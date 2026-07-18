@@ -11,6 +11,7 @@
 //   rit-tamper   : sign one body, send a different body
 //   flood        : application-layer request flood (fingerprint-keyed rate)
 //   distributed  : one fingerprint across rotated proxy subnets
+//   xff-spoof    : forged private X-Forwarded-For to impersonate a LAN client
 // (HTTP/2 Rapid Reset is exercised by the rapid_reset node profile, not this binary.)
 package main
 
@@ -35,7 +36,7 @@ import (
 )
 
 var (
-	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed")
+	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|xff-spoof")
 	host   = flag.String("host", "127.0.0.1:8443", "target host:port")
 )
 
@@ -48,6 +49,8 @@ func main() {
 		v, err = flood()
 	case "distributed":
 		v, err = distributed()
+	case "xff-spoof":
+		v, err = xffSpoof()
 	case "tls-static":
 		v, err = tlsStatic()
 	case "tls-rotate":

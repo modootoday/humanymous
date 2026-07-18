@@ -186,6 +186,7 @@ var (
 	_ = def(Definition{"l5.header.h2_uppercase", LayerNetwork, 25, nil, "header", "uppercase header in h2 (malformed)"})
 	_ = def(Definition{"l5.header.sec_fetch_missing", LayerNetwork, 25, nil, "header", "Chrome UA but sec-fetch missing"})
 	_ = def(Definition{"l5.header.accept_encoding", LayerNetwork, 8, nil, "header", "accept-encoding mismatch"})
+	_ = def(Definition{"l5.header.forwarded_private", LayerNetwork, 50, nil, "header", "forwarded client IP is private/reserved (spoofed source)"})
 	_ = def(Definition{"l5.tcp.ttl_os", LayerNetwork, 10, nil, "tcp", "TTL/OS vs UA OS"})
 	_ = def(Definition{"l5.ip.datacenter_asn", LayerNetwork, 20, nil, "ip", "datacenter/hosting ASN"})
 	_ = def(Definition{"l5.ip.proxy_vpn_tor", LayerNetwork, 15, nil, "ip", "proxy/vpn/tor exit"})

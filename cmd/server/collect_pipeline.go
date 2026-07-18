@@ -49,10 +49,11 @@ func parseClientReport(w http.ResponseWriter, body []byte, sid string) (signals.
 // report into the session (network is pinned on the first collect).
 func (a *app) mergeObservation(sid string, r *http.Request, client signals.ClientReport, now time.Time) {
 	obs := network.Observation{
-		Hello:          a.reg.Hello(r.RemoteAddr),
-		H2:             a.reg.H2(r.RemoteAddr),
-		Header:         reqToHeaderInfo(r),
-		IsDatacenterIP: isDatacenterIP(clientIP(r)),
+		Hello:             a.reg.Hello(r.RemoteAddr),
+		H2:                a.reg.H2(r.RemoteAddr),
+		Header:            reqToHeaderInfo(r),
+		IsDatacenterIP:    isDatacenterIP(clientIP(r)),
+		ClientForwardedIP: forwardedIP(r),
 	}
 	a.store.MergeNetwork(sid, network.Build(obs), now)
 	a.store.MergeClient(sid, client, now)

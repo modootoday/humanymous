@@ -1,6 +1,7 @@
 package network
 
 import (
+	"net"
 	"strings"
 
 	"github.com/modootoday/humanymous/internal/signals"
@@ -19,6 +20,11 @@ type Observation struct {
 	// IsDatacenterIP / IsProxy come from IP intel (internal/network/ipintel.go).
 	IsDatacenterIP bool
 	IsProxy        bool
+	// ClientForwardedIP is the IP the CLIENT asserted via a forwarding header
+	// (X-Forwarded-For left-most / X-Real-IP), captured regardless of proxy trust.
+	// A real reverse proxy forwards the client's PUBLIC address; a private/reserved
+	// value here is a forged "I'm on your LAN" source (see forwarded_private).
+	ClientForwardedIP string
 }
 
 // Build turns an Observation into a NetworkReport (L5 signals + engine fields).
@@ -80,6 +86,13 @@ func Build(obs Observation) signals.NetworkReport {
 	}
 	if obs.IsProxy {
 		add("l5.ip.proxy_vpn_tor", true, signals.VerdictSuspicious, "proxy/vpn/tor exit")
+	}
+	// A client-asserted forwarded IP that is private/loopback/link-local is a
+	// forged source: a genuine reverse proxy forwards the client's PUBLIC address,
+	// never a LAN one. This is the spoof used to shed datacenter/IP-intel signals.
+	if ip := net.ParseIP(obs.ClientForwardedIP); ip != nil &&
+		(ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsUnspecified()) {
+		add("l5.header.forwarded_private", obs.ClientForwardedIP, signals.VerdictBot, "forwarded client IP is private/reserved (spoofed source)")
 	}
 
 	nr.Signals = sigs

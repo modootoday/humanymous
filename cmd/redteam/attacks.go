@@ -161,6 +161,32 @@ func flood() (map[string]any, error) {
 	return v, nil
 }
 
+// xffSpoof forges a PRIVATE X-Forwarded-For (+ X-Real-IP) to impersonate a
+// trusted-LAN client. If the engine naively trusts the forwarding header from
+// its NAT/proxy peer, the client sheds the datacenter/IP-intel signals; a single
+// (non-rotated) source also dodges cross-session correlation (HR-19). Otherwise
+// clean Chrome uTLS + a fabricated-but-consistent client report, so the forged
+// IP is the ONLY variable. Blue must reject a forwarded client IP that is
+// private/reserved — a real reverse proxy forwards the client's PUBLIC address,
+// never a LAN one (l5.header.forwarded_private).
+func xffSpoof() (map[string]any, error) {
+	const fpID = "5p00fed15p00fed15p00fed1"
+	body := `{"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0 Safari/537.36",` +
+		`"fingerprintId":"` + fpID + `","engineVersion":"wasm-1.0.0","advanced":{"probed":true},` +
+		`"environment":{"probed":true},"behavior":{"mouse":{"samples":32,"velocityStdDev":0.5},` +
+		`"events":{"totalEvents":44}},"signals":[]}`
+	cookie, _, _, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	// forge "I'm on your LAN" so IP-intel treats the source as trusted/non-datacenter
+	hdr := withBrowserHeaders(map[string]string{
+		"X-Forwarded-For": "10.20.30.40",
+		"X-Real-IP":       "10.20.30.40",
+	})
+	return collect(utls.HelloChrome_Auto, chromeUA, cookie, hdr, body)
+}
+
 func itoa(n uint64) string {
 	if n == 0 {
 		return "0"

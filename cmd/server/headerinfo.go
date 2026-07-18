@@ -95,6 +95,20 @@ func clientIP(r *http.Request) string {
 	return peer
 }
 
+// forwardedIP returns the IP the CLIENT asserted via a forwarding header
+// (X-Forwarded-For left-most, else X-Real-IP), with NO trust decision applied. It
+// feeds the forwarded_private spoof signal — a client claiming a private/reserved
+// source is forging "I'm on your LAN" to shed IP-intel signals.
+func forwardedIP(r *http.Request) string {
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		if i := strings.IndexByte(xff, ','); i >= 0 {
+			return strings.TrimSpace(xff[:i])
+		}
+		return strings.TrimSpace(xff)
+	}
+	return strings.TrimSpace(r.Header.Get("X-Real-IP"))
+}
+
 // directPeer extracts the bare IP (no port, no brackets) of the connecting peer.
 func directPeer(remoteAddr string) string {
 	if host, _, err := net.SplitHostPort(remoteAddr); err == nil {

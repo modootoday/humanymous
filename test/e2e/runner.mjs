@@ -44,6 +44,7 @@ const PROFILES = [
   // --- frontier threats (SoT-15/16): AI agents + distributed proxy pools ---
   'ai_agent.mjs',              // LLM browser-agent cadence -> HR-20
   'distributed.mjs',           // rotating residential-proxy pool -> HR-19
+  'xff_spoof.mjs',             // forged private X-Forwarded-For -> l5.header.forwarded_private
   'flood.mjs',                 // application-layer request flood -> HR-21 (SoT-17)
   'rapid_reset.mjs',           // HTTP/2 Rapid Reset DoS (CVE-2023-44487) -> HR-21 (SoT-17)
 ];
