@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>humanymous Pass</title>
+<link rel="icon" href="/static/img/favicon.svg">
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--panel2:#11161d;--border:#232b36;--ink:#c9d1d9;--ink2:#eaf1f7;--muted:#8b949e;--faint:#5c6773;--accent:#35d0ba;--allow:#3fb950;--challenge:#d9a441;--deny:#f0556a;--mono:ui-monospace,Cascadia Code,Consolas,monospace;--sans:ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(900px 500px at 50% -10%,#12303030,transparent 60%),var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55}
+  .wrap{max-width:720px;margin:0 auto;padding:34px 20px 80px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+  h1{font-size:30px;font-weight:600;letter-spacing:-.02em;color:var(--ink2);margin:0}
+  h1 .p{color:var(--accent)}
+  .sub{color:var(--muted);font-size:15px;margin:8px 0 0}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:14px;padding:18px;margin:18px 0}
+  .prompt{font-size:15px;color:var(--ink2);margin:0 0 12px}
+  .stage{position:relative;width:100%;max-width:420px;margin:0 auto;aspect-ratio:3/2;background:#080b10;border:1px solid var(--border);border-radius:10px;touch-action:none;cursor:grab;overflow:hidden}
+  .stage.dragging{cursor:grabbing}
+  canvas{display:block;width:100%;height:100%}
+  .hint{font-family:var(--mono);font-size:12px;color:var(--faint);text-align:center;margin:10px 0 0}
+  .row{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:14px;flex-wrap:wrap}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:9px;border:1px solid var(--border);padding:9px 16px;cursor:pointer;background:var(--panel);color:var(--ink2)}
+  button.go{background:var(--accent);color:#04120f;border-color:transparent}
+  button:disabled{opacity:.5;cursor:default}
+  .status{font-family:var(--mono);font-size:13px;text-align:center;margin-top:14px;min-height:20px}
+  .ok{color:var(--allow)} .bad{color:var(--deny)} .warn{color:var(--challenge)}
+  .meta{font-family:var(--mono);font-size:11px;color:var(--faint);display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  .note{font-size:13px;color:var(--muted);border-left:3px solid var(--border);padding:2px 0 2px 12px;margin:16px 0}
+  .note b{color:var(--ink2)}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">humanymous · challenge layer</p>
+  <h1>humanymous <span class="p">Pass</span></h1>
+  <p class="sub">Place the ramp so the released ball lands in the cup. A person does this by eye in seconds.</p>
+
+  <div class="card">
+    <p class="prompt" id="prompt">Drag the <b style="color:var(--accent)">teal ramp</b> into place · <b>scroll</b> to rotate it · then drop the ball.</p>
+    <div class="stage" id="stage"><canvas id="cv" width="420" height="280"></canvas></div>
+    <p class="hint" id="hint">drag to move · scroll / ↑↓ to rotate</p>
+    <div class="row">
+      <button id="drop" class="go">Drop the ball</button>
+      <button id="new">New puzzle</button>
+    </div>
+    <div class="status" id="status">&nbsp;</div>
+    <div class="meta" id="meta"></div>
+  </div>
+
+  <p class="note"><b>Why a game?</b> This is <b>humanymous Pass</b> — shown only when a session is scored ambiguous. It is
+  built so a real person clears it effortlessly while an automated agent, reasoning over a static screenshot, cannot: the
+  answer is not in the page — it is whatever placement your intuition finds, verified by re-simulating the physics on the
+  server. This page is a <b>non-blocking research surface</b>: attack it, study it. It raises the cost of automation; it does
+  not claim to stop it.</p>
+</div>
+
+<script>
+// ---- shared ballistics: identical to internal/pass/pass.go so the client preview == the server verdict ----
+const DT=0.10, MAXSTEPS=900, BOUNDS=100, RAMP_B=0.86, DEFL_B=0.90;
+const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const sub=(a,b)=>({x:a.x-b.x,y:a.y-b.y});
+const crossp=(a,b)=>a.x*b.y-a.y*b.x;
+function segInt(p1,p2,p3,p4){const d1=crossp(sub(p3,p4),sub(p3,p1)),d2=crossp(sub(p3,p4),sub(p3,p2)),d3=crossp(sub(p1,p2),sub(p1,p3)),d4=crossp(sub(p1,p2),sub(p1,p4));return ((d1>0)!==(d2>0))&&((d3>0)!==(d4>0));}
+function crosses(p,q,w){if(!segInt(p,q,w.a,w.b))return null;const wx=w.b.x-w.a.x,wy=w.b.y-w.a.y,l=Math.hypot(wx,wy);if(l===0)return null;return{x:-wy/l,y:wx/l};}
+function reflectV(v,n,rest){const dot=v.x*n.x+v.y*n.y;return{x:(v.x-2*dot*n.x)*rest,y:(v.y-2*dot*n.y)*rest};}
+function makeRamp(c,a,len){const dx=Math.cos(a)*len/2,dy=Math.sin(a)*len/2;return{a:{x:c.x-dx,y:c.y-dy},b:{x:c.x+dx,y:c.y+dy}};}
+function simulate(sc,ramp){const segs=[...sc.deflectors,ramp];let p={...sc.ball},v={x:0,y:0};const path=[{...p}];
+  for(let i=0;i<MAXSTEPS;i++){v.y+=sc.gravity*DT;let np={x:p.x+v.x*DT,y:p.y+v.y*DT};
+    if(d(np,sc.cup)<=sc.cupR||d(p,sc.cup)<=sc.cupR){path.push({...sc.cup});return{path,ok:true};}
+    for(let si=0;si<segs.length;si++){const bo=si<sc.deflectors.length?DEFL_B:RAMP_B;const n=crosses(p,np,segs[si]);if(n){v=reflectV(v,n,bo);np={x:p.x+v.x*DT*0.5,y:p.y+v.y*DT*0.5};break;}}
+    p=np;path.push({...p});if(p.x<0||p.x>BOUNDS||p.y>BOUNDS)return{path,ok:false};}
+  return{path,ok:false};}
+
+// ---- state ----
+let scene=null, bucket=0, ramp={cx:50,cy:50,ang:0}, solved=false;
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+const stage=document.getElementById('stage'), statusEl=document.getElementById('status'), metaEl=document.getElementById('meta');
+const S=cv.width/100, SY=cv.height/100; // scene(0..100)->canvas scale (x uses width, y uses height*... keep square-ish)
+function toPx(pt){return {x:pt.x/100*cv.width, y:pt.y/100*cv.height};}
+function toScene(px,py){const r=cv.getBoundingClientRect();return {x:(px-r.left)/r.width*100, y:(py-r.top)/r.height*100};}
+
+// ---- real-event capture (SoT-36 §5) ----
+let cap=resetCap();
+function resetCap(){return {moves:0,coalesced:0,trusted:true,pathLen:0,last:null,lastT:0,durations:[]};}
+function onMove(e){
+  if(e.isTrusted===false) cap.trusted=false;
+  cap.moves++;
+  const co = e.getCoalescedEvents?e.getCoalescedEvents():[e];
+  cap.coalesced += co.length;
+  const now=performance.now();
+  if(cap.lastT){const dt=now-cap.lastT; if(dt>0&&dt<500&&cap.durations.length<400) cap.durations.push(dt);}
+  cap.lastT=now;
+  const p={x:e.clientX,y:e.clientY};
+  if(cap.last){cap.pathLen+=Math.hypot(p.x-cap.last.x,p.y-cap.last.y);}
+  cap.last=p;
+}
+
+function draw(preview){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  if(!scene) return;
+  // deflectors
+  ctx.lineCap='round';
+  ctx.strokeStyle='#3a4553'; ctx.lineWidth=6;
+  for(const s of scene.deflectors){const a=toPx(s.a),b=toPx(s.b);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+  // cup
+  const c=toPx(scene.cup); ctx.strokeStyle='#3fb950'; ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.arc(c.x,c.y,scene.cupR/100*cv.width,0.15*Math.PI,0.85*Math.PI,false);ctx.stroke();
+  // preview path
+  if(preview){ctx.strokeStyle='rgba(217,164,65,.7)';ctx.lineWidth=1.6;ctx.beginPath();preview.path.forEach((pt,i)=>{const q=toPx(pt);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});ctx.stroke();}
+  // ramp
+  const rp=makeRamp({x:ramp.cx,y:ramp.cy},ramp.ang,scene.rampLen);const a=toPx(rp.a),b=toPx(rp.b);
+  ctx.strokeStyle='#35d0ba'; ctx.lineWidth=6; ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  // ball
+  const bl=toPx(scene.ball); ctx.fillStyle='#e0e6ed'; ctx.beginPath();ctx.arc(bl.x,bl.y,6,0,7);ctx.fill();
+}
+
+async function loadNew(){
+  solved=false; statusEl.textContent=' '; statusEl.className='status'; metaEl.textContent='';
+  cap=resetCap();
+  const r=await fetch('/api/pass/new',{credentials:'include'}); const j=await r.json();
+  if(j.alreadySolved){statusEl.textContent='already cleared ✓';statusEl.className='status ok';return;}
+  scene=j.scene; bucket=j.bucket; ramp={cx:scene.ball.x+8, cy:scene.ball.y+22, ang:0};
+  document.getElementById('drop').disabled=false;
+  draw(); updateMeta(j.triesLeft);
+}
+function updateMeta(tl){metaEl.textContent=`ramp (${ramp.cx.toFixed(0)}, ${ramp.cy.toFixed(0)}) · ${(ramp.ang*57.3).toFixed(0)}°` + (tl!=null?` · ${tl} tries left`:'');}
+
+// drag to move ramp
+let dragging=false;
+stage.addEventListener('pointerdown',e=>{if(solved||!scene)return;dragging=true;stage.classList.add('dragging');stage.setPointerCapture(e.pointerId);onMove(e);const s=toScene(e.clientX,e.clientY);ramp.cx=Math.max(4,Math.min(96,s.x));ramp.cy=Math.max(4,Math.min(96,s.y));draw();});
+stage.addEventListener('pointermove',e=>{if(!dragging)return;onMove(e);const s=toScene(e.clientX,e.clientY);ramp.cx=Math.max(4,Math.min(96,s.x));ramp.cy=Math.max(4,Math.min(96,s.y));draw();updateMeta();});
+stage.addEventListener('pointerup',e=>{dragging=false;stage.classList.remove('dragging');});
+stage.addEventListener('wheel',e=>{if(solved||!scene)return;e.preventDefault();ramp.ang+=(e.deltaY>0?1:-1)*0.08;draw();updateMeta();},{passive:false});
+window.addEventListener('keydown',e=>{if(!scene||solved)return;if(e.key==='ArrowUp'){ramp.ang-=0.06;draw();updateMeta();}if(e.key==='ArrowDown'){ramp.ang+=0.06;draw();updateMeta();}});
+
+document.getElementById('drop').addEventListener('click',async()=>{
+  if(solved||!scene)return;
+  const rp=makeRamp({x:ramp.cx,y:ramp.cy},ramp.ang,scene.rampLen);
+  const preview=simulate(scene,rp); draw(preview);
+  statusEl.textContent='checking…'; statusEl.className='status warn';
+  const body={bucket,rampX:ramp.cx,rampY:ramp.cy,rampAngle:ramp.ang,
+    moves:cap.moves,coalesced:cap.coalesced,trusted:cap.trusted,pathLen:cap.pathLen,durations:cap.durations.slice(0,60)};
+  const r=await fetch('/api/pass/solve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json();
+  if(j.ok){solved=true;statusEl.textContent='✓ cleared — you are human enough. verdict: '+(j.verdict||'ALLOW');statusEl.className='status ok';document.getElementById('drop').disabled=true;}
+  else{statusEl.textContent='✕ '+(j.reason||'not this time')+(j.triesLeft!=null?` · ${j.triesLeft} tries left`:'');statusEl.className='status bad';
+    if(j.triesLeft===0){setTimeout(loadNew,900);}}
+});
+document.getElementById('new').addEventListener('click',loadNew);
+loadNew();
+</script>
+</body>
+</html>

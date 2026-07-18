@@ -37,6 +37,8 @@ type app struct {
 	webDir    string
 	ritOn     bool
 
+	pass *passStore // SoT-36 humanymous Pass challenge state (per-session, in-memory)
+
 	// SoT-30 Phase-3 local Red launcher (all nil/zero unless HMN_PLAYGROUND=1).
 	nonces       *nonceStore
 	launchSem    chan struct{} // capacity 1: serializes launches (§10)
@@ -59,6 +61,7 @@ func newApp(webDir string, masterKey []byte, ritOn bool) *app {
 		masterKey: masterKey,
 		webDir:    webDir,
 		ritOn:     ritOn,
+		pass:      newPassStore(),
 	}
 	// SoT-30 Detection Observatory: the live-telemetry hub exists only when the
 	// dev flag is set, so gate-off leaves the scorer tap a zero-cost nil check.
@@ -81,6 +84,9 @@ func (a *app) routes() http.Handler {
 	mux.HandleFunc("/api/report", a.handleReportList)
 	mux.HandleFunc("/api/csp-report", a.handleCSPReport)
 	mux.HandleFunc("/api/pow", a.handlePoW)
+	mux.HandleFunc("/pass", a.handlePassPage)          // SoT-36 humanymous Pass (demo/research surface)
+	mux.HandleFunc("/api/pass/new", a.handlePassNew)   // issue a fresh challenge instance
+	mux.HandleFunc("/api/pass/solve", a.handlePassSolve) // verify placement + interaction
 	mux.HandleFunc("/api/trace", a.handleTrace)
 	mux.HandleFunc("/api/traffic/", a.handleTraffic)
 	mux.HandleFunc("/res/", a.handleResource)
