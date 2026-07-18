@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/attestation"
 	"github.com/modootoday/humanymous/internal/pass"
 	"github.com/modootoday/humanymous/internal/pow"
 	"github.com/modootoday/humanymous/internal/signals"
@@ -40,6 +41,7 @@ type passSession struct {
 	powDifficulty int    // PoW leading-zero-bit target for this instance
 	powOK         bool   // the crypto axis (①) has been satisfied for this instance
 	velLevel      int    // highest Pass-velocity level flagged this session (0 ok, 1 elevated, 2 flood)
+	attestReq     bool   // this instance additionally requires a rate-limited attestation token
 }
 
 // passStore holds transient per-session Pass state + the wargame metrics, guarded
@@ -103,6 +105,13 @@ func passNonce() (string, error) {
 // within the same time bucket.
 func passPoWSession(sid, nonce string) string { return sid + "|pass|" + nonce }
 
+// passFP is the STABLE per-fingerprint key (JA4 engine + /24 subnet) — the identity
+// that a cookie-rotating bot cannot shed but a residential-proxy pool shares. Both
+// the velocity governor (axis ③) and the attestation issuer (axis ①) key on it.
+func (a *app) passFP(r *http.Request) string {
+	return ja4Stable(a.reg.Hello(r.RemoteAddr)) + "|" + clientSubnet(r)
+}
+
 // record logs one attempt into the wargame metrics (caller need not hold the lock).
 func (p *passStore) record(label string, difficulty int, passed bool) {
 	outcome := "fail"
@@ -160,7 +169,7 @@ func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 	}
 	// Axis ③ (SoT-36 §7): meter Pass velocity first so this instance's cost already
 	// reflects any automation cadence. No lockout — just a re-scored risk + PoW tax.
-	velLvl := a.applyPassVelocity(sid, r, now)
+	velLvl, sessLvl := a.applyPassVelocity(sid, r, now)
 	a.pass.mu.Lock()
 	bucket := uint64(now.Unix() / passWindow)
 	ps.instance++ // fresh puzzle every /new
@@ -177,9 +186,15 @@ func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 	if ps.powDifficulty > 20 {
 		ps.powDifficulty = 20 // keep the demo/wargame solver snappy
 	}
+	// Axis ① upgrade (SoT-36 §2): once the identity is flagged for velocity, PoW (a CPU
+	// tax) is no longer sufficient — the instance also requires a rate-limited attestation
+	// token, so the crypto axis costs an identity budget, not just cycles. Gated on the
+	// SESSION cadence here (production extends the trigger to the fp level, already metered).
+	ps.attestReq = sessLvl >= 1
 	diff := ps.difficulty
 	inst := ps.instance
 	powDiff := ps.powDifficulty
+	attestReq := ps.attestReq
 	a.pass.mu.Unlock()
 
 	challenge := pass.Generate(a.masterKey, sid, bucket, inst, diff)
@@ -192,9 +207,55 @@ func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 		"challenge":      challenge,
 		"challengeNonce": nonce,
 		"triesLeft":      passMaxTries,
-		"expiresInS":     passWindow * 2,                      // TTL spans a couple of buckets (SoT-36 §5)
-		"preflight":      map[string]any{"pow": powChallenge}, // axis ①: the non-interactive crypto proof
+		"expiresInS":     passWindow * 2, // TTL spans a couple of buckets (SoT-36 §5)
+		"preflight": map[string]any{
+			"pow":            powChallenge, // axis ①: the non-interactive crypto proof
+			"attestRequired": attestReq,    // axis ①: identity-costed token also required when flagged
+		},
 	})
+}
+
+// handlePassAttest issues an attestation token (SoT-36 §2 axis ①) bound to the
+// caller's fingerprint + this instance's challenge nonce. Issuance is rate-limited
+// PER FINGERPRINT (short, self-clearing window — never a lockout): a cookie-rotating
+// flood from one JA4|subnet runs out of tokens and can no longer satisfy the crypto
+// axis, closing the one-shot-per-fresh-cookie bypass that PoW alone leaves open.
+func (a *app) handlePassAttest(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "POST only", http.StatusMethodNotAllowed)
+		return
+	}
+	sid := cookieValue(r, sessionCookie)
+	if sid == "" {
+		http.Error(w, "no session", http.StatusBadRequest)
+		return
+	}
+	var body struct {
+		ChallengeNonce string `json:"challengeNonce"`
+	}
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 4096)).Decode(&body); err != nil {
+		http.Error(w, "bad body", http.StatusBadRequest)
+		return
+	}
+	ps := a.pass.get(sid)
+	a.pass.mu.Lock()
+	issuedNonce := ps.nonce
+	a.pass.mu.Unlock()
+	if body.ChallengeNonce == "" || body.ChallengeNonce != issuedNonce {
+		writeJSON(w, map[string]any{"ok": false, "reason": "stale challenge"})
+		return
+	}
+	now := time.Now()
+	// Issuance budget is keyed on the FINGERPRINT (the identity a cookie-rotating flood
+	// shares); exhausted -> deny (short window; retry shortly). The token, however, binds
+	// to the SESSION id so it verifies across whatever connection redeems it.
+	if a.attestLim.Level(a.attestLim.Observe("att|"+a.passFP(r), now)) >= 2 {
+		writeJSON(w, map[string]any{"ok": false, "reason": "attestation budget exhausted — retry shortly"})
+		return
+	}
+	window := uint64(now.Unix() / attestation.Window)
+	token := attestation.Issue(a.masterKey, sid, issuedNonce, window)
+	writeJSON(w, map[string]any{"ok": true, "token": token})
 }
 
 // handlePassPoW verifies the non-interactive crypto proof (axis ①, SoT-36 §2):
@@ -248,15 +309,20 @@ func (a *app) handlePassPoW(w http.ResponseWriter, r *http.Request) {
 //     (accessibility: cost shifts to crypto as suspicion grows, SoT-36 §2).
 //
 // The window is short (30s) and self-clearing — it never stalls the red/blue wargame.
-// Returns the current velocity level (0 ok, 1 elevated, 2 flood).
-func (a *app) applyPassVelocity(sid string, r *http.Request, now time.Time) int {
-	lvl := a.passVel.Level(a.passVel.Observe("s|"+sid, now)) // per-session cadence
-	fpKey := ja4Stable(a.reg.Hello(r.RemoteAddr)) + "|" + clientSubnet(r)
-	if l := a.passVel.Level(a.passVel.Observe("f|"+fpKey, now)); l > lvl { // cross-session (proxy pool)
-		lvl = l
+// Returns (combined level, session-only level): the combined level drives the risk
+// signal + PoW cost; the session level drives the attestation requirement, keeping the
+// shared-fingerprint wargame's fresh-session strategies clean. In production the
+// attestation trigger extends to the fp level (already metered), catching a
+// cookie-rotating flood from one JA4|subnet — not exercisable in a shared-fp harness.
+func (a *app) applyPassVelocity(sid string, r *http.Request, now time.Time) (int, int) {
+	sLvl := a.passVel.Level(a.passVel.Observe("s|"+sid, now))         // per-session cadence
+	fLvl := a.passVel.Level(a.passVel.Observe("f|"+a.passFP(r), now)) // cross-session (proxy pool)
+	lvl := sLvl
+	if fLvl > lvl {
+		lvl = fLvl
 	}
 	if lvl == 0 {
-		return 0
+		return 0, sLvl
 	}
 	ps := a.pass.get(sid)
 	a.pass.mu.Lock()
@@ -266,7 +332,7 @@ func (a *app) applyPassVelocity(sid string, r *http.Request, now time.Time) int 
 	}
 	a.pass.mu.Unlock()
 	if lvl <= prev {
-		return lvl // already flagged at this level — don't append a duplicate signal
+		return lvl, sLvl // already flagged at this level — don't append a duplicate signal
 	}
 	id, v := "l7.pass.velocity", signals.VerdictSuspicious
 	if lvl == 2 {
@@ -277,7 +343,7 @@ func (a *app) applyPassVelocity(sid string, r *http.Request, now time.Time) int 
 		signals.New(id, nil, v, 1.0, signals.SourceServer, "Pass velocity (automation cadence)"))
 	a.engine.Score(&rep)
 	a.store.StoreScored(sid, rep, now)
-	return lvl
+	return lvl, sLvl
 }
 
 // passDifficulty is the blue controller's knob (SoT-36 §8): harder challenges for
@@ -325,6 +391,7 @@ func isBotLabel(label string) bool { return label != "human" && label != "unknow
 type passProof struct {
 	Bucket         uint64 `json:"bucket"`
 	ChallengeNonce string `json:"challengeNonce"` // binds the solve to the issued instance (axis ①)
+	AttestToken    string `json:"attestToken"`    // rate-limited attestation token (axis ①, when required)
 	Offsets        []int  `json:"offsets"`        // per-row shift; key lands at (keyIndex+offset) mod N
 	Trusted        bool   `json:"trusted"`        // all events had isTrusted === true (pre-filter)
 	// Pointer/touch channel (SoT-36 §5): mouse/touch users produce these.
@@ -438,6 +505,7 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	instance := ps.instance
 	issuedNonce := ps.nonce
 	powOK := ps.powOK
+	attestReq := ps.attestReq
 	a.pass.mu.Unlock()
 
 	current := uint64(time.Now().Unix() / passWindow)
@@ -462,6 +530,17 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	if !powOK {
 		reject("no cryptographic preflight")
 		return
+	}
+
+	// 2b. Identity gate (axis ① upgrade): when the fingerprint is flagged, PoW alone
+	// no longer buys an attempt — a rate-limited attestation token (bound to this
+	// fingerprint + nonce) is also required, so throughput costs an identity budget.
+	if attestReq {
+		window := uint64(time.Now().Unix() / attestation.Window)
+		if !attestation.Verify(a.masterKey, sid, issuedNonce, pr.AttestToken, window) {
+			reject("attestation required")
+			return
+		}
 	}
 
 	// 3. Real-event pre-filter (SoT-36 §5) — degenerate/synthetic submissions.

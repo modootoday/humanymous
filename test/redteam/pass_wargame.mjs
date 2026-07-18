@@ -63,6 +63,12 @@ class Client {
       body: JSON.stringify({ bucket: p.bucket, nonce: solvePoW(p), challengeNonce: nw.challengeNonce }),
     });
   }
+  attest(nw) { // axis ①: fetch a rate-limited attestation token for this instance
+    return this.api('/api/pass/attest', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ challengeNonce: nw.challengeNonce }),
+    });
+  }
   submit(body) {
     return this.api('/api/pass/solve', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
@@ -115,27 +121,50 @@ const human = new Client(); const humanNew = await human.fresh(); await human.pr
 const humanResult = await human.submit(keyboardProof(humanNew, 19));
 console.log(`${humanResult.ok ? '  PASS   ' : '✗ FAIL   '} accessible-keyboard-human  risk=${humanResult.riskScore ?? '?'} ${humanResult.reason || ''}`);
 
-// ── Axis ③ demonstration: volume-forge ─────────────────────────────────────────
-// One session clears Pass repeatedly with forged keyboard proofs. A single forged
-// solve IS indistinguishable and passes — but the flooding CADENCE is the tell: the
-// engine folds l7.pass.velocity/flood into the score, so (a) the PoW CPU cost climbs
-// (crypto axis, never the puzzle → accessibility safe) and (b) the returned verdict
-// turns BOT. Solving Pass never launders mass automation. No lockout — nothing stalls.
+// ── Axis ③ (round 2) + axis ① identity gate (round 3): volume-forge ────────────
+// One session clears Pass with forged keyboard proofs. Round 2 folds l7.pass.velocity
+// /flood into the score (PoW cost climbs, verdict turns non-ALLOW). Round 3 goes
+// further: once the session cadence is flagged, PoW alone no longer buys an attempt —
+// a rate-limited attestation TOKEN is also required. A naive flood holds no token, so
+// after the first few fresh attempts it is BLOCKED, not merely taxed. No lockout: the
+// window self-clears; a fresh identity may try again — bounded by the issuance rate.
 const vol = new Client('volume-forge'); const volStats = [];
 for (let i = 0; i < 8; i++) {
   const nw = await vol.fresh();
   const powDiff = nw.preflight.pow.difficulty;
+  const attReq = !!(nw.preflight && nw.preflight.attestRequired);
   await vol.preflight(nw);
-  const r = await vol.submit(keyboardProof(nw, 100 + i));
-  volStats.push({ i, powDiff, ok: !!r.ok, risk: r.riskScore ?? 0, verdict: r.verdict || '-' });
+  const r = await vol.submit(keyboardProof(nw, 100 + i)); // naive: never fetches a token
+  volStats.push({ i, powDiff, attReq, ok: !!r.ok, risk: r.riskScore ?? 0, reason: r.reason || '' });
 }
-console.log('\nvolume-forge (Pass-clears succeed, but PoW cost + engine risk climb):');
-for (const s of volStats) console.log(`  #${s.i} pow=${s.powDiff}  clear=${s.ok}  engineRisk=${s.risk}  verdict=${s.verdict}`);
-const powFirst = volStats[0].powDiff, powLast = volStats[volStats.length - 1].powDiff;
-const riskPeak = Math.max(...volStats.map(s => s.risk));
-const costEscalated = powLast > powFirst;
-const engineCaught = riskPeak >= 45; // flood signal (weight 45) lifts risk into the CHALLENGE band
-console.log(`  → PoW cost ${powFirst}→${powLast} (${costEscalated ? 'ESCALATED' : 'flat'}); peak engine risk ${riskPeak} (${engineCaught ? 'held at elevated risk, verdict ≠ ALLOW despite clearing' : 'not flagged'})\n`);
+console.log('\nvolume-forge (naive flood — cost climbs, then the identity gate BLOCKS it):');
+for (const s of volStats) console.log(`  #${s.i} pow=${s.powDiff} attestReq=${s.attReq} clear=${s.ok} risk=${s.risk} ${s.reason}`);
+const volCleared = volStats.filter(s => s.ok).length;
+const volBlocked = volStats.filter(s => !s.ok).length;
+const volGate = volBlocked > 0 && volStats.some(s => /attestation/.test(s.reason));
+console.log(`  → ${volCleared} cleared then ${volBlocked} BLOCKED (identity gate ${volGate ? 'engaged' : 'DID NOT engage'})\n`);
+
+// ── Round 3: token-flood — a bot that DOES fetch attestation tokens ─────────────
+// Smarter than volume-forge: when attestation is required it fetches a token. But
+// issuance is rate-limited PER FINGERPRINT, so its throughput is hard-capped: after
+// the per-fingerprint budget is spent the issuer denies, and the attempts are blocked.
+// The crypto axis now costs an identity budget, not just CPU.
+const tok = new Client('token-flood'); const tokStats = [];
+for (let i = 0; i < 8; i++) {
+  const nw = await tok.fresh();
+  const attReq = !!(nw.preflight && nw.preflight.attestRequired);
+  await tok.preflight(nw);
+  let token = '';
+  if (attReq) { const a = await tok.attest(nw); token = a.ok ? a.token : ''; }
+  const r = await tok.submit({ ...keyboardProof(nw, 200 + i), attestToken: token });
+  tokStats.push({ i, attReq, gotToken: !!token, ok: !!r.ok, reason: r.reason || '' });
+}
+console.log('token-flood (fetches tokens — throughput capped by per-fingerprint issuance):');
+for (const s of tokStats) console.log(`  #${s.i} attestReq=${s.attReq} token=${s.gotToken} clear=${s.ok} ${s.reason}`);
+const tokCleared = tokStats.filter(s => s.ok).length;
+const tokBlocked = tokStats.filter(s => !s.ok).length;
+const tokCap = tokBlocked > 0; // issuance budget exhausted at least once
+console.log(`  → ${tokCleared} cleared then ${tokBlocked} BLOCKED (issuance budget ${tokCap ? 'capped throughput' : 'NOT capped'})\n`);
 
 // ── Blocked classes (our current defense holds) ────────────────────────────────
 await run('read-dom-forge-no-crypto', async () => {
@@ -202,11 +231,11 @@ console.log(`human pass floor: ${(kpi.humanPassRate * 100).toFixed(1)}% over ${k
 // ── Promotion gate ─────────────────────────────────────────────────────────────
 const postureHeld = results.every(r => r.passed === r.expected);
 const humanFloorOK = humanResult.ok && (kpi.humanAttempts === 0 || kpi.humanPassRate === 1);
-const axis3OK = costEscalated && engineCaught; // velocity taxed cost + flipped the verdict
-const promotion = postureHeld && humanFloorOK && a11yOK && axis3OK;
+const identityGateOK = volGate && tokCap; // naive flood blocked + token flood throughput-capped
+const promotion = postureHeld && humanFloorOK && a11yOK && identityGateOK;
 const blocked = results.filter(r => !r.passed).length;
-console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · axis③ ${axis3OK ? 'engaged (cost↑ + risk↑, verdict ≠ ALLOW)' : 'FAILED'}`);
+console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · identity-gate ${identityGateOK ? 'engaged (flood blocked + throughput capped)' : 'FAILED'}`);
 console.log(`promotion gate: ${promotion ? 'PASS' : 'FAIL'}`);
-console.log('round 2 closed: mass forgery no longer launders trust — velocity escalates PoW cost + lifts the engine risk so a flooding session is never cleared to ALLOW, with zero lockout (wargame stays iterable).');
-console.log('frontier: a single forged solve from a fresh identity still clears Pass; next rotate the ISSUER axis (rate-limited PAT/attestation token) so each attempt costs an identity, not just CPU.');
+console.log('round 3 closed: a flagged identity can no longer flood Pass — PoW alone stops buying attempts; a rate-limited attestation token (identity budget) is required, so throughput is capped per fingerprint. Human floor + accessibility intact, zero lockout (short self-clearing windows).');
+console.log('frontier: a single forged solve from a truly FRESH identity still clears one Pass (bounded by the issuance rate). Next: raise the real-event bar (keystroke/pointer kinematics) — soft, fused, never gating the accessible lane — to make even that first forgery costlier.');
 if (!promotion) process.exitCode = 1;

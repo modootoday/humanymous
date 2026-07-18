@@ -66,7 +66,7 @@
 
 <script>
 let ch=null, bucket=0, N=11, CENTER=5, offsets=[0,0,0], activeRow=0, solved=false;
-let challengeNonce='', powReady=Promise.resolve(false);
+let challengeNonce='', attestToken='', powReady=Promise.resolve(false);
 const reelsEl=document.getElementById('reels'), slot=document.getElementById('slot');
 const statusEl=document.getElementById('status'), live=document.getElementById('live');
 let cap=resetCap();
@@ -92,6 +92,19 @@ async function preflightPoW(p){
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({bucket:p.bucket,nonce,challengeNonce})})).json();
   return !!r.ok;
+}
+// Full crypto axis (①): always the PoW; plus, when the fingerprint is flagged, a
+// rate-limited attestation token (identity budget). Both run in the background.
+async function doPreflight(j){
+  const pf=j.preflight||{}; if(!pf.pow) return false;
+  if(!(await preflightPoW(pf.pow))) return false;
+  if(pf.attestRequired){
+    const r=await (await fetch('/api/pass/attest',{method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({challengeNonce})})).json();
+    if(!r.ok) return false; // issuance budget exhausted for this fingerprint — retry shortly
+    attestToken=r.token;
+  }
+  return true;
 }
 
 function onMove(e){ if(e.isTrusted===false)cap.trusted=false; cap.events++;
@@ -159,15 +172,15 @@ async function loadNew(){ solved=false; statusEl.textContent=' '; statusEl.class
   const j=await (await fetch('/api/pass/new',{credentials:'include'})).json();
   if(j.alreadySolved){ statusEl.textContent='already cleared ✓'; statusEl.className='status ok'; return; }
   ch=j.challenge; bucket=j.bucket; N=ch.n; CENTER=ch.center; offsets=[0,0,0];
-  challengeNonce=j.challengeNonce||'';
-  powReady = (j.preflight&&j.preflight.pow) ? preflightPoW(j.preflight.pow) : Promise.resolve(false);
+  challengeNonce=j.challengeNonce||''; attestToken='';
+  powReady = doPreflight(j);
   document.getElementById('submit').disabled=false; build();
 }
 document.getElementById('submit').addEventListener('click',async()=>{
   if(solved||!ch)return; statusEl.textContent='checking…'; statusEl.className='status warn';
   const cryptoOK=await powReady; // axis ①: wait for the background crypto proof
   if(!cryptoOK){ statusEl.textContent='✕ verifying your browser… try Submit again'; statusEl.className='status warn'; return; }
-  const body={bucket,challengeNonce,offsets,trusted:cap.trusted,moves:cap.events,coalesced:cap.coalesced,pathLen:cap.pathLen,
+  const body={bucket,challengeNonce,attestToken,offsets,trusted:cap.trusted,moves:cap.events,coalesced:cap.coalesced,pathLen:cap.pathLen,
     durations:cap.durs.slice(0,60),rawT:cap.rawT.slice(-80),pressures:cap.pressures.slice(0,60),keys:cap.keys,keyDurs:cap.keyDurs.slice(0,60)};
   const j=await (await fetch('/api/pass/solve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
   if(j.ok){ solved=true; statusEl.textContent='✓ verified — you are human enough ('+(j.verdict||'ALLOW')+')'; statusEl.className='status ok'; document.getElementById('submit').disabled=true; }

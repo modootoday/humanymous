@@ -113,3 +113,21 @@ func TestPassVelocityThresholds(t *testing.T) {
 		t.Fatalf("8th observation must be flood (level 2), got %d", levels[7])
 	}
 }
+
+// TestAttestIssuanceBudget documents the axis-① identity cap: attestation issuance is
+// rate-limited PER FINGERPRINT (30s window, budget 3), so a cookie-rotating flood from
+// one fingerprint runs out of tokens. handlePassAttest denies once Level >= 2. Short,
+// self-clearing window — never a multi-minute lockout.
+func TestAttestIssuanceBudget(t *testing.T) {
+	lim := abuse.NewLimiter(30*time.Second, 3, 3)
+	now := time.Now()
+	if lim.Level(lim.Observe("fp", now)) >= 2 {
+		t.Fatal("1st issuance must be allowed")
+	}
+	if lim.Level(lim.Observe("fp", now)) >= 2 {
+		t.Fatal("2nd issuance must be allowed")
+	}
+	if lim.Level(lim.Observe("fp", now)) < 2 {
+		t.Fatal("3rd issuance must hit the per-fingerprint cap (deny)")
+	}
+}

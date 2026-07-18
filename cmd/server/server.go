@@ -33,6 +33,7 @@ type app struct {
 	limiter   *abuse.Limiter         // SoT-17 fingerprint-keyed rate/flood limiter
 	authLim   *abuse.Limiter         // SoT-17 failed-auth velocity (credential stuffing)
 	passVel   *abuse.Limiter         // SoT-36 §7 axis ③: Pass challenge/solve velocity (short window, no lockout)
+	attestLim *abuse.Limiter         // SoT-36 §2 axis ①: attestation-token issuance budget per fingerprint (short window)
 	hub       *livefeed.Hub          // SoT-30 live telemetry broadcast (nil unless HMN_PLAYGROUND=1)
 	masterKey []byte
 	webDir    string
@@ -61,7 +62,10 @@ func newApp(webDir string, masterKey []byte, ritOn bool) *app {
 		authLim: abuse.NewLimiter(60*time.Second, 5, 10),
 		// Short 30s window: velocity taxes cost in the moment, then self-clears fast —
 		// NEVER a multi-minute lockout (that would break wargame iteration). soft 4 / hard 8.
-		passVel:   abuse.NewLimiter(30*time.Second, 4, 8),
+		passVel: abuse.NewLimiter(30*time.Second, 4, 8),
+		// Attestation issuance budget per fingerprint: at most 3 tokens / 30s. A short,
+		// self-clearing window (NOT a ban) — it caps identity throughput, never stalls.
+		attestLim: abuse.NewLimiter(30*time.Second, 3, 3),
 		masterKey: masterKey,
 		webDir:    webDir,
 		ritOn:     ritOn,
@@ -88,11 +92,12 @@ func (a *app) routes() http.Handler {
 	mux.HandleFunc("/api/report", a.handleReportList)
 	mux.HandleFunc("/api/csp-report", a.handleCSPReport)
 	mux.HandleFunc("/api/pow", a.handlePoW)
-	mux.HandleFunc("/pass", a.handlePassPage)            // SoT-36 humanymous Pass (demo/research surface)
-	mux.HandleFunc("/api/pass/new", a.handlePassNew)     // issue a fresh challenge instance
-	mux.HandleFunc("/api/pass/pow", a.handlePassPoW)     // axis ①: non-interactive crypto preflight
-	mux.HandleFunc("/api/pass/solve", a.handlePassSolve) // verify placement + interaction
-	mux.HandleFunc("/api/pass/kpi", a.handlePassKPI)     // wargame KPIs (bypass-rate, human floor)
+	mux.HandleFunc("/pass", a.handlePassPage)              // SoT-36 humanymous Pass (demo/research surface)
+	mux.HandleFunc("/api/pass/new", a.handlePassNew)       // issue a fresh challenge instance
+	mux.HandleFunc("/api/pass/pow", a.handlePassPoW)       // axis ①: non-interactive crypto preflight
+	mux.HandleFunc("/api/pass/attest", a.handlePassAttest) // axis ①: rate-limited attestation token issuance
+	mux.HandleFunc("/api/pass/solve", a.handlePassSolve)   // verify placement + interaction
+	mux.HandleFunc("/api/pass/kpi", a.handlePassKPI)       // wargame KPIs (bypass-rate, human floor)
 	mux.HandleFunc("/api/trace", a.handleTrace)
 	mux.HandleFunc("/api/traffic/", a.handleTraffic)
 	mux.HandleFunc("/res/", a.handleResource)
