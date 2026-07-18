@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net"
 	"net/http"
 	"strings"
 	"sync"
@@ -150,10 +151,20 @@ func (a *app) withSecurityHeaders(next http.Handler) http.Handler {
 	})
 }
 
-// isDatacenterIP is a stub IP-intel classifier (SoT-02 §6). Loopback/private are
-// treated as non-datacenter for the local demo; extend with a real ASN dataset.
+// isDatacenterIP is a stub IP-intel classifier (SoT-02 §6): loopback, private,
+// and link-local addresses are never datacenter (LAN, reverse-proxy hops, the
+// local Docker demo); any other (public) address is treated as datacenter until
+// a real ASN dataset is wired in. Uses net.IP ranges so ALL private blocks are
+// excluded — including 172.16/12, which Docker bridge networks use and the old
+// string-prefix check missed (it flagged every containerized session as a
+// datacenter IP, a persistent +score even for a real user's browser).
 func isDatacenterIP(ip string) bool {
-	return !(strings.HasPrefix(ip, "127.") || strings.HasPrefix(ip, "::1") ||
-		strings.HasPrefix(ip, "192.168.") || strings.HasPrefix(ip, "10.") ||
-		ip == "localhost")
+	p := net.ParseIP(ip)
+	if p == nil {
+		return false // unresolvable → do not accuse
+	}
+	if p.IsLoopback() || p.IsPrivate() || p.IsLinkLocalUnicast() || p.IsUnspecified() {
+		return false
+	}
+	return true
 }
