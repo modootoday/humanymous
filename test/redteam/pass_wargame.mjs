@@ -107,6 +107,36 @@ async function run(name, fn, expected) {
 
 console.log('=== humanymous Pass: 3-row red/blue wargame ===\n');
 
+// ── The human/accessible floor FIRST ───────────────────────────────────────────
+// Run it before any bot saturates the shared JA4|subnet velocity key, so the
+// accessible lane is measured on a clean system (in this harness every node client
+// shares one fingerprint — a real deployment separates human vs bot by JA4).
+const human = new Client(); const humanNew = await human.fresh(); await human.preflight(humanNew);
+const humanResult = await human.submit(keyboardProof(humanNew, 19));
+console.log(`${humanResult.ok ? '  PASS   ' : '✗ FAIL   '} accessible-keyboard-human  risk=${humanResult.riskScore ?? '?'} ${humanResult.reason || ''}`);
+
+// ── Axis ③ demonstration: volume-forge ─────────────────────────────────────────
+// One session clears Pass repeatedly with forged keyboard proofs. A single forged
+// solve IS indistinguishable and passes — but the flooding CADENCE is the tell: the
+// engine folds l7.pass.velocity/flood into the score, so (a) the PoW CPU cost climbs
+// (crypto axis, never the puzzle → accessibility safe) and (b) the returned verdict
+// turns BOT. Solving Pass never launders mass automation. No lockout — nothing stalls.
+const vol = new Client('volume-forge'); const volStats = [];
+for (let i = 0; i < 8; i++) {
+  const nw = await vol.fresh();
+  const powDiff = nw.preflight.pow.difficulty;
+  await vol.preflight(nw);
+  const r = await vol.submit(keyboardProof(nw, 100 + i));
+  volStats.push({ i, powDiff, ok: !!r.ok, risk: r.riskScore ?? 0, verdict: r.verdict || '-' });
+}
+console.log('\nvolume-forge (Pass-clears succeed, but PoW cost + engine risk climb):');
+for (const s of volStats) console.log(`  #${s.i} pow=${s.powDiff}  clear=${s.ok}  engineRisk=${s.risk}  verdict=${s.verdict}`);
+const powFirst = volStats[0].powDiff, powLast = volStats[volStats.length - 1].powDiff;
+const riskPeak = Math.max(...volStats.map(s => s.risk));
+const costEscalated = powLast > powFirst;
+const engineCaught = riskPeak >= 45; // flood signal (weight 45) lifts risk into the CHALLENGE band
+console.log(`  → PoW cost ${powFirst}→${powLast} (${costEscalated ? 'ESCALATED' : 'flat'}); peak engine risk ${riskPeak} (${engineCaught ? 'held at elevated risk, verdict ≠ ALLOW despite clearing' : 'not flagged'})\n`);
+
 // ── Blocked classes (our current defense holds) ────────────────────────────────
 await run('read-dom-forge-no-crypto', async () => {
   const c = new Client('read-dom-forge'); const nw = await c.fresh();
@@ -148,11 +178,6 @@ await run('cdp-inject-with-pow', async () => {
   return c.submit(pointerProof(nw, 3));
 }, true);
 
-// ── The human/accessible floor must never regress ──────────────────────────────
-const human = new Client(); const humanNew = await human.fresh(); await human.preflight(humanNew);
-const humanResult = await human.submit(keyboardProof(humanNew, 19));
-console.log(`${humanResult.ok ? '  PASS   ' : '✗ FAIL   '} accessible-keyboard-human  ${humanResult.reason || ''}`);
-
 // ── Automated accessibility check on the served page ───────────────────────────
 const page = await (await fetch(BASE + '/pass')).text();
 const a11yChecks = {
@@ -177,9 +202,11 @@ console.log(`human pass floor: ${(kpi.humanPassRate * 100).toFixed(1)}% over ${k
 // ── Promotion gate ─────────────────────────────────────────────────────────────
 const postureHeld = results.every(r => r.passed === r.expected);
 const humanFloorOK = humanResult.ok && (kpi.humanAttempts === 0 || kpi.humanPassRate === 1);
-const promotion = postureHeld && humanFloorOK && a11yOK;
+const axis3OK = costEscalated && engineCaught; // velocity taxed cost + flipped the verdict
+const promotion = postureHeld && humanFloorOK && a11yOK && axis3OK;
 const blocked = results.filter(r => !r.passed).length;
-console.log(`\nblocked ${blocked}/${results.length} attack classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'}`);
+console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · axis③ ${axis3OK ? 'engaged (cost↑ + risk↑, verdict ≠ ALLOW)' : 'FAILED'}`);
 console.log(`promotion gate: ${promotion ? 'PASS' : 'FAIL'}`);
-console.log('frontier: keyboard/CDP forgeries that pay PoW remain a measured residual; rotate the issuer/input axis (attestation/PAT) + engine fusion next.');
+console.log('round 2 closed: mass forgery no longer launders trust — velocity escalates PoW cost + lifts the engine risk so a flooding session is never cleared to ALLOW, with zero lockout (wargame stays iterable).');
+console.log('frontier: a single forged solve from a fresh identity still clears Pass; next rotate the ISSUER axis (rate-limited PAT/attestation token) so each attempt costs an identity, not just CPU.');
 if (!promotion) process.exitCode = 1;

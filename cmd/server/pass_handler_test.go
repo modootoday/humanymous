@@ -4,7 +4,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/abuse"
 	"github.com/modootoday/humanymous/internal/pow"
+	"github.com/modootoday/humanymous/internal/signals"
 )
 
 // TestReserveTraceBlocksReplay is the anti-replay invariant (SoT-36 §5): a motor
@@ -67,5 +69,47 @@ func TestPoWInstanceBinding(t *testing.T) {
 	// The SAME solution against instance B must fail (different bound seed).
 	if pow.Verify(key, passPoWSession(sid, nonceB), diff, bucket, bucket, sol) {
 		t.Fatal("PoW solution must NOT verify against a different instance nonce")
+	}
+}
+
+// TestPassVelocitySignalsRegistered: the axis-③ fusion only raises risk if its
+// signal IDs carry weight in the registry (unknown IDs are weight 0). solved stays
+// 0 (a trust upgrade via the OK verdict, not a weighted penalty).
+func TestPassVelocitySignalsRegistered(t *testing.T) {
+	cases := map[string]float64{
+		"l7.pass.solved":   0,
+		"l7.pass.velocity": 25,
+		"l7.pass.flood":    45,
+	}
+	for id, want := range cases {
+		d, ok := signals.Lookup(id)
+		if !ok {
+			t.Fatalf("%s not registered", id)
+		}
+		if d.Weight != want {
+			t.Fatalf("%s weight = %v, want %v", id, d.Weight, want)
+		}
+	}
+}
+
+// TestPassVelocityThresholds documents the delay-free governor's levels: the 30s
+// window with soft 4 / hard 8 leaves a human's 1-few attempts at level 0, while a
+// sustained loop crosses into elevated (1) then flood (2). No lockout — the window
+// self-clears, so the wargame stays iterable.
+func TestPassVelocityThresholds(t *testing.T) {
+	lim := abuse.NewLimiter(30*time.Second, 4, 8)
+	now := time.Now()
+	levels := make([]int, 0, 8)
+	for i := 0; i < 8; i++ {
+		levels = append(levels, lim.Level(lim.Observe("k", now)))
+	}
+	if levels[1] != 0 {
+		t.Fatalf("a human's 2nd attempt must stay level 0, got %d", levels[1])
+	}
+	if levels[3] != 1 {
+		t.Fatalf("4th observation must be elevated (level 1), got %d", levels[3])
+	}
+	if levels[7] != 2 {
+		t.Fatalf("8th observation must be flood (level 2), got %d", levels[7])
 	}
 }

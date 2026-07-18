@@ -225,6 +225,17 @@ var (
 	_ = def(Definition{"l7.pow.refused", LayerScoring, 15, nil, "pow", "PoW challenge ignored"})
 )
 
+// ---- L7 humanymous Pass active defense (SoT-36) ----
+// Solving Pass is a trust upgrade (weight 0, via the OK verdict). Pass velocity is
+// the axis-③ fusion: a session driving the challenge at machine cadence is flagged
+// so it raises risk (a flooding bot that solves the puzzle is STILL caught) and taxes
+// its PoW cost — never the puzzle (accessibility: cost shifts to crypto, SoT-36 §2).
+var (
+	_ = def(Definition{"l7.pass.solved", LayerScoring, 0, nil, "pass", "humanymous Pass cleared (trust upgrade)"})
+	_ = def(Definition{"l7.pass.velocity", LayerScoring, 25, nil, "pass", "elevated Pass challenge/solve velocity (automation cadence)"})
+	_ = def(Definition{"l7.pass.flood", LayerScoring, 45, nil, "pass", "Pass challenge/solve flood (mass automation)"})
+)
+
 // ---- L5 traffic consistency guard (SoT-12) ----
 var (
 	_ = def(Definition{"l5.traffic.ja4_rotation", LayerNetwork, 35, nil, "traffic", "JA4 fingerprint changed mid-session"})

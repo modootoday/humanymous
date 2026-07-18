@@ -39,6 +39,7 @@ type passSession struct {
 	nonce         string // per-instance challenge nonce; binds the crypto proof + the solve
 	powDifficulty int    // PoW leading-zero-bit target for this instance
 	powOK         bool   // the crypto axis (①) has been satisfied for this instance
+	velLevel      int    // highest Pass-velocity level flagged this session (0 ok, 1 elevated, 2 flood)
 }
 
 // passStore holds transient per-session Pass state + the wargame metrics, guarded
@@ -157,6 +158,9 @@ func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "challenge unavailable", http.StatusInternalServerError)
 		return
 	}
+	// Axis ③ (SoT-36 §7): meter Pass velocity first so this instance's cost already
+	// reflects any automation cadence. No lockout — just a re-scored risk + PoW tax.
+	velLvl := a.applyPassVelocity(sid, r, now)
 	a.pass.mu.Lock()
 	bucket := uint64(now.Unix() / passWindow)
 	ps.instance++ // fresh puzzle every /new
@@ -167,7 +171,12 @@ func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 	ps.nonce = nonce
 	ps.powOK = false
 	ps.difficulty = a.passDifficulty(sid, r) // blue controller: harder for suspicious
-	ps.powDifficulty = 14 + ps.difficulty    // crypto axis scales with suspicion (SoT-36 §2 ①)
+	// Crypto axis (SoT-36 §2 ①): PoW cost scales with suspicion AND velocity. Velocity
+	// taxes the CPU cost only — NOT the puzzle — so accessibility never regresses.
+	ps.powDifficulty = 14 + ps.difficulty + velLvl*2
+	if ps.powDifficulty > 20 {
+		ps.powDifficulty = 20 // keep the demo/wargame solver snappy
+	}
 	diff := ps.difficulty
 	inst := ps.instance
 	powDiff := ps.powDifficulty
@@ -227,6 +236,48 @@ func (a *app) handlePassPoW(w http.ResponseWriter, r *http.Request) {
 		a.pass.mu.Unlock()
 	}
 	writeJSON(w, map[string]any{"ok": ok})
+}
+
+// applyPassVelocity is the axis-③ engine fusion (SoT-36 §7): it meters how fast a
+// session (and its JA4|subnet fingerprint) drives the Pass endpoints and, past a
+// threshold, folds an l7.pass.velocity/flood signal into the session's engine score.
+// This does TWO honest things WITHOUT any lockout/delay:
+//   - raises the session's risk, so a flooding bot that later SOLVES the puzzle is
+//     STILL flagged BOT by the engine verdict (solving Pass never launders automation),
+//   - lets the caller tax the PoW *cost* (crypto axis), never the puzzle difficulty
+//     (accessibility: cost shifts to crypto as suspicion grows, SoT-36 §2).
+//
+// The window is short (30s) and self-clearing — it never stalls the red/blue wargame.
+// Returns the current velocity level (0 ok, 1 elevated, 2 flood).
+func (a *app) applyPassVelocity(sid string, r *http.Request, now time.Time) int {
+	lvl := a.passVel.Level(a.passVel.Observe("s|"+sid, now)) // per-session cadence
+	fpKey := ja4Stable(a.reg.Hello(r.RemoteAddr)) + "|" + clientSubnet(r)
+	if l := a.passVel.Level(a.passVel.Observe("f|"+fpKey, now)); l > lvl { // cross-session (proxy pool)
+		lvl = l
+	}
+	if lvl == 0 {
+		return 0
+	}
+	ps := a.pass.get(sid)
+	a.pass.mu.Lock()
+	prev := ps.velLevel
+	if lvl > prev {
+		ps.velLevel = lvl
+	}
+	a.pass.mu.Unlock()
+	if lvl <= prev {
+		return lvl // already flagged at this level — don't append a duplicate signal
+	}
+	id, v := "l7.pass.velocity", signals.VerdictSuspicious
+	if lvl == 2 {
+		id, v = "l7.pass.flood", signals.VerdictBot
+	}
+	rep, _ := a.store.Get(sid)
+	rep.Network.Signals = append(rep.Network.Signals,
+		signals.New(id, nil, v, 1.0, signals.SourceServer, "Pass velocity (automation cadence)"))
+	a.engine.Score(&rep)
+	a.store.StoreScored(sid, rep, now)
+	return lvl
 }
 
 // passDifficulty is the blue controller's knob (SoT-36 §8): harder challenges for
@@ -390,6 +441,7 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	a.pass.mu.Unlock()
 
 	current := uint64(time.Now().Unix() / passWindow)
+	a.applyPassVelocity(sid, r, time.Now()) // axis ③: count this attempt into the velocity fusion
 	rep0, _ := a.store.Get(sid)
 	label := passLabel(rep0.Scoring.RiskScore, r) // wargame ground-truth-ish label
 
