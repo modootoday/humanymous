@@ -26,6 +26,7 @@ const (
 // passSession is the per-session Pass state (in-memory; the challenge is transient).
 type passSession struct {
 	bucket     uint64
+	instance   uint64 // increments on each /new so every puzzle is fresh
 	difficulty int
 	issuedAt   time.Time
 	tries      int
@@ -88,30 +89,31 @@ func (a *app) handlePassPage(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, a.webDir+"/pass.html")
 }
 
-// handlePassNew issues a fresh Pass instance (scene + bucket) for the session.
+// handlePassNew issues a FRESH Pass instance for the session. Each call resets the
+// per-instance state (a new puzzle, retries reset, replay allowed) and advances the
+// instance counter so the seed — and therefore the challenge — is different every time.
 func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 	sid := a.ensureSession(w, r)
 	ps := a.pass.get(sid)
 	a.pass.mu.Lock()
-	if ps.solved {
-		a.pass.mu.Unlock()
-		writeJSON(w, map[string]any{"ok": true, "alreadySolved": true})
-		return
-	}
 	bucket := uint64(time.Now().Unix() / passWindow)
+	ps.instance++ // fresh puzzle every /new
 	ps.bucket = bucket
 	ps.issuedAt = time.Now()
+	ps.tries = 0
+	ps.solved = false
 	ps.difficulty = a.passDifficulty(sid, r) // blue controller: harder for suspicious
 	diff := ps.difficulty
+	inst := ps.instance
 	a.pass.mu.Unlock()
 
-	challenge := pass.Generate(a.masterKey, sid, bucket, diff)
+	challenge := pass.Generate(a.masterKey, sid, bucket, inst, diff)
 	writeJSON(w, map[string]any{
 		"ok":         true,
 		"bucket":     bucket,
 		"difficulty": diff,
 		"challenge":  challenge,
-		"triesLeft":  passMaxTries - ps.tries,
+		"triesLeft":  passMaxTries,
 		"expiresInS": passWindow * 2, // TTL spans a couple of buckets (SoT-36 §5)
 	})
 }
@@ -264,6 +266,8 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	ps.tries++
 	tries := ps.tries
 	diff := ps.difficulty
+	issuedBucket := ps.bucket
+	instance := ps.instance
 	a.pass.mu.Unlock()
 
 	current := uint64(time.Now().Unix() / passWindow)
@@ -279,7 +283,7 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 2. Server-side re-simulation of the placement (the whole verdict; no oracle).
-	if !pass.Verify(a.masterKey, sid, pr.Bucket, current, diff, pr.Offsets) {
+	if !pass.Verify(a.masterKey, sid, issuedBucket, current, instance, diff, pr.Offsets) {
 		a.pass.record(label, diff, false)
 		a.publishPass(sid, false, "misaligned")
 		writeJSON(w, map[string]any{"ok": false, "reason": "the keys are not all in the slot", "triesLeft": passMaxTries - tries})

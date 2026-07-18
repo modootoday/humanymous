@@ -38,13 +38,16 @@ type Challenge struct {
 
 // deriveSeed binds a per-instance 32-byte seed to session + time bucket; the master
 // key never leaves the server.
-func deriveSeed(masterKey []byte, sessionID string, bucket uint64) [32]byte {
+func deriveSeed(masterKey []byte, sessionID string, bucket, instance uint64) [32]byte {
 	m := hmac.New(sha256.New, masterKey)
 	var b [8]byte
-	binary.BigEndian.PutUint64(b[:], bucket)
 	m.Write([]byte("pass|"))
 	m.Write([]byte(sessionID))
 	m.Write([]byte{'|'})
+	binary.BigEndian.PutUint64(b[:], bucket)
+	m.Write(b[:])
+	m.Write([]byte{'|'})
+	binary.BigEndian.PutUint64(b[:], instance) // fresh instance per /new → new puzzle
 	m.Write(b[:])
 	var out [32]byte
 	copy(out[:], m.Sum(nil))
@@ -84,9 +87,10 @@ func dims(difficulty int) (n, center int) {
 	return n, n / 2
 }
 
-// Generate builds the public 3-row alignment challenge from a seed.
-func Generate(masterKey []byte, sessionID string, bucket uint64, difficulty int) Challenge {
-	seed := deriveSeed(masterKey, sessionID, bucket)
+// Generate builds the public 3-row alignment challenge from a seed. instance makes
+// each /new issue a fresh puzzle within the same session+bucket.
+func Generate(masterKey []byte, sessionID string, bucket, instance uint64, difficulty int) Challenge {
+	seed := deriveSeed(masterKey, sessionID, bucket, instance)
 	r := newRNG(seed)
 	n, center := dims(difficulty)
 	ch := Challenge{N: n, Center: center, Rows: make([]Row, 0, Rows)}
@@ -106,14 +110,14 @@ func Generate(masterKey []byte, sessionID string, bucket uint64, difficulty int)
 // column. offsets[i] is how many cells row i was shifted; the key lands at
 // (keyIndex+offset) mod N. TTL bounds staleness. This is the alignment gate ONLY —
 // the handler additionally requires the real-event proof (SoT-36 §5) + attestation.
-func Verify(masterKey []byte, sessionID string, bucket, currentBucket uint64, difficulty int, offsets []int) bool {
+func Verify(masterKey []byte, sessionID string, bucket, currentBucket, instance uint64, difficulty int, offsets []int) bool {
 	if currentBucket < bucket || currentBucket-bucket > 2 { // TTL
 		return false
 	}
 	if len(offsets) != Rows {
 		return false
 	}
-	ch := Generate(masterKey, sessionID, bucket, difficulty)
+	ch := Generate(masterKey, sessionID, bucket, instance, difficulty)
 	for i, row := range ch.Rows {
 		col := ((row.KeyIndex+offsets[i])%ch.N + ch.N) % ch.N
 		if col != ch.Center {
@@ -126,8 +130,8 @@ func Verify(masterKey []byte, sessionID string, bucket, currentBucket uint64, di
 // SolutionOffsets returns the canonical offsets that solve an instance — used by
 // tests and by the red harness's oracle (a bot can compute these; the security is
 // the real-event proof, not the answer).
-func SolutionOffsets(masterKey []byte, sessionID string, bucket uint64, difficulty int) []int {
-	ch := Generate(masterKey, sessionID, bucket, difficulty)
+func SolutionOffsets(masterKey []byte, sessionID string, bucket, instance uint64, difficulty int) []int {
+	ch := Generate(masterKey, sessionID, bucket, instance, difficulty)
 	out := make([]int, len(ch.Rows))
 	for i, row := range ch.Rows {
 		out[i] = ((ch.Center-row.KeyIndex)%ch.N + ch.N) % ch.N

@@ -89,10 +89,22 @@ function build(){
   setActive(0); render(); updateSlot(); announce();
 }
 function setActive(i){ activeRow=Math.max(0,Math.min(2,i)); [...reelsEl.querySelectorAll('.reel')].forEach((el,idx)=>el.classList.toggle('active',idx===activeRow)); }
-function cellW(){ const el=reelsEl.querySelector('.reel'); return el? el.getBoundingClientRect().width/N : 40; }
-function updateSlot(){ const el=reelsEl.querySelector('.reel'); if(!el)return; const cw=cellW();
-  const cr=reelsEl.getBoundingClientRect(), rr=el.getBoundingClientRect();
-  slot.style.width=cw+'px'; slot.style.left=((rr.left-cr.left)+(CENTER+0.5)*cw)+'px'; slot.style.transform='translateX(-50%)'; }
+function cellW(){ const c=reelsEl.querySelector('.reel .cell'); return c? c.getBoundingClientRect().width : 40; }
+// Align the slot to the CENTER cell's real position (cells are fixed-width and
+// centre-justified, so reelWidth/N would be wrong).
+function updateSlot(){
+  const reels=reelsEl.querySelectorAll('.reel');
+  if(!reels.length || !reels[0].children[CENTER]) return;
+  const cr=reelsEl.getBoundingClientRect();
+  const cell=reels[0].children[CENTER].getBoundingClientRect();
+  const fr=reels[0].getBoundingClientRect(), lr=reels[reels.length-1].getBoundingClientRect();
+  slot.style.width=cell.width+'px';
+  slot.style.left=(cell.left-cr.left+cell.width/2)+'px';
+  slot.style.top=(fr.top-cr.top-2)+'px';          // span exactly the three rows
+  slot.style.height=(lr.bottom-fr.top+4)+'px';
+  slot.style.bottom='auto';
+  slot.style.transform='translateX(-50%)';
+}
 function render(){
   const reels=[...reelsEl.querySelectorAll('.reel')];
   reels.forEach((el,r)=>{ const row=ch.rows[r], off=offsets[r], cells=el.children;
