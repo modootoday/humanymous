@@ -66,10 +66,33 @@
 
 <script>
 let ch=null, bucket=0, N=11, CENTER=5, offsets=[0,0,0], activeRow=0, solved=false;
+let challengeNonce='', powReady=Promise.resolve(false);
 const reelsEl=document.getElementById('reels'), slot=document.getElementById('slot');
 const statusEl=document.getElementById('status'), live=document.getElementById('live');
 let cap=resetCap();
 function resetCap(){return {events:0,coalesced:0,trusted:true,pathLen:0,durs:[],last:0,rawT:[],pressures:[],keys:0,keyDurs:[],lastK:0};}
+
+// Axis ① — the non-interactive crypto proof (SoT-36 §2). Solve the PoW in the
+// background while the person aligns the rows, so it never gates their time.
+function hexToBytes(h){ const a=new Uint8Array(h.length/2); for(let i=0;i<a.length;i++)a[i]=parseInt(h.substr(i*2,2),16); return a; }
+function lzBits(bytes){ let n=0; for(const b of bytes){ if(b===0){n+=8;continue;} for(let k=7;k>=0;k--){ if((b&(1<<k))===0)n++; else return n; } return n; } return n; }
+async function solvePoW(p){
+  const seed=hexToBytes(p.seed), enc=new TextEncoder();
+  for(let i=0;i<(1<<24);i++){
+    const ns=enc.encode(String(i)), msg=new Uint8Array(seed.length+ns.length);
+    msg.set(seed,0); msg.set(ns,seed.length);
+    const dg=new Uint8Array(await crypto.subtle.digest('SHA-256',msg));
+    if(lzBits(dg)>=p.difficulty) return String(i);
+  }
+  return null;
+}
+async function preflightPoW(p){
+  const nonce=await solvePoW(p); if(nonce==null) return false;
+  const r=await (await fetch('/api/pass/pow',{method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({bucket:p.bucket,nonce,challengeNonce})})).json();
+  return !!r.ok;
+}
 
 function onMove(e){ if(e.isTrusted===false)cap.trusted=false; cap.events++;
   const co=e.getCoalescedEvents?e.getCoalescedEvents():[e]; cap.coalesced+=co.length;
@@ -136,11 +159,15 @@ async function loadNew(){ solved=false; statusEl.textContent=' '; statusEl.class
   const j=await (await fetch('/api/pass/new',{credentials:'include'})).json();
   if(j.alreadySolved){ statusEl.textContent='already cleared ✓'; statusEl.className='status ok'; return; }
   ch=j.challenge; bucket=j.bucket; N=ch.n; CENTER=ch.center; offsets=[0,0,0];
+  challengeNonce=j.challengeNonce||'';
+  powReady = (j.preflight&&j.preflight.pow) ? preflightPoW(j.preflight.pow) : Promise.resolve(false);
   document.getElementById('submit').disabled=false; build();
 }
 document.getElementById('submit').addEventListener('click',async()=>{
   if(solved||!ch)return; statusEl.textContent='checking…'; statusEl.className='status warn';
-  const body={bucket,offsets,trusted:cap.trusted,moves:cap.events,coalesced:cap.coalesced,pathLen:cap.pathLen,
+  const cryptoOK=await powReady; // axis ①: wait for the background crypto proof
+  if(!cryptoOK){ statusEl.textContent='✕ verifying your browser… try Submit again'; statusEl.className='status warn'; return; }
+  const body={bucket,challengeNonce,offsets,trusted:cap.trusted,moves:cap.events,coalesced:cap.coalesced,pathLen:cap.pathLen,
     durations:cap.durs.slice(0,60),rawT:cap.rawT.slice(-80),pressures:cap.pressures.slice(0,60),keys:cap.keys,keyDurs:cap.keyDurs.slice(0,60)};
   const j=await (await fetch('/api/pass/solve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
   if(j.ok){ solved=true; statusEl.textContent='✓ verified — you are human enough ('+(j.verdict||'ALLOW')+')'; statusEl.className='status ok'; document.getElementById('submit').disabled=true; }

@@ -1,13 +1,18 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"math"
 	"net/http"
 	"sync"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/pass"
+	"github.com/modootoday/humanymous/internal/pow"
 	"github.com/modootoday/humanymous/internal/signals"
 )
 
@@ -19,32 +24,83 @@ import (
 // (SoT-36 §2.4); the client only renders the public scene and collects interaction.
 
 const (
-	passWindow  = 30 // seconds per bucket (challenge TTL granularity)
+	passWindow   = 30 // seconds per bucket (challenge TTL granularity)
 	passMaxTries = 4  // hard retry cap per session (SoT-36 §2.3: fail -> new instance)
 )
 
 // passSession is the per-session Pass state (in-memory; the challenge is transient).
 type passSession struct {
-	bucket     uint64
-	instance   uint64 // increments on each /new so every puzzle is fresh
-	difficulty int
-	issuedAt   time.Time
-	tries      int
-	solved     bool
+	bucket        uint64
+	instance      uint64 // increments on each /new so every puzzle is fresh
+	difficulty    int
+	issuedAt      time.Time
+	tries         int
+	solved        bool
+	nonce         string // per-instance challenge nonce; binds the crypto proof + the solve
+	powDifficulty int    // PoW leading-zero-bit target for this instance
+	powOK         bool   // the crypto axis (①) has been satisfied for this instance
 }
 
 // passStore holds transient per-session Pass state + the wargame metrics, guarded
 // by a mutex. metrics is the blue team's evidence base (SoT-36 §8): attempts
-// counted by label × outcome × difficulty.
+// counted by label × outcome × difficulty. traces is the anti-replay registry:
+// the digest of every accepted motor trace, so a captured human trace can be
+// replayed at most once (SoT-36 §5).
 type passStore struct {
 	mu      sync.Mutex
 	m       map[string]*passSession
-	metrics map[string]int // "label|outcome|difficulty" -> count
+	metrics map[string]int       // "label|outcome|difficulty" -> count
+	traces  map[string]time.Time // motor-trace digest -> first-seen (anti-replay)
 }
 
 func newPassStore() *passStore {
-	return &passStore{m: map[string]*passSession{}, metrics: map[string]int{}}
+	return &passStore{
+		m:       map[string]*passSession{},
+		metrics: map[string]int{},
+		traces:  map[string]time.Time{},
+	}
 }
+
+// reserveTrace registers a motor-trace digest and reports whether it is FRESH
+// (never seen inside the retention window). A replayed capture — identical raw
+// timings — collides on the digest and is rejected. Old entries are swept lazily.
+func (p *passStore) reserveTrace(digest string, now time.Time) bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	for k, seen := range p.traces {
+		if now.Sub(seen) > 10*time.Minute {
+			delete(p.traces, k)
+		}
+	}
+	if _, exists := p.traces[digest]; exists {
+		return false
+	}
+	p.traces[digest] = now
+	return true
+}
+
+// traceDigest fingerprints the raw motor evidence (NOT the offsets/nonce, which
+// change per instance) so a replay of the same captured trace collides even when
+// wrapped around a fresh challenge (SoT-36 §5).
+func traceDigest(pr passProof) string {
+	h := sha256.New()
+	fmt.Fprintf(h, "%v|%v|%v|%v", pr.RawT, pr.Durations, pr.Pressures, pr.KeyDurs)
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+// passNonce mints a fresh per-instance challenge nonce.
+func passNonce() (string, error) {
+	var b [18]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b[:]), nil
+}
+
+// passPoWSession binds the PoW seed to BOTH the session and this specific
+// challenge instance, so a solved PoW cannot be reused across /new instances
+// within the same time bucket.
+func passPoWSession(sid, nonce string) string { return sid + "|pass|" + nonce }
 
 // record logs one attempt into the wargame metrics (caller need not hold the lock).
 func (p *passStore) record(label string, difficulty int, passed bool) {
@@ -95,27 +151,82 @@ func (a *app) handlePassPage(w http.ResponseWriter, r *http.Request) {
 func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 	sid := a.ensureSession(w, r)
 	ps := a.pass.get(sid)
+	now := time.Now()
+	nonce, err := passNonce()
+	if err != nil {
+		http.Error(w, "challenge unavailable", http.StatusInternalServerError)
+		return
+	}
 	a.pass.mu.Lock()
-	bucket := uint64(time.Now().Unix() / passWindow)
+	bucket := uint64(now.Unix() / passWindow)
 	ps.instance++ // fresh puzzle every /new
 	ps.bucket = bucket
-	ps.issuedAt = time.Now()
+	ps.issuedAt = now
 	ps.tries = 0
 	ps.solved = false
+	ps.nonce = nonce
+	ps.powOK = false
 	ps.difficulty = a.passDifficulty(sid, r) // blue controller: harder for suspicious
+	ps.powDifficulty = 14 + ps.difficulty    // crypto axis scales with suspicion (SoT-36 §2 ①)
 	diff := ps.difficulty
 	inst := ps.instance
+	powDiff := ps.powDifficulty
 	a.pass.mu.Unlock()
 
 	challenge := pass.Generate(a.masterKey, sid, bucket, inst, diff)
+	powBucket := uint64(now.Unix() / pow.Window)
+	powChallenge := pow.Issue(a.masterKey, passPoWSession(sid, nonce), powDiff, powBucket)
 	writeJSON(w, map[string]any{
-		"ok":         true,
-		"bucket":     bucket,
-		"difficulty": diff,
-		"challenge":  challenge,
-		"triesLeft":  passMaxTries,
-		"expiresInS": passWindow * 2, // TTL spans a couple of buckets (SoT-36 §5)
+		"ok":             true,
+		"bucket":         bucket,
+		"difficulty":     diff,
+		"challenge":      challenge,
+		"challengeNonce": nonce,
+		"triesLeft":      passMaxTries,
+		"expiresInS":     passWindow * 2,                      // TTL spans a couple of buckets (SoT-36 §5)
+		"preflight":      map[string]any{"pow": powChallenge}, // axis ①: the non-interactive crypto proof
 	})
+}
+
+// handlePassPoW verifies the non-interactive crypto proof (axis ①, SoT-36 §2):
+// the PoW is bound to this instance's nonce, so it cannot be pre-computed or
+// reused across instances. Clearing it marks the crypto axis satisfied; the solve
+// still requires the real-event proof + the alignment.
+func (a *app) handlePassPoW(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "POST only", http.StatusMethodNotAllowed)
+		return
+	}
+	sid := cookieValue(r, sessionCookie)
+	if sid == "" {
+		http.Error(w, "no session", http.StatusBadRequest)
+		return
+	}
+	var body struct {
+		Bucket         uint64 `json:"bucket"`
+		Nonce          string `json:"nonce"`          // the PoW solution
+		ChallengeNonce string `json:"challengeNonce"` // must match the issued instance nonce
+	}
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 4096)).Decode(&body); err != nil {
+		http.Error(w, "bad body", http.StatusBadRequest)
+		return
+	}
+	ps := a.pass.get(sid)
+	a.pass.mu.Lock()
+	issuedNonce, powDiff, solved := ps.nonce, ps.powDifficulty, ps.solved
+	a.pass.mu.Unlock()
+
+	current := uint64(time.Now().Unix() / pow.Window)
+	ok := !solved && body.ChallengeNonce == issuedNonce && issuedNonce != "" &&
+		pow.Verify(a.masterKey, passPoWSession(sid, issuedNonce), powDiff, body.Bucket, current, body.Nonce)
+	if ok {
+		a.pass.mu.Lock()
+		if ps.nonce == issuedNonce { // still the same instance
+			ps.powOK = true
+		}
+		a.pass.mu.Unlock()
+	}
+	writeJSON(w, map[string]any{"ok": ok})
 }
 
 // passDifficulty is the blue controller's knob (SoT-36 §8): harder challenges for
@@ -138,11 +249,12 @@ func (a *app) passDifficulty(sid string, r *http.Request) int {
 }
 
 // passLabel classifies an attempt for the wargame KPIs (SoT-36 §8). A self-declared
-// red-team probe is ground-truth "bot"; otherwise the session's risk band is a weak
-// label (bot >=70, human <30, else unknown).
+// red-team probe reports its STRATEGY name (ground-truth bot, per-strategy KPI);
+// otherwise the session's risk band is a weak label (bot >=70, human <30, else
+// unknown). Strategy names are header values with no '|' so the metric key is safe.
 func passLabel(risk float64, r *http.Request) string {
-	if r.Header.Get("X-HM-Redteam") != "" {
-		return "redteam"
+	if s := r.Header.Get("X-HM-Redteam"); s != "" {
+		return s
 	}
 	switch {
 	case risk >= 70:
@@ -154,11 +266,16 @@ func passLabel(risk float64, r *http.Request) string {
 	}
 }
 
+// isBotLabel reports whether a KPI label is an adversary (a red-team strategy or a
+// high-risk "bot"), as opposed to the human floor / ambiguous "unknown" band.
+func isBotLabel(label string) bool { return label != "human" && label != "unknown" }
+
 // passProof is the client submission: the 3-row offsets + an interaction proof.
 type passProof struct {
-	Bucket  uint64 `json:"bucket"`
-	Offsets []int  `json:"offsets"` // per-row shift; key lands at (keyIndex+offset) mod N
-	Trusted bool   `json:"trusted"` // all events had isTrusted === true (pre-filter)
+	Bucket         uint64 `json:"bucket"`
+	ChallengeNonce string `json:"challengeNonce"` // binds the solve to the issued instance (axis ①)
+	Offsets        []int  `json:"offsets"`        // per-row shift; key lands at (keyIndex+offset) mod N
+	Trusted        bool   `json:"trusted"`        // all events had isTrusted === true (pre-filter)
 	// Pointer/touch channel (SoT-36 §5): mouse/touch users produce these.
 	Moves     int       `json:"moves"`     // distinct pointermove events
 	Coalesced int       `json:"coalesced"` // total getCoalescedEvents() sub-samples
@@ -268,21 +385,46 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	diff := ps.difficulty
 	issuedBucket := ps.bucket
 	instance := ps.instance
+	issuedNonce := ps.nonce
+	powOK := ps.powOK
 	a.pass.mu.Unlock()
 
 	current := uint64(time.Now().Unix() / passWindow)
 	rep0, _ := a.store.Get(sid)
 	label := passLabel(rep0.Scoring.RiskScore, r) // wargame ground-truth-ish label
 
-	// 1. Real-event pre-filter (SoT-36 §5) — degenerate/synthetic submissions.
-	if ok, why := realEventOK(pr); !ok {
+	reject := func(why string) {
 		a.pass.record(label, diff, false)
 		a.publishPass(sid, false, why)
 		writeJSON(w, map[string]any{"ok": false, "reason": why, "triesLeft": passMaxTries - tries})
+	}
+
+	// 1. Instance binding (axis ①) — the solve must carry this instance's nonce.
+	if issuedNonce == "" || pr.ChallengeNonce != issuedNonce {
+		reject("stale or missing challenge")
 		return
 	}
 
-	// 2. Server-side re-simulation of the placement (the whole verdict; no oracle).
+	// 2. Crypto axis (axis ①, SoT-36 §2) — the non-interactive proof must be paid.
+	// This carries the weak/keyboard lane where motor microstructure is inadmissible.
+	if !powOK {
+		reject("no cryptographic preflight")
+		return
+	}
+
+	// 3. Real-event pre-filter (SoT-36 §5) — degenerate/synthetic submissions.
+	if ok, why := realEventOK(pr); !ok {
+		reject(why)
+		return
+	}
+
+	// 4. Anti-replay (SoT-36 §5) — a captured human trace may be used at most once.
+	if !a.pass.reserveTrace(traceDigest(pr), time.Now()) {
+		reject("duplicate interaction trace")
+		return
+	}
+
+	// 5. Server-side re-simulation of the placement (the whole verdict; no oracle).
 	if !pass.Verify(a.masterKey, sid, issuedBucket, current, instance, diff, pr.Offsets) {
 		a.pass.record(label, diff, false)
 		a.publishPass(sid, false, "misaligned")
@@ -291,7 +433,7 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	}
 	a.pass.record(label, diff, true)
 
-	// 3. Cleared — grant the trust upgrade and re-score (mirrors PoW upgrade).
+	// 6. Cleared — grant the trust upgrade and re-score (mirrors PoW upgrade).
 	a.pass.mu.Lock()
 	ps.solved = true
 	a.pass.mu.Unlock()
@@ -347,11 +489,14 @@ func (a *app) handlePassKPI(w http.ResponseWriter, r *http.Request) {
 		return float64(p.pass) / float64(p.att)
 	}
 	botAtt, botPass := 0, 0
-	for _, l := range []string{"redteam", "bot"} {
-		if p := byLabel[l]; p != nil {
-			botAtt += p.att
-			botPass += p.pass
+	perStrategy := map[string]float64{}
+	for label, p := range byLabel {
+		if !isBotLabel(label) {
+			continue
 		}
+		botAtt += p.att
+		botPass += p.pass
+		perStrategy[label] = rate(p)
 	}
 	bypass := 0.0
 	if botAtt > 0 {
@@ -369,6 +514,7 @@ func (a *app) handlePassKPI(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, map[string]any{
 		"bypassRate":      bypass, // bots/red that obtained a pass — drive DOWN
 		"botAttempts":     botAtt,
+		"perStrategy":     perStrategy,            // bypass rate per red-team strategy
 		"humanPassRate":   rate(byLabel["human"]), // the floor the blue team may never breach
 		"humanAttempts":   humanAtt,
 		"unknownPassRate": rate(byLabel["unknown"]),

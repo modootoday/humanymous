@@ -1,52 +1,185 @@
-// pass_wargame.mjs — the humanymous Pass red/blue wargame runner (SoT-36 §8).
-// A red team attacks Pass with several strategies: it SOLVES the physics (a script
-// can run the same simulation) and submits with different forged interaction proofs.
-// Every attempt self-labels via X-HM-Redteam so it lands in the wargame KPIs. Then
-// it reads /api/pass/kpi to print the blue scoreboard (bypass-rate per strategy).
+// Canonical 3-row humanymous Pass red/blue wargame (SoT-36 §7). Local target only.
 //
-// The point of the loop: solving the puzzle is NOT enough — the attacker must also
-// forge convincing REAL-EVENT signals. Naive synthetic input is caught; the strategy
-// that slips through (if any) is the blue team's next hardening target.
+// The puzzle is intentionally bot-solvable (accessibility → DOM-readable → a script
+// can compute the aligning offsets). Security is the FUSED axes, not the puzzle:
+//   ① a non-interactive crypto proof (nonce-bound PoW),
+//   ② a real-event proof (the hardware fingerprint of the input),
+//   ③ engine fusion (out of this harness's scope; L1–L7 + JA4 + rate/retry).
+//
+// Each red strategy self-labels via X-HM-Redteam so it lands in the wargame KPIs.
+// `expected` encodes the CURRENT honest posture: which classes we block, and which
+// remain a measured residual frontier. The promotion gate fails loudly if reality
+// diverges from that posture (a supposedly-blocked class bypasses, or the human/
+// accessible lane regresses).
+import { createHash } from 'node:crypto';
+
 const BASE = process.env.BASE || 'https://127.0.0.1:8443';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-// --- shared ballistics (identical to internal/pass) ---
-const DT=0.10,MAXSTEPS=900,BOUNDS=100,RB=0.86,DB=0.90;
-const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),sub=(a,b)=>({x:a.x-b.x,y:a.y-b.y}),cr=(a,b)=>a.x*b.y-a.y*b.x;
-const segI=(p1,p2,p3,p4)=>{const d1=cr(sub(p3,p4),sub(p3,p1)),d2=cr(sub(p3,p4),sub(p3,p2)),d3=cr(sub(p1,p2),sub(p1,p3)),d4=cr(sub(p1,p2),sub(p1,p4));return((d1>0)!==(d2>0))&&((d3>0)!==(d4>0));};
-const cross=(p,q,w)=>{if(!segI(p,q,w.a,w.b))return null;const wx=w.b.x-w.a.x,wy=w.b.y-w.a.y,l=Math.hypot(wx,wy);if(!l)return null;return{x:-wy/l,y:wx/l};};
-const refl=(v,n,r)=>{const dot=v.x*n.x+v.y*n.y;return{x:(v.x-2*dot*n.x)*r,y:(v.y-2*dot*n.y)*r};};
-const mk=(c,a,len)=>{const dx=Math.cos(a)*len/2,dy=Math.sin(a)*len/2;return{a:{x:c.x-dx,y:c.y-dy},b:{x:c.x+dx,y:c.y+dy}};};
-function sim(sc,ramp){const segs=[...sc.deflectors,ramp];let p={...sc.ball},v={x:0,y:0};for(let i=0;i<MAXSTEPS;i++){v.y+=sc.gravity*DT;let np={x:p.x+v.x*DT,y:p.y+v.y*DT};if(d(np,sc.cup)<=sc.cupR||d(p,sc.cup)<=sc.cupR)return true;for(let si=0;si<segs.length;si++){const bo=si<sc.deflectors.length?DB:RB;const n=cross(p,np,segs[si]);if(n){v=refl(v,n,bo);np={x:p.x+v.x*DT*0.5,y:p.y+v.y*DT*0.5};break;}}p=np;if(p.x<0||p.x>BOUNDS||p.y>BOUNDS)return false;}return false;}
-function solve(sc){for(let cx=18;cx<=82;cx+=1.5)for(let cy=24;cy<=82;cy+=1.5)for(let a=-1.15;a<=1.15;a+=0.1){if(cx>2&&cx<98&&d({x:cx,y:cy},sc.ball)>=4&&sim(sc,mk({x:cx,y:cy},a,sc.rampLen)))return{cx,cy,a};}return null;}
-
-// --- forged interaction-proof strategies (the red team's variants) ---
-const strategies={
-  'A: script (uniform timing)':()=>({moves:24,coalesced:70,trusted:true,pathLen:340,durations:Array(12).fill(16)}),
-  'B: dispatchEvent (untrusted)':()=>({moves:24,coalesced:70,trusted:false,pathLen:340,durations:[12,18,9,22,14]}),
-  'C: minimal interaction':()=>({moves:2,coalesced:2,trusted:true,pathLen:6,durations:[15,15]}),
-  'D: forged plausible stats':()=>{const dur=[];for(let i=0;i<14;i++)dur.push(8+Math.random()*30);return {moves:22,coalesced:64,trusted:true,pathLen:300+Math.random()*80,durations:dur};},
-  'E: forged raw stream':()=>{const dur=[],rawT=[];let t=1000;for(let i=0;i<30;i++){t+=6+Math.random()*10;rawT.push(+t.toFixed(3));}for(let i=0;i<14;i++)dur.push(8+Math.random()*30);return {moves:22,coalesced:64,trusted:true,pathLen:300+Math.random()*80,durations:dur,rawT};},
+const zeroBits = bytes => {
+  let count = 0;
+  for (const byte of bytes) {
+    if (byte === 0) { count += 8; continue; }
+    for (let bit = 7; bit >= 0; bit--) {
+      if ((byte & (1 << bit)) === 0) count++; else return count;
+    }
+  }
+  return count;
 };
+function solvePoW(p) {
+  const seed = Buffer.from(p.seed, 'hex');
+  for (let i = 0; i < (1 << 24); i++) {
+    const digest = createHash('sha256').update(seed).update(String(i)).digest();
+    if (zeroBits(digest) >= p.difficulty) return String(i);
+  }
+  throw new Error('PoW search exhausted');
+}
+// The oracle: the aligning offsets are derivable from the public challenge — by
+// design (a blind user's screen reader can read them, so a script can too).
+const solve = ch => ch.rows.map(row => ((ch.center - row.keyIndex) % ch.n + ch.n) % ch.n);
 
-let cookie='';
-async function api(path,opts={}){const h={...(opts.headers||{}),'X-HM-Redteam':'1'};if(cookie)h.Cookie=cookie;const r=await fetch(BASE+path,{...opts,headers:h});const sc=r.headers.get('set-cookie');if(sc)cookie=sc.split(';')[0];return r.json();}
+// Per-run salt: the anti-replay registry persists ~10 min server-side. Fold a
+// run-unique fractional into every trace so re-runs don't self-collide — but it is
+// a MODULE constant, so a given `variant` is stable WITHIN a run (the replay test
+// depends on reusing one captured trace verbatim).
+const RUN = (Date.now() % 100000) * 0.0001;
 
-async function attack(name,forge,rounds=6){let bypass=0,tried=0;
-  for(let i=0;i<rounds;i++){cookie='';const nw=await api('/api/pass/new');if(!nw.scene)continue;const s=solve(nw.scene);if(!s)continue;tried++;
-    const r=await api('/api/pass/solve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bucket:nw.bucket,rampX:s.cx,rampY:s.cy,rampAngle:s.a,...forge()})});
-    if(r.ok)bypass++;}
-  return {name,tried,bypass};}
+class Client {
+  constructor(strategy = '') { this.cookie = ''; this.strategy = strategy; }
+  async api(path, opts = {}) {
+    const headers = { ...(opts.headers || {}) };
+    if (this.cookie) headers.Cookie = this.cookie;
+    if (this.strategy) headers['X-HM-Redteam'] = this.strategy;
+    const response = await fetch(BASE + path, { ...opts, headers });
+    const setCookie = response.headers.get('set-cookie');
+    if (setCookie) this.cookie = setCookie.split(';')[0];
+    return response.json();
+  }
+  fresh() { return this.api('/api/pass/new'); }
+  preflight(nw) {
+    const p = nw.preflight.pow;
+    return this.api('/api/pass/pow', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bucket: p.bucket, nonce: solvePoW(p), challengeNonce: nw.challengeNonce }),
+    });
+  }
+  submit(body) {
+    return this.api('/api/pass/solve', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+  }
+}
 
-console.log('=== humanymous Pass — red/blue wargame ===\nRed solves the physics every time; the question is whether its forged input survives the real-event filter.\n');
-const results=[];
-for(const [name,forge] of Object.entries(strategies)){const r=await attack(name,forge);results.push(r);
-  console.log(`  ${r.bypass>0?'⚠ BYPASS':'✓ blocked'}  ${name.padEnd(30)} ${r.bypass}/${r.tried} passed`);}
+// A forged keyboard proof (the accessible lane a bot must mimic): no pointer
+// microstructure, plausibly-irregular inter-key timing. `variant` perturbs the
+// timing so each call is a distinct trace (the replay registry keys on the trace).
+function keyboardProof(nw, variant = 0) {
+  return {
+    bucket: nw.bucket, challengeNonce: nw.challengeNonce, offsets: solve(nw.challenge), trusted: true,
+    keys: 5, keyDurs: [137 + variant + RUN, 89, 211 + variant, 123],
+    moves: 0, coalesced: 0, pathLen: 0, durations: [], rawT: [], pressures: [],
+  };
+}
+// A forged pointer proof: plausible coalesced sub-samples + a monotone, jittered
+// raw timestamp stream. `variant` perturbs the stream so it is a fresh trace.
+function pointerProof(nw, variant = 0) {
+  // RUN shifts the whole series uniformly: diffs (hence stddev + monotonicity) are
+  // preserved, but the absolute timestamps — and thus the trace digest — are unique per run.
+  const rawT = [1, 7, 15, 24, 34, 47, 55, 68, 82, 99, 117, 138].map((n, i) => n + (i % 3) * variant * 0.01 + RUN);
+  return {
+    bucket: nw.bucket, challengeNonce: nw.challengeNonce, offsets: solve(nw.challenge), trusted: true,
+    moves: 12, coalesced: 31, pathLen: 143 + variant,
+    durations: [10, 18, 9, 22, 15, 12 + variant * 0.1, 27, 11], rawT,
+    pressures: [], keys: 0, keyDurs: [],
+  };
+}
 
-// blue scoreboard
-const kpi=await (await fetch(BASE+'/api/pass/kpi',{headers:cookie?{Cookie:cookie}:{}})).json();
-console.log(`\n=== blue KPI scoreboard ===`);
-console.log(`  bypass-rate (bots/red that passed): ${(kpi.bypassRate*100).toFixed(1)}%  over ${kpi.botAttempts} attempts`);
-console.log(`  per-difficulty pass-rate:`,kpi.perDifficulty);
-const anyBypass=results.some(r=>r.bypass>0);
-console.log(`\n${anyBypass?'⚠ A strategy slipped through — the blue team\'s next hardening target (motor-model the forged-stats path, bind to nonce, replay-registry).':'✓ All red strategies blocked at this build. Rotate mechanics + re-run as models improve.'}`);
+const results = [];
+async function run(name, fn, expected) {
+  const outcome = await fn();
+  const passed = !!outcome.ok;
+  results.push({ name, passed, expected, reason: outcome.reason || '' });
+  const tag = passed ? 'BYPASS ' : 'BLOCKED';
+  const flag = passed === expected ? ' ' : '✗'; // ✗ = reality diverged from posture
+  console.log(`${flag} ${tag}  ${name.padEnd(26)} ${outcome.reason || ''}`);
+  return outcome;
+}
+
+console.log('=== humanymous Pass: 3-row red/blue wargame ===\n');
+
+// ── Blocked classes (our current defense holds) ────────────────────────────────
+await run('read-dom-forge-no-crypto', async () => {
+  const c = new Client('read-dom-forge'); const nw = await c.fresh();
+  return c.submit(pointerProof(nw, 1)); // never paid axis ①
+}, false);
+
+await run('no-attestation-or-pow', async () => {
+  const c = new Client('no-attestation'); const nw = await c.fresh();
+  return c.submit(keyboardProof(nw, 5)); // keyboard lane, but no crypto proof
+}, false);
+
+await run('dispatch-untrusted', async () => {
+  const c = new Client('dispatch-untrusted'); const nw = await c.fresh(); await c.preflight(nw);
+  return c.submit({ ...pointerProof(nw, 6), trusted: false });
+}, false);
+
+let replayTrace;
+await run('replay-trace-first-use', async () => {
+  const c = new Client('replay-trace'); const nw = await c.fresh(); await c.preflight(nw);
+  replayTrace = pointerProof(nw, 4); return c.submit(replayTrace);
+}, true); // first use looks human + pays PoW → passes (this is the captured trace)
+await run('replay-trace-second-use', async () => {
+  const c = new Client('replay-trace'); const nw = await c.fresh(); await c.preflight(nw);
+  // reuse the SAME motor trace wrapped around a fresh challenge → registry collision
+  return c.submit({ ...replayTrace, bucket: nw.bucket, challengeNonce: nw.challengeNonce, offsets: solve(nw.challenge) });
+}, false);
+
+// ── Residual frontier (measured, not yet closed by axes ①/②) ───────────────────
+// A bot that PAYS the PoW and forges plausible dynamics still passes: keystroke/
+// pointer microstructure is forgeable and the accessible lane forbids gating on
+// motor richness. These are pushed down by axis ③ (engine fusion + rate/retry) and
+// by rotating the issuer/input axis — out of this harness's scope. Kept honest.
+await run('keyboard-forge-with-pow', async () => {
+  const c = new Client('keyboard-forge'); const nw = await c.fresh(); await c.preflight(nw);
+  return c.submit(keyboardProof(nw, 2));
+}, true);
+await run('cdp-inject-with-pow', async () => {
+  const c = new Client('cdp-inject'); const nw = await c.fresh(); await c.preflight(nw);
+  return c.submit(pointerProof(nw, 3));
+}, true);
+
+// ── The human/accessible floor must never regress ──────────────────────────────
+const human = new Client(); const humanNew = await human.fresh(); await human.preflight(humanNew);
+const humanResult = await human.submit(keyboardProof(humanNew, 19));
+console.log(`${humanResult.ok ? '  PASS   ' : '✗ FAIL   '} accessible-keyboard-human  ${humanResult.reason || ''}`);
+
+// ── Automated accessibility check on the served page ───────────────────────────
+const page = await (await fetch(BASE + '/pass')).text();
+const a11yChecks = {
+  keyboardGroup: /role="group"/.test(page) && /tabindex="0"/.test(page),
+  screenReaderLive: /aria-live="polite"/.test(page),
+  rowSliders: /setAttribute\('role','slider'\)/.test(page),
+  noCanvas: !/<canvas/i.test(page),
+  noAnimationLoop: !/requestAnimationFrame|setInterval/.test(page),
+  noTimeLimitCopy: /No timer|no timer/i.test(page),
+};
+const a11yOK = Object.values(a11yChecks).every(Boolean);
+console.log(`\nA11Y ${a11yOK ? 'PASS' : 'FAIL'} ${JSON.stringify(a11yChecks)}`);
+
+// ── Blue KPI scoreboard ────────────────────────────────────────────────────────
+const kpi = await (await fetch(BASE + '/api/pass/kpi')).json();
+console.log('\n=== blue KPI scoreboard ===');
+console.log(`bypass-rate: ${(kpi.bypassRate * 100).toFixed(1)}% over ${kpi.botAttempts} red/bot attempts`);
+console.log('per-strategy:', kpi.perStrategy);
+console.log('per-difficulty:', kpi.perDifficulty);
+console.log(`human pass floor: ${(kpi.humanPassRate * 100).toFixed(1)}% over ${kpi.humanAttempts} attempts`);
+
+// ── Promotion gate ─────────────────────────────────────────────────────────────
+const postureHeld = results.every(r => r.passed === r.expected);
+const humanFloorOK = humanResult.ok && (kpi.humanAttempts === 0 || kpi.humanPassRate === 1);
+const promotion = postureHeld && humanFloorOK && a11yOK;
+const blocked = results.filter(r => !r.passed).length;
+console.log(`\nblocked ${blocked}/${results.length} attack classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'}`);
+console.log(`promotion gate: ${promotion ? 'PASS' : 'FAIL'}`);
+console.log('frontier: keyboard/CDP forgeries that pay PoW remain a measured residual; rotate the issuer/input axis (attestation/PAT) + engine fusion next.');
+if (!promotion) process.exitCode = 1;
