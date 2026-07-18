@@ -176,8 +176,18 @@ func generate(masterKey []byte, sessionID string, bucket uint64, difficulty int)
 	if bestMargin < 0 { // no valid designed landing at all (very rare) — gentle ramp
 		bestC = Vec{X: sc.Ball.X + 8, Y: sc.Ball.Y + 28}
 		bestA = 0.1
+		bestMargin = 8
 	}
 	sc.Cup = simLand(sc, makeRamp(bestC, bestA, sc.RampLen)) // solvable by (bestC,bestA)
+	// Necessity by construction: the natural (no-ramp) path is bestMargin away from
+	// the cup, so shrinking the cup below bestMargin guarantees a wrong/absent ramp
+	// misses — no trivial pass. Clamp to a still-human-clearable minimum.
+	if want := bestMargin - 1; want < sc.CupR {
+		if want < 3.8 {
+			want = 3.8
+		}
+		sc.CupR = want
+	}
 	return sc, bestC.X, bestC.Y, bestA
 }
 
