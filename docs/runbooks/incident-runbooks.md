@@ -5,6 +5,23 @@
 
 This page is symptom-indexed. Find the symptom you are seeing, run the 60-second triage, follow the decision tree, take the exact action, and know your rollback before you commit it.
 
+The triage fork every section shares — is this a false positive to relieve, or an attack to hold?
+
+```mermaid
+flowchart TD
+  S["Symptom on the Overview view"] --> Q{"60-second triage: attack or false-positive?"}
+  Q -->|"humans locked out, one route or one rule"| FP["False-positive storm (a)"]
+  Q -->|"automation signals across subnets"| AT["Real attack"]
+  FP --> D1["Least-disruptive: demote misfiring route to monitor"]
+  FP --> KS["Broad lockout only: kill switch — fleet-wide, dual-control"]
+  AT --> B["(b) Scraping / cred-stuffing — temporary fp: ban"]
+  AT --> H["(c) HTTP/2 flood — confirm auto-DENY plus limiter"]
+  AT --> AG["(d) AI-agent wave — temporary fp: ban"]
+  S --> INT["(e) Integrity red — verify offline, preserve evidence, do NOT write"]
+```
+
+
+
 humanymous Gate is a reverse-proxy enforcement layer that scores every request across layers L1–L7, applies hard rules, and enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge. This is a reference implementation, not a production-hardened build; your deployment's paging rotation and thresholds may differ.
 
 ## Before you start: the tools you will use

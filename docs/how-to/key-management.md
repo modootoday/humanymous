@@ -54,6 +54,22 @@ keystore: created new sealed node identity at <path>
 keystore: resumed persisted node identity from <path>
 ```
 
+The lifecycle of the node identity across a boot/shutdown, with and without a keystore:
+
+```mermaid
+stateDiagram-v2
+  [*] --> Boot
+  Boot --> Created: -keystore path empty, LoadOrCreateKeys mints sealed identity
+  Boot --> Resumed: -keystore path exists, LoadOrCreateKeys opens (needs HMN_UNSEAL)
+  Boot --> Ephemeral: no -keystore, new SigningSeed + new Vault in memory
+  Created --> Running
+  Resumed --> Running
+  Running --> Sealed: SIGINT / SIGTERM, SealKeys writes sealed file
+  Sealed --> [*]
+  Ephemeral --> Lost: exit, identity gone (new key + new vault next boot)
+  Lost --> [*]
+```
+
 > **Warning:** Without `-keystore`, the keys are **ephemeral**. A restart mints a **new SigningSeed** — the verifier public key changes, so previously exported checkpoints no longer verify against the new key and audit-trust continuity is broken — and a **new Vault** — every per-subject pseudonym linkage key is lost, which is equivalent to an accidental mass crypto-shred: the existing audit records survive but can no longer be resolved to any subject. Run any node whose audit log or pseudonym linkage must outlive a restart with a keystore.
 
 ---

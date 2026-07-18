@@ -10,6 +10,20 @@ This repository is a **reference implementation**, not a production-hardened bui
 
 Gate decides **whether the caller is a human-driven browser or an automated client**, using a risk score built from behavioral, TLS/HTTP-2, and cross-layer-consistency evidence — and it enforces that decision at the edge before your origin is contacted. It is not a payload firewall, not a network CDN, and not a CAPTCHA vending machine. It is complementary to all three.
 
+Placed in a stack, each layer does its own job and Gate owns only the human-or-automation verdict:
+
+```mermaid
+flowchart LR
+  U["Browser"] --> CDN["CDN / bot manager · (capacity, DDoS, IP reputation)"]
+  CDN --> WAF["WAF · (payload / exploit filtering)"]
+  WAF --> G["humanymous Gate · (terminate TLS · L1–L7 score · verdict at edge)"]
+  U -. "control plane /__hmn/* · bundle, collect beacon, PoW" .-> G
+  G -- "ALLOW only" --> O["Origin app"]
+  G -- "CHALLENGE / DENY" --> Stop["PoW or block · (origin never contacted)"]
+```
+
+The CDN and WAF sit ahead of Gate for the jobs they own; Gate makes the per-request, auditable human-or-automation call the other two do not model.
+
 ## Start with what it does not replace
 
 Before the comparison, three boundaries that a buyer needs on the table first.

@@ -37,6 +37,17 @@ One lens is "what the edge did to live traffic"; the other is "how the scorer re
 
 ## Decision guide
 
+```mermaid
+flowchart TD
+  Q{"What are you trying to do?"}
+  Q -- "Protect a real app at the edge" --> GATE["Gate — bin/gate.exe · edge :8444 + admin :8445"]
+  Q -- "See / extend detection signal by signal" --> OBS["Standalone engine + Observatory · bin/server.exe on 127.0.0.1:8443 · (HMN_PLAYGROUND=1)"]
+  Q -- "Just score requests (tests, e2e)" --> ENG["Standalone engine · bin/server.exe on 127.0.0.1:8443"]
+  GATE --> P445{"Which port?"}
+  P445 -- ":8445 admin" --> LEDGER["Ledger — enforced & recorded verdicts"]
+  P445 -- ":8444 edge" --> DATA["Public data plane + /__hmn/* control plane"]
+```
+
 - **I want to protect an app.** Use **Gate** (`bin/gate.exe`, edge `:8444` + admin `:8445`) and start with the [monitor-mode quickstart](../tutorials/quickstart-monitor-mode.md).
 - **I want to see, understand, or extend detection.** Use the **standalone engine plus the Observatory** — see [run the detection engine](../how-to/run-detection-engine.md) and [the Detection Observatory](../how-to/detection-observatory.md).
 - **I want to run in production.** Follow the **Operator path** in [start here: operator](../start-here/operator.md).

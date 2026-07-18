@@ -50,6 +50,18 @@ Every enforced request resolves to one of four edge verdicts: `allow`, `challeng
 | Strict route (`failClosed`/`syncScore`), any method | Fail **closed** → `challenge` | A PoW interstitial |
 | Any unsafe method (POST/PUT/PATCH/DELETE), any route | Fail **closed** → `challenge` | A PoW interstitial |
 
+The branch that decides open-vs-closed on an Unknown verdict:
+
+```mermaid
+flowchart TD
+  R["Enforced request, verdict still Unknown (none)"] --> U{"strict route?"}
+  U -- "yes" --> C["Fail closed -> PoW challenge"]
+  U -- "no (balanced)" --> M{"safe method? (GET / HEAD)"}
+  M -- "no (POST/PUT/PATCH/DELETE)" --> C
+  M -- "yes" --> O["Fail open -> pass to origin · (covered by fingerprint/subnet rate metering)"]
+  C -. "challenge, never an outright DENY" .-> C
+```
+
 Two things to internalize:
 
 1. **Fail-closed here means a challenge, not a block.** An Unknown verdict never becomes a DENY on its own. The user gets an accessible proof-of-work interstitial served from the control plane; the origin is simply not contacted until the challenge is satisfied. A DENY only comes from a score of 70+ or a hard rule firing on real evidence.

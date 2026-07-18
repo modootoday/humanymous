@@ -5,6 +5,16 @@
 
 humanymous Gate is a reverse proxy you put in front of your app. It terminates TLS, streams a detection bundle into your HTML, scores every request across layers L1–L7 inline, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes each decision to a tamper-evident audit log — then forwards allowed traffic to your origin, which it fronts and does not modify. The drop-in promise: near-zero upstream changes (point Gate at your origin with `-upstream`; your app code stays as-is), reversible (start in monitor mode — score and log, enforce nothing — and turn enforcement on per route only when you trust the signal), and safe by default. This repository is a reference implementation, not a production-hardened build.
 
+The drop-in shape and the monitor-first rollout it enables:
+
+```mermaid
+flowchart LR
+  U["End user"] --> G["humanymous Gate (edge)"]
+  G -->|"-upstream"| O["Your origin (unchanged)"]
+  G -.-> M["Start in monitor: score and log, enforce nothing"]
+  M -.-> E["Turn enforcement on per route once you trust the signal"]
+```
+
 ## What you need
 
 - A Go toolchain to build the binary to `bin/gate.exe` from `./cmd/gate` (module `github.com/modootoday/humanymous`).

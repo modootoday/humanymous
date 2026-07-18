@@ -64,6 +64,30 @@ Consequences worth stating explicitly:
 
 Some actions require two distinct identities: one to request and a different one to commit. Dual-control means the committing identity must not be the requesting identity, and must hold the correct approving capability for that action class.
 
+The two-principal flow — request, pending, distinct commit — resolves like this:
+
+```mermaid
+sequenceDiagram
+  participant R as "Requester (Operator or DPO)"
+  participant G as "Gate admin plane"
+  participant C as "Committer (distinct identity)"
+  R->>G: "request action (canOperate)"
+  G->>G: "record pending action"
+  G-->>R: "pending: approvalId, needsRole"
+  Note over G: "requester cannot self-commit"
+  C->>G: "commit approvalId"
+  G->>G: "check distinct identity AND approving capability"
+  alt "permanent / CIDR ban or kill switch"
+    Note over C: "needs canApprove (Approver or DPO)"
+    G-->>C: "committed"
+  else "right-to-erasure"
+    Note over C: "needs canApproveErasure (DPO only)"
+    G-->>C: "committed"
+  else "same identity as requester"
+    G-->>C: "denied — self-commit barred"
+  end
+```
+
 | Action | Requesting capability | Committing role (distinct identity) | Single- or dual-control |
 |--------|-----------------------|-------------------------------------|-------------------------|
 | Temporary ban (add) | `canOperate` (Operator or DPO) | — | Single-control |

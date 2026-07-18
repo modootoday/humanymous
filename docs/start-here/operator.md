@@ -4,6 +4,19 @@
 
 You are the person watching humanymous Gate while it fronts the origin. Your working surface is the Ledger: you watch the Overview view ("live edge decisions") as ALLOW / CHALLENGE / DENY decisions land, and you decide whether a change in the pattern is a false-positive spike (real humans getting CHALLENGE or DENY) or an abuse surge (automated traffic Gate is correctly holding back). When you need to act, you have three levers — unblock a subject, ban a subject, or pull the kill switch — and you drill into a flagged session by its incident handle to read the hard rules and signal contributions behind the verdict. Gate is a reference implementation, not a production-hardened build; treat the numbers and thresholds you see as reference behavior, and confirm before you widen the blast radius of any action.
 
+Your read-decide-act loop, from a pattern change on the Overview view to the lever you reach for:
+
+```mermaid
+flowchart TD
+  O["Pattern change on the Overview view"] --> Q{"FP spike or abuse surge?"}
+  Q -->|"humans getting CHALLENGE / DENY on routes that pass"| FP["FP spike"]
+  Q -->|"one fingerprint across subnets, or a flood"| AB["Abuse surge"]
+  FP --> U["Drill in by incident handle, read signals; if unjust: unblock"]
+  U --> KS["Broad lockout: kill switch — dual-control, fleet-wide"]
+  AB --> C["Confirm the hard rule that fired"]
+  C --> BAN["Ban the subject — temporary fp: is single Operator; permanent / CIDR is dual-control"]
+```
+
 ## Triage, in short
 
 - **FP spike** — humans reporting blocks, a jump in CHALLENGE/DENY on routes that normally pass. Drill into a sample session, read the contributing signals, and if the verdict is unjust, unblock and consider whether a route preset is too tight.

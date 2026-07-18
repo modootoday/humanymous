@@ -138,6 +138,20 @@ Then open the Ledger at `https://localhost:8445/__hmn/admin/console` and walk th
 
 1. Know the flood limiter. A per-IP sliding-window limiter guards the control-plane endpoints `/__hmn/collect` and `/__hmn/session`. Reference defaults: **window 10s**, **soft threshold 60**, **hard threshold 120**. A hard breach returns `429` *before* scoring. These defaults are set from config fields (`Config.RateWindow` / `Config.RateSoft` / `Config.RateHard`) at startup, the same way the route table is — changing them means editing the config and restarting, not a runtime call.
 2. Understand the auto-ban ladder. Repeated abuse escalates with strike decay: **1h → 6h → 24h → permanent**. Auto bans are recorded with `Source=auto`; bans you add by hand are `Source=manual`. Ban keys are `ip:<addr>` or `fp:<fingerprint>`.
+
+   ```mermaid
+   stateDiagram-v2
+     [*] --> None
+     None --> Ban1h: abuse (auto) or manual temp ban
+     Ban1h --> Ban6h: re-offend
+     Ban6h --> Ban24h: re-offend
+     Ban24h --> Perm: re-offend
+     Ban1h --> None: expiry / strike decay / lift
+     Ban6h --> None: expiry / strike decay / lift
+     Ban24h --> None: expiry / strike decay / lift
+     Perm --> None: lift (single Operator)
+     note right of Perm: manual permanent / CIDR ban = dual-control commit by a distinct Approver
+   ```
 3. Apply a temporary ban by hand. A temporary ban is a single Operator action (no second approver). Post it to the admin listener with the Operator token:
 
    ```

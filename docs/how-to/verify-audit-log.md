@@ -21,6 +21,22 @@ That property is what lets an external reviewer form an independent opinion. You
 
 Four mechanisms compose. Each defends a different class of tampering, and the verification checks them together.
 
+```mermaid
+flowchart TD
+  subgraph Mech["Four composed mechanisms"]
+    A["Append-only hash chain"]
+    B["Per-record HMAC"]
+    C["Ed25519 Signed Tree Heads (every 32 records)"]
+    D["Independent witness co-sign"]
+  end
+  A --> V["internal/audit · Verify / SelfVerify"]
+  B --> V
+  C --> V
+  D --> V
+  V -->|"consistent"| OK["ok:true — verifies with the public key alone"]
+  V -->|"mismatch"| FAIL["ok:false + class (hash-break, hmac-invalid, seq-gap, linkage-break, checkpoint-mismatch, node-missing)"]
+```
+
 ### 1. Append-only hash chain
 
 Each record carries the hash of the record before it, so the records form a chain. Changing any earlier record changes its hash, which breaks the link every later record depends on. You cannot silently edit a record in the middle of the log and leave the tail consistent — the linkage no longer resolves.

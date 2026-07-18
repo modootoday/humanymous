@@ -8,6 +8,19 @@ This is the procedure for adding one unit of coverage — a signal, a cross-chec
 
 For the model you are extending — layers, dedup, noisy-OR, the hard-rule table, and the ScoreTrace — read [Detection engine internals](../explanation/detection-engine-internals.md) alongside this page. The verdict tables you will update at the end live in [Hard rules, verdicts and signal-ID reference](../reference/hard-rules-verdicts.md).
 
+The full procedure, end to end:
+
+```mermaid
+flowchart TD
+  S1["1. Choose layer + (layer, group)"] --> S2["2. Add the signal (internal/signals)"]
+  S2 --> S3["3. Cross-check (L6, x.* namespace) if it is a contradiction"]
+  S3 --> S4["4. Promotion rule as data (promotionRules) — optional"]
+  S4 --> S5["5. Guard the FP path (applyFPMitigation damp)"]
+  S5 --> S6["6. Do not fork trace logic (golden test)"]
+  S6 --> S7["7. Validate end to end (Observatory + runner.mjs)"]
+  S7 --> S8["8. Update the reader surface in lockstep"]
+```
+
 ## Before you start
 
 - You have the engine building and running on loopback: `bin/server.exe -addr 127.0.0.1:8443 -web web` (and, for client tells, the rebuilt `web/detector.wasm`). See [Run the detection engine](run-detection-engine.md).
@@ -39,7 +52,9 @@ Mint the id and set its fields honestly. The signal schema is in `internal/signa
 - `collected` — `js` | `wasm` | `server`, where the evidence was gathered.
 - plus `value`, `expectedHuman`, `score`, `notes`.
 
-Set weight and confidence honestly. The per-signal score is `weight × severity × confidence`, clamped to `0..weight`:
+Set weight and confidence honestly. The per-signal score is `weight × severity × confidence`, clamped to `0..weight` — with severity fixed by the per-signal verdict (BOT = 1, SUSPICIOUS = ½, OK/UNKNOWN = 0):
+
+$$s_i = w_i \cdot \sigma(v_i) \cdot \operatorname{clamp}_{[0,1]}(c_i)$$
 
 - **Low confidence means a weak weight, never a penalty.** A tell you are unsure about gets a small ceiling; it does not push the score negative and it does not get promoted by wishful weighting.
 - The layer cap (`LayerCap = 60`) and noisy-OR mean an over-weighted signal cannot dominate a layer on its own — but honest weighting is still your job, because the golden and e2e checks in Steps 6–7 will catch a weight that flips a human baseline.

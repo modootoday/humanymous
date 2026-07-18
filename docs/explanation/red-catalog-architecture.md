@@ -27,6 +27,23 @@ Exactly one of them — `human.mjs` — is **not** a bot. That single non-bot pr
 - **bot** profile → `CHALLENGE` or `DENY` is a true positive (TP); `ALLOW` is a false negative (FN).
 - **human** profile → `DENY` is a false positive (FP); anything else is a true negative (TN).
 
+That two-axis scoring — what the profile *is* against what the engine *did* — is what turns a raw verdict into a labelled outcome:
+
+```mermaid
+flowchart TD
+  V["Verdict for a profile run"]
+  L{"label starts with bot: ?"}
+  V --> L
+  L -- "bot" --> BV{"verdict"}
+  L -- "human baseline" --> HV{"verdict"}
+  BV -- "CHALLENGE or DENY" --> TP["TP (caught)"]
+  BV -- "ALLOW" --> FN["FN (missed)"]
+  HV -- "DENY" --> FP["FP (denied a human)"]
+  HV -- "ALLOW or CHALLENGE" --> TN["TN"]
+```
+
+Because a human `CHALLENGE` counts as TN, `humanFPR` is DENY-only — see the note below.
+
 The consequence is the whole point of shipping a baseline: a catalog that only ran bot profiles could report a high detection rate while silently denying real people. Running `human` in the same battery converts "how many bots did we catch" into "how many bots did we catch **without** denying a human."
 
 > **Note.** Because a human `CHALLENGE` is scored **TN, not FP**, the `humanFPR` metric is DENY-only. It under-reports human friction — a challenge is still friction a real person feels. Inspect the challenge-rate on the baseline separately; do not read a low `humanFPR` as "no human impact." This matters most for the heuristic hard rules (HR-11, HR-12, HR-17), which can challenge some real humans by design.

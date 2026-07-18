@@ -62,7 +62,20 @@ To understand what those routes do and why they are safe to expose only locally,
 
 ## See a verdict without the Observatory
 
-You do not need the Observatory to read a score — it is a viewer, not the scorer.
+You do not need the Observatory to read a score — it is a viewer, not the scorer. A page load (or a posted client report) becomes a verdict through the collect path:
+
+```mermaid
+sequenceDiagram
+  participant B as "Browser (detector.wasm)"
+  participant S as "server.exe · /api/collect"
+  participant E as "internal/scoring"
+  B->>B: collect L1–L4 client signals
+  B->>S: POST /api/collect (SessionReport)
+  S->>S: merge server-side L5/L6 network signals
+  S->>E: score all signals
+  E-->>S: risk 0–100 + verdict + hardRuleFired
+  S-->>B: ScoreResult JSON
+```
 
 **Load a page in a browser.** Point a browser at `https://127.0.0.1:8443/` (accepting the dev cert). The `detector.wasm` bundle collects the client signals and POSTs a session report to `/api/collect`; the response is the scored verdict as JSON, containing `verdict` (`ALLOW` | `CHALLENGE` | `DENY`), `riskScore` (0–100), `hardRuleFired`, and `topContributors`.
 

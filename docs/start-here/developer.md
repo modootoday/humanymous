@@ -7,6 +7,17 @@ A developer works two surfaces here, both on your own loopback. On the **Blue** 
 
 Before you pick a path, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) so you do not confuse the three surfaces: the standalone detection engine (`:8443`), the Detection Observatory (dev-gated page on that engine), and the Gate reverse proxy (edge `:8444` + admin `:8445`).
 
+The two surfaces you work, both self-target-only on your own `127.0.0.1`:
+
+```mermaid
+flowchart TD
+  D["Developer on 127.0.0.1"] --> BL["Blue — understand and extend detection"]
+  D --> RD["Red — understand and extend the test catalog"]
+  BL --> BE["Detection engine on :8443: signals, scoring, hard rules, ScoreTrace"]
+  RD --> ROE["Rules of engagement first — defensive, local-only, self-target-only"]
+  ROE --> OBS["Dev-gated Observatory: launch profiles, watch the live scored feed"]
+```
+
 ## Blue path — understand & extend detection
 
 1. [Which piece am I using?](../explanation/which-piece-am-i-using.md) — tell the three surfaces apart before you touch code.

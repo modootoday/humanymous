@@ -53,6 +53,21 @@ return verdict === 'DENY' ? 'FP' : 'TN';
 
 Rows are in `runner.mjs` `PROFILES` order. `Expected HR` is the hard rule the profile is designed to trip; where the ground-truth mapping does not pin a specific rule, the profile is still expected to score TP (CHALLENGE or DENY) but the exact rule is marked for verification.
 
+The catalog groups into five profile families, with the raw-protocol attacks as a parallel axis three profiles shell into:
+
+```mermaid
+flowchart TD
+  CAT["26-profile catalog (test/redteam/*.mjs)"]
+  CAT --> BASE["Baseline · 1"]
+  CAT --> NBC["Non-browser clients · 2"]
+  CAT --> BDS["Browser drivers and stealth · 12"]
+  CAT --> ABE["Anti-bypass evasions · 7"]
+  CAT --> FT["Frontier threats · 4"]
+  RAW["Raw-protocol attacks · 7 -attack values (cmd/redteam)"]
+  ABE -. "tls-static shells to" .-> RAW
+  FT -. "flood, distributed shell to" .-> RAW
+```
+
 ### Baseline
 
 | File | `label` | `needsBrowser` | Tell reproduced | Expected verdict / HR |

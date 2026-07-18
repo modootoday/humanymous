@@ -7,6 +7,18 @@
 
 A profile is a small, self-checking test that reproduces one automation stack's tell, fires it at your own detection engine, and asserts the verdict you expected. This page walks through writing one, classifying it so the harness scores it correctly, registering it in the three places a new file must appear, and verifying it end to end.
 
+```mermaid
+flowchart TD
+  C["Choose a class: browser-driven or network"] --> W["Write test/redteam/NAME.mjs (run, label, needsBrowser)"]
+  W --> L["Pick a bot: label — classify() scores it"]
+  L --> R1["Register 1: PROFILES array (test/e2e/runner.mjs)"]
+  R1 --> R2["Register 2: launchProfiles allowlist (cmd/server/launch.go)"]
+  R2 --> R3["Register 3: Observatory catalog (web/playground.html)"]
+  R3 --> V1["Verify: run-one.mjs — minimal verdict"]
+  V1 --> V2["Verify: Observatory — L1→L7 + why-this-verdict"]
+  V2 --> V3["Verify: runner.mjs — full-suite bookkeeping"]
+```
+
 ## Before you start
 
 You need the standalone detection engine running on loopback. It is the same L1–L7 engine your profile will exercise. Build the detector module and the server:

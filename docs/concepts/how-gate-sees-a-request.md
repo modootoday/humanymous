@@ -24,6 +24,31 @@ A request moves through Gate in this order:
 
 The origin (the app Gate fronts; also reachable via the `-upstream` flag) is contacted only when the verdict is ALLOW.
 
+The same lifecycle as a sequence, from the browser's first request to the enforced verdict:
+
+```mermaid
+sequenceDiagram
+  participant B as Browser
+  participant G as "Gate edge"
+  participant C as "Control plane (/__hmn/)"
+  participant O as Origin
+  B->>G: HTTPS request on :8444 (Gate terminates TLS)
+  Note over G: reads L5 network signals — JA3/JA4, HTTP/2 fp, header order
+  G-->>B: HTML with detection bundle injected
+  B->>C: beacon to /__hmn/collect (L1–L4, same TLS connection)
+  C->>C: aggregate L1–L7 into risk score, then apply hard rules
+  G->>G: verdict gate
+  alt ALLOW → pass
+    G->>O: forward to origin
+    O-->>B: origin response
+  else CHALLENGE → challenge_pow
+    G-->>B: accessible proof-of-work interstitial (origin never contacted)
+  else DENY → block
+    G-->>B: blocked page (origin never contacted)
+  end
+  Note over G,O: each decision is written to the tamper-evident audit log before it takes effect
+```
+
 ## 2. The seven layers (L1–L7)
 
 Gate scores each request across seven layers. Layers L1–L4 run in the browser (JavaScript and WebAssembly); L5–L6 run on the Go server; L7 is the aggregation and decision step.

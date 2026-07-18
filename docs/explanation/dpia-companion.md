@@ -135,6 +135,22 @@ A classifier assigns audit records to retention tiers:
 
 These are the reference defaults. The controller must reconcile them with its own retention schedule and legal obligations, including Korea's PIPA destruction and record-keeping obligations where applicable, and document the justification for each tier under the storage-limitation principle (Article 5(1)(e)).
 
+The record lifecycle, and where crypto-shred acts on it without deleting the record, is:
+
+```mermaid
+flowchart LR
+  W["Decision written · (pseudonymized, hash-chained)"] --> H["HOT ~90d"]
+  H --> WA["WARM ~1y"]
+  WA --> CO["COLD ~7y"]
+  CO -. "physical WORM retirement · (prod-delta)" .-> RET["Retired"]
+  ER["Crypto-shred · (DPO + dual-control, ~5min hold)"] -. "destroy per-subject linkage key" .-> UN["Record retained, chain intact, · no longer linkable to subject"]
+  H -. any tier .-> ER
+  WA -. any tier .-> ER
+  CO -. any tier .-> ER
+```
+
+Crypto-shred is orthogonal to the retention tier — it removes re-identifiability at any point in the lifecycle while the record and its Merkle anchors stay verifiable (Section 7.2).
+
 > **TODO(verify):** The classifier's tier-assignment rules (which record types map to HOT/WARM/COLD, and the exact boundary durations beyond the approximate values above) are not enumerated in the available facts. Confirm the mapping before asserting a specific per-record retention period.
 
 ### 7.2 Why crypto-shred rather than deletion — WORM compatibility

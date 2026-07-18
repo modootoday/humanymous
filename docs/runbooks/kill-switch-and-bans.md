@@ -40,6 +40,20 @@ A fleet-wide enforcement stand-down is too consequential for one person, so it i
 
 The requester cannot approve their own flip. If you are the Operator, you cannot proceed without paging an Approver; page them before you request, not after.
 
+Both directions — engaging the switch and disengaging it — cross the same two-person gate:
+
+```mermaid
+stateDiagram-v2
+  [*] --> Enforcing
+  Enforcing --> PendingOn: Operator requests kill switch ON
+  PendingOn --> KillSwitchOn: distinct Approver commits
+  PendingOn --> Enforcing: not committed
+  KillSwitchOn --> PendingOff: Operator requests kill switch OFF
+  PendingOff --> Enforcing: distinct Approver commits
+  note right of KillSwitchOn: hard-rule enforcement demoted to monitor fleet-wide; manual bans still enforce
+```
+
+
 ### The decision criterion — when to pull it, when not to
 
 Pull the kill switch for **a false-positive storm that is locking out real customers faster than you can tune it.** That is the one situation where letting automation through briefly is the lesser harm: real humans are being denied, and the switch stops the bleeding fleet-wide while you fix the misfiring rule or route.

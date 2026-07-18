@@ -25,7 +25,15 @@ Gate is inline. Every request that passes through it does more work than a plain
 - **Inline L1–L7 scoring.** Gate aggregates the L1–L6 signals into a 0–100 risk score and then applies the hard rules (L7), producing an ALLOW / CHALLENGE / DENY verdict **inline, before the verdict takes effect**. This is synchronous decision work on the request path, not an out-of-band analysis.
 - **The audit hash-chain write.** Every decision is emitted to the tamper-evident audit sink **before it takes effect**: an append-only hash chain with a per-record HMAC, plus an Ed25519 Signed Tree Head checkpoint every 32 records and an independent local witness co-sign. That is durable write work in the critical path of each decision.
 
-A valid, fingerprint-bound verdict trust token short-circuits re-scoring on the ALLOW fast path, so repeat traffic from an already-verified session costs less than a first-time request. How much less is, again, something to measure — not a number this page will supply.
+Qualitatively, the added per-request latency is the sum of those four work terms:
+
+$$t_{\text{Gate}} \;=\; t_{\text{TLS}} + t_{\text{inject}} + t_{\text{score}} + t_{\text{audit}}$$
+
+A valid, fingerprint-bound verdict trust token short-circuits re-scoring on the ALLOW fast path, so repeat traffic from an already-verified session costs less than a first-time request — the scoring term drops out:
+
+$$t_{\text{Gate}}^{\text{fast}} \;\approx\; t_{\text{TLS}} + t_{\text{inject}} + t_{\text{audit}}$$
+
+The symbols are placeholders, not measured values — the reference publishes none. How much each term costs, and how much less the fast path costs, is something to measure, not a number this page will supply.
 
 > **TODO(verify):** Whether the audit hash-chain write is synchronous per-request or batched/buffered before it is acknowledged (the ordering guarantee "emitted before the decision takes effect" is documented; the write-durability path is not specified in the ground truth).
 
@@ -49,7 +57,11 @@ These limits are set in the reference and apply to **both listeners** (the `:844
 
 These bounds also form part of Gate's defense against slow-client and protocol-abuse pressure (they cap how long a connection can hold resources and how large a frame or header block can be). They are limits, not a performance profile — they tell you the ceiling behavior, not the per-request cost.
 
-Separately, the control-plane endpoints (`/collect`, `/session`) carry a per-IP rate limiter: a default 10s window with a soft threshold of 60 and a hard threshold of 120 (a `429` on the hard threshold). That protects the beacon path; it is a rate control, not a throughput figure.
+Separately, the control-plane endpoints (`/collect`, `/session`) carry a per-IP rate limiter: a default 10s window with a soft threshold of 60 and a hard threshold of 120 (a `429` on the hard threshold). That protects the beacon path; it is a rate control, not a throughput figure. The hard threshold sets a per-IP ceiling on the beacon path of
+
+$$R_{\text{hard}} = \frac{120\ \text{requests}}{10\ \text{s}} = 12\ \text{req/s per IP}$$
+
+which is a defensive cap, not a capacity target for the edge as a whole.
 
 ---
 

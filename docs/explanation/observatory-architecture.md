@@ -52,6 +52,20 @@ The stream honours `Last-Event-ID`, so a page that reconnects resumes from where
 
 To inspect a session already in the feed, the page calls `GET /playground/explain/{id}`, which returns the stored `ScoreTrace` for that session id — the same four shapes above. So the live stream tells you *that* something scored; `explain/{id}` tells you *why*.
 
+The push feed and the pull-for-detail split like this:
+
+```mermaid
+flowchart LR
+  ENG["Engine ScoreWithTrace · (same assemble/decide as Score)"]
+  HUB["Livefeed hub · (fan-out)"]
+  SSE["GET /playground/events (SSE) · session.scored · attack.* · network.abuse · Last-Event-ID · 15s heartbeat"]
+  PAGE["Observatory page"]
+  EXP["GET /playground/explain/{id} · stored ScoreTrace"]
+  ENG --> HUB --> SSE -- "push: that it scored" --> PAGE
+  PAGE -- "pull by id: why" --> EXP
+  EXP -- "ContribTrace · DedupTrace · LayerTrace · HardRuleEval" --> PAGE
+```
+
 ## The launch path, made safe step by step
 
 A developer launches a Red profile against the loopback engine from the page. The path is deliberately narrow:

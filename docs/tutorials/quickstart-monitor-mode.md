@@ -8,6 +8,16 @@ That monitor-first shape is deliberate. It is how the product is meant to be ado
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. The dev TLS certificate is self-signed and generated in memory, and the admin tokens shown here are development tokens. Everything below is for a local evaluation on `127.0.0.1`.
 
+The whole path at a glance — five steps, ending with verdicts you watch but never enforce:
+
+```mermaid
+flowchart LR
+  A["Step 1: throwaway origin on 127.0.0.1:9000"] --> B["Step 2: go build -o bin/gate.exe"]
+  B --> C["Step 3: run Gate with -monitor (global monitor mode)"]
+  C --> D["Step 4: load https://localhost:8444 — origin intact, bundle injected"]
+  D --> E["Step 5: Ledger on :8445 — verdicts scored and logged, nothing enforced"]
+```
+
 ## Before you start
 
 You will need:

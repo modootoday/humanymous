@@ -67,6 +67,21 @@ The launcher requests a single-use nonce, then fires exactly that one profile at
 
 Before each launch the engine's stateful detectors (rate limiter, cross-session correlation, traffic log) are reset, and launches are serialized — so a flood run cannot poison the baseline of your next run, and a second launch while one is in flight returns "a launch is already in flight."
 
+The launch is nonce-gated, fixed to the local engine, and streamed back over SSE:
+
+```mermaid
+sequenceDiagram
+  participant U as "Observatory page"
+  participant E as "Detection engine (fixed 127.0.0.1:8443)"
+  U->>E: GET /playground/nonce
+  E-->>U: single-use nonce
+  U->>E: POST /playground/launch {profileId, runs, nonce} — host/url rejected
+  E->>E: reset stateful detectors, fire one profile
+  E-->>U: SSE /playground/events — session.scored / attack.* / network.abuse
+  U->>E: GET /playground/explain/{id} — decision trace
+  E-->>U: per-layer decomposition + ordered hard-rule ladder
+```
+
 ## Step 6 — Read "why this verdict"
 
 Under the pipeline, the **Why this verdict** panel shows the server's own decision trace for the current session — not a re-implementation:

@@ -25,7 +25,24 @@ A few things to know before you click around:
 - There is a **refresh button** whose job is to *re-verify the chain now* — it re-runs the integrity check and re-pulls the current data, rather than waiting for the next poll.
 - Navigation is **keyboard-operable** (the nav items expose `role="button"`, `tabindex`, and `aria-current`), and there is a hamburger menu on narrow screens.
 
-The six views are grouped into two sections: **Operations** (Overview, Integrity, Sessions) and **Governance** (Rate Limits & Bans, Policy, Compliance).
+The six views are grouped into two sections: **Operations** (Overview, Integrity, Sessions) and **Governance** (Rate Limits & Bans, Policy, Compliance). The arrows below trace the triage path you walk most shifts — spot a pattern on Overview, drill into a sample decision in Sessions, then act in Rate Limits & Bans:
+
+```mermaid
+flowchart TD
+  subgraph Ops["Operations"]
+    OV["Overview — live edge decisions"]
+    IN["Integrity — verify the audit log"]
+    SE["Sessions — incident drill-down"]
+  end
+  subgraph Gov["Governance"]
+    RB["Rate Limits & Bans"]
+    PO["Policy — route posture + kill switch"]
+    CO["Compliance — erasure & retention"]
+  end
+  OV -->|"click a row"| SE
+  SE -->|"ban / unblock"| RB
+  IN -.->|"red state: stop, do not act on downstream data"| SE
+```
 
 ---
 

@@ -57,7 +57,11 @@ The engine emits one of three verdicts, and Gate enforces it at the edge before 
 - **CHALLENGE** → the client is served an accessible proof-of-work interstitial from the control plane. **The origin is never contacted.**
 - **DENY** → the request is blocked. **The origin is never contacted.**
 
-Thresholds under the shipped policy: risk 0–29 → ALLOW, 30–69 → CHALLENGE, 70–100 → DENY. The challenge is a proof-of-work interstitial, not a CAPTCHA — there is no puzzle to solve by hand and no third-party vendor in the path. When a valid, fingerprint-bound verdict trust token is present, an ALLOW can take a fast path with no re-scoring.
+Thresholds under the shipped policy: risk 0–29 → ALLOW, 30–69 → CHALLENGE, 70–100 → DENY — with a fired hard rule able to promote the verdict regardless of the score:
+
+$$\text{verdict} = \begin{cases}\text{DENY} & \text{HR fired, or risk}\ge 70\\ \text{CHALLENGE} & 30\le\text{risk}<70\\ \text{ALLOW} & \text{risk}<30\end{cases}$$
+
+The challenge is a proof-of-work interstitial, not a CAPTCHA — there is no puzzle to solve by hand and no third-party vendor in the path. When a valid, fingerprint-bound verdict trust token is present, an ALLOW can take a fast path with no re-scoring.
 
 Per-route policy is chosen from four presets: `off` (no injection, no enforcement), `monitor` (inject, score, log, enforce nothing), `balanced` (the default for any unmatched route — inject, enforce, safe-GET fail-open), and `strict` (inject, enforce, fail-closed, synchronous re-score). A fleet-wide **kill switch** or the global `-monitor` flag can demote enforcement to monitor everywhere, so you can turn detection into observation without redeploying.
 
@@ -81,19 +85,20 @@ Identifiers in the log (IP, JA4, HTTP/2 fingerprint, UA, SNI, device fingerprint
 
 ## Topology
 
-```
-End-user browser
-      │  (HTTPS)
-      ▼
-humanymous Gate
-  • terminates TLS
-  • streams the L1–L7 detection bundle into the HTML
-  • scores the request inline (0–100) and applies hard rules
-  • enforces the verdict at the edge (allow / PoW challenge / deny)
-  • writes every decision to a tamper-evident audit log
-      │  (origin contacted only on ALLOW)
-      ▼
-Operator's origin app  (Gate fronts it; does not control it)
+```mermaid
+flowchart TD
+  B["End-user browser"] -- "HTTPS" --> G
+  subgraph G["humanymous Gate"]
+    direction TB
+    T["Terminate TLS · stream L1–L7 bundle into HTML"]
+    S["Score inline (0–100) · apply hard rules"]
+    A["Write decision to tamper-evident audit log"]
+    E{"Enforce verdict at edge"}
+    T --> S --> A --> E
+  end
+  E -- "ALLOW" --> O["Operator origin app · (Gate fronts it; does not control it)"]
+  E -- "CHALLENGE" --> PoW["PoW interstitial · (origin never contacted)"]
+  E -- "DENY" --> X["Blocked · (origin never contacted)"]
 ```
 
 Gate sits in the request path and owns the verdict; your origin app stays as it is behind it. On CHALLENGE or DENY, the origin is never reached.

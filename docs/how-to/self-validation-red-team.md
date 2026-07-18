@@ -15,6 +15,23 @@ Read both together. A high detection rate means little if the honest-human basel
 
 For where the detection engine sits relative to the proxy, see **[Where Gate fits](../explanation/where-gate-fits.md)**. For how enforcement and fail-open behavior work before you turn anything on, see **[Will this break my app?](../explanation/will-this-break-my-app.md)**.
 
+The whole exercise is one measurement loop — the harness fires at your own local engine, the runner records every verdict, and the report reduces them to two numbers:
+
+```mermaid
+flowchart LR
+  subgraph Harness["Red harness (local target only)"]
+    R["cmd/redteam · network / anti-tamper"]
+    P["test/redteam/*.mjs · browser sims + human baseline"]
+  end
+  E["Detection engine · 127.0.0.1:8443"]
+  R --> E
+  P --> E
+  E --> RUN["test/e2e/runner.mjs"]
+  RUN --> J["results.json"]
+  J --> REP["cmd/report"]
+  REP --> M["botTPR (detection) · humanFPR (false positives)"]
+```
+
 ## Step 1 — Stand up in monitor mode first
 
 Before you measure anything, put a deployment in front of a throwaway origin in **global monitor mode** (score and log every request, enforce nothing). This is the recommended starting posture and the safe place to observe verdicts.

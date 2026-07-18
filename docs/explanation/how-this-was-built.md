@@ -10,6 +10,21 @@ This page describes the *method* — how the detection engine and humanymous Gat
 
 humanymous Gate is a reference implementation, not a production-hardened build. The method below is what a reference implementation can honestly claim: a traceable path from a written intent to a verified behavior.
 
+The method, at a glance — a spec-first path with an adversarial loop that feeds the next design round:
+
+```mermaid
+flowchart TD
+  SPEC["Specification · (vocabulary, decision rule, non-coverage)"] --> CRIT{"Multi-perspective critique · + adversarial pass"}
+  CRIT -- "survives" --> IMPL["Implement + wire to files"]
+  CRIT -- "weakest assumption found" --> SPEC
+  IMPL --> TEST["Tests verify the spec holds"]
+  TEST --> ADV["Adversarial self-validation · (local catalog vs engine + human baseline)"]
+  ADV -- "a hidden tell -> next layer's job" --> SPEC
+  IMPL --> GATE["Promote scoring model into Gate · (audit-log-first · fail-closed · dual-control)"]
+```
+
+The backward arrows are the point: a tell a new profile hides, or a weak assumption a critique finds, becomes the next specification's input — so nothing in the scoring path is folklore.
+
 ## Specification before code
 
 Every capability began as a written specification — a single source of truth for one behavior — before any code existed. The spec fixed the vocabulary (which signal, which layer, which verdict), the decision rule, and the boundary of what the behavior does *not* cover. Implementation notes wired the spec to concrete files; tests verified the spec held.

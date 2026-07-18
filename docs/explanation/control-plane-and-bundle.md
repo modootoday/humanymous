@@ -18,6 +18,26 @@ When Gate fronts your origin, two of its behaviors are visible from the browser 
 
 Everything on this page is about how those two surfaces interact with *your* paths, *your* CSP, and *your* router.
 
+The two surfaces, and how the admin plane sits apart from both, look like this:
+
+```mermaid
+flowchart LR
+  B["Browser"]
+  subgraph Edge["Gate public edge · -addr :8444"]
+    CP["Control plane /__hmn/* · loader.js · session · collect · csp-report · + challenge interstitial"]
+    INJ["Streaming HTML injection · (adds loader script)"]
+  end
+  ADMIN["Admin plane /__hmn/admin/* · separate listener -admin-addr :8445 · (Ledger, bans, policy)"]
+  O["Your origin"]
+  B -- "page request" --> INJ
+  INJ -- "forward on ALLOW" --> O
+  O -- "HTML response" --> INJ
+  INJ -- "HTML + loader tag" --> B
+  B -- "loader.js · session · collect (signed beacon)" --> CP
+  B -. "/__hmn/admin/* on the edge -> 404" .-> Edge
+  B -. "admin plane: separate authenticated listener :8445" .-> ADMIN
+```
+
 ## The `/__hmn/` control plane
 
 `/__hmn/` is Gate's client-facing namespace on the public edge (the `-addr` listener, `:8444` by default). Requests to these paths are handled by Gate and are **not** forwarded to your origin. The detection bundle talks to these endpoints; the challenge interstitial is served from here too.

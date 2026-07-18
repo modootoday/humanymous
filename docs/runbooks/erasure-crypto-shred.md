@@ -17,6 +17,22 @@ humanymous Gate does not store raw identifiers. Every subject identifier that ap
 
 This procedure is DPO-gated and dual-control. A single actor cannot shred a subject's key alone.
 
+The five steps as a state machine — note the cancellable hold window that stands between commit and the irreversible shred:
+
+```mermaid
+stateDiagram-v2
+  [*] --> Intake: map subject to console pseudonym
+  Intake --> Pending: Operator or DPO requests erasure
+  Pending --> Scheduled: distinct DPO commits
+  Scheduled --> Cancelled: Operator or DPO cancels within hold window
+  Scheduled --> Shredded: hold window (default 5 min) elapses
+  Cancelled --> [*]
+  Shredded --> Certificate: signed erasure certificate sealed
+  Certificate --> [*]
+  note right of Shredded: linkage key destroyed (irreversible); audit chain stays intact and verifiable
+```
+
+
 ---
 
 ## Preconditions

@@ -45,6 +45,16 @@ For how the keystore seals and opens the node's keys, and the operational limits
 
 Do not bring a new build straight into enforcement. Stage it so a bad verdict from a changed engine cannot block real users before you have looked at it.
 
+```mermaid
+flowchart TD
+  A["Back up HMN_UNSEAL out-of-band"] --> B["Start new build: -keystore + -monitor (global monitor)"]
+  B --> C["Watch Overview / audit stream — is the ALLOW/CHALLENGE/DENY mix sane?"]
+  C -->|"no: unexpected blocks"| B2["Investigate before enforcing"]
+  C -->|"yes"| D["Restart without -monitor (enforce)"]
+  D --> E["Re-verify chain integrity — same public key, no new mismatch class"]
+  E --> F["Confirm effective policy + signed config_version"]
+```
+
 ### Step 1 — Bring the new build up in global monitor mode
 
 Start the new binary with the global `-monitor` flag. In global monitor mode every route scores and logs but enforces nothing, so the new build observes live traffic and produces verdicts without acting on them.

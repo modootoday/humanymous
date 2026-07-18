@@ -108,6 +108,23 @@ Native SIEM shipping is a production concern the reference does not implement (s
 3. Follow the `nextBefore` cursor to drain new records since your last run, persisting the cursor between runs so you never miss or double-ship.
 4. Map each record's fields to your SIEM schema and forward.
 
+```mermaid
+sequenceDiagram
+  participant J as "Collector job (interval)"
+  participant A as "Admin listener :8445"
+  participant S as "SIEM"
+  loop each run
+    J->>A: GET /__hmn/admin/audit?before=cursor (Auditor token)
+    A-->>J: records[], count, nextBefore
+    J->>J: map fields to SIEM schema
+    J->>S: forward records
+    J->>J: persist nextBefore cursor for next run
+  end
+  J->>A: GET /__hmn/admin/integrity (scheduled)
+  A-->>J: ok, class, witnessed, lastSTH
+  J->>S: alert on ok:false or witnessed:false
+```
+
 This gives you allow/challenge/deny decisions, risk scores, matched routes, and triggered hard rules in your SIEM without waiting for native shipping. Because the feed is pull-based and the records are pseudonymous, your collector needs only network reach to the admin listener and a read-only token — keep that token scoped to Auditor and rotate it like any other credential.
 
 > **Note:** You are polling, not streaming. Your SIEM's freshness is bounded by your poll interval. Size the interval against your audit volume so a single page-drain keeps up between runs.

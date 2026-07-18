@@ -128,6 +128,22 @@ The rule is directional and simple:
 
 > **A change to any SoT triggers a review of every user-facing page derived from it.**
 
+Each page flows from one or more SoT specs through the single derivation index, and a change propagates back as a review obligation:
+
+```mermaid
+flowchart TD
+  S0["SoT-00 — engine / behavior authority"]
+  S29["SoT-29 — user-facing doc surfaces"]
+  S30["SoT-30 — Detection Observatory"]
+  SN["SoT-NN — specific mechanism"]
+  S0 --> IDX["SoT to user-doc derivation index"]
+  S29 --> IDX
+  S30 --> IDX
+  SN --> IDX
+  IDX --> P["derived user-facing pages"]
+  P -. "any SoT change triggers" .-> RV["review of every page derived from it"]
+```
+
 When you change a SoT:
 
 1. Look it up as a value in the derivation index above.

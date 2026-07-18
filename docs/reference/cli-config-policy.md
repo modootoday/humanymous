@@ -92,6 +92,27 @@ The default route table is set in `main.go`. Routes match by **longest-prefix wi
 
 > **Note:** `-monitor` or the kill switch downgrades `enforce` to monitor everywhere (`GlobalMonitor`), regardless of a route's preset. See below.
 
+A request resolves route to preset to verdict to edge action along this path:
+
+```mermaid
+flowchart TD
+  A["request path"] --> B["longest-prefix route match"]
+  B -->|"/login, /checkout, /admin"| P1["preset strict"]
+  B -->|"/health"| P0["preset off"]
+  B -->|"unmatched"| P2["preset balanced"]
+  P0 --> BYP["no inject, no enforce (full bypass)"]
+  P1 --> GM{"global monitor on? (-monitor or kill switch)"}
+  P2 --> GM
+  GM -->|"yes"| MON["inject, score and log, no enforce"]
+  GM -->|"no"| SC["score L1–L7 to risk 0–100"]
+  SC --> HR{"hard rule fired?"}
+  HR -->|"yes"| DN["DENY to block"]
+  HR -->|"no"| VB{"risk band"}
+  VB -->|"0–29"| AL["ALLOW to pass"]
+  VB -->|"30–69"| CHV["CHALLENGE to challenge_pow"]
+  VB -->|"70–100"| DN
+```
+
 ---
 
 ## Monitor disambiguation

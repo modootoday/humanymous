@@ -4,6 +4,10 @@
 
 humanymous Gate is a reverse proxy that sits in front of your origin app, scores each request across seven detection layers (static client, fingerprint, client integrity, behavior, network/protocol, cross-check, and scoring), and enforces a verdict at the edge before the request reaches your app. It does not emit a binary "bot / not-bot" flag: it produces a graded risk score from 0 to 100 and maps that score to one of three verdicts — ALLOW (pass to origin), CHALLENGE (serve an accessible proof-of-work interstitial; origin never contacted), or DENY (block; origin never contacted). Hard rules can override the score for high-confidence automation signatures. The honest limitation to weigh first: Gate raises the cost of automated traffic and challenges or blocks it, but it does not solve the T4 tier — anti-detect toolchains paired with real-human click-farms. That is an explicit design boundary, mitigated only by rate limiting and reputation, not eliminated. Everything here is a reference implementation for evaluation, not a production-hardened build; treat measured latency and false-positive figures as reference-measured, and expect a prod-delta (ACME certificates, bring-your-own keys, and operational hardening) before you ship.
 
+A verdict as it renders in the bundled `/demo` — the graded risk score and the hard rules behind a DENY, not a bare bot/not-bot flag:
+
+![A humanymous /demo verdict card showing a DENY decision with its risk score and contributing hard rules](../assets/screenshots/demo-verdict.jpg)
+
 ## Next 3 reads
 
 Read these in order. Each builds on the last, and together they take you from "what is this" to "running it against my own traffic."
