@@ -1,0 +1,41 @@
+/* SoT-33 P2 — overlays & chrome: toasts, tooltips, the confirm modal, the mobile
+   nav, the status bar, and the session drill-down drawer. */
+@layer overlays {
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:12px 16px;font-size:13px;box-shadow:0 12px 40px -12px rgba(0,0,0,.6);opacity:0;transform:translateY(8px);transition:.2s;z-index:60}
+  .toast.show{opacity:1;transform:none}
+  .tooltip{position:fixed;z-index:80;max-width:290px;background:var(--raise);border:1px solid var(--border);color:var(--text);font-size:12px;line-height:1.55;padding:9px 12px;border-radius:9px;box-shadow:0 14px 44px -12px rgba(0,0,0,.65);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+  .tooltip.show{opacity:1;transform:none}
+  .tooltip b{color:var(--accent);font-family:var(--mono);font-size:11px;font-weight:600;display:block;margin-bottom:3px}
+  [data-tip]{cursor:help}
+  [data-tip].navitem,[data-tip].chip,[data-tip].btn,[data-tip].lift,[data-tip].iconbtn,[data-tip] .lift{cursor:pointer}
+  .hint{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--border);color:var(--faint);font-size:9px;font-weight:700;margin-left:5px;cursor:help;vertical-align:middle}
+  .hint:hover{border-color:var(--accent);color:var(--accent)}
+  /* confirm modal (SoT-28 WS9 destructive-action safety) */
+  .mscrim{position:fixed;inset:0;background:rgba(4,7,11,.6);opacity:0;pointer-events:none;transition:.15s;z-index:90}
+  .mscrim.show{opacity:1;pointer-events:auto}
+  .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%);width:min(440px,92vw);background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:0 24px 70px -20px rgba(0,0,0,.7);z-index:91;opacity:0;pointer-events:none;transition:.16s;padding:22px}
+  .modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+  .modal h3{font-size:16px;margin-bottom:8px}.modal.danger h3{color:var(--deny)}
+  .modal p{font-size:13.5px;color:var(--muted);line-height:1.6;margin:0 0 14px}
+  .modal .mrow{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .modal .mrow input{font-family:var(--mono);font-size:13px;padding:8px 10px;border-radius:8px;background:var(--panel-2);border:1px solid var(--border);color:var(--text)}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end}
+  /* mobile nav toggle */
+  .hamburger{display:none}
+  @media (max-width:680px){
+    .hamburger{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--text);cursor:pointer}
+    .rail{position:fixed;left:0;top:0;bottom:0;z-index:70;transform:translateX(-100%);transition:transform .2s;box-shadow:0 0 40px rgba(0,0,0,.5)}
+    .rail.open{display:flex;transform:none}
+  }
+  .statusbar{display:flex;align-items:center;gap:20px;padding:9px 24px;border-top:1px solid var(--border);font-size:11.5px;color:var(--muted);font-family:var(--mono);background:var(--panel-2)}
+  .statusbar .ok{color:var(--allow)}.statusbar .bad{color:var(--deny)}
+  .scrim{position:fixed;inset:0;background:rgba(4,7,11,.55);opacity:0;pointer-events:none;transition:.2s;z-index:40}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;width:min(460px,94vw);height:100vh;background:var(--panel);border-left:1px solid var(--border);z-index:41;transform:translateX(100%);transition:transform .24s;display:flex;flex-direction:column}
+  .drawer.show{transform:none}
+  .drawer header{padding:16px 20px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:12px}
+  .drawer .body{overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:18px}
+  .sec-label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:9px}
+  .kv{display:flex;justify-content:space-between;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--border-soft)}
+  .kv:last-child{border:none}.kv .k{color:var(--muted)}.kv .v{font-family:var(--mono)}
+}

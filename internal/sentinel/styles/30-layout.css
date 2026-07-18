@@ -1,0 +1,29 @@
+/* SoT-33 P2 — app shell: rail, brand, nav, topbar, content grid. */
+@layer layout {
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+  .rail{background:var(--panel-2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 14px;gap:5px;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 16px}
+  .mark{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(150deg,var(--accent),#1b6);color:var(--accent-ink);font-weight:800}
+  .brand b{font-size:14px;display:block}.brand span{font-size:11px;color:var(--muted)}
+  .navlabel{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);padding:14px 8px 4px}
+  .navitem{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer;border:1px solid transparent;font-size:13.5px;transition:background .12s,color .12s}
+  .navitem:hover{background:var(--panel);color:var(--text)}
+  .navitem.active{background:var(--accent-dim);color:var(--text);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+  .navitem .ico{width:16px;height:16px;flex:none}
+  .navitem.active .ico{color:var(--accent)}
+  .navitem .badge{margin-left:auto;font-size:11px;background:var(--deny-dim);color:var(--deny);padding:1px 7px;border-radius:20px;font-family:var(--mono);font-weight:600}
+  .rail .spacer{flex:1}
+  .rolechip{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;background:var(--panel);border:1px solid var(--border);font-size:12px}
+  .rolechip .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .rolechip small{color:var(--muted);display:block;font-size:10.5px}
+  .main{display:flex;flex-direction:column;min-width:0}
+  .topbar{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--panel) 70%,transparent);backdrop-filter:blur(8px)}
+  .topbar h1{font-size:16px}.topbar h1 small{color:var(--muted);font-weight:400;font-size:13px;margin-left:8px}
+  .push{flex:1}
+  .iconbtn{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--muted);cursor:pointer}
+  .iconbtn:hover{color:var(--text);border-color:var(--accent)}
+  .live{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+  .live .pulse{width:8px;height:8px;border-radius:50%;background:var(--allow);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .content{padding:22px 24px 40px;display:flex;flex-direction:column;gap:20px}
+}

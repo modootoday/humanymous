@@ -1,0 +1,82 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref (saves runner minutes on rapid pushes).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# The Docker detector-vs-bots stack is the integration gate: it runs the whole
+# attack in real containers (real network boundary), so the network-layer
+# detection that a loopback host can't exercise is actually verified in CI.
+jobs:
+  go:
+    name: build + unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache: true
+      - run: go build ./...
+      - run: go vet ./cmd/... ./internal/...
+      - run: go test ./...
+
+  detector-vs-bots:
+    name: docker detector-vs-bots
+    runs-on: ubuntu-latest
+    needs: go
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # buildx (docker-container driver) is required for the gha cache backend.
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Validate modular compose
+        run: docker compose -f deployments/compose.yaml config -q
+
+      - name: Build all images (gha layer cache)
+        run: >
+          docker compose
+          -f deployments/compose.yaml -f deployments/compose.ci.yaml
+          --profile attack --profile sentinel-test --profile swarm
+          build
+
+      - name: Start the detection stack
+        run: docker compose -f deployments/compose.yaml up -d engine origin sentinel
+
+      - name: Run the bots (automation catalog) vs the engine
+        run: docker compose -f deployments/compose.yaml run --rm bots
+
+      - name: Assert attack gate (all bots blocked, no FP)
+        run: node scripts/assert-attack.mjs deployments/artifacts/engine-results.json
+
+      - name: Sentinel proxy-layer conformance (34 checks)
+        run: docker compose -f deployments/compose.yaml run --rm sentinel-e2e
+
+      - name: Multi-subnet swarm — assert cross-subnet correlation fires
+        run: |
+          docker compose -f deployments/compose.yaml --profile swarm up \
+            --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c | tee swarm.log
+          grep -q 'l5.correlation.proxy_rotation' swarm.log \
+            || (echo 'FAIL: proxy_rotation never fired across subnets' && exit 1)
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: attack-artifacts
+          path: |
+            deployments/artifacts/
+            swarm.log
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f deployments/compose.yaml down -v

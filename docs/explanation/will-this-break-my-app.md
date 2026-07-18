@@ -1,0 +1,140 @@
+# Will this break my app? Safety, fail-open, and monitor-first rollout
+
+> **Diátaxis:** Explanation, plus a how-to rollout runbook.
+> **Audience:** Integrators and SRE reviewers doing a pre-go-live safety review.
+
+This is the trust document. Before you put humanymous Sentinel ("Sentinel") in front of real traffic, you want to know exactly what it can and cannot do to a legitimate request. This page answers that honestly: where Sentinel touches a response and where it does not, when an uncertain verdict lets traffic through versus holds it, and how to roll out so that any surprise is observable and reversible before it reaches a user.
+
+This repository is a reference implementation, not a production-hardened build. Numbers that depend on your hardware and traffic (latency, false-positive rate) are called out as things you measure in your own monitor-mode run, not values we assert.
+
+For the request lifecycle and vocabulary used below, see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md). For every flag and preset named here, see the [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md).
+
+## The short version
+
+- You can run Sentinel so it scores and logs but enforces nothing, fleet-wide, with one flag (`-monitor`) or per-route (the `monitor` preset). Start there.
+- On an uncertain (Unknown) verdict, safe reads (GET/HEAD) on `balanced` routes **fail open** — they pass. Strict routes and every unsafe method (POST/PUT/PATCH/DELETE) **fail closed** to a proof-of-work (PoW) challenge, never a hard block.
+- Sentinel injects its detection bundle only into HTML responses. Non-HTML, streamed, and large-body responses are not rewritten.
+- You can revert to zero enforcement instantly by flipping `-monitor` or the kill switch. The kill switch is fleet-wide — read its warning below before you rely on it.
+
+## Monitor, shadow, and enforce: what actually runs
+
+Sentinel has three postures. Two of them cannot block anyone.
+
+### Global monitor mode (`-monitor`)
+
+Starting the binary with `-monitor` downgrades **every** route to monitor. Sentinel still injects the bundle, collects signals, scores L1–L7, and writes every decision to the audit log — but it enforces nothing, anywhere. The startup log line reports the mode:
+
+```
+humanymous Sentinel on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+```
+
+With `-monitor` set, that trailing value reads `monitor=true`. This is your safest first contact with production traffic: you get the full verdict stream and the audit trail without any user ever being challenged or blocked.
+
+### The `monitor` preset (per-route)
+
+The same score-and-log behavior can be applied to individual routes with the `monitor` policy preset (`inject=true`, `enforce=false`) while other routes enforce normally. Use this to shadow a single sensitive path — watch how it scores real users — before you promote it to an enforcing preset.
+
+### Enforce (`balanced`, `strict`)
+
+`balanced` (the default for any unmatched route) and `strict` both inject and enforce. The difference is what they do when the verdict is uncertain, covered next. The `off` preset does neither — no injection, no enforcement — and is the true bypass.
+
+> **Note:** Only four presets ship in this reference build: `off`, `monitor`, `balanced`, `strict`. Route matching is longest-prefix wins; anything unmatched is `balanced`.
+
+## Fail-open vs fail-closed, precisely
+
+Every enforced request resolves to one of four edge verdicts: `allow`, `challenge`, `deny`, or `none`. `none` means Unknown — Sentinel has no evidence yet (for example, a first request before any beacon returns). What happens on Unknown is the crux of the safety story.
+
+| Situation | Verdict on Unknown | User sees |
+| --- | --- | --- |
+| Safe method (GET/HEAD) on a `balanced` route | Fail **open** → `pass` | Nothing; request proceeds to origin |
+| Strict route (`failClosed`/`syncScore`), any method | Fail **closed** → `challenge` | A PoW interstitial |
+| Any unsafe method (POST/PUT/PATCH/DELETE), any route | Fail **closed** → `challenge` | A PoW interstitial |
+
+Two things to internalize:
+
+1. **Fail-closed here means a challenge, not a block.** An Unknown verdict never becomes a DENY on its own. The user gets an accessible proof-of-work interstitial served from the control plane; the origin is simply not contacted until the challenge is satisfied. A DENY only comes from a score of 70+ or a hard rule firing on real evidence.
+
+2. **The safe-GET fail-open on `balanced` is a deliberate, documented residual.** A GET/HEAD to a non-strict route that Sentinel cannot yet classify is allowed through rather than challenged, to protect legitimate readers and crawlers you want. That gap is covered meanwhile by fingerprint- and subnet-level rate metering, not left unwatched. If you cannot accept it on a given path, put that path on the `strict` preset — strict fails closed even for safe reads.
+
+A verdict trust token bound to the fingerprint, when present and valid, lets an ALLOW take a fast path with no re-scoring, so returning legitimate users are not re-challenged on every request.
+
+### What promotes a challenge to allow — and what does not
+
+A **score-based** CHALLENGE (30–69 risk, no hard rule) becomes ALLOW if the session solved the proof-of-work (the `l7.pow.solved` signal). Proof-of-work proves CPU work was done; it does **not** prove humanity, so it **never** overrides a hard rule. A CHALLENGE that a hard rule promoted stays a challenge (or block) regardless of PoW.
+
+## What Sentinel does and does not touch in a response
+
+### Only HTML is rewritten
+
+The detection bundle is injected **only into HTML responses**. If your endpoint returns JSON, an image, a file download, a redirect, or any non-HTML content type, Sentinel does not rewrite the body. Your API responses and asset payloads pass through structurally unchanged.
+
+The exact gate: Sentinel injects only when the response status is `200 OK` **and** its `Content-Type` (lower-cased) begins with `text/html`. So `text/html; charset=utf-8` is rewritten, while a missing/empty `Content-Type`, any non-HTML type, and any non-200 response (redirects, errors) are streamed through untouched.
+
+### Streaming and large bodies
+
+Because injection targets HTML documents, streamed and non-HTML bodies are not buffered for rewriting on the response path. On the **request** ingress side, the hardening caps apply to both the edge and admin listeners and bound how much a client can send:
+
+- `MaxHeaderBytes` 1 MiB.
+- HTTP/2: `MaxConcurrentStreams` 100, `MaxReadFrameSize` 1 MiB, `MaxUploadBufferPerConnection` 1 MiB.
+- Timeouts: `ReadHeaderTimeout` 8s, `ReadTimeout` 30s, `WriteTimeout` 30s, `IdleTimeout` 60s.
+
+If your app legitimately accepts very large uploads or holds long-lived slow requests, review these against your workload before go-live.
+
+> **TODO(verify):** whether request bodies larger than the HTTP/2 upload-buffer cap are streamed to origin or bounded/rejected, and any configurable max request-body size beyond the per-connection buffer.
+
+### WebSocket and SSE upgrades
+
+A WebSocket or SSE upgrade that arrives **without a prior fingerprint-bound verdict** is denied by hard rule HR-26. In practice this means the browser must first have loaded a normal page through Sentinel — establishing a fingerprint and a verdict — before it opens a socket. If your app opens a WebSocket or event stream as its very first interaction (before any HTML page load through Sentinel), test that path explicitly in monitor mode and confirm the upgrade carries a prior verdict.
+
+### Latency and overhead
+
+Sentinel terminates TLS, injects into HTML, and scores inline, so it adds some per-request overhead. The actual figure depends on your hardware, route mix, and whether a route re-scores synchronously (`strict` uses `syncScore`). Do not take a number on faith — **measure it in monitor mode against your own traffic**, where enforcement is off but the full scoring path still runs, so you see representative overhead with zero user impact. Where we cite any performance figure elsewhere it is labeled reference-measured, meaning measured on our reference setup, not a guarantee for yours.
+
+> **TODO(verify):** whether a documented reference-measured added-latency figure exists to cite as a baseline expectation.
+
+### Direct-to-origin traffic (origin cloaking)
+
+If you set `-origin-key`, requests that reach the origin **directly**, bypassing Sentinel, are rejected with a 421 via hard rule HR-24 (the origin validates the `X-Hmny-Origin-Auth` header). This is what stops an attacker from simply addressing your origin and skipping the edge. The practical caution: once origin cloaking is on, your own health checks, internal callers, and deploy tooling must go **through** Sentinel, or they will receive 421s. Confirm your internal callers' paths before enabling the key.
+
+## The safe rollout ladder
+
+Promote one rung at a time. Sit on each rung long enough to read the verdict stream and audit log for false positives on real traffic before climbing. If anything looks wrong, drop back down — the rollback is instant (see below).
+
+1. **`off` everywhere — baseline.** No injection, no enforcement. Confirm Sentinel proxies your app correctly end to end (routing, TLS termination, upstream reachability) with nothing else changing.
+
+2. **Global `-monitor` — score and log fleet-wide.** Restart with `-monitor`. Every route now injects, scores, and logs, but enforces nothing. Watch the Overview view ("live edge decisions") and audit log. This is also where you take your latency measurement. Let it run against representative traffic (peak hours, real user agents, your legitimate bots and crawlers). Confirm the false-positive picture is acceptable before you enforce anything.
+
+3. **`monitor` preset on a few routes — targeted shadow.** Drop global `-monitor` and instead put the `monitor` preset on the specific routes you plan to protect first. Everything else can stay `off`. You are now shadowing exactly the paths that matter, still enforcing nothing on them.
+
+4. **`balanced` on non-critical routes — first real enforcement.** Promote low-risk, non-critical routes to `balanced`. Enforcement is now live there, but remember: safe GET/HEAD on `balanced` fails **open**, so the blast radius of any misclassification on reads is a pass-through, not a block. Watch for unexpected challenges on unsafe methods.
+
+5. **`strict` on `/login`, `/checkout` (and `/admin`) — fail-closed on the sensitive paths.** Finally, put your highest-value routes on `strict`. These fail closed to a challenge on Unknown, even for safe reads, and re-score synchronously before any state-changing mutation. The default route table already maps `/login`, `/checkout`, and `/admin` to `strict` and `/health` to `off`; confirm your real route names match.
+
+## Instant rollback
+
+Two mechanisms take you back to zero enforcement without a redeploy of your app:
+
+- **Flip `-monitor`.** Restarting Sentinel with `-monitor` downgrades every route to monitor: scoring and logging continue, enforcement stops everywhere. This is the clean, full revert.
+
+- **Kill switch (fleet-wide).** A dual-control kill switch demotes hard-rule enforcement to monitor across the fleet — detection stops, traffic flows — without a restart. It is committed by a distinct Approver (the requesting Operator cannot approve their own flip). Manual bans still enforce under the kill switch.
+
+> **Warning:** The kill switch is **fleet-wide**. Flipping it demotes hard-rule enforcement to monitor on every node at once — this is not a per-route or per-node control. Traffic that hard rules would have blocked will flow. Use it as a deliberate incident lever, confirm the scope with your on-call, and plan to re-arm enforcement once the incident is resolved.
+
+For the operational procedures around these levers — when to flip, who approves, what to watch afterward — see the [Incident Runbooks](../runbooks/incident-runbooks.md).
+
+## Pre-go-live checklist
+
+- [ ] Ran global `-monitor` against representative traffic; verdict stream and audit log reviewed for false positives.
+- [ ] Measured added latency in monitor mode; acceptable for your SLOs.
+- [ ] Confirmed non-HTML responses (APIs, assets, downloads) pass through unmodified.
+- [ ] Tested any WebSocket/SSE path; confirmed a prior fingerprint-bound verdict exists before the upgrade (HR-26).
+- [ ] Checked request size and timeout caps against your largest legitimate uploads and longest requests.
+- [ ] If using `-origin-key`, routed health checks and internal callers through Sentinel (avoid HR-24 421s).
+- [ ] Route table matches your real paths; sensitive paths on `strict`, `/health`-style paths on `off`.
+- [ ] On-call knows the two rollback levers and the kill switch's fleet-wide scope.
+
+## Related pages
+
+- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — request lifecycle, verdicts, layers, glossary.
+- [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md) — every flag, preset, and route-table detail named here.
+- [Incident Runbooks](../runbooks/incident-runbooks.md) — operating the kill switch, bans, and rollback under pressure.

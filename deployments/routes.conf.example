@@ -1,0 +1,15 @@
+# humanymous Sentinel route policy (SoT-31 R2). Copy to `routes.conf` and edit.
+# One `<path-prefix> <preset>` per line. Longest matching prefix wins.
+# Presets:
+#   strict    inject + enforce + fail-closed + synchronous re-score (login, checkout, admin)
+#   balanced  inject + enforce, fail-open on unknown safe GETs (default for unlisted paths)
+#   monitor   score + log, enforce nothing (safe first-rollout stage)
+#   off       no injection, no scoring (health checks, static assets)
+
+/login      strict
+/checkout   strict
+/account    strict
+/admin      strict
+/api        balanced
+/health     off
+/assets     off

@@ -1,0 +1,146 @@
+---
+title: Data Processing & Personal-Data Inventory (RoPA-ready)
+---
+
+# Data processing & personal-data inventory (RoPA-ready)
+
+**Diátaxis quadrant:** Reference. **Audience:** Data Protection Officers and privacy counsel completing a GDPR Article 30 record of processing activities (RoPA) for a deployment that fronts an origin with humanymous Sentinel ("Sentinel" after first mention).
+
+This page is a descriptive inventory of the personal data Sentinel observes and stores in the reference implementation, written so that a DPO can lift the field-by-field detail directly into an Article 30 record and a pseudonymization policy note. It is not a compliance certification. Sentinel is processing tooling that **supports** your Article 30 and Article 17 obligations; it does not by itself make any deployment compliant.
+
+> **Note:** This repository is a reference implementation, not a production-hardened build. The categories, stored forms, and retention tiers below describe the reference build. A production deployment adds controls (prod-delta) but must not remove the pseudonymization and erasure guarantees described here. See [Production vs. reference](production-vs-reference.md).
+
+---
+
+## 1. Controller and processor framing
+
+Sentinel does not determine the purposes of the operator's business processing. In GDPR terms:
+
+- **The operator that deploys Sentinel is the data controller.** You decide why traffic is scored (protecting your origin from automated access), you set the legal basis, and you own the retention schedule and the erasure obligation.
+- **Sentinel is processing tooling operated under your control.** It observes request signals, derives pseudonyms, records decisions to a tamper-evident audit log, and enforces verdicts at the edge. It fronts your origin app and does not control it.
+
+Where Sentinel is operated by a third party on your behalf, that operator is your Article 28 processor; the topology and evidence in this document describe what that processor would be processing. This page does not assess any controller–processor contract.
+
+---
+
+## 2. The observe-versus-store distinction (core of the inventory)
+
+The single most important fact for a RoPA entry is that **the identifiers Sentinel observes are not the data Sentinel stores.**
+
+- **Observed** identifiers are read transiently during scoring, in memory, for the duration of a request lifecycle (see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md)).
+- **Stored** identifiers exist in the audit log **only as per-subject-key-derived pseudonyms** — a 64-hex value produced by a scrypt KDF-stretched derivation. Raw identifiers (IP, JA3/JA4, HTTP/2 fingerprint, UA, UA-CH, SNI, device fingerprint) are **never** written to the audit log in raw form.
+
+This means the "personal data at rest" and the "personal data observed in transit" are two different rows in your analysis. Section 3 enumerates both.
+
+---
+
+## 3. Personal-data inventory (field by field)
+
+Detection-layer references (L1–L7) are defined in [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md). "Observed form" is what Sentinel reads during scoring; "Stored form" is what is persisted to the audit log.
+
+| # | Identifier / signal | Detection layer | Purpose of processing | Observed form (transient) | Stored form (at rest) |
+|---|---------------------|-----------------|-----------------------|---------------------------|-----------------------|
+| 1 | IP address | L5 (network/protocol) | Automated-traffic detection; rate metering; ban keying | Raw source address, in memory | 64-hex pseudonym only |
+| 2 | JA3 / JA4 TLS fingerprint | L5 | TLS-stack consistency vs. claimed browser | Raw fingerprint, in memory | 64-hex pseudonym only |
+| 3 | HTTP/2 fingerprint | L5 | Protocol-stack consistency; HTTP/2 abuse detection | Raw fingerprint, in memory | 64-hex pseudonym only |
+| 4 | User-Agent (UA) | L1 / L6 | Claimed-client baseline; cross-check vs. TLS/JS | Raw header, in memory | 64-hex pseudonym only |
+| 5 | User-Agent Client Hints (UA-CH) | L6 | Cross-check of UA against UA-CH and JS evidence | Raw hints, in memory | 64-hex pseudonym only |
+| 6 | SNI (server name indication) | L5 | TLS handshake context | Raw SNI, in memory | 64-hex pseudonym only |
+| 7 | Device fingerprint (canvas/WebGL/audio hash, screen, hardware) | L2 | Client fingerprint; cross-session correlation of automated traffic | Derived fingerprint, in memory | 64-hex pseudonym only |
+| 8 | Behavioral signals (mouse, keystroke, scroll dynamics; `isTrusted`) | L4 | Human-interaction evidence; automation cadence detection | Event-derived features, in memory | Pseudonymized / aggregated in the record |
+| 9 | Session id | Control plane | Subject key that binds a subject's pseudonyms together | Session identifier, in memory | Acts as the **subject key**; see section 4 |
+| 10 | Verdict, risk score, contributing signal ids, route/host | L7 / edge | The decision record itself (audit evidence) | Computed at the edge | Recorded in the audit log |
+
+> **Note:** Rows 1–8 are read to compute a verdict and are not persisted in raw form. What persists is the pseudonym plus the decision metadata in row 10. The decision metadata references internal signal ids (for example `x.ua_vs_ja4`); these are internal signal names and are never surfaced to the end user, who sees only plain language and an incident handle.
+
+> **TODO(verify):** Whether the behavioral signals in row 8 (keystroke and mouse dynamics in particular) constitute biometric data under Article 4(14) / Article 9 for your deployment is a controller legal determination. The facts available here do not state that Sentinel classifies these as special-category data or applies Article 9 handling to them. Confirm with counsel and record the determination in your RoPA.
+
+---
+
+## 4. Pseudonymization policy note
+
+This section is the pseudonymization policy statement a DPO can cite directly.
+
+- **Every raw identifier is stored only as a pseudonym.** The stored value is a 64-hex string.
+- **Derivation.** Pseudonyms are produced with a scrypt key-derivation function, KDF-stretched with work factor N = 2¹². The stretching raises the cost of a brute-force reversal attempt against the stored pseudonym.
+- **The subject key is the session id.** Pseudonyms for a given subject are derived under that subject's key, which is the session id. This is what binds a subject's several pseudonyms (their IP pseudonym, their fingerprint pseudonym, and so on) into one resolvable subject when the vault is present.
+- **The linkage material lives in a vault.** The per-subject linkage keys that make re-identification possible are held in a vault, sealed with the node keystore (scrypt N = 2¹⁵ plus AES-256-GCM) when a keystore is configured. See [Key management](../how-to/key-management.md).
+
+> **TODO(verify):** The exact construction that binds the session-id subject key to each per-field pseudonym (salt handling and per-field domain separation) is not specified in the available facts. Record the construction detail from the implementation before publishing a formal DPIA.
+
+---
+
+## 5. Pseudonymous, not anonymous
+
+For the RoPA classification, state this explicitly:
+
+The audit data is **pseudonymous, not anonymous** (GDPR Recital 26; Article 4(5)). Because a vault of linkage keys can, under controlled conditions, resolve a pseudonym back to the subject it was derived from, the pseudonyms remain personal data and stay within the scope of the GDPR. Do not record this processing as anonymization or as outside GDPR scope.
+
+Re-identification is not a routine operation. It requires **the vault plus dual-control** — the linkage key material must be present, and the re-identification action is gated by separation of duties (see [RBAC and separation of duties](rbac-separation-of-duties.md)). No single actor can unilaterally resolve a pseudonym to a subject.
+
+---
+
+## 6. Record-level tagging (legal basis and data class)
+
+Audit records carry tagging that supports your Article 30 mapping, including a legal-basis tag and a data-class tag per record. The legal basis is a **controller determination**: Sentinel does not choose the lawful basis for your traffic processing, and you should set and record it (for most bot-mitigation deployments this is a legitimate-interest or legal-obligation analysis you perform, not one Sentinel asserts).
+
+> **TODO(verify):** The exact field names and the enumerated value set for the record-level legal-basis and data-class tags are not specified in the available facts. Capture the concrete tag schema (field names and permitted values) from the implementation before mapping it into a RoPA column.
+
+---
+
+## 7. Retention tiers
+
+Records are never physically deleted as part of the erasure model (erasure works by destroying key material — see section 8). Retention is expressed as lifecycle tiers:
+
+| Tier | Reference horizon | Purpose |
+|------|-------------------|---------|
+| HOT | ~90 days | Active incident review and drill-down |
+| WARM | ~1 year | Slower-access investigation and correlation |
+| COLD | ~7 years | Long-horizon retention (for example, legal/audit hold) |
+
+> **Note:** The horizons above are the reference tier boundaries. Physical retirement of retention segments to write-once (WORM) storage at tier expiry is a prod-delta and is not shipped in the reference build. Set the concrete calendar retention schedule for each tier in your own retention policy.
+
+> **TODO(verify):** Whether tier transitions (HOT → WARM → COLD) and any physical retirement at COLD expiry are automated in the reference build or are operator-driven is not specified in the available facts.
+
+---
+
+## 8. Erasure mechanism (cryptographic erasure)
+
+The right-to-erasure mechanism is **cryptographic erasure (crypto-shred)**: the erasure request destroys the per-subject linkage key that binds a subject's pseudonyms to the identifiers they were derived from. The audit records remain in place and cryptographically verifiable; once the key is gone, the pseudonyms can no longer be resolved back to the subject.
+
+Crypto-shred is DPO-gated and dual-control, with a cancellable hold window before the shred commits. The full procedure, role gates, and hold-window handling are in the [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md).
+
+> **Warning:** Cryptographic erasure is irreversible. Destroying the per-subject linkage key cannot be undone, and there is no recovery path once the shred commits. Confirm the subject-to-pseudonym mapping before you request erasure, and use the hold window as your final checkpoint.
+
+Sentinel **supports** your Article 17 obligation by giving you a targeted, auditable erasure primitive and a sealed erasure certificate on commit. It does not discharge the obligation for you; intake, subject verification, and the decision to erase remain controller responsibilities.
+
+---
+
+## 9. Residual risk (state this honestly in your DPIA)
+
+Pseudonymization reduces re-identification risk; it does not eliminate it. State the residual plainly:
+
+- Several of the observed identifiers are **low-entropy** (for example an IP address, or a UA string shared by many clients). A low-entropy identifier held behind a pseudonym is re-identifiable **only if the underlying key material leaks** — that is, if an adversary obtains the vault linkage key that resolves the pseudonym. Absent that key, the 64-hex pseudonym does not by itself reveal the subject.
+- **Crypto-shred destroys exactly that key material.** After a subject's linkage key is shredded, the low-entropy identifiers behind that subject's pseudonyms can no longer be resolved from the audit log, because the resolving key no longer exists.
+- The honest boundary is therefore key custody: the strength of the pseudonymization is the strength of vault-key protection and dual-control, plus the scrypt stretching that raises the cost of brute-forcing a pseudonym directly.
+
+---
+
+## 10. Backups (operator responsibility)
+
+Any backup that includes the vault or the node keystore is a **re-identifiable copy** of the linkage material and must be held under controls equivalent to the live vault. A backup taken before an erasure also holds a copy of the key that the erasure destroyed; that copy would re-enable resolution unless it is retired under the same schedule.
+
+> **Warning:** Backups of the vault or keystore are outside the crypto-shred boundary. If you back up the sealed keystore or vault, you are responsible for ensuring that an erasure is propagated to — or the corresponding key material is retired from — those copies. Otherwise a restore can re-establish linkage that a live shred already destroyed.
+
+> **TODO(verify):** Whether the reference build produces any on-disk copies of the vault beyond the single sealed keystore file (and where), is not specified in the available facts. Inventory your own backup surface for the keystore and vault as part of your RoPA.
+
+---
+
+## Related pages
+
+- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — the pseudonymization model and the L1–L7 layers referenced above.
+- [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — the Article 17 procedure.
+- [Compliance & DPO start here](../start-here/compliance-dpo.md) — orientation for the DPO role.
+- [RBAC and separation of duties](rbac-separation-of-duties.md) — the dual-control model that gates re-identification and erasure.
+- [Key management](../how-to/key-management.md) — keystore, vault, and unseal handling.
+- [Production vs. reference](production-vs-reference.md) — what the reference does not ship for production.

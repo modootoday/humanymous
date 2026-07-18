@@ -1,0 +1,12 @@
+{
+  "name": "humanymous-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Red vs Blue e2e harness for the humanymous detector (local target only).",
+  "scripts": {
+    "e2e": "node e2e/runner.mjs"
+  },
+  "optionalDependencies": {
+    "playwright-core": "^1.61.1"
+  }
+}

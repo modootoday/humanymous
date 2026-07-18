@@ -1,0 +1,45 @@
+# ── Development-process resources: kept OUT of the published repo ─────────────
+# Internal, normative source-of-truth specs and planning notes written during
+# development. Not part of the public product surface — the public story is told
+# by docs/ (served on GitHub Pages) and, later, a separate distilled
+# "development theory" write-up. Excluding them keeps the raw dev process private
+# when the repo is published.
+/sots/
+/plan/
+
+# build outputs
+/bin/
+*.exe
+/web/detector.wasm
+/docs/report.html
+
+# ACME/autocert on-disk cache (issued certs + account key; engine -acme-cache)
+/acme-cache/
+
+# e2e artifacts
+/test/node_modules/
+/test/e2e/results.json
+/test/shoot.mjs
+# NOTE: test/package-lock.json is intentionally COMMITTED (SoT-31 R8) so `npm ci`
+# in the red image / CI is deterministic — do not ignore it.
+
+# jekyll / github pages local build (the site is built by GitHub, never committed)
+/docs/_site/
+/docs/.jekyll-cache/
+.jekyll-metadata
+
+# local / secrets
+*.log
+*.local
+.env
+*.pem
+*.key
+/var/
+
+# os / editor
+.DS_Store
+Thumbs.db
+
+# Docker Red/Blue run artifacts (keep the dir, ignore outputs)
+/deployments/artifacts/*
+!/deployments/artifacts/.gitkeep

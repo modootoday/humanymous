@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detection Observatory — humanymous</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f14'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335d0ba' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%2335d0ba'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b0f14;--panel:#121a24;--panel2:#0f161e;--border:#1e2a38;--border2:#28394c;
+    --text:#e7eef6;--muted:#93a2b4;--faint:#5d6c7e;
+    --live:#3ac6e0;--live-dim:rgba(58,198,224,.13);
+    --allow:#3fb950;--challenge:#d9a441;--deny:#f0556a;
+    --allow-dim:rgba(63,185,80,.14);--challenge-dim:rgba(217,164,65,.14);--deny-dim:rgba(240,85,106,.14);
+    --mono:ui-monospace,"Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 500px at 80% -10%,rgba(58,198,224,.07),transparent 60%),var(--bg);
+    color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55}
+  a{color:var(--live)}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  :focus-visible{outline:2px solid var(--live);outline-offset:2px;border-radius:4px}
+  header{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header h1{font-size:17px;margin:0;letter-spacing:-.3px}
+  header h1 b{color:var(--live)}
+  .status{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+  .dot.on{background:var(--allow);box-shadow:0 0 0 3px var(--allow-dim)}
+  .dot.off{background:var(--deny);box-shadow:0 0 0 3px var(--deny-dim)}
+  .guardrail{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:8px 22px;
+    background:linear-gradient(90deg,var(--deny-dim),transparent 70%);border-bottom:1px solid var(--border);font-size:12.5px;color:var(--muted)}
+  .pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:5px;border:1px solid var(--border2)}
+  .pill.dev{color:var(--challenge);border-color:rgba(217,164,65,.4);background:var(--challenge-dim)}
+  .pill.tgt{color:var(--live);border-color:rgba(58,198,224,.35);background:var(--live-dim)}
+  .guardrail b{color:var(--text)}
+  main{display:grid;grid-template-columns:224px 1fr;gap:0;min-height:calc(100vh - 96px)}
+  /* launcher rail */
+  .rail{border-right:1px solid var(--border);padding:14px;background:var(--panel2);overflow:auto}
+  .rail h2,.center h2{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0 0 10px}
+  .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:12px 0 5px;opacity:.8}
+  .rcard{border:1px solid var(--border);border-radius:7px;padding:7px 9px;margin-bottom:6px;background:var(--panel);cursor:pointer}
+  .rcard:hover{border-color:var(--border2)}
+  .rcard.sel{border-color:rgba(58,198,224,.5);background:var(--live-dim)}
+  .rcard.skip{opacity:.5;cursor:not-allowed}
+  .rcard .rt{display:flex;justify-content:space-between;gap:6px;align-items:center}
+  .rcard .rn{font-family:var(--mono);font-size:11.5px;color:var(--text)}
+  .rcard .rh{font-family:var(--mono);font-size:9.5px;color:var(--deny);border:1px solid rgba(240,85,106,.3);border-radius:4px;padding:1px 4px}
+  .rcard.human .rh{color:var(--allow);border-color:rgba(63,185,80,.3)}
+  .rcard .re{font-size:10px;color:var(--faint);margin-top:2px}
+  .launchbar{display:flex;gap:8px;margin-top:12px;align-items:center}
+  .btn{font-family:var(--mono);font-size:12px;border:0;border-radius:7px;padding:8px 12px;cursor:pointer;font-weight:600}
+  .btn.go{background:var(--live);color:#04252b;flex:1}
+  .btn.go:disabled{opacity:.5;cursor:not-allowed}
+  .btn.abort{background:var(--deny-dim);color:var(--deny);border:1px solid rgba(240,85,106,.4)}
+  .runs{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;margin-top:9px}
+  .runs input{width:44px;font-family:var(--mono);background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:3px 6px}
+  .nohost{font-size:9.5px;color:var(--faint);text-align:center;margin-top:9px;font-style:italic}
+  /* center */
+  .center{padding:16px 22px 40px;overflow:auto}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .toolbar input{font-family:var(--mono);font-size:12px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:7px 10px;width:200px}
+  .toolbar .meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-left:auto}
+  .vhead{display:flex;gap:18px;align-items:center;border:1px solid var(--border2);border-radius:12px;background:var(--panel2);padding:15px 18px;margin-bottom:14px}
+  .bignum{font-family:var(--mono);font-size:44px;font-weight:700;line-height:1;min-width:92px;text-align:center}
+  .vmeta{flex:1;min-width:0}
+  .vrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .verdict{font-family:var(--mono);font-size:21px;font-weight:700;display:inline-flex;align-items:center;gap:9px}
+  .vshape{width:13px;height:13px;flex:none}
+  .hrbadge{font-family:var(--mono);font-size:12px;color:var(--deny);border:1px solid rgba(240,85,106,.4);background:var(--deny-dim);border-radius:5px;padding:2px 8px}
+  .vwhy{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .vsub{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:5px}
+  .riskbar{position:relative;height:12px;border-radius:6px;margin-top:10px;overflow:hidden;
+    background:linear-gradient(90deg,#2b7a37 0 29%,#9c7629 29% 69%,#b23a49 69% 100%)}
+  .riskmark{position:absolute;top:-3px;width:3px;height:18px;background:#fff;border-radius:2px;box-shadow:0 0 5px rgba(0,0,0,.6);transition:left .35s ease}
+  .risklabels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--faint);margin-top:3px}
+  .lane{display:grid;grid-template-columns:82px 1fr;gap:12px;align-items:start;padding:8px 0;border-top:1px solid var(--border)}
+  .lane:first-child{border-top:0}
+  .lname{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .lname .lsub{display:block;color:var(--faint);font-size:9.5px}
+  .sigs{display:flex;flex-wrap:wrap;gap:6px;min-height:22px}
+  .empty{font-family:var(--mono);font-size:11px;color:var(--faint);opacity:.55}
+  .sig{font-family:var(--mono);font-size:11.5px;padding:2px 9px;border-radius:5px;border:1px solid var(--border2);display:inline-flex;align-items:center;gap:7px;background:var(--panel)}
+  .sig::before{content:"";width:8px;height:8px;flex:none}
+  .sig .sc{color:var(--faint)}
+  .sig.v-BOT{color:#ffd7dd;border-color:rgba(240,85,106,.4);background:var(--deny-dim)}
+  .sig.v-BOT::before{background:var(--deny)}
+  .sig.v-SUSPICIOUS{color:#f6e4bd;border-color:rgba(217,164,65,.4);background:var(--challenge-dim)}
+  .sig.v-SUSPICIOUS::before{background:var(--challenge);transform:rotate(45deg)}
+  .sig.v-OK{color:#c4ecc9;border-color:rgba(63,185,80,.35);background:var(--allow-dim)}
+  .sig.v-OK::before{background:var(--allow);border-radius:50%}
+  .sig.v-UNKNOWN{color:var(--faint)} .sig.v-UNKNOWN::before{background:var(--faint);border-radius:50%}
+  .sig.srv{box-shadow:inset 0 0 0 1px rgba(58,198,224,.18)}
+  .lc{font-family:var(--mono);font-size:9.5px;color:var(--live);margin-left:6px}
+  .xc{font-family:var(--mono);font-size:11px;border-radius:5px;padding:2px 9px;border:1px solid var(--border2);background:var(--panel)}
+  .xc.bad{color:#ffd7dd;border-color:rgba(240,85,106,.35);background:var(--deny-dim)}
+  .xc.good{color:var(--muted)}
+  .top{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .topc{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:2px 8px}
+  .topc b{color:var(--deny)}
+  /* explain / hard-rule ladder */
+  .explain{margin-top:16px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);padding:14px 16px}
+  .explain h3{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--live);margin:0 0 10px}
+  .ladder{display:flex;flex-direction:column;gap:3px}
+  .hr{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;font-family:var(--mono);font-size:11.5px;padding:4px 8px;border-radius:5px;border:1px solid transparent}
+  .hr .hid{color:var(--faint)} .hr .hy{color:var(--faint);font-family:var(--sans);font-size:11.5px}
+  .hr .hv{font-size:10px;color:var(--faint)}
+  .hr.matched{color:var(--muted)} .hr.matched .hid{color:var(--challenge)}
+  .hr.won{border-color:rgba(240,85,106,.4);background:var(--deny-dim)}
+  .hr.won .hid{color:var(--deny);font-weight:700} .hr.won .hy{color:#ffd7dd} .hr.won .hv{color:var(--deny)}
+  .decomp{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+  .lp{font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--border);border-radius:5px;padding:3px 8px;background:var(--panel)}
+  .lp b{color:var(--text)} .lp.cap{border-color:rgba(217,164,65,.4);color:var(--challenge)}
+  .drop{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:8px}
+  .honest{font-size:11px;color:var(--faint);margin-top:10px;border-left:2px solid var(--border2);padding-left:9px}
+  /* event log */
+  .log{margin-top:16px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);max-height:190px;overflow:auto}
+  .log h3{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0;padding:9px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--panel2)}
+  .logrow{font-family:var(--mono);font-size:11px;padding:5px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px}
+  .logrow:last-child{border-bottom:0}
+  .logrow .t{color:var(--faint)} .logrow .ty{color:var(--live)} .logrow .m{margin-left:auto;color:var(--muted)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .legend i{width:9px;height:9px;display:inline-block;margin-right:6px}
+  .lg-deny i{background:var(--deny)}.lg-chal i{background:var(--challenge);transform:rotate(45deg)}.lg-allow i{background:var(--allow);border-radius:50%}
+  @media (max-width:820px){ main{grid-template-columns:1fr} .rail{border-right:0;border-bottom:1px solid var(--border)} }
+  @media (prefers-reduced-motion:reduce){ .riskmark{transition:none} }
+</style>
+</head>
+<body>
+  <a href="#center" class="mono" style="position:absolute;left:-9999px">skip to pipeline</a>
+  <header>
+    <h1><b>humanymous</b> Detection Observatory</h1>
+    <div class="status"><span class="dot" id="sdot" aria-hidden="true"></span><span id="stext" role="status" aria-live="polite">connecting…</span></div>
+  </header>
+  <div class="guardrail">
+    <span class="pill dev">DEV BUILD — not for production</span>
+    <span class="pill tgt" id="tgt">local Blue</span>
+    <span><b>Self-validation only</b> — this fires the bundled catalog at your own loopback engine. There is no target field.</span>
+  </div>
+
+  <main>
+    <nav class="rail" aria-label="Red launcher">
+      <h2>Red launcher</h2>
+      <div id="catalog"></div>
+      <div class="runs"><label for="runs">runs</label><input id="runs" type="number" min="1" max="5" value="1"></div>
+      <div class="launchbar">
+        <button class="btn go" id="launch" disabled>Launch (local)</button>
+        <button class="btn abort" id="abort" title="Cancel the in-flight run">Abort</button>
+      </div>
+      <div class="nohost">target hard-wired to 127.0.0.1 · no host field</div>
+      <div id="launchstat" class="nohost" style="font-style:normal;color:var(--muted)"></div>
+    </nav>
+
+    <section class="center" id="center">
+      <div class="toolbar">
+        <input id="rid" placeholder="replay a session id…" spellcheck="false" aria-label="session id to replay">
+        <button class="btn" id="replay" style="background:var(--panel);color:var(--text);border:1px solid var(--border)">Replay</button>
+        <span class="meta" id="metaline">policy —</span>
+      </div>
+
+      <div class="vhead">
+        <div class="bignum num" id="bignum" style="color:var(--faint)">—</div>
+        <div class="vmeta">
+          <div class="vrow">
+            <span class="verdict" id="verdict" style="color:var(--faint)">awaiting a session</span>
+            <span class="hrbadge" id="hr" style="display:none"></span>
+          </div>
+          <div class="vwhy" id="why">Launch a profile on the left, browse in another tab, or replay a report id — then watch the pipeline score it.</div>
+          <div class="vsub" id="vsub"></div>
+          <div class="riskbar" id="riskbar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="risk score"><span class="riskmark" id="mark" style="left:0"></span></div>
+          <div class="risklabels"><span>0</span><span>29</span><span>69</span><span>100</span></div>
+        </div>
+      </div>
+
+      <h2>Live pipeline · L1→L7</h2>
+      <div id="lanes"></div>
+
+      <div class="explain" id="explain" hidden>
+        <h3>Why this verdict · hard-rule evaluation (HR-1..HR-21, server truth)</h3>
+        <div class="ladder" id="ladder"></div>
+        <div class="decomp" id="decomp"></div>
+        <div class="drop" id="drops"></div>
+        <div class="honest">Rules evaluate top-to-bottom; the first match wins and overrides the score band. HR-12 and HR-11 are heuristics that can challenge some real humans. Detection has a ceiling: a T4 anti-detect toolchain paired with a real-human click-farm is a design boundary, mitigated by rate/reputation, not eliminated.</div>
+      </div>
+
+      <div class="legend">
+        <span class="lg-deny"><i></i>■ BOT</span>
+        <span class="lg-chal"><i></i>◆ SUSPICIOUS</span>
+        <span class="lg-allow"><i></i>● OK</span>
+        <span>◻ inset = server-observed (L5/L6)</span>
+      </div>
+
+      <div class="log"><h3>live event log</h3><div id="logrows" aria-live="polite"></div></div>
+    </section>
+  </main>
+
+<script type="module">
+import { createFeed, prependRows } from '/static/js/feed.js';
+(function(){
+  var LAYERS=[["L1","static"],["L2","fingerprint"],["L3","integrity"],["L4","behavioral"],["L5","network"],["L6","cross-check"],["L7","scoring"]];
+  var CATALOG=[
+    ["baseline",[["human.mjs","human","OK","honest baseline"]]],
+    ["browser drivers",[["selenium.mjs","selenium","HR-1","cdc_ artifacts"],["puppeteer.mjs","puppeteer","HR-7","headless+webdriver"],["playwright_plain.mjs","playwright","HR-7","headless+webdriver"],["direct_cdp.mjs","direct_cdp","HR-9","raw CDP driver"],["undetected.mjs","undetected","HR-7","webdriver stripped"]]],
+    ["stealth",[["puppeteer_stealth.mjs","puppeteer_stealth","HR-8","patched natives"],["playwright_stealth.mjs","playwright_stealth","HR-8","patched natives"],["patchright.mjs","patchright","HR-13","console disabled"],["nodriver.mjs","nodriver","HR-12","headful frontier"],["xvfb_headful.mjs","xvfb_headful","HR-12","no display tell"],["antidetect.mjs","antidetect","HR-12","coherent spoof"],["camoufox.mjs","camoufox","HR-12","Firefox fork"]]],
+    ["non-browser",[["http_client.mjs","http_client","HR-18","no JS evidence"],["tls_parrot.mjs","tls_parrot","HR-18","uTLS parrot"],["tls_static.mjs","tls_static","HR-18","static parrot"]]],
+    ["anti-bypass",[["tls_rotate.mjs","tls_rotate","HR-14","TLS rotation"],["ua_rotate.mjs","ua_rotate","HR-15","UA rotation"],["rit_replay.mjs","rit_replay","HR-17","RIT replay"],["rit_tamper.mjs","rit_tamper","HR-16","RIT body tamper"],["video_scrape.mjs","video_scrape","HR-—","media range-storm"],["watermark_strip.mjs","watermark_strip","HR-—","leak + strip"]]],
+    ["frontier",[["ai_agent.mjs","ai_agent","HR-20","LLM cadence"],["distributed.mjs","distributed","HR-19","proxy rotation"],["flood.mjs","flood","HR-21","request flood"],["rapid_reset.mjs","rapid_reset","HR-21","HTTP/2 Rapid Reset"]]]
+  ];
+  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});};
+  var $=function(id){return document.getElementById(id);};
+  var selected=null;
+  $("tgt").textContent="target · "+location.host+" (local Blue)";
+
+  // meta
+  fetch("/playground/meta").then(function(r){return r.json();}).then(function(m){
+    var p=m.policy;
+    $("metaline").textContent="policy "+p.version+" · challenge≥"+p.challengeAt+" · deny≥"+p.denyAt+" · cap "+p.layerCap;
+  }).catch(function(){});
+
+  // build launcher catalog
+  (function(){
+    var html="";
+    CATALOG.forEach(function(g){
+      html+="<div class='grp'>"+esc(g[0])+"</div>";
+      g[1].forEach(function(p){
+        var human=p[1]==="human"?" human":"";
+        html+="<div class='rcard"+human+"' role='button' tabindex='0' data-p='"+esc(p[0])+"'><div class='rt'><span class='rn'>"+esc(p[1])+"</span><span class='rh'>"+esc(p[2])+"</span></div><div class='re'>"+esc(p[3])+"</div></div>";
+      });
+    });
+    $("catalog").innerHTML=html;
+    Array.prototype.forEach.call(document.querySelectorAll(".rcard"),function(c){
+      var pick=function(){ selected=c.dataset.p;
+        Array.prototype.forEach.call(document.querySelectorAll(".rcard"),function(x){x.classList.remove("sel");});
+        c.classList.add("sel"); $("launch").disabled=false; };
+      c.addEventListener("click",pick);
+      c.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();pick();}});
+    });
+  })();
+
+  function launch(){
+    if(!selected)return;
+    var runs=Math.max(1,Math.min(5,parseInt($("runs").value,10)||1));
+    $("launch").disabled=true; $("launchstat").textContent="requesting nonce…";
+    fetch("/playground/nonce").then(function(r){return r.json();}).then(function(j){
+      return fetch("/playground/launch",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({profileId:selected,runs:runs,nonce:j.nonce})});
+    }).then(function(r){ return r.text().then(function(t){return {ok:r.ok,t:t};}); })
+      .then(function(res){ $("launchstat").textContent=res.ok?("launched "+selected+" ×"+runs):("refused: "+res.t.slice(0,60)); $("launch").disabled=false; })
+      .catch(function(e){ $("launchstat").textContent="error: "+e; $("launch").disabled=false; });
+  }
+  $("launch").onclick=launch;
+  $("abort").onclick=function(){ fetch("/playground/abort",{method:"POST"}).then(function(){$("launchstat").textContent="abort requested";}); };
+
+  function vshape(v){
+    if(v==="DENY")return '<svg class="vshape" viewBox="0 0 12 12" aria-hidden="true"><rect width="12" height="12" fill="#f0556a"/></svg>';
+    if(v==="CHALLENGE")return '<svg class="vshape" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="9" height="9" transform="rotate(45 7 7)" fill="#d9a441"/></svg>';
+    if(v==="ALLOW")return '<svg class="vshape" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="6" fill="#3fb950"/></svg>';
+    return "";
+  }
+  function vcolor(v){return v==="DENY"?"var(--deny)":v==="CHALLENGE"?"var(--challenge)":v==="ALLOW"?"var(--allow)":"var(--faint)";}
+
+  function render(evt){
+    var rep=evt.report||evt, sc=rep.scoring||{};
+    var risk=(sc.riskScore!=null?sc.riskScore:0), verdict=sc.verdict||"—";
+    $("bignum").textContent=(typeof risk==="number"?risk.toFixed(1):risk); $("bignum").style.color=vcolor(verdict);
+    var vd=$("verdict"); vd.innerHTML=vshape(verdict)+esc(verdict); vd.style.color=vcolor(verdict);
+    var hr=$("hr"); if(sc.hardRuleFired){hr.style.display="";hr.textContent=sc.hardRuleFired+" fired";}else{hr.style.display="none";}
+    $("why").innerHTML=sc.hardRuleFired?("Hard rule <b class='mono' style='color:var(--deny)'>"+esc(sc.hardRuleFired)+"</b> overrode the score band."):"Verdict from the score band (no hard rule fired).";
+    $("vsub").textContent="session "+(evt.sessionId||rep.sessionId||"")+" · source "+(evt.source||"replay")+" · policy "+(sc.policyVersion||"—");
+    var rb=$("riskbar"); rb.setAttribute("aria-valuenow",Math.round(Number(risk))); rb.setAttribute("aria-valuetext",risk+" — "+verdict);
+    $("mark").style.left=Math.max(0,Math.min(100,Number(risk)))+"%";
+
+    var byLayer={};LAYERS.forEach(function(l){byLayer[l[0]]=[];});
+    [].concat((rep.client&&rep.client.signals)||[],(rep.network&&rep.network.signals)||[]).forEach(function(s){(byLayer[s.layer||"L1"]=byLayer[s.layer||"L1"]||[]).push(s);});
+    var html="";
+    LAYERS.forEach(function(l){
+      var L=l[0], chips="";
+      (byLayer[L]||[]).forEach(function(s){
+        var srv=(s.collected==="server")?" srv":"";
+        var scv=(s.score!=null&&s.score>0)?" <span class='sc'>+"+Number(s.score).toFixed(0)+"</span>":"";
+        chips+="<span class='sig v-"+esc(s.verdict||"UNKNOWN")+srv+"' title='"+esc(s.notes||"")+"'>"+esc(s.id)+scv+"</span>";
+      });
+      if(L==="L5"){var net=rep.network||{};if(net.ja4)chips="<span class='sig srv v-UNKNOWN'>ja4="+esc(net.ja4Engine||net.ja4).slice(0,22)+"</span>"+chips;}
+      if(L==="L6"){((rep.crosschecks)||[]).forEach(function(x){chips+="<span class='xc "+(x.consistent?"good":"bad")+"'>"+esc(x.id)+" · "+(x.consistent?"consistent":"inconsistent")+"</span>";});}
+      if(L==="L7"){
+        var tc=(sc.topContributors)||[];
+        if(tc.length){chips+="<div class='top'>";tc.forEach(function(c){chips+="<span class='topc'>"+esc(c.id)+" <b>"+Number(c.score).toFixed(0)+"</b></span>";});chips+="</div>";}
+        chips+="<span class='sig srv v-UNKNOWN'>noisy-OR &rarr; "+(typeof risk==="number"?risk.toFixed(1):risk)+"</span>";
+        if(sc.hardRuleFired)chips+="<span class='sig v-BOT'>"+esc(sc.hardRuleFired)+" &rarr; "+esc(verdict)+"</span>";
+      }
+      if(!chips)chips="<span class='empty'>—</span>";
+      html+="<div class='lane'><span class='lname'>"+L+"<span class='lsub'>"+l[1]+"</span></span><div class='sigs'>"+chips+"</div></div>";
+    });
+    $("lanes").innerHTML=html;
+
+    var sid=evt.sessionId||rep.sessionId;
+    if(sid)loadExplain(sid);
+  }
+
+  // teaching layer: fetch the server-truth ScoreTrace and render the hard-rule ladder + decomposition
+  function loadExplain(sid){
+    fetch("/playground/explain/"+encodeURIComponent(sid)).then(function(r){ if(!r.ok)throw 0; return r.json(); }).then(function(tr){
+      var lad="";
+      (tr.hardRuleEval||[]).forEach(function(h){
+        var cls=h.won?"won":(h.matched?"matched":"");
+        lad+="<div class='hr "+cls+"'><span class='hid'>"+esc(h.rule)+"</span><span class='hy'>"+esc(h.why||"")+"</span><span class='hv'>"+(h.won?"WON &rarr; "+esc(h.verdict):(h.matched?"matched":"—"))+"</span></div>";
+      });
+      $("ladder").innerHTML=lad;
+      var dec="";
+      (tr.perLayer||[]).forEach(function(l){
+        dec+="<span class='lp"+(l.capHit?" cap":"")+"'>"+esc(l.layer)+" <b>"+(l.rawProb*100).toFixed(0)+"%</b>"+(l.capHit?" &rarr; cap "+(l.cappedProb*100).toFixed(0)+"%":"")+"</span>";
+      });
+      $("decomp").innerHTML=dec;
+      var drops=(tr.dedupDropped||[]);
+      $("drops").textContent=drops.length?("dedup: "+drops.map(function(d){return d.droppedId+"→"+d.keptId;}).join(", ")):"";
+      $("explain").hidden=false;
+    }).catch(function(){ $("explain").hidden=true; });
+  }
+
+  // High-velocity log feed via the reusable SoT-33 module: push() only buffers into
+  // a fixed ring; one rAF loop is the sole DOM writer and coalesces a whole frame's
+  // events into ONE update. Bounded ring + rendered-row cap + dropped-count keep it
+  // lossy-but-honest under load. Same architecture the Audit Console feed uses.
+  var feed=createFeed({
+    mount:$("logrows"), ringCap:5000, maxRows:150,
+    onOverflow:function(d){ stext.textContent="live · "+d+" event(s) dropped under burst"; },
+    render:function(batch,o){ prependRows(o.mount,batch,o.maxRows,function(it){
+      var d=document.createElement("div"); d.className="logrow";
+      d.innerHTML="<span class='t'>"+esc(it.t)+"</span><span class='ty'>"+esc(it.ty)+"</span><span class='m'>"+esc(it.m)+"</span>";
+      return d;
+    }); },
+  });
+  function logEvent(type,detail){ feed.push({t:new Date().toLocaleTimeString(),ty:type,m:detail}); }
+
+  // SSE
+  var sdot=$("sdot"),stext=$("stext");
+  try{
+    var es=new EventSource("/playground/events");
+    es.onopen=function(){sdot.className="dot on";stext.textContent="live · SSE connected";};
+    es.onerror=function(){sdot.className="dot off";stext.textContent="reconnecting…";};
+    es.addEventListener("session.scored",function(ev){var e=JSON.parse(ev.data);render(e);var sc=(e.report&&e.report.scoring)||{};logEvent("scored",(e.source||"")+" "+(sc.verdict||"")+" "+(sc.riskScore!=null?Number(sc.riskScore).toFixed(1):"")+(sc.hardRuleFired?" "+sc.hardRuleFired:""));});
+    ["attack.launched","attack.ran","attack.completed","attack.error","attack.aborted","network.abuse"].forEach(function(t){
+      es.addEventListener(t,function(ev){var d={};try{d=JSON.parse(ev.data);}catch(e){}logEvent(t.replace("attack.",""),d.profile||d.signal||d.reason||JSON.stringify(d).slice(0,50));});
+    });
+  }catch(e){sdot.className="dot off";stext.textContent="SSE unavailable";}
+
+  function doReplay(){var id=$("rid").value.trim();if(!id)return;
+    fetch("/api/report/"+encodeURIComponent(id)).then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(rep){render({report:rep,sessionId:rep.sessionId,source:"replay"});})
+      .catch(function(){$("why").textContent="No report found for that id.";});}
+  $("replay").onclick=doReplay;
+  $("rid").addEventListener("keydown",function(e){if(e.key==="Enter")doReplay();});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+# What Sentinel is (and is not): a technical overview
+
+> **Quadrant:** Explanation. **Audience:** engineering leaders, architects, and first-pass evaluators deciding whether humanymous Sentinel belongs in their stack.
+
+This page is written engineer-to-engineer. It leads with the limits, because that is the honest way to evaluate a bot-mitigation layer: what a control does *not* do is as load-bearing as what it does. Read this before you read anything that sounds like a feature list.
+
+This repository is a **reference implementation**, not a production-hardened build. Where a capability is deferred to production (a prod-delta), this page says so.
+
+## Start with the limits
+
+Two boundaries matter before anything else.
+
+**T4 human-assisted traffic is a design boundary, not a solved problem.** Anti-detect browser stacks driven by real humans — click-farms — are, by construction, hard to separate from legitimate users, because much of what they emit is genuine human behavior on a genuine engine. Sentinel does not claim to resolve this tier. It is mitigated only by rate limiting and reputation, never by detection alone. If your threat model is dominated by paid human labor, Sentinel raises the cost but does not close the gap, and you should plan accordingly.
+
+**The safe-GET fail-open residual is deliberate.** On a `balanced` route, when the verdict is still Unknown (no evidence collected yet) and the request is a safe method (GET or HEAD), Sentinel fails **open** — it passes the request to the origin rather than blocking it. This is an accepted residual: it protects real first-time visitors and crawlers you want, at the cost of letting a not-yet-scored safe read through. That window is covered meanwhile by fingerprint- and subnet-level rate metering, and you can close it entirely on sensitive routes by choosing the `strict` preset, which fails **closed** (Unknown → challenge). Unsafe methods (POST/PUT/PATCH/DELETE) always fail closed regardless of preset.
+
+Everything below should be read against those two limits.
+
+## The problem, stated mechanically
+
+Four automated abuse patterns motivate this layer:
+
+- **Credential stuffing** — replaying breached username/password pairs against a login endpoint at machine speed.
+- **Scraping** — bulk extraction of catalog, pricing, or content that a human would never page through by hand.
+- **Inventory sniping** — automated carts and checkouts that clear limited stock before humans can transact.
+- **Fake account creation** — programmatic signups that seed spam, fraud, or later abuse.
+
+The common thread is not malice — it is *mechanism*. Each pattern is an HTTP client that is not a human driving a browser, and the goal of Sentinel is to tell those apart with evidence, then let you decide what to do. We describe blocked traffic as "automated" or "not verified as human." We do not describe your own users as attackers.
+
+## The mechanism: streamed L1–L7 detection, a score not a flag
+
+Sentinel is a reverse proxy that terminates TLS in front of your origin. When a request arrives on a route configured to inject, Sentinel streams a detection bundle into the HTML response as it passes through. The browser runs that bundle and beacons signals back to the control plane (`/__hmn/collect`) over the **same TLS connection**, which is what lets the server observe network- and protocol-layer signals alongside the client-side ones.
+
+Detection is organized as seven layers:
+
+- **L1 Static client** — webdriver flags, headless tells (JS/WASM).
+- **L2 Fingerprint** — canvas/WebGL/audio hashes, screen and hardware traits (JS/WASM).
+- **L3 Client integrity** — native-`toString` checks, proxy/hook detection (WASM).
+- **L4 Behavioral** — mouse, keystroke, scroll, `isTrusted` (JS collect → WASM/server).
+- **L5 Network/protocol** — JA3/JA4, HTTP/2 fingerprint, header order (Go server).
+- **L6 Consistency cross-check** — does the UA agree with UA-CH, with the JS environment, with the TLS engine? (Go server).
+- **L7 Scoring/decision** — aggregates the L1–L6 contributions into one number, then applies hard rules.
+
+The output of L7 is a **risk score from 0 to 100** (one decimal), **not a binary bot/human flag**. That distinction is the point of the design. Three principles shape how the score is produced:
+
+- **Defense-in-depth.** No single signal produces a verdict. A lone "botty" reading is weak evidence.
+- **Cross-check-first.** Inter-layer *disagreement* — a UA that claims Chrome while the TLS and HTTP/2 fingerprints resolve to a different engine — outweighs any single botness heuristic. Consistency is harder to fake than any one attribute.
+- **Low false-positive.** Privacy browsers, blocking extensions, and old devices must not be scored as bots. Low-confidence signals get weak weighting, not penalties. The same input always produces the same score (deterministic).
+
+On top of the score sit **hard rules (HR)**, which can promote or override a score-based verdict when a high-confidence condition is met — for example, a hard automation artifact (HR-1) or a browser UA with zero client-side JS evidence (HR-18). Hard rules are how high-certainty conditions bypass the gentler scoring math. Proof-of-work is the one upgrade that runs the other way: a score-based CHALLENGE with no hard rule firing becomes ALLOW if the session solved the PoW (`l7.pow.solved`). PoW proves CPU work was spent — it never overrides a hard rule, because it does not prove humanity.
+
+## The enforcement model: three actions at the edge
+
+The engine emits one of three verdicts, and Sentinel enforces it at the edge before your origin is involved:
+
+- **ALLOW** → the request passes to the origin.
+- **CHALLENGE** → the client is served an accessible proof-of-work interstitial from the control plane. **The origin is never contacted.**
+- **DENY** → the request is blocked. **The origin is never contacted.**
+
+Thresholds under the shipped policy: risk 0–29 → ALLOW, 30–69 → CHALLENGE, 70–100 → DENY. The challenge is a proof-of-work interstitial, not a CAPTCHA — there is no puzzle to solve by hand and no third-party vendor in the path. When a valid, fingerprint-bound verdict trust token is present, an ALLOW can take a fast path with no re-scoring.
+
+Per-route policy is chosen from four presets: `off` (no injection, no enforcement), `monitor` (inject, score, log, enforce nothing), `balanced` (the default for any unmatched route — inject, enforce, safe-GET fail-open), and `strict` (inject, enforce, fail-closed, synchronous re-score). A fleet-wide **kill switch** or the global `-monitor` flag can demote enforcement to monitor everywhere, so you can turn detection into observation without redeploying.
+
+> **Note:** Route matching is longest-prefix-wins. The default table sends `/login`, `/checkout`, and `/admin` to `strict`, `/health` to `off`, and everything else to `balanced`.
+
+## The audit posture: tamper-evident, and honest about the residual
+
+Every enforcement decision is written to an append-only audit log **before it takes effect** — an audit-or-panic sink. The log is a hash chain with a per-record HMAC, an Ed25519 Signed Tree Head (STH) every 32 records, and an independent local **witness** that co-signs each STH. A writer that tries to rewrite history cannot obtain a witness co-sign, and an offline verifier can check the whole chain without trusting the operator.
+
+This is **tamper-evident, not tamper-proof** — and the difference is a real residual, stated plainly: records written *after* the last signed checkpoint remain re-writable by the writer until the next checkpoint or anchor. That unanchored in-window residual is the honest scope of the guarantee. Tampering with anything already checkpointed is detectable; the most recent unanchored records are not yet protected.
+
+Identifiers in the log (IP, JA4, HTTP/2 fingerprint, UA, SNI, device fingerprint) are stored only as per-subject pseudonyms (scrypt-stretched 64-hex), never raw. This is **pseudonymous, not anonymous** — re-identification is possible but requires the vault plus dual-control. Right-to-erasure is implemented as cryptographic erasure (crypto-shred): the per-subject linkage key is destroyed while the chain and its Merkle anchors stay intact and verifiable.
+
+> **Warning:** Cryptographic erasure is irreversible. Destroying the linkage key cannot be undone; the records become permanently unlinkable to the subject. A cancellable hold window precedes commit, but once committed there is no recovery.
+
+## What Sentinel is not
+
+- **Not a CAPTCHA-vending machine.** The CHALLENGE action is a proof-of-work interstitial, not a "click the traffic lights" puzzle and not a third-party CAPTCHA service. It costs the client CPU, not the user their patience, and it keeps no human in a solving loop.
+- **Not a WAF replacement.** Sentinel decides *whether the caller is a human-driven browser*. It does not inspect payloads for SQL injection, XSS, or application-layer exploits. It is **complementary** to a WAF, not a substitute — run both, each doing the job it is built for.
+- **Not a guarantee.** Sentinel reduces automated abuse and raises its cost. It does not block all bots, and — per the limits section — it does not resolve human-assisted T4 traffic. Treat it as one control in a layered posture.
+
+## Topology
+
+```
+End-user browser
+      │  (HTTPS)
+      ▼
+humanymous Sentinel
+  • terminates TLS
+  • streams the L1–L7 detection bundle into the HTML
+  • scores the request inline (0–100) and applies hard rules
+  • enforces the verdict at the edge (allow / PoW challenge / deny)
+  • writes every decision to a tamper-evident audit log
+      │  (origin contacted only on ALLOW)
+      ▼
+Operator's origin app  (Sentinel fronts it; does not control it)
+```
+
+Sentinel sits in the request path and owns the verdict; your origin app stays as it is behind it. On CHALLENGE or DENY, the origin is never reached.
+
+## Where to go next
+
+- [Will this break my app?](./will-this-break-my-app.md) — the safety model, fail-open behavior, and a staged rollout from monitor to enforce.
+- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — the concepts and glossary behind the layers, verdicts, and signal IDs.
+- **[Where Sentinel fits](where-sentinel-fits.md)** — a side-by-side on where Sentinel complements an existing WAF, CDN bot manager, or CAPTCHA, with the threat model and honest limitations.

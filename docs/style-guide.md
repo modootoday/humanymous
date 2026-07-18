@@ -1,0 +1,313 @@
+# humanymous Documentation Style Guide
+
+<!-- Quadrant: Reference. -->
+<!-- Audience: anyone who writes or reviews humanymous Sentinel user docs, UI strings, error microcopy, or release notes. -->
+
+**Diátaxis quadrant:** Reference — look things up, do not read start to finish.
+**Audience:** doc authors and reviewers of humanymous Sentinel documentation, UI strings, error microcopy, and release notes.
+
+This guide defines how humanymous Sentinel documentation reads and what it must never claim. Every rule here is enforceable at review time. If a rule and a deadline conflict, the rule wins: an over-claim that ships is a defect, not a rough edge.
+
+humanymous Sentinel is a reference implementation, not a production-hardened product. Documentation says so wherever a reader might otherwise assume production guarantees.
+
+---
+
+## 1. The six voice attributes
+
+The product voice is: **Calm, Precise, Candid, Respectful, Verifiable, Defensive-only.** Each attribute is a permission and a prohibition. The prohibition is the part reviewers check.
+
+### 1.1 Calm
+
+State the mechanism at room temperature. The reader is competent and busy.
+
+- **Forbids:** exclamation points; urgency theatre; verbs like "instantly", "slams", "crushes", "destroys".
+- **Forbids:** manufactured stakes ("before it's too late", "don't get caught out").
+- Let the facts carry weight. A blocked request is a log line, not a victory.
+
+### 1.2 Precise
+
+Name the exact mechanism: this verdict, this hard rule ID, this layer, this flag, this endpoint.
+
+- **Forbids:** anthropomorphism — "the system decides", "it thinks", "the AI figures out".
+- **Forbids:** vague scope — "handles bots", "deals with automation". Say which layer, which hard rule, which verdict.
+- Prefer "hard rule HR-1 promotes the verdict to DENY" over "it catches Selenium".
+
+### 1.3 Candid
+
+State what a capability does **not** do beside what it does.
+
+- **Forbids:** omitting the false-positive risk when one exists.
+- **Forbids:** hiding the T4 ceiling (anti-detect tooling plus real-human click-farms is an explicit design boundary, not solved — mitigated only by rate and reputation).
+- **Forbids:** implying production guarantees for a reference implementation. Label prod-only behaviour as prod-delta.
+
+### 1.4 Respectful
+
+Blocked traffic belongs to real people until proven otherwise.
+
+- **Forbids:** calling your own traffic "attacker", "hacker", "evil", "bad guy".
+- Use "automated" or "not verified as human" for blocked or challenged traffic.
+- Naming an **abstract** adversary or attacker tier (T0–T4) is allowed in threat-model and self-validation docs. See §5.2.
+
+### 1.5 Verifiable
+
+Give the reader something to run.
+
+- **Forbids:** unlabeled performance or accuracy numbers. Latency, false-positive rate, and block rate are not reader-reproducible — label them "reference-measured" and never invent a figure.
+- Prefer an endpoint to curl, a startup log line to expect, or a test to run over a bare assertion.
+
+### 1.6 Defensive-only
+
+Every red-team, validation, or probing instruction targets **your own** deployment.
+
+- **Forbids:** framing any technique as probing a third party.
+- Self-validation language ("attack your own edge with…") is fine; third-party targeting is never fine.
+
+---
+
+## 2. Tone-by-context matrix
+
+Voice is constant; register shifts by document type. Match the row you are writing.
+
+| Context | Register | Person / mood | Notable rule |
+|---|---|---|---|
+| Quickstart (tutorial) | Encouraging, concrete, linear | Second person, imperative | One happy path. No branching. State the expected output at each step. |
+| How-to (task) | Direct, goal-first | Second person, imperative | Assume competence. Link concepts, do not re-teach them. |
+| Reference | Flat, exhaustive, neutral | Third person / declarative | No persuasion, no narrative. Tables over prose. This guide is reference-flat. |
+| Runbook | Terse, sequenced, unambiguous | Second person, imperative | Number every step. One action per step. Name the exact endpoint, role, and expected result. Flag irreversible steps. |
+| Compliance / DPO | Formal, precise, cited | Third person, careful | Aim Grade 12+ where precision demands it. Cite the mechanism. No marketing verbs. Crypto-shred and retention claims are exact or absent. |
+| Explanation (concepts) | Measured, reasoned | Second/third person | Explain trade-offs, including what the design does not solve. Room for "why". |
+| Error microcopy (operator-facing) | Brief, actionable | Second person | Say what happened and the next action. May reference an endpoint or role. |
+| Blocked-user empathy (end-user-facing) | Plain, warm, non-technical | Second person | No internal identifiers. Plain language plus an incident handle. Assume the reader is a human who did nothing wrong. See §6. |
+
+Prose target is Grade 9–11, except compliance and erasure docs, which are formal and precise and may run higher.
+
+---
+
+## 3. Terminology and capitalization
+
+Use the canonical form in the left column. The right column is a rejection list, not a synonym list.
+
+| Preferred (canonical) | Avoid |
+|---|---|
+| humanymous (lowercase always, even at sentence start) | Humanymous, HumanyMous, HUMANYMOUS |
+| Sentinel (capitalized; the reverse-proxy enforcement layer) | sentinel, the proxy, the gateway |
+| humanymous Sentinel (full name, first mention per page) | Sentinel alone on first mention |
+| Audit Console | audit console, the dashboard, admin panel |
+| verdict; values ALLOW / CHALLENGE / DENY (uppercase) | allow/deny lowercase in a verdict value; "decision" as the value |
+| risk score (0–100, one decimal) | trust score, bot score, confidence % |
+| hard rule; HR-14 (hyphen, no space) | hardrule, HR 14, rule #14 |
+| L1–L7 (layers) | layer 1-7 written out inconsistently; "level" |
+| monitor / shadow / enforce (modes) | dry-run, test mode, live mode |
+| kill switch (fleet-wide) | killswitch (one word), panic button |
+| cryptographic erasure (crypto-shred) — expand on first use | delete, wipe, purge (as the formal term) |
+| proof-of-work / PoW | captcha (PoW is not a CAPTCHA) |
+| allowlist / denylist | whitelist / blacklist |
+| pseudonymous | anonymous |
+| tamper-evident | tamper-proof |
+| origin (primary term) / upstream (the `-upstream` flag alias) | backend, target server used interchangeably |
+| verdict trust token (single form) | trust cookie, session token, auth token |
+| incident handle (single form) | case ID, ticket number, reference code |
+| fingerprint | signature, hash (when you mean the device/session fingerprint) |
+| dual-control (name the second role) | two-man rule, four-eyes without naming the role |
+| Auditor / Operator / Approver / DPO (RBAC roles, capitalized) | admin, superuser, reviewer |
+| reference implementation vs production-hardened / prod-delta | "the product", "GA" for reference-only behaviour |
+| signal IDs lowercase `l{n}.{group}.{item}`; layer tokens uppercase L1–L7; cross-checks in the `x.` namespace (`x.ua_vs_ja4`) | uppercase `L{n}.…` signal IDs; an `l6.x.…` prefix for cross-checks |
+| engine hard rules HR-1..HR-21 (score pipeline) vs Sentinel hard rules HR-22..HR-30 (proxy edge) | one flat HR list with no plane marker |
+
+**First-mention rule:** the first time a page names the product, write "humanymous Sentinel", then "Sentinel" thereafter. "humanymous" stays lowercase even when it opens a sentence — rewrite the sentence if a leading lowercase word reads badly.
+
+**Never leak internal signal names** — HR-IDs, JA3/JA4, entropy codes, layer references, dotted signal IDs like `l1.cdp.proxy_leak` — into any end-user-facing string. Those live in operator docs and the Audit Console only.
+
+**Never put internal spec identifiers** (the internal "SoT-NN" scheme) or Korean-spec references on any reader-facing page.
+
+---
+
+## 4. Banned words
+
+### 4.1 Banned absolutes (over-claim)
+
+Never ship: **unhackable**, **blocks all bots**, **100%**, **zero false positives**, **bulletproof**, **tamper-proof**, **military-grade**, **AI-powered** (as hype), **makes you GDPR compliant**.
+
+Replace with bounded verbs: **reduces**, **raises the cost of**, **flags**, **challenges**, **blocks**, **supports / helps you meet**.
+
+### 4.2 Banned fear-selling words (dread)
+
+Never ship: **rampant**, **devastating**, **under constant attack**, **epidemic**, or any unquantified scale claim ("everyone is being targeted", "millions of bots").
+
+---
+
+## 5. Honest-security and defensive-framing pre-merge checklist
+
+Run this before approving any page. A single failed item blocks the merge.
+
+- [ ] **Bounded claims only.** No banned absolute (§4.1). Every capability claim uses a bounded verb.
+- [ ] **Candor present.** Where a capability has a false-positive risk or a ceiling, the page states it in the same section, not a distant footnote.
+- [ ] **T4 ceiling honored.** No page implies anti-detect tooling plus human click-farms is solved.
+- [ ] **Reference vs production honesty.** Prod-only behaviour is labeled prod-delta; reference limitations are not hidden.
+- [ ] **Numbers labeled.** Every latency, FPR, or block-rate figure is "reference-measured" or removed.
+- [ ] **Verifiability.** A security claim ships with something to run: an endpoint, a log line, or a test.
+- [ ] **No internal identifiers on reader-facing pages** (HR-IDs / signal IDs / internal spec numbers on end-user strings; internal spec numbers on any reader page).
+- [ ] **Fear-selling test passes** (§5.1).
+- [ ] **Adversary naming resolved** (§5.2).
+
+### 5.1 The mechanical fear-selling test
+
+Apply these three checks literally. Each is pass/fail.
+
+1. **Dread-word scan.** Search the diff for the §4.2 list plus any unquantified scale word. Any hit fails until removed or quantified with a reference-measured, cited figure.
+2. **Neutral-verb check.** Every threat sentence uses a neutral verb (observes, sends, requests, retries) and a bounded outcome verb (flags, challenges, blocks). Verbs that dramatize (slams, floods as hyperbole, devastates) fail.
+3. **Bounded-or-cited frame.** Any statement about how common or severe a threat is must be either (a) bounded and non-alarming, or (b) attached to a cited, reference-measured figure. An uncited scale claim fails.
+
+A threat sentence that passes reads: "Automated clients frequently retry blocked requests; Sentinel meters repeat attempts per fingerprint and subnet." It names the mechanism, uses neutral verbs, and makes no uncited scale claim.
+
+### 5.2 Adversary-naming resolution
+
+- **Allowed:** naming an abstract adversary or an attacker tier (T0–T4) in threat-model and self-validation documents. These describe capability classes, not your users.
+- **Never:** calling your own traffic "attacker", "hacker", or any pejorative. Blocked or challenged traffic is "automated" or "not verified as human".
+- **Never:** framing a red-team or probing technique as targeting a third party. Self-validation targets your own deployment only (Defensive-only, §1.6).
+
+---
+
+## 6. End-user vs operator string boundary
+
+Two audiences, two vocabularies. Keep them apart.
+
+**Operator-facing** (Audit Console, operator docs, runbooks, operator error microcopy) may use: HR-IDs, verdict values, layer references, signal IDs, risk scores, role names, flags, endpoints.
+
+**End-user-facing** (the blocked-user page, the challenge interstitial copy, appeal help) may use: plain language, a short explanation, and an **incident handle** only.
+
+The blocked-user page never exposes:
+
+- why the verdict fired (no HR-ID, no signal name, no layer);
+- the risk score or any internal number;
+- JA3/JA4, entropy codes, or dotted signal IDs;
+- internal spec identifiers.
+
+An end user who wants to appeal gets: a plain statement that access was blocked, the incident handle to quote, and where to take it. Nothing that helps an adversary map the detection logic.
+
+---
+
+## 7. Accessibility and inclusive language
+
+Copy-level WCAG 2.2 AA is a merge requirement.
+
+- **Inclusive lists:** allowlist / denylist, never whitelist / blacklist. dual-control (name the second role), never "two-man rule".
+- **No "click here" / "read more"** as link text. Link the meaningful phrase: "see the [Quickstart](tutorials/quickstart-monitor-mode.md)".
+- **No direction-only instructions.** Never "the button on the right" or "below". Name the control or the heading: "select **Lift ban** in the Bans view".
+- **No color-only instructions.** Never "the red rows are denials". Pair color with a label or value: "rows with verdict DENY (shown red)".
+- **Meaningful link text and headings** so a screen-reader user scanning by link or heading gets the destination from the text alone.
+- **Alt text** on every explanatory image; describe what the reader needs, not "screenshot".
+- **Sentence-case headings**, one `H1` per page, no skipped heading levels.
+- **Plain language** and second-person active voice; expand an acronym on first use.
+
+---
+
+## 8. Formatting and the admonition ladder
+
+### 8.1 Page structure
+
+- Announce the Diátaxis quadrant and audience in the first two lines of every page.
+- Sentence-case headings. Second person, active voice.
+- One command per fenced code block, **no leading `$`**, `<angle-bracket>` placeholders, and expected output shown where it aids verification.
+
+Example:
+
+```
+bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream <origin-url>
+```
+
+Expected startup line:
+
+```
+humanymous Sentinel on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+```
+
+### 8.2 The admonition ladder
+
+Use exactly these four, lightest to heaviest. Do not invent others.
+
+- `> **Note:**` — a fact worth surfacing that changes nothing you do.
+- `> **Tip:**` — an optional shortcut or better practice.
+- `> **Important:**` — a step or condition that, if missed, causes the wrong result.
+- `> **Warning:**` — a consequence that is destructive, irreversible, or fleet-wide.
+
+Two topics **always** get a Warning:
+
+> **Warning:** Cryptographic erasure (crypto-shred) is irreversible. It destroys the per-subject linkage key. The hash chain and Merkle anchors stay intact and verifiable, but the subject's records can no longer be re-identified.
+
+> **Warning:** The kill switch is fleet-wide. It demotes hard-rule enforcement to monitor across every node — detection stops and traffic flows. Manual bans still enforce under the kill switch.
+
+### 8.3 Cross-linking
+
+Link the P0 doc set by relative repo path from the current file's location. From `docs/style-guide.md`, the Quickstart is `tutorials/quickstart-monitor-mode.md`; the Hard Rules reference is `reference/hard-rules-verdicts.md`.
+
+---
+
+## 9. Before / after rewrites
+
+These span every register. The "after" is the shippable form.
+
+**1. Hype claim**
+
+- Before: humanymous Sentinel blocks all bots with AI-powered, military-grade detection.
+- After: humanymous Sentinel scores each request across layers L1–L7 and blocks or challenges traffic that is not verified as human. It reduces automated access; it does not claim to stop every bot.
+
+**2. Compliance over-claim**
+
+- Before: Deploying Sentinel makes you GDPR compliant.
+- After: Sentinel stores raw identifiers only as per-subject pseudonyms and supports right-to-erasure via cryptographic erasure. These capabilities help you meet GDPR obligations; compliance depends on your overall processing.
+
+**3. Runbook step**
+
+- Before: Go to the admin thing and kill the bad session, then check it worked.
+- After:
+  1. In the Audit Console **Session Drill-down** view, locate the session by its incident handle.
+  2. Request a ban: `POST /__hmn/admin/bans` as the Operator.
+  3. Confirm the ban appears in the **Bans** view with `Source=manual`.
+
+**4. Blocked-user string**
+
+- Before: Access denied: HR-1 fired (l1.navigator.webdriver), risk score 82, verdict DENY.
+- After: We could not verify that this request came from a person, so we could not let it through. If you think this is a mistake, contact the site and quote this reference: `<incident-handle>`.
+
+**5. Absolute claim**
+
+- Before: Sentinel guarantees zero false positives and is bulletproof against headless browsers.
+- After: Sentinel weights low-confidence signals weakly to keep false positives low, and hard rule HR-7 promotes headless browsers with a second automation tell to DENY. Some real users can still be challenged; the design accepts a bounded false-positive rate.
+
+**6. Fear-selling threat line**
+
+- Before: Bots are rampant and your site is under constant attack from a devastating epidemic of automation.
+- After: Automated clients regularly probe public endpoints. Sentinel scores each request and meters repeat attempts per fingerprint and subnet.
+
+**7. tamper-proof → tamper-evident**
+
+- Before: The audit log is tamper-proof and cannot be altered.
+- After: The audit log is tamper-evident: an append-only hash chain with per-record HMAC and periodic signed checkpoints. Records written after the last signed checkpoint remain re-writable until the next checkpoint — a disclosed in-window residual.
+
+**8. anonymous → pseudonymous**
+
+- Before: All identifiers are stored anonymously, so nothing can be traced back.
+- After: Identifiers are stored pseudonymously — raw values are replaced by per-subject-key-derived pseudonyms, never stored raw. This is pseudonymous, not anonymous (GDPR Recital 26); re-identification requires the vault and dual-control.
+
+**9. Anthropomorphism → named mechanism** (bonus)
+
+- Before: The system thinks you might be a bot and decides to block you.
+- After: The request scored in the DENY band (risk 70–100), or a hard rule promoted the verdict to DENY. The edge blocks it and the origin is never contacted.
+
+---
+
+## 10. Reviewer quick reference
+
+Approve only when all hold:
+
+- Quadrant and audience declared in the first two lines.
+- No banned absolute (§4.1) and no fear-selling word (§4.2).
+- Fear-selling test passes (§5.1); adversary naming resolved (§5.2).
+- Canonical terminology and capitalization (§3); "humanymous" lowercase; full name on first mention.
+- No internal identifiers on reader-facing pages; no internal spec numbers anywhere reader-facing.
+- Numbers labeled reference-measured or removed.
+- Accessibility rules met (§7): allowlist/denylist, no click-here, no direction- or color-only cues, meaningful link text.
+- End-user vs operator boundary held (§6).
+- Correct admonition tier; crypto-shred and kill switch carry a Warning (§8.2).
+- Reserved presets `low` and `api` are **not** documented as working; they fall back to `balanced`.

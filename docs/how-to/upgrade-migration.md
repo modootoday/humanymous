@@ -1,0 +1,156 @@
+---
+title: Upgrade, Migration & Zero-Downtime
+---
+
+# Upgrade, migration & zero-downtime
+
+**Diátaxis quadrant:** How-to. **Audience:** operators and platform engineers upgrading a running humanymous Sentinel ("Sentinel" after first mention) node, or planning how to roll a new build out safely.
+
+This guide describes the safe way to move a Sentinel node from one build to the next. It is written against the reference implementation — a single in-process node — and is candid about where a genuine zero-downtime, multi-node upgrade crosses into production architecture the reference does not ship.
+
+> **Note:** This repository is a reference implementation, not a production-hardened build. The upgrade posture below is honest about that boundary: the reference runs as one process with an in-process verdict store and in-process bans, so an upgrade is a process restart, not a rolling fleet operation.
+
+Sentinel is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
+
+---
+
+## The core fact: an upgrade is a restart
+
+Two properties of the reference build decide how you upgrade it:
+
+- **Policy is startup configuration.** The route table, the per-route presets, and the boot flags are read once, at process start, from `cmd/sentinel/main.go` and `internal/sentinel/config.go`. There is no runtime per-route policy-write endpoint. Changing a route's preset, adding a route, or changing a flag means editing the config and starting a new process.
+- **State is in-process.** The verdict store and the ban ladder live in the process's memory in the reference build. There is no shared external state store. When the process exits, that runtime state is gone with it.
+
+So upgrading to a new build, or changing route policy, is the same operation: **stop the old process, start the new one.** The only variable that matters for a clean restart is whether the node keeps its cryptographic identity across that restart — which is what the keystore is for.
+
+---
+
+## Before you restart: keep the node's identity with a keystore
+
+A Sentinel node has a cryptographic identity: the Ed25519 signing seed that signs the audit log's Signed Tree Heads, the per-record HMAC key, and the vault of per-subject linkage keys that resolve pseudonyms. How a restart treats that identity depends entirely on whether you booted with `-keystore`.
+
+**With `-keystore` + `HMN_UNSEAL`:** the node's identity is sealed to disk and reopened on the next boot. `SealKeys` runs on `SIGINT`/`SIGTERM`; `LoadOrCreateKeys` reopens the sealed keystore on start. Across the restart, the node keeps the same audit-chain signing key (verifier public key is unchanged, so existing checkpoints keep verifying) and the same vault (pseudonym linkage is preserved). This is the required posture for any node whose audit history and pseudonym linkage must survive an upgrade.
+
+**Without `-keystore`:** keys are ephemeral. A restart mints a **new** signing key — the verifier public key changes, breaking continuity with checkpoints signed by the old key — and a **new** vault, which means every existing per-subject linkage is lost. Losing the vault is equivalent to an accidental mass cryptographic erasure (crypto-shred): the audit records remain, but their pseudonyms can no longer be resolved to any subject.
+
+> **Warning:** Restarting a node that was booted without `-keystore` mints a new signing key and a new vault. The verifier public key changes and all pseudonym linkage is lost across the restart — the effect is an accidental mass crypto-shred. Boot production-representative nodes with `-keystore` + `HMN_UNSEAL` before you ever need to upgrade them.
+
+> **Warning:** The keystore is only as recoverable as its passphrase. If `HMN_UNSEAL` is lost, the sealed identity cannot be opened — you lose chain-signing continuity and vault linkage, again equivalent to a mass crypto-shred. Back up the passphrase out-of-band before an upgrade window, not during one.
+
+For how the keystore seals and opens the node's keys, and the operational limits (rotation is not automated), see [Key management](key-management.md).
+
+---
+
+## Roll forward carefully: monitor first, then enforce
+
+Do not bring a new build straight into enforcement. Stage it so a bad verdict from a changed engine cannot block real users before you have looked at it.
+
+### Step 1 — Bring the new build up in global monitor mode
+
+Start the new binary with the global `-monitor` flag. In global monitor mode every route scores and logs but enforces nothing, so the new build observes live traffic and produces verdicts without acting on them.
+
+```
+bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node sentinel-1 -keystore ./sentinel.keystore -monitor
+```
+
+(`HMN_UNSEAL` must be set in the environment for the `-keystore` node to open its sealed identity.)
+
+### Step 2 — Confirm verdicts look sane
+
+Open the Audit Console **Overview** view (`https://localhost:8445/__hmn/admin/console`) and watch the live edge decisions the new build is scoring, or read the same stream over the API:
+
+```
+curl -sk -H "Authorization: Bearer <operator-token>" "https://localhost:8445/__hmn/admin/audit"
+```
+
+Confirm the mix of ALLOW / CHALLENGE / DENY on your normal traffic matches what you expect for this node. A new build that would suddenly CHALLENGE or DENY traffic that previously passed shows up here first — while enforcement is still off — so you can decide before any real user is affected. This is the same shadow posture used for a first rollout; see [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md) and [Will this break my app?](../explanation/will-this-break-my-app.md) for reading the stream and judging false positives.
+
+### Step 3 — Enable enforcement
+
+Once the monitor-mode verdicts look right, restart the node **without** `-monitor` so route presets enforce normally (the default `balanced` route and the `strict` routes take effect again).
+
+```
+bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node sentinel-1 -keystore ./sentinel.keystore
+```
+
+> **Note:** Because both steps are full restarts of the same single node, the reference cannot enforce with the new build and shadow it at the same time on that node. The monitor-then-enforce sequence is two restarts of one process, not a live traffic split. A true side-by-side shadow needs more than one node (see [Multi-node](#multi-node-rolling-upgrades-are-a-prod-delta)).
+
+---
+
+## Config and route-table changes take effect on restart
+
+The same restart rule covers policy changes, not just new binaries:
+
+- Route presets are set at startup via the route table in `cmd/sentinel/main.go` (longest-prefix wins; default `balanced`; `/login`, `/checkout`, `/admin` → `strict`; `/health` → `off`). Editing which preset a route uses is a code-level change that takes effect only on the next start.
+- The reserved names `low` and `api` are **not** implemented and fall back to `balanced` — never introduce them as a route preset expecting new behavior.
+- The only runtime enforcement levers that do **not** require a restart are the global kill switch (`POST /__hmn/admin/killswitch`, dual-control) and the `-monitor` boot flag. Neither edits a route's preset — the kill switch demotes hard-rule enforcement to monitor fleet-wide, and `-monitor` demotes everywhere. Changing one route's posture specifically still means editing the route table and restarting.
+
+For the full flag, preset, and route-table reference, see [CLI, config & per-route policy reference](../reference/cli-config-policy.md).
+
+---
+
+## Breaking-change handling: watch the signed config version
+
+After an upgrade, confirm what policy the node is actually running rather than assuming the edit took. The Policy view records a signed `config_version` for the effective route enforcement configuration; config changes are dual-control and signed.
+
+- Read the Policy / Policy & Rollout view in the Audit Console, or `GET /__hmn/admin/policy`, and confirm the effective route posture (preset, fail-open/closed, sync re-score, injection) and the `config_version` match the build and config you intended to deploy.
+- Treat a `config_version` that did not change when you expected it to — or changed when you did not edit policy — as a signal to stop and reconcile before enabling enforcement.
+
+```
+curl -sk -H "Authorization: Bearer <operator-token>" "https://localhost:8445/__hmn/admin/policy"
+```
+
+The signed value is the top-level `configVersion` field in the `GET /__hmn/admin/policy` response (alongside `globalMonitor`, `killSwitch`, `effectiveMonitor`, `routes`, `rateLimit`, and `retentionDays`). It is a signed hash of the *effective* policy (route table + rate limits + monitor + kill-switch state), so an upgrade that leaves the effective policy unchanged **preserves the same `configVersion`** — a change means the effective policy actually changed. Every audit record also carries the `config_version` it was decided under.
+
+A kill-switch flip emits a `config.changed` audit event; route/preset changes take effect at process start and appear as an `instance.startup` record. The `GET /__hmn/admin/audit` query filters do not include `event_type`, so to confirm a change, pull recent records and inspect the `event_type` field for `config.changed` / `instance.startup`, and compare the `config_version` before and after.
+
+---
+
+## Verify the audit chain across the restart
+
+An upgrade should not break audit continuity. With `-keystore`, the signing key is preserved, so checkpoints written by the old process still verify under the same public key after the restart. Confirm this after Step 3:
+
+- Open the Integrity / Chain Integrity view (or `GET /__hmn/admin/integrity`) and re-verify the chain. It should verify with the public key alone, with no `checkpoint-mismatch` or `node-missing` classes introduced by the restart.
+- A node that was **not** keystore-backed will show a changed verifier public key after restart — expected for ephemeral keys, and a reason those nodes are not production-representative.
+
+> **TODO(verify):** Whether the reference records an explicit start/stop or node-restart marker in the audit stream that an operator can use to bracket "before upgrade" and "after upgrade" records during verification.
+
+---
+
+## Multi-node, rolling upgrades are a prod-delta
+
+True zero-downtime upgrade — running several Sentinel nodes behind a load balancer, draining and replacing them one at a time so the edge never goes fully offline — depends on **shared fleet state** that the reference does not ship.
+
+- The reference is a **single node** with an **in-process verdict store** and **in-process bans**. Redis (or any) shared fleet state is not implemented.
+- Without shared state, two nodes do not agree on verdict trust tokens, ban ladders, or rate-limit counters, so you cannot simply add a second node behind a balancer and treat them as one enforcement surface. Multi-node deployment, shared state, connection draining, and rolling replacement are **production architecture**, not reference behavior.
+- The kill switch is described as fleet-wide, and node identity anticipates multiple nodes, but the reference build itself runs and upgrades as one process. Restarting it is a brief interruption of the edge for that node.
+
+> **Note:** Because the reference is a single node, the restart in Step 1 and Step 3 momentarily interrupts the edge that node serves. Plan the restart into a maintenance window, or front the origin another way during it — the reference does not provide in-process rolling replacement.
+
+> **TODO(verify):** The production-supported topology for rolling multiple nodes behind a load balancer with shared state — the shared state store, the drain/replace sequence, and how verdict tokens and ban ladders are shared across nodes. This is a prod-delta and the specifics are not defined in the reference.
+
+> **TODO(verify):** Whether any schema or on-disk format migration is needed when upgrading a `-keystore` node between builds (for example a keystore or audit-log format version), and the migration step if so.
+
+For the full list of what the reference does not ship for production, see [Production vs. reference](../reference/production-vs-reference.md).
+
+---
+
+## Upgrade checklist
+
+1. Back up the `HMN_UNSEAL` passphrase out-of-band; confirm the keystore path is intact.
+2. Bring the new build up with `-keystore` + `HMN_UNSEAL` and the global `-monitor` flag.
+3. Watch the Overview / audit stream; confirm the ALLOW / CHALLENGE / DENY mix is sane.
+4. Restart without `-monitor` to enable enforcement.
+5. Re-verify chain integrity (Integrity view / `GET /__hmn/admin/integrity`) — same public key, no new mismatch classes.
+6. Confirm the effective policy and signed `config_version` in the Policy view / `GET /__hmn/admin/policy`.
+7. For anything beyond a single node — rolling, draining, shared state — treat it as production architecture (prod-delta).
+
+---
+
+## Related
+
+- [Key management](key-management.md) — how the keystore seals and opens the node's signing key, HMAC key, and pseudonym vault; rotation is a prod-delta.
+- [Production vs. reference](../reference/production-vs-reference.md) — the canonical list of what the reference does not ship for production, including shared fleet state.
+- [CLI, config & per-route policy reference](../reference/cli-config-policy.md) — every flag, preset, route default, and admin endpoint.
+- [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md) — bringing a node up in shadow before enforcing.
+- [Will this break my app?](../explanation/will-this-break-my-app.md) — reading the verdict stream and judging false positives before enforcement.

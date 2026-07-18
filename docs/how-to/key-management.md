@@ -1,0 +1,127 @@
+---
+title: Key Management, Rotation & Recovery
+---
+
+# Key management, rotation & recovery
+
+**Diátaxis quadrant:** How-to. **Audience:** operators, security, and platform engineers running humanymous Sentinel.
+
+This guide describes the load-bearing key material in a humanymous Sentinel ("Sentinel" after first mention) deployment: what each key protects, how the sealed keystore persists node identity, what breaks if a key or passphrase is lost, and how to think about rotation. It is written against the reference implementation; production deployments add controls that the reference does not ship (prod-delta). For the boundary between the two, see [Production vs reference](../reference/production-vs-reference.md).
+
+Sentinel is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. Several of the keys below are what make that audit log verifiable and what keeps pseudonymized subject data resolvable under dual-control.
+
+---
+
+## The key material at a glance
+
+| Key material | Protects / enables | Where it lives | Rotation in the reference |
+|--------------|--------------------|----------------|---------------------------|
+| **SigningSeed** (Ed25519) | Signs the audit log's Signed Tree Heads (STHs); the verifier confirms the chain with the matching public key. | Sealed keystore, or ephemeral in memory. | Not automated (prod-delta). |
+| **HMACKey** | Per-record HMAC over each audit record. | Sealed keystore, or ephemeral in memory. | Not automated (prod-delta). |
+| **Vault snapshot** | Per-subject pseudonym linkage keys — resolve pseudonyms back to identifiers under dual-control. | Sealed keystore, or ephemeral in memory. | n/a (per-subject; destroyed by crypto-shred). |
+| **Origin-cloaking HMAC** (`-origin-key`) | Signs `X-Hmny-Origin-Auth` so the origin can verify traffic came through Sentinel. | `-origin-key` flag (separate from the keystore). | Operator-managed flag value. |
+| **Verdict-token epoch key** | Signs fingerprint-bound verdict trust tokens. | In-process only. | Rotates automatically every 15 minutes. |
+
+The first three — SigningSeed, HMACKey, and the Vault snapshot — are the sealed node identity. They are the keys that persist across restarts only when you run with a keystore.
+
+---
+
+## The sealed keystore
+
+The keystore is Sentinel's persistent node identity. Enable it with the `-keystore` flag and the `HMN_UNSEAL` environment variable:
+
+```
+HMN_UNSEAL="<passphrase>" bin/sentinel.exe -keystore /var/lib/sentinel/keystore.sealed -addr :8444 -admin-addr :8445
+```
+
+Boot fails if `-keystore` is set and `HMN_UNSEAL` is unset — the passphrase is required to open (or create) the sealed file. See [CLI, config & policy reference](../reference/cli-config-policy.md) for the full flag and environment table.
+
+**What it seals.** The keystore holds three pieces of key material as one sealed blob:
+
+- **SigningSeed** — the Ed25519 seed that signs the audit log's Signed Tree Heads. The verifier checks the chain against the corresponding public key.
+- **HMACKey** — the key for the per-record HMAC that binds each audit record.
+- **Vault snapshot** — the per-subject pseudonym linkage keys that let a pseudonym be resolved back to the identifiers it was derived from, under the re-identification vault plus dual-control.
+
+**How it is sealed.** The blob is sealed with `scrypt` (N=2^15) key stretching over the `HMN_UNSEAL` passphrase, then encrypted with AES-256-GCM.
+
+**Lifecycle.** On boot, `LoadOrCreateKeys` opens an existing keystore or mints a new sealed identity if none exists at the path. On `SIGINT`/`SIGTERM`, `SealKeys` writes the current identity back to the sealed file before exit. Expect one of these startup lines:
+
+```
+keystore: created new sealed node identity at <path>
+```
+
+```
+keystore: resumed persisted node identity from <path>
+```
+
+> **Warning:** Without `-keystore`, the keys are **ephemeral**. A restart mints a **new SigningSeed** — the verifier public key changes, so previously exported checkpoints no longer verify against the new key and audit-trust continuity is broken — and a **new Vault** — every per-subject pseudonym linkage key is lost, which is equivalent to an accidental mass crypto-shred: the existing audit records survive but can no longer be resolved to any subject. Run any node whose audit log or pseudonym linkage must outlive a restart with a keystore.
+
+---
+
+## The separate origin-cloaking key
+
+The `-origin-key` flag is a **separate** HMAC key, unrelated to the keystore. Sentinel uses it to sign the `X-Hmny-Origin-Auth` header so the origin can confirm a request arrived through Sentinel rather than directly (supporting the direct-origin-hit hard rule). It is not part of the sealed node identity and is not stretched or stored in the keystore.
+
+If `-origin-key` is unset, an ephemeral random key is used per boot — the origin must be configured with the same value for validation to succeed, so an ephemeral key only works if the origin re-reads it each boot. Set an explicit `-origin-key` (and configure the matching secret at the origin) whenever the origin validates the header. Treat this value as a shared secret between Sentinel and the origin, and store it in your secrets manager alongside `HMN_UNSEAL`.
+
+---
+
+## The verdict-token epoch key
+
+The verdict trust token — the fingerprint-bound token that lets a valid ALLOW take a fast path without re-scoring — is signed by an in-process **epoch key that rotates every 15 minutes** automatically. This rotation is internal and needs no operator action. Because the key lives only in process memory, verdict tokens do not survive a restart and are not part of the keystore; a restart simply begins a new epoch, and clients re-establish tokens on their next scored request.
+
+---
+
+## Blast radius — what breaks if a key is lost
+
+Use this table to size the impact of losing each piece of key material and to prioritize backups.
+
+| Lost item | Immediate effect | Blast radius |
+|-----------|------------------|--------------|
+| **SigningSeed** | The verifier public key changes; STHs signed by the old seed no longer verify against the new key. | Audit-trust **continuity** breaks — you can still verify going forward under the new key, but the chain across the key change is no longer continuous under one public key. |
+| **Vault snapshot / keystore** | Per-subject pseudonym linkage keys are gone. | Pseudonym linkage is lost for all subjects — records remain and still verify, but can no longer be resolved to a subject. Equivalent to a **mass crypto-shred**. |
+| **`HMN_UNSEAL` passphrase** | The sealed keystore cannot be opened at all. | Same blast radius as losing the keystore itself: you lose chain-signing continuity **and** vault linkage together (≈ mass crypto-shred), because the SigningSeed, HMACKey, and Vault snapshot are all inside the file you can no longer open. |
+
+> **Warning:** Losing `HMN_UNSEAL` is not recoverable. There is no reset path for a sealed keystore — the passphrase is the only way in. **Back up the passphrase out-of-band** (a secrets manager or an offline escrow separate from the keystore file), and back up the sealed keystore file itself. If either is lost, treat the node identity as gone and plan for the mass-crypto-shred outcome above.
+
+Note that a lost vault or an accidental ephemeral-restart mass-shred, while destructive to linkage, keeps the audit records intact and independently verifiable — the same design property that makes deliberate crypto-shred safe for the log. See [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) for the deliberate case.
+
+---
+
+## Rotation — concept only in the reference
+
+> **Important:** Automated rotation of the SigningSeed and HMACKey is **not implemented** in the reference. There is no shipped rotation command, endpoint, or scheduler for these keys. Rotating them would require re-anchoring the audit chain, so rotation is a prod-delta and an operational procedure — not something the reference binary does for you. Do not script against a rotation command; none exists here.
+
+The reasoning: the SigningSeed anchors the audit log. Every Signed Tree Head is signed under it, and the verifier trusts a single public key for the chain. Swapping the seed changes the public key, so any checkpoint signed before the swap stops verifying under the new key. Rotation therefore cannot be a silent in-place key swap; it has to be a deliberate, recorded re-anchoring.
+
+Conceptually, a production rotation procedure would:
+
+1. **Anchor a final checkpoint** under the current key and export it, so the pre-rotation chain has a fixed, publishable end-state that verifies under the outgoing public key.
+2. **Introduce the new key with a grace window** during which the outgoing public key stays published for verification of historical checkpoints while the new key signs new STHs going forward.
+3. **Re-anchor** — record the key transition in the log itself and publish the new public key, so a verifier can follow the chain across the boundary: old key up to the transition checkpoint, new key after it.
+4. **Retire the old key** only after the grace window, keeping its **public** key published for as long as historical checkpoints must remain verifiable.
+
+The 15-minute verdict-token epoch key already rotates on its own and needs none of this — it signs short-lived tokens, not the durable audit chain. Rotation concern applies to the durable signing and HMAC keys only.
+
+> **TODO(verify):** Whether the reference exposes any manual re-anchoring or checkpoint-export affordance that a production rotation procedure could build on (for example an export of the current STH under the outgoing key), and its exact mechanism.
+
+---
+
+## Operational checklist
+
+- Run any node whose audit log or pseudonym linkage must survive a restart **with `-keystore` + `HMN_UNSEAL`**. An ephemeral node is only safe for throwaway/dev use.
+- **Back up two things separately:** the sealed keystore file, and the `HMN_UNSEAL` passphrase (out-of-band). Losing either loses the node identity.
+- Store `-origin-key` as a shared secret with the origin, in your secrets manager.
+- Publish and archive the **public** key so anyone can verify exported checkpoints — see [Verify the audit log](verify-audit-log.md).
+- Treat SigningSeed/HMACKey rotation as a planned, re-anchoring operation, never an in-place swap. It is not automated here.
+- Let the verdict-token epoch key rotate on its own; do not build tooling around it.
+
+---
+
+## Related
+
+- [Verify the audit log](verify-audit-log.md) — how the public key alone verifies the chain, and how a key change affects verification.
+- [Production vs reference](../reference/production-vs-reference.md) — the prod-delta list, including automated key rotation and KMS/HSM.
+- [CLI, config & policy reference](../reference/cli-config-policy.md) — `-keystore`, `HMN_UNSEAL`, `-origin-key`, and startup lines.
+- [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — deliberate destruction of a per-subject linkage key.
+- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — the pseudonymization and audit-chain model the keys protect.

@@ -1,0 +1,187 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>humanymous — is your browser real?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A live, read-only demo of a seven-layer automation-detection engine. It scores this browser and shows exactly why.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f14'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%234fd1c5' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%234fd1c5'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --ground: #0b0f14; --panel: #121a23; --panel2: #0f161e; --border: #223040;
+    --text: #e6edf3; --muted: #8b98a5; --faint: #5b6b7a;
+    --brand: #4fd1c5; --allow: #3fb950; --challenge: #d6a327; --deny: #f85149;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: radial-gradient(1200px 700px at 50% -8%, #10202b 0%, var(--ground) 58%);
+    color: var(--text); font-family: var(--sans); line-height: 1.55;
+    font-size: 16px; letter-spacing: .1px;
+  }
+  a { color: var(--brand); text-underline-offset: 3px; }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 0 20px 88px; }
+  .skip { position: absolute; left: -999px; }
+  .skip:focus { left: 12px; top: 12px; background: var(--panel); padding: 8px 12px; border-radius: 8px; z-index: 9; }
+  :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+
+  header.hero { padding: 64px 0 20px; }
+  .kicker { font-family: var(--mono); font-size: 12.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--brand); margin: 0 0 14px; }
+  h1 { font-size: clamp(30px, 5.4vw, 46px); line-height: 1.05; margin: 0 0 14px; font-weight: 680; letter-spacing: -.02em; text-wrap: balance; }
+  .lede { font-size: clamp(16px, 2.2vw, 19px); color: var(--muted); max-width: 62ch; margin: 0 0 28px; }
+  .lede b { color: var(--text); font-weight: 600; }
+
+  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  button.score {
+    font: 600 16px var(--sans); color: #04120f; background: var(--brand);
+    border: 0; border-radius: 10px; padding: 13px 22px; cursor: pointer;
+    box-shadow: 0 1px 0 #7fe8dd inset, 0 8px 26px -12px var(--brand); transition: transform .08s ease, filter .15s ease;
+  }
+  button.score:hover:not(:disabled) { filter: brightness(1.06); }
+  button.score:active:not(:disabled) { transform: translateY(1px); }
+  button.score:disabled { opacity: .55; cursor: progress; }
+  .status { font-family: var(--mono); font-size: 13px; color: var(--muted); min-height: 1.2em; }
+
+  section { margin-top: 34px; }
+  .card { background: linear-gradient(180deg, var(--panel) 0%, var(--panel2) 100%); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+  h2 { font-size: 13px; font-family: var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin: 0 0 16px; font-weight: 600; }
+
+  /* verdict banner */
+  .verdict-card { display: grid; grid-template-columns: 128px 1fr; gap: 26px; align-items: center; }
+  @media (max-width: 560px) { .verdict-card { grid-template-columns: 1fr; text-align: center; } }
+  .gauge {
+    --pct: 0; width: 128px; height: 128px; border-radius: 50%; display: grid; place-items: center;
+    background: conic-gradient(var(--gc, var(--muted)) calc(var(--pct) * 1%), #1a2530 0);
+    position: relative; margin: 0 auto;
+  }
+  .gauge::before { content: ""; position: absolute; inset: 11px; border-radius: 50%; background: var(--panel2); border: 1px solid var(--border); }
+  .gauge .num { position: relative; font: 700 30px/1 var(--mono); font-variant-numeric: tabular-nums; }
+  .gauge.allow { --gc: var(--allow); } .gauge.challenge { --gc: var(--challenge); } .gauge.deny { --gc: var(--deny); } .gauge.unknown { --gc: var(--muted); }
+  .num.allow { color: var(--allow); } .num.challenge { color: var(--challenge); } .num.deny { color: var(--deny); } .num.unknown { color: var(--muted); }
+  .vt-main { display: flex; align-items: center; gap: 12px; font: 700 30px var(--sans); letter-spacing: -.01em; margin: 0 0 4px; }
+  .vt-main.allow { color: var(--allow); } .vt-main.challenge { color: var(--challenge); } .vt-main.deny { color: var(--deny); } .vt-main.unknown { color: var(--muted); }
+  .vshape { width: 16px; height: 16px; flex: none; }
+  .vband { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--faint); text-transform: uppercase; margin: 0 0 10px; }
+  .vsub { color: var(--muted); margin: 0; max-width: 60ch; }
+  .vsub b { color: var(--text); }
+  .faint { color: var(--faint); font-family: var(--mono); font-size: 12.5px; display: block; margin-top: 8px; }
+
+  /* lanes */
+  .lanes { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .lane { display: grid; grid-template-columns: 150px 1fr auto; gap: 14px; align-items: center; background: var(--panel2); padding: 12px 16px; }
+  @media (max-width: 560px) { .lane { grid-template-columns: 1fr; gap: 8px; } }
+  .ln { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .ln b { color: var(--text); font-weight: 600; }
+  .sigs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sig { font-family: var(--mono); font-size: 11.5px; padding: 2.5px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); white-space: nowrap; }
+  .sig b { color: inherit; }
+  .sig.flag { color: var(--deny); border-color: #5a2a2a; background: #1e1113; }
+  .sig.noted { color: var(--challenge); border-color: #524217; background: #1c1708; }
+  .sig.clear, .sig.unk { color: var(--faint); }
+  .sig.srv { color: var(--brand); border-color: #1d4a45; background: #0c1917; }
+  .xc { font-family: var(--mono); font-size: 11.5px; padding: 2.5px 8px; border-radius: 999px; border: 1px solid var(--border); }
+  .xc.good { color: var(--allow); border-color: #1f4429; } .xc.bad { color: var(--deny); border-color: #5a2a2a; background: #1e1113; }
+  .empty { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+  .pill.clear { font-family: var(--mono); font-size: 11px; color: var(--allow); border: 1px solid #1f4429; border-radius: 999px; padding: 2px 9px; }
+
+  /* comparison + honesty + privacy */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+  .mini h3 { margin: 0 0 6px; font-size: 15px; }
+  .mini p { margin: 0; color: var(--muted); font-size: 14px; }
+  .botverdict { display: inline-flex; align-items: center; gap: 8px; font: 700 20px var(--sans); color: var(--deny); margin: 6px 0 10px; }
+  .youverdict { color: var(--allow); }
+  .note { border-left: 2px solid var(--challenge); padding: 2px 0 2px 14px; color: var(--muted); }
+  .note b { color: var(--text); }
+  ul.plain { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+  ul.plain li { margin: 4px 0; }
+  footer { margin-top: 40px; color: var(--faint); font-size: 13px; border-top: 1px solid var(--border); padding-top: 22px; }
+  footer a { color: var(--muted); }
+  .sess { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+
+<a class="skip" href="#scorebtn">Skip to the scorer</a>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="kicker">humanymous · blue-team detection engine</p>
+    <h1>Is your browser real — and can it prove it?</h1>
+    <p class="lede">This page runs a <b>seven-layer automation detector</b> against your own browser,
+      live, and shows you every signal it read. Nothing is stored beyond this session; it can only
+      score <b>this</b> browser. Press the button and watch it decide.</p>
+    <div class="cta-row">
+      <button id="scorebtn" class="score" type="button">Score this browser</button>
+      <span id="status" class="status" role="status"></span>
+    </div>
+  </header>
+
+  <div id="live" class="sr-only" aria-live="polite"></div>
+
+  <section id="result" class="card verdict-card" hidden aria-labelledby="verdictHeading">
+    <h2 id="verdictHeading" class="sr-only">Verdict</h2>
+    <div id="gauge" class="gauge" role="img" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <span id="bignum" class="num">0</span>
+    </div>
+    <div>
+      <p id="verdict" class="vt-main">—</p>
+      <p id="vband" class="vband">band · —</p>
+      <p id="vsub" class="vsub"></p>
+    </div>
+  </section>
+
+  <section id="lanesSection" class="card" hidden aria-label="Layer decomposition">
+    <h2>What each layer saw</h2>
+    <div id="lanes" class="lanes"></div>
+  </section>
+
+  <section class="card">
+    <h2>You, next to a bot</h2>
+    <div class="two">
+      <div class="mini">
+        <h3 class="youverdict">A real browser</h3>
+        <p>Its signals agree across all seven layers, so it clears with a low score — no challenge,
+          no friction. That's what you should see above.</p>
+      </div>
+      <div class="mini">
+        <h3>A headless bot (recorded)</h3>
+        <div id="botverdict" class="botverdict"></div>
+        <p id="botcatch"></p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:18px"><b>Why stealth doesn't save it:</b> hiding one tell creates
+      another. Patch <code>navigator.webdriver</code> and the missing GPU, inconsistent TLS, or robotic
+      timing still disagree at the cross-check layer. The engine scores the <i>whole</i> story, not one field.</p>
+  </section>
+
+  <section class="card">
+    <h2>When this gets it wrong</h2>
+    <p class="vsub">No detector is perfect, and it's dishonest to pretend otherwise.</p>
+    <ul class="plain">
+      <li><b>Real people get challenged.</b> Privacy browsers, locked-down extensions, and unusual
+        hardware can look automated. A challenge is a second chance, never a verdict of guilt.</li>
+      <li><b>Some bots get through.</b> A well-funded, human-piloted automation can pass. The goal is
+        to raise the cost of abuse, not to claim a perfect wall.</li>
+      <li><b>It reads signals, not identity.</b> It never sees who you are — only how your browser behaves.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>What this page collects</h2>
+    <ul class="plain">
+      <li>Standard browser properties (user-agent, screen, a rendering fingerprint) plus how the mouse/keys moved during scoring.</li>
+      <li>The TLS &amp; HTTP-2 handshake your browser already sends to every site — read server-side to compute a fingerprint.</li>
+      <li>Held only in memory for this short session, then dropped. No accounts, no cross-site tracking, no third parties.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>humanymous is an educational, defensive automation-detection reference — a Go + WebAssembly engine.
+      Read the <a href="/docs/">documentation</a> to see how each layer works, or
+      <a href="/docs/explainers/which-piece-am-i-using.html">which piece you're looking at</a>.</p>
+    <p class="sess">session <span id="sessionid">—</span> · scored locally · no data leaves this session</p>
+  </footer>
+</div>
+
+<script src="/static/js/wasm_exec.js"></script>
+<script type="module" src="/static/js/demo.js"></script>

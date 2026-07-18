@@ -1,0 +1,13 @@
+# Per-Dockerfile ignore (overrides the root .dockerignore) so the Sentinel build
+# can see cmd/sentinel + internal/. Keep only heavy/irrelevant paths out.
+.git
+.github
+bin
+*.exe
+web/detector.wasm
+docs
+sots
+plan
+node_modules
+test/node_modules
+**/*.log

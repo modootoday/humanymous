@@ -1,0 +1,46 @@
+# Bots — the automation catalog (SRP: the offense). On-demand, NETWORK-SANDBOXED:
+# every bots container attaches to ONLY an internal lab network, so it can reach
+# nothing but the detector. Readiness is polled in-script, so no cross-fragment
+# depends_on.
+x-bots-image: &bots-image "humanymous/bots:local"
+x-bots-build: &bots-build
+  context: ../../
+  dockerfile: build/bots.Dockerfile
+x-swarm: &swarm
+  image: *bots-image
+  build: *bots-build
+  entrypoint: ["/app/run-swarm.sh"]
+  env_file: [../../configs/dev.env]
+  volumes: [../artifacts:/artifacts]
+  profiles: [swarm]
+
+services:
+  # The full automation catalog vs the engine (26 profiles).
+  bots:
+    image: *bots-image
+    build: *bots-build
+    env_file: [../../configs/dev.env]
+    volumes: [../artifacts:/artifacts]
+    networks: [lab-a]
+    profiles: [attack]
+
+  # Self-contained Sentinel proxy-layer conformance (34 checks, on loopback).
+  sentinel-e2e:
+    image: *bots-image
+    build: *bots-build
+    entrypoint: ["/app/run-sentinel-e2e.sh"]
+    volumes: [../artifacts:/artifacts]
+    networks: [lab-a]
+    profiles: [sentinel-test]
+
+  # Multi-subnet swarm: the SAME fingerprint from THREE real subnets, to exercise
+  # cross-session correlation (proxy_rotation / shared_fingerprint) for real.
+  bot-swarm-a:
+    <<: *swarm
+    networks: [lab-a]
+  bot-swarm-b:
+    <<: *swarm
+    networks: [lab-b]
+  bot-swarm-c:
+    <<: *swarm
+    networks: [lab-c]

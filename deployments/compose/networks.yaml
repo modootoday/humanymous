@@ -1,0 +1,32 @@
+# Network topology (SRP). One host-visible bridge + THREE internal lab subnets.
+#
+# `internal: true` gives the lab networks no route off-box, and the bots
+# containers attach to ONLY a lab network — so the automation can physically
+# reach nothing but the detector (the "local target only" mandate, enforced by
+# the network, not by convention).
+#
+# Distinct subnets exist so the multi-subnet swarm presents ONE fingerprint from
+# THREE real subnets — exercising the engine's cross-session correlation
+# (proxy_rotation / shared_fingerprint) across a genuine network boundary, which
+# a single loopback host could never validate.
+networks:
+  web:
+    driver: bridge
+  lab-a:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+  lab-b:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24
+  lab-c:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.32.0.0/24

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign in — Demo Origin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 480px; margin: 3rem auto; padding: 0 1.2rem; color: #1c2733; }
+  label { display: block; margin: .8rem 0 .2rem; font-weight: 600; }
+  input { width: 100%; padding: .55rem .6rem; border: 1px solid #cdd6df; border-radius: 8px; box-sizing: border-box; }
+  button { margin-top: 1.2rem; padding: .6rem 1.2rem; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-weight: 600; cursor: pointer; }
+  p.note { color: #667; }
+</style>
+</head>
+<body>
+  <h1>Sign in</h1>
+  <p class="note">A <b>strict</b> route: credential-stuffing / automated login is denied at the edge.</p>
+  <form method="post" action="/login">
+    <label for="u">Email</label>
+    <input id="u" name="email" autocomplete="username" type="email">
+    <label for="p">Password</label>
+    <input id="p" name="password" autocomplete="current-password" type="password">
+    <button type="submit">Sign in</button>
+  </form>
+</body>
+</html>

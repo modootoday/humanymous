@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Demo Origin — a shop behind humanymous Sentinel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1.2rem; color: #1c2733; }
+  h1 { margin-bottom: .2rem; }
+  .muted { color: #667; }
+  nav a { display: inline-block; margin-right: 1rem; }
+  .card { border: 1px solid #dde3ea; border-radius: 12px; padding: 1rem 1.2rem; margin: 1.2rem 0; }
+  code { background: #f2f5f8; padding: .1rem .35rem; border-radius: 5px; }
+</style>
+</head>
+<body>
+  <h1>Acme Demo Shop</h1>
+  <p class="muted">This is an unmodified origin application. It knows nothing about bot detection —
+    the <b>humanymous Sentinel</b> reverse proxy sits in front of it, injects the detection bundle
+    into this HTML on the fly, scores every session, and enforces the verdict at the edge before a
+    request ever reaches here.</p>
+
+  <nav>
+    <a href="/login">Sign in</a>
+    <a href="/checkout">Checkout</a>
+    <a href="/health">Health</a>
+  </nav>
+
+  <div class="card">
+    <h2>Protected routes</h2>
+    <p><code>/login</code>, <code>/checkout</code> and <code>/admin</code> are marked <b>strict</b> in the
+    Sentinel route policy — a bot verdict is denied at the edge; the origin is never contacted.</p>
+  </div>
+
+  <div class="card">
+    <h2>Origin cloaking</h2>
+    <p>The origin accepts traffic only when it carries the rotating <code>X-Hmny-Origin-Auth</code>
+    token the proxy attaches, so a direct hit that bypasses the proxy is refused (HTTP 421).</p>
+  </div>
+</body>
+</html>

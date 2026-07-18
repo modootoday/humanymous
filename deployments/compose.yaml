@@ -1,0 +1,19 @@
+# humanymous — local detector-vs-bots stack, modularized (Compose `include:`).
+#
+# Each concern is a self-contained fragment under compose/ :
+#   networks.yaml   the web + multi-subnet lab networks (SRP: topology)
+#   defenders.yaml  the detection stack (engine + origin + Sentinel)
+#   bots.yaml       the automation catalog (attack run, Sentinel conformance, subnet swarm)
+#
+# Usage (run from this directory):
+#   docker compose up -d --build engine origin sentinel     # detector up
+#   docker compose run --rm bots                            # run the bots vs the engine
+#   docker compose --profile swarm up --build               # multi-subnet swarm
+#   docker compose run --rm sentinel-e2e                    # Sentinel conformance
+#   docker compose down -v                                  # tear down
+#
+# See deployments/README.md for the full topology + safety model.
+include:
+  - compose/networks.yaml
+  - compose/defenders.yaml
+  - compose/bots.yaml

@@ -1,0 +1,118 @@
+# Inside the Detection Observatory: live-telemetry and safety architecture
+
+**Diátaxis quadrant:** Explanation. **Audience:** Red/Blue developers who want to understand how the Detection Observatory streams live telemetry and what makes it trustworthy as a window onto the engine's real decision.
+
+> **Important:** This page is defensive, local-only, and self-target-only. The Observatory runs against your own loopback engine on `127.0.0.1:8443` so you can study and extend *your own* detector's decisions on your own machine. Nothing here is for evading a third-party service. Every number the Observatory renders is reference-measured on the machine you run it on, not a guarantee.
+
+## What this page explains
+
+The Observatory is a dev-gated single-page app served by the standalone detection engine (`bin/server.exe`, the `cmd/server` binary). It shows you a scored session and *why* the engine reached that verdict. This page is about two properties that make it useful to a developer:
+
+- **Trust** — the "why this verdict" view renders the engine's *own* score trace, not a second implementation that could drift from what production scoring does.
+- **Safety** — every route, launch, and stream is tied to a concrete enforcement point so a self-test can never become a live attack surface or poison the next baseline.
+
+For the operator-facing walkthrough of the panels and how to turn it on, see [how-to: Detection Observatory](../how-to/detection-observatory.md). For the scoring math this page refers to (dedup, layer caps, noisy-OR, hard rules), see [explanation: detection engine internals](./detection-engine-internals.md).
+
+## The trust property: the page shows what the engine did
+
+The single most important design decision is that the Observatory does **not** re-derive the verdict for display. It renders the engine's own `ScoreTrace`.
+
+`Engine.ScoreWithTrace` shares `assemble()` and `decide()` with the production `Score()` path, and its `combineTrace` reuses the *same* building blocks that production combination uses:
+
+- the same `dedupGroups` keep-rule (highest-scoring signal per `(layer, group)` correlation group; empty-group signals each stand alone),
+- the same within-layer noisy-OR accumulation and `LayerCap=60` clamp,
+- the same `promotionRules` table (HR-1..HR-21), evaluated in the same first-match precedence order.
+
+Because the trace is produced by the same code that scores the request, the trace's winning contributor and its score can never diverge from the number the engine acted on. This is not an aspiration — it is asserted by a golden test: `trace.Score == Combine`, and `ScoreWithTrace == Score`. The production `Score()` path is left untouched; the trace is an *observable form* of it, not a fork.
+
+> **Note:** "the engine's real decision" means exactly this: the Observatory is faithful to `Score()` by construction, not by a display author remembering to keep two code paths in sync.
+
+## The trace data shapes and the panels they feed
+
+The `ScoreTrace` carries four shapes, and each maps to a panel in the "why this verdict" view.
+
+| Trace shape | Fields | What it explains |
+| --- | --- | --- |
+| `ContribTrace` | `id`, `layer`, `group`, `score` | The per-signal contributions — which signal ids scored, in which layer/group, and how much. |
+| `DedupTrace` | `layer`, `group`, `keptId`, `droppedId`, `keptScore`, `droppedScore` | Where two signals collided in one correlation group and the lower-scoring one was dropped, so a group can't double-count. |
+| `LayerTrace` | `layer`, `rawProb`, `cappedProb`, `capHit` | The per-layer roll-up: the raw accumulated probability, the value after the `LayerCap=60` clamp, and whether the cap actually bit (`capHit`). |
+| `HardRuleEval` | `rule`, `verdict`, `why`, `matched`, `won` | Every promotion rule that was evaluated: which ones *matched* their predicate and which single one *won* under first-match precedence. |
+
+Read together, these let a developer follow the whole path: raw contributions → dedup decisions → per-layer capping → noisy-OR combine → hard-rule promotion. The `HardRuleEval` panel is where you confirm, for example, that `selenium` was promoted by HR-1 and not by a later rule, or that a heuristic CHALLENGE (HR-10/11/12/17) matched but a DENY rule won ahead of it.
+
+## Live telemetry: how a scored session reaches the page
+
+The transport is server-sent events. The Observatory subscribes to `GET /playground/events`, an SSE stream that carries:
+
+- `session.scored` — a fresh `SessionReport` was scored; the livefeed hub fans it out to connected pages,
+- `attack.launched`, `attack.ran`, `attack.completed`, `attack.error`, `attack.aborted` — lifecycle of a self-test run,
+- `network.abuse` — a connection-level event that never produced a scored collect (see below).
+
+The stream honours `Last-Event-ID`, so a page that reconnects resumes from where it left off rather than losing events, and it emits a 15s heartbeat to keep the connection alive.
+
+To inspect a session already in the feed, the page calls `GET /playground/explain/{id}`, which returns the stored `ScoreTrace` for that session id — the same four shapes above. So the live stream tells you *that* something scored; `explain/{id}` tells you *why*.
+
+## The launch path, made safe step by step
+
+A developer launches a Red profile against the loopback engine from the page. The path is deliberately narrow:
+
+1. **Single-use nonce.** The page first fetches `GET /playground/nonce`, a short-lived single-use launch nonce.
+2. **Constrained launch.** It then `POST`s to `/playground/launch` with `{profileId, runs, nonce}`. Any `host`, `url`, or `upstream` key in the body is rejected with `400`. There is no target field to set — the target is hard-coded to `127.0.0.1:8443`. `profileId` is an allowlisted enum, not a free string.
+3. **Serialized execution.** Runs are serialized — at most one is in flight at a time.
+4. **Baseline isolation.** Before each run, `resetDetectionState()` calls `Reset()` on the limiter, auth limiter, correlator, and traffic log, so a flood or rotation self-test cannot poison the next run's baseline.
+5. **Abort.** `POST /playground/abort` cancels the in-flight run.
+
+Under the hood the launcher shells `node test/redteam/run-one.mjs <profile> https://127.0.0.1:8443`, and `run-one.mjs` itself rejects path-traversal profile names and non-loopback bases — a second, independent check on the same locked target.
+
+## The full safety model, each tied to an enforcement point
+
+Every safety property has a concrete place it is enforced, not a policy note:
+
+- **Dev-gate.** The Observatory routes exist only when `HMN_PLAYGROUND=1`. With the flag unset, the hub is `nil`, no routes are registered, and there is zero request-path cost.
+- **Fail-closed startup.** The engine refuses to start the Observatory on a non-loopback `-addr`; the check is at startup, so a misconfigured bind can't expose it.
+- **Per-request Host loopback check.** Beyond the bind-time check, every request re-verifies the `Host` is loopback — a DNS-rebinding defense.
+- **Anti-embed + cross-origin refusal.** Responses carry `X-Frame-Options: DENY`, `Content-Security-Policy: frame-ancestors 'none'`, and `Cache-Control: no-store`; launch requests with a cross-origin `Origin` are refused.
+- **No target field.** The launch body has no host/url/upstream; those keys `400`, and the target is the fixed loopback enum described above.
+- **Single-use nonce + serialized runs + state reset.** As in the launch path above — one launch per nonce, one run at a time, clean baseline before each.
+
+## Data-exposure posture
+
+The feed carries the developer's own local self-test `SessionReport` verbatim. Nothing needs to be redacted because no secret key material is present in a report in the first place — the RIT seed/HMAC and the watermark master key never appear in a `SessionReport`. The non-exposure is true by construction, not by a redaction pass that could miss a field. What you see on the page is public detection output about your own loopback traffic.
+
+## Why connection-level attacks surface differently
+
+Some Red profiles operate below the request-scoring layer. A `rapid_reset`-style HTTP/2 attack, for example, never completes a scored collect — there is no `SessionReport` to fan out. Rather than leaving the pipeline blank, such a run surfaces as a `network.abuse` event on the SSE stream, so a developer can still see that the run happened and had an effect, even though it produced no `session.scored`.
+
+## Zero cost when off, and hard separation from the Audit Console
+
+When `HMN_PLAYGROUND` is unset, the hub is `nil` and no Observatory route is added — there is no request-path cost to running the engine without it.
+
+The Observatory is not the Audit Console, and the separation is hard:
+
+- It holds no admin tokens and no signing keys.
+- It exposes public detection output only — the same verdicts the tests and `/api/collect` see.
+- A promoted Sentinel build never exposes the Observatory at all; the Observatory lives on the standalone engine's `127.0.0.1:8443`, while the Audit Console is the Sentinel admin plane on `:8445`.
+
+If you're unsure which surface you're looking at, [production vs reference](../reference/production-vs-reference.md) draws the boundary between the reference engine (with its dev-gated Observatory) and a promoted Sentinel deployment.
+
+## Extending it: keep the trace sourced from the real path
+
+When you add a new signal, cross-check, or hard rule, the Observatory should show it without a second implementation. The flow for a new event type or trace field is:
+
+**engine → hub → SSE → page**
+
+- The engine produces the data (a new `ContribTrace`/`LayerTrace`/`HardRuleEval` entry, or a new event).
+- The livefeed hub fans it out.
+- `/playground/events` carries it (add the event kind if it's a new lifecycle event).
+- The page renders it into the relevant panel.
+
+The one invariant that must not be broken: **the trace must stay sourced from the real scoring path.** `ScoreWithTrace` must keep reusing `dedupGroups`, the noisy-OR/`LayerCap` roll-up, and the `promotionRules` table via `combineTrace` — and the golden test (`trace.Score == Combine`, `ScoreWithTrace == Score`) must keep passing. If you ever find yourself computing a display score a second way, that is the bug: the point of the Observatory is that the picture cannot diverge from the decision.
+
+For how to add the signal or rule itself, see [detection engine internals](./detection-engine-internals.md). For the rules a Red developer works within when launching self-tests, see [red-team rules of engagement](../reference/red-team-rules-of-engagement.md).
+
+## Related
+
+- [How-to: Detection Observatory](../how-to/detection-observatory.md) — turning it on and using the panels.
+- [Explanation: detection engine internals](./detection-engine-internals.md) — the dedup/cap/noisy-OR/hard-rule math the trace mirrors.
+- [Reference: production vs reference](../reference/production-vs-reference.md) — reference engine vs promoted Sentinel.
+- [Reference: red-team rules of engagement](../reference/red-team-rules-of-engagement.md) — the boundaries for self-test launches.

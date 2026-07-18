@@ -1,0 +1,43 @@
+# Build context for the PUBLIC demo image (the detection engine only).
+# Everything here is excluded so dev-process resources, the red-team tooling, and
+# the docs never ship in the deployed container (SoT-30 §11 / demo safety gate).
+
+# Development-process resources — never in the deployed image
+sots/
+plan/
+
+# Docs live on GitHub Pages, not in the engine image
+docs/
+
+# Red-team tooling and the whole test harness — must NOT be reachable in prod
+test/
+cmd/redteam/
+cmd/tlsparrot/
+cmd/report/
+
+# The Sentinel proxy is a separate binary; the demo runs only cmd/server
+cmd/sentinel/
+
+# The dev Detection Observatory UI must not ship, even as an inert static asset
+# (its routes are gate-off in prod, but keep the shell out of /static too).
+web/playground.html
+
+# Build outputs (the image rebuilds detector.wasm + the server in a builder stage)
+bin/
+*.exe
+web/detector.wasm
+
+# VCS / CI / editor / local
+.git/
+.github/
+.gitignore
+.dockerignore
+*.md
+*.log
+*.local
+.env
+*.pem
+*.key
+.DS_Store
+Thumbs.db
+node_modules/

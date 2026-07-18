@@ -1,0 +1,126 @@
+# The Red catalog: architecture of the bundled attack profiles and the raw-protocol client
+
+> Diátaxis quadrant: **Explanation**. Audience: **Red-team developers** who want to understand how the bundled defensive test catalog and the Go raw-protocol client are built — and what each profile proves about your own detector.
+
+> **Important — rules of engagement.** This material is purely **defensive, local-only, and self-target-only**. The catalog exists to test, understand, and extend **your own** detector's coverage against **your own** loopback engine (`127.0.0.1:8443`). It is not a third-party evasion toolkit. Every profile reproduces a tell so your detector has something honest to catch; nothing here is a recipe for defeating someone else's system. See [Red-team rules of engagement](../reference/red-team-rules-of-engagement.md) before you run or extend anything.
+
+## Why the catalog is shaped the way it is
+
+The Red catalog is a **fixed, enumerable set** of test profiles plus a small Go raw-protocol client. Its job is not to be an open-ended adversary — it is to give your detector a repeatable, reviewable battery of known-automated samples so you can measure detection **without** measuring it in a vacuum. Two design choices carry most of that weight: the catalog is grouped by the tell it reproduces, and it ships a **human baseline** alongside the bot profiles.
+
+For the machine-readable profile-by-profile table (labels, expected hard rules, which need a browser), see the [Red-team catalog reference](../reference/red-team-catalog.md). This page explains the *architecture* behind that table.
+
+## The human baseline turns a detection rate into a false-positive-aware one
+
+There are 26 profiles in the runner's `PROFILES` order:
+
+```
+human, http_client, tls_parrot, selenium, puppeteer, puppeteer_stealth,
+playwright_plain, playwright_stealth, undetected, patchright, direct_cdp,
+nodriver, xvfb_headful, antidetect, camoufox, tls_static, tls_rotate,
+ua_rotate, rit_replay, rit_tamper, video_scrape, watermark_strip,
+ai_agent, distributed, flood, rapid_reset
+```
+
+Exactly one of them — `human.mjs` — is **not** a bot. That single non-bot profile is load-bearing. `classify()` in `test/e2e/runner.mjs` reads the profile's exported `label`: a label that starts with `bot:` is an automated sample, and anything else is treated as a human-baseline sample. The classification rules are:
+
+- **bot** profile → `CHALLENGE` or `DENY` is a true positive (TP); `ALLOW` is a false negative (FN).
+- **human** profile → `DENY` is a false positive (FP); anything else is a true negative (TN).
+
+The consequence is the whole point of shipping a baseline: a catalog that only ran bot profiles could report a high detection rate while silently denying real people. Running `human` in the same battery converts "how many bots did we catch" into "how many bots did we catch **without** denying a human."
+
+> **Note.** Because a human `CHALLENGE` is scored **TN, not FP**, the `humanFPR` metric is DENY-only. It under-reports human friction — a challenge is still friction a real person feels. Inspect the challenge-rate on the baseline separately; do not read a low `humanFPR` as "no human impact." This matters most for the heuristic hard rules (HR-11, HR-12, HR-17), which can challenge some real humans by design.
+
+## Anatomy of a browser profile: reproduce the tell, don't drive the real tool
+
+The browser profiles (`selenium`, `puppeteer`, the Playwright variants, `undetected`, `patchright`, `direct_cdp`, and friends) export `needsBrowser = true` and are driven through the shared `test/redteam/_driver.mjs` helper, `drive(baseURL, {headless, initScripts, ...})`. That helper launches an **installed Edge** (`chromium.launch` with channel `'msedge'`) or Playwright Firefox, injects init scripts, and toggles headless/headful.
+
+The critical architectural decision: a browser profile **reproduces the exact artifacts** an automation tool would leave, rather than driving the genuine tool. `selenium.mjs` does not spin up a real ChromeDriver — it uses `addInitScript` to **plant** the tells: the `cdc_` property that ChromeDriver injects, and `navigator.webdriver`. The profile is a faithful *fixture* of the artifact surface, not a live integration.
+
+This buys three things:
+
+- **Determinism.** The tell is present every run, regardless of which exact driver version is installed on the machine.
+- **Reviewability.** You can read the init script and see precisely which L1–L4 signal you intend to trip.
+- **Portability.** The battery runs from one installed browser channel instead of a matrix of real drivers.
+
+So a browser profile answers a scoped question: *given this specific client-side artifact, does my detector's L1–L4 client-signal path fire the right signal and hard rule?* `selenium` is expected to reach **HR-1** (hard automation artifact), `direct_cdp` to reach **HR-9** (a CDP leak plus an automation hint). See [Hard rules and verdicts](../reference/hard-rules-verdicts.md) for the full ordered table.
+
+## Why a raw Go client exists: reaching what a browser cannot
+
+A browser — even a scripted one — cannot **rotate its own TLS fingerprint mid-session** and cannot **forge or replay a request-integrity (RIT) token** at will. Those behaviours live below the browser's API surface. So the catalog ships `cmd/redteam`, a Go client built on **uTLS**, to exercise the L5 network defenses and the RIT anti-tamper path that the `.mjs` profiles structurally cannot reach.
+
+The division of labour is clean:
+
+- **Browser simulations → L1–L4.** Client-side artifacts, integrity/guard checks, and event/interaction signals.
+- **`cmd/redteam` (Go, uTLS) → L5 + RIT.** TLS/HTTP-2 engine consistency, traffic-rotation, correlation, abuse velocity, and the RIT token lifecycle.
+
+`cmd/redteam` exposes **7 real `-attack` values**: `flood`, `distributed`, `tls-static`, `tls-rotate`, `ua-rotate`, `rit-replay`, `rit-tamper` (default `-host 127.0.0.1:8443`).
+
+> **Warning.** The `-host` default is **advisory, not enforced** — the CLI connects to whatever `host:port` you pass it. Keeping it on loopback is the operator's responsibility. (This is deliberately unlike the Detection Observatory launcher, which is structurally locked to `127.0.0.1:8443`.) The `-attack` values are the seven listed here.
+
+> **Note:** `cmd/redteam/main.go` declares exactly two flags — `-attack` and `-host`. There are no run-count or session flags; each invocation runs one attack and prints the resulting verdict JSON to stdout. Invocation is `redteam -attack <name> -host <host:port>`.
+
+## TLS control via uTLS: a chosen ClientHello, and the static-parrot case
+
+The Go client's leverage over L5 comes from uTLS: it sends a **chosen `ClientHelloID`** and can force HTTP/1.1 (`forceHTTP11`). That lets a profile present a specific, controllable TLS fingerprint instead of whatever the Go standard library would emit.
+
+The **static-parrot** case (`tls-static`) is the instructive one. It presents a fixed ClientHello with **no extension permutation** across the session. A genuine modern browser permutes certain ClientHello extensions between connections; a fingerprint that stays byte-identical is itself a tell. So `tls-static` is expected to trip the **intra-session TLS-consistency** rules and reach **HR-14** (the TLS fingerprint behaviour rotated / is inconsistent within one session). Its sibling `tls-rotate` changes the TLS engine mid-session and reaches the same hard rule from the opposite direction. What this proves: your detector is not merely reading a fingerprint once, it is holding the client to a *consistent* fingerprint over the session.
+
+## The session and RIT flow
+
+The RIT profiles exercise the request-integrity token lifecycle end to end:
+
+1. `session()` establishes the cookie and the initial RIT **seed / counter** (`n`).
+2. Each subsequent request carries a **live token** derived from that seed and counter.
+3. The server **rotates the seed** on the response via the `X-HM-Seed` header; the client is expected to follow the rotation.
+
+Two attacks break that contract in different places:
+
+- **`rit-replay`** re-sends a token whose counter is now stale → the engine sees `l5.rit.stale_replay`. Expected outcome: **HR-17** (a replayed or absent RIT token on an API call — a CHALLENGE heuristic).
+- **`rit-tamper`** signs one body and sends another → `l5.rit.header_tampered` / `l5.rit.body_mismatch`. Expected outcome: **HR-16** (a RIT token that fails the body HMAC).
+
+What this proves about your detector: the token is bound to the request body and to a monotonically advancing counter, so neither a copy nor a swap survives.
+
+## Correlation and abuse constructions
+
+Two L5 attacks are built by controlling headers and velocity rather than fingerprints:
+
+- **`distributed`** holds **one fixed fingerprint** while rotating the `X-Forwarded-For` subnet across requests → `l5.correlation.proxy_rotation`, reaching **HR-19** (one fingerprint across many subnets — residential-proxy-style rotation).
+- **`flood`** drives velocity that is **metered by JA4 + subnet, not by raw IP** → `l5.abuse.flood`, reaching **HR-21** (destructive-abuse flood).
+
+The `distributed` and `flood` cases prove your rate/correlation logic keys on the *client identity* (fingerprint, JA4+subnet) rather than the trivially-rotated IP.
+
+## Why every raw attack spoofs full browser headers
+
+Each `cmd/redteam` attack sends a **complete, browser-like header set**. This is intentional and is the sharpest part of the catalog's design. If the raw client sent obviously non-browser headers, the L6 header cross-checks (`x.ua_vs_ja4`, `x.ua_vs_h2`, `x.browser_no_js`, `x.uach_present`) would light up immediately and the engine would catch the request for the *wrong* reason — a header inconsistency the real attack would never have.
+
+By keeping the header cross-checks **quiet**, the catalog forces the engine to catch the request on the **specific network or anti-tamper signal the attack is actually about**. That is the honest test: `tls-static` must be caught by TLS-consistency, not by a sloppy header; `rit-tamper` must be caught by the body HMAC, not by a missing UA. Each raw attack is deliberately mapped to one intended signal → one intended hard rule, and spoofing the headers is how you isolate that path.
+
+For how those L6 cross-checks and per-layer signals are assembled into a verdict, see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md).
+
+## Which tool tests which layer (summary)
+
+| Tool | Layers exercised | How |
+| --- | --- | --- |
+| Browser simulations (`.mjs`, `needsBrowser=true`) | L1–L4 | `_driver.mjs` injects planted artifacts (e.g. `cdc_`, `navigator.webdriver`) via `addInitScript` in installed Edge / Playwright Firefox |
+| `cmd/redteam` (Go, uTLS) | L5 + RIT | chosen ClientHelloID, mid-session fingerprint/UA rotation, spoofed `X-Forwarded-For`, RIT replay/tamper, full browser headers |
+
+One profile sits apart: **`rapid_reset`** never completes a scored `collect`. There is no `SessionReport` to score, so instead of a verdict it surfaces on the **`network.abuse`** path — the pipeline records the abuse event rather than a per-request score. It is expected to reach **HR-21** through the H2-DoS family. Treat its absence of a normal scored verdict as *by design*, not as a gap.
+
+## The T4 ceiling is a catalog boundary, not a scoreboard
+
+The catalog is a **fixed set of adversaries you chose to reproduce** — not the field of all possible adversaries. The most capable tier the design acknowledges is **T4**: anti-detect tooling combined with real-human click-farms. T4 is a stated design boundary, mitigated by rate and reputation, **not** solved. The catalog cannot and does not claim otherwise.
+
+The practical rule for reading results:
+
+- A profile that slips through is a **coverage finding about your detector** — an entry to add, a signal to strengthen, a hard rule to reorder.
+- It is **not** an evasion recipe, and it is not evidence the field of adversaries has "won."
+
+Every number the catalog produces is **reference-measured on your machine**, against your loopback engine, with the profiles you enabled. It bounds what *this battery* found; it does not bound what a novel adversary could do. Keep that honesty in the framing whenever you report a block-rate.
+
+## See also
+
+- [Red-team catalog reference](../reference/red-team-catalog.md) — the profile-by-profile table (labels, expected hard rules, `needsBrowser`).
+- [Red-team rules of engagement](../reference/red-team-rules-of-engagement.md) — the defensive, local-only, self-target-only boundary you operate within.
+- [Hard rules and verdicts](../reference/hard-rules-verdicts.md) — the full ordered HR-1..HR-21 table and verdict thresholds.
+- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — how per-layer signals and L6 cross-checks combine into a verdict.

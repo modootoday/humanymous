@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>humanymous · Audit Console</title>
+<style id="app-css"></style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail">
+    <div class="brand"><div class="mark">h</div><div><b>humanymous</b><span>Audit Console</span></div></div>
+    <div class="navlabel">Operations</div>
+    <a class="navitem active" data-view="overview" data-tip="<b>Overview</b>Live feed of every edge decision (allow / challenge / deny) with KPIs, computed from the audit stream. Click a row to drill in."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Overview</a>
+    <a class="navitem" data-view="integrity" data-tip="<b>Integrity</b>The tamper-evident audit log verified live: append-only hash chain + per-record HMAC + Ed25519 Signed Tree Heads. Verifies with the public key alone."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Integrity</a>
+    <a class="navitem" data-view="sessions" data-tip="<b>Sessions</b>Look up any decision by its record seq (incident reference) and drill into the full evidence: timeline, top contributors, pseudonymized subject."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Sessions</a>
+    <div class="navlabel">Governance</div>
+    <a class="navitem" data-view="bans" data-tip="<b>Rate Limits &amp; Bans</b>Active IP and fingerprint bans — auto-escalating (1h→6h→24h→permanent) plus manual. Add and unblock are dual-control and audited."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>Rate Limits &amp; Bans<span class="badge" id="banBadge">0</span></a>
+    <a class="navitem" data-view="policy" data-tip="<b>Policy</b>Per-route enforcement posture (preset, fail-open/closed, sync re-score, injection) and the rate-limit thresholds. Config changes are dual-control + signed."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Policy</a>
+    <a class="navitem" data-view="compliance" data-tip="<b>Compliance</b>GDPR Art.17 / PIPA right-to-erasure via crypto-shred (destroy the subject's linkage key — the chain stays intact) and retention tiers."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Compliance</a>
+    <div class="spacer"></div>
+    <div class="rolechip"><span class="dot"></span><div><b>Operator</b><small>live · dual-control</small></div></div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" id="navToggle" aria-label="Open navigation">☰</button>
+      <h1 id="viewTitle">Overview<small>live edge decisions</small></h1>
+      <div class="push"></div>
+      <div class="live" data-tip="<b>Live status</b>The console polls the audit chain every 4s. Shows the current record count and whether the chain still self-verifies."><span class="pulse"></span><span id="liveLabel">connecting…</span></div>
+      <button class="iconbtn" id="refreshBtn" data-tip="Refresh the current view and re-verify the chain now"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg></button>
+      <button class="iconbtn" id="themeBtn" data-tip="Toggle light / dark theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
+    </div>
+
+    <div class="content" id="view-overview"></div>
+    <div class="content" id="view-integrity" hidden></div>
+    <div class="content" id="view-sessions" hidden></div>
+    <div class="content" id="view-bans" hidden></div>
+    <div class="content" id="view-policy" hidden></div>
+    <div class="content" id="view-compliance" hidden></div>
+
+    <div class="statusbar">
+      <span id="sb-chain"><span class="ok">●</span> chain —</span>
+      <span id="sb-node">node —</span>
+      <span>read-replica · SoD · every action meta-audited</span>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Session detail">
+  <header><span class="mono" id="d-title" style="color:var(--accent)">record</span>
+    <button class="iconbtn" id="d-close" style="margin-left:auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </header>
+  <div class="body" id="d-body"></div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="tooltip" id="tooltip" role="tooltip"></div>
+<div class="mscrim" id="cScrim"></div>
+<div class="modal" id="cModal" role="dialog" aria-modal="true" aria-labelledby="cTitle">
+  <h3 id="cTitle">Confirm</h3>
+  <p id="cMsg"></p>
+  <div class="mrow" id="cConfirmRow" hidden><span style="font-size:12px">Type <b id="cWord"></b> to confirm</span><input id="cInput" autocomplete="off"></div>
+  <div class="modal-btns"><button class="btn" id="cCancel">Cancel</button><button class="btn primary" id="cOk">Confirm</button></div>
+</div>
+
+<script>
+// ---------- overlay tooltip engine ----------
+(function(){
+  const tip=document.getElementById('tooltip');
+  function place(el){
+    const r=el.getBoundingClientRect();
+    let left=r.left+r.width/2-tip.offsetWidth/2;
+    left=Math.max(10,Math.min(left,innerWidth-tip.offsetWidth-10));
+    let top=r.bottom+9;
+    if(top+tip.offsetHeight>innerHeight-10) top=r.top-tip.offsetHeight-9;
+    tip.style.left=left+'px'; tip.style.top=Math.max(10,top)+'px';
+  }
+  function open(el){ const t=el.getAttribute('data-tip'); if(!t)return; tip.innerHTML=t; tip.classList.add('show'); place(el); }
+  function close(){ tip.classList.remove('show'); }
+  document.addEventListener('mouseover',e=>{const el=e.target.closest('[data-tip]'); if(el)open(el);});
+  document.addEventListener('mouseout',e=>{const el=e.target.closest('[data-tip]'); if(el && !el.contains(e.relatedTarget))close();});
+  document.addEventListener('focusin',e=>{const el=e.target.closest('[data-tip]'); if(el)open(el);});
+  document.addEventListener('focusout',close);
+  document.addEventListener('scroll',close,true);
+})();
+const API = location.pathname.replace(/console\/?$/, '').replace(/\/$/, '') || '/__hmn/admin';
+const $ = s => document.querySelector(s);
+async function api(path, opts){ opts=opts||{}; const h=Object.assign({}, opts.headers); if(window.__HMN_TOKEN) h['Authorization']='Bearer '+window.__HMN_TOKEN; opts.headers=h; const r = await fetch(API + path, opts); if(!r.ok) throw new Error(await r.text()); const t = await r.text(); try{return JSON.parse(t)}catch{return t} }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const critHR = new Set(['HR-1','HR-2','HR-7','HR-8','HR-9','HR-14','HR-16','HR-18','HR-19','HR-20','HR-21','HR-23','HR-24','HR-27b','HR-28','HR-30']);
+const verdictTip = {
+  allow:'<b>ALLOW</b>Passed to the origin. If a fingerprint-bound trust token is present it takes the fast-path with no re-scoring.',
+  challenge:'<b>CHALLENGE</b>Accessible proof-of-work interstitial is served from the control plane. The origin is never contacted.',
+  deny:'<b>DENY</b>Blocked at the edge before any upstream connection. The origin is never contacted.',
+  none:'<b>NONE</b>No verdict yet (Unknown). Public routes fail-open; sensitive routes fail-closed to a challenge.' };
+const hrDesc = {
+  'HR-1':'Hard automation artifact (Selenium/Puppeteer/Playwright) → DENY',
+  'HR-2':'UA claims a browser but TLS + HTTP/2 fingerprints resolve to a different engine → DENY',
+  'HR-7':'Headless browser plus a second automation tell → DENY',
+  'HR-8':'Patched native getter hiding webdriver in a chromeless window → DENY',
+  'HR-9':'CDP leak plus an automation hint → DENY',
+  'HR-12':'No interaction over the observation window → CHALLENGE',
+  'HR-18':'Browser UA but zero client-side JS evidence (header-spoofing HTTP client) → DENY',
+  'HR-19':'One stable fingerprint across many subnets (residential-proxy rotation) → DENY',
+  'HR-20':'AI browser-agent signature (teleport click + LLM cadence) → DENY',
+  'HR-21':'Destructive flood / HTTP-2 DoS / rate-limit ban → DENY',
+  'HR-23':'HTTP request smuggling (CL+TE / duplicate CL / bad TE) → DENY',
+  'HR-24':'Direct origin hit bypassing Sentinel (origin cloaking) → 421',
+  'HR-25':'Detection bundle injected but no beacon returned (script-strip) → CHALLENGE',
+  'HR-26':'WebSocket/SSE upgrade with no prior fingerprint-bound verdict → DENY',
+  'HR-27b':'Client forged a trust / internal forwarding header → DENY',
+  'HR-28':'Verdict token replayed from a different fingerprint, or forged → DENY',
+  'HR-29':'Replayed single-use proof (beacon / PoW nonce) → reject',
+  'HR-30':'Decision-probing sweep: many sessions from one fingerprint → DENY' };
+function verdictCell(v){ v=(v||'none'); return `<span class="verdict v-${v}" data-tip='${verdictTip[v]||''}'>${v.toUpperCase()}</span>`; }
+function hrBadge(hr,crit){ return hr?`<span class="hr ${crit?'crit':''}" data-tip="${esc(hrDesc[hr]||('Hard rule '+hr))}">${esc(hr)}</span>`:'<span style="color:var(--faint)">—</span>'; }
+function fmtDur(s){ if(s<=0) return '<span style="color:var(--deny);font-weight:600">permanent</span>'; const h=s/3600|0,m=(s%3600)/60|0; return `<span class="mono">${h?h+'h ':''}${m}m</span>`; }
+
+// theme
+$('#themeBtn').onclick=()=>{const c=document.documentElement.getAttribute('data-theme');document.documentElement.setAttribute('data-theme',c==='dark'?'light':'dark');};
+
+// ---------- confirm modal (WS9 destructive-action safety) ----------
+function confirmAction({title,msg,danger,word}){
+  return new Promise(resolve=>{
+    $('#cTitle').textContent=title; $('#cMsg').innerHTML=msg;
+    $('#cModal').classList.toggle('danger',!!danger);
+    const needWord=!!word; $('#cConfirmRow').hidden=!needWord;
+    if(needWord){ $('#cWord').textContent=word; $('#cInput').value=''; $('#cInput').style.borderColor=''; }
+    $('#cScrim').classList.add('show'); $('#cModal').classList.add('show');
+    setTimeout(()=>{(needWord?$('#cInput'):$('#cOk')).focus();},50);
+    const close=v=>{ $('#cScrim').classList.remove('show'); $('#cModal').classList.remove('show'); $('#cOk').onclick=$('#cCancel').onclick=$('#cScrim').onclick=null; document.removeEventListener('keydown',key); resolve(v); };
+    const ok=()=>{ if(needWord && $('#cInput').value.trim()!==word){ $('#cInput').style.borderColor='var(--deny)'; return; } close(true); };
+    function key(e){ if(e.key==='Escape')close(false); if(e.key==='Enter')ok(); }
+    $('#cOk').onclick=ok; $('#cCancel').onclick=()=>close(false); $('#cScrim').onclick=()=>close(false); document.addEventListener('keydown',key);
+  });
+}
+// ---------- mobile nav toggle ----------
+$('#navToggle') && ($('#navToggle').onclick=()=>document.querySelector('.rail').classList.toggle('open'));
+// ---------- WCAG: nav items keyboard-operable ----------
+document.querySelectorAll('.navitem').forEach(n=>{ n.setAttribute('role','button'); n.setAttribute('tabindex','0');
+  n.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); n.click(); } }); });
+// ---------- operator attribution (WS9) ----------
+(async()=>{ try{ const me=await api('/whoami'); const rc=document.querySelector('.rolechip'); if(rc&&me.id){ rc.querySelector('b').textContent=me.id; rc.querySelector('small').textContent=me.role+' · authenticated'; } }catch(e){} })();
+
+// ---------- views ----------
+const views = ['overview','integrity','sessions','bans','policy','compliance'];
+const titles = { overview:['Overview','live edge decisions'], integrity:['Chain Integrity','tamper-evident audit log'],
+  sessions:['Sessions','incident drill-down'], bans:['Rate Limits &amp; Bans','edge protection'],
+  policy:['Policy &amp; Rollout','route enforcement'], compliance:['Compliance','erasure &amp; retention'] };
+let current='overview';
+const loaded=new Set(); // load each view once; nav switching is then instant
+function show(v){
+  current=v; views.forEach(k=>$('#view-'+k).hidden=k!==v);
+  document.querySelectorAll('.navitem').forEach(n=>{const a=n.dataset.view===v;n.classList.toggle('active',a);a?n.setAttribute('aria-current','page'):n.removeAttribute('aria-current');});
+  document.querySelector('.rail').classList.remove('open'); // close mobile nav on switch
+  const [t,s]=titles[v]; $('#viewTitle').innerHTML=`${t}<small>${s}</small>`;
+  // Only fetch+render on first visit; revisits show the already-rendered view
+  // instantly. Use the refresh button (or overview's auto-tick) to update.
+  if(loaders[v] && !loaded.has(v)){ loaded.add(v); loaders[v](); }
+}
+document.querySelectorAll('.navitem[data-view]').forEach(n=>n.onclick=()=>show(n.dataset.view));
+
+// ---------- Overview ----------
+let overviewTimer;
+async function loadOverview(){
+  const el=$('#view-overview');
+  let data; try{ data=await api('/audit?limit=60'); }catch(e){ el.innerHTML=`<div class="note">Could not load audit stream: ${esc(e.message)}</div>`; return; }
+  const recs=data.records||[];
+  const c={allow:0,challenge:0,deny:0,none:0}; let denies=0,challenges=0,bans=0;
+  recs.forEach(r=>{ c[r.verdict||'none']=(c[r.verdict||'none']||0)+1; if(r.event_type==='ban.enforced'||r.event_type==='ban.applied')bans++; });
+  const total=recs.length||1;
+  el.innerHTML=`
+    <div class="kpis">
+      <div class="kpi" data-tip="<b>Allow</b>Sessions passed to the origin in the recent window. A trust token short-circuits re-scoring on the fast path."><span class="stripe" style="background:var(--allow)"></span><div class="k-label">Allow</div><div class="k-val up">${c.allow}</div><div class="k-sub">${(c.allow/total*100|0)}% of recent</div></div>
+      <div class="kpi" data-tip="<b>Challenge</b>Sessions served an accessible proof-of-work interstitial. The origin is never contacted until the challenge is solved."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Challenge</div><div class="k-val warn">${c.challenge}</div><div class="k-sub">recent window</div></div>
+      <div class="kpi" data-tip="<b>Deny</b>Sessions blocked at the edge before any upstream connection — automation, floods, smuggling, token/proof abuse."><span class="stripe" style="background:var(--deny)"></span><div class="k-label">Deny</div><div class="k-val bad">${c.deny}</div><div class="k-sub">edge-blocked</div></div>
+      <div class="kpi" data-tip="<b>Ban actions</b>Bans applied or enforced in this window — rate-limit auto-bans plus manual operator bans."><span class="stripe" style="background:var(--info)"></span><div class="k-label">Ban actions</div><div class="k-val">${bans}</div><div class="k-sub">auto + manual</div></div>
+      <div class="kpi" data-tip="<b>Records</b>Total events sealed into the tamper-evident audit chain on this node."><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Records</div><div class="k-val">${data.count}</div><div class="k-sub">newest first</div></div>
+    </div>
+    <section class="card">
+      <header><h2>Decision feed</h2><div class="push"></div>
+        <input id="ovHost" placeholder="filter host…" aria-label="Filter by host" style="font-family:var(--mono);font-size:12px;padding:5px 9px;border-radius:8px;background:var(--panel-2);border:1px solid var(--border);color:var(--text);width:130px">
+        <button class="btn" id="ovExport" data-tip="Download the current feed as CSV for a postmortem or shift handoff">Export CSV</button>
+        <div class="chiprow" id="ovFilters">
+        <span class="chip on" data-f="all" role="button" tabindex="0">all</span><span class="chip" data-f="deny" role="button" tabindex="0">deny</span><span class="chip" data-f="challenge" role="button" tabindex="0">challenge</span><span class="chip" data-f="allow" role="button" tabindex="0">allow</span>
+      </div></header>
+      <div class="streamwrap"><table><thead><tr><th>Seq</th><th>Event</th><th>Host</th><th>Verdict</th><th>Rule</th><th>Risk</th><th>Mode</th></tr></thead>
+      <tbody id="ovRows"></tbody></table></div>
+    </section>`;
+  const rows=$('#ovRows');
+  let curF='all';
+  function draw(f){
+    curF=f;
+    const hostq=($('#ovHost').value||'').toLowerCase();
+    const list=recs.filter(r=>(f==='all'||r.verdict===f) && (!hostq||(r.host||'').toLowerCase().includes(hostq)));
+    rows.innerHTML=list.slice(0,25).map(r=>{
+      const hr=(r.triggered_rules||[])[0];
+      return `<tr class="clk" data-inc="${r.incident||''}"><td class="mono t-ts" data-tip="incident ${r.incident||''}">#${r.seq}</td>
+        <td class="mono" style="font-size:12px;color:var(--muted)">${esc(r.event_type)}</td>
+        <td class="t-host">${esc(r.host||'—')}</td>
+        <td>${verdictCell(r.verdict)}</td>
+        <td>${hrBadge(hr,critHR.has(hr))}</td>
+        <td class="num">${r.risk_score||0}</td>
+        <td><span class="mode-badge mode-${r.enforcement_mode==='monitor'?'monitor':'enforce'}">${esc(r.enforcement_mode||'—')}</span></td></tr>`;
+    }).join('')|| '<tr><td colspan="7" class="empty">No records.</td></tr>';
+    rows.querySelectorAll('tr.clk').forEach(tr=>tr.onclick=()=>drill(tr.dataset.inc));
+  }
+  draw('all');
+  $('#ovFilters').querySelectorAll('.chip').forEach(ch=>{const go=()=>{$('#ovFilters').querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));ch.classList.add('on');draw(ch.dataset.f);};ch.onclick=go;ch.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
+  $('#ovHost').oninput=()=>draw(curF);
+  $('#ovExport').onclick=()=>{
+    const cols=['seq','ts','event_type','host','verdict','risk_score','triggered_rules'];
+    const q=($('#ovHost').value||'').toLowerCase();
+    const list=recs.filter(r=>(curF==='all'||r.verdict===curF)&&(!q||(r.host||'').toLowerCase().includes(q)));
+    const cell=v=>'"'+String(Array.isArray(v)?v.join(' '):(v==null?'':v)).replace(/"/g,'""')+'"';
+    const csv=[cols.join(',')].concat(list.map(r=>cols.map(c=>cell(r[c])).join(','))).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='audit-feed.csv'; a.click(); URL.revokeObjectURL(a.href);
+    toast('Exported '+list.length+' records');
+  };
+}
+
+// ---------- Integrity ----------
+async function loadIntegrity(){
+  const el=$('#view-integrity');
+  let d; try{ d=await api('/integrity'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const ok=d.ok;
+  el.innerHTML=`
+    <div class="split">
+      <section class="card">
+        <header><h2>Verification</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">offline verifier</span></header>
+        <div class="statuslead"><div class="shieldbig ${ok?'ok-bg':'bad-bg'}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div><b>${ok?'PASS':'VIOLATION'}</b><span>${ok?d.records+' records · 0 divergent':'diverged at seq '+d.divergentSeq}</span></div></div>
+        <div class="integ-row" data-tip="Total events sealed into the append-only chain. Each links to the previous by hash, so any edit, deletion, or reorder is detectable."><span class="lbl">Chain records</span><span class="val">${d.records}</span></div>
+        <div class="integ-row" data-tip="Periodic checkpoints signed with an Ed25519 key and anchored externally (WORM). They detect truncation and rollback even against an insider with the database."><span class="lbl">Signed Tree Heads</span><span class="val">${d.checkpoints}</span></div>
+        ${d.witnessed!==undefined?`<div class="integ-row" data-tip="A separate-key witness co-signs each tree head only if the tree grows monotonically, so a history rewrite cannot obtain a valid witness signature. Independent of the writer.">
+          <span class="lbl">Independent witness</span><span class="val" style="color:${d.witnessed?'var(--allow)':'var(--deny)'}">${d.witnessed?'✓ co-signed':'✗ FAILED @'+d.witnessFailAt}</span></div>`:''}
+        ${d.lastSTH?`<div class="integ-row"><span class="lbl">Last STH tree size</span><span class="val">#${d.lastSTH.treeSize}</span></div>
+        <div class="integ-row"><span class="lbl">Root (hex)</span><span class="val" style="max-width:180px;overflow:hidden;text-overflow:ellipsis">${esc(d.lastSTH.root).slice(0,20)}…</span></div>`:''}
+        ${ok?'':`<div class="integ-row"><span class="lbl">Class</span><span class="val bad">${esc(d.class)}</span></div>`}
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Node</h2></header>
+          <div class="integ-row"><span class="lbl">Node id</span><span class="val">${esc(d.node)}</span></div>
+          <div class="integ-row" data-tip="Checkpoints are signed with an asymmetric key, so the writer process cannot forge them and an auditor can verify without any forging power."><span class="lbl">Ed25519 STH signing</span><span class="val" style="color:var(--allow)">✓ asymmetric</span></div>
+          <div class="integ-row" data-tip="An independent auditor verifies the chain with only the public key — no secret is needed to check authenticity."><span class="lbl">Verify method</span><span class="val">public key only</span></div>
+        </section>
+        <section class="card" style="margin-top:20px"><header><h2>Guarantees</h2></header>
+          <div style="padding:14px 16px"><p class="note" style="margin:0">Append-only hash chain + per-record HMAC + Ed25519 Signed Tree Heads. Identifiers are per-subject-keyed pseudonyms; GDPR/PIPA erasure is crypto-shred (Compliance view) — the chain stays verifiable.</p></div>
+        </section>
+      </div>
+    </div>`;
+}
+
+// ---------- Sessions (incident drill-down) ----------
+async function loadSessions(){
+  const el=$('#view-sessions');
+  el.innerHTML=`
+    <section class="card">
+      <header><h2>Incident lookup</h2></header>
+      <div style="padding:15px 16px;display:flex;gap:10px;align-items:end">
+        <label class="fld" style="flex:1"><span>Incident handle</span><input id="incSeq" placeholder="INC-…" data-tip="Every block/challenge shows an opaque incident handle (INC-…). Paste it to open the full evidence. The raw record seq is never exposed (non-enumerable)."></label>
+        <button class="btn primary" id="incGo" data-tip="Open the full record: decision, rules, top contributors, pseudonymized subject">Open</button>
+      </div>
+    </section>
+    <section class="card">
+      <header><h2>Recent enforcement</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">deny / challenge</span></header>
+      <div class="streamwrap"><table><thead><tr><th>Seq</th><th>Host</th><th>Verdict</th><th>Rule</th><th>Reason</th></tr></thead><tbody id="sessRows"></tbody></table></div>
+    </section>`;
+  $('#incGo').onclick=()=>{const v=$('#incSeq').value.trim(); if(v)drill(v);};
+  $('#incSeq').onkeydown=e=>{if(e.key==='Enter'){const v=$('#incSeq').value.trim();if(v)drill(v);}};
+  let d; try{ d=await api('/audit?limit=100'); }catch(e){ return; }
+  const rows=(d.records||[]).filter(r=>r.verdict==='deny'||r.verdict==='challenge').slice(0,25);
+  $('#sessRows').innerHTML=rows.map(r=>`<tr class="clk" data-inc="${r.incident||''}"><td class="mono t-ts">#${r.seq}</td>
+    <td class="t-host">${esc(r.host||'—')}</td><td>${verdictCell(r.verdict)}</td>
+    <td>${(r.triggered_rules||[]).map(h=>hrBadge(h,true)).join(' ')||'—'}</td>
+    <td style="color:var(--muted);font-size:12px">${esc(r.fail_reason||'')}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No enforcement events yet.</td></tr>';
+  $('#sessRows').querySelectorAll('tr.clk').forEach(tr=>tr.onclick=()=>drill(tr.dataset.inc));
+}
+
+// ---------- Bans ----------
+let banFilter='all';
+async function loadBans(){
+  const el=$('#view-bans');
+  let d; try{ d=await api('/bans'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const bans=d.bans||[];
+  $('#banBadge').textContent=bans.length;
+  const auto=bans.filter(b=>b.source==='auto').length, manual=bans.length-auto;
+  el.innerHTML=`
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi" data-tip="<b>Active bans</b>Sources currently blocked at the edge. A banned key is dropped before scoring or any upstream connection."><span class="stripe" style="background:var(--deny)"></span><div class="k-label">Active bans</div><div class="k-val">${bans.length}</div><div class="k-sub">${auto} auto · ${manual} manual</div></div>
+      <div class="kpi" data-tip="<b>Escalation</b>A repeat rate-limit offender is banned for longer each strike: 1h, then 6h, 24h, then permanent."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Escalation</div><div class="k-val mono" style="font-size:15px">1h→6h→24h→∞</div><div class="k-sub">by strike</div></div>
+      <div class="kpi" data-tip="<b>Keys</b>Bans are keyed by IP and by stable fingerprint. A flood that rotates its IP is still caught by the fingerprint key."><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Keys</div><div class="k-val mono" style="font-size:15px">ip · fp</div><div class="k-sub">rotation-proof</div></div>
+      <div class="kpi" data-tip="<b>Strike decay</b>A strike is remembered for 7 days, so a returning abuser escalates to a longer ban quickly."><span class="stripe" style="background:var(--info)"></span><div class="k-label">Strike decay</div><div class="k-val">7d</div><div class="k-sub">repeat abusers</div></div>
+    </div>
+    <div class="split">
+      <section class="card">
+        <header><h2>Active bans</h2><div class="push"></div><div class="chiprow" id="banFilters">
+          <span class="chip ${banFilter==='all'?'on':''}" data-bf="all">all</span><span class="chip ${banFilter==='auto'?'on':''}" data-bf="auto">auto</span><span class="chip ${banFilter==='manual'?'on':''}" data-bf="manual">manual</span></div></header>
+        <div class="streamwrap"><table><thead><tr><th>Key</th><th>Source</th><th>Reason</th><th>Strike</th><th>Expires</th><th></th></tr></thead><tbody id="banRows"></tbody></table></div>
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Add manual ban</h2></header>
+          <div style="padding:15px 16px;display:flex;flex-direction:column;gap:11px">
+            <label class="fld"><span>Key</span><input id="b-key" placeholder="ip:203.0.113.9 · fp:…"></label>
+            <label class="fld"><span>Reason</span><input id="b-reason" placeholder="coordinated scraping"></label>
+            <label class="fld"><span>Duration</span><select id="b-dur"><option value="3600">1 hour</option><option value="21600">6 hours</option><option value="86400">24 hours</option><option value="604800">7 days</option><option value="0">Permanent</option></select></label>
+            <label class="fld" id="b-apwrap" hidden><span>Second approver <span class="dc">⚿ dual-control</span></span><input id="b-approver" placeholder="approver id"></label>
+            <button class="btn primary" id="b-add" style="justify-content:center" data-tip="Apply the ban. Permanent bans require a second approver (dual-control). Recorded as ban.applied before it takes effect.">Apply ban</button>
+            <p class="note" style="margin:0">Every ban/unblock is written to the audit chain before it takes effect.</p>
+          </div>
+        </section>
+      </div>
+    </div>`;
+  const durSel=$('#b-dur'); durSel.onchange=()=>{$('#b-apwrap').hidden=durSel.value!=='0';};
+  function drawBans(){
+    const list=bans.filter(b=>banFilter==='all'||b.source===banFilter);
+    $('#banRows').innerHTML=list.map(b=>`<tr><td class="mono" style="font-size:12.5px" data-tip="Ban key — ${b.key.startsWith('fp:')?'stable device/TLS fingerprint (survives IP rotation)':'client source IP'}">${esc(b.key)}</td>
+      <td><span class="src-badge src-${b.source}" data-tip="${b.source==='auto'?'Applied automatically by the rate limiter on a hard-flood breach':'Applied manually by an operator (audited, dual-control for permanent)'}">${b.source}</span></td>
+      <td style="color:var(--muted);font-size:12.5px">${esc(b.reason)}</td>
+      <td class="num" data-tip="Escalation strike count — higher strikes mean longer bans">${b.strike||'—'}</td><td>${fmtDur(b.expiresInSec)}</td>
+      <td style="text-align:right"><button class="lift" data-k="${esc(b.key)}" data-tip="Remove this ban now (dual-control, written to the audit chain)">Unblock</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No active bans.</td></tr>';
+    $('#banRows').querySelectorAll('.lift').forEach(btn=>btn.onclick=async()=>{
+      try{ await api('/bans/lift?key='+encodeURIComponent(btn.dataset.k)+'&operator=console', {method:'POST'}); toast('Ban lifted — audited'); loadBans(); }catch(e){ toast('Lift failed: '+e.message); }
+    });
+  }
+  drawBans();
+  $('#banFilters').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{banFilter=c.dataset.bf;$('#banFilters').querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');drawBans();});
+  $('#b-add').onclick=async()=>{
+    const key=$('#b-key').value.trim(); if(!key){$('#b-key').focus();return;}
+    const body={Key:key,Reason:$('#b-reason').value||'manual ban',DurationSec:+durSel.value,Operator:'console',Approver:$('#b-approver')?$('#b-approver').value:''};
+    try{ await api('/bans',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); toast('Ban applied — audited'); loadBans(); }
+    catch(e){ toast(e.message.includes('dual-control')?'Permanent ban needs a second approver':'Add failed'); }
+  };
+}
+
+// ---------- Policy ----------
+async function loadPolicy(){
+  const el=$('#view-policy');
+  let d; try{ d=await api('/policy'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  el.innerHTML=`
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+      <div class="kpi"><span class="stripe" style="background:${d.globalMonitor?'var(--info)':'var(--accent)'}"></span><div class="k-label">Global mode</div><div class="k-val" style="font-size:17px">${d.globalMonitor?'MONITOR':'ENFORCE'}</div><div class="k-sub">${d.globalMonitor?'shadow — actions logged only':'live enforcement'}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Rate limit</div><div class="k-val mono" style="font-size:16px">${d.rateLimit.hard}/${d.rateLimit.windowSec}s</div><div class="k-sub">hard · soft ${d.rateLimit.soft}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Routes</div><div class="k-val">${d.routes.length}</div><div class="k-sub">longest-prefix match</div></div>
+    </div>
+    <section class="card" data-tip="Emergency global monitor: suppresses all scoring-driven enforcement to log-only. Dual-control — a second approver must commit. Use during a false-positive incident.">
+      <header><h2>Kill switch — emergency global monitor</h2><div class="push"></div>
+        <span class="mono" style="font-size:12px;color:${d.effectiveMonitor?'var(--challenge)':'var(--muted)'}">${d.effectiveMonitor?'● MONITOR (enforcement suppressed)':'○ enforcing'}</span></header>
+      <div style="padding:14px 16px;display:flex;gap:10px;align-items:center">
+        <button class="btn" id="ks-req" data-tip="Requests the flip; a distinct approver must then commit (dual-control).">${d.killSwitch?'Request release':'Request kill switch'}</button>
+        <span class="note" style="margin:0;flex:1">Requesting creates a pending action — an Approver commits it in the approvals queue. Every flip is audited (config.changed).</span>
+      </div>
+    </section>
+    <section class="card">
+      <header><h2>Route policy</h2></header>
+      <div class="streamwrap"><table><thead><tr><th>Route</th>
+        <th data-tip="<b>Preset</b>Sensitivity bundle: off / monitor / low / balanced / strict / api-mode. Longest path-prefix wins.">Preset</th>
+        <th data-tip="<b>Enforce</b>Whether verdicts are acted on (enforce) or only scored and logged (monitor/shadow — the mandatory first rollout stage).">Enforce</th>
+        <th data-tip="<b>Fail policy</b>What happens when evidence is missing or a dependency is down. Public routes fail-open (pass) so the layer never takes down the app; sensitive routes fail-closed (challenge/deny).">Fail policy</th>
+        <th data-tip="<b>Sync re-score</b>High-assurance state-changing routes re-score synchronously before the mutation, so a single-request attack cannot slip through on the sticky-verdict fast path.">Sync re-score</th>
+        <th data-tip="<b>Inject</b>Whether the detection bundle is streamed into HTML responses on this route.">Inject</th></tr></thead>
+      <tbody>${d.routes.map(r=>`<tr><td class="mono" style="font-size:12.5px">${esc(r.prefix)}</td>
+        <td><span class="mode-badge ${r.preset==='strict'?'mode-enforce':'mode-monitor'}">${esc(r.preset)}</span></td>
+        <td>${r.enforce?'<span style="color:var(--allow)">●</span> enforce':'<span style="color:var(--info)">○</span> monitor'}</td>
+        <td class="mono" style="font-size:12px;color:${r.failClosed?'var(--deny)':'var(--muted)'}">${r.failClosed?'fail-closed':'fail-open'}</td>
+        <td>${r.syncScore?'<span style="color:var(--allow)">✓</span>':'<span style="color:var(--faint)">—</span>'}</td>
+        <td>${r.inject?'<span style="color:var(--accent)">✓</span>':'<span style="color:var(--faint)">—</span>'}</td></tr>`).join('')}</tbody></table></div>
+    </section>
+    <div class="note">Sensitive routes (login/checkout/admin) are <b>strict</b>: fail-closed + synchronous pre-mutation re-score. Public routes fail-open so the security layer never takes down the app. Config changes are dual-control + signed (SoT-24).</div>`;
+  $('#ks-req').onclick=async()=>{
+    const on=!d.killSwitch;
+    if(!await confirmAction({title:on?'Engage kill switch':'Release kill switch',danger:on,
+      msg:on?'This suppresses ALL scoring-driven enforcement to monitor mode across every route. A second approver must commit. Use only during a false-positive incident.':'This restores enforcement. A second approver must commit.'})) return;
+    try{ const r=await api('/killswitch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({On:on})});
+      toast(r.pending?'Kill-switch flip requested — needs an approver (dual-control)':'Requested'); }
+    catch(e){ toast(e.message.includes('role')?'Requires the Operator role':'Request failed'); }
+  };
+}
+
+// ---------- Compliance / Erasure ----------
+async function loadCompliance(){
+  const el=$('#view-compliance');
+  el.innerHTML=`
+    <div class="split">
+      <section class="card"><header><h2>Right-to-erasure — crypto-shred</h2></header>
+        <div style="padding:15px 16px;display:flex;flex-direction:column;gap:11px">
+          <label class="fld"><span>Subject id (session / subject key)</span><input id="e-subj" placeholder="subject id"></label>
+          <label class="fld"><span>Legal basis</span><select id="e-basis"><option>GDPR Art.17</option><option>PIPA §36</option><option>DPA request</option></select></label>
+          <label class="fld"><span>Second approver <span class="dc">⚿ dual-control</span></span><input id="e-approver" placeholder="DPO / approver id"></label>
+          <button class="btn primary" id="e-go" style="justify-content:center" data-tip="Destroy this subject's per-subject linkage key. Their pseudonyms become permanently unlinkable — but the hash chain and Merkle anchors stay intact and verifiable. Dual-control + audited.">Crypto-shred subject</button>
+          <p class="note" style="margin:0">Enter a subject <b>pseudonym</b> (as shown in any incident) — it resolves to the subject via the audited reverse index; a raw client id is never needed. Approval schedules a <b>cancellable hold window</b> before the shred commits; on execution a signed erasure certificate (STH root + legal basis) is sealed. The subject's per-subject linkage key is then destroyed so their pseudonyms become permanently unlinkable, while the append-only chain stays intact and verifiable (SoT-18 §5-6, SoT-28 §5-7).</p>
+        </div>
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Erasure log</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">from audit chain</span></header>
+          <div id="eraseLog"></div>
+        </section>
+        <section class="card" style="margin-top:20px"><header><h2>Retention</h2></header>
+          <div class="integ-row"><span class="lbl">HOT (queryable)</span><span class="val">~90d</span></div>
+          <div class="integ-row"><span class="lbl">WARM (compressed)</span><span class="val">~1y</span></div>
+          <div class="integ-row"><span class="lbl">COLD (WORM)</span><span class="val">1–7y</span></div>
+        </section>
+      </div>
+    </div>`;
+  $('#e-go').onclick=async()=>{
+    const subj=$('#e-subj').value.trim(); if(!subj){$('#e-subj').focus();return;}
+    if(!await confirmAction({title:'Crypto-shred subject',danger:true,word:'ERASE',
+      msg:'Requesting erasure of <b class="mono">'+esc(subj)+'</b>. After a DPO approves and the hold window elapses, the linkage key for this subject is permanently destroyed (irreversible). The audit chain stays intact.'})) return;
+    try{ const r=await api('/erasure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({Subject:subj,LegalBasis:$('#e-basis').value})});
+      toast(r.approvalId?'Erasure requested — needs a DPO approver (dual-control)':'Requested'); loadCompliance(); }
+    catch(e){ toast(e.message.includes('legal')?'Legal basis required':'Erasure request failed'); }
+  };
+  try{ const d=await api('/audit?limit=100'); const evs=(d.records||[]).filter(r=>r.event_type&&r.event_type.startsWith('erasure')).slice(0,10);
+    $('#eraseLog').innerHTML=evs.map(r=>`<div class="integ-row"><span class="lbl mono" style="font-size:11.5px">${esc(r.event_type)}</span><span class="val" style="font-size:11px;color:var(--muted)">#${r.seq}</span></div>`).join('')||'<div class="empty">No erasure events.</div>';
+  }catch(e){}
+}
+
+// ---------- drill-over ----------
+async function drill(ref){
+  const scrim=$('#scrim'),dr=$('#drawer');
+  $('#d-title').textContent=ref||'record'; $('#d-body').innerHTML='<div class="empty">Loading…</div>';
+  scrim.classList.add('show'); dr.classList.add('show');
+  let r; try{ r=await api('/incidents/'+encodeURIComponent(ref)); }catch(e){ $('#d-body').innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const sig=(r.top_signals||[]).map(s=>`<div class="kv"><span class="k mono" style="font-size:12px">${esc(s.id)}</span><span class="v">${(s.conf||0).toFixed(2)}</span></div>`).join('');
+  $('#d-body').innerHTML=`
+    <div><div class="sec-label">Decision</div>
+      <div class="kv"><span class="k">verdict</span><span class="v">${verdictCell(r.verdict)}</span></div>
+      <div class="kv"><span class="k">event</span><span class="v" style="font-size:12px">${esc(r.event_type)}</span></div>
+      <div class="kv"><span class="k">rules</span><span class="v">${(r.triggered_rules||[]).join(', ')||'—'}</span></div>
+      <div class="kv"><span class="k">risk</span><span class="v">${r.risk_score||0}</span></div>
+      <div class="kv"><span class="k">action / mode</span><span class="v">${esc(r.enforcement_action||'—')} · ${esc(r.enforcement_mode||'—')}</span></div>
+      ${r.fail_reason?`<div class="kv"><span class="k">reason</span><span class="v" style="font-size:11.5px">${esc(r.fail_reason)}</span></div>`:''}</div>
+    <div><div class="sec-label">Subject (pseudonymized)</div>
+      <div class="kv"><span class="k">session</span><span class="v" style="color:var(--faint);font-size:11px">${esc((r.session_pseudonym||'—')).slice(0,20)}…</span></div>
+      <div class="kv"><span class="k">host / route</span><span class="v" style="font-size:12px">${esc(r.host||'—')} ${esc(r.route_class||'')}</span></div>
+      <div class="kv"><span class="k">config</span><span class="v">${esc(r.config_version||'—')}</span></div>
+      <div class="kv"><span class="k">chain seq</span><span class="v">#${r.seq}</span></div></div>
+    ${sig?`<div><div class="sec-label">Top contributors</div>${sig}</div>`:''}
+    <div><div class="sec-label">Actions</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="d-rescore" data-tip="Re-open this record to re-examine the decision">Copy incident id</button>
+        <button class="btn" id="d-erase" data-tip="Start a right-to-erasure for this subject (resolves the pseudonym via the reverse index; dual-control)">Request erasure of this subject</button>
+      </div></div>
+    <div class="note">Identifiers are per-subject-keyed pseudonyms (SoT-18 §5). Re-identification requires a dual-control vault request; erasure crypto-shreds this subject from the Compliance view.</div>`;
+  // Incident → action linkage (WS9): jump to Compliance pre-filled with this subject.
+  $('#d-erase') && ($('#d-erase').onclick=()=>{
+    const psn=r.session_pseudonym||''; if(!psn){ toast('No subject pseudonym on this record'); return; }
+    $('#scrim').classList.remove('show'); $('#drawer').classList.remove('show');
+    show('compliance');
+    setTimeout(()=>{ const f=$('#e-subj'); if(f){ f.value=psn; f.focus(); toast('Subject loaded — add a DPO approver, then request erasure'); } },120);
+  });
+  $('#d-rescore') && ($('#d-rescore').onclick=()=>{ navigator.clipboard && navigator.clipboard.writeText(r.incident||('#'+r.seq)); toast('Incident id copied'); });
+}
+$('#d-close').onclick=$('#scrim').onclick=()=>{$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');};
+addEventListener('keydown',e=>{if(e.key==='Escape'){$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');}});
+
+// ---------- status bar + live ----------
+const loaders={overview:loadOverview,integrity:loadIntegrity,sessions:loadSessions,bans:loadBans,policy:loadPolicy,compliance:loadCompliance};
+async function refreshStatus(){
+  try{ const d=await api('/integrity'); $('#sb-chain').innerHTML=d.ok?'<span class="ok">●</span> chain verified':'<span class="bad">●</span> chain VIOLATION';
+    $('#sb-node').textContent='node '+d.node+' · '+d.records+' rec'; $('#liveLabel').textContent='live · '+d.records+' records';
+  }catch(e){ $('#liveLabel').textContent='offline'; $('#sb-chain').innerHTML='<span class="bad">●</span> chain unreachable'; }
+  try{ const b=await api('/bans'); $('#banBadge').textContent=b.count; }catch(e){}
+}
+$('#refreshBtn').onclick=()=>{ loaders[current](); refreshStatus(); toast('Refreshed'); };
+// auto-refresh overview + status
+setInterval(()=>{ refreshStatus(); if(current==='overview')loadOverview(); },4000);
+refreshStatus(); loadOverview();
+</script>
+</body>
+</html>

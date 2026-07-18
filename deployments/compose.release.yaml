@@ -1,0 +1,53 @@
+# humanymous Sentinel — adopter drop-in (SoT-31 R7). Pull-only: references
+# published ghcr.io images, so `compose up` is a PULL, not a source build.
+#
+# Adopt in three steps:
+#   1. cp .env.example .env   &&   edit .env   (your origin, domain, admin tokens)
+#   2. cp routes.conf.example routes.conf   &&   edit your protected paths
+#   3. docker compose -f compose.release.yaml up -d
+#
+# Sentinel joins YOUR existing origin network (external) and proxies to YOUR app.
+# This file ships NO build: and NO dev tokens; the war/demo stack lives in
+# deployments/compose.yaml.
+services:
+  sentinel:
+    image: ghcr.io/modootoday/humanymous-sentinel:${HMN_VERSION:-latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env                           # HMN_ADMIN_TOKENS (real, not e2e-*)
+        required: false                       # cp .env.example .env before `up`
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "${HMN_UPSTREAM}"                     # your origin, e.g. http://app:8080
+      - "-acme-domain"
+      - "${HMN_DOMAIN}"                       # real TLS; or mount a cert + use -tls-cert/-tls-key
+      - "-routes"
+      - "/etc/hmn/routes.conf"                # your protected paths
+      - "-keystore"
+      - "/data/keystore"                      # persistent audit identity (needs HMN_UNSEAL in .env)
+      - "-audit-wal"
+      - "/data/audit"                         # durable, replay-verified audit log (SoT-32)
+    ports:
+      - "443:8444"                            # public edge on 443 (ACME needs 443)
+      - "127.0.0.1:8445:8445"                 # admin console — host-loopback only
+    volumes:
+      - hmn-acme:/acme-cache
+      - hmn-data:/data
+      - ./routes.conf:/etc/hmn/routes.conf:ro
+    networks: [origin-net]
+
+networks:
+  # Join the adopter's existing origin network instead of a bundled demo.
+  # Create it (`docker network create ${HMN_ORIGIN_NET}`) and attach your app, or
+  # point HMN_ORIGIN_NET at the network your origin already runs on.
+  origin-net:
+    external: true
+    name: ${HMN_ORIGIN_NET:-humanymous-origin}
+
+volumes:
+  hmn-acme: {}
+  hmn-data: {}

@@ -1,0 +1,66 @@
+---
+title: Console localization & product-surface language
+---
+
+# Console localization & product-surface language
+
+**Diátaxis quadrant:** Reference. **Audience:** non-Korean (or non-English) operators evaluating the humanymous Sentinel product surface and its language.
+
+humanymous Sentinel ("Sentinel" after first mention) ships an **English product surface**. This page states, factually, which surfaces are English, what is Korean but not user-facing, and what localization is and is not shipped in the reference implementation. It is a reference implementation, not a production-hardened build, and localization is one of the areas a production deployment must supply for itself.
+
+For the docs' own language convention, see the [documentation style guide](../style-guide.md) (the docs are English-primary). For the documentation set overview, see the [README](../README.md).
+
+---
+
+## What the surface language is
+
+Every user-facing surface in the reference build is **English**:
+
+| Surface | Language | Notes |
+|---------|----------|-------|
+| Audit Console UI | English | The single-page app declares `<html lang="en">`. |
+| Admin API messages | English | Responses and error strings from the `/__hmn/admin` API. |
+| Server log lines | English | Log messages emitted by the running node. |
+| CSV export | English | The Overview "Export CSV" button downloads `audit-feed.csv` (`text/csv`); its column headers are English. |
+| Reference challenge page | English | The interstitial an unverified visitor sees. |
+| Reference help pages | English | Including "[Why am I seeing this?](../help/why-am-i-seeing-this.md)". |
+
+An end user who is challenged, and an operator who opens the Audit Console, both read English in the reference build.
+
+## The internal specifications are Korean, but are not the surface
+
+The internal specification documents that describe how Sentinel is built are written in Korean. They are for developers of the reference implementation only. They are **not** part of the user-facing product surface — no operator or end user encounters them at runtime, and they are not shipped as product strings. Do not treat the existence of Korean internal specs as evidence that any runtime surface is Korean; it is not.
+
+## Localization is not shipped — it is a prod-delta
+
+Localization of the product surface into Korean or any other language is **not shipped in the reference**. This includes:
+
+- The Audit Console UI.
+- Admin API and error strings.
+- CSV export column headers (`audit-feed.csv`).
+- The end-user challenge page.
+- The end-user "Why am I seeing this?" help page.
+
+Adding any of these in another language is a **prod-delta** — a production responsibility for the operator, not a feature of the reference build. The reference does not define a message catalog, locale-negotiation, or string-externalization mechanism.
+
+> **TODO(verify):** Whether any i18n / string-externalization mechanism (message catalog, locale files, `Accept-Language` negotiation) exists in the reference. None is defined in the ground-truth facts; treat localization as fully unimplemented until confirmed in the source.
+
+## If you serve non-English visitors, localize the visitor-facing pages first
+
+Two surfaces are read by real end users rather than by your operators, and they are the priority to localize if your audience is not English-reading:
+
+- The **challenge page** an unverified visitor is shown. See [Challenge accessibility](../help/challenge-accessibility.md) for what that page is and its accessibility posture (the reference ships a minimal interstitial; a full self-hosted, accessible challenge UI is itself a prod-delta).
+- The **"Why am I seeing this?"** explanation page. See [why-am-i-seeing-this](../help/why-am-i-seeing-this.md).
+
+These pages face people who may have been challenged or blocked, so their language and clarity matter most to a non-English audience. The Audit Console, admin API, and log lines face your own operators and can stay English or be localized later, at your discretion.
+
+> **Note:** When you localize the challenge or help pages, keep them free of internal signal identifiers (hard-rule IDs, layer references, fingerprint terms). Those never belong in an end-user string in any language. The [documentation style guide](../style-guide.md) states this rule for the English surface; it applies equally to any translation.
+
+---
+
+## Related pages
+
+- [Documentation style guide](../style-guide.md) — the docs are English-primary; terminology and end-user-string rules.
+- [README](../README.md) — the documentation set overview.
+- [Challenge accessibility](../help/challenge-accessibility.md) — the visitor-facing challenge page.
+- [Why am I seeing this?](../help/why-am-i-seeing-this.md) — the visitor-facing explanation page.

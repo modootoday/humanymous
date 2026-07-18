@@ -1,0 +1,33 @@
+# GitHub Pages / Jekyll config for the humanymous documentation.
+# Serve this folder as the site: repo Settings → Pages → Source: "Deploy from a
+# branch" → Branch: main, Folder: /docs. Jekyll then treats /docs as the site root
+# and this file as its configuration.
+
+title: humanymous Sentinel — Documentation
+description: >-
+  Defensive anti-bot / browser-automation detection. Docs for the detection
+  engine, the Sentinel reverse proxy, and the Detection Observatory.
+lang: en
+
+# A supported GitHub Pages theme (styles every page; no Gemfile needed).
+theme: jekyll-theme-cayman
+
+# These are GitHub Pages default plugins and are active automatically; listed
+# here for clarity. They are why this doc set renders correctly as-is:
+#   jekyll-optional-front-matter — the ~40 pages without YAML front matter still
+#     render to HTML (Jekyll would otherwise skip them).
+#   jekyll-relative-links        — Markdown links like [x](foo.md) resolve to the
+#     rendered foo.html, so the cross-doc links keep working.
+#   jekyll-readme-index          — README.md is served as the folder index.
+#   jekyll-titles-from-headings  — a page <title> is taken from its first H1.
+plugins:
+  - jekyll-optional-front-matter
+  - jekyll-relative-links
+  - jekyll-readme-index
+  - jekyll-titles-from-headings
+
+# Nothing to exclude: serving from /docs means only this folder is the site, so
+# the internal Korean SoT specs, cmd/, and internal/ are never rendered.
+# Keep build artifacts and the screenshot utility out if they ever land here:
+exclude:
+  - "*.mjs"

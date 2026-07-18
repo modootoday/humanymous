@@ -1,0 +1,102 @@
+# Security vulnerability disclosure policy
+
+**Quadrant:** Reference (policy document). **Audience:** security researchers reporting a vulnerability in humanymous Sentinel, and buyers doing security due diligence.
+
+This page is a coordinated-disclosure policy for **humanymous Sentinel** itself — the reverse-proxy enforcement layer, its detection engine, control plane, admin plane and Audit Console. It tells a researcher how to report a suspected vulnerability, what a good report contains, and what testing is and is not authorized.
+
+> **Important:** This page is a **template**. humanymous Sentinel is a reference implementation, not a production-hardened build (see [Production vs reference](production-vs-reference.md)). Every operator or vendor who deploys Sentinel is responsible for filling in the real contact address, PGP key, response commitments and hosted `security.txt` before pointing researchers at them. Fields marked `<placeholder>` and lines marked `TODO(verify)` MUST be completed by the operator; do not treat the sample values below as live.
+
+## Scope
+
+This policy governs coordinated (responsible) disclosure of security vulnerabilities in a humanymous Sentinel deployment that you operate, or one you are explicitly authorized in writing to test.
+
+In scope for a report:
+
+- The Sentinel edge and control plane on the public listener (default `:8444`), including the client-facing `/__hmn/` endpoints (`/__hmn/session`, `/__hmn/collect`, `/__hmn/loader.js`, `/__hmn/csp-report`) and the challenge / proof-of-work interstitial.
+- The separate authenticated admin listener (default `:8445`), the Admin API under `/__hmn/admin/`, and the Audit Console SPA at `/__hmn/admin/console`.
+- The detection engine (layers L1–L7), the verdict pipeline (ALLOW / CHALLENGE / DENY) and hard rules, where a flaw lets an issue be exploited beyond the documented detection ceiling — for example a control-plane injection, an authentication or RBAC bypass, an audit-log integrity break, or a verdict-token forgery not already described as an accepted residual.
+- The tamper-evident audit log and its verification logic, key sealing (`-keystore` / `HMN_UNSEAL`), and the cryptographic-erasure (crypto-shred) path.
+
+> **Note:** A verdict of ALLOW, CHALLENGE or DENY that you disagree with is **not** by itself a vulnerability. Detection is heuristic and bounded: the documented T4 ceiling (anti-detect tooling plus real-human click-farms) and the fail-open residual for safe-method GET on non-strict routes are stated design limits, not defects. See [Hard rules, verdicts and signal-ID reference](hard-rules-verdicts.md). If you believe you can defeat a **hard rule** that is documented as high-confidence, that is in scope — report it.
+
+## How to report
+
+Report privately to the security contact and give the operator a chance to remediate before any public disclosure.
+
+- **Security contact:** `<security-contact>` — an email address or intake form the operator publishes.
+
+  > **TODO(verify):** Fill in the real reporting address (for example a dedicated `security@<your-domain>` mailbox or a hosted intake form URL).
+
+- **Encryption:** `<pgp-key-fingerprint>` — a PGP key or equivalent for sending sensitive details.
+
+  > **TODO(verify):** Publish a PGP key fingerprint and the key itself, or another supported encrypted channel.
+
+The conventional, machine-readable home for these details is a `security.txt` file served at `/.well-known/security.txt` (per the `security.txt` convention). Publish one so researchers can find your contact without guessing.
+
+### security.txt template
+
+Serve this at `https://<your-domain>/.well-known/security.txt`. Replace every placeholder with a real value before publishing.
+
+```
+Contact: <security-contact>
+Expires: <YYYY-MM-DDThh:mm:ssZ>
+Preferred-Languages: <e.g. en, ko>
+Policy: <URL of this published disclosure policy>
+Encryption: <URL of your PGP key>
+Acknowledgments: <URL of your researcher acknowledgments page, optional>
+```
+
+> **TODO(verify):** Set each field. `Expires` MUST be a future date and should be refreshed before it lapses; `Contact` MUST match the address above; `Policy` should point at your published copy of this page.
+
+## What to include in a report
+
+A report that lets the operator reproduce and triage quickly should contain:
+
+- A clear description of the vulnerability and the security impact you believe it has.
+- The affected component and version — the Go module is `github.com/modootoday/humanymous`; include the build or commit you tested and the relevant listener (edge `:8444` or admin `:8445`).
+- Exact reproduction steps: the request(s) sent, any required configuration or preset (`off` / `monitor` / `balanced` / `strict`), and the observed versus expected behavior.
+- Proof-of-concept material — a request you can `curl`, a script, or a log line to expect — kept minimal and non-destructive.
+- Any prerequisites (an admin token role, a specific route policy, a keystore state) needed to trigger the issue.
+- Your assessment of severity and, if known, a suggested remediation.
+
+> **Note:** Do not include third-party personal data or another operator's production data in a report. If your proof-of-concept incidentally captures a subject identifier, redact it — Sentinel stores identifiers only as per-subject pseudonyms by design, and your report should not reintroduce raw ones.
+
+## Coordinated-disclosure expectations
+
+- **Report privately first.** Send the details to the security contact before any public writeup, and give the operator reasonable time to remediate.
+- **Response and remediation timeline.** `<response-sla>` — the operator's target for acknowledging a report and for a coordinated disclosure window.
+
+  > **TODO(verify):** State the acknowledgment target (for example "within N business days"), the triage and fix timeline, and the coordinated public-disclosure window you commit to.
+
+- **Coordinate the public disclosure date** with the operator once a fix is available or a mitigation is in place. Credit for reporters is at the operator's discretion.
+
+  > **TODO(verify):** State whether the deployment offers acknowledgments, a hall of fame, or any bounty, and the terms.
+
+### Good-faith safe harbor
+
+Testing conducted in good faith and in compliance with this policy — against **systems you operate, or a deployment you are explicitly authorized in writing to test** — is welcomed, and the operator will not pursue or support action against you for such testing.
+
+> **Warning:** This safe harbor is **not** authorization to test third parties or anyone else's deployment. humanymous Sentinel is a defensive product; its red-team and self-validation tooling targets **your own** deployment only. Testing a Sentinel instance you neither operate nor have written permission to test is outside this policy, is not authorized, and may be unlawful. See [Self-validation and red-team testing](../how-to/self-validation-red-team.md).
+
+Good-faith testing means, at a minimum: you stay within scope; you avoid privacy violations, data destruction, and degradation of service to others; you use only the access necessary to demonstrate the issue; and you stop and report as soon as you confirm a vulnerability rather than pivoting deeper.
+
+> **TODO(verify):** The operator should reconcile this safe-harbor language with their own legal terms and jurisdiction before publishing; the wording here is a template, not legal advice.
+
+## Out of scope
+
+The following are generally **not** accepted as vulnerabilities under this policy:
+
+- Detection outcomes that reflect documented limits: the T4 ceiling (anti-detect tooling plus real-human click-farms), the accepted fail-open residual for safe-method GET/HEAD on non-strict routes, and the tamper-**evident** (not tamper-proof) in-window residual for audit records written after the last signed checkpoint.
+- Reports that a verdict was "wrong" without a concrete security impact — false positives and false negatives are handled as tuning and triage, not as disclosures. A privacy browser, extension, or old device being challenged is expected behavior, not a defect.
+- Findings that only apply to the reference build's explicit prod-deltas rather than a real deployment — for example the self-signed in-memory dev certificate, bearer dev tokens instead of mTLS/SSO, in-process (single-node) verdict and ban state, or the absence of automated key rotation. These are documented gaps a production deployment is expected to close; see [Production vs reference](production-vs-reference.md).
+- Volumetric denial-of-service, physical attacks, and social-engineering of the operator's staff.
+- Reports generated purely by automated scanners with no demonstrated, reproducible impact.
+- Any testing against a deployment you do not operate and are not authorized to test.
+
+> **TODO(verify):** The operator may add deployment-specific out-of-scope items (for example specific hostnames, staging environments, or third-party services fronted by Sentinel).
+
+## Related pages
+
+- [Self-validation and red-team testing](../how-to/self-validation-red-team.md) — how to exercise detection against your own deployment.
+- [Production vs reference](production-vs-reference.md) — what the reference build does not ship for production.
+- [Hard rules, verdicts and signal-ID reference](hard-rules-verdicts.md) — the verdict model and documented detection limits.

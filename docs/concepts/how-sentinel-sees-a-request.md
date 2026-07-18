@@ -1,0 +1,151 @@
+# Concepts & Glossary: How Sentinel sees a request
+
+> **Quadrant:** Explanation + glossary.
+> **Audience:** Everyone — integrators, operators, compliance/DPO, and evaluators. This page is the canonical shared vocabulary; other docs link their terms here.
+
+humanymous Sentinel is a reverse proxy that sits in front of your origin app. It terminates TLS, streams a detection bundle into the HTML it serves, scores each request across seven layers, and enforces a verdict at the edge before your origin is ever contacted. This page explains how a single request travels through Sentinel and defines every term the rest of the documentation uses.
+
+This repository is a **reference implementation**, not a production-hardened build. Where a capability differs in production, this page says so (see prod-delta in the glossary).
+
+Two design principles run through everything below:
+
+- **Cross-check first.** No single signal produces a verdict. Inter-layer disagreement — for example, a user agent that claims one browser while the TLS and HTTP/2 fingerprints resolve to another engine — carries more weight than any single "botness" score. Defense-in-depth means no single-signal verdict.
+- **Low false positive.** Privacy browsers, browser extensions, and older devices must not be scored as bots. Low-confidence signals get weak weighting, not penalties. Scoring is deterministic: the same input produces the same score.
+
+## 1. The request lifecycle
+
+A request moves through Sentinel in this order:
+
+1. **Browser → edge.** The end-user browser connects to Sentinel on the public edge listener (default `:8444`, HTTPS). Sentinel terminates TLS here.
+2. **Bundle injected.** For any route whose policy injects (see section 5), Sentinel streams the detection bundle into the served HTML. The bundle loads via the control plane (prefix `/__hmn/`).
+3. **Beacon to `/__hmn/collect`.** The browser runs the bundle and beacons the collected signals back to `/__hmn/collect` on the **same TLS connection** Sentinel used to serve the page. Using the same connection lets the server capture the L5 network and protocol signals (TLS and HTTP/2 fingerprints) and bind them to the client-side evidence.
+4. **L1–L7 scoring.** Sentinel aggregates the layer contributions into a risk score, then applies hard rules (see sections 2 and 3).
+5. **Verdict → enforce or pass.** The edge acts on the verdict: pass the request through to the origin, serve an accessible proof-of-work interstitial, or block it (see section 4). Every enforcement decision is written to the tamper-evident audit log **before** it takes effect.
+
+The origin (the app Sentinel fronts; also reachable via the `-upstream` flag) is contacted only when the verdict is ALLOW.
+
+## 2. The seven layers (L1–L7)
+
+Sentinel scores each request across seven layers. Layers L1–L4 run in the browser (JavaScript and WebAssembly); L5–L6 run on the Go server; L7 is the aggregation and decision step.
+
+| Layer | Role (one line) | Where it runs |
+|-------|-----------------|---------------|
+| **L1 Static client** | Reads static automation tells (webdriver flag, headless indicators). | JS/WASM |
+| **L2 Fingerprint** | Hashes canvas/WebGL/audio output, screen, and hardware traits. | JS/WASM |
+| **L3 Client integrity** | Detects patched natives, proxies, and hooks (toString-native checks). | WASM |
+| **L4 Behavioral** | Observes mouse, keystroke, and scroll patterns and the `isTrusted` flag. | JS collect → WASM/server |
+| **L5 Network / protocol** | Reads JA3/JA4, the HTTP/2 fingerprint, and header order from the connection. | Go server |
+| **L6 Consistency cross-check** | Checks that UA, UA client hints, JS evidence, and TLS agree with each other. | Go server |
+| **L7 Scoring / decision** | Aggregates the L1–L6 contributions into the 0–100 risk score, then applies hard rules. | Go server |
+
+L7 is both the seventh layer and the aggregation step: it turns everything the first six layers observed into one risk score, then lets hard rules override that score where warranted.
+
+## 3. Risk score and verdict mapping
+
+The **risk score** is a number from 0 to 100 (one decimal place). Higher means more evidence that the request is automated. The policy thresholds map the score to a verdict:
+
+| Risk score | Verdict |
+|------------|---------|
+| 0–29 | ALLOW |
+| 30–69 | CHALLENGE |
+| 70–100 | DENY |
+
+Hard rules (HR) can **override** the score-based verdict. A hard rule is a high-confidence pattern that promotes the verdict regardless of where the score landed — for example, a hard automation artifact that maps directly to DENY. Cross-check first means inter-layer disagreement can trigger a hard rule even when no single layer's score is high.
+
+One score-based path can be upgraded: a CHALLENGE that came from the **score** (no hard rule fired) becomes ALLOW if the session solved the proof-of-work (the `l7.pow.solved` signal). Proof-of-work never overrides a hard rule — it proves CPU work, not humanity.
+
+## 4. The three verdicts (and none)
+
+The engine emits one of three verdicts; the edge maps each to an action. There is also a fourth edge state, `none`, for requests with no evidence yet.
+
+| Verdict | Edge action | What happens |
+|---------|-------------|--------------|
+| **ALLOW** | `pass` | The request is forwarded to the origin. |
+| **CHALLENGE** | `challenge_pow` | Sentinel serves an accessible proof-of-work interstitial from the control plane. The origin is never contacted until the challenge is satisfied. |
+| **DENY** | `block` | The request is blocked before any upstream connection is made. The origin is never contacted. |
+| **none (Unknown)** | fail-open or fail-closed | No evidence yet. The edge either passes or challenges depending on route and method (see below). |
+
+**Fail-open vs fail-closed on Unknown.** When the verdict is Unknown, the edge fails **closed** (→ CHALLENGE) if the route is strict or the HTTP method is unsafe (POST/PUT/PATCH/DELETE). It fails **open** (→ pass) only for safe-method requests (GET/HEAD) on non-strict routes. The safe-GET fail-open on balanced routes is a documented, accepted residual; it is covered meanwhile by fingerprint and subnet rate metering.
+
+End users who are challenged or blocked see plain language and an incident handle only — never internal signal names, hard-rule IDs, or layer references.
+
+## 5. Policy presets and modes
+
+Sentinel matches each request to a route policy by **longest-prefix wins**; any unmatched route defaults to `balanced`. Four presets are implemented:
+
+| Preset | Injects bundle | Enforces | Notes |
+|--------|----------------|----------|-------|
+| **off** | No | No | Bypass — no injection, no enforcement. |
+| **monitor** | Yes | No | Scores and logs, enforces nothing. |
+| **balanced** | Yes | Yes | Default for any unmatched route; fails open on unknown safe-GET. |
+| **strict** | Yes | Yes | Fails closed (unknown verdict → challenge) and re-scores synchronously before mutation. |
+
+> **Note:** The `low` and `api` presets are reserved and are **not** implemented in the reference build. Requests naming them fall back to `balanced`. Do not treat them as shipping.
+
+The default route table ships as: `/login` → strict, `/checkout` → strict, `/admin` → strict, `/health` → off. Everything else → balanced.
+
+**Modes** describe how much of the pipeline enforces:
+
+- **monitor** — score and log, enforce nothing.
+- **shadow** — observe alongside enforcement without acting on the observed path. > **TODO(verify):** the exact behavior distinguishing shadow from monitor mode is not in the brief.
+- **enforce** — act on the verdict at the edge.
+
+The `-monitor` flag or the kill switch downgrades enforcement to monitor **fleet-wide** (a global monitor mode that turns every route into score-and-log).
+
+> **Warning:** The kill switch is a dual-control flip that demotes hard-rule enforcement to monitor across the entire fleet — detection stops and traffic flows. Manual bans still enforce under the kill switch. Because its scope is fleet-wide, treat it accordingly.
+
+## 6. The verdict trust token
+
+A **verdict trust token** is a fingerprint-bound token that records a prior verdict. When a valid trust token is present, an ALLOW verdict can take a fast path with no re-scoring. The token is bound to the client fingerprint: a token replayed from a different fingerprint, or forged, is rejected (hard rule HR-28) rather than honored.
+
+## 7. Attacker tiers (T0–T4)
+
+The documentation uses a five-tier scale to describe the automation Sentinel is designed to resist. Naming an abstract adversary tier here is a threat-model description, not a claim about any real user.
+
+| Tier | Description |
+|------|-------------|
+| **T0** | Non-browser HTTP clients. |
+| **T1** | Naive Selenium / Puppeteer. |
+| **T2** | Stealth-patched automation with residual leaks. |
+| **T3** | Real-engine automation (nodriver, camoufox, patchright). Behavior and network become the deciding signals; confidence is lower. |
+| **T4** | Anti-detect tooling plus real-human click-farms. |
+
+**The T4 boundary.** T4 is an explicit design boundary — it is **not** solved. Real humans clicking through anti-detect browsers cannot be separated from legitimate users by client or network signals alone. Sentinel mitigates T4 only through rate limiting and reputation, and this documentation does not claim otherwise.
+
+## 8. Glossary
+
+Every canonical term used across the documentation, with a one-line plain definition. Other docs link here.
+
+| Term | Definition |
+|------|------------|
+| **humanymous** | The brand and detection engine. Always lowercase, even at the start of a sentence. |
+| **Sentinel** | The reverse-proxy enforcement layer that fronts your origin. First mention per page is "humanymous Sentinel", then "Sentinel". |
+| **Audit Console** | The admin single-page app served from the separate admin listener, for reading verdicts, integrity, bans, policy, and erasure. |
+| **verdict** | The engine decision for a request: ALLOW, CHALLENGE, or DENY (values written uppercase). |
+| **risk score** | A 0–100 number (one decimal) that L7 aggregates from the layer contributions; maps to a verdict via policy thresholds. |
+| **hard rule / HR-14** | A high-confidence pattern that can override the score-based verdict. Written with a hyphen and no space, e.g. HR-14. |
+| **L1–L7** | The seven detection layers, from static client signals (L1) through scoring and decision (L7). |
+| **monitor / shadow / enforce** | The three modes: score-and-log, observe-alongside, and act-on-verdict. |
+| **kill switch** | A dual-control flip that demotes hard-rule enforcement to monitor fleet-wide. |
+| **cryptographic erasure (crypto-shred)** | Right-to-erasure by destroying the per-subject linkage key; the audit chain and anchors stay intact and verifiable. |
+| **proof-of-work / PoW** | CPU work a challenged session performs; can upgrade a score-based CHALLENGE to ALLOW, but never overrides a hard rule. |
+| **allowlist / denylist** | Explicit lists of entities to permit or block. |
+| **pseudonymous** | Raw identifiers are stored only as per-subject-key-derived pseudonyms, never raw. Not "anonymous". |
+| **tamper-evident** | Tampering with the audit log is detectable; the log is not "tamper-proof". |
+| **origin / upstream** | The app Sentinel fronts and does not control. "origin" is the primary term; "upstream" is the `-upstream` flag alias. |
+| **verdict trust token** | A fingerprint-bound token that lets a valid ALLOW take a fast path with no re-scoring. |
+| **incident handle** | The opaque reference an end user receives on a challenge or block page, for appeal. |
+| **fingerprint** | A derived identifier for a client, combining signals such as TLS/HTTP2 traits and device characteristics. |
+| **dual-control** | A two-person control: a distinct second role (Approver, or DPO for erasure) must commit a pending action. |
+| **Auditor / Operator / Approver / DPO** | The admin RBAC roles: read-only, operate, approve two-person actions, and data-protection officer. |
+| **reference implementation vs production-hardened / prod-delta** | This repo is a reference build; features or behaviors that differ in production are labeled prod-delta. |
+
+## Where to go next
+
+- New to integrating? See [Start here: Integrator](../start-here/integrator.md).
+- Running Sentinel? See [Start here: Operator](../start-here/operator.md).
+- Compliance and data protection? See [Start here: Compliance / DPO](../start-here/compliance-dpo.md).
+- Evaluating the detection? See [Start here: Evaluator](../start-here/evaluator.md).
+- Full hard-rule and signal-ID reference: [Hard Rules, Verdicts & Signal-ID Reference](../reference/hard-rules-verdicts.md).
+- Flags, config, and per-route policy: [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md).
+- Try it hands-on: [Quickstart (monitor mode, 30 min)](../tutorials/quickstart-monitor-mode.md).

@@ -1,0 +1,241 @@
+// Command redteam is an aggressive Red-team client that attacks the anti-bypass
+// systems directly (SoT-07/12). It controls the TLS fingerprint (uTLS) and RIT
+// tokens precisely to attempt evasions a browser cannot, so the Blue engine's
+// network-bypass and anti-tamper defenses can be verified. Local target only.
+//
+// Attacks (-attack), all local-target-only:
+//   tls-static   : a fixed uTLS parrot (no extension permutation)
+//   tls-rotate   : two requests in one session with different TLS fingerprints
+//   ua-rotate    : two requests in one session with different User-Agents
+//   rit-replay   : replay a previously valid RIT token
+//   rit-tamper   : sign one body, send a different body
+//   flood        : application-layer request flood (fingerprint-keyed rate)
+//   distributed  : one fingerprint across rotated proxy subnets
+// (HTTP/2 Rapid Reset is exercised by the rapid_reset node profile, not this binary.)
+package main
+
+import (
+	"bufio"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
+	"time"
+
+	utls "github.com/refraction-networking/utls"
+)
+
+var (
+	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed")
+	host   = flag.String("host", "127.0.0.1:8443", "target host:port")
+)
+
+func main() {
+	flag.Parse()
+	var v map[string]any
+	var err error
+	switch *attack {
+	case "flood":
+		v, err = flood()
+	case "distributed":
+		v, err = distributed()
+	case "tls-static":
+		v, err = tlsStatic()
+	case "tls-rotate":
+		v, err = tlsRotate()
+	case "ua-rotate":
+		v, err = uaRotate()
+	case "rit-replay":
+		v, err = ritReplay()
+	case "rit-tamper":
+		v, err = ritTamper()
+	default:
+		fmt.Fprintln(os.Stderr, "unknown attack:", *attack)
+		os.Exit(2)
+	}
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "redteam:", err)
+		os.Exit(1)
+	}
+	b, _ := json.Marshal(v)
+	fmt.Println(string(b))
+}
+
+// --- HTTP/1.1 over a uTLS-controlled ClientHello ---
+
+type resp struct {
+	status  int
+	body    []byte
+	cookie  string
+	headers map[string]string
+}
+
+// do sends one HTTP/1.1 request over a fresh TLS connection with the given
+// uTLS ClientHelloID, returning the response.
+func do(helloID utls.ClientHelloID, method, path string, hdr map[string]string, body, cookie string) (*resp, error) {
+	raw, err := net.Dial("tcp", *host)
+	if err != nil {
+		return nil, err
+	}
+	defer raw.Close()
+	spec, err := utls.UTLSIdToSpec(helloID)
+	if err != nil {
+		return nil, err
+	}
+	forceHTTP11(&spec)
+	uconn := utls.UClient(raw, &utls.Config{ServerName: hostname(*host), InsecureSkipVerify: true}, utls.HelloCustom)
+	if err := uconn.ApplyPreset(&spec); err != nil {
+		return nil, err
+	}
+	if err := uconn.Handshake(); err != nil {
+		return nil, err
+	}
+
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s %s HTTP/1.1\r\n", method, path)
+	fmt.Fprintf(&b, "Host: %s\r\n", hostname(*host))
+	for k, v := range hdr {
+		fmt.Fprintf(&b, "%s: %s\r\n", k, v)
+	}
+	if cookie != "" {
+		fmt.Fprintf(&b, "Cookie: %s\r\n", cookie)
+	}
+	if body != "" {
+		fmt.Fprintf(&b, "Content-Length: %d\r\n", len(body))
+	}
+	b.WriteString("Connection: close\r\n\r\n")
+	b.WriteString(body)
+	if _, err := io.WriteString(uconn, b.String()); err != nil {
+		return nil, err
+	}
+
+	r, err := http.ReadResponse(bufio.NewReader(uconn), nil)
+	if err != nil {
+		return nil, err
+	}
+	defer r.Body.Close()
+	out, _ := io.ReadAll(r.Body)
+	res := &resp{status: r.StatusCode, body: out, headers: map[string]string{}}
+	for k := range r.Header {
+		res.headers[k] = r.Header.Get(k)
+	}
+	if sc := r.Header.Get("Set-Cookie"); sc != "" {
+		res.cookie = strings.SplitN(sc, ";", 2)[0]
+	}
+	return res, nil
+}
+
+// session establishes a session (GET /api/session) with a given hello, returning
+// the cookie and the RIT seed/n.
+func session(helloID utls.ClientHelloID) (cookie string, seed []byte, n uint64, err error) {
+	r, err := do(helloID, "GET", "/api/session", withBrowserHeaders(map[string]string{"User-Agent": chromeUA}), "", "")
+	if err != nil {
+		return "", nil, 0, err
+	}
+	cookie = r.cookie
+	var j struct {
+		RitSeed string `json:"ritSeed"`
+		RitN    uint64 `json:"ritN"`
+	}
+	_ = json.Unmarshal(r.body, &j)
+	if j.RitSeed != "" {
+		seed, _ = base64.RawURLEncoding.DecodeString(j.RitSeed)
+	}
+	return cookie, seed, j.RitN, nil
+}
+
+const chromeUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+const collectBody = `{"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0 Safari/537.36","signals":[]}`
+
+// browserHeaders spoofs the client-hint / sec-fetch headers a real Chrome sends,
+// so the L6 header cross-checks stay quiet and the Blue engine must catch the
+// attack via the specific anti-bypass signal (a curl_cffi-class adversary).
+func browserHeaders() map[string]string {
+	return map[string]string{
+		"sec-ch-ua":          `"Chromium";v="126", "Google Chrome";v="126", "Not.A/Brand";v="24"`,
+		"sec-ch-ua-mobile":   "?0",
+		"sec-ch-ua-platform": `"Windows"`,
+		"sec-fetch-site":     "same-origin",
+		"sec-fetch-mode":     "cors",
+		"sec-fetch-dest":     "empty",
+		"accept":             "*/*",
+		"accept-language":    "en-US,en;q=0.9",
+		"accept-encoding":    "gzip, deflate, br, zstd",
+	}
+}
+
+func withBrowserHeaders(extra map[string]string) map[string]string {
+	h := browserHeaders()
+	for k, v := range extra {
+		h[k] = v
+	}
+	return h
+}
+
+// ritToken computes the live RIT token for a body (matches cmd/server/rit.go).
+func ritToken(seed []byte, sid string, n, tb uint64, body string) string {
+	bh := sha256.Sum256([]byte(body))
+	canonical := sid + "\n" + strconv.FormatUint(n, 10) + "\n" +
+		strconv.FormatUint(tb, 10) + "\n" + hex.EncodeToString(bh[:])
+	m := hmac.New(sha256.New, seed)
+	m.Write([]byte(canonical))
+	return base64.RawURLEncoding.EncodeToString(m.Sum(nil))
+}
+
+func sidFromCookie(cookie string) string {
+	if i := strings.IndexByte(cookie, '='); i >= 0 {
+		return cookie[i+1:]
+	}
+	return ""
+}
+
+func collect(hello utls.ClientHelloID, ua, cookie string, hdr map[string]string, body string) (map[string]any, error) {
+	v, _, err := collectSeed(hello, ua, cookie, hdr, body)
+	return v, err
+}
+
+// collectSeed POSTs /api/collect and also returns the rotated seed the server
+// issued in the response (X-HM-Seed), so the caller can sign its next request.
+func collectSeed(hello utls.ClientHelloID, ua, cookie string, hdr map[string]string, body string) (map[string]any, []byte, error) {
+	h := map[string]string{"User-Agent": ua, "Content-Type": "application/json"}
+	for k, v := range hdr {
+		h[k] = v
+	}
+	r, err := do(hello, "POST", "/api/collect", h, body, cookie)
+	if err != nil {
+		return nil, nil, err
+	}
+	var v map[string]any
+	_ = json.Unmarshal(r.body, &v)
+	var seed []byte
+	if s := r.headers["X-Hm-Seed"]; s != "" {
+		seed, _ = base64.RawURLEncoding.DecodeString(s)
+	}
+	return v, seed, nil
+}
+
+func forceHTTP11(spec *utls.ClientHelloSpec) {
+	for _, ext := range spec.Extensions {
+		if alpn, ok := ext.(*utls.ALPNExtension); ok {
+			alpn.AlpnProtocols = []string{"http/1.1"}
+		}
+	}
+}
+
+func hostname(hp string) string {
+	if h, _, err := net.SplitHostPort(hp); err == nil {
+		return h
+	}
+	return hp
+}
+
+var _ = time.Now

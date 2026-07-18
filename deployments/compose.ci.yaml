@@ -1,0 +1,23 @@
+# CI-only build-cache overlay (GitHub Actions `gha` backend). Kept OUT of the
+# base compose so local builds never touch a backend they don't have. Used as:
+#   docker compose -f compose.yaml -f compose.ci.yaml build
+#
+# ROI note: this stack's build time is dominated by pulling the ~3.5GB Playwright
+# base image (a registry pull the layer cache can't shortcut). The gha cache still
+# saves the Go module download + compile layers shared by all three images.
+# Distinct `scope`s stop the images clobbering each other's cache entries.
+services:
+  engine:
+    build:
+      cache_from: ["type=gha,scope=engine"]
+      cache_to: ["type=gha,mode=max,scope=engine"]
+
+  sentinel:
+    build:
+      cache_from: ["type=gha,scope=sentinel"]
+      cache_to: ["type=gha,mode=max,scope=sentinel"]
+
+  bots:
+    build:
+      cache_from: ["type=gha,scope=bots"]
+      cache_to: ["type=gha,mode=max,scope=bots"]

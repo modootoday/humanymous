@@ -1,0 +1,377 @@
+package sentinel
+
+import (
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"strings"
+	"sync/atomic"
+	"time"
+
+	"github.com/modootoday/humanymous/internal/abuse"
+	"github.com/modootoday/humanymous/internal/audit"
+)
+
+// sentinel.go is the two-plane reverse proxy handler (SoT-19). It routes the
+// reserved control-plane namespace locally, enforces the sticky verdict at the
+// pre-upstream gate, forwards ALLOW traffic to the origin, and injects the
+// detection bundle into HTML responses on the way back.
+
+// Server is the humanymous proxy.
+type Server struct {
+	cfg      Config
+	sink     *audit.Sink
+	vault    *audit.Vault
+	verdicts *VerdictStore
+	control   http.Handler // /__hmn/* control plane (session/collect/pow/loader)
+	rp        *httputil.ReverseProxy
+	snippet   []byte
+	originKey []byte         // origin-cloaking HMAC key (SoT-23 §1)
+	tokenKey  []byte         // verdict-token HMAC key (SoT-21 §3)
+	epoch     string         // fixed origin-auth epoch (SoT-23 §1)
+	tokenEpochs *EpochManager // rotating verdict-token epoch (SoT-28 WS6)
+	sweep     *SweepDetector // decision-probing recon detector (HR-30)
+	decFloor  time.Duration  // constant decision-latency floor (HR-30)
+	bans      *BanStore      // rate-limit-triggered + manual bans (SoT-27)
+	auth      *AdminAuth     // admin-plane authentication (SoT-28 WS1)
+	approvals *ApprovalStore // two-phase dual-control (SoT-28 WS2)
+	shreds    *ShredQueue    // erasure hold-window queue (SoT-28 WS3)
+	incidentLimiter *abuse.Limiter // per-operator incident-lookup enumeration cap (SoT-28 WS4)
+	devConsoleToken string   // dev bearer injected into the served console (SoT-28 §1)
+	killSwitch atomic.Bool   // runtime global-monitor override (SoT-28 WS9 kill switch)
+	nowFn     func() time.Time
+}
+
+// RunDueShreds executes any erasures whose hold window has elapsed and seals a
+// signed erasure certificate for each (SoT-28 WS3). Call periodically.
+func (s *Server) RunDueShreds(now time.Time) int {
+	if s.shreds == nil {
+		return 0
+	}
+	due := s.shreds.Due(now)
+	for _, d := range due {
+		existed := s.vault != nil && s.vault.Shred(d.Subject)
+		s.emitErasureCertificate(d, existed)
+	}
+	return len(due)
+}
+
+// emitErasureCertificate seals a verifiable erasure certificate: the STH root at
+// erasure time, key id, legal basis, and the two principals (SoT-28 §7). Because
+// records store only pseudonyms, the certificate proves severance without PII.
+func (s *Server) emitErasureCertificate(d ScheduledShred, existed bool) {
+	root, size := "", uint64(0)
+	if cps := s.sink.Log().Checkpoints(); len(cps) > 0 {
+		root, size = cps[len(cps)-1].Root, cps[len(cps)-1].TreeSize
+	}
+	evt := audit.EventErasureCompleted
+	if !existed {
+		evt = "erasure.no_subject"
+	}
+	rootShort := root
+	if len(rootShort) > 12 {
+		rootShort = rootShort[:12]
+	}
+	s.sink.Emit(audit.Record{
+		EventType: evt, Actor: audit.Actor{Kind: "operator", IDPsn: s.pseudonym(d.Approver, d.Approver)},
+		TenantID: s.cfg.NodeID, Mode: "enforce", KeyID: "k1",
+		FailReason: "erasure-cert: sth_root=" + rootShort + " tree_size=" + itoaInt(int(size)) + " legal_basis=" + d.LegalBasis + " " + d.Requester + "->" + d.Approver,
+	})
+}
+
+// monitorOn reports whether enforcement is globally suppressed (config or the
+// runtime kill switch) — everything drops to monitor/shadow (SoT-28 WS9).
+func (s *Server) monitorOn() bool { return s.cfg.GlobalMonitor || s.killSwitch.Load() }
+
+// SetKillSwitch flips the runtime global-monitor override (dual-controlled at the
+// admin layer). When on, every route scores + logs but enforces nothing.
+func (s *Server) SetKillSwitch(on bool) { s.killSwitch.Store(on) }
+
+// enforcing reports the EFFECTIVE enforcement for a route (route policy AND not
+// globally monitored).
+func (s *Server) enforcing(route routePolicy) bool { return route.enforce && !s.monitorOn() }
+
+// Bans exposes the ban store for console management (SoT-26/27).
+func (s *Server) Bans() *BanStore { return s.bans }
+
+// Auth exposes the admin auth table so cmd/sentinel can seed operators (SoT-28).
+func (s *Server) Auth() *AdminAuth { return s.auth }
+
+// SetDevConsoleToken injects a dev bearer token into the served console so the
+// SPA can call the authenticated admin API (dev only; prod uses SSO/mTLS login).
+func (s *Server) SetDevConsoleToken(t string) { s.devConsoleToken = t }
+
+// AdminHandler is the admin plane mounted on a SEPARATE authenticated listener
+// (SoT-28 WS1). It answers only the reserved /__hmn/admin/* prefix; anything
+// else 404s. It is NEVER mounted on the public proxied listener.
+func (s *Server) AdminHandler() http.Handler {
+	prefix := s.cfg.ControlPath + "admin/"
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.URL.Path, prefix) {
+			http.NotFound(w, r)
+			return
+		}
+		s.handleAdmin(w, r, strings.TrimPrefix(r.URL.Path, prefix))
+	})
+}
+
+// NewServer builds the proxy. control handles the reserved namespace (with the
+// prefix already stripped). upstream is the origin base URL.
+func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts *VerdictStore, control http.Handler) (*Server, error) {
+	if cfg.ControlPath == "" {
+		cfg.ControlPath = "/__hmn/"
+	}
+	target, err := url.Parse(cfg.Upstream)
+	if err != nil {
+		return nil, err
+	}
+	rp := httputil.NewSingleHostReverseProxy(target)
+	s := &Server{
+		cfg:      cfg,
+		sink:     sink,
+		vault:    vault,
+		verdicts: verdicts,
+		control:  control,
+		rp:        rp,
+		snippet:   []byte(injectMarker + `<script src="` + cfg.ControlPath + `loader.js" defer></script>`),
+		originKey: cfg.OriginKey,
+		tokenKey:  cfg.TokenKey,
+		epoch:     "e1",
+		tokenEpochs: orDefaultEpochs(cfg.TokenEpochs),
+		sweep:     NewSweepDetector(30*time.Second, 8), // >8 sessions/fp/30s = recon
+		decFloor:  2 * time.Millisecond,                // HR-30 timing-oracle floor (SoT-28 WS2 breakout)
+		bans:      NewBanStore(rlWindow(cfg), rlSoft(cfg), rlHard(cfg)), // rate limiter -> auto-ban (SoT-27)
+		auth:      NewAdminAuth(),
+		approvals: NewApprovalStore(cfg.TokenKey, 10*time.Minute),
+		shreds:    NewShredQueue(erasureHold(cfg)),
+		incidentLimiter: abuse.NewLimiter(time.Minute, 60, 120), // >120 incident lookups/min = trawl
+		nowFn:     time.Now,
+	}
+	// Response hook: force identity upstream (done in Director), inject into HTML.
+	rp.ModifyResponse = s.modifyResponse
+	base := rp.Director
+	rp.Director = func(r *http.Request) {
+		base(r)
+		// Header hygiene (SoT-19 step 3 / HR-27b): inbound trust headers were
+		// already stripped at ingress; re-derive from the socket here.
+		stripInbound(r)
+		r.Header.Set("Accept-Encoding", "identity")                 // SoT-20 §1: no recompress
+		r.Header.Set("X-Forwarded-Host", r.Host)                    // set by us, post-strip
+		r.Header.Set("X-Forwarded-For", clientIP(r))                // authoritative source
+		// Origin cloaking (SoT-23 §1, HR-24): the origin accepts ONLY proxied
+		// traffic carrying this rotating token; direct hits lack it.
+		r.Header.Set("X-Hmny-Origin-Auth", originAuth(s.originKey, s.epoch))
+	}
+	return s, nil
+}
+
+// ServeHTTP is the request entry point.
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	sid := sessionID(r)
+
+	// The edge request path is a sequence of security-domain gates (see
+	// sentinel_gates.go). Each returns true when it has handled (short-circuited)
+	// the request. Order is load-bearing: control-plane split, then ban, framing,
+	// header hygiene, verdict-token fast-path, upgrade, sweep, then the verdict
+	// gate. The admin plane is never on this public listener (SoT-28 WS1).
+	if s.routeControlPlane(w, r) { // SoT-19 §3
+		return
+	}
+	if s.banGate(w, r, sid) { // SoT-27, HR-21
+		return
+	}
+	if s.smuggleGate(w, r, sid) { // SoT-23 §3, HR-23
+		return
+	}
+	if s.spoofHeaderGate(w, r, sid) { // SoT-23 §4, HR-27b
+		return
+	}
+
+	route := s.cfg.resolve(r.URL.Path)
+	if s.verdictTokenGate(w, r, sid, route) { // SoT-21 §3, HR-28 (deny or trusted fast-path)
+		return
+	}
+	if s.upgradeGate(w, r, sid, route) { // SoT-21 §5, HR-26
+		return
+	}
+	now := s.nowFn()
+	if s.sweepGate(w, r, sid, route, now) { // SoT-21 §8, HR-30
+		return
+	}
+	s.applyVerdict(w, r, sid, route, now) // SoT-19 step 6, SoT-21 §1
+}
+
+// maxInjectBody caps the declared HTML size we will scan for an injection point
+// (HR-27a). A larger body is passed through un-injected rather than buffered.
+const maxInjectBody = 8 << 20 // 8 MiB
+
+// auditInjectSkip records that injection was safely skipped (SoT-20 §8).
+func (s *Server) auditInjectSkip(resp *http.Response, reason string) {
+	s.sink.Emit(audit.Record{
+		EventType:  audit.EventInjectSkipped,
+		Actor:      audit.Actor{Kind: "system"},
+		TenantID:   s.cfg.NodeID,
+		RouteClass: "html",
+		Rules:      []string{"HR-27a"},
+		FailReason: reason,
+		Mode:       "enforce",
+		KeyID:      "k1",
+	})
+}
+
+// hasValidToken reports whether the request carries a verdict token that
+// verifies and binds to this client's fingerprint (SoT-21 §3).
+func (s *Server) hasValidToken(r *http.Request) bool {
+	if len(s.tokenKey) == 0 {
+		return false
+	}
+	c, err := r.Cookie(verdictCookie)
+	if err != nil || c.Value == "" {
+		return false
+	}
+	return verifyVerdictToken(s.tokenKey, c.Value, tokenBind(r), sessionID(r), s.nowFn(), s.tokenEpochs.Accepted()...) == tokenOK
+}
+
+// forward proxies to the upstream origin (ALLOW path, SoT-19 step 8-9).
+func (s *Server) forward(w http.ResponseWriter, r *http.Request, route routePolicy) {
+	r = r.WithContext(withRoute(r.Context(), route))
+	s.rp.ServeHTTP(w, r)
+}
+
+// modifyResponse injects the bundle into HTML responses (SoT-19 step 9). It is
+// add-only and drops Content-Length so the framing stays correct (SoT-20 §3).
+func (s *Server) modifyResponse(resp *http.Response) error {
+	route := routeFrom(resp.Request.Context())
+	if !route.inject {
+		return nil
+	}
+	ct := resp.Header.Get("Content-Type")
+	if resp.StatusCode != http.StatusOK || !strings.HasPrefix(strings.ToLower(ct), "text/html") {
+		return nil
+	}
+	// HR-27a injector abuse: a compressed body despite our identity request could
+	// be a decompression bomb — skip injection (safe pass-through), never expand.
+	if resp.Header.Get("Content-Encoding") != "" {
+		s.auditInjectSkip(resp, "decomp_bomb_guard")
+		return nil
+	}
+	// HR-27a injector abuse: an oversized HTML body (5GB "no closing head" DoS)
+	// must not be scanned/buffered — skip injection above a hard cap.
+	if resp.ContentLength > maxInjectBody {
+		s.auditInjectSkip(resp, "too_large")
+		return nil
+	}
+	var res injectResult
+	resp.Body = readCloser{newInjectingReader(resp.Body, s.snippet, &res), resp.Body}
+	resp.Header.Del("Content-Length") // length changes; force chunked
+	resp.ContentLength = -1
+	// egress scrub: verdict/nonce-bearing HTML must not be cached (SoT-19 §11).
+	resp.Header.Set("Cache-Control", "no-store")
+	// Merge (add-only) our CSP connect-src to the control plane (SoT-20 §6). We
+	// only ADD; if origin has a CSP we leave it and add a report-only companion.
+	if resp.Header.Get("Content-Security-Policy") == "" {
+		resp.Header.Set("Content-Security-Policy-Report-Only",
+			"connect-src 'self'; report-uri "+s.cfg.ControlPath+"csp-report")
+	}
+	return nil
+}
+
+// enforceBan drops a banned request at the edge with a Retry-After for temporary
+// bans, and audits ban.enforced (SoT-27 §3). The scorer/origin are never touched.
+func (s *Server) enforceBan(w http.ResponseWriter, r *http.Request, sid string, b BanEntry) {
+	s.sink.EmitAndAct(audit.Record{
+		EventType: audit.EventBanEnforced, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, clientIP(r))},
+		TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictDeny),
+		Rules: []string{"HR-21"}, Action: "block", Mode: "enforce", FailReason: banReason(b), KeyID: "k1",
+	}, func() {
+		w.Header().Set("X-Hmn-Incident", "see-audit-log")
+		if !b.Permanent() {
+			if secs := int(s.bans.remaining(b)); secs > 0 {
+				w.Header().Set("Retry-After", itoaInt(secs))
+			}
+		}
+		http.Error(w, "Source temporarily blocked (rate limit / abuse protection).", http.StatusForbidden)
+	})
+}
+
+// banReason renders a compact ban descriptor for the audit record.
+func banReason(b BanEntry) string {
+	dur := "permanent"
+	if !b.Permanent() {
+		dur = "strike " + itoaInt(b.Strike)
+	}
+	return b.Source + " ban (" + dur + "): " + b.Reason
+}
+
+func itoaInt(v int) string {
+	if v == 0 {
+		return "0"
+	}
+	neg := v < 0
+	if neg {
+		v = -v
+	}
+	var b [12]byte
+	i := len(b)
+	for v > 0 {
+		i--
+		b[i] = byte('0' + v%10)
+		v /= 10
+	}
+	if neg {
+		i--
+		b[i] = '-'
+	}
+	return string(b[i:])
+}
+
+// deny blocks at the edge; origin was never contacted (SoT-21 §1).
+func (s *Server) deny(w http.ResponseWriter) {
+	w.Header().Set("X-Hmn-Incident", "see-audit-log")
+	http.Error(w, "Request blocked by humanymous (automation detected).", http.StatusForbidden)
+}
+
+// challenge serves the accessible interstitial (SoT-21 §6). The reference serves
+// a minimal page pointing at the control-plane PoW; production self-hosts WCAG UI.
+func (s *Server) challenge(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store")
+	w.WriteHeader(http.StatusUnauthorized)
+	_, _ = w.Write([]byte(`<!doctype html><html lang="en"><head><meta charset="utf-8">` +
+		`<title>Verification required</title></head><body>` +
+		`<h1>Verification required</h1><p>Please complete a quick check to continue.</p>` +
+		`<script src="` + s.cfg.ControlPath + `loader.js" defer></script></body></html>`))
+}
+
+// pseudonym applies per-subject linkage-key pseudonymization (SoT-18 §5). The
+// subject key is the session id, so a session's events are linkable but the raw
+// IP is never stored and can be crypto-shredded.
+func (s *Server) pseudonym(sid, value string) string {
+	if s.vault == nil || sid == "" {
+		return ""
+	}
+	return s.vault.Pseudonymize(sid, value)
+}
+
+// readCloser adapts a reader + the original closer.
+type readCloser struct {
+	r interface{ Read([]byte) (int, error) }
+	c interface{ Close() error }
+}
+
+func (rc readCloser) Read(p []byte) (int, error) { return rc.r.Read(p) }
+func (rc readCloser) Close() error               { return rc.c.Close() }
+
+func modeName(route routePolicy) string {
+	if route.enforce {
+		return "enforce"
+	}
+	return "monitor"
+}
+
+func ruleList(rule string) []string {
+	if rule == "" {
+		return []string{}
+	}
+	return []string{rule}
+}

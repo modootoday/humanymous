@@ -1,0 +1,27 @@
+humanymous
+Copyright (c) 2026 The humanymous Authors
+
+This product is licensed under the BSD 3-Clause License. See the LICENSE file.
+
+--------------------------------------------------------------------------------
+Third-party software included in the distributed engine and Sentinel binaries:
+
+  github.com/refraction-networking/utls   BSD-3-Clause
+  github.com/andybalholm/brotli           MIT
+  github.com/klauspost/compress           BSD-3-Clause
+  golang.org/x/crypto                     BSD-3-Clause
+  golang.org/x/net                        BSD-3-Clause
+  golang.org/x/sys                        BSD-3-Clause
+  golang.org/x/text                       BSD-3-Clause
+
+Each module's full license text is in that module's own LICENSE file (available
+in the Go module cache and in the module's source repository). All are permissive
+licenses that allow redistribution with attribution.
+
+--------------------------------------------------------------------------------
+The defensive red-team test harness under test/ (NOT part of the distributed
+engine or Sentinel container images) additionally uses:
+
+  playwright-core                         Apache-2.0
+
+Regenerate this file's dependency list when bumping module versions.
