@@ -346,6 +346,72 @@ func (a *app) applyPassVelocity(sid string, r *http.Request, now time.Time) (int
 	return lvl, sLvl
 }
 
+// applyPassBehavior is the deeper real-event model (SoT-36 §5), fused SOFT. It derives
+// behavioral tells from the interaction proof and folds the matching (already-weighted)
+// l4.* signals into the session score. It NEVER blocks — the accessible lane forbids
+// gating on motor richness or speed (some AT/switch devices inject fast, regular input)
+// — so a flagged trace still clears Pass; the engine merely holds it at elevated risk
+// (verdict ≠ ALLOW). Real browser input (fractional performance.now deltas, human-scale
+// variance) trips none of these. This softly reaches the fresh-identity single forgery
+// that velocity (axis ③) and attestation (axis ①) leave to the last line.
+func (a *app) applyPassBehavior(sid string, pr passProof, now time.Time) {
+	var sig []signals.Signal
+	seen := map[string]bool{}
+	add := func(id string, v signals.Verdict, conf float64, note string) {
+		if seen[id] {
+			return
+		}
+		seen[id] = true
+		sig = append(sig, signals.New(id, nil, v, conf, signals.SourceServer, note))
+	}
+	if len(pr.KeyDurs) >= 3 {
+		if meanFloats(pr.KeyDurs) < 15 { // no human presses arrow keys at <15ms flight
+			add("l4.key.machine_speed", signals.VerdictBot, 0.7, "machine-speed inter-key latency (<15ms)")
+		}
+		if stddev(pr.KeyDurs) < 6 { // real keystroke flight varies by tens of ms
+			add("l4.key.flight_std", signals.VerdictSuspicious, 0.5, "near-zero keystroke flight variance")
+		}
+		if allIntegerMs(pr.KeyDurs) { // real timings carry sub-ms jitter
+			add("l4.event.perfect_timing", signals.VerdictSuspicious, 0.6, "zero sub-ms jitter (synthetic timing)")
+		}
+	}
+	if len(pr.Durations) >= 5 && allIntegerMs(pr.Durations) {
+		add("l4.event.perfect_timing", signals.VerdictSuspicious, 0.6, "zero sub-ms jitter (synthetic pointer timing)")
+	}
+	if len(sig) == 0 {
+		return
+	}
+	rep, _ := a.store.Get(sid)
+	rep.Network.Signals = append(rep.Network.Signals, sig...)
+	a.engine.Score(&rep)
+	a.store.StoreScored(sid, rep, now)
+}
+
+func meanFloats(xs []float64) float64 {
+	if len(xs) == 0 {
+		return 0
+	}
+	var s float64
+	for _, x := range xs {
+		s += x
+	}
+	return s / float64(len(xs))
+}
+
+// allIntegerMs reports whether every sample is (near) a whole millisecond — real
+// performance.now() deltas carry sub-ms fractions, so all-integer timing is synthetic.
+func allIntegerMs(xs []float64) bool {
+	if len(xs) == 0 {
+		return false
+	}
+	for _, x := range xs {
+		if d := x - math.Floor(x); d > 1e-6 && d < 1-1e-6 {
+			return false
+		}
+	}
+	return true
+}
+
 // passDifficulty is the blue controller's knob (SoT-36 §8): harder challenges for
 // suspicious sessions, trivial for likely-humans. Difficulty scales with the
 // session's current risk; a self-labelled red-team probe always gets the hardest.
@@ -548,6 +614,11 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 		reject(why)
 		return
 	}
+
+	// 3b. Deeper real-event model (SoT-36 §5), fused SOFT — behavioral tells raise risk
+	// but never block (accessibility), so even a fresh-identity forgery with motor tells
+	// is held at elevated verdict.
+	a.applyPassBehavior(sid, pr, time.Now())
 
 	// 4. Anti-replay (SoT-36 §5) — a captured human trace may be used at most once.
 	if !a.pass.reserveTrace(traceDigest(pr), time.Now()) {

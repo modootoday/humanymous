@@ -131,3 +131,30 @@ func TestAttestIssuanceBudget(t *testing.T) {
 		t.Fatal("3rd issuance must hit the per-fingerprint cap (deny)")
 	}
 }
+
+// TestBehaviorTimingTells checks the round-4 SOFT detectors: a real browser trace
+// (fractional ms, human-scale, tens-of-ms variance) trips none; a machine trace
+// (<15ms, integer, near-zero variance) trips machine-speed + integer + low-variance.
+func TestBehaviorTimingTells(t *testing.T) {
+	human := []float64{137.3, 89.7, 211.4, 123.8} // real performance.now() deltas
+	machine := []float64{7, 5, 9, 6}              // machine-speed, integer ms
+
+	if allIntegerMs(human) {
+		t.Fatal("fractional human timing must NOT read as all-integer")
+	}
+	if !allIntegerMs(machine) {
+		t.Fatal("integer machine timing must read as all-integer")
+	}
+	if meanFloats(human) < 15 {
+		t.Fatal("human inter-key mean must be well above 15ms")
+	}
+	if meanFloats(machine) >= 15 {
+		t.Fatal("machine inter-key mean must be under 15ms")
+	}
+	if stddev(human) < 6 {
+		t.Fatal("human keystroke variance must be well above the near-zero floor")
+	}
+	if stddev(machine) >= 6 {
+		t.Fatal("machine keystroke variance must read as near-zero")
+	}
+}

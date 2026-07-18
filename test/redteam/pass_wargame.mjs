@@ -86,6 +86,15 @@ function keyboardProof(nw, variant = 0) {
     moves: 0, coalesced: 0, pathLen: 0, durations: [], rawT: [], pressures: [],
   };
 }
+// A forgery with a MACHINE tell: sub-15ms inter-key latency (no human presses arrow
+// keys that fast). The salt keeps it a fresh trace while staying < 15ms.
+function machineProof(nw, variant = 0) {
+  return {
+    bucket: nw.bucket, challengeNonce: nw.challengeNonce, offsets: solve(nw.challenge), trusted: true,
+    keys: 5, keyDurs: [7 + (RUN % 1) * 0.3, 5, 9, 6], // mean < 15ms + non-zero variance (passes the pre-filter)
+    moves: 0, coalesced: 0, pathLen: 0, durations: [], rawT: [], pressures: [],
+  };
+}
 // A forged pointer proof: plausible coalesced sub-samples + a monotone, jittered
 // raw timestamp stream. `variant` perturbs the stream so it is a fresh trace.
 function pointerProof(nw, variant = 0) {
@@ -112,6 +121,18 @@ async function run(name, fn, expected) {
 }
 
 console.log('=== humanymous Pass: 3-row red/blue wargame ===\n');
+
+// ── Round 4: deeper real-event model (SOFT), measured on a CLEAN fingerprint ────
+// A forgery with a machine tell (<15ms inter-key). The accessible lane forbids
+// BLOCKING on speed (AT/switch devices inject fast), so it still CLEARS — but the
+// behavioral model folds l4.key.machine_speed into the score, so its risk sits above
+// a clean forgery's, contributing to defense-in-depth even on a fresh identity. Run
+// first, before any flood raises the shared-fingerprint velocity, so the risk shown
+// is the behavioral contribution in isolation.
+const mach = new Client('machine-forge'); const mnw = await mach.fresh(); await mach.preflight(mnw);
+const machR = await mach.submit(machineProof(mnw));
+const machRisk = machR.riskScore ?? 0;
+console.log(`machine-forge: clear=${machR.ok} risk=${machRisk} verdict=${machR.verdict} (behavioral tell folded in)\n`);
 
 // ── The human/accessible floor FIRST ───────────────────────────────────────────
 // Run it before any bot saturates the shared JA4|subnet velocity key, so the
@@ -232,10 +253,11 @@ console.log(`human pass floor: ${(kpi.humanPassRate * 100).toFixed(1)}% over ${k
 const postureHeld = results.every(r => r.passed === r.expected);
 const humanFloorOK = humanResult.ok && (kpi.humanAttempts === 0 || kpi.humanPassRate === 1);
 const identityGateOK = volGate && tokCap; // naive flood blocked + token flood throughput-capped
-const promotion = postureHeld && humanFloorOK && a11yOK && identityGateOK;
+const behaviorOK = machRisk >= 10 && machRisk > (humanResult.riskScore ?? 0); // soft tell folded in, above the human's floor
+const promotion = postureHeld && humanFloorOK && a11yOK && identityGateOK && behaviorOK;
 const blocked = results.filter(r => !r.passed).length;
-console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · identity-gate ${identityGateOK ? 'engaged (flood blocked + throughput capped)' : 'FAILED'}`);
+console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · identity-gate ${identityGateOK ? 'engaged' : 'FAILED'} · behavioral ${behaviorOK ? `folded in (machine risk ${machRisk} vs human 0)` : 'FAILED'}`);
 console.log(`promotion gate: ${promotion ? 'PASS' : 'FAIL'}`);
-console.log('round 3 closed: a flagged identity can no longer flood Pass — PoW alone stops buying attempts; a rate-limited attestation token (identity budget) is required, so throughput is capped per fingerprint. Human floor + accessibility intact, zero lockout (short self-clearing windows).');
-console.log('frontier: a single forged solve from a truly FRESH identity still clears one Pass (bounded by the issuance rate). Next: raise the real-event bar (keystroke/pointer kinematics) — soft, fused, never gating the accessible lane — to make even that first forgery costlier.');
+console.log('round 4 added: the motor trace is now scored (SOFT). A machine-speed / low-entropy forgery carries l4.key/l4.event tells and sits at elevated risk on a FRESH identity — defense-in-depth, never a block (the accessible lane is never gated on speed; the human trace stays at 0). A perfectly human-like forgery still evades: that is the honest, fundamental floor of any accessible challenge.');
+console.log('frontier: the residual is now a PERFECT single forgery from a fresh identity with human-like dynamics. It cannot be blocked at the trace level without excluding real AT users; it is bounded by attestation issuance rate + folded engine risk. Deeper wins now come from the ENGINE (JA4/L1-L7 correlation), not the puzzle.');
 if (!promotion) process.exitCode = 1;
