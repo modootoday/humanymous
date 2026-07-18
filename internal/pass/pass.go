@@ -100,7 +100,26 @@ func (r *rng) f(lo, hi float64) float64 {
 // Generate builds a solvable physics-placement scene from a seed. It designs a
 // hidden ramp, simulates to find where the ball lands, and puts the cup there —
 // guaranteeing at least one solution exists — then returns only the public scene.
-func Generate(masterKey []byte, sessionID string, bucket uint64) Scene {
+//
+// difficulty (0..3, the blue controller's knob — SoT-36 §8) tightens the scene:
+// higher difficulty means MORE deflectors (harder routing) and a SMALLER cup
+// (tighter placement tolerance). It is served harder to suspicious sessions and
+// trivial to likely-humans; Verify must be called with the SAME difficulty.
+func Generate(masterKey []byte, sessionID string, bucket uint64, difficulty int) Scene {
+	sc, _, _, _ := generate(masterKey, sessionID, bucket, difficulty)
+	return sc
+}
+
+// generate is Generate plus the winning designed ramp (center + angle) — a
+// GUARANTEED solution. Exposed to the verification path in tests so solvability is
+// checked against a known answer, not a grid search.
+func generate(masterKey []byte, sessionID string, bucket uint64, difficulty int) (Scene, float64, float64, float64) {
+	if difficulty < 0 {
+		difficulty = 0
+	}
+	if difficulty > 3 {
+		difficulty = 3
+	}
 	seed := deriveSeed(masterKey, sessionID, bucket)
 	r := newRNG(seed)
 
@@ -108,11 +127,17 @@ func Generate(masterKey []byte, sessionID string, bucket uint64) Scene {
 		Mechanic: MechanicPlacement,
 		Gravity:  r.f(9, 15),
 		Ball:     Vec{X: r.f(12, 30), Y: r.f(6, 16)},
-		CupR:     r.f(6, 8),
+		CupR:     r.f(6.5, 8.5) - float64(difficulty)*0.9, // smaller cup = harder
 		RampLen:  r.f(16, 22),
 	}
-	// 1–2 fixed deflectors in the mid-field.
-	n := 1 + int(r.next()%2)
+	if sc.CupR < 3.8 {
+		sc.CupR = 3.8
+	}
+	// 1..3 fixed deflectors in the mid-field, scaling with difficulty.
+	n := 1 + difficulty
+	if n > 3 {
+		n = 3
+	}
 	for i := 0; i < n; i++ {
 		cx, cy := r.f(35, 75), r.f(35, 65)
 		ang := r.f(-0.9, 0.9)
@@ -127,20 +152,33 @@ func Generate(masterKey []byte, sessionID string, bucket uint64) Scene {
 	// farRamp is off-canvas, so it never intersects — it stands in for "no ramp".
 	farRamp := Segment{A: Vec{X: -30, Y: -30}, B: Vec{X: -30, Y: -29}}
 	natural := simLand(sc, farRamp)
-	for attempt := 0; attempt < 16; attempt++ {
-		designed := makeRamp(Vec{X: r.f(28, 62), Y: r.f(38, 62)}, r.f(-0.8, 0.3), sc.RampLen)
-		land := simLand(sc, designed)
-		if land.X < 6 || land.X > 94 { // landed off the useful field
+	// Keep the best (max-necessity) designed ramp as a guaranteed-solvable fallback:
+	// whatever ramp we pick, ITS landing is reachable by that same ramp.
+	var bestC Vec
+	var bestA, bestMargin float64
+	bestMargin = -1
+	for attempt := 0; attempt < 24; attempt++ {
+		c := Vec{X: r.f(28, 62), Y: r.f(38, 62)}
+		a := r.f(-0.8, 0.3)
+		land := simLand(sc, makeRamp(c, a, sc.RampLen))
+		if land.X < 6 || land.X > 94 || land.Y < 18 { // landed off the useful field
 			continue
 		}
-		if dist(natural, land) > sc.CupR+3 { // the ramp changed the outcome enough
+		margin := dist(natural, land)
+		if margin > bestMargin {
+			bestMargin, bestC, bestA = margin, c, a
+		}
+		if margin > sc.CupR+3 { // the ramp changed the outcome enough — accept now
 			sc.Cup = land
-			return sc
+			return sc, c.X, c.Y, a
 		}
 	}
-	// Fallback (rare): offset the cup off the natural path so a ramp is still needed.
-	sc.Cup = Vec{X: clampF(natural.X+18, 8, 92), Y: clampF(natural.Y-6, 30, 94)}
-	return sc
+	if bestMargin < 0 { // no valid designed landing at all (very rare) — gentle ramp
+		bestC = Vec{X: sc.Ball.X + 8, Y: sc.Ball.Y + 28}
+		bestA = 0.1
+	}
+	sc.Cup = simLand(sc, makeRamp(bestC, bestA, sc.RampLen)) // solvable by (bestC,bestA)
+	return sc, bestC.X, bestC.Y, bestA
 }
 
 func clampF(v, lo, hi float64) float64 {
@@ -191,11 +229,11 @@ func makeRamp(c Vec, a, length float64) Segment {
 // Verify re-simulates the player's ramp against the seed-derived scene and reports
 // whether the ball reaches the cup. This is the whole verdict: no stored answer.
 // bucket is the instance's issue bucket; currentBucket bounds staleness (TTL).
-func Verify(masterKey []byte, sessionID string, bucket, currentBucket uint64, rampCX, rampCY, rampAngle float64) bool {
+func Verify(masterKey []byte, sessionID string, bucket, currentBucket uint64, difficulty int, rampCX, rampCY, rampAngle float64) bool {
 	if currentBucket < bucket || currentBucket-bucket > 2 { // TTL: a few buckets
 		return false
 	}
-	sc := Generate(masterKey, sessionID, bucket)
+	sc := Generate(masterKey, sessionID, bucket, difficulty)
 	ramp := makeRamp(Vec{X: rampCX, Y: rampCY}, rampAngle, sc.RampLen)
 	// Reject a ramp placed on top of the ball or cup (degenerate) or out of bounds.
 	if rampCX < 2 || rampCX > 98 || rampCY < 2 || rampCY > 98 {

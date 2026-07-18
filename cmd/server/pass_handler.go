@@ -25,19 +25,44 @@ const (
 
 // passSession is the per-session Pass state (in-memory; the challenge is transient).
 type passSession struct {
-	bucket   uint64
-	issuedAt time.Time
-	tries    int
-	solved   bool
+	bucket     uint64
+	difficulty int
+	issuedAt   time.Time
+	tries      int
+	solved     bool
 }
 
-// passStore holds transient per-session Pass state, guarded by a mutex.
+// passStore holds transient per-session Pass state + the wargame metrics, guarded
+// by a mutex. metrics is the blue team's evidence base (SoT-36 §8): attempts
+// counted by label × outcome × difficulty.
 type passStore struct {
-	mu sync.Mutex
-	m  map[string]*passSession
+	mu      sync.Mutex
+	m       map[string]*passSession
+	metrics map[string]int // "label|outcome|difficulty" -> count
 }
 
-func newPassStore() *passStore { return &passStore{m: map[string]*passSession{}} }
+func newPassStore() *passStore {
+	return &passStore{m: map[string]*passSession{}, metrics: map[string]int{}}
+}
+
+// record logs one attempt into the wargame metrics (caller need not hold the lock).
+func (p *passStore) record(label string, difficulty int, passed bool) {
+	outcome := "fail"
+	if passed {
+		outcome = "pass"
+	}
+	key := label + "|" + outcome + "|d" + itoaSmall(difficulty)
+	p.mu.Lock()
+	p.metrics[key]++
+	p.mu.Unlock()
+}
+
+func itoaSmall(n int) string {
+	if n < 0 || n > 9 {
+		return "?"
+	}
+	return string(rune('0' + n))
+}
 
 func (p *passStore) get(sid string) *passSession {
 	p.mu.Lock()
@@ -76,16 +101,55 @@ func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 	bucket := uint64(time.Now().Unix() / passWindow)
 	ps.bucket = bucket
 	ps.issuedAt = time.Now()
+	ps.difficulty = a.passDifficulty(sid, r) // blue controller: harder for suspicious
+	diff := ps.difficulty
 	a.pass.mu.Unlock()
 
-	scene := pass.Generate(a.masterKey, sid, bucket)
+	scene := pass.Generate(a.masterKey, sid, bucket, diff)
 	writeJSON(w, map[string]any{
 		"ok":         true,
 		"bucket":     bucket,
+		"difficulty": diff,
 		"scene":      scene,
 		"triesLeft":  passMaxTries - ps.tries,
 		"expiresInS": passWindow * 2, // TTL spans a couple of buckets (SoT-36 §5)
 	})
+}
+
+// passDifficulty is the blue controller's knob (SoT-36 §8): harder challenges for
+// suspicious sessions, trivial for likely-humans. Difficulty scales with the
+// session's current risk; a self-labelled red-team probe always gets the hardest.
+func (a *app) passDifficulty(sid string, r *http.Request) int {
+	if r.Header.Get("X-HM-Redteam") != "" {
+		return 3
+	}
+	rep, _ := a.store.Get(sid)
+	risk := rep.Scoring.RiskScore
+	d := int((risk - 20) / 15) // 30->0, 45->1, 60->2, 75->3
+	if d < 0 {
+		d = 0
+	}
+	if d > 3 {
+		d = 3
+	}
+	return d
+}
+
+// passLabel classifies an attempt for the wargame KPIs (SoT-36 §8). A self-declared
+// red-team probe is ground-truth "bot"; otherwise the session's risk band is a weak
+// label (bot >=70, human <30, else unknown).
+func passLabel(risk float64, r *http.Request) string {
+	if r.Header.Get("X-HM-Redteam") != "" {
+		return "redteam"
+	}
+	switch {
+	case risk >= 70:
+		return "bot"
+	case risk < 30:
+		return "human"
+	default:
+		return "unknown"
+	}
 }
 
 // passProof is the client submission: the ramp placement + an interaction proof.
@@ -174,23 +238,29 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	}
 	ps.tries++
 	tries := ps.tries
+	diff := ps.difficulty
 	a.pass.mu.Unlock()
 
 	current := uint64(time.Now().Unix() / passWindow)
+	rep0, _ := a.store.Get(sid)
+	label := passLabel(rep0.Scoring.RiskScore, r) // wargame ground-truth-ish label
 
 	// 1. Real-event pre-filter (SoT-36 §5) — degenerate/synthetic submissions.
 	if ok, why := realEventOK(pr); !ok {
+		a.pass.record(label, diff, false)
 		a.publishPass(sid, false, why)
 		writeJSON(w, map[string]any{"ok": false, "reason": why, "triesLeft": passMaxTries - tries})
 		return
 	}
 
 	// 2. Server-side re-simulation of the placement (the whole verdict; no oracle).
-	if !pass.Verify(a.masterKey, sid, pr.Bucket, current, pr.RampX, pr.RampY, pr.RampAngle) {
+	if !pass.Verify(a.masterKey, sid, pr.Bucket, current, diff, pr.RampX, pr.RampY, pr.RampAngle) {
+		a.pass.record(label, diff, false)
 		a.publishPass(sid, false, "placement missed")
 		writeJSON(w, map[string]any{"ok": false, "reason": "the ball missed the cup", "triesLeft": passMaxTries - tries})
 		return
 	}
+	a.pass.record(label, diff, true)
 
 	// 3. Cleared — grant the trust upgrade and re-score (mirrors PoW upgrade).
 	a.pass.mu.Lock()
@@ -203,6 +273,95 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	res := a.engine.Score(&rep)
 	a.store.StoreScored(sid, rep, time.Now())
 	writeJSON(w, map[string]any{"ok": true, "verdict": res.Verdict, "riskScore": res.RiskScore})
+}
+
+// handlePassKPI reports the wargame KPIs (SoT-36 §8): the closed-loop scoreboard
+// the blue team hardens against — bypass-rate (bots/red that obtained a pass) and
+// the human pass-rate floor, plus per-difficulty solve rates.
+func (a *app) handlePassKPI(w http.ResponseWriter, r *http.Request) {
+	a.pass.mu.Lock()
+	snap := make(map[string]int, len(a.pass.metrics))
+	for k, v := range a.pass.metrics {
+		snap[k] = v
+	}
+	a.pass.mu.Unlock()
+
+	// aggregate: label -> {pass, attempts}; and per-difficulty.
+	type pa struct{ pass, att int }
+	byLabel := map[string]*pa{}
+	byDiff := map[string]*pa{}
+	for k, n := range snap {
+		// key = "label|outcome|dN"
+		var label, outcome, dd string
+		parts := splitKey(k)
+		if len(parts) != 3 {
+			continue
+		}
+		label, outcome, dd = parts[0], parts[1], parts[2]
+		if byLabel[label] == nil {
+			byLabel[label] = &pa{}
+		}
+		if byDiff[dd] == nil {
+			byDiff[dd] = &pa{}
+		}
+		byLabel[label].att += n
+		byDiff[dd].att += n
+		if outcome == "pass" {
+			byLabel[label].pass += n
+			byDiff[dd].pass += n
+		}
+	}
+	rate := func(p *pa) float64 {
+		if p == nil || p.att == 0 {
+			return 0
+		}
+		return float64(p.pass) / float64(p.att)
+	}
+	botAtt, botPass := 0, 0
+	for _, l := range []string{"redteam", "bot"} {
+		if p := byLabel[l]; p != nil {
+			botAtt += p.att
+			botPass += p.pass
+		}
+	}
+	bypass := 0.0
+	if botAtt > 0 {
+		bypass = float64(botPass) / float64(botAtt)
+	}
+
+	diffRates := map[string]float64{}
+	for d, p := range byDiff {
+		diffRates[d] = rate(p)
+	}
+	humanAtt := 0
+	if p := byLabel["human"]; p != nil {
+		humanAtt = p.att
+	}
+	writeJSON(w, map[string]any{
+		"bypassRate":      bypass, // bots/red that obtained a pass — drive DOWN
+		"botAttempts":     botAtt,
+		"humanPassRate":   rate(byLabel["human"]), // the floor the blue team may never breach
+		"humanAttempts":   humanAtt,
+		"unknownPassRate": rate(byLabel["unknown"]),
+		"perDifficulty":   diffRates,
+		"raw":             snap,
+	})
+}
+
+// splitKey splits "a|b|c" into 3 parts (no strings.Split import churn needed here,
+// but keep it simple).
+func splitKey(s string) []string {
+	out := []string{}
+	cur := ""
+	for _, c := range s {
+		if c == '|' {
+			out = append(out, cur)
+			cur = ""
+		} else {
+			cur += string(c)
+		}
+	}
+	return append(out, cur)
 }
 
 // publishPass emits a Pass attempt to the live telemetry hub (wargame surface,

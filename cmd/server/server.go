@@ -87,6 +87,7 @@ func (a *app) routes() http.Handler {
 	mux.HandleFunc("/pass", a.handlePassPage)          // SoT-36 humanymous Pass (demo/research surface)
 	mux.HandleFunc("/api/pass/new", a.handlePassNew)   // issue a fresh challenge instance
 	mux.HandleFunc("/api/pass/solve", a.handlePassSolve) // verify placement + interaction
+	mux.HandleFunc("/api/pass/kpi", a.handlePassKPI)     // wargame KPIs (bypass-rate, human floor)
 	mux.HandleFunc("/api/trace", a.handleTrace)
 	mux.HandleFunc("/api/traffic/", a.handleTraffic)
 	mux.HandleFunc("/res/", a.handleResource)
