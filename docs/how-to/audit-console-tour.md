@@ -15,6 +15,8 @@ The Ledger is a single-page app served on the **separate admin listener** (defau
 https://localhost:8445/__hmn/admin/console
 ```
 
+![The Ledger console Overview: live edge-decision feed with chain-verified status, node id, and record count](../assets/screenshots/console-overview.jpg)
+
 In dev the console is injected with the **Operator** token, so it can read every view and *request* actions. Any two-person (dual-control) action must be committed by a genuinely **distinct** token — an Approver or DPO, never your own. Actor identity is derived server-side from the token; you cannot act as someone else by editing a request body.
 
 A few things to know before you click around:
