@@ -85,6 +85,34 @@ Combination happens in `internal/scoring/combine.go`, in this exact order. `Scor
 risk = 100 × (1 − Π(1 − p_layer))
 ```
 
+### The same, formally
+
+Each signal contributes a score bounded by its own weight — severity zeroes out non-bot verdicts, confidence scales it, and the result can never exceed the weight ceiling:
+
+$$s_i = w_i \cdot \sigma(v_i) \cdot \operatorname{clamp}_{[0,1]}(c_i), \qquad \sigma(\text{BOT})=1,\ \sigma(\text{SUSPICIOUS})=\tfrac{1}{2},\ \sigma(\text{OK})=\sigma(\text{UNKNOWN})=0$$
+
+Correlated signals are de-duplicated to the strongest per group $g$, converted to a probability, noisy-OR'd within their layer, and capped at `LayerCap`:
+
+$$p_\ell = \min\!\left(\frac{\text{LayerCap}}{100},\ \; 1 - \prod_{g \in \ell}\left(1 - \frac{\max_{i \in g} s_i}{100}\right)\right)$$
+
+The seven capped layer probabilities combine by a final cross-layer noisy-OR into the 0–100 risk:
+
+$$\text{risk} = 100 \cdot \left(1 - \prod_{\ell = 1}^{7} \left(1 - p_\ell\right)\right)$$
+
+Because every stage is a noisy-OR of values in $[0,1]$, risk is **saturating**: more tells always raise it, but never past 100, and the per-layer cap keeps any single layer from dominating.
+
+```mermaid
+flowchart LR
+  S["scored signals<br/>sᵢ = wᵢ·σ(vᵢ)·cᵢ"] --> D["dedup by (layer, group)<br/>keep max per group"]
+  D --> C["per-layer noisy-OR<br/>then cap at LayerCap = 60"]
+  C --> N["cross-layer noisy-OR<br/>risk = 100·(1 − Π(1 − p_ℓ))"]
+  N --> R{"risk 0–100"}
+  R -->|"0–29"| A([ALLOW])
+  R -->|"30–69"| H([CHALLENGE])
+  R -->|"70–100"| Y([DENY])
+  HR["hard rule fired"] -. "promote / override" .-> Y
+```
+
 ### Worked example: an L6 84% clamped to 60%
 
 Suppose `L6` produced two cross-checks that both fired, each contributing a per-check probability of `0.60`:

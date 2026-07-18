@@ -19,6 +19,22 @@ The engine emits one of three verdicts — ALLOW, CHALLENGE or DENY — derived 
 
 Thresholds (policy 1.0.0): risk `0–29` → ALLOW, `30–69` → CHALLENGE, `70–100` → DENY. ChallengeAt is 30, DenyAt is 70. The risk score is 0–100 with one decimal. Hard rules can promote or override the score-based verdict.
 
+Formally, the verdict is the score band, unless a hard rule fires and forces DENY:
+
+$$\text{verdict} = \begin{cases} \text{DENY} & \text{a hard rule fired, or } \text{risk} \ge 70 \\[2pt] \text{CHALLENGE} & 30 \le \text{risk} < 70 \\[2pt] \text{ALLOW} & \text{risk} < 30 \end{cases}$$
+
+```mermaid
+flowchart TD
+  R{"risk 0–100"} -->|"0–29"| AL["ALLOW"]
+  R -->|"30–69"| CH["CHALLENGE"]
+  R -->|"70–100"| DN["DENY"]
+  HR["hard rule fired"] -->|"promote / override"| DN
+  AL --> PA["edge: pass → origin contacted"]
+  CH --> PW["edge: challenge_pow → PoW interstitial, origin NOT contacted"]
+  DN --> BL["edge: block → origin NOT contacted"]
+```
+
+
 > **Note:** A fingerprint-bound verdict trust token, when present and valid, lets ALLOW take a fast path with no re-scoring.
 
 ### The `none` (Unknown) fail rule

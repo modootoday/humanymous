@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="docs/assets/brand/mark.svg" width="88" height="88" alt="humanymous — pulse-aperture mark" />
+</p>
+<p align="center"><em>Raise the cost of automation.</em></p>
+<p align="center"><sub>seven layers · one verdict · a signed record</sub></p>
+
 # humanymous — Browser Automation Detection Sample (Go/WASM + JS)
 
 > **A defensive anti-bot detection reference project (educational / commercial).**
@@ -19,6 +25,25 @@ the engine collects, cross-checks, and scores signals across the layers below.
 | L5 network/protocol | Go backend | JA3/JA4 TLS, HTTP/2 fingerprint, header order/casing |
 | L6 consistency cross-check | Go backend | UA ↔ UA-CH ↔ JS navigator ↔ TLS/H2 cross-consistency |
 | L7 scoring/decision | Go backend | weighted risk score → allow / challenge / deny |
+
+The client layers (L1–L4) are collected in the browser and beaconed under a rotating integrity token; the server layers (L5–L7) are read from the connection itself and cannot be spoofed by client JavaScript. The cross-check layer (L6) treats *disagreement between layers* as stronger evidence than any single value.
+
+```mermaid
+flowchart LR
+  subgraph Client["Browser · JS + Go/WASM"]
+    direction LR
+    L1[L1 static] --> L2[L2 fingerprint] --> L3[L3 integrity] --> L4[L4 behavior]
+  end
+  subgraph Server["Go backend · Core"]
+    direction LR
+    L5[L5 network / TLS] --> L6[L6 cross-check] --> L7[L7 scoring]
+  end
+  L4 -- "signed beacon (RIT)" --> L5
+  L7 --> V{"risk 0–100"}
+  V -- "0–29" --> A([ALLOW · pass])
+  V -- "30–69" --> C([CHALLENGE · prove work])
+  V -- "70–100" --> D([DENY · block])
+```
 
 ## Why Go/WASM
 
