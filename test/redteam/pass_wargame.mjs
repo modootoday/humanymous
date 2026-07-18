@@ -127,25 +127,51 @@ async function run(name, fn, expected) {
 
 console.log('=== humanymous Pass: 3-row red/blue wargame ===\n');
 
-// ── Round 4: deeper real-event model (SOFT), measured on a CLEAN fingerprint ────
+// NOTE ON ORDERING: in this harness every node client shares ONE JA4|subnet, so the
+// velocity governor's fingerprint key is shared. Sessions whose VERDICT we assert
+// (the human floor + the engine-fusion demos) run FIRST, on a clean fingerprint,
+// before the floods raise the shared velocity into a hard band. A real deployment
+// separates human vs bot by JA4, so this ordering is a harness artifact, not a gap.
+
+// ── The human/accessible floor FIRST ───────────────────────────────────────────
+const human = new Client(); const humanNew = await human.fresh(); await human.preflight(humanNew);
+const humanResult = await human.submit(keyboardProof(humanNew, 19));
+console.log(`${humanResult.ok ? '  PASS   ' : '✗ FAIL   '} accessible-keyboard-human  risk=${humanResult.riskScore ?? '?'} ${humanResult.reason || ''}`);
+
+// ── Round 5/6/7: engine fusion LIVE (both directions) ──────────────────────────
+// upgrade: a genuine SCORE-based CHALLENGE that solves Pass is UPGRADED to ALLOW —
+// the point of the challenge (SoT-36 §3, mirroring PoW). no-laundering: a session
+// already proven a bot (selenium+webdriver → HR-1 DENY) solves the puzzle (ok:true —
+// it is bot-solvable by design) but the verdict STAYS DENY. Solving Pass is one signal:
+// it never fabricates trust a genuine session hadn't earned, and never overrides
+// conclusive independent bot evidence.
+const chal = new Client('challenge-clears');
+await chal.collect({ userAgent: 'myapp/1.0', signals: [] }); // score-based CHALLENGE, no hard rule
+const chalNew = await chal.fresh(); await chal.preflight(chalNew);
+const chalSolve = await chal.submit(keyboardProof(chalNew, 301));
+const upgradeOK = chalSolve.ok === true && chalSolve.verdict === 'ALLOW';
+console.log(`challenge-clears-to-allow:  solved=${chalSolve.ok} engineVerdict=${chalSolve.verdict} → ${upgradeOK ? 'UPGRADED to ALLOW (Pass cleared the challenge)' : 'NOT upgraded'}`);
+
+const botUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
+const known = new Client('known-bot');
+const knownNew = await known.fresh(); await known.preflight(knownNew);
+await known.collect({ userAgent: botUA, signals: [
+  { id: 'l1.artifact.selenium', verdict: 'BOT', confidence: 1 },
+  { id: 'l1.navigator.webdriver', verdict: 'BOT', confidence: 1 },
+] });
+const knownSolve = await known.submit(keyboardProof(knownNew, 300));
+const launderBlocked = knownSolve.ok === true && knownSolve.verdict === 'DENY';
+console.log(`known-bot-solves-pass:      cleared=${knownSolve.ok} engineVerdict=${knownSolve.verdict} → ${launderBlocked ? 'NOT laundered (stays DENY)' : 'LAUNDERED — BUG'}\n`);
+
+// ── Round 4: deeper real-event model (SOFT) — machine-speed tell ───────────────
 // A forgery with a machine tell (<15ms inter-key). The accessible lane forbids
 // BLOCKING on speed (AT/switch devices inject fast), so it still CLEARS — but the
 // behavioral model folds l4.key.machine_speed into the score, so its risk sits above
-// a clean forgery's, contributing to defense-in-depth even on a fresh identity. Run
-// first, before any flood raises the shared-fingerprint velocity, so the risk shown
-// is the behavioral contribution in isolation.
+// the human's 0, contributing to defense-in-depth even on a fresh identity.
 const mach = new Client('machine-forge'); const mnw = await mach.fresh(); await mach.preflight(mnw);
 const machR = await mach.submit(machineProof(mnw));
 const machRisk = machR.riskScore ?? 0;
 console.log(`machine-forge: clear=${machR.ok} risk=${machRisk} verdict=${machR.verdict} (behavioral tell folded in)\n`);
-
-// ── The human/accessible floor FIRST ───────────────────────────────────────────
-// Run it before any bot saturates the shared JA4|subnet velocity key, so the
-// accessible lane is measured on a clean system (in this harness every node client
-// shares one fingerprint — a real deployment separates human vs bot by JA4).
-const human = new Client(); const humanNew = await human.fresh(); await human.preflight(humanNew);
-const humanResult = await human.submit(keyboardProof(humanNew, 19));
-console.log(`${humanResult.ok ? '  PASS   ' : '✗ FAIL   '} accessible-keyboard-human  risk=${humanResult.riskScore ?? '?'} ${humanResult.reason || ''}`);
 
 // ── Axis ③ (round 2) + axis ① identity gate (round 3): volume-forge ────────────
 // One session clears Pass with forged keyboard proofs. Round 2 folds l7.pass.velocity
@@ -191,22 +217,6 @@ const tokCleared = tokStats.filter(s => s.ok).length;
 const tokBlocked = tokStats.filter(s => !s.ok).length;
 const tokCap = tokBlocked > 0; // issuance budget exhausted at least once
 console.log(`  → ${tokCleared} cleared then ${tokBlocked} BLOCKED (issuance budget ${tokCap ? 'capped throughput' : 'NOT capped'})\n`);
-
-// ── Round 5/6: engine fusion LIVE — solving Pass never launders a known bot ─────
-// A session already proven a bot by independent signals (selenium + webdriver → HR-1
-// DENY) then solves the Pass puzzle. The puzzle CLEARS (ok:true — it is bot-solvable
-// by design), but the engine verdict returned stays DENY: solving Pass is one signal
-// among many and never overrides conclusive independent bot evidence (SoT-36 §3).
-const botUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
-const known = new Client('known-bot');
-const knownNew = await known.fresh(); await known.preflight(knownNew);
-await known.collect({ userAgent: botUA, signals: [
-  { id: 'l1.artifact.selenium', verdict: 'BOT', confidence: 1 },
-  { id: 'l1.navigator.webdriver', verdict: 'BOT', confidence: 1 },
-] });
-const knownSolve = await known.submit(keyboardProof(knownNew, 300));
-const launderBlocked = knownSolve.ok === true && knownSolve.verdict === 'DENY';
-console.log(`known-bot-solves-pass: puzzle cleared=${knownSolve.ok} engineVerdict=${knownSolve.verdict} → ${launderBlocked ? 'NOT laundered (verdict stays DENY)' : 'LAUNDERED — BUG'}\n`);
 
 // ── Blocked classes (our current defense holds) ────────────────────────────────
 await run('read-dom-forge-no-crypto', async () => {
@@ -275,11 +285,11 @@ const postureHeld = results.every(r => r.passed === r.expected);
 const humanFloorOK = humanResult.ok && (kpi.humanAttempts === 0 || kpi.humanPassRate === 1);
 const identityGateOK = volGate && tokCap; // naive flood blocked + token flood throughput-capped
 const behaviorOK = machRisk >= 10 && machRisk > (humanResult.riskScore ?? 0); // soft tell folded in, above the human's floor
-const noLaundering = launderBlocked; // a known bot that solves Pass still gets DENY
-const promotion = postureHeld && humanFloorOK && a11yOK && identityGateOK && behaviorOK && noLaundering;
+const engineFusionOK = launderBlocked && upgradeOK; // bot→DENY despite clearing; genuine CHALLENGE→ALLOW
+const promotion = postureHeld && humanFloorOK && a11yOK && identityGateOK && behaviorOK && engineFusionOK;
 const blocked = results.filter(r => !r.passed).length;
-console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · identity-gate ${identityGateOK ? 'engaged' : 'FAILED'} · behavioral ${behaviorOK ? `folded in (machine risk ${machRisk} vs human 0)` : 'FAILED'} · no-laundering ${noLaundering ? 'held (bot→DENY despite clearing)' : 'FAILED'}`);
+console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · identity-gate ${identityGateOK ? 'engaged' : 'FAILED'} · behavioral ${behaviorOK ? `folded in (machine risk ${machRisk} vs human 0)` : 'FAILED'} · engine-fusion ${engineFusionOK ? 'held (bot→DENY, genuine CHALLENGE→ALLOW)' : 'FAILED'}`);
 console.log(`promotion gate: ${promotion ? 'PASS' : 'FAIL'}`);
-console.log('rounds 1-6 in force: ① nonce-bound PoW + anti-replay · ③ velocity→PoW-cost + engine risk (no lockout) · ① rate-limited attestation identity-gate · ④ SOFT motor-trace scoring (never gates the accessible lane) · ⑤/⑥ engine fusion — solving Pass upgrades a genuine CHALLENGE to ALLOW but NEVER launders a known bot (verified LIVE above: bot→DENY despite clearing).');
+console.log('rounds 1-7 in force: ① nonce-bound PoW + anti-replay · ③ velocity→PoW-cost + engine risk (no lockout) · ① rate-limited attestation identity-gate · ④ SOFT motor-trace scoring (never gates the accessible lane) · ⑤/⑥/⑦ engine fusion verified LIVE both ways — a genuine CHALLENGE→ALLOW, a known bot→DENY despite clearing the puzzle.');
 console.log('honest floor: a PERFECT single forgery from a FRESH identity with human-like dynamics still clears the puzzle — it cannot be blocked at the trace level without excluding real AT users. It is now bounded by attestation issuance rate + folded engine risk, and the engine still DENIES it the moment any independent bot signal (JA4/L1-L7/correlation) appears. Remaining wins are engine-side, in the full real-browser-vs-bot redteam suite — not this node puzzle harness.');
 if (!promotion) process.exitCode = 1;
