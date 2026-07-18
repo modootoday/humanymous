@@ -45,6 +45,19 @@ flowchart LR
   V -- "70–100" --> D([DENY · block])
 ```
 
+### See it decide
+
+The public `/demo` page scores *your* browser live. Below, a headless automation
+(the same kind used in the self-test catalog) is scored on `/demo` — a hard rule
+(HR-7) overrides the score to DENY:
+
+<p align="center">
+  <img src="docs/assets/screenshots/demo-verdict.jpg" width="760" alt="humanymous /demo verdict card: DENY, risk 75.2, HR-7 override" />
+</p>
+
+A real browser on real hardware clears with a low score (ALLOW). No detector is
+perfect — the goal is to *raise the cost of automation*, not to claim a perfect wall.
+
 ## Why Go/WASM
 
 - The core detection logic is **sealed in a WASM binary**, making it harder to tamper with or hook than plain JS.

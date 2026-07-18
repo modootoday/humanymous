@@ -7,7 +7,14 @@ const OUT = process.argv[2];
 const BASE = process.argv[3] || 'https://127.0.0.1:8443';
 if (!OUT) { console.error('usage: node shoot-demo.mjs <outdir> [baseURL]'); process.exit(2); }
 
-const browser = await chromium.launch({ channel: 'msedge', headless: true });
+// Channel/args are env-driven so the same script runs on a dev workstation
+// (installed Edge, no download) and in the bots container (bundled Chromium):
+//   HM_LAUNCH_CHANNEL unset -> 'msedge';  'chromium'/'bundled'/'' -> bundled Chromium.
+//   HM_LAUNCH_ARGS (comma-separated) adds flags a container needs (e.g. --no-sandbox).
+const chRaw = process.env.HM_LAUNCH_CHANNEL;
+const channel = chRaw === undefined ? 'msedge' : (['chromium', 'bundled', ''].includes(chRaw) ? undefined : chRaw);
+const args = (process.env.HM_LAUNCH_ARGS || '').split(',').map((s) => s.trim()).filter(Boolean);
+const browser = await chromium.launch({ channel, headless: true, args });
 const ctx = await browser.newContext({ ignoreHTTPSErrors: true, viewport: { width: 1100, height: 1500 }, deviceScaleFactor: 1.0 });
 const p = await ctx.newPage();
 const errs = [];
