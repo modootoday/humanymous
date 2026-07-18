@@ -9,6 +9,11 @@ description: >-
   Core, the Gate reverse proxy, and the Detection Observatory.
 lang: en
 
+# Custom domain (GitHub Pages reads docs/CNAME). Apex serves /docs as the site
+# root, so baseurl is empty and url is the bare domain.
+url: https://humanymous.net
+baseurl: ""
+
 # A supported GitHub Pages theme (styles every page; no Gemfile needed).
 theme: jekyll-theme-cayman
 
