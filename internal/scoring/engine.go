@@ -103,6 +103,16 @@ func (e *Engine) decide(r *signals.SessionReport, contributions []scored, rc rul
 		firedRule = "PoW-upgrade"
 	}
 
+	// humanymous Pass trust upgrade (SoT-36 §3): clearing the interactive Pass
+	// challenge upgrades a SCORE-based CHALLENGE to ALLOW, exactly like PoW. It
+	// NEVER overrides a hard rule — a session already proven a bot by L1–L7 / JA4 /
+	// correlation stays DENY even after solving Pass. Solving Pass is one signal
+	// among many; it does not launder conclusive independent bot evidence.
+	if verdict == VerdictChallenge && firedRule == "" && hasSignal(rc.sigs, "l7.pass.solved") {
+		verdict = VerdictAllow
+		firedRule = "Pass-upgrade"
+	}
+
 	res := signals.ScoreResult{
 		RiskScore:       round1(risk),
 		Verdict:         verdict,
