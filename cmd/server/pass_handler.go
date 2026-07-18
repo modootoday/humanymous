@@ -105,12 +105,12 @@ func (a *app) handlePassNew(w http.ResponseWriter, r *http.Request) {
 	diff := ps.difficulty
 	a.pass.mu.Unlock()
 
-	scene := pass.Generate(a.masterKey, sid, bucket, diff)
+	challenge := pass.Generate(a.masterKey, sid, bucket, diff)
 	writeJSON(w, map[string]any{
 		"ok":         true,
 		"bucket":     bucket,
 		"difficulty": diff,
-		"scene":      scene,
+		"challenge":  challenge,
 		"triesLeft":  passMaxTries - ps.tries,
 		"expiresInS": passWindow * 2, // TTL spans a couple of buckets (SoT-36 §5)
 	})
@@ -152,58 +152,65 @@ func passLabel(risk float64, r *http.Request) string {
 	}
 }
 
-// passProof is the client submission: the ramp placement + an interaction proof.
+// passProof is the client submission: the 3-row offsets + an interaction proof.
 type passProof struct {
-	Bucket    uint64  `json:"bucket"`
-	RampX     float64 `json:"rampX"`
-	RampY     float64 `json:"rampY"`
-	RampAngle float64 `json:"rampAngle"`
-	// real-event interaction evidence (SoT-36 §5): pointer-move samples collected
-	// during placement. isTrusted is a pre-filter; the discriminator is the stream.
-	Moves      int       `json:"moves"`      // distinct pointermove events
-	Coalesced  int       `json:"coalesced"`  // total getCoalescedEvents() sub-samples
-	Trusted    bool      `json:"trusted"`    // all events had isTrusted === true
-	Durations  []float64 `json:"durations"`  // inter-event Δt (ms), for uniformity check
-	PathLen    float64   `json:"pathLen"`    // total pointer path length (px)
-	RawT       []float64 `json:"rawT"`       // raw getCoalescedEvents() sample timestamps (ms)
+	Bucket  uint64 `json:"bucket"`
+	Offsets []int  `json:"offsets"` // per-row shift; key lands at (keyIndex+offset) mod N
+	Trusted bool   `json:"trusted"` // all events had isTrusted === true (pre-filter)
+	// Pointer/touch channel (SoT-36 §5): mouse/touch users produce these.
+	Moves     int       `json:"moves"`     // distinct pointermove events
+	Coalesced int       `json:"coalesced"` // total getCoalescedEvents() sub-samples
+	Durations []float64 `json:"durations"` // inter-event Δt (ms)
+	PathLen   float64   `json:"pathLen"`   // total pointer path length (px)
+	RawT      []float64 `json:"rawT"`      // raw coalesced sample timestamps (ms)
+	Pressures []float64 `json:"pressures"` // touch/pen pressure samples (0..1)
+	// Keyboard channel (accessible lane): keyboard users produce these instead.
+	Keys    int       `json:"keys"`    // distinct arrow/Home keydowns
+	KeyDurs []float64 `json:"keyDurs"` // inter-key Δt (ms)
 }
 
-// realEventOK is a lightweight real-event check (SoT-36 §5, v1): reject the obvious
-// synthetic/empty cases (no interaction, untrusted events, perfectly-uniform timing,
-// no coalesced sub-samples). Scored leniently — full motor modeling is a follow-up;
-// this is a hard pre-filter for degenerate bot submissions, not the whole gate.
+// realEventOK is the SoT-36 §5 pre-filter, accessibility-aware: it accepts EITHER a
+// pointer/touch channel OR a keyboard channel, rejecting only the obviously synthetic
+// (untrusted, no interaction, perfectly-uniform timing). Keyboard users are NEVER
+// required to produce pointer microstructure (that would exclude blind/AT users). It
+// is a soft pre-filter, not the whole gate — attestation + engine fusion carry the
+// weak/keyboard case (SoT-36 §2), and the deeper motor model is the wargame's job.
 func realEventOK(pr passProof) (bool, string) {
 	if !pr.Trusted {
 		return false, "untrusted events"
 	}
-	if pr.Moves < 6 || pr.PathLen < 20 {
+	pointer := pr.Moves >= 5 && pr.PathLen >= 20
+	keyboard := pr.Keys >= 3
+	if !pointer && !keyboard {
 		return false, "insufficient interaction"
 	}
-	// Uniform timing tell (CDP emits identical Δt regardless of distance).
-	if len(pr.Durations) >= 5 && stddev(pr.Durations) < 0.5 {
-		return false, "uniform event timing"
+	// Keyboard path: irregular inter-key timing is human; uniform is a bot tell.
+	if keyboard && len(pr.KeyDurs) >= 4 && stddev(pr.KeyDurs) < 0.4 {
+		return false, "uniform key timing"
 	}
-	// Real pointer moves coalesce sub-frame samples; a total of exactly `moves`
-	// (one sample each) is the CDP structural tell. Neutral if unsupported (== 0).
-	if pr.Coalesced != 0 && pr.Coalesced <= pr.Moves {
-		return false, "no coalesced sub-samples"
-	}
-	// Blue hardening round 1 (wargame): require the RAW sub-frame timestamp stream —
-	// the hardware microstructure a forged-aggregate submission ("strategy D") lacks.
-	// It must be present, monotonic, and NOT uniformly spaced.
-	if len(pr.RawT) < 10 {
-		return false, "missing raw input stream"
-	}
-	diffs := make([]float64, 0, len(pr.RawT)-1)
-	for i := 1; i < len(pr.RawT); i++ {
-		dd := pr.RawT[i] - pr.RawT[i-1]
-		if dd < 0 {
-			return false, "non-monotonic raw timestamps"
+	// Pointer path: uniform Δt + missing coalesced sub-samples + no raw stream are the
+	// CDP/forged-aggregate tells. Only enforced when the user actually used a pointer.
+	if pointer && !keyboard {
+		if len(pr.Durations) >= 5 && stddev(pr.Durations) < 0.5 {
+			return false, "uniform event timing"
 		}
-		diffs = append(diffs, dd)
-	}
-	if stddev(diffs) < 0.15 { // perfectly-even raw spacing is synthetic
-		return false, "uniform raw sample spacing"
+		if pr.Coalesced != 0 && pr.Coalesced <= pr.Moves {
+			return false, "no coalesced sub-samples"
+		}
+		if len(pr.RawT) < 10 {
+			return false, "missing raw input stream"
+		}
+		diffs := make([]float64, 0, len(pr.RawT)-1)
+		for i := 1; i < len(pr.RawT); i++ {
+			dd := pr.RawT[i] - pr.RawT[i-1]
+			if dd < 0 {
+				return false, "non-monotonic raw timestamps"
+			}
+			diffs = append(diffs, dd)
+		}
+		if stddev(diffs) < 0.15 {
+			return false, "uniform raw sample spacing"
+		}
 	}
 	return true, ""
 }
@@ -272,10 +279,10 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 2. Server-side re-simulation of the placement (the whole verdict; no oracle).
-	if !pass.Verify(a.masterKey, sid, pr.Bucket, current, diff, pr.RampX, pr.RampY, pr.RampAngle) {
+	if !pass.Verify(a.masterKey, sid, pr.Bucket, current, diff, pr.Offsets) {
 		a.pass.record(label, diff, false)
-		a.publishPass(sid, false, "placement missed")
-		writeJSON(w, map[string]any{"ok": false, "reason": "the ball missed the cup", "triesLeft": passMaxTries - tries})
+		a.publishPass(sid, false, "misaligned")
+		writeJSON(w, map[string]any{"ok": false, "reason": "the keys are not all in the slot", "triesLeft": passMaxTries - tries})
 		return
 	}
 	a.pass.record(label, diff, true)
