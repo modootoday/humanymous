@@ -24,14 +24,14 @@ services:
     networks: [lab-a]
     profiles: [attack]
 
-  # Self-contained Sentinel proxy-layer conformance (34 checks, on loopback).
-  sentinel-e2e:
+  # Self-contained Gate proxy-layer conformance (34 checks, on loopback).
+  gate-e2e:
     image: *bots-image
     build: *bots-build
-    entrypoint: ["/app/run-sentinel-e2e.sh"]
+    entrypoint: ["/app/run-gate-e2e.sh"]
     volumes: [../artifacts:/artifacts]
     networks: [lab-a]
-    profiles: [sentinel-test]
+    profiles: [gate-test]
 
   # Multi-subnet swarm: the SAME fingerprint from THREE real subnets, to exercise
   # cross-session correlation (proxy_rotation / shared_fingerprint) for real.

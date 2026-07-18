@@ -4,26 +4,26 @@ title: CLI, Config & Per-Route Policy Reference
 
 # CLI, config & per-route policy reference
 
-**Diátaxis quadrant:** Reference. **Audience:** integrators and operators running humanymous Sentinel.
+**Diátaxis quadrant:** Reference. **Audience:** integrators and operators running humanymous Gate.
 
-This page lists every command-line flag, environment variable, policy preset, route-table default, threshold, and ingress limit in the reference build of humanymous Sentinel ("Sentinel" after first mention). It is descriptive and complete, not a walkthrough — for a guided first run see the [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md); for rollout and safety reasoning see [Will this break my app?](../explanation/will-this-break-my-app.md).
+This page lists every command-line flag, environment variable, policy preset, route-table default, threshold, and ingress limit in the reference build of humanymous Gate ("Gate" after first mention). It is descriptive and complete, not a walkthrough — for a guided first run see the [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md); for rollout and safety reasoning see [Will this break my app?](../explanation/will-this-break-my-app.md).
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. Values below are the reference defaults; production deployments layer on prod-delta changes (for example ACME/bring-your-own TLS) that are not present in the reference binary.
 
-Sentinel is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
+Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
 
 ---
 
 ## CLI flags
 
-Flags are defined in `cmd/sentinel/main.go`. The binary is built to `bin/sentinel.exe` from `./cmd/sentinel` (module `github.com/modootoday/humanymous`).
+Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` from `./cmd/gate` (module `github.com/modootoday/humanymous`).
 
 | Flag | Default | Meaning |
 |------|---------|---------|
 | `-addr` | `:8444` | Public edge listen address (HTTPS). Terminates TLS, injects the bundle, scores, and enforces. |
-| `-admin-addr` | `:8445` | Separate authenticated admin listener, cross-origin to the edge. Serves the Audit Console and admin API only. |
-| `-upstream` | `http://127.0.0.1:9000` | Origin upstream base URL that Sentinel fronts. (`upstream` is the flag alias for the origin.) |
-| `-node` | `sentinel-1` | Node id; the owner of this node's audit hash chain. |
+| `-admin-addr` | `:8445` | Separate authenticated admin listener, cross-origin to the edge. Serves the Ledger and admin API only. |
+| `-upstream` | `http://127.0.0.1:9000` | Origin upstream base URL that Gate fronts. (`upstream` is the flag alias for the origin.) |
+| `-node` | `gate-1` | Node id; the owner of this node's audit hash chain. |
 | `-monitor` | `false` | Global monitor mode: score and log everywhere, enforce nothing. Downgrades every route to monitor. See [Monitor disambiguation](#monitor-disambiguation). |
 | `-origin-key` | `""` (random ephemeral) | Origin-cloaking HMAC key. The origin validates the `X-Hmny-Origin-Auth` header against it. |
 | `-keystore` | `""` (ephemeral keys) | Path to a sealed keystore for persistent node identity. Requires the `HMN_UNSEAL` environment variable; boot fails without it. |
@@ -44,8 +44,8 @@ Flags are defined in `cmd/sentinel/main.go`. The binary is built to `bin/sentine
 Expect these lines on boot (values reflect defaults):
 
 ```
-humanymous Sentinel on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
-humanymous Sentinel admin console on https://localhost:8445/__hmn/admin/console
+humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+humanymous Gate admin console on https://localhost:8445/__hmn/admin/console
   dev tokens — auditor:<hex> operator:<hex> approver:<hex> dpo:<hex>
 ```
 
@@ -65,7 +65,7 @@ The `dev tokens` line prints only when tokens are generated (that is, when `HMN_
 
 ## Policy presets
 
-Presets are defined in `internal/sentinel/config.go`. Four presets are implemented. Each sets whether the detection bundle is injected, whether the verdict is enforced, and (for `strict`) fail-closed and synchronous-rescore behavior.
+Presets are defined in `internal/gate/config.go`. Four presets are implemented. Each sets whether the detection bundle is injected, whether the verdict is enforced, and (for `strict`) fail-closed and synchronous-rescore behavior.
 
 | Preset | inject | enforce | fail-closed | sync-score | Behavior |
 |--------|:------:|:-------:|:-----------:|:----------:|----------|
@@ -129,7 +129,7 @@ The engine produces one of three verdicts — ALLOW, CHALLENGE, DENY — from a 
 | 30–69 | CHALLENGE (`ChallengeAt = 30`) |
 | 70–100 | DENY (`DenyAt = 70`) |
 
-Edge verdict values are `allow` / `challenge` / `deny` / `none` (`none` = Unknown, no evidence yet). Edge actions (`internal/sentinel/enforce.go`): DENY → `block` (origin never contacted), CHALLENGE → `challenge_pow` (an accessible proof-of-work (PoW) interstitial from the control plane; origin never contacted), ALLOW → `pass`.
+Edge verdict values are `allow` / `challenge` / `deny` / `none` (`none` = Unknown, no evidence yet). Edge actions (`internal/gate/enforce.go`): DENY → `block` (origin never contacted), CHALLENGE → `challenge_pow` (an accessible proof-of-work (PoW) interstitial from the control plane; origin never contacted), ALLOW → `pass`.
 
 - **Hard rules** can promote or override the score-based verdict. See the [Hard Rules, Verdicts & Signal-ID Reference](./hard-rules-verdicts.md).
 - **PoW upgrade:** a score-based CHALLENGE with no hard rule fired becomes ALLOW if the session solved the proof-of-work (signal `l7.pow.solved`). PoW never overrides a hard rule — it proves CPU work, not humanity.
@@ -213,7 +213,7 @@ The client-facing control plane is served on the public edge listener under the 
 
 ## Admin API (admin listener)
 
-Served on the admin listener (`-admin-addr`, default `:8445`). The Audit Console SPA is at `https://localhost:8445/__hmn/admin/console` and derives its API base as `/__hmn/admin`. Authentication is bearer (`Authorization: Bearer <token>`) with constant-time compare. A missing or invalid token returns 404 (deny-by-default, non-discoverable). Every authenticated access is meta-audited (`admin.access`) before serving.
+Served on the admin listener (`-admin-addr`, default `:8445`). The Ledger SPA is at `https://localhost:8445/__hmn/admin/console` and derives its API base as `/__hmn/admin`. Authentication is bearer (`Authorization: Bearer <token>`) with constant-time compare. A missing or invalid token returns 404 (deny-by-default, non-discoverable). Every authenticated access is meta-audited (`admin.access`) before serving.
 
 Actor identity is server-derived from the token; request-body actor fields are ignored. RBAC roles: **Auditor** (read-only), **Operator**, **Approver**, **DPO**. In dev the console is injected with the Operator token so it can read and request; approvals need a distinct Approver token.
 
@@ -270,23 +270,23 @@ The authoritative admin request/response bodies. JSON field decoding is case-ins
 
 **`GET /bans`** → `{"bans":[{"key","reason","source","incident","strike","permanent","expiresInSec"}],"count"}`. **`GET /erasures`** → `{"scheduled":[{"id","legalBasis","requester","approver","executesInSec"}],"count"}`. **`GET /approvals`** → `{"pending":[{"id","kind","params","needsRole"}],"count"}`. **`GET /whoami`** → `{"id","role"}`. **`GET /incidents/{handle}`** → the audit record (or 404; a per-operator lookup cap returns 429).
 
-For hard-rule identifiers (HR-*), signal-ID namespaces, and per-verdict detail, see the [Hard Rules, Verdicts & Signal-ID Reference](./hard-rules-verdicts.md). For how a request flows through L1–L7, see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md).
+For hard-rule identifiers (HR-*), signal-ID namespaces, and per-verdict detail, see the [Hard Rules, Verdicts & Signal-ID Reference](./hard-rules-verdicts.md). For how a request flows through L1–L7, see [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
 
 ---
 
 ## End-to-end run example
 
-The following boots Sentinel with deterministic dev admin tokens, a public edge on `:8444`, the admin listener on `:8445`, and an origin on `http://127.0.0.1:9000`. Run it from the module root after building `bin/sentinel.exe`.
+The following boots Gate with deterministic dev admin tokens, a public edge on `:8444`, the admin listener on `:8445`, and an origin on `http://127.0.0.1:9000`. Run it from the module root after building `bin/gate.exe`.
 
 ```
-HMN_ADMIN_TOKENS="auditor:aud-dev,operator:op-dev,approver:apr-dev,dpo:dpo-dev" bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node sentinel-1
+HMN_ADMIN_TOKENS="auditor:aud-dev,operator:op-dev,approver:apr-dev,dpo:dpo-dev" bin/gate.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node gate-1
 ```
 
 Expected startup output:
 
 ```
-humanymous Sentinel on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
-humanymous Sentinel admin console on https://localhost:8445/__hmn/admin/console
+humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+humanymous Gate admin console on https://localhost:8445/__hmn/admin/console
 ```
 
 Because `HMN_ADMIN_TOKENS` is supplied, no `dev tokens` line is printed — authenticate the admin API with the tokens you provided:

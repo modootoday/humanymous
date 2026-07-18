@@ -2,17 +2,17 @@
 
 > **Diátaxis quadrant:** Explanation. **Audience:** Data Protection Officers (DPOs), privacy counsel, and supervisory-authority reviewers.
 
-This page is a compliance companion for a Data Protection Impact Assessment (Article 35 GDPR) covering an operator deployment of humanymous Sentinel. It is written as a **risk-and-mitigation register**, not a set of assurances. Each processing property below is stated first as the residual risk it carries, then as the mitigation the reference implementation provides, and — where the mitigation is incomplete or deferred — as an explicit limit the controller must accept or close.
+This page is a compliance companion for a Data Protection Impact Assessment (Article 35 GDPR) covering an operator deployment of humanymous Gate. It is written as a **risk-and-mitigation register**, not a set of assurances. Each processing property below is stated first as the residual risk it carries, then as the mitigation the reference implementation provides, and — where the mitigation is incomplete or deferred — as an explicit limit the controller must accept or close.
 
-humanymous Sentinel ("Sentinel") is a reverse-proxy enforcement layer that terminates TLS, streams a detection bundle into HTML responses, scores each request across layers L1–L7, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes every decision to a tamper-evident audit log. This document does not repeat the field-level processing register; read it alongside the [data-processing inventory](../reference/data-processing-inventory.md), the [standards mapping](../reference/standards-mapping.md), the [erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md), and [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
+humanymous Gate ("Gate") is a reverse-proxy enforcement layer that terminates TLS, streams a detection bundle into HTML responses, scores each request across layers L1–L7, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes every decision to a tamper-evident audit log. This document does not repeat the field-level processing register; read it alongside the [data-processing inventory](../reference/data-processing-inventory.md), the [standards mapping](../reference/standards-mapping.md), the [erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md), and [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
 
-> **Important:** This document describes a **reference implementation**, not a production-hardened product. Several controls a DPIA would rely on in production are prod-deltas (identified inline). Sentinel is processing **tooling**; determining lawful basis, necessity, proportionality, and the DPIA conclusion for a specific deployment remains the responsibility of the operator acting as **data controller**.
+> **Important:** This document describes a **reference implementation**, not a production-hardened product. Several controls a DPIA would rely on in production are prod-deltas (identified inline). Gate is processing **tooling**; determining lawful basis, necessity, proportionality, and the DPIA conclusion for a specific deployment remains the responsibility of the operator acting as **data controller**.
 
 ---
 
 ## 1. Controller/processor framing
 
-The operator who deploys Sentinel in front of an origin application is the **data controller** for the traffic it inspects. Sentinel is the processing tooling the controller configures and operates; it fronts the origin and does not control it. Sentinel does not transmit personal data to humanymous or any third party — all processing described here is in-process on infrastructure the operator runs.
+The operator who deploys Gate in front of an origin application is the **data controller** for the traffic it inspects. Gate is the processing tooling the controller configures and operates; it fronts the origin and does not control it. Gate does not transmit personal data to humanymous or any third party — all processing described here is in-process on infrastructure the operator runs.
 
 The controller is accountable for the Article 30 record of processing activities, the Article 35 DPIA itself, the lawful-basis determination, data-subject communications, and the retention schedule. This companion supplies the technical facts those instruments require; it does not substitute for them.
 
@@ -28,7 +28,7 @@ The processing purpose is **distinguishing automated clients from human users** 
 
 ### 2.2 Necessity
 
-Necessity turns on whether the purpose can be met with less personal-data processing. The signals Sentinel evaluates (static client attributes, fingerprint material, client-integrity checks, behavioral timing, and network/protocol characteristics such as TLS and HTTP/2 fingerprints and header ordering) are the inputs that let the engine separate automation from humans across layers L1–L7. A cross-check-first, defense-in-depth design is used specifically so that no single identifier is decisive and low-false-positive verdicts can be reached deterministically.
+Necessity turns on whether the purpose can be met with less personal-data processing. The signals Gate evaluates (static client attributes, fingerprint material, client-integrity checks, behavioral timing, and network/protocol characteristics such as TLS and HTTP/2 fingerprints and header ordering) are the inputs that let the engine separate automation from humans across layers L1–L7. A cross-check-first, defense-in-depth design is used specifically so that no single identifier is decisive and low-false-positive verdicts can be reached deterministically.
 
 The proportionality-relevant design choices in the reference are:
 

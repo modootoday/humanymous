@@ -1,12 +1,12 @@
-# humanymous Sentinel documentation
+# humanymous Gate documentation
 
 Navigation hub · Audience: everyone arriving for the first time.
 
 Start here to find the right path for your role, then use the doc map to jump to any page in the set.
 
-## What is humanymous Sentinel?
+## What is humanymous Gate?
 
-humanymous Sentinel is a reverse-proxy enforcement layer that sits between your end users and your origin app. It terminates TLS, streams a detection bundle into the HTML, and scores each request across seven layers (L1–L7) — static client signals, fingerprint, client integrity, behavior, network/protocol, cross-check consistency, and scoring. The result is not a binary bot/human flag: each request gets a risk score from 0 to 100, which resolves to one of three verdicts — ALLOW, CHALLENGE (an accessible proof-of-work interstitial), or DENY — with hard rules able to promote a verdict on high-confidence evidence. Sentinel enforces that verdict at the edge and writes every decision to a tamper-evident audit log before it takes effect. It fronts your origin app and does not control it.
+humanymous Gate is a reverse-proxy enforcement layer that sits between your end users and your origin app. It terminates TLS, streams a detection bundle into the HTML, and scores each request across seven layers (L1–L7) — static client signals, fingerprint, client integrity, behavior, network/protocol, cross-check consistency, and scoring. The result is not a binary bot/human flag: each request gets a risk score from 0 to 100, which resolves to one of three verdicts — ALLOW, CHALLENGE (an accessible proof-of-work interstitial), or DENY — with hard rules able to promote a verdict on high-confidence evidence. Gate enforces that verdict at the edge and writes every decision to a tamper-evident audit log before it takes effect. It fronts your origin app and does not control it.
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. See the "Reference implementation" note below.
 
@@ -14,13 +14,13 @@ humanymous Sentinel is a reverse-proxy enforcement layer that sits between your 
 
 Five role-based landing pages, each a short orientation into the rest of the docs:
 
-- **[Integrator](start-here/integrator.md)** — you are putting Sentinel in front of an app: topology, wiring, and rollout.
-- **[Operator](start-here/operator.md)** — you run Sentinel day to day: the Audit Console, bans, policy, and on-call.
+- **[Integrator](start-here/integrator.md)** — you are putting Gate in front of an app: topology, wiring, and rollout.
+- **[Operator](start-here/operator.md)** — you run Gate day to day: the Ledger, bans, policy, and on-call.
 - **[Compliance / DPO](start-here/compliance-dpo.md)** — you own privacy and data handling: pseudonymization, retention, and right-to-erasure.
-- **[Evaluator](start-here/evaluator.md)** — you are assessing what Sentinel does and does not do before adopting it.
+- **[Evaluator](start-here/evaluator.md)** — you are assessing what Gate does and does not do before adopting it.
 - **[Developer (Red/Blue)](start-here/developer.md)** — you want to understand and extend the detection engine and its local test catalog.
 
-> **New here?** [Which piece am I using?](explanation/which-piece-am-i-using.md) maps the three surfaces — the standalone detection engine (:8443), the Sentinel proxy (:8444/:8445), and the Detection Observatory — so you never confuse two binaries.
+> **New here?** [Which piece am I using?](explanation/which-piece-am-i-using.md) maps the three surfaces — the standalone detection engine (:8443), the Gate proxy (:8444/:8445), and the Detection Observatory — so you never confuse two binaries.
 
 ## Doc map
 
@@ -28,12 +28,12 @@ The documentation set, grouped by Diátaxis quadrant.
 
 ### Tutorial
 
-- **[Quickstart — monitor mode (30 min)](tutorials/quickstart-monitor-mode.md)** — stand up Sentinel in monitor mode and watch it score real traffic without enforcing anything.
+- **[Quickstart — monitor mode (30 min)](tutorials/quickstart-monitor-mode.md)** — stand up Gate in monitor mode and watch it score real traffic without enforcing anything.
 
 ### How-to
 
 - **[Deployment & policy operations](how-to/deployment-policy-operations.md)** — task recipes: TLS/certs, origin cloaking, admin listener + RBAC, moving a route from monitor to enforce, rate limits and bans.
-- **[Audit Console tour](how-to/audit-console-tour.md)** — a guided walk of the six console views (Overview, Integrity, Sessions, Rate Limits & Bans, Policy, Compliance).
+- **[Ledger tour](how-to/audit-console-tour.md)** — a guided walk of the six console views (Overview, Integrity, Sessions, Rate Limits & Bans, Policy, Compliance).
 - **[Verify the audit log](how-to/verify-audit-log.md)** — how to check the tamper-evident log without trusting the operator, and what each integrity-mismatch class means.
 - **[Self-validation: red-team your own deployment](how-to/self-validation-red-team.md)** — measure your own detection and false-positive rate with the bundled harness (defensive-only, local).
 - **[Key management, rotation & recovery](how-to/key-management.md)** — the keystore, signing/HMAC/vault keys, ephemeral-vs-persistent identity, and recovery blast radius.
@@ -46,12 +46,12 @@ The documentation set, grouped by Diátaxis quadrant.
 ### Reference
 
 - **[CLI, config & per-route policy](reference/cli-config-policy.md)** — every flag, environment variable, policy preset, and the route match model.
-- **[Hard rules, verdicts & signal IDs](reference/hard-rules-verdicts.md)** — the engine (HR-1..21) and Sentinel (HR-22..30) rule planes, verdict thresholds, and the lowercase l{n}.{group}.{item} signal namespace.
+- **[Hard rules, verdicts & signal IDs](reference/hard-rules-verdicts.md)** — the engine (HR-1..21) and Gate (HR-22..30) rule planes, verdict thresholds, and the lowercase l{n}.{group}.{item} signal namespace.
 - **[Install, requirements & supported platforms](reference/install-requirements.md)** — toolchain, build, ports, and dependencies.
 - **[RBAC, separation-of-duties & dual-control](reference/rbac-separation-of-duties.md)** — the role×capability matrix and which actions need a distinct committer.
 - **[Data processing & personal-data inventory](reference/data-processing-inventory.md)** — what is observed vs stored, pseudonymization, retention tiers (RoPA-ready).
 - **[Production-ready vs reference (prod-delta)](reference/production-vs-reference.md)** — component-by-component status and the local↔production checklist.
-- **[Security vulnerability disclosure policy](reference/security-disclosure.md)** — how to report a flaw in Sentinel itself, with a security.txt template.
+- **[Security vulnerability disclosure policy](reference/security-disclosure.md)** — how to report a flaw in Gate itself, with a security.txt template.
 - **[Deployment cost, latency & footprint](reference/deployment-cost-latency.md)** — what adds per-request cost, the defined resource bounds, and how to measure your own numbers.
 - **[Standards & regulatory mapping](reference/standards-mapping.md)** — control→requirement traceability (GDPR/PIPA/RFCs) and the audit-response evidence pack.
 - **[On-call quick-reference & KPI thresholds](reference/on-call-quick-reference.md)** — a one-screen cheat sheet: verdicts, top hard rules, the levers, and the ban ladder.
@@ -62,10 +62,10 @@ The documentation set, grouped by Diátaxis quadrant.
 
 ### Explanation
 
-- **[Concepts & glossary — how Sentinel sees a request](concepts/how-sentinel-sees-a-request.md)** — the L1–L7 pipeline and the vocabulary the rest of the docs use.
-- **[What Sentinel is (and is not)](explanation/what-sentinel-is.md)** — scope, the attacker-tier ceiling, and honest boundaries.
+- **[Concepts & glossary — how Gate sees a request](concepts/how-gate-sees-a-request.md)** — the L1–L7 pipeline and the vocabulary the rest of the docs use.
+- **[What Gate is (and is not)](explanation/what-gate-is.md)** — scope, the attacker-tier ceiling, and honest boundaries.
 - **[Will this break my app?](explanation/will-this-break-my-app.md)** — safety, fail-open behavior, and a staged rollout from monitor to enforce.
-- **[Where Sentinel fits](explanation/where-sentinel-fits.md)** — vs WAF / CDN bot manager / CAPTCHA, with the threat model and honest limitations.
+- **[Where Gate fits](explanation/where-gate-fits.md)** — vs WAF / CDN bot manager / CAPTCHA, with the threat model and honest limitations.
 - **[The control plane and the injected bundle](explanation/control-plane-and-bundle.md)** — the /__hmn/ namespace, streaming injection, and avoiding CSP/routing collisions.
 - **[DPIA companion & retention/lifecycle](explanation/dpia-companion.md)** — a risks-and-mitigations input to your Data Protection Impact Assessment, and the retention model.
 
@@ -84,7 +84,7 @@ The documentation set, grouped by Diátaxis quadrant.
 
 The depth tier for developers who want to understand and extend the detection engine and its local test catalog. Start at **[Developer (Red/Blue)](start-here/developer.md)**.
 
-- **[Which piece am I using?](explanation/which-piece-am-i-using.md)** — the standalone engine (:8443) vs the Sentinel proxy (:8444/:8445) vs the Observatory, in one screen.
+- **[Which piece am I using?](explanation/which-piece-am-i-using.md)** — the standalone engine (:8443) vs the Gate proxy (:8444/:8445) vs the Observatory, in one screen.
 - **[Run the standalone detection engine](how-to/run-detection-engine.md)** — build and run `bin/server.exe` directly.
 - **[Inside the detection engine](explanation/detection-engine-internals.md)** — the Signal schema, the noisy-OR + LayerCap + dedup math, the hard-rule table, and the ScoreTrace.
 - **[Extend the detector](how-to/extend-detection.md)** — add a signal, a cross-check, or a hard rule without regressing the low-false-positive principle.
@@ -97,7 +97,7 @@ The depth tier for developers who want to understand and extend the detection en
 
 ## Defensive-only
 
-These docs describe protecting your own deployment. Any red-team, validation, or probing guidance targets a Sentinel instance you operate — never a third party's systems.
+These docs describe protecting your own deployment. Any red-team, validation, or probing guidance targets a Gate instance you operate — never a third party's systems.
 
 ## Reference implementation, not production-hardened
 

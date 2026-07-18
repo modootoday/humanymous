@@ -7,15 +7,15 @@
 # saves the Go module download + compile layers shared by all three images.
 # Distinct `scope`s stop the images clobbering each other's cache entries.
 services:
-  engine:
+  core:
     build:
-      cache_from: ["type=gha,scope=engine"]
-      cache_to: ["type=gha,mode=max,scope=engine"]
+      cache_from: ["type=gha,scope=core"]
+      cache_to: ["type=gha,mode=max,scope=core"]
 
-  sentinel:
+  gate:
     build:
-      cache_from: ["type=gha,scope=sentinel"]
-      cache_to: ["type=gha,mode=max,scope=sentinel"]
+      cache_from: ["type=gha,scope=gate"]
+      cache_to: ["type=gha,mode=max,scope=gate"]
 
   bots:
     build:

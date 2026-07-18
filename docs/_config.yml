@@ -3,10 +3,10 @@
 # branch" → Branch: main, Folder: /docs. Jekyll then treats /docs as the site root
 # and this file as its configuration.
 
-title: humanymous Sentinel — Documentation
+title: humanymous — Documentation
 description: >-
   Defensive anti-bot / browser-automation detection. Docs for the detection
-  engine, the Sentinel reverse proxy, and the Detection Observatory.
+  Core, the Gate reverse proxy, and the Detection Observatory.
 lang: en
 
 # A supported GitHub Pages theme (styles every page; no Gemfile needed).

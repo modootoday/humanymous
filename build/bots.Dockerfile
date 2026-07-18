@@ -1,6 +1,6 @@
 # Bots image — the automation catalog (SoT-04) + the Go protocol attack binaries
-# (cmd/redteam uTLS/RIT, cmd/tlsparrot). Also carries the Sentinel binary so the
-# self-contained Sentinel conformance e2e can run on loopback.
+# (cmd/redteam uTLS/RIT, cmd/tlsparrot). Also carries the Gate binary so the
+# self-contained Gate conformance e2e can run on loopback.
 #
 # LOCAL TARGET ONLY. In docker-compose this container is attached ONLY to the
 # internal `lab` network (no internet route), so it can physically reach nothing
@@ -8,9 +8,9 @@
 # by convention.
 #
 # Build context = repo root; the adjacent bots.Dockerfile.dockerignore re-includes
-# cmd/redteam, cmd/tlsparrot, cmd/sentinel and test/.
+# cmd/redteam, cmd/tlsparrot, cmd/gate and test/.
 
-# ---- Go attack + sentinel binaries ----------------------------------------
+# ---- Go attack + gate binaries ----------------------------------------
 FROM golang:1.25 AS gobuild
 WORKDIR /src
 COPY go.mod go.sum ./
@@ -18,7 +18,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/ \
- && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/sentinel  ./cmd/sentinel/
+ && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/
 
 # ---- Bots runtime: Node + Playwright browsers (Chromium + Firefox) ---------
 FROM mcr.microsoft.com/playwright:v1.61.1-noble
@@ -26,7 +26,7 @@ WORKDIR /app
 
 COPY --from=gobuild /out/redteam   /app/bin/redteam
 COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
-COPY --from=gobuild /out/sentinel  /app/bin/sentinel
+COPY --from=gobuild /out/gate  /app/bin/gate
 
 COPY test /app/test
 COPY deployments/bots/ /app/
@@ -40,5 +40,5 @@ ENV HM_REDTEAM_BIN=/app/bin/redteam \
     NODE_TLS_REJECT_UNAUTHORIZED=0
 
 # Default job: run the automation catalog against the detector engine. Overridable
-# in compose (e.g. the sentinel-e2e service runs run-sentinel-e2e.sh instead).
+# in compose (e.g. the gate-e2e service runs run-gate-e2e.sh instead).
 ENTRYPOINT ["/app/run-attack.sh"]

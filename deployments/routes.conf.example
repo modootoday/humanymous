@@ -1,4 +1,4 @@
-# humanymous Sentinel route policy (SoT-31 R2). Copy to `routes.conf` and edit.
+# humanymous Gate route policy (SoT-31 R2). Copy to `routes.conf` and edit.
 # One `<path-prefix> <preset>` per line. Longest matching prefix wins.
 # Presets:
 #   strict    inject + enforce + fail-closed + synchronous re-score (login, checkout, admin)

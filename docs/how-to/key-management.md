@@ -4,11 +4,11 @@ title: Key Management, Rotation & Recovery
 
 # Key management, rotation & recovery
 
-**Diátaxis quadrant:** How-to. **Audience:** operators, security, and platform engineers running humanymous Sentinel.
+**Diátaxis quadrant:** How-to. **Audience:** operators, security, and platform engineers running humanymous Gate.
 
-This guide describes the load-bearing key material in a humanymous Sentinel ("Sentinel" after first mention) deployment: what each key protects, how the sealed keystore persists node identity, what breaks if a key or passphrase is lost, and how to think about rotation. It is written against the reference implementation; production deployments add controls that the reference does not ship (prod-delta). For the boundary between the two, see [Production vs reference](../reference/production-vs-reference.md).
+This guide describes the load-bearing key material in a humanymous Gate ("Gate" after first mention) deployment: what each key protects, how the sealed keystore persists node identity, what breaks if a key or passphrase is lost, and how to think about rotation. It is written against the reference implementation; production deployments add controls that the reference does not ship (prod-delta). For the boundary between the two, see [Production vs reference](../reference/production-vs-reference.md).
 
-Sentinel is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. Several of the keys below are what make that audit log verifiable and what keeps pseudonymized subject data resolvable under dual-control.
+Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. Several of the keys below are what make that audit log verifiable and what keeps pseudonymized subject data resolvable under dual-control.
 
 ---
 
@@ -19,7 +19,7 @@ Sentinel is the reverse-proxy enforcement layer. It terminates TLS, streams the 
 | **SigningSeed** (Ed25519) | Signs the audit log's Signed Tree Heads (STHs); the verifier confirms the chain with the matching public key. | Sealed keystore, or ephemeral in memory. | Not automated (prod-delta). |
 | **HMACKey** | Per-record HMAC over each audit record. | Sealed keystore, or ephemeral in memory. | Not automated (prod-delta). |
 | **Vault snapshot** | Per-subject pseudonym linkage keys — resolve pseudonyms back to identifiers under dual-control. | Sealed keystore, or ephemeral in memory. | n/a (per-subject; destroyed by crypto-shred). |
-| **Origin-cloaking HMAC** (`-origin-key`) | Signs `X-Hmny-Origin-Auth` so the origin can verify traffic came through Sentinel. | `-origin-key` flag (separate from the keystore). | Operator-managed flag value. |
+| **Origin-cloaking HMAC** (`-origin-key`) | Signs `X-Hmny-Origin-Auth` so the origin can verify traffic came through Gate. | `-origin-key` flag (separate from the keystore). | Operator-managed flag value. |
 | **Verdict-token epoch key** | Signs fingerprint-bound verdict trust tokens. | In-process only. | Rotates automatically every 15 minutes. |
 
 The first three — SigningSeed, HMACKey, and the Vault snapshot — are the sealed node identity. They are the keys that persist across restarts only when you run with a keystore.
@@ -28,10 +28,10 @@ The first three — SigningSeed, HMACKey, and the Vault snapshot — are the sea
 
 ## The sealed keystore
 
-The keystore is Sentinel's persistent node identity. Enable it with the `-keystore` flag and the `HMN_UNSEAL` environment variable:
+The keystore is Gate's persistent node identity. Enable it with the `-keystore` flag and the `HMN_UNSEAL` environment variable:
 
 ```
-HMN_UNSEAL="<passphrase>" bin/sentinel.exe -keystore /var/lib/sentinel/keystore.sealed -addr :8444 -admin-addr :8445
+HMN_UNSEAL="<passphrase>" bin/gate.exe -keystore /var/lib/gate/keystore.sealed -addr :8444 -admin-addr :8445
 ```
 
 Boot fails if `-keystore` is set and `HMN_UNSEAL` is unset — the passphrase is required to open (or create) the sealed file. See [CLI, config & policy reference](../reference/cli-config-policy.md) for the full flag and environment table.
@@ -60,9 +60,9 @@ keystore: resumed persisted node identity from <path>
 
 ## The separate origin-cloaking key
 
-The `-origin-key` flag is a **separate** HMAC key, unrelated to the keystore. Sentinel uses it to sign the `X-Hmny-Origin-Auth` header so the origin can confirm a request arrived through Sentinel rather than directly (supporting the direct-origin-hit hard rule). It is not part of the sealed node identity and is not stretched or stored in the keystore.
+The `-origin-key` flag is a **separate** HMAC key, unrelated to the keystore. Gate uses it to sign the `X-Hmny-Origin-Auth` header so the origin can confirm a request arrived through Gate rather than directly (supporting the direct-origin-hit hard rule). It is not part of the sealed node identity and is not stretched or stored in the keystore.
 
-If `-origin-key` is unset, an ephemeral random key is used per boot — the origin must be configured with the same value for validation to succeed, so an ephemeral key only works if the origin re-reads it each boot. Set an explicit `-origin-key` (and configure the matching secret at the origin) whenever the origin validates the header. Treat this value as a shared secret between Sentinel and the origin, and store it in your secrets manager alongside `HMN_UNSEAL`.
+If `-origin-key` is unset, an ephemeral random key is used per boot — the origin must be configured with the same value for validation to succeed, so an ephemeral key only works if the origin re-reads it each boot. Set an explicit `-origin-key` (and configure the matching secret at the origin) whenever the origin validates the header. Treat this value as a shared secret between Gate and the origin, and store it in your secrets manager alongside `HMN_UNSEAL`.
 
 ---
 
@@ -124,4 +124,4 @@ The 15-minute verdict-token epoch key already rotates on its own and needs none 
 - [Production vs reference](../reference/production-vs-reference.md) — the prod-delta list, including automated key rotation and KMS/HSM.
 - [CLI, config & policy reference](../reference/cli-config-policy.md) — `-keystore`, `HMN_UNSEAL`, `-origin-key`, and startup lines.
 - [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — deliberate destruction of a per-subject linkage key.
-- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — the pseudonymization and audit-chain model the keys protect.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the pseudonymization and audit-chain model the keys protect.

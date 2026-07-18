@@ -1,4 +1,4 @@
-# humanymous Sentinel — adopter drop-in (SoT-31 R7). Pull-only: references
+# humanymous Gate — adopter drop-in (SoT-31 R7). Pull-only: references
 # published ghcr.io images, so `compose up` is a PULL, not a source build.
 #
 # Adopt in three steps:
@@ -6,12 +6,12 @@
 #   2. cp routes.conf.example routes.conf   &&   edit your protected paths
 #   3. docker compose -f compose.release.yaml up -d
 #
-# Sentinel joins YOUR existing origin network (external) and proxies to YOUR app.
+# Gate joins YOUR existing origin network (external) and proxies to YOUR app.
 # This file ships NO build: and NO dev tokens; the war/demo stack lives in
 # deployments/compose.yaml.
 services:
-  sentinel:
-    image: ghcr.io/modootoday/humanymous-sentinel:${HMN_VERSION:-latest}
+  gate:
+    image: ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}
     restart: unless-stopped
     env_file:
       - path: .env                           # HMN_ADMIN_TOKENS (real, not e2e-*)

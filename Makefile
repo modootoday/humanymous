@@ -7,11 +7,11 @@ SRV_OUT  := bin/server.exe
 RPT_OUT  := bin/report.exe
 ADDR     ?= :8443
 
-IMAGE   ?= humanymous/engine:local
+IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
 .PHONY: all wasm wasmexec server report build test race e2e-deps e2e report-html run clean fmt vet \
-        docker up attack swarm sentinel-e2e down logs
+        docker up attack swarm gate-e2e down logs
 
 all: build
 
@@ -63,15 +63,15 @@ e2e:
 report-html: report
 	$(RPT_OUT) -in test/e2e/results.json -out docs/report.html
 
-## docker: build the public demo image (detection engine only; build/engine.Dockerfile)
+## docker: build the public demo image (detection engine only; build/core.Dockerfile)
 docker:
-	docker build -f build/engine.Dockerfile -t $(IMAGE) .
+	docker build -f build/core.Dockerfile -t $(IMAGE) .
 
 # --- Local Docker detector-vs-bots stack (modular compose in deployments/) -----
 
-## up: build + start the detection stack (engine + origin + Sentinel), host-visible
+## up: build + start the detection stack (engine + origin + Gate), host-visible
 up:
-	$(COMPOSE) up -d --build engine origin sentinel
+	$(COMPOSE) up -d --build core origin gate
 
 ## attack: run the automation catalog (bots) against the engine (writes deployments/artifacts/)
 attack:
@@ -81,13 +81,13 @@ attack:
 swarm:
 	$(COMPOSE) --profile swarm up --build --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
 
-## sentinel-e2e: run the Sentinel proxy-layer conformance (34 checks)
-sentinel-e2e:
-	$(COMPOSE) run --rm sentinel-e2e
+## gate-e2e: run the Gate proxy-layer conformance (34 checks)
+gate-e2e:
+	$(COMPOSE) run --rm gate-e2e
 
 ## logs: follow the detection-stack logs
 logs:
-	$(COMPOSE) logs -f engine sentinel
+	$(COMPOSE) logs -f core gate
 
 ## down: tear down the whole stack (containers + networks + volumes)
 down:

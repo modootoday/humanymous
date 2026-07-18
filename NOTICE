@@ -4,7 +4,7 @@ Copyright (c) 2026 The humanymous Authors
 This product is licensed under the BSD 3-Clause License. See the LICENSE file.
 
 --------------------------------------------------------------------------------
-Third-party software included in the distributed engine and Sentinel binaries:
+Third-party software included in the distributed engine and Gate binaries:
 
   github.com/refraction-networking/utls   BSD-3-Clause
   github.com/andybalholm/brotli           MIT
@@ -20,7 +20,7 @@ licenses that allow redistribution with attribution.
 
 --------------------------------------------------------------------------------
 The defensive red-team test harness under test/ (NOT part of the distributed
-engine or Sentinel container images) additionally uses:
+engine or Gate container images) additionally uses:
 
   playwright-core                         Apache-2.0
 

@@ -6,9 +6,9 @@ The Detection Observatory is a real-time, local-only web page served by the dete
 
 > **Tip:** Want to see what it looks like first? The **[guided tour](observatory-tour.md)** is an annotated screenshot walkthrough.
 
-> **Note:** The Observatory runs on the standalone detection engine (`bin/server.exe` on `127.0.0.1:8443`) — **not** the Sentinel proxy (`bin/sentinel.exe` on `:8444`/`:8445`) you build in the Quickstart. It is a separate binary for watching the L1→L7 scoring in isolation, and it is not the Audit Console. If those two binaries are new to you, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) first. For how the live feed and safety model work, see [Inside the Detection Observatory](../explanation/observatory-architecture.md).
+> **Note:** The Observatory runs on the standalone detection engine (`bin/server.exe` on `127.0.0.1:8443`) — **not** the Gate proxy (`bin/gate.exe` on `:8444`/`:8445`) you build in the Quickstart. It is a separate binary for watching the L1→L7 scoring in isolation, and it is not the Ledger. If those two binaries are new to you, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) first. For how the live feed and safety model work, see [Inside the Detection Observatory](../explanation/observatory-architecture.md).
 
-> **Warning:** The Observatory is a **development-only, loopback-only** surface. It spawns local test processes and streams raw detection telemetry, so it is disabled by default and refuses to start on a non-loopback address. Never enable it on a production or internet-reachable deployment. A promoted Sentinel build never exposes it.
+> **Warning:** The Observatory is a **development-only, loopback-only** surface. It spawns local test processes and streams raw detection telemetry, so it is disabled by default and refuses to start on a non-loopback address. Never enable it on a production or internet-reachable deployment. A promoted Gate build never exposes it.
 
 > **Note:** This validates *your own* engine on `127.0.0.1`. There is no target field — the Red side can only fire the bundled catalog at your local engine. It is not a tool for probing systems you do not operate, and it contains no evasion tuning.
 
@@ -71,7 +71,7 @@ Before each launch the engine's stateful detectors (rate limiter, cross-session 
 
 Under the pipeline, the **Why this verdict** panel shows the server's own decision trace for the current session — not a re-implementation:
 
-- **The hard-rule ladder** — every engine rule (HR-1 through HR-21) evaluated in **first-match precedence order** (not numeric order — for example HR-13 is checked before HR-10), with the matched ones highlighted and the **winner** marked. The winner overrides the score band regardless of the number, and each rule shows a plain-language reason. (HR-22..HR-30 are Sentinel-plane rules and never appear here.)
+- **The hard-rule ladder** — every engine rule (HR-1 through HR-21) evaluated in **first-match precedence order** (not numeric order — for example HR-13 is checked before HR-10), with the matched ones highlighted and the **winner** marked. The winner overrides the score band regardless of the number, and each rule shows a plain-language reason. (HR-22..HR-30 are Gate-plane rules and never appear here.)
 - **The per-layer decomposition** — each layer's combined probability, and where the per-layer cap clamped a saturated layer (for example `L6 84% → cap 60%`).
 - **Dedup drops** — where two tells from the same root cause were de-duplicated so they weren't double-counted.
 
@@ -112,10 +112,10 @@ curl -sk -X POST https://127.0.0.1:8443/playground/launch \
 
 - It **shows you, live, how your own engine decides.** The score decomposition and hard-rule ladder come straight from the engine's own scoring, so what you see is what the engine did.
 - It does **not** block all automation, and it is **not** a production console. Browser-driver profiles depend on a local browser; the T4 tier (anti-detect toolchains with real-human click-farms) is a design boundary the catalog does not resolve; and HR-11/HR-12 are heuristics that can challenge some real humans. The page labels these honestly.
-- It is **separate from, and never touches, the authenticated Audit Console** — it holds no admin tokens or signing keys and serves only public detection output.
+- It is **separate from, and never touches, the authenticated Ledger** — it holds no admin tokens or signing keys and serves only public detection output.
 
 ## Related
 
 - **[Self-validation: red-team your own deployment](self-validation-red-team.md)** — the terminal workflow that runs the whole catalog and reports your block-rate / false-positive rate.
 - **[Hard rules and verdicts](../reference/hard-rules-verdicts.md)** — what each hard rule and verdict means.
-- **[Concepts & glossary](../concepts/how-sentinel-sees-a-request.md)** — the L1→L7 pipeline and the risk-score → verdict model the page visualizes.
+- **[Concepts & glossary](../concepts/how-gate-sees-a-request.md)** — the L1→L7 pipeline and the risk-score → verdict model the page visualizes.

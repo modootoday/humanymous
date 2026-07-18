@@ -83,17 +83,17 @@ The feed carries the developer's own local self-test `SessionReport` verbatim. N
 
 Some Red profiles operate below the request-scoring layer. A `rapid_reset`-style HTTP/2 attack, for example, never completes a scored collect — there is no `SessionReport` to fan out. Rather than leaving the pipeline blank, such a run surfaces as a `network.abuse` event on the SSE stream, so a developer can still see that the run happened and had an effect, even though it produced no `session.scored`.
 
-## Zero cost when off, and hard separation from the Audit Console
+## Zero cost when off, and hard separation from the Ledger
 
 When `HMN_PLAYGROUND` is unset, the hub is `nil` and no Observatory route is added — there is no request-path cost to running the engine without it.
 
-The Observatory is not the Audit Console, and the separation is hard:
+The Observatory is not the Ledger, and the separation is hard:
 
 - It holds no admin tokens and no signing keys.
 - It exposes public detection output only — the same verdicts the tests and `/api/collect` see.
-- A promoted Sentinel build never exposes the Observatory at all; the Observatory lives on the standalone engine's `127.0.0.1:8443`, while the Audit Console is the Sentinel admin plane on `:8445`.
+- A promoted Gate build never exposes the Observatory at all; the Observatory lives on the standalone engine's `127.0.0.1:8443`, while the Ledger is the Gate admin plane on `:8445`.
 
-If you're unsure which surface you're looking at, [production vs reference](../reference/production-vs-reference.md) draws the boundary between the reference engine (with its dev-gated Observatory) and a promoted Sentinel deployment.
+If you're unsure which surface you're looking at, [production vs reference](../reference/production-vs-reference.md) draws the boundary between the reference engine (with its dev-gated Observatory) and a promoted Gate deployment.
 
 ## Extending it: keep the trace sourced from the real path
 
@@ -114,5 +114,5 @@ For how to add the signal or rule itself, see [detection engine internals](./det
 
 - [How-to: Detection Observatory](../how-to/detection-observatory.md) — turning it on and using the panels.
 - [Explanation: detection engine internals](./detection-engine-internals.md) — the dedup/cap/noisy-OR/hard-rule math the trace mirrors.
-- [Reference: production vs reference](../reference/production-vs-reference.md) — reference engine vs promoted Sentinel.
+- [Reference: production vs reference](../reference/production-vs-reference.md) — reference engine vs promoted Gate.
 - [Reference: red-team rules of engagement](../reference/red-team-rules-of-engagement.md) — the boundaries for self-test launches.

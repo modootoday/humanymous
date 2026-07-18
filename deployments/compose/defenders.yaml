@@ -1,11 +1,11 @@
 # Defenders — the detection stack (SRP). Long-running, host-visible. Reachable
 # from every lab subnet so any bots container can attack them.
 services:
-  engine:
+  core:
     build:
       context: ../../
-      dockerfile: build/engine.Dockerfile
-    image: humanymous/engine:local
+      dockerfile: build/core.Dockerfile
+    image: humanymous/core:local
     # The public image ENTRYPOINT targets :443 + ACME; for the local run we
     # override to self-signed TLS on :8443.
     entrypoint: ["/app/server"]
@@ -21,11 +21,11 @@ services:
       - ../origin/default.conf:/etc/nginx/conf.d/default.conf:ro
     networks: [web]
 
-  sentinel:
+  gate:
     build:
       context: ../../
-      dockerfile: build/sentinel.Dockerfile
-    image: humanymous/sentinel:local
+      dockerfile: build/gate.Dockerfile
+    image: humanymous/gate:local
     command:
       - "-addr"
       - ":8444"
@@ -34,7 +34,7 @@ services:
       - "-upstream"
       - "http://origin:80"
       - "-node"
-      - "sentinel-1"
+      - "gate-1"
     env_file:
       - ../../configs/dev.env
     ports:

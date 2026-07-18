@@ -2,9 +2,9 @@
 
 **Quadrant:** Reference (lookup tables). **Audience:** operators, integrators and evaluators reading a single verdict row and needing to know exactly what fired it and what happened next.
 
-This page is a lookup reference for the values you see attached to a request in the Audit Console and the audit log: the verdict, the edge action it produced, the hard rule (if any) that promoted it, and the drill-down signal IDs. It does not teach the model; for concepts, see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md). For where verdicts are enforced per route, see [CLI, Config & Per-Route Policy Reference](cli-config-policy.md).
+This page is a lookup reference for the values you see attached to a request in the Ledger and the audit log: the verdict, the edge action it produced, the hard rule (if any) that promoted it, and the drill-down signal IDs. It does not teach the model; for concepts, see [How Gate sees a request](../concepts/how-gate-sees-a-request.md). For where verdicts are enforced per route, see [CLI, Config & Per-Route Policy Reference](cli-config-policy.md).
 
-humanymous Sentinel is a reference implementation, not a production-hardened build. Thresholds and rule set below reflect the reference build.
+humanymous Gate is a reference implementation, not a production-hardened build. Thresholds and rule set below reflect the reference build.
 
 ## Verdicts and edge actions
 
@@ -42,7 +42,7 @@ A score-based CHALLENGE can be upgraded to ALLOW when the session has solved the
 Hard rules can promote or override the score-based verdict. They fall in **two planes**, and knowing which is which prevents a common confusion:
 
 - **Engine-plane hard rules (HR-1..HR-21)** are evaluated by the detection engine inside the score pipeline (`internal/scoring`). These are the rules the Detection Observatory shows in its hard-rule ladder, and the ones you see on a scored request.
-- **Sentinel-plane hard rules (HR-22..HR-30)** are evaluated at the proxy edge (origin cloaking, request smuggling, token/beacon replay, upgrade tunnels, decision-probing). They never run in the detection engine and never appear in the Observatory's "HR-1 through HR-21" ladder — you only meet them on the running Sentinel proxy.
+- **Gate-plane hard rules (HR-22..HR-30)** are evaluated at the proxy edge (origin cloaking, request smuggling, token/beacon replay, upgrade tunnels, decision-probing). They never run in the detection engine and never appear in the Observatory's "HR-1 through HR-21" ladder — you only meet them on the running Gate proxy.
 
 Each row lists what fires the rule, the action it drives, and its confidence class. The confidence class also tells you how to read a spike:
 
@@ -79,14 +79,14 @@ Evaluated by the detection engine; visualized in the Detection Observatory. List
 
 > **Note:** These 21 rows are regenerated from the engine's own rule table, so they match what the Observatory shows and what the engine did. For the exact predicate behind each rule (and how to author one), see [Inside the detection engine](../explanation/detection-engine-internals.md).
 
-### Sentinel-plane hard rules (HR-22..HR-30)
+### Gate-plane hard rules (HR-22..HR-30)
 
 Evaluated at the proxy edge, **not** in the detection engine — these never appear in the Observatory.
 
 | Rule | What fires it | Action | Confidence | Reading a spike |
 |------|---------------|--------|------------|-----------------|
 | HR-23 | HTTP request smuggling (CL+TE / duplicate CL / bad TE) | DENY | High-confidence | Attack |
-| HR-24 | Direct origin hit bypassing Sentinel (origin cloaking) | 421 | High-confidence | Attack |
+| HR-24 | Direct origin hit bypassing Gate (origin cloaking) | 421 | High-confidence | Attack |
 | HR-25 | Detection bundle injected but no beacon returned (script-strip) | CHALLENGE | Heuristic (a script-blocking user can trip it) | May be mislabeling humans |
 | HR-26 | WebSocket / SSE upgrade with no prior fingerprint-bound verdict | DENY | High-confidence | Attack |
 | HR-27b | Client forged a trust / internal forwarding header | DENY | High-confidence | Attack |
@@ -102,7 +102,7 @@ When you open a session drill-down, the TopContributors panel lists the individu
 l{n}.{group}.{item}
 ```
 
-- `l{n}` — the detection layer that produced the signal (**layer tokens are uppercase L1–L7, but signal IDs are lowercase**, e.g. `l1.cdp.proxy_leak`). See the layer list in [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md).
+- `l{n}` — the detection layer that produced the signal (**layer tokens are uppercase L1–L7, but signal IDs are lowercase**, e.g. `l1.cdp.proxy_leak`). See the layer list in [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
 - `{group}` — the signal family within that layer; it drives de-duplication (two tells in one group are collapsed so they aren't double-counted).
 - `{item}` — the specific signal.
 
@@ -125,6 +125,6 @@ Real examples from the reference build:
 ## Related
 
 - [CLI, Config & Per-Route Policy Reference](cli-config-policy.md) — how presets map verdicts to routes.
-- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — the L1–L7 layers and glossary.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the L1–L7 layers and glossary.
 - [Incident Runbooks](../runbooks/incident-runbooks.md) — responding to a rule spike on call.
 - [Will This Break My App?](../explanation/will-this-break-my-app.md) — fail-open behavior and rollout safety.

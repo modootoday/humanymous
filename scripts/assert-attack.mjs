@@ -1,10 +1,10 @@
 // assert-attack.mjs — CI gate for the detector-vs-bots attack run. Reads the
 // results the runner wrote and fails the build on any escaped bot or a human
 // false-positive.
-//   node scripts/assert-attack.mjs [deployments/artifacts/engine-results.json]
+//   node scripts/assert-attack.mjs [deployments/artifacts/core-results.json]
 import { readFileSync } from 'node:fs';
 
-const path = process.argv[2] || 'deployments/artifacts/engine-results.json';
+const path = process.argv[2] || 'deployments/artifacts/core-results.json';
 const r = JSON.parse(readFileSync(path, 'utf8'));
 
 const bots = r.filter((x) => x.label && x.label.startsWith('bot:') && !x.skipped && !x.error);

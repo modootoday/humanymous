@@ -2,7 +2,7 @@
 
 > **Quadrant:** Reference — a one-screen cheat sheet. **Audience:** SOC on-call, during and between incidents.
 
-Fast lookup for a shift on humanymous Sentinel (the reverse-proxy enforcement layer, "Sentinel" after first mention). Scan it; do not read it. This is the reference build, not a production-hardened one. When you need the full procedure, jump to [Incident runbooks](../runbooks/incident-runbooks.md) and [Kill switch & bans](../runbooks/kill-switch-and-bans.md).
+Fast lookup for a shift on humanymous Gate (the reverse-proxy enforcement layer, "Gate" after first mention). Scan it; do not read it. This is the reference build, not a production-hardened one. When you need the full procedure, jump to [Incident runbooks](../runbooks/incident-runbooks.md) and [Kill switch & bans](../runbooks/kill-switch-and-bans.md).
 
 ---
 

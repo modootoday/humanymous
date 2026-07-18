@@ -1,15 +1,15 @@
 > **Runbook** — operational procedures for SOC on-call responders.
-> **Audience:** on-call SOC / incident responders operating a running humanymous Sentinel deployment. Not an intro; if you have never seen the Audit Console, read [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) first.
+> **Audience:** on-call SOC / incident responders operating a running humanymous Gate deployment. Not an intro; if you have never seen the Ledger, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first.
 
-# Incident runbooks: humanymous Sentinel on-call
+# Incident runbooks: humanymous Gate on-call
 
 This page is symptom-indexed. Find the symptom you are seeing, run the 60-second triage, follow the decision tree, take the exact action, and know your rollback before you commit it.
 
-humanymous Sentinel is a reverse-proxy enforcement layer that scores every request across layers L1–L7, applies hard rules, and enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge. This is a reference implementation, not a production-hardened build; your deployment's paging rotation and thresholds may differ.
+humanymous Gate is a reverse-proxy enforcement layer that scores every request across layers L1–L7, applies hard rules, and enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge. This is a reference implementation, not a production-hardened build; your deployment's paging rotation and thresholds may differ.
 
 ## Before you start: the tools you will use
 
-You drive every action below from the **Audit Console** or its admin API.
+You drive every action below from the **Ledger** or its admin API.
 
 - Console: `https://localhost:8445/__hmn/admin/console` (served on the separate admin listener, not the public edge).
 - API base: `/__hmn/admin/` on the admin listener. Bearer auth on every call. A missing or invalid token returns `404`, not `401` — that is deny-by-default, not a bug.
@@ -173,7 +173,7 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-21" -H "Authorization
 ### Who to page
 
 - **Page the Operator on-call** for bans.
-- **Page the infrastructure/network on-call** if the flood is saturating the edge below the application layer — Sentinel sheds at the control plane, but upstream capacity is outside its control.
+- **Page the infrastructure/network on-call** if the flood is saturating the edge below the application layer — Gate sheds at the control plane, but upstream capacity is outside its control.
 
 > **TODO(verify):** the concrete escalation contact / rotation for HTTP/2 DoS saturation (deployment-specific; not in the brief).
 
@@ -210,7 +210,7 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-20" -H "Authorization
 - **Temporary `fp:` ban** via `POST /__hmn/admin/bans` for repeat agent fingerprints; the ladder escalates on repeats.
 - **Permanent/CIDR** only with a **distinct Approver** (dual-control); rollback via `POST /__hmn/admin/bans/lift` (also dual-control).
 
-> **Note:** T4 (anti-detect tooling plus real-human click-farms) is an explicit design boundary Sentinel does not solve; it is mitigated only by rate and reputation. If bans are not denting the volume, escalate rather than banning ever-wider.
+> **Note:** T4 (anti-detect tooling plus real-human click-farms) is an explicit design boundary Gate does not solve; it is mitigated only by rate and reputation. If bans are not denting the volume, escalate rather than banning ever-wider.
 
 ### Who to page
 

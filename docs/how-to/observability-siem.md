@@ -1,28 +1,28 @@
 # Observability and SIEM integration
 
-**Quadrant:** How-to. **Audience:** SRE and security engineers wiring humanymous Sentinel into your monitoring and SIEM.
+**Quadrant:** How-to. **Audience:** SRE and security engineers wiring humanymous Gate into your monitoring and SIEM.
 
-This guide shows you what observability surface the reference implementation of humanymous Sentinel actually exposes today, how to pull edge decisions out of it with `curl`, and how to bridge that data to a SIEM until the production-only pieces (a metrics endpoint, health probes, native log shipping) are in place.
+This guide shows you what observability surface the reference implementation of humanymous Gate actually exposes today, how to pull edge decisions out of it with `curl`, and how to bridge that data to a SIEM until the production-only pieces (a metrics endpoint, health probes, native log shipping) are in place.
 
 > **Important:** This repository is a reference implementation, not a production-hardened build. Several observability features an SRE would expect — a Prometheus metrics endpoint, load-balancer health probes, and structured-log SIEM shipping — are not in the reference. This page is candid about that and gives you a working interim path.
 
 ## What exists today
 
-The reference Sentinel gives you three observability surfaces, all on the authenticated admin listener (`-admin-addr`, default `:8445`), never on the public edge:
+The reference Gate gives you three observability surfaces, all on the authenticated admin listener (`-admin-addr`, default `:8445`), never on the public edge:
 
 1. **The audit stream** — `GET /__hmn/admin/audit`, structured JSON records of every edge decision, with server-side filters and a paging cursor. This is your primary machine-readable feed.
-2. **The Audit Console Overview KPIs** — a human-facing live feed of allow/challenge/deny decisions with rollup counters, at `https://localhost:8445/__hmn/admin/console`. See the [Audit Console tour](audit-console-tour.md).
+2. **The Ledger Overview KPIs** — a human-facing live feed of allow/challenge/deny decisions with rollup counters, at `https://localhost:8445/__hmn/admin/console`. See the [Ledger tour](audit-console-tour.md).
 3. **Chain-integrity status** — the Integrity view and `GET /__hmn/admin/integrity`, which verify the tamper-evident audit log live (append-only hash chain + per-record HMAC + Ed25519 Signed Tree Heads) using the public key alone.
 
 Observability today is the audit stream plus these two console views. There is no separate metrics or telemetry pipeline.
 
 ## What does NOT exist (do not look for it)
 
-> **Warning:** Do not point a load balancer health check or a Prometheus scraper at Sentinel. Neither surface exists in the reference, and the closest-looking path is a trap.
+> **Warning:** Do not point a load balancer health check or a Prometheus scraper at Gate. Neither surface exists in the reference, and the closest-looking path is a trap.
 
 - **No Prometheus `/metrics` endpoint.** There is no metrics-exposition surface in the reference build.
-- **No `/healthz` or `/readyz` probe.** There is no Sentinel health or readiness endpoint.
-- **The `/health` route is not a Sentinel health check.** `/health` is an *origin application* path that ships mapped to the `off` preset — meaning Sentinel does not inject or enforce on it. It is a documented **bypass** of detection, not a liveness signal for Sentinel itself. Treating it as a health probe would tell you nothing about Sentinel's own state and would route probe traffic straight through unscored.
+- **No `/healthz` or `/readyz` probe.** There is no Gate health or readiness endpoint.
+- **The `/health` route is not a Gate health check.** `/health` is an *origin application* path that ships mapped to the `off` preset — meaning Gate does not inject or enforce on it. It is a documented **bypass** of detection, not a liveness signal for Gate itself. Treating it as a health probe would tell you nothing about Gate's own state and would route probe traffic straight through unscored.
 
 If you need a coarse liveness signal in the interim, exercise an authenticated admin endpoint (for example `GET /__hmn/admin/whoami`) and treat a `200` as "the admin listener is up." This is not a substitute for a real readiness probe; see [Production vs. reference](../reference/production-vs-reference.md).
 
@@ -30,7 +30,7 @@ If you need a coarse liveness signal in the interim, exercise an authenticated a
 
 The admin API base is `/__hmn/admin/` on the admin listener. Every request needs a bearer token; the comparison is constant-time, and a missing or invalid token returns `404` (deny-by-default — the admin plane does not advertise itself). Every authenticated access is meta-audited (an `admin.access` record) before anything is served.
 
-Tokens are configured through the `HMN_ADMIN_TOKENS` environment variable (`"auditor:tok,operator:tok,approver:tok,dpo:tok"`); if unset, Sentinel mints random tokens per boot and prints them at startup. For observability you only need read access, so use the **Auditor** token — Auditor is read-only (`canRead`) and cannot request or approve any change. See [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) for the full role matrix.
+Tokens are configured through the `HMN_ADMIN_TOKENS` environment variable (`"auditor:tok,operator:tok,approver:tok,dpo:tok"`); if unset, Gate mints random tokens per boot and prints them at startup. For observability you only need read access, so use the **Auditor** token — Auditor is read-only (`canRead`) and cannot request or approve any change. See [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) for the full role matrix.
 
 Set your token once:
 
@@ -126,5 +126,5 @@ For the full list and the reasoning behind each, see [Production vs. reference](
 ## Related
 
 - [CLI, config, and policy reference](../reference/cli-config-policy.md) — the `-admin-addr` flag, `HMN_ADMIN_TOKENS`, and other startup levers.
-- [Audit Console tour](audit-console-tour.md) — the Overview KPIs and Integrity view described here, in the UI.
+- [Ledger tour](audit-console-tour.md) — the Overview KPIs and Integrity view described here, in the UI.
 - [Production vs. reference](../reference/production-vs-reference.md) — the complete prod-delta list.

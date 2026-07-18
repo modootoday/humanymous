@@ -96,7 +96,7 @@ Each `cmd/redteam` attack sends a **complete, browser-like header set**. This is
 
 By keeping the header cross-checks **quiet**, the catalog forces the engine to catch the request on the **specific network or anti-tamper signal the attack is actually about**. That is the honest test: `tls-static` must be caught by TLS-consistency, not by a sloppy header; `rit-tamper` must be caught by the body HMAC, not by a missing UA. Each raw attack is deliberately mapped to one intended signal → one intended hard rule, and spoofing the headers is how you isolate that path.
 
-For how those L6 cross-checks and per-layer signals are assembled into a verdict, see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md).
+For how those L6 cross-checks and per-layer signals are assembled into a verdict, see [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
 
 ## Which tool tests which layer (summary)
 
@@ -123,4 +123,4 @@ Every number the catalog produces is **reference-measured on your machine**, aga
 - [Red-team catalog reference](../reference/red-team-catalog.md) — the profile-by-profile table (labels, expected hard rules, `needsBrowser`).
 - [Red-team rules of engagement](../reference/red-team-rules-of-engagement.md) — the defensive, local-only, self-target-only boundary you operate within.
 - [Hard rules and verdicts](../reference/hard-rules-verdicts.md) — the full ordered HR-1..HR-21 table and verdict thresholds.
-- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — how per-layer signals and L6 cross-checks combine into a verdict.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — how per-layer signals and L6 cross-checks combine into a verdict.

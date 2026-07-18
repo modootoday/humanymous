@@ -5,7 +5,7 @@
 # LOCAL TARGET ONLY: this container is on an internal lab network.
 set -uo pipefail
 
-BASE="${HM_BASE:-https://engine:8443}"
+BASE="${HM_BASE:-https://core:8443}"
 FP="${HM_FP:-swarm-shared-fp-0001}"
 N="${HM_SWARM_N:-5}"
 

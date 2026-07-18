@@ -4,19 +4,19 @@ title: RBAC, Separation-of-Duties & Dual-Control Reference
 
 # RBAC, separation-of-duties and dual-control reference
 
-**Diátaxis quadrant:** Reference. **Audience:** DPOs, security auditors, and IT-governance reviewers verifying who can do what on the admin plane of humanymous Sentinel.
+**Diátaxis quadrant:** Reference. **Audience:** DPOs, security auditors, and IT-governance reviewers verifying who can do what on the admin plane of humanymous Gate.
 
-This page is the authoritative lookup for the admin-plane access model in the reference build of humanymous Sentinel ("Sentinel" after first mention): the four roles, the capability each role carries, the exact capability-resolution rules, and which actions require a distinct second identity (dual-control). It is descriptive, not a walkthrough. For the admin API surface each capability maps onto, see the [CLI, config & per-route policy reference](./cli-config-policy.md). For the operational procedures these controls gate, see the [Kill-switch and bans runbook](../runbooks/kill-switch-and-bans.md) and the [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md).
+This page is the authoritative lookup for the admin-plane access model in the reference build of humanymous Gate ("Gate" after first mention): the four roles, the capability each role carries, the exact capability-resolution rules, and which actions require a distinct second identity (dual-control). It is descriptive, not a walkthrough. For the admin API surface each capability maps onto, see the [CLI, config & per-route policy reference](./cli-config-policy.md). For the operational procedures these controls gate, see the [Kill-switch and bans runbook](../runbooks/kill-switch-and-bans.md) and the [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md).
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. The role model, capability rules, and dual-control constraints below are enforced by the reference binary; the transport authentication is dev bearer tokens (see [Authentication and trust boundary](#authentication-and-trust-boundary)), and mTLS/SSO admin authentication is a prod-delta not present in the reference.
 
-Sentinel is the reverse-proxy enforcement layer. Its admin plane is served on a separate authenticated admin listener (`-admin-addr`, default `:8445`), cross-origin to the public edge. The public edge does not serve `/__hmn/admin/*` — it 404s that prefix.
+Gate is the reverse-proxy enforcement layer. Its admin plane is served on a separate authenticated admin listener (`-admin-addr`, default `:8445`), cross-origin to the public edge. The public edge does not serve `/__hmn/admin/*` — it 404s that prefix.
 
 ---
 
 ## Roles and capabilities
 
-The reference defines four roles (`internal/sentinel/adminauth.go`). Each role carries a fixed set of named capabilities. Capabilities are the primitives; roles are bundles of them.
+The reference defines four roles (`internal/gate/adminauth.go`). Each role carries a fixed set of named capabilities. Capabilities are the primitives; roles are bundles of them.
 
 | Role | `canRead` | `canOperate` | `canApprove` | `canApproveErasure` |
 |----------|:---------:|:------------:|:------------:|:-------------------:|

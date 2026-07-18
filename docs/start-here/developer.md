@@ -5,7 +5,7 @@
 
 A developer works two surfaces here, both on your own loopback. On the **Blue** side you understand and extend the detection engine — how it scores a request across layers L1–L7, how signals combine, how the hard rules HR-1..HR-21 promote a verdict — and you add your own signals and tests. On the **Red** side you understand and extend the local Red test catalog — the profiles that exercise the engine so you can verify what your detector catches and measure the effect of a change. Everything is defensive, local-only, and self-target-only: the Red material teaches you to understand and extend **your own** detector's test catalog against your own `127.0.0.1` engine, never third-party evasion.
 
-Before you pick a path, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) so you do not confuse the three surfaces: the standalone detection engine (`:8443`), the Detection Observatory (dev-gated page on that engine), and the Sentinel reverse proxy (edge `:8444` + admin `:8445`).
+Before you pick a path, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) so you do not confuse the three surfaces: the standalone detection engine (`:8443`), the Detection Observatory (dev-gated page on that engine), and the Gate reverse proxy (edge `:8444` + admin `:8445`).
 
 ## Blue path — understand & extend detection
 

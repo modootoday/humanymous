@@ -4,7 +4,7 @@
 # the detector.
 set -uo pipefail
 
-BASE="${HM_BASE:-https://engine:8443}"
+BASE="${HM_BASE:-https://core:8443}"
 RUNS="${HM_RUNS:-1}"
 
 echo "[bots] waiting for the detector engine at ${BASE} ..."
@@ -27,8 +27,8 @@ code=$?
 
 # Publish the machine-readable results to the mounted artifacts dir, if present.
 if [ -d /artifacts ]; then
-  cp -f e2e/results.json /artifacts/engine-results.json 2>/dev/null || true
-  echo "[bots] wrote /artifacts/engine-results.json"
+  cp -f e2e/results.json /artifacts/core-results.json 2>/dev/null || true
+  echo "[bots] wrote /artifacts/core-results.json"
 fi
 
 echo "[bots] attack run complete (runner exit ${code})."

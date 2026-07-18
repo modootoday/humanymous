@@ -46,20 +46,20 @@ jobs:
         run: >
           docker compose
           -f deployments/compose.yaml -f deployments/compose.ci.yaml
-          --profile attack --profile sentinel-test --profile swarm
+          --profile attack --profile gate-test --profile swarm
           build
 
       - name: Start the detection stack
-        run: docker compose -f deployments/compose.yaml up -d engine origin sentinel
+        run: docker compose -f deployments/compose.yaml up -d core origin gate
 
       - name: Run the bots (automation catalog) vs the engine
         run: docker compose -f deployments/compose.yaml run --rm bots
 
       - name: Assert attack gate (all bots blocked, no FP)
-        run: node scripts/assert-attack.mjs deployments/artifacts/engine-results.json
+        run: node scripts/assert-attack.mjs deployments/artifacts/core-results.json
 
-      - name: Sentinel proxy-layer conformance (34 checks)
-        run: docker compose -f deployments/compose.yaml run --rm sentinel-e2e
+      - name: Gate proxy-layer conformance (34 checks)
+        run: docker compose -f deployments/compose.yaml run --rm gate-e2e
 
       - name: Multi-subnet swarm — assert cross-subnet correlation fires
         run: |

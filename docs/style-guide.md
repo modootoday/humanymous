@@ -1,14 +1,14 @@
 # humanymous Documentation Style Guide
 
 <!-- Quadrant: Reference. -->
-<!-- Audience: anyone who writes or reviews humanymous Sentinel user docs, UI strings, error microcopy, or release notes. -->
+<!-- Audience: anyone who writes or reviews humanymous Gate user docs, UI strings, error microcopy, or release notes. -->
 
 **Diátaxis quadrant:** Reference — look things up, do not read start to finish.
-**Audience:** doc authors and reviewers of humanymous Sentinel documentation, UI strings, error microcopy, and release notes.
+**Audience:** doc authors and reviewers of humanymous Gate documentation, UI strings, error microcopy, and release notes.
 
-This guide defines how humanymous Sentinel documentation reads and what it must never claim. Every rule here is enforceable at review time. If a rule and a deadline conflict, the rule wins: an over-claim that ships is a defect, not a rough edge.
+This guide defines how humanymous Gate documentation reads and what it must never claim. Every rule here is enforceable at review time. If a rule and a deadline conflict, the rule wins: an over-claim that ships is a defect, not a rough edge.
 
-humanymous Sentinel is a reference implementation, not a production-hardened product. Documentation says so wherever a reader might otherwise assume production guarantees.
+humanymous Gate is a reference implementation, not a production-hardened product. Documentation says so wherever a reader might otherwise assume production guarantees.
 
 ---
 
@@ -90,9 +90,9 @@ Use the canonical form in the left column. The right column is a rejection list,
 | Preferred (canonical) | Avoid |
 |---|---|
 | humanymous (lowercase always, even at sentence start) | Humanymous, HumanyMous, HUMANYMOUS |
-| Sentinel (capitalized; the reverse-proxy enforcement layer) | sentinel, the proxy, the gateway |
-| humanymous Sentinel (full name, first mention per page) | Sentinel alone on first mention |
-| Audit Console | audit console, the dashboard, admin panel |
+| Gate (capitalized; the reverse-proxy enforcement layer) | gate, the proxy, the gateway |
+| humanymous Gate (full name, first mention per page) | Gate alone on first mention |
+| Ledger | audit console, the dashboard, admin panel |
 | verdict; values ALLOW / CHALLENGE / DENY (uppercase) | allow/deny lowercase in a verdict value; "decision" as the value |
 | risk score (0–100, one decimal) | trust score, bot score, confidence % |
 | hard rule; HR-14 (hyphen, no space) | hardrule, HR 14, rule #14 |
@@ -112,11 +112,11 @@ Use the canonical form in the left column. The right column is a rejection list,
 | Auditor / Operator / Approver / DPO (RBAC roles, capitalized) | admin, superuser, reviewer |
 | reference implementation vs production-hardened / prod-delta | "the product", "GA" for reference-only behaviour |
 | signal IDs lowercase `l{n}.{group}.{item}`; layer tokens uppercase L1–L7; cross-checks in the `x.` namespace (`x.ua_vs_ja4`) | uppercase `L{n}.…` signal IDs; an `l6.x.…` prefix for cross-checks |
-| engine hard rules HR-1..HR-21 (score pipeline) vs Sentinel hard rules HR-22..HR-30 (proxy edge) | one flat HR list with no plane marker |
+| engine hard rules HR-1..HR-21 (score pipeline) vs Gate hard rules HR-22..HR-30 (proxy edge) | one flat HR list with no plane marker |
 
-**First-mention rule:** the first time a page names the product, write "humanymous Sentinel", then "Sentinel" thereafter. "humanymous" stays lowercase even when it opens a sentence — rewrite the sentence if a leading lowercase word reads badly.
+**First-mention rule:** the first time a page names the product, write "humanymous Gate", then "Gate" thereafter. "humanymous" stays lowercase even when it opens a sentence — rewrite the sentence if a leading lowercase word reads badly.
 
-**Never leak internal signal names** — HR-IDs, JA3/JA4, entropy codes, layer references, dotted signal IDs like `l1.cdp.proxy_leak` — into any end-user-facing string. Those live in operator docs and the Audit Console only.
+**Never leak internal signal names** — HR-IDs, JA3/JA4, entropy codes, layer references, dotted signal IDs like `l1.cdp.proxy_leak` — into any end-user-facing string. Those live in operator docs and the Ledger only.
 
 **Never put internal spec identifiers** (the internal "SoT-NN" scheme) or Korean-spec references on any reader-facing page.
 
@@ -158,7 +158,7 @@ Apply these three checks literally. Each is pass/fail.
 2. **Neutral-verb check.** Every threat sentence uses a neutral verb (observes, sends, requests, retries) and a bounded outcome verb (flags, challenges, blocks). Verbs that dramatize (slams, floods as hyperbole, devastates) fail.
 3. **Bounded-or-cited frame.** Any statement about how common or severe a threat is must be either (a) bounded and non-alarming, or (b) attached to a cited, reference-measured figure. An uncited scale claim fails.
 
-A threat sentence that passes reads: "Automated clients frequently retry blocked requests; Sentinel meters repeat attempts per fingerprint and subnet." It names the mechanism, uses neutral verbs, and makes no uncited scale claim.
+A threat sentence that passes reads: "Automated clients frequently retry blocked requests; Gate meters repeat attempts per fingerprint and subnet." It names the mechanism, uses neutral verbs, and makes no uncited scale claim.
 
 ### 5.2 Adversary-naming resolution
 
@@ -172,7 +172,7 @@ A threat sentence that passes reads: "Automated clients frequently retry blocked
 
 Two audiences, two vocabularies. Keep them apart.
 
-**Operator-facing** (Audit Console, operator docs, runbooks, operator error microcopy) may use: HR-IDs, verdict values, layer references, signal IDs, risk scores, role names, flags, endpoints.
+**Operator-facing** (Ledger, operator docs, runbooks, operator error microcopy) may use: HR-IDs, verdict values, layer references, signal IDs, risk scores, role names, flags, endpoints.
 
 **End-user-facing** (the blocked-user page, the challenge interstitial copy, appeal help) may use: plain language, a short explanation, and an **incident handle** only.
 
@@ -213,13 +213,13 @@ Copy-level WCAG 2.2 AA is a merge requirement.
 Example:
 
 ```
-bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream <origin-url>
+bin/gate.exe -addr :8444 -admin-addr :8445 -upstream <origin-url>
 ```
 
 Expected startup line:
 
 ```
-humanymous Sentinel on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
 ```
 
 ### 8.2 The admonition ladder
@@ -249,19 +249,19 @@ These span every register. The "after" is the shippable form.
 
 **1. Hype claim**
 
-- Before: humanymous Sentinel blocks all bots with AI-powered, military-grade detection.
-- After: humanymous Sentinel scores each request across layers L1–L7 and blocks or challenges traffic that is not verified as human. It reduces automated access; it does not claim to stop every bot.
+- Before: humanymous Gate blocks all bots with AI-powered, military-grade detection.
+- After: humanymous Gate scores each request across layers L1–L7 and blocks or challenges traffic that is not verified as human. It reduces automated access; it does not claim to stop every bot.
 
 **2. Compliance over-claim**
 
-- Before: Deploying Sentinel makes you GDPR compliant.
-- After: Sentinel stores raw identifiers only as per-subject pseudonyms and supports right-to-erasure via cryptographic erasure. These capabilities help you meet GDPR obligations; compliance depends on your overall processing.
+- Before: Deploying Gate makes you GDPR compliant.
+- After: Gate stores raw identifiers only as per-subject pseudonyms and supports right-to-erasure via cryptographic erasure. These capabilities help you meet GDPR obligations; compliance depends on your overall processing.
 
 **3. Runbook step**
 
 - Before: Go to the admin thing and kill the bad session, then check it worked.
 - After:
-  1. In the Audit Console **Session Drill-down** view, locate the session by its incident handle.
+  1. In the Ledger **Session Drill-down** view, locate the session by its incident handle.
   2. Request a ban: `POST /__hmn/admin/bans` as the Operator.
   3. Confirm the ban appears in the **Bans** view with `Source=manual`.
 
@@ -272,13 +272,13 @@ These span every register. The "after" is the shippable form.
 
 **5. Absolute claim**
 
-- Before: Sentinel guarantees zero false positives and is bulletproof against headless browsers.
-- After: Sentinel weights low-confidence signals weakly to keep false positives low, and hard rule HR-7 promotes headless browsers with a second automation tell to DENY. Some real users can still be challenged; the design accepts a bounded false-positive rate.
+- Before: Gate guarantees zero false positives and is bulletproof against headless browsers.
+- After: Gate weights low-confidence signals weakly to keep false positives low, and hard rule HR-7 promotes headless browsers with a second automation tell to DENY. Some real users can still be challenged; the design accepts a bounded false-positive rate.
 
 **6. Fear-selling threat line**
 
 - Before: Bots are rampant and your site is under constant attack from a devastating epidemic of automation.
-- After: Automated clients regularly probe public endpoints. Sentinel scores each request and meters repeat attempts per fingerprint and subnet.
+- After: Automated clients regularly probe public endpoints. Gate scores each request and meters repeat attempts per fingerprint and subnet.
 
 **7. tamper-proof → tamper-evident**
 

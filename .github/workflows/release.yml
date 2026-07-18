@@ -1,6 +1,6 @@
 name: release
 
-# SoT-31 R6 — publish the engine + Sentinel images to ghcr.io on a semver tag so
+# SoT-31 R6 — publish the engine + Gate images to ghcr.io on a semver tag so
 # adopters `compose up` a pulled image instead of building from source. The `red`
 # attacker image is NEVER published.
 on:
@@ -19,10 +19,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: engine
-            dockerfile: build/engine.Dockerfile
-          - name: sentinel
-            dockerfile: build/sentinel.Dockerfile
+          - name: core
+            dockerfile: build/core.Dockerfile
+          - name: gate
+            dockerfile: build/gate.Dockerfile
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3          # arm64 emulation fallback

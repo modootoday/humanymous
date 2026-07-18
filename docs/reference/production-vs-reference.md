@@ -4,9 +4,9 @@ title: Production-ready vs reference (prod-delta) & local↔production checklist
 
 # Production-ready vs reference (prod-delta) & local↔production checklist
 
-**Diátaxis quadrant:** Reference. **Audience:** engineering leaders, security reviewers, and integrators promoting humanymous Sentinel from a local reference build toward a production deployment.
+**Diátaxis quadrant:** Reference. **Audience:** engineering leaders, security reviewers, and integrators promoting humanymous Gate from a local reference build toward a production deployment.
 
-This is the honesty page. This repository is a **reference implementation, not a production-hardened build.** humanymous Sentinel ("Sentinel" after first mention) is the reverse-proxy enforcement layer: it terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log in front of an origin app it does not control.
+This is the honesty page. This repository is a **reference implementation, not a production-hardened build.** humanymous Gate ("Gate" after first mention) is the reverse-proxy enforcement layer: it terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log in front of an origin app it does not control.
 
 The reference build demonstrates every mechanism end-to-end so you can evaluate it, but several components ship as dev-grade stubs that are safe on a laptop and unsafe in production. This page names each one — what the reference ships versus what a production deployment must supply (the "prod-delta") — and then gives a checklist for the local→production promotion.
 
@@ -26,16 +26,16 @@ Each row states what the reference binary ships and what a production deployment
 | **Node signing / HMAC / vault keys** | Ephemeral by default: a restart mints a **new** Ed25519 signing key (verifier public key changes) and a **new** vault (all pseudonym linkage lost ≈ accidental mass crypto-shred). A sealed keystore (`-keystore` + `HMN_UNSEAL`) makes them persistent. | Always run with `-keystore` + `HMN_UNSEAL` for a stable identity; back up the passphrase out-of-band. See [Key management](../how-to/key-management.md). |
 | **Automated key rotation** | Not implemented for the signing/HMAC keys. (The verdict-token epoch key rotates every 15 min in-process; that is separate.) Rotation would require re-anchoring the chain. | An operational rotation procedure with re-anchoring. prod-delta. |
 | **Admin authentication** | Bearer dev tokens over the separate admin listener, constant-time compared. Tokens are random per boot (printed at startup) unless set via `HMN_ADMIN_TOKENS`. | mTLS and/or SSO for the admin plane. prod-delta. |
-| **Verdict store & bans (fleet state)** | In-process, single node. Verdict trust tokens and IP/fingerprint bans live in memory on one Sentinel instance. | A shared store (for example Redis) so verdicts and bans are consistent across a fleet. prod-delta. |
+| **Verdict store & bans (fleet state)** | In-process, single node. Verdict trust tokens and IP/fingerprint bans live in memory on one Gate instance. | A shared store (for example Redis) so verdicts and bans are consistent across a fleet. prod-delta. |
 | **TLS fingerprint capture (JA4)** | Reference-level capture. Raw ClientHello TLS-accept-loop capture is not shipped. | Raw ClientHello TLS-accept-loop capture for full JA4 fidelity. prod-delta. |
-| **Audit-log verification** | Verification logic lives in `internal/audit` (`Verify` / `SelfVerify`) and runs **live** in the Audit Console "Integrity" view and `GET /__hmn/admin/integrity` — verifies with the public key alone. | A standalone offline verifier **process/binary** (built from `internal/audit.Verify` over exported checkpoints). Not shipped in `cmd/`. prod-delta. See [Verify the audit log](../how-to/verify-audit-log.md). |
+| **Audit-log verification** | Verification logic lives in `internal/audit` (`Verify` / `SelfVerify`) and runs **live** in the Ledger "Integrity" view and `GET /__hmn/admin/integrity` — verifies with the public key alone. | A standalone offline verifier **process/binary** (built from `internal/audit.Verify` over exported checkpoints). Not shipped in `cmd/`. prod-delta. See [Verify the audit log](../how-to/verify-audit-log.md). |
 | **Retention retirement** | Retention tiers exist (HOT ~90d / WARM ~1y / COLD ~7y). | Physical retirement of retention segments to WORM storage. prod-delta. |
-| **Live console updates** | The Audit Console refreshes/polls; a manual refresh button re-verifies the chain on demand. | SSE live-push for real-time console updates. prod-delta. |
+| **Live console updates** | The Ledger refreshes/polls; a manual refresh button re-verifies the chain on demand. | SSE live-push for real-time console updates. prod-delta. |
 | **False-positive triage UI** | No dedicated FP/appeal-queue view. Triage is done from the Overview feed plus Sessions drill-down. | A dedicated FP/appeal-queue view. prod-delta. |
 | **Challenge / PoW interstitial** | A minimal accessible interstitial (HTTP 401, `no-store`, `lang="en"`, a plain-language message, loads the control-plane PoW loader). The code states production self-hosts the WCAG UI. | A full self-hosted WCAG 2.2 AA-conformant challenge experience. prod-delta. See [Challenge accessibility](../help/challenge-accessibility.md). |
 | **Observability export** | The audit stream (`GET /audit` with filters + cursor), the Integrity view/endpoint, and the Overview KPIs. There is **no** Prometheus `/metrics` endpoint and **no** health/readiness probe in the reference. | A metrics endpoint, health/readiness probes, and SIEM log shipping. prod-delta. See [Observability & SIEM](../how-to/observability-siem.md). |
 
-> **Note:** The `/health` route is an origin app path mapped to the `off` preset (a bypass), not a Sentinel health probe. Do not treat it as a readiness signal for Sentinel itself.
+> **Note:** The `/health` route is an origin app path mapped to the `off` preset (a bypass), not a Gate health probe. Do not treat it as a readiness signal for Gate itself.
 
 ---
 
@@ -52,11 +52,11 @@ Work through this before any deployment that faces real traffic. Each item remov
 ### Transport and origin trust
 
 - [ ] **Replace the self-signed dev certificate** with real certificates (ACME or bring-your-own) backed by a real KMS/HSM. The in-memory self-signed cert is for `localhost` only.
-- [ ] **Set a real `-origin-key`.** Provide a stable origin-cloaking HMAC key so the origin can validate `X-Hmny-Origin-Auth`. If left unset the key is random and ephemeral, and the origin cannot reliably distinguish Sentinel-forwarded traffic from a direct hit.
+- [ ] **Set a real `-origin-key`.** Provide a stable origin-cloaking HMAC key so the origin can validate `X-Hmny-Origin-Auth`. If left unset the key is random and ephemeral, and the origin cannot reliably distinguish Gate-forwarded traffic from a direct hit.
 
 ### State and fleet
 
-- [ ] **Externalize fleet state.** The reference keeps verdict trust tokens and IP/fingerprint bans in-process on a single node. For more than one Sentinel instance, move them to a shared store (for example Redis) so verdicts and bans are consistent fleet-wide.
+- [ ] **Externalize fleet state.** The reference keeps verdict trust tokens and IP/fingerprint bans in-process on a single node. For more than one Gate instance, move them to a shared store (for example Redis) so verdicts and bans are consistent fleet-wide.
 
 ### Admin plane
 
@@ -81,7 +81,7 @@ Some limitations are design boundaries, not stubs a production build removes:
 - **The unanchored in-window residual.** The audit log is **tamper-evident**, not tamper-proof: records after the last signed checkpoint remain re-writable by the writer until the next checkpoint (every 32 records). This is an honestly-scoped property, not a gap a production build closes.
 - **Fail-open on safe-method GET/HEAD (non-strict routes).** This is a documented accepted residual covered by fingerprint/subnet rate metering, chosen deliberately — not a stub.
 
-For the reasoning behind these boundaries, see [What Sentinel is](../explanation/what-sentinel-is.md) and [Hard rules & verdicts](./hard-rules-verdicts.md).
+For the reasoning behind these boundaries, see [What Gate is](../explanation/what-gate-is.md) and [Hard rules & verdicts](./hard-rules-verdicts.md).
 
 ---
 

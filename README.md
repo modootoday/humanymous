@@ -31,14 +31,14 @@ the engine collects, cross-checks, and scores signals across the layers below.
 Following golang-standards/project-layout.
 
 ```
-cmd/            # executables: server, sentinel, redteam, tlsparrot, report, wasm
-internal/       # internal packages (16): signals, network, scoring, sentinel, collector, …
+cmd/            # executables: server, gate, redteam, tlsparrot, report, wasm
+internal/       # internal packages (16): signals, network, scoring, gate, collector, …
 api/            # HTTP API contract (http-contract.md)
 web/            # client assets: index.html, /demo, JS injector, detector.wasm
-build/          # Dockerfiles: engine / sentinel / bots (+ per-file .dockerignore)
+build/          # Dockerfiles: engine / gate / bots (+ per-file .dockerignore)
 deployments/    # modular docker compose (include:) + origin + bots scripts + artifacts
 configs/        # deployment config (dev.env, …)
-test/           # redteam/ attack catalog, e2e/ runner, sentinel/ conformance
+test/           # redteam/ attack catalog, e2e/ runner, gate/ conformance
 docs/           # GitHub Pages documentation
 scripts/        # local dev helpers (e2e.sh)
 sots/  plan/    # development source-of-truth / design (excluded from release & publish)
@@ -54,21 +54,21 @@ below work the same on **Linux, macOS, and Windows**.
 cd deployments
 
 # 1. Start the detection stack (builds the images on the first run; long-running)
-docker compose up -d --build engine origin sentinel
+docker compose up -d --build engine origin gate
 ```
 
 Then open (accept the self-signed certificate):
 
 - **Engine demo** — <https://localhost:8443/demo> — score your own browser across L1–L7.
-- **Sentinel edge** — <https://localhost:8444/> — a demo origin app with the detection bundle injected.
-- **Audit Console** — <https://localhost:8445/__hmn/admin/console> — dev token `operator:e2e-operator-token`.
+- **Gate edge** — <https://localhost:8444/> — a demo origin app with the detection bundle injected.
+- **Ledger** — <https://localhost:8445/__hmn/admin/console> — dev token `operator:e2e-operator-token`.
 
 ```bash
 # 2. Run the bots (automation catalog, 26 profiles) against the engine
 docker compose run --rm bots
 
-# 3. Sentinel proxy-layer conformance (34 checks)
-docker compose run --rm sentinel-e2e
+# 3. Gate proxy-layer conformance (34 checks)
+docker compose run --rm gate-e2e
 
 # 4. Multi-subnet correlation swarm — one fingerprint across 3 real subnets
 docker compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
@@ -77,7 +77,7 @@ docker compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swar
 docker compose down -v
 ```
 
-Expected result: **25/25 bots blocked (TPR 100%), 0 false positives**; Sentinel
+Expected result: **25/25 bots blocked (TPR 100%), 0 false positives**; Gate
 conformance **34/34**. The bots containers attach to an `internal` network only, so
 they can physically reach nothing but the detector. Full topology and safety model:
 `deployments/README.md`.
@@ -88,7 +88,7 @@ they can physically reach nothing but the detector. Full topology and safety mod
 ## Without Docker (local build)
 
 With the Go toolchain installed you can build and run directly. A `Makefile`
-provides shortcuts (`make wasm`, `make run`, `make attack`, `make sentinel-e2e`, …)
+provides shortcuts (`make wasm`, `make run`, `make attack`, `make gate-e2e`, …)
 **where `make` is available** — note that Windows typically has no `make`, so the
 Docker path above is the reliable cross-platform option. The raw equivalents:
 
@@ -217,7 +217,7 @@ serving (verified by human ALLOW).
 ## Production promotion — reverse-proxy security layer (SoT-18–28)
 
 The verified L1–L7 engine was promoted into a **drop-in reverse proxy**:
-`(browser) → (humanymous Sentinel: TLS termination + streaming HTML injection +
+`(browser) → (humanymous Gate: TLS termination + streaming HTML injection +
 inline scoring + edge enforcement + tamper-evident audit) → (origin app)`. It
 inlines detection in front of an app the operator does not control.
 
@@ -233,22 +233,22 @@ critique (7 agents). Real defects the critique found were **reflected in the spe
 | Layer | Package | Verification |
 |------|--------|------|
 | **audit log (headline)** | `internal/audit` | hash chain + Ed25519 STH + per-subject crypto-shred + offline verifier; tamper/truncation/rollback detection, erasure isolation, structural audit-or-panic sink tests |
-| streaming HTML injection | `internal/sentinel/inject.go` | single-pass, add-only, idempotent, chunk-boundary split + fallback + oversize guard tests |
-| edge enforcement | `internal/sentinel` | sticky verdict → allow/challenge/deny, blocks without contacting origin |
-| origin cloaking (HR-24) | `internal/sentinel/guard.go` | rotating HMAC origin-auth, 421 on direct bypass |
-| header hygiene (HR-27b) | `internal/sentinel/guard.go` | strips + blocks inbound trust/internal headers |
-| verdict trust token (HR-28) | `internal/sentinel/token.go` | AEAD/HMAC server-key-only, fingerprint-bound, TTL, epoch; theft/forgery/expiry blocked |
-| beacon replay prevention (HR-29) | `internal/sentinel/token.go` | single-use beacon nonce (incl. solve-once-reuse-many) |
-| reverse-proxy wiring | `cmd/sentinel` | TLS termination, `/__hmn/*` control plane, h2 DoS caps, route presets |
-| smuggling normalization (HR-23) | `internal/sentinel/smuggle.go` | rejects CL+TE/dup-CL/TE≠chunked/obs-fold (+ stdlib defense-in-depth) |
-| upgrade gate (HR-26) | `internal/sentinel` | requires a fingerprint-bound token before a WS/SSE 101 |
-| injector robustness (HR-27a) | `internal/sentinel` | decomp-bomb/oversize (8 MiB) safe pass-through + audit |
-| timing oracle (HR-30) | `internal/sentinel/recon.go` | sweep detection (many sessions per fingerprint) + constant-floor |
-| rate limit + temporary bans | `internal/sentinel/ban.go` | **both IP and fingerprint** rate → auto-escalating bans (1h→6h→24h→permanent), IP rotation tracked by fingerprint, first line at the edge |
-| console live API | `internal/sentinel/admin.go` | `/__hmn/admin/` integrity, audit, incident, bans, **policy, erasure (crypto-shred)** |
-| **live admin console SPA** | `internal/sentinel/console.html` | **6 working views served at `/__hmn/admin/console`**: Overview/Integrity/Sessions/Bans/Policy/Compliance, live feed, drill-down, dual-control, theming |
+| streaming HTML injection | `internal/gate/inject.go` | single-pass, add-only, idempotent, chunk-boundary split + fallback + oversize guard tests |
+| edge enforcement | `internal/gate` | sticky verdict → allow/challenge/deny, blocks without contacting origin |
+| origin cloaking (HR-24) | `internal/gate/guard.go` | rotating HMAC origin-auth, 421 on direct bypass |
+| header hygiene (HR-27b) | `internal/gate/guard.go` | strips + blocks inbound trust/internal headers |
+| verdict trust token (HR-28) | `internal/gate/token.go` | AEAD/HMAC server-key-only, fingerprint-bound, TTL, epoch; theft/forgery/expiry blocked |
+| beacon replay prevention (HR-29) | `internal/gate/token.go` | single-use beacon nonce (incl. solve-once-reuse-many) |
+| reverse-proxy wiring | `cmd/gate` | TLS termination, `/__hmn/*` control plane, h2 DoS caps, route presets |
+| smuggling normalization (HR-23) | `internal/gate/smuggle.go` | rejects CL+TE/dup-CL/TE≠chunked/obs-fold (+ stdlib defense-in-depth) |
+| upgrade gate (HR-26) | `internal/gate` | requires a fingerprint-bound token before a WS/SSE 101 |
+| injector robustness (HR-27a) | `internal/gate` | decomp-bomb/oversize (8 MiB) safe pass-through + audit |
+| timing oracle (HR-30) | `internal/gate/recon.go` | sweep detection (many sessions per fingerprint) + constant-floor |
+| rate limit + temporary bans | `internal/gate/ban.go` | **both IP and fingerprint** rate → auto-escalating bans (1h→6h→24h→permanent), IP rotation tracked by fingerprint, first line at the edge |
+| console live API | `internal/gate/admin.go` | `/__hmn/admin/` integrity, audit, incident, bans, **policy, erasure (crypto-shred)** |
+| **live admin console SPA** | `internal/gate/console.html` | **6 working views served at `/__hmn/admin/console`**: Overview/Integrity/Sessions/Bans/Policy/Compliance, live feed, drill-down, dual-control, theming |
 
-**Sentinel conformance e2e** (`test/sentinel/e2e.mjs`, 34/34): HTML injection · bot blocked at
+**Gate conformance e2e** (`test/gate/e2e.mjs`, 34/34): HTML injection · bot blocked at
 the edge (origin untouched) · human ALLOW · origin direct-hit (HR-24) · header spoofing
 (HR-27b) · strict fail-closed · **token theft/forgery (HR-28)** · **beacon replay (HR-29)**
 · **smuggling (HR-23)** · **upgrade tunnel (HR-26)** · **decision sweep (HR-30)** ·
@@ -259,17 +259,17 @@ SPA serving, policy, erasure (crypto-shred) dual-control, final chain integrity*
 console at `/__hmn/admin/console` (SoT-26).
 
 ```bash
-# Run the proxy (:8444) in front of a demo upstream (:9000), then the Sentinel conformance e2e
-go build -o bin/sentinel.exe ./cmd/sentinel/
-./bin/sentinel.exe -addr :8444 -upstream http://127.0.0.1:9000 -origin-key demo-origin-secret
-node test/sentinel/e2e.mjs
+# Run the proxy (:8444) in front of a demo upstream (:9000), then the Gate conformance e2e
+go build -o bin/gate.exe ./cmd/gate/
+./bin/gate.exe -addr :8444 -upstream http://127.0.0.1:9000 -origin-key demo-origin-secret
+node test/gate/e2e.mjs
 ```
 
 ## Status
 
 L1–L7 detection + all anti-bypass layers (SoT-07–17) + **production reverse-proxy
 promotion (SoT-18–28)** implemented and verified. All tests green; detection catalog
-**25/25 bots blocked, 0 false positives**; Sentinel conformance **34/34** (incl. token
+**25/25 bots blocked, 0 false positives**; Gate conformance **34/34** (incl. token
 theft/forgery/replay, smuggling, upgrade-tunnel, and sweep defenses). The headline
 audit log (tamper-evident hash chain + Ed25519 STH + crypto-shred) is live, with the
 live admin console (SoT-26). Details in `sots/18-audit-log.md`, `sots/19`–`sots/28`,

@@ -4,9 +4,9 @@ title: Data Processing & Personal-Data Inventory (RoPA-ready)
 
 # Data processing & personal-data inventory (RoPA-ready)
 
-**Diátaxis quadrant:** Reference. **Audience:** Data Protection Officers and privacy counsel completing a GDPR Article 30 record of processing activities (RoPA) for a deployment that fronts an origin with humanymous Sentinel ("Sentinel" after first mention).
+**Diátaxis quadrant:** Reference. **Audience:** Data Protection Officers and privacy counsel completing a GDPR Article 30 record of processing activities (RoPA) for a deployment that fronts an origin with humanymous Gate ("Gate" after first mention).
 
-This page is a descriptive inventory of the personal data Sentinel observes and stores in the reference implementation, written so that a DPO can lift the field-by-field detail directly into an Article 30 record and a pseudonymization policy note. It is not a compliance certification. Sentinel is processing tooling that **supports** your Article 30 and Article 17 obligations; it does not by itself make any deployment compliant.
+This page is a descriptive inventory of the personal data Gate observes and stores in the reference implementation, written so that a DPO can lift the field-by-field detail directly into an Article 30 record and a pseudonymization policy note. It is not a compliance certification. Gate is processing tooling that **supports** your Article 30 and Article 17 obligations; it does not by itself make any deployment compliant.
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. The categories, stored forms, and retention tiers below describe the reference build. A production deployment adds controls (prod-delta) but must not remove the pseudonymization and erasure guarantees described here. See [Production vs. reference](production-vs-reference.md).
 
@@ -14,20 +14,20 @@ This page is a descriptive inventory of the personal data Sentinel observes and 
 
 ## 1. Controller and processor framing
 
-Sentinel does not determine the purposes of the operator's business processing. In GDPR terms:
+Gate does not determine the purposes of the operator's business processing. In GDPR terms:
 
-- **The operator that deploys Sentinel is the data controller.** You decide why traffic is scored (protecting your origin from automated access), you set the legal basis, and you own the retention schedule and the erasure obligation.
-- **Sentinel is processing tooling operated under your control.** It observes request signals, derives pseudonyms, records decisions to a tamper-evident audit log, and enforces verdicts at the edge. It fronts your origin app and does not control it.
+- **The operator that deploys Gate is the data controller.** You decide why traffic is scored (protecting your origin from automated access), you set the legal basis, and you own the retention schedule and the erasure obligation.
+- **Gate is processing tooling operated under your control.** It observes request signals, derives pseudonyms, records decisions to a tamper-evident audit log, and enforces verdicts at the edge. It fronts your origin app and does not control it.
 
-Where Sentinel is operated by a third party on your behalf, that operator is your Article 28 processor; the topology and evidence in this document describe what that processor would be processing. This page does not assess any controller–processor contract.
+Where Gate is operated by a third party on your behalf, that operator is your Article 28 processor; the topology and evidence in this document describe what that processor would be processing. This page does not assess any controller–processor contract.
 
 ---
 
 ## 2. The observe-versus-store distinction (core of the inventory)
 
-The single most important fact for a RoPA entry is that **the identifiers Sentinel observes are not the data Sentinel stores.**
+The single most important fact for a RoPA entry is that **the identifiers Gate observes are not the data Gate stores.**
 
-- **Observed** identifiers are read transiently during scoring, in memory, for the duration of a request lifecycle (see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md)).
+- **Observed** identifiers are read transiently during scoring, in memory, for the duration of a request lifecycle (see [How Gate sees a request](../concepts/how-gate-sees-a-request.md)).
 - **Stored** identifiers exist in the audit log **only as per-subject-key-derived pseudonyms** — a 64-hex value produced by a scrypt KDF-stretched derivation. Raw identifiers (IP, JA3/JA4, HTTP/2 fingerprint, UA, UA-CH, SNI, device fingerprint) are **never** written to the audit log in raw form.
 
 This means the "personal data at rest" and the "personal data observed in transit" are two different rows in your analysis. Section 3 enumerates both.
@@ -36,7 +36,7 @@ This means the "personal data at rest" and the "personal data observed in transi
 
 ## 3. Personal-data inventory (field by field)
 
-Detection-layer references (L1–L7) are defined in [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md). "Observed form" is what Sentinel reads during scoring; "Stored form" is what is persisted to the audit log.
+Detection-layer references (L1–L7) are defined in [How Gate sees a request](../concepts/how-gate-sees-a-request.md). "Observed form" is what Gate reads during scoring; "Stored form" is what is persisted to the audit log.
 
 | # | Identifier / signal | Detection layer | Purpose of processing | Observed form (transient) | Stored form (at rest) |
 |---|---------------------|-----------------|-----------------------|---------------------------|-----------------------|
@@ -53,7 +53,7 @@ Detection-layer references (L1–L7) are defined in [How Sentinel sees a request
 
 > **Note:** Rows 1–8 are read to compute a verdict and are not persisted in raw form. What persists is the pseudonym plus the decision metadata in row 10. The decision metadata references internal signal ids (for example `x.ua_vs_ja4`); these are internal signal names and are never surfaced to the end user, who sees only plain language and an incident handle.
 
-> **TODO(verify):** Whether the behavioral signals in row 8 (keystroke and mouse dynamics in particular) constitute biometric data under Article 4(14) / Article 9 for your deployment is a controller legal determination. The facts available here do not state that Sentinel classifies these as special-category data or applies Article 9 handling to them. Confirm with counsel and record the determination in your RoPA.
+> **TODO(verify):** Whether the behavioral signals in row 8 (keystroke and mouse dynamics in particular) constitute biometric data under Article 4(14) / Article 9 for your deployment is a controller legal determination. The facts available here do not state that Gate classifies these as special-category data or applies Article 9 handling to them. Confirm with counsel and record the determination in your RoPA.
 
 ---
 
@@ -82,7 +82,7 @@ Re-identification is not a routine operation. It requires **the vault plus dual-
 
 ## 6. Record-level tagging (legal basis and data class)
 
-Audit records carry tagging that supports your Article 30 mapping, including a legal-basis tag and a data-class tag per record. The legal basis is a **controller determination**: Sentinel does not choose the lawful basis for your traffic processing, and you should set and record it (for most bot-mitigation deployments this is a legitimate-interest or legal-obligation analysis you perform, not one Sentinel asserts).
+Audit records carry tagging that supports your Article 30 mapping, including a legal-basis tag and a data-class tag per record. The legal basis is a **controller determination**: Gate does not choose the lawful basis for your traffic processing, and you should set and record it (for most bot-mitigation deployments this is a legitimate-interest or legal-obligation analysis you perform, not one Gate asserts).
 
 > **TODO(verify):** The exact field names and the enumerated value set for the record-level legal-basis and data-class tags are not specified in the available facts. Capture the concrete tag schema (field names and permitted values) from the implementation before mapping it into a RoPA column.
 
@@ -112,7 +112,7 @@ Crypto-shred is DPO-gated and dual-control, with a cancellable hold window befor
 
 > **Warning:** Cryptographic erasure is irreversible. Destroying the per-subject linkage key cannot be undone, and there is no recovery path once the shred commits. Confirm the subject-to-pseudonym mapping before you request erasure, and use the hold window as your final checkpoint.
 
-Sentinel **supports** your Article 17 obligation by giving you a targeted, auditable erasure primitive and a sealed erasure certificate on commit. It does not discharge the obligation for you; intake, subject verification, and the decision to erase remain controller responsibilities.
+Gate **supports** your Article 17 obligation by giving you a targeted, auditable erasure primitive and a sealed erasure certificate on commit. It does not discharge the obligation for you; intake, subject verification, and the decision to erase remain controller responsibilities.
 
 ---
 
@@ -138,7 +138,7 @@ Any backup that includes the vault or the node keystore is a **re-identifiable c
 
 ## Related pages
 
-- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — the pseudonymization model and the L1–L7 layers referenced above.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the pseudonymization model and the L1–L7 layers referenced above.
 - [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — the Article 17 procedure.
 - [Compliance & DPO start here](../start-here/compliance-dpo.md) — orientation for the DPO role.
 - [RBAC and separation of duties](rbac-separation-of-duties.md) — the dual-control model that gates re-identification and erasure.

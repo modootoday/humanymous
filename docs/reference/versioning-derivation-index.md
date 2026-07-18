@@ -1,10 +1,10 @@
 # Versioning, release notes & SoT→user-doc derivation index
 
-> Reference · Governance — maintainer page. Audience: humanymous Sentinel maintainers and doc authors.
+> Reference · Governance — maintainer page. Audience: humanymous Gate maintainers and doc authors.
 
 > **Note:** This is a **maintainer-facing** page. It is the **only** page in the documentation set that may reference internal source-of-truth identifiers (`SoT-NN`). Every reader-facing page must not surface those identifiers. If you copy content from here into a reader-facing page, strip the `SoT-NN` references first.
 
-This page explains how the humanymous Sentinel documentation set is versioned, how behavior changes reach a changelog, and how each user-facing page derives from one or more internal source-of-truth (SoT) specs. Use it to keep the docs from drifting when the engine or a SoT changes.
+This page explains how the humanymous Gate documentation set is versioned, how behavior changes reach a changelog, and how each user-facing page derives from one or more internal source-of-truth (SoT) specs. Use it to keep the docs from drifting when the engine or a SoT changes.
 
 ## Who this is for
 
@@ -15,7 +15,7 @@ For voice, terminology, and formatting rules that govern every reader-facing pag
 
 ## 1. Versioning
 
-humanymous Sentinel exposes two distinct version stamps. Keep them separate — they answer different questions.
+humanymous Gate exposes two distinct version stamps. Keep them separate — they answer different questions.
 
 ### Scoring policy version
 
@@ -30,7 +30,7 @@ Separately, `config_version` is a **signed HMAC hash of the effective policy** �
 
 Because it is derived from the effective configuration, an operator can read `config_version` after a change or upgrade and confirm that the policy now in force is the one they intended. Two nodes reporting the same `config_version` are enforcing the same effective policy; a changed `config_version` is evidence that the effective policy changed.
 
-> **Tip:** When you document a policy or preset change, point operators at `GET /__hmn/admin/policy` (and the Policy view in the Audit Console) so they can verify the new `config_version` took effect — do not ask them to infer it from behavior.
+> **Tip:** When you document a policy or preset change, point operators at `GET /__hmn/admin/policy` (and the Policy view in the Ledger) so they can verify the new `config_version` took effect — do not ask them to infer it from behavior.
 
 ### Aligning docs to engine releases
 
@@ -64,11 +64,11 @@ Paths are repo-relative from `docs/`.
 | `start-here/compliance-dpo.md` | SoT-29 |
 | `start-here/evaluator.md` | SoT-29 |
 | `style-guide.md` | SoT-29 |
-| `concepts/how-sentinel-sees-a-request.md` | SoT-00 |
+| `concepts/how-gate-sees-a-request.md` | SoT-00 |
 | `tutorials/quickstart-monitor-mode.md` | SoT-19, SoT-20 |
-| `explanation/what-sentinel-is.md` | SoT-00, SoT-06 |
+| `explanation/what-gate-is.md` | SoT-00, SoT-06 |
 | `explanation/will-this-break-my-app.md` | SoT-19, SoT-21 |
-| `explanation/where-sentinel-fits.md` | SoT-06 |
+| `explanation/where-gate-fits.md` | SoT-06 |
 | `explanation/control-plane-and-bundle.md` | SoT-19, SoT-20 |
 | `reference/cli-config-policy.md` | SoT-24, SoT-27 |
 | `reference/hard-rules-verdicts.md` | SoT-05, SoT-25 |
@@ -121,7 +121,7 @@ The entire user-facing documentation set is derived from the internal source-of-
 
 Two SoTs anchor the split of authority:
 
-- **SoT-00 is the engine / behavior authority.** It governs what Sentinel actually does — how a request is scored, which layers apply, and how verdicts are reached. Pages describing behavior trace back to SoT-00 (directly or through a more specific SoT).
+- **SoT-00 is the engine / behavior authority.** It governs what Gate actually does — how a request is scored, which layers apply, and how verdicts are reached. Pages describing behavior trace back to SoT-00 (directly or through a more specific SoT).
 - **SoT-29 governs the user-facing surfaces** — voice, terminology, formatting, and the shape of the documentation set itself (including this page).
 
 The rule is directional and simple:

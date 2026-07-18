@@ -146,7 +146,7 @@ Predicate helpers available to a rule's `pred`:
 
 The one-line `why` field is the **teaching text**. It is not a comment — it publishes to the Observatory's "Why this verdict" panel and to the hard-rules reference page, so it is written to be read by a human predicting or auditing a verdict.
 
-> **Warning:** This page documents the **engine plane only: HR-1 through HR-21.** Rules HR-22..HR-30 belong to the Sentinel (proxy edge) plane and are out of scope here; do not expect them in `internal/scoring/hardrules.go`.
+> **Warning:** This page documents the **engine plane only: HR-1 through HR-21.** Rules HR-22..HR-30 belong to the Gate (proxy edge) plane and are out of scope here; do not expect them in `internal/scoring/hardrules.go`.
 
 ### Engine-plane hard rules (HR-1..HR-21)
 
@@ -224,7 +224,7 @@ That is: the traced score equals the plain combined score, and the traced verdic
 
 ## Related
 
-- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md)
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md)
 - [Hard rules and verdicts (reference)](../reference/hard-rules-verdicts.md)
 - [How to extend detection](../how-to/extend-detection.md)
 - [Observatory architecture](./observatory-architecture.md)

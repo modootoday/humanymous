@@ -2,11 +2,11 @@
 
 **Diátaxis quadrant:** Reference. **Audience:** Data Protection Officers, compliance and legal reviewers, and procurement / vendor-assessment teams.
 
-This page maps the controls that humanymous Sentinel ("Sentinel" hereafter) implements in the reference build to the specific standards and regulatory articles those controls support. It then gives you a repeatable evidence-pack procedure for responding to a supervisory-authority inquiry or a data-subject access request (DSAR).
+This page maps the controls that humanymous Gate ("Gate" hereafter) implements in the reference build to the specific standards and regulatory articles those controls support. It then gives you a repeatable evidence-pack procedure for responding to a supervisory-authority inquiry or a data-subject access request (DSAR).
 
-> **Note:** In your data-processing relationships, you (the operator) are the **data controller**. Sentinel is **processing tooling** you deploy and configure. This document describes controls Sentinel **provides** and how they **support** your obligations. Sentinel does not, and cannot, make you compliant — that determination rests with you and your supervisory authority. Read every "supports" and "provides controls for" below in that frame.
+> **Note:** In your data-processing relationships, you (the operator) are the **data controller**. Gate is **processing tooling** you deploy and configure. This document describes controls Gate **provides** and how they **support** your obligations. Gate does not, and cannot, make you compliant — that determination rests with you and your supervisory authority. Read every "supports" and "provides controls for" below in that frame.
 
-Sentinel in the reference build is a **reference implementation, not a production-hardened product**. Several anchors that a production deployment would add are called out explicitly as **prod-delta** (not shipped in the reference). See [Production vs reference](./production-vs-reference.md) for the full boundary.
+Gate in the reference build is a **reference implementation, not a production-hardened product**. Several anchors that a production deployment would add are called out explicitly as **prod-delta** (not shipped in the reference). See [Production vs reference](./production-vs-reference.md) for the full boundary.
 
 ---
 
@@ -14,7 +14,7 @@ Sentinel in the reference build is a **reference implementation, not a productio
 
 ### How to read this table
 
-- **Control** — the mechanism Sentinel implements.
+- **Control** — the mechanism Gate implements.
 - **Standard / requirement** — the specific RFC or regulatory article the control supports. Only standards **actually used** in the reference build appear here.
 - **What it supports** — the obligation or property the control helps you meet. Bounded language throughout: a control *supports*, *provides controls for*, or *is evidence toward* a requirement; it does not discharge it.
 - **Where to verify** — the endpoint, view, or document that lets an assessor independently confirm the control.
@@ -31,7 +31,7 @@ Sentinel in the reference build is a **reference implementation, not a productio
 
 > **Note:** Work factors above are transcribed as `N=2^12` (pseudonym stretch) and `N=2^15` (keystore seal). The exact SPDX license of each third-party Go dependency is **not asserted here** — confirm each from that module's own LICENSE file before publishing a vendor bill-of-materials.
 
-> **TODO(verify):** The reference repository contains no `LICENSE`, `NOTICE`, or `COPYING` file, so the project license of Sentinel itself is unspecified. Do not state a license for Sentinel in a procurement response until the operator/vendor supplies one.
+> **TODO(verify):** The reference repository contains no `LICENSE`, `NOTICE`, or `COPYING` file, so the project license of Gate itself is unspecified. Do not state a license for Gate in a procurement response until the operator/vendor supplies one.
 
 ### GDPR controls
 
@@ -89,11 +89,11 @@ Assemble your Records of Processing from the [data processing inventory](./data-
 
 ### 2. DPIA
 
-Adapt the [DPIA companion](../explanation/dpia-companion.md) into your own assessment. It documents the processing purpose, the risk to data subjects (including false-positive risk and the residual attacker-tier ceiling), and the mitigations Sentinel provides. The DPIA is your document; the companion is structured input.
+Adapt the [DPIA companion](../explanation/dpia-companion.md) into your own assessment. It documents the processing purpose, the risk to data subjects (including false-positive risk and the residual attacker-tier ceiling), and the mitigations Gate provides. The DPIA is your document; the companion is structured input.
 
 ### 3. Erasure certificates and their verification
 
-For a right-to-erasure request, follow the [erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md). On commit, Sentinel seals a **signed erasure certificate**. Include the certificate in the pack as evidence that the linkage key was destroyed.
+For a right-to-erasure request, follow the [erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md). On commit, Gate seals a **signed erasure certificate**. Include the certificate in the pack as evidence that the linkage key was destroyed.
 
 List erasures and their state:
 
@@ -128,7 +128,7 @@ curl -k -H "Authorization: Bearer <token>" \
 
 Page through results with the returned `nextBefore` cursor. Each record carries the verdict, risk score, matched hard rule (if any), and the pseudonymized identifiers — never raw identifiers.
 
-For a human-readable snapshot, the Audit Console Overview view has an **Export CSV** button that downloads `audit-feed.csv` (`text/csv`). See the [Audit Console tour](../how-to/audit-console-tour.md).
+For a human-readable snapshot, the Ledger Overview view has an **Export CSV** button that downloads `audit-feed.csv` (`text/csv`). See the [Ledger tour](../how-to/audit-console-tour.md).
 
 > **Note:** Observability in the reference build is the audit stream, the Integrity view/endpoint, and the Overview KPIs. There is no Prometheus `/metrics` endpoint and no health-probe path; SIEM shipping is prod-delta.
 
@@ -165,7 +165,7 @@ curl -k -H "Authorization: Bearer <token>" \
 
 ## Scope and boundaries to state plainly
 
-- You are the controller; Sentinel is processing tooling. These controls **support** your obligations; they do not discharge them.
+- You are the controller; Gate is processing tooling. These controls **support** your obligations; they do not discharge them.
 - The reference build is a **reference implementation, not production-hardened**. RFC 3161 timestamping and external WORM anchoring are recommended production anchors, **not shipped**.
 - The audit log is **tamper-evident, not tamper-proof** (unanchored in-window residual; witness co-sign stops silent rewrites of anchored history).
 - Pseudonymized identifiers are **pseudonymous, not anonymous** (GDPR Recital 26).

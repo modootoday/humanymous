@@ -4,11 +4,11 @@
 # How this reference implementation was built
 
 **Diátaxis quadrant:** Explanation — read for understanding, not to complete a task.
-**Audience:** evaluators judging the rigor behind humanymous Sentinel, and developers who want to extend it in the same spirit it was written.
+**Audience:** evaluators judging the rigor behind humanymous Gate, and developers who want to extend it in the same spirit it was written.
 
-This page describes the *method* — how the detection engine and humanymous Sentinel were designed and validated — rather than how to run them. If you want to operate or integrate the system, start at the [documentation hub](../README.md). If you want to see the design decisions themselves, the [detection engine internals](detection-engine-internals.md) and [red catalog architecture](red-catalog-architecture.md) pages go layer by layer.
+This page describes the *method* — how the detection engine and humanymous Gate were designed and validated — rather than how to run them. If you want to operate or integrate the system, start at the [documentation hub](../README.md). If you want to see the design decisions themselves, the [detection engine internals](detection-engine-internals.md) and [red catalog architecture](red-catalog-architecture.md) pages go layer by layer.
 
-humanymous Sentinel is a reference implementation, not a production-hardened build. The method below is what a reference implementation can honestly claim: a traceable path from a written intent to a verified behavior.
+humanymous Gate is a reference implementation, not a production-hardened build. The method below is what a reference implementation can honestly claim: a traceable path from a written intent to a verified behavior.
 
 ## Specification before code
 
@@ -48,7 +48,7 @@ Weighting low-confidence signals weakly keeps the false-positive rate bounded; h
 
 ## From an engine to an enforcement layer
 
-The same scoring model was then promoted into humanymous Sentinel — a reverse proxy that terminates TLS, streams the detection bundle into the origin's HTML, scores each request, and enforces the verdict at the edge before the origin is contacted. Three properties were designed in from the start rather than added later:
+The same scoring model was then promoted into humanymous Gate — a reverse proxy that terminates TLS, streams the detection bundle into the origin's HTML, scores each request, and enforces the verdict at the edge before the origin is contacted. Three properties were designed in from the start rather than added later:
 
 - **Audit-log-first.** Nothing enforces until the decision has a home. Every verdict is written to a tamper-evident, append-only hash chain with periodic signed checkpoints *before* it takes effect.
 - **Fail-closed.** When a required signal is missing — a strict route with no returned detection beacon — the edge challenges rather than allows. The safe default is to withhold access, not grant it.
@@ -84,6 +84,6 @@ It does not give a finished product. This is a reference implementation: it favo
 
 ## Where to go next
 
-- [Which piece am I using?](which-piece-am-i-using.md) — the three surfaces (engine, Sentinel, Observatory) and how they differ.
+- [Which piece am I using?](which-piece-am-i-using.md) — the three surfaces (engine, Gate, Observatory) and how they differ.
 - [Detection engine internals](detection-engine-internals.md) — the layers, scoring, hard rules, and cross-checks in detail.
 - [Self-validation: red-team your own deployment](../how-to/self-validation-red-team.md) — run the catalog against your own edge.

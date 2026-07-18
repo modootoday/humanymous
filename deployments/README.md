@@ -1,7 +1,7 @@
 # Local Docker environment — the detector vs the bots
 
 A complete humanymous stack in containers, defined as **modular compose fragments**.
-The detection stack (engine + reverse-proxy Sentinel + a demo origin) runs long and
+The detection stack (engine + reverse-proxy Gate + a demo origin) runs long and
 is viewable from the host; the bots (the automation catalog) run on demand and are
 **network-sandboxed**.
 
@@ -16,15 +16,15 @@ fingerprint appearing across three real subnets raises
 ```
 build/                      # Dockerfiles (+ per-file .dockerignore overrides)
   engine.Dockerfile         #   cmd/server  (also the public demo image)
-  sentinel.Dockerfile       #   cmd/sentinel
+  gate.Dockerfile       #   cmd/gate
   bots.Dockerfile           #   Playwright + Go attack binaries
 configs/dev.env             # dev-only env (admin tokens, targets) — env_file'd
 deployments/
   compose.yaml              # top-level; `include:`s the fragments
   compose/networks.yaml     #   web + lab-a/b/c (SRP: topology)
-  compose/defenders.yaml    #   engine + origin + Sentinel
+  compose/defenders.yaml    #   engine + origin + Gate
   compose/bots.yaml         #   attack / conformance / swarm
-  origin/                   # nginx shop the Sentinel protects
+  origin/                   # nginx shop the Gate protects
   bots/                     # bots orchestration scripts
   artifacts/                # run outputs land here
 ```
@@ -32,16 +32,16 @@ deployments/
 ## Topology
 
 ```
-  host :8443 (engine)   host :8444/:8445 (sentinel)
+  host :8443 (engine)   host :8444/:8445 (gate)
         │                         │
   ┌─── web (bridge, host-visible) ────────────────────────┐
-  │  engine   sentinel ──proxies──▶ origin                 │
+  │  engine   gate ──proxies──▶ origin                 │
   └────────────────────────────────────────────────────────┘
   ┌─ lab-a 172.30 ────┐ ┌─ lab-b 172.31 ────┐ ┌─ lab-c 172.32 ────┐
   │ (internal: no      │ │ internet route)   │ │                   │
   │  bots / bot-swarm-a│ │  bot-swarm-b      │ │  bot-swarm-c      │
   └──────────▲─────────┘ └────────▲──────────┘ └────────▲──────────┘
-             └── all attack engine / sentinel, which join every subnet
+             └── all attack engine / gate, which join every subnet
 ```
 
 **Safety by construction:** the `lab-*` networks are `internal: true` (no route
@@ -53,17 +53,17 @@ enforced by the network, not by convention.
 
 ```bash
 # from repo root — Make targets wrap compose (where `make` is available):
-make up             # build + start the detection stack (engine :8443/demo, sentinel :8444, admin :8445)
+make up             # build + start the detection stack (engine :8443/demo, gate :8444, admin :8445)
 make attack         # run the bots (automation catalog) vs the engine (26 profiles)
 make swarm          # multi-subnet correlation swarm (proxy_rotation across 3 subnets)
-make sentinel-e2e   # Sentinel proxy-layer conformance (34 checks)
+make gate-e2e   # Gate proxy-layer conformance (34 checks)
 make down           # tear everything down
 
 # or drive compose directly from deployments/ (cross-platform; no make needed):
-docker compose up -d --build engine origin sentinel
+docker compose up -d --build engine origin gate
 docker compose run --rm bots
 docker compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
-docker compose run --rm sentinel-e2e
+docker compose run --rm gate-e2e
 docker compose down -v
 ```
 
@@ -78,7 +78,7 @@ accept the browser warning.
 - **Swarm**: `l5.ip.datacenter_asn` on first contact, then
   `l5.correlation.proxy_rotation` once the shared fingerprint spans the three
   subnets (risk 59 → 75.4, DENY).
-- **Sentinel conformance**: 34/34.
+- **Gate conformance**: 34/34.
 
 ## Notes
 

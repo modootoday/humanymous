@@ -1,4 +1,4 @@
-# Self-validation: red-team your own Sentinel deployment (defensive-only)
+# Self-validation: red-team your own Gate deployment (defensive-only)
 
 **How-to** (task-oriented, guarded) · **Audience:** operators and evaluators validating an install **they own**, on their own machine.
 
@@ -13,21 +13,21 @@ The goal is a measurement, not a guarantee. When you finish, you will have two n
 
 Read both together. A high detection rate means little if the honest-human baseline is also being flagged, and the low-false-positive principle (privacy browsers, extensions, and older devices must not be scored as bots) is exactly what this exercise lets you verify before enforcement affects real visitors. Treat every number as **reference-measured** on your machine — it describes this run, not a promise about live traffic.
 
-For where the detection engine sits relative to the proxy, see **[Where Sentinel fits](../explanation/where-sentinel-fits.md)**. For how enforcement and fail-open behavior work before you turn anything on, see **[Will this break my app?](../explanation/will-this-break-my-app.md)**.
+For where the detection engine sits relative to the proxy, see **[Where Gate fits](../explanation/where-gate-fits.md)**. For how enforcement and fail-open behavior work before you turn anything on, see **[Will this break my app?](../explanation/will-this-break-my-app.md)**.
 
 ## Step 1 — Stand up in monitor mode first
 
 Before you measure anything, put a deployment in front of a throwaway origin in **global monitor mode** (score and log every request, enforce nothing). This is the recommended starting posture and the safe place to observe verdicts.
 
-Follow **[Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md)** end to end. When you can load your app through Sentinel and watch verdicts appear on the Overview stream in the Audit Console — with nothing challenged and nothing blocked — you are ready to validate detection.
+Follow **[Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md)** end to end. When you can load your app through Gate and watch verdicts appear on the Overview stream in the Ledger — with nothing challenged and nothing blocked — you are ready to validate detection.
 
 > **Note:** Monitor mode is where you confirm the false-positive picture without risk. Because enforcement is off, a wrong verdict is recorded but never delivered, so you can study it in the audit log before it could ever affect a real visitor.
 
 ## Step 2 — Understand what the harness targets
 
-The bundled harness measures the **detection engine** directly. It runs against the standalone detection server (`cmd/server`) on **`127.0.0.1:8443`** — the same L1–L7 engine and scoring that Sentinel embeds and runs inline at the edge.
+The bundled harness measures the **detection engine** directly. It runs against the standalone detection server (`cmd/server`) on **`127.0.0.1:8443`** — the same L1–L7 engine and scoring that Gate embeds and runs inline at the edge.
 
-> **Important:** The harness default target (`127.0.0.1:8443`, the standalone detection server) is **distinct** from the Sentinel reverse proxy, which listens on `:8444`. When you run the harness you are exercising the detection engine itself, not the proxy edge. Do not repoint the harness at your Sentinel edge or any other host.
+> **Important:** The harness default target (`127.0.0.1:8443`, the standalone detection server) is **distinct** from the Gate reverse proxy, which listens on `:8444`. When you run the harness you are exercising the detection engine itself, not the proxy edge. Do not repoint the harness at your Gate edge or any other host.
 
 Build and start the detection server on loopback:
 
@@ -111,7 +111,7 @@ Both are measurements from this run on your machine, not guarantees. If `humanFP
 ## What this exercise does — and does not — tell you
 
 - It **confirms** that your own detection engine responds to known automation stacks and to network/anti-tamper probes, and it **quantifies** your false-positive rate on an honest baseline. Those are real, reproducible signals about your deployment.
-- It does **not** prove your deployment blocks all automation. The simulators are a fixed catalog, not the full field of adversaries, and the T4 tier (anti-detect toolchains paired with real-human click-farms) is an explicit design boundary that this harness does not resolve — it is mitigated by rate limiting and reputation, not eliminated. See **[What Sentinel is (and is not)](../explanation/what-sentinel-is.md)** for the attacker-tier framing.
+- It does **not** prove your deployment blocks all automation. The simulators are a fixed catalog, not the full field of adversaries, and the T4 tier (anti-detect toolchains paired with real-human click-farms) is an explicit design boundary that this harness does not resolve — it is mitigated by rate limiting and reputation, not eliminated. See **[What Gate is (and is not)](../explanation/what-gate-is.md)** for the attacker-tier framing.
 - This page is **defensive-only by design.** It contains no tuning to make automation evade detection. If you find a profile that slips through, treat it as a finding about your own coverage to raise with the maintainers — not something to optimize against.
 
 > **Tip:** Re-run Steps 4–5 whenever you change detection configuration or upgrade the engine, and keep the `humanFPR` measurement in view. A change that raises detection but also raises false positives is a regression in the low-false-positive principle, not an improvement.
@@ -120,6 +120,6 @@ Both are measurements from this run on your machine, not guarantees. If `humanFP
 
 - **[Watch detection happen live: the Detection Observatory](detection-observatory.md)** — the interactive, real-time version of this workflow: fire a profile and watch the L1→L7 pipeline reach its verdict.
 - **[Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md)** — stand up the monitor-first posture this procedure assumes.
-- **[Where Sentinel fits](../explanation/where-sentinel-fits.md)** — how the detection engine relates to the proxy edge.
+- **[Where Gate fits](../explanation/where-gate-fits.md)** — how the detection engine relates to the proxy edge.
 - **[Will this break my app?](../explanation/will-this-break-my-app.md)** — fail-open behavior and staged rollout before you enforce.
 - **[Hard rules and verdicts](../reference/hard-rules-verdicts.md)** — how verdicts and hard rules map to the ALLOW / CHALLENGE / DENY outcomes you see in the results.

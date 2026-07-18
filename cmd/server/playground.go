@@ -90,7 +90,7 @@ func (a *app) handlePlaygroundPage(w http.ResponseWriter, r *http.Request) {
 // the verdict bands and score decomposition (SoT-30 §6.3) — these are NOT in the
 // /api/collect or /api/report response, so a client that hard-codes them would
 // silently drift. HR scope is HR-1..HR-21 (the engine plane; HR-22..30 are
-// Sentinel-plane rules the detection engine never evaluates, SoT-30 §2.1).
+// Gate-plane rules the detection engine never evaluates, SoT-30 §2.1).
 func (a *app) handlePlaygroundMeta(w http.ResponseWriter, r *http.Request) {
 	if !a.playgroundGuard(w, r) {
 		return

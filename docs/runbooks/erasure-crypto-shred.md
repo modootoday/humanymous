@@ -1,7 +1,7 @@
 # Right-to-erasure (crypto-shred) operations runbook
 
 **Diátaxis quadrant:** Runbook (operational procedure).
-**Audience:** DPO and compliance operator executing a GDPR Art. 17 / PIPA erasure request against a humanymous Sentinel deployment.
+**Audience:** DPO and compliance operator executing a GDPR Art. 17 / PIPA erasure request against a humanymous Gate deployment.
 
 This runbook is written against the reference implementation. Endpoints, defaults, and role gates match the reference build; a production deployment may add controls (prod-delta) but must not remove the ones described here.
 
@@ -9,9 +9,9 @@ This runbook is written against the reference implementation. Endpoints, default
 
 ## What erasure means here
 
-humanymous Sentinel does not store raw identifiers. Every subject identifier that appears in the audit log — IP, JA4, HTTP/2 fingerprint, UA, SNI, device fingerprint — is written only as a per-subject-key-derived pseudonym (64-hex, scrypt KDF-stretched). The data is therefore pseudonymous, not anonymous (GDPR Recital 26). See [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) for the pseudonymization model.
+humanymous Gate does not store raw identifiers. Every subject identifier that appears in the audit log — IP, JA4, HTTP/2 fingerprint, UA, SNI, device fingerprint — is written only as a per-subject-key-derived pseudonym (64-hex, scrypt KDF-stretched). The data is therefore pseudonymous, not anonymous (GDPR Recital 26). See [How Gate sees a request](../concepts/how-gate-sees-a-request.md) for the pseudonymization model.
 
-**Cryptographic erasure (crypto-shred)** is the erasure mechanism: rather than deleting audit records, Sentinel destroys the per-subject linkage key that binds a subject's pseudonyms to the identifiers they were derived from. Once the key is gone, the pseudonyms in the chain can no longer be resolved back to the subject, while the records themselves remain in place and cryptographically verifiable.
+**Cryptographic erasure (crypto-shred)** is the erasure mechanism: rather than deleting audit records, Gate destroys the per-subject linkage key that binds a subject's pseudonyms to the identifiers they were derived from. Once the key is gone, the pseudonyms in the chain can no longer be resolved back to the subject, while the records themselves remain in place and cryptographically verifiable.
 
 > **Warning:** Crypto-shred is irreversible. Destroying the per-subject linkage key cannot be undone, and there is no recovery path once the shred commits. Confirm subject identity and the mapped pseudonym before you request erasure, and use the hold window (step 3) as your last checkpoint.
 
@@ -21,7 +21,7 @@ This procedure is DPO-gated and dual-control. A single actor cannot shred a subj
 
 ## Preconditions
 
-- You can reach the Audit Console on the admin listener at `https://localhost:8445/__hmn/admin/console` (Compliance/Erasure view), or you can call the admin API base `/__hmn/admin/` directly.
+- You can reach the Ledger on the admin listener at `https://localhost:8445/__hmn/admin/console` (Compliance/Erasure view), or you can call the admin API base `/__hmn/admin/` directly.
 - You hold a bearer token whose server-derived role can act. **Requesting** erasure needs the **Operator** or **DPO** role; **committing** it requires the **DPO** role specifically. Actor identity is derived from the token; request-body actor fields are ignored.
 - The requester and the committing DPO are **distinct** identities. Dual-control rejects a self-approval.
 
@@ -36,7 +36,7 @@ This procedure is DPO-gated and dual-control. A single actor cannot shred a subj
 2. In the Compliance/Erasure console view, resolve that identifier to the subject's **console-visible pseudonym** — the 64-hex per-subject value that keys the linkage. This pseudonym, not any raw identifier, is what the erasure request targets.
 3. Confirm the mapping before proceeding. The shred acts on the linkage key behind this pseudonym; an incorrect mapping erases the wrong subject and cannot be reversed.
 
-You supply the **console-visible session pseudonym** as the `Subject`. Sentinel resolves that pseudonym to the internal subject id through its audited reverse index automatically — the shred itself does not require a separate re-identification-vault step. (Resolving a pseudonym back to a *raw* identifier, by contrast, is what needs the vault + dual-control; erasure does not, because it operates on the linkage key, not the raw value.)
+You supply the **console-visible session pseudonym** as the `Subject`. Gate resolves that pseudonym to the internal subject id through its audited reverse index automatically — the shred itself does not require a separate re-identification-vault step. (Resolving a pseudonym back to a *raw* identifier, by contrast, is what needs the vault + dual-control; erasure does not, because it operates on the linkage key, not the raw value.)
 
 ---
 
@@ -103,7 +103,7 @@ Execution destroys the **per-subject linkage key**. From that point, the subject
 
 ## Step 5 — The signed erasure certificate
 
-On commit, Sentinel seals a **signed erasure certificate** recording that the shred occurred.
+On commit, Gate seals a **signed erasure certificate** recording that the shred occurred.
 
 1. Retrieve the certificate for the completed erasure and archive it as defensible proof that the Art. 17 / PIPA obligation was discharged.
 2. Send the data subject a confirmation that their erasure request has been fulfilled, accompanied by the certificate (or a certificate reference), and stating what was erased in plain terms: the key that links their pseudonymized records to their identifiers has been destroyed; the tamper-evident audit records remain, but can no longer be resolved to them.
@@ -125,7 +125,7 @@ For independent verification, see the [Verify the audit log](../how-to/verify-au
 
 ## Related
 
-- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — audit log, hash chain / Merkle anchors, and pseudonymization model.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — audit log, hash chain / Merkle anchors, and pseudonymization model.
 - [Incident runbooks](incident-runbooks.md) — on-call procedures.
 - [Start here: Compliance / DPO](../start-here/compliance-dpo.md) — role and access setup.
 - [Verify the audit log](../how-to/verify-audit-log.md) — independent verification of the tamper-evident chain.

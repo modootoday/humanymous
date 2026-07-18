@@ -59,7 +59,7 @@ Testing conducted in good faith **against systems you operate, or a deployment y
 
 > **Warning:** The safe harbor is **not** authorization to test anything you neither operate nor are authorized in writing to test. This is a defensive product; its Red-team and self-validation tooling targets **your own** deployment only. Testing an instance you do not run and do not have written permission to test is outside the policy, is not authorized, and may be unlawful.
 
-Read the full policy — scope, how to report, out-of-scope items, and the safe-harbor wording — in **[Security vulnerability disclosure policy](security-disclosure.md)**. To actually run the self-validation exercise on your own install, follow **[Self-validation: red-team your own Sentinel deployment](../how-to/self-validation-red-team.md)**.
+Read the full policy — scope, how to report, out-of-scope items, and the safe-harbor wording — in **[Security vulnerability disclosure policy](security-disclosure.md)**. To actually run the self-validation exercise on your own install, follow **[Self-validation: red-team your own Gate deployment](../how-to/self-validation-red-team.md)**.
 
 ## Guardrail preamble block (embed verbatim)
 

@@ -53,5 +53,5 @@ The full `SessionReport`: `client{signals[]}`, `network{ja3,ja4,ja4Engine,header
 `ALLOW` 0–29 · `CHALLENGE` 30–69 · `DENY` 70–100. A hard rule (HR-*) can override
 the band. See `docs/reference/` for the signal and hard-rule catalogs.
 
-> The Sentinel proxy (`cmd/sentinel`) speaks the same scoring model at the edge
+> The Gate proxy (`cmd/gate`) speaks the same scoring model at the edge
 > under its `/__hmn/` control path; its admin API is documented in the console.

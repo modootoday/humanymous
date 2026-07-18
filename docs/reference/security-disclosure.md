@@ -1,19 +1,19 @@
 # Security vulnerability disclosure policy
 
-**Quadrant:** Reference (policy document). **Audience:** security researchers reporting a vulnerability in humanymous Sentinel, and buyers doing security due diligence.
+**Quadrant:** Reference (policy document). **Audience:** security researchers reporting a vulnerability in humanymous Gate, and buyers doing security due diligence.
 
-This page is a coordinated-disclosure policy for **humanymous Sentinel** itself — the reverse-proxy enforcement layer, its detection engine, control plane, admin plane and Audit Console. It tells a researcher how to report a suspected vulnerability, what a good report contains, and what testing is and is not authorized.
+This page is a coordinated-disclosure policy for **humanymous Gate** itself — the reverse-proxy enforcement layer, its detection engine, control plane, admin plane and Ledger. It tells a researcher how to report a suspected vulnerability, what a good report contains, and what testing is and is not authorized.
 
-> **Important:** This page is a **template**. humanymous Sentinel is a reference implementation, not a production-hardened build (see [Production vs reference](production-vs-reference.md)). Every operator or vendor who deploys Sentinel is responsible for filling in the real contact address, PGP key, response commitments and hosted `security.txt` before pointing researchers at them. Fields marked `<placeholder>` and lines marked `TODO(verify)` MUST be completed by the operator; do not treat the sample values below as live.
+> **Important:** This page is a **template**. humanymous Gate is a reference implementation, not a production-hardened build (see [Production vs reference](production-vs-reference.md)). Every operator or vendor who deploys Gate is responsible for filling in the real contact address, PGP key, response commitments and hosted `security.txt` before pointing researchers at them. Fields marked `<placeholder>` and lines marked `TODO(verify)` MUST be completed by the operator; do not treat the sample values below as live.
 
 ## Scope
 
-This policy governs coordinated (responsible) disclosure of security vulnerabilities in a humanymous Sentinel deployment that you operate, or one you are explicitly authorized in writing to test.
+This policy governs coordinated (responsible) disclosure of security vulnerabilities in a humanymous Gate deployment that you operate, or one you are explicitly authorized in writing to test.
 
 In scope for a report:
 
-- The Sentinel edge and control plane on the public listener (default `:8444`), including the client-facing `/__hmn/` endpoints (`/__hmn/session`, `/__hmn/collect`, `/__hmn/loader.js`, `/__hmn/csp-report`) and the challenge / proof-of-work interstitial.
-- The separate authenticated admin listener (default `:8445`), the Admin API under `/__hmn/admin/`, and the Audit Console SPA at `/__hmn/admin/console`.
+- The Gate edge and control plane on the public listener (default `:8444`), including the client-facing `/__hmn/` endpoints (`/__hmn/session`, `/__hmn/collect`, `/__hmn/loader.js`, `/__hmn/csp-report`) and the challenge / proof-of-work interstitial.
+- The separate authenticated admin listener (default `:8445`), the Admin API under `/__hmn/admin/`, and the Ledger SPA at `/__hmn/admin/console`.
 - The detection engine (layers L1–L7), the verdict pipeline (ALLOW / CHALLENGE / DENY) and hard rules, where a flaw lets an issue be exploited beyond the documented detection ceiling — for example a control-plane injection, an authentication or RBAC bypass, an audit-log integrity break, or a verdict-token forgery not already described as an accepted residual.
 - The tamper-evident audit log and its verification logic, key sealing (`-keystore` / `HMN_UNSEAL`), and the cryptographic-erasure (crypto-shred) path.
 
@@ -59,7 +59,7 @@ A report that lets the operator reproduce and triage quickly should contain:
 - Any prerequisites (an admin token role, a specific route policy, a keystore state) needed to trigger the issue.
 - Your assessment of severity and, if known, a suggested remediation.
 
-> **Note:** Do not include third-party personal data or another operator's production data in a report. If your proof-of-concept incidentally captures a subject identifier, redact it — Sentinel stores identifiers only as per-subject pseudonyms by design, and your report should not reintroduce raw ones.
+> **Note:** Do not include third-party personal data or another operator's production data in a report. If your proof-of-concept incidentally captures a subject identifier, redact it — Gate stores identifiers only as per-subject pseudonyms by design, and your report should not reintroduce raw ones.
 
 ## Coordinated-disclosure expectations
 
@@ -76,7 +76,7 @@ A report that lets the operator reproduce and triage quickly should contain:
 
 Testing conducted in good faith and in compliance with this policy — against **systems you operate, or a deployment you are explicitly authorized in writing to test** — is welcomed, and the operator will not pursue or support action against you for such testing.
 
-> **Warning:** This safe harbor is **not** authorization to test third parties or anyone else's deployment. humanymous Sentinel is a defensive product; its red-team and self-validation tooling targets **your own** deployment only. Testing a Sentinel instance you neither operate nor have written permission to test is outside this policy, is not authorized, and may be unlawful. See [Self-validation and red-team testing](../how-to/self-validation-red-team.md).
+> **Warning:** This safe harbor is **not** authorization to test third parties or anyone else's deployment. humanymous Gate is a defensive product; its red-team and self-validation tooling targets **your own** deployment only. Testing a Gate instance you neither operate nor have written permission to test is outside this policy, is not authorized, and may be unlawful. See [Self-validation and red-team testing](../how-to/self-validation-red-team.md).
 
 Good-faith testing means, at a minimum: you stay within scope; you avoid privacy violations, data destruction, and degradation of service to others; you use only the access necessary to demonstrate the issue; and you stop and report as soon as you confirm a vulnerability rather than pivoting deeper.
 
@@ -93,7 +93,7 @@ The following are generally **not** accepted as vulnerabilities under this polic
 - Reports generated purely by automated scanners with no demonstrated, reproducible impact.
 - Any testing against a deployment you do not operate and are not authorized to test.
 
-> **TODO(verify):** The operator may add deployment-specific out-of-scope items (for example specific hostnames, staging environments, or third-party services fronted by Sentinel).
+> **TODO(verify):** The operator may add deployment-specific out-of-scope items (for example specific hostnames, staging environments, or third-party services fronted by Gate).
 
 ## Related pages
 

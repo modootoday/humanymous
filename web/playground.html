@@ -321,7 +321,7 @@ import { createFeed, prependRows } from '/static/js/feed.js';
   // High-velocity log feed via the reusable SoT-33 module: push() only buffers into
   // a fixed ring; one rAF loop is the sole DOM writer and coalesces a whole frame's
   // events into ONE update. Bounded ring + rendered-row cap + dropped-count keep it
-  // lossy-but-honest under load. Same architecture the Audit Console feed uses.
+  // lossy-but-honest under load. Same architecture the Ledger feed uses.
   var feed=createFeed({
     mount:$("logrows"), ringCap:5000, maxRows:150,
     onOverflow:function(d){ stext.textContent="live · "+d+" event(s) dropped under burst"; },

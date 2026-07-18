@@ -1,5 +1,5 @@
 # Per-Dockerfile ignore (overrides the root .dockerignore) so the Red build can
-# see cmd/redteam, cmd/tlsparrot, cmd/sentinel and the test/ harness.
+# see cmd/redteam, cmd/tlsparrot, cmd/gate and the test/ harness.
 .git
 .github
 bin

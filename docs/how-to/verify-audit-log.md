@@ -1,17 +1,17 @@
 # Independent audit-log verification guide
 
 > **Quadrant:** How-to + reference.
-> **Audience:** External or internal auditor, DPO, or forensic reviewer who needs to verify humanymous Sentinel's audit log **without trusting the operator**.
+> **Audience:** External or internal auditor, DPO, or forensic reviewer who needs to verify humanymous Gate's audit log **without trusting the operator**.
 
-humanymous Sentinel writes every edge decision — every ALLOW, CHALLENGE, and DENY, plus every administrative action — to a tamper-evident audit log. This page explains the verification model, shows how you check the log today in the reference build, gives a failure-class table for reading a mismatch, and is candid about exactly what verification proves and what it does not.
+humanymous Gate writes every edge decision — every ALLOW, CHALLENGE, and DENY, plus every administrative action — to a tamper-evident audit log. This page explains the verification model, shows how you check the log today in the reference build, gives a failure-class table for reading a mismatch, and is candid about exactly what verification proves and what it does not.
 
-This repository is a **reference implementation**, not a production-hardened build. Where the reference differs from what a production deployment would ship, this page says so (prod-delta). For the shared vocabulary used below — pseudonym, verdict, hard rule, incident handle — see [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md).
+This repository is a **reference implementation**, not a production-hardened build. Where the reference differs from what a production deployment would ship, this page says so (prod-delta). For the shared vocabulary used below — pseudonym, verdict, hard rule, incident handle — see [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
 
 ---
 
 ## What "verify without trusting the operator" means
 
-The operator runs the Sentinel process, so the operator controls the disk the log lives on. The point of the verification model is that possession of the log is not the same as authority over its contents. An auditor with the **public key alone** can decide whether the log is internally consistent and whether any signed checkpoint has been altered — without the operator's cooperation and without any secret the operator holds. The log **verifies with the public key alone**; no operator attestation is part of the trust chain.
+The operator runs the Gate process, so the operator controls the disk the log lives on. The point of the verification model is that possession of the log is not the same as authority over its contents. An auditor with the **public key alone** can decide whether the log is internally consistent and whether any signed checkpoint has been altered — without the operator's cooperation and without any secret the operator holds. The log **verifies with the public key alone**; no operator attestation is part of the trust chain.
 
 That property is what lets an external reviewer form an independent opinion. You are not asked to believe the operator that the log is intact — you check it.
 
@@ -31,7 +31,7 @@ Each record is authenticated with a keyed HMAC. This binds the record's content 
 
 ### 3. Ed25519 Signed Tree Heads (STH)
 
-Every 32 records, Sentinel signs a checkpoint — a Signed Tree Head — over the log up to that point with an Ed25519 signing key. The STH is the anchor an external verifier checks with the corresponding **public key**: a valid signature over a checkpoint proves the log up to that checkpoint is exactly what was signed, and the private signing key never leaves the operator. This is the mechanism that makes the log verifiable by a party who holds only the public key.
+Every 32 records, Gate signs a checkpoint — a Signed Tree Head — over the log up to that point with an Ed25519 signing key. The STH is the anchor an external verifier checks with the corresponding **public key**: a valid signature over a checkpoint proves the log up to that checkpoint is exactly what was signed, and the private signing key never leaves the operator. This is the mechanism that makes the log verifiable by a party who holds only the public key.
 
 ### 4. Independent witness co-sign
 
@@ -45,9 +45,9 @@ An independent local witness co-signs each Signed Tree Head. A writer who rewrit
 
 The verification **logic** lives in `internal/audit` (the `Verify` and `SelfVerify` routines). In the reference build you run that logic live, two ways — both on the authenticated admin listener, both meta-audited before they serve.
 
-### Option A — the Audit Console "Integrity" view
+### Option A — the Ledger "Integrity" view
 
-The Audit Console's **Integrity** view (labelled "Chain Integrity", subtitle "tamper-evident audit log") runs the verification live in the browser and reports the result. It verifies the append-only hash chain, the per-record HMAC, and the Ed25519 Signed Tree Heads, and states plainly that it "verifies with the public key alone." A refresh control ("re-verify the chain now") re-runs the check on demand.
+The Ledger's **Integrity** view (labelled "Chain Integrity", subtitle "tamper-evident audit log") runs the verification live in the browser and reports the result. It verifies the append-only hash chain, the per-record HMAC, and the Ed25519 Signed Tree Heads, and states plainly that it "verifies with the public key alone." A refresh control ("re-verify the chain now") re-runs the check on demand.
 
 Open the console on the admin listener:
 
@@ -75,7 +75,7 @@ Authorization: Bearer <token>
 
 A missing or invalid token returns `404` (deny-by-default), and every authenticated access is meta-audited (`admin.access`) before the endpoint serves. Your role needs read capability — **Auditor** (read-only) is sufficient. See [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) for the role model.
 
-A clean response looks like `{"node":"sentinel-1","ok":true,"class":"","records":<n>,"checkpoints":<n>,"witnessed":true,"lastSTH":{"treeSize":<n>,"root":"<hex>"}}`. On a mismatch, `ok` is `false`, `class` names the failure (one of `hash-break`, `hmac-invalid`, `seq-gap`, `linkage-break`, `checkpoint-mismatch`, `node-missing`), and the payload adds `divergentSeq` and `detail`; if the witness attestation fails, `witnessed` is `false` and `witnessFailAt` is included.
+A clean response looks like `{"node":"gate-1","ok":true,"class":"","records":<n>,"checkpoints":<n>,"witnessed":true,"lastSTH":{"treeSize":<n>,"root":"<hex>"}}`. On a mismatch, `ok` is `false`, `class` names the failure (one of `hash-break`, `hmac-invalid`, `seq-gap`, `linkage-break`, `checkpoint-mismatch`, `node-missing`), and the payload adds `divergentSeq` and `detail`; if the witness attestation fails, `witnessed` is `false` and `witnessFailAt` is included.
 
 Note what the endpoint does and does not expose: it returns the latest Signed Tree Head's `treeSize` and `root`, but **not** the raw Ed25519 STH signature or the witness co-signature. It runs `SelfVerify` server-side and reports the outcome — so it is a live integrity check, not a channel for exporting the signatures an external verifier would re-check independently.
 
@@ -125,7 +125,7 @@ What contains it: the next checkpoint anchors those records, and the **witness c
 
 ## Verification survives crypto-shred
 
-A right-to-erasure request against Sentinel is executed by **cryptographic erasure (crypto-shred)** — destroying a subject's per-subject linkage key so their pseudonyms can no longer be resolved back to identifiers. Crucially, **records are never deleted**. The audit chain, its HMACs, and the Merkle anchors stay intact and verifiable after a shred: the pseudonyms in the affected records simply become unresolvable, while every integrity mechanism on this page still passes.
+A right-to-erasure request against Gate is executed by **cryptographic erasure (crypto-shred)** — destroying a subject's per-subject linkage key so their pseudonyms can no longer be resolved back to identifiers. Crucially, **records are never deleted**. The audit chain, its HMACs, and the Merkle anchors stay intact and verifiable after a shred: the pseudonyms in the affected records simply become unresolvable, while every integrity mechanism on this page still passes.
 
 So an erasure does not — and must not — produce a `seq-gap`, `linkage-break`, or `hash-break`. If you see one of those classes, it is a tampering signal, not the footprint of a lawful erasure. For the erasure procedure, hold window, and the signed erasure certificate, see [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md).
 
@@ -137,7 +137,7 @@ So an erasure does not — and must not — produce a `seq-gap`, `linkage-break`
 
 Be explicit about what the reference does **not** ship: there is **no standalone offline verifier process or binary in `cmd/`**. The reference verifies the log **live**, in-process, through the Integrity view and `GET /__hmn/admin/integrity` — both of which run `internal/audit` verification against the running log.
 
-A separate, independently runnable verifier — a binary you run on an exported set of records and checkpoints, on your own machine, with no Sentinel process involved — is a **prod-delta**. It would be **built from the `internal/audit` `Verify` logic** operating over exported checkpoints (records + STHs + public keys), giving an auditor a fully offline, operator-independent check. The verification logic exists; the packaged standalone tool does not ship in the reference.
+A separate, independently runnable verifier — a binary you run on an exported set of records and checkpoints, on your own machine, with no Gate process involved — is a **prod-delta**. It would be **built from the `internal/audit` `Verify` logic** operating over exported checkpoints (records + STHs + public keys), giving an auditor a fully offline, operator-independent check. The verification logic exists; the packaged standalone tool does not ship in the reference.
 
 > **Important:** Because today's verification runs inside the operator's admin listener, an external auditor performing a live check is still calling an operator-hosted endpoint. The Ed25519 STH design means the *result* is checkable with the public key alone — but a fully hands-off, operator-independent verification is realized by the offline verifier, which is a prod-delta. Plan your assurance process accordingly, or request exported checkpoints you can hold.
 
@@ -145,8 +145,8 @@ A separate, independently runnable verifier — a binary you run on an exported 
 
 ## Related pages
 
-- [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) — shared vocabulary: pseudonym, verdict, hard rule, incident handle.
-- [Audit Console tour](./audit-console-tour.md) — the six views, including where the Integrity view lives.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — shared vocabulary: pseudonym, verdict, hard rule, incident handle.
+- [Ledger tour](./audit-console-tour.md) — the six views, including where the Integrity view lives.
 - [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) — which role can read the integrity endpoint and console.
 - [Key management](./key-management.md) — the sealed keystore holding the Ed25519 signing seed and HMAC key, and what an ephemeral (no-keystore) restart does to verification continuity.
 - [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md) — why erasure leaves the chain verifiable.

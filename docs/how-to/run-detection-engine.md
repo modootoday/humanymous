@@ -1,12 +1,12 @@
 # Run the standalone detection engine (dev)
 
-**Quadrant: How-to.** **Audience: Blue and Red developers who want to build and run the raw detection engine (`bin/server.exe` on `127.0.0.1:8443`) directly** — the engine-side equivalent of the Sentinel proxy Quickstart.
+**Quadrant: How-to.** **Audience: Blue and Red developers who want to build and run the raw detection engine (`bin/server.exe` on `127.0.0.1:8443`) directly** — the engine-side equivalent of the Gate proxy Quickstart.
 
 > **Note:** Defensive, local-only, self-target-only, educational. This page builds and runs *your own* detector on your own loopback so you can read its scoring output. It teaches nothing about evading third-party systems. Every number you observe is reference-measured on your machine, not a guarantee.
 
-This page gets the detection engine compiled and serving on `127.0.0.1:8443`, shows you how to read a verdict with and without the Detection Observatory, and marks the boundary where the engine stops and the Sentinel proxy begins.
+This page gets the detection engine compiled and serving on `127.0.0.1:8443`, shows you how to read a verdict with and without the Detection Observatory, and marks the boundary where the engine stops and the Gate proxy begins.
 
-## When to use this instead of the Sentinel Quickstart
+## When to use this instead of the Gate Quickstart
 
 There are two binaries in this repo, and they do different jobs. The orientation map covers the full split — read [which piece am I using?](../explanation/which-piece-am-i-using.md) if you are unsure which one you want.
 
@@ -14,10 +14,10 @@ Use the **standalone detection engine** (this page) when you want the engine's p
 
 - edge enforcement (the engine scores; it does not block a request at an edge),
 - TLS termination or streaming bundle injection,
-- the admin plane (no Audit Console, no bans, no dual-control),
+- the admin plane (no Ledger, no bans, no dual-control),
 - a tamper-evident audit log.
 
-Use the **Sentinel reverse proxy** instead — via [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md) — when you want those production behaviors wrapped around the same engine. Both binaries embed the same `internal/scoring` engine, so the verdicts are consistent; the difference is everything *around* the score.
+Use the **Gate reverse proxy** instead — via [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md) — when you want those production behaviors wrapped around the same engine. Both binaries embed the same `internal/scoring` engine, so the verdicts are consistent; the difference is everything *around* the score.
 
 ## Build
 
@@ -49,7 +49,7 @@ Flags: `-addr` (bind address), `-web` (static web root), `-rit` (request-integri
 
 > **Warning:** The engine serves over TLS with a **self-signed development certificate**. Your browser and `curl` will flag it as untrusted — that is expected for a local dev cert. Trust it locally or pass your client's insecure/skip-verify flag for loopback testing only; never carry that habit to a real endpoint.
 
-There is **no admin listener here** — the engine exposes `127.0.0.1:8443` only. The `:8445` admin plane and the `:8444` edge belong to the Sentinel proxy, not to this binary.
+There is **no admin listener here** — the engine exposes `127.0.0.1:8443` only. The `:8445` admin plane and the `:8444` edge belong to the Gate proxy, not to this binary.
 
 ## The `HMN_PLAYGROUND` gate
 
@@ -84,17 +84,17 @@ curl -sk -X POST https://127.0.0.1:8443/api/collect \
 
 The response is the ScoreResult: `{"sessionId":…,"riskScore":…,"verdict":…,"hardRuleFired":…,"topContributors":[…],"policyVersion":…}`. The `signals` array is the client-collected L1–L4 portion; the server merges its own L5/L6 network signals before scoring.
 
-The score itself comes from `internal/scoring`: each signal contributes `weight x severity x confidence`, the combiner deduplicates per group, caps each layer, and folds the layers with a noisy-OR into a 0–100 risk score, which policy `1.0.0` maps to `ALLOW` / `CHALLENGE` / `DENY` (challenge at 30, deny at 70). Hard rules HR-1..HR-21 can promote a verdict ahead of the score. For the full walk-through of how a request becomes a verdict, read [how Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) and [detection engine internals](../explanation/detection-engine-internals.md).
+The score itself comes from `internal/scoring`: each signal contributes `weight x severity x confidence`, the combiner deduplicates per group, caps each layer, and folds the layers with a noisy-OR into a 0–100 risk score, which policy `1.0.0` maps to `ALLOW` / `CHALLENGE` / `DENY` (challenge at 30, deny at 70). Hard rules HR-1..HR-21 can promote a verdict ahead of the score. For the full walk-through of how a request becomes a verdict, read [how Gate sees a request](../concepts/how-gate-sees-a-request.md) and [detection engine internals](../explanation/detection-engine-internals.md).
 
 ## The boundary: what this engine does not do
 
-This binary **scores**. It does not enforce at an edge, and it does not write the tamper-evident audit log. Those are the Sentinel reverse proxy's job — the proxy wraps this same engine and adds TLS termination, edge enforcement, the audit log, the Audit Console, bans, and dual-control.
+This binary **scores**. It does not enforce at an edge, and it does not write the tamper-evident audit log. Those are the Gate reverse proxy's job — the proxy wraps this same engine and adds TLS termination, edge enforcement, the audit log, the Ledger, bans, and dual-control.
 
-If you need any of that, do not try to bolt it onto the standalone engine — run the proxy instead, starting from [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md). A promoted Sentinel build never exposes the Observatory, and the Observatory (`:8443`) is never the Audit Console (`:8445`).
+If you need any of that, do not try to bolt it onto the standalone engine — run the proxy instead, starting from [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md). A promoted Gate build never exposes the Observatory, and the Observatory (`:8443`) is never the Ledger (`:8445`).
 
 ## Related
 
 - [Which piece am I using?](../explanation/which-piece-am-i-using.md) — the two-engine orientation map.
-- [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md) — the Sentinel proxy equivalent of this page.
+- [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md) — the Gate proxy equivalent of this page.
 - [Detection Observatory how-to](./detection-observatory.md) — drive the dev-gated viewer on this engine.
 - [Detection engine internals](../explanation/detection-engine-internals.md) — where the score comes from.

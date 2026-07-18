@@ -1,15 +1,15 @@
-# Audit Console tour for operators
+# Ledger tour for operators
 
-> **How-to / annotated tour.** For a new or occasional on-call operator learning the humanymous Sentinel Audit Console.
+> **How-to / annotated tour.** For a new or occasional on-call operator learning the humanymous Gate Ledger.
 > **Audience:** you are on the security-operator rotation, you have a token, and you need to know what each view answers and how to act from it — without breaking anything.
 
-This page walks the six views of the Audit Console in the order you will use them on a shift. For each view you get three things: the question it answers, what the badges and subtitles mean, and how to act from it. This is a reference implementation, not a production-hardened build, so treat the numbers you see as reference behavior and confirm before you widen the blast radius of any action.
+This page walks the six views of the Ledger in the order you will use them on a shift. For each view you get three things: the question it answers, what the badges and subtitles mean, and how to act from it. This is a reference implementation, not a production-hardened build, so treat the numbers you see as reference behavior and confirm before you widen the blast radius of any action.
 
-If you have never seen how Sentinel scores a request, read [How Sentinel sees a request](../concepts/how-sentinel-sees-a-request.md) first. For what the hard-rule IDs and dotted signal IDs mean when you drill in, keep [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) open in a second tab.
+If you have never seen how Gate scores a request, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first. For what the hard-rule IDs and dotted signal IDs mean when you drill in, keep [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) open in a second tab.
 
 ## Open the console
 
-The Audit Console is a single-page app served on the **separate admin listener** (default `:8445`), not on the public edge. The `/__hmn/admin/*` path returns `404` on the public edge by design.
+The Ledger is a single-page app served on the **separate admin listener** (default `:8445`), not on the public edge. The `/__hmn/admin/*` path returns `404` on the public edge by design.
 
 ```
 https://localhost:8445/__hmn/admin/console
@@ -96,13 +96,13 @@ The Policy view (also labelled "Policy & Rollout") shows the **per-route posture
 
 The one thing to be clear about on a shift:
 
-> **Important:** Per-route presets are set at **startup**, in the route table, and there is **no runtime per-route policy-write endpoint** in this reference. Changing a single route's preset means editing the route table and restarting Sentinel. The only *runtime* enforcement lever is the **kill switch** (and the `-monitor` boot flag). Do not expect to retune one route live from this view.
+> **Important:** Per-route presets are set at **startup**, in the route table, and there is **no runtime per-route policy-write endpoint** in this reference. Changing a single route's preset means editing the route table and restarting Gate. The only *runtime* enforcement lever is the **kill switch** (and the `-monitor` boot flag). Do not expect to retune one route live from this view.
 
 So you read posture here to understand *why* a route is behaving as it is (for example, `/login`, `/checkout`, and `/admin` default to the strict preset; `/health` maps to the off preset), but you do not live-edit a route's preset. For the day-to-day posture and rollout workflow, see [Deployment and policy operations](./deployment-policy-operations.md).
 
 **How to act from it — the runtime lever you *do* have:** the kill switch. It is a dual-control flip that demotes hard-rule enforcement to monitor **fleet-wide** — detection keeps scoring and logging, traffic flows, and manual bans still enforce.
 
-> **Warning:** The kill switch is fleet-wide. It stops hard-rule enforcement everywhere Sentinel runs, not on one route or one node. Traffic that would have been challenged or denied will pass. Pull it only as a deliberate, two-person decision, and plan to restore enforcement. The procedure is in [Kill switch and bans](../runbooks/kill-switch-and-bans.md).
+> **Warning:** The kill switch is fleet-wide. It stops hard-rule enforcement everywhere Gate runs, not on one route or one node. Traffic that would have been challenged or denied will pass. Pull it only as a deliberate, two-person decision, and plan to restore enforcement. The procedure is in [Kill switch and bans](../runbooks/kill-switch-and-bans.md).
 
 ### Compliance — "erasure & retention"
 

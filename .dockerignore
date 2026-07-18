@@ -15,8 +15,8 @@ cmd/redteam/
 cmd/tlsparrot/
 cmd/report/
 
-# The Sentinel proxy is a separate binary; the demo runs only cmd/server
-cmd/sentinel/
+# The Gate proxy is a separate binary; the demo runs only cmd/server
+cmd/gate/
 
 # The dev Detection Observatory UI must not ship, even as an inert static asset
 # (its routes are gate-off in prod, but keep the shell out of /static too).

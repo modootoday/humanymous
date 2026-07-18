@@ -4,13 +4,13 @@ title: Upgrade, Migration & Zero-Downtime
 
 # Upgrade, migration & zero-downtime
 
-**Diátaxis quadrant:** How-to. **Audience:** operators and platform engineers upgrading a running humanymous Sentinel ("Sentinel" after first mention) node, or planning how to roll a new build out safely.
+**Diátaxis quadrant:** How-to. **Audience:** operators and platform engineers upgrading a running humanymous Gate ("Gate" after first mention) node, or planning how to roll a new build out safely.
 
-This guide describes the safe way to move a Sentinel node from one build to the next. It is written against the reference implementation — a single in-process node — and is candid about where a genuine zero-downtime, multi-node upgrade crosses into production architecture the reference does not ship.
+This guide describes the safe way to move a Gate node from one build to the next. It is written against the reference implementation — a single in-process node — and is candid about where a genuine zero-downtime, multi-node upgrade crosses into production architecture the reference does not ship.
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. The upgrade posture below is honest about that boundary: the reference runs as one process with an in-process verdict store and in-process bans, so an upgrade is a process restart, not a rolling fleet operation.
 
-Sentinel is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
+Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
 
 ---
 
@@ -18,7 +18,7 @@ Sentinel is the reverse-proxy enforcement layer. It terminates TLS, streams the 
 
 Two properties of the reference build decide how you upgrade it:
 
-- **Policy is startup configuration.** The route table, the per-route presets, and the boot flags are read once, at process start, from `cmd/sentinel/main.go` and `internal/sentinel/config.go`. There is no runtime per-route policy-write endpoint. Changing a route's preset, adding a route, or changing a flag means editing the config and starting a new process.
+- **Policy is startup configuration.** The route table, the per-route presets, and the boot flags are read once, at process start, from `cmd/gate/main.go` and `internal/gate/config.go`. There is no runtime per-route policy-write endpoint. Changing a route's preset, adding a route, or changing a flag means editing the config and starting a new process.
 - **State is in-process.** The verdict store and the ban ladder live in the process's memory in the reference build. There is no shared external state store. When the process exits, that runtime state is gone with it.
 
 So upgrading to a new build, or changing route policy, is the same operation: **stop the old process, start the new one.** The only variable that matters for a clean restart is whether the node keeps its cryptographic identity across that restart — which is what the keystore is for.
@@ -27,7 +27,7 @@ So upgrading to a new build, or changing route policy, is the same operation: **
 
 ## Before you restart: keep the node's identity with a keystore
 
-A Sentinel node has a cryptographic identity: the Ed25519 signing seed that signs the audit log's Signed Tree Heads, the per-record HMAC key, and the vault of per-subject linkage keys that resolve pseudonyms. How a restart treats that identity depends entirely on whether you booted with `-keystore`.
+A Gate node has a cryptographic identity: the Ed25519 signing seed that signs the audit log's Signed Tree Heads, the per-record HMAC key, and the vault of per-subject linkage keys that resolve pseudonyms. How a restart treats that identity depends entirely on whether you booted with `-keystore`.
 
 **With `-keystore` + `HMN_UNSEAL`:** the node's identity is sealed to disk and reopened on the next boot. `SealKeys` runs on `SIGINT`/`SIGTERM`; `LoadOrCreateKeys` reopens the sealed keystore on start. Across the restart, the node keeps the same audit-chain signing key (verifier public key is unchanged, so existing checkpoints keep verifying) and the same vault (pseudonym linkage is preserved). This is the required posture for any node whose audit history and pseudonym linkage must survive an upgrade.
 
@@ -50,14 +50,14 @@ Do not bring a new build straight into enforcement. Stage it so a bad verdict fr
 Start the new binary with the global `-monitor` flag. In global monitor mode every route scores and logs but enforces nothing, so the new build observes live traffic and produces verdicts without acting on them.
 
 ```
-bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node sentinel-1 -keystore ./sentinel.keystore -monitor
+bin/gate.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node gate-1 -keystore ./gate.keystore -monitor
 ```
 
 (`HMN_UNSEAL` must be set in the environment for the `-keystore` node to open its sealed identity.)
 
 ### Step 2 — Confirm verdicts look sane
 
-Open the Audit Console **Overview** view (`https://localhost:8445/__hmn/admin/console`) and watch the live edge decisions the new build is scoring, or read the same stream over the API:
+Open the Ledger **Overview** view (`https://localhost:8445/__hmn/admin/console`) and watch the live edge decisions the new build is scoring, or read the same stream over the API:
 
 ```
 curl -sk -H "Authorization: Bearer <operator-token>" "https://localhost:8445/__hmn/admin/audit"
@@ -70,7 +70,7 @@ Confirm the mix of ALLOW / CHALLENGE / DENY on your normal traffic matches what 
 Once the monitor-mode verdicts look right, restart the node **without** `-monitor` so route presets enforce normally (the default `balanced` route and the `strict` routes take effect again).
 
 ```
-bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node sentinel-1 -keystore ./sentinel.keystore
+bin/gate.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node gate-1 -keystore ./gate.keystore
 ```
 
 > **Note:** Because both steps are full restarts of the same single node, the reference cannot enforce with the new build and shadow it at the same time on that node. The monitor-then-enforce sequence is two restarts of one process, not a live traffic split. A true side-by-side shadow needs more than one node (see [Multi-node](#multi-node-rolling-upgrades-are-a-prod-delta)).
@@ -81,7 +81,7 @@ bin/sentinel.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -
 
 The same restart rule covers policy changes, not just new binaries:
 
-- Route presets are set at startup via the route table in `cmd/sentinel/main.go` (longest-prefix wins; default `balanced`; `/login`, `/checkout`, `/admin` → `strict`; `/health` → `off`). Editing which preset a route uses is a code-level change that takes effect only on the next start.
+- Route presets are set at startup via the route table in `cmd/gate/main.go` (longest-prefix wins; default `balanced`; `/login`, `/checkout`, `/admin` → `strict`; `/health` → `off`). Editing which preset a route uses is a code-level change that takes effect only on the next start.
 - The reserved names `low` and `api` are **not** implemented and fall back to `balanced` — never introduce them as a route preset expecting new behavior.
 - The only runtime enforcement levers that do **not** require a restart are the global kill switch (`POST /__hmn/admin/killswitch`, dual-control) and the `-monitor` boot flag. Neither edits a route's preset — the kill switch demotes hard-rule enforcement to monitor fleet-wide, and `-monitor` demotes everywhere. Changing one route's posture specifically still means editing the route table and restarting.
 
@@ -93,7 +93,7 @@ For the full flag, preset, and route-table reference, see [CLI, config & per-rou
 
 After an upgrade, confirm what policy the node is actually running rather than assuming the edit took. The Policy view records a signed `config_version` for the effective route enforcement configuration; config changes are dual-control and signed.
 
-- Read the Policy / Policy & Rollout view in the Audit Console, or `GET /__hmn/admin/policy`, and confirm the effective route posture (preset, fail-open/closed, sync re-score, injection) and the `config_version` match the build and config you intended to deploy.
+- Read the Policy / Policy & Rollout view in the Ledger, or `GET /__hmn/admin/policy`, and confirm the effective route posture (preset, fail-open/closed, sync re-score, injection) and the `config_version` match the build and config you intended to deploy.
 - Treat a `config_version` that did not change when you expected it to — or changed when you did not edit policy — as a signal to stop and reconcile before enabling enforcement.
 
 ```
@@ -119,7 +119,7 @@ An upgrade should not break audit continuity. With `-keystore`, the signing key 
 
 ## Multi-node, rolling upgrades are a prod-delta
 
-True zero-downtime upgrade — running several Sentinel nodes behind a load balancer, draining and replacing them one at a time so the edge never goes fully offline — depends on **shared fleet state** that the reference does not ship.
+True zero-downtime upgrade — running several Gate nodes behind a load balancer, draining and replacing them one at a time so the edge never goes fully offline — depends on **shared fleet state** that the reference does not ship.
 
 - The reference is a **single node** with an **in-process verdict store** and **in-process bans**. Redis (or any) shared fleet state is not implemented.
 - Without shared state, two nodes do not agree on verdict trust tokens, ban ladders, or rate-limit counters, so you cannot simply add a second node behind a balancer and treat them as one enforcement surface. Multi-node deployment, shared state, connection draining, and rolling replacement are **production architecture**, not reference behavior.

@@ -4,19 +4,19 @@ title: Support, licensing & open-source notices
 
 # Support, licensing & open-source notices
 
-**Diátaxis quadrant:** Reference. **Audience:** buyers, legal, and procurement teams evaluating humanymous Sentinel before or during adoption.
+**Diátaxis quadrant:** Reference. **Audience:** buyers, legal, and procurement teams evaluating humanymous Gate before or during adoption.
 
-humanymous Sentinel ("Sentinel" after first mention) is the reverse-proxy enforcement layer distributed in this repository as a **reference implementation, not a production-hardened build.** This page states plainly what the reference repo ships with respect to licensing, what third-party open-source software it depends on, and where to get help — and it marks the facts you must confirm for your own procurement, rather than asserting anything the repository does not actually contain.
+humanymous Gate ("Gate" after first mention) is the reverse-proxy enforcement layer distributed in this repository as a **reference implementation, not a production-hardened build.** This page states plainly what the reference repo ships with respect to licensing, what third-party open-source software it depends on, and where to get help — and it marks the facts you must confirm for your own procurement, rather than asserting anything the repository does not actually contain.
 
 For install prerequisites, see [Install requirements](./install-requirements.md). For how to report a security vulnerability, see the [Security disclosure policy](./security-disclosure.md).
 
 ---
 
-## Project license (humanymous Sentinel itself)
+## Project license (humanymous Gate itself)
 
-**The reference repository ships no license.** The repository root contains `README.md` only — there is **no `LICENSE`, `NOTICE`, or `COPYING` file** for humanymous Sentinel.
+**The reference repository ships no license.** The repository root contains `README.md` only — there is **no `LICENSE`, `NOTICE`, or `COPYING` file** for humanymous Gate.
 
-Because no license text is present, the project license for humanymous Sentinel is:
+Because no license text is present, the project license for humanymous Gate is:
 
 **BSD-3-Clause.** humanymous is released under the BSD 3-Clause License; the full text is in the [`LICENSE`](../../LICENSE) file at the repository root.
 
@@ -28,7 +28,7 @@ BSD-3-Clause is a permissive license: you may use, modify, redistribute, and bui
 
 ## Third-party open-source notices
 
-Sentinel is a pure-Go module (`github.com/modootoday/humanymous`) built with Go 1.25.3, no CGO. Its Go dependencies are declared in `go.mod`. The table below lists them at the exact versions the reference pins.
+Gate is a pure-Go module (`github.com/modootoday/humanymous`) built with Go 1.25.3, no CGO. Its Go dependencies are declared in `go.mod`. The table below lists them at the exact versions the reference pins.
 
 These modules are all permissive, BSD/MIT-family open-source software. Each SPDX identifier below was read from that module's own `LICENSE` file in the module cache.
 
@@ -46,7 +46,7 @@ These modules are all permissive, BSD/MIT-family open-source software. Each SPDX
 
 ### Red-team harness (test) dependencies
 
-The defensive red-team harness under `test/` uses one npm package, `playwright-core` (declared in `test/package.json`, installed via `npm install` in `test/`), which is **Apache-2.0** licensed. It is used only by the local validation harness, not by the Sentinel runtime binary.
+The defensive red-team harness under `test/` uses one npm package, `playwright-core` (declared in `test/package.json`, installed via `npm install` in `test/`), which is **Apache-2.0** licensed. It is used only by the local validation harness, not by the Gate runtime binary.
 
 > **Note:** If you bump the harness or add npm packages, re-read the licenses from the installed `node_modules` and record any that a redistribution would ship.
 
@@ -54,7 +54,7 @@ The defensive red-team harness under `test/` uses one npm package, `playwright-c
 
 ## Getting help
 
-Support channels for humanymous Sentinel are **deployment- and vendor-specific**. The reference repository does not bundle a support contract, a hosted issue tracker, or a community forum; whichever of these you have depends on the vendor or operator that supplied your build.
+Support channels for humanymous Gate are **deployment- and vendor-specific**. The reference repository does not bundle a support contract, a hosted issue tracker, or a community forum; whichever of these you have depends on the vendor or operator that supplied your build.
 
 | Channel | Where |
 |---------|-------|

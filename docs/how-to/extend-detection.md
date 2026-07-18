@@ -14,7 +14,7 @@ For the model you are extending — layers, dedup, noisy-OR, the hard-rule table
 - You can run the red harness: `node test/e2e/runner.mjs`. See [Red-team catalog](../reference/red-team-catalog.md).
 - You know which layer your evidence belongs to (L1–L7) and whether it is collected in the browser (`js`/`wasm`) or on the server. If not, read [Detection engine internals](../explanation/detection-engine-internals.md) first.
 
-> **Note:** Everything below changes the standalone engine (the one the tests and the Observatory exercise). Because Sentinel embeds the **same** `internal/scoring`/`internal/signals` engine, coverage you add here is the coverage the proxy runs at the edge. You do not edit two engines — see [Which piece am I using?](../explanation/which-piece-am-i-using.md).
+> **Note:** Everything below changes the standalone engine (the one the tests and the Observatory exercise). Because Gate embeds the **same** `internal/scoring`/`internal/signals` engine, coverage you add here is the coverage the proxy runs at the edge. You do not edit two engines — see [Which piece am I using?](../explanation/which-piece-am-i-using.md).
 
 ## Step 1 — Choose the layer and the group
 
@@ -75,7 +75,7 @@ Place the rule by **precedence, not number.** `promotionRules` is evaluated in f
 
 Write a plain-language `why` field. It is not an internal note: it **publishes** to the Observatory trace and to the hard-rules reference table. Name the mechanism in Blue voice ("a CDP leak together with any automation hint"), never third-party evasion framing, and never an internal spec identifier.
 
-> **Note:** Give your rule the next id in the engine-plane sequence for its plane. The detection engine evaluates **HR-1..HR-21 only**. `HR-22..HR-30` are Sentinel-plane rules (proxy edge: bans, rate-limit, smuggling, token) that this engine never evaluates and the Observatory never shows — do not reuse or extend into that range here.
+> **Note:** Give your rule the next id in the engine-plane sequence for its plane. The detection engine evaluates **HR-1..HR-21 only**. `HR-22..HR-30` are Gate-plane rules (proxy edge: bans, rate-limit, smuggling, token) that this engine never evaluates and the Observatory never shows — do not reuse or extend into that range here.
 
 ## Step 5 — Guard the false-positive path
 

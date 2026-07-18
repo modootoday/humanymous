@@ -4,9 +4,9 @@ title: Integration Troubleshooting & FAQ
 
 # Integration troubleshooting & FAQ
 
-**Diátaxis quadrant:** How-to (FAQ). **Audience:** integrators standing up humanymous Sentinel for the first time and working through the errors that show up mid-integration.
+**Diátaxis quadrant:** How-to (FAQ). **Audience:** integrators standing up humanymous Gate for the first time and working through the errors that show up mid-integration.
 
-This page is a symptom → cause → fix reference for the problems you are most likely to hit while wiring humanymous Sentinel ("Sentinel" after first mention) in front of your origin. Sentinel is the reverse-proxy enforcement layer: it terminates TLS, streams the detection bundle into your HTML, scores layers L1–L7 inline, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes every decision to a tamper-evident audit log.
+This page is a symptom → cause → fix reference for the problems you are most likely to hit while wiring humanymous Gate ("Gate" after first mention) in front of your origin. Gate is the reverse-proxy enforcement layer: it terminates TLS, streams the detection bundle into your HTML, scores layers L1–L7 inline, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes every decision to a tamper-evident audit log.
 
 Everything below is written against the reference implementation. Some behaviors you might expect from a production install (real certificates, shared fleet state, and more) are intentionally not in the reference — those are called out as prod-delta. For the full boundary, see [Production vs reference](../reference/production-vs-reference.md).
 
@@ -26,7 +26,7 @@ For flags, environment variables, presets, and defaults referenced throughout, s
 curl -k https://localhost:8444/
 ```
 
-For a browser, proceed through the warning (or trust the dev certificate locally). Do not treat the warning as a Sentinel fault — it is the expected state of the in-memory dev certificate.
+For a browser, proceed through the warning (or trust the dev certificate locally). Do not treat the warning as a Gate fault — it is the expected state of the in-memory dev certificate.
 
 > **Note:** Real certificates (ACME / a managed CA) and a real KMS/HSM for key material are prod-delta — the reference does not ship them. Plan certificate issuance as part of your production deployment; see [Production vs reference](../reference/production-vs-reference.md).
 
@@ -36,12 +36,12 @@ For a browser, proceed through the warning (or trust the dev certificate locally
 
 **Symptom.** Some requests to your origin return `421`.
 
-**Cause.** A `421` is hard rule HR-24: a request reached the origin directly, bypassing Sentinel. Once you set `-origin-key`, Sentinel signs traffic it forwards with the `X-Hmny-Origin-Auth` header (origin cloaking), and the origin validates that header. A request that arrives without a valid `X-Hmny-Origin-Auth` — that is, one that did not pass through the edge — is rejected with `421`.
+**Cause.** A `421` is hard rule HR-24: a request reached the origin directly, bypassing Gate. Once you set `-origin-key`, Gate signs traffic it forwards with the `X-Hmny-Origin-Auth` header (origin cloaking), and the origin validates that header. A request that arrives without a valid `X-Hmny-Origin-Auth` — that is, one that did not pass through the edge — is rejected with `421`.
 
-**Fix.** Route all client traffic through the Sentinel edge listener (default `:8444`) rather than letting clients reach the origin (default `:9000`) directly. Confirm:
+**Fix.** Route all client traffic through the Gate edge listener (default `:8444`) rather than letting clients reach the origin (default `:9000`) directly. Confirm:
 
 - `-origin-key` is set to the same value that the origin uses to validate `X-Hmny-Origin-Auth`.
-- Your load balancer, DNS, or firewall sends external traffic to the edge, and the origin is only reachable from Sentinel.
+- Your load balancer, DNS, or firewall sends external traffic to the edge, and the origin is only reachable from Gate.
 
 The `-origin-key` value is separate from the sealed keystore; see [Key management, rotation & recovery](./key-management.md) for how it fits alongside the other key material.
 
@@ -49,9 +49,9 @@ The `-origin-key` value is separate from the sealed keystore; see [Key managemen
 
 ## The detection bundle is not appearing in my page
 
-**Symptom.** You expected Sentinel's control-plane script to be injected, but the page source that reaches the browser has no injected `<script>`, and no beacon reaches `/__hmn/collect`.
+**Symptom.** You expected Gate's control-plane script to be injected, but the page source that reaches the browser has no injected `<script>`, and no beacon reaches `/__hmn/collect`.
 
-**Cause.** Streaming HTML injection is single-pass, add-only, idempotent, and applies to **HTML responses only**. Sentinel does not inject into responses that are not HTML — for example non-HTML content types, or responses it cannot treat as injectable HTML in a single streaming pass.
+**Cause.** Streaming HTML injection is single-pass, add-only, idempotent, and applies to **HTML responses only**. Gate does not inject into responses that are not HTML — for example non-HTML content types, or responses it cannot treat as injectable HTML in a single streaming pass.
 
 **Fix.** Confirm the response you expect injection on is served as HTML (an HTML `Content-Type`). Static assets, JSON APIs, and other non-HTML responses are not injected by design. If a page that should be HTML is not getting the bundle, verify the origin is returning it as an HTML response rather than, for example, a downloadable or opaque body.
 
@@ -73,7 +73,7 @@ If you see the `<!--hmn-injected-->` marker but no bundle behavior, the page was
 
 **Symptom.** Real people hit the proof-of-work (PoW) challenge interstitial when you did not expect them to.
 
-**Cause.** When Sentinel cannot form a verdict (Unknown), it **fails closed** on strict routes and on all unsafe methods (POST, PUT, PATCH, DELETE) — those requests are challenged rather than passed. This is deliberate: the default policy routes sensitive paths such as `/login`, `/checkout`, and `/admin` to the `strict` preset. It fails open (passes) only for safe `GET`/`HEAD` requests on non-strict routes, a documented, accepted residual covered by fingerprint and subnet rate metering. Some heuristic hard rules can also challenge real people — for example HR-12 (no interaction over the window) is explicitly a heuristic that can catch some humans.
+**Cause.** When Gate cannot form a verdict (Unknown), it **fails closed** on strict routes and on all unsafe methods (POST, PUT, PATCH, DELETE) — those requests are challenged rather than passed. This is deliberate: the default policy routes sensitive paths such as `/login`, `/checkout`, and `/admin` to the `strict` preset. It fails open (passes) only for safe `GET`/`HEAD` requests on non-strict routes, a documented, accepted residual covered by fingerprint and subnet rate metering. Some heuristic hard rules can also challenge real people — for example HR-12 (no interaction over the window) is explicitly a heuristic that can catch some humans.
 
 **Fix.**
 
@@ -85,22 +85,22 @@ For a fuller treatment of what changes for real users and how to de-risk enforce
 
 ---
 
-## The Audit Console will not authenticate, or returns 404
+## The Ledger will not authenticate, or returns 404
 
-**Symptom.** The Audit Console (or an admin API call) returns `404`, or your bearer token is not accepted.
+**Symptom.** The Ledger (or an admin API call) returns `404`, or your bearer token is not accepted.
 
 **Cause.** Two things commonly cause this:
 
 1. **Deny-by-default auth.** Admin authentication is bearer-token, compared in constant time. A missing or invalid token returns `404` (not `401`) — the endpoint does not reveal itself to an unauthenticated caller.
-2. **Wrong listener.** The Audit Console and the whole admin API live on a **separate admin listener** (default `:8445`) at `/__hmn/admin/`. On the public edge listener, `/__hmn/admin/*` returns `404` by design. If you are calling the admin path on the edge port, you will always get `404`.
+2. **Wrong listener.** The Ledger and the whole admin API live on a **separate admin listener** (default `:8445`) at `/__hmn/admin/`. On the public edge listener, `/__hmn/admin/*` returns `404` by design. If you are calling the admin path on the edge port, you will always get `404`.
 
 **Fix.**
 
 - Use the admin listener. The console is served at `https://localhost:8445/__hmn/admin/console`, and the admin API base is `/__hmn/admin`.
-- Present a valid token. If you did not set `HMN_ADMIN_TOKENS`, Sentinel generates random tokens per boot and prints them at startup — read them from the startup log. To set them yourself, use `HMN_ADMIN_TOKENS`:
+- Present a valid token. If you did not set `HMN_ADMIN_TOKENS`, Gate generates random tokens per boot and prints them at startup — read them from the startup log. To set them yourself, use `HMN_ADMIN_TOKENS`:
 
 ```
-HMN_ADMIN_TOKENS="auditor:<tok>,operator:<tok>,approver:<tok>,dpo:<tok>" bin/sentinel.exe -addr :8444 -admin-addr :8445
+HMN_ADMIN_TOKENS="auditor:<tok>,operator:<tok>,approver:<tok>,dpo:<tok>" bin/gate.exe -addr :8444 -admin-addr :8445
 ```
 
 - Send the token as a bearer credential, for example:
@@ -115,7 +115,7 @@ Every admin access is meta-audited (`admin.access`), and the actor identity is d
 
 ## "Port already in use" on startup
 
-**Symptom.** Sentinel fails to bind a listener at boot with an address-in-use error.
+**Symptom.** Gate fails to bind a listener at boot with an address-in-use error.
 
 **Cause.** A default port is already taken. The reference uses three:
 
@@ -128,7 +128,7 @@ Every admin access is meta-audited (`admin.access`), and the actor identity is d
 **Fix.** Free the conflicting port, or point the relevant flag at a different one. For example, to move the edge and admin listeners:
 
 ```
-bin/sentinel.exe -addr :18444 -admin-addr :18445 -upstream http://127.0.0.1:9000
+bin/gate.exe -addr :18444 -admin-addr :18445 -upstream http://127.0.0.1:9000
 ```
 
 The origin address comes from your `-upstream` target; make sure that host and port are the one your origin app actually listens on.
@@ -137,14 +137,14 @@ The origin address comes from your `-upstream` target; make sure that host and p
 
 ## Keystore boot failure
 
-**Symptom.** Sentinel exits at startup instead of coming up, when you have configured a keystore.
+**Symptom.** Gate exits at startup instead of coming up, when you have configured a keystore.
 
 **Cause.** When `-keystore` is set, the `HMN_UNSEAL` environment variable is **required** — the passphrase opens (or creates) the sealed file. Boot fails if `-keystore` is set and `HMN_UNSEAL` is unset.
 
 **Fix.** Provide the passphrase in the environment alongside the flag:
 
 ```
-HMN_UNSEAL="<passphrase>" bin/sentinel.exe -keystore /var/lib/sentinel/keystore.sealed -addr :8444 -admin-addr :8445
+HMN_UNSEAL="<passphrase>" bin/gate.exe -keystore /var/lib/gate/keystore.sealed -addr :8444 -admin-addr :8445
 ```
 
 > **Warning:** Losing `HMN_UNSEAL` means you cannot open the sealed identity, which is equivalent to a mass cryptographic erasure (crypto-shred) of the linkage it protects. Back the passphrase up out-of-band. See [Key management, rotation & recovery](./key-management.md).
@@ -155,12 +155,12 @@ HMN_UNSEAL="<passphrase>" bin/sentinel.exe -keystore /var/lib/sentinel/keystore.
 
 **Symptom.** After a restart, pseudonyms no longer resolve to the same subjects, and/or the public key your audit-log verifier expects no longer matches.
 
-**Cause.** You are running without a keystore, so the keys are **ephemeral** (held in memory only). On restart, Sentinel mints a new signing key — so the verifier's expected public key changes — and creates a new vault, so the per-subject pseudonym linkage from before the restart is lost (effectively a mass crypto-shred).
+**Cause.** You are running without a keystore, so the keys are **ephemeral** (held in memory only). On restart, Gate mints a new signing key — so the verifier's expected public key changes — and creates a new vault, so the per-subject pseudonym linkage from before the restart is lost (effectively a mass crypto-shred).
 
 **Fix.** Persist node identity by running with a sealed keystore. Set both `-keystore` and `HMN_UNSEAL`:
 
 ```
-HMN_UNSEAL="<passphrase>" bin/sentinel.exe -keystore /var/lib/sentinel/keystore.sealed -addr :8444 -admin-addr :8445
+HMN_UNSEAL="<passphrase>" bin/gate.exe -keystore /var/lib/gate/keystore.sealed -addr :8444 -admin-addr :8445
 ```
 
 With the keystore, the SigningSeed (Ed25519 STH key), HMACKey, and vault snapshot persist across restarts, so the verifier public key stays stable and pseudonym linkage survives. Full detail — what each key protects, sealing (`scrypt` N=2^15 + AES-256-GCM), and recovery — is in [Key management, rotation & recovery](./key-management.md).
@@ -173,13 +173,13 @@ With the keystore, the SigningSeed (Ed25519 STH key), HMACKey, and vault snapsho
 
 **Why `404` instead of `401` from the admin API?** Deny-by-default: a missing or invalid bearer token returns `404` so the admin surface does not announce itself. Check both the token and that you are on the admin listener (`:8445`), not the edge.
 
-**Can I change route policy while Sentinel is running?** Presets (`off` / `monitor` / `balanced` / `strict`) are startup configuration. There is no runtime per-route policy-write endpoint. The runtime levers are the fleet-wide kill switch and the global `-monitor` switch.
+**Can I change route policy while Gate is running?** Presets (`off` / `monitor` / `balanced` / `strict`) are startup configuration. There is no runtime per-route policy-write endpoint. The runtime levers are the fleet-wide kill switch and the global `-monitor` switch.
 
 **How do I stop enforcement without stopping traffic?** The kill switch demotes hard-rule enforcement to monitor fleet-wide — detection stops and traffic flows, though manually placed bans still enforce. It is dual-control (committed by a distinct Approver).
 
-> **Warning:** The kill switch is fleet-wide. Enabling it stops hard-rule enforcement everywhere Sentinel runs, not just on one node.
+> **Warning:** The kill switch is fleet-wide. Enabling it stops hard-rule enforcement everywhere Gate runs, not just on one node.
 
-**Where do I see what Sentinel decided?** Observability is the audit stream (`GET /audit`), the Integrity view/endpoint, and the Overview KPIs in the Audit Console. There is no Prometheus `/metrics` endpoint and no `/healthz` / `/readyz` probe in the reference — those are prod-delta.
+**Where do I see what Gate decided?** Observability is the audit stream (`GET /audit`), the Integrity view/endpoint, and the Overview KPIs in the Ledger. There is no Prometheus `/metrics` endpoint and no `/healthz` / `/readyz` probe in the reference — those are prod-delta.
 
 ---
 

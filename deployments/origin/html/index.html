@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Demo Origin — a shop behind humanymous Sentinel</title>
+<title>Demo Origin — a shop behind humanymous Gate</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   body { font: 16px/1.6 system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1.2rem; color: #1c2733; }
@@ -16,7 +16,7 @@
 <body>
   <h1>Acme Demo Shop</h1>
   <p class="muted">This is an unmodified origin application. It knows nothing about bot detection —
-    the <b>humanymous Sentinel</b> reverse proxy sits in front of it, injects the detection bundle
+    the <b>humanymous Gate</b> reverse proxy sits in front of it, injects the detection bundle
     into this HTML on the fly, scores every session, and enforces the verdict at the edge before a
     request ever reaches here.</p>
 
@@ -29,7 +29,7 @@
   <div class="card">
     <h2>Protected routes</h2>
     <p><code>/login</code>, <code>/checkout</code> and <code>/admin</code> are marked <b>strict</b> in the
-    Sentinel route policy — a bot verdict is denied at the edge; the origin is never contacted.</p>
+    Gate route policy — a bot verdict is denied at the edge; the origin is never contacted.</p>
   </div>
 
   <div class="card">

@@ -5,7 +5,7 @@
 
 This runbook is written against the reference implementation, not a production-hardened build. Endpoints, defaults, and role gates match the reference; a production deployment may add controls but must not remove the dual-control gates described here.
 
-Every action below is driven from the **Audit Console** or its admin API on the separate admin listener:
+Every action below is driven from the **Ledger** or its admin API on the separate admin listener:
 
 - Console: `https://localhost:8445/__hmn/admin/console` (not on the public edge).
 - API base: `/__hmn/admin/` on the admin listener. Bearer auth on every call. A missing or invalid token returns `404`, not `401` — that is deny-by-default, not a bug.
@@ -100,7 +100,7 @@ A ban keys on either an IP or a fingerprint, and choosing wrong either misses th
 
 Do not reach for the kill switch to deal with an attack that bans can hold. The kill switch demotes hard-rule enforcement fleet-wide and would remove exactly the DENY that is protecting the origin — while your manual bans keep enforcing regardless. Escalate the ladder with fingerprint bans; keep enforcement on.
 
-> **Note:** Anti-detect tooling combined with real-human click-farms is an explicit design boundary Sentinel does not solve; it is mitigated only by rate and reputation. If bans are not denting the volume, escalate rather than banning ever-wider.
+> **Note:** Anti-detect tooling combined with real-human click-farms is an explicit design boundary Gate does not solve; it is mitigated only by rate and reputation. If bans are not denting the volume, escalate rather than banning ever-wider.
 
 ---
 
