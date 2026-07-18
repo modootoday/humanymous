@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" width="96" height="96" role="img" aria-label="humanymous">
+  <title>humanymous — pulse-aperture mark</title>
+  <path d="M27.3 11.9 A12 12 0 1 1 20.1 4.7" stroke="#35d0ba" stroke-width="2" stroke-linecap="round"/>
+  <polyline points="6,17 11,17 14,17 16,10 18,22 21,17 26,17" fill="none" stroke="#35d0ba" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

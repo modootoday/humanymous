@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 48" fill="none" width="224" height="48" role="img" aria-label="humanymous">
+  <title>humanymous — horizontal lockup</title>
+  <g transform="translate(4,8)">
+    <path d="M27.3 11.9 A12 12 0 1 1 20.1 4.7" stroke="#35d0ba" stroke-width="2" stroke-linecap="round"/>
+    <polyline points="6,17 11,17 14,17 16,10 18,22 21,17 26,17" fill="none" stroke="#35d0ba" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="52" y="32" font-family="ui-sans-serif,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="26" font-weight="500" letter-spacing="-0.5" fill="#c9d1d9">huma<tspan fill="#35d0ba">nym</tspan>ous</text>
+</svg>
