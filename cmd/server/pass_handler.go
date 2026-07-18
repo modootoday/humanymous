@@ -165,6 +165,7 @@ type passProof struct {
 	Trusted    bool      `json:"trusted"`    // all events had isTrusted === true
 	Durations  []float64 `json:"durations"`  // inter-event Δt (ms), for uniformity check
 	PathLen    float64   `json:"pathLen"`    // total pointer path length (px)
+	RawT       []float64 `json:"rawT"`       // raw getCoalescedEvents() sample timestamps (ms)
 }
 
 // realEventOK is a lightweight real-event check (SoT-36 §5, v1): reject the obvious
@@ -186,6 +187,23 @@ func realEventOK(pr passProof) (bool, string) {
 	// (one sample each) is the CDP structural tell. Neutral if unsupported (== 0).
 	if pr.Coalesced != 0 && pr.Coalesced <= pr.Moves {
 		return false, "no coalesced sub-samples"
+	}
+	// Blue hardening round 1 (wargame): require the RAW sub-frame timestamp stream —
+	// the hardware microstructure a forged-aggregate submission ("strategy D") lacks.
+	// It must be present, monotonic, and NOT uniformly spaced.
+	if len(pr.RawT) < 10 {
+		return false, "missing raw input stream"
+	}
+	diffs := make([]float64, 0, len(pr.RawT)-1)
+	for i := 1; i < len(pr.RawT); i++ {
+		dd := pr.RawT[i] - pr.RawT[i-1]
+		if dd < 0 {
+			return false, "non-monotonic raw timestamps"
+		}
+		diffs = append(diffs, dd)
+	}
+	if stddev(diffs) < 0.15 { // perfectly-even raw spacing is synthetic
+		return false, "uniform raw sample spacing"
 	}
 	return true, ""
 }

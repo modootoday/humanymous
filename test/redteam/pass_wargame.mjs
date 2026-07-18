@@ -26,6 +26,7 @@ const strategies={
   'B: dispatchEvent (untrusted)':()=>({moves:24,coalesced:70,trusted:false,pathLen:340,durations:[12,18,9,22,14]}),
   'C: minimal interaction':()=>({moves:2,coalesced:2,trusted:true,pathLen:6,durations:[15,15]}),
   'D: forged plausible stats':()=>{const dur=[];for(let i=0;i<14;i++)dur.push(8+Math.random()*30);return {moves:22,coalesced:64,trusted:true,pathLen:300+Math.random()*80,durations:dur};},
+  'E: forged raw stream':()=>{const dur=[],rawT=[];let t=1000;for(let i=0;i<30;i++){t+=6+Math.random()*10;rawT.push(+t.toFixed(3));}for(let i=0;i<14;i++)dur.push(8+Math.random()*30);return {moves:22,coalesced:64,trusted:true,pathLen:300+Math.random()*80,durations:dur,rawT};},
 };
 
 let cookie='';

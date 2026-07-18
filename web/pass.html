@@ -84,12 +84,15 @@ function toScene(px,py){const r=cv.getBoundingClientRect();return {x:(px-r.left)
 
 // ---- real-event capture (SoT-36 §5) ----
 let cap=resetCap();
-function resetCap(){return {moves:0,coalesced:0,trusted:true,pathLen:0,last:null,lastT:0,durations:[]};}
+function resetCap(){return {moves:0,coalesced:0,trusted:true,pathLen:0,last:null,lastT:0,durations:[],rawT:[]};}
 function onMove(e){
   if(e.isTrusted===false) cap.trusted=false;
   cap.moves++;
   const co = e.getCoalescedEvents?e.getCoalescedEvents():[e];
   cap.coalesced += co.length;
+  // raw sub-frame sample timestamps — the hardware microstructure a script can't
+  // cheaply fabricate (SoT-36 §5). The blue team requires this stream.
+  for(const c of co){ if(cap.rawT.length<200) cap.rawT.push(+((c.timeStamp||performance.now()).toFixed(3))); }
   const now=performance.now();
   if(cap.lastT){const dt=now-cap.lastT; if(dt>0&&dt<500&&cap.durations.length<400) cap.durations.push(dt);}
   cap.lastT=now;
@@ -142,7 +145,8 @@ document.getElementById('drop').addEventListener('click',async()=>{
   const preview=simulate(scene,rp); draw(preview);
   statusEl.textContent='checking…'; statusEl.className='status warn';
   const body={bucket,rampX:ramp.cx,rampY:ramp.cy,rampAngle:ramp.ang,
-    moves:cap.moves,coalesced:cap.coalesced,trusted:cap.trusted,pathLen:cap.pathLen,durations:cap.durations.slice(0,60)};
+    moves:cap.moves,coalesced:cap.coalesced,trusted:cap.trusted,pathLen:cap.pathLen,
+    durations:cap.durations.slice(0,60),rawT:cap.rawT.slice(-80)};
   const r=await fetch('/api/pass/solve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const j=await r.json();
   if(j.ok){solved=true;statusEl.textContent='✓ cleared — you are human enough. verdict: '+(j.verdict||'ALLOW');statusEl.className='status ok';document.getElementById('drop').disabled=true;}
