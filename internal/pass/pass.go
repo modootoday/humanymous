@@ -121,25 +121,65 @@ func Generate(masterKey []byte, sessionID string, bucket uint64) Scene {
 		sc.Deflectors = append(sc.Deflectors, Segment{A: Vec{cx - dx, cy - dy}, B: Vec{cx + dx, cy + dy}})
 	}
 
-	// Design a hidden ramp and simulate forward to place the cup where the ball lands.
-	designed := makeRamp(Vec{X: r.f(30, 55), Y: r.f(40, 60)}, r.f(-0.7, 0.2), sc.RampLen)
-	land, ok := simulate(sc, designed)
-	if !ok {
-		// fallback: a gentle ramp under the ball; place cup at a plain landing.
-		designed = makeRamp(Vec{X: sc.Ball.X + 10, Y: sc.Ball.Y + 30}, 0.15, sc.RampLen)
-		land, _ = simulate(sc, designed)
+	// Place the cup where a hidden designed ramp sends the ball — AND require that
+	// ramp to be NECESSARY: without it (natural path) the ball must clearly miss the
+	// cup, so a wrong/absent ramp fails and the challenge cannot be passed trivially.
+	// farRamp is off-canvas, so it never intersects — it stands in for "no ramp".
+	farRamp := Segment{A: Vec{X: -30, Y: -30}, B: Vec{X: -30, Y: -29}}
+	natural := simLand(sc, farRamp)
+	for attempt := 0; attempt < 16; attempt++ {
+		designed := makeRamp(Vec{X: r.f(28, 62), Y: r.f(38, 62)}, r.f(-0.8, 0.3), sc.RampLen)
+		land := simLand(sc, designed)
+		if land.X < 6 || land.X > 94 { // landed off the useful field
+			continue
+		}
+		if dist(natural, land) > sc.CupR+3 { // the ramp changed the outcome enough
+			sc.Cup = land
+			return sc
+		}
 	}
-	sc.Cup = land
-	if sc.Cup.X < 8 {
-		sc.Cup.X = 8
-	}
-	if sc.Cup.X > 92 {
-		sc.Cup.X = 92
-	}
-	if sc.Cup.Y > 96 {
-		sc.Cup.Y = 96
-	}
+	// Fallback (rare): offset the cup off the natural path so a ramp is still needed.
+	sc.Cup = Vec{X: clampF(natural.X+18, 8, 92), Y: clampF(natural.Y-6, 30, 94)}
 	return sc
+}
+
+func clampF(v, lo, hi float64) float64 {
+	if v < lo {
+		return lo
+	}
+	if v > hi {
+		return hi
+	}
+	return v
+}
+
+// simLand runs the ballistics WITHOUT cup capture and returns where the ball exits
+// (leaves the field or comes to the end of the step budget) — used at generation
+// time to decide where to put the cup and whether the ramp is necessary.
+func simLand(sc Scene, ramp Segment) Vec {
+	segs := append(append([]Segment{}, sc.Deflectors...), ramp)
+	p := sc.Ball
+	v := Vec{X: 0, Y: 0}
+	for i := 0; i < maxSteps; i++ {
+		v.Y += sc.Gravity * dt
+		np := Vec{X: p.X + v.X*dt, Y: p.Y + v.Y*dt}
+		for si, s := range segs {
+			bounce := rampBounce
+			if si < len(sc.Deflectors) {
+				bounce = deflBounce
+			}
+			if hit, n := crosses(p, np, s); hit {
+				v = reflectVel(v, n, bounce)
+				np = Vec{X: p.X + v.X*dt*0.5, Y: p.Y + v.Y*dt*0.5}
+				break
+			}
+		}
+		p = np
+		if p.X < 0 || p.X > bounds || p.Y > bounds {
+			return p
+		}
+	}
+	return p
 }
 
 // makeRamp builds a ramp segment centered at c with angle a and length len.
