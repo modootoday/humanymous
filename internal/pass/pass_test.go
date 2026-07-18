@@ -49,6 +49,30 @@ func TestSceneIsSolvable(t *testing.T) {
 	}
 }
 
+func TestNecessityHoldsAcrossSeeds(t *testing.T) {
+	// A wrong/absent ramp (a corner ramp the ball can never reach — above it, off to
+	// the side) must NEVER pass, at every difficulty, across many seeds. This is the
+	// anti-trivial-scene guarantee; a single failure is a generator regression.
+	triv := 0
+	for b := uint64(1); b <= 1500; b++ {
+		for diff := 0; diff <= 3; diff++ {
+			sid := "seed"
+			// vary the session id per bucket so scenes differ
+			sid = sid + string(rune('a'+int(b%26))) + string(rune('0'+diff))
+			if Verify(testKey, sid, b, b, diff, 96, 4, 0) {
+				triv++
+				if triv <= 3 {
+					sc := Generate(testKey, sid, b, diff)
+					t.Errorf("trivial scene: corner ramp passed sid=%s b=%d diff=%d cup=%v r=%.2f", sid, b, diff, sc.Cup, sc.CupR)
+				}
+			}
+		}
+	}
+	if triv > 0 {
+		t.Errorf("necessity violated in %d / 6000 scenes", triv)
+	}
+}
+
 func TestWrongPlacementFails(t *testing.T) {
 	// A ramp jammed into the top corner, far from any sensible path, must not pass.
 	if Verify(testKey, "s-a", 100, 100, 1, 96, 4, 0) {

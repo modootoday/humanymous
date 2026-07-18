@@ -122,92 +122,71 @@ func generate(masterKey []byte, sessionID string, bucket uint64, difficulty int)
 	}
 	seed := deriveSeed(masterKey, sessionID, bucket)
 	r := newRNG(seed)
-
-	sc := Scene{
-		Mechanic: MechanicPlacement,
-		Gravity:  r.f(9, 15),
-		Ball:     Vec{X: r.f(12, 30), Y: r.f(6, 16)},
-		CupR:     r.f(6.5, 8.5) - float64(difficulty)*0.9, // smaller cup = harder
-		RampLen:  r.f(16, 22),
-	}
-	if sc.CupR < 3.8 {
-		sc.CupR = 3.8
-	}
-	// 1..3 fixed deflectors in the mid-field, scaling with difficulty.
-	n := 1 + difficulty
-	if n > 3 {
-		n = 3
-	}
-	for i := 0; i < n; i++ {
-		cx, cy := r.f(35, 75), r.f(35, 65)
-		ang := r.f(-0.9, 0.9)
-		half := r.f(8, 13)
-		dx, dy := math.Cos(ang)*half, math.Sin(ang)*half
-		sc.Deflectors = append(sc.Deflectors, Segment{A: Vec{cx - dx, cy - dy}, B: Vec{cx + dx, cy + dy}})
-	}
-
-	// Place the cup where a hidden designed ramp sends the ball — AND require that
-	// ramp to be NECESSARY: without it (natural path) the ball must clearly miss the
-	// cup, so a wrong/absent ramp fails and the challenge cannot be passed trivially.
-	// farRamp is off-canvas, so it never intersects — it stands in for "no ramp".
 	farRamp := Segment{A: Vec{X: -30, Y: -30}, B: Vec{X: -30, Y: -29}}
-	natural := simLand(sc, farRamp)
-	// Keep the best (max-necessity) designed ramp as a guaranteed-solvable fallback:
-	// whatever ramp we pick, ITS landing is reachable by that same ramp.
-	var bestC Vec
-	var bestA, bestMargin float64
-	bestMargin = -1
-	for attempt := 0; attempt < 24; attempt++ {
-		c := Vec{X: r.f(28, 62), Y: r.f(38, 62)}
-		a := r.f(-0.8, 0.3)
-		land := simLand(sc, makeRamp(c, a, sc.RampLen))
-		if land.X < 6 || land.X > 94 || land.Y < 18 { // landed off the useful field
-			continue
+	fullCupR := r.f(6.5, 8.5) - float64(difficulty)*0.9 // smaller cup = harder
+	if fullCupR < 3.8 {
+		fullCupR = 3.8
+	}
+
+	// Outer re-roll: keep generating fresh scenes (ball + deflectors) until one admits
+	// a clean, NECESSARY, VISIBLE cup at full size — a scene whose natural (no-ramp)
+	// fall does not already pass through the target zone. Almost always succeeds on the
+	// first roll; the loop only exists for the rare bad geometry. Deterministic: Verify
+	// runs the same seed → same rolls → same scene.
+	var gScene Scene
+	var gCX, gCY, gA, gMargin float64
+	var gCup Vec
+	gMargin = -1
+	for outer := 0; outer < 24; outer++ {
+		sc := Scene{Mechanic: MechanicPlacement, Gravity: r.f(9, 15),
+			Ball: Vec{X: r.f(12, 30), Y: r.f(6, 16)}, CupR: fullCupR, RampLen: r.f(16, 22)}
+		n := 1 + difficulty
+		if n > 3 {
+			n = 3
 		}
-		margin := dist(natural, land)
-		if margin > bestMargin {
-			bestMargin, bestC, bestA = margin, c, a
+		for i := 0; i < n; i++ {
+			cx, cy, ang, half := r.f(35, 75), r.f(35, 65), r.f(-0.9, 0.9), r.f(8, 13)
+			dx, dy := math.Cos(ang)*half, math.Sin(ang)*half
+			sc.Deflectors = append(sc.Deflectors, Segment{A: Vec{cx - dx, cy - dy}, B: Vec{cx + dx, cy + dy}})
 		}
-		if margin > sc.CupR+3 { // the ramp changed the outcome enough — accept now
-			sc.Cup = land
-			return sc, c.X, c.Y, a
+		for attempt := 0; attempt < 40; attempt++ {
+			// The designed ramp goes DIRECTLY in the ball's fall path so it deflects it
+			// (otherwise the designed path == the natural path and the ramp isn't needed).
+			c := Vec{X: clampF(sc.Ball.X+r.f(-7, 12), 10, 90), Y: sc.Ball.Y + r.f(16, 40)}
+			a := r.f(-0.95, 0.6)
+			cup, okT := pickVisibleTarget(simPath(sc, makeRamp(c, a, sc.RampLen)))
+			if !okT {
+				continue
+			}
+			margin := pathMinDist(sc, farRamp, cup) // closest the no-ramp path gets to the cup
+			if margin > sc.CupR+2 {                 // clean, full-size, necessary — done
+				sc.Cup = cup
+				return sc, c.X, c.Y, a
+			}
+			if margin > gMargin { // remember the best across all rolls as a safety net
+				gMargin, gScene, gCX, gCY, gA, gCup = margin, sc, c.X, c.Y, a, cup
+			}
 		}
 	}
-	if bestMargin < 0 { // no valid designed landing at all (very rare) — gentle ramp
-		bestC = Vec{X: sc.Ball.X + 8, Y: sc.Ball.Y + 28}
-		bestA = 0.1
-		bestMargin = 8
+	// 24 rolls without a clean scene is astronomically rare. Use the best seen with the
+	// cup radius held STRICTLY below its necessity margin (a wrong ramp still misses).
+	sc := gScene
+	sc.Cup = gCup
+	if gMargin < 0.2 {
+		gMargin = 0.2
 	}
-	sc.Cup = simLand(sc, makeRamp(bestC, bestA, sc.RampLen)) // solvable by (bestC,bestA)
-	// Necessity by construction: the natural (no-ramp) path is bestMargin away from
-	// the cup, so shrinking the cup below bestMargin guarantees a wrong/absent ramp
-	// misses — no trivial pass. Clamp to a still-human-clearable minimum.
-	if want := bestMargin - 1; want < sc.CupR {
-		if want < 3.8 {
-			want = 3.8
-		}
-		sc.CupR = want
+	if cap := gMargin * 0.72; cap < sc.CupR {
+		sc.CupR = cap
 	}
-	return sc, bestC.X, bestC.Y, bestA
+	return sc, gCX, gCY, gA
 }
 
-func clampF(v, lo, hi float64) float64 {
-	if v < lo {
-		return lo
-	}
-	if v > hi {
-		return hi
-	}
-	return v
-}
-
-// simLand runs the ballistics WITHOUT cup capture and returns where the ball exits
-// (leaves the field or comes to the end of the step budget) — used at generation
-// time to decide where to put the cup and whether the ramp is necessary.
-func simLand(sc Scene, ramp Segment) Vec {
+// simPath runs the ballistics WITHOUT cup capture and returns the full trajectory.
+func simPath(sc Scene, ramp Segment) []Vec {
 	segs := append(append([]Segment{}, sc.Deflectors...), ramp)
 	p := sc.Ball
 	v := Vec{X: 0, Y: 0}
+	path := []Vec{p}
 	for i := 0; i < maxSteps; i++ {
 		v.Y += sc.Gravity * dt
 		np := Vec{X: p.X + v.X*dt, Y: p.Y + v.Y*dt}
@@ -223,11 +202,56 @@ func simLand(sc Scene, ramp Segment) Vec {
 			}
 		}
 		p = np
+		path = append(path, p)
 		if p.X < 0 || p.X > bounds || p.Y > bounds {
-			return p
+			break
 		}
 	}
-	return p
+	return path
+}
+
+// pickVisibleTarget returns the DEEPEST point of the trajectory that sits in the
+// visible target band (inset from every edge, lower-middle), so the cup renders
+// clearly and reads as a place the ball travels TO. False if the path never enters it.
+func pickVisibleTarget(path []Vec) (Vec, bool) {
+	var best Vec
+	found := false
+	for i, p := range path {
+		if i < 4 { // skip the release neighborhood
+			continue
+		}
+		if p.X >= 14 && p.X <= 86 && p.Y >= 52 && p.Y <= 86 {
+			best = p // keep the last (deepest along the path) qualifying point
+			found = true
+		}
+	}
+	return best, found
+}
+
+// pathMinDist returns the minimum distance from the ball's path (under ramp) to
+// target, measured continuously over each step segment (not just sampled points).
+func pathMinDist(sc Scene, ramp Segment, target Vec) float64 {
+	path := simPath(sc, ramp)
+	min := 1e9
+	for i := 1; i < len(path); i++ {
+		if d := distToSeg(target, path[i-1], path[i]); d < min {
+			min = d
+		}
+	}
+	if len(path) == 1 {
+		return dist(path[0], target)
+	}
+	return min
+}
+
+func clampF(v, lo, hi float64) float64 {
+	if v < lo {
+		return lo
+	}
+	if v > hi {
+		return hi
+	}
+	return v
 }
 
 // makeRamp builds a ramp segment centered at c with angle a and length len.
@@ -266,8 +290,8 @@ func simulate(sc Scene, ramp Segment) (Vec, bool) {
 	for i := 0; i < maxSteps; i++ {
 		v.Y += sc.Gravity * dt
 		np := Vec{X: p.X + v.X*dt, Y: p.Y + v.Y*dt}
-		// cup capture (check along the step)
-		if dist(np, sc.Cup) <= sc.CupR || dist(p, sc.Cup) <= sc.CupR {
+		// cup capture — measured along the whole step so a fast ball can't tunnel over.
+		if distToSeg(sc.Cup, p, np) <= sc.CupR {
 			return sc.Cup, true
 		}
 		// reflect off the first segment the path crosses
@@ -294,6 +318,25 @@ func simulate(sc Scene, ramp Segment) (Vec, bool) {
 }
 
 func dist(a, b Vec) float64 { return math.Hypot(a.X-b.X, a.Y-b.Y) }
+
+// distToSeg is the distance from point p to the segment a→b. Used for cup capture
+// and necessity so a fast ball can't tunnel over a small cup between steps, and the
+// no-ramp path is measured continuously (not just at sampled points).
+func distToSeg(p, a, b Vec) float64 {
+	ab := sub(b, a)
+	ab2 := ab.X*ab.X + ab.Y*ab.Y
+	if ab2 == 0 {
+		return dist(p, a)
+	}
+	ap := sub(p, a)
+	t := (ap.X*ab.X + ap.Y*ab.Y) / ab2
+	if t < 0 {
+		t = 0
+	} else if t > 1 {
+		t = 1
+	}
+	return dist(p, Vec{X: a.X + t*ab.X, Y: a.Y + t*ab.Y})
+}
 
 // crosses reports whether the segment p->q intersects wall, and the wall's unit normal.
 func crosses(p, q Vec, wall Segment) (bool, Vec) {
