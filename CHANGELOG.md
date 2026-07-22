@@ -7,7 +7,11 @@ are called out in a dedicated **Security** subsection with upgrade urgency.
 
 ## [Unreleased]
 
-Pre-release hardening pass driven by a multi-reviewer Red/Blue + judge code audit
+_Nothing yet — see [0.1.0]._
+
+## [0.1.0] - 2026-07-23
+
+First tagged release. Pre-release hardening pass driven by a multi-reviewer Red/Blue + judge code audit
 (see [`docs/reference/security-audit.md`](docs/reference/security-audit.md)). Release
 readiness moved from *GO-with-fixes* toward *GO* by clearing the confirmed blockers.
 

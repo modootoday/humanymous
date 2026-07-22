@@ -34,6 +34,11 @@ services:
     ports:
       - "443:8444"                            # public edge on 443 (ACME needs 443)
       - "127.0.0.1:8445:8445"                 # admin console — host-loopback only
+      # ADMIN-PLANE REACHABILITY (audit SEC-1): `-admin-addr :8445` binds every CONTAINER
+      # interface, so ANY container sharing origin-net can reach gate:8445 — the host
+      # loopback mapping restricts HOST access, not intra-network access. Either front the
+      # admin plane with mTLS/SSO, or attach the gate to a DEDICATED internal admin network
+      # and treat origin-net as trusted. Do not run untrusted workloads on origin-net.
     volumes:
       - hmn-acme:/acme-cache
       - hmn-data:/data

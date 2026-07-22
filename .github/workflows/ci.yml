@@ -27,6 +27,10 @@ jobs:
       - run: go build ./...
       - run: go vet ./cmd/... ./internal/...
       - run: go test ./...
+      # PLAN-08 backlog: fail if a module compiled into the shipped binaries is missing
+      # from the third-party licence index (prevents licence drift).
+      - name: licence-index drift check
+        run: bash scripts/check-licenses.sh
       # PLAN-07 R6: the WASM client-side detection (cmd/wasm + internal/detect) is only
       # built for GOOS=js — without this step it can break the build with a green CI.
       - name: wasm build + vet (GOOS=js)
@@ -97,6 +101,13 @@ jobs:
             --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c | tee swarm.log
           grep -q 'l5.correlation.proxy_rotation' swarm.log \
             || (echo 'FAIL: proxy_rotation never fired across subnets' && exit 1)
+
+      # PLAN-08 backlog: stand up every opt-in feature overlay in Docker and run its
+      # consistency assert (shared state, PROXY-proto, the three token verifiers, Redis
+      # hardening, durable ClickHouse projection) — so the new packages are validated on
+      # real infra and a fresh-clone / config break is caught in CI.
+      - name: PLAN-08 feature overlays (Docker consistency)
+        run: bash scripts/ci-overlays.sh
 
       - name: Upload run artifacts
         if: always()
