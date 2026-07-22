@@ -67,3 +67,14 @@ func TestReadReplyScanArray(t *testing.T) {
 		t.Errorf("scan keys: got %+v", keys)
 	}
 }
+
+// PLAN-08 backlog: an oversized declared length must be rejected, not allocated — a
+// compromised coordinator otherwise triggers an OOM/panic via a huge $ or * header.
+func TestReadReplyRejectsOversizedLengths(t *testing.T) {
+	if _, err := readReply(bufio.NewReader(strings.NewReader("$999999999\r\n"))); err == nil {
+		t.Error("oversized bulk length must be rejected")
+	}
+	if _, err := readReply(bufio.NewReader(strings.NewReader("*999999999\r\n"))); err == nil {
+		t.Error("oversized array length must be rejected")
+	}
+}

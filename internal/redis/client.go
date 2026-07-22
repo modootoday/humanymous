@@ -28,11 +28,21 @@ type Client struct {
 	addr      string
 	timeout   time.Duration
 	cooldown  time.Duration
+	user      string // optional ACL username (AUTH)
+	pass      string // optional password (AUTH); sent on connect
 	mu        sync.Mutex
 	conn      net.Conn
 	br        *bufio.Reader
 	openUntil time.Time // breaker: fail fast until this time (zero = closed)
 }
+
+// Reply-size caps so a malicious or compromised coordinator cannot force an
+// unbounded allocation (OOM / panic DoS) via an oversized declared length. Larger
+// than any value humanymous stores; SCAN arrays stay well under the element cap.
+const (
+	maxBulkLen  = 32 << 20 // 32 MiB per bulk string
+	maxArrayLen = 1 << 20  // 1,048,576 array elements
+)
 
 // ErrBreakerOpen is returned while the circuit breaker is open (recent failure);
 // the caller should serve from its local fallback without waiting.
@@ -42,6 +52,14 @@ var ErrBreakerOpen = errors.New("redis: circuit breaker open")
 // on the first command and re-established after any I/O error.
 func New(addr string) *Client {
 	return &Client{addr: addr, timeout: 3 * time.Second, cooldown: 2 * time.Second}
+}
+
+// SetAuth configures an optional AUTH credential sent on every (re)connect. An empty
+// password disables AUTH. user may be empty for a legacy password-only AUTH.
+func (c *Client) SetAuth(user, pass string) {
+	c.mu.Lock()
+	c.user, c.pass = user, pass
+	c.mu.Unlock()
 }
 
 // Reply is a parsed RESP2 reply. Exactly one shape is populated: Int (integer),
@@ -104,6 +122,24 @@ func (c *Client) ensure() error {
 		return err
 	}
 	c.conn, c.br = conn, bufio.NewReader(conn)
+	// Authenticate the fresh connection if a credential is configured. A failed AUTH
+	// drops the connection and surfaces the error (the caller then serves local).
+	if c.pass != "" {
+		args := []string{"AUTH", c.pass}
+		if c.user != "" {
+			args = []string{"AUTH", c.user, c.pass}
+		}
+		_ = c.conn.SetWriteDeadline(time.Now().Add(c.timeout))
+		if _, err := c.conn.Write(respCommand(args)); err != nil {
+			c.drop()
+			return err
+		}
+		_ = c.conn.SetReadDeadline(time.Now().Add(c.timeout))
+		if _, err := readReply(c.br); err != nil { // RESP error (e.g. WRONGPASS) → err
+			c.drop()
+			return err
+		}
+	}
 	return nil
 }
 
@@ -140,6 +176,9 @@ func readReply(br *bufio.Reader) (Reply, error) {
 		if n < 0 {
 			return Reply{Nil: true}, nil
 		}
+		if n > maxBulkLen {
+			return Reply{}, fmt.Errorf("redis: bulk length %d exceeds cap %d", n, maxBulkLen)
+		}
 		buf := make([]byte, n+2) // payload + CRLF
 		if _, err := io.ReadFull(br, buf); err != nil {
 			return Reply{}, err
@@ -152,6 +191,9 @@ func readReply(br *bufio.Reader) (Reply, error) {
 		}
 		if n < 0 {
 			return Reply{Nil: true}, nil
+		}
+		if n > maxArrayLen {
+			return Reply{}, fmt.Errorf("redis: array length %d exceeds cap %d", n, maxArrayLen)
 		}
 		arr := make([]Reply, n)
 		for i := 0; i < n; i++ {

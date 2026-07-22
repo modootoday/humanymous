@@ -181,9 +181,21 @@ func main() {
 	var sharedBans gate.BanLedger // nil => NewServer builds an in-memory BanStore
 	if *redisAddr != "" {
 		rc := redis.New(*redisAddr)
-		verdicts = gate.NewRedisVerdictLedger(rc, 30*time.Minute)
-		sharedBans = gate.NewRedisBanLedger(rc, gate.DefaultRateWindow, gate.DefaultRateSoft, gate.DefaultRateHard)
-		log.Printf("shared state: Redis %s (bans + sticky verdicts propagate fleet-wide, PLAN-08 R1)", *redisAddr)
+		// PLAN-08 backlog — Redis hardening: optional AUTH (HMN_REDIS_PASSWORD /
+		// HMN_REDIS_USER) and a fleet-shared HMAC key (HMN_REDIS_KEY) that authenticates
+		// stored verdict/ban values, so a compromised coordinator that can write Redis
+		// cannot FORGE an ALLOW or inject a ban. All optional (empty = unchanged).
+		if pw := os.Getenv("HMN_REDIS_PASSWORD"); pw != "" {
+			rc.SetAuth(os.Getenv("HMN_REDIS_USER"), pw)
+		}
+		redisKey := []byte(os.Getenv("HMN_REDIS_KEY"))
+		verdicts = gate.NewRedisVerdictLedger(rc, 30*time.Minute, redisKey)
+		sharedBans = gate.NewRedisBanLedger(rc, gate.DefaultRateWindow, gate.DefaultRateSoft, gate.DefaultRateHard, redisKey)
+		mode := "unsigned"
+		if len(redisKey) > 0 {
+			mode = "HMAC-signed values"
+		}
+		log.Printf("shared state: Redis %s (%s; bans + sticky verdicts propagate fleet-wide, PLAN-08 R1)", *redisAddr, mode)
 	}
 
 	tokenKey := make([]byte, 32)

@@ -1,0 +1,27 @@
+# PLAN-08 backlog — Redis coordination-channel hardening proof. Redis requires a
+# password (AUTH), and the gate authenticates stored verdict/ban VALUES with a
+# fleet-shared HMAC key so a coordinator that can write Redis cannot FORGE state.
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--requirepass", "demopass"]
+    networks: [web]
+
+  gate:
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "http://origin:80"
+      - "-node"
+      - "gate-1"
+      - "-redis"
+      - "redis:6379"
+    environment:
+      HMN_ADMIN_TOKENS: "auditor:e2e-auditor-token,operator:e2e-operator-token,approver:e2e-approver-token,dpo:e2e-dpo-token"
+      HMN_ALLOW_DEV_TOKENS: "1"
+      HMN_REDIS_PASSWORD: "demopass"   # AUTH to the coordinator
+      HMN_REDIS_KEY: "fleet-shared-hmac-secret"  # authenticates stored values
+    depends_on: [origin, redis]
