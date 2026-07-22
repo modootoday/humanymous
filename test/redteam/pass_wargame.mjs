@@ -121,7 +121,10 @@ function pointerProof(nw, variant = 0) {
   return {
     bucket: nw.bucket, challengeNonce: nw.challengeNonce, offsets: solve(nw.challenge), trusted: true,
     moves: 12, coalesced: 31, pathLen: 143 + variant,
-    durations: [10, 18, 9, 22, 15, 12 + variant * 0.1, 27, 11], rawT,
+    // Separate variants by a WHOLE ms so distinct traces stay distinct after the
+    // server quantizes the digest to 1 ms (anti-replay CWE-294 fix); a sub-ms variant
+    // would collide with another trace and be wrongly flagged as a replay.
+    durations: [10, 18, 9, 22, 15, 12 + variant, 27, 11], rawT,
     pressures: [], keys: 0, keyDurs: [],
   };
 }

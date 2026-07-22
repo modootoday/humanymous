@@ -24,7 +24,8 @@ COPY . .
 # then cross-compile the server for the target arch.
 RUN GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/ \
  && cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" web/js/wasm_exec.js
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -trimpath -ldflags="-s -w" -o /out/server ./cmd/server/
+ARG VERSION=dev
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o /out/server ./cmd/server/
 
 # Pre-create the ACME cache dir owned by the non-root runtime user so autocert
 # can persist issued certs + the account key across restarts (mount a volume here).

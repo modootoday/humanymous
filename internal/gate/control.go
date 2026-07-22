@@ -159,7 +159,9 @@ func (c *ControlPlane) ensureSession(w http.ResponseWriter, r *http.Request) str
 		return sid
 	}
 	b := make([]byte, 16)
-	_, _ = rand.Read(b)
+	if _, err := rand.Read(b); err != nil {
+		panic("crypto/rand read failed: " + err.Error()) // fail closed (audit LOW-2)
+	}
 	sid := hex.EncodeToString(b)
 	http.SetCookie(w, &http.Cookie{Name: sessionCookie, Value: sid, Path: "/", HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
 	return sid

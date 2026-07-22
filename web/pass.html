@@ -6,7 +6,7 @@
 <title>humanymous Pass</title>
 <link rel="icon" href="/static/img/favicon.svg">
 <style>
-  :root{--bg:#0d1117;--panel:#161b22;--panel2:#11161d;--border:#232b36;--ink:#c9d1d9;--ink2:#eaf1f7;--muted:#8b949e;--faint:#5c6773;--accent:#35d0ba;--allow:#3fb950;--challenge:#d9a441;--deny:#f0556a;--mono:ui-monospace,Cascadia Code,Consolas,monospace;--sans:ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif}
+  :root{--bg:#0d1117;--panel:#161b22;--panel2:#11161d;--border:#232b36;--ink:#c9d1d9;--ink2:#eaf1f7;--muted:#8b949e;--faint:#9aa3ad;--accent:#35d0ba;--allow:#3fb950;--challenge:#d9a441;--deny:#f0556a;--mono:ui-monospace,Cascadia Code,Consolas,monospace;--sans:ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif}
   *{box-sizing:border-box}
   body{margin:0;background:radial-gradient(900px 500px at 50% -10%,#12303030,transparent 60%),var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55}
   .wrap{max-width:640px;margin:0 auto;padding:34px 20px 80px}
@@ -27,6 +27,9 @@
   .cell{width:40px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:21px;color:var(--muted)}
   .cell.key{color:var(--ink2);font-weight:700}
   .reel.solved .cell.key{color:var(--allow)}
+  .reel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .taps{display:flex;gap:8px;justify-content:center;margin-top:12px}
+  .taps button{min-width:44px;min-height:36px;font-size:15px}
   .hint{font-family:var(--mono);font-size:12px;color:var(--faint);text-align:center;margin-top:8px}
   .row2{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
   button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:9px;border:1px solid var(--border);padding:9px 16px;cursor:pointer;background:var(--panel);color:var(--ink2)}
@@ -50,7 +53,12 @@
     <div class="reels" id="reels" tabindex="0" role="group" aria-label="Alignment puzzle. Up and Down select a row; Left and Right slide it; Home snaps its key to the slot.">
       <div class="slot" id="slot"></div>
     </div>
-    <p class="hint">Tab in · ↑ ↓ pick a row · ← → slide · Home snap · or drag any row</p>
+    <div class="taps" role="group" aria-label="Slide the selected row without dragging">
+      <button type="button" id="tapL" aria-label="Slide the selected row left">◀</button>
+      <button type="button" id="tapSnap" aria-label="Snap the selected row's key into the slot">⊙ snap</button>
+      <button type="button" id="tapR" aria-label="Slide the selected row right">▶</button>
+    </div>
+    <p class="hint">Tap a row, then ◀ ▶ ⊙ · or Tab in · ↑ ↓ pick a row · ← → slide · Home snap · or drag</p>
     <div class="row2">
       <button id="submit" class="go">Submit</button>
       <button id="newp">New puzzle</button>
@@ -126,7 +134,10 @@ function onKey(){ const t=performance.now(); cap.keys++; if(cap.lastK){const dt=
 function build(){
   [...reelsEl.querySelectorAll('.reel')].forEach(n=>n.remove());
   for(let r=0;r<3;r++){
-    const el=document.createElement('div'); el.className='reel'; el.setAttribute('role','slider'); el.setAttribute('aria-label','Row '+(r+1));
+    const el=document.createElement('div'); el.className='reel';
+    el.setAttribute('role','slider'); el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label','Row '+(r+1)+': slide so its key reaches the centre slot');
+    el.setAttribute('aria-valuemin','0'); el.setAttribute('aria-valuemax',String(N-1));
     for(let i=0;i<N;i++){ const c=document.createElement('span'); c.className='cell'; el.appendChild(c); }
     reelsEl.appendChild(el); wireRow(el,r);
   }
@@ -155,18 +166,37 @@ function render(){
     for(let i=0;i<N;i++){ const cchar=row.chars[((i-off)%N+N*4)%N]; const isKey=((row.keyIndex+off)%N)===i;
       cells[i].textContent=cchar; cells[i].className='cell'+(isKey?' key':''); }
     const on=((row.keyIndex+off)%N)===CENTER; el.classList.toggle('solved',on);
+    el.setAttribute('aria-valuenow',String((row.keyIndex+off+N*4)%N));
     el.setAttribute('aria-valuetext','key '+row.chars[row.keyIndex]+(on?' in slot':(' '+keyDist(r)))); });
   slot.classList.toggle('ok', offsets.every((o,r)=>((ch.rows[r].keyIndex+o)%N)===CENTER));
 }
 function keyDist(r){ let d=((ch.rows[r].keyIndex+offsets[r])%N)-CENTER; return d<0?(-d)+' left':(d===0?'in slot':d+' right'); }
 function shift(r,dir){ offsets[r]=(offsets[r]+dir+N)%N; render(); }
+function snapRow(r){ offsets[r]=((CENTER-ch.rows[r].keyIndex)%N+N)%N; render(); }
+function focusRow(i){ const rows=reelsEl.querySelectorAll('.reel'); i=Math.max(0,Math.min(rows.length-1,i)); if(rows[i]){ rows[i].focus(); setActive(i); announce(); } }
 function announce(){ live.textContent='Active row '+(activeRow+1)+'. '+ch.rows.map((row,r)=>'Row '+(r+1)+' key '+row.chars[row.keyIndex]+' '+keyDist(r)).join('. '); }
 
 function wireRow(el,r){ let dragging=false,startX=0,startOff=0,cw=40;
   el.addEventListener('pointerdown',e=>{ if(solved)return; dragging=true; setActive(r); reelsEl.focus(); el.classList.add('drag'); el.setPointerCapture(e.pointerId); startX=e.clientX; startOff=offsets[r]; cw=cellW(); onMove(e); });
   el.addEventListener('pointermove',e=>{ if(!dragging)return; onMove(e); const d=Math.round((e.clientX-startX)/cw); offsets[r]=((startOff+d)%N+N)%N; render(); });
   el.addEventListener('pointerup',()=>{ dragging=false; el.classList.remove('drag'); announce(); });
+  // Each row is a real, focusable slider (WCAG 4.1.2): Tab to it and operate it directly.
+  el.addEventListener('focus',()=>setActive(r));
+  el.addEventListener('keydown',e=>{ if(solved||!ch)return;
+    if(e.key==='ArrowLeft'){ setActive(r); shift(r,-1); onKey(); e.preventDefault(); e.stopPropagation(); announce(); }
+    else if(e.key==='ArrowRight'){ setActive(r); shift(r,1); onKey(); e.preventDefault(); e.stopPropagation(); announce(); }
+    else if(e.key==='Home'){ setActive(r); snapRow(r); onKey(); e.preventDefault(); e.stopPropagation(); announce(); }
+    else if(e.key==='ArrowUp'){ focusRow(r-1); e.preventDefault(); e.stopPropagation(); }
+    else if(e.key==='ArrowDown'){ focusRow(r+1); e.preventDefault(); e.stopPropagation(); }
+  });
 }
+// On-screen tap controls (WCAG 2.5.7): a pointer-only user who cannot drag operates the
+// selected row by tapping. Each tap is a trusted discrete input, counted like a keypress
+// so the real-event proof is satisfied without any drag path.
+function tapMove(dir){ if(solved||!ch)return; shift(activeRow,dir); onKey(); announce(); }
+document.getElementById('tapL').addEventListener('click',()=>tapMove(-1));
+document.getElementById('tapR').addEventListener('click',()=>tapMove(1));
+document.getElementById('tapSnap').addEventListener('click',()=>{ if(solved||!ch)return; snapRow(activeRow); onKey(); announce(); });
 reelsEl.addEventListener('keydown',e=>{ if(solved||!ch)return;
   if(e.key==='ArrowUp'){ setActive(activeRow-1); e.preventDefault(); announce(); }
   else if(e.key==='ArrowDown'){ setActive(activeRow+1); e.preventDefault(); announce(); }

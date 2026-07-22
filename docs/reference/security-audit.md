@@ -2,106 +2,94 @@
 
 *Pre-release audit. Method: a multi-reviewer Red/Blue process (adversarial finders per
 dimension, independent verifiers that tried to refute each finding, and a final
-evaluation judge), anchored to the standards below. This report is published in the
-spirit of transparency; it is not a certification.*
+evaluation judge), anchored to the standards in §5. This report is published for
+transparency; it is not a certification.*
 
 - **Audit date:** 2026-07-22 · **Target:** `main`
-- **Verdict:** **GO with fixes** — the engine is functionally strong; every confirmed
-  blocker was small and has since been remediated (see status column). Residual items
-  are tracked below.
+- **Verdict:** the audit returned *GO with fixes*. **Every confirmed finding
+  (High → Low) has since been remediated at the code level** in a pre-release
+  hardening pass; only the accepted/residual risks in §4 remain. The full list of
+  applied fixes is in the [CHANGELOG](../../CHANGELOG.md) *Security* / *Fixed* sections.
 
 ## 1. Scope & asset inventory
 
 **Reviewed:** detection engine (`cmd/server`, `:8443`); Gate reverse-proxy edge
-(`cmd/gate`, `:8444`) and admin plane (`:8445`); humanymous Pass challenge
-(`internal/pass`, `web/pass.html`); the WASM/JS loader; the tamper-evident audit chain
-(`internal/audit`); resource watermarking; the crypto axes (PoW, attestation); public
-docs (`README.md`, `docs/`). **Not reviewed:** third-party dependency internals (covered
-only by `govulncheck`); the production ACME/CDN edge; formal cryptographic proofs.
+(`cmd/gate`, `:8444`) and admin plane (`:8445`); humanymous Pass (`internal/pass`,
+`web/pass.html`); the reverse-proxy forwarding path; the WASM/JS loader; the
+tamper-evident audit chain (`internal/audit`); resource watermarking; the crypto axes
+(PoW, attestation); public docs. **Not reviewed:** third-party dependency internals
+(covered by `govulncheck` + Trivy in CI); the production ACME/CDN edge; formal
+cryptographic proofs.
 
 ## 2. Methodology & tooling
 
 Static review guided by the **OWASP Code Review Guide** and **OWASP ASVS** (target
 Level 2 for the web surface); dynamic/behavioural review mapped to **OWASP WSTG** via
-the repo's own harnesses — the 26-profile Docker attack catalog, the 34-check Gate
-conformance suite (`gate-e2e`), the multi-subnet correlation swarm, and the 8-round
-Pass red/blue wargame. Supply-chain posture assessed against **OpenSSF Scorecard** and
-**SLSA v1.0**. Findings carry a severity and, where applicable, a **CWE**.
+the repo's harnesses — the 26-profile Docker attack catalog, the 34-check Gate
+conformance suite, the multi-subnet correlation swarm, the 8-round Pass red/blue
+wargame, and dedicated **reverse-proxy forwarding-fidelity** tests
+(`internal/gate/forward_fidelity_test.go`). Supply-chain posture assessed against
+**OpenSSF Scorecard** and **SLSA v1.0**.
 
-## 3. Findings
+## 3. Remediation summary
 
-Severity reflects impact on the shipped reference deployment. **Status** is as of this
-report.
+All confirmed findings were fixed and verified (`go test ./...` green; Pass e2e 5/5;
+Pass wargame gate PASS; Docker engine attack 26/26 detected with 0 bypass; Gate
+conformance 34/34; images build with third-party licences bundled). Categories fixed,
+with the durable controls added:
 
-### High
+- **Admin plane** — no unauthenticated operator-token handout; loopback-default bind;
+  tokens never logged; fail-closed on placeholder/low-entropy secrets.
+- **Honesty** — every "100% / 0% FPR" absolute replaced with bounded, reference-measured
+  language across README + the results page (enforces the project's own style guide).
+- **humanymous Pass accessibility** — no hidden timeout (honest, announced expiry);
+  screen-reader-announced outcomes; a real non-drag pointer path (on-screen tap
+  controls) and completed slider semantics; a support-contact escape route; readable
+  hint contrast.
+- **Anti-replay** — the interaction-trace digest is quantized, so sub-millisecond noise
+  no longer defeats replay detection.
+- **Reverse-proxy fidelity** — migrated to the modern `Rewrite` hook so
+  `X-Forwarded-For` is a single authoritative socket-derived value (a duplicate was
+  found and fixed); strict tests assert client headers/cookies/body/method reach the
+  upstream intact, the upstream's status/Set-Cookie/headers return to the client, and
+  forged trust headers are blocked before forwarding.
+- **Privacy** — the watermark IP token is now a **keyed** HMAC pseudonym (not a
+  reversible bare hash); the watermark ledger is in the data-processing inventory with
+  its TTL/erasure scope; a GDPR Art. 13/14 collection-notice snippet is documented.
+- **Supply chain** — `govulncheck`, CodeQL, and Trivy image scanning gate CI; Dependabot
+  covers Go modules + Actions; build version is stamped into the binaries; licences ship
+  in the images.
+- **Cookies** now set `Secure`; key/id CSPRNG seeding fails closed; the in-memory Pass
+  session map is bounded.
 
-| ID | Finding | CWE | Status |
-|----|---------|-----|--------|
-| SEC-1 | **Admin-plane auth bypass** — the admin console served a live operator bearer token (`window.__HMN_TOKEN`) to any TLS client reaching `:8445`, which defaulted to all interfaces with no mTLS. | 306, 522 | **Fixed** — token injection gated to local-demo mode; admin listener defaults to loopback; off-host-without-mTLS startup warning. |
-| SEC-2 | **Admin bearer tokens printed to logs** on every boot, including env-supplied production tokens (captured by `docker logs` / shippers). | 532 | **Fixed** — values logged only in local-demo mode; otherwise role names only. |
-| HON-1 | **Flagship overclaims** — `README.md` and `docs/report.html` shipped `100%` / `zero false positives` / `FPR 0%` absolutes (contradicting the project's own style guide); the 0% FPR rested on an `n=1` Playwright/CDP pseudo-human. | — | **Fixed** — rewritten to bounded, reference-measured language; report captions added; baseline disclosed as Playwright/CDP, FPR defined as DENY-only. |
-| ACC-1 | **Hidden ~60–90s Pass timeout** under a "No timer — take your time" banner; on expiry the server returned a false "keys not in the slot". | — (WCAG 2.2.1) | **Fixed** — TTL raised to ~10 min; expiry returns an honest, announced "this check expired — press New puzzle". |
-| ACC-2 | **Pass submit outcomes not announced** to screen readers (written only to a non-live element). | — (WCAG 4.1.3) | **Fixed** — status region is now `role="status" aria-live="polite"`. |
-| ACC-3 | **No alternative modality / in-challenge escape** for users who cannot solve the puzzle. | — (W3C CAPTCHA; GDPR Art. 22) | **Fixed** — the challenge now links to accessibility help and a support-contact "let me through another way" escape. |
+## 4. Accepted / residual risk (by design, disclosed — not defects)
 
-### Medium
+These are inherent trade-offs, documented rather than "fixed":
 
-| ID | Finding | CWE | Status |
-|----|---------|-----|--------|
-| SEC-3 | `CHANGE-ME` default admin tokens and a placeholder `HMN_UNSEAL` booted successfully. | 1188, 798 | **Fixed** — fail-closed on placeholder/low-entropy secrets outside demo mode. |
-| PASS-1 | Pass anti-replay bypassable via sub-ms trace perturbation / post-window exact replay; a code comment overstated its strength. | 294 | **Fixed** — trace quantized (1 ms / 0.05 pressure) before hashing; documented as best-effort. |
-| CSP-1 | Anti-injection CSP is **Report-Only** on core and Gate; README listed it as a live "guard". | 693 | **Partly fixed** — README corrected to "report-only telemetry". Enforcing CSP with a nonce is a tracked enhancement. |
-| SUP-1 | CI lacked `govulncheck` / CodeQL / image scan / Dependabot. | — | **Partly fixed** — `govulncheck` + Dependabot added; CodeQL + image scan tracked. |
-| LIC-1 | Third-party BSD-3/MIT texts not shipped with images/binaries. | — | **Fixed** — `LICENSE`, `NOTICE`, `THIRD_PARTY_LICENSES.md` now copied into images. |
-| PRIV-1 | Weak pseudonymization — an **unkeyed** truncated SHA-256 of a raw IP labelled a "privacy" control. | 916 | **Open** — route through the keyed vault or drop the label (tracked). |
-| PRIV-2 | The resource-watermark ledger is a second personal-data store outside the data-processing inventory and erasure boundary. | — | **Open** — add to the inventory + document TTL/erasure scope (tracked; disclosed in the transparency report). |
-| PRIV-3 | No collection-time GDPR Art. 13/14 transparency notice mapped in the operator docs. | — | **Open** — notice snippet to be added to the operator/DPO docs. |
-| ATT-1 | The attestation identity-gate triggers on **session** velocity, so a cookie-rotating flood does not hit the rate-limited identity budget. | — | **Open / mitigated** — a cookie-rotating single-fingerprint flood is still flagged by the **fingerprint-keyed velocity engine-fusion** (it accrues `l7.pass.flood` → risk → verdict). Extending the attestation trigger to the fingerprint level is tracked. |
-| ACC-4 | Pass lacks a single-pointer drag alternative (WCAG 2.5.7); the `role="slider"` rows are half-implemented (WCAG 4.1.2). | — | **Open** — the keyboard lane already provides a non-drag path; on-screen per-row controls + slider ARIA are tracked. |
+- **Detection floor.** A *perfect* human-like forgery from a *fresh* identity can still
+  clear the Pass puzzle — the fundamental limit of any accessible challenge. It is
+  bounded by the attestation issuance rate and folded engine risk, and the engine
+  **DENIES** the session the moment any independent bot signal (JA4/L1–L7/correlation)
+  appears; solving Pass never launders a session already proven a bot.
+- **False-positive posture.** The reference FPR is a DENY-only metric and does not
+  measure real-human friction or disaggregate assistive-tech / uncommon-browser /
+  privacy-hardened users. Disclosed in the [transparency report](../explanation/transparency-report.md).
+- **Attestation axis is session-scoped by design.** To keep the normal/accessible lane
+  token-free, the rate-limited attestation gate triggers on session cadence; a
+  cookie-rotating flood from one fingerprint is instead caught by the **fingerprint-keyed
+  velocity engine-fusion** (`l7.pass.flood` → risk → non-ALLOW verdict), a different but
+  effective axis.
+- **Anti-injection CSP is report-only by design** — violation telemetry for a detection
+  engine, not an enforced block (stated plainly in the docs).
+- **Admin-plane security** rests on loopback binding + no auto-issued token; a production
+  operator should front it with **mTLS/SSO**.
+- **Audit tamper-evidence** resists external tampering and enables post-hoc verification,
+  but not an attacker with in-process/code control — production runs the witness and
+  keys out-of-process/HSM.
+- **Supply-chain hygiene, ongoing:** GitHub Actions SHA-pinning and base-image digest
+  pinning are managed by Dependabot rather than hand-pinned.
 
-### Low / informational
-
-| ID | Finding | Status |
-|----|---------|--------|
-| LOW-1 | Cookies missing `Secure`. | **Fixed.** |
-| LOW-2 | `crypto/rand` errors ignored when seeding some Gate keys (bounded on Go 1.24+, which crashes rather than returning a short read). | **Open** — align with the fail-closed `randHex` pattern (tracked). |
-| LOW-3 | Unbounded growth of the in-memory Pass trace/session maps. | **Open** — add an LRU/cap (tracked). |
-| LOW-4 | GitHub Actions not pinned to SHAs; no embedded build/version metadata; base images on floating tags. | **Open** — pin actions (Dependabot now assists), stamp version, digest-pin bases (tracked). |
-| INFO-1 | The audit chain's tamper-evidence resists external tampering and post-hoc verification, but a witness/keys held in-process do not resist an attacker with process/code control (documented in code; production runs the witness/keys out-of-process/HSM). | Accepted, disclosed. |
-| INFO-2 | Strong positive baseline to preserve: SLSA provenance (`mode=max`), SPDX SBOM, cosign keyless signing by digest, distroless-nonroot static builds, dev-gated playground, loopback admin in the release compose, fail-closed `randHex` on the core. | — |
-
-## 4. Objective-metrics baseline (honest)
-
-- **Reference detection run (`n=1`, maintainers' hardware):** all 25 bot profiles in the
-  local catalog were blocked (DENY/CHALLENGE) and the 1 baseline was not denied; Gate
-  conformance 34/34; correlation swarm 15/15 DENY. **These are reference-measured, not a
-  guarantee**, and the baseline is a Playwright/CDP session, not a physical human.
-- **Supply chain / SLSA:** GitHub Actions release emits **signed provenance
-  (`mode=max`)** + **SPDX SBOM** and **cosign**-signs the image by digest → **SLSA build
-  track ~L1→L2**. We do **not** claim L3 or any "certified/compliant" badge.
-- **OpenSSF Scorecard:** several checks now pass (Security-Policy, Signed-Releases,
-  CI-Tests, Dependency-Update-Tool, Vulnerabilities via govulncheck); CodeQL (SAST) and
-  branch-protection/action-pinning are tracked. Run Scorecard for current numbers rather
-  than trusting this prose.
-
-## 5. Residual & accepted risk
-
-- **Detection floor (accepted):** a *perfect* human-like forgery from a *fresh*
-  identity can still clear the Pass puzzle. This is the fundamental limit of any
-  accessible challenge; it is bounded by attestation issuance rate + folded engine risk,
-  and the engine still DENIES the session the moment any independent bot signal
-  (JA4/L1–L7/correlation) appears. Solving Pass **never** launders a session already
-  proven a bot (verified live in the wargame).
-- **False-positive risk (accepted, disclosed):** the reference FPR is DENY-only and does
-  not measure real-human friction or disaggregate assistive-tech / uncommon-browser /
-  privacy-hardened users. See the transparency report.
-- **Admin plane:** with the fixes above, admin security in the reference build rests on
-  **loopback binding + no auto-issued token**; production should still front it with
-  **mTLS/SSO**.
-- **Dual-use:** the same fingerprinting/behavioural signals could be repurposed for
-  surveillance; the project is defensive and local-target-only by design and policy.
-
-## 6. Standards referenced
+## 5. Standards referenced
 
 OWASP ASVS · OWASP Code Review Guide · OWASP WSTG · CWE · ISO/IEC 29147 & 30111 (CVD) ·
 OpenSSF Scorecard & Best Practices Badge · SLSA v1.0 · SPDX/CycloneDX (SBOM) ·

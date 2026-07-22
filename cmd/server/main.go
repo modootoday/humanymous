@@ -16,6 +16,10 @@ import (
 	"golang.org/x/net/http2"
 )
 
+// version is stamped at release via -ldflags "-X main.version=<tag>-<sha>-<date>"
+// so a running engine self-reports which build it is (audit LOW-4).
+var version = "dev"
+
 func main() {
 	addr := flag.String("addr", ":8443", "listen address")
 	webDir := flag.String("web", "web", "web asset directory")
@@ -77,7 +81,7 @@ func main() {
 	if len(domains) > 0 {
 		log.Printf("humanymous Blue server on %s (rit=%v) — ACME TLS for %v (cache %q)", *addr, *ritOn, domains, *acmeCache)
 	} else {
-		log.Printf("humanymous Blue server on https://localhost%s (rit=%v) — self-signed TLS", *addr, *ritOn)
+		log.Printf("humanymous Blue server %s on https://localhost%s (rit=%v) — self-signed TLS", version, *addr, *ritOn)
 	}
 
 	// Custom accept loop: we terminate TLS ourselves so we can peek the HTTP/2

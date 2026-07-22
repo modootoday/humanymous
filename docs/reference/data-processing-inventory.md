@@ -23,6 +23,25 @@ Where Gate is operated by a third party on your behalf, that operator is your Ar
 
 ---
 
+## 1b. Collection-time transparency notice (GDPR Art. 13/14)
+
+Gate itself does **not** discharge your **duty to inform** — that is a controller
+obligation you must satisfy at collection time (privacy policy + a layered notice). Use
+this as a starting snippet and adapt it to your deployment:
+
+> **Automated security screening.** To protect this service from automated abuse we
+> analyse technical characteristics of your connection and browser (IP address, TLS and
+> HTTP fingerprints, User-Agent and client hints, a device fingerprint, and interaction
+> **timings** — never the keys you type). The legal basis is our legitimate interest in
+> the security of our network and service (GDPR Art. 6(1)(f); a legitimate-interest
+> assessment is on file). Data is used **only** for security, is not sold or used for
+> advertising, and is retained per our retention schedule. You can request access or
+> erasure, and contest an automated decision, at **support@modoo.today**. See our full
+> privacy policy for details.
+
+Publish the concrete retention periods, your identity as controller, and your DPO/contact
+alongside this notice.
+
 ## 2. The observe-versus-store distinction (core of the inventory)
 
 The single most important fact for a RoPA entry is that **the identifiers Gate observes are not the data Gate stores.**
@@ -50,10 +69,18 @@ Detection-layer references (L1–L7) are defined in [How Gate sees a request](..
 | 8 | Behavioral signals (mouse, keystroke, scroll dynamics; `isTrusted`) | L4 | Human-interaction evidence; automation cadence detection | Event-derived features, in memory | Pseudonymized / aggregated in the record |
 | 9 | Session id | Control plane | Subject key that binds a subject's pseudonyms together | Session identifier, in memory | Acts as the **subject key**; see section 4 |
 | 10 | Verdict, risk score, contributing signal ids, route/host | L7 / edge | The decision record itself (audit evidence) | Computed at the edge | Recorded in the audit log |
+| 11 | Resource-watermark ledger (session id + **keyed** IP pseudonym) | L5 (resource/watermark, SoT-08) | Per-session forensic leak-tracing of served resources | Session id + HMAC(masterKey, IP) token, in memory | **In-memory only, ~24h TTL; self-expires — NOT persisted to the audit log and OUT of the crypto-shred erasure scope (it is not resolvable after TTL).** |
 
 > **Note:** Rows 1–8 are read to compute a verdict and are not persisted in raw form. What persists is the pseudonym plus the decision metadata in row 10. The decision metadata references internal signal ids (for example `x.ua_vs_ja4`); these are internal signal names and are never surfaced to the end user, who sees only plain language and an incident handle.
 
-> **TODO(verify):** Whether the behavioral signals in row 8 (keystroke and mouse dynamics in particular) constitute biometric data under Article 4(14) / Article 9 for your deployment is a controller legal determination. The facts available here do not state that Gate classifies these as special-category data or applies Article 9 handling to them. Confirm with counsel and record the determination in your RoPA.
+> **Biometric-data scope (design position).** humanymous records **timings only** for the
+> behavioral signals in row 8 — inter-event intervals for pointer/keystroke/scroll and the
+> `isTrusted` flag. **Key *values* (which keys were pressed) are never captured or stored.**
+> Timing dynamics are not used for unique biometric *identification* of a natural person;
+> they are used as automation-cadence evidence and are stored pseudonymized/aggregated.
+> Whether timing dynamics nonetheless meet Article 4(14)/Article 9 "biometric data" for your
+> specific deployment remains a **controller determination** — record it in your RoPA. The
+> reference build applies no Article 9 special-category handling by default.
 
 ---
 

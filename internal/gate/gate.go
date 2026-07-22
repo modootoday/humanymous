@@ -147,20 +147,25 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts *Verdi
 		incidentLimiter: abuse.NewLimiter(time.Minute, 60, 120), // >120 incident lookups/min = trawl
 		nowFn:     time.Now,
 	}
-	// Response hook: force identity upstream (done in Director), inject into HTML.
+	// Response hook: inject into HTML (identity upstream is forced in Rewrite).
 	rp.ModifyResponse = s.modifyResponse
-	base := rp.Director
-	rp.Director = func(r *http.Request) {
-		base(r)
-		// Header hygiene (SoT-19 step 3 / HR-27b): inbound trust headers were
-		// already stripped at ingress; re-derive from the socket here.
-		stripInbound(r)
-		r.Header.Set("Accept-Encoding", "identity")                 // SoT-20 §1: no recompress
-		r.Header.Set("X-Forwarded-Host", r.Host)                    // set by us, post-strip
-		r.Header.Set("X-Forwarded-For", clientIP(r))                // authoritative source
-		// Origin cloaking (SoT-23 §1, HR-24): the origin accepts ONLY proxied
-		// traffic carrying this rotating token; direct hits lack it.
-		r.Header.Set("X-Hmny-Origin-Auth", originAuth(s.originKey, s.epoch))
+	// Use the modern Rewrite hook (Go 1.20+) instead of Director. A Director-based
+	// proxy ALSO auto-appends the peer IP to X-Forwarded-For, which doubled the value
+	// ("ip, ip") next to the one we set. Rewrite + SetXForwarded writes a SINGLE
+	// authoritative X-Forwarded-For / -Host / -Proto derived from the inbound socket;
+	// a client cannot forge them (inbound trust headers are stripped, and the spoof
+	// gate blocks forgeries before we ever forward). Setting Rewrite requires clearing
+	// the Director that NewSingleHostReverseProxy installed.
+	rp.Director = nil
+	rp.Rewrite = func(pr *httputil.ProxyRequest) {
+		pr.SetURL(target)        // route to upstream (scheme/host + path join)
+		pr.Out.Host = pr.In.Host // preserve the client Host (origin reads X-Forwarded-Host)
+		stripInbound(pr.Out)     // drop any client-forged internal/trust headers
+		pr.SetXForwarded()       // authoritative X-Forwarded-For (socket IP) + Host + Proto
+		pr.Out.Header.Set("Accept-Encoding", "identity") // SoT-20 §1: no upstream recompress
+		// Origin cloaking (SoT-23 §1, HR-24): the origin accepts ONLY proxied traffic
+		// carrying this rotating token; a direct hit to the origin lacks it.
+		pr.Out.Header.Set("X-Hmny-Origin-Auth", originAuth(s.originKey, s.epoch))
 	}
 	return s, nil
 }

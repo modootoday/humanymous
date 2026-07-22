@@ -33,6 +33,10 @@ import (
 	"github.com/modootoday/humanymous/internal/scoring"
 )
 
+// version is stamped at release via -ldflags "-X main.version=<tag>-<sha>-<date>"
+// so a running Gate self-reports which build it is (audit LOW-4).
+var version = "dev"
+
 func main() {
 	addr := flag.String("addr", ":8444", "public edge listen address")
 	adminAddr := flag.String("admin-addr", "127.0.0.1:8445", "SEPARATE admin listener (auth-gated; SoT-28 WS1). Defaults to LOOPBACK — front it with mTLS/SSO before exposing off-host (audit SEC-1).")
@@ -60,7 +64,7 @@ func main() {
 	originKey := []byte(*originKeyHex)
 	if len(originKey) == 0 {
 		originKey = make([]byte, 32)
-		_, _ = rand.Read(originKey)
+		mustRand(originKey)
 	}
 
 	// Audit log FIRST (SoT-18): nothing enforces until decisions have a home.
@@ -87,7 +91,7 @@ func main() {
 		}
 	} else {
 		hmacKey = make([]byte, 32)
-		_, _ = rand.Read(hmacKey)
+		mustRand(hmacKey)
 		vault = audit.NewVault()
 	}
 	vault.SetStretch(true) // KDF-stretch pseudonyms (SoT-28 WS8 brute-force resistance)
@@ -145,7 +149,7 @@ func main() {
 	verdicts := gate.NewVerdictStore(30 * time.Minute)
 
 	tokenKey := make([]byte, 32)
-	_, _ = rand.Read(tokenKey)
+	mustRand(tokenKey)
 	// Shared rotating token epoch (SoT-28 WS6): the control plane mints under the
 	// current epoch, the edge accepts current+previous, and a timer rotates.
 	epochs := gate.NewEpochManager()
@@ -308,8 +312,16 @@ func main() {
 	} else if *tlsCert != "" && *tlsKey != "" {
 		tlsMode = "BYO cert"
 	}
-	log.Printf("humanymous Gate on https://localhost%s -> %s (monitor=%v, tls=%s)", *addr, *upstream, *monitor, tlsMode)
+	log.Printf("humanymous Gate %s on https://localhost%s -> %s (monitor=%v, tls=%s)", version, *addr, *upstream, *monitor, tlsMode)
 	log.Fatal(pubSrv.ListenAndServeTLS("", ""))
+}
+
+// mustRand fills b with CSPRNG bytes and fails CLOSED on error rather than seeding a
+// key/id with predictable/zero material (SoT-31 R4 / audit LOW-2).
+func mustRand(b []byte) {
+	if _, err := rand.Read(b); err != nil {
+		panic("crypto/rand read failed: " + err.Error())
+	}
 }
 
 // randHex returns n random bytes hex-encoded (dev token generation).

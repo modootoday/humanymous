@@ -144,12 +144,24 @@ func itoaSmall(n int) string {
 	return string(rune('0' + n))
 }
 
+// maxPassSessions caps the in-memory per-session Pass map (audit LOW-3: bound the
+// resource so a churn of fresh session ids cannot grow it without limit).
+const maxPassSessions = 50000
+
 func (p *passStore) get(sid string) *passSession {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	if len(p.m) > maxPassSessions { // lazy sweep of stale sessions under pressure
+		cut := time.Now().Add(-30 * time.Minute)
+		for k, s := range p.m {
+			if s.issuedAt.Before(cut) {
+				delete(p.m, k)
+			}
+		}
+	}
 	s := p.m[sid]
 	if s == nil {
-		s = &passSession{}
+		s = &passSession{issuedAt: time.Now()} // stamp creation so a fresh session isn't swept
 		p.m[sid] = s
 	}
 	return s

@@ -36,6 +36,19 @@ readiness moved from *GO-with-fixes* toward *GO* by clearing the confirmed block
   (Go modules + GitHub Actions). *(audit — OpenSSF Scorecard baseline.)*
 - **License compliance:** `LICENSE`, `NOTICE`, and a new `THIRD_PARTY_LICENSES.md`
   index now ship inside the release container images. *(audit — BSD-3/MIT redistribution.)*
+- **Reverse-proxy forwarding fidelity:** migrated the Gate proxy to the modern
+  `Rewrite` hook so `X-Forwarded-For` is a single authoritative socket-derived value
+  (a duplicated value was found and fixed). Added strict tests asserting client
+  headers/cookies/body/method reach the upstream intact, the upstream's status /
+  Set-Cookie / headers return to the client, and forged trust headers
+  (`X-Forwarded-For`, `X-Real-Ip`, `X-Hmny-Origin-Auth`, `Forwarded`, `Cf-Connecting-Ip`)
+  are blocked before forwarding.
+- **Keyed IP pseudonym:** the watermark ledger's IP token is now an HMAC pseudonym, not
+  a reversible bare SHA-256. *(audit PRIV-1, CWE-916.)*
+- **CSPRNG seeding fails closed** when generating Gate keys/session ids. *(audit LOW-2.)*
+- **Bounded** the in-memory Pass session map. *(audit LOW-3.)*
+- **Supply chain (more):** added CodeQL (SAST) and Trivy image scanning to CI; binaries
+  are stamped with a build `version`. *(audit SUP-1 / LOW-4.)*
 
 ### Added
 
@@ -67,13 +80,20 @@ readiness moved from *GO-with-fixes* toward *GO* by clearing the confirmed block
   and an expiry now returns an honest, screen-reader-announced message instead of a
   false "keys not in the slot" (WCAG 2.2.1); submit outcomes are announced to screen
   readers via an `aria-live` status region (WCAG 4.1.3). *(audit ACC-1, ACC-2, ACC-3.)*
+- **humanymous Pass accessibility (more):** on-screen tap controls give pointer-only
+  users a non-drag path (WCAG 2.5.7); each row is a fully-described, focusable slider
+  with `aria-valuenow/min/max` (WCAG 4.1.2); hint-text contrast raised (WCAG 1.4.3).
+  *(audit ACC-4.)*
+- **Privacy docs:** the resource-watermark ledger is now in the data-processing
+  inventory with its TTL/erasure scope, a GDPR Art. 13/14 collection-notice snippet was
+  added, and the biometric-scope note resolved to a definitive design position.
+  *(audit PRIV-2, PRIV-3.)*
 
-### Known / residual (tracked, not yet closed)
+### Accepted / residual (by design — see the audit report §4)
 
-See the [security audit report](docs/reference/security-audit.md) for the full list:
-weak IP pseudonymization label, the watermark ledger's inclusion in the data-processing
-inventory, a collection-time GDPR notice, CodeQL + image scanning, minor Pass WCAG items
-(single-pointer drag alternative, slider role), the attestation gate's fingerprint-level
-trigger, and pinning GitHub Actions to SHAs. The honest detection floor (a perfect
-human-like forgery from a fresh identity can still clear the Pass puzzle) is an accepted,
-documented limitation, not a bug.
+The remaining items are documented trade-offs, not open defects: the honest detection
+floor (a perfect fresh-identity forgery can still clear the puzzle), the DENY-only FPR
+posture, the session-scoped attestation axis (cookie-rotation is caught by the
+fingerprint-velocity engine-fusion instead), the report-only anti-injection CSP, the
+loopback-plus-mTLS admin posture, the in-process audit tamper-evidence scope, and
+Dependabot-managed Action/base-image pinning.

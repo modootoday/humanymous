@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"net/http"
@@ -34,11 +35,15 @@ func dayBucket() uint64 {
 	return uint64(time.Now().Unix() / 86400)
 }
 
-// trafficIPHash returns a short hash of the client IP for the ledger (privacy:
-// store a hash, not the raw IP).
-func trafficIPHash(r *http.Request) string {
-	sum := sha256.Sum256([]byte(clientIP(r)))
-	return hex.EncodeToString(sum[:6])
+// trafficIPHash returns a KEYED pseudonym of the client IP for the watermark ledger
+// (audit PRIV-1). An unkeyed hash of an IPv4 is trivially reversible (the whole address
+// space fits a rainbow table); HMAC with the server master key makes the token a real
+// pseudonym that cannot be reversed without the key.
+func (a *app) trafficIPHash(r *http.Request) string {
+	m := hmac.New(sha256.New, a.masterKey)
+	m.Write([]byte("ipwm|"))
+	m.Write([]byte(clientIP(r)))
+	return hex.EncodeToString(m.Sum(nil)[:8])
 }
 
 // ja4Stable returns the permutation-invariant a_b portion of a connection's JA4

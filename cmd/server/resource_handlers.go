@@ -71,7 +71,7 @@ func (a *app) handleResource(w http.ResponseWriter, r *http.Request) {
 		out = src
 		channel = "none"
 	}
-	a.ledger.Put(watermark.Record{Payload: p, MIME: mimeType, Channel: channel, IssuedAt: time.Now(), IPHash: trafficIPHash(r)})
+	a.ledger.Put(watermark.Record{Payload: p, MIME: mimeType, Channel: channel, IssuedAt: time.Now(), IPHash: a.trafficIPHash(r)})
 
 	w.Header().Set("Content-Type", mimeType)
 	w.Header().Set("Cache-Control", "no-store") // per-session unique
