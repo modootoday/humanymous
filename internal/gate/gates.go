@@ -108,15 +108,22 @@ func (s *Server) verdictTokenGate(w http.ResponseWriter, r *http.Request, sid st
 	}
 	reason := verifyVerdictToken(s.tokenKey, c.Value, tokenBind(r), sid, s.nowFn(), s.tokenEpochs.Accepted()...)
 	if reason != tokenOK {
-		rec := audit.Record{
+		// A token that does not verify (stale key after a restart, wrong epoch, expired,
+		// a fingerprint that legitimately changed, or an actual forgery) must NOT be a
+		// terminal deny — that 403s a legitimate returning human whose token was minted
+		// under a previous key/node, which is the DEFAULT single-node restart case and any
+		// non-sticky fleet node (deep-review ship-blocker; violates the no-lockout / low-FPR
+		// hard constraint). Clear the stale cookie and fall through to full scoring, which
+		// re-mints a fresh token on ALLOW. A real bot is caught on its own fingerprint by
+		// scoring; a stolen token confers no fast-path benefit. Audited, but not a deny.
+		http.SetCookie(w, &http.Cookie{Name: verdictCookie, Value: "", Path: "/", MaxAge: -1, HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
+		s.sink.Emit(audit.Record{
 			EventType: audit.EventTokenBindingMismatch,
 			Actor:     audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
-			TenantID:  s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictDeny),
-			Rules: []string{"HR-28"}, Action: "block", Mode: "enforce",
-			FailReason: "verdict token " + string(reason), KeyID: "k1",
-		}
-		s.sink.EmitAndAct(rec, func() { s.deny(w) })
-		return true
+			TenantID:  s.cfg.NodeID, RouteClass: routeClass(r), Mode: "enforce",
+			FailReason: "verdict token " + string(reason) + " — cleared, re-scoring", KeyID: "k1",
+		})
+		return false
 	}
 	if s.enforcing(route) {
 		rec := audit.Record{
@@ -158,6 +165,16 @@ func (s *Server) agentAuthGate(w http.ResponseWriter, r *http.Request, sid strin
 	v, keyid := verifyAgent(r.Host, r.Header.Get("Signature-Input"), r.Header.Get("Signature"), s.agentKeys, s.nowFn())
 	switch v {
 	case agentForged:
+		if !s.enforcing(route) {
+			// Monitor/shadow mode enforces NOTHING (SoT invariant): log the forgery but
+			// do not deny — otherwise a shadow deployment would silently block (deep-review).
+			s.sink.Emit(audit.Record{
+				EventType: audit.EventAgentForged, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+				TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Mode: "monitor",
+				FailReason: "forged Web Bot Auth signature for allowlisted keyid " + keyid + " (monitor: not blocked)", KeyID: "k1",
+			})
+			return false
+		}
 		rec := audit.Record{
 			EventType: audit.EventAgentForged, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
 			TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictDeny),

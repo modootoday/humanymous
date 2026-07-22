@@ -20,7 +20,15 @@ import (
 // assertion carries a counter that does not advance). A valid, fresh assertion from a
 // known credential is a trust-upgrade; anything else is a NO-OP (never a deny). This
 // is a modest, returning-user trust signal — the blueprint rated it low value against
-// anonymous first-time bots — but the verifier is complete and correct.
+// anonymous first-time bots.
+//
+// Anti-replay caveat (deep-review): this verifier is header-presented, WITHOUT a
+// server-issued per-request challenge, so replay protection rests ENTIRELY on the
+// WebAuthn signature counter. A credential that reports a zero/non-incrementing counter
+// (many modern passkeys legitimately do) cannot be replay-protected here, so such an
+// assertion is treated as INVALID (no upgrade) rather than trusted — the fail-safe
+// direction for an optional, never-denying signal. Wire a server challenge before
+// relying on this for anything stronger than a returning-user hint.
 
 // WebAuthnRegistry maps a credential id to its ES256 public key + last seen counter.
 type WebAuthnRegistry struct {
@@ -147,13 +155,15 @@ func (r *WebAuthnRegistry) verify(header string) (webauthnVerdict, string) {
 	if !ecdsa.VerifyASN1(pub, signed[:], sig) {
 		return webauthnInvalid, a.CredentialID
 	}
-	// WebAuthn native anti-replay: the signature counter must advance.
+	// WebAuthn native anti-replay: the signature counter must advance. A zero counter is
+	// un-replay-protectable without a server challenge (see the caveat above), so it is
+	// refused rather than upgraded — the fail-safe choice for an optional signal.
 	counter := binary.BigEndian.Uint32(authData[33:37])
 	r.mu.Lock()
 	last := r.count[a.CredentialID]
-	if counter != 0 && counter <= last {
+	if counter == 0 || counter <= last {
 		r.mu.Unlock()
-		return webauthnInvalid, a.CredentialID // replay (counter did not advance)
+		return webauthnInvalid, a.CredentialID // zero counter or replay (did not advance)
 	}
 	r.count[a.CredentialID] = counter
 	r.mu.Unlock()

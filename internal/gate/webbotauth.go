@@ -116,6 +116,12 @@ func verifyAgent(host, sigInput, sig string, dir KeyDirectory, now time.Time) (a
 		if p.expires < nowU-skew {
 			return agentVerifiedUnknown, p.keyid // expired
 		}
+		// Bound the REMAINING lifetime regardless of `created`: a far-future `expires`
+		// with no `created` would otherwise be replayable for as long as it names
+		// (deep-review). Also bound the declared span when `created` is present.
+		if p.expires-nowU > maxLifetime {
+			return agentVerifiedUnknown, p.keyid // over-long remaining lifetime
+		}
 		if p.created != 0 && p.expires-p.created > maxLifetime {
 			return agentVerifiedUnknown, p.keyid // over-long declared lifetime
 		}

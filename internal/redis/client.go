@@ -28,8 +28,9 @@ type Client struct {
 	addr      string
 	timeout   time.Duration
 	cooldown  time.Duration
-	user      string // optional ACL username (AUTH)
-	pass      string // optional password (AUTH); sent on connect
+	slow      time.Duration // latency budget: a command slower than this trips the breaker
+	user      string        // optional ACL username (AUTH)
+	pass      string        // optional password (AUTH); sent on connect
 	mu        sync.Mutex
 	conn      net.Conn
 	br        *bufio.Reader
@@ -42,6 +43,9 @@ type Client struct {
 const (
 	maxBulkLen  = 32 << 20 // 32 MiB per bulk string
 	maxArrayLen = 1 << 20  // 1,048,576 array elements
+	maxDepth    = 8        // nesting cap: our deepest reply is SCAN (depth 2); a
+	// compromised coordinator otherwise nests arrays arbitrarily (*1\r\n…) to drive an
+	// unrecoverable stack-overflow throw (the size caps guard WIDTH only).
 )
 
 // ErrBreakerOpen is returned while the circuit breaker is open (recent failure);
@@ -51,7 +55,7 @@ var ErrBreakerOpen = errors.New("redis: circuit breaker open")
 // New returns a client for addr (host:port). The connection is established lazily
 // on the first command and re-established after any I/O error.
 func New(addr string) *Client {
-	return &Client{addr: addr, timeout: 3 * time.Second, cooldown: 2 * time.Second}
+	return &Client{addr: addr, timeout: 3 * time.Second, cooldown: 2 * time.Second, slow: 750 * time.Millisecond}
 }
 
 // SetAuth configures an optional AUTH credential sent on every (re)connect. An empty
@@ -90,10 +94,20 @@ func (c *Client) Do(args ...string) (Reply, error) {
 		return Reply{}, c.trip(err)
 	}
 	_ = c.conn.SetReadDeadline(time.Now().Add(c.timeout))
-	rep, err := readReply(c.br)
+	rep, err := readReply(c.br, 0)
 	if err != nil {
 		c.drop()
 		return Reply{}, c.trip(err)
+	}
+	// Latency budget: a command that SUCCEEDS but is slow (a degraded coordinator, not a
+	// dead one) would otherwise be invisible to the breaker, so every request keeps paying
+	// that latency serialized behind the single connection's mutex — a wedge (deep-review).
+	// Trip the breaker on slow-success too: the reply is still returned, but the next
+	// cooldown window fast-fails to the caller's local view instead of stalling. The conn
+	// stays up (no drop) so a transient blip self-heals after the cooldown.
+	if c.slow > 0 && time.Since(now) > c.slow {
+		c.openUntil = time.Now().Add(c.cooldown)
+		return rep, nil
 	}
 	c.openUntil = time.Time{} // success: close the breaker
 	return rep, nil
@@ -135,7 +149,7 @@ func (c *Client) ensure() error {
 			return err
 		}
 		_ = c.conn.SetReadDeadline(time.Now().Add(c.timeout))
-		if _, err := readReply(c.br); err != nil { // RESP error (e.g. WRONGPASS) → err
+		if _, err := readReply(c.br, 0); err != nil { // RESP error (e.g. WRONGPASS) → err
 			c.drop()
 			return err
 		}
@@ -150,8 +164,11 @@ func (c *Client) drop() {
 	}
 }
 
-// readReply parses one RESP2 reply from br.
-func readReply(br *bufio.Reader) (Reply, error) {
+// readReply parses one RESP2 reply from br, refusing nesting past maxDepth.
+func readReply(br *bufio.Reader, depth int) (Reply, error) {
+	if depth > maxDepth {
+		return Reply{}, fmt.Errorf("redis: reply nesting exceeds cap %d", maxDepth)
+	}
 	line, err := br.ReadString('\n')
 	if err != nil {
 		return Reply{}, err
@@ -197,7 +214,7 @@ func readReply(br *bufio.Reader) (Reply, error) {
 		}
 		arr := make([]Reply, n)
 		for i := 0; i < n; i++ {
-			if arr[i], err = readReply(br); err != nil {
+			if arr[i], err = readReply(br, depth+1); err != nil {
 				return Reply{}, err
 			}
 		}

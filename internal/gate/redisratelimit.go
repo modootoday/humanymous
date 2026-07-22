@@ -65,5 +65,11 @@ func (l *RedisRateLimiter) Observe(key string, now time.Time) int {
 // Level classifies a rolling count using the shared thresholds.
 func (l *RedisRateLimiter) Level(count int) int { return l.local.Level(count) }
 
+// GC sweeps the local fallback limiter (used during a Redis outage). Without it,
+// BanStore.GC's type-assertion silently skips this limiter and its per-key map grows
+// unbounded during an outage under flood — the reverse of the GC ticker's intent
+// (deep-review finding). Redis expires its own ZSETs via PEXPIRE.
+func (l *RedisRateLimiter) GC(now time.Time) { l.local.GC(now) }
+
 // Compile-time proof the shared limiter satisfies the seam.
 var _ RateLimiter = (*RedisRateLimiter)(nil)

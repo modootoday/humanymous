@@ -36,11 +36,11 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 
 | Flag | Default | Description + trust caveat |
 | --- | --- | --- |
-| `-redis` | `""` (single-node in-memory) | Redis `host:port` for **shared** ban + sticky-verdict + rate-limit state across a Gate fleet (PLAN-08 R1). **Caveat:** treat Redis as a trusted, network-isolated component — there is no AUTH/TLS or value-signing yet, so a compromised coordinator could forge state. Outage degrades each node to its local view (no lockout). |
+| `-redis` | `""` (single-node in-memory) | Redis `host:port` for **shared** ban + sticky-verdict + rate-limit state across a Gate fleet (PLAN-08 R1). Set `HMN_REDIS_KEY` (fleet-shared secret, ≥16 bytes) to **key-bind** stored values — a compromised coordinator then cannot forge, relocate, or roll back a verdict/ban (freshness is re-checked on read); it can only *withhold*, which degrades each node to its local view (no lockout). Set `HMN_REDIS_PASSWORD` (+ optional `HMN_REDIS_USER`) for AUTH. **Caveat:** without `HMN_REDIS_KEY` the channel is UNSIGNED (Gate logs a loud WARNING) — still treat Redis as a network-isolated, trusted component. |
 | `-trusted-proxies` | `""` (disabled) | Comma-separated CIDRs of L4 balancers allowed to send a PROXY-protocol-v2 header (PLAN-08 R4). **Caveat:** set this to your balancers' addresses ONLY — never a broad range like `0.0.0.0/0`, or any client could spoof its source IP. The Gate still terminates TLS (JA3/JA4 unaffected). |
 | `-agent-keys` | `""` (disabled) | PEM/allowlist of trusted **Web Bot Auth** (RFC 9421) keys; a valid signature is a trust-upgrade, a forgery of a listed key is denied (PLAN-08 R3). |
-| `-pat-issuers` | `""` (disabled) | PEM of trusted **Privacy Pass** PAT issuer public keys; a valid token is a trust-upgrade (PLAN-08 R2). **Caveat:** no double-spend/expiry cache yet — do not rely on single-use semantics. |
-| `-webauthn-creds` | `""` (disabled) | Allowlist of registered **WebAuthn** credentials; a valid, counter-fresh assertion is a trust-upgrade (PLAN-08 R2). **Caveat:** replay is bounded only by the signature counter — no per-request challenge/origin binding yet. |
+| `-pat-issuers` | `""` (disabled) | PEM of trusted **Privacy Pass** PAT issuer public keys; a valid token is a trust-upgrade (PLAN-08 R2). Double-spend is bounded by an in-memory nonce cache (10-min TTL, amortized sweep, capped set — fail-safe to *no upgrade* at saturation). **Caveat:** the cache is per-node and non-durable, so single-use holds within a node's window, not fleet-wide. |
+| `-webauthn-creds` | `""` (disabled) | Allowlist of registered **WebAuthn** credentials; a valid, counter-advancing assertion is a trust-upgrade (PLAN-08 R2). **Caveat:** replay is bounded only by the signature counter (a zero/non-incrementing counter is refused, not trusted) — there is no per-request server challenge, so treat this as a returning-user hint, not strong possession proof. Origin/RP-ID binding is available via config. |
 | `-audit-redis` / `-audit-clickhouse` | `""` (off) | Project the audit stream to Redis Streams (Tier 1) / ClickHouse (Tier 2). The WAL remains the durability authority; projections drop-and-count under backpressure. |
 | `-anomaly-shadow` | `false` | Enable the **log-only** streaming-anomaly observer (PLAN-08 R5). Strictly observational — never affects the verdict. |
 
@@ -52,6 +52,9 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 |----------|---------------|-----------------|
 | `HMN_UNSEAL` | `-keystore` is set | Passphrase used to seal and open the keystore. Boot fails if `-keystore` is set and this is unset. |
 | `HMN_ADMIN_TOKENS` | Optional (dev) | Deterministic dev admin tokens. Format: `auditor:tok,operator:tok,approver:tok,dpo:tok`. If unset, random tokens are generated per boot and printed at startup. |
+| `HMN_REDIS_KEY` | Recommended with `-redis` | Fleet-shared secret (≥16 bytes; a demo/placeholder value is rejected at boot) that key-binds shared verdict/ban values. Unset ⇒ unsigned channel + a loud startup WARNING. |
+| `HMN_REDIS_PASSWORD` / `HMN_REDIS_USER` | Optional with `-redis` | Redis AUTH credential sent on every (re)connect. User may be empty for legacy password-only AUTH. |
+| `HMN_TOKEN_KEY` | Recommended for a fleet | Hex (≥16 bytes) verdict-token HMAC key shared across nodes and restarts, so a returning human's trust token stays valid fleet-wide. Unset ⇒ per-boot random key; a token minted elsewhere simply falls through to re-scoring (never a deny), and `-redis` mode logs a WARNING advising you to set it. |
 
 ---
 

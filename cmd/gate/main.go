@@ -14,6 +14,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/hex"
 	"flag"
 	"log"
 	"math/big"
@@ -188,24 +189,47 @@ func main() {
 	if *redisAddr != "" {
 		rc := redis.New(*redisAddr)
 		// PLAN-08 backlog — Redis hardening: optional AUTH (HMN_REDIS_PASSWORD /
-		// HMN_REDIS_USER) and a fleet-shared HMAC key (HMN_REDIS_KEY) that authenticates
-		// stored verdict/ban values, so a compromised coordinator that can write Redis
-		// cannot FORGE an ALLOW or inject a ban. All optional (empty = unchanged).
+		// HMN_REDIS_USER) and a fleet-shared HMAC key (HMN_REDIS_KEY) that KEY-BINDS stored
+		// verdict/ban values, so a compromised coordinator that can write Redis cannot
+		// forge, relocate, or roll back an ALLOW or a ban (it lacks the key; freshness is
+		// re-checked on read). It can still WITHHOLD (availability), which degrades to the
+		// local view. Values are UNSIGNED unless HMN_REDIS_KEY is set.
 		if pw := os.Getenv("HMN_REDIS_PASSWORD"); pw != "" {
 			rc.SetAuth(os.Getenv("HMN_REDIS_USER"), pw)
 		}
 		redisKey := []byte(os.Getenv("HMN_REDIS_KEY"))
+		if len(redisKey) == 0 {
+			log.Printf("WARNING: -redis set WITHOUT HMN_REDIS_KEY — the shared verdict/ban channel is UNSIGNED; a weak-ACL or on-path Redis can inject ALLOW/DENY/ban state. Set HMN_REDIS_KEY (>=16 bytes, secret) AND HMN_REDIS_PASSWORD, and isolate Redis on a trusted network.")
+		} else if len(redisKey) < 16 || string(redisKey) == "fleet-shared-hmac-secret" {
+			log.Fatalf("HMN_REDIS_KEY must be a secret of at least 16 bytes (and not a demo/placeholder value)")
+		}
 		verdicts = gate.NewRedisVerdictLedger(rc, 30*time.Minute, redisKey)
 		sharedBans = gate.NewRedisBanLedger(rc, gate.DefaultRateWindow, gate.DefaultRateSoft, gate.DefaultRateHard, redisKey)
 		mode := "unsigned"
 		if len(redisKey) > 0 {
-			mode = "HMAC-signed values"
+			mode = "key-bound HMAC values"
 		}
 		log.Printf("shared state: Redis %s (%s; bans + sticky verdicts propagate fleet-wide, PLAN-08 R1)", *redisAddr, mode)
 	}
 
+	// Verdict-token HMAC key. By default it is per-boot random (single node). For a
+	// FLEET (or to keep tokens valid across restarts) set HMN_TOKEN_KEY (hex, >=32 chars)
+	// so every node signs/verifies the same tokens (deep-review). Without it a token
+	// minted on one node/boot simply fails to verify elsewhere and the request falls
+	// through to re-scoring (no deny) — correct but it loses the cross-node fast-path.
 	tokenKey := make([]byte, 32)
-	mustRand(tokenKey)
+	if tk := os.Getenv("HMN_TOKEN_KEY"); tk != "" {
+		b, err := hex.DecodeString(tk)
+		if err != nil || len(b) < 16 {
+			log.Fatalf("HMN_TOKEN_KEY must be hex of at least 16 bytes")
+		}
+		tokenKey = b
+	} else {
+		mustRand(tokenKey)
+		if *redisAddr != "" {
+			log.Printf("WARNING: -redis (fleet mode) set WITHOUT HMN_TOKEN_KEY — verdict tokens are per-node, so a returning human is re-scored (not fast-pathed) on other nodes. Set a shared HMN_TOKEN_KEY across the fleet.")
+		}
+	}
 	// Shared rotating token epoch (SoT-28 WS6): the control plane mints under the
 	// current epoch, the edge accepts current+previous, and a timer rotates.
 	epochs := gate.NewEpochManager()

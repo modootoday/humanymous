@@ -37,11 +37,17 @@ const patTokenType = 0x0002
 // PATVerifier holds the trusted issuer keys, indexed by token_key_id (the SHA-256 of
 // the issuer's SubjectPublicKeyInfo DER, as carried in the token).
 type PATVerifier struct {
-	issuers map[string]*rsa.PublicKey // hex(token_key_id) -> issuer public key
-	mu      sync.Mutex
-	seen    map[string]time.Time // token nonce -> first-seen (anti-double-spend, PLAN-08 backlog)
-	ttl     time.Duration
+	issuers   map[string]*rsa.PublicKey // hex(token_key_id) -> issuer public key
+	mu        sync.Mutex
+	seen      map[string]time.Time // token nonce -> first-seen (anti-double-spend, PLAN-08 backlog)
+	ttl       time.Duration
+	lastSweep time.Time // amortize the expiry sweep to at most once per ttl/4
 }
+
+// patMaxSeen bounds the anti-double-spend nonce set so a flood of distinct valid
+// tokens cannot grow it without limit (deep-review). At saturation the verifier stops
+// upgrading (fail-safe: no trust, never a deny) until the sweep drains it.
+const patMaxSeen = 1 << 20
 
 // NewPATVerifier parses PEM-encoded RSA public keys (one or more "PUBLIC KEY" blocks)
 // into a verifier, computing each key's RFC 9578 token_key_id.
@@ -125,14 +131,23 @@ func (v *PATVerifier) verifyPrivateToken(header string) (patVerdict, string) {
 	nonce := hex.EncodeToString(raw[2:34])
 	now := time.Now()
 	v.mu.Lock()
-	for k, t := range v.seen {
-		if now.Sub(t) > v.ttl {
-			delete(v.seen, k)
+	// Amortize the O(n) expiry sweep: run it at most once per ttl/4, or eagerly when the
+	// set is saturated. This keeps the steady-state per-call cost O(1) instead of O(n).
+	if now.Sub(v.lastSweep) > v.ttl/4 || len(v.seen) >= patMaxSeen {
+		for k, t := range v.seen {
+			if now.Sub(t) > v.ttl {
+				delete(v.seen, k)
+			}
 		}
+		v.lastSweep = now
 	}
 	if _, dup := v.seen[nonce]; dup {
 		v.mu.Unlock()
 		return patInvalid, keyID // token already spent
+	}
+	if len(v.seen) >= patMaxSeen {
+		v.mu.Unlock()
+		return patInvalid, keyID // set saturated: fail-safe (no upgrade) rather than grow unbounded
 	}
 	v.seen[nonce] = now
 	v.mu.Unlock()

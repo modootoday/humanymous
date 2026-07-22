@@ -21,7 +21,7 @@ func TestRespCommandEncoding(t *testing.T) {
 
 func parse(t *testing.T, wire string) Reply {
 	t.Helper()
-	r, err := readReply(bufio.NewReader(strings.NewReader(wire)))
+	r, err := readReply(bufio.NewReader(strings.NewReader(wire)), 0)
 	if err != nil {
 		t.Fatalf("readReply(%q): %v", wire, err)
 	}
@@ -48,7 +48,7 @@ func TestReadReplyScalars(t *testing.T) {
 }
 
 func TestReadReplyError(t *testing.T) {
-	if _, err := readReply(bufio.NewReader(strings.NewReader("-WRONGTYPE nope\r\n"))); err == nil {
+	if _, err := readReply(bufio.NewReader(strings.NewReader("-WRONGTYPE nope\r\n")), 0); err == nil {
 		t.Error("RESP error reply must surface as a Go error")
 	}
 }
@@ -72,10 +72,10 @@ func TestReadReplyScanArray(t *testing.T) {
 // PLAN-08 backlog: an oversized declared length must be rejected, not allocated — a
 // compromised coordinator otherwise triggers an OOM/panic via a huge $ or * header.
 func TestReadReplyRejectsOversizedLengths(t *testing.T) {
-	if _, err := readReply(bufio.NewReader(strings.NewReader("$999999999\r\n"))); err == nil {
+	if _, err := readReply(bufio.NewReader(strings.NewReader("$999999999\r\n")), 0); err == nil {
 		t.Error("oversized bulk length must be rejected")
 	}
-	if _, err := readReply(bufio.NewReader(strings.NewReader("*999999999\r\n"))); err == nil {
+	if _, err := readReply(bufio.NewReader(strings.NewReader("*999999999\r\n")), 0); err == nil {
 		t.Error("oversized array length must be rejected")
 	}
 }
@@ -90,5 +90,18 @@ func TestBreakerTripsAndFastFails(t *testing.T) {
 	}
 	if _, err := c.Do("PING"); err != ErrBreakerOpen {
 		t.Fatalf("within cooldown the breaker must fast-fail, got %v", err)
+	}
+}
+
+// deep-review ship-blocker: a coordinator nesting arrays arbitrarily (*1 repeated)
+// must be rejected by the depth cap, not drive a stack-overflow throw.
+func TestReadReplyRejectsDeepNesting(t *testing.T) {
+	var b strings.Builder
+	for i := 0; i < 100; i++ {
+		b.WriteString("*1\r\n")
+	}
+	b.WriteString("$1\r\nx\r\n")
+	if _, err := readReply(bufio.NewReader(strings.NewReader(b.String())), 0); err == nil {
+		t.Fatal("deeply-nested reply must be rejected, not stack-overflow")
 	}
 }

@@ -13,23 +13,24 @@ import (
 	"github.com/modootoday/humanymous/internal/redis"
 )
 
-// sealValue appends an HMAC-SHA256 tag to a payload so a compromised coordinator that
-// can write Redis cannot FORGE a verdict/ban value (it lacks the fleet-shared key).
-// With no key configured it is a no-op (unsigned, backward-compatible). Separator is a
-// NUL byte, which JSON never contains.
-func sealValue(key []byte, payload string) string {
+// sealValue appends an HMAC-SHA256 tag over (ctx || 0x00 || payload) so a compromised
+// coordinator that can write Redis cannot FORGE a value NOR RELOCATE an authentic one:
+// the tag is bound to ctx (the record's Redis KEY), so a value sealed for one key does
+// not verify under another (defeats verdict/ban relocation). Freshness (rollback) is
+// enforced by the caller re-checking the payload's own timestamp on read. With no key
+// configured it is a no-op (unsigned, backward-compatible). NUL separator: JSON never
+// emits a NUL byte.
+func sealValue(key []byte, ctx, payload string) string {
 	if len(key) == 0 {
 		return payload
 	}
-	m := hmac.New(sha256.New, key)
-	m.Write([]byte(payload))
-	return payload + "\x00" + hex.EncodeToString(m.Sum(nil))
+	return payload + "\x00" + hex.EncodeToString(sealTag(key, ctx, payload))
 }
 
-// openValue verifies + strips the HMAC tag. In signed mode an unsigned or
-// tag-mismatched value is rejected (treated as tamper/injection); the caller then
-// falls back to its trusted local view rather than honoring forged coordinator state.
-func openValue(key []byte, val string) (string, bool) {
+// openValue verifies the key-bound HMAC tag and strips it. In signed mode an unsigned,
+// relocated, or tag-mismatched value is rejected; the caller falls back to its trusted
+// local view rather than honoring forged/relocated coordinator state.
+func openValue(key []byte, ctx, val string) (string, bool) {
 	if len(key) == 0 {
 		return val, true
 	}
@@ -38,12 +39,18 @@ func openValue(key []byte, val string) (string, bool) {
 		return "", false
 	}
 	payload, tag := val[:i], val[i+1:]
-	m := hmac.New(sha256.New, key)
-	m.Write([]byte(payload))
-	if !hmac.Equal([]byte(tag), []byte(hex.EncodeToString(m.Sum(nil)))) {
+	if !hmac.Equal([]byte(tag), []byte(hex.EncodeToString(sealTag(key, ctx, payload)))) {
 		return "", false
 	}
 	return payload, true
+}
+
+func sealTag(key []byte, ctx, payload string) []byte {
+	m := hmac.New(sha256.New, key)
+	m.Write([]byte(ctx))
+	m.Write([]byte{0})
+	m.Write([]byte(payload))
+	return m.Sum(nil)
 }
 
 // redisledger.go provides Redis-backed implementations of the R18 distribution
@@ -98,7 +105,7 @@ func (l *RedisVerdictLedger) Set(sid string, v stickyVerdict) {
 	if err != nil {
 		return
 	}
-	_, _ = l.rc.Do("SET", redisVerdictPrefix+sid, sealValue(l.sign, string(b)), "PX", strconv.FormatInt(l.ttl.Milliseconds(), 10))
+	_, _ = l.rc.Do("SET", redisVerdictPrefix+sid, sealValue(l.sign, redisVerdictPrefix+sid, string(b)), "PX", strconv.FormatInt(l.ttl.Milliseconds(), 10))
 }
 
 // GC sweeps the local mirror (Redis expires its own keys via PX).
@@ -112,12 +119,15 @@ func (l *RedisVerdictLedger) Get(sid string, now time.Time) stickyVerdict {
 	if rep.Nil {
 		return stickyVerdict{verdict: VerdictUnknown} // no shared verdict yet
 	}
-	payload, ok := openValue(l.sign, rep.Str)
+	payload, ok := openValue(l.sign, redisVerdictPrefix+sid, rep.Str)
 	if !ok {
-		return l.local.Get(sid, now) // forged/tampered coordinator value → trust local
+		return l.local.Get(sid, now) // forged/relocated coordinator value → trust local
 	}
 	var w verdictWire
 	if json.Unmarshal([]byte(payload), &w) != nil {
+		return l.local.Get(sid, now)
+	}
+	if now.Sub(w.Updated) > l.ttl { // freshness: reject a replayed/rolled-back stale verdict
 		return l.local.Get(sid, now)
 	}
 	return stickyVerdict{verdict: w.Verdict, risk: w.Risk, rule: w.Rule, top: w.Top, updated: w.Updated}
@@ -162,13 +172,13 @@ func (l *RedisBanLedger) Check(key string) (BanEntry, bool) {
 	if rep.Nil {
 		return BanEntry{}, false
 	}
-	payload, ok := openValue(l.sign, rep.Str)
+	payload, ok := openValue(l.sign, redisBanPrefix+key, rep.Str)
 	if !ok {
-		return l.local.Check(key) // forged/tampered ban → trust local (ignore injection)
+		return l.local.Check(key) // forged/relocated ban → trust local (ignore injection)
 	}
 	var b banWire
-	if json.Unmarshal([]byte(payload), &b) != nil {
-		return l.local.Check(key)
+	if json.Unmarshal([]byte(payload), &b) != nil || b.Key != key {
+		return l.local.Check(key) // value not sealed for THIS key
 	}
 	if !b.active(l.nowFn()) { // TTL should have removed it, but honor Until defensively
 		return BanEntry{}, false
@@ -210,12 +220,12 @@ func (l *RedisBanLedger) List() []BanEntry {
 		if rep.Nil {
 			continue
 		}
-		payload, ok := openValue(l.sign, rep.Str)
+		payload, ok := openValue(l.sign, key, rep.Str)
 		if !ok {
-			continue // ignore forged/tampered entries
+			continue // ignore forged/relocated entries
 		}
 		var b banWire
-		if json.Unmarshal([]byte(payload), &b) != nil || !b.active(now) {
+		if json.Unmarshal([]byte(payload), &b) != nil || !b.active(now) || redisBanPrefix+b.Key != key {
 			continue
 		}
 		seen[b.Key] = true
@@ -236,7 +246,7 @@ func (l *RedisBanLedger) writeBan(key string, entry BanEntry) {
 	if err != nil {
 		return
 	}
-	val := sealValue(l.sign, string(b))
+	val := sealValue(l.sign, redisBanPrefix+key, string(b))
 	if entry.Permanent() {
 		_, _ = l.rc.Do("SET", redisBanPrefix+key, val)
 		return
