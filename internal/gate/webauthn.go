@@ -105,12 +105,9 @@ func (r *WebAuthnRegistry) verify(header string) (webauthnVerdict, string) {
 	if header == "" {
 		return webauthnNone, ""
 	}
-	rawJSON, err := base64.StdEncoding.DecodeString(strings.TrimSpace(header))
-	if err != nil {
-		rawJSON, err = base64.RawStdEncoding.DecodeString(strings.TrimSpace(header))
-		if err != nil {
-			return webauthnInvalid, ""
-		}
+	rawJSON, ok := decodeB64Loose(strings.TrimSpace(header))
+	if !ok {
+		return webauthnInvalid, ""
 	}
 	var a webauthnAssertion
 	if json.Unmarshal(rawJSON, &a) != nil || a.CredentialID == "" {

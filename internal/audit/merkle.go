@@ -40,59 +40,74 @@ func largestPow2Below(n int) int {
 }
 
 // merkleRoot computes the RFC 6962 Merkle Tree Hash over leaves.
-func merkleRoot(leaves [][]byte) []byte {
-	n := len(leaves)
+func merkleRoot(leaves [][]byte) []byte { return mroot(leaves, 0, len(leaves), nil) }
+
+// mroot is the RFC 6962 root of leaves[off:off+n], memoizing subtree roots by (off,n)
+// so a single proof that touches a subtree repeatedly computes it once (PLAN-08
+// backlog — proof generation is no longer superlinear on large logs). A nil memo
+// disables caching (used by the plain root, whose recursion visits each node once).
+func mroot(leaves [][]byte, off, n int, memo map[[2]int][]byte) []byte {
 	if n == 0 {
 		s := sha256.Sum256(nil)
 		return s[:]
 	}
 	if n == 1 {
-		return leafHash(leaves[0])
+		return leafHash(leaves[off])
+	}
+	if memo != nil {
+		if v, ok := memo[[2]int{off, n}]; ok {
+			return v
+		}
 	}
 	k := largestPow2Below(n)
-	return nodeHash(merkleRoot(leaves[:k]), merkleRoot(leaves[k:]))
+	h := nodeHash(mroot(leaves, off, k, memo), mroot(leaves, off+k, n-k, memo))
+	if memo != nil {
+		memo[[2]int{off, n}] = h
+	}
+	return h
 }
 
 // inclusionProof returns the audit path proving leaf index m is in a tree of the
 // given leaves (RFC 6962 §2.1.1). Order is leaf-to-root.
 func inclusionProof(leaves [][]byte, m int) [][]byte {
-	n := len(leaves)
-	if m < 0 || m >= n {
+	if m < 0 || m >= len(leaves) {
 		return nil
 	}
-	if n == 1 {
+	return iproof(leaves, m, 0, len(leaves), map[[2]int][]byte{})
+}
+
+func iproof(leaves [][]byte, m, off, n int, memo map[[2]int][]byte) [][]byte {
+	if n <= 1 {
 		return nil
 	}
 	k := largestPow2Below(n)
 	if m < k {
-		return append(inclusionProof(leaves[:k], m), merkleRoot(leaves[k:]))
+		return append(iproof(leaves, m, off, k, memo), mroot(leaves, off+k, n-k, memo))
 	}
-	return append(inclusionProof(leaves[k:], m-k), merkleRoot(leaves[:k]))
+	return append(iproof(leaves, m-k, off+k, n-k, memo), mroot(leaves, off, k, memo))
 }
 
 // consistencyProof returns the proof that a tree of the first m leaves is a prefix
 // of the tree of all leaves (RFC 6962 §2.1.2), for 0 < m < len(leaves).
 func consistencyProof(leaves [][]byte, m int) [][]byte {
-	n := len(leaves)
-	if m <= 0 || m >= n {
+	if m <= 0 || m >= len(leaves) {
 		return nil
 	}
-	return subProof(m, leaves, true)
+	return subProof(leaves, m, 0, len(leaves), true, map[[2]int][]byte{})
 }
 
-func subProof(m int, leaves [][]byte, b bool) [][]byte {
-	n := len(leaves)
+func subProof(leaves [][]byte, m, off, n int, b bool, memo map[[2]int][]byte) [][]byte {
 	if m == n {
 		if b {
 			return nil
 		}
-		return [][]byte{merkleRoot(leaves)}
+		return [][]byte{mroot(leaves, off, n, memo)}
 	}
 	k := largestPow2Below(n)
 	if m <= k {
-		return append(subProof(m, leaves[:k], b), merkleRoot(leaves[k:]))
+		return append(subProof(leaves, m, off, k, b, memo), mroot(leaves, off+k, n-k, memo))
 	}
-	return append(subProof(m-k, leaves[k:], false), merkleRoot(leaves[:k]))
+	return append(subProof(leaves, m-k, off+k, n-k, false, memo), mroot(leaves, off, k, memo))
 }
 
 // verifyInclusion checks an inclusion proof: that leaf (raw data) at index m in a

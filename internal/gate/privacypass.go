@@ -93,12 +93,9 @@ func (v *PATVerifier) verifyPrivateToken(header string) (patVerdict, string) {
 	if tok == "" {
 		return patNone, ""
 	}
-	raw, err := base64.StdEncoding.DecodeString(tok)
-	if err != nil {
-		raw, err = base64.RawStdEncoding.DecodeString(tok)
-		if err != nil {
-			return patInvalid, ""
-		}
+	raw, ok := decodeB64Loose(tok)
+	if !ok {
+		return patInvalid, ""
 	}
 	// struct { uint16 type; nonce[32]; challenge_digest[32]; token_key_id[32]; authenticator[Nk] }
 	const prefix = 2 + 32 + 32 + 32
@@ -161,6 +158,18 @@ func parsePrivateTokenHeader(h string) string {
 		return "" // header present but malformed
 	}
 	return h // bare token
+}
+
+// decodeB64Loose decodes standard base64, tolerating a missing '=' pad (raw form).
+// Shared by the token verifiers (PLAN-08 backlog DRY).
+func decodeB64Loose(s string) ([]byte, bool) {
+	if b, err := base64.StdEncoding.DecodeString(s); err == nil {
+		return b, true
+	}
+	if b, err := base64.RawStdEncoding.DecodeString(s); err == nil {
+		return b, true
+	}
+	return nil, false
 }
 
 // sha384Sum returns the SHA-384 digest of b.

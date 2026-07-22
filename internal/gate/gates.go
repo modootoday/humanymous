@@ -170,14 +170,7 @@ func (s *Server) agentAuthGate(w http.ResponseWriter, r *http.Request, sid strin
 		if !s.enforcing(route) {
 			return false // monitor mode: log-only below, no fast-path
 		}
-		rec := audit.Record{
-			EventType: audit.EventAgentVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
-			TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
-			Rules: []string{"web-bot-auth"}, Action: "pass", Mode: "enforce",
-			FailReason: "verified Web Bot Auth agent " + keyid, KeyID: "k1",
-		}
-		s.sink.EmitAndAct(rec, func() { s.forward(w, r, route) })
-		return true
+		return s.trustUpgrade(w, r, sid, route, audit.EventAgentVerified, "web-bot-auth", "verified Web Bot Auth agent "+keyid)
 	case agentVerifiedUnknown:
 		s.sink.Emit(audit.Record{
 			EventType: audit.EventAgentUnknown, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
@@ -203,14 +196,7 @@ func (s *Server) patGate(w http.ResponseWriter, r *http.Request, sid string, rou
 	if v != patVerified {
 		return false // no valid token → continue the normal pipeline
 	}
-	rec := audit.Record{
-		EventType: audit.EventPATVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
-		TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
-		Rules: []string{"privacy-pass"}, Action: "pass", Mode: "enforce",
-		FailReason: "verified Private Access Token, issuer " + keyid[:12], KeyID: "k1",
-	}
-	s.sink.EmitAndAct(rec, func() { s.forward(w, r, route) })
-	return true
+	return s.trustUpgrade(w, r, sid, route, audit.EventPATVerified, "privacy-pass", "verified Private Access Token, issuer "+keyid[:12])
 }
 
 // webauthnGate trust-upgrades a request carrying a valid, fresh WebAuthn assertion
@@ -229,11 +215,19 @@ func (s *Server) webauthnGate(w http.ResponseWriter, r *http.Request, sid string
 	if len(short) > 16 {
 		short = short[:16]
 	}
+	return s.trustUpgrade(w, r, sid, route, audit.EventWebAuthnVerified, "webauthn", "verified WebAuthn assertion, credential "+short)
+}
+
+// trustUpgrade is the shared audited ALLOW fast-path for the token gates (Web Bot
+// Auth, PAT, WebAuthn): the caller proved trust out-of-band, so forward without a
+// behavioral fight. One place so the four verify→forward paths cannot drift
+// (PLAN-08 backlog DRY).
+func (s *Server) trustUpgrade(w http.ResponseWriter, r *http.Request, sid string, route routePolicy, eventType, rule, reason string) bool {
 	rec := audit.Record{
-		EventType: audit.EventWebAuthnVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+		EventType: eventType, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
 		TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
-		Rules: []string{"webauthn"}, Action: "pass", Mode: "enforce",
-		FailReason: "verified WebAuthn assertion, credential " + short, KeyID: "k1",
+		Rules: []string{rule}, Action: "pass", Mode: "enforce",
+		FailReason: reason, KeyID: "k1",
 	}
 	s.sink.EmitAndAct(rec, func() { s.forward(w, r, route) })
 	return true
