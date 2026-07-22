@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"strings"
 	"testing"
+	"time"
 )
 
 // client_test.go verifies the RESP2 wire codec: encoding commands and parsing every
@@ -76,5 +77,18 @@ func TestReadReplyRejectsOversizedLengths(t *testing.T) {
 	}
 	if _, err := readReply(bufio.NewReader(strings.NewReader("*999999999\r\n"))); err == nil {
 		t.Error("oversized array length must be rejected")
+	}
+}
+
+// PLAN-08 backlog: the circuit breaker trips on a failure and fast-fails subsequent
+// calls within the cooldown (so an outage does not stall every request).
+func TestBreakerTripsAndFastFails(t *testing.T) {
+	c := New("127.0.0.1:1") // a closed port → dial fails
+	c.cooldown = time.Minute
+	if _, err := c.Do("PING"); err == nil {
+		t.Fatal("expected a dial failure against a closed port")
+	}
+	if _, err := c.Do("PING"); err != ErrBreakerOpen {
+		t.Fatalf("within cooldown the breaker must fast-fail, got %v", err)
 	}
 }
