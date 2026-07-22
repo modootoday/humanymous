@@ -52,7 +52,7 @@ func TestVerdictTokenSubnetAndSidBinding(t *testing.T) {
 		r.Header.Set("sec-ch-ua", `"Chromium";v="126"`)
 		return r
 	}
-	human := reqAt("203.0.113.10")            // residential
+	human := reqAt("203.0.113.10") // residential
 	tok := issueVerdictToken(key, "sidH", tokenBind(human), "e1", now.Add(time.Minute))
 
 	// Same subnet + same session → OK.

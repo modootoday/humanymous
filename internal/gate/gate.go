@@ -40,6 +40,7 @@ type Server struct {
 	devConsoleToken string         // dev bearer injected into the served console (SoT-28 §1)
 	killSwitch      atomic.Bool    // runtime global-monitor override (SoT-28 WS9 kill switch)
 	agentKeys       KeyDirectory   // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
+	anomaly         *anomalyShadow // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
 	nowFn           func() time.Time
 }
 
@@ -158,6 +159,9 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		agentKeys:       cfg.AgentKeys,                          // Web Bot Auth directory (PLAN-08 R3), nil = off
 		nowFn:           time.Now,
 	}
+	if cfg.AnomalyShadow {
+		s.anomaly = newAnomalyShadow() // PLAN-08 R5: log-only shadow observer, off by default
+	}
 	// Response hook: inject into HTML (identity upstream is forced in Rewrite).
 	rp.ModifyResponse = s.modifyResponse
 	// Upstream-error hook (PLAN-07 R16): the default handler logs to ErrorLog and
@@ -193,6 +197,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// record this request emits — verdict, upstream error, egress — shares one
 	// correlation id and can be latency-stamped from a single start.
 	r = r.WithContext(withReqMeta(r.Context(), reqMeta{corr: newCorrelationID(), start: s.nowFn()}))
+	if s.anomaly != nil { // PLAN-08 R5: observe only — never short-circuits, never changes the verdict
+		s.anomaly.observe(bindKey(r), s.nowFn())
+	}
 	sid := sessionID(r)
 
 	// The edge request path is a sequence of security-domain gates (see

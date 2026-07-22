@@ -34,8 +34,8 @@ type injectResult struct {
 // the snippet inserted once at the first head boundary. It never buffers more
 // than maxLookahead before deciding.
 type injectingReader struct {
-	src     io.Reader
-	snippet []byte
+	src        io.Reader
+	snippet    []byte
 	buf        []byte // pending output (post-injection)
 	pre        []byte // look-ahead accumulator (pre-injection)
 	done       bool   // injection resolved (either inserted or gave up)

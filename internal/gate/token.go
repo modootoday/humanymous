@@ -32,11 +32,11 @@ const verdictCookie = "hmn_vt"
 type tokenReason string
 
 const (
-	tokenOK               tokenReason = ""
-	tokenBadSig           tokenReason = "bad_sig"
-	tokenExpired          tokenReason = "expired"
-	tokenBindingMismatch  tokenReason = "binding_mismatch"
-	tokenMalformed        tokenReason = "malformed"
+	tokenOK              tokenReason = ""
+	tokenBadSig          tokenReason = "bad_sig"
+	tokenExpired         tokenReason = "expired"
+	tokenBindingMismatch tokenReason = "binding_mismatch"
+	tokenMalformed       tokenReason = "malformed"
 )
 
 // bindKey derives the client-fingerprint surrogate the token is bound to. A

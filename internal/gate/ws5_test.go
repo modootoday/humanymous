@@ -50,7 +50,7 @@ func TestFailClosedActionMapping(t *testing.T) {
 		unsafe  bool
 		want    string
 	}{
-		{VerdictUnknown, presetBalanced, false, "pass"},        // safe GET, public → open
+		{VerdictUnknown, presetBalanced, false, "pass"},         // safe GET, public → open
 		{VerdictUnknown, presetBalanced, true, "challenge_pow"}, // mutation → closed
 		{VerdictUnknown, presetStrict, false, "challenge_pow"},  // sensitive route → closed
 		{VerdictAllow, presetBalanced, true, "pass"},            // scored ALLOW passes

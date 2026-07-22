@@ -15,10 +15,10 @@ import (
 // a sliding window. One binding fanning out to many sessions rapidly is a
 // decision-probing / signal-sweep recon pattern.
 type SweepDetector struct {
-	mu       sync.Mutex
-	byBind   map[string]*bindWindow
-	window   time.Duration
-	maxSess  int
+	mu      sync.Mutex
+	byBind  map[string]*bindWindow
+	window  time.Duration
+	maxSess int
 }
 
 type bindWindow struct {

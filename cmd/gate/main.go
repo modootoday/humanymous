@@ -73,6 +73,10 @@ func main() {
 	// lines. A valid signature from a listed key is a trust-upgrade; a forgery of a
 	// listed key is denied. Empty = feature off.
 	agentKeysFile := flag.String("agent-keys", "", "path to a Web Bot Auth trusted-key allowlist (PLAN-08 R3); empty = disabled")
+	// PLAN-08 R5 — shadow anomaly observer: watch per-fingerprint request inter-arrival
+	// through a streaming MAD detector and LOG outliers. Strictly observational (never
+	// affects the verdict); off by default. Shadow-first before any signal earns weight.
+	anomalyShadow := flag.Bool("anomaly-shadow", false, "enable the log-only shadow anomaly observer (PLAN-08 R5); never affects verdicts")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -204,8 +208,9 @@ func main() {
 		OriginKey:     originKey,
 		TokenKey:      tokenKey,
 		TokenEpochs:   epochs,
-		BanLedger:     sharedBans, // shared Redis ban ledger, or nil for in-memory (PLAN-08 R1)
-		AgentKeys:     agentKeys,  // Web Bot Auth directory, or nil (PLAN-08 R3)
+		BanLedger:     sharedBans,     // shared Redis ban ledger, or nil for in-memory (PLAN-08 R1)
+		AgentKeys:     agentKeys,      // Web Bot Auth directory, or nil (PLAN-08 R3)
+		AnomalyShadow: *anomalyShadow, // R5 shadow observer (log-only), off by default
 		Routes: map[string]string{
 			"/login":    "strict",
 			"/checkout": "strict",

@@ -1,0 +1,17 @@
+# PLAN-08 R5 — enable the log-only shadow anomaly observer on the gate. It watches
+# per-fingerprint request inter-arrival through a streaming MAD detector and LOGS
+# outliers; it NEVER affects the verdict. This overlay proves it fires on a burst while
+# the gate conformance (verdicts) stays identical.
+services:
+  gate:
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "http://origin:80"
+      - "-node"
+      - "gate-1"
+      - "-anomaly-shadow"
+    depends_on: [origin]

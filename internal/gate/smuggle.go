@@ -18,11 +18,11 @@ import (
 type smuggleReason string
 
 const (
-	smuggleNone      smuggleReason = ""
-	smuggleTECL      smuggleReason = "te_cl_conflict"     // CL and TE both present
-	smuggleDupCL     smuggleReason = "ambiguous_len"      // multiple/conflicting CL
-	smuggleBadTE     smuggleReason = "te_not_chunked"     // TE present but not exactly chunked
-	smuggleObsFold   smuggleReason = "obs_fold"           // header value with embedded CR/LF
+	smuggleNone    smuggleReason = ""
+	smuggleTECL    smuggleReason = "te_cl_conflict" // CL and TE both present
+	smuggleDupCL   smuggleReason = "ambiguous_len"  // multiple/conflicting CL
+	smuggleBadTE   smuggleReason = "te_not_chunked" // TE present but not exactly chunked
+	smuggleObsFold smuggleReason = "obs_fold"       // header value with embedded CR/LF
 )
 
 // smuggleScan inspects the request headers for framing ambiguity (HR-23).

@@ -46,9 +46,9 @@ func TestVerifyAgentTrusted(t *testing.T) {
 }
 
 func TestVerifyAgentForged(t *testing.T) {
-	pub, _, _ := ed25519.GenerateKey(nil)         // the ALLOWLISTED key
-	_, attacker, _ := ed25519.GenerateKey(nil)    // a DIFFERENT key the attacker holds
-	dir := testDir(t, testKID, pub)               // directory trusts pub, not attacker
+	pub, _, _ := ed25519.GenerateKey(nil)      // the ALLOWLISTED key
+	_, attacker, _ := ed25519.GenerateKey(nil) // a DIFFERENT key the attacker holds
+	dir := testDir(t, testKID, pub)            // directory trusts pub, not attacker
 	now := time.Unix(1_700_000_000, 0)
 	// Attacker signs with their own key but CLAIMS the allowlisted keyid.
 	si, sig := signWebBotAuth("example.com", testKID, attacker, now.Unix())

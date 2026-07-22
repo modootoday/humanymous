@@ -54,6 +54,9 @@ type Config struct {
 	// (PLAN-08 R3): a valid signature from an allowlisted key is a trust-upgrade, a
 	// forgery is denied. nil = the feature is off.
 	AgentKeys KeyDirectory
+	// AnomalyShadow enables the PLAN-08 R5 shadow anomaly observer (log-only, never
+	// affects the verdict). Off by default — the frozen detection path is untouched.
+	AnomalyShadow bool
 }
 
 // resolve returns the policy for a request path (longest-prefix match; default

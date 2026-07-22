@@ -27,11 +27,11 @@ const (
 
 // stickyVerdict is a cached scoring outcome for a session (SoT-21 §2).
 type stickyVerdict struct {
-	verdict   Verdict
-	risk      float64
-	rule      string
-	top       []audit.Signal
-	updated   time.Time
+	verdict Verdict
+	risk    float64
+	rule    string
+	top     []audit.Signal
+	updated time.Time
 }
 
 // VerdictStore keeps sticky verdicts keyed by session id.
