@@ -58,7 +58,10 @@ func NewCHSink(base, table string, maxRows int, maxWait time.Duration, bufCap in
 		bufCap = 100000
 	}
 	q := "INSERT INTO " + table + " FORMAT JSONEachRow"
-	u := base + "/?query=" + url.QueryEscape(q) + "&async_insert=1&wait_for_async_insert=1"
+	// skip_unknown_fields keeps the projection forward-compatible: a new Record field
+	// (e.g. event_id, upstream) must not break inserts against an operator's existing
+	// table — they simply project the columns the table declares (PLAN-08 R6).
+	u := base + "/?query=" + url.QueryEscape(q) + "&async_insert=1&wait_for_async_insert=1&input_format_skip_unknown_fields=1"
 	s := &CHSink{
 		insertURL: u,
 		client:    &http.Client{Timeout: 10 * time.Second},

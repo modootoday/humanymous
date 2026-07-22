@@ -1,0 +1,43 @@
+# PLAN-08 R6 — durable audit projection to ClickHouse (SoT-32 Tier 2).
+#
+# Stands up a ClickHouse container (with the audit_log table pre-created) and points
+# the gate's audit projection at it, so every tamper-evident record is mirrored into a
+# queryable columnar store whose rows carry record_hash — cross-checkable against the
+# signed Merkle tree.
+#
+#   docker compose -f deployments/compose.yaml -f deployments/compose/audit-ch.yaml \
+#       up -d origin clickhouse gate
+#   node scripts/assert-audit-clickhouse.mjs
+#
+# Paths are relative to the project dir (deployments/, the first -f's directory).
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24-alpine
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
+    volumes:
+      - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "8123:8123"
+    networks: [web]
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  gate:
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "http://origin:80"
+      - "-node"
+      - "gate-1"
+      - "-audit-clickhouse"
+      - "http://clickhouse:8123"
+    depends_on: [origin, clickhouse]
