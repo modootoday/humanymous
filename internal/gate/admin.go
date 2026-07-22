@@ -30,6 +30,95 @@ type banView struct {
 	ExpiresIn int    `json:"expiresInSec"`
 }
 
+// adminRoute is one row of the declarative admin dispatch table (PLAN-07 R13,
+// replacing a stringly-typed switch): a method + a path matcher (exact, prefix, or
+// prefix/suffix-wrapped, capturing any dynamic segment) + an RBAC capability
+// predicate + the handler. First match wins; a matched route whose capability check
+// fails is a 403, an unmatched path is a 404 — identical semantics to the switch it
+// replaced, but now the auth matrix is data an auditor can read at a glance.
+type adminRoute struct {
+	method string
+	match  func(sub string) (arg string, ok bool)
+	allow  func(op Operator) bool
+	handle func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, arg string)
+}
+
+// adminExact matches a fixed sub-path and captures nothing.
+func adminExact(p string) func(string) (string, bool) {
+	return func(sub string) (string, bool) { return "", sub == p }
+}
+
+// adminPrefix matches a sub-path under p and captures the remainder (e.g. an id).
+func adminPrefix(p string) func(string) (string, bool) {
+	return func(sub string) (string, bool) {
+		if strings.HasPrefix(sub, p) {
+			return strings.TrimPrefix(sub, p), true
+		}
+		return "", false
+	}
+}
+
+// adminWrapped matches pre<arg>suf and captures the middle segment.
+func adminWrapped(pre, suf string) func(string) (string, bool) {
+	return func(sub string) (string, bool) {
+		if strings.HasPrefix(sub, pre) && strings.HasSuffix(sub, suf) {
+			return strings.TrimSuffix(strings.TrimPrefix(sub, pre), suf), true
+		}
+		return "", false
+	}
+}
+
+// RBAC predicates — named so the table reads as a capability matrix.
+func adminAnyRole(op Operator) bool    { return op.canRead() } // any authenticated role
+func adminCanOperate(op Operator) bool { return op.canOperate() }
+func adminCanApprove(op Operator) bool { return op.canApprove() }
+
+// adminRoutes is the ordered dispatch + RBAC table. Reads are open to any
+// authenticated role (Auditor default); mutations are role-gated; destructive
+// actions additionally require dual-control inside their handlers (approval.go).
+var adminRoutes = []adminRoute{
+	// --- reads: any authenticated role (Auditor default) ---
+	{http.MethodGet, adminExact("bans"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminListBans(w) }},
+	{http.MethodGet, adminExact("integrity"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminIntegrity(w) }},
+	{http.MethodGet, adminExact("audit"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminAudit(w, r) }},
+	{http.MethodGet, adminPrefix("incidents/"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, arg string) {
+		s.adminIncident(w, arg, op)
+	}},
+	{http.MethodGet, adminExact("policy"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminPolicy(w) }},
+	{http.MethodGet, adminExact("approvals"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminListApprovals(w)
+	}},
+	{http.MethodGet, adminExact("erasures"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminListErasures(w) }},
+	{http.MethodGet, adminExact("whoami"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		writeJSON(w, map[string]any{"id": op.ID, "role": op.Role})
+	}},
+
+	// --- mutations: role-gated (Operator) ---
+	{http.MethodPost, adminExact("bans"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminAddBan(w, r, op)
+	}},
+	{http.MethodPost, adminExact("bans/bulk"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminBulkBan(w, r, op)
+	}},
+	{http.MethodPost, adminExact("bans/lift"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminLiftBan(w, r, op)
+	}},
+	{http.MethodPost, adminExact("erasure"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminErasure(w, r, op)
+	}},
+	{http.MethodPost, adminExact("killswitch"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminKillSwitch(w, r, op)
+	}},
+	{http.MethodPost, adminWrapped("erasures/", "/cancel"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, arg string) {
+		s.adminCancelErasure(w, arg, op)
+	}},
+
+	// --- dual-control commit: Approver ---
+	{http.MethodPost, adminPrefix("approvals/"), adminCanApprove, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, arg string) {
+		s.adminApprove(w, arg, op)
+	}},
+}
+
 // handleAdmin authenticates, meta-audits, RBAC-checks, and dispatches /admin/*.
 func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request, sub string) {
 	// The console HTML itself carries no data and is fetched by a top-level
@@ -58,55 +147,24 @@ func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request, sub string)
 		TenantID: s.cfg.NodeID, RouteClass: "control", Action: r.Method, FailReason: sub + " (role=" + string(op.Role) + ")", KeyID: "k1",
 	})
 
-	switch {
-	// --- reads: any authenticated role (Auditor default) ---
-	case sub == "bans" && r.Method == http.MethodGet:
-		s.adminListBans(w)
-	case sub == "integrity" && r.Method == http.MethodGet:
-		s.adminIntegrity(w)
-	case sub == "audit" && r.Method == http.MethodGet:
-		s.adminAudit(w, r)
-	case strings.HasPrefix(sub, "incidents/") && r.Method == http.MethodGet:
-		s.adminIncident(w, strings.TrimPrefix(sub, "incidents/"), op)
-	case sub == "policy" && r.Method == http.MethodGet:
-		s.adminPolicy(w)
-	case sub == "approvals" && r.Method == http.MethodGet:
-		s.adminListApprovals(w)
-	case sub == "erasures" && r.Method == http.MethodGet:
-		s.adminListErasures(w)
-	case sub == "whoami" && r.Method == http.MethodGet:
-		writeJSON(w, map[string]any{"id": op.ID, "role": op.Role})
-
-	// --- mutations: role-gated ---
-	case sub == "bans" && r.Method == http.MethodPost:
-		s.requireRole(w, op, op.canOperate(), func() { s.adminAddBan(w, r, op) })
-	case sub == "bans/bulk" && r.Method == http.MethodPost:
-		s.requireRole(w, op, op.canOperate(), func() { s.adminBulkBan(w, r, op) })
-	case sub == "bans/lift" && r.Method == http.MethodPost:
-		s.requireRole(w, op, op.canOperate(), func() { s.adminLiftBan(w, r, op) })
-	case sub == "erasure" && r.Method == http.MethodPost:
-		s.requireRole(w, op, op.canOperate(), func() { s.adminErasure(w, r, op) })
-	case sub == "killswitch" && r.Method == http.MethodPost:
-		s.requireRole(w, op, op.canOperate(), func() { s.adminKillSwitch(w, r, op) })
-	case strings.HasPrefix(sub, "erasures/") && strings.HasSuffix(sub, "/cancel") && r.Method == http.MethodPost:
-		s.requireRole(w, op, op.canOperate(), func() {
-			s.adminCancelErasure(w, strings.TrimSuffix(strings.TrimPrefix(sub, "erasures/"), "/cancel"), op)
-		})
-	case strings.HasPrefix(sub, "approvals/") && r.Method == http.MethodPost:
-		s.requireRole(w, op, op.canApprove(), func() { s.adminApprove(w, strings.TrimPrefix(sub, "approvals/"), op) })
-	default:
-		http.NotFound(w, r)
-	}
-}
-
-// requireRole runs fn only if allowed; otherwise 403 (the caller is authenticated
-// but lacks the capability — distinct from the 404 for unauthenticated).
-func (s *Server) requireRole(w http.ResponseWriter, op Operator, allowed bool, fn func()) {
-	if !allowed {
-		http.Error(w, "role "+string(op.Role)+" not permitted", http.StatusForbidden)
+	for _, rt := range adminRoutes {
+		if r.Method != rt.method {
+			continue
+		}
+		arg, matched := rt.match(sub)
+		if !matched {
+			continue
+		}
+		if !rt.allow(op) {
+			// Authenticated but lacking the capability → 403 (distinct from the 404 for
+			// unauthenticated / unknown routes).
+			http.Error(w, "role "+string(op.Role)+" not permitted", http.StatusForbidden)
+			return
+		}
+		rt.handle(s, w, r, op, arg)
 		return
 	}
-	fn()
+	http.NotFound(w, r)
 }
 
 // adminConsole serves the console SPA, injecting a dev bearer token so the SPA
