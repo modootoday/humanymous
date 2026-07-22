@@ -81,6 +81,10 @@ func main() {
 	// keys. A request carrying a valid Private Access Token from a listed issuer is
 	// trust-upgraded. Empty = feature off.
 	patIssuersFile := flag.String("pat-issuers", "", "path to a PEM file of trusted Privacy Pass PAT issuer public keys (PLAN-08 R2); empty = disabled")
+	// PLAN-08 R2 — WebAuthn credential allowlist: a file of `credentialId
+	// base64url-spki-ecdsa-p256-pubkey` lines. A valid, fresh possession assertion from
+	// a listed credential is trust-upgraded. Empty = feature off.
+	webauthnCredsFile := flag.String("webauthn-creds", "", "path to a WebAuthn registered-credential allowlist (PLAN-08 R2); empty = disabled")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -219,6 +223,21 @@ func main() {
 		log.Printf("Privacy Pass enabled: verifying Private Access Tokens against %s (PLAN-08 R2)", *patIssuersFile)
 	}
 
+	// PLAN-08 R2 — load the WebAuthn registered-credential allowlist, if configured.
+	var webauthnCreds *gate.WebAuthnRegistry
+	if *webauthnCredsFile != "" {
+		raw, err := os.ReadFile(*webauthnCredsFile)
+		if err != nil {
+			log.Fatalf("webauthn-creds: %v", err)
+		}
+		wc, err := gate.NewWebAuthnRegistry(string(raw))
+		if err != nil {
+			log.Fatalf("webauthn-creds: %v", err)
+		}
+		webauthnCreds = wc
+		log.Printf("WebAuthn enabled: verifying possession assertions against %s (PLAN-08 R2)", *webauthnCredsFile)
+	}
+
 	cfg := gate.Config{
 		Upstream:      *upstream,
 		NodeID:        *node,
@@ -231,6 +250,7 @@ func main() {
 		AgentKeys:     agentKeys,      // Web Bot Auth directory, or nil (PLAN-08 R3)
 		AnomalyShadow: *anomalyShadow, // R5 shadow observer (log-only), off by default
 		PATIssuers:    patIssuers,     // Privacy Pass PAT issuers, or nil (PLAN-08 R2)
+		WebAuthnCreds: webauthnCreds,  // WebAuthn credential registry, or nil (PLAN-08 R2)
 		Routes: map[string]string{
 			"/login":    "strict",
 			"/checkout": "strict",

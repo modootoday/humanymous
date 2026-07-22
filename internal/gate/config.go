@@ -61,6 +61,10 @@ type Config struct {
 	// at the edge (PLAN-08 R2): a valid token from a trusted issuer is a trust-upgrade.
 	// nil = the feature is off.
 	PATIssuers *PATVerifier
+	// WebAuthnCreds, when non-nil, enables WebAuthn assertion verification at the edge
+	// (PLAN-08 R2): a valid, fresh possession assertion from a registered credential is
+	// a trust-upgrade. nil = the feature is off.
+	WebAuthnCreds *WebAuthnRegistry
 }
 
 // resolve returns the policy for a request path (longest-prefix match; default

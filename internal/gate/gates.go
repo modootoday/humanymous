@@ -213,6 +213,32 @@ func (s *Server) patGate(w http.ResponseWriter, r *http.Request, sid string, rou
 	return true
 }
 
+// webauthnGate trust-upgrades a request carrying a valid, fresh WebAuthn assertion
+// from a registered credential (PLAN-08 R2) — proof of possession by a returning user.
+// A missing/invalid/replayed assertion is a NO-OP (never a deny): the request falls
+// through to the normal detection pipeline.
+func (s *Server) webauthnGate(w http.ResponseWriter, r *http.Request, sid string, route routePolicy) bool {
+	if s.webauthn == nil || !s.enforcing(route) {
+		return false
+	}
+	v, credID := s.webauthn.verify(r.Header.Get("Webauthn-Assertion"))
+	if v != webauthnVerified {
+		return false
+	}
+	short := credID
+	if len(short) > 16 {
+		short = short[:16]
+	}
+	rec := audit.Record{
+		EventType: audit.EventWebAuthnVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+		TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
+		Rules: []string{"webauthn"}, Action: "pass", Mode: "enforce",
+		FailReason: "verified WebAuthn assertion, credential " + short, KeyID: "k1",
+	}
+	s.sink.EmitAndAct(rec, func() { s.forward(w, r, route) })
+	return true
+}
+
 // sweepGate flags decision-probing recon: one fingerprint spinning up many
 // near-identical sessions (SoT-21 §8, HR-30).
 func (s *Server) sweepGate(w http.ResponseWriter, r *http.Request, sid string, route routePolicy, now time.Time) bool {

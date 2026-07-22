@@ -26,22 +26,23 @@ type Server struct {
 	control         http.Handler  // /__hmn/* control plane (session/collect/pow/loader)
 	rp              *httputil.ReverseProxy
 	snippet         []byte
-	originKey       []byte         // origin-cloaking HMAC key (SoT-23 §1)
-	tokenKey        []byte         // verdict-token HMAC key (SoT-21 §3)
-	epoch           string         // fixed origin-auth epoch (SoT-23 §1)
-	tokenEpochs     *EpochManager  // rotating verdict-token epoch (SoT-28 WS6)
-	sweep           *SweepDetector // decision-probing recon detector (HR-30)
-	decFloor        time.Duration  // constant decision-latency floor (HR-30)
-	bans            BanLedger      // rate-limit-triggered + manual bans (SoT-27); distribution seam (R18)
-	auth            *AdminAuth     // admin-plane authentication (SoT-28 WS1)
-	approvals       *ApprovalStore // two-phase dual-control (SoT-28 WS2)
-	shreds          *ShredQueue    // erasure hold-window queue (SoT-28 WS3)
-	incidentLimiter *abuse.Limiter // per-operator incident-lookup enumeration cap (SoT-28 WS4)
-	devConsoleToken string         // dev bearer injected into the served console (SoT-28 §1)
-	killSwitch      atomic.Bool    // runtime global-monitor override (SoT-28 WS9 kill switch)
-	agentKeys       KeyDirectory   // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
-	patVerifier     *PATVerifier   // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
-	anomaly         *anomalyShadow // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
+	originKey       []byte            // origin-cloaking HMAC key (SoT-23 §1)
+	tokenKey        []byte            // verdict-token HMAC key (SoT-21 §3)
+	epoch           string            // fixed origin-auth epoch (SoT-23 §1)
+	tokenEpochs     *EpochManager     // rotating verdict-token epoch (SoT-28 WS6)
+	sweep           *SweepDetector    // decision-probing recon detector (HR-30)
+	decFloor        time.Duration     // constant decision-latency floor (HR-30)
+	bans            BanLedger         // rate-limit-triggered + manual bans (SoT-27); distribution seam (R18)
+	auth            *AdminAuth        // admin-plane authentication (SoT-28 WS1)
+	approvals       *ApprovalStore    // two-phase dual-control (SoT-28 WS2)
+	shreds          *ShredQueue       // erasure hold-window queue (SoT-28 WS3)
+	incidentLimiter *abuse.Limiter    // per-operator incident-lookup enumeration cap (SoT-28 WS4)
+	devConsoleToken string            // dev bearer injected into the served console (SoT-28 §1)
+	killSwitch      atomic.Bool       // runtime global-monitor override (SoT-28 WS9 kill switch)
+	agentKeys       KeyDirectory      // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
+	patVerifier     *PATVerifier      // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
+	webauthn        *WebAuthnRegistry // WebAuthn credential registry (PLAN-08 R2); nil = feature off
+	anomaly         *anomalyShadow    // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
 	nowFn           func() time.Time
 }
 
@@ -159,6 +160,7 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		incidentLimiter: abuse.NewLimiter(time.Minute, 60, 120), // >120 incident lookups/min = trawl
 		agentKeys:       cfg.AgentKeys,                          // Web Bot Auth directory (PLAN-08 R3), nil = off
 		patVerifier:     cfg.PATIssuers,                         // Privacy Pass PAT issuers (PLAN-08 R2), nil = off
+		webauthn:        cfg.WebAuthnCreds,                      // WebAuthn credential registry (PLAN-08 R2), nil = off
 		nowFn:           time.Now,
 	}
 	if cfg.AnomalyShadow {
@@ -227,6 +229,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if s.patGate(w, r, sid, route) { // PLAN-08 R2: Privacy Pass PAT (trust-upgrade on a valid token)
+		return
+	}
+	if s.webauthnGate(w, r, sid, route) { // PLAN-08 R2: WebAuthn possession (trust-upgrade)
 		return
 	}
 	if s.verdictTokenGate(w, r, sid, route) { // SoT-21 §3, HR-28 (deny or trusted fast-path)
