@@ -94,10 +94,14 @@ type RedisBanLedger struct {
 // banWire is the JSON form of a BanEntry (all fields exported → direct marshal).
 type banWire = BanEntry
 
-// NewRedisBanLedger builds a shared ban ledger; window/soft/hard configure the
-// local rate limiter that drives auto-bans (SoT-27 §2), exactly as NewBanStore.
+// NewRedisBanLedger builds a shared ban ledger. The auto-ban rate detection runs on
+// a SHARED sliding-window counter (RedisRateLimiter) so a flood split across nodes
+// escalates on the aggregate (PLAN-08 R1 phase 2); the ban itself + strike ladder
+// live in the inner BanStore and propagate via writeBan. Both degrade to per-node
+// local behavior on a Redis outage.
 func NewRedisBanLedger(rc *redis.Client, window time.Duration, soft, hard int) *RedisBanLedger {
-	return &RedisBanLedger{rc: rc, local: NewBanStore(window, soft, hard), nowFn: time.Now}
+	rl := NewRedisRateLimiter(rc, window, soft, hard)
+	return &RedisBanLedger{rc: rc, local: NewBanStoreWithLimiter(rl), nowFn: time.Now}
 }
 
 func (l *RedisBanLedger) Check(key string) (BanEntry, bool) {

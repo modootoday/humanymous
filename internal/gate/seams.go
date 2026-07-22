@@ -1,6 +1,10 @@
 package gate
 
-import "time"
+import (
+	"time"
+
+	"github.com/modootoday/humanymous/internal/abuse"
+)
 
 // seams.go declares the distribution seams for the gate's global-correctness stores
 // (PLAN-07 R18). A single gate node keeps bans and sticky verdicts in memory, which
@@ -31,9 +35,21 @@ type VerdictLedger interface {
 	Get(sid string, now time.Time) stickyVerdict
 }
 
+// RateLimiter is the seam for the fingerprint-keyed rate counter that drives
+// auto-bans (SoT-17). The in-memory abuse.Limiter counts per node; a shared
+// implementation (PLAN-08 R1 phase 2) counts across the fleet so a flood SPLIT
+// across nodes — each slice below any single node's threshold — still escalates on
+// the aggregate. Observe returns the rolling count for key; Level classifies it
+// (0 ok / 1 soft / 2 hard).
+type RateLimiter interface {
+	Observe(key string, now time.Time) int
+	Level(count int) int
+}
+
 // Compile-time proof that the in-memory stores satisfy the seams. If a store's method
 // set drifts from the contract, this fails to build — the seam stays honest.
 var (
 	_ BanLedger     = (*BanStore)(nil)
 	_ VerdictLedger = (*VerdictStore)(nil)
+	_ RateLimiter   = (*abuse.Limiter)(nil)
 )

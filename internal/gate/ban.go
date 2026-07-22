@@ -16,10 +16,10 @@ import (
 
 // BanEntry is one active or historical ban.
 type BanEntry struct {
-	Key      string    // "ip:1.2.3.4" or "fp:<hash>"
+	Key      string // "ip:1.2.3.4" or "fp:<hash>"
 	Reason   string
-	Source   string    // "auto" | "manual"
-	By       string    // operator pseudonym (manual)
+	Source   string // "auto" | "manual"
+	By       string // operator pseudonym (manual)
 	Incident string
 	Created  time.Time
 	Until    time.Time // zero value => permanent
@@ -53,11 +53,11 @@ const strikeDecay = 7 * 24 * time.Hour
 
 // BanStore holds active bans + strike history + the IP/fingerprint rate limiter.
 type BanStore struct {
-	mu       sync.Mutex
-	bans     map[string]BanEntry
-	strikes  map[string]strikeRec
-	limiter  *abuse.Limiter
-	nowFn    func() time.Time
+	mu      sync.Mutex
+	bans    map[string]BanEntry
+	strikes map[string]strikeRec
+	limiter RateLimiter // in-memory (abuse.Limiter) or a shared Redis counter (PLAN-08 R1)
+	nowFn   func() time.Time
 }
 
 type strikeRec struct {
@@ -65,13 +65,19 @@ type strikeRec struct {
 	last  time.Time
 }
 
-// NewBanStore builds a ban store. window/soft/hard configure the rate limiter
-// that drives auto-bans (SoT-27 §2).
+// NewBanStore builds a ban store with an in-memory (per-node) rate limiter.
+// window/soft/hard configure the limiter that drives auto-bans (SoT-27 §2).
 func NewBanStore(window time.Duration, soft, hard int) *BanStore {
+	return NewBanStoreWithLimiter(abuse.NewLimiter(window, soft, hard))
+}
+
+// NewBanStoreWithLimiter builds a ban store over an injected rate limiter, so a
+// shared (Redis) counter can drive aggregate-across-nodes auto-bans (PLAN-08 R1).
+func NewBanStoreWithLimiter(rl RateLimiter) *BanStore {
 	return &BanStore{
 		bans:    map[string]BanEntry{},
 		strikes: map[string]strikeRec{},
-		limiter: abuse.NewLimiter(window, soft, hard),
+		limiter: rl,
 		nowFn:   time.Now,
 	}
 }

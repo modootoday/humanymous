@@ -55,21 +55,28 @@ async function main() {
   const onB2 = await listBans(B_ADMIN);
   check('ban-lift-on-A-clears-on-B', !onB2.includes(KEY), `node B bans: [${onB2.join(', ')}]`);
 
-  // 3. End-to-end: a flood on node A auto-bans the source; node B then blocks the
-  //    SAME source on its edge (both gates see the same docker-gateway IP).
+  // 3. SPLIT-FLOOD aggregate: hard threshold is 120 req / 10s. Fire 80 concurrent
+  //    requests at EACH node — 80/node is below the per-node hard limit, but 160
+  //    aggregate is well over it. A per-node counter would never ban (neither node
+  //    alone breaches); the SHARED sliding-window counter aggregates across nodes, so
+  //    whichever node crosses 120 auto-bans, and the ban propagates fleet-wide. This
+  //    proves both aggregate counting (R1 phase 2) AND cross-node enforcement.
   const controlB = await fetch(B_EDGE + '/', { redirect: 'manual' }).then((r) => r.status).catch(() => 0);
   check('edge-B-open-before-flood', controlB !== 403, `status ${controlB}`);
 
-  let aBanned = false;
-  for (let i = 0; i < 400 && !aBanned; i++) {
-    const s = await fetch(A_EDGE + '/', { redirect: 'manual' }).then((r) => r.status).catch(() => 0);
-    if (s === 403) aBanned = true;
-  }
-  check('flood-auto-bans-on-A', aBanned, aBanned ? 'node A returned 403' : 'never auto-banned (raise flood count?)');
+  const N = 80; // per node; 2N = 160 > hard(120), but N < hard so no per-node breach
+  const burst = (base) =>
+    Promise.all(Array.from({ length: N }, () => fetch(base + '/', { redirect: 'manual' }).then((r) => r.status).catch(() => 0)));
+  const [aCodes, bCodes] = await Promise.all([burst(A_EDGE), burst(B_EDGE)]);
+  const banned403 = aCodes.includes(403) || bCodes.includes(403);
+  check('split-flood-aggregate-bans', banned403,
+    `${N}/node (<120 each) → 403 seen: A=${aCodes.includes(403)} B=${bCodes.includes(403)} (shared counter aggregated 2×${N})`);
 
   await sleep(300);
+  const aBlocked = await fetch(A_EDGE + '/', { redirect: 'manual' }).then((r) => r.status).catch(() => 0);
   const bBlocked = await fetch(B_EDGE + '/', { redirect: 'manual' }).then((r) => r.status).catch(() => 0);
-  check('auto-ban-enforced-on-B', bBlocked === 403, `node B status ${bBlocked} (expected 403 via shared ban)`);
+  check('aggregate-ban-enforced-on-both', aBlocked === 403 && bBlocked === 403,
+    `node A=${aBlocked} node B=${bBlocked} (both expected 403 via shared ban)`);
 
   console.log(`\n=== shared-state consistency: ${failed === 0 ? 'ALL PASS' : failed + ' FAILED'} ===`);
   process.exit(failed === 0 ? 0 : 1);
