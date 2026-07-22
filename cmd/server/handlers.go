@@ -3,12 +3,12 @@ package main
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"encoding/json"
 	"io"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/httpx"
 	"github.com/modootoday/humanymous/internal/signals"
 )
 
@@ -152,7 +152,4 @@ func randHex(n int) string {
 	return hex.EncodeToString(b)
 }
 
-func writeJSON(w http.ResponseWriter, v any) {
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(v)
-}
+func writeJSON(w http.ResponseWriter, v any) { httpx.WriteJSON(w, v) } // PLAN-07 R7

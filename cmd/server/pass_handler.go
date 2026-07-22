@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -131,17 +133,10 @@ func (p *passStore) record(label string, difficulty int, passed bool) {
 	if passed {
 		outcome = "pass"
 	}
-	key := label + "|" + outcome + "|d" + itoaSmall(difficulty)
+	key := label + "|" + outcome + "|d" + strconv.Itoa(difficulty) // PLAN-07 R7
 	p.mu.Lock()
 	p.metrics[key]++
 	p.mu.Unlock()
-}
-
-func itoaSmall(n int) string {
-	if n < 0 || n > 9 {
-		return "?"
-	}
-	return string(rune('0' + n))
 }
 
 // maxPassSessions caps the in-memory per-session Pass map (audit LOW-3: bound the
@@ -713,7 +708,7 @@ func (a *app) handlePassKPI(w http.ResponseWriter, r *http.Request) {
 	for k, n := range snap {
 		// key = "label|outcome|dN"
 		var label, outcome, dd string
-		parts := splitKey(k)
+		parts := strings.Split(k, "|") // PLAN-07 R7
 		if len(parts) != 3 {
 			continue
 		}
@@ -770,22 +765,6 @@ func (a *app) handlePassKPI(w http.ResponseWriter, r *http.Request) {
 		"perDifficulty":   diffRates,
 		"raw":             snap,
 	})
-}
-
-// splitKey splits "a|b|c" into 3 parts (no strings.Split import churn needed here,
-// but keep it simple).
-func splitKey(s string) []string {
-	out := []string{}
-	cur := ""
-	for _, c := range s {
-		if c == '|' {
-			out = append(out, cur)
-			cur = ""
-		} else {
-			cur += string(c)
-		}
-	}
-	return append(out, cur)
 }
 
 // publishPass emits a Pass attempt to the live telemetry hub (wargame surface,

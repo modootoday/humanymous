@@ -104,6 +104,14 @@ func (a *app) scoreAndStore(sid string, now time.Time) (signals.ScoreResult, sig
 	rep, _ := a.store.Get(sid)
 	res := a.engine.Score(&rep)
 	a.store.StoreScored(sid, rep, now)
+	if a.logEnabled { // PLAN-07 R11: one structured verdict line, opt-in, no raw IP/UA
+		top := ""
+		if len(res.TopContributors) > 0 {
+			top = res.TopContributors[0].ID
+		}
+		a.log.Info("scored", "sid", shortSID(sid), "verdict", res.Verdict,
+			"risk", res.RiskScore, "hardRule", res.HardRuleFired, "top", top)
+	}
 	return res, rep
 }
 

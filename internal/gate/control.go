@@ -3,7 +3,6 @@ package gate
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"encoding/json"
 	"io"
 	"net/http"
 	"time"
@@ -11,6 +10,7 @@ import (
 	"github.com/modootoday/humanymous/internal/abuse"
 	"github.com/modootoday/humanymous/internal/audit"
 	"github.com/modootoday/humanymous/internal/collector"
+	"github.com/modootoday/humanymous/internal/httpx"
 	"github.com/modootoday/humanymous/internal/network"
 	"github.com/modootoday/humanymous/internal/scoring"
 	"github.com/modootoday/humanymous/internal/signals"
@@ -211,10 +211,7 @@ func protoVer(r *http.Request) string {
 	return "11"
 }
 
-func writeJSON(w http.ResponseWriter, v any) {
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(v)
-}
+func writeJSON(w http.ResponseWriter, v any) { httpx.WriteJSON(w, v) } // PLAN-07 R7
 
 // loaderJS is the slim reference collector (posts a client report to /collect).
 const loaderJS = `(function(){

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log/slog"
 	"net"
 	"net/http"
 	"strings"
@@ -39,6 +40,9 @@ type app struct {
 	webDir    string
 	ritOn     bool
 
+	log        *slog.Logger // PLAN-07 R11 structured logger (DiscardHandler unless -log-level set)
+	logEnabled bool         // fast gate: hot-path verdict/request emits are skipped entirely when off
+
 	pass *passStore // SoT-36 humanymous Pass challenge state (per-session, in-memory)
 
 	// SoT-30 Phase-3 local Red launcher (all nil/zero unless HMN_PLAYGROUND=1).
@@ -70,6 +74,9 @@ func newApp(webDir string, masterKey []byte, ritOn bool) *app {
 		webDir:    webDir,
 		ritOn:     ritOn,
 		pass:      newPassStore(),
+		// Default to a disabled logger so an app built without configureLogging (tests,
+		// embedders) is silent AND zero-cost. main() flips this via configureLogging.
+		log: slog.New(slog.DiscardHandler),
 	}
 	// SoT-30 Detection Observatory: the live-telemetry hub exists only when the
 	// dev flag is set, so gate-off leaves the scorer tap a zero-cost nil check.
@@ -107,7 +114,7 @@ func (a *app) routes() http.Handler {
 	if a.hub != nil {
 		a.registerPlayground(mux)
 	}
-	return a.withSecurityHeaders(a.withTrafficLog(mux))
+	return a.withSecurityHeaders(a.withTrafficLog(a.withObservability(mux)))
 }
 
 // withTrafficLog records every TCP/TLS/HTTP request into the traffic log so the

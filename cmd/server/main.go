@@ -27,6 +27,7 @@ func main() {
 	acmeDomain := flag.String("acme-domain", "", "comma-separated domain(s) for a Let's Encrypt cert via TLS-ALPN-01 (requires binding :443 directly; empty = self-signed)")
 	acmeCache := flag.String("acme-cache", "acme-cache", "directory to cache issued ACME certificates")
 	acmeEmail := flag.String("acme-email", "", "optional contact email for the ACME account")
+	logLevel := flag.String("log-level", "", "structured log level: off|error|warn|info|debug (default off; also HMN_LOG_LEVEL)")
 	flag.Parse()
 
 	domains := splitDomains(*acmeDomain)
@@ -50,6 +51,7 @@ func main() {
 	}
 
 	a := newApp(*webDir, masterKey, *ritOn)
+	a.configureLogging(*logLevel) // PLAN-07 R11: opt-in structured logging (off by default)
 
 	tlsConfig, err := buildTLSConfig(tlsSettings{
 		acmeDomains: domains,

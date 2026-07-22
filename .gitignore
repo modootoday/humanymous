@@ -44,3 +44,6 @@ Thumbs.db
 # Docker Red/Blue run artifacts (keep the dir, ignore outputs)
 /deployments/artifacts/*
 !/deployments/artifacts/.gitkeep
+
+# stray root output of `go build ./cmd/wasm/` (PLAN-07 R6 wasm gate); the real bundle lives under web/
+/wasm
