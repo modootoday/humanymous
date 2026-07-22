@@ -376,13 +376,26 @@ func main() {
 	}()
 	// Sweep in-memory detection state every minute so fingerprint/IP-keyed maps cannot
 	// grow without bound under bot-flood churn (PLAN-08 deployment-review ship-blocker;
-	// brings the gate to parity with the core engine's GC ticker).
+	// brings the gate to parity with the core engine's GC ticker). The same tick surfaces
+	// audit-projection drop counters (PLAN-08 backlog): a Tier-1/Tier-2 sink that is
+	// dropping records under backpressure/outage was previously silent.
+	var lastDropped uint64
 	go func() {
 		t := time.NewTicker(time.Minute)
 		for range t.C {
 			now := time.Now()
 			srv.GC(now)   // verdicts, bans + strikes + rate windows, sweep bindings, anomaly
 			store.GC(now) // control-plane collector store
+			var dropped uint64
+			for _, p := range projections {
+				if d, ok := p.(interface{ Dropped() uint64 }); ok {
+					dropped += d.Dropped()
+				}
+			}
+			if dropped > lastDropped {
+				log.Printf("WARN audit projection dropped %d records total (Tier-1/2 backpressure or outage; the WAL remains the durability authority)", dropped)
+				lastDropped = dropped
+			}
 		}
 	}()
 

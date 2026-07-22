@@ -99,6 +99,12 @@ func (c *ControlPlane) Handler() http.Handler {
 	mux.HandleFunc("/collect", c.handleCollect)
 	mux.HandleFunc("/loader.js", c.handleLoader)
 	mux.HandleFunc("/csp-report", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusNoContent) })
+	// Always-on unauthenticated liveness probe (PLAN-08 backlog): LBs/orchestrators
+	// need a real probe for a wedged Gate. Unlike the /health origin-bypass route, this
+	// is answered by the Gate itself and carries no data.
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, map[string]any{"status": "ok", "plane": "gate"})
+	})
 	return mux
 }
 

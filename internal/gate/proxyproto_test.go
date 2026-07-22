@@ -111,3 +111,17 @@ func TestProxyListenerTrustGate(t *testing.T) {
 		t.Errorf("untrusted peer: RemoteAddr host = %s, want the real peer 127.0.0.1 (spoof rejected)", host)
 	}
 }
+
+// PLAN-08 backlog: a dangerously broad trusted-proxy CIDR must be rejected (fail-closed
+// on misconfig) so an operator cannot let any client spoof any source IP.
+func TestParseCIDRsRejectsBroad(t *testing.T) {
+	for _, broad := range []string{"0.0.0.0/0", "::/0", "10.0.0.0/4"} {
+		if _, err := ParseCIDRs(broad); err == nil {
+			t.Errorf("broad CIDR %q must be rejected", broad)
+		}
+	}
+	// A normal balancer CIDR is accepted.
+	if nets, err := ParseCIDRs("172.40.0.0/24, 10.1.2.3"); err != nil || len(nets) != 2 {
+		t.Errorf("valid CIDRs must parse: %v, %d nets", err, len(nets))
+	}
+}

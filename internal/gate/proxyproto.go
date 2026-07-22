@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"strconv"
@@ -61,6 +62,14 @@ func ParseCIDRs(list string) ([]*net.IPNet, error) {
 		_, n, err := net.ParseCIDR(f)
 		if err != nil {
 			return nil, err
+		}
+		// Reject a dangerously broad trusted-proxy range (PLAN-08 backlog): a /0 (or a
+		// near-/0) would let ANY client spoof ANY source IP via a self-supplied PROXY-v2
+		// header — the exact abuse the trust gate exists to prevent. Fail closed on the
+		// misconfig rather than silently trusting the whole internet.
+		if ones, bits := n.Mask.Size(); ones < 8 {
+			return nil, fmt.Errorf("gate: trusted-proxy CIDR %s is too broad (/%d of /%d); "+
+				"list your balancers' addresses, never a /0", f, ones, bits)
 		}
 		out = append(out, n)
 	}
