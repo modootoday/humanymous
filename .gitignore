@@ -12,6 +12,7 @@
 *.exe
 /web/detector.wasm
 /docs/report.html
+/.cache/
 
 # ACME/autocert on-disk cache (issued certs + account key; engine -acme-cache)
 /acme-cache/
