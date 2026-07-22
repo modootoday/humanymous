@@ -142,7 +142,13 @@ func main() {
 		log.Printf("audit projection: Redis Streams -> %s (audit:%s)", *auditRedis, *node)
 	}
 	if *auditCH != "" {
-		projections = append(projections, audit.NewCHSink(*auditCH, "audit_log", 10000, time.Second, 100000))
+		ch := audit.NewCHSink(*auditCH, "audit_log", 10000, time.Second, 100000)
+		// PLAN-08 backlog: optional ClickHouse credential via HTTP Basic Auth (kept out of
+		// the URL, so it never lands in a logged endpoint string).
+		if u := os.Getenv("HMN_CLICKHOUSE_USER"); u != "" {
+			ch.SetAuth(u, os.Getenv("HMN_CLICKHOUSE_PASSWORD"))
+		}
+		projections = append(projections, ch)
 		log.Printf("audit projection: ClickHouse -> %s (audit_log)", *auditCH)
 	}
 	alog := audit.NewLog(audit.Config{NodeID: *node, HMACKey: hmacKey, CheckpointEvery: 32, Witness: witness, SigningSeed: signingSeed, WAL: auditSink, Projections: projections})

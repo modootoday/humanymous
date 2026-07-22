@@ -14,7 +14,9 @@ const OP = process.env.OP_TOKEN || 'e2e-operator-token';
 let failed = 0;
 const check = (name, ok, detail) => { console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ' — ' + detail : ''}`); if (!ok) failed++; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const chQuery = async (sql) => (await fetch(CH + '/?query=' + encodeURIComponent(sql)).then((r) => r.text()).catch(() => '')).trim();
+const CH_USER = process.env.CH_USER || '', CH_PASSWORD = process.env.CH_PASSWORD || '';
+const chHeaders = CH_USER ? { Authorization: 'Basic ' + Buffer.from(`${CH_USER}:${CH_PASSWORD}`).toString('base64') } : {};
+const chQuery = async (sql) => (await fetch(CH + '/?query=' + encodeURIComponent(sql), { headers: chHeaders }).then((r) => r.text()).catch(() => '')).trim();
 
 async function main() {
   // Wait for ClickHouse + the table.

@@ -138,3 +138,13 @@ func TestCHSinkInsert(t *testing.T) {
 		t.Fatal("clickhouse sink did not POST an insert")
 	}
 }
+
+// PLAN-08 backlog: an unsafe projection table name is rejected (falls back to the safe default).
+func TestCHTableNameValidation(t *testing.T) {
+	if validTableName.MatchString("audit_log; DROP TABLE x") {
+		t.Error("an injection-y table name must NOT be accepted")
+	}
+	if !validTableName.MatchString("audit_log") {
+		t.Error("a normal identifier must be accepted")
+	}
+}

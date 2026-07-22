@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"sync"
 	"time"
 )
@@ -30,6 +31,8 @@ import (
 
 type CHSink struct {
 	insertURL string // full HTTP URL incl. ?query=INSERT...FORMAT JSONEachRow&settings
+	user      string // optional ClickHouse user (HTTP Basic Auth — NOT put in the URL)
+	pass      string
 	client    *http.Client
 	maxRows   int
 	maxWait   time.Duration
@@ -44,6 +47,14 @@ type CHSink struct {
 	closed  bool
 }
 
+// validTableName restricts the projection table to a safe SQL identifier
+// (defense-in-depth against injection via the table name, PLAN-08 backlog).
+var validTableName = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
+
+// SetAuth sets a ClickHouse credential sent as HTTP Basic Auth (kept OUT of the URL,
+// so a credential never lands in a logged endpoint string). Empty user disables it.
+func (s *CHSink) SetAuth(user, pass string) { s.user, s.pass = user, pass }
+
 // NewCHSink starts a background batch flusher. base is the ClickHouse HTTP endpoint
 // (e.g. "http://ch:8123"); table is the target table; maxRows/maxWait bound a batch;
 // bufCap bounds the in-process backlog before drop-and-count.
@@ -56,6 +67,9 @@ func NewCHSink(base, table string, maxRows int, maxWait time.Duration, bufCap in
 	}
 	if bufCap <= 0 {
 		bufCap = 100000
+	}
+	if !validTableName.MatchString(table) {
+		table = "audit_log" // reject an unsafe identifier; fall back to the safe default
 	}
 	q := "INSERT INTO " + table + " FORMAT JSONEachRow"
 	// skip_unknown_fields keeps the projection forward-compatible: a new Record field
@@ -149,6 +163,9 @@ func (s *CHSink) flush(ctx context.Context) error {
 		return err
 	}
 	req.Header.Set("Content-Type", "application/x-ndjson")
+	if s.user != "" {
+		req.SetBasicAuth(s.user, s.pass)
+	}
 	resp, err := s.client.Do(req)
 	if err != nil {
 		// server down: this projection loses the batch (durable copy is in the WAL).
