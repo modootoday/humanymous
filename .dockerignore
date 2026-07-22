@@ -33,6 +33,7 @@ web/detector.wasm
 .gitignore
 .dockerignore
 *.md
+!THIRD_PARTY_LICENSES.md
 *.log
 *.local
 .env

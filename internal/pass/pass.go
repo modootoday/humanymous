@@ -106,12 +106,25 @@ func Generate(masterKey []byte, sessionID string, bucket, instance uint64, diffi
 	return ch
 }
 
+// MaxBucketAge is the challenge TTL in 30s buckets. Set generously (~10 minutes) so a
+// slow assistive-technology user honours the "No timer — take your time" promise and is
+// never failed for being slow (audit ACC-1 / WCAG 2.2.1 No Timing). Freshness is a
+// weak staleness bound, not the security control — that is the crypto + real-event axes.
+const MaxBucketAge = 20
+
+// Fresh reports whether an issued challenge bucket is still within the TTL window.
+// Split out from Verify so the handler can tell "expired" apart from "misaligned" and
+// return an honest, screen-reader-announced message instead of a false "not solved".
+func Fresh(bucket, currentBucket uint64) bool {
+	return currentBucket >= bucket && currentBucket-bucket <= MaxBucketAge
+}
+
 // Verify checks that the submitted per-row offsets align every key to the centre
 // column. offsets[i] is how many cells row i was shifted; the key lands at
 // (keyIndex+offset) mod N. TTL bounds staleness. This is the alignment gate ONLY —
 // the handler additionally requires the real-event proof (SoT-36 §5) + attestation.
 func Verify(masterKey []byte, sessionID string, bucket, currentBucket, instance uint64, difficulty int, offsets []int) bool {
-	if currentBucket < bucket || currentBucket-bucket > 2 { // TTL
+	if !Fresh(bucket, currentBucket) {
 		return false
 	}
 	if len(offsets) != Rows {

@@ -55,13 +55,16 @@
       <button id="submit" class="go">Submit</button>
       <button id="newp">New puzzle</button>
     </div>
-    <div class="status" id="status">&nbsp;</div>
+    <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true">&nbsp;</div>
     <div class="sr" aria-live="polite" id="live"></div>
   </div>
 
   <p class="note"><b>Why this?</b> When a session looks ambiguous, humanymous asks you to prove you're a person. This challenge is
-  built to be clearable by <b>keyboard and by screen reader</b> — the check is not the puzzle, it's that a real device and person
+  built to be clearable by <b>keyboard and by screen reader</b>, and <b>there is no time limit</b> — the check is not the puzzle, it's that a real device and person
   moved the rows. It <b>raises the cost of automation</b>; it does not claim to stop it.</p>
+  <p class="note"><b>Can't complete this check?</b> No interactive challenge works for everyone. Read
+  <a href="https://humanymous.net/help/challenge-accessibility">accessibility help</a>, or
+  <a href="mailto:support@modoo.today?subject=humanymous%20Pass%20accessibility%20—%20need%20another%20way%20in">contact a human to be let through another way</a>.</p>
 </div>
 
 <script>
@@ -190,6 +193,7 @@ document.getElementById('submit').addEventListener('click',async()=>{
     motion:cap.motion.slice(-60),pointerType:cap.ptype};
   const j=await (await fetch('/api/pass/solve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
   if(j.ok){ solved=true; statusEl.textContent='✓ verified — you are human enough ('+(j.verdict||'ALLOW')+')'; statusEl.className='status ok'; document.getElementById('submit').disabled=true; }
+  else if(j.expired){ statusEl.textContent='⟳ '+(j.reason||'this check expired — starting a fresh one'); statusEl.className='status warn'; setTimeout(loadNew,1400); }
   else{ statusEl.textContent='✕ '+(j.reason||'not this time')+(j.triesLeft!=null?` · ${j.triesLeft} tries left`:''); statusEl.className='status bad'; if(j.triesLeft===0)setTimeout(loadNew,900); }
 });
 document.getElementById('newp').addEventListener('click',loadNew);

@@ -29,13 +29,13 @@ import (
 
 	"github.com/modootoday/humanymous/internal/audit"
 	"github.com/modootoday/humanymous/internal/collector"
-	"github.com/modootoday/humanymous/internal/scoring"
 	"github.com/modootoday/humanymous/internal/gate"
+	"github.com/modootoday/humanymous/internal/scoring"
 )
 
 func main() {
 	addr := flag.String("addr", ":8444", "public edge listen address")
-	adminAddr := flag.String("admin-addr", ":8445", "SEPARATE admin listener (auth-gated; SoT-28 WS1)")
+	adminAddr := flag.String("admin-addr", "127.0.0.1:8445", "SEPARATE admin listener (auth-gated; SoT-28 WS1). Defaults to LOOPBACK — front it with mTLS/SSO before exposing off-host (audit SEC-1).")
 	upstream := flag.String("upstream", "http://127.0.0.1:9000", "origin upstream base URL")
 	node := flag.String("node", "gate-1", "node id (audit chain owner)")
 	monitor := flag.Bool("monitor", false, "global monitor/shadow mode (score+log, enforce nothing)")
@@ -195,14 +195,27 @@ func main() {
 			envToks[p[0]] = p[1]
 		}
 	}
-	// SoT-31 R3 — fail-safe: refuse to boot with the shipped `e2e-*` demo tokens
-	// unless the demo/war explicitly opts in (HMN_ALLOW_DEV_TOKENS=1). An adopter
-	// who copies configs/dev.env is stopped, not silently exposed on :8445.
-	if os.Getenv("HMN_ALLOW_DEV_TOKENS") != "1" {
-		for role, v := range envToks {
-			if strings.HasPrefix(v, "e2e-") {
-				log.Fatalf("refusing to boot: HMN_ADMIN_TOKENS carries a shipped dev token for %q; set real admin tokens, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only (SoT-31 R3)", role)
+	// SoT-31 R3 + audit SEC-3 — fail-safe defaults: outside the explicit local-demo
+	// opt-in, refuse to boot with shipped/placeholder/weak admin secrets, so a
+	// `cp .env.example .env && up` cannot go live on CHANGE-ME credentials or a
+	// `e2e-*` demo token, and a low-entropy unseal passphrase cannot seal the keystore.
+	devTokens := os.Getenv("HMN_ALLOW_DEV_TOKENS") == "1"
+	if !devTokens {
+		reject := func(kind, v string) {
+			lv := strings.ToLower(v)
+			if strings.HasPrefix(v, "e2e-") || strings.Contains(lv, "change") ||
+				strings.Contains(lv, "placeholder") || strings.Contains(lv, "example") || strings.Contains(lv, "your-") {
+				log.Fatalf("refusing to boot: %s is a shipped/placeholder value; set a real secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only (SoT-31 R3 / audit SEC-3)", kind)
 			}
+			if len(v) < 16 {
+				log.Fatalf("refusing to boot: %s is too short (<16 chars); use a high-entropy secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only (audit SEC-3)", kind)
+			}
+		}
+		for role, v := range envToks {
+			reject("HMN_ADMIN_TOKENS["+role+"]", v)
+		}
+		if unseal != "" {
+			reject("HMN_UNSEAL", unseal)
 		}
 	}
 	for _, role := range []gate.Role{gate.RoleAuditor, gate.RoleOperator, gate.RoleApprover, gate.RoleDPO} {
@@ -213,7 +226,14 @@ func main() {
 		toks[role] = t
 		srv.Auth().Add(t, string(role)+"-1", role)
 	}
-	srv.SetDevConsoleToken(toks[gate.RoleOperator])
+	// audit SEC-1: only hand the console a live operator bearer token in the explicit
+	// local-demo mode. In a real deployment the console loads WITHOUT an injected token,
+	// so admin API calls require a real bearer token through the auth gate — front the
+	// admin plane with mTLS/SSO. (This closes the "any TLS client that reaches :8445 is
+	// handed a working operator token" bypass.)
+	if devTokens {
+		srv.SetDevConsoleToken(toks[gate.RoleOperator])
+	}
 
 	// SoT-31 R1 — the public edge serves a real cert (BYO / ACME) or self-signed;
 	// the admin plane stays self-signed (management-network + mTLS is the real
@@ -263,10 +283,21 @@ func main() {
 		}
 	}()
 
+	if lo := strings.HasPrefix(*adminAddr, "127.0.0.1") || strings.HasPrefix(*adminAddr, "localhost") || strings.HasPrefix(*adminAddr, "[::1]"); !lo && !devTokens {
+		log.Printf("WARNING (audit SEC-1): admin listener %s is not bound to loopback and no mTLS/SSO is configured — front it with a mutually-authenticated proxy or bind -admin-addr to 127.0.0.1. In Docker, keep the host port mapping loopback-only (127.0.0.1:8445:8445).", *adminAddr)
+	}
 	adminSrv := mkServer(*adminAddr, srv.AdminHandler(), adminCfg)
 	go func() {
 		log.Printf("humanymous Gate admin console on https://localhost%s/__hmn/admin/console", *adminAddr)
-		log.Printf("  dev tokens — auditor:%s operator:%s approver:%s dpo:%s", toks[gate.RoleAuditor], toks[gate.RoleOperator], toks[gate.RoleApprover], toks[gate.RoleDPO])
+		// SoT-31 R4 / audit SEC-2: NEVER echo admin bearer-token values at INFO level in a
+		// real deployment — env-supplied production tokens would land in stdout / docker logs
+		// / log shippers. Print the raw values only in the explicit local-demo mode; otherwise
+		// print role names only.
+		if devTokens {
+			log.Printf("  dev tokens (demo mode) — auditor:%s operator:%s approver:%s dpo:%s", toks[gate.RoleAuditor], toks[gate.RoleOperator], toks[gate.RoleApprover], toks[gate.RoleDPO])
+		} else {
+			log.Printf("  admin roles configured: auditor, operator, approver, dpo — token values NOT logged; supply them via HMN_ADMIN_TOKENS (a random token was generated for any role left unset)")
+		}
 		log.Fatalf("admin listener: %v", adminSrv.ListenAndServeTLS("", ""))
 	}()
 

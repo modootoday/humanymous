@@ -87,7 +87,20 @@ func (p *passStore) reserveTrace(digest string, now time.Time) bool {
 // wrapped around a fresh challenge (SoT-36 §5).
 func traceDigest(pr passProof) string {
 	h := sha256.New()
-	fmt.Fprintf(h, "%v|%v|%v|%v", pr.RawT, pr.Durations, pr.Pressures, pr.KeyDurs)
+	// Quantize before hashing (audit CWE-294): a replayed human trace must still collide
+	// after sub-ms noise is added to defeat an exact-match digest. Timings snap to 1ms and
+	// pressures to 0.05 — coarser than any perturbation an attacker can hide below, far
+	// finer than real human variance (tens of ms), so genuine distinct traces stay distinct.
+	q := func(xs []float64, quantum float64) {
+		for _, x := range xs {
+			fmt.Fprintf(h, "%d,", int64(math.Round(x/quantum)))
+		}
+		h.Write([]byte("|"))
+	}
+	q(pr.RawT, 1)
+	q(pr.Durations, 1)
+	q(pr.Pressures, 0.05)
+	q(pr.KeyDurs, 1)
 	return hex.EncodeToString(h.Sum(nil))
 }
 
@@ -639,7 +652,16 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 5. Server-side re-simulation of the placement (the whole verdict; no oracle).
+	// 5a. Expiry is NOT a wrong answer (audit ACC-1): a slow assistive-tech user must
+	// never be told "not solved" for taking their time. Report expiry honestly so the
+	// client can announce it and offer a fresh puzzle.
+	if !pass.Fresh(issuedBucket, current) {
+		a.publishPass(sid, false, "expired")
+		writeJSON(w, map[string]any{"ok": false, "expired": true, "reason": "this check expired — press New puzzle to start a fresh one"})
+		return
+	}
+
+	// 5b. Server-side re-simulation of the placement (the whole verdict; no oracle).
 	if !pass.Verify(a.masterKey, sid, issuedBucket, current, instance, diff, pr.Offsets) {
 		a.pass.record(label, diff, false)
 		a.publishPass(sid, false, "misaligned")

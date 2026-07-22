@@ -38,6 +38,8 @@ WORKDIR /app
 
 COPY --from=builder /out/server /app/server
 COPY --from=builder /src/web /app/web
+# Ship licence + third-party notices with the image (audit: BSD-3/MIT redistribution).
+COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
 COPY --from=builder --chown=65532:65532 /acme-cache /acme-cache
 
 VOLUME ["/acme-cache"]

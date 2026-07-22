@@ -27,6 +27,13 @@ jobs:
       - run: go build ./...
       - run: go vet ./cmd/... ./internal/...
       - run: go test ./...
+      # Supply-chain: fail CI on a known-vulnerable dependency reachable from our code
+      # (audit — OpenSSF Scorecard "Vulnerabilities" baseline). Reachability-aware, so it
+      # only flags CVEs in code paths we actually call.
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          "$(go env GOPATH)/bin/govulncheck" ./...
 
   detector-vs-bots:
     name: docker detector-vs-bots

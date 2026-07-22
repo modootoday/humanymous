@@ -115,8 +115,11 @@ docker compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swar
 docker compose down -v
 ```
 
-Expected result: **25/25 bots blocked (TPR 100%), 0 false positives**; Gate
-conformance **34/34**. The bots containers attach to an `internal` network only, so
+Expected result (a single reference run on the maintainers' hardware, n=1 per
+profile): all **25 bot profiles blocked** (DENY/CHALLENGE) and the **1 baseline
+session not denied**; Gate conformance **34/34**. These are reference-measured
+observations, **not a guarantee** — the baseline is a Playwright/CDP-driven session,
+not a physical human (see *Verification results* below). The bots containers attach to an `internal` network only, so
 they can physically reach nothing but the detector. Full topology and safety model:
 `deployments/README.md`.
 
@@ -160,9 +163,17 @@ Reference-measured results of running the **SoT-04 automation catalog** in
 installed Edge, Firefox-family use Playwright Firefox, and tls-parrot runs a real
 uTLS (Go) client:
 
+> **How to read these numbers.** This is a **single run (n=1 per profile) on the
+> maintainers' hardware** against a 26-profile local catalog (**25 bot profiles + 1
+> baseline**). The "baseline" is a **Playwright/CDP-driven session, not a physical
+> human**, so a real-human false-positive rate is *not* measured here. "FPR" below is a
+> **DENY-only** metric — it cannot count a human who was sent to a CHALLENGE, so it
+> under-reports human friction. Treat every figure as **reference-measured, not a
+> guarantee**.
+
 | Profile | Verdict | Detection basis |
 |----------|------|-----------|
-| human (simulated real user) | **ALLOW** | zero false positives |
+| baseline (Playwright/CDP session — not a physical human) | **ALLOW** or CHALLENGE | not denied in the reference run |
 | bot:http-client | CHALLENGE | UA↔TLS/header inconsistency (L6) |
 | bot:tls-parrot (uTLS Chrome parrot) | DENY | JA4=chrome but sec-ch-ua/sec-fetch absent + no JS |
 | bot:selenium | DENY | `cdc_` artifacts (HR-1) |
@@ -173,8 +184,12 @@ uTLS (Go) client:
 | bot:nodriver / xvfb-headful / anti-detect | CHALLENGE | no interaction (HR-12) |
 | bot:camoufox (Playwright Firefox) | CHALLENGE | no interaction (HR-12) |
 
-→ All bots blocked (DENY + CHALLENGE), **bot detection rate (TPR) 100%, human
-false-positive rate (FPR) 0%** (reference-measured). Full report: `docs/report.html`.
+→ In this reference run all 25 bot profiles were blocked (DENY/CHALLENGE) and the
+baseline was not denied. **Reference-measured on the maintainers' hardware, n=1 — not
+a guarantee**; the baseline is a Playwright/CDP session, and the DENY-only "FPR"
+under-reports human friction. Full report (read with the same caveats):
+`docs/report.html`. Honest capabilities, limits, and the known detection floor are in
+the [transparency report](docs/explanation/transparency-report.md).
 
 ## Anti-bypass layers (implemented & wired)
 
@@ -184,7 +199,7 @@ false-positive rate (FPR) 0%** (reference-measured). Full report: `docs/report.h
 | Forensic watermarking of all resources | SoT-08 | ✅ live | `/res/*`→`/api/trace` leak-session trace-back + forgery detection, measured |
 | Adaptive resource gating (video/embed) | SoT-10 | ✅ live | verdict×tier → serve/downgrade/deny, `X-HM-Gate` |
 | Ad/tracking-block verification | SoT-09 | ✅ live | mitigates false positives for privacy users |
-| Script-injection/eval/new Function guard | SoT-11 | ✅ live | CSP + injector runtime hardening, patchright detection (HR-9) |
+| Script-injection/eval/new Function guard | SoT-11 | ✅ live | injector runtime hardening + patchright detection (HR-9); CSP ships **report-only** (violation telemetry, not an enforced block — see the security audit) |
 | Traffic (TCP/TLS/HTTP) logging + consistency guard | SoT-12 | ✅ live | detects intra-session JA4/UA/IP/header rotation (HR-14/15) |
 | **Raw HTTP/2 frame capture (Akamai fp)** | SoT-02 | ✅ live | captures real SETTINGS/pseudo-order (fingerproxy approach) |
 | **Image LSB steganography (watermark robustness)** | SoT-08 | ✅ live | survives meta-strip + PNG re-encode, retains leak tracing |
@@ -203,7 +218,8 @@ the anti-bypass layers:
 | bot:video-scrape (video Range storm) | DENY | media.range_storm + gate (HR-14) |
 | bot:watermark-strip (leak + meta strip) | DENY | LSB residue → session identified via /api/trace |
 
-→ **All bots blocked, human ALLOW. TPR 100% / FPR 0%.** RIT is validated on a real
+→ In this reference run every profile above was blocked and the baseline was not
+denied (reference-measured, n=1 — not a guarantee). RIT is validated on a real
 browser (`l5.rit.ok`); replay and tampering are blocked.
 
 ### Round 2 — web-research-driven deeper escalation (2025–2026 techniques)
@@ -248,9 +264,9 @@ rate limit on the protocol-error rate and server-emitted resets.**
 
 New bots: `flood` (90 rapid requests from one fingerprint), `rapid_reset` (open + immediate
 CANCEL flood on one connection; scored even when Go stdlib mitigation closes the
-connection). **Result**: 25/25 bots blocked (DENY 24 + CHALLENGE 1), human **ALLOW**.
-**TPR 100% / FPR 0%.** The frame monitor is regression-free for normal h2 browser
-serving (verified by human ALLOW).
+connection). **Result** (reference run, n=1): all 25 bot profiles blocked (DENY 24 +
+CHALLENGE 1) and the baseline not denied — reference-measured, not a guarantee. The
+frame monitor showed no regression for normal h2 browser serving in this run.
 
 ## Production promotion — reverse-proxy security layer (SoT-18–28)
 
@@ -306,8 +322,9 @@ node test/gate/e2e.mjs
 ## Status
 
 L1–L7 detection + all anti-bypass layers (SoT-07–17) + **production reverse-proxy
-promotion (SoT-18–28)** implemented and verified. All tests green; detection catalog
-**25/25 bots blocked, 0 false positives**; Gate conformance **34/34** (incl. token
+promotion (SoT-18–28)** implemented and verified. All tests green; in the reference
+run (n=1) all **25 bot profiles were blocked and the baseline was not denied**
+(reference-measured, not a guarantee); Gate conformance **34/34** (incl. token
 theft/forgery/replay, smuggling, upgrade-tunnel, and sweep defenses). The headline
 audit log (tamper-evident hash chain + Ed25519 STH + crypto-shred) is live, with the
 live admin console (SoT-26). Details in `sots/18-audit-log.md`, `sots/19`–`sots/28`,

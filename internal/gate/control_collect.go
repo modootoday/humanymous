@@ -77,7 +77,7 @@ func (c *ControlPlane) issueVerdictTokenOnAllow(w http.ResponseWriter, r *http.R
 		return
 	}
 	tok := issueVerdictToken(c.tokenKey, sid, tokenBind(r), c.tokEpoch(), now.Add(30*time.Minute))
-	http.SetCookie(w, &http.Cookie{Name: verdictCookie, Value: tok, Path: "/", HttpOnly: true, SameSite: http.SameSiteLaxMode})
+	http.SetCookie(w, &http.Cookie{Name: verdictCookie, Value: tok, Path: "/", HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
 	c.sink.Emit(audit.Record{
 		EventType: audit.EventTokenIssued, Actor: audit.Actor{Kind: "subject", IDPsn: c.pseudo(sid, sid)},
 		TenantID: "control", RouteClass: "control", Verdict: "allow", Mode: "enforce", KeyID: "k1",

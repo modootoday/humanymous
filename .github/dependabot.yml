@@ -1,0 +1,22 @@
+# Dependabot — keep dependencies and CI actions patched (audit: OpenSSF Scorecard
+# "Dependency-Update-Tool" + "Vulnerabilities" baseline for a public security tool).
+version: 2
+updates:
+  # Go modules (engine + Gate + tooling).
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      go-dependencies:
+        patterns: ["*"]
+    labels: ["dependencies", "go"]
+
+  # GitHub Actions used by CI + release (also lets Dependabot pin actions to SHAs).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "ci"]

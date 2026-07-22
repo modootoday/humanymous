@@ -62,8 +62,14 @@ func TestStaleBucketRejected(t *testing.T) {
 	if !Verify(testKey, "a", 100, 100, 0, 1, sol) {
 		t.Fatal("sanity: fresh solution should verify")
 	}
-	if Verify(testKey, "a", 100, 104, 0, 1, sol) {
-		t.Error("a solution 4 buckets late must be rejected (TTL)")
+	// Accessibility (ACC-1 / WCAG 2.2.1): a slow assistive-tech user well within the
+	// ~10-minute TTL must NOT be rejected for taking their time.
+	if !Verify(testKey, "a", 100, 100+MaxBucketAge, 0, 1, sol) {
+		t.Error("a solution within the TTL window must still verify (no hidden short timeout)")
+	}
+	// Beyond the TTL, the challenge is stale and must be rejected.
+	if Verify(testKey, "a", 100, 100+MaxBucketAge+1, 0, 1, sol) {
+		t.Error("a solution past the TTL window must be rejected")
 	}
 	if Verify(testKey, "a", 100, 99, 0, 1, sol) {
 		t.Error("an earlier currentBucket must be rejected")

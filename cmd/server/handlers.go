@@ -128,6 +128,7 @@ func (a *app) ensureSession(w http.ResponseWriter, r *http.Request) string {
 		Value:    sid,
 		Path:     "/",
 		HttpOnly: true,
+		Secure:   true, // HTTPS-only (audit): humanymous is served over TLS everywhere
 		SameSite: http.SameSiteLaxMode,
 	})
 	return sid

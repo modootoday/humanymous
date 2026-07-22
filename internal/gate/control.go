@@ -23,18 +23,18 @@ import (
 
 // ControlPlane serves /__hmn/* (prefix already stripped by the proxy).
 type ControlPlane struct {
-	store    *collector.Store
-	engine   *scoring.Engine
-	verdicts *VerdictStore
-	sink     *audit.Sink
-	vault    *audit.Vault
-	tokenKey    []byte        // verdict-token HMAC key (SoT-21 §3)
-	epoch       string        // fallback token epoch
-	tokenEpochs *EpochManager // shared rotating epoch (SoT-28 WS6)
-	nonces      *NonceCache   // single-use beacon nonce cache (HR-29)
-	climiter *abuse.Limiter // control-plane flood limiter (SoT-28 WS7)
-	cpHard   int            // control-plane hard threshold (for sampled audit)
-	nowFn    func() time.Time
+	store       *collector.Store
+	engine      *scoring.Engine
+	verdicts    *VerdictStore
+	sink        *audit.Sink
+	vault       *audit.Vault
+	tokenKey    []byte         // verdict-token HMAC key (SoT-21 §3)
+	epoch       string         // fallback token epoch
+	tokenEpochs *EpochManager  // shared rotating epoch (SoT-28 WS6)
+	nonces      *NonceCache    // single-use beacon nonce cache (HR-29)
+	climiter    *abuse.Limiter // control-plane flood limiter (SoT-28 WS7)
+	cpHard      int            // control-plane hard threshold (for sampled audit)
+	nowFn       func() time.Time
 }
 
 // NewControlPlane wires the control plane against shared state. The control
@@ -161,7 +161,7 @@ func (c *ControlPlane) ensureSession(w http.ResponseWriter, r *http.Request) str
 	b := make([]byte, 16)
 	_, _ = rand.Read(b)
 	sid := hex.EncodeToString(b)
-	http.SetCookie(w, &http.Cookie{Name: sessionCookie, Value: sid, Path: "/", HttpOnly: true, SameSite: http.SameSiteLaxMode})
+	http.SetCookie(w, &http.Cookie{Name: sessionCookie, Value: sid, Path: "/", HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
 	return sid
 }
 

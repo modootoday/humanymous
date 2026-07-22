@@ -36,3 +36,8 @@ plugins:
 # Keep build artifacts and the screenshot utility out if they ever land here:
 exclude:
   - "*.mjs"
+
+# Jekyll excludes dotfiles/dirs by default; force-include the RFC 9116 security
+# contact so it is served at https://humanymous.net/.well-known/security.txt.
+include:
+  - ".well-known"

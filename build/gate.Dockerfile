@@ -16,6 +16,8 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -trimpat
 FROM gcr.io/distroless/static-debian12:nonroot
 WORKDIR /app
 COPY --from=builder /out/gate /app/gate
+# Ship licence + third-party notices with the image (audit: BSD-3/MIT redistribution).
+COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
 EXPOSE 8444 8445
 USER 65532:65532
 # Flags (edge/admin addr, upstream, tokens) are supplied by docker-compose.
