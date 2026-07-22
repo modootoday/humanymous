@@ -240,10 +240,16 @@ func (l *Log) checkpointLocked() {
 		PrevCP:     prev,
 	}
 	cp.Sig = hex.EncodeToString(ed25519.Sign(l.signPriv, sthBytes(cp)))
-	// Independent witness counter-signature (SoT-28 WS8): the witness only signs a
-	// monotonically-growing tree, so a history rewrite cannot obtain a valid one.
+	// Independent witness counter-signature (SoT-28 WS8): the witness co-signs only an
+	// append-only extension of the last STH it saw, verified via an RFC 6962
+	// consistency proof (PLAN-08 R6), so a history rewrite/fork cannot obtain a valid
+	// one.
 	if l.witness != nil {
-		if wsig, err := l.witness.CounterSign(cp); err == nil {
+		var cproof [][]byte
+		if last := l.witness.LastSize(); last > 0 && last < l.seq {
+			cproof = consistencyProof(l.leaves, int(last))
+		}
+		if wsig, err := l.witness.CounterSign(cp, cproof); err == nil {
 			cp.WitnessSig = wsig
 		}
 	}
