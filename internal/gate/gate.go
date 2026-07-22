@@ -22,7 +22,7 @@ type Server struct {
 	cfg             Config
 	sink            *audit.Sink
 	vault           *audit.Vault
-	verdicts        *VerdictStore
+	verdicts        VerdictLedger // distribution seam (PLAN-07 R18): in-mem now, shared later
 	control         http.Handler // /__hmn/* control plane (session/collect/pow/loader)
 	rp              *httputil.ReverseProxy
 	snippet         []byte
@@ -32,7 +32,7 @@ type Server struct {
 	tokenEpochs     *EpochManager  // rotating verdict-token epoch (SoT-28 WS6)
 	sweep           *SweepDetector // decision-probing recon detector (HR-30)
 	decFloor        time.Duration  // constant decision-latency floor (HR-30)
-	bans            *BanStore      // rate-limit-triggered + manual bans (SoT-27)
+	bans            BanLedger      // rate-limit-triggered + manual bans (SoT-27); distribution seam (R18)
 	auth            *AdminAuth     // admin-plane authentication (SoT-28 WS1)
 	approvals       *ApprovalStore // two-phase dual-control (SoT-28 WS2)
 	shreds          *ShredQueue    // erasure hold-window queue (SoT-28 WS3)
@@ -92,7 +92,7 @@ func (s *Server) SetKillSwitch(on bool) { s.killSwitch.Store(on) }
 func (s *Server) enforcing(route routePolicy) bool { return route.enforce && !s.monitorOn() }
 
 // Bans exposes the ban store for console management (SoT-26/27).
-func (s *Server) Bans() *BanStore { return s.bans }
+func (s *Server) Bans() BanLedger { return s.bans }
 
 // Auth exposes the admin auth table so cmd/gate can seed operators (SoT-28).
 func (s *Server) Auth() *AdminAuth { return s.auth }
@@ -324,7 +324,7 @@ func (s *Server) enforceBan(w http.ResponseWriter, r *http.Request, sid string, 
 	}, func() {
 		w.Header().Set("X-Hmn-Incident", "see-audit-log")
 		if !b.Permanent() {
-			if secs := int(s.bans.remaining(b)); secs > 0 {
+			if secs := int(b.remainingSecs(s.nowFn())); secs > 0 {
 				w.Header().Set("Retry-After", itoaInt(secs))
 			}
 		}

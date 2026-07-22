@@ -147,12 +147,15 @@ func (s *BanStore) Lift(key string) bool {
 	return ok
 }
 
-// remaining returns seconds until a temporary ban expires (0 for permanent/past).
-func (s *BanStore) remaining(b BanEntry) float64 {
+// remainingSecs returns seconds until a temporary ban expires (0 for permanent/past).
+// It lives on the entry (not the store) so the enforcement path can compute a
+// Retry-After without reaching through the store — keeping the BanLedger seam (R18)
+// limited to the operations a shared implementation must actually provide.
+func (b BanEntry) remainingSecs(now time.Time) float64 {
 	if b.Permanent() {
 		return 0
 	}
-	d := b.Until.Sub(s.nowFn()).Seconds()
+	d := b.Until.Sub(now).Seconds()
 	if d < 0 {
 		return 0
 	}

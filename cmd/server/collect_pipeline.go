@@ -76,8 +76,13 @@ func (a *app) enrichServerSignals(sid string, r *http.Request, client signals.Cl
 			signals.New(dos, true, signals.VerdictBot, 1.0, signals.SourceServer, "HTTP/2 frame-abuse DoS"),
 		}, now)
 	}
-	rlKey := ja4Stable(a.reg.Hello(r.RemoteAddr)) + "|" + clientSubnet(r)
-	if lvl := a.limiter.Level(a.limiter.Observe(rlKey, now)); lvl > 0 {
+	// Coalesce the fingerprint derivation (PLAN-07 R19): the stable JA4 and the client
+	// subnet are each needed by both the rate limiter and the correlation check. Hello()
+	// is a registry lookup and clientSubnet() re-parses the peer address — compute each
+	// once and reuse, instead of recomputing per consumer.
+	ja4 := ja4Stable(a.reg.Hello(r.RemoteAddr))
+	subnet := clientSubnet(r)
+	if lvl := a.limiter.Level(a.limiter.Observe(ja4+"|"+subnet, now)); lvl > 0 {
 		id, v := "l5.abuse.rate_exceeded", signals.VerdictSuspicious
 		if lvl == 2 {
 			id, v = "l5.abuse.flood", signals.VerdictBot
@@ -87,8 +92,8 @@ func (a *app) enrichServerSignals(sid string, r *http.Request, client signals.Cl
 		}, now)
 	}
 	if client.FingerprintID != "" {
-		key := client.FingerprintID + "|" + ja4Stable(a.reg.Hello(r.RemoteAddr))
-		if corr := a.corr.Observe(key, clientSubnet(r), sid, now); len(corr) > 0 {
+		key := client.FingerprintID + "|" + ja4
+		if corr := a.corr.Observe(key, subnet, sid, now); len(corr) > 0 {
 			a.store.AppendNetworkSignals(sid, corr, now)
 		}
 	}
