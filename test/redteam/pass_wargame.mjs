@@ -100,6 +100,18 @@ function machineProof(nw, variant = 0) {
     moves: 0, coalesced: 0, pathLen: 0, durations: [], rawT: [], pressures: [],
   };
 }
+// A mobile-claiming forgery: touch pointer + pressure samples but NO device-motion.
+// A real phone always carries hand-tremor micro-motion; its absence is the tell.
+function mobileProof(nw) {
+  return {
+    bucket: nw.bucket, challengeNonce: nw.challengeNonce, offsets: solve(nw.challenge), trusted: true,
+    pointerType: 'touch', pressures: [0.41 + (RUN % 1) * 0.02, 0.5, 0.46, 0.52, 0.44],
+    moves: 12, coalesced: 31, pathLen: 141,
+    durations: [10.3, 18.1, 9.6, 22.4, 15.2, 12.8, 27.1, 11.5], // fractional → no integer-timing flag
+    rawT: [1, 7, 15, 24, 34, 47, 55, 68, 82, 99, 117, 138].map((n) => n + RUN),
+    keys: 0, keyDurs: [], motion: [], // NO device-motion → mobile inconsistency
+  };
+}
 // A forged pointer proof: plausible coalesced sub-samples + a monotone, jittered
 // raw timestamp stream. `variant` perturbs the stream so it is a fresh trace.
 function pointerProof(nw, variant = 0) {
@@ -171,7 +183,17 @@ console.log(`known-bot-solves-pass:      cleared=${knownSolve.ok} engineVerdict=
 const mach = new Client('machine-forge'); const mnw = await mach.fresh(); await mach.preflight(mnw);
 const machR = await mach.submit(machineProof(mnw));
 const machRisk = machR.riskScore ?? 0;
-console.log(`machine-forge: clear=${machR.ok} risk=${machRisk} verdict=${machR.verdict} (behavioral tell folded in)\n`);
+console.log(`machine-forge: clear=${machR.ok} risk=${machRisk} verdict=${machR.verdict} (behavioral tell folded in)`);
+
+// ── Round 8: mobile sensor guard (SOFT) — a touch claim without device-motion ──
+// The user-requested guard: a session claiming touch input but carrying NO device-
+// motion is inconsistent (a real phone always has hand-tremor micro-jitter). SOFT —
+// a mounted phone is low-motion too, so it raises risk (l2.adv.mobile_inconsistent),
+// never blocks. A real mobile human sends motion samples and is not flagged.
+const mob = new Client('mobile-forge'); const mobnw = await mob.fresh(); await mob.preflight(mobnw);
+const mobR = await mob.submit(mobileProof(mobnw));
+const mobRisk = mobR.riskScore ?? 0;
+console.log(`mobile-forge:  clear=${mobR.ok} risk=${mobRisk} verdict=${mobR.verdict} (touch claim, no device-motion → flagged)\n`);
 
 // ── Axis ③ (round 2) + axis ① identity gate (round 3): volume-forge ────────────
 // One session clears Pass with forged keyboard proofs. Round 2 folds l7.pass.velocity
@@ -285,11 +307,12 @@ const postureHeld = results.every(r => r.passed === r.expected);
 const humanFloorOK = humanResult.ok && (kpi.humanAttempts === 0 || kpi.humanPassRate === 1);
 const identityGateOK = volGate && tokCap; // naive flood blocked + token flood throughput-capped
 const behaviorOK = machRisk >= 10 && machRisk > (humanResult.riskScore ?? 0); // soft tell folded in, above the human's floor
+const mobileOK = mobR.ok === true && mobRisk >= 10; // touch-without-motion flagged (soft), still clears
 const engineFusionOK = launderBlocked && upgradeOK; // bot→DENY despite clearing; genuine CHALLENGE→ALLOW
-const promotion = postureHeld && humanFloorOK && a11yOK && identityGateOK && behaviorOK && engineFusionOK;
+const promotion = postureHeld && humanFloorOK && a11yOK && identityGateOK && behaviorOK && mobileOK && engineFusionOK;
 const blocked = results.filter(r => !r.passed).length;
-console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · identity-gate ${identityGateOK ? 'engaged' : 'FAILED'} · behavioral ${behaviorOK ? `folded in (machine risk ${machRisk} vs human 0)` : 'FAILED'} · engine-fusion ${engineFusionOK ? 'held (bot→DENY, genuine CHALLENGE→ALLOW)' : 'FAILED'}`);
+console.log(`\nblocked ${blocked}/${results.length} single-shot classes · posture ${postureHeld ? 'held' : 'DIVERGED'} · human floor ${humanFloorOK ? 'ok' : 'REGRESSED'} · identity-gate ${identityGateOK ? 'engaged' : 'FAILED'} · behavioral ${behaviorOK ? `folded in (machine ${machRisk} vs human 0)` : 'FAILED'} · mobile-guard ${mobileOK ? `flagged (risk ${mobRisk})` : 'FAILED'} · engine-fusion ${engineFusionOK ? 'held (bot→DENY, genuine CHALLENGE→ALLOW)' : 'FAILED'}`);
 console.log(`promotion gate: ${promotion ? 'PASS' : 'FAIL'}`);
-console.log('rounds 1-7 in force: ① nonce-bound PoW + anti-replay · ③ velocity→PoW-cost + engine risk (no lockout) · ① rate-limited attestation identity-gate · ④ SOFT motor-trace scoring (never gates the accessible lane) · ⑤/⑥/⑦ engine fusion verified LIVE both ways — a genuine CHALLENGE→ALLOW, a known bot→DENY despite clearing the puzzle.');
+console.log('rounds 1-8 in force: ① nonce-bound PoW + anti-replay · ③ velocity→PoW-cost + engine risk (no lockout) · ① rate-limited attestation identity-gate · ④ SOFT motor-trace scoring + ⑧ mobile device-motion consistency (both never gate the accessible lane) · ⑤/⑥/⑦ engine fusion verified LIVE both ways — a genuine CHALLENGE→ALLOW, a known bot→DENY despite clearing the puzzle.');
 console.log('honest floor: a PERFECT single forgery from a FRESH identity with human-like dynamics still clears the puzzle — it cannot be blocked at the trace level without excluding real AT users. It is now bounded by attestation issuance rate + folded engine risk, and the engine still DENIES it the moment any independent bot signal (JA4/L1-L7/correlation) appears. Remaining wins are engine-side, in the full real-browser-vs-bot redteam suite — not this node puzzle harness.');
 if (!promotion) process.exitCode = 1;

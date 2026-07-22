@@ -70,7 +70,12 @@ let challengeNonce='', attestToken='', powReady=Promise.resolve(false);
 const reelsEl=document.getElementById('reels'), slot=document.getElementById('slot');
 const statusEl=document.getElementById('status'), live=document.getElementById('live');
 let cap=resetCap();
-function resetCap(){return {events:0,coalesced:0,trusted:true,pathLen:0,durs:[],last:0,rawT:[],pressures:[],keys:0,keyDurs:[],lastK:0};}
+function resetCap(){return {events:0,coalesced:0,trusted:true,pathLen:0,durs:[],last:0,rawT:[],pressures:[],keys:0,keyDurs:[],lastK:0,motion:[],ptype:''};}
+// Mobile sensor guard (SoT-36 §5): a real phone carries hand-tremor micro-motion.
+// Capture device-motion magnitude; the server soft-flags a touch claim without it.
+if(window.DeviceMotionEvent){ window.addEventListener('devicemotion',e=>{
+  const a=e.accelerationIncludingGravity||e.acceleration; if(!a||cap.motion.length>=200)return;
+  cap.motion.push(+Math.hypot(a.x||0,a.y||0,a.z||0).toFixed(4)); }); }
 
 // Axis ① — the non-interactive crypto proof (SoT-36 §2). Solve the PoW in the
 // background while the person aligns the rows, so it never gates their time.
@@ -107,7 +112,7 @@ async function doPreflight(j){
   return true;
 }
 
-function onMove(e){ if(e.isTrusted===false)cap.trusted=false; cap.events++;
+function onMove(e){ if(e.isTrusted===false)cap.trusted=false; cap.events++; if(e.pointerType)cap.ptype=e.pointerType;
   const co=e.getCoalescedEvents?e.getCoalescedEvents():[e]; cap.coalesced+=co.length;
   for(const c of co){ if(cap.rawT.length<200) cap.rawT.push(+((c.timeStamp||performance.now()).toFixed(3))); }
   if((e.pointerType==='touch'||e.pointerType==='pen')&&e.pressure>0&&cap.pressures.length<200) cap.pressures.push(+e.pressure.toFixed(3));
@@ -181,7 +186,8 @@ document.getElementById('submit').addEventListener('click',async()=>{
   const cryptoOK=await powReady; // axis ①: wait for the background crypto proof
   if(!cryptoOK){ statusEl.textContent='✕ verifying your browser… try Submit again'; statusEl.className='status warn'; return; }
   const body={bucket,challengeNonce,attestToken,offsets,trusted:cap.trusted,moves:cap.events,coalesced:cap.coalesced,pathLen:cap.pathLen,
-    durations:cap.durs.slice(0,60),rawT:cap.rawT.slice(-80),pressures:cap.pressures.slice(0,60),keys:cap.keys,keyDurs:cap.keyDurs.slice(0,60)};
+    durations:cap.durs.slice(0,60),rawT:cap.rawT.slice(-80),pressures:cap.pressures.slice(0,60),keys:cap.keys,keyDurs:cap.keyDurs.slice(0,60),
+    motion:cap.motion.slice(-60),pointerType:cap.ptype};
   const j=await (await fetch('/api/pass/solve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
   if(j.ok){ solved=true; statusEl.textContent='✓ verified — you are human enough ('+(j.verdict||'ALLOW')+')'; statusEl.className='status ok'; document.getElementById('submit').disabled=true; }
   else{ statusEl.textContent='✕ '+(j.reason||'not this time')+(j.triesLeft!=null?` · ${j.triesLeft} tries left`:''); statusEl.className='status bad'; if(j.triesLeft===0)setTimeout(loadNew,900); }

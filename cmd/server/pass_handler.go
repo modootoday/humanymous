@@ -378,6 +378,15 @@ func (a *app) applyPassBehavior(sid string, pr passProof, now time.Time) {
 	if len(pr.Durations) >= 5 && allIntegerMs(pr.Durations) {
 		add("l4.event.perfect_timing", signals.VerdictSuspicious, 0.6, "zero sub-ms jitter (synthetic pointer timing)")
 	}
+	// Mobile sensor consistency (SoT-36 §5): a touch/mobile-claiming session with flat
+	// or absent device-motion is inconsistent — a real phone always carries hand-tremor
+	// micro-jitter. SOFT: a mounted phone is low-motion too, so this raises risk, never
+	// blocks. Desktop mouse/keyboard sessions make no mobile claim and are never checked.
+	if pr.PointerType == "touch" || len(pr.Pressures) > 0 {
+		if len(pr.Motion) < 3 || stddev(pr.Motion) < 0.01 {
+			add("l2.adv.mobile_inconsistent", signals.VerdictSuspicious, 0.5, "touch/mobile claim without device-motion micro-jitter")
+		}
+	}
 	if len(sig) == 0 {
 		return
 	}
@@ -461,15 +470,19 @@ type passProof struct {
 	Offsets        []int  `json:"offsets"`        // per-row shift; key lands at (keyIndex+offset) mod N
 	Trusted        bool   `json:"trusted"`        // all events had isTrusted === true (pre-filter)
 	// Pointer/touch channel (SoT-36 §5): mouse/touch users produce these.
-	Moves     int       `json:"moves"`     // distinct pointermove events
-	Coalesced int       `json:"coalesced"` // total getCoalescedEvents() sub-samples
-	Durations []float64 `json:"durations"` // inter-event Δt (ms)
-	PathLen   float64   `json:"pathLen"`   // total pointer path length (px)
-	RawT      []float64 `json:"rawT"`      // raw coalesced sample timestamps (ms)
-	Pressures []float64 `json:"pressures"` // touch/pen pressure samples (0..1)
+	Moves       int       `json:"moves"`       // distinct pointermove events
+	Coalesced   int       `json:"coalesced"`   // total getCoalescedEvents() sub-samples
+	Durations   []float64 `json:"durations"`   // inter-event Δt (ms)
+	PathLen     float64   `json:"pathLen"`     // total pointer path length (px)
+	RawT        []float64 `json:"rawT"`        // raw coalesced sample timestamps (ms)
+	Pressures   []float64 `json:"pressures"`   // touch/pen pressure samples (0..1)
+	PointerType string    `json:"pointerType"` // "mouse" | "touch" | "pen"
 	// Keyboard channel (accessible lane): keyboard users produce these instead.
 	Keys    int       `json:"keys"`    // distinct arrow/Home keydowns
 	KeyDurs []float64 `json:"keyDurs"` // inter-key Δt (ms)
+	// Mobile sensor channel (SoT-36 §5): device-motion magnitude samples. A real phone
+	// always carries hand-tremor micro-motion; a mobile-claiming emulator/bot is flat.
+	Motion []float64 `json:"motion"`
 }
 
 // realEventOK is the SoT-36 §5 pre-filter, accessibility-aware: it accepts EITHER a
