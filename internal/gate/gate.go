@@ -19,27 +19,27 @@ import (
 
 // Server is the humanymous proxy.
 type Server struct {
-	cfg      Config
-	sink     *audit.Sink
-	vault    *audit.Vault
-	verdicts *VerdictStore
-	control   http.Handler // /__hmn/* control plane (session/collect/pow/loader)
-	rp        *httputil.ReverseProxy
-	snippet   []byte
-	originKey []byte         // origin-cloaking HMAC key (SoT-23 §1)
-	tokenKey  []byte         // verdict-token HMAC key (SoT-21 §3)
-	epoch     string         // fixed origin-auth epoch (SoT-23 §1)
-	tokenEpochs *EpochManager // rotating verdict-token epoch (SoT-28 WS6)
-	sweep     *SweepDetector // decision-probing recon detector (HR-30)
-	decFloor  time.Duration  // constant decision-latency floor (HR-30)
-	bans      *BanStore      // rate-limit-triggered + manual bans (SoT-27)
-	auth      *AdminAuth     // admin-plane authentication (SoT-28 WS1)
-	approvals *ApprovalStore // two-phase dual-control (SoT-28 WS2)
-	shreds    *ShredQueue    // erasure hold-window queue (SoT-28 WS3)
+	cfg             Config
+	sink            *audit.Sink
+	vault           *audit.Vault
+	verdicts        *VerdictStore
+	control         http.Handler // /__hmn/* control plane (session/collect/pow/loader)
+	rp              *httputil.ReverseProxy
+	snippet         []byte
+	originKey       []byte         // origin-cloaking HMAC key (SoT-23 §1)
+	tokenKey        []byte         // verdict-token HMAC key (SoT-21 §3)
+	epoch           string         // fixed origin-auth epoch (SoT-23 §1)
+	tokenEpochs     *EpochManager  // rotating verdict-token epoch (SoT-28 WS6)
+	sweep           *SweepDetector // decision-probing recon detector (HR-30)
+	decFloor        time.Duration  // constant decision-latency floor (HR-30)
+	bans            *BanStore      // rate-limit-triggered + manual bans (SoT-27)
+	auth            *AdminAuth     // admin-plane authentication (SoT-28 WS1)
+	approvals       *ApprovalStore // two-phase dual-control (SoT-28 WS2)
+	shreds          *ShredQueue    // erasure hold-window queue (SoT-28 WS3)
 	incidentLimiter *abuse.Limiter // per-operator incident-lookup enumeration cap (SoT-28 WS4)
-	devConsoleToken string   // dev bearer injected into the served console (SoT-28 §1)
-	killSwitch atomic.Bool   // runtime global-monitor override (SoT-28 WS9 kill switch)
-	nowFn     func() time.Time
+	devConsoleToken string         // dev bearer injected into the served console (SoT-28 §1)
+	killSwitch      atomic.Bool    // runtime global-monitor override (SoT-28 WS9 kill switch)
+	nowFn           func() time.Time
 }
 
 // RunDueShreds executes any erasures whose hold window has elapsed and seals a
@@ -127,28 +127,34 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts *Verdi
 	}
 	rp := httputil.NewSingleHostReverseProxy(target)
 	s := &Server{
-		cfg:      cfg,
-		sink:     sink,
-		vault:    vault,
-		verdicts: verdicts,
-		control:  control,
-		rp:        rp,
-		snippet:   []byte(injectMarker + `<script src="` + cfg.ControlPath + `loader.js" defer></script>`),
-		originKey: cfg.OriginKey,
-		tokenKey:  cfg.TokenKey,
-		epoch:     "e1",
-		tokenEpochs: orDefaultEpochs(cfg.TokenEpochs),
-		sweep:     NewSweepDetector(30*time.Second, 8), // >8 sessions/fp/30s = recon
-		decFloor:  2 * time.Millisecond,                // HR-30 timing-oracle floor (SoT-28 WS2 breakout)
-		bans:      NewBanStore(rlWindow(cfg), rlSoft(cfg), rlHard(cfg)), // rate limiter -> auto-ban (SoT-27)
-		auth:      NewAdminAuth(),
-		approvals: NewApprovalStore(cfg.TokenKey, 10*time.Minute),
-		shreds:    NewShredQueue(erasureHold(cfg)),
+		cfg:             cfg,
+		sink:            sink,
+		vault:           vault,
+		verdicts:        verdicts,
+		control:         control,
+		rp:              rp,
+		snippet:         []byte(injectMarker + `<script src="` + cfg.ControlPath + `loader.js" defer></script>`),
+		originKey:       cfg.OriginKey,
+		tokenKey:        cfg.TokenKey,
+		epoch:           "e1",
+		tokenEpochs:     orDefaultEpochs(cfg.TokenEpochs),
+		sweep:           NewSweepDetector(30*time.Second, 8),                  // >8 sessions/fp/30s = recon
+		decFloor:        2 * time.Millisecond,                                 // HR-30 timing-oracle floor (SoT-28 WS2 breakout)
+		bans:            NewBanStore(rlWindow(cfg), rlSoft(cfg), rlHard(cfg)), // rate limiter -> auto-ban (SoT-27)
+		auth:            NewAdminAuth(),
+		approvals:       NewApprovalStore(cfg.TokenKey, 10*time.Minute),
+		shreds:          NewShredQueue(erasureHold(cfg)),
 		incidentLimiter: abuse.NewLimiter(time.Minute, 60, 120), // >120 incident lookups/min = trawl
-		nowFn:     time.Now,
+		nowFn:           time.Now,
 	}
 	// Response hook: inject into HTML (identity upstream is forced in Rewrite).
 	rp.ModifyResponse = s.modifyResponse
+	// Upstream-error hook (PLAN-07 R16): the default handler logs to ErrorLog and
+	// writes a bare 502 with NO audit trail — an origin outage was invisible in the
+	// tamper-evident log. Emit a record (correlation-linked, latency-stamped, with the
+	// upstream status + error class) and THEN reproduce the default response exactly:
+	// StatusBadGateway with an empty body, so clients see no change.
+	rp.ErrorHandler = s.handleUpstreamError
 	// Use the modern Rewrite hook (Go 1.20+) instead of Director. A Director-based
 	// proxy ALSO auto-appends the peer IP to X-Forwarded-For, which doubled the value
 	// ("ip, ip") next to the one we set. Rewrite + SetXForwarded writes a SINGLE
@@ -158,10 +164,10 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts *Verdi
 	// the Director that NewSingleHostReverseProxy installed.
 	rp.Director = nil
 	rp.Rewrite = func(pr *httputil.ProxyRequest) {
-		pr.SetURL(target)        // route to upstream (scheme/host + path join)
-		pr.Out.Host = pr.In.Host // preserve the client Host (origin reads X-Forwarded-Host)
-		stripInbound(pr.Out)     // drop any client-forged internal/trust headers
-		pr.SetXForwarded()       // authoritative X-Forwarded-For (socket IP) + Host + Proto
+		pr.SetURL(target)                                // route to upstream (scheme/host + path join)
+		pr.Out.Host = pr.In.Host                         // preserve the client Host (origin reads X-Forwarded-Host)
+		stripInbound(pr.Out)                             // drop any client-forged internal/trust headers
+		pr.SetXForwarded()                               // authoritative X-Forwarded-For (socket IP) + Host + Proto
 		pr.Out.Header.Set("Accept-Encoding", "identity") // SoT-20 §1: no upstream recompress
 		// Origin cloaking (SoT-23 §1, HR-24): the origin accepts ONLY proxied traffic
 		// carrying this rotating token; a direct hit to the origin lacks it.
@@ -172,6 +178,10 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts *Verdi
 
 // ServeHTTP is the request entry point.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Stamp per-request audit metadata (PLAN-07 R15) before any gate runs so every
+	// record this request emits — verdict, upstream error, egress — shares one
+	// correlation id and can be latency-stamped from a single start.
+	r = r.WithContext(withReqMeta(r.Context(), reqMeta{corr: newCorrelationID(), start: s.nowFn()}))
 	sid := sessionID(r)
 
 	// The edge request path is a sequence of security-domain gates (see
@@ -235,6 +245,29 @@ func (s *Server) hasValidToken(r *http.Request) bool {
 		return false
 	}
 	return verifyVerdictToken(s.tokenKey, c.Value, tokenBind(r), sessionID(r), s.nowFn(), s.tokenEpochs.Accepted()...) == tokenOK
+}
+
+// handleUpstreamError is the ReverseProxy ErrorHandler (PLAN-07 R16). It audits an
+// origin transport failure (unreachable/timeout/reset) then reproduces the default
+// proxy response byte-for-byte: a 502 with an empty body. The request passed here is
+// the outbound clone, whose context carries the inbound reqMeta + route.
+func (s *Server) handleUpstreamError(w http.ResponseWriter, r *http.Request, err error) {
+	meta := reqMetaFrom(r.Context())
+	s.sink.Emit(audit.Record{
+		EventType:   audit.EventUpstreamError,
+		Actor:       audit.Actor{Kind: "system"},
+		TenantID:    s.cfg.NodeID,
+		Host:        r.Host,
+		RouteClass:  routeClass(r),
+		Correlation: meta.corr,
+		LatencyUS:   meta.latencyUS(s.nowFn()),
+		Mode:        modeName(routeFrom(r.Context())),
+		FailMode:    "degraded",
+		FailReason:  "upstream " + upstreamErrorClass(err) + ": " + err.Error(),
+		Upstream:    &audit.Upstream{Status: http.StatusBadGateway, ErrorClass: upstreamErrorClass(err)},
+		KeyID:       "k1",
+	})
+	w.WriteHeader(http.StatusBadGateway) // identical to httputil's default (empty body)
 }
 
 // forward proxies to the upstream origin (ALLOW path, SoT-19 step 8-9).

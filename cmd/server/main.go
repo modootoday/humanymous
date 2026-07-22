@@ -28,6 +28,7 @@ func main() {
 	acmeCache := flag.String("acme-cache", "acme-cache", "directory to cache issued ACME certificates")
 	acmeEmail := flag.String("acme-email", "", "optional contact email for the ACME account")
 	logLevel := flag.String("log-level", "", "structured log level: off|error|warn|info|debug (default off; also HMN_LOG_LEVEL)")
+	opsToken := flag.String("ops-token", "", "operator bearer token enabling /api/explain + /api/counters (empty = disabled; also HMN_OPS_TOKEN)")
 	flag.Parse()
 
 	domains := splitDomains(*acmeDomain)
@@ -52,6 +53,7 @@ func main() {
 
 	a := newApp(*webDir, masterKey, *ritOn)
 	a.configureLogging(*logLevel) // PLAN-07 R11: opt-in structured logging (off by default)
+	a.configureOps(*opsToken)     // PLAN-07 R14/R17: operator-gated explain + counters (off by default)
 
 	tlsConfig, err := buildTLSConfig(tlsSettings{
 		acmeDomains: domains,

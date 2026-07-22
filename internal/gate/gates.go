@@ -191,6 +191,11 @@ func (s *Server) applyVerdict(w http.ResponseWriter, r *http.Request, sid string
 		KeyID:      "k1",
 		ConfigVer:  s.configVersion(),
 	}
+	// Correlation + decision latency (PLAN-07 R15): tie this verdict to every other
+	// record the request emits, and stamp how long reaching the verdict took.
+	meta := reqMetaFrom(r.Context())
+	rec.Correlation = meta.corr
+	rec.LatencyUS = meta.latencyUS(s.nowFn())
 
 	if !s.enforcing(route) { // monitor/shadow or kill switch: log, pass through
 		rec.Mode = "monitor"

@@ -106,6 +106,7 @@ const (
 	EventReconProbing         = "recon.decision_probing"
 	EventAbuseH2DoS           = "abuse.h2dos.detected"
 	EventUpstreamForwarded    = "upstream.request.forwarded"
+	EventUpstreamError        = "upstream.error" // origin unreachable/timeout → 502 (SoT-19; PLAN-07 R16)
 	EventResponseEgress       = "response.egress"
 	EventFailOpen             = "failopen.triggered"
 	EventFailClosed           = "failclosed.triggered"

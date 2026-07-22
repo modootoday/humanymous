@@ -43,6 +43,9 @@ type app struct {
 	log        *slog.Logger // PLAN-07 R11 structured logger (DiscardHandler unless -log-level set)
 	logEnabled bool         // fast gate: hot-path verdict/request emits are skipped entirely when off
 
+	started  time.Time // process start, for /healthz + counters uptime (PLAN-07 R17)
+	opsToken string    // operator bearer for /api/explain + /api/counters (empty = routes absent, PLAN-07 R14/R17)
+
 	pass *passStore // SoT-36 humanymous Pass challenge state (per-session, in-memory)
 
 	// SoT-30 Phase-3 local Red launcher (all nil/zero unless HMN_PLAYGROUND=1).
@@ -76,7 +79,8 @@ func newApp(webDir string, masterKey []byte, ritOn bool) *app {
 		pass:      newPassStore(),
 		// Default to a disabled logger so an app built without configureLogging (tests,
 		// embedders) is silent AND zero-cost. main() flips this via configureLogging.
-		log: slog.New(slog.DiscardHandler),
+		log:     slog.New(slog.DiscardHandler),
+		started: time.Now(),
 	}
 	// SoT-30 Detection Observatory: the live-telemetry hub exists only when the
 	// dev flag is set, so gate-off leaves the scorer tap a zero-cost nil check.
@@ -109,6 +113,14 @@ func (a *app) routes() http.Handler {
 	mux.HandleFunc("/api/traffic/", a.handleTraffic)
 	mux.HandleFunc("/res/", a.handleResource)
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(a.webDir))))
+	// Ops surface (PLAN-07 R17): /healthz is always-on, unauthenticated liveness.
+	mux.HandleFunc("/healthz", a.handleHealthz)
+	// PLAN-07 R14/R17: the production explain + counters endpoints are operator-token
+	// gated and mounted ONLY when a token is configured (absent = not discoverable).
+	if a.opsToken != "" {
+		mux.HandleFunc("/api/explain/", a.handleExplain)  // R14: ScoreTrace over a re-scored COPY
+		mux.HandleFunc("/api/counters", a.handleCounters) // R17: runtime/ops counters
+	}
 	// SoT-30: the read-only Detection Observatory surface, mounted only when the
 	// live-telemetry hub is present (HMN_PLAYGROUND=1).
 	if a.hub != nil {

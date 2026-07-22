@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"sync"
+	"time"
 )
 
 // chain.go implements the append-only per-node hash chain with a secondary
@@ -37,6 +38,7 @@ type Log struct {
 	wal         *WALSink
 	ringCap     int
 	projections []RecordSink
+	now         func() time.Time // clock for record TS + event-id timestamp (PLAN-07 R15)
 }
 
 const defaultRingCap = 4096
@@ -90,6 +92,7 @@ func NewLog(cfg Config) *Log {
 		wal:         cfg.WAL,
 		ringCap:     cfg.RingCap,
 		projections: cfg.Projections,
+		now:         time.Now,
 	}
 	if l.wal != nil {
 		if l.ringCap <= 0 {
@@ -153,6 +156,21 @@ func (l *Log) Append(r Record) Record {
 	seq := l.seq + 1
 	r.Seq = seq
 	r.NodeID = l.nodeID
+	// Stamp the always-present identity/observation fields (PLAN-07 R15): a UUIDv7
+	// event id + an RFC3339-nanos timestamp, so every record is individually
+	// referenceable and time-stamped. Both are part of the canonical body; a caller
+	// that pre-set them (e.g. a replayed WAL record) is preserved as-is.
+	clock := l.now
+	if clock == nil {
+		clock = time.Now
+	}
+	at := clock()
+	if r.EventID == "" {
+		r.EventID = newEventID(at)
+	}
+	if r.TS == "" {
+		r.TS = at.UTC().Format(time.RFC3339Nano)
+	}
 	if r.EventVer == "" {
 		r.EventVer = EventSchemaVersion
 	}
