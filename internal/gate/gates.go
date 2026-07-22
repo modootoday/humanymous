@@ -146,6 +146,50 @@ func (s *Server) upgradeGate(w http.ResponseWriter, r *http.Request, sid string,
 	return true
 }
 
+// agentAuthGate verifies a Web Bot Auth request signature (PLAN-08 R3). A valid
+// signature from an operator-allowlisted key is a trust-upgrade (forward without a
+// behavioral fight); a signature that claims an allowlisted key but fails to verify
+// is a forgery (deny); an unknown/unsupported key is neutral (fall through to the
+// normal pipeline). No signature at all is a no-op.
+func (s *Server) agentAuthGate(w http.ResponseWriter, r *http.Request, sid string, route routePolicy) bool {
+	if s.agentKeys == nil {
+		return false
+	}
+	v, keyid := verifyAgent(r.Host, r.Header.Get("Signature-Input"), r.Header.Get("Signature"), s.agentKeys, s.nowFn())
+	switch v {
+	case agentForged:
+		rec := audit.Record{
+			EventType: audit.EventAgentForged, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+			TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictDeny),
+			Rules: []string{"web-bot-auth"}, Action: "block", Mode: "enforce",
+			FailReason: "forged Web Bot Auth signature for allowlisted keyid " + keyid, KeyID: "k1",
+		}
+		s.sink.EmitAndAct(rec, func() { s.deny(w) })
+		return true
+	case agentVerifiedTrusted:
+		if !s.enforcing(route) {
+			return false // monitor mode: log-only below, no fast-path
+		}
+		rec := audit.Record{
+			EventType: audit.EventAgentVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+			TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
+			Rules: []string{"web-bot-auth"}, Action: "pass", Mode: "enforce",
+			FailReason: "verified Web Bot Auth agent " + keyid, KeyID: "k1",
+		}
+		s.sink.EmitAndAct(rec, func() { s.forward(w, r, route) })
+		return true
+	case agentVerifiedUnknown:
+		s.sink.Emit(audit.Record{
+			EventType: audit.EventAgentUnknown, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+			TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Mode: "enforce",
+			FailReason: "unknown/unsupported agent signature keyid " + keyid, KeyID: "k1",
+		})
+		return false // neutral: continue the normal detection pipeline
+	default:
+		return false
+	}
+}
+
 // sweepGate flags decision-probing recon: one fingerprint spinning up many
 // near-identical sessions (SoT-21 §8, HR-30).
 func (s *Server) sweepGate(w http.ResponseWriter, r *http.Request, sid string, route routePolicy, now time.Time) bool {

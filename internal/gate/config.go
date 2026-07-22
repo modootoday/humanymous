@@ -30,7 +30,7 @@ var (
 type Config struct {
 	Upstream    string // upstream origin base URL (http[s]://host:port)
 	NodeID      string
-	ControlPath string // reserved control-plane prefix (default /__hmn/)
+	ControlPath string        // reserved control-plane prefix (default /__hmn/)
 	OriginKey   []byte        // origin-cloaking HMAC key (SoT-23 §1, HR-24)
 	TokenKey    []byte        // verdict trust-token HMAC key (SoT-21 §3, HR-28)
 	TokenEpochs *EpochManager // shared rotating token epoch (SoT-28 WS6); nil => own
@@ -50,6 +50,10 @@ type Config struct {
 	// (e.g. Redis) implementation so bans propagate across a fleet (PLAN-08 R1). nil =
 	// the single-node in-memory BanStore, unchanged.
 	BanLedger BanLedger
+	// AgentKeys, when non-nil, enables Web Bot Auth signature verification at the edge
+	// (PLAN-08 R3): a valid signature from an allowlisted key is a trust-upgrade, a
+	// forgery is denied. nil = the feature is off.
+	AgentKeys KeyDirectory
 }
 
 // resolve returns the policy for a request path (longest-prefix match; default

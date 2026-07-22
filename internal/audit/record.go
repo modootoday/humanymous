@@ -106,7 +106,10 @@ const (
 	EventReconProbing         = "recon.decision_probing"
 	EventAbuseH2DoS           = "abuse.h2dos.detected"
 	EventUpstreamForwarded    = "upstream.request.forwarded"
-	EventUpstreamError        = "upstream.error" // origin unreachable/timeout → 502 (SoT-19; PLAN-07 R16)
+	EventUpstreamError        = "upstream.error"        // origin unreachable/timeout → 502 (SoT-19; PLAN-07 R16)
+	EventAgentVerified        = "agent.signature.verified" // valid Web Bot Auth sig from an allowlisted key (PLAN-08 R3)
+	EventAgentForged          = "agent.signature.forged"   // claims an allowlisted key but fails verification
+	EventAgentUnknown         = "agent.signature.unknown"  // signed by an unknown/unsupported key (neutral)
 	EventResponseEgress       = "response.egress"
 	EventFailOpen             = "failopen.triggered"
 	EventFailClosed           = "failclosed.triggered"

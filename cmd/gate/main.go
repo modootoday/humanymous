@@ -69,6 +69,10 @@ func main() {
 	// so the gate can sit behind a TCP-passthrough LB while keeping IP-keyed bans /
 	// rate limits / correlation correct. Empty = disabled (direct client IP, unchanged).
 	trustedProxies := flag.String("trusted-proxies", "", "comma-separated CIDRs of L4 balancers allowed to send a PROXY v2 header (PLAN-08 R4); empty = disabled")
+	// PLAN-08 R3 — Web Bot Auth allowlist: a file of `keyid base64url-ed25519-pubkey`
+	// lines. A valid signature from a listed key is a trust-upgrade; a forgery of a
+	// listed key is denied. Empty = feature off.
+	agentKeysFile := flag.String("agent-keys", "", "path to a Web Bot Auth trusted-key allowlist (PLAN-08 R3); empty = disabled")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -177,6 +181,21 @@ func main() {
 	epochs := gate.NewEpochManager()
 	control := gate.NewControlPlane(store, engine, verdicts, sink, vault).WithTokenKey(tokenKey).WithTokenEpochs(epochs)
 
+	// PLAN-08 R3 — load the Web Bot Auth trusted-key allowlist, if configured.
+	var agentKeys gate.KeyDirectory
+	if *agentKeysFile != "" {
+		raw, err := os.ReadFile(*agentKeysFile)
+		if err != nil {
+			log.Fatalf("agent-keys: %v", err)
+		}
+		dir, err := gate.NewStaticKeyDirectory(string(raw))
+		if err != nil {
+			log.Fatalf("agent-keys: %v", err)
+		}
+		agentKeys = dir
+		log.Printf("Web Bot Auth enabled: verifying agent signatures against %s (PLAN-08 R3)", *agentKeysFile)
+	}
+
 	cfg := gate.Config{
 		Upstream:      *upstream,
 		NodeID:        *node,
@@ -186,6 +205,7 @@ func main() {
 		TokenKey:      tokenKey,
 		TokenEpochs:   epochs,
 		BanLedger:     sharedBans, // shared Redis ban ledger, or nil for in-memory (PLAN-08 R1)
+		AgentKeys:     agentKeys,  // Web Bot Auth directory, or nil (PLAN-08 R3)
 		Routes: map[string]string{
 			"/login":    "strict",
 			"/checkout": "strict",

@@ -23,7 +23,7 @@ type Server struct {
 	sink            *audit.Sink
 	vault           *audit.Vault
 	verdicts        VerdictLedger // distribution seam (PLAN-07 R18): in-mem now, shared later
-	control         http.Handler // /__hmn/* control plane (session/collect/pow/loader)
+	control         http.Handler  // /__hmn/* control plane (session/collect/pow/loader)
 	rp              *httputil.ReverseProxy
 	snippet         []byte
 	originKey       []byte         // origin-cloaking HMAC key (SoT-23 §1)
@@ -39,6 +39,7 @@ type Server struct {
 	incidentLimiter *abuse.Limiter // per-operator incident-lookup enumeration cap (SoT-28 WS4)
 	devConsoleToken string         // dev bearer injected into the served console (SoT-28 §1)
 	killSwitch      atomic.Bool    // runtime global-monitor override (SoT-28 WS9 kill switch)
+	agentKeys       KeyDirectory   // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
 	nowFn           func() time.Time
 }
 
@@ -154,6 +155,7 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		approvals:       NewApprovalStore(cfg.TokenKey, 10*time.Minute),
 		shreds:          NewShredQueue(erasureHold(cfg)),
 		incidentLimiter: abuse.NewLimiter(time.Minute, 60, 120), // >120 incident lookups/min = trawl
+		agentKeys:       cfg.AgentKeys,                          // Web Bot Auth directory (PLAN-08 R3), nil = off
 		nowFn:           time.Now,
 	}
 	// Response hook: inject into HTML (identity upstream is forced in Rewrite).
@@ -212,6 +214,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	route := s.cfg.resolve(r.URL.Path)
+	if s.agentAuthGate(w, r, sid, route) { // PLAN-08 R3: Web Bot Auth (trust-upgrade or forgery-deny)
+		return
+	}
 	if s.verdictTokenGate(w, r, sid, route) { // SoT-21 §3, HR-28 (deny or trusted fast-path)
 		return
 	}

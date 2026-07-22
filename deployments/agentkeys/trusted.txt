@@ -1,0 +1,4 @@
+# PLAN-08 R3 — Web Bot Auth trusted-key allowlist (keyid  base64url-ed25519-pubkey).
+# A valid RFC 9421 signature from a listed key earns a trust-upgrade; a forgery of a
+# listed key is denied. Demo key only — NOT a real agent operator.
+test-agent-key-1 GVBAVrnIKyS3YNIqggPd6Btpqw9lcvND3J7VoTGkCx4
