@@ -190,6 +190,29 @@ func (s *Server) agentAuthGate(w http.ResponseWriter, r *http.Request, sid strin
 	}
 }
 
+// patGate trust-upgrades a request carrying a valid Privacy Pass Private Access
+// Token from a trusted issuer (PLAN-08 R2) — the redeemer proved humanity/attestation
+// to the issuer, so the edge forwards without a behavioral fight. A missing or invalid
+// token is a NO-OP (PAT is opt-in proof, never an accusation): the request falls
+// through to the normal detection pipeline.
+func (s *Server) patGate(w http.ResponseWriter, r *http.Request, sid string, route routePolicy) bool {
+	if s.patVerifier == nil || !s.enforcing(route) {
+		return false
+	}
+	v, keyid := s.patVerifier.verifyPrivateToken(r.Header.Get("Authorization"))
+	if v != patVerified {
+		return false // no valid token → continue the normal pipeline
+	}
+	rec := audit.Record{
+		EventType: audit.EventPATVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+		TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
+		Rules: []string{"privacy-pass"}, Action: "pass", Mode: "enforce",
+		FailReason: "verified Private Access Token, issuer " + keyid[:12], KeyID: "k1",
+	}
+	s.sink.EmitAndAct(rec, func() { s.forward(w, r, route) })
+	return true
+}
+
 // sweepGate flags decision-probing recon: one fingerprint spinning up many
 // near-identical sessions (SoT-21 §8, HR-30).
 func (s *Server) sweepGate(w http.ResponseWriter, r *http.Request, sid string, route routePolicy, now time.Time) bool {

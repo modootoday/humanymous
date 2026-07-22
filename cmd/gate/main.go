@@ -77,6 +77,10 @@ func main() {
 	// through a streaming MAD detector and LOG outliers. Strictly observational (never
 	// affects the verdict); off by default. Shadow-first before any signal earns weight.
 	anomalyShadow := flag.Bool("anomaly-shadow", false, "enable the log-only shadow anomaly observer (PLAN-08 R5); never affects verdicts")
+	// PLAN-08 R2 — Privacy Pass PAT issuer keys: a PEM file of trusted issuer RSA public
+	// keys. A request carrying a valid Private Access Token from a listed issuer is
+	// trust-upgraded. Empty = feature off.
+	patIssuersFile := flag.String("pat-issuers", "", "path to a PEM file of trusted Privacy Pass PAT issuer public keys (PLAN-08 R2); empty = disabled")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -200,6 +204,21 @@ func main() {
 		log.Printf("Web Bot Auth enabled: verifying agent signatures against %s (PLAN-08 R3)", *agentKeysFile)
 	}
 
+	// PLAN-08 R2 — load the Privacy Pass PAT issuer allowlist, if configured.
+	var patIssuers *gate.PATVerifier
+	if *patIssuersFile != "" {
+		raw, err := os.ReadFile(*patIssuersFile)
+		if err != nil {
+			log.Fatalf("pat-issuers: %v", err)
+		}
+		pv, err := gate.NewPATVerifier(raw)
+		if err != nil {
+			log.Fatalf("pat-issuers: %v", err)
+		}
+		patIssuers = pv
+		log.Printf("Privacy Pass enabled: verifying Private Access Tokens against %s (PLAN-08 R2)", *patIssuersFile)
+	}
+
 	cfg := gate.Config{
 		Upstream:      *upstream,
 		NodeID:        *node,
@@ -211,6 +230,7 @@ func main() {
 		BanLedger:     sharedBans,     // shared Redis ban ledger, or nil for in-memory (PLAN-08 R1)
 		AgentKeys:     agentKeys,      // Web Bot Auth directory, or nil (PLAN-08 R3)
 		AnomalyShadow: *anomalyShadow, // R5 shadow observer (log-only), off by default
+		PATIssuers:    patIssuers,     // Privacy Pass PAT issuers, or nil (PLAN-08 R2)
 		Routes: map[string]string{
 			"/login":    "strict",
 			"/checkout": "strict",

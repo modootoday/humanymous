@@ -57,6 +57,10 @@ type Config struct {
 	// AnomalyShadow enables the PLAN-08 R5 shadow anomaly observer (log-only, never
 	// affects the verdict). Off by default — the frozen detection path is untouched.
 	AnomalyShadow bool
+	// PATIssuers, when non-nil, enables Privacy Pass Private Access Token verification
+	// at the edge (PLAN-08 R2): a valid token from a trusted issuer is a trust-upgrade.
+	// nil = the feature is off.
+	PATIssuers *PATVerifier
 }
 
 // resolve returns the policy for a request path (longest-prefix match; default

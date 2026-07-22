@@ -40,6 +40,7 @@ type Server struct {
 	devConsoleToken string         // dev bearer injected into the served console (SoT-28 §1)
 	killSwitch      atomic.Bool    // runtime global-monitor override (SoT-28 WS9 kill switch)
 	agentKeys       KeyDirectory   // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
+	patVerifier     *PATVerifier   // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
 	anomaly         *anomalyShadow // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
 	nowFn           func() time.Time
 }
@@ -157,6 +158,7 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		shreds:          NewShredQueue(erasureHold(cfg)),
 		incidentLimiter: abuse.NewLimiter(time.Minute, 60, 120), // >120 incident lookups/min = trawl
 		agentKeys:       cfg.AgentKeys,                          // Web Bot Auth directory (PLAN-08 R3), nil = off
+		patVerifier:     cfg.PATIssuers,                         // Privacy Pass PAT issuers (PLAN-08 R2), nil = off
 		nowFn:           time.Now,
 	}
 	if cfg.AnomalyShadow {
@@ -222,6 +224,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	route := s.cfg.resolve(r.URL.Path)
 	if s.agentAuthGate(w, r, sid, route) { // PLAN-08 R3: Web Bot Auth (trust-upgrade or forgery-deny)
+		return
+	}
+	if s.patGate(w, r, sid, route) { // PLAN-08 R2: Privacy Pass PAT (trust-upgrade on a valid token)
 		return
 	}
 	if s.verdictTokenGate(w, r, sid, route) { // SoT-21 §3, HR-28 (deny or trusted fast-path)
