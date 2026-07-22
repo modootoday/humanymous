@@ -64,6 +64,11 @@ func main() {
 	// single-node in-memory (unchanged). When set, a ban or DENY raised on any node
 	// is enforced on all nodes; a Redis outage degrades each node to its local view.
 	redisAddr := flag.String("redis", "", "Redis host:port for shared ban + verdict state (PLAN-08 R1); empty = single-node in-memory")
+	// PLAN-08 R4 — trusted L4 balancer CIDRs. When set, the public listener reads a
+	// PROXY protocol v2 header from these sources ONLY and recovers the real client IP,
+	// so the gate can sit behind a TCP-passthrough LB while keeping IP-keyed bans /
+	// rate limits / correlation correct. Empty = disabled (direct client IP, unchanged).
+	trustedProxies := flag.String("trusted-proxies", "", "comma-separated CIDRs of L4 balancers allowed to send a PROXY v2 header (PLAN-08 R4); empty = disabled")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -331,6 +336,24 @@ func main() {
 		tlsMode = "BYO cert"
 	}
 	log.Printf("humanymous Gate %s on https://localhost%s -> %s (monitor=%v, tls=%s)", version, *addr, *upstream, *monitor, tlsMode)
+
+	// PLAN-08 R4 — behind an L4 passthrough LB: parse PROXY v2 (below TLS) from the
+	// trusted balancer CIDRs, recovering the real client IP. Without trusted proxies,
+	// keep the standard ListenAndServeTLS path unchanged.
+	if *trustedProxies != "" {
+		cidrs, err := gate.ParseCIDRs(*trustedProxies)
+		if err != nil {
+			log.Fatalf("trusted-proxies: %v", err)
+		}
+		base, err := net.Listen("tcp", *addr)
+		if err != nil {
+			log.Fatalf("edge listener: %v", err)
+		}
+		log.Printf("  PROXY protocol v2 enabled for %d trusted CIDR(s) (real client IP recovered behind L4 passthrough)", len(cidrs))
+		// PROXY header is read below TLS; then tls.NewListener terminates the handshake.
+		tln := tls.NewListener(gate.WrapProxyProto(base, cidrs), edgeCfg)
+		log.Fatal(pubSrv.Serve(tln))
+	}
 	log.Fatal(pubSrv.ListenAndServeTLS("", ""))
 }
 

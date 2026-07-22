@@ -1,0 +1,48 @@
+# PLAN-08 R4 — L4/TCP passthrough deployment proof.
+#
+# HAProxy in `mode tcp` (no TLS termination) with send-proxy-v2 sits in front of the
+# gate; the gate trusts HAProxy's subnet and recovers the real client IP from the
+# PROXY v2 header, while STILL terminating TLS itself (JA3/JA4 unaffected). The origin
+# echoes the forwarded client IP at /whoami so the recovery is externally verifiable.
+#
+#   docker compose -f deployments/compose.yaml -f deployments/compose/proxyproto.yaml \
+#       up -d origin gate haproxy
+#   # then GET https://127.0.0.1:8460/whoami  → the real client IP, not HAProxy's.
+#
+# A dedicated `edge` network with a fixed subnet makes the trusted-proxy CIDR + the
+# recovered client IP (the bridge gateway, .1) deterministic.
+networks:
+  edge:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.40.0.0/24
+
+services:
+  # Gate trusts the edge subnet as an L4 balancer source and recovers the real IP.
+  gate:
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "http://origin:80"
+      - "-node"
+      - "gate-1"
+      - "-trusted-proxies"
+      - "172.40.0.0/24"
+    networks: [web, edge]
+    depends_on: [origin]
+
+  haproxy:
+    image: haproxy:2.9-alpine
+    # Path is relative to the project dir (deployments/, the first -f's directory).
+    volumes:
+      - ./proxyproto/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "8460:8460"
+    networks:
+      edge:
+        ipv4_address: 172.40.0.5 # pinned so the test can assert the recovered IP != this
+    depends_on: [gate]
