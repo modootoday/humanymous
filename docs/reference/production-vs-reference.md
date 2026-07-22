@@ -12,7 +12,7 @@ The reference build demonstrates every mechanism end-to-end so you can evaluate 
 
 For a component-level inventory of flags and presets, see [CLI, config & policy reference](./cli-config-policy.md). For key handling specifics, see the [Key management guide](../how-to/key-management.md). For install prerequisites, see [Install requirements](./install-requirements.md). For version-to-version moves, see the [Upgrade & migration guide](../how-to/upgrade-migration.md).
 
-> **Warning:** Nothing that is dev-only in the reference build should reach production. That specifically means ephemeral in-memory keys, the self-signed in-memory TLS certificate, the printed bearer dev tokens, and the in-process (single-node) verdict and ban stores. Each has a production replacement listed below; shipping the dev-grade version is a security and availability risk, not a shortcut.
+> **Warning:** Nothing that is dev-only in the reference build should reach production. That specifically means ephemeral in-memory keys, the self-signed in-memory TLS certificate, the printed bearer dev tokens, and the default in-process (single-node) verdict and ban stores. Each has a production replacement listed below; shipping the dev-grade version is a security and availability risk, not a shortcut. (An **experimental, off-by-default** `-redis` shared-state backend for verdicts/bans/rate-limits now exists — treat Redis as a trusted, network-isolated component; see [CLI flags](cli-config-policy.md).)
 
 ---
 

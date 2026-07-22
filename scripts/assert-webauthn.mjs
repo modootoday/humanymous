@@ -9,7 +9,12 @@ const EDGE = process.env.EDGE || 'https://127.0.0.1:8444';
 const ADMIN = process.env.ADMIN || 'https://127.0.0.1:8445';
 const OP = process.env.OP_TOKEN || 'e2e-operator-token';
 const CRED_ID = 'demo-credential-1';
-const priv = crypto.createPrivateKey(fs.readFileSync(process.env.PRIV_PEM || 'deployments/webauthncreds/cred-priv.pem'));
+const PRIV_PEM = process.env.PRIV_PEM || 'deployments/webauthncreds/cred-priv.pem';
+if (!fs.existsSync(PRIV_PEM)) {
+  console.error(`missing ${PRIV_PEM} — run: go run ./scripts/gen-demo-keys`);
+  process.exit(2);
+}
+const priv = crypto.createPrivateKey(fs.readFileSync(PRIV_PEM));
 
 function assertion(counter) {
   const authData = Buffer.alloc(37); authData[32] = 0x05; authData.writeUInt32BE(counter, 33); // rpIdHash|flags|count

@@ -1,5 +1,9 @@
 # PLAN-08 R2 — WebAuthn possession-assertion verification proof. The gate trust-upgrades
 # a request carrying a valid, fresh assertion from a registered credential.
+#
+#   go run ./scripts/gen-demo-keys        # mint the demo credential keypair (not committed)
+#   docker compose -f deployments/compose.yaml -f deployments/compose/webauthn.yaml up -d origin gate
+#   node scripts/assert-webauthn.mjs
 services:
   gate:
     command:

@@ -62,8 +62,39 @@ readiness moved from *GO-with-fixes* toward *GO* by clearing the confirmed block
 - `THIRD_PARTY_LICENSES.md` — third-party dependency licence index.
 - humanymous Pass: a documented accessibility **escape route** (support contact + help
   link) reachable from the challenge itself.
+- **Constraint-resolution features (all OFF by default, behind flags; experimental —
+  see the per-flag trust caveats).** Driven by a researched design blueprint:
+  - **Shared fleet state via Redis** (`-redis host:port`): bans + sticky verdicts + a
+    shared sliding-window rate limiter propagate across a Gate fleet, so a ban/DENY on
+    one node is enforced on all. A Redis outage degrades each node to its local view
+    (circuit-breaker fast-fail, no lockout). *Treat Redis as a trusted, network-isolated
+    component (no AUTH/TLS/value-signing yet).*
+  - **PROXY-protocol-v2 real-IP recovery** (`-trusted-proxies <cidrs>`): the Gate can
+    sit behind an L4/TCP-passthrough balancer while keeping IP-keyed bans/rate/correlation
+    correct; the PROXY header is honored ONLY from the trusted-CIDR balancers.
+  - **Trust-upgrade signals** for legitimate automation / returning users: Web Bot Auth
+    (RFC 9421, `-agent-keys`), Privacy Pass Private Access Tokens (RFC 9578,
+    `-pat-issuers`), and WebAuthn possession assertions (`-webauthn-creds`). Each verifies
+    a signature/token and forwards; a missing/invalid one is a no-op (never a deny).
+  - **RFC 6962 Merkle audit tree**: inclusion + consistency proofs over the tamper-evident
+    log (Merkle root folded into the signed tree head; witness co-signs only append-only
+    extensions → split-view protection); read-only `/__hmn/admin/proof?seq=N`; durable
+    ClickHouse projection (`-audit-clickhouse`).
+  - **Streaming MAD anomaly SHADOW observer** (`-anomaly-shadow`): log-only, never affects
+    the verdict — evidence collection before any signal earns weight.
 
 ### Changed
+
+- **Maintainability refactor (behavior-preserving, detection FROZEN).** 19 refactors that
+  make silent stringly-typed failures loud (signal-id resolution tests, launcher/catalog
+  parity), split large files by concern, replace the admin dispatch switch with a
+  declarative route+RBAC table, and add opt-in structured logging + audit
+  event-id/correlation/latency + an upstream-error audit record.
+- **Deployment-review ship-blockers cleared:** the Gate now runs a 1-minute GC ticker so
+  its in-memory detection maps cannot grow without bound under fingerprint/IP churn
+  (OOM-DoS fix, parity with the core engine), and the unused **JA4H** HTTP fingerprint
+  (FoxIO License 1.1, not the BSD-3 that covers JA4-TLS) was removed as a dead-code
+  licence liability.
 
 - **Honest metrics.** Every "100% / 0% false-positive / FPR 0%" absolute in `README.md`
   and `docs/report.html` was rewritten to bounded, reference-measured language that

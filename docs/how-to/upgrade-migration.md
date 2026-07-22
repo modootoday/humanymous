@@ -129,10 +129,10 @@ An upgrade should not break audit continuity. With `-keystore`, the signing key 
 
 ## Multi-node, rolling upgrades are a prod-delta
 
-True zero-downtime upgrade — running several Gate nodes behind a load balancer, draining and replacing them one at a time so the edge never goes fully offline — depends on **shared fleet state** that the reference does not ship.
+True zero-downtime upgrade — running several Gate nodes behind a load balancer, draining and replacing them one at a time so the edge never goes fully offline — depends on **shared fleet state**.
 
-- The reference is a **single node** with an **in-process verdict store** and **in-process bans**. Redis (or any) shared fleet state is not implemented.
-- Without shared state, two nodes do not agree on verdict trust tokens, ban ladders, or rate-limit counters, so you cannot simply add a second node behind a balancer and treat them as one enforcement surface. Multi-node deployment, shared state, connection draining, and rolling replacement are **production architecture**, not reference behavior.
+- By default the Gate is a **single node** with an **in-process verdict store** and **in-process bans**. An **experimental, off-by-default** shared-state backend (`-redis host:port`) now propagates bans, sticky verdicts, and a shared rate limiter across nodes so a ban/DENY on one node is enforced on all; a Redis outage degrades each node to its local view (no lockout). It is experimental: treat Redis as a trusted, network-isolated component (no AUTH/TLS/value-signing yet), and see the trust caveat in [CLI flags](../reference/cli-config-policy.md).
+- Without `-redis`, two nodes do not agree on ban ladders or rate-limit counters, so you cannot treat them as one enforcement surface. Connection draining and rolling replacement orchestration remain **production architecture**, not reference behavior — but the shared-state substrate they need is now available (experimental).
 - The kill switch is described as fleet-wide, and node identity anticipates multiple nodes, but the reference build itself runs and upgrades as one process. Restarting it is a brief interruption of the edge for that node.
 
 > **Note:** Because the reference is a single node, the restart in Step 1 and Step 3 momentarily interrupts the edge that node serves. Plan the restart into a maintenance window, or front the origin another way during it — the reference does not provide in-process rolling replacement.

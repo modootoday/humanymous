@@ -12,6 +12,10 @@ const ADMIN = process.env.ADMIN || 'https://127.0.0.1:8445';
 const OP = process.env.OP_TOKEN || 'e2e-operator-token';
 const PRIV_PEM = process.env.PRIV_PEM || 'deployments/patissuers/issuer-priv.pem';
 
+if (!fs.existsSync(PRIV_PEM)) {
+  console.error(`missing ${PRIV_PEM} — run: go run ./scripts/gen-demo-keys`);
+  process.exit(2);
+}
 const priv = crypto.createPrivateKey(fs.readFileSync(PRIV_PEM));
 const pub = crypto.createPublicKey(priv);
 const keyID = crypto.createHash('sha256').update(pub.export({ type: 'spki', format: 'der' })).digest(); // token_key_id (32B)

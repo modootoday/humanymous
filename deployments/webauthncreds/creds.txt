@@ -1,2 +1,0 @@
-# PLAN-08 R2 WebAuthn demo credential (credentialId  base64url-spki-ec-p256).
-demo-credential-1 MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAdz51TOoZFI-89BLfCM3A5LuShJYvJUsc6djzvF_GjmrX8FutL-gm3NRTtSnVaC4w4cT8J-PtBUiZfiDAtUBHA

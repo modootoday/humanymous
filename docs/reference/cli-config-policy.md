@@ -27,6 +27,22 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 | `-monitor` | `false` | Global monitor mode: score and log everywhere, enforce nothing. Downgrades every route to monitor. See [Monitor disambiguation](#monitor-disambiguation). |
 | `-origin-key` | `""` (random ephemeral) | Origin-cloaking HMAC key. The origin validates the `X-Hmny-Origin-Auth` header against it. |
 | `-keystore` | `""` (ephemeral keys) | Path to a sealed keystore for persistent node identity. Requires the `HMN_UNSEAL` environment variable; boot fails without it. |
+| `-tls-cert` / `-tls-key` | `""` (self-signed) | Bring-your-own edge TLS certificate + key (PEM). |
+| `-acme-domain` | `""` | Comma-separated domain(s) for a Let's Encrypt edge cert (TLS-ALPN-01, needs `:443`). `-acme-cache` / `-acme-email` tune it. |
+| `-routes` | `""` (built-in presets) | Path to an external route-policy file (`<prefix> <preset>` per line). |
+| `-audit-wal` | `""` (ephemeral) | Durable audit WAL directory (survives restarts). `-audit-verify` replays + verifies the chain and exits. |
+
+**Constraint-resolution features — all OFF by default, experimental. Read the trust caveat before enabling.**
+
+| Flag | Default | Description + trust caveat |
+| --- | --- | --- |
+| `-redis` | `""` (single-node in-memory) | Redis `host:port` for **shared** ban + sticky-verdict + rate-limit state across a Gate fleet (PLAN-08 R1). **Caveat:** treat Redis as a trusted, network-isolated component — there is no AUTH/TLS or value-signing yet, so a compromised coordinator could forge state. Outage degrades each node to its local view (no lockout). |
+| `-trusted-proxies` | `""` (disabled) | Comma-separated CIDRs of L4 balancers allowed to send a PROXY-protocol-v2 header (PLAN-08 R4). **Caveat:** set this to your balancers' addresses ONLY — never a broad range like `0.0.0.0/0`, or any client could spoof its source IP. The Gate still terminates TLS (JA3/JA4 unaffected). |
+| `-agent-keys` | `""` (disabled) | PEM/allowlist of trusted **Web Bot Auth** (RFC 9421) keys; a valid signature is a trust-upgrade, a forgery of a listed key is denied (PLAN-08 R3). |
+| `-pat-issuers` | `""` (disabled) | PEM of trusted **Privacy Pass** PAT issuer public keys; a valid token is a trust-upgrade (PLAN-08 R2). **Caveat:** no double-spend/expiry cache yet — do not rely on single-use semantics. |
+| `-webauthn-creds` | `""` (disabled) | Allowlist of registered **WebAuthn** credentials; a valid, counter-fresh assertion is a trust-upgrade (PLAN-08 R2). **Caveat:** replay is bounded only by the signature counter — no per-request challenge/origin binding yet. |
+| `-audit-redis` / `-audit-clickhouse` | `""` (off) | Project the audit stream to Redis Streams (Tier 1) / ClickHouse (Tier 2). The WAL remains the durability authority; projections drop-and-count under backpressure. |
+| `-anomaly-shadow` | `false` | Enable the **log-only** streaming-anomaly observer (PLAN-08 R5). Strictly observational — never affects the verdict. |
 
 ---
 

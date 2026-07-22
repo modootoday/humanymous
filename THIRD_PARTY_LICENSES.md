@@ -25,6 +25,7 @@ Applies to the statically-linked Go runtime/standard library and to
 | `golang.org/x/crypto` | BSD-3-Clause | Copyright (c) 2009 The Go Authors. All rights reserved. | <https://cs.opensource.google/go/x/crypto> |
 | `golang.org/x/net` | BSD-3-Clause | Copyright (c) 2009 The Go Authors. All rights reserved. | <https://cs.opensource.google/go/x/net> |
 | `golang.org/x/text` | BSD-3-Clause | Copyright (c) 2009 The Go Authors. All rights reserved. | <https://cs.opensource.google/go/x/text> |
+| `golang.org/x/sys` (indirect) | BSD-3-Clause | Copyright (c) 2009 The Go Authors. All rights reserved. | <https://cs.opensource.google/go/x/sys> |
 | `github.com/andybalholm/brotli` | MIT | Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors. | <https://github.com/andybalholm/brotli> |
 | `github.com/klauspost/compress` | BSD-3-Clause (+ Apache-2.0 / BSD-2 for vendored parts) | Copyright (c) 2012 The Go Authors / Copyright (c) 2019 Klaus Post | <https://github.com/klauspost/compress> |
 
