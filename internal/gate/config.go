@@ -46,6 +46,10 @@ type Config struct {
 	// GlobalMode overrides enforce->monitor when set to "monitor" (mandatory
 	// first rollout stage, SoT-24 §3).
 	GlobalMonitor bool
+	// BanLedger, when non-nil, replaces the default in-memory ban store with a shared
+	// (e.g. Redis) implementation so bans propagate across a fleet (PLAN-08 R1). nil =
+	// the single-node in-memory BanStore, unchanged.
+	BanLedger BanLedger
 }
 
 // resolve returns the policy for a request path (longest-prefix match; default
@@ -66,23 +70,31 @@ func (c Config) resolve(path string) routePolicy {
 }
 
 // rate-limit defaults (SoT-27 §2): generous window/thresholds to avoid FP.
+// Exported so a shared (Redis) ban ledger built outside NewServer uses the SAME
+// thresholds and cannot drift from the in-memory path (PLAN-08 R1).
+const (
+	DefaultRateWindow = 10 * time.Second
+	DefaultRateSoft   = 60
+	DefaultRateHard   = 120
+)
+
 func rlWindow(c Config) time.Duration {
 	if c.RateWindow > 0 {
 		return c.RateWindow
 	}
-	return 10 * time.Second
+	return DefaultRateWindow
 }
 func rlSoft(c Config) int {
 	if c.RateSoft > 0 {
 		return c.RateSoft
 	}
-	return 60
+	return DefaultRateSoft
 }
 func rlHard(c Config) int {
 	if c.RateHard > 0 {
 		return c.RateHard
 	}
-	return 120
+	return DefaultRateHard
 }
 func erasureHold(c Config) time.Duration {
 	if c.ErasureHold > 0 {

@@ -25,7 +25,7 @@ import (
 type ControlPlane struct {
 	store       *collector.Store
 	engine      *scoring.Engine
-	verdicts    *VerdictStore
+	verdicts    VerdictLedger // distribution seam (PLAN-08 R1): in-mem now, shared Redis later
 	sink        *audit.Sink
 	vault       *audit.Vault
 	tokenKey    []byte         // verdict-token HMAC key (SoT-21 §3)
@@ -42,7 +42,7 @@ type ControlPlane struct {
 // bloat the audit chain (SoT-28 WS7): the ban gate does not cover it, so it must
 // protect itself. Defaults are generous (300 requests / 10s per IP) — a real
 // page makes ~2 control-plane calls; a flood is thousands/sec.
-func NewControlPlane(store *collector.Store, engine *scoring.Engine, verdicts *VerdictStore, sink *audit.Sink, vault *audit.Vault) *ControlPlane {
+func NewControlPlane(store *collector.Store, engine *scoring.Engine, verdicts VerdictLedger, sink *audit.Sink, vault *audit.Vault) *ControlPlane {
 	return &ControlPlane{store: store, engine: engine, verdicts: verdicts, sink: sink, vault: vault,
 		epoch: "e1", nonces: NewNonceCache(10 * time.Minute),
 		climiter: abuse.NewLimiter(10*time.Second, 150, 300), cpHard: 300, nowFn: time.Now}

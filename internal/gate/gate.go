@@ -91,6 +91,15 @@ func (s *Server) SetKillSwitch(on bool) { s.killSwitch.Store(on) }
 // globally monitored).
 func (s *Server) enforcing(route routePolicy) bool { return route.enforce && !s.monitorOn() }
 
+// banLedger returns the configured shared ban ledger, or a default in-memory
+// BanStore with the standard thresholds (PLAN-08 R1).
+func banLedger(cfg Config) BanLedger {
+	if cfg.BanLedger != nil {
+		return cfg.BanLedger
+	}
+	return NewBanStore(rlWindow(cfg), rlSoft(cfg), rlHard(cfg))
+}
+
 // Bans exposes the ban store for console management (SoT-26/27).
 func (s *Server) Bans() BanLedger { return s.bans }
 
@@ -117,7 +126,7 @@ func (s *Server) AdminHandler() http.Handler {
 
 // NewServer builds the proxy. control handles the reserved namespace (with the
 // prefix already stripped). upstream is the origin base URL.
-func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts *VerdictStore, control http.Handler) (*Server, error) {
+func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts VerdictLedger, control http.Handler) (*Server, error) {
 	if cfg.ControlPath == "" {
 		cfg.ControlPath = "/__hmn/"
 	}
@@ -138,9 +147,9 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts *Verdi
 		tokenKey:        cfg.TokenKey,
 		epoch:           "e1",
 		tokenEpochs:     orDefaultEpochs(cfg.TokenEpochs),
-		sweep:           NewSweepDetector(30*time.Second, 8),                  // >8 sessions/fp/30s = recon
-		decFloor:        2 * time.Millisecond,                                 // HR-30 timing-oracle floor (SoT-28 WS2 breakout)
-		bans:            NewBanStore(rlWindow(cfg), rlSoft(cfg), rlHard(cfg)), // rate limiter -> auto-ban (SoT-27)
+		sweep:           NewSweepDetector(30*time.Second, 8), // >8 sessions/fp/30s = recon
+		decFloor:        2 * time.Millisecond,                // HR-30 timing-oracle floor (SoT-28 WS2 breakout)
+		bans:            banLedger(cfg),                      // in-memory, or a shared Redis ledger (PLAN-08 R1)
 		auth:            NewAdminAuth(),
 		approvals:       NewApprovalStore(cfg.TokenKey, 10*time.Minute),
 		shreds:          NewShredQueue(erasureHold(cfg)),

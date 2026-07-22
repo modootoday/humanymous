@@ -30,6 +30,7 @@ import (
 	"github.com/modootoday/humanymous/internal/audit"
 	"github.com/modootoday/humanymous/internal/collector"
 	"github.com/modootoday/humanymous/internal/gate"
+	"github.com/modootoday/humanymous/internal/redis"
 	"github.com/modootoday/humanymous/internal/scoring"
 )
 
@@ -59,6 +60,10 @@ func main() {
 	auditVerify := flag.Bool("audit-verify", false, "replay the audit WAL, verify the chain, print the result, and exit")
 	auditRedis := flag.String("audit-redis", "", "Redis host:port to project the audit stream to (SoT-32 Tier 1 hot); empty = off")
 	auditCH := flag.String("audit-clickhouse", "", "ClickHouse HTTP base URL (e.g. http://ch:8123) to project the audit log to (SoT-32 Tier 2 cold); empty = off")
+	// PLAN-08 R1 — shared ban + sticky-verdict state across a gate fleet. Empty =
+	// single-node in-memory (unchanged). When set, a ban or DENY raised on any node
+	// is enforced on all nodes; a Redis outage degrades each node to its local view.
+	redisAddr := flag.String("redis", "", "Redis host:port for shared ban + verdict state (PLAN-08 R1); empty = single-node in-memory")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -146,7 +151,19 @@ func main() {
 	// Shared scoring/verdict state (SoT-22 externalizes this to Redis in prod).
 	store := collector.NewStore(30 * time.Minute)
 	engine := scoring.NewEngine()
-	verdicts := gate.NewVerdictStore(30 * time.Minute)
+
+	// PLAN-08 R1 — with -redis, ban + sticky-verdict state is shared fleet-wide via a
+	// single Redis client; both the control plane (which SETs verdicts on /collect) and
+	// the edge Server (which GETs them, and owns the ban ledger) share the SAME ledgers.
+	// Empty keeps the single-node in-memory stores, unchanged.
+	var verdicts gate.VerdictLedger = gate.NewVerdictStore(30 * time.Minute)
+	var sharedBans gate.BanLedger // nil => NewServer builds an in-memory BanStore
+	if *redisAddr != "" {
+		rc := redis.New(*redisAddr)
+		verdicts = gate.NewRedisVerdictLedger(rc, 30*time.Minute)
+		sharedBans = gate.NewRedisBanLedger(rc, gate.DefaultRateWindow, gate.DefaultRateSoft, gate.DefaultRateHard)
+		log.Printf("shared state: Redis %s (bans + sticky verdicts propagate fleet-wide, PLAN-08 R1)", *redisAddr)
+	}
 
 	tokenKey := make([]byte, 32)
 	mustRand(tokenKey)
@@ -163,6 +180,7 @@ func main() {
 		OriginKey:     originKey,
 		TokenKey:      tokenKey,
 		TokenEpochs:   epochs,
+		BanLedger:     sharedBans, // shared Redis ban ledger, or nil for in-memory (PLAN-08 R1)
 		Routes: map[string]string{
 			"/login":    "strict",
 			"/checkout": "strict",

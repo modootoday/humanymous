@@ -1,0 +1,62 @@
+# PLAN-08 R1 — shared-state (Redis) high-availability overlay.
+#
+# Adds a Redis coordinator and a SECOND gate node, and points BOTH gate nodes at
+# Redis so bans + sticky verdicts propagate across the fleet. This is the real
+# infrastructure the cross-node consistency gate (scripts/assert-shared-state.mjs)
+# runs against.
+#
+#   docker compose -f deployments/compose.yaml -f deployments/compose/redis-ha.yaml \
+#       up -d origin redis gate gate-b
+#   node scripts/assert-shared-state.mjs
+#
+# Paths are relative to this file's directory (deployments/compose/), matching
+# defenders.yaml, so ../../ resolves to the repo root.
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    networks: [web]
+
+  # Override node A (gate-1) to share state via Redis.
+  gate:
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "http://origin:80"
+      - "-node"
+      - "gate-1"
+      - "-redis"
+      - "redis:6379"
+    depends_on: [origin, redis]
+
+  # Node B (gate-2): identical image + config, distinct node id, distinct host ports,
+  # SAME Redis + origin — so it is a peer, not a copy of A's local state.
+  gate-b:
+    build:
+      context: ../../
+      dockerfile: build/gate.Dockerfile
+    image: humanymous/gate:local
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "http://origin:80"
+      - "-node"
+      - "gate-2"
+      - "-redis"
+      - "redis:6379"
+    # Inlined (not env_file) so path resolution is invariant to how this overlay is
+    # loaded; mirrors configs/dev.env's admin tokens for the consistency test.
+    environment:
+      HMN_ADMIN_TOKENS: "auditor:e2e-auditor-token,operator:e2e-operator-token,approver:e2e-approver-token,dpo:e2e-dpo-token"
+      HMN_ALLOW_DEV_TOKENS: "1"
+    ports:
+      - "8446:8444"
+      - "8447:8445"
+    depends_on: [origin, redis]
+    networks: [web, lab-a, lab-b, lab-c]
