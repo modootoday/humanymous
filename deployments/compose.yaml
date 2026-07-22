@@ -2,7 +2,7 @@
 #
 # Each concern is a self-contained fragment under compose/ :
 #   networks.yaml   the web + multi-subnet lab networks (SRP: topology)
-#   defenders.yaml  the detection stack (engine + origin + Gate)
+#   defenders.yaml  the detection stack (core engine + origin + Gate)
 #   bots.yaml       the automation catalog (attack run, Gate conformance, subnet swarm)
 #
 # Usage (run from this directory):

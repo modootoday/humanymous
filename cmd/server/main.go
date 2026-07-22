@@ -1,4 +1,4 @@
-// Command server is the Blue-team detection backend: it captures TLS/HTTP
+// Command server is the humanymous Core detection engine: it captures TLS/HTTP
 // signals, merges them with the WASM/JS client report, scores the session and
 // returns a verdict. See sots/ and plan/ for the full design.
 package main
@@ -75,13 +75,15 @@ func main() {
 			a.store.GC(now)
 			a.tlog.GC(now)
 			a.ledger.GC(now)
+			a.corr.GC(now)    // PLAN-07 R2: bound the correlation map (was never swept)
+			a.limiter.GC(now) // PLAN-07 R2: bound the fingerprint rate-limiter map
 		}
 	}()
 
 	if len(domains) > 0 {
-		log.Printf("humanymous Blue server on %s (rit=%v) — ACME TLS for %v (cache %q)", *addr, *ritOn, domains, *acmeCache)
+		log.Printf("humanymous Core on %s (rit=%v) — ACME TLS for %v (cache %q)", *addr, *ritOn, domains, *acmeCache)
 	} else {
-		log.Printf("humanymous Blue server %s on https://localhost%s (rit=%v) — self-signed TLS", version, *addr, *ritOn)
+		log.Printf("humanymous Core %s on https://localhost%s (rit=%v) — self-signed TLS", version, *addr, *ritOn)
 	}
 
 	// Custom accept loop: we terminate TLS ourselves so we can peek the HTTP/2

@@ -159,8 +159,9 @@ func applyPromotionRules(c ruleContext) hardVerdict {
 // applyFPMitigation adjusts scores in place before combination (SoT-05 §4.3).
 // It returns the possibly-modified slice.
 func applyFPMitigation(sigs []scored) []scored {
-	// HR-20: privacy-browser noise (canvas/webgl tampered) with a consistent
-	// UA/TLS is a protective user, not a bot -> damp canvas/webgl by 50%.
+	// SoT-05 §4.3 / SoT-09 FP-mitigation (NOT hard rule HR-20): privacy-browser noise
+	// (canvas/webgl tampered) with a consistent UA/TLS is a protective user, not a bot
+	// -> damp canvas/webgl by 50%.
 	privacy := false
 	for _, s := range sigs {
 		if s.id == "l2.canvas.tampered" || s.id == "l2.webgl.param_consistency" {

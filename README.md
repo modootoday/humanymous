@@ -92,7 +92,7 @@ below work the same on **Linux, macOS, and Windows**.
 cd deployments
 
 # 1. Start the detection stack (builds the images on the first run; long-running)
-docker compose up -d --build engine origin gate
+docker compose up -d --build core origin gate
 ```
 
 Then open (accept the self-signed certificate):

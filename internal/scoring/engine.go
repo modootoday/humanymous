@@ -163,7 +163,8 @@ func (e *Engine) gather(r *signals.SessionReport, behavior, env []signals.Signal
 }
 
 // dampPrivacyNoise halves fingerprint-noise contributions for sessions that
-// show genuine privacy tooling (SoT-05 HR-20 / SoT-09).
+// show genuine privacy tooling (SoT-05 §4.3 / SoT-09). NOTE: this is FP-mitigation,
+// not the hard rule HR-20 (which is the AI-agent DENY rule; see hardrules.go).
 func dampPrivacyNoise(in []scored) []scored {
 	for i := range in {
 		switch in[i].group {

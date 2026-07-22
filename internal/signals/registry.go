@@ -194,6 +194,10 @@ var (
 
 // ---- L5 request integrity (SoT-07) ----
 var (
+	// l5.rit.ok is an intentional OK signal (weight 0 — a valid RIT is not evidence of a
+	// bot). Declared here so it is a KNOWN signal, not an UNKNOWN-safe fallback that a
+	// resolution test (PLAN-07 R9) could not tell apart from a typo.
+	_ = def(Definition{"l5.rit.ok", LayerNetwork, 0, true, "rit", "valid RIT token (no tamper)"})
 	_ = def(Definition{"l5.rit.absent", LayerNetwork, 30, nil, "rit", "no RIT token on API call"})
 	_ = def(Definition{"l5.rit.invalid_hmac", LayerNetwork, 35, nil, "rit", "RIT HMAC invalid"})
 	_ = def(Definition{"l5.rit.header_tampered", LayerNetwork, 40, nil, "rit", "signed headers != observed"})

@@ -27,6 +27,12 @@ jobs:
       - run: go build ./...
       - run: go vet ./cmd/... ./internal/...
       - run: go test ./...
+      # PLAN-07 R6: the WASM client-side detection (cmd/wasm + internal/detect) is only
+      # built for GOOS=js — without this step it can break the build with a green CI.
+      - name: wasm build + vet (GOOS=js)
+        run: |
+          GOOS=js GOARCH=wasm go build ./cmd/wasm/
+          GOOS=js GOARCH=wasm go vet ./cmd/wasm/ ./internal/detect/
       # Supply-chain: fail CI on a known-vulnerable dependency reachable from our code
       # (audit — OpenSSF Scorecard "Vulnerabilities" baseline). Reachability-aware, so it
       # only flags CVEs in code paths we actually call.
