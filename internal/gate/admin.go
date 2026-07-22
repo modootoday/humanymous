@@ -1,6 +1,7 @@
 package gate
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -80,6 +81,7 @@ var adminRoutes = []adminRoute{
 	// --- reads: any authenticated role (Auditor default) ---
 	{http.MethodGet, adminExact("bans"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminListBans(w) }},
 	{http.MethodGet, adminExact("integrity"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminIntegrity(w) }},
+	{http.MethodGet, adminExact("proof"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminProof(w, r) }},
 	{http.MethodGet, adminExact("audit"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminAudit(w, r) }},
 	{http.MethodGet, adminPrefix("incidents/"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, arg string) {
 		s.adminIncident(w, arg, op)
@@ -253,6 +255,47 @@ func (s *Server) adminErasure(w http.ResponseWriter, r *http.Request, op Operato
 		TenantID: s.cfg.NodeID, Mode: "enforce", FailReason: "erasure pending DPO approval; legal_basis=" + req.LegalBasis, KeyID: "k1",
 	})
 	writeJSON(w, map[string]any{"pending": true, "approvalId": p.ID, "needsRole": RoleDPO})
+}
+
+// adminProof returns an offline-verifiable RFC 6962 inclusion proof for a record,
+// anchored to the latest Signed Tree Head (PLAN-08 R6). An auditor verifies the
+// proof against the STH's Merkle root, whose signature they check independently, to
+// prove the record is in exactly the log the STH commits to.
+func (s *Server) adminProof(w http.ResponseWriter, r *http.Request) {
+	seq, _ := strconv.ParseUint(r.URL.Query().Get("seq"), 10, 64)
+	if seq == 0 {
+		http.Error(w, "seq query parameter required", http.StatusBadRequest)
+		return
+	}
+	log := s.sink.Log()
+	cps := log.Checkpoints()
+	if len(cps) == 0 {
+		http.Error(w, "no signed tree head yet (record not checkpointed)", http.StatusNotFound)
+		return
+	}
+	sth := cps[len(cps)-1]
+	res, ok := log.InclusionProofAt(seq, sth.TreeSize)
+	if !ok {
+		http.Error(w, "record not covered by the latest signed tree head", http.StatusNotFound)
+		return
+	}
+	proof := make([]string, len(res.Proof))
+	for i, p := range res.Proof {
+		proof[i] = hex.EncodeToString(p)
+	}
+	writeJSON(w, map[string]any{
+		"seq":       seq,
+		"leafData":  hex.EncodeToString(res.LeafData),
+		"leafIndex": res.LeafIndex,
+		"treeSize":  res.TreeSize,
+		"proof":     proof,
+		"sth": map[string]any{
+			"treeSize":   sth.TreeSize,
+			"merkleRoot": sth.MerkleRoot,
+			"sig":        sth.Sig,
+			"witnessSig": sth.WitnessSig,
+		},
+	})
 }
 
 func (s *Server) adminIntegrity(w http.ResponseWriter) {

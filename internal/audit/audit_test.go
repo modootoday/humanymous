@@ -28,8 +28,8 @@ func newTestLog() *Log {
 func TestCanonicalDeterministic(t *testing.T) {
 	a := sampleRecord(1)
 	b := sampleRecord(1)
-	b.Rules = []string{"HR-2", "HR-23"}                         // different order
-	b.TopSignals = []Signal{b.TopSignals[1], b.TopSignals[0]}   // reversed
+	b.Rules = []string{"HR-2", "HR-23"}                       // different order
+	b.TopSignals = []Signal{b.TopSignals[1], b.TopSignals[0]} // reversed
 	if h1, h2 := computeRecordHash(&a, "prev"), computeRecordHash(&b, "prev"); h1 != h2 {
 		t.Fatalf("canonical not order-independent: %s != %s", h1, h2)
 	}

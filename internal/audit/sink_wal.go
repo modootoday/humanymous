@@ -19,9 +19,9 @@ import (
 // depends on a remote store. Records are one JSON object per line.
 
 const (
-	walSegPrefix = "audit-"
-	walSegSuffix = ".log"
-	walCPFile    = "checkpoints.jsonl"
+	walSegPrefix          = "audit-"
+	walSegSuffix          = ".log"
+	walCPFile             = "checkpoints.jsonl"
 	walDefaultRotateBytes = 16 << 20 // 16 MiB per segment
 )
 

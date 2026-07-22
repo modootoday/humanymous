@@ -17,21 +17,21 @@ import (
 type MismatchClass string
 
 const (
-	ClassOK               MismatchClass = "ok"
-	ClassHashBreak        MismatchClass = "hash-break"
-	ClassHMACInvalid      MismatchClass = "hmac-invalid"
-	ClassSeqGap           MismatchClass = "seq-gap"
-	ClassLinkageBreak     MismatchClass = "linkage-break"
-	ClassCheckpointBad    MismatchClass = "checkpoint-mismatch"
-	ClassNodeMissing      MismatchClass = "node-missing"
+	ClassOK            MismatchClass = "ok"
+	ClassHashBreak     MismatchClass = "hash-break"
+	ClassHMACInvalid   MismatchClass = "hmac-invalid"
+	ClassSeqGap        MismatchClass = "seq-gap"
+	ClassLinkageBreak  MismatchClass = "linkage-break"
+	ClassCheckpointBad MismatchClass = "checkpoint-mismatch"
+	ClassNodeMissing   MismatchClass = "node-missing"
 )
 
 // VerifyResult is the verifier's report.
 type VerifyResult struct {
-	OK        bool
-	Class     MismatchClass
-	AtSeq     uint64
-	Detail    string
+	OK     bool
+	Class  MismatchClass
+	AtSeq  uint64
+	Detail string
 }
 
 // pass is the success result.

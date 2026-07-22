@@ -15,33 +15,33 @@ type (
 	// Record is one immutable audit event. seq/prevHash/recordHash/hmac are
 	// filled by the Log at append time; callers set the semantic fields only.
 	Record struct {
-		EventID     string   `json:"event_id"`     // UUIDv7 (display/correlation, NOT the dedupe key)
-		Seq         uint64   `json:"seq"`           // per-node monotonic sequence; a gap is an integrity violation
-		NodeID      string   `json:"node_id"`       // proxy instance; each node owns its own chain
-		TS          string   `json:"ts"`            // RFC3339 nanos UTC; observational only, NOT the order of record
-		EventType   string   `json:"event_type"`    // taxonomy value (see Event* constants)
-		EventVer    string   `json:"event_version"` // schema semver of this event type
-		Actor       Actor    `json:"actor"`
-		TenantID    string   `json:"tenant_id"`     // tenant isolation boundary (SoT-18 §11)
-		SessionPsn  string   `json:"session_pseudonym,omitempty"`
-		RequestID   string   `json:"request_id,omitempty"`
-		Correlation string   `json:"correlation_id,omitempty"`
-		Host        string   `json:"host,omitempty"`
-		RouteClass  string   `json:"route_class,omitempty"` // html|api|upgrade|control|static
-		Verdict     string   `json:"verdict,omitempty"`     // allow|challenge|deny|none
-		RiskScore   int      `json:"risk_score"`
-		Rules       []string `json:"triggered_rules"`       // HR-xx, sorted (canonical)
-		TopSignals  []Signal `json:"top_signals"`           // id/verdict/conf only, sorted by id
-		Action      string   `json:"enforcement_action,omitempty"`
-		Mode        string   `json:"enforcement_mode,omitempty"` // monitor|shadow|enforce
-		FailMode    string   `json:"fail_mode,omitempty"`        // none|fail_open|fail_closed|degraded
-		FailReason  string   `json:"fail_reason,omitempty"`
-		LatencyUS   uint32   `json:"latency_us"`
+		EventID     string    `json:"event_id"`      // UUIDv7 (display/correlation, NOT the dedupe key)
+		Seq         uint64    `json:"seq"`           // per-node monotonic sequence; a gap is an integrity violation
+		NodeID      string    `json:"node_id"`       // proxy instance; each node owns its own chain
+		TS          string    `json:"ts"`            // RFC3339 nanos UTC; observational only, NOT the order of record
+		EventType   string    `json:"event_type"`    // taxonomy value (see Event* constants)
+		EventVer    string    `json:"event_version"` // schema semver of this event type
+		Actor       Actor     `json:"actor"`
+		TenantID    string    `json:"tenant_id"` // tenant isolation boundary (SoT-18 §11)
+		SessionPsn  string    `json:"session_pseudonym,omitempty"`
+		RequestID   string    `json:"request_id,omitempty"`
+		Correlation string    `json:"correlation_id,omitempty"`
+		Host        string    `json:"host,omitempty"`
+		RouteClass  string    `json:"route_class,omitempty"` // html|api|upgrade|control|static
+		Verdict     string    `json:"verdict,omitempty"`     // allow|challenge|deny|none
+		RiskScore   int       `json:"risk_score"`
+		Rules       []string  `json:"triggered_rules"` // HR-xx, sorted (canonical)
+		TopSignals  []Signal  `json:"top_signals"`     // id/verdict/conf only, sorted by id
+		Action      string    `json:"enforcement_action,omitempty"`
+		Mode        string    `json:"enforcement_mode,omitempty"` // monitor|shadow|enforce
+		FailMode    string    `json:"fail_mode,omitempty"`        // none|fail_open|fail_closed|degraded
+		FailReason  string    `json:"fail_reason,omitempty"`
+		LatencyUS   uint32    `json:"latency_us"`
 		Upstream    *Upstream `json:"upstream,omitempty"`
 		TLS         *TLSPsn   `json:"tls,omitempty"`
-		ConfigVer   string   `json:"config_version,omitempty"` // bound to an APPROVED signed config
-		KeyID       string   `json:"key_id"`                   // signing/pepper key version
-		DataClass   string   `json:"data_class,omitempty"`
+		ConfigVer   string    `json:"config_version,omitempty"` // bound to an APPROVED signed config
+		KeyID       string    `json:"key_id"`                   // signing/pepper key version
+		DataClass   string    `json:"data_class,omitempty"`
 
 		// Integrity fields — set by the Log, excluded from the canonical body.
 		PrevHash   string `json:"prev_hash"`
@@ -55,8 +55,8 @@ type (
 	}
 
 	Actor struct {
-		Kind       string `json:"kind"` // system|subject|operator
-		IDPsn      string `json:"id_pseudonym,omitempty"`
+		Kind  string `json:"kind"` // system|subject|operator
+		IDPsn string `json:"id_pseudonym,omitempty"`
 	}
 	Signal struct {
 		ID      string  `json:"id"`
@@ -106,14 +106,14 @@ const (
 	EventReconProbing         = "recon.decision_probing"
 	EventAbuseH2DoS           = "abuse.h2dos.detected"
 	EventUpstreamForwarded    = "upstream.request.forwarded"
-	EventUpstreamError        = "upstream.error"        // origin unreachable/timeout → 502 (SoT-19; PLAN-07 R16)
+	EventUpstreamError        = "upstream.error"           // origin unreachable/timeout → 502 (SoT-19; PLAN-07 R16)
 	EventAgentVerified        = "agent.signature.verified" // valid Web Bot Auth sig from an allowlisted key (PLAN-08 R3)
 	EventAgentForged          = "agent.signature.forged"   // claims an allowlisted key but fails verification
 	EventAgentUnknown         = "agent.signature.unknown"  // signed by an unknown/unsupported key (neutral)
 	EventResponseEgress       = "response.egress"
 	EventFailOpen             = "failopen.triggered"
 	EventFailClosed           = "failclosed.triggered"
-	EventAdminAccess          = "admin.access"      // meta-audit of an admin read (SoT-28 §9)
+	EventAdminAccess          = "admin.access"       // meta-audit of an admin read (SoT-28 §9)
 	EventAdminAuthFail        = "admin.auth_fail"    // rejected admin credential
 	EventApprovalRequested    = "approval.requested" // dual-control pending created (SoT-28 §4)
 	EventApprovalGranted      = "approval.granted"   // dual-control committed by second principal

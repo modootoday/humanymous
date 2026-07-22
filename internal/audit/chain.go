@@ -39,6 +39,10 @@ type Log struct {
 	ringCap     int
 	projections []RecordSink
 	now         func() time.Time // clock for record TS + event-id timestamp (PLAN-07 R15)
+	// leaves are the RFC 6962 Merkle leaves (record hashes), kept in full — even when
+	// the WAL bounds `records` — so inclusion/consistency proofs cover the whole log
+	// (PLAN-08 R6). A production log persists the tree; the reference keeps it in memory.
+	leaves [][]byte
 }
 
 const defaultRingCap = 4096
@@ -47,8 +51,9 @@ const defaultRingCap = 4096
 // verify the Ed25519 signature with the public key alone — no forging power.
 type Checkpoint struct {
 	NodeID     string `json:"node_id"`
-	TreeSize   uint64 `json:"tree_size"` // number of records covered
-	Root       string `json:"root"`      // hex chained root == last record_hash
+	TreeSize   uint64 `json:"tree_size"`   // number of records covered
+	Root       string `json:"root"`        // hex chained root == last record_hash
+	MerkleRoot string `json:"merkle_root"` // hex RFC 6962 Merkle root over the record hashes (PLAN-08 R6)
 	PrevCP     string `json:"prev_checkpoint_hash"`
 	Sig        string `json:"sig"`         // hex Ed25519 (writer key) over canonical STH bytes
 	WitnessSig string `json:"witness_sig"` // hex Ed25519 (independent witness key), SoT-28 WS8
@@ -119,6 +124,10 @@ func (l *Log) replayWAL() {
 	last := recs[len(recs)-1]
 	l.seq = last.Seq
 	l.prevHash = last.RecordHash
+	l.leaves = make([][]byte, 0, len(recs)) // rebuild the full Merkle leaf set (PLAN-08 R6)
+	for i := range recs {
+		l.leaves = append(l.leaves, []byte(recs[i].RecordHash))
+	}
 	start := 0
 	if len(recs) > l.ringCap {
 		start = len(recs) - l.ringCap
@@ -199,6 +208,7 @@ func (l *Log) Append(r Record) Record {
 	l.seq = seq
 	l.records = append(l.records, r)
 	l.prevHash = r.RecordHash
+	l.leaves = append(l.leaves, []byte(r.RecordHash)) // RFC 6962 Merkle leaf (PLAN-08 R6)
 	l.sinceCP++
 
 	// With a WAL, the full chain is on disk; bound the in-memory window.
@@ -223,10 +233,11 @@ func (l *Log) checkpointLocked() {
 		prev = l.checkpoints[n-1].Sig
 	}
 	cp := Checkpoint{
-		NodeID:   l.nodeID,
-		TreeSize: l.seq,
-		Root:     l.prevHash,
-		PrevCP:   prev,
+		NodeID:     l.nodeID,
+		TreeSize:   l.seq,
+		Root:       l.prevHash,
+		MerkleRoot: hex.EncodeToString(merkleRoot(l.leaves)), // RFC 6962 STH root (PLAN-08 R6)
+		PrevCP:     prev,
 	}
 	cp.Sig = hex.EncodeToString(ed25519.Sign(l.signPriv, sthBytes(cp)))
 	// Independent witness counter-signature (SoT-28 WS8): the witness only signs a
@@ -299,10 +310,11 @@ func (l *Log) Len() int {
 func sthBytes(cp Checkpoint) []byte {
 	// deterministic: exclude Sig; JSON of the fixed struct without it.
 	b, _ := json.Marshal(struct {
-		NodeID   string `json:"node_id"`
-		TreeSize uint64 `json:"tree_size"`
-		Root     string `json:"root"`
-		PrevCP   string `json:"prev_checkpoint_hash"`
-	}{cp.NodeID, cp.TreeSize, cp.Root, cp.PrevCP})
+		NodeID     string `json:"node_id"`
+		TreeSize   uint64 `json:"tree_size"`
+		Root       string `json:"root"`
+		MerkleRoot string `json:"merkle_root"` // PLAN-08 R6: the Merkle root is covered by the STH signature
+		PrevCP     string `json:"prev_checkpoint_hash"`
+	}{cp.NodeID, cp.TreeSize, cp.Root, cp.MerkleRoot, cp.PrevCP})
 	return b
 }

@@ -49,7 +49,7 @@ func TestRedisStreamSinkXADD(t *testing.T) {
 		}
 		var sb strings.Builder
 		for i := 0; i < n; i++ {
-			br.ReadString('\n')          // $len
+			br.ReadString('\n')            // $len
 			line, _ := br.ReadString('\n') // value\r\n
 			sb.WriteString(strings.TrimRight(line, "\r\n"))
 			sb.WriteByte(' ')
