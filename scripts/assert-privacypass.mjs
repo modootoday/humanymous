@@ -22,7 +22,7 @@ const keyID = crypto.createHash('sha256').update(pub.export({ type: 'spki', form
 
 // Build a token: type(0x0002) || nonce[32] || challenge_digest[32] || token_key_id[32] || authenticator.
 function mintToken() {
-  const head = Buffer.concat([Buffer.from([0x00, 0x02]), Buffer.alloc(32), Buffer.alloc(32), keyID]);
+  const head = Buffer.concat([Buffer.from([0x00, 0x02]), crypto.randomBytes(32), Buffer.alloc(32), keyID]); // random nonce (single-use)
   const sig = crypto.sign('sha384', head, { key: priv, padding: crypto.constants.RSA_PKCS1_PSS_PADDING, saltLength: 48 });
   return Buffer.concat([head, sig]).toString('base64');
 }
@@ -51,6 +51,12 @@ async function main() {
   await sleep(300);
   const afterValid = await verifiedCount();
   check('audit-records-pat-verified', afterValid >= 1, `${afterValid} privacypass.token.verified event(s)`);
+
+  // 1b. Replaying the SAME valid token is a double-spend → no new verified event.
+  await fetch(EDGE + '/', { headers: { Authorization: `PrivateToken token="${token}"` }, redirect: 'manual' }).catch(() => {});
+  await sleep(300);
+  const afterReplay = await verifiedCount();
+  check('pat-double-spend-rejected', afterReplay === afterValid, `verified count stayed ${afterReplay} (replay rejected)`);
 
   // 2. A tampered token (flip a signature byte) must NOT verify — no new verified event.
   const raw = Buffer.from(token, 'base64');

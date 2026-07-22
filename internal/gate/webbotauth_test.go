@@ -100,3 +100,22 @@ func TestVerifyAgentNone(t *testing.T) {
 		t.Fatalf("no signature headers must be agentNone, got %d", v)
 	}
 }
+
+// PLAN-08 backlog: a Web Bot Auth token must be lifetime-bounded; unbounded or stale is rejected.
+func TestVerifyAgentLifetimeBound(t *testing.T) {
+	pub, priv, _ := ed25519.GenerateKey(nil)
+	dir := testDir(t, testKID, pub)
+	now := time.Unix(1_700_000_000, 0)
+	// created far in the past, no expires → beyond max age → neutral (not trusted).
+	old := `("@authority");created=1000000000;keyid="` + testKID + `";alg="ed25519";tag="web-bot-auth"`
+	sigOld := "sig1=:" + base64.StdEncoding.EncodeToString(ed25519.Sign(priv, []byte(buildSignatureBase("example.com", old)))) + ":"
+	if v, _ := verifyAgent("example.com", "sig1="+old, sigOld, dir, now); v != agentVerifiedUnknown {
+		t.Fatalf("an unbounded/stale token must not be trusted, got %d", v)
+	}
+	// No created and no expires → unbounded → neutral.
+	none := `("@authority");keyid="` + testKID + `";alg="ed25519";tag="web-bot-auth"`
+	sigNone := "sig1=:" + base64.StdEncoding.EncodeToString(ed25519.Sign(priv, []byte(buildSignatureBase("example.com", none)))) + ":"
+	if v, _ := verifyAgent("example.com", "sig1="+none, sigNone, dir, now); v != agentVerifiedUnknown {
+		t.Fatalf("a token with no created/expires must not be trusted, got %d", v)
+	}
+}

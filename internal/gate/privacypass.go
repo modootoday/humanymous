@@ -10,6 +10,8 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"strings"
+	"sync"
+	"time"
 
 	_ "crypto/sha512" // register SHA-384 for rsa.VerifyPSS
 )
@@ -36,12 +38,15 @@ const patTokenType = 0x0002
 // the issuer's SubjectPublicKeyInfo DER, as carried in the token).
 type PATVerifier struct {
 	issuers map[string]*rsa.PublicKey // hex(token_key_id) -> issuer public key
+	mu      sync.Mutex
+	seen    map[string]time.Time // token nonce -> first-seen (anti-double-spend, PLAN-08 backlog)
+	ttl     time.Duration
 }
 
 // NewPATVerifier parses PEM-encoded RSA public keys (one or more "PUBLIC KEY" blocks)
 // into a verifier, computing each key's RFC 9578 token_key_id.
 func NewPATVerifier(pemBytes []byte) (*PATVerifier, error) {
-	v := &PATVerifier{issuers: map[string]*rsa.PublicKey{}}
+	v := &PATVerifier{issuers: map[string]*rsa.PublicKey{}, seen: map[string]time.Time{}, ttl: 10 * time.Minute}
 	rest := pemBytes
 	for {
 		var block *pem.Block
@@ -114,10 +119,27 @@ func (v *PATVerifier) verifyPrivateToken(header string) (patVerdict, string) {
 	// SaltLengthAuto accepts both the randomized (salt=hashLen) and deterministic
 	// (salt=0) RSABSSA variants, so the verifier is agnostic to the issuer's choice.
 	if rsa.VerifyPSS(pub, crypto.SHA384, sum, authenticator,
-		&rsa.PSSOptions{SaltLength: rsa.PSSSaltLengthAuto, Hash: crypto.SHA384}) == nil {
-		return patVerified, keyID
+		&rsa.PSSOptions{SaltLength: rsa.PSSSaltLengthAuto, Hash: crypto.SHA384}) != nil {
+		return patInvalid, keyID
 	}
-	return patInvalid, keyID
+	// Anti-double-spend (PLAN-08 backlog): a valid token is single-use within the
+	// retention window — the same nonce presented twice is a replay. raw[2:34] is the
+	// token nonce.
+	nonce := hex.EncodeToString(raw[2:34])
+	now := time.Now()
+	v.mu.Lock()
+	for k, t := range v.seen {
+		if now.Sub(t) > v.ttl {
+			delete(v.seen, k)
+		}
+	}
+	if _, dup := v.seen[nonce]; dup {
+		v.mu.Unlock()
+		return patInvalid, keyID // token already spent
+	}
+	v.seen[nonce] = now
+	v.mu.Unlock()
+	return patVerified, keyID
 }
 
 // parsePrivateTokenHeader extracts the token from `PrivateToken token="<b64>"`

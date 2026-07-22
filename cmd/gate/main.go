@@ -246,6 +246,9 @@ func main() {
 		if err != nil {
 			log.Fatalf("webauthn-creds: %v", err)
 		}
+		// PLAN-08 backlog — optional origin + RP-ID binding so an assertion minted for
+		// another site cannot be replayed here (empty = the respective check is off).
+		wc.SetBinding(os.Getenv("HMN_WEBAUTHN_ORIGIN"), os.Getenv("HMN_WEBAUTHN_RPID"))
 		webauthnCreds = wc
 		log.Printf("WebAuthn enabled: verifying possession assertions against %s (PLAN-08 R2)", *webauthnCredsFile)
 	}

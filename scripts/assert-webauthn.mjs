@@ -16,9 +16,9 @@ if (!fs.existsSync(PRIV_PEM)) {
 }
 const priv = crypto.createPrivateKey(fs.readFileSync(PRIV_PEM));
 
-function assertion(counter) {
+function assertion(counter, origin = 'https://example.com') {
   const authData = Buffer.alloc(37); authData[32] = 0x05; authData.writeUInt32BE(counter, 33); // rpIdHash|flags|count
-  const clientData = Buffer.from(JSON.stringify({ type: 'webauthn.get', challenge: 'Y2g', origin: 'https://example.com' }));
+  const clientData = Buffer.from(JSON.stringify({ type: 'webauthn.get', challenge: 'Y2g', origin }));
   const cdHash = crypto.createHash('sha256').update(clientData).digest();
   const sig = crypto.sign('sha256', Buffer.concat([authData, cdHash]), priv); // ES256 DER over SHA256(authData||cdHash)
   const j = JSON.stringify({ credentialId: CRED_ID, authenticatorData: authData.toString('base64'),
@@ -50,6 +50,12 @@ async function main() {
   await sleep(300);
   const n2 = await verifiedCount();
   check('replayed-assertion-rejected', n2 === n1, `verified count stayed ${n2} (replay rejected by counter)`);
+
+  // Origin binding (PLAN-08 backlog): an assertion minted for a DIFFERENT origin is rejected.
+  await fetch(EDGE + '/', { headers: { 'Webauthn-Assertion': assertion(30, 'https://evil.example') }, redirect: 'manual' }).catch(() => {});
+  await sleep(300);
+  const n3 = await verifiedCount();
+  check('wrong-origin-assertion-rejected', n3 === n2, `verified count stayed ${n3} (foreign-origin assertion rejected)`);
 
   console.log(`\n=== webauthn assertion verification: ${failed === 0 ? 'ALL PASS' : failed + ' FAILED'} ===`);
   process.exit(failed === 0 ? 0 : 1);

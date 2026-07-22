@@ -24,9 +24,24 @@ import (
 
 // WebAuthnRegistry maps a credential id to its ES256 public key + last seen counter.
 type WebAuthnRegistry struct {
-	mu    sync.Mutex
-	keys  map[string]*ecdsa.PublicKey // credentialId (base64url) -> public key
-	count map[string]uint32           // credentialId -> highest signature counter seen
+	mu        sync.Mutex
+	keys      map[string]*ecdsa.PublicKey // credentialId (base64url) -> public key
+	count     map[string]uint32           // credentialId -> highest signature counter seen
+	origin    string                      // expected clientData origin (empty = unchecked)
+	rpIDHash  [32]byte                    // SHA-256(rpID) the authenticatorData must carry
+	rpIDBound bool                        // whether rpIDHash is enforced
+}
+
+// SetBinding enables origin + RP-ID binding (PLAN-08 backlog): an assertion whose
+// clientData.origin differs, or whose authenticatorData rpIdHash != SHA-256(rpID), is
+// rejected — so an assertion minted for another site cannot be replayed here. Empty
+// values leave the respective check off.
+func (r *WebAuthnRegistry) SetBinding(origin, rpID string) {
+	r.origin = origin
+	if rpID != "" {
+		r.rpIDHash = sha256.Sum256([]byte(rpID))
+		r.rpIDBound = true
+	}
 }
 
 // NewWebAuthnRegistry parses "credentialId base64url-spki-ecdsa-p256-pubkey" lines.
@@ -115,12 +130,19 @@ func (r *WebAuthnRegistry) verify(header string) (webauthnVerdict, string) {
 	if e1 != nil || e2 != nil || e3 != nil || len(authData) < 37 {
 		return webauthnInvalid, a.CredentialID
 	}
-	// clientData must be a WebAuthn get() assertion.
+	// clientData must be a WebAuthn get() assertion for the expected origin.
 	var cd struct {
-		Type string `json:"type"`
+		Type   string `json:"type"`
+		Origin string `json:"origin"`
 	}
 	if json.Unmarshal(clientData, &cd) != nil || cd.Type != "webauthn.get" {
 		return webauthnInvalid, a.CredentialID
+	}
+	if r.origin != "" && cd.Origin != r.origin {
+		return webauthnInvalid, a.CredentialID // assertion bound to a different origin
+	}
+	if r.rpIDBound && string(authData[0:32]) != string(r.rpIDHash[:]) {
+		return webauthnInvalid, a.CredentialID // assertion for a different relying party
 	}
 	// signed message = authenticatorData || SHA-256(clientDataJSON).
 	cdHash := sha256.Sum256(clientData)

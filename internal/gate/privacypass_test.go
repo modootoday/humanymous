@@ -96,3 +96,16 @@ func sha256Sum(b []byte) []byte {
 	h.Write(b)
 	return h.Sum(nil)
 }
+
+// PLAN-08 backlog: a PAT is single-use — the same token presented twice is a replay.
+func TestPATDoubleSpend(t *testing.T) {
+	priv, _ := rsa.GenerateKey(rand.Reader, 2048)
+	v, _ := NewPATVerifier(pubPEM(t, &priv.PublicKey))
+	hdr := mintPAT(t, &priv.PublicKey, priv)
+	if got, _ := v.verifyPrivateToken(hdr); got != patVerified {
+		t.Fatal("first use must verify")
+	}
+	if got, _ := v.verifyPrivateToken(hdr); got != patInvalid {
+		t.Fatalf("second use of the same token must be rejected (double-spend), got %d", got)
+	}
+}

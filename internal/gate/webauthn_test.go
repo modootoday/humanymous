@@ -94,3 +94,18 @@ func TestWebAuthnNone(t *testing.T) {
 		t.Fatalf("no assertion must be webauthnNone, got %d", v)
 	}
 }
+
+// PLAN-08 backlog: origin binding rejects an assertion minted for another site.
+func TestWebAuthnOriginBinding(t *testing.T) {
+	priv, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	r := webauthnDir(t, testCredID, &priv.PublicKey)
+	r.SetBinding("https://example.com", "") // signAssertion uses origin https://example.com
+	if v, _ := r.verify(signAssertion(t, priv, testCredID, 1)); v != webauthnVerified {
+		t.Fatal("matching origin must verify")
+	}
+	r2 := webauthnDir(t, testCredID, &priv.PublicKey)
+	r2.SetBinding("https://victim.example", "")
+	if v, _ := r2.verify(signAssertion(t, priv, testCredID, 2)); v != webauthnInvalid {
+		t.Fatalf("assertion for a different origin must be rejected, got %d", v)
+	}
+}

@@ -101,14 +101,30 @@ func verifyAgent(host, sigInput, sig string, dir KeyDirectory, now time.Time) (a
 	if p.alg != "ed25519" || p.tag != "web-bot-auth" {
 		return agentVerifiedUnknown, p.keyid
 	}
-	// Freshness: reject stale/not-yet-valid signatures (60s skew).
+	// Freshness: reject stale/not-yet-valid signatures, and BOUND every token's
+	// lifetime (PLAN-08 backlog) so a long-lived signature cannot be replayed
+	// indefinitely — by `expires` when present, else by `created` + a max age; a token
+	// carrying neither is unbounded and rejected.
 	const skew = 60
+	const maxLifetime = int64(3600) // 1 hour
 	nowU := now.Unix()
 	if p.created != 0 && p.created > nowU+skew {
-		return agentVerifiedUnknown, p.keyid
+		return agentVerifiedUnknown, p.keyid // not yet valid
 	}
-	if p.expires != 0 && p.expires < nowU-skew {
-		return agentVerifiedUnknown, p.keyid
+	switch {
+	case p.expires != 0:
+		if p.expires < nowU-skew {
+			return agentVerifiedUnknown, p.keyid // expired
+		}
+		if p.created != 0 && p.expires-p.created > maxLifetime {
+			return agentVerifiedUnknown, p.keyid // over-long declared lifetime
+		}
+	case p.created != 0:
+		if nowU-p.created > maxLifetime {
+			return agentVerifiedUnknown, p.keyid // no expiry → bound by created + max age
+		}
+	default:
+		return agentVerifiedUnknown, p.keyid // neither created nor expires → unbounded
 	}
 	// Only the "@authority" covered set is supported in this reference; anything else
 	// is unverifiable here → neutral.
