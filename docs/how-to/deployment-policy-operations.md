@@ -80,7 +80,7 @@ Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-O
 
 **Steps:**
 
-1. Choose one token string per role and set them in `HMN_ADMIN_TOKENS`, in the format `auditor:<tok>,operator:<tok>,approver:<tok>,dpo:<tok>`. Then start Gate; the admin listener defaults to `:8445` (a separate, cross-origin listener from the public edge).
+1. Choose one token string per role and set them in `HMN_ADMIN_TOKENS`, in the format `auditor:<tok>,operator:<tok>,approver:<tok>,dpo:<tok>`. Then start Gate; the admin listener defaults to `127.0.0.1:8445` (loopback) (a separate, cross-origin listener from the public edge).
 
    ```
    HMN_ADMIN_TOKENS="auditor:<tokA>,operator:<tokB>,approver:<tokC>,dpo:<tokD>" bin/gate.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000

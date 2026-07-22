@@ -21,7 +21,7 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 | Flag | Default | Meaning |
 |------|---------|---------|
 | `-addr` | `:8444` | Public edge listen address (HTTPS). Terminates TLS, injects the bundle, scores, and enforces. |
-| `-admin-addr` | `:8445` | Separate authenticated admin listener, cross-origin to the edge. Serves the Ledger and admin API only. |
+| `-admin-addr` | `127.0.0.1:8445` | Separate authenticated admin listener, cross-origin to the edge. Serves the Ledger and admin API only. **Defaults to loopback** — bind it off-host only behind mTLS/SSO (a startup warning fires otherwise). |
 | `-upstream` | `http://127.0.0.1:9000` | Origin upstream base URL that Gate fronts. (`upstream` is the flag alias for the origin.) |
 | `-node` | `gate-1` | Node id; the owner of this node's audit hash chain. |
 | `-monitor` | `false` | Global monitor mode: score and log everywhere, enforce nothing. Downgrades every route to monitor. See [Monitor disambiguation](#monitor-disambiguation). |
@@ -234,7 +234,7 @@ The client-facing control plane is served on the public edge listener under the 
 
 ## Admin API (admin listener)
 
-Served on the admin listener (`-admin-addr`, default `:8445`). The Ledger SPA is at `https://localhost:8445/__hmn/admin/console` and derives its API base as `/__hmn/admin`. Authentication is bearer (`Authorization: Bearer <token>`) with constant-time compare. A missing or invalid token returns 404 (deny-by-default, non-discoverable). Every authenticated access is meta-audited (`admin.access`) before serving.
+Served on the admin listener (`-admin-addr`, default `127.0.0.1:8445` — loopback; bind off-host only behind mTLS/SSO). The Ledger SPA is at `https://localhost:8445/__hmn/admin/console` and derives its API base as `/__hmn/admin`. Authentication is bearer (`Authorization: Bearer <token>`) with constant-time compare. A missing or invalid token returns 404 (deny-by-default, non-discoverable). Every authenticated access is meta-audited (`admin.access`) before serving.
 
 Actor identity is server-derived from the token; request-body actor fields are ignored. RBAC roles: **Auditor** (read-only), **Operator**, **Approver**, **DPO**. In dev the console is injected with the Operator token so it can read and request; approvals need a distinct Approver token.
 
@@ -297,10 +297,10 @@ For hard-rule identifiers (HR-*), signal-ID namespaces, and per-verdict detail, 
 
 ## End-to-end run example
 
-The following boots Gate with deterministic dev admin tokens, a public edge on `:8444`, the admin listener on `:8445`, and an origin on `http://127.0.0.1:9000`. Run it from the module root after building `bin/gate.exe`.
+The following boots Gate with deterministic **dev** admin tokens, a public edge on `:8444`, the loopback admin listener on `127.0.0.1:8445`, and an origin on `http://127.0.0.1:9000`. Run it from the module root after building `bin/gate.exe`. `HMN_ALLOW_DEV_TOKENS=1` is required here because Gate **fails closed** on short/placeholder admin secrets — never set it in production, where you provide real high-entropy tokens.
 
 ```
-HMN_ADMIN_TOKENS="auditor:aud-dev,operator:op-dev,approver:apr-dev,dpo:dpo-dev" bin/gate.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node gate-1
+HMN_ALLOW_DEV_TOKENS=1 HMN_ADMIN_TOKENS="auditor:aud-dev,operator:op-dev,approver:apr-dev,dpo:dpo-dev" bin/gate.exe -addr :8444 -admin-addr 127.0.0.1:8445 -upstream http://127.0.0.1:9000 -node gate-1
 ```
 
 Expected startup output:

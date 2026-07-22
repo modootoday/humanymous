@@ -9,7 +9,7 @@ If you have never seen how Gate scores a request, read [How Gate sees a request]
 
 ## Open the console
 
-The Ledger is a single-page app served on the **separate admin listener** (default `:8445`), not on the public edge. The `/__hmn/admin/*` path returns `404` on the public edge by design.
+The Ledger is a single-page app served on the **separate admin listener** (default `127.0.0.1:8445` (loopback)), not on the public edge. The `/__hmn/admin/*` path returns `404` on the public edge by design.
 
 ```
 https://localhost:8445/__hmn/admin/console

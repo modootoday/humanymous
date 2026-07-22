@@ -21,7 +21,7 @@ Gate is built so that its bot-detection processing can be reasoned about under a
 
 ## Verify it yourself
 
-The audit and integrity surfaces are exposed on the authenticated admin listener (default `:8445`), under the admin API base `/__hmn/admin/` with bearer-token auth. Relevant read-only endpoints for a DPO or auditor include `GET /__hmn/admin/integrity`, `GET /__hmn/admin/audit` (filterable by verdict, host, route, rule, minimum risk, and a `before` cursor), and `GET /__hmn/admin/erasures`. Every authenticated access is itself meta-audited before the response is served.
+The audit and integrity surfaces are exposed on the authenticated admin listener (default `127.0.0.1:8445` (loopback)), under the admin API base `/__hmn/admin/` with bearer-token auth. Relevant read-only endpoints for a DPO or auditor include `GET /__hmn/admin/integrity`, `GET /__hmn/admin/audit` (filterable by verdict, host, route, rule, minimum risk, and a `before` cursor), and `GET /__hmn/admin/erasures`. Every authenticated access is itself meta-audited before the response is served.
 
 ---
 

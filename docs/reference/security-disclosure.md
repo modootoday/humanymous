@@ -4,6 +4,12 @@
 
 This page is a coordinated-disclosure policy for **humanymous Gate** itself — the reverse-proxy enforcement layer, its detection engine, control plane, admin plane and Ledger. It tells a researcher how to report a suspected vulnerability, what a good report contains, and what testing is and is not authorized.
 
+> **Reporting a vulnerability in humanymous *itself* (this project)?** Use the
+> project's own policy — [`SECURITY.md`](https://github.com/modootoday/humanymous/blob/main/SECURITY.md)
+> and the live [`/.well-known/security.txt`](https://humanymous.net/.well-known/security.txt)
+> (contact **support@modoo.today**). The page below is a **template you adapt for your own
+> Gate deployment**, not the project's intake.
+
 > **Important:** This page is a **template**. humanymous Gate is a reference implementation, not a production-hardened build (see [Production vs reference](production-vs-reference.md)). Every operator or vendor who deploys Gate is responsible for filling in the real contact address, PGP key, response commitments and hosted `security.txt` before pointing researchers at them. Fields marked `<placeholder>` and lines marked `TODO(verify)` MUST be completed by the operator; do not treat the sample values below as live.
 
 ## Scope
@@ -13,7 +19,7 @@ This policy governs coordinated (responsible) disclosure of security vulnerabili
 In scope for a report:
 
 - The Gate edge and control plane on the public listener (default `:8444`), including the client-facing `/__hmn/` endpoints (`/__hmn/session`, `/__hmn/collect`, `/__hmn/loader.js`, `/__hmn/csp-report`) and the challenge / proof-of-work interstitial.
-- The separate authenticated admin listener (default `:8445`), the Admin API under `/__hmn/admin/`, and the Ledger SPA at `/__hmn/admin/console`.
+- The separate authenticated admin listener (default `127.0.0.1:8445` (loopback)), the Admin API under `/__hmn/admin/`, and the Ledger SPA at `/__hmn/admin/console`.
 - The detection engine (layers L1–L7), the verdict pipeline (ALLOW / CHALLENGE / DENY) and hard rules, where a flaw lets an issue be exploited beyond the documented detection ceiling — for example a control-plane injection, an authentication or RBAC bypass, an audit-log integrity break, or a verdict-token forgery not already described as an accepted residual.
 - The tamper-evident audit log and its verification logic, key sealing (`-keystore` / `HMN_UNSEAL`), and the cryptographic-erasure (crypto-shred) path.
 

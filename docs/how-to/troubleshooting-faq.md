@@ -92,7 +92,7 @@ For a fuller treatment of what changes for real users and how to de-risk enforce
 **Cause.** Two things commonly cause this:
 
 1. **Deny-by-default auth.** Admin authentication is bearer-token, compared in constant time. A missing or invalid token returns `404` (not `401`) — the endpoint does not reveal itself to an unauthenticated caller.
-2. **Wrong listener.** The Ledger and the whole admin API live on a **separate admin listener** (default `:8445`) at `/__hmn/admin/`. On the public edge listener, `/__hmn/admin/*` returns `404` by design. If you are calling the admin path on the edge port, you will always get `404`.
+2. **Wrong listener.** The Ledger and the whole admin API live on a **separate admin listener** (default `127.0.0.1:8445` (loopback)) at `/__hmn/admin/`. On the public edge listener, `/__hmn/admin/*` returns `404` by design. If you are calling the admin path on the edge port, you will always get `404`.
 
 **Fix.**
 

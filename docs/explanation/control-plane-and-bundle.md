@@ -55,7 +55,7 @@ When a verdict is CHALLENGE, Gate serves an accessible proof-of-work (PoW) inter
 
 ### The admin plane is not here
 
-`/__hmn/admin/*` is **not** served on the public edge. Requests to admin paths on the public listener return **404** (deny-by-default). The Ledger and all admin APIs live on a **separate authenticated listener** (`-admin-addr`, `:8445` by default), cross-origin to the edge. So if you are probing `:8444` and expecting an admin endpoint to answer, it will 404 by design — that is not a routing bug, it is the isolation boundary. See the [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md) for the two listeners.
+`/__hmn/admin/*` is **not** served on the public edge. Requests to admin paths on the public listener return **404** (deny-by-default). The Ledger and all admin APIs live on a **separate authenticated listener** (`-admin-addr`, `127.0.0.1:8445` by default (loopback)), cross-origin to the edge. So if you are probing `:8444` and expecting an admin endpoint to answer, it will 404 by design — that is not a routing bug, it is the isolation boundary. See the [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md) for the two listeners.
 
 ### Endpoint reference
 

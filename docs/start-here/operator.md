@@ -40,4 +40,4 @@ flowchart TD
 2. **[Hard Rules, Verdicts & Signal-ID Reference](../reference/hard-rules-verdicts.md)** — what each HR-ID means and what the dotted signal IDs in a drill-down are telling you.
 3. **[The Ledger](https://localhost:8445/__hmn/admin/console)** — the live surface itself, six views: Overview (live edge decisions), Integrity, Sessions (incident drill-down), Rate Limits & Bans, Policy, and Compliance.
 
-> **Tip:** The Ledger is served on the separate admin listener (default `:8445`), not on the public edge. In dev it uses a self-signed certificate, so expect a browser certificate warning.
+> **Tip:** The Ledger is served on the separate admin listener (default `127.0.0.1:8445` (loopback)), not on the public edge. In dev it uses a self-signed certificate, so expect a browser certificate warning.

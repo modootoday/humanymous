@@ -8,7 +8,7 @@ This guide shows you what observability surface the reference implementation of 
 
 ## What exists today
 
-The reference Gate gives you three observability surfaces, all on the authenticated admin listener (`-admin-addr`, default `:8445`), never on the public edge:
+The reference Gate gives you three observability surfaces, all on the authenticated admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)), never on the public edge:
 
 1. **The audit stream** — `GET /__hmn/admin/audit`, structured JSON records of every edge decision, with server-side filters and a paging cursor. This is your primary machine-readable feed.
 2. **The Ledger Overview KPIs** — a human-facing live feed of allow/challenge/deny decisions with rollup counters, at `https://localhost:8445/__hmn/admin/console`. See the [Ledger tour](audit-console-tour.md).

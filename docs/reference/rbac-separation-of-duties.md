@@ -10,7 +10,7 @@ This page is the authoritative lookup for the admin-plane access model in the re
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. The role model, capability rules, and dual-control constraints below are enforced by the reference binary; the transport authentication is dev bearer tokens (see [Authentication and trust boundary](#authentication-and-trust-boundary)), and mTLS/SSO admin authentication is a prod-delta not present in the reference.
 
-Gate is the reverse-proxy enforcement layer. Its admin plane is served on a separate authenticated admin listener (`-admin-addr`, default `:8445`), cross-origin to the public edge. The public edge does not serve `/__hmn/admin/*` — it 404s that prefix.
+Gate is the reverse-proxy enforcement layer. Its admin plane is served on a separate authenticated admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)), cross-origin to the public edge. The public edge does not serve `/__hmn/admin/*` — it 404s that prefix.
 
 ---
 

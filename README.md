@@ -153,8 +153,11 @@ commercial services**. The included red-team simulations (Selenium/Puppeteer/
 Playwright, etc.) exist to **validate your own detector** and must not be used for
 unauthorized access to, evasion of, or abuse of third-party systems. The collected
 signals may be personally identifiable, so a real deployment must comply with
-GDPR / privacy-law notice, consent, and retention obligations. See
-`sots/06-threat-model.md` for the full threat model and boundaries.
+GDPR / privacy-law notice, consent, and retention obligations. See the
+[data-processing inventory](docs/reference/data-processing-inventory.md) and the
+[transparency report](docs/explanation/transparency-report.md) for the privacy model,
+and [red-team rules of engagement](docs/reference/red-team-rules-of-engagement.md) for
+the testing boundaries.
 
 ## Verification results (bots vs the detector)
 
@@ -187,9 +190,11 @@ uTLS (Go) client:
 → In this reference run all 25 bot profiles were blocked (DENY/CHALLENGE) and the
 baseline was not denied. **Reference-measured on the maintainers' hardware, n=1 — not
 a guarantee**; the baseline is a Playwright/CDP session, and the DENY-only "FPR"
-under-reports human friction. Full report (read with the same caveats):
-`docs/report.html`. Honest capabilities, limits, and the known detection floor are in
-the [transparency report](docs/explanation/transparency-report.md).
+under-reports human friction. A full per-profile report is generated locally at
+`docs/report.html` (via `make report-html`, or by re-running the catalog). Honest
+capabilities, limits, and the known detection floor are published in the
+[transparency report](docs/explanation/transparency-report.md) and the
+[security audit](docs/reference/security-audit.md).
 
 ## Anti-bypass layers (implemented & wired)
 
@@ -246,7 +251,7 @@ New bots: `tls-static` (static parrot), `tls-rotate`, `ua-rotate`, `rit-replay`,
 fire but it resolves to ALLOW once it interacts; a physical human has no CDP signal
 at all. AI-agent burst_silence needs a long-enough observation window to catch
 (loader 6s). Not-yet-implemented extensions: memory-hard PoW (Argon2), web-bot-auth
-(allow declared agents), Sec-Fetch combination checks. See `docs/report.html`.
+(allow declared agents), Sec-Fetch combination checks.
 
 ### Round 4 — destructive attack classes (deep-research verified, SoT-17)
 
@@ -327,5 +332,8 @@ run (n=1) all **25 bot profiles were blocked and the baseline was not denied**
 (reference-measured, not a guarantee); Gate conformance **34/34** (incl. token
 theft/forgery/replay, smuggling, upgrade-tunnel, and sweep defenses). The headline
 audit log (tamper-evident hash chain + Ed25519 STH + crypto-shred) is live, with the
-live admin console (SoT-26). Details in `sots/18-audit-log.md`, `sots/19`–`sots/28`,
-and `plan/01-implementation-plan.md`.
+live admin console (SoT-26). Full documentation is published at
+**[humanymous.net](https://humanymous.net)** (also under [`docs/`](docs/)) — start with
+[what Gate is](docs/explanation/what-gate-is.md), the
+[security audit](docs/reference/security-audit.md), and the
+[transparency report](docs/explanation/transparency-report.md).

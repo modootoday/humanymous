@@ -73,7 +73,7 @@ https://localhost:8445/__hmn/admin/console
 
 Navigate to **Integrity** under Operations. The view reports either a clean verification or the specific mismatch class it found (see the failure-class table below).
 
-> **Note:** The admin listener (`-admin-addr`, default `:8445`) is a separate, authenticated listener, cross-origin to the public edge. The admin API and console are **not** reachable on the public edge — `/__hmn/admin/*` returns `404` there.
+> **Note:** The admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)) is a separate, authenticated listener, cross-origin to the public edge. The admin API and console are **not** reachable on the public edge — `/__hmn/admin/*` returns `404` there.
 
 ### Option B — the integrity endpoint directly
 

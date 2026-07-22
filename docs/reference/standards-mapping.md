@@ -69,7 +69,7 @@ The following are established anchors a production deployment would add. They ar
 
 ## Part 2 — Audit-response evidence pack
 
-This checklist turns a supervisory-authority inquiry or a DSAR into a repeatable procedure. Each item names the artifact, how to produce it, and how the recipient can independently verify it. All admin endpoints are served on the **admin listener** (default `:8445`) under the `/__hmn/admin` base, behind bearer authentication; the public edge returns 404 for these paths.
+This checklist turns a supervisory-authority inquiry or a DSAR into a repeatable procedure. Each item names the artifact, how to produce it, and how the recipient can independently verify it. All admin endpoints are served on the **admin listener** (default `127.0.0.1:8445` (loopback)) under the `/__hmn/admin` base, behind bearer authentication; the public edge returns 404 for these paths.
 
 Throughout, replace `<admin-host>` (default `localhost:8445`), `<token>` (an admin bearer token with the required role), and other `<angle-bracket>` placeholders with your values.
 
