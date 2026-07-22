@@ -62,6 +62,9 @@ func (l *RedisVerdictLedger) Set(sid string, v stickyVerdict) {
 	_, _ = l.rc.Do("SET", redisVerdictPrefix+sid, string(b), "PX", strconv.FormatInt(l.ttl.Milliseconds(), 10))
 }
 
+// GC sweeps the local mirror (Redis expires its own keys via PX).
+func (l *RedisVerdictLedger) GC(now time.Time) { l.local.GC(now) }
+
 func (l *RedisVerdictLedger) Get(sid string, now time.Time) stickyVerdict {
 	rep, err := l.rc.Do("GET", redisVerdictPrefix+sid)
 	if err != nil {
@@ -103,6 +106,9 @@ func NewRedisBanLedger(rc *redis.Client, window time.Duration, soft, hard int) *
 	rl := NewRedisRateLimiter(rc, window, soft, hard)
 	return &RedisBanLedger{rc: rc, local: NewBanStoreWithLimiter(rl), nowFn: time.Now}
 }
+
+// GC sweeps the local mirror + its rate-limiter (Redis expires its own keys).
+func (l *RedisBanLedger) GC(now time.Time) { l.local.GC(now) }
 
 func (l *RedisBanLedger) Check(key string) (BanEntry, bool) {
 	rep, err := l.rc.Do("GET", redisBanPrefix+key)

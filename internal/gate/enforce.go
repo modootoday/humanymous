@@ -65,6 +65,19 @@ func (s *VerdictStore) Get(sid string, now time.Time) stickyVerdict {
 	return v
 }
 
+// GC evicts sticky verdicts past their TTL. Without it the map grows once per
+// distinct session forever — an attacker-controllable unbounded-memory vector, since
+// Set runs on every /collect beacon (PLAN-08 deployment-review ship-blocker).
+func (s *VerdictStore) GC(now time.Time) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for k, v := range s.m {
+		if now.Sub(v.updated) > s.ttl {
+			delete(s.m, k)
+		}
+	}
+}
+
 // mapVerdict converts an engine verdict string (ALLOW/CHALLENGE/DENY) to the
 // edge Verdict.
 func mapVerdict(engine string) Verdict {

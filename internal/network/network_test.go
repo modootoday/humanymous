@@ -135,20 +135,3 @@ func TestHeaderAnomalies(t *testing.T) {
 		t.Error("expected sec-fetch and sec-ch-ua present")
 	}
 }
-
-func TestJA4H_Stable(t *testing.T) {
-	h := HeaderInfo{
-		Method: "GET", Version: "20", HasCookie: true, HasReferer: false,
-		Names:          []string{"user-agent", "accept", "cookie", "accept-language"},
-		AcceptLanguage: "en-US,en;q=0.9",
-		CookieNames:    []string{"hsid"},
-	}
-	a := h.JA4H()
-	b := h.JA4H()
-	if a != b {
-		t.Fatalf("JA4H not stable: %s vs %s", a, b)
-	}
-	if !strings.HasPrefix(a, "ge20c") { // GET, h2, cookie=c
-		t.Errorf("JA4H prefix want ge20c, got %q", a)
-	}
-}

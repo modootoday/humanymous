@@ -54,3 +54,15 @@ func (a *anomalyShadow) observe(fp string, now time.Time) {
 			gap, res.Score, res.Median)
 	}
 }
+
+// gc age-evicts the last-seen map and the detector's per-key state.
+func (a *anomalyShadow) gc(now time.Time) {
+	a.det.GC(now, 10*time.Minute)
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	for k, t := range a.last {
+		if now.Sub(t) > 10*time.Minute {
+			delete(a.last, k)
+		}
+	}
+}

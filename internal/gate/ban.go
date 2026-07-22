@@ -168,6 +168,28 @@ func (b BanEntry) remainingSecs(now time.Time) float64 {
 	return d
 }
 
+// GC evicts expired bans, stale strike records, and old rate-limiter windows. The
+// strikes map in particular is fingerprint/IP-keyed and was reset-but-never-deleted,
+// so a churn of fresh keys grew it without bound (PLAN-08 deployment-review
+// ship-blocker).
+func (s *BanStore) GC(now time.Time) {
+	if l, ok := s.limiter.(interface{ GC(time.Time) }); ok {
+		l.GC(now)
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for k, b := range s.bans {
+		if !b.active(now) {
+			delete(s.bans, k)
+		}
+	}
+	for k, st := range s.strikes {
+		if now.Sub(st.last) > strikeDecay {
+			delete(s.strikes, k)
+		}
+	}
+}
+
 // List returns all active bans (for the console, SoT-26 §4). Expired entries are
 // swept.
 func (s *BanStore) List() []BanEntry {

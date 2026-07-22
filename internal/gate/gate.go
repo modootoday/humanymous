@@ -104,6 +104,26 @@ func banLedger(cfg Config) BanLedger {
 	return NewBanStore(rlWindow(cfg), rlSoft(cfg), rlHard(cfg))
 }
 
+// GC sweeps the gate's in-memory detection state (verdicts, bans + strikes + rate
+// windows, sweep-detector bindings, shadow-anomaly state). Call it periodically —
+// without it these fingerprint/IP-keyed maps grow without bound under the exact bot
+// churn the product defends against (PLAN-08 deployment-review ship-blocker). The
+// core engine already does this every minute; this brings the gate to parity.
+func (s *Server) GC(now time.Time) {
+	if g, ok := s.verdicts.(interface{ GC(time.Time) }); ok {
+		g.GC(now)
+	}
+	if g, ok := s.bans.(interface{ GC(time.Time) }); ok {
+		g.GC(now)
+	}
+	if s.sweep != nil {
+		s.sweep.GC(now)
+	}
+	if s.anomaly != nil {
+		s.anomaly.gc(now)
+	}
+}
+
 // Bans exposes the ban store for console management (SoT-26/27).
 func (s *Server) Bans() BanLedger { return s.bans }
 

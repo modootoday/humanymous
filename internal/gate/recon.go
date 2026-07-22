@@ -32,6 +32,19 @@ func NewSweepDetector(window time.Duration, maxSess int) *SweepDetector {
 }
 
 // Observe records (bind, sid) and returns true if the binding is now sweeping.
+// GC evicts binding windows that have fully aged out. byBind is keyed by client
+// binding (fingerprint/IP), so without eviction a churn of bindings grows it without
+// bound (PLAN-08 deployment-review ship-blocker).
+func (d *SweepDetector) GC(now time.Time) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	for k, bw := range d.byBind {
+		if now.Sub(bw.first) > 2*d.window {
+			delete(d.byBind, k)
+		}
+	}
+}
+
 func (d *SweepDetector) Observe(bind, sid string, now time.Time) bool {
 	if bind == "" {
 		return false

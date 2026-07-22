@@ -374,6 +374,17 @@ func main() {
 			epochs.Advance()
 		}
 	}()
+	// Sweep in-memory detection state every minute so fingerprint/IP-keyed maps cannot
+	// grow without bound under bot-flood churn (PLAN-08 deployment-review ship-blocker;
+	// brings the gate to parity with the core engine's GC ticker).
+	go func() {
+		t := time.NewTicker(time.Minute)
+		for range t.C {
+			now := time.Now()
+			srv.GC(now)   // verdicts, bans + strikes + rate windows, sweep bindings, anomaly
+			store.GC(now) // control-plane collector store
+		}
+	}()
 
 	if lo := strings.HasPrefix(*adminAddr, "127.0.0.1") || strings.HasPrefix(*adminAddr, "localhost") || strings.HasPrefix(*adminAddr, "[::1]"); !lo && !devTokens {
 		log.Printf("WARNING (audit SEC-1): admin listener %s is not bound to loopback and no mTLS/SSO is configured — front it with a mutually-authenticated proxy or bind -admin-addr to 127.0.0.1. In Docker, keep the host port mapping loopback-only (127.0.0.1:8445:8445).", *adminAddr)

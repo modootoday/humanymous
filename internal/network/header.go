@@ -1,12 +1,11 @@
 package network
 
 import (
-	"sort"
 	"strings"
 )
 
-// header.go computes HTTP header-order signals and the JA4H fingerprint, and
-// flags library/automation anomalies (SoT-02 §L5 header). It works on a small
+// header.go computes HTTP header-order signals and flags library/automation
+// anomalies (SoT-02 §L5 header). It works on a small
 // HeaderInfo struct rather than *http.Request so it is unit-testable and
 // decoupled from the server (SRP).
 
@@ -78,63 +77,10 @@ func (h HeaderInfo) Order() []string {
 	return out
 }
 
-// JA4H computes the JA4H HTTP fingerprint (FoxIO):
-//
-//	{method:2}{version:2}{cookie:1}{referer:1}{hdrCount:02}_{alHash:12}_{hdrHash:12}_{ckHash:12}
-func (h HeaderInfo) JA4H() string {
-	method := twoChar(strings.ToLower(h.Method))
-	ver := h.Version
-	if ver == "" {
-		ver = "11"
-	}
-	cookie := "n"
-	if h.HasCookie {
-		cookie = "c"
-	}
-	ref := "n"
-	if h.HasReferer {
-		ref = "r"
-	}
-	// header names excluding cookie/referer, in order.
-	var hdrNames []string
-	for _, n := range h.Names {
-		ln := strings.ToLower(n)
-		if ln == "cookie" || ln == "referer" {
-			continue
-		}
-		hdrNames = append(hdrNames, ln)
-	}
-	al := "000000000000"
-	if h.AcceptLanguage != "" {
-		al = trunc12(sha256Hex(h.AcceptLanguage))
-	}
-	hdrHash := "000000000000"
-	if len(hdrNames) > 0 {
-		hdrHash = trunc12(sha256Hex(strings.Join(hdrNames, ",")))
-	}
-	ckHash := "000000000000"
-	if len(h.CookieNames) > 0 {
-		cn := append([]string(nil), h.CookieNames...)
-		sort.Strings(cn)
-		ckHash = trunc12(sha256Hex(strings.Join(cn, ",")))
-	}
-	a := method + ver + cookie + ref + pad2(len(hdrNames))
-	return a + "_" + al + "_" + hdrHash + "_" + ckHash
-}
-
-func twoChar(s string) string {
-	if len(s) >= 2 {
-		return s[:2]
-	}
-	return (s + "xx")[:2]
-}
-
-func pad2(n int) string {
-	if n > 99 {
-		n = 99
-	}
-	if n < 10 {
-		return "0" + string(rune('0'+n))
-	}
-	return string(rune('0'+n/10)) + string(rune('0'+n%10))
-}
+// NOTE: a JA4H HTTP-fingerprint implementation was removed here (PLAN-08
+// deployment-review). JA4H is covered by the FoxIO License 1.1, NOT the BSD-3-Clause
+// that covers the JA4 TLS fingerprint (internal/network/ja4.go). It was dead code
+// (no production caller, never emitted as a scoring signal), so it is deleted rather
+// than carried as a licence liability. If ever revived, add explicit FoxIO License
+// 1.1 attribution to NOTICE/THIRD_PARTY_LICENSES.md and confirm BSD-3 compatibility
+// first.
