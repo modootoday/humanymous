@@ -74,6 +74,18 @@ A verdict trust token bound to the fingerprint, when present and valid, lets an 
 
 A **score-based** CHALLENGE (30–69 risk, no hard rule) becomes ALLOW if the session solved the proof-of-work (the `l7.pow.solved` signal). Proof-of-work proves CPU work was done; it does **not** prove humanity, so it **never** overrides a hard rule. A CHALLENGE that a hard rule promoted stays a challenge (or block) regardless of PoW.
 
+## Legitimate populations that can still be challenged or denied
+
+Monitor-first rollout and the safe-GET fail-open reduce false positives, but they do not eliminate them. Be candid with yourself about these populations before you enforce — measure each in monitor mode against your own traffic, because some ride a **hard rule** that is not softened by the fail-open residual:
+
+- **Privacy browsers (Tor Browser, Brave, Firefox RFP).** Anti-fingerprinting deliberately collides fingerprints and, for Tor, rotates exit IPs across many /24 subnets — the exact shape the cross-session correlation rule (HR-19) reads as residential-proxy rotation. These users can be **denied**, and it is the privacy-conscious population that most needs tolerant handling. There is no per-user recourse in the reference.
+- **Carrier-grade NAT / mobile (CGNAT).** The flood rate limiter keys on a shared `ja4|subnet` bucket, so one user behind a busy carrier NAT can trip the aggregate threshold (HR-21) on **strangers'** traffic they cannot see.
+- **Corporate TLS-inspecting proxies (Zscaler/Netskope-class).** When the enterprise proxy re-terminates TLS, the JA4 the engine sees is the *proxy's*, not the browser's, so the UA-vs-TLS cross-check (HR-2) can fire on a whole enterprise of legitimate employees. (Note this only applies where the network plane is active at all — see [Supported topologies](../reference/supported-topologies.md).)
+- **No-JS, CSP/WASM-blocked, ad-blocked, embedded-webview, and old/low-end devices.** The verification bundle requires WebAssembly, and the CHALLENGE escape is itself JS-based, so for these users a CHALLENGE is effectively a **hard block** with no non-JS path in the reference.
+- **Screen-reader and keyboard-only users.** Assistive tech produces synthetic/atypical input events, which the behavioral rules (e.g. HR-12) can read as non-human. See [challenge accessibility](../help/challenge-accessibility.md).
+
+The reference does not ship a false-positive appeal/allowlist workflow, and several of the rules above are categorical (DENY, not CHALLENGE). If your user base is heavy in any of these populations, weigh that against the no-lockout expectation, keep those routes in monitor mode longer, and treat the affected hard rules as tuning targets for your deployment. The full, honest list of who-hits-what is in the review briefing and [Supported topologies](../reference/supported-topologies.md).
+
 ## What Gate does and does not touch in a response
 
 ### Only HTML is rewritten

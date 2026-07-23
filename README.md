@@ -58,6 +58,43 @@ The public `/demo` page scores *your* browser live. Below, a headless automation
 A real browser on real hardware clears with a low score (ALLOW). No detector is
 perfect — the goal is to *raise the cost of automation*, not to claim a perfect wall.
 
+## What this is — and is not
+
+Read this before you evaluate or deploy. This is a **BSD-3-Clause reference/sample** anti-bot
+detection engine that **raises the cost of automation against the commodity bot long tail**.
+It is not a turnkey production bot defense and not a silver bullet.
+
+**It reliably handles** off-the-shelf automation (Selenium, Puppeteer, Playwright,
+undetected-chromedriver, nodriver), headless tells, `curl_cffi`/uTLS TLS parrots, and naive
+proxy farms. **It does not** stop a determined, well-resourced adversary running a *genuine*
+browser engine (a patched Camoufox/Chromium) behind residential proxies with human-paced
+input — that is the nature of browser fingerprinting, an arms race, not a bug. It is also not
+a WAF (no payload/exploit filtering), not a CDN (no volumetric-DDoS absorption), and not a
+CAPTCHA (its CHALLENGE is an accessible proof-of-work, not a puzzle). See the honest
+threat-tier (T0–T4) breakdown in [Where Gate fits](docs/explanation/where-gate-fits.md).
+
+## Supported topologies (read before deploying)
+
+**The detection layers are not all active in every topology.** The network plane — JA3/JA4
+TLS fingerprinting, the HTTP/2 fingerprint, and the UA-vs-TLS/H2 cross-checks (hard rules
+HR-2/HR-5/HR-11/HR-14) — is read from the **raw TLS connection** and exists **only** in a
+process that terminates raw TLS on its own accept loop. Two consequences that most surprise
+adopters:
+
+- **Behind a CDN, WAF appliance, or L7 load balancer that re-terminates TLS, the entire
+  network plane is inert** — silently. Detection collapses to the client JS/WASM plane
+  (the most spoofable layer) plus header and IP-intel heuristics. This is the dominant
+  production topology, so plan for it.
+- **The shipped `cmd/gate` reverse proxy does not capture the ClientHello at all** — JA3/JA4/H2
+  do not fire at the gate. For TLS fingerprinting, deploy the `cmd/server` Core engine as the
+  raw-TLS terminator (direct-facing or behind an **L4 / TCP-passthrough** LB), with no
+  re-terminating CDN in front.
+
+It is also **single-node by default**: only bans, sticky verdicts, and the rate limiter have a
+shared-state (Redis) seam; correlation, recon-sweep, nonce anti-replay, and the RIT/PoW state
+are per-node in memory. **The full topology matrix — what fires where, plus the scale and
+clock-sync requirements — is in [Supported topologies](docs/reference/supported-topologies.md).**
+
 ## Why Go/WASM
 
 - The core detection logic is **sealed in a WASM binary**, making it harder to tamper with or hook than plain JS.

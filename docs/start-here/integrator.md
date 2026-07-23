@@ -23,6 +23,11 @@ flowchart LR
 
 > **Note:** Building needs **Go 1.25.3 or newer** (the version pinned in `go.mod`). The build is pure Go (no CGO).
 
+> **Decide your topology first.** Where you place Gate determines which detection layers are
+> even active. The network plane (JA3/JA4/H2) needs raw-TLS termination and does **not** fire
+> at the gate or behind a TLS-terminating CDN/L7-LB. Read [Supported topologies](../reference/supported-topologies.md)
+> before you wire anything, so you deploy the shape that matches the detection you expect.
+
 ## Your next 3 reads (in order)
 
 1. [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md) — build the binary, front your throwaway origin, and watch verdicts get scored and logged without enforcing anything. Do this first.

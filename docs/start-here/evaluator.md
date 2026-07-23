@@ -19,3 +19,5 @@ Read these in order. Each builds on the last, and together they take you from "w
 3. **[Quickstart (monitor mode, 30 min)](../tutorials/quickstart-monitor-mode.md)** — Stand up Gate in front of a test origin, watch it score real requests in the Ledger, and enforce nothing while you build confidence. This is the fastest way to see the graded score and the ALLOW/CHALLENGE/DENY model against your own traffic.
 
 > **Tip:** If you are evaluating with a security team, run monitor mode against a mirror of production traffic first. You get the full risk score and verdict stream in the audit log with zero enforcement risk to live users.
+
+> **Read before you benchmark:** [Supported topologies](../reference/supported-topologies.md) explains why the numbers you measure depend on *where you place it*. The network plane (JA3/JA4/H2) only fires when the process terminates raw TLS itself — it is inert behind a CDN/L7-LB and absent at the `cmd/gate` proxy — so benchmarking the Core engine and deploying the gate, or sitting behind a CDN, measures a different detector than you deploy.

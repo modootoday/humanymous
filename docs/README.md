@@ -50,6 +50,7 @@ The documentation set, grouped by Diátaxis quadrant.
 - **[Install, requirements & supported platforms](reference/install-requirements.md)** — toolchain, build, ports, and dependencies.
 - **[RBAC, separation-of-duties & dual-control](reference/rbac-separation-of-duties.md)** — the role×capability matrix and which actions need a distinct committer.
 - **[Data processing & personal-data inventory](reference/data-processing-inventory.md)** — what is observed vs stored, pseudonymization, retention tiers (RoPA-ready).
+- **[Supported topologies (read before deploying)](reference/supported-topologies.md)** — which detection layers are active in each topology; the raw-TLS-termination requirement, the Core-vs-Gate split, and why a fronting CDN silently disables the network plane.
 - **[Production-ready vs reference (prod-delta)](reference/production-vs-reference.md)** — component-by-component status and the local↔production checklist.
 - **[Security vulnerability disclosure policy](reference/security-disclosure.md)** — how to report a flaw in Gate itself, with a security.txt template.
 - **[Deployment cost, latency & footprint](reference/deployment-cost-latency.md)** — what adds per-request cost, the defined resource bounds, and how to measure your own numbers.

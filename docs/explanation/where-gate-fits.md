@@ -118,6 +118,7 @@ The mechanical summary, in bounded terms: Gate **reduces** commodity automation 
 
 ## Related pages
 
+- [Supported topologies](../reference/supported-topologies.md) — which detection layers are active in each deployment shape; the raw-TLS requirement and why a fronting CDN silently disables the network plane.
 - [What Gate is (and is not)](./what-gate-is.md) — the mechanism, the score-not-a-flag design, and the audit posture, in depth.
 - [Will this break my app?](./will-this-break-my-app.md) — the safety model, fail-open/fail-closed behavior, and a monitor-first rollout.
 - [Production vs reference](../reference/production-vs-reference.md) — the canonical list of what this reference build does not ship for production.
