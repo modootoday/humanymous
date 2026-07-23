@@ -194,6 +194,19 @@ func (a *app) withSecurityHeaders(next http.Handler) http.Handler {
 // excluded — including 172.16/12, which Docker bridge networks use and the old
 // string-prefix check missed (it flagged every containerized session as a
 // datacenter IP, a persistent +score even for a real user's browser).
+// datacenterNets is the operator-supplied set of datacenter/cloud IP ranges (from an ASN
+// feed or a provider CIDR list). It is EMPTY by default, which makes isDatacenterIP fail
+// OPEN — returning false for every IP. This is deliberate (deep-review blocker): the old
+// stub returned true for EVERY public IP, so on any real (non-loopback) deployment it fired
+// l5.ip.datacenter_asn on every visitor and HR-11 hard-CHALLENGEd 100% of real humans,
+// violating the no-lockout constraint. Missing a datacenter bot is far cheaper than
+// challenging everyone, so with no dataset wired the signal simply does not fire.
+var datacenterNets []*net.IPNet
+
+// SetDatacenterCIDRs wires the real datacenter/cloud IP-range set an operator must supply
+// for l5.ip.datacenter_asn to fire in production. Until then isDatacenterIP fails open.
+func SetDatacenterCIDRs(nets []*net.IPNet) { datacenterNets = nets }
+
 func isDatacenterIP(ip string) bool {
 	p := net.ParseIP(ip)
 	if p == nil {
@@ -202,5 +215,10 @@ func isDatacenterIP(ip string) bool {
 	if p.IsLoopback() || p.IsPrivate() || p.IsLinkLocalUnicast() || p.IsUnspecified() {
 		return false
 	}
-	return true
+	for _, n := range datacenterNets {
+		if n.Contains(p) {
+			return true
+		}
+	}
+	return false // fail open: no dataset ⇒ do not accuse a real user's public IP
 }

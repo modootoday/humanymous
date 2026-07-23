@@ -129,44 +129,53 @@ func tokenMAC(key []byte, payload string) []byte {
 	return m.Sum(nil)
 }
 
-// NonceCache is a single-use proof-nonce store (HR-29). A nonce is accepted once
-// per (nonce, binding); a replay — same nonce, or the nonce from a different
-// fingerprint — is rejected.
+// NonceCache is a single-use proof-nonce store (HR-29). A nonce is accepted once GLOBALLY:
+// a replay — the same nonce again, under the same OR a different binding — is rejected
+// (solve-once-reuse-many). Keying on the bare nonce makes both the lookup and the
+// cross-binding check O(1); the binding is folded into the caller's nonce string when it
+// needs to be part of identity.
 type NonceCache struct {
-	mu   sync.Mutex
-	seen map[string]time.Time
-	ttl  time.Duration
+	mu        sync.Mutex
+	seen      map[string]time.Time // bare nonce -> first-seen
+	ttl       time.Duration
+	lastSweep time.Time
 }
+
+// nonceMaxSeen bounds the nonce set so an unauthenticated /collect-beacon nonce flood cannot
+// grow it without limit (deep-review self-DoS). At saturation Use fails safe (treats a new
+// nonce as a replay) until the amortized sweep drains it. Mirrors privacypass.patMaxSeen.
+const nonceMaxSeen = 1 << 20
 
 // NewNonceCache builds a single-use nonce cache with a TTL sweep.
 func NewNonceCache(ttl time.Duration) *NonceCache {
 	return &NonceCache{seen: map[string]time.Time{}, ttl: ttl}
 }
 
-// Use records a nonce as consumed for a binding; returns false on replay.
+// Use records a nonce as consumed; returns false on replay. bind is retained for API
+// compatibility but is not part of the key — a bare nonce is single-use across all bindings.
 func (c *NonceCache) Use(nonce, bind string, now time.Time) bool {
 	if nonce == "" {
 		return true // no nonce presented; not a replay (older client)
 	}
+	_ = bind
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	// GC opportunistically.
-	for k, t := range c.seen {
-		if now.Sub(t) > c.ttl {
-			delete(c.seen, k)
+	// Amortize the O(n) expiry sweep to at most once per ttl/4 (or eagerly at saturation),
+	// so the steady-state per-call cost is O(1) instead of O(n) on the hot beacon path.
+	if now.Sub(c.lastSweep) > c.ttl/4 || len(c.seen) >= nonceMaxSeen {
+		for k, t := range c.seen {
+			if now.Sub(t) > c.ttl {
+				delete(c.seen, k)
+			}
 		}
+		c.lastSweep = now
 	}
-	key := nonce + "|" + bind
-	if _, ok := c.seen[key]; ok {
-		return false // replay: this nonce+binding was already consumed
+	if _, ok := c.seen[nonce]; ok {
+		return false // replay: this nonce was already consumed (any binding)
 	}
-	// A nonce reused across a DIFFERENT binding is also a replay (solve-once-
-	// reuse-many): reject if the bare nonce was seen under any binding.
-	for k := range c.seen {
-		if strings.HasPrefix(k, nonce+"|") {
-			return false
-		}
+	if len(c.seen) >= nonceMaxSeen {
+		return false // saturated: fail-safe rather than grow unbounded
 	}
-	c.seen[key] = now
+	c.seen[nonce] = now
 	return true
 }

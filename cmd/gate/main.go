@@ -485,6 +485,12 @@ func main() {
 		tlsMode = "BYO cert"
 	}
 	log.Printf("humanymous Gate %s on https://localhost%s -> %s (monitor=%v, tls=%s)", version, *addr, *upstream, *monitor, tlsMode)
+	// Topology honesty (deep-review): the gate does NOT capture the ClientHello, so JA3/JA4,
+	// grease, the H2 fingerprint and the UA-vs-TLS/H2 cross-checks (HR-2/HR-5/HR-11/HR-14) do
+	// NOT fire here — the network-fingerprint plane is a reference feature of the Core engine.
+	// Detection at the gate is client JS/WASM + header/behavior + IP-intel only. Additionally,
+	// if a CDN/L7 balancer terminates TLS in front, even the Core's TLS plane is inert.
+	log.Printf("NOTE: network-fingerprint plane (JA3/JA4/H2) is INACTIVE at the gate — detection here is JS/WASM + headers + behavior + IP-intel. For TLS fingerprinting, terminate raw TLS at the Core engine with no re-terminating CDN/L7-LB in front.")
 
 	// PLAN-08 R4 — behind an L4 passthrough LB: parse PROXY v2 (below TLS) from the
 	// trusted balancer CIDRs, recovering the real client IP. Without trusted proxies,

@@ -13,10 +13,12 @@ import (
 )
 
 // proxyproto.go recovers the true client address when the gate sits behind an L4 /
-// TCP-passthrough load balancer (PLAN-08 R4). In that deployment the gate still
-// terminates TLS itself — so the real ClientHello (and thus the JA3/JA4 signals in
-// internal/network) is unaffected — but the TCP peer is the balancer, not the client,
-// which would break every ban / rate-limit / correlation keyed on the client IP.
+// TCP-passthrough load balancer (PLAN-08 R4). The gate terminates TLS itself, but note
+// (deep-review): the gate does NOT currently extract the ClientHello, so the JA3/JA4 and
+// H2 network-fingerprint signals do NOT fire at the gate at all (control_collect.go builds
+// its network observation with Hello=nil; those signals are a reference feature of the Core
+// engine, cmd/server). This wrapper only recovers the real client IP so the IP-keyed ban /
+// rate-limit / correlation state is correct behind an L4 balancer.
 //
 // The balancer prepends a PROXY protocol v2 header (HAProxy send-proxy-v2, nginx
 // stream proxy_protocol) declaring the real source. This wrapper parses that header

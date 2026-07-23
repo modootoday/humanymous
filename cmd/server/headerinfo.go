@@ -47,18 +47,17 @@ func reqToHeaderInfo(r *http.Request) network.HeaderInfo {
 	}
 }
 
-// clientSubnet returns the /24 (or IPv6 /48) of the client for cross-session
-// correlation. It prefers X-Forwarded-For (so the demo can simulate rotating
-// residential-proxy exit IPs); production would trust only the real edge IP.
+// clientSubnet returns the /24 (or IPv6 /48) of the client for cross-session correlation.
+// It derives the subnet from clientIP(r), which trust-gates X-Forwarded-For on
+// isTrustedProxy: a forwarding header is honored ONLY from a trusted proxy peer and ignored
+// from a direct (untrusted) client. This closes the asymmetry (deep-review) where a
+// direct-facing Core read XFF unconditionally here while clientIP trust-gated it — letting a
+// bot pin a fake subnet to evade the ja4|subnet flood limiter (HR-21) and cross-session
+// correlation (HR-19), or assert a victim's subnet to frame a real human into an HR-19
+// lone-DENY. The demo's proxy-rotation simulation still works because its harness/bots
+// connect from private (trusted) Docker addresses, so their simulated XFF is still honored.
 func clientSubnet(r *http.Request) string {
 	ip := clientIP(r)
-	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
-		if i := strings.IndexByte(xff, ','); i >= 0 {
-			ip = strings.TrimSpace(xff[:i])
-		} else {
-			ip = strings.TrimSpace(xff)
-		}
-	}
 	if strings.Count(ip, ".") == 3 {
 		parts := strings.Split(ip, ".")
 		return parts[0] + "." + parts[1] + "." + parts[2]

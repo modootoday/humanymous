@@ -70,10 +70,17 @@ func originEpoch(now time.Time) string {
 	return "e" + strconv.FormatInt(now.Unix()/originEpochWindow, 10)
 }
 
-// originEpochGrace returns the current + previous epoch, the set an origin should accept to
-// tolerate a bucket boundary / clock skew (rotation grace, SoT-22 §4).
+// originEpochGrace returns the NEXT, current, and previous epoch — the set an origin should
+// accept to tolerate a bucket boundary in EITHER direction. The grace must be symmetric: if
+// the gate's clock is AHEAD of the origin's across an hour boundary the gate emits the next
+// bucket, and a past-only grace would reject every proxied request until the origin caught
+// up — blackholing all traffic (deep-review). ±1 bucket tolerates skew either way.
 func originEpochGrace(now time.Time) []string {
-	return []string{originEpoch(now), originEpoch(now.Add(-originEpochWindow * time.Second))}
+	return []string{
+		originEpoch(now.Add(originEpochWindow * time.Second)),
+		originEpoch(now),
+		originEpoch(now.Add(-originEpochWindow * time.Second)),
+	}
 }
 
 // ValidateOriginAuth is the ORIGIN-side check (used by a compliant upstream or

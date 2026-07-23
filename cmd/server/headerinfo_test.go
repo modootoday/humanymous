@@ -1,32 +1,35 @@
 package main
 
 import (
+	"net"
 	"net/http"
 	"testing"
 )
 
-func TestIsDatacenterIP(t *testing.T) {
-	cases := map[string]bool{
-		"127.0.0.1":    false, // loopback
-		"::1":          false, // loopback v6
-		"10.1.2.3":     false, // private 10/8
-		"192.168.65.1": false, // private 192.168/16 (Docker Desktop gw)
-		"172.16.0.1":   false, // private 172.16/12 low edge
-		"172.30.0.1":   false, // Docker compose bridge gw (regression: old stub flagged this)
-		"172.31.255.9": false, // private 172.16/12 high edge
-		"172.18.0.5":   false, // Docker default bridge
-		"169.254.1.1":  false, // link-local
-		"fc00::1":      false, // IPv6 ULA (private)
-		"0.0.0.0":      false, // unspecified
-		"garbage":      false, // unresolvable → do not accuse
-		"":             false,
-		"8.8.8.8":      true, // public
-		"1.2.3.4":      true, // public
-		"172.32.0.1":   true, // just ABOVE 172.16/12 → public
+// With NO datacenter dataset wired, isDatacenterIP FAILS OPEN: every IP → false, so a real
+// user's public IP is never accused (deep-review: the old stub flagged every public IP and
+// HR-11 mass-CHALLENGEd 100% of real humans).
+func TestIsDatacenterIP_FailsOpenByDefault(t *testing.T) {
+	datacenterNets = nil // default state
+	for _, ip := range []string{"127.0.0.1", "::1", "10.1.2.3", "172.30.0.1", "169.254.1.1", "garbage", "", "8.8.8.8", "1.2.3.4", "203.0.113.7"} {
+		if isDatacenterIP(ip) {
+			t.Errorf("isDatacenterIP(%q)=true with no dataset, want false (fail-open)", ip)
+		}
 	}
-	for ip, want := range cases {
-		if got := isDatacenterIP(ip); got != want {
-			t.Errorf("isDatacenterIP(%q)=%v, want %v", ip, got, want)
+}
+
+// With a real CIDR set wired, only IPs INSIDE it are datacenter; a residential/public IP
+// outside the set is not accused.
+func TestIsDatacenterIP_WithDataset(t *testing.T) {
+	_, n, _ := net.ParseCIDR("203.0.113.0/24")
+	SetDatacenterCIDRs([]*net.IPNet{n})
+	defer SetDatacenterCIDRs(nil)
+	if !isDatacenterIP("203.0.113.7") {
+		t.Error("an IP inside a wired datacenter CIDR must be flagged")
+	}
+	for _, ip := range []string{"8.8.8.8", "198.51.100.4", "10.0.0.1", ""} {
+		if isDatacenterIP(ip) {
+			t.Errorf("isDatacenterIP(%q)=true, want false (outside the wired set / private)", ip)
 		}
 	}
 }
