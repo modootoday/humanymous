@@ -76,7 +76,6 @@ func (e *Engine) assemble(r *signals.SessionReport) (contributions []scored, rc 
 		cross:        r.CrossChecks,
 		hasClient:    hasClientReport(r),
 		browserClaim: isBrowserUA(r.Client.UserAgent),
-		privacy:      env.Privacy,
 	}
 	rc.sigs = append(rc.sigs, behavior...)
 	rc.sigs = append(rc.sigs, env.Signals...)

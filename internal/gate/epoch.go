@@ -55,9 +55,12 @@ func (e *EpochManager) Current() string { return e.epochAt(0) }
 // Accepted returns the epochs a token may present (current + previous bucket).
 func (e *EpochManager) Accepted() []string { return []string{e.epochAt(0), e.epochAt(-1)} }
 
-// Advance performs a MANUAL emergency bump: it shifts this node's epoch forward one step,
-// revoking outstanding tokens. In a fleet every node must bump together (an operator action);
-// normal rotation happens automatically by the wall clock and needs no ticker.
+// Advance performs a MANUAL, PER-NODE emergency bump: it shifts THIS node's epoch forward one
+// step (in-memory, not persisted, not propagated). It is NOT a fleet-wide revocation on its
+// own — in a fleet every node would have to bump together, and even then prior-epoch tokens
+// survive through the one grace bucket. The genuine fleet-wide "revoke everything now" lever
+// is rotating the shared token key (HMN_TOKEN_KEY). Normal rotation is automatic by the wall
+// clock and needs no ticker.
 func (e *EpochManager) Advance() {
 	e.mu.Lock()
 	e.bump++

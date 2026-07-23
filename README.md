@@ -301,7 +301,7 @@ rate limit on the protocol-error rate and server-emitted resets.**
 | New detection (SoT-17) | Effect |
 |-------------------------|------|
 | **passive HTTP/2 frame monitor** (`cmd/server/h2monitor.go`): parses only the 9-byte frame header of the decrypted h2 stream (no HPACK access → no serving interference), per-conn RST/CONTINUATION/protoErr counts | **Rapid Reset (CVE-2023-44487) · CONTINUATION Flood · MadeYouReset** → `l5.h2dos.*` → DENY (HR-21) |
-| **fingerprint-keyed sliding-window limiter** (`internal/abuse`): key = JA4+subnet (not IP → defeats proxy rotation) | request flood + credential-stuffing rate → `l5.abuse.flood` (HR-21) |
+| **fingerprint-keyed sliding-window limiter** (`internal/abuse`): key = JA4+subnet (not IP → defeats proxy rotation) | request flood + credential-stuffing rate → `l5.abuse.flood` → score-based CHALLENGE + escalating ban ladder (not a categorical DENY, so a shared CGNAT subnet is not locked out) |
 | **connection resource caps**: `ReadHeaderTimeout` (slowloris), `ReadTimeout` (slow-POST), `MaxConcurrentStreams`, `MaxReadFrameSize` | mitigates slowloris/slow-POST/connection-exhaustion |
 
 New bots: `flood` (90 rapid requests from one fingerprint), `rapid_reset` (open + immediate

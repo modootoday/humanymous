@@ -55,20 +55,17 @@ func TestCatalog_HTTPParrot_NoExecEvidence_DenyHR18(t *testing.T) {
 	}
 }
 
-// TestFPR_PrivacyBrowser_ProxyRotation_NotDeniedHR19: a genuine privacy browser (Tor/Brave/
-// RFP) collides fingerprints and rotates exit subnets BY DESIGN, so proxy_rotation must NOT
-// hard-DENY it (deep-review no-lockout). A non-privacy scraper with the same rotation still does.
-func TestFPR_PrivacyBrowser_ProxyRotation_NotDeniedHR19(t *testing.T) {
-	priv := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36", []signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
-	priv.Client.Environment = signals.Environment{Probed: true, AdBlock: true} // genuine tracking protection
-	priv.Network.Signals = append(priv.Network.Signals, signals.New("l5.correlation.proxy_rotation", 3, signals.VerdictBot, 1, signals.SourceServer, ""))
-	if v := NewEngine().Score(priv); v.HardRuleFired == "HR-19" {
-		t.Fatalf("a genuine privacy browser must not be HR-19-DENIED on proxy_rotation, got %s/%s", v.Verdict, v.HardRuleFired)
-	}
-	scraper := base("Mozilla/5.0 Chrome/126", nil, humanBeh, chromeNet)
-	scraper.Network.Signals = append(scraper.Network.Signals, signals.New("l5.correlation.proxy_rotation", 3, signals.VerdictBot, 1, signals.SourceServer, ""))
-	if v := NewEngine().Score(scraper); v.HardRuleFired != "HR-19" {
-		t.Fatalf("a non-privacy proxy-rotation scraper must still fire HR-19, got %s/%s", v.Verdict, v.HardRuleFired)
+// TestFPR_ProxyRotation_ClientPrivacyFlagDoesNotExempt: a CLIENT-reported privacy flag
+// (adBlock/GPC) must NOT disarm the server-authoritative proxy_rotation hard-DENY — otherwise
+// a residential-proxy scraper posts adBlock:true and lies its way to ALLOW (round-5 regression).
+// The genuine-privacy false positive (Tor/Brave) is an inherent, documented limitation, not
+// something a forgeable client bool may resolve.
+func TestFPR_ProxyRotation_ClientPrivacyFlagDoesNotExempt(t *testing.T) {
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36", []signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r.Client.Environment = signals.Environment{Probed: true, AdBlock: true} // a bot could set this for free
+	r.Network.Signals = append(r.Network.Signals, signals.New("l5.correlation.proxy_rotation", 3, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r); v.HardRuleFired != "HR-19" {
+		t.Fatalf("a client privacy flag must NOT exempt proxy_rotation from HR-19, got %s/%s", v.Verdict, v.HardRuleFired)
 	}
 }
 

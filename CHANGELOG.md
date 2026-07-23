@@ -9,11 +9,65 @@ are called out in a dedicated **Security** subsection with upgrade urgency.
 
 _Nothing yet — see [0.1.0]._
 
-## [0.1.0] - 2026-07-23
+## [0.1.0] - 2026-07-24
 
-First tagged release. Pre-release hardening pass driven by a multi-reviewer Red/Blue + judge code audit
-(see [`docs/reference/security-audit.md`](docs/reference/security-audit.md)). Release
-readiness moved from *GO-with-fixes* toward *GO* by clearing the confirmed blockers.
+First tagged release. Pre-release hardening driven by (a) an initial multi-reviewer Red/Blue +
+judge code audit (see [`docs/reference/security-audit.md`](docs/reference/security-audit.md)),
+then (b) **five progressively deeper deployment-suitability reviews** (multi-agent adversarial
+panels with independent 3-vote verification). Each round found and fixed real defects; the
+series is summarized under *Deployment-suitability review series* below. Detection scoring
+weights were **not** changed — the fixes correct signal *provenance*, hard-rule *false
+positives*, resource bounds, fleet consistency, and honesty of claims. Verified after every
+round: Docker detection catalog **25/25 bots blocked** (no ALLOW), Gate conformance **34/34**,
+`go test -race` clean. Final confirmatory review: **GO** for a reference/sample implementation.
+
+### Deployment-suitability review series (rounds 1–5)
+
+- **Client→server signal provenance boundary.** A client could assert its own trust-upgrade
+  (`{"signals":[{"id":"l7.pass.solved"}]}`) to launder a CHALLENGE to ALLOW. Trust-upgrades now
+  honor only server-minted signals; client-supplied signals in the reserved L5/L6/L7 namespace
+  are stripped at ingest.
+- **The mass false-positive default.** `isDatacenterIP` was a stub returning `true` for every
+  public IP, so on any non-loopback deployment HR-11 hard-CHALLENGEd 100% of real humans (hidden
+  by the loopback demo). It now **fails open** with `SetDatacenterCIDRs` to wire a real
+  cloud/ASN feed.
+- **Unauthenticated PII/IDOR closed.** `/api/report/{sid}`, `/api/traffic/{sid}` and `/api/trace`
+  are now self-bound to the requester's `hsid` cookie or the operator bearer; otherwise 404.
+- **Edge path-confusion** fixed (normalized, segment-anchored route matching).
+- **Audit integrity:** the witness key is persisted; offline `Verify` reconciles the signed
+  Merkle root; a torn trailing WAL record is recovered instead of panic-looping the node.
+- **Coordinator hardening:** key-bound Redis values, verdict/ban anti-rollback + anti-resurrection
+  high-water marks, RESP reply-depth cap, slow-latency breaker; **Web Bot Auth** binds the
+  request line + a single-use nonce.
+- **No-lockout false-positive corrections:** `l5.abuse.flood` (a shared `ja4|subnet` bucket that a
+  busy CGNAT trips) drives a solvable CHALLENGE instead of a categorical HR-21 DENY, with the
+  unambiguous HTTP/2 DoS attacks still DENY; `ja4_rotation` tolerates the benign TLS-1.3
+  resumption delta; `clientSubnet` now trust-gates `X-Forwarded-For`; a verdict token that fails
+  to verify is cleared and re-scored, never a terminal 403.
+- **Self-DoS / resource bounds:** the unauthenticated `/collect` nonce cache, the `scanBanKeys`
+  loop, the enforce verdict store, the rate-limiter GC, the Pass anti-replay store (now reserved
+  only *after* a solve verifies), and the PAT nonce cache are all bounded and fail-safe.
+- **Fleet / correctness:** the verdict-token and origin-cloaking epochs derive from a wall-clock
+  bucket so nodes agree without coordination; PoW delivery and verification use the same
+  issue-time difficulty; shared `HMN_TOKEN_KEY` / `HMN_REDIS_KEY` keep fleet state consistent,
+  with loud warnings when unset.
+- **Honesty of claims:** new
+  [Supported topologies](docs/reference/supported-topologies.md) documents that the network plane
+  (JA3/JA4/H2) needs **raw-TLS termination** and is **inert behind a TLS-terminating CDN/L7-LB**
+  and at the Gate proxy (a weight-0 `l5.tls.not_observed` marker now surfaces this); the README
+  gained a candid "what this is / is not" section; the DPIA/RoPA disclose the operational stores
+  outside audit-log pseudonymization (the raw-IP ban ledger — now with a finite retention
+  horizon — and the in-memory correlation graph), the behavioral-biometric posture, and how
+  GPC/DNT are treated.
+
+> **Documented, inherent limitations (not defects):** the network plane requires raw-TLS
+> termination; the reference is single-node by default; there is a hard detection ceiling against
+> a determined adversary running a genuine browser engine behind residential proxies; and a
+> residual challenge/DENY cost on privacy browsers (Tor/Brave/RFP), CGNAT, corporate TLS-MITM,
+> and no-JS users is inherent (a client-reported privacy flag deliberately does **not** exempt the
+> server-authoritative proxy-rotation rule, as that would hand a bypass to any bot willing to
+> lie). See [Supported topologies](docs/reference/supported-topologies.md) and
+> [Will this break my app?](docs/explanation/will-this-break-my-app.md).
 
 ### Security
 

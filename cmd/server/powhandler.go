@@ -27,6 +27,13 @@ func (a *app) issuePoWHeader(w http.ResponseWriter, sid string, verdict string, 
 		return
 	}
 	d := pow.DifficultyFor(risk)
+	// Re-deliver at the FIRST-issued difficulty once one is recorded, so a re-collecting
+	// client always receives the same difficulty the server VERIFIES against (SetPowIssued is
+	// first-write-wins). Without this, a benign mid-challenge risk DROP would hand an easier
+	// challenge than verification expects and reject a valid human solve (round-5 symmetry).
+	if issued := a.store.PowDifficulty(sid); issued > 0 {
+		d = issued
+	}
 	if d <= 0 {
 		return
 	}

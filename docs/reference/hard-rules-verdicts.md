@@ -91,9 +91,11 @@ Evaluated by the detection engine; visualized in the Detection Observatory. List
 | HR-18 | A browser UA that delivered zero client-side JS evidence (HTTP parrot) | DENY | High-confidence | Attack |
 | HR-19 | One fingerprint across many subnets (residential-proxy rotation), or a proof-of-work solved implausibly fast | DENY | High-confidence | Attack |
 | HR-20 | AI browser-agent signature (teleport click plus a second agent/CDP tell) | DENY | High-confidence | Attack |
-| HR-21 | Destructive-abuse flood / HTTP/2 DoS (Rapid Reset, CONTINUATION flood) / credential-stuffing velocity | DENY | High-confidence | Attack |
+| HR-21 | HTTP/2 DoS (Rapid Reset, CONTINUATION flood) | DENY | High-confidence | Attack |
 
-> **Note:** These 21 rows are regenerated from the engine's own rule table, so they match what the Observatory shows and what the engine did. For the exact predicate behind each rule (and how to author one), see [Inside the detection engine](../explanation/detection-engine-internals.md).
+> **Note:** These rows match the engine's own rule table (what the Observatory shows and what the engine did). For the exact predicate behind each rule (and how to author one), see [Inside the detection engine](../explanation/detection-engine-internals.md).
+
+> **Where request-flood and credential-stuffing velocity are handled (not HR-21).** A request **flood** (`l5.abuse.flood`, a shared `ja4|subnet` bucket) is deliberately **not** a categorical HR-21 DENY — that would lock out a busy carrier-NAT (CGNAT) subnet on strangers' traffic. It instead contributes to a **score-based CHALLENGE** (a real flood is challenged and then rate-limited/banned by the escalating **ban ladder**, SoT-27). High **credential-stuffing / failed-auth velocity** is likewise a rate-limit / ban-ladder concern, not a scoring hard rule. HR-21 covers only the unambiguous HTTP/2 protocol DoS attacks.
 
 ### Gate-plane hard rules (HR-22..HR-30)
 

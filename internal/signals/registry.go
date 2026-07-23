@@ -266,7 +266,6 @@ var (
 	_ = def(Definition{"l5.abuse.flood", LayerNetwork, 45, nil, "abuse", "request flood over hard threshold (DoS/credential-stuffing)"})
 	_ = def(Definition{"l5.h2dos.rapid_reset", LayerNetwork, 45, nil, "abuse", "HTTP/2 Rapid Reset (HEADERS then immediate RST_STREAM flood)"})
 	_ = def(Definition{"l5.h2dos.continuation_flood", LayerNetwork, 45, nil, "abuse", "HTTP/2 CONTINUATION flood (no END_HEADERS)"})
-	_ = def(Definition{"l5.abuse.auth_stuffing", LayerNetwork, 40, nil, "abuse", "high failed-auth velocity per fingerprint (credential stuffing)"})
 )
 
 // ---- L5 cross-session correlation (SoT-15) ----

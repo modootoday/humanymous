@@ -142,8 +142,10 @@ func distributed() (map[string]any, error) {
 
 // flood hammers /api/collect with many rapid requests from one TLS fingerprint
 // (application-layer DoS / credential-stuffing velocity). The Blue engine meters
-// by JA4+subnet (not IP), so the flood is caught even though each request opens
-// a fresh connection -> l5.abuse.flood -> HR-21 DENY (SoT-17).
+// by JA4+subnet (not IP), so the flood is caught even though each request opens a
+// fresh connection -> l5.abuse.flood -> a score-based CHALLENGE (not a categorical
+// DENY, so a shared CGNAT subnet is not locked out) plus the escalating ban ladder
+// (SoT-17/SoT-27).
 func flood() (map[string]any, error) {
 	cookie, _, _, err := session(utls.HelloChrome_Auto)
 	if err != nil {

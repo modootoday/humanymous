@@ -265,12 +265,6 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	// is held at elevated verdict.
 	a.applyPassBehavior(sid, pr, time.Now())
 
-	// 4. Anti-replay (SoT-36 §5) — a captured human trace may be used at most once.
-	if !a.pass.reserveTrace(traceDigest(pr), time.Now()) {
-		reject("duplicate interaction trace")
-		return
-	}
-
 	// 5a. Expiry is NOT a wrong answer (audit ACC-1): a slow assistive-tech user must
 	// never be told "not solved" for taking their time. Report expiry honestly so the
 	// client can announce it and offer a fresh puzzle.
@@ -285,6 +279,16 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 		a.pass.record(label, diff, false)
 		a.publishPass(sid, false, "misaligned")
 		writeJSON(w, map[string]any{"ok": false, "reason": "the keys are not all in the slot", "triesLeft": passMaxTries - tries})
+		return
+	}
+
+	// 5c. Anti-replay (SoT-36 §5) — a captured human trace may be used at most once. Reserved
+	// ONLY after the solve is verified (round-5): reserving before Verify let a failed/expired
+	// submission permanently consume a slot (registry pollution) and, at the bounded cap, lock
+	// out every subsequent legitimate first solve. A slot is now consumed only by a genuine,
+	// verified solving trace, so saturation is bounded by real human solve throughput.
+	if !a.pass.reserveTrace(traceDigest(pr), time.Now()) {
+		reject("duplicate interaction trace")
 		return
 	}
 	a.pass.record(label, diff, true)

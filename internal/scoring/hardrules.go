@@ -12,7 +12,6 @@ type ruleContext struct {
 	cross        []signals.CrossCheck
 	hasClient    bool // client (WASM/JS) report present at all
 	browserClaim bool // UA claims a real browser (not a library default)
-	privacy      bool // session shows genuine privacy tooling (ad-block/tracking-protection)
 	combined     float64
 }
 
@@ -124,24 +123,26 @@ var promotionRules = []promoRule{
 				c.firedBot("l1.cdp.runtime_enable"))
 	}, "AI browser-agent signature (teleport click + a second agent/CDP tell)"},
 	{"HR-19", VerdictDeny, func(c ruleContext) bool {
-		// proxy_rotation alone must NOT hard-DENY a genuine privacy-tooling session:
-		// Tor/Brave/Firefox-RFP browsers collide fingerprints and rotate exit subnets BY
-		// DESIGN, so this rule would categorically lock out the exact privacy population it
-		// most needs to tolerate (deep-review no-lockout). A privacy session that also rotates
-		// still faces full scoring; a scraper without genuine tracking-protection is unaffected.
-		// pow.too_fast is not a privacy trait, so it still denies unconditionally.
-		return (c.firedBot("l5.correlation.proxy_rotation") && !c.privacy) || c.firedBot("l7.pow.too_fast")
+		// proxy_rotation is a SERVER-authoritative network-correlation signal (one fingerprint
+		// across many /24 subnets). It is NOT gated on a client-reported privacy flag: doing so
+		// let a residential-proxy scraper post adBlock:true to disarm the rule and reach ALLOW
+		// (deep-review round-5 regression). The genuine-privacy false positive it causes
+		// (Tor/Brave/RFP fingerprint-collision + exit rotation) is an inherent, DOCUMENTED
+		// limitation — see docs will-this-break-my-app.md — not something a forgeable client
+		// bool may resolve. An operator who must spare a known privacy population should exempt
+		// it by server-observed identity (e.g. a Tor exit-node CIDR set), never by client claim.
+		return c.firedBot("l5.correlation.proxy_rotation") || c.firedBot("l7.pow.too_fast")
 	}, "one fingerprint across many subnets (residential-proxy rotation)"},
 	{"HR-21", VerdictDeny, func(c ruleContext) bool {
-		// Only the UNAMBIGUOUS protocol attacks hard-DENY here. l5.abuse.flood is deliberately
-		// NOT included: it is keyed on a SHARED ja4|subnet bucket, so one user behind a busy
-		// carrier NAT (CGNAT) would be DENIED by strangers' traffic they cannot see. The flood
-		// signal (weight 45) instead drives a SCORE-based CHALLENGE — a real flooding bot is
-		// still challenged and rate-limited/banned by the escalating ladder, while a legitimate
-		// CGNAT user can clear the PoW rather than being hard-locked-out (deep-review no-lockout).
-		return c.firedBot("l5.h2dos.rapid_reset") ||
-			c.firedBot("l5.h2dos.continuation_flood") || c.firedBot("l5.abuse.auth_stuffing")
-	}, "HTTP-2 DoS (Rapid Reset / CONTINUATION flood) / credential-stuffing velocity"},
+		// Only the UNAMBIGUOUS HTTP/2 protocol DoS attacks hard-DENY here. Two deliberate
+		// exclusions (deep-review): (1) l5.abuse.flood is a SHARED ja4|subnet-bucket signal, so
+		// a busy CGNAT would be DENIED by strangers' traffic — it instead drives a score-based
+		// CHALLENGE (a real flood is still challenged + rate-limited/banned by the escalating
+		// ladder). (2) volumetric credential-stuffing velocity is covered by that same
+		// fingerprint-keyed rate-limit BAN LADDER (SoT-27), not a scoring hard rule — there is
+		// no l5.abuse.auth_stuffing producer, so the branch was dead and is removed.
+		return c.firedBot("l5.h2dos.rapid_reset") || c.firedBot("l5.h2dos.continuation_flood")
+	}, "HTTP-2 DoS (Rapid Reset / CONTINUATION flood)"},
 	{"HR-15", VerdictDeny, func(c ruleContext) bool {
 		return c.fired("l5.traffic.ua_rotation") &&
 			(c.firedBot("l5.traffic.ja4_rotation") || c.fired("l5.traffic.ip_hop"))
