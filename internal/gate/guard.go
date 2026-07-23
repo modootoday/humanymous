@@ -5,7 +5,9 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/modootoday/humanymous/internal/audit"
 )
@@ -56,9 +58,28 @@ func originAuth(key []byte, epoch string) string {
 	return hex.EncodeToString(m.Sum(nil))
 }
 
+// originEpochWindow is the origin-cloaking epoch bucket. The epoch is derived from
+// wall-clock time so the gate and the (independent) origin agree without coordination —
+// exactly like the RIT time bucket. A leaked X-Hmny-Origin-Auth is therefore valid for at
+// most one window plus the grace bucket (~2h), instead of forever under the old hardcoded
+// "e1" (deep-review).
+const originEpochWindow = 3600 // seconds (1h)
+
+// originEpoch returns the wall-clock-derived origin epoch for now.
+func originEpoch(now time.Time) string {
+	return "e" + strconv.FormatInt(now.Unix()/originEpochWindow, 10)
+}
+
+// originEpochGrace returns the current + previous epoch, the set an origin should accept to
+// tolerate a bucket boundary / clock skew (rotation grace, SoT-22 §4).
+func originEpochGrace(now time.Time) []string {
+	return []string{originEpoch(now), originEpoch(now.Add(-originEpochWindow * time.Second))}
+}
+
 // ValidateOriginAuth is the ORIGIN-side check (used by a compliant upstream or
 // the demo origin guard): returns true only if the header matches the current or
-// previous epoch (rotation grace, SoT-22 §4).
+// previous epoch (rotation grace, SoT-22 §4). A compliant origin computes the epoch set
+// with originEpochGrace(time.Now()).
 func ValidateOriginAuth(key []byte, header string, epochs ...string) bool {
 	for _, e := range epochs {
 		if hmac.Equal([]byte(header), []byte(originAuth(key, e))) {

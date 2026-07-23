@@ -2,8 +2,50 @@ package audit
 
 import (
 	"context"
+	"os"
+	"path/filepath"
 	"testing"
 )
+
+// deep-review: a torn/partial trailing record (crash/power-loss mid-write) must NOT brick
+// the node — on the LAST segment it is truncated and recovery proceeds; a fully-framed but
+// corrupt record stays fatal.
+func TestWALTornTailRecovers(t *testing.T) {
+	dir := t.TempDir()
+	l := walLog(t, dir, 0)
+	for i := 0; i < 3; i++ {
+		l.Append(sampleRecord(i))
+	}
+	// Simulate a partial final write: append a truncated JSON line with NO newline.
+	seg := filepath.Join(dir, "audit-0000000001.log")
+	f, err := os.OpenFile(seg, os.O_APPEND|os.O_WRONLY, 0o640)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, _ = f.WriteString(`{"seq":4,"event_type":"trunc`) // torn: no closing brace, no '\n'
+	_ = f.Close()
+
+	// A fresh WAL over the same dir must recover the 3 good records (not panic/error).
+	w2, err := NewWALSink(dir)
+	if err != nil {
+		t.Fatalf("reopen: %v", err)
+	}
+	t.Cleanup(func() { _ = w2.Close() })
+	recs, err := w2.ReadAll()
+	if err != nil {
+		t.Fatalf("ReadAll must recover a torn tail, got error: %v", err)
+	}
+	if len(recs) != 3 {
+		t.Fatalf("torn-tail recovery: got %d records, want 3 good ones", len(recs))
+	}
+	// A fully-framed but corrupt line, by contrast, stays fatal.
+	f2, _ := os.OpenFile(seg, os.O_APPEND|os.O_WRONLY, 0o640)
+	_, _ = f2.WriteString("\n{not valid json}\n") // framed (ends in \n) → corruption
+	_ = f2.Close()
+	if _, err := w2.ReadAll(); err == nil {
+		t.Fatal("a fully-framed corrupt record must remain fatal (fail-closed)")
+	}
+}
 
 // A fixed signing seed simulates the persisted keystore identity (SoT-28 WS8):
 // the STH signing key MUST be stable across a restart for replayed checkpoints to

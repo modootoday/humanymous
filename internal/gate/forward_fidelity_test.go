@@ -112,7 +112,7 @@ func TestProxyForwardsClientRequestFaithfully(t *testing.T) {
 	if gotHeaders.Get("X-Forwarded-Host") == "" {
 		t.Error("X-Forwarded-Host not set by proxy")
 	}
-	if oa := gotHeaders.Get("X-Hmny-Origin-Auth"); !ValidateOriginAuth(originKey, oa, "e1") {
+	if oa := gotHeaders.Get("X-Hmny-Origin-Auth"); !ValidateOriginAuth(originKey, oa, originEpochGrace(time.Now())...) {
 		t.Errorf("origin-cloak auth missing/invalid: %q", oa)
 	}
 

@@ -162,7 +162,7 @@ func (s *Server) agentAuthGate(w http.ResponseWriter, r *http.Request, sid strin
 	if s.agentKeys == nil {
 		return false
 	}
-	v, keyid := verifyAgent(r.Host, r.Header.Get("Signature-Input"), r.Header.Get("Signature"), s.agentKeys, s.nowFn())
+	v, keyid := verifyAgent(r.Host, r.Method, r.URL.Path, r.Header.Get("Signature-Input"), r.Header.Get("Signature"), s.agentKeys, s.agentNonces, s.nowFn())
 	switch v {
 	case agentForged:
 		if !s.enforcing(route) {

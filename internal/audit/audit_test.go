@@ -1,6 +1,37 @@
 package audit
 
-import "testing"
+import (
+	"crypto/ed25519"
+	"encoding/hex"
+	"testing"
+)
+
+// deep-review: Verify must reconcile the SIGNED Merkle root against the actual records, so a
+// compromised writer cannot sign a checkpoint whose chained Root matches yet whose MerkleRoot
+// commits to a different leaf set (which an offline inclusion proof would validate against).
+func TestVerifyRejectsMerkleRootMismatch(t *testing.T) {
+	l := NewLog(Config{NodeID: "n", HMACKey: []byte("k"), CheckpointEvery: 4, SigningSeed: testSeed})
+	for i := 0; i < 12; i++ {
+		l.Append(sampleRecord(i))
+	}
+	l.Checkpoint()
+	recs, cps := l.Records(), l.Checkpoints()
+	if len(cps) == 0 {
+		t.Fatal("expected checkpoints")
+	}
+	if res := Verify(recs, cps, l.hmacKey, l.PublicKey()); !res.OK {
+		t.Fatalf("baseline chain must verify: %+v", res)
+	}
+	// A compromised writer re-signs the LAST checkpoint (no successor's PrevCP to break) with
+	// a wrong-but-well-formed MerkleRoot; the chained Root is untouched so ONLY the Merkle
+	// reconcile can catch it.
+	last := len(cps) - 1
+	cps[last].MerkleRoot = hex.EncodeToString(make([]byte, 32)) // 32 zero bytes ≠ real root
+	cps[last].Sig = hex.EncodeToString(ed25519.Sign(l.signPriv, sthBytes(cps[last])))
+	if res := Verify(recs, cps, l.hmacKey, l.PublicKey()); res.OK || res.Class != ClassCheckpointBad {
+		t.Fatalf("a signed checkpoint whose MerkleRoot mismatches the records must fail, got %+v", res)
+	}
+}
 
 func sampleRecord(seq int) Record {
 	return Record{

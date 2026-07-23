@@ -1,9 +1,10 @@
 // assert-webbotauth.mjs — PLAN-08 R3 Web Bot Auth verification gate.
 //
-// Signs a request with the demo agent key (RFC 9421, covered set "@authority",
-// ed25519, tag web-bot-auth) and proves the gate: (1) trust-upgrades a valid signature
-// from the allowlisted key, (2) DENIES a forgery of that key, (3) audits both. Run
-// against the compose/webbotauth overlay. Exit non-zero on any failure.
+// Signs a request with the demo agent key (RFC 9421, covered set "@authority" "@method"
+// "@path" + single-use nonce, ed25519, tag web-bot-auth) and proves the gate:
+// (1) trust-upgrades a valid signature from the allowlisted key, (2) DENIES a forgery of
+// that key, (3) audits both. Run against the compose/webbotauth overlay. Exit non-zero on
+// any failure.
 import crypto from 'node:crypto';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -22,12 +23,13 @@ let failed = 0;
 const check = (name, ok, detail) => { console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ' — ' + detail : ''}`); if (!ok) failed++; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// authority is the Host the gate will see (host:port), lowercased — matching the
-// verifier's buildSignatureBase.
-function sign(authority) {
+// authority is the Host the gate will see (host:port), lowercased. The covered set binds
+// the request line (@authority @method @path) plus a single-use nonce — matching the
+// verifier's buildSignatureBase, which emits one line per covered component in order.
+function sign(authority, method, path, nonce) {
   const created = Math.floor(Date.now() / 1000);
-  const inner = `("@authority");created=${created};keyid="${KID}";alg="ed25519";tag="web-bot-auth"`;
-  const base = `"@authority": ${authority.toLowerCase()}\n"@signature-params": ${inner}`;
+  const inner = `("@authority" "@method" "@path");created=${created};keyid="${KID}";alg="ed25519";tag="web-bot-auth";nonce="${nonce}"`;
+  const base = `"@authority": ${authority.toLowerCase()}\n"@method": ${method.toUpperCase()}\n"@path": ${path}\n"@signature-params": ${inner}`;
   const sig = crypto.sign(null, Buffer.from(base), KEY).toString('base64');
   return { 'Signature-Input': `sig1=${inner}`, Signature: `sig1=:${sig}:` };
 }
@@ -45,7 +47,7 @@ async function main() {
   }
 
   // 1. Valid signature from the allowlisted key → trust-upgrade (forwarded, not denied).
-  const good = sign(authority);
+  const good = sign(authority, 'GET', '/', 'nonce-' + Date.now());
   const goodStatus = await fetch(EDGE + '/', { headers: good, redirect: 'manual' }).then((r) => r.status).catch(() => 0);
   check('valid-agent-signature-allowed', goodStatus === 200, `HTTP ${goodStatus} (trust-upgrade)`);
 

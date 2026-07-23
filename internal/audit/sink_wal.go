@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
@@ -121,8 +122,8 @@ func (w *WALSink) ReadAll() ([]Record, error) {
 		return nil, err
 	}
 	var out []Record
-	for _, s := range segs {
-		recs, err := readRecords(s)
+	for i, s := range segs {
+		recs, err := readRecords(s, i == len(segs)-1) // torn-tail recovery only on the last segment
 		if err != nil {
 			return nil, err
 		}
@@ -245,25 +246,54 @@ func segIndexOf(path string) int {
 	return idx
 }
 
-func readRecords(path string) ([]Record, error) {
+// readRecords parses one segment. A record is one JSON object per newline-terminated line.
+// A fully-framed line (ends in '\n') that fails to parse is genuine corruption and is fatal
+// (fail-closed) wherever it occurs. A PARTIAL final line with NO trailing newline is a torn
+// tail — a crash/power-loss mid-write or a not-yet-Sync'd final line. On the LAST segment a
+// torn tail is TRUNCATED to the last good record and recovery proceeds, so one partial write
+// cannot brick the node into an unrecoverable boot panic loop (deep-review); anywhere else a
+// torn record is still fatal.
+func readRecords(path string, lastSeg bool) ([]Record, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	br := bufio.NewReaderSize(f, 64*1024)
 	var out []Record
-	sc := bufio.NewScanner(f)
-	sc.Buffer(make([]byte, 0, 64*1024), 8<<20) // allow large records
-	for sc.Scan() {
-		ln := sc.Bytes()
-		if len(ln) == 0 {
-			continue
+	var good int64 // byte offset past the last fully-parsed, newline-terminated record
+	for {
+		line, rerr := br.ReadBytes('\n')
+		framed := len(line) > 0 && line[len(line)-1] == '\n'
+		trimmed := strings.TrimRight(string(line), "\r\n")
+		if framed {
+			if trimmed != "" {
+				var r Record
+				if e := json.Unmarshal([]byte(trimmed), &r); e != nil {
+					f.Close()
+					return nil, fmt.Errorf("wal %s: corrupt framed record: %w", path, e)
+				}
+				out = append(out, r)
+			}
+			good += int64(len(line))
+		} else if trimmed != "" {
+			// A non-empty chunk with no terminating newline = a torn/partial final write.
+			if !lastSeg {
+				f.Close()
+				return nil, fmt.Errorf("wal %s: torn record in a non-terminal segment", path)
+			}
+			f.Close()
+			if terr := os.Truncate(path, good); terr != nil {
+				return nil, fmt.Errorf("wal %s: torn tail, truncate failed: %w", path, terr)
+			}
+			fmt.Printf("WARNING: wal %s: truncated a torn trailing record at offset %d (crash/partial write recovered)\n", path, good)
+			return out, nil
 		}
-		var r Record
-		if err := json.Unmarshal(ln, &r); err != nil {
-			return nil, err
+		if rerr != nil { // io.EOF (clean end) or a read error
+			f.Close()
+			if rerr == io.EOF {
+				return out, nil
+			}
+			return out, rerr
 		}
-		out = append(out, r)
 	}
-	return out, sc.Err()
 }

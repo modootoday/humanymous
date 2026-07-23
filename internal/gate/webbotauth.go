@@ -81,11 +81,12 @@ type sigParams struct {
 	keyid      string
 	alg        string
 	tag        string
+	nonce      string
 }
 
 // verifyAgent verifies the request's Web Bot Auth signature against dir at time now.
 // It returns the verdict and the claimed keyid (for audit).
-func verifyAgent(host, sigInput, sig string, dir KeyDirectory, now time.Time) (agentVerdict, string) {
+func verifyAgent(host, method, path, sigInput, sig string, dir KeyDirectory, nonces *NonceCache, now time.Time) (agentVerdict, string) {
 	if sigInput == "" || sig == "" || dir == nil {
 		return agentNone, ""
 	}
@@ -132,27 +133,71 @@ func verifyAgent(host, sigInput, sig string, dir KeyDirectory, now time.Time) (a
 	default:
 		return agentVerifiedUnknown, p.keyid // neither created nor expires → unbounded
 	}
-	// Only the "@authority" covered set is supported in this reference; anything else
-	// is unverifiable here → neutral.
-	if len(p.components) != 1 || p.components[0] != "@authority" {
+	// The covered set must bind the REQUEST LINE, not just the host: a signature over only
+	// "@authority" replays across ANY path and method to the same host as a trust-upgrade
+	// (deep-review). Require @authority + @method + @path, and reject any component we cannot
+	// reconstruct here (→ neutral, never a false deny).
+	if !coversRequestLine(p.components) {
 		return agentVerifiedUnknown, p.keyid
 	}
 	pub, trusted := dir.Lookup(p.keyid)
 	if !trusted {
 		return agentVerifiedUnknown, p.keyid // unknown key: cannot verify, do not trust
 	}
-	base := buildSignatureBase(host, p.inner)
-	if ed25519.Verify(pub, []byte(base), rawSig) {
-		return agentVerifiedTrusted, p.keyid
+	base := buildSignatureBase(host, method, path, p.components, p.inner)
+	if !ed25519.Verify(pub, []byte(base), rawSig) {
+		return agentForged, p.keyid // claims an allowlisted key but the signature does not verify
 	}
-	return agentForged, p.keyid // claims an allowlisted key but the signature does not verify
+	// Anti-replay: consume the single-use nonce (RFC 9421 `nonce` param). A replayed nonce
+	// (a lifted signature re-sent for the SAME request line within its lifetime) is not a
+	// forgery but confers no upgrade. A signature with no nonce still gets the upgrade — it is
+	// already bound to this exact method+path+authority and short-lived — so compliant agents
+	// that omit a nonce are not broken (no false deny).
+	if p.nonce != "" && nonces != nil && !nonces.Use("wba|"+p.keyid+"|"+p.nonce, p.keyid, now) {
+		return agentVerifiedUnknown, p.keyid
+	}
+	return agentVerifiedTrusted, p.keyid
 }
 
-// buildSignatureBase reconstructs the RFC 9421 signature base for the covered set
-// {"@authority"} plus the @signature-params line (the inner Signature-Input value).
-func buildSignatureBase(host, inner string) string {
-	authority := strings.ToLower(host)
-	return "\"@authority\": " + authority + "\n\"@signature-params\": " + inner
+// coversRequestLine reports whether the covered components bind the request line —
+// @authority, @method, AND @path all present — with no component we cannot reconstruct
+// here (any other identifier makes the signature unverifiable → the caller treats it as
+// neutral, never a false deny).
+func coversRequestLine(components []string) bool {
+	var auth, method, path bool
+	for _, c := range components {
+		switch c {
+		case "@authority":
+			auth = true
+		case "@method":
+			method = true
+		case "@path":
+			path = true
+		default:
+			return false // covers something we can't reconstruct (e.g. a header) → unverifiable
+		}
+	}
+	return auth && method && path
+}
+
+// buildSignatureBase reconstructs the RFC 9421 signature base: one line per covered
+// component (in the order the signer listed them) followed by the @signature-params line.
+// Only the derived components we can reconstruct from the request are emitted; coversRequestLine
+// has already guaranteed the set is exactly {@authority,@method,@path}.
+func buildSignatureBase(host, method, path string, components []string, inner string) string {
+	var b strings.Builder
+	for _, c := range components {
+		switch c {
+		case "@authority":
+			b.WriteString("\"@authority\": " + strings.ToLower(host) + "\n")
+		case "@method":
+			b.WriteString("\"@method\": " + strings.ToUpper(method) + "\n")
+		case "@path":
+			b.WriteString("\"@path\": " + path + "\n")
+		}
+	}
+	b.WriteString("\"@signature-params\": " + inner)
+	return b.String()
 }
 
 // parseSignatureInput parses `label=(...);params...` returning the label and params.
@@ -195,6 +240,8 @@ func parseSignatureInput(v string) (string, sigParams, bool) {
 			p.alg = val
 		case "tag":
 			p.tag = val
+		case "nonce":
+			p.nonce = val
 		}
 	}
 	return label, p, true

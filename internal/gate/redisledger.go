@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/audit"
@@ -82,6 +83,8 @@ type RedisVerdictLedger struct {
 	local *VerdictStore
 	ttl   time.Duration
 	sign  []byte // fleet-shared HMAC key; nil = unsigned (PLAN-08 backlog)
+	mu    sync.Mutex
+	hwm   map[string]time.Time // per-sid freshest Updated observed (anti-rollback high-water)
 }
 
 // verdictWire is the JSON form of a stickyVerdict (whose fields are unexported).
@@ -96,7 +99,7 @@ type verdictWire struct {
 // NewRedisVerdictLedger builds a shared verdict ledger over rc with the given TTL.
 // signKey (fleet-shared) HMAC-authenticates stored values; nil = unsigned.
 func NewRedisVerdictLedger(rc *redis.Client, ttl time.Duration, signKey []byte) *RedisVerdictLedger {
-	return &RedisVerdictLedger{rc: rc, local: NewVerdictStore(ttl), ttl: ttl, sign: signKey}
+	return &RedisVerdictLedger{rc: rc, local: NewVerdictStore(ttl), ttl: ttl, sign: signKey, hwm: map[string]time.Time{}}
 }
 
 func (l *RedisVerdictLedger) Set(sid string, v stickyVerdict) {
@@ -108,8 +111,18 @@ func (l *RedisVerdictLedger) Set(sid string, v stickyVerdict) {
 	_, _ = l.rc.Do("SET", redisVerdictPrefix+sid, sealValue(l.sign, redisVerdictPrefix+sid, string(b)), "PX", strconv.FormatInt(l.ttl.Milliseconds(), 10))
 }
 
-// GC sweeps the local mirror (Redis expires its own keys via PX).
-func (l *RedisVerdictLedger) GC(now time.Time) { l.local.GC(now) }
+// GC sweeps the local mirror (Redis expires its own keys via PX) and evicts stale
+// anti-rollback high-water entries (older than the TTL cannot be replayed anyway).
+func (l *RedisVerdictLedger) GC(now time.Time) {
+	l.local.GC(now)
+	l.mu.Lock()
+	for sid, t := range l.hwm {
+		if now.Sub(t) > l.ttl {
+			delete(l.hwm, sid)
+		}
+	}
+	l.mu.Unlock()
+}
 
 func (l *RedisVerdictLedger) Get(sid string, now time.Time) stickyVerdict {
 	rep, err := l.rc.Do("GET", redisVerdictPrefix+sid)
@@ -130,6 +143,21 @@ func (l *RedisVerdictLedger) Get(sid string, now time.Time) stickyVerdict {
 	if now.Sub(w.Updated) > l.ttl { // freshness: reject a replayed/rolled-back stale verdict
 		return l.local.Get(sid, now)
 	}
+	// Monotonic anti-rollback (deep-review): absolute freshness alone lets a compromised
+	// coordinator replay an EARLIER but still-in-TTL verdict (e.g. a stale ALLOW) to shed a
+	// newer sticky DENY. Track the freshest Updated this node has observed per sid and reject
+	// a value older than that high-water mark, falling back to the trusted local view. (This
+	// bounds rollback to values this node never saw a newer version of; a globally-monotonic
+	// guarantee would need a consensus store — documented limitation.)
+	l.mu.Lock()
+	if seen, ok := l.hwm[sid]; ok && w.Updated.Before(seen) {
+		l.mu.Unlock()
+		return l.local.Get(sid, now)
+	}
+	if w.Updated.After(l.hwm[sid]) {
+		l.hwm[sid] = w.Updated
+	}
+	l.mu.Unlock()
 	return stickyVerdict{verdict: w.Verdict, risk: w.Risk, rule: w.Rule, top: w.Top, updated: w.Updated}
 }
 
@@ -142,11 +170,18 @@ func (l *RedisVerdictLedger) Get(sid string, now time.Time) stickyVerdict {
 // a flood split across nodes escalates on aggregate. Reads fall back to local on a
 // Redis outage.
 type RedisBanLedger struct {
-	rc    *redis.Client
-	local *BanStore
-	nowFn func() time.Time
-	sign  []byte // fleet-shared HMAC key; nil = unsigned (PLAN-08 backlog)
+	rc        *redis.Client
+	local     *BanStore
+	nowFn     func() time.Time
+	sign      []byte // fleet-shared HMAC key; nil = unsigned (PLAN-08 backlog)
+	mu        sync.Mutex
+	liftEpoch map[string]time.Time // per-key last Lift time (anti-resurrection high-water)
 }
+
+// liftEpochTTL bounds how long a lift is remembered for anti-resurrection. Lifts are rare
+// (operator action); a ban re-served after this window would in practice be past its Until
+// anyway (a still-active permanent ban resurrected after 30d is the accepted residual).
+const liftEpochTTL = 30 * 24 * time.Hour
 
 // banWire is the JSON form of a BanEntry (all fields exported → direct marshal).
 type banWire = BanEntry
@@ -158,11 +193,21 @@ type banWire = BanEntry
 // local behavior on a Redis outage.
 func NewRedisBanLedger(rc *redis.Client, window time.Duration, soft, hard int, signKey []byte) *RedisBanLedger {
 	rl := NewRedisRateLimiter(rc, window, soft, hard)
-	return &RedisBanLedger{rc: rc, local: NewBanStoreWithLimiter(rl), nowFn: time.Now, sign: signKey}
+	return &RedisBanLedger{rc: rc, local: NewBanStoreWithLimiter(rl), nowFn: time.Now, sign: signKey, liftEpoch: map[string]time.Time{}}
 }
 
-// GC sweeps the local mirror + its rate-limiter (Redis expires its own keys).
-func (l *RedisBanLedger) GC(now time.Time) { l.local.GC(now) }
+// GC sweeps the local mirror + its rate-limiter (Redis expires its own keys) and evicts
+// stale lift-epoch entries.
+func (l *RedisBanLedger) GC(now time.Time) {
+	l.local.GC(now)
+	l.mu.Lock()
+	for k, t := range l.liftEpoch {
+		if now.Sub(t) > liftEpochTTL {
+			delete(l.liftEpoch, k)
+		}
+	}
+	l.mu.Unlock()
+}
 
 func (l *RedisBanLedger) Check(key string) (BanEntry, bool) {
 	rep, err := l.rc.Do("GET", redisBanPrefix+key)
@@ -183,6 +228,17 @@ func (l *RedisBanLedger) Check(key string) (BanEntry, bool) {
 	if !b.active(l.nowFn()) { // TTL should have removed it, but honor Until defensively
 		return BanEntry{}, false
 	}
+	// Anti-resurrection (deep-review): a compromised coordinator can re-serve the sealed
+	// bytes of a ban an operator already LIFTED (DEL is not an integrity operation), re-banning
+	// a legitimate source and violating the no-lockout constraint. Reject any ban whose Created
+	// predates this node's last observed Lift of the key, falling back to the (lifted) local
+	// view. A genuine RE-ban after the lift has a newer Created and is honored.
+	l.mu.Lock()
+	lifted, ok := l.liftEpoch[key]
+	l.mu.Unlock()
+	if ok && !b.Created.After(lifted) {
+		return l.local.Check(key)
+	}
 	return b, true
 }
 
@@ -202,6 +258,9 @@ func (l *RedisBanLedger) Add(key, reason, by, incident string, dur time.Duration
 
 func (l *RedisBanLedger) Lift(key string) bool {
 	lifted := l.local.Lift(key)
+	l.mu.Lock()
+	l.liftEpoch[key] = l.nowFn() // remember the lift so a resurrected pre-lift ban is rejected
+	l.mu.Unlock()
 	_, _ = l.rc.Do("DEL", redisBanPrefix+key)
 	return lifted
 }

@@ -28,13 +28,15 @@ type Client struct {
 	addr      string
 	timeout   time.Duration
 	cooldown  time.Duration
-	slow      time.Duration // latency budget: a command slower than this trips the breaker
+	slow      time.Duration // single-sample latency budget: one command slower than this trips
+	slowEwma  time.Duration // sustained-latency budget: a rolling EWMA above this trips
 	user      string        // optional ACL username (AUTH)
 	pass      string        // optional password (AUTH); sent on connect
 	mu        sync.Mutex
 	conn      net.Conn
 	br        *bufio.Reader
 	openUntil time.Time // breaker: fail fast until this time (zero = closed)
+	ewmaNs    float64   // rolling EWMA of command latency (ns)
 }
 
 // Reply-size caps so a malicious or compromised coordinator cannot force an
@@ -55,7 +57,7 @@ var ErrBreakerOpen = errors.New("redis: circuit breaker open")
 // New returns a client for addr (host:port). The connection is established lazily
 // on the first command and re-established after any I/O error.
 func New(addr string) *Client {
-	return &Client{addr: addr, timeout: 3 * time.Second, cooldown: 2 * time.Second, slow: 750 * time.Millisecond}
+	return &Client{addr: addr, timeout: 3 * time.Second, cooldown: 2 * time.Second, slow: 750 * time.Millisecond, slowEwma: 400 * time.Millisecond}
 }
 
 // SetAuth configures an optional AUTH credential sent on every (re)connect. An empty
@@ -102,10 +104,15 @@ func (c *Client) Do(args ...string) (Reply, error) {
 	// Latency budget: a command that SUCCEEDS but is slow (a degraded coordinator, not a
 	// dead one) would otherwise be invisible to the breaker, so every request keeps paying
 	// that latency serialized behind the single connection's mutex — a wedge (deep-review).
-	// Trip the breaker on slow-success too: the reply is still returned, but the next
-	// cooldown window fast-fails to the caller's local view instead of stalling. The conn
-	// stays up (no drop) so a transient blip self-heals after the cooldown.
-	if c.slow > 0 && time.Since(now) > c.slow {
+	// Trip on slow-success too. A SINGLE sample over `slow` trips immediately; a rolling
+	// EWMA over `slowEwma` also trips, which catches a coordinator answering STEADILY just
+	// under the single-sample threshold (the sub-750ms band the one-shot check missed). The
+	// reply is still returned; the next cooldown window fast-fails to the caller's local
+	// view. The conn stays up (no drop) so a transient blip self-heals as the EWMA decays.
+	elapsed := time.Since(now)
+	const ewmaAlpha = 0.4
+	c.ewmaNs = ewmaAlpha*float64(elapsed) + (1-ewmaAlpha)*c.ewmaNs
+	if (c.slow > 0 && elapsed > c.slow) || (c.slowEwma > 0 && c.ewmaNs > float64(c.slowEwma)) {
 		c.openUntil = time.Now().Add(c.cooldown)
 		return rep, nil
 	}

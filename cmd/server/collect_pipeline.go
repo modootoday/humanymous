@@ -91,6 +91,17 @@ func (a *app) enrichServerSignals(sid string, r *http.Request, client signals.Cl
 			signals.New(id, nil, v, 1.0, signals.SourceServer, "fingerprint-keyed request rate exceeded"),
 		}, now)
 	}
+	// Cross-session correlation key. The client FingerprintID is attacker-controllable, so a
+	// bot that rotates it per session evades this specific check (deep-review). We deliberately
+	// keep it as a key COMPONENT rather than switching to a purely server-observed key
+	// (ja4|h2): l5.correlation.proxy_rotation is VerdictBot and HR-19 LONE-DENYs on it, while
+	// ja4|h2 is coarse (all users of one browser version share it), so a server-only key would
+	// collapse ordinary Chrome users on ≥3 /24 subnets within the TTL into one entry and
+	// mass-false-DENY legitimate humans — the no-lockout constraint forbids that, and adding a
+	// new, softer scored signal would touch the frozen detection path. The client fingerprint
+	// supplies the per-browser entropy that keeps this FP-safe. A rotating-id bot is instead
+	// caught by the SERVER-observed layers that do not depend on it: the ja4|subnet rate
+	// limiter above, JA4/engine-rotation (HR-14), and IP-intel/datacenter rules.
 	if client.FingerprintID != "" {
 		key := client.FingerprintID + "|" + ja4
 		if corr := a.corr.Observe(key, subnet, sid, now); len(corr) > 0 {

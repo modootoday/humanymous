@@ -117,15 +117,20 @@ func (s *Store) SetPowSolved(id string, now time.Time) {
 	defer s.mu.Unlock()
 	if st, ok := s.m[id]; ok {
 		st.powSolved = true
+		st.powIssued = time.Time{} // reset the solve-time clock for any future challenge cycle
 		st.updated = now
 	}
 }
 
-// SetPowIssued records when a PoW challenge was issued (for solve-time analysis).
+// SetPowIssued records when a PoW challenge was FIRST issued for solve-time analysis.
+// It is first-write-wins: re-issuing the same challenge on every subsequent CHALLENGE
+// collect must NOT reset the clock, or the measured solve time shrinks to the gap between
+// the last re-issue and the solve — understating elapsed and defeating the too-fast control
+// (deep-review). Cleared on solve so a fresh challenge cycle measures anew.
 func (s *Store) SetPowIssued(id string, now time.Time) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if st, ok := s.m[id]; ok {
+	if st, ok := s.m[id]; ok && st.powIssued.IsZero() {
 		st.powIssued = now
 	}
 }

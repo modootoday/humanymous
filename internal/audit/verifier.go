@@ -100,6 +100,27 @@ func Verify(records []Record, checkpoints []Checkpoint, hmacKey []byte, pub ed25
 			return VerifyResult{Class: ClassCheckpointBad, AtSeq: cp.TreeSize,
 				Detail: "checkpoint root does not match records (truncation/rollback)"}
 		}
+		// Reconcile the SIGNED Merkle root against the actual record set (deep-review). The
+		// chained Root check above ties the STH to the last record hash, but the STH ALSO
+		// commits an RFC-6962 MerkleRoot that inclusion proofs verify against — and it was
+		// trusted on the writer's signature alone. A compromised writer could sign a
+		// checkpoint whose chained Root matches the records yet whose MerkleRoot commits to a
+		// DIFFERENT leaf set, so an offline inclusion proof would validate a record not in the
+		// chain. Recompute the tree over the first TreeSize record hashes and require a match.
+		if cp.MerkleRoot != "" {
+			if uint64(len(records)) < cp.TreeSize {
+				return VerifyResult{Class: ClassCheckpointBad, AtSeq: cp.TreeSize,
+					Detail: "checkpoint merkle root: fewer records than tree size"}
+			}
+			leaves := make([][]byte, cp.TreeSize)
+			for i := uint64(0); i < cp.TreeSize; i++ {
+				leaves[i] = []byte(records[i].RecordHash)
+			}
+			if hex.EncodeToString(merkleRoot(leaves)) != cp.MerkleRoot {
+				return VerifyResult{Class: ClassCheckpointBad, AtSeq: cp.TreeSize,
+					Detail: "checkpoint merkle root does not match records (STH committed a different leaf set)"}
+			}
+		}
 		pv = cp.Sig
 	}
 	return pass()

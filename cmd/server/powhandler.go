@@ -36,10 +36,16 @@ func (a *app) issuePoWHeader(w http.ResponseWriter, sid string, verdict string, 
 	a.store.SetPowIssued(sid, time.Now())
 }
 
-// plausibleBrowserSolve returns a conservative lower bound on how long a real
-// browser JS solver needs for a difficulty (SoT-15): a browser does ~150-300
-// kH/s of SHA-256 via Web Crypto, so we use a generous 3 MH/s ceiling. A proof
-// returned faster than expected_attempts / 3MH/s is a native/GPU solver.
+// plausibleBrowserSolve returns a DELIBERATELY conservative lower bound on how long a real
+// browser JS solver needs for a difficulty (SoT-15). A browser does ~150-300 kH/s of SHA-256
+// via Web Crypto; we intentionally use a much higher 3 MH/s ceiling so the too-fast threshold
+// stays small. This is not a mistake (deep-review): PoW solve time is EXPONENTIALLY
+// distributed, so a mean-based threshold would flag a meaningful fraction of lucky-but-honest
+// browsers — and l7.pow.too_fast LONE-DENYs via HR-14, so any false positive is a false DENY
+// that violates the no-lockout constraint. The conservative ceiling keeps the control
+// FP-safe: it fires only for solutions so fast they beat even a 3 MH/s solver, i.e. a
+// native/GPU/precomputed solver. (The companion correctness fix is measuring elapsed from the
+// FIRST challenge issuance — see Store.SetPowIssued — which previously reset every collect.)
 func plausibleBrowserSolve(difficulty int) time.Duration {
 	attempts := float64(uint64(1) << uint(difficulty)) // 2^difficulty mean-ish
 	const ceilingHashesPerSec = 3_000_000.0

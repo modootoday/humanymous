@@ -28,7 +28,6 @@ type Server struct {
 	snippet         []byte
 	originKey       []byte            // origin-cloaking HMAC key (SoT-23 §1)
 	tokenKey        []byte            // verdict-token HMAC key (SoT-21 §3)
-	epoch           string            // fixed origin-auth epoch (SoT-23 §1)
 	tokenEpochs     *EpochManager     // rotating verdict-token epoch (SoT-28 WS6)
 	sweep           *SweepDetector    // decision-probing recon detector (HR-30)
 	decFloor        time.Duration     // constant decision-latency floor (HR-30)
@@ -40,6 +39,7 @@ type Server struct {
 	devConsoleToken string            // dev bearer injected into the served console (SoT-28 §1)
 	killSwitch      atomic.Bool       // runtime global-monitor override (SoT-28 WS9 kill switch)
 	agentKeys       KeyDirectory      // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
+	agentNonces     *NonceCache       // Web Bot Auth single-use signature nonces (anti-replay)
 	patVerifier     *PATVerifier      // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
 	webauthn        *WebAuthnRegistry // WebAuthn credential registry (PLAN-08 R2); nil = feature off
 	anomaly         *anomalyShadow    // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
@@ -169,7 +169,6 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		snippet:         []byte(injectMarker + `<script src="` + cfg.ControlPath + `loader.js" defer></script>`),
 		originKey:       cfg.OriginKey,
 		tokenKey:        cfg.TokenKey,
-		epoch:           "e1",
 		tokenEpochs:     orDefaultEpochs(cfg.TokenEpochs),
 		sweep:           NewSweepDetector(30*time.Second, 8), // >8 sessions/fp/30s = recon
 		decFloor:        2 * time.Millisecond,                // HR-30 timing-oracle floor (SoT-28 WS2 breakout)
@@ -179,6 +178,7 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		shreds:          NewShredQueue(erasureHold(cfg)),
 		incidentLimiter: abuse.NewLimiter(time.Minute, 60, 120), // >120 incident lookups/min = trawl
 		agentKeys:       cfg.AgentKeys,                          // Web Bot Auth directory (PLAN-08 R3), nil = off
+		agentNonces:     NewNonceCache(time.Hour),               // Web Bot Auth anti-replay nonces (≥ signature max lifetime)
 		patVerifier:     cfg.PATIssuers,                         // Privacy Pass PAT issuers (PLAN-08 R2), nil = off
 		webauthn:        cfg.WebAuthnCreds,                      // WebAuthn credential registry (PLAN-08 R2), nil = off
 		nowFn:           time.Now,
@@ -210,7 +210,7 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		pr.Out.Header.Set("Accept-Encoding", "identity") // SoT-20 §1: no upstream recompress
 		// Origin cloaking (SoT-23 §1, HR-24): the origin accepts ONLY proxied traffic
 		// carrying this rotating token; a direct hit to the origin lacks it.
-		pr.Out.Header.Set("X-Hmny-Origin-Auth", originAuth(s.originKey, s.epoch))
+		pr.Out.Header.Set("X-Hmny-Origin-Auth", originAuth(s.originKey, originEpoch(time.Now())))
 	}
 	return s, nil
 }
