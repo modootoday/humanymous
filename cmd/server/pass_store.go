@@ -39,10 +39,11 @@ type passSession struct {
 // the digest of every accepted motor trace, so a captured human trace can be
 // replayed at most once (SoT-36 §5).
 type passStore struct {
-	mu      sync.Mutex
-	m       map[string]*passSession
-	metrics map[string]int       // "label|outcome|difficulty" -> count
-	traces  map[string]time.Time // motor-trace digest -> first-seen (anti-replay)
+	mu        sync.Mutex
+	m         map[string]*passSession
+	metrics   map[string]int       // "label|outcome|difficulty" -> count
+	traces    map[string]time.Time // motor-trace digest -> first-seen (anti-replay)
+	lastSweep time.Time            // amortize the trace-registry expiry sweep to once per traceTTL/4
 }
 
 func newPassStore() *passStore {
@@ -53,19 +54,38 @@ func newPassStore() *passStore {
 	}
 }
 
+// traceTTL is the anti-replay retention window: a captured motor trace can be
+// replayed at most once inside it.
+const traceTTL = 10 * time.Minute
+
+// maxTraces hard-caps the anti-replay registry so a burst of distinct accepted
+// traces cannot grow it without limit (deep-review). At saturation reserveTrace
+// fails closed (treats the new trace as a replay) until the amortized sweep drains
+// it, rather than growing unbounded — the ~50k stale-sweep trigger frees nothing
+// under an active burst because every entry is fresh.
+const maxTraces = 1 << 19
+
 // reserveTrace registers a motor-trace digest and reports whether it is FRESH
 // (never seen inside the retention window). A replayed capture — identical raw
 // timings — collides on the digest and is rejected. Old entries are swept lazily.
 func (p *passStore) reserveTrace(digest string, now time.Time) bool {
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	for k, seen := range p.traces {
-		if now.Sub(seen) > 10*time.Minute {
-			delete(p.traces, k)
+	// Amortize the O(n) expiry sweep to at most once per traceTTL/4 (or eagerly when
+	// saturated) so the steady-state per-solve cost is O(1), not O(n) (deep-review).
+	if now.Sub(p.lastSweep) > traceTTL/4 || len(p.traces) >= maxTraces {
+		for k, seen := range p.traces {
+			if now.Sub(seen) > traceTTL {
+				delete(p.traces, k)
+			}
 		}
+		p.lastSweep = now
 	}
 	if _, exists := p.traces[digest]; exists {
 		return false
+	}
+	if len(p.traces) >= maxTraces {
+		return false // registry saturated: fail closed (treat as replay) rather than grow unbounded
 	}
 	p.traces[digest] = now
 	return true
@@ -110,7 +130,14 @@ func (p *passStore) get(sid string) *passSession {
 	s := p.m[sid]
 	if s == nil {
 		s = &passSession{issuedAt: time.Now()} // stamp creation so a fresh session isn't swept
-		p.m[sid] = s
+		// Hard cap (deep-review): under an active burst of distinct session ids the
+		// stale sweep frees nothing (every session is fresh), so refuse to grow the map
+		// past the cap and serve an ephemeral, unstored session instead of accumulating
+		// memory without bound. Normal traffic never reaches the cap, so behavior is
+		// identical there.
+		if len(p.m) < maxPassSessions {
+			p.m[sid] = s
+		}
 	}
 	return s
 }

@@ -426,14 +426,10 @@ func main() {
 			srv.RunDueShreds(time.Now())
 		}
 	}()
-	// Rotate the verdict-token epoch periodically (SoT-28 WS6): bounds how long a
-	// cloned token survives (accepted for at most one rotation after issuance).
-	go func() {
-		t := time.NewTicker(15 * time.Minute)
-		for range t.C {
-			epochs.Advance()
-		}
-	}()
+	// The verdict-token epoch now rotates automatically by the wall clock (see
+	// EpochManager) so every fleet node agrees without coordination — no per-node ticker,
+	// which previously desynced the fleet (deep-review). epochs.Advance() remains available
+	// as a manual fleet-wide emergency revocation.
 	// Sweep in-memory detection state every minute so fingerprint/IP-keyed maps cannot
 	// grow without bound under bot-flood churn (PLAN-08 deployment-review ship-blocker;
 	// brings the gate to parity with the core engine's GC ticker). The same tick surfaces

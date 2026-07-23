@@ -298,8 +298,14 @@ func (l *RedisBanLedger) List() []BanEntry {
 	return out
 }
 
-// writeBan mirrors a ban to Redis with a PX expiry equal to its remaining lifetime
-// (permanent bans are stored without expiry).
+// banRetentionHorizon bounds how long even a "permanent" ban's key (which encodes a client
+// IP/fingerprint — personal data) is retained in the coordinator, so the store does not hold
+// an identifier INDEFINITELY (GDPR/PIPA storage-limitation, deep-review). Re-asserting the
+// ban refreshes the horizon; an un-refreshed permanent ban ages out and can be re-applied.
+const banRetentionHorizon = 400 * 24 * time.Hour
+
+// writeBan mirrors a ban to Redis with a PX expiry equal to its remaining lifetime; a
+// "permanent" ban is written with the finite retention horizon rather than no expiry.
 func (l *RedisBanLedger) writeBan(key string, entry BanEntry) {
 	b, err := json.Marshal(entry)
 	if err != nil {
@@ -307,7 +313,7 @@ func (l *RedisBanLedger) writeBan(key string, entry BanEntry) {
 	}
 	val := sealValue(l.sign, redisBanPrefix+key, string(b))
 	if entry.Permanent() {
-		_, _ = l.rc.Do("SET", redisBanPrefix+key, val)
+		_, _ = l.rc.Do("SET", redisBanPrefix+key, val, "PX", strconv.FormatInt(banRetentionHorizon.Milliseconds(), 10))
 		return
 	}
 	ms := time.Until(entry.Until).Milliseconds()

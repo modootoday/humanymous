@@ -49,6 +49,13 @@ func Build(obs Observation) signals.NetworkReport {
 		if !hasGREASE(obs.Hello) {
 			add("l5.tls.grease_absent", true, signals.VerdictBot, "no GREASE (non-browser TLS stack)")
 		}
+	} else {
+		// No ClientHello captured — the entire TLS/JA3/JA4 network plane is INACTIVE for this
+		// request (the gate never captures it; a TLS-terminating CDN/L7-LB in front strips it
+		// from the Core). Emit a weight-0, non-verdict marker so operators SEE the plane is dark
+		// in the console/audit instead of mistaking silent absence for coverage (deep-review).
+		// It carries no score and no BOT/SUSPICIOUS verdict, so the frozen detection is untouched.
+		add("l5.tls.not_observed", true, signals.VerdictUnknown, "no ClientHello captured — TLS fingerprint plane inactive (gate or TLS-terminating CDN/L7-LB in front)")
 	}
 
 	// --- HTTP/2 ---

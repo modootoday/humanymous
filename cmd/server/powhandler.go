@@ -33,7 +33,7 @@ func (a *app) issuePoWHeader(w http.ResponseWriter, sid string, verdict string, 
 	bucket := uint64(time.Now().Unix() / powWindow)
 	ch := pow.Issue(a.masterKey, sid, d, bucket)
 	w.Header().Set("X-HM-PoW", ch.Encode())
-	a.store.SetPowIssued(sid, time.Now())
+	a.store.SetPowIssued(sid, time.Now(), d)
 }
 
 // plausibleBrowserSolve returns a DELIBERATELY conservative lower bound on how long a real
@@ -73,9 +73,12 @@ func (a *app) handlePoW(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Difficulty is re-derived from the session's risk (client cannot lower it).
+	// Verify at the ISSUE-TIME difficulty stored server-side, not one re-derived from the
+	// session's CURRENT risk: a benign mid-challenge risk-band change would otherwise shift
+	// the required difficulty and reject a valid human solution (deep-review). The client
+	// still cannot lower it — the difficulty is server-held, not client-supplied.
 	rep, _ := a.store.Get(sid)
-	d := pow.DifficultyFor(rep.Scoring.RiskScore)
+	d := a.store.PowDifficulty(sid)
 	current := uint64(time.Now().Unix() / powWindow)
 
 	if d > 0 && pow.Verify(a.masterKey, sid, d, body.Bucket, current, body.Nonce) {

@@ -19,6 +19,7 @@ type sessionState struct {
 	netPinned    bool
 	powSolved    bool      // SoT-13: session has solved a proof-of-work challenge
 	powIssued    time.Time // when the current PoW challenge was issued (solve-time)
+	powDiff      int       // difficulty the current PoW challenge was ISSUED at (verify against this)
 	ritBootstrap bool      // SoT-07: the one-shot tokenless RIT grace has been consumed
 	updated      time.Time
 }
@@ -118,21 +119,35 @@ func (s *Store) SetPowSolved(id string, now time.Time) {
 	if st, ok := s.m[id]; ok {
 		st.powSolved = true
 		st.powIssued = time.Time{} // reset the solve-time clock for any future challenge cycle
+		st.powDiff = 0
 		st.updated = now
 	}
 }
 
-// SetPowIssued records when a PoW challenge was FIRST issued for solve-time analysis.
-// It is first-write-wins: re-issuing the same challenge on every subsequent CHALLENGE
-// collect must NOT reset the clock, or the measured solve time shrinks to the gap between
-// the last re-issue and the solve — understating elapsed and defeating the too-fast control
-// (deep-review). Cleared on solve so a fresh challenge cycle measures anew.
-func (s *Store) SetPowIssued(id string, now time.Time) {
+// SetPowIssued records when a PoW challenge was FIRST issued (for solve-time analysis) AND
+// the difficulty it was issued at. It is first-write-wins: re-issuing the same challenge on
+// every subsequent CHALLENGE collect must NOT reset the clock (that would understate elapsed
+// and defeat the too-fast control) NOR change the recorded difficulty (verification must use
+// the ISSUE-TIME difficulty, not one re-derived from a since-changed risk score, which would
+// reject a valid human solution — deep-review). Cleared on solve so a fresh cycle records anew.
+func (s *Store) SetPowIssued(id string, now time.Time, difficulty int) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if st, ok := s.m[id]; ok && st.powIssued.IsZero() {
 		st.powIssued = now
+		st.powDiff = difficulty
 	}
+}
+
+// PowDifficulty returns the difficulty the session's current PoW challenge was issued at
+// (0 if none issued).
+func (s *Store) PowDifficulty(id string) int {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if st, ok := s.m[id]; ok {
+		return st.powDiff
+	}
+	return 0
 }
 
 // PowIssuedAt returns when the session's PoW challenge was issued (zero if none).

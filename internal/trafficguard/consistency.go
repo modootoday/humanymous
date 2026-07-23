@@ -72,7 +72,14 @@ func Check(recs []TrafficRecord) []signals.Signal {
 	if engineSet.len() > 1 {
 		add("l5.traffic.engine_rotation", engineSet.keys(), signals.VerdictBot, "TLS engine family rotated within session")
 	}
-	if ja4Set.len() > 1 {
+	// A benign TLS 1.3 session resumption changes the ClientHello (it adds pre_shared_key /
+	// early_data), which shifts the JA4_a extension count and therefore the stable JA4 — so a
+	// legitimate browser reusing a session ticket presents the full + resumed pair (2 distinct
+	// stable JA4s) with no automation at all. Flag rotation only at 3+ distinct stable
+	// fingerprints, which resumption cannot explain, so HR-14/HR-15 no longer hard-DENY a real
+	// resuming browser (deep-review no-lockout). Genuine TLS-stack rotation is also caught by
+	// engine_rotation (a different engine family) above, which is unaffected by this tolerance.
+	if ja4Set.len() > 2 {
 		add("l5.traffic.ja4_rotation", ja4Set.len(), signals.VerdictBot, "JA4 (stable part) rotated within session")
 	}
 	if uaSet.len() > 1 {

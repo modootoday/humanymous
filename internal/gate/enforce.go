@@ -46,10 +46,21 @@ func NewVerdictStore(ttl time.Duration) *VerdictStore {
 	return &VerdictStore{m: map[string]stickyVerdict{}, ttl: ttl}
 }
 
+// maxVerdicts hard-caps the sticky-verdict map so a churn of distinct (attacker-
+// controlled) session ids on /collect cannot grow it without bound between GC ticks
+// (deep-review). At the cap Set degrades to not-tracking new sessions — the verdict
+// simply isn't cached, so Get returns Unknown and the caller re-scores — rather than
+// growing unbounded or denying a legitimate request. Existing keys still update.
+const maxVerdicts = 1 << 20
+
 // Set records/updates the sticky verdict for a session (called by the control
 // plane on each /collect beacon, SoT-19 step 5).
 func (s *VerdictStore) Set(sid string, v stickyVerdict) {
 	s.mu.Lock()
+	if _, ok := s.m[sid]; !ok && len(s.m) >= maxVerdicts {
+		s.mu.Unlock()
+		return // saturated: degrade to not-tracking, never grow unbounded (and never deny)
+	}
 	s.m[sid] = v
 	s.mu.Unlock()
 }

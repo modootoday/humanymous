@@ -178,6 +178,10 @@ var (
 // ---- L5 network (SoT-02) ----
 var (
 	_ = def(Definition{"l5.tls.ja3", LayerNetwork, 2, nil, "tls", "JA3 (compat/logging)"})
+	// l5.tls.not_observed is a weight-0 observability marker: no ClientHello captured, so the
+	// TLS fingerprint plane is inactive (gate, or a TLS-terminating CDN/L7-LB in front). Known
+	// signal, never scored (deep-review topology visibility).
+	_ = def(Definition{"l5.tls.not_observed", LayerNetwork, 0, true, "tls", "no ClientHello captured (network plane inactive)"})
 	_ = def(Definition{"l5.tls.ja4_engine", LayerNetwork, 30, nil, "tls", "JA4 engine vs UA"})
 	_ = def(Definition{"l5.tls.grease_absent", LayerNetwork, 15, nil, "tls", "no GREASE (non-browser)"})
 	_ = def(Definition{"l5.tls.pq_keyshare", LayerNetwork, 10, nil, "tls", "missing PQ keyshare for claimed Chrome"})

@@ -17,8 +17,8 @@ import (
 type Limiter struct {
 	mu     sync.Mutex
 	window time.Duration
-	soft   int // requests/window -> SUSPICIOUS
-	hard   int // requests/window -> BOT/flood
+	soft   int                // requests/window -> SUSPICIOUS
+	hard   int                // requests/window -> BOT/flood
 	hits   map[string][]int64 // key -> unix-nano timestamps in window
 	ttl    time.Duration
 	lastGC time.Time
@@ -69,14 +69,25 @@ func (l *Limiter) Level(count int) int {
 	}
 }
 
-// GC evicts keys with no recent hits.
+// gcScanBudget bounds how many entries a single GC pass scans while holding the
+// lock, so the per-minute sweep can never become an unbounded O(n) stop-the-world
+// pause under a large key population (deep-review). Go's randomized map iteration
+// means each call samples a fresh subset, so stale keys are still reclaimed across
+// successive ticks — just never all in one lock hold. Thresholds/windows unchanged.
+const gcScanBudget = 4096
+
+// GC evicts keys with no recent hits, scanning at most gcScanBudget entries per call.
 func (l *Limiter) GC(now time.Time) {
 	cut := now.Add(-l.ttl).UnixNano()
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	scanned := 0
 	for k, h := range l.hits {
 		if len(h) == 0 || h[len(h)-1] < cut {
 			delete(l.hits, k)
+		}
+		if scanned++; scanned >= gcScanBudget {
+			break
 		}
 	}
 }

@@ -52,11 +52,23 @@ func (d *SweepDetector) Observe(bind, sid string, now time.Time) bool {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 	bw := d.byBind[bind]
-	if bw == nil || now.Sub(bw.first) > d.window {
+	if bw == nil {
 		bw = &bindWindow{sessions: map[string]time.Time{}, first: now}
 		d.byBind[bind] = bw
 	}
+	// True sliding window (deep-review): expire each session by its OWN last-seen age
+	// against the window, so entries never accumulate across what used to be a tumbling
+	// reset — the count reflects only the trailing `window`, matching the documented
+	// semantics. The scan is bounded by the maxSess-scale fan-out. `first` tracks last
+	// activity so an idle binding still ages out of GC.
+	cut := now.Add(-d.window)
+	for s, seen := range bw.sessions {
+		if seen.Before(cut) {
+			delete(bw.sessions, s)
+		}
+	}
 	bw.sessions[sid] = now
+	bw.first = now
 	return len(bw.sessions) > d.maxSess
 }
 

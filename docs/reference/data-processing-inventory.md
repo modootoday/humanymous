@@ -49,6 +49,10 @@ The single most important fact for a RoPA entry is that **the identifiers Gate o
 - **Observed** identifiers are read transiently during scoring, in memory, for the duration of a request lifecycle (see [How Gate sees a request](../concepts/how-gate-sees-a-request.md)).
 - **Stored** identifiers exist in the audit log **only as per-subject-key-derived pseudonyms** — a 64-hex value produced by a scrypt KDF-stretched derivation. Raw identifiers (IP, JA3/JA4, HTTP/2 fingerprint, UA, UA-CH, SNI, device fingerprint) are **never** written to the audit log in raw form.
 
+> **Operational stores outside the audit-log pseudonymization (disclose these in your RoPA).** The pseudonymization above covers the **audit log**. Two *operational* stores hold identifiers in a different form, and an adopter must account for them separately:
+> - **Ban ledger.** When shared-fleet mode (`-redis`) is enabled, an IP/fingerprint ban is stored in Redis under a key that encodes the **raw** identifier (e.g. `hmn:ban:ip:203.0.113.4`); the value is HMAC-sealed. This is a legitimate-interest security record, but the key is a personal identifier held in the coordinator. It is bounded by a **finite retention horizon** (≈400 days even for "permanent" bans; a re-asserted ban refreshes it), and is lifted via the console/admin API. Single-node (default, in-memory) mode holds the same ban map in process memory only. *Add the ban store to your RoPA and your Article 17 procedure (lift = erase).*
+> - **Cross-session correlation registry.** An **in-memory, TTL-bounded** graph of `fingerprint → {/24 subnets, session ids}` used to detect residential-proxy rotation (SoT-15). It is per-process, never persisted, and swept on its TTL; it holds a transient device graph in raw form for the correlation window only. *Note it as transient in-memory processing; it is not written to disk.*
+
 This means the "personal data at rest" and the "personal data observed in transit" are two different rows in your analysis. Section 3 enumerates both.
 
 ---

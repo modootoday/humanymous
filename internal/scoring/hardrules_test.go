@@ -55,6 +55,39 @@ func TestCatalog_HTTPParrot_NoExecEvidence_DenyHR18(t *testing.T) {
 	}
 }
 
+// TestFPR_PrivacyBrowser_ProxyRotation_NotDeniedHR19: a genuine privacy browser (Tor/Brave/
+// RFP) collides fingerprints and rotates exit subnets BY DESIGN, so proxy_rotation must NOT
+// hard-DENY it (deep-review no-lockout). A non-privacy scraper with the same rotation still does.
+func TestFPR_PrivacyBrowser_ProxyRotation_NotDeniedHR19(t *testing.T) {
+	priv := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36", []signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	priv.Client.Environment = signals.Environment{Probed: true, AdBlock: true} // genuine tracking protection
+	priv.Network.Signals = append(priv.Network.Signals, signals.New("l5.correlation.proxy_rotation", 3, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(priv); v.HardRuleFired == "HR-19" {
+		t.Fatalf("a genuine privacy browser must not be HR-19-DENIED on proxy_rotation, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+	scraper := base("Mozilla/5.0 Chrome/126", nil, humanBeh, chromeNet)
+	scraper.Network.Signals = append(scraper.Network.Signals, signals.New("l5.correlation.proxy_rotation", 3, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(scraper); v.HardRuleFired != "HR-19" {
+		t.Fatalf("a non-privacy proxy-rotation scraper must still fire HR-19, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
+// TestFPR_Flood_NotLoneDenyHR21: l5.abuse.flood keys on a SHARED ja4|subnet bucket, so a busy
+// CGNAT trips it on strangers' traffic — it must drive a score-based CHALLENGE, not a lone HR-21
+// DENY. The unambiguous protocol attacks (h2dos) still hard-DENY (deep-review no-lockout).
+func TestFPR_Flood_NotLoneDenyHR21(t *testing.T) {
+	flood := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36", []signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	flood.Network.Signals = append(flood.Network.Signals, signals.New("l5.abuse.flood", 100, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(flood); v.Verdict == VerdictDeny && v.HardRuleFired == "HR-21" {
+		t.Fatalf("flood alone must NOT be a lone HR-21 DENY (CGNAT lockout), got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+	dos := base("Mozilla/5.0 Chrome/126", nil, humanBeh, chromeNet)
+	dos.Network.Signals = append(dos.Network.Signals, signals.New("l5.h2dos.rapid_reset", 1, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(dos); v.HardRuleFired != "HR-21" {
+		t.Fatalf("h2dos.rapid_reset must still fire HR-21 DENY, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),
