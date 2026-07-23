@@ -51,9 +51,18 @@ func (a *app) verifyRIT(sid string, r *http.Request, body []byte) signals.Signal
 	presentedTB := parseUint(r.Header.Get("X-HM-TB"))
 	currentTB := integrity.TimeBucket(time.Now().Unix(), ritWindow)
 
-	// First request in a session has no token yet — grace (SoT-07 §4.3).
+	// First request in a session has no token yet — ONE-SHOT grace (SoT-07 §4.3). The
+	// grace is consumed once per session so a bot cannot omit X-HM-Token on every call to
+	// permanently re-enter grace and suppress l5.rit.absent (deep-review): the SECOND
+	// tokenless request emits the absent-token BOT signal. Honest clients fetch /api/session
+	// before their first collect, so they present a token and never rely on the grace. The
+	// grace signal is DISTINCT from a verified l5.rit.ok so it is not mistaken for proof of
+	// JS execution (see the HR-18 cross-check).
 	if lastN == 0 && token == "" {
-		return signals.New("l5.rit.ok", "bootstrap", signals.VerdictOK, 1.0, src, "first request, token grace")
+		if a.store.ClaimRITBootstrap(sid, time.Now()) {
+			return signals.New("l5.rit.bootstrap", "bootstrap", signals.VerdictOK, 1.0, src, "first request, token grace")
+		}
+		return signals.New("l5.rit.absent", true, signals.VerdictBot, 1.0, src, "repeated tokenless API call (grace already consumed)")
 	}
 	if token == "" {
 		return signals.New("l5.rit.absent", true, signals.VerdictBot, 1.0, src, "no RIT token on API call")

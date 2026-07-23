@@ -35,6 +35,32 @@ func NewWitness() *Witness {
 	return &Witness{priv: priv, seenRoot: map[uint64]string{}}
 }
 
+// NewWitnessFromSeed reconstructs a witness from a persisted 32-byte Ed25519 seed, so its
+// verification key is STABLE across restarts and every checkpoint it ever co-signed still
+// verifies under it (deep-review). Falls back to a fresh key if the seed is malformed.
+func NewWitnessFromSeed(seed []byte) *Witness {
+	if len(seed) != ed25519.SeedSize {
+		return NewWitness()
+	}
+	return &Witness{priv: ed25519.NewKeyFromSeed(seed), seenRoot: map[uint64]string{}}
+}
+
+// Restore re-seeds the witness's monotonic fork-detection state from the last checkpoint
+// recovered from the durable chain on boot, so a rewrite of history BEFORE a restart still
+// fails the append-only consistency proof the witness demands for the next co-sign. Without
+// this the witness would resume from size 0 and blindly co-sign a rewritten continuation.
+func (wt *Witness) Restore(lastSize uint64, lastMerkle, lastRoot string) {
+	wt.mu.Lock()
+	defer wt.mu.Unlock()
+	wt.lastSize, wt.lastMerkle = lastSize, lastMerkle
+	if lastSize > wt.maxSize {
+		wt.maxSize = lastSize
+	}
+	if lastRoot != "" {
+		wt.seenRoot[lastSize] = lastRoot
+	}
+}
+
 // Public returns the witness verification key (auditors hold this).
 func (wt *Witness) Public() ed25519.PublicKey { return wt.priv.Public().(ed25519.PublicKey) }
 

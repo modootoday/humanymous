@@ -46,6 +46,28 @@ func (a *app) operatorAuthorized(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
+// canReadSession authorizes reading ONE session's data. The caller must either OWN the
+// session (its hsid cookie equals the path sid) or present the operator bearer. On failure
+// it answers 404 (non-discoverable) and returns false. This closes the IDOR on the raw
+// per-session endpoints (report/{sid}, traffic/{sid}) which otherwise returned the client
+// IP:port and behavioral-biometric aggregates for ANY sid to any anonymous caller who
+// learned a session id — an unauthenticated PII disclosure for a tool whose purpose is not
+// deanonymizing legitimate users (deep-review). Self-binding preserves the demo's ability
+// to show a visitor its OWN result.
+func (a *app) canReadSession(w http.ResponseWriter, r *http.Request, sid string) bool {
+	if sid != "" && cookieValue(r, sessionCookie) == sid {
+		return true // the owner reading its own session
+	}
+	if a.opsToken != "" {
+		got := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+		if subtle.ConstantTimeCompare([]byte(got), []byte(a.opsToken)) == 1 {
+			return true // an authenticated operator
+		}
+	}
+	http.NotFound(w, r)
+	return false
+}
+
 // handleHealthz is unauthenticated liveness — status, build, and uptime only.
 func (a *app) handleHealthz(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, map[string]any{

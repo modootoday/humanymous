@@ -65,9 +65,9 @@ func TestPlaygroundMeta(t *testing.T) {
 	}
 	var m struct {
 		Policy struct {
-			Version              string
-			LayerCap, DenyAt     float64
-			ChallengeAt          float64
+			Version          string
+			LayerCap, DenyAt float64
+			ChallengeAt      float64
 		} `json:"policy"`
 		Bands         []map[string]any `json:"bands"`
 		HardRuleRange string           `json:"hardRuleRange"`

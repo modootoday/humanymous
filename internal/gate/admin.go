@@ -412,6 +412,12 @@ func (s *Server) adminListBans(w http.ResponseWriter) {
 	writeJSON(w, map[string]any{"bans": out, "count": len(out)})
 }
 
+// maxBanDurationSec (~400 days) is the ceiling for a single-operator temporary ban. At or
+// above it a ban is treated as effectively permanent and routed to dual-control; it also
+// keeps time.Duration(sec)*time.Second well within int64 so a huge value cannot wrap
+// negative and be silently reinterpreted as a permanent ban (deep-review).
+const maxBanDurationSec = 400 * 24 * 3600
+
 // adminAddBan applies a temporary ban directly (authenticated Operator) or, for
 // a permanent/CIDR/broad ban, creates a PENDING action a distinct Approver must
 // commit (SoT-27 §4 / SoT-28 §7). The actor is the authenticated operator.
@@ -428,8 +434,16 @@ func (s *Server) adminAddBan(w http.ResponseWriter, r *http.Request, op Operator
 		http.Error(w, "ban key must be ip:<addr>, fp:<hash>, or cidr:<addr/mask>", http.StatusBadRequest)
 		return
 	}
-	// Permanent OR broad (CIDR) bans need dual-control regardless of duration.
-	if req.DurationSec == 0 || isBroadKey(req.Key) {
+	if req.DurationSec < 0 {
+		http.Error(w, "durationSec must be >= 0", http.StatusBadRequest)
+		return
+	}
+	// Permanent (0), effectively-permanent (>= cap), OR broad (CIDR) bans need dual-control
+	// regardless of duration. The >= cap check ALSO closes the overflow bypass where a huge
+	// DurationSec wrapped time.Duration(sec)*time.Second negative -> dur<=0 -> a PERMANENT ban
+	// committed by ONE operator, defeating dual-control and the no-lockout constraint
+	// (deep-review). Below the cap the multiply cannot overflow int64.
+	if req.DurationSec == 0 || req.DurationSec >= maxBanDurationSec || isBroadKey(req.Key) {
 		p := s.approvals.Create("ban", map[string]string{
 			"key": req.Key, "reason": req.Reason, "incident": req.Incident, "durationSec": strconv.Itoa(req.DurationSec),
 		}, op.ID, RoleApprover)
@@ -457,8 +471,8 @@ func (s *Server) adminBulkBan(w http.ResponseWriter, r *http.Request, op Operato
 		http.Error(w, "keys required", http.StatusBadRequest)
 		return
 	}
-	if req.DurationSec == 0 {
-		http.Error(w, "bulk bans must be temporary (permanent needs dual-control)", http.StatusBadRequest)
+	if req.DurationSec <= 0 || req.DurationSec >= maxBanDurationSec {
+		http.Error(w, "bulk bans must be temporary and bounded (0/negative/over-cap needs dual-control)", http.StatusBadRequest)
 		return
 	}
 	applied, skipped := 0, 0
@@ -543,7 +557,13 @@ func (s *Server) adminApprove(w http.ResponseWriter, id string, op Operator) {
 	switch p.Kind {
 	case "ban":
 		dur, _ := strconv.Atoi(p.Params["durationSec"])
-		entry := s.commitBan(p.Params["key"], p.Params["reason"], p.Params["incident"], time.Duration(dur)*time.Second, p.Requester, op.ID)
+		// 0 or an at/above-cap value => a PERMANENT ban (both approved by two principals);
+		// otherwise an exact, overflow-safe duration. Never rely on multiply overflow.
+		var d time.Duration
+		if dur > 0 && dur < maxBanDurationSec {
+			d = time.Duration(dur) * time.Second
+		}
+		entry := s.commitBan(p.Params["key"], p.Params["reason"], p.Params["incident"], d, p.Requester, op.ID)
 		writeJSON(w, map[string]any{"ok": true, "committed": "ban", "permanent": entry.Permanent()})
 	case "erasure":
 		// Do NOT shred immediately — SCHEDULE with a cancellable hold window; the

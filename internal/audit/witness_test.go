@@ -25,6 +25,39 @@ func TestWitnessCoSign(t *testing.T) {
 	}
 }
 
+// deep-review: a witness reconstructed from a persisted seed keeps the SAME verification
+// key, so checkpoints co-signed before a restart still verify — no spurious witnessed:false
+// alarm on every reboot; and after Restore it still refuses a rewrite behind the restored
+// size, so anti-equivocation survives a (writer-triggerable) restart.
+func TestWitnessSeedPersistenceAndRestore(t *testing.T) {
+	seed := make([]byte, 32)
+	for i := range seed {
+		seed[i] = byte(i + 1)
+	}
+	w1 := NewWitnessFromSeed(seed)
+	sig, err := w1.CounterSign(Checkpoint{TreeSize: 8, Root: "R1", MerkleRoot: ""}, nil)
+	if err != nil {
+		t.Fatalf("co-sign: %v", err)
+	}
+	// A DIFFERENT process boot reconstructs the witness from the same persisted seed.
+	w2 := NewWitnessFromSeed(seed)
+	if string(w2.Public()) != string(w1.Public()) {
+		t.Fatal("reconstructed witness must have the SAME public key (else every restart false-alarms)")
+	}
+	if at, ok := VerifyWitness([]Checkpoint{{TreeSize: 8, Root: "R1", WitnessSig: sig}}, w2.Public()); !ok {
+		t.Fatalf("a pre-restart checkpoint must verify under the reconstructed witness key (failed at %d)", at)
+	}
+	// Restore the monotonic state from the last replayed checkpoint, then a rewrite at that
+	// size (or a rollback below it) must still be refused — no cross-restart amnesia.
+	w2.Restore(8, "", "R1")
+	if _, err := w2.CounterSign(Checkpoint{TreeSize: 8, Root: "R2"}, nil); err != errWitnessRewrite {
+		t.Fatalf("after Restore a rewrite must be refused, got %v", err)
+	}
+	if _, err := w2.CounterSign(Checkpoint{TreeSize: 4, Root: "Rx"}, nil); err != errWitnessRegress {
+		t.Fatalf("after Restore a rollback must be refused, got %v", err)
+	}
+}
+
 // WS8: the witness refuses to co-sign a rewrite (root changed at a witnessed
 // tree size) or a rollback (tree size regressed) — the exact moves a history
 // forgery requires.

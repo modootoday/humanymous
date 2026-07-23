@@ -93,6 +93,9 @@ func (a *app) handleCollect(w http.ResponseWriter, r *http.Request) {
 // handleReportOne returns the full SessionReport for a session id.
 func (a *app) handleReportOne(w http.ResponseWriter, r *http.Request) {
 	id := strings.TrimPrefix(r.URL.Path, "/api/report/")
+	if !a.canReadSession(w, r, id) { // owner (hsid cookie) or operator only — the report
+		return // carries behavioral-biometric aggregates + fingerprints (deep-review IDOR)
+	}
 	rep, ok := a.store.Get(id)
 	if !ok {
 		http.NotFound(w, r)
@@ -101,8 +104,13 @@ func (a *app) handleReportOne(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, rep)
 }
 
-// handleReportList returns recent session summaries.
+// handleReportList returns recent session summaries. It exposes EVERY session's data, so
+// it is operator-only (a public listing would hand any caller a directory of session ids
+// to pivot the per-session IDOR from — deep-review).
 func (a *app) handleReportList(w http.ResponseWriter, r *http.Request) {
+	if !a.operatorAuthorized(w, r) {
+		return
+	}
 	writeJSON(w, a.store.List(100))
 }
 

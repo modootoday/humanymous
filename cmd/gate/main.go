@@ -9,6 +9,7 @@ package main
 
 import (
 	"crypto/ecdsa"
+	"crypto/ed25519"
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/tls"
@@ -99,7 +100,7 @@ func main() {
 	// key + vault linkage keys are sealed and resumed across restarts, so a reboot
 	// keeps the same chain identity and the same pseudonym linkage (no accidental
 	// mass crypto-shred). Without it, keys are ephemeral (dev).
-	var hmacKey, signingSeed []byte
+	var hmacKey, signingSeed, witnessSeed []byte
 	var vault *audit.Vault
 	unseal := os.Getenv("HMN_UNSEAL")
 	if *keystorePath != "" {
@@ -110,7 +111,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("keystore: %v", err)
 		}
-		hmacKey, signingSeed, vault = m.HMACKey, m.SigningSeed, audit.LoadVault(m.Vault)
+		hmacKey, signingSeed, witnessSeed, vault = m.HMACKey, m.SigningSeed, m.WitnessSeed, audit.LoadVault(m.Vault)
 		if created {
 			log.Printf("keystore: created new sealed node identity at %s", *keystorePath)
 		} else {
@@ -122,9 +123,16 @@ func main() {
 		vault = audit.NewVault()
 	}
 	vault.SetStretch(true) // KDF-stretch pseudonyms (SoT-28 WS8 brute-force resistance)
-	// Independent witness co-signs each Signed Tree Head (SoT-28 WS8) so the
-	// writer cannot rewrite history undetected (it can't obtain a witness sig).
-	witness := audit.NewWitness()
+	// Independent witness co-signs each Signed Tree Head (SoT-28 WS8) so the writer cannot
+	// rewrite history undetected. With a keystore its key is PERSISTED (witnessSeed) so
+	// pre-restart checkpoints keep verifying and fork-detection survives a restart
+	// (deep-review); without one it is ephemeral (dev).
+	var witness *audit.Witness
+	if len(witnessSeed) == ed25519.SeedSize {
+		witness = audit.NewWitnessFromSeed(witnessSeed)
+	} else {
+		witness = audit.NewWitness()
+	}
 	// SoT-32 durable audit sink: with -audit-wal the chain is fsync'd to disk and
 	// replayed on boot; the STH signing key comes from -keystore so replayed
 	// checkpoints verify across restarts.
@@ -153,6 +161,13 @@ func main() {
 		log.Printf("audit projection: ClickHouse -> %s (audit_log)", *auditCH)
 	}
 	alog := audit.NewLog(audit.Config{NodeID: *node, HMACKey: hmacKey, CheckpointEvery: 32, Witness: witness, SigningSeed: signingSeed, WAL: auditSink, Projections: projections})
+	// Restore the witness's monotonic fork-detection state from the last replayed
+	// checkpoint so the first post-restart co-sign still demands an append-only
+	// consistency proof (deep-review: no cross-restart amnesia).
+	if cps := alog.Checkpoints(); len(cps) > 0 {
+		last := cps[len(cps)-1]
+		witness.Restore(last.TreeSize, last.MerkleRoot, last.Root)
+	}
 	if *auditVerify {
 		res := alog.SelfVerify()
 		if res.OK {
@@ -170,7 +185,7 @@ func main() {
 			ch := make(chan os.Signal, 1)
 			signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
 			<-ch
-			_ = audit.SealKeys(*keystorePath, unseal, audit.KeyMaterial{SigningSeed: signingSeed, HMACKey: hmacKey, Vault: vault.Snapshot()})
+			_ = audit.SealKeys(*keystorePath, unseal, audit.KeyMaterial{SigningSeed: signingSeed, HMACKey: hmacKey, Vault: vault.Snapshot(), WitnessSeed: witnessSeed})
 			log.Printf("keystore: node identity + vault sealed on shutdown")
 			os.Exit(0)
 		}()

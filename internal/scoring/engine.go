@@ -98,7 +98,7 @@ func (e *Engine) decide(r *signals.SessionReport, contributions []scored, rc rul
 	// PoW trust upgrade (SoT-13): a session that solved a proof-of-work
 	// challenge upgrades a SCORE-based CHALLENGE to ALLOW. It never overrides a
 	// hard rule (DENY or a hard CHALLENGE) — PoW proves CPU work, not humanity.
-	if verdict == VerdictChallenge && firedRule == "" && hasSignal(rc.sigs, "l7.pow.solved") {
+	if verdict == VerdictChallenge && firedRule == "" && hasServerSignal(r.Network.Signals, "l7.pow.solved") {
 		verdict = VerdictAllow
 		firedRule = "PoW-upgrade"
 	}
@@ -108,7 +108,7 @@ func (e *Engine) decide(r *signals.SessionReport, contributions []scored, rc rul
 	// NEVER overrides a hard rule — a session already proven a bot by L1–L7 / JA4 /
 	// correlation stays DENY even after solving Pass. Solving Pass is one signal
 	// among many; it does not launder conclusive independent bot evidence.
-	if verdict == VerdictChallenge && firedRule == "" && hasSignal(rc.sigs, "l7.pass.solved") {
+	if verdict == VerdictChallenge && firedRule == "" && hasServerSignal(r.Network.Signals, "l7.pass.solved") {
 		verdict = VerdictAllow
 		firedRule = "Pass-upgrade"
 	}
@@ -175,9 +175,18 @@ func dampPrivacyNoise(in []scored) []scored {
 	return in
 }
 
-func hasSignal(sigs []signals.Signal, id string) bool {
+// hasServerSignal reports whether a SERVER-COLLECTED, OK-verdict signal with the given
+// id is present. Trust-upgrades (PoW-/Pass-upgrade) must be granted ONLY by evidence the
+// server itself minted — a client can put {"signals":[{"id":"l7.pass.solved"}]} in its
+// /api/collect body, which lands in r.Client.Signals (and thus AllSignals), so an ID-only
+// match would let any borderline CHALLENGE launder itself to ALLOW with zero Pass/PoW
+// work (deep-review blocker). r.Network.Signals is server-authoritative — client input
+// only ever reaches r.Client via MergeClient — and the Collected/Verdict re-check is
+// belt-and-suspenders. This changes WHICH list is trusted, not any scoring weight
+// (frozen-core safe).
+func hasServerSignal(sigs []signals.Signal, id string) bool {
 	for _, s := range sigs {
-		if s.ID == id {
+		if s.ID == id && s.Collected == signals.SourceServer && s.Verdict == signals.VerdictOK {
 			return true
 		}
 	}

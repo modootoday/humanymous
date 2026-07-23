@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"strings"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/signals"
@@ -10,13 +11,45 @@ import (
 // SessionReport. The first network observation is pinned (plan/02 §2); the
 // client report is replaced on each /api/collect.
 
-// MergeClient stores/updates the client-collected portion of a session.
+// MergeClient stores/updates the client-collected portion of a session. The client
+// report is sanitized first: a browser only ever reports L1–L4 evidence (fingerprint,
+// guard, integrity, behavior), so any client-supplied signal that claims a
+// server-authoritative identity — Collected==server, or an id in the server-minted
+// L5/L6/L7 namespace (RIT, cross-checks, PoW/Pass upgrades) — is a forgery attempt and
+// is dropped at ingest. This is the provenance boundary that stops a client from laundering
+// a CHALLENGE to ALLOW by asserting its own trust-upgrade (deep-review). No weight change.
 func (s *Store) MergeClient(id string, client signals.ClientReport, now time.Time) {
+	client.Signals = sanitizeClientSignals(client.Signals)
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	st := s.ensureLocked(id, now)
 	st.report.Client = client
 	st.updated = now
+}
+
+// sanitizeClientSignals drops any client-reported signal that claims server provenance:
+// a server Collected source, or a reserved server-authoritative id (L5/L6/L7). Returns a
+// new slice; a nil/empty input yields nil.
+func sanitizeClientSignals(in []signals.Signal) []signals.Signal {
+	if len(in) == 0 {
+		return in
+	}
+	out := in[:0:0]
+	for _, sig := range in {
+		if sig.Collected == signals.SourceServer || reservedServerID(sig.ID) {
+			continue // forged server-provenance claim
+		}
+		out = append(out, sig)
+	}
+	return out
+}
+
+// reservedServerID reports whether id belongs to a server-minted layer (L5 RIT/traffic/
+// correlation/abuse/h2dos/resource, L6 cross-checks, L7 PoW/Pass) that a client must
+// never author.
+func reservedServerID(id string) bool {
+	return strings.HasPrefix(id, "l5.") || strings.HasPrefix(id, "l6.") ||
+		strings.HasPrefix(id, "l7.") || strings.HasPrefix(id, "x.")
 }
 
 // MergeNetwork attaches the network observation. Only the first observation is

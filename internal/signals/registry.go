@@ -198,6 +198,10 @@ var (
 	// bot). Declared here so it is a KNOWN signal, not an UNKNOWN-safe fallback that a
 	// resolution test (PLAN-07 R9) could not tell apart from a typo.
 	_ = def(Definition{"l5.rit.ok", LayerNetwork, 0, true, "rit", "valid RIT token (no tamper)"})
+	// l5.rit.bootstrap is the one-shot tokenless first-request grace (weight 0). Distinct
+	// from l5.rit.ok so the HR-18 cross-check does not mistake the grace for verified JS
+	// execution (deep-review).
+	_ = def(Definition{"l5.rit.bootstrap", LayerNetwork, 0, true, "rit", "first-request token grace (one-shot)"})
 	_ = def(Definition{"l5.rit.absent", LayerNetwork, 30, nil, "rit", "no RIT token on API call"})
 	_ = def(Definition{"l5.rit.invalid_hmac", LayerNetwork, 35, nil, "rit", "RIT HMAC invalid"})
 	_ = def(Definition{"l5.rit.header_tampered", LayerNetwork, 40, nil, "rit", "signed headers != observed"})

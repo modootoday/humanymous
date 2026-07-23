@@ -82,6 +82,13 @@ func (a *app) handleResource(w http.ResponseWriter, r *http.Request) {
 // handleTrace recovers the watermark from an uploaded (leaked) resource and
 // identifies the session (SoT-08 §4). Admin endpoint.
 func (a *app) handleTrace(w http.ResponseWriter, r *http.Request) {
+	// Forensic watermark de-anonymization is an operator capability, not a public one:
+	// unauthenticated it both leaks the session-linkage of a leaked asset AND is a 32 MiB
+	// read + extraction amplification vector (deep-review). Gate it like the other ops
+	// endpoints; when no opsToken is configured the route is a non-discoverable 404.
+	if !a.operatorAuthorized(w, r) {
+		return
+	}
 	if r.Method != http.MethodPost {
 		http.Error(w, "POST only", http.StatusMethodNotAllowed)
 		return
@@ -103,6 +110,9 @@ func (a *app) handleTrace(w http.ResponseWriter, r *http.Request) {
 // handleTraffic returns a session's traffic log (SoT-12 debug).
 func (a *app) handleTraffic(w http.ResponseWriter, r *http.Request) {
 	sid := strings.TrimPrefix(r.URL.Path, "/api/traffic/")
+	if !a.canReadSession(w, r, sid) { // returns raw client IP:port + request timeline —
+		return // owner (hsid cookie) or operator only (deep-review IDOR)
+	}
 	writeJSON(w, a.tlog.Session(sid))
 }
 

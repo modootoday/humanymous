@@ -44,14 +44,22 @@ func CrossChecks(r *signals.SessionReport) []signals.CrossCheck {
 	// environment probe. This catches a header-spoofing HTTP parrot (curl_cffi /
 	// uTLS) that fakes sec-ch-ua/sec-fetch but cannot run our JS/WASM (SoT-14).
 	if isBrowserUA(r.Client.UserAgent) {
-		noJS := len(r.Client.Signals) == 0 &&
-			!r.Client.Advanced.Probed && !r.Client.Environment.Probed &&
-			r.Client.Behavior.Mouse.Samples == 0 && r.Client.Behavior.Events.TotalEvents == 0 &&
-			r.Client.EngineVersion == ""
+		// A browser-claiming UA that delivered no client-side EXECUTION EVIDENCE never ran as
+		// a browser. Evidence is WASM L1–L3 signals, an advanced fingerprint probe, or real
+		// behavior — things that require actually running our code. The two self-reported
+		// STRING claims the old predicate also honored (EngineVersion, Environment.Probed)
+		// are dropped: a header-spoofing parrot (curl_cffi/uTLS) set just one of them
+		// (e.g. engineVersion:"120") to clear x.browser_no_js for free while running no JS
+		// (deep-review). Since HR-18 is a LONE DENY, noJS must be true only for real parrots;
+		// a real browser produces WASM signals / an advanced probe / behavior, so this stays
+		// false for humans (and for JS-executing bots like nodriver → no regression), while a
+		// parrot that only forges a version string is now caught.
+		noJS := len(r.Client.Signals) == 0 && !r.Client.Advanced.Probed &&
+			r.Client.Behavior.Mouse.Samples == 0 && r.Client.Behavior.Events.TotalEvents == 0
 		out = append(out, mkCross("x.browser_no_js",
-			[]string{"client.userAgent", "client.signals", "client.advanced"},
-			"browser UA implies JS/WASM execution", "no client-side evidence delivered",
-			!noJS, "browser UA but zero JS execution evidence (HTTP parrot)"))
+			[]string{"client.userAgent", "client.signals", "client.advanced", "client.behavior"},
+			"browser UA implies JS/WASM execution", "no client-side execution evidence delivered",
+			!noJS, "browser UA but zero JS/WASM execution evidence (HTTP parrot)"))
 	}
 
 	// UA-vs-engine checks require a definite browser claim to diff against.

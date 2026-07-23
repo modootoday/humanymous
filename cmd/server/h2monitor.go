@@ -34,7 +34,7 @@ const (
 // frameMonitor accumulates bytes and counts frame types.
 type frameMonitor struct {
 	buf         []byte
-	prefaceSkip int  // remaining preface bytes to skip (24-byte client preface)
+	prefaceSkip int // remaining preface bytes to skip (24-byte client preface)
 	rst         int
 	cont        int
 	protoErr    int

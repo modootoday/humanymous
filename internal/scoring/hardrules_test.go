@@ -32,6 +32,29 @@ func TestCatalog_HumanAllow(t *testing.T) {
 	}
 }
 
+// TestCatalog_HTTPParrot_NoExecEvidence_DenyHR18: a header-spoofing parrot (curl_cffi/
+// uTLS) that perfectly mimics Chrome JA4+H2+Sec-CH-UA but runs no JS must not evade HR-18
+// by setting a self-reported field. Before the deep-review fix, one client-authored field
+// (engineVersion / environment.probed) flipped x.browser_no_js off; now execution proof
+// requires genuine client signals, behavior, or a server-verified RIT round-trip.
+func TestCatalog_HTTPParrot_NoExecEvidence_DenyHR18(t *testing.T) {
+	// Parrot: browser UA, browser JA4/H2, but zero execution evidence — only a forged
+	// version string / probed flag (the old single-field bypass).
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36", nil, noBeh, chromeNet)
+	r.Client.EngineVersion = "126.0.0"                       // self-reported claim (the old bypass)
+	r.Client.Environment = signals.Environment{Probed: true} // another self-reported claim
+	if v := NewEngine().Score(r); v.Verdict != VerdictDeny || v.HardRuleFired != "HR-18" {
+		t.Fatalf("HTTP parrot want DENY/HR-18 got %s/%s risk=%.1f", v.Verdict, v.HardRuleFired, v.RiskScore)
+	}
+	// A real browser that delivered genuine WASM evidence (a client signal) must NOT trip
+	// HR-18 even with the same headers — execution evidence, not a self-reported string.
+	r2 := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, noBeh, chromeNet)
+	if v := NewEngine().Score(r2); v.HardRuleFired == "HR-18" {
+		t.Fatalf("a browser with real WASM evidence must not trip HR-18, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),

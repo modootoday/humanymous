@@ -258,11 +258,24 @@ func (l *RedisBanLedger) writeBan(key string, entry BanEntry) {
 	_, _ = l.rc.Do("SET", redisBanPrefix+key, val, "PX", strconv.FormatInt(ms, 10))
 }
 
-// scanBanKeys enumerates ban keys via non-blocking SCAN (MATCH hmn:ban:*).
+// scanBan* bounds so a hostile/buggy coordinator that never returns cursor "0" (or keeps
+// emitting fresh keys) cannot spin scanBanKeys forever — which would peg CPU, grow the
+// slice until OOM, and, because every Do() takes the single shared-connection mutex,
+// starve every concurrent on-path ban/verdict/rate lookup fleet-wide (deep-review). Each
+// SCAN round-trip is fast enough to slip under the client's slow-breaker, so the loop must
+// self-limit. The caps are far above any real ban keyspace; hitting one returns the partial
+// set (List still merges the local mirror) rather than serving nothing.
+const (
+	scanMaxRounds = 4096    // max SCAN round-trips per enumeration
+	scanMaxKeys   = 1 << 16 // 65,536 ban keys is already far past any real deployment
+)
+
+// scanBanKeys enumerates ban keys via non-blocking SCAN (MATCH hmn:ban:*), bounded.
 func (l *RedisBanLedger) scanBanKeys() []string {
 	var keys []string
 	cursor := "0"
-	for {
+	seen := map[string]bool{} // detect a non-advancing / cycling cursor
+	for round := 0; round < scanMaxRounds; round++ {
 		rep, err := l.rc.Do("SCAN", cursor, "MATCH", redisBanPrefix+"*", "COUNT", "256")
 		if err != nil || len(rep.Array) != 2 {
 			return keys
@@ -270,11 +283,19 @@ func (l *RedisBanLedger) scanBanKeys() []string {
 		cursor = rep.Array[0].Str
 		for _, k := range rep.Array[1].Array {
 			keys = append(keys, k.Str)
+			if len(keys) >= scanMaxKeys {
+				return keys // key cap: stop growing (partial set)
+			}
 		}
 		if cursor == "0" {
+			return keys // normal completion
+		}
+		if seen[cursor] { // coordinator is replaying a cursor → never converges
 			return keys
 		}
+		seen[cursor] = true
 	}
+	return keys // round cap: coordinator never returned "0"
 }
 
 // Compile-time proof the Redis ledgers satisfy the R18 distribution seams.

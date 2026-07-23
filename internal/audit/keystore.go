@@ -24,9 +24,10 @@ import (
 
 // KeyMaterial is the persisted node identity.
 type KeyMaterial struct {
-	SigningSeed []byte `json:"signing_seed"` // Ed25519 seed (32B) for the STH key
-	HMACKey     []byte `json:"hmac_key"`     // per-record HMAC key
-	Vault       []byte `json:"vault"`        // serialized per-subject linkage keys (optional)
+	SigningSeed []byte `json:"signing_seed"`           // Ed25519 seed (32B) for the STH key
+	HMACKey     []byte `json:"hmac_key"`               // per-record HMAC key
+	Vault       []byte `json:"vault"`                  // serialized per-subject linkage keys (optional)
+	WitnessSeed []byte `json:"witness_seed,omitempty"` // Ed25519 seed (32B) for the independent witness co-signer (SoT-28 WS8); persisted so pre-restart checkpoints still verify and fork-detection survives a restart (deep-review)
 }
 
 type sealedBlob struct {
@@ -111,17 +112,36 @@ func OpenKeys(path, passphrase string) (KeyMaterial, error) {
 func LoadOrCreateKeys(path, passphrase string) (m KeyMaterial, created bool, err error) {
 	if _, statErr := os.Stat(path); statErr == nil {
 		m, err = OpenKeys(path, passphrase)
-		return m, false, err
+		if err != nil {
+			return m, false, err
+		}
+		// Migrate a pre-witness-persistence keystore: mint + seal a witness seed once so
+		// this node has a stable witness identity from now on (deep-review).
+		if len(m.WitnessSeed) == 0 {
+			ws := make([]byte, 32)
+			if _, err = rand.Read(ws); err != nil {
+				return m, false, err
+			}
+			m.WitnessSeed = ws
+			if err = SealKeys(path, passphrase, m); err != nil {
+				return m, false, err
+			}
+		}
+		return m, false, nil
 	}
 	seed := make([]byte, 32)
 	hkey := make([]byte, 32)
+	wseed := make([]byte, 32)
 	if _, err = rand.Read(seed); err != nil {
 		return
 	}
 	if _, err = rand.Read(hkey); err != nil {
 		return
 	}
-	m = KeyMaterial{SigningSeed: seed, HMACKey: hkey}
+	if _, err = rand.Read(wseed); err != nil {
+		return
+	}
+	m = KeyMaterial{SigningSeed: seed, HMACKey: hkey, WitnessSeed: wseed}
 	if err = SealKeys(path, passphrase, m); err != nil {
 		return
 	}

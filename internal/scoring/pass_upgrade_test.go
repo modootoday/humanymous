@@ -18,8 +18,8 @@ func passChallengeReport() *signals.SessionReport {
 			UserAgent:     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
 			UAClientHints: signals.UAClientHints{Platform: "Windows", Brands: []signals.UABrand{{Brand: "Chromium", Version: "126"}}},
 			Signals: []signals.Signal{
-				sig("l2.webgl.swiftshader", signals.VerdictBot, 1),        // L2, weight 30
-				sig("l2.webgl.param_consistency", signals.VerdictBot, 1),  // L2, weight 25
+				sig("l2.webgl.swiftshader", signals.VerdictBot, 1),       // L2, weight 30
+				sig("l2.webgl.param_consistency", signals.VerdictBot, 1), // L2, weight 25
 			},
 			Environment: signals.Environment{Probed: true},
 			Behavior:    signals.BehaviorSummary{Events: signals.EventFeatures{TotalEvents: 50, UntrustedFrac: 0}},
@@ -45,6 +45,26 @@ func TestPassUpgrade_ChallengeToAllow(t *testing.T) {
 	res := NewEngine().Score(withPass)
 	if res.Verdict != VerdictAllow || res.HardRuleFired != "Pass-upgrade" {
 		t.Fatalf("solving Pass must upgrade CHALLENGE->ALLOW, got %s/%s (risk %.1f)", res.Verdict, res.HardRuleFired, res.RiskScore)
+	}
+}
+
+// TestPassUpgrade_ClientForgedSignalIgnored: a bot cannot self-assert the trust upgrade.
+// A borderline CHALLENGE that puts a forged l7.pass.solved / l7.pow.solved in its OWN
+// client report (r.Client.Signals) must STAY CHALLENGE — the upgrade is honored only from
+// a server-minted signal in Network.Signals (deep-review blocker: provenance boundary).
+func TestPassUpgrade_ClientForgedSignalIgnored(t *testing.T) {
+	for _, id := range []string{"l7.pass.solved", "l7.pow.solved"} {
+		r := passChallengeReport()
+		// The attacker forges the upgrade signal in the client body (VerdictOK, but the
+		// client cannot claim SourceServer credibly — and even if it does, it lands in
+		// Client.Signals, which decide() no longer consults for the upgrade).
+		r.Client.Signals = append(r.Client.Signals,
+			signals.New(id, true, signals.VerdictOK, 1, signals.SourceJS, "forged"),
+			signals.New(id, true, signals.VerdictOK, 1, signals.SourceServer, "forged-server-claim"))
+		res := NewEngine().Score(r)
+		if res.Verdict != VerdictChallenge || res.HardRuleFired != "" {
+			t.Fatalf("%s: a client-forged upgrade must NOT launder CHALLENGE->ALLOW, got %s/%s", id, res.Verdict, res.HardRuleFired)
+		}
 	}
 }
 

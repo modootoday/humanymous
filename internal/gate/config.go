@@ -1,6 +1,7 @@
 package gate
 
 import (
+	"path"
 	"strings"
 	"time"
 )
@@ -69,11 +70,21 @@ type Config struct {
 
 // resolve returns the policy for a request path (longest-prefix match; default
 // balanced). GlobalMonitor downgrades enforce to monitor everywhere.
-func (c Config) resolve(path string) routePolicy {
+//
+// The path is NORMALIZED (path.Clean + duplicate-slash collapse) and matched on SEGMENT
+// boundaries before selecting a preset. A bare strings.HasPrefix on the raw path let
+// `/./admin`, `//admin`, or `/admin/..;/` miss the `/admin` strict preset and fall through
+// to the weaker balanced default — which passes an UNKNOWN verdict on a safe method — then
+// be forwarded to an origin that collapses the path back to `/admin` and serves it with no
+// enforcement (deep-review path-confusion bypass). Segment anchoring also stops a `/health`
+// off-preset from over-scoping onto `/healthstatus-secret`. Only policy SELECTION is
+// normalized here; the request forwarded upstream keeps its original path.
+func (c Config) resolve(rawPath string) routePolicy {
+	p := normalizeMatchPath(rawPath)
 	best := presetBalanced
 	bestLen := -1
 	for prefix, preset := range c.Routes {
-		if strings.HasPrefix(path, prefix) && len(prefix) > bestLen {
+		if segmentMatch(p, prefix) && len(prefix) > bestLen {
 			best = presetByName(preset)
 			bestLen = len(prefix)
 		}
@@ -82,6 +93,30 @@ func (c Config) resolve(path string) routePolicy {
 		best.enforce = false
 	}
 	return best
+}
+
+// normalizeMatchPath canonicalizes a request path for policy matching: it resolves `.`/`..`
+// segments and collapses duplicate slashes via path.Clean, so equivalent encodings map to
+// the single path an origin will actually serve. (net/http has already percent-decoded
+// r.URL.Path, so `%2e` is already `.` here.)
+func normalizeMatchPath(p string) string {
+	if p == "" {
+		return "/"
+	}
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p
+	}
+	return path.Clean(p)
+}
+
+// segmentMatch reports whether prefix matches path on a path-segment boundary: an exact
+// match, or path continues with a `/` after prefix. The root prefix matches everything.
+func segmentMatch(p, prefix string) bool {
+	if prefix == "" || prefix == "/" {
+		return true
+	}
+	prefix = strings.TrimRight(prefix, "/")
+	return p == prefix || strings.HasPrefix(p, prefix+"/")
 }
 
 // rate-limit defaults (SoT-27 §2): generous window/thresholds to avoid FP.

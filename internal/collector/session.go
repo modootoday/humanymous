@@ -14,12 +14,13 @@ import (
 // counter. The first network observation is pinned as the session's L5 basis
 // (plan/02 §2); later requests only re-validate.
 type sessionState struct {
-	report    signals.SessionReport
-	ritN      uint64 // last RIT counter a seed was issued for
-	netPinned bool
-	powSolved bool      // SoT-13: session has solved a proof-of-work challenge
-	powIssued time.Time // when the current PoW challenge was issued (solve-time)
-	updated   time.Time
+	report       signals.SessionReport
+	ritN         uint64 // last RIT counter a seed was issued for
+	netPinned    bool
+	powSolved    bool      // SoT-13: session has solved a proof-of-work challenge
+	powIssued    time.Time // when the current PoW challenge was issued (solve-time)
+	ritBootstrap bool      // SoT-07: the one-shot tokenless RIT grace has been consumed
+	updated      time.Time
 }
 
 // Store is an in-memory, TTL-expiring session store (sufficient for the sample;
@@ -85,6 +86,29 @@ func (s *Store) AdvanceRIT(id string, now time.Time) uint64 {
 	st.ritN++
 	st.updated = now
 	return st.ritN
+}
+
+// ClaimRITBootstrap atomically consumes the session's ONE-SHOT tokenless RIT grace:
+// it returns true the first time (and marks it used), false on every later call. This
+// makes the bootstrap grace one-shot so a bot cannot camp indefinitely in the tokenless
+// grace state and permanently suppress l5.rit.absent (deep-review). An honest client
+// fetches /api/session (a seed) before its first /api/collect, so it presents a token and
+// never relies on the grace — no false-positive.
+func (s *Store) ClaimRITBootstrap(id string, now time.Time) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	st, ok := s.m[id]
+	if !ok {
+		st = &sessionState{}
+		st.report.SessionID = id
+		s.m[id] = st
+	}
+	st.updated = now
+	if st.ritBootstrap {
+		return false
+	}
+	st.ritBootstrap = true
+	return true
 }
 
 // SetPowSolved marks a session as having solved a PoW challenge (SoT-13).
