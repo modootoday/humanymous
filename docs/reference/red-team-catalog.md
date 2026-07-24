@@ -62,7 +62,7 @@ return verdict === 'DENY' ? 'FP' : 'TN';
 
 The catalog is **47 profiles = 45 must-block bots + 1 detection-ceiling + 1 baseline**. Rows are in `runner.mjs` `PROFILES` order. `Expected HR` is the hard rule the profile is designed to trip; where the ground-truth mapping does not pin a specific rule, the profile is still expected to score TP (CHALLENGE or DENY) but the exact rule is marked score-driven / for verification.
 
-The catalog is organised as the **T0–T4 attacker cost-escalation ladder** defined in `test/e2e/tiers.mjs` — from the cheapest trivial script (T0) up to a funded real-engine adversary (T3) and the honest detection ceiling (T4). `assertCoverage()` in `runner.mjs` fails loudly if this catalog and the tier ladder drift. The raw-protocol attacks are a parallel axis three profiles shell into.
+The catalog is organised as the **T0–T4 attacker cost-escalation ladder** defined in `test/e2e/tiers.mjs` — from the cheapest trivial script (T0) up to a funded real-engine adversary (T3) and the honest detection ceiling (T4). `assertCoverage()` in `runner.mjs` fails loudly if this catalog and the tier ladder drift. The raw-protocol attacks are a parallel axis that eighteen `.mjs` catalog profiles shell into via `_bin.mjs`.
 
 ```mermaid
 flowchart TD
@@ -73,10 +73,10 @@ flowchart TD
   CAT --> T2["T2 moderate · 12"]
   CAT --> T3["T3 high · 8"]
   CAT --> T4["T4 ceiling · 1 (ALLOW by design)"]
-  RAW["Raw-protocol attacks · 7 -attack values (cmd/redteam)"]
-  T0 -. "tls-static shells to" .-> RAW
-  T1 -. "flood shells to" .-> RAW
-  T3 -. "distributed shells to" .-> RAW
+  RAW["Raw-protocol attacks · 18 -attack values (cmd/redteam)"]
+  T0 -. "e.g. tls-static" .-> RAW
+  T1 -. "e.g. flood" .-> RAW
+  T3 -. "e.g. distributed" .-> RAW
 ```
 
 Node counts sum to the catalog total: 1 + 13 + 12 + 12 + 8 + 1 = 47.
@@ -174,9 +174,9 @@ A fully coherent BotBrowser-class engine spoof (or genuine human behaviour on a 
 
 ## Raw-protocol attacks (`cmd/redteam`)
 
-The Go `cmd/redteam` client drives evasions a browser cannot: it controls the TLS ClientHello (via uTLS) and RIT tokens precisely, and it spoofs the client-hint / `sec-fetch` headers a real Chrome sends so the L6 header cross-checks stay quiet — isolating the one bypass under test. It exposes **seven** real `-attack` values.
+The Go `cmd/redteam` client drives evasions a browser cannot: it controls the TLS ClientHello (via uTLS) and RIT tokens precisely, and it spoofs the client-hint / `sec-fetch` headers a real Chrome sends so the L6 header cross-checks stay quiet — isolating the one bypass under test. It exposes **eighteen** real `-attack` values.
 
-> **Note:** These seven are the values the `-attack` switch in `cmd/redteam/main.go` implements. (HTTP/2 Rapid Reset is exercised by the `rapid_reset` node profile, not this binary.)
+> **Note:** These are eighteen values the `-attack` switch in `cmd/redteam/main.go` implements; the table below documents a representative seven. The full set also includes `privacy-evasion`, `signal-forgery`, `nonbrowser-ua`, `sec-chua-absent`, `sec-fetch-absent`, `rit-absent`, `ja4-churn`, `multi-axis-rotate`, `grease-absent-js`, `coherent-ceiling`, and `xff-spoof`. (HTTP/2 Rapid Reset is exercised by the `rapid_reset` node profile, not this binary.)
 
 | `-attack` | What it constructs | Signal targeted | Hard rule |
 |-----------|--------------------|-----------------|-----------|
@@ -192,7 +192,7 @@ The `-host` flag defaults to `127.0.0.1:8443`. That default is **advisory, not e
 
 ### Two entry points for the same attack
 
-Three attacks exist **both** as a `-attack` value **and** as a `.mjs` profile that shells to the Go binary via `_bin.mjs`: `flood`, `distributed`, and `tls-static`. Running the profile and running the raw `-attack` exercise the same underlying attack; the profile wrapper is what lets the e2e runner and the Observatory catalog reach it.
+Every raw-protocol `-attack` value also exists as a `.mjs` profile that shells to the Go binary via `_bin.mjs` — **eighteen** profiles in all (for example `flood`, `distributed`, `tls-static`). Running the profile and running the raw `-attack` exercise the same underlying attack; the profile wrapper is what lets the e2e runner and the Observatory catalog reach it.
 
 ## Where verdict detail comes from
 

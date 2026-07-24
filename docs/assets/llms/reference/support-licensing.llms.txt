@@ -36,10 +36,10 @@ These modules are all permissive, BSD/MIT-family open-source software. Each SPDX
 | `github.com/refraction-networking/utls` | v1.8.2 | direct | BSD-3-Clause |
 | `github.com/andybalholm/brotli` | v1.0.6 | indirect | MIT |
 | `github.com/klauspost/compress` | v1.17.4 | indirect | BSD-3-Clause |
-| `golang.org/x/crypto` | v0.54.0 | indirect | BSD-3-Clause |
-| `golang.org/x/net` | v0.57.0 | indirect | BSD-3-Clause |
+| `golang.org/x/crypto` | v0.54.0 | direct | BSD-3-Clause |
+| `golang.org/x/net` | v0.57.0 | direct | BSD-3-Clause |
 | `golang.org/x/sys` | v0.47.0 | indirect | BSD-3-Clause |
-| `golang.org/x/text` | v0.40.0 | indirect | BSD-3-Clause |
+| `golang.org/x/text` | v0.40.0 | direct | BSD-3-Clause |
 
 > **Note:** All seven are permissive licenses that allow redistribution with attribution. If you redistribute a build, generate an attribution/`NOTICE` bundle from these modules' `LICENSE` files to satisfy their notice terms. Re-confirm the identifiers whenever you bump a dependency version.
 

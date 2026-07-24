@@ -79,15 +79,17 @@ When it finishes, the command returns with no output and `bin/gate.exe` exists. 
 Now start Gate. The `-monitor` flag is the important one: it puts the whole fleet in **global monitor mode**, which downgrades every route to monitor. Gate will score and log, but enforce nothing, everywhere.
 
 ```
-bin/gate.exe -addr :8444 -upstream http://127.0.0.1:9000 -monitor
+HMN_ALLOW_DEV_TOKENS=1 bin/gate.exe -addr :8444 -upstream http://127.0.0.1:9000 -monitor
 ```
+
+`HMN_ALLOW_DEV_TOKENS=1` is the local-demo switch: it makes Gate print the admin role tokens and auto-inject the operator token into the console so you can open it without pasting anything. Never set it outside a local demo. (PowerShell: run `$env:HMN_ALLOW_DEV_TOKENS=1` first, then the `bin/gate.exe …` line.)
 
 You should see startup log lines like these:
 
 ```
-humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=true)
+humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=true, tls=self-signed)
 humanymous Gate admin console on https://localhost:8445/__hmn/admin/console
-  dev tokens — auditor:<hex> operator:<hex> approver:<hex> dpo:<hex>
+  dev tokens (demo mode) — auditor:<hex> operator:<hex> approver:<hex> dpo:<hex>
 ```
 
 A few things to notice:
@@ -136,7 +138,7 @@ Open the Ledger:
 https://localhost:8445/__hmn/admin/console
 ```
 
-You will get the same self-signed certificate warning — accept it. In dev, the console is injected with the **operator** token, so it can read and request without you pasting anything.
+You will get the same self-signed certificate warning — accept it. Because you started Gate with `HMN_ALLOW_DEV_TOKENS=1`, the console is injected with the **operator** token, so it can read and request without you pasting anything.
 
 Go to the **Overview** view ("live edge decisions"). As you reload `https://localhost:8444` in your other browser tab, watch a verdict flow in for each request. Every request Gate handled — including your own page loads — was scored across layers L1–L7 and written to the tamper-evident audit log.
 

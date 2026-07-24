@@ -210,7 +210,7 @@ A surge of AI browser-agents driving real browser engines.
 ### Trigger signal
 
 - `HR-20` (AI browser-agent signature: teleport click + LLM cadence → DENY) fires across many sessions.
-- Signals `l4.agent.llm_cadence` and `l4.mouse.click_no_trajectory` dominate TopContributors.
+- Signals `l4.agent.burst_silence` and `l4.mouse.click_no_trajectory` dominate TopContributors.
 
 ### 60-second triage — attack or false-positive?
 
@@ -303,7 +303,7 @@ curl -sk "https://localhost:8445/__hmn/admin/integrity" -H "Authorization: Beare
 | (a) DENY spike, humans locked out | HR-12 misfire / route-scoped | Demote route to monitor | Distinct Approver for kill switch |
 | (b) Scraping / cred-stuffing | HR-19, HR-30 | Temporary `fp:` ban | Distinct Approver for permanent/CIDR |
 | (c) HTTP/2 flood | HR-21, `l5.h2dos.rapid_reset` | Confirm auto-DENY + limiter | Infra/network on-call |
-| (d) AI-agent wave | HR-20, `l4.agent.llm_cadence` | Temporary `fp:` ban | Distinct Approver; Operator for route review |
+| (d) AI-agent wave | HR-20, `l4.agent.burst_silence` | Temporary `fp:` ban | Distinct Approver; Operator for route review |
 | (e) Integrity red | mismatch classes | Run offline verifier, preserve | Security lead (+ DPO if data-touching) |
 
 ### Rules of engagement

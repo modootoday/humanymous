@@ -32,7 +32,7 @@ Gate has three postures. Two of them cannot block anyone.
 Starting the binary with `-monitor` downgrades **every** route to monitor. Gate still injects the bundle, collects signals, scores L1–L7, and writes every decision to the audit log — but it enforces nothing, anywhere. The startup log line reports the mode:
 
 ```
-humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false, tls=self-signed)
 ```
 
 With `-monitor` set, that trailing value reads `monitor=true`. This is your safest first contact with production traffic: you get the full verdict stream and the audit trail without any user ever being challenged or blocked.

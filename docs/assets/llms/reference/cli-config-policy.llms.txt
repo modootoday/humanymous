@@ -66,7 +66,7 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 Expect these lines on boot (values reflect defaults):
 
 ```
-humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false, tls=self-signed)
 humanymous Gate admin console on https://localhost:8445/__hmn/admin/console
   dev tokens — auditor:<hex> operator:<hex> approver:<hex> dpo:<hex>
 ```
@@ -344,7 +344,7 @@ HMN_ALLOW_DEV_TOKENS=1 HMN_ADMIN_TOKENS="auditor:aud-dev,operator:op-dev,approve
 Expected startup output:
 
 ```
-humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false, tls=self-signed)
 humanymous Gate admin console on https://localhost:8445/__hmn/admin/console
 ```
 

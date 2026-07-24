@@ -91,10 +91,10 @@ make up
 ```
 
 ```
-make war
+make attack
 ```
 
-`make up` starts the defenders; `make war` runs the automation catalog against the engine and writes the per-profile verdicts. In the reference run, every profile in the catalog was blocked or challenged and the human baseline was not denied (reference-measured). Your own run reproduces the numbers for your environment; treat any figure here as reference-measured, not a guarantee.
+`make up` starts the defenders; `make attack` runs the automation catalog against the engine and writes the per-profile verdicts. In the reference run, every profile in the catalog was blocked or challenged and the human baseline was not denied (reference-measured). Your own run reproduces the numbers for your environment; treat any figure here as reference-measured, not a guarantee.
 
 ## What the method does and does not give you
 

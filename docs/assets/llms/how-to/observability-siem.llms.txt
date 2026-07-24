@@ -51,7 +51,7 @@ export HMN_ADMIN_TOKEN="<your-auditor-token>"
 
 - `verdict=` — `allow`, `challenge`, `deny`, or `none`
 - `host=` — origin host
-- `route=` — matched route
+- `route=` — matched `route_class` (`html|api|upgrade|control|static`), not a URL path
 - `rule=` — a hard-rule identifier (for example a specific HR)
 - `minRisk=` — minimum risk score (0–100)
 - `before=` — the paging cursor
@@ -82,12 +82,12 @@ Each record's canonical fields for a SIEM mapping: `event_id`, `seq`, `node_id`,
 
 ### Narrow to what you care about
 
-Combine filters to build focused queries an on-call engineer or a scheduled job can run. For example, high-risk challenges on the checkout route:
+Combine filters to build focused queries an on-call engineer or a scheduled job can run. For example, high-risk challenges on HTML page requests whose host contains `checkout` (`route=` filters by `route_class`, and `host=` is a substring match — neither takes a URL path):
 
 ```
 curl --silent \
   --header "Authorization: Bearer ${HMN_ADMIN_TOKEN}" \
-  "https://localhost:8445/__hmn/admin/audit?verdict=challenge&route=/checkout&minRisk=50"
+  "https://localhost:8445/__hmn/admin/audit?verdict=challenge&host=checkout&route=html&minRisk=50"
 ```
 
 Records are pseudonymous: raw identifiers (IP, TLS/HTTP fingerprints, UA, device fingerprint) are stored only as per-subject-key-derived pseudonyms, never raw. Your SIEM will ingest pseudonyms, not source IPs. Re-identification is a separate, dual-controlled action and is out of scope for a monitoring feed.

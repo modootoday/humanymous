@@ -205,7 +205,7 @@ Listed in precedence order. `verdict` is what the rule promotes to on match.
 | 14 | HR-18 | DENY | Browser UA with zero client-side JS evidence (HTTP parrot). |
 | 15 | HR-20 | DENY | AI browser-agent signature (teleport click plus a second agent / CDP tell). |
 | 16 | HR-19 | DENY | One fingerprint across many subnets (residential-proxy rotation), or a PoW solved implausibly fast. |
-| 17 | HR-21 | DENY | Destructive-abuse flood / HTTP-2 DoS (Rapid Reset, CONTINUATION flood) / credential-stuffing velocity. |
+| 17 | HR-21 | DENY | HTTP-2 DoS only: Rapid Reset / CONTINUATION flood. (Application-layer flood and credential-stuffing velocity are handled by score-based CHALLENGE + the rate-limit ban ladder, not this rule.) |
 | 18 | HR-15 | DENY | Multi-axis rotation (UA changed together with TLS / IP rotation). |
 | 19 | HR-17 | CHALLENGE | Heuristic: a replayed or absent RIT token on an API call. |
 | 20 | HR-12 | CHALLENGE | Heuristic (can catch some humans): zero interaction over the observation window. |

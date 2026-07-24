@@ -19,11 +19,11 @@ This page lists exactly what you need to build and run the reference implementat
 |---|---|
 | Go toolchain | go 1.25.3 (declared in `go.mod`) |
 | CGO | Not used — pure Go |
-| Direct dependencies | One: `github.com/refraction-networking/utls` v1.8.2 (uTLS) |
+| Direct dependencies | Four: `github.com/refraction-networking/utls` v1.8.2 (uTLS), plus `golang.org/x/crypto` v0.54.0, `golang.org/x/net` v0.57.0, `golang.org/x/text` v0.40.0 |
 
 Gate is written in pure Go with no CGO. That keeps the build simple and lets you cross-compile for any target with `GOOS`/`GOARCH` — you do not need a C compiler or platform-specific build tooling.
 
-The Go module is `github.com/modootoday/humanymous`. Its only direct dependency is uTLS, which Gate uses to read TLS ClientHello fingerprints (part of the L5 network layer — see [how Gate sees a request](../concepts/how-gate-sees-a-request.md)).
+The Go module is `github.com/modootoday/humanymous`. It has four direct dependencies: uTLS — which Gate uses to read TLS ClientHello fingerprints (part of the L5 network layer — see [how Gate sees a request](../concepts/how-gate-sees-a-request.md)) — plus the `golang.org/x/crypto`, `golang.org/x/net`, and `golang.org/x/text` extended standard-library packages. uTLS is the only non-`golang.org/x` third-party dependency.
 
 ## Supported platforms
 
@@ -35,7 +35,7 @@ The build command below writes `bin/gate.exe`. The `.exe` name reflects a Window
 
 > **TODO(verify):** A supported-OS/architecture matrix with specific version floors (for example, minimum Linux kernel, macOS, or Windows versions) is not specified in the verified facts.
 
-> **Note:** Container packaging is defined in the repository under `build/` — `build/engine.Dockerfile` (the detection engine) and `build/gate.Dockerfile` (Gate), both on a `gcr.io/distroless/static-debian12:nonroot` base — and the local stack is wired in `deployments/compose.yaml`. No image is published to a public registry; build locally with `make docker` (engine) or `docker compose -f deployments/compose.yaml build`.
+> **Note:** Container packaging is defined in the repository under `build/` — `build/core.Dockerfile` (the detection engine) and `build/gate.Dockerfile` (Gate), both on a `gcr.io/distroless/static-debian12:nonroot` base — and the local stack is wired in `deployments/compose.yaml`. No image is published to a public registry; build locally with `make docker` (engine) or `docker compose -f deployments/compose.yaml build`.
 
 ## Build
 

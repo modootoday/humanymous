@@ -65,9 +65,9 @@ Before `1.0.0` the project is pre-stable: a breaking change may bump the minor r
 
 Non-Conventional commits and merge commits are filtered out. To preview exactly what a tag's notes will be: `make release-notes`.
 
-## Re-tagging note
+## First release
 
-An early `v0.1.0` tag exists locally that points at a superseded commit and was never pushed. Do not push it as-is. To make `v0.1.0` the first published release, move it to the intended commit first (`git tag -f v0.1.0 <commit>`), or start the public series at the next version. Force-moving a tag that has already been pushed and pulled by others is disruptive — only re-tag tags that have never left this machine.
+No release tags exist yet. To cut the first public release, pick the intended version (for example `v0.1.0`) and tag the commit you want published, following the steps above. Once a tag has been pushed and pulled by others, force-moving it is disruptive — only ever re-tag a tag that has never left this machine.
 
 ## Related
 

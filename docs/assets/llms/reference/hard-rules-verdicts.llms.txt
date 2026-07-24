@@ -145,7 +145,7 @@ Real examples from the reference build:
 |-----------|-------|----------|
 | `l1.cdp.proxy_leak` | L1 Static Client | CDP proxy leak |
 | `l1.navigator.webdriver` | L1 Static Client | `navigator.webdriver` flag |
-| `l2.webgl.renderer` | L2 Fingerprint | WebGL renderer string |
+| `l2.webgl.param_consistency` | L2 Fingerprint | WebGL renderer vs params mismatch |
 | `l4.mouse.click_no_trajectory` | L4 Behavioral | Click with no mouse trajectory |
 | `l4.agent.burst_silence` | L4 Behavioral | Agent burst/silence input cadence |
 | `l5.h2dos.rapid_reset` | L5 Network/Protocol | HTTP/2 Rapid Reset pattern |

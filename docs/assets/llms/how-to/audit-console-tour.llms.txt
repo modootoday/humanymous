@@ -90,7 +90,7 @@ A **red** integrity state is a signal that something is wrong with the log's own
 
 This is where an Overview row lands when you click it, and it is where you go when a user gives you an incident handle. You look up any decision by its **record seq** (the incident reference), and you get the full evidence for it: the timeline, the top contributing signals, and the pseudonymized subject.
 
-The top contributors are dotted signal IDs of the form `l{n}.{group}.{item}` (lowercase; layer tokens are uppercase L1–L7) — for example `l1.navigator.webdriver`, `l2.webgl.renderer`, `l4.mouse.click_no_trajectory`. The L6 consistency cross-checks use a separate `x.` namespace (`x.ua_vs_ja4`, `x.ua_vs_h2`, `x.browser_no_js`). Read these against the [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) to understand what tipped the score and which hard rule, if any, overrode it.
+The top contributors are dotted signal IDs of the form `l{n}.{group}.{item}` (lowercase; layer tokens are uppercase L1–L7) — for example `l1.navigator.webdriver`, `l2.webgl.param_consistency`, `l4.mouse.click_no_trajectory`. The L6 consistency cross-checks use a separate `x.` namespace (`x.ua_vs_ja4`, `x.ua_vs_h2`, `x.browser_no_js`). Read these against the [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) to understand what tipped the score and which hard rule, if any, overrode it.
 
 The subject is **pseudonymous, not anonymous** — identifiers such as IP, JA4, and device fingerprint are stored only as per-subject-key-derived pseudonyms, never raw. You are reading a stable pseudonym, not a person's raw address.
 

@@ -7,7 +7,7 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Glossary
 
-Plain definitions of the terms a newcomer meets across the humanymous documentation. For how these fit together on a single request, see [How Gate sees a request](../concepts/how-gate-sees-a-request.html); for the exact rule and signal tables, see [Hard rules & verdicts](hard-rules-verdicts.html).
+Plain definitions of the terms a newcomer meets across the humanymous documentation. For how these fit together on a single request, see [How Gate sees a request](../concepts/how-gate-sees-a-request.md); for the exact rule and signal tables, see [Hard rules & verdicts](hard-rules-verdicts.md).
 
 humanymous Gate is a reference implementation, not a production-hardened build. Definitions below describe the reference behaviour.
 
@@ -38,7 +38,7 @@ humanymous Gate is a reference implementation, not a production-hardened build. 
 ## Hard rules and fingerprints
 
 <a id="hard-rule--hr-nn"></a>
-**Hard rule (HR-NN).** A high-confidence pattern that can promote or override the score-based verdict — written with a hyphen and no space, for example HR-14. Engine-plane rules (HR-1 through HR-21) are evaluated inside the score pipeline and are the ones the [Detection Observatory](#detection-observatory) shows; Gate-plane rules (HR-22 through HR-30) are evaluated at the proxy edge only. Some hard rules are high-confidence (a spike reads as automated traffic); others are heuristic and can catch some real users, so a spike there warrants investigation. See [Hard rules & verdicts](hard-rules-verdicts.html) for the full table.
+**Hard rule (HR-NN).** A high-confidence pattern that can promote or override the score-based verdict — written with a hyphen and no space, for example HR-14. Engine-plane rules (HR-1 through HR-21) are evaluated inside the score pipeline and are the ones the [Detection Observatory](#detection-observatory) shows; Gate-plane rules (HR-22 through HR-30) are evaluated at the proxy edge only. Some hard rules are high-confidence (a spike reads as automated traffic); others are heuristic and can catch some real users, so a spike there warrants investigation. See [Hard rules & verdicts](hard-rules-verdicts.md) for the full table.
 
 <a id="ja3--ja4-tls-fingerprint"></a>
 **JA3 / JA4 (TLS fingerprint).** Derived identifiers computed from the fields in a client's TLS ClientHello — cipher suites, extensions, and their order — which tend to reflect the underlying network stack rather than the claimed browser. When these resolve to a different engine than the user agent claims, that disagreement is a cross-check signal. Capturing them requires that Gate or the Core terminate raw TLS directly; a re-terminating CDN in front removes them.
@@ -51,7 +51,7 @@ humanymous Gate is a reference implementation, not a production-hardened build. 
 
 ## The pieces
 
-**Gate.** The reverse-proxy enforcement layer that fronts your [origin](#origin--upstream). It terminates TLS, streams the detection bundle into served HTML, scores each request across L1–L7, enforces the verdict at the edge before the origin is contacted, and writes every decision to a tamper-evident audit log. First mention on a page is "humanymous Gate", then "Gate". See [Which piece am I using?](../explanation/which-piece-am-i-using.html).
+**Gate.** The reverse-proxy enforcement layer that fronts your [origin](#origin--upstream). It terminates TLS, streams the detection bundle into served HTML, scores each request across L1–L7, enforces the verdict at the edge before the origin is contacted, and writes every decision to a tamper-evident audit log. First mention on a page is "humanymous Gate", then "Gate". See [Which piece am I using?](../explanation/which-piece-am-i-using.md).
 
 **Core.** The standalone detection engine (`cmd/server`) that embeds the same L1–L7 scoring as Gate and returns a verdict without edge enforcement or an admin plane. It is the reference and testing surface, and — because it can terminate TLS on its own accept loop — it captures JA3/JA4 and the HTTP/2 fingerprint directly. Gate and the Core share one scoring brain, so a request scores the same way in both.
 
@@ -67,10 +67,10 @@ humanymous Gate is a reference implementation, not a production-hardened build. 
 <a id="proof-of-work--pow-challenge"></a>
 **Proof-of-work (PoW) challenge.** CPU work a challenged session performs, served as an accessible interstitial from the control plane; it is not a CAPTCHA. Solving it (signal `l7.pow.solved`) can upgrade a score-based CHALLENGE to ALLOW, because it demonstrates cost. It never overrides a hard rule — it proves CPU effort, not that a person is present.
 
-**humanymous Pass.** An interactive, LLM-resistant challenge presented on a CHALLENGE verdict, designed so that solving it is hard to automate. On an [attested route](#attestation-floor--attested-route), a successful solve mints a short-lived step-up receipt that the Gate exchanges for the `hmn_su` proof. The same Pass is solved by an unattested human and an anonymous visitor alike, so there is no categorical human block. See [Why am I seeing this?](../help/why-am-i-seeing-this.html).
+**humanymous Pass.** An interactive, LLM-resistant challenge presented on a CHALLENGE verdict, designed so that solving it is hard to automate. On an [attested route](#attestation-floor--attested-route), a successful solve mints a short-lived step-up receipt that the Gate exchanges for the `hmn_su` proof. The same Pass is solved by an unattested human and an anonymous visitor alike, so there is no categorical human block. See [Why am I seeing this?](../help/why-am-i-seeing-this.md).
 
 <a id="attestation-floor--attested-route"></a>
-**Attestation floor / attested route.** A route an operator marks with the `attested` preset (`strict` plus the floor), typically a high-value mutating path such as checkout or a password change. On such a route an ALLOW is priced rather than fast-pathed: absent possession — an existing WebAuthn, Privacy Pass, or Web Bot Auth trust-upgrade — or an `hmn_su` step-up proof from a Pass solve, the ALLOW is demoted to CHALLENGE→Pass, never to DENY. The floor prices high-value passes into a per-session human solve; it does not detect or resolve a coherent spoof. See [Configure attested routes](../how-to/configure-attested-routes.html).
+**Attestation floor / attested route.** A route an operator marks with the `attested` preset (`strict` plus the floor), typically a high-value mutating path such as checkout or a password change. On such a route an ALLOW is priced rather than fast-pathed: absent possession — an existing WebAuthn, Privacy Pass, or Web Bot Auth trust-upgrade — or an `hmn_su` step-up proof from a Pass solve, the ALLOW is demoted to CHALLENGE→Pass, never to DENY. The floor prices high-value passes into a per-session human solve; it does not detect or resolve a coherent spoof. See [Configure attested routes](../how-to/configure-attested-routes.md).
 
 <a id="verdict-trust-token"></a>
 **Verdict trust token.** A fingerprint-bound token (`hmn_vt`) that records a prior verdict so a valid ALLOW can take a fast path without re-scoring. It is bound to the client fingerprint: a token replayed from a different fingerprint, or forged, is rejected rather than honoured. It is session-scoped and short-lived, and carries no new identifier.
@@ -89,6 +89,6 @@ humanymous Gate is a reference implementation, not a production-hardened build. 
 
 ## Related
 
-- [How Gate sees a request](../concepts/how-gate-sees-a-request.html) — the request lifecycle and the shared vocabulary in context.
-- [Hard rules & verdicts](hard-rules-verdicts.html) — the full hard-rule and signal-ID lookup tables.
-- [Which piece am I using?](../explanation/which-piece-am-i-using.html) — Gate, the Core, and the Observatory compared.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the request lifecycle and the shared vocabulary in context.
+- [Hard rules & verdicts](hard-rules-verdicts.md) — the full hard-rule and signal-ID lookup tables.
+- [Which piece am I using?](../explanation/which-piece-am-i-using.md) — Gate, the Core, and the Observatory compared.

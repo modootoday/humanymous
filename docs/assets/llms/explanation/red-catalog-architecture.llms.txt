@@ -91,9 +91,9 @@ The division of labour is clean:
 - **Browser simulations → L1–L4.** Client-side artifacts, integrity/guard checks, and event/interaction signals.
 - **`cmd/redteam` (Go, uTLS) → L5 + RIT.** TLS/HTTP-2 engine consistency, traffic-rotation, correlation, abuse velocity, and the RIT token lifecycle.
 
-`cmd/redteam` exposes **7 real `-attack` values**: `flood`, `distributed`, `tls-static`, `tls-rotate`, `ua-rotate`, `rit-replay`, `rit-tamper` (default `-host 127.0.0.1:8443`).
+`cmd/redteam` exposes **18 `-attack` values**: `tls-static`, `tls-rotate`, `ua-rotate`, `rit-replay`, `rit-tamper`, `rit-absent`, `flood`, `distributed`, `privacy-evasion`, `signal-forgery`, `nonbrowser-ua`, `sec-chua-absent`, `sec-fetch-absent`, `ja4-churn`, `multi-axis-rotate`, `grease-absent-js`, `coherent-ceiling`, `xff-spoof` (default `-host 127.0.0.1:8443`).
 
-> **Warning.** The `-host` default is **advisory, not enforced** — the CLI connects to whatever `host:port` you pass it. Keeping it on loopback is the operator's responsibility. (This is deliberately unlike the Detection Observatory launcher, which is structurally locked to `127.0.0.1:8443`.) The `-attack` values are the seven listed here.
+> **Warning.** The `-host` default is **advisory, not enforced** — the CLI connects to whatever `host:port` you pass it. Keeping it on loopback is the operator's responsibility. (This is deliberately unlike the Detection Observatory launcher, which is structurally locked to `127.0.0.1:8443`.)
 
 > **Note:** `cmd/redteam/main.go` declares exactly two flags — `-attack` and `-host`. There are no run-count or session flags; each invocation runs one attack and prints the resulting verdict JSON to stdout. Invocation is `redteam -attack <name> -host <host:port>`.
 
@@ -123,7 +123,7 @@ What this proves about your detector: the token is bound to the request body and
 Two L5 attacks are built by controlling headers and velocity rather than fingerprints:
 
 - **`distributed`** holds **one fixed fingerprint** while rotating the `X-Forwarded-For` subnet across requests → `l5.correlation.proxy_rotation`, reaching **HR-19** (one fingerprint across many subnets — residential-proxy-style rotation).
-- **`flood`** drives velocity that is **metered by JA4 + subnet, not by raw IP** → `l5.abuse.flood`, reaching **HR-21** (destructive-abuse flood).
+- **`flood`** drives velocity that is **metered by JA4 + subnet, not by raw IP** → `l5.abuse.flood`, which produces a **score-based CHALLENGE** plus the fingerprint-keyed rate-limit ban ladder. (A lone flood is deliberately *not* a scoring DENY — HR-21 excludes `l5.abuse.flood` to avoid CGNAT lockouts and is reserved for HTTP-2 DoS; the ban ladder is enforced at the Gate.)
 
 The `distributed` and `flood` cases prove your rate/correlation logic keys on the *client identity* (fingerprint, JA4+subnet) rather than the trivially-rotated IP.
 

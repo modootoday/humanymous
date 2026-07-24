@@ -226,7 +226,7 @@ bin/gate.exe -addr :8444 -admin-addr :8445 -upstream <origin-url>
 Expected startup line:
 
 ```
-humanymous Gate on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false)
+humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false, tls=self-signed)
 ```
 
 ### 8.2 The admonition ladder
