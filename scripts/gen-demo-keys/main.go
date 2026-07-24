@@ -45,7 +45,17 @@ func main() {
 
 func writePEM(path, typ string, der []byte) {
 	must(os.MkdirAll(filepath.Dir(path), 0o755))
-	must(os.WriteFile(path, pem.EncodeToMemory(&pem.Block{Type: typ, Bytes: der}), 0o600))
+	// A PUBLIC key is bind-mounted read-only into the distroless, NON-ROOT gate
+	// container (e.g. patissuers/issuer.pem for -pat-issuers), so it must be
+	// world-readable or the container user gets "permission denied" and the gate
+	// fails to start. Private keys are host-only (the assert-side signer) and stay
+	// owner-only. (Local Docker Desktop ignores these Unix perms; a Linux CI runner
+	// enforces them — this is what surfaced the overlay failure.)
+	mode := os.FileMode(0o600)
+	if typ == "PUBLIC KEY" {
+		mode = 0o644
+	}
+	must(os.WriteFile(path, pem.EncodeToMemory(&pem.Block{Type: typ, Bytes: der}), mode))
 }
 
 func writeFile(path, content string) {
