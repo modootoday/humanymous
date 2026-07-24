@@ -23,47 +23,68 @@ const redteam = join(__dir, '..', 'redteam');
 // that need a binary we don't have are simulated via their documented tells; camoufox needs
 // Playwright Firefox and skips if absent.
 const PROFILES = [
-  'human.mjs',                 // baseline (expect ALLOW/not-denied, FPR=0)
-  // --- T0 · trivial ($0, a script, no browser) — HTTP/uTLS clients & raw-protocol abuse ---
-  'http_client.mjs',           // non-browser scraper (L5/L6)
-  'tls_parrot.mjs',            // uTLS Chrome ClientHello parrot (header/JS residual)
-  'tls_static.mjs',            // static parrot (no TLS permutation)
-  'tls_rotate.mjs',            // mid-session TLS fingerprint rotation -> HR-14
-  'ua_rotate.mjs',             // mid-session User-Agent rotation
-  'signal_forgery.mjs',        // forged l7.pass.solved/l7.pow.solved -> stripped, no ALLOW (round-3 provenance)
-  'xff_spoof.mjs',             // forged private X-Forwarded-For -> l5.header.forwarded_private
-  'rit_replay.mjs',            // RIT token replay -> HR-17
-  'rit_tamper.mjs',            // RIT body tamper -> HR-16
-  'flood.mjs',                 // application-layer request flood -> score CHALLENGE + ban ladder
-  'rapid_reset.mjs',           // HTTP/2 Rapid Reset DoS (CVE-2023-44487) -> HR-21 (SoT-17)
-  // --- T1 · low ($, off-the-shelf tools on defaults) — naive automation frameworks ---
-  'selenium.mjs',              // cdc_ artifacts (HR-1)
-  'puppeteer.mjs',             // headless + webdriver (HR-7)
-  'playwright_plain.mjs',      // headless + webdriver (HR-7)
-  'undetected.mjs',            // headless, webdriver stripped (HR-7)
-  'direct_cdp.mjs',            // raw CDP driver
-  'video_scrape.mjs',          // media Range-storm on heavy resource
-  'watermark_strip.mjs',       // resource leak + metadata strip (forensic trace)
-  // --- T2 · moderate ($$, stealth plugins / patched natives) ---
-  'puppeteer_stealth.mjs',     // stealth evasions (patched natives L3) (HR-8)
-  'playwright_stealth.mjs',    // patched natives (L3) (HR-8)
-  'patchright.mjs',            // console disabled (Patchright) (HR-9)
-  // --- T3 · high ($$$, real browser engine + proxy/AI infra) — degrades gracefully ---
-  'nodriver.mjs',              // headful frontier (behavior) (HR-12)
-  'xvfb_headful.mjs',          // headful, no display tells (behavior)
-  'antidetect.mjs',            // anti-detect browser (coherent spoof + behavior)
-  'camoufox.mjs',              // Firefox fork (Playwright Firefox stand-in)
-  'ai_agent.mjs',              // LLM browser-agent cadence -> HR-20
-  'distributed.mjs',           // rotating residential-proxy pool -> HR-19
-  'privacy_evasion.mjs',       // proxy-rotation + forged adBlock/GPC -> still HR-19 DENY (round-5 regression)
+  'human.mjs',                     // baseline (expect ALLOW/not-denied, FPR=0)
+  // --- T0 · trivial ($0, a script, no browser) — HTTP/uTLS clients, header/token tricks ---
+  'nonbrowser_ua.mjs',             // bare HTTP library (library UA) -> x.non_browser_ua + HR-10
+  'http_client.mjs',               // non-browser scraper (L5/L6)
+  'tls_parrot.mjs',                // uTLS Chrome ClientHello parrot (header/JS residual)
+  'tls_static.mjs',                // static parrot (no TLS permutation)
+  'sec_chua_absent.mjs',           // Chrome UA without Sec-CH-UA -> x.uach_present
+  'sec_fetch_absent.mjs',          // Chrome UA without Sec-Fetch-* -> sec_fetch_missing
+  'rit_absent.mjs',                // API call with no RIT token -> HR-17
+  'rit_replay.mjs',                // RIT token replay -> HR-17
+  'rit_tamper.mjs',                // RIT body tamper -> HR-16
+  'ua_rotate.mjs',                 // mid-session User-Agent rotation
+  'xff_spoof.mjs',                 // forged private X-Forwarded-For -> l5.header.forwarded_private
+  'behavior_no_interaction.mjs',   // zero interaction over the window -> HR-12
+  'behavior_untrusted.mjs',        // isTrusted=false injected events -> l4.event.untrusted
+  // --- T1 · low ($, off-the-shelf tools) — naive frameworks, TLS churn, resource/DoS ---
+  'selenium.mjs',                  // cdc_ artifacts (HR-1)
+  'puppeteer.mjs',                 // headless + webdriver (HR-7)
+  'playwright_plain.mjs',          // headless + webdriver (HR-7)
+  'undetected.mjs',                // headless, webdriver stripped (HR-7)
+  'direct_cdp.mjs',                // raw CDP driver
+  'tls_rotate.mjs',                // mid-session engine rotation -> HR-14
+  'ja4_churn.mjs',                 // 3+ distinct JA4 in one session -> HR-14
+  'grease_absent_js.mjs',          // no-GREASE Go TLS + JS -> grease_absent + x.ua_vs_ja4
+  'video_scrape.mjs',              // media Range-storm on heavy resource
+  'watermark_strip.mjs',           // resource leak + metadata strip (forensic trace)
+  'flood.mjs',                     // application-layer request flood -> score CHALLENGE + ban ladder
+  'rapid_reset.mjs',               // HTTP/2 Rapid Reset DoS (CVE-2023-44487) -> HR-21 (SoT-17)
+  // --- T2 · moderate ($$, stealth / rotation / fingerprint-spoof / humanizers) ---
+  'puppeteer_stealth.mjs',         // stealth-patched natives (L3) (HR-8)
+  'playwright_stealth.mjs',        // patched natives (L3) (HR-8)
+  'patchright.mjs',                // console disabled (Patchright) (HR-9)
+  'multi_axis_rotate.mjs',         // UA + TLS rotate together -> HR-14/HR-15
+  'adv_webgpu_mismatch.mjs',       // WebGL vs WebGPU vendor contradiction -> l2.adv.webgpu_mismatch
+  'headless_ua_token.mjs',         // HeadlessChrome UA token + a second tell
+  'signal_forgery.mjs',            // forged l7.pass.solved/l7.pow.solved -> stripped, no ALLOW (round-3)
+  'behavior_machine_keystroke.mjs',// sub-25ms machine typing -> l4.key.machine_speed
+  'behavior_teleport_click.mjs',   // clicks with no approach trajectory -> l4.mouse.click_no_trajectory
+  'behavior_bezier_mouse.mjs',     // pathologically smooth ghost-cursor path -> l4.mouse.*
+  'behavior_fixed_typing.mjs',     // fixed-interval typing (near-zero variance) -> l4.key.*
+  'ai_burst_silence.mjs',          // LLM inference-loop cadence -> l4.agent.burst_silence
+  // --- T3 · high ($$$, real engine + AI + proxy infra) — degrades gracefully ---
+  'nodriver.mjs',                  // headful frontier (behavior) (HR-12)
+  'xvfb_headful.mjs',              // headful, no display tells (behavior)
+  'antidetect.mjs',                // anti-detect browser (coherent spoof + behavior)
+  'camoufox.mjs',                  // Firefox fork (Playwright Firefox stand-in)
+  'ai_agent.mjs',                  // LLM browser-agent cadence -> HR-20
+  'ai_full_cadence.mjs',           // teleport + burst-silence + machine keystroke -> HR-20
+  'distributed.mjs',               // rotating residential-proxy pool -> HR-19
+  'privacy_evasion.mjs',           // proxy-rotation + forged adBlock/GPC -> still HR-19 (round-5)
+  // --- T4 · very high — the detection ceiling (ALLOW is the honest expected result) ---
+  'native_coherent_ceiling.mjs',   // fully-coherent Chrome-TLS engine spoof -> ALLOW (ceiling)
 ];
 assertCoverage(PROFILES); // fail loudly if the catalog and the tier ladder (tiers.mjs) drift
 
 function classify(label, verdict) {
-  const isBot = label.startsWith('bot:');
   const denied = verdict === 'DENY' || verdict === 'CHALLENGE';
-  if (isBot) return denied ? 'TP' : 'FN';      // bot caught?
-  return verdict === 'DENY' ? 'FP' : 'TN';     // human wrongly denied?
+  // A 'ceiling:' profile is the honest DETECTION CEILING (a coherent engine-level spoof): ALLOW
+  // is the EXPECTED result, not a miss. If Blue happens to catch it, that is a bonus, not a fail.
+  if (label.startsWith('ceiling:')) return denied ? 'CEIL-CAUGHT' : 'CEILING';
+  if (label.startsWith('bot:')) return denied ? 'TP' : 'FN'; // must-block bot caught?
+  return verdict === 'DENY' ? 'FP' : 'TN';                   // baseline human wrongly denied?
 }
 
 async function main() {
@@ -122,27 +143,27 @@ function tieredReport(results) {
     const denied = base.verdict === 'DENY';
     console.log(`  baseline (${base.label}) : ${base.verdict}  -> ${denied ? 'FALSE-POSITIVE (a human was denied!)' : 'ok (not denied)'}`);
   }
-  let prevBlocked = true;
   for (const t of TIERS) {
     const recs = t.profiles.map((p) => byProfile[p]).filter(Boolean);
-    const ran = recs.length;
-    const blocked = recs.filter((r) => r.verdict === 'DENY' || r.verdict === 'CHALLENGE').length;
-    const allowed = recs.filter((r) => r.verdict === 'ALLOW');
-    const skipped = t.profiles.length - ran;
-    const rate = ran ? Math.round((blocked / ran) * 100) : (t.id === 'T4' ? 100 : 0);
-    const bar = t.id === 'T4'
-      ? 'n/a — ceiling (no detection profile; rate/reputation only)'
-      : `${blocked}/${ran} blocked${skipped ? ` (+${skipped} skipped)` : ''} = ${rate}%`;
+    const skipped = t.profiles.length - recs.length;
+    // Must-block bots vs honest-ceiling profiles are scored differently.
+    const bots = recs.filter((r) => (r.label || '').startsWith('bot:'));
+    const ceilings = recs.filter((r) => (r.label || '').startsWith('ceiling:'));
+    const blocked = bots.filter((r) => r.verdict === 'DENY' || r.verdict === 'CHALLENGE').length;
+    const leaked = bots.filter((r) => r.verdict === 'ALLOW'); // a must-block bot that reached ALLOW = regression
+    const rate = bots.length ? Math.round((blocked / bots.length) * 100) : 100;
     console.log(`\n  [${t.id}] ${t.cost}`);
     console.log(`       ${t.desc}`);
     console.log(`       expect: ${t.expect}`);
-    console.log(`       result: ${bar}`);
-    if (allowed.length) {
-      console.log(`       !! reached ALLOW: ${allowed.map((r) => r.label).join(', ')}`);
+    if (bots.length) {
+      console.log(`       must-block: ${blocked}/${bots.length} blocked${skipped ? ` (+${skipped} skipped)` : ''} = ${rate}%`);
     }
-    if (ran && blocked < ran) prevBlocked = false;
-    if (prevBlocked && ran && blocked === ran && t.id !== 'T4') {
-      // still fully caught at this cost tier
+    for (const c of ceilings) {
+      const honest = c.verdict === 'ALLOW';
+      console.log(`       ceiling: ${c.label} -> ${c.verdict}  (${honest ? 'ALLOW = the honest ceiling, as expected' : 'caught — a bonus over the ceiling'})`);
+    }
+    if (leaked.length) {
+      console.log(`       !! REGRESSION — must-block bot reached ALLOW: ${leaked.map((r) => r.label).join(', ')}`);
     }
   }
   console.log('\n  Reading it: Blue should hold 100% through T2 and score/challenge (not necessarily');

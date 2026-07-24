@@ -25,6 +25,7 @@ import (
 	"bufio"
 	"crypto/hmac"
 	"crypto/sha256"
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -42,7 +43,7 @@ import (
 )
 
 var (
-	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|xff-spoof")
+	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|nonbrowser-ua|sec-chua-absent|sec-fetch-absent|rit-absent|ja4-churn|multi-axis-rotate|grease-absent-js|xff-spoof")
 	host   = flag.String("host", "127.0.0.1:8443", "target host:port")
 )
 
@@ -59,6 +60,22 @@ func main() {
 		v, err = privacyEvasion()
 	case "signal-forgery":
 		v, err = signalForgery()
+	case "nonbrowser-ua":
+		v, err = nonBrowserUA()
+	case "sec-chua-absent":
+		v, err = secCHUAAbsent()
+	case "sec-fetch-absent":
+		v, err = secFetchAbsent()
+	case "rit-absent":
+		v, err = ritAbsent()
+	case "ja4-churn":
+		v, err = ja4Churn()
+	case "multi-axis-rotate":
+		v, err = multiAxisRotate()
+	case "grease-absent-js":
+		v, err = greaseAbsentJS()
+	case "coherent-ceiling":
+		v, err = coherentBrowser()
 	case "xff-spoof":
 		v, err = xffSpoof()
 	case "tls-static":
@@ -112,7 +129,28 @@ func do(helloID utls.ClientHelloID, method, path string, hdr map[string]string, 
 	if err := uconn.Handshake(); err != nil {
 		return nil, err
 	}
+	return httpRoundTrip(uconn, method, path, hdr, body, cookie)
+}
 
+// doStock sends one HTTP/1.1 request over Go's STOCK crypto/tls (no uTLS, no GREASE), so the
+// server observes a Go TLS fingerprint (JA4 engine = go). Used by the library-client and
+// grease-absent scenarios where the whole point is a genuine non-browser TLS stack.
+func doStock(method, path string, hdr map[string]string, body, cookie string) (*resp, error) {
+	raw, err := net.Dial("tcp", *host)
+	if err != nil {
+		return nil, err
+	}
+	defer raw.Close()
+	conn := tls.Client(raw, &tls.Config{ServerName: hostname(*host), InsecureSkipVerify: true, NextProtos: []string{"http/1.1"}})
+	if err := conn.Handshake(); err != nil {
+		return nil, err
+	}
+	return httpRoundTrip(conn, method, path, hdr, body, cookie)
+}
+
+// httpRoundTrip writes one HTTP/1.1 request over an already-handshaked conn and parses the
+// response. Shared by the uTLS (do) and stock-TLS (doStock) paths.
+func httpRoundTrip(conn io.ReadWriter, method, path string, hdr map[string]string, body, cookie string) (*resp, error) {
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s %s HTTP/1.1\r\n", method, path)
 	fmt.Fprintf(&b, "Host: %s\r\n", hostname(*host))
@@ -127,11 +165,10 @@ func do(helloID utls.ClientHelloID, method, path string, hdr map[string]string, 
 	}
 	b.WriteString("Connection: close\r\n\r\n")
 	b.WriteString(body)
-	if _, err := io.WriteString(uconn, b.String()); err != nil {
+	if _, err := io.WriteString(conn, b.String()); err != nil {
 		return nil, err
 	}
-
-	r, err := http.ReadResponse(bufio.NewReader(uconn), nil)
+	r, err := http.ReadResponse(bufio.NewReader(conn), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -145,6 +182,30 @@ func do(helloID utls.ClientHelloID, method, path string, hdr map[string]string, 
 		res.cookie = strings.SplitN(sc, ";", 2)[0]
 	}
 	return res, nil
+}
+
+// sessionStock / collectStock mirror session/collect but over Go's stock crypto/tls, so the
+// session's pinned network observation carries a Go (no-GREASE) TLS fingerprint.
+func sessionStock() (cookie string, err error) {
+	r, err := doStock("GET", "/api/session", withBrowserHeaders(map[string]string{"User-Agent": chromeUA}), "", "")
+	if err != nil {
+		return "", err
+	}
+	return r.cookie, nil
+}
+
+func collectStock(ua, cookie string, hdr map[string]string, body string) (map[string]any, error) {
+	h := map[string]string{"User-Agent": ua, "Content-Type": "application/json"}
+	for k, v := range hdr {
+		h[k] = v
+	}
+	r, err := doStock("POST", "/api/collect", h, body, cookie)
+	if err != nil {
+		return nil, err
+	}
+	var v map[string]any
+	_ = json.Unmarshal(r.body, &v)
+	return v, nil
 }
 
 // session establishes a session (GET /api/session) with a given hello, returning

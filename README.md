@@ -139,7 +139,7 @@ Then open (accept the self-signed certificate):
 - **Ledger** — <https://localhost:8445/__hmn/admin/console> — dev token `operator:e2e-operator-token`.
 
 ```bash
-# 2. Run the bots (automation catalog, 28 profiles) against the engine
+# 2. Run the bots (automation catalog, 47 profiles across a T0–T4 cost ladder) against the engine
 docker compose run --rm bots
 
 # 3. Gate proxy-layer conformance (34 checks)
@@ -153,7 +153,7 @@ docker compose down -v
 ```
 
 Expected result (a single reference run on the maintainers' hardware, n=1 per
-profile): all **27 bot profiles blocked** (DENY/CHALLENGE) and the **1 baseline
+profile): all **45 bot profiles blocked** (DENY/CHALLENGE) and the **1 baseline
 session not denied**; Gate conformance **34/34**. These are reference-measured
 observations, **not a guarantee** — the baseline is a Playwright/CDP-driven session,
 not a physical human (see *Verification results* below). The bots containers attach to an `internal` network only, so
@@ -204,7 +204,7 @@ installed Edge, Firefox-family use Playwright Firefox, and tls-parrot runs a rea
 uTLS (Go) client:
 
 > **How to read these numbers.** This is a **single run (n=1 per profile) on the
-> maintainers' hardware** against a 28-profile local catalog (**27 bot profiles + 1
+> maintainers' hardware** against a 47-profile local catalog (**45 bot profiles + 1 detection-ceiling + 1
 > baseline**). The "baseline" is a **Playwright/CDP-driven session, not a physical
 > human**, so a real-human false-positive rate is *not* measured here. "FPR" below is a
 > **DENY-only** metric — it cannot count a human who was sent to a CHALLENGE, so it
@@ -224,7 +224,7 @@ uTLS (Go) client:
 | bot:nodriver / xvfb-headful / anti-detect | CHALLENGE | no interaction (HR-12) |
 | bot:camoufox (Playwright Firefox) | CHALLENGE | no interaction (HR-12) |
 
-→ In this reference run all 27 bot profiles were blocked (DENY/CHALLENGE) and the
+→ In this reference run all 45 bot profiles were blocked (DENY/CHALLENGE) and the
 baseline was not denied. **Reference-measured on the maintainers' hardware, n=1 — not
 a guarantee**; the baseline is a Playwright/CDP session, and the DENY-only "FPR"
 under-reports human friction. A full per-profile report is generated locally at
@@ -322,8 +322,28 @@ the run:
 | `bot:signal-forgery` | a borderline (score-CHALLENGE) client FORGES the server-only trust-upgrades `l7.pass.solved`/`l7.pow.solved` in its own report to launder itself to ALLOW | **CHALLENGE** | client-supplied L5/L6/L7 signals are stripped at ingest; a trust-upgrade is honored ONLY from a server-minted signal, so the forgery is inert |
 | `bot:privacy-evasion` | a residential-proxy-rotation scraper ALSO claims `adBlock`/GPC to try to disarm the correlation hard rule | **DENY** | a client-reported privacy flag does NOT exempt the server-authoritative `l5.correlation.proxy_rotation` rule → **HR-19** |
 
-→ **Result** (reference run, n=1): all **27 bot profiles blocked** (DENY/CHALLENGE), the
+→ **Result** (reference run, n=1): all **45 bot profiles blocked** (DENY/CHALLENGE), the
 baseline not denied, Gate conformance **34/34** — reference-measured, not a guarantee.
+
+### Round 6 — web-research-designed cost-escalation ladder (T0→T4)
+
+A 10-surface web-research survey of 2025–2026 anti-bot evasion (TLS/JA4 mimicry, HTTP/2 &
+smuggling, stealth frameworks, anti-detect browsers, fingerprint spoofing, behavioral evasion,
+AI agents, proxy/token/credential abuse) produced a **70-scenario taxonomy**; its implementable
+gradations were realized as code, growing the catalog to **45 bot profiles + a detection-ceiling
++ a human baseline**, organized as a staged **attacker-cost ladder** (`test/e2e/tiers.mjs`,
+parity-enforced). The wargame now runs and reports cheap→expensive:
+
+| Tier | Cost | Example scenarios | Blue |
+|------|------|-------------------|------|
+| **T0** | trivial · $0 script | non-browser UA, `sec-ch-ua`/`sec-fetch` absent, RIT-absent, untrusted events, no-interaction | **100% blocked** |
+| **T1** | low · off-the-shelf | Selenium/Puppeteer/Playwright, TLS/engine churn, `ja4-churn`, grease-absent, flood, Rapid Reset | **100% blocked** |
+| **T2** | moderate · stealth | puppeteer/playwright-stealth, patchright, multi-axis rotation, WebGPU-vs-WebGL mismatch, machine-keystroke, Bézier-mouse, LLM burst-silence | **100% blocked** |
+| **T3** | high · real engine + AI/proxy | nodriver/xvfb/anti-detect/camoufox, full AI-agent cadence (HR-20), residential-proxy correlation (HR-19) | **100% blocked** |
+| **T4** | very high · coherent spoof / real human | a fully coherent Chrome-TLS engine-level spoof | **ALLOW — the honest detection ceiling** (mitigated by rate/reputation only) |
+
+The ladder is the honest map of where detection holds and where it stops: reliable through T2,
+degrading-but-scoring at T3, and — by construction — not solved at T4.
 
 ## Production promotion — reverse-proxy security layer (SoT-18–28)
 
@@ -380,7 +400,7 @@ node test/gate/e2e.mjs
 
 L1–L7 detection + all anti-bypass layers (SoT-07–17) + **production reverse-proxy
 promotion (SoT-18–28)** implemented and verified. All tests green; in the reference
-run (n=1) all **27 bot profiles were blocked and the baseline was not denied**
+run (n=1) all **45 bot profiles were blocked and the baseline was not denied**
 (reference-measured, not a guarantee); Gate conformance **34/34** (incl. token
 theft/forgery/replay, smuggling, upgrade-tunnel, and sweep defenses). The headline
 audit log (tamper-evident hash chain + Ed25519 STH + crypto-shred) is live, with the

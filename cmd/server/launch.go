@@ -76,6 +76,14 @@ var launchProfiles = map[string]bool{
 	"ai_agent.mjs": true, "distributed.mjs": true, "xff_spoof.mjs": true, "flood.mjs": true, "rapid_reset.mjs": true,
 	// deployment-review-hardened evasions (rounds 3 & 5) — permanent regression wargame cases.
 	"signal_forgery.mjs": true, "privacy_evasion.mjs": true,
+	// web-research-designed cost-ladder expansion (T0-T4 gradations) — go-utls-http scenarios:
+	"nonbrowser_ua.mjs": true, "sec_chua_absent.mjs": true, "sec_fetch_absent.mjs": true,
+	"rit_absent.mjs": true, "ja4_churn.mjs": true, "multi_axis_rotate.mjs": true, "grease_absent_js.mjs": true,
+	// simulated-tells fingerprint/behavior/AI scenarios + the T4 coherent-spoof ceiling:
+	"behavior_untrusted.mjs": true, "behavior_no_interaction.mjs": true, "behavior_machine_keystroke.mjs": true,
+	"behavior_teleport_click.mjs": true, "behavior_bezier_mouse.mjs": true, "behavior_fixed_typing.mjs": true,
+	"ai_burst_silence.mjs": true, "ai_full_cadence.mjs": true, "adv_webgpu_mismatch.mjs": true,
+	"headless_ua_token.mjs": true, "native_coherent_ceiling.mjs": true,
 }
 
 // realRunProfile shells the thin per-profile wrapper against the local Blue. The

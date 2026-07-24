@@ -27,6 +27,144 @@ func signedCollect(hello utls.ClientHelloID, ua, cookie, sid string, seed []byte
 	return collectSeed(hello, ua, cookie, hdr, body)
 }
 
+// jsEvidenceBody carries JS-execution + human-shaped behavior so HR-10 (no client) and
+// HR-18 (browser-no-js) stay quiet — letting a scenario ISOLATE its specific header / TLS /
+// token tell instead of collapsing into the no-JS parrot rule.
+const jsEvidenceBody = `{"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0 Safari/537.36",` +
+	`"engineVersion":"wasm-1.0.0","advanced":{"probed":true},"environment":{"probed":true},` +
+	`"behavior":{"durationS":3,"mouse":{"samples":30,"velocityStdDev":0.5,"straightLineFrac":0.2,"meanJerk":0.4},` +
+	`"key":{"keystrokes":10,"meanFlightMs":120,"flightStdDevMs":35,"dwellStdDevMs":28},` +
+	`"events":{"totalEvents":40,"untrustedFrac":0}},"signals":[]}`
+
+// browserHeadersExcept returns the spoofed Chrome header set minus the given keys, so a
+// scenario can drop exactly ONE header family (Sec-CH-UA, Sec-Fetch-*) and isolate the
+// cross-check that catches its absence.
+func browserHeadersExcept(drop ...string) map[string]string {
+	h := browserHeaders()
+	for _, k := range drop {
+		delete(h, k)
+	}
+	return h
+}
+
+// coherentBrowser is the T4 DETECTION CEILING: a fully COHERENT session — real Chrome TLS
+// (JA4=chrome), the full Sec-CH-UA / Sec-Fetch header set, every advanced capability present
+// and self-consistent (WebGL and WebGPU vendors agree, Widevine/voices/media all present), and
+// rich human-shaped behavior (high-variance mouse + human typing, no synthetic events). Every
+// plane reconciles, so it SCORES ALLOW — the honest limit where detection alone cannot separate
+// an engine-level spoof (BotBrowser-class) from a real human. Retained to keep the ceiling honest.
+func coherentBrowser() (map[string]any, error) {
+	cookie, _, _, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	body := `{"userAgent":"` + chromeUA + `","engineVersion":"wasm-1.0.0",` +
+		`"advanced":{"probed":true,"mediaDeviceCount":3,"hasAudioInput":true,"hasVideoInput":true,"voiceCount":200,` +
+		`"widevineSupported":true,"webgpuPresent":true,"webgpuVendor":"nvidia","webglVendor":"NVIDIA Corporation / NVIDIA GeForce RTX 3080",` +
+		`"audioSampleRate":48000,"connectionPresent":true,"connectionRtt":50,"batteryPresent":true,"batteryLevel":0.8,` +
+		`"timezoneIana":"America/New_York","language":"en-US","colorGamut":"srgb","maxTouchPoints":0},` +
+		`"environment":{"probed":true},` +
+		`"behavior":{"durationS":8,"mouse":{"samples":45,"velocityStdDev":0.6,"straightLineFrac":0.15,"accelEntropy":2.1,"meanJerk":0.4,"meanCurvature":0.3,"coalescedRatio":3.0},` +
+		`"key":{"keystrokes":14,"meanDwellMs":95,"dwellStdDevMs":28,"meanFlightMs":140,"flightStdDevMs":35},` +
+		`"events":{"totalEvents":60,"untrustedFrac":0,"clickCount":1}},"signals":[]}`
+	v, _ := collect(utls.HelloChrome_Auto, chromeUA, cookie, withBrowserHeaders(nil), body)
+	return v, nil
+}
+
+// nonBrowserUA: the cheapest bot — a bare HTTP library (library User-Agent, no browser
+// headers, no JS). The UA is not a browser at all -> x.non_browser_ua (w45) + HR-10.
+func nonBrowserUA() (map[string]any, error) {
+	cookie, err := sessionStock()
+	if err != nil {
+		return nil, err
+	}
+	return collectStock("python-requests/2.31.0", cookie, nil, `{"userAgent":"python-requests/2.31.0","signals":[]}`)
+}
+
+// secCHUAAbsent: a Chromium UA (with JS evidence) that omits the Sec-CH-UA client hint a
+// real Chromium always sends -> x.uach_present cross-check fails (w40) -> CHALLENGE.
+func secCHUAAbsent() (map[string]any, error) {
+	cookie, _, _, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	hdr := browserHeadersExcept("sec-ch-ua", "sec-ch-ua-mobile", "sec-ch-ua-platform")
+	v, _ := collect(utls.HelloChrome_Auto, chromeUA, cookie, hdr, jsEvidenceBody)
+	return v, nil
+}
+
+// secFetchAbsent: a Chrome UA (with JS evidence) that omits the Sec-Fetch-* metadata a real
+// Chrome always sends -> l5.header.sec_fetch_missing + x.ua_vs_header -> CHALLENGE.
+func secFetchAbsent() (map[string]any, error) {
+	cookie, _, _, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	hdr := browserHeadersExcept("sec-fetch-site", "sec-fetch-mode", "sec-fetch-dest")
+	v, _ := collect(utls.HelloChrome_Auto, chromeUA, cookie, hdr, jsEvidenceBody)
+	return v, nil
+}
+
+// ritAbsent: an API client that never presents a RIT anti-tamper token. The first tokenless
+// call gets the one-shot bootstrap grace; the SECOND emits l5.rit.absent -> HR-17.
+func ritAbsent() (map[string]any, error) {
+	cookie, _, _, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	// No X-HM-Token headers on either request (collect() adds none by default).
+	_, _ = collect(utls.HelloChrome_Auto, chromeUA, cookie, withBrowserHeaders(nil), jsEvidenceBody)
+	v, _ := collect(utls.HelloChrome_Auto, chromeUA, cookie, withBrowserHeaders(nil), jsEvidenceBody)
+	return v, nil
+}
+
+// ja4Churn: three or more DISTINCT TLS fingerprints (spanning engine families) inside one
+// cookied session -> l5.traffic.engine_rotation / ja4_rotation -> HR-14. A real browser keeps
+// one TLS stack per session; churning it is a parrot rotating presets.
+func ja4Churn() (map[string]any, error) {
+	cookie, seed, n, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	sid := sidFromCookie(cookie)
+	hellos := []utls.ClientHelloID{utls.HelloChrome_100, utls.HelloFirefox_Auto, utls.HelloChrome_Auto}
+	var v map[string]any
+	for i, h := range hellos {
+		var s []byte
+		v, s, _ = signedCollect(h, chromeUA, cookie, sid, seed, n+uint64(i+1), jsEvidenceBody)
+		if s != nil {
+			seed = s
+		}
+	}
+	return v, nil
+}
+
+// multiAxisRotate: rotate the User-Agent AND the TLS engine together in one session
+// -> HR-15 (ua_rotation + ja4_rotation/engine axis), a coordinated multi-axis rotation a
+// single browser never performs.
+func multiAxisRotate() (map[string]any, error) {
+	cookie, seed, n, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	sid := sidFromCookie(cookie)
+	_, seed1, _ := signedCollect(utls.HelloChrome_Auto, chromeUA, cookie, sid, seed, n+1, jsEvidenceBody)
+	altUA := "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+	v, _, err := signedCollect(utls.HelloFirefox_Auto, altUA, cookie, sid, seed1, n+2, jsEvidenceBody)
+	return v, err
+}
+
+// greaseAbsentJS: a no-GREASE (Go-default) TLS stack under a Chrome UA that DOES run JS (so
+// HR-18 stays quiet), isolating the network tells: l5.tls.grease_absent (a real browser
+// always sends a GREASE value) + x.ua_vs_ja4 (UA says Chrome, JA4 says Go).
+func greaseAbsentJS() (map[string]any, error) {
+	cookie, err := sessionStock()
+	if err != nil {
+		return nil, err
+	}
+	return collectStock(chromeUA, cookie, withBrowserHeaders(nil), jsEvidenceBody)
+}
+
 // tlsRotate: two cookied requests in one session with different TLS stacks
 // (Chrome then Firefox) -> l5.traffic.engine_rotation -> HR-14 DENY.
 func tlsRotate() (map[string]any, error) {
