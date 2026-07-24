@@ -10,6 +10,7 @@ import (
 
 	"github.com/modootoday/humanymous/internal/abuse"
 	"github.com/modootoday/humanymous/internal/audit"
+	"github.com/modootoday/humanymous/internal/correlation"
 )
 
 // gate.go is the two-plane reverse proxy handler (SoT-19). It routes the
@@ -26,23 +27,26 @@ type Server struct {
 	control         http.Handler  // /__hmn/* control plane (session/collect/pow/loader)
 	rp              *httputil.ReverseProxy
 	snippet         []byte
-	originKey       []byte            // origin-cloaking HMAC key (SoT-23 §1)
-	tokenKey        []byte            // verdict-token HMAC key (SoT-21 §3)
-	tokenEpochs     *EpochManager     // rotating verdict-token epoch (SoT-28 WS6)
-	sweep           *SweepDetector    // decision-probing recon detector (HR-30)
-	decFloor        time.Duration     // constant decision-latency floor (HR-30)
-	bans            BanLedger         // rate-limit-triggered + manual bans (SoT-27); distribution seam (R18)
-	auth            *AdminAuth        // admin-plane authentication (SoT-28 WS1)
-	approvals       *ApprovalStore    // two-phase dual-control (SoT-28 WS2)
-	shreds          *ShredQueue       // erasure hold-window queue (SoT-28 WS3)
-	incidentLimiter *abuse.Limiter    // per-operator incident-lookup enumeration cap (SoT-28 WS4)
-	devConsoleToken string            // dev bearer injected into the served console (SoT-28 §1)
-	killSwitch      atomic.Bool       // runtime global-monitor override (SoT-28 WS9 kill switch)
-	agentKeys       KeyDirectory      // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
-	agentNonces     *NonceCache       // Web Bot Auth single-use signature nonces (anti-replay)
-	patVerifier     *PATVerifier      // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
-	webauthn        *WebAuthnRegistry // WebAuthn credential registry (PLAN-08 R2); nil = feature off
-	anomaly         *anomalyShadow    // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
+	originKey       []byte                // origin-cloaking HMAC key (SoT-23 §1)
+	tokenKey        []byte                // verdict-token HMAC key (SoT-21 §3)
+	tokenEpochs     *EpochManager         // rotating verdict-token epoch (SoT-28 WS6)
+	sweep           *SweepDetector        // decision-probing recon detector (HR-30)
+	decFloor        time.Duration         // constant decision-latency floor (HR-30)
+	bans            BanLedger             // rate-limit-triggered + manual bans (SoT-27); distribution seam (R18)
+	auth            *AdminAuth            // admin-plane authentication (SoT-28 WS1)
+	approvals       *ApprovalStore        // two-phase dual-control (SoT-28 WS2)
+	shreds          *ShredQueue           // erasure hold-window queue (SoT-28 WS3)
+	incidentLimiter *abuse.Limiter        // per-operator incident-lookup enumeration cap (SoT-28 WS4)
+	devConsoleToken string                // dev bearer injected into the served console (SoT-28 §1)
+	killSwitch      atomic.Bool           // runtime global-monitor override (SoT-28 WS9 kill switch)
+	agentKeys       KeyDirectory          // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
+	agentNonces     *NonceCache           // Web Bot Auth single-use signature nonces (anti-replay)
+	patVerifier     *PATVerifier          // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
+	webauthn        *WebAuthnRegistry     // WebAuthn credential registry (PLAN-08 R2); nil = feature off
+	anomaly         *anomalyShadow        // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
+	hasCredVerifier bool                  // ceiling-guard #1: ≥1 possession verifier configured (attestation shortcut available)
+	credCorr        *correlation.Registry // ceiling-guard #2: per-WebAuthn-credential /24 fan-out tracker
+	credFanoutCap   int                   // ceiling-guard #2: distinct /24s per credential before its fast-path reverts to Pass
 	nowFn           func() time.Time
 }
 
@@ -122,6 +126,9 @@ func (s *Server) GC(now time.Time) {
 	if s.anomaly != nil {
 		s.anomaly.gc(now)
 	}
+	if s.credCorr != nil {
+		s.credCorr.GC(now)
+	}
 }
 
 // Bans exposes the ban store for console management (SoT-26/27).
@@ -182,6 +189,22 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		patVerifier:     cfg.PATIssuers,                         // Privacy Pass PAT issuers (PLAN-08 R2), nil = off
 		webauthn:        cfg.WebAuthnCreds,                      // WebAuthn credential registry (PLAN-08 R2), nil = off
 		nowFn:           time.Now,
+	}
+	// Ceiling-guard #1: a possession verifier (Web Bot Auth / PAT / WebAuthn) gives an
+	// attestFloor route an ATTESTATION shortcut past the Pass. With none configured the
+	// floor still holds — it just degrades to a Pass-for-everyone friction wall (audited
+	// at startup by cmd/gate). Either way scoring-ALLOW alone no longer fast-paths.
+	s.hasCredVerifier = cfg.AgentKeys != nil || cfg.PATIssuers != nil || cfg.WebAuthnCreds != nil
+	// Ceiling-guard #2: bound a single WebAuthn credential's /24 fan-out so a stolen/shared
+	// passkey fronting a proxy farm reverts to paying Pass friction past N subnets. Only
+	// armed when WebAuthn is configured (PAT keyids are unlinkable-by-design and agent keys
+	// are SUPPOSED to fan out — both are excluded, per the ceiling-guard meeting).
+	if cfg.WebAuthnCreds != nil {
+		s.credCorr = correlation.New(time.Hour)
+		s.credFanoutCap = cfg.CredFanoutCap
+		if s.credFanoutCap <= 0 {
+			s.credFanoutCap = DefaultCredFanoutCap
+		}
 	}
 	if cfg.AnomalyShadow {
 		s.anomaly = newAnomalyShadow() // PLAN-08 R5: log-only shadow observer, off by default
@@ -296,6 +319,21 @@ func (s *Server) hasValidToken(r *http.Request) bool {
 		return false
 	}
 	return verifyVerdictToken(s.tokenKey, c.Value, tokenBind(r), sessionID(r), s.nowFn(), s.tokenEpochs.Accepted()...) == tokenOK
+}
+
+// hasValidStepUp reports whether the request carries a step-up proof (hmn_su) that
+// verifies and binds to this client's fingerprint+subnet + session (ceiling-guard
+// #1). This is the token minted on an LLM-resistant Pass solve; possessing it is
+// what lets a scoring-ALLOW take the fast-path on an attestFloor route.
+func (s *Server) hasValidStepUp(r *http.Request, sid string) bool {
+	if len(s.tokenKey) == 0 {
+		return false
+	}
+	c, err := r.Cookie(stepUpCookie)
+	if err != nil || c.Value == "" {
+		return false
+	}
+	return verifyStepUpToken(s.tokenKey, c.Value, tokenBind(r), sid, s.nowFn(), s.tokenEpochs.Accepted()...) == tokenOK
 }
 
 // handleUpstreamError is the ReverseProxy ErrorHandler (PLAN-07 R16). It audits an

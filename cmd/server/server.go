@@ -37,6 +37,11 @@ type app struct {
 	attestLim *abuse.Limiter         // SoT-36 §2 axis ①: attestation-token issuance budget per fingerprint (short window)
 	hub       *livefeed.Hub          // SoT-30 live telemetry broadcast (nil unless HMN_PLAYGROUND=1)
 	masterKey []byte
+	// stepUpKey, when set (from the SHARED HMN_TOKEN_KEY the Gate also reads), signs the
+	// ceiling-guard #1 step-up receipt handed to the client on a verified Pass solve. The
+	// client redeems it at the Gate's /stepup for the socket-bound hmn_su proof. nil (the
+	// standalone-Core default) => no receipt is emitted: there is no Gate to honor it.
+	stepUpKey []byte
 	webDir    string
 	ritOn     bool
 

@@ -28,6 +28,115 @@ import (
 
 const verdictCookie = "hmn_vt"
 
+// stepUpCookie carries the attestation-floor STEP-UP PROOF (ceiling-guard #1): a
+// server-key HMAC asserting that this fingerprint+subnet completed an attestation
+// step-up (an LLM-resistant SoT-36 Pass solve, or presented possession) on a route
+// the operator marked high-value (attestFloor). It is DOMAIN-SEPARATED from the
+// verdict token by a distinct "su" MAC tag, so a plain ALLOW verdict token minted
+// by scoring can NEVER be presented as a step-up proof (that is the whole point of
+// the floor — scoring-ALLOW alone must not buy the fast-path). Bound to fp+subnet +
+// sid + a short TTL + epoch exactly like the verdict token, so a human solves ONCE
+// per window (it rides subsequent mutations) yet the proof is not liftable to a
+// different machine.
+const stepUpCookie = "hmn_su"
+
+// stepUpReceiptHeader carries a SESSION-bound receipt that an attestation front-end
+// (the SoT-36 Pass server) verified a human step-up for this sid. The receipt is
+// presented to the gate's /stepup endpoint, which RE-BINDS to the live socket
+// fingerprint+subnet and mints the hmn_su cookie. This split keeps the socket
+// binding authoritative at the gate (correct even when the Pass is served behind an
+// XFF hop), while the Pass server only asserts "this sid solved a Pass".
+const stepUpReceiptHeader = "X-Hmn-Stepup-Receipt"
+
+// issueStepUpToken mints the step-up proof cookie value (ceiling-guard #1).
+func issueStepUpToken(key []byte, sid, bind, epoch string, exp time.Time) string {
+	payload := "su|" + sid + "|" + bind + "|" + strconv.FormatInt(exp.Unix(), 10) + "|" + epoch
+	mac := tokenMAC(key, payload)
+	return base64.RawURLEncoding.EncodeToString([]byte(payload)) + "." + base64.RawURLEncoding.EncodeToString(mac)
+}
+
+// verifyStepUpToken checks a step-up proof: signature, "su" domain, expiry,
+// fingerprint+subnet binding, and that it is bound to THIS session. Mirrors
+// verifyVerdictToken but on the domain-separated payload so the two token classes
+// are never interchangeable.
+func verifyStepUpToken(key []byte, token, bind, expectSID string, now time.Time, epochs ...string) tokenReason {
+	dot := strings.IndexByte(token, '.')
+	if dot < 0 {
+		return tokenMalformed
+	}
+	pb, err1 := base64.RawURLEncoding.DecodeString(token[:dot])
+	mb, err2 := base64.RawURLEncoding.DecodeString(token[dot+1:])
+	if err1 != nil || err2 != nil {
+		return tokenMalformed
+	}
+	payload := string(pb)
+	if subtle.ConstantTimeCompare(mb, tokenMAC(key, payload)) != 1 {
+		return tokenBadSig
+	}
+	parts := strings.Split(payload, "|")
+	if len(parts) != 5 || parts[0] != "su" {
+		return tokenMalformed
+	}
+	exp, _ := strconv.ParseInt(parts[3], 10, 64)
+	if now.Unix() > exp {
+		return tokenExpired
+	}
+	epochOK := false
+	for _, e := range epochs {
+		if parts[4] == e {
+			epochOK = true
+		}
+	}
+	if !epochOK {
+		return tokenExpired
+	}
+	if expectSID != "" && subtle.ConstantTimeCompare([]byte(parts[1]), []byte(expectSID)) != 1 {
+		return tokenBindingMismatch
+	}
+	if subtle.ConstantTimeCompare([]byte(parts[2]), []byte(bind)) != 1 {
+		return tokenBindingMismatch
+	}
+	return tokenOK
+}
+
+// IssueStepUpReceipt mints a short-lived, SESSION-bound receipt proving an
+// attestation front-end (SoT-36 Pass) verified a human step-up for sid. It is
+// exported so the Pass server (cmd/server, a separate plane) can mint it with the
+// SHARED token key on a verified solve; the gate re-binds it to the live socket at
+// /stepup. It is NOT the gate cookie and grants nothing on its own.
+func IssueStepUpReceipt(key []byte, sid string, exp time.Time) string {
+	payload := "sur|" + sid + "|" + strconv.FormatInt(exp.Unix(), 10)
+	mac := tokenMAC(key, payload)
+	return base64.RawURLEncoding.EncodeToString([]byte(payload)) + "." + base64.RawURLEncoding.EncodeToString(mac)
+}
+
+// verifyStepUpReceipt checks a step-up receipt: signature, "sur" domain, expiry,
+// and session binding. Returns true only for a valid, unexpired receipt for sid.
+func verifyStepUpReceipt(key []byte, token, expectSID string, now time.Time) bool {
+	dot := strings.IndexByte(token, '.')
+	if dot < 0 {
+		return false
+	}
+	pb, err1 := base64.RawURLEncoding.DecodeString(token[:dot])
+	mb, err2 := base64.RawURLEncoding.DecodeString(token[dot+1:])
+	if err1 != nil || err2 != nil {
+		return false
+	}
+	payload := string(pb)
+	if subtle.ConstantTimeCompare(mb, tokenMAC(key, payload)) != 1 {
+		return false
+	}
+	parts := strings.Split(payload, "|")
+	if len(parts) != 3 || parts[0] != "sur" {
+		return false
+	}
+	exp, _ := strconv.ParseInt(parts[2], 10, 64)
+	if now.Unix() > exp {
+		return false
+	}
+	return expectSID != "" && subtle.ConstantTimeCompare([]byte(parts[1]), []byte(expectSID)) == 1
+}
+
 // tokenReason enumerates why a token check failed (audit + HR-28).
 type tokenReason string
 

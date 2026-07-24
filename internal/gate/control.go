@@ -34,6 +34,7 @@ type ControlPlane struct {
 	nonces      *NonceCache    // single-use beacon nonce cache (HR-29)
 	climiter    *abuse.Limiter // control-plane flood limiter (SoT-28 WS7)
 	cpHard      int            // control-plane hard threshold (for sampled audit)
+	cohort      *cohortShadow  // ceiling-guard #3: population/cohort behavioral shadow (log-only); nil = off
 	nowFn       func() time.Time
 }
 
@@ -81,6 +82,18 @@ func (c *ControlPlane) cpGuard(w http.ResponseWriter, r *http.Request, endpoint 
 // WithTokenKey enables verdict-token issuance on ALLOW (SoT-21 §3, HR-28).
 func (c *ControlPlane) WithTokenKey(key []byte) *ControlPlane { c.tokenKey = key; return c }
 
+// WithCohortShadow enables the ceiling-guard #3 population/cohort behavioral shadow
+// (log-only; never affects the verdict). Off by default.
+func (c *ControlPlane) WithCohortShadow() *ControlPlane { c.cohort = newCohortShadow(); return c }
+
+// GC age-evicts the control-plane observers' bounded state (the cohort shadow). Call
+// it periodically alongside the server/store GC.
+func (c *ControlPlane) GC(now time.Time) {
+	if c.cohort != nil {
+		c.cohort.gc(now)
+	}
+}
+
 // WithTokenEpochs shares the rotating epoch manager with the edge (SoT-28 WS6).
 func (c *ControlPlane) WithTokenEpochs(em *EpochManager) *ControlPlane { c.tokenEpochs = em; return c }
 
@@ -97,6 +110,7 @@ func (c *ControlPlane) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/session", c.handleSession)
 	mux.HandleFunc("/collect", c.handleCollect)
+	mux.HandleFunc("/stepup", c.handleStepUp)
 	mux.HandleFunc("/loader.js", c.handleLoader)
 	mux.HandleFunc("/csp-report", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusNoContent) })
 	// Always-on unauthenticated liveness probe (PLAN-08 backlog): LBs/orchestrators
@@ -149,6 +163,52 @@ func (c *ControlPlane) handleCollect(w http.ResponseWriter, r *http.Request) {
 	c.issueVerdictTokenOnAllow(w, r, sid, res, now) // HR-28
 	c.linkAndAuditScoring(sid, r, res)
 	writeControlVerdict(w, sid, res)
+}
+
+// handleStepUp mints the attestation-floor STEP-UP PROOF cookie (ceiling-guard #1).
+// It is the redemption endpoint for an LLM-resistant SoT-36 Pass solve: the Pass
+// server (which may sit behind an XFF hop) hands the client a SESSION-bound receipt
+// on a verified solve; the client presents it here, and the gate — which sees the
+// authoritative live socket — RE-BINDS the proof to this fingerprint+subnet and sets
+// hmn_su. Re-binding at the gate is what makes the proof non-liftable to another
+// machine even though the receipt itself is only session-bound. A missing/invalid/
+// expired receipt is a 403; this endpoint grants nothing on its own.
+func (c *ControlPlane) handleStepUp(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "POST only", http.StatusMethodNotAllowed)
+		return
+	}
+	if c.cpGuard(w, r, "stepup") {
+		return
+	}
+	if len(c.tokenKey) == 0 {
+		http.Error(w, "step-up not configured", http.StatusNotImplemented)
+		return
+	}
+	sid := sessionID(r)
+	if sid == "" {
+		http.Error(w, "no session", http.StatusBadRequest)
+		return
+	}
+	now := c.nowFn()
+	receipt := r.Header.Get(stepUpReceiptHeader)
+	if !verifyStepUpReceipt(c.tokenKey, receipt, sid, now) {
+		c.sink.Emit(audit.Record{
+			EventType: audit.EventTokenBindingMismatch, Actor: audit.Actor{Kind: "subject", IDPsn: c.pseudo(sid, sid)},
+			TenantID: "control", RouteClass: "control", Verdict: string(VerdictDeny), Mode: "enforce",
+			FailReason: "step-up: missing/invalid Pass receipt", KeyID: "k1",
+		})
+		http.Error(w, "invalid or missing step-up receipt", http.StatusForbidden)
+		return
+	}
+	tok := issueStepUpToken(c.tokenKey, sid, tokenBind(r), c.tokEpoch(), now.Add(30*time.Minute))
+	http.SetCookie(w, &http.Cookie{Name: stepUpCookie, Value: tok, Path: "/", HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
+	c.sink.Emit(audit.Record{
+		EventType: audit.EventTokenIssued, Actor: audit.Actor{Kind: "subject", IDPsn: c.pseudo(sid, sid)},
+		TenantID: "control", RouteClass: "control", Verdict: "allow", Mode: "enforce", KeyID: "k1",
+		FailReason: "step-up proof minted (Pass solved)",
+	})
+	writeJSON(w, map[string]any{"ok": true})
 }
 
 // handleLoader serves a minimal collector that beacons a client report to the

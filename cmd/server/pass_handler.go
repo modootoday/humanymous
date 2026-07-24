@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/modootoday/humanymous/internal/attestation"
+	"github.com/modootoday/humanymous/internal/gate"
 	"github.com/modootoday/humanymous/internal/pass"
 	"github.com/modootoday/humanymous/internal/pow"
 )
@@ -303,7 +304,15 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	rep.Network.Signals = append(rep.Network.Signals, passSolvedSignal())
 	res := a.engine.Score(&rep)
 	a.store.StoreScored(sid, rep, time.Now())
-	writeJSON(w, map[string]any{"ok": true, "verdict": res.Verdict, "riskScore": res.RiskScore})
+	out := map[string]any{"ok": true, "verdict": res.Verdict, "riskScore": res.RiskScore}
+	// Ceiling-guard #1: a verified human Pass solve is exactly the step-up the attestation
+	// floor demands. When the Core runs as a Pass front-end behind a Gate (shared token
+	// key present), hand the client a short-lived, session-bound receipt to redeem at the
+	// Gate's /stepup for the socket-bound hmn_su proof. Standalone (no key) => omitted.
+	if a.stepUpKey != nil {
+		out["stepUpReceipt"] = gate.IssueStepUpReceipt(a.stepUpKey, sid, time.Now().Add(2*time.Minute))
+	}
+	writeJSON(w, out)
 }
 
 // handlePassKPI reports the wargame KPIs (SoT-36 §8): the closed-loop scoreboard

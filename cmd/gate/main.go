@@ -249,6 +249,9 @@ func main() {
 	// current epoch, the edge accepts current+previous, and a timer rotates.
 	epochs := gate.NewEpochManager()
 	control := gate.NewControlPlane(store, engine, verdicts, sink, vault).WithTokenKey(tokenKey).WithTokenEpochs(epochs)
+	if *anomalyShadow {
+		control.WithCohortShadow() // ceiling-guard #3: population/cohort behavioral shadow (log-only)
+	}
 
 	// PLAN-08 R3 — load the Web Bot Auth trusted-key allowlist, if configured.
 	var agentKeys gate.KeyDirectory
@@ -327,6 +330,17 @@ func main() {
 		}
 		cfg.Routes = r
 		log.Printf("loaded %d route rule(s) from %s", len(r), *routesFile)
+	}
+
+	// Ceiling-guard #1 startup validation: if any route carries the attestation floor but
+	// NO possession verifier (Web Bot Auth / PAT / WebAuthn) is configured, the floor still
+	// holds but degrades to a Pass-for-everyone friction wall (no attestation shortcut).
+	// Surface that plainly so the operator opts in to a credential verifier deliberately.
+	hasVerifier := agentKeys != nil || patIssuers != nil || webauthnCreds != nil
+	for prefix, preset := range cfg.Routes {
+		if preset == "attested" && !hasVerifier {
+			log.Printf("WARNING: route %q uses preset \"attested\" but NO possession verifier (-agent-keys/-pat-issuers/-webauthn-creds) is configured — the attestation floor degrades to a Pass-for-EVERYONE friction wall on that route (still no-lockout, but no attestation shortcut). Configure a credential verifier to give returning users a possession fast-path.", prefix)
+		}
 	}
 
 	srv, err := gate.NewServer(cfg, sink, vault, verdicts, control.Handler())
@@ -440,8 +454,9 @@ func main() {
 		t := time.NewTicker(time.Minute)
 		for range t.C {
 			now := time.Now()
-			srv.GC(now)   // verdicts, bans + strikes + rate windows, sweep bindings, anomaly
-			store.GC(now) // control-plane collector store
+			srv.GC(now)     // verdicts, bans + strikes + rate windows, sweep bindings, anomaly, cred fan-out
+			store.GC(now)   // control-plane collector store
+			control.GC(now) // control-plane observers (cohort shadow)
 			var dropped uint64
 			for _, p := range projections {
 				if d, ok := p.(interface{ Dropped() uint64 }); ok {

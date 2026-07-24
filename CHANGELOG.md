@@ -7,7 +7,46 @@ are called out in a dedicated **Security** subsection with upgrade urgency.
 
 ## [Unreleased]
 
-_Nothing yet — see [0.1.0]._
+### Added — ceiling-guard: attestation floor on high-value routes
+
+A Blue-team ceiling-guard design meeting (6 orthogonal-axis architects + adversarial Red / no-lockout
+critique) concluded that a **coherent engine-level spoof cannot be detected past the T4 ceiling**, so
+the only guard that raises its cost without blocking a real human is to **price the ALLOW** on
+operator-marked high-value routes rather than keep trying to detect. Implemented (Gate + Core), all
+verified with `go test -race`; the detection catalog is **unchanged** (baseline human ALLOW/0-FP,
+T0–T3 100% blocked, T4 ceiling ALLOW).
+
+- **Attestation floor (`attested` route preset).** On a route the operator marks high-value, a plain
+  scoring-ALLOW no longer buys the fast-path: the session must present **possession** (an existing
+  WebAuthn / Privacy-Pass / Web-Bot-Auth trust-upgrade) **or** a **step-up proof** minted on an
+  LLM-resistant SoT-36 **Pass** solve. Enforced at **both** the verdict-token fast-path and the
+  sticky-verdict path, so a coherent spoof cannot launder its free ALLOW past the floor by any route.
+  It does **not** detect the spoof — it converts unlimited free high-value passes into possession-or-a
+  -per-session-human-solve. **CHALLENGE→Pass, never DENY:** an unattested human solves the same Pass an
+  anonymous visitor already solves (no categorical human block; no-lockout preserved). The floor is
+  **refused on catch-all/public prefixes** and warns when configured without a credential verifier
+  (it then degrades to an audited Pass-for-everyone friction wall).
+- **Step-up proof (`hmn_su`).** A domain-separated, fingerprint+subnet-bound, TTL'd token — a verdict
+  token can never be presented as one, and it is not liftable to another machine. A human solves
+  **once per window** (it rides subsequent mutations), closing the verdict-token laundering hole
+  without re-challenging every checkout step. Minted at the Gate's `/__hmn/stepup` from a
+  session-bound **receipt** the Pass server issues on a verified solve (the Gate re-binds to the live
+  socket, so the split stays correct behind an XFF hop).
+- **WebAuthn credential /24 fan-out cap (ceiling-guard #2).** Bounds a single WebAuthn credential's
+  subnet fan-out; past the cap its trust-upgrade is withheld and the request reverts to Pass — closing
+  the stolen/shared-passkey-fronting-a-farm residual on guard #1. Degrades to CHALLENGE, never DENY.
+  WebAuthn-only (PAT keyids are unlinkable-by-design; agent keys are supposed to fan out).
+- **Population/cohort behavioral shadow (ceiling-guard #3).** A **strictly log-only** observer that
+  flags a cohort of unlinked sessions sharing one synthetic motor signature (a shared behavior
+  generator). Zero live FPR by construction; value is farm-review intel + FPR evidence for a possible
+  future low-weight signal, whose promotion is gated on first proving natural shared-egress cohorts
+  show high entropy.
+
+**Honest limits (unchanged and stated plainly):** a real human on their own connection and a single
+coherent one-shot request remain irreducibly open — this shifts economics on high-value routes, it
+does not restore a detection tell. PoW is deliberately **not** used as the friction (its asymmetry
+runs backwards and would lock out real/no-JS/assistive humans first); the friction is the interactive
+Pass.
 
 ## [0.1.0] - 2026-07-24
 

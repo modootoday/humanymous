@@ -126,6 +126,16 @@ func (s *Server) verdictTokenGate(w http.ResponseWriter, r *http.Request, sid st
 		return false
 	}
 	if s.enforcing(route) {
+		// Ceiling-guard #1: on an attestFloor route a VALID verdict (ALLOW) token is NOT
+		// enough for the fast-path — the client must also hold a step-up proof (hmn_su). A
+		// credential-bearing request never reaches here (the possession pre-gates forwarded
+		// it already), so reaching this point on an attestFloor route means neither
+		// possession nor a Pass solve. Decline the fast-path and fall through; applyVerdict
+		// demotes the scoring-ALLOW to a step-up challenge. This closes the laundering hole
+		// where a prior plain ALLOW token would otherwise walk past the floor.
+		if route.attestFloor && !s.hasValidStepUp(r, sid) {
+			return false
+		}
 		rec := audit.Record{
 			EventType: audit.EventEnfAllow, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
 			TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
@@ -232,6 +242,24 @@ func (s *Server) webauthnGate(w http.ResponseWriter, r *http.Request, sid string
 	if len(short) > 16 {
 		short = short[:16]
 	}
+	// Ceiling-guard #2: bound this credential's /24 fan-out. A genuine possession proof
+	// still verified, but if ONE credential is now fast-pathing from more than the cap of
+	// distinct subnets within the window, it is a stolen/shared passkey fronting a proxy
+	// farm — stop honoring its trust-upgrade and let it fall through to the normal
+	// pipeline, where an attestFloor route routes it to Pass. Degrades to CHALLENGE (Pass),
+	// never DENY: a roaming human on one passkey across a few networks just solves a Pass.
+	// WebAuthn-only by construction (s.credCorr is nil for PAT/agent — see NewServer).
+	if s.credCorr != nil {
+		s.credCorr.Observe("cred:"+credID, clientSubnet(r), sid, s.nowFn())
+		if subnets, _ := s.credCorr.Stats("cred:" + credID); subnets > s.credFanoutCap {
+			s.sink.Emit(audit.Record{
+				EventType: audit.EventWebAuthnVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+				TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Mode: "enforce", KeyID: "k1",
+				FailReason: "webauthn credential " + short + " fan-out " + itoaInt(subnets) + " subnets > cap " + itoaInt(s.credFanoutCap) + " — trust-upgrade withheld, routed to Pass",
+			})
+			return false // credential-farm fan-out: no fast-path; fall through to the floor
+		}
+	}
 	return s.trustUpgrade(w, r, sid, route, audit.EventWebAuthnVerified, "webauthn", "verified WebAuthn assertion, credential "+short)
 }
 
@@ -278,6 +306,17 @@ func (s *Server) applyVerdict(w http.ResponseWriter, r *http.Request, sid string
 	eventType, actionName := verdict.action(route, unsafe)
 	if verdict == VerdictUnknown && unsafe && actionName == "challenge_pow" {
 		eventType = "enf.failclosed.mutating"
+	}
+	// Ceiling-guard #1: on an attestFloor route, a scoring-ALLOW that would otherwise pass
+	// is demoted to a step-up challenge unless the session holds a step-up proof. This is
+	// the second half of the floor (verdictTokenGate handles the token fast-path): it also
+	// catches the sticky-ALLOW path (a session scored ALLOW on a prior beacon, no verdict
+	// cookie), so a coherent spoof cannot launder its free ALLOW past the floor by any
+	// route. A possession-bearing request never reaches applyVerdict (the pre-gates
+	// forwarded it), so the only exemption here is a valid step-up proof — exactly
+	// Pass-or-possession, never a categorical block (CHALLENGE→Pass, not DENY).
+	if s.enforcing(route) && route.attestFloor && actionName == "pass" && !s.hasValidStepUp(r, sid) {
+		eventType, actionName = audit.EventEnfChallengeIssued, "challenge_pow"
 	}
 	rec := audit.Record{
 		EventType:  eventType,

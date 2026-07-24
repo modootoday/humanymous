@@ -49,6 +49,12 @@ func (c *ControlPlane) scoreBeacon(sid string, r *http.Request, client signals.C
 	obs := network.Observation{Header: headerInfo(r), IsDatacenterIP: false}
 	c.store.MergeNetwork(sid, network.Build(obs), now)
 	c.store.MergeClient(sid, client, now)
+	// Ceiling-guard #3 (log-only): feed this session's coarse motor signature to the
+	// population/cohort shadow, keyed on the server-observed fingerprint+subnet. Never
+	// affects the verdict below — pure aggregate evidence collection.
+	if c.cohort != nil {
+		c.cohort.observe(tokenBind(r), client.Behavior, sid, now)
+	}
 	if lbl := r.URL.Query().Get("label"); lbl != "" {
 		c.store.SetLabel(sid, lbl, now)
 	}

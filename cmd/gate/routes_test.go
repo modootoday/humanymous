@@ -39,6 +39,17 @@ func TestLoadRoutesUnknownPreset(t *testing.T) {
 	}
 }
 
+// Ceiling-guard #1: the attestation floor is valid on a specific route but REFUSED on
+// the catch-all — flooring an entire site's browse traffic to Pass is a misconfig.
+func TestLoadRoutesAttestedValidAndCatchAllRefused(t *testing.T) {
+	if r, err := loadRoutes(writeTemp(t, "/transfer attested\n/checkout attested\n")); err != nil || r["/transfer"] != "attested" {
+		t.Fatalf("attested on a specific route must load: r=%v err=%v", r, err)
+	}
+	if _, err := loadRoutes(writeTemp(t, "/ attested\n")); err == nil {
+		t.Fatal("expected error: attested on the catch-all prefix must be refused")
+	}
+}
+
 func TestLoadRoutesMalformed(t *testing.T) {
 	p := writeTemp(t, "/login strict extra\n")
 	if _, err := loadRoutes(p); err == nil {

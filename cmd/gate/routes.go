@@ -13,9 +13,14 @@ import (
 // prefix -> preset map; this just fills it from disk.
 //
 // Format: one `<path-prefix> <preset>` per line; `#` comments and blank lines are
-// ignored; preset is one of strict | balanced | monitor | off.
+// ignored; preset is one of strict | balanced | attested | monitor | off.
+//
+// `attested` (ceiling-guard #1) is the attestation floor: reserve it for high-value
+// MUTATING routes (POST /checkout, /transfer, /password, /api/keys). It is REFUSED on
+// a catch-all prefix (`/` or empty) — flooring an entire site's browse traffic to Pass
+// is a misconfiguration the ceiling-guard meeting explicitly rules out.
 
-var validPresets = map[string]bool{"strict": true, "balanced": true, "monitor": true, "off": true}
+var validPresets = map[string]bool{"strict": true, "balanced": true, "attested": true, "monitor": true, "off": true}
 
 // loadRoutes parses a routes file into a prefix -> preset map.
 func loadRoutes(path string) (map[string]string, error) {
@@ -40,7 +45,13 @@ func loadRoutes(path string) (map[string]string, error) {
 		}
 		prefix, preset := fields[0], fields[1]
 		if !validPresets[preset] {
-			return nil, fmt.Errorf("routes %s:%d: unknown preset %q (want strict|balanced|monitor|off)", path, ln, preset)
+			return nil, fmt.Errorf("routes %s:%d: unknown preset %q (want strict|balanced|attested|monitor|off)", path, ln, preset)
+		}
+		// Ceiling-guard #1: the attestation floor must never blanket a whole site. Refuse
+		// it on a catch-all prefix so an operator cannot accidentally Pass-wall all browse
+		// traffic (the meeting's "refuse attestFloor on public/catch-all routes").
+		if preset == "attested" && (prefix == "/" || prefix == "") {
+			return nil, fmt.Errorf("routes %s:%d: preset \"attested\" is refused on the catch-all prefix %q — mark specific high-value routes (e.g. /checkout), not the whole site", path, ln, prefix)
 		}
 		routes[prefix] = preset
 	}
