@@ -233,12 +233,14 @@ func main() {
 	// minted on one node/boot simply fails to verify elsewhere and the request falls
 	// through to re-scoring (no deny) — correct but it loses the cross-node fast-path.
 	tokenKey := make([]byte, 32)
+	sharedTokenKey := false
 	if tk := os.Getenv("HMN_TOKEN_KEY"); tk != "" {
 		b, err := hex.DecodeString(tk)
 		if err != nil || len(b) < 16 {
 			log.Fatalf("HMN_TOKEN_KEY must be hex of at least 16 bytes")
 		}
 		tokenKey = b
+		sharedTokenKey = true
 	} else {
 		mustRand(tokenKey)
 		if *redisAddr != "" {
@@ -332,15 +334,19 @@ func main() {
 		log.Printf("loaded %d route rule(s) from %s", len(r), *routesFile)
 	}
 
-	// Ceiling-guard #1 startup validation: if any route carries the attestation floor but
-	// NO possession verifier (Web Bot Auth / PAT / WebAuthn) is configured, the floor still
-	// holds but degrades to a Pass-for-everyone friction wall (no attestation shortcut).
-	// Surface that plainly so the operator opts in to a credential verifier deliberately.
+	// Ceiling-guard #1 startup validation (see validateAttestedRoutes): refuse to start if
+	// an attested route is configured without a shared HMN_TOKEN_KEY — the Gate's per-boot
+	// random key could never verify a Core-minted step-up receipt, so /__hmn/stepup could
+	// never mint hmn_su and the route becomes a CHALLENGE→Pass wall NO human can clear
+	// (worse than the lockout the top constraint forbids). Warn (non-fatal) when a verifier
+	// is absent (the floor then holds as a Pass-for-everyone friction wall).
 	hasVerifier := agentKeys != nil || patIssuers != nil || webauthnCreds != nil
-	for prefix, preset := range cfg.Routes {
-		if preset == "attested" && !hasVerifier {
-			log.Printf("WARNING: route %q uses preset \"attested\" but NO possession verifier (-agent-keys/-pat-issuers/-webauthn-creds) is configured — the attestation floor degrades to a Pass-for-EVERYONE friction wall on that route (still no-lockout, but no attestation shortcut). Configure a credential verifier to give returning users a possession fast-path.", prefix)
-		}
+	warns, err := validateAttestedRoutes(cfg.Routes, sharedTokenKey, hasVerifier)
+	if err != nil {
+		log.Fatalf("routes: %v", err)
+	}
+	for _, wmsg := range warns {
+		log.Printf("WARNING: %s", wmsg)
 	}
 
 	srv, err := gate.NewServer(cfg, sink, vault, verdicts, control.Handler())

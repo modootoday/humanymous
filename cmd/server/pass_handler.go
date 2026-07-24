@@ -202,7 +202,14 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	a.pass.mu.Lock()
 	if ps.solved {
 		a.pass.mu.Unlock()
-		writeJSON(w, map[string]any{"ok": true, "alreadySolved": true})
+		out := map[string]any{"ok": true, "alreadySolved": true}
+		// Ceiling-guard #1: re-issue a fresh step-up receipt on re-poll so a benign receipt
+		// expiry / redemption latency stall recovers WITHOUT forcing a full /api/pass/new
+		// re-solve (the Pass was already genuinely solved). Only when keyed (behind a Gate).
+		if a.stepUpKey != nil {
+			out["stepUpReceipt"] = gate.IssueStepUpReceipt(a.stepUpKey, sid, time.Now().Add(2*time.Minute))
+		}
+		writeJSON(w, out)
 		return
 	}
 	if ps.tries >= passMaxTries {

@@ -31,7 +31,6 @@ func NewSweepDetector(window time.Duration, maxSess int) *SweepDetector {
 	return &SweepDetector{byBind: map[string]*bindWindow{}, window: window, maxSess: maxSess}
 }
 
-// Observe records (bind, sid) and returns true if the binding is now sweeping.
 // GC evicts binding windows that have fully aged out. byBind is keyed by client
 // binding (fingerprint/IP), so without eviction a churn of bindings grows it without
 // bound (PLAN-08 deployment-review ship-blocker).
@@ -45,6 +44,7 @@ func (d *SweepDetector) GC(now time.Time) {
 	}
 }
 
+// Observe records (bind, sid) and returns true if the binding is now sweeping.
 func (d *SweepDetector) Observe(bind, sid string, now time.Time) bool {
 	if bind == "" {
 		return false

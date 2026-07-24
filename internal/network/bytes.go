@@ -23,12 +23,6 @@ func (p *parser) skip(n int) bool {
 	return true
 }
 
-func (p *parser) u8() uint8 {
-	v := p.b[p.pos]
-	p.pos++
-	return v
-}
-
 func (p *parser) u16() uint16 {
 	v := binary.BigEndian.Uint16(p.b[p.pos:])
 	p.pos += 2

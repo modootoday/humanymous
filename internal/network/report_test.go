@@ -14,12 +14,12 @@ func buildIDs(obs Observation) map[string]bool {
 
 func TestForwardedPrivateSpoofSignal(t *testing.T) {
 	fires := []string{
-		"10.20.30.40",  // private 10/8
-		"192.168.1.9",  // private 192.168/16
-		"172.30.0.5",   // private 172.16/12 (Docker)
-		"127.0.0.1",    // loopback
-		"169.254.1.1",  // link-local
-		"0.0.0.0",      // unspecified
+		"10.20.30.40", // private 10/8
+		"192.168.1.9", // private 192.168/16
+		"172.30.0.5",  // private 172.16/12 (Docker)
+		"127.0.0.1",   // loopback
+		"169.254.1.1", // link-local
+		"0.0.0.0",     // unspecified
 	}
 	for _, ip := range fires {
 		if !buildIDs(Observation{ClientForwardedIP: ip})["l5.header.forwarded_private"] {

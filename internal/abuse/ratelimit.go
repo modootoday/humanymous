@@ -21,7 +21,6 @@ type Limiter struct {
 	hard   int                // requests/window -> BOT/flood
 	hits   map[string][]int64 // key -> unix-nano timestamps in window
 	ttl    time.Duration
-	lastGC time.Time
 }
 
 // NewLimiter returns a limiter. Defaults suit a demo: 60 req / 10s soft,

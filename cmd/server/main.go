@@ -58,11 +58,14 @@ func main() {
 	// the SHARED HMN_TOKEN_KEY (the same var the Gate uses); absent it, no receipt is
 	// emitted (a standalone Core has no Gate to redeem one).
 	if tk := os.Getenv("HMN_TOKEN_KEY"); tk != "" {
-		if b, err := hex.DecodeString(tk); err == nil && len(b) >= 16 {
-			a.stepUpKey = b
-		} else {
-			log.Printf("WARNING: HMN_TOKEN_KEY set but not hex >=16 bytes — step-up receipts disabled")
+		b, err := hex.DecodeString(tk)
+		if err != nil || len(b) < 16 {
+			// Fail closed, symmetric with the Gate (cmd/gate/main.go): a malformed shared key
+			// would silently disable step-up receipts and leave attested routes an unredeemable
+			// Pass loop, so refuse to start rather than degrade invisibly.
+			log.Fatalf("HMN_TOKEN_KEY must be hex of at least 16 bytes")
 		}
+		a.stepUpKey = b
 	}
 	a.configureLogging(*logLevel) // PLAN-07 R11: opt-in structured logging (off by default)
 	a.configureOps(*opsToken)     // PLAN-07 R14/R17: operator-gated explain + counters (off by default)

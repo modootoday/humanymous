@@ -31,8 +31,11 @@ type TrafficRecord struct {
 	HasSecFetch bool      `json:"hasSecFetch"`
 }
 
-// Kind distinguishes TLS-only vs HTTP records for backfill correlation.
-func (r TrafficRecord) IsTLS() bool  { return r.JA4 != "" && r.Method == "" }
+// IsTLS reports a TLS-only record (JA4 seen, no HTTP method yet) — the two kinds are
+// distinguished for backfill correlation.
+func (r TrafficRecord) IsTLS() bool { return r.JA4 != "" && r.Method == "" }
+
+// IsHTTP reports a record that carries an HTTP request line.
 func (r TrafficRecord) IsHTTP() bool { return r.Method != "" }
 
 // HashUA returns a short stable hash of a User-Agent (privacy: store hash).

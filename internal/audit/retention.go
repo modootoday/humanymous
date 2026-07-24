@@ -16,7 +16,7 @@ type RetentionPolicy struct {
 	Cold time.Duration // WORM; expired after this
 }
 
-// DefaultRetention: HOT 90d, WARM 1y, COLD 7y.
+// DefaultRetention returns the default tiered policy: HOT 90d, WARM 1y, COLD 7y.
 func DefaultRetention() RetentionPolicy {
 	return RetentionPolicy{Hot: 90 * 24 * time.Hour, Warm: 365 * 24 * time.Hour, Cold: 7 * 365 * 24 * time.Hour}
 }

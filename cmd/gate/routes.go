@@ -60,3 +60,28 @@ func loadRoutes(path string) (map[string]string, error) {
 	}
 	return routes, nil
 }
+
+// validateAttestedRoutes enforces the ceiling-guard #1 deployment preconditions
+// (extracted so it is unit-testable independent of main's wiring):
+//   - err (FATAL): an "attested" route without a shared HMN_TOKEN_KEY. Without a shared,
+//     persistent key the Gate's per-boot random token key can never verify a Core-minted
+//     step-up receipt, so POST /__hmn/stepup can never mint hmn_su and the attested route
+//     becomes an unredeemable CHALLENGE→Pass loop for real humans — functionally worse than
+//     the multi-minute lockout the top no-lockout constraint forbids. Refuse at boot.
+//   - warnings (non-fatal): an "attested" route with no possession verifier configured. The
+//     floor still holds but degrades to a Pass-for-EVERYONE friction wall (no attestation
+//     shortcut); surface it so the operator opts into a credential verifier deliberately.
+func validateAttestedRoutes(routes map[string]string, sharedTokenKey, hasVerifier bool) (warnings []string, err error) {
+	for prefix, preset := range routes {
+		if preset != "attested" {
+			continue
+		}
+		if !sharedTokenKey {
+			return nil, fmt.Errorf("route %q uses preset \"attested\" but no shared HMN_TOKEN_KEY is set — the step-up receipt from the Core Pass could never verify at the Gate, making the route an unredeemable Pass loop for humans; set a shared HMN_TOKEN_KEY (hex, ≥16 bytes) across Core and Gate", prefix)
+		}
+		if !hasVerifier {
+			warnings = append(warnings, fmt.Sprintf("route %q uses preset \"attested\" but NO possession verifier (-agent-keys/-pat-issuers/-webauthn-creds) is configured — every user (incl. returning humans) must solve a Pass to clear the floor (still no-lockout, but no attestation fast-path). Configure a credential verifier to give possession-holders a shortcut.", prefix))
+		}
+	}
+	return warnings, nil
+}

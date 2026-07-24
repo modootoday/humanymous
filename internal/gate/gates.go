@@ -250,14 +250,21 @@ func (s *Server) webauthnGate(w http.ResponseWriter, r *http.Request, sid string
 	// never DENY: a roaming human on one passkey across a few networks just solves a Pass.
 	// WebAuthn-only by construction (s.credCorr is nil for PAT/agent — see NewServer).
 	if s.credCorr != nil {
+		// Count fan-out on EVERY route (so a farm cannot launder its subnet count by warming
+		// up on unmarked routes)…
 		s.credCorr.Observe("cred:"+credID, clientSubnet(r), sid, s.nowFn())
-		if subnets, _ := s.credCorr.Stats("cred:" + credID); subnets > s.credFanoutCap {
+		// …but only WITHHOLD the trust-upgrade on attested routes. On a balanced/strict route
+		// a valid possession proof past the cap still fast-paths, so a roaming/CGNAT/VPN human
+		// on one passkey is never newly challenged on ordinary traffic (restores the
+		// "unmarked routes untouched" invariant); the farm still reverts to Pass exactly where
+		// the operator priced the ALLOW.
+		if subnets, _ := s.credCorr.Stats("cred:" + credID); route.attestFloor && subnets > s.credFanoutCap {
 			s.sink.Emit(audit.Record{
 				EventType: audit.EventWebAuthnVerified, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
 				TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Mode: "enforce", KeyID: "k1",
-				FailReason: "webauthn credential " + short + " fan-out " + itoaInt(subnets) + " subnets > cap " + itoaInt(s.credFanoutCap) + " — trust-upgrade withheld, routed to Pass",
+				FailReason: "webauthn credential " + short + " fan-out " + itoaInt(subnets) + " subnets > cap " + itoaInt(s.credFanoutCap) + " — trust-upgrade withheld on attested route, routed to Pass",
 			})
-			return false // credential-farm fan-out: no fast-path; fall through to the floor
+			return false // credential-farm fan-out on a priced route: no fast-path; fall through to the floor
 		}
 	}
 	return s.trustUpgrade(w, r, sid, route, audit.EventWebAuthnVerified, "webauthn", "verified WebAuthn assertion, credential "+short)

@@ -58,20 +58,32 @@ func (cs *cohortShadow) observe(cohortKey string, b signals.BehaviorSummary, sid
 	}
 	cs.mu.Lock()
 	defer cs.mu.Unlock()
-	if len(cs.cohorts) >= cohortSigMax {
-		// Saturated: drop the oldest-touched cohorts rather than grow unbounded.
-		for k, e := range cs.cohorts {
-			if now.Sub(e.updated) > 10*time.Minute {
-				delete(cs.cohorts, k)
-			}
-		}
-	}
 	e := cs.cohorts[cohortKey]
 	if e == nil {
+		if len(cs.cohorts) >= cohortSigMax {
+			// Saturated: sweep idle cohorts, then FAIL-SAFE — if still full, refuse the new
+			// cohort rather than grow unbounded (mirrors NonceCache.Use). Under a fresh-cohort
+			// flood the sweep frees nothing, so this hard cap is what actually bounds memory.
+			for k, ce := range cs.cohorts {
+				if now.Sub(ce.updated) > 10*time.Minute {
+					delete(cs.cohorts, k)
+				}
+			}
+			if len(cs.cohorts) >= cohortSigMax {
+				return
+			}
+		}
 		e = &cohortEntry{sigs: map[string]map[string]struct{}{}, flagged: map[string]struct{}{}}
 		cs.cohorts[cohortKey] = e
 	}
 	e.updated = now
+	// Per-(cohort,sig) sid set cap: once the improbable-cluster signal has been captured at
+	// minCohort and flagged, STOP adding sids. The sid is a client-chosen cookie, so a fixed
+	// fp+subnet+signature with rotating sids would otherwise grow this set without bound; and
+	// further sids add zero detection value beyond the flag. This bounds the sharper vector.
+	if _, done := e.flagged[sig]; done {
+		return
+	}
 	set := e.sigs[sig]
 	if set == nil {
 		set = map[string]struct{}{}
@@ -79,10 +91,9 @@ func (cs *cohortShadow) observe(cohortKey string, b signals.BehaviorSummary, sid
 	}
 	set[sid] = struct{}{}
 	if len(set) >= cs.minCohort {
-		if _, done := e.flagged[sig]; !done {
-			e.flagged[sig] = struct{}{}
-			log.Printf("cohort.shadow: %d unlinked sessions in one cohort share an identical motor signature (suspected shared behavior generator — SHADOW, verdict unaffected)", len(set))
-		}
+		e.flagged[sig] = struct{}{}
+		log.Printf("cohort.shadow: %d unlinked sessions in one cohort share an identical motor signature (suspected shared behavior generator — SHADOW, verdict unaffected)", len(set))
+		delete(e.sigs, sig) // signal captured; release the sid set (the flag is the durable record)
 	}
 }
 

@@ -110,31 +110,53 @@ func IssueStepUpReceipt(key []byte, sid string, exp time.Time) string {
 	return base64.RawURLEncoding.EncodeToString([]byte(payload)) + "." + base64.RawURLEncoding.EncodeToString(mac)
 }
 
-// verifyStepUpReceipt checks a step-up receipt: signature, "sur" domain, expiry,
-// and session binding. Returns true only for a valid, unexpired receipt for sid.
-func verifyStepUpReceipt(key []byte, token, expectSID string, now time.Time) bool {
+// receiptReason distinguishes WHY a step-up receipt failed so the control plane can
+// emit an actionable audit reason (a valid-signature/sid-mismatch is a cross-plane
+// misconfiguration masquerading as a human soft-lockout, NOT an attacker) rather than
+// a blanket DENY.
+type receiptReason string
+
+const (
+	receiptOK          receiptReason = ""
+	receiptBad         receiptReason = "bad_sig"      // absent/forged/malformed
+	receiptExpired     receiptReason = "expired"      // past TTL even with skew leeway
+	receiptSIDMismatch receiptReason = "sid_mismatch" // valid receipt, but for a different hsid (diverged cookie jar)
+)
+
+// receiptSkew tolerates modest clock drift between the Core (which mints the receipt)
+// and the Gate (which verifies it) on a multi-host deployment, so a solved Pass is not
+// rejected purely for a ~minute of NTP skew. Deployments should still run NTP.
+const receiptSkew = 120 * time.Second
+
+// verifyStepUpReceipt checks a step-up receipt: signature, "sur" domain, expiry (with
+// clock-skew leeway), and session binding — returning a typed reason. receiptOK only
+// for a valid, unexpired receipt bound to expectSID.
+func verifyStepUpReceipt(key []byte, token, expectSID string, now time.Time) receiptReason {
 	dot := strings.IndexByte(token, '.')
 	if dot < 0 {
-		return false
+		return receiptBad
 	}
 	pb, err1 := base64.RawURLEncoding.DecodeString(token[:dot])
 	mb, err2 := base64.RawURLEncoding.DecodeString(token[dot+1:])
 	if err1 != nil || err2 != nil {
-		return false
+		return receiptBad
 	}
 	payload := string(pb)
 	if subtle.ConstantTimeCompare(mb, tokenMAC(key, payload)) != 1 {
-		return false
+		return receiptBad
 	}
 	parts := strings.Split(payload, "|")
 	if len(parts) != 3 || parts[0] != "sur" {
-		return false
+		return receiptBad
 	}
 	exp, _ := strconv.ParseInt(parts[2], 10, 64)
-	if now.Unix() > exp {
-		return false
+	if now.Add(-receiptSkew).Unix() > exp {
+		return receiptExpired
 	}
-	return expectSID != "" && subtle.ConstantTimeCompare([]byte(parts[1]), []byte(expectSID)) == 1
+	if expectSID == "" || subtle.ConstantTimeCompare([]byte(parts[1]), []byte(expectSID)) != 1 {
+		return receiptSIDMismatch
+	}
+	return receiptOK
 }
 
 // tokenReason enumerates why a token check failed (audit + HR-28).

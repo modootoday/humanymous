@@ -50,6 +50,29 @@ func TestLoadRoutesAttestedValidAndCatchAllRefused(t *testing.T) {
 	}
 }
 
+// Ceiling-guard #1 startup preconditions: an attested route without a shared token key is
+// a FATAL misconfig (unredeemable Pass loop); without a verifier it is a non-fatal warning.
+func TestValidateAttestedRoutes(t *testing.T) {
+	attested := map[string]string{"/transfer": "attested", "/browse": "balanced"}
+	if _, err := validateAttestedRoutes(attested, false, true); err == nil {
+		t.Fatal("attested route without a shared HMN_TOKEN_KEY must be a fatal error")
+	}
+	warns, err := validateAttestedRoutes(attested, true, false)
+	if err != nil {
+		t.Fatalf("attested route with a shared key must not error: %v", err)
+	}
+	if len(warns) != 1 {
+		t.Fatalf("attested route without a verifier must warn once, got %d", len(warns))
+	}
+	warns, err = validateAttestedRoutes(attested, true, true)
+	if err != nil || len(warns) != 0 {
+		t.Fatalf("attested route with shared key + verifier must be clean: warns=%d err=%v", len(warns), err)
+	}
+	if _, err := validateAttestedRoutes(map[string]string{"/x": "balanced"}, false, false); err != nil {
+		t.Fatalf("non-attested routes must never error: %v", err)
+	}
+}
+
 func TestLoadRoutesMalformed(t *testing.T) {
 	p := writeTemp(t, "/login strict extra\n")
 	if _, err := loadRoutes(p); err == nil {

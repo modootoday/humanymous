@@ -81,7 +81,10 @@ func (r *Registry) GC(now time.Time) {
 	}
 }
 
-// Stats returns (subnets, sessions) currently associated with a key (for tests).
+// Stats returns (subnets, sessions) currently associated with a key. It is the
+// production read for the Gate's ceiling-guard #2 per-credential /24 fan-out cap
+// (internal/gate webauthnGate) — NOT a test-only helper — so removing it silently
+// disables that cap.
 func (r *Registry) Stats(key string) (int, int) {
 	r.mu.Lock()
 	defer r.mu.Unlock()

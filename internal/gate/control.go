@@ -192,11 +192,22 @@ func (c *ControlPlane) handleStepUp(w http.ResponseWriter, r *http.Request) {
 	}
 	now := c.nowFn()
 	receipt := r.Header.Get(stepUpReceiptHeader)
-	if !verifyStepUpReceipt(c.tokenKey, receipt, sid, now) {
+	if reason := verifyStepUpReceipt(c.tokenKey, receipt, sid, now); reason != receiptOK {
+		// A VALID-signature receipt whose sid does not match this request's hsid is the
+		// fingerprint of a diverged cookie jar (Core Pass not co-served in the Gate's cookie
+		// scope) — a real human who genuinely solved the Pass now loops. Surface it as an
+		// actionable misconfig, distinct from an absent/forged/expired receipt, so operators
+		// are not blind to a human soft-lockout that reads like a blocked attacker.
+		msg := "step-up: missing/invalid Pass receipt (" + string(reason) + ")"
+		if reason == receiptSIDMismatch && receipt != "" {
+			msg = "step-up receipt sid mismatch — Core Pass likely not co-served in the Gate cookie jar (hsid diverged); real human may loop on the attested route"
+		} else if reason == receiptExpired {
+			msg = "step-up receipt expired (check Core↔Gate clock skew / NTP; the client can re-solve for a fresh receipt)"
+		}
 		c.sink.Emit(audit.Record{
 			EventType: audit.EventTokenBindingMismatch, Actor: audit.Actor{Kind: "subject", IDPsn: c.pseudo(sid, sid)},
 			TenantID: "control", RouteClass: "control", Verdict: string(VerdictDeny), Mode: "enforce",
-			FailReason: "step-up: missing/invalid Pass receipt", KeyID: "k1",
+			FailReason: msg, KeyID: "k1",
 		})
 		http.Error(w, "invalid or missing step-up receipt", http.StatusForbidden)
 		return

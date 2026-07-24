@@ -217,6 +217,49 @@ func TestStepUpEndpointMintsProof(t *testing.T) {
 	}
 }
 
+// TestStepUpCrossPlaneKeyMismatch: a receipt minted by a Core with a DIFFERENT token key
+// (the exact multi-process misconfig the startup guard warns about) fails signature at the
+// gate's /stepup — no hmn_su minted. Covers the key-mismatch failure mode in-process.
+func TestStepUpCrossPlaneKeyMismatch(t *testing.T) {
+	srv, _, _, _, _, _ := buildAttestStack(t, 0)
+	now := srv.nowFn()
+	sid := "keymismatch"
+	// Core mints with a key that does NOT match the gate's shared key.
+	receipt := IssueStepUpReceipt([]byte("a-totally-different-core-key!!!!"), sid, now.Add(2*time.Minute))
+	r := aReq("POST", "/__hmn/stepup", "198.51.100.41:1", "Chrome/126", "hsid="+sid)
+	r.Header.Set(stepUpReceiptHeader, receipt)
+	w := serve(srv, r)
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("a receipt signed with a mismatched key must be refused (403), got %d", w.Code)
+	}
+	for _, c := range w.Result().Cookies() {
+		if c.Name == stepUpCookie {
+			t.Fatal("no hmn_su may be minted for a key-mismatched receipt")
+		}
+	}
+}
+
+// TestStepUpCrossPlaneSidDivergence: a validly-signed receipt for the Core's hsid but a
+// request carrying a DIFFERENT gate hsid (diverged cookie jar) is refused as a sid mismatch
+// (self-diagnosing), not silently mistaken for a forged/absent receipt. Covers the
+// cross-origin hsid divergence failure mode in-process.
+func TestStepUpCrossPlaneSidDivergence(t *testing.T) {
+	srv, _, key, _, _, _ := buildAttestStack(t, 0)
+	now := srv.nowFn()
+	// Receipt correctly signed (shared key) but bound to the CORE's session id…
+	receipt := IssueStepUpReceipt(key, "core-side-sid", now.Add(2*time.Minute))
+	// …while the request carries the GATE's diverged hsid.
+	r := aReq("POST", "/__hmn/stepup", "198.51.100.43:1", "Chrome/126", "hsid=gate-side-sid")
+	r.Header.Set(stepUpReceiptHeader, receipt)
+	if w := serve(srv, r); w.Code != http.StatusForbidden {
+		t.Fatalf("a sid-diverged receipt must be refused (403), got %d", w.Code)
+	}
+	// The typed reason must classify this as a sid mismatch (the actionable misconfig signal).
+	if r := verifyStepUpReceipt(key, receipt, "gate-side-sid", now); r != receiptSIDMismatch {
+		t.Fatalf("a valid receipt for a different sid must report sid_mismatch, got %q", r)
+	}
+}
+
 // TestWebAuthnFanoutCap (ceiling-guard #2): one credential fast-paths from up to the
 // cap of distinct /24s; beyond it the trust-upgrade is withheld and the request falls
 // to the floor (challenge). Degrades to CHALLENGE, never DENY.
@@ -238,6 +281,67 @@ func TestWebAuthnFanoutCap(t *testing.T) {
 	}
 	if c := code(subnets[2]); c != http.StatusUnauthorized {
 		t.Fatalf("subnet #3 beyond the fan-out cap must revert to the floor (401 challenge), got %d", c)
+	}
+}
+
+// TestWebAuthnFanoutCapUnmarkedRoutesUntouched: past the cap, a valid possession proof
+// STILL fast-paths on an ordinary (balanced) route — the cap withholds the upgrade only
+// on attested routes, so a roaming human on one passkey isn't newly challenged on browse
+// traffic. Regression guard for fanout-cap-hits-unmarked-routes.
+func TestWebAuthnFanoutCapUnmarkedRoutesUntouched(t *testing.T) {
+	srv, _, _, _, priv, credID := buildAttestStack(t, 2)
+	var counter uint32
+	hit := func(path, addr string) int {
+		counter++
+		r := aReq("GET", path, addr, "Chrome/126")
+		r.Header.Set("Webauthn-Assertion", signAssertion(t, priv, credID, counter))
+		return serve(srv, r).Code
+	}
+	// Blow past the cap across 4 distinct /24s, all on a BALANCED route.
+	hit("/browse", "203.0.113.1:1")
+	hit("/browse", "203.0.114.1:1")
+	hit("/browse", "203.0.115.1:1")
+	if c := hit("/browse", "203.0.116.1:1"); c != http.StatusOK {
+		t.Fatalf("past the cap on a balanced route the possession proof must still fast-path (200), got %d", c)
+	}
+	// …but the very next hit on the ATTESTED route is demoted (fan-out already counted).
+	if c := hit("/transfer", "203.0.117.1:1"); c != http.StatusUnauthorized {
+		t.Fatalf("on the attested route the over-cap credential must revert to Pass (401), got %d", c)
+	}
+}
+
+// TestNewServerRefusesAttestedCatchAll: defense-in-depth — a programmatic Config that
+// maps the attestation floor onto the catch-all prefix fails closed at construction.
+func TestNewServerRefusesAttestedCatchAll(t *testing.T) {
+	alog := audit.NewLog(audit.Config{NodeID: "t", HMACKey: []byte("k"), CheckpointEvery: 4})
+	sink := audit.NewSink(alog)
+	vault := audit.NewVault()
+	verdicts := NewVerdictStore(time.Minute)
+	for _, prefix := range []string{"/", ""} {
+		cfg := Config{Upstream: "http://up", ControlPath: "/__hmn/", TokenKey: []byte(attestTokenKey), Routes: map[string]string{prefix: "attested"}}
+		if _, err := NewServer(cfg, sink, vault, verdicts, http.NewServeMux()); err == nil {
+			t.Fatalf("NewServer must refuse attested on catch-all prefix %q", prefix)
+		}
+	}
+}
+
+// TestCohortShadowBounded: under a fresh-cohort flood the map never exceeds its cap, and
+// a flagged (cohort,sig) releases its sid set (the flag is the durable record).
+func TestCohortShadowBounded(t *testing.T) {
+	cs := newCohortShadow()
+	now := time.Now()
+	b := signals.BehaviorSummary{Mouse: signals.MouseFeatures{Samples: 10, MeanCurvature: 0.2}}
+	// A fixed cohort+signature with rotating (client-chosen) sids: the sid set must not grow
+	// past minCohort — after the flag fires it is released.
+	for i := 0; i < 5000; i++ {
+		cs.observe("fixed", b, "sid-"+itoaInt(i), now)
+	}
+	sig := behaviorSignature(b)
+	if set := cs.cohorts["fixed"].sigs[sig]; len(set) != 0 {
+		t.Fatalf("a flagged (cohort,sig) must release its sid set, still holds %d", len(set))
+	}
+	if _, flagged := cs.cohorts["fixed"].flagged[sig]; !flagged {
+		t.Fatal("the cohort should have flagged")
 	}
 }
 
@@ -287,12 +391,21 @@ func TestStepUpTokenVerify(t *testing.T) {
 	if r := verifyStepUpToken(key, vt, "bindX", "sidX", now, "e1"); r == tokenOK {
 		t.Fatal("a verdict token must never verify as a step-up proof")
 	}
-	// Receipt round-trip + session binding.
+	// Receipt round-trip + session binding + typed reasons.
 	rc := IssueStepUpReceipt(key, "sidX", now.Add(time.Minute))
-	if !verifyStepUpReceipt(key, rc, "sidX", now) {
-		t.Fatal("valid receipt should verify")
+	if r := verifyStepUpReceipt(key, rc, "sidX", now); r != receiptOK {
+		t.Fatalf("valid receipt should verify, got %q", r)
 	}
-	if verifyStepUpReceipt(key, rc, "sidOther", now) {
-		t.Fatal("receipt must be session-bound")
+	if r := verifyStepUpReceipt(key, rc, "sidOther", now); r != receiptSIDMismatch {
+		t.Fatalf("receipt for a different sid must report sid_mismatch, got %q", r)
+	}
+	if r := verifyStepUpReceipt(key, rc, "sidX", now.Add(90*time.Second)); r != receiptOK {
+		t.Fatalf("a receipt within the clock-skew leeway must still verify, got %q", r)
+	}
+	if r := verifyStepUpReceipt(key, rc, "sidX", now.Add(10*time.Minute)); r != receiptExpired {
+		t.Fatalf("a receipt past TTL+skew must report expired, got %q", r)
+	}
+	if r := verifyStepUpReceipt(key, "garbage", "sidX", now); r != receiptBad {
+		t.Fatalf("a malformed receipt must report bad_sig, got %q", r)
 	}
 }

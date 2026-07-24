@@ -123,7 +123,8 @@ func DifficultyFor(risk float64) int {
 	}
 }
 
-// Encode/Decode a challenge as a compact header value "seed:difficulty:bucket".
+// Encode renders a challenge as a compact header value "seed:difficulty:bucket"
+// (Decode is the inverse).
 func (c Challenge) Encode() string {
 	return fmt.Sprintf("%s:%d:%d", c.Seed, c.Difficulty, c.Bucket)
 }

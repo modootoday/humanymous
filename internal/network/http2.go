@@ -76,25 +76,7 @@ func EngineFromH2(f H2Fingerprint) string {
 	if hasMaxConc && m[4] == 65535 {
 		return EngineGo
 	}
-	if len(f.Settings) == 0 {
-		return EngineUnknown
-	}
 	return EngineUnknown
-}
-
-// pseudoOrderCode maps a pseudo-header name to its Akamai abbreviation.
-func pseudoOrderCode(name string) string {
-	switch name {
-	case ":method":
-		return "m"
-	case ":authority":
-		return "a"
-	case ":scheme":
-		return "s"
-	case ":path":
-		return "p"
-	}
-	return ""
 }
 
 // SortedSettingIDs returns setting ids sorted (helper for stable comparison).

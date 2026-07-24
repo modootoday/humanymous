@@ -1,6 +1,7 @@
 package gate
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -12,6 +13,11 @@ import (
 	"github.com/modootoday/humanymous/internal/audit"
 	"github.com/modootoday/humanymous/internal/correlation"
 )
+
+// errAttestedCatchAll is returned by NewServer when the attestation floor
+// (ceiling-guard #1) is mapped onto a catch-all/root prefix — flooring an entire
+// site's browse traffic to Pass is a misconfiguration, refused fail-closed at boot.
+var errAttestedCatchAll = errors.New("gate: the \"attested\" preset (attestation floor) is refused on the catch-all/root prefix — mark specific high-value routes (e.g. /checkout), not the whole site")
 
 // gate.go is the two-plane reverse proxy handler (SoT-19). It routes the
 // reserved control-plane namespace locally, enforces the sticky verdict at the
@@ -44,7 +50,6 @@ type Server struct {
 	patVerifier     *PATVerifier          // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
 	webauthn        *WebAuthnRegistry     // WebAuthn credential registry (PLAN-08 R2); nil = feature off
 	anomaly         *anomalyShadow        // PLAN-08 R5 shadow anomaly observer (log-only); nil = off
-	hasCredVerifier bool                  // ceiling-guard #1: ≥1 possession verifier configured (attestation shortcut available)
 	credCorr        *correlation.Registry // ceiling-guard #2: per-WebAuthn-credential /24 fan-out tracker
 	credFanoutCap   int                   // ceiling-guard #2: distinct /24s per credential before its fast-path reverts to Pass
 	nowFn           func() time.Time
@@ -190,11 +195,16 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		webauthn:        cfg.WebAuthnCreds,                      // WebAuthn credential registry (PLAN-08 R2), nil = off
 		nowFn:           time.Now,
 	}
-	// Ceiling-guard #1: a possession verifier (Web Bot Auth / PAT / WebAuthn) gives an
-	// attestFloor route an ATTESTATION shortcut past the Pass. With none configured the
-	// floor still holds — it just degrades to a Pass-for-everyone friction wall (audited
-	// at startup by cmd/gate). Either way scoring-ALLOW alone no longer fast-paths.
-	s.hasCredVerifier = cfg.AgentKeys != nil || cfg.PATIssuers != nil || cfg.WebAuthnCreds != nil
+	// Ceiling-guard #1 defense-in-depth: refuse the attestation floor on a catch-all
+	// (root/empty) prefix at CONSTRUCTION, not only in the CLI routes loader. A programmatic
+	// or alternate Config.Routes population would otherwise bypass cmd/gate/routes.go and
+	// Pass-wall an entire site — the exact misconfiguration the ceiling-guard meeting rules
+	// out. Fail closed so the operator sees it at boot, never in production.
+	for prefix, preset := range cfg.Routes {
+		if presetByName(preset).attestFloor && (normalizeMatchPath(prefix) == "/" || prefix == "") {
+			return nil, errAttestedCatchAll
+		}
+	}
 	// Ceiling-guard #2: bound a single WebAuthn credential's /24 fan-out so a stolen/shared
 	// passkey fronting a proxy farm reverts to paying Pass friction past N subnets. Only
 	// armed when WebAuthn is configured (PAT keyids are unlinkable-by-design and agent keys
