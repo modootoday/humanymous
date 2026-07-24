@@ -79,14 +79,14 @@ jobs:
       # Supply-chain: scan the release images for known-vulnerable OS/deps
       # (audit SUP-1 / OpenSSF Scorecard). Fail only on FIXABLE High/Critical.
       - name: Trivy image scan (core)
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: humanymous/core:local
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
       - name: Trivy image scan (gate)
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: humanymous/gate:local
           severity: HIGH,CRITICAL
