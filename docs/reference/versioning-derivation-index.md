@@ -109,6 +109,7 @@ Paths are repo-relative from `docs/`.
 | `start-here/developer.md` | SoT-29 |
 | `how-to/key-management.md` | SoT-22, SoT-28 |
 | `how-to/upgrade-migration.md` | SoT-22 |
+| `how-to/cut-a-release.md` | SoT-37 |
 | `how-to/observability-siem.md` | SoT-25 |
 
 ### This batch (P2)

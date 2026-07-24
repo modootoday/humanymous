@@ -24,7 +24,7 @@ The commit types since the last tag decide the bump:
 | Commits since the last tag | Bump | Example |
 |----------------------------|------|---------|
 | Any `feat:` | **minor** — `0.1.0 → 0.2.0` | a new capability |
-| Only `fix:` / `perf:` / `harden:` / `docs:` | **patch** — `0.1.0 → 0.1.1` | fixes, hardening, docs |
+| Only `fix:` / `perf:` / `harden:` / `security:` / `docs:` | **patch** — `0.1.0 → 0.1.1` | fixes, hardening, docs |
 | Any commit with a `!` or a `BREAKING CHANGE:` footer | **major** — `0.1.0 → 1.0.0` | an incompatible change |
 
 Before `1.0.0` the project is pre-stable: a breaking change may bump the minor rather than the major, at the maintainer's discretion. Preview what a version would contain with `make changelog-unreleased`.
