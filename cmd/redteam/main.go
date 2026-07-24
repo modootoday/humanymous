@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Command redteam is an aggressive Red-team client that attacks the anti-bypass
 // systems directly (SoT-07/12). It controls the TLS fingerprint (uTLS) and RIT
 // tokens precisely to attempt evasions a browser cannot, so the Blue engine's

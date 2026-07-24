@@ -1,22 +1,36 @@
 humanymous
-Copyright (c) 2026 The humanymous Authors
+Copyright 2026 The humanymous Authors
 
-This product is licensed under the BSD 3-Clause License. See the LICENSE file.
+This product is licensed under the Apache License, Version 2.0 (the "License").
+You may not use this product except in compliance with the License. A copy of the
+License is in the LICENSE file at the repository root, and at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied.
+
+"humanymous" and the humanymous marks and logos are trademarks of the humanymous
+Authors. The Apache License does not grant permission to use them; see TRADEMARK.md.
 
 --------------------------------------------------------------------------------
-Third-party software included in the distributed engine and Gate binaries:
+Third-party software included in the distributed engine and Gate binaries (full
+per-module notices in THIRD_PARTY_LICENSES.md):
 
   github.com/refraction-networking/utls   BSD-3-Clause
   github.com/andybalholm/brotli           MIT
-  github.com/klauspost/compress           BSD-3-Clause
+  github.com/klauspost/compress           BSD-3-Clause (+ Apache-2.0 / BSD-2 vendored parts)
   golang.org/x/crypto                     BSD-3-Clause
   golang.org/x/net                        BSD-3-Clause
   golang.org/x/sys                        BSD-3-Clause
   golang.org/x/text                       BSD-3-Clause
+  The Go standard library & wasm_exec.js  BSD-3-Clause (Copyright 2009 The Go Authors)
 
 Each module's full license text is in that module's own LICENSE file (available
 in the Go module cache and in the module's source repository). All are permissive
-licenses that allow redistribution with attribution.
+licenses that allow redistribution with attribution and are compatible with the
+Apache License 2.0 under which humanymous is distributed.
 
 --------------------------------------------------------------------------------
 The defensive red-team test harness under test/ (NOT part of the distributed

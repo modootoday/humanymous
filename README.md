@@ -60,7 +60,7 @@ perfect — the goal is to *raise the cost of automation*, not to claim a perfec
 
 ## What this is — and is not
 
-Read this before you evaluate or deploy. This is a **BSD-3-Clause reference/sample** anti-bot
+Read this before you evaluate or deploy. This is an **Apache-2.0 reference/sample** anti-bot
 detection engine that **raises the cost of automation against the commodity bot long tail**.
 It is not a turnkey production bot defense and not a silver bullet.
 

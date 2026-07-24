@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Command server is the humanymous Core detection engine: it captures TLS/HTTP
 // signals, merges them with the WASM/JS client report, scores the session and
 // returns a verdict. See sots/ and plan/ for the full design.

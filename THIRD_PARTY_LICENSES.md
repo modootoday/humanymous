@@ -1,10 +1,11 @@
 # Third-party licenses
 
-humanymous is distributed under the [BSD-3-Clause LICENSE](LICENSE). The distributed
+humanymous is distributed under the [Apache License 2.0](LICENSE). The distributed
 binaries and container images statically link the Go modules below, and the web assets
-include Go's `wasm_exec.js` loader. Each is a permissive licence; their copyright and
-permission notices are reproduced here as required, and this file ships alongside
-`LICENSE` and `NOTICE` in every release binary and image.
+include Go's `wasm_exec.js` loader. Each is a permissive licence compatible with the
+Apache License 2.0; their copyright and permission notices are reproduced here as
+required, and this file ships alongside `LICENSE` and `NOTICE` in every release binary
+and image.
 
 For the full verbatim licence text of any module, see its source repository (linked)
 or the copy in your Go module cache (`go env GOMODCACHE`).

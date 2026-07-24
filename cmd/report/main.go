@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Command report aggregates test/e2e/results.json into docs/report.html
 // (plan/05). Timestamp is passed in so the report package stays deterministic.
 package main

@@ -14,15 +14,11 @@ For install prerequisites, see [Install requirements](./install-requirements.md)
 
 ## Project license (humanymous Gate itself)
 
-**The reference repository ships no license.** The repository root contains `README.md` only — there is **no `LICENSE`, `NOTICE`, or `COPYING` file** for humanymous Gate.
+**Apache License 2.0.** humanymous is released under the Apache License, Version 2.0; the full text is in the [`LICENSE`](../../LICENSE) file at the repository root, accompanied by [`NOTICE`](../../NOTICE) and [`THIRD_PARTY_LICENSES.md`](../../THIRD_PARTY_LICENSES.md).
 
-Because no license text is present, the project license for humanymous Gate is:
+The Apache License 2.0 is a permissive license: you may use, modify, redistribute, and build on the source in open or closed products, provided you retain the copyright notice, the license text, and the `NOTICE` attributions, and state significant changes you make. It adds two things a BSD/MIT license does not: an **explicit patent grant** from each contributor (with defensive termination if you initiate patent litigation over the software), and an explicit statement that it grants **no trademark rights** — relevant for a detection engine that embodies potentially patentable techniques and carries a distinct brand. It is compatible with the project's own third-party dependencies, which are BSD-3-Clause and MIT (below).
 
-**BSD-3-Clause.** humanymous is released under the BSD 3-Clause License; the full text is in the [`LICENSE`](../../LICENSE) file at the repository root.
-
-BSD-3-Clause is a permissive license: you may use, modify, redistribute, and build on the source in open or closed products, provided you retain the copyright notice and the license text and do not use the project's name to endorse derived products without permission. It aligns with the project's own third-party dependencies, which are BSD-3-Clause and MIT (below).
-
-> **Note:** If you redistribute a build, keep the `LICENSE` file with it and generate an attribution/`NOTICE` bundle covering the third-party modules listed below.
+> **Note:** If you redistribute a build, keep the `LICENSE` and `NOTICE` files with it and carry the attribution bundle covering the third-party modules listed below. The Apache License does not license the "humanymous" name or logos; see [`TRADEMARK.md`](../../TRADEMARK.md).
 
 ---
 

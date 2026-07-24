@@ -78,9 +78,9 @@ func (h HeaderInfo) Order() []string {
 }
 
 // NOTE: a JA4H HTTP-fingerprint implementation was removed here (PLAN-08
-// deployment-review). JA4H is covered by the FoxIO License 1.1, NOT the BSD-3-Clause
-// that covers the JA4 TLS fingerprint (internal/network/ja4.go). It was dead code
-// (no production caller, never emitted as a scoring signal), so it is deleted rather
-// than carried as a licence liability. If ever revived, add explicit FoxIO License
-// 1.1 attribution to NOTICE/THIRD_PARTY_LICENSES.md and confirm BSD-3 compatibility
-// first.
+// deployment-review). JA4H is covered by the FoxIO License 1.1, unlike the JA4 TLS
+// fingerprint in internal/network/ja4.go which is this project's own code under the
+// project's Apache-2.0 license. It was dead code (no production caller, never emitted
+// as a scoring signal), so it is deleted rather than carried as a licence liability.
+// If ever revived, add explicit FoxIO License 1.1 attribution to
+// NOTICE/THIRD_PARTY_LICENSES.md and confirm Apache-2.0 compatibility first.

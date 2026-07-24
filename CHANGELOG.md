@@ -79,6 +79,19 @@ does not restore a detection tell. PoW is deliberately **not** used as the frict
 runs backwards and would lock out real/no-JS/assistive humans first); the friction is the interactive
 Pass.
 
+### Changed — license: BSD-3-Clause → Apache-2.0
+
+- Relicensed the project from BSD-3-Clause to the **Apache License 2.0**. For a defensive
+  detection engine that embodies potentially patentable techniques and invites adoption +
+  contribution, Apache-2.0 adds an **explicit patent grant** (with defensive termination) and an
+  explicit **no-trademark** statement that BSD/MIT lack — and it is the de-facto norm for comparable
+  security tooling (ModSecurity, Coraza, Falco, OWASP). All dependencies remain permissive
+  (BSD-3-Clause/MIT) and compatible. Updated `LICENSE`, `NOTICE`, `THIRD_PARTY_LICENSES.md`, the
+  licensing/standards docs (fixing a stale "repo ships no license" contradiction), the README, and
+  SPDX headers on the command entry points; added `TRADEMARK.md` for the "humanymous" brand
+  (Apache-2.0 grants no trademark rights). Dual-use remains handled in the docs (defensive-only
+  positioning, rules of engagement), not by a license restriction.
+
 ### Changed — automated releases & changelog
 
 - Release notes and this changelog are now generated from Conventional Commits by

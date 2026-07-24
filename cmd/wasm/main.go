@@ -1,5 +1,7 @@
 //go:build js && wasm
 
+// SPDX-License-Identifier: Apache-2.0
+
 // Command wasm is the browser-side detection engine (GOOS=js GOARCH=wasm). It
 // registers window.__hmDetect() which the JS loader calls to collect L1-L3
 // signals, then keeps the Go runtime alive. See sots/01-client-signals.md.

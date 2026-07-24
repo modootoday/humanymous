@@ -31,7 +31,7 @@ Gate in the reference build is a **reference implementation, not a production-ha
 
 > **Note:** Work factors above are transcribed as `N=2^12` (pseudonym stretch) and `N=2^15` (keystore seal). The exact SPDX license of each third-party Go dependency is **not asserted here** — confirm each from that module's own LICENSE file before publishing a vendor bill-of-materials.
 
-> **TODO(verify):** The reference repository contains no `LICENSE`, `NOTICE`, or `COPYING` file, so the project license of Gate itself is unspecified. Do not state a license for Gate in a procurement response until the operator/vendor supplies one.
+> **Note:** humanymous Gate is released under the **Apache License 2.0** (`LICENSE`, `NOTICE`, `THIRD_PARTY_LICENSES.md` at the repository root). See [Support, licensing & open-source notices](support-licensing.md) for the full statement and the third-party dependency bill-of-materials.
 
 ### GDPR controls
 

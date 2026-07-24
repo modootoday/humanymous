@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Command gate is the humanymous Gate reverse-proxy security layer (SoT-19..28,31,32):
 // (Browser) -> (humanymous Gate: TLS terminate + streaming HTML injection +
 // L1-L7 scoring + edge enforcement + tamper-evident audit) -> (origin app).
