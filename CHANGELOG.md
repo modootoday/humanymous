@@ -7,6 +7,8 @@ are called out in a dedicated **Security** subsection with upgrade urgency.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-25
+
 ### Added — production hardening (reference → production gap closure)
 
 A multi-agent production-readiness census (prod-delta inventory + web-researched standards) drove a batch
@@ -133,9 +135,9 @@ Pass.
   run. See [Cut a release](docs/how-to/cut-a-release.md). Earlier hand-written entries in this file are
   preserved as curated narrative.
 
-## [0.1.0] - 2026-07-24
+### Pre-release deployment-suitability hardening (rounds 1–5)
 
-First tagged release. Pre-release hardening driven by (a) an initial multi-reviewer Red/Blue +
+Pre-release hardening driven by (a) an initial multi-reviewer Red/Blue +
 judge code audit (see [`docs/reference/security-audit.md`](docs/reference/security-audit.md)),
 then (b) **five progressively deeper deployment-suitability reviews** (multi-agent adversarial
 panels with independent 3-vote verification). Each round found and fixed real defects; the
