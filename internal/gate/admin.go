@@ -324,24 +324,12 @@ func (s *Server) adminMetrics(w http.ResponseWriter) {
 	// Audit-projection drops: a Tier-1/2 sink (Redis/ClickHouse) shedding records under
 	// backpressure/outage is otherwise only a once-a-minute WARN log — alert on any increase.
 	fmt.Fprintf(w, "# HELP hmn_gate_audit_projection_dropped_total Audit records dropped by Tier-1/2 projection sinks (the WAL remains the durability authority).\n# TYPE hmn_gate_audit_projection_dropped_total counter\nhmn_gate_audit_projection_dropped_total %d\n", s.projectionDropped())
-	// Audit-chain integrity: the single highest-severity alert. 1 = verified, 0 = a mismatch
-	// (hash/HMAC/STH break) or the writer rewrote history so a witness co-sign no longer holds.
-	// Re-verifies the in-memory chain per scrape; keep the scrape interval modest (>=15s).
-	ires := log.SelfVerify()
-	integrityOK := 0
-	if ires.OK {
-		integrityOK = 1
-	}
-	witnessed := 0
-	if cps := log.Checkpoints(); len(cps) > 0 {
-		if wpub := log.WitnessPublicKey(); wpub != nil {
-			if _, ok := audit.VerifyWitness(cps, wpub); ok {
-				witnessed = 1
-			}
-		}
-	}
-	fmt.Fprintf(w, "# HELP hmn_gate_audit_integrity_ok Audit chain verifies end-to-end (1) or a mismatch was found (0).\n# TYPE hmn_gate_audit_integrity_ok gauge\nhmn_gate_audit_integrity_ok %d\n", integrityOK)
-	fmt.Fprintf(w, "# HELP hmn_gate_audit_witnessed The latest checkpoints carry a valid independent-witness co-signature (1) or not (0).\n# TYPE hmn_gate_audit_witnessed gauge\nhmn_gate_audit_witnessed %d\n", witnessed)
+	// Audit-chain integrity + witness attestation: the highest-severity alert. Served from a
+	// cache refreshed OFF the request path (RefreshIntegrityMetrics on the maintenance ticker)
+	// so a full-chain verify — O(log size), and in WAL mode a disk read under the audit lock —
+	// never runs on a scrape and cannot stall verdict seals.
+	fmt.Fprintf(w, "# HELP hmn_gate_audit_integrity_ok Audit chain verifies end-to-end (1) or a mismatch was found (0).\n# TYPE hmn_gate_audit_integrity_ok gauge\nhmn_gate_audit_integrity_ok %d\n", b01(s.integrityOK.Load()))
+	fmt.Fprintf(w, "# HELP hmn_gate_audit_witnessed The latest checkpoints carry a valid independent-witness co-signature (1) or not (0).\n# TYPE hmn_gate_audit_witnessed gauge\nhmn_gate_audit_witnessed %d\n", b01(s.auditWitnessed.Load()))
 	fmt.Fprintf(w, "# HELP hmn_gate_killswitch Kill switch engaged (1) or not (0).\n# TYPE hmn_gate_killswitch gauge\nhmn_gate_killswitch %d\n", b01(s.killSwitch.Load()))
 	fmt.Fprintf(w, "# HELP hmn_gate_monitor Effective global monitor mode (1) or enforcing (0).\n# TYPE hmn_gate_monitor gauge\nhmn_gate_monitor %d\n", b01(s.monitorOn()))
 	fmt.Fprintf(w, "# HELP hmn_gate_goroutines Current goroutine count.\n# TYPE hmn_gate_goroutines gauge\nhmn_gate_goroutines %d\n", runtime.NumGoroutine())

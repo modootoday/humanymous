@@ -16,7 +16,7 @@ The [release workflow](cut-a-release.md) does not just publish images to `ghcr.i
 
 This page gives you the exact adopter commands to check all three **before** you run the image, and explains what each one proves. Verification is the point: a pull alone tells you *what tag you got*, not *who built it or from what*. These checks tell you the rest.
 
-> **Important:** cosign is **required tooling and is not bundled** with the images or this repo. Install it first — see the [Sigstore cosign install guide](https://docs.sigstore.dev/system_config/installation/). `docker` / `docker buildx` is only needed for the SBOM cross-check in step 2b.
+> **Important:** cosign is **required tooling and is not bundled** with the images or this repo. Install it first — see the [Sigstore cosign install guide](https://docs.sigstore.dev/system_config/installation/). `docker buildx` (bundled with modern Docker) is used to read the SBOM + provenance attestations in steps (b) and (c).
 
 ---
 
@@ -66,35 +66,27 @@ cosign verify \
 
 ## b) Fetch and inspect the SBOM
 
-The release attaches an **SPDX SBOM** describing the image's contents. Two equivalent ways to read it:
-
-**With cosign (reads the attached SBOM attestation):**
-
-```bash
-cosign download sbom "$DIGEST"
-```
-
-**With docker buildx (reads the SBOM the build recorded):**
+The release attaches an **SPDX SBOM** describing the image's contents. Read it with docker buildx — the reliable path for a BuildKit-attached attestation:
 
 ```bash
 docker buildx imagetools inspect "$DIGEST" --format '{{json .SBOM}}'
 ```
 
+> **Note:** the SBOM and provenance are **BuildKit attestations** (attached to the image index as an `attestation-manifest`), not `cosign attest` predicates. `cosign download sbom` is deprecated and may not resolve a BuildKit-attached SBOM, so the `docker buildx imagetools` command above is the recommended retrieval. Only the attestation *retrieval* differs — the image **signature** in (a) is still cosign.
+
 **What this proves / is for.** The SBOM is the ingredients list. Pipe it into your own tooling to answer supply-chain questions — "is package *X* at a vulnerable version in this exact image?", diffing the SBOM between two releases, or feeding it to a vulnerability scanner. It is inventory, not a verdict: pair it with the signature check in (a) (proves *who* produced this inventory) and CI's own scanning — the pipeline already gates on `govulncheck` and a Trivy HIGH/CRITICAL (fixable) scan before an image is published.
 
 ---
 
-## c) Verify the SLSA provenance attestation
+## c) Inspect the SLSA provenance
+
+The release attaches **SLSA provenance** (`mode=max`, a BuildKit attestation) recording how the image was built. Read it with docker buildx:
 
 ```bash
-cosign verify-attestation \
-  --type slsaprovenance \
-  --certificate-identity-regexp 'https://github.com/modootoday/humanymous/.github/workflows/release.yml@refs/tags/.*' \
-  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
-  "$DIGEST"
+docker buildx imagetools inspect "$DIGEST" --format '{{json .Provenance}}'
 ```
 
-**What this proves.** The provenance attestation is a signed record of **how the image was built** — the builder (GitHub Actions), the source repository and tag, and the build parameters — and `verify-attestation` checks that this record was signed by the **same** release-workflow identity and issuer as the image itself. Built `mode=max`, it captures the fuller build context. Together with (a) this closes the loop: (a) says "the right workflow signed these bytes"; (c) says "and here is the signed, tamper-evident story of how those bytes were produced, from this repo, at this tag." Inspect the decoded predicate to confirm the `buildDefinition` source and ref are the release you expected.
+**What this proves.** The provenance is a record of **how the image was built** — the builder (GitHub Actions), the source repository and tag, and the build parameters (`buildDefinition`). Confirm its `buildDefinition` source/ref is the release you expected and the builder is GitHub Actions. Because it is a BuildKit attestation (not a `cosign attest` predicate), its authenticity rests on the image-index signature you already verified in (a): (a) proves the release workflow signed this exact index — which *includes* the attestation manifest — and (c) reads the signed-over provenance content. (`cosign verify-attestation --type slsaprovenance …` may also work if your cosign build resolves OCI referrers, but the buildx command is the reliable retrieval.)
 
 ---
 
@@ -104,8 +96,8 @@ Run these in order and stop on the first failure:
 
 1. Resolve the tag to a **digest** and use only the digest afterwards.
 2. `cosign verify …` — right signer, right issuer, signature valid. *(a)*
-3. `cosign verify-attestation --type slsaprovenance …` — provenance signed by the same identity, source/ref as expected. *(c)*
-4. `cosign download sbom …` — capture the SBOM and feed it to your scanner / inventory. *(b)*
+3. `docker buildx imagetools inspect --format '{{json .Provenance}}' …` — provenance `buildDefinition` source/ref as expected. *(c)*
+4. `docker buildx imagetools inspect --format '{{json .SBOM}}' …` — capture the SBOM and feed it to your scanner / inventory. *(b)*
 5. Deploy the **digest** you verified — never re-resolve the tag between verifying and running.
 
 A failure at step 2 or 3 means the image is not authentically a humanymous release (or has been altered) — do not run it, and report it via [`SECURITY.md`](../../SECURITY.md).

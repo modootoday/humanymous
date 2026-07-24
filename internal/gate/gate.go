@@ -47,6 +47,8 @@ type Server struct {
 	killSwitch      atomic.Bool           // runtime global-monitor override (SoT-28 WS9 kill switch)
 	startedAt       time.Time             // process start, for the /metrics uptime gauge
 	droppedFn       func() uint64         // audit-projection drop count for /metrics; nil = 0 (wired from main)
+	integrityOK     atomic.Bool           // cached audit-chain integrity for /metrics (refreshed off the request path)
+	auditWitnessed  atomic.Bool           // cached witness-attestation state for /metrics
 	agentKeys       KeyDirectory          // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
 	agentNonces     *NonceCache           // Web Bot Auth single-use signature nonces (anti-replay)
 	patVerifier     *PATVerifier          // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
@@ -109,6 +111,23 @@ func (s *Server) projectionDropped() uint64 {
 		return 0
 	}
 	return s.droppedFn()
+}
+
+// RefreshIntegrityMetrics recomputes the cached audit-integrity gauges that /metrics serves.
+// It MUST be called off the request path (e.g. the maintenance ticker), never per scrape: a
+// full-chain SelfVerify in WAL mode reads the entire log under the audit lock, which would
+// otherwise stall verdict seals on every Prometheus scrape. Cheap and safe to call
+// periodically.
+func (s *Server) RefreshIntegrityMetrics() {
+	log := s.sink.Log()
+	s.integrityOK.Store(log.SelfVerify().OK)
+	w := false
+	if cps := log.Checkpoints(); len(cps) > 0 {
+		if wpub := log.WitnessPublicKey(); wpub != nil {
+			_, w = audit.VerifyWitness(cps, wpub)
+		}
+	}
+	s.auditWitnessed.Store(w)
 }
 
 // SetKillSwitch flips the runtime global-monitor override (dual-controlled at the
@@ -211,6 +230,7 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		nowFn:           time.Now,
 		startedAt:       time.Now(),
 	}
+	s.integrityOK.Store(true) // a fresh chain verifies; RefreshIntegrityMetrics updates it off the request path
 	// Ceiling-guard #1 defense-in-depth: refuse the attestation floor on a catch-all
 	// (root/empty) prefix at CONSTRUCTION, not only in the CLI routes loader. A programmatic
 	// or alternate Config.Routes population would otherwise bypass cmd/gate/routes.go and

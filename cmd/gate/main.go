@@ -370,6 +370,7 @@ func main() {
 		}
 		return total
 	})
+	srv.RefreshIntegrityMetrics() // seed the cached integrity/witness gauges before the first scrape
 
 	// Seed admin operators with bearer tokens (SoT-28 WS1/WS2). Production issues
 	// these via mTLS client certs or an SSO/operator-CA login; the reference
@@ -493,9 +494,10 @@ func main() {
 		t := time.NewTicker(time.Minute)
 		for range t.C {
 			now := time.Now()
-			srv.GC(now)     // verdicts, bans + strikes + rate windows, sweep bindings, anomaly, cred fan-out
-			store.GC(now)   // control-plane collector store
-			control.GC(now) // control-plane observers (cohort shadow)
+			srv.GC(now)                   // verdicts, bans + strikes + rate windows, sweep bindings, anomaly, cred fan-out
+			store.GC(now)                 // control-plane collector store
+			control.GC(now)               // control-plane observers (cohort shadow)
+			srv.RefreshIntegrityMetrics() // recompute the cached audit-integrity /metrics gauges OFF the request path
 			var dropped uint64
 			for _, p := range projections {
 				if d, ok := p.(interface{ Dropped() uint64 }); ok {

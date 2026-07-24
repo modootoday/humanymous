@@ -108,16 +108,15 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 3
             failureThreshold: 3
-          lifecycle:
-            preStop:
-              # Give kube-proxy/Ingress time to remove this pod from endpoints
-              # before the process starts draining, so no new conns land mid-drain.
-              # The binary itself also drains on SIGTERM; this just de-races the LB.
-              # NOTE: distroless has no /bin/sleep. If your image lacks it, delete
-              # this hook and rely on readinessProbe (readyz -> 503) + the in-process
-              # SIGTERM drain, which already covers graceful shutdown.
-              exec:
-                command: ["/sleep", "5"]
+          # A preStop LB-deregistration de-race is DISABLED by default: the published image is
+          # distroless and ships NO /bin/sleep, so an exec hook would fail (FailedPreStopHook).
+          # Graceful shutdown is already covered by the readinessProbe (readyz -> 503 on drain,
+          # so the endpoint is pulled before the drain) + the in-process SIGTERM drain bounded
+          # by -shutdown-grace. Only if YOUR image bundles a shell/sleep, re-enable:
+          #   lifecycle:
+          #     preStop:
+          #       exec:
+          #         command: ["/bin/sleep", "5"]
           resources:
             requests:
               cpu: "100m"

@@ -18,12 +18,12 @@ The reference Gate gives you five observability surfaces. Three are on the authe
 1. **The audit stream** — `GET /__hmn/admin/audit`, structured JSON records of every edge decision, with server-side filters and a paging cursor. This is your primary machine-readable feed, and the source of per-verdict rates (see below).
 2. **The Ledger Overview KPIs** — a human-facing live feed of allow/challenge/deny decisions with rollup counters, at `https://localhost:8445/__hmn/admin/console`. See the [Ledger tour](audit-console-tour.md).
 3. **Chain-integrity status** — the Integrity view and `GET /__hmn/admin/integrity`, which verify the tamper-evident audit log live (append-only hash chain + per-record HMAC + Ed25519 Signed Tree Heads) using the public key alone.
-4. **Prometheus metrics** — `GET /__hmn/metrics` on the admin plane, process/chain/ban gauges and counters in text-exposition format (see [Scrape process metrics](#scrape-process-metrics-__hmnmetrics)).
+4. **Prometheus metrics** — `GET /__hmn/admin/metrics` on the admin plane, process/chain/ban gauges and counters in text-exposition format (see [Scrape process metrics](#scrape-process-metrics-__hmnmetrics)).
 5. **Liveness and readiness probes** — `GET /__hmn/healthz` and `GET /__hmn/readyz`, unauthenticated on the public edge, for orchestrator probes and load-balancer drain ordering (see [Wire liveness and readiness probes](#wire-liveness-and-readiness-probes)).
 
 ## Where per-verdict rates come from
 
-The metrics endpoint deliberately does **not** emit per-verdict rates (allow/challenge/deny counts). Derive those from the **audit stream** (`GET /__hmn/admin/audit`), which your SIEM already ingests — the audit records carry `verdict`, `risk_score`, `route_class`, and `triggered_rules`, so rates and breakdowns are a query over data you already collect. `/__hmn/metrics` covers the process, chain-growth, and ban-state gauges that a query over the audit stream cannot give you.
+The metrics endpoint deliberately does **not** emit per-verdict rates (allow/challenge/deny counts). Derive those from the **audit stream** (`GET /__hmn/admin/audit`), which your SIEM already ingests — the audit records carry `verdict`, `risk_score`, `route_class`, and `triggered_rules`, so rates and breakdowns are a query over data you already collect. `/__hmn/admin/metrics` covers the process, chain-growth, and ban-state gauges that a query over the audit stream cannot give you.
 
 > **Note on `/health`:** The `/health` route is **not** a Gate health check. It is an *origin application* path that ships mapped to the `off` preset — Gate does not inject or enforce on it. It is a documented **bypass** of detection, not a liveness signal for Gate itself. Use `/__hmn/healthz` for Gate's own liveness; point orchestrator probes there, not at `/health`.
 
@@ -113,14 +113,14 @@ The verification can report these mismatch classes, any of which should page you
 
 `GET /__hmn/admin/integrity` returns `{"node","ok":<bool>,"class":"<mismatch-class>","records":<n>,"checkpoints":<n>,"witnessed":<bool>,"lastSTH":{"treeSize","root"}}`; on failure it adds `divergentSeq`, `detail`, and (if the witness attestation fails) `witnessFailAt`. Alert on `ok:false` or `witnessed:false`. The mismatch classes are `hash-break`, `hmac-invalid`, `seq-gap`, `linkage-break`, `checkpoint-mismatch`, and `node-missing` — see [Verify the audit log](verify-audit-log.md).
 
-## Scrape process metrics (`/__hmn/metrics`)
+## Scrape process metrics (`/__hmn/admin/metrics`)
 
-`GET /__hmn/metrics` exposes Gate's process, chain-growth, and ban-state telemetry in Prometheus text-exposition format (`Content-Type: text/plain; version=0.0.4`). It is served on the **admin plane** and is auth-gated (any role — an Auditor token is enough), so Prometheus must scrape it **with a bearer token**, and behind mTLS if you set `-admin-mtls-ca`.
+`GET /__hmn/admin/metrics` exposes Gate's process, chain-growth, and ban-state telemetry in Prometheus text-exposition format (`Content-Type: text/plain; version=0.0.4`). It is served on the **admin plane** and is auth-gated (any role — an Auditor token is enough), so Prometheus must scrape it **with a bearer token**, and behind mTLS if you set `-admin-mtls-ca`.
 
 ```
 curl --silent \
   --header "Authorization: Bearer ${HMN_ADMIN_TOKEN}" \
-  "https://localhost:8445/__hmn/metrics"
+  "https://localhost:8445/__hmn/admin/metrics"
 ```
 
 The endpoint emits these series:

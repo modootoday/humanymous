@@ -41,7 +41,21 @@ func pass() VerifyResult { return VerifyResult{OK: true, Class: ClassOK} }
 // Used by the admin/integrity endpoint; production runs an independent verifier
 // against a read replica with only the public key (SoT-18 §1 SoD).
 func (l *Log) SelfVerify() VerifyResult {
-	return Verify(l.Records(), l.Checkpoints(), l.hmacKey, l.PublicKey())
+	// Snapshot records + checkpoints under ONE lock so the two views are consistent.
+	// Taking them via separate Records()/Checkpoints() calls (two lock acquisitions) let a
+	// checkpoint that seals between them expose a checkpoints slice ahead of the records
+	// slice, which Verify reports as a spurious ClassCheckpoint mismatch — a false tamper
+	// signal. signPriv/hmacKey are immutable after construction, so they are read lock-free.
+	l.mu.Lock()
+	var recs []Record
+	if l.wal == nil {
+		recs = append([]Record(nil), l.records...)
+	} else if r, err := l.wal.ReadAll(); err == nil {
+		recs = r // on a read error recs stays nil, matching the prior Records() behavior
+	}
+	cps := append([]Checkpoint(nil), l.checkpoints...)
+	l.mu.Unlock()
+	return Verify(recs, cps, l.hmacKey, l.PublicKey())
 }
 
 // Verify replays the chain against the HMAC key and STH public key. The HMAC key

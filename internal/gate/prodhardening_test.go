@@ -122,6 +122,7 @@ func TestAdminMetricsExposition(t *testing.T) {
 	defer up.Close()
 	srv, _ := buildStackWith(t, up.URL, Config{})
 
+	srv.RefreshIntegrityMetrics() // exercise the real (off-request-path) verify + cache
 	w := httptest.NewRecorder()
 	srv.adminMetrics(w)
 	body := w.Body.String()

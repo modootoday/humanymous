@@ -1,6 +1,6 @@
 # humanymous Gate — Prometheus scrape config for the admin-plane metrics endpoint.
 #
-# Gate exposes `GET /__hmn/metrics` in Prometheus text-exposition format on the
+# Gate exposes `GET /__hmn/admin/metrics` in Prometheus text-exposition format on the
 # AUTHENTICATED admin listener (-admin-addr, default 127.0.0.1:8445). It is NOT on
 # the public edge. So the scrape must:
 #   - use `scheme: https` (the admin listener terminates TLS),
@@ -16,7 +16,7 @@
 scrape_configs:
   - job_name: humanymous-gate
     scheme: https
-    metrics_path: /__hmn/metrics
+    metrics_path: /__hmn/admin/metrics
     # Keep the interval modest (>= 15s): each scrape re-verifies the in-memory audit
     # chain (hmn_gate_audit_integrity_ok / hmn_gate_audit_witnessed).
     scrape_interval: 30s

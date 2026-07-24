@@ -10,7 +10,7 @@ how-to — read that guide for the full picture (audit-stream poll-and-forward, 
 
 | File | What it is |
 |------|------------|
-| `prometheus-scrape.yml` | A `scrape_configs` job for `GET /__hmn/metrics` on the **admin** listener: `scheme: https`, the **Auditor** bearer token (read-only), and a dev `tls_config` (`insecure_skip_verify` for the self-signed admin cert — swap for a real CA / mTLS in production). |
+| `prometheus-scrape.yml` | A `scrape_configs` job for `GET /__hmn/admin/metrics` on the **admin** listener: `scheme: https`, the **Auditor** bearer token (read-only), and a dev `tls_config` (`insecure_skip_verify` for the self-signed admin cert — swap for a real CA / mTLS in production). |
 | `alerts.yml` | Prometheus alerting rules. **Structural only — no invented numeric verdict/DENY thresholds.** |
 
 ## What the alerts cover
