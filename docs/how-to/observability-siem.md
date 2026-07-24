@@ -1,3 +1,8 @@
+---
+description: "Pull humanymous Gate edge decisions into your SIEM: poll the authenticated admin audit stream with curl and forward. Candid that the reference has no /metrics or health probe."
+keywords: ["bot detection SIEM integration","observability","admin audit stream","poll-and-forward","chain-integrity verification","Prometheus metrics endpoint absent","health probe absent","pseudonymous audit records","humanymous Gate","self-hosted bot detection","reference implementation","Auditor token RBAC"]
+---
+
 # Observability and SIEM integration
 
 **Quadrant:** How-to. **Audience:** SRE and security engineers wiring humanymous Gate into your monitoring and SIEM.

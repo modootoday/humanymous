@@ -1,5 +1,7 @@
 ---
 title: Deployment cost, latency & operational footprint
+description: "Deployment cost of humanymous Gate: it adds four inline per-request work terms and no published benchmark — a sizing framework to measure in monitor mode."
+keywords: ["humanymous Gate deployment cost","latency and operational footprint","reference implementation","inline reverse proxy","per-request latency","monitor mode measurement","ingress and resource bounds","single-node model","TLS termination cost","audit hash-chain write","capacity planning SRE","no published benchmark"]
 ---
 
 # Deployment cost, latency & operational footprint

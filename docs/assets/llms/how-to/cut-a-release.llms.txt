@@ -73,5 +73,4 @@ An early `v0.1.0` tag exists locally that points at a superseded commit and was 
 ## Related
 
 - [Upgrade, migration & zero-downtime](upgrade-migration.md) — the upgrade posture releases are consumed under.
-- [Versioning & derivation index](../reference/versioning-derivation-index.md) — which surfaces are versioned and what a change to them triggers.
 - [CLI, configuration & policy reference](../reference/cli-config-policy.md) — the `VERSION` build-arg the images self-report.

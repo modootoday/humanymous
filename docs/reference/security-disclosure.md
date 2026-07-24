@@ -1,3 +1,8 @@
+---
+description: "Coordinated-disclosure policy template for a humanymous Gate deployment: how researchers report a vulnerability, what is in scope, and the good-faith safe harbor."
+keywords: ["security vulnerability disclosure policy","coordinated disclosure","humanymous Gate","security.txt template","good-faith safe harbor","responsible disclosure","vulnerability reporting","PGP security contact","in-scope out-of-scope","T4 ceiling"]
+---
+
 # Security vulnerability disclosure policy
 
 **Quadrant:** Reference (policy document). **Audience:** security researchers reporting a vulnerability in humanymous Gate, and buyers doing security due diligence.

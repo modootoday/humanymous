@@ -1,3 +1,8 @@
+---
+description: "Which of the seven detection layers fire per topology: JA3/JA4 TLS fingerprinting runs only when the process terminates raw TLS; behind a CDN it goes inert."
+keywords: ["supported deployment topologies","JA3/JA4 TLS fingerprinting placement","bot detection behind CDN","raw TLS termination ClientHello","Gate reverse proxy vs Core engine","L4 TCP passthrough PROXY protocol v2","single-node vs multi-node scaling","network plane inert","open source bot detection","self-hosted deployment"]
+---
+
 # Supported topologies: where each detection layer is actually active
 
 > **Quadrant:** Reference. **Audience:** integrators and platform engineers deciding *where in their stack* to place humanymous, and evaluators who need to know which detections will and will not fire in their topology before they benchmark.
@@ -78,7 +83,7 @@ Three mechanisms derive a value from wall-clock time buckets and therefore assum
 
 The `attested` preset adds an attestation floor on operator-marked high-value routes: a scoring-ALLOW there is priced to CHALLENGE → Pass unless the session presents possession or a step-up proof. That step-up proof depends on a **topology prerequisite** — it belongs alongside the port and co-location facts in [install requirements](./install-requirements.md#ports), because it is a placement constraint, not a runtime tunable.
 
-The mechanism: on a verified SoT-36 Pass solve the Core mints a session-bound receipt; the Gate redeems it at `POST /__hmn/stepup` and issues the `hmn_su` proof. The receipt is bound **only to the `hsid` session id**. So the Core-Pass front-end and the Gate must serve `hsid` in the **same cookie jar**, or the id the Gate reads will not match the id the receipt was minted for. Note this is **not** a same-origin requirement:
+The mechanism: on a verified Pass solve the Core mints a session-bound receipt; the Gate redeems it at `POST /__hmn/stepup` and issues the `hmn_su` proof. The receipt is bound **only to the `hsid` session id**. So the Core-Pass front-end and the Gate must serve `hsid` in the **same cookie jar**, or the id the Gate reads will not match the id the receipt was minted for. Note this is **not** a same-origin requirement:
 
 | Placement of Core-Pass relative to the Gate | Shared `hsid`? | Result |
 | --- | --- | --- |

@@ -1,3 +1,8 @@
+---
+description: "humanymous's Detection Observatory is a dev-gated, local-only page that renders the engine's own ScoreTrace — the same code that scores each request, not a copy that can drift."
+keywords: ["Detection Observatory architecture","live telemetry bot detection","server-sent events SSE stream","score trace explainability","open source bot detection","self-hosted detection engine","dev-gated loopback tool","ALLOW CHALLENGE DENY verdict","faithful-by-construction","noisy-OR hard-rule promotion"]
+---
+
 # Inside the Detection Observatory: live-telemetry and safety architecture
 
 **Diátaxis quadrant:** Explanation. **Audience:** Red/Blue developers who want to understand how the Detection Observatory streams live telemetry and what makes it trustworthy as a window onto the engine's real decision.

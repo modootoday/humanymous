@@ -1,3 +1,8 @@
+---
+description: "Spec-first, adversarially self-validated: this bot detection method traces every scored signal from written intent to verified verdict, and names its T4 ceiling rather than hiding it."
+keywords: ["bot detection open source","spec-first detection method","adversarial self-validation","red-team your own deployment","seven-layer bot detection","JA3/JA4 TLS fingerprinting","ALLOW CHALLENGE DENY verdict","T4 ceiling","headless browser detection","reference implementation","humanymous Gate"]
+---
+
 <!-- Quadrant: Explanation. -->
 <!-- Audience: evaluators and developers who want to understand the method behind this reference implementation, not just its surface behavior. -->
 

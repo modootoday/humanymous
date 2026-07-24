@@ -1,3 +1,8 @@
+---
+description: "Annotated operator tour of the humanymous Gate Ledger console: what each of the six views answers and how to act from it — a reference implementation, not production-hardened."
+keywords: ["Ledger console tour","humanymous Gate","audit log console","security operator how-to","tamper-evident hash chain","dual-control bans","kill switch","crypto-shred erasure","per-route policy","six Ledger views"]
+---
+
 # Ledger tour for operators
 
 > **How-to / annotated tour.** For a new or occasional on-call operator learning the humanymous Gate Ledger.

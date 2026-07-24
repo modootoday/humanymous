@@ -1,3 +1,8 @@
+---
+description: "How humanymous Gate sees a request: it scores seven browser and TLS layers into one ALLOW / CHALLENGE / DENY verdict at the edge, and names its T4 ceiling."
+keywords: ["how bot detection sees a request","seven-layer bot detection","ALLOW CHALLENGE DENY verdict","JA3/JA4 fingerprinting","HTTP/2 fingerprinting","risk score 0-100","reverse proxy bot detection","hard rule override","T4 ceiling","verdict trust token","open source bot detection"]
+---
+
 # Concepts & Glossary: How Gate sees a request
 
 > **Quadrant:** Explanation + glossary.

@@ -1,3 +1,8 @@
+---
+description: "Gate's /__hmn/ control plane and injected bundle: reserved edge endpoints (loader.js, session, collect, csp-report) plus one add-only HTML loader tag."
+keywords: ["/__hmn/ control plane","injected detection bundle","loader.js","csp-report endpoint","CSP conflict debugging","SPA router collision","admin plane isolation","humanymous Gate reverse proxy","streaming HTML injection","JA3/JA4 same-connection beacon"]
+---
+
 # The `/__hmn/` control plane and the injected detection bundle
 
 > **Quadrant:** Explanation (with an endpoint reference table).

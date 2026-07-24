@@ -1,5 +1,7 @@
 ---
 title: Integration Troubleshooting & FAQ
+description: "Symptom-to-fix guide for humanymous Gate integration errors: self-signed cert warnings, HTTP 421 origin bypass, admin API 404, CHALLENGE'd users, and keystore boot. Reference implementation."
+keywords: ["humanymous Gate troubleshooting","HTTP 421 origin bypass","self-signed certificate warning","admin API 404 bearer token","detection bundle not injecting","keystore boot failure HMN_UNSEAL","CHALLENGE false positive tuning","port already in use","proof-of-work interstitial","reverse-proxy bot detection"]
 ---
 
 # Integration troubleshooting & FAQ

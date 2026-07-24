@@ -1,3 +1,8 @@
+---
+description: "Gate supports GDPR/PIPA DPO workflows — it does not make you compliant — via pseudonymized identifiers, a tamper-evident audit log, and crypto-shred erasure."
+keywords: ["GDPR bot detection","DPO compliance","crypto-shred right-to-erasure","pseudonymized audit log","tamper-evident hash-chained log","RBAC dual-control","PIPA data protection","Ed25519 Signed Tree Head","separation of duties","humanymous Gate"]
+---
+
 # Start here: Compliance / DPO
 
 > **Quadrant:** How-to / navigation hub.

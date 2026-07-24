@@ -1,3 +1,8 @@
+---
+description: "Crypto-shred destroys the per-subject linkage key binding audit-log pseudonyms — DPO-gated, dual-control, with a cancellable hold window. Records stay verifiable."
+keywords: ["crypto-shred","GDPR Art. 17 erasure","right to erasure","cryptographic erasure","linkage key destruction","dual-control DPO erasure","tamper-evident audit log","pseudonymization","PIPA erasure request","humanymous Gate"]
+---
+
 # Right-to-erasure (crypto-shred) operations runbook
 
 **Diátaxis quadrant:** Runbook (operational procedure).

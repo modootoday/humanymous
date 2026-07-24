@@ -1,3 +1,8 @@
+---
+description: "Operator runbook for humanymous Gate's kill switch and bans. The kill switch demotes hard-rule enforcement fleet-wide to monitor; manual bans keep enforcing."
+keywords: ["kill switch runbook","dual-control bans","humanymous Gate","fingerprint vs IP ban","escalating ban ladder","hard-rule enforcement to monitor","on-call operator runbook","residential proxy rotation ban","self-hosted bot detection"]
+---
+
 > **Runbook** — operational procedure for the two-person actions you reach for under pressure.
 > **Audience:** on-call Operator and the Approver they page. You are mid-incident; this page tells you what each control does, what it costs, how to roll it back, and who the distinct second role is that has to commit it.
 

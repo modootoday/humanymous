@@ -1,3 +1,8 @@
+---
+description: "Reference map of humanymous's 47 Red-team bot profiles: 45 must-block bots, one honest T4 detection ceiling, one human baseline, plus seven raw-protocol attacks. Local-only."
+keywords: ["red-team bot detection catalog","bot detection test profiles","must-block bot profiles","T4 detection ceiling","raw-protocol attacks","ALLOW CHALLENGE DENY verdict","Selenium Puppeteer Playwright","headless Chrome detection","human baseline profile","JA3/JA4 fingerprinting"]
+---
+
 # Red-team catalog reference: profiles, raw-protocol attacks and verdict classification
 
 **Quadrant:** Reference (lookup tables). **Audience:** Red-team developers needing the authoritative catalog map and the profile contract.

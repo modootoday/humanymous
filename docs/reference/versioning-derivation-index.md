@@ -1,3 +1,12 @@
+---
+# Maintainer-only index — kept in the repository for maintainers, but NOT published to
+# the public docs site (it is the sole page that references internal SoT-NN identifiers).
+published: false
+sitemap: false
+description: "Maintainer reference: how humanymous Gate docs are versioned — scoring-policy version vs signed config_version — and how each page derives from an internal spec."
+keywords: ["documentation versioning","derivation index","scoring policy version","config_version","release notes changelog","doc change-control","humanymous Gate maintainer","doc governance"]
+---
+
 # Versioning, release notes & SoT→user-doc derivation index
 
 > Reference · Governance — maintainer page. Audience: humanymous Gate maintainers and doc authors.

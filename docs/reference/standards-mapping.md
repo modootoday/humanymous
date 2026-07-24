@@ -1,3 +1,8 @@
+---
+description: "Maps humanymous Gate's reference-build controls to GDPR and PIPA articles and the RFCs they use, plus a repeatable DSAR audit evidence-pack. Controls support your obligations; they do not discharge them."
+keywords: ["GDPR bot detection compliance","PIPA destruction obligations","RFC 8032 Ed25519 audit log","RFC 6962 Merkle Signed Tree Head","RFC 7914 scrypt pseudonymization","crypto-shred right to erasure","DSAR audit evidence pack","tamper-evident audit chain","data protection by design","humanymous Gate reference implementation"]
+---
+
 # Standards and regulatory mapping matrix, plus audit-response evidence pack
 
 **Diátaxis quadrant:** Reference. **Audience:** Data Protection Officers, compliance and legal reviewers, and procurement / vendor-assessment teams.

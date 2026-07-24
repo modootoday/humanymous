@@ -1,14 +1,21 @@
+---
+description: "Pre-release Red/Blue security audit of the humanymous bot detection engine: GO-with-fixes; every confirmed finding remediated, residual T4 detection floor disclosed."
+keywords: ["security audit","open source bot detection","Red/Blue audit","GO with fixes","OWASP ASVS","OWASP WSTG","JA3/JA4 fingerprinting","T4 ceiling","tamper-evident audit chain","remediation summary","humanymous Gate"]
+---
+
 # humanymous — security & code audit report
 
 *Pre-release audit. Method: a multi-reviewer Red/Blue process (adversarial finders per
 dimension, independent verifiers that tried to refute each finding, and a final
-evaluation judge), anchored to the standards in §5. This report is published for
+evaluation judge), anchored to the standards listed in the *Standards referenced*
+section below. This report is published for
 transparency; it is not a certification.*
 
 - **Audit date:** 2026-07-22 · **Target:** `main`
 - **Verdict:** the audit returned *GO with fixes*. **Every confirmed finding
   (High → Low) has since been remediated at the code level** in a pre-release
-  hardening pass; only the accepted/residual risks in §4 remain. The full list of
+  hardening pass; only the accepted/residual risks in the *Accepted / residual risk*
+  section remain. The full list of
   applied fixes is in the [CHANGELOG](../../CHANGELOG.md) *Security* / *Fixed* sections.
 
 ## 1. Scope & asset inventory

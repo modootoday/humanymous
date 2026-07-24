@@ -1,5 +1,7 @@
 ---
 title: Cut a Release (semver tags + automated changelog)
+description: "Push a SemVer git tag (vX.Y.Z) and GitHub Actions builds signed core and gate images while git-cliff writes the changelog from Conventional Commits."
+keywords: ["cut a release","SemVer git tag","git-cliff changelog","Conventional Commits","GitHub Actions release workflow","cosign keyless signing","SLSA provenance SBOM","ghcr.io core gate images","Keep a Changelog","humanymous maintainer"]
 ---
 
 # Cut a release
@@ -70,5 +72,4 @@ An early `v0.1.0` tag exists locally that points at a superseded commit and was 
 ## Related
 
 - [Upgrade, migration & zero-downtime](upgrade-migration.md) — the upgrade posture releases are consumed under.
-- [Versioning & derivation index](../reference/versioning-derivation-index.md) — which surfaces are versioned and what a change to them triggers.
 - [CLI, configuration & policy reference](../reference/cli-config-policy.md) — the `VERSION` build-arg the images self-report.

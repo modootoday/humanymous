@@ -1,3 +1,8 @@
+---
+description: "How humanymous builds its Red catalog: 47 local-only attack fixtures plus a Go uTLS client that test your own detector against a human baseline and the honest T4 ceiling."
+keywords: ["Red catalog architecture","bot detection test catalog","uTLS raw-protocol client","human baseline false-positive accounting","T4 detection ceiling","JA4 fingerprint consistency","RIT anti-tamper","Selenium Puppeteer Playwright planted artifacts","hard rules verdict model","self-hosted bot detection"]
+---
+
 # The Red catalog: architecture of the bundled attack profiles and the raw-protocol client
 
 > Diátaxis quadrant: **Explanation**. Audience: **Red-team developers** who want to understand how the bundled defensive test catalog and the Go raw-protocol client are built — and what each profile proves about your own detector.

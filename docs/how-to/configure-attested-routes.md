@@ -1,5 +1,7 @@
 ---
 title: Configure Attested Routes (the Attestation Floor)
+description: "Mark a high-value route attested and Gate prices the ALLOW: an unattested ALLOW is demoted to a humanymous Pass, always CHALLENGE→Pass, never DENY. Does not close the T4 ceiling."
+keywords: ["configure attested routes","attestation floor","humanymous Gate","step-up proof (hmn_su)","WebAuthn passkey","Privacy Pass","Web Bot Auth","HMN_TOKEN_KEY shared key","high-value route protection","CHALLENGE to Pass demotion","detect bots without CAPTCHA","T4 ceiling"]
 ---
 
 # Configure attested routes (the attestation floor)

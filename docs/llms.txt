@@ -41,6 +41,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 - [Console localization & product-surface language](https://humanymous.net/reference/console-localization.html)
 - [Data Processing & Personal-Data Inventory (RoPA-ready)](https://humanymous.net/reference/data-processing-inventory.html)
 - [Deployment cost, latency & operational footprint](https://humanymous.net/reference/deployment-cost-latency.html)
+- [Glossary](https://humanymous.net/reference/glossary.html)
 - [Hard rules, verdicts and signal-ID reference](https://humanymous.net/reference/hard-rules-verdicts.html)
 - [Install, system requirements & supported platforms](https://humanymous.net/reference/install-requirements.html)
 - [On-call quick reference card](https://humanymous.net/reference/on-call-quick-reference.html)
@@ -53,7 +54,6 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 - [Standards and regulatory mapping matrix, plus audit-response evidence pack](https://humanymous.net/reference/standards-mapping.html)
 - [Support, licensing & open-source notices](https://humanymous.net/reference/support-licensing.html)
 - [Supported topologies: where each detection layer is actually active](https://humanymous.net/reference/supported-topologies.html)
-- [Versioning, release notes & SoT→user-doc derivation index](https://humanymous.net/reference/versioning-derivation-index.html)
 
 ## Explanation
 
@@ -82,6 +82,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 ## Help
 
 - [Challenge accessibility statement](https://humanymous.net/help/challenge-accessibility.html)
+- [FAQ](https://humanymous.net/help/faq.html)
 - [Why am I seeing this?](https://humanymous.net/help/why-am-i-seeing-this.html)
 
 ## Documentation

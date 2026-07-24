@@ -45,7 +45,7 @@
     - { title: "Security audit", url: "/reference/security-audit.html" }
     - { title: "Security disclosure", url: "/reference/security-disclosure.html" }
     - { title: "Support & licensing", url: "/reference/support-licensing.html" }
-    - { title: "Versioning & derivation", url: "/reference/versioning-derivation-index.html" }
+    - { title: "Glossary", url: "/reference/glossary.html" }
 
 - label: "Explanation"
   items:
@@ -67,5 +67,6 @@
     - { title: "Kill switch & bans", url: "/runbooks/kill-switch-and-bans.html" }
     - { title: "Erasure / crypto-shred", url: "/runbooks/erasure-crypto-shred.html" }
     - { title: "On-call quick reference", url: "/reference/on-call-quick-reference.html" }
+    - { title: "FAQ", url: "/help/faq.html" }
     - { title: "Why am I seeing this?", url: "/help/why-am-i-seeing-this.html" }
     - { title: "Challenge accessibility", url: "/help/challenge-accessibility.html" }

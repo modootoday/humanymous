@@ -1,3 +1,8 @@
+---
+description: "You're seeing this because a site's bot-protection check flagged your connection, not you. Complete the quick verification, or contact support to review a block via your incident handle."
+keywords: ["why am I seeing this","bot protection check","complete verification challenge","blocked by bot detection","incident handle","ask support to review a block","screen-reader accessible check","WCAG 2.2 AA","pseudonymous connection signals","humanymous Gate"]
+---
+
 <!--
 Diátaxis quadrant: Explanation (public, end-user facing).
 Audience: a real person who hit a CHALLENGE or DENY — possibly a paying customer, possibly using a screen reader or a privacy browser.

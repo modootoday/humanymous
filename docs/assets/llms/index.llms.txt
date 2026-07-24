@@ -68,7 +68,6 @@ The documentation set, grouped by Diátaxis quadrant.
 - **[On-call quick-reference & KPI thresholds](reference/on-call-quick-reference.md)** — a one-screen cheat sheet: verdicts, top hard rules, the levers, and the ban ladder.
 - **[Support, licensing & OSS notices](reference/support-licensing.md)** — project-license status, third-party dependencies, and where to get help.
 - **[Console localization & product-surface language](reference/console-localization.md)** — what is English today and what localization is a deployment responsibility.
-- **[Versioning & SoT→doc derivation index](reference/versioning-derivation-index.md)** — maintainer governance: versioning, release notes, and which spec each doc derives from.
 - **[Documentation style guide](style-guide.md)** — voice, terminology, and formatting rules for doc authors.
 
 ### Explanation

@@ -1,0 +1,161 @@
+---
+title: FAQ
+description: "Straight answers about humanymous — what it detects, what it cannot (the T4 ceiling), whether it is a WAF/CAPTCHA, production-readiness, privacy, and how it compares."
+---
+
+# Frequently asked questions
+
+Straight answers about what humanymous Gate does, what it does not, and where its limits are.
+
+## What is humanymous?
+
+humanymous Gate is a defensive, open-source reference engine for detecting browser automation and non-human clients. It scores each request across seven layers (L1–L7) and returns one of three verdicts — ALLOW, CHALLENGE, or DENY — which a reverse-proxy enforcement layer called Gate applies at the edge. It is built to reduce automated access to your own application, and every decision is written to a tamper-evident audit log.
+
+## Is it a WAF, a CDN, or a CAPTCHA?
+
+No to all three. Gate is not a web application firewall — it does not inspect payloads for injection or apply signature rules to request bodies. It is not a CDN and does not cache or distribute your content. It is not a CAPTCHA vendor: the score-based proof-of-work (PoW) step it can raise is a computational check on the client, not an image or puzzle test, and PoW is not a CAPTCHA. Gate complements these tools rather than replacing any of them.
+
+## What can it reliably stop?
+
+Gate reliably flags and blocks common automation stacks that carry observable tells: Selenium, Puppeteer, Playwright, and undetected-chromedriver; headless-browser markers; TLS fingerprint parrots that do not match their claimed client; and naive proxy or datacenter-IP farms. These are promoted toward CHALLENGE or DENY by hard rules and layered scoring. Detection reflects a reference-measured signal set, not an unbounded guarantee.
+
+## What can it NOT detect?
+
+The honest boundary is the T4 ceiling: a coherent, real browser engine driven to spoof every layer consistently, arriving from residential proxies, is not solved. When automation presents a genuine engine with matching TLS, fingerprints, and interaction signals over a residential address, there is no clean tell to key on. Gate mitigates this case only by rate and reputation — metering repeat attempts per fingerprint and subnet — not by clean detection. We name this plainly rather than imply it is covered.
+
+## Is it production-ready?
+
+No — humanymous Gate is a reference implementation, not a production-hardened product. It ships an in-memory development certificate, single-node state by default, and ephemeral keys unless you configure a sealed keystore. Behaviors a production install would need — real certificate issuance, shared fleet state, a managed KMS/HSM — are intentionally out of scope and labeled prod-delta throughout the documentation. Treat it as something to study, run, and extend, not as a drop-in production shield.
+
+## Does it use CAPTCHAs?
+
+No. On a score-based CHALLENGE, Gate can raise a proof-of-work interstitial: the client's browser computes a short cryptographic task, and solving it upgrades that verdict to ALLOW. There is no image labeling, no puzzle, and no third-party CAPTCHA service. Proof-of-work never overrides a hard rule — a request denied by a hard rule stays denied regardless of any solve.
+
+## How is a verdict decided?
+
+Each request is scored across layers L1–L7, producing a risk score, and the score maps to ALLOW, CHALLENGE, or DENY. Hard rules can override the score: an engine hard rule (for example, a headless browser with a second automation tell) can promote a verdict to DENY regardless of the numeric band. On strict and attested routes Gate fails closed when it cannot form a verdict, and a proof-of-work solve can upgrade a score-based CHALLENGE — but not a hard-rule verdict — to ALLOW.
+
+## Does it need a CDN, and where does it sit?
+
+Gate sits inline as a reverse proxy in front of your origin: it terminates TLS, streams a detection bundle into your HTML responses, scores the request, enforces the verdict at the edge, and only then forwards allowed traffic to your origin. It does not require a CDN and can run directly ahead of your application. Because part of its signal comes from the raw TLS handshake, it needs to terminate TLS itself rather than sit behind a layer that has already done so.
+
+## What about false positives?
+
+Some real users can be challenged or, rarely, denied — the design accepts a bounded false-positive rate rather than claiming zero. Low-confidence signals are weighted weakly to keep that rate down, and monitor mode lets you observe what would be challenged or denied against real traffic before you enforce. The published false-positive figure is reference-measured and reported against DENY only; it is not a promise for your traffic mix. Heuristic hard rules — such as one keyed on no interaction over a window — can catch some humans, which is why tuning in monitor mode comes first.
+
+## What about privacy and GDPR?
+
+Gate stores raw identifiers only as per-subject pseudonyms — this is pseudonymous, not anonymous — and records decisions in a tamper-evident audit log. It supports right-to-erasure through cryptographic erasure (crypto-shred), which destroys the per-subject linkage key so records can no longer be re-identified while the audit chain stays verifiable. These capabilities help you meet GDPR obligations; they do not by themselves make your overall processing compliant.
+
+## Is it a self-hosted alternative to DataDome, Cloudflare Bot Management, or Kasada?
+
+Not a like-for-like replacement. Those are managed, production commercial services with global networks, hosted threat intelligence, and operational support. humanymous Gate is an open-source reference implementation with a different scope: something you self-host, read end to end, and adapt, with its detection boundaries stated openly. If you need a supported production service today, a commercial vendor is the better fit; if you want a transparent, hackable engine to learn from or build on, that is what this is.
+
+## What licence is it under?
+
+humanymous Gate is released under the Apache License 2.0. You may use, modify, and redistribute it under that licence's terms, including its patent grant and attribution requirements.
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is humanymous?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "humanymous Gate is a defensive, open-source reference engine for detecting browser automation and non-human clients. It scores each request across seven layers (L1-L7) and returns one of three verdicts - ALLOW, CHALLENGE, or DENY - which a reverse-proxy enforcement layer called Gate applies at the edge. It is built to reduce automated access to your own application, and every decision is written to a tamper-evident audit log."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it a WAF, a CDN, or a CAPTCHA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No to all three. Gate is not a web application firewall - it does not inspect payloads for injection or apply signature rules to request bodies. It is not a CDN and does not cache or distribute your content. It is not a CAPTCHA vendor: the score-based proof-of-work (PoW) step it can raise is a computational check on the client, not an image or puzzle test, and PoW is not a CAPTCHA. Gate complements these tools rather than replacing any of them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What can it reliably stop?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gate reliably flags and blocks common automation stacks that carry observable tells: Selenium, Puppeteer, Playwright, and undetected-chromedriver; headless-browser markers; TLS fingerprint parrots that do not match their claimed client; and naive proxy or datacenter-IP farms. These are promoted toward CHALLENGE or DENY by hard rules and layered scoring. Detection reflects a reference-measured signal set, not an unbounded guarantee."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What can it NOT detect?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The honest boundary is the T4 ceiling: a coherent, real browser engine driven to spoof every layer consistently, arriving from residential proxies, is not solved. When automation presents a genuine engine with matching TLS, fingerprints, and interaction signals over a residential address, there is no clean tell to key on. Gate mitigates this case only by rate and reputation - metering repeat attempts per fingerprint and subnet - not by clean detection. We name this plainly rather than imply it is covered."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it production-ready?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No - humanymous Gate is a reference implementation, not a production-hardened product. It ships an in-memory development certificate, single-node state by default, and ephemeral keys unless you configure a sealed keystore. Behaviors a production install would need - real certificate issuance, shared fleet state, a managed KMS/HSM - are intentionally out of scope and labeled prod-delta throughout the documentation. Treat it as something to study, run, and extend, not as a drop-in production shield."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it use CAPTCHAs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. On a score-based CHALLENGE, Gate can raise a proof-of-work interstitial: the client's browser computes a short cryptographic task, and solving it upgrades that verdict to ALLOW. There is no image labeling, no puzzle, and no third-party CAPTCHA service. Proof-of-work never overrides a hard rule - a request denied by a hard rule stays denied regardless of any solve."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is a verdict decided?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each request is scored across layers L1-L7, producing a risk score, and the score maps to ALLOW, CHALLENGE, or DENY. Hard rules can override the score: an engine hard rule (for example, a headless browser with a second automation tell) can promote a verdict to DENY regardless of the numeric band. On strict and attested routes Gate fails closed when it cannot form a verdict, and a proof-of-work solve can upgrade a score-based CHALLENGE - but not a hard-rule verdict - to ALLOW."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it need a CDN, and where does it sit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gate sits inline as a reverse proxy in front of your origin: it terminates TLS, streams a detection bundle into your HTML responses, scores the request, enforces the verdict at the edge, and only then forwards allowed traffic to your origin. It does not require a CDN and can run directly ahead of your application. Because part of its signal comes from the raw TLS handshake, it needs to terminate TLS itself rather than sit behind a layer that has already done so."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about false positives?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Some real users can be challenged or, rarely, denied - the design accepts a bounded false-positive rate rather than claiming zero. Low-confidence signals are weighted weakly to keep that rate down, and monitor mode lets you observe what would be challenged or denied against real traffic before you enforce. The published false-positive figure is reference-measured and reported against DENY only; it is not a promise for your traffic mix. Heuristic hard rules - such as one keyed on no interaction over a window - can catch some humans, which is why tuning in monitor mode comes first."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about privacy and GDPR?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gate stores raw identifiers only as per-subject pseudonyms - this is pseudonymous, not anonymous - and records decisions in a tamper-evident audit log. It supports right-to-erasure through cryptographic erasure (crypto-shred), which destroys the per-subject linkage key so records can no longer be re-identified while the audit chain stays verifiable. These capabilities help you meet GDPR obligations; they do not by themselves make your overall processing compliant."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it a self-hosted alternative to DataDome, Cloudflare Bot Management, or Kasada?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not a like-for-like replacement. Those are managed, production commercial services with global networks, hosted threat intelligence, and operational support. humanymous Gate is an open-source reference implementation with a different scope: something you self-host, read end to end, and adapt, with its detection boundaries stated openly. If you need a supported production service today, a commercial vendor is the better fit; if you want a transparent, hackable engine to learn from or build on, that is what this is."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What licence is it under?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "humanymous Gate is released under the Apache License 2.0. You may use, modify, and redistribute it under that licence's terms, including its patent grant and attribution requirements."
+      }
+    }
+  ]
+}
+</script>

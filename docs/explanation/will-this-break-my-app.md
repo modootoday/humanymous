@@ -1,3 +1,8 @@
+---
+description: "Gate can score and log without enforcing (monitor mode), fails open on safe GET reads, and reverts instantly; an uncertain verdict becomes a PoW challenge, never a silent block."
+keywords: ["bot detection safety","monitor mode","fail-open fail-closed","safe rollout ladder","proof-of-work challenge","false positives","HTML-only injection","kill switch rollback","humanymous Gate","reference implementation"]
+---
+
 # Will this break my app? Safety, fail-open, and monitor-first rollout
 
 > **Diátaxis:** Explanation, plus a how-to rollout runbook.

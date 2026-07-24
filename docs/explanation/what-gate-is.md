@@ -1,3 +1,8 @@
+---
+description: "humanymous Gate is a reverse-proxy engine that scores seven browser signals into an ALLOW / CHALLENGE / DENY verdict. Reference build; names its T4 ceiling."
+keywords: ["humanymous Gate","reverse-proxy bot detection","seven-layer detection","ALLOW CHALLENGE DENY verdict","T4 ceiling","open source bot detection","self-hosted bot detection","JA3/JA4 fingerprinting","proof-of-work interstitial","headless browser detection"]
+---
+
 # What Gate is (and is not): a technical overview
 
 > **Quadrant:** Explanation. **Audience:** engineering leaders, architects, and first-pass evaluators deciding whether humanymous Gate belongs in their stack.

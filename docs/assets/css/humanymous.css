@@ -135,8 +135,7 @@
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   @media (max-width:900px){
     .app{grid-template-columns:1fr}
-    .rail{position:fixed;left:0;top:0;bottom:0;width:280px;z-index:70;transform:translateX(-100%);transition:transform .2s;
-      background:var(--panel);border-right:1px solid var(--border);box-shadow:0 0 40px rgba(0,0,0,.6);overflow-y:auto}
+    .rail{position:fixed;left:0;top:0;bottom:0;width:280px;z-index:70;transform:translateX(-100%);transition:transform .2s;box-shadow:0 0 40px rgba(0,0,0,.5)}
     .rail.open{transform:none}
     .hamburger{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--text);cursor:pointer}
     .scrim{position:fixed;inset:0;background:rgba(4,7,11,.55);opacity:0;pointer-events:none;transition:.2s;z-index:60}

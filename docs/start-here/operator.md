@@ -1,3 +1,8 @@
+---
+description: "Operator guide to running the humanymous Gate Ledger: watch ALLOW / CHALLENGE / DENY, triage false-positive spikes vs abuse surges, and use unblock, ban, and the dual-control kill switch. Reference build."
+keywords: ["humanymous Gate operator","bot detection console","Ledger admin surface","ALLOW CHALLENGE DENY triage","unblock ban kill switch","dual-control approval","false-positive vs abuse surge","incident drill-down","SOC on-call runbook","fingerprint ban ladder"]
+---
+
 # Start here: Operator
 
 > **How-to / navigation hub.** For the security operator or SOC on-call who runs the humanymous Gate Ledger during a shift.
@@ -34,7 +39,7 @@ flowchart TD
 
 > **Note:** Your identity is derived by the server from your bearer token — the Console reads and requests with the Operator token. Dual-control actions need a genuinely distinct Approver token; you cannot approve your own request.
 
-> **Note:** On a route running the `attested` preset, a scoring-ALLOW is deliberately priced to CHALLENGE → Pass by the attestation floor. This is **not** a false positive, **not** a bug, and **not** a lockout — it is the configured behavior for that route. A real human self-resolves it: they solve the SoT-36 Pass, the solve returns a session-bound receipt, the client redeems it at `POST /__hmn/stepup`, and the resulting `hmn_su` proof fast-paths later requests on the route. Neither lever fits here — **Unblock** lifts bans, and there is no ban to lift; the kill switch demotes hard-rule enforcement but does not clear the attestation floor. If unattested humans are looping instead of self-resolving, the cause is a topology one (a diverged `hsid` cookie jar or a missing shared `HMN_TOKEN_KEY`), covered in [Supported topologies](../reference/supported-topologies.md), not an action for the levers.
+> **Note:** On a route running the `attested` preset, a scoring-ALLOW is deliberately priced to CHALLENGE → Pass by the attestation floor. This is **not** a false positive, **not** a bug, and **not** a lockout — it is the configured behavior for that route. A real human self-resolves it: they solve the Pass, the solve returns a session-bound receipt, the client redeems it at `POST /__hmn/stepup`, and the resulting `hmn_su` proof fast-paths later requests on the route. Neither lever fits here — **Unblock** lifts bans, and there is no ban to lift; the kill switch demotes hard-rule enforcement but does not clear the attestation floor. If unattested humans are looping instead of self-resolving, the cause is a topology one (a diverged `hsid` cookie jar or a missing shared `HMN_TOKEN_KEY`), covered in [Supported topologies](../reference/supported-topologies.md), not an action for the levers.
 
 ## Your next 3 reads
 

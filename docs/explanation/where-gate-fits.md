@@ -1,3 +1,8 @@
+---
+description: "humanymous Gate decides human vs automation at the edge, complementary to your WAF, CDN, and CAPTCHA. Reliable on commodity bots; names its T4 ceiling."
+keywords: ["bot detection vs WAF","bot detection vs CAPTCHA","CDN bot manager alternative","self-hosted bot detection","T0-T4 threat model","human-or-automation verdict","proof-of-work not CAPTCHA","cross-layer consistency detection","JA3/JA4 TLS fingerprinting","Selenium Puppeteer detection","T4 ceiling click-farms","where Gate fits"]
+---
+
 # Where Gate fits: vs WAF, CDN bot manager, and CAPTCHA
 
 > **Quadrant:** Explanation. **Audience:** security buyers, threat modelers, and skeptical reviewers deciding where humanymous Gate ("Gate") sits — or does not sit — in an existing stack.

@@ -1,5 +1,7 @@
 ---
 title: Upgrade, Migration & Zero-Downtime
+description: "Upgrade a self-hosted humanymous Gate node: the reference upgrade is a process restart — keep identity with -keystore, monitor-then-enforce, verify the audit chain across it."
+keywords: ["humanymous Gate upgrade","self-hosted bot detection upgrade","keystore identity preservation","monitor mode rollout","zero-downtime upgrade prod-delta","audit chain continuity","signed config_version policy","Ed25519 signing key restart","rolling multi-node upgrade","reference implementation"]
 ---
 
 # Upgrade, migration & zero-downtime

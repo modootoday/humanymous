@@ -9,13 +9,15 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 *Pre-release audit. Method: a multi-reviewer Red/Blue process (adversarial finders per
 dimension, independent verifiers that tried to refute each finding, and a final
-evaluation judge), anchored to the standards in §5. This report is published for
+evaluation judge), anchored to the standards listed in the *Standards referenced*
+section below. This report is published for
 transparency; it is not a certification.*
 
 - **Audit date:** 2026-07-22 · **Target:** `main`
 - **Verdict:** the audit returned *GO with fixes*. **Every confirmed finding
   (High → Low) has since been remediated at the code level** in a pre-release
-  hardening pass; only the accepted/residual risks in §4 remain. The full list of
+  hardening pass; only the accepted/residual risks in the *Accepted / residual risk*
+  section remain. The full list of
   applied fixes is in the [CHANGELOG](../../CHANGELOG.md) *Security* / *Fixed* sections.
 
 ## 1. Scope & asset inventory

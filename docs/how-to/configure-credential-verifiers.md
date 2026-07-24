@@ -1,5 +1,7 @@
 ---
 title: Configure Credential Verifiers (WebAuthn, Privacy Pass, Web Bot Auth)
+description: "Configure credential verifiers in humanymous Gate — WebAuthn, Privacy Pass, Web Bot Auth — so proven clients skip the Pass. Off by default; a missing one is a no-op."
+keywords: ["configure credential verifiers","WebAuthn passkey verification","Privacy Pass Private Access Token RFC 9577","Web Bot Auth RFC 9421","HTTP Message Signatures","proof of possession trust-upgrade","humanymous Gate","attested routes fast-path","allow-listed automated agent","ES256 signature counter"]
 ---
 
 # Configure credential verifiers

@@ -1,3 +1,8 @@
+---
+description: "One scoring engine, three surfaces: the standalone detection engine on :8443, the enforcing Gate reverse proxy on :8444/:8445, and the read-only Detection Observatory. Names which one you are touching."
+keywords: ["standalone detection engine vs Gate proxy","Detection Observatory","humanymous Gate","Ledger admin plane","internal/scoring engine","ALLOW CHALLENGE DENY verdict","ports 8443 8444 8445","reverse proxy edge enforcement","dev-gated playground","open source bot detection"]
+---
+
 # Which piece am I using? Detection engine, Gate proxy, and the Observatory
 
 **Diátaxis quadrant:** Explanation. **Audience:** any first-time reader — especially integrators and Red/Blue developers — who has now met two binaries and three ports and wants to know which one they are actually touching.

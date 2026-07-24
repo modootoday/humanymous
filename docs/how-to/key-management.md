@@ -1,5 +1,7 @@
 ---
 title: Key Management, Rotation & Recovery
+description: "humanymous Gate key management: seal the keystore (SigningSeed, HMACKey, vault) with -keystore + HMN_UNSEAL, size a lost key's blast radius, back it up. Rotation isn't automated in the reference."
+keywords: ["humanymous Gate key management","sealed keystore","HMN_UNSEAL passphrase recovery","SigningSeed Ed25519 audit signing key","HMACKey","key rotation prod-delta","vault pseudonym linkage crypto-shred","verdict-token epoch key rotation","origin-cloaking HMAC key","audit log blast radius backup"]
 ---
 
 # Key management, rotation & recovery

@@ -1,5 +1,7 @@
 ---
 title: Support, licensing & open-source notices
+description: "humanymous Gate ships under Apache-2.0 as a reference implementation, not a production-hardened build; its Go dependencies are BSD-3-Clause and MIT, and support is deployment- and vendor-specific."
+keywords: ["humanymous Gate license","Apache-2.0","reference implementation","third-party open-source notices","BSD-3-Clause","MIT license","go.mod dependencies","open source bot detection","self-hosted","vendor support","THIRD_PARTY_LICENSES","NOTICE attribution"]
 ---
 
 # Support, licensing & open-source notices

@@ -1,3 +1,8 @@
+---
+description: "Red-team a humanymous Gate install you own on loopback: run the bundled bot simulators plus an honest-human baseline, then measure your detection and false-positive rate before you enforce. Defensive-only."
+keywords: ["self-hosted bot detection validation","red-team your own deployment","measure false-positive rate","bot detection true-positive rate","botTPR humanFPR","monitor mode before enforce","Selenium Puppeteer Playwright simulators","honest-human baseline","humanymous Gate","T4 ceiling"]
+---
+
 # Self-validation: red-team your own Gate deployment (defensive-only)
 
 **How-to** (task-oriented, guarded) · **Audience:** operators and evaluators validating an install **they own**, on their own machine.

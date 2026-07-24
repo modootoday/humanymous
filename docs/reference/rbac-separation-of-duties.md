@@ -1,5 +1,7 @@
 ---
 title: RBAC, Separation-of-Duties & Dual-Control Reference
+description: "humanymous Gate admin-plane RBAC and separation of duties: four roles (Auditor, Operator, Approver, DPO), capability-resolution rules, and dual-control that bars self-commit."
+keywords: ["RBAC separation of duties","dual-control admin plane","humanymous Gate admin roles","Auditor Operator Approver DPO","capability-resolution rules","right-to-erasure crypto-shred","fleet-wide kill switch","deny-by-default 404 admin","server-derived actor identity","least privilege bot detection"]
 ---
 
 # RBAC, separation-of-duties and dual-control reference

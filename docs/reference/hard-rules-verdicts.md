@@ -1,3 +1,8 @@
+---
+description: "Lookup tables mapping each verdict — ALLOW, CHALLENGE or DENY — to its edge action, the hard rule that fired it, and drill-down signal IDs. Apache-2.0 build."
+keywords: ["ALLOW CHALLENGE DENY verdict","bot detection hard rules","verdict edge action reference","proof-of-work upgrade rule","attestation-floor demotion","signal ID namespace","risk score bands","engine-plane vs Gate-plane rules","open source bot detection","humanymous Gate"]
+---
+
 # Hard rules, verdicts and signal-ID reference
 
 **Quadrant:** Reference (lookup tables). **Audience:** operators, integrators and evaluators reading a single verdict row and needing to know exactly what fired it and what happened next.
@@ -103,7 +108,7 @@ Evaluated by the detection engine; visualized in the Detection Observatory. List
 
 > **Note:** These rows match the engine's own rule table (what the Observatory shows and what the engine did). For the exact predicate behind each rule (and how to author one), see [Inside the detection engine](../explanation/detection-engine-internals.md).
 
-> **Where request-flood and credential-stuffing velocity are handled (not HR-21).** A request **flood** (`l5.abuse.flood`, a shared `ja4|subnet` bucket) is deliberately **not** a categorical HR-21 DENY — that would lock out a busy carrier-NAT (CGNAT) subnet on strangers' traffic. It instead contributes to a **score-based CHALLENGE** (a real flood is challenged and then rate-limited/banned by the escalating **ban ladder**, SoT-27). High **credential-stuffing / failed-auth velocity** is likewise a rate-limit / ban-ladder concern, not a scoring hard rule. HR-21 covers only the unambiguous HTTP/2 protocol DoS attacks.
+> **Where request-flood and credential-stuffing velocity are handled (not HR-21).** A request **flood** (`l5.abuse.flood`, a shared `ja4|subnet` bucket) is deliberately **not** a categorical HR-21 DENY — that would lock out a busy carrier-NAT (CGNAT) subnet on strangers' traffic. It instead contributes to a **score-based CHALLENGE** (a real flood is challenged and then rate-limited/banned by the escalating **ban ladder**). High **credential-stuffing / failed-auth velocity** is likewise a rate-limit / ban-ladder concern, not a scoring hard rule. HR-21 covers only the unambiguous HTTP/2 protocol DoS attacks.
 
 ### Gate-plane hard rules (HR-22..HR-30)
 

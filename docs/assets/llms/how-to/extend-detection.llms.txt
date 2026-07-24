@@ -141,7 +141,6 @@ go test ./internal/scoring/ -run 'ScoreWithTrace|CombineTrace'
 A rule that fires but is undocumented is a drift bug. When you add or change an engine hard rule:
 
 - Add the row to the **engine-plane** hard-rule table in [Hard rules, verdicts and signal-ID reference](../reference/hard-rules-verdicts.md) — id, verdict, the `why`, and the signal/cross-check IDs it fires on.
-- Add the corresponding derivation-index row so the page's provenance stays current (see [Versioning & derivation index](../reference/versioning-derivation-index.md)).
 - Keep it on the engine plane: HR-1..HR-21 only, no `HR-22..HR-30`.
 
 > **Important:** Reader-facing pages must never carry an internal source-of-truth identifier. Name the signal IDs (`l{n}.{group}.{item}`), the layer tokens (L1–L7), the cross-checks (`x.*`), and the hard rule (HR-N) — nothing else.

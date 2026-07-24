@@ -1,3 +1,8 @@
+---
+description: "If a human-verification step won't complete with your screen reader or keyboard, that's treated as a defect to fix — retry, or contact support with your incident handle."
+keywords: ["challenge accessibility","verification step screen reader","WCAG 2.2 AA bot check","EN 301 549","ADA verification","keyboard-only navigation","incident handle","assistive technology verification","humanymous Gate"]
+---
+
 <!--
 Diátaxis quadrant: Reference (public, end-user facing).
 Audience: a blocked or challenged end user, plus the DPO/buyer who will ask about accessibility.

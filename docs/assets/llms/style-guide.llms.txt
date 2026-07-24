@@ -53,7 +53,7 @@ Blocked traffic belongs to real people until proven otherwise.
 
 - **Forbids:** calling your own traffic "attacker", "hacker", "evil", "bad guy".
 - Use "automated" or "not verified as human" for blocked or challenged traffic.
-- Naming an **abstract** adversary or attacker tier (T0–T4) is allowed in threat-model and self-validation docs. See §5.2.
+- Naming an **abstract** adversary or attacker tier (T0–T4) is allowed in threat-model and self-validation docs. See section 5.2.
 
 ### 1.5 Verifiable
 
@@ -84,7 +84,7 @@ Voice is constant; register shifts by document type. Match the row you are writi
 | Compliance / DPO | Formal, precise, cited | Third person, careful | Aim Grade 12+ where precision demands it. Cite the mechanism. No marketing verbs. Crypto-shred and retention claims are exact or absent. |
 | Explanation (concepts) | Measured, reasoned | Second/third person | Explain trade-offs, including what the design does not solve. Room for "why". |
 | Error microcopy (operator-facing) | Brief, actionable | Second person | Say what happened and the next action. May reference an endpoint or role. |
-| Blocked-user empathy (end-user-facing) | Plain, warm, non-technical | Second person | No internal identifiers. Plain language plus an incident handle. Assume the reader is a human who did nothing wrong. See §6. |
+| Blocked-user empathy (end-user-facing) | Plain, warm, non-technical | Second person | No internal identifiers. Plain language plus an incident handle. Assume the reader is a human who did nothing wrong. See section 6. |
 
 Prose target is Grade 9–11, except compliance and erasure docs, which are formal and precise and may run higher.
 
@@ -125,7 +125,7 @@ Use the canonical form in the left column. The right column is a rejection list,
 
 **Never leak internal signal names** — HR-IDs, JA3/JA4, entropy codes, layer references, dotted signal IDs like `l1.cdp.proxy_leak` — into any end-user-facing string. Those live in operator docs and the Ledger only.
 
-**Never put internal spec identifiers** (the internal "SoT-NN" scheme) or Korean-spec references on any reader-facing page.
+**Never put internal spec identifiers** or Korean-spec references on any reader-facing page.
 
 ---
 
@@ -147,21 +147,21 @@ Never ship: **rampant**, **devastating**, **under constant attack**, **epidemic*
 
 Run this before approving any page. A single failed item blocks the merge.
 
-- [ ] **Bounded claims only.** No banned absolute (§4.1). Every capability claim uses a bounded verb.
+- [ ] **Bounded claims only.** No banned absolute (see section 4.1). Every capability claim uses a bounded verb.
 - [ ] **Candor present.** Where a capability has a false-positive risk or a ceiling, the page states it in the same section, not a distant footnote.
 - [ ] **T4 ceiling honored.** No page implies anti-detect tooling plus human click-farms is solved.
 - [ ] **Reference vs production honesty.** Prod-only behaviour is labeled prod-delta; reference limitations are not hidden.
 - [ ] **Numbers labeled.** Every latency, FPR, or block-rate figure is "reference-measured" or removed.
 - [ ] **Verifiability.** A security claim ships with something to run: an endpoint, a log line, or a test.
 - [ ] **No internal identifiers on reader-facing pages** (HR-IDs / signal IDs / internal spec numbers on end-user strings; internal spec numbers on any reader page).
-- [ ] **Fear-selling test passes** (§5.1).
-- [ ] **Adversary naming resolved** (§5.2).
+- [ ] **Fear-selling test passes** (see section 5.1).
+- [ ] **Adversary naming resolved** (see section 5.2).
 
 ### 5.1 The mechanical fear-selling test
 
 Apply these three checks literally. Each is pass/fail.
 
-1. **Dread-word scan.** Search the diff for the §4.2 list plus any unquantified scale word. Any hit fails until removed or quantified with a reference-measured, cited figure.
+1. **Dread-word scan.** Search the diff for the banned fear-selling list in section 4.2 plus any unquantified scale word. Any hit fails until removed or quantified with a reference-measured, cited figure.
 2. **Neutral-verb check.** Every threat sentence uses a neutral verb (observes, sends, requests, retries) and a bounded outcome verb (flags, challenges, blocks). Verbs that dramatize (slams, floods as hyperbole, devastates) fail.
 3. **Bounded-or-cited frame.** Any statement about how common or severe a threat is must be either (a) bounded and non-alarming, or (b) attached to a cited, reference-measured figure. An uncited scale claim fails.
 
@@ -171,7 +171,7 @@ A threat sentence that passes reads: "Automated clients frequently retry blocked
 
 - **Allowed:** naming an abstract adversary or an attacker tier (T0–T4) in threat-model and self-validation documents. These describe capability classes, not your users.
 - **Never:** calling your own traffic "attacker", "hacker", or any pejorative. Blocked or challenged traffic is "automated" or "not verified as human".
-- **Never:** framing a red-team or probing technique as targeting a third party. Self-validation targets your own deployment only (Defensive-only, §1.6).
+- **Never:** framing a red-team or probing technique as targeting a third party. Self-validation targets your own deployment only (Defensive-only, see section 1.6).
 
 ---
 
@@ -309,12 +309,12 @@ These span every register. The "after" is the shippable form.
 Approve only when all hold:
 
 - Quadrant and audience declared in the first two lines.
-- No banned absolute (§4.1) and no fear-selling word (§4.2).
-- Fear-selling test passes (§5.1); adversary naming resolved (§5.2).
-- Canonical terminology and capitalization (§3); "humanymous" lowercase; full name on first mention.
+- No banned absolute (section 4.1) and no fear-selling word (section 4.2).
+- Fear-selling test passes (section 5.1); adversary naming resolved (section 5.2).
+- Canonical terminology and capitalization (section 3); "humanymous" lowercase; full name on first mention.
 - No internal identifiers on reader-facing pages; no internal spec numbers anywhere reader-facing.
 - Numbers labeled reference-measured or removed.
-- Accessibility rules met (§7): allowlist/denylist, no click-here, no direction- or color-only cues, meaningful link text.
-- End-user vs operator boundary held (§6).
-- Correct admonition tier; crypto-shred and kill switch carry a Warning (§8.2).
+- Accessibility rules met (section 7): allowlist/denylist, no click-here, no direction- or color-only cues, meaningful link text.
+- End-user vs operator boundary held (section 6).
+- Correct admonition tier; crypto-shred and kill switch carry a Warning (see section 8.2).
 - Reserved presets `low` and `api` are **not** documented as working; they fall back to `balanced`.

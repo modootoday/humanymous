@@ -1,3 +1,8 @@
+---
+description: "On-call cheat sheet for humanymous Gate: verdict legend, top hard rules, ban levers, kill switch, and 20-second attack-vs-false-positive triage. Reference build."
+keywords: ["on-call quick reference","humanymous Gate","ALLOW CHALLENGE DENY verdict","hard rules","ban ladder","kill switch dual-control","attack vs false-positive triage","SOC on-call runbook","proof-of-work challenge","residential-proxy rotation"]
+---
+
 # On-call quick reference card
 
 > **Quadrant:** Reference — a one-screen cheat sheet. **Audience:** SOC on-call, during and between incidents.

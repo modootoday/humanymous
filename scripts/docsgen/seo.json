@@ -1,0 +1,864 @@
+{
+ "/": {
+  "description": "Docs for humanymous Gate, an open-source Apache-2.0 reverse-proxy engine that scores seven browser signals into an ALLOW / CHALLENGE / DENY verdict. Stops commodity bots; states its T4 ceiling.",
+  "keywords": [
+   "humanymous Gate documentation",
+   "open source bot detection",
+   "self-hosted DataDome alternative",
+   "seven-layer bot detection",
+   "JA3/JA4 TLS fingerprinting",
+   "ALLOW CHALLENGE DENY verdict",
+   "reverse-proxy bot detection",
+   "headless Chrome detection",
+   "Selenium Puppeteer Playwright detection",
+   "tamper-evident audit log",
+   "T4 ceiling",
+   "Red/Blue test catalog"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Where to start with the docs — humanymous Gate"
+ },
+ "/start-here/integrator.html": {
+  "description": "Put humanymous Gate, the open-source bot-detection reverse proxy, in front of your app: start in monitor mode, enforce per route once you trust the signal.",
+  "keywords": [
+   "bot-detection reverse proxy",
+   "self-hosted bot detection",
+   "humanymous Gate",
+   "monitor mode rollout",
+   "per-route enforcement",
+   "open source bot detection",
+   "-upstream drop-in proxy",
+   "ALLOW CHALLENGE DENY verdict",
+   "reference implementation"
+  ],
+  "ogEyebrow": "INTEGRATOR",
+  "ogHeadline": "Drop Gate in front of your app — humanymous Gate"
+ },
+ "/start-here/operator.html": {
+  "description": "Operator guide to running the humanymous Gate Ledger: watch ALLOW / CHALLENGE / DENY, triage false-positive spikes vs abuse surges, and use unblock, ban, and the dual-control kill switch. Reference build.",
+  "keywords": [
+   "humanymous Gate operator",
+   "bot detection console",
+   "Ledger admin surface",
+   "ALLOW CHALLENGE DENY triage",
+   "unblock ban kill switch",
+   "dual-control approval",
+   "false-positive vs abuse surge",
+   "incident drill-down",
+   "SOC on-call runbook",
+   "fingerprint ban ladder"
+  ],
+  "ogEyebrow": "OPERATOR",
+  "ogHeadline": "Run the Gate from the Ledger"
+ },
+ "/start-here/evaluator.html": {
+  "description": "Reverse-proxy bot detection you can evaluate: it scores each request across seven layers into an ALLOW / CHALLENGE / DENY verdict. Raises the cost of automation; documents its T4 ceiling. Run monitor mode first.",
+  "keywords": [
+   "evaluate open source bot detection",
+   "self-hosted bot detection",
+   "reverse proxy bot detection",
+   "ALLOW CHALLENGE DENY verdict",
+   "monitor mode evaluation",
+   "seven-layer detection",
+   "T4 ceiling",
+   "self-hosted DataDome alternative",
+   "humanymous Gate",
+   "graded risk score"
+  ],
+  "ogEyebrow": "EVALUATOR",
+  "ogHeadline": "Evaluate bot detection for your stack — humanymous"
+ },
+ "/start-here/developer.html": {
+  "description": "Developer hub to extend the open-source bot detection engine: add signals, scoring, and hard rules, then run the local Red test catalog against your own 127.0.0.1.",
+  "keywords": [
+   "bot detection open source",
+   "extend detection engine",
+   "seven-layer scoring",
+   "hard rules verdict",
+   "Red test catalog",
+   "Detection Observatory",
+   "ScoreTrace",
+   "self-hosted bot detection",
+   "Selenium Puppeteer Playwright detection",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "DEVELOPER",
+  "ogHeadline": "Extend the engine and its test catalog"
+ },
+ "/start-here/compliance-dpo.html": {
+  "description": "Gate supports GDPR/PIPA DPO workflows — it does not make you compliant — via pseudonymized identifiers, a tamper-evident audit log, and crypto-shred erasure.",
+  "keywords": [
+   "GDPR bot detection",
+   "DPO compliance",
+   "crypto-shred right-to-erasure",
+   "pseudonymized audit log",
+   "tamper-evident hash-chained log",
+   "RBAC dual-control",
+   "PIPA data protection",
+   "Ed25519 Signed Tree Head",
+   "separation of duties",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "COMPLIANCE / DPO",
+  "ogHeadline": "Compliance & DPO workflows — humanymous Gate"
+ },
+ "/tutorials/quickstart-monitor-mode.html": {
+  "description": "Stand up humanymous Gate in front of a local app in global monitor mode in 30 minutes: Gate scores and logs every request across layers L1–L7 but enforces nothing.",
+  "keywords": [
+   "monitor mode quickstart",
+   "humanymous Gate",
+   "reverse-proxy bot detection",
+   "open source bot detection",
+   "self-hosted DataDome alternative",
+   "detection bundle injection",
+   "tamper-evident audit log",
+   "ALLOW CHALLENGE DENY verdict",
+   "Go reverse proxy",
+   "observe before enforce"
+  ],
+  "ogEyebrow": "INTEGRATOR",
+  "ogHeadline": "Run Gate in monitor mode — humanymous"
+ },
+ "/how-to/deployment-policy-operations.html": {
+  "description": "How to deploy humanymous Gate — a reference build, not production-hardened: production TLS, origin cloaking (421), RBAC admin tokens, and monitor-to-enforce routes.",
+  "keywords": [
+   "deploy humanymous Gate",
+   "self-hosted bot detection operations",
+   "origin cloaking 421",
+   "RBAC admin tokens",
+   "monitor-to-enforce routes",
+   "per-route policy",
+   "rate limit ban ladder",
+   "production TLS reverse proxy",
+   "reference implementation"
+  ],
+  "ogEyebrow": "OPERATOR",
+  "ogHeadline": "Deploy and operate — humanymous Gate"
+ },
+ "/how-to/configure-attested-routes.html": {
+  "description": "Mark a high-value route attested and Gate prices the ALLOW: an unattested ALLOW is demoted to a humanymous Pass, always CHALLENGE→Pass, never DENY. Does not close the T4 ceiling.",
+  "keywords": [
+   "configure attested routes",
+   "attestation floor",
+   "humanymous Gate",
+   "step-up proof (hmn_su)",
+   "WebAuthn passkey",
+   "Privacy Pass",
+   "Web Bot Auth",
+   "HMN_TOKEN_KEY shared key",
+   "high-value route protection",
+   "CHALLENGE to Pass demotion",
+   "detect bots without CAPTCHA",
+   "T4 ceiling"
+  ],
+  "ogEyebrow": "HOW-TO · ATTESTED ROUTES",
+  "ogHeadline": "Configure attested routes — humanymous Gate"
+ },
+ "/how-to/configure-credential-verifiers.html": {
+  "description": "Configure credential verifiers in humanymous Gate — WebAuthn, Privacy Pass, Web Bot Auth — so proven clients skip the Pass. Off by default; a missing one is a no-op.",
+  "keywords": [
+   "configure credential verifiers",
+   "WebAuthn passkey verification",
+   "Privacy Pass Private Access Token RFC 9577",
+   "Web Bot Auth RFC 9421",
+   "HTTP Message Signatures",
+   "proof of possession trust-upgrade",
+   "humanymous Gate",
+   "attested routes fast-path",
+   "allow-listed automated agent",
+   "ES256 signature counter"
+  ],
+  "ogEyebrow": "INTEGRATOR",
+  "ogHeadline": "Wire credential verifiers — humanymous Gate"
+ },
+ "/how-to/cut-a-release.html": {
+  "description": "Push a SemVer git tag (vX.Y.Z) and GitHub Actions builds signed core and gate images while git-cliff writes the changelog from Conventional Commits.",
+  "keywords": [
+   "cut a release",
+   "SemVer git tag",
+   "git-cliff changelog",
+   "Conventional Commits",
+   "GitHub Actions release workflow",
+   "cosign keyless signing",
+   "SLSA provenance SBOM",
+   "ghcr.io core gate images",
+   "Keep a Changelog",
+   "humanymous maintainer"
+  ],
+  "ogEyebrow": "MAINTAINER · RELEASE",
+  "ogHeadline": "Cut a release: tags &amp; changelog"
+ },
+ "/how-to/key-management.html": {
+  "description": "humanymous Gate key management: seal the keystore (SigningSeed, HMACKey, vault) with -keystore + HMN_UNSEAL, size a lost key's blast radius, back it up. Rotation isn't automated in the reference.",
+  "keywords": [
+   "humanymous Gate key management",
+   "sealed keystore",
+   "HMN_UNSEAL passphrase recovery",
+   "SigningSeed Ed25519 audit signing key",
+   "HMACKey",
+   "key rotation prod-delta",
+   "vault pseudonym linkage crypto-shred",
+   "verdict-token epoch key rotation",
+   "origin-cloaking HMAC key",
+   "audit log blast radius backup"
+  ],
+  "ogEyebrow": "OPERATOR",
+  "ogHeadline": "Key management & recovery — humanymous Gate"
+ },
+ "/how-to/verify-audit-log.html": {
+  "description": "Verify humanymous Gate's tamper-evident audit log with the public key alone: append-only hash chain, per-record HMAC, Ed25519 Signed Tree Heads, witness co-sign. Detects tampering; records past the last checkpoint stay in-window until sealed.",
+  "keywords": [
+   "tamper-evident audit log",
+   "audit log verification",
+   "Ed25519 Signed Tree Head",
+   "append-only hash chain",
+   "per-record HMAC",
+   "independent witness co-sign",
+   "public-key verification",
+   "verify without trusting the operator",
+   "crypto-shred erasure",
+   "humanymous Gate",
+   "integrity endpoint",
+   "offline verifier prod-delta"
+  ],
+  "ogEyebrow": "HOW-TO · AUDIT LOG",
+  "ogHeadline": "Verify the audit log — humanymous Gate"
+ },
+ "/how-to/observability-siem.html": {
+  "description": "Pull humanymous Gate edge decisions into your SIEM: poll the authenticated admin audit stream with curl and forward. Candid that the reference has no /metrics or health probe.",
+  "keywords": [
+   "bot detection SIEM integration",
+   "observability",
+   "admin audit stream",
+   "poll-and-forward",
+   "chain-integrity verification",
+   "Prometheus metrics endpoint absent",
+   "health probe absent",
+   "pseudonymous audit records",
+   "humanymous Gate",
+   "self-hosted bot detection",
+   "reference implementation",
+   "Auditor token RBAC"
+  ],
+  "ogEyebrow": "OPERATOR",
+  "ogHeadline": "Wire Gate into your SIEM"
+ },
+ "/how-to/self-validation-red-team.html": {
+  "description": "Red-team a humanymous Gate install you own on loopback: run the bundled bot simulators plus an honest-human baseline, then measure your detection and false-positive rate before you enforce. Defensive-only.",
+  "keywords": [
+   "self-hosted bot detection validation",
+   "red-team your own deployment",
+   "measure false-positive rate",
+   "bot detection true-positive rate",
+   "botTPR humanFPR",
+   "monitor mode before enforce",
+   "Selenium Puppeteer Playwright simulators",
+   "honest-human baseline",
+   "humanymous Gate",
+   "T4 ceiling"
+  ],
+  "ogEyebrow": "EVALUATOR",
+  "ogHeadline": "Red-team your own Gate deployment"
+ },
+ "/how-to/detection-observatory.html": {
+  "description": "Run the Detection Observatory, a dev-only, loopback-only page that streams the L1-L7 scoring live so you watch your own engine reach ALLOW / CHALLENGE / DENY.",
+  "keywords": [
+   "Detection Observatory",
+   "humanymous",
+   "live L1-L7 detection pipeline",
+   "watch bot detection verdict",
+   "hard-rule ladder",
+   "risk score to verdict model",
+   "self-hosted bot detection",
+   "Selenium Puppeteer Playwright profiles",
+   "loopback dev-only tool",
+   "SSE live feed"
+  ],
+  "ogEyebrow": "EVALUATOR",
+  "ogHeadline": "Watch detection happen, layer by layer"
+ },
+ "/how-to/audit-console-tour.html": {
+  "description": "Annotated operator tour of the humanymous Gate Ledger console: what each of the six views answers and how to act from it — a reference implementation, not production-hardened.",
+  "keywords": [
+   "Ledger console tour",
+   "humanymous Gate",
+   "audit log console",
+   "security operator how-to",
+   "tamper-evident hash chain",
+   "dual-control bans",
+   "kill switch",
+   "crypto-shred erasure",
+   "per-route policy",
+   "six Ledger views"
+  ],
+  "ogEyebrow": "OPERATOR",
+  "ogHeadline": "Walk the six Ledger views — humanymous Gate"
+ },
+ "/how-to/upgrade-migration.html": {
+  "description": "Upgrade a self-hosted humanymous Gate node: the reference upgrade is a process restart — keep identity with -keystore, monitor-then-enforce, verify the audit chain across it.",
+  "keywords": [
+   "humanymous Gate upgrade",
+   "self-hosted bot detection upgrade",
+   "keystore identity preservation",
+   "monitor mode rollout",
+   "zero-downtime upgrade prod-delta",
+   "audit chain continuity",
+   "signed config_version policy",
+   "Ed25519 signing key restart",
+   "rolling multi-node upgrade",
+   "reference implementation"
+  ],
+  "ogEyebrow": "OPERATOR",
+  "ogHeadline": "Upgrade & migrate your Gate node — humanymous"
+ },
+ "/how-to/troubleshooting-faq.html": {
+  "description": "Symptom-to-fix guide for humanymous Gate integration errors: self-signed cert warnings, HTTP 421 origin bypass, admin API 404, CHALLENGE'd users, and keystore boot. Reference implementation.",
+  "keywords": [
+   "humanymous Gate troubleshooting",
+   "HTTP 421 origin bypass",
+   "self-signed certificate warning",
+   "admin API 404 bearer token",
+   "detection bundle not injecting",
+   "keystore boot failure HMN_UNSEAL",
+   "CHALLENGE false positive tuning",
+   "port already in use",
+   "proof-of-work interstitial",
+   "reverse-proxy bot detection"
+  ],
+  "ogEyebrow": "INTEGRATOR",
+  "ogHeadline": "Fix Gate integration errors — humanymous Gate"
+ },
+ "/reference/cli-config-policy.html": {
+  "description": "Complete reference for humanymous Gate: every CLI flag, environment variable, and per-route policy preset (off, monitor, balanced, strict, attested). Reference-build defaults, not production-hardened.",
+  "keywords": [
+   "humanymous Gate CLI flags",
+   "per-route policy presets",
+   "reverse-proxy config reference",
+   "monitor mode",
+   "strict and attested routes",
+   "ALLOW CHALLENGE DENY thresholds",
+   "admin API RBAC",
+   "rate limiting and bans",
+   "route table longest-prefix",
+   "self-hosted bot detection config"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Configure humanymous Gate — flags & policy"
+ },
+ "/reference/hard-rules-verdicts.html": {
+  "description": "Lookup tables mapping each verdict — ALLOW, CHALLENGE or DENY — to its edge action, the hard rule that fired it, and drill-down signal IDs. Apache-2.0 build.",
+  "keywords": [
+   "ALLOW CHALLENGE DENY verdict",
+   "bot detection hard rules",
+   "verdict edge action reference",
+   "proof-of-work upgrade rule",
+   "attestation-floor demotion",
+   "signal ID namespace",
+   "risk score bands",
+   "engine-plane vs Gate-plane rules",
+   "open source bot detection",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "VERDICT MODEL",
+  "ogHeadline": "Reading a verdict row — humanymous Gate"
+ },
+ "/reference/supported-topologies.html": {
+  "description": "Which of the seven detection layers fire per topology: JA3/JA4 TLS fingerprinting runs only when the process terminates raw TLS; behind a CDN it goes inert.",
+  "keywords": [
+   "supported deployment topologies",
+   "JA3/JA4 TLS fingerprinting placement",
+   "bot detection behind CDN",
+   "raw TLS termination ClientHello",
+   "Gate reverse proxy vs Core engine",
+   "L4 TCP passthrough PROXY protocol v2",
+   "single-node vs multi-node scaling",
+   "network plane inert",
+   "open source bot detection",
+   "self-hosted deployment"
+  ],
+  "ogEyebrow": "ARCHITECTURE",
+  "ogHeadline": "Where each detection layer is active — humanymous"
+ },
+ "/reference/install-requirements.html": {
+  "description": "humanymous Gate install requirements: Go 1.25.3, one direct dependency (uTLS), pure Go with no CGO, cross-compiles to Linux, macOS, Windows. Reference build needs no database or Redis.",
+  "keywords": [
+   "humanymous Gate install requirements",
+   "Go 1.25.3 toolchain",
+   "refraction-networking/utls uTLS dependency",
+   "pure Go no CGO build",
+   "GOOS GOARCH cross-compile",
+   "bot detection self-hosted install",
+   "reference implementation not production-hardened",
+   "edge and admin listener ports 8444 8445",
+   "no database Redis or KMS",
+   "distroless container build"
+  ],
+  "ogEyebrow": "REFERENCE · INTEGRATOR",
+  "ogHeadline": "What you need to install humanymous Gate"
+ },
+ "/reference/red-team-catalog.html": {
+  "description": "Reference map of humanymous's 47 Red-team bot profiles: 45 must-block bots, one honest T4 detection ceiling, one human baseline, plus seven raw-protocol attacks. Local-only.",
+  "keywords": [
+   "red-team bot detection catalog",
+   "bot detection test profiles",
+   "must-block bot profiles",
+   "T4 detection ceiling",
+   "raw-protocol attacks",
+   "ALLOW CHALLENGE DENY verdict",
+   "Selenium Puppeteer Playwright",
+   "headless Chrome detection",
+   "human baseline profile",
+   "JA3/JA4 fingerprinting"
+  ],
+  "ogEyebrow": "REFERENCE · RED-TEAM CATALOG",
+  "ogHeadline": "Red-team catalog: 47 bot profiles — humanymous"
+ },
+ "/reference/production-vs-reference.html": {
+  "description": "humanymous Gate is an Apache-2.0 reference build, not production-hardened. Each dev-grade stub — ephemeral keys, self-signed TLS — is named with its prod-delta.",
+  "keywords": [
+   "reference implementation vs production-hardened",
+   "prod-delta",
+   "dev-grade stubs",
+   "ephemeral signing keys",
+   "self-signed TLS certificate",
+   "single-node verdict and ban store",
+   "local to production checklist",
+   "humanymous Gate",
+   "sealed keystore HMN_UNSEAL",
+   "crypto-shred"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Reference build vs production — humanymous Gate"
+ },
+ "/reference/deployment-cost-latency.html": {
+  "description": "Deployment cost of humanymous Gate: it adds four inline per-request work terms and no published benchmark — a sizing framework to measure in monitor mode.",
+  "keywords": [
+   "humanymous Gate deployment cost",
+   "latency and operational footprint",
+   "reference implementation",
+   "inline reverse proxy",
+   "per-request latency",
+   "monitor mode measurement",
+   "ingress and resource bounds",
+   "single-node model",
+   "TLS termination cost",
+   "audit hash-chain write",
+   "capacity planning SRE",
+   "no published benchmark"
+  ],
+  "ogEyebrow": "OPERATOR · SIZING",
+  "ogHeadline": "Sizing Gate cost and latency — humanymous Gate"
+ },
+ "/reference/rbac-separation-of-duties.html": {
+  "description": "humanymous Gate admin-plane RBAC and separation of duties: four roles (Auditor, Operator, Approver, DPO), capability-resolution rules, and dual-control that bars self-commit.",
+  "keywords": [
+   "RBAC separation of duties",
+   "dual-control admin plane",
+   "humanymous Gate admin roles",
+   "Auditor Operator Approver DPO",
+   "capability-resolution rules",
+   "right-to-erasure crypto-shred",
+   "fleet-wide kill switch",
+   "deny-by-default 404 admin",
+   "server-derived actor identity",
+   "least privilege bot detection"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Who can do what on the admin plane — humanymous Gate"
+ },
+ "/reference/standards-mapping.html": {
+  "description": "Maps humanymous Gate's reference-build controls to GDPR and PIPA articles and the RFCs they use, plus a repeatable DSAR audit evidence-pack. Controls support your obligations; they do not discharge them.",
+  "keywords": [
+   "GDPR bot detection compliance",
+   "PIPA destruction obligations",
+   "RFC 8032 Ed25519 audit log",
+   "RFC 6962 Merkle Signed Tree Head",
+   "RFC 7914 scrypt pseudonymization",
+   "crypto-shred right to erasure",
+   "DSAR audit evidence pack",
+   "tamper-evident audit chain",
+   "data protection by design",
+   "humanymous Gate reference implementation"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Standards & compliance mapping — humanymous Gate"
+ },
+ "/reference/data-processing-inventory.html": {
+  "description": "Field-by-field GDPR Article 30 (RoPA) inventory of the personal data humanymous Gate observes versus stores: raw signals scored in memory, only scrypt-derived 64-hex pseudonyms at rest. Supports your record; does not certify compliance.",
+  "keywords": [
+   "GDPR Article 30 RoPA",
+   "data processing inventory",
+   "bot detection GDPR",
+   "pseudonymization scrypt 64-hex",
+   "cryptographic erasure crypto-shred",
+   "Article 17 right to erasure",
+   "legitimate interest bot mitigation",
+   "IP JA3/JA4 pseudonym",
+   "DPO record of processing activities",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "REFERENCE · GDPR ROPA",
+  "ogHeadline": "Build your Article 30 RoPA — humanymous Gate"
+ },
+ "/reference/security-audit.html": {
+  "description": "Pre-release Red/Blue security audit of the humanymous bot detection engine: GO-with-fixes; every confirmed finding remediated, residual T4 detection floor disclosed.",
+  "keywords": [
+   "security audit",
+   "open source bot detection",
+   "Red/Blue audit",
+   "GO with fixes",
+   "OWASP ASVS",
+   "OWASP WSTG",
+   "JA3/JA4 fingerprinting",
+   "T4 ceiling",
+   "tamper-evident audit chain",
+   "remediation summary",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Security audit report — humanymous"
+ },
+ "/reference/security-disclosure.html": {
+  "description": "Coordinated-disclosure policy template for a humanymous Gate deployment: how researchers report a vulnerability, what is in scope, and the good-faith safe harbor.",
+  "keywords": [
+   "security vulnerability disclosure policy",
+   "coordinated disclosure",
+   "humanymous Gate",
+   "security.txt template",
+   "good-faith safe harbor",
+   "responsible disclosure",
+   "vulnerability reporting",
+   "PGP security contact",
+   "in-scope out-of-scope",
+   "T4 ceiling"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Report a Gate vulnerability — humanymous"
+ },
+ "/reference/support-licensing.html": {
+  "description": "humanymous Gate ships under Apache-2.0 as a reference implementation, not a production-hardened build; its Go dependencies are BSD-3-Clause and MIT, and support is deployment- and vendor-specific.",
+  "keywords": [
+   "humanymous Gate license",
+   "Apache-2.0",
+   "reference implementation",
+   "third-party open-source notices",
+   "BSD-3-Clause",
+   "MIT license",
+   "go.mod dependencies",
+   "open source bot detection",
+   "self-hosted",
+   "vendor support",
+   "THIRD_PARTY_LICENSES",
+   "NOTICE attribution"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "Licensing and support — humanymous Gate"
+ },
+ "/reference/versioning-derivation-index.html": {
+  "description": "Maintainer reference: how humanymous Gate docs are versioned — scoring-policy version vs signed config_version — and how each page derives from an internal spec.",
+  "keywords": [
+   "documentation versioning",
+   "derivation index",
+   "scoring policy version",
+   "config_version",
+   "release notes changelog",
+   "doc change-control",
+   "humanymous Gate maintainer",
+   "doc governance"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "How the docs are versioned and derived — humanymous"
+ },
+ "/explanation/what-gate-is.html": {
+  "description": "humanymous Gate is a reverse-proxy engine that scores seven browser signals into an ALLOW / CHALLENGE / DENY verdict. Reference build; names its T4 ceiling.",
+  "keywords": [
+   "humanymous Gate",
+   "reverse-proxy bot detection",
+   "seven-layer detection",
+   "ALLOW CHALLENGE DENY verdict",
+   "T4 ceiling",
+   "open source bot detection",
+   "self-hosted bot detection",
+   "JA3/JA4 fingerprinting",
+   "proof-of-work interstitial",
+   "headless browser detection"
+  ],
+  "ogEyebrow": "ARCHITECTURE",
+  "ogHeadline": "What Gate is, and is not — humanymous Gate"
+ },
+ "/explanation/where-gate-fits.html": {
+  "description": "humanymous Gate decides human vs automation at the edge, complementary to your WAF, CDN, and CAPTCHA. Reliable on commodity bots; names its T4 ceiling.",
+  "keywords": [
+   "bot detection vs WAF",
+   "bot detection vs CAPTCHA",
+   "CDN bot manager alternative",
+   "self-hosted bot detection",
+   "T0-T4 threat model",
+   "human-or-automation verdict",
+   "proof-of-work not CAPTCHA",
+   "cross-layer consistency detection",
+   "JA3/JA4 TLS fingerprinting",
+   "Selenium Puppeteer detection",
+   "T4 ceiling click-farms",
+   "where Gate fits"
+  ],
+  "ogEyebrow": "ARCHITECTURE · LIMITS",
+  "ogHeadline": "Where Gate fits vs WAF, CDN, CAPTCHA"
+ },
+ "/explanation/which-piece-am-i-using.html": {
+  "description": "One scoring engine, three surfaces: the standalone detection engine on :8443, the enforcing Gate reverse proxy on :8444/:8445, and the read-only Detection Observatory. Names which one you are touching.",
+  "keywords": [
+   "standalone detection engine vs Gate proxy",
+   "Detection Observatory",
+   "humanymous Gate",
+   "Ledger admin plane",
+   "internal/scoring engine",
+   "ALLOW CHALLENGE DENY verdict",
+   "ports 8443 8444 8445",
+   "reverse proxy edge enforcement",
+   "dev-gated playground",
+   "open source bot detection"
+  ],
+  "ogEyebrow": "ARCHITECTURE",
+  "ogHeadline": "Which piece am I using? — humanymous"
+ },
+ "/explanation/will-this-break-my-app.html": {
+  "description": "Gate can score and log without enforcing (monitor mode), fails open on safe GET reads, and reverts instantly; an uncertain verdict becomes a PoW challenge, never a silent block.",
+  "keywords": [
+   "bot detection safety",
+   "monitor mode",
+   "fail-open fail-closed",
+   "safe rollout ladder",
+   "proof-of-work challenge",
+   "false positives",
+   "HTML-only injection",
+   "kill switch rollback",
+   "humanymous Gate",
+   "reference implementation"
+  ],
+  "ogEyebrow": "INTEGRATOR",
+  "ogHeadline": "Will bot detection break my app? — humanymous Gate"
+ },
+ "/concepts/how-gate-sees-a-request.html": {
+  "description": "How humanymous Gate sees a request: it scores seven browser and TLS layers into one ALLOW / CHALLENGE / DENY verdict at the edge, and names its T4 ceiling.",
+  "keywords": [
+   "how bot detection sees a request",
+   "seven-layer bot detection",
+   "ALLOW CHALLENGE DENY verdict",
+   "JA3/JA4 fingerprinting",
+   "HTTP/2 fingerprinting",
+   "risk score 0-100",
+   "reverse proxy bot detection",
+   "hard rule override",
+   "T4 ceiling",
+   "verdict trust token",
+   "open source bot detection"
+  ],
+  "ogEyebrow": "ARCHITECTURE",
+  "ogHeadline": "How a request moves through humanymous Gate"
+ },
+ "/explanation/detection-engine-internals.html": {
+  "description": "How the humanymous detection engine scores signals into one ALLOW / CHALLENGE / DENY verdict: per-signal severity, noisy-OR combine, a 60% per-layer cap, and 21 first-match hard rules.",
+  "keywords": [
+   "detection engine internals",
+   "bot detection scoring math",
+   "noisy-OR risk score",
+   "per-layer cap",
+   "hard rules HR-1 to HR-21",
+   "ALLOW CHALLENGE DENY verdict",
+   "per-signal vs request verdict",
+   "L6 cross-check",
+   "score trace",
+   "JA3/JA4 UA cross-check"
+  ],
+  "ogEyebrow": "VERDICT MODEL",
+  "ogHeadline": "How the engine reaches a verdict — humanymous"
+ },
+ "/explanation/control-plane-and-bundle.html": {
+  "description": "Gate's /__hmn/ control plane and injected bundle: reserved edge endpoints (loader.js, session, collect, csp-report) plus one add-only HTML loader tag.",
+  "keywords": [
+   "/__hmn/ control plane",
+   "injected detection bundle",
+   "loader.js",
+   "csp-report endpoint",
+   "CSP conflict debugging",
+   "SPA router collision",
+   "admin plane isolation",
+   "humanymous Gate reverse proxy",
+   "streaming HTML injection",
+   "JA3/JA4 same-connection beacon"
+  ],
+  "ogEyebrow": "INTEGRATOR",
+  "ogHeadline": "The /__hmn/ control plane & bundle — humanymous Gate"
+ },
+ "/explanation/observatory-architecture.html": {
+  "description": "humanymous's Detection Observatory is a dev-gated, local-only page that renders the engine's own ScoreTrace — the same code that scores each request, not a copy that can drift.",
+  "keywords": [
+   "Detection Observatory architecture",
+   "live telemetry bot detection",
+   "server-sent events SSE stream",
+   "score trace explainability",
+   "open source bot detection",
+   "self-hosted detection engine",
+   "dev-gated loopback tool",
+   "ALLOW CHALLENGE DENY verdict",
+   "faithful-by-construction",
+   "noisy-OR hard-rule promotion"
+  ],
+  "ogEyebrow": "ARCHITECTURE",
+  "ogHeadline": "Detection Observatory architecture — humanymous"
+ },
+ "/explanation/red-catalog-architecture.html": {
+  "description": "How humanymous builds its Red catalog: 47 local-only attack fixtures plus a Go uTLS client that test your own detector against a human baseline and the honest T4 ceiling.",
+  "keywords": [
+   "Red catalog architecture",
+   "bot detection test catalog",
+   "uTLS raw-protocol client",
+   "human baseline false-positive accounting",
+   "T4 detection ceiling",
+   "JA4 fingerprint consistency",
+   "RIT anti-tamper",
+   "Selenium Puppeteer Playwright planted artifacts",
+   "hard rules verdict model",
+   "self-hosted bot detection"
+  ],
+  "ogEyebrow": "ARCHITECTURE",
+  "ogHeadline": "How the Red catalog is built — humanymous"
+ },
+ "/explanation/transparency-report.html": {
+  "description": "Transparency report for humanymous bot detection: what data it collects, how ALLOW/CHALLENGE/DENY is decided, its GDPR basis, and the T4 ceiling it names.",
+  "keywords": [
+   "humanymous transparency report",
+   "bot detection transparency report",
+   "ALLOW CHALLENGE DENY verdict",
+   "JA3/JA4 data collected",
+   "behavioural timings not keystrokes",
+   "GDPR legitimate interest bot detection",
+   "notice and appeal GDPR Art. 22",
+   "cryptographic-shred erasure",
+   "reference-measured block rate",
+   "T4 detection ceiling",
+   "self-hosted bot detection"
+  ],
+  "ogEyebrow": "EVALUATOR · REFERENCE",
+  "ogHeadline": "Transparency report — humanymous"
+ },
+ "/explanation/how-this-was-built.html": {
+  "description": "Spec-first, adversarially self-validated: this bot detection method traces every scored signal from written intent to verified verdict, and names its T4 ceiling rather than hiding it.",
+  "keywords": [
+   "bot detection open source",
+   "spec-first detection method",
+   "adversarial self-validation",
+   "red-team your own deployment",
+   "seven-layer bot detection",
+   "JA3/JA4 TLS fingerprinting",
+   "ALLOW CHALLENGE DENY verdict",
+   "T4 ceiling",
+   "headless browser detection",
+   "reference implementation",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "REFERENCE",
+  "ogHeadline": "How this bot detection engine was built — humanymous"
+ },
+ "/runbooks/incident-runbooks.html": {
+  "description": "Symptom-indexed on-call runbooks for a humanymous Gate deployment: triage and respond to DENY-spike false positives, scraping, HTTP/2 floods, AI-agent waves and audit-integrity alerts, with dual-control rollbacks.",
+  "keywords": [
+   "humanymous Gate incident runbooks",
+   "on-call SOC runbook",
+   "false-positive storm triage",
+   "credential-stuffing response",
+   "HTTP/2 flood mitigation",
+   "AI-agent wave",
+   "audit integrity mismatch",
+   "dual-control kill switch",
+   "fingerprint vs IP ban",
+   "reverse-proxy bot detection"
+  ],
+  "ogEyebrow": "OPERATOR",
+  "ogHeadline": "On-call incident runbooks — humanymous Gate"
+ },
+ "/runbooks/kill-switch-and-bans.html": {
+  "description": "Operator runbook for humanymous Gate's kill switch and bans. The kill switch demotes hard-rule enforcement fleet-wide to monitor; manual bans keep enforcing.",
+  "keywords": [
+   "kill switch runbook",
+   "dual-control bans",
+   "humanymous Gate",
+   "fingerprint vs IP ban",
+   "escalating ban ladder",
+   "hard-rule enforcement to monitor",
+   "on-call operator runbook",
+   "residential proxy rotation ban",
+   "self-hosted bot detection"
+  ],
+  "ogEyebrow": "OPERATOR RUNBOOK",
+  "ogHeadline": "Kill switch & bans runbook — humanymous Gate"
+ },
+ "/runbooks/erasure-crypto-shred.html": {
+  "description": "Crypto-shred destroys the per-subject linkage key binding audit-log pseudonyms — DPO-gated, dual-control, with a cancellable hold window. Records stay verifiable.",
+  "keywords": [
+   "crypto-shred",
+   "GDPR Art. 17 erasure",
+   "right to erasure",
+   "cryptographic erasure",
+   "linkage key destruction",
+   "dual-control DPO erasure",
+   "tamper-evident audit log",
+   "pseudonymization",
+   "PIPA erasure request",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "OPERATOR RUNBOOK",
+  "ogHeadline": "Crypto-shred erasure runbook — humanymous Gate"
+ },
+ "/reference/on-call-quick-reference.html": {
+  "description": "On-call cheat sheet for humanymous Gate: verdict legend, top hard rules, ban levers, kill switch, and 20-second attack-vs-false-positive triage. Reference build.",
+  "keywords": [
+   "on-call quick reference",
+   "humanymous Gate",
+   "ALLOW CHALLENGE DENY verdict",
+   "hard rules",
+   "ban ladder",
+   "kill switch dual-control",
+   "attack vs false-positive triage",
+   "SOC on-call runbook",
+   "proof-of-work challenge",
+   "residential-proxy rotation"
+  ],
+  "ogEyebrow": "OPERATOR REFERENCE",
+  "ogHeadline": "Run an on-call shift on Gate — humanymous"
+ },
+ "/help/why-am-i-seeing-this.html": {
+  "description": "You're seeing this because a site's bot-protection check flagged your connection, not you. Complete the quick verification, or contact support to review a block via your incident handle.",
+  "keywords": [
+   "why am I seeing this",
+   "bot protection check",
+   "complete verification challenge",
+   "blocked by bot detection",
+   "incident handle",
+   "ask support to review a block",
+   "screen-reader accessible check",
+   "WCAG 2.2 AA",
+   "pseudonymous connection signals",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "HELP",
+  "ogHeadline": "Why am I seeing this? — humanymous Gate"
+ },
+ "/help/challenge-accessibility.html": {
+  "description": "If a human-verification step won't complete with your screen reader or keyboard, that's treated as a defect to fix — retry, or contact support with your incident handle.",
+  "keywords": [
+   "challenge accessibility",
+   "verification step screen reader",
+   "WCAG 2.2 AA bot check",
+   "EN 301 549",
+   "ADA verification",
+   "keyboard-only navigation",
+   "incident handle",
+   "assistive technology verification",
+   "humanymous Gate"
+  ],
+  "ogEyebrow": "ACCESSIBILITY",
+  "ogHeadline": "Challenge accessibility — humanymous Gate"
+ }
+}

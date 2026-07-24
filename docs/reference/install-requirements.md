@@ -1,3 +1,8 @@
+---
+description: "humanymous Gate install requirements: Go 1.25.3, one direct dependency (uTLS), pure Go with no CGO, cross-compiles to Linux, macOS, Windows. Reference build needs no database or Redis."
+keywords: ["humanymous Gate install requirements","Go 1.25.3 toolchain","refraction-networking/utls uTLS dependency","pure Go no CGO build","GOOS GOARCH cross-compile","bot detection self-hosted install","reference implementation not production-hardened","edge and admin listener ports 8444 8445","no database Redis or KMS","distroless container build"]
+---
+
 # Install, system requirements & supported platforms
 
 > **Diátaxis quadrant:** Reference. **Audience:** integrators standing up humanymous Gate for the first time (step zero).

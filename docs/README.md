@@ -1,3 +1,8 @@
+---
+description: "Docs for humanymous Gate, an open-source Apache-2.0 reverse-proxy engine that scores seven browser signals into an ALLOW / CHALLENGE / DENY verdict. Stops commodity bots; states its T4 ceiling."
+keywords: ["humanymous Gate documentation","open source bot detection","self-hosted DataDome alternative","seven-layer bot detection","JA3/JA4 TLS fingerprinting","ALLOW CHALLENGE DENY verdict","reverse-proxy bot detection","headless Chrome detection","Selenium Puppeteer Playwright detection","tamper-evident audit log","T4 ceiling","Red/Blue test catalog"]
+---
+
 # humanymous Gate documentation
 
 Navigation hub · Audience: everyone arriving for the first time.
@@ -61,7 +66,6 @@ The documentation set, grouped by Diátaxis quadrant.
 - **[On-call quick-reference & KPI thresholds](reference/on-call-quick-reference.md)** — a one-screen cheat sheet: verdicts, top hard rules, the levers, and the ban ladder.
 - **[Support, licensing & OSS notices](reference/support-licensing.md)** — project-license status, third-party dependencies, and where to get help.
 - **[Console localization & product-surface language](reference/console-localization.md)** — what is English today and what localization is a deployment responsibility.
-- **[Versioning & SoT→doc derivation index](reference/versioning-derivation-index.md)** — maintainer governance: versioning, release notes, and which spec each doc derives from.
 - **[Documentation style guide](style-guide.md)** — voice, terminology, and formatting rules for doc authors.
 
 ### Explanation

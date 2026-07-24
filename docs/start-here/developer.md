@@ -1,3 +1,8 @@
+---
+description: "Developer hub to extend the open-source bot detection engine: add signals, scoring, and hard rules, then run the local Red test catalog against your own 127.0.0.1."
+keywords: ["bot detection open source","extend detection engine","seven-layer scoring","hard rules verdict","Red test catalog","Detection Observatory","ScoreTrace","self-hosted bot detection","Selenium Puppeteer Playwright detection","humanymous Gate"]
+---
+
 > **How-to / navigation hub.** For Red-team and Blue detection **developers** who want the depth tier — building on the detection engine and the local Red test catalog.
 > This page is a router: it points you at your next reads and nothing else.
 

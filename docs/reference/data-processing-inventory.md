@@ -1,5 +1,7 @@
 ---
 title: Data Processing & Personal-Data Inventory (RoPA-ready)
+description: "Field-by-field GDPR Article 30 (RoPA) inventory of the personal data humanymous Gate observes versus stores: raw signals scored in memory, only scrypt-derived 64-hex pseudonyms at rest. Supports your record; does not certify compliance."
+keywords: ["GDPR Article 30 RoPA","data processing inventory","bot detection GDPR","pseudonymization scrypt 64-hex","cryptographic erasure crypto-shred","Article 17 right to erasure","legitimate interest bot mitigation","IP JA3/JA4 pseudonym","DPO record of processing activities","humanymous Gate"]
 ---
 
 # Data processing & personal-data inventory (RoPA-ready)
@@ -51,7 +53,7 @@ The single most important fact for a RoPA entry is that **the identifiers Gate o
 
 > **Operational stores outside the audit-log pseudonymization (disclose these in your RoPA).** The pseudonymization above covers the **audit log**. Two *operational* stores hold identifiers in a different form, and an adopter must account for them separately:
 > - **Ban ledger.** When shared-fleet mode (`-redis`) is enabled, an IP/fingerprint ban is stored in Redis under a key that encodes the **raw** identifier (e.g. `hmn:ban:ip:203.0.113.4`); the value is HMAC-sealed. This is a legitimate-interest security record, but the key is a personal identifier held in the coordinator. It is bounded by a **finite retention horizon** (≈400 days even for "permanent" bans; a re-asserted ban refreshes it), and is lifted via the console/admin API. Single-node (default, in-memory) mode holds the same ban map in process memory only. *Add the ban store to your RoPA and your Article 17 procedure (lift = erase).*
-> - **Cross-session correlation registry.** An **in-memory, TTL-bounded** graph of `fingerprint → {/24 subnets, session ids}` used to detect residential-proxy rotation (SoT-15). It is per-process, never persisted, and swept on its TTL; it holds a transient device graph in raw form for the correlation window only. *Note it as transient in-memory processing; it is not written to disk.*
+> - **Cross-session correlation registry.** An **in-memory, TTL-bounded** graph of `fingerprint → {/24 subnets, session ids}` used to detect residential-proxy rotation. It is per-process, never persisted, and swept on its TTL; it holds a transient device graph in raw form for the correlation window only. *Note it as transient in-memory processing; it is not written to disk.*
 
 This means the "personal data at rest" and the "personal data observed in transit" are two different rows in your analysis. Section 3 enumerates both.
 
@@ -73,7 +75,7 @@ Detection-layer references (L1–L7) are defined in [How Gate sees a request](..
 | 8 | Behavioral signals (mouse, keystroke, scroll dynamics; `isTrusted`) | L4 | Human-interaction evidence; automation cadence detection | Event-derived features, in memory | Pseudonymized / aggregated in the record |
 | 9 | Session id | Control plane | Subject key that binds a subject's pseudonyms together | Session identifier, in memory | Acts as the **subject key**; see section 4 |
 | 10 | Verdict, risk score, contributing signal ids, route/host | L7 / edge | The decision record itself (audit evidence) | Computed at the edge | Recorded in the audit log |
-| 11 | Resource-watermark ledger (session id + **keyed** IP pseudonym) | L5 (resource/watermark, SoT-08) | Per-session forensic leak-tracing of served resources | Session id + HMAC(masterKey, IP) token, in memory | **In-memory only, ~24h TTL; self-expires — NOT persisted to the audit log and OUT of the crypto-shred erasure scope (it is not resolvable after TTL).** |
+| 11 | Resource-watermark ledger (session id + **keyed** IP pseudonym) | L5 (resource/watermark) | Per-session forensic leak-tracing of served resources | Session id + HMAC(masterKey, IP) token, in memory | **In-memory only, ~24h TTL; self-expires — NOT persisted to the audit log and OUT of the crypto-shred erasure scope (it is not resolvable after TTL).** |
 
 > **Note:** Rows 1–8 are read to compute a verdict and are not persisted in raw form. What persists is the pseudonym plus the decision metadata in row 10. The decision metadata references internal signal ids (for example `x.ua_vs_ja4`); these are internal signal names and are never surfaced to the end user, who sees only plain language and an incident handle.
 

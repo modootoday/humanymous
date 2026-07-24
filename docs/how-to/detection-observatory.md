@@ -1,3 +1,8 @@
+---
+description: "Run the Detection Observatory, a dev-only, loopback-only page that streams the L1-L7 scoring live so you watch your own engine reach ALLOW / CHALLENGE / DENY."
+keywords: ["Detection Observatory","humanymous","live L1-L7 detection pipeline","watch bot detection verdict","hard-rule ladder","risk score to verdict model","self-hosted bot detection","Selenium Puppeteer Playwright profiles","loopback dev-only tool","SSE live feed"]
+---
+
 # Watch detection happen live: the Detection Observatory
 
 **Diátaxis quadrant:** How-to. **Audience:** Red/Blue developers who want to *see* the detection engine reach a verdict, layer by layer, while testing on their own machine.

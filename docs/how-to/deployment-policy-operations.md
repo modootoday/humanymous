@@ -1,5 +1,7 @@
 ---
 title: Deployment & Policy Operations
+description: "How to deploy humanymous Gate — a reference build, not production-hardened: production TLS, origin cloaking (421), RBAC admin tokens, and monitor-to-enforce routes."
+keywords: ["deploy humanymous Gate","self-hosted bot detection operations","origin cloaking 421","RBAC admin tokens","monitor-to-enforce routes","per-route policy","rate limit ban ladder","production TLS reverse proxy","reference implementation"]
 ---
 
 # Deployment & policy operations

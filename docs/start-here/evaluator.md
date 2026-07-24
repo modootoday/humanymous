@@ -1,3 +1,8 @@
+---
+description: "Reverse-proxy bot detection you can evaluate: it scores each request across seven layers into an ALLOW / CHALLENGE / DENY verdict. Raises the cost of automation; documents its T4 ceiling. Run monitor mode first."
+keywords: ["evaluate open source bot detection","self-hosted bot detection","reverse proxy bot detection","ALLOW CHALLENGE DENY verdict","monitor mode evaluation","seven-layer detection","T4 ceiling","self-hosted DataDome alternative","humanymous Gate","graded risk score"]
+---
+
 # Start here: Evaluator
 
 > **How-to / navigation hub.** For the engineering leader or security buyer deciding whether humanymous Gate fits your stack.

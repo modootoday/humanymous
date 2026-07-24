@@ -25,6 +25,10 @@ const MONO = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospa
 const SECTION = { 'start-here':'Start here','how-to':'How-to','tutorials':'Tutorial','reference':'Reference',
   'explanation':'Explanation','concepts':'Concept','runbooks':'Runbook','help':'Help' };
 
+// Per-page SEO overrides produced by the docs-seo-panel workflow (url → {ogEyebrow,
+// ogHeadline, description, keywords}). Absent → fall back to the page title + section.
+const SEO = (() => { try { return JSON.parse(readFileSync(new URL('./seo.json', import.meta.url))); } catch { return {}; } })();
+
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // Word-wrap a title into lines that fit the card at the given font size.
@@ -102,7 +106,7 @@ function parse(file){
   if(m){ body = raw.slice(m[0].length); for(const line of m[1].split(/\r?\n/)){ const kv=line.match(/^(\w+):\s*(.*)$/); if(kv) fm[kv[1]]=kv[2].replace(/^["']|["']$/g,''); } }
   const h1 = body.match(/^#\s+(.+)$/m);
   const title = fm.title || (h1 ? h1[1].trim() : 'humanymous');
-  return { title, body };
+  return { title, body, published: fm.published };
 }
 
 const pages = walk(DOCS);
@@ -115,14 +119,17 @@ for(const file of pages){
   const urlPath = isHome ? '' : rel.replace(/\.md$/,'.html');
   const seg = rel.split('/');
   const section = isHome ? 'Overview' : (SECTION[seg[0]] || 'Documentation');
-  const { title, body } = parse(file);
+  const { title, body, published } = parse(file);
+  if (published === 'false') continue; // maintainer-only pages are not published (no OG/llms/index entry)
+  const seo = SEO[isHome ? '/' : urlPath] || {};
 
-  // 1. OG WebP → docs/assets/og/<path>.webp   (home → default.webp)
+  // 1. OG WebP → docs/assets/og/<path>.webp   (home → default.webp). Use the panel's
+  //    optimized OG headline/eyebrow when present, else the page title + section.
   const ogRel = isHome ? 'default' : rel.replace(/\.md$/,'');
   const ogOut = join(DOCS,'assets','og', ogRel + '.webp');
   mkdirSync(dirname(ogOut), { recursive:true });
   // Rasterize at 2× density (crisp text) then downsample to the 1200×630 OG spec.
-  const webp = await sharp(Buffer.from(ogSvg(title, section)), { density:144 })
+  const webp = await sharp(Buffer.from(ogSvg(seo.ogHeadline || title, seo.ogEyebrow || section)), { density:144 })
     .resize(1200, 630).webp({ quality:80 }).toBuffer();
   writeFileSync(ogOut, webp); ogN++;
 

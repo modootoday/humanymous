@@ -1,3 +1,8 @@
+---
+description: "Put humanymous Gate, the open-source bot-detection reverse proxy, in front of your app: start in monitor mode, enforce per route once you trust the signal."
+keywords: ["bot-detection reverse proxy","self-hosted bot detection","humanymous Gate","monitor mode rollout","per-route enforcement","open source bot detection","-upstream drop-in proxy","ALLOW CHALLENGE DENY verdict","reference implementation"]
+---
+
 > **How-to / navigation hub.** Start here if you are a backend or platform developer dropping Gate in front of an existing app.
 > This page orients you and points to your next three reads.
 

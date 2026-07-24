@@ -1,5 +1,7 @@
 ---
 title: Production-ready vs reference (prod-delta) & local↔production checklist
+description: "humanymous Gate is an Apache-2.0 reference build, not production-hardened. Each dev-grade stub — ephemeral keys, self-signed TLS — is named with its prod-delta."
+keywords: ["reference implementation vs production-hardened","prod-delta","dev-grade stubs","ephemeral signing keys","self-signed TLS certificate","single-node verdict and ban store","local to production checklist","humanymous Gate","sealed keystore HMN_UNSEAL","crypto-shred"]
 ---
 
 # Production-ready vs reference (prod-delta) & local↔production checklist

@@ -1,3 +1,8 @@
+---
+description: "Stand up humanymous Gate in front of a local app in global monitor mode in 30 minutes: Gate scores and logs every request across layers L1–L7 but enforces nothing."
+keywords: ["monitor mode quickstart","humanymous Gate","reverse-proxy bot detection","open source bot detection","self-hosted DataDome alternative","detection bundle injection","tamper-evident audit log","ALLOW CHALLENGE DENY verdict","Go reverse proxy","observe before enforce"]
+---
+
 # Quickstart: Put Gate in front of an app in monitor mode (first 30 minutes)
 
 **Tutorial** (learning-oriented) · **Audience:** integrator or evaluator, first run.

@@ -1,3 +1,8 @@
+---
+description: "Transparency report for humanymous bot detection: what data it collects, how ALLOW/CHALLENGE/DENY is decided, its GDPR basis, and the T4 ceiling it names."
+keywords: ["humanymous transparency report","bot detection transparency report","ALLOW CHALLENGE DENY verdict","JA3/JA4 data collected","behavioural timings not keystrokes","GDPR legitimate interest bot detection","notice and appeal GDPR Art. 22","cryptographic-shred erasure","reference-measured block rate","T4 detection ceiling","self-hosted bot detection"]
+---
+
 # humanymous — transparency report
 
 *This report explains, in plain language, what humanymous does, how well it works, what
