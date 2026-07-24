@@ -54,7 +54,7 @@
         "url": {{ site.url | jsonify }},
         "logo": { "@type": "ImageObject", "url": {{ '/assets/brand/mark.svg' | absolute_url | jsonify }} }
       },
-      "keywords": {{ site.keywords | strip_newlines | jsonify }}
+      "keywords": {{ page.keywords | default: site.keywords | jsonify }}
     }
     </script>
     {% unless is_home %}
