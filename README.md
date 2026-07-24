@@ -4,7 +4,23 @@
 <p align="center"><em>Raise the cost of automation.</em></p>
 <p align="center"><sub>seven layers · one verdict · a signed record</sub></p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-3fb950?style=flat-square" alt="License: Apache-2.0" /></a>
+  <a href="https://github.com/modootoday/humanymous/releases"><img src="https://img.shields.io/github/v/release/modootoday/humanymous?style=flat-square&color=35d0ba" alt="Latest release" /></a>
+  <a href="https://github.com/modootoday/humanymous/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/modootoday/humanymous/ci.yml?branch=main&style=flat-square&label=ci" alt="CI status" /></a>
+  <a href="https://goreportcard.com/report/github.com/modootoday/humanymous"><img src="https://goreportcard.com/badge/github.com/modootoday/humanymous?style=flat-square" alt="Go report card" /></a>
+  <a href="https://github.com/modootoday/humanymous/pkgs/container/humanymous-gate"><img src="https://img.shields.io/badge/ghcr.io-cosign%20signed-35d0ba?style=flat-square" alt="Signed container images" /></a>
+</p>
+
 # humanymous — Browser Automation Detection Sample (Go/WASM + JS)
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/screenshots/framed/hero-ledger-dark.webp" />
+    <img src="docs/assets/screenshots/framed/hero-ledger-light.webp" width="820" alt="humanymous Ledger console — the live edge-decision feed (allow / challenge / deny) with per-record hard-rule badges, KPIs, and a chain-verified tamper-evident audit status." />
+  </picture>
+</p>
+<p align="center"><sub>The <strong>Ledger</strong> — every edge decision, scored across seven layers and sealed into a tamper-evident audit chain.</sub></p>
 
 > **A defensive anti-bot detection reference project (educational / commercial).**
 > A multi-layer detection engine sample built with Go (WASM) + JavaScript + a Go
@@ -52,7 +68,10 @@ The public `/demo` page scores *your* browser live. Below, a headless automation
 (HR-7) overrides the score to DENY:
 
 <p align="center">
-  <img src="docs/assets/screenshots/demo-verdict.jpg" width="760" alt="humanymous /demo verdict card: DENY, risk 75.2, HR-7 override" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/screenshots/framed/verdict-detail-dark.webp" />
+    <img src="docs/assets/screenshots/framed/verdict-detail-light.webp" width="720" alt="humanymous /demo verdict card: DENY at risk 75.2 with an HR-7 hard-rule override, above the seven per-layer signal lanes (L1 webdriver, L2 SwiftShader, L6 UA↔GPU inconsistency) that produced it." />
+  </picture>
 </p>
 
 A real browser on real hardware clears with a low score (ALLOW). No detector is

@@ -20,7 +20,10 @@ The Ledger is a single-page app served on the **separate admin listener** (defau
 https://localhost:8445/__hmn/admin/console
 ```
 
-![The Ledger console Overview: live edge-decision feed with chain-verified status, node id, and record count](../assets/screenshots/console-overview.jpg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/hero-ledger-dark.webp" />
+  <img src="../assets/screenshots/framed/hero-ledger-light.webp" alt="The Ledger console Overview: live edge-decision feed with chain-verified status, node id, and record count" />
+</picture>
 
 In dev the console is injected with the **Operator** token, so it can read every view and *request* actions. Any two-person (dual-control) action must be committed by a genuinely **distinct** token — an Approver or DPO, never your own. Actor identity is derived server-side from the token; you cannot act as someone else by editing a request body.
 
@@ -108,6 +111,11 @@ The subject is **pseudonymous, not anonymous** — identifiers such as IP, JA4, 
 
 This view lists the active **IP and fingerprint bans**. A **badge shows the active ban count** so you can see at a glance whether the ban list is growing. Bans come from two sources: automatic escalation on the ladder **1h → 6h → 24h → permanent** (with strike decay over time), and manual bans you add. Ban keys are `ip:<addr>` or `fp:<fingerprint>`.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/console-bans-dark.webp" />
+  <img src="../assets/screenshots/framed/console-bans-light.webp" alt="The Ledger Rate Limits & Bans view: active IP and fingerprint bans with source (auto/manual), reason, strike count, expiry, and the escalation-ladder KPIs, beside the dual-control manual-ban form." />
+</picture>
+
 **How to act from it — and who has to co-sign:**
 
 - **Temporary bans** and **lifts (unblock)** are single **Operator** actions. You can do these yourself.
@@ -121,6 +129,11 @@ Every add and unblock is audited. For the exact request/commit steps, the escala
 **Question it answers:** What posture is each route running, and can I change it here?
 
 The Policy view (also labelled "Policy & Rollout") shows the **per-route posture**: the preset, whether the route fails open or closed on an unknown verdict, whether it re-scores synchronously before a mutation, and whether injection is on — plus the rate-limit thresholds. Config changes in this view are **dual-control and signed** (they carry a signed config version), so a posture change is a recorded, two-person event.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/console-policy-dark.webp" />
+  <img src="../assets/screenshots/framed/console-policy-light.webp" alt="The Ledger Policy view: global enforce/monitor mode, rate-limit thresholds, and the per-route table (preset, enforce, fail-open/closed, sync re-score, inject) — with /login and /checkout strict and fail-closed, /healthz off." />
+</picture>
 
 The one thing to be clear about on a shift:
 
@@ -151,6 +164,11 @@ This view also shows a **"Scheduled erasures (hold window)"** list: every approv
 **Question it answers:** What two-person actions are pending, and how do I commit one as the second approver?
 
 Every dual-control action — a **permanent or CIDR ban**, the **kill switch**, or an **erasure** — is *requested* in its own view but not applied immediately; it lands here as a pending item. The Approvals view is that commit queue, with a **badge showing the pending count**. Each row shows the action kind, its parameters, and the role required to commit it, plus a **Commit** button.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/console-approvals-dark.webp" />
+  <img src="../assets/screenshots/framed/console-approvals-light.webp" alt="The Ledger Approvals view: the dual-control commit queue of pending two-person actions (a permanent ban needing an Approver, an erasure needing a DPO) with their params and a Commit button, above the separation-of-duty KPIs." />
+</picture>
 
 Committing is separation-of-duty enforced: the committer must be a **genuinely distinct** identity from the requester, and the console's injected Operator token is a *requester*, not an approver — so committing needs a distinct **Approver** token (or, for an erasure, a distinct **DPO** token; a generic Approver cannot commit an erasure). Every commit is written to the audit chain.
 

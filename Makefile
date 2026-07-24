@@ -12,7 +12,7 @@ IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
 .PHONY: all wasm wasmexec server gate report build test race e2e-deps e2e report-html run clean fmt vet \
-        docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets
+        docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets docs-frames
 
 all: build
 
@@ -56,6 +56,14 @@ vet:
 ## Run after editing a page title/description (needs Node; sharp installs on first run).
 docs-assets:
 	cd scripts/docsgen && npm install --silent && node gen.mjs
+
+## docs-frames: (re)render the OSX-framed surface screenshots (Ledger, /demo, Pass) as
+## brand-framed WebP for the README + docs. Renders the REAL console/demo/pass HTML
+## headlessly with stubbed data — needs Node, sharp (installed here), and the Playwright
+## browser from the e2e harness (test/). Run after a surface's UI changes.
+docs-frames:
+	cd test && npm install --silent
+	cd scripts/docsgen && npm install --silent && node shoot.mjs
 
 ## changelog-unreleased: preview the notes for unreleased commits (since the last tag) to stdout.
 changelog-unreleased:

@@ -11,7 +11,10 @@ humanymous Gate is a reverse proxy that sits in front of your origin app, scores
 
 A verdict as it renders in the bundled `/demo` — the graded risk score and the hard rules behind a DENY, not a bare bot/not-bot flag:
 
-![A humanymous /demo verdict card showing a DENY decision with its risk score and contributing hard rules](../assets/screenshots/demo-verdict.jpg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/verdict-detail-dark.webp" />
+  <img src="../assets/screenshots/framed/verdict-detail-light.webp" alt="A humanymous /demo verdict card showing a DENY decision with its risk score and contributing hard rules" />
+</picture>
 
 ## Next 3 reads
 

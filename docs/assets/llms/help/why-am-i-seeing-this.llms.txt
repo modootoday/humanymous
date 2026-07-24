@@ -31,6 +31,11 @@ You were asked to complete a short verification step before continuing. In most
 cases you just wait a moment for it to finish, or follow the simple on-screen
 prompt, and the page then loads as normal.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/pass-challenge-dark.webp" />
+  <img src="../assets/screenshots/framed/pass-challenge-light.webp" alt="The humanymous Pass verification check: slide three rows so each highlighted key lines up in the teal slot, then submit. It works by keyboard, by screen reader, and by tapping the on-screen arrows, and has no time limit." />
+</picture>
+
 This step is meant to work for everyone, including people using a screen reader
 or other assistive technology. If the check will not complete, or you cannot
 use it:

@@ -233,7 +233,10 @@ So a request that landed at CHALLENGE purely because its risk was in the `30`–
 
 The same decomposition is shown to the visitor on `/demo` — each layer's contribution, side by side, under the final verdict:
 
-![The /demo "what each layer saw" panel: seven per-layer contribution lanes](../assets/screenshots/demo-lanes.jpg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/verdict-detail-dark.webp" />
+  <img src="../assets/screenshots/framed/verdict-detail-light.webp" alt="The /demo verdict card and its seven per-layer contribution lanes (what each layer saw)" />
+</picture>
 
 `internal/scoring/scoretrace.go` exposes `Engine.ScoreWithTrace`. It shares `assemble()` and `decide()` with the production `Score()` path and runs the same `combineTrace` (which reuses the identical `dedupGroups` keep-rule, noisy-OR, and `promotionRules` table). It records what the engine did without changing the decision.
 
