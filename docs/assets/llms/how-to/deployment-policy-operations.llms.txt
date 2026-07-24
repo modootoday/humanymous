@@ -15,12 +15,43 @@ This page is a shelf of independent, goal-titled recipes. Each follows the same 
 
 Pick your recipe:
 
+- [Deploy from the published image with pull-only Compose](#recipe-deploy-from-the-published-image-with-pull-only-compose)
 - [Move from the dev certificate to production TLS](#recipe-move-from-the-dev-certificate-to-production-tls)
 - [Cloak the origin so direct hits get a 421](#recipe-cloak-the-origin-so-direct-hits-get-a-421)
 - [Stand up the admin listener with seeded role tokens](#recipe-stand-up-the-admin-listener-with-seeded-role-tokens)
 - [Move a route from monitor to enforce](#recipe-move-a-route-from-monitor-to-enforce)
 - [Set rate limits and work the ban ladder](#recipe-set-rate-limits-and-work-the-ban-ladder)
 - [Not yet in the reference: a good-bot allowlist](#not-yet-in-the-reference-a-good-bot-allowlist)
+
+---
+
+## Recipe: deploy from the published image with pull-only Compose
+
+**Goal:** run a production Gate by pulling the published container image instead of building from source.
+
+**Steps:**
+
+1. Use the pull-only Compose file. `deployments/compose.release.yaml` references `ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}` (multi-arch `linux/amd64` + `linux/arm64`, cosign-signed), so `compose up` is a **pull, not a source build**. It runs Gate hardened — distroless, non-root, read-only root filesystem, dropped capabilities — with ACME TLS on `:443`, a sealed keystore, and a durable, replay-verified audit WAL, all on named volumes.
+2. Provide config. From `deployments/`, copy the example env and route files and edit them:
+
+   ```
+   cd deployments
+   cp .env.example .env            # HMN_UPSTREAM, HMN_DOMAIN, HMN_UNSEAL, HMN_ADMIN_TOKENS
+   cp routes.conf.example routes.conf
+   ```
+
+   `.env` sets your origin (`HMN_UPSTREAM`), the public domain for the Let's Encrypt cert (`HMN_DOMAIN`, TLS-ALPN-01 needs `:443` reachable), the keystore unseal passphrase (`HMN_UNSEAL`), and real admin tokens (`HMN_ADMIN_TOKENS` — the binary refuses to boot on the shipped `e2e-*` dev tokens). `routes.conf` sets your per-route presets. Gate joins your existing origin network (`HMN_ORIGIN_NET`) and proxies to your app.
+3. Start it:
+
+   ```
+   docker compose -f compose.release.yaml up -d
+   ```
+
+   `:latest` tracks the newest release; for a reproducible deploy, pin a release by setting `HMN_VERSION=0.1.0` in `.env` instead of the default `latest`.
+
+**Verify:** the edge exposes HTTP probes — `GET /__hmn/healthz` (liveness) and `/__hmn/readyz` (readiness — 503s during drain). The image is distroless (no shell), so there is **no** Docker `HEALTHCHECK`; point your orchestrator's `httpGet` probes at those paths. The admin console is served at `https://<admin>/__hmn/admin/console` on the loopback-mapped admin listener (`127.0.0.1:8445`).
+
+> **Note:** `-admin-addr :8445` binds every container interface, so any container sharing the origin network can reach `gate:8445` — the host-loopback port mapping restricts *host* access, not intra-network access. Front the admin plane with mTLS/SSO or attach Gate to a dedicated internal admin network, and do not run untrusted workloads on the origin network. The standalone detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest`, for self-testing and the demo. Building from source stays fully supported — see [Install requirements](../reference/install-requirements.md); the recipes below apply whether you run the published image or your own build.
 
 ---
 

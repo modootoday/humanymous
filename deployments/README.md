@@ -71,6 +71,42 @@ Admin console: `https://localhost:8445/__hmn/admin/console` — dev token
 `operator:e2e-operator-token` (from `configs/dev.env`). Certs are self-signed;
 accept the browser warning.
 
+## Published images (pull-only production path)
+
+The `compose.yaml` above is the **local-build lab**: it builds images from source
+(`build/*.Dockerfile`) and wires the engine, Gate, a demo origin, and the bots
+together for Red/Blue work. To run Gate in front of your *own* app you do not need to
+build — two images are published to GitHub Container Registry (Apache-2.0, multi-arch
+`linux/amd64` + `linux/arm64`, cosign-signed):
+
+| Image | What it is |
+|---|---|
+| `ghcr.io/modootoday/humanymous-gate:latest` | The reverse-proxy enforcement layer — the product. Put it in front of your origin. |
+| `ghcr.io/modootoday/humanymous-core:latest` | The standalone detection engine, for self-testing and the demo. |
+
+`:latest` tracks the newest release; pin a release with `:0.1.0` (also `:0.1`, `:0`)
+for reproducibility.
+
+`compose.release.yaml` is the **pull-only** counterpart to the lab file: it references
+`ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}` with **no `build:` and no
+dev tokens**, and runs Gate hardened (distroless, non-root, read-only rootfs, dropped
+capabilities) with ACME TLS on `:443`, a sealed keystore, and a durable, replay-verified
+audit WAL. Adopt it in three steps:
+
+```bash
+cp .env.example .env            # HMN_UPSTREAM, HMN_DOMAIN, HMN_UNSEAL, HMN_ADMIN_TOKENS
+cp routes.conf.example routes.conf
+docker compose -f compose.release.yaml up -d
+```
+
+Gate joins your existing origin network and proxies to your app. The admin listener stays
+host-loopback (`127.0.0.1:8445`) — keep it there or front it with mTLS/SSO. Liveness and
+readiness are HTTP probes on the edge (`GET /__hmn/healthz`, `/__hmn/readyz`); the
+distroless image has no shell, so there is **no Docker `HEALTHCHECK`** — point your
+orchestrator's `httpGet` probes at those paths. For a quick local demo of the published
+Gate image without the full production config, see
+[Run from the published image](../docs/reference/install-requirements.md#run-from-the-published-image-no-build).
+
 ## Verified result
 
 - **Attack run**: 25/25 bots blocked (TPR 100%), 0 false positives; the human

@@ -13,21 +13,20 @@ That monitor-first shape is deliberate. It is how the product is meant to be ado
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. The dev TLS certificate is self-signed and generated in memory, and the admin tokens shown here are development tokens. Everything below is for a local evaluation on `127.0.0.1`.
 
-The whole path at a glance — five steps, ending with verdicts you watch but never enforce:
+The whole path at a glance — four steps, ending with verdicts you watch but never enforce:
 
 ```mermaid
 flowchart LR
-  A["Step 1: throwaway origin on 127.0.0.1:9000"] --> B["Step 2: go build -o bin/gate.exe"]
-  B --> C["Step 3: run Gate with -monitor (global monitor mode)"]
-  C --> D["Step 4: load https://localhost:8444 — origin intact, bundle injected"]
-  D --> E["Step 5: Ledger on :8445 — verdicts scored and logged, nothing enforced"]
+  A["Step 1: throwaway origin on 127.0.0.1:9000"] --> B["Step 2: start Gate with -monitor (Docker image or build from source)"]
+  B --> C["Step 3: load https://localhost:8444 — origin intact, bundle injected"]
+  C --> D["Step 4: Ledger on :8445 — verdicts scored and logged, nothing enforced"]
 ```
 
 ## Before you start
 
 You will need:
 
-- **Go** installed (to build the binary from `./cmd/gate`).
+- Either **Docker** (for Option A — run the published image, no build) or a **Go** toolchain (for Option B — build the binary from `./cmd/gate`). You only need one.
 - **Python 3** (used only for the one-line throwaway origin; any tiny static HTTP server works).
 - A **web browser**.
 - A shell open in the repository root.
@@ -64,19 +63,42 @@ Leave this running and open a new shell for the next steps.
 
 > **Tip:** This is a plain, unprotected origin — exactly the app you are about to place Gate in front of. In a real deployment, Gate terminates TLS at the edge and forwards to your origin over the private network; the origin itself is not exposed to the internet.
 
-## Step 2 — Build the binary
+## Step 2 — Start Gate in global monitor mode
 
-From the repository root, build the Gate binary:
+There are two ways to run Gate — pick one. **Option A** pulls the published container image (no build, no Go toolchain). **Option B** builds the binary from the source tree. Either way the `-monitor` flag is the important one: it puts the whole fleet in **global monitor mode**, which downgrades every route to monitor, so Gate scores and logs but enforces nothing, everywhere. Once Gate is up, the rest of the tutorial (Steps 3–4) is identical.
+
+### Option A — Docker (published image, no build)
+
+The fastest path: pull the published, multi-arch image (`linux/amd64` + `linux/arm64`, cosign-signed) and run it in front of the origin from Step 1. No Go toolchain, no source tree.
+
+```
+docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 -e HMN_ALLOW_DEV_TOKENS=1 \
+  ghcr.io/modootoday/humanymous-gate:latest \
+  -addr :8444 -admin-addr :8445 -upstream http://host.docker.internal:9000 -monitor
+```
+
+- `host.docker.internal:9000` is how the container reaches the origin you started on the host in Step 1. On **Docker Desktop (macOS/Windows)** this resolves automatically; on **Linux**, add `--add-host=host.docker.internal:host-gateway` to the `docker run` line.
+- `HMN_ALLOW_DEV_TOKENS=1` is the local-demo switch: it makes Gate print the admin role tokens and auto-inject the operator token into the console so you can open it without pasting anything. Never set it outside a local demo.
+- `:latest` tracks the newest release. For a reproducible run, pin `:0.1.0` (also `:0.1`, `:0`) instead.
+- The admin listener is mapped to host loopback only (`127.0.0.1:8445`) — keep it that way.
+
+Because the container runs detached (`-d`), read the startup lines — including the dev tokens — from its logs:
+
+```
+docker logs <container-id>
+```
+
+You should see log lines like the ones shown under Option B below (`monitor=true`, the admin console URL, and the four `dev tokens`). Then skip to **"Whichever option you chose"**.
+
+### Option B — Build from source
+
+If you have a Go toolchain and want to run from the tree, build the binary and start it. From the repository root:
 
 ```
 go build -o bin/gate.exe ./cmd/gate
 ```
 
-When it finishes, the command returns with no output and `bin/gate.exe` exists. That is success — `go build` is quiet when it works.
-
-## Step 3 — Run Gate in global monitor mode
-
-Now start Gate. The `-monitor` flag is the important one: it puts the whole fleet in **global monitor mode**, which downgrades every route to monitor. Gate will score and log, but enforce nothing, everywhere.
+When it finishes, the command returns with no output and `bin/gate.exe` exists. That is success — `go build` is quiet when it works. Now start Gate:
 
 ```
 HMN_ALLOW_DEV_TOKENS=1 bin/gate.exe -addr :8444 -upstream http://127.0.0.1:9000 -monitor
@@ -92,15 +114,17 @@ humanymous Gate admin console on https://localhost:8445/__hmn/admin/console
   dev tokens (demo mode) — auditor:<hex> operator:<hex> approver:<hex> dpo:<hex>
 ```
 
-A few things to notice:
+### Whichever option you chose
+
+A few things to notice in those startup lines:
 
 - `(monitor=true)` confirms enforcement is off across the board. Every verdict is still computed and written to the audit log — it just never changes what the visitor receives.
 - The **admin console** is on a *separate* listener (`:8445`), cross-origin to the public edge. This is by design: the admin plane is not reachable from the public edge.
-- The `dev tokens` line prints four development admin tokens, one per role (**Auditor**, **Operator**, **Approver**, **DPO**). These are generated fresh each boot unless you set `HMN_ADMIN_TOKENS`. Keep this terminal visible — you may want the operator token shortly.
+- The `dev tokens` line prints four development admin tokens, one per role (**Auditor**, **Operator**, **Approver**, **DPO**). These are generated fresh each boot unless you set `HMN_ADMIN_TOKENS`. Keep this output visible — you may want the operator token shortly.
 
 Leave Gate running.
 
-## Step 4 — Load your app through Gate
+## Step 3 — Load your app through Gate
 
 Open your browser to:
 
@@ -130,7 +154,7 @@ The exact markup Gate inserts once at the first `<head>` boundary is:
 
 The `<!--hmn-injected-->` comment is an idempotency marker — if it is already present, Gate passes the page through untouched, so injection never happens twice.
 
-## Step 5 — Open the Ledger and watch a verdict appear
+## Step 4 — Open the Ledger and watch a verdict appear
 
 Open the Ledger:
 
@@ -154,7 +178,7 @@ The verdict on the stream is a *decision that was recorded, not enforced*. That 
 
 In about half an hour you have:
 
-- Stood up an origin, built Gate, and placed it at the edge in front of your app.
+- Stood up an origin, started Gate (from the published image or your own build), and placed it at the edge in front of your app.
 - Run the whole fleet in global monitor mode with enforcement off.
 - Confirmed your app's HTML came back intact, with the detection bundle injected.
 - Watched real verdicts appear on the Overview view — scored and logged, enforced nowhere.

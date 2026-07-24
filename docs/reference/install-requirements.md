@@ -33,7 +33,7 @@ The build command below writes `bin/gate.exe`. The `.exe` name reflects a Window
 
 > **Confirmed in source:** Because Gate is pure Go with no CGO, the supported target matrix is every `GOOS`/`GOARCH` pair the Go toolchain supports — including `linux`, `darwin`, and `windows` on `amd64` and `arm64` — selected via cross-compilation flags. The only build-constrained code is the browser detection engine (`js/wasm`); the server binaries carry no OS/arch constraints. The toolchain floor is the `go` directive in `go.mod`: Go 1.25.3. Specific OS version floors (minimum Linux kernel, macOS, or Windows release) are not constrained in the build and Gate imposes none in code; treat them as operator-determined.
 
-> **Note:** Container packaging is defined in the repository under `build/` — `build/core.Dockerfile` (the detection engine) and `build/gate.Dockerfile` (Gate), both on a `gcr.io/distroless/static-debian12:nonroot` base — and the local stack is wired in `deployments/compose.yaml`. No image is published to a public registry; build locally with `make docker` (engine) or `docker compose -f deployments/compose.yaml build`.
+> **Note:** Prebuilt multi-arch images are published to GitHub Container Registry — `ghcr.io/modootoday/humanymous-gate:latest` and `ghcr.io/modootoday/humanymous-core:latest` (Apache-2.0, `linux/amd64` + `linux/arm64`, cosign-signed) — so you can run without building (see [Run from the published image](#run-from-the-published-image-no-build) below). Container packaging also lives in the repository under `build/` — `build/core.Dockerfile` (the detection engine) and `build/gate.Dockerfile` (Gate), both on a `gcr.io/distroless/static-debian12:nonroot` base, wired for local builds in `deployments/compose.yaml`.
 
 ## Build
 
@@ -50,6 +50,31 @@ go build -o bin/gate ./cmd/gate
 ```
 
 To cross-compile from one host for another target, set `GOOS` and `GOARCH` before the build (for example, `GOOS=linux GOARCH=amd64`). No CGO toolchain is required.
+
+## Run from the published image (no build)
+
+You do not have to build Gate to run it. Pull the published image and run it in front of your origin — no Go toolchain, no source tree. The image is `linux/amd64` + `linux/arm64`, so it runs natively on Intel/AMD and ARM (Apple Silicon, Graviton, Raspberry Pi).
+
+```
+docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
+  ghcr.io/modootoday/humanymous-gate:latest \
+  -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
+```
+
+- `:latest` tracks the newest release; pin a specific release with `:0.1.0` for reproducibility.
+- `-monitor` scores and logs without enforcing — the safe first contact with real traffic. Drop it to enforce.
+- The admin listener is mapped to host loopback only (`127.0.0.1:8445`); keep it that way or front it with mTLS/SSO.
+
+For a full production deployment (ACME TLS, sealed keystore, durable audit WAL, hardened read-only container), use the pull-only Compose file, which references the published images directly:
+
+```
+cd deployments
+cp .env.example .env            # HMN_UPSTREAM, HMN_DOMAIN, HMN_UNSEAL, HMN_ADMIN_TOKENS
+cp routes.conf.example routes.conf
+docker compose -f compose.release.yaml up -d
+```
+
+The detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest` (for standalone self-testing / the demo). See [Deployment & policy operations](../how-to/deployment-policy-operations.md) for the full runbook.
 
 ## Ports
 

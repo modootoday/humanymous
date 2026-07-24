@@ -22,11 +22,23 @@ flowchart LR
 
 ## What you need
 
-- A Go toolchain to build the binary to `bin/gate.exe` from `./cmd/gate` (module `github.com/modootoday/humanymous`).
+- A way to run Gate — either **Docker** (pull the published image; nothing to build) or a **Go toolchain** to build `bin/gate.exe` from `./cmd/gate` (module `github.com/modootoday/humanymous`). You only need one.
 - A throwaway origin app to front — the default upstream is `http://127.0.0.1:9000`, so run something on `:9000` you don't mind experimenting against.
 - The `-upstream` flag to point Gate at that origin (default `http://127.0.0.1:9000`). Gate listens on `:8444` (public edge) by default.
 
-> **Note:** Building needs **Go 1.25.3 or newer** (the version pinned in `go.mod`). The build is pure Go (no CGO).
+> **Note:** Building from source needs **Go 1.25.3 or newer** (the version pinned in `go.mod`); the build is pure Go (no CGO). The Docker path below needs neither Go nor the source tree.
+
+## Fastest path — run the published image (no build)
+
+The quickest way to get Gate in front of an origin is to pull the published container image rather than build. It is multi-arch (`linux/amd64` + `linux/arm64`) and cosign-signed. Monitor-first: start with `-monitor` so Gate scores and logs without enforcing, then drop the flag once you trust the signal.
+
+```
+docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
+  ghcr.io/modootoday/humanymous-gate:latest \
+  -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
+```
+
+`:latest` tracks the newest release; pin `:0.1.0` for a reproducible run. The admin listener is mapped to host loopback only (`127.0.0.1:8445`) — keep it that way. For a full production deployment (ACME TLS, sealed keystore, durable audit log, hardened read-only container) use the pull-only Compose file `deployments/compose.release.yaml`, which references the published image directly — see [Deployment & policy operations](../how-to/deployment-policy-operations.md). Prefer to build from source instead? Keep reading — the quickstart below covers the `go build` path.
 
 > **Decide your topology first.** Where you place Gate determines which detection layers are
 > even active. The network plane (JA3/JA4/H2) needs raw-TLS termination and does **not** fire

@@ -163,6 +163,37 @@ they can physically reach nothing but the detector. Full topology and safety mod
 > **Windows note:** if `docker build` reports `docker-credential-desktop … not
 > found`, add `C:\Program Files\Docker\Docker\resources\bin` to your `PATH`.
 
+### Deploy in front of your own app (published images — no build)
+
+The lab above builds from source. To run **Gate** in front of your own origin, pull the
+published multi-arch images from `ghcr.io` instead — no source tree, no Go/Node toolchain:
+
+```bash
+# fastest: one container in front of your app (self-signed dev TLS, monitor-first)
+docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
+  ghcr.io/modootoday/humanymous-gate:latest \
+  -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
+```
+
+For a real deployment (ACME TLS, sealed keystore, durable audit, hardened read-only
+container), use the pull-only compose — it references the published images directly:
+
+```bash
+cd deployments
+cp .env.example .env            # set HMN_UPSTREAM, HMN_DOMAIN, HMN_UNSEAL, HMN_ADMIN_TOKENS
+cp routes.conf.example routes.conf
+docker compose -f compose.release.yaml up -d
+```
+
+Published images (Apache-2.0, `linux/amd64` + `linux/arm64`, cosign-signed):
+
+- `ghcr.io/modootoday/humanymous-gate:latest` — the reverse-proxy enforcement layer (the product you deploy).
+- `ghcr.io/modootoday/humanymous-core:latest` — the standalone detection engine (demo / self-testing).
+
+Pin a release with `:0.1.0` instead of `:latest`. Start with `-monitor` (score + log, enforce
+nothing), watch the Ledger, then drop it to enforce — see
+[Will this break my app?](docs/explanation/will-this-break-my-app.md).
+
 ## Without Docker (local build)
 
 With the Go toolchain installed you can build and run directly. A `Makefile`

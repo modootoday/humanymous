@@ -29,6 +29,18 @@ The honest boundary is the T4 ceiling: a coherent, real browser engine driven to
 
 No — humanymous Gate is a reference implementation, not a production-hardened product. It ships an in-memory development certificate, single-node state by default, and ephemeral keys unless you configure a sealed keystore. Behaviors a production install would need — real certificate issuance, shared fleet state, a managed KMS/HSM — are intentionally out of scope and labeled prod-delta throughout the documentation. Treat it as something to study, run, and extend, not as a drop-in production shield.
 
+## Can I run it without building from source?
+
+Yes. Prebuilt images are published to GitHub Container Registry, so you can run Gate with no Go toolchain and no source tree. Pull `ghcr.io/modootoday/humanymous-gate:latest` — it is multi-arch (`linux/amd64` + `linux/arm64`, so it runs natively on Intel/AMD and ARM) and cosign-signed. A monitor-mode one-liner in front of your origin looks like this:
+
+```
+docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
+  ghcr.io/modootoday/humanymous-gate:latest \
+  -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
+```
+
+`:latest` tracks the newest release; pin `:0.1.0` for a reproducible run. See [Run from the published image](../reference/install-requirements.md#run-from-the-published-image-no-build) for the full walkthrough (including the local-demo token switch), and for a production deployment — ACME TLS, a sealed keystore, and a durable audit log — use the pull-only `deployments/compose.release.yaml`, which references the published image directly. The detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest`, for standalone self-testing and the demo.
+
 ## Does it use CAPTCHAs?
 
 No. On a score-based CHALLENGE, Gate can raise a proof-of-work interstitial: the client's browser computes a short cryptographic task, and solving it upgrades that verdict to ALLOW. There is no image labeling, no puzzle, and no third-party CAPTCHA service. Proof-of-work never overrides a hard rule — a request denied by a hard rule stays denied regardless of any solve.
@@ -100,6 +112,14 @@ humanymous Gate is released under the Apache License 2.0. You may use, modify, a
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "No - humanymous Gate is a reference implementation, not a production-hardened product. It ships an in-memory development certificate, single-node state by default, and ephemeral keys unless you configure a sealed keystore. Behaviors a production install would need - real certificate issuance, shared fleet state, a managed KMS/HSM - are intentionally out of scope and labeled prod-delta throughout the documentation. Treat it as something to study, run, and extend, not as a drop-in production shield."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run it without building from source?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Prebuilt images are published to GitHub Container Registry, so you can run Gate with no Go toolchain and no source tree. Pull ghcr.io/modootoday/humanymous-gate:latest - it is multi-arch (linux/amd64 + linux/arm64) and cosign-signed. Run it in monitor mode in front of your origin with `docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 ghcr.io/modootoday/humanymous-gate:latest -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor`. `:latest` tracks the newest release; pin :0.1.0 for a reproducible run. For a production deployment (ACME TLS, sealed keystore, durable audit log) use the pull-only deployments/compose.release.yaml, which references the published image directly. The detection engine is published too, as ghcr.io/modootoday/humanymous-core:latest, for standalone self-testing and the demo."
       }
     },
     {
