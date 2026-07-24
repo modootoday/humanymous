@@ -47,7 +47,7 @@ The documentation set, grouped by Diátaxis quadrant.
 - **[Self-validation: red-team your own deployment](how-to/self-validation-red-team.md)** — measure your own detection and false-positive rate with the bundled harness (defensive-only, local).
 - **[Key management, rotation & recovery](how-to/key-management.md)** — the keystore, signing/HMAC/vault keys, ephemeral-vs-persistent identity, and recovery blast radius.
 - **[Upgrade, migration & zero-downtime](how-to/upgrade-migration.md)** — the safe upgrade posture for a single node, and what multi-node rolling upgrades require.
-- **[Cut a release](how-to/cut-a-release.md)** — SemVer `v*` tags drive ghcr.io images and a git-cliff changelog generated from Conventional Commits; the version-bump rules and the release flow.
+- **[Cut a release](how-to/cut-a-release.md)** — SemVer `v*` tags drive ghcr.io images and git-cliff release notes generated from Conventional Commits; the version-bump rules and the release flow.
 - **[Observability & SIEM integration](how-to/observability-siem.md)** — the audit stream, integrity status, KPIs, and how to bridge to a SIEM.
 - **[Watch detection happen live: the Detection Observatory](how-to/detection-observatory.md)** — the local-only, dev-gated page that streams the L1→L7 pipeline as it scores a session.
 - **[A guided tour of the Detection Observatory](how-to/observatory-tour.md)** — an annotated screenshot walkthrough of the page before you run it.

@@ -79,7 +79,7 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 -e HMN_ALLOW_DEV_TOKENS=1 \
 
 - `host.docker.internal:9000` is how the container reaches the origin you started on the host in Step 1. On **Docker Desktop (macOS/Windows)** this resolves automatically; on **Linux**, add `--add-host=host.docker.internal:host-gateway` to the `docker run` line.
 - `HMN_ALLOW_DEV_TOKENS=1` is the local-demo switch: it makes Gate print the admin role tokens and auto-inject the operator token into the console so you can open it without pasting anything. Never set it outside a local demo.
-- `:latest` tracks the newest release. For a reproducible run, pin `:0.1.0` (also `:0.1`, `:0`) instead.
+- `:latest` tracks the newest release.
 - The admin listener is mapped to host loopback only (`127.0.0.1:8445`) — keep it that way.
 
 Because the container runs detached (`-d`), read the startup lines — including the dev tokens — from its logs:

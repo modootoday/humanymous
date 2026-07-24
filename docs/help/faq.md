@@ -37,7 +37,7 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
   -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
 ```
 
-`:latest` tracks the newest release; pin `:0.1.0` for a reproducible run. See [Run from the published image](../reference/install-requirements.md#run-from-the-published-image-no-build) for the full walkthrough (including the local-demo token switch), and for a production deployment — ACME TLS, a sealed keystore, and a durable audit log — use the pull-only `deployments/compose.release.yaml`, which references the published image directly. The detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest`, for standalone self-testing and the demo.
+`:latest` tracks the newest release. See [Run from the published image](../reference/install-requirements.md#run-from-the-published-image-no-build) for the full walkthrough (including the local-demo token switch), and for a production deployment — ACME TLS, a sealed keystore, and a durable audit log — use the pull-only `deployments/compose.release.yaml`, which references the published image directly. The detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest`, for standalone self-testing and the demo.
 
 ## Does it use CAPTCHAs?
 
@@ -117,7 +117,7 @@ humanymous Gate is released under the Apache License 2.0. You may use, modify, a
       "name": "Can I run it without building from source?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Prebuilt images are published to GitHub Container Registry, so you can run Gate with no Go toolchain and no source tree. Pull ghcr.io/modootoday/humanymous-gate:latest - it is multi-arch (linux/amd64 + linux/arm64) and cosign-signed. Run it in monitor mode in front of your origin with `docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 ghcr.io/modootoday/humanymous-gate:latest -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor`. `:latest` tracks the newest release; pin :0.1.0 for a reproducible run. For a production deployment (ACME TLS, sealed keystore, durable audit log) use the pull-only deployments/compose.release.yaml, which references the published image directly. The detection engine is published too, as ghcr.io/modootoday/humanymous-core:latest, for standalone self-testing and the demo."
+        "text": "Yes. Prebuilt images are published to GitHub Container Registry, so you can run Gate with no Go toolchain and no source tree. Pull ghcr.io/modootoday/humanymous-gate:latest - it is multi-arch (linux/amd64 + linux/arm64) and cosign-signed. Run it in monitor mode in front of your origin with `docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 ghcr.io/modootoday/humanymous-gate:latest -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor`. `:latest` tracks the newest release. For a production deployment (ACME TLS, sealed keystore, durable audit log) use the pull-only deployments/compose.release.yaml, which references the published image directly. The detection engine is published too, as ghcr.io/modootoday/humanymous-core:latest, for standalone self-testing and the demo."
       }
     },
     {

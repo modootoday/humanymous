@@ -1,14 +1,13 @@
 # cliff.toml — git-cliff configuration (https://git-cliff.org).
 #
-# Generates CHANGELOG.md and per-release notes from this repo's Conventional
-# Commits, in the Keep a Changelog format the project already uses. It is
-# tag-driven (v* SemVer tags): `git cliff` maps commits since the previous tag
-# into grouped sections. The maintainer stays in control of WHEN to release —
-# git-cliff only writes the changelog for whatever tag you cut. See
-# docs/how-to/cut-a-release.md.
+# Generates the GitHub Release notes from this repo's Conventional Commits, in the
+# Keep a Changelog grouping. It is tag-driven (v* SemVer tags): `git cliff` maps the
+# commits since the previous tag into grouped sections, which release.yml publishes as
+# the GitHub Release body. There is no committed CHANGELOG.md file — the GitHub Releases
+# page is the changelog. See docs/how-to/cut-a-release.md.
 
 [changelog]
-# Matches the existing CHANGELOG.md preamble so a full regenerate stays consistent.
+# Preamble rendered atop a full multi-version render; not used for the --latest release notes.
 header = """
 # Changelog
 

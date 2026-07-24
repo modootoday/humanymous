@@ -53,7 +53,7 @@ docker run -d \
   -monitor
 ```
 
-- `:latest` tracks the newest release; pin a reproducible release with `:0.1.0` instead.
+- `:latest` tracks the newest release.
 - `-monitor` scores and logs without enforcing — the safe first contact with real traffic. Drop it to enforce.
 - `-acme-email` is optional but recommended: Let's Encrypt uses it for expiry and policy notices.
 

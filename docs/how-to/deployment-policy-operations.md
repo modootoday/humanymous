@@ -46,7 +46,7 @@ Pick your recipe:
    docker compose -f compose.release.yaml up -d
    ```
 
-   `:latest` tracks the newest release; for a reproducible deploy, pin a release by setting `HMN_VERSION=0.1.0` in `.env` instead of the default `latest`.
+   The default `HMN_VERSION=latest` tracks the newest release.
 
 **Verify:** the edge exposes HTTP probes — `GET /__hmn/healthz` (liveness) and `/__hmn/readyz` (readiness — 503s during drain). The image is distroless (no shell), so there is **no** Docker `HEALTHCHECK`; point your orchestrator's `httpGet` probes at those paths. The admin console is served at `https://<admin>/__hmn/admin/console` on the loopback-mapped admin listener (`127.0.0.1:8445`).
 

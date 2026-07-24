@@ -11,7 +11,7 @@ IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
 .PHONY: all wasm wasmexec server report build test race e2e-deps e2e report-html run clean fmt vet \
-        docker up attack swarm gate-e2e down logs changelog changelog-unreleased release-notes docs-assets
+        docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets
 
 all: build
 
@@ -51,12 +51,6 @@ vet:
 ## Run after editing a page title/description (needs Node; sharp installs on first run).
 docs-assets:
 	cd scripts/docsgen && npm install --silent && node gen.mjs
-
-## changelog: regenerate CHANGELOG.md from Conventional Commits (git-cliff, cliff.toml).
-## Uses npx so no local install is needed. Review the diff before committing — the
-## curated prose in earlier entries is intentionally hand-written; see docs/how-to/cut-a-release.md.
-changelog:
-	npx --yes git-cliff@latest --config cliff.toml --output CHANGELOG.md
 
 ## changelog-unreleased: preview the notes for unreleased commits (since the last tag) to stdout.
 changelog-unreleased:

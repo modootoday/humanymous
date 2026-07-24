@@ -38,7 +38,7 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
   -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
 ```
 
-`:latest` tracks the newest release; pin `:0.1.0` for a reproducible run. The admin listener is mapped to host loopback only (`127.0.0.1:8445`) — keep it that way. For a full production deployment (ACME TLS, sealed keystore, durable audit log, hardened read-only container) use the pull-only Compose file `deployments/compose.release.yaml`, which references the published image directly — see [Deployment & policy operations](../how-to/deployment-policy-operations.md). Prefer to build from source instead? Keep reading — the quickstart below covers the `go build` path.
+`:latest` tracks the newest release. The admin listener is mapped to host loopback only (`127.0.0.1:8445`) — keep it that way. For a full production deployment (ACME TLS, sealed keystore, durable audit log, hardened read-only container) use the pull-only Compose file `deployments/compose.release.yaml`, which references the published image directly — see [Deployment & policy operations](../how-to/deployment-policy-operations.md). Prefer to build from source instead? Keep reading — the quickstart below covers the `go build` path.
 
 > **Decide your topology first.** Where you place Gate determines which detection layers are
 > even active. The network plane (JA3/JA4/H2) needs raw-TLS termination and does **not** fire

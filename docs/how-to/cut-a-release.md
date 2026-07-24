@@ -1,6 +1,6 @@
 ---
 title: Cut a Release (semver tags + automated changelog)
-description: "Push a SemVer git tag (vX.Y.Z) and GitHub Actions builds signed core and gate images while git-cliff writes the changelog from Conventional Commits."
+description: "Push a SemVer git tag (vX.Y.Z) and GitHub Actions builds signed core and gate images while git-cliff writes the release notes from Conventional Commits."
 keywords: ["cut a release","SemVer git tag","git-cliff changelog","Conventional Commits","GitHub Actions release workflow","cosign keyless signing","SLSA provenance SBOM","ghcr.io core gate images","Keep a Changelog","humanymous maintainer"]
 ---
 
@@ -8,7 +8,7 @@ keywords: ["cut a release","SemVer git tag","git-cliff changelog","Conventional 
 
 **Diátaxis quadrant:** How-to. **Audience:** maintainers of humanymous who tag releases.
 
-humanymous releases are driven by **SemVer git tags** (`vMAJOR.MINOR.PATCH`) and an **automated changelog** generated from [Conventional Commits](https://www.conventionalcommits.org/) by [git-cliff](https://git-cliff.org) (config in `cliff.toml`). Tagging is deliberate and manual — the tooling never decides *when* to release; it writes the changelog and release notes for whatever tag you cut. This guide is the end-to-end recipe.
+humanymous releases are driven by **SemVer git tags** (`vMAJOR.MINOR.PATCH`) and **automated release notes** generated from [Conventional Commits](https://www.conventionalcommits.org/) by [git-cliff](https://git-cliff.org) (config in `cliff.toml`). Tagging is deliberate and manual — the tooling never decides *when* to release; it writes the release notes for whatever tag you cut. This guide is the end-to-end recipe.
 
 ## What a tag triggers
 
@@ -31,22 +31,16 @@ Before `1.0.0` the project is pre-stable: a breaking change may bump the minor r
 
 ## Steps
 
-1. **Land your work on `main`** with Conventional Commit subjects (`feat(gate): …`, `fix(core): …`, `docs: …`). The changelog quality is only as good as the commit subjects — the first line becomes the changelog entry.
+1. **Land your work on `main`** with Conventional Commit subjects (`feat(gate): …`, `fix(core): …`, `docs: …`). The release-notes quality is only as good as the commit subjects — the first line becomes the release-notes entry.
 
-2. **Update `CHANGELOG.md`.** Two supported styles, pick one per release:
-   - *Curated (default for notable releases):* write the highlights by hand under `## [Unreleased]`, then rename that heading to `## [X.Y.Z] - <date>` at release time. Earlier entries in this file are intentionally hand-written narrative — do not overwrite them.
-   - *Generated:* run `make changelog` to (re)generate `CHANGELOG.md` from the commit history via git-cliff. Review the diff; the generated entries are one line per commit, grouped by type.
-
-   Either way, commit the result: `git commit -am "docs(changelog): prepare vX.Y.Z"`.
-
-3. **Tag and push.**
+2. **Tag and push.**
    ```bash
    git tag -a v0.2.0 -m "v0.2.0"
    git push origin main
    git push origin v0.2.0
    ```
 
-4. **Watch the release workflow** in the Actions tab. When it is green, the images are on ghcr.io and the GitHub release carries the git-cliff notes. Verify a pulled image runs (see [Deployment & policy operations](deployment-policy-operations.md)).
+3. **Watch the release workflow** in the Actions tab. When it is green, the images are on ghcr.io and the GitHub release carries the git-cliff notes. Verify a pulled image runs (see [Deployment & policy operations](deployment-policy-operations.md)).
 
 ## How the changelog is generated
 
@@ -65,9 +59,9 @@ Before `1.0.0` the project is pre-stable: a breaking change may bump the minor r
 
 Non-Conventional commits and merge commits are filtered out. To preview exactly what a tag's notes will be: `make release-notes`.
 
-## First release
+## Cutting the next release
 
-No release tags exist yet. To cut the first public release, pick the intended version (for example `v0.1.0`) and tag the commit you want published, following the steps above. Once a tag has been pushed and pulled by others, force-moving it is disruptive — only ever re-tag a tag that has never left this machine.
+Releases are cut by tagging the next SemVer version (`vX.Y.Z`) per the bump rules above and pushing it, following the steps above. The release workflow then builds the ghcr images, and `:latest` tracks the newest release. Once a tag has been pushed and pulled by others, force-moving it is disruptive — only ever re-tag a tag that has never left this machine.
 
 ## Related
 

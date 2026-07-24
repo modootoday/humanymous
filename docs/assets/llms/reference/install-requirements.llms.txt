@@ -63,7 +63,7 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
   -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
 ```
 
-- `:latest` tracks the newest release; pin a specific release with `:0.1.0` for reproducibility.
+- `:latest` tracks the newest release.
 - `-monitor` scores and logs without enforcing — the safe first contact with real traffic. Drop it to enforce.
 - The admin listener is mapped to host loopback only (`127.0.0.1:8445`); keep it that way or front it with mTLS/SSO.
 

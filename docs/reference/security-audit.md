@@ -16,7 +16,7 @@ transparency; it is not a certification.*
   (High → Low) has since been remediated at the code level** in a pre-release
   hardening pass; only the accepted/residual risks in the *Accepted / residual risk*
   section remain. The full list of
-  applied fixes is in the [CHANGELOG](../../CHANGELOG.md) *Security* / *Fixed* sections.
+  applied fixes is on the [GitHub Releases page](https://github.com/modootoday/humanymous/releases) *Security* / *Fixed* sections.
 
 ## 1. Scope & asset inventory
 

@@ -84,8 +84,7 @@ build — two images are published to GitHub Container Registry (Apache-2.0, mul
 | `ghcr.io/modootoday/humanymous-gate:latest` | The reverse-proxy enforcement layer — the product. Put it in front of your origin. |
 | `ghcr.io/modootoday/humanymous-core:latest` | The standalone detection engine, for self-testing and the demo. |
 
-`:latest` tracks the newest release; pin a release with `:0.1.0` (also `:0.1`, `:0`)
-for reproducibility.
+`:latest` tracks the newest release.
 
 `compose.release.yaml` is the **pull-only** counterpart to the lab file: it references
 `ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}` with **no `build:` and no

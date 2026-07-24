@@ -202,7 +202,7 @@ Published images (Apache-2.0, `linux/amd64` + `linux/arm64`, cosign-signed):
 - `ghcr.io/modootoday/humanymous-gate:latest` — the reverse-proxy enforcement layer (the product you deploy).
 - `ghcr.io/modootoday/humanymous-core:latest` — the standalone detection engine (demo / self-testing).
 
-Pin a release with `:0.1.0` instead of `:latest`. Start with `-monitor` (score + log, enforce
+`:latest` tracks the newest release. Start with `-monitor` (score + log, enforce
 nothing), watch the Ledger, then drop it to enforce — see
 [Will this break my app?](docs/explanation/will-this-break-my-app.md).
 
@@ -355,7 +355,7 @@ frame monitor showed no regression for normal h2 browser serving in this run.
 
 ### Round 5 — deployment-suitability hardening (signal provenance · privacy-evasion)
 
-Five deep deployment-suitability reviews (see the [CHANGELOG](CHANGELOG.md)) surfaced two
+Five deep deployment-suitability reviews (see the [GitHub Releases notes](https://github.com/modootoday/humanymous/releases)) surfaced two
 evasions that are now **permanent regression wargame cases** in the catalog (retained as
 code — `cmd/redteam` + `test/redteam/*.mjs`), so a future change that reopens either fails
 the run:
