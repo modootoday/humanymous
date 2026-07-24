@@ -12,19 +12,29 @@ For the machine-readable profile-by-profile table (labels, expected hard rules, 
 
 ## The human baseline turns a detection rate into a false-positive-aware one
 
-There are 26 profiles in the runner's `PROFILES` order:
+There are **47 profiles** in the runner's `PROFILES` order, organised as the T0–T4 attacker cost-escalation ladder (`test/e2e/tiers.mjs`): 45 must-block bots + 1 detection-ceiling + 1 human baseline.
 
 ```
-human, http_client, tls_parrot, selenium, puppeteer, puppeteer_stealth,
-playwright_plain, playwright_stealth, undetected, patchright, direct_cdp,
-nodriver, xvfb_headful, antidetect, camoufox, tls_static, tls_rotate,
-ua_rotate, rit_replay, rit_tamper, video_scrape, watermark_strip,
-ai_agent, distributed, flood, rapid_reset
+baseline:  human
+T0 (13):   nonbrowser_ua, http_client, tls_parrot, tls_static, sec_chua_absent,
+           sec_fetch_absent, rit_absent, rit_replay, rit_tamper, ua_rotate,
+           xff_spoof, behavior_no_interaction, behavior_untrusted
+T1 (12):   selenium, puppeteer, playwright_plain, undetected, direct_cdp,
+           tls_rotate, ja4_churn, grease_absent_js, video_scrape,
+           watermark_strip, flood, rapid_reset
+T2 (12):   puppeteer_stealth, playwright_stealth, patchright, multi_axis_rotate,
+           adv_webgpu_mismatch, headless_ua_token, signal_forgery,
+           behavior_machine_keystroke, behavior_teleport_click,
+           behavior_bezier_mouse, behavior_fixed_typing, ai_burst_silence
+T3 (8):    nodriver, xvfb_headful, antidetect, camoufox, ai_agent,
+           ai_full_cadence, distributed, privacy_evasion
+T4 (1):    native_coherent_ceiling   (ceiling: label — ALLOW by design)
 ```
 
-Exactly one of them — `human.mjs` — is **not** a bot. That single non-bot profile is load-bearing. `classify()` in `test/e2e/runner.mjs` reads the profile's exported `label`: a label that starts with `bot:` is an automated sample, and anything else is treated as a human-baseline sample. The classification rules are:
+Two of them carry a non-`bot:` label: `human.mjs` (the human baseline) and `native_coherent_ceiling.mjs` (the T4 detection ceiling). The baseline is load-bearing for false-positive accounting; the ceiling is the honest boundary the design does not claim to solve. `classify()` in `test/e2e/runner.mjs` reads the profile's exported `label`: a `bot:` prefix is an automated sample, a `ceiling:` prefix is the detection ceiling, and anything else is the human baseline. The classification rules are:
 
 - **bot** profile → `CHALLENGE` or `DENY` is a true positive (TP); `ALLOW` is a false negative (FN).
+- **ceiling** profile → `ALLOW` is the honest expected result (the detection ceiling, priced via the attested / ceiling-guard mechanism, not a bypass); a `CHALLENGE` or `DENY` is a bonus catch, not the pass condition.
 - **human** profile → `DENY` is a false positive (FP); anything else is a true negative (TN).
 
 That two-axis scoring — what the profile *is* against what the engine *did* — is what turns a raw verdict into a labelled outcome:
@@ -32,12 +42,15 @@ That two-axis scoring — what the profile *is* against what the engine *did* �
 ```mermaid
 flowchart TD
   V["Verdict for a profile run"]
-  L{"label starts with bot: ?"}
+  L{"label prefix?"}
   V --> L
-  L -- "bot" --> BV{"verdict"}
+  L -- "bot:" --> BV{"verdict"}
+  L -- "ceiling:" --> CV{"verdict"}
   L -- "human baseline" --> HV{"verdict"}
   BV -- "CHALLENGE or DENY" --> TP["TP (caught)"]
   BV -- "ALLOW" --> FN["FN (missed)"]
+  CV -- "ALLOW" --> CEIL["CEILING (honest, expected)"]
+  CV -- "CHALLENGE or DENY" --> CC["CEIL-CAUGHT (bonus)"]
   HV -- "DENY" --> FP["FP (denied a human)"]
   HV -- "ALLOW or CHALLENGE" --> TN["TN"]
 ```

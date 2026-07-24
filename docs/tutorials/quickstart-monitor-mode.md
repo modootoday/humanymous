@@ -158,3 +158,4 @@ That is the recommended starting posture for any deployment: observe first, trus
 
 - **[Will this break my app?](../explanation/will-this-break-my-app.md)** — how enforcement, fail-open behavior, and staged rollout work before you turn anything on.
 - **[CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md)** — every flag, environment variable, policy preset, and the per-route policy table, for when you move past monitor mode.
+- **[Configure attested routes](../how-to/configure-attested-routes.md)** — the `attested` preset: put an attestation floor on high-value mutating routes so a scoring-ALLOW there is priced to CHALLENGE → Pass, once you are ready to enforce.

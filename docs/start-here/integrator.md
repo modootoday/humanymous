@@ -32,7 +32,9 @@ flowchart LR
 
 1. [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md) — build the binary, front your throwaway origin, and watch verdicts get scored and logged without enforcing anything. Do this first.
 2. [Will This Break My App?](../explanation/will-this-break-my-app.md) — how fail-open on safe GETs, monitor-first rollout, and per-route enforcement keep real users flowing before you turn enforcement on.
-3. [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md) — every flag (`-addr`, `-admin-addr`, `-upstream`, `-monitor`, and more), the four policy presets (off / monitor / balanced / strict), and how the route table maps paths to enforcement.
+3. [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md) — every flag (`-addr`, `-admin-addr`, `-upstream`, `-monitor`, and more), the five policy presets (off / monitor / balanced / strict / attested), and how the route table maps paths to enforcement.
+
+Then, for high-value routes: once you trust the signal and want a ceiling-guard on your mutating endpoints (checkout, transfer, password, key issuance), read [Configure attested routes](../how-to/configure-attested-routes.md). The `attested` preset is strict plus an attestation floor — a scoring-ALLOW on a marked route is priced to CHALLENGE → Pass unless the session presents possession or a step-up proof — so the install → first-use → ceiling-guard path is walkable end to end.
 
 ## Then
 

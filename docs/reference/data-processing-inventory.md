@@ -86,6 +86,8 @@ Detection-layer references (L1–L7) are defined in [How Gate sees a request](..
 > specific deployment remains a **controller determination** — record it in your RoPA. The
 > reference build applies no Article 9 special-category handling by default.
 
+> **Note (low significance).** Gate sets three client-side cookies/tokens as part of enforcement — the verdict trust token (`hmn_vt`), the rotating request-integrity token (RIT), and the attestation step-up proof (`hmn_su`, minted on an attested route after a Pass solve). These are **session-scoped, short-TTL, and not persisted** to the audit log; each expires on its own and is discarded. They carry no new identifier: they bind only to data already inventoried above — the IP/subnet (row 1), the device fingerprint (row 7), and the session id (row 9). They therefore add **no new personal-data category** to this inventory. Record them, if at all, as transient enforcement state derived from existing rows.
+
 ---
 
 ## 4. Pseudonymization policy note

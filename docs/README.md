@@ -33,6 +33,8 @@ The documentation set, grouped by Diátaxis quadrant.
 ### How-to
 
 - **[Deployment & policy operations](how-to/deployment-policy-operations.md)** — task recipes: TLS/certs, origin cloaking, admin listener + RBAC, moving a route from monitor to enforce, rate limits and bans.
+- **[Configure attested routes (the attestation floor)](how-to/configure-attested-routes.md)** — price the ALLOW on high-value routes: mark a route `attested`, its shared-key and cookie-jar preconditions, and how a real user clears the floor with a Pass or possession.
+- **[Configure credential verifiers](how-to/configure-credential-verifiers.md)** — wire WebAuthn, Privacy Pass, and Web Bot Auth so verifiable clients skip the friction and fast-path past the attestation floor.
 - **[Ledger tour](how-to/audit-console-tour.md)** — a guided walk of the six console views (Overview, Integrity, Sessions, Rate Limits & Bans, Policy, Compliance).
 - **[Verify the audit log](how-to/verify-audit-log.md)** — how to check the tamper-evident log without trusting the operator, and what each integrity-mismatch class means.
 - **[Self-validation: red-team your own deployment](how-to/self-validation-red-team.md)** — measure your own detection and false-positive rate with the bundled harness (defensive-only, local).
@@ -91,7 +93,7 @@ The depth tier for developers who want to understand and extend the detection en
 - **[Extend the detector](how-to/extend-detection.md)** — add a signal, a cross-check, or a hard rule without regressing the low-false-positive principle.
 - **[Inside the Detection Observatory](explanation/observatory-architecture.md)** — the live-telemetry transport and the complete, enumerated safety model.
 - **[Red-team rules of engagement](reference/red-team-rules-of-engagement.md)** — the defensive, local-only, self-target-only boundary every Red page rests on.
-- **[Red-team catalog reference](reference/red-team-catalog.md)** — the profile contract, the 26-profile catalog, the raw-protocol attacks, and how a verdict becomes TP/FN/FP/TN.
+- **[Red-team catalog reference](reference/red-team-catalog.md)** — the profile contract, the 47-profile catalog, the raw-protocol attacks, and how a verdict becomes TP/FN/FP/TN.
 - **[The Red catalog architecture](explanation/red-catalog-architecture.md)** — how the bundled profiles and the raw-protocol client are built.
 - **[Write or extend a Red-team profile](how-to/write-a-red-profile.md)** — author a profile and register it in all three places.
 - **[How this reference implementation was built](explanation/how-this-was-built.md)** — the method behind the system: spec-first design, adversarial self-validation, and real-network validation.

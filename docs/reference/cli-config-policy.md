@@ -54,7 +54,7 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 | `HMN_ADMIN_TOKENS` | Optional (dev) | Deterministic dev admin tokens. Format: `auditor:tok,operator:tok,approver:tok,dpo:tok`. If unset, random tokens are generated per boot and printed at startup. |
 | `HMN_REDIS_KEY` | Recommended with `-redis` | Fleet-shared secret (≥16 bytes; a demo/placeholder value is rejected at boot) that key-binds shared verdict/ban values. Unset ⇒ unsigned channel + a loud startup WARNING. |
 | `HMN_REDIS_PASSWORD` / `HMN_REDIS_USER` | Optional with `-redis` | Redis AUTH credential sent on every (re)connect. User may be empty for legacy password-only AUTH. |
-| `HMN_TOKEN_KEY` | Recommended for a fleet | Hex (≥16 bytes) verdict-token HMAC key shared across nodes and restarts, so a returning human's trust token stays valid fleet-wide. Unset ⇒ per-boot random key; a token minted elsewhere simply falls through to re-scoring (never a deny), and `-redis` mode logs a WARNING advising you to set it. |
+| `HMN_TOKEN_KEY` | Recommended for a fleet; **required for `attested` routes** | Hex (≥16 bytes) verdict-token HMAC key shared across nodes and restarts, so a returning human's trust token stays valid fleet-wide. Unset ⇒ per-boot random key; a token minted elsewhere simply falls through to re-scoring (never a deny), and `-redis` mode logs a WARNING advising you to set it. It has a **second role** for the attestation floor: set the *same* value on the Core (which serves the Pass) and the Gate so a Pass-solve step-up receipt minted by the Core verifies at the Gate's `/__hmn/stepup`. If any route uses the `attested` preset without a shared key, both the Gate and the Core **refuse to start** (a malformed value is likewise fatal) — an attested route with no verifiable receipt would be an unredeemable Pass loop for real humans. |
 
 ---
 
@@ -84,7 +84,7 @@ The `dev tokens` line prints only when tokens are generated (that is, when `HMN_
 
 ## Policy presets
 
-Presets are defined in `internal/gate/config.go`. Four presets are implemented. Each sets whether the detection bundle is injected, whether the verdict is enforced, and (for `strict`) fail-closed and synchronous-rescore behavior.
+Presets are defined in `internal/gate/config.go`. Five presets are implemented. Each sets whether the detection bundle is injected, whether the verdict is enforced, and (for `strict` and `attested`) fail-closed and synchronous-rescore behavior; `attested` adds the attestation floor.
 
 | Preset | inject | enforce | fail-closed | sync-score | Behavior |
 |--------|:------:|:-------:|:-----------:|:----------:|----------|
@@ -92,8 +92,11 @@ Presets are defined in `internal/gate/config.go`. Four presets are implemented. 
 | `monitor` | yes | no | — | — | Inject bundle, score and log, enforce nothing. |
 | `balanced` | yes | yes | no | no | Default for any unmatched route. Enforces; fails open on an unknown verdict for a safe GET/HEAD request. |
 | `strict` | yes | yes | yes | yes | Enforces; an unknown verdict becomes a challenge (fail-closed), and the score is re-computed synchronously before any state-changing action (sync-score). |
+| `attested` | yes | yes | yes | yes | `strict` **plus the attestation floor**. On this route a scoring-ALLOW is priced, not fast-pathed: the request must carry possession (a WebAuthn / Privacy-Pass / Web-Bot-Auth trust-upgrade, which the possession pre-gate forwards before scoring) **or** a step-up proof (`hmn_su`, minted on a Pass solve). Without either, an ALLOW is demoted to a Pass challenge — CHALLENGE→Pass, never DENY. Refused on a catch-all/public prefix; requires a shared `HMN_TOKEN_KEY`; warns if no credential verifier is configured. See [Configure attested routes](../how-to/configure-attested-routes.md). |
 
 > **Important:** The `low` and `api` preset names are reserved and not implemented in the reference build. `presetByName` falls back to `balanced` for them. Do not rely on `low` or `api` as working presets.
+
+> **The attestation floor prices the ALLOW; it does not detect.** A coherent engine-level spoof cannot be told from a human past the T4 ceiling. On an `attested` route the floor makes the free ALLOW cost either possession or a per-session human Pass solve. It never blocks a human categorically — the demotion is always to a Pass challenge, never a DENY, so an unattested human solves the same Pass an anonymous visitor already solves.
 
 ---
 
@@ -156,6 +159,19 @@ This table shows the effective runtime behavior of each preset with global monit
 | `monitor` | Inject, score + log, no enforce | Inject, score + log, no enforce (unchanged) |
 | `balanced` | Inject, score, enforce | Inject, score + log, no enforce |
 | `strict` | Inject, score, enforce, fail-closed, sync-score | Inject, score + log, no enforce |
+| `attested` | Inject, score, enforce, fail-closed, sync-score, attestation floor | Inject, score + log, no enforce (floor suppressed with all enforcement) |
+
+### Attestation-floor surface (ceiling-guard)
+
+These apply only to `attested` routes. For a task-oriented walkthrough see [Configure attested routes](../how-to/configure-attested-routes.md).
+
+| Surface | Value | Role |
+|---------|-------|------|
+| `hmn_su` cookie | HMAC, bound to fingerprint + subnet + session id, TTL'd, epoch-rotated | The step-up proof. Domain-separated from the `hmn_vt` verdict token, so a verdict token can never be presented as a step-up. Minted only via `/__hmn/stepup`. |
+| `POST /__hmn/stepup` | Control-plane endpoint (public listener) | Redeems a Pass-solve step-up receipt (header `X-Hmn-Stepup-Receipt`) for an `hmn_su` cookie, re-binding it to the live socket. A missing/forged/expired/foreign-session receipt is a 403 with a self-diagnosing audit reason (`sid_mismatch` flags a diverged cookie jar; `expired` flags Core↔Gate clock skew). |
+| `CredFanoutCap` | `8` distinct /24 subnets (default) | Ceiling-guard #2. Past this fan-out, one WebAuthn credential's trust-upgrade is withheld **on attested routes only** and the request reverts to Pass — bounding a stolen/shared passkey fronting a proxy farm. Degrades to CHALLENGE, never DENY. |
+
+The step-up receipt carries a ±120 s clock-skew leeway; multi-host attested deployments should still run NTP.
 
 ---
 

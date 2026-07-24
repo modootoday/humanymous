@@ -7,6 +7,37 @@ are called out in a dedicated **Security** subsection with upgrade urgency.
 
 ## [Unreleased]
 
+### Fixed — ceiling-guard deployment-review remediation
+
+A deep deployment-suitability review (49 findings, 47 confirmed after adversarial verification →
+GO_WITH_FIXES) hardened the wiring layer around the cross-plane attested-or-Pass flow; the crypto and
+the happy path were already correct. All fixed at code level, `go test -race` clean, detection catalog
+unchanged.
+
+- **HIGH — no-lockout footgun closed.** An `attested` route configured without a shared `HMN_TOKEN_KEY`
+  would have made the route an unredeemable CHALLENGE→Pass loop for real humans (the Gate's per-boot key
+  could never verify a Core-minted step-up receipt). Both the Gate and the Core now **refuse to start**
+  in that case (a malformed key is likewise fatal), and `/__hmn/stepup` emits self-diagnosing audit
+  reasons — `sid_mismatch` (a diverged `hsid` cookie jar) and `expired` (Core↔Gate clock skew) — so a
+  human soft-lockout can never read as a blocked attacker.
+- **Fan-out cap no longer touches unmarked routes.** The WebAuthn /24 fan-out cap (ceiling-guard #2)
+  now withholds the trust-upgrade only on `attested` routes; a possession proof past the cap still
+  fast-paths on `balanced`/`strict` routes, so a roaming/CGNAT/VPN human on one passkey is never newly
+  challenged on ordinary traffic.
+- **Robustness.** The cohort shadow is hard-bounded against a fresh-cohort flood; the step-up receipt
+  gets a ±120 s clock-skew leeway and is re-issued on an already-solved re-poll; `NewServer` refuses the
+  attestation floor on a catch-all prefix as defense-in-depth beyond the CLI loader.
+- **Stale-code cleanup:** removed a dead `hasCredVerifier` field, an unused `pseudoOrderCode`, a
+  `parser.u8` method, a dead `Limiter.lastGC` field, a redundant guard, and corrected several drifted
+  doc-comments. The three `/24` extractors were deliberately left un-unified (one feeds frozen HR-19/21
+  keying).
+- **Docs:** the `attested` preset, the `hmn_su` step-up cookie, `POST /__hmn/stepup`, and the shared-key
+  / same-cookie-jar prerequisites are now documented across the reference and persona pages; two new
+  how-tos — [Configure attested routes](docs/how-to/configure-attested-routes.md) and
+  [Configure credential verifiers](docs/how-to/configure-credential-verifiers.md) — complete the
+  install→configure path; the red-team catalog count was corrected from a stale 26 to the real 47
+  (45 must-block bots + 1 detection-ceiling + 1 baseline), with the T4 ceiling ALLOW stated honestly.
+
 ### Added — ceiling-guard: attestation floor on high-value routes
 
 A Blue-team ceiling-guard design meeting (6 orthogonal-axis architects + adversarial Red / no-lockout

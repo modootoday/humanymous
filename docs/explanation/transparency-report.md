@@ -35,8 +35,11 @@ screen-reader users).
 ## How well it works (and how to read the numbers)
 
 In a **single reference run (`n=1` per profile) on the maintainers' hardware** against a
-26-profile local catalog (**25 bot profiles + 1 baseline**), all 25 bot profiles were
-blocked and the baseline was not denied. **This is reference-measured, not a guarantee.**
+47-profile local catalog (**45 must-block bots + 1 detection-ceiling + 1 baseline**), all
+45 must-block bots were blocked and the baseline was not denied. The single T4
+`native_coherent_ceiling` profile **ALLOWs by design** — the documented detection ceiling,
+priced via the attested / ceiling-guard mechanism, not a bypass. **This is
+reference-measured, not a guarantee.**
 
 Please read these caveats with any figure you see:
 

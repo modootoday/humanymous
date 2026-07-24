@@ -41,7 +41,7 @@ Align the documentation version to the **engine release** it describes. When the
 A release-notes changelog should surface **behavior changes** that affect operators, integrators, or end users. At minimum, call out:
 
 - **New or retired hard rules** (for example, a new `HR-NN` → DENY/CHALLENGE rule).
-- **Preset changes** — anything that alters what `off` / `monitor` / `balanced` / `strict` do, or the default route→preset mapping.
+- **Preset changes** — anything that alters what `off` / `monitor` / `balanced` / `strict` / `attested` do (including the `attested` attestation-floor lever — its possession-or-`hmn_su` pricing, the catch-all refusal, or the shared-`HMN_TOKEN_KEY` precondition), or the default route→preset mapping.
 - **Threshold or escalation changes** — moved risk bands (`ChallengeAt` / `DenyAt`), changed ban-ladder steps, or changed rate-limit windows.
 
 Each such entry should name the mechanism precisely and link the reader-facing page(s) that document it, using the derivation index below to find them.

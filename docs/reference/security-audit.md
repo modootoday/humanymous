@@ -25,7 +25,7 @@ cryptographic proofs.
 
 Static review guided by the **OWASP Code Review Guide** and **OWASP ASVS** (target
 Level 2 for the web surface); dynamic/behavioural review mapped to **OWASP WSTG** via
-the repo's harnesses — the 26-profile Docker attack catalog, the 34-check Gate
+the repo's harnesses — the 47-profile Docker attack catalog, the 34-check Gate
 conformance suite, the multi-subnet correlation swarm, the 8-round Pass red/blue
 wargame, and dedicated **reverse-proxy forwarding-fidelity** tests
 (`internal/gate/forward_fidelity_test.go`). Supply-chain posture assessed against
@@ -34,8 +34,9 @@ wargame, and dedicated **reverse-proxy forwarding-fidelity** tests
 ## 3. Remediation summary
 
 All confirmed findings were fixed and verified (`go test ./...` green; Pass e2e 5/5;
-Pass wargame gate PASS; Docker engine attack 26/26 detected with 0 bypass; Gate
-conformance 34/34; images build with third-party licences bundled). Categories fixed,
+Pass wargame gate PASS; Docker engine attack 45/45 sub-ceiling bots blocked (0 bypass) —
+the T4 `native_coherent_ceiling` profile ALLOWs by design, priced via attested/ceiling-guard;
+Gate conformance 34/34; images build with third-party licences bundled). Categories fixed,
 with the durable controls added:
 
 - **Admin plane** — no unauthenticated operator-token handout; loopback-default bind;

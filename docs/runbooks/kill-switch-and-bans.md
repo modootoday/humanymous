@@ -64,7 +64,7 @@ If you are unsure whether a DENY spike is a misfire or an attack, run the attack
 
 ### The narrower alternative, and why it is not always available
 
-The least-disruptive fix for a misfiring route is to demote **that one route** to monitor, leaving enforcement intact everywhere else. But per-route demotion is **not a runtime option**: route presets (`off` / `monitor` / `balanced` / `strict`) are startup configuration in the route table, not something an admin endpoint rewrites live. `GET /__hmn/admin/policy` reads the posture; there is no runtime policy-write endpoint.
+The least-disruptive fix for a misfiring route is to demote **that one route** to monitor, leaving enforcement intact everywhere else. But per-route demotion is **not a runtime option**: route presets (`off` / `monitor` / `balanced` / `strict` / `attested`) are startup configuration in the route table, not something an admin endpoint rewrites live. `GET /__hmn/admin/policy` reads the posture; there is no runtime policy-write endpoint.
 
 So under a false-positive storm your two runtime choices are:
 

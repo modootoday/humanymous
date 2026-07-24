@@ -25,6 +25,8 @@ flowchart TD
 3. [Detection engine internals](../explanation/detection-engine-internals.md) — signals, the scoring math (dedup → per-layer cap → noisy-OR), the hard-rule table, and the ScoreTrace you can observe.
 4. [Extend detection](../how-to/extend-detection.md) — add a signal or a hard rule and confirm it in the trace.
 
+> **Important:** There is a cross-plane contract on the Pass solve path. When `HMN_TOKEN_KEY` is set, `handlePassSolve` in `cmd/server/pass_handler.go` mints a session-bound step-up receipt into the solve response JSON (`stepUpReceipt`), which the Gate redeems at `POST /__hmn/stepup` to issue the `hmn_su` proof the `attested` preset's attestation floor requires. If you change the Pass solve flow — the response shape, the session binding, or when the receipt is minted — you can break attested-route redemption downstream even though the engine and its tests stay green. See [Configure attested routes](../how-to/configure-attested-routes.md) for the redemption path.
+
 ## Red path — understand & extend the test catalog
 
 Read the rules of engagement **first** — before running or writing anything.

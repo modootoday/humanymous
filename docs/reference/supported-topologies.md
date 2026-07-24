@@ -74,12 +74,34 @@ The consequence for a multi-node deployment behind a load balancer: correlation,
 
 Three mechanisms derive a value from wall-clock time buckets and therefore assume loosely-synchronized clocks (NTP) across any fleet: the **RIT** time bucket, the **origin-cloaking epoch**, and the **verdict-token epoch**. Each tolerates roughly ±1 bucket of skew as a grace window. A node whose clock drifts more than a bucket past its peers will see spurious RIT/token friction. Run NTP; do not deploy a fleet with unsynchronized clocks.
 
+## Attested routes need one shared cookie jar (a topology prerequisite)
+
+The `attested` preset adds an attestation floor on operator-marked high-value routes: a scoring-ALLOW there is priced to CHALLENGE → Pass unless the session presents possession or a step-up proof. That step-up proof depends on a **topology prerequisite** — it belongs alongside the port and co-location facts in [install requirements](./install-requirements.md#ports), because it is a placement constraint, not a runtime tunable.
+
+The mechanism: on a verified SoT-36 Pass solve the Core mints a session-bound receipt; the Gate redeems it at `POST /__hmn/stepup` and issues the `hmn_su` proof. The receipt is bound **only to the `hsid` session id**. So the Core-Pass front-end and the Gate must serve `hsid` in the **same cookie jar**, or the id the Gate reads will not match the id the receipt was minted for. Note this is **not** a same-origin requirement:
+
+| Placement of Core-Pass relative to the Gate | Shared `hsid`? | Result |
+| --- | --- | --- |
+| Same host, different ports | Yes — cookies are not port-scoped | Works |
+| Pass proxied through the Gate | Yes — one origin | Works |
+| Split-domain / cross-subdomain Pass, no shared cookie `Domain` on `hsid` | No — `hsid` diverges | `verifyStepUpReceipt` returns a sid mismatch and 403s indefinitely; `hmn_su` is never minted; a real human loops on the route |
+
+The failure mode is bounded but permanent until fixed: a diverged cookie jar is **never** a DENY and **never** clears itself — the human keeps solving the Pass without ever getting the fast-path. Because a valid-signature/wrong-sid receipt is a cross-plane misconfiguration (not automated traffic), the Gate logs it with an actionable reason rather than a blanket block.
+
+To deploy attested routes correctly:
+
+- Co-serve the Core-Pass front-end **through the Gate**, or set a shared cookie `Domain` on `hsid` so it is the same value on both planes.
+- Set a **shared `HMN_TOKEN_KEY`** across the Core and the Gate — the receipt is signed with it and verified with it; without a shared key the receipt cannot verify at all.
+
+See [Configure attested routes](../how-to/configure-attested-routes.md) for the route-marking and end-to-end redemption walkthrough.
+
 ## Checklist: pick your topology deliberately
 
 - If you want the **full seven-layer** verdict: deploy the **Core engine as the raw-TLS terminator**, direct-facing or behind an **L4-passthrough** LB — with **no re-terminating CDN/L7-LB in front**.
 - If you must sit **behind a CDN/L7-LB**: expect the **network plane to be inert**; size detection to client + headers + IP-intel, and ingest JA3/JA4 from the CDN out-of-band if it can export it.
 - If you deploy the **Gate proxy**: know that it captures **no TLS fingerprints** today; it is the enforcement/injection/audit surface, and its detection is client + headers + behavior + IP-intel.
 - If you **scale out**: keep the Core single-node, or accept the documented multi-node correlation/nonce/RIT limits; enable the `-redis` ban/verdict backend and a shared `HMN_TOKEN_KEY`.
+- If you run **attested routes**: co-serve Core-Pass through the Gate (or share a cookie `Domain` on `hsid`) so `hsid` does not diverge, and set a shared `HMN_TOKEN_KEY` on both planes — otherwise the step-up receipt never verifies and humans loop on the route.
 - **Run NTP** on every node.
 
 ## Related pages

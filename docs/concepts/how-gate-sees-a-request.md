@@ -96,7 +96,7 @@ End users who are challenged or blocked see plain language and an incident handl
 
 ## 5. Policy presets and modes
 
-Gate matches each request to a route policy by **longest-prefix wins**; any unmatched route defaults to `balanced`. Four presets are implemented:
+Gate matches each request to a route policy by **longest-prefix wins**; any unmatched route defaults to `balanced`. Five presets are implemented:
 
 | Preset | Injects bundle | Enforces | Notes |
 |--------|----------------|----------|-------|
@@ -104,6 +104,7 @@ Gate matches each request to a route policy by **longest-prefix wins**; any unma
 | **monitor** | Yes | No | Scores and logs, enforces nothing. |
 | **balanced** | Yes | Yes | Default for any unmatched route; fails open on unknown safe-GET. |
 | **strict** | Yes | Yes | Fails closed (unknown verdict → challenge) and re-scores synchronously before mutation. |
+| **attested** | Yes | Yes | `strict` plus an attestation floor: on operator-marked high-value routes a scoring-ALLOW is priced, not fast-pathed — it must present possession (an existing WebAuthn / Privacy Pass / Web Bot Auth trust-upgrade) or an `hmn_su` step-up proof from a Pass solve. CHALLENGE→Pass only, never DENY. Refused on catch-all / public prefixes. |
 
 > **Note:** The `low` and `api` presets are reserved and are **not** implemented in the reference build. Requests naming them fall back to `balanced`. Do not treat them as shipping.
 
@@ -135,7 +136,7 @@ The documentation uses a five-tier scale to describe the automation Gate is desi
 | **T3** | Real-engine automation (nodriver, camoufox, patchright). Behavior and network become the deciding signals; confidence is lower. |
 | **T4** | Anti-detect tooling plus real-human click-farms. |
 
-**The T4 boundary.** T4 is an explicit design boundary — it is **not** solved. Real humans clicking through anti-detect browsers cannot be separated from legitimate users by client or network signals alone. Gate mitigates T4 only through rate limiting and reputation, and this documentation does not claim otherwise.
+**The T4 boundary.** T4 is an explicit design boundary — it is **not** solved. Real humans clicking through anti-detect browsers cannot be separated from legitimate users by client or network signals alone. Gate does not detect T4 by client or network signals; it mitigates the tier through rate limiting and reputation, and this documentation does not claim otherwise. On routes an operator opts into the `attested` preset there is one further, opt-in mitigation: it still does not detect a coherent T4 spoof, it **prices** the ALLOW — a scoring-ALLOW that cannot present possession or an `hmn_su` step-up is challenged to a Pass rather than fast-pathed, so unlimited free high-value passes become a per-session human solve.
 
 ## 8. Glossary
 

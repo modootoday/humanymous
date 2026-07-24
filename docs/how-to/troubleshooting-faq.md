@@ -78,7 +78,7 @@ If you see the `<!--hmn-injected-->` marker but no bundle behavior, the page was
 **Fix.**
 
 - Start in monitor mode to observe verdicts without enforcing them, then tune before you enforce. Monitor mode lets you see what *would* be challenged or denied against real traffic first.
-- Rely on the PoW upgrade path: a score-based CHALLENGE (one with no hard rule behind it) upgrades to ALLOW once the client solves the proof of work (`l7.pow.solved`). A real human completing the interstitial passes. The PoW upgrade never overrides a hard rule.
+- Rely on the PoW upgrade path: a score-based CHALLENGE (one with no hard rule behind it) upgrades to ALLOW once the client solves the proof of work (`l7.pow.solved`). A real human completing the interstitial passes. The PoW upgrade never overrides a hard rule. On an **`attested`** route this bare solve is not enough: the solve must **also** mint a step-up receipt that redeems at `POST /__hmn/stepup` for an `hmn_su` cookie, or the attestation floor keeps pricing the ALLOW back to a Pass (see the FAQ entry below).
 - Review which routes are mapped to `strict`. Presets are startup configuration (`Config.Routes`); there is no runtime per-route policy-write endpoint. Adjust the route-to-preset mapping at startup if a route is stricter than you need.
 
 For a fuller treatment of what changes for real users and how to de-risk enforcement, see [Will this break my app?](../explanation/will-this-break-my-app.md).
@@ -173,11 +173,13 @@ With the keystore, the SigningSeed (Ed25519 STH key), HMACKey, and vault snapsho
 
 **Why `404` instead of `401` from the admin API?** Deny-by-default: a missing or invalid bearer token returns `404` so the admin surface does not announce itself. Check both the token and that you are on the admin listener (`:8445`), not the edge.
 
-**Can I change route policy while Gate is running?** Presets (`off` / `monitor` / `balanced` / `strict`) are startup configuration. There is no runtime per-route policy-write endpoint. The runtime levers are the fleet-wide kill switch and the global `-monitor` switch.
+**Can I change route policy while Gate is running?** Presets (`off` / `monitor` / `balanced` / `strict` / `attested`) are startup configuration. There is no runtime per-route policy-write endpoint. The runtime levers are the fleet-wide kill switch and the global `-monitor` switch.
 
 **How do I stop enforcement without stopping traffic?** The kill switch demotes hard-rule enforcement to monitor fleet-wide — detection stops and traffic flows, though manually placed bans still enforce. It is dual-control (committed by a distinct Approver).
 
 > **Warning:** The kill switch is fleet-wide. Enabling it stops hard-rule enforcement everywhere Gate runs, not just on one node.
+
+**Why is an ALLOW still challenged on my high-value (`attested`) route?** That is the attestation floor (ceiling-guard #1) doing its job: on an `attested` route a scoring-ALLOW — and even a valid verdict-token fast-path — is priced to a Pass challenge unless the session presents possession or an `hmn_su` step-up proof. The fix is to give humans a way to satisfy the floor: either wire a credential verifier (WebAuthn / Privacy Pass / Web Bot Auth) so possession pre-gates and forwards first, **or** run the Core Pass server and Gate with a **shared `HMN_TOKEN_KEY`** and the same cookie jar so a Pass solve's receipt redeems at `POST /__hmn/stepup` and mints `hmn_su`. Without one of those, humans re-solve the Pass forever — a Pass-for-everyone friction wall. (Note: `attested` also requires the shared `HMN_TOKEN_KEY` across Core and Gate to start at all; the Gate refuses to boot without it.)
 
 **Where do I see what Gate decided?** Observability is the audit stream (`GET /audit`), the Integrity view/endpoint, and the Overview KPIs in the Ledger. There is no Prometheus `/metrics` endpoint and no `/healthz` / `/readyz` probe in the reference — those are prod-delta.
 

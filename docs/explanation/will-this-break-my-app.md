@@ -38,7 +38,9 @@ The same score-and-log behavior can be applied to individual routes with the `mo
 
 `balanced` (the default for any unmatched route) and `strict` both inject and enforce. The difference is what they do when the verdict is uncertain, covered next. The `off` preset does neither — no injection, no enforcement — and is the true bypass.
 
-> **Note:** Only four presets ship in this reference build: `off`, `monitor`, `balanced`, `strict`. Route matching is longest-prefix wins; anything unmatched is `balanced`.
+> **Note:** Five presets ship in this reference build: `off`, `monitor`, `balanced`, `strict`, `attested`. Route matching is longest-prefix wins; anything unmatched is `balanced`.
+
+`attested` is `strict` plus an **attestation floor** for the operator-marked high-value routes where an ALLOW should cost more than a good score. On those routes a scoring-ALLOW is priced, not fast-pathed: unless the session presents possession (an existing WebAuthn / Privacy Pass / Web Bot Auth trust-upgrade) or an `hmn_su` step-up proof from a Pass solve, the ALLOW is challenged up to a Pass. It is CHALLENGE→Pass, never DENY — never a lockout; an unattested human solves the same Pass an anonymous visitor already solves. It cannot apply to a catch-all or public prefix (config validation refuses that), and without a wired credential verifier it degrades to a Pass-for-everyone friction wall, so treat it as opt-in for the handful of routes that warrant it.
 
 ## Fail-open vs fail-closed, precisely
 

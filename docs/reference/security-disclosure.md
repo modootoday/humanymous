@@ -60,7 +60,7 @@ A report that lets the operator reproduce and triage quickly should contain:
 
 - A clear description of the vulnerability and the security impact you believe it has.
 - The affected component and version — the Go module is `github.com/modootoday/humanymous`; include the build or commit you tested and the relevant listener (edge `:8444` or admin `:8445`).
-- Exact reproduction steps: the request(s) sent, any required configuration or preset (`off` / `monitor` / `balanced` / `strict`), and the observed versus expected behavior.
+- Exact reproduction steps: the request(s) sent, any required configuration or preset (`off` / `monitor` / `balanced` / `strict` / `attested`), and the observed versus expected behavior.
 - Proof-of-concept material — a request you can `curl`, a script, or a log line to expect — kept minimal and non-destructive.
 - Any prerequisites (an admin token role, a specific route policy, a keystore state) needed to trigger the issue.
 - Your assessment of severity and, if known, a suggested remediation.

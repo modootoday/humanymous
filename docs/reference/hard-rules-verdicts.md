@@ -35,7 +35,7 @@ flowchart TD
 ```
 
 
-> **Note:** A fingerprint-bound verdict trust token, when present and valid, lets ALLOW take a fast path with no re-scoring.
+> **Note:** A fingerprint-bound verdict trust token, when present and valid, lets ALLOW take a fast path with no re-scoring — **except on an `attested` route.** There the attestation floor overrides the fast path: a valid verdict token does **not** fast-path; the request re-scores, and absent possession (a WebAuthn / Privacy Pass / Web Bot Auth trust-upgrade) or an `hmn_su` step-up proof, the ALLOW is priced to a CHALLENGE→Pass (never DENY). See the attestation-floor demotion rule below.
 
 ### The `none` (Unknown) fail rule
 
@@ -52,6 +52,14 @@ A score-based CHALLENGE can be upgraded to ALLOW when the session has solved the
 
 - The upgrade applies **only** to a CHALLENGE that came from the score (no hard rule fired).
 - PoW **never** overrides a hard rule. Solving the work proves CPU effort, not humanity: if a hard rule promoted the verdict, `l7.pow.solved` does not clear it.
+
+## The attestation-floor demotion rule (`attested` routes)
+
+On a route the operator marked with the `attested` preset (`strict` plus the attestation floor, ceiling-guard #1), an ALLOW is not free — it is priced. Both ALLOW paths described above are affected:
+
+- A **scoring-ALLOW** (risk < 30, no hard rule) and a **token-fast-path ALLOW** (a valid verdict trust token that would otherwise skip re-scoring) are **demoted to `challenge_pow`** unless the session presents possession — a WebAuthn / Privacy Pass / Web Bot Auth trust-upgrade (exempt, because the possession pre-gate forwards it first) — or a valid `hmn_su` step-up proof (minted on an LLM-resistant Pass solve, redeemed at `POST /__hmn/stepup`).
+- The demotion is **CHALLENGE→Pass only, never DENY**: an unattested human solves the same Pass an anonymous visitor solves, so there is no categorical human block and no lockout. It does **not** detect or resolve a coherent spoof past the ceiling; it prices the ALLOW so unlimited free high-value passes become possession-or-a-per-session human solve.
+- The floor applies only where it is armed. The preset is refused on a catch-all / public prefix, and without a wired credential verifier it degrades to a Pass-for-everyone friction wall.
 
 ## Hard rules
 
