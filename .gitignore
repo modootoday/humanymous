@@ -54,3 +54,6 @@ deployments/webauthncreds/creds.txt
 # git-cliff scratch output (CI writes these; never committed)
 RELEASE_NOTES.md
 CHANGES.md
+
+# docs OG/llms generator deps (build-time only)
+scripts/docsgen/node_modules/

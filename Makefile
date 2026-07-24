@@ -11,7 +11,7 @@ IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
 .PHONY: all wasm wasmexec server report build test race e2e-deps e2e report-html run clean fmt vet \
-        docker up attack swarm gate-e2e down logs changelog changelog-unreleased release-notes
+        docker up attack swarm gate-e2e down logs changelog changelog-unreleased release-notes docs-assets
 
 all: build
 
@@ -46,6 +46,11 @@ fmt:
 	$(GO) fmt ./...
 vet:
 	$(GO) vet ./internal/... ./cmd/server/... ./cmd/report/...
+
+## docs-assets: (re)generate the docs OG images (brand WebP) + per-page llms.txt.
+## Run after editing a page title/description (needs Node; sharp installs on first run).
+docs-assets:
+	cd scripts/docsgen && npm install --silent && node gen.mjs
 
 ## changelog: regenerate CHANGELOG.md from Conventional Commits (git-cliff, cliff.toml).
 ## Uses npx so no local install is needed. Review the diff before committing — the

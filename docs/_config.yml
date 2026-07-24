@@ -14,8 +14,35 @@ lang: en
 url: https://humanymous.net
 baseurl: ""
 
-# A supported GitHub Pages theme (styles every page; no Gemfile needed).
-theme: jekyll-theme-cayman
+# ── SEO / AEO / GEO metadata ────────────────────────────────────────────────
+# Read by jekyll-seo-tag (title/description/canonical/OpenGraph/Twitter + JSON-LD)
+# and jekyll-sitemap (/sitemap.xml). Together with the per-page TechArticle JSON-LD,
+# robots.txt and llms.txt, this makes the docs legible to search engines, answer
+# engines, and generative/LLM crawlers alike.
+author:
+  name: The humanymous Authors
+logo: /assets/brand/mark.svg
+twitter:
+  card: summary
+social:
+  name: humanymous
+  links:
+    - https://github.com/modootoday/humanymous
+repository: modootoday/humanymous
+# Keywords surfaced in the homepage structured data (answer/generative engines).
+keywords: >-
+  anti-bot detection, browser automation detection, bot management, JA3, JA4, TLS
+  fingerprint, HTTP/2 fingerprint, reverse proxy WAF, behavioral biometrics,
+  headless browser detection, Selenium Puppeteer Playwright detection, Go, WebAssembly
+
+# No external theme: the site ships its own brand layout + stylesheet (SoT-34/33
+# design system, shared with the console and demo). _layouts/default.html + the
+# @layer stylesheet at assets/css/humanymous.css replace jekyll-theme-cayman.
+# Apply that layout to EVERY page (the pages carry only a title in front matter, or
+# none, so a defaults rule is what wraps them in the brand shell).
+defaults:
+  - scope: { path: "" }
+    values: { layout: default }
 
 # These are GitHub Pages default plugins and are active automatically; listed
 # here for clarity. They are why this doc set renders correctly as-is:
@@ -30,6 +57,9 @@ plugins:
   - jekyll-relative-links
   - jekyll-readme-index
   - jekyll-titles-from-headings
+  # SEO/AEO/GEO — both are GitHub-Pages-whitelisted (no Gemfile needed):
+  - jekyll-seo-tag   #  {% seo %} → title/description/canonical/OpenGraph/Twitter + JSON-LD
+  - jekyll-sitemap   #  auto /sitemap.xml on every build (referenced by robots.txt)
 
 # Nothing to exclude: serving from /docs means only this folder is the site, so
 # the internal Korean SoT specs, cmd/, and internal/ are never rendered.

@@ -1,0 +1,9 @@
+{
+  "name": "humanymous-docsgen",
+  "private": true,
+  "type": "module",
+  "description": "Build-time generator for the docs site's per-page OG images (brand WebP) and llms.txt files. Not part of the shipped engine.",
+  "dependencies": {
+    "sharp": "^0.34.0"
+  }
+}

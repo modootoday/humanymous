@@ -1,0 +1,94 @@
+# humanymous
+
+> A defensive, multi-layer browser-automation / anti-bot detection engine (Go/WASM + JavaScript core, Go reverse-proxy "Gate"). Apache-2.0 reference implementation. It raises the cost of automation across seven detection layers (static client, fingerprint, integrity, behavioral biometrics, JA3/JA4 TLS + HTTP/2, cross-consistency, weighted scoring) into one verdict — ALLOW, CHALLENGE, or DENY — with a tamper-evident signed audit record.
+
+Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppeteer/Playwright, headless tells, TLS parrots, naive proxy farms) but does not claim to beat a coherent real-engine spoof behind residential proxies (the documented T4 ceiling). Not a WAF, not a CDN, not a CAPTCHA.
+
+## Start here
+
+- [Start here: Compliance / DPO](https://humanymous.net/start-here/compliance-dpo.html)
+- [Start here: Developer (Red/Blue)](https://humanymous.net/start-here/developer.html)
+- [Start here: Evaluator](https://humanymous.net/start-here/evaluator.html)
+- [Start here: Integrator](https://humanymous.net/start-here/integrator.html)
+- [Start here: Operator](https://humanymous.net/start-here/operator.html)
+
+## Tutorial
+
+- [Quickstart: Put Gate in front of an app in monitor mode (first 30 minutes)](https://humanymous.net/tutorials/quickstart-monitor-mode.html)
+
+## How-to
+
+- [Ledger tour for operators](https://humanymous.net/how-to/audit-console-tour.html)
+- [Configure Attested Routes (the Attestation Floor)](https://humanymous.net/how-to/configure-attested-routes.html)
+- [Configure Credential Verifiers (WebAuthn, Privacy Pass, Web Bot Auth)](https://humanymous.net/how-to/configure-credential-verifiers.html)
+- [Cut a Release (semver tags + automated changelog)](https://humanymous.net/how-to/cut-a-release.html)
+- [Deployment & Policy Operations](https://humanymous.net/how-to/deployment-policy-operations.html)
+- [Watch detection happen live: the Detection Observatory](https://humanymous.net/how-to/detection-observatory.html)
+- [Extend the detector: add a signal, a cross-check, or a hard rule](https://humanymous.net/how-to/extend-detection.html)
+- [Key Management, Rotation & Recovery](https://humanymous.net/how-to/key-management.html)
+- [Observability and SIEM integration](https://humanymous.net/how-to/observability-siem.html)
+- [A guided tour of the Detection Observatory](https://humanymous.net/how-to/observatory-tour.html)
+- [Run the standalone detection engine (dev)](https://humanymous.net/how-to/run-detection-engine.html)
+- [Self-validation: red-team your own Gate deployment (defensive-only)](https://humanymous.net/how-to/self-validation-red-team.html)
+- [Integration Troubleshooting & FAQ](https://humanymous.net/how-to/troubleshooting-faq.html)
+- [Upgrade, Migration & Zero-Downtime](https://humanymous.net/how-to/upgrade-migration.html)
+- [Independent audit-log verification guide](https://humanymous.net/how-to/verify-audit-log.html)
+- [Write or extend a Red-team profile](https://humanymous.net/how-to/write-a-red-profile.html)
+
+## Reference
+
+- [CLI, Config & Per-Route Policy Reference](https://humanymous.net/reference/cli-config-policy.html)
+- [Console localization & product-surface language](https://humanymous.net/reference/console-localization.html)
+- [Data Processing & Personal-Data Inventory (RoPA-ready)](https://humanymous.net/reference/data-processing-inventory.html)
+- [Deployment cost, latency & operational footprint](https://humanymous.net/reference/deployment-cost-latency.html)
+- [Hard rules, verdicts and signal-ID reference](https://humanymous.net/reference/hard-rules-verdicts.html)
+- [Install, system requirements & supported platforms](https://humanymous.net/reference/install-requirements.html)
+- [On-call quick reference card](https://humanymous.net/reference/on-call-quick-reference.html)
+- [Production-ready vs reference (prod-delta) & local↔production checklist](https://humanymous.net/reference/production-vs-reference.html)
+- [RBAC, Separation-of-Duties & Dual-Control Reference](https://humanymous.net/reference/rbac-separation-of-duties.html)
+- [Red-team catalog reference: profiles, raw-protocol attacks and verdict classification](https://humanymous.net/reference/red-team-catalog.html)
+- [Red-team rules of engagement (defensive-only)](https://humanymous.net/reference/red-team-rules-of-engagement.html)
+- [humanymous — security & code audit report](https://humanymous.net/reference/security-audit.html)
+- [Security vulnerability disclosure policy](https://humanymous.net/reference/security-disclosure.html)
+- [Standards and regulatory mapping matrix, plus audit-response evidence pack](https://humanymous.net/reference/standards-mapping.html)
+- [Support, licensing & open-source notices](https://humanymous.net/reference/support-licensing.html)
+- [Supported topologies: where each detection layer is actually active](https://humanymous.net/reference/supported-topologies.html)
+- [Versioning, release notes & SoT→user-doc derivation index](https://humanymous.net/reference/versioning-derivation-index.html)
+
+## Explanation
+
+- [The `/__hmn/` control plane and the injected detection bundle](https://humanymous.net/explanation/control-plane-and-bundle.html)
+- [Inside the detection engine: signals, scoring math and the score trace](https://humanymous.net/explanation/detection-engine-internals.html)
+- [DPIA companion pack and retention/lifecycle guide](https://humanymous.net/explanation/dpia-companion.html)
+- [How this reference implementation was built](https://humanymous.net/explanation/how-this-was-built.html)
+- [Inside the Detection Observatory: live-telemetry and safety architecture](https://humanymous.net/explanation/observatory-architecture.html)
+- [The Red catalog: architecture of the bundled attack profiles and the raw-protocol client](https://humanymous.net/explanation/red-catalog-architecture.html)
+- [humanymous — transparency report](https://humanymous.net/explanation/transparency-report.html)
+- [What Gate is (and is not): a technical overview](https://humanymous.net/explanation/what-gate-is.html)
+- [Where Gate fits: vs WAF, CDN bot manager, and CAPTCHA](https://humanymous.net/explanation/where-gate-fits.html)
+- [Which piece am I using? Detection engine, Gate proxy, and the Observatory](https://humanymous.net/explanation/which-piece-am-i-using.html)
+- [Will this break my app? Safety, fail-open, and monitor-first rollout](https://humanymous.net/explanation/will-this-break-my-app.html)
+
+## Concept
+
+- [Concepts & Glossary: How Gate sees a request](https://humanymous.net/concepts/how-gate-sees-a-request.html)
+
+## Runbook
+
+- [Right-to-erasure (crypto-shred) operations runbook](https://humanymous.net/runbooks/erasure-crypto-shred.html)
+- [Incident runbooks: humanymous Gate on-call](https://humanymous.net/runbooks/incident-runbooks.html)
+- [Kill switch & bans: blast radius, apply / escalate / lift, dual-control](https://humanymous.net/runbooks/kill-switch-and-bans.html)
+
+## Help
+
+- [Challenge accessibility statement](https://humanymous.net/help/challenge-accessibility.html)
+- [Why am I seeing this?](https://humanymous.net/help/why-am-i-seeing-this.html)
+
+## Documentation
+
+- [humanymous Documentation Style Guide](https://humanymous.net/style-guide.html)
+
+## Source
+
+- [GitHub repository](https://github.com/modootoday/humanymous)
+- Per-page LLM-readable markdown lives under `/assets/llms/<path>.llms.txt` and is linked from each page's `<link rel="alternate" type="text/markdown">`.

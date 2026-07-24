@@ -1,0 +1,22 @@
+# humanymous documentation — open to search, answer, and generative engines.
+User-agent: *
+Allow: /
+
+# Explicitly welcome AI answer / generative crawlers (AEO / GEO).
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+# Site index for LLMs is at /llms.txt; per-page markdown at /assets/llms/<path>.llms.txt
+Sitemap: https://humanymous.net/sitemap.xml

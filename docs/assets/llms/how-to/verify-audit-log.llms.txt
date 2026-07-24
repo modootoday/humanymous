@@ -1,0 +1,176 @@
+# Independent audit-log verification guide
+
+Source: https://humanymous.net/how-to/verify-audit-log.html
+Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
+
+---
+
+# Independent audit-log verification guide
+
+> **Quadrant:** How-to + reference.
+> **Audience:** External or internal auditor, DPO, or forensic reviewer who needs to verify humanymous Gate's audit log **without trusting the operator**.
+
+humanymous Gate writes every edge decision — every ALLOW, CHALLENGE, and DENY, plus every administrative action — to a tamper-evident audit log. This page explains the verification model, shows how you check the log today in the reference build, gives a failure-class table for reading a mismatch, and is candid about exactly what verification proves and what it does not.
+
+This repository is a **reference implementation**, not a production-hardened build. Where the reference differs from what a production deployment would ship, this page says so (prod-delta). For the shared vocabulary used below — pseudonym, verdict, hard rule, incident handle — see [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
+
+---
+
+## What "verify without trusting the operator" means
+
+The operator runs the Gate process, so the operator controls the disk the log lives on. The point of the verification model is that possession of the log is not the same as authority over its contents. An auditor with the **public key alone** can decide whether the log is internally consistent and whether any signed checkpoint has been altered — without the operator's cooperation and without any secret the operator holds. The log **verifies with the public key alone**; no operator attestation is part of the trust chain.
+
+That property is what lets an external reviewer form an independent opinion. You are not asked to believe the operator that the log is intact — you check it.
+
+---
+
+## The verification model
+
+Four mechanisms compose. Each defends a different class of tampering, and the verification checks them together.
+
+```mermaid
+flowchart TD
+  subgraph Mech["Four composed mechanisms"]
+    A["Append-only hash chain"]
+    B["Per-record HMAC"]
+    C["Ed25519 Signed Tree Heads (every 32 records)"]
+    D["Independent witness co-sign"]
+  end
+  A --> V["internal/audit · Verify / SelfVerify"]
+  B --> V
+  C --> V
+  D --> V
+  V -->|"consistent"| OK["ok:true — verifies with the public key alone"]
+  V -->|"mismatch"| FAIL["ok:false + class (hash-break, hmac-invalid, seq-gap, linkage-break, checkpoint-mismatch, node-missing)"]
+```
+
+### 1. Append-only hash chain
+
+Each record carries the hash of the record before it, so the records form a chain. Changing any earlier record changes its hash, which breaks the link every later record depends on. You cannot silently edit a record in the middle of the log and leave the tail consistent — the linkage no longer resolves.
+
+### 2. Per-record HMAC
+
+Each record is authenticated with a keyed HMAC. This binds the record's content to the log's HMAC key, so a record cannot be forged or rewritten by someone who does not hold that key, even if they can reproduce a plausible hash chain.
+
+### 3. Ed25519 Signed Tree Heads (STH)
+
+Every 32 records, Gate signs a checkpoint — a Signed Tree Head — over the log up to that point with an Ed25519 signing key. The STH is the anchor an external verifier checks with the corresponding **public key**: a valid signature over a checkpoint proves the log up to that checkpoint is exactly what was signed, and the private signing key never leaves the operator. This is the mechanism that makes the log verifiable by a party who holds only the public key.
+
+### 4. Independent witness co-sign
+
+An independent local witness co-signs each Signed Tree Head. A writer who rewrites history would have to re-sign the affected checkpoint — but it cannot obtain the witness's co-signature on a rewritten checkpoint. The witness co-sign is the control that stops a **silent** history rewrite: an operator who edits a checkpointed record and re-signs is detectable because the witness co-sign will not corroborate the new checkpoint.
+
+> **Note:** These four together make the log **tamper-evident**, not tamper-proof. Tamper-evident means alteration is *detectable*, not *impossible*. See the residual section below for the precise scope of that claim.
+
+---
+
+## How you verify it today (reference build)
+
+The verification **logic** lives in `internal/audit` (the `Verify` and `SelfVerify` routines). In the reference build you run that logic live, two ways — both on the authenticated admin listener, both meta-audited before they serve.
+
+### Option A — the Ledger "Integrity" view
+
+The Ledger's **Integrity** view (labelled "Chain Integrity", subtitle "tamper-evident audit log") runs the verification live in the browser and reports the result. It verifies the append-only hash chain, the per-record HMAC, and the Ed25519 Signed Tree Heads, and states plainly that it "verifies with the public key alone." A refresh control ("re-verify the chain now") re-runs the check on demand.
+
+Open the console on the admin listener:
+
+```
+https://localhost:8445/__hmn/admin/console
+```
+
+Navigate to **Integrity** under Operations. The view reports either a clean verification or the specific mismatch class it found (see the failure-class table below).
+
+> **Note:** The admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)) is a separate, authenticated listener, cross-origin to the public edge. The admin API and console are **not** reachable on the public edge — `/__hmn/admin/*` returns `404` there.
+
+### Option B — the integrity endpoint directly
+
+Call the admin API and read the machine result:
+
+```
+GET https://localhost:8445/__hmn/admin/integrity
+```
+
+The call carries a bearer token:
+
+```
+Authorization: Bearer <token>
+```
+
+A missing or invalid token returns `404` (deny-by-default), and every authenticated access is meta-audited (`admin.access`) before the endpoint serves. Your role needs read capability — **Auditor** (read-only) is sufficient. See [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) for the role model.
+
+A clean response looks like `{"node":"gate-1","ok":true,"class":"","records":<n>,"checkpoints":<n>,"witnessed":true,"lastSTH":{"treeSize":<n>,"root":"<hex>"}}`. On a mismatch, `ok` is `false`, `class` names the failure (one of `hash-break`, `hmac-invalid`, `seq-gap`, `linkage-break`, `checkpoint-mismatch`, `node-missing`), and the payload adds `divergentSeq` and `detail`; if the witness attestation fails, `witnessed` is `false` and `witnessFailAt` is included.
+
+Note what the endpoint does and does not expose: it returns the latest Signed Tree Head's `treeSize` and `root`, but **not** the raw Ed25519 STH signature or the witness co-signature. It runs `SelfVerify` server-side and reports the outcome — so it is a live integrity check, not a channel for exporting the signatures an external verifier would re-check independently.
+
+### Getting the public key
+
+Independent verification needs the Ed25519 public key that the STH signatures verify against.
+
+> **Note:** The reference build does not expose the Ed25519 STH public key (or the witness public key) through an admin endpoint or a startup line. With `-keystore`, the signing seed is sealed in the keystore and the public key is derived from it; publishing the public key (and the raw STH/witness signatures) for a fully independent, offline auditor is a production responsibility (prod-delta). Until then, verification is the server-side `SelfVerify` surfaced by `GET /__hmn/admin/integrity` and the console Integrity view.
+
+---
+
+## Failure classes: reading a mismatch
+
+When verification does not come back clean, it reports one of the following mismatch classes. Each points at a different kind of break.
+
+| Class | What it means | What it implies |
+| --- | --- | --- |
+| **hash-break** | A record's stored hash does not match a recomputation over its content. | The record's content was altered after it was written, or the chain link no longer resolves. Integrity of that record is not established. |
+| **hmac-invalid** | A record's per-record HMAC does not verify. | The record was forged or rewritten by a party without the HMAC key, or the record content was changed. The record is not authentic. |
+| **seq-gap** | The record sequence has a gap — an expected sequence number is missing. | Records were removed, or never written, between two surviving records. The log is not the complete append-only sequence it claims. |
+| **linkage-break** | A record's back-reference to the prior record does not resolve. | The append-only chain is broken at that point; records before and after cannot be tied into one continuous chain. |
+| **checkpoint-mismatch** | A Signed Tree Head does not match the records it should anchor. | The signed checkpoint and the underlying records disagree — a checkpointed range was altered, or the STH was replaced. This is the class that catches a rewrite of already-checkpointed history. |
+| **node-missing** | An expected node/record is absent — a suppression alert. | Evidence that something that should be present was suppressed. Treat as a signal that the log may have been truncated or a record withheld. |
+
+> **Important:** A clean result establishes internal consistency and checkpoint authenticity up to the last signed checkpoint. Any non-clean class means you cannot rely on the affected range; escalate to the operator's incident process and preserve a copy of the log and the STHs as you found them.
+
+---
+
+## What verification proves — and the honestly-scoped residual
+
+Be precise about the boundary. Verification proves:
+
+- The records form one continuous append-only chain (no silent mid-log edits, no unresolved linkage).
+- Each record is authentic under the HMAC key (no forgery without the key).
+- The log up to the **last signed checkpoint** is exactly what was signed, checkable with the public key alone.
+- A rewrite of checkpointed history is detectable, because the independent witness co-sign will not corroborate a re-signed checkpoint.
+
+### The unanchored in-window residual
+
+The honest limit: **records written after the last signed Tree Head are not yet anchored.** A checkpoint is signed every 32 records, so between checkpoints there is a window of recent records that the writer could still rewrite before the next checkpoint seals them. This is the unanchored in-window residual, and it is why the log is called tamper-**evident** rather than tamper-**proof**.
+
+What contains it: the next checkpoint anchors those records, and the **witness co-sign** is what stops a silent history rewrite once a checkpoint exists. So the residual is bounded to the current unsealed window, and it closes as soon as the next STH is signed and co-signed.
+
+> **Warning:** Do not read a clean Integrity result as proof that the most recent, not-yet-checkpointed records are immutable. They are anchored only once the next Signed Tree Head is written and witness-co-signed. When you take an audit snapshot, record which sequence number the last signed checkpoint covers, and treat records beyond it as in-window.
+
+---
+
+## Verification survives crypto-shred
+
+A right-to-erasure request against Gate is executed by **cryptographic erasure (crypto-shred)** — destroying a subject's per-subject linkage key so their pseudonyms can no longer be resolved back to identifiers. Crucially, **records are never deleted**. The audit chain, its HMACs, and the Merkle anchors stay intact and verifiable after a shred: the pseudonyms in the affected records simply become unresolvable, while every integrity mechanism on this page still passes.
+
+So an erasure does not — and must not — produce a `seq-gap`, `linkage-break`, or `hash-break`. If you see one of those classes, it is a tampering signal, not the footprint of a lawful erasure. For the erasure procedure, hold window, and the signed erasure certificate, see [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md).
+
+> **Note:** The data in the log is **pseudonymous, not anonymous** (GDPR Recital 26). Re-identification requires the vault plus dual-control. Verification never needs to resolve a pseudonym — it checks structure and signatures, not subject identity.
+
+---
+
+## A standalone offline verifier is a prod-delta
+
+Be explicit about what the reference does **not** ship: there is **no standalone offline verifier process or binary in `cmd/`**. The reference verifies the log **live**, in-process, through the Integrity view and `GET /__hmn/admin/integrity` — both of which run `internal/audit` verification against the running log.
+
+A separate, independently runnable verifier — a binary you run on an exported set of records and checkpoints, on your own machine, with no Gate process involved — is a **prod-delta**. It would be **built from the `internal/audit` `Verify` logic** operating over exported checkpoints (records + STHs + public keys), giving an auditor a fully offline, operator-independent check. The verification logic exists; the packaged standalone tool does not ship in the reference.
+
+> **Important:** Because today's verification runs inside the operator's admin listener, an external auditor performing a live check is still calling an operator-hosted endpoint. The Ed25519 STH design means the *result* is checkable with the public key alone — but a fully hands-off, operator-independent verification is realized by the offline verifier, which is a prod-delta. Plan your assurance process accordingly, or request exported checkpoints you can hold.
+
+---
+
+## Related pages
+
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — shared vocabulary: pseudonym, verdict, hard rule, incident handle.
+- [Ledger tour](./audit-console-tour.md) — the six views, including where the Integrity view lives.
+- [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) — which role can read the integrity endpoint and console.
+- [Key management](./key-management.md) — the sealed keystore holding the Ed25519 signing seed and HMAC key, and what an ephemeral (no-keystore) restart does to verification continuity.
+- [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md) — why erasure leaves the chain verifiable.
+- [Production vs reference](../reference/production-vs-reference.md) — the full prod-delta list, including the standalone offline verifier.

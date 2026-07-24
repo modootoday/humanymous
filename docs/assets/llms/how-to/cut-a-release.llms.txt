@@ -1,0 +1,77 @@
+# Cut a Release (semver tags + automated changelog)
+
+Source: https://humanymous.net/how-to/cut-a-release.html
+Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
+
+---
+
+# Cut a release
+
+**Diátaxis quadrant:** How-to. **Audience:** maintainers of humanymous who tag releases.
+
+humanymous releases are driven by **SemVer git tags** (`vMAJOR.MINOR.PATCH`) and an **automated changelog** generated from [Conventional Commits](https://www.conventionalcommits.org/) by [git-cliff](https://git-cliff.org) (config in `cliff.toml`). Tagging is deliberate and manual — the tooling never decides *when* to release; it writes the changelog and release notes for whatever tag you cut. This guide is the end-to-end recipe.
+
+## What a tag triggers
+
+Pushing a tag matching `v*.*.*` runs `.github/workflows/release.yml`:
+
+1. **Images** — builds the `core` and `gate` images for `linux/amd64` and `linux/arm64`, pushes them to `ghcr.io/<owner>/humanymous-core` and `-gate` with `type=semver` tags (`X.Y.Z`, `X.Y`, `X`), attaches SLSA provenance + an SPDX SBOM, and signs each with cosign (keyless OIDC). The `bots` attacker image is never published.
+2. **GitHub release** — git-cliff generates the release notes from the Conventional Commits **since the previous tag**, grouped into Keep a Changelog sections, and `softprops/action-gh-release` publishes them.
+
+## Choose the version
+
+The commit types since the last tag decide the bump:
+
+| Commits since the last tag | Bump | Example |
+|----------------------------|------|---------|
+| Any `feat:` | **minor** — `0.1.0 → 0.2.0` | a new capability |
+| Only `fix:` / `perf:` / `harden:` / `docs:` | **patch** — `0.1.0 → 0.1.1` | fixes, hardening, docs |
+| Any commit with a `!` or a `BREAKING CHANGE:` footer | **major** — `0.1.0 → 1.0.0` | an incompatible change |
+
+Before `1.0.0` the project is pre-stable: a breaking change may bump the minor rather than the major, at the maintainer's discretion. Preview what a version would contain with `make changelog-unreleased`.
+
+## Steps
+
+1. **Land your work on `main`** with Conventional Commit subjects (`feat(gate): …`, `fix(core): …`, `docs: …`). The changelog quality is only as good as the commit subjects — the first line becomes the changelog entry.
+
+2. **Update `CHANGELOG.md`.** Two supported styles, pick one per release:
+   - *Curated (default for notable releases):* write the highlights by hand under `## [Unreleased]`, then rename that heading to `## [X.Y.Z] - <date>` at release time. Earlier entries in this file are intentionally hand-written narrative — do not overwrite them.
+   - *Generated:* run `make changelog` to (re)generate `CHANGELOG.md` from the commit history via git-cliff. Review the diff; the generated entries are one line per commit, grouped by type.
+
+   Either way, commit the result: `git commit -am "docs(changelog): prepare vX.Y.Z"`.
+
+3. **Tag and push.**
+   ```bash
+   git tag -a v0.2.0 -m "v0.2.0"
+   git push origin main
+   git push origin v0.2.0
+   ```
+
+4. **Watch the release workflow** in the Actions tab. When it is green, the images are on ghcr.io and the GitHub release carries the git-cliff notes. Verify a pulled image runs (see [Deployment & policy operations](deployment-policy-operations.md)).
+
+## How the changelog is generated
+
+`cliff.toml` maps Conventional Commit types to Keep a Changelog sections:
+
+| Commit type | Section |
+|-------------|---------|
+| `feat` | Added |
+| `fix` | Fixed |
+| `harden`, `security`, or a body mentioning security | Security |
+| `perf` | Performance |
+| `refactor` (and anything unmatched) | Changed |
+| `revert` | Reverted |
+| `docs` | Documentation |
+| `test`, `ci`, `build`, `chore`, `style` | *(omitted — not user-facing)* |
+
+Non-Conventional commits and merge commits are filtered out. To preview exactly what a tag's notes will be: `make release-notes`.
+
+## Re-tagging note
+
+An early `v0.1.0` tag exists locally that points at a superseded commit and was never pushed. Do not push it as-is. To make `v0.1.0` the first published release, move it to the intended commit first (`git tag -f v0.1.0 <commit>`), or start the public series at the next version. Force-moving a tag that has already been pushed and pulled by others is disruptive — only re-tag tags that have never left this machine.
+
+## Related
+
+- [Upgrade, migration & zero-downtime](upgrade-migration.md) — the upgrade posture releases are consumed under.
+- [Versioning & derivation index](../reference/versioning-derivation-index.md) — which surfaces are versioned and what a change to them triggers.
+- [CLI, configuration & policy reference](../reference/cli-config-policy.md) — the `VERSION` build-arg the images self-report.

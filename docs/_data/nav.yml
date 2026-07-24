@@ -1,0 +1,71 @@
+# Sidebar navigation for the humanymous docs (rendered by _layouts/default.html).
+# Grouped by Diátaxis quadrant + persona entry points. URLs are the rendered .html
+# paths (jekyll-relative-links renders each .md to .html at the same path); the
+# layout compares each against page.url to mark the active item. Values are quoted
+# because titles contain commas / ampersands / middots (YAML flow-scalar specials).
+- label: "Start here"
+  items:
+    - { title: "Integrator", url: "/start-here/integrator.html" }
+    - { title: "Operator", url: "/start-here/operator.html" }
+    - { title: "Evaluator", url: "/start-here/evaluator.html" }
+    - { title: "Developer", url: "/start-here/developer.html" }
+    - { title: "Compliance / DPO", url: "/start-here/compliance-dpo.html" }
+
+- label: "Tutorials"
+  items:
+    - { title: "Quickstart · monitor mode", url: "/tutorials/quickstart-monitor-mode.html" }
+
+- label: "How-to"
+  items:
+    - { title: "Deployment & policy operations", url: "/how-to/deployment-policy-operations.html" }
+    - { title: "Configure attested routes", url: "/how-to/configure-attested-routes.html" }
+    - { title: "Configure credential verifiers", url: "/how-to/configure-credential-verifiers.html" }
+    - { title: "Cut a release", url: "/how-to/cut-a-release.html" }
+    - { title: "Key management & recovery", url: "/how-to/key-management.html" }
+    - { title: "Verify the audit log", url: "/how-to/verify-audit-log.html" }
+    - { title: "Observability & SIEM", url: "/how-to/observability-siem.html" }
+    - { title: "Self-validation (red-team)", url: "/how-to/self-validation-red-team.html" }
+    - { title: "Detection Observatory", url: "/how-to/detection-observatory.html" }
+    - { title: "Ledger console tour", url: "/how-to/audit-console-tour.html" }
+    - { title: "Upgrade & migration", url: "/how-to/upgrade-migration.html" }
+    - { title: "Troubleshooting & FAQ", url: "/how-to/troubleshooting-faq.html" }
+
+- label: "Reference"
+  items:
+    - { title: "CLI, config & policy", url: "/reference/cli-config-policy.html" }
+    - { title: "Hard rules & verdicts", url: "/reference/hard-rules-verdicts.html" }
+    - { title: "Supported topologies", url: "/reference/supported-topologies.html" }
+    - { title: "Install requirements", url: "/reference/install-requirements.html" }
+    - { title: "Red-team catalog", url: "/reference/red-team-catalog.html" }
+    - { title: "Production vs reference", url: "/reference/production-vs-reference.html" }
+    - { title: "Deployment cost & latency", url: "/reference/deployment-cost-latency.html" }
+    - { title: "RBAC & separation of duties", url: "/reference/rbac-separation-of-duties.html" }
+    - { title: "Standards mapping", url: "/reference/standards-mapping.html" }
+    - { title: "Data-processing inventory", url: "/reference/data-processing-inventory.html" }
+    - { title: "Security audit", url: "/reference/security-audit.html" }
+    - { title: "Security disclosure", url: "/reference/security-disclosure.html" }
+    - { title: "Support & licensing", url: "/reference/support-licensing.html" }
+    - { title: "Versioning & derivation", url: "/reference/versioning-derivation-index.html" }
+
+- label: "Explanation"
+  items:
+    - { title: "What is Gate?", url: "/explanation/what-gate-is.html" }
+    - { title: "Where Gate fits · T0–T4", url: "/explanation/where-gate-fits.html" }
+    - { title: "Which piece am I using?", url: "/explanation/which-piece-am-i-using.html" }
+    - { title: "Will this break my app?", url: "/explanation/will-this-break-my-app.html" }
+    - { title: "How a request is seen", url: "/concepts/how-gate-sees-a-request.html" }
+    - { title: "Detection engine internals", url: "/explanation/detection-engine-internals.html" }
+    - { title: "Control plane & bundle", url: "/explanation/control-plane-and-bundle.html" }
+    - { title: "Observatory architecture", url: "/explanation/observatory-architecture.html" }
+    - { title: "Red catalog architecture", url: "/explanation/red-catalog-architecture.html" }
+    - { title: "Transparency report", url: "/explanation/transparency-report.html" }
+    - { title: "How this was built", url: "/explanation/how-this-was-built.html" }
+
+- label: "Runbooks & help"
+  items:
+    - { title: "Incident runbooks", url: "/runbooks/incident-runbooks.html" }
+    - { title: "Kill switch & bans", url: "/runbooks/kill-switch-and-bans.html" }
+    - { title: "Erasure / crypto-shred", url: "/runbooks/erasure-crypto-shred.html" }
+    - { title: "On-call quick reference", url: "/reference/on-call-quick-reference.html" }
+    - { title: "Why am I seeing this?", url: "/help/why-am-i-seeing-this.html" }
+    - { title: "Challenge accessibility", url: "/help/challenge-accessibility.html" }
