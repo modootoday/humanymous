@@ -20,6 +20,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # full history + tags for the git-cliff config check below
       - uses: actions/setup-go@v5
         with:
           go-version: "1.25"
@@ -44,6 +46,14 @@ jobs:
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
           "$(go env GOPATH)/bin/govulncheck" ./...
+      # Validate the changelog config so a broken cliff.toml is caught here, not at release
+      # time (release.yml generates the release notes from it). Full history is needed to
+      # render commit sections.
+      - name: changelog config check (git-cliff)
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --context
 
   detector-vs-bots:
     name: docker detector-vs-bots

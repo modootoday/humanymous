@@ -79,6 +79,15 @@ does not restore a detection tell. PoW is deliberately **not** used as the frict
 runs backwards and would lock out real/no-JS/assistive humans first); the friction is the interactive
 Pass.
 
+### Changed — automated releases & changelog
+
+- Release notes and this changelog are now generated from Conventional Commits by
+  [git-cliff](https://git-cliff.org) (`cliff.toml`). A `v*.*.*` SemVer tag builds and signs the
+  ghcr.io images and publishes a GitHub release whose notes are the grouped commits since the previous
+  tag; `make changelog` / `make release-notes` preview locally, and CI validates `cliff.toml` on every
+  run. See [Cut a release](docs/how-to/cut-a-release.md). Earlier hand-written entries in this file are
+  preserved as curated narrative.
+
 ## [0.1.0] - 2026-07-24
 
 First tagged release. Pre-release hardening driven by (a) an initial multi-reviewer Red/Blue +

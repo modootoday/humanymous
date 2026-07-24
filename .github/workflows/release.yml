@@ -68,7 +68,21 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Create GitHub release with auto notes
+        with:
+          fetch-depth: 0        # git-cliff needs the full history + tags to diff since the previous tag
+      # Generate the release notes for THIS tag from the Conventional Commits since
+      # the previous tag (git-cliff, config in cliff.toml). Deterministic, grouped
+      # into Keep a Changelog sections — replaces GitHub's generic auto-notes.
+      - name: Generate release notes (git-cliff)
+        id: notes
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --latest --strip header
+        env:
+          OUTPUT: RELEASE_NOTES.md
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # enables commit/PR enrichment
+      - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          body: ${{ steps.notes.outputs.content }}

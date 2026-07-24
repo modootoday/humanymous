@@ -11,7 +11,7 @@ IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
 .PHONY: all wasm wasmexec server report build test race e2e-deps e2e report-html run clean fmt vet \
-        docker up attack swarm gate-e2e down logs
+        docker up attack swarm gate-e2e down logs changelog changelog-unreleased release-notes
 
 all: build
 
@@ -46,6 +46,20 @@ fmt:
 	$(GO) fmt ./...
 vet:
 	$(GO) vet ./internal/... ./cmd/server/... ./cmd/report/...
+
+## changelog: regenerate CHANGELOG.md from Conventional Commits (git-cliff, cliff.toml).
+## Uses npx so no local install is needed. Review the diff before committing — the
+## curated prose in earlier entries is intentionally hand-written; see docs/how-to/cut-a-release.md.
+changelog:
+	npx --yes git-cliff@latest --config cliff.toml --output CHANGELOG.md
+
+## changelog-unreleased: preview the notes for unreleased commits (since the last tag) to stdout.
+changelog-unreleased:
+	npx --yes git-cliff@latest --config cliff.toml --unreleased
+
+## release-notes: print the release notes for the latest tag (what the GitHub Release body will be).
+release-notes:
+	npx --yes git-cliff@latest --config cliff.toml --latest --strip header
 
 ## run: start the Blue server (self-signed TLS)
 run: server wasm
