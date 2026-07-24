@@ -11,7 +11,7 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 This page is a shelf of independent, goal-titled recipes. Each follows the same template — a goal, numbered steps, and a way to verify — so you can jump to the one task you need and stop. Concepts and full option tables are linked, not repeated here: for the mechanism behind a request see [How Gate sees a request](../concepts/how-gate-sees-a-request.md), and for every flag, preset, and threshold see the [CLI, config & per-route policy reference](../reference/cli-config-policy.md).
 
-> **Note:** This repository is a reference implementation, not a production-hardened build. Several production paths named below (ACME/bring-your-own TLS, automated key rotation) are prod-deltas that are not present in the reference binary. Each recipe says so where it applies.
+> **Note:** This repository is a reference implementation, not a production-hardened build. **ACME (Let's Encrypt) and bring-your-own TLS ARE supported and wired in the reference binary** — see [HTTPS / TLS certificates](./https-tls-certificates.md) for the full walkthrough. What remains a prod-delta is automated signing-key rotation. Each recipe says so where it applies.
 
 Pick your recipe:
 
@@ -73,9 +73,9 @@ openssl s_client -connect localhost:8444 -servername localhost </dev/null 2>/dev
 
 Expected (dev): a `subject=CN=humanymous.local` line and a SAN list containing `localhost`, `humanymous.local`, `127.0.0.1`, `::1`.
 
-> **Note:** production TLS is supplied by CLI flag. For bring-your-own certificates, pass `-tls-cert <pem>` and `-tls-key <pem>` (PEM file paths). For automatic certificates, `-acme-domain <domain[,domain]>` requests a Let's Encrypt cert over TLS-ALPN-01 (which requires binding `:443`), `-acme-cache <dir>` sets the on-disk cache directory (default `acme-cache`), and `-acme-email <addr>` sets the optional ACME account contact. With none set, Gate falls back to the in-memory self-signed dev cert. The admin listener always stays self-signed.
+> **Note:** production TLS is supplied by CLI flag. For bring-your-own certificates, pass `-tls-cert <pem>` and `-tls-key <pem>` (PEM file paths). For automatic certificates, `-acme-domain <domain[,domain]>` requests a Let's Encrypt cert over TLS-ALPN-01 (which requires binding `:443`), `-acme-cache <dir>` sets the on-disk cache directory (default `acme-cache` — in a container this **must** be an absolute path on a persistent volume, e.g. `/acme-cache`), `-acme-email <addr>` sets the optional ACME account contact, and `-acme-directory <url>` selects the ACME server (empty = production Let's Encrypt; set the LE staging URL to dry-run issuance without burning rate limits). With none set, Gate falls back to the in-memory self-signed dev cert. The admin listener always stays self-signed. Full walkthrough: [HTTPS / TLS certificates](./https-tls-certificates.md).
 
-For the full TLS/ingress hardening table, see the [CLI, config & per-route policy reference](../reference/cli-config-policy.md).
+For the complete certificate walkthrough — Let's Encrypt (with a persistent ACME cache volume, staging dry-run, automatic renewal, and rate-limit caution), bring-your-own PEMs, and running behind an existing TLS terminator/CDN — see [HTTPS / TLS certificates](./https-tls-certificates.md). For the full TLS/ingress hardening table, see the [CLI, config & per-route policy reference](../reference/cli-config-policy.md).
 
 ---
 

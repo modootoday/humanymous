@@ -18,6 +18,7 @@
 - label: "How-to"
   items:
     - { title: "Deployment & policy operations", url: "/how-to/deployment-policy-operations.html" }
+    - { title: "HTTPS / TLS certificates", url: "/how-to/https-tls-certificates.html" }
     - { title: "Configure attested routes", url: "/how-to/configure-attested-routes.html" }
     - { title: "Configure credential verifiers", url: "/how-to/configure-credential-verifiers.html" }
     - { title: "Cut a release", url: "/how-to/cut-a-release.html" }

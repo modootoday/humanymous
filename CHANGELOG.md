@@ -7,6 +7,37 @@ are called out in a dedicated **Security** subsection with upgrade urgency.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-25
+
+### Fixed
+
+- **The pull-only production path (`compose.release.yaml`) now boots.** The hardened
+  release image (read-only rootfs, non-root uid 65532) could not write its keystore,
+  audit WAL, or ACME cache: the gate image never pre-created `/data` + `/acme-cache`, so
+  fresh named volumes stayed root-owned and the process failed with `keystore: …
+  permission denied` and exited. The image now creates those dirs owned by 65532
+  (matching the core image). Verified end-to-end: the hardened container boots, persists
+  the keystore/WAL, and resumes its identity on restart. This path was previously
+  unvalidated (the e2e suite uses the non-hardened lab compose).
+- **Let's Encrypt certificates now persist across restarts.** `compose.release.yaml`
+  mounted the ACME volume at `/acme-cache` but never passed `-acme-cache`, so autocert
+  wrote to the relative default (`/app/acme-cache`, on the read-only rootfs) — issuance
+  failed and, absent read-only, would re-issue on every restart and exhaust Let's Encrypt
+  rate limits. The release command now sets `-acme-cache /acme-cache`.
+
+### Added
+
+- **`-acme-directory` flag.** Point Gate at the Let's Encrypt **staging** directory to
+  dry-run certificate issuance without burning production rate limits, or at ZeroSSL / an
+  internal step-ca. Default (empty) = production Let's Encrypt.
+- **New guide — [HTTPS / TLS certificates](docs/how-to/https-tls-certificates.md):**
+  Let's Encrypt (`docker run` + Compose), a staging dry-run, bring-your-own PEM, running
+  behind an existing TLS terminator (`-trusted-proxies` + the JA4-inert caveat),
+  automatic renewal, rate limits, HSTS, and troubleshooting. Real Let's Encrypt
+  `docker run` examples were added to the README and install requirements, and the stale
+  note that called ACME/BYO TLS a prod-delta was corrected (both are shipped and wired;
+  only automated signing-key rotation remains a prod-delta).
+
 ## [0.1.0] - 2026-07-25
 
 ### Added — production hardening (reference → production gap closure)

@@ -175,6 +175,18 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
   -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT -monitor
 ```
 
+With a **real Let's Encrypt certificate** (automatic issue + renew via TLS-ALPN-01; needs a
+public domain, inbound `:443`, and a persistent cache volume — full walkthrough in
+[HTTPS / TLS certificates](docs/how-to/https-tls-certificates.md)):
+
+```bash
+docker run -d -p 443:8444 -p 127.0.0.1:8445:8445 \
+  -v hmn-acme:/acme-cache \
+  ghcr.io/modootoday/humanymous-gate:latest \
+  -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT \
+  -acme-domain your.domain -acme-cache /acme-cache -acme-email you@your.domain -monitor
+```
+
 For a real deployment (ACME TLS, sealed keystore, durable audit, hardened read-only
 container), use the pull-only compose — it references the published images directly:
 

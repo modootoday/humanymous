@@ -25,6 +25,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 - [Deployment & Policy Operations](https://humanymous.net/how-to/deployment-policy-operations.html)
 - [Watch detection happen live: the Detection Observatory](https://humanymous.net/how-to/detection-observatory.html)
 - [Extend the detector: add a signal, a cross-check, or a hard rule](https://humanymous.net/how-to/extend-detection.html)
+- [HTTPS / TLS Certificates (Let's Encrypt, BYO, behind a terminator)](https://humanymous.net/how-to/https-tls-certificates.html)
 - [Key Management, Rotation & Recovery](https://humanymous.net/how-to/key-management.html)
 - [Observability and SIEM integration](https://humanymous.net/how-to/observability-siem.html)
 - [A guided tour of the Detection Observatory](https://humanymous.net/how-to/observatory-tour.html)

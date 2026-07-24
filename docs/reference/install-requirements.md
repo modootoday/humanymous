@@ -65,6 +65,18 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
 - `-monitor` scores and logs without enforcing — the safe first contact with real traffic. Drop it to enforce.
 - The admin listener is mapped to host loopback only (`127.0.0.1:8445`); keep it that way or front it with mTLS/SSO.
 
+To present a **real Let's Encrypt certificate** instead of the self-signed dev cert (public domain, inbound `:443`, and a persistent ACME cache volume), add the ACME flags and publish `:443`:
+
+```
+docker run -d -p 443:8444 -p 127.0.0.1:8445:8445 \
+  -v hmn-acme:/acme-cache \
+  ghcr.io/modootoday/humanymous-gate:latest \
+  -addr :8444 -admin-addr :8445 -upstream http://YOUR-ORIGIN:PORT \
+  -acme-domain your.domain -acme-cache /acme-cache -acme-email you@your.domain -monitor
+```
+
+The certificate issues automatically via TLS-ALPN-01 and renews itself; see [HTTPS / TLS certificates](../how-to/https-tls-certificates.md) for the full walkthrough, a staging dry-run, bring-your-own PEMs, and running behind an existing TLS terminator.
+
 For a full production deployment (ACME TLS, sealed keystore, durable audit WAL, hardened read-only container), use the pull-only Compose file, which references the published images directly:
 
 ```
