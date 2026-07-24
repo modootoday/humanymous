@@ -25,7 +25,7 @@ To run the standalone engine after building:
 bin/server.exe -addr 127.0.0.1:8443 -web web
 ```
 
-The engine's core flags for local runs are `-addr`, `-web`, and `-rit` (default `true`); it also accepts `-acme-domain`/`-acme-cache`/`-acme-email`, `-log-level`, and `-ops-token` (see the CLI reference). The Observatory appears on that same server only when it is dev-gated on with `HMN_PLAYGROUND=1`, and it refuses to start on a non-loopback `-addr` (fail-closed).
+The engine's core flags for local runs are `-addr`, `-web`, and `-rit` (default `true`); it also accepts `-acme-domain`/`-acme-cache`/`-acme-email`, `-log-level`, and `-ops-token` (see [run the detection engine](../how-to/run-detection-engine.md) for the full Core flag set). The Observatory appears on that same server only when it is dev-gated on with `HMN_PLAYGROUND=1`, and it refuses to start on a non-loopback `-addr` (fail-closed).
 
 ## The one sentence that prevents the mistake
 

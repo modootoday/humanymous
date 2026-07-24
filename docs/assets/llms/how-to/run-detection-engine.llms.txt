@@ -52,11 +52,54 @@ Start the engine on loopback, pointing `-web` at the directory that holds `detec
 bin/server.exe -addr 127.0.0.1:8443 -web web
 ```
 
-Flags: `-addr` (bind address), `-web` (static web root), `-rit` (request-integrity token, default `true`).
+### Core flags (full set)
+
+`cmd/server` takes eight flags. The three above cover most local runs; the rest configure TLS, logging, and the operator surface.
+
+| Flag | Default | Purpose |
+|---|---|---|
+| `-addr` | `:8443` (from source) | Listen address. The published image overrides this to `:443` (see below). |
+| `-web` | `web` | Static web root — the directory holding `detector.wasm`, `index.html`, `demo.html`. |
+| `-rit` | `true` | Enable RIT anti-tamper (request-integrity token) verification. |
+| `-acme-domain` | `""` | Comma-separated domain(s) for a Let's Encrypt cert via TLS-ALPN-01 (needs binding `:443` directly). Empty = self-signed. |
+| `-acme-cache` | `acme-cache` | Directory to cache issued ACME certificates + the account key (persist this across restarts). |
+| `-acme-email` | `""` | Optional contact email for the ACME account. |
+| `-log-level` | `""` (off) | Structured log level: `off\|error\|warn\|info\|debug`. Also settable via `HMN_LOG_LEVEL`. |
+| `-ops-token` | `""` (disabled) | Operator bearer token that enables `/api/explain` + `/api/counters`. Also settable via `HMN_OPS_TOKEN`. Empty = those endpoints are not registered. |
 
 > **Warning:** The engine serves over TLS with a **self-signed development certificate**. Your browser and `curl` will flag it as untrusted — that is expected for a local dev cert. Trust it locally or pass your client's insecure/skip-verify flag for loopback testing only; never carry that habit to a real endpoint.
 
 There is **no admin listener here** — the engine exposes `127.0.0.1:8443` only. The `:8445` admin plane and the `:8444` edge belong to the Gate proxy, not to this binary.
+
+### Core ops surface
+
+The Core has a small, deliberately minimal operations surface:
+
+- **`GET /healthz`** — always on, **unauthenticated** liveness at the **root path** (not under `/__hmn/`). Returns `status`, `version`, and `uptimeSec`.
+- **`GET /api/explain/{id}`** and **`GET /api/counters`** — mounted **only** when `-ops-token` / `HMN_OPS_TOKEN` is set, and require that bearer token (a missing or wrong token gets `404`, so the surface is non-discoverable). `/api/explain/{id}` returns the `ScoreTrace` for a stored session (re-scored from a copy); `/api/counters` returns runtime counters (uptime, goroutines, heap, GC).
+
+Unlike the Gate, the Core has **no `/readyz` readiness probe and no Prometheus `/metrics` endpoint** — health is the single `/healthz` liveness check.
+
+## Run the published Core image
+
+The Core is published as `ghcr.io/modootoday/humanymous-core:latest` (built from `build/core.Dockerfile`). Its `ENTRYPOINT` is `/app/server -addr :443 -web /app/web -acme-cache /acme-cache`, so the **image binds `:443`** (whereas the from-source default is `:8443`) and terminates its own TLS — never front it with a TLS-terminating proxy or load balancer, since it needs the raw TLS/HTTP-2 handshake to read JA3/JA4.
+
+**Real TLS (public domain).** Supply a domain and mount a persistent volume at `/acme-cache` so the issued cert + ACME account key survive restarts:
+
+```
+docker run -p 443:443 -v hmn-acme:/acme-cache \
+  ghcr.io/modootoday/humanymous-core:latest -acme-domain your.domain
+```
+
+TLS-ALPN-01 needs `:443` reachable from the internet. Without `-acme-domain`, the image falls back to a **self-signed** cert on `:443`.
+
+**Local demo (self-signed, non-privileged port).** Override `-addr` to avoid `:443` and skip ACME:
+
+```
+docker run -p 8443:8443 ghcr.io/modootoday/humanymous-core:latest -addr :8443
+```
+
+> **Note:** `HMN_PLAYGROUND` is intentionally **unset** in the published image, so the Detection Observatory and the local Red launcher are **never registered** there — they are loopback-only dev features you get only from a source build (see below).
 
 ## The `HMN_PLAYGROUND` gate
 
@@ -110,7 +153,7 @@ The score itself comes from `internal/scoring`: each signal contributes `weight 
 
 This binary **scores**. It does not enforce at an edge, and it does not write the tamper-evident audit log. Those are the Gate reverse proxy's job — the proxy wraps this same engine and adds TLS termination, edge enforcement, the audit log, the Ledger, bans, and dual-control.
 
-If you need any of that, do not try to bolt it onto the standalone engine — run the proxy instead, starting from [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md). A promoted Gate build never exposes the Observatory, and the Observatory (`:8443`) is never the Ledger (`:8445`).
+If you need any of that, do not try to bolt it onto the standalone engine — run the proxy instead, starting from [Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md). The Observatory is a Core feature, not a Gate one, and the published core image never exposes it (`HMN_PLAYGROUND` is unset there); the Observatory (`:8443`) is never the Ledger (`:8445`).
 
 ## Related
 

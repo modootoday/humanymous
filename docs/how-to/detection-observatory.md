@@ -13,7 +13,7 @@ The Detection Observatory is a real-time, local-only web page served by the dete
 
 > **Note:** The Observatory runs on the standalone detection engine (`bin/server.exe` on `127.0.0.1:8443`) — **not** the Gate proxy (`bin/gate.exe` on `:8444`/`:8445`) you build in the Quickstart. It is a separate binary for watching the L1→L7 scoring in isolation, and it is not the Ledger. If those two binaries are new to you, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) first. For how the live feed and safety model work, see [Inside the Detection Observatory](../explanation/observatory-architecture.md).
 
-> **Warning:** The Observatory is a **development-only, loopback-only** surface. It spawns local test processes and streams raw detection telemetry, so it is disabled by default and refuses to start on a non-loopback address. Never enable it on a production or internet-reachable deployment. A promoted Gate build never exposes it.
+> **Warning:** The Observatory is a **development-only, loopback-only** surface. It spawns local test processes and streams raw detection telemetry, so it is disabled by default and refuses to start on a non-loopback address. Never enable it on a production or internet-reachable deployment. It is a Core feature, and the published core image never exposes it (`HMN_PLAYGROUND` is unset there); a Gate build has no Observatory at all.
 
 > **Note:** This validates *your own* engine on `127.0.0.1`. There is no target field — the Red side can only fire the bundled catalog at your local engine. It is not a tool for probing systems you do not operate, and it contains no evasion tuning.
 

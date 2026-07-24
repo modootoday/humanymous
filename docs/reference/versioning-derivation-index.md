@@ -123,6 +123,8 @@ Paths are repo-relative from `docs/`.
 | `explanation/dpia-companion.md` | SoT-18, SoT-22 |
 | `reference/support-licensing.md` | SoT-29 |
 | `reference/console-localization.md` | SoT-26, SoT-29 |
+| `reference/gate-origin-contract.md` | SoT-19, SoT-23 |
+| `how-to/verify-the-image.md` | SoT-31 |
 | `reference/versioning-derivation-index.md` (this page) | SoT-29 |
 
 ## 3. Change-control rule

@@ -97,7 +97,7 @@ The engine emits one of three verdicts; the edge maps each to an action. There i
 
 **Fail-open vs fail-closed on Unknown.** When the verdict is Unknown, the edge fails **closed** (→ CHALLENGE) if the route is strict or the HTTP method is unsafe (POST/PUT/PATCH/DELETE). It fails **open** (→ pass) only for safe-method requests (GET/HEAD) on non-strict routes. The safe-GET fail-open on balanced routes is a documented, accepted residual; it is covered meanwhile by fingerprint and subnet rate metering.
 
-End users who are challenged or blocked see plain language and an incident handle only — never internal signal names, hard-rule IDs, or layer references.
+End users who are challenged or blocked see plain language only (a production deployment's self-hosted page may also surface a per-visit incident handle) — never internal signal names, hard-rule IDs, or layer references.
 
 ## 5. Policy presets and modes
 
@@ -165,7 +165,7 @@ Every canonical term used across the documentation, with a one-line plain defini
 | **tamper-evident** | Tampering with the audit log is detectable; the log is not "tamper-proof". |
 | **origin / upstream** | The app Gate fronts and does not control. "origin" is the primary term; "upstream" is the `-upstream` flag alias. |
 | **verdict trust token** | A fingerprint-bound token that lets a valid ALLOW take a fast path with no re-scoring. |
-| **incident handle** | The opaque reference an end user receives on a challenge or block page, for appeal. |
+| **incident handle** | The opaque per-visit reference (`INC-…`) recorded for a challenged or blocked visit, for appeals — shown to the operator in the Ledger; a production self-hosted page may also surface it to the end user (the minimal reference interstitial does not). |
 | **fingerprint** | A derived identifier for a client, combining signals such as TLS/HTTP2 traits and device characteristics. |
 | **dual-control** | A two-person control: a distinct second role (Approver, or DPO for erasure) must commit a pending action. |
 | **Auditor / Operator / Approver / DPO** | The admin RBAC roles: read-only, operate, approve two-person actions, and data-protection officer. |

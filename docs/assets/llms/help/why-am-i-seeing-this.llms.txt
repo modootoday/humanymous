@@ -48,8 +48,10 @@ We would rather hear from you than leave you stuck.
 If the page told you it could not let you through, you can ask us to take
 another look. Please contact support at `<support-contact>` and include:
 
-- **Your incident handle** — the short reference code shown on the page that
-  blocked you. This is the fastest way for us to find your specific visit.
+- **Your incident handle, if the page shows one** — some deployments display a
+  short reference code on the block/verification page. If you see one, include it;
+  it is the fastest way for us to find your specific visit. If not, the details
+  below still let us locate it.
 - **Roughly when you were browsing** — the date and approximate time, and your
   timezone if you know it.
 - **What you were trying to do** — for example, signing in, checking out, or
@@ -65,7 +67,7 @@ task, please say so and we will treat it as a priority.
 
 ## Accessibility
 
-The quick check is designed to meet the WCAG 2.2 AA accessibility standard, so
+We aim for the quick check to meet the WCAG 2.2 AA accessibility standard, so
 that it works with screen readers, keyboard navigation, and other assistive
 technology. If it did not work for you, that is a bug we want to fix. Please
 report it to `<support-contact>` and describe what happened and what you were

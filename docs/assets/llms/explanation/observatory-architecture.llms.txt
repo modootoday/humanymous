@@ -112,7 +112,7 @@ The Observatory is not the Ledger, and the separation is hard:
 
 - It holds no admin tokens and no signing keys.
 - It exposes public detection output only — the same verdicts the tests and `/api/collect` see.
-- A promoted Gate build never exposes the Observatory at all; the Observatory lives on the standalone engine's `127.0.0.1:8443`, while the Ledger is the Gate admin plane on `:8445`.
+- The Observatory is a Core feature, not a Gate one: it lives on the standalone Core engine's `127.0.0.1:8443` and only when dev-gated on, while the Ledger is the Gate admin plane on `:8445`. The published core image never exposes it (`HMN_PLAYGROUND` is unset there), and a Gate build has no Observatory at all.
 
 If you're unsure which surface you're looking at, [production vs reference](../reference/production-vs-reference.md) draws the boundary between the reference engine (with its dev-gated Observatory) and a promoted Gate deployment.
 

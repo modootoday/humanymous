@@ -55,8 +55,9 @@ not comfortable with:
   will often clear on a second attempt.
 - **Contact support.** If it still will not let you through, reach
   `<support-contact>`. It helps us most if you include:
-  - **Your incident handle** — the short reference code shown on the page. This
-    is the fastest way for us to find your specific visit.
+  - **Your incident handle, if shown** — some deployments display a short
+    reference code on the check page. If you see one, include it — it is the
+    fastest way to find your specific visit.
   - **The assistive technology you use** — for example, the screen reader,
     browser, and device — so we can reproduce what happened.
   - **What you were trying to do** — for example, signing in or checking out.

@@ -27,6 +27,7 @@
     - { title: "Verify the audit log", url: "/how-to/verify-audit-log.html" }
     - { title: "Observability & SIEM", url: "/how-to/observability-siem.html" }
     - { title: "Self-validation (red-team)", url: "/how-to/self-validation-red-team.html" }
+    - { title: "Run the detection engine", url: "/how-to/run-detection-engine.html" }
     - { title: "Detection Observatory", url: "/how-to/detection-observatory.html" }
     - { title: "Ledger console tour", url: "/how-to/audit-console-tour.html" }
     - { title: "Upgrade & migration", url: "/how-to/upgrade-migration.html" }

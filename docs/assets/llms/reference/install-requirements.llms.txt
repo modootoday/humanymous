@@ -89,7 +89,7 @@ cp routes.conf.example routes.conf
 docker compose -f compose.release.yaml up -d
 ```
 
-The detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest` (for standalone self-testing / the demo). See [Deployment & policy operations](../how-to/deployment-policy-operations.md) for the full runbook.
+The detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest` (for standalone self-testing / the demo). See [Run the detection engine](../how-to/run-detection-engine.md) for the full Core runbook (flags, ports, and the published-image `docker run` recipes).
 
 ## Ports
 
