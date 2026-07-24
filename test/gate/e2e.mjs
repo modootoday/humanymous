@@ -29,12 +29,20 @@ function areq(method, path, { token, body } = {}) {
 }
 
 // The origin validates the rotating cloaking token the proxy attaches (SoT-23
-// §1, HR-24): originAuth = HMAC-SHA256(key, "hmny-origin|" + epoch).
+// §1, HR-24): originAuth = HMAC-SHA256(key, "hmny-origin|" + epoch). The Gate
+// rotates the epoch hourly (internal/gate/guard.go: epoch = "e"+floor(unix/3600)),
+// so the origin must derive the SAME time-bucketed epoch and accept the adjacent
+// buckets as grace at the hour boundary (mirroring originEpochGrace). A hardcoded
+// epoch would reject every forwarded request outside a single hour.
+const ORIGIN_EPOCH_WINDOW = 3600; // seconds — must match guard.go originEpochWindow
+function originEpoch(offsetBuckets = 0) {
+  return 'e' + (Math.floor(Date.now() / 1000 / ORIGIN_EPOCH_WINDOW) + offsetBuckets);
+}
 function originAuth(epoch) {
   return crypto.createHmac('sha256', ORIGIN_KEY).update('hmny-origin|' + epoch).digest('hex');
 }
 function validOriginAuth(h) {
-  return h === originAuth('e1') || h === originAuth('e0');
+  return h === originAuth(originEpoch(0)) || h === originAuth(originEpoch(-1)) || h === originAuth(originEpoch(1));
 }
 
 let upstreamHits = 0;
@@ -189,15 +197,22 @@ async function main() {
   const tokPass = await req('GET', '/', { cookie: humanCookies, headers: browserHeaders });
   check('token-fastpath-allow', tokPass.status === 200 && tokPass.body.includes('Origin content'), `status=${tokPass.status}`);
 
-  // 10. Token THEFT (HR-28): a bot lifts the human's hmn_vt and replays it with a
-  //     different fingerprint (bot UA). Binding mismatch -> blocked.
+  // 10. Token THEFT (HR-28): a bot lifts the human's hmn_vt and replays it from a
+  //     DIFFERENT fingerprint (bot UA). The binding mismatch means the token is NOT
+  //     honored — it is CLEARED and the request re-scored on the bot's own fingerprint.
+  //     (A binding mismatch is deliberately NOT a terminal 403: that would lock out a
+  //     returning human whose fingerprint/subnet legitimately changed — deep-review
+  //     false-403 fix.) The security property is that the stolen token grants no
+  //     trusted fast-path — proven by the edge clearing it — not that the request 403s.
+  const cleared = (r) => (r.headers['set-cookie'] || []).some((c) => c.startsWith('hmn_vt=;'));
   const botHeaders = { 'User-Agent': 'HeadlessChrome/126', 'Accept': '*/*' };
   const stolen = await req('GET', '/', { cookie: vtCookie, headers: botHeaders });
-  check('token-theft-blocked', stolen.status === 403, `status=${stolen.status} (binding mismatch)`);
+  check('token-theft-not-honored', cleared(stolen), `cleared=${cleared(stolen)} status=${stolen.status} (binding mismatch -> cleared + re-scored)`);
 
-  // 11. Token FORGERY (HR-28): a fabricated token (no server key) fails the sig.
+  // 11. Token FORGERY (HR-28): a fabricated token (no server key) fails the signature
+  //     check and is likewise cleared, not honored (never a terminal 403).
   const forged = await req('GET', '/', { cookie: 'hmn_vt=Zm9yZ2Vk.Zm9yZ2Vk', headers: browserHeaders });
-  check('token-forgery-blocked', forged.status === 403, `status=${forged.status} (bad sig)`);
+  check('token-forgery-not-honored', cleared(forged), `cleared=${cleared(forged)} status=${forged.status} (bad sig -> cleared)`);
 
   // 12. Beacon REPLAY (HR-29): capture a beacon's single-use nonce and replay it.
   const nonce = 'nonce-' + Math.random().toString(36).slice(2);
