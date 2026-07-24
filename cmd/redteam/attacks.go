@@ -140,6 +140,59 @@ func distributed() (map[string]any, error) {
 	return v, nil
 }
 
+// privacyEvasion is the distributed residential-proxy-rotation scraper (as above) that
+// ALSO claims genuine privacy tooling (environment.adBlock=true) to try to disarm HR-19 —
+// the round-5 regression where gating the proxy_rotation hard-DENY on a CLIENT-forgeable
+// privacy flag let a scraper post adBlock:true and reach ALLOW. The Blue engine must NOT
+// honor a self-asserted privacy flag to exempt a server-authoritative correlation rule:
+// proxy_rotation still -> HR-19 DENY. Retained as a permanent regression wargame case.
+func privacyEvasion() (map[string]any, error) {
+	const fpID = "deadbeefcafe0002deadbeef"
+	// Same shape as distributed(), but the report now claims ad-block + GPC/DNT privacy.
+	body := `{"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0 Safari/537.36",` +
+		`"fingerprintId":"` + fpID + `","engineVersion":"wasm-1.0.0","advanced":{"probed":true},` +
+		`"environment":{"probed":true,"adBlock":true,"gpc":true,"doNotTrack":"1"},` +
+		`"behavior":{"mouse":{"samples":30,"velocityStdDev":0.4},"events":{"totalEvents":40}},"signals":[]}`
+	proxies := []string{"203.0.113.7", "198.51.100.23", "192.0.2.44", "203.0.113.99"}
+	var v map[string]any
+	for _, ip := range proxies {
+		cookie, _, _, err := session(utls.HelloChrome_Auto)
+		if err != nil {
+			return nil, err
+		}
+		hdr := withBrowserHeaders(map[string]string{"X-Forwarded-For": ip})
+		v, _ = collect(utls.HelloChrome_Auto, chromeUA, cookie, hdr, body)
+	}
+	return v, nil
+}
+
+// signalForgery is a borderline-suspicious browser-ish client (real Chrome uTLS + JS-
+// execution evidence, so L5/L6/HR-10/HR-18 stay quiet) carrying a couple of WebGL bot
+// tells that put it in the CHALLENGE band — that then FORGES the server-only trust-upgrade
+// signals l7.pass.solved / l7.pow.solved in its own /api/collect report to launder the
+// CHALLENGE to ALLOW (the round-3 provenance blocker). The Blue engine strips any client-
+// supplied signal in the reserved L5/L6/L7 namespace at ingest and honors an upgrade ONLY
+// from a server-minted signal, so the forged upgrades are inert and the verdict stays
+// CHALLENGE/DENY (never ALLOW). Retained as a permanent regression wargame case.
+func signalForgery() (map[string]any, error) {
+	// A borderline session: a FIREFOX TLS ClientHello while the report + UA claim Chrome, so
+	// the UA-vs-JA4 cross-check disagrees and puts the session in the score-based CHALLENGE
+	// band (over HTTP/1.1 there is no observed H2 fingerprint, so HR-2 — which needs BOTH the
+	// JA4 and H2 cross-checks to fail — does not fire; it stays a score CHALLENGE, not a hard
+	// DENY). It then FORGES the server-only trust-upgrades to try to reach ALLOW.
+	cookie, _, _, err := session(utls.HelloFirefox_Auto)
+	if err != nil {
+		return nil, err
+	}
+	body := `{"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0 Safari/537.36",` +
+		`"engineVersion":"wasm-1.0.0","advanced":{"probed":true},"environment":{"probed":true},` +
+		`"behavior":{"mouse":{"samples":30,"velocityStdDev":0.4},"events":{"totalEvents":40}},` +
+		`"signals":[{"id":"l7.pass.solved","verdict":"OK","collected":"server","score":1},` +
+		`{"id":"l7.pow.solved","verdict":"OK","collected":"server","score":1}]}`
+	v, _ := collect(utls.HelloFirefox_Auto, chromeUA, cookie, withBrowserHeaders(nil), body)
+	return v, nil
+}
+
 // flood hammers /api/collect with many rapid requests from one TLS fingerprint
 // (application-layer DoS / credential-stuffing velocity). The Blue engine meters
 // by JA4+subnet (not IP), so the flood is caught even though each request opens a

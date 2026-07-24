@@ -4,14 +4,20 @@
 // network-bypass and anti-tamper defenses can be verified. Local target only.
 //
 // Attacks (-attack), all local-target-only:
-//   tls-static   : a fixed uTLS parrot (no extension permutation)
-//   tls-rotate   : two requests in one session with different TLS fingerprints
-//   ua-rotate    : two requests in one session with different User-Agents
-//   rit-replay   : replay a previously valid RIT token
-//   rit-tamper   : sign one body, send a different body
-//   flood        : application-layer request flood (fingerprint-keyed rate)
-//   distributed  : one fingerprint across rotated proxy subnets
-//   xff-spoof    : forged private X-Forwarded-For to impersonate a LAN client
+//
+//	tls-static   : a fixed uTLS parrot (no extension permutation)
+//	tls-rotate   : two requests in one session with different TLS fingerprints
+//	ua-rotate    : two requests in one session with different User-Agents
+//	rit-replay   : replay a previously valid RIT token
+//	rit-tamper   : sign one body, send a different body
+//	flood        : application-layer request flood (fingerprint-keyed rate)
+//	distributed  : one fingerprint across rotated proxy subnets
+//	privacy-evasion : distributed proxy-rotation that ALSO claims ad-block/GPC to try to
+//	                  disarm HR-19 (round-5 regression case) — must still DENY
+//	signal-forgery  : a borderline client forging l7.pass.solved/l7.pow.solved to launder
+//	                  a CHALLENGE to ALLOW (round-3 provenance blocker) — must not ALLOW
+//	xff-spoof    : forged private X-Forwarded-For to impersonate a LAN client
+//
 // (HTTP/2 Rapid Reset is exercised by the rapid_reset node profile, not this binary.)
 package main
 
@@ -36,7 +42,7 @@ import (
 )
 
 var (
-	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|xff-spoof")
+	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|xff-spoof")
 	host   = flag.String("host", "127.0.0.1:8443", "target host:port")
 )
 
@@ -49,6 +55,10 @@ func main() {
 		v, err = flood()
 	case "distributed":
 		v, err = distributed()
+	case "privacy-evasion":
+		v, err = privacyEvasion()
+	case "signal-forgery":
+		v, err = signalForgery()
 	case "xff-spoof":
 		v, err = xffSpoof()
 	case "tls-static":

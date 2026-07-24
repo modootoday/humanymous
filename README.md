@@ -139,7 +139,7 @@ Then open (accept the self-signed certificate):
 - **Ledger** — <https://localhost:8445/__hmn/admin/console> — dev token `operator:e2e-operator-token`.
 
 ```bash
-# 2. Run the bots (automation catalog, 26 profiles) against the engine
+# 2. Run the bots (automation catalog, 28 profiles) against the engine
 docker compose run --rm bots
 
 # 3. Gate proxy-layer conformance (34 checks)
@@ -153,7 +153,7 @@ docker compose down -v
 ```
 
 Expected result (a single reference run on the maintainers' hardware, n=1 per
-profile): all **25 bot profiles blocked** (DENY/CHALLENGE) and the **1 baseline
+profile): all **27 bot profiles blocked** (DENY/CHALLENGE) and the **1 baseline
 session not denied**; Gate conformance **34/34**. These are reference-measured
 observations, **not a guarantee** — the baseline is a Playwright/CDP-driven session,
 not a physical human (see *Verification results* below). The bots containers attach to an `internal` network only, so
@@ -204,7 +204,7 @@ installed Edge, Firefox-family use Playwright Firefox, and tls-parrot runs a rea
 uTLS (Go) client:
 
 > **How to read these numbers.** This is a **single run (n=1 per profile) on the
-> maintainers' hardware** against a 26-profile local catalog (**25 bot profiles + 1
+> maintainers' hardware** against a 28-profile local catalog (**27 bot profiles + 1
 > baseline**). The "baseline" is a **Playwright/CDP-driven session, not a physical
 > human**, so a real-human false-positive rate is *not* measured here. "FPR" below is a
 > **DENY-only** metric — it cannot count a human who was sent to a CHALLENGE, so it
@@ -224,7 +224,7 @@ uTLS (Go) client:
 | bot:nodriver / xvfb-headful / anti-detect | CHALLENGE | no interaction (HR-12) |
 | bot:camoufox (Playwright Firefox) | CHALLENGE | no interaction (HR-12) |
 
-→ In this reference run all 25 bot profiles were blocked (DENY/CHALLENGE) and the
+→ In this reference run all 27 bot profiles were blocked (DENY/CHALLENGE) and the
 baseline was not denied. **Reference-measured on the maintainers' hardware, n=1 — not
 a guarantee**; the baseline is a Playwright/CDP session, and the DENY-only "FPR"
 under-reports human friction. A full per-profile report is generated locally at
@@ -306,9 +306,24 @@ rate limit on the protocol-error rate and server-emitted resets.**
 
 New bots: `flood` (90 rapid requests from one fingerprint), `rapid_reset` (open + immediate
 CANCEL flood on one connection; scored even when Go stdlib mitigation closes the
-connection). **Result** (reference run, n=1): all 25 bot profiles blocked (DENY 24 +
-CHALLENGE 1) and the baseline not denied — reference-measured, not a guarantee. The
+connection). **Result** (reference run, n=1): all bot profiles blocked (DENY/CHALLENGE)
+and the baseline not denied — reference-measured, not a guarantee. The
 frame monitor showed no regression for normal h2 browser serving in this run.
+
+### Round 5 — deployment-suitability hardening (signal provenance · privacy-evasion)
+
+Five deep deployment-suitability reviews (see the [CHANGELOG](CHANGELOG.md)) surfaced two
+evasions that are now **permanent regression wargame cases** in the catalog (retained as
+code — `cmd/redteam` + `test/redteam/*.mjs`), so a future change that reopens either fails
+the run:
+
+| New wargame profile | Attack | Verdict | Basis |
+|---------------------|--------|---------|-------|
+| `bot:signal-forgery` | a borderline (score-CHALLENGE) client FORGES the server-only trust-upgrades `l7.pass.solved`/`l7.pow.solved` in its own report to launder itself to ALLOW | **CHALLENGE** | client-supplied L5/L6/L7 signals are stripped at ingest; a trust-upgrade is honored ONLY from a server-minted signal, so the forgery is inert |
+| `bot:privacy-evasion` | a residential-proxy-rotation scraper ALSO claims `adBlock`/GPC to try to disarm the correlation hard rule | **DENY** | a client-reported privacy flag does NOT exempt the server-authoritative `l5.correlation.proxy_rotation` rule → **HR-19** |
+
+→ **Result** (reference run, n=1): all **27 bot profiles blocked** (DENY/CHALLENGE), the
+baseline not denied, Gate conformance **34/34** — reference-measured, not a guarantee.
 
 ## Production promotion — reverse-proxy security layer (SoT-18–28)
 
@@ -365,7 +380,7 @@ node test/gate/e2e.mjs
 
 L1–L7 detection + all anti-bypass layers (SoT-07–17) + **production reverse-proxy
 promotion (SoT-18–28)** implemented and verified. All tests green; in the reference
-run (n=1) all **25 bot profiles were blocked and the baseline was not denied**
+run (n=1) all **27 bot profiles were blocked and the baseline was not denied**
 (reference-measured, not a guarantee); Gate conformance **34/34** (incl. token
 theft/forgery/replay, smuggling, upgrade-tunnel, and sweep defenses). The headline
 audit log (tamper-evident hash chain + Ed25519 STH + crypto-shred) is live, with the

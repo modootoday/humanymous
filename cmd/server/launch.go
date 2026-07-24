@@ -59,12 +59,13 @@ func (n *nonceStore) consume(tok string) bool {
 	return time.Now().Before(exp)
 }
 
-// launchProfiles is the strict allowlist: exactly the 27 test/redteam catalog
+// launchProfiles is the strict allowlist: exactly the test/redteam catalog
 // profiles (the _bin/_driver helpers export no run() and are excluded). A
 // launch maps a profileId onto ONLY these — never an arbitrary path or host.
 // This set MUST stay in lock-step with test/e2e/runner.mjs PROFILES — the parity
 // is enforced by TestLaunchProfilesMatchCatalog (PLAN-07 R5), which failed loudly
-// when xff_spoof.mjs was added to the catalog but not here.
+// when xff_spoof.mjs (and later the deployment-review evasions) were added to the
+// catalog but not here.
 var launchProfiles = map[string]bool{
 	"human.mjs": true, "http_client.mjs": true, "tls_parrot.mjs": true, "selenium.mjs": true,
 	"puppeteer.mjs": true, "puppeteer_stealth.mjs": true, "playwright_plain.mjs": true,
@@ -73,6 +74,8 @@ var launchProfiles = map[string]bool{
 	"camoufox.mjs": true, "tls_static.mjs": true, "tls_rotate.mjs": true, "ua_rotate.mjs": true,
 	"rit_replay.mjs": true, "rit_tamper.mjs": true, "video_scrape.mjs": true, "watermark_strip.mjs": true,
 	"ai_agent.mjs": true, "distributed.mjs": true, "xff_spoof.mjs": true, "flood.mjs": true, "rapid_reset.mjs": true,
+	// deployment-review-hardened evasions (rounds 3 & 5) — permanent regression wargame cases.
+	"signal_forgery.mjs": true, "privacy_evasion.mjs": true,
 }
 
 // realRunProfile shells the thin per-profile wrapper against the local Blue. The

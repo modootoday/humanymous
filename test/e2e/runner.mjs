@@ -45,8 +45,11 @@ const PROFILES = [
   'ai_agent.mjs',              // LLM browser-agent cadence -> HR-20
   'distributed.mjs',           // rotating residential-proxy pool -> HR-19
   'xff_spoof.mjs',             // forged private X-Forwarded-For -> l5.header.forwarded_private
-  'flood.mjs',                 // application-layer request flood -> HR-21 (SoT-17)
+  'flood.mjs',                 // application-layer request flood -> score CHALLENGE + ban ladder
   'rapid_reset.mjs',           // HTTP/2 Rapid Reset DoS (CVE-2023-44487) -> HR-21 (SoT-17)
+  // --- deployment-review-hardened evasions (rounds 3 & 5): must stay caught ---
+  'signal_forgery.mjs',        // forged l7.pass.solved/l7.pow.solved -> stripped, no ALLOW (round-3 provenance blocker)
+  'privacy_evasion.mjs',       // proxy-rotation + forged adBlock/GPC -> still HR-19 DENY (round-5 regression)
 ];
 
 function classify(label, verdict) {
