@@ -15,11 +15,12 @@ import (
 // real control is a management network + mTLS, per the operability audit).
 
 type edgeTLS struct {
-	acmeDomains []string // -acme-domain (csv); autocert TLS-ALPN-01 on the edge
-	acmeCache   string   // -acme-cache DirCache path
-	acmeEmail   string   // -acme-email account contact
-	certFile    string   // -tls-cert (bring-your-own)
-	keyFile     string   // -tls-key
+	acmeDomains   []string // -acme-domain (csv); autocert TLS-ALPN-01 on the edge
+	acmeCache     string   // -acme-cache DirCache path
+	acmeEmail     string   // -acme-email account contact
+	acmeDirectory string   // -acme-directory ACME server URL; empty = production Let's Encrypt
+	certFile      string   // -tls-cert (bring-your-own)
+	keyFile       string   // -tls-key
 }
 
 // buildEdgeTLS returns the *tls.Config for the public edge:
@@ -38,6 +39,13 @@ func buildEdgeTLS(e edgeTLS) (*tls.Config, error) {
 			HostPolicy: autocert.HostWhitelist(e.acmeDomains...),
 			Cache:      autocert.DirCache(cache),
 			Email:      e.acmeEmail,
+		}
+		// A custom ACME directory (empty = production Let's Encrypt). Point this at the
+		// Let's Encrypt STAGING directory to dry-run issuance without burning the strict
+		// production rate limits, or at ZeroSSL / an internal step-ca. Staging certs are
+		// signed by an untrusted root (browsers warn) — for validation only.
+		if e.acmeDirectory != "" {
+			m.Client = &acme.Client{DirectoryURL: e.acmeDirectory}
 		}
 		return &tls.Config{
 			GetCertificate: m.GetCertificate,

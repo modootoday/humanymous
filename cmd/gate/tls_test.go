@@ -48,6 +48,31 @@ func TestBuildEdgeTLSACME(t *testing.T) {
 	}
 }
 
+// A custom ACME directory (e.g. Let's Encrypt staging) still yields a valid ACME
+// TLS config — GetCertificate set, acme-tls/1 advertised — so staging dry-runs work.
+func TestBuildEdgeTLSACMEStagingDirectory(t *testing.T) {
+	cfg, err := buildEdgeTLS(edgeTLS{
+		acmeDomains:   []string{"edge.example.com"},
+		acmeCache:     t.TempDir(),
+		acmeDirectory: "https://acme-staging-v02.api.letsencrypt.org/directory",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg.GetCertificate == nil {
+		t.Fatal("ACME mode with a custom directory must still set GetCertificate")
+	}
+	var hasALPN bool
+	for _, p := range cfg.NextProtos {
+		if p == acme.ALPNProto {
+			hasALPN = true
+		}
+	}
+	if !hasALPN {
+		t.Errorf("ACME mode must advertise %q, got %v", acme.ALPNProto, cfg.NextProtos)
+	}
+}
+
 // A BYO cert path that does not exist is a hard error (not a silent self-sign).
 func TestBuildEdgeTLSBadCert(t *testing.T) {
 	_, err := buildEdgeTLS(edgeTLS{certFile: "/no/such/cert.pem", keyFile: "/no/such/key.pem"})

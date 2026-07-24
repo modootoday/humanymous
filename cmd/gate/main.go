@@ -57,6 +57,7 @@ func main() {
 	acmeDomain := flag.String("acme-domain", "", "comma-separated domain(s) for a Let's Encrypt edge cert via TLS-ALPN-01 (requires binding :443)")
 	acmeCache := flag.String("acme-cache", "acme-cache", "directory to cache issued ACME certificates")
 	acmeEmail := flag.String("acme-email", "", "optional ACME account contact email")
+	acmeDirectory := flag.String("acme-directory", "", "ACME directory URL; empty = production Let's Encrypt. Set to the LE staging URL (https://acme-staging-v02.api.letsencrypt.org/directory) to dry-run issuance without hitting production rate limits, or to ZeroSSL / an internal step-ca")
 	// SoT-31 R2 — external route table (prefix -> preset); empty uses the built-in presets.
 	routesFile := flag.String("routes", "", "path to a route policy file (`<prefix> <preset>` per line); empty = built-in presets")
 	// SoT-32 — durable audit WAL: the tamper-evident chain survives restarts and the
@@ -417,7 +418,7 @@ func main() {
 	// control), so ACME challenges never depend on the admin port.
 	edgeCfg, err := buildEdgeTLS(edgeTLS{
 		acmeDomains: splitDomains(*acmeDomain), acmeCache: *acmeCache, acmeEmail: *acmeEmail,
-		certFile: *tlsCert, keyFile: *tlsKey,
+		acmeDirectory: *acmeDirectory, certFile: *tlsCert, keyFile: *tlsKey,
 	})
 	if err != nil {
 		log.Fatalf("edge tls: %v", err)

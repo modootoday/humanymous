@@ -40,6 +40,12 @@ services:
       - "${HMN_UPSTREAM}"                     # your origin, e.g. http://app:8080
       - "-acme-domain"
       - "${HMN_DOMAIN}"                       # real TLS; or mount a cert + use -tls-cert/-tls-key
+      - "-acme-cache"
+      - "/acme-cache"                         # persist issued certs on the named volume (below).
+                                              # MUST be an absolute path onto the writable volume:
+                                              # the default is relative (-> /app/acme-cache) which is
+                                              # on the read-only rootfs, so ACME would fail and, if it
+                                              # didn't, re-issue every restart (Let's Encrypt rate limit).
       - "-routes"
       - "/etc/hmn/routes.conf"                # your protected paths
       - "-keystore"
