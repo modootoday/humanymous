@@ -1,6 +1,7 @@
 package gate
 
 import (
+	"math"
 	"strconv"
 	"sync/atomic"
 	"time"
@@ -59,7 +60,16 @@ func (l *RedisRateLimiter) Observe(key string, now time.Time) int {
 	if err != nil {
 		return l.local.Observe(key, now) // outage: fall back to per-node counting
 	}
-	return int(rep.Int)
+	// Clamp the int64 reply into int with an explicit bound so the conversion is safe on
+	// a 32-bit build (a rolling rate count never legitimately exceeds this; a negative is
+	// impossible from a Redis counter but guarded for totality).
+	n := rep.Int
+	if n < 0 {
+		n = 0
+	} else if n > math.MaxInt32 {
+		n = math.MaxInt32
+	}
+	return int(n)
 }
 
 // Level classifies a rolling count using the shared thresholds.

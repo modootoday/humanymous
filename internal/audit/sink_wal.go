@@ -103,11 +103,15 @@ func (w *WALSink) AppendCheckpoint(cp Checkpoint) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 	if _, err := f.Write(append(line, '\n')); err != nil {
+		f.Close()
 		return err
 	}
-	return f.Sync()
+	if err := f.Sync(); err != nil {
+		f.Close()
+		return err
+	}
+	return f.Close() // a writable file's Close can surface a deferred flush error — return it (no data loss goes unreported)
 }
 
 // ReadAll reads every sealed record from all segments in seq order.

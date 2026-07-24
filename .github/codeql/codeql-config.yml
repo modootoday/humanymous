@@ -1,0 +1,11 @@
+name: humanymous CodeQL config
+
+# Exclude the RED-TEAM attack tooling from analysis. cmd/redteam and cmd/tlsparrot
+# are adversarial tools that INTENTIONALLY disable TLS verification and forge TLS
+# handshakes to attack the LOCAL self-signed dev engine (127.0.0.1). They are never
+# part of a distributed build — release.yml publishes only the core + gate images —
+# so a "disabled certificate check" finding there is expected by design, not a defect.
+# Everything else (the engine, the Gate, all internal packages) is fully scanned.
+paths-ignore:
+  - cmd/redteam
+  - cmd/tlsparrot

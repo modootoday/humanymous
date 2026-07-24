@@ -63,18 +63,33 @@ func (a *app) withObservability(next http.Handler) http.Handler {
 		defer func() {
 			if rec := recover(); rec != nil {
 				a.log.Error("panic recovered",
-					"method", r.Method, "path", r.URL.Path, "err", rec, "stack", string(debug.Stack()))
+					"method", logSafe(r.Method), "path", logSafe(r.URL.Path), "err", rec, "stack", string(debug.Stack()))
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()
 		next.ServeHTTP(w, r)
-		a.log.Info("request", "method", r.Method, "path", r.URL.Path, "proto", protoVer(r))
+		a.log.Info("request", "method", logSafe(r.Method), "path", logSafe(r.URL.Path), "proto", protoVer(r))
 	})
+}
+
+// logSafe strips ASCII control characters (including CR/LF and DEL) from a
+// client-controlled string before it is logged, so a crafted request path or
+// session id cannot forge or split log lines (CWE-117, log injection). slog already
+// quotes/escapes attribute values, but sanitizing at the source makes the guarantee
+// explicit and independent of the handler in use.
+func logSafe(s string) string {
+	return strings.Map(func(r rune) rune {
+		if r < 0x20 || r == 0x7f {
+			return -1 // drop control chars
+		}
+		return r
+	}, s)
 }
 
 // shortSID truncates a session id for logs: enough to correlate lines within a run,
 // not the full cookie value (which is a bearer-style secret and must not be logged whole).
 func shortSID(sid string) string {
+	sid = logSafe(sid) // the session id is a client-controlled cookie — never log it raw (CWE-117)
 	if len(sid) > 8 {
 		return sid[:8]
 	}
