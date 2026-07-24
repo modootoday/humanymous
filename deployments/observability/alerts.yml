@@ -1,0 +1,89 @@
+# humanymous Gate — Prometheus alerting rules (structural only).
+#
+# These rules deliberately carry NO invented numeric verdict/DENY thresholds. Rates
+# (allow/challenge/deny) come from the audit stream, not from /metrics, and tuning a
+# "too many denies" threshold is a per-deployment decision the reference does not make
+# for you (see docs/reference/on-call-quick-reference.md — structural alerts only).
+#
+# Every rule below fires on a STRUCTURAL condition: the audit chain stopped verifying,
+# lost its witness co-sign, a durable-projection sink shed records, the kill switch is
+# engaged, or the target is unreachable. Load these under `rule_files:` in prometheus.yml.
+#
+# See ../../docs/how-to/observability-siem.md for what each series means.
+
+groups:
+  - name: humanymous-gate-audit-integrity
+    rules:
+      # HIGHEST severity: the tamper-evident audit chain no longer verifies end-to-end
+      # (hash/HMAC/STH break, or the writer rewrote history). Page security on-call.
+      - alert: HmnGateAuditChainBroken
+        expr: hmn_gate_audit_integrity_ok == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Gate audit chain failed self-verification on {{ $labels.instance }}"
+          description: >
+            hmn_gate_audit_integrity_ok == 0 — the append-only hash chain, per-record
+            HMAC, or Signed Tree Head no longer verifies. Treat as tamper/corruption.
+            Cross-check GET /__hmn/admin/integrity for the mismatch class + divergentSeq.
+
+      # The latest checkpoints no longer carry a valid independent-witness co-signature —
+      # a chain the writer rewrote cannot be witness-attested.
+      - alert: HmnGateAuditWitnessLost
+        expr: hmn_gate_audit_witnessed == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Gate audit checkpoints lost witness co-signature on {{ $labels.instance }}"
+          description: >
+            hmn_gate_audit_witnessed == 0 — the latest Signed Tree Heads are not covered by
+            a valid independent-witness co-sign. Cross-check GET /__hmn/admin/integrity
+            (witnessed:false / witnessFailAt).
+
+      # A Tier-1/2 projection sink (Redis Streams / ClickHouse) shed audit records under
+      # backpressure or an outage. The WAL remains the durability authority, but any drop
+      # means your downstream SIEM/analytics view is now incomplete.
+      - alert: HmnGateAuditProjectionDropping
+        expr: increase(hmn_gate_audit_projection_dropped_total[10m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Gate audit projection sink dropping records on {{ $labels.instance }}"
+          description: >
+            hmn_gate_audit_projection_dropped_total increased — a Redis/ClickHouse
+            projection is shedding under backpressure/outage. The durable WAL is
+            unaffected; the downstream projection is lagging or degraded. Check the sink.
+
+  - name: humanymous-gate-state
+    rules:
+      # The fleet-wide kill switch is engaged: hard-rule enforcement is demoted to monitor
+      # everywhere (detection stopped, traffic flows). This is a dual-control action, so it
+      # is intentional — but it must never go unnoticed.
+      - alert: HmnGateKillSwitchEngaged
+        expr: hmn_gate_killswitch == 1
+        labels:
+          severity: warning
+        annotations:
+          summary: "Gate kill switch is ENGAGED on {{ $labels.instance }}"
+          description: >
+            hmn_gate_killswitch == 1 — hard-rule enforcement is demoted to monitor
+            fleet-wide. Confirm this was an intended dual-control flip; release it when the
+            incident is over.
+
+  - name: humanymous-gate-availability
+    rules:
+      # Prometheus cannot reach the admin metrics endpoint (auth failure, TLS failure, or
+      # the process is down). A metrics blackout hides every rule above, so alert on it.
+      - alert: HmnGateScrapeDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Gate metrics endpoint is unreachable on {{ $labels.instance }}"
+          description: >
+            up == 0 for the humanymous-gate scrape — the admin /metrics endpoint is down,
+            unauthenticated (check the Auditor token), or unreachable (TLS/network). While
+            this fires, the integrity/witness/projection alerts are blind.

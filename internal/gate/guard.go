@@ -1,15 +1,12 @@
 package gate
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/audit"
+	"github.com/modootoday/humanymous/pkg/origincloak"
 )
 
 // guard.go implements the proxy↔upstream trust-boundary guards (SoT-23): origin
@@ -48,52 +45,30 @@ func stripInbound(r *http.Request) {
 	}
 }
 
-// originAuth computes the rotating origin-cloaking token the proxy attaches to
-// upstream requests (SoT-23 §1). The origin validates + strips it; a request
-// arriving at the origin without it is a direct-hit bypass (HR-24). `epoch`
-// rotates the value so a leaked token expires.
-func originAuth(key []byte, epoch string) string {
-	m := hmac.New(sha256.New, key)
-	m.Write([]byte("hmny-origin|" + epoch))
-	return hex.EncodeToString(m.Sum(nil))
-}
+// The origin-cloaking construction (rotating X-Hmny-Origin-Auth token + epoch grace)
+// lives in the PUBLIC, importable pkg/origincloak so an origin app can verify + strip it
+// with the same code Gate uses. These thin wrappers keep the internal call sites unchanged
+// and guarantee a single source of truth (the enforcement path and the public package are
+// the same code, so they cannot drift).
 
-// originEpochWindow is the origin-cloaking epoch bucket. The epoch is derived from
-// wall-clock time so the gate and the (independent) origin agree without coordination —
-// exactly like the RIT time bucket. A leaked X-Hmny-Origin-Auth is therefore valid for at
-// most one window plus the grace bucket (~2h), instead of forever under the old hardcoded
-// "e1" (deep-review).
-const originEpochWindow = 3600 // seconds (1h)
+// originAuth computes the rotating origin-cloaking token the proxy attaches to upstream
+// requests (SoT-23 §1, HR-24). The origin validates + strips it; a request arriving without
+// it is a direct-hit bypass. `epoch` rotates the value so a leaked token expires.
+func originAuth(key []byte, epoch string) string { return origincloak.Token(key, epoch) }
 
 // originEpoch returns the wall-clock-derived origin epoch for now.
-func originEpoch(now time.Time) string {
-	return "e" + strconv.FormatInt(now.Unix()/originEpochWindow, 10)
-}
+func originEpoch(now time.Time) string { return origincloak.Epoch(now) }
 
-// originEpochGrace returns the NEXT, current, and previous epoch — the set an origin should
-// accept to tolerate a bucket boundary in EITHER direction. The grace must be symmetric: if
-// the gate's clock is AHEAD of the origin's across an hour boundary the gate emits the next
-// bucket, and a past-only grace would reject every proxied request until the origin caught
-// up — blackholing all traffic (deep-review). ±1 bucket tolerates skew either way.
-func originEpochGrace(now time.Time) []string {
-	return []string{
-		originEpoch(now.Add(originEpochWindow * time.Second)),
-		originEpoch(now),
-		originEpoch(now.Add(-originEpochWindow * time.Second)),
-	}
-}
+// originEpochGrace returns the next/current/previous epoch set an origin should accept to
+// tolerate a bucket boundary crossed in either direction (a past-only grace blackholes
+// traffic when the gate clock is ahead).
+func originEpochGrace(now time.Time) []string { return origincloak.EpochGrace(now) }
 
-// ValidateOriginAuth is the ORIGIN-side check (used by a compliant upstream or
-// the demo origin guard): returns true only if the header matches the current or
-// previous epoch (rotation grace, SoT-22 §4). A compliant origin computes the epoch set
-// with originEpochGrace(time.Now()).
+// ValidateOriginAuth is the ORIGIN-side check. It delegates to pkg/origincloak (the public
+// copy an origin app imports directly); returns true only if the header matches one of the
+// grace epochs (constant-time).
 func ValidateOriginAuth(key []byte, header string, epochs ...string) bool {
-	for _, e := range epochs {
-		if hmac.Equal([]byte(header), []byte(originAuth(key, e))) {
-			return true
-		}
-	}
-	return false
+	return origincloak.ValidAt(key, header, epochs...)
 }
 
 // spoofRecord builds the audit event for a detected trust-header spoof.

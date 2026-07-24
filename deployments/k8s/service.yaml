@@ -1,0 +1,50 @@
+# humanymous Gate — Services.
+#
+# TWO Services, mirroring compose.release.yaml's port model:
+#   - edge  : public, 443 -> containerPort 8444 (ACME needs 443 reachable)
+#   - admin : ClusterIP-internal ONLY, 8445 -> 8445 (never expose publicly)
+#
+# The edge Service is LoadBalancer here for a from-scratch cluster. If you
+# terminate TLS at an Ingress/L7 LB instead, make this ClusterIP, point the
+# Ingress at it, and drop -acme-domain from the Deployment (BYO TLS).
+apiVersion: v1
+kind: Service
+metadata:
+  name: humanymous-gate
+  labels:
+    app.kubernetes.io/name: humanymous-gate
+    app.kubernetes.io/component: edge
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: humanymous-gate
+  ports:
+    - name: https
+      port: 443              # public edge
+      targetPort: 8444       # container edge listener
+      protocol: TCP
+---
+# Admin plane. ClusterIP (the default) means this is reachable only from inside
+# the cluster — there is NO external LoadBalancer/NodePort here by design.
+#
+# ADMIN-PLANE REACHABILITY CAVEAT (audit SEC-1): -admin-addr :8445 binds every
+# pod interface, so ANY pod that can route to this Service reaches the admin
+# console. ClusterIP is not an authz boundary. Restrict it with a NetworkPolicy
+# (allow only your admin namespace/pods) AND front it with mTLS/SSO. Do NOT add
+# a LoadBalancer/NodePort/Ingress to this Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: humanymous-gate-admin
+  labels:
+    app.kubernetes.io/name: humanymous-gate
+    app.kubernetes.io/component: admin
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: humanymous-gate
+  ports:
+    - name: admin
+      port: 8445
+      targetPort: 8445
+      protocol: TCP

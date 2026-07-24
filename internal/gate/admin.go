@@ -321,6 +321,27 @@ func (s *Server) adminMetrics(w http.ResponseWriter) {
 	fmt.Fprintf(w, "# HELP hmn_gate_audit_records_total Records sealed into this node's audit chain.\n# TYPE hmn_gate_audit_records_total counter\nhmn_gate_audit_records_total %d\n", log.Len())
 	fmt.Fprintf(w, "# HELP hmn_gate_audit_checkpoints_total Signed Tree Heads written.\n# TYPE hmn_gate_audit_checkpoints_total counter\nhmn_gate_audit_checkpoints_total %d\n", len(log.Checkpoints()))
 	fmt.Fprintf(w, "# HELP hmn_gate_bans_active Currently active IP/fingerprint bans.\n# TYPE hmn_gate_bans_active gauge\nhmn_gate_bans_active %d\n", len(s.bans.List()))
+	// Audit-projection drops: a Tier-1/2 sink (Redis/ClickHouse) shedding records under
+	// backpressure/outage is otherwise only a once-a-minute WARN log — alert on any increase.
+	fmt.Fprintf(w, "# HELP hmn_gate_audit_projection_dropped_total Audit records dropped by Tier-1/2 projection sinks (the WAL remains the durability authority).\n# TYPE hmn_gate_audit_projection_dropped_total counter\nhmn_gate_audit_projection_dropped_total %d\n", s.projectionDropped())
+	// Audit-chain integrity: the single highest-severity alert. 1 = verified, 0 = a mismatch
+	// (hash/HMAC/STH break) or the writer rewrote history so a witness co-sign no longer holds.
+	// Re-verifies the in-memory chain per scrape; keep the scrape interval modest (>=15s).
+	ires := log.SelfVerify()
+	integrityOK := 0
+	if ires.OK {
+		integrityOK = 1
+	}
+	witnessed := 0
+	if cps := log.Checkpoints(); len(cps) > 0 {
+		if wpub := log.WitnessPublicKey(); wpub != nil {
+			if _, ok := audit.VerifyWitness(cps, wpub); ok {
+				witnessed = 1
+			}
+		}
+	}
+	fmt.Fprintf(w, "# HELP hmn_gate_audit_integrity_ok Audit chain verifies end-to-end (1) or a mismatch was found (0).\n# TYPE hmn_gate_audit_integrity_ok gauge\nhmn_gate_audit_integrity_ok %d\n", integrityOK)
+	fmt.Fprintf(w, "# HELP hmn_gate_audit_witnessed The latest checkpoints carry a valid independent-witness co-signature (1) or not (0).\n# TYPE hmn_gate_audit_witnessed gauge\nhmn_gate_audit_witnessed %d\n", witnessed)
 	fmt.Fprintf(w, "# HELP hmn_gate_killswitch Kill switch engaged (1) or not (0).\n# TYPE hmn_gate_killswitch gauge\nhmn_gate_killswitch %d\n", b01(s.killSwitch.Load()))
 	fmt.Fprintf(w, "# HELP hmn_gate_monitor Effective global monitor mode (1) or enforcing (0).\n# TYPE hmn_gate_monitor gauge\nhmn_gate_monitor %d\n", b01(s.monitorOn()))
 	fmt.Fprintf(w, "# HELP hmn_gate_goroutines Current goroutine count.\n# TYPE hmn_gate_goroutines gauge\nhmn_gate_goroutines %d\n", runtime.NumGoroutine())
@@ -365,6 +386,9 @@ func (s *Server) adminAudit(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	vf, host, route, rule := q.Get("verdict"), strings.ToLower(q.Get("host")), q.Get("route"), q.Get("rule")
+	// subject scopes the stream to one pseudonymous subject (GDPR Art. 15 access request):
+	// the deterministic session/id pseudonym, matched against session_pseudonym or id_pseudonym.
+	subject := q.Get("subject")
 	minRisk, _ := strconv.Atoi(q.Get("minRisk"))
 	before, _ := strconv.ParseUint(q.Get("before"), 10, 64) // pagination cursor (0 = newest)
 
@@ -389,6 +413,9 @@ func (s *Server) adminAudit(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		if rule != "" && !hasRule(rec.Rules, rule) {
+			continue
+		}
+		if subject != "" && rec.SessionPsn != subject && rec.Actor.IDPsn != subject {
 			continue
 		}
 		rec.Incident = s.incidentHandle(rec.Seq) // opaque handle for the console (WS4)

@@ -359,6 +359,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("proxy: %v", err)
 	}
+	// Expose the audit-projection drop total on /metrics (previously only a WARN log line),
+	// so a Tier-1/2 sink shedding records under backpressure/outage is alertable.
+	srv.SetProjectionDroppedFn(func() uint64 {
+		var total uint64
+		for _, p := range projections {
+			if d, ok := p.(interface{ Dropped() uint64 }); ok {
+				total += d.Dropped()
+			}
+		}
+		return total
+	})
 
 	// Seed admin operators with bearer tokens (SoT-28 WS1/WS2). Production issues
 	// these via mTLS client certs or an SSO/operator-CA login; the reference

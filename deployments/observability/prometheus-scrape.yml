@@ -1,0 +1,46 @@
+# humanymous Gate — Prometheus scrape config for the admin-plane metrics endpoint.
+#
+# Gate exposes `GET /__hmn/metrics` in Prometheus text-exposition format on the
+# AUTHENTICATED admin listener (-admin-addr, default 127.0.0.1:8445). It is NOT on
+# the public edge. So the scrape must:
+#   - use `scheme: https` (the admin listener terminates TLS),
+#   - present the Auditor bearer token (read-only role — never Operator/Approver/DPO),
+#   - trust the admin cert (in dev it is self-signed in memory; see tls_config).
+#
+# Per-verdict rates (allow/challenge/deny) are intentionally NOT in /metrics — derive
+# those from the audit stream (GET /__hmn/admin/audit), which your SIEM already ingests.
+# See ../../docs/how-to/observability-siem.md.
+#
+# Drop this job into the `scrape_configs:` list of your prometheus.yml.
+
+scrape_configs:
+  - job_name: humanymous-gate
+    scheme: https
+    metrics_path: /__hmn/metrics
+    # Keep the interval modest (>= 15s): each scrape re-verifies the in-memory audit
+    # chain (hmn_gate_audit_integrity_ok / hmn_gate_audit_witnessed).
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+    # Auditor token — read-only. Store it out of band and reference the file, do NOT
+    # inline the secret here. Rotate it like any other credential.
+    authorization:
+      type: Bearer
+      credentials_file: /etc/prometheus/secrets/hmn-auditor-token
+
+    tls_config:
+      # DEV ONLY: the reference admin cert is self-signed in memory, so skip verification
+      # to scrape a dev instance. In PRODUCTION, remove this line and pin a real CA:
+      #   ca_file: /etc/prometheus/secrets/hmn-admin-ca.pem
+      # and if you run the admin plane behind mTLS (`gate -admin-mtls-ca`), also present a
+      # client cert:
+      #   cert_file: /etc/prometheus/secrets/hmn-prom-client.pem
+      #   key_file:  /etc/prometheus/secrets/hmn-prom-client-key.pem
+      insecure_skip_verify: true
+
+    static_configs:
+      - targets:
+          - "127.0.0.1:8445"   # admin listener; change to your gate's admin host:port
+        labels:
+          service: humanymous-gate
+          plane: admin

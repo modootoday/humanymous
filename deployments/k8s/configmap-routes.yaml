@@ -1,0 +1,27 @@
+# humanymous Gate — route policy as a ConfigMap.
+#
+# Mounted at /etc/hmn/routes.conf by the Deployment (-routes /etc/hmn/routes.conf).
+# Mirrors deployments/routes.conf.example. Edit the path->preset lines for YOUR
+# app; longest matching prefix wins.
+#
+# Presets:
+#   strict    inject + enforce + fail-closed + synchronous re-score (login, checkout, admin)
+#   balanced  inject + enforce, fail-open on unknown safe GETs (default for unlisted paths)
+#   monitor   score + log, enforce nothing (safe first-rollout stage)
+#   off       no injection, no scoring (health checks, static assets)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: humanymous-gate-routes
+  labels:
+    app.kubernetes.io/name: humanymous-gate
+data:
+  routes.conf: |
+    # One `<path-prefix> <preset>` per line. Longest matching prefix wins.
+    /login      strict
+    /checkout   strict
+    /account    strict
+    /admin      strict
+    /api        balanced
+    /health     off
+    /assets     off

@@ -4,13 +4,14 @@
 GO       ?= go
 WASM_OUT := web/detector.wasm
 SRV_OUT  := bin/server.exe
+GATE_OUT := bin/gate.exe
 RPT_OUT  := bin/report.exe
 ADDR     ?= :8443
 
 IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
-.PHONY: all wasm wasmexec server report build test race e2e-deps e2e report-html run clean fmt vet \
+.PHONY: all wasm wasmexec server gate report build test race e2e-deps e2e report-html run clean fmt vet \
         docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets
 
 all: build
@@ -24,23 +25,27 @@ wasmexec:
 	@cp "$$($(GO) env GOROOT)/lib/wasm/wasm_exec.js" web/js/wasm_exec.js 2>/dev/null \
 	 || cp "$$($(GO) env GOROOT)/misc/wasm/wasm_exec.js" web/js/wasm_exec.js
 
-## server: build the Blue backend binary
+## server: build the Blue backend binary (detection engine / Core)
 server:
 	$(GO) build -o $(SRV_OUT) ./cmd/server/
+
+## gate: build the reverse-proxy enforcement layer binary
+gate:
+	$(GO) build -o $(GATE_OUT) ./cmd/gate/
 
 ## report: build the report generator
 report:
 	$(GO) build -o $(RPT_OUT) ./cmd/report/
 
-build: wasm server report
+build: wasm server gate report
 
-## test: unit tests
+## test: unit tests (all packages, matching README `go test ./...`)
 test:
-	$(GO) test ./internal/...
+	$(GO) test ./...
 
-## race: unit tests with the race detector
+## race: unit tests with the race detector (all packages)
 race:
-	$(GO) test -race ./internal/...
+	$(GO) test -race ./...
 
 fmt:
 	$(GO) fmt ./...

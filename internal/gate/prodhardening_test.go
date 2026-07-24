@@ -134,9 +134,43 @@ func TestAdminMetricsExposition(t *testing.T) {
 		"hmn_gate_bans_active",
 		"hmn_gate_killswitch",
 		"hmn_gate_goroutines",
+		"hmn_gate_audit_projection_dropped_total",
+		"hmn_gate_audit_integrity_ok",
+		"hmn_gate_audit_witnessed",
 	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("metrics missing %s\n%s", want, body)
 		}
+	}
+	// A healthy in-memory chain must report integrity ok=1.
+	if !strings.Contains(body, "hmn_gate_audit_integrity_ok 1") {
+		t.Errorf("expected integrity ok=1 on a fresh chain\n%s", body)
+	}
+}
+
+// The audit query can be scoped to one pseudonymous subject (GDPR Art. 15 access request),
+// matching session_pseudonym or id_pseudonym.
+func TestAuditSubjectFilter(t *testing.T) {
+	up := htmlUpstream(t)
+	defer up.Close()
+	srv, _ := buildStackWith(t, up.URL, Config{})
+
+	srv.sink.Emit(audit.Record{EventType: "gate.decision", SessionPsn: "subjA", Verdict: "allow"})
+	srv.sink.Emit(audit.Record{EventType: "gate.decision", SessionPsn: "subjB", Verdict: "deny"})
+	srv.sink.Emit(audit.Record{EventType: "gate.decision", Actor: audit.Actor{Kind: "operator", IDPsn: "subjA"}, Verdict: "challenge"})
+
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("GET", "http://admin/__hmn/admin/audit?subject=subjA", nil)
+	srv.adminAudit(w, r)
+	body := w.Body.String()
+	if !strings.Contains(body, "subjA") {
+		t.Fatalf("subject filter should return subjA records: %s", body)
+	}
+	if strings.Contains(body, "subjB") {
+		t.Errorf("subject filter must exclude other subjects: %s", body)
+	}
+	// Two records reference subjA (one by session, one by id pseudonym).
+	if n := strings.Count(body, "subjA"); n < 2 {
+		t.Errorf("expected both subjA records (session + id), got %d", n)
 	}
 }

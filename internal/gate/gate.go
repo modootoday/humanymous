@@ -46,6 +46,7 @@ type Server struct {
 	devConsoleToken string                // dev bearer injected into the served console (SoT-28 §1)
 	killSwitch      atomic.Bool           // runtime global-monitor override (SoT-28 WS9 kill switch)
 	startedAt       time.Time             // process start, for the /metrics uptime gauge
+	droppedFn       func() uint64         // audit-projection drop count for /metrics; nil = 0 (wired from main)
 	agentKeys       KeyDirectory          // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
 	agentNonces     *NonceCache           // Web Bot Auth single-use signature nonces (anti-replay)
 	patVerifier     *PATVerifier          // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
@@ -96,6 +97,19 @@ func (s *Server) emitErasureCertificate(d ScheduledShred, existed bool) {
 // monitorOn reports whether enforcement is globally suppressed (config or the
 // runtime kill switch) — everything drops to monitor/shadow (SoT-28 WS9).
 func (s *Server) monitorOn() bool { return s.cfg.GlobalMonitor || s.killSwitch.Load() }
+
+// SetProjectionDroppedFn wires a getter for the total audit records dropped by the Tier-1/2
+// projection sinks (Redis/ClickHouse) under backpressure/outage, so /metrics can expose it
+// (previously the drop count was only surfaced as a once-a-minute WARN log line). nil = 0.
+func (s *Server) SetProjectionDroppedFn(fn func() uint64) { s.droppedFn = fn }
+
+// projectionDropped returns the wired projection drop total, or 0 if none is wired.
+func (s *Server) projectionDropped() uint64 {
+	if s.droppedFn == nil {
+		return 0
+	}
+	return s.droppedFn()
+}
 
 // SetKillSwitch flips the runtime global-monitor override (dual-controlled at the
 // admin layer). When on, every route scores + logs but enforces nothing.

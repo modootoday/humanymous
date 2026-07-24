@@ -1,0 +1,38 @@
+# humanymous Gate — persistent volumes.
+#
+# Two claims, mirroring the compose.release.yaml named volumes:
+#   hmn-data  -> /data       keystore (sealed audit identity) + audit WAL
+#   hmn-acme  -> /acme-cache issued Let's Encrypt certificates
+#
+# Both are ReadWriteOnce (one node mounts them) — which is why the Deployment
+# runs a single replica. To scale out, switch to an RWX StorageClass and give
+# each pod its own keystore identity.
+#
+# storageClassName is omitted so your cluster's default StorageClass is used.
+# Set it explicitly if you need a specific class. Sizes are conservative — the
+# WAL grows with audit volume; raise hmn-data if you retain a long history.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hmn-data
+  labels:
+    app.kubernetes.io/name: humanymous-gate
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hmn-acme
+  labels:
+    app.kubernetes.io/name: humanymous-gate
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 128Mi
