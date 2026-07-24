@@ -148,7 +148,7 @@ Crypto-shred is DPO-gated and dual-control, with a cancellable hold window befor
 
 > **Warning:** Cryptographic erasure is irreversible. Destroying the per-subject linkage key cannot be undone, and there is no recovery path once the shred commits. Confirm the subject-to-pseudonym mapping before you request erasure, and use the hold window as your final checkpoint.
 
-Gate **supports** your Article 17 obligation by giving you a targeted, auditable erasure primitive and a sealed erasure certificate on commit. It does not discharge the obligation for you; intake, subject verification, and the decision to erase remain controller responsibilities.
+Gate **supports** your Article 17 obligation by giving you a targeted, auditable erasure primitive and a sealed erasure certificate on **execution** — sealed when the hold window elapses and the shred runs, not at commit, and a cancelled erasure produces no certificate. It does not discharge the obligation for you; intake, subject verification, and the decision to erase remain controller responsibilities.
 
 ---
 

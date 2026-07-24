@@ -170,7 +170,7 @@ The erasure workflow provides:
 
 - **DPO gating and dual-control.** Erasure is committed by a distinct DPO; a generic Approver cannot.
 - **A cancellable hold window** (default ~5 minutes) before execution, cancellable via the erasure-cancel endpoint; a ticker executes due shreds.
-- **A signed erasure certificate** sealed on commit, evidencing that the erasure occurred.
+- **A signed erasure certificate** sealed on **execution** — when the hold window elapses and the shred runs, not at commit; a cancelled erasure produces no certificate. It is emitted as an `erasure.completed` audit record (there is no certificate-retrieval endpoint — prod-delta).
 
 See the [erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) for the operational procedure.
 

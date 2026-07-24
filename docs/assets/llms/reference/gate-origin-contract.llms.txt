@@ -1,0 +1,130 @@
+# Gate → origin request contract & origin-cloaking spec
+
+Source: https://humanymous.net/reference/gate-origin-contract.html
+Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
+
+---
+
+# Gate → origin request contract & origin-cloaking spec
+
+> **Diátaxis quadrant:** Reference. **Audience:** integrators writing an origin application that sits behind humanymous Gate ("Gate" after first mention) and needs to know exactly what request it will receive and how to authenticate it.
+
+This page is the wire-level contract between Gate and the origin it proxies. It lists every header Gate **adds**, **re-derives and forwards**, and **strips**; states what the origin does *not* receive; and gives the complete `X-Hmny-Origin-Auth` origin-cloaking specification with two copy-paste validators. It is a lookup, not a walkthrough — for the deployment recipe see [Cloak the origin so direct hits get a 421](../how-to/deployment-policy-operations.md#recipe-cloak-the-origin-so-direct-hits-get-a-421); for where the verdict is decided see [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
+
+## The origin only ever sees ALLOW traffic
+
+Enforcement happens at the **edge**, before the origin is contacted. A request that scores DENY is blocked (`403`), a CHALLENGE is served the interstitial, and a misrouted/failed-closed request gets a `421` — none of these reach the origin. By the time Gate opens an upstream connection the verdict is already ALLOW.
+
+Consequently:
+
+- **Gate sends the origin no verdict, risk, or score header.** There is no `X-Hmn-Verdict`, no risk band, nothing for the origin to read the decision from — the decision was already acted on at the edge. If an inbound client tries to forge `X-Hmn-Verdict`, Gate strips it (see the table below); it never reaches the origin from either direction.
+- The origin's only job at the trust boundary is to confirm the request **came through Gate** (the origin-cloaking check) and otherwise treat it as an ordinary ALLOW-ed request.
+
+## Header contract
+
+Gate rewrites the upstream request in `internal/gate/gate.go` (the `Rewrite` hook) and `internal/gate/guard.go` (`stripInbound`). The three groups:
+
+| Direction | Header | Value the origin receives |
+|---|---|---|
+| **ADDED** | `X-Hmny-Origin-Auth` | The rotating origin-cloaking token — `hex(HMAC-SHA256(key, "hmny-origin\|"+epoch))`. Present on every proxied request. Validate it (below). |
+| **ADDED** | `Accept-Encoding: identity` | Forced, replacing whatever the client sent, so the origin returns an un-recompressed body (Gate injects into plain HTML). Your origin should honour it and not force its own compression. |
+| **RE-DERIVED & FORWARDED** | `X-Forwarded-For` | The inbound **socket IP** Gate observed — a single authoritative value, not the client-supplied chain. Any inbound `X-Forwarded-For` is stripped first, so this cannot be spoofed by the client. |
+| **RE-DERIVED & FORWARDED** | `X-Forwarded-Host` | The client's original `Host` (Gate sets `pr.Out.Host = pr.In.Host`, then `SetXForwarded` records the host). |
+| **RE-DERIVED & FORWARDED** | `X-Forwarded-Proto` | The inbound scheme Gate terminated (`https` on the TLS edge). |
+| **STRIPPED** | `X-Forwarded-For` | Removed on the way in, then re-derived from the socket (above). The client's own chain never survives. |
+| **STRIPPED** | `X-Real-Ip` | Removed. Use `X-Forwarded-For` for the real client IP. |
+| **STRIPPED** | `Forwarded` | Removed (RFC 7239 form; not re-emitted). |
+| **STRIPPED** | `Cf-Connecting-Ip` | Removed — a client cannot impersonate a CDN-forwarded source. |
+| **STRIPPED** | `X-Hmny-Origin-Auth` | Any **inbound** copy is stripped before Gate sets its own, so a client cannot forge the cloaking token; its presence inbound is itself an attack signal (HR-27b). |
+| **STRIPPED** | `X-Hmn-Verdict` | Gate's internal verdict header — stripped inbound and never emitted upstream. |
+
+The strip list is the single `internalHeaders` slice in `internal/gate/guard.go`; the additions and re-derivation are the `Rewrite` hook in `internal/gate/gate.go`. Everything else the client sent (path, method, cookies, `User-Agent`, `Content-Type`, request body, and so on) is forwarded unchanged.
+
+## Origin-cloaking (`X-Hmny-Origin-Auth`) specification
+
+The origin-cloaking token lets your origin reject any request that did **not** come through Gate (a direct hit that bypasses detection), returning `421 Misdirected Request` (hard rule HR-24). The construction is public and importable at `github.com/modootoday/humanymous/pkg/origincloak` — Gate's own enforcement path calls the same package, so the two cannot drift.
+
+**Construction:**
+
+- **Header:** `X-Hmny-Origin-Auth` (`origincloak.Header`).
+- **Value:** `hex(HMAC-SHA256(key, "hmny-origin|" + epoch))` (`origincloak.Token(key, epoch)`).
+- **Epoch:** `epoch = "e" + floor(unix_seconds / 3600)` — a one-hour wall-clock bucket (`origincloak.Epoch(t)`; `origincloak.EpochWindow == time.Hour`). Gate and the origin each derive the epoch from their **own** clock with no coordination.
+- **Key:** the value you pass Gate with `-origin-key` is **hex text**, but Gate does **not** hex-decode it — it uses the literal ASCII bytes of that string as the HMAC key (`originKey := []byte(*originKeyHex)` in `cmd/gate/main.go`). Your origin must key the HMAC with the **same literal bytes** — i.e. `[]byte(hexString)`, not the decoded hex. (Any string works as a key; "hex" is only the documented convention.) If `-origin-key` is unset, Gate uses a random per-boot key and cloaking cannot be validated end-to-end — set a fixed, shared key.
+
+**Acceptance set (mandatory ±1 bucket / 3 epochs):** because the two clocks are independent, a validator that accepts **only** the current epoch drops every proxied request each time an hour boundary is crossed. The origin **must** accept the three-epoch grace set — **next, current, and previous** (`origincloak.EpochGrace(t)` returns exactly `[Epoch(t+1h), Epoch(t), Epoch(t-1h)]`). The grace is symmetric on purpose: if Gate's clock is slightly ahead across a boundary it emits the *next* bucket, so a past-only grace would reject valid traffic. A token is therefore valid for at most ~2 hours.
+
+**Clock-sync (NTP) requirement:** both machines must keep reasonable time (run NTP). The ±1-bucket grace tolerates sub-hour skew in either direction; drift beyond one bucket will blackhole traffic. This is the one operational dependency of the scheme.
+
+**Validation:** on every inbound request, compute the three-epoch acceptance set, HMAC each with your key, and compare (constant-time) against the received header. On no match, return `421`. On match, you may strip the header before handing the request to your app. Use a constant-time compare (`hmac.Equal`) to avoid a timing oracle — `origincloak.Valid` already does.
+
+### Validator (a): Go `http.Handler` middleware
+
+Imports the public package; `origincloak.Valid` does the epoch grace and constant-time compare for you:
+
+```go
+import (
+	"net/http"
+	"time"
+
+	"github.com/modootoday/humanymous/pkg/origincloak"
+)
+
+// key is the SAME literal bytes you passed Gate: []byte(hexOriginKey).
+func cloak(key []byte, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !origincloak.Valid(key, r.Header.Get(origincloak.Header), time.Now()) {
+			http.Error(w, "direct origin access is not allowed", http.StatusMisdirectedRequest) // 421
+			return
+		}
+		r.Header.Del(origincloak.Header) // optional: strip before your app sees it
+		next.ServeHTTP(w, r)
+	})
+}
+```
+
+### Validator (b): nginx / njs
+
+For an nginx origin that cannot import Go, compute the same three-epoch set in njs (`js_import` + `js_content`, or `js_set` for an `if`-based gate). The key is the literal hex string bytes, matching Gate:
+
+```js
+import crypto from 'crypto';
+
+const ORIGIN_KEY = process.env.HMN_ORIGIN_KEY; // the SAME hex string you gave Gate -origin-key
+const WINDOW = 3600; // seconds; one epoch bucket == origincloak.EpochWindow
+
+function epoch(offsetBuckets) {
+    return 'e' + (Math.floor(Date.now() / 1000 / WINDOW) + offsetBuckets);
+}
+function token(ep) {
+    return crypto.createHmac('sha256', ORIGIN_KEY).update('hmny-origin|' + ep).digest('hex');
+}
+function valid(h) {
+    // ±1 bucket grace: next, current, previous (mirrors origincloak.EpochGrace)
+    return h === token(epoch(1)) || h === token(epoch(0)) || h === token(epoch(-1));
+}
+
+// Reject direct hits with 421; the location that calls this must be reachable
+// ONLY from Gate at the network layer as well (firewall / private network).
+function guard(r) {
+    if (!valid(r.headersIn['X-Hmny-Origin-Auth'] || '')) {
+        r.return(421, 'direct origin access denied');
+        return;
+    }
+    r.internalRedirect('@app'); // hand off to your real upstream
+}
+
+export default { guard };
+```
+
+> **Note:** an OpenResty/Lua origin uses the identical logic — `ngx.hmac_sha1` is SHA-1, so use `resty.openssl.hmac` (or FFI) for SHA-256, build the same `next/current/previous` epoch set, and `ngx.exit(421)` on no match. The HMAC message is the literal string `hmny-origin|` + epoch; the key is the raw hex string bytes.
+
+## Reference validator in the test suite
+
+A worked, runnable validator ships at `test/gate/e2e.mjs` — the `validOriginAuth(h)` helper and the upstream stub around it derive the same `next/current/previous` epoch set and return `421` on a direct hit (`origin-direct-hit-blocked`). Read it as the canonical cross-language reference for the njs/Lua re-implementations above; it also drives an end-to-end ALLOW / CHALLENGE / DENY / 421 pass through a live Gate (see [Test your integration behind Gate](../how-to/deployment-policy-operations.md#test-your-integration-behind-gate)).
+
+## Related pages
+
+- [Cloak the origin so direct hits get a 421](../how-to/deployment-policy-operations.md#recipe-cloak-the-origin-so-direct-hits-get-a-421) — the deployment recipe and `curl` verification.
+- [Hard rules, verdicts & signal-ID reference](hard-rules-verdicts.md) — HR-24 (direct-origin bypass) and HR-27b (inbound trust-header spoof).
+- [CLI, config & per-route policy reference](cli-config-policy.md) — the `-origin-key` flag and every other flag.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — where the verdict is decided before the origin is contacted.

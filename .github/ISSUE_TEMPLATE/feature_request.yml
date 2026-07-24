@@ -1,0 +1,50 @@
+name: Feature request
+description: Propose an enhancement or a new detection signal
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing an improvement.
+
+        **Note on detection:** upstream detection **weights and thresholds are frozen**
+        (see [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md)). Tuning existing weights
+        belongs in your own fork. Contributing detection improvements is welcome — but as
+        a **new signal**, described below, not as a re-weighting of an existing one.
+  - type: checkboxes
+    id: preconditions
+    attributes:
+      label: Preconditions
+      options:
+        - label: I searched existing issues and this has not already been proposed.
+          required: true
+        - label: This does not ask to change frozen upstream detection weights/thresholds.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What are you trying to achieve? What is missing or painful today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the feature. If this is a NEW detection signal, state what it detects, its expected false-positive profile, and where it sits in the L1–L7 layering.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you weighed, and why you prefer this one.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, references, or anything else that helps evaluate the request.
+    validations:
+      required: false

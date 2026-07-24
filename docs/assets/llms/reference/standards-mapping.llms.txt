@@ -47,8 +47,8 @@ Gate in the reference build is a **reference implementation, not a production-ha
 | Raw identifiers (IP, JA4, HTTP/2 fingerprint, UA, SNI, device fingerprint) stored **only** as per-subject-key-derived pseudonyms (64-hex, scrypt-stretched) | GDPR Art. 4(5) + Recital 26 (pseudonymization) | Pseudonymization by default; identifiers are pseudonymous, **not anonymous** — re-identification needs the vault plus dual-control. | [Data processing inventory](./data-processing-inventory.md) |
 | Data-protection-by-design defaults: pseudonymize-at-write, fail-closed edge on strict/unsafe requests, least-privilege RBAC | GDPR Art. 25 (data protection by design and by default) | Controls that support privacy-preserving defaults rather than opt-in configuration. | [RBAC and separation of duties](./rbac-separation-of-duties.md) |
 | Purpose-scoped, minimized processing recorded in a Records-of-Processing extract | GDPR Art. 5 (principles) | Evidence toward lawfulness, purpose limitation, data minimization, and storage limitation (retention tiers). | [Data processing inventory](./data-processing-inventory.md) |
-| Cryptographic erasure (crypto-shred): destroy the per-subject linkage key; the chain and Merkle anchors stay intact and verifiable; a signed erasure certificate is sealed on commit | GDPR Art. 17 (right to erasure) | A repeatable, verifiable erasure mechanism that preserves audit integrity while severing re-identifiability. | [Erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md) |
-| Records-of-Processing extract exportable for review | GDPR Art. 30 (records of processing activities) | Provides the processing-activity content you assemble into your RoPA. | [Data processing inventory](./data-processing-inventory.md) |
+| Cryptographic erasure (crypto-shred): destroy the per-subject linkage key; the chain and Merkle anchors stay intact and verifiable; a signed erasure certificate is sealed on **execution**, after the hold window elapses (a cancelled erasure produces no certificate) | GDPR Art. 17 (right to erasure) | A repeatable, verifiable erasure mechanism that preserves audit integrity while severing re-identifiability. | [Erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md) |
+| Records-of-Processing content to assemble a RoPA manually | GDPR Art. 30 (records of processing activities) | Provides the processing-activity content you assemble into your RoPA. **No machine-readable RoPA export ships** — the inventory is documentation you transcribe, not an exportable artifact. | [Data processing inventory](./data-processing-inventory.md) |
 | Tamper-evident hash chain + per-record HMAC + Ed25519 STH; role-based access control; dual-control on high-impact actions; meta-audit of every admin access | GDPR Art. 32 (security of processing) | Integrity, access control, and accountability controls that support security of processing. | Integrity view; [RBAC and separation of duties](./rbac-separation-of-duties.md) |
 | DPIA companion content covering the processing, risks, and mitigations | GDPR Art. 35 (data protection impact assessment) | Structured input you adapt into your own DPIA. | [DPIA companion](../explanation/dpia-companion.md) |
 
@@ -100,16 +100,22 @@ Adapt the [DPIA companion](../explanation/dpia-companion.md) into your own asses
 
 ### 3. Erasure certificates and their verification
 
-For a right-to-erasure request, follow the [erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md). On commit, Gate seals a **signed erasure certificate**. Include the certificate in the pack as evidence that the linkage key was destroyed.
+For a right-to-erasure request, follow the [erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md). The certificate is sealed on **execution** — when the cancellable hold window elapses and the shred actually runs — **not** on commit; a cancelled erasure produces **no** certificate.
 
-List erasures and their state:
+There is **no admin endpoint that returns the certificate** (prod-delta). The `/__hmn/admin/erasures` endpoint lists only erasures still **within** their hold window (scheduled but not yet executed); once the shred runs, the certificate is observable only as an `erasure.completed` **audit record** in the stream:
 
 ```
+# List scheduled (in-hold-window) erasures only:
 curl -k -H "Authorization: Bearer <token>" \
   https://<admin-host>/__hmn/admin/erasures
+
+# The completed-erasure certificate is an audit record — retrieve it from the audit stream:
+curl -k -H "Authorization: Bearer <token>" \
+  "https://<admin-host>/__hmn/admin/audit" \
+  | jq '.records[] | select(.event_type == "erasure.completed")'
 ```
 
-The certificate is signed under the Ed25519 STH key (RFC 8032), so a recipient can verify it with the public key alone. The chain and Merkle anchors remain intact after a shred, which the Integrity view confirms independently (see step 4).
+The certificate record is a plain audit record **HMAC-chained** into the log; it is **not independently Ed25519-signed at seal time**. It is anchored — and becomes tamper-evident — only when the **next Ed25519 STH checkpoint** covers it. So the certificate is verifiable as part of the audit chain (via the next checkpoint, public key alone), not as a standalone signature you verify in isolation. The chain and Merkle anchors remain intact after a shred, which the Integrity view confirms independently (see step 4).
 
 > **Warning:** Do not initiate an erasure to produce a demonstration certificate. Crypto-shred is irreversible; the affected subject's records become permanently non-re-identifiable once the hold window elapses and the shred commits.
 

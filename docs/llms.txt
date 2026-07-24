@@ -34,6 +34,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 - [Integration Troubleshooting & FAQ](https://humanymous.net/how-to/troubleshooting-faq.html)
 - [Upgrade, Migration & Zero-Downtime](https://humanymous.net/how-to/upgrade-migration.html)
 - [Independent audit-log verification guide](https://humanymous.net/how-to/verify-audit-log.html)
+- [Verify a Released Image (cosign signature, SBOM, SLSA provenance)](https://humanymous.net/how-to/verify-the-image.html)
 - [Write or extend a Red-team profile](https://humanymous.net/how-to/write-a-red-profile.html)
 
 ## Reference
@@ -42,6 +43,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 - [Console localization & product-surface language](https://humanymous.net/reference/console-localization.html)
 - [Data Processing & Personal-Data Inventory (RoPA-ready)](https://humanymous.net/reference/data-processing-inventory.html)
 - [Deployment cost, latency & operational footprint](https://humanymous.net/reference/deployment-cost-latency.html)
+- [Gate → origin request contract & origin-cloaking spec](https://humanymous.net/reference/gate-origin-contract.html)
 - [Glossary](https://humanymous.net/reference/glossary.html)
 - [Hard rules, verdicts and signal-ID reference](https://humanymous.net/reference/hard-rules-verdicts.html)
 - [Install, system requirements & supported platforms](https://humanymous.net/reference/install-requirements.html)

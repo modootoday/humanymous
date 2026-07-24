@@ -1,0 +1,121 @@
+# Verify a Released Image (cosign signature, SBOM, SLSA provenance)
+
+Source: https://humanymous.net/how-to/verify-the-image.html
+Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
+
+---
+
+# Verify a released image
+
+**Diátaxis quadrant:** How-to. **Audience:** operators and integrators pulling the published `humanymous-core` / `humanymous-gate` images before running them.
+
+The [release workflow](cut-a-release.md) does not just publish images to `ghcr.io` — it **cryptographically attests** them. Every image the `release.yml` pipeline pushes is:
+
+- **keyless-signed with [cosign](https://docs.sigstore.dev/)** (Sigstore), where the signing identity is the release workflow itself (OIDC, no long-lived key to steal or leak);
+- shipped with an **SPDX Software Bill of Materials (SBOM)** attestation listing what is inside it;
+- shipped with a **[SLSA](https://slsa.dev/) provenance** attestation (`mode=max`) recording how and from what it was built.
+
+This page gives you the exact adopter commands to check all three **before** you run the image, and explains what each one proves. Verification is the point: a pull alone tells you *what tag you got*, not *who built it or from what*. These checks tell you the rest.
+
+> **Important:** cosign is **required tooling and is not bundled** with the images or this repo. Install it first — see the [Sigstore cosign install guide](https://docs.sigstore.dev/system_config/installation/). `docker` / `docker buildx` is only needed for the SBOM cross-check in step 2b.
+
+---
+
+## The identity you are verifying against
+
+Keyless signatures do not verify against a public key you hold — they verify against an **identity** (who signed) and an **issuer** (which OIDC provider vouched for that identity). For humanymous releases those are fixed:
+
+| What | Value |
+| --- | --- |
+| **Registry / images** | `ghcr.io/modootoday/humanymous-core`, `ghcr.io/modootoday/humanymous-gate` |
+| **Certificate identity** (the signer) | the release workflow ref: `https://github.com/modootoday/humanymous/.github/workflows/release.yml@refs/tags/<tag>` |
+| **Certificate OIDC issuer** | `https://token.actions.githubusercontent.com` |
+
+Because releases are cut from tags (`v*.*.*`), the identity is matched with a **regexp** that pins the workflow file and the `refs/tags/` ref while allowing any tag. Pinning both the identity **and** the issuer is what stops a different repository, a pull-request build, or any other workflow from producing a signature your check would accept.
+
+---
+
+## Always pin by digest, not by tag
+
+A tag such as `:latest` or `:0.2.0` is a **movable pointer** — it can be re-pushed to point at different bytes. A digest (`sha256:…`) names the exact image content and cannot be re-pointed. Resolve the tag to a digest once, then verify **and run** that digest.
+
+```bash
+# Resolve the tag you intend to run to an immutable digest.
+docker pull ghcr.io/modootoday/humanymous-gate:latest
+DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/modootoday/humanymous-gate:latest)
+echo "$DIGEST"     # e.g. ghcr.io/modootoday/humanymous-gate@sha256:abc123…
+```
+
+Use `$DIGEST` (the `name@sha256:…` form) in every command below. Verifying a tag and then running whatever that tag later points at defeats the whole exercise.
+
+---
+
+## a) Verify the cosign signature
+
+```bash
+cosign verify \
+  --certificate-identity-regexp 'https://github.com/modootoday/humanymous/.github/workflows/release.yml@refs/tags/.*' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  "$DIGEST"
+```
+
+**What this proves.** The image content at that digest was signed by **this repository's release workflow, run on a tag**, as vouched for by GitHub's OIDC issuer — and cosign confirmed the signature is logged in the Sigstore transparency log. If the signature is missing, was produced by any other identity or issuer, or the image bytes differ from what was signed, the command **exits non-zero** — treat that as "do not run this image." On success cosign prints the verified certificate subject and issuer; confirm they read as the workflow ref and `token.actions.githubusercontent.com` above.
+
+> **Note:** Both `--certificate-identity-regexp` and `--certificate-oidc-issuer` are **required** for a keyless verify. Omitting the issuer, or loosening the identity regexp so it matches other workflows/repos, weakens the check to the point of being decorative.
+
+---
+
+## b) Fetch and inspect the SBOM
+
+The release attaches an **SPDX SBOM** describing the image's contents. Two equivalent ways to read it:
+
+**With cosign (reads the attached SBOM attestation):**
+
+```bash
+cosign download sbom "$DIGEST"
+```
+
+**With docker buildx (reads the SBOM the build recorded):**
+
+```bash
+docker buildx imagetools inspect "$DIGEST" --format '{{json .SBOM}}'
+```
+
+**What this proves / is for.** The SBOM is the ingredients list. Pipe it into your own tooling to answer supply-chain questions — "is package *X* at a vulnerable version in this exact image?", diffing the SBOM between two releases, or feeding it to a vulnerability scanner. It is inventory, not a verdict: pair it with the signature check in (a) (proves *who* produced this inventory) and CI's own scanning — the pipeline already gates on `govulncheck` and a Trivy HIGH/CRITICAL (fixable) scan before an image is published.
+
+---
+
+## c) Verify the SLSA provenance attestation
+
+```bash
+cosign verify-attestation \
+  --type slsaprovenance \
+  --certificate-identity-regexp 'https://github.com/modootoday/humanymous/.github/workflows/release.yml@refs/tags/.*' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  "$DIGEST"
+```
+
+**What this proves.** The provenance attestation is a signed record of **how the image was built** — the builder (GitHub Actions), the source repository and tag, and the build parameters — and `verify-attestation` checks that this record was signed by the **same** release-workflow identity and issuer as the image itself. Built `mode=max`, it captures the fuller build context. Together with (a) this closes the loop: (a) says "the right workflow signed these bytes"; (c) says "and here is the signed, tamper-evident story of how those bytes were produced, from this repo, at this tag." Inspect the decoded predicate to confirm the `buildDefinition` source and ref are the release you expected.
+
+---
+
+## Put it together (adopter checklist)
+
+Run these in order and stop on the first failure:
+
+1. Resolve the tag to a **digest** and use only the digest afterwards.
+2. `cosign verify …` — right signer, right issuer, signature valid. *(a)*
+3. `cosign verify-attestation --type slsaprovenance …` — provenance signed by the same identity, source/ref as expected. *(c)*
+4. `cosign download sbom …` — capture the SBOM and feed it to your scanner / inventory. *(b)*
+5. Deploy the **digest** you verified — never re-resolve the tag between verifying and running.
+
+A failure at step 2 or 3 means the image is not authentically a humanymous release (or has been altered) — do not run it, and report it via [`SECURITY.md`](../../SECURITY.md).
+
+---
+
+## Related pages
+
+- [Cut a release](cut-a-release.md) — the maintainer side: what a tag triggers, and where the signing/SBOM/provenance steps live in `release.yml`.
+- [Security policy](../../SECURITY.md) — how to report a supply-chain or verification concern.
+- [Security & code audit report](../reference/security-audit.md) — the supply-chain posture (govulncheck, CodeQL, Trivy, Dependabot) this verification complements.
+- [HTTPS / TLS certificates](https-tls-certificates.md) — securing the edge once you trust the image, including admin-plane mTLS.

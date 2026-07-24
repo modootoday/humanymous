@@ -66,7 +66,9 @@ with the durable controls added:
   its TTL/erasure scope; a GDPR Art. 13/14 collection-notice snippet is documented.
 - **Supply chain** — `govulncheck`, CodeQL, and Trivy image scanning gate CI; Dependabot
   covers Go modules + Actions; build version is stamped into the binaries; licences ship
-  in the images.
+  in the images. Released images are **keyless-signed with cosign** and carry an **SPDX
+  SBOM** + **SLSA provenance** attestation — adopters verify all three before running; see
+  [Verify a released image](../how-to/verify-the-image.md).
 - **Cookies** now set `Secure`; key/id CSPRNG seeding fails closed; the in-memory Pass
   session map is bounded.
 
@@ -89,8 +91,11 @@ These are inherent trade-offs, documented rather than "fixed":
   effective axis.
 - **Anti-injection CSP is report-only by design** — violation telemetry for a detection
   engine, not an enforced block (stated plainly in the docs).
-- **Admin-plane security** rests on loopback binding + no auto-issued token; a production
-  operator should front it with **mTLS/SSO**.
+- **Admin-plane security** rests on loopback binding + no auto-issued token, and
+  **client-certificate mTLS is shipped**: `-admin-mtls-ca <pem>` makes the admin listener
+  require a client cert signed by that CA (`tls.RequireAndVerifyClientCert`) in addition to
+  the bearer token. **SSO remains the production delta** — front the listener with an
+  authenticating proxy for that.
 - **Audit tamper-evidence** resists external tampering and enables post-hoc verification,
   but not an attacker with in-process/code control — production runs the witness and
   keys out-of-process/HSM.

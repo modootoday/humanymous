@@ -1,7 +1,7 @@
 # Local Docker environment — the detector vs the bots
 
 A complete humanymous stack in containers, defined as **modular compose fragments**.
-The detection stack (engine + reverse-proxy Gate + a demo origin) runs long and
+The detection stack (Core engine + reverse-proxy Gate + a demo origin) runs long and
 is viewable from the host; the bots (the automation catalog) run on demand and are
 **network-sandboxed**.
 
@@ -15,15 +15,17 @@ fingerprint appearing across three real subnets raises
 
 ```
 build/                      # Dockerfiles (+ per-file .dockerignore overrides)
-  engine.Dockerfile         #   cmd/server  (also the public demo image)
+  core.Dockerfile           #   cmd/server  (also the public demo image)
   gate.Dockerfile       #   cmd/gate
   bots.Dockerfile           #   Playwright + Go attack binaries
 configs/dev.env             # dev-only env (admin tokens, targets) — env_file'd
 deployments/
   compose.yaml              # top-level; `include:`s the fragments
   compose/networks.yaml     #   web + lab-a/b/c (SRP: topology)
-  compose/defenders.yaml    #   engine + origin + Gate
+  compose/defenders.yaml    #   core + origin + Gate
   compose/bots.yaml         #   attack / conformance / swarm
+  k8s/                      #   Kubernetes manifests for the published Gate image
+  systemd/                  #   systemd unit to run the Gate binary on a host
   origin/                   # nginx shop the Gate protects
   bots/                     # bots orchestration scripts
   artifacts/                # run outputs land here
@@ -32,16 +34,16 @@ deployments/
 ## Topology
 
 ```
-  host :8443 (engine)   host :8444/:8445 (gate)
+  host :8443 (core)   host :8444/:8445 (gate)
         │                         │
   ┌─── web (bridge, host-visible) ────────────────────────┐
-  │  engine   gate ──proxies──▶ origin                 │
+  │  core   gate ──proxies──▶ origin                 │
   └────────────────────────────────────────────────────────┘
   ┌─ lab-a 172.30 ────┐ ┌─ lab-b 172.31 ────┐ ┌─ lab-c 172.32 ────┐
   │ (internal: no      │ │ internet route)   │ │                   │
   │  bots / bot-swarm-a│ │  bot-swarm-b      │ │  bot-swarm-c      │
   └──────────▲─────────┘ └────────▲──────────┘ └────────▲──────────┘
-             └── all attack engine / gate, which join every subnet
+             └── all attack core / gate, which join every subnet
 ```
 
 **Safety by construction:** the `lab-*` networks are `internal: true` (no route
@@ -53,14 +55,14 @@ enforced by the network, not by convention.
 
 ```bash
 # from repo root — Make targets wrap compose (where `make` is available):
-make up             # build + start the detection stack (engine :8443/demo, gate :8444, admin :8445)
-make attack         # run the bots (automation catalog) vs the engine (26 profiles)
+make up             # build + start the detection stack (core :8443/demo, gate :8444, admin :8445)
+make attack         # run the bots (automation catalog) vs the engine (47 profiles)
 make swarm          # multi-subnet correlation swarm (proxy_rotation across 3 subnets)
 make gate-e2e   # Gate proxy-layer conformance (34 checks)
 make down           # tear everything down
 
 # or drive compose directly from deployments/ (cross-platform; no make needed):
-docker compose up -d --build engine origin gate
+docker compose up -d --build core origin gate
 docker compose run --rm bots
 docker compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
 docker compose run --rm gate-e2e
@@ -74,7 +76,7 @@ accept the browser warning.
 ## Published images (pull-only production path)
 
 The `compose.yaml` above is the **local-build lab**: it builds images from source
-(`build/*.Dockerfile`) and wires the engine, Gate, a demo origin, and the bots
+(`build/*.Dockerfile`) and wires the Core engine, Gate, a demo origin, and the bots
 together for Red/Blue work. To run Gate in front of your *own* app you do not need to
 build — two images are published to GitHub Container Registry (Apache-2.0, multi-arch
 `linux/amd64` + `linux/arm64`, cosign-signed):
@@ -106,10 +108,19 @@ orchestrator's `httpGet` probes at those paths. For a quick local demo of the pu
 Gate image without the full production config, see
 [Run from the published image](../docs/reference/install-requirements.md#run-from-the-published-image-no-build).
 
+Beyond Compose, two more ways to run the same published Gate image/binary ship
+here: **[`k8s/`](k8s/)** — `kubectl apply`-able Deployment/Service/PVC/Secret/
+ConfigMap manifests (hardened, httpGet probes, graceful drain, admin plane kept
+cluster-internal) — and **[`systemd/`](systemd/)** — a `humanymous-gate.service`
+unit for running the `gate` binary directly on a host. Both mirror the flags and
+hardening of `compose.release.yaml`.
+
 ## Verified result
 
-- **Attack run**: 25/25 bots blocked (TPR 100%), 0 false positives; the human
-  baseline resolves to CHALLENGE (counted TN — a real user passes the check).
+- **Attack run**: all 45 bot profiles blocked (DENY/CHALLENGE) out of the
+  47-profile catalog (45 bots + 1 detection-ceiling + 1 baseline); the baseline
+  (a Playwright/CDP session, not a physical human) is not denied. Reference-
+  measured on the maintainers' hardware, n=1 — not a guarantee.
 - **Swarm**: `l5.ip.datacenter_asn` on first contact, then
   `l5.correlation.proxy_rotation` once the shared fingerprint spans the three
   subnets (risk 59 → 75.4, DENY).

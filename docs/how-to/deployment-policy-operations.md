@@ -17,6 +17,7 @@ Pick your recipe:
 - [Deploy from the published image with pull-only Compose](#recipe-deploy-from-the-published-image-with-pull-only-compose)
 - [Move from the dev certificate to production TLS](#recipe-move-from-the-dev-certificate-to-production-tls)
 - [Cloak the origin so direct hits get a 421](#recipe-cloak-the-origin-so-direct-hits-get-a-421)
+- [Test your integration behind Gate](#test-your-integration-behind-gate)
 - [Stand up the admin listener with seeded role tokens](#recipe-stand-up-the-admin-listener-with-seeded-role-tokens)
 - [Move a route from monitor to enforce](#recipe-move-a-route-from-monitor-to-enforce)
 - [Set rate limits and work the ban ladder](#recipe-set-rate-limits-and-work-the-ban-ladder)
@@ -103,7 +104,33 @@ curl -i http://127.0.0.1:9000/
 
 Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-Origin-Auth`). The same path fetched through the edge (`https://localhost:8444/`) is served normally. In the Ledger, a direct-origin bypass attempt surfaces as HR-24. See the [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md).
 
-> **Note:** the reference ships no example origin-side validator. Gate only emits the signed `X-Hmny-Origin-Auth` header; validating it (and returning `421` when it is absent or wrong) is entirely the operator's responsibility. The bundled demo origin (`deployments/origin/default.conf`, plain nginx) does not perform this check — it is there to be proxied, not to demonstrate cloaking enforcement.
+> **Note:** validating `X-Hmny-Origin-Auth` (and returning `421` when it is absent or wrong) is the operator's responsibility, but you do **not** have to write the check from scratch. The reference ships the public, importable package `github.com/modootoday/humanymous/pkg/origincloak` — a Go origin validates with one call, `origincloak.Valid(key, r.Header.Get(origincloak.Header), time.Now())` — plus a worked reference validator (`validOriginAuth`) in `test/gate/e2e.mjs` you can port to njs/Lua. The full construction, the mandatory ±1-bucket epoch grace, and copy-paste Go and nginx/njs validators are in the [Gate → origin request contract](../reference/gate-origin-contract.md). The bundled demo origin (`deployments/origin/default.conf`, plain nginx) does **not** perform this check — it is there to be proxied, not to demonstrate cloaking enforcement.
+
+---
+
+## Test your integration behind Gate
+
+**Goal:** exercise your own app *through* Gate and confirm it behaves correctly on each verdict — an ALLOW is served, a DENY/CHALLENGE never reaches it, and a direct-to-origin hit is refused with `421`.
+
+**Steps:**
+
+1. Run Gate in front of your app with a fixed origin key (so cloaking validates end to end) and your app validating `X-Hmny-Origin-Auth` per the [Gate → origin request contract](../reference/gate-origin-contract.md).
+
+   ```
+   bin/gate.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -origin-key <hex-key>
+   ```
+
+2. Drive each verdict **through the edge** (`https://localhost:8444`), not against your app directly:
+   - **ALLOW** — a normal browser-shaped request is served your app's response (`200`, your body). With a valid verdict token on the fast path it stays `200`.
+   - **CHALLENGE** — a request that scores as suspect on an enforcing route gets the PoW interstitial (or `401` on a strict route with no beacon); your origin is **not** contacted.
+   - **DENY** — a request that scores automated (e.g. a `webdriver`/beacon signal) is blocked at the edge with `403`; your origin is **not** contacted.
+   - **421** — a request sent **straight to your app** (bypassing Gate) lacks a valid `X-Hmny-Origin-Auth` and your validator returns `421 Misdirected Request`.
+
+3. Use the worked harness as your template. `test/gate/e2e.mjs` stands up an upstream stub that enforces the cloaking check and asserts exactly these outcomes against a live Gate — `human-passes` (ALLOW `200`), `bot-blocked-at-edge` + `origin-not-contacted` (DENY `403`, zero upstream hits), `strict-route-fail-closed` (CHALLENGE), and `origin-direct-hit-blocked` (`421`). It targets Gate's edge on `:8444` and the admin listener on `:8445`. Copy its request shapes to drive your own app.
+
+> **Important:** this is the Gate edge harness. The **red-team CLI** (`cmd/redteam`, `bin/redteam.exe -attack … -host …`) is a **different** target — its default `127.0.0.1:8443` is the standalone **Core detection engine**, *not* Gate. Do not point it at your Gate edge (`:8444`); to exercise your app behind Gate, use the `test/gate/e2e.mjs` flow above. See [Self-validation & red team](./self-validation-red-team.md).
+
+**Verify:** the four outcomes above each hold: `200` served from your app on ALLOW, `403`/challenge with your origin never hit on DENY/CHALLENGE, and `421` on a direct-to-origin hit. Watch the decisions land in the Overview view of the Ledger.
 
 ---
 

@@ -66,6 +66,7 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
 - `:latest` tracks the newest release.
 - `-monitor` scores and logs without enforcing — the safe first contact with real traffic. Drop it to enforce.
 - The admin listener is mapped to host loopback only (`127.0.0.1:8445`); keep it that way or front it with mTLS/SSO.
+- To actually reach the console/audit API on `:8445`, set an admin token — the command above maps the port but sets none, so Gate mints **random per-boot tokens it does not print** and the API is unreachable. Add `-e HMN_ADMIN_TOKENS=operator:<random-16+-char-secret>` (repeat comma-separated per role: `auditor:…,operator:…,approver:…,dpo:…`), or `-e HMN_ALLOW_DEV_TOKENS=1` for a throwaway local demo. See [Stand up the admin listener](../how-to/deployment-policy-operations.md#recipe-stand-up-the-admin-listener-with-seeded-role-tokens).
 
 To present a **real Let's Encrypt certificate** instead of the self-signed dev cert (public domain, inbound `:443`, and a persistent ACME cache volume), add the ACME flags and publish `:443`:
 

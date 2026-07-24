@@ -106,6 +106,76 @@ Note that a lost vault or an accidental ephemeral-restart mass-shred, while dest
 
 ---
 
+## Back up & restore the keystore + audit WAL
+
+The two pieces of durable node state live on the `hmn-data` named volume in the release compose (`deployments/compose.release.yaml`): the **sealed keystore** at `/data/keystore` and the **durable audit WAL** at `/data/audit`. ACME certificates live separately on `hmn-acme` (`/acme-cache`). Back up `hmn-data` on a schedule; the `HMN_UNSEAL` passphrase is backed up **out-of-band** and is never in the volume (see the warning below).
+
+### Capture (Docker named volume)
+
+Stop or quiesce the Gate first so the WAL is at rest, then tar the volume into a backup volume (or a host bind mount):
+
+```
+docker run --rm \
+  -v hmn-data:/data:ro \
+  -v backup:/backup \
+  alpine tar czf /backup/hmn-data-$(date +%F).tar.gz -C /data .
+```
+
+`hmn-acme` (ACME certs) is reproducible — Let's Encrypt re-issues on the next boot — so it is optional to back up; the keystore and WAL are **not** reproducible.
+
+### Restore (Docker named volume)
+
+Recreate the volume and unpack the archive into it, then start Gate with the **same `HMN_UNSEAL`** the keystore was sealed under:
+
+```
+docker volume create hmn-data
+docker run --rm \
+  -v hmn-data:/data \
+  -v backup:/backup \
+  alpine sh -c 'tar xzf /backup/hmn-data-<date>.tar.gz -C /data'
+```
+
+### PVC-snapshot equivalent (Kubernetes)
+
+If `hmn-data` is a PersistentVolumeClaim, use a `VolumeSnapshot` instead of a tar:
+
+```
+kubectl apply -f - <<'YAML'
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: hmn-data-snap
+spec:
+  volumeSnapshotClassName: <your-snapshot-class>
+  source:
+    persistentVolumeClaimName: hmn-data
+YAML
+```
+
+Restore by provisioning a new PVC with `spec.dataSource` pointing at the snapshot, then mounting it back at `/data`. Snapshot the volume while the pod is quiesced (or use an application-consistent snapshot) so the WAL is captured at rest.
+
+### Validate the restore
+
+A restored volume is only trustworthy if the chain still verifies. Replay + verify the WAL against the restored keystore before you put the node back in service — this is the same offline verification `gate` runs, exercised as a one-shot:
+
+```
+HMN_UNSEAL="<passphrase>" gate \
+  -audit-wal /data/audit \
+  -keystore /data/keystore \
+  -audit-verify
+```
+
+It replays the WAL, verifies the hash chain / HMAC / Signed Tree Heads under the keystore's signing key, prints `audit-verify: OK (<n> records)` and exits `0` on success, or `audit-verify: FAILED class=<class> seq=<n> …` and a non-zero exit on any mismatch. A non-zero exit means the backup is corrupt or the keystore does not match the WAL — do not return that node to service. (In a container, run the same flags as a one-shot against the `hmn-data` volume with `HMN_UNSEAL` supplied.)
+
+### Loss blast radius
+
+- **Lose the WAL (`/data/audit`)** → you lose the local audit chain since the **last exported checkpoint (STH)**. Anything you archived via `GET /__hmn/admin/proof` / the `lastSTH` still verifies independently; the records appended after it are gone with the WAL. Export and archive checkpoints off-box so a WAL loss has a bounded tail.
+- **Lose the keystore or `HMN_UNSEAL` (`/data/keystore`)** → **mass crypto-shred**: the SigningSeed, HMACKey, and Vault snapshot all go together (they are one sealed blob). Chain-signing continuity breaks and every per-subject pseudonym linkage is unresolvable, exactly as in the [blast-radius table](#blast-radius--what-breaks-if-a-key-is-lost) above. This is why `HMN_UNSEAL` is backed up **out-of-band**, never inside `hmn-data`.
+
+> **Warning — crypto-shred ↔ backup interaction.** A backup taken **before** a right-to-erasure crypto-shred still contains the per-subject **linkage key** for the erased subject. Restoring that backup, or keeping it reachable, **re-arms re-identification** of a subject you were legally required to shred. Treat keystore backups as sensitive linkage material: scope their retention, and after an erasure either re-run the shred against restored/rotated copies or expire the pre-erasure backups on a schedule aligned with your erasure obligations. The WAL/records themselves stay crypto-shred-safe (the records survive but are unresolvable) — it is the **keystore backup** that carries the linkage key back.
+
+---
+
 ## Rotation — concept only in the reference
 
 > **Important:** Automated rotation of the SigningSeed and HMACKey is **not implemented** in the reference. There is no shipped rotation command, endpoint, or scheduler for these keys. Rotating them would require re-anchoring the audit chain, so rotation is a prod-delta and an operational procedure — not something the reference binary does for you. Do not script against a rotation command; none exists here.
@@ -128,7 +198,8 @@ The 15-minute verdict-token epoch key already rotates on its own and needs none 
 ## Operational checklist
 
 - Run any node whose audit log or pseudonym linkage must survive a restart **with `-keystore` + `HMN_UNSEAL`**. An ephemeral node is only safe for throwaway/dev use.
-- **Back up two things separately:** the sealed keystore file, and the `HMN_UNSEAL` passphrase (out-of-band). Losing either loses the node identity.
+- **Back up two things separately:** the sealed keystore file, and the `HMN_UNSEAL` passphrase (out-of-band). Losing either loses the node identity. Back up the `hmn-data` volume (keystore + audit WAL) on a schedule and **validate every restore** with `gate -audit-wal … -keystore … -audit-verify` — see [Back up & restore the keystore + audit WAL](#back-up--restore-the-keystore--audit-wal).
+- **Expire pre-erasure keystore backups.** A keystore backup taken before a crypto-shred still holds the erased subject's linkage key; scope its retention so a restore cannot re-arm re-identification (same section).
 - Store `-origin-key` as a shared secret with the origin, in your secrets manager.
 - Publish and archive the **public** key so anyone can verify exported checkpoints — see [Verify the audit log](verify-audit-log.md).
 - Treat SigningSeed/HMACKey rotation as a planned, re-anchoring operation, never an in-place swap. It is not automated here.

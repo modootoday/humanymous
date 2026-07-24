@@ -48,6 +48,7 @@ export HMN_ADMIN_TOKEN="<your-auditor-token>"
 - `route=` — matched `route_class` (`html|api|upgrade|control|static`), not a URL path
 - `rule=` — a hard-rule identifier (for example a specific HR)
 - `minRisk=` — minimum risk score (0–100)
+- `subject=` — a pseudonymous subject, matched against `session_pseudonym` **or** `actor.id_pseudonym` (see [Export one subject's records](#export-one-subjects-records-gdpr-art-15))
 - `before=` — the paging cursor
 
 Fetch the most recent deny decisions:
@@ -86,6 +87,18 @@ curl --silent \
 
 Records are pseudonymous: raw identifiers (IP, TLS/HTTP fingerprints, UA, device fingerprint) are stored only as per-subject-key-derived pseudonyms, never raw. Your SIEM will ingest pseudonyms, not source IPs. Re-identification is a separate, dual-controlled action and is out of scope for a monitoring feed.
 
+### Export one subject's records (GDPR Art. 15)
+
+The `?subject=` filter scopes the stream to a single pseudonymous subject, for a subject-access request (GDPR Art. 15 / PIPA). Pass the deterministic pseudonym the Console shows for a subject; Gate matches it against **both** `session_pseudonym` and `actor.id_pseudonym`, so a subject who appears in either position is returned.
+
+```
+curl --silent \
+  --header "Authorization: Bearer ${HMN_ADMIN_TOKEN}" \
+  "https://localhost:8445/__hmn/admin/audit?subject=<subject-pseudonym>"
+```
+
+This produces a subject-scoped export you can hand to a data-subject-access workflow. It combines with the other filters and the `before=` cursor exactly as above (add `&limit=500` and page the cursor to drain a subject's full history). The filter takes a **pseudonym**, not a raw identifier — resolving a raw identity to its pseudonym (or the reverse) is a separate, dual-controlled re-identification action, out of scope for this read-only feed.
+
 ## Check chain integrity
 
 `GET /__hmn/admin/integrity` runs the audit-log verification live and reports whether the tamper-evident chain is intact — the same logic the Console's Integrity view surfaces. Poll it on a schedule and alert on any failure class.
@@ -117,6 +130,9 @@ The endpoint emits these series:
 | `hmn_gate_uptime_seconds` | gauge | Seconds since this Gate process started. |
 | `hmn_gate_audit_records_total` | counter | Records sealed into this node's audit chain. |
 | `hmn_gate_audit_checkpoints_total` | counter | Signed Tree Heads written. |
+| `hmn_gate_audit_projection_dropped_total` | counter | Audit records dropped by the Tier-1/2 projection sinks (Redis/ClickHouse) under backpressure or outage. The durable WAL is unaffected — it stays the durability authority; a non-zero increase means the downstream projection view is incomplete. |
+| `hmn_gate_audit_integrity_ok` | gauge | The audit chain verifies end-to-end (`1`) or a mismatch was found (`0`) — re-checked each scrape (keep the interval ≥ 15s). |
+| `hmn_gate_audit_witnessed` | gauge | The latest checkpoints carry a valid independent-witness co-signature (`1`) or not (`0`). |
 | `hmn_gate_bans_active` | gauge | Currently active IP/fingerprint bans. |
 | `hmn_gate_killswitch` | gauge | Kill switch engaged (`1`) or not (`0`). |
 | `hmn_gate_monitor` | gauge | Effective global monitor mode (`1`) or enforcing (`0`). |
@@ -124,7 +140,11 @@ The endpoint emits these series:
 | `hmn_gate_heap_alloc_bytes` | gauge | Heap bytes allocated and in use. |
 | `hmn_gate_sys_bytes` | gauge | Total memory obtained from the OS. |
 
-> **Note:** Per-verdict rates are intentionally absent here — derive allow/challenge/deny rates from the audit stream (see [Where per-verdict rates come from](#where-per-verdict-rates-come-from)). Configure your Prometheus scrape job with the Auditor bearer token (`authorization` / `bearer_token_file`) and, in dev, `insecure_skip_verify: true` for the self-signed admin cert.
+### What to alert on
+
+The audit-chain series are the highest-signal structural alerts on this endpoint — they need no tuning and no invented thresholds. **Alert on `hmn_gate_audit_integrity_ok == 0`, `hmn_gate_audit_witnessed == 0`, and any increase in `hmn_gate_audit_projection_dropped_total`** (`increase(hmn_gate_audit_projection_dropped_total[10m]) > 0`). The first two are the metrics twin of the `GET /__hmn/admin/integrity` `ok:false` / `witnessed:false` conditions — same signal, now scrapeable without a poll. The drop counter surfaces a Tier-1/2 sink shedding records, which is otherwise only a once-a-minute WARN log. Also alert on `hmn_gate_killswitch == 1` (enforcement demoted fleet-wide) and on `up == 0` (a metrics blackout hides all of the above). Ready-to-load rules live in [`deployments/observability/alerts.yml`](../../deployments/observability/alerts.yml).
+
+> **Note:** Per-verdict rates are intentionally absent here — derive allow/challenge/deny rates from the audit stream (see [Where per-verdict rates come from](#where-per-verdict-rates-come-from)). Configure your Prometheus scrape job with the Auditor bearer token (`authorization` / `bearer_token_file`) and, in dev, `insecure_skip_verify: true` for the self-signed admin cert. A ready-to-merge scrape job is in [`deployments/observability/prometheus-scrape.yml`](../../deployments/observability/prometheus-scrape.yml); see the [observability README](../../deployments/observability/README.md).
 
 ## Wire liveness and readiness probes
 

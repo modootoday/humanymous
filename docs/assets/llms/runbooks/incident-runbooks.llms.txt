@@ -296,6 +296,73 @@ curl -sk "https://localhost:8445/__hmn/admin/integrity" -H "Authorization: Beare
 
 ---
 
+## (f) Dependency / supply-chain CVE response
+
+A known-vulnerable dependency or a vulnerable OS package in a shipped image. **Not a live-traffic symptom** — this fires from CI or a scanner, not the Overview view — but it is an incident, and the response path is operational.
+
+### Trigger signal
+
+- CI goes red on the **`govulncheck`** step (a CVE reachable from code we actually call) or on a **Trivy** image scan (`HIGH`/`CRITICAL`, *fixable* — CI ignores unfixed).
+- A **Dependabot** PR / alert lands for a Go module or a GitHub Action.
+- A CodeQL alert, or an out-of-band advisory (upstream GHSA/CVE) for a dependency you ship.
+
+### Who triages
+
+- **The maintainer / security-lead on-call** owns triage — the same rotation that receives [`SECURITY.md`](../../SECURITY.md) reports. This is not the SOC on-call's job: the SOC holds the live edge; supply-chain CVEs are a build-and-release concern.
+- Confirm the finding is **real and reachable**: `govulncheck` is reachability-aware (it only flags CVEs in call paths we exercise), and Trivy is gated to **fixable** HIGH/CRITICAL. A Trivy hit with no upstream fix is tracked, not shipped-blocked. Assess severity against actual exposure (is the vulnerable path in the released binary / image, or only in a test/tool dependency?).
+
+### The patch → tag → re-release → re-pull path
+
+```mermaid
+flowchart LR
+  CVE["CVE / govulncheck / Trivy HIGH"] --> P["Patch: bump dep or base image on main"]
+  P --> CI["CI green: govulncheck + Trivy + CodeQL + tests"]
+  CI --> T["Cut a SemVer tag (v*.*.*)"]
+  T --> R["release.yml rebuilds, re-signs (cosign), re-attests SBOM + provenance"]
+  R --> A["Adopters re-pull the new DIGEST and re-verify"]
+```
+
+1. **Patch on `main`.** Bump the vulnerable Go module (or the image base layer for a Trivy OS-package CVE); merge the Dependabot PR or raise the equivalent. Land it as a Conventional Commit (`fix:` / `harden:`) so the changelog records it.
+2. **Let CI prove it.** The fix must pass `govulncheck`, the Trivy image scans, CodeQL, and the full test + Docker attack gate — the same gates that caught it. Detection is **frozen**; a dependency bump must not change detection behaviour (the attack/conformance gates guard that).
+3. **Cut a release.** Tag `v*.*.*` — `release.yml` rebuilds both images, **keyless-signs them with cosign**, and re-attaches the **SPDX SBOM + SLSA provenance**. See [Cut a release](../how-to/cut-a-release.md).
+4. **Publish the advisory** where the issue warrants it (GHSA, request a CVE) per the CVD process in `SECURITY.md`.
+5. **Adopters re-pull and re-verify.** Notify adopters to pull the new tag, **resolve it to the new digest**, and re-run the signature / SBOM / provenance checks before deploying — see [Verify a released image](../how-to/verify-the-image.md). The old digest stays vulnerable; pinning to it is the point of pinning, so the re-pull is the fix reaching production.
+
+### Who to page
+
+- **Page the maintainer / security-lead on-call** to triage and drive the patch→tag path.
+- **Page the release owner** to cut the tag once CI is green.
+- No SOC page unless the CVE is being **actively exploited against your edge** — then it is also a live incident and you contain at the edge (bans / kill switch) in parallel with patching.
+
+---
+
+## (g) Personal-data-breach tie-in
+
+**A note, not a full runbook — the legal notification wording belongs to the data controller.** Some incidents on this page are not only availability/integrity events; they are candidate **personal-data breaches** that start a regulatory clock. Recognise them fast and hand off.
+
+### What makes an incident a candidate breach
+
+The audit chain and its pseudonyms are only *pseudonymous* — re-identification requires the **vault plus dual-control**. So the events that raise a session/pseudonym incident to a **personal-data breach assessment** are the ones that compromise that separation or the chain itself:
+
+- **Keystore or `HMN_UNSEAL` compromise** — the sealed keystore holds the signing seed and HMAC key; its passphrase unseals it. Compromise of the keystore **or** the `HMN_UNSEAL` passphrase, or of the **vault** (the per-subject linkage keys), enables **mass re-identification of every un-shredded subject** — a confidentiality breach of pseudonymous personal data at scale.
+- **`audit.integrity.violation.detected`** — this audit record indicates **chain tampering** (it is the machine tell behind a red Integrity Dashboard in [(e)](#e-integrity-dashboard-went-red)). A confirmed pre-checkpoint break is an **integrity** breach of the audit record of personal-data processing.
+
+### Immediate actions (parallel to the technical runbook)
+
+1. **Keep running the technical response** — for a keystore/vault compromise, rotate keys and revoke the exposed material per [Key management](../how-to/key-management.md); for an integrity red, follow [(e)](#e-integrity-dashboard-went-red) (verify offline, **preserve evidence, do not write**).
+2. **Page the DPO / privacy owner immediately** — in parallel with the security lead, not after. The breach assessment (scope, affected subjects, likelihood of harm) is theirs to run.
+3. **Start the clock and record it.** Log the **time of awareness** — under GDPR the controller's assessment feeds a **72-hour notification window to the supervisory authority** (Art. 33), with data-subject notification (Art. 34) when the risk warrants. This runbook does not decide whether the threshold is met and does not draft the notice — **the controller / DPO owns the legal determination and wording**. Your job is to surface the facts (what was exposed, when, how many subjects, mass-re-identification feasible yes/no) so they can decide against the clock.
+4. **Scope the blast radius with the DPO:** how many un-shredded subjects were resolvable, whether the vault/keystore was actually used to re-identify, and whether the exposure is contained.
+
+> **Note:** A lawful crypto-shred erasure never produces an integrity mismatch (see [(e)](#e-integrity-dashboard-went-red) and the [erasure runbook](./erasure-crypto-shred.md)); a `seq-gap`/`linkage-break`/`hash-break` is a tampering signal, not an erasure footprint. Do not mistake one for the other when scoping a candidate breach.
+
+### Who to page
+
+- **Page the security lead** (technical containment) **and the DPO / privacy owner** (breach assessment + the notification clock) **together**.
+- Do not wait for the technical root-cause to be fully understood before paging the DPO — the 72-hour clock runs from awareness, not from resolution.
+
+---
+
 ## Quick reference
 
 | Symptom | Primary rule / signal | First non-destructive move | Escalation |
@@ -305,6 +372,8 @@ curl -sk "https://localhost:8445/__hmn/admin/integrity" -H "Authorization: Beare
 | (c) HTTP/2 flood | HR-21, `l5.h2dos.rapid_reset` | Confirm auto-DENY + limiter | Infra/network on-call |
 | (d) AI-agent wave | HR-20, `l4.agent.burst_silence` | Temporary `fp:` ban | Distinct Approver; Operator for route review |
 | (e) Integrity red | mismatch classes | Run offline verifier, preserve | Security lead (+ DPO if data-touching) |
+| (f) Dependency / supply-chain CVE | govulncheck / Trivy HIGH / Dependabot | Confirm reachable + fixable, patch on `main` | Maintainer/security-lead → release owner (tag) |
+| (g) Personal-data-breach tie-in | keystore/`HMN_UNSEAL`/vault compromise; `audit.integrity.violation.detected` | Preserve evidence, log time of awareness | Security lead **and** DPO together (72h clock) |
 
 ### Rules of engagement
 
@@ -318,5 +387,7 @@ curl -sk "https://localhost:8445/__hmn/admin/integrity" -H "Authorization: Beare
 - [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md)
 - [CLI, config & per-route policy reference](../reference/cli-config-policy.md)
 - [Right-to-erasure (crypto-shred) runbook](./erasure-crypto-shred.md)
+- [Cut a release](../how-to/cut-a-release.md) — the tag→rebuild→re-sign path for a supply-chain patch (f)
+- [Verify a released image](../how-to/verify-the-image.md) — cosign / SBOM / provenance checks adopters re-run after a re-pull (f)
 - [Will this break my app? (safety, fail-open, rollout)](../explanation/will-this-break-my-app.md)
 - [Why am I seeing this? (blocked-user help + appeal)](../help/why-am-i-seeing-this.md)

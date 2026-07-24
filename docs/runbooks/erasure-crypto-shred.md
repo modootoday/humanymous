@@ -124,13 +124,26 @@ Execution destroys the **per-subject linkage key**. From that point, the subject
 
 ## Step 5 — The signed erasure certificate
 
-On commit, Gate seals a **signed erasure certificate** recording that the shred occurred.
+On **execution** — when the hold window (step 3) elapses and the shred actually runs — Gate seals a **signed erasure certificate** recording that the shred occurred. It is **not** sealed at commit (step 2b): a commit only schedules the shred, and an erasure cancelled during its hold window produces **no** certificate.
 
 1. Retrieve the certificate for the completed erasure and archive it as defensible proof that the Art. 17 / PIPA obligation was discharged.
 2. Send the data subject a confirmation that their erasure request has been fulfilled, accompanied by the certificate (or a certificate reference), and stating what was erased in plain terms: the key that links their pseudonymized records to their identifiers has been destroyed; the tamper-evident audit records remain, but can no longer be resolved to them.
 3. Retain the certificate under your compliance retention schedule as evidence of completion.
 
-> **Note:** In the reference build there is no admin endpoint that returns the sealed erasure certificate. `GET /__hmn/admin/erasures` lists scheduled shreds within their hold window (`id`, `legalBasis`, `requester`, `approver`, `executesInSec`); the certificate is sealed internally on commit. Exposing the certificate for retrieval/export is a production responsibility (prod-delta).
+> **Note:** In the reference build there is no admin endpoint that returns the sealed erasure certificate. `GET /__hmn/admin/erasures` lists scheduled shreds still within their hold window (`id`, `legalBasis`, `requester`, `approver`, `executesInSec`); the certificate is sealed internally on execution and is observable only as an `erasure.completed` audit record in the stream (filter the audit export on `event_type == "erasure.completed"`). The record is HMAC-chained into the log and anchored by the next Ed25519 STH checkpoint — it is not independently Ed25519-signed at seal time. Exposing the certificate for direct retrieval/export is a production responsibility (prod-delta).
+
+---
+
+## Access request (GDPR Art. 15)
+
+An erasure request is often preceded by an **access request** — the subject asking for a copy of the data held about them. Scope the audit stream to a single subject with the `subject` query parameter, which matches the deterministic **session or id pseudonym** (against `session_pseudonym` or `id_pseudonym`):
+
+```
+curl -k -H "Authorization: Bearer <token>" \
+  "https://localhost:8445/__hmn/admin/audit?subject=<pseudonym>"
+```
+
+Use the same console-visible pseudonym you resolved in Step 1. This returns only that subject's records — the pseudonymized decision copy you assemble for an Art. 15 response — without exposing other subjects. Raw identifiers are never returned; the records carry pseudonyms and decision metadata only.
 
 ---
 

@@ -15,7 +15,7 @@ x-swarm: &swarm
   profiles: [swarm]
 
 services:
-  # The full automation catalog vs the engine (26 profiles).
+  # The full automation catalog vs the core engine (45 profiles).
   bots:
     image: *bots-image
     build: *bots-build

@@ -19,6 +19,7 @@
   items:
     - { title: "Deployment & policy operations", url: "/how-to/deployment-policy-operations.html" }
     - { title: "HTTPS / TLS certificates", url: "/how-to/https-tls-certificates.html" }
+    - { title: "Verify a released image", url: "/how-to/verify-the-image.html" }
     - { title: "Configure attested routes", url: "/how-to/configure-attested-routes.html" }
     - { title: "Configure credential verifiers", url: "/how-to/configure-credential-verifiers.html" }
     - { title: "Cut a release", url: "/how-to/cut-a-release.html" }
@@ -35,6 +36,7 @@
   items:
     - { title: "CLI, config & policy", url: "/reference/cli-config-policy.html" }
     - { title: "Hard rules & verdicts", url: "/reference/hard-rules-verdicts.html" }
+    - { title: "Gate → origin request contract", url: "/reference/gate-origin-contract.html" }
     - { title: "Supported topologies", url: "/reference/supported-topologies.html" }
     - { title: "Install requirements", url: "/reference/install-requirements.html" }
     - { title: "Red-team catalog", url: "/reference/red-team-catalog.html" }
