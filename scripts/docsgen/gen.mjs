@@ -45,8 +45,12 @@ function ogSvg(title, section){
   const fs = title.length > 46 ? 58 : 68;
   const maxChars = title.length > 46 ? 30 : 26;
   const lines = wrap(title, maxChars, 3);
-  const startY = 300 - (lines.length-1)*(fs*0.58);
-  const tspans = lines.map((l,i)=>`<tspan x="80" y="${Math.round(startY + i*fs*1.14)}">${esc(l)}</tspan>`).join('');
+  // TOP-anchored: the first line sits at a fixed baseline well below the eyebrow and
+  // the block grows DOWNWARD, so a 2- or 3-line title can never ride up into the
+  // eyebrow (the previous centre-anchored math did, causing the overlap).
+  const lineH = Math.round(fs * 1.18);
+  const firstY = 300;
+  const tspans = lines.map((l,i)=>`<tspan x="80" y="${firstY + i*lineH}">${esc(l)}</tspan>`).join('');
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <radialGradient id="glow" cx="82%" cy="6%" r="70%">
@@ -56,9 +60,8 @@ function ogSvg(title, section){
   </defs>
   <rect width="1200" height="630" fill="${T.bg}"/>
   <rect width="1200" height="630" fill="url(#glow)"/>
-  <!-- faint pulse waveform -->
-  <path d="M0,150 H820 L850,150 L872,96 L896,204 L920,150 H1060 L1088,150 L1110,110 L1132,190 L1154,150 H1200"
-        stroke="${T.accent}" stroke-width="2" fill="none" opacity="0.16"/>
+  <!-- hairline frame -->
+  <rect x="0.5" y="0.5" width="1199" height="629" fill="none" stroke="${T.border}" stroke-width="1"/>
   <!-- pulse-aperture logo + wordmark -->
   <g transform="translate(80,78) scale(2.05)">
     <path d="M27.3 11.9 A12 12 0 1 1 20.1 4.7" stroke="${T.accent}" stroke-width="2" stroke-linecap="round" fill="none"/>
