@@ -44,6 +44,12 @@ defaults:
   - scope: { path: "" }
     values: { layout: default }
 
+# README.md now carries SEO front matter (description/keywords). jekyll-readme-index
+# skips READMEs that already have front matter unless told otherwise, so without this
+# the site root (/) 404s while /README.html still renders. Promote it regardless.
+readme_index:
+  with_frontmatter: true
+
 # These are GitHub Pages default plugins and are active automatically; listed
 # here for clarity. They are why this doc set renders correctly as-is:
 #   jekyll-optional-front-matter — the ~40 pages without YAML front matter still

@@ -1,7 +1,7 @@
 name: release
 
 # SoT-31 R6 — publish the engine + Gate images to ghcr.io on a semver tag so
-# adopters `compose up` a pulled image instead of building from source. The `red`
+# adopters `compose up` a pulled image instead of building from source. The `bots`
 # attacker image is NEVER published.
 on:
   push:

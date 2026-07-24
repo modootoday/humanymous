@@ -483,7 +483,7 @@ func main() {
 	}
 	adminSrv := mkServer(*adminAddr, srv.AdminHandler(), adminCfg)
 	go func() {
-		log.Printf("humanymous Gate admin console on https://localhost%s/__hmn/admin/console", *adminAddr)
+		log.Printf("humanymous Gate admin console on https://%s/__hmn/admin/console", *adminAddr)
 		// SoT-31 R4 / audit SEC-2: NEVER echo admin bearer-token values at INFO level in a
 		// real deployment — env-supplied production tokens would land in stdout / docker logs
 		// / log shippers. Print the raw values only in the explicit local-demo mode; otherwise
