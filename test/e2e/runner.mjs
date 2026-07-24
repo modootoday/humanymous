@@ -6,6 +6,7 @@
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
+import { TIERS, BASELINE, tierOf, assertCoverage } from './tiers.mjs';
 
 const BASE = process.env.HM_BASE || 'https://127.0.0.1:8443';
 const RUNS = Number(process.env.HM_RUNS || 3);
@@ -14,43 +15,49 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // self-signed dev cert
 const __dir = dirname(fileURLToPath(import.meta.url));
 const redteam = join(__dir, '..', 'redteam');
 
-// Full SoT-04 automation catalog (local target only). Tools that need a binary
-// we don't have are simulated via their documented client/network tells, clearly
-// labeled in each file; camoufox needs Playwright Firefox and skips if absent.
+// Full SoT-04 automation catalog (local target only), ordered as a STAGED COST ESCALATION:
+// the baseline first, then the Red ladder from the cheapest trivial script (T0) up to the
+// funded real-engine adversary (T3); T4 (a real human on a real engine) is the documented
+// detection ceiling and has no profile. The tier of each entry is the single source of truth
+// in tiers.mjs; assertCoverage() below fails loudly if this list and the tiers drift. Tools
+// that need a binary we don't have are simulated via their documented tells; camoufox needs
+// Playwright Firefox and skips if absent.
 const PROFILES = [
-  'human.mjs',                 // baseline (expect ALLOW, FPR=0)
+  'human.mjs',                 // baseline (expect ALLOW/not-denied, FPR=0)
+  // --- T0 · trivial ($0, a script, no browser) — HTTP/uTLS clients & raw-protocol abuse ---
   'http_client.mjs',           // non-browser scraper (L5/L6)
   'tls_parrot.mjs',            // uTLS Chrome ClientHello parrot (header/JS residual)
-  'selenium.mjs',              // cdc_ artifacts
-  'puppeteer.mjs',             // headless + webdriver
-  'puppeteer_stealth.mjs',     // stealth evasions (patched natives L3)
-  'playwright_plain.mjs',      // headless + webdriver
-  'playwright_stealth.mjs',    // patched natives (L3)
-  'undetected.mjs',            // headless, webdriver stripped
-  'patchright.mjs',            // console disabled (Patchright)
+  'tls_static.mjs',            // static parrot (no TLS permutation)
+  'tls_rotate.mjs',            // mid-session TLS fingerprint rotation -> HR-14
+  'ua_rotate.mjs',             // mid-session User-Agent rotation
+  'signal_forgery.mjs',        // forged l7.pass.solved/l7.pow.solved -> stripped, no ALLOW (round-3 provenance)
+  'xff_spoof.mjs',             // forged private X-Forwarded-For -> l5.header.forwarded_private
+  'rit_replay.mjs',            // RIT token replay -> HR-17
+  'rit_tamper.mjs',            // RIT body tamper -> HR-16
+  'flood.mjs',                 // application-layer request flood -> score CHALLENGE + ban ladder
+  'rapid_reset.mjs',           // HTTP/2 Rapid Reset DoS (CVE-2023-44487) -> HR-21 (SoT-17)
+  // --- T1 · low ($, off-the-shelf tools on defaults) — naive automation frameworks ---
+  'selenium.mjs',              // cdc_ artifacts (HR-1)
+  'puppeteer.mjs',             // headless + webdriver (HR-7)
+  'playwright_plain.mjs',      // headless + webdriver (HR-7)
+  'undetected.mjs',            // headless, webdriver stripped (HR-7)
   'direct_cdp.mjs',            // raw CDP driver
-  'nodriver.mjs',              // headful frontier (behavior)
+  'video_scrape.mjs',          // media Range-storm on heavy resource
+  'watermark_strip.mjs',       // resource leak + metadata strip (forensic trace)
+  // --- T2 · moderate ($$, stealth plugins / patched natives) ---
+  'puppeteer_stealth.mjs',     // stealth evasions (patched natives L3) (HR-8)
+  'playwright_stealth.mjs',    // patched natives (L3) (HR-8)
+  'patchright.mjs',            // console disabled (Patchright) (HR-9)
+  // --- T3 · high ($$$, real browser engine + proxy/AI infra) — degrades gracefully ---
+  'nodriver.mjs',              // headful frontier (behavior) (HR-12)
   'xvfb_headful.mjs',          // headful, no display tells (behavior)
   'antidetect.mjs',            // anti-detect browser (coherent spoof + behavior)
   'camoufox.mjs',              // Firefox fork (Playwright Firefox stand-in)
-  // --- aggressive anti-bypass evasions (SoT-07/08/10/12) ---
-  'tls_static.mjs',            // static parrot (no TLS permutation) -> HR-14
-  'tls_rotate.mjs',            // mid-session TLS fingerprint rotation -> HR-14
-  'ua_rotate.mjs',             // mid-session User-Agent rotation
-  'rit_replay.mjs',            // RIT token replay -> HR-17
-  'rit_tamper.mjs',            // RIT body tamper -> HR-16
-  'video_scrape.mjs',          // media Range-storm on heavy resource
-  'watermark_strip.mjs',       // resource leak + metadata strip (forensic trace)
-  // --- frontier threats (SoT-15/16): AI agents + distributed proxy pools ---
   'ai_agent.mjs',              // LLM browser-agent cadence -> HR-20
   'distributed.mjs',           // rotating residential-proxy pool -> HR-19
-  'xff_spoof.mjs',             // forged private X-Forwarded-For -> l5.header.forwarded_private
-  'flood.mjs',                 // application-layer request flood -> score CHALLENGE + ban ladder
-  'rapid_reset.mjs',           // HTTP/2 Rapid Reset DoS (CVE-2023-44487) -> HR-21 (SoT-17)
-  // --- deployment-review-hardened evasions (rounds 3 & 5): must stay caught ---
-  'signal_forgery.mjs',        // forged l7.pass.solved/l7.pow.solved -> stripped, no ALLOW (round-3 provenance blocker)
   'privacy_evasion.mjs',       // proxy-rotation + forged adBlock/GPC -> still HR-19 DENY (round-5 regression)
 ];
+assertCoverage(PROFILES); // fail loudly if the catalog and the tier ladder (tiers.mjs) drift
 
 function classify(label, verdict) {
   const isBot = label.startsWith('bot:');
@@ -96,6 +103,51 @@ async function main() {
   writeFileSync(outPath, JSON.stringify(results, null, 2));
   console.log(`\nwrote ${outPath} (${results.length} records)`);
   summarize(results);
+  tieredReport(results);
+}
+
+// tieredReport prints the Red cost-escalation ladder (T0 cheapest -> T4 most expensive) with
+// Blue's block rate at each tier, so the wargame reads as a staged escalation and shows
+// exactly where — and at what attacker cost — Blue's confidence degrades. Retained as code.
+function tieredReport(results) {
+  // Reduce to one verdict per profile (the last non-error run), keyed by profile file.
+  const byProfile = {};
+  for (const r of results) {
+    if (r.skipped || r.error || !r.label) continue;
+    byProfile[r.profile] = r;
+  }
+  console.log('\n=== Red/Blue cost-escalation ladder (cheap -> expensive) ===');
+  const base = results.find((r) => r.profile === BASELINE && !r.error && !r.skipped);
+  if (base) {
+    const denied = base.verdict === 'DENY';
+    console.log(`  baseline (${base.label}) : ${base.verdict}  -> ${denied ? 'FALSE-POSITIVE (a human was denied!)' : 'ok (not denied)'}`);
+  }
+  let prevBlocked = true;
+  for (const t of TIERS) {
+    const recs = t.profiles.map((p) => byProfile[p]).filter(Boolean);
+    const ran = recs.length;
+    const blocked = recs.filter((r) => r.verdict === 'DENY' || r.verdict === 'CHALLENGE').length;
+    const allowed = recs.filter((r) => r.verdict === 'ALLOW');
+    const skipped = t.profiles.length - ran;
+    const rate = ran ? Math.round((blocked / ran) * 100) : (t.id === 'T4' ? 100 : 0);
+    const bar = t.id === 'T4'
+      ? 'n/a — ceiling (no detection profile; rate/reputation only)'
+      : `${blocked}/${ran} blocked${skipped ? ` (+${skipped} skipped)` : ''} = ${rate}%`;
+    console.log(`\n  [${t.id}] ${t.cost}`);
+    console.log(`       ${t.desc}`);
+    console.log(`       expect: ${t.expect}`);
+    console.log(`       result: ${bar}`);
+    if (allowed.length) {
+      console.log(`       !! reached ALLOW: ${allowed.map((r) => r.label).join(', ')}`);
+    }
+    if (ran && blocked < ran) prevBlocked = false;
+    if (prevBlocked && ran && blocked === ran && t.id !== 'T4') {
+      // still fully caught at this cost tier
+    }
+  }
+  console.log('\n  Reading it: Blue should hold 100% through T2 and score/challenge (not necessarily');
+  console.log('  DENY) at T3; any bot reaching ALLOW below T4 is a regression. T4 is the documented');
+  console.log('  detection ceiling — a real human on a real engine, mitigated by rate/reputation only.');
 }
 
 function summarize(results) {
