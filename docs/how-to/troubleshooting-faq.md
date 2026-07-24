@@ -183,7 +183,7 @@ With the keystore, the SigningSeed (Ed25519 STH key), HMACKey, and vault snapsho
 
 **Why is an ALLOW still challenged on my high-value (`attested`) route?** That is the attestation floor (ceiling-guard #1) doing its job: on an `attested` route a scoring-ALLOW — and even a valid verdict-token fast-path — is priced to a Pass challenge unless the session presents possession or an `hmn_su` step-up proof. The fix is to give humans a way to satisfy the floor: either wire a credential verifier (WebAuthn / Privacy Pass / Web Bot Auth) so possession pre-gates and forwards first, **or** run the Core Pass server and Gate with a **shared `HMN_TOKEN_KEY`** and the same cookie jar so a Pass solve's receipt redeems at `POST /__hmn/stepup` and mints `hmn_su`. Without one of those, humans re-solve the Pass forever — a Pass-for-everyone friction wall. (Note: `attested` also requires the shared `HMN_TOKEN_KEY` across Core and Gate to start at all; the Gate refuses to boot without it.)
 
-**Where do I see what Gate decided?** Observability is the audit stream (`GET /audit`), the Integrity view/endpoint, and the Overview KPIs in the Ledger. There is no Prometheus `/metrics` endpoint and no `/healthz` / `/readyz` probe in the reference — those are prod-delta.
+**Where do I see what Gate decided?** Observability is the audit stream (`GET /audit`), the Integrity view/endpoint, and the Overview KPIs in the Ledger, plus a Prometheus `GET /__hmn/metrics` gauge snapshot on the admin plane and the `GET /__hmn/healthz` (liveness) / `GET /__hmn/readyz` (readiness) probes answered by Gate itself. Per-verdict rates come from the audit stream; SIEM shipping of that stream is the prod-delta.
 
 ---
 

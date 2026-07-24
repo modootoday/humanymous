@@ -117,7 +117,7 @@ Watch three signals:
 
 > **TODO(verify):** specific numeric healthy/alarm ranges for CHALLENGE/DENY mix and DENY-rate delta — none exist in the reference and none may be invented; each operator must derive them from their own baseline.
 
-> **TODO(verify):** exact Overview KPI tile labels — the console shows KPIs from the audit stream, but the tile label strings are not in the brief.
+The Overview surfaces five KPI tiles, each a count over the recent window: **Allow**, **Challenge**, **Deny**, **Ban actions** (auto + manual), and **Records** (total events sealed into this node's chain).
 
 ---
 

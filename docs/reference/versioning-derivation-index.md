@@ -55,7 +55,7 @@ A release-notes changelog should surface **behavior changes** that affect operat
 
 Each such entry should name the mechanism precisely and link the reader-facing page(s) that document it, using the derivation index below to find them.
 
-> **TODO(verify):** Confirm the concrete location, filename, and format of the release-notes changelog in the repo (for example, `CHANGELOG.md` at repo root vs. a docs page). The brief does not specify where the changelog lives.
+The release-notes changelog lives at **`CHANGELOG.md`** in the repo root, in [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. It is generated and curated with **git-cliff** (`cliff.toml`) from Conventional Commits, tag-driven on `v*` SemVer tags, and wired into `.github/workflows/release.yml` for release bodies.
 
 ## 2. SoT → user-doc derivation index
 

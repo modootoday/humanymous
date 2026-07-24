@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"io"
 	"net/http"
+	"sync/atomic"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/abuse"
@@ -36,6 +37,7 @@ type ControlPlane struct {
 	cpHard      int            // control-plane hard threshold (for sampled audit)
 	cohort      *cohortShadow  // ceiling-guard #3: population/cohort behavioral shadow (log-only); nil = off
 	nowFn       func() time.Time
+	ready       atomic.Bool // readiness gate: true once serving, flipped false on shutdown so an LB drains first
 }
 
 // NewControlPlane wires the control plane against shared state. The control
@@ -44,10 +46,17 @@ type ControlPlane struct {
 // protect itself. Defaults are generous (300 requests / 10s per IP) — a real
 // page makes ~2 control-plane calls; a flood is thousands/sec.
 func NewControlPlane(store *collector.Store, engine *scoring.Engine, verdicts VerdictLedger, sink *audit.Sink, vault *audit.Vault) *ControlPlane {
-	return &ControlPlane{store: store, engine: engine, verdicts: verdicts, sink: sink, vault: vault,
+	c := &ControlPlane{store: store, engine: engine, verdicts: verdicts, sink: sink, vault: vault,
 		epoch: "e1", nonces: NewNonceCache(10 * time.Minute),
 		climiter: abuse.NewLimiter(10*time.Second, 150, 300), cpHard: 300, nowFn: time.Now}
+	c.ready.Store(true) // ready to serve once constructed; SetReady(false) on shutdown
+	return c
 }
+
+// SetReady toggles the readiness gate. Call SetReady(false) at the start of a
+// graceful shutdown so /__hmn/readyz returns 503 and a load balancer stops routing
+// new traffic to this node before the drain begins. Liveness (/healthz) stays ok.
+func (c *ControlPlane) SetReady(ready bool) { c.ready.Store(ready) }
 
 // WithControlLimiter overrides the control-plane flood thresholds (tests/tuning).
 func (c *ControlPlane) WithControlLimiter(window time.Duration, soft, hard int) *ControlPlane {
@@ -118,6 +127,17 @@ func (c *ControlPlane) Handler() http.Handler {
 	// is answered by the Gate itself and carries no data.
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, map[string]any{"status": "ok", "plane": "gate"})
+	})
+	// Readiness probe: 200 while serving, 503 once a graceful shutdown has flipped the
+	// readiness gate — so a load balancer removes this node BEFORE the drain begins.
+	// Point the orchestrator's readinessProbe here and its livenessProbe at /healthz.
+	mux.HandleFunc("/readyz", func(w http.ResponseWriter, r *http.Request) {
+		if !c.ready.Load() {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			writeJSON(w, map[string]any{"status": "draining", "plane": "gate"})
+			return
+		}
+		writeJSON(w, map[string]any{"status": "ready", "plane": "gate"})
 	})
 	return mux
 }

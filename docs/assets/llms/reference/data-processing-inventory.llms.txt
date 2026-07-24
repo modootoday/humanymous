@@ -102,7 +102,7 @@ This section is the pseudonymization policy statement a DPO can cite directly.
 - **The subject key is the session id.** Pseudonyms for a given subject are derived under that subject's key, which is the session id. This is what binds a subject's several pseudonyms (their IP pseudonym, their fingerprint pseudonym, and so on) into one resolvable subject when the vault is present.
 - **The linkage material lives in a vault.** The per-subject linkage keys that make re-identification possible are held in a vault, sealed with the node keystore (scrypt N = 2¹⁵ plus AES-256-GCM) when a keystore is configured. See [Key management](../how-to/key-management.md).
 
-> **TODO(verify):** The exact construction that binds the session-id subject key to each per-field pseudonym (salt handling and per-field domain separation) is not specified in the available facts. Record the construction detail from the implementation before publishing a formal DPIA.
+> **Confirmed in source:** For each subject — keyed by the session id — the vault mints a random 32-byte linkage key (`K_subj`) on first use and holds it in the vault; the session id is the handle to that key, not the key material itself. Each field's pseudonym is `scrypt(K_subj, salt = raw_field_value, N = 2¹², r = 8, p = 1, dkLen = 32)`, rendered as a 64-hex string (when stretching is disabled the reference falls back to `HMAC-SHA256(K_subj, raw_field_value)`, the same 64-hex shape). The raw field value doubles as the scrypt salt, which provides per-field domain separation: two different identifiers under the same subject produce unlinkable pseudonyms, while the same identifier under the same subject is deterministic — so a subject's own events stay linkable. There is no separate global pepper and no additional per-field salt; destroying `K_subj` (crypto-shred) severs all of that subject's pseudonyms at once.
 
 ---
 
@@ -118,9 +118,9 @@ Re-identification is not a routine operation. It requires **the vault plus dual-
 
 ## 6. Record-level tagging (legal basis and data class)
 
-Audit records carry tagging that supports your Article 30 mapping, including a legal-basis tag and a data-class tag per record. The legal basis is a **controller determination**: Gate does not choose the lawful basis for your traffic processing, and you should set and record it (for most bot-mitigation deployments this is a legitimate-interest or legal-obligation analysis you perform, not one Gate asserts).
+Audit records carry a single record-level tag — `data_class` — that supports your Article 30 mapping; legal basis is not tagged per traffic record but is captured on the erasure path. The legal basis is a **controller determination**: Gate does not choose the lawful basis for your traffic processing, and you should set and record it (for most bot-mitigation deployments this is a legitimate-interest or legal-obligation analysis you perform, not one Gate asserts).
 
-> **TODO(verify):** The exact field names and the enumerated value set for the record-level legal-basis and data-class tags are not specified in the available facts. Capture the concrete tag schema (field names and permitted values) from the implementation before mapping it into a RoPA column.
+> **Confirmed in source:** In the reference the only record-level tag field is `data_class` (JSON `data_class`, `omitempty`) on the audit record; there is no per-record `legal_basis` field. The reference defines no enumerated value set for `data_class` and never populates it (carried for forward schema compatibility, empty in emitted records), so any data-class vocabulary is an operator/prod-delta you define. Legal basis is captured elsewhere: it is a required free-text field on the crypto-shred erasure path (`LegalBasis`, e.g. `"GDPR Art.17"` or `"PIPA"`), recorded on the erasure request/decision and certificate — not as a tag on ordinary traffic records.
 
 ---
 
@@ -136,7 +136,7 @@ Records are never physically deleted as part of the erasure model (erasure works
 
 > **Note:** The horizons above are the reference tier boundaries. Physical retirement of retention segments to write-once (WORM) storage at tier expiry is a prod-delta and is not shipped in the reference build. Set the concrete calendar retention schedule for each tier in your own retention policy.
 
-> **TODO(verify):** Whether tier transitions (HOT → WARM → COLD) and any physical retirement at COLD expiry are automated in the reference build or are operator-driven is not specified in the available facts.
+> **Confirmed in source:** Tier transitions are not automated by a background job. The reference models retention as a pure classifier — `RetentionPolicy.Tier(age)` maps a record's age to `HOT`/`WARM`/`COLD`/`EXPIRED` on demand — plus the default windows (HOT 90d, WARM 1y, COLD 7y). No scheduler migrates records between tiers, and physical retirement of expired segments (moving checkpoint-bounded prefixes to WORM and recording their terminal STH) is the production step, not shipped in the reference. Tiering is a queryable policy the reference computes; acting on it is operator-driven (prod-delta).
 
 ---
 
@@ -168,7 +168,7 @@ Any backup that includes the vault or the node keystore is a **re-identifiable c
 
 > **Warning:** Backups of the vault or keystore are outside the crypto-shred boundary. If you back up the sealed keystore or vault, you are responsible for ensuring that an erasure is propagated to — or the corresponding key material is retired from — those copies. Otherwise a restore can re-establish linkage that a live shred already destroyed.
 
-> **TODO(verify):** Whether the reference build produces any on-disk copies of the vault beyond the single sealed keystore file (and where), is not specified in the available facts. Inventory your own backup surface for the keystore and vault as part of your RoPA.
+> **Confirmed in source:** The reference produces no on-disk copy of the vault beyond the single sealed keystore file. The vault's per-subject linkage keys are serialized (`Vault.Snapshot`) into the `Vault` field of `KeyMaterial` and sealed — together with the signing and HMAC keys — into one file written by `SealKeys` (scrypt-derived AES-256-GCM, mode 0600). No separate vault file is written anywhere, and the durable audit sinks (WAL, Redis, ClickHouse) persist only pseudonymized records, never linkage-key material. Your backups of that one keystore file are the entire on-disk vault surface to inventory.
 
 ---
 

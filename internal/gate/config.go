@@ -85,6 +85,14 @@ type Config struct {
 	// trust-upgrade reverts to Pass (a stolen/shared passkey fronting a proxy farm). Zero
 	// uses DefaultCredFanoutCap. Only armed when WebAuthnCreds is set.
 	CredFanoutCap int
+	// MaxBodyBytes caps the request-body size forwarded to origin on the proxy path
+	// (production ingress hardening). 0 = unlimited (reference default). A body over the
+	// cap is rejected with 413 before it reaches origin. Gate's own control/admin JSON
+	// endpoints keep their own tighter caps regardless of this value.
+	MaxBodyBytes int64
+	// HSTS adds a Strict-Transport-Security header to edge responses. Off by default —
+	// enabling it in dev behind the self-signed cert would pin a bad cert in browsers.
+	HSTS bool
 }
 
 // DefaultCredFanoutCap bounds a single WebAuthn credential's /24 fan-out before its

@@ -161,10 +161,11 @@ Every admin access is meta-audited under `admin.access`, with the actor identity
 
 ```
 curl -k -H "Authorization: Bearer <token>" \
-  "https://<admin-host>/__hmn/admin/audit?rule=admin.access"
+  "https://<admin-host>/__hmn/admin/audit?route=control" \
+  | jq '.records[] | select(.event_type == "admin.access")'
 ```
 
-> **TODO(verify):** Confirm the exact query key/value that selects `admin.access` meta-audit records (whether it is the `rule` filter as shown, or a distinct record-type field) before publishing this command in an assessment response.
+The audit export has no event-type query parameter (its server-side filters are `verdict`, `host`, `route`, `minRisk`, `before`, `limit` and `rule`). The `rule` filter matches the `triggered_rules` slice, not the event taxonomy, so `?rule=admin.access` selects nothing. Meta-audit records carry `route_class: "control"`, so `?route=control` narrows to the control plane server-side; isolate `admin.access` precisely by filtering the exported `event_type` field client-side, as shown.
 
 ---
 

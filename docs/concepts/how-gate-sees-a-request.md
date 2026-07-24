@@ -118,7 +118,7 @@ The default route table ships as: `/login` → strict, `/checkout` → strict, `
 **Modes** describe how much of the pipeline enforces:
 
 - **monitor** — score and log, enforce nothing.
-- **shadow** — observe alongside enforcement without acting on the observed path. > **TODO(verify):** the exact behavior distinguishing shadow from monitor mode is not in the brief.
+- **shadow** — a log-only observer runs a *candidate* signal alongside live enforcement without ever touching the verdict, the ban ledger, or the enforcement path. Unlike monitor, enforcement stays on; the shadow signal is collected purely to measure its false-positive profile on real traffic before it earns any weight. The reference ships two such observers, both off by default and strictly non-acting: the `-anomaly-shadow` per-fingerprint inter-arrival outlier detector and the cohort/population behavioral shadow. This is the opposite of monitor, which turns enforcement off entirely (score-and-log).
 - **enforce** — act on the verdict at the edge.
 
 The `-monitor` flag or the kill switch downgrades enforcement to monitor **fleet-wide** (a global monitor mode that turns every route into score-and-log).

@@ -97,7 +97,7 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?verdict=deny&minRisk=70" -H "
 
 Demoting a route to `monitor` keeps scoring and logging but enforces nothing on that route, so blocked humans flow through while you investigate.
 
-> **TODO(verify):** the runtime mechanism/endpoint to change a single route's policy preset to `monitor` from the admin API. The admin API in the brief exposes `GET /policy` (read) but no policy-write endpoint; the reference build may require a config/route-table change and restart (`-monitor` is global only). Confirm before relying on a hot per-route demotion.
+> **Note:** the reference admin API has no per-route policy-write endpoint. `GET /__hmn/admin/policy` is read-only, and the only enforcement mutators are `POST /__hmn/admin/killswitch` (fleet-wide, dual-control — demotes all hard-rule enforcement to monitor) and manual bans. There is no hot per-route demotion: to move a single route to `monitor`/`off` you edit the `-routes` route-table file for that prefix and restart the node. `-monitor` is global-only and likewise requires a restart. If a single route cannot contain the storm, use the global kill switch below.
 
 - **Consequence:** the demoted route stops enforcing — automation on that route is scored and logged but passes to origin.
 - **Rollback:** restore the route's prior preset (`balanced` or `strict`) once the misfiring rule is tuned.
@@ -281,7 +281,7 @@ curl -sk "https://localhost:8445/__hmn/admin/integrity" -H "Authorization: Beare
 
 1. **Run** the offline verifier against the audit log. It checks the hash chain, per-record HMACs, and Ed25519 Signed Tree Heads with the independent witness co-signature, **without trusting the operator or the running node**.
 
-> **TODO(verify):** the exact offline-verifier invocation (binary/subcommand and arguments) for the reference build; the brief states an offline verifier exists but not its command line.
+> **Note:** verification is a mode of the `gate` binary, not a separate tool. Run `bin/gate.exe -audit-wal <wal-dir> -keystore <keystore-path> -audit-verify` with `HMN_UNSEAL` set: it replays the WAL, re-checks the hash chain, per-record HMACs, and the Ed25519 Signed Tree Heads with the independent-witness co-signature, then prints `audit-verify: OK (<n> records)` and exits 0 on success, or `audit-verify: FAILED class=<class> seq=<n>` and exits non-zero on a break. Point the keystore + `HMN_UNSEAL` at the node under investigation; there is no separate offline-verifier executable.
 
 2. **Capture** the verifier output and the Integrity Dashboard state as evidence (screenshots + saved output).
 3. **Preserve** the audit files; do not rotate, truncate, or restart the node until security has the evidence.

@@ -13,6 +13,21 @@ services:
   gate:
     image: ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}
     restart: unless-stopped
+    # Container runtime hardening (production). The image is already distroless +
+    # nonroot (USER 65532); these lock the sandbox further. read_only roots the
+    # filesystem — only the named data/acme volumes and a /tmp tmpfs are writable.
+    security_opt:
+      - "no-new-privileges:true"
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
+    pids_limit: 512
+    stop_grace_period: 30s                     # >= gate -shutdown-grace so the drain completes
+    # Liveness/readiness are HTTP probes on the edge (distroless has no shell for a
+    # Docker HEALTHCHECK): GET https://<edge>/__hmn/healthz (liveness) and /__hmn/readyz
+    # (readiness — 503s during drain). Point your orchestrator's probes at those.
     env_file:
       - path: .env                           # HMN_ADMIN_TOKENS (real, not e2e-*)
         required: false                       # cp .env.example .env before `up`

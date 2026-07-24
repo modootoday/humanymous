@@ -7,6 +7,38 @@ are called out in a dedicated **Security** subsection with upgrade urgency.
 
 ## [Unreleased]
 
+### Added — production hardening (reference → production gap closure)
+
+A multi-agent production-readiness census (prod-delta inventory + web-researched standards) drove a batch
+of ops/observability/security hardening on the Gate. **Detection is unchanged** — every change is on the
+transport/ops/console plane; the frozen scoring core, hard rules, and JA4 plane are untouched. All new
+behavior ships with unit tests and was verified live in Docker.
+
+- **Graceful shutdown.** On `SIGINT`/`SIGTERM` Gate now drains both listeners (bounded by `-shutdown-grace`,
+  default `25s`), flips readiness to draining first so a load balancer removes the node, then seals the
+  keystore — on **every** clean stop, not only when `-keystore` is set. Replaces the previous abrupt
+  `os.Exit` that cut in-flight requests.
+- **Health & readiness probes.** `GET /__hmn/healthz` (liveness) and `GET /__hmn/readyz` (readiness — 503s
+  during a drain), answered by Gate itself, for orchestrator probes.
+- **Prometheus metrics.** `GET /__hmn/metrics` on the authenticated admin plane emits a text-exposition
+  snapshot (uptime, audit-chain size, active bans, kill-switch/monitor state, goroutines/heap). No new
+  dependency; per-verdict rates stay in the audit stream.
+- **Ingress caps & security headers.** `-max-body` caps the proxied request body (413 over the limit);
+  add-only OWASP response headers (`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`) ship on
+  every proxied response, with HSTS opt-in via `-hsts`. None overwrite an origin's own value.
+- **Admin mTLS.** `-admin-mtls-ca` requires a client certificate signed by the operator's CA on the admin
+  listener, in addition to the bearer token — the shippable half of "front the admin plane with mTLS/SSO".
+- **Console dual-control wiring.** The Ledger gained an **Approvals** view (the dual-control commit queue
+  the UI already referenced but never surfaced) and a **Scheduled erasures** list with a cancel control in
+  the Compliance view (the "cancellable hold window" the UI promised). Both wire to already-implemented,
+  tested admin endpoints.
+- **Container hardening.** The release compose runs the gate `read_only` with `cap_drop: ALL`,
+  `no-new-privileges`, a `/tmp` tmpfs, `pids_limit`, and a `stop_grace_period` aligned to `-shutdown-grace`.
+- **Docs truth-up.** ~20 stale `TODO(verify)` doc markers were resolved against the codebase (the code
+  answered them), and `production-vs-reference.md` was corrected — items it still listed as prod-delta
+  (ACME/BYO TLS, sealed keystore, Redis fleet state, durable WAL, and now metrics/health/mTLS/graceful
+  shutdown) are shipped.
+
 ### Fixed — ceiling-guard deployment-review remediation
 
 A deep deployment-suitability review (49 findings, 47 confirmed after adversarial verification →

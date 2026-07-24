@@ -38,7 +38,7 @@ $$t_{\text{Gate}}^{\text{fast}} \;\approx\; t_{\text{TLS}} + t_{\text{inject}} +
 
 The symbols are placeholders, not measured values — the reference publishes none. How much each term costs, and how much less the fast path costs, is something to measure, not a number this page will supply.
 
-> **TODO(verify):** Whether the audit hash-chain write is synchronous per-request or batched/buffered before it is acknowledged (the ordering guarantee "emitted before the decision takes effect" is documented; the write-durability path is not specified in the ground truth).
+> **Confirmed in source:** The authoritative durable sink (the local write-ahead log) writes synchronously per record: `WALSink.AppendRecord` marshals the sealed record, appends it under a single-writer mutex, flushes the buffer, and calls `fsync` before returning — so "sealed" means "on disk" before the enforcement side effect is released. It is not batched or buffered-before-ack; there is one fsync per record, and that fsync is the durability boundary backing the "emitted before the decision takes effect" ordering guarantee. (Segment rotation and checkpoint writes are fsync'd as well.)
 
 ---
 

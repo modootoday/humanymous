@@ -32,7 +32,7 @@ Pick your recipe:
 
 1. Run Gate and observe the certificate it presents. The reference generates a self-signed certificate **in memory** on boot: ECDSA P-256, CN `humanymous.local`, with SANs `localhost`, `humanymous.local`, `127.0.0.1`, and `::1`. The negotiated TLS floor is version 1.2.
 2. Expect a browser certificate warning when you visit `https://localhost:8444` in development. This is the self-signed dev cert, and the warning is normal for local use.
-3. Plan production TLS as a prod-delta. Production terminates TLS with ACME-issued or bring-your-own certificates. **That path is not in the reference binary** — there is no flag in the reference build to load an operator-supplied certificate or key.
+3. Configure production TLS with a CLI flag. Production terminates TLS with ACME-issued or bring-your-own certificates, and the reference binary supports both: `-tls-cert`/`-tls-key` for a bring-your-own PEM certificate, or `-acme-domain` (with optional `-acme-cache`/`-acme-email`) for a Let's Encrypt certificate via TLS-ALPN-01, which requires binding `:443`.
 
 **Verify:** in development, inspect the presented certificate (for example with `openssl s_client`) and confirm the CN is `humanymous.local` and the SANs include `localhost` and `127.0.0.1`.
 
@@ -42,7 +42,7 @@ openssl s_client -connect localhost:8444 -servername localhost </dev/null 2>/dev
 
 Expected (dev): a `subject=CN=humanymous.local` line and a SAN list containing `localhost`, `humanymous.local`, `127.0.0.1`, `::1`.
 
-> **TODO(verify):** the exact production mechanism for supplying ACME or bring-your-own certificates (config field, file path, or wrapping component), since the reference binary exposes no CLI flag for it.
+> **Note:** production TLS is supplied by CLI flag. For bring-your-own certificates, pass `-tls-cert <pem>` and `-tls-key <pem>` (PEM file paths). For automatic certificates, `-acme-domain <domain[,domain]>` requests a Let's Encrypt cert over TLS-ALPN-01 (which requires binding `:443`), `-acme-cache <dir>` sets the on-disk cache directory (default `acme-cache`), and `-acme-email <addr>` sets the optional ACME account contact. With none set, Gate falls back to the in-memory self-signed dev cert. The admin listener always stays self-signed.
 
 For the full TLS/ingress hardening table, see the [CLI, config & per-route policy reference](../reference/cli-config-policy.md).
 
@@ -73,7 +73,7 @@ curl -i http://127.0.0.1:9000/
 
 Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-Origin-Auth`). The same path fetched through the edge (`https://localhost:8444/`) is served normally. In the Ledger, a direct-origin bypass attempt surfaces as HR-24. See the [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md).
 
-> **TODO(verify):** whether the reference ships an example origin-side validator for `X-Hmny-Origin-Auth`, or whether the origin check is entirely the operator's responsibility.
+> **Note:** the reference ships no example origin-side validator. Gate only emits the signed `X-Hmny-Origin-Auth` header; validating it (and returning `421` when it is absent or wrong) is entirely the operator's responsibility. The bundled demo origin (`deployments/origin/default.conf`, plain nginx) does not perform this check — it is there to be proxied, not to demonstrate cloaking enforcement.
 
 ---
 

@@ -10,6 +10,7 @@
 package main
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"crypto/ed25519"
 	"crypto/elliptic"
@@ -89,6 +90,13 @@ func main() {
 	// base64url-spki-ecdsa-p256-pubkey` lines. A valid, fresh possession assertion from
 	// a listed credential is trust-upgraded. Empty = feature off.
 	webauthnCredsFile := flag.String("webauthn-creds", "", "path to a WebAuthn registered-credential allowlist (PLAN-08 R2); empty = disabled")
+	// Production ops hardening (prod-delta closure): graceful drain, request-body cap,
+	// HSTS, structured logs, and mTLS on the admin plane. All safe defaults preserve the
+	// existing single-binary behavior; detection is unchanged.
+	shutdownGrace := flag.Duration("shutdown-grace", 25*time.Second, "graceful-shutdown drain timeout on SIGINT/SIGTERM (align with the orchestrator termination grace)")
+	maxBody := flag.Int64("max-body", 0, "max request-body size in bytes forwarded to origin on the proxy path (0 = unlimited); large uploads above this get 413")
+	hsts := flag.Bool("hsts", false, "add a Strict-Transport-Security header to edge responses (only enable once real certs and HTTPS-everywhere are in place)")
+	adminMTLSCA := flag.String("admin-mtls-ca", "", "PEM file of client-cert CA(s); when set, the admin listener REQUIRES a verified client certificate (mTLS) in addition to the bearer token")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -181,17 +189,10 @@ func main() {
 	sink := audit.NewSink(alog)
 	sink.Emit(audit.Record{EventType: audit.EventInstanceStartup, Actor: audit.Actor{Kind: "system"}, TenantID: *node, KeyID: "k1"})
 
-	// Persist keys + vault on shutdown so the next boot resumes identity (WS8).
-	if *keystorePath != "" {
-		go func() {
-			ch := make(chan os.Signal, 1)
-			signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
-			<-ch
-			_ = audit.SealKeys(*keystorePath, unseal, audit.KeyMaterial{SigningSeed: signingSeed, HMACKey: hmacKey, Vault: vault.Snapshot(), WitnessSeed: witnessSeed})
-			log.Printf("keystore: node identity + vault sealed on shutdown")
-			os.Exit(0)
-		}()
-	}
+	// Shutdown (SIGINT/SIGTERM) is handled centrally at the end of main: it drains
+	// both listeners via http.Server.Shutdown, THEN seals the keystore (WS8), so an
+	// in-flight request is never cut and identity is persisted on every clean stop —
+	// not only when -keystore is set. See the graceful-shutdown block below.
 
 	// Shared scoring/verdict state (SoT-22 externalizes this to Redis in prod).
 	store := collector.NewStore(30 * time.Minute)
@@ -318,6 +319,8 @@ func main() {
 		AnomalyShadow: *anomalyShadow, // R5 shadow observer (log-only), off by default
 		PATIssuers:    patIssuers,     // Privacy Pass PAT issuers, or nil (PLAN-08 R2)
 		WebAuthnCreds: webauthnCreds,  // WebAuthn credential registry, or nil (PLAN-08 R2)
+		MaxBodyBytes:  *maxBody,       // proxy-path request-body cap (0 = unlimited)
+		HSTS:          *hsts,          // Strict-Transport-Security on edge responses
 		Routes: map[string]string{
 			"/login":    "strict",
 			"/checkout": "strict",
@@ -424,6 +427,22 @@ func main() {
 		log.Fatalf("admin cert: %v", err)
 	}
 	adminCfg := &tls.Config{Certificates: []tls.Certificate{adminCert}, MinVersion: tls.VersionTLS12}
+	// Optional mTLS on the admin plane (prod-delta closure B1): require a client cert
+	// signed by an operator-supplied CA, in ADDITION to the bearer token. This is the
+	// shippable half of "front the admin plane with mTLS/SSO" — SSO stays a reverse proxy.
+	if *adminMTLSCA != "" {
+		caPEM, rerr := os.ReadFile(*adminMTLSCA)
+		if rerr != nil {
+			log.Fatalf("admin-mtls-ca: %v", rerr)
+		}
+		pool := x509.NewCertPool()
+		if !pool.AppendCertsFromPEM(caPEM) {
+			log.Fatalf("admin-mtls-ca: no valid certificate found in %s", *adminMTLSCA)
+		}
+		adminCfg.ClientAuth = tls.RequireAndVerifyClientCert
+		adminCfg.ClientCAs = pool
+		log.Printf("admin listener: mTLS ENABLED — a client certificate signed by %s is required in addition to the bearer token", *adminMTLSCA)
+	}
 	mkServer := func(a string, h http.Handler, tc *tls.Config) *http.Server {
 		hs := &http.Server{
 			Addr: a, Handler: h, TLSConfig: tc,
@@ -493,7 +512,9 @@ func main() {
 		} else {
 			log.Printf("  admin roles configured: auditor, operator, approver, dpo — token values NOT logged; supply them via HMN_ADMIN_TOKENS (a random token was generated for any role left unset)")
 		}
-		log.Fatalf("admin listener: %v", adminSrv.ListenAndServeTLS("", ""))
+		if err := adminSrv.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("admin listener: %v", err)
+		}
 	}()
 
 	pubSrv := mkServer(*addr, srv, edgeCfg)
@@ -514,21 +535,51 @@ func main() {
 	// PLAN-08 R4 — behind an L4 passthrough LB: parse PROXY v2 (below TLS) from the
 	// trusted balancer CIDRs, recovering the real client IP. Without trusted proxies,
 	// keep the standard ListenAndServeTLS path unchanged.
-	if *trustedProxies != "" {
-		cidrs, err := gate.ParseCIDRs(*trustedProxies)
-		if err != nil {
-			log.Fatalf("trusted-proxies: %v", err)
+	// Start the edge listener in the background so main can block on a shutdown signal.
+	go func() {
+		var err error
+		if *trustedProxies != "" {
+			cidrs, perr := gate.ParseCIDRs(*trustedProxies)
+			if perr != nil {
+				log.Fatalf("trusted-proxies: %v", perr)
+			}
+			base, lerr := net.Listen("tcp", *addr)
+			if lerr != nil {
+				log.Fatalf("edge listener: %v", lerr)
+			}
+			log.Printf("  PROXY protocol v2 enabled for %d trusted CIDR(s) (real client IP recovered behind L4 passthrough)", len(cidrs))
+			// PROXY header is read below TLS; then tls.NewListener terminates the handshake.
+			tln := tls.NewListener(gate.WrapProxyProto(base, cidrs), edgeCfg)
+			err = pubSrv.Serve(tln)
+		} else {
+			err = pubSrv.ListenAndServeTLS("", "")
 		}
-		base, err := net.Listen("tcp", *addr)
-		if err != nil {
+		if err != nil && err != http.ErrServerClosed {
 			log.Fatalf("edge listener: %v", err)
 		}
-		log.Printf("  PROXY protocol v2 enabled for %d trusted CIDR(s) (real client IP recovered behind L4 passthrough)", len(cidrs))
-		// PROXY header is read below TLS; then tls.NewListener terminates the handshake.
-		tln := tls.NewListener(gate.WrapProxyProto(base, cidrs), edgeCfg)
-		log.Fatal(pubSrv.Serve(tln))
+	}()
+
+	// Graceful shutdown: on SIGINT/SIGTERM drain both listeners (bounded by -shutdown-grace)
+	// so in-flight requests complete, THEN seal the keystore so identity persists on every
+	// clean stop. A second signal restores default handling and force-quits.
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	<-ctx.Done()
+	stop()
+	control.SetReady(false) // /__hmn/readyz now 503s so a load balancer drains this node first
+	log.Printf("shutdown: signal received; readiness now draining; draining connections (grace %s)...", *shutdownGrace)
+	dctx, cancel := context.WithTimeout(context.Background(), *shutdownGrace)
+	defer cancel()
+	_ = pubSrv.Shutdown(dctx)
+	_ = adminSrv.Shutdown(dctx)
+	if *keystorePath != "" {
+		if err := audit.SealKeys(*keystorePath, unseal, audit.KeyMaterial{SigningSeed: signingSeed, HMACKey: hmacKey, Vault: vault.Snapshot(), WitnessSeed: witnessSeed}); err != nil {
+			log.Printf("shutdown: keystore seal FAILED: %v", err)
+		} else {
+			log.Printf("keystore: node identity + vault sealed on shutdown")
+		}
 	}
-	log.Fatal(pubSrv.ListenAndServeTLS("", ""))
+	log.Printf("shutdown: complete")
 }
 
 // mustRand fills b with CSPRNG bytes and fails CLOSED on error rather than seeding a

@@ -33,6 +33,10 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 | `-acme-domain` | `""` | Comma-separated domain(s) for a Let's Encrypt edge cert (TLS-ALPN-01, needs `:443`). `-acme-cache` / `-acme-email` tune it. |
 | `-routes` | `""` (built-in presets) | Path to an external route-policy file (`<prefix> <preset>` per line). |
 | `-audit-wal` | `""` (ephemeral) | Durable audit WAL directory (survives restarts). `-audit-verify` replays + verifies the chain and exits. |
+| `-shutdown-grace` | `25s` | Graceful-shutdown drain timeout on `SIGINT`/`SIGTERM`. On signal the readiness probe (`/__hmn/readyz`) flips to draining, both listeners drain in-flight requests, then the keystore is sealed. Set this **≥ your orchestrator's termination grace** so the drain completes before the pod is killed. |
+| `-max-body` | `0` (unlimited) | Caps the request body forwarded to origin on the proxy path (bytes). A declared `Content-Length` over the cap returns **413** before it reaches origin. Gate's own control/admin JSON endpoints keep their own tighter caps regardless of this value. |
+| `-hsts` | `false` | Add a `Strict-Transport-Security` header to edge responses. Leave off in dev behind the self-signed cert; enable only once real certs and HTTPS-everywhere are in place. (Gate always adds, add-only — never overwriting an origin's own value — `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and `X-Frame-Options: SAMEORIGIN`, independent of this flag.) |
+| `-admin-mtls-ca` | `""` (disabled) | PEM file of client-cert CA(s). When set, the admin listener **requires** a client certificate signed by this CA (mTLS, `tls.RequireAndVerifyClientCert`) **in addition to** the bearer token — the shippable half of "front the admin plane with mTLS/SSO". |
 
 **Constraint-resolution features — all OFF by default, experimental. Read the trust caveat before enabling.**
 

@@ -165,7 +165,7 @@ flowchart LR
 
 Crypto-shred is orthogonal to the retention tier — it removes re-identifiability at any point in the lifecycle while the record and its Merkle anchors stay verifiable (Section 7.2).
 
-> **TODO(verify):** The classifier's tier-assignment rules (which record types map to HOT/WARM/COLD, and the exact boundary durations beyond the approximate values above) are not enumerated in the available facts. Confirm the mapping before asserting a specific per-record retention period.
+> **Confirmed in source:** The tier classifier is age-based, not record-type-based: every audit record is classified by a single function of its age against fixed windows — HOT for age ≤ 90 days, WARM for ≤ 365 days (1 year), COLD for ≤ 2,555 days (7 years), and EXPIRED beyond that. There is no per-record-type mapping in the reference; all record types share the one default policy (HOT 90d, WARM 1y, COLD 7y). The tier windows are a supplyable policy, so an operator that needs type-differentiated or different retention sets its own windows.
 
 ### 7.2 Why crypto-shred rather than deletion — WORM compatibility
 

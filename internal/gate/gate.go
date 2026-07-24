@@ -45,6 +45,7 @@ type Server struct {
 	incidentLimiter *abuse.Limiter        // per-operator incident-lookup enumeration cap (SoT-28 WS4)
 	devConsoleToken string                // dev bearer injected into the served console (SoT-28 §1)
 	killSwitch      atomic.Bool           // runtime global-monitor override (SoT-28 WS9 kill switch)
+	startedAt       time.Time             // process start, for the /metrics uptime gauge
 	agentKeys       KeyDirectory          // Web Bot Auth trusted-key directory (PLAN-08 R3); nil = feature off
 	agentNonces     *NonceCache           // Web Bot Auth single-use signature nonces (anti-replay)
 	patVerifier     *PATVerifier          // Privacy Pass PAT issuer keys (PLAN-08 R2); nil = feature off
@@ -194,6 +195,7 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		patVerifier:     cfg.PATIssuers,                         // Privacy Pass PAT issuers (PLAN-08 R2), nil = off
 		webauthn:        cfg.WebAuthnCreds,                      // WebAuthn credential registry (PLAN-08 R2), nil = off
 		nowFn:           time.Now,
+		startedAt:       time.Now(),
 	}
 	// Ceiling-guard #1 defense-in-depth: refuse the attestation floor on a catch-all
 	// (root/empty) prefix at CONSTRUCTION, not only in the CLI routes loader. A programmatic
@@ -266,6 +268,17 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// gate. The admin plane is never on this public listener (SoT-28 WS1).
 	if s.routeControlPlane(w, r) { // SoT-19 §3
 		return
+	}
+	// Ingress hardening: cap the proxied request body (production DoS guard). Applies
+	// only to origin-bound traffic — the control/admin planes above keep their own
+	// tighter JSON caps. A declared length over the cap is a clean 413; an unknown or
+	// lying length is bounded by MaxBytesReader so memory stays flat regardless.
+	if s.cfg.MaxBodyBytes > 0 {
+		if r.ContentLength > s.cfg.MaxBodyBytes {
+			http.Error(w, "request body too large", http.StatusRequestEntityTooLarge)
+			return
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, s.cfg.MaxBodyBytes)
 	}
 	if s.banGate(w, r, sid) { // SoT-27, HR-21
 		return
@@ -378,6 +391,9 @@ func (s *Server) forward(w http.ResponseWriter, r *http.Request, route routePoli
 // modifyResponse injects the bundle into HTML responses (SoT-19 step 9). It is
 // add-only and drops Content-Length so the framing stays correct (SoT-20 §3).
 func (s *Server) modifyResponse(resp *http.Response) error {
+	// Add-only security response headers on every proxied response (OWASP secure
+	// headers), independent of injection so `off`/non-HTML routes are covered too.
+	s.addSecurityHeaders(resp.Header)
 	route := routeFrom(resp.Request.Context())
 	if !route.inject {
 		return nil
@@ -411,6 +427,26 @@ func (s *Server) modifyResponse(resp *http.Response) error {
 			"connect-src 'self'; report-uri "+s.cfg.ControlPath+"csp-report")
 	}
 	return nil
+}
+
+// addSecurityHeaders adds standard, add-only security response headers to every
+// proxied response (OWASP Secure Headers). It never overwrites a value the origin
+// already set, so an origin's own stricter policy wins. HSTS is opt-in (-hsts) so
+// the dev self-signed cert is never pinned into a browser.
+func (s *Server) addSecurityHeaders(h http.Header) {
+	setHeaderIfAbsent(h, "X-Content-Type-Options", "nosniff")
+	setHeaderIfAbsent(h, "Referrer-Policy", "strict-origin-when-cross-origin")
+	setHeaderIfAbsent(h, "X-Frame-Options", "SAMEORIGIN")
+	if s.cfg.HSTS {
+		setHeaderIfAbsent(h, "Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+	}
+}
+
+// setHeaderIfAbsent sets k=v only when the origin left the header unset (add-only).
+func setHeaderIfAbsent(h http.Header, k, v string) {
+	if h.Get(k) == "" {
+		h.Set(k, v)
+	}
 }
 
 // enforceBan drops a banned request at the edge with a Retry-After for temporary

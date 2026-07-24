@@ -18,6 +18,7 @@
     <a class="navitem" data-view="bans" data-tip="<b>Rate Limits &amp; Bans</b>Active IP and fingerprint bans — auto-escalating (1h→6h→24h→permanent) plus manual. Add and unblock are dual-control and audited."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>Rate Limits &amp; Bans<span class="badge" id="banBadge">0</span></a>
     <a class="navitem" data-view="policy" data-tip="<b>Policy</b>Per-route enforcement posture (preset, fail-open/closed, sync re-score, injection) and the rate-limit thresholds. Config changes are dual-control + signed."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Policy</a>
     <a class="navitem" data-view="compliance" data-tip="<b>Compliance</b>GDPR Art.17 / PIPA right-to-erasure via crypto-shred (destroy the subject's linkage key — the chain stays intact) and retention tiers."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Compliance</a>
+    <a class="navitem" data-view="approvals" data-tip="<b>Approvals</b>Pending dual-control actions (bans, kill switch, erasures) awaiting a second, distinct approver. Committing here is separation-of-duty enforced and audited."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Approvals<span class="badge" id="approvalsBadge">0</span></a>
     <div class="spacer"></div>
     <div class="rolechip"><span class="dot"></span><div><b>Operator</b><small>live · dual-control</small></div></div>
   </nav>
@@ -38,6 +39,7 @@
     <div class="content" id="view-bans" hidden></div>
     <div class="content" id="view-policy" hidden></div>
     <div class="content" id="view-compliance" hidden></div>
+    <div class="content" id="view-approvals" hidden></div>
 
     <div class="statusbar">
       <span id="sb-chain"><span class="ok">●</span> chain —</span>
@@ -145,10 +147,11 @@ document.querySelectorAll('.navitem').forEach(n=>{ n.setAttribute('role','button
 (async()=>{ try{ const me=await api('/whoami'); const rc=document.querySelector('.rolechip'); if(rc&&me.id){ rc.querySelector('b').textContent=me.id; rc.querySelector('small').textContent=me.role+' · authenticated'; } }catch(e){} })();
 
 // ---------- views ----------
-const views = ['overview','integrity','sessions','bans','policy','compliance'];
+const views = ['overview','integrity','sessions','bans','policy','compliance','approvals'];
 const titles = { overview:['Overview','live edge decisions'], integrity:['Chain Integrity','tamper-evident audit log'],
   sessions:['Sessions','incident drill-down'], bans:['Rate Limits &amp; Bans','edge protection'],
-  policy:['Policy &amp; Rollout','route enforcement'], compliance:['Compliance','erasure &amp; retention'] };
+  policy:['Policy &amp; Rollout','route enforcement'], compliance:['Compliance','erasure &amp; retention'],
+  approvals:['Approvals','dual-control commit queue'] };
 let current='overview';
 const loaded=new Set(); // load each view once; nav switching is then instant
 function show(v){
@@ -403,7 +406,11 @@ async function loadCompliance(){
           <div class="integ-row"><span class="lbl">COLD (WORM)</span><span class="val">1–7y</span></div>
         </section>
       </div>
-    </div>`;
+    </div>
+    <section class="card" data-tip="Approved erasures wait out a hold window before the crypto-shred commits. Any one can be cancelled during this window; every cancel is written to the audit chain.">
+      <header><h2>Scheduled erasures (hold window)</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">cancellable before commit</span></header>
+      <div class="streamwrap"><table><thead><tr><th>Id</th><th>Legal basis</th><th>Requester</th><th>Approver</th><th>Executes in</th><th></th></tr></thead><tbody id="eraseSched"></tbody></table></div>
+    </section>`;
   $('#e-go').onclick=async()=>{
     const subj=$('#e-subj').value.trim(); if(!subj){$('#e-subj').focus();return;}
     if(!await confirmAction({title:'Crypto-shred subject',danger:true,word:'ERASE',
@@ -415,6 +422,68 @@ async function loadCompliance(){
   try{ const d=await api('/audit?limit=100'); const evs=(d.records||[]).filter(r=>r.event_type&&r.event_type.startsWith('erasure')).slice(0,10);
     $('#eraseLog').innerHTML=evs.map(r=>`<div class="integ-row"><span class="lbl mono" style="font-size:11.5px">${esc(r.event_type)}</span><span class="val" style="font-size:11px;color:var(--muted)">#${r.seq}</span></div>`).join('')||'<div class="empty">No erasure events.</div>';
   }catch(e){}
+  loadErasures();
+}
+
+// ---------- Scheduled erasures (hold window) ----------
+let erasureRows=[];
+function fmtCountdown(s){ s=Math.max(0,s|0); if(s<=0) return '<span style="color:var(--challenge);font-weight:600">now</span>'; const h=s/3600|0,m=(s%3600)/60|0,sec=s%60; return `<span class="mono">${h?h+'h ':''}${m}m ${sec}s</span>`; }
+function drawErasures(){
+  const body=$('#eraseSched'); if(!body) return;
+  body.innerHTML=erasureRows.map(s=>`<tr>
+    <td class="mono" style="font-size:12.5px" data-tip="Scheduled crypto-shred id — cancellable during the hold window">${esc(String(s.id).slice(0,12))}…</td>
+    <td style="font-size:12.5px">${esc(s.legalBasis)}</td>
+    <td class="mono" style="font-size:12px;color:var(--muted)">${esc(s.requester)}</td>
+    <td class="mono" style="font-size:12px;color:var(--muted)">${esc(s.approver)}</td>
+    <td class="num" data-eid="${esc(String(s.id))}">${fmtCountdown(s.executesInSec)}</td>
+    <td style="text-align:right"><button class="lift" data-cancel="${esc(String(s.id))}" data-tip="Cancel this scheduled shred during its hold window (written to the audit chain)">Cancel</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No scheduled erasures.</td></tr>';
+  body.querySelectorAll('button[data-cancel]').forEach(btn=>btn.onclick=async()=>{
+    try{ const r=await api('/erasures/'+encodeURIComponent(btn.dataset.cancel)+'/cancel',{method:'POST'}); toast('Scheduled erasure cancelled — audited'); loadErasures(); }
+    catch(e){ toast(e.message||'Cancel failed'); }
+  });
+}
+async function loadErasures(){
+  const body=$('#eraseSched'); if(!body) return;
+  let d; try{ d=await api('/erasures'); }catch(e){ body.innerHTML=`<tr><td colspan="6" class="empty">${esc(e.message)}</td></tr>`; erasureRows=[]; return; }
+  erasureRows=d.scheduled||[];
+  drawErasures();
+}
+// live "executes in Ns" countdown — ticks only while the Compliance view is on screen.
+setInterval(()=>{
+  if(current!=='compliance'||!erasureRows.length) return;
+  const body=$('#eraseSched'); if(!body) return; let changed=false;
+  erasureRows.forEach(s=>{ if(s.executesInSec>0){ s.executesInSec--; changed=true; } });
+  if(changed) body.querySelectorAll('td[data-eid]').forEach(td=>{ const s=erasureRows.find(x=>String(x.id)===td.getAttribute('data-eid')); if(s) td.innerHTML=fmtCountdown(s.executesInSec); });
+},1000);
+
+// ---------- Approvals (dual-control commit queue) ----------
+async function loadApprovals(){
+  const el=$('#view-approvals');
+  let d; try{ d=await api('/approvals'); }catch(e){ el.innerHTML=`<div class="note">${esc(e.message)}</div>`; return; }
+  const pend=d.pending||[];
+  $('#approvalsBadge').textContent=pend.length;
+  el.innerHTML=`
+    <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+      <div class="kpi" data-tip="<b>Pending</b>Dual-control actions requested but not yet committed. Each needs a second, distinct approver before it takes effect."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Pending actions</div><div class="k-val">${pend.length}</div><div class="k-sub">awaiting a distinct approver</div></div>
+      <div class="kpi" data-tip="<b>Separation of duty</b>The operator who requested an action can never commit it. Erasures additionally require the DPO role."><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Separation of duty</div><div class="k-val mono" style="font-size:15px">requester ≠ approver</div><div class="k-sub">erasure needs DPO</div></div>
+    </div>
+    <section class="card">
+      <header><h2>Pending dual-control actions</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">commit needs a distinct approver</span></header>
+      <div class="streamwrap"><table><thead><tr><th>Id</th><th>Action</th><th>Needs role</th><th>Params</th><th></th></tr></thead><tbody id="apRows"></tbody></table></div>
+    </section>`;
+  const rows=$('#apRows');
+  rows.innerHTML=pend.map(p=>{
+    const params=(p.params&&typeof p.params==='object')?JSON.stringify(p.params):String(p.params==null?'':p.params);
+    return `<tr><td class="mono" style="font-size:12.5px" data-tip="Pending action id">${esc(String(p.id).slice(0,12))}…</td>
+      <td><span class="mode-badge mode-enforce">${esc(p.kind)}</span></td>
+      <td>${p.needsRole?`<span class="src-badge src-manual" data-tip="Committing requires this role">${esc(p.needsRole)}</span>`:'<span style="color:var(--faint)">—</span>'}</td>
+      <td class="mono" style="font-size:11.5px;color:var(--muted);max-width:300px;overflow:hidden;text-overflow:ellipsis" data-tip="${esc(params)}">${esc(params)}</td>
+      <td style="text-align:right"><button class="btn primary" data-id="${esc(String(p.id))}" data-tip="Commit this action — requires a distinct approver token (erasure requires the DPO role); written to the audit chain">Commit</button></td></tr>`;
+  }).join('')||'<tr><td colspan="5" class="empty">No pending approvals.</td></tr>';
+  rows.querySelectorAll('button[data-id]').forEach(btn=>btn.onclick=async()=>{
+    try{ await api('/approvals/'+encodeURIComponent(btn.dataset.id),{method:'POST'}); toast('Approved & committed — audited'); loadApprovals(); }
+    catch(e){ toast(e.message||'Commit failed'); }
+  });
 }
 
 // ---------- drill-over ----------
@@ -457,12 +526,13 @@ $('#d-close').onclick=$('#scrim').onclick=()=>{$('#scrim').classList.remove('sho
 addEventListener('keydown',e=>{if(e.key==='Escape'){$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');}});
 
 // ---------- status bar + live ----------
-const loaders={overview:loadOverview,integrity:loadIntegrity,sessions:loadSessions,bans:loadBans,policy:loadPolicy,compliance:loadCompliance};
+const loaders={overview:loadOverview,integrity:loadIntegrity,sessions:loadSessions,bans:loadBans,policy:loadPolicy,compliance:loadCompliance,approvals:loadApprovals};
 async function refreshStatus(){
   try{ const d=await api('/integrity'); $('#sb-chain').innerHTML=d.ok?'<span class="ok">●</span> chain verified':'<span class="bad">●</span> chain VIOLATION';
     $('#sb-node').textContent='node '+d.node+' · '+d.records+' rec'; $('#liveLabel').textContent='live · '+d.records+' records';
   }catch(e){ $('#liveLabel').textContent='offline'; $('#sb-chain').innerHTML='<span class="bad">●</span> chain unreachable'; }
   try{ const b=await api('/bans'); $('#banBadge').textContent=b.count; }catch(e){}
+  try{ const a=await api('/approvals'); $('#approvalsBadge').textContent=a.count; }catch(e){}
 }
 $('#refreshBtn').onclick=()=>{ loaders[current](); refreshStatus(); toast('Refreshed'); };
 // auto-refresh overview + status

@@ -113,7 +113,7 @@ Because injection targets HTML documents, streamed and non-HTML bodies are not b
 
 If your app legitimately accepts very large uploads or holds long-lived slow requests, review these against your workload before go-live.
 
-> **TODO(verify):** whether request bodies larger than the HTTP/2 upload-buffer cap are streamed to origin or bounded/rejected, and any configurable max request-body size beyond the per-connection buffer.
+> **Confirmed in source:** Request bodies are streamed to origin, not buffered for inspection or size-capped, on the proxy path. Gate forwards through Go's `httputil` single-host reverse proxy, which streams the request body upstream; the HTTP/2 `MaxUploadBufferPerConnection` cap is a per-connection flow-control window (backpressure), not a body-size limit. A configurable maximum request-body size on the enforcement path is available via `-max-body` (see the CLI reference); body-size limits otherwise apply only to Gate's own admin/control JSON endpoints. If you need a hard upload ceiling independent of Gate, also enforce it at the origin.
 
 ### WebSocket and SSE upgrades
 

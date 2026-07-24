@@ -1,35 +1,31 @@
 ---
-description: "Pull humanymous Gate edge decisions into your SIEM: poll the authenticated admin audit stream with curl and forward. Candid that the reference has no /metrics or health probe."
-keywords: ["bot detection SIEM integration","observability","admin audit stream","poll-and-forward","chain-integrity verification","Prometheus metrics endpoint absent","health probe absent","pseudonymous audit records","humanymous Gate","self-hosted bot detection","reference implementation","Auditor token RBAC"]
+description: "Pull humanymous Gate edge decisions into your SIEM: poll the authenticated admin audit stream with curl and forward, scrape the admin-plane Prometheus metrics endpoint, and wire the healthz/readyz probes."
+keywords: ["bot detection SIEM integration","observability","admin audit stream","poll-and-forward","chain-integrity verification","Prometheus metrics endpoint","liveness readiness probes","healthz readyz","pseudonymous audit records","humanymous Gate","self-hosted bot detection","reference implementation","Auditor token RBAC"]
 ---
 
 # Observability and SIEM integration
 
 **Quadrant:** How-to. **Audience:** SRE and security engineers wiring humanymous Gate into your monitoring and SIEM.
 
-This guide shows you what observability surface the reference implementation of humanymous Gate actually exposes today, how to pull edge decisions out of it with `curl`, and how to bridge that data to a SIEM until the production-only pieces (a metrics endpoint, health probes, native log shipping) are in place.
+This guide shows you what observability surface the reference implementation of humanymous Gate exposes, how to pull edge decisions out of it with `curl`, how to scrape process metrics and wire liveness/readiness probes, and how to bridge decision data to a SIEM until native log shipping is in place.
 
-> **Important:** This repository is a reference implementation, not a production-hardened build. Several observability features an SRE would expect — a Prometheus metrics endpoint, load-balancer health probes, and structured-log SIEM shipping — are not in the reference. This page is candid about that and gives you a working interim path.
+> **Important:** This repository is a reference implementation, not a production-hardened build. Gate now exposes a Prometheus metrics endpoint and load-balancer/orchestrator health probes (documented below); structured-log SIEM shipping in a standard schema is still a production delta, so the poll-and-forward pattern below remains the supported interim path for decision data.
 
 ## What exists today
 
-The reference Gate gives you three observability surfaces, all on the authenticated admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)), never on the public edge:
+The reference Gate gives you five observability surfaces. Three are on the authenticated admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)); the metrics endpoint is on the admin listener too; the liveness/readiness probes are the exception — they answer unauthenticated on the **public edge** control plane so an orchestrator can reach them.
 
-1. **The audit stream** — `GET /__hmn/admin/audit`, structured JSON records of every edge decision, with server-side filters and a paging cursor. This is your primary machine-readable feed.
+1. **The audit stream** — `GET /__hmn/admin/audit`, structured JSON records of every edge decision, with server-side filters and a paging cursor. This is your primary machine-readable feed, and the source of per-verdict rates (see below).
 2. **The Ledger Overview KPIs** — a human-facing live feed of allow/challenge/deny decisions with rollup counters, at `https://localhost:8445/__hmn/admin/console`. See the [Ledger tour](audit-console-tour.md).
 3. **Chain-integrity status** — the Integrity view and `GET /__hmn/admin/integrity`, which verify the tamper-evident audit log live (append-only hash chain + per-record HMAC + Ed25519 Signed Tree Heads) using the public key alone.
+4. **Prometheus metrics** — `GET /__hmn/metrics` on the admin plane, process/chain/ban gauges and counters in text-exposition format (see [Scrape process metrics](#scrape-process-metrics-__hmnmetrics)).
+5. **Liveness and readiness probes** — `GET /__hmn/healthz` and `GET /__hmn/readyz`, unauthenticated on the public edge, for orchestrator probes and load-balancer drain ordering (see [Wire liveness and readiness probes](#wire-liveness-and-readiness-probes)).
 
-Observability today is the audit stream plus these two console views. There is no separate metrics or telemetry pipeline.
+## Where per-verdict rates come from
 
-## What does NOT exist (do not look for it)
+The metrics endpoint deliberately does **not** emit per-verdict rates (allow/challenge/deny counts). Derive those from the **audit stream** (`GET /__hmn/admin/audit`), which your SIEM already ingests — the audit records carry `verdict`, `risk_score`, `route_class`, and `triggered_rules`, so rates and breakdowns are a query over data you already collect. `/__hmn/metrics` covers the process, chain-growth, and ban-state gauges that a query over the audit stream cannot give you.
 
-> **Warning:** Do not point a load balancer health check or a Prometheus scraper at Gate. Neither surface exists in the reference, and the closest-looking path is a trap.
-
-- **No Prometheus `/metrics` endpoint.** There is no metrics-exposition surface in the reference build.
-- **No `/healthz` or `/readyz` probe.** There is no Gate health or readiness endpoint.
-- **The `/health` route is not a Gate health check.** `/health` is an *origin application* path that ships mapped to the `off` preset — meaning Gate does not inject or enforce on it. It is a documented **bypass** of detection, not a liveness signal for Gate itself. Treating it as a health probe would tell you nothing about Gate's own state and would route probe traffic straight through unscored.
-
-If you need a coarse liveness signal in the interim, exercise an authenticated admin endpoint (for example `GET /__hmn/admin/whoami`) and treat a `200` as "the admin listener is up." This is not a substitute for a real readiness probe; see [Production vs. reference](../reference/production-vs-reference.md).
+> **Note on `/health`:** The `/health` route is **not** a Gate health check. It is an *origin application* path that ships mapped to the `off` preset — Gate does not inject or enforce on it. It is a documented **bypass** of detection, not a liveness signal for Gate itself. Use `/__hmn/healthz` for Gate's own liveness; point orchestrator probes there, not at `/health`.
 
 ## Authenticate to the admin API
 
@@ -104,6 +100,53 @@ The verification can report these mismatch classes, any of which should page you
 
 `GET /__hmn/admin/integrity` returns `{"node","ok":<bool>,"class":"<mismatch-class>","records":<n>,"checkpoints":<n>,"witnessed":<bool>,"lastSTH":{"treeSize","root"}}`; on failure it adds `divergentSeq`, `detail`, and (if the witness attestation fails) `witnessFailAt`. Alert on `ok:false` or `witnessed:false`. The mismatch classes are `hash-break`, `hmac-invalid`, `seq-gap`, `linkage-break`, `checkpoint-mismatch`, and `node-missing` — see [Verify the audit log](verify-audit-log.md).
 
+## Scrape process metrics (`/__hmn/metrics`)
+
+`GET /__hmn/metrics` exposes Gate's process, chain-growth, and ban-state telemetry in Prometheus text-exposition format (`Content-Type: text/plain; version=0.0.4`). It is served on the **admin plane** and is auth-gated (any role — an Auditor token is enough), so Prometheus must scrape it **with a bearer token**, and behind mTLS if you set `-admin-mtls-ca`.
+
+```
+curl --silent \
+  --header "Authorization: Bearer ${HMN_ADMIN_TOKEN}" \
+  "https://localhost:8445/__hmn/metrics"
+```
+
+The endpoint emits these series:
+
+| Metric | Type | Meaning |
+|--------|------|---------|
+| `hmn_gate_uptime_seconds` | gauge | Seconds since this Gate process started. |
+| `hmn_gate_audit_records_total` | counter | Records sealed into this node's audit chain. |
+| `hmn_gate_audit_checkpoints_total` | counter | Signed Tree Heads written. |
+| `hmn_gate_bans_active` | gauge | Currently active IP/fingerprint bans. |
+| `hmn_gate_killswitch` | gauge | Kill switch engaged (`1`) or not (`0`). |
+| `hmn_gate_monitor` | gauge | Effective global monitor mode (`1`) or enforcing (`0`). |
+| `hmn_gate_goroutines` | gauge | Current goroutine count. |
+| `hmn_gate_heap_alloc_bytes` | gauge | Heap bytes allocated and in use. |
+| `hmn_gate_sys_bytes` | gauge | Total memory obtained from the OS. |
+
+> **Note:** Per-verdict rates are intentionally absent here — derive allow/challenge/deny rates from the audit stream (see [Where per-verdict rates come from](#where-per-verdict-rates-come-from)). Configure your Prometheus scrape job with the Auditor bearer token (`authorization` / `bearer_token_file`) and, in dev, `insecure_skip_verify: true` for the self-signed admin cert.
+
+## Wire liveness and readiness probes
+
+Gate answers two probe endpoints on the **public edge** control plane, both **unauthenticated** (an orchestrator or load balancer must reach them without a token) and answered by Gate itself, not proxied to origin:
+
+| Endpoint | Response while serving | Response while draining | Use as |
+|----------|------------------------|-------------------------|--------|
+| `GET /__hmn/healthz` | `200` `{"status":"ok","plane":"gate"}` | `200` (stays up) | Liveness probe. |
+| `GET /__hmn/readyz` | `200` `{"status":"ready","plane":"gate"}` | `503` `{"status":"draining","plane":"gate"}` | Readiness probe. |
+
+Point your orchestrator's **livenessProbe** at `/__hmn/healthz` and its **readinessProbe** at `/__hmn/readyz`.
+
+**Drain ordering.** On `SIGINT`/`SIGTERM`, Gate flips the readiness gate first — so `/__hmn/readyz` returns `503 draining` while `/__hmn/healthz` keeps returning `200`. A load balancer sees the readiness failure and removes the node **before** the in-flight drain begins, so no new traffic lands on a node that is shutting down. The drain is bounded by `-shutdown-grace` (default `25s`); set it **≥ your orchestrator's termination grace** so the drain completes before the pod is killed. Do not gate liveness on readiness: a draining node is still alive, and a livenessProbe pointed at `/__hmn/readyz` would kill it mid-drain.
+
+```
+curl --silent "https://localhost:8444/__hmn/healthz"   # 200 ok
+curl --silent -o /dev/null -w '%{http_code}\n' \
+  "https://localhost:8444/__hmn/readyz"                # 200 ready, 503 once draining
+```
+
+> **Note:** These probes are on the **edge** listener (`-addr`, default `:8444`), not the admin listener — that is deliberate, so a load balancer fronting the public edge can reach them without admin credentials.
+
 ## Bridge to a SIEM in the meantime
 
 Native SIEM shipping is a production concern the reference does not implement (see below). Until then, the supported pattern is **poll-and-forward**:
@@ -138,9 +181,7 @@ This gives you allow/challenge/deny decisions, risk scores, matched routes, and 
 
 The following are **not** in the reference build. Do not document or configure them as working; plan for them as production deltas:
 
-- A Prometheus `/metrics` exposition endpoint.
-- Health and readiness probes (`/healthz` / `/readyz`) for load balancers and orchestrators.
-- Native structured-log SIEM shipping in a standard schema (for example OCSF or CEF).
+- Native structured-log SIEM shipping in a standard schema (for example OCSF or CEF) — decision data still ships via the poll-and-forward pattern above.
 - Server-sent-events (SSE) live-push for the Console and downstream consumers — the reference Console refreshes and polls rather than receiving pushes.
 
 For the full list and the reasoning behind each, see [Production vs. reference](../reference/production-vs-reference.md).

@@ -3,7 +3,9 @@ package gate
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -94,6 +96,7 @@ var adminRoutes = []adminRoute{
 	{http.MethodGet, adminExact("whoami"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
 		writeJSON(w, map[string]any{"id": op.ID, "role": op.Role})
 	}},
+	{http.MethodGet, adminExact("metrics"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminMetrics(w) }},
 
 	// --- mutations: role-gated (Operator) ---
 	{http.MethodPost, adminExact("bans"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
@@ -296,6 +299,33 @@ func (s *Server) adminProof(w http.ResponseWriter, r *http.Request) {
 			"witnessSig": sth.WitnessSig,
 		},
 	})
+}
+
+// adminMetrics serves a Prometheus text-exposition snapshot of gate health on the
+// authenticated admin plane (no new dependency). Per-verdict rates are derived from
+// the audit stream (GET /audit), which SIEM already ingests; this endpoint covers the
+// process, chain-growth, and ban-state gauges an orchestrator or Prometheus scrapes.
+func (s *Server) adminMetrics(w http.ResponseWriter) {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	log := s.sink.Log()
+	uptime := s.nowFn().Sub(s.startedAt).Seconds()
+	b01 := func(cond bool) int {
+		if cond {
+			return 1
+		}
+		return 0
+	}
+	w.Header().Set("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
+	fmt.Fprintf(w, "# HELP hmn_gate_uptime_seconds Seconds since this gate process started.\n# TYPE hmn_gate_uptime_seconds gauge\nhmn_gate_uptime_seconds %.0f\n", uptime)
+	fmt.Fprintf(w, "# HELP hmn_gate_audit_records_total Records sealed into this node's audit chain.\n# TYPE hmn_gate_audit_records_total counter\nhmn_gate_audit_records_total %d\n", log.Len())
+	fmt.Fprintf(w, "# HELP hmn_gate_audit_checkpoints_total Signed Tree Heads written.\n# TYPE hmn_gate_audit_checkpoints_total counter\nhmn_gate_audit_checkpoints_total %d\n", len(log.Checkpoints()))
+	fmt.Fprintf(w, "# HELP hmn_gate_bans_active Currently active IP/fingerprint bans.\n# TYPE hmn_gate_bans_active gauge\nhmn_gate_bans_active %d\n", len(s.bans.List()))
+	fmt.Fprintf(w, "# HELP hmn_gate_killswitch Kill switch engaged (1) or not (0).\n# TYPE hmn_gate_killswitch gauge\nhmn_gate_killswitch %d\n", b01(s.killSwitch.Load()))
+	fmt.Fprintf(w, "# HELP hmn_gate_monitor Effective global monitor mode (1) or enforcing (0).\n# TYPE hmn_gate_monitor gauge\nhmn_gate_monitor %d\n", b01(s.monitorOn()))
+	fmt.Fprintf(w, "# HELP hmn_gate_goroutines Current goroutine count.\n# TYPE hmn_gate_goroutines gauge\nhmn_gate_goroutines %d\n", runtime.NumGoroutine())
+	fmt.Fprintf(w, "# HELP hmn_gate_heap_alloc_bytes Heap bytes allocated and in use.\n# TYPE hmn_gate_heap_alloc_bytes gauge\nhmn_gate_heap_alloc_bytes %d\n", m.HeapAlloc)
+	fmt.Fprintf(w, "# HELP hmn_gate_sys_bytes Total memory obtained from the OS.\n# TYPE hmn_gate_sys_bytes gauge\nhmn_gate_sys_bytes %d\n", m.Sys)
 }
 
 func (s *Server) adminIntegrity(w http.ResponseWriter) {

@@ -167,7 +167,7 @@ A separate, independently runnable verifier — a binary you run on an exported 
 ## Related pages
 
 - [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — shared vocabulary: pseudonym, verdict, hard rule, incident handle.
-- [Ledger tour](./audit-console-tour.md) — the six views, including where the Integrity view lives.
+- [Ledger tour](./audit-console-tour.md) — the seven views, including where the Integrity view lives.
 - [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) — which role can read the integrity endpoint and console.
 - [Key management](./key-management.md) — the sealed keystore holding the Ed25519 signing seed and HMAC key, and what an ephemeral (no-keystore) restart does to verification continuity.
 - [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md) — why erasure leaves the chain verifiable.

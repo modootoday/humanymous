@@ -122,7 +122,7 @@ Conceptually, a production rotation procedure would:
 
 The 15-minute verdict-token epoch key already rotates on its own and needs none of this — it signs short-lived tokens, not the durable audit chain. Rotation concern applies to the durable signing and HMAC keys only.
 
-> **TODO(verify):** Whether the reference exposes any manual re-anchoring or checkpoint-export affordance that a production rotation procedure could build on (for example an export of the current STH under the outgoing key), and its exact mechanism.
+> **Note:** the reference exposes a checkpoint-export affordance a rotation procedure can build on, though not an automated re-anchoring command. `GET /__hmn/admin/proof?seq=<n>` returns the latest Signed Tree Head — its `treeSize`, `merkleRoot`, Ed25519 `sig`, and independent-witness `witnessSig` — alongside an RFC 6962 inclusion proof, all verifiable under the outgoing public key; `GET /__hmn/admin/integrity` additionally reports the `lastSTH` (`treeSize` + `root`). Exporting and archiving that final STH is the "anchor a final checkpoint" step above. The re-anchoring and key-transition recording around it remain a manual operational procedure — the reference ships no command for them.
 
 ---
 

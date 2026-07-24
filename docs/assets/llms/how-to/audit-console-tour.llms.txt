@@ -10,7 +10,7 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 > **How-to / annotated tour.** For a new or occasional on-call operator learning the humanymous Gate Ledger.
 > **Audience:** you are on the security-operator rotation, you have a token, and you need to know what each view answers and how to act from it — without breaking anything.
 
-This page walks the six views of the Ledger in the order you will use them on a shift. For each view you get three things: the question it answers, what the badges and subtitles mean, and how to act from it. This is a reference implementation, not a production-hardened build, so treat the numbers you see as reference behavior and confirm before you widen the blast radius of any action.
+This page walks the seven views of the Ledger in the order you will use them on a shift. For each view you get three things: the question it answers, what the badges and subtitles mean, and how to act from it. This is a reference implementation, not a production-hardened build, so treat the numbers you see as reference behavior and confirm before you widen the blast radius of any action.
 
 If you have never seen how Gate scores a request, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first. For what the hard-rule IDs and dotted signal IDs mean when you drill in, keep [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) open in a second tab.
 
@@ -34,7 +34,7 @@ A few things to know before you click around:
 - There is a **refresh button** whose job is to *re-verify the chain now* — it re-runs the integrity check and re-pulls the current data, rather than waiting for the next poll.
 - Navigation is **keyboard-operable** (the nav items expose `role="button"`, `tabindex`, and `aria-current`), and there is a hamburger menu on narrow screens.
 
-The six views are grouped into two sections: **Operations** (Overview, Integrity, Sessions) and **Governance** (Rate Limits & Bans, Policy, Compliance). The arrows below trace the triage path you walk most shifts — spot a pattern on Overview, drill into a sample decision in Sessions, then act in Rate Limits & Bans:
+The seven views are grouped into two sections: **Operations** (Overview, Integrity, Sessions) and **Governance** (Rate Limits & Bans, Policy, Compliance, Approvals). The arrows below trace the triage path you walk most shifts — spot a pattern on Overview, drill into a sample decision in Sessions, then act in Rate Limits & Bans; a two-person action you request lands in Approvals for a distinct approver to commit:
 
 ```mermaid
 flowchart TD
@@ -47,10 +47,14 @@ flowchart TD
     RB["Rate Limits & Bans"]
     PO["Policy — route posture + kill switch"]
     CO["Compliance — erasure & retention"]
+    AP["Approvals — dual-control commit queue"]
   end
   OV -->|"click a row"| SE
   SE -->|"ban / unblock"| RB
   IN -.->|"red state: stop, do not act on downstream data"| SE
+  RB -.->|"permanent / CIDR ban request"| AP
+  PO -.->|"kill-switch request"| AP
+  CO -.->|"erasure request"| AP
 ```
 
 ---
@@ -138,9 +142,21 @@ This view covers cryptographic erasure (crypto-shred) and retention. A right-to-
 
 Erasure is **DPO-gated and dual-control**: an Operator can request it, but the committer must be a **distinct DPO** — a generic Approver cannot commit an erasure. There is a **cancellable hold window** (default 5 minutes) before a due erasure executes.
 
-> **Warning:** Cryptographic erasure (crypto-shred) is irreversible. Once the hold window passes and the linkage key is destroyed, the subject's pseudonym linkage is gone for good — the records remain in the chain but can no longer be tied back to the subject. Confirm the request is correct before the hold window closes.
+This view also shows a **"Scheduled erasures (hold window)"** list: every approved erasure waiting out its hold window before the crypto-shred commits, with a live countdown to execution and a per-row **Cancel** button. Cancelling a scheduled shred during its window stops the linkage-key destruction, and every cancel is itself written to the audit chain. This is the safety net for a mistaken or superseded request — you can pull it back any time before the window closes.
+
+> **Warning:** Cryptographic erasure (crypto-shred) is irreversible. Once the hold window passes and the linkage key is destroyed, the subject's pseudonym linkage is gone for good — the records remain in the chain but can no longer be tied back to the subject. Confirm the request is correct before the hold window closes; if in doubt, **Cancel** the scheduled erasure and re-request once you are certain.
 
 **How to act from it:** follow the dedicated procedure rather than improvising — see [Erasure and crypto-shred](../runbooks/erasure-crypto-shred.md) for the request, hold-window, cancel, and DPO-commit steps.
+
+### Approvals — "dual-control commit queue"
+
+**Question it answers:** What two-person actions are pending, and how do I commit one as the second approver?
+
+Every dual-control action — a **permanent or CIDR ban**, the **kill switch**, or an **erasure** — is *requested* in its own view but not applied immediately; it lands here as a pending item. The Approvals view is that commit queue, with a **badge showing the pending count**. Each row shows the action kind, its parameters, and the role required to commit it, plus a **Commit** button.
+
+Committing is separation-of-duty enforced: the committer must be a **genuinely distinct** identity from the requester, and the console's injected Operator token is a *requester*, not an approver — so committing needs a distinct **Approver** token (or, for an erasure, a distinct **DPO** token; a generic Approver cannot commit an erasure). Every commit is written to the audit chain.
+
+**How to act from it:** open Approvals with the second person's token, confirm the pending action is the one that was intended, and click **Commit** — this is the step that actually applies the ban / flips the kill switch / schedules the erasure. If a request was made in error, it is not committed; the requester's action simply never takes effect. For the exact request-then-commit steps per action, see [Kill switch and bans](../runbooks/kill-switch-and-bans.md) and [Erasure and crypto-shred](../runbooks/erasure-crypto-shred.md); for who may commit what, see [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
 
 ---
 

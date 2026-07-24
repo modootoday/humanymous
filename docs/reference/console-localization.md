@@ -43,7 +43,7 @@ Localization of the product surface into Korean or any other language is **not s
 
 Adding any of these in another language is a **prod-delta** — a production responsibility for the operator, not a feature of the reference build. The reference does not define a message catalog, locale-negotiation, or string-externalization mechanism.
 
-> **TODO(verify):** Whether any i18n / string-externalization mechanism (message catalog, locale files, `Accept-Language` negotiation) exists in the reference. None is defined in the ground-truth facts; treat localization as fully unimplemented until confirmed in the source.
+> **Confirmed in source:** No i18n or string-externalization mechanism exists in the reference. There is no message catalog, no locale files, and no `Accept-Language` locale negotiation for product strings — every surface string is inline and English-only (the Ledger UI is served from a single `console.html` with a hardcoded `lang="en"`, and the challenge interstitial is emitted with a hardcoded `lang="en"`). `Accept-Language` is read only as a fingerprinting/forwarding input, never to select a language. Localization is unimplemented; adding it is a prod-delta.
 
 ## If you serve non-English visitors, localize the visitor-facing pages first
 
