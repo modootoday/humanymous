@@ -6,8 +6,14 @@
  * allow: no output, exit 0
  * block: stderr reason, exit 2
  */
-import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+export const AUDIT_LOG =
+  process.env.HUMANYMOUS_HOOK_LOG || join(ROOT, '.agent-runs', 'hooks', 'pre-tool-guard.jsonl');
 
 const BLOCK_PATTERNS = [
   [/\bcurl\s+.*\|\s*(?:ba)?sh\b/i, 'blocked: curl|sh pipe'],
@@ -25,6 +31,37 @@ const PROTECTED_BRANCH = /(?:^|[^\w/-])(?:main|master)(?![\w/-])/i;
 const FORCE_FLAG = /(?:^|\s)(?:--force(?:-with-lease)?|-f)(?=$|\s)/i;
 const ROOT_TARGET =
   /(?:^|\s)(?:--?\w+\s+)*["']?(?:\/|~|\$home|\$env:(?:userprofile|homedrive)|[a-z]:[\\/]+)["']?(?=$|\s)/i;
+
+function sha256(value) {
+  return createHash('sha256').update(value).digest('hex');
+}
+
+function audit(raw, payload, command, reason) {
+  const entry = {
+    version: 1,
+    timestamp: new Date().toISOString(),
+    pid: process.pid,
+    ppid: process.ppid,
+    hookEvent: typeof payload?.hook_event_name === 'string' ? payload.hook_event_name : null,
+    toolName: typeof payload?.tool_name === 'string' ? payload.tool_name : null,
+    inputBytes: Buffer.byteLength(raw),
+    inputSha256: sha256(raw),
+    commandBytes: Buffer.byteLength(command),
+    commandSha256: command ? sha256(command) : null,
+    decision: reason ? 'block' : 'allow',
+    rule: reason,
+    exitCode: reason ? 2 : 0,
+    stdoutBytes: 0,
+    stderrBytes: reason ? Buffer.byteLength(`${reason}\n`) : 0,
+  };
+
+  try {
+    mkdirSync(dirname(AUDIT_LOG), { recursive: true });
+    appendFileSync(AUDIT_LOG, `${JSON.stringify(entry)}\n`, 'utf8');
+  } catch {
+    // Observability must never change the safety decision or hook output.
+  }
+}
 
 export function extractCommand(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return '';
@@ -83,19 +120,20 @@ export function evaluateCommand(command) {
 }
 
 export function main(raw = readFileSync(0, 'utf8')) {
-  if (!raw.trim()) return 0;
-
   let payload;
-  try {
-    payload = JSON.parse(raw);
-  } catch {
-    payload = { command: raw };
+  if (raw.trim()) {
+    try {
+      payload = JSON.parse(raw);
+    } catch {
+      payload = { command: raw };
+    }
+  } else {
+    payload = {};
   }
 
   const command = extractCommand(payload);
-  if (!command) return 0;
-
-  const reason = evaluateCommand(command);
+  const reason = command ? evaluateCommand(command) : null;
+  audit(raw, payload, command, reason);
   if (!reason) return 0;
 
   process.stderr.write(`${reason}\n`);

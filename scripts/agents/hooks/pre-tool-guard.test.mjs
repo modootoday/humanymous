@@ -1,18 +1,24 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import test from 'node:test';
+import test, { after } from 'node:test';
+import { tmpdir } from 'node:os';
 
 import { evaluateCommand, extractCommand } from './pre-tool-guard.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..', '..', '..');
 const GUARD = join(import.meta.dirname, 'pre-tool-guard.mjs');
+const AUDIT_LOG = join(tmpdir(), `humanymous-pre-tool-guard-${process.pid}.jsonl`);
+
+rmSync(AUDIT_LOG, { force: true });
+after(() => rmSync(AUDIT_LOG, { force: true }));
 
 function runGuard(payload) {
   return spawnSync(process.execPath, [GUARD], {
     cwd: ROOT,
     encoding: 'utf8',
+    env: { ...process.env, HUMANYMOUS_HOOK_LOG: AUDIT_LOG },
     input: JSON.stringify(payload),
   });
 }
@@ -93,6 +99,20 @@ test('Codex project config excludes ambient GitHub tokens', () => {
   const config = readFileSync(join(ROOT, '.codex/config.toml'), 'utf8');
   assert.match(config, /\[shell_environment_policy\]/);
   assert.match(config, /exclude\s*=\s*\[[^\]]*"GH_TOKEN"[^\]]*"GITHUB_TOKEN"[^\]]*\]/s);
+});
+
+test('audit log records hashes and byte counts without raw commands', () => {
+  const entries = readFileSync(AUDIT_LOG, 'utf8')
+    .trim()
+    .split(/\r?\n/)
+    .map((line) => JSON.parse(line));
+  assert.ok(entries.length >= 2);
+  assert.equal(entries.some((entry) => Object.hasOwn(entry, 'command')), false);
+  assert.equal(entries.at(-2).decision, 'allow');
+  assert.equal(entries.at(-2).stdoutBytes, 0);
+  assert.match(entries.at(-2).commandSha256, /^[a-f0-9]{64}$/);
+  assert.equal(entries.at(-1).decision, 'block');
+  assert.equal(entries.at(-1).exitCode, 2);
 });
 
 test('Codex Windows adapter executes the guard with silent success', {
