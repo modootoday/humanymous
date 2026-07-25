@@ -49,13 +49,15 @@ The `/audit` endpoint accepts `?verdict=&host=&route=&rule=&minRisk=&before=` an
 
 ### The dual-control actions (memorize these)
 
-Three action classes require a **distinct Approver** (second person, different token from the requester):
+Action classes that require a **distinct Approver** (second person, different token from the requester):
 
 1. **Kill switch** (fleet-wide).
-2. **Permanent or CIDR bans**.
-3. **Ban lift / unblock** of a dual-control ban, and **erasure**.
+2. **Permanent or CIDR ban placement**.
+3. **Erasure** (DPO-gated commit — not a generic Approver).
 
-The flow is always the same:
+**Ban lift / unblock is single-Operator** for every ban class, including permanent and CIDR. The dual-control gate applies only when *placing* high-blast-radius bans, not when removing them.
+
+The dual-control flow is always the same:
 
 1. **Request** the action as Operator — it lands as `PENDING`.
 2. **Locate** the pending id: `GET /__hmn/admin/approvals`.
@@ -152,12 +154,12 @@ Auto-bans escalate on repeat strikes: **1h → 6h → 24h → permanent**, with 
 
 > **Warning:** A **permanent** or **CIDR** ban is **dual-control**. Request it as Operator, then have a **distinct Approver** commit via `POST /__hmn/admin/approvals/<id>`.
 > - **Consequence:** the key is denied indefinitely (permanent) or an entire range is denied (CIDR) — high blast radius, real risk of catching humans behind shared egress.
-> - **Rollback:** `POST /__hmn/admin/bans/lift`. Lifting a dual-control ban is **also dual-control** — needs a **distinct Approver**.
+> - **Rollback:** `POST /__hmn/admin/bans/lift` — **single Operator action** (no Approver needed).
 
 ### Who to page
 
-- **Page the Operator on-call** to place fingerprint bans and watch the ladder.
-- **Page a distinct Approver** for any permanent/CIDR ban or any lift.
+- **Page the Operator on-call** to place fingerprint bans, watch the ladder, and lift bans.
+- **Page a distinct Approver** for any permanent/CIDR ban placement (not for lifts).
 
 ---
 
@@ -189,7 +191,7 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-21" -H "Authorization
 
 ### Action
 
-- **Ban the source** with the ladder as in (b): temporary `fp:`/`ip:` ban via `POST /__hmn/admin/bans`; permanent/CIDR is **dual-control** with a **distinct Approver**, rollback via `POST /__hmn/admin/bans/lift` (also dual-control).
+- **Ban the source** with the ladder as in (b): temporary `fp:`/`ip:` ban via `POST /__hmn/admin/bans`; permanent/CIDR placement is **dual-control** with a **distinct Approver**; rollback via `POST /__hmn/admin/bans/lift` (single Operator).
 - **Do not** reach for the kill switch here — it demotes hard-rule enforcement fleet-wide and would remove exactly the `HR-21` DENY that is protecting the origin.
 
 ### Who to page
@@ -230,7 +232,7 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-20" -H "Authorization
 ### Action
 
 - **Temporary `fp:` ban** via `POST /__hmn/admin/bans` for repeat agent fingerprints; the ladder escalates on repeats.
-- **Permanent/CIDR** only with a **distinct Approver** (dual-control); rollback via `POST /__hmn/admin/bans/lift` (also dual-control).
+- **Permanent/CIDR** only with a **distinct Approver** (dual-control placement); rollback via `POST /__hmn/admin/bans/lift` (single Operator).
 
 > **Note:** T4 (anti-detect tooling plus real-human click-farms) is an explicit design boundary Gate does not solve; it is mitigated only by rate and reputation. If bans are not denting the volume, escalate rather than banning ever-wider.
 
@@ -376,7 +378,7 @@ The audit chain and its pseudonyms are only *pseudonymous* — re-identification
 
 ### Rules of engagement
 
-- **Kill switch and permanent/CIDR bans and their lifts are dual-control** — always name and involve a **distinct Approver**; the requester never self-approves.
+- **Kill switch and permanent/CIDR ban placement are dual-control** — always name and involve a **distinct Approver**; the requester never self-approves. **Ban lifts are single-Operator.**
 - **The kill switch is fleet-wide** — it stops hard-rule enforcement everywhere and exposes the origin; manual bans still enforce; roll it back (dual-control) the moment the cause is fixed.
 - **Fingerprint (`fp:`) beats IP (`ip:`)** against rotation; IP/CIDR beats fingerprint against a fixed hostile source; neither beats shared-egress false positives.
 - **Integrity red is a security incident** — verify offline, preserve evidence, do not paper over it with admin writes.

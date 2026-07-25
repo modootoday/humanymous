@@ -108,12 +108,11 @@ A ban keys on either an IP or a fingerprint, and choosing wrong either misses th
 
 > **Warning:** A **permanent** ban or a **CIDR** ban is **dual-control**. Request it as Operator, then have a **distinct Approver** commit via `POST /__hmn/admin/approvals/<id>`.
 > - **Consequence:** the key is denied indefinitely (permanent) or an entire range is denied (CIDR) — high blast radius, real risk of catching humans behind shared egress.
-> - **Rollback:** `POST /__hmn/admin/bans/lift`.
+> - **Rollback:** `POST /__hmn/admin/bans/lift` — **single Operator action** for every ban class (temporary, permanent, and CIDR). Placement of permanent/CIDR is dual-control; lift is not.
 
 ### Lifting bans — the rollback path
 
-- **Lifting a temporary ban is a single Operator action:** `POST /__hmn/admin/bans/lift`.
-- **Lifting a permanent or CIDR ban is dual-control** — it needs a **distinct Approver**, the same two-person flow as placing one. A dual-control ban and its removal both require the second role; the requester never self-approves either direction.
+- **Every lift is a single Operator action:** `POST /__hmn/admin/bans/lift?key=<ban-key>`. The reference routes lift to `adminCanOperate` only — there is no Approver commit path for unblocks. Permanent/CIDR **placement** is dual-control; **removal** is not.
 
 ### What bans are *not* for
 
@@ -130,11 +129,11 @@ Do not reach for the kill switch to deal with an attack that bans can hold. The 
 | Kill switch (on or off) | Operator | **Distinct Approver** | Fleet-wide; hard-rule enforcement → monitor everywhere; manual bans still enforce | Flip off — also dual-control |
 | Temporary `ip:`/`fp:` ban | Operator (single) | — | One key, expires (1h/6h/24h) | Lift — single Operator |
 | Bulk temporary bans | Operator (single) | — | Batch of expiring keys (perm/CIDR rejected) | Lift each — single Operator |
-| Permanent or CIDR ban | Operator | **Distinct Approver** | Indefinite key, or whole range | Lift — also dual-control |
+| Permanent or CIDR ban | Operator | **Distinct Approver** | Indefinite key, or whole range | Lift — single Operator |
 
 ### Rules of engagement
 
-- **Kill switch, permanent/CIDR bans, and their lifts are dual-control** — always name and page a **distinct Approver**; the requester never self-approves, in either direction.
+- **Kill switch and permanent/CIDR ban placement are dual-control** — always name and page a **distinct Approver**; the requester never self-approves. **Ban lifts are single-Operator** (any ban class).
 - **The kill switch is fleet-wide** — it stops hard-rule enforcement everywhere and exposes the origin. Manual bans still enforce. Pull it for a customer-hurting false-positive storm, never to calm a real attack; roll it back (dual-control) the moment the cause is fixed.
 - **Per-route demotion is startup config, not a runtime toggle** — under a false-positive storm your runtime choices are the global kill switch or a route-table edit plus restart.
 - **`fp:` beats `ip:` against rotation (HR-19)** — and avoids CGNAT / corporate-egress false positives; `ip:`/`cidr:` beats fingerprint against a fixed source; neither beats shared-egress false positives.
