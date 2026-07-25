@@ -10,7 +10,7 @@ keywords: ["RBAC separation of duties","dual-control admin plane","humanymous Ga
 
 This page is the authoritative lookup for the admin-plane access model in the reference build of humanymous Gate ("Gate" after first mention): the four roles, the capability each role carries, the exact capability-resolution rules, and which actions require a distinct second identity (dual-control). It is descriptive, not a walkthrough. For the admin API surface each capability maps onto, see the [CLI, config & per-route policy reference](./cli-config-policy.md). For the operational procedures these controls gate, see the [Kill-switch and bans runbook](../runbooks/kill-switch-and-bans.md) and the [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md).
 
-> **Note:** This repository is a reference implementation, not a production-hardened build. The role model, capability rules, and dual-control constraints below are enforced by the reference binary; the transport authentication is dev bearer tokens (see [Authentication and trust boundary](#authentication-and-trust-boundary)), and mTLS/SSO admin authentication is a prod-delta not present in the reference.
+> **Note:** This repository is a reference implementation, not a production-hardened build. The role model, capability rules, and dual-control constraints below are enforced by the reference binary. Transport auth defaults to dev bearer tokens (see [Authentication and trust boundary](#authentication-and-trust-boundary)); **client mTLS** is available via `-admin-mtls-ca` (still bearer + mTLS together). External IdP/SSO remains a prod-delta.
 
 Gate is the reverse-proxy enforcement layer. Its admin plane is served on a separate authenticated admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)), cross-origin to the public edge. The public edge does not serve `/__hmn/admin/*` — it 404s that prefix.
 
@@ -119,7 +119,7 @@ The controls below back the role model. Each maps to a separation-of-duties (SoD
 - **Deny-by-default (404).** A missing or invalid token returns 404, not 401/403 — the admin surface is non-discoverable to an unauthenticated caller. `/__hmn/admin/*` is not served on the public edge at all.
 - **Meta-audited access.** Every authenticated admin access is recorded to the audit log as `admin.access` **before** the request is served. Reads and actions alike are logged, so the audit trail shows who looked at what, not only who changed what.
 
-> **Note:** The reference authenticates admin callers with dev bearer tokens (`HMN_ADMIN_TOKENS`, or random per-boot tokens printed at startup). Mutual-TLS or SSO admin authentication is a prod-delta and is not present in the reference build.
+> **Note:** The reference authenticates admin callers with dev bearer tokens (`HMN_ADMIN_TOKENS`, or random per-boot tokens printed at startup). Optional **client mTLS** is enabled with `-admin-mtls-ca` (required *in addition* to the bearer token). External IdP/SSO fronting is still a prod-delta.
 
 ---
 
