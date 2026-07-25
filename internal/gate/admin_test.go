@@ -32,6 +32,29 @@ func TestAdminReadAPIs(t *testing.T) {
 		t.Fatalf("unauthenticated admin read must 404, got %d", w.Code)
 	}
 
+	// keys (SoT-38 WS2): public verification material only.
+	kw := adminDo(srv, toks[RoleAuditor], "GET", "/__hmn/admin/keys", "")
+	if kw.Code != http.StatusOK {
+		t.Fatalf("keys: %d %s", kw.Code, kw.Body.String())
+	}
+	var keys map[string]any
+	if err := json.Unmarshal(kw.Body.Bytes(), &keys); err != nil {
+		t.Fatalf("keys json: %v", err)
+	}
+	if keys["sth_public_key"] == nil || keys["sth_public_key"] == "" {
+		t.Fatalf("keys missing sth_public_key: %v", keys)
+	}
+	// witness_public_key is always present; empty string when the node has no
+	// co-signer (banStack test fixture). Production with -keystore + witness
+	// fills a hex public key.
+	if _, ok := keys["witness_public_key"]; !ok {
+		t.Fatalf("keys missing witness_public_key field: %v", keys)
+	}
+	cpw := adminDo(srv, toks[RoleAuditor], "GET", "/__hmn/admin/checkpoints", "")
+	if cpw.Code != http.StatusOK {
+		t.Fatalf("checkpoints: %d %s", cpw.Code, cpw.Body.String())
+	}
+
 	// integrity (authenticated auditor): chain must self-verify.
 	iw := adminDo(srv, toks[RoleAuditor], "GET", "/__hmn/admin/integrity", "")
 	var integ struct {
@@ -66,9 +89,9 @@ func TestAdminReadAPIs(t *testing.T) {
 	if handle == "" {
 		t.Fatal("stream records must carry an opaque incident handle")
 	}
-	cw := adminDo(srv, toks[RoleAuditor], "GET", "/__hmn/admin/incidents/"+handle, "")
-	if cw.Code != http.StatusOK || !strings.Contains(cw.Body.String(), "\"seq\":") {
-		t.Fatalf("incident lookup by handle failed: %d %s", cw.Code, cw.Body.String())
+	incw := adminDo(srv, toks[RoleAuditor], "GET", "/__hmn/admin/incidents/"+handle, "")
+	if incw.Code != http.StatusOK || !strings.Contains(incw.Body.String(), "\"seq\":") {
+		t.Fatalf("incident lookup by handle failed: %d %s", incw.Code, incw.Body.String())
 	}
 	// A raw seq must NOT resolve (non-enumerable).
 	if raw := adminDo(srv, toks[RoleAuditor], "GET", "/__hmn/admin/incidents/"+itoaInt(int(stream.Records[0].Seq)), ""); raw.Code == http.StatusOK {

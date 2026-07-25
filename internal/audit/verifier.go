@@ -23,9 +23,10 @@ const (
 	ClassSeqGap        MismatchClass = "seq-gap"
 	ClassLinkageBreak  MismatchClass = "linkage-break"
 	ClassCheckpointBad MismatchClass = "checkpoint-mismatch"
-	ClassWitnessBad    MismatchClass = "witness-invalid"
-	ClassEmptyChain    MismatchClass = "empty-chain"
-	ClassNodeMissing   MismatchClass = "node-missing"
+	ClassWitnessBad     MismatchClass = "witness-invalid"
+	ClassEmptyChain     MismatchClass = "empty-chain"
+	ClassHMACUnchecked  MismatchClass = "hmac-unchecked"
+	ClassNodeMissing    MismatchClass = "node-missing"
 )
 
 // VerifyResult is the verifier's report.
@@ -81,7 +82,12 @@ func (l *Log) SelfVerify() VerifyResult {
 // Verify replays the chain against the HMAC key and STH public key. The HMAC key
 // is needed only because HMAC is a secondary symmetric layer; the PRIMARY trust
 // (checkpoint signatures) verifies with pub alone.
+//
+// SoT-38 WS2: when hmacKey is nil or empty, the HMAC layer is skipped and a
+// successful verify returns ClassHMACUnchecked instead of ClassOK — auditors
+// with only public keys can still check hash linkage + STH signatures.
 func Verify(records []Record, checkpoints []Checkpoint, hmacKey []byte, pub ed25519.PublicKey) VerifyResult {
+	checkHMAC := len(hmacKey) > 0
 	prevHash := ""
 	var expectSeq uint64 = 1
 	for i := range records {
@@ -103,12 +109,14 @@ func Verify(records []Record, checkpoints []Checkpoint, hmacKey []byte, pub ed25
 			return VerifyResult{Class: ClassHashBreak, AtSeq: r.Seq,
 				Detail: "record content was altered"}
 		}
-		// Secondary HMAC layer.
-		mac := hmac.New(sha256.New, hmacKey)
-		mac.Write([]byte(r.RecordHash))
-		if !hmac.Equal([]byte(hex.EncodeToString(mac.Sum(nil))), []byte(r.HMAC)) {
-			return VerifyResult{Class: ClassHMACInvalid, AtSeq: r.Seq,
-				Detail: "hmac invalid"}
+		// Secondary HMAC layer (optional for public-key-only offline auditors).
+		if checkHMAC {
+			mac := hmac.New(sha256.New, hmacKey)
+			mac.Write([]byte(r.RecordHash))
+			if !hmac.Equal([]byte(hex.EncodeToString(mac.Sum(nil))), []byte(r.HMAC)) {
+				return VerifyResult{Class: ClassHMACInvalid, AtSeq: r.Seq,
+					Detail: "hmac invalid"}
+			}
 		}
 		prevHash = r.RecordHash
 	}
@@ -156,6 +164,13 @@ func Verify(records []Record, checkpoints []Checkpoint, hmacKey []byte, pub ed25
 			}
 		}
 		pv = cp.Sig
+	}
+	if !checkHMAC {
+		return VerifyResult{
+			OK:     true,
+			Class:  ClassHMACUnchecked,
+			Detail: "hmac layer skipped (no key); hash chain and STH signatures verified",
+		}
 	}
 	return pass()
 }

@@ -201,7 +201,7 @@ The 15-minute verdict-token epoch key already rotates on its own and needs none 
 - **Back up two things separately:** the sealed keystore file, and the `HMN_UNSEAL` passphrase (out-of-band). Losing either loses the node identity. Back up the `hmn-data` volume (keystore + audit WAL) on a schedule and **validate every restore** with `gate -audit-wal … -keystore … -audit-verify` — see [Back up & restore the keystore + audit WAL](#back-up--restore-the-keystore--audit-wal).
 - **Expire pre-erasure keystore backups.** A keystore backup taken before a crypto-shred still holds the erased subject's linkage key; scope its retention so a restore cannot re-arm re-identification (same section).
 - Store `-origin-key` as a shared secret with the origin, in your secrets manager.
-- Publish and archive the **public** key so anyone can verify exported checkpoints — see [Verify the audit log](verify-audit-log.md).
+- Publish and archive the **public** key so anyone can verify exported checkpoints — see [Verify the audit log](verify-audit-log.md). Reference surfaces: boot line `audit keys: …`, `GET /__hmn/admin/keys`, and `GET /__hmn/admin/checkpoints` (STHs + witness sigs).
 - Treat SigningSeed/HMACKey rotation as a planned, re-anchoring operation, never an in-place swap. It is not automated here.
 - Let the verdict-token epoch key rotate on its own; do not build tooling around it.
 

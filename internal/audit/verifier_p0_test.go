@@ -36,6 +36,25 @@ func TestSelfVerifyRequiresWitness(t *testing.T) {
 	}
 }
 
+// SoT-38 WS2: public-key-only auditors pass nil HMAC key.
+func TestVerifyNilHMACSkipsSecondaryLayer(t *testing.T) {
+	w := NewWitness()
+	l := NewLog(Config{NodeID: "n", HMACKey: []byte("secret-hmac"), CheckpointEvery: 4, Witness: w})
+	for i := 0; i < 8; i++ {
+		l.Append(sampleRecord(i))
+	}
+	l.Checkpoint()
+	recs, cps := l.Records(), l.Checkpoints()
+	res := Verify(recs, cps, nil, l.PublicKey())
+	if !res.OK || res.Class != ClassHMACUnchecked {
+		t.Fatalf("nil HMAC should skip layer: %+v", res)
+	}
+	// Wrong non-nil HMAC still fails.
+	if res := Verify(recs, cps, []byte("wrong"), l.PublicKey()); res.OK || res.Class != ClassHMACInvalid {
+		t.Fatalf("wrong HMAC must fail: %+v", res)
+	}
+}
+
 // Writer-only Verify still passes on stripped witness (documents the gap SelfVerify closes).
 func TestVerifyAloneDoesNotCheckWitness(t *testing.T) {
 	w := NewWitness()

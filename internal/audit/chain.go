@@ -191,6 +191,11 @@ func (l *Log) Append(r Record) Record {
 	}
 	r.PrevHash = l.prevHash
 	r.RecordHash = computeRecordHash(&r, l.prevHash)
+	if len(l.hmacKey) == 0 {
+		// Writers always need a real HMAC key (keystore or ephemeral). nil is only
+		// for offline Verify with public keys (SoT-38 WS2) — never for Append.
+		panic("audit: Append requires a non-empty HMAC key")
+	}
 	mac := hmac.New(sha256.New, l.hmacKey)
 	mac.Write([]byte(r.RecordHash))
 	r.HMAC = hex.EncodeToString(mac.Sum(nil))

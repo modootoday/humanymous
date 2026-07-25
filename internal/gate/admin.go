@@ -97,6 +97,9 @@ var adminRoutes = []adminRoute{
 		writeJSON(w, map[string]any{"id": op.ID, "role": op.Role})
 	}},
 	{http.MethodGet, adminExact("metrics"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminMetrics(w) }},
+	// SoT-38 WS2 — public verification material (no secrets). Auditors pin these out-of-band.
+	{http.MethodGet, adminExact("keys"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminKeys(w) }},
+	{http.MethodGet, adminExact("checkpoints"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminCheckpoints(w) }},
 
 	// --- mutations: role-gated (Operator) ---
 	{http.MethodPost, adminExact("bans"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
@@ -360,6 +363,29 @@ func (s *Server) adminIntegrity(w http.ResponseWriter) {
 		out["lastSTH"] = map[string]any{"treeSize": cps[n-1].TreeSize, "root": cps[n-1].Root}
 	}
 	writeJSON(w, out)
+}
+
+// adminKeys publishes STH + witness verification keys (SoT-38 WS2). No HMAC or
+// seed material — only what an external auditor needs to verify exported STHs.
+func (s *Server) adminKeys(w http.ResponseWriter) {
+	log := s.sink.Log()
+	out := map[string]any{
+		"node_id":         s.cfg.NodeID,
+		"key_id":          "k1",
+		"sth_public_key":  hex.EncodeToString(log.PublicKey()),
+		"witness_public_key": "",
+	}
+	if wpub := log.WitnessPublicKey(); len(wpub) > 0 {
+		out["witness_public_key"] = hex.EncodeToString(wpub)
+	}
+	writeJSON(w, out)
+}
+
+// adminCheckpoints returns the full Signed Tree Head list including writer and
+// witness signatures (SoT-38 WS2).
+func (s *Server) adminCheckpoints(w http.ResponseWriter) {
+	cps := s.sink.Log().Checkpoints()
+	writeJSON(w, map[string]any{"checkpoints": cps, "count": len(cps)})
 }
 
 // adminAudit serves the audit stream with server-side search, filtering and

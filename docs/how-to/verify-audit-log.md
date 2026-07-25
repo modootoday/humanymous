@@ -46,9 +46,11 @@ flowchart TD
 
 Each record carries the hash of the record before it, so the records form a chain. Changing any earlier record changes its hash, which breaks the link every later record depends on. You cannot silently edit a record in the middle of the log and leave the tail consistent — the linkage no longer resolves.
 
-### 2. Per-record HMAC
+### 2. Per-record HMAC (secondary; optional for public-key auditors)
 
 Each record is authenticated with a keyed HMAC. This binds the record's content to the log's HMAC key, so a record cannot be forged or rewritten by someone who does not hold that key, even if they can reproduce a plausible hash chain.
+
+The HMAC layer is **secondary**. An external auditor who holds only the Ed25519 public keys (no keystore / no HMAC material) can still verify hash linkage and STH signatures. In that mode `Verify` skips HMAC and returns `ok:true` with class **`hmac-unchecked`** so the report is honest about what was not checked. Writers always require a real HMAC key — `Append` panics if the key is empty.
 
 ### 3. Ed25519 Signed Tree Heads (STH)
 
@@ -104,7 +106,15 @@ Note what the endpoint does and does not expose: it returns the latest Signed Tr
 
 Independent verification needs the Ed25519 public key that the STH signatures verify against.
 
-> **Note:** The reference build does not expose the Ed25519 STH public key (or the witness public key) through an admin endpoint or a startup line. With `-keystore`, the signing seed is sealed in the keystore and the public key is derived from it; publishing the public key (and the raw STH/witness signatures) for a fully independent, offline auditor is a production responsibility (prod-delta). Until then, verification is the server-side `SelfVerify` surfaced by `GET /__hmn/admin/integrity` and the console Integrity view.
+**Reference publish surfaces (SoT-38 WS2):**
+
+1. **Startup line** — every boot logs public material only:
+   `audit keys: node=<id> sth_public=<hex> witness_public=<hex>`
+2. **Admin API** (Auditor bearer token; meta-audited):
+   - `GET /__hmn/admin/keys` → `node_id`, `key_id`, `sth_public_key`, `witness_public_key` (hex; witness may be empty when no co-signer is configured).
+   - `GET /__hmn/admin/checkpoints` → full Signed Tree Head list including writer and witness signatures for export.
+
+Pin these keys out-of-band (config management, paper escrow). Never treat the HMAC key or signing seeds as publishable. A fully packaged standalone offline verifier binary remains a prod-delta; the library path is `internal/audit.Verify(records, checkpoints, hmacKeyOrNil, sthPublicKey)`.
 
 ---
 
@@ -116,6 +126,7 @@ When verification does not come back clean, it reports one of the following mism
 | --- | --- | --- |
 | **hash-break** | A record's stored hash does not match a recomputation over its content. | The record's content was altered after it was written, or the chain link no longer resolves. Integrity of that record is not established. |
 | **hmac-invalid** | A record's per-record HMAC does not verify. | The record was forged or rewritten by a party without the HMAC key, or the record content was changed. The record is not authentic. |
+| **hmac-unchecked** | Verification succeeded with hash chain + STH signatures, but the HMAC layer was skipped because no HMAC key was supplied. | **Not a failure.** Public-key-only auditors get this class with `ok:true`. Treat as partial assurance: linkage and checkpoints are good; per-record HMAC authenticity was not checked. |
 | **seq-gap** | The record sequence has a gap — an expected sequence number is missing. | Records were removed, or never written, between two surviving records. The log is not the complete append-only sequence it claims. |
 | **linkage-break** | A record's back-reference to the prior record does not resolve. | The append-only chain is broken at that point; records before and after cannot be tied into one continuous chain. |
 | **checkpoint-mismatch** | A Signed Tree Head does not match the records it should anchor. | The signed checkpoint and the underlying records disagree — a checkpointed range was altered, or the STH was replaced. This is the class that catches a rewrite of already-checkpointed history. |

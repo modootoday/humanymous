@@ -251,6 +251,7 @@ The Integrity Dashboard flags one of these mismatch classes:
 
 - **hash-break** — a record's content hash does not match.
 - **hmac-invalid** — a per-record HMAC does not verify.
+- **hmac-unchecked** — not a red state: hash chain + STHs verified without an HMAC key (public-key-only audit). Treat as partial assurance, not a break.
 - **seq-gap** — a sequence number is missing.
 - **linkage-break** — the append-only chain linkage is broken.
 - **checkpoint-mismatch** — a Signed Tree Head checkpoint does not reconcile.

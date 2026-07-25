@@ -129,8 +129,15 @@ func main() {
 			log.Printf("keystore: resumed persisted node identity from %s", *keystorePath)
 		}
 	} else {
-		hmacKey = make([]byte, 32)
-		mustRand(hmacKey)
+		// SoT-38 WS2: do not mint a random HMAC for -audit-verify. A random key
+		// makes every offline verify against a real WAL return hmac-invalid
+		// before public STH checks can matter. Runtime still needs an ephemeral
+		// HMAC so Append can seal records in dev without a keystore.
+		if !*auditVerify {
+			hmacKey = make([]byte, 32)
+			mustRand(hmacKey)
+		}
+		// hmacKey stays nil when -audit-verify without -keystore → Verify skips HMAC.
 		vault = audit.NewVault()
 	}
 	vault.SetStretch(true) // KDF-stretch pseudonyms (SoT-28 WS8 brute-force resistance)
@@ -172,6 +179,10 @@ func main() {
 		log.Printf("audit projection: ClickHouse -> %s (audit_log)", *auditCH)
 	}
 	alog := audit.NewLog(audit.Config{NodeID: *node, HMACKey: hmacKey, CheckpointEvery: 32, Witness: witness, SigningSeed: signingSeed, WAL: auditSink, Projections: projections})
+	// Publish verification keys for out-of-band pinning (SoT-38 WS2). Public only —
+	// never log seeds or HMAC material.
+	log.Printf("audit keys: node=%s sth_public=%x witness_public=%x",
+		*node, alog.PublicKey(), alog.WitnessPublicKey())
 	// Restore the witness's monotonic fork-detection state from the last replayed
 	// checkpoint so the first post-restart co-sign still demands an append-only
 	// consistency proof (deep-review: no cross-restart amnesia).
