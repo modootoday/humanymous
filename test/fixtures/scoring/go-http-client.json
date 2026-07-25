@@ -1,0 +1,140 @@
+{
+  "id": "go-http-client",
+  "report": {
+    "sessionId": "",
+    "ts": "0001-01-01T00:00:00Z",
+    "client": {
+      "sessionId": "",
+      "userAgent": "Go-http-client/2.0",
+      "uaClientHints": {
+        "mobile": false
+      },
+      "signals": null,
+      "behavior": {
+        "mouse": {
+          "samples": 0,
+          "meanCurvature": 0,
+          "velocityStdDev": 0,
+          "accelEntropy": 0,
+          "straightLineFrac": 0,
+          "pauseCount": 0,
+          "maxTeleportPx": 0,
+          "meanJerk": 0,
+          "coalescedRatio": 0
+        },
+        "key": {
+          "keystrokes": 0,
+          "meanDwellMs": 0,
+          "dwellStdDevMs": 0,
+          "meanFlightMs": 0,
+          "flightStdDevMs": 0,
+          "pasteEvents": 0,
+          "zeroDwellFrac": 0
+        },
+        "events": {
+          "totalEvents": 0,
+          "untrustedFrac": 0,
+          "noMoveClicks": 0,
+          "syntheticFlags": 0,
+          "clickCount": 0,
+          "longGapCount": 0,
+          "burstVarMs": 0,
+          "minReactionMs": 0
+        },
+        "durationS": 0
+      },
+      "environment": {
+        "probed": false,
+        "adBlock": false,
+        "trackingProtection": false,
+        "doNotTrack": "",
+        "gpc": false,
+        "collectorBlocked": false,
+        "braveShields": false
+      },
+      "guard": {
+        "reported": false,
+        "evalUsed": 0,
+        "funcCtor": 0,
+        "scriptInjected": 0,
+        "protoPolluted": false,
+        "nativeHooked": false,
+        "consoleDisabled": false
+      },
+      "advanced": {
+        "probed": false,
+        "mediaDeviceCount": 0,
+        "hasAudioInput": false,
+        "hasVideoInput": false,
+        "voiceCount": 0,
+        "widevineSupported": false,
+        "webgpuPresent": false,
+        "webgpuVendor": "",
+        "webgpuFallback": false,
+        "webglVendor": "",
+        "audioSampleRate": 0,
+        "connectionPresent": false,
+        "connectionRtt": 0,
+        "batteryPresent": false,
+        "batteryLevel": 0,
+        "batteryCharging": false,
+        "timezoneIana": "",
+        "timezoneOffsetMin": 0,
+        "language": "",
+        "colorGamut": "",
+        "dynamicRange": "",
+        "pointerCoarse": false,
+        "maxTouchPoints": 0,
+        "perfMemoryPresent": false,
+        "measureMemThrows": false,
+        "mobileUA": false
+      },
+      "fingerprintId": "",
+      "engineVersion": ""
+    },
+    "network": {
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "ja4Engine": "go",
+      "h2Engine": "go",
+      "secFetchPresent": false,
+      "secChUaPresent": false,
+      "signals": null
+    },
+    "crosschecks": [
+      {
+        "id": "x.non_browser_ua",
+        "inputs": [
+          "client.userAgent"
+        ],
+        "claim": "UA looks like a browser",
+        "observed": "UA matches a known HTTP library",
+        "consistent": false,
+        "weight": 45,
+        "score": 45,
+        "notes": "UA=\"Go-http-client/2.0\" not a browser"
+      }
+    ],
+    "scoring": {
+      "riskScore": 46.4,
+      "verdict": "CHALLENGE",
+      "topContributors": [
+        {
+          "id": "x.non_browser_ua",
+          "score": 45
+        },
+        {
+          "id": "l2.env.probe_dead",
+          "score": 2.5
+        }
+      ],
+      "policyVersion": "1.0.0"
+    }
+  },
+  "want": {
+    "riskScore": 46.4,
+    "verdict": "CHALLENGE",
+    "policyVersion": "1.0.0"
+  }
+}

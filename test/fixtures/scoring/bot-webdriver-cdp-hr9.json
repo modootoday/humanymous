@@ -1,0 +1,202 @@
+{
+  "id": "bot-webdriver-cdp-hr9",
+  "report": {
+    "sessionId": "",
+    "ts": "0001-01-01T00:00:00Z",
+    "client": {
+      "sessionId": "",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0 Safari/537.36",
+      "uaClientHints": {
+        "mobile": false
+      },
+      "signals": [
+        {
+          "id": "l1.navigator.webdriver",
+          "layer": "L1",
+          "value": null,
+          "verdict": "BOT",
+          "weight": 40,
+          "score": 40,
+          "confidence": 0.95,
+          "collected": "js"
+        },
+        {
+          "id": "l1.cdp.proxy_leak",
+          "layer": "L1",
+          "value": null,
+          "verdict": "BOT",
+          "weight": 40,
+          "score": 40,
+          "confidence": 0.95,
+          "collected": "wasm"
+        }
+      ],
+      "behavior": {
+        "mouse": {
+          "samples": 0,
+          "meanCurvature": 0,
+          "velocityStdDev": 0,
+          "accelEntropy": 0,
+          "straightLineFrac": 0,
+          "pauseCount": 0,
+          "maxTeleportPx": 0,
+          "meanJerk": 0,
+          "coalescedRatio": 0
+        },
+        "key": {
+          "keystrokes": 0,
+          "meanDwellMs": 0,
+          "dwellStdDevMs": 0,
+          "meanFlightMs": 0,
+          "flightStdDevMs": 0,
+          "pasteEvents": 0,
+          "zeroDwellFrac": 0
+        },
+        "events": {
+          "totalEvents": 0,
+          "untrustedFrac": 0,
+          "noMoveClicks": 0,
+          "syntheticFlags": 0,
+          "clickCount": 0,
+          "longGapCount": 0,
+          "burstVarMs": 0,
+          "minReactionMs": 0
+        },
+        "durationS": 0
+      },
+      "environment": {
+        "probed": false,
+        "adBlock": false,
+        "trackingProtection": false,
+        "doNotTrack": "",
+        "gpc": false,
+        "collectorBlocked": false,
+        "braveShields": false
+      },
+      "guard": {
+        "reported": false,
+        "evalUsed": 0,
+        "funcCtor": 0,
+        "scriptInjected": 0,
+        "protoPolluted": false,
+        "nativeHooked": false,
+        "consoleDisabled": false
+      },
+      "advanced": {
+        "probed": false,
+        "mediaDeviceCount": 0,
+        "hasAudioInput": false,
+        "hasVideoInput": false,
+        "voiceCount": 0,
+        "widevineSupported": false,
+        "webgpuPresent": false,
+        "webgpuVendor": "",
+        "webgpuFallback": false,
+        "webglVendor": "",
+        "audioSampleRate": 0,
+        "connectionPresent": false,
+        "connectionRtt": 0,
+        "batteryPresent": false,
+        "batteryLevel": 0,
+        "batteryCharging": false,
+        "timezoneIana": "",
+        "timezoneOffsetMin": 0,
+        "language": "",
+        "colorGamut": "",
+        "dynamicRange": "",
+        "pointerCoarse": false,
+        "maxTouchPoints": 0,
+        "perfMemoryPresent": false,
+        "measureMemThrows": false,
+        "mobileUA": false
+      },
+      "fingerprintId": "",
+      "engineVersion": ""
+    },
+    "network": {
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "secFetchPresent": false,
+      "secChUaPresent": false,
+      "signals": null
+    },
+    "crosschecks": [
+      {
+        "id": "x.browser_no_js",
+        "inputs": [
+          "client.userAgent",
+          "client.signals",
+          "client.advanced",
+          "client.behavior"
+        ],
+        "claim": "browser UA implies JS/WASM execution",
+        "observed": "no client-side execution evidence delivered",
+        "consistent": true,
+        "weight": 45,
+        "score": 0,
+        "notes": "browser UA but zero JS/WASM execution evidence (HTTP parrot)"
+      },
+      {
+        "id": "x.uach_present",
+        "inputs": [
+          "client.userAgent",
+          "network.secChUa"
+        ],
+        "claim": "Chromium always sends Sec-CH-UA",
+        "observed": "Sec-CH-UA present",
+        "consistent": false,
+        "weight": 40,
+        "score": 40,
+        "notes": "UA-CH presence"
+      },
+      {
+        "id": "x.ua_vs_header",
+        "inputs": [
+          "client.userAgent",
+          "network.secFetch"
+        ],
+        "claim": "Chromium sends sec-fetch-*",
+        "observed": "sec-fetch present",
+        "consistent": false,
+        "weight": 35,
+        "score": 35,
+        "notes": "sec-fetch presence"
+      }
+    ],
+    "scoring": {
+      "riskScore": 84.4,
+      "verdict": "DENY",
+      "hardRuleFired": "HR-9",
+      "topContributors": [
+        {
+          "id": "l1.navigator.webdriver",
+          "score": 40
+        },
+        {
+          "id": "l1.cdp.proxy_leak",
+          "score": 40
+        },
+        {
+          "id": "x.uach_present",
+          "score": 40
+        },
+        {
+          "id": "x.ua_vs_header",
+          "score": 35
+        },
+        {
+          "id": "l2.env.probe_dead",
+          "score": 2.5
+        }
+      ],
+      "policyVersion": "1.0.0"
+    }
+  },
+  "want": {
+    "riskScore": 84.4,
+    "verdict": "DENY",
+    "hardRuleFired": "HR-9",
+    "policyVersion": "1.0.0"
+  }
+}
