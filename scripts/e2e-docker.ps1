@@ -97,25 +97,27 @@ $cleanup = {
 
 try {
   Write-Host "[e2e-docker] validate compose..."
-  Invoke-Compose "validate-compose" config -q
+  # Use long Docker flags here: PowerShell can bind short flags such as -d to
+  # the wrapper function's own common parameters instead of forwarding them.
+  Invoke-Compose "validate-compose" config --quiet
 
   Invoke-Compose "build-images" --profile attack --profile gate-test --profile pass-test --profile swarm --progress plain build core gate bots
-  Invoke-Compose "start-defenders" up -d --no-build core origin gate
+  Invoke-Compose "start-defenders" up --detach --no-build core origin gate
 
-  Invoke-Compose "attack-catalog" run --rm -T bots
+  Invoke-Compose "attack-catalog" run --rm --no-TTY bots
 
-  Invoke-Compose "attack-assert" run --rm -T attack-assert
+  Invoke-Compose "attack-assert" run --rm --no-TTY attack-assert
 
-  Invoke-Compose "gate-conformance" run --rm -T gate-e2e
+  Invoke-Compose "gate-conformance" run --rm --no-TTY gate-e2e
 
-  Invoke-Compose "pass-contract" run --rm -T pass-e2e
+  Invoke-Compose "pass-contract" run --rm --no-TTY pass-e2e
   Invoke-Compose "restart-core" restart core
-  Invoke-Compose "pass-wargame" run --rm -T pass-wargame
+  Invoke-Compose "pass-wargame" run --rm --no-TTY pass-wargame
 
   if (-not $SkipSwarm) {
-    Invoke-Compose "swarm-reset" run --rm -T swarm-reset
+    Invoke-Compose "swarm-reset" run --rm --no-TTY swarm-reset
     Invoke-Compose "swarm" --profile swarm up --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c
-    Invoke-Compose "swarm-assert" run --rm -T swarm-assert
+    Invoke-Compose "swarm-assert" run --rm --no-TTY swarm-assert
   } else {
     Write-Host "[e2e-docker] skip swarm"
   }
