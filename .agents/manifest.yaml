@@ -1,0 +1,84 @@
+# Multi-provider agent layout inventory (canon).
+version: 3
+
+canon:
+  project_rules: AGENTS.md
+  nested_agents:
+    - internal/AGENTS.md
+    - cmd/gate/AGENTS.md
+    - docs/AGENTS.md
+    - test/AGENTS.md
+    - web/AGENTS.md
+  rules_root: .agents/rules
+  skills_root: .agents/skills
+  personas_root: .agents/personas
+  workflows_root: .agents/workflows
+  evals: .agents/evals/trigger-queries.json
+  hooks_canon: .agents/hooks
+
+adapters:
+  claude:
+    project_rules: [CLAUDE.md]
+    skills: .claude/skills
+    rules: .claude/rules
+    agents: .claude/agents
+    settings: .claude/settings.json
+  grok:
+    project_rules: [AGENTS.md]
+    skills: [.agents/skills, .grok/skills]
+    rules: .grok/rules
+    hooks: .grok/hooks/project-safety.json
+  codex:
+    project_rules: [AGENTS.md]
+    skills: .codex/skills
+  gemini:
+    project_rules: [AGENTS.md]
+    settings: .gemini/settings.json
+    skills: [.agents/skills, .gemini/skills]
+
+rules:
+  - 00-safety.md
+  - 10-go-conventions.md
+  - 20-detection-freeze.md
+  - 30-docs-diataxis.md
+  - 40-ambiguity-ask.md
+  - 50-provider-matrix.md
+  - 60-e2e-docker-only.md
+  - 70-hard-won-lessons.md
+  - 80-truth-debt.md
+
+lessons:
+  - HARD-WON.md
+  - PROVIDER-HISTORY.md
+
+skills:
+  - design-sot
+  - adversarial-critique
+  - implement-sot-slice
+  - red-blue-validate
+  - pass-wargame-round
+  - docs-from-sot
+  - cut-release
+  - review-changes
+  - handover-pack
+  - optimize-skill-description
+  - survey-provider-history
+
+personas:
+  - blue-architect
+  - red-attacker
+  - sre-ops
+  - compliance-dpo
+  - evaluator
+  - staff-synthesizer
+
+workflows:
+  - feature-loop.yaml
+  - design-panel.yaml
+
+research_basis:
+  - https://agents.md/
+  - https://agentskills.io/skill-creation/best-practices
+  - https://agentskills.io/skill-creation/optimizing-descriptions
+  - nested AGENTS progressive disclosure / monorepo patterns
+  - L0 hooks for deterministic safety (Claude settings + Grok hooks)

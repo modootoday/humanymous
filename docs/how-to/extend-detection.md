@@ -17,7 +17,7 @@ flowchart TD
   S3 --> S4["4. Promotion rule as data (promotionRules) — optional"]
   S4 --> S5["5. Guard the FP path (applyFPMitigation damp)"]
   S5 --> S6["6. Do not fork trace logic (golden test)"]
-  S6 --> S7["7. Validate end to end (Observatory + runner.mjs)"]
+  S6 --> S7["7. Validate end to end (Observatory + Docker e2e)"]
   S7 --> S8["8. Update the reader surface in lockstep"]
 ```
 
@@ -121,11 +121,15 @@ go test ./internal/scoring/ -run 'ScoreWithTrace|CombineTrace'
 
    > **Note:** If no profile exercises your tell yet, add one first — see [Write a red profile](write-a-red-profile.md). Adding a profile has three registration points (the `runner.mjs` `PROFILES` array, the `launchProfiles` allowlist in `cmd/server/launch.go`, and the Observatory catalog in `web/playground.html`); missing any one makes it silently absent.
 
-2. **Run the harness.**
+2. **Run the Docker e2e harness (authoritative).**
 
    ```
-   node test/e2e/runner.mjs
+   make e2e
+   # or faster: make e2e-quick
+   # or only the catalog: make up && make attack && make e2e-assert
    ```
+
+   Host `node test/e2e/runner.mjs` is for local debugging only — not completion authority.
 
 3. **Confirm the trade-off is honest.** Your change is good only if `botTPR` improved **without** raising `humanFPR`, and without a spike in the human baseline's challenge-rate (Step 5). If a bot profile that should now be caught still passes (FN), re-check your group choice (Step 1) and per-signal verdict (Step 2 — `fired` vs `firedBot`). If a human baseline flipped to DENY, prefer a damp (Step 5) or a CHALLENGE (Step 4) over the DENY.
 
@@ -146,7 +150,7 @@ A rule that fires but is undocumented is a drift bug. When you add or change an 
 - [ ] Any hard rule appended as a `promoRule` to `promotionRules`, verdict chosen deliberately (human-catching heuristic ⇒ CHALLENGE), placed by precedence, with a plain `why`.
 - [ ] FP guarded: `applyFPMitigation` damp added where a legitimate client would trip; privacy-browser and old-device baselines re-checked before any DENY.
 - [ ] Golden test run (no forked trace logic): `trace.Score == Combine`, `ScoreWithTrace == Score`.
-- [ ] End-to-end: fires in the Observatory; `node test/e2e/runner.mjs` shows `botTPR` up, `humanFPR` flat, challenge-rate on the human baseline inspected.
+- [ ] End-to-end (Docker): fires in the Observatory; `make e2e` / `make attack` shows `botTPR` up, `humanFPR` flat, challenge-rate on the human baseline inspected.
 - [ ] Reader surface updated in lockstep: engine-plane row in `hard-rules-verdicts.md` + derivation-index row; no internal spec IDs on reader pages.
 
 ## Related

@@ -11,7 +11,7 @@ ADDR     ?= :8443
 IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
-.PHONY: all wasm wasmexec server gate report build test race e2e-deps e2e report-html run clean fmt vet \
+.PHONY: all wasm wasmexec server gate report build test race e2e-deps e2e e2e-docker e2e-quick report-html run clean fmt vet \
         docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets docs-frames docs-anim
 
 all: build
@@ -84,17 +84,28 @@ release-notes:
 run: server wasm
 	$(SRV_OUT) -addr $(ADDR) -web web
 
-## e2e-deps: install the Red-team harness deps (playwright-core; uses installed Edge)
+## e2e-deps: install host-side Node deps for docs screenshots / local profile authoring
+## (the authoritative attack catalog runs inside the bots Docker image — not via this target)
 e2e-deps:
 	cd test && npm install --no-audit --no-fund
 
-## e2e: run the Red vs Blue harness (server must be running separately, or use scripts/e2e.sh)
-e2e:
-	node test/e2e/runner.mjs
+## e2e / e2e-docker: authoritative end-to-end suite (Docker only).
+## Runs attack catalog + assert + gate-e2e + swarm (+ overlays unless skipped).
+## Host/loopback `node test/e2e/runner.mjs` is NOT completion authority (misses L5 topology).
+e2e e2e-docker:
+	bash scripts/e2e-docker.sh
 
-## report-html: aggregate results.json into docs/report.html
+## e2e-quick: Docker e2e without swarm/overlays (faster local iteration; still not unit-only)
+e2e-quick:
+	E2E_SKIP_SWARM=1 E2E_SKIP_OVERLAYS=1 bash scripts/e2e-docker.sh
+
+## report-html: aggregate Docker attack artifacts (or local results) into docs/report.html
 report-html: report
-	$(RPT_OUT) -in test/e2e/results.json -out docs/report.html
+	@if [ -f deployments/artifacts/core-results.json ]; then \
+	  $(RPT_OUT) -in deployments/artifacts/core-results.json -out docs/report.html; \
+	else \
+	  $(RPT_OUT) -in test/e2e/results.json -out docs/report.html; \
+	fi
 
 ## docker: build the public demo image (detection engine only; build/core.Dockerfile)
 docker:
@@ -114,7 +125,7 @@ attack:
 swarm:
 	$(COMPOSE) --profile swarm up --build --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
 
-## gate-e2e: run the Gate proxy-layer conformance (34 checks)
+## gate-e2e: run the Gate proxy-layer conformance (34 checks) inside Docker
 gate-e2e:
 	$(COMPOSE) run --rm gate-e2e
 
@@ -125,6 +136,10 @@ logs:
 ## down: tear down the whole stack (containers + networks + volumes)
 down:
 	$(COMPOSE) down -v
+
+## e2e-assert: re-check last Docker attack artifact without re-running bots
+e2e-assert:
+	node scripts/assert-attack.mjs deployments/artifacts/core-results.json
 
 clean:
 	rm -f $(SRV_OUT) $(RPT_OUT) $(WASM_OUT) test/e2e/results.json

@@ -131,8 +131,10 @@ deployments/    # modular docker compose (include:) + origin + bots scripts + ar
 configs/        # deployment config (dev.env, …)
 test/           # redteam/ attack catalog, e2e/ runner, gate/ conformance
 docs/           # GitHub Pages documentation
-scripts/        # local dev helpers (e2e.sh)
+scripts/        # e2e-docker.sh (authoritative e2e) + agents/sync-adapters
 sots/  plan/    # development source-of-truth / design (excluded from release & publish)
+AGENTS.md       # always-on rules for coding agents (Claude/Grok/Codex/Gemini)
+.agents/        # multi-provider skills, personas, rules, workflows (canon)
 ```
 
 ## Quick start (Docker — cross-platform, recommended)
@@ -453,10 +455,12 @@ SPA serving, policy, erasure (crypto-shred) dual-control, final chain integrity*
 console at `/__hmn/admin/console` (SoT-26).
 
 ```bash
-# Run the proxy (:8444) in front of a demo upstream (:9000), then the Gate conformance e2e
-go build -o bin/gate.exe ./cmd/gate/
-./bin/gate.exe -addr :8444 -upstream http://127.0.0.1:9000 -origin-key demo-origin-secret
-node test/gate/e2e.mjs
+# Gate proxy-layer conformance (authoritative path: Docker)
+# from repo root — needs Docker; stands up a throwaway Gate inside the bots image
+make up          # optional: detection stack for other targets
+make gate-e2e    # docker compose run --rm gate-e2e  (34 checks)
+# full e2e suite (attack + assert + gate-e2e + swarm + overlays):
+make e2e
 ```
 
 ## Status

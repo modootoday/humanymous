@@ -7,6 +7,21 @@
 /sots/
 /plan/
 
+# Multi-provider agent adapters are generated from .agents/ via
+# scripts/agents/sync-adapters — commit the canon; regenerate vendor mirrors.
+# Uncomment the next block if you prefer not to commit generated trees:
+# /.claude/skills/
+# /.claude/rules/
+# /.claude/agents/
+# /.grok/skills/
+# /.grok/rules/
+# /.gemini/skills/
+# /.codex/skills/
+
+# Claude Code personal overrides (never commit)
+.claude/settings.local.json
+
+
 # build outputs
 /bin/
 *.exe

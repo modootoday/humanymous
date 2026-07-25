@@ -140,13 +140,15 @@ Its stdout is deliberately minimal — `{label, verdict, riskScore, hardRuleFire
 
 Next, launch the profile in the Detection Observatory and watch it run. The L1→L7 waterfall and the "Why this verdict" hard-rule ladder should show what you expected — the tell you planted lighting up the layer you aimed at, and the verdict landing where your label assumes it will.
 
-Finally, run the full suite and confirm the bookkeeping matches your intent:
+Finally, run the full suite **in Docker** and confirm the bookkeeping matches your intent:
 
 ```
-node test/e2e/runner.mjs
+make up && make attack && make e2e-assert
+# or the full authoritative suite:
+make e2e
 ```
 
-A `bot:` profile you expected to be caught should read as a true positive (CHALLENGE or DENY); if it reads as a false negative (ALLOW), the runner is telling you the truth about a coverage gap — see [Interpret and act](#interpret-and-act).
+A `bot:` profile you expected to be caught should read as a true positive (CHALLENGE or DENY); if it reads as a false negative (ALLOW), the runner is telling you the truth about a coverage gap — see [Interpret and act](#interpret-and-act). Host-only `node test/e2e/runner.mjs` is fine while drafting a profile, but completion claims require the Docker path.
 
 ## Raw-protocol tells go in cmd/redteam
 

@@ -1,7 +1,12 @@
 // runner.mjs — Red vs Blue e2e harness. Runs each available Red profile against
-// the LOCAL Blue server, collects verdicts, and writes results.json. Browser
-// profiles are skipped gracefully if playwright-core is not installed
-// (plan/04 §3). Target is hard-coded to localhost — no external targets.
+// the detection engine, collects verdicts, and writes results.json.
+//
+// AUTHORITATIVE PATH: Docker bots container (deployments/bots/run-attack.sh) with
+// HM_BASE=https://core:8443 on the internal lab network. See scripts/e2e-docker.sh
+// and make e2e. Host/loopback runs (default HM_BASE=https://127.0.0.1:8443) are for
+// profile authoring only — not completion authority for L5 / multi-subnet work.
+// Browser profiles skip gracefully if playwright-core is missing (plan/04 §3).
+// No external targets.
 
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';

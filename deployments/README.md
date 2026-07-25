@@ -57,9 +57,16 @@ enforced by the network, not by convention.
 # from repo root — Make targets wrap compose (where `make` is available):
 make up             # build + start the detection stack (core :8443/demo, gate :8444, admin :8445)
 make attack         # run the bots (automation catalog) vs the engine (47 profiles)
+make e2e-assert     # assert last attack artifact (all bots blocked, no FP)
 make swarm          # multi-subnet correlation swarm (proxy_rotation across 3 subnets)
-make gate-e2e   # Gate proxy-layer conformance (34 checks)
+make gate-e2e       # Gate proxy-layer conformance (34 checks)
+make e2e            # full Docker e2e suite (attack + assert + gate-e2e + swarm + overlays)
+make e2e-quick      # Docker e2e without swarm/overlays (faster iteration)
 make down           # tear everything down
+
+# or the one-shot script (same authority as CI):
+bash scripts/e2e-docker.sh
+# Windows: pwsh -File scripts/e2e-docker.ps1
 
 # or drive compose directly from deployments/ (cross-platform; no make needed):
 docker compose up -d --build core origin gate
@@ -68,6 +75,8 @@ docker compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swar
 docker compose run --rm gate-e2e
 docker compose down -v
 ```
+
+> **E2E policy:** completion authority for end-to-end detection/Gate validation is **Docker only**. Host `node test/e2e/runner.mjs` against a loopback binary is for profile authoring, not for claiming the suite passed.
 
 Admin console: `https://localhost:8445/__hmn/admin/console` — dev token
 `operator:e2e-operator-token` (from `configs/dev.env`). Certs are self-signed;

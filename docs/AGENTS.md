@@ -1,0 +1,16 @@
+# AGENTS.md — `docs/`
+
+Inherits root `AGENTS.md`. User-facing documentation only.
+
+## Rules
+
+- Diátaxis: one quadrant per page (tutorial / how-to / reference / explanation / runbook).
+- Declare quadrant + audience near the top (house style).
+- **Never** surface internal `SoT-NN` ids on reader-facing pages (maintainer derivation index excepted).
+- Derive from SoT intent; do not dump raw SoT.
+- Limits-first: T4 ceiling, topology (CDN re-TLS), reference vs production.
+- Enforcement changes should keep blocked-user guidance coherent (`docs/help/`).
+
+## Skills
+
+Use `docs-from-sot` for derivation work. Style: `docs/style-guide.md`.

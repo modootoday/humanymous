@@ -1,0 +1,34 @@
+# Multi-perspective design panel → synthesis → adversarial critique
+id: design-panel
+version: 1
+description: >
+  Parallel persona survey for a significant design decision, then one synthesis
+  SoT/plan draft and one adversarial completeness pass.
+
+phases:
+  - id: brief
+    action: Fix problem statement, constraints, and non-goals in 10–15 lines.
+    exit: Shared brief all personas use
+
+  - id: panel
+    parallel: true
+    personas:
+      - blue-architect
+      - red-attacker
+      - sre-ops
+      - compliance-dpo
+      - evaluator
+    each_produces:
+      - findings (severity H/M/L)
+      - evidence (file path, SoT id, or threat)
+      - open questions
+    exit: Per-persona finding lists
+
+  - id: synthesize
+    persona: staff-synthesizer
+    skill: design-sot
+    exit: Single SoT or plan draft; contradictions resolved or marked residual
+
+  - id: adversarial
+    skill: adversarial-critique
+    exit: Weakest assumptions listed; must-fix items reflected in draft before implement

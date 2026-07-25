@@ -1,0 +1,17 @@
+# Project-scoped Codex config (loaded only when this project is trusted).
+# Goal: auto-approve command/tool execution without per-step prompts.
+#
+# Docs: approval_policy + sandbox_mode
+#   https://learn.chatgpt.com/docs/config-file/config-reference
+#   https://learn.chatgpt.com/docs/agent-approvals-security
+#
+# `never` = do not pause for approval before exec.
+# `danger-full-access` = avoid sandbox-escalation prompts (Docker, host tools, etc.).
+# This project is already marked trusted in ~/.codex/config.toml.
+
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+
+# If an older Codex build prefers granular form, these all stay off (auto).
+# Uncomment if string "never" is ignored by your IDE build:
+# approval_policy = { granular = { sandbox_approval = false, rules = false, mcp_elicitations = false, request_permissions = false, skill_approval = false } }

@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "description": "Static trigger eval set for project skills (manual or agent-assisted). should_trigger labels guide description quality reviews.",
+  "queries": [
+    {
+      "query": "Write a new SoT for rate-limit escalation before we touch code",
+      "skill": "design-sot",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "design panel multi-perspective for the audit sink",
+      "skill": "design-sot",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Adversarial completeness critique of this draft SoT",
+      "skill": "adversarial-critique",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Find the weakest assumptions in plan/07",
+      "skill": "adversarial-critique",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Implement the accepted SoT slice into internal/scoring",
+      "skill": "implement-sot-slice",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Run the full gate and Docker bots before merge",
+      "skill": "red-blue-validate",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "make e2e / make attack / detector-vs-bots self-validation",
+      "skill": "red-blue-validate",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "run e2e-docker suite before merging gate changes",
+      "skill": "red-blue-validate",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Another Pass wargame round for volume-forge residual",
+      "skill": "pass-wargame-round",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Derive a Diátaxis how-to from SoT for operators",
+      "skill": "docs-from-sot",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Review my uncommitted changes for detection freeze",
+      "skill": "review-changes",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Write a handover pack for the next LLM session",
+      "skill": "handover-pack",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Cut a v0.3.0 release following SoT-37",
+      "skill": "cut-release",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Our skill description is too broad and fires on every PR — tune it",
+      "skill": "optimize-skill-description",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Fix a typo in README.md only",
+      "skill": "design-sot",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "What is the weather in Seoul?",
+      "skill": "red-blue-validate",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Update formulas in my Excel budget spreadsheet",
+      "skill": "docs-from-sot",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Write a unit test for itoa helper with no detection changes",
+      "skill": "pass-wargame-round",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Explain how JA4 works in general cryptography terms",
+      "skill": "implement-sot-slice",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "git status only — don't change anything",
+      "skill": "cut-release",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Near miss: document internal SoT file itself, not user docs",
+      "skill": "docs-from-sot",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

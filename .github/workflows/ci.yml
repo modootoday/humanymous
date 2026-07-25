@@ -54,6 +54,12 @@ jobs:
         with:
           config: cliff.toml
           args: --context
+      # Multi-provider agent layout (AGENTS.md + .agents skills/personas).
+      # Sync adapters so Claude/Codex/Gemini/Grok skill trees match the canon.
+      - name: agent layout sync + verify
+        run: |
+          bash scripts/agents/sync-adapters.sh
+          bash scripts/agents/verify-agents-layout.sh
 
   detector-vs-bots:
     name: docker detector-vs-bots

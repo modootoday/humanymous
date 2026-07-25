@@ -90,34 +90,37 @@ The available `-attack` values are `tls-rotate`, `ua-rotate`, `rit-replay`, `rit
 
 **Browser-automation simulators — `test/redteam/*.mjs`.** A catalog of profiles that reproduce the client-side and behavioral tells of common automation stacks — for example `selenium`, `puppeteer`, `puppeteer_stealth`, `playwright_plain`, `playwright_stealth`, `undetected`, `nodriver`, `patchright`, `camoufox`, `antidetect`, `direct_cdp`, `ai_agent`, `flood`, and `rapid_reset`, among others. Crucially, the catalog also includes **`human`** — an honest-human baseline you expect to be ALLOWed. That baseline is what turns this from "does it catch bots" into "does it catch bots *without* flagging real people."
 
-## Step 4 — Run the full suite
+## Step 4 — Run the full suite (Docker — authoritative)
 
-The orchestrator `test/e2e/runner.mjs` runs each available profile against the local detection server, records every verdict, and writes `test/e2e/results.json`. Browser profiles that need a driver you have not installed are skipped gracefully rather than failing the run.
+**Authoritative e2e is Docker compose**, not a host process on loopback. The catalog runs inside the `bots` image on an internal lab network against the `core` service so the network plane and isolation policy match CI.
 
-Install the harness dependencies once:
-
-```
-cd test && npm install --no-audit --no-fund
-```
-
-Then, with the detection server from Step 2 still running, run the suite from the repository root:
+From the repository root (Docker required):
 
 ```
-node test/e2e/runner.mjs
+make e2e
 ```
 
-You will see one line per profile run — the label, the verdict (ALLOW / CHALLENGE / DENY), the risk score, and whether a hard rule fired — followed by a short per-label summary. The honest-human baseline should read as ALLOW; the automation profiles should read as CHALLENGE or DENY.
+Or the equivalent one-shot:
+
+```
+bash scripts/e2e-docker.sh
+```
+
+That path builds/starts the stack, runs the automation catalog, asserts every bot is blocked with no human false DENY, runs Gate conformance, and (unless skipped) multi-subnet swarm + feature overlays. Artifacts land under `deployments/artifacts/` (including `core-results.json`).
+
+> **Note:** `node test/e2e/runner.mjs` against a host-only server remains available for **profile authoring**, but it is **not** completion authority — loopback cannot exercise multi-subnet correlation or the lab network boundary. Prefer `make attack` / `make e2e` for any claim about the suite.
 
 ## Step 5 — Summarize as a measurement
 
-Turn the raw results into the two numbers that matter with `cmd/report`, which aggregates `results.json`:
+Turn the raw results into the two numbers that matter with `cmd/report`, which aggregates the Docker attack artifact (or a local results file):
 
 ```
 go build -o bin/report.exe ./cmd/report
 ```
 
 ```
-bin/report.exe -in test/e2e/results.json -out docs/report.html
+bin/report.exe -in deployments/artifacts/core-results.json -out docs/report.html
+# or: make report-html  (prefers the Docker artifact when present)
 ```
 
 It prints a one-line summary and writes an HTML report:

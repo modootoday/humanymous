@@ -1,0 +1,40 @@
+# Tool-agnostic feature development loop (humanymous method)
+id: feature-loop
+version: 1
+description: >
+  Spec-first change with multi-perspective pressure, adversarial critique,
+  implementation, and full red/blue verification.
+
+phases:
+  - id: spec
+    skill: design-sot
+    personas: [blue-architect, red-attacker, sre-ops, compliance-dpo, evaluator]
+    synthesizer: staff-synthesizer
+    exit: SoT (or plan delta) accepted with non-coverage and vocabulary fixed
+
+  - id: critique
+    skill: adversarial-critique
+    exit: needs-work findings folded into SoT, or explicit residual risks listed
+
+  - id: implement
+    skill: implement-sot-slice
+    exit: code + unit tests for the slice; detection freeze honored unless in scope
+
+  - id: verify
+    skill: red-blue-validate
+    exit: full gate green for the scope (unit + Docker attack when network plane touched)
+
+  - id: docs
+    skill: docs-from-sot
+    when: user-facing surface or operator behavior changed
+    exit: docs page + derivation note updated if applicable
+
+  - id: handover
+    skill: handover-pack
+    when: multi-session or incomplete residual work
+    exit: self-contained next-agent brief written
+
+  - id: skill-hygiene
+    skill: optimize-skill-description
+    when: new/changed project skills mis-trigger
+    exit: descriptions pass eval queries in .agents/evals/

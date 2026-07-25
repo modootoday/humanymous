@@ -5,14 +5,19 @@
 #   defenders.yaml  the detection stack (core engine + origin + Gate)
 #   bots.yaml       the automation catalog (attack run, Gate conformance, subnet swarm)
 #
-# Usage (run from this directory):
-#   docker compose up -d --build core origin gate     # detector up
-#   docker compose run --rm bots                            # run the bots vs the engine
-#   docker compose --profile swarm up --build               # multi-subnet swarm
-#   docker compose run --rm gate-e2e                    # Gate conformance
-#   docker compose down -v                                  # tear down
+# Usage (run from repo root preferred):
+#   make e2e / bash scripts/e2e-docker.sh   # full authoritative e2e suite
+#   make up && make attack && make e2e-assert
+#   make gate-e2e && make swarm
+# From this directory:
+#   docker compose up -d --build core origin gate
+#   docker compose run --rm bots
+#   docker compose --profile swarm up --build
+#   docker compose run --rm gate-e2e
+#   docker compose down -v
 #
-# See deployments/README.md for the full topology + safety model.
+# Host/loopback node test/e2e/runner.mjs is NOT completion authority.
+# See deployments/README.md for topology + safety model.
 include:
   - compose/networks.yaml
   - compose/defenders.yaml
