@@ -123,7 +123,7 @@ A kill-switch flip emits a `config.changed` audit event; route/preset changes ta
 
 An upgrade should not break audit continuity. With `-keystore`, the signing key is preserved, so checkpoints written by the old process still verify under the same public key after the restart. Confirm this after Step 3:
 
-- Open the Integrity / Chain Integrity view (or `GET /__hmn/admin/integrity`) and re-verify the chain. It should verify with the public key alone, with no `checkpoint-mismatch` or `node-missing` classes introduced by the restart.
+- Open the Integrity / Chain Integrity view (or `GET /__hmn/admin/integrity`) and re-verify the chain. Expect `ok:true` with records present and no `checkpoint-mismatch` / `node-missing` / `empty-chain` classes introduced by the restart.
 - A node that was **not** keystore-backed will show a changed verifier public key after restart — expected for ephemeral keys, and a reason those nodes are not production-representative.
 
 > **Note:** the reference emits an `instance.startup` audit record on every boot (the first record written after key load), so each restart lays down a fresh start marker that brackets the "after upgrade" records — combine it with the `config_version` comparison above. There is no matching stop marker: an `instance.shutdown` event type is defined but the reference never emits it, so bracket on the post-restart `instance.startup`, not on a clean-stop record.

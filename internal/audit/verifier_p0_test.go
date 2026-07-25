@@ -36,6 +36,34 @@ func TestSelfVerifyRequiresWitness(t *testing.T) {
 	}
 }
 
+// SoT-38 P0-5: empty chain is a hard fail in the library (not only in CLI).
+func TestVerifyEmptyChainFails(t *testing.T) {
+	l := NewLog(Config{NodeID: "n", HMACKey: []byte("k-empty")})
+	res := Verify(nil, nil, []byte("k-empty"), l.PublicKey())
+	if res.OK || res.Class != ClassEmptyChain {
+		t.Fatalf("empty Verify must fail empty-chain: %+v", res)
+	}
+	// SelfVerify on a log that never Append'd is the same vacuous-green trap.
+	if res := l.SelfVerify(); res.OK || res.Class != ClassEmptyChain {
+		t.Fatalf("empty SelfVerify must fail empty-chain: %+v", res)
+	}
+	// Nil HMAC must not rebrand empty as hmac-unchecked OK.
+	if res := Verify(nil, nil, nil, l.PublicKey()); res.OK || res.Class != ClassEmptyChain {
+		t.Fatalf("empty+nilHMAC must fail empty-chain: %+v", res)
+	}
+}
+
+// Append refuses to seal without an HMAC key (writers need real material).
+func TestAppendPanicsWithoutHMAC(t *testing.T) {
+	defer func() {
+		if recover() == nil {
+			t.Fatal("Append with empty HMAC must panic")
+		}
+	}()
+	l := NewLog(Config{NodeID: "n", HMACKey: nil})
+	l.Append(sampleRecord(0))
+}
+
 // SoT-38 WS2: public-key-only auditors pass nil HMAC key.
 func TestVerifyNilHMACSkipsSecondaryLayer(t *testing.T) {
 	w := NewWitness()

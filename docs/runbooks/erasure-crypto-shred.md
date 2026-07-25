@@ -32,8 +32,8 @@ stateDiagram-v2
   Scheduled --> Cancelled: Operator or DPO cancels within hold window
   Scheduled --> Shredded: hold window (default 5 min) elapses
   Cancelled --> [*]
-  Shredded --> Certificate: signed erasure certificate sealed
-  Certificate --> [*]
+  Shredded --> Evidence: erasure.completed audit record sealed
+  Evidence --> [*]
   note right of Shredded: linkage key destroyed (irreversible); audit chain stays intact and verifiable
 ```
 

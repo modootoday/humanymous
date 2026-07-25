@@ -19,7 +19,7 @@ The reference Gate gives you five observability surfaces. Three are on the authe
 
 1. **The audit stream** — `GET /__hmn/admin/audit`, structured JSON records of every edge decision, with server-side filters and a paging cursor. This is your primary machine-readable feed, and the source of per-verdict rates (see below).
 2. **The Ledger Overview KPIs** — a human-facing live feed of allow/challenge/deny decisions with rollup counters, at `https://localhost:8445/__hmn/admin/console`. See the [Ledger tour](audit-console-tour.md).
-3. **Chain-integrity status** — the Integrity view and `GET /__hmn/admin/integrity`, which verify the tamper-evident audit log live (append-only hash chain + per-record HMAC + Ed25519 Signed Tree Heads) using the public key alone.
+3. **Chain-integrity status** — the Integrity view and `GET /__hmn/admin/integrity`, which run live `SelfVerify` (hash chain + HMAC + Ed25519 STHs + witness when configured). Empty chains report `empty-chain`, not a green pass.
 4. **Prometheus metrics** — `GET /__hmn/admin/metrics` on the admin plane, process/chain/ban gauges and counters in text-exposition format (see [Scrape process metrics](#scrape-process-metrics-__hmnmetrics)).
 5. **Liveness and readiness probes** — `GET /__hmn/healthz` and `GET /__hmn/readyz`, unauthenticated on the public edge, for orchestrator probes and load-balancer drain ordering (see [Wire liveness and readiness probes](#wire-liveness-and-readiness-probes)).
 

@@ -209,7 +209,7 @@ The 15-minute verdict-token epoch key already rotates on its own and needs none 
 
 ## Related
 
-- [Verify the audit log](verify-audit-log.md) — how the public key alone verifies the chain, and how a key change affects verification.
+- [Verify the audit log](verify-audit-log.md) — how published STH/witness public keys verify the chain (and `hmac-unchecked` when no HMAC key), and how a key change affects verification.
 - [Production vs reference](../reference/production-vs-reference.md) — the prod-delta list, including automated key rotation and KMS/HSM.
 - [CLI, config & policy reference](../reference/cli-config-policy.md) — `-keystore`, `HMN_UNSEAL`, `-origin-key`, and startup lines.
 - [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — deliberate destruction of a per-subject linkage key.

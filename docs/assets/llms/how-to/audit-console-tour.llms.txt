@@ -83,7 +83,7 @@ You do not decide from the Overview alone. **Click a row to drill into it** — 
 
 **Question it answers:** Can I still trust the audit log itself?
 
-The Integrity view (also labelled "Chain Integrity") verifies the audit log **live**. The log is an append-only hash chain with a per-record HMAC and Ed25519 Signed Tree Heads, and the important property is on the page: it **verifies with the public key alone**. You do not need any secret to confirm the log has not been rewritten.
+The Integrity view (also labelled "Chain Integrity") verifies the audit log **live** via `SelfVerify` on this node: hash linkage, the per-record HMAC (the node holds the HMAC key), Ed25519 Signed Tree Heads, and the local witness when configured. An **external** auditor who only holds published public keys uses `GET /__hmn/admin/keys` + exported checkpoints and may get class `hmac-unchecked` — see [Verify the audit log](./verify-audit-log.md).
 
 A **green / passing** state means the chain verified end to end. This is "tamper-evident," not "tamper-proof" — records written after the last signed checkpoint remain re-writable by the writer until the next checkpoint is signed, which is an honestly-scoped in-window residual, not a gap in the verification.
 

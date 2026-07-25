@@ -87,6 +87,14 @@ func (l *Log) SelfVerify() VerifyResult {
 // successful verify returns ClassHMACUnchecked instead of ClassOK — auditors
 // with only public keys can still check hash linkage + STH signatures.
 func Verify(records []Record, checkpoints []Checkpoint, hmacKey []byte, pub ed25519.PublicKey) VerifyResult {
+	// SoT-38 P0-5: an empty chain must never look green — CLI and library share one rule.
+	if len(records) == 0 {
+		return VerifyResult{
+			OK:     false,
+			Class:  ClassEmptyChain,
+			Detail: "empty chain is not a pass",
+		}
+	}
 	checkHMAC := len(hmacKey) > 0
 	prevHash := ""
 	var expectSeq uint64 = 1

@@ -143,9 +143,19 @@ func TestAdminMetricsExposition(t *testing.T) {
 			t.Errorf("metrics missing %s\n%s", want, body)
 		}
 	}
-	// A healthy in-memory chain must report integrity ok=1.
-	if !strings.Contains(body, "hmn_gate_audit_integrity_ok 1") {
-		t.Errorf("expected integrity ok=1 on a fresh chain\n%s", body)
+	// SoT-38 P0-5: an empty chain is NOT a green integrity pass (vacuous green trap).
+	if !strings.Contains(body, "hmn_gate_audit_integrity_ok 0") {
+		t.Errorf("expected integrity ok=0 on an empty chain\n%s", body)
+	}
+	// After real records are sealed, RefreshIntegrityMetrics must flip to ok=1.
+	srv.sink.Emit(audit.Record{EventType: "gate.decision", Verdict: "allow", Mode: "enforce", KeyID: "k1"})
+	srv.sink.Emit(audit.Record{EventType: "gate.decision", Verdict: "allow", Mode: "enforce", KeyID: "k1"})
+	srv.RefreshIntegrityMetrics()
+	w2 := httptest.NewRecorder()
+	srv.adminMetrics(w2)
+	body2 := w2.Body.String()
+	if !strings.Contains(body2, "hmn_gate_audit_integrity_ok 1") {
+		t.Errorf("expected integrity ok=1 after records sealed\n%s", body2)
 	}
 }
 

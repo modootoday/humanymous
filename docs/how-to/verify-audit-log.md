@@ -38,8 +38,8 @@ flowchart TD
   B --> V
   C --> V
   D --> V
-  V -->|"consistent"| OK["ok:true — verifies with the public key alone"]
-  V -->|"mismatch"| FAIL["ok:false + class (hash-break, hmac-invalid, seq-gap, linkage-break, checkpoint-mismatch, node-missing)"]
+  V -->|"consistent"| OK["ok:true — ClassOK or hmac-unchecked"]
+  V -->|"mismatch"| FAIL["ok:false + class (empty-chain, hash-break, hmac-invalid, seq-gap, linkage-break, checkpoint-mismatch, witness-invalid, node-missing)"]
 ```
 
 ### 1. Append-only hash chain
@@ -70,7 +70,7 @@ The verification **logic** lives in `internal/audit` (the `Verify` and `SelfVeri
 
 ### Option A — the Ledger "Integrity" view
 
-The Ledger's **Integrity** view (labelled "Chain Integrity", subtitle "tamper-evident audit log") runs the verification live in the browser and reports the result. It verifies the append-only hash chain, the per-record HMAC, and the Ed25519 Signed Tree Heads, and states plainly that it "verifies with the public key alone." A refresh control ("re-verify the chain now") re-runs the check on demand.
+The Ledger's **Integrity** view (labelled "Chain Integrity", subtitle "tamper-evident audit log") runs live `SelfVerify` in the browser and reports the result: hash chain, per-record HMAC (node key material), Ed25519 STHs, and local witness when configured. External public-key-only verification is a separate offline path (`hmac-unchecked` when HMAC is omitted). A refresh control ("re-verify the chain now") re-runs the check on demand.
 
 Open the console on the admin listener:
 
@@ -127,6 +127,7 @@ When verification does not come back clean, it reports one of the following mism
 | **hash-break** | A record's stored hash does not match a recomputation over its content. | The record's content was altered after it was written, or the chain link no longer resolves. Integrity of that record is not established. |
 | **hmac-invalid** | A record's per-record HMAC does not verify. | The record was forged or rewritten by a party without the HMAC key, or the record content was changed. The record is not authentic. |
 | **hmac-unchecked** | Verification succeeded with hash chain + STH signatures, but the HMAC layer was skipped because no HMAC key was supplied. | **Not a failure.** Public-key-only auditors get this class with `ok:true`. Treat as partial assurance: linkage and checkpoints are good; per-record HMAC authenticity was not checked. |
+| **empty-chain** | There are zero records to verify. | **Hard fail.** A vacuous green is worse than a hard fail — CLI `-audit-verify` and library `Verify` / `SelfVerify` all reject empty chains. Point at a real WAL. |
 | **seq-gap** | The record sequence has a gap — an expected sequence number is missing. | Records were removed, or never written, between two surviving records. The log is not the complete append-only sequence it claims. |
 | **linkage-break** | A record's back-reference to the prior record does not resolve. | The append-only chain is broken at that point; records before and after cannot be tied into one continuous chain. |
 | **checkpoint-mismatch** | A Signed Tree Head does not match the records it should anchor. | The signed checkpoint and the underlying records disagree — a checkpointed range was altered, or the STH was replaced. This is the class that catches a rewrite of already-checkpointed history. |
