@@ -86,16 +86,16 @@ jobs:
           - name: gate
             dockerfile: build/gate.Dockerfile
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-qemu-action@v3          # arm64 emulation fallback
-      - uses: docker/setup-buildx-action@v4
-      - uses: docker/login-action@v3
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3  arm64 emulation fallback
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/humanymous-${{ matrix.name }}
           # Tag-only workflow: always emit :latest for successful SemVer cuts.
@@ -110,7 +110,7 @@ jobs:
             type=semver,pattern={{major}}
             type=sha,format=long
       - id: build
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           context: .
           file: ${{ matrix.dockerfile }}
@@ -122,7 +122,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           provenance: mode=max                     # SLSA provenance attestation
           sbom: true                               # SPDX SBOM attestation
-      - uses: sigstore/cosign-installer@v3
+      - uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
       - name: Sign the pushed image
         run: |
           cosign sign --yes \
@@ -133,7 +133,7 @@ jobs:
           # build-push outputs digest like sha256:…
           echo -n "${{ steps.build.outputs.digest }}" > "${{ runner.temp }}/digests/${{ matrix.name }}"
       - name: Upload digest artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: digest-${{ matrix.name }}
           path: ${{ runner.temp }}/digests/${{ matrix.name }}
@@ -148,14 +148,14 @@ jobs:
     needs: images
     timeout-minutes: 10
     steps:
-      - uses: docker/setup-buildx-action@v4
-      - uses: docker/login-action@v3
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: digests
           pattern: digest-*
@@ -187,7 +187,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0        # git-cliff needs the full history + tags to diff since the previous tag
       # Generate the release notes for THIS tag from the Conventional Commits since
@@ -195,7 +195,7 @@ jobs:
       # into Keep a Changelog sections — replaces GitHub's generic auto-notes.
       - name: Generate release notes (git-cliff)
         id: notes
-        uses: orhun/git-cliff-action@v4
+        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4
         with:
           config: cliff.toml
           args: --latest --strip header
@@ -203,6 +203,6 @@ jobs:
           OUTPUT: RELEASE_NOTES.md
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # enables commit/PR enrichment
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           body: ${{ steps.notes.outputs.content }}
