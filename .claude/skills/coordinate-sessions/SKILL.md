@@ -52,7 +52,7 @@ pwsh -File scripts/agents/git-coord.ps1 release -Note "commit <sha>"
 ```
 
 - **Required trailer:** vendor GitHub-linked `Co-Authored-By` (avatar-capable), e.g.
-  `Claude <noreply@anthropic.com>`, `Grok Build <304785771+grokkybara[bot]@users.noreply.github.com>`,
+  `Claude <noreply@anthropic.com>`, `Grok <grok@x.ai>`,
   `codex <codex@openai.com>` — full registry in `COMMIT-CONVENTION.md`.
 - Do not use bare `git commit -m` without that trailer; do not invent unowned emails.
 - Read-only `git status`/`diff`/`log` — no claim.
