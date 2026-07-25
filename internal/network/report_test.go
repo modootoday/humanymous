@@ -48,3 +48,75 @@ func TestDatacenterSignalGatedByObservation(t *testing.T) {
 		t.Error("IsDatacenterIP=false must not raise l5.ip.datacenter_asn")
 	}
 }
+
+func TestProxyHopSquidVia(t *testing.T) {
+	ids := buildIDs(Observation{Header: HeaderInfo{
+		Via: "1.1 proxy.example (squid/5.7)",
+	}})
+	if !ids["l5.header.proxy_hop"] {
+		t.Fatal("Squid Via must raise l5.header.proxy_hop")
+	}
+}
+
+func TestProxyHopProxyConnection(t *testing.T) {
+	ids := buildIDs(Observation{Header: HeaderInfo{ProxyConnection: "keep-alive"}})
+	if !ids["l5.header.proxy_hop"] {
+		t.Fatal("Proxy-Connection must raise l5.header.proxy_hop")
+	}
+}
+
+func TestXFFMultiHop(t *testing.T) {
+	ids := buildIDs(Observation{Header: HeaderInfo{
+		XForwardedFor: "203.0.113.1, 198.51.100.2",
+	}})
+	if !ids["l5.header.xff_multi_hop"] {
+		t.Fatal("multi-hop XFF must raise l5.header.xff_multi_hop")
+	}
+	ids1 := buildIDs(Observation{Header: HeaderInfo{XForwardedFor: "203.0.113.1"}})
+	if ids1["l5.header.xff_multi_hop"] {
+		t.Fatal("single-hop XFF must NOT raise xff_multi_hop")
+	}
+}
+
+func TestProxyVPNIPSignal(t *testing.T) {
+	if !buildIDs(Observation{IsProxy: true})["l5.ip.proxy_vpn_tor"] {
+		t.Fatal("IsProxy=true should raise l5.ip.proxy_vpn_tor")
+	}
+	if buildIDs(Observation{IsProxy: false})["l5.ip.proxy_vpn_tor"] {
+		t.Fatal("IsProxy=false must not raise proxy_vpn_tor")
+	}
+}
+
+func TestClientIPSpoofAndAnonChain(t *testing.T) {
+	if !buildIDs(Observation{Header: HeaderInfo{CFConnectingIP: "8.8.8.8"}})["l5.header.client_ip_spoof"] {
+		t.Fatal("CF-Connecting-IP must raise client_ip_spoof")
+	}
+	ids := buildIDs(Observation{Header: HeaderInfo{
+		XForwardedFor: "1.1.1.1, 2.2.2.2, 3.3.3.3, 4.4.4.4",
+	}})
+	if !ids["l5.proxy.anon_chain"] {
+		t.Fatal("≥4-hop XFF must raise anon_chain")
+	}
+	if !ids["l5.proxy.tor_circuit"] {
+		t.Fatal("≥4-hop also implies tor_circuit (≥3)")
+	}
+}
+
+func TestTorExitAndCircuitSignals(t *testing.T) {
+	if !buildIDs(Observation{IsTorExit: true})["l5.ip.tor_exit"] {
+		t.Fatal("IsTorExit=true should raise l5.ip.tor_exit")
+	}
+	ids := buildIDs(Observation{Header: HeaderInfo{
+		XForwardedFor: "185.220.101.1, 185.220.102.2, 203.0.113.50",
+	}})
+	if !ids["l5.proxy.tor_circuit"] {
+		t.Fatal("≥3-hop XFF must raise l5.proxy.tor_circuit")
+	}
+	if !ids["l5.header.xff_multi_hop"] {
+		t.Fatal("≥3-hop XFF must also raise xff_multi_hop")
+	}
+	ids2 := buildIDs(Observation{Header: HeaderInfo{XForwardedFor: "203.0.113.1, 198.51.100.2"}})
+	if ids2["l5.proxy.tor_circuit"] {
+		t.Fatal("2-hop XFF must NOT raise tor_circuit (needs ≥3)")
+	}
+}

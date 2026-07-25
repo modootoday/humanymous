@@ -17,14 +17,17 @@ type Observation struct {
 	Hello  *ClientHello   // nil if not captured (e.g. plain HTTP demo)
 	H2     *H2Fingerprint // nil if not HTTP/2
 	Header HeaderInfo
-	// IsDatacenterIP / IsProxy come from IP intel (internal/network/ipintel.go).
+	// IsDatacenterIP / IsProxy / IsTorExit come from IP intel (operator CIDR feeds).
 	IsDatacenterIP bool
-	IsProxy        bool
+	IsProxy        bool // commercial VPN / open-proxy ranges
+	IsTorExit      bool // Tor exit-relay ranges (distinct from generic proxy/VPN)
 	// ClientForwardedIP is the IP the CLIENT asserted via a forwarding header
 	// (X-Forwarded-For left-most / X-Real-IP), captured regardless of proxy trust.
 	// A real reverse proxy forwards the client's PUBLIC address; a private/reserved
 	// value here is a forged "I'm on your LAN" source (see forwarded_private).
 	ClientForwardedIP string
+	// TCP is the optional L4 residual (PROXY TLV / eBPF). Zero-value = not observed.
+	TCP TCPObservation
 }
 
 // Build turns an Observation into a NetworkReport (L5 signals + engine fields).
@@ -87,12 +90,41 @@ func Build(obs Observation) signals.NetworkReport {
 		add("l5.header.accept_encoding", h.AcceptEncoding, signals.VerdictSuspicious, "Chrome UA but accept-encoding lacks zstd")
 	}
 
+	// --- Forward proxy / hop residual (Squid, open HTTP proxies, elite Forwarded) ---
+	// A direct browser→origin request does not carry Via / Proxy-Connection /
+	// Squid X-Cache on the request. Residual = traffic crossed an HTTP forward proxy.
+	if kind := h.ProxyHopKind(); kind != "" {
+		add("l5.header.proxy_hop", kind, signals.VerdictBot, "forward-proxy hop header residual ("+kind+")")
+	}
+	// CDN/edge client-identity headers forged by scrapers (anonymous-proxy laundering).
+	if kind := h.ClientIPSpoofKind(); kind != "" {
+		add("l5.header.client_ip_spoof", kind, signals.VerdictBot, "forged CDN/edge client-IP header ("+kind+")")
+	}
+	// Multi-hop XFF (≥2) is common on open-proxy chains and some VPN→proxy stacks.
+	// Single-hop XFF is also set by legitimate reverse proxies (Gate); only multi-hop
+	// is scored here. Soft signal — HR-24 needs a second tell for challenge.
+	if n := h.XFFHopCount(); n >= 2 {
+		add("l5.header.xff_multi_hop", n, signals.VerdictSuspicious, "multi-hop X-Forwarded-For chain")
+	}
+	// ≥3 XFF hops is rare for a single reverse proxy; typical of Tor-class circuit
+	// residual or stacked open proxies. Soft — HR-24 promotes with browser claim.
+	if n := h.XFFHopCount(); n >= 3 {
+		add("l5.proxy.tor_circuit", n, signals.VerdictSuspicious, "≥3-hop XFF circuit residual (Tor-class path)")
+	}
+	// Free/anonymous open-proxy chains often stack 4+ hops (elite lists). Strong residual.
+	if n := h.XFFHopCount(); n >= 4 {
+		add("l5.proxy.anon_chain", n, signals.VerdictBot, "≥4-hop XFF anonymous open-proxy chain")
+	}
+
 	// --- IP intel ---
 	if obs.IsDatacenterIP {
 		add("l5.ip.datacenter_asn", true, signals.VerdictSuspicious, "datacenter/hosting ASN")
 	}
 	if obs.IsProxy {
-		add("l5.ip.proxy_vpn_tor", true, signals.VerdictSuspicious, "proxy/vpn/tor exit")
+		add("l5.ip.proxy_vpn_tor", true, signals.VerdictSuspicious, "proxy/vpn exit")
+	}
+	if obs.IsTorExit {
+		add("l5.ip.tor_exit", true, signals.VerdictSuspicious, "Tor exit relay")
 	}
 	// A client-asserted forwarded IP that is private/loopback/link-local is a
 	// forged source: a genuine reverse proxy forwards the client's PUBLIC address,
@@ -101,6 +133,9 @@ func Build(obs Observation) signals.NetworkReport {
 		(ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsUnspecified()) {
 		add("l5.header.forwarded_private", obs.ClientForwardedIP, signals.VerdictBot, "forwarded client IP is private/reserved (spoofed source)")
 	}
+
+	// TCP/L4 residual plane — always observational (weight 0). Score-exempt; Audit owns it.
+	sigs = append(sigs, TCPSignals(obs.TCP, h.UserAgent)...)
 
 	nr.Signals = sigs
 	return nr

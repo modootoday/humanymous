@@ -150,6 +150,11 @@ type Advanced struct {
 	MeasureMemThrows  bool `json:"measureMemThrows"`
 	// UA hints for consistency (mobile claim).
 	MobileUA bool `json:"mobileUA"`
+	// WebRTC ICE residual (VPN/OpenVPN/WireGuard leak): host candidates are
+	// typically private LAN; public srflx/relay candidates should match the TCP
+	// client IP the server sees. Mismatch ⇒ tunnel exit ≠ browser's real path.
+	WebRTCHostAddrs   []string `json:"webrtcHostAddrs,omitempty"`
+	WebRTCPublicAddrs []string `json:"webrtcPublicAddrs,omitempty"`
 }
 
 // Guard holds runtime-hardening probe results from injector.js (SoT-11).

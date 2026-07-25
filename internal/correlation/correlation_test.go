@@ -56,3 +56,26 @@ func TestEmptyKeyIgnored(t *testing.T) {
 		t.Fatal("empty key must be ignored")
 	}
 }
+
+func TestFPChurnProxyDetected(t *testing.T) {
+	r := New(time.Hour)
+	now := time.Unix(1, 0)
+	ja4 := "t13d1516h2_churn"
+	// Rotate fingerprint per exit under one JA4 (evade classic proxy_rotation key).
+	pairs := []struct{ fp, sn string }{
+		{"fp1", "1.2.3"},
+		{"fp2", "9.8.7"},
+		{"fp3", "50.60.70"},
+	}
+	var fired bool
+	for _, p := range pairs {
+		for _, s := range r.ObserveJA4Fanout(ja4, p.fp, p.sn, now) {
+			if s.ID == "l5.correlation.fp_churn_proxy" {
+				fired = true
+			}
+		}
+	}
+	if !fired {
+		t.Fatal("expected fp_churn_proxy across 3 fps + 3 subnets under one JA4")
+	}
+}

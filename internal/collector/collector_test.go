@@ -71,6 +71,42 @@ func TestMergePinsFirstNetwork(t *testing.T) {
 	}
 }
 
+// TestMergeNetwork_RequestScopedHopResiduals: after the TLS pin, a later collect
+// with multi-hop XFF / proxy Via must still append those hop signals so WireGuard
+// exit rotation mid-session is visible to HR-24.
+func TestMergeNetwork_RequestScopedHopResiduals(t *testing.T) {
+	s := NewStore(time.Hour)
+	now := time.Now()
+	s.MergeNetwork("sid", signals.NetworkReport{
+		JA4: "pinned",
+		Signals: []signals.Signal{
+			{ID: "l5.tls.grease_absent"},
+		},
+	}, now)
+	s.MergeNetwork("sid", signals.NetworkReport{
+		JA4: "ignored",
+		Signals: []signals.Signal{
+			{ID: "l5.header.xff_multi_hop"},
+			{ID: "l5.header.proxy_hop"},
+			{ID: "l5.tls.grease_absent"}, // not request-scoped — must NOT re-append
+		},
+	}, now)
+	rep, _ := s.Get("sid")
+	if rep.Network.JA4 != "pinned" {
+		t.Fatalf("JA4 pin broken: %q", rep.Network.JA4)
+	}
+	ids := map[string]int{}
+	for _, sig := range rep.Network.Signals {
+		ids[sig.ID]++
+	}
+	if ids["l5.header.xff_multi_hop"] != 1 || ids["l5.header.proxy_hop"] != 1 {
+		t.Fatalf("want hop residuals once each, got %v", ids)
+	}
+	if ids["l5.tls.grease_absent"] != 1 {
+		t.Fatalf("TLS signal must stay single-pinned, got count %d", ids["l5.tls.grease_absent"])
+	}
+}
+
 func TestMergeClientAndLabel(t *testing.T) {
 	s := NewStore(time.Hour)
 	now := time.Now()

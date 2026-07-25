@@ -16,6 +16,10 @@ import (
 const (
 	subnetsForProxyRotation = 3 // distinct /24 subnets sharing one fingerprint
 	sessionsForShared       = 5 // distinct sessions sharing one fingerprint
+	// Bot rotates fingerprintId per exit to dodge proxy_rotation while one JA4
+	// still fans out across many subnets (anonymous-proxy / residential evasion).
+	ja4SubnetsForFPChurn = 3
+	ja4FPsForFPChurn     = 3
 )
 
 type entry struct {
@@ -24,16 +28,24 @@ type entry struct {
 	updated  time.Time
 }
 
-// Registry tracks fingerprint -> {subnets, sessions}.
+// ja4Fan tracks distinct client fingerprints + subnets under one server JA4.
+type ja4Fan struct {
+	fps     map[string]struct{}
+	subnets map[string]struct{}
+	updated time.Time
+}
+
+// Registry tracks fingerprint -> {subnets, sessions} and JA4 fan-out for fp-churn.
 type Registry struct {
-	mu  sync.Mutex
-	m   map[string]*entry
-	ttl time.Duration
+	mu    sync.Mutex
+	m     map[string]*entry
+	ja4m  map[string]*ja4Fan
+	ttl   time.Duration
 }
 
 // New returns a correlation registry with the given TTL.
 func New(ttl time.Duration) *Registry {
-	return &Registry{m: map[string]*entry{}, ttl: ttl}
+	return &Registry{m: map[string]*entry{}, ja4m: map[string]*ja4Fan{}, ttl: ttl}
 }
 
 // Observe records that (subnet, sessionID) presented the given correlation key
@@ -70,6 +82,37 @@ func (r *Registry) Observe(key, subnet, sessionID string, now time.Time) []signa
 	return out
 }
 
+// ObserveJA4Fanout records that (fingerprintId, subnet) presented under a stable
+// server-observed JA4. When one JA4 fans out across many subnets AND many client
+// fingerprints, the bot is rotating fingerprintId to dodge proxy_rotation (HR-19
+// class) while still riding a rotating anonymous/residential proxy pool.
+func (r *Registry) ObserveJA4Fanout(ja4, fingerprintID, subnet string, now time.Time) []signals.Signal {
+	if ja4 == "" || fingerprintID == "" {
+		return nil
+	}
+	r.mu.Lock()
+	f, ok := r.ja4m[ja4]
+	if !ok {
+		f = &ja4Fan{fps: map[string]struct{}{}, subnets: map[string]struct{}{}}
+		r.ja4m[ja4] = f
+	}
+	f.fps[fingerprintID] = struct{}{}
+	if subnet != "" {
+		f.subnets[subnet] = struct{}{}
+	}
+	f.updated = now
+	nFP, nSub := len(f.fps), len(f.subnets)
+	r.mu.Unlock()
+
+	if nFP >= ja4FPsForFPChurn && nSub >= ja4SubnetsForFPChurn {
+		return []signals.Signal{signals.New("l5.correlation.fp_churn_proxy",
+			map[string]int{"fingerprints": nFP, "subnets": nSub},
+			signals.VerdictBot, 1.0, signals.SourceServer,
+			"many fingerprints + many subnets under one JA4 (proxy fp-churn evasion)")}
+	}
+	return nil
+}
+
 // GC drops fingerprint entries older than the TTL.
 func (r *Registry) GC(now time.Time) {
 	r.mu.Lock()
@@ -77,6 +120,11 @@ func (r *Registry) GC(now time.Time) {
 	for k, e := range r.m {
 		if now.Sub(e.updated) > r.ttl {
 			delete(r.m, k)
+		}
+	}
+	for k, f := range r.ja4m {
+		if now.Sub(f.updated) > r.ttl {
+			delete(r.ja4m, k)
 		}
 	}
 }
@@ -98,5 +146,6 @@ func (r *Registry) Stats(key string) (int, int) {
 func (r *Registry) Reset() {
 	r.mu.Lock()
 	r.m = map[string]*entry{}
+	r.ja4m = map[string]*ja4Fan{}
 	r.mu.Unlock()
 }

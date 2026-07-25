@@ -52,9 +52,10 @@ func reservedServerID(id string) bool {
 		strings.HasPrefix(id, "l7.") || strings.HasPrefix(id, "x.")
 }
 
-// MergeNetwork attaches the network observation. Only the first observation is
-// pinned as the session basis; later ones are ignored here (re-validation is a
-// separate concern).
+// MergeNetwork attaches the network observation. The first observation pins the
+// session TLS/H2 basis (plan/02 §2). Later observations keep that pin but still
+// append REQUEST-SCOPED hop residuals (proxy Via/XFF multi-hop, forwarded_private,
+// IP-intel flags) so a mid-session WireGuard/OpenVPN exit change remains visible.
 func (s *Store) MergeNetwork(id string, net signals.NetworkReport, now time.Time) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -62,8 +63,27 @@ func (s *Store) MergeNetwork(id string, net signals.NetworkReport, now time.Time
 	if !st.netPinned {
 		st.report.Network = net
 		st.netPinned = true
+	} else {
+		for _, sig := range net.Signals {
+			if requestScopedNetwork(sig.ID) {
+				st.report.Network.Signals = append(st.report.Network.Signals, sig)
+			}
+		}
 	}
 	st.updated = now
+}
+
+// requestScopedNetwork ids re-emit on every collect even after the network pin —
+// hop headers and IP-intel depend on the current request path, not the first TLS.
+func requestScopedNetwork(id string) bool {
+	switch id {
+	case "l5.header.proxy_hop", "l5.header.client_ip_spoof", "l5.header.xff_multi_hop",
+		"l5.header.forwarded_private", "l5.proxy.tor_circuit", "l5.proxy.anon_chain",
+		"l5.ip.proxy_vpn_tor", "l5.ip.tor_exit", "l5.ip.datacenter_asn":
+		return true
+	default:
+		return false
+	}
 }
 
 // AppendNetworkSignals adds extra L5 signals (e.g. RIT/resource) to the pinned

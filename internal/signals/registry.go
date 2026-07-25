@@ -190,10 +190,24 @@ var (
 	_ = def(Definition{"l5.header.h2_uppercase", LayerNetwork, 25, nil, "header", "uppercase header in h2 (malformed)"})
 	_ = def(Definition{"l5.header.sec_fetch_missing", LayerNetwork, 25, nil, "header", "Chrome UA but sec-fetch missing"})
 	_ = def(Definition{"l5.header.accept_encoding", LayerNetwork, 8, nil, "header", "accept-encoding mismatch"})
-	_ = def(Definition{"l5.header.forwarded_private", LayerNetwork, 50, nil, "header", "forwarded client IP is private/reserved (spoofed source)"})
-	_ = def(Definition{"l5.tcp.ttl_os", LayerNetwork, 10, nil, "tcp", "TTL/OS vs UA OS"})
-	_ = def(Definition{"l5.ip.datacenter_asn", LayerNetwork, 20, nil, "ip", "datacenter/hosting ASN"})
-	_ = def(Definition{"l5.ip.proxy_vpn_tor", LayerNetwork, 15, nil, "ip", "proxy/vpn/tor exit"})
+	// Network-plane residuals below are WEIGHT 0 (score-exempt). They still fire
+	// BOT/SUSPICIOUS verdicts for console/audit/admin policy (HR-24 NET-POLICY /
+	// Ban), but never move Combine risk — operators own detect+block via Audit.
+	_ = def(Definition{"l5.header.forwarded_private", LayerNetwork, 0, true, "header", "forwarded client IP is private/reserved (audit/admin)"})
+	_ = def(Definition{"l5.header.proxy_hop", LayerNetwork, 0, true, "proxy", "forward-proxy hop residual (audit/admin)"})
+	_ = def(Definition{"l5.header.client_ip_spoof", LayerNetwork, 0, true, "proxy", "forged CDN/edge client-IP (audit/admin)"})
+	_ = def(Definition{"l5.header.xff_multi_hop", LayerNetwork, 0, true, "proxy", "multi-hop XFF chain (audit/admin)"})
+	_ = def(Definition{"l5.proxy.vpn_webrtc_leak", LayerNetwork, 0, true, "proxy", "WebRTC≠TCP VPN leak (audit/admin)"})
+	_ = def(Definition{"l5.proxy.tor_circuit", LayerNetwork, 0, true, "proxy", "≥3-hop XFF Tor-class path (audit/admin)"})
+	_ = def(Definition{"l5.proxy.anon_chain", LayerNetwork, 0, true, "proxy", "≥4-hop anon open-proxy chain (audit/admin)"})
+	_ = def(Definition{"l5.tcp.not_observed", LayerNetwork, 0, true, "tcp", "TCP L4 plane inactive (no SYN/PROXY TLV)"})
+	_ = def(Definition{"l5.tcp.ttl", LayerNetwork, 0, true, "tcp", "observed IP TTL (audit)"})
+	_ = def(Definition{"l5.tcp.mss", LayerNetwork, 0, true, "tcp", "TCP MSS option (audit)"})
+	_ = def(Definition{"l5.tcp.window", LayerNetwork, 0, true, "tcp", "TCP initial window (audit)"})
+	_ = def(Definition{"l5.tcp.ttl_os", LayerNetwork, 0, true, "tcp", "TTL/OS vs UA OS mismatch (audit/admin)"})
+	_ = def(Definition{"l5.ip.datacenter_asn", LayerNetwork, 0, true, "ip", "datacenter/hosting ASN (audit/admin)"})
+	_ = def(Definition{"l5.ip.proxy_vpn_tor", LayerNetwork, 0, true, "ip", "proxy/vpn exit (audit/admin)"})
+	_ = def(Definition{"l5.ip.tor_exit", LayerNetwork, 0, true, "ip", "Tor exit relay (audit/admin)"})
 )
 
 // ---- L5 request integrity (SoT-07) ----
@@ -253,7 +267,8 @@ var (
 	_ = def(Definition{"l5.traffic.ja4_rotation", LayerNetwork, 35, nil, "traffic", "JA4 fingerprint changed mid-session"})
 	_ = def(Definition{"l5.traffic.engine_rotation", LayerNetwork, 40, nil, "traffic", "TLS engine family changed mid-session"})
 	_ = def(Definition{"l5.traffic.ua_rotation", LayerNetwork, 30, nil, "traffic", "User-Agent changed mid-session"})
-	_ = def(Definition{"l5.traffic.ip_hop", LayerNetwork, 20, nil, "traffic", "remote IP /24 changed mid-session"})
+	// ip_hop is network residual (score-exempt); still participates in NET-POLICY (HR-24).
+	_ = def(Definition{"l5.traffic.ip_hop", LayerNetwork, 0, true, "traffic", "remote IP /24 changed mid-session (audit/admin)"})
 	_ = def(Definition{"l5.traffic.proto_downgrade", LayerNetwork, 15, nil, "traffic", "repeated h2->h1 downgrade"})
 	_ = def(Definition{"l5.traffic.header_order_shift", LayerNetwork, 18, nil, "traffic", "header order changed under same UA"})
 	_ = def(Definition{"l5.traffic.alpn_flap", LayerNetwork, 10, nil, "traffic", "unstable ALPN across requests"})
@@ -270,7 +285,9 @@ var (
 
 // ---- L5 cross-session correlation (SoT-15) ----
 var (
-	_ = def(Definition{"l5.correlation.proxy_rotation", LayerNetwork, 40, nil, "correlation", "one fingerprint across many subnets (residential-proxy rotation)"})
-	_ = def(Definition{"l5.correlation.shared_fingerprint", LayerNetwork, 25, nil, "correlation", "one fingerprint shared by many sessions (botnet)"})
+	// Correlation residuals are score-exempt; HR-19 is admin/network POLICY (not risk combine).
+	_ = def(Definition{"l5.correlation.proxy_rotation", LayerNetwork, 0, true, "correlation", "one fingerprint across many subnets (audit + NET-POLICY)"})
+	_ = def(Definition{"l5.correlation.shared_fingerprint", LayerNetwork, 0, true, "correlation", "one fingerprint shared by many sessions (audit)"})
+	_ = def(Definition{"l5.correlation.fp_churn_proxy", LayerNetwork, 0, true, "correlation", "mid-session fingerprintId churn (audit + NET-POLICY)"})
 	_ = def(Definition{"l7.pow.too_fast", LayerScoring, 30, nil, "pow", "PoW solved faster than JS-on-claimed-hardware (native/GPU solver)"})
 )
