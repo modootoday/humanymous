@@ -104,7 +104,7 @@ For the full flag, preset, and route-table reference, see [CLI, config & per-rou
 
 ## Breaking-change handling: watch the signed config version
 
-After an upgrade, confirm what policy the node is actually running rather than assuming the edit took. The Policy view records a signed `config_version` for the effective route enforcement configuration; config changes are dual-control and signed.
+After an upgrade, confirm what policy the node is actually running rather than assuming the edit took. The Policy view / `GET /__hmn/admin/policy` exposes a signed `config_version` — a **fingerprint of the effective running posture** (route table + rate limits + monitor + kill-switch state), not a dual-control write path. Route/preset edits still require a process restart; the dual-control runtime levers remain kill switch and permanent/CIDR bans.
 
 - Read the Policy / Policy & Rollout view in the Ledger, or `GET /__hmn/admin/policy`, and confirm the effective route posture (preset, fail-open/closed, sync re-score, injection) and the `config_version` match the build and config you intended to deploy.
 - Treat a `config_version` that did not change when you expected it to — or changed when you did not edit policy — as a signal to stop and reconcile before enabling enforcement.

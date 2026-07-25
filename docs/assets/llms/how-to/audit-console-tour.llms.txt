@@ -130,7 +130,7 @@ Every add and unblock is audited. For the exact request/commit steps, the escala
 
 **Question it answers:** What posture is each route running, and can I change it here?
 
-The Policy view (also labelled "Policy & Rollout") shows the **per-route posture**: the preset, whether the route fails open or closed on an unknown verdict, whether it re-scores synchronously before a mutation, and whether injection is on — plus the rate-limit thresholds. Config changes in this view are **dual-control and signed** (they carry a signed config version), so a posture change is a recorded, two-person event.
+The Policy view (also labelled "Policy & Rollout") shows the **per-route posture**: the preset, whether the route fails open or closed on an unknown verdict, whether it re-scores synchronously before a mutation, and whether injection is on — plus the rate-limit thresholds. This view is **read-only**: there is no dual-control policy-write endpoint. Route presets change only by editing the startup route table and restarting. The response's `config_version` is a **signed hash of the effective running posture** (routes + rate limits + monitor + kill-switch) so you can detect drift — not a two-person config-edit workflow.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/console-policy-dark.webp" />
