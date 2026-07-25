@@ -1,5 +1,5 @@
 ---
-description: "Verify humanymous Gate's tamper-evident audit log with the public key alone: append-only hash chain, per-record HMAC, Ed25519 Signed Tree Heads, witness co-sign. Detects tampering; records past the last checkpoint stay in-window until sealed."
+description: "Verify humanymous Gate's tamper-evident audit log: append-only hash chain, optional HMAC, Ed25519 Signed Tree Heads, witness co-sign. Empty chain fails; public-key-only offline path may report hmac-unchecked."
 keywords: ["tamper-evident audit log","audit log verification","Ed25519 Signed Tree Head","append-only hash chain","per-record HMAC","independent witness co-sign","public-key verification","verify without trusting the operator","crypto-shred erasure","humanymous Gate","integrity endpoint","offline verifier prod-delta"]
 ---
 
