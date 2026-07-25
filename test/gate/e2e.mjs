@@ -284,6 +284,74 @@ async function main() {
   check('dual-control-two-principal', permReq.body.includes('approvalId') && selfApprove.status === 403 && commit.status === 200,
     `pending=${permReq.status} self=${selfApprove.status} commit=${commit.status}`);
 
+  // 19b. Wargame r01: body Operator/Approver must be ignored — dual-control is
+  //      bearer-token only. Spoofed Approver must still leave ban PENDING only.
+  const spoofBody = await areq('POST', '/__hmn/admin/bans', {
+    token: TOK.operator,
+    body: {
+      Key: 'ip:198.51.100.77', DurationSec: 0, Reason: 'wargame-r01-body-approver',
+      Operator: 'evil-op', Approver: 'already-approved',
+    },
+  });
+  let spoofParsed = {};
+  try { spoofParsed = JSON.parse(spoofBody.body); } catch { /* keep empty */ }
+  check('permanent-ban-ignores-body-approver',
+    spoofBody.status === 200 && spoofParsed.pending === true && !!spoofParsed.approvalId && spoofParsed.needsRole === 'approver',
+    `status=${spoofBody.status} body=${spoofBody.body.slice(0, 200)}`);
+
+  // 19c. Wargame r11: broad CIDR key always dual-control even with temporary DurationSec.
+  const cidrReq = await areq('POST', '/__hmn/admin/bans', {
+    token: TOK.operator,
+    body: { Key: 'cidr:198.51.100.0/24', DurationSec: 3600, Reason: 'wargame-r11-cidr' },
+  });
+  let cidrParsed = {};
+  try { cidrParsed = JSON.parse(cidrReq.body); } catch { /* keep */ }
+  check('cidr-ban-dual-control',
+    cidrReq.status === 200 && cidrParsed.pending === true && !!cidrParsed.approvalId,
+    `status=${cidrReq.status} body=${cidrReq.body.slice(0, 200)}`);
+
+  // 19d. Wargame r12: bulk permanent (DurationSec 0) must be rejected (not applied).
+  const bulkPerm = await areq('POST', '/__hmn/admin/bans/bulk', {
+    token: TOK.operator,
+    body: { Keys: ['ip:198.51.100.88'], DurationSec: 0, Reason: 'wargame-r12-bulk-perm' },
+  });
+  check('bulk-permanent-rejected', bulkPerm.status === 400,
+    `status=${bulkPerm.status} body=${bulkPerm.body.slice(0, 120)}`);
+
+  // 19e. Wargame r14: over-cap duration forces dual-control (overflow/permanent ladder).
+  const overCap = await areq('POST', '/__hmn/admin/bans', {
+    token: TOK.operator,
+    body: { Key: 'ip:198.51.100.99', DurationSec: 400 * 24 * 3600, Reason: 'wargame-r14-overcap' },
+  });
+  let overParsed = {};
+  try { overParsed = JSON.parse(overCap.body); } catch { /* keep */ }
+  check('overcap-ban-dual-control',
+    overCap.status === 200 && overParsed.pending === true && !!overParsed.approvalId,
+    `status=${overCap.status} body=${overCap.body.slice(0, 200)}`);
+
+  // 19f. Wargame r21: auditor must not commit permanent-ban approvals (wrong role).
+  const auditorCommit = await areq('POST', '/__hmn/admin/approvals/' + spoofParsed.approvalId, { token: TOK.auditor });
+  check('auditor-cannot-approve-ban', auditorCommit.status === 403,
+    `status=${auditorCommit.status} body=${auditorCommit.body.slice(0, 120)}`);
+
+  // 19g. Wargame r22: negative DurationSec rejected (not reinterpreted as permanent).
+  const negDur = await areq('POST', '/__hmn/admin/bans', {
+    token: TOK.operator,
+    body: { Key: 'ip:198.51.100.66', DurationSec: -1, Reason: 'wargame-r22-neg' },
+  });
+  check('negative-duration-rejected', negDur.status === 400,
+    `status=${negDur.status} body=${negDur.body.slice(0, 120)}`);
+
+  // 19h. Wargame r51+: empty/garbage ban keys rejected (validBanKey harden).
+  const emptyIP = await areq('POST', '/__hmn/admin/bans', {
+    token: TOK.operator, body: { Key: 'ip:', DurationSec: 60, Reason: 'wargame-empty-ip' },
+  });
+  const garbageCIDR = await areq('POST', '/__hmn/admin/bans', {
+    token: TOK.operator, body: { Key: 'cidr:not-a-cidr', DurationSec: 0, Reason: 'wargame-bad-cidr' },
+  });
+  check('invalid-ban-key-rejected', emptyIP.status === 400 && garbageCIDR.status === 400,
+    `emptyIP=${emptyIP.status} garbageCIDR=${garbageCIDR.status}`);
+
   // 20. Self-lift closed: unauthenticated lift is 404; operator lift works.
   const unauthLift = await areq('POST', '/__hmn/admin/bans/lift?key=ip:203.0.113.5');
   const lift = await areq('POST', '/__hmn/admin/bans/lift?key=ip:203.0.113.5', { token: TOK.operator });

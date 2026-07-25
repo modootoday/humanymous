@@ -26,7 +26,9 @@ export const TIERS = [
     desc: 'non-browser HTTP/uTLS clients, header/token tricks, and the cheapest behavior tells',
     expect: 'reliable',
     profiles: [
-      'nonbrowser_ua.mjs', 'http_client.mjs', 'tls_parrot.mjs', 'tls_static.mjs',
+      'nonbrowser_ua.mjs', 'http_client.mjs', 'tls_parrot.mjs',
+      'curl_impersonate_chrome.mjs', 'curl_impersonate_chrome99_android.mjs',
+      'tls_static.mjs',
       'sec_chua_absent.mjs', 'sec_fetch_absent.mjs', 'rit_absent.mjs', 'rit_replay.mjs',
       'rit_tamper.mjs', 'ua_rotate.mjs', 'xff_spoof.mjs',
       'behavior_no_interaction.mjs', 'behavior_untrusted.mjs',
@@ -50,6 +52,8 @@ export const TIERS = [
     expect: 'reliable',
     profiles: [
       'puppeteer_stealth.mjs', 'playwright_stealth.mjs', 'patchright.mjs',
+      'rebrowser_cdp_stripped.mjs', 'mobile_ua_desktop_profile.mjs',
+      'near_ceiling_audio_24k.mjs', 'near_ceiling_no_widevine.mjs', 'browser_use_cdp.mjs',
       'multi_axis_rotate.mjs', 'adv_webgpu_mismatch.mjs', 'headless_ua_token.mjs', 'signal_forgery.mjs',
       'behavior_machine_keystroke.mjs', 'behavior_teleport_click.mjs', 'behavior_bezier_mouse.mjs',
       'behavior_fixed_typing.mjs', 'ai_burst_silence.mjs',
@@ -58,11 +62,14 @@ export const TIERS = [
   {
     id: 'T3',
     cost: 'high — $$$, real browser engine + proxy/AI infrastructure',
-    desc: 'real-engine anti-detect (nodriver/camoufox/xvfb/anti-detect), full AI-agent cadence, and residential-proxy-rotation correlation',
+    desc: 'real-engine anti-detect, AI cadence, residential/anonymous proxy chains, Squid/OpenVPN/WireGuard/Tor/SOCKS, CDN IP spoof, fp-churn evasion',
     expect: 'degrades gracefully — scores + challenges/denies at lower confidence',
     profiles: [
       'nodriver.mjs', 'xvfb_headful.mjs', 'antidetect.mjs', 'camoufox.mjs',
       'ai_agent.mjs', 'ai_full_cadence.mjs', 'distributed.mjs', 'privacy_evasion.mjs',
+      'squid_forward.mjs', 'openvpn_exit.mjs', 'wireguard_hop.mjs', 'tor_exit.mjs',
+      'anon_proxy_chain.mjs', 'elite_anon_proxy.mjs', 'cdn_ip_spoof.mjs',
+      'proxy_ua_rotate.mjs', 'fp_churn_proxy.mjs', 'stacked_proxy_vpn.mjs', 'socks_exit_hop.mjs',
     ],
   },
   {

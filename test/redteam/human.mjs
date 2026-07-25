@@ -1,6 +1,15 @@
-// human.mjs — baseline "human" profile: headful Edge with human-like mouse
-// curves and variable-rhythm typing. Used to measure FALSE POSITIVES: the Blue
-// engine must NOT deny this session (plan/04 §2.1).
+// human.mjs — catalog baseline for FALSE-POSITIVE measurement (plan/04 §2.1).
+//
+// IMPORTANT (measurement honesty):
+// This is Playwright-driven headful Chromium/Edge with
+// --disable-blink-features=AutomationControlled. It is NOT a real human browser.
+// In Docker it commonly scores CHALLENGE (not DENY) because of structural tells:
+//   l1.cdp.proxy_leak, l2.webgl.swiftshader, l4.mouse.coalesced_synthetic, no_voices…
+// humanFPR counts DENY only, so CHALLENGE is TN — inspect challenge friction separately.
+// Real-browser ALLOW checks: open the demo page in a normal Edge/Chrome window and
+// read /api/collect (see SCRATCH/wargame-gate-rb/REAL_BROWSER_VERIFY.md).
+//
+// Blue must NOT DENY this session; CHALLENGE under CDP/container is expected.
 
 import { drive } from './_driver.mjs';
 

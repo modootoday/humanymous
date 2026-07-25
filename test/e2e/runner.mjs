@@ -33,6 +33,8 @@ const PROFILES = [
   'nonbrowser_ua.mjs',             // bare HTTP library (library UA) -> x.non_browser_ua + HR-10
   'http_client.mjs',               // non-browser scraper (L5/L6)
   'tls_parrot.mjs',                // uTLS Chrome ClientHello parrot (header/JS residual)
+  'curl_impersonate_chrome.mjs',   // curl-impersonate Chrome116 TLS/JA4 parrot (Docker)
+  'curl_impersonate_chrome99_android.mjs', // curl-impersonate Android Chrome99 (Docker)
   'tls_static.mjs',                // static parrot (no TLS permutation)
   'sec_chua_absent.mjs',           // Chrome UA without Sec-CH-UA -> x.uach_present
   'sec_fetch_absent.mjs',          // Chrome UA without Sec-Fetch-* -> sec_fetch_missing
@@ -60,6 +62,11 @@ const PROFILES = [
   'puppeteer_stealth.mjs',         // stealth-patched natives (L3) (HR-8)
   'playwright_stealth.mjs',        // patched natives (L3) (HR-8)
   'patchright.mjs',                // console disabled (Patchright) (HR-9)
+  'rebrowser_cdp_stripped.mjs',    // rebrowser-class CDP Runtime.enable stripped; residual headless+no-interact
+  'mobile_ua_desktop_profile.mjs', // mobile UA/UA-CH claim + desktop touch/pointer residual
+  'near_ceiling_audio_24k.mjs',    // T4-adjacent: coherent-ish + AudioContext 24k residual
+  'near_ceiling_no_widevine.mjs',  // T4-adjacent: Chrome UA without Widevine/media residual
+  'browser_use_cdp.mjs',           // pure-CDP agent residual (public Browser Use CDP era)
   'multi_axis_rotate.mjs',         // UA + TLS rotate together -> HR-14/HR-15
   'adv_webgpu_mismatch.mjs',       // WebGL vs WebGPU vendor contradiction -> l2.adv.webgpu_mismatch
   'headless_ua_token.mjs',         // HeadlessChrome UA token + a second tell
@@ -78,6 +85,17 @@ const PROFILES = [
   'ai_full_cadence.mjs',           // teleport + burst-silence + machine keystroke -> HR-20
   'distributed.mjs',               // rotating residential-proxy pool -> HR-19
   'privacy_evasion.mjs',           // proxy-rotation + forged adBlock/GPC -> still HR-19 (round-5)
+  'squid_forward.mjs',             // open Squid forward-proxy hop headers -> HR-24
+  'openvpn_exit.mjs',              // OpenVPN exit + WebRTC public IP leak -> HR-24
+  'wireguard_hop.mjs',             // WireGuard mid-session exit hop + multi-hop XFF -> HR-24
+  'tor_exit.mjs',                  // Tor circuit multi-hop + exit rotation -> HR-24/HR-19
+  'anon_proxy_chain.mjs',          // free open-proxy 4+ hop chain -> HR-24
+  'elite_anon_proxy.mjs',          // elite Forwarded multi (Via stripped) -> HR-24
+  'cdn_ip_spoof.mjs',              // forged CF/True-Client-IP -> HR-24
+  'proxy_ua_rotate.mjs',           // exit hop + UA rotate -> HR-15/HR-19
+  'fp_churn_proxy.mjs',            // rotate fingerprint per exit (dodge HR-19) -> still HR-19
+  'stacked_proxy_vpn.mjs',         // Squid over VPN + WebRTC leak -> HR-24
+  'socks_exit_hop.mjs',            // SOCKS5/VPN L4 exit hop -> HR-24
   // --- T4 · very high — the detection ceiling (ALLOW is the honest expected result) ---
   'native_coherent_ceiling.mjs',   // fully-coherent Chrome-TLS engine spoof -> ALLOW (ceiling)
 ];

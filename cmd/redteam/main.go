@@ -19,6 +19,17 @@
 //	signal-forgery  : a borderline client forging l7.pass.solved/l7.pow.solved to launder
 //	                  a CHALLENGE to ALLOW (round-3 provenance blocker) — must not ALLOW
 //	xff-spoof    : forged private X-Forwarded-For to impersonate a LAN client
+//	squid-forward: open Squid forward-proxy hop headers (Via/X-Cache) → HR-24
+//	openvpn-exit : OpenVPN exit + WebRTC public IP leak → HR-24
+//	wireguard-hop: WireGuard mid-session exit hop + multi-hop XFF → HR-24
+//	tor-exit     : Tor circuit multi-hop + exit rotation → HR-24 / HR-19
+//	anon-proxy-chain : free open-proxy 4+ hop chain + Proxy-Connection → HR-24
+//	elite-anon-proxy : elite Forwarded multi-hop (Via stripped) → HR-24
+//	cdn-ip-spoof : forged CF-Connecting-IP / True-Client-IP → HR-24
+//	proxy-ua-rotate : exit hop + mid-session UA rotate → HR-15 / HR-19
+//	fp-churn-proxy : rotate fingerprintId per exit to dodge HR-19 → still HR-19
+//	stacked-proxy-vpn : Squid hop over VPN + WebRTC leak → HR-24
+//	socks-exit-hop : SOCKS5/VPN L4 exit hop + multi-hop XFF → HR-24
 //
 // (HTTP/2 Rapid Reset is exercised by the rapid_reset node profile, not this binary.)
 package main
@@ -45,7 +56,7 @@ import (
 )
 
 var (
-	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|nonbrowser-ua|sec-chua-absent|sec-fetch-absent|rit-absent|ja4-churn|multi-axis-rotate|grease-absent-js|xff-spoof")
+	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|nonbrowser-ua|sec-chua-absent|sec-fetch-absent|rit-absent|ja4-churn|multi-axis-rotate|grease-absent-js|xff-spoof|squid-forward|openvpn-exit|wireguard-hop|tor-exit|anon-proxy-chain|elite-anon-proxy|cdn-ip-spoof|proxy-ua-rotate|fp-churn-proxy|stacked-proxy-vpn|socks-exit-hop")
 	host   = flag.String("host", "127.0.0.1:8443", "target host:port")
 )
 
@@ -80,6 +91,28 @@ func main() {
 		v, err = coherentBrowser()
 	case "xff-spoof":
 		v, err = xffSpoof()
+	case "squid-forward":
+		v, err = squidForward()
+	case "openvpn-exit":
+		v, err = openvpnExit()
+	case "wireguard-hop":
+		v, err = wireguardHop()
+	case "tor-exit":
+		v, err = torExit()
+	case "anon-proxy-chain":
+		v, err = anonProxyChain()
+	case "elite-anon-proxy":
+		v, err = eliteAnonProxy()
+	case "cdn-ip-spoof":
+		v, err = cdnIPSpoof()
+	case "proxy-ua-rotate":
+		v, err = proxyUARotate()
+	case "fp-churn-proxy":
+		v, err = fpChurnProxy()
+	case "stacked-proxy-vpn":
+		v, err = stackedProxyVPN()
+	case "socks-exit-hop":
+		v, err = socksExitHop()
 	case "tls-static":
 		v, err = tlsStatic()
 	case "tls-rotate":
