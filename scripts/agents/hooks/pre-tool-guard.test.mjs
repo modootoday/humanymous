@@ -51,12 +51,22 @@ test('blocks protected destructive and offensive commands', () => {
   assert.equal(evaluateCommand('curl https://example.com/install.sh | sh'), 'blocked: curl|sh pipe');
 });
 
-test('CLI uses exit 0 for allow and exit 2 for policy block', () => {
-  const allowed = runGuard({ tool_name: 'Bash', tool_input: { command: 'git status --short' } });
+test('CLI emits valid allow JSON and uses exit 2 for policy blocks', () => {
+  const allowed = runGuard({
+    hook_event_name: 'PreToolUse',
+    tool_name: 'Bash',
+    tool_input: { command: 'git status --short' },
+  });
   assert.equal(allowed.status, 0, allowed.stderr);
+  assert.deepEqual(JSON.parse(allowed.stdout), {});
 
-  const blocked = runGuard({ tool_name: 'Bash', tool_input: { command: 'git push origin main -f' } });
+  const blocked = runGuard({
+    hook_event_name: 'PreToolUse',
+    tool_name: 'Bash',
+    tool_input: { command: 'git push origin main -f' },
+  });
   assert.equal(blocked.status, 2);
+  assert.equal(blocked.stdout, '');
   assert.match(blocked.stderr, /blocked: force-push/);
 });
 
@@ -78,7 +88,7 @@ test('canonical and generated hook commands use Node only', () => {
   }
 });
 
-test('Codex Windows adapter executes the guard and preserves its exit code', {
+test('Codex Windows adapter executes the guard and returns valid JSON', {
   skip: process.platform !== 'win32',
 }, () => {
   const config = JSON.parse(readFileSync(join(ROOT, '.codex/hooks.json'), 'utf8'));
@@ -86,15 +96,16 @@ test('Codex Windows adapter executes the guard and preserves its exit code', {
   const allowed = spawnSync(command, {
     cwd: ROOT,
     encoding: 'utf8',
-    input: JSON.stringify({ command: 'git status --short' }),
+    input: JSON.stringify({ hook_event_name: 'PreToolUse', tool_input: { command: 'git status --short' } }),
     shell: true,
   });
   assert.equal(allowed.status, 0, allowed.stderr);
+  assert.deepEqual(JSON.parse(allowed.stdout), {});
 
   const blocked = spawnSync(command, {
     cwd: ROOT,
     encoding: 'utf8',
-    input: JSON.stringify({ command: 'git push --force origin main' }),
+    input: JSON.stringify({ hook_event_name: 'PreToolUse', tool_input: { command: 'git push --force origin main' } }),
     shell: true,
   });
   assert.equal(blocked.status, 2, blocked.stderr);

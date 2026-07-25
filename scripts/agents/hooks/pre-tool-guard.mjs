@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 /**
- * Cross-provider pre-tool guard for coding agents.
+ * Dependency-free cross-provider PreToolUse guard.
  *
- * Reads a tool payload from stdin. Exit codes:
- *   0 — allow
- *   2 — block (reason on stderr)
- *
- * This is intentionally dependency-free so the same command runs on Windows
- * and Linux wherever the repository's Node-based agent tooling runs.
+ * stdin: provider hook payload JSON
+ * allow: stdout "{}\n", exit 0
+ * block: stderr reason, exit 2
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -85,8 +82,15 @@ export function evaluateCommand(command) {
   return null;
 }
 
+function allow() {
+  // Codex builds with strict hook parsing reject an empty successful stdout,
+  // while Claude and Grok also accept this minimal JSON object.
+  process.stdout.write('{}\n');
+  return 0;
+}
+
 export function main(raw = readFileSync(0, 'utf8')) {
-  if (!raw.trim()) return 0;
+  if (!raw.trim()) return allow();
 
   let payload;
   try {
@@ -96,10 +100,10 @@ export function main(raw = readFileSync(0, 'utf8')) {
   }
 
   const command = extractCommand(payload);
-  if (!command) return 0;
+  if (!command) return allow();
 
   const reason = evaluateCommand(command);
-  if (!reason) return 0;
+  if (!reason) return allow();
 
   process.stderr.write(`${reason}\n`);
   return 2;
