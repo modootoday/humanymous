@@ -43,8 +43,12 @@ func smuggleScan(r *http.Request) smuggleReason {
 		}
 		return smuggleDupCL // even identical duplicates are rejected (RFC 9110)
 	}
-	// Transfer-Encoding must be exactly "chunked" (case-insensitive), never a
-	// list like "chunked, chunked" / "identity" / "gzip, chunked" tricks.
+	// Transfer-Encoding must be exactly one value "chunked" (case-insensitive).
+	// Multi-value TE (even "chunked"+"chunked") is TE.TE / list ambiguity (HR-23).
+	// Also reject list forms like "chunked, chunked" / "identity" / "gzip, chunked".
+	if len(te) > 1 {
+		return smuggleBadTE
+	}
 	for _, v := range te {
 		if !strings.EqualFold(strings.TrimSpace(v), "chunked") {
 			return smuggleBadTE

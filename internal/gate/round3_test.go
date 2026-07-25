@@ -18,6 +18,10 @@ func TestSmuggleScan(t *testing.T) {
 		{"cl+te", nil, map[string][]string{"Content-Length": {"5"}, "Transfer-Encoding": {"chunked"}}, smuggleTECL},
 		{"dup-cl", nil, map[string][]string{"Content-Length": {"5", "6"}}, smuggleDupCL},
 		{"te-not-chunked", nil, map[string][]string{"Transfer-Encoding": {"chunked, chunked"}}, smuggleBadTE},
+		// Wargame r13: obs-fold / embedded CR-LF in a header value (bare-LF smuggling class).
+		{"obs-fold", nil, map[string][]string{"X-Custom": {"ok\r\nInjected: yes"}}, smuggleObsFold},
+		// Identical multi-value TE "chunked"+"chunked" is still not a single exact token.
+		{"te-multi-chunked", nil, map[string][]string{"Transfer-Encoding": {"chunked", "chunked"}}, smuggleBadTE},
 	}
 	for _, c := range cases {
 		r := httptest.NewRequest("POST", "http://p/", nil)

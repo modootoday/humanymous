@@ -2,6 +2,7 @@ package gate
 
 import (
 	"log"
+	"math"
 	"sync"
 	"time"
 
@@ -117,11 +118,13 @@ func behaviorSignature(b signals.BehaviorSummary) string {
 	}
 	// Coarse buckets: quantise each moment so near-identical (not bit-identical)
 	// synthetic vectors still collide, while genuine human spread does not.
+	// Round (not truncate) so IEEE edges like 0.30/0.05≈5.999… do not split a
+	// farm's near-identical motors into adjacent buckets (wargame r255).
 	q := func(v float64, step float64) int {
 		if step <= 0 {
 			return 0
 		}
-		return int(v / step)
+		return int(math.Round(v / step))
 	}
 	parts := []int{
 		q(b.Mouse.MeanCurvature, 0.05),

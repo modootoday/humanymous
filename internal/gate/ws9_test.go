@@ -68,7 +68,8 @@ func TestBulkBan(t *testing.T) {
 	srv, _ := banStack(t, up.URL, 1000)
 	toks := seedAdmins(t, srv)
 
-	body := `{"Keys":["ip:203.0.113.1","ip:203.0.113.2","fp:abc","cidr:10.0.0.0/8"],"DurationSec":3600,"Reason":"scraper fleet"}`
+	// fp must meet validBanKey min length; cidr is skipped (dual-control path only).
+	body := `{"Keys":["ip:203.0.113.1","ip:203.0.113.2","fp:abcd1234","cidr:10.0.0.0/8"],"DurationSec":3600,"Reason":"scraper fleet"}`
 	w := adminDo(srv, toks[RoleOperator], "POST", "/__hmn/admin/bans/bulk", body)
 	if w.Code != http.StatusOK {
 		t.Fatalf("bulk ban failed: %d %s", w.Code, w.Body.String())
