@@ -10,6 +10,8 @@ Overlapping sessions cause:
 4. **Double commits / thrash** — same fix applied twice in divergent ways.
 5. **Detection freeze breaches** — parallel “small” scoring edits compound.
 6. **Git races** — concurrent `add`/`commit`/`pull`/`push` fight over `index.lock`, HEAD, and the remote.
+7. **Wargame theater** — bulk empty commits or mid-series git noise during red/blue series
+   (rule `61`, skill `red-blue-wargame-round`: default no per-round commits).
 
 ## Session lifecycle (mandatory)
 

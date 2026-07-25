@@ -75,6 +75,15 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
 21. **Codex** may also load `~/.codex/AGENTS.md`; project root `AGENTS.md` must remain the
     sharper source of truth for this repo.
 
+## Red/blue wargame process
+
+21a. **Sequential wargame is red→measure→blue**, not commit theater. Put the attack in
+    `test/redteam` or `test/gate/e2e.mjs`, prove with **Docker** for that plane, then guard.
+    Default: **no per-round commits**; no bulk `--allow-empty`. Formalize after the series
+    with `git-coord`. Rule `61` + skill `red-blue-wargame-round`.
+21b. **Plane honesty:** Core catalog ≠ Gate edge/admin ≠ Pass. Host runner is not e2e done.
+21c. **Never invent `test/wargame/`** — extend existing harnesses and the three Core registries.
+
 ## Git contention (multi-session)
 
 22. **Git writes are a global mutex** (`git-ops` lane). Parallel work lanes may edit files;

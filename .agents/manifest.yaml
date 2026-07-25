@@ -51,6 +51,7 @@ rules:
   - 40-ambiguity-ask.md
   - 50-provider-matrix.md
   - 60-e2e-docker-only.md
+  - 61-redblue-wargame.md
   - 70-hard-won-lessons.md
   - 80-truth-debt.md
   - 90-session-overlap.md
@@ -75,6 +76,7 @@ skills:
   - adversarial-critique
   - implement-sot-slice
   - red-blue-validate
+  - red-blue-wargame-round
   - pass-wargame-round
   - docs-from-sot
   - cut-release

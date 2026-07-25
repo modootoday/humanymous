@@ -6,7 +6,16 @@
     "adversarial-critique": ["\\badversarial\\b.*\\bcritique\\b", "\\bweakest assumptions?\\b"],
     "implement-sot-slice": ["\\bimplement\\b.*\\baccepted\\b.*\\bsot\\b", "\\bimplement\\b.*\\bsot slice\\b"],
     "red-blue-validate": ["\\bfull gate\\b", "\\bdocker bots\\b", "\\bmake e2e\\b", "\\bmake attack\\b", "\\bdetector-vs-bots\\b", "\\be2e-docker\\b"],
-    "pass-wargame-round": ["\\bpass wargame\\b", "\\bwargame round\\b"],
+    "red-blue-wargame-round": [
+      "\\bred/?blue wargame\\b",
+      "\\b50[- ]round\\b",
+      "\\bsequential red/?blue\\b",
+      "\\battack then (blue )?guard\\b",
+      "\\bresidual gap hunt\\b",
+      "\\bredteam then e2e\\b",
+      "\\bmulti[- ]round wargame\\b"
+    ],
+    "pass-wargame-round": ["\\bpass wargame\\b", "\\bsot-36\\b", "\\bpass challenge\\b", "\\bharden pass\\b"],
     "docs-from-sot": ["\\bdi[aá]taxis\\b", "\\bderive\\b.*\\bhow-to\\b.*\\bsot\\b"],
     "review-changes": ["\\breview\\b.*\\buncommitted\\b", "\\breview\\b.*\\bdetection freeze\\b"],
     "handover-pack": ["\\bhandover pack\\b", "\\bnext llm session\\b"],

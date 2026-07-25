@@ -8,6 +8,9 @@ description: >
 
 # Red/Blue validate (Docker-only e2e)
 
+Measure / pre-merge only. For a **multi-round series** (red writes attack → e2e → blue
+guards, no per-round commit theater) use skill `red-blue-wargame-round` + rule `61`.
+
 ## Policy
 
 **All e2e completion authority is Docker compose.** Host/loopback catalog or

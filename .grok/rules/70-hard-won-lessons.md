@@ -10,3 +10,6 @@ Before large detection, Gate, Pass, or honesty changes, read
 3. Docker-only e2e for completion (`make e2e`).
 4. Pass: no multi-minute lockouts; no motor/speed gates.
 5. No speculative over-engineering; verify claims against source (SoT-38 if present).
+
+**Wargame process (see also rule `61`):** red attack artifact → Docker measure → blue;
+no empty-commit theater; no invented `test/wargame/` trees.

@@ -57,6 +57,18 @@
       "split": "train"
     },
     {
+      "query": "Run a 50-round sequential red/blue wargame: redteam then e2e then blue guard",
+      "skill": "red-blue-wargame-round",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "residual gap hunt multi-round wargame without mid-series commits",
+      "skill": "red-blue-wargame-round",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
       "query": "Derive a Diátaxis how-to from SoT for operators",
       "skill": "docs-from-sot",
       "should_trigger": true,
@@ -161,6 +173,12 @@
     {
       "query": "Write a unit test for itoa helper with no detection changes",
       "skill": "pass-wargame-round",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "make e2e only before merge — no new attack profiles",
+      "skill": "red-blue-wargame-round",
       "should_trigger": false,
       "split": "train"
     },

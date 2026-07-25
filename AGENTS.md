@@ -28,6 +28,8 @@ Raise the cost of automation. Apache-2.0 **reference** build: honesty over over-
 | Deferred / misdocumented claims | `sots/38-truth-debt-remediation.md` if present + `.agents/rules/80-truth-debt.md` |
 | Hard-won multi-session lessons | `.agents/lessons/HARD-WON.md` (Claude memory is **not** visible to other providers) |
 | Full verification | skill `red-blue-validate` (**Docker only**) |
+| Multi-round red/blue wargame (attack→e2e→guard) | skill `red-blue-wargame-round` + rule `61-redblue-wargame` |
+| Pass challenge round only | skill `pass-wargame-round` (SoT-36) |
 | Multi-perspective panel | `.agents/workflows/design-panel.yaml` + personas |
 | Prior LLM sessions on this machine | skill `survey-provider-history` |
 | SemVer tag / ghcr release / release.yml failure | skill `cut-release` (user-invoked publish) or `github-actions-ops` + rule `93` + `docs/how-to/cut-a-release.md` |

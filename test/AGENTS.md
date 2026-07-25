@@ -18,5 +18,14 @@ Inherits root `AGENTS.md`. Self-validation only.
 
 ## Skills
 
-- Full Docker e2e: `red-blue-validate`
-- Pass challenge rounds: `pass-wargame-round` (unit tests local; integration via Docker stack when exercising live engine)
+- Full Docker e2e / pre-merge measure: `red-blue-validate`
+- Sequential multi-round red→Docker→blue series: `red-blue-wargame-round` (rule `61`)
+- Pass challenge rounds only: `pass-wargame-round` (SoT-36; Docker pass-test profile for live engine)
+
+## New Core profile checklist
+
+1. `test/redteam/<name>.mjs` exports `run`, `label`, `needsBrowser`
+2. Register in `test/e2e/runner.mjs` `PROFILES`
+3. Register in `cmd/server/launch.go` `launchProfiles`
+4. Register in `web/playground.html`
+5. Prove with Docker `make attack` + `make e2e-assert` (not host runner alone)

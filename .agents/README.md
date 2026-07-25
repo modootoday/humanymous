@@ -60,7 +60,8 @@ node scripts/agents/workflow-runner.mjs start --workflow feature-loop --objectiv
 | `adversarial-critique` | Completeness / weak assumptions |
 | `implement-sot-slice` | Vertical implement + tests |
 | `red-blue-validate` | Full defensive gate (**Docker e2e only**) |
-| `pass-wargame-round` | Pass challenge round |
+| `red-blue-wargame-round` | Sequential red→Docker→blue wargame series (rule `61`) |
+| `pass-wargame-round` | Pass challenge round (SoT-36 only) |
 | `docs-from-sot` | Diátaxis user docs |
 | `cut-release` | SemVer release prepare/publish (user-invoked only) |
 | `github-actions-ops` | CI/release.yml failures + workflow authoring |

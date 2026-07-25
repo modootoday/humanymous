@@ -22,8 +22,8 @@ fi
 
 skills=(
   design-sot adversarial-critique implement-sot-slice red-blue-validate
-  pass-wargame-round docs-from-sot cut-release review-changes handover-pack
-  optimize-skill-description survey-provider-history coordinate-sessions
+  red-blue-wargame-round pass-wargame-round docs-from-sot cut-release review-changes
+  handover-pack optimize-skill-description survey-provider-history coordinate-sessions
 )
 for id in "${skills[@]}"; do
   f=".agents/skills/$id/SKILL.md"
@@ -45,7 +45,7 @@ for id in "${skills[@]}"; do
   else ok "skill $id (desc ~$len chars)"; fi
 done
 
-for r in 00-safety.md 10-go-conventions.md 20-detection-freeze.md 30-docs-diataxis.md 40-ambiguity-ask.md 50-provider-matrix.md 60-e2e-docker-only.md 70-hard-won-lessons.md 80-truth-debt.md 90-session-overlap.md 91-git-contention.md 92-git-commit-attribution.md 93-release-and-ci.md; do
+for r in 00-safety.md 10-go-conventions.md 20-detection-freeze.md 30-docs-diataxis.md 40-ambiguity-ask.md 50-provider-matrix.md 60-e2e-docker-only.md 61-redblue-wargame.md 70-hard-won-lessons.md 80-truth-debt.md 90-session-overlap.md 91-git-contention.md 92-git-commit-attribution.md 93-release-and-ci.md; do
   [[ -f ".agents/rules/$r" ]] && ok "rule $r" || fail "missing rule $r"
 done
 if [[ ! -f .agents/skills/cut-release/SKILL.md ]]; then

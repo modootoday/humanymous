@@ -24,8 +24,9 @@ if (Test-Path $settingsPath) {
 
 $manifestSkills = @(
   "design-sot", "adversarial-critique", "implement-sot-slice", "red-blue-validate",
-  "pass-wargame-round", "docs-from-sot", "cut-release", "review-changes", "handover-pack",
-  "optimize-skill-description", "survey-provider-history", "coordinate-sessions"
+  "red-blue-wargame-round", "pass-wargame-round", "docs-from-sot", "cut-release",
+  "review-changes", "handover-pack", "optimize-skill-description",
+  "survey-provider-history", "coordinate-sessions"
 )
 foreach ($id in $manifestSkills) {
   $skill = Join-Path $Root ".agents\skills\$id\SKILL.md"
@@ -46,7 +47,7 @@ foreach ($id in $manifestSkills) {
   else { Ok "skill $id (desc $($desc.Length) chars)" }
 }
 
-foreach ($r in @("00-safety.md", "10-go-conventions.md", "20-detection-freeze.md", "30-docs-diataxis.md", "40-ambiguity-ask.md", "50-provider-matrix.md", "60-e2e-docker-only.md", "70-hard-won-lessons.md", "80-truth-debt.md", "90-session-overlap.md", "91-git-contention.md", "92-git-commit-attribution.md", "93-release-and-ci.md")) {
+foreach ($r in @("00-safety.md", "10-go-conventions.md", "20-detection-freeze.md", "30-docs-diataxis.md", "40-ambiguity-ask.md", "50-provider-matrix.md", "60-e2e-docker-only.md", "61-redblue-wargame.md", "70-hard-won-lessons.md", "80-truth-debt.md", "90-session-overlap.md", "91-git-contention.md", "92-git-commit-attribution.md", "93-release-and-ci.md")) {
   if (Test-Path (Join-Path $Root ".agents\rules\$r")) { Ok "rule $r" } else { Fail "missing rule $r" }
 }
 $cutRel = Join-Path $Root ".agents\skills\cut-release\SKILL.md"
