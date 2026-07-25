@@ -14,7 +14,7 @@ humanymous releases are driven by **SemVer git tags** (`vMAJOR.MINOR.PATCH`) and
 
 Pushing a tag matching `v*.*.*` runs `.github/workflows/release.yml`:
 
-1. **Images** — builds the `core` and `gate` images for `linux/amd64` and `linux/arm64`, pushes them to `ghcr.io/<owner>/humanymous-core` and `-gate` with `type=semver` tags (`X.Y.Z`, `X.Y`, `X`), attaches SLSA provenance + an SPDX SBOM, and signs each with cosign (keyless OIDC). The `bots` attacker image is never published.
+1. **Images** — builds the `core` and `gate` images for `linux/amd64` and `linux/arm64`, pushes them to `ghcr.io/<owner>/humanymous-core` and `-gate` with SemVer tags (`X.Y.Z`, `X.Y`, `X`), **`latest`**, and a long `sha` tag, attaches SLSA provenance + an SPDX SBOM, and signs each with cosign (keyless OIDC). The `bots` attacker image is never published. Concurrent tag pushes are **queued** (not cancelled mid-push). Both matrix legs must succeed and pass an `images-ok` inspect before the GitHub Release job runs.
 2. **GitHub release** — git-cliff generates the release notes from the Conventional Commits **since the previous tag**, grouped into Keep a Changelog sections, and `softprops/action-gh-release` publishes them.
 
 ## Choose the version

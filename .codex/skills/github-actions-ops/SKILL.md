@@ -20,7 +20,7 @@ human-gated via skill `cut-release` + rule `93`.
 | Workflow | Trigger | Agent may… | Must not… |
 |----------|---------|------------|-----------|
 | `.github/workflows/ci.yml` | push `main`, PR | Fix jobs, caches, Trivy, agent-layout verify, cliff config check | Replace Docker e2e with host loopback as authority |
-| `.github/workflows/release.yml` | tags `v*.*.*` | Fix build-args, matrix build issues, notes step | Add bots matrix; PR/workflow_dispatch package push; strip cosign/SBOM/provenance |
+| `.github/workflows/release.yml` | tags `v*.*.*` | Fix build-args, matrix build issues, notes step | Add bots matrix; PR/workflow_dispatch package push; strip cosign/SBOM/provenance; set `cancel-in-progress: true` on release concurrency; remove `:latest` on tag cuts |
 | `.github/workflows/codeql.yml` | as configured | Keep green; align Go version | Weaken analysis without user OK |
 
 ## Lanes
@@ -34,10 +34,16 @@ human-gated via skill `cut-release` + rule `93`.
 
 1. Prefer action majors already used (`checkout@v4`, `setup-go@v7`, `build-push-action@v7`, `git-cliff-action@v4`).
 2. Default `permissions: contents: read`; elevate only where needed (`packages: write`, `id-token: write`, `contents: write` on `gh-release` job only).
-3. CI may use concurrency cancel-in-progress; **do not** cancel-in-progress a mid-flight multi-arch **release** publish.
-4. Never add `bots.Dockerfile` / `humanymous-bots` / red paths to any push-to-registry job.
-5. Privilege expansion (`id-token`, `packages: write`, new secrets) requires **explicit human approval of the diff** before commit.
-6. Do not invent long-lived cosign keys or `CR_PAT` unless the user names them.
+3. CI may use concurrency cancel-in-progress; **release** must keep
+   `concurrency.cancel-in-progress: false` (queue tags; never abort mid-push).
+4. Tag-only releases use metadata-action `flavor: latest=true` so `:latest`
+   moves on every successful `v*.*.*` cut — **not** `enable={{is_default_branch}}`
+   (false on tag refs).
+5. Never add `bots.Dockerfile` / `humanymous-bots` / red paths to any push-to-registry job.
+6. Privilege expansion (`id-token`, `packages: write`, new secrets) requires **explicit human approval of the diff** before commit.
+7. Do not invent long-lived cosign keys or `CR_PAT` unless the user names them.
+8. Matrix uses `fail-fast: false` + `images-ok` job before `gh-release`. A failed
+   leg can still leave the other image on ghcr — fix-forward with a new SemVer.
 
 ## Failure playbook
 

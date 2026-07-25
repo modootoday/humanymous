@@ -98,9 +98,12 @@ gh run watch   # when run id known
 
 `release.yml` on `v*.*.*`:
 
-1. **images** matrix: `build/core.Dockerfile` → `ghcr.io/<owner>/humanymous-core`,
-   `build/gate.Dockerfile` → `…/humanymous-gate` (amd64+arm64), SBOM, provenance, cosign OIDC.
-2. **gh-release** (`needs: images`): git-cliff (`cliff.toml`) → GitHub Release body.
+1. **images** matrix (`fail-fast: false`): `build/core.Dockerfile` →
+   `ghcr.io/<owner>/humanymous-core`, `build/gate.Dockerfile` → `…/humanymous-gate`
+   (amd64+arm64), tags include SemVer + **`latest`** + sha, SBOM, provenance, cosign OIDC.
+2. **images-ok**: both digests present; imagetools inspect version + `latest`.
+3. **gh-release** (`needs: [images, images-ok]`): git-cliff → GitHub Release body.
+   Concurrent releases use `concurrency.group: release` with **cancel-in-progress: false**.
 
 Bots image is **never** in the matrix.
 
