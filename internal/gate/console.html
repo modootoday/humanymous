@@ -309,14 +309,14 @@ async function loadBans(){
             <label class="fld"><span>Key</span><input id="b-key" placeholder="ip:203.0.113.9 · fp:…"></label>
             <label class="fld"><span>Reason</span><input id="b-reason" placeholder="coordinated scraping"></label>
             <label class="fld"><span>Duration</span><select id="b-dur"><option value="3600">1 hour</option><option value="21600">6 hours</option><option value="86400">24 hours</option><option value="604800">7 days</option><option value="0">Permanent</option></select></label>
-            <label class="fld" id="b-apwrap" hidden><span>Second approver <span class="dc">⚿ dual-control</span></span><input id="b-approver" placeholder="approver id"></label>
-            <button class="btn primary" id="b-add" style="justify-content:center" data-tip="Apply the ban. Permanent bans require a second approver (dual-control). Recorded as ban.applied before it takes effect.">Apply ban</button>
-            <p class="note" style="margin:0">Every ban/unblock is written to the audit chain before it takes effect.</p>
+            <p class="note" id="b-dcnote" hidden style="margin:0">Permanent/CIDR placement is dual-control: this request lands in Approvals; a <b>distinct Approver</b> commits with their bearer token (server-derived — no approver id field).</p>
+            <button class="btn primary" id="b-add" style="justify-content:center" data-tip="Temporary ban: single Operator. Permanent/CIDR: pending dual-control — commit in Approvals with a distinct Approver token.">Apply ban</button>
+            <p class="note" style="margin:0">Every ban/unblock is written to the audit chain before it takes effect. Lift is single-Operator.</p>
           </div>
         </section>
       </div>
     </div>`;
-  const durSel=$('#b-dur'); durSel.onchange=()=>{$('#b-apwrap').hidden=durSel.value!=='0';};
+  const durSel=$('#b-dur'); durSel.onchange=()=>{$('#b-dcnote').hidden=durSel.value!=='0';};
   function drawBans(){
     const list=bans.filter(b=>banFilter==='all'||b.source===banFilter);
     $('#banRows').innerHTML=list.map(b=>`<tr><td class="mono" style="font-size:12.5px" data-tip="Ban key — ${b.key.startsWith('fp:')?'stable device/TLS fingerprint (survives IP rotation)':'client source IP'}">${esc(b.key)}</td>
@@ -332,9 +332,14 @@ async function loadBans(){
   $('#banFilters').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{banFilter=c.dataset.bf;$('#banFilters').querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');drawBans();});
   $('#b-add').onclick=async()=>{
     const key=$('#b-key').value.trim(); if(!key){$('#b-key').focus();return;}
-    const body={Key:key,Reason:$('#b-reason').value||'manual ban',DurationSec:+durSel.value,Operator:'console',Approver:$('#b-approver')?$('#b-approver').value:''};
-    try{ await api('/bans',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); toast('Ban applied — audited'); loadBans(); }
-    catch(e){ toast(e.message.includes('dual-control')?'Permanent ban needs a second approver':'Add failed'); }
+    // Body carries Key/Reason/Duration only — actor is server-derived from the bearer.
+    const body={Key:key,Reason:$('#b-reason').value||'manual ban',DurationSec:+durSel.value};
+    try{
+      const r=await api('/bans',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(r&&r.pending){ toast('Permanent/CIDR ban pending — needs distinct Approver (Approvals)'); }
+      else { toast('Ban applied — audited'); }
+      loadBans();
+    }catch(e){ toast(e.message.includes('dual-control')||e.message.includes('approval')?'Permanent ban needs a second approver':'Add failed'); }
   };
 }
 
