@@ -7,12 +7,40 @@ import "github.com/modootoday/humanymous/internal/signals"
 // lives in its own file (SRP). Score is a pure function (SoT-05 §8).
 
 // Engine scores sessions under a fixed policy.
+// Optional RuleModes / WeightMultipliers are SoT-39 runtime overlay inputs:
+// empty maps preserve freeze-identical behavior (all HR enforce, multiplier 1.0).
 type Engine struct {
 	Policy Policy
+	// RuleModes maps hard-rule id → "enforce"|"monitor". Missing id = enforce.
+	// monitor: predicate may match for traces but does NOT short-circuit or set verdict.
+	RuleModes map[string]string
+	// WeightMultipliers maps signal id → m in [0,2]. Missing = 1.0. Applied after
+	// registry scores, before FP mitigation (SoT-39 §5.4).
+	WeightMultipliers map[string]float64
+	// NetPolicy maps residual class id → enforce|monitor (SoT-39 §3.5). Empty = code defaults
+	// (correlation enforce for empty overlay via hardrules as today).
+	NetPolicy map[string]string
 }
 
 // NewEngine returns an Engine with the default policy (policyVersion 1.0.0).
 func NewEngine() *Engine { return &Engine{Policy: DefaultPolicy()} }
+
+// Configure replaces policy + overlay knobs in one shot (SoT-39 P2). Safe to call
+// with DefaultPolicy() and nil maps — identical to NewEngine() scoring.
+func (e *Engine) Configure(p Policy, ruleModes map[string]string, weights map[string]float64) {
+	e.ConfigureFull(p, ruleModes, weights, nil)
+}
+
+// ConfigureFull also sets NET-POLICY residual class modes.
+func (e *Engine) ConfigureFull(p Policy, ruleModes map[string]string, weights map[string]float64, netPolicy map[string]string) {
+	if e == nil {
+		return
+	}
+	e.Policy = p
+	e.RuleModes = ruleModes
+	e.WeightMultipliers = weights
+	e.NetPolicy = netPolicy
+}
 
 // Score evaluates a merged SessionReport and fills its CrossChecks + Scoring.
 // It mutates r.CrossChecks and returns the ScoreResult (also stored in r).
@@ -64,7 +92,8 @@ func (e *Engine) assemble(r *signals.SessionReport) (contributions []scored, rc 
 	extra = append(extra, advanced...)
 	contributions = e.gather(r, behavior, extra)
 
-	// 4. FP mitigation before combination (privacy users, low-spec devices).
+	// 4. Overlay weight multipliers (SoT-39), then FP mitigation (SoT-05 §4.3).
+	contributions = applyWeightMultipliers(contributions, e.WeightMultipliers)
 	contributions = applyFPMitigation(contributions)
 	if env.Privacy {
 		contributions = dampPrivacyNoise(contributions)
@@ -76,6 +105,8 @@ func (e *Engine) assemble(r *signals.SessionReport) (contributions []scored, rc 
 		cross:        r.CrossChecks,
 		hasClient:    hasClientReport(r),
 		browserClaim: isBrowserUA(r.Client.UserAgent),
+		ruleModes:    e.RuleModes,
+		netPolicy:    e.NetPolicy,
 	}
 	rc.sigs = append(rc.sigs, behavior...)
 	rc.sigs = append(rc.sigs, env.Signals...)
@@ -125,7 +156,9 @@ func (e *Engine) decide(r *signals.SessionReport, contributions []scored, rc rul
 }
 
 // gather converts client/network/behavior/env signals + cross-checks into the
-// unified scored slice used by Combine.
+// unified scored slice used by Combine. Network-plane residuals (proxy/VPN/TCP
+// /IP-intel correlation) are score-exempt (weight 0) and still appear on the
+// session for audit — they must not move the risk dial.
 func (e *Engine) gather(r *signals.SessionReport, behavior, env []signals.Signal) []scored {
 	var out []scored
 	appendSig := func(s signals.Signal) {
@@ -133,7 +166,7 @@ func (e *Engine) gather(r *signals.SessionReport, behavior, env []signals.Signal
 			id:    s.ID,
 			layer: s.Layer,
 			group: signals.GroupOf(s.ID),
-			score: s.Score,
+			score: s.Score, // weight-0 residuals contribute 0; multipliers applied later
 		})
 	}
 	for _, s := range r.Client.Signals {

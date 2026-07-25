@@ -139,18 +139,20 @@ func layerTrace(kept []scored, cap float64) (probs []float64, traces []LayerTrac
 }
 
 // tracePromotionRules evaluates every promotion rule (matched AND unmatched) in
-// order, marking the first match as the winner. Same table as the production
-// applyPromotionRules, so the winner here always equals the real override.
+// order. Winner = first enforce-mode match (SoT-39 continue semantics for monitor).
+// Same table + mode rules as applyPromotionRules.
 func tracePromotionRules(c ruleContext) []HardRuleEval {
 	out := make([]HardRuleEval, 0, len(promotionRules))
 	won := false
 	for _, r := range promotionRules {
-		m := r.pred(c)
-		e := HardRuleEval{Rule: r.id, Verdict: r.verdict, Why: r.why, Matched: m}
-		if m && !won {
+		matched := r.pred(c)
+		mode := ruleModeOf(c.ruleModes, r.id)
+		e := HardRuleEval{Rule: r.id, Verdict: r.verdict, Why: r.why, Matched: matched}
+		if matched && mode == "enforce" && !won {
 			e.Won = true
 			won = true
 		}
+		// monitor match: Matched=true, Won=false (shadow only)
 		out = append(out, e)
 	}
 	return out

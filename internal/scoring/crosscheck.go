@@ -2,6 +2,7 @@ package scoring
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/modootoday/humanymous/internal/signals"
 )
@@ -109,12 +110,36 @@ func CrossChecks(r *signals.SessionReport) []signals.CrossCheck {
 	return out
 }
 
-// uachMatchesJS is a placeholder consistency check: in this reference build the
-// server stores header UA-CH into the same struct, so we compare platform.
-// A real deployment would diff brand+version+mobile byte-for-byte.
+// uachMatchesJS checks low-entropy Client Hints vs the UA string / JS surface.
+// Public residual research (UA-CH fingerprint inconsistency): bots often forge
+// UA and Sec-CH-UA-Platform independently (e.g. iPhone UA + Android platform).
+// Empty platform is inconsistent; coarse OS family must agree with the UA claim.
 func uachMatchesJS(r *signals.SessionReport) bool {
-	// If the client reported a platform, it must be non-empty and plausible.
-	return r.Client.UAClientHints.Platform != ""
+	p := strings.ToLower(strings.TrimSpace(r.Client.UAClientHints.Platform))
+	if p == "" {
+		return false
+	}
+	// Strip quotes if a client echoed header form ("Windows").
+	p = strings.Trim(p, `"`)
+	ua := strings.ToLower(r.Client.UserAgent)
+	switch {
+	case strings.Contains(ua, "android"):
+		return p == "android"
+	case strings.Contains(ua, "iphone") || strings.Contains(ua, "ipad") || strings.Contains(ua, "ipod"):
+		// iOS UAs sometimes report "iOS"; desktop-mode iPad may report "macOS".
+		return p == "ios" || p == "macos"
+	case strings.Contains(ua, "windows"):
+		return p == "windows"
+	case strings.Contains(ua, "mac os") || strings.Contains(ua, "macintosh"):
+		return p == "macos" || p == "mac os"
+	case strings.Contains(ua, "cros") || strings.Contains(ua, "chromium os"):
+		return p == "chrome os" || p == "chromium os"
+	case strings.Contains(ua, "linux"):
+		return p == "linux" || p == "chrome os" || p == "chromium os"
+	default:
+		// Unknown UA family: require non-empty platform only.
+		return true
+	}
 }
 
 func mkCross(id string, inputs []string, claim, observed string, consistent bool, notes string) signals.CrossCheck {

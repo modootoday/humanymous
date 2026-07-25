@@ -85,6 +85,87 @@ func TestFPR_Flood_NotLoneDenyHR21(t *testing.T) {
 	}
 }
 
+// TestHR24_ProxyVPNResiduals pins Squid hop / WebRTC VPN leak / multi-hop+ip-hop /
+// proxy ASN under a browser UA → CHALLENGE (not mass DENY).
+func TestHR24_ProxyVPNResiduals(t *testing.T) {
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r.Network.Signals = append(r.Network.Signals,
+		signals.New("l5.header.proxy_hop", "via-squid", signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r); v.HardRuleFired != "HR-24" || v.Verdict != VerdictChallenge {
+		t.Fatalf("squid hop want CHALLENGE/HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	r2 := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r2.Network.Signals = append(r2.Network.Signals,
+		signals.New("l5.proxy.vpn_webrtc_leak", true, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r2); v.HardRuleFired != "HR-24" {
+		t.Fatalf("webrtc leak want HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	r3 := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r3.Network.Signals = append(r3.Network.Signals,
+		signals.New("l5.header.xff_multi_hop", 2, signals.VerdictSuspicious, 1, signals.SourceServer, ""),
+		signals.New("l5.traffic.ip_hop", []string{"203.0.113", "198.51.100"}, signals.VerdictSuspicious, 1, signals.SourceServer, ""),
+	)
+	if v := NewEngine().Score(r3); v.HardRuleFired != "HR-24" {
+		t.Fatalf("multi-hop+ip-hop want HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	r4 := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r4.Network.Signals = append(r4.Network.Signals,
+		signals.New("l5.ip.proxy_vpn_tor", true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r4); v.HardRuleFired != "HR-24" {
+		t.Fatalf("proxy ASN under browser UA want HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	// Firefox/Tor Browser UA needs a Firefox-consistent network plane so HR-2 (UA vs TLS/H2)
+	// does not fire first and hide the Tor residual under test.
+	ffNet := signals.NetworkReport{JA4Engine: "firefox", H2Engine: "firefox", SecFetchPresent: true, SecCHUAPresent: false}
+	r5 := base("Mozilla/5.0 (Windows NT 10.0; rv:115.0) Gecko/20100101 Firefox/115.0",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, ffNet)
+	r5.Network.Signals = append(r5.Network.Signals,
+		signals.New("l5.proxy.tor_circuit", 3, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r5); v.HardRuleFired != "HR-24" {
+		t.Fatalf("tor_circuit want HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	r6 := base("Mozilla/5.0 (Windows NT 10.0; rv:115.0) Gecko/20100101 Firefox/115.0",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, ffNet)
+	r6.Network.Signals = append(r6.Network.Signals,
+		signals.New("l5.ip.tor_exit", true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r6); v.HardRuleFired != "HR-24" {
+		t.Fatalf("tor_exit ASN want HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	r7 := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r7.Network.Signals = append(r7.Network.Signals,
+		signals.New("l5.header.client_ip_spoof", "cf-connecting-ip", signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r7); v.HardRuleFired != "HR-24" {
+		t.Fatalf("client_ip_spoof want HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	r8 := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r8.Network.Signals = append(r8.Network.Signals,
+		signals.New("l5.proxy.anon_chain", 4, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r8); v.HardRuleFired != "HR-24" {
+		t.Fatalf("anon_chain want HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+
+	r9 := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r9.Network.Signals = append(r9.Network.Signals,
+		signals.New("l5.correlation.fp_churn_proxy", 3, signals.VerdictBot, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r9); v.HardRuleFired != "HR-19" {
+		t.Fatalf("fp_churn_proxy want HR-19 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),
