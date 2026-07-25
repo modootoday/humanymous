@@ -23,6 +23,8 @@ const (
 	ClassSeqGap        MismatchClass = "seq-gap"
 	ClassLinkageBreak  MismatchClass = "linkage-break"
 	ClassCheckpointBad MismatchClass = "checkpoint-mismatch"
+	ClassWitnessBad    MismatchClass = "witness-invalid"
+	ClassEmptyChain    MismatchClass = "empty-chain"
 	ClassNodeMissing   MismatchClass = "node-missing"
 )
 
@@ -40,6 +42,10 @@ func pass() VerifyResult { return VerifyResult{OK: true, Class: ClassOK} }
 // SelfVerify replays this log's own chain (it holds the HMAC key and pubkey).
 // Used by the admin/integrity endpoint; production runs an independent verifier
 // against a read replica with only the public key (SoT-18 §1 SoD).
+//
+// SoT-28 / SoT-38 P0-5: when an independent witness is configured, SelfVerify also
+// requires every checkpoint's witness co-signature (VerifyWitness). Writer-only
+// Verify() is not enough — that is the control the witness exists for.
 func (l *Log) SelfVerify() VerifyResult {
 	// Snapshot records + checkpoints under ONE lock so the two views are consistent.
 	// Taking them via separate Records()/Checkpoints() calls (two lock acquisitions) let a
@@ -55,7 +61,21 @@ func (l *Log) SelfVerify() VerifyResult {
 	}
 	cps := append([]Checkpoint(nil), l.checkpoints...)
 	l.mu.Unlock()
-	return Verify(recs, cps, l.hmacKey, l.PublicKey())
+	res := Verify(recs, cps, l.hmacKey, l.PublicKey())
+	if !res.OK {
+		return res
+	}
+	if wpub := l.WitnessPublicKey(); len(wpub) > 0 {
+		if at, ok := VerifyWitness(cps, wpub); !ok {
+			return VerifyResult{
+				OK:     false,
+				Class:  ClassWitnessBad,
+				AtSeq:  at,
+				Detail: "witness co-signature missing or invalid",
+			}
+		}
+	}
+	return res
 }
 
 // Verify replays the chain against the HMAC key and STH public key. The HMAC key

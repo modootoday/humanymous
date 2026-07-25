@@ -180,6 +180,16 @@ func main() {
 		witness.Restore(last.TreeSize, last.MerkleRoot, last.Root)
 	}
 	if *auditVerify {
+		// SoT-38 P0-5: a vacuous green is worse than a hard fail. Without -audit-wal the
+		// instance.startup emit has not run yet, so the chain is empty and SelfVerify
+		// would report OK (0 records). Auditors must point at a real WAL directory.
+		if *auditWAL == "" {
+			log.Fatalf("audit-verify: FAILED class=%s seq=0 -audit-wal is required (empty in-memory chain is not a pass)", audit.ClassEmptyChain)
+		}
+		if alog.Len() == 0 {
+			log.Fatalf("audit-verify: FAILED class=%s seq=0 no records in WAL (empty chain is not a pass)", audit.ClassEmptyChain)
+		}
+		// SelfVerify includes VerifyWitness when a witness key is configured (P0-5).
 		res := alog.SelfVerify()
 		if res.OK {
 			log.Printf("audit-verify: OK (%d records)", alog.Len())
