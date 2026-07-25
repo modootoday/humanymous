@@ -3,6 +3,7 @@
 // cross-session correlation (SoT-15) then sees ONE fingerprint from THREE
 // subnets and raises proxy_rotation / shared_fingerprint. Local target only.
 import https from 'node:https';
+import { appendFileSync } from 'node:fs';
 
 const BASE = process.argv[2];
 const FP = process.argv[3] || 'swarm-shared-fp-0001';
@@ -25,6 +26,7 @@ function req(method, path, { cookie, body } = {}) {
   });
 }
 
+let completed = 0;
 for (let i = 0; i < N; i++) {
   try {
     const s = await req('GET', '/api/session');
@@ -34,7 +36,16 @@ for (let i = 0; i < N; i++) {
     let v = {}; try { v = JSON.parse(c.body); } catch { /* non-JSON */ }
     const corr = (v.topContributors || []).map((t) => t.id).filter((id) => /corr|proxy|shared|ip\.|subnet/i.test(id));
     console.log(`[swarm] #${i} verdict=${v.verdict} risk=${v.riskScore} rule=${v.hardRuleFired || '-'} corr=[${corr.join(',') || '-'}]`);
+    completed++;
+    if (corr.includes('l5.correlation.proxy_rotation')) {
+      appendFileSync('/artifacts/swarm-correlation.ok', `proxy_rotation ${new Date().toISOString()}\n`);
+    }
   } catch (e) {
-    console.log(`[swarm] #${i} error: ${e.message}`);
+    console.error(`[swarm] #${i} error: ${e.message}`);
   }
+}
+
+if (completed !== N) {
+  console.error(`FAIL: only ${completed}/${N} swarm requests completed`);
+  process.exitCode = 1;
 }

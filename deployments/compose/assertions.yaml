@@ -1,0 +1,89 @@
+# Docker-native PLAN-08 assertions. These one-shot services keep Node, key
+# material, and protocol clients inside the Compose network; the host only
+# orchestrates Docker.
+networks:
+  edge:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.40.0.0/24
+
+x-assert: &assert
+  image: humanymous/bots:local
+  build:
+    context: ../../
+    dockerfile: build/bots.Dockerfile
+  profiles: [assert]
+
+services:
+  assert-shared-state:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-shared-state.mjs"]
+    environment:
+      A_EDGE: "https://gate:8444"
+      A_ADMIN: "https://gate:8445"
+      B_EDGE: "https://gate-b:8444"
+      B_ADMIN: "https://gate-b:8445"
+    networks: [lab-a]
+
+  assert-proxyproto:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-proxyproto.mjs"]
+    environment:
+      VIA_LB: "https://haproxy:8460"
+      HAPROXY_IP: "172.40.0.5"
+      REAL_CLIENT_IP: "172.40.0.10"
+    networks:
+      edge:
+        ipv4_address: 172.40.0.10
+
+  assert-webbotauth:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-webbotauth.mjs"]
+    environment:
+      EDGE: "https://gate:8444"
+      ADMIN: "https://gate:8445"
+    networks: [lab-a]
+
+  assert-privacypass:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-privacypass.mjs"]
+    environment:
+      EDGE: "https://gate:8444"
+      ADMIN: "https://gate:8445"
+      PRIV_PEM: "/app/demo-keys/patissuers/issuer-priv.pem"
+    volumes:
+      - demo-keys:/app/demo-keys:ro
+    networks: [lab-a]
+
+  assert-webauthn:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-webauthn.mjs"]
+    environment:
+      EDGE: "https://gate:8444"
+      ADMIN: "https://gate:8445"
+      PRIV_PEM: "/app/demo-keys/webauthncreds/cred-priv.pem"
+    volumes:
+      - demo-keys:/app/demo-keys:ro
+    networks: [lab-a]
+
+  assert-redis-hardening:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-redis-hardening.mjs"]
+    environment:
+      ADMIN: "https://gate:8445"
+      REDIS_HOST: "redis"
+      REDIS_PASSWORD: "demopass"
+    networks: [web]
+
+  assert-audit-clickhouse:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-audit-clickhouse.mjs"]
+    environment:
+      EDGE: "https://gate:8444"
+      ADMIN: "https://gate:8445"
+      CH: "http://clickhouse:8123"
+    networks: [web]
+
+volumes:
+  demo-keys:

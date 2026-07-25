@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # ci-overlays.sh — stand up each PLAN-08 compose overlay and run its Docker consistency
 # assert (PLAN-08 backlog item 7). Used by CI and reproducible locally.
-set -euo pipefail
-BASE="-f deployments/compose.yaml"
+set -eu
+PROJECT="${E2E_PROJECT_NAME:-hmn-overlays-${CI_RUN_ID:-$$}}"
+PROJECT="$(printf '%s' "$PROJECT" | tr '[:upper:]_' '[:lower:]-' | tr -cd 'a-z0-9-')"
+BASE="-p $PROJECT -f deployments/compose.yaml -f deployments/compose/assertions.yaml"
 cd "$(dirname "$0")/.."
-
-go run ./scripts/gen-demo-keys
 
 # Start from a clean slate: the CI job leaves the base detection stack (core/origin/gate)
 # up from the attack run, which shares this compose project + host port 8444 with every
@@ -13,8 +13,8 @@ go run ./scripts/gen-demo-keys
 # still-running base gate for the port.
 docker compose $BASE down -v >/dev/null 2>&1 || true
 
-run() { # name  "services"  assert.mjs  [wait]  [env...]
-  local name=$1 services=$2 assert=$3 wait=${4:-6}; shift 4 || shift $#
+run() { # name  "services"  assertion-service  [wait]
+  local name=$1 services=$2 assertion=$3 wait=${4:-2}
   echo "::group::overlay $name"
   local attempt ok=""
   # Retry the whole up→assert cycle: overlay containers occasionally lose the port-8444
@@ -25,7 +25,7 @@ run() { # name  "services"  assert.mjs  [wait]  [env...]
   for attempt in 1 2 3; do
     docker compose $BASE -f "deployments/compose/$name.yaml" up -d $services
     sleep "$wait"
-    if env "$@" node "scripts/$assert"; then ok=1; break; fi
+    if docker compose $BASE -f "deployments/compose/$name.yaml" run --rm "$assertion"; then ok=1; break; fi
     echo "overlay $name: attempt $attempt failed — gate logs follow, then teardown + retry"
     docker compose $BASE -f "deployments/compose/$name.yaml" logs --tail=25 gate 2>/dev/null || true
     docker compose $BASE -f "deployments/compose/$name.yaml" down -v >/dev/null 2>&1 || true
@@ -36,11 +36,11 @@ run() { # name  "services"  assert.mjs  [wait]  [env...]
   [ -n "$ok" ] || { echo "overlay $name FAILED after 3 attempts"; return 1; }
 }
 
-run redis-ha       "origin redis gate gate-b" assert-shared-state.mjs
-run proxyproto     "origin gate haproxy"      assert-proxyproto.mjs
-run webbotauth     "origin gate"              assert-webbotauth.mjs
-run privacypass    "origin gate"              assert-privacypass.mjs
-run webauthn       "origin gate"              assert-webauthn.mjs
-run redis-hardened "origin redis gate"        assert-redis-hardening.mjs
-run audit-ch       "origin clickhouse gate"   assert-audit-clickhouse.mjs 16
+run redis-ha       "origin redis gate gate-b"              assert-shared-state
+run proxyproto     "origin gate haproxy"                   assert-proxyproto
+run webbotauth     "origin gate"                           assert-webbotauth
+run privacypass    "origin demo-keys-init gate"            assert-privacypass
+run webauthn       "origin demo-keys-init gate"            assert-webauthn
+run redis-hardened "origin redis gate"                     assert-redis-hardening
+run audit-ch       "origin clickhouse gate"                assert-audit-clickhouse 4
 echo "ALL PLAN-08 overlays passed"

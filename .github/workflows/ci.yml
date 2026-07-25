@@ -105,18 +105,18 @@ jobs:
       - name: Run the bots (automation catalog) vs the engine
         run: docker compose -f deployments/compose.yaml run --rm bots
 
-      - name: Assert attack gate (all bots blocked, no FP)
-        run: node scripts/assert-attack.mjs deployments/artifacts/core-results.json
+      - name: Assert attack gate (Docker — complete catalog, no escape/FP/error/skip)
+        run: docker compose -f deployments/compose.yaml run --rm attack-assert
 
       - name: Gate proxy-layer conformance (34 checks)
         run: docker compose -f deployments/compose.yaml run --rm gate-e2e
 
       - name: Multi-subnet swarm — assert cross-subnet correlation fires
         run: |
+          docker compose -f deployments/compose.yaml run --rm swarm-reset
           docker compose -f deployments/compose.yaml --profile swarm up \
-            --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c | tee swarm.log
-          grep -q 'l5.correlation.proxy_rotation' swarm.log \
-            || (echo 'FAIL: proxy_rotation never fired across subnets' && exit 1)
+            --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
+          docker compose -f deployments/compose.yaml run --rm swarm-assert
 
       # PLAN-08 backlog: stand up every opt-in feature overlay in Docker and run its
       # consistency assert (shared state, PROXY-proto, the three token verifiers, Redis

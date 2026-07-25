@@ -130,6 +130,11 @@ async function main() {
   console.log(`\nwrote ${outPath} (${results.length} records)`);
   summarize(results);
   tieredReport(results);
+  const incomplete = results.filter((r) => r.error || r.skipped);
+  if (incomplete.length) {
+    console.error(`\nFAIL: ${incomplete.length} catalog record(s) errored or skipped`);
+    process.exitCode = 1;
+  }
 }
 
 // tieredReport prints the Red cost-escalation ladder (T0 cheapest -> T4 most expensive) with

@@ -18,7 +18,8 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/ \
- && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/
+ && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/ \
+ && go run ./scripts/gen-demo-keys
 
 # ---- Bots runtime: Node + Playwright browsers (Chromium + Firefox) ---------
 FROM mcr.microsoft.com/playwright:v1.61.1-noble
@@ -29,7 +30,11 @@ COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
 COPY --from=gobuild /out/gate  /app/bin/gate
 
 COPY test /app/test
+COPY scripts/assert-*.mjs /app/scripts/
 COPY deployments/bots/ /app/
+# Seed lives outside the runtime mount point so an empty named volume cannot hide keys.
+COPY --from=gobuild /src/deployments/patissuers /app/demo-keys-seed/patissuers
+COPY --from=gobuild /src/deployments/webauthncreds /app/demo-keys-seed/webauthncreds
 RUN sed -i 's/\r$//' /app/*.sh && chmod +x /app/*.sh \
  && cd /app/test && (npm ci --no-audit --no-fund || npm install --no-audit --no-fund)
 

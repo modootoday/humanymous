@@ -137,9 +137,9 @@ logs:
 down:
 	$(COMPOSE) down -v
 
-## e2e-assert: re-check last Docker attack artifact without re-running bots
+## e2e-assert: re-check last Docker attack artifact inside the bots image (authoritative)
 e2e-assert:
-	node scripts/assert-attack.mjs deployments/artifacts/core-results.json
+	$(COMPOSE) run --rm attack-assert
 
 clean:
 	rm -f $(SRV_OUT) $(RPT_OUT) $(WASM_OUT) test/e2e/results.json

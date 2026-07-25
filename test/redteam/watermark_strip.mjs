@@ -24,10 +24,20 @@ export async function run(baseURL) {
   // Blue traces the leaked (stripped) image.
   const trace = await fetch(base + '/api/trace', {
     method: 'POST',
-    headers: { 'Content-Type': 'image/png' },
+    headers: {
+      'Content-Type': 'image/png',
+      Authorization: `Bearer ${process.env.HMN_OPS_TOKEN || 'e2e-core-operator-token'}`,
+    },
     body: stripped,
   });
-  const t = await trace.json();
+  const text = await trace.text();
+  if (!trace.ok) throw new Error(`/api/trace returned HTTP ${trace.status}: ${text.slice(0, 200)}`);
+  let t;
+  try {
+    t = JSON.parse(text);
+  } catch {
+    throw new Error(`/api/trace returned non-JSON: ${text.slice(0, 200)}`);
+  }
 
   // A successful trace means the leaker is identified despite the strip.
   const traced = !!t.traced && !t.result?.forged;

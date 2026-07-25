@@ -16,13 +16,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-COMPOSE=(docker compose -f deployments/compose.yaml)
-if [[ -f deployments/compose.ci.yaml ]]; then
-  # CI fragment (cache/build tweaks) is optional for local runs.
-  if [[ "${E2E_USE_CI_COMPOSE:-0}" == "1" ]]; then
-    COMPOSE=(docker compose -f deployments/compose.yaml -f deployments/compose.ci.yaml)
-  fi
+PROJECT="${E2E_PROJECT_NAME:-hmn-e2e-${CI_RUN_ID:-$$}}"
+PROJECT="$(printf '%s' "$PROJECT" | tr '[:upper:]_' '[:lower:]-' | tr -cd 'a-z0-9-')"
+COMPOSE_FILES=(-f deployments/compose.yaml)
+if [[ -f deployments/compose.ci.yaml && "${E2E_USE_CI_COMPOSE:-0}" == "1" ]]; then
+  COMPOSE_FILES+=(-f deployments/compose.ci.yaml)
 fi
+COMPOSE=(docker compose -p "$PROJECT" "${COMPOSE_FILES[@]}")
 
 SKIP_SWARM="${E2E_SKIP_SWARM:-0}"
 SKIP_OVERLAYS="${E2E_SKIP_OVERLAYS:-0}"
@@ -48,25 +48,24 @@ echo "[e2e-docker] automation catalog (bots) vs core..."
 "${COMPOSE[@]}" run --rm bots
 
 echo "[e2e-docker] assert attack gate..."
-node scripts/assert-attack.mjs deployments/artifacts/core-results.json
+"${COMPOSE[@]}" run --rm attack-assert
 
 echo "[e2e-docker] gate proxy-layer conformance..."
 "${COMPOSE[@]}" run --rm gate-e2e
 
+echo "[e2e-docker] Pass contract..."
+"${COMPOSE[@]}" run --rm pass-e2e
+"${COMPOSE[@]}" restart core
+echo "[e2e-docker] Pass wargame..."
+"${COMPOSE[@]}" run --rm pass-wargame
+
 if [[ "$SKIP_SWARM" != "1" ]]; then
   echo "[e2e-docker] multi-subnet swarm (proxy_rotation)..."
-  swarm_log="${TMPDIR:-/tmp}/hmn-swarm-e2e.log"
-  # shellcheck disable=SC2068
-  set +e
-  "${COMPOSE[@]}" --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c 2>&1 | tee "$swarm_log"
-  swarm_rc=${PIPESTATUS[0]}
-  set -e
-  if ! grep -q 'l5.correlation.proxy_rotation' "$swarm_log"; then
-    echo "[e2e-docker] FAIL: proxy_rotation never fired across subnets" >&2
-    exit 1
-  fi
-  # swarm may exit non-zero if containers stop; correlation assert is the gate
-  echo "[e2e-docker] swarm correlation OK (compose exit ${swarm_rc})"
+  "${COMPOSE[@]}" run --rm swarm-reset
+  # Prefer --abort-on-container-exit (widely available); failure alias may not exist on all Compose versions.
+  "${COMPOSE[@]}" --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
+  "${COMPOSE[@]}" run --rm swarm-assert
+  echo "[e2e-docker] swarm correlation OK"
 else
   echo "[e2e-docker] skip swarm (E2E_SKIP_SWARM=1)"
 fi
@@ -74,7 +73,8 @@ fi
 if [[ "$SKIP_OVERLAYS" != "1" ]]; then
   if [[ -x scripts/ci-overlays.sh ]] || [[ -f scripts/ci-overlays.sh ]]; then
     echo "[e2e-docker] PLAN-08 feature overlays..."
-    bash scripts/ci-overlays.sh
+    "${COMPOSE[@]}" down -v
+    E2E_PROJECT_NAME="${PROJECT}-overlay" sh scripts/ci-overlays.sh
   fi
 else
   echo "[e2e-docker] skip overlays (E2E_SKIP_OVERLAYS=1)"

@@ -10,6 +10,8 @@ services:
     # override to self-signed TLS on :8443.
     entrypoint: ["/app/server"]
     command: ["-addr", ":8443", "-web", "/app/web"]
+    env_file:
+      - ../../configs/dev.env
     ports:
       - "8443:8443"
     networks: [web, lab-a, lab-b, lab-c]

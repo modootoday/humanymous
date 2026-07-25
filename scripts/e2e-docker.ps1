@@ -26,7 +26,9 @@ $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
 
-$composeArgs = @("-f", "deployments/compose.yaml")
+$projectSeed = if ($env:E2E_PROJECT_NAME) { $env:E2E_PROJECT_NAME } else { "hmn-e2e-$([guid]::NewGuid().ToString('N').Substring(0, 8))" }
+$project = ($projectSeed.ToLowerInvariant() -replace '[^a-z0-9-]', '-').Trim('-')
+$composeArgs = @("-p", $project, "-f", "deployments/compose.yaml")
 function Invoke-Compose {
   param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
   & docker compose @composeArgs @Args
@@ -53,21 +55,22 @@ try {
   Invoke-Compose run --rm bots
 
   Write-Host "[e2e-docker] assert attack gate..."
-  node scripts/assert-attack.mjs deployments/artifacts/core-results.json
-  if ($LASTEXITCODE -ne 0) { throw "assert-attack failed" }
+  Invoke-Compose run --rm attack-assert
 
   Write-Host "[e2e-docker] gate proxy-layer conformance..."
   Invoke-Compose run --rm gate-e2e
 
+  Write-Host "[e2e-docker] Pass contract..."
+  Invoke-Compose run --rm pass-e2e
+  Invoke-Compose restart core
+  Write-Host "[e2e-docker] Pass wargame..."
+  Invoke-Compose run --rm pass-wargame
+
   if (-not $SkipSwarm) {
     Write-Host "[e2e-docker] multi-subnet swarm..."
-    $swarmLog = Join-Path $env:TEMP "hmn-swarm-e2e.log"
-    & docker compose @composeArgs --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c 2>&1 |
-      Tee-Object -FilePath $swarmLog
-    $text = Get-Content $swarmLog -Raw
-    if ($text -notmatch 'l5.correlation.proxy_rotation') {
-      throw "FAIL: proxy_rotation never fired across subnets"
-    }
+    Invoke-Compose run --rm swarm-reset
+    Invoke-Compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
+    Invoke-Compose run --rm swarm-assert
     Write-Host "[e2e-docker] swarm correlation OK"
   } else {
     Write-Host "[e2e-docker] skip swarm"
@@ -75,9 +78,16 @@ try {
 
   if (-not $SkipOverlays) {
     if (Test-Path "scripts/ci-overlays.sh") {
-      Write-Host "[e2e-docker] PLAN-08 overlays (bash required)..."
-      bash scripts/ci-overlays.sh
-      if ($LASTEXITCODE -ne 0) { throw "ci-overlays failed" }
+      Write-Host "[e2e-docker] PLAN-08 overlays..."
+      Invoke-Compose down -v
+      $env:E2E_PROJECT_NAME = "$project-overlay"
+      & docker run --rm `
+        -v /var/run/docker.sock:/var/run/docker.sock `
+        -v "${Root}:/workspace" `
+        -w /workspace `
+        -e "E2E_PROJECT_NAME=$env:E2E_PROJECT_NAME" `
+        docker:27-cli sh scripts/ci-overlays.sh
+      if ($LASTEXITCODE -ne 0) { throw "Docker overlay orchestrator failed" }
     }
   } else {
     Write-Host "[e2e-docker] skip overlays"
@@ -87,3 +97,4 @@ try {
 } finally {
   & $cleanup
 }
+

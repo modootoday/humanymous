@@ -24,6 +24,14 @@ services:
     networks: [lab-a]
     profiles: [attack]
 
+  attack-assert:
+    image: *bots-image
+    build: *bots-build
+    entrypoint: ["node", "/app/scripts/assert-attack.mjs", "/artifacts/core-results.json"]
+    volumes: [../artifacts:/artifacts:ro]
+    networks: [lab-a]
+    profiles: [attack]
+
   # Self-contained Gate proxy-layer conformance (34 checks, on loopback).
   gate-e2e:
     image: *bots-image
@@ -32,6 +40,26 @@ services:
     volumes: [../artifacts:/artifacts]
     networks: [lab-a]
     profiles: [gate-test]
+
+  pass-e2e:
+    image: *bots-image
+    build: *bots-build
+    entrypoint: ["node", "/app/test/redteam/pass_e2e.mjs"]
+    env_file: [../../configs/dev.env]
+    environment:
+      HM_BASE: "https://core:8443"
+    networks: [lab-a]
+    profiles: [pass-test]
+
+  pass-wargame:
+    image: *bots-image
+    build: *bots-build
+    entrypoint: ["node", "/app/test/redteam/pass_wargame.mjs"]
+    env_file: [../../configs/dev.env]
+    environment:
+      HM_BASE: "https://core:8443"
+    networks: [lab-a]
+    profiles: [pass-test]
 
   # Multi-subnet swarm: the SAME fingerprint from THREE real subnets, to exercise
   # cross-session correlation (proxy_rotation / shared_fingerprint) for real.
@@ -44,3 +72,19 @@ services:
   bot-swarm-c:
     <<: *swarm
     networks: [lab-c]
+
+  swarm-reset:
+    image: *bots-image
+    build: *bots-build
+    entrypoint: ["sh", "-c", "rm -f /artifacts/swarm-correlation.ok"]
+    volumes: [../artifacts:/artifacts]
+    networks: [lab-a]
+    profiles: [swarm]
+
+  swarm-assert:
+    image: *bots-image
+    build: *bots-build
+    entrypoint: ["sh", "-c", "test -s /artifacts/swarm-correlation.ok || { echo 'FAIL: proxy_rotation never fired across subnets' >&2; exit 1; }"]
+    volumes: [../artifacts:/artifacts:ro]
+    networks: [lab-a]
+    profiles: [swarm]
