@@ -90,6 +90,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 
 ## Documentation
 
+- [AGENTS.md — `docs/`](https://humanymous.net/AGENTS.html)
 - [humanymous Documentation Style Guide](https://humanymous.net/style-guide.html)
 
 ## Source

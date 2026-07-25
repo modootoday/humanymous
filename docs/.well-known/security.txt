@@ -1,6 +1,6 @@
 # humanymous — security contact (RFC 9116)
 Contact: mailto:support@modoo.today
 Expires: 2027-07-01T00:00:00.000Z
-Policy: https://humanymous.net/SECURITY
+Policy: https://github.com/modootoday/humanymous/blob/main/SECURITY.md
 Preferred-Languages: en, ko
 Canonical: https://humanymous.net/.well-known/security.txt

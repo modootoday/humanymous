@@ -143,7 +143,7 @@ Page through results with the returned `nextBefore` cursor. Each record carries 
 
 For a human-readable snapshot, the Ledger Overview view has an **Export CSV** button that downloads `audit-feed.csv` (`text/csv`). See the [Ledger tour](../how-to/audit-console-tour.md).
 
-> **Note:** Observability in the reference build is the audit stream, the Integrity view/endpoint, and the Overview KPIs. There is no Prometheus `/metrics` endpoint and no health-probe path; SIEM shipping is prod-delta.
+> **Note:** Observability in the reference build is the audit stream, the Integrity view/endpoint, the Overview KPIs, Prometheus `GET /__hmn/admin/metrics` on the admin plane, and edge `GET /__hmn/healthz` / `GET /__hmn/readyz`. SIEM shipping of the audit stream is still a prod-delta.
 
 ### 6. RBAC and dual-control configuration
 

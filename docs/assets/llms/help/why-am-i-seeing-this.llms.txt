@@ -42,16 +42,21 @@ use it:
 
 - Try refreshing the page and completing the step again.
 - If it still will not let you through, contact support at
-  `<support-contact>`. Tell them you were stopped by a verification step and
+  support@modoo.today. Tell them you were stopped by a verification step and
   could not complete it, and mention any assistive technology you use so they
   can help directly.
+
+> **Note:** If you were blocked on **someone else's** website, contact **that
+> site's operator** first — they control the deployment and the unblock path.
+> `support@modoo.today` reaches the **maintainers of the humanymous software**,
+> not every site that runs it.
 
 We would rather hear from you than leave you stuck.
 
 ## If you were blocked (denied)
 
 If the page told you it could not let you through, you can ask us to take
-another look. Please contact support at `<support-contact>` and include:
+another look. Please contact support at support@modoo.today and include:
 
 - **Your incident handle, if the page shows one** — some deployments display a
   short reference code on the block/verification page. If you see one, include it;
@@ -75,7 +80,7 @@ task, please say so and we will treat it as a priority.
 We aim for the quick check to meet the WCAG 2.2 AA accessibility standard, so
 that it works with screen readers, keyboard navigation, and other assistive
 technology. If it did not work for you, that is a bug we want to fix. Please
-report it to `<support-contact>` and describe what happened and what you were
+report it to support@modoo.today and describe what happened and what you were
 using, and we will follow up.
 
 ## Your privacy
@@ -88,5 +93,5 @@ incident handle is what links your message to the specific visit, so you do not
 need to share more personal information than you are comfortable with.
 
 > **Note:** If you have a data or privacy request about your visit, you can
-> raise it with support at `<support-contact>` and it will be routed to the right
+> raise it with support at support@modoo.today and it will be routed to the right
 > team.

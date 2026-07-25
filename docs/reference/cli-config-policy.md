@@ -10,7 +10,7 @@ keywords: ["humanymous Gate CLI flags","per-route policy presets","reverse-proxy
 
 This page lists every command-line flag, environment variable, policy preset, route-table default, threshold, and ingress limit in the reference build of humanymous Gate ("Gate" after first mention). It is descriptive and complete, not a walkthrough — for a guided first run see the [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md); for rollout and safety reasoning see [Will this break my app?](../explanation/will-this-break-my-app.md).
 
-> **Note:** This repository is a reference implementation, not a production-hardened build. Values below are the reference defaults; production deployments layer on prod-delta changes (for example ACME/bring-your-own TLS) that are not present in the reference binary.
+> **Note:** This repository is a reference implementation, not a production-hardened build. Values below are the reference defaults. Several production-shaped features **do** ship in the binary (for example `-acme-domain` / `-tls-cert` edge TLS, `-admin-mtls-ca`, Prometheus `GET /__hmn/admin/metrics`, and `/__hmn/healthz` + `/__hmn/readyz`); prod-delta is the remaining operational surface (SIEM shipping, external IdP/SSO, multi-node shared state beyond the optional Redis path).
 
 Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
 
@@ -256,7 +256,7 @@ These limits apply to **both** the edge listener and the admin listener.
 | HTTP/2 `MaxUploadBufferPerConnection` | 1 MiB | Upload buffer cap. |
 | TLS minimum version | 1.2 | Floor for negotiated TLS. |
 
-The dev certificate is self-signed in memory (ECDSA P-256), CN `humanymous.local`, SAN `localhost`, `humanymous.local`, `127.0.0.1`, `::1`. Browsers show a certificate warning in dev — this is expected. Production uses ACME or bring-your-own certificates (prod-delta; not in the reference binary).
+The dev certificate is self-signed in memory (ECDSA P-256), CN `humanymous.local`, SAN `localhost`, `humanymous.local`, `127.0.0.1`, `::1`. Browsers show a certificate warning in dev — this is expected. Production TLS is **in the reference binary**: set `-tls-cert`/`-tls-key` for bring-your-own PEM, or `-acme-domain` (and related flags) for Let's Encrypt TLS-ALPN-01.
 
 ---
 
