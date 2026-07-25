@@ -17,9 +17,11 @@ Mission · Done (+ evidence) · In progress · Next actions · Verify commands �
 
 If detection intentionally changed, state it loudly. Prefer updating `plan/*` handover when in tree.
 
-## Multi-provider
+## Multi-provider / nested sessions
 
 - Point the next agent at `.agents/lessons/HARD-WON.md` and `AGENTS.md`, not only Claude memory.
-- If work spanned Claude/Grok/Codex/Gemini, note which provider holds residual session state
-  (skill `survey-provider-history`).
+- **Write a handover block onto the session board** (`.agents/sessions/ACTIVE.md`) and
+  `release` the lane via `session-board` so overlapping sessions see the state.
+- If work spanned Claude/Grok/Codex/Gemini, note which provider holds residual chat state
+  (skill `survey-provider-history` / `coordinate-sessions`).
 - Never put MCP tokens or OAuth material in the handover.

@@ -13,6 +13,7 @@ Vendor-neutral source of truth for Claude Code, Grok Build, OpenAI Codex, and Ge
 | **L4 Workflows** | `workflows/` | Tool-agnostic loops |
 | **Evals** | `evals/trigger-queries.json` | Description trigger quality |
 | **Lessons** | `lessons/HARD-WON.md` | Cross-provider durable lessons (Claude memory is not enough) |
+| **Sessions** | `sessions/` | Multi-provider overlap: lanes, protocol, live ACTIVE board |
 
 ### Why nested AGENTS.md
 
@@ -59,3 +60,4 @@ bash scripts/agents/verify-agents-layout.sh
 | `handover-pack` | Next LLM/human brief |
 | `optimize-skill-description` | Trigger description tuning |
 | `survey-provider-history` | Inventory Claude/Grok/Codex/Gemini sessions |
+| `coordinate-sessions` | Claim/release work lanes when sessions overlap |

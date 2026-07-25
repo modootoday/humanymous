@@ -94,13 +94,34 @@ Section "Repo agent canon"
   "AGENTS.md",
   ".agents/lessons/HARD-WON.md",
   ".agents/lessons/PROVIDER-HISTORY.md",
+  ".agents/sessions/PROTOCOL.md",
   "scripts/e2e-docker.sh",
+  "scripts/agents/session-board.ps1",
   "sots/38-truth-debt-remediation.md"
 ) | ForEach-Object {
   $p = Join-Path $Root $_
   if (Test-Path $p) { Write-Host "OK  $_" } else { Write-Host "MISS $_" }
 }
 
+Section "Live session board"
+$board = Join-Path $Root ".agents\sessions\ACTIVE.md"
+$claims = Join-Path $Root ".agents\sessions\claims"
+if (Test-Path $board) {
+  Write-Host "ACTIVE.md present (gitignored live state)"
+} else {
+  Write-Host "ACTIVE.md absent — run: pwsh -File scripts/agents/session-board.ps1 list"
+}
+if (Test-Path $claims) {
+  $n = @(Get-ChildItem $claims -Filter "*.json" -ErrorAction SilentlyContinue).Count
+  Write-Host "claim files: $n"
+  Get-ChildItem $claims -Filter "*.json" -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Host "  $($_.Name)"
+  }
+} else {
+  Write-Host "claims/ empty or missing"
+}
+
 Write-Host ""
 Write-Host "Done. Durable lessons: .agents/lessons/HARD-WON.md"
+Write-Host "Overlap protocol: .agents/sessions/PROTOCOL.md"
 Write-Host "Do not commit provider secrets or raw transcripts."

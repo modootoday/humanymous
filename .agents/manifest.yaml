@@ -1,5 +1,5 @@
 # Multi-provider agent layout inventory (canon).
-version: 3
+version: 4
 
 canon:
   project_rules: AGENTS.md
@@ -46,10 +46,19 @@ rules:
   - 60-e2e-docker-only.md
   - 70-hard-won-lessons.md
   - 80-truth-debt.md
+  - 90-session-overlap.md
+  - 91-git-contention.md
+
+sessions:
+  protocol: .agents/sessions/PROTOCOL.md
+  git_protocol: .agents/sessions/GIT-PROTOCOL.md
+  lanes: .agents/sessions/LANES.md
+  board: .agents/sessions/ACTIVE.md  # gitignored live state
 
 lessons:
   - HARD-WON.md
   - PROVIDER-HISTORY.md
+  - CODEX-AUTO-APPROVE.md
 
 skills:
   - design-sot
@@ -63,6 +72,7 @@ skills:
   - handover-pack
   - optimize-skill-description
   - survey-provider-history
+  - coordinate-sessions
 
 personas:
   - blue-architect
@@ -75,6 +85,7 @@ personas:
 workflows:
   - feature-loop.yaml
   - design-panel.yaml
+  - session-overlap.yaml
 
 research_basis:
   - https://agents.md/

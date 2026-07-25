@@ -87,6 +87,24 @@
       "split": "train"
     },
     {
+      "query": "Claude and Grok are both editing — claim a work lane first",
+      "skill": "coordinate-sessions",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "session overlap board list and release my docs claim",
+      "skill": "coordinate-sessions",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "two agents might commit at once — run git-coord preflight first",
+      "skill": "coordinate-sessions",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
       "query": "Fix a typo in README.md only",
       "skill": "design-sot",
       "should_trigger": false,

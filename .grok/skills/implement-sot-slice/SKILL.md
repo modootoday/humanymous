@@ -12,6 +12,7 @@ description: >
 
 - Accepted SoT/plan (or user-pasted design).
 - Detection freeze (`.agents/rules/20-detection-freeze.md`) unless scoring is in scope.
+- **Lane claimed** (`coordinate-sessions` / `session-board claim`) if other LLM sessions may be active.
 
 ## Steps
 

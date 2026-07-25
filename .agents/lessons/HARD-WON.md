@@ -28,6 +28,16 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
    `mouse.samples: 40` when the Gate injects `samples: 0` makes CI vacuous-green (SoT-38).
 8. **isDatacenterIP / IP intel stubs** can mass-CHALLENGE real humans off-loopback. Never
    ship demo stubs that fire on every non-loopback address without a documented policy.
+8a. **A check that repairs or excludes before it verifies passes vacuously.** Two live
+   instances: `assert-attack.mjs` drops `skipped` **and** `error` records from the denominator
+   and downgrades errors to `WARN` (a real errored profile printed `PASS` on 2026-07-26, so
+   `44/44` means "44 of the 44 that ran"); `ci.yml` runs `sync-adapters` *then*
+   `verify-agents-layout`, auto-healing stale committed files. Fix shape: assert an expected
+   floor (`bots.length >= 45`) and `git diff --exit-code` after any generate step.
+8b. **The reference human must reach ALLOW, not CHALLENGE-scored-TN.** The canonical run
+   reports `human FP 0` while the baseline sits at CHALLENGE — and with no enforcement path to
+   `/pass`, that human is blocked with no recourse. A metric with no threshold is not a gate
+   (see #5).
 
 ## Pass / a11y
 
@@ -64,3 +74,11 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     **project** `.gemini/settings.json` (committed). Re-run `sync-adapters` after skill edits.
 21. **Codex** may also load `~/.codex/AGENTS.md`; project root `AGENTS.md` must remain the
     sharper source of truth for this repo.
+
+## Git contention (multi-session)
+
+22. **Git writes are a global mutex** (`git-ops` lane). Parallel work lanes may edit files;
+    only one agent runs `add`/`commit`/`pull`/`push`/`stash`/branch switch at a time.
+23. Hold `git-ops` only for the transaction (TTL ~30m). Never leave it claimed while coding.
+24. If `.git/index.lock` exists, wait — do not start a second writer.
+25. On non-fast-forward push: stop, fetch, rebase/merge under `git-ops`; never force `main`.

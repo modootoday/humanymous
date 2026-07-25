@@ -50,10 +50,34 @@ Host/loopback `node test/e2e/runner.mjs` or host `node test/gate/e2e.mjs` is **n
 - Verify: `scripts/agents/verify-agents-layout.*`
 - Edit **only** `.agents/**`, nested `AGENTS.md`, and this file — re-run sync; never hand-edit generated `.claude/` / `.grok/` / `.codex/` mirrors.
 
+## Multi-provider / nested sessions (overlap)
+
+Several LLM chats may run on this repo **at once**. Before non-trivial edits:
+
+1. `pwsh -File scripts/agents/session-board.ps1 list` (or `bash scripts/agents/session-board.sh list`)
+2. **Claim a work lane** — skill `coordinate-sessions` / `.agents/sessions/LANES.md`
+3. Work only under claimed paths
+4. **Git writes are serial** — before `add`/`commit`/`pull`/`push`/`stash`/branch switch:
+
+   ```powershell
+   pwsh -File scripts/agents/git-coord.ps1 preflight
+   pwsh -File scripts/agents/git-coord.ps1 claim -Provider <claude|grok|codex|gemini|human>
+   # git add/commit/push — stage only your paths
+   pwsh -File scripts/agents/git-coord.ps1 release -Note "…"
+   ```
+
+5. Release the **work lane** when done or switching providers; incomplete → board handover + `handover-pack`
+
+Same work lane = one writer. Different work lanes may dirty the tree in parallel;  
+**`git-ops` is a global mutex** for the index/HEAD/remote.  
+`detection-core` ↔ `gate-edge` mutex on scoring seams.  
+Details: `.agents/rules/90-session-overlap.md`, `91-git-contention.md`,  
+`.agents/sessions/PROTOCOL.md`, `GIT-PROTOCOL.md`.
+
 ## Ambiguity
 
 If requirements conflict or scope is unclear: **stop and ask** before large edits (agents default to silent assumption otherwise).
 
 ## Cross-provider note
 
-Claude Code may have rich `~/.claude/.../memory/*.md` for this repo. **Grok, Codex, and Gemini do not load that tree.** Prefer `.agents/lessons/` and this file for anything that must survive provider switches.
+Claude Code may have rich `~/.claude/.../memory/*.md` for this repo. **Grok, Codex, and Gemini do not load that tree.** Prefer `.agents/lessons/` and the **session board** (`.agents/sessions/ACTIVE.md`) for anything that must survive provider switches or stacked chats.

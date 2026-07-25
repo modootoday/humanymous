@@ -1,0 +1,45 @@
+# Multi-provider / nested-session coordination workflow
+id: session-overlap
+version: 1
+description: >
+  How to start, claim, work, and release when Claude/Grok/Codex/Gemini sessions
+  may run concurrently or hand off mid-task.
+
+phases:
+  - id: discover
+    skill: coordinate-sessions
+    actions:
+      - session-board list
+      - git status
+      - optional survey-provider-history
+    exit: board state understood
+
+  - id: claim
+    skill: coordinate-sessions
+    exit: one primary lane claimed with path globs
+
+  - id: work
+    skill: null  # primary task skill (implement-sot-slice, docs-from-sot, …)
+    constraints:
+      - paths ⊆ claim
+      - detection freeze / Docker e2e rules still apply
+    exit: scoped change ready to verify
+
+  - id: verify
+    skill: red-blue-validate  # when e2e in scope; else go test
+    when: detection, gate, catalog, or e2e-infra touched
+    exit: verification evidence recorded
+
+  - id: git-serial
+    skill: coordinate-sessions
+    actions:
+      - git-coord preflight
+      - git-ops claim
+      - stage only claimed paths; commit/push
+      - git-ops release immediately
+    exit: no index.lock; git-ops free; commit sha recorded
+
+  - id: release
+    skill: coordinate-sessions
+    optional_skill: handover-pack
+    exit: work lane free; handover on board if incomplete

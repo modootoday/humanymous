@@ -21,6 +21,10 @@
 # Claude Code personal overrides (never commit)
 .claude/settings.local.json
 
+# Multi-provider live session board (claims are local machine state)
+.agents/sessions/ACTIVE.md
+.agents/sessions/claims/
+
 
 # build outputs
 /bin/
