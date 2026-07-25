@@ -181,6 +181,49 @@ func TestSettingsInjectMonitorLeavesHTMLUntouched(t *testing.T) {
 	}
 }
 
+func TestSettingsAttestationFloorMonitorAuditsWithoutChallenging(t *testing.T) {
+	srv, hits, _, _, _, _ := buildAttestStack(t, 0)
+	attachSettingsOverlay(t, srv, &settings.Overlay{
+		Gates: map[string]settings.Mode{"gate.attest_floor": settings.ModeMonitor},
+	})
+
+	sid := "floor-monitor"
+	srv.verdicts.Set(sid, stickyVerdict{verdict: VerdictAllow, updated: srv.nowFn()})
+	before := *hits
+	w := serve(srv, aReq(http.MethodGet, "/transfer", "198.51.100.47:1234", "Chrome/126", "hsid="+sid))
+	if w.Code != http.StatusOK || *hits != before+1 {
+		t.Fatalf("monitor floor changed request outcome: status=%d hits+%d", w.Code, *hits-before)
+	}
+	found := false
+	for _, rec := range srv.sink.Log().Records() {
+		if rec.EventType == audit.EventEnfChallengeIssued && rec.Mode == "monitor" && rec.Action == "would_challenge" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal("missing attestation-floor would-challenge audit")
+	}
+}
+
+func TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath(t *testing.T) {
+	srv, hits, key, epochs, _, _ := buildAttestStack(t, 0)
+	attachSettingsOverlay(t, srv, &settings.Overlay{
+		Gates: map[string]settings.Mode{"gate.attest_floor": settings.ModeMonitor},
+	})
+
+	sid := "floor-token-monitor"
+	now := srv.nowFn()
+	srv.verdicts.Set(sid, stickyVerdict{verdict: VerdictDeny, updated: now})
+	r := aReq(http.MethodGet, "/transfer", "198.51.100.48:1234", "Chrome/126")
+	token := issueVerdictToken(key, sid, tokenBind(r), epochs.Current(), now.Add(time.Minute))
+	r.Header.Set("Cookie", "hsid="+sid+"; "+verdictCookie+"="+token)
+	before := *hits
+	w := serve(srv, r)
+	if w.Code != http.StatusOK || *hits != before+1 {
+		t.Fatalf("monitor floor blocked verdict-token fast path: status=%d hits+%d", w.Code, *hits-before)
+	}
+}
+
 func TestSettingsMetricsReflectApply(t *testing.T) {
 	srv, _ := testSettingsServer(t)
 	eff := srv.SettingsEffective()

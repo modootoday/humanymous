@@ -46,12 +46,12 @@ var version = "dev"
 
 func main() {
 	addr := flag.String("addr", ":8444", "public edge listen address")
-	adminAddr := flag.String("admin-addr", "127.0.0.1:8445", "SEPARATE admin listener (auth-gated; SoT-28 WS1). Defaults to LOOPBACK — front it with mTLS/SSO before exposing off-host (audit SEC-1).")
+	adminAddr := flag.String("admin-addr", "127.0.0.1:8445", "separate authenticated admin listener; defaults to loopback. Require mutual TLS or an identity-aware proxy before exposing it off-host")
 	upstream := flag.String("upstream", "http://127.0.0.1:9000", "origin upstream base URL")
 	node := flag.String("node", "gate-1", "node id (audit chain owner)")
 	monitor := flag.Bool("monitor", false, "global monitor/shadow mode (score+log, enforce nothing)")
 	originKeyHex := flag.String("origin-key", "", "origin-cloaking HMAC key (hex); origin validates X-Hmny-Origin-Auth")
-	keystorePath := flag.String("keystore", "", "sealed keystore path for persistent node identity (SoT-28 WS8; needs HMN_UNSEAL); empty = ephemeral")
+	keystorePath := flag.String("keystore", "", "sealed keystore path for persistent node identity; requires HMN_UNSEAL. Empty uses an ephemeral identity")
 	// SoT-31 R1 — edge TLS: bring-your-own cert or Let's Encrypt (autocert). None => self-signed.
 	tlsCert := flag.String("tls-cert", "", "edge TLS certificate file (PEM); pair with -tls-key for bring-your-own TLS")
 	tlsKey := flag.String("tls-key", "", "edge TLS private key file (PEM)")
@@ -63,44 +63,44 @@ func main() {
 	routesFile := flag.String("routes", "", "path to a route policy file (`<prefix> <preset>` per line); empty = built-in presets")
 	// SoT-32 — durable audit WAL: the tamper-evident chain survives restarts and the
 	// in-memory window is bounded. Empty = ephemeral in-memory (dev, unchanged).
-	auditWAL := flag.String("audit-wal", "", "durable audit WAL directory (SoT-32); empty = ephemeral in-memory")
-	auditVerify := flag.Bool("audit-verify", false, "replay the audit WAL, verify the chain, print the result, and exit")
-	auditRedis := flag.String("audit-redis", "", "Redis host:port to project the audit stream to (SoT-32 Tier 1 hot); empty = off")
-	auditCH := flag.String("audit-clickhouse", "", "ClickHouse HTTP base URL (e.g. http://ch:8123) to project the audit log to (SoT-32 Tier 2 cold); empty = off")
+	auditWAL := flag.String("audit-wal", "", "directory for the durable audit write-ahead log; empty uses an ephemeral in-memory log")
+	auditVerify := flag.Bool("audit-verify", false, "replay the audit write-ahead log, verify the chain, print the result, and exit")
+	auditRedis := flag.String("audit-redis", "", "Redis host:port for a recent-record audit projection; empty disables the projection")
+	auditCH := flag.String("audit-clickhouse", "", "ClickHouse HTTP base URL, such as http://ch:8123, for a long-term audit projection; empty disables the projection")
 	// PLAN-08 R1 — shared ban + sticky-verdict state across a gate fleet. Empty =
 	// single-node in-memory (unchanged). When set, a ban or DENY raised on any node
 	// is enforced on all nodes; a Redis outage degrades each node to its local view.
-	redisAddr := flag.String("redis", "", "Redis host:port for shared ban + verdict state (PLAN-08 R1); empty = single-node in-memory")
+	redisAddr := flag.String("redis", "", "Redis host:port for shared ban and sticky-verdict state; empty uses single-node in-memory state")
 	// PLAN-08 R4 — trusted L4 balancer CIDRs. When set, the public listener reads a
 	// PROXY protocol v2 header from these sources ONLY and recovers the real client IP,
 	// so the gate can sit behind a TCP-passthrough LB while keeping IP-keyed bans /
 	// rate limits / correlation correct. Empty = disabled (direct client IP, unchanged).
-	trustedProxies := flag.String("trusted-proxies", "", "comma-separated CIDRs of L4 balancers allowed to send a PROXY v2 header (PLAN-08 R4); empty = disabled")
+	trustedProxies := flag.String("trusted-proxies", "", "comma-separated address ranges of transport-pass-through load balancers allowed to send a Proxy Protocol version 2 header; empty disables it")
 	// PLAN-08 R3 — Web Bot Auth allowlist: a file of `keyid base64url-ed25519-pubkey`
 	// lines. A valid signature from a listed key is a trust-upgrade; a forgery of a
 	// listed key is denied. Empty = feature off.
-	agentKeysFile := flag.String("agent-keys", "", "path to a Web Bot Auth trusted-key allowlist (PLAN-08 R3); empty = disabled")
+	agentKeysFile := flag.String("agent-keys", "", "path to a Web Bot Auth trusted-key allowlist; empty disables agent-signature verification")
 	// PLAN-08 R5 — shadow anomaly observer: watch per-fingerprint request inter-arrival
 	// through a streaming MAD detector and LOG outliers. Strictly observational (never
 	// affects the verdict); off by default. Shadow-first before any signal earns weight.
-	anomalyShadow := flag.Bool("anomaly-shadow", false, "enable the log-only shadow anomaly observer (PLAN-08 R5); never affects verdicts")
+	anomalyShadow := flag.Bool("anomaly-shadow", false, "enable the log-only anomaly observer; it never affects verdicts")
 	// PLAN-08 R2 — Privacy Pass PAT issuer keys: a PEM file of trusted issuer RSA public
 	// keys. A request carrying a valid Private Access Token from a listed issuer is
 	// trust-upgraded. Empty = feature off.
-	patIssuersFile := flag.String("pat-issuers", "", "path to a PEM file of trusted Privacy Pass PAT issuer public keys (PLAN-08 R2); empty = disabled")
+	patIssuersFile := flag.String("pat-issuers", "", "path to a PEM file of trusted Privacy Pass issuer public keys; empty disables token verification")
 	// PLAN-08 R2 — WebAuthn credential allowlist: a file of `credentialId
 	// base64url-spki-ecdsa-p256-pubkey` lines. A valid, fresh possession assertion from
 	// a listed credential is trust-upgraded. Empty = feature off.
-	webauthnCredsFile := flag.String("webauthn-creds", "", "path to a WebAuthn registered-credential allowlist (PLAN-08 R2); empty = disabled")
+	webauthnCredsFile := flag.String("webauthn-creds", "", "path to a WebAuthn registered-credential allowlist; empty disables possession verification")
 	// Production ops hardening (prod-delta closure): graceful drain, request-body cap,
 	// HSTS, structured logs, and mTLS on the admin plane. All safe defaults preserve the
 	// existing single-binary behavior; detection is unchanged.
 	shutdownGrace := flag.Duration("shutdown-grace", 25*time.Second, "graceful-shutdown drain timeout on SIGINT/SIGTERM (align with the orchestrator termination grace)")
 	maxBody := flag.Int64("max-body", 0, "max request-body size in bytes forwarded to origin on the proxy path (0 = unlimited); large uploads above this get 413")
 	hsts := flag.Bool("hsts", false, "add a Strict-Transport-Security header to edge responses (only enable once real certs and HTTPS-everywhere are in place)")
-	adminMTLSCA := flag.String("admin-mtls-ca", "", "PEM file of client-cert CA(s); when set, the admin listener REQUIRES a verified client certificate (mTLS) in addition to the bearer token")
+	adminMTLSCA := flag.String("admin-mtls-ca", "", "PEM file containing trusted client-certificate authorities; when set, the admin listener requires a verified client certificate in addition to the bearer token")
 	// SoT-39 P1/P2 — RuntimeOverlay file dir (empty = no store, freeze-identical defaults).
-	settingsDir := flag.String("settings-dir", "", "directory for SoT-39 RuntimeOverlay persistence (settings.overlay.v1.json); empty = no overlay store")
+	settingsDir := flag.String("settings-dir", "", "directory for runtime settings persistence; empty provides read-only built-in and startup behavior with no overlay store")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -252,7 +252,7 @@ func main() {
 		if len(redisKey) > 0 {
 			mode = "key-bound HMAC values"
 		}
-		log.Printf("shared state: Redis %s (%s; bans + sticky verdicts propagate fleet-wide, PLAN-08 R1)", *redisAddr, mode)
+		log.Printf("shared state: Redis %s (%s; bans and sticky verdicts propagate across Gate nodes)", *redisAddr, mode)
 	}
 
 	// Verdict-token HMAC key. By default it is per-boot random (single node). For a
@@ -293,7 +293,7 @@ func main() {
 		if st.LoadError() != nil {
 			log.Printf("WARNING: settings store: %v", st.LoadError())
 		}
-		log.Printf("SoT-39 settings store: %s (emptyOverlay=%v)", *settingsDir, st.Active() == nil)
+		log.Printf("runtime settings store: %s (active overlay=%v)", *settingsDir, st.Active() != nil)
 	}
 
 	// PLAN-08 R3 — load the Web Bot Auth trusted-key allowlist, if configured.
@@ -308,7 +308,7 @@ func main() {
 			log.Fatalf("agent-keys: %v", err)
 		}
 		agentKeys = dir
-		log.Printf("Web Bot Auth enabled: verifying agent signatures against %s (PLAN-08 R3)", *agentKeysFile)
+		log.Printf("Web Bot Auth enabled: verifying agent signatures against %s", *agentKeysFile)
 	}
 
 	// PLAN-08 R2 — load the Privacy Pass PAT issuer allowlist, if configured.
@@ -323,7 +323,7 @@ func main() {
 			log.Fatalf("pat-issuers: %v", err)
 		}
 		patIssuers = pv
-		log.Printf("Privacy Pass enabled: verifying Private Access Tokens against %s (PLAN-08 R2)", *patIssuersFile)
+		log.Printf("Privacy Pass enabled: verifying Private Access Tokens against %s", *patIssuersFile)
 	}
 
 	// PLAN-08 R2 — load the WebAuthn registered-credential allowlist, if configured.
@@ -341,7 +341,7 @@ func main() {
 		// another site cannot be replayed here (empty = the respective check is off).
 		wc.SetBinding(os.Getenv("HMN_WEBAUTHN_ORIGIN"), os.Getenv("HMN_WEBAUTHN_RPID"))
 		webauthnCreds = wc
-		log.Printf("WebAuthn enabled: verifying possession assertions against %s (PLAN-08 R2)", *webauthnCredsFile)
+		log.Printf("WebAuthn enabled: verifying possession assertions against %s", *webauthnCredsFile)
 	}
 
 	cfg := gate.Config{
@@ -440,10 +440,10 @@ func main() {
 			lv := strings.ToLower(v)
 			if strings.HasPrefix(v, "e2e-") || strings.Contains(lv, "change") ||
 				strings.Contains(lv, "placeholder") || strings.Contains(lv, "example") || strings.Contains(lv, "your-") {
-				log.Fatalf("refusing to boot: %s is a shipped/placeholder value; set a real secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only (SoT-31 R3 / audit SEC-3)", kind)
+				log.Fatalf("refusing to boot: %s is a shipped or placeholder value; set a real secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only", kind)
 			}
 			if len(v) < 16 {
-				log.Fatalf("refusing to boot: %s is too short (<16 chars); use a high-entropy secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only (audit SEC-3)", kind)
+				log.Fatalf("refusing to boot: %s is shorter than 16 characters; use a high-entropy secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only", kind)
 			}
 		}
 		for role, v := range envToks {
@@ -550,14 +550,14 @@ func main() {
 				}
 			}
 			if dropped > lastDropped {
-				log.Printf("WARN audit projection dropped %d records total (Tier-1/2 backpressure or outage; the WAL remains the durability authority)", dropped)
+				log.Printf("WARN audit projection dropped %d records total because a projection was unavailable or backpressured; the write-ahead log remains the durability authority", dropped)
 				lastDropped = dropped
 			}
 		}
 	}()
 
 	if lo := strings.HasPrefix(*adminAddr, "127.0.0.1") || strings.HasPrefix(*adminAddr, "localhost") || strings.HasPrefix(*adminAddr, "[::1]"); !lo && !devTokens {
-		log.Printf("WARNING (audit SEC-1): admin listener %s is not bound to loopback and no mTLS/SSO is configured — front it with a mutually-authenticated proxy or bind -admin-addr to 127.0.0.1. In Docker, keep the host port mapping loopback-only (127.0.0.1:8445:8445).", *adminAddr)
+		log.Printf("WARNING: admin listener %s is not bound to loopback and no mutual-TLS client authority is configured; front it with an identity-aware, mutually authenticated proxy or bind -admin-addr to 127.0.0.1. In Docker, keep the host port mapping loopback-only (127.0.0.1:8445:8445).", *adminAddr)
 	}
 	adminSrv := mkServer(*adminAddr, srv.AdminHandler(), adminCfg)
 	go func() {
@@ -567,9 +567,9 @@ func main() {
 		// / log shippers. Print the raw values only in the explicit local-demo mode; otherwise
 		// print role names only.
 		if devTokens {
-			log.Printf("  dev tokens (demo mode) — auditor:%s operator:%s approver:%s dpo:%s", toks[gate.RoleAuditor], toks[gate.RoleOperator], toks[gate.RoleApprover], toks[gate.RoleDPO])
+			log.Printf("  development tokens (demo mode) — auditor:%s operator:%s approver:%s privacy-officer:%s", toks[gate.RoleAuditor], toks[gate.RoleOperator], toks[gate.RoleApprover], toks[gate.RoleDPO])
 		} else {
-			log.Printf("  admin roles configured: auditor, operator, approver, dpo — token values NOT logged; supply them via HMN_ADMIN_TOKENS (a random token was generated for any role left unset)")
+			log.Printf("  admin roles configured: auditor, operator, approver, privacy officer — token values are not logged; supply them via HMN_ADMIN_TOKENS (a random token was generated for any role left unset)")
 		}
 		if err := adminSrv.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("admin listener: %v", err)
@@ -589,7 +589,7 @@ func main() {
 	// NOT fire here — the network-fingerprint plane is a reference feature of the Core engine.
 	// Detection at the gate is client JS/WASM + header/behavior + IP-intel only. Additionally,
 	// if a CDN/L7 balancer terminates TLS in front, even the Core's TLS plane is inert.
-	log.Printf("NOTE: network-fingerprint plane (JA3/JA4/H2) is INACTIVE at the gate — detection here is JS/WASM + headers + behavior + IP-intel. For TLS fingerprinting, terminate raw TLS at the Core engine with no re-terminating CDN/L7-LB in front.")
+	log.Printf("NOTE: Gate does not capture the browser's encrypted-connection handshake or HTTP/2 frames and receives only its reduced browser report. For complete Core network observations, terminate the original encrypted connection at Core without a re-terminating intermediary in front.")
 
 	// PLAN-08 R4 — behind an L4 passthrough LB: parse PROXY v2 (below TLS) from the
 	// trusted balancer CIDRs, recovering the real client IP. Without trusted proxies,
@@ -606,7 +606,7 @@ func main() {
 			if lerr != nil {
 				log.Fatalf("edge listener: %v", lerr)
 			}
-			log.Printf("  PROXY protocol v2 enabled for %d trusted CIDR(s) (real client IP recovered behind L4 passthrough)", len(cidrs))
+			log.Printf("  Proxy Protocol version 2 enabled for %d trusted load-balancer address range(s); the original client address is recovered behind transport pass-through", len(cidrs))
 			// PROXY header is read below TLS; then tls.NewListener terminates the handshake.
 			tln := tls.NewListener(gate.WrapProxyProto(base, cidrs), edgeCfg)
 			err = pubSrv.Serve(tln)

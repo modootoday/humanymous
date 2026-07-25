@@ -125,16 +125,15 @@ func Schema() map[string]any {
 		critHR = append(critHR, id)
 	}
 	return map[string]any{
-		"schemaVersion":            "1.0.0",
-		"sot":                      "SoT-39",
-		"gates":                    KnownGates,
-		"netPolicyClasses":         NetPolicyClasses,
+		"schemaVersion":              "1.0.0",
+		"gates":                      KnownGates,
+		"netPolicyClasses":           NetPolicyClasses,
 		"integrityCriticalHardRules": critHR,
 		"integrityCriticalGates": []string{
 			"gate.smuggle", "gate.spoof_header", "gate.verdict_token",
 		},
 		"modes": map[string]any{
-			"gates":     []string{"enforce", "monitor", "shadow"},
+			"gates":     []string{"enforce", "monitor", "shadow", "off"},
 			"hardRules": []string{"enforce", "monitor"},
 			"netPolicy": []string{"enforce", "monitor", "shadow"},
 		},
@@ -143,15 +142,16 @@ func Schema() map[string]any {
 			"denyAt":      map[string]float64{"min": 40, "max": 95, "default": dn},
 			"layerCap":    map[string]float64{"min": 30, "max": 80, "default": lc},
 		},
-		"weightMultiplier": map[string]float64{"min": 0, "max": 2, "step": 0.05},
-		"emptyOverlayMeans": "pre-Settings code defaults; freeze/catalog identity",
+		"weightMultiplier":  map[string]float64{"min": 0, "max": 2, "step": 0.05},
+		"emptyOverlayMeans": "no active overlay; preserve built-in and startup behavior",
 		"notes": []string{
-			"Detect free / Enforce governed",
-			"net.tcp never auto-enforce",
-			"B/C/D apply only via Approvals; A Operator alone",
-			"Dry-run: aggregates only; n<50 → usable=false (no numeric claim)",
-			"Empty overlay ≡ freeze/catalog defaults",
-			"T4 ceiling unchanged by sliders",
+			"Detection measurements remain observable; enforcement changes are governed",
+			"Transport-pattern evidence never auto-enforces",
+			"Protection-reducing changes require a distinct Approver",
+			"Integrity-reducing changes also require an explicit confirmation phrase",
+			"Preview uses aggregates only and makes no numeric claim below 50 samples",
+			"No active overlay preserves built-in and startup behavior",
+			"Settings do not overcome the coherent real-browser and human-paced automation boundary",
 		},
 	}
 }

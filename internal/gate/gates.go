@@ -202,7 +202,12 @@ func (s *Server) verdictTokenGate(w http.ResponseWriter, r *http.Request, sid st
 		// demotes the scoring-ALLOW to a step-up challenge. This closes the laundering hole
 		// where a prior plain ALLOW token would otherwise walk past the floor.
 		if route.attestFloor && !s.hasValidStepUp(r, sid) {
-			return false
+			switch floorMode := s.gateModuleMode("gate.attest_floor"); floorMode {
+			case settings.ModeEnforce:
+				return false
+			case settings.ModeMonitor, settings.ModeShadow:
+				s.auditAttestationFloor(r, sid, route, floorMode, "verdict-token fast path would require step-up")
+			}
 		}
 		rec := audit.Record{
 			EventType: audit.EventEnfAllow, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
@@ -405,7 +410,12 @@ func (s *Server) applyVerdict(w http.ResponseWriter, r *http.Request, sid string
 	// forwarded it), so the only exemption here is a valid step-up proof — exactly
 	// Pass-or-possession, never a categorical block (CHALLENGE→Pass, not DENY).
 	if s.enforcing(route) && route.attestFloor && actionName == "pass" && !s.hasValidStepUp(r, sid) {
-		eventType, actionName = audit.EventEnfChallengeIssued, "challenge_pow"
+		switch floorMode := s.gateModuleMode("gate.attest_floor"); floorMode {
+		case settings.ModeEnforce:
+			eventType, actionName = audit.EventEnfChallengeIssued, "challenge_pow"
+		case settings.ModeMonitor, settings.ModeShadow:
+			s.auditAttestationFloor(r, sid, route, floorMode, "scoring allow would require step-up")
+		}
 	}
 	rec := audit.Record{
 		EventType:  eventType,
@@ -446,4 +456,24 @@ func (s *Server) applyVerdict(w http.ResponseWriter, r *http.Request, sid string
 	default: // pass
 		s.sink.EmitAndAct(rec, func() { s.forward(w, r, route) })
 	}
+}
+
+// auditAttestationFloor records the action the attestation floor would have
+// taken while its Settings mode is monitor or shadow. It never mutates the
+// scorer or the request outcome.
+func (s *Server) auditAttestationFloor(r *http.Request, sid string, route routePolicy, mode settings.Mode, reason string) {
+	s.sink.Emit(audit.Record{
+		EventType:  audit.EventEnfChallengeIssued,
+		Actor:      audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, clientIP(r))},
+		TenantID:   s.cfg.NodeID,
+		SessionPsn: s.pseudonym(sid, sid),
+		Host:       r.Host,
+		RouteClass: routeClass(r),
+		Verdict:    string(VerdictAllow),
+		Action:     "would_challenge",
+		Mode:       gateModeName(mode),
+		FailReason: reason + " (audit only)",
+		KeyID:      "k1",
+		ConfigVer:  s.configVersion(),
+	})
 }
