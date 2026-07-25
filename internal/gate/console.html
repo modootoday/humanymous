@@ -595,7 +595,6 @@ async function loadSettings(){
             ${Object.entries(eff.netPolicy||{}).map(([k,v])=>`<tr><td class="mono" style="font-size:12px">${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}
             ${Object.entries(eff.routes||{}).map(([k,v])=>`<tr><td class="mono" style="font-size:12px">route ${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}
             <tr><td class="mono" style="font-size:12px">rate soft/hard</td><td>${eff.rateSoft||'—'} / ${eff.rateHard||'—'}</td></tr>
-            ${(!eff.netPolicy||!Object.keys(eff.netPolicy).length)&&(!eff.routes||!Object.keys(eff.routes).length)?'':'')}
           </tbody></table></div>
         </section>
         <section class="card" style="margin-top:16px"><header><h2>Schema notes</h2></header>
