@@ -151,7 +151,7 @@ So you read posture here to understand *why* a route is behaving as it is (for e
 
 **Question it answers:** How do I honor a right-to-erasure request, and how long is data kept?
 
-This view covers cryptographic erasure (crypto-shred) and retention. A right-to-erasure request is honored by **destroying the per-subject linkage key** — the chain and its Merkle anchors stay intact and verifiable; the records are never deleted, but the subject can no longer be re-linked to them. Retention runs in tiers (HOT ~90 days / WARM ~1 year / COLD ~7 years).
+This view covers cryptographic erasure (crypto-shred) and retention labels. A right-to-erasure request is honored by **destroying the per-subject linkage key** for a **session subject** — the chain and its Merkle anchors stay intact and verifiable; the records are never deleted, but that session can no longer be re-linked. HOT / WARM / COLD are **declared** windows (~90d / ~1y / ~7y) shown for operator orientation — the reference does **not** auto-enforce them or write to WORM media.
 
 Erasure is **DPO-gated and dual-control**: an Operator can request it, but the committer must be a **distinct DPO** — a generic Approver cannot commit an erasure. There is a **cancellable hold window** (default 5 minutes) before a due erasure executes.
 

@@ -345,7 +345,7 @@ flowchart LR
 
 ### What makes an incident a candidate breach
 
-The audit chain and its pseudonyms are only *pseudonymous* — re-identification requires the **vault plus dual-control**. So the events that raise a session/pseudonym incident to a **personal-data breach assessment** are the ones that compromise that separation or the chain itself:
+The audit chain and its pseudonyms are only *pseudonymous* — Gate has no re-identification API; anyone holding the **keystore + `HMN_UNSEAL`** can resolve offline alone (custodial, not dual-control). Events that raise a session/pseudonym incident to a **personal-data breach assessment** are those that compromise that custody or the chain itself:
 
 - **Keystore or `HMN_UNSEAL` compromise** — the sealed keystore holds the signing seed and HMAC key; its passphrase unseals it. Compromise of the keystore **or** the `HMN_UNSEAL` passphrase, or of the **vault** (the per-subject linkage keys), enables **mass re-identification of every un-shredded subject** — a confidentiality breach of pseudonymous personal data at scale.
 - **`audit.integrity.violation.detected`** — this audit record indicates **chain tampering** (it is the machine tell behind a red Integrity Dashboard in [(e)](#e-integrity-dashboard-went-red)). A confirmed pre-checkpoint break is an **integrity** breach of the audit record of personal-data processing.

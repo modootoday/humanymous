@@ -18,7 +18,7 @@ This repository is a **reference implementation**, not a production-hardened bui
 
 ## What "verify without trusting the operator" means
 
-The operator runs the Gate process, so the operator controls the disk the log lives on. The point of the verification model is that possession of the log is not the same as authority over its contents. An auditor with the **public key alone** can decide whether the log is internally consistent and whether any signed checkpoint has been altered — without the operator's cooperation and without any secret the operator holds. The log **verifies with the public key alone**; no operator attestation is part of the trust chain.
+The operator runs the Gate process, so the operator controls the disk the log lives on. The point of the verification model is that possession of the log is not the same as authority over its contents. An auditor with the **published STH (and witness) public keys** can check hash linkage and Signed Tree Heads without the operator's forging keys. Live Integrity/`SelfVerify` also checks the HMAC layer when the node holds the keystore; a public-key-only library `Verify` may report **`hmac-unchecked`**. Keys are published via boot log and `GET /__hmn/admin/keys`.
 
 That property is what lets an external reviewer form an independent opinion. You are not asked to believe the operator that the log is intact — you check it.
 
@@ -163,7 +163,7 @@ A right-to-erasure request against Gate is executed by **cryptographic erasure (
 
 So an erasure does not — and must not — produce a `seq-gap`, `linkage-break`, or `hash-break`. If you see one of those classes, it is a tampering signal, not the footprint of a lawful erasure. For the erasure procedure, hold window, and the signed erasure certificate, see [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md).
 
-> **Note:** The data in the log is **pseudonymous, not anonymous** (GDPR Recital 26). Re-identification requires the vault plus dual-control. Verification never needs to resolve a pseudonym — it checks structure and signatures, not subject identity.
+> **Note:** The data in the log is **pseudonymous, not anonymous** (GDPR Recital 26). Gate exposes no re-identification API; resolving a pseudonym is a **custodial offline** act for whoever holds the keystore + `HMN_UNSEAL` (not dual-control, not audited). Verification never needs to resolve a pseudonym — it checks structure and signatures, not subject identity.
 
 ---
 

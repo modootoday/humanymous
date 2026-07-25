@@ -118,14 +118,18 @@ Evaluated at the proxy edge, **not** in the detection engine — these never app
 
 | Rule | What fires it | Action | Confidence | Reading a spike |
 |------|---------------|--------|------------|-----------------|
+| **HR-22** | *(retired number — never reassigned)* | — | — | Do not implement; docs must not invent a predicate for this id |
 | HR-23 | HTTP request smuggling (CL+TE / duplicate CL / bad TE) | DENY | High-confidence | Attack |
 | HR-24 | Direct origin hit bypassing Gate (origin cloaking) | 421 | High-confidence | Attack |
-| HR-25 | Detection bundle injected but no beacon returned (script-strip) | CHALLENGE | Heuristic (a script-blocking user can trip it) | May be mislabeling humans |
+| **HR-25** | *(retired — was "bundle injected but no beacon")* | — | — | **Not shipped.** Missing beacons are an ops/CSP signal, not a hard-rule CHALLENGE |
 | HR-26 | WebSocket / SSE upgrade with no prior fingerprint-bound verdict | DENY | High-confidence | Attack |
+| HR-27a | Injector abuse / oversized or hostile HTML body — skip injection | **passthrough** (fail-open) | High-confidence of abuse shape | Origin still served; no injection; audited as inject-skip |
 | HR-27b | Client forged a trust / internal forwarding header | DENY | High-confidence | Attack |
 | HR-28 | Verdict token replayed from a different fingerprint, or forged | DENY | High-confidence | Attack |
 | HR-29 | Replayed single-use proof (beacon / PoW nonce) | reject | High-confidence | Attack |
 | HR-30 | Decision-probing sweep: many sessions from one fingerprint | DENY | High-confidence | Attack |
+
+> **Note:** HR-27a is deliberately **fail-open**: Gate refuses to buffer unbounded HTML and passes the response through without injection rather than DoS itself or DENY the client. Do not read a spike of HR-27a audit events as blocked attacks — they mean "injection skipped."
 
 ## Reading TopContributors drill-down signal IDs
 

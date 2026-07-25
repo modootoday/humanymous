@@ -46,7 +46,7 @@ Proportionality must account for the impact on **legitimate human users** who ar
 
 Two points an adopter must resolve for their jurisdiction, both stated candidly here:
 
-- **Behavioral timing is biometric-adjacent.** Layer 4 evaluates mouse-movement and keystroke *timing dynamics* (dwell/flight, velocity, trajectory). Depending on jurisdiction and how it is used, timing-dynamics profiling can attract heightened scrutiny (GDPR Article 9 special-category analysis, or PIPA sensitive-data duties). The reference collects it **by default** as an input to the security verdict; it is not used to uniquely identify a person and is stored only as aggregate features under the audit pseudonymization, but the controller must decide whether their basis and notices cover it. There is currently **no built-in toggle** to disable behavioral collection — an operator who needs consent-gated collection must add that gate (prod-delta).
+- **Behavioral timing is biometric-adjacent and component-scoped.** Layer 4 evaluates mouse-movement and keystroke *timing dynamics* (dwell/flight, velocity, trajectory) when the **full client detection path** (Core / WASM bundle) is in use. Depending on jurisdiction and how it is used, timing-dynamics profiling can attract heightened scrutiny (GDPR Article 9 special-category analysis, or PIPA sensitive-data duties). Controllers who deploy **only the Gate reverse proxy** must **remove "interaction timings" / mouse-keystroke dynamics from their Article 13 notice** unless they also run a client path that actually collects them — the Gate's injected loader does not reproduce the Core behavioral sample stream. Where the full path is enabled, the reference collects timing features as an input to the security verdict; it is not used to uniquely identify a person and is stored only as aggregate features under audit pseudonymization. There is currently **no built-in toggle** to disable behavioral collection — consent-gated collection is a prod-delta.
 - **GPC / DNT are read as a *privacy-posture* signal, not honored as a tracking opt-out.** A session presenting Global Privacy Control or Do-Not-Track (or Brave shields, ad-block, tracking protection) is treated as a **human/FP-mitigation** signal — it *lowers* suspicion and damps fingerprint-noise scoring — but it does **not** exempt the session from any server-authoritative hard rule: HR-19 (residential-proxy rotation) is deliberately never gated on a client-reported privacy flag, precisely so a proxy scraper cannot post `adBlock:true` to disarm it. It is **not** honored as an opt-out of the detection processing itself, because bot detection is security processing (typically legitimate interests / strictly-necessary), not advertising/tracking to which GPC/DNT legally attach. If your lawful-basis analysis concludes the processing is not strictly necessary for your context, you must add your own consent/opt-out gate; the reference does not do this for you.
 
 ---
@@ -77,15 +77,15 @@ Pseudonymization protects against exposure of the **stored** value, not against 
 
 ---
 
-## 4. Re-identification vault and the necessity test
+## 4. Re-identification — custodial keystore control (not dual-control)
 
-Re-identification — turning a stored pseudonym back into the underlying identifier — is not an ambient capability. It **requires the vault plus dual-control**, and the act of re-identification is itself audited.
+Re-identification — turning a stored pseudonym back into the underlying identifier — is **not a product API**. Gate does not expose a re-identification endpoint and does not perform re-identification in-process. Anyone who holds the **sealed keystore and `HMN_UNSEAL`** can resolve pseudonyms **offline, alone**, with **no second approver** and **no audit record** of that offline act.
 
-- **Necessity test.** Because re-identification requires the vault and a second authorizing role, each re-identification is a discrete, gated event, not a routine read. The controller can therefore demonstrate that re-identification occurs only when a specific, recorded need arises.
-- **Dual-control.** The re-identification path requires a distinct second actor (name the second role in the authorization record; see [RBAC and separation of duties](../reference/rbac-separation-of-duties.md)).
-- **Meta-audit.** The re-identification action is written to the audit log like any other privileged action, producing an accountability trail (Article 5(2), Article 30).
+- **What dual-control actually covers.** Product dual-control (distinct second role) applies to **erasure**, **permanent/CIDR bans**, and the **kill switch** — not to re-identification. See [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
+- **Necessity test (organizational).** Because re-identification is a custodial offline capability of the key material, the controller must control **who holds the keystore and the unseal secret**, not a second click in the console. Necessity is demonstrated by key-custody policy and operational access control, not by a dual-control product gate.
+- **No meta-audit of offline resolve.** The product cannot prove "who re-identified whom" for offline keystore use. Do not claim an audited re-identification trail that the reference does not emit.
 
-**Residual risk:** An actor who holds both the vault and can satisfy dual-control could re-identify without an externally-justified need. The mitigation is organizational: separation of duties, deny-by-default admin access, and the meta-audit trail that makes such an action reviewable after the fact. The DPIA should record who holds vault access and how the second-role authorization is controlled.
+**Residual risk:** A single actor with keystore + `HMN_UNSEAL` can re-identify every un-shredded subject without product dual-control. Mitigation is **organizational custody** of the sealed identity (split knowledge of passphrase, HSM/KMS in production, access logging outside Gate). The DPIA must record who holds vault access — not invent a dual-control product path.
 
 ---
 
@@ -101,11 +101,11 @@ Records written **after the last signed checkpoint** and before the next are **r
 
 ### 5.3 Mitigations
 
-- **The independent witness co-sign** is the specific control that stops **silent** history rewrites: because an independent witness co-signs the tree head, a rewrite cannot be anchored without the witness's participation, so silent rewriting of already-checkpointed history is prevented.
+- **The local witness co-sign** stops **silent** history rewrites by a writer that does **not** also hold the witness key: co-signing the tree head means a rewrite cannot be re-anchored without the witness material. In the reference the witness runs **in the same process** as the writer, and with `-keystore` its seed lives in the **same sealed keystore under the same `HMN_UNSEAL`**. It defends against writer **malfunction** and **partial** compromise — **not** against an actor who holds the full keystore.
 - **Frequent checkpoints** (every 32 records) bound the size of the unanchored window.
-- **Public verifiability.** Chain integrity verifies with the public key alone, via the Integrity view and the integrity endpoint, so the controller (and, where appropriate, an auditor) can independently confirm the chain has not been altered. Verification distinguishes integrity-failure classes: hash-break, hmac-invalid, seq-gap, linkage-break, checkpoint-mismatch, and node-missing.
+- **Public verifiability.** Hash linkage and Ed25519 STHs verify with published public keys (`GET /__hmn/admin/keys`, boot log). Live Integrity / `SelfVerify` also checks the HMAC layer when the node holds the key; public-key-only offline `Verify` may return `hmac-unchecked`. Classes: hash-break, hmac-invalid, hmac-unchecked, seq-gap, linkage-break, checkpoint-mismatch, empty-chain, witness-invalid, node-missing.
 
-**Residual accepted:** The in-window (post-last-checkpoint) residual is an accepted, documented limitation of the reference. The DPIA should record it as a known integrity limit mitigated by frequent anchoring and witness co-signing, not as a solved property.
+**Residual accepted:** The in-window (post-last-checkpoint) residual and the co-located witness are accepted, documented limitations of the reference. The DPIA should record them as known integrity limits, not as external multi-party consensus.
 
 > **Note:** A standalone offline verifier **process**, RFC 3161 trusted timestamps, and external WORM/object-lock anchoring are prod-deltas (Section 7.3). They are recommended production anchors, not shipped features of the reference.
 
@@ -132,33 +132,27 @@ The following measures are what the DPIA can cite as the reference's technical a
 
 ### 7.1 Retention tiers
 
-A classifier assigns audit records to retention tiers:
+The reference **declares** HOT / WARM / COLD age labels for documentation and a `Tier(age)` helper used in tests. **They are not enforced at runtime:** no production caller prunes, compresses, or relocates the WAL by tier; the Ledger Retention card is **hardcoded HTML**, not a read of `/admin/policy`. There is **no WORM** media or object-lock integration in the reference.
 
-| Tier | Approximate retention |
-| --- | --- |
-| HOT | ~90 days |
-| WARM | ~1 year |
-| COLD | ~7 years |
+| Label (declared) | Approximate window | Enforcement in reference |
+| --- | --- | --- |
+| HOT | ~90 days | **None** |
+| WARM | ~1 year | **None** |
+| COLD | ~7 years | **None** (and not WORM) |
 
-These are the reference defaults. The controller must reconcile them with its own retention schedule and legal obligations, including Korea's PIPA destruction and record-keeping obligations where applicable, and document the justification for each tier under the storage-limitation principle (Article 5(1)(e)).
+**Audit durability defaults (honest residual):** without `-audit-wal` the chain is **in RAM and lost on restart**; with `-audit-wal` it **grows without bound**. Neither default implements a retention schedule. **Mitigation in the reference: none** — operators must supply external retention, archival, and deletion policy (prod-delta).
 
-The record lifecycle, and where crypto-shred acts on it without deleting the record, is:
+The controller must reconcile any schedule with legal obligations (including PIPA where applicable) under Article 5(1)(e). Crypto-shred removes re-identifiability at any point without deleting records (Section 7.2); it is not a retention engine.
 
 ```mermaid
 flowchart LR
-  W["Decision written · (pseudonymized, hash-chained)"] --> H["HOT ~90d"]
-  H --> WA["WARM ~1y"]
-  WA --> CO["COLD ~7y"]
-  CO -. "physical WORM retirement · (prod-delta)" .-> RET["Retired"]
+  W["Decision written · (pseudonymized, hash-chained)"] --> A["WAL or in-memory chain · (no auto-tiering)"]
+  A -. "operator retention policy · (prod-delta)" .-> RET["Archived / retired"]
   ER["Crypto-shred · (DPO + dual-control, ~5min hold)"] -. "destroy per-subject linkage key" .-> UN["Record retained, chain intact, · no longer linkable to subject"]
-  H -. any tier .-> ER
-  WA -. any tier .-> ER
-  CO -. any tier .-> ER
+  A -. any age .-> ER
 ```
 
-Crypto-shred is orthogonal to the retention tier — it removes re-identifiability at any point in the lifecycle while the record and its Merkle anchors stay verifiable (Section 7.2).
-
-> **Confirmed in source:** The tier classifier is age-based, not record-type-based: every audit record is classified by a single function of its age against fixed windows — HOT for age ≤ 90 days, WARM for ≤ 365 days (1 year), COLD for ≤ 2,555 days (7 years), and EXPIRED beyond that. There is no per-record-type mapping in the reference; all record types share the one default policy (HOT 90d, WARM 1y, COLD 7y). The tier windows are a supplyable policy, so an operator that needs type-differentiated or different retention sets its own windows.
+> **Confirmed in source:** `Tier(age)` has no non-test production callers that enforce storage lifecycle. Do not claim automated HOT→WARM→COLD movement or WORM retirement as shipped.
 
 ### 7.2 Why crypto-shred rather than deletion — WORM compatibility
 
@@ -202,10 +196,10 @@ RFC 3161 trusted timestamps and S3 Object-Lock/WORM external anchoring are **pro
 | R1 | Human users wrongly challenged (false positive) | Low-FP design; heuristic rules challenge rather than block; monitor mode to measure before enforcing | Document FP residual and challenge accessibility (challenge WCAG UI is prod-delta) |
 | R2 | Audit log is personal data, not anonymous | Pseudonymization at rest (Art. 4(5)) | Treat log as personal data across its lifecycle |
 | R3 | Low-entropy identifier (e.g. IPv4) re-derivable if subject key/keystore leaks | Sealed keystore (scrypt N=2^15, AES-256-GCM); crypto-shred destroys the key | Protect `HMN_UNSEAL`; back up out-of-band; loss ≈ mass crypto-shred |
-| R4 | Unauthorized re-identification | Vault + dual-control (distinct second role); action meta-audited | Control vault access; review re-identification audit trail |
+| R4 | Unauthorized re-identification | Keystore custody only (no product dual-control or re-id API) | Split knowledge of `HMN_UNSEAL`; HSM/KMS in production; no offline-resolve audit trail in reference |
 | R5 | In-window history rewrite before next checkpoint | Witness co-sign stops silent rewrites; checkpoint every 32 records; public verification | Accept documented in-window residual; consider external anchoring (prod-delta) |
 | R6 | Privileged admin misuse | RBAC, separation of duties, dual-control, deny-by-default, server-derived actor, meta-audit | Deploy production admin auth (mTLS/SSO is prod-delta) |
-| R7 | Over-retention | HOT/WARM/COLD classifier | Reconcile tiers with legal schedule; physical retirement is prod-delta |
+| R7 | Over-retention | **None in the reference** (labels only; WAL unbounded or RAM) | Operator retention schedule / archival / delete policy (prod-delta) |
 | R8 | Erasure breaking integrity / WORM conflict | Crypto-shred (key destruction), records retained, chain intact | Confirm subject and hold window; erasure is DPO dual-control |
 
 ---

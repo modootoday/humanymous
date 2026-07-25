@@ -112,7 +112,7 @@ For the RoPA classification, state this explicitly:
 
 The audit data is **pseudonymous, not anonymous** (GDPR Recital 26; Article 4(5)). Because a vault of linkage keys can, under controlled conditions, resolve a pseudonym back to the subject it was derived from, the pseudonyms remain personal data and stay within the scope of the GDPR. Do not record this processing as anonymization or as outside GDPR scope.
 
-Re-identification is not a routine operation. It requires **the vault plus dual-control** — the linkage key material must be present, and the re-identification action is gated by separation of duties (see [RBAC and separation of duties](rbac-separation-of-duties.md)). No single actor can unilaterally resolve a pseudonym to a subject.
+Re-identification is not a routine product operation. Gate **exposes no re-identification API** and performs none in-process. Anyone who holds the **sealed keystore and `HMN_UNSEAL`** can resolve pseudonyms **offline, alone**, with no second approver and no audit record of that offline act. Dual-control in the product covers **erasure, permanent/CIDR bans, and the kill switch** — not re-identification. Organizational custody of the keystore is the entire control surface (see [RBAC and separation of duties](rbac-separation-of-duties.md) for product dual-control, and [Key management](../how-to/key-management.md) for keystore custody).
 
 ---
 
@@ -124,19 +124,19 @@ Audit records carry a single record-level tag — `data_class` — that supports
 
 ---
 
-## 7. Retention tiers
+## 7. Retention tiers (declared, not enforced)
 
-Records are never physically deleted as part of the erasure model (erasure works by destroying key material — see section 8). Retention is expressed as lifecycle tiers:
+Records are never physically deleted as part of the erasure model (erasure works by destroying key material — see section 8). The reference **names** HOT / WARM / COLD horizons for documentation and a pure `Tier(age)` classifier used in tests:
 
-| Tier | Reference horizon | Purpose |
-|------|-------------------|---------|
-| HOT | ~90 days | Active incident review and drill-down |
-| WARM | ~1 year | Slower-access investigation and correlation |
-| COLD | ~7 years | Long-horizon retention (for example, legal/audit hold) |
+| Label | Declared horizon | Runtime enforcement |
+|------|------------------|---------------------|
+| HOT | ~90 days | **None** |
+| WARM | ~1 year | **None** |
+| COLD | ~7 years | **None** (and **not** WORM media) |
 
-> **Note:** The horizons above are the reference tier boundaries. Physical retirement of retention segments to write-once (WORM) storage at tier expiry is a prod-delta and is not shipped in the reference build. Set the concrete calendar retention schedule for each tier in your own retention policy.
+> **Honest residual:** Without `-audit-wal` the chain is **RAM-only and lost on restart**. With `-audit-wal` the WAL **grows without bound**. Neither path implements a retention schedule. Set calendar retention, archival, and delete/retire policy yourself (prod-delta). The Ledger Retention card is hardcoded labels, not live policy.
 
-> **Confirmed in source:** Tier transitions are not automated by a background job. The reference models retention as a pure classifier — `RetentionPolicy.Tier(age)` maps a record's age to `HOT`/`WARM`/`COLD`/`EXPIRED` on demand — plus the default windows (HOT 90d, WARM 1y, COLD 7y). No scheduler migrates records between tiers, and physical retirement of expired segments (moving checkpoint-bounded prefixes to WORM and recording their terminal STH) is the production step, not shipped in the reference. Tiering is a queryable policy the reference computes; acting on it is operator-driven (prod-delta).
+> **Confirmed in source:** `RetentionPolicy.Tier(age)` has no non-test production caller that prunes or relocates storage. Physical WORM retirement is not shipped.
 
 ---
 
@@ -177,6 +177,6 @@ Any backup that includes the vault or the node keystore is a **re-identifiable c
 - [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the pseudonymization model and the L1–L7 layers referenced above.
 - [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — the Article 17 procedure.
 - [Compliance & DPO start here](../start-here/compliance-dpo.md) — orientation for the DPO role.
-- [RBAC and separation of duties](rbac-separation-of-duties.md) — the dual-control model that gates re-identification and erasure.
+- [RBAC and separation of duties](rbac-separation-of-duties.md) — the dual-control model that gates erasure, permanent/CIDR bans, and the kill switch (not re-identification).
 - [Key management](../how-to/key-management.md) — keystore, vault, and unseal handling.
 - [Production vs. reference](production-vs-reference.md) — what the reference does not ship for production.

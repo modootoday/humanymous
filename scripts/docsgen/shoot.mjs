@@ -58,7 +58,7 @@ const auditRecords = [
   ['enforcement.allow', 'shop.example.com', 'allow', [], 3, 'enforce'],
   ['ban.enforced', 'api.example.com', 'deny', ['HR-21'], 100, 'enforce'],
   ['enforcement.allow', 'app.example.com', 'allow', [], 8, 'enforce'],
-  ['enforcement.challenge', 'shop.example.com', 'challenge', ['HR-25'], 44, 'enforce'],
+  ['enforcement.challenge', 'shop.example.com', 'challenge', ['HR-12'], 44, 'enforce'],
   ['enforcement.allow', 'app.example.com', 'allow', [], 5, 'enforce'],
   ['enforcement.allow', 'shop.example.com', 'allow', [], 2, 'enforce'],
   ['enforcement.deny', 'login.example.com', 'deny', ['HR-1'], 91, 'enforce'],

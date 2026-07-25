@@ -94,7 +94,7 @@ const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&l
 const critHR = new Set(['HR-1','HR-2','HR-7','HR-8','HR-9','HR-14','HR-16','HR-18','HR-19','HR-20','HR-21','HR-23','HR-24','HR-27b','HR-28','HR-30']);
 const verdictTip = {
   allow:'<b>ALLOW</b>Passed to the origin. If a fingerprint-bound trust token is present it takes the fast-path with no re-scoring.',
-  challenge:'<b>CHALLENGE</b>Accessible proof-of-work interstitial is served from the control plane. The origin is never contacted.',
+  challenge:'<b>CHALLENGE</b>Risk is high enough to challenge. In the reference, Pass / step-up (when configured) or sticky challenge handling applies; the origin is not treated as trusted automation.',
   deny:'<b>DENY</b>Blocked at the edge before any upstream connection. The origin is never contacted.',
   none:'<b>NONE</b>No verdict yet (Unknown). Public routes fail-open; sensitive routes fail-closed to a challenge.' };
 const hrDesc = {
@@ -110,8 +110,8 @@ const hrDesc = {
   'HR-21':'Destructive flood / HTTP-2 DoS / rate-limit ban → DENY',
   'HR-23':'HTTP request smuggling (CL+TE / duplicate CL / bad TE) → DENY',
   'HR-24':'Direct origin hit bypassing Gate (origin cloaking) → 421',
-  'HR-25':'Detection bundle injected but no beacon returned (script-strip) → CHALLENGE',
   'HR-26':'WebSocket/SSE upgrade with no prior fingerprint-bound verdict → DENY',
+  'HR-27a':'Injector abuse / oversized HTML — skip injection (passthrough, fail-open)',
   'HR-27b':'Client forged a trust / internal forwarding header → DENY',
   'HR-28':'Verdict token replayed from a different fingerprint, or forged → DENY',
   'HR-29':'Replayed single-use proof (beacon / PoW nonce) → reject',
@@ -177,7 +177,7 @@ async function loadOverview(){
   el.innerHTML=`
     <div class="kpis">
       <div class="kpi" data-tip="<b>Allow</b>Sessions passed to the origin in the recent window. A trust token short-circuits re-scoring on the fast path."><span class="stripe" style="background:var(--allow)"></span><div class="k-label">Allow</div><div class="k-val up">${c.allow}</div><div class="k-sub">${(c.allow/total*100|0)}% of recent</div></div>
-      <div class="kpi" data-tip="<b>Challenge</b>Sessions served an accessible proof-of-work interstitial. The origin is never contacted until the challenge is solved."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Challenge</div><div class="k-val warn">${c.challenge}</div><div class="k-sub">recent window</div></div>
+      <div class="kpi" data-tip="<b>Challenge</b>Sessions scored into the challenge band (Pass / step-up when configured). Not a guarantee that a PoW interstitial was served from this control plane."><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">Challenge</div><div class="k-val warn">${c.challenge}</div><div class="k-sub">recent window</div></div>
       <div class="kpi" data-tip="<b>Deny</b>Sessions blocked at the edge before any upstream connection — automation, floods, smuggling, token/proof abuse."><span class="stripe" style="background:var(--deny)"></span><div class="k-label">Deny</div><div class="k-val bad">${c.deny}</div><div class="k-sub">edge-blocked</div></div>
       <div class="kpi" data-tip="<b>Ban actions</b>Bans applied or enforced in this window — rate-limit auto-bans plus manual operator bans."><span class="stripe" style="background:var(--info)"></span><div class="k-label">Ban actions</div><div class="k-val">${bans}</div><div class="k-sub">auto + manual</div></div>
       <div class="kpi" data-tip="<b>Records</b>Total events sealed into the tamper-evident audit chain on this node."><span class="stripe" style="background:var(--accent)"></span><div class="k-label">Records</div><div class="k-val">${data.count}</div><div class="k-sub">newest first</div></div>
@@ -236,7 +236,7 @@ async function loadIntegrity(){
         <div class="statuslead"><div class="shieldbig ${ok?'ok-bg':'bad-bg'}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
           <div><b>${ok?'PASS':'VIOLATION'}</b><span>${ok?d.records+' records · 0 divergent':'diverged at seq '+d.divergentSeq}</span></div></div>
         <div class="integ-row" data-tip="Total events sealed into the append-only chain. Each links to the previous by hash, so any edit, deletion, or reorder is detectable."><span class="lbl">Chain records</span><span class="val">${d.records}</span></div>
-        <div class="integ-row" data-tip="Periodic checkpoints signed with an Ed25519 key and anchored externally (WORM). They detect truncation and rollback even against an insider with the database."><span class="lbl">Signed Tree Heads</span><span class="val">${d.checkpoints}</span></div>
+        <div class="integ-row" data-tip="Periodic checkpoints signed with an Ed25519 key and co-signed by the local witness. They detect truncation and rewrite of checkpointed history; not external WORM media."><span class="lbl">Signed Tree Heads</span><span class="val">${d.checkpoints}</span></div>
         ${d.witnessed!==undefined?`<div class="integ-row" data-tip="A separate-key witness co-signs each tree head only if the tree grows monotonically, so a history rewrite cannot obtain a valid witness signature. Independent of the writer.">
           <span class="lbl">Independent witness</span><span class="val" style="color:${d.witnessed?'var(--allow)':'var(--deny)'}">${d.witnessed?'✓ co-signed':'✗ FAILED @'+d.witnessFailAt}</span></div>`:''}
         ${d.lastSTH?`<div class="integ-row"><span class="lbl">Last STH tree size</span><span class="val">#${d.lastSTH.treeSize}</span></div>
@@ -391,9 +391,8 @@ async function loadCompliance(){
         <div style="padding:15px 16px;display:flex;flex-direction:column;gap:11px">
           <label class="fld"><span>Subject id (session / subject key)</span><input id="e-subj" placeholder="subject id"></label>
           <label class="fld"><span>Legal basis</span><select id="e-basis"><option>GDPR Art.17</option><option>PIPA §36</option><option>DPA request</option></select></label>
-          <label class="fld"><span>Second approver <span class="dc">⚿ dual-control</span></span><input id="e-approver" placeholder="DPO / approver id"></label>
-          <button class="btn primary" id="e-go" style="justify-content:center" data-tip="Destroy this subject's per-subject linkage key. Their pseudonyms become permanently unlinkable — but the hash chain and Merkle anchors stay intact and verifiable. Dual-control + audited.">Crypto-shred subject</button>
-          <p class="note" style="margin:0">Enter a subject <b>pseudonym</b> (as shown in any incident) — it resolves to the subject via the audited reverse index; a raw client id is never needed. Approval schedules a <b>cancellable hold window</b> before the shred commits; on execution a signed erasure certificate (STH root + legal basis) is sealed. The subject's per-subject linkage key is then destroyed so their pseudonyms become permanently unlinkable, while the append-only chain stays intact and verifiable (SoT-18 §5-6, SoT-28 §5-7).</p>
+          <button class="btn primary" id="e-go" style="justify-content:center" data-tip="Request crypto-shred for this session subject. A distinct DPO must approve (dual-control); the approver is derived from their bearer token, not this form. After the hold window the linkage key is destroyed — chain stays verifiable.">Crypto-shred subject</button>
+          <p class="note" style="margin:0">Enter a session <b>pseudonym</b> (as shown in any incident). A raw client id is never needed. This posts <code>{Subject, LegalBasis}</code> only — a <b>distinct DPO</b> commits via Approvals (server-derived actor). Hold window is cancellable; on execution an <code>erasure.completed</code> audit record is sealed (not a separate certificate download). One session subject ≠ one natural person.</p>
         </div>
       </section>
       <div class="side">
@@ -401,9 +400,10 @@ async function loadCompliance(){
           <div id="eraseLog"></div>
         </section>
         <section class="card" style="margin-top:20px"><header><h2>Retention</h2></header>
-          <div class="integ-row"><span class="lbl">HOT (queryable)</span><span class="val">~90d</span></div>
-          <div class="integ-row"><span class="lbl">WARM (compressed)</span><span class="val">~1y</span></div>
-          <div class="integ-row"><span class="lbl">COLD (WORM)</span><span class="val">1–7y</span></div>
+          <div class="integ-row" data-tip="Declared label only — the reference does not auto-prune or compress by tier."><span class="lbl">HOT (declared)</span><span class="val">~90d · not enforced</span></div>
+          <div class="integ-row" data-tip="Declared label only — no runtime move to compressed storage."><span class="lbl">WARM (declared)</span><span class="val">~1y · not enforced</span></div>
+          <div class="integ-row" data-tip="Declared label only — no WORM media in the reference. Without -audit-wal the chain is RAM-only; with it the WAL grows unbounded."><span class="lbl">COLD (declared)</span><span class="val">~7y · not WORM</span></div>
+          <p class="note" style="margin:8px 12px 12px">Operator-owned retention / archival is required. Crypto-shred is not a retention engine.</p>
         </section>
       </div>
     </div>

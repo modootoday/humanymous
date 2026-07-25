@@ -57,7 +57,7 @@ stateDiagram-v2
 2. In the Compliance/Erasure console view, resolve that identifier to the subject's **console-visible pseudonym** — the 64-hex per-subject value that keys the linkage. This pseudonym, not any raw identifier, is what the erasure request targets.
 3. Confirm the mapping before proceeding. The shred acts on the linkage key behind this pseudonym; an incorrect mapping erases the wrong subject and cannot be reversed.
 
-You supply the **console-visible session pseudonym** as the `Subject`. Gate resolves that pseudonym to the internal subject id through its audited reverse index automatically — the shred itself does not require a separate re-identification-vault step. (Resolving a pseudonym back to a *raw* identifier, by contrast, is what needs the vault + dual-control; erasure does not, because it operates on the linkage key, not the raw value.)
+You supply the **console-visible session pseudonym** as the `Subject`. Gate resolves that pseudonym to the internal subject id through its audited reverse index automatically — the shred itself does not require a separate re-identification step. (Resolving a pseudonym back to a *raw* identifier is a **custodial offline** act for whoever holds the keystore + `HMN_UNSEAL` — Gate exposes no re-identification API and dual-control does not apply; erasure operates on the linkage key, not the raw value.)
 
 ---
 
@@ -122,15 +122,26 @@ Execution destroys the **per-subject linkage key**. From that point, the subject
 
 ---
 
-## Step 5 — The signed erasure certificate
+## Step 5 — Evidence of completion (`erasure.completed` audit record)
 
-On **execution** — when the hold window (step 3) elapses and the shred actually runs — Gate seals a **signed erasure certificate** recording that the shred occurred. It is **not** sealed at commit (step 2b): a commit only schedules the shred, and an erasure cancelled during its hold window produces **no** certificate.
+On **execution** — when the hold window (step 3) elapses and the shred actually runs — Gate emits an **`erasure.completed` audit record** (the "erasure certificate" in operator language). It is **not** sealed at commit (step 2b): a commit only schedules the shred, and an erasure cancelled during its hold window produces **no** completion record.
 
-1. Retrieve the certificate for the completed erasure and archive it as defensible proof that the Art. 17 / PIPA obligation was discharged.
-2. Send the data subject a confirmation that their erasure request has been fulfilled, accompanied by the certificate (or a certificate reference), and stating what was erased in plain terms: the key that links their pseudonymized records to their identifiers has been destroyed; the tamper-evident audit records remain, but can no longer be resolved to them.
-3. Retain the certificate under your compliance retention schedule as evidence of completion.
+**What it actually is:** an ordinary audit record whose free-text fields carry legal basis / subject context, **HMAC-chained** into the log at seal time and **Ed25519-covered by the next STH** (up to 32 records later). It is **not** independently Ed25519-signed at seal time, and there is **no** admin endpoint that returns a standalone certificate blob.
 
-> **Note:** In the reference build there is no admin endpoint that returns the sealed erasure certificate. `GET /__hmn/admin/erasures` lists scheduled shreds still within their hold window (`id`, `legalBasis`, `requester`, `approver`, `executesInSec`); the certificate is sealed internally on execution and is observable only as an `erasure.completed` audit record in the stream (filter the audit export on `event_type == "erasure.completed"`). The record is HMAC-chained into the log and anchored by the next Ed25519 STH checkpoint — it is not independently Ed25519-signed at seal time. Exposing the certificate for direct retrieval/export is a production responsibility (prod-delta).
+1. **Retrieve** the completion evidence from the audit stream (this is the path that works today):
+
+```
+curl -k -H "Authorization: Bearer <auditor-or-dpo-token>" \
+  "https://localhost:8445/__hmn/admin/audit?limit=200"
+```
+
+Filter for `event_type` / `EventType` = `erasure.completed` (and the subject pseudonym if known). `GET /__hmn/admin/erasures` only lists shreds still inside the hold window — completed erasures leave that list.
+
+2. Send the data subject a confirmation that their erasure request has been fulfilled, referencing the audit-record sequence / incident handle, and stating what was erased in plain terms: the key that links their pseudonymized **session** records to identifiers has been destroyed; the tamper-evident audit records remain, but can no longer be resolved to them. **A person with many visits has many unlinkable session subjects** — one erasure does not enumerate or shred their other sessions.
+
+3. Retain the filtered audit export under your compliance retention schedule as evidence of completion.
+
+> **Note:** A dedicated certificate-retrieval endpoint with an independent Ed25519 signature at seal time is a prod-delta. Do not invent a curl to an endpoint that does not exist.
 
 ---
 
@@ -149,8 +160,9 @@ Use the same console-visible pseudonym you resolved in Step 1. This returns only
 
 ## What this proves, and the residual
 
-- **Proves:** The per-subject linkage key was destroyed under DPO gating and dual-control, timestamped and sealed in a signed certificate, without altering or deleting the underlying audit records. The chain and Merkle anchors remain verifiable.
-- **Residual — pseudonymous, not anonymous:** Erasure removes the resolution key, not the records. Low-entropy identifiers behind a pseudonym could in principle be re-derived **only if a key leaks** — that is, re-identification requires the vault key material, which crypto-shred is precisely what destroys for the erased subject. Describe the outcome to auditors as pseudonymized data rendered unresolvable, not as anonymized or deleted data.
+- **Proves:** The per-subject linkage key for that **session subject** was destroyed under DPO gating and dual-control, and an `erasure.completed` audit record was sealed into the chain, without altering or deleting the underlying audit records. The chain and Merkle anchors remain verifiable.
+- **Residual — pseudonymous, not anonymous:** Erasure removes the resolution key, not the records. Low-entropy identifiers behind a pseudonym could in principle be re-derived **only if key material leaks** (keystore / vault / pre-erasure backups). Describe the outcome as pseudonymized data rendered unresolvable, not as anonymized or deleted data.
+- **What shred does not reach:** the **ban ledger** (raw-keyed keys, up to ~400d, and `GET /__hmn/admin/bans` returns raw keys to any authenticated role including Auditor), in-memory **correlation / watermark** registries, **other nodes** in a multi-node deployment that never received the shred, and **keystore backups** taken before the shred (restoring them re-arms linkage). Scope Art. 17 fulfilment accordingly.
 - **Independent verification:** The audit chain still verifies after erasure. See the [Verify the audit log](../how-to/verify-audit-log.md) guide.
 
 For independent verification, see the [Verify the audit log](../how-to/verify-audit-log.md) guide.

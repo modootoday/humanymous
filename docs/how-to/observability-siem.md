@@ -97,7 +97,7 @@ curl --silent \
   "https://localhost:8445/__hmn/admin/audit?subject=<subject-pseudonym>"
 ```
 
-This produces a subject-scoped export you can hand to a data-subject-access workflow. It combines with the other filters and the `before=` cursor exactly as above (add `&limit=500` and page the cursor to drain a subject's full history). The filter takes a **pseudonym**, not a raw identifier — resolving a raw identity to its pseudonym (or the reverse) is a separate, dual-controlled re-identification action, out of scope for this read-only feed.
+This produces a subject-scoped export you can hand to a data-subject-access workflow. It combines with the other filters and the `before=` cursor exactly as above (add `&limit=500` and page the cursor to drain a subject's full history). The filter takes a **pseudonym**, not a raw identifier — resolving a raw identity to its pseudonym (or the reverse) is a **custodial offline** act against the keystore, out of scope for this read-only feed (Gate has no re-identification API).
 
 ## Check chain integrity
 

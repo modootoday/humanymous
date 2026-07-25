@@ -295,7 +295,7 @@ These span every register. The "after" is the shippable form.
 **8. anonymous → pseudonymous**
 
 - Before: All identifiers are stored anonymously, so nothing can be traced back.
-- After: Identifiers are stored pseudonymously — raw values are replaced by per-subject-key-derived pseudonyms, never stored raw. This is pseudonymous, not anonymous (GDPR Recital 26); re-identification requires the vault and dual-control.
+- After: Identifiers are stored pseudonymously — raw values are replaced by per-subject-key-derived pseudonyms, never stored raw. This is pseudonymous, not anonymous (GDPR Recital 26). Gate exposes no re-identification API; anyone holding the keystore and `HMN_UNSEAL` can resolve pseudonyms offline alone (custodial control, not dual-control).
 
 **9. Anthropomorphism → named mechanism** (bonus)
 

@@ -43,7 +43,7 @@ Boot fails if `-keystore` is set and `HMN_UNSEAL` is unset — the passphrase is
 
 - **SigningSeed** — the Ed25519 seed that signs the audit log's Signed Tree Heads. The verifier checks the chain against the corresponding public key.
 - **HMACKey** — the key for the per-record HMAC that binds each audit record.
-- **Vault snapshot** — the per-subject pseudonym linkage keys that let a pseudonym be resolved back to the identifiers it was derived from, under the re-identification vault plus dual-control.
+- **Vault snapshot** — the per-subject pseudonym linkage keys that let a pseudonym be resolved back to the identifiers it was derived from offline by whoever holds this sealed material (no product dual-control path).
 
 **How it is sealed.** The blob is sealed with `scrypt` (N=2^15) key stretching over the `HMN_UNSEAL` passphrase, then encrypted with AES-256-GCM.
 

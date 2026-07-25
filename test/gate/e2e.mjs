@@ -180,11 +180,11 @@ async function main() {
   const spoofAuth = await req('GET', '/', { headers: { ...browserHeaders, 'X-Hmny-Origin-Auth': originAuth('e1') } });
   check('spoof-origin-auth-blocked', spoofAuth.status === 403, `status=${spoofAuth.status}`);
 
-  // 8. Injection-strip / no-beacon on a STRICT route (HR-25 / fail-closed):
-  //    a fresh session that never beaconed hitting /login must be challenged,
-  //    not passed through (SoT-21 §2 fail-closed on sensitive routes).
+  // 8. STRICT route fail-closed without a prior beacon / score (SoT-21 §2):
+  //    a fresh session hitting /login must be challenged, not passed through.
+  //    (HR-25 "no beacon" hard rule is retired and not shipped.)
   const strict = await req('GET', '/login', { headers: browserHeaders });
-  check('strict-route-fail-closed', strict.status === 401, `status=${strict.status} (no-beacon -> challenge)`);
+  check('strict-route-fail-closed', strict.status === 401, `status=${strict.status} (unscored strict -> challenge)`);
 
   // === Round 2: verdict-token & proof-replay family (SoT-21 §3-4) ===
 

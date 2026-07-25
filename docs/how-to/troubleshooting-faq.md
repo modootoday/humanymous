@@ -57,7 +57,7 @@ The `-origin-key` value is separate from the sealed keystore; see [Key managemen
 
 **Fix.** Confirm the response you expect injection on is served as HTML (an HTML `Content-Type`). Static assets, JSON APIs, and other non-HTML responses are not injected by design. If a page that should be HTML is not getting the bundle, verify the origin is returning it as an HTML response rather than, for example, a downloadable or opaque body.
 
-> **Note:** A page that is served the bundle but never sends a beacon is itself a signal — HR-25 (bundle injected but no beacon) results in a CHALLENGE. If you are testing and see challenges on a freshly injected page, confirm the control-plane script is actually loading and posting to `/__hmn/collect`.
+> **Note:** A page that is served the bundle but never sends a beacon is an **ops / CSP** symptom, not a hard-rule CHALLENGE — **HR-25 is retired and not shipped**. If you are testing and see weak detection, confirm the control-plane script is actually loading and posting to `/__hmn/collect`, and check the browser console for CSP blocks first.
 
 For how the bundle, the beacon, and the `/__hmn/*` control plane fit together, see [The control plane and the detection bundle](../explanation/control-plane-and-bundle.md).
 

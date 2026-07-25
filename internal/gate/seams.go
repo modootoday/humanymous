@@ -12,9 +12,12 @@ import (
 // that must be SHARED: a ban raised on node A has to block on node B, and a session's
 // sticky verdict must follow it to whichever node it lands on. This file names the
 // contracts the enforcement path depends on so a production deployment can drop in a
-// shared (e.g. Redis) implementation WITHOUT touching Server. No such implementation
-// exists yet — these are interfaces only; the compile-time assertions below prove the
-// current in-memory stores satisfy them, so the seam can never silently rot.
+// shared implementation WITHOUT touching Server.
+//
+// Reference shared implementations ship behind `-redis` (see redisledger.go:
+// RedisBanLedger / RedisVerdictLedger, with optional value-signing via HMN_REDIS_KEY).
+// The compile-time assertions below still prove the default in-memory stores satisfy
+// the same contracts so the seam cannot silently rot.
 
 // BanLedger is the ban store contract the edge enforces against (SoT-27). A shared
 // implementation must make Observe's strike accounting atomic across nodes so a
