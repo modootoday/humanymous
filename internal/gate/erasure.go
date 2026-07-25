@@ -10,7 +10,8 @@ import (
 // immediately: it is SCHEDULED with a grace window during which it can be
 // cancelled (e.g. the "erased" subject turns out to be an active-incident
 // attacker whose linkage must be kept). Only when the window elapses is the
-// linkage key actually destroyed, and a signed erasure certificate is sealed.
+// linkage key actually destroyed, and an erasure.completed audit record is sealed
+// (HMAC-chained evidence — not a standalone independently-signed certificate blob).
 
 // ScheduledShred is an approved erasure awaiting its hold window.
 type ScheduledShred struct {

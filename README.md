@@ -428,7 +428,7 @@ critique (7 agents). Real defects the critique found were **reflected in the spe
 
 | Layer | Package | Verification |
 |------|--------|------|
-| **audit log (headline)** | `internal/audit` | hash chain + Ed25519 STH + per-subject crypto-shred + offline verifier; tamper/truncation/rollback detection, erasure isolation, structural audit-or-panic sink tests |
+| **audit log (headline)** | `internal/audit` | hash chain + Ed25519 STH + per-subject crypto-shred; library `Verify`/`SelfVerify` (empty-chain fails; nil HMAC → hmac-unchecked); keys via admin `GET /keys`; packaged offline verifier binary is prod-delta |
 | streaming HTML injection | `internal/gate/inject.go` | single-pass, add-only, idempotent, chunk-boundary split + fallback + oversize guard tests |
 | edge enforcement | `internal/gate` | sticky verdict → allow/challenge/deny, blocks without contacting origin |
 | origin cloaking (HR-24) | `internal/gate/guard.go` | rotating HMAC origin-auth, 421 on direct bypass |
@@ -448,10 +448,10 @@ critique (7 agents). Real defects the critique found were **reflected in the spe
 the edge (origin untouched) · human ALLOW · origin direct-hit (HR-24) · header spoofing
 (HR-27b) · strict fail-closed · **token theft/forgery (HR-28)** · **beacon replay (HR-29)**
 · **smuggling (HR-23)** · **upgrade tunnel (HR-26)** · **decision sweep (HR-30)** ·
-**rate-limit auto-ban + console manual ban/lift/dual-control (SoT-27)** · **console live
-API (integrity self-verify, pseudonymized audit stream, no PII leak)** · **live console
-SPA serving, policy, erasure (crypto-shred) dual-control, final chain integrity** ·
-**audit-chain verification passes**. New hard rules HR-22–HR-30 (SoT-25). Live admin
+**rate-limit auto-ban + console manual ban/lift (lift single-control; permanent/CIDR place dual-control) (SoT-27)** · **console live
+API (integrity SelfVerify, pseudonymized audit stream, no PII leak)** · **live console
+SPA serving, read-only policy view, erasure (crypto-shred) dual-control, chain integrity** ·
+**audit-chain verification passes**. Gate-plane hard rules include HR-23–HR-30 (HR-22/25 retired). Live admin
 console at `/__hmn/admin/console` (SoT-26).
 
 ```bash

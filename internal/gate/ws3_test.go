@@ -48,7 +48,7 @@ func TestErasureHoldWindowAndReverseResolve(t *testing.T) {
 	if _, ok := srv.vault.Resolve("psn-handle-X"); ok {
 		t.Fatal("shredded subject's handle must be unresolvable")
 	}
-	// A signed erasure certificate (with STH root + legal basis) was recorded.
+	// Completion evidence is an erasure.completed audit record (not a separate cert blob).
 	found := false
 	for _, r := range srv.sink.Log().Records() {
 		if r.EventType == "erasure.completed" && strings.Contains(r.FailReason, "erasure-cert") && strings.Contains(r.FailReason, "GDPR Art.17") {
@@ -56,7 +56,7 @@ func TestErasureHoldWindowAndReverseResolve(t *testing.T) {
 		}
 	}
 	if !found {
-		t.Fatal("a signed erasure certificate must be sealed on shred")
+		t.Fatal("erasure.completed audit evidence must be sealed on shred")
 	}
 }
 

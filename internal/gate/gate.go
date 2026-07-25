@@ -59,8 +59,8 @@ type Server struct {
 	nowFn           func() time.Time
 }
 
-// RunDueShreds executes any erasures whose hold window has elapsed and seals a
-// signed erasure certificate for each (SoT-28 WS3). Call periodically.
+// RunDueShreds executes any erasures whose hold window has elapsed and seals an
+// erasure.completed audit record for each (SoT-28 WS3). Call periodically.
 func (s *Server) RunDueShreds(now time.Time) int {
 	if s.shreds == nil {
 		return 0
