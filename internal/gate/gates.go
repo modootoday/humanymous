@@ -37,17 +37,51 @@ func (s *Server) banGate(w http.ResponseWriter, r *http.Request, sid string) boo
 	if s.bans == nil {
 		return false
 	}
+	mode := s.gateModuleMode("gate.ban")
+	if mode == settings.ModeOff {
+		return false
+	}
 	keys := []string{"ip:" + clientIP(r)}
 	if fp := bindKey(r); fp != "" {
 		keys = append(keys, "fp:"+fp)
 	}
 	for _, k := range keys {
 		if b, banned := s.bans.Check(k); banned {
+			if mode != settings.ModeEnforce {
+				s.sink.Emit(audit.Record{
+					EventType: audit.EventBanEnforced, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, clientIP(r))},
+					TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictDeny),
+					Rules: []string{"HR-21"}, Action: "would_block", Mode: gateModeName(mode),
+					FailReason: banReason(b) + " (audit only)", KeyID: "k1",
+				})
+				continue
+			}
 			s.enforceBan(w, r, sid, b)
 			return true
 		}
 	}
 	for _, k := range keys {
+		if mode != settings.ModeEnforce {
+			monitor, ok := s.bans.(RateMonitorBanLedger)
+			if !ok {
+				continue
+			}
+			level := monitor.ObserveRate(k)
+			if level > 0 {
+				eventType := audit.EventRateSoftExceeded
+				action := "would_rate_limit"
+				if level == 2 {
+					eventType = audit.EventRateHardExceeded
+					action = "would_auto_ban"
+				}
+				s.sink.Emit(audit.Record{
+					EventType: eventType, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, clientIP(r))},
+					TenantID: s.cfg.NodeID, RouteClass: routeClass(r),
+					Action: action, Mode: gateModeName(mode), KeyID: "k1",
+				})
+			}
+			continue
+		}
 		entry, banned, level := s.bans.Observe(k)
 		if banned {
 			s.sink.Emit(audit.Record{
@@ -115,12 +149,25 @@ func (s *Server) verdictTokenGate(w http.ResponseWriter, r *http.Request, sid st
 	if len(s.tokenKey) == 0 {
 		return false
 	}
+	mode := s.gateModuleMode("gate.verdict_token")
+	if mode == settings.ModeOff {
+		return false
+	}
 	c, err := r.Cookie(verdictCookie)
 	if err != nil || c.Value == "" {
 		return false
 	}
 	reason := verifyVerdictToken(s.tokenKey, c.Value, tokenBind(r), sid, s.nowFn(), s.tokenEpochs.Accepted()...)
 	if reason != tokenOK {
+		if mode != settings.ModeEnforce {
+			s.sink.Emit(audit.Record{
+				EventType: audit.EventTokenBindingMismatch,
+				Actor:     audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+				TenantID:  s.cfg.NodeID, RouteClass: routeClass(r), Mode: gateModeName(mode),
+				Action: "would_clear_and_rescore", FailReason: "verdict token " + string(reason) + " (audit only)", KeyID: "k1",
+			})
+			return false
+		}
 		// A token that does not verify (stale key after a restart, wrong epoch, expired,
 		// a fingerprint that legitimately changed, or an actual forgery) must NOT be a
 		// terminal deny — that 403s a legitimate returning human whose token was minted
@@ -135,6 +182,14 @@ func (s *Server) verdictTokenGate(w http.ResponseWriter, r *http.Request, sid st
 			Actor:     audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
 			TenantID:  s.cfg.NodeID, RouteClass: routeClass(r), Mode: "enforce",
 			FailReason: "verdict token " + string(reason) + " — cleared, re-scoring", KeyID: "k1",
+		})
+		return false
+	}
+	if mode != settings.ModeEnforce {
+		s.sink.Emit(audit.Record{
+			EventType: audit.EventEnfAllow, Actor: audit.Actor{Kind: "subject", IDPsn: s.pseudonym(sid, sid)},
+			TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictAllow),
+			Action: "would_fast_path", Mode: gateModeName(mode), KeyID: "k1",
 		})
 		return false
 	}
@@ -301,7 +356,14 @@ func (s *Server) trustUpgrade(w http.ResponseWriter, r *http.Request, sid string
 // sweepGate flags decision-probing recon: one fingerprint spinning up many
 // near-identical sessions (SoT-21 §8, HR-30).
 func (s *Server) sweepGate(w http.ResponseWriter, r *http.Request, sid string, route routePolicy, now time.Time) bool {
-	if s.sweep == nil || !s.enforcing(route) || !s.sweep.Observe(bindKey(r), sid, now) {
+	if s.sweep == nil {
+		return false
+	}
+	mode := s.gateModuleMode("gate.recon_sweep")
+	if mode == settings.ModeOff || mode == settings.ModeEnforce && !s.enforcing(route) {
+		return false
+	}
+	if !s.sweep.Observe(bindKey(r), sid, now) {
 		return false
 	}
 	rec := audit.Record{
@@ -309,6 +371,13 @@ func (s *Server) sweepGate(w http.ResponseWriter, r *http.Request, sid string, r
 		TenantID: s.cfg.NodeID, RouteClass: routeClass(r), Verdict: string(VerdictDeny),
 		Rules: []string{"HR-30"}, Action: "block", Mode: "enforce",
 		FailReason: "decision-probing sweep (many sessions, one fingerprint)", KeyID: "k1",
+	}
+	if mode != settings.ModeEnforce {
+		rec.Mode = gateModeName(mode)
+		rec.Action = "would_block"
+		rec.FailReason += " (audit only)"
+		s.sink.Emit(rec)
+		return false
 	}
 	s.sink.EmitAndAct(rec, func() { s.deny(w) })
 	return true

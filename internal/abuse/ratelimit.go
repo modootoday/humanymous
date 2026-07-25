@@ -41,9 +41,9 @@ func (l *Limiter) Observe(key string, now time.Time) int {
 	if key == "" {
 		return 0
 	}
-	cut := now.Add(-l.window).UnixNano()
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	cut := now.Add(-l.window).UnixNano()
 	h := l.hits[key]
 	kept := h[:0]
 	for _, t := range h {
@@ -58,6 +58,8 @@ func (l *Limiter) Observe(key string, now time.Time) int {
 
 // Level classifies a rolling count: 0 ok, 1 soft (suspicious), 2 hard (flood).
 func (l *Limiter) Level(count int) int {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	switch {
 	case count >= l.hard:
 		return 2
@@ -66,6 +68,18 @@ func (l *Limiter) Level(count int) int {
 	default:
 		return 0
 	}
+}
+
+// Configure hot-applies a new window and thresholds without discarding rolling
+// counters. The next Observe trims each key against the new window, so tightening
+// cannot buy an attacker a fresh empty bucket during a Settings apply.
+func (l *Limiter) Configure(window time.Duration, soft, hard int) {
+	l.mu.Lock()
+	l.window = window
+	l.soft = soft
+	l.hard = hard
+	l.ttl = window * 6
+	l.mu.Unlock()
 }
 
 // gcScanBudget bounds how many entries a single GC pass scans while holding the
@@ -77,9 +91,9 @@ const gcScanBudget = 4096
 
 // GC evicts keys with no recent hits, scanning at most gcScanBudget entries per call.
 func (l *Limiter) GC(now time.Time) {
-	cut := now.Add(-l.ttl).UnixNano()
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	cut := now.Add(-l.ttl).UnixNano()
 	scanned := 0
 	for k, h := range l.hits {
 		if len(h) == 0 || h[len(h)-1] < cut {

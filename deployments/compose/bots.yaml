@@ -32,7 +32,7 @@ services:
     networks: [lab-a]
     profiles: [attack]
 
-  # Self-contained Gate proxy-layer conformance (34 checks, on loopback).
+  # Self-contained Gate proxy-layer conformance.
   gate-e2e:
     image: *bots-image
     build: *bots-build

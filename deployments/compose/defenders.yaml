@@ -37,10 +37,17 @@ services:
       - "http://origin:80"
       - "-node"
       - "gate-1"
+      - "-settings-dir"
+      - "/var/lib/humanymous/settings"
     env_file:
       - ../../configs/dev.env
+    volumes:
+      - gate-settings:/var/lib/humanymous/settings
     ports:
       - "8444:8444"
       - "8445:8445"
     depends_on: [origin]
     networks: [web, lab-a, lab-b, lab-c]
+
+volumes:
+  gate-settings:

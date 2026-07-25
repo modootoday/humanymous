@@ -63,3 +63,12 @@ func TestClassifyRateHardRaiseIsB(t *testing.T) {
 		t.Fatalf("got %s want B", c)
 	}
 }
+
+func TestClassifyRateWindowShorterIsB(t *testing.T) {
+	eff := Resolve(BootInput{HMACKey: []byte("k"), RateWindowSec: 10, RateSoft: 60, RateHard: 120}, nil)
+	short := 5
+	o := &Overlay{RateLimit: &RateLimitPatch{WindowSec: &short}}
+	if got := Classify(eff, o); got != ClassB {
+		t.Fatalf("shorter rate window weakens enforcement: want B got %s", got)
+	}
+}

@@ -60,6 +60,7 @@ type Server struct {
 	nowFn           func() time.Time
 	// settingsStore holds the SoT-39 RuntimeOverlay (nil = empty overlay ≡ freeze defaults).
 	settingsStore *settings.FileStore
+	settingsStats settingsRuntimeStats
 }
 
 // RunDueShreds executes any erasures whose hold window has elapsed and seals an
@@ -156,6 +157,7 @@ func banLedger(cfg Config) BanLedger {
 // churn the product defends against (PLAN-08 deployment-review ship-blocker). The
 // core engine already does this every minute; this brings the gate to parity.
 func (s *Server) GC(now time.Time) {
+	s.expireActiveOverlayIfNeeded()
 	if g, ok := s.verdicts.(interface{ GC(time.Time) }); ok {
 		g.GC(now)
 	}
@@ -197,9 +199,24 @@ func (s *Server) AdminHandler() http.Handler {
 	})
 }
 
-// SetSettingsStore attaches the SoT-39 RuntimeOverlay file store (optional).
-// Nil store = empty overlay (freeze-identical defaults).
-func (s *Server) SetSettingsStore(st *settings.FileStore) { s.settingsStore = st }
+// SetSettingsStore attaches the SoT-39 RuntimeOverlay file store (optional) and
+// hot-applies its effective rate settings. Nil store = empty overlay.
+func (s *Server) SetSettingsStore(st *settings.FileStore) error {
+	s.settingsStore = st
+	if st == nil {
+		return nil
+	}
+	if err := st.LoadError(); err != nil {
+		s.recordSettingsStoreError("load: " + err.Error())
+	}
+	eff := s.SettingsEffective()
+	if err := s.validateSettingsRuntime(eff); err != nil {
+		s.settingsStore = nil
+		return err
+	}
+	s.syncSettingsRuntime(eff)
+	return nil
+}
 
 // SettingsEffective returns resolved posture for admin GET /settings/effective.
 func (s *Server) SettingsEffective() settings.Effective {
@@ -207,6 +224,10 @@ func (s *Server) SettingsEffective() settings.Effective {
 	if s.settingsStore != nil {
 		active = s.settingsStore.Active()
 	}
+	return s.settingsEffectiveFor(active)
+}
+
+func (s *Server) settingsEffectiveFor(active *settings.Overlay) settings.Effective {
 	boot := settings.BootInput{
 		GlobalMonitor: s.cfg.GlobalMonitor,
 		KillSwitch:    s.killSwitch.Load(),
@@ -217,6 +238,15 @@ func (s *Server) SettingsEffective() settings.Effective {
 		HMACKey:       s.tokenKey,
 	}
 	return settings.Resolve(boot, active)
+}
+
+func (s *Server) settingsEffectiveCandidate(ov *settings.Overlay) settings.Effective {
+	if ov == nil {
+		return s.settingsEffectiveFor(nil)
+	}
+	candidate := *ov
+	candidate.Status = "active"
+	return s.settingsEffectiveFor(&candidate)
 }
 
 // resolvePath applies SoT-39 Effective routes/globalMonitor when an overlay is
@@ -245,6 +275,13 @@ func (s *Server) gateModuleMode(id string) settings.Mode {
 		return settings.ModeEnforce
 	}
 	return s.SettingsEffective().GateMode(id)
+}
+
+func gateModeName(mode settings.Mode) string {
+	if mode == settings.ModeShadow {
+		return "shadow"
+	}
+	return "monitor"
 }
 
 // NewServer builds the proxy. control handles the reserved namespace (with the
@@ -409,6 +446,10 @@ const maxInjectBody = 8 << 20 // 8 MiB
 
 // auditInjectSkip records that injection was safely skipped (SoT-20 §8).
 func (s *Server) auditInjectSkip(resp *http.Response, reason string) {
+	s.auditInjectSkipMode(resp, reason, "enforce")
+}
+
+func (s *Server) auditInjectSkipMode(resp *http.Response, reason, mode string) {
 	s.sink.Emit(audit.Record{
 		EventType:  audit.EventInjectSkipped,
 		Actor:      audit.Actor{Kind: "system"},
@@ -416,7 +457,7 @@ func (s *Server) auditInjectSkip(resp *http.Response, reason string) {
 		RouteClass: "html",
 		Rules:      []string{"HR-27a"},
 		FailReason: reason,
-		Mode:       "enforce",
+		Mode:       mode,
 		KeyID:      "k1",
 	})
 }
@@ -490,6 +531,14 @@ func (s *Server) modifyResponse(resp *http.Response) error {
 	}
 	ct := resp.Header.Get("Content-Type")
 	if resp.StatusCode != http.StatusOK || !strings.HasPrefix(strings.ToLower(ct), "text/html") {
+		return nil
+	}
+	injectMode := s.gateModuleMode("gate.inject")
+	if injectMode == settings.ModeOff {
+		return nil
+	}
+	if injectMode != settings.ModeEnforce {
+		s.auditInjectSkipMode(resp, "gate.inject "+string(injectMode)+" (would inject)", gateModeName(injectMode))
 		return nil
 	}
 	// HR-27a injector abuse: a compressed body despite our identity request could

@@ -389,6 +389,36 @@ async function main() {
   check('console-policy', Array.isArray(pv.routes) && pv.routes.length > 0 && pv.rateLimit.hard > 0,
     `${pv.routes.length} routes, hard=${pv.rateLimit.hard}`);
 
+  // SoT-39 freeze regression: Docker runs Gate with a real Settings store, but
+  // its volume starts empty. The effective posture must explicitly report the
+  // empty overlay while all proxy conformance checks above remain unchanged.
+  const settingsEffective = await areq('GET', '/__hmn/admin/settings/effective', { token: TOK.auditor });
+  let settingsState = {};
+  try { settingsState = JSON.parse(settingsEffective.body); } catch { /* checked below */ }
+  check('settings-empty-overlay-freeze',
+    settingsEffective.status === 200 && settingsState.storeAttached === true &&
+      settingsState.effective?.emptyOverlay === true && !!settingsState.effective?.configVersion,
+    `status=${settingsEffective.status} attached=${settingsState.storeAttached} empty=${settingsState.effective?.emptyOverlay}`);
+
+  // Mutating Settings requests remain server-governed: Auditor is read-only,
+  // stale CAS is rejected, and integrity demotion needs the typed confirmation.
+  const cfgVersion = settingsState.effective?.configVersion || '';
+  const settingsAuditorPost = await areq('POST', '/__hmn/admin/settings/overlays', {
+    token: TOK.auditor,
+    body: { parentConfigVersion: cfgVersion, scoring: { challengeAt: 20 } },
+  });
+  const settingsStale = await areq('POST', '/__hmn/admin/settings/overlays', {
+    token: TOK.operator,
+    body: { parentConfigVersion: 'cfg-stale', scoring: { challengeAt: 20 } },
+  });
+  const settingsClassCNoConfirm = await areq('POST', '/__hmn/admin/settings/overlays', {
+    token: TOK.operator,
+    body: { parentConfigVersion: cfgVersion, hardRules: { 'HR-18': 'monitor' } },
+  });
+  check('settings-mutation-guards',
+    settingsAuditorPost.status === 403 && settingsStale.status === 409 && settingsClassCNoConfirm.status === 400,
+    `auditor=${settingsAuditorPost.status} stale=${settingsStale.status} classC=${settingsClassCNoConfirm.status}`);
+
   // Erasure is two-phase + DPO-gated: request → pending; non-DPO approver rejected; DPO commits.
   const eraseReq = await areq('POST', '/__hmn/admin/erasure', { token: TOK.operator, body: { Subject: 'demo-subject-1', LegalBasis: 'GDPR Art.17' } });
   const eraseId = JSON.parse(eraseReq.body).approvalId;

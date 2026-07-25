@@ -7,12 +7,15 @@
 set -uo pipefail
 
 TOKENS="auditor:e2e-auditor-token,operator:e2e-operator-token,approver:e2e-approver-token,dpo:e2e-dpo-token"
+SETTINGS_DIR="/tmp/hmn-settings"
+mkdir -p "$SETTINGS_DIR"
 
 echo "[gate-e2e] starting a throwaway Gate on loopback ..."
 HMN_ADMIN_TOKENS="$TOKENS" HMN_ALLOW_DEV_TOKENS=1 /app/bin/gate \
   -addr :8444 -admin-addr :8445 \
   -upstream http://127.0.0.1:9000 \
   -origin-key demo-origin-secret \
+  -settings-dir "$SETTINGS_DIR" \
   -node gate-e2e >/tmp/gate.log 2>&1 &
 GATE_PID=$!
 

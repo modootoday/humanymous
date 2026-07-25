@@ -47,12 +47,28 @@ type VerdictLedger interface {
 type RateLimiter interface {
 	Observe(key string, now time.Time) int
 	Level(count int) int
+	Configure(window time.Duration, soft, hard int)
+}
+
+// RateConfigurableBanLedger is the optional hot-apply seam used by SoT-39.
+// Built-in in-memory and Redis ban ledgers implement it; alternate ledgers can
+// opt in without widening the enforcement-only BanLedger contract.
+type RateConfigurableBanLedger interface {
+	ConfigureRate(window time.Duration, soft, hard int)
+}
+
+// RateMonitorBanLedger observes the rate window without creating or enforcing a
+// ban. Gate module monitor/shadow mode uses this to remain genuinely audit-only.
+type RateMonitorBanLedger interface {
+	ObserveRate(key string) int
 }
 
 // Compile-time proof that the in-memory stores satisfy the seams. If a store's method
 // set drifts from the contract, this fails to build — the seam stays honest.
 var (
-	_ BanLedger     = (*BanStore)(nil)
-	_ VerdictLedger = (*VerdictStore)(nil)
-	_ RateLimiter   = (*abuse.Limiter)(nil)
+	_ BanLedger                 = (*BanStore)(nil)
+	_ VerdictLedger             = (*VerdictStore)(nil)
+	_ RateLimiter               = (*abuse.Limiter)(nil)
+	_ RateConfigurableBanLedger = (*BanStore)(nil)
+	_ RateMonitorBanLedger      = (*BanStore)(nil)
 )

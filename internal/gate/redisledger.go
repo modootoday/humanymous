@@ -250,6 +250,15 @@ func (l *RedisBanLedger) Observe(key string) (BanEntry, bool, int) {
 	return entry, banned, level
 }
 
+// ObserveRate records the fleet-wide rolling rate without applying a ban.
+func (l *RedisBanLedger) ObserveRate(key string) int { return l.local.ObserveRate(key) }
+
+// ConfigureRate hot-applies Settings thresholds to the shared and fallback
+// counters while preserving active bans, strike history, and rolling hits.
+func (l *RedisBanLedger) ConfigureRate(window time.Duration, soft, hard int) {
+	l.local.ConfigureRate(window, soft, hard)
+}
+
 func (l *RedisBanLedger) Add(key, reason, by, incident string, dur time.Duration) BanEntry {
 	entry := l.local.Add(key, reason, by, incident, dur) // reuse the ban construction
 	l.writeBan(key, entry)
@@ -365,6 +374,8 @@ func (l *RedisBanLedger) scanBanKeys() []string {
 
 // Compile-time proof the Redis ledgers satisfy the R18 distribution seams.
 var (
-	_ BanLedger     = (*RedisBanLedger)(nil)
-	_ VerdictLedger = (*RedisVerdictLedger)(nil)
+	_ BanLedger                 = (*RedisBanLedger)(nil)
+	_ VerdictLedger             = (*RedisVerdictLedger)(nil)
+	_ RateConfigurableBanLedger = (*RedisBanLedger)(nil)
+	_ RateMonitorBanLedger      = (*RedisBanLedger)(nil)
 )

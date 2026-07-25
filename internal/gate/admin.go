@@ -369,6 +369,16 @@ func (s *Server) adminMetrics(w http.ResponseWriter) {
 	fmt.Fprintf(w, "# HELP hmn_gate_audit_witnessed The latest checkpoints carry a valid independent-witness co-signature (1) or not (0).\n# TYPE hmn_gate_audit_witnessed gauge\nhmn_gate_audit_witnessed %d\n", b01(s.auditWitnessed.Load()))
 	fmt.Fprintf(w, "# HELP hmn_gate_killswitch Kill switch engaged (1) or not (0).\n# TYPE hmn_gate_killswitch gauge\nhmn_gate_killswitch %d\n", b01(s.killSwitch.Load()))
 	fmt.Fprintf(w, "# HELP hmn_gate_monitor Effective global monitor mode (1) or enforcing (0).\n# TYPE hmn_gate_monitor gauge\nhmn_gate_monitor %d\n", b01(s.monitorOn()))
+	eff := s.SettingsEffective()
+	fmt.Fprintf(w, "# HELP hmn_gate_settings_overlay_active Runtime Settings overlay active (1) or empty/freeze defaults (0).\n# TYPE hmn_gate_settings_overlay_active gauge\nhmn_gate_settings_overlay_active %d\n", b01(!eff.EmptyOverlay))
+	fmt.Fprintf(w, "# HELP hmn_gate_settings_overlay_pending_age_seconds Age in seconds of the oldest pending Settings approval (0 when none).\n# TYPE hmn_gate_settings_overlay_pending_age_seconds gauge\nhmn_gate_settings_overlay_pending_age_seconds %.0f\n", s.settingsPendingAgeSeconds())
+	fmt.Fprintf(w, "# HELP hmn_gate_settings_apply_total Settings apply outcomes.\n# TYPE hmn_gate_settings_apply_total counter\n")
+	fmt.Fprintf(w, "hmn_gate_settings_apply_total{result=\"applied\"} %d\n", s.settingsStats.applied.Load())
+	fmt.Fprintf(w, "hmn_gate_settings_apply_total{result=\"rolled_back\"} %d\n", s.settingsStats.rolledBack.Load())
+	fmt.Fprintf(w, "hmn_gate_settings_apply_total{result=\"rejected\"} %d\n", s.settingsStats.rejected.Load())
+	fmt.Fprintf(w, "hmn_gate_settings_apply_total{result=\"error\"} %d\n", s.settingsStats.errors.Load())
+	fmt.Fprintf(w, "# HELP hmn_gate_settings_store_errors_total Settings store load or persistence errors.\n# TYPE hmn_gate_settings_store_errors_total counter\nhmn_gate_settings_store_errors_total %d\n", s.settingsStats.storeErrors.Load())
+	fmt.Fprintf(w, "# HELP hmn_gate_config_version Effective signed Settings configuration version.\n# TYPE hmn_gate_config_version gauge\nhmn_gate_config_version{version=\"%s\"} 1\n", prometheusLabel(eff.ConfigVersion))
 	fmt.Fprintf(w, "# HELP hmn_gate_goroutines Current goroutine count.\n# TYPE hmn_gate_goroutines gauge\nhmn_gate_goroutines %d\n", runtime.NumGoroutine())
 	fmt.Fprintf(w, "# HELP hmn_gate_heap_alloc_bytes Heap bytes allocated and in use.\n# TYPE hmn_gate_heap_alloc_bytes gauge\nhmn_gate_heap_alloc_bytes %d\n", m.HeapAlloc)
 	fmt.Fprintf(w, "# HELP hmn_gate_sys_bytes Total memory obtained from the OS.\n# TYPE hmn_gate_sys_bytes gauge\nhmn_gate_sys_bytes %d\n", m.Sys)
@@ -404,9 +414,9 @@ func (s *Server) adminIntegrity(w http.ResponseWriter) {
 func (s *Server) adminKeys(w http.ResponseWriter) {
 	log := s.sink.Log()
 	out := map[string]any{
-		"node_id":         s.cfg.NodeID,
-		"key_id":          "k1",
-		"sth_public_key":  hex.EncodeToString(log.PublicKey()),
+		"node_id":            s.cfg.NodeID,
+		"key_id":             "k1",
+		"sth_public_key":     hex.EncodeToString(log.PublicKey()),
 		"witness_public_key": "",
 	}
 	if wpub := log.WitnessPublicKey(); len(wpub) > 0 {

@@ -104,8 +104,7 @@ func (s *BanStore) Check(key string) (BanEntry, bool) {
 // is 0 ok / 1 soft / 2 hard. When banned is true the caller enforces + audits.
 func (s *BanStore) Observe(key string) (BanEntry, bool, int) {
 	now := s.nowFn()
-	count := s.limiter.Observe(key, now)
-	level := s.limiter.Level(count)
+	level := s.ObserveRate(key)
 	if level < 2 {
 		return BanEntry{}, false, level
 	}
@@ -124,6 +123,19 @@ func (s *BanStore) Observe(key string) (BanEntry, bool, int) {
 	s.strikes[key] = st
 	entry := s.applyLocked(key, "rate limit exceeded (auto)", "auto", "", "", escalation(st.count), st.count, now)
 	return entry, true, level
+}
+
+// ObserveRate records and classifies a request without mutating ban state. It is
+// the audit-only path for gate.ban monitor/shadow mode.
+func (s *BanStore) ObserveRate(key string) int {
+	now := s.nowFn()
+	count := s.limiter.Observe(key, now)
+	return s.limiter.Level(count)
+}
+
+// ConfigureRate hot-applies limiter parameters while preserving rolling hits.
+func (s *BanStore) ConfigureRate(window time.Duration, soft, hard int) {
+	s.limiter.Configure(window, soft, hard)
 }
 
 // Add applies a manual ban (SoT-27 §4). dur == 0 => permanent.

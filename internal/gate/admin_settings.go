@@ -15,15 +15,15 @@ import (
 
 // settingsProposeBody is the allow-listed write body (client mutationClass discarded).
 type settingsProposeBody struct {
-	ParentConfigVersion string                `json:"parentConfigVersion"`
-	HardRules           map[string]string     `json:"hardRules"`
-	Gates               map[string]string     `json:"gates"`
-	Scoring             *settings.ScoringPatch `json:"scoring"`
-	WeightMultipliers   map[string]float64    `json:"weightMultipliers"`
-	NetPolicy           map[string]string     `json:"netPolicy"`
-	Routes              map[string]string     `json:"routes"`
+	ParentConfigVersion string                   `json:"parentConfigVersion"`
+	HardRules           map[string]string        `json:"hardRules"`
+	Gates               map[string]string        `json:"gates"`
+	Scoring             *settings.ScoringPatch   `json:"scoring"`
+	WeightMultipliers   map[string]float64       `json:"weightMultipliers"`
+	NetPolicy           map[string]string        `json:"netPolicy"`
+	Routes              map[string]string        `json:"routes"`
 	RateLimit           *settings.RateLimitPatch `json:"rateLimit"`
-	GlobalMonitor       *bool                 `json:"globalMonitor"`
+	GlobalMonitor       *bool                    `json:"globalMonitor"`
 	// IntegrityConfirm must be DISABLE-INTEGRITY for class C.
 	IntegrityConfirm string `json:"integrityConfirm"`
 	// ExpiresInSec optional; server caps B≤7d C≤24h.
@@ -52,6 +52,10 @@ func (s *Server) adminSettingsPropose(w http.ResponseWriter, r *http.Request, op
 		return
 	}
 	if err := settings.Validate(ov); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if err := s.validateSettingsRuntime(s.settingsEffectiveCandidate(ov)); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -279,11 +283,18 @@ func (s *Server) adminSettingsRollback(w http.ResponseWriter, r *http.Request, o
 func (s *Server) clearOverlayCAS(parent, requester, approver string) error {
 	cur := s.SettingsEffective()
 	if parent == "" || parent != cur.ConfigVersion {
-		return errStr("CAS: parentConfigVersion mismatch (stale)")
+		return s.settingsApplyRejected(errStr("CAS: parentConfigVersion mismatch (stale)"))
+	}
+	next := s.settingsEffectiveFor(nil)
+	if err := s.validateSettingsRuntime(next); err != nil {
+		return s.settingsApplyRejected(err)
 	}
 	if err := s.settingsStore.SetActive(nil); err != nil {
-		return err
+		s.recordSettingsStoreError("rollback: " + err.Error())
+		return s.settingsApplyError(err)
 	}
+	s.syncSettingsRuntime(next)
+	s.settingsStats.rolledBack.Add(1)
 	fr := "settings.overlay rolled back to empty"
 	if approver != "" {
 		fr += " dual-control " + requester + "→" + approver
@@ -386,28 +397,35 @@ func randOverlayID() (string, error) {
 
 func (s *Server) applyOverlayCAS(ov *settings.Overlay, parent string, requester, approver string) error {
 	if s.settingsStore == nil {
-		return errStr("settings store not configured")
+		return s.settingsApplyRejected(errStr("settings store not configured"))
 	}
 	cur := s.SettingsEffective()
 	if parent == "" || parent != cur.ConfigVersion {
-		return errStr("CAS: parentConfigVersion mismatch (stale)")
+		return s.settingsApplyRejected(errStr("CAS: parentConfigVersion mismatch (stale)"))
 	}
 	if err := settings.Validate(ov); err != nil {
-		return err
+		return s.settingsApplyRejected(err)
 	}
 	class := settings.Classify(cur, ov)
 	ov.MutationClass = class
 	if class == settings.ClassC && ov.ExpiresAt == nil {
-		return errStr("class C requires expiresAt")
+		return s.settingsApplyRejected(errStr("class C requires expiresAt"))
 	}
 	if ov.ExpiresAt != nil && !ov.ExpiresAt.After(time.Now()) {
-		return errStr("overlay already expired")
+		return s.settingsApplyRejected(errStr("overlay already expired"))
 	}
 	ov.Status = "active"
 	ov.ApprovedBy = approver
-	if err := s.settingsStore.SetActive(ov); err != nil {
-		return err
+	next := s.settingsEffectiveCandidate(ov)
+	if err := s.validateSettingsRuntime(next); err != nil {
+		return s.settingsApplyRejected(err)
 	}
+	if err := s.settingsStore.SetActive(ov); err != nil {
+		s.recordSettingsStoreError("apply: " + err.Error())
+		return s.settingsApplyError(err)
+	}
+	s.syncSettingsRuntime(next)
+	s.settingsStats.applied.Add(1)
 	fr := "settings.overlay applied class=" + string(class) + " id=" + ov.OverlayID
 	if approver != "" {
 		fr += " dual-control " + requester + "→" + approver
@@ -454,7 +472,12 @@ func (s *Server) expireActiveOverlayIfNeeded() {
 		return
 	}
 	if time.Now().After(*ov.ExpiresAt) {
-		_ = s.settingsStore.SetActive(nil)
+		next := s.settingsEffectiveFor(nil)
+		if err := s.settingsStore.SetActive(nil); err != nil {
+			s.recordSettingsStoreError("expire: " + err.Error())
+			return
+		}
+		s.syncSettingsRuntime(next)
 		s.sink.Emit(audit.Record{
 			EventType: "settings.overlay.expired", Actor: audit.Actor{Kind: "system"},
 			TenantID: s.cfg.NodeID, Mode: "enforce", KeyID: "k1",

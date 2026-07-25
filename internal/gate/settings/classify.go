@@ -141,6 +141,12 @@ func Classify(eff Effective, o *Overlay) MutationClass {
 
 	// rate loosen
 	if o.RateLimit != nil {
+		if o.RateLimit.WindowSec != nil && *o.RateLimit.WindowSec < eff.RateWindowSec {
+			raise(ClassB)
+		}
+		if o.RateLimit.WindowSec != nil && *o.RateLimit.WindowSec > eff.RateWindowSec {
+			raise(ClassA)
+		}
 		if o.RateLimit.Hard != nil && *o.RateLimit.Hard > eff.RateHard {
 			raise(ClassB)
 		}
@@ -148,6 +154,9 @@ func Classify(eff Effective, o *Overlay) MutationClass {
 			raise(ClassB)
 		}
 		if o.RateLimit.Hard != nil && *o.RateLimit.Hard < eff.RateHard {
+			raise(ClassA)
+		}
+		if o.RateLimit.Soft != nil && *o.RateLimit.Soft < eff.RateSoft {
 			raise(ClassA)
 		}
 	}

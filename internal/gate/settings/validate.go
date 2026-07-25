@@ -49,6 +49,9 @@ func Validate(o *Overlay) error {
 		if o.RateLimit.Soft != nil && *o.RateLimit.Soft < 1 {
 			return fmt.Errorf("rateLimit.soft must be >= 1")
 		}
+		if o.RateLimit.Hard != nil && *o.RateLimit.Hard < 1 {
+			return fmt.Errorf("rateLimit.hard must be >= 1")
+		}
 		if o.RateLimit.Hard != nil && o.RateLimit.Soft != nil && *o.RateLimit.Hard < *o.RateLimit.Soft {
 			return fmt.Errorf("rateLimit.hard must be >= soft")
 		}

@@ -38,6 +38,14 @@ func TestValidateScoringBounds(t *testing.T) {
 	}
 }
 
+func TestValidateRefusesNonPositiveRateHard(t *testing.T) {
+	hard := 0
+	o := &Overlay{RateLimit: &RateLimitPatch{Hard: &hard}}
+	if err := Validate(o); err == nil {
+		t.Fatal("rate hard 0 should fail")
+	}
+}
+
 func TestResolveEmptyOverlayIdentity(t *testing.T) {
 	boot := BootInput{
 		HMACKey:       []byte("test-key-32-bytes-long!!!!!!!!"),

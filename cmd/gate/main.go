@@ -397,7 +397,9 @@ func main() {
 		log.Fatalf("proxy: %v", err)
 	}
 	if settingsStore != nil {
-		srv.SetSettingsStore(settingsStore)
+		if err := srv.SetSettingsStore(settingsStore); err != nil {
+			log.Fatalf("settings runtime: %v", err)
+		}
 		control.WithEngineConfigurator(func(e *scoring.Engine) {
 			gate.ConfigureEngineFromEffective(e, srv.SettingsEffective())
 		})

@@ -3,6 +3,7 @@ package gate
 import (
 	"math"
 	"strconv"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -32,6 +33,7 @@ return redis.call('ZCARD', KEYS[1])`
 // RedisRateLimiter is a shared sliding-window rate counter satisfying RateLimiter.
 type RedisRateLimiter struct {
 	rc     *redis.Client
+	mu     sync.RWMutex
 	local  *abuse.Limiter // Level thresholds + outage fallback
 	window time.Duration
 	seq    uint64 // per-process disambiguator so same-nanosecond hits are distinct members
@@ -49,16 +51,20 @@ func (l *RedisRateLimiter) Observe(key string, now time.Time) int {
 	if key == "" {
 		return 0
 	}
+	l.mu.RLock()
+	window := l.window
+	local := l.local
+	l.mu.RUnlock()
 	nowNs := now.UnixNano()
 	member := strconv.FormatInt(nowNs, 10) + "-" + strconv.FormatUint(atomic.AddUint64(&l.seq, 1), 10)
 	rep, err := l.rc.Do("EVAL", slidingWindowLua, "1", "hmn:rl:"+key,
 		strconv.FormatInt(nowNs, 10),
-		strconv.FormatInt(l.window.Nanoseconds(), 10),
-		strconv.FormatInt((l.window*6).Milliseconds(), 10),
+		strconv.FormatInt(window.Nanoseconds(), 10),
+		strconv.FormatInt((window*6).Milliseconds(), 10),
 		member,
 	)
 	if err != nil {
-		return l.local.Observe(key, now) // outage: fall back to per-node counting
+		return local.Observe(key, now) // outage: fall back to per-node counting
 	}
 	// Clamp the int64 reply into int with an explicit bound so the conversion is safe on
 	// a 32-bit build (a rolling rate count never legitimately exceeds this; a negative is
@@ -73,13 +79,33 @@ func (l *RedisRateLimiter) Observe(key string, now time.Time) int {
 }
 
 // Level classifies a rolling count using the shared thresholds.
-func (l *RedisRateLimiter) Level(count int) int { return l.local.Level(count) }
+func (l *RedisRateLimiter) Level(count int) int {
+	l.mu.RLock()
+	local := l.local
+	l.mu.RUnlock()
+	return local.Level(count)
+}
+
+// Configure hot-applies the shared window and both shared/local thresholds.
+// Existing Redis ZSET members remain and are trimmed against the new window on
+// the next Observe, matching the in-memory counter-preservation contract.
+func (l *RedisRateLimiter) Configure(window time.Duration, soft, hard int) {
+	l.mu.Lock()
+	l.window = window
+	l.local.Configure(window, soft, hard)
+	l.mu.Unlock()
+}
 
 // GC sweeps the local fallback limiter (used during a Redis outage). Without it,
 // BanStore.GC's type-assertion silently skips this limiter and its per-key map grows
 // unbounded during an outage under flood — the reverse of the GC ticker's intent
 // (deep-review finding). Redis expires its own ZSETs via PEXPIRE.
-func (l *RedisRateLimiter) GC(now time.Time) { l.local.GC(now) }
+func (l *RedisRateLimiter) GC(now time.Time) {
+	l.mu.RLock()
+	local := l.local
+	l.mu.RUnlock()
+	local.GC(now)
+}
 
 // Compile-time proof the shared limiter satisfies the seam.
 var _ RateLimiter = (*RedisRateLimiter)(nil)
