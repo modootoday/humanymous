@@ -7,8 +7,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/scripts/agents/hooks/pre-tool-guard.py\"",
-            "commandWindows": "powershell -NoProfile -Command \"$root = git rev-parse --show-toplevel; py -3 (Join-Path $root 'scripts/agents/hooks/pre-tool-guard.py')\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/agents/hooks/pre-tool-guard.mjs\"",
+            "commandWindows": "powershell -NoProfile -Command \"$root = git rev-parse --show-toplevel; node (Join-Path $root 'scripts/agents/hooks/pre-tool-guard.mjs'); exit $LASTEXITCODE\"",
             "timeout": 10,
             "statusMessage": "Checking workspace safety policy"
           }

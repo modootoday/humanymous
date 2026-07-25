@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 scripts/agents/hooks/pre-tool-guard.py"
+            "command": "node scripts/agents/hooks/pre-tool-guard.mjs"
           }
         ]
       }

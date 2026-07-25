@@ -64,8 +64,7 @@ jobs:
           bash scripts/agents/sync-adapters.sh
           git diff --exit-code -- .claude .grok .gemini .codex/skills .codex/hooks.json
           bash scripts/agents/verify-agents-layout.sh
-          node --test scripts/agents/workflow-runner.test.mjs scripts/assert-attack.test.mjs
-          python3 -m unittest scripts/agents/hooks/test_pre_tool_guard.py
+          node --test scripts/agents/workflow-runner.test.mjs scripts/agents/hooks/pre-tool-guard.test.mjs scripts/assert-attack.test.mjs
 
   detector-vs-bots:
     name: docker detector-vs-bots

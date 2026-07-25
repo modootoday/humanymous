@@ -78,13 +78,15 @@ done
 [[ -f .agents/evals/trigger-rules.json ]] && ok "evals trigger-rules.json" || fail "missing trigger rules"
 [[ -f .agents/workflows/workflow.schema.json ]] && ok "workflow schema" || fail "missing workflow schema"
 [[ -f .agents/workflows/run.schema.json ]] && ok "run schema" || fail "missing run schema"
-[[ -f scripts/agents/hooks/pre-tool-guard.py ]] && ok "hook pre-tool-guard.py" || fail "missing pre-tool-guard.py"
+[[ -f scripts/agents/hooks/pre-tool-guard.mjs ]] && ok "hook pre-tool-guard.mjs" || fail "missing pre-tool-guard.mjs"
 [[ -f .codex/hooks.json ]] && ok "Codex hooks" || fail "missing .codex/hooks.json"
 
 if node scripts/agents/workflow-runner.mjs validate >/dev/null; then ok "workflow contracts"
 else fail "workflow contract validation"; fi
 if node scripts/agents/eval-skill-triggers.mjs >/dev/null; then ok "trigger evals (no LLM API)"
 else fail "trigger evals"; fi
+if node --test scripts/agents/hooks/pre-tool-guard.test.mjs >/dev/null; then ok "Node pre-tool hook contract"
+else fail "Node pre-tool hook contract"; fi
 
 lines=$(wc -l < AGENTS.md | tr -d ' ')
 if [[ "$lines" -gt 200 ]]; then fail "AGENTS.md has $lines lines (keep ≤200)"; else ok "AGENTS.md line count $lines"; fi

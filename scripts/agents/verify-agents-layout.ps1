@@ -100,9 +100,9 @@ foreach ($schema in @(".agents\workflows\workflow.schema.json", ".agents\workflo
   if (Test-Path (Join-Path $Root $schema)) { Ok $schema } else { Fail "missing $schema" }
 }
 
-if (-not (Test-Path (Join-Path $Root "scripts\agents\hooks\pre-tool-guard.py"))) {
-  Fail "missing pre-tool-guard.py"
-} else { Ok "hook pre-tool-guard.py" }
+if (-not (Test-Path (Join-Path $Root "scripts\agents\hooks\pre-tool-guard.mjs"))) {
+  Fail "missing pre-tool-guard.mjs"
+} else { Ok "hook pre-tool-guard.mjs" }
 if (-not (Test-Path (Join-Path $Root ".codex\hooks.json"))) {
   Fail "missing .codex/hooks.json"
 } else { Ok "Codex hooks" }
@@ -111,6 +111,8 @@ if (-not (Test-Path (Join-Path $Root ".codex\hooks.json"))) {
 if ($LASTEXITCODE -eq 0) { Ok "workflow contracts" } else { Fail "workflow contract validation" }
 & node scripts/agents/eval-skill-triggers.mjs | Out-Null
 if ($LASTEXITCODE -eq 0) { Ok "trigger evals (no LLM API)" } else { Fail "trigger evals" }
+& node --test scripts/agents/hooks/pre-tool-guard.test.mjs | Out-Null
+if ($LASTEXITCODE -eq 0) { Ok "Node pre-tool hook contract" } else { Fail "Node pre-tool hook contract" }
 
 # Root AGENTS size budget (~150 lines recommended)
 $rootLines = (Get-Content (Join-Path $Root "AGENTS.md")).Count
