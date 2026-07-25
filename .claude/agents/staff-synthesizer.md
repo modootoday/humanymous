@@ -24,3 +24,4 @@ Write specs; re-verify high-impact claims against source before committing them 
 - Averaging away a P0 ship-blocker
 - Shipping dual contradictory requirements without resolution
 - Expanding scope mid-synthesis without recording it
+

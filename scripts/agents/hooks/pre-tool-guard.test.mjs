@@ -115,26 +115,29 @@ test('audit log records hashes and byte counts without raw commands', () => {
   assert.equal(entries.at(-1).exitCode, 2);
 });
 
-test('Codex Windows adapter executes the guard with silent success', {
+test('Codex Windows adapter invokes Node directly through the session PowerShell', {
   skip: process.platform !== 'win32',
 }, () => {
   const config = JSON.parse(readFileSync(join(ROOT, '.codex/hooks.json'), 'utf8'));
-  const command = config.hooks.PreToolUse[0].hooks[0].commandWindows;
-  const allowed = spawnSync(command, {
+  const handler = config.hooks.PreToolUse[0].hooks[0];
+  const command = handler.commandWindows ?? handler.command;
+  assert.doesNotMatch(command, /\bpowershell(?:\.exe)?\b/i);
+
+  const allowed = spawnSync('pwsh', ['-NoProfile', '-Command', command], {
     cwd: ROOT,
     encoding: 'utf8',
+    env: { ...process.env, HUMANYMOUS_HOOK_LOG: AUDIT_LOG },
     input: JSON.stringify({ hook_event_name: 'PreToolUse', tool_input: { command: 'git status --short' } }),
-    shell: true,
   });
   assert.equal(allowed.status, 0, allowed.stderr);
   assert.equal(allowed.stdout, '');
   assert.equal(allowed.stderr, '');
 
-  const blocked = spawnSync(command, {
+  const blocked = spawnSync('pwsh', ['-NoProfile', '-Command', command], {
     cwd: ROOT,
     encoding: 'utf8',
+    env: { ...process.env, HUMANYMOUS_HOOK_LOG: AUDIT_LOG },
     input: JSON.stringify({ hook_event_name: 'PreToolUse', tool_input: { command: 'git push --force origin main' } }),
-    shell: true,
   });
   assert.equal(blocked.status, 2, blocked.stderr);
 });

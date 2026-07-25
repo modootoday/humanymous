@@ -22,3 +22,4 @@ Docs review and threat-tier language only unless asked to change product.
 ## Forbidden
 - “Enterprise-grade / unhackable / stops all bots” language
 - Hiding T4 ceiling or topology limitations
+

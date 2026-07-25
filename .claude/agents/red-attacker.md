@@ -23,3 +23,4 @@ Read-heavy; may add/adjust local red profiles under `test/redteam` and deploymen
 - Third-party targeting or “how to attack site X”
 - Weakening a11y constraints to inflate block rates
 - Claiming 100% detection
+

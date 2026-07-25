@@ -23,3 +23,4 @@ Docs and audit design; block designs that re-identify at rest without controls.
 - Calling pseudonyms “anonymous”
 - Single-pepper designs that cannot fulfill subject erasure
 - Writer-only integrity stories without independent verification residual notes
+

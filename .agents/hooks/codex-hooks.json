@@ -8,7 +8,7 @@
           {
             "type": "command",
             "command": "node \"$(git rev-parse --show-toplevel)/scripts/agents/hooks/pre-tool-guard.mjs\"",
-            "commandWindows": "powershell -NoProfile -Command \"$root = git rev-parse --show-toplevel; node (Join-Path $root 'scripts/agents/hooks/pre-tool-guard.mjs'); exit $LASTEXITCODE\"",
+            "commandWindows": "node \"$(git rev-parse --show-toplevel)/scripts/agents/hooks/pre-tool-guard.mjs\"; exit $LASTEXITCODE",
             "timeout": 10,
             "statusMessage": "Checking workspace safety policy"
           }
