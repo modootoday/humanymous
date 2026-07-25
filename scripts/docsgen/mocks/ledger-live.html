@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<!-- Animated source for the README/docs Ledger hero. Deterministic window.__frame(i,N)
+     scrolls a periodic decision feed (seamless loop) and ticks the recent-window KPIs.
+     Captured frame-by-frame by scripts/docsgen/anim.mjs. mac-window chrome baked in. -->
+<style>
+  :root{
+    --bg:#0a0e14;--panel:#111722;--border:#202a38;--text:#e4ecf5;--muted:#8a99ad;--faint:#5a6879;
+    --accent:#35d0ba;--allow:#3fb950;--challenge:#d9a441;--deny:#f0556a;
+    --mono:ui-monospace,'Cascadia Code','SF Mono',Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{background:#05070b}
+  .stage{width:916px;height:600px;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 90% at 82% -12%,rgba(53,208,186,.10),transparent 55%),#05070b}
+  .win{width:820px;border-radius:12px;overflow:hidden;background:#0b1119;
+    box-shadow:0 2px 6px rgba(0,0,0,.32),0 20px 44px rgba(0,0,0,.5);outline:1px solid rgba(255,255,255,.06)}
+  .bar{display:flex;align-items:center;height:40px;padding:0 14px;background:linear-gradient(#1c2430,#151c26);border-bottom:1px solid #253040}
+  .dots{display:flex;gap:8px}.dot{width:12px;height:12px;border-radius:50%}
+  .dc{background:#ff5f57}.dm{background:#febc2e}.dz{background:#28c840}
+  .title{flex:1;text-align:center;font-family:var(--mono);font-size:12.5px;color:#8a99ad;margin-right:118px}
+  .live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .livedot{width:7px;height:7px;border-radius:50%;background:var(--allow);box-shadow:0 0 0 3px rgba(63,185,80,.16)}
+  .body{padding:16px 18px 18px}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+  .kpi{background:#111a24;border:1px solid #1e2a38;border-radius:9px;padding:9px 12px;position:relative;overflow:hidden}
+  .kpi .stripe{position:absolute;left:0;top:0;bottom:0;width:3px}
+  .a .stripe{background:var(--allow)}.c .stripe{background:var(--challenge)}.d .stripe{background:var(--deny)}
+  .kpi .kl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#7488a0}
+  .kpi .kv{font-family:var(--mono);font-size:23px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums;color:var(--text)}
+  .a .kv{color:var(--allow)}.c .kv{color:var(--challenge)}.d .kv{color:var(--deny)}
+  .cols{display:grid;grid-template-columns:1.5fr 1.35fr 84px 66px 46px;gap:10px}
+  .feedhead{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:0 10px 7px}
+  .feedhead span:last-child,.row .risk{text-align:right}
+  .feedwrap{height:306px;overflow:hidden;border-top:1px solid var(--border);
+    -webkit-mask-image:linear-gradient(#000 88%,transparent);mask-image:linear-gradient(#000 88%,transparent)}
+  .feed{will-change:transform}
+  .row{align-items:center;height:34px;padding:0 10px;font-family:var(--mono);font-size:12px;border-bottom:1px solid #161d28}
+  .ev{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.host{color:#c9d5e3}
+  .v{font-weight:700;font-size:11px;padding:1px 7px;border-radius:5px;justify-self:start}
+  .va{color:var(--allow);background:rgba(63,185,80,.12)}
+  .vc{color:var(--challenge);background:rgba(217,164,65,.12)}
+  .vd{color:var(--deny);background:rgba(240,85,106,.12)}
+  .rule{color:var(--faint)}.rule.hr{color:var(--deny)}
+  .risk{color:#c9d5e3;font-variant-numeric:tabular-nums}
+</style></head>
+<body>
+<div class="stage"><div class="win">
+  <div class="bar">
+    <div class="dots"><span class="dot dc"></span><span class="dot dm"></span><span class="dot dz"></span></div>
+    <div class="title">humanymous — Ledger</div>
+    <div class="live"><span class="livedot" id="livedot"></span><span>live</span></div>
+  </div>
+  <div class="body">
+    <div class="kpis">
+      <div class="kpi a"><span class="stripe"></span><div class="kl">Allow</div><div class="kv" id="kA">0</div></div>
+      <div class="kpi c"><span class="stripe"></span><div class="kl">Challenge</div><div class="kv" id="kC">0</div></div>
+      <div class="kpi d"><span class="stripe"></span><div class="kl">Deny</div><div class="kv" id="kD">0</div></div>
+    </div>
+    <div class="cols feedhead"><span>Event</span><span>Host</span><span>Verdict</span><span>Rule</span><span>Risk</span></div>
+    <div class="feedwrap"><div class="feed cols" id="feed" style="display:block"></div></div>
+  </div>
+</div></div>
+<script>
+  // periodic block of decisions — a seamless scroll repeats it, so no counter ever "jumps".
+  var DEC=[
+    ['allow','shop.example.com','enforcement.allow','',4],
+    ['allow','app.example.com','enforcement.allow','',6],
+    ['deny','api.example.com','enforcement.deny','HR-19',88],
+    ['allow','shop.example.com','enforcement.allow','',3],
+    ['challenge','app.example.com','enforcement.challenge','HR-12',52],
+    ['allow','shop.example.com','enforcement.allow','',5],
+    ['allow','app.example.com','enforcement.allow','',7],
+    ['deny','login.example.com','enforcement.deny','HR-7',95],
+    ['allow','shop.example.com','enforcement.allow','',2],
+    ['allow','api.example.com','enforcement.allow','',8],
+    ['challenge','shop.example.com','enforcement.challenge','HR-25',44],
+    ['allow','app.example.com','enforcement.allow','',6],
+    ['allow','shop.example.com','enforcement.allow','',4],
+    ['deny','api.example.com','enforcement.deny','HR-21',100],
+  ];
+  var ROWH=34, VIS=9, B=DEC.length;
+  function pill(v){return v==='allow'?'<span class="v va">ALLOW</span>':v==='challenge'?'<span class="v vc">CHAL</span>':'<span class="v vd">DENY</span>';}
+  function rowHTML(d){return '<div class="row cols"><span class="ev">'+d[2]+'</span><span class="host">'+d[1]+'</span>'+pill(d[0])+'<span class="rule'+(d[3]?' hr':'')+'">'+(d[3]||'—')+'</span><span class="risk">'+d[4]+'</span></div>';}
+  (function(){var h='';for(var k=0;k<2;k++)for(var i=0;i<B;i++)h+=rowHTML(DEC[i]);document.getElementById('feed').innerHTML=h;})();
+  window.__frame=function(i,N){
+    var off=(i/N)*(B*ROWH);                                   // 0 → one full block over the loop
+    document.getElementById('feed').style.transform='translateY('+(-off)+'px)';
+    var top=Math.floor(off/ROWH), c={allow:0,challenge:0,deny:0};
+    for(var r=0;r<VIS;r++){c[DEC[(top+r)%B][0]]++;}           // recent-window counts (periodic → loops)
+    document.getElementById('kA').textContent=(1180+c.allow*11);
+    document.getElementById('kC').textContent=(58+c.challenge*7);
+    document.getElementById('kD').textContent=(19+c.deny*8);
+    var ph=(i/N)*Math.PI*2*3;                                 // 3 pulses per loop
+    document.getElementById('livedot').style.opacity=(0.4+0.6*Math.abs(Math.sin(ph))).toFixed(3);
+  };
+  window.__frame(0,1);
+</script>
+</body></html>

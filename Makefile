@@ -12,7 +12,7 @@ IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
 .PHONY: all wasm wasmexec server gate report build test race e2e-deps e2e report-html run clean fmt vet \
-        docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets docs-frames
+        docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets docs-frames docs-anim
 
 all: build
 
@@ -64,6 +64,13 @@ docs-assets:
 docs-frames:
 	cd test && npm install --silent
 	cd scripts/docsgen && npm install --silent && node shoot.mjs
+
+## docs-anim: (re)render the animated docs sources (Ledger hero, quickstart cast) to
+## animated WebP (github.com) + WebM/MP4/poster (docs <video>). Needs Node, sharp, the
+## e2e Playwright browser, and ffmpeg on PATH. Run after editing scripts/docsgen/mocks/.
+docs-anim:
+	cd test && npm install --silent
+	cd scripts/docsgen && npm install --silent && node anim.mjs
 
 ## changelog-unreleased: preview the notes for unreleased commits (since the last tag) to stdout.
 changelog-unreleased:

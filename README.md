@@ -15,10 +15,7 @@
 # humanymous — Browser Automation Detection Sample (Go/WASM + JS)
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/screenshots/framed/hero-ledger-dark.webp" />
-    <img src="docs/assets/screenshots/framed/hero-ledger-light.webp" width="820" alt="humanymous Ledger console — the live edge-decision feed (allow / challenge / deny) with per-record hard-rule badges, KPIs, and a chain-verified tamper-evident audit status." />
-  </picture>
+  <img src="docs/assets/screenshots/anim/ledger-live.webp" width="820" alt="The humanymous Ledger, live: a scrolling feed of edge decisions — ALLOW / CHALLENGE / DENY — each with its host and hard-rule badge (HR-7, HR-19, HR-21…), above recent-window Allow/Challenge/Deny counters, all sealed into a tamper-evident audit chain." />
 </p>
 <p align="center"><sub>The <strong>Ledger</strong> — every edge decision, scored across seven layers and sealed into a tamper-evident audit chain.</sub></p>
 
@@ -143,6 +140,10 @@ sots/  plan/    # development source-of-truth / design (excluded from release & 
 The only prerequisite is **Docker** (Desktop or Engine). No `make`, Go, or Node is
 required on the host — everything builds inside containers, so the exact commands
 below work the same on **Linux, macOS, and Windows**.
+
+<p align="center">
+  <img src="docs/assets/screenshots/anim/quickstart-cast.webp" width="820" alt="Terminal running `docker compose run --rm bots`: the automation catalog streams against the local engine — selenium, puppeteer, playwright-stealth, tls-parrot, ai-agent, distributed, rapid-reset each resolve to DENY with their hard rule, the baseline clears ALLOW, ending 45/45 bots blocked with 0 false positives." />
+</p>
 
 ```bash
 cd deployments

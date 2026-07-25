@@ -11,6 +11,11 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 > **Warning:** This procedure validates a deployment **you operate**, on your own loopback interface (`127.0.0.1`). The bundled tools are labeled "local target only" and default to localhost for that reason. Never point them at any host, domain, or IP you do not run yourself. This page gives you no evasion, bypass, or attack guidance against third parties — it only helps you confirm that **your own** detection and enforcement behave as expected, and helps you measure your own false-positive rate before you enforce anything.
 
+<video autoplay loop muted playsinline poster="../assets/screenshots/anim/quickstart-cast-poster.webp" width="820" style="max-width:100%;border-radius:12px" aria-label="A self-validation run: `docker compose run --rm bots` streams the automation catalog against the local engine — each simulator resolves to DENY with its hard rule, the honest-human baseline clears ALLOW, ending 45/45 blocked with 0 false positives.">
+  <source src="../assets/screenshots/anim/quickstart-cast.webm" type="video/webm" />
+  <source src="../assets/screenshots/anim/quickstart-cast.mp4" type="video/mp4" />
+</video>
+
 ## What this gives you
 
 The goal is a measurement, not a guarantee. When you finish, you will have two numbers for **your** deployment:

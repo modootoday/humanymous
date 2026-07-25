@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<!-- Animated source for the quickstart terminal cast: types the attack command, streams
+     the bots-vs-engine verdicts, then the summary; holds; loops. Deterministic __frame. -->
+<style>
+  :root{
+    --bg:#0a0e14;--text:#e4ecf5;--muted:#8a99ad;--faint:#5a6879;--accent:#35d0ba;
+    --allow:#3fb950;--challenge:#d9a441;--deny:#f0556a;--prompt:#35d0ba;
+    --mono:ui-monospace,'Cascadia Code','SF Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{background:#05070b}
+  .stage{width:916px;height:600px;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 90% at 82% -12%,rgba(53,208,186,.09),transparent 55%),#05070b}
+  .win{width:820px;border-radius:12px;overflow:hidden;background:#0b0f14;
+    box-shadow:0 2px 6px rgba(0,0,0,.32),0 20px 44px rgba(0,0,0,.5);outline:1px solid rgba(255,255,255,.06)}
+  .bar{display:flex;align-items:center;height:40px;padding:0 14px;background:linear-gradient(#1c2430,#151c26);border-bottom:1px solid #253040}
+  .dots{display:flex;gap:8px}.dot{width:12px;height:12px;border-radius:50%}
+  .dc{background:#ff5f57}.dm{background:#febc2e}.dz{background:#28c840}
+  .title{flex:1;text-align:center;font-family:var(--mono);font-size:12.5px;color:#8a99ad}
+  .term{height:430px;padding:18px 20px;font-family:var(--mono);font-size:13.5px;line-height:1.62;color:var(--text);white-space:pre;overflow:hidden}
+  .p{color:var(--prompt);font-weight:700}
+  .cmd{color:#e4ecf5}
+  .cur{color:var(--accent)}
+  .dim{color:var(--faint)}
+  .head{color:var(--muted)}
+  .lbl{color:#c9d5e3}
+  .deny{color:var(--deny);font-weight:700}
+  .allow{color:var(--allow);font-weight:700}
+  .hr{color:var(--challenge)}
+  .ok{color:var(--allow);font-weight:700}
+</style></head>
+<body>
+<div class="stage"><div class="win">
+  <div class="bar">
+    <div class="dots"><span class="dot dc"></span><span class="dot dm"></span><span class="dot dz"></span></div>
+    <div class="title">bash — humanymous / deployments</div>
+  </div>
+  <div class="term" id="term"></div>
+</div></div>
+<script>
+  var CMD='docker compose run --rm bots';
+  // Output lines revealed one-by-one after the command is typed. [class, text]
+  var OUT=[
+    ['dim',''],
+    ['head','humanymous · automation catalog → local engine (:8443)'],
+    ['dim',''],
+    ['row','selenium|DENY|HR-1|cdc_ automation artifact'],
+    ['row','puppeteer|DENY|HR-7|headless + navigator.webdriver'],
+    ['row','playwright-stealth|DENY|HR-8|patched native getters'],
+    ['row','tls-parrot|DENY|HR-18|uTLS parrot · no JS evidence'],
+    ['row','ai-agent|DENY|HR-20|teleport click + LLM cadence'],
+    ['row','distributed|DENY|HR-19|one fingerprint, many subnets'],
+    ['row','rapid-reset|DENY|HR-21|HTTP/2 reset flood'],
+    ['row','baseline|ALLOW|—|real browser · low risk'],
+    ['dim',''],
+    ['sum','✓ 45/45 bots blocked · baseline not denied · 0 false positives'],
+  ];
+  function pad(s,n){s=String(s);while(s.length<n)s+=' ';return s;}
+  function lineHTML(o){
+    if(o[0]==='row'){var p=o[1].split('|');
+      var vc=p[1]==='ALLOW'?'allow':'deny';
+      return '  <span class="lbl">'+pad('bot:'+p[0],24)+'</span><span class="'+vc+'">'+pad(p[1],9)+'</span><span class="hr">'+pad(p[2],7)+'</span><span class="dim">'+p[3]+'</span>';
+    }
+    if(o[0]==='sum')return '  <span class="ok">'+o[1]+'</span>';
+    if(o[0]==='head')return '<span class="head">'+o[1]+'</span>';
+    return '<span class="dim">'+(o[1]||' ')+'</span>';
+  }
+  var TYPE=26;                  // frames spent typing the command
+  var PER=7;                    // frames between revealed output lines
+  var term=document.getElementById('term');
+  window.__frame=function(i,N){
+    var typed=Math.max(0,Math.min(CMD.length,Math.round(CMD.length*(i/TYPE))));
+    var cmdShown=CMD.slice(0,typed);
+    var linesShown= i<=TYPE ? 0 : Math.min(OUT.length, Math.floor((i-TYPE)/PER)+1);
+    var blink=(Math.floor(i/6)%2===0)?'<span class="cur">▋</span>':'<span class="cur" style="opacity:.15">▋</span>';
+    var cursor = (typed<CMD.length) ? blink : (linesShown>=OUT.length ? blink : '<span class="cur">▋</span>');
+    var html='<span class="p">$</span> <span class="cmd">'+cmdShown+'</span>'+(linesShown===0?cursor:'')+'\n';
+    for(var k=0;k<linesShown;k++)html+=lineHTML(OUT[k])+'\n';
+    if(linesShown>0 && linesShown>=OUT.length)html+=blink;
+    term.innerHTML=html;
+  };
+  window.__frame(0,1);
+</script>
+</body></html>
