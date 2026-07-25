@@ -13,8 +13,14 @@ canon:
   skills_root: .agents/skills
   personas_root: .agents/personas
   workflows_root: .agents/workflows
-  evals: .agents/evals/trigger-queries.json
+  evals:
+    dataset: .agents/evals/trigger-queries.json
+    deterministic_rules: .agents/evals/trigger-rules.json
+    runner: scripts/agents/eval-skill-triggers.mjs
   hooks_canon: .agents/hooks
+  workflow_runtime: scripts/agents/workflow-runner.mjs
+  workflow_schema: .agents/workflows/workflow.schema.json
+  run_schema: .agents/workflows/run.schema.json
 
 adapters:
   claude:
@@ -31,6 +37,7 @@ adapters:
   codex:
     project_rules: [AGENTS.md]
     skills: .codex/skills
+    hooks: .codex/hooks.json
   gemini:
     project_rules: [AGENTS.md]
     settings: .gemini/settings.json
@@ -49,6 +56,7 @@ rules:
   - 90-session-overlap.md
   - 91-git-contention.md
   - 92-git-commit-attribution.md
+  - 93-release-and-ci.md
 
 sessions:
   protocol: .agents/sessions/PROTOCOL.md
@@ -70,6 +78,7 @@ skills:
   - pass-wargame-round
   - docs-from-sot
   - cut-release
+  - github-actions-ops
   - review-changes
   - handover-pack
   - optimize-skill-description

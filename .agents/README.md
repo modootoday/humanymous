@@ -1,4 +1,4 @@
-# `.agents/` — multi-provider agent canon (v2)
+# `.agents/` — multi-provider agent canon (v4)
 
 Vendor-neutral source of truth for Claude Code, Grok Build, OpenAI Codex, and Gemini CLI.
 
@@ -10,8 +10,8 @@ Vendor-neutral source of truth for Claude Code, Grok Build, OpenAI Codex, and Ge
 | **L1 Rules** | root + nested `AGENTS.md`, `rules/` | Always-on; root stays **thin** (router) |
 | **L2 Skills** | `skills/*/SKILL.md` + `assets/` | Progressive disclosure ([Agent Skills](https://agentskills.io)) |
 | **L3 Personas** | `personas/` | Multi-perspective panels |
-| **L4 Workflows** | `workflows/` | Tool-agnostic loops |
-| **Evals** | `evals/trigger-queries.json` | Description trigger quality |
+| **L4 Workflows** | `workflows/` + `scripts/agents/workflow-runner.mjs` | Local state machine, approvals, retries, JSONL journal |
+| **Evals** | `evals/trigger-{queries,rules}.json` | Executable no-LLM intent-routing proxy |
 | **Lessons** | `lessons/HARD-WON.md` | Cross-provider durable lessons (Claude memory is not enough) |
 | **Sessions** | `sessions/` | Multi-provider overlap: lanes, protocol, live ACTIVE board |
 
@@ -25,7 +25,11 @@ Only `name` + `description` load at discovery (~100 tokens). Description must us
 
 ### Why hooks
 
-Prompts are soft. L0 hooks block high-risk shell patterns (rm -rf /, force-push main, non-local offensive scanners). Grok requires `/hooks-trust` once per project.
+Prompts are soft. L0 hooks block high-risk shell patterns (rm -rf /, force-push main, non-local offensive scanners). Grok requires `/hooks-trust`; Codex requires trusting the project-local hook with `/hooks`.
+
+### Why the workflow runner is local
+
+The runner records phases, time budgets, retries, approvals, artifacts, and an append-only JSONL journal under the gitignored `.agent-runs/` directory. It never imports an LLM SDK or calls a provider API; agents remain interactive clients that execute the recorded phase.
 
 ## Commands
 
@@ -37,6 +41,9 @@ pwsh -File scripts/agents/verify-agents-layout.ps1
 ```bash
 bash scripts/agents/sync-adapters.sh
 bash scripts/agents/verify-agents-layout.sh
+node scripts/agents/workflow-runner.mjs validate
+node scripts/agents/eval-skill-triggers.mjs
+node scripts/agents/workflow-runner.mjs start --workflow feature-loop --objective "..." --provider codex
 ```
 
 ## Edit policy
@@ -55,7 +62,8 @@ bash scripts/agents/verify-agents-layout.sh
 | `red-blue-validate` | Full defensive gate (**Docker e2e only**) |
 | `pass-wargame-round` | Pass challenge round |
 | `docs-from-sot` | Diátaxis user docs |
-| `cut-release` | SemVer release (manual) |
+| `cut-release` | SemVer release prepare/publish (user-invoked only) |
+| `github-actions-ops` | CI/release.yml failures + workflow authoring |
 | `review-changes` | Freeze / security review |
 | `handover-pack` | Next LLM/human brief |
 | `optimize-skill-description` | Trigger description tuning |

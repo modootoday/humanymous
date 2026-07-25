@@ -10,7 +10,23 @@
     "docs-from-sot": ["\\bdi[aá]taxis\\b", "\\bderive\\b.*\\bhow-to\\b.*\\bsot\\b"],
     "review-changes": ["\\breview\\b.*\\buncommitted\\b", "\\breview\\b.*\\bdetection freeze\\b"],
     "handover-pack": ["\\bhandover pack\\b", "\\bnext llm session\\b"],
-    "cut-release": ["\\bcut\\b.*\\bv\\d+\\.\\d+\\.\\d+\\b", "\\brelease\\b.*\\bsot-37\\b"],
+    "cut-release": [
+      "\\bcut\\b.*\\bv\\d+\\.\\d+\\.\\d+\\b",
+      "\\brelease\\b.*\\bsot-37\\b",
+      "\\b(changelog-unreleased|release-notes)\\b",
+      "\\bcut[- ]a[- ]release\\b",
+      "\\bannotated\\b.*\\btag\\b",
+      "\\bsemver\\b.*\\b(tag|release)\\b"
+    ],
+    "github-actions-ops": [
+      "\\brelease\\.yml\\b",
+      "\\bci\\.yml\\b",
+      "\\bactions?\\b.*\\b(red|failed|failing)\\b",
+      "\\bcosign\\b",
+      "\\bghcr\\b",
+      "\\bworkflow permissions\\b",
+      "\\bdetector-vs-bots\\b.*\\b(job|failed|failing)\\b"
+    ],
     "optimize-skill-description": ["\\bskill description\\b", "\\btune\\b.*\\bfires?\\b"],
     "coordinate-sessions": ["\\bclaim\\b.*\\b(?:work )?lane\\b", "\\bsession overlap\\b", "\\bgit-coord\\b", "\\bagents?\\b.*\\bcommit\\b", "\\bco-authored-by\\b"]
   }

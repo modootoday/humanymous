@@ -16,7 +16,7 @@ at once produce: `index.lock`, lost commits, thrashy rebases, or rejected pushes
 | `git branch` create (no checkout) | Prefer yes if others may push |
 | `git checkout` / `git switch` of a shared branch | **Yes** (changes others’ context) |
 | `git stash` / `git stash pop` | **Yes** (mutates worktree + reflog) |
-| `git tag` (version tags) | **Yes** (+ usually `release` lane) |
+| `git tag` (version tags) | **Yes** (+ exclusive `release` lane). Skill `cut-release` + rule `93` — no unsolicited `v*` push; no force-move of published tags |
 | `git reset` / `git commit --amend` / force-push | **Yes** + user approval (see forbidden) |
 
 Hold `git-ops` only for the **duration of the git transaction** (seconds–minutes),

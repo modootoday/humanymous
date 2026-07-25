@@ -45,9 +45,17 @@ for id in "${skills[@]}"; do
   else ok "skill $id (desc ~$len chars)"; fi
 done
 
-for r in 00-safety.md 10-go-conventions.md 20-detection-freeze.md 30-docs-diataxis.md 40-ambiguity-ask.md 50-provider-matrix.md 60-e2e-docker-only.md 70-hard-won-lessons.md 80-truth-debt.md 90-session-overlap.md 91-git-contention.md 92-git-commit-attribution.md; do
+for r in 00-safety.md 10-go-conventions.md 20-detection-freeze.md 30-docs-diataxis.md 40-ambiguity-ask.md 50-provider-matrix.md 60-e2e-docker-only.md 70-hard-won-lessons.md 80-truth-debt.md 90-session-overlap.md 91-git-contention.md 92-git-commit-attribution.md 93-release-and-ci.md; do
   [[ -f ".agents/rules/$r" ]] && ok "rule $r" || fail "missing rule $r"
 done
+if [[ ! -f .agents/skills/cut-release/SKILL.md ]]; then
+  fail "missing skill cut-release"
+elif ! grep -qE '^disable-model-invocation:[[:space:]]*true[[:space:]]*$' .agents/skills/cut-release/SKILL.md; then
+  fail "cut-release must set disable-model-invocation: true"
+else
+  ok "skill cut-release (disable-model-invocation)"
+fi
+[[ -f .agents/skills/github-actions-ops/SKILL.md ]] && ok "skill github-actions-ops" || fail "missing skill github-actions-ops"
 for sf in README.md LANES.md PROTOCOL.md GIT-PROTOCOL.md COMMIT-CONVENTION.md ACTIVE.example.md; do
   [[ -f ".agents/sessions/$sf" ]] && ok "sessions $sf" || fail "missing sessions/$sf"
 done
@@ -67,7 +75,16 @@ for p in blue-architect red-attacker sre-ops compliance-dpo evaluator staff-synt
 done
 
 [[ -f .agents/evals/trigger-queries.json ]] && ok "evals trigger-queries.json" || fail "missing evals"
+[[ -f .agents/evals/trigger-rules.json ]] && ok "evals trigger-rules.json" || fail "missing trigger rules"
+[[ -f .agents/workflows/workflow.schema.json ]] && ok "workflow schema" || fail "missing workflow schema"
+[[ -f .agents/workflows/run.schema.json ]] && ok "run schema" || fail "missing run schema"
 [[ -f scripts/agents/hooks/pre-tool-guard.py ]] && ok "hook pre-tool-guard.py" || fail "missing pre-tool-guard.py"
+[[ -f .codex/hooks.json ]] && ok "Codex hooks" || fail "missing .codex/hooks.json"
+
+if node scripts/agents/workflow-runner.mjs validate >/dev/null; then ok "workflow contracts"
+else fail "workflow contract validation"; fi
+if node scripts/agents/eval-skill-triggers.mjs >/dev/null; then ok "trigger evals (no LLM API)"
+else fail "trigger evals"; fi
 
 lines=$(wc -l < AGENTS.md | tr -d ' ')
 if [[ "$lines" -gt 200 ]]; then fail "AGENTS.md has $lines lines (keep ≤200)"; else ok "AGENTS.md line count $lines"; fi

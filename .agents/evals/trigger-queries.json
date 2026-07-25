@@ -81,6 +81,36 @@
       "split": "train"
     },
     {
+      "query": "Prepare release notes and recommend SemVer with changelog-unreleased",
+      "skill": "cut-release",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Walk through cut-a-release for an annotated tag after CI green",
+      "skill": "cut-release",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "release.yml failed on cosign sign after ghcr push",
+      "skill": "github-actions-ops",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "CI is red on detector-vs-bots job — debug the workflow",
+      "skill": "github-actions-ops",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "edit ci.yml workflow permissions for packages",
+      "skill": "github-actions-ops",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
       "query": "Our skill description is too broad and fires on every PR — tune it",
       "skill": "optimize-skill-description",
       "should_trigger": true,
@@ -145,6 +175,30 @@
       "skill": "cut-release",
       "should_trigger": false,
       "split": "train"
+    },
+    {
+      "query": "session overlap board list and release my docs claim",
+      "skill": "cut-release",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Document how adopters verify cosign on a released image",
+      "skill": "cut-release",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "What is the weather in Seoul?",
+      "skill": "github-actions-ops",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Cut a v0.3.0 release following SoT-37",
+      "skill": "github-actions-ops",
+      "should_trigger": false,
+      "split": "validation"
     },
     {
       "query": "Near miss: document internal SoT file itself, not user docs",

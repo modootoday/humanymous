@@ -46,9 +46,20 @@ foreach ($id in $manifestSkills) {
   else { Ok "skill $id (desc $($desc.Length) chars)" }
 }
 
-foreach ($r in @("00-safety.md", "10-go-conventions.md", "20-detection-freeze.md", "30-docs-diataxis.md", "40-ambiguity-ask.md", "50-provider-matrix.md", "60-e2e-docker-only.md", "70-hard-won-lessons.md", "80-truth-debt.md", "90-session-overlap.md", "91-git-contention.md", "92-git-commit-attribution.md")) {
+foreach ($r in @("00-safety.md", "10-go-conventions.md", "20-detection-freeze.md", "30-docs-diataxis.md", "40-ambiguity-ask.md", "50-provider-matrix.md", "60-e2e-docker-only.md", "70-hard-won-lessons.md", "80-truth-debt.md", "90-session-overlap.md", "91-git-contention.md", "92-git-commit-attribution.md", "93-release-and-ci.md")) {
   if (Test-Path (Join-Path $Root ".agents\rules\$r")) { Ok "rule $r" } else { Fail "missing rule $r" }
 }
+$cutRel = Join-Path $Root ".agents\skills\cut-release\SKILL.md"
+if (-not (Test-Path $cutRel)) { Fail "missing skill cut-release" }
+else {
+  $cutBody = Get-Content -Raw $cutRel
+  if ($cutBody -notmatch '(?m)^disable-model-invocation:\s*true\s*$') {
+    Fail "cut-release must set disable-model-invocation: true"
+  } else { Ok "skill cut-release (disable-model-invocation)" }
+}
+if (-not (Test-Path (Join-Path $Root ".agents\skills\github-actions-ops\SKILL.md"))) {
+  Fail "missing skill github-actions-ops"
+} else { Ok "skill github-actions-ops" }
 foreach ($sf in @("README.md", "LANES.md", "PROTOCOL.md", "GIT-PROTOCOL.md", "COMMIT-CONVENTION.md", "ACTIVE.example.md")) {
   if (Test-Path (Join-Path $Root ".agents\sessions\$sf")) { Ok "sessions $sf" }
   else { Fail "missing sessions/$sf" }
@@ -82,10 +93,24 @@ foreach ($persona in @("blue-architect", "red-attacker", "sre-ops", "compliance-
 if (-not (Test-Path (Join-Path $Root ".agents\evals\trigger-queries.json"))) {
   Fail "missing .agents/evals/trigger-queries.json"
 } else { Ok "evals trigger-queries.json" }
+if (-not (Test-Path (Join-Path $Root ".agents\evals\trigger-rules.json"))) {
+  Fail "missing .agents/evals/trigger-rules.json"
+} else { Ok "evals trigger-rules.json" }
+foreach ($schema in @(".agents\workflows\workflow.schema.json", ".agents\workflows\run.schema.json")) {
+  if (Test-Path (Join-Path $Root $schema)) { Ok $schema } else { Fail "missing $schema" }
+}
 
 if (-not (Test-Path (Join-Path $Root "scripts\agents\hooks\pre-tool-guard.py"))) {
   Fail "missing pre-tool-guard.py"
 } else { Ok "hook pre-tool-guard.py" }
+if (-not (Test-Path (Join-Path $Root ".codex\hooks.json"))) {
+  Fail "missing .codex/hooks.json"
+} else { Ok "Codex hooks" }
+
+& node scripts/agents/workflow-runner.mjs validate | Out-Null
+if ($LASTEXITCODE -eq 0) { Ok "workflow contracts" } else { Fail "workflow contract validation" }
+& node scripts/agents/eval-skill-triggers.mjs | Out-Null
+if ($LASTEXITCODE -eq 0) { Ok "trigger evals (no LLM API)" } else { Fail "trigger evals" }
 
 # Root AGENTS size budget (~150 lines recommended)
 $rootLines = (Get-Content (Join-Path $Root "AGENTS.md")).Count

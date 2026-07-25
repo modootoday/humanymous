@@ -30,6 +30,7 @@ Raise the cost of automation. Apache-2.0 **reference** build: honesty over over-
 | Full verification | skill `red-blue-validate` (**Docker only**) |
 | Multi-perspective panel | `.agents/workflows/design-panel.yaml` + personas |
 | Prior LLM sessions on this machine | skill `survey-provider-history` |
+| SemVer tag / ghcr release / release.yml failure | skill `cut-release` (user-invoked publish) or `github-actions-ops` + rule `93` + `docs/how-to/cut-a-release.md` |
 
 Domain canon: `sots/`, `plan/` (may be gitignored in publish snapshots). Public method: `docs/explanation/how-this-was-built.md`.
 

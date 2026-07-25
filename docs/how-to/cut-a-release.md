@@ -33,14 +33,20 @@ Before `1.0.0` the project is pre-stable: a breaking change may bump the minor r
 
 1. **Land your work on `main`** with Conventional Commit subjects (`feat(gate): …`, `fix(core): …`, `docs: …`). The release-notes quality is only as good as the commit subjects — the first line becomes the release-notes entry.
 
-2. **Tag and push.**
+2. **Confirm CI is green on the exact SHA you will tag** (the `ci` workflow jobs for build/unit tests and the Docker detector-vs-bots gate). The release workflow builds images from the tagged commit; it does **not** re-run those tests for you.
+
+3. **Preview notes** with `make changelog-unreleased` and choose the SemVer bump using the table above.
+
+4. **Tag and push** only when you intend to publish.
    ```bash
    git tag -a v0.2.0 -m "v0.2.0"
    git push origin main
    git push origin v0.2.0
    ```
 
-3. **Watch the release workflow** in the Actions tab. When it is green, the images are on ghcr.io and the GitHub release carries the git-cliff notes. Verify a pulled image runs (see [Deployment & policy operations](deployment-policy-operations.md)).
+5. **Watch the release workflow** in the Actions tab. When it is green, the images are on ghcr.io and the GitHub release carries the git-cliff notes. Verify supply-chain trust with [Verify the image](verify-the-image.md) (digest pin + cosign), then confirm a pulled image runs (see [Deployment & policy operations](deployment-policy-operations.md)).
+
+**If a cut goes wrong after the tag has left this machine:** do **not** force-move or delete-and-recreate the published tag. Fix on `main` and cut the **next** SemVer (fix-forward). Only re-tag a version that never left this machine.
 
 ## How the changelog is generated
 
@@ -61,7 +67,7 @@ Non-Conventional commits and merge commits are filtered out. To preview exactly 
 
 ## Cutting the next release
 
-Releases are cut by tagging the next SemVer version (`vX.Y.Z`) per the bump rules above and pushing it, following the steps above. The release workflow then builds the ghcr images, and `:latest` tracks the newest release. Once a tag has been pushed and pulled by others, force-moving it is disruptive — only ever re-tag a tag that has never left this machine.
+Releases are cut by tagging the next SemVer version (`vX.Y.Z`) per the bump rules above and pushing it, following the steps above. The release workflow then builds the ghcr images. Prefer adopters pin by **digest**; floating tags (`X.Y`, `X`, and `latest` when applied) move on later releases. Once a tag has been pushed and may have been pulled, force-moving it is forbidden — only ever re-tag a tag that has never left this machine; otherwise fix-forward with a new SemVer.
 
 ## Related
 
