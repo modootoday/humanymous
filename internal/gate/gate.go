@@ -230,7 +230,10 @@ func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts Verdic
 		nowFn:           time.Now,
 		startedAt:       time.Now(),
 	}
-	s.integrityOK.Store(true) // a fresh chain verifies; RefreshIntegrityMetrics updates it off the request path
+	// SoT-38 P0-5: empty chain is not a green pass. Default the scrape cache to
+	// false until RefreshIntegrityMetrics runs SelfVerify (or records are sealed).
+	// Storing true here left hmn_gate_audit_integrity_ok=1 on a zero-record node.
+	s.integrityOK.Store(false)
 	// Ceiling-guard #1 defense-in-depth: refuse the attestation floor on a catch-all
 	// (root/empty) prefix at CONSTRUCTION, not only in the CLI routes loader. A programmatic
 	// or alternate Config.Routes population would otherwise bypass cmd/gate/routes.go and

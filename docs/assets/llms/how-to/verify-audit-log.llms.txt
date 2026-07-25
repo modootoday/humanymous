@@ -162,7 +162,7 @@ What contains it: the next checkpoint anchors those records, and the **witness c
 
 A right-to-erasure request against Gate is executed by **cryptographic erasure (crypto-shred)** — destroying a subject's per-subject linkage key so their pseudonyms can no longer be resolved back to identifiers. Crucially, **records are never deleted**. The audit chain, its HMACs, and the Merkle anchors stay intact and verifiable after a shred: the pseudonyms in the affected records simply become unresolvable, while every integrity mechanism on this page still passes.
 
-So an erasure does not — and must not — produce a `seq-gap`, `linkage-break`, or `hash-break`. If you see one of those classes, it is a tampering signal, not the footprint of a lawful erasure. For the erasure procedure, hold window, and the signed erasure certificate, see [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md).
+So an erasure does not — and must not — produce a `seq-gap`, `linkage-break`, or `hash-break`. If you see one of those classes, it is a tampering signal, not the footprint of a lawful erasure. For the erasure procedure, hold window, and the `erasure.completed` audit-record evidence (not a standalone independently-signed certificate blob), see [Right-to-erasure (crypto-shred) operations runbook](../runbooks/erasure-crypto-shred.md).
 
 > **Note:** The data in the log is **pseudonymous, not anonymous** (GDPR Recital 26). Gate exposes no re-identification API; resolving a pseudonym is a **custodial offline** act for whoever holds the keystore + `HMN_UNSEAL` (not dual-control, not audited). Verification never needs to resolve a pseudonym — it checks structure and signatures, not subject identity.
 

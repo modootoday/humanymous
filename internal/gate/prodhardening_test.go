@@ -116,6 +116,21 @@ func TestReadinessProbe(t *testing.T) {
 	}
 }
 
+// SoT-38 P0-5: NewServer must not cache integrity_ok=1 before any SelfVerify /
+// RefreshIntegrityMetrics — a fresh empty chain is not green.
+func TestIntegrityOKDefaultsFalseOnEmptyServer(t *testing.T) {
+	up := htmlUpstream(t)
+	defer up.Close()
+	srv, _ := buildStackWith(t, up.URL, Config{})
+	// Do NOT call RefreshIntegrityMetrics — read the construction-time cache.
+	w := httptest.NewRecorder()
+	srv.adminMetrics(w)
+	body := w.Body.String()
+	if !strings.Contains(body, "hmn_gate_audit_integrity_ok 0") {
+		t.Fatalf("fresh server must report integrity_ok=0 before first refresh\n%s", body)
+	}
+}
+
 // The metrics endpoint emits Prometheus text with the expected gate gauges.
 func TestAdminMetricsExposition(t *testing.T) {
 	up := htmlUpstream(t)
