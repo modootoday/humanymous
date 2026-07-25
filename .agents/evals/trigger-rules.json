@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "description": "Deterministic, no-LLM routing proxy. This gates obvious intent regressions; provider-native model routing remains a separate manual concern.",
+  "rules": {
+    "design-sot": ["\\bnew\\s+sot\\b", "\\bdesign panel\\b", "\\bmulti-perspective\\b"],
+    "adversarial-critique": ["\\badversarial\\b.*\\bcritique\\b", "\\bweakest assumptions?\\b"],
+    "implement-sot-slice": ["\\bimplement\\b.*\\baccepted\\b.*\\bsot\\b", "\\bimplement\\b.*\\bsot slice\\b"],
+    "red-blue-validate": ["\\bfull gate\\b", "\\bdocker bots\\b", "\\bmake e2e\\b", "\\bmake attack\\b", "\\bdetector-vs-bots\\b", "\\be2e-docker\\b"],
+    "pass-wargame-round": ["\\bpass wargame\\b", "\\bwargame round\\b"],
+    "docs-from-sot": ["\\bdi[aá]taxis\\b", "\\bderive\\b.*\\bhow-to\\b.*\\bsot\\b"],
+    "review-changes": ["\\breview\\b.*\\buncommitted\\b", "\\breview\\b.*\\bdetection freeze\\b"],
+    "handover-pack": ["\\bhandover pack\\b", "\\bnext llm session\\b"],
+    "cut-release": ["\\bcut\\b.*\\bv\\d+\\.\\d+\\.\\d+\\b", "\\brelease\\b.*\\bsot-37\\b"],
+    "optimize-skill-description": ["\\bskill description\\b", "\\btune\\b.*\\bfires?\\b"],
+    "coordinate-sessions": ["\\bclaim\\b.*\\b(?:work )?lane\\b", "\\bsession overlap\\b", "\\bgit-coord\\b", "\\bagents?\\b.*\\bcommit\\b", "\\bco-authored-by\\b"]
+  }
+}

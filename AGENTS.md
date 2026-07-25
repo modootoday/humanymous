@@ -57,14 +57,23 @@ Several LLM chats may run on this repo **at once**. Before non-trivial edits:
 1. `pwsh -File scripts/agents/session-board.ps1 list` (or `bash scripts/agents/session-board.sh list`)
 2. **Claim a work lane** — skill `coordinate-sessions` / `.agents/sessions/LANES.md`
 3. Work only under claimed paths
-4. **Git writes are serial** — before `add`/`commit`/`pull`/`push`/`stash`/branch switch:
+4. **Git writes are serial + attributed** — before `add`/`commit`/`pull`/`push`/`stash`/branch switch:
 
    ```powershell
    pwsh -File scripts/agents/git-coord.ps1 preflight
-   pwsh -File scripts/agents/git-coord.ps1 claim -Provider <claude|grok|codex|gemini|human>
-   # git add/commit/push — stage only your paths
+   pwsh -File scripts/agents/git-coord.ps1 claim -Provider <claude|grok|codex|gemini>
+   git add <only-your-paths>
+   pwsh -File scripts/agents/git-coord.ps1 commit -Provider <claude|grok|codex|gemini> `
+     -Subject "feat(scope): summary" -Body "optional why…"
+   # injects vendor GitHub-linked Co-Authored-By (avatars):
+   #   claude → Claude <noreply@anthropic.com>
+   #   grok   → Grok <grok@x.ai>  (community de-facto; avatar may be absent)
+   #   codex  → codex <codex@openai.com>
    pwsh -File scripts/agents/git-coord.ps1 release -Note "…"
    ```
+
+   Commit message canon: `.agents/sessions/COMMIT-CONVENTION.md` (rule `92`).
+   Emails must be GitHub-linked so co-author **profile photos** resolve.
 
 5. Release the **work lane** when done or switching providers; incomplete → board handover + `handover-pack`
 

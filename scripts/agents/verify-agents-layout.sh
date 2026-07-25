@@ -45,14 +45,16 @@ for id in "${skills[@]}"; do
   else ok "skill $id (desc ~$len chars)"; fi
 done
 
-for r in 00-safety.md 10-go-conventions.md 20-detection-freeze.md 30-docs-diataxis.md 40-ambiguity-ask.md 50-provider-matrix.md 60-e2e-docker-only.md 70-hard-won-lessons.md 80-truth-debt.md 90-session-overlap.md 91-git-contention.md; do
+for r in 00-safety.md 10-go-conventions.md 20-detection-freeze.md 30-docs-diataxis.md 40-ambiguity-ask.md 50-provider-matrix.md 60-e2e-docker-only.md 70-hard-won-lessons.md 80-truth-debt.md 90-session-overlap.md 91-git-contention.md 92-git-commit-attribution.md; do
   [[ -f ".agents/rules/$r" ]] && ok "rule $r" || fail "missing rule $r"
 done
-for sf in README.md LANES.md PROTOCOL.md GIT-PROTOCOL.md ACTIVE.example.md; do
+for sf in README.md LANES.md PROTOCOL.md GIT-PROTOCOL.md COMMIT-CONVENTION.md ACTIVE.example.md; do
   [[ -f ".agents/sessions/$sf" ]] && ok "sessions $sf" || fail "missing sessions/$sf"
 done
 [[ -f scripts/agents/session-board.ps1 ]] && ok "session-board.ps1" || fail "missing session-board.ps1"
 [[ -f scripts/agents/git-coord.ps1 ]] && ok "git-coord.ps1" || fail "missing git-coord.ps1"
+[[ -f scripts/agents/git-commit.sh ]] && ok "git-commit.sh" || fail "missing git-commit.sh"
+[[ -f scripts/agents/check-commit-attribution.ps1 ]] && ok "check-commit-attribution.ps1" || fail "missing check-commit-attribution.ps1"
 [[ -f .agents/skills/coordinate-sessions/SKILL.md ]] && ok "skill coordinate-sessions" || fail "missing coordinate-sessions"
 [[ -f scripts/e2e-docker.sh ]] && ok "scripts/e2e-docker.sh" || fail "missing scripts/e2e-docker.sh"
 for lesson in HARD-WON.md PROVIDER-HISTORY.md; do

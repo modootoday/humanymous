@@ -8,10 +8,16 @@ description: >
 phases:
   - id: brief
     action: Fix problem statement, constraints, and non-goals in 10–15 lines.
+    timeout_minutes: 15
+    max_retries: 1
+    approval: none
     exit: Shared brief all personas use
 
   - id: panel
     parallel: true
+    timeout_minutes: 45
+    max_retries: 1
+    approval: none
     personas:
       - blue-architect
       - red-attacker
@@ -27,8 +33,14 @@ phases:
   - id: synthesize
     persona: staff-synthesizer
     skill: design-sot
+    timeout_minutes: 30
+    max_retries: 1
+    approval: required
     exit: Single SoT or plan draft; contradictions resolved or marked residual
 
   - id: adversarial
     skill: adversarial-critique
+    timeout_minutes: 30
+    max_retries: 1
+    approval: none
     exit: Weakest assumptions listed; must-fix items reflected in draft before implement

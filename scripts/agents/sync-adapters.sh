@@ -69,6 +69,12 @@ if [[ -f "$ROOT/.agents/hooks/grok-project-safety.json" ]]; then
   echo "Synced Grok hooks -> .grok/hooks/project-safety.json"
 fi
 
+if [[ -f "$ROOT/.agents/hooks/codex-hooks.json" ]]; then
+  mkdir -p "$ROOT/.codex"
+  cp "$ROOT/.agents/hooks/codex-hooks.json" "$ROOT/.codex/hooks.json"
+  echo "Synced Codex hooks -> .codex/hooks.json"
+fi
+
 if [[ -d "$ROOT/.agents/lessons" ]]; then
   write_marker "$ROOT/.claude/lessons" lessons
   copy_tree "$ROOT/.agents/lessons" "$ROOT/.claude/lessons"

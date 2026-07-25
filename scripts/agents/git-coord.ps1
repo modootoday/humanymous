@@ -6,11 +6,12 @@
 .EXAMPLE
   pwsh -File scripts/agents/git-coord.ps1 preflight
   pwsh -File scripts/agents/git-coord.ps1 claim -Provider grok -Session "abc"
+  pwsh -File scripts/agents/git-coord.ps1 commit -Provider grok -Subject "feat(agents): …" -Body "…"
   pwsh -File scripts/agents/git-coord.ps1 release -Note "pushed"
 #>
 param(
   [Parameter(Position = 0)]
-  [ValidateSet("preflight", "claim", "release", "status")]
+  [ValidateSet("preflight", "claim", "release", "status", "commit")]
   [string]$Action = "preflight",
 
   [ValidateSet("claude", "grok", "codex", "gemini", "human", "")]
@@ -18,6 +19,9 @@ param(
   [string]$Session = "",
   [string]$Note = "",
   [string]$Goal = "git write transaction",
+  [string]$Subject = "",
+  [string]$Body = "",
+  [string]$MessageFile = "",
   [switch]$Force
 )
 
@@ -106,6 +110,8 @@ function Action-Preflight {
     Write-Host "NOTE no upstream configured for current branch"
   }
 
+  Write-Host "NOTE agent commits MUST use: git-coord commit -Provider <claude|grok|codex|gemini> -Subject 'type: …'"
+  Write-Host "     (injects Co-Authored-By per .agents/sessions/COMMIT-CONVENTION.md)"
   Write-Host "=== preflight done (claim git-ops before add/commit/push) ==="
 }
 
@@ -148,9 +154,70 @@ function Action-Status {
   git status -sb
 }
 
+function Get-ProviderIdentity([string]$P) {
+  # Emails must be GitHub-linked for avatars — see .agents/sessions/COMMIT-CONVENTION.md
+  switch ($P) {
+    "claude" { return @{ Display = "Claude"; Email = "noreply@anthropic.com" } }
+    "grok"   { return @{ Display = "Grok"; Email = "grok@x.ai" } }
+    "codex"  { return @{ Display = "codex"; Email = "codex@openai.com" } }
+    "gemini" { return @{ Display = "Gemini CLI"; Email = "gemini-cli@users.noreply.github.com" } }
+    default { throw "commit requires -Provider claude|grok|codex|gemini (not '$P')" }
+  }
+}
+
+function Action-Commit {
+  $c = Get-GitOpsClaim
+  if (-not $c -or (Test-GitOpsStale $c)) {
+    throw "git-ops must be actively claimed before commit (git-coord claim -Provider …)"
+  }
+  if ($Provider -and $c.provider -ne $Provider -and -not $Force) {
+    Write-Host "WARN claim provider=$($c.provider) but -Provider $Provider (use -Force to override)" -ForegroundColor Yellow
+  }
+  $useProvider = if ($Provider -and $Provider -ne "human" -and $Provider -ne "") { $Provider } else { $c.provider }
+  $id = Get-ProviderIdentity $useProvider
+
+  $subjectText = $Subject
+  $bodyText = $Body
+  if ($MessageFile) {
+    if (-not (Test-Path $MessageFile)) { throw "MessageFile not found: $MessageFile" }
+    $lines = Get-Content $MessageFile
+    if ($lines.Count -lt 1) { throw "MessageFile empty" }
+    $subjectText = $lines[0]
+    if ($lines.Count -gt 2) {
+      $bodyText = ($lines[2..($lines.Count - 1)] -join "`n").Trim()
+    } elseif ($lines.Count -eq 2 -and $lines[1].Trim() -ne "") {
+      $bodyText = $lines[1].Trim()
+    }
+  }
+  if (-not $subjectText) { throw "-Subject is required (or -MessageFile)" }
+  if ($subjectText -notmatch '^(feat|fix|docs|test|ci|build|refactor|perf|harden|security|chore)(\(.+\))?!?: ') {
+    throw "Subject must be Conventional Commits, e.g. feat(scope): summary"
+  }
+
+  $trailer = "Co-Authored-By: $($id.Display) <$($id.Email)>"
+  $xprov = "X-Agent-Provider: $useProvider"
+  $msg = $subjectText.TrimEnd() + "`n"
+  if ($bodyText -and $bodyText.Trim().Length -gt 0) {
+    $msg += "`n" + $bodyText.Trim() + "`n"
+  }
+  $msg += "`n" + $trailer + "`n" + $xprov + "`n"
+
+  $tmp = Join-Path $env:TEMP ("hmn-commit-" + [guid]::NewGuid().ToString("N") + ".txt")
+  Set-Content -Path $tmp -Value $msg -Encoding utf8
+  try {
+    git commit -F $tmp
+    if ($LASTEXITCODE -ne 0) { throw "git commit failed ($LASTEXITCODE)" }
+    $sha = git rev-parse --short HEAD
+    Write-Host "OK committed $sha with $trailer"
+  } finally {
+    Remove-Item $tmp -Force -ErrorAction SilentlyContinue
+  }
+}
+
 switch ($Action) {
   "preflight" { Action-Preflight }
   "claim" { Action-Claim }
   "release" { Action-Release }
   "status" { Action-Status }
+  "commit" { Action-Commit }
 }

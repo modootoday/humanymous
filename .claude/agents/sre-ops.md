@@ -23,4 +23,3 @@ Deploy configs, ops docs, Gate admin APIs — no silent production policy change
 - Shipping unauthenticated admin on the public listener
 - Unbounded control-plane floods without rate limits
 - Logging raw PII (IP/UA) when pseudonymized paths exist
-

@@ -37,21 +37,28 @@ this repository.
 - If you need another lane: claim it only if free, or extend Paths after checking mutex rules
   (`detection-core` ↔ `gate-edge`).
 
-### Git writes (always serial)
+### Git writes (always serial + attributed)
 
 Even if work lanes differ, only one agent may own git mutations:
 
 ```powershell
 pwsh -File scripts/agents/git-coord.ps1 preflight
 pwsh -File scripts/agents/git-coord.ps1 claim -Provider <provider> -Session "<id>"
-# git add (only your paths) && git commit && optional push
+git add <only-your-paths>
+pwsh -File scripts/agents/git-coord.ps1 commit -Provider <provider> `
+  -Subject "feat(scope): summary" -Body "why…"
+# or: bash scripts/agents/git-commit.sh <provider> "feat(scope): summary" "body"
 pwsh -File scripts/agents/git-coord.ps1 release -Note "commit <sha>"
 ```
 
+- **Required trailer:** vendor GitHub-linked `Co-Authored-By` (avatar-capable), e.g.
+  `Claude <noreply@anthropic.com>`, `Grok Build <304785771+grokkybara[bot]@users.noreply.github.com>`,
+  `codex <codex@openai.com>` — full registry in `COMMIT-CONVENTION.md`.
+- Do not use bare `git commit -m` without that trailer; do not invent unowned emails.
 - Read-only `git status`/`diff`/`log` — no claim.
-- If preflight reports `index.lock` or active `git-ops` → wait; do not force concurrent commit.
+- If preflight reports `index.lock` or active `git-ops` → wait.
 - No force-push to shared branches; no amend of pushed commits without user OK.
-- Full rules: `.agents/sessions/GIT-PROTOCOL.md`, `.agents/rules/91-git-contention.md`.
+- Full rules: `GIT-PROTOCOL.md`, `COMMIT-CONVENTION.md`, rules `91` + `92`.
 
 ### Session end / provider switch
 
@@ -78,6 +85,8 @@ pwsh -File scripts/agents/git-coord.ps1 release -Note "commit <sha>"
 
 - `.agents/sessions/PROTOCOL.md`
 - `.agents/sessions/GIT-PROTOCOL.md`
+- `.agents/sessions/COMMIT-CONVENTION.md`
 - `.agents/sessions/LANES.md`
 - `.agents/rules/90-session-overlap.md`
 - `.agents/rules/91-git-contention.md`
+- `.agents/rules/92-git-commit-attribution.md`

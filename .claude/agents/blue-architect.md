@@ -23,4 +23,3 @@ Read/write code and specs in scope; prefer pure scoring functions and registry p
 - Binary bot/human claims without score/verdict bands
 - Forking scoring logic into Gate
 - Silent fail-open on strict/mutating routes without documenting accept-risk
-

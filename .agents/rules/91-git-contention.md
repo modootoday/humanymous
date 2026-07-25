@@ -12,7 +12,10 @@ File lanes are not enough. **Git index / HEAD / remote updates are a global mute
 5. **Never** force-push shared branches or amend already-pushed commits without user OK.
 6. If `.git/index.lock` exists, do not start another git write — wait or diagnose.
 7. On push rejection: stop, re-fetch under `git-ops`, no force.
+8. **Attribution:** every agent commit MUST carry `Co-Authored-By` for the provider
+   (rule `92-git-commit-attribution.md`, canon `COMMIT-CONVENTION.md`). Prefer
+   `git-coord commit -Provider …`.
 
 Protocol: `.agents/sessions/GIT-PROTOCOL.md`  
-Tooling: `scripts/agents/git-coord.ps1` / `git-coord.sh`  
+Tooling: `scripts/agents/git-coord.ps1` / `git-coord.sh` / `git-commit.sh`  
 Skill: `coordinate-sessions` (git section).

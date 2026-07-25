@@ -46,10 +46,10 @@ foreach ($id in $manifestSkills) {
   else { Ok "skill $id (desc $($desc.Length) chars)" }
 }
 
-foreach ($r in @("00-safety.md", "10-go-conventions.md", "20-detection-freeze.md", "30-docs-diataxis.md", "40-ambiguity-ask.md", "50-provider-matrix.md", "60-e2e-docker-only.md", "70-hard-won-lessons.md", "80-truth-debt.md", "90-session-overlap.md", "91-git-contention.md")) {
+foreach ($r in @("00-safety.md", "10-go-conventions.md", "20-detection-freeze.md", "30-docs-diataxis.md", "40-ambiguity-ask.md", "50-provider-matrix.md", "60-e2e-docker-only.md", "70-hard-won-lessons.md", "80-truth-debt.md", "90-session-overlap.md", "91-git-contention.md", "92-git-commit-attribution.md")) {
   if (Test-Path (Join-Path $Root ".agents\rules\$r")) { Ok "rule $r" } else { Fail "missing rule $r" }
 }
-foreach ($sf in @("README.md", "LANES.md", "PROTOCOL.md", "GIT-PROTOCOL.md", "ACTIVE.example.md")) {
+foreach ($sf in @("README.md", "LANES.md", "PROTOCOL.md", "GIT-PROTOCOL.md", "COMMIT-CONVENTION.md", "ACTIVE.example.md")) {
   if (Test-Path (Join-Path $Root ".agents\sessions\$sf")) { Ok "sessions $sf" }
   else { Fail "missing sessions/$sf" }
 }
@@ -57,6 +57,10 @@ if (-not (Test-Path (Join-Path $Root "scripts\agents\session-board.ps1"))) { Fai
 else { Ok "session-board.ps1" }
 if (-not (Test-Path (Join-Path $Root "scripts\agents\git-coord.ps1"))) { Fail "missing git-coord.ps1" }
 else { Ok "git-coord.ps1" }
+if (-not (Test-Path (Join-Path $Root "scripts\agents\git-commit.sh"))) { Fail "missing git-commit.sh" }
+else { Ok "git-commit.sh" }
+if (-not (Test-Path (Join-Path $Root "scripts\agents\check-commit-attribution.ps1"))) { Fail "missing check-commit-attribution.ps1" }
+else { Ok "check-commit-attribution.ps1" }
 if (-not (Test-Path (Join-Path $Root ".agents\skills\coordinate-sessions\SKILL.md"))) {
   Fail "missing skill coordinate-sessions"
 } else { Ok "skill coordinate-sessions" }

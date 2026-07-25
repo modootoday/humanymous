@@ -40,8 +40,11 @@ not for the whole coding session. Typical pattern:
 2. `git status -sb` — understand *all* dirty files (other sessions may have written).
 3. Stage **only** paths belonging to your work (or explicitly agreed multi-lane batch).
 4. Do not stage secrets (`.env`, keys, provider OAuth, MCP tokens).
-5. Message: Conventional Commits style used by this repo (`feat:`, `fix:`, `docs:`, …).
-6. Prefer **one logical commit per lane batch**; avoid mega-commits that mix `docs` +
+5. Message: Conventional Commits (`feat:`, `fix:`, `docs:`, …) **plus mandatory**
+   `Co-Authored-By` provider trailer — see **`COMMIT-CONVENTION.md`**.
+6. Create the commit via `git-coord commit -Provider <…> -Subject "…"` (not bare
+   `git commit -m` without trailers).
+7. Prefer **one logical commit per lane batch**; avoid mega-commits that mix `docs` +
    detection freeze breaks.
 
 ## Pre-push checklist

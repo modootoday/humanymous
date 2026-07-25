@@ -8,46 +8,76 @@ description: >
 phases:
   - id: coordinate
     skill: coordinate-sessions
+    timeout_minutes: 10
+    max_retries: 0
+    approval: none
     exit: work lane claimed; no conflict with overlapping provider sessions
 
   - id: spec
     skill: design-sot
+    timeout_minutes: 45
+    max_retries: 1
+    approval: required
     personas: [blue-architect, red-attacker, sre-ops, compliance-dpo, evaluator]
     synthesizer: staff-synthesizer
     exit: SoT (or plan delta) accepted with non-coverage and vocabulary fixed
 
   - id: critique
     skill: adversarial-critique
+    timeout_minutes: 30
+    max_retries: 1
+    approval: none
     exit: needs-work findings folded into SoT, or explicit residual risks listed
 
   - id: implement
     skill: implement-sot-slice
+    timeout_minutes: 120
+    max_retries: 1
+    approval: none
     exit: code + unit tests for the slice; detection freeze honored unless in scope
 
   - id: verify
     skill: red-blue-validate
+    timeout_minutes: 90
+    max_retries: 1
+    approval: none
     exit: full gate green for the scope (unit + Docker attack when network plane touched)
 
   - id: docs
     skill: docs-from-sot
+    timeout_minutes: 30
+    max_retries: 1
+    approval: none
     when: user-facing surface or operator behavior changed
     exit: docs page + derivation note updated if applicable
 
   - id: git-serial
     skill: coordinate-sessions
+    timeout_minutes: 10
+    max_retries: 0
+    approval: required
     when: user requested commit/push or shipping the change
     exit: git-ops claimed → commit → released; no concurrent index writers
 
   - id: handover
     skill: handover-pack
+    timeout_minutes: 20
+    max_retries: 0
+    approval: none
     when: multi-session or incomplete residual work
     exit: self-contained next-agent brief written; board handover updated
 
   - id: release
     skill: coordinate-sessions
+    timeout_minutes: 10
+    max_retries: 0
+    approval: none
     exit: work lane released; git-ops not left held
 
   - id: skill-hygiene
     skill: optimize-skill-description
+    timeout_minutes: 20
+    max_retries: 1
+    approval: none
     when: new/changed project skills mis-trigger
     exit: descriptions pass eval queries in .agents/evals/

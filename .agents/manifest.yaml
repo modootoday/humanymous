@@ -48,10 +48,12 @@ rules:
   - 80-truth-debt.md
   - 90-session-overlap.md
   - 91-git-contention.md
+  - 92-git-commit-attribution.md
 
 sessions:
   protocol: .agents/sessions/PROTOCOL.md
   git_protocol: .agents/sessions/GIT-PROTOCOL.md
+  commit_convention: .agents/sessions/COMMIT-CONVENTION.md
   lanes: .agents/sessions/LANES.md
   board: .agents/sessions/ACTIVE.md  # gitignored live state
 

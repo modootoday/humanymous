@@ -25,6 +25,9 @@
 .agents/sessions/ACTIVE.md
 .agents/sessions/claims/
 
+# Local workflow run state and append-only journals (never commit).
+.agent-runs/
+
 
 # build outputs
 /bin/

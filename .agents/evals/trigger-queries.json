@@ -105,6 +105,12 @@
       "split": "train"
     },
     {
+      "query": "force Co-Authored-By trailer for Grok Build on every commit",
+      "skill": "coordinate-sessions",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
       "query": "Fix a typo in README.md only",
       "skill": "design-sot",
       "should_trigger": false,

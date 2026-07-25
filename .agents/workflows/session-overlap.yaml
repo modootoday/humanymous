@@ -8,6 +8,9 @@ description: >
 phases:
   - id: discover
     skill: coordinate-sessions
+    timeout_minutes: 10
+    max_retries: 0
+    approval: none
     actions:
       - session-board list
       - git status
@@ -16,10 +19,16 @@ phases:
 
   - id: claim
     skill: coordinate-sessions
+    timeout_minutes: 10
+    max_retries: 0
+    approval: none
     exit: one primary lane claimed with path globs
 
   - id: work
     skill: null  # primary task skill (implement-sot-slice, docs-from-sot, …)
+    timeout_minutes: 120
+    max_retries: 1
+    approval: none
     constraints:
       - paths ⊆ claim
       - detection freeze / Docker e2e rules still apply
@@ -27,11 +36,17 @@ phases:
 
   - id: verify
     skill: red-blue-validate  # when e2e in scope; else go test
+    timeout_minutes: 90
+    max_retries: 1
+    approval: none
     when: detection, gate, catalog, or e2e-infra touched
     exit: verification evidence recorded
 
   - id: git-serial
     skill: coordinate-sessions
+    timeout_minutes: 10
+    max_retries: 0
+    approval: required
     actions:
       - git-coord preflight
       - git-ops claim
@@ -41,5 +56,8 @@ phases:
 
   - id: release
     skill: coordinate-sessions
+    timeout_minutes: 10
+    max_retries: 0
+    approval: none
     optional_skill: handover-pack
     exit: work lane free; handover on board if incomplete

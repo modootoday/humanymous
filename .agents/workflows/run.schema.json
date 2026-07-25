@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://humanymous.dev/schemas/agent-workflow-run.json",
+  "title": "Local workflow run journal state",
+  "type": "object",
+  "required": ["schemaVersion", "runId", "workflow", "objective", "provider", "costPolicy", "status", "phases"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runId": { "type": "string" },
+    "costPolicy": { "const": "no-llm-api" },
+    "status": { "enum": ["running", "awaiting_approval", "completed", "failed", "cancelled"] },
+    "phaseIndex": { "type": "integer", "minimum": 0 },
+    "artifacts": { "type": "array", "items": { "type": "string" } },
+    "evidence": { "type": "array", "items": { "type": "string" } }
+  }
+}
