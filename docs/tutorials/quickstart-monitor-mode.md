@@ -1,5 +1,5 @@
 ---
-description: "Stand up humanymous Gate in front of a local app in global monitor mode in 30 minutes: Gate scores and logs every request across layers L1–L7 but enforces nothing."
+description: "Stand up humanymous Gate in front of a local app in global monitor mode in 30 minutes: Gate scores its available evidence and logs decisions without enforcement."
 keywords: ["monitor mode quickstart","humanymous Gate","reverse-proxy bot detection","open source bot detection","self-hosted DataDome alternative","detection bundle injection","tamper-evident audit log","ALLOW CHALLENGE DENY verdict","Go reverse proxy","observe before enforce"]
 ---
 
@@ -7,7 +7,7 @@ keywords: ["monitor mode quickstart","humanymous Gate","reverse-proxy bot detect
 
 **Tutorial** (learning-oriented) · **Audience:** integrator or evaluator, first run.
 
-Welcome. In the next 30 minutes you will stand up **humanymous Gate** — the reverse-proxy enforcement layer — in front of a throwaway app on your own machine, running in **global monitor mode**. Monitor mode is where every deployment should start: Gate scores and logs every request across layers L1–L7, but it enforces *nothing*. No visitor is challenged, no visitor is blocked, and your origin app behaves exactly as it did before. You get to watch the detection work with zero risk to real traffic.
+Welcome. In the next 30 minutes you will stand up **humanymous Gate** in front of a throwaway app on your own machine, running in **global monitor mode**. Gate scores the evidence its current collector supplies and logs the resulting decisions, but it enforces nothing. Core's richer seven-stage measurements are a separate surface and should not be used as Gate results.
 
 That monitor-first shape is deliberate. It is how the product is meant to be adopted: observe first, build confidence from the audit trail, and only then decide where to turn enforcement on. This guide follows a single path that is designed to succeed on the first try.
 
@@ -65,7 +65,7 @@ Leave this running and open a new shell for the next steps.
 
 ## Step 2 — Start Gate in global monitor mode
 
-There are two ways to run Gate — pick one. **Option A** pulls the published container image (no build, no Go toolchain). **Option B** builds the binary from the source tree. Either way the `-monitor` flag is the important one: it puts the whole fleet in **global monitor mode**, which downgrades every route to monitor, so Gate scores and logs but enforces nothing, everywhere. Once Gate is up, the rest of the tutorial (Steps 3–4) is identical.
+There are two ways to run Gate. **Option A** pulls the published container image. **Option B** builds the binary from source. In either case, `-monitor` puts every route on that process into monitor mode. A multi-node deployment must set and verify the flag on each node.
 
 ### Option A — Docker (published image, no build)
 
@@ -120,7 +120,7 @@ A few things to notice in those startup lines:
 
 - `(monitor=true)` confirms enforcement is off across the board. Every verdict is still computed and written to the audit log — it just never changes what the visitor receives.
 - The **admin console** is on a *separate* listener (`:8445`), cross-origin to the public edge. This is by design: the admin plane is not reachable from the public edge.
-- The `dev tokens` line prints four development admin tokens, one per role (**Auditor**, **Operator**, **Approver**, **DPO**). These are generated fresh each boot unless you set `HMN_ADMIN_TOKENS`. Keep this output visible — you may want the operator token shortly.
+- The `dev tokens` line prints four development admin tokens, one per role (**Auditor**, **Operator**, **Approver**, **data protection officer**). These are generated fresh each boot unless you set `HMN_ADMIN_TOKENS`. Keep this output visible — you may want the operator token shortly.
 
 Leave Gate running.
 
@@ -164,7 +164,7 @@ https://localhost:8445/__hmn/admin/console
 
 You will get the same self-signed certificate warning — accept it. Because you started Gate with `HMN_ALLOW_DEV_TOKENS=1`, the console is injected with the **operator** token, so it can read and request without you pasting anything.
 
-Go to the **Overview** view ("live edge decisions"). As you reload `https://localhost:8444` in your other browser tab, watch a verdict flow in for each request. Every request Gate handled — including your own page loads — was scored across layers L1–L7 and written to the tamper-evident audit log.
+Go to the **Overview** view ("live edge decisions"). As you reload `https://localhost:8444` in your other browser tab, watch Gate's verdicts appear. The audit log records the decisions produced from Gate's available evidence.
 
 Because you are in monitor mode, note what did **not** happen:
 
@@ -179,7 +179,7 @@ The verdict on the stream is a *decision that was recorded, not enforced*. That 
 In about half an hour you have:
 
 - Stood up an origin, started Gate (from the published image or your own build), and placed it at the edge in front of your app.
-- Run the whole fleet in global monitor mode with enforcement off.
+- Run this Gate process in global monitor mode with enforcement off.
 - Confirmed your app's HTML came back intact, with the detection bundle injected.
 - Watched real verdicts appear on the Overview view — scored and logged, enforced nowhere.
 

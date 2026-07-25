@@ -34,14 +34,14 @@ Gate rewrites the upstream request in `internal/gate/gate.go` (the `Rewrite` hoo
 | **STRIPPED** | `X-Real-Ip` | Removed. Use `X-Forwarded-For` for the real client IP. |
 | **STRIPPED** | `Forwarded` | Removed (RFC 7239 form; not re-emitted). |
 | **STRIPPED** | `Cf-Connecting-Ip` | Removed — a client cannot impersonate a CDN-forwarded source. |
-| **STRIPPED** | `X-Hmny-Origin-Auth` | Any **inbound** copy is stripped before Gate sets its own, so a client cannot forge the cloaking token; its presence inbound is itself an attack signal (HR-27b). |
+| **STRIPPED** | `X-Hmny-Origin-Auth` | Any **inbound** copy is stripped before Gate sets its own, so a client cannot forge the cloaking token; its presence inbound is itself an attack signal (trusted-header forgery protection). |
 | **STRIPPED** | `X-Hmn-Verdict` | Gate's internal verdict header — stripped inbound and never emitted upstream. |
 
 The strip list is the single `internalHeaders` slice in `internal/gate/guard.go`; the additions and re-derivation are the `Rewrite` hook in `internal/gate/gate.go`. Everything else the client sent (path, method, cookies, `User-Agent`, `Content-Type`, request body, and so on) is forwarded unchanged.
 
 ## Origin-cloaking (`X-Hmny-Origin-Auth`) specification
 
-The origin-cloaking token lets your origin reject any request that did **not** come through Gate (a direct hit that bypasses detection), returning `421 Misdirected Request` (hard rule HR-24). The construction is public and importable at `github.com/modootoday/humanymous/pkg/origincloak` — Gate's own enforcement path calls the same package, so the two cannot drift.
+The origin-cloaking token lets your origin reject any request that did **not** come through Gate (a direct hit that bypasses detection), returning `421 Misdirected Request` (enforcement rule direct-origin bypass protection). The construction is public and importable at `github.com/modootoday/humanymous/pkg/origincloak` — Gate's own enforcement path calls the same package, so the two cannot drift.
 
 **Construction:**
 
@@ -124,6 +124,6 @@ A worked, runnable validator ships at `test/gate/e2e.mjs` — the `validOriginAu
 ## Related pages
 
 - [Cloak the origin so direct hits get a 421](../how-to/deployment-policy-operations.md#recipe-cloak-the-origin-so-direct-hits-get-a-421) — the deployment recipe and `curl` verification.
-- [Hard rules, verdicts & signal-ID reference](hard-rules-verdicts.md) — HR-24 (direct-origin bypass) and HR-27b (inbound trust-header spoof).
+- [enforcement rules, verdicts & signal reference](hard-rules-verdicts.md) — direct-origin bypass protection (direct-origin bypass) and trusted-header forgery protection (inbound trust-header spoof).
 - [CLI, config & per-route policy reference](cli-config-policy.md) — the `-origin-key` flag and every other flag.
 - [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — where the verdict is decided before the origin is contacted.

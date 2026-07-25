@@ -8,9 +8,9 @@ keywords: ["humanymous Gate troubleshooting","HTTP 421 origin bypass","self-sign
 
 **Diátaxis quadrant:** How-to (FAQ). **Audience:** integrators standing up humanymous Gate for the first time and working through the errors that show up mid-integration.
 
-This page is a symptom → cause → fix reference for the problems you are most likely to hit while wiring humanymous Gate ("Gate" after first mention) in front of your origin. Gate is the reverse-proxy enforcement layer: it terminates TLS, streams the detection bundle into your HTML, scores layers L1–L7 inline, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes every decision to a tamper-evident audit log.
+This page is a symptom → cause → fix reference for the problems you are most likely to hit while wiring humanymous Gate ("Gate" after first mention) in front of your origin. Gate scores the evidence available to its current collector, enforces ALLOW, CHALLENGE, or DENY at the edge, and writes decisions to a tamper-evident audit log. Core's complete seven-stage measurement path is a separate surface.
 
-Everything below is written against the reference implementation. Some behaviors you might expect from a production install (real certificates, shared fleet state, and more) are intentionally not in the reference — those are called out as prod-delta. For the full boundary, see [Production vs reference](../reference/production-vs-reference.md).
+Everything below is written against the reference implementation. Some behaviors you might expect from a production install (real certificates, shared fleet state, and more) are intentionally not in the reference — those are called out as production responsibility. For the full boundary, see [Production vs reference](../reference/production-vs-reference.md).
 
 For flags, environment variables, presets, and defaults referenced throughout, see [CLI, config & policy reference](../reference/cli-config-policy.md).
 
@@ -30,7 +30,7 @@ curl -k https://localhost:8444/
 
 For a browser, proceed through the warning (or trust the dev certificate locally). Do not treat the warning as a Gate fault — it is the expected state of the in-memory dev certificate.
 
-> **Note:** Real certificates (ACME / a managed CA) and a real KMS/HSM for key material are prod-delta — the reference does not ship them. Plan certificate issuance as part of your production deployment; see [Production vs reference](../reference/production-vs-reference.md).
+> **Note:** Real certificates (ACME / a managed CA) and a real KMS/HSM for key material are production responsibility — the reference does not ship them. Plan certificate issuance as part of your production deployment; see [Production vs reference](../reference/production-vs-reference.md).
 
 ---
 
@@ -38,7 +38,7 @@ For a browser, proceed through the warning (or trust the dev certificate locally
 
 **Symptom.** Some requests to your origin return `421`.
 
-**Cause.** A `421` is hard rule HR-24: a request reached the origin directly, bypassing Gate. Once you set `-origin-key`, Gate signs traffic it forwards with the `X-Hmny-Origin-Auth` header (origin cloaking), and the origin validates that header. A request that arrives without a valid `X-Hmny-Origin-Auth` — that is, one that did not pass through the edge — is rejected with `421`.
+**Cause.** A `421` is enforcement rule direct-origin bypass protection: a request reached the origin directly, bypassing Gate. Once you set `-origin-key`, Gate signs traffic it forwards with the `X-Hmny-Origin-Auth` header (origin cloaking), and the origin validates that header. A request that arrives without a valid `X-Hmny-Origin-Auth` — that is, one that did not pass through the edge — is rejected with `421`.
 
 **Fix.** Route all client traffic through the Gate edge listener (default `:8444`) rather than letting clients reach the origin (default `:9000`) directly. Confirm:
 
@@ -57,7 +57,7 @@ The `-origin-key` value is separate from the sealed keystore; see [Key managemen
 
 **Fix.** Confirm the response you expect injection on is served as HTML (an HTML `Content-Type`). Static assets, JSON APIs, and other non-HTML responses are not injected by design. If a page that should be HTML is not getting the bundle, verify the origin is returning it as an HTML response rather than, for example, a downloadable or opaque body.
 
-> **Note:** A page that is served the bundle but never sends a beacon is an **ops / CSP** symptom, not a hard-rule CHALLENGE — **HR-25 is retired and not shipped**. If you are testing and see weak detection, confirm the control-plane script is actually loading and posting to `/__hmn/collect`, and check the browser console for CSP blocks first.
+> **Note:** A page that is served the bundle but never sends a beacon is an **ops / CSP** symptom, not an enforcement-rule CHALLENGE — **the retired beacon-absence identifier is retired and not shipped**. If you are testing and see weak detection, confirm the control-plane script is actually loading and posting to `/__hmn/collect`, and check the browser console for CSP blocks first.
 
 For how the bundle, the beacon, and the `/__hmn/*` control plane fit together, see [The control plane and the detection bundle](../explanation/control-plane-and-bundle.md).
 
@@ -73,15 +73,15 @@ If you see the `<!--hmn-injected-->` marker but no bundle behavior, the page was
 
 ## Legitimate users are getting CHALLENGE'd
 
-**Symptom.** Real people hit the proof-of-work (PoW) challenge interstitial when you did not expect them to.
+**Symptom.** Real people hit the proof-of-work challenge interstitial when you did not expect them to.
 
-**Cause.** When Gate cannot form a verdict (Unknown), it **fails closed** on strict routes and on all unsafe methods (POST, PUT, PATCH, DELETE) — those requests are challenged rather than passed. This is deliberate: the default policy routes sensitive paths such as `/login`, `/checkout`, and `/admin` to the `strict` preset. It fails open (passes) only for safe `GET`/`HEAD` requests on non-strict routes, a documented, accepted residual covered by fingerprint and subnet rate metering. Some heuristic hard rules can also challenge real people — for example HR-12 (no interaction over the window) is explicitly a heuristic that can catch some humans.
+**Cause.** When Gate cannot form a verdict (Unknown), it **fails closed** on strict routes and on all unsafe methods (POST, PUT, PATCH, DELETE) — those requests are challenged rather than passed. This is deliberate: the default policy routes sensitive paths such as `/login`, `/checkout`, and `/admin` to the `strict` preset. It fails open (passes) only for safe `GET`/`HEAD` requests on non-strict routes, a documented, accepted residual covered by fingerprint and subnet rate metering. Some heuristic enforcement rules can also challenge real people — for example no interaction observed rule (no interaction over the window) is explicitly a heuristic that can catch some humans.
 
 **Fix.**
 
 - Start in monitor mode to observe verdicts without enforcing them, then tune before you enforce. Monitor mode lets you see what *would* be challenged or denied against real traffic first.
-- Rely on the PoW upgrade path: a score-based CHALLENGE (one with no hard rule behind it) upgrades to ALLOW once the client solves the proof of work (`l7.pow.solved`). A real human completing the interstitial passes. The PoW upgrade never overrides a hard rule. On an **`attested`** route this bare solve is not enough: the solve must **also** mint a step-up receipt that redeems at `POST /__hmn/stepup` for an `hmn_su` cookie, or the attestation floor keeps pricing the ALLOW back to a Pass (see the FAQ entry below).
-- Review which routes are mapped to `strict`. Presets are startup configuration (`Config.Routes`); there is no runtime per-route policy-write endpoint. Adjust the route-to-preset mapping at startup if a route is stricter than you need.
+- If your deployment wires proof of work, use it only to clear score-based challenges. The reference Gate does not provide the complete visitor flow by itself, and proof of work never overrides a rule-promoted verdict. On an **`attested`** route the solve must also mint a step-up receipt that redeems at `POST /__hmn/stepup`; otherwise the attestation floor continues to require proof.
+- Review which routes are mapped to `strict`. Use Runtime Settings to dry-run a bounded route overlay, or change the startup table for the next boot. A protection reduction can require separate approval.
 
 For a fuller treatment of what changes for real users and how to de-risk enforcement, see [Will this break my app?](../explanation/will-this-break-my-app.md).
 
@@ -111,7 +111,7 @@ HMN_ADMIN_TOKENS="auditor:<tok>,operator:<tok>,approver:<tok>,dpo:<tok>" bin/gat
 curl -k -H "Authorization: Bearer <operator-token>" https://localhost:8445/__hmn/admin/whoami
 ```
 
-Every admin access is meta-audited (`admin.access`), and the actor identity is derived by the server from the token — a body-supplied actor is ignored. Role capabilities differ (Auditor / Operator / Approver / DPO); see [RBAC & separation of duties](../reference/rbac-separation-of-duties.md).
+Every admin access is meta-audited (`admin.access`), and the actor identity is derived by the server from the token — a body-supplied actor is ignored. Role capabilities differ (Auditor / Operator / Approver / data protection officer); see [role-based access control & separation of duties](../reference/rbac-separation-of-duties.md).
 
 ---
 
@@ -171,19 +171,19 @@ With the keystore, the SigningSeed (Ed25519 STH key), HMACKey, and vault snapsho
 
 ## Quick FAQ
 
-**Is the self-signed certificate a bug?** No. The reference generates it in memory; use `curl -k` in development. Real certificates are prod-delta.
+**Is the self-signed certificate a bug?** No. The reference generates it in memory; use `curl -k` in development. Real certificates are production responsibility.
 
 **Why `404` instead of `401` from the admin API?** Deny-by-default: a missing or invalid bearer token returns `404` so the admin surface does not announce itself. Check both the token and that you are on the admin listener (`:8445`), not the edge.
 
-**Can I change route policy while Gate is running?** Presets (`off` / `monitor` / `balanced` / `strict` / `attested`) are startup configuration. There is no runtime per-route policy-write endpoint. The runtime levers are the fleet-wide kill switch and the global `-monitor` switch.
+**Can I change route policy while Gate is running?** Yes, for known route prefixes and presets through a validated Runtime Settings overlay. The startup table remains the base, and an empty overlay restores it. Use dry run and respect server-derived approval requirements.
 
-**How do I stop enforcement without stopping traffic?** The kill switch demotes hard-rule enforcement to monitor fleet-wide — detection stops and traffic flows, though manually placed bans still enforce. It is dual-control (committed by a distinct Approver).
+**How do I stop enforcement without stopping traffic?** The kill switch demotes rule enforcement to monitor node-local — detection continues and affected traffic flows, though manually placed bans still enforce. It is dual-control (committed by a distinct Approver).
 
-> **Warning:** The kill switch is fleet-wide. Enabling it stops hard-rule enforcement everywhere Gate runs, not just on one node.
+> **Warning:** The kill switch is node-local. It affects every route on that process, not every node in a fleet.
 
 **Why is an ALLOW still challenged on my high-value (`attested`) route?** That is the attestation floor (ceiling-guard #1) doing its job: on an `attested` route a scoring-ALLOW — and even a valid verdict-token fast-path — is priced to a Pass challenge unless the session presents possession or an `hmn_su` step-up proof. The fix is to give humans a way to satisfy the floor: either wire a credential verifier (WebAuthn / Privacy Pass / Web Bot Auth) so possession pre-gates and forwards first, **or** run the Core Pass server and Gate with a **shared `HMN_TOKEN_KEY`** and the same cookie jar so a Pass solve's receipt redeems at `POST /__hmn/stepup` and mints `hmn_su`. Without one of those, humans re-solve the Pass forever — a Pass-for-everyone friction wall. (Note: `attested` also requires the shared `HMN_TOKEN_KEY` across Core and Gate to start at all; the Gate refuses to boot without it.)
 
-**Where do I see what Gate decided?** Observability is the audit stream (`GET /audit`), the Integrity view/endpoint, and the Overview KPIs in the Ledger, plus a Prometheus `GET /__hmn/admin/metrics` gauge snapshot on the admin plane and the `GET /__hmn/healthz` (liveness) / `GET /__hmn/readyz` (readiness) probes answered by Gate itself. Per-verdict rates come from the audit stream; SIEM shipping of that stream is the prod-delta.
+**Where do I see what Gate decided?** Observability is the audit stream (`GET /audit`), the Integrity view/endpoint, and the Overview KPIs in the Ledger, plus a Prometheus `GET /__hmn/admin/metrics` gauge snapshot on the admin plane and the `GET /__hmn/healthz` (liveness) / `GET /__hmn/readyz` (readiness) probes answered by Gate itself. Per-verdict rates come from the audit stream; SIEM shipping of that stream is the production responsibility.
 
 ---
 
@@ -193,4 +193,4 @@ With the keystore, the SigningSeed (Ed25519 STH key), HMACKey, and vault snapsho
 - [Will this break my app?](../explanation/will-this-break-my-app.md) — what enforcement changes for real users, and how to de-risk it.
 - [The control plane and the detection bundle](../explanation/control-plane-and-bundle.md) — how injection, the beacon, and `/__hmn/*` work.
 - [Key management, rotation & recovery](./key-management.md) — the keystore, `HMN_UNSEAL`, `-origin-key`, and what breaks when key material is lost.
-- [Production vs reference](../reference/production-vs-reference.md) — the full prod-delta boundary.
+- [Production vs reference](../reference/production-vs-reference.md) — the full production responsibility boundary.

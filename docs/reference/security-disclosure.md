@@ -1,6 +1,6 @@
 ---
 description: "Coordinated-disclosure policy template for a humanymous Gate deployment: how researchers report a vulnerability, what is in scope, and the good-faith safe harbor."
-keywords: ["security vulnerability disclosure policy","coordinated disclosure","humanymous Gate","security.txt template","good-faith safe harbor","responsible disclosure","vulnerability reporting","PGP security contact","in-scope out-of-scope","T4 ceiling"]
+keywords: ["security vulnerability disclosure policy","coordinated disclosure","humanymous Gate","security.txt template","good-faith safe harbor","responsible disclosure","vulnerability reporting","PGP security contact","in-scope out-of-scope","coherent browser or human-assisted automation ceiling"]
 ---
 
 # Security vulnerability disclosure policy
@@ -25,10 +25,10 @@ In scope for a report:
 
 - The Gate edge and control plane on the public listener (default `:8444`), including the client-facing `/__hmn/` endpoints (`/__hmn/session`, `/__hmn/collect`, `/__hmn/loader.js`, `/__hmn/csp-report`) and the challenge / proof-of-work interstitial.
 - The separate authenticated admin listener (default `127.0.0.1:8445` (loopback)), the Admin API under `/__hmn/admin/`, and the Ledger SPA at `/__hmn/admin/console`.
-- The detection engine (layers L1–L7), the verdict pipeline (ALLOW / CHALLENGE / DENY) and hard rules, where a flaw lets an issue be exploited beyond the documented detection ceiling — for example a control-plane injection, an authentication or RBAC bypass, an audit-log integrity break, or a verdict-token forgery not already described as an accepted residual.
+- The detection engine (the seven-stage pipeline), the verdict pipeline (ALLOW / CHALLENGE / DENY) and enforcement rules, where a flaw lets an issue be exploited beyond the documented detection ceiling — for example a control-plane injection, an authentication or role-based access control bypass, an audit-log integrity break, or a verdict-token forgery not already described as an accepted residual.
 - The tamper-evident audit log and its verification logic, key sealing (`-keystore` / `HMN_UNSEAL`), and the cryptographic-erasure (crypto-shred) path.
 
-> **Note:** A verdict of ALLOW, CHALLENGE or DENY that you disagree with is **not** by itself a vulnerability. Detection is heuristic and bounded: the documented T4 ceiling (anti-detect tooling plus real-human click-farms) and the fail-open residual for safe-method GET on non-strict routes are stated design limits, not defects. See [Hard rules, verdicts and signal-ID reference](hard-rules-verdicts.md). If you believe you can defeat a **hard rule** that is documented as high-confidence, that is in scope — report it.
+> **Note:** A verdict of ALLOW, CHALLENGE or DENY that you disagree with is **not** by itself a vulnerability. Detection is heuristic and bounded: the documented coherent browser or human-assisted automation ceiling (anti-detect tooling plus real-human click-farms) and the fail-open residual for safe-method GET on non-strict routes are stated design limits, not defects. See [enforcement rules, verdicts and signal reference](hard-rules-verdicts.md). If you believe you can defeat a **enforcement rule** that is documented as high-confidence, that is in scope — report it.
 
 ## How to report
 
@@ -97,9 +97,9 @@ Good-faith testing means, at a minimum: you stay within scope; you avoid privacy
 
 The following are generally **not** accepted as vulnerabilities under this policy:
 
-- Detection outcomes that reflect documented limits: the T4 ceiling (anti-detect tooling plus real-human click-farms), the accepted fail-open residual for safe-method GET/HEAD on non-strict routes, and the tamper-**evident** (not tamper-proof) in-window residual for audit records written after the last signed checkpoint.
+- Detection outcomes that reflect documented limits: the coherent browser or human-assisted automation ceiling (anti-detect tooling plus real-human click-farms), the accepted fail-open residual for safe-method GET/HEAD on non-strict routes, and the tamper-**evident** (not tamper-proof) in-window residual for audit records written after the last signed checkpoint.
 - Reports that a verdict was "wrong" without a concrete security impact — false positives and false negatives are handled as tuning and triage, not as disclosures. A privacy browser, extension, or old device being challenged is expected behavior, not a defect.
-- Findings that only apply to the reference build's explicit prod-deltas rather than a real deployment — for example the self-signed in-memory dev certificate, bearer dev tokens instead of mTLS/SSO, in-process (single-node) verdict and ban state, or the absence of automated key rotation. These are documented gaps a production deployment is expected to close; see [Production vs reference](production-vs-reference.md).
+- Findings that only apply to the reference build's explicit production responsibilities rather than a real deployment — for example the self-signed in-memory dev certificate, bearer dev tokens instead of mutual Transport Layer Security/SSO, in-process (single-node) verdict and ban state, or the absence of automated key rotation. These are documented gaps a production deployment is expected to close; see [Production vs reference](production-vs-reference.md).
 - Volumetric denial-of-service, physical attacks, and social-engineering of the operator's staff.
 - Reports generated purely by automated scanners with no demonstrated, reproducible impact.
 - Any testing against a deployment you do not operate and are not authorized to test.
@@ -110,4 +110,4 @@ The following are generally **not** accepted as vulnerabilities under this polic
 
 - [Self-validation and red-team testing](../how-to/self-validation-red-team.md) — how to exercise detection against your own deployment.
 - [Production vs reference](production-vs-reference.md) — what the reference build does not ship for production.
-- [Hard rules, verdicts and signal-ID reference](hard-rules-verdicts.md) — the verdict model and documented detection limits.
+- [enforcement rules, verdicts and signal reference](hard-rules-verdicts.md) — the verdict model and documented detection limits.

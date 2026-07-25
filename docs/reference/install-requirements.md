@@ -9,7 +9,7 @@ keywords: ["humanymous Gate install requirements","Go 1.25.3 toolchain","refract
 
 This page lists exactly what you need to build and run the reference implementation of humanymous Gate: the toolchain, the one dependency, the build command, the ports it listens on, and the external services it does *not* need. It is a lookup, not a walkthrough — when you are ready to run, follow the [monitor-mode quickstart](../tutorials/quickstart-monitor-mode.md).
 
-> **Note:** This repository is a **reference implementation**, not a production-hardened build. Several things a production deployment would need (shared fleet state, a real key-management service, CA-issued certificates, and more) are **prod-delta** and are not present here. See [production vs reference](production-vs-reference.md) for the full list.
+> **Note:** This repository is a **reference implementation**, not a production-hardened build. Several things a production deployment would need (shared fleet state, a real key-management service, CA-issued certificates, and more) are **production responsibility** and are not present here. See [production vs reference](production-vs-reference.md) for the full list.
 
 ## Toolchain
 
@@ -21,7 +21,7 @@ This page lists exactly what you need to build and run the reference implementat
 
 Gate is written in pure Go with no CGO. That keeps the build simple and lets you cross-compile for any target with `GOOS`/`GOARCH` — you do not need a C compiler or platform-specific build tooling.
 
-The Go module is `github.com/modootoday/humanymous`. It has four direct dependencies: uTLS — which Gate uses to read TLS ClientHello fingerprints (part of the L5 network layer — see [how Gate sees a request](../concepts/how-gate-sees-a-request.md)) — plus the `golang.org/x/crypto`, `golang.org/x/net`, and `golang.org/x/text` extended standard-library packages. uTLS is the only non-`golang.org/x` third-party dependency.
+The Go module is `github.com/modootoday/humanymous`. Its direct dependencies include uTLS, used by the standalone Core and defensive raw-protocol test client, plus `golang.org/x/crypto`, `golang.org/x/net`, and `golang.org/x/text`. The current Gate does not extract Core's complete ClientHello fingerprint set.
 
 ## Supported platforms
 
@@ -63,7 +63,7 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
 
 - `:latest` tracks the newest release.
 - `-monitor` scores and logs without enforcing — the safe first contact with real traffic. Drop it to enforce.
-- The admin listener is mapped to host loopback only (`127.0.0.1:8445`); keep it that way or front it with mTLS/SSO.
+- The admin listener is mapped to host loopback only (`127.0.0.1:8445`); keep it that way or front it with mutual Transport Layer Security/SSO.
 - To actually reach the console/audit API on `:8445`, set an admin token — the command above maps the port but sets none, so Gate mints **random per-boot tokens it does not print** and the API is unreachable. Add `-e HMN_ADMIN_TOKENS=operator:<random-16+-char-secret>` (repeat comma-separated per role: `auditor:…,operator:…,approver:…,dpo:…`), or `-e HMN_ALLOW_DEV_TOKENS=1` for a throwaway local demo. See [Stand up the admin listener](../how-to/deployment-policy-operations.md#recipe-stand-up-the-admin-listener-with-seeded-role-tokens).
 
 To present a **real Let's Encrypt certificate** instead of the self-signed dev cert (public domain, inbound `:443`, and a persistent ACME cache volume), add the ACME flags and publish `:443`:
@@ -78,7 +78,7 @@ docker run -d -p 443:8444 -p 127.0.0.1:8445:8445 \
 
 The certificate issues automatically via TLS-ALPN-01 and renews itself; see [HTTPS / TLS certificates](../how-to/https-tls-certificates.md) for the full walkthrough, a staging dry-run, bring-your-own PEMs, and running behind an existing TLS terminator.
 
-For a full production deployment (ACME TLS, sealed keystore, durable audit WAL, hardened read-only container), use the pull-only Compose file, which references the published images directly:
+For a full production deployment (ACME TLS, sealed keystore, durable audit write-ahead log, hardened read-only container), use the pull-only Compose file, which references the published images directly:
 
 ```
 cd deployments
@@ -95,7 +95,7 @@ The reference runs three localhost listeners. Two are Gate's own; the third is y
 
 | Port | Role | Flag / source |
 |---|---|---|
-| `:8444` | Public edge (HTTPS) — terminates TLS, injects the detection bundle, scores L1–L7, and enforces the verdict | `-addr ":8444"` |
+| `:8444` | Public edge (HTTPS) — terminates TLS, injects the detection bundle, scores seven detection stages, and enforces the verdict | `-addr ":8444"` |
 | `:8445` | Separate authenticated admin listener (Ledger + admin API), cross-origin to the edge | `-admin-addr ":8445"` |
 | `:9000` | Your origin app that Gate proxies to (the `-upstream` target) | `-upstream "http://127.0.0.1:9000"` |
 
@@ -113,7 +113,7 @@ In the reference, there are **none**. Gate holds its state in memory in a single
 
 You do not need a database, Redis, or a key-management service to run the reference.
 
-> **Important:** Shared fleet state (for example, Redis-backed verdict store and bans), a real KMS/HSM, and CA-issued certificates are **prod-delta** — they are what a production deployment would add, and they are not part of this reference. Do not plan a multi-node deployment on the assumption that shared state exists here; it does not. See [production vs reference](production-vs-reference.md).
+> **Important:** Shared fleet state (for example, Redis-backed verdict store and bans), a real KMS/HSM, and CA-issued certificates are **production responsibility** — they are what a production deployment would add, and they are not part of this reference. Do not plan a multi-node deployment on the assumption that shared state exists here; it does not. See [production vs reference](production-vs-reference.md).
 
 ## First run
 
@@ -123,6 +123,6 @@ Once the binary builds, start with monitor mode so Gate scores and logs traffic 
 
 - [Monitor-mode quickstart](../tutorials/quickstart-monitor-mode.md) — your first run, end to end.
 - [CLI, config & policy](cli-config-policy.md) — every flag, preset, and route default.
-- [Production vs reference](production-vs-reference.md) — the complete prod-delta list.
+- [Production vs reference](production-vs-reference.md) — the complete production responsibility list.
 - [Integrator start-here](../start-here/integrator.md) — putting Gate in front of your app.
-- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the L1–L7 detection model.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the seven detection stages detection model.

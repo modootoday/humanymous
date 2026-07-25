@@ -28,7 +28,7 @@ humanymous Gate exposes two distinct version stamps. Keep them separate — they
 
 ### Scoring policy version
 
-The scoring policy carries a semantic version. The reference implementation ships policy version **`1.0.0`** (`internal/scoring/policy.go`). This version identifies the **decision rules** — the risk band thresholds (0–29 ALLOW, 30–69 CHALLENGE, 70–100 DENY; `ChallengeAt=30`, `DenyAt=70`) and the hard-rule overrides. When you change a threshold, add or retire a hard rule, or change how a verdict is reached, that is a scoring-policy behavior change and the policy version should move.
+The scoring policy carries a semantic version. The reference implementation ships policy version **`1.0.0`** (`internal/scoring/policy.go`). This version identifies the **decision rules** — the risk band thresholds (0–29 ALLOW, 30–69 CHALLENGE, 70–100 DENY; `ChallengeAt=30`, `DenyAt=70`) and the enforcement-rule overrides. When you change a threshold, add or retire an enforcement rule, or change how a verdict is reached, that is a scoring-policy behavior change and the policy version should move.
 
 ### Signed config version
 
@@ -49,7 +49,7 @@ Align the documentation version to the **engine release** it describes. When the
 
 A release-notes changelog should surface **behavior changes** that affect operators, integrators, or end users. At minimum, call out:
 
-- **New or retired hard rules** (for example, a new `HR-NN` → DENY/CHALLENGE rule).
+- **New or retired enforcement rules** (for example, a new `HR-NN` → DENY/CHALLENGE rule).
 - **Preset changes** — anything that alters what `off` / `monitor` / `balanced` / `strict` / `attested` do (including the `attested` attestation-floor lever — its possession-or-`hmn_su` pricing, the catch-all refusal, or the shared-`HMN_TOKEN_KEY` precondition), or the default route→preset mapping.
 - **Threshold or escalation changes** — moved risk bands (`ChallengeAt` / `DenyAt`), changed ban-ladder steps, or changed rate-limit windows.
 
@@ -73,6 +73,7 @@ Paths are repo-relative from `docs/`.
 | `start-here/compliance-dpo.md` | SoT-29 |
 | `start-here/evaluator.md` | SoT-29 |
 | `style-guide.md` | SoT-29 |
+| `reference/glossary.md` | SoT-00, SoT-29, SoT-38, SoT-39 |
 | `concepts/how-gate-sees-a-request.md` | SoT-00 |
 | `tutorials/quickstart-monitor-mode.md` | SoT-19, SoT-20 |
 | `explanation/what-gate-is.md` | SoT-00, SoT-06 |
@@ -133,7 +134,7 @@ The entire user-facing documentation set is derived from the internal source-of-
 
 Two SoTs anchor the split of authority:
 
-- **SoT-00 is the engine / behavior authority.** It governs what Gate actually does — how a request is scored, which layers apply, and how verdicts are reached. Pages describing behavior trace back to SoT-00 (directly or through a more specific SoT).
+- **SoT-00 is the engine / behavior authority.** It governs what Gate actually does — how a request is scored, which stages apply, and how verdicts are reached. Pages describing behavior trace back to SoT-00 (directly or through a more specific SoT).
 - **SoT-29 governs the user-facing surfaces** — voice, terminology, formatting, and the shape of the documentation set itself (including this page).
 
 The rule is directional and simple:
@@ -160,6 +161,6 @@ When you change a SoT:
 
 1. Look it up as a value in the derivation index above.
 2. Review each page listed against it, and update any page whose content the change affects.
-3. If the change alters behavior (a threshold, preset, hard rule, or escalation step), also add a release-notes entry per Section 1 and confirm the scoring policy version and/or `config_version` implications are documented.
+3. If the change alters behavior (a threshold, preset, enforcement rule, or escalation step), also add a release-notes entry per Section 1 and confirm the scoring policy version and/or `config_version` implications are documented.
 
 When you add or re-scope a user-facing page, add or update its row in the derivation index so the mapping stays complete. A page with no SoT row, or a SoT change with no page review, is drift.

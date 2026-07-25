@@ -60,11 +60,11 @@ Some properties are inherent design trade-offs, documented rather than fixed. Se
 including: the detection floor (a perfect human-like forgery from a fresh identity can
 still clear the Pass challenge), the report-only CSP, and best-effort anti-replay.
 
-On the admin plane, **client-certificate mTLS ships today**: set `-admin-mtls-ca <pem>`
+On the admin plane, **client-certificate mutual Transport Layer Security ships today**: set `-admin-mtls-ca <pem>`
 and the admin listener requires a client certificate signed by that CA
 (`tls.RequireAndVerifyClientCert`) **in addition to** the bearer token. **SSO remains the
 production delta** — front the admin listener with an authenticating proxy for that.
-Loopback binding by default plus mTLS is the intended posture; operator-network isolation
+Loopback binding by default plus mutual Transport Layer Security is the intended posture; operator-network isolation
 is a defence-in-depth layer, not the only control.
 
 ## Verifying what you run

@@ -1,7 +1,7 @@
 ---
 title: Configure Attested Routes (the Attestation Floor)
-description: "Mark a high-value route attested and Gate prices the ALLOW: an unattested ALLOW is demoted to a humanymous Pass, always CHALLENGE→Pass, never DENY. Does not close the T4 ceiling."
-keywords: ["configure attested routes","attestation floor","humanymous Gate","step-up proof (hmn_su)","WebAuthn passkey","Privacy Pass","Web Bot Auth","HMN_TOKEN_KEY shared key","high-value route protection","CHALLENGE to Pass demotion","detect bots without CAPTCHA","T4 ceiling"]
+description: "Mark a high-value route attested and Gate prices the ALLOW: an unattested ALLOW is demoted to a humanymous Pass, always CHALLENGE→Pass, never DENY. Does not close the coherent browser or human-assisted automation ceiling."
+keywords: ["configure attested routes","attestation floor","humanymous Gate","step-up proof (hmn_su)","WebAuthn passkey","Privacy Pass","Web Bot Auth","HMN_TOKEN_KEY shared key","high-value route protection","CHALLENGE to Pass demotion","detect bots without CAPTCHA","coherent browser or human-assisted automation ceiling"]
 ---
 
 # Configure attested routes (the attestation floor)
@@ -12,14 +12,14 @@ This guide shows how to put the **attestation floor** on an operator-marked rout
 
 ## What the floor does, and what it does not
 
-Past the T4 ceiling, a coherent engine-level spoof cannot be told apart from a human by detection alone — that is a design boundary, not a bug (see [What is Gate?](../explanation/what-gate-is.md)). The attestation floor does not try to detect the spoof. On a route you mark `attested`, it **prices the ALLOW**: a scoring-ALLOW no longer takes the free fast-path. The request must carry one of
+Past the coherent browser or human-assisted automation ceiling, a coherent engine-level spoof cannot be told apart from a human by detection alone — that is a design boundary, not a bug (see [What is Gate?](../explanation/what-gate-is.md)). The attestation floor does not try to detect the spoof. On a route you mark `attested`, it **prices the ALLOW**: a scoring-ALLOW no longer takes the free fast-path. The request must carry one of
 
 - **possession** — a WebAuthn, Privacy Pass, or Web Bot Auth trust-upgrade (the possession pre-gate forwards it before scoring runs), or
 - **a step-up proof** — the `hmn_su` cookie, minted when the user solves a [humanymous Pass](../help/why-am-i-seeing-this.md) challenge.
 
 Without either, the ALLOW is demoted to a Pass challenge. The demotion is always **CHALLENGE→Pass, never DENY**: an unattested human solves the same Pass an anonymous visitor already solves. The floor never blocks a human categorically, and it is not a lockout.
 
-It converts a spoof's unlimited free high-value passes into either possession it cannot mint or a per-session human Pass solve. It does not close the ceiling: a real human on their own connection, and a single one-shot coherent request, remain open by construction. Compute cost (PoW) is deliberately **not** the friction — a native solver clears any false-positive-safe difficulty faster than a real browser, so it would tax real, no-JS, and assistive-technology users first. The friction is the interactive Pass.
+It converts a spoof's unlimited free high-value passes into either possession it cannot mint or a per-session human Pass solve. It does not close the ceiling: a real human on their own connection, and a single one-shot coherent request, remain open by construction. Compute cost (proof of work) is deliberately **not** the friction — a native solver clears any false-positive-safe difficulty faster than a real browser, so it would tax real, no-JS, and assistive-technology users first. The friction is the interactive Pass.
 
 ## Before you start
 

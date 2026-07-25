@@ -1,6 +1,6 @@
 ---
-description: "Annotated operator tour of the humanymous Gate Ledger console: what each of the seven views answers and how to act from it — a reference implementation, not production-hardened."
-keywords: ["Ledger console tour","humanymous Gate","audit log console","security operator how-to","tamper-evident hash chain","dual-control bans","kill switch","crypto-shred erasure","per-route policy","approvals commit queue","seven Ledger views"]
+description: "Annotated operator tour of the humanymous Gate Ledger console: what each of the eight views answers and how to act from it — a reference implementation, not production-hardened."
+keywords: ["Ledger console tour","humanymous Gate","audit log console","security operator how-to","tamper-evident hash chain","dual-control bans","kill switch","crypto-shred erasure","runtime settings","approvals commit queue","eight Ledger views"]
 ---
 
 # Ledger tour for operators
@@ -8,9 +8,9 @@ keywords: ["Ledger console tour","humanymous Gate","audit log console","security
 > **How-to / annotated tour.** For a new or occasional on-call operator learning the humanymous Gate Ledger.
 > **Audience:** you are on the security-operator rotation, you have a token, and you need to know what each view answers and how to act from it — without breaking anything.
 
-This page walks the seven views of the Ledger in the order you will use them on a shift. For each view you get three things: the question it answers, what the badges and subtitles mean, and how to act from it. This is a reference implementation, not a production-hardened build, so treat the numbers you see as reference behavior and confirm before you widen the blast radius of any action.
+This page walks the eight views of the Ledger in the order you will use them on a shift. For each view you get three things: the question it answers, what the badges and subtitles mean, and how to act from it. This is a reference implementation, not a production-hardened build, so treat the numbers you see as reference behavior and confirm before you widen the blast radius of any action.
 
-If you have never seen how Gate scores a request, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first. For what the hard-rule IDs and dotted signal IDs mean when you drill in, keep [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) open in a second tab.
+If you have never seen how Gate scores a request, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first. For what the enforcement-rule identifiers and dotted signal identifiers mean when you drill in, keep [enforcement rules, verdicts & signal reference](../reference/hard-rules-verdicts.md) open in a second tab.
 
 ## Open the console
 
@@ -25,7 +25,7 @@ https://localhost:8445/__hmn/admin/console
   <img src="../assets/screenshots/framed/hero-ledger-light.webp" alt="The Ledger console Overview: live edge-decision feed with chain-verified status, node id, and record count" />
 </picture>
 
-In dev the console is injected with the **Operator** token, so it can read every view and *request* actions. Any two-person (dual-control) action must be committed by a genuinely **distinct** token — an Approver or DPO, never your own. Actor identity is derived server-side from the token; you cannot act as someone else by editing a request body.
+In dev the console is injected with the **Operator** token, so it can read every view and *request* actions. Any two-person (dual-control) action must be committed by a genuinely **distinct** token — an Approver or data protection officer, never your own. Actor identity is derived server-side from the token; you cannot act as someone else by editing a request body.
 
 A few things to know before you click around:
 
@@ -35,7 +35,7 @@ A few things to know before you click around:
 - There is a **refresh button** whose job is to *re-verify the chain now* — it re-runs the integrity check and re-pulls the current data, rather than waiting for the next poll.
 - Navigation is **keyboard-operable** (the nav items expose `role="button"`, `tabindex`, and `aria-current`), and there is a hamburger menu on narrow screens.
 
-The seven views are grouped into two sections: **Operations** (Overview, Integrity, Sessions) and **Governance** (Rate Limits & Bans, Policy, Compliance, Approvals). The arrows below trace the triage path you walk most shifts — spot a pattern on Overview, drill into a sample decision in Sessions, then act in Rate Limits & Bans; a two-person action you request lands in Approvals for a distinct approver to commit:
+The eight views are grouped into two sections: **Operations** (Overview, Integrity, Sessions) and **Governance** (Rate Limits & Bans, Policy, Settings, Compliance, Approvals). The arrows below trace the triage path you walk most shifts — spot a pattern on Overview, drill into a sample decision in Sessions, then act in Rate Limits & Bans or Settings; a two-person action lands in Approvals for a distinct approver to commit:
 
 ```mermaid
 flowchart TD
@@ -47,6 +47,7 @@ flowchart TD
   subgraph Gov["Governance"]
     RB["Rate Limits & Bans"]
     PO["Policy — route posture + kill switch"]
+    ST["Settings — runtime detection posture"]
     CO["Compliance — erasure & retention"]
     AP["Approvals — dual-control commit queue"]
   end
@@ -54,6 +55,7 @@ flowchart TD
   SE -->|"ban / unblock"| RB
   IN -.->|"red state: stop, do not act on downstream data"| SE
   RB -.->|"permanent / CIDR ban request"| AP
+  ST -.->|"protection-reducing change"| AP
   PO -.->|"kill-switch request"| AP
   CO -.->|"erasure request"| AP
 ```
@@ -95,7 +97,7 @@ A **red** integrity state is a signal that something is wrong with the log's own
 
 This is where an Overview row lands when you click it, and it is where you go when a user gives you an incident handle. You look up any decision by its **record seq** (the incident reference), and you get the full evidence for it: the timeline, the top contributing signals, and the pseudonymized subject.
 
-The top contributors are dotted signal IDs of the form `l{n}.{group}.{item}` (lowercase; layer tokens are uppercase L1–L7) — for example `l1.navigator.webdriver`, `l2.webgl.param_consistency`, `l4.mouse.click_no_trajectory`. The L6 consistency cross-checks use a separate `x.` namespace (`x.ua_vs_ja4`, `x.ua_vs_h2`, `x.browser_no_js`). Read these against the [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) to understand what tipped the score and which hard rule, if any, overrode it.
+The top contributors are dotted machine identifiers such as `l1.navigator.webdriver`, `l2.webgl.param_consistency`, and `l4.mouse.click_no_trajectory`. Consistency checks use a separate `x.` namespace, including `x.ua_vs_ja4`, `x.ua_vs_h2`, and `x.browser_no_js`. The Console should lead with their descriptive names; use the [verdicts, enforcement rules, and diagnostic signals reference](../reference/hard-rules-verdicts.md) when you need to interpret a raw export.
 
 The subject is **pseudonymous, not anonymous** — identifiers such as IP, JA4, and device fingerprint are stored only as per-subject-key-derived pseudonyms, never raw. You are reading a stable pseudonym, not a person's raw address.
 
@@ -122,13 +124,13 @@ This view lists the active **IP and fingerprint bans**. A **badge shows the acti
 - **Permanent or CIDR bans** are **dual-control**: you request as Operator, and a **distinct Approver** commits it. You cannot approve your own request.
 - **Bulk bans are temporary-only** — permanent or CIDR entries are rejected from a bulk add and need the dual-control path.
 
-Every add and unblock is audited. For the exact request/commit steps, the escalation ladder details, and how bans interact with the kill switch, see [Kill switch and bans](../runbooks/kill-switch-and-bans.md). For the full role-to-capability matrix, see [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
+Every add and unblock is audited. For the exact request/commit steps, the escalation ladder details, and how bans interact with the kill switch, see [Kill switch and bans](../runbooks/kill-switch-and-bans.md). For the full role-to-capability matrix, see [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md).
 
 ### Policy — "route enforcement"
 
 **Question it answers:** What posture is each route running, and can I change it here?
 
-The Policy view (also labelled "Policy & Rollout") shows the **per-route posture**: the preset, whether the route fails open or closed on an unknown verdict, whether it re-scores synchronously before a mutation, and whether injection is on — plus the rate-limit thresholds. This view is **read-only**: there is no dual-control policy-write endpoint. Route presets change only by editing the startup route table and restarting. The response's `config_version` is a **signed hash of the effective running posture** (routes + rate limits + monitor + kill-switch) so you can detect drift — not a two-person config-edit workflow.
+The Policy view (also labelled "Policy & Rollout") shows the **per-route posture**: the preset, whether the route fails open or closed on an unknown verdict, whether it re-scores synchronously before a state-changing request, and whether injection is on — plus the effective rate-limit thresholds. This view is **read-only**. Route presets still change only through startup configuration and a restart. The response's `config_version` is the effective configuration fingerprint, so you can detect drift and correlate decisions with the posture that produced them.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/console-policy-dark.webp" />
@@ -137,13 +139,32 @@ The Policy view (also labelled "Policy & Rollout") shows the **per-route posture
 
 The one thing to be clear about on a shift:
 
-> **Important:** Per-route presets are set at **startup**, in the route table, and there is **no runtime per-route policy-write endpoint** in this reference. Changing a single route's preset means editing the route table and restarting Gate. The only *runtime* enforcement lever is the **kill switch** (and the `-monitor` boot flag). Do not expect to retune one route live from this view.
+> **Important:** Startup route presets remain the base configuration. Runtime Settings can overlay known route prefixes and presets without changing the compiled defaults. An empty overlay restores the startup table unchanged.
 
 So you read posture here to understand *why* a route is behaving as it is (for example, `/login`, `/checkout`, and `/admin` default to the strict preset; `/health` maps to the off preset), but you do not live-edit a route's preset. For the day-to-day posture and rollout workflow, see [Deployment and policy operations](./deployment-policy-operations.md).
 
-**How to act from it — the runtime lever you *do* have:** the kill switch. It is a dual-control flip that demotes hard-rule enforcement to monitor **fleet-wide** — detection keeps scoring and logging, traffic flows, and manual bans still enforce.
+**How to act from it:** use the Settings view for bounded runtime tuning. Use the kill switch only for a broad emergency demotion. It demotes enforcement rules to monitor on the current node; a multi-node deployment must coordinate that state externally. Detection keeps scoring and logging, while manual bans still enforce.
 
-> **Warning:** The kill switch is fleet-wide. It stops hard-rule enforcement everywhere Gate runs, not on one route or one node. Traffic that would have been challenged or denied will pass. Pull it only as a deliberate, two-person decision, and plan to restore enforcement. The procedure is in [Kill switch and bans](../runbooks/kill-switch-and-bans.md).
+> **Warning:** The reference kill switch is node-local and affects every route on that node. Traffic that node would have challenged or denied through an enforcement rule can pass. Coordinate the state externally before treating it as a fleet action.
+
+### Settings — "runtime detection posture"
+
+**Question it answers:** Which runtime tuning is active, what would a proposed change do, and does it need a second approver?
+
+Settings shows the effective score thresholds, selected signal weights, rate limits, enforcement-rule modes, edge-protection module modes, route overrides, and network-residual policy. It also shows the effective configuration version and the active overlay. An **empty overlay means use the built-in and startup configuration unchanged**; it is not a request to zero or disable anything.
+
+Use **Dry run** before applying a change. Gate validates the proposal, derives the effective result, and classifies its risk from server-side state:
+
+- a **protection-increasing change** can apply immediately;
+- a **protection-reducing change** requires dual control;
+- an **integrity-affecting change** requires dual control;
+- a **sensitive-route protection reduction** receives the strictest treatment and must not be disguised by changing several fields at once.
+
+Rate-limit changes take effect in the running limiter after an approved apply. Enforcement-rule modes and score settings update the one shared scoring engine; Settings does not create a second scorer. Network residuals remain score-exempt unless the explicit network policy promotes a configured residual class.
+
+**How to act from it:** confirm the parent configuration version, dry-run the proposal, read the natural-language change classification, then apply. Protection-reducing and integrity-affecting proposals land in Approvals. Use rollback to restore a recorded last-known-good overlay. A rollback can itself require approval when it would reduce protection relative to the current posture.
+
+> **Limit:** Settings does not make coherent real-browser or human-assisted automation detectable. It changes policy around measured evidence; it does not add evidence that the deployment cannot observe.
 
 ### Compliance — "erasure & retention"
 
@@ -151,13 +172,13 @@ So you read posture here to understand *why* a route is behaving as it is (for e
 
 This view covers cryptographic erasure (crypto-shred) and retention labels. A right-to-erasure request is honored by **destroying the per-subject linkage key** for a **session subject** — the chain and its Merkle anchors stay intact and verifiable; the records are never deleted, but that session can no longer be re-linked. HOT / WARM / COLD are **declared** windows (~90d / ~1y / ~7y) shown for operator orientation — the reference does **not** auto-enforce them or write to WORM media.
 
-Erasure is **DPO-gated and dual-control**: an Operator can request it, but the committer must be a **distinct DPO** — a generic Approver cannot commit an erasure. There is a **cancellable hold window** (default 5 minutes) before a due erasure executes.
+Erasure is **data protection officer-gated and dual-control**: an Operator can request it, but the committer must be a **distinct data protection officer** — a generic Approver cannot commit an erasure. There is a **cancellable hold window** (default 5 minutes) before a due erasure executes.
 
 This view also shows a **"Scheduled erasures (hold window)"** list: every approved erasure waiting out its hold window before the crypto-shred commits, with a live countdown to execution and a per-row **Cancel** button. Cancelling a scheduled shred during its window stops the linkage-key destruction, and every cancel is itself written to the audit chain. This is the safety net for a mistaken or superseded request — you can pull it back any time before the window closes.
 
 > **Warning:** Cryptographic erasure (crypto-shred) is irreversible. Once the hold window passes and the linkage key is destroyed, the subject's pseudonym linkage is gone for good — the records remain in the chain but can no longer be tied back to the subject. Confirm the request is correct before the hold window closes; if in doubt, **Cancel** the scheduled erasure and re-request once you are certain.
 
-**How to act from it:** follow the dedicated procedure rather than improvising — see [Erasure and crypto-shred](../runbooks/erasure-crypto-shred.md) for the request, hold-window, cancel, and DPO-commit steps.
+**How to act from it:** follow the dedicated procedure rather than improvising — see [Erasure and crypto-shred](../runbooks/erasure-crypto-shred.md) for the request, hold-window, cancel, and data protection officer-commit steps.
 
 ### Approvals — "dual-control commit queue"
 
@@ -167,12 +188,12 @@ Every dual-control action — a **permanent or CIDR ban**, the **kill switch**, 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/console-approvals-dark.webp" />
-  <img src="../assets/screenshots/framed/console-approvals-light.webp" alt="The Ledger Approvals view: the dual-control commit queue of pending two-person actions (a permanent ban needing an Approver, an erasure needing a DPO) with their params and a Commit button, above the separation-of-duty KPIs." />
+  <img src="../assets/screenshots/framed/console-approvals-light.webp" alt="The Ledger Approvals view: the dual-control commit queue of pending two-person actions (a permanent ban needing an Approver, an erasure needing a data protection officer) with their params and a Commit button, above the separation-of-duty KPIs." />
 </picture>
 
-Committing is separation-of-duty enforced: the committer must be a **genuinely distinct** identity from the requester, and the console's injected Operator token is a *requester*, not an approver — so committing needs a distinct **Approver** token (or, for an erasure, a distinct **DPO** token; a generic Approver cannot commit an erasure). Every commit is written to the audit chain.
+Committing is separation-of-duty enforced: the committer must be a **genuinely distinct** identity from the requester, and the console's injected Operator token is a *requester*, not an approver — so committing needs a distinct **Approver** token (or, for an erasure, a distinct **data protection officer** token; a generic Approver cannot commit an erasure). Every commit is written to the audit chain.
 
-**How to act from it:** open Approvals with the second person's token, confirm the pending action is the one that was intended, and click **Commit** — this is the step that actually applies the ban / flips the kill switch / schedules the erasure. If a request was made in error, it is not committed; the requester's action simply never takes effect. For the exact request-then-commit steps per action, see [Kill switch and bans](../runbooks/kill-switch-and-bans.md) and [Erasure and crypto-shred](../runbooks/erasure-crypto-shred.md); for who may commit what, see [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
+**How to act from it:** open Approvals with the second person's token, confirm the pending action is the one that was intended, and click **Commit** — this is the step that actually applies the ban / flips the kill switch / schedules the erasure. If a request was made in error, it is not committed; the requester's action simply never takes effect. For the exact request-then-commit steps per action, see [Kill switch and bans](../runbooks/kill-switch-and-bans.md) and [Erasure and crypto-shred](../runbooks/erasure-crypto-shred.md); for who may commit what, see [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md).
 
 ---
 
@@ -181,6 +202,6 @@ Committing is separation-of-duty enforced: the committer must be a **genuinely d
 - [Kill switch and bans](../runbooks/kill-switch-and-bans.md) — the exact request/commit steps for every lever in Rate Limits & Bans and Policy.
 - [Verify the audit log](./verify-audit-log.md) — what a red Integrity state means and how to confirm it.
 - [Erasure and crypto-shred](../runbooks/erasure-crypto-shred.md) — the Compliance-view procedure end to end.
-- [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) — who can commit which dual-control action.
-- [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md) — reading the top contributors in a Sessions drill-down.
+- [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md) — who can commit which dual-control action.
+- [enforcement rules, verdicts & signal reference](../reference/hard-rules-verdicts.md) — reading the top contributors in a Sessions drill-down.
 - [Incident runbooks](../runbooks/incident-runbooks.md) — symptom-indexed playbooks that tie these views together under pressure.

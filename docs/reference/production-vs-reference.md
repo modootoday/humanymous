@@ -1,16 +1,16 @@
 ---
-title: Production-ready vs reference (prod-delta) & local↔production checklist
-description: "humanymous Gate is an Apache-2.0 reference build, not production-hardened. Each dev-grade stub — ephemeral keys, self-signed TLS — is named with its prod-delta."
-keywords: ["reference implementation vs production-hardened","prod-delta","dev-grade stubs","ephemeral signing keys","self-signed TLS certificate","single-node verdict and ban store","local to production checklist","humanymous Gate","sealed keystore HMN_UNSEAL","crypto-shred"]
+title: Production-ready vs reference (production responsibility) & local↔production checklist
+description: "humanymous Gate is an Apache-2.0 reference build, not production-hardened. Each dev-grade stub — ephemeral keys, self-signed TLS — is named with its production responsibility."
+keywords: ["reference implementation vs production-hardened","production responsibility","dev-grade stubs","ephemeral signing keys","self-signed TLS certificate","single-node verdict and ban store","local to production checklist","humanymous Gate","sealed keystore HMN_UNSEAL","crypto-shred"]
 ---
 
-# Production-ready vs reference (prod-delta) & local↔production checklist
+# Production-ready vs reference (production responsibility) & local↔production checklist
 
 **Diátaxis quadrant:** Reference. **Audience:** engineering leaders, security reviewers, and integrators promoting humanymous Gate from a local reference build toward a production deployment.
 
-This is the honesty page. This repository is a **reference implementation, not a production-hardened build.** humanymous Gate ("Gate" after first mention) is the reverse-proxy enforcement layer: it terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log in front of an origin app it does not control.
+This is the honesty page. This repository is a **reference implementation, not a production-hardened build.** humanymous Gate ("Gate" after first mention) enforces the verdict derived from the evidence its current collector supplies. The standalone Core engine demonstrates a richer seven-stage path. Results from one are not results from the other.
 
-The reference build demonstrates every mechanism end-to-end so you can evaluate it, but several components ship as dev-grade stubs that are safe on a laptop and unsafe in production. This page names each one — what the reference ships versus what a production deployment must supply (the "prod-delta") — and then gives a checklist for the local→production promotion.
+The reference build demonstrates every mechanism end-to-end so you can evaluate it, but several components ship as dev-grade stubs that are safe on a laptop and unsafe in production. This page names each one — what the reference ships versus what a production deployment must supply (the "production responsibility") — and then gives a checklist for the local→production promotion.
 
 For a component-level inventory of flags and presets, see [CLI, config & policy reference](./cli-config-policy.md). For key handling specifics, see the [Key management guide](../how-to/key-management.md). For install prerequisites, see [Install requirements](./install-requirements.md). For version-to-version moves, see the [Upgrade & migration guide](../how-to/upgrade-migration.md).
 
@@ -18,27 +18,27 @@ For a component-level inventory of flags and presets, see [CLI, config & policy 
 
 ---
 
-## Component-by-component: reference vs prod-delta
+## Component-by-component: reference vs production responsibility
 
-Each row states what the reference binary ships and what a production deployment is responsible for adding or replacing. "prod-delta" means the item is deliberately out of scope for the reference and is a production responsibility.
+Each row states what the reference binary ships and what a production deployment is responsible for adding or replacing. "production responsibility" means the item is deliberately out of scope for the reference and is a production responsibility.
 
-| Component | What the reference ships | Production responsibility (prod-delta) |
+| Component | What the reference ships | Production responsibility (production responsibility) |
 |-----------|--------------------------|----------------------------------------|
 | **TLS certificate** | A self-signed certificate minted in memory at boot. Fine for `localhost`, rejected by real clients. | Real certificates via ACME or bring-your-own, backed by a real KMS/HSM for key custody. |
 | **Node signing / HMAC / vault keys** | Ephemeral by default: a restart mints a **new** Ed25519 signing key (verifier public key changes) and a **new** vault (all pseudonym linkage lost ≈ accidental mass crypto-shred). A sealed keystore (`-keystore` + `HMN_UNSEAL`) makes them persistent. | Always run with `-keystore` + `HMN_UNSEAL` for a stable identity; back up the passphrase out-of-band. See [Key management](../how-to/key-management.md). |
-| **Automated key rotation** | Not implemented for the signing/HMAC keys. (The verdict-token epoch key rotates every 15 min in-process; that is separate.) Rotation would require re-anchoring the chain. | An operational rotation procedure with re-anchoring. prod-delta. |
-| **Admin authentication** | Bearer RBAC tokens over the separate admin listener, constant-time compared (random per boot unless set via `HMN_ADMIN_TOKENS`), **plus optional mTLS** on the admin listener via `-admin-mtls-ca`: when set, a client certificate signed by your CA is required in addition to the bearer token. | SSO for the admin plane (front it with an authenticating reverse proxy). prod-delta. |
-| **Verdict store & bans (fleet state)** | In-process, single node. Verdict trust tokens and IP/fingerprint bans live in memory on one Gate instance. | A shared store (for example Redis) so verdicts and bans are consistent across a fleet. prod-delta. |
-| **TLS fingerprint capture (JA4) — Core engine** | The Core (`cmd/server`) **does** capture the raw ClientHello + H2 on its own accept loop, so JA3/JA4/H2 and their cross-checks fire when the Core is the direct TLS terminator. | Same mechanism, hardened; requires no re-terminating CDN/L7-LB in front (see [Supported topologies](./supported-topologies.md)). |
-| **TLS fingerprint capture (JA4) — Gate proxy** | The Gate (`cmd/gate`) does **NOT** extract the ClientHello: JA3/JA4/H2 and their cross-checks (HR-2/HR-5/HR-11/HR-14) do **not** fire at the gate. Detection there is client + headers + behavior + IP-intel only. | Wire raw ClientHello + H2 capture into the gate accept loop (the `captureListener` pattern exists in `cmd/server`), or deploy the Core as the terminator. prod-delta. |
-| **Datacenter-ASN signal (`l5.ip.datacenter_asn`)** | **Fails open** — no CIDR dataset ships, so the signal fires for no one. (An earlier stub flagged every public IP and mass-CHALLENGEd real users via HR-11; that is fixed.) | Wire a real cloud/ASN CIDR feed via `SetDatacenterCIDRs` if datacenter egress is in your threat model. prod-delta. |
-| **Audit-log verification** | Live Integrity / `SelfVerify` (HMAC + STH + witness). Public keys published via boot log and `GET /__hmn/admin/keys`; library `Verify` can run with HMAC nil (`hmac-unchecked`). Empty chain fails (`empty-chain`). | A packaged standalone offline verifier **binary** in `cmd/` remains prod-delta. See [Verify the audit log](../how-to/verify-audit-log.md). |
-| **Retention retirement** | HOT / WARM / COLD labels are **declared only** (`Tier(age)` has no production enforcer; WAL unbounded with `-audit-wal`, RAM-only without). | Operator retention schedule, archival, and optional WORM. prod-delta. |
-| **Live console updates** | The Ledger refreshes/polls; a manual refresh button re-verifies the chain on demand. | SSE live-push for real-time console updates. prod-delta. |
-| **False-positive triage UI** | No dedicated FP/appeal-queue view. Triage is done from the Overview feed plus Sessions drill-down. | A dedicated FP/appeal-queue view. prod-delta. |
-| **Challenge / PoW interstitial** | A minimal accessible interstitial (HTTP 401, `no-store`, `lang="en"`, a plain-language message, loads the control-plane PoW loader). The code states production self-hosts the WCAG UI. | A full self-hosted WCAG 2.2 AA-conformant challenge experience. prod-delta. See [Challenge accessibility](../help/challenge-accessibility.md). |
-| **Observability export** | The audit stream (`GET /audit` with filters + cursor), the Integrity view/endpoint, the Overview KPIs, a Prometheus text-exposition `GET /__hmn/admin/metrics` gauge snapshot on the admin plane (uptime, chain size, active bans, kill-switch/monitor state, goroutines/heap), and `GET /__hmn/healthz` (liveness) + `GET /__hmn/readyz` (readiness — 503s during a graceful drain) answered by Gate itself. | SIEM log shipping of the audit stream, and wiring the metrics/health probes into your platform. prod-delta. See [Observability & SIEM](../how-to/observability-siem.md). |
-| **Graceful shutdown & ingress caps** | On SIGINT/SIGTERM Gate drains both listeners (bounded by `-shutdown-grace`, readiness flips to draining first) then seals the keystore; an optional `-max-body` caps proxied request bodies (413 over the limit); add-only OWASP security response headers ship, with HSTS opt-in via `-hsts`. | Tune `-shutdown-grace` to your orchestrator's termination grace and set `-max-body`/`-hsts` for your traffic. Already shipped — no prod-delta. |
+| **Automated key rotation** | Not implemented for the signing/HMAC keys. (The verdict-token epoch key rotates every 15 min in-process; that is separate.) Rotation would require re-anchoring the chain. | An operational rotation procedure with re-anchoring. production responsibility. |
+| **Admin authentication** | Bearer role-based access control tokens over the separate admin listener, constant-time compared (random per boot unless set via `HMN_ADMIN_TOKENS`), **plus optional mutual Transport Layer Security** on the admin listener via `-admin-mtls-ca`: when set, a client certificate signed by your CA is required in addition to the bearer token. | SSO for the admin plane (front it with an authenticating reverse proxy). production responsibility. |
+| **Verdict store & bans (fleet state)** | In-process, single node. Verdict trust tokens and IP/fingerprint bans live in memory on one Gate instance. | A shared store (for example Redis) so verdicts and bans are consistent across a fleet. production responsibility. |
+| **TLS fingerprint capture (JA4) — Core engine** | The Core (`cmd/server`) **does** capture the raw ClientHello + H2 on its own accept loop, so JA3/JA4/H2 and their cross-checks fire when the Core is the direct TLS terminator. | Same mechanism, hardened; requires no re-terminating CDN/application-layer load balancer in front (see [Supported topologies](./supported-topologies.md)). |
+| **TLS fingerprint capture (JA4) — Gate proxy** | The Gate (`cmd/gate`) does **NOT** extract the ClientHello: JA3/JA4/H2 and their cross-checks (browser and network-engine mismatch rule/request-integrity failure plus protocol mismatch rule/datacenter-network browser rule/in-session protocol-fingerprint rotation rule) do **not** fire at the gate. Detection there is client + headers + behavior + IP-intel only. | Wire raw ClientHello + H2 capture into the gate accept loop (the `captureListener` pattern exists in `cmd/server`), or deploy the Core as the terminator. production responsibility. |
+| **Datacenter-ASN signal (`l5.ip.datacenter_asn`)** | **Fails open** — no CIDR dataset ships, so the signal fires for no one. (An earlier stub flagged every public IP and mass-CHALLENGEd real users via datacenter-network browser rule; that is fixed.) | Wire a real cloud/ASN CIDR feed via `SetDatacenterCIDRs` if datacenter egress is in your threat model. production responsibility. |
+| **Audit-log verification** | Live Integrity / `SelfVerify` (HMAC + STH + witness). Public keys published via boot log and `GET /__hmn/admin/keys`; library `Verify` can run with HMAC nil (`hmac-unchecked`). Empty chain fails (`empty-chain`). | A packaged standalone offline verifier **binary** in `cmd/` remains production responsibility. See [Verify the audit log](../how-to/verify-audit-log.md). |
+| **Retention retirement** | HOT / WARM / COLD labels are **declared only** (`Tier(age)` has no production enforcer; write-ahead log unbounded with `-audit-wal`, RAM-only without). | Operator retention schedule, archival, and optional WORM. production responsibility. |
+| **Live console updates** | The Ledger refreshes/polls; a manual refresh button re-verifies the chain on demand. | SSE live-push for real-time console updates. production responsibility. |
+| **False-positive triage UI** | No dedicated false positive/appeal-queue view. Triage is done from the Overview feed plus Sessions drill-down. | A dedicated false positive/appeal-queue view. production responsibility. |
+| **Challenge / proof of work interstitial** | A minimal accessible interstitial (HTTP 401, `no-store`, `lang="en"`, a plain-language message, loads the control-plane proof of work loader). The code states production self-hosts the WCAG UI. | A full self-hosted WCAG 2.2 AA-conformant challenge experience. production responsibility. See [Challenge accessibility](../help/challenge-accessibility.md). |
+| **Observability export** | The audit stream (`GET /audit` with filters + cursor), the Integrity view/endpoint, the Overview KPIs, a Prometheus text-exposition `GET /__hmn/admin/metrics` gauge snapshot on the admin plane (uptime, chain size, active bans, kill-switch/monitor state, goroutines/heap), and `GET /__hmn/healthz` (liveness) + `GET /__hmn/readyz` (readiness — 503s during a graceful drain) answered by Gate itself. | SIEM log shipping of the audit stream, and wiring the metrics/health probes into your platform. production responsibility. See [Observability & SIEM](../how-to/observability-siem.md). |
+| **Graceful shutdown & ingress caps** | On SIGINT/SIGTERM Gate drains both listeners (bounded by `-shutdown-grace`, readiness flips to draining first) then seals the keystore; an optional `-max-body` caps proxied request bodies (413 over the limit); add-only OWASP security response headers ship, with HSTS opt-in via `-hsts`. | Tune `-shutdown-grace` to your orchestrator's termination grace and set `-max-body`/`-hsts` for your traffic. Already shipped — no production responsibility. |
 
 > **Note:** The `/health` route is an origin app path mapped to the `off` preset (a bypass), not a Gate probe. For Gate's **own** health, use `GET /__hmn/healthz` (liveness) and `GET /__hmn/readyz` (readiness — it returns 503 once a graceful shutdown starts, so a load balancer drains the node first). Both are answered by Gate and carry no data.
 
@@ -61,32 +61,32 @@ Work through this before any deployment that faces real traffic. Each item remov
 
 ### State and fleet
 
-- [ ] **Externalize fleet state.** The reference keeps verdict trust tokens and IP/fingerprint bans in-process on a single node. For more than one Gate instance, move them to a shared store (for example Redis) so verdicts and bans are consistent fleet-wide.
+- [ ] **Externalize fleet state.** The reference keeps verdict trust tokens and IP/fingerprint bans in-process on a single node. For more than one Gate instance, move them to a shared store (for example Redis) so verdicts and bans are consistent node-local.
 
 ### Admin plane
 
-- [ ] **Harden admin auth beyond bearer dev tokens.** Do not carry the printed dev tokens (or a static `HMN_ADMIN_TOKENS` value) into production. Enable **mTLS** on the admin listener with `-admin-mtls-ca <pem>` so a client certificate signed by your CA is required in addition to the bearer token; put SSO in front with an authenticating reverse proxy. Preserve the RBAC role separation — Auditor, Operator, Approver, DPO — and keep dual-control intact (a distinct Approver commits a permanent/CIDR ban or the kill switch; a distinct DPO commits an erasure). See [RBAC & separation of duties](./rbac-separation-of-duties.md).
+- [ ] **Harden admin auth beyond bearer dev tokens.** Do not carry the printed dev tokens (or a static `HMN_ADMIN_TOKENS` value) into production. Enable **mutual Transport Layer Security** on the admin listener with `-admin-mtls-ca <pem>` so a client certificate signed by your CA is required in addition to the bearer token; put SSO in front with an authenticating reverse proxy. Preserve the role-based access control role separation — Auditor, Operator, Approver, data protection officer — and keep dual-control intact (a distinct Approver commits a permanent/CIDR ban or the kill switch; a distinct data protection officer commits an erasure). See [role-based access control & separation of duties](./rbac-separation-of-duties.md).
 
 ### Verification, observability, and challenge UX
 
-- [ ] **Provide an offline audit verifier package** if your compliance posture requires a separate binary off-box. The library path (`internal/audit.Verify` + published keys) already supports public-key-only checks; packaging it under `cmd/` is still a prod-delta.
+- [ ] **Provide an offline audit verifier package** if your compliance posture requires a separate binary off-box. The library path (`internal/audit.Verify` + published keys) already supports public-key-only checks; packaging it under `cmd/` is still a production responsibility.
 - [ ] **Add observability integration.** The reference now ships a Prometheus `GET /__hmn/admin/metrics` (admin plane) plus `/__hmn/healthz` (liveness) and `/__hmn/readyz` (readiness) probes — point your orchestrator's probes at them and set a `stop_grace_period`/`terminationGracePeriodSeconds` ≥ `-shutdown-grace`. Wire the audit stream into your SIEM for the decision record. See [Observability & SIEM](../how-to/observability-siem.md).
 - [ ] **Self-host the full WCAG challenge UI.** The reference serves only a minimal accessible interstitial. Any accessibility conformance statement applies to the deployed challenge you host, not to the reference page. See [Challenge accessibility](../help/challenge-accessibility.md).
 - [ ] **Plan for retention retirement.** The reference declares tier labels but does not prune, compress, or WORM-retire the audit chain; implement an operator schedule if your policy requires it.
 
-> **Warning:** Cryptographic erasure (crypto-shred) is irreversible — it destroys the per-subject linkage key while the hash chain and Merkle anchors stay intact. Running with ephemeral keys turns every restart into an unintended fleet-wide erasure of pseudonym linkage. Confirm the keystore checklist items above before production.
+> **Warning:** Cryptographic erasure (crypto-shred) is irreversible — it destroys the per-subject linkage key while the hash chain and Merkle anchors stay intact. Running with ephemeral keys turns every restart into an unintended node-local erasure of pseudonym linkage. Confirm the keystore checklist items above before production.
 
 ---
 
-## What is *not* a prod-delta
+## What is *not* a production responsibility
 
 Some limitations are design boundaries, not stubs a production build removes:
 
-- **The T4 ceiling.** Anti-detect tooling combined with real-human click-farms (tier T4) is an explicit design boundary, not something a production deployment "fixes." It is mitigated only by rate and reputation controls, never eliminated.
+- **The coherent browser or human-assisted automation ceiling.** Anti-detect tooling combined with real-human click-farms (tier coherent browser or human-assisted automation) is an explicit design boundary, not something a production deployment "fixes." It is mitigated only by rate and reputation controls, never eliminated.
 - **The unanchored in-window residual.** The audit log is **tamper-evident**, not tamper-proof: records after the last signed checkpoint remain re-writable by the writer until the next checkpoint (every 32 records). This is an honestly-scoped property, not a gap a production build closes.
 - **Fail-open on safe-method GET/HEAD (non-strict routes).** This is a documented accepted residual covered by fingerprint/subnet rate metering, chosen deliberately — not a stub.
 
-For the reasoning behind these boundaries, see [What Gate is](../explanation/what-gate-is.md) and [Hard rules & verdicts](./hard-rules-verdicts.md).
+For the reasoning behind these boundaries, see [What Gate is](../explanation/what-gate-is.md) and [enforcement rules & verdicts](./hard-rules-verdicts.md).
 
 ---
 
@@ -96,6 +96,6 @@ For the reasoning behind these boundaries, see [What Gate is](../explanation/wha
 - [Install requirements](./install-requirements.md) — prerequisites and build.
 - [Upgrade & migration](../how-to/upgrade-migration.md) — moving between versions.
 - [CLI, config & policy reference](./cli-config-policy.md) — every flag, preset, and default.
-- [RBAC & separation of duties](./rbac-separation-of-duties.md) — admin roles and dual-control.
+- [role-based access control & separation of duties](./rbac-separation-of-duties.md) — admin roles and dual-control.
 - [Verify the audit log](../how-to/verify-audit-log.md) — live and offline verification.
 - [Observability & SIEM](../how-to/observability-siem.md) — audit stream, metrics, log shipping.

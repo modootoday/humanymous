@@ -1,6 +1,6 @@
 ---
 description: "Pull humanymous Gate edge decisions into your SIEM: poll the authenticated admin audit stream with curl and forward, scrape the admin-plane Prometheus metrics endpoint, and wire the healthz/readyz probes."
-keywords: ["bot detection SIEM integration","observability","admin audit stream","poll-and-forward","chain-integrity verification","Prometheus metrics endpoint","liveness readiness probes","healthz readyz","pseudonymous audit records","humanymous Gate","self-hosted bot detection","reference implementation","Auditor token RBAC"]
+keywords: ["bot detection SIEM integration","observability","admin audit stream","poll-and-forward","chain-integrity verification","Prometheus metrics endpoint","liveness readiness probes","healthz readyz","pseudonymous audit records","humanymous Gate","self-hosted bot detection","reference implementation","Auditor token role-based access control"]
 ---
 
 # Observability and SIEM integration
@@ -31,7 +31,7 @@ The metrics endpoint deliberately does **not** emit per-verdict rates (allow/cha
 
 The admin API base is `/__hmn/admin/` on the admin listener. Every request needs a bearer token; the comparison is constant-time, and a missing or invalid token returns `404` (deny-by-default — the admin plane does not advertise itself). Every authenticated access is meta-audited (an `admin.access` record) before anything is served.
 
-Tokens are configured through the `HMN_ADMIN_TOKENS` environment variable (`"auditor:tok,operator:tok,approver:tok,dpo:tok"`); if unset, Gate mints random tokens per boot and prints them at startup. For observability you only need read access, so use the **Auditor** token — Auditor is read-only (`canRead`) and cannot request or approve any change. See [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) for the full role matrix.
+Tokens are configured through the `HMN_ADMIN_TOKENS` environment variable (`"auditor:tok,operator:tok,approver:tok,dpo:tok"`); if unset, Gate mints random tokens per boot and prints them at startup. For observability you only need read access, so use the **Auditor** token — Auditor is read-only (`canRead`) and cannot request or approve any change. See [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md) for the full role matrix.
 
 Set your token once:
 
@@ -46,7 +46,7 @@ export HMN_ADMIN_TOKEN="<your-auditor-token>"
 - `verdict=` — `allow`, `challenge`, `deny`, or `none`
 - `host=` — origin host
 - `route=` — matched `route_class` (`html|api|upgrade|control|static`), not a URL path
-- `rule=` — a hard-rule identifier (for example a specific HR)
+- `rule=` — an enforcement-rule identifier (for example a specific HR)
 - `minRisk=` — minimum risk score (0–100)
 - `subject=` — a pseudonymous subject, matched against `session_pseudonym` **or** `actor.id_pseudonym` (see [Export one subject's records](#export-one-subjects-records-gdpr-art-15))
 - `before=` — the paging cursor
@@ -115,7 +115,7 @@ The verification can report these mismatch classes, any of which should page you
 
 ## Scrape process metrics (`/__hmn/admin/metrics`)
 
-`GET /__hmn/admin/metrics` exposes Gate's process, chain-growth, and ban-state telemetry in Prometheus text-exposition format (`Content-Type: text/plain; version=0.0.4`). It is served on the **admin plane** and is auth-gated (any role — an Auditor token is enough), so Prometheus must scrape it **with a bearer token**, and behind mTLS if you set `-admin-mtls-ca`.
+`GET /__hmn/admin/metrics` exposes Gate's process, chain-growth, and ban-state telemetry in Prometheus text-exposition format (`Content-Type: text/plain; version=0.0.4`). It is served on the **admin plane** and is auth-gated (any role — an Auditor token is enough), so Prometheus must scrape it **with a bearer token**, and behind mutual Transport Layer Security if you set `-admin-mtls-ca`.
 
 ```
 curl --silent \
@@ -130,7 +130,7 @@ The endpoint emits these series:
 | `hmn_gate_uptime_seconds` | gauge | Seconds since this Gate process started. |
 | `hmn_gate_audit_records_total` | counter | Records sealed into this node's audit chain. |
 | `hmn_gate_audit_checkpoints_total` | counter | Signed Tree Heads written. |
-| `hmn_gate_audit_projection_dropped_total` | counter | Audit records dropped by the Tier-1/2 projection sinks (Redis/ClickHouse) under backpressure or outage. The durable WAL is unaffected — it stays the durability authority; a non-zero increase means the downstream projection view is incomplete. |
+| `hmn_gate_audit_projection_dropped_total` | counter | Audit records dropped by the Tier-1/2 projection sinks (Redis/ClickHouse) under backpressure or outage. The durable write-ahead log is unaffected — it stays the durability authority; a non-zero increase means the downstream projection view is incomplete. |
 | `hmn_gate_audit_integrity_ok` | gauge | The audit chain verifies end-to-end (`1`) or a mismatch was found (`0`) — re-checked each scrape (keep the interval ≥ 15s). |
 | `hmn_gate_audit_witnessed` | gauge | The latest checkpoints carry a valid independent-witness co-signature (`1`) or not (`0`). |
 | `hmn_gate_bans_active` | gauge | Currently active IP/fingerprint bans. |
@@ -142,7 +142,7 @@ The endpoint emits these series:
 
 ### What to alert on
 
-The audit-chain series are the highest-signal structural alerts on this endpoint — they need no tuning and no invented thresholds. **Alert on `hmn_gate_audit_integrity_ok == 0`, `hmn_gate_audit_witnessed == 0`, and any increase in `hmn_gate_audit_projection_dropped_total`** (`increase(hmn_gate_audit_projection_dropped_total[10m]) > 0`). The first two are the metrics twin of the `GET /__hmn/admin/integrity` `ok:false` / `witnessed:false` conditions — same signal, now scrapeable without a poll. The drop counter surfaces a Tier-1/2 sink shedding records, which is otherwise only a once-a-minute WARN log. Also alert on `hmn_gate_killswitch == 1` (enforcement demoted fleet-wide) and on `up == 0` (a metrics blackout hides all of the above). Ready-to-load rules live in [`deployments/observability/alerts.yml`](../../deployments/observability/alerts.yml).
+The audit-chain series are the highest-signal structural alerts on this endpoint — they need no tuning and no invented thresholds. **Alert on `hmn_gate_audit_integrity_ok == 0`, `hmn_gate_audit_witnessed == 0`, and any increase in `hmn_gate_audit_projection_dropped_total`** (`increase(hmn_gate_audit_projection_dropped_total[10m]) > 0`). The first two are the metrics twin of the `GET /__hmn/admin/integrity` `ok:false` / `witnessed:false` conditions — same signal, now scrapeable without a poll. The drop counter surfaces a Tier-1/2 sink shedding records, which is otherwise only a once-a-minute WARN log. Also alert on `hmn_gate_killswitch == 1` (enforcement demoted node-local) and on `up == 0` (a metrics blackout hides all of the above). Ready-to-load rules live in [`deployments/observability/alerts.yml`](../../deployments/observability/alerts.yml).
 
 > **Note:** Per-verdict rates are intentionally absent here — derive allow/challenge/deny rates from the audit stream (see [Where per-verdict rates come from](#where-per-verdict-rates-come-from)). Configure your Prometheus scrape job with the Auditor bearer token (`authorization` / `bearer_token_file`) and, in dev, `insecure_skip_verify: true` for the self-signed admin cert. A ready-to-merge scrape job is in [`deployments/observability/prometheus-scrape.yml`](../../deployments/observability/prometheus-scrape.yml); see the [observability README](../../deployments/observability/README.md).
 
@@ -193,11 +193,11 @@ sequenceDiagram
   J->>S: alert on ok:false or witnessed:false
 ```
 
-This gives you allow/challenge/deny decisions, risk scores, matched routes, and triggered hard rules in your SIEM without waiting for native shipping. Because the feed is pull-based and the records are pseudonymous, your collector needs only network reach to the admin listener and a read-only token — keep that token scoped to Auditor and rotate it like any other credential.
+This gives you allow/challenge/deny decisions, risk scores, matched routes, and triggered enforcement rules in your SIEM without waiting for native shipping. Because the feed is pull-based and the records are pseudonymous, your collector needs only network reach to the admin listener and a read-only token — keep that token scoped to Auditor and rotate it like any other credential.
 
 > **Note:** You are polling, not streaming. Your SIEM's freshness is bounded by your poll interval. Size the interval against your audit volume so a single page-drain keeps up between runs.
 
-## Explicitly production-only (prod-delta)
+## Explicitly production-only (production responsibility)
 
 The following are **not** in the reference build. Do not document or configure them as working; plan for them as production deltas:
 
@@ -210,4 +210,4 @@ For the full list and the reasoning behind each, see [Production vs. reference](
 
 - [CLI, config, and policy reference](../reference/cli-config-policy.md) — the `-admin-addr` flag, `HMN_ADMIN_TOKENS`, and other startup levers.
 - [Ledger tour](audit-console-tour.md) — the Overview KPIs and Integrity view described here, in the UI.
-- [Production vs. reference](../reference/production-vs-reference.md) — the complete prod-delta list.
+- [Production vs. reference](../reference/production-vs-reference.md) — the complete production responsibility list.

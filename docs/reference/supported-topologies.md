@@ -1,9 +1,9 @@
 ---
-description: "Which of the seven detection layers fire per topology: JA3/JA4 TLS fingerprinting runs only when the process terminates raw TLS; behind a CDN it goes inert."
-keywords: ["supported deployment topologies","JA3/JA4 TLS fingerprinting placement","bot detection behind CDN","raw TLS termination ClientHello","Gate reverse proxy vs Core engine","L4 TCP passthrough PROXY protocol v2","single-node vs multi-node scaling","network plane inert","open source bot detection","self-hosted deployment"]
+description: "Which evidence is available per topology: Core can inspect the original encrypted connection; the current Gate has a smaller collector and no ClientHello extraction."
+keywords: ["supported deployment topologies","connection fingerprint placement","bot detection behind CDN","raw encrypted-connection termination","Gate reverse proxy vs Core engine","transport pass-through Proxy Protocol version 2","single-node vs multi-node scaling","network evidence inactive","open source bot detection","self-hosted deployment"]
 ---
 
-# Supported topologies: where each detection layer is actually active
+# Supported topologies: where each kind of evidence is actually available
 
 > **Quadrant:** Reference. **Audience:** integrators and platform engineers deciding *where in their stack* to place humanymous, and evaluators who need to know which detections will and will not fire in their topology before they benchmark.
 
@@ -13,71 +13,71 @@ This repository is a **reference implementation**, not a production-hardened bui
 
 ## The one fact to take away first
 
-The seven detection layers split into two groups by **where the evidence comes from**:
+The complete Core pipeline splits into two groups by **where the evidence comes from**:
 
-- **L1–L4 (client plane)** — collected in the browser by JS + WASM and beaconed to the server under a rotating integrity token. Active wherever the detection bundle can run and reach the control plane.
-- **L5–L6 (network plane)** — JA3/JA4 TLS fingerprint, the HTTP/2 fingerprint, header order, and the UA-vs-TLS/UA-vs-H2 cross-checks. These are read from the **raw TLS connection itself**. They exist **only** in a process that terminates raw TLS on its own accept loop and extracts the ClientHello.
+- **browser-side evidence** — the complete Core bundle collects JavaScript and WebAssembly evidence. Gate's current loader supplies a smaller report; injection alone does not make the complete browser plane active.
+- **network and consistency evidence** — Core can derive connection fingerprints and cross-checks when it directly terminates and parses the original client connection. Gate currently does not implement that extraction.
 
-If anything between the client and the humanymous process re-terminates TLS — a CDN, a WAF appliance, an L7 load balancer, a corporate TLS-inspecting proxy — the ClientHello humanymous sees is *that intermediary's*, not the browser's, and the entire network plane is inert. It does not error; it simply produces no L5/L6 signals, and detection silently collapses to the client plane (the most spoofable layer) plus header and IP-intel heuristics.
+If an intermediary re-terminates the encrypted connection before Core, Core sees the intermediary's connection, not the browser's. Gate lacks the complete connection-fingerprint plane in both direct and re-terminated topologies.
 
 ## The two shipped surfaces are not equivalent detectors
 
 There are two binaries, and they do **not** have the same detection coverage. This is the gap most likely to surprise you.
 
-| Surface | Binary | Client plane (L1–L4) | Network plane (L5/L6 TLS/H2) | Notes |
+| Surface | Binary | Client plane (browser-side collection stages) | Network plane (network and consistency-check TLS/H2) | Notes |
 | --- | --- | --- | --- | --- |
 | **Core detection engine** | `cmd/server` (`:8443`) | Yes | **Yes** — captures the raw ClientHello + H2 frames on its own accept loop | The rich demo/reference surface. What most people benchmark. |
-| **Gate reverse proxy** | `cmd/gate` (`:8444`) | Yes | **No** — the gate does **not** currently extract the ClientHello | The component you deploy in front of an origin. JA3/JA4/H2 and their cross-checks (HR-2/HR-5/HR-11/HR-14) do **not** fire here. prod-delta. |
+| **Gate reverse proxy** | `cmd/gate` (`:8444`) | **Reduced** — current loader, not Core's full report | **No** — Gate does **not** currently extract the ClientHello | The component deployed in front of an origin. Do not reuse Core accuracy claims. |
 
-The consequence, stated plainly: **an integrator who evaluates the Core engine and then deploys the Gate loses the network plane.** At the gate, detection is client JS/WASM + header cross-checks + behavior + IP-intel only. The gate logs a startup `NOTE` saying so, and the ClientHello-capture path is a documented prod-delta (see [production vs reference](./production-vs-reference.md)). If you need TLS fingerprinting in production, either wire raw ClientHello + H2 capture into the gate accept loop (the `captureListener` pattern already exists in `cmd/server`) or deploy the Core engine directly as the TLS terminator.
+The consequence, stated plainly: **an integrator who evaluates the Core engine and then deploys the Gate loses the network plane.** Gate currently has its reduced browser loader plus edge observations such as headers, request behavior, and client address intelligence. It does not receive Core's full browser report or capture the browser's encryption handshake and HTTP/2 frames. Gate logs that limitation at startup. If production requires connection fingerprints, add raw ClientHello and HTTP/2 capture to Gate's accept loop (Core's `captureListener` is the reference pattern), or deploy Core as the encrypted-connection terminator. See [production vs reference](./production-vs-reference.md).
 
 ## Topology matrix: what fires where
 
-Read your intended topology across the row. "Client" = L1–L4, "Network" = L5/L6 TLS/H2, "Headers/IP" = header-order + IP-intel heuristics + behavioral rate/correlation.
+Read your intended topology across the row. "Client" = browser-side collection stages, "Network" = network and consistency-check TLS/H2, "Headers/IP" = header-order + IP-intel heuristics + behavioral rate/correlation.
 
-| Topology | Who terminates the browser's TLS | Client (L1–L4) | Network (L5/L6) | Headers / IP / behavior | Verdict quality |
+| Topology | Who terminates the browser's TLS | Client (browser-side collection stages) | Network (network and consistency-check) | Headers / IP / behavior | Verdict quality |
 | --- | --- | --- | --- | --- | --- |
 | **Core engine, direct-facing** | The Core itself | Active | **Active** | Active | Full — the design's intended shape |
-| **Gate proxy, direct-facing** | The Gate itself | Active | **Inactive** (gate does not capture ClientHello) | Active | Reduced — no TLS/H2 plane |
-| **Core/Gate behind an L4 / TCP-passthrough LB** (PROXY protocol) | The humanymous process | Active | Active on Core / inactive on Gate | Active (real client IP recovered via PROXY v2) | As direct-facing; IP-keyed state stays correct |
-| **Core/Gate behind a CDN or L7 LB that re-terminates TLS** | The CDN / L7 LB | Active | **Inactive** — silently | Active, but IP is the CDN's unless XFF is trust-configured | Weakest — client plane + headers only |
-| **Behind a corporate TLS-inspecting proxy** (client side) | The inspection proxy | Active | Active but **mismatched** — the JA4 is the proxy's, not the user's | Active | Risk of false-positive on HR-2 (UA-vs-TLS); see limitations |
+| **Gate proxy, direct-facing** | The Gate itself | Reduced | **Inactive** (Gate does not capture ClientHello) | Active | Reduced — no connection-handshake or HTTP/2-frame evidence |
+| **Core/Gate behind a transport-pass-through load balancer** (Proxy Protocol) | The humanymous process | Full on Core / reduced on Gate | Active on Core / inactive on Gate | Active (real client address recovered through Proxy Protocol version 2) | As direct-facing; address-keyed state stays correct |
+| **Core/Gate behind a CDN or application-layer load balancer that re-terminates TLS** | The CDN / application-layer load balancer | Active | **Inactive** — silently | Active, but IP is the CDN's unless XFF is trust-configured | Weakest — client plane + headers only |
+| **Behind a corporate encrypted-traffic inspection proxy** (client side) | The inspection proxy | Full on Core / reduced on Gate | Active on Core, but **mismatched** — the connection fingerprint belongs to the proxy, not the user's browser | Active | Risk of false positives from browser and connection-fingerprint inconsistencies; see limitations |
 
 Two rows deserve emphasis:
 
-- **Behind a CDN/L7-LB, the network plane is inert and silent.** This is the dominant production topology, and it disables exactly the defenses that catch uTLS/`curl_cffi` TLS parrots and Chromium TLS mimics. If your CDN can export the client's JA3/JA4 as a header (some can), that is the supported way to recover the signal — ingest it out-of-band rather than expecting humanymous to capture it. Until then, do not claim network-layer coverage in this topology.
-- **The L4-passthrough row is the way to keep the network plane on the Core while still load-balancing.** Terminate TLS at the Core, put an L4 (TCP) balancer in front with PROXY protocol v2 so the real client IP is recovered, and do not put a re-terminating CDN ahead of it. See the `-trusted-proxies` flag in [CLI, config & per-route policy](./cli-config-policy.md).
+- **Behind a content delivery network or application-layer load balancer, the network plane is inert and silent.** This common production topology removes the evidence used to distinguish browser connections from libraries that imitate their encryption handshake. The reference build does not import connection fingerprints supplied by an intermediary. Treat such an import as a production integration, and do not claim network-plane coverage until it is implemented and tested.
+- **Transport pass-through keeps Core's network plane while still load-balancing.** Terminate the encrypted connection at Core, put a transport-layer load balancer in front, and use Proxy Protocol version 2 if Core needs the original client address. Do not put a re-terminating intermediary ahead of it. See the `-trusted-proxies` flag in [command-line, configuration, and per-route policy](./cli-config-policy.md).
 
 ```mermaid
 flowchart TB
   subgraph GOOD["Network plane ACTIVE"]
     direction LR
-    B1["Browser"] -->|"raw TLS"| L4["L4 / TCP-passthrough LB<br/>(PROXY v2, optional)"] -->|"raw TLS"| C1["humanymous Core<br/>terminates TLS · reads ClientHello"]
+    B1["Browser"] -->|"raw encrypted connection"| Pass["Transport-pass-through load balancer<br/>(Proxy Protocol version 2 optional)"] -->|"raw encrypted connection"| C1["humanymous Core<br/>terminates connection · reads ClientHello"]
   end
   subgraph BAD["Network plane INERT (silent)"]
     direction LR
-    B2["Browser"] -->|"raw TLS"| CDN["CDN / WAF / L7 LB<br/>re-terminates TLS"] -->|"new TLS"| C2["humanymous<br/>sees the CDN's ClientHello"]
+    B2["Browser"] -->|"raw encrypted connection"| CDN["Content delivery network / web application firewall / application load balancer<br/>re-terminates encryption"] -->|"new encrypted connection"| C2["humanymous<br/>sees the intermediary's ClientHello"]
   end
 ```
 
-## The datacenter-ASN signal needs a dataset (it now fails open)
+## The hosting-network signal needs a dataset (it now fails open)
 
-`l5.ip.datacenter_asn` — the signal that flags a request coming from cloud/hosting IP space — depends on a real datacenter/ASN CIDR dataset that the reference does **not** ship. With no dataset wired, it **fails open**: it fires for no one. This is deliberate. An earlier build used a placeholder that treated *every public IP* as a datacenter IP, which — combined with hard rule HR-11 — hard-CHALLENGEd 100% of real human traffic on any non-loopback deployment. Missing a datacenter bot is far cheaper than challenging every human, so the signal is silent until you provide real data via `SetDatacenterCIDRs`. Plan to wire an ASN/cloud-CIDR feed if datacenter egress is part of your threat model.
+The machine signal `l5.ip.datacenter_asn` flags requests from known cloud or hosting address ranges. It depends on a real autonomous-system and cloud-address dataset, which the reference build does **not** ship. Without that dataset it deliberately **fails open** and flags no one. An earlier placeholder treated every public address as a hosting address, which challenged all real users outside loopback. Missing this signal is safer than challenging everyone, so it remains silent until an integrator supplies verified ranges through `SetDatacenterCIDRs`.
 
 ## Single-node by default; what scales and what does not
 
 humanymous defaults to **single-node, in-process state**. Only three kinds of shared state have a distribution seam today (an experimental, off-by-default `-redis` backend): **bans**, **sticky verdicts**, and the **rate limiter**. Everything else is per-process in memory:
 
-- Cross-session **correlation** (residential-proxy-rotation catch, HR-19)
-- The recon **sweep** detector (HR-30)
+- Cross-session **correlation** (residential-proxy-rotation catch, cross-session correlation rule)
+- The recon **sweep** detector (decision-probing sweep protection)
 - The **nonce** caches (anti-replay)
-- The Core's **RIT counter** and **PoW solve-state**
+- The Core's **request-integrity token counter** and **proof of work solve-state**
 
-The consequence for a multi-node deployment behind a load balancer: correlation, sweep, and nonce anti-replay weaken as node count rises, and replicating the Core desyncs RIT counters (spurious HR-17 friction) and loses PoW state (re-challenging users who already solved). Until those seams exist, the supported scale-out shape is: **cap the Core to a single vertically-scaled node**, or accept single-node correlation limits and pin verdict/token continuity with a shared token key (`HMN_TOKEN_KEY`) and the `-redis` ban/verdict backend. See [CLI flags](./cli-config-policy.md) and [production vs reference](./production-vs-reference.md).
+The consequence for a multi-node deployment behind a load balancer: correlation, sweep, and nonce anti-replay weaken as node count rises, and replicating the Core desyncs request-integrity token counters (spurious missing or replayed request-integrity token rule friction) and loses proof of work state (re-challenging users who already solved). Until those seams exist, the supported scale-out shape is: **cap the Core to a single vertically-scaled node**, or accept single-node correlation limits and pin verdict/token continuity with a shared token key (`HMN_TOKEN_KEY`) and the `-redis` ban/verdict backend. See [CLI flags](./cli-config-policy.md) and [production vs reference](./production-vs-reference.md).
 
 ## Clock dependence
 
-Three mechanisms derive a value from wall-clock time buckets and therefore assume loosely-synchronized clocks (NTP) across any fleet: the **RIT** time bucket, the **origin-cloaking epoch**, and the **verdict-token epoch**. Each tolerates roughly ±1 bucket of skew as a grace window. A node whose clock drifts more than a bucket past its peers will see spurious RIT/token friction. Run NTP; do not deploy a fleet with unsynchronized clocks.
+Three mechanisms derive a value from wall-clock time buckets and therefore assume loosely-synchronized clocks (NTP) across any fleet: the **request-integrity token** time bucket, the **origin-cloaking epoch**, and the **verdict-token epoch**. Each tolerates roughly ±1 bucket of skew as a grace window. A node whose clock drifts more than a bucket past its peers will see spurious request-integrity token/token friction. Run NTP; do not deploy a fleet with unsynchronized clocks.
 
 ## Attested routes need one shared cookie jar (a topology prerequisite)
 
@@ -102,17 +102,17 @@ See [Configure attested routes](../how-to/configure-attested-routes.md) for the 
 
 ## Checklist: pick your topology deliberately
 
-- If you want the **full seven-layer** verdict: deploy the **Core engine as the raw-TLS terminator**, direct-facing or behind an **L4-passthrough** LB — with **no re-terminating CDN/L7-LB in front**.
-- If you must sit **behind a CDN/L7-LB**: expect the **network plane to be inert**; size detection to client + headers + IP-intel, and ingest JA3/JA4 from the CDN out-of-band if it can export it.
-- If you deploy the **Gate proxy**: know that it captures **no TLS fingerprints** today; it is the enforcement/injection/audit surface, and its detection is client + headers + behavior + IP-intel.
-- If you **scale out**: keep the Core single-node, or accept the documented multi-node correlation/nonce/RIT limits; enable the `-redis` ban/verdict backend and a shared `HMN_TOKEN_KEY`.
+- If you want the **complete seven-stage** verdict, deploy the **Core engine as the encrypted-connection terminator**, direct-facing or behind a **transport-pass-through load balancer**, with no re-terminating intermediary in front.
+- If you must sit **behind a content delivery network or application-layer load balancer**, expect the **network plane to be inert** and size detection to the evidence that remains. Importing intermediary-supplied connection fingerprints requires a separate production integration.
+- If you deploy the **Gate proxy**, know that it captures **no connection fingerprints** today and receives only a reduced browser report; it is primarily the enforcement, injection, and audit surface.
+- If you **scale out**: keep the Core single-node, or accept the documented multi-node correlation/nonce/request-integrity token limits; enable the `-redis` ban/verdict backend and a shared `HMN_TOKEN_KEY`.
 - If you run **attested routes**: co-serve Core-Pass through the Gate (or share a cookie `Domain` on `hsid`) so `hsid` does not diverge, and set a shared `HMN_TOKEN_KEY` on both planes — otherwise the step-up receipt never verifies and humans loop on the route.
 - **Run NTP** on every node.
 
 ## Related pages
 
-- [Where Gate fits: vs WAF, CDN bot manager, and CAPTCHA](../explanation/where-gate-fits.md) — the threat-tier (T0–T4) model and when Gate is *not* the right tool.
+- [Where Gate fits: vs WAF, CDN bot manager, and CAPTCHA](../explanation/where-gate-fits.md) — the threat-tier (five attacker cost bands, from direct HTTP automation through coherent browser or human-assisted automation) model and when Gate is *not* the right tool.
 - [Which piece am I using?](../explanation/which-piece-am-i-using.md) — the three surfaces (Core `:8443`, Gate `:8444`, Observatory) so you never confuse two binaries.
-- [Production vs reference](./production-vs-reference.md) — the canonical prod-delta list, including ClientHello capture at the gate.
+- [Production vs reference](./production-vs-reference.md) — the canonical production responsibility list, including ClientHello capture at the gate.
 - [CLI, config & per-route policy](./cli-config-policy.md) — `-trusted-proxies` (PROXY protocol), `-redis`, `HMN_TOKEN_KEY`, and the route model.
 - [Will this break my app?](../explanation/will-this-break-my-app.md) — fail-open/closed behavior and monitor-first rollout.

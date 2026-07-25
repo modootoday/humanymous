@@ -31,7 +31,7 @@ An end user who is challenged, and an operator who opens the Ledger, both read E
 
 The internal specification documents that describe how Gate is built are written in Korean. They are for developers of the reference implementation only. They are **not** part of the user-facing product surface — no operator or end user encounters them at runtime, and they are not shipped as product strings. Do not treat the existence of Korean internal specs as evidence that any runtime surface is Korean; it is not.
 
-## Localization is not shipped — it is a prod-delta
+## Localization is not shipped — it is a production responsibility
 
 Localization of the product surface into Korean or any other language is **not shipped in the reference**. This includes:
 
@@ -41,20 +41,20 @@ Localization of the product surface into Korean or any other language is **not s
 - The end-user challenge page.
 - The end-user "Why am I seeing this?" help page.
 
-Adding any of these in another language is a **prod-delta** — a production responsibility for the operator, not a feature of the reference build. The reference does not define a message catalog, locale-negotiation, or string-externalization mechanism.
+Adding any of these in another language is a **production responsibility** — a production responsibility for the operator, not a feature of the reference build. The reference does not define a message catalog, locale-negotiation, or string-externalization mechanism.
 
-> **Confirmed in source:** No i18n or string-externalization mechanism exists in the reference. There is no message catalog, no locale files, and no `Accept-Language` locale negotiation for product strings — every surface string is inline and English-only (the Ledger UI is served from a single `console.html` with a hardcoded `lang="en"`, and the challenge interstitial is emitted with a hardcoded `lang="en"`). `Accept-Language` is read only as a fingerprinting/forwarding input, never to select a language. Localization is unimplemented; adding it is a prod-delta.
+> **Confirmed in source:** No i18n or string-externalization mechanism exists in the reference. There is no message catalog, no locale files, and no `Accept-Language` locale negotiation for product strings — every surface string is inline and English-only (the Ledger UI is served from a single `console.html` with a hardcoded `lang="en"`, and the challenge interstitial is emitted with a hardcoded `lang="en"`). `Accept-Language` is read only as a fingerprinting/forwarding input, never to select a language. Localization is unimplemented; adding it is a production responsibility.
 
 ## If you serve non-English visitors, localize the visitor-facing pages first
 
 Two surfaces are read by real end users rather than by your operators, and they are the priority to localize if your audience is not English-reading:
 
-- The **challenge page** an unverified visitor is shown. See [Challenge accessibility](../help/challenge-accessibility.md) for what that page is and its accessibility posture (the reference ships a minimal interstitial; a full self-hosted, accessible challenge UI is itself a prod-delta).
+- The **challenge page** an unverified visitor is shown. See [Challenge accessibility](../help/challenge-accessibility.md) for what that page is and its accessibility posture (the reference ships a minimal interstitial; a full self-hosted, accessible challenge UI is itself a production responsibility).
 - The **"Why am I seeing this?"** explanation page. See [why-am-i-seeing-this](../help/why-am-i-seeing-this.md).
 
 These pages face people who may have been challenged or blocked, so their language and clarity matter most to a non-English audience. The Ledger, admin API, and log lines face your own operators and can stay English or be localized later, at your discretion.
 
-> **Note:** When you localize the challenge or help pages, keep them free of internal signal identifiers (hard-rule IDs, layer references, fingerprint terms). Those never belong in an end-user string in any language. The [documentation style guide](../style-guide.md) states this rule for the English surface; it applies equally to any translation.
+> **Note:** When you localize the challenge or help pages, keep them free of internal signal identifiers (enforcement-rule identifiers, layer references, fingerprint terms). Those never belong in an end-user string in any language. The [documentation style guide](../style-guide.md) states this rule for the English surface; it applies equally to any translation.
 
 ---
 

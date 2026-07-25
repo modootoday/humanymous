@@ -1,7 +1,7 @@
 ---
 title: HTTPS / TLS Certificates (Let's Encrypt, BYO, behind a terminator)
 description: "How to give humanymous Gate a real, browser-trusted TLS certificate: automatic Let's Encrypt via TLS-ALPN-01 on :443, bring-your-own PEM, or self-signed behind an existing terminator — plus a staging dry-run, automatic renewal, and HSTS."
-keywords: ["humanymous Gate TLS certificate","Let's Encrypt Docker","TLS-ALPN-01","acme-domain","acme-cache persistent volume","bring-your-own certificate","tls-cert tls-key","acme-directory staging","Let's Encrypt rate limits","HSTS","behind CDN nginx Caddy Traefik","trusted-proxies PROXY protocol","admin mTLS","automatic certificate renewal"]
+keywords: ["humanymous Gate TLS certificate","Let's Encrypt Docker","TLS-ALPN-01","acme-domain","acme-cache persistent volume","bring-your-own certificate","tls-cert tls-key","acme-directory staging","Let's Encrypt rate limits","HSTS","behind CDN nginx Caddy Traefik","trusted-proxies PROXY protocol","admin mutual Transport Layer Security","automatic certificate renewal"]
 ---
 
 # HTTPS / TLS certificates
@@ -18,10 +18,10 @@ Gate's edge listener chooses its certificate from exactly one of three sources (
 |----------------|-----|---------|
 | Public domain, Gate terminates TLS itself, nothing else on `:443` | **Let's Encrypt** (`-acme-domain`) — automatic issue + renew | [Let's Encrypt](#lets-encrypt-recommended) |
 | You already have a certificate (corporate CA, wildcard, purchased) | **Bring-your-own** (`-tls-cert` / `-tls-key`) | [Bring-your-own](#bring-your-own-certificate) |
-| A CDN / nginx / Caddy / Traefik / L7 LB already terminates TLS in front of Gate | **Self-signed / internal cert behind the terminator** + `-trusted-proxies` | [Behind a terminator](#behind-an-existing-tls-terminator--cdn) |
+| A CDN / nginx / Caddy / Traefik / application-layer load balancer already terminates TLS in front of Gate | **Self-signed / internal cert behind the terminator** + `-trusted-proxies` | [Behind a terminator](#behind-an-existing-tls-terminator--cdn) |
 | Local development only | Do nothing — the self-signed dev cert is the default | — |
 
-> **Note:** These sources apply to the **public edge** only. The **admin listener always stays self-signed** — it is a management plane, hardened with client-cert mTLS (`-admin-mtls-ca`), not ACME. See [Keep the admin plane on mTLS](#keep-the-admin-plane-on-mtls-not-acme).
+> **Note:** These sources apply to the **public edge** only. The **admin listener always stays self-signed** — it is a management plane, hardened with client-cert mutual Transport Layer Security (`-admin-mtls-ca`), not ACME. See [Keep the admin plane on mutual Transport Layer Security](#keep-the-admin-plane-on-mtls-not-acme).
 
 ---
 
@@ -33,7 +33,7 @@ Gate's edge listener chooses its certificate from exactly one of three sources (
 
 1. **DNS.** An `A` (and/or `AAAA`) record for your domain points at the host's public IP.
 2. **Inbound `:443` open from anywhere.** Let's Encrypt validation servers connect from varying IPs, so `:443` must be reachable from the public internet, not just your office.
-3. **Nothing else terminates TLS for that domain on `:443`.** TLS-ALPN-01 is answered in the handshake, so no CDN, WAF, or L7 load balancer may re-terminate TLS in front of Gate. (If something must, you are in the [behind-a-terminator](#behind-an-existing-tls-terminator--cdn) topology, not this one.)
+3. **Nothing else terminates TLS for that domain on `:443`.** TLS-ALPN-01 is answered in the handshake, so no CDN, WAF, or scoring and policy stage load balancer may re-terminate TLS in front of Gate. (If something must, you are in the [behind-a-terminator](#behind-an-existing-tls-terminator--cdn) topology, not this one.)
 4. **A persistent volume for the certificate cache** (see the caution below).
 
 ### Run it (single container)
@@ -149,15 +149,15 @@ Both flags are required together; the certificate PEM should include any interme
 
 ## Behind an existing TLS terminator / CDN
 
-If a CDN, nginx, Caddy, Traefik, or an L7 load balancer already terminates TLS in front of Gate, **do not run ACME on Gate** — the terminator, not Gate, owns the public certificate. Run Gate with its default self-signed dev certificate (or your own internal cert via `-tls-cert`/`-tls-key`) behind the terminator, and tell Gate which balancers to trust so it can recover the real client IP:
+If a CDN, nginx, Caddy, Traefik, or an application-layer load balancer already terminates TLS in front of Gate, **do not run ACME on Gate** — the terminator, not Gate, owns the public certificate. Run Gate with its default self-signed dev certificate (or your own internal cert via `-tls-cert`/`-tls-key`) behind the terminator, and tell Gate which balancers to trust so it can recover the real client IP:
 
 ```
 -trusted-proxies <cidr-of-your-terminator>
 ```
 
-Set `-trusted-proxies` to your terminator's addresses **only** — never a broad range like `0.0.0.0/0`, or any client could spoof its source IP. With it set, Gate reads the real client IP from the PROXY-protocol-v2 header the L4 balancer sends, keeping IP-keyed state (bans, rate limits, correlation) correct.
+Set `-trusted-proxies` to your terminator's addresses **only** — never a broad range like `0.0.0.0/0`, or any client could spoof its source IP. With it set, Gate reads the real client IP from the PROXY-protocol-v2 header the transport-layer load balancer sends, keeping IP-keyed state (bans, rate limits, correlation) correct.
 
-> **Caveat — the TLS fingerprint plane goes inert behind a re-terminator.** When anything re-terminates TLS in front of Gate, the ClientHello Gate sees is the *terminator's*, not the browser's, so the JA3/JA4/HTTP-2 fingerprint plane (HR-2/HR-5/HR-11/HR-14) is **inactive and silent** — detection collapses to the client, header, behavior, and IP-intel planes. For TLS fingerprinting you must terminate **raw TLS at the Core engine with nothing in front**. This is a placement decision, not a tunable; read [Supported topologies](../reference/supported-topologies.md) before you choose this shape.
+> **Caveat — the current Gate does not extract the client's connection fingerprint.** Direct-facing Gate and Gate behind a re-terminating intermediary both lack Core's complete ClientHello and HTTP/2 evidence. For the reference network-fingerprint path, terminate the original client connection at Core with no re-terminator in front. Read [Supported topologies](../reference/supported-topologies.md) before comparing measurements.
 
 ---
 
@@ -171,9 +171,9 @@ Once a real certificate is issued and stable, add `Strict-Transport-Security` wi
 
 Enable it **only after** the real cert is confirmed working. HSTS pins the browser to HTTPS for the max-age window, so a bad, expired, or accidentally-self-signed certificate then **hard-blocks** browsers with no click-through. Leave `-hsts` off while you are still on the dev cert or dialing in ACME.
 
-## Keep the admin plane on mTLS (not ACME)
+## Keep the admin plane on mutual Transport Layer Security (not ACME)
 
-The `-acme-domain` / `-tls-cert` sources configure the **public edge only**. The admin listener (`-admin-addr`, default `127.0.0.1:8445`) always keeps its own self-signed certificate — it is a management plane, not a public surface. Harden it with **client-cert mTLS** using `-admin-mtls-ca` (a PEM of client-cert CA(s)); when set, the admin listener requires a client certificate signed by that CA **in addition to** the bearer token. Do not point ACME at the admin listener. See [Deployment & policy operations](./deployment-policy-operations.md#recipe-stand-up-the-admin-listener-with-seeded-role-tokens).
+The `-acme-domain` / `-tls-cert` sources configure the **public edge only**. The admin listener (`-admin-addr`, default `127.0.0.1:8445`) always keeps its own self-signed certificate — it is a management plane, not a public surface. Harden it with **client-cert mutual Transport Layer Security** using `-admin-mtls-ca` (a PEM of client-cert CA(s)); when set, the admin listener requires a client certificate signed by that CA **in addition to** the bearer token. Do not point ACME at the admin listener. See [Deployment & policy operations](./deployment-policy-operations.md#recipe-stand-up-the-admin-listener-with-seeded-role-tokens).
 
 ---
 

@@ -1,14 +1,14 @@
 ---
-description: "Crypto-shred destroys the per-subject linkage key binding audit-log pseudonyms — DPO-gated, dual-control, with a cancellable hold window. Records stay verifiable."
-keywords: ["crypto-shred","GDPR Art. 17 erasure","right to erasure","cryptographic erasure","linkage key destruction","dual-control DPO erasure","tamper-evident audit log","pseudonymization","PIPA erasure request","humanymous Gate"]
+description: "Crypto-shred destroys the per-subject linkage key binding audit-log pseudonyms — data protection officer-gated, dual-control, with a cancellable hold window. Records stay verifiable."
+keywords: ["crypto-shred","GDPR Art. 17 erasure","right to erasure","cryptographic erasure","linkage key destruction","dual-control data protection officer erasure","tamper-evident audit log","pseudonymization","PIPA erasure request","humanymous Gate"]
 ---
 
 # Right-to-erasure (crypto-shred) operations runbook
 
 **Diátaxis quadrant:** Runbook (operational procedure).
-**Audience:** DPO and compliance operator executing a GDPR Art. 17 / PIPA erasure request against a humanymous Gate deployment.
+**Audience:** data protection officer and compliance operator executing a GDPR Art. 17 / PIPA erasure request against a humanymous Gate deployment.
 
-This runbook is written against the reference implementation. Endpoints, defaults, and role gates match the reference build; a production deployment may add controls (prod-delta) but must not remove the ones described here.
+This runbook is written against the reference implementation. Endpoints, defaults, and role gates match the reference build; a production deployment may add controls (production responsibility) but must not remove the ones described here.
 
 ---
 
@@ -20,16 +20,16 @@ humanymous Gate does not store raw identifiers. Every subject identifier that ap
 
 > **Warning:** Crypto-shred is irreversible. Destroying the per-subject linkage key cannot be undone, and there is no recovery path once the shred commits. Confirm subject identity and the mapped pseudonym before you request erasure, and use the hold window (step 3) as your last checkpoint.
 
-This procedure is DPO-gated and dual-control. A single actor cannot shred a subject's key alone.
+This procedure is data protection officer-gated and dual-control. A single actor cannot shred a subject's key alone.
 
 The five steps as a state machine — note the cancellable hold window that stands between commit and the irreversible shred:
 
 ```mermaid
 stateDiagram-v2
   [*] --> Intake: map subject to console pseudonym
-  Intake --> Pending: Operator or DPO requests erasure
-  Pending --> Scheduled: distinct DPO commits
-  Scheduled --> Cancelled: Operator or DPO cancels within hold window
+  Intake --> Pending: Operator or data protection officer requests erasure
+  Pending --> Scheduled: distinct data protection officer commits
+  Scheduled --> Cancelled: Operator or data protection officer cancels within hold window
   Scheduled --> Shredded: hold window (default 5 min) elapses
   Cancelled --> [*]
   Shredded --> Evidence: erasure.completed audit record sealed
@@ -43,10 +43,10 @@ stateDiagram-v2
 ## Preconditions
 
 - You can reach the Ledger on the admin listener at `https://localhost:8445/__hmn/admin/console` (Compliance/Erasure view), or you can call the admin API base `/__hmn/admin/` directly.
-- You hold a bearer token whose server-derived role can act. **Requesting** erasure needs the **Operator** or **DPO** role; **committing** it requires the **DPO** role specifically. Actor identity is derived from the token; request-body actor fields are ignored.
-- The requester and the committing DPO are **distinct** identities. Dual-control rejects a self-approval.
+- You hold a bearer token whose server-derived role can act. **Requesting** erasure needs the **Operator** or **data protection officer** role; **committing** it requires the **data protection officer** role specifically. Actor identity is derived from the token; request-body actor fields are ignored.
+- The requester and the committing data protection officer are **distinct** identities. Dual-control rejects a self-approval.
 
-> **Important:** Only the **DPO** role can commit (approve) an erasure — a generic Approver cannot. Because the committer must be a distinct DPO, an erasure needs either two DPO identities, or an Operator requester plus a distinct DPO committer.
+> **Important:** Only the **data protection officer** role can commit (approve) an erasure — a generic Approver cannot. Because the committer must be a distinct data protection officer, an erasure needs either two data protection officer identities, or an Operator requester plus a distinct data protection officer committer.
 - Admin API calls carry `Authorization: Bearer <token>`. A missing or invalid token returns `404` (deny-by-default). Every authenticated access is meta-audited before it is served.
 
 ---
@@ -61,9 +61,9 @@ You supply the **console-visible session pseudonym** as the `Subject`. Gate reso
 
 ---
 
-## Step 2 — Request erasure (Operator or DPO)
+## Step 2 — Request erasure (Operator or data protection officer)
 
-An Operator or a DPO submits the erasure request. This creates a **pending** action; nothing is destroyed at this point.
+An Operator or a data protection officer submits the erasure request. This creates a **pending** action; nothing is destroyed at this point.
 
 Console: in the Compliance/Erasure view, submit the erasure request against the mapped pseudonym.
 
@@ -80,9 +80,9 @@ The response identifies the pending erasure by an `<id>` used in steps 3 and 2b 
 
 The request body is `{"Subject":"<console pseudonym>","LegalBasis":"GDPR Art.17"}` — both fields are required (the call returns `400` otherwise). The response is `{"pending":true,"approvalId":"<id>","needsRole":"dpo"}`; the `approvalId` is the `<id>` used to commit (step 2b) or cancel (step 3).
 
-### Step 2b — Commit via a distinct DPO
+### Step 2b — Commit via a distinct data protection officer
 
-Erasure is dual-control, and its committer must hold the **DPO** role. A **distinct** DPO (an identity that is not the requester) commits the pending action:
+Erasure is dual-control, and its committer must hold the **data protection officer** role. A **distinct** data protection officer (an identity that is not the requester) commits the pending action:
 
 ```
 curl -X POST https://localhost:8445/__hmn/admin/approvals/<id> \
@@ -104,7 +104,7 @@ curl -X POST https://localhost:8445/__hmn/admin/erasures/<id>/cancel \
   -H "Authorization: Bearer <token>"
 ```
 
-Cancelling is an operate-level action: an **Operator** or a **DPO** token may cancel a scheduled erasure during its hold window.
+Cancelling is an operate-level action: an **Operator** or a **data protection officer** token may cancel a scheduled erasure during its hold window.
 
 - If the window is not cancelled, the shred auto-executes. A 10-second ticker runs due shreds; the key is destroyed on the first tick after the hold window elapses.
 
@@ -141,7 +141,7 @@ Filter for `event_type` / `EventType` = `erasure.completed` (and the subject pse
 
 3. Retain the filtered audit export under your compliance retention schedule as evidence of completion.
 
-> **Note:** A dedicated certificate-retrieval endpoint with an independent Ed25519 signature at seal time is a prod-delta. Do not invent a curl to an endpoint that does not exist.
+> **Note:** A dedicated certificate-retrieval endpoint with an independent Ed25519 signature at seal time is a production responsibility. Do not invent a curl to an endpoint that does not exist.
 
 ---
 
@@ -160,7 +160,7 @@ Use the same console-visible pseudonym you resolved in Step 1. This returns only
 
 ## What this proves, and the residual
 
-- **Proves:** The per-subject linkage key for that **session subject** was destroyed under DPO gating and dual-control, and an `erasure.completed` audit record was sealed into the chain, without altering or deleting the underlying audit records. The chain and Merkle anchors remain verifiable.
+- **Proves:** The per-subject linkage key for that **session subject** was destroyed under data protection officer gating and dual-control, and an `erasure.completed` audit record was sealed into the chain, without altering or deleting the underlying audit records. The chain and Merkle anchors remain verifiable.
 - **Residual — pseudonymous, not anonymous:** Erasure removes the resolution key, not the records. Low-entropy identifiers behind a pseudonym could in principle be re-derived **only if key material leaks** (keystore / vault / pre-erasure backups). Describe the outcome as pseudonymized data rendered unresolvable, not as anonymized or deleted data.
 - **What shred does not reach:** the **ban ledger** (raw-keyed keys, up to ~400d, and `GET /__hmn/admin/bans` returns raw keys to any authenticated role including Auditor), in-memory **correlation / watermark** registries, **other nodes** in a multi-node deployment that never received the shred, and **keystore backups** taken before the shred (restoring them re-arms linkage). Scope Art. 17 fulfilment accordingly.
 - **Independent verification:** The audit chain still verifies after erasure. See the [Verify the audit log](../how-to/verify-audit-log.md) guide.
@@ -173,5 +173,5 @@ For independent verification, see the [Verify the audit log](../how-to/verify-au
 
 - [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — audit log, hash chain / Merkle anchors, and pseudonymization model.
 - [Incident runbooks](incident-runbooks.md) — on-call procedures.
-- [Start here: Compliance / DPO](../start-here/compliance-dpo.md) — role and access setup.
+- [Start here: Compliance / data protection officer](../start-here/compliance-dpo.md) — role and access setup.
 - [Verify the audit log](../how-to/verify-audit-log.md) — independent verification of the tamper-evident chain.

@@ -1,7 +1,7 @@
 ---
 title: Upgrade, Migration & Zero-Downtime
 description: "Upgrade a self-hosted humanymous Gate node: the reference upgrade is a process restart — keep identity with -keystore, monitor-then-enforce, verify the audit chain across it."
-keywords: ["humanymous Gate upgrade","self-hosted bot detection upgrade","keystore identity preservation","monitor mode rollout","zero-downtime upgrade prod-delta","audit chain continuity","signed config_version policy","Ed25519 signing key restart","rolling multi-node upgrade","reference implementation"]
+keywords: ["humanymous Gate upgrade","self-hosted bot detection upgrade","keystore identity preservation","monitor mode rollout","zero-downtime upgrade production responsibility","audit chain continuity","signed config_version policy","Ed25519 signing key restart","rolling multi-node upgrade","reference implementation"]
 ---
 
 # Upgrade, migration & zero-downtime
@@ -12,7 +12,7 @@ This guide describes the safe way to move a Gate node from one build to the next
 
 > **Note:** This repository is a reference implementation, not a production-hardened build. The upgrade posture below is honest about that boundary: the reference runs as one process with an in-process verdict store and in-process bans, so an upgrade is a process restart, not a rolling fleet operation.
 
-Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
+Gate is the reverse-proxy enforcement layer. It scores the evidence available to its current collector, enforces the verdict, and writes decisions to a tamper-evident audit log. It fronts the operator's origin app and does not control it.
 
 ---
 
@@ -20,7 +20,7 @@ Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the dete
 
 Two properties of the reference build decide how you upgrade it:
 
-- **Policy is startup configuration.** The route table, the per-route presets, and the boot flags are read once, at process start, from `cmd/gate/main.go` and `internal/gate/config.go`. There is no runtime per-route policy-write endpoint. Changing a route's preset, adding a route, or changing a flag means editing the config and starting a new process.
+- **Startup policy remains the base configuration.** Runtime Settings can overlay supported routes, thresholds, rule and module modes, and rate limits. Boot-only listener, certificate, and storage flags still require a restart.
 - **State is in-process.** The verdict store and the ban ladder live in the process's memory in the reference build. There is no shared external state store. When the process exits, that runtime state is gone with it.
 
 So upgrading to a new build, or changing route policy, is the same operation: **stop the old process, start the new one.** The only variable that matters for a clean restart is whether the node keeps its cryptographic identity across that restart — which is what the keystore is for.
@@ -85,7 +85,7 @@ Once the monitor-mode verdicts look right, restart the node **without** `-monito
 bin/gate.exe -addr :8444 -admin-addr :8445 -upstream http://127.0.0.1:9000 -node gate-1 -keystore ./gate.keystore
 ```
 
-> **Note:** Because both steps are full restarts of the same single node, the reference cannot enforce with the new build and shadow it at the same time on that node. The monitor-then-enforce sequence is two restarts of one process, not a live traffic split. A true side-by-side shadow needs more than one node (see [Multi-node](#multi-node-rolling-upgrades-are-a-prod-delta)).
+> **Note:** Because both steps are full restarts of the same single node, the reference cannot enforce with the new build and shadow it at the same time on that node. The monitor-then-enforce sequence is two restarts of one process, not a live traffic split. A true side-by-side shadow needs more than one node (see [Multi-node](#multi-node-rolling-upgrades-are-a-production responsibility)).
 
 ---
 
@@ -95,7 +95,7 @@ The same restart rule covers policy changes, not just new binaries:
 
 - Route presets are set at startup via the route table in `cmd/gate/main.go` (longest-prefix wins; default `balanced`; `/login`, `/checkout`, `/admin` → `strict`; `/health` → `off`). Editing which preset a route uses is a code-level change that takes effect only on the next start.
 - The reserved names `low` and `api` are **not** implemented and fall back to `balanced` — never introduce them as a route preset expecting new behavior.
-- The only runtime enforcement levers that do **not** require a restart are the global kill switch (`POST /__hmn/admin/killswitch`, dual-control) and the `-monitor` boot flag. Neither edits a route's preset — the kill switch demotes hard-rule enforcement to monitor fleet-wide, and `-monitor` demotes everywhere. Changing one route's posture specifically still means editing the route table and restarting.
+- Runtime Settings can change supported route presets, thresholds, rule and module modes, network policy, and rate limits without a restart. The kill switch is a node-local emergency demotion in the reference. The `-monitor` flag is boot-time configuration.
 
 For the full flag, preset, and route-table reference, see [CLI, config & per-route policy reference](../reference/cli-config-policy.md).
 
@@ -103,7 +103,7 @@ For the full flag, preset, and route-table reference, see [CLI, config & per-rou
 
 ## Breaking-change handling: watch the signed config version
 
-After an upgrade, confirm what policy the node is actually running rather than assuming the edit took. The Policy view / `GET /__hmn/admin/policy` exposes a signed `config_version` — a **fingerprint of the effective running posture** (route table + rate limits + monitor + kill-switch state), not a dual-control write path. Route/preset edits still require a process restart; the dual-control runtime levers remain kill switch and permanent/CIDR bans.
+After an upgrade, confirm the effective policy rather than assuming startup configuration or an overlay took effect. The Policy and Settings views expose the effective configuration version. Preserve or intentionally clear the active overlay, and dry-run any post-upgrade change against the new parent version.
 
 - Read the Policy / Policy & Rollout view in the Ledger, or `GET /__hmn/admin/policy`, and confirm the effective route posture (preset, fail-open/closed, sync re-score, injection) and the `config_version` match the build and config you intended to deploy.
 - Treat a `config_version` that did not change when you expected it to — or changed when you did not edit policy — as a signal to stop and reconcile before enabling enforcement.
@@ -129,19 +129,19 @@ An upgrade should not break audit continuity. With `-keystore`, the signing key 
 
 ---
 
-## Multi-node, rolling upgrades are a prod-delta
+## Multi-node, rolling upgrades are a production responsibility
 
 True zero-downtime upgrade — running several Gate nodes behind a load balancer, draining and replacing them one at a time so the edge never goes fully offline — depends on **shared fleet state**.
 
 - By default the Gate is a **single node** with an **in-process verdict store** and **in-process bans**. An **experimental, off-by-default** shared-state backend (`-redis host:port`) now propagates bans, sticky verdicts, and a shared rate limiter across nodes so a ban/DENY on one node is enforced on all; a Redis outage degrades each node to its local view (no lockout). It is experimental: treat Redis as a trusted, network-isolated component (no AUTH/TLS/value-signing yet), and see the trust caveat in [CLI flags](../reference/cli-config-policy.md).
 - Without `-redis`, two nodes do not agree on ban ladders or rate-limit counters, so you cannot treat them as one enforcement surface. Connection draining and rolling replacement orchestration remain **production architecture**, not reference behavior — but the shared-state substrate they need is now available (experimental).
-- The kill switch is described as fleet-wide, and node identity anticipates multiple nodes, but the reference build itself runs and upgrades as one process. Restarting it is a brief interruption of the edge for that node.
+- The kill switch is described as node-local, and node identity anticipates multiple nodes, but the reference build itself runs and upgrades as one process. Restarting it is a brief interruption of the edge for that node.
 
 > **Note:** Because the reference is a single node, the restart in Step 1 and Step 3 momentarily interrupts the edge that node serves. Plan the restart into a maintenance window, or front the origin another way during it — the reference does not provide in-process rolling replacement.
 
-> **TODO(verify):** The production-supported topology for rolling multiple nodes behind a load balancer with shared state — the shared state store, the drain/replace sequence, and how verdict tokens and ban ladders are shared across nodes. This is a prod-delta and the specifics are not defined in the reference.
+> **TODO(verify):** The production-supported topology for rolling multiple nodes behind a load balancer with shared state — the shared state store, the drain/replace sequence, and how verdict tokens and ban ladders are shared across nodes. This is a production responsibility and the specifics are not defined in the reference.
 
-> **Note:** the on-disk formats carry no explicit version field — the sealed keystore is a scrypt + AES-256-GCM JSON blob (`salt`/`nonce`/`ct` wrapping `signing_seed`/`hmac_key`/`vault`/`witness_seed`), and the audit-WAL segments have no format-version header — so there is no version-gated migration step to run. The one migration the reference performs is automatic and in-process: opening a pre-witness-persistence keystore (one with no `witness_seed`) mints a witness seed and re-seals the file transparently on first boot. No operator action is required to upgrade a `-keystore` node between reference builds.
+> **Note:** the on-disk formats carry no explicit version field — the sealed keystore is a scrypt + AES-256-GCM JSON blob (`salt`/`nonce`/`ct` wrapping `signing_seed`/`hmac_key`/`vault`/`witness_seed`), and the audit-write-ahead log segments have no format-version header — so there is no version-gated migration step to run. The one migration the reference performs is automatic and in-process: opening a pre-witness-persistence keystore (one with no `witness_seed`) mints a witness seed and re-seals the file transparently on first boot. No operator action is required to upgrade a `-keystore` node between reference builds.
 
 For the full list of what the reference does not ship for production, see [Production vs. reference](../reference/production-vs-reference.md).
 
@@ -155,13 +155,13 @@ For the full list of what the reference does not ship for production, see [Produ
 4. Restart without `-monitor` to enable enforcement.
 5. Re-verify chain integrity (Integrity view / `GET /__hmn/admin/integrity`) — same public key, no new mismatch classes.
 6. Confirm the effective policy and signed `config_version` in the Policy view / `GET /__hmn/admin/policy`.
-7. For anything beyond a single node — rolling, draining, shared state — treat it as production architecture (prod-delta).
+7. For anything beyond a single node — rolling, draining, shared state — treat it as production architecture (production responsibility).
 
 ---
 
 ## Related
 
-- [Key management](key-management.md) — how the keystore seals and opens the node's signing key, HMAC key, and pseudonym vault; rotation is a prod-delta.
+- [Key management](key-management.md) — how the keystore seals and opens the node's signing key, HMAC key, and pseudonym vault; rotation is a production responsibility.
 - [Production vs. reference](../reference/production-vs-reference.md) — the canonical list of what the reference does not ship for production, including shared fleet state.
 - [CLI, config & per-route policy reference](../reference/cli-config-policy.md) — every flag, preset, route default, and admin endpoint.
 - [Quickstart (monitor mode)](../tutorials/quickstart-monitor-mode.md) — bringing a node up in shadow before enforcing.

@@ -1,6 +1,6 @@
 ---
 description: "humanymous's Detection Observatory is a dev-gated, local-only page that renders the engine's own ScoreTrace — the same code that scores each request, not a copy that can drift."
-keywords: ["Detection Observatory architecture","live telemetry bot detection","server-sent events SSE stream","score trace explainability","open source bot detection","self-hosted detection engine","dev-gated loopback tool","ALLOW CHALLENGE DENY verdict","faithful-by-construction","noisy-OR hard-rule promotion"]
+keywords: ["Detection Observatory architecture","live telemetry bot detection","server-sent events SSE stream","score trace explainability","open source bot detection","self-hosted detection engine","dev-gated loopback tool","ALLOW CHALLENGE DENY verdict","faithful-by-construction","noisy-OR enforcement-rule promotion"]
 ---
 
 # Inside the Detection Observatory: live-telemetry and safety architecture
@@ -16,7 +16,7 @@ The Observatory is a dev-gated single-page app served by the standalone detectio
 - **Trust** — the "why this verdict" view renders the engine's *own* score trace, not a second implementation that could drift from what production scoring does.
 - **Safety** — every route, launch, and stream is tied to a concrete enforcement point so a self-test can never become a live attack surface or poison the next baseline.
 
-For the operator-facing walkthrough of the panels and how to turn it on, see [how-to: Detection Observatory](../how-to/detection-observatory.md). For the scoring math this page refers to (dedup, layer caps, noisy-OR, hard rules), see [explanation: detection engine internals](./detection-engine-internals.md).
+For the operator-facing walkthrough of the panels and how to turn it on, see [how-to: Detection Observatory](../how-to/detection-observatory.md). For the scoring math this page refers to (dedup, layer caps, noisy-OR, enforcement rules), see [explanation: detection engine internals](./detection-engine-internals.md).
 
 ## The trust property: the page shows what the engine did
 
@@ -26,7 +26,7 @@ The single most important design decision is that the Observatory does **not** r
 
 - the same `dedupGroups` keep-rule (highest-scoring signal per `(layer, group)` correlation group; empty-group signals each stand alone),
 - the same within-layer noisy-OR accumulation and `LayerCap=60` clamp,
-- the same `promotionRules` table (HR-1..HR-21), evaluated in the same first-match precedence order.
+- the same `promotionRules` table (the Core enforcement-rule set), evaluated in the same first-match precedence order.
 
 Because the trace is produced by the same code that scores the request, the trace's winning contributor and its score can never diverge from the number the engine acted on. This is not an aspiration — it is asserted by a golden test: `trace.Score == Combine`, and `ScoreWithTrace == Score`. The production `Score()` path is left untouched; the trace is an *observable form* of it, not a fork.
 
@@ -38,12 +38,12 @@ The `ScoreTrace` carries four shapes, and each maps to a panel in the "why this 
 
 | Trace shape | Fields | What it explains |
 | --- | --- | --- |
-| `ContribTrace` | `id`, `layer`, `group`, `score` | The per-signal contributions — which signal ids scored, in which layer/group, and how much. |
+| `ContribTrace` | `id`, `layer`, `group`, `score` | The per-signal contributions — which signal ids scored, in which stage/group, and how much. |
 | `DedupTrace` | `layer`, `group`, `keptId`, `droppedId`, `keptScore`, `droppedScore` | Where two signals collided in one correlation group and the lower-scoring one was dropped, so a group can't double-count. |
-| `LayerTrace` | `layer`, `rawProb`, `cappedProb`, `capHit` | The per-layer roll-up: the raw accumulated probability, the value after the `LayerCap=60` clamp, and whether the cap actually bit (`capHit`). |
+| `LayerTrace` | `layer`, `rawProb`, `cappedProb`, `capHit` | The per-stage roll-up: the raw accumulated probability, the value after the `LayerCap=60` clamp, and whether the cap actually bit (`capHit`). |
 | `HardRuleEval` | `rule`, `verdict`, `why`, `matched`, `won` | Every promotion rule that was evaluated: which ones *matched* their predicate and which single one *won* under first-match precedence. |
 
-Read together, these let a developer follow the whole path: raw contributions → dedup decisions → per-layer capping → noisy-OR combine → hard-rule promotion. The `HardRuleEval` panel is where you confirm, for example, that `selenium` was promoted by HR-1 and not by a later rule, or that a heuristic CHALLENGE (HR-10/11/12/17) matched but a DENY rule won ahead of it.
+Read together, these let a developer follow the whole path: raw contributions → dedup decisions → per-stage capping → noisy-OR combine → enforcement-rule promotion. The `HardRuleEval` panel is where you confirm, for example, that `selenium` was promoted by hard automation artifact rule and not by a later rule, or that a heuristic CHALLENGE (missing browser evidence rule/11/12/17) matched but a DENY rule won ahead of it.
 
 ## Live telemetry: how a scored session reaches the page
 
@@ -96,7 +96,7 @@ Every safety property has a concrete place it is enforced, not a policy note:
 
 ## Data-exposure posture
 
-The feed carries the developer's own local self-test `SessionReport` verbatim. Nothing needs to be redacted because no secret key material is present in a report in the first place — the RIT seed/HMAC and the watermark master key never appear in a `SessionReport`. The non-exposure is true by construction, not by a redaction pass that could miss a field. What you see on the page is public detection output about your own loopback traffic.
+The feed carries the developer's own local self-test `SessionReport` verbatim. Nothing needs to be redacted because no secret key material is present in a report in the first place — the request-integrity token seed/HMAC and the watermark master key never appear in a `SessionReport`. The non-exposure is true by construction, not by a redaction pass that could miss a field. What you see on the page is public detection output about your own loopback traffic.
 
 ## Why connection-level attacks surface differently
 
@@ -116,7 +116,7 @@ If you're unsure which surface you're looking at, [production vs reference](../r
 
 ## Extending it: keep the trace sourced from the real path
 
-When you add a new signal, cross-check, or hard rule, the Observatory should show it without a second implementation. The flow for a new event type or trace field is:
+When you add a new signal, cross-check, or enforcement rule, the Observatory should show it without a second implementation. The flow for a new event type or trace field is:
 
 **engine → hub → SSE → page**
 
@@ -132,6 +132,6 @@ For how to add the signal or rule itself, see [detection engine internals](./det
 ## Related
 
 - [How-to: Detection Observatory](../how-to/detection-observatory.md) — turning it on and using the panels.
-- [Explanation: detection engine internals](./detection-engine-internals.md) — the dedup/cap/noisy-OR/hard-rule math the trace mirrors.
+- [Explanation: detection engine internals](./detection-engine-internals.md) — the dedup/cap/noisy-OR/enforcement-rule math the trace mirrors.
 - [Reference: production vs reference](../reference/production-vs-reference.md) — reference engine vs promoted Gate.
 - [Reference: red-team rules of engagement](../reference/red-team-rules-of-engagement.md) — the boundaries for self-test launches.

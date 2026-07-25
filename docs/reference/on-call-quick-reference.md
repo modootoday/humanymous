@@ -1,6 +1,6 @@
 ---
-description: "On-call cheat sheet for humanymous Gate: verdict legend, top hard rules, ban levers, kill switch, and 20-second attack-vs-false-positive triage. Reference build."
-keywords: ["on-call quick reference","humanymous Gate","ALLOW CHALLENGE DENY verdict","hard rules","ban ladder","kill switch dual-control","attack vs false-positive triage","SOC on-call runbook","proof-of-work challenge","residential-proxy rotation"]
+description: "On-call cheat sheet for humanymous Gate: verdict legend, top enforcement rules, ban levers, kill switch, and 20-second attack-vs-false-positive triage. Reference build."
+keywords: ["on-call quick reference","humanymous Gate","ALLOW CHALLENGE DENY verdict","enforcement rules","ban ladder","kill switch dual-control","attack vs false-positive triage","SOC on-call runbook","proof-of-work challenge","residential-proxy rotation"]
 ---
 
 # On-call quick reference card
@@ -16,29 +16,29 @@ Fast lookup for a shift on humanymous Gate (the reverse-proxy enforcement layer,
 | Verdict | Edge action | Origin contacted? |
 |---------|-------------|-------------------|
 | **ALLOW** | `pass` | Yes |
-| **CHALLENGE** | `challenge_pow` — accessible proof-of-work (PoW) interstitial from the control plane | No |
+| **CHALLENGE** | `challenge_pow` — minimal reference challenge response; deployed recovery flow required | No |
 | **DENY** | `block` | No |
 | **none** (Unknown, no evidence yet) | fail-**closed** on strict routes or unsafe methods (POST/PUT/PATCH/DELETE) → challenge; fail-**open** only for safe GET/HEAD on non-strict routes | Depends on the fail rule |
 
-Score bands (policy 1.0.0): `0–29` ALLOW · `30–69` CHALLENGE · `70–100` DENY. Hard rules override the score. A score-based CHALLENGE upgrades to ALLOW on `l7.pow.solved`; PoW never clears a hard rule. Every decision is written to the audit log before it takes effect.
+Built-in score bands are `0–29` ALLOW, `30–69` CHALLENGE, and `70–100` DENY. Runtime Settings can change the thresholds. Enforcement rules raise the score-based result. A valid proof-of-work result can clear only a score-based challenge, and the reference Gate does not provide the complete visitor flow by itself.
 
 ---
 
-## Top hard rules to recognize
+## Top enforcement rules to recognize
 
-All DENY are high-confidence (FP~0): a spike means automated traffic is arriving — reading it as an attack is safe.
+Do not treat a DENY spike as proof by itself. Confirm the predicate, collection plane, topology, and representative records. High-confidence combined rules are stronger evidence than heuristics, but no public document promises a zero false-positive rate.
 
 | Rule | Fires on | Action | Read a spike as |
 |------|----------|--------|-----------------|
-| **HR-1** | Automation artifact (Selenium / Puppeteer / Playwright) | DENY | Attack |
-| **HR-9** | CDP leak + automation hint | DENY | Attack |
-| **HR-19** | One fingerprint across many subnets (residential-proxy rotation) | DENY | Attack |
-| **HR-20** | AI browser-agent (teleport click + LLM cadence) | DENY | Attack |
-| **HR-21** | Destructive flood / HTTP/2 DoS / rate-limit ban | DENY | Attack |
-| **HR-30** | Decision-probing sweep: many sessions from one fingerprint | DENY | Attack |
-| **HR-12** | No interaction over the observation window | **CHALLENGE** | **Heuristic — can catch some real humans. Investigate before treating as attack volume.** |
+| **hard automation artifact rule** | Automation artifact (Selenium / Puppeteer / Playwright) | DENY | Attack |
+| **browser-control leak plus automation evidence rule** | Chrome DevTools Protocol leak + automation hint | DENY | Attack |
+| **cross-session correlation rule** | One fingerprint across many subnets (residential-proxy rotation) | DENY | Attack |
+| **automated-browser interaction signature rule** | AI browser-agent (teleport click + LLM cadence) | DENY | Attack |
+| **Hypertext Transfer Protocol version 2 denial-of-service protection rule** | Rapid Reset or continuation-frame flooding | DENY | Protocol abuse; verify frame evidence |
+| **decision-probing sweep protection** | Decision-probing sweep: many sessions from one fingerprint | DENY | Attack |
+| **no interaction observed rule** | No interaction over the observation window | **CHALLENGE** | **Heuristic — can catch some real humans. Investigate before treating as attack volume.** |
 
-Full table and signal-ID drill-down: [Hard rules & verdicts](hard-rules-verdicts.md).
+Full table and signal-ID drill-down: [enforcement rules & verdicts](hard-rules-verdicts.md).
 
 ---
 
@@ -49,12 +49,12 @@ Full table and signal-ID drill-down: [Hard rules & verdicts](hard-rules-verdicts
 | **Unblock** (lift temp ban) | `POST /__hmn/admin/bans/lift` | Single **Operator** |
 | **Temp ban** (`1h`/`6h`/`24h`) | `POST /__hmn/admin/bans` | Single **Operator** |
 | **Permanent / CIDR ban** | `POST /__hmn/admin/bans` → `POST /__hmn/admin/approvals/<id>` | **Distinct Approver** (dual-control) |
-| **Kill switch** (fleet-wide) | `POST /__hmn/admin/killswitch` → `POST /__hmn/admin/approvals/<id>` | **Distinct Approver** (dual-control) |
-| **Erasure** (crypto-shred) | (control plane) | **Distinct DPO** (dual-control; generic Approver cannot) |
+| **Kill switch** (node-local) | `POST /__hmn/admin/killswitch` → `POST /__hmn/admin/approvals/<id>` | **Distinct Approver** (dual-control) |
+| **Erasure** (crypto-shred) | (control plane) | **Distinct data protection officer** (dual-control; generic Approver cannot) |
 
 The requester never self-commits a dual-control action, in either direction (placing or lifting). Actor identity is server-derived from the bearer token; body actor fields are ignored.
 
-> **Warning:** The **kill switch is fleet-wide.** It demotes hard-rule enforcement to monitor across every node — detection still scores and logs, manual bans still enforce, but traffic hard rules would DENY now reaches origin. Pull it for a customer-hurting false-positive storm, never to calm a real attack. Roll it back (also dual-control) the moment the cause is fixed.
+> **Warning:** The **kill switch is node-local and not route-scoped.** Detection still scores and logs, and manual bans still enforce. Coordinate every node separately in a fleet.
 
 ---
 
@@ -68,7 +68,7 @@ Auto-bans climb on repeat strikes, with strike decay downward:
 
 `Source=auto` = ladder placed it; `Source=manual` = you placed it. Active set: `GET /__hmn/admin/bans`.
 
-- **`fp:<fingerprint>`** — use for residential-proxy rotation (HR-19). The IP moves; the fingerprint is the stable handle.
+- **`fp:<fingerprint>`** — use for residential-proxy rotation (cross-session correlation rule). The IP moves; the fingerprint is the stable handle.
 - **`ip:<addr>` / `cidr:<range>`** — use for a fixed hostile source (many fingerprints, one IP/range). Dual-control for CIDR.
 - **Avoid `ip:` / `cidr:` against shared egress** — CGNAT and corporate egress put real humans behind the same address. Prefer `fp:`-scoped action or let rate metering absorb it.
 
@@ -77,10 +77,10 @@ Auto-bans climb on repeat strikes, with strike decay downward:
 ## 20-second: attack vs false-positive
 
 1. **Which verdict spiked?** DENY → lean attack. CHALLENGE → could be humans.
-2. **Which rule?** A high-confidence DENY rule (HR-1/9/19/20/21/30) firing → attack; act with bans. **HR-12** (CHALLENGE, heuristic) climbing → suspect humans first.
+2. **Which rule?** A high-confidence DENY rule (hard automation artifact rule/9/19/20/21/30) firing → attack; act with bans. **no interaction observed rule** (CHALLENGE, heuristic) climbing → suspect humans first.
 3. **Are real users complaining?** User reports of blocks/challenges on a legit path = false-positive signal. No reports + rising DENY = attack.
-4. **Shared handle?** Spike keyed to one `fp:` across subnets = HR-19 rotation (ban the `fp:`). Spike behind one NAT/carrier `ip:` = likely shared-egress false positive (do **not** IP-ban).
-5. **Verdict:** Attack → escalate bans, keep enforcement on. False-positive storm locking out customers → route-table demote + restart, or the fleet-wide kill switch. Unsure → run the triage in [Incident runbooks](../runbooks/incident-runbooks.md) before touching the switch.
+4. **Shared handle?** Spike keyed to one `fp:` across subnets = cross-session correlation rule rotation (ban the `fp:`). Spike behind one NAT/carrier `ip:` = likely shared-egress false positive (do **not** IP-ban).
+5. **Verdict:** Attack → escalate bans, keep enforcement on. False-positive storm locking out customers → route-table demote + restart, or the node-local kill switch. Unsure → run the triage in [Incident runbooks](../runbooks/incident-runbooks.md) before touching the switch.
 
 ---
 
@@ -107,7 +107,7 @@ The Overview view surfaces KPIs computed from the audit stream (`GET /__hmn/admi
 
 Watch three signals:
 
-- **CHALLENGE / DENY mix** — the ratio of verdicts over a window. A shift toward DENY leans attack; a shift toward CHALLENGE (especially HR-12-driven) leans false-positive.
+- **CHALLENGE / DENY mix** — the ratio of verdicts over a window. A shift toward DENY leans attack; a shift toward CHALLENGE (especially no interaction observed rule-driven) leans false-positive.
 - **DENY-rate deltas** — change against your own baseline matters more than any absolute rate. Alarm on the delta, not a fixed count.
 - **False-positive signal from user reports** — blocks/challenges reported on legitimate paths. This is the counter-signal to a rising DENY rate and the trigger to suspect a misfire.
 
@@ -123,4 +123,4 @@ The Overview surfaces five KPI tiles, each a count over the recent window: **All
 
 - [Incident runbooks](../runbooks/incident-runbooks.md) — symptom-indexed procedures and the attack-or-false-positive triage.
 - [Kill switch & bans](../runbooks/kill-switch-and-bans.md) — blast radius, dual-control, apply / escalate / lift.
-- [Hard rules & verdicts](hard-rules-verdicts.md) — the full rule set, verdict bands and signal-ID drill-down.
+- [enforcement rules & verdicts](hard-rules-verdicts.md) — the full rule set, verdict bands and signal-ID drill-down.

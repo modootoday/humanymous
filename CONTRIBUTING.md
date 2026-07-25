@@ -81,8 +81,8 @@ Every PR runs two workflows. All checks must be green before review:
 - **git-cliff changelog-config check** — validates `cliff.toml` (release notes are
   generated from it).
 - **Docker `detector-vs-bots` integration gate** — builds the images (with Trivy
-  HIGH/CRITICAL image scans), runs the bots against the engine and asserts all are blocked
-  with no FP, runs the Gate 34-check conformance, asserts the multi-subnet swarm fires
+  HIGH/CRITICAL image scans), runs the automated profiles against Core and asserts all are blocked
+  with no human-baseline denial, runs the Gate 34-check conformance, asserts the multi-subnet swarm emits
   `proxy_rotation`, and stands up the feature overlays.
 
 **`codeql.yml`**
@@ -110,9 +110,9 @@ before you push — they are the fastest checks and the most common cause of a r
 ## Detection freeze — do not change upstream weights or thresholds
 
 > [!IMPORTANT]
-> **Detection weights, hard-rule thresholds, and verdict cut-offs are FROZEN upstream.** Do not change them in a PR — it will not be merged. Tune detection in a **fork**, or propose a **new signal** instead of re-weighting an existing one.
+> **Detection weights, enforcement-rule thresholds, and verdict cut-offs are FROZEN upstream.** Do not change them in a PR — it will not be merged. Tune detection in a **fork**, or propose a **new signal** instead of re-weighting an existing one.
 
-The detection posture (signal weights, hard-rule thresholds, and verdict cut-offs) is
+The detection posture (signal weights, enforcement-rule thresholds, and verdict cut-offs) is
 **FROZEN upstream**. This is deliberate: the reference build's low-false-positive profile
 and the full bots-vs-engine catalog are validated against these exact values, and changing
 them silently would invalidate that evidence and the compliance documentation that cites
@@ -127,7 +127,7 @@ What this means for a contribution:
   without touching upstream — do that in your own build.
 - **To contribute detection improvements, propose a NEW signal** rather than re-weighting
   an existing one. Open an issue describing the new signal (what it detects, its
-  false-positive profile, and where it sits in the L1–L7 layering) so it can be discussed
+  false-positive profile, and which named detection stage owns it) so it can be discussed
   and validated against the catalog before any code lands. New signals are welcome;
   re-weighting the frozen ones is not.
 

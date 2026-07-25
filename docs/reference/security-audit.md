@@ -1,6 +1,6 @@
 ---
-description: "Pre-release Red/Blue security audit of the humanymous bot detection engine: GO-with-fixes; every confirmed finding remediated, residual T4 detection floor disclosed."
-keywords: ["security audit","open source bot detection","Red/Blue audit","GO with fixes","OWASP ASVS","OWASP WSTG","JA3/JA4 fingerprinting","T4 ceiling","tamper-evident audit chain","remediation summary","humanymous Gate"]
+description: "Pre-release Red/Blue security audit of the humanymous bot detection engine: GO-with-fixes; every confirmed finding remediated, residual coherent browser or human-assisted automation detection floor disclosed."
+keywords: ["security audit","open source bot detection","Red/Blue audit","GO with fixes","OWASP ASVS","OWASP WSTG","JA3/JA4 fingerprinting","coherent browser or human-assisted automation ceiling","tamper-evident audit chain","remediation summary","humanymous Gate"]
 ---
 
 # humanymous — security & code audit report
@@ -24,7 +24,7 @@ transparency; it is not a certification.*
 (`cmd/gate`, `:8444`) and admin plane (`:8445`); humanymous Pass (`internal/pass`,
 `web/pass.html`); the reverse-proxy forwarding path; the WASM/JS loader; the
 tamper-evident audit chain (`internal/audit`); resource watermarking; the crypto axes
-(PoW, attestation); public docs. **Not reviewed:** third-party dependency internals
+(proof of work, attestation); public docs. **Not reviewed:** third-party dependency internals
 (covered by `govulncheck` + Trivy in CI); the production ACME/CDN edge; formal
 cryptographic proofs.
 
@@ -32,7 +32,7 @@ cryptographic proofs.
 
 Static review guided by the **OWASP Code Review Guide** and **OWASP ASVS** (target
 Level 2 for the web surface); dynamic/behavioural review mapped to **OWASP WSTG** via
-the repo's harnesses — the 47-profile Docker attack catalog, the 34-check Gate
+the repo's harnesses — the 65-entry Docker attack catalog, the 34-check Gate
 conformance suite, the multi-subnet correlation swarm, the 8-round Pass red/blue
 wargame, and dedicated **reverse-proxy forwarding-fidelity** tests
 (`internal/gate/forward_fidelity_test.go`). Supply-chain posture assessed against
@@ -42,13 +42,13 @@ wargame, and dedicated **reverse-proxy forwarding-fidelity** tests
 
 All confirmed findings were fixed and verified (`go test ./...` green; Pass e2e 5/5;
 Pass wargame gate PASS; Docker engine attack 45/45 sub-ceiling bots blocked (0 bypass) —
-the T4 `native_coherent_ceiling` profile ALLOWs by design, priced via attested/ceiling-guard;
+the coherent browser or human-assisted automation `native_coherent_ceiling` profile ALLOWs by design, priced via attested/ceiling-guard;
 Gate conformance 34/34; images build with third-party licences bundled). Categories fixed,
 with the durable controls added:
 
 - **Admin plane** — no unauthenticated operator-token handout; loopback-default bind;
   tokens never logged; fail-closed on placeholder/low-entropy secrets.
-- **Honesty** — every "100% / 0% FPR" absolute replaced with bounded, reference-measured
+- **Honesty** — every "100% / 0% false-positive rate" absolute replaced with bounded, reference-measured
   language across README + the results page (enforces the project's own style guide).
 - **humanymous Pass accessibility** — no hidden timeout (honest, announced expiry);
   screen-reader-announced outcomes; a real non-drag pointer path (on-screen tap
@@ -79,9 +79,9 @@ These are inherent trade-offs, documented rather than "fixed":
 - **Detection floor.** A *perfect* human-like forgery from a *fresh* identity can still
   clear the Pass puzzle — the fundamental limit of any accessible challenge. It is
   bounded by the attestation issuance rate and folded engine risk, and the engine
-  **DENIES** the session the moment any independent bot signal (JA4/L1–L7/correlation)
+  **DENIES** the session the moment any independent bot signal (JA4/seven detection stages/correlation)
   appears; solving Pass never launders a session already proven a bot.
-- **False-positive posture.** The reference FPR is a DENY-only metric and does not
+- **False-positive posture.** The reference false-positive rate is a DENY-only metric and does not
   measure real-human friction or disaggregate assistive-tech / uncommon-browser /
   privacy-hardened users. Disclosed in the [transparency report](../explanation/transparency-report.md).
 - **Attestation axis is session-scoped by design.** To keep the normal/accessible lane
@@ -92,7 +92,7 @@ These are inherent trade-offs, documented rather than "fixed":
 - **Anti-injection CSP is report-only by design** — violation telemetry for a detection
   engine, not an enforced block (stated plainly in the docs).
 - **Admin-plane security** rests on loopback binding + no auto-issued token, and
-  **client-certificate mTLS is shipped**: `-admin-mtls-ca <pem>` makes the admin listener
+  **client-certificate mutual Transport Layer Security is shipped**: `-admin-mtls-ca <pem>` makes the admin listener
   require a client cert signed by that CA (`tls.RequireAndVerifyClientCert`) in addition to
   the bearer token. **SSO remains the production delta** — front the listener with an
   authenticating proxy for that.

@@ -1,6 +1,6 @@
 ---
-description: "Transparency report for humanymous bot detection: what data it collects, how ALLOW/CHALLENGE/DENY is decided, its GDPR basis, and the T4 ceiling it names."
-keywords: ["humanymous transparency report","bot detection transparency report","ALLOW CHALLENGE DENY verdict","JA3/JA4 data collected","behavioural timings not keystrokes","GDPR legitimate interest bot detection","notice and appeal GDPR Art. 22","cryptographic-shred erasure","reference-measured block rate","T4 detection ceiling","self-hosted bot detection"]
+description: "Transparency report for humanymous bot detection: what data it collects, how ALLOW/CHALLENGE/DENY is decided, its GDPR basis, and the coherent browser or human-assisted automation ceiling it names."
+keywords: ["humanymous transparency report","bot detection transparency report","ALLOW CHALLENGE DENY verdict","JA3/JA4 data collected","behavioural timings not keystrokes","GDPR legitimate interest bot detection","notice and appeal GDPR Art. 22","cryptographic-shred erasure","reference-measured block rate","coherent browser or human-assisted automation detection ceiling","self-hosted bot detection"]
 ---
 
 # humanymous — transparency report
@@ -40,15 +40,15 @@ screen-reader users).
 ## How well it works (and how to read the numbers)
 
 In a **single reference run (`n=1` per profile) on the maintainers' hardware** against a
-47-profile local catalog (**45 must-block bots + 1 detection-ceiling + 1 baseline**), all
-45 must-block bots were blocked and the baseline was not denied. The single T4
+65-entry local catalog (**63 automated behavior profiles + 1 coherent boundary case + 1 synthetic human baseline**), all
+63 automated profiles were blocked and the baseline was not denied. The single coherent browser or human-assisted automation
 `native_coherent_ceiling` profile **ALLOWs by design** — the documented detection ceiling,
 priced via the attested / ceiling-guard mechanism, not a bypass. **This is
 reference-measured, not a guarantee.**
 
 Please read these caveats with any figure you see:
 
-- The "baseline" is a **Playwright/CDP-driven session, not a physical human**, so a
+- The "baseline" is a **Playwright/Chrome DevTools Protocol-driven session, not a physical human**, so a
   real-human false-positive rate is **not** measured here.
 - Our "false-positive rate" is a **DENY-only** metric: it cannot count a real person who
   was sent to a *CHALLENGE*, so it **under-reports human friction**.
@@ -125,7 +125,7 @@ and local-target-only testing.
 - The anti-injection **CSP is currently report-only** (violation telemetry), not an
   enforced block.
 - **Admin-plane security** in the reference build depends on loopback binding and no
-  auto-issued token; a production operator should front it with **mTLS/SSO**.
+  auto-issued token; a production operator should front it with **mutual Transport Layer Security/SSO**.
 - The audit chain's tamper-evidence resists external tampering and enables post-hoc
   verification, but not an attacker with in-process/code control (production runs the
   witness and keys out-of-process/HSM).
