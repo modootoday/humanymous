@@ -66,7 +66,6 @@ make down           # tear everything down
 
 # or the one-shot script (same authority as CI):
 bash scripts/e2e-docker.sh
-# Windows: pwsh -File scripts/e2e-docker.ps1
 
 # or drive compose directly from deployments/ (cross-platform; no make needed):
 docker compose up -d --build core origin gate
@@ -77,6 +76,27 @@ docker compose down -v
 ```
 
 > **E2E policy:** completion authority for end-to-end detection/Gate validation is **Docker only**. Host `node test/e2e/runner.mjs` against a loopback binary is for profile authoring, not for claiming the suite passed.
+
+The authoritative Linux runner prints every Docker command directly, marks every
+phase `START`/`PASS`/`FAIL`, emits a heartbeat every 30 seconds, and applies a hard
+timeout to each phase. Output is also mirrored to
+`.agent-runs/e2e/<run-id>/e2e.log`; the machine-readable current phase is in the
+adjacent `status.json`.
+
+Follow the newest run from another terminal without waiting for its command to
+return:
+
+```bash
+sh scripts/e2e-watch.sh
+```
+
+Use `sh scripts/e2e-watch.sh --once` (or PowerShell `-Once`) for a non-blocking
+status snapshot.
+
+On a Docker Desktop workstation, `pwsh -File scripts/e2e-watch.ps1` follows the
+same log. `scripts/e2e-docker.ps1` is a troubleshooting convenience only; it is
+not completion authority and intentionally does not claim the Linux overlay gate.
+GitHub Actions uploads `.agent-runs/e2e/` on failure as well as success.
 
 Admin console: `https://localhost:8445/__hmn/admin/console` — dev token
 `operator:e2e-operator-token` (from `configs/dev.env`). Certs are self-signed;

@@ -2,6 +2,12 @@
 # see cmd/redteam, cmd/tlsparrot, cmd/gate and the test/ harness.
 .git
 .github
+.agent-runs
+.agents
+.claude
+.codex
+.gemini
+.grok
 bin
 *.exe
 web

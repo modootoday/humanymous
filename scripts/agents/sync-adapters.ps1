@@ -97,6 +97,15 @@ if (Test-Path $grokHookSrc) {
   Write-Host "Synced Grok hooks -> .grok/hooks/project-safety.json"
 }
 
+# Codex project hooks
+$codexHookSrc = Join-Path $Root ".agents\hooks\codex-hooks.json"
+if (Test-Path $codexHookSrc) {
+  $codexHookDstDir = Join-Path $Root ".codex"
+  Ensure-Dir $codexHookDstDir
+  Copy-Item $codexHookSrc (Join-Path $codexHookDstDir "hooks.json") -Force
+  Write-Host "Synced Codex hooks -> .codex/hooks.json"
+}
+
 # Lessons (readable from all providers via .agents/; also mirror under .claude for discovery)
 $lessonsSrc = Join-Path $Root ".agents\lessons"
 if (Test-Path $lessonsSrc) {

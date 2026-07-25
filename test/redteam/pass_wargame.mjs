@@ -13,7 +13,7 @@
 // accessible lane regresses).
 import { createHash } from 'node:crypto';
 
-const BASE = process.env.BASE || 'https://127.0.0.1:8443';
+const BASE = process.env.HM_BASE || process.env.BASE || 'https://127.0.0.1:8443';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const zeroBits = bytes => {

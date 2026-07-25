@@ -90,7 +90,7 @@ e2e-deps:
 	cd test && npm install --no-audit --no-fund
 
 ## e2e / e2e-docker: authoritative end-to-end suite (Docker only).
-## Runs attack catalog + assert + gate-e2e + swarm (+ overlays unless skipped).
+## Runs attack catalog + assert + gate-e2e + Pass + swarm (+ overlays unless skipped).
 ## Host/loopback `node test/e2e/runner.mjs` is NOT completion authority (misses L5 topology).
 e2e e2e-docker:
 	bash scripts/e2e-docker.sh
@@ -123,7 +123,9 @@ attack:
 
 ## swarm: run the multi-subnet correlation swarm (one fingerprint, three real subnets)
 swarm:
-	$(COMPOSE) --profile swarm up --build --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
+	$(COMPOSE) run --rm swarm-reset
+	$(COMPOSE) --profile swarm up --build --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c
+	$(COMPOSE) run --rm swarm-assert
 
 ## gate-e2e: run the Gate proxy-layer conformance (34 checks) inside Docker
 gate-e2e:

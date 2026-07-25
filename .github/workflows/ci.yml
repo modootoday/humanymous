@@ -62,13 +62,19 @@ jobs:
       - name: agent layout sync + verify
         run: |
           bash scripts/agents/sync-adapters.sh
+          git diff --exit-code -- .claude .grok .gemini .codex/skills .codex/hooks.json
           bash scripts/agents/verify-agents-layout.sh
+          node --test scripts/agents/workflow-runner.test.mjs scripts/assert-attack.test.mjs
+          python3 -m unittest scripts/agents/hooks/test_pre_tool_guard.py
 
   detector-vs-bots:
     name: docker detector-vs-bots
     runs-on: ubuntu-latest
     needs: go
-    timeout-minutes: 30
+    timeout-minutes: 35
+    env:
+      COMPOSE_ANSI: never
+      BUILDKIT_PROGRESS: plain
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -82,7 +88,8 @@ jobs:
         run: >
           docker compose
           -f deployments/compose.yaml -f deployments/compose.ci.yaml
-          --profile attack --profile gate-test --profile swarm
+          --profile attack --profile gate-test --profile pass-test --profile swarm
+          --progress plain
           build
 
       # Supply-chain: scan the release images for known-vulnerable OS/deps
@@ -103,30 +110,32 @@ jobs:
           exit-code: "1"
 
       - name: Start the detection stack
-        run: docker compose -f deployments/compose.yaml up -d core origin gate
+        run: docker compose -f deployments/compose.yaml up -d --no-build core origin gate
 
       - name: Run the bots (automation catalog) vs the engine
-        run: docker compose -f deployments/compose.yaml run --rm bots
+        run: docker compose -f deployments/compose.yaml run --rm -T bots
 
       - name: Assert attack gate (Docker — complete catalog, no escape/FP/error/skip)
-        run: docker compose -f deployments/compose.yaml run --rm attack-assert
+        run: docker compose -f deployments/compose.yaml run --rm -T attack-assert
 
       - name: Gate proxy-layer conformance (34 checks)
-        run: docker compose -f deployments/compose.yaml run --rm gate-e2e
+        run: docker compose -f deployments/compose.yaml run --rm -T gate-e2e
+
+      - name: Pass contract + wargame
+        run: |
+          docker compose -f deployments/compose.yaml run --rm -T pass-e2e
+          docker compose -f deployments/compose.yaml restart core
+          docker compose -f deployments/compose.yaml run --rm -T pass-wargame
 
       - name: Multi-subnet swarm — assert cross-subnet correlation fires
         run: |
-          docker compose -f deployments/compose.yaml run --rm swarm-reset
+          docker compose -f deployments/compose.yaml run --rm -T swarm-reset
           docker compose -f deployments/compose.yaml --profile swarm up \
-            --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
-          docker compose -f deployments/compose.yaml run --rm swarm-assert
+            --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c
+          docker compose -f deployments/compose.yaml run --rm -T swarm-assert
 
-      # PLAN-08 backlog: stand up every opt-in feature overlay in Docker and run its
-      # consistency assert (shared state, PROXY-proto, the three token verifiers, Redis
-      # hardening, durable ClickHouse projection) — so the new packages are validated on
-      # real infra and a fresh-clone / config break is caught in CI.
       - name: PLAN-08 feature overlays (Docker consistency)
-        run: bash scripts/ci-overlays.sh
+        run: sh scripts/ci-overlays.sh
 
       - name: Upload run artifacts
         if: always()
@@ -136,7 +145,8 @@ jobs:
           path: |
             deployments/artifacts/
             swarm.log
+            .agent-runs/e2e/
 
       - name: Tear down
         if: always()
-        run: docker compose -f deployments/compose.yaml down -v
+        run: docker compose -f deployments/compose.yaml --profile swarm down -v

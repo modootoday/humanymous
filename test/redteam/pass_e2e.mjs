@@ -1,8 +1,8 @@
 // Functional API e2e for the canonical 3-row humanymous Pass (with axis ① crypto
-// preflight). Local target only. Run against a live core on 127.0.0.1:8443.
+// preflight). Local target only. Docker sets HM_BASE=https://core:8443.
 import { createHash } from 'node:crypto';
 
-const BASE = process.env.BASE || 'https://127.0.0.1:8443';
+const BASE = process.env.HM_BASE || process.env.BASE || 'https://127.0.0.1:8443';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 let cookie = '';

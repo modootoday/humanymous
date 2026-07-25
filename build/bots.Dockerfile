@@ -15,7 +15,10 @@ FROM golang:1.25 AS gobuild
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
-COPY . .
+COPY cmd ./cmd
+COPY internal ./internal
+COPY pkg ./pkg
+COPY scripts/gen-demo-keys ./scripts/gen-demo-keys
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/ \
@@ -29,14 +32,15 @@ COPY --from=gobuild /out/redteam   /app/bin/redteam
 COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
 COPY --from=gobuild /out/gate  /app/bin/gate
 
+COPY test/package.json test/package-lock.json /app/test/
+RUN cd /app/test && npm ci --no-audit --no-fund
 COPY test /app/test
 COPY scripts/assert-*.mjs /app/scripts/
 COPY deployments/bots/ /app/
 # Seed lives outside the runtime mount point so an empty named volume cannot hide keys.
 COPY --from=gobuild /src/deployments/patissuers /app/demo-keys-seed/patissuers
 COPY --from=gobuild /src/deployments/webauthncreds /app/demo-keys-seed/webauthncreds
-RUN sed -i 's/\r$//' /app/*.sh && chmod +x /app/*.sh \
- && cd /app/test && (npm ci --no-audit --no-fund || npm install --no-audit --no-fund)
+RUN sed -i 's/\r$//' /app/*.sh && chmod +x /app/*.sh
 
 ENV HM_REDTEAM_BIN=/app/bin/redteam \
     HM_TLSPARROT_BIN=/app/bin/tlsparrot \

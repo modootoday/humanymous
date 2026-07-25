@@ -10,8 +10,10 @@
 #   E2E_SKIP_SWARM=1 bash scripts/e2e-docker.sh
 #   E2E_SKIP_OVERLAYS=1 bash scripts/e2e-docker.sh   # skip PLAN-08 overlays
 #   E2E_KEEP=1 bash scripts/e2e-docker.sh            # leave stack up on success
+#   E2E_STEP_TIMEOUT=900 bash scripts/e2e-docker.sh   # per-step hard timeout
 #
-# Exit non-zero on any failed gate. Tears down the stack unless E2E_KEEP=1.
+# Live output is mirrored to .agent-runs/e2e/<run-id>/e2e.log. The current
+# phase is always readable from status.json; a heartbeat prints every 30s.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -27,6 +29,73 @@ COMPOSE=(docker compose -p "$PROJECT" "${COMPOSE_FILES[@]}")
 SKIP_SWARM="${E2E_SKIP_SWARM:-0}"
 SKIP_OVERLAYS="${E2E_SKIP_OVERLAYS:-0}"
 KEEP="${E2E_KEEP:-0}"
+STEP_TIMEOUT="${E2E_STEP_TIMEOUT:-900}"
+BUILD_TIMEOUT="${E2E_BUILD_TIMEOUT:-600}"
+HEARTBEAT_SECONDS="${E2E_HEARTBEAT_SECONDS:-30}"
+RUN_ID="${E2E_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$PROJECT}"
+LOG_ROOT="${E2E_LOG_ROOT:-$ROOT/.agent-runs/e2e}"
+RUN_DIR="$LOG_ROOT/$RUN_ID"
+LOG_FILE="${E2E_LOG_FILE:-$RUN_DIR/e2e.log}"
+STATUS_FILE="$RUN_DIR/status.json"
+CURRENT_STEP="initializing"
+CURRENT_STEP_STARTED="$(date +%s)"
+FINAL_STATUS="failed"
+
+mkdir -p "$RUN_DIR"
+printf '%s\n' "$LOG_FILE" >"$LOG_ROOT/latest.log.path"
+echo "[e2e-docker] live log: $LOG_FILE"
+echo "[e2e-docker] live status: $STATUS_FILE"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+write_status() {
+  local status="$1" rc="${2:-0}" now elapsed tmp
+  now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  elapsed=$(( $(date +%s) - CURRENT_STEP_STARTED ))
+  tmp="$STATUS_FILE.tmp.${BASHPID:-$$}"
+  printf '{"runId":"%s","project":"%s","status":"%s","phase":"%s","phaseElapsedSeconds":%s,"exitCode":%s,"updatedAt":"%s","log":"%s"}\n' \
+    "$RUN_ID" "$PROJECT" "$status" "$CURRENT_STEP" "$elapsed" "$rc" "$now" "$LOG_FILE" >"$tmp"
+  mv "$tmp" "$STATUS_FILE"
+}
+
+run_step() {
+  local name="$1" limit="$2" started rc heartbeat_pid
+  shift 2
+  CURRENT_STEP="$name"
+  CURRENT_STEP_STARTED="$(date +%s)"
+  started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  write_status running 0
+  echo
+  echo "========== [e2e-docker] START $name @ $started (timeout ${limit}s) =========="
+  printf '[e2e-docker] COMMAND'
+  printf ' %q' "$@"
+  printf '\n'
+  (
+    while sleep "$HEARTBEAT_SECONDS"; do
+      write_status running 0
+      echo "[e2e-docker] HEARTBEAT phase=$name elapsed=$(( $(date +%s) - CURRENT_STEP_STARTED ))s log=$LOG_FILE"
+    done
+  ) &
+  heartbeat_pid=$!
+
+  set +e
+  timeout --signal=TERM --kill-after=15s "${limit}s" "$@"
+  rc=$?
+  set -e
+  kill "$heartbeat_pid" >/dev/null 2>&1 || true
+  wait "$heartbeat_pid" 2>/dev/null || true
+
+  if [[ "$rc" -ne 0 ]]; then
+    write_status failed "$rc"
+    if [[ "$rc" -eq 124 ]]; then
+      echo "[e2e-docker] TIMEOUT phase=$name after ${limit}s"
+    else
+      echo "[e2e-docker] FAIL phase=$name exit=$rc"
+    fi
+    return "$rc"
+  fi
+  write_status running 0
+  echo "========== [e2e-docker] PASS $name elapsed=$(( $(date +%s) - CURRENT_STEP_STARTED ))s =========="
+}
 
 cleanup() {
   if [[ "$KEEP" == "1" ]]; then
@@ -34,50 +103,51 @@ cleanup() {
     return 0
   fi
   echo "[e2e-docker] tearing down stack..."
-  "${COMPOSE[@]}" down -v >/dev/null 2>&1 || true
+  timeout 90s "${COMPOSE[@]}" --profile swarm down -v || true
 }
-trap cleanup EXIT
+on_exit() {
+  local rc=$?
+  cleanup
+  if [[ "$FINAL_STATUS" == "completed" && "$rc" -eq 0 ]]; then
+    write_status completed 0
+  elif [[ -f "$STATUS_FILE" ]] && ! grep -q '"status":"failed"' "$STATUS_FILE"; then
+    write_status failed "$rc"
+  fi
+}
+trap on_exit EXIT
 
-echo "[e2e-docker] validate compose..."
-"${COMPOSE[@]}" config -q
-
-echo "[e2e-docker] build + start defenders (core, origin, gate)..."
-"${COMPOSE[@]}" up -d --build core origin gate
-
-echo "[e2e-docker] automation catalog (bots) vs core..."
-"${COMPOSE[@]}" run --rm bots
-
-echo "[e2e-docker] assert attack gate..."
-"${COMPOSE[@]}" run --rm attack-assert
-
-echo "[e2e-docker] gate proxy-layer conformance..."
-"${COMPOSE[@]}" run --rm gate-e2e
-
-echo "[e2e-docker] Pass contract..."
-"${COMPOSE[@]}" run --rm pass-e2e
-"${COMPOSE[@]}" restart core
-echo "[e2e-docker] Pass wargame..."
-"${COMPOSE[@]}" run --rm pass-wargame
+run_step validate-compose 60 "${COMPOSE[@]}" config -q
+run_step build-images "$BUILD_TIMEOUT" "${COMPOSE[@]}" \
+  --profile attack --profile gate-test --profile pass-test --profile swarm \
+  --progress plain build core gate bots
+run_step start-defenders 120 "${COMPOSE[@]}" up -d --no-build core origin gate
+run_step attack-catalog "$STEP_TIMEOUT" "${COMPOSE[@]}" run --rm -T bots
+run_step attack-assert 120 "${COMPOSE[@]}" run --rm -T attack-assert
+run_step gate-conformance 300 "${COMPOSE[@]}" run --rm -T gate-e2e
+run_step pass-contract 300 "${COMPOSE[@]}" run --rm -T pass-e2e
+run_step restart-core 120 "${COMPOSE[@]}" restart core
+run_step pass-wargame 600 "${COMPOSE[@]}" run --rm -T pass-wargame
 
 if [[ "$SKIP_SWARM" != "1" ]]; then
-  echo "[e2e-docker] multi-subnet swarm (proxy_rotation)..."
-  "${COMPOSE[@]}" run --rm swarm-reset
-  # Prefer --abort-on-container-exit (widely available); failure alias may not exist on all Compose versions.
-  "${COMPOSE[@]}" --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
-  "${COMPOSE[@]}" run --rm swarm-assert
-  echo "[e2e-docker] swarm correlation OK"
+  run_step swarm-reset 120 "${COMPOSE[@]}" run --rm -T swarm-reset
+  run_step swarm 300 "${COMPOSE[@]}" --profile swarm up \
+    --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c
+  run_step swarm-assert 120 "${COMPOSE[@]}" run --rm -T swarm-assert
 else
   echo "[e2e-docker] skip swarm (E2E_SKIP_SWARM=1)"
 fi
 
 if [[ "$SKIP_OVERLAYS" != "1" ]]; then
   if [[ -x scripts/ci-overlays.sh ]] || [[ -f scripts/ci-overlays.sh ]]; then
-    echo "[e2e-docker] PLAN-08 feature overlays..."
-    "${COMPOSE[@]}" down -v
-    E2E_PROJECT_NAME="${PROJECT}-overlay" sh scripts/ci-overlays.sh
+    run_step stop-base-before-overlays 120 "${COMPOSE[@]}" --profile swarm down -v
+    run_step overlays "$STEP_TIMEOUT" env \
+      E2E_BASE_PROJECT="$PROJECT" \
+      E2E_PROJECT_NAME="${PROJECT}-overlay" \
+      sh scripts/ci-overlays.sh
   fi
 else
   echo "[e2e-docker] skip overlays (E2E_SKIP_OVERLAYS=1)"
 fi
 
+FINAL_STATUS="completed"
 echo "[e2e-docker] ALL e2e gates passed."

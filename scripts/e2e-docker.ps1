@@ -1,24 +1,26 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Authoritative Docker-only e2e suite (Windows-friendly).
+  Docker Desktop diagnostic subset (not completion authority).
 
 .DESCRIPTION
-  Mirrors scripts/e2e-docker.sh. All e2e must use the compose stack — host/loopback
-  is not completion authority for network-plane detection.
+  Convenience wrapper for local Docker Desktop. Linux CI and
+  scripts/e2e-docker.sh remain completion authority. Product tests still run
+  only in Linux containers; PowerShell only orchestrates Docker.
 
 .PARAMETER SkipSwarm
   Skip multi-subnet swarm correlation.
 
 .PARAMETER SkipOverlays
-  Skip PLAN-08 compose overlay asserts.
+  Skip PLAN-08 compose overlay asserts. Defaults to true because the full
+  overlay orchestrator is the Linux shell runner.
 
 .PARAMETER Keep
   Leave the stack running after success.
 #>
 param(
   [switch]$SkipSwarm,
-  [switch]$SkipOverlays,
+  [switch]$SkipOverlays = $true,
   [switch]$Keep
 )
 
@@ -29,16 +31,65 @@ Set-Location $Root
 $projectSeed = if ($env:E2E_PROJECT_NAME) { $env:E2E_PROJECT_NAME } else { "hmn-e2e-$([guid]::NewGuid().ToString('N').Substring(0, 8))" }
 $project = ($projectSeed.ToLowerInvariant() -replace '[^a-z0-9-]', '-').Trim('-')
 $composeArgs = @("-p", $project, "-f", "deployments/compose.yaml")
+$runId = if ($env:E2E_RUN_ID) { $env:E2E_RUN_ID } else { "$(Get-Date -Format 'yyyyMMddTHHmmss')-$project" }
+$runDir = Join-Path $Root ".agent-runs\e2e\$runId"
+$logFile = Join-Path $runDir "e2e.log"
+$statusFile = Join-Path $runDir "status.json"
+New-Item -ItemType Directory -Force -Path $runDir | Out-Null
+Set-Content -Path (Join-Path $Root ".agent-runs\e2e\latest.log.path") -Value $logFile -Encoding utf8
+Write-Host "[e2e-docker] live log: $logFile"
+Write-Host "[e2e-docker] live status: $statusFile"
+Start-Transcript -Path $logFile -Append | Out-Null
+
+function Set-RunStatus {
+  param([string]$Status, [string]$Phase, [int]$ExitCode = 0)
+  [ordered]@{
+    runId = $runId
+    project = $project
+    status = $Status
+    phase = $Phase
+    exitCode = $ExitCode
+    updatedAt = (Get-Date).ToUniversalTime().ToString("o")
+    log = $logFile
+  } | ConvertTo-Json | Set-Content -Path $statusFile -Encoding utf8
+}
+
+function Invoke-DockerStep {
+  param(
+    [Parameter(Mandatory)][string]$Step,
+    [Parameter(Mandatory)][string[]]$DockerArgs,
+    [switch]$AllowFailure
+  )
+  $started = Get-Date
+  Set-RunStatus -Status "running" -Phase $Step
+  Write-Host ""
+  Write-Host "========== [e2e-docker] START $Step @ $($started.ToString('o')) =========="
+  Write-Host "[e2e-docker] COMMAND docker $($DockerArgs -join ' ')"
+  & docker @DockerArgs 2>&1 | ForEach-Object { Write-Host $_ }
+  $code = $LASTEXITCODE
+  $elapsed = [int]((Get-Date) - $started).TotalSeconds
+  if ($code -ne 0) {
+    Set-RunStatus -Status "failed" -Phase $Step -ExitCode $code
+    Write-Host "[e2e-docker] FAIL phase=$Step exit=$code elapsed=${elapsed}s" -ForegroundColor Red
+    if (-not $AllowFailure) { throw "Docker step failed: $Step (exit $code)" }
+  } else {
+    Write-Host "========== [e2e-docker] PASS $Step elapsed=${elapsed}s =========="
+  }
+  return $code
+}
+
 function Invoke-Compose {
-  param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
-  & docker compose @composeArgs @Args
-  if ($LASTEXITCODE -ne 0) { throw "docker compose failed: $Args (exit $LASTEXITCODE)" }
+  param(
+    [Parameter(Mandatory)][string]$Step,
+    [Parameter(ValueFromRemainingArguments = $true)][string[]]$Command
+  )
+  Invoke-DockerStep -Step $Step -DockerArgs (@("compose") + $composeArgs + $Command) | Out-Null
 }
 
 $cleanup = {
   if (-not $Keep) {
     Write-Host "[e2e-docker] tearing down stack..."
-    & docker compose @composeArgs down -v 2>$null | Out-Null
+    & docker compose @composeArgs --profile swarm down -v 2>$null | Out-Null
   } else {
     Write-Host "[e2e-docker] -Keep set — leaving stack running"
   }
@@ -46,55 +97,38 @@ $cleanup = {
 
 try {
   Write-Host "[e2e-docker] validate compose..."
-  Invoke-Compose config -q
+  Invoke-Compose "validate-compose" config -q
 
-  Write-Host "[e2e-docker] build + start defenders..."
-  Invoke-Compose up -d --build core origin gate
+  Invoke-Compose "build-images" --profile attack --profile gate-test --profile pass-test --profile swarm --progress plain build core gate bots
+  Invoke-Compose "start-defenders" up -d --no-build core origin gate
 
-  Write-Host "[e2e-docker] automation catalog (bots)..."
-  Invoke-Compose run --rm bots
+  Invoke-Compose "attack-catalog" run --rm -T bots
 
-  Write-Host "[e2e-docker] assert attack gate..."
-  Invoke-Compose run --rm attack-assert
+  Invoke-Compose "attack-assert" run --rm -T attack-assert
 
-  Write-Host "[e2e-docker] gate proxy-layer conformance..."
-  Invoke-Compose run --rm gate-e2e
+  Invoke-Compose "gate-conformance" run --rm -T gate-e2e
 
-  Write-Host "[e2e-docker] Pass contract..."
-  Invoke-Compose run --rm pass-e2e
-  Invoke-Compose restart core
-  Write-Host "[e2e-docker] Pass wargame..."
-  Invoke-Compose run --rm pass-wargame
+  Invoke-Compose "pass-contract" run --rm -T pass-e2e
+  Invoke-Compose "restart-core" restart core
+  Invoke-Compose "pass-wargame" run --rm -T pass-wargame
 
   if (-not $SkipSwarm) {
-    Write-Host "[e2e-docker] multi-subnet swarm..."
-    Invoke-Compose run --rm swarm-reset
-    Invoke-Compose --profile swarm up --abort-on-container-exit bot-swarm-a bot-swarm-b bot-swarm-c
-    Invoke-Compose run --rm swarm-assert
-    Write-Host "[e2e-docker] swarm correlation OK"
+    Invoke-Compose "swarm-reset" run --rm -T swarm-reset
+    Invoke-Compose "swarm" --profile swarm up --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c
+    Invoke-Compose "swarm-assert" run --rm -T swarm-assert
   } else {
     Write-Host "[e2e-docker] skip swarm"
   }
 
   if (-not $SkipOverlays) {
-    if (Test-Path "scripts/ci-overlays.sh") {
-      Write-Host "[e2e-docker] PLAN-08 overlays..."
-      Invoke-Compose down -v
-      $env:E2E_PROJECT_NAME = "$project-overlay"
-      & docker run --rm `
-        -v /var/run/docker.sock:/var/run/docker.sock `
-        -v "${Root}:/workspace" `
-        -w /workspace `
-        -e "E2E_PROJECT_NAME=$env:E2E_PROJECT_NAME" `
-        docker:27-cli sh scripts/ci-overlays.sh
-      if ($LASTEXITCODE -ne 0) { throw "Docker overlay orchestrator failed" }
-    }
-  } else {
-    Write-Host "[e2e-docker] skip overlays"
+    throw "Full overlays require the authoritative Linux runner: bash scripts/e2e-docker.sh"
   }
+  Write-Host "[e2e-docker] skip overlays (Docker Desktop diagnostics only)"
 
-  Write-Host "[e2e-docker] ALL e2e gates passed."
+  Set-RunStatus -Status "completed" -Phase "complete"
+  Write-Host "[e2e-docker] Docker Desktop diagnostic subset passed; this is not an E2E completion claim."
 } finally {
   & $cleanup
+  Stop-Transcript -ErrorAction SilentlyContinue | Out-Null
 }
 
