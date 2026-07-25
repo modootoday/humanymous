@@ -18,7 +18,8 @@ at this stage of the project. Pin to a tag and watch releases to receive fixes.
 
 ## Reporting a vulnerability
 
-**Please report privately — do not open a public issue for a security bug.**
+> [!WARNING]
+> **Please report privately — do not open a public issue for a security bug.**
 
 1. Preferred: **GitHub Private Vulnerability Reporting** — the *Security → Report a
    vulnerability* button on the repository (creates a private advisory draft).

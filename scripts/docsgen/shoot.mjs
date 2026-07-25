@@ -44,6 +44,7 @@ const demoHTML = readFileSync(join(ROOT, 'web', 'demo.html'), 'utf8')
   .replace(/<script type="module" src="\/static\/js\/demo\.js"><\/script>/, '') + DEMO_RENDER;
 
 const passHTML = readFileSync(join(ROOT, 'web', 'pass.html'), 'utf8');
+const playgroundHTML = readFileSync(join(ROOT, 'web', 'playground.html'), 'utf8'); // the Detection Observatory
 
 // ── canned fixtures for the stubbed endpoints ────────────────────────────────
 const now = 16;
@@ -100,6 +101,45 @@ const FIX = {
   '/erasures': { scheduled: [] },
 };
 
+// Detection Observatory: a scored session pushed over SSE + its server-truth ScoreTrace.
+// A puppeteer-class headless bot → HR-7 DENY, mirroring the /demo fixture at engine depth.
+const obsReport = {
+  sessionId: 'obs-7f3a', source: 'launch:puppeteer',
+  scoring: {
+    riskScore: 82.4, verdict: 'DENY', hardRuleFired: 'HR-7', policyVersion: '1.0.0',
+    topContributors: [{ id: 'l1.navigator.webdriver', score: 40 }, { id: 'l1.headless.newHeadless', score: 22 }, { id: 'x.ua_vs_gpu', score: 18 }],
+  },
+  client: { signals: [
+    { layer: 'L1', id: 'l1.navigator.webdriver', verdict: 'BOT', score: 40, collected: 'wasm', notes: 'webdriver=true' },
+    { layer: 'L1', id: 'l1.headless.newHeadless', verdict: 'BOT', score: 22, collected: 'js', notes: 'HeadlessChrome UA token' },
+    { layer: 'L2', id: 'l2.webgl.swiftshader', verdict: 'SUSPICIOUS', score: 14, collected: 'js', notes: 'software renderer' },
+    { layer: 'L2', id: 'l2.canvas.noise_absent', verdict: 'SUSPICIOUS', score: 8, collected: 'js' },
+    { layer: 'L3', id: 'l3.native.toString_ok', verdict: 'OK', score: 0, collected: 'wasm' },
+    { layer: 'L4', id: 'l4.behavior.no_interaction', verdict: 'SUSPICIOUS', score: 9, collected: 'js' },
+  ] },
+  network: { ja4: 't13d1516h2_8daaf6152771_b186095e22b6', ja4Engine: 'chrome',
+    signals: [{ layer: 'L5', id: 'l5.h2.akamai_fp', verdict: 'OK', score: 0, collected: 'server' }] },
+  crosschecks: [{ id: 'x.ua_vs_gpu', consistent: false }, { id: 'x.ua_vs_ja4', consistent: true }, { id: 'x.browser_no_js', consistent: true }],
+};
+const obsMeta = { policy: { version: '1.0.0', challengeAt: 30, denyAt: 70, layerCap: 60 } };
+const obsExplain = {
+  hardRuleEval: [
+    { rule: 'HR-1', why: 'Selenium / cdc_ automation artifact', matched: false },
+    { rule: 'HR-2', why: 'UA claims a browser but TLS+H2 resolve to another engine', matched: false },
+    { rule: 'HR-7', why: 'Headless browser plus a second automation tell', matched: true, won: true, verdict: 'DENY' },
+    { rule: 'HR-8', why: 'Patched native getter hiding webdriver', matched: false },
+    { rule: 'HR-12', why: 'No interaction over the observation window', matched: true },
+    { rule: 'HR-18', why: 'Browser UA but zero client-side JS evidence', matched: false },
+  ],
+  perLayer: [
+    { layer: 'L1', rawProb: 0.62, cappedProb: 0.60, capHit: true },
+    { layer: 'L2', rawProb: 0.21, cappedProb: 0.21, capHit: false },
+    { layer: 'L4', rawProb: 0.09, cappedProb: 0.09, capHit: false },
+    { layer: 'L6', rawProb: 0.18, cappedProb: 0.18, capHit: false },
+  ],
+  dedupDropped: [{ droppedId: 'l1.webdriver.present', keptId: 'l1.navigator.webdriver' }],
+};
+
 const passChallenge = {
   challenge: {
     n: 11, center: 5, rows: [
@@ -116,12 +156,26 @@ const MIME = { '.svg': 'image/svg+xml', '.js': 'text/javascript', '.css': 'text/
 function jsonRes(res, obj) { res.writeHead(200, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(obj)); }
 function htmlRes(res, s) { res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(s); }
 
+const sseClients = new Set(); // open Observatory SSE responses, ended on teardown
+
 const server = createServer((req, res) => {
   const u = new URL(req.url, 'http://x');
   const p = u.pathname;
   if (p === '/__hmn/admin/console') return htmlRes(res, consoleHTML);
   if (p === '/demo') return htmlRes(res, demoHTML);
   if (p === '/pass') return htmlRes(res, passHTML);
+  if (p === '/playground') return htmlRes(res, playgroundHTML);
+  // Observatory data plane: meta + server-truth ScoreTrace + a scored session over SSE.
+  if (p === '/playground/meta') return jsonRes(res, obsMeta);
+  if (p.startsWith('/playground/explain/')) return jsonRes(res, obsExplain);
+  if (p === '/playground/events') {
+    res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
+    res.write(':ok\n\n');
+    sseClients.add(res);
+    req.on('close', () => sseClients.delete(res));
+    setTimeout(() => { if (!res.writableEnded) res.write('event: session.scored\ndata: ' + JSON.stringify({ sessionId: obsReport.sessionId, source: obsReport.source, report: obsReport }) + '\n\n'); }, 250);
+    return;
+  }
   // stubbed admin API (strip the /__hmn/admin prefix)
   for (const key of Object.keys(FIX)) {
     if (p === '/__hmn/admin' + key) return jsonRes(res, FIX[key]);
@@ -152,8 +206,11 @@ const ASSETS = [
   // Pass: capture the body (its own gradient bg) in a viewport wider than the 640px
   // card so the card sits inset with breathing room; trim off (keeps the side margins).
   { name: 'pass-challenge', page: 'pass', title: 'humanymous — Pass', sel: 'body', w: 900, perTheme: false, trim: false, vp: { width: 800, height: 900 } },
+  // Observatory: the launcher rail is far taller than the scored-session content, so
+  // clip to the bottom of the last center panel instead of capturing the whole body.
+  { name: 'observatory', page: 'observatory', title: 'humanymous — Detection Observatory', sel: 'body', w: 1500, perTheme: false, clipBottom: '.center', vp: { width: 1300, height: 1480 } },
 ];
-const URLS = { console: '/__hmn/admin/console', demo: '/demo', pass: '/pass' };
+const URLS = { console: '/__hmn/admin/console', demo: '/demo', pass: '/pass', observatory: '/playground' };
 
 async function prep(page, a) {
   if (a.page === 'console') {
@@ -174,6 +231,11 @@ async function prep(page, a) {
     await page.waitForSelector('.reel', { timeout: 8000 });
     await page.evaluate(() => document.querySelectorAll('.note').forEach((n) => (n.style.display = 'none')));
     await page.waitForTimeout(200);
+  } else if (a.page === 'observatory') {
+    await page.waitForSelector('#lanes .lane', { timeout: 8000 });          // SSE session.scored rendered
+    await page.waitForSelector('#explain:not([hidden])', { timeout: 8000 }).catch(() => {}); // ScoreTrace fetched
+    await page.evaluate(() => { const c = document.querySelector('.rcard[data-p="puppeteer.mjs"]'); if (c) c.click(); }); // highlight the launched profile
+    await page.waitForTimeout(300);
   }
 }
 
@@ -194,12 +256,28 @@ async function run() {
     const themes = a.perTheme ? ['dark', 'light'] : ['dark'];
     const captured = {};
     for (const theme of themes) {
-      const ctx = await browser.newContext({ viewport: a.vp, deviceScaleFactor: 2, colorScheme: theme, ignoreHTTPSErrors: true });
+      const ctx = await browser.newContext({ viewport: a.vp, deviceScaleFactor: 2, colorScheme: theme, ignoreHTTPSErrors: true, locale: 'en-US' });
       const page = await ctx.newPage();
       await page.goto(base + URLS[a.page], { waitUntil: 'domcontentloaded' });
       if (a.page === 'console') await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme);
       await prep(page, a);
-      captured[theme] = await page.locator(a.sel).first().screenshot();
+      if (a.clipBottom) {
+        // clip from the top to the true content bottom (max bottom of the container's
+        // direct children) — the container itself stretches to the tall rail, so its own
+        // box would re-introduce the dead space we're trying to drop.
+        const h = await page.evaluate((sel) => {
+          const root = document.querySelector(sel);
+          if (!root) return document.body.scrollHeight;
+          let max = 0;
+          root.querySelectorAll(':scope > *').forEach((k) => { const b = k.getBoundingClientRect().bottom; if (b > max) max = b; });
+          return Math.ceil(max + 20);
+        }, a.clipBottom);
+        // clip only captures within the viewport, so the vp must be tall enough (below).
+        captured[theme] = await page.screenshot({ clip: { x: 0, y: 0, width: a.vp.width, height: h } });
+        captured[theme] = await page.screenshot({ clip: { x: 0, y: 0, width: a.vp.width, height: h } });
+      } else {
+        captured[theme] = await page.locator(a.sel).first().screenshot();
+      }
       await ctx.close();
     }
     // Emit both chrome variants. per-theme pages give a theme-matched inner capture;
@@ -214,6 +292,7 @@ async function run() {
   }
 
   await browser.close();
+  for (const c of sseClients) { try { c.end(); } catch { /* already gone */ } }
   await new Promise((r) => server.close(r));
   console.log(`shoot: ${n} framed WebP (${ASSETS.length} surfaces × 2 themes) → docs/assets/screenshots/framed/`);
 }

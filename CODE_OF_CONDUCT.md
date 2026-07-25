@@ -1,5 +1,7 @@
 # Contributor Covenant Code of Conduct
 
+> humanymous adopts the [Contributor Covenant](https://www.contributor-covenant.org/), version 2.1. It applies in every project space — issues, pull requests, and discussions — and when you represent the project in public. Reports are handled per the **Enforcement** section below.
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our

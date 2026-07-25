@@ -11,6 +11,11 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 The Detection Observatory is a real-time, local-only web page served by the detection engine. You fire a bundled attack profile — or just browse — at your own engine and watch the L1→L7 pipeline light up: which signals fired, how the risk score built to its band, and which hard rule (if any) overrode it. It turns the terminal-only test run into something you can watch and learn from.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/observatory-dark.webp" />
+  <img src="../assets/screenshots/framed/observatory-light.webp" alt="The Detection Observatory scoring a headless puppeteer session live: an 82.4 DENY with HR-7 fired, the L1→L7 pipeline of signals, and the server-truth hard-rule ladder showing HR-7 winning over the score band, beside the Red launcher catalog." />
+</picture>
+
 > **Tip:** Want to see what it looks like first? The **[guided tour](observatory-tour.md)** is an annotated screenshot walkthrough.
 
 > **Note:** The Observatory runs on the standalone detection engine (`bin/server.exe` on `127.0.0.1:8443`) — **not** the Gate proxy (`bin/gate.exe` on `:8444`/`:8445`) you build in the Quickstart. It is a separate binary for watching the L1→L7 scoring in isolation, and it is not the Ledger. If those two binaries are new to you, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) first. For how the live feed and safety model work, see [Inside the Detection Observatory](../explanation/observatory-architecture.md).
