@@ -16,6 +16,7 @@ import (
 	"github.com/modootoday/humanymous/internal/network"
 	"github.com/modootoday/humanymous/internal/resource"
 	"github.com/modootoday/humanymous/internal/scoring"
+	"github.com/modootoday/humanymous/internal/signals"
 	"github.com/modootoday/humanymous/internal/trafficguard"
 	"github.com/modootoday/humanymous/internal/watermark"
 )
@@ -59,6 +60,11 @@ type app struct {
 	launchMu     sync.Mutex
 	launchCancel context.CancelFunc
 	runProfile   func(ctx context.Context, profile, base string) ([]byte, error) // injectable for tests
+
+	// lastFP tracks client fingerprintId per session for mid-session fp-churn
+	// (rotate-fp-to-dodge-HR-19 residual). Not a cross-session JA4 census.
+	lastFPMu sync.Mutex
+	lastFP   map[string]string
 }
 
 func newApp(webDir string, masterKey []byte, ritOn bool) *app {
@@ -136,14 +142,18 @@ func (a *app) routes() http.Handler {
 
 // withTrafficLog records every TCP/TLS/HTTP request into the traffic log so the
 // intra-session consistency guard (SoT-12) can detect rotation/evasion.
+// RemoteAddr uses clientIP (XFF-aware when the peer is a trusted proxy) so
+// WireGuard/OpenVPN exit rotation simulated via trusted XFF is visible as
+// l5.traffic.ip_hop — not just the Docker bridge peer that never changes.
 func (a *app) withTrafficLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		sid := cookieValue(r, sessionCookie)
 		hi := reqToHeaderInfo(r)
+		client := clientIP(r)
 		rec := trafficguard.TrafficRecord{
 			TS:          time.Now(),
 			SessionID:   sid,
-			RemoteAddr:  r.RemoteAddr,
+			RemoteAddr:  client,
 			Method:      r.Method,
 			Path:        r.URL.Path,
 			Proto:       protoVer(r),
@@ -155,7 +165,7 @@ func (a *app) withTrafficLog(next http.Handler) http.Handler {
 			ja3, _ := network.JA3(hello)
 			ja4, _ := network.JA4(hello)
 			a.tlog.RecordTLS(trafficguard.TrafficRecord{
-				TS: rec.TS, RemoteAddr: r.RemoteAddr,
+				TS: rec.TS, RemoteAddr: client,
 				JA3: ja3, JA4: ja4, JA4Engine: network.EngineFromClientHello(hello),
 				ExtOrder: network.ExtOrderHash(hello),
 			})
@@ -226,4 +236,102 @@ func isDatacenterIP(ip string) bool {
 		}
 	}
 	return false // fail open: no dataset ⇒ do not accuse a real user's public IP
+}
+
+// proxyVPNNets is the operator-supplied commercial VPN / open-proxy CIDR set.
+// Empty by default → fail open. Feeds l5.ip.proxy_vpn_tor (HR-24 under browser UA).
+// Tor exits are wired separately via SetTorExitCIDRs → l5.ip.tor_exit.
+var proxyVPNNets []*net.IPNet
+
+// SetProxyVPNCIDRs wires commercial VPN / open-proxy ranges for l5.ip.proxy_vpn_tor.
+func SetProxyVPNCIDRs(nets []*net.IPNet) { proxyVPNNets = nets }
+
+func isProxyVPNIP(ip string) bool {
+	p := net.ParseIP(ip)
+	if p == nil {
+		return false
+	}
+	if p.IsLoopback() || p.IsPrivate() || p.IsLinkLocalUnicast() || p.IsUnspecified() {
+		return false
+	}
+	for _, n := range proxyVPNNets {
+		if n.Contains(p) {
+			return true
+		}
+	}
+	return false
+}
+
+// torExitNets is the operator-supplied Tor exit-relay CIDR set (e.g. from the
+// public Tor bulk exit list). Empty by default → fail open. Feeds l5.ip.tor_exit.
+var torExitNets []*net.IPNet
+
+// SetTorExitCIDRs wires Tor exit-relay ranges for l5.ip.tor_exit (HR-24).
+func SetTorExitCIDRs(nets []*net.IPNet) { torExitNets = nets }
+
+func isTorExitIP(ip string) bool {
+	p := net.ParseIP(ip)
+	if p == nil {
+		return false
+	}
+	if p.IsLoopback() || p.IsPrivate() || p.IsLinkLocalUnicast() || p.IsUnspecified() {
+		return false
+	}
+	for _, n := range torExitNets {
+		if n.Contains(p) {
+			return true
+		}
+	}
+	return false
+}
+
+// fingerprintChurnSignal fires when fingerprintId changes mid-session (same cookie).
+// Bots rotate the client-controlled fingerprintId per exit hop to dodge HR-19's
+// fingerprint|ja4 correlation key. Cross-session JA4 fan-out is NOT used here —
+// ordinary Chrome users share a JA4 prefix and would mass-false-positive.
+func fingerprintChurnSignal(sid, fp string, a *app) signals.Signal {
+	if sid == "" || fp == "" || a == nil {
+		return signals.Signal{}
+	}
+	a.lastFPMu.Lock()
+	defer a.lastFPMu.Unlock()
+	if a.lastFP == nil {
+		a.lastFP = map[string]string{}
+	}
+	prev, ok := a.lastFP[sid]
+	a.lastFP[sid] = fp
+	if ok && prev != "" && prev != fp {
+		return signals.New("l5.correlation.fp_churn_proxy",
+			map[string]string{"prev": prev, "next": fp},
+			signals.VerdictBot, 1.0, signals.SourceServer,
+			"fingerprintId rotated mid-session (proxy fp-churn evasion)")
+	}
+	return signals.Signal{}
+}
+
+// vpnWebRTCLeakSignal compares client-reported WebRTC public ICE candidates to the
+// server-observed TCP client IP. OpenVPN/WireGuard tunnels often leak the real
+// egress via STUN while TCP hits the origin from the tunnel exit.
+func vpnWebRTCLeakSignal(adv signals.Advanced, tcpClientIP string) signals.Signal {
+	tcp := net.ParseIP(tcpClientIP)
+	if tcp == nil || tcp.IsLoopback() || tcp.IsPrivate() || tcp.IsLinkLocalUnicast() {
+		// Lab/Docker peers are private; WebRTC leak is only meaningful against a public
+		// TCP peer (production). Skip rather than mass-flag containerized tests that
+		// did not model a public tunnel exit.
+		return signals.Signal{}
+	}
+	tcpStr := tcp.String()
+	for _, raw := range adv.WebRTCPublicAddrs {
+		ip := net.ParseIP(strings.TrimSpace(raw))
+		if ip == nil || ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() || ip.IsUnspecified() {
+			continue
+		}
+		if ip.String() != tcpStr {
+			return signals.New("l5.proxy.vpn_webrtc_leak",
+				map[string]string{"tcp": tcpStr, "webrtc": ip.String()},
+				signals.VerdictBot, 1.0, signals.SourceServer,
+				"WebRTC public candidate ≠ TCP client IP (VPN/tunnel leak)")
+		}
+	}
+	return signals.Signal{}
 }

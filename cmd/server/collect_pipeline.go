@@ -48,11 +48,14 @@ func parseClientReport(w http.ResponseWriter, body []byte, sid string) (signals.
 // ClientHello + HTTP/2 fingerprint + headers and merges it with the client
 // report into the session (network is pinned on the first collect).
 func (a *app) mergeObservation(sid string, r *http.Request, client signals.ClientReport, now time.Time) {
+	cip := clientIP(r)
 	obs := network.Observation{
 		Hello:             a.reg.Hello(r.RemoteAddr),
 		H2:                a.reg.H2(r.RemoteAddr),
 		Header:            reqToHeaderInfo(r),
-		IsDatacenterIP:    isDatacenterIP(clientIP(r)),
+		IsDatacenterIP:    isDatacenterIP(cip),
+		IsProxy:           isProxyVPNIP(cip),
+		IsTorExit:         isTorExitIP(cip),
 		ClientForwardedIP: forwardedIP(r),
 	}
 	a.store.MergeNetwork(sid, network.Build(obs), now)
@@ -108,6 +111,20 @@ func (a *app) enrichServerSignals(sid string, r *http.Request, client signals.Cl
 			a.store.AppendNetworkSignals(sid, corr, now)
 		}
 	}
+	// Mid-session fingerprintId churn (client rotates fp to dodge HR-19 within one
+	// cookie while hopping exits). Distinct from cross-session JA4 fan-out, which
+	// would mass-false-positive ordinary Chrome users sharing one JA4 prefix.
+	if sig := fingerprintChurnSignal(sid, client.FingerprintID, a); sig.ID != "" {
+		a.store.AppendNetworkSignals(sid, []signals.Signal{sig}, now)
+	}
+	// VPN / tunnel residual (OpenVPN, WireGuard, commercial VPN): WebRTC srflx/public
+	// candidates should match the TCP client IP the server sees. When they diverge, the
+	// browser path (TCP, often tunnel exit) ≠ the ICE path (often the real egress) —
+	// classic WebRTC leak under VPN. Server-authoritative compare; client cannot forge the
+	// peer IP. Honest dual-WAN is rare enough that HR-24 CHALLENGEs rather than DENYs.
+	if sig := vpnWebRTCLeakSignal(client.Advanced, clientIP(r)); sig.ID != "" {
+		a.store.AppendNetworkSignals(sid, []signals.Signal{sig}, now)
+	}
 	if a.store.PowSolved(sid) {
 		a.store.AppendNetworkSignals(sid, []signals.Signal{powSolvedSignal()}, now)
 	}
@@ -133,10 +150,23 @@ func (a *app) scoreAndStore(sid string, now time.Time) (signals.ScoreResult, sig
 
 // publishScored publishes the scored session to the Detection Observatory live
 // feed (SoT-30 tap A), outside any shared lock. Nil (zero cost) unless the
-// playground is enabled.
+// playground is enabled. Network residual events are published separately so
+// operators can monitor TCP/proxy/VPN detections without score movement.
 func (a *app) publishScored(sid string, r *http.Request, rep *signals.SessionReport) {
-	if a.hub != nil {
-		a.hub.Publish("session.scored", buildLiveEvent(sid, liveSource(r), rep))
+	if a.hub == nil {
+		return
+	}
+	a.hub.Publish("session.scored", buildLiveEvent(sid, liveSource(r), rep))
+	for _, ar := range network.AuditRecordsFromSignals(rep.Network.Signals) {
+		a.hub.Publish("network.residual", map[string]any{
+			"sid":       shortSID(sid),
+			"eventType": ar.EventType,
+			"signalId":  ar.SignalID,
+			"verdict":   ar.Verdict,
+			"notes":     ar.Notes,
+			// scoreExempt: residual never moves risk; admin Ban is the block path.
+			"scoreExempt": true,
+		})
 	}
 }
 

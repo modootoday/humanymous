@@ -67,15 +67,25 @@ func (n *nonceStore) consume(tok string) bool {
 // when xff_spoof.mjs (and later the deployment-review evasions) were added to the
 // catalog but not here.
 var launchProfiles = map[string]bool{
-	"human.mjs": true, "http_client.mjs": true, "tls_parrot.mjs": true, "selenium.mjs": true,
+	"human.mjs": true, "http_client.mjs": true, "tls_parrot.mjs": true,
+	"curl_impersonate_chrome.mjs": true, "curl_impersonate_chrome99_android.mjs": true,
+	"selenium.mjs": true,
 	"puppeteer.mjs": true, "puppeteer_stealth.mjs": true, "playwright_plain.mjs": true,
 	"playwright_stealth.mjs": true, "undetected.mjs": true, "patchright.mjs": true,
+	"rebrowser_cdp_stripped.mjs": true, "mobile_ua_desktop_profile.mjs": true,
+	"near_ceiling_audio_24k.mjs": true, "near_ceiling_no_widevine.mjs": true,
+	"browser_use_cdp.mjs": true,
 	"direct_cdp.mjs": true, "nodriver.mjs": true, "xvfb_headful.mjs": true, "antidetect.mjs": true,
 	"camoufox.mjs": true, "tls_static.mjs": true, "tls_rotate.mjs": true, "ua_rotate.mjs": true,
 	"rit_replay.mjs": true, "rit_tamper.mjs": true, "video_scrape.mjs": true, "watermark_strip.mjs": true,
 	"ai_agent.mjs": true, "distributed.mjs": true, "xff_spoof.mjs": true, "flood.mjs": true, "rapid_reset.mjs": true,
 	// deployment-review-hardened evasions (rounds 3 & 5) — permanent regression wargame cases.
 	"signal_forgery.mjs": true, "privacy_evasion.mjs": true,
+	// proxy/VPN/Tor residual layer (Squid, OpenVPN, WireGuard, Tor, anonymous chains…).
+	"squid_forward.mjs": true, "openvpn_exit.mjs": true, "wireguard_hop.mjs": true, "tor_exit.mjs": true,
+	"anon_proxy_chain.mjs": true, "elite_anon_proxy.mjs": true, "cdn_ip_spoof.mjs": true,
+	"proxy_ua_rotate.mjs": true, "fp_churn_proxy.mjs": true, "stacked_proxy_vpn.mjs": true,
+	"socks_exit_hop.mjs": true,
 	// web-research-designed cost-ladder expansion (T0-T4 gradations) — go-utls-http scenarios:
 	"nonbrowser_ua.mjs": true, "sec_chua_absent.mjs": true, "sec_fetch_absent.mjs": true,
 	"rit_absent.mjs": true, "ja4_churn.mjs": true, "multi_axis_rotate.mjs": true, "grease_absent_js.mjs": true,

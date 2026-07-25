@@ -33,17 +33,33 @@ func reqToHeaderInfo(r *http.Request) network.HeaderInfo {
 	for _, c := range r.Cookies() {
 		cookieNames = append(cookieNames, c.Name)
 	}
+	// Squid and some forward proxies emit either X-Cache or X-Cache-Lookup on the request.
+	xcache := r.Header.Get("X-Cache")
+	if xcache == "" {
+		xcache = r.Header.Get("X-Cache-Lookup")
+	}
 	return network.HeaderInfo{
-		Method:         r.Method,
-		Version:        version,
-		IsH2:           r.ProtoMajor == 2,
-		Names:          names,
-		HasCookie:      r.Header.Get("Cookie") != "",
-		HasReferer:     r.Header.Get("Referer") != "",
-		AcceptLanguage: r.Header.Get("Accept-Language"),
-		AcceptEncoding: r.Header.Get("Accept-Encoding"),
-		CookieNames:    cookieNames,
-		UserAgent:      r.Header.Get("User-Agent"),
+		Method:          r.Method,
+		Version:         version,
+		IsH2:            r.ProtoMajor == 2,
+		Names:           names,
+		HasCookie:       r.Header.Get("Cookie") != "",
+		HasReferer:      r.Header.Get("Referer") != "",
+		AcceptLanguage:  r.Header.Get("Accept-Language"),
+		AcceptEncoding:  r.Header.Get("Accept-Encoding"),
+		CookieNames:     cookieNames,
+		UserAgent:       r.Header.Get("User-Agent"),
+		Via:                   r.Header.Get("Via"),
+		ProxyConnection:       r.Header.Get("Proxy-Connection"),
+		XCache:                xcache,
+		XSquidError:           r.Header.Get("X-Squid-Error"),
+		XForwardedFor:         r.Header.Get("X-Forwarded-For"),
+		Forwarded:             r.Header.Get("Forwarded"),
+		CFConnectingIP:        r.Header.Get("CF-Connecting-IP"),
+		TrueClientIP:          r.Header.Get("True-Client-IP"),
+		XClientIP:             r.Header.Get("X-Client-IP"),
+		XOriginalForwardedFor: r.Header.Get("X-Original-Forwarded-For"),
+		XBlueCoatVia:          r.Header.Get("X-BlueCoat-Via"),
 	}
 }
 
