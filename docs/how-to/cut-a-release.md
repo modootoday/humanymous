@@ -33,7 +33,7 @@ Before `1.0.0` the project is pre-stable: a breaking change may bump the minor r
 
 1. **Land your work on `main`** with Conventional Commit subjects (`feat(gate): …`, `fix(core): …`, `docs: …`). The release-notes quality is only as good as the commit subjects — the first line becomes the release-notes entry.
 
-2. **Confirm CI is green on the exact SHA you will tag** (the `ci` workflow jobs for build/unit tests and the Docker detector-vs-bots gate). The release workflow builds images from the tagged commit; it does **not** re-run those tests for you.
+2. **Confirm CI is green on the exact SHA you will tag** (the `ci` workflow jobs for build/unit tests — including `go test -race` — and the Docker detector-vs-bots gate). The release workflow **refuses to publish** until a successful `ci.yml` run exists for that commit (`require-ci` job); it does **not** re-run unit/e2e itself.
 
 3. **Preview notes** with `make changelog-unreleased` and choose the SemVer bump using the table above.
 

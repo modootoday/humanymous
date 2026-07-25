@@ -17,7 +17,7 @@ jobs:
   go:
     name: build + unit tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,6 +29,9 @@ jobs:
       - run: go build ./...
       - run: go vet ./cmd/... ./internal/...
       - run: go test ./...
+      # SoT-38 §9.5 / v0.2.2 — race detector in CI (unit packages only; not the Docker e2e job).
+      - name: go test -race
+        run: go test -race ./...
       # PLAN-08 backlog: fail if a module compiled into the shipped binaries is missing
       # from the third-party licence index (prevents licence drift).
       - name: licence-index drift check
@@ -44,7 +47,7 @@ jobs:
       # only flags CVEs in code paths we actually call.
       - name: govulncheck
         run: |
-          go install golang.org/x/vuln/cmd/govulncheck@latest
+          go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
           "$(go env GOPATH)/bin/govulncheck" ./...
       # Validate the changelog config so a broken cliff.toml is caught here, not at release
       # time (release.yml generates the release notes from it). Full history is needed to

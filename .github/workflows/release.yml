@@ -16,9 +16,62 @@ permissions:
   contents: read
   packages: write        # push to ghcr.io
   id-token: write        # cosign keyless (OIDC)
+  actions: read          # require-ci lists workflow runs for this SHA
 
 jobs:
+  # SoT-38 §9.7 / v0.2.2 — a tag must not publish images unless CI already passed
+  # on this exact commit. release.yml does not re-run unit/e2e tests itself.
+  require-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Require green ci.yml on this tag SHA
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          echo "Looking for successful ci.yml run on $SHA"
+          for i in $(seq 1 40); do
+            # Prefer a completed run for this exact commit.
+            mapfile -t rows < <(gh run list --repo "$REPO" --commit "$SHA" --workflow=ci.yml \
+              --json databaseId,status,conclusion --jq '.[] | [.databaseId, .status, (.conclusion // "")] | @tsv' 2>/dev/null || true)
+            completed_ok=""
+            in_flight=0
+            for row in "${rows[@]:-}"; do
+              [ -z "$row" ] && continue
+              id=$(echo "$row" | cut -f1)
+              st=$(echo "$row" | cut -f2)
+              concl=$(echo "$row" | cut -f3)
+              echo "  run $id status=$st conclusion=$concl"
+              if [ "$st" = "completed" ]; then
+                if [ "$concl" = "success" ]; then
+                  completed_ok=1
+                else
+                  echo "ci run $id finished with conclusion=$concl — refusing to publish"
+                  exit 1
+                fi
+              else
+                in_flight=1
+              fi
+            done
+            if [ -n "$completed_ok" ]; then
+              echo "ci green on $SHA"
+              exit 0
+            fi
+            if [ "$in_flight" -eq 0 ]; then
+              echo "attempt $i/40: no ci.yml run for $SHA yet (tag may have landed before push CI); waiting 30s..."
+            else
+              echo "attempt $i/40: ci still in progress; waiting 30s..."
+            fi
+            sleep 30
+          done
+          echo "timed out waiting for green ci.yml on $SHA — push CI on main for this commit, then re-tag fix-forward if needed"
+          exit 1
+
   images:
+    needs: require-ci
     runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:

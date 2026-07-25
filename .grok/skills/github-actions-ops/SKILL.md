@@ -51,6 +51,7 @@ human-gated via skill `cut-release` + rule `93`.
 |---------|--------------|-----------|
 | CI `go` red | logs, `go test`, wasm job | fix code on main |
 | CI `detector-vs-bots` red | compose, assert profiles, freeze regression | Docker e2e locally; do not “skip” job |
+| Release `require-ci` red / timeout | No green `ci.yml` on tag SHA | Land CI green on that commit first, or fix-forward new tag after green CI |
 | Release `images` one leg red | Dockerfile, TARGETARCH, VERSION build-arg | fix main → **new** tag if prior tag incomplete |
 | Cosign / id-token | `permissions.id-token: write`, OIDC | restore perms; no ad-hoc keys |
 | `gh-release` empty body | `fetch-depth: 0`, cliff, unconventional commits | fix cliff/hygiene; `gh release edit` only with user OK |

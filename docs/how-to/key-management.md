@@ -165,7 +165,7 @@ HMN_UNSEAL="<passphrase>" gate \
   -audit-verify
 ```
 
-It replays the WAL, verifies the hash chain / HMAC / Signed Tree Heads under the keystore's signing key, prints `audit-verify: OK (<n> records)` and exits `0` on success, or `audit-verify: FAILED class=<class> seq=<n> …` and a non-zero exit on any mismatch. A non-zero exit means the backup is corrupt or the keystore does not match the WAL — do not return that node to service. (In a container, run the same flags as a one-shot against the `hmn-data` volume with `HMN_UNSEAL` supplied.)
+It **requires** `-audit-wal` pointing at a non-empty WAL (an empty chain or omitting `-audit-wal` exits non-zero with `class=empty-chain` — a vacuous green is not a pass). It replays the WAL, verifies the hash chain / HMAC / Signed Tree Heads under the keystore's signing key, and checks independent **witness** co-signatures when a witness key is configured. Success prints `audit-verify: OK (<n> records)` and exits `0`; any mismatch prints `audit-verify: FAILED class=<class> seq=<n> …` and exits non-zero. A non-zero exit means the backup is corrupt, the keystore does not match the WAL, or witness attestation failed — do not return that node to service. (In a container, run the same flags as a one-shot against the `hmn-data` volume with `HMN_UNSEAL` supplied.)
 
 ### Loss blast radius
 

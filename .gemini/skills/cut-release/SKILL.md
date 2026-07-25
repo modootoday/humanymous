@@ -32,7 +32,8 @@ Hard gates: rule `93-release-and-ci.md`
 
 - Another session holds `release` or `git-ops` without agreement.
 - Dirty tree or HEAD is not the intended SHA (`origin/main` tip or human-named SHA).
-- CI (`ci.yml` jobs **go** + **detector-vs-bots**) not **success** on that SHA.
+- CI (`ci.yml` jobs **go** including `go test -race` + **detector-vs-bots**) not **success** on that SHA.
+  (`release.yml` also hard-gates on a green `ci.yml` via `require-ci`.)
 - Freeze surfaces changed without `!` / `BREAKING CHANGE:` — refuse PATCH; demand markers + correct bump.
 - User only asked to prepare — stop before any remote tag push.
 
