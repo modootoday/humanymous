@@ -12,6 +12,7 @@ import (
 	"github.com/modootoday/humanymous/internal/abuse"
 	"github.com/modootoday/humanymous/internal/audit"
 	"github.com/modootoday/humanymous/internal/correlation"
+	"github.com/modootoday/humanymous/internal/gate/settings"
 )
 
 // errAttestedCatchAll is returned by NewServer when the attestation floor
@@ -57,6 +58,8 @@ type Server struct {
 	credCorr        *correlation.Registry // ceiling-guard #2: per-WebAuthn-credential /24 fan-out tracker
 	credFanoutCap   int                   // ceiling-guard #2: distinct /24s per credential before its fast-path reverts to Pass
 	nowFn           func() time.Time
+	// settingsStore holds the SoT-39 RuntimeOverlay (nil = empty overlay ≡ freeze defaults).
+	settingsStore *settings.FileStore
 }
 
 // RunDueShreds executes any erasures whose hold window has elapsed and seals an
@@ -194,6 +197,56 @@ func (s *Server) AdminHandler() http.Handler {
 	})
 }
 
+// SetSettingsStore attaches the SoT-39 RuntimeOverlay file store (optional).
+// Nil store = empty overlay (freeze-identical defaults).
+func (s *Server) SetSettingsStore(st *settings.FileStore) { s.settingsStore = st }
+
+// SettingsEffective returns resolved posture for admin GET /settings/effective.
+func (s *Server) SettingsEffective() settings.Effective {
+	var active *settings.Overlay
+	if s.settingsStore != nil {
+		active = s.settingsStore.Active()
+	}
+	boot := settings.BootInput{
+		GlobalMonitor: s.cfg.GlobalMonitor,
+		KillSwitch:    s.killSwitch.Load(),
+		Routes:        s.cfg.Routes,
+		RateWindowSec: int(rlWindow(s.cfg).Seconds()),
+		RateSoft:      rlSoft(s.cfg),
+		RateHard:      rlHard(s.cfg),
+		HMACKey:       s.tokenKey,
+	}
+	return settings.Resolve(boot, active)
+}
+
+// resolvePath applies SoT-39 Effective routes/globalMonitor when an overlay is
+// active; empty overlay keeps Config.resolve byte-identical (freeze).
+func (s *Server) resolvePath(rawPath string) routePolicy {
+	if s == nil {
+		return presetBalanced
+	}
+	if s.settingsStore == nil || s.settingsStore.Active() == nil {
+		return s.cfg.resolve(rawPath)
+	}
+	eff := s.SettingsEffective()
+	cfg := s.cfg
+	if len(eff.Routes) > 0 {
+		cfg.Routes = eff.Routes
+	}
+	if eff.GlobalMonitor {
+		cfg.GlobalMonitor = true
+	}
+	return cfg.resolve(rawPath)
+}
+
+// gateModuleMode returns effective gate module mode (enforce when empty overlay).
+func (s *Server) gateModuleMode(id string) settings.Mode {
+	if s == nil || s.settingsStore == nil {
+		return settings.ModeEnforce
+	}
+	return s.SettingsEffective().GateMode(id)
+}
+
 // NewServer builds the proxy. control handles the reserved namespace (with the
 // prefix already stripped). upstream is the origin base URL.
 func NewServer(cfg Config, sink *audit.Sink, vault *audit.Vault, verdicts VerdictLedger, control http.Handler) (*Server, error) {
@@ -327,7 +380,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	route := s.cfg.resolve(r.URL.Path)
+	route := s.resolvePath(r.URL.Path)
 	if s.agentAuthGate(w, r, sid, route) { // PLAN-08 R3: Web Bot Auth (trust-upgrade or forgery-deny)
 		return
 	}

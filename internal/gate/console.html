@@ -16,7 +16,8 @@
     <a class="navitem" data-view="sessions" data-tip="<b>Sessions</b>Look up any decision by its record seq (incident reference) and drill into the full evidence: timeline, top contributors, pseudonymized subject."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Sessions</a>
     <div class="navlabel">Governance</div>
     <a class="navitem" data-view="bans" data-tip="<b>Rate Limits &amp; Bans</b>Active IP and fingerprint bans — auto-escalating (1h→6h→24h→permanent) plus manual. Permanent/CIDR place is dual-control; every lift is a single Operator action. All mutations are audited."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>Rate Limits &amp; Bans<span class="badge" id="banBadge">0</span></a>
-    <a class="navitem" data-view="policy" data-tip="<b>Policy</b>Read-only view of the running route table and rate limits. Route presets are startup config (edit + restart) — there is no dual-control policy-write endpoint. Kill switch is dual-control. config_version is a signed hash of the effective posture."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Policy</a>
+    <a class="navitem" data-view="policy" data-tip="<b>Policy</b>Read-only effective posture (routes, rate limits, kill switch, config_version). Writable detection tuning lives under Settings (SoT-39). Kill switch remains dual-control."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Policy</a>
+    <a class="navitem" data-view="settings" data-tip="<b>Settings</b>SoT-39 RuntimeOverlay: HR modes, score thresholds, weights, net residual policy. Class A apply alone; B/C dual-control. Empty overlay = freeze defaults. Does not solve T4."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>Settings</a>
     <a class="navitem" data-view="compliance" data-tip="<b>Compliance</b>GDPR Art.17 / PIPA right-to-erasure via crypto-shred (destroy the subject's linkage key — the chain stays intact) and retention tiers."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Compliance</a>
     <a class="navitem" data-view="approvals" data-tip="<b>Approvals</b>Pending dual-control actions (bans, kill switch, erasures) awaiting a second, distinct approver. Committing here is separation-of-duty enforced and audited."><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Approvals<span class="badge" id="approvalsBadge">0</span></a>
     <div class="spacer"></div>
@@ -38,6 +39,7 @@
     <div class="content" id="view-sessions" hidden></div>
     <div class="content" id="view-bans" hidden></div>
     <div class="content" id="view-policy" hidden></div>
+    <div class="content" id="view-settings" hidden></div>
     <div class="content" id="view-compliance" hidden></div>
     <div class="content" id="view-approvals" hidden></div>
 
@@ -147,10 +149,11 @@ document.querySelectorAll('.navitem').forEach(n=>{ n.setAttribute('role','button
 (async()=>{ try{ const me=await api('/whoami'); const rc=document.querySelector('.rolechip'); if(rc&&me.id){ rc.querySelector('b').textContent=me.id; rc.querySelector('small').textContent=me.role+' · authenticated'; } }catch(e){} })();
 
 // ---------- views ----------
-const views = ['overview','integrity','sessions','bans','policy','compliance','approvals'];
+const views = ['overview','integrity','sessions','bans','policy','settings','compliance','approvals'];
 const titles = { overview:['Overview','live edge decisions'], integrity:['Chain Integrity','tamper-evident audit log'],
   sessions:['Sessions','incident drill-down'], bans:['Rate Limits &amp; Bans','edge protection'],
-  policy:['Policy &amp; Rollout','route enforcement'], compliance:['Compliance','erasure &amp; retention'],
+  policy:['Policy &amp; Rollout','route enforcement'], settings:['Settings','detection overlay (SoT-39)'],
+  compliance:['Compliance','erasure &amp; retention'],
   approvals:['Approvals','dual-control commit queue'] };
 let current='overview';
 const loaded=new Set(); // load each view once; nav switching is then instant
@@ -531,7 +534,120 @@ $('#d-close').onclick=$('#scrim').onclick=()=>{$('#scrim').classList.remove('sho
 addEventListener('keydown',e=>{if(e.key==='Escape'){$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');}});
 
 // ---------- status bar + live ----------
-const loaders={overview:loadOverview,integrity:loadIntegrity,sessions:loadSessions,bans:loadBans,policy:loadPolicy,compliance:loadCompliance,approvals:loadApprovals};
+// ---------- Settings (SoT-39) ----------
+async function loadSettings(){
+  const el=$('#view-settings');
+  let effBody, schema;
+  try{ effBody=await api('/settings/effective'); schema=await api('/settings/schema'); }
+  catch(e){ el.innerHTML=`<div class="note">Settings unavailable: ${esc(e.message)}. Start Gate with <span class="mono">-settings-dir</span> for writes; reads work without store (empty overlay).</div>`; return; }
+  const eff=effBody.effective||{};
+  const storeOk=!!effBody.storeAttached;
+  const ch=eff.challengeAt, dn=eff.denyAt, lc=eff.layerCap;
+  el.innerHTML=`
+    <div class="note" style="border-color:var(--challenge)">Tuning does <b>not</b> detect coherent T4 spoofs. Empty overlay = freeze/catalog defaults. Class A apply alone; B/C need Approvals. Network residual is score-exempt; NET-POLICY only auto-challenges when class=enforce.</div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><span class="stripe" style="background:var(--accent)"></span><div class="k-label">config_version</div><div class="k-val mono" style="font-size:13px">${esc(eff.configVersion||'—')}</div><div class="k-sub">${eff.emptyOverlay?'empty overlay':'overlay active'}</div></div>
+      <div class="kpi"><span class="stripe" style="background:${storeOk?'var(--allow)':'var(--muted)'}"></span><div class="k-label">Store</div><div class="k-val" style="font-size:15px">${storeOk?'attached':'none'}</div><div class="k-sub">${esc(effBody.storeWarning||'-settings-dir')}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--challenge)"></span><div class="k-label">ChallengeAt</div><div class="k-val">${ch}</div><div class="k-sub">DenyAt ${dn} · cap ${lc}</div></div>
+      <div class="kpi"><span class="stripe" style="background:var(--info)"></span><div class="k-label">Kill switch</div><div class="k-val" style="font-size:15px">${eff.killSwitch?'ON':'off'}</div><div class="k-sub">${eff.globalMonitor?'monitor forced':''}</div></div>
+    </div>
+    <div class="split">
+      <section class="card"><header><h2>Propose overlay</h2><div class="push"></div><span class="mono" style="font-size:11px;color:var(--muted)">allow-listed fields</span></header>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+          <label class="fld"><span>HR-12 mode (non-integrity demote → class B)</span>
+            <select id="s-hr12"><option value="">(unchanged)</option><option value="enforce">enforce</option><option value="monitor">monitor</option></select></label>
+          <label class="fld"><span>HR-18 mode (integrity → class C + confirm)</span>
+            <select id="s-hr18"><option value="">(unchanged)</option><option value="enforce">enforce</option><option value="monitor">monitor</option></select></label>
+          <label class="fld"><span>ChallengeAt (raise = weaker)</span><input id="s-ch" type="number" min="10" max="60" step="1" placeholder="${ch}"></label>
+          <label class="fld"><span>DenyAt</span><input id="s-dn" type="number" min="40" max="95" step="1" placeholder="${dn}"></label>
+          <label class="fld"><span>LayerCap (lower = weaker)</span><input id="s-lc" type="number" min="30" max="80" step="1" placeholder="${lc}"></label>
+          <label class="fld"><span>Weight m for l4.event.no_interaction (0–2)</span><input id="s-w" type="number" min="0" max="2" step="0.05" placeholder="1"></label>
+          <label class="fld"><span>net.proxy.hop NET-POLICY</span>
+            <select id="s-nethop"><option value="">(code default)</option><option value="enforce">enforce</option><option value="monitor">monitor</option></select></label>
+          <label class="fld"><span>net.correlation NET-POLICY (integrity family → C)</span>
+            <select id="s-netcorr"><option value="">(code default)</option><option value="enforce">enforce</option><option value="monitor">monitor</option></select></label>
+          <label class="fld"><span>net.tor NET-POLICY</span>
+            <select id="s-nettor"><option value="">(code default)</option><option value="enforce">enforce</option><option value="monitor">monitor</option></select></label>
+          <label class="fld"><span>Route /checkout preset</span>
+            <select id="s-route"><option value="">(unchanged)</option><option value="strict">strict</option><option value="balanced">balanced</option><option value="monitor">monitor</option><option value="attested">attested</option><option value="off">off</option></select></label>
+          <label class="fld"><span>Rate hard (raise = weaker / class B)</span><input id="s-rh" type="number" min="1" step="1" placeholder="${eff.rateHard||''}"></label>
+          <label class="fld"><span>Integrity confirm (class C only)</span><input id="s-ic" placeholder="DISABLE-INTEGRITY" autocomplete="off"></label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="s-dry">Dry-run (aggregates)</button>
+            <button class="btn primary" id="s-prop">Propose / apply</button>
+            <button class="btn" id="s-rb">Rollback to empty</button>
+          </div>
+          <pre id="s-out" class="mono" style="font-size:11px;background:var(--panel-2);padding:10px;border-radius:8px;max-height:160px;overflow:auto;margin:0"></pre>
+        </div>
+      </section>
+      <div class="side">
+        <section class="card"><header><h2>Effective gates</h2></header>
+          <div class="streamwrap"><table><thead><tr><th>Module</th><th>Mode</th></tr></thead>
+          <tbody>${Object.entries(eff.gates||{}).map(([k,v])=>`<tr><td class="mono" style="font-size:12px">${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')||'<tr><td colspan="2" class="empty">—</td></tr>'}</tbody></table></div>
+        </section>
+        <section class="card" style="margin-top:16px"><header><h2>HR overrides</h2></header>
+          <div class="streamwrap"><table><thead><tr><th>Rule</th><th>Mode</th></tr></thead>
+          <tbody>${Object.entries(eff.hardRules||{}).map(([k,v])=>`<tr><td class="mono">${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')||'<tr><td colspan="2" class="empty">all enforce (empty)</td></tr>'}</tbody></table></div>
+        </section>
+        <section class="card" style="margin-top:16px"><header><h2>NET-POLICY / routes</h2></header>
+          <div class="streamwrap"><table><thead><tr><th>Key</th><th>Value</th></tr></thead>
+          <tbody>
+            ${Object.entries(eff.netPolicy||{}).map(([k,v])=>`<tr><td class="mono" style="font-size:12px">${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}
+            ${Object.entries(eff.routes||{}).map(([k,v])=>`<tr><td class="mono" style="font-size:12px">route ${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}
+            <tr><td class="mono" style="font-size:12px">rate soft/hard</td><td>${eff.rateSoft||'—'} / ${eff.rateHard||'—'}</td></tr>
+            ${(!eff.netPolicy||!Object.keys(eff.netPolicy).length)&&(!eff.routes||!Object.keys(eff.routes).length)?'':'')}
+          </tbody></table></div>
+        </section>
+        <section class="card" style="margin-top:16px"><header><h2>Schema notes</h2></header>
+          <div style="padding:12px;font-size:12px;color:var(--muted)">${(schema.notes||[]).map(n=>`<div>· ${esc(n)}</div>`).join('')}</div>
+        </section>
+      </div>
+    </div>`;
+  function buildBody(){
+    const b={parentConfigVersion:eff.configVersion};
+    const hr={};
+    if($('#s-hr12').value) hr['HR-12']=$('#s-hr12').value;
+    if($('#s-hr18').value) hr['HR-18']=$('#s-hr18').value;
+    if(Object.keys(hr).length) b.hardRules=hr;
+    const scoring={};
+    if($('#s-ch').value!=='') scoring.challengeAt=Number($('#s-ch').value);
+    if($('#s-dn').value!=='') scoring.denyAt=Number($('#s-dn').value);
+    if($('#s-lc').value!=='') scoring.layerCap=Number($('#s-lc').value);
+    if(Object.keys(scoring).length) b.scoring=scoring;
+    if($('#s-w').value!=='') b.weightMultipliers={'l4.event.no_interaction':Number($('#s-w').value)};
+    const np={};
+    if($('#s-nethop').value) np['net.proxy.hop']=$('#s-nethop').value;
+    if($('#s-netcorr').value) np['net.correlation']=$('#s-netcorr').value;
+    if($('#s-nettor').value) np['net.tor']=$('#s-nettor').value;
+    if(Object.keys(np).length) b.netPolicy=np;
+    if($('#s-route').value) b.routes={'/checkout':$('#s-route').value};
+    if($('#s-rh').value!=='') b.rateLimit={hard:Number($('#s-rh').value)};
+    if($('#s-ic').value.trim()) b.integrityConfirm=$('#s-ic').value.trim();
+    return b;
+  }
+  $('#s-dry').onclick=async()=>{
+    try{ const r=await api('/settings/dry-run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildBody())});
+      $('#s-out').textContent=JSON.stringify(r,null,2); toast(r.usable?'Dry-run ok':'Dry-run n<'+ (r.minN||50)+' — no numeric claim'); }
+    catch(e){ toast('Dry-run failed: '+e.message); }
+  };
+  $('#s-prop').onclick=async()=>{
+    const b=buildBody();
+    if(!await confirmAction({title:'Propose settings overlay',danger:!!$('#s-hr18').value&&$('#s-hr18').value==='monitor',
+      msg:'Server will classify A/B/C. Class A applies immediately; B/C go to Approvals. parent='+esc(eff.configVersion)})) return;
+    try{ const r=await api('/settings/overlays',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+      $('#s-out').textContent=JSON.stringify(r,null,2);
+      if(r.applied) toast('Applied class '+r.class); else if(r.pending) toast('Pending approval '+r.approvalId); loaded.delete('settings'); loadSettings(); }
+    catch(e){ toast(e.message); $('#s-out').textContent=e.message; }
+  };
+  $('#s-rb').onclick=async()=>{
+    if(!await confirmAction({title:'Rollback overlay',msg:'Clear active RuntimeOverlay to empty (freeze defaults). May need Approver if undoing a tighten.'})) return;
+    try{ const r=await api('/settings/rollback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({parentConfigVersion:eff.configVersion})});
+      toast(r.pending?'Rollback pending Approver':(r.rolledBack?'Rolled back':'No-op')); loaded.delete('settings'); loadSettings(); }
+    catch(e){ toast(e.message); }
+  };
+}
+
+const loaders={overview:loadOverview,integrity:loadIntegrity,sessions:loadSessions,bans:loadBans,policy:loadPolicy,settings:loadSettings,compliance:loadCompliance,approvals:loadApprovals};
 async function refreshStatus(){
   try{ const d=await api('/integrity'); $('#sb-chain').innerHTML=d.ok?'<span class="ok">●</span> chain verified':'<span class="bad">●</span> chain VIOLATION';
     $('#sb-node').textContent='node '+d.node+' · '+d.records+' rec'; $('#liveLabel').textContent='live · '+d.records+' records';

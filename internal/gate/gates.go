@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/modootoday/humanymous/internal/audit"
+	"github.com/modootoday/humanymous/internal/gate/settings"
 )
 
 // gates.go decomposes the edge request path into one method per SECURITY
@@ -71,18 +72,25 @@ func (s *Server) banGate(w http.ResponseWriter, r *http.Request, sid string) boo
 
 // smuggleGate rejects request-smuggling primitives (CL+TE, dup CL, TE!=chunked,
 // obs-fold) before any routing/parse decision (SoT-23 §3, HR-23).
+// SoT-39: when gate.smuggle is monitor/shadow, audit only (no deny).
 func (s *Server) smuggleGate(w http.ResponseWriter, r *http.Request, sid string) bool {
 	reason := smuggleScan(r)
 	if reason == smuggleNone {
 		return false
 	}
 	rec := smuggleRecord(s.cfg.NodeID, s.pseudonym(sid, sid), reason)
+	if s.gateModuleMode("gate.smuggle") != settings.ModeEnforce {
+		rec.Mode = "monitor"
+		s.sink.Emit(rec)
+		return false
+	}
 	s.sink.EmitAndAct(rec, func() { s.deny(w) })
 	return true
 }
 
 // spoofHeaderGate strips + blocks a client that sends our internal/forwarding
 // headers to forge its source or impersonate the proxy (SoT-23 §4, HR-27b).
+// SoT-39: monitor/shadow demotion audits + still strips, but does not deny.
 func (s *Server) spoofHeaderGate(w http.ResponseWriter, r *http.Request, sid string) bool {
 	found := spoofScan(r)
 	if len(found) == 0 {
@@ -90,6 +98,11 @@ func (s *Server) spoofHeaderGate(w http.ResponseWriter, r *http.Request, sid str
 	}
 	rec := spoofRecord(s.cfg.NodeID, s.pseudonym(sid, sid), found)
 	stripInbound(r)
+	if s.gateModuleMode("gate.spoof_header") != settings.ModeEnforce {
+		rec.Mode = "monitor"
+		s.sink.Emit(rec)
+		return false
+	}
 	s.sink.EmitAndAct(rec, func() { s.deny(w) })
 	return true
 }

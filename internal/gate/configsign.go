@@ -14,8 +14,13 @@ import (
 // effective config under the server key makes every past verdict explainable
 // against the exact policy in force, and makes an unapproved change detectable.
 
-// configVersion is a deterministic keyed hash of the effective policy.
+// configVersion is a deterministic keyed hash of the effective policy
+// (SoT-28 WS8 + SoT-39 overlay binding when a RuntimeOverlay is active).
 func (s *Server) configVersion() string {
+	// Prefer the full effective hash when Settings is wired (includes overlay).
+	if s != nil {
+		return s.SettingsEffective().ConfigVersion
+	}
 	h := hmac.New(sha256.New, s.tokenKey)
 	fmt.Fprintf(h, "monitor=%v|kill=%v", s.cfg.GlobalMonitor, s.killSwitch.Load())
 	prefixes := make([]string, 0, len(s.cfg.Routes))

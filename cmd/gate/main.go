@@ -35,6 +35,7 @@ import (
 	"github.com/modootoday/humanymous/internal/audit"
 	"github.com/modootoday/humanymous/internal/collector"
 	"github.com/modootoday/humanymous/internal/gate"
+	"github.com/modootoday/humanymous/internal/gate/settings"
 	"github.com/modootoday/humanymous/internal/redis"
 	"github.com/modootoday/humanymous/internal/scoring"
 )
@@ -98,6 +99,8 @@ func main() {
 	maxBody := flag.Int64("max-body", 0, "max request-body size in bytes forwarded to origin on the proxy path (0 = unlimited); large uploads above this get 413")
 	hsts := flag.Bool("hsts", false, "add a Strict-Transport-Security header to edge responses (only enable once real certs and HTTPS-everywhere are in place)")
 	adminMTLSCA := flag.String("admin-mtls-ca", "", "PEM file of client-cert CA(s); when set, the admin listener REQUIRES a verified client certificate (mTLS) in addition to the bearer token")
+	// SoT-39 P1/P2 — RuntimeOverlay file dir (empty = no store, freeze-identical defaults).
+	settingsDir := flag.String("settings-dir", "", "directory for SoT-39 RuntimeOverlay persistence (settings.overlay.v1.json); empty = no overlay store")
 	flag.Parse()
 
 	originKey := []byte(*originKeyHex)
@@ -279,6 +282,19 @@ func main() {
 	if *anomalyShadow {
 		control.WithCohortShadow() // ceiling-guard #3: population/cohort behavioral shadow (log-only)
 	}
+	// SoT-39: load overlay store (optional) and wire Engine Configure from Effective on each score.
+	var settingsStore *settings.FileStore
+	if *settingsDir != "" {
+		st, sErr := settings.NewFileStore(*settingsDir)
+		if sErr != nil {
+			log.Fatalf("settings-dir: %v", sErr)
+		}
+		settingsStore = st
+		if st.LoadError() != nil {
+			log.Printf("WARNING: settings store: %v", st.LoadError())
+		}
+		log.Printf("SoT-39 settings store: %s (emptyOverlay=%v)", *settingsDir, st.Active() == nil)
+	}
 
 	// PLAN-08 R3 — load the Web Bot Auth trusted-key allowlist, if configured.
 	var agentKeys gate.KeyDirectory
@@ -379,6 +395,12 @@ func main() {
 	srv, err := gate.NewServer(cfg, sink, vault, verdicts, control.Handler())
 	if err != nil {
 		log.Fatalf("proxy: %v", err)
+	}
+	if settingsStore != nil {
+		srv.SetSettingsStore(settingsStore)
+		control.WithEngineConfigurator(func(e *scoring.Engine) {
+			gate.ConfigureEngineFromEffective(e, srv.SettingsEffective())
+		})
 	}
 	// Expose the audit-projection drop total on /metrics (previously only a WARN log line),
 	// so a Tier-1/2 sink shedding records under backpressure/outage is alertable.

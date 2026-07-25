@@ -38,6 +38,9 @@ type ControlPlane struct {
 	cohort      *cohortShadow  // ceiling-guard #3: population/cohort behavioral shadow (log-only); nil = off
 	nowFn       func() time.Time
 	ready       atomic.Bool // readiness gate: true once serving, flipped false on shutdown so an LB drains first
+	// configureEngine optionally reloads SoT-39 Effective into the Engine before Score (P2).
+	// Nil = never touch Engine (freeze defaults). Must be pure Configure of scoring inputs.
+	configureEngine func(*scoring.Engine)
 }
 
 // NewControlPlane wires the control plane against shared state. The control
@@ -45,6 +48,13 @@ type ControlPlane struct {
 // bloat the audit chain (SoT-28 WS7): the ban gate does not cover it, so it must
 // protect itself. Defaults are generous (300 requests / 10s per IP) — a real
 // page makes ~2 control-plane calls; a flood is thousands/sec.
+// WithEngineConfigurator sets the SoT-39 hook that applies Effective overlay knobs
+// to the Engine before each score. Empty-overlay Configure must remain freeze-identical.
+func (c *ControlPlane) WithEngineConfigurator(fn func(*scoring.Engine)) *ControlPlane {
+	c.configureEngine = fn
+	return c
+}
+
 func NewControlPlane(store *collector.Store, engine *scoring.Engine, verdicts VerdictLedger, sink *audit.Sink, vault *audit.Vault) *ControlPlane {
 	c := &ControlPlane{store: store, engine: engine, verdicts: verdicts, sink: sink, vault: vault,
 		epoch: "e1", nonces: NewNonceCache(10 * time.Minute),
@@ -287,17 +297,32 @@ func headerInfo(r *http.Request) network.HeaderInfo {
 	for k := range r.Header {
 		names = append(names, k)
 	}
+	xcache := r.Header.Get("X-Cache")
+	if xcache == "" {
+		xcache = r.Header.Get("X-Cache-Lookup")
+	}
 	return network.HeaderInfo{
-		Method:         r.Method,
-		Version:        protoVer(r),
-		IsH2:           r.ProtoMajor == 2,
-		Names:          names,
-		CasingReliable: false,
-		HasCookie:      r.Header.Get("Cookie") != "",
-		HasReferer:     r.Header.Get("Referer") != "",
-		AcceptLanguage: r.Header.Get("Accept-Language"),
-		AcceptEncoding: r.Header.Get("Accept-Encoding"),
-		UserAgent:      r.Header.Get("User-Agent"),
+		Method:                 r.Method,
+		Version:                protoVer(r),
+		IsH2:                   r.ProtoMajor == 2,
+		Names:                  names,
+		CasingReliable:         false,
+		HasCookie:              r.Header.Get("Cookie") != "",
+		HasReferer:             r.Header.Get("Referer") != "",
+		AcceptLanguage:         r.Header.Get("Accept-Language"),
+		AcceptEncoding:         r.Header.Get("Accept-Encoding"),
+		UserAgent:              r.Header.Get("User-Agent"),
+		Via:                    r.Header.Get("Via"),
+		ProxyConnection:        r.Header.Get("Proxy-Connection"),
+		XCache:                 xcache,
+		XSquidError:            r.Header.Get("X-Squid-Error"),
+		XForwardedFor:          r.Header.Get("X-Forwarded-For"),
+		Forwarded:              r.Header.Get("Forwarded"),
+		CFConnectingIP:         r.Header.Get("CF-Connecting-IP"),
+		TrueClientIP:           r.Header.Get("True-Client-IP"),
+		XClientIP:              r.Header.Get("X-Client-IP"),
+		XOriginalForwardedFor:  r.Header.Get("X-Original-Forwarded-For"),
+		XBlueCoatVia:           r.Header.Get("X-BlueCoat-Via"),
 	}
 }
 

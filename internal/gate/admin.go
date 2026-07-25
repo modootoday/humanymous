@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"runtime"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	"time"
 
 	"github.com/modootoday/humanymous/internal/audit"
+	"github.com/modootoday/humanymous/internal/gate/settings"
 )
 
 // admin.go is the admin-plane API (SoT-26 §10, hardened per SoT-28 WS1/WS2). It
@@ -89,6 +91,25 @@ var adminRoutes = []adminRoute{
 		s.adminIncident(w, arg, op)
 	}},
 	{http.MethodGet, adminExact("policy"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminPolicy(w) }},
+	// SoT-39 P1 — Settings read plane (writes land in P3 via Approvals).
+	{http.MethodGet, adminExact("settings/effective"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminSettingsEffective(w)
+	}},
+	{http.MethodGet, adminExact("settings/schema"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminSettingsSchema(w)
+	}},
+	{http.MethodGet, adminExact("settings/overlays"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminSettingsOverlaysList(w)
+	}},
+	{http.MethodPost, adminExact("settings/overlays"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminSettingsPropose(w, r, op)
+	}},
+	{http.MethodPost, adminExact("settings/dry-run"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminSettingsDryRun(w, r, op)
+	}},
+	{http.MethodPost, adminExact("settings/rollback"), adminCanOperate, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
+		s.adminSettingsRollback(w, r, op)
+	}},
 	{http.MethodGet, adminExact("approvals"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
 		s.adminListApprovals(w)
 	}},
@@ -215,7 +236,20 @@ func (s *Server) adminPolicy(w http.ResponseWriter) {
 		"routes":           rows,
 		"rateLimit":        map[string]any{"windowSec": int(rlWindow(s.cfg).Seconds()), "soft": rlSoft(s.cfg), "hard": rlHard(s.cfg)},
 		"retentionDays":    audit.DefaultRetention().Days(),
+		// SoT-39: Policy view is observe-only; Settings is the write plane.
+		"settingsWrite":    false,
+		"settingsReadPath": "GET /settings/effective",
 	})
+}
+
+// adminSettingsEffective returns SoT-39 resolved posture (empty overlay ≡ freeze defaults).
+func (s *Server) adminSettingsEffective(w http.ResponseWriter) {
+	writeJSON(w, adminSettingsEffectiveBody(s))
+}
+
+// adminSettingsSchema returns static bounds / integrity catalogs (SoT-39 §7).
+func (s *Server) adminSettingsSchema(w http.ResponseWriter) {
+	writeJSON(w, settings.Schema())
 }
 
 // adminKillSwitch creates a PENDING kill-switch flip (dual-control, SoT-28 §5 /
@@ -654,6 +688,25 @@ func (s *Server) adminApprove(w http.ResponseWriter, id string, op Operator) {
 			TenantID: s.cfg.NodeID, Mode: "enforce", FailReason: "kill switch " + map[bool]string{true: "ENGAGED (global monitor)", false: "released"}[on] + " by " + p.Requester + "→" + op.ID, KeyID: "k1",
 		})
 		writeJSON(w, map[string]any{"ok": true, "committed": "killswitch", "monitorOn": s.monitorOn()})
+	case "settings.overlay":
+		if err := s.commitSettingsOverlay(p, op); err != nil {
+			http.Error(w, err.Error(), http.StatusConflict)
+			return
+		}
+		writeJSON(w, map[string]any{
+			"ok": true, "committed": "settings.overlay",
+			"configVersion": s.SettingsEffective().ConfigVersion,
+			"overlayId":     p.Params["overlayId"],
+		})
+	case "settings.overlay.rollback":
+		if err := s.clearOverlayCAS(p.Params["parentConfigVersion"], p.Requester, op.ID); err != nil {
+			http.Error(w, err.Error(), http.StatusConflict)
+			return
+		}
+		writeJSON(w, map[string]any{
+			"ok": true, "committed": "settings.overlay.rollback",
+			"configVersion": s.SettingsEffective().ConfigVersion,
+		})
 	default:
 		http.Error(w, "unknown action kind", http.StatusInternalServerError)
 	}
@@ -674,9 +727,45 @@ func (s *Server) commitBan(key, reason, incident string, dur time.Duration, requ
 	return entry
 }
 
-// validBanKey enforces the ip:/fp:/cidr: key format (SoT-28 §7).
+// validBanKey enforces the ip:/fp:/cidr: key format (SoT-28 §7) with real
+// address material — a bare "ip:" / "fp:" / "cidr:" prefix is not enough.
+// Control characters and non-printable payloads are rejected so ban keys cannot
+// smuggle framing or log-injection bytes into the ban store / audit trail.
 func validBanKey(k string) bool {
-	return strings.HasPrefix(k, "ip:") || strings.HasPrefix(k, "fp:") || strings.HasPrefix(k, "cidr:")
+	if k == "" || strings.ContainsAny(k, "\r\n\x00") {
+		return false
+	}
+	for _, r := range k {
+		if r < 32 || r == 127 {
+			return false
+		}
+	}
+	switch {
+	case strings.HasPrefix(k, "ip:"):
+		ip := strings.TrimSpace(k[len("ip:"):])
+		// ParseIP rejects empty, garbage, and CIDR-suffix forms (use cidr: for ranges).
+		return ip != "" && net.ParseIP(ip) != nil
+	case strings.HasPrefix(k, "fp:"):
+		fp := k[len("fp:"):]
+		if len(fp) < 4 || len(fp) > 128 {
+			return false
+		}
+		for _, r := range fp {
+			if r < 33 || r > 126 {
+				return false
+			}
+		}
+		return true
+	case strings.HasPrefix(k, "cidr:"):
+		c := strings.TrimSpace(k[len("cidr:"):])
+		if c == "" {
+			return false
+		}
+		_, _, err := net.ParseCIDR(c)
+		return err == nil
+	default:
+		return false
+	}
 }
 
 // isBroadKey reports a wide-blast-radius key (CIDR / range) that always needs

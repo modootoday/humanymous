@@ -44,9 +44,15 @@ func NewApprovalStore(key []byte, ttl time.Duration) *ApprovalStore {
 }
 
 // Create records a pending action and returns its id.
+// Params are shallow-copied so a caller cannot retarget a pending dual-control
+// action by mutating the map it passed in (wargame r189).
 func (s *ApprovalStore) Create(kind string, params map[string]string, requester string, needsRole Role) PendingAction {
 	id := randHexN(12)
-	p := PendingAction{ID: id, Kind: kind, Params: params, Requester: requester, NeedsRole: needsRole, Created: s.nowFn()}
+	cp := make(map[string]string, len(params))
+	for k, v := range params {
+		cp[k] = v
+	}
+	p := PendingAction{ID: id, Kind: kind, Params: cp, Requester: requester, NeedsRole: needsRole, Created: s.nowFn()}
 	s.mu.Lock()
 	s.gcLocked()
 	s.pending[id] = p
@@ -100,7 +106,8 @@ func (s *ApprovalStore) Pending() []PendingAction {
 func (s *ApprovalStore) ticket(p PendingAction, approver string) string {
 	m := hmac.New(sha256.New, s.key)
 	m.Write([]byte(p.ID + "|" + p.Kind + "|" + p.Requester + "|" + approver))
-	for _, k := range []string{"key", "durationSec", "subject", "legalBasis"} {
+	// Include settings.overlay binding keys (SoT-39) alongside ban/erasure fields.
+	for _, k := range []string{"key", "durationSec", "subject", "legalBasis", "overlayId", "parentConfigVersion", "mutationClass", "body", "action"} {
 		m.Write([]byte("|" + k + "=" + p.Params[k]))
 	}
 	return hex.EncodeToString(m.Sum(nil))

@@ -58,6 +58,10 @@ func (c *ControlPlane) scoreBeacon(sid string, r *http.Request, client signals.C
 	if lbl := r.URL.Query().Get("label"); lbl != "" {
 		c.store.SetLabel(sid, lbl, now)
 	}
+	// SoT-39 P2: apply Effective overlay knobs (empty overlay ⇒ DefaultPolicy identity).
+	if c.configureEngine != nil && c.engine != nil {
+		c.configureEngine(c.engine)
+	}
 	rep, _ := c.store.Get(sid)
 	res := c.engine.Score(&rep)
 	c.store.StoreScored(sid, rep, now)
@@ -92,14 +96,17 @@ func (c *ControlPlane) issueVerdictTokenOnAllow(w http.ResponseWriter, r *http.R
 
 // linkAndAuditScoring records the handle->subject reverse mapping (SoT-28 §6) so an
 // operator can request erasure by pseudonym, and audits the scoring evaluation
-// (informational; enforcement happens at the edge).
+// (informational; enforcement happens at the edge). Network-plane residuals are
+// emitted as separate net.* audit events (score-exempt) so operators can detect
+// and ban without relying on risk-score movement.
 func (c *ControlPlane) linkAndAuditScoring(sid string, r *http.Request, res signals.ScoreResult) {
 	if c.vault != nil {
 		c.vault.Link(c.pseudo(sid, sid), sid)
 	}
+	psn := c.pseudo(sid, clientIP(r))
 	c.sink.Emit(audit.Record{
 		EventType:  audit.EventScoringEvaluated,
-		Actor:      audit.Actor{Kind: "subject", IDPsn: c.pseudo(sid, clientIP(r))},
+		Actor:      audit.Actor{Kind: "subject", IDPsn: psn},
 		TenantID:   "control",
 		SessionPsn: c.pseudo(sid, sid),
 		RouteClass: "control",
@@ -110,6 +117,35 @@ func (c *ControlPlane) linkAndAuditScoring(sid string, r *http.Request, res sign
 		Mode:       "enforce",
 		KeyID:      "k1",
 	})
+	// Network residual plane → dedicated audit events (admin detect + ban).
+	if rep, ok := c.store.Get(sid); ok {
+		c.emitNetworkResidualAudit(sid, psn, rep.Network.Signals)
+	}
+}
+
+// emitNetworkResidualAudit seals one audit record per score-exempt network residual
+// so the console/audit stream shows TCP/proxy/VPN/Tor detections independently of risk.
+func (c *ControlPlane) emitNetworkResidualAudit(sid, psn string, sigs []signals.Signal) {
+	if c.sink == nil {
+		return
+	}
+	for _, ar := range network.AuditRecordsFromSignals(sigs) {
+		c.sink.Emit(audit.Record{
+			EventType:  ar.EventType,
+			Actor:      audit.Actor{Kind: "subject", IDPsn: psn},
+			TenantID:   "control",
+			SessionPsn: c.pseudo(sid, sid),
+			RouteClass: "control",
+			// Verdict "none" = observational; Mode enforce so console still lists it.
+			Verdict:    "none",
+			RiskScore:  0, // score-exempt plane
+			Rules:      []string{ar.SignalID},
+			TopSignals: []audit.Signal{{ID: ar.SignalID, Verdict: ar.Verdict, Conf: 1}},
+			FailReason: ar.Notes,
+			Mode:       "monitor", // detect-first; admin Ban for block
+			KeyID:      "k1",
+		})
+	}
 }
 
 // writeControlVerdict writes the beacon verdict JSON returned to the client.
