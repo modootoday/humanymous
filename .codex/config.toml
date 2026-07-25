@@ -14,5 +14,11 @@ sandbox_mode = "workspace-write"
 [sandbox_workspace_write]
 network_access = false
 
+# Never forward ambient GitHub credentials to model-proposed commands. GitHub
+# CLI uses its OS keyring credential when these environment overrides are absent.
+[shell_environment_policy]
+ignore_default_excludes = false
+exclude = ["GH_TOKEN", "GITHUB_TOKEN"]
+
 [features]
 hooks = true

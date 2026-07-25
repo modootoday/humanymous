@@ -3,7 +3,7 @@
  * Dependency-free cross-provider PreToolUse guard.
  *
  * stdin: provider hook payload JSON
- * allow: stdout "{}\n", exit 0
+ * allow: no output, exit 0
  * block: stderr reason, exit 2
  */
 import { readFileSync } from 'node:fs';
@@ -82,15 +82,8 @@ export function evaluateCommand(command) {
   return null;
 }
 
-function allow() {
-  // Codex builds with strict hook parsing reject an empty successful stdout,
-  // while Claude and Grok also accept this minimal JSON object.
-  process.stdout.write('{}\n');
-  return 0;
-}
-
 export function main(raw = readFileSync(0, 'utf8')) {
-  if (!raw.trim()) return allow();
+  if (!raw.trim()) return 0;
 
   let payload;
   try {
@@ -100,10 +93,10 @@ export function main(raw = readFileSync(0, 'utf8')) {
   }
 
   const command = extractCommand(payload);
-  if (!command) return allow();
+  if (!command) return 0;
 
   const reason = evaluateCommand(command);
-  if (!reason) return allow();
+  if (!reason) return 0;
 
   process.stderr.write(`${reason}\n`);
   return 2;
