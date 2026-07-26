@@ -67,12 +67,11 @@
     <div class="sr" aria-live="polite" id="live"></div>
   </div>
 
-  <p class="note"><b>Why this?</b> When a session looks ambiguous, humanymous asks you to prove you're a person. This challenge is
-  built to be clearable by <b>keyboard and by screen reader</b>, and <b>there is no time limit</b> — the check is not the puzzle, it's that a real device and person
-  moved the rows. It <b>raises the cost of automation</b>; it does not claim to stop it.</p>
+  <p class="note"><b>Why this?</b> This research exercise asks for additional evidence when a session is ambiguous. It is
+  operable by <b>keyboard and screen reader</b>, and <b>there is no time limit</b>. Motor richness and speed are not requirements.
+  Completing the exercise raises the cost of automation; it does not prove that a person is present. The reference Gate does not automatically route every challenged visitor here.</p>
   <p class="note"><b>Can't complete this check?</b> No interactive challenge works for everyone. Read
-  <a href="https://humanymous.net/help/challenge-accessibility">accessibility help</a>, or
-  <a href="mailto:support@modoo.today?subject=humanymous%20Pass%20accessibility%20—%20need%20another%20way%20in">contact a human to be let through another way</a>.</p>
+  <a href="https://humanymous.net/help/challenge-accessibility">accessibility help</a>. A production integrator must provide an alternative access and appeal path; this reference page does not provide one.</p>
 </div>
 
 <script>
@@ -222,7 +221,7 @@ document.getElementById('submit').addEventListener('click',async()=>{
     durations:cap.durs.slice(0,60),rawT:cap.rawT.slice(-80),pressures:cap.pressures.slice(0,60),keys:cap.keys,keyDurs:cap.keyDurs.slice(0,60),
     motion:cap.motion.slice(-60),pointerType:cap.ptype};
   const j=await (await fetch('/api/pass/solve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
-  if(j.ok){ solved=true; statusEl.textContent='✓ verified — you are human enough ('+(j.verdict||'ALLOW')+')'; statusEl.className='status ok'; document.getElementById('submit').disabled=true; }
+  if(j.ok){ solved=true; statusEl.textContent='✓ additional check completed ('+(j.verdict||'ALLOW')+')'; statusEl.className='status ok'; document.getElementById('submit').disabled=true; }
   else if(j.expired){ statusEl.textContent='⟳ '+(j.reason||'this check expired — starting a fresh one'); statusEl.className='status warn'; setTimeout(loadNew,1400); }
   else{ statusEl.textContent='✕ '+(j.reason||'not this time')+(j.triesLeft!=null?` · ${j.triesLeft} tries left`:''); statusEl.className='status bad'; if(j.triesLeft===0)setTimeout(loadNew,900); }
 });
