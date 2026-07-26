@@ -17,6 +17,7 @@ import (
 
 // catalogProfileLit matches a quoted '<name>.mjs' entry in runner.mjs PROFILES.
 var catalogProfileLit = regexp.MustCompile(`'([a-z0-9_]+\.mjs)'`)
+var observatoryProfileLit = regexp.MustCompile(`\["([a-z0-9_]+\.mjs)"`)
 
 func TestLaunchProfilesMatchCatalog(t *testing.T) {
 	// cwd is cmd/server during the test; the catalog lives at the module root.
@@ -49,6 +50,36 @@ func TestLaunchProfilesMatchCatalog(t *testing.T) {
 	}
 	if len(catalog) != len(launchProfiles) {
 		t.Errorf("size mismatch: catalog has %d profiles, launchProfiles has %d", len(catalog), len(launchProfiles))
+	}
+}
+
+func TestObservatoryCatalogMatchesLaunchProfiles(t *testing.T) {
+	root := moduleRootFrom(t)
+	page := filepath.Join(root, "web", "playground.html")
+	src, err := os.ReadFile(page)
+	if err != nil {
+		t.Fatalf("read observatory %s: %v", page, err)
+	}
+
+	catalog := map[string]bool{}
+	for _, m := range observatoryProfileLit.FindAllStringSubmatch(string(src), -1) {
+		catalog[m[1]] = true
+	}
+	if len(catalog) == 0 {
+		t.Fatal("parsed zero profiles from playground.html")
+	}
+	for name := range launchProfiles {
+		if !catalog[name] {
+			t.Errorf("launcher profile %q is missing from the Observatory catalog", name)
+		}
+	}
+	for name := range catalog {
+		if !launchProfiles[name] {
+			t.Errorf("Observatory profile %q is not allowed by the launcher", name)
+		}
+	}
+	if len(catalog) != len(launchProfiles) {
+		t.Errorf("size mismatch: Observatory has %d profiles, launcher has %d", len(catalog), len(launchProfiles))
 	}
 }
 

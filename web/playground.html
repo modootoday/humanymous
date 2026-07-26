@@ -75,7 +75,7 @@
     background:linear-gradient(90deg,#2b7a37 0 29%,#9c7629 29% 69%,#b23a49 69% 100%)}
   .riskmark{position:absolute;top:-3px;width:3px;height:18px;background:#fff;border-radius:2px;box-shadow:0 0 5px rgba(0,0,0,.6);transition:left .35s ease}
   .risklabels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--faint);margin-top:3px}
-  .lane{display:grid;grid-template-columns:82px 1fr;gap:12px;align-items:start;padding:8px 0;border-top:1px solid var(--border)}
+  .lane{display:grid;grid-template-columns:minmax(170px,220px) 1fr;gap:12px;align-items:start;padding:8px 0;border-top:1px solid var(--border)}
   .lane:first-child{border-top:0}
   .lname{font-family:var(--mono);font-size:12px;color:var(--muted)}
   .lname .lsub{display:block;color:var(--faint);font-size:9.5px}
@@ -103,7 +103,7 @@
   .explain{margin-top:16px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);padding:14px 16px}
   .explain h3{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--live);margin:0 0 10px}
   .ladder{display:flex;flex-direction:column;gap:3px}
-  .hr{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;font-family:var(--mono);font-size:11.5px;padding:4px 8px;border-radius:5px;border:1px solid transparent}
+  .hr{display:grid;grid-template-columns:minmax(170px,.7fr) 1fr auto;gap:10px;align-items:center;font-family:var(--mono);font-size:11.5px;padding:4px 8px;border-radius:5px;border:1px solid transparent}
   .hr .hid{color:var(--faint)} .hr .hy{color:var(--faint);font-family:var(--sans);font-size:11.5px}
   .hr .hv{font-size:10px;color:var(--faint)}
   .hr.matched{color:var(--muted)} .hr.matched .hid{color:var(--challenge)}
@@ -123,7 +123,7 @@
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted)}
   .legend i{width:9px;height:9px;display:inline-block;margin-right:6px}
   .lg-deny i{background:var(--deny)}.lg-chal i{background:var(--challenge);transform:rotate(45deg)}.lg-allow i{background:var(--allow);border-radius:50%}
-  @media (max-width:820px){ main{grid-template-columns:1fr} .rail{border-right:0;border-bottom:1px solid var(--border)} }
+  @media (max-width:820px){ main{grid-template-columns:1fr} .rail{border-right:0;border-bottom:1px solid var(--border)} .lane{grid-template-columns:1fr}.hr{grid-template-columns:1fr}.hr .hv{text-align:left} }
   @media (prefers-reduced-motion:reduce){ .riskmark{transition:none} }
 </style>
 </head>
@@ -134,14 +134,14 @@
     <div class="status"><span class="dot" id="sdot" aria-hidden="true"></span><span id="stext" role="status" aria-live="polite">connecting…</span></div>
   </header>
   <div class="guardrail">
-    <span class="pill dev">DEV BUILD — not for production</span>
-    <span class="pill tgt" id="tgt">local Blue</span>
+    <span class="pill dev">DEVELOPMENT BUILD — not for production</span>
+    <span class="pill tgt" id="tgt">local detector</span>
     <span><b>Self-validation only</b> — this fires the bundled catalog at your own loopback engine. There is no target field.</span>
   </div>
 
   <main>
-    <nav class="rail" aria-label="Red launcher">
-      <h2>Red launcher</h2>
+    <nav class="rail" aria-label="Self-validation launcher">
+      <h2>Self-validation launcher</h2>
       <div id="catalog"></div>
       <div class="runs"><label for="runs">runs</label><input id="runs" type="number" min="1" max="5" value="1"></div>
       <div class="launchbar">
@@ -173,28 +173,28 @@
         </div>
       </div>
 
-      <h2>Live pipeline · L1→L7</h2>
+      <h2>Live seven-stage pipeline</h2>
       <div id="lanes"></div>
 
       <div class="explain" id="explain" hidden>
-        <h3>Why this verdict · hard-rule evaluation (HR-1..HR-21, server truth)</h3>
+        <h3>Why this verdict · ordered enforcement-rule evaluation</h3>
         <div class="ladder" id="ladder"></div>
         <div class="decomp" id="decomp"></div>
         <div class="drop" id="drops"></div>
-        <div class="honest">Rules evaluate top-to-bottom; the first match wins and overrides the score band. HR-12 and HR-11 are heuristics that can challenge some real humans. Detection has a ceiling: a T4 anti-detect toolchain paired with a real-human click-farm is a design boundary, mitigated by rate/reputation, not eliminated.</div>
+        <div class="honest">Rules evaluate from top to bottom; the first match wins and can raise the score-band verdict. Heuristics such as no interaction observed and a browser claim from a hosting network can challenge real people. Internally consistent real-browser or human-paced automation is a documented design boundary; request rate and reputation can raise its cost but do not make it reliably distinguishable.</div>
       </div>
 
       <div class="legend">
         <span class="lg-deny"><i></i>■ BOT</span>
         <span class="lg-chal"><i></i>◆ SUSPICIOUS</span>
         <span class="lg-allow"><i></i>● OK</span>
-        <span>◻ inset = server-observed (L5/L6)</span>
+        <span>◻ inset = server-observed evidence</span>
       </div>
 
       <div class="log"><h3>live event log</h3><div id="logrows" aria-live="polite"></div></div>
 
-      <div class="log" style="margin-top:14px"><h3>humanymous Pass — challenge wargame</h3>
-        <p style="color:#8b949e;font-size:13px;line-height:1.5;margin:6px 0 10px">The interactive challenge served on a CHALLENGE verdict. A non-blocking research surface: attack it to study bypass, then harden it. Pass attempts stream into the live log above as <code>pass.attempt</code> events.</p>
+      <div class="log" style="margin-top:14px"><h3>humanymous Pass — challenge research exercise</h3>
+        <p style="color:#8b949e;font-size:13px;line-height:1.5;margin:6px 0 10px">Pass is an interactive research challenge. The current Gate does not automatically route every challenged visitor here. Exercise it only against this local deployment, then use the observations to harden the reference implementation. Pass attempts appear in the live event log above.</p>
         <a href="/pass" style="display:inline-block;background:#35d0ba;color:#04120f;font-weight:700;text-decoration:none;padding:9px 16px;border-radius:8px;font-size:13px">Open humanymous Pass →</a>
       </div>
     </section>
@@ -203,19 +203,115 @@
 <script type="module">
 import { createFeed, prependRows } from '/static/js/feed.js';
 (function(){
-  var LAYERS=[["L1","static"],["L2","fingerprint"],["L3","integrity"],["L4","behavioral"],["L5","network"],["L6","cross-check"],["L7","scoring"]];
+  var LAYERS=[
+    ["L1","Static client inspection"],
+    ["L2","Client fingerprinting"],
+    ["L3","Client integrity checks"],
+    ["L4","Interaction analysis"],
+    ["L5","Network and protocol inspection"],
+    ["L6","Consistency checks"],
+    ["L7","Risk aggregation and verdict selection"]
+  ];
   var CATALOG=[
-    ["baseline",[["human.mjs","human","OK","honest baseline"]]],
-    ["browser drivers",[["selenium.mjs","selenium","HR-1","cdc_ artifacts"],["puppeteer.mjs","puppeteer","HR-7","headless+webdriver"],["playwright_plain.mjs","playwright","HR-7","headless+webdriver"],["direct_cdp.mjs","direct_cdp","HR-9","raw CDP driver"],["undetected.mjs","undetected","HR-7","webdriver stripped"]]],
-    ["stealth",[["puppeteer_stealth.mjs","puppeteer_stealth","HR-8","patched natives"],["playwright_stealth.mjs","playwright_stealth","HR-8","patched natives"],["patchright.mjs","patchright","HR-13","console disabled"],["rebrowser_cdp_stripped.mjs","rebrowser_cdp_stripped","HR-12","CDP Runtime.enable stripped residual"],["browser_use_cdp.mjs","browser_use_cdp","CDP","pure-CDP agent residual"],["mobile_ua_desktop_profile.mjs","mobile_ua_desktop","L2","mobile UA + desktop pointer residual"],["nodriver.mjs","nodriver","HR-12","headful frontier"],["xvfb_headful.mjs","xvfb_headful","HR-12","no display tell"],["antidetect.mjs","antidetect","HR-12","coherent spoof"],["camoufox.mjs","camoufox","HR-12","Firefox fork"]]],
-    ["non-browser",[["http_client.mjs","http_client","HR-18","no JS evidence"],["tls_parrot.mjs","tls_parrot","HR-18","uTLS parrot"],["curl_impersonate_chrome.mjs","curl_impersonate_chrome","HR-18","curl-impersonate Chrome116"],["curl_impersonate_chrome99_android.mjs","curl_impersonate_android","HR-18","curl-impersonate Android99"],["tls_static.mjs","tls_static","HR-18","static parrot"]]],
-    ["anti-bypass",[["tls_rotate.mjs","tls_rotate","HR-14","TLS rotation"],["ua_rotate.mjs","ua_rotate","HR-15","UA rotation"],["rit_replay.mjs","rit_replay","HR-17","RIT replay"],["rit_tamper.mjs","rit_tamper","HR-16","RIT body tamper"],["video_scrape.mjs","video_scrape","HR-—","media range-storm"],["watermark_strip.mjs","watermark_strip","HR-—","leak + strip"]]],
-    ["frontier",[["ai_agent.mjs","ai_agent","HR-20","LLM cadence"],["distributed.mjs","distributed","HR-19","proxy rotation"],["squid_forward.mjs","squid_forward","HR-24","Squid hop"],["openvpn_exit.mjs","openvpn_exit","HR-24","OpenVPN WebRTC"],["wireguard_hop.mjs","wireguard_hop","HR-24","WireGuard hop"],["tor_exit.mjs","tor_exit","HR-19","Tor exit rotation"],["anon_proxy_chain.mjs","anon_proxy_chain","HR-24","open-proxy chain"],["elite_anon_proxy.mjs","elite_anon","HR-24","elite Forwarded"],["cdn_ip_spoof.mjs","cdn_ip_spoof","HR-24","CF/True-Client-IP"],["proxy_ua_rotate.mjs","proxy_ua_rotate","HR-15","proxy+UA rotate"],["fp_churn_proxy.mjs","fp_churn_proxy","HR-19","fp churn per exit"],["stacked_proxy_vpn.mjs","stacked_proxy_vpn","HR-24","Squid+VPN"],["socks_exit_hop.mjs","socks_exit_hop","HR-24","SOCKS exit hop"],["flood.mjs","flood","HR-21","request flood"],["rapid_reset.mjs","rapid_reset","HR-21","HTTP/2 Rapid Reset"],["near_ceiling_audio_24k.mjs","near_ceiling_audio_24k","HR-22","T4-adjacent audio 24k"],["near_ceiling_no_widevine.mjs","near_ceiling_no_widevine","HR-23","T4-adjacent no Widevine"]]]
+    ["baseline",[
+      ["human.mjs","human","expected allow","synthetic human baseline"]
+    ]],
+    ["browser drivers",[
+      ["selenium.mjs","selenium","automation artifact","injected automation markers"],
+      ["puppeteer.mjs","puppeteer","headless plus automation","headless browser and WebDriver"],
+      ["playwright_plain.mjs","playwright","headless plus automation","headless browser and WebDriver"],
+      ["direct_cdp.mjs","direct browser control","browser-control leak","direct developer-protocol driver"],
+      ["undetected.mjs","modified driver","headless plus automation","WebDriver property removed"]
+    ]],
+    ["stealth and browser modifications",[
+      ["puppeteer_stealth.mjs","Puppeteer stealth","stealth modification","patched native functions"],
+      ["playwright_stealth.mjs","Playwright stealth","stealth modification","patched native functions"],
+      ["patchright.mjs","Patchright","disabled developer console","console interface disabled"],
+      ["rebrowser_cdp_stripped.mjs","Rebrowser","no interaction observed","developer-protocol residual"],
+      ["browser_use_cdp.mjs","browser-use","browser-control residual","agent driven through developer protocol"],
+      ["mobile_ua_desktop_profile.mjs","mobile claim","fingerprint residual","mobile claim with desktop pointer"],
+      ["nodriver.mjs","nodriver","no interaction observed","headful automation boundary"],
+      ["xvfb_headful.mjs","virtual display","no interaction observed","headful browser on a virtual display"],
+      ["antidetect.mjs","anti-detect","coherent-browser boundary","internally consistent spoof"],
+      ["camoufox.mjs","Camoufox","coherent-browser boundary","modified Firefox engine"]
+    ]],
+    ["non-browser clients",[
+      ["http_client.mjs","HTTP client","browser claim without execution","no browser execution evidence"],
+      ["tls_parrot.mjs","connection parrot","browser claim without execution","imitated encryption handshake"],
+      ["curl_impersonate_chrome.mjs","Chrome impersonation","browser claim without execution","Chrome handshake imitation"],
+      ["curl_impersonate_chrome99_android.mjs","Android impersonation","browser claim without execution","Android handshake imitation"],
+      ["tls_static.mjs","static connection parrot","protocol rotation","identical handshake ordering"],
+      ["nonbrowser_ua.mjs","browser header only","browser claim without execution","browser user agent from a non-browser client"],
+      ["sec_chua_absent.mjs","missing client hints","consistency residual","browser claim without expected client hints"],
+      ["sec_fetch_absent.mjs","missing fetch metadata","consistency residual","browser claim without fetch metadata"]
+    ]],
+    ["integrity and rotation",[
+      ["tls_rotate.mjs","connection rotation","protocol rotation","connection engine changes within one session"],
+      ["ua_rotate.mjs","user-agent rotation","identity rotation","browser identity changes within one session"],
+      ["rit_replay.mjs","integrity replay","request-integrity replay","stale signed request counter"],
+      ["rit_tamper.mjs","body tamper","request-body integrity","body differs from the signed body"],
+      ["rit_absent.mjs","missing integrity token","request-integrity residual","application request without its integrity token"],
+      ["ja4_churn.mjs","fingerprint churn","protocol rotation","connection fingerprint changes repeatedly"],
+      ["multi_axis_rotate.mjs","multi-axis rotation","identity rotation","several identity axes rotate together"],
+      ["grease_absent_js.mjs","protocol residual","connection residual","browser execution with unusual handshake behavior"],
+      ["signal_forgery.mjs","signal forgery","provenance guard","client submits server-owned success signals"],
+      ["privacy_evasion.mjs","privacy hardening","false-positive guard","legitimate privacy-shaped residuals"],
+      ["video_scrape.mjs","media range storm","resource protection","repeated media range requests"],
+      ["watermark_strip.mjs","watermark stripping","resource protection","download and strip simulation"]
+    ]],
+    ["network, scale, and advanced residuals",[
+      ["ai_agent.mjs","browser agent","automated interaction","machine-like browser-agent cadence"],
+      ["distributed.mjs","distributed proxy","cross-session correlation","one fingerprint across many subnets"],
+      ["xff_spoof.mjs","source spoofing","source-header protection","forged forwarding address"],
+      ["squid_forward.mjs","forward proxy","proxy residual","forward-proxy hop"],
+      ["openvpn_exit.mjs","virtual private network","network residual","virtual-private-network exit"],
+      ["wireguard_hop.mjs","WireGuard","network residual","WireGuard exit"],
+      ["tor_exit.mjs","Tor exit","cross-session correlation","Tor exit rotation"],
+      ["anon_proxy_chain.mjs","anonymous chain","proxy residual","multi-hop anonymous proxy"],
+      ["elite_anon_proxy.mjs","anonymous proxy","proxy residual","forwarding-header suppression"],
+      ["cdn_ip_spoof.mjs","source-header spoof","source-header protection","forged intermediary address headers"],
+      ["proxy_ua_rotate.mjs","proxy plus identity rotation","identity rotation","proxy and browser identity rotate together"],
+      ["fp_churn_proxy.mjs","fingerprint churn","cross-session correlation","fingerprint changes across exits"],
+      ["stacked_proxy_vpn.mjs","stacked proxy and VPN","network residual","forward proxy through a virtual private network"],
+      ["socks_exit_hop.mjs","SOCKS exit","network residual","SOCKS proxy exit hop"],
+      ["flood.mjs","request flood","request-rate protection","rapid application requests"],
+      ["rapid_reset.mjs","HTTP/2 Rapid Reset","protocol flood protection","Rapid Reset frames"],
+      ["near_ceiling_audio_24k.mjs","audio residual","advanced browser residual","unusual audio sample rate near the coherent-browser boundary"],
+      ["near_ceiling_no_widevine.mjs","media residual","Chromium-container residual","Chrome claim without expected media capabilities"],
+      ["behavior_untrusted.mjs","untrusted events","interaction residual","synthetic browser events"],
+      ["behavior_no_interaction.mjs","no interaction","no interaction observed","no input during the observation window"],
+      ["behavior_machine_keystroke.mjs","machine typing","interaction residual","implausibly short key intervals"],
+      ["behavior_teleport_click.mjs","teleport click","interaction residual","click without an approach path"],
+      ["behavior_bezier_mouse.mjs","smooth pointer","interaction residual","pathologically smooth pointer path"],
+      ["behavior_fixed_typing.mjs","fixed typing","interaction residual","near-zero typing variance"],
+      ["ai_burst_silence.mjs","burst and silence","automated interaction","inference-loop cadence"],
+      ["ai_full_cadence.mjs","full agent cadence","automated interaction","combined agent timing pattern"],
+      ["adv_webgpu_mismatch.mjs","graphics mismatch","advanced browser residual","graphics interfaces disagree"],
+      ["headless_ua_token.mjs","headless identity token","static client residual","headless marker in the user agent"],
+      ["native_coherent_ceiling.mjs","coherent native browser","documented boundary","internally consistent real-browser automation"]
+    ]]
   ];
   var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});};
+  var RULE_LABELS={
+    "HR-1":"automation artifact","HR-2":"browser and network-engine mismatch",
+    "HR-3":"synthetic events plus browser-driver evidence","HR-4":"WebDriver concealment",
+    "HR-5":"request-integrity failure plus protocol mismatch","HR-6":"runtime hook plus automation evidence",
+    "HR-7":"headless browser plus another automation indicator","HR-8":"stealth browser modification",
+    "HR-9":"browser-control leak plus automation evidence","HR-10":"missing browser evidence",
+    "HR-11":"hosting-network browser","HR-12":"no interaction observed",
+    "HR-13":"disabled developer console plus automation evidence","HR-14":"in-session protocol-fingerprint rotation",
+    "HR-15":"multi-axis identity rotation","HR-16":"request-body integrity failure",
+    "HR-17":"missing or replayed request-integrity token","HR-18":"browser claim without execution evidence",
+    "HR-19":"cross-session correlation","HR-20":"automated-browser interaction signature",
+    "HR-21":"HTTP/2 denial-of-service protection","HR-22":"advanced browser residual",
+    "HR-23":"Chromium-container residual","HR-24":"network residual policy"
+  };
+  var ruleLabel=function(id){return RULE_LABELS[id]||"enforcement rule";};
+  var signalLabel=function(id){return String(id||"diagnostic signal").replace(/^l[1-7]\./i,"").replace(/^x\./i,"").replace(/[._-]+/g," ");};
+  var stageLabel=function(id){for(var i=0;i<LAYERS.length;i++){if(LAYERS[i][0]===id)return LAYERS[i][1];}return "Detection stage";};
   var $=function(id){return document.getElementById(id);};
   var selected=null;
-  $("tgt").textContent="target · "+location.host+" (local Blue)";
+  $("tgt").textContent="target · "+location.host+" (local detector)";
 
   // meta
   fetch("/playground/meta").then(function(r){return r.json();}).then(function(m){
@@ -270,8 +366,8 @@ import { createFeed, prependRows } from '/static/js/feed.js';
     var risk=(sc.riskScore!=null?sc.riskScore:0), verdict=sc.verdict||"—";
     $("bignum").textContent=(typeof risk==="number"?risk.toFixed(1):risk); $("bignum").style.color=vcolor(verdict);
     var vd=$("verdict"); vd.innerHTML=vshape(verdict)+esc(verdict); vd.style.color=vcolor(verdict);
-    var hr=$("hr"); if(sc.hardRuleFired){hr.style.display="";hr.textContent=sc.hardRuleFired+" fired";}else{hr.style.display="none";}
-    $("why").innerHTML=sc.hardRuleFired?("Hard rule <b class='mono' style='color:var(--deny)'>"+esc(sc.hardRuleFired)+"</b> overrode the score band."):"Verdict from the score band (no hard rule fired).";
+    var hr=$("hr"); if(sc.hardRuleFired){hr.style.display="";hr.textContent=ruleLabel(sc.hardRuleFired);}else{hr.style.display="none";}
+    $("why").innerHTML=sc.hardRuleFired?("The <b style='color:var(--deny)'>"+esc(ruleLabel(sc.hardRuleFired))+"</b> raised the score-band verdict."):"Verdict from the score band; no enforcement rule raised it.";
     $("vsub").textContent="session "+(evt.sessionId||rep.sessionId||"")+" · source "+(evt.source||"replay")+" · policy "+(sc.policyVersion||"—");
     var rb=$("riskbar"); rb.setAttribute("aria-valuenow",Math.round(Number(risk))); rb.setAttribute("aria-valuetext",risk+" — "+verdict);
     $("mark").style.left=Math.max(0,Math.min(100,Number(risk)))+"%";
@@ -284,18 +380,18 @@ import { createFeed, prependRows } from '/static/js/feed.js';
       (byLayer[L]||[]).forEach(function(s){
         var srv=(s.collected==="server")?" srv":"";
         var scv=(s.score!=null&&s.score>0)?" <span class='sc'>+"+Number(s.score).toFixed(0)+"</span>":"";
-        chips+="<span class='sig v-"+esc(s.verdict||"UNKNOWN")+srv+"' title='"+esc(s.notes||"")+"'>"+esc(s.id)+scv+"</span>";
+        chips+="<span class='sig v-"+esc(s.verdict||"UNKNOWN")+srv+"' title='"+esc(s.notes||"")+"'>"+esc(signalLabel(s.id))+scv+"</span>";
       });
-      if(L==="L5"){var net=rep.network||{};if(net.ja4)chips="<span class='sig srv v-UNKNOWN'>ja4="+esc(net.ja4Engine||net.ja4).slice(0,22)+"</span>"+chips;}
-      if(L==="L6"){((rep.crosschecks)||[]).forEach(function(x){chips+="<span class='xc "+(x.consistent?"good":"bad")+"'>"+esc(x.id)+" · "+(x.consistent?"consistent":"inconsistent")+"</span>";});}
+      if(L==="L5"){var net=rep.network||{};if(net.ja4)chips="<span class='sig srv v-UNKNOWN'>connection fingerprint observed</span>"+chips;}
+      if(L==="L6"){((rep.crosschecks)||[]).forEach(function(x){chips+="<span class='xc "+(x.consistent?"good":"bad")+"'>"+esc(signalLabel(x.id))+" · "+(x.consistent?"consistent":"inconsistent")+"</span>";});}
       if(L==="L7"){
         var tc=(sc.topContributors)||[];
-        if(tc.length){chips+="<div class='top'>";tc.forEach(function(c){chips+="<span class='topc'>"+esc(c.id)+" <b>"+Number(c.score).toFixed(0)+"</b></span>";});chips+="</div>";}
-        chips+="<span class='sig srv v-UNKNOWN'>noisy-OR &rarr; "+(typeof risk==="number"?risk.toFixed(1):risk)+"</span>";
-        if(sc.hardRuleFired)chips+="<span class='sig v-BOT'>"+esc(sc.hardRuleFired)+" &rarr; "+esc(verdict)+"</span>";
+        if(tc.length){chips+="<div class='top'>";tc.forEach(function(c){chips+="<span class='topc'>"+esc(signalLabel(c.id))+" <b>"+Number(c.score).toFixed(0)+"</b></span>";});chips+="</div>";}
+        chips+="<span class='sig srv v-UNKNOWN'>combined risk &rarr; "+(typeof risk==="number"?risk.toFixed(1):risk)+"</span>";
+        if(sc.hardRuleFired)chips+="<span class='sig v-BOT'>"+esc(ruleLabel(sc.hardRuleFired))+" &rarr; "+esc(verdict)+"</span>";
       }
       if(!chips)chips="<span class='empty'>—</span>";
-      html+="<div class='lane'><span class='lname'>"+L+"<span class='lsub'>"+l[1]+"</span></span><div class='sigs'>"+chips+"</div></div>";
+      html+="<div class='lane'><span class='lname'>"+esc(l[1])+"</span><div class='sigs'>"+chips+"</div></div>";
     });
     $("lanes").innerHTML=html;
 
@@ -309,16 +405,16 @@ import { createFeed, prependRows } from '/static/js/feed.js';
       var lad="";
       (tr.hardRuleEval||[]).forEach(function(h){
         var cls=h.won?"won":(h.matched?"matched":"");
-        lad+="<div class='hr "+cls+"'><span class='hid'>"+esc(h.rule)+"</span><span class='hy'>"+esc(h.why||"")+"</span><span class='hv'>"+(h.won?"WON &rarr; "+esc(h.verdict):(h.matched?"matched":"—"))+"</span></div>";
+        lad+="<div class='hr "+cls+"'><span class='hid'>"+esc(ruleLabel(h.rule))+"</span><span class='hy'>"+esc(h.why||"")+"</span><span class='hv'>"+(h.won?"selected &rarr; "+esc(h.verdict):(h.matched?"matched":"—"))+"</span></div>";
       });
       $("ladder").innerHTML=lad;
       var dec="";
       (tr.perLayer||[]).forEach(function(l){
-        dec+="<span class='lp"+(l.capHit?" cap":"")+"'>"+esc(l.layer)+" <b>"+(l.rawProb*100).toFixed(0)+"%</b>"+(l.capHit?" &rarr; cap "+(l.cappedProb*100).toFixed(0)+"%":"")+"</span>";
+        dec+="<span class='lp"+(l.capHit?" cap":"")+"'>"+esc(stageLabel(l.layer))+" <b>"+(l.rawProb*100).toFixed(0)+"%</b>"+(l.capHit?" &rarr; cap "+(l.cappedProb*100).toFixed(0)+"%":"")+"</span>";
       });
       $("decomp").innerHTML=dec;
       var drops=(tr.dedupDropped||[]);
-      $("drops").textContent=drops.length?("dedup: "+drops.map(function(d){return d.droppedId+"→"+d.keptId;}).join(", ")):"";
+      $("drops").textContent=drops.length?("correlated evidence merged: "+drops.map(function(d){return signalLabel(d.droppedId)+" → "+signalLabel(d.keptId);}).join(", ")):"";
       $("explain").hidden=false;
     }).catch(function(){ $("explain").hidden=true; });
   }
@@ -342,13 +438,13 @@ import { createFeed, prependRows } from '/static/js/feed.js';
   var sdot=$("sdot"),stext=$("stext");
   try{
     var es=new EventSource("/playground/events");
-    es.onopen=function(){sdot.className="dot on";stext.textContent="live · SSE connected";};
+    es.onopen=function(){sdot.className="dot on";stext.textContent="live · event stream connected";};
     es.onerror=function(){sdot.className="dot off";stext.textContent="reconnecting…";};
-    es.addEventListener("session.scored",function(ev){var e=JSON.parse(ev.data);render(e);var sc=(e.report&&e.report.scoring)||{};logEvent("scored",(e.source||"")+" "+(sc.verdict||"")+" "+(sc.riskScore!=null?Number(sc.riskScore).toFixed(1):"")+(sc.hardRuleFired?" "+sc.hardRuleFired:""));});
+    es.addEventListener("session.scored",function(ev){var e=JSON.parse(ev.data);render(e);var sc=(e.report&&e.report.scoring)||{};logEvent("scored",(e.source||"")+" "+(sc.verdict||"")+" "+(sc.riskScore!=null?Number(sc.riskScore).toFixed(1):"")+(sc.hardRuleFired?" "+ruleLabel(sc.hardRuleFired):""));});
     ["attack.launched","attack.ran","attack.completed","attack.error","attack.aborted","network.abuse"].forEach(function(t){
       es.addEventListener(t,function(ev){var d={};try{d=JSON.parse(ev.data);}catch(e){}logEvent(t.replace("attack.",""),d.profile||d.signal||d.reason||JSON.stringify(d).slice(0,50));});
     });
-  }catch(e){sdot.className="dot off";stext.textContent="SSE unavailable";}
+  }catch(e){sdot.className="dot off";stext.textContent="event stream unavailable";}
 
   function doReplay(){var id=$("rid").value.trim();if(!id)return;
     fetch("/api/report/"+encodeURIComponent(id)).then(function(r){if(!r.ok)throw 0;return r.json();})

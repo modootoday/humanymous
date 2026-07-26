@@ -69,8 +69,9 @@ func TestPlaygroundMeta(t *testing.T) {
 			LayerCap, DenyAt float64
 			ChallengeAt      float64
 		} `json:"policy"`
-		Bands         []map[string]any `json:"bands"`
-		HardRuleRange string           `json:"hardRuleRange"`
+		Bands     []map[string]any `json:"bands"`
+		RuleCount int              `json:"ruleCount"`
+		Stages    []string         `json:"stages"`
 	}
 	if err := json.Unmarshal(rec.Body.Bytes(), &m); err != nil {
 		t.Fatalf("meta not JSON: %v", err)
@@ -81,8 +82,8 @@ func TestPlaygroundMeta(t *testing.T) {
 	if len(m.Bands) != 3 {
 		t.Fatalf("want 3 verdict bands, got %d", len(m.Bands))
 	}
-	if m.HardRuleRange != "HR-1..HR-21" {
-		t.Fatalf("HR scope must be engine-plane HR-1..HR-21, got %q", m.HardRuleRange)
+	if m.RuleCount != 24 || len(m.Stages) != 7 {
+		t.Fatalf("meta scope drift: rules=%d stages=%d", m.RuleCount, len(m.Stages))
 	}
 }
 

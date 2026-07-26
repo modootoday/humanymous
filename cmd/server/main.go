@@ -41,7 +41,7 @@ func main() {
 	// can never become remotely reachable (rewriting the launcher host is not
 	// enough if the socket itself is reachable off-box).
 	if playgroundEnabled() && !listenAddrIsLoopback(*addr) {
-		log.Fatalf("HMN_PLAYGROUND=1 requires a loopback -addr (got %q); refusing non-loopback bind (SoT-30 §11.1)", *addr)
+		log.Fatalf("HMN_PLAYGROUND=1 requires a loopback -addr (got %q); refusing to expose the self-validation launcher off-host", *addr)
 	}
 	// The dev playground and public ACME serving are mutually exclusive: one is
 	// loopback-only, the other is a public domain on :443. Refuse the mix.

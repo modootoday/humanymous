@@ -42,7 +42,7 @@ func (a *app) registerPlayground(mux *http.ServeMux) {
 // handlePlaygroundExplain returns the additive ScoreTrace (SoT-30 §6) for a
 // stored session: per-layer subtotals + LayerCap hits, dedup drops (with the
 // group each signal belongs to — NOT parseable from the dotted id), and the
-// ordered HR-1..HR-21 evaluation. Re-scores a COPY (store.Get returns by value),
+// ordered 24-rule Core evaluation. Re-scores a COPY (store.Get returns by value),
 // so the production verdict path is untouched. Secret material is never present
 // in a SessionReport, so nothing is redacted.
 func (a *app) handlePlaygroundExplain(w http.ResponseWriter, r *http.Request) {
@@ -89,8 +89,7 @@ func (a *app) handlePlaygroundPage(w http.ResponseWriter, r *http.Request) {
 // handlePlaygroundMeta exposes the policy constants the client needs to render
 // the verdict bands and score decomposition (SoT-30 §6.3) — these are NOT in the
 // /api/collect or /api/report response, so a client that hard-codes them would
-// silently drift. HR scope is HR-1..HR-21 (the engine plane; HR-22..30 are
-// Gate-plane rules the detection engine never evaluates, SoT-30 §2.1).
+// silently drift.
 func (a *app) handlePlaygroundMeta(w http.ResponseWriter, r *http.Request) {
 	if !a.playgroundGuard(w, r) {
 		return
@@ -108,8 +107,16 @@ func (a *app) handlePlaygroundMeta(w http.ResponseWriter, r *http.Request) {
 			{"verdict": "CHALLENGE", "min": p.ChallengeAt, "max": p.DenyAt},
 			{"verdict": "DENY", "min": p.DenyAt, "max": 100.0},
 		},
-		"hardRuleRange": "HR-1..HR-21",
-		"layers":        []string{"L1", "L2", "L3", "L4", "L5", "L6", "L7"},
+		"ruleCount": 24,
+		"stages": []string{
+			"static client inspection",
+			"client fingerprinting",
+			"client integrity checks",
+			"interaction analysis",
+			"network and protocol inspection",
+			"consistency checks",
+			"risk aggregation and verdict selection",
+		},
 	})
 }
 

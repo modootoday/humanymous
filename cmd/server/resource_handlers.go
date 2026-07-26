@@ -59,7 +59,7 @@ func (a *app) handleResource(w http.ResponseWriter, r *http.Request) {
 		// Serve a small preview placeholder instead of the full heavy resource.
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.Header().Set("X-HM-Downgrade", "preview")
-		_, _ = io.WriteString(w, "[preview] full resource withheld pending trust (SoT-10)")
+		_, _ = io.WriteString(w, "[preview] full resource withheld until this session reaches the required trust level")
 		return
 	}
 
