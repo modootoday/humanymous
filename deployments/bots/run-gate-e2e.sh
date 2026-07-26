@@ -7,11 +7,12 @@
 set -uo pipefail
 
 TOKENS="auditor:e2e-auditor-token,operator:e2e-operator-token,approver:e2e-approver-token,dpo:e2e-dpo-token"
+TOKEN_KEY_HEX="000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
 SETTINGS_DIR="/tmp/hmn-settings"
 mkdir -p "$SETTINGS_DIR"
 
 echo "[gate-e2e] starting a throwaway Gate on loopback ..."
-HMN_ADMIN_TOKENS="$TOKENS" HMN_ALLOW_DEV_TOKENS=1 /app/bin/gate \
+HMN_ADMIN_TOKENS="$TOKENS" HMN_ALLOW_DEV_TOKENS=1 HMN_TOKEN_KEY="$TOKEN_KEY_HEX" /app/bin/gate \
   -addr :8444 -admin-addr :8445 \
   -upstream http://127.0.0.1:9000 \
   -origin-key demo-origin-secret \
@@ -30,7 +31,7 @@ done
 if [ -z "$up" ]; then echo "[gate-e2e] ERROR: Gate never came up"; cat /tmp/gate.log; kill $GATE_PID 2>/dev/null; exit 1; fi
 
 cd /app/test
-HM_PROXY="https://127.0.0.1:8444" HM_ADMIN="https://127.0.0.1:8445" HM_ORIGIN_KEY="demo-origin-secret" \
+HM_PROXY="https://127.0.0.1:8444" HM_ADMIN="https://127.0.0.1:8445" HM_ORIGIN_KEY="demo-origin-secret" HM_TOKEN_KEY_HEX="$TOKEN_KEY_HEX" \
   node gate/e2e.mjs
 code=$?
 

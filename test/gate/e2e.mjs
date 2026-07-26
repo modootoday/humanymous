@@ -1,7 +1,8 @@
 // e2e.mjs — proxy-layer end-to-end: a demo upstream behind the humanymous proxy.
 // Verifies: (1) HTML injection into upstream bytes, (2) control-plane scoring
 // updates the sticky verdict, (3) a bot session is DENYed at the edge while the
-// upstream is never contacted, (4) a human session passes through. Local only.
+// upstream is never contacted, (4) the automated baseline is challenged rather
+// than misrepresented as a real human session. Local only.
 import http from 'node:http';
 import https from 'node:https';
 import crypto from 'node:crypto';
@@ -11,6 +12,7 @@ const PROXY = process.env.HM_PROXY || 'https://127.0.0.1:8444';
 const ADMIN = process.env.HM_ADMIN || 'https://127.0.0.1:8445'; // SEPARATE admin listener (SoT-28 WS1)
 const UP_PORT = 9000;
 const ORIGIN_KEY = process.env.HM_ORIGIN_KEY || 'demo-origin-secret';
+const TOKEN_KEY = Buffer.from(process.env.HM_TOKEN_KEY_HEX || '', 'hex');
 // Deterministic dev tokens (must match HMN_ADMIN_TOKENS the gate is started with).
 const TOK = { auditor: 'e2e-auditor-token', operator: 'e2e-operator-token', approver: 'e2e-approver-token', dpo: 'e2e-dpo-token' };
 
@@ -113,14 +115,40 @@ function rawRequest(raw) {
 
 const setCookie = (res) => (res.headers['set-cookie'] ? res.headers['set-cookie'][0].split(';')[0] : '');
 
-// allCookies joins every Set-Cookie name=value into one Cookie header string.
-const allCookies = (res) =>
-  (res.headers['set-cookie'] || []).map((c) => c.split(';')[0]).join('; ');
 // cookieVal extracts one cookie's name=value pair from a Set-Cookie array.
 const cookieVal = (res, name) => {
   const hit = (res.headers['set-cookie'] || []).find((c) => c.startsWith(name + '='));
   return hit ? hit.split(';')[0] : '';
 };
+
+// Mint one explicit valid-ALLOW fixture token with the throwaway Gate's test key.
+// The automated baseline below must remain CHALLENGE and therefore must not issue
+// a token. Unit tests cover issuance on a genuine ALLOW result; this fixture keeps
+// the edge fast-path and theft checks independent of pretending automation is human.
+function mintVerdictToken(sid, headers, subnet = '127.0.0.0/24') {
+  if (TOKEN_KEY.length < 16) throw new Error('HM_TOKEN_KEY_HEX must contain the throwaway Gate test key');
+  const bindKey = crypto.createHash('sha256')
+    .update(headers['User-Agent'] || '')
+    .update('\0')
+    .update(headers['Accept-Language'] || '')
+    .update('\0')
+    .update(headers['sec-ch-ua'] || '')
+    .digest()
+    .subarray(0, 12)
+    .toString('base64url');
+  const bind = crypto.createHash('sha256')
+    .update(bindKey)
+    .update('\0')
+    .update(subnet)
+    .digest()
+    .subarray(0, 16)
+    .toString('base64url');
+  const epoch = 'e' + Math.floor(Date.now() / 1000 / (15 * 60));
+  const expires = Math.floor(Date.now() / 1000) + 30 * 60;
+  const payload = `${sid}|${bind}|${expires}|${epoch}`;
+  const mac = crypto.createHmac('sha256', TOKEN_KEY).update(payload).digest('base64url');
+  return Buffer.from(payload).toString('base64url') + '.' + mac;
+}
 
 async function main() {
   await new Promise((r) => upstream.listen(UP_PORT, r));
@@ -151,14 +179,16 @@ async function main() {
   check('bot-blocked-at-edge', r3.status === 403, `status=${r3.status}`);
   check('origin-not-contacted', upstreamHits === hitsBefore, `hits delta=${upstreamHits - hitsBefore}`);
 
-  // 4. Fresh human session -> passes through.
+  // 4. The "human" catalog fixture is still driven by Node automation. It is a
+  // synthetic friction baseline, not evidence of a person, so CHALLENGE is the
+  // expected safe result. The contract is "not denied", never "must ALLOW".
   const humanRep = { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0 Safari/537', engineVersion: 'x',
     signals: [], behavior: { mouse: { samples: 40 }, events: { totalEvents: 30 } }, environment: { probed: true }, advanced: { probed: true } };
   const rh = await req('POST', '/__hmn/collect', { body: humanRep, json: true, headers: browserHeaders });
   const hc = setCookie(rh);
   const hv = JSON.parse(rh.body);
   const r5 = await req('GET', '/', { cookie: hc, headers: browserHeaders });
-  check('human-passes', r5.status === 200 && r5.body.includes('Origin content') && hv.verdict !== 'DENY',
+  check('synthetic-baseline-challenged', hv.verdict === 'CHALLENGE' && r5.status === 401,
     `verdict=${hv.verdict} status=${r5.status}`);
 
   // === Red/Blue v2: attacks on the proxy topology (SoT-23/25) ===
@@ -188,16 +218,21 @@ async function main() {
 
   // === Round 2: verdict-token & proof-replay family (SoT-21 §3-4) ===
 
-  // The human ALLOW beacon issued a fingerprint-bound verdict token (hmn_vt).
-  const vtCookie = cookieVal(rh, 'hmn_vt');
-  const humanCookies = allCookies(rh); // hsid + hmn_vt
-  check('verdict-token-issued', vtCookie.startsWith('hmn_vt='), vtCookie ? 'issued' : 'MISSING');
+  // A challenged baseline must not receive an ALLOW trust token.
+  const challengedToken = cookieVal(rh, 'hmn_vt');
+  check('challenge-does-not-issue-verdict-token', challengedToken === '', challengedToken ? 'unexpected token' : 'none issued');
 
-  // 9. Legit human with the bound token -> trusted fast-path (HR-28 happy path).
-  const tokPass = await req('GET', '/', { cookie: humanCookies, headers: browserHeaders });
-  check('token-fastpath-allow', tokPass.status === 200 && tokPass.body.includes('Origin content'), `status=${tokPass.status}`);
+  // 9. Exercise the trusted fast-path with an explicit valid-ALLOW fixture token,
+  // independently of the automated baseline's correct CHALLENGE verdict.
+  const sidCookie = cookieVal(rh, 'hsid');
+  const sid = sidCookie.slice('hsid='.length);
+  const vtCookie = 'hmn_vt=' + mintVerdictToken(sid, browserHeaders);
+  const fixtureCookies = sidCookie + '; ' + vtCookie;
+  const tokPass = await req('GET', '/', { cookie: fixtureCookies, headers: browserHeaders });
+  check('token-fastpath-allow', tokPass.status === 200 && tokPass.body.includes('Origin content'),
+    `status=${tokPass.status} explicit fixture`);
 
-  // 10. Token THEFT (HR-28): a bot lifts the human's hmn_vt and replays it from a
+  // 10. Token theft: a bot lifts the fixture token and replays it from a
   //     DIFFERENT fingerprint (bot UA). The binding mismatch means the token is NOT
   //     honored — it is CLEARED and the request re-scored on the bot's own fingerprint.
   //     (A binding mismatch is deliberately NOT a terminal 403: that would lock out a
