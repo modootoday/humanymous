@@ -9,9 +9,9 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 **Diátaxis quadrant:** Reference. **Audience:** Data Protection Officers and privacy counsel completing a GDPR Article 30 record of processing activities (RoPA) for a deployment that fronts an origin with humanymous Gate ("Gate" after first mention).
 
-This page is a descriptive inventory of the personal data Gate observes and stores in the reference implementation, written so that a DPO can lift the field-by-field detail directly into an Article 30 record and a pseudonymization policy note. It is not a compliance certification. Gate is processing tooling that **supports** your Article 30 and Article 17 obligations; it does not by itself make any deployment compliant.
+This page is a descriptive inventory of the personal data Gate observes and stores in the reference implementation, written so that a data protection officer can lift the field-by-field detail directly into an Article 30 record and a pseudonymization policy note. It is not a compliance certification. Gate is processing tooling that **supports** your Article 30 and Article 17 obligations; it does not by itself make any deployment compliant.
 
-> **Note:** This repository is a reference implementation, not a production-hardened build. The categories, stored forms, and retention tiers below describe the reference build. A production deployment adds controls (prod-delta) but must not remove the pseudonymization and erasure guarantees described here. See [Production vs. reference](production-vs-reference.md).
+> **Note:** This repository is a reference implementation, not a production-hardened build. The categories, stored forms, and retention tiers below describe the reference build. A production deployment adds controls (production responsibility) but must not remove the pseudonymization and erasure guarantees described here. See [Production vs. reference](production-vs-reference.md).
 
 ---
 
@@ -42,7 +42,7 @@ this as a starting snippet and adapt it to your deployment:
 > erasure, and contest an automated decision, at **support@modoo.today**. See our full
 > privacy policy for details.
 
-Publish the concrete retention periods, your identity as controller, and your DPO/contact
+Publish the concrete retention periods, your identity as controller, and your data protection officer/contact
 alongside this notice.
 
 ## 2. The observe-versus-store distinction (core of the inventory)
@@ -62,21 +62,21 @@ This means the "personal data at rest" and the "personal data observed in transi
 
 ## 3. Personal-data inventory (field by field)
 
-Detection-layer references (L1–L7) are defined in [How Gate sees a request](../concepts/how-gate-sees-a-request.md). "Observed form" is what Gate reads during scoring; "Stored form" is what is persisted to the audit log.
+Detection-layer references (seven detection stages) are defined in [How Gate sees a request](../concepts/how-gate-sees-a-request.md). "Observed form" is what Gate reads during scoring; "Stored form" is what is persisted to the audit log.
 
 | # | Identifier / signal | Detection layer | Purpose of processing | Observed form (transient) | Stored form (at rest) |
 |---|---------------------|-----------------|-----------------------|---------------------------|-----------------------|
-| 1 | IP address | L5 (network/protocol) | Automated-traffic detection; rate metering; ban keying | Raw source address, in memory | 64-hex pseudonym only |
-| 2 | JA3 / JA4 TLS fingerprint | L5 | TLS-stack consistency vs. claimed browser | Raw fingerprint, in memory | 64-hex pseudonym only |
-| 3 | HTTP/2 fingerprint | L5 | Protocol-stack consistency; HTTP/2 abuse detection | Raw fingerprint, in memory | 64-hex pseudonym only |
-| 4 | User-Agent (UA) | L1 / L6 | Claimed-client baseline; cross-check vs. TLS/JS | Raw header, in memory | 64-hex pseudonym only |
-| 5 | User-Agent Client Hints (UA-CH) | L6 | Cross-check of UA against UA-CH and JS evidence | Raw hints, in memory | 64-hex pseudonym only |
-| 6 | SNI (server name indication) | L5 | TLS handshake context | Raw SNI, in memory | 64-hex pseudonym only |
-| 7 | Device fingerprint (canvas/WebGL/audio hash, screen, hardware) | L2 | Client fingerprint; cross-session correlation of automated traffic | Derived fingerprint, in memory | 64-hex pseudonym only |
-| 8 | Behavioral signals (mouse, keystroke, scroll dynamics; `isTrusted`) | L4 | Human-interaction evidence; automation cadence detection | Event-derived features, in memory | Pseudonymized / aggregated in the record |
+| 1 | IP address | network and protocol inspection stage (network/protocol) | Automated-traffic detection; rate metering; ban keying | Raw source address, in memory | 64-hex pseudonym only |
+| 2 | JA3 / JA4 TLS fingerprint | network and protocol inspection stage | TLS-stack consistency vs. claimed browser | Raw fingerprint, in memory | 64-hex pseudonym only |
+| 3 | HTTP/2 fingerprint | network and protocol inspection stage | Protocol-stack consistency; HTTP/2 abuse detection | Raw fingerprint, in memory | 64-hex pseudonym only |
+| 4 | User-Agent (UA) | static client inspection stage / consistency-check stage | Claimed-client baseline; cross-check vs. TLS/JS | Raw header, in memory | 64-hex pseudonym only |
+| 5 | User-Agent Client Hints (UA-CH) | consistency-check stage | Cross-check of UA against UA-CH and JS evidence | Raw hints, in memory | 64-hex pseudonym only |
+| 6 | SNI (server name indication) | network and protocol inspection stage | TLS handshake context | Raw SNI, in memory | 64-hex pseudonym only |
+| 7 | Device fingerprint (canvas/WebGL/audio hash, screen, hardware) | client fingerprinting stage | Client fingerprint; cross-session correlation of automated traffic | Derived fingerprint, in memory | 64-hex pseudonym only |
+| 8 | Behavioral signals (mouse, keystroke, scroll dynamics; `isTrusted`) | interaction analysis stage | Human-interaction evidence; automation cadence detection | Event-derived features, in memory | Pseudonymized / aggregated in the record |
 | 9 | Session id | Control plane | Subject key that binds a subject's pseudonyms together | Session identifier, in memory | Acts as the **subject key**; see section 4 |
-| 10 | Verdict, risk score, contributing signal ids, route/host | L7 / edge | The decision record itself (audit evidence) | Computed at the edge | Recorded in the audit log |
-| 11 | Resource-watermark ledger (session id + **keyed** IP pseudonym) | L5 (resource/watermark) | Per-session forensic leak-tracing of served resources | Session id + HMAC(masterKey, IP) token, in memory | **In-memory only, ~24h TTL; self-expires — NOT persisted to the audit log and OUT of the crypto-shred erasure scope (it is not resolvable after TTL).** |
+| 10 | Verdict, risk score, contributing signal ids, route/host | scoring and policy stage / edge | The decision record itself (audit evidence) | Computed at the edge | Recorded in the audit log |
+| 11 | Resource-watermark ledger (session id + **keyed** IP pseudonym) | network and protocol inspection stage (resource/watermark) | Per-session forensic leak-tracing of served resources | Session id + HMAC(masterKey, IP) token, in memory | **In-memory only, ~24h TTL; self-expires — NOT persisted to the audit log and OUT of the crypto-shred erasure scope (it is not resolvable after TTL).** |
 
 > **Note:** Rows 1–8 are read to compute a verdict and are not persisted in raw form. What persists is the pseudonym plus the decision metadata in row 10. The decision metadata references internal signal ids (for example `x.ua_vs_ja4`); these are internal signal names and are never surfaced to the end user, who sees only plain language and an incident handle.
 
@@ -89,13 +89,13 @@ Detection-layer references (L1–L7) are defined in [How Gate sees a request](..
 > specific deployment remains a **controller determination** — record it in your RoPA. The
 > reference build applies no Article 9 special-category handling by default.
 
-> **Note (low significance).** Gate sets three client-side cookies/tokens as part of enforcement — the verdict trust token (`hmn_vt`), the rotating request-integrity token (RIT), and the attestation step-up proof (`hmn_su`, minted on an attested route after a Pass solve). These are **session-scoped, short-TTL, and not persisted** to the audit log; each expires on its own and is discarded. They carry no new identifier: they bind only to data already inventoried above — the IP/subnet (row 1), the device fingerprint (row 7), and the session id (row 9). They therefore add **no new personal-data category** to this inventory. Record them, if at all, as transient enforcement state derived from existing rows.
+> **Note (low significance).** Gate sets three client-side cookies/tokens as part of enforcement — the verdict trust token (`hmn_vt`), the rotating request-integrity token (request-integrity token), and the attestation step-up proof (`hmn_su`, minted on an attested route after a Pass solve). These are **session-scoped, short-TTL, and not persisted** to the audit log; each expires on its own and is discarded. They carry no new identifier: they bind only to data already inventoried above — the IP/subnet (row 1), the device fingerprint (row 7), and the session id (row 9). They therefore add **no new personal-data category** to this inventory. Record them, if at all, as transient enforcement state derived from existing rows.
 
 ---
 
 ## 4. Pseudonymization policy note
 
-This section is the pseudonymization policy statement a DPO can cite directly.
+This section is the pseudonymization policy statement a data protection officer can cite directly.
 
 - **Every raw identifier is stored only as a pseudonym.** The stored value is a 64-hex string.
 - **Derivation.** Pseudonyms are produced with a scrypt key-derivation function, KDF-stretched with work factor N = 2¹². The stretching raises the cost of a brute-force reversal attempt against the stored pseudonym.
@@ -112,7 +112,7 @@ For the RoPA classification, state this explicitly:
 
 The audit data is **pseudonymous, not anonymous** (GDPR Recital 26; Article 4(5)). Because a vault of linkage keys can, under controlled conditions, resolve a pseudonym back to the subject it was derived from, the pseudonyms remain personal data and stay within the scope of the GDPR. Do not record this processing as anonymization or as outside GDPR scope.
 
-Re-identification is not a routine product operation. Gate **exposes no re-identification API** and performs none in-process. Anyone who holds the **sealed keystore and `HMN_UNSEAL`** can resolve pseudonyms **offline, alone**, with no second approver and no audit record of that offline act. Dual-control in the product covers **erasure, permanent/CIDR bans, and the kill switch** — not re-identification. Organizational custody of the keystore is the entire control surface (see [RBAC and separation of duties](rbac-separation-of-duties.md) for product dual-control, and [Key management](../how-to/key-management.md) for keystore custody).
+Re-identification is not a routine product operation. Gate **exposes no re-identification API** and performs none in-process. Anyone who holds the **sealed keystore and `HMN_UNSEAL`** can resolve pseudonyms **offline, alone**, with no second approver and no audit record of that offline act. Dual-control in the product covers **erasure, permanent/CIDR bans, and the kill switch** — not re-identification. Organizational custody of the keystore is the entire control surface (see [role-based access control and separation of duties](rbac-separation-of-duties.md) for product dual-control, and [Key management](../how-to/key-management.md) for keystore custody).
 
 ---
 
@@ -120,7 +120,7 @@ Re-identification is not a routine product operation. Gate **exposes no re-ident
 
 Audit records carry a single record-level tag — `data_class` — that supports your Article 30 mapping; legal basis is not tagged per traffic record but is captured on the erasure path. The legal basis is a **controller determination**: Gate does not choose the lawful basis for your traffic processing, and you should set and record it (for most bot-mitigation deployments this is a legitimate-interest or legal-obligation analysis you perform, not one Gate asserts).
 
-> **Confirmed in source:** In the reference the only record-level tag field is `data_class` (JSON `data_class`, `omitempty`) on the audit record; there is no per-record `legal_basis` field. The reference defines no enumerated value set for `data_class` and never populates it (carried for forward schema compatibility, empty in emitted records), so any data-class vocabulary is an operator/prod-delta you define. Legal basis is captured elsewhere: it is a required free-text field on the crypto-shred erasure path (`LegalBasis`, e.g. `"GDPR Art.17"` or `"PIPA"`), recorded on the erasure request/decision and certificate — not as a tag on ordinary traffic records.
+> **Confirmed in source:** In the reference the only record-level tag field is `data_class` (JSON `data_class`, `omitempty`) on the audit record; there is no per-record `legal_basis` field. The reference defines no enumerated value set for `data_class` and never populates it (carried for forward schema compatibility, empty in emitted records), so any data-class vocabulary is an operator/production responsibility you define. Legal basis is captured elsewhere: it is a required free-text field on the crypto-shred erasure path (`LegalBasis`, e.g. `"GDPR Art.17"` or `"PIPA"`), recorded on the erasure request/decision and certificate — not as a tag on ordinary traffic records.
 
 ---
 
@@ -134,7 +134,7 @@ Records are never physically deleted as part of the erasure model (erasure works
 | WARM | ~1 year | **None** |
 | COLD | ~7 years | **None** (and **not** WORM media) |
 
-> **Honest residual:** Without `-audit-wal` the chain is **RAM-only and lost on restart**. With `-audit-wal` the WAL **grows without bound**. Neither path implements a retention schedule. Set calendar retention, archival, and delete/retire policy yourself (prod-delta). The Ledger Retention card is hardcoded labels, not live policy.
+> **Honest residual:** Without `-audit-wal` the chain is **RAM-only and lost on restart**. With `-audit-wal` the write-ahead log **grows without bound**. Neither path implements a retention schedule. Set calendar retention, archival, and delete/retire policy yourself (production responsibility). The Ledger Retention card is hardcoded labels, not live policy.
 
 > **Confirmed in source:** `RetentionPolicy.Tier(age)` has no non-test production caller that prunes or relocates storage. Physical WORM retirement is not shipped.
 
@@ -144,7 +144,7 @@ Records are never physically deleted as part of the erasure model (erasure works
 
 The right-to-erasure mechanism is **cryptographic erasure (crypto-shred)**: the erasure request destroys the per-subject linkage key that binds a subject's pseudonyms to the identifiers they were derived from. The audit records remain in place and cryptographically verifiable; once the key is gone, the pseudonyms can no longer be resolved back to the subject.
 
-Crypto-shred is DPO-gated and dual-control, with a cancellable hold window before the shred commits. The full procedure, role gates, and hold-window handling are in the [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md).
+Crypto-shred is data protection officer-gated and dual-control, with a cancellable hold window before the shred commits. The full procedure, role gates, and hold-window handling are in the [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md).
 
 > **Warning:** Cryptographic erasure is irreversible. Destroying the per-subject linkage key cannot be undone, and there is no recovery path once the shred commits. Confirm the subject-to-pseudonym mapping before you request erasure, and use the hold window as your final checkpoint.
 
@@ -168,15 +168,15 @@ Any backup that includes the vault or the node keystore is a **re-identifiable c
 
 > **Warning:** Backups of the vault or keystore are outside the crypto-shred boundary. If you back up the sealed keystore or vault, you are responsible for ensuring that an erasure is propagated to — or the corresponding key material is retired from — those copies. Otherwise a restore can re-establish linkage that a live shred already destroyed.
 
-> **Confirmed in source:** The reference produces no on-disk copy of the vault beyond the single sealed keystore file. The vault's per-subject linkage keys are serialized (`Vault.Snapshot`) into the `Vault` field of `KeyMaterial` and sealed — together with the signing and HMAC keys — into one file written by `SealKeys` (scrypt-derived AES-256-GCM, mode 0600). No separate vault file is written anywhere, and the durable audit sinks (WAL, Redis, ClickHouse) persist only pseudonymized records, never linkage-key material. Your backups of that one keystore file are the entire on-disk vault surface to inventory.
+> **Confirmed in source:** The reference produces no on-disk copy of the vault beyond the single sealed keystore file. The vault's per-subject linkage keys are serialized (`Vault.Snapshot`) into the `Vault` field of `KeyMaterial` and sealed — together with the signing and HMAC keys — into one file written by `SealKeys` (scrypt-derived AES-256-GCM, mode 0600). No separate vault file is written anywhere, and the durable audit sinks (write-ahead log, Redis, ClickHouse) persist only pseudonymized records, never linkage-key material. Your backups of that one keystore file are the entire on-disk vault surface to inventory.
 
 ---
 
 ## Related pages
 
-- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the pseudonymization model and the L1–L7 layers referenced above.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the pseudonymization model, Core stages, and Gate collection boundary.
 - [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — the Article 17 procedure.
-- [Compliance & DPO start here](../start-here/compliance-dpo.md) — orientation for the DPO role.
-- [RBAC and separation of duties](rbac-separation-of-duties.md) — the dual-control model that gates erasure, permanent/CIDR bans, and the kill switch (not re-identification).
+- [Compliance & data protection officer start here](../start-here/compliance-dpo.md) — orientation for the data protection officer role.
+- [role-based access control and separation of duties](rbac-separation-of-duties.md) — the dual-control model that gates erasure, permanent/CIDR bans, and the kill switch (not re-identification).
 - [Key management](../how-to/key-management.md) — keystore, vault, and unseal handling.
 - [Production vs. reference](production-vs-reference.md) — what the reference does not ship for production.

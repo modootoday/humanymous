@@ -18,10 +18,10 @@ For the request lifecycle and vocabulary used below, see [How Gate sees a reques
 
 ## The short version
 
-- You can run Gate so it scores and logs but enforces nothing, fleet-wide, with one flag (`-monitor`) or per-route (the `monitor` preset). Start there.
-- On an uncertain (Unknown) verdict, safe reads (GET/HEAD) on `balanced` routes **fail open** — they pass. Strict routes and every unsafe method (POST/PUT/PATCH/DELETE) **fail closed** to a proof-of-work (PoW) challenge, never a hard block.
+- You can run Gate so it scores and logs but enforces nothing, node-local, with one flag (`-monitor`) or per-route (the `monitor` preset). Start there.
+- On an uncertain (Unknown) verdict, safe reads (GET/HEAD) on `balanced` routes **fail open**. Strict routes and state-changing methods **fail closed** to CHALLENGE. The reference challenge response is not a complete visitor-recovery flow.
 - Gate injects its detection bundle only into HTML responses. Non-HTML, streamed, and large-body responses are not rewritten.
-- You can revert to zero enforcement instantly by flipping `-monitor` or the kill switch. The kill switch is fleet-wide — read its warning below before you rely on it.
+- You can revert to zero enforcement instantly by flipping `-monitor` or the kill switch. The kill switch is node-local — read its warning below before you rely on it.
 
 ## Monitor, shadow, and enforce: what actually runs
 
@@ -29,13 +29,13 @@ Gate has three postures. Two of them cannot block anyone.
 
 ### Global monitor mode (`-monitor`)
 
-Starting the binary with `-monitor` downgrades **every** route to monitor. Gate still injects the bundle, collects signals, scores L1–L7, and writes every decision to the audit log — but it enforces nothing, anywhere. The startup log line reports the mode:
+Starting the binary with `-monitor` downgrades **every** route to monitor. Gate still injects its current loader, scores the evidence it collects, and writes decisions to the audit log, but it does not enforce them. The startup log line reports the mode:
 
 ```
 humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false, tls=self-signed)
 ```
 
-With `-monitor` set, that trailing value reads `monitor=true`. This is your safest first contact with production traffic: you get the full verdict stream and the audit trail without any user ever being challenged or blocked.
+With `-monitor` set, that trailing value reads `monitor=true`. This is the safest first contact with production traffic: you get Gate's verdict stream and audit trail without challenging or blocking visitors.
 
 ### The `monitor` preset (per-route)
 
@@ -56,15 +56,15 @@ Every enforced request resolves to one of four edge verdicts: `allow`, `challeng
 | Situation | Verdict on Unknown | User sees |
 | --- | --- | --- |
 | Safe method (GET/HEAD) on a `balanced` route | Fail **open** → `pass` | Nothing; request proceeds to origin |
-| Strict route (`failClosed`/`syncScore`), any method | Fail **closed** → `challenge` | A PoW interstitial |
-| Any unsafe method (POST/PUT/PATCH/DELETE), any route | Fail **closed** → `challenge` | A PoW interstitial |
+| Strict route (`failClosed`/`syncScore`), any method | Fail **closed** → `challenge` | Minimal challenge response; deployment must provide recovery |
+| Any state-changing method (POST/PUT/PATCH/DELETE), any route | Fail **closed** → `challenge` | Minimal challenge response; deployment must provide recovery |
 
 The branch that decides open-vs-closed on an Unknown verdict:
 
 ```mermaid
 flowchart TD
   R["Enforced request, verdict still Unknown (none)"] --> U{"strict route?"}
-  U -- "yes" --> C["Fail closed -> PoW challenge"]
+  U -- "yes" --> C["Fail closed -> CHALLENGE"]
   U -- "no (balanced)" --> M{"safe method? (GET / HEAD)"}
   M -- "no (POST/PUT/PATCH/DELETE)" --> C
   M -- "yes" --> O["Fail open -> pass to origin · (covered by fingerprint/subnet rate metering)"]
@@ -73,7 +73,7 @@ flowchart TD
 
 Two things to internalize:
 
-1. **Fail-closed here means a challenge, not a block.** An Unknown verdict never becomes a DENY on its own. The user gets an accessible proof-of-work interstitial served from the control plane; the origin is simply not contacted until the challenge is satisfied. A DENY only comes from a score of 70+ or a hard rule firing on real evidence.
+1. **Fail-closed here means CHALLENGE, not DENY.** An Unknown verdict never becomes DENY on its own. The origin is not contacted. Because the reference does not provide a complete recovery path for every challenged visitor, CHALLENGE can still be an effective lockout unless the deployment wires and tests one.
 
 2. **The safe-GET fail-open on `balanced` is a deliberate, documented residual.** A GET/HEAD to a non-strict route that Gate cannot yet classify is allowed through rather than challenged, to protect legitimate readers and crawlers you want. That gap is covered meanwhile by fingerprint- and subnet-level rate metering, not left unwatched. If you cannot accept it on a given path, put that path on the `strict` preset — strict fails closed even for safe reads.
 
@@ -81,19 +81,19 @@ A verdict trust token bound to the fingerprint, when present and valid, lets an 
 
 ### What promotes a challenge to allow — and what does not
 
-A **score-based** CHALLENGE (30–69 risk, no hard rule) becomes ALLOW if the session solved the proof-of-work (the `l7.pow.solved` signal). Proof-of-work proves CPU work was done; it does **not** prove humanity, so it **never** overrides a hard rule. A CHALLENGE that a hard rule promoted stays a challenge (or block) regardless of PoW.
+A **score-based** CHALLENGE can become ALLOW when the scoring engine receives a valid proof-of-work result. That result proves computation, not humanity, and never overrides a rule-promoted verdict. Gate operators must still connect this mechanism to a usable end-to-end visitor flow.
 
 ## Legitimate populations that can still be challenged or denied
 
-Monitor-first rollout and the safe-GET fail-open reduce false positives, but they do not eliminate them. Be candid with yourself about these populations before you enforce — measure each in monitor mode against your own traffic, because some ride a **hard rule** that is not softened by the fail-open residual:
+Monitor-first rollout and the safe-GET fail-open reduce false positives, but they do not eliminate them. Be candid with yourself about these populations before you enforce — measure each in monitor mode against your own traffic, because some ride a **enforcement rule** that is not softened by the fail-open residual:
 
-- **Privacy browsers (Tor Browser, Brave, Firefox RFP).** Anti-fingerprinting deliberately collides fingerprints and, for Tor, rotates exit IPs across many /24 subnets — the exact shape the cross-session correlation rule (HR-19) reads as residential-proxy rotation. These users can be **denied**, and it is the privacy-conscious population that most needs tolerant handling. There is no per-user recourse in the reference.
-- **Carrier-grade NAT / mobile (CGNAT).** The flood rate limiter keys on a shared `ja4|subnet` bucket, so one user behind a busy carrier NAT can trip the aggregate threshold (HR-21) on **strangers'** traffic they cannot see.
-- **Corporate TLS-inspecting proxies (Zscaler/Netskope-class).** When the enterprise proxy re-terminates TLS, the JA4 the engine sees is the *proxy's*, not the browser's, so the UA-vs-TLS cross-check (HR-2) can fire on a whole enterprise of legitimate employees. (Note this only applies where the network plane is active at all — see [Supported topologies](../reference/supported-topologies.md).)
+- **Privacy browsers (Tor Browser, Brave, Firefox RFP).** Anti-fingerprinting deliberately collides fingerprints and, for Tor, rotates exit IPs across many /24 subnets — the exact shape the cross-session correlation rule (cross-session correlation rule) reads as residential-proxy rotation. These users can be **denied**, and it is the privacy-conscious population that most needs tolerant handling. There is no per-user recourse in the reference.
+- **Carrier-grade NAT / mobile (CGNAT).** The flood rate limiter keys on a shared `ja4|subnet` bucket, so one user behind a busy carrier NAT can trip the aggregate threshold (Hypertext Transfer Protocol version 2 denial-of-service protection rule) on **strangers'** traffic they cannot see.
+- **Corporate TLS-inspecting proxies (Zscaler/Netskope-class).** When the enterprise proxy re-terminates TLS, the JA4 the engine sees is the *proxy's*, not the browser's, so the UA-vs-TLS cross-check (browser and network-engine mismatch rule) can fire on a whole enterprise of legitimate employees. (Note this only applies where the network plane is active at all — see [Supported topologies](../reference/supported-topologies.md).)
 - **No-JS, CSP/WASM-blocked, ad-blocked, embedded-webview, and old/low-end devices.** The verification bundle requires WebAssembly, and the CHALLENGE escape is itself JS-based, so for these users a CHALLENGE is effectively a **hard block** with no non-JS path in the reference.
-- **Screen-reader and keyboard-only users.** Assistive tech produces synthetic/atypical input events, which the behavioral rules (e.g. HR-12) can read as non-human. See [challenge accessibility](../help/challenge-accessibility.md).
+- **Screen-reader and keyboard-only users.** Assistive tech produces synthetic/atypical input events, which the behavioral rules (e.g. no interaction observed rule) can read as non-human. See [challenge accessibility](../help/challenge-accessibility.md).
 
-The reference does not ship a false-positive appeal/allowlist workflow, and several of the rules above are categorical (DENY, not CHALLENGE). If your user base is heavy in any of these populations, weigh that against the no-lockout expectation, keep those routes in monitor mode longer, and treat the affected hard rules as tuning targets for your deployment. The full, honest list of who-hits-what is in the review briefing and [Supported topologies](../reference/supported-topologies.md).
+The reference does not ship a false-positive appeal/allowlist workflow, and several of the rules above are categorical (DENY, not CHALLENGE). If your user base is heavy in any of these populations, weigh that against the no-lockout expectation, keep those routes in monitor mode longer, and treat the affected enforcement rules as tuning targets for your deployment. The full, honest list of who-hits-what is in the review briefing and [Supported topologies](../reference/supported-topologies.md).
 
 ## What Gate does and does not touch in a response
 
@@ -117,7 +117,7 @@ If your app legitimately accepts very large uploads or holds long-lived slow req
 
 ### WebSocket and SSE upgrades
 
-A WebSocket or SSE upgrade that arrives **without a prior fingerprint-bound verdict** is denied by hard rule HR-26. In practice this means the browser must first have loaded a normal page through Gate — establishing a fingerprint and a verdict — before it opens a socket. If your app opens a WebSocket or event stream as its very first interaction (before any HTML page load through Gate), test that path explicitly in monitor mode and confirm the upgrade carries a prior verdict.
+A WebSocket or SSE upgrade that arrives **without a prior fingerprint-bound verdict** is denied by enforcement rule connection-upgrade protection. In practice this means the browser must first have loaded a normal page through Gate — establishing a fingerprint and a verdict — before it opens a socket. If your app opens a WebSocket or event stream as its very first interaction (before any HTML page load through Gate), test that path explicitly in monitor mode and confirm the upgrade carries a prior verdict.
 
 ### Latency and overhead
 
@@ -127,7 +127,7 @@ Gate terminates TLS, injects into HTML, and scores inline, so it adds some per-r
 
 ### Direct-to-origin traffic (origin cloaking)
 
-If you set `-origin-key`, requests that reach the origin **directly**, bypassing Gate, are rejected with a 421 via hard rule HR-24 (the origin validates the `X-Hmny-Origin-Auth` header). This is what stops an attacker from simply addressing your origin and skipping the edge. The practical caution: once origin cloaking is on, your own health checks, internal callers, and deploy tooling must go **through** Gate, or they will receive 421s. Confirm your internal callers' paths before enabling the key.
+If you set `-origin-key`, requests that reach the origin **directly**, bypassing Gate, are rejected with a 421 vian enforcement rule direct-origin bypass protection (the origin validates the `X-Hmny-Origin-Auth` header). This is what stops an attacker from simply addressing your origin and skipping the edge. The practical caution: once origin cloaking is on, your own health checks, internal callers, and deploy tooling must go **through** Gate, or they will receive 421s. Confirm your internal callers' paths before enabling the key.
 
 ## The safe rollout ladder
 
@@ -135,7 +135,7 @@ Promote one rung at a time. Sit on each rung long enough to read the verdict str
 
 1. **`off` everywhere — baseline.** No injection, no enforcement. Confirm Gate proxies your app correctly end to end (routing, TLS termination, upstream reachability) with nothing else changing.
 
-2. **Global `-monitor` — score and log fleet-wide.** Restart with `-monitor`. Every route now injects, scores, and logs, but enforces nothing. Watch the Overview view ("live edge decisions") and audit log. This is also where you take your latency measurement. Let it run against representative traffic (peak hours, real user agents, your legitimate bots and crawlers). Confirm the false-positive picture is acceptable before you enforce anything.
+2. **Global `-monitor` — score and log node-local.** Restart with `-monitor`. Every route now injects, scores, and logs, but enforces nothing. Watch the Overview view ("live edge decisions") and audit log. This is also where you take your latency measurement. Let it run against representative traffic (peak hours, real user agents, your legitimate bots and crawlers). Confirm the false-positive picture is acceptable before you enforce anything.
 
 3. **`monitor` preset on a few routes — targeted shadow.** Drop global `-monitor` and instead put the `monitor` preset on the specific routes you plan to protect first. Everything else can stay `off`. You are now shadowing exactly the paths that matter, still enforcing nothing on them.
 
@@ -149,9 +149,9 @@ Two mechanisms take you back to zero enforcement without a redeploy of your app:
 
 - **Flip `-monitor`.** Restarting Gate with `-monitor` downgrades every route to monitor: scoring and logging continue, enforcement stops everywhere. This is the clean, full revert.
 
-- **Kill switch (fleet-wide).** A dual-control kill switch demotes hard-rule enforcement to monitor across the fleet — detection stops, traffic flows — without a restart. It is committed by a distinct Approver (the requesting Operator cannot approve their own flip). Manual bans still enforce under the kill switch.
+- **Kill switch (node-local).** A dual-control kill switch demotes rule enforcement to monitor for every route on the current node without a restart. Detection continues, affected traffic flows, and manual bans still enforce.
 
-> **Warning:** The kill switch is **fleet-wide**. Flipping it demotes hard-rule enforcement to monitor on every node at once — this is not a per-route or per-node control. Traffic that hard rules would have blocked will flow. Use it as a deliberate incident lever, confirm the scope with your on-call, and plan to re-arm enforcement once the incident is resolved.
+> **Warning:** The kill switch is **node-local but not route-scoped**. A multi-node deployment must coordinate the change externally. Confirm which nodes changed state and plan to re-arm each one.
 
 For the operational procedures around these levers — when to flip, who approves, what to watch afterward — see the [Incident Runbooks](../runbooks/incident-runbooks.md).
 
@@ -160,11 +160,11 @@ For the operational procedures around these levers — when to flip, who approve
 - [ ] Ran global `-monitor` against representative traffic; verdict stream and audit log reviewed for false positives.
 - [ ] Measured added latency in monitor mode; acceptable for your SLOs.
 - [ ] Confirmed non-HTML responses (APIs, assets, downloads) pass through unmodified.
-- [ ] Tested any WebSocket/SSE path; confirmed a prior fingerprint-bound verdict exists before the upgrade (HR-26).
+- [ ] Tested any WebSocket/SSE path; confirmed a prior fingerprint-bound verdict exists before the upgrade (connection-upgrade protection).
 - [ ] Checked request size and timeout caps against your largest legitimate uploads and longest requests.
-- [ ] If using `-origin-key`, routed health checks and internal callers through Gate (avoid HR-24 421s).
+- [ ] If using `-origin-key`, routed health checks and internal callers through Gate (avoid direct-origin bypass protection 421s).
 - [ ] Route table matches your real paths; sensitive paths on `strict`, `/health`-style paths on `off`.
-- [ ] On-call knows the two rollback levers and the kill switch's fleet-wide scope.
+- [ ] On-call knows the two rollback levers and the kill switch's node-local scope.
 
 ## Related pages
 

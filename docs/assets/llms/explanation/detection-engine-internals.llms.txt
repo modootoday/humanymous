@@ -12,7 +12,7 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 This page explains how *our own* detector reaches a verdict. It is defensive documentation: the goal is that a Blue engineer can look at a set of collected signals and reason forward to the risk number and the request verdict — and, when the two disagree with intuition, know exactly which rule or which cap did it. It is not evasion guidance, and it does not describe how to defeat any third party's product. Everything below is a description of code we control: `internal/signals`, `internal/scoring` and the policy in `policy.go`.
 
-The engine has a deliberately small number of moving parts. If you hold four ideas in your head — the signal schema, the two kinds of verdict, the exact combine pipeline, and the hard-rule table — you can predict most outcomes by hand.
+The engine has a deliberately small number of moving parts. If you hold four ideas in your head — the signal schema, the two kinds of verdict, the exact combine pipeline, and the enforcement-rule table — you can predict most outcomes by hand.
 
 ## The signal schema
 
@@ -20,8 +20,8 @@ Every observation the engine makes, whether it was collected in the browser by t
 
 | Field | Type / domain | Meaning |
 | --- | --- | --- |
-| `id` | lowercase dotted `l{n}.{group}.{item}` | Stable signal identity, e.g. `l1.cdp.proxy_leak`. The leading `l{n}` mirrors the layer. |
-| `layer` | `L1`..`L7` | Which detection layer produced it. |
+| `id` | lowercase dotted `l{n}.{group}.{item}` | Stable signal identity, e.g. `l1.cdp.proxy_leak`. The leading `l{n}` mirrors the stage. |
+| `layer` | one of the seven legacy stage values | Which named detection stage produced it. Treat this as a machine value, not a reader-facing label. |
 | `value` | any | The raw observed value. |
 | `expectedHuman` | any | What a genuine browser would have produced, for contrast. |
 | `verdict` | `OK` \| `SUSPICIOUS` \| `BOT` \| `UNKNOWN` | The **per-signal** verdict (see below). |
@@ -40,16 +40,16 @@ The word "verdict" is used for two different things, and conflating them is the 
 - **Per-signal verdict** — the `verdict` field above: `OK`, `SUSPICIOUS`, `BOT`, or `UNKNOWN`. It describes one observation.
 - **Request verdict** — the engine's final decision for the whole request: `ALLOW`, `CHALLENGE`, or `DENY`. It is what the caller acts on.
 
-The hard-rule predicates bridge these two, and they distinguish between them on purpose:
+The enforcement-rule predicates bridge these two, and they distinguish between them on purpose:
 
 - `fired(id)` is true when the signal with that `id` is **`SUSPICIOUS` *or* `BOT`**.
 - `firedBot(id)` is true only when the signal is **`BOT`**.
 
-This is load-bearing. A hard rule can name signals that are all "present" in the collected set and still **fail to fire**, because a rule written with `firedBot(...)` needs those signals at `BOT` severity, not merely `SUSPICIOUS`. So "all the named signals are there" is not sufficient to predict a `DENY` — you must check the *severity* each predicate demands. When you are debugging a rule that "should have matched but didn't," check `firedBot` vs `fired` first.
+This is load-bearing. An enforcement rule can name signals that are all "present" in the collected set and still **fail to fire**, because a rule written with `firedBot(...)` needs those signals at `BOT` severity, not merely `SUSPICIOUS`. So "all the named signals are there" is not sufficient to predict a `DENY` — you must check the *severity* each predicate demands. When you are debugging a rule that "should have matched but didn't," check `firedBot` vs `fired` first.
 
-## The L6 cross-checks, and cross-check-first
+## Consistency checks, and why they run first
 
-Layer `L6` does not measure botness directly; it measures **agreement between layers**. A cross-check (`CrossCheck` schema) has its own `x.` identifier namespace and this shape:
+The consistency-check stage does not measure automation likelihood directly; it measures **agreement between stages**. A cross-check (`CrossCheck` schema) has its own `x.` identifier namespace and this shape:
 
 | Field | Meaning |
 | --- | --- |
@@ -63,7 +63,7 @@ Layer `L6` does not measure botness directly; it measures **agreement between la
 
 Examples: `x.ua_vs_ja4` compares the User-Agent's claimed engine against the JA4 TLS fingerprint; `x.ua_vs_h2` compares it against the HTTP/2 fingerprint; `x.browser_no_js` compares a browser UA claim against the presence of any client-side JS evidence.
 
-**Cross-check first** is the governing principle here: an *inter-layer disagreement* outweighs any single-layer botness score. A client can look perfectly human on every individual axis and still be caught because its axes contradict each other — a UA claiming Chrome while the TLS and HTTP/2 fingerprints resolve to a different engine is a stronger tell than any one nervous score. This is why `L6` carries real weight and why several hard rules key off cross-check failure.
+**Cross-check first** is the governing principle here: a disagreement between stages outweighs any single-stage automation score. A client can look perfectly human on every individual axis and still be caught because its axes contradict each other — a user-agent header claiming Chrome while the encrypted-connection and HTTP/2 fingerprints resolve to a different engine is stronger evidence than one uncertain score. This is why consistency checks carry real weight and why several enforcement rules depend on cross-check failure.
 
 ## From a raw signal to a scored contribution
 
@@ -85,8 +85,8 @@ This is why two signals with identical `weight` can contribute very differently:
 Combination happens in `internal/scoring/combine.go`, in this exact order. `ScoreWithTrace` reuses the same steps through `combineTrace`, so the trace you read in the Observatory is the real pipeline, not a reconstruction.
 
 1. **`dedupGroups`** — correlated signals are grouped by `(layer, group)`. Within each correlation group, only the **highest-scoring** signal is kept; the rest are dropped so that one phenomenon observed three ways does not count three times. Signals with an empty group are uncorrelated and each stand alone.
-2. **`capByLayer`** — within each layer, the surviving signals accumulate by **noisy-OR**, then the per-layer probability is **clamped to `LayerCap = 60`** (0.60). No single layer may contribute more than 60% on its own.
-3. **Final noisy-OR across layers** — the capped per-layer probabilities combine into the risk score:
+2. **`capByLayer`** — within each stage, the surviving signals accumulate by **noisy-OR**, then the per-stage probability is **clamped to `LayerCap = 60`** (0.60). No single layer may contribute more than 60% on its own.
+3. **Final noisy-OR across layers** — the capped per-stage probabilities combine into the risk score:
 
 ```
 risk = 100 × (1 − Π(1 − p_layer))
@@ -106,23 +106,23 @@ The seven capped layer probabilities combine by a final cross-layer noisy-OR int
 
 $$\text{risk} = 100 \cdot \left(1 - \prod_{\ell = 1}^{7} \left(1 - p_\ell\right)\right)$$
 
-Because every stage is a noisy-OR of values in $[0,1]$, risk is **saturating**: more tells always raise it, but never past 100, and the per-layer cap keeps any single layer from dominating.
+Because every stage is a noisy-OR of values in $[0,1]$, risk is **saturating**: more tells always raise it, but never past 100, and the per-stage cap keeps any single layer from dominating.
 
 ```mermaid
 flowchart LR
   S["scored signals<br/>sᵢ = wᵢ·σ(vᵢ)·cᵢ"] --> D["dedup by (layer, group)<br/>keep max per group"]
-  D --> C["per-layer noisy-OR<br/>then cap at LayerCap = 60"]
+  D --> C["per-stage noisy-OR<br/>then cap at LayerCap = 60"]
   C --> N["cross-layer noisy-OR<br/>risk = 100·(1 − Π(1 − p_ℓ))"]
   N --> R{"risk 0–100"}
   R -->|"0–29"| A([ALLOW])
   R -->|"30–69"| H([CHALLENGE])
   R -->|"70–100"| Y([DENY])
-  HR["hard rule fired"] -. "promote / override" .-> Y
+  Rule["Enforcement rule matched"] -. "raise verdict" .-> Y
 ```
 
-### Worked example: an L6 84% clamped to 60%
+### Worked example: a consistency-check stage at 84%, clamped to 60%
 
-Suppose `L6` produced two cross-checks that both fired, each contributing a per-check probability of `0.60`:
+Suppose the consistency-check stage produced two checks that both fired, each contributing a probability of `0.60`:
 
 - `x.ua_vs_ja4` → `0.60`
 - `x.ua_vs_h2` → `0.60`
@@ -142,7 +142,7 @@ That is 84%. But `LayerCap = 60`, so `capByLayer` clamps it:
 p_L6 = min(0.84, 0.60) = 0.60      (capHit = true)
 ```
 
-Now let a single `L1` signal (say `l1.cdp.proxy_leak`) contribute `p_L1 = 0.30`. The final combine multiplies the *complements* of the **capped** per-layer probabilities:
+Now let one static client inspection signal contribute `0.30`. The final combine multiplies the *complements* of the **capped** per-stage probabilities:
 
 ```
 risk = 100 × (1 − (1 − p_L6)(1 − p_L1))
@@ -152,25 +152,21 @@ risk = 100 × (1 − (1 − p_L6)(1 − p_L1))
      = 72
 ```
 
-Risk `72`. Under policy `1.0.0` that is `DENY` (see thresholds below). Note two things you can now predict by hand: the raw 0.84 never reaches the final product — the cap does its job first — and the layer still enters the product at its ceiling of 0.60, which combined with a modest L1 is already enough to cross the deny line.
+Risk `72`. Under policy `1.0.0` that is `DENY` (see thresholds below). Note two things you can now predict by hand: the raw 0.84 never reaches the final product — the cap does its job first — and the stage still enters the product at its ceiling of 0.60, which combined with a modest static client inspection stage is already enough to cross the deny line.
 
-## FP mitigation runs *before* combination
+## False-positive mitigation runs *before* combination
 
 `applyFPMitigation` runs **before** the combine pipeline. It is a **damp, not a promotion**: it can only *lower* scores, never raise them. For example, when the client looks like a privacy-hardened but genuine browser, canvas and WebGL divergence scores are **halved** before they enter `dedupGroups`, because those axes are noisy for privacy browsers and we would rather lose a marginal detection than mislabel a real person.
 
-> **Note:** This ordering is deliberate and tied to the low-false-positive principle. Because the damp happens first, every downstream number — the deduped keep, the layer cap, the final noisy-OR — already reflects the mitigation. If you are predicting a score for a privacy-browser session, halve the affected inputs *before* you run the arithmetic above.
+> **Note:** This ordering is deliberate and tied to the low-false-positive principle. Because the damp happens first, every downstream number — the deduped keep, the stage cap, the final noisy-OR — already reflects the mitigation. If you are predicting a score for a privacy-browser session, halve the affected inputs *before* you run the arithmetic above.
 
-## The hard-rule table as data
+## The enforcement-rule table as data
 
-Hard rules live in `internal/scoring/hardrules.go` as a **list of `promotionRules`**, each `{id, verdict, pred, why}`. They are data, not scattered `if` statements, which is why they can be enumerated, tested, and published verbatim.
+enforcement rules live in `internal/scoring/hardrules.go` as a **list of `promotionRules`**, each `{id, verdict, pred, why}`. They are data, not scattered `if` statements, which is why they can be enumerated, tested, and published verbatim.
 
-They are evaluated in **first-match precedence order** — which is *not* numeric order:
+They are evaluated in the **first-match precedence order shown in the table below**. The order intentionally differs from the legacy machine identifiers.
 
-```
-1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 10, 16, 14, 18, 20, 19, 21, 15, 17, 12, 11
-```
-
-The first rule whose predicate matches wins; evaluation stops there. So HR-13 is checked before HR-10, and the CHALLENGE heuristics (HR-10, HR-17, HR-12, HR-11) sit late so a stronger DENY can pre-empt them.
+The first rule whose predicate matches wins; evaluation stops there. So disabled developer console plus automation evidence rule is checked before missing browser evidence rule, and the CHALLENGE heuristics (missing browser evidence rule, missing or replayed request-integrity token rule, no interaction observed rule, datacenter-network browser rule) sit late so a stronger DENY can pre-empt them.
 
 Predicate helpers available to a rule's `pred`:
 
@@ -179,43 +175,46 @@ Predicate helpers available to a rule's `pred`:
 - `crossFail(x.id)` — the named cross-check is inconsistent.
 - Context: `hasClient` (any WASM/JS signal was collected at all), `browserClaim` (the UA claims a real browser), `combined` (the combined risk score).
 
-The one-line `why` field is the **teaching text**. It is not a comment — it publishes to the Observatory's "Why this verdict" panel and to the hard-rules reference page, so it is written to be read by a human predicting or auditing a verdict.
+The one-line `why` field is the **teaching text**. It is not a comment — it publishes to the Observatory's "Why this verdict" panel and to the enforcement-rule reference page, so it is written to be read by a human predicting or auditing a verdict.
 
-> **Warning:** This page documents the **engine plane only: HR-1 through HR-21.** Rules HR-22..HR-30 belong to the Gate (proxy edge) plane and are out of scope here; do not expect them in `internal/scoring/hardrules.go`.
+> **Warning:** This page documents the **Core scoring-engine plane only**. Gate edge protections run outside this table. Some legacy machine identifiers overlap across those planes, so never interpret a raw number without its event type and plane.
 
-### Engine-plane hard rules (HR-1..HR-21)
+### Engine-plane enforcement rules (the Core enforcement-rule set)
 
 Listed in precedence order. `verdict` is what the rule promotes to on match.
 
 | Order | Rule | Verdict | `why` (teaching text) |
 | --- | --- | --- | --- |
-| 1 | HR-1 | DENY | Hard automation artifact present (Selenium / Puppeteer / Playwright). |
-| 2 | HR-2 | DENY | UA claims a browser but TLS **and** HTTP/2 both resolve to a different engine. |
-| 3 | HR-3 | DENY | Synthetic (untrusted) events combined with a webdriver / CDP tell. |
-| 4 | HR-4 | DENY | Webdriver flag together with a patched native getter hiding it. |
-| 5 | HR-5 | DENY | RIT tamper / invalid HMAC together with a TLS engine mismatch. |
-| 6 | HR-6 | DENY | Runtime hooking / prototype pollution with a webdriver / CDP tell. |
-| 7 | HR-7 | DENY | Headless browser plus a second automation indicator. |
-| 8 | HR-8 | DENY | Patched native getter in a chromeless / headless window (stealth tool). |
-| 9 | HR-9 | DENY | A CDP leak together with any automation hint. |
-| 10 | HR-13 | DENY | Disabled Console API (Patchright) with a chromeless / automation tell. |
-| 11 | HR-10 | CHALLENGE | Heuristic: no client-side (WASM / JS) signals at all. |
-| 12 | HR-16 | DENY | RIT token that fails the **body** HMAC (request-body tamper). |
-| 13 | HR-14 | DENY | TLS fingerprint rotated within a single session. |
-| 14 | HR-18 | DENY | Browser UA with zero client-side JS evidence (HTTP parrot). |
-| 15 | HR-20 | DENY | AI browser-agent signature (teleport click plus a second agent / CDP tell). |
-| 16 | HR-19 | DENY | One fingerprint across many subnets (residential-proxy rotation), or a PoW solved implausibly fast. |
-| 17 | HR-21 | DENY | HTTP-2 DoS only: Rapid Reset / CONTINUATION flood. (Application-layer flood and credential-stuffing velocity are handled by score-based CHALLENGE + the rate-limit ban ladder, not this rule.) |
-| 18 | HR-15 | DENY | Multi-axis rotation (UA changed together with TLS / IP rotation). |
-| 19 | HR-17 | CHALLENGE | Heuristic: a replayed or absent RIT token on an API call. |
-| 20 | HR-12 | CHALLENGE | Heuristic (can catch some humans): zero interaction over the observation window. |
-| 21 | HR-11 | CHALLENGE | Heuristic: a consistent browser from a datacenter ASN. |
+| 1 | hard automation artifact rule | DENY | Hard automation artifact present (Selenium / Puppeteer / Playwright). |
+| 2 | browser and network-engine mismatch rule | DENY | UA claims a browser but TLS **and** HTTP/2 both resolve to a different engine. |
+| 3 | synthetic-event plus browser-driver evidence rule | DENY | Synthetic (untrusted) events combined with a webdriver / Chrome DevTools Protocol tell. |
+| 4 | WebDriver concealment rule | DENY | Webdriver flag together with a patched native getter hiding it. |
+| 5 | request-integrity failure plus protocol mismatch rule | DENY | request-integrity token tamper / invalid HMAC together with a TLS engine mismatch. |
+| 6 | runtime-hook plus automation evidence rule | DENY | Runtime hooking / prototype pollution with a webdriver / Chrome DevTools Protocol tell. |
+| 7 | headless browser plus another automation indicator rule | DENY | Headless browser plus a second automation indicator. |
+| 8 | stealth browser modification rule | DENY | Patched native getter in a chromeless / headless window (stealth tool). |
+| 9 | browser-control leak plus automation evidence rule | DENY | A Chrome DevTools Protocol leak together with any automation hint. |
+| 10 | disabled developer console plus automation evidence rule | DENY | Disabled Console API (Patchright) with a chromeless / automation tell. |
+| 11 | missing browser evidence rule | CHALLENGE | Heuristic: no client-side (WASM / JS) signals at all. |
+| 12 | request-body integrity failure rule | DENY | request-integrity token that fails the **body** HMAC (request-body tamper). |
+| 13 | in-session protocol-fingerprint rotation rule | DENY | TLS fingerprint rotated within a single session. |
+| 14 | browser claim without execution evidence rule | DENY | Browser UA with zero client-side JS evidence (HTTP parrot). |
+| 15 | automated-browser interaction signature rule | DENY | AI browser-agent signature (teleport click plus a second agent / Chrome DevTools Protocol tell). |
+| 16 | cross-session correlation rule | DENY | One fingerprint across many subnets (residential-proxy rotation), or a proof of work solved implausibly fast. |
+| 17 | Hypertext Transfer Protocol version 2 denial-of-service protection rule | DENY | HTTP-2 DoS only: Rapid Reset / CONTINUATION flood. (Application-layer flood and credential-stuffing velocity are handled by score-based CHALLENGE + the rate-limit ban ladder, not this rule.) |
+| 18 | multi-axis identity rotation rule | DENY | Multi-axis rotation (UA changed together with TLS / IP rotation). |
+| 19 | missing or replayed request-integrity token rule | CHALLENGE | Heuristic: a replayed or absent request-integrity token on an API call. |
+| 20 | no interaction observed rule | CHALLENGE | Heuristic (can catch some humans): zero interaction over the observation window. |
+| 21 | datacenter-network browser rule | CHALLENGE | Heuristic: a consistent browser from a datacenter ASN. |
+| 22 | advanced browser residual rule | CHALLENGE | Audio-rate, graphics-processor, or mobile-versus-desktop evidence remains inconsistent near the coherent-browser boundary. |
+| 23 | Chromium-container residual rule | CHALLENGE | A Chrome claim lacks Widevine, media devices, and voices in the specific combined pattern. |
+| 24 | network residual policy rule | CHALLENGE | Operator policy promotes configured proxy, virtual-private-network, Tor, or source-spoofing residuals; these signals remain score-exempt. |
 
-> **Note:** The heuristic CHALLENGE rules (HR-10, HR-11, HR-12, HR-17) are explicitly softer and can occasionally match genuine humans — HR-12 in particular. They sit later in precedence so that any confident DENY pre-empts them, and they promote only to CHALLENGE, never DENY.
+> **Note:** The heuristic CHALLENGE rules (missing browser evidence rule, datacenter-network browser rule, no interaction observed rule, missing or replayed request-integrity token rule) are explicitly softer and can occasionally match genuine humans — no interaction observed rule in particular. They sit later in precedence so that any confident DENY pre-empts them, and they promote only to CHALLENGE, never DENY.
 
 ### Score thresholds (policy `1.0.0`)
 
-When no hard rule matches, the request verdict comes from the combined risk against `policy.go` thresholds:
+When no enforcement rule matches, the request verdict comes from the combined risk against `policy.go` thresholds:
 
 | Risk | Verdict | Constant |
 | --- | --- | --- |
@@ -223,21 +222,21 @@ When no hard rule matches, the request verdict comes from the combined risk agai
 | `30`–`69` | CHALLENGE | `ChallengeAt = 30` |
 | `70`–`100` | DENY | `DenyAt = 70` |
 
-A hard rule overrides these thresholds: a matched DENY rule denies even if the score is low, and a CHALLENGE rule raises an otherwise-ALLOW score to CHALLENGE.
+An enforcement rule overrides these thresholds: a matched DENY rule denies even if the score is low, and a CHALLENGE rule raises an otherwise-ALLOW score to CHALLENGE.
 
-## The PoW boundary
+## The proof of work boundary
 
-The signal `l7.pow.solved` (a valid proof-of-work) has a **narrow, one-directional** effect: it upgrades **only a score-based CHALLENGE to ALLOW**. It never overrides a hard-rule verdict.
+The signal `l7.pow.solved` (a valid proof-of-work) has a **narrow, one-directional** effect: it upgrades **only a score-based CHALLENGE to ALLOW**. It never overrides an enforcement-rule verdict.
 
-So a request that landed at CHALLENGE purely because its risk was in the `30`–`69` band can clear to ALLOW by solving the PoW. But a request denied by, say, HR-1 or held at CHALLENGE by HR-12 is unaffected — the PoW cannot buy its way past a rule verdict. (And note the other direction: under HR-19 a PoW solved *implausibly fast* is itself a DENY signal.)
+So a request that landed at CHALLENGE purely because its risk was in the `30`–`69` band can clear to ALLOW by solving the proof of work. But a request denied by, say, hard automation artifact rule or held at CHALLENGE by no interaction observed rule is unaffected — the proof of work cannot buy its way past a rule verdict. (And note the other direction: under cross-session correlation rule a proof of work solved *implausibly fast* is itself a DENY signal.)
 
 ## The ScoreTrace: the observable form of the decision
 
-The same decomposition is shown to the visitor on `/demo` — each layer's contribution, side by side, under the final verdict:
+The same decomposition is shown to the visitor on `/demo` — each stage's contribution, side by side, under the final verdict:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/verdict-detail-dark.webp" />
-  <img src="../assets/screenshots/framed/verdict-detail-light.webp" alt="The /demo verdict card and its seven per-layer contribution lanes (what each layer saw)" />
+  <img src="../assets/screenshots/framed/verdict-detail-light.webp" alt="The /demo verdict card and its seven per-stage contribution lanes (what each stage saw)" />
 </picture>
 
 `internal/scoring/scoretrace.go` exposes `Engine.ScoreWithTrace`. It shares `assemble()` and `decide()` with the production `Score()` path and runs the same `combineTrace` (which reuses the identical `dedupGroups` keep-rule, noisy-OR, and `promotionRules` table). It records what the engine did without changing the decision.
@@ -248,7 +247,7 @@ Trace shapes, mapped to their Observatory panel:
 | --- | --- | --- |
 | `ContribTrace` | `{id, layer, group, score}` | "Signals" — every scored contribution that entered combination. |
 | `DedupTrace` | `{layer, group, keptId, droppedId, keptScore, droppedScore}` | "Correlation" — which signal won its `(layer, group)` group and which was dropped. |
-| `LayerTrace` | `{layer, rawProb, cappedProb, capHit}` | "Layers" — per-layer noisy-OR before and after the `LayerCap` clamp; `capHit` flags the 84%→60% case. |
+| `LayerTrace` | `{layer, rawProb, cappedProb, capHit}` | "Layers" — per-stage noisy-OR before and after the `LayerCap` clamp; `capHit` flags the 84%→60% case. |
 | `HardRuleEval` | `{rule, verdict, why, matched, won}` | "Why this verdict" — every rule evaluated in precedence order, which matched, and which one won. The `why` string is shown verbatim. |
 
 ### The golden invariant
@@ -267,6 +266,6 @@ That is: the traced score equals the plain combined score, and the traced verdic
 ## Related
 
 - [How Gate sees a request](../concepts/how-gate-sees-a-request.md)
-- [Hard rules and verdicts (reference)](../reference/hard-rules-verdicts.md)
+- [enforcement rules and verdicts (reference)](../reference/hard-rules-verdicts.md)
 - [How to extend detection](../how-to/extend-detection.md)
 - [Observatory architecture](./observatory-architecture.md)

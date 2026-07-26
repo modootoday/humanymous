@@ -20,7 +20,7 @@ flowchart TD
   Q -->|"humans locked out, one route or one rule"| FP["False-positive storm (a)"]
   Q -->|"automation signals across subnets"| AT["Real attack"]
   FP --> D1["Least-disruptive: demote misfiring route to monitor"]
-  FP --> KS["Broad lockout only: kill switch — fleet-wide, dual-control"]
+  FP --> KS["Broad lockout only: kill switch — node-local, dual-control"]
   AT --> B["(b) Scraping / cred-stuffing — temporary fp: ban"]
   AT --> H["(c) HTTP/2 flood — confirm auto-DENY plus limiter"]
   AT --> AG["(d) AI-agent wave — temporary fp: ban"]
@@ -29,7 +29,7 @@ flowchart TD
 
 
 
-humanymous Gate is a reverse-proxy enforcement layer that scores every request across layers L1–L7, applies hard rules, and enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge. This is a reference implementation, not a production-hardened build; your deployment's paging rotation and thresholds may differ.
+humanymous Gate is a reverse-proxy enforcement layer that scores the evidence its current collector supplies, applies enforcement rules, and enforces an ALLOW, CHALLENGE, or DENY verdict at the edge. The standalone Core engine demonstrates a richer seven-stage evidence path; do not use Core measurements as Gate incident baselines.
 
 ## Before you start: the tools you will use
 
@@ -53,9 +53,9 @@ The `/audit` endpoint accepts `?verdict=&host=&route=&rule=&minRisk=&before=` an
 
 Action classes that require a **distinct Approver** (second person, different token from the requester):
 
-1. **Kill switch** (fleet-wide).
+1. **Kill switch** (node-local).
 2. **Permanent or CIDR ban placement**.
-3. **Erasure** (DPO-gated commit — not a generic Approver).
+3. **Erasure** (data protection officer-gated commit — not a generic Approver).
 
 **Ban lift / unblock is single-Operator** for every ban class, including permanent and CIDR. The dual-control gate applies only when *placing* high-blast-radius bans, not when removing them.
 
@@ -86,32 +86,32 @@ Suspected **false-positive storm**: a spike in DENY verdicts that is hitting ver
 curl -sk "https://localhost:8445/__hmn/admin/audit?verdict=deny&minRisk=70" -H "Authorization: Bearer <operator-token>"
 ```
 
-2. **Read** the TopContributors on the drilled-down sessions. Real automation clusters on high-confidence signals (`l1.navigator.webdriver`, `l1.cdp.proxy_leak`, `x.ua_vs_ja4`). A false-positive storm clusters on a single route or a single heuristic rule (for example HR-12, no-interaction → CHALLENGE) firing on ordinary traffic.
+2. **Read** the TopContributors on the drilled-down sessions. Real automation clusters on high-confidence signals (`l1.navigator.webdriver`, `l1.cdp.proxy_leak`, `x.ua_vs_ja4`). A false-positive storm clusters on a single route or a single heuristic rule (for example no interaction observed rule, no-interaction → CHALLENGE) firing on ordinary traffic.
 3. **Check** whether the denies concentrate on one route (`?route=`) or one rule (`?rule=`). One route + one rule + diverse, plausible fingerprints = misfire. Many rules + automation signals across subnets = real attack.
 
 ### Decision tree
 
 - **Denies are correct automation** → this is not your incident; go to (b), (c), or (d).
 - **One route is misfiring** on otherwise-human traffic → demote that route to monitor (below). Least-disruptive.
-- **Misfire is broad / cross-route and users are locked out fleet-wide** → consider the **kill switch**. Fleet-wide and dual-control; read the warning first.
+- **Misfire is broad / cross-route and users are locked out node-local** → consider the **kill switch**. Node-local and dual-control; read the warning first.
 
 ### Action — demote the misfiring route to monitor
 
 Demoting a route to `monitor` keeps scoring and logging but enforces nothing on that route, so blocked humans flow through while you investigate.
 
-> **Note:** the reference admin API has no per-route policy-write endpoint. `GET /__hmn/admin/policy` is read-only, and the only enforcement mutators are `POST /__hmn/admin/killswitch` (fleet-wide, dual-control — demotes all hard-rule enforcement to monitor) and manual bans. There is no hot per-route demotion: to move a single route to `monitor`/`off` you edit the `-routes` route-table file for that prefix and restart the node. `-monitor` is global-only and likewise requires a restart. If a single route cannot contain the storm, use the global kill switch below.
+> **Note:** the reference admin API has no per-route policy-write endpoint. `GET /__hmn/admin/policy` is read-only, and the only enforcement mutators are `POST /__hmn/admin/killswitch` (node-local, dual-control — demotes all rule enforcement to monitor) and manual bans. There is no hot per-route demotion: to move a single route to `monitor`/`off` you edit the `-routes` route-table file for that prefix and restart the node. `-monitor` is global-only and likewise requires a restart. If a single route cannot contain the storm, use the global kill switch below.
 
 - **Consequence:** the demoted route stops enforcing — automation on that route is scored and logged but passes to origin.
 - **Rollback:** restore the route's prior preset (`balanced` or `strict`) once the misfiring rule is tuned.
 
 ### Action — kill switch (broad lockout only)
 
-> **Warning:** The kill switch is **fleet-wide** and **dual-control**. It demotes hard-rule enforcement to monitor across every node — detection continues to score and log, but hard-rule DENY/CHALLENGE stops taking effect and traffic flows to origin. Manual bans still enforce under the kill switch. Use it only when a false-positive storm is locking out real users faster than you can tune, and you accept that automation flows freely while it is on.
+> **Warning:** The kill switch is **node-local** and **dual-control**. It demotes rule enforcement for every route on the current node. Detection continues, manual bans still enforce, and a multi-node deployment must coordinate other nodes separately.
 
 1. **Request** the flip as Operator: `POST /__hmn/admin/killswitch`.
 2. **Have a distinct Approver commit it**: `GET /__hmn/admin/approvals` → `POST /__hmn/admin/approvals/<id>`.
 
-- **Consequence:** hard-rule enforcement is off fleet-wide. The origin is exposed to automation that hard rules would otherwise DENY.
+- **Consequence:** rule enforcement is off node-local. The origin is exposed to automation that enforcement rules would otherwise DENY.
 - **Rollback:** flip the kill switch back off — this is **also dual-control** and needs a **distinct Approver**. Do it the moment the misfiring rule is tuned or the route is demoted.
 
 ### Who to page
@@ -128,7 +128,7 @@ High-volume automated access, often behind rotating residential proxies.
 ### Trigger signal
 
 - Sustained DENY/CHALLENGE on login/checkout routes.
-- Auto-ban ladder is climbing; `HR-19` (one stable fingerprint across many subnets) or `HR-30` (many sessions from one fingerprint) appears in the audit filter.
+- The auto-ban ladder is climbing; cross-session correlation or decision-probing sweep protection appears in the audit stream.
 
 ### 60-second triage — attack or false-positive?
 
@@ -143,7 +143,7 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-19" -H "Authorization
 
 ### Decision tree
 
-- **One fingerprint, many subnets (`HR-19`)** → ban on the **`fp:` key, not `ip:`**. An IP ban chases a moving target; the fingerprint is the stable handle.
+- **One fingerprint, many subnets** → ban on the **`fp:` key, not `ip:`**. An IP ban chases a moving target; the fingerprint is the stable handle.
 - **Many fingerprints behind one hostile IP/range** → an `ip:` ban is appropriate; a CIDR ban is dual-control.
 - **Many real humans behind one IP** → do **not** IP-ban. Prefer fingerprint-scoped action or let rate metering absorb it.
 
@@ -165,13 +165,13 @@ Auto-bans escalate on repeat strikes: **1h → 6h → 24h → permanent**, with 
 
 ---
 
-## (c) HTTP/2 flood / destructive abuse (HR-21)
+## (c) HTTP/2 flood / destructive abuse (Hypertext Transfer Protocol version 2 denial-of-service protection rule)
 
 Protocol-level flooding or a destructive request pattern.
 
 ### Trigger signal
 
-- `HR-21` (destructive flood / HTTP/2 DoS / rate-limit ban → DENY) fires.
+- Hypertext Transfer Protocol version 2 denial-of-service protection matches.
 - Signals `l5.h2dos.rapid_reset` and related appear in TopContributors.
 - Control-plane flood limiter is returning `429` before scoring (default window 10s, soft 60, hard 120 per IP).
 
@@ -183,18 +183,18 @@ Protocol-level flooding or a destructive request pattern.
 curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-21" -H "Authorization: Bearer <operator-token>"
 ```
 
-2. **Confirm** it is protocol abuse, not a load spike: `HR-21` keys on frame-level patterns (rapid reset) and rate-limit ceilings, not on content. A legitimate traffic surge raises request counts but does not produce reset-flood frame signatures.
+2. **Confirm** it is protocol abuse, not a load spike: this rule keys only on Rapid Reset or continuation-frame flooding. The application request-rate limiter and ban ladder are separate controls.
 
 ### Decision tree
 
-- **`HR-21` firing + rate limiter shedding at `429`** → enforcement is already active; DENY is automatic and the origin is never contacted. Your job is containment and escalation, not first-line blocking.
+- **The protocol denial-of-service rule matched** → DENY is already active and the origin is not contacted for the scored request. A simultaneous `429` means the separate rate limiter is also shedding traffic.
 - **Repeat offender by fingerprint or IP** → place a ban (fingerprint for a rotating source, IP/CIDR for a fixed source) to move it up the ladder faster.
-- **Rate ceilings are too low and catching real bursts** → the flood limiter thresholds (`RateWindow` / `RateSoft` / `RateHard`) are configuration, not a hot admin toggle; retuning them is a config/restart change — escalate, do not guess.
+- **Rate ceilings are too low and catching real bursts** → use Settings to dry-run a rate-window or threshold change. The server classifies a reduction in protection and requires approval when appropriate; approved values hot-apply to new requests.
 
 ### Action
 
 - **Ban the source** with the ladder as in (b): temporary `fp:`/`ip:` ban via `POST /__hmn/admin/bans`; permanent/CIDR placement is **dual-control** with a **distinct Approver**; rollback via `POST /__hmn/admin/bans/lift` (single Operator).
-- **Do not** reach for the kill switch here — it demotes hard-rule enforcement fleet-wide and would remove exactly the `HR-21` DENY that is protecting the origin.
+- **Do not** reach for the kill switch here — it demotes rule enforcement on the current node and would remove the protocol denial-of-service DENY that is protecting the origin.
 
 ### Who to page
 
@@ -205,13 +205,13 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-21" -H "Authorization
 
 ---
 
-## (d) AI-agent wave (HR-20)
+## (d) AI-agent wave (automated-browser interaction signature rule)
 
 A surge of AI browser-agents driving real browser engines.
 
 ### Trigger signal
 
-- `HR-20` (AI browser-agent signature: teleport click + LLM cadence → DENY) fires across many sessions.
+- The automated-browser interaction signature matches across many sessions.
 - Signals `l4.agent.burst_silence` and `l4.mouse.click_no_trajectory` dominate TopContributors.
 
 ### 60-second triage — attack or false-positive?
@@ -222,12 +222,12 @@ A surge of AI browser-agents driving real browser engines.
 curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-20" -H "Authorization: Bearer <operator-token>"
 ```
 
-2. **Inspect** the behavioral evidence. `HR-20` keys on teleport clicks (no cursor trajectory) plus LLM-paced cadence. These are behavioral tells on real engines (attacker tier T3), so confidence is lower than for hardware artifacts — read a few drill-downs before acting broadly.
+2. **Inspect** the behavioral evidence. The rule requires a click without an approach trajectory plus a second machine-interaction or browser-control indicator. These are behavioral tells on real engines, so read representative drill-downs before acting broadly.
 3. **Watch the false-positive edge:** assistive tech, scripted accessibility tools, and some automation-for-testing can resemble teleport-click cadence. If drill-downs look like genuine assisted humans, treat it like a false-positive storm — go to (a).
 
 ### Decision tree
 
-- **Clear agent signature, high volume** → `HR-20` is already DENYing. Add fingerprint bans for the persistent sources to escalate the ladder.
+- **Clear agent signature, high volume** → the rule is already denying. Add fingerprint bans for persistent sources to escalate the ladder.
 - **Mixed / uncertain evidence** → keep enforcing but hold manual permanent bans; prefer temporary `fp:` bans that expire.
 - **Evidence looks like assisted humans** → demote the affected route to monitor (see (a)) and page for policy review rather than banning.
 
@@ -236,7 +236,7 @@ curl -sk "https://localhost:8445/__hmn/admin/audit?rule=HR-20" -H "Authorization
 - **Temporary `fp:` ban** via `POST /__hmn/admin/bans` for repeat agent fingerprints; the ladder escalates on repeats.
 - **Permanent/CIDR** only with a **distinct Approver** (dual-control placement); rollback via `POST /__hmn/admin/bans/lift` (single Operator).
 
-> **Note:** T4 (anti-detect tooling plus real-human click-farms) is an explicit design boundary Gate does not solve; it is mitigated only by rate and reputation. If bans are not denting the volume, escalate rather than banning ever-wider.
+> **Note:** coherent browser or human-assisted automation (anti-detect tooling plus real-human click-farms) is an explicit design boundary Gate does not solve; it is mitigated only by rate and reputation. If bans are not denting the volume, escalate rather than banning ever-wider.
 
 ### Who to page
 
@@ -284,7 +284,7 @@ curl -sk "https://localhost:8445/__hmn/admin/integrity" -H "Authorization: Beare
 
 1. **Run** the offline verifier against the audit log. It checks the hash chain, per-record HMACs, and Ed25519 Signed Tree Heads with the independent witness co-signature, **without trusting the operator or the running node**.
 
-> **Note:** verification is a mode of the `gate` binary, not a separate tool. Run `bin/gate.exe -audit-wal <wal-dir> -keystore <keystore-path> -audit-verify` with `HMN_UNSEAL` set. **`-audit-wal` is required** and the WAL must contain at least one record — an empty chain exits non-zero (`class=empty-chain`) so a missing path cannot look like a clean audit. On a real chain it re-checks the hash chain, per-record HMACs, Ed25519 Signed Tree Heads, and independent-witness co-signatures, then prints `audit-verify: OK (<n> records)` and exits 0 on success, or `audit-verify: FAILED class=<class> seq=<n>` and exits non-zero on a break. Point the keystore + `HMN_UNSEAL` at the node under investigation; there is no separate offline-verifier executable.
+> **Note:** verification is a mode of the `gate` binary, not a separate tool. Run `bin/gate.exe -audit-wal <wal-dir> -keystore <keystore-path> -audit-verify` with `HMN_UNSEAL` set. **`-audit-wal` is required** and the write-ahead log must contain at least one record — an empty chain exits non-zero (`class=empty-chain`) so a missing path cannot look like a clean audit. On a real chain it re-checks the hash chain, per-record HMACs, Ed25519 Signed Tree Heads, and independent-witness co-signatures, then prints `audit-verify: OK (<n> records)` and exits 0 on success, or `audit-verify: FAILED class=<class> seq=<n>` and exits non-zero on a break. Point the keystore + `HMN_UNSEAL` at the node under investigation; there is no separate offline-verifier executable.
 
 2. **Capture** the verifier output and the Integrity Dashboard state as evidence (screenshots + saved output).
 3. **Preserve** the audit files; do not rotate, truncate, or restart the node until security has the evidence.
@@ -295,7 +295,7 @@ curl -sk "https://localhost:8445/__hmn/admin/integrity" -H "Authorization: Beare
 ### Who to page
 
 - **Page the security lead** immediately. An integrity mismatch is a security incident, not a traffic incident.
-- **Page the DPO** as well if the affected segment touches subject data or an in-flight erasure — see the [Right-to-erasure (crypto-shred) runbook](./erasure-crypto-shred.md).
+- **Page the data protection officer** as well if the affected segment touches subject data or an in-flight erasure — see the [Right-to-erasure (crypto-shred) runbook](./erasure-crypto-shred.md).
 
 ---
 
@@ -353,16 +353,16 @@ The audit chain and its pseudonyms are only *pseudonymous* — Gate has no re-id
 ### Immediate actions (parallel to the technical runbook)
 
 1. **Keep running the technical response** — for a keystore/vault compromise, rotate keys and revoke the exposed material per [Key management](../how-to/key-management.md); for an integrity red, follow [(e)](#e-integrity-dashboard-went-red) (verify offline, **preserve evidence, do not write**).
-2. **Page the DPO / privacy owner immediately** — in parallel with the security lead, not after. The breach assessment (scope, affected subjects, likelihood of harm) is theirs to run.
-3. **Start the clock and record it.** Log the **time of awareness** — under GDPR the controller's assessment feeds a **72-hour notification window to the supervisory authority** (Art. 33), with data-subject notification (Art. 34) when the risk warrants. This runbook does not decide whether the threshold is met and does not draft the notice — **the controller / DPO owns the legal determination and wording**. Your job is to surface the facts (what was exposed, when, how many subjects, mass-re-identification feasible yes/no) so they can decide against the clock.
-4. **Scope the blast radius with the DPO:** how many un-shredded subjects were resolvable, whether the vault/keystore was actually used to re-identify, and whether the exposure is contained.
+2. **Page the data protection officer / privacy owner immediately** — in parallel with the security lead, not after. The breach assessment (scope, affected subjects, likelihood of harm) is theirs to run.
+3. **Start the clock and record it.** Log the **time of awareness** — under GDPR the controller's assessment feeds a **72-hour notification window to the supervisory authority** (Art. 33), with data-subject notification (Art. 34) when the risk warrants. This runbook does not decide whether the threshold is met and does not draft the notice — **the controller / data protection officer owns the legal determination and wording**. Your job is to surface the facts (what was exposed, when, how many subjects, mass-re-identification feasible yes/no) so they can decide against the clock.
+4. **Scope the blast radius with the data protection officer:** how many un-shredded subjects were resolvable, whether the vault/keystore was actually used to re-identify, and whether the exposure is contained.
 
 > **Note:** A lawful crypto-shred erasure never produces an integrity mismatch (see [(e)](#e-integrity-dashboard-went-red) and the [erasure runbook](./erasure-crypto-shred.md)); a `seq-gap`/`linkage-break`/`hash-break` is a tampering signal, not an erasure footprint. Do not mistake one for the other when scoping a candidate breach.
 
 ### Who to page
 
-- **Page the security lead** (technical containment) **and the DPO / privacy owner** (breach assessment + the notification clock) **together**.
-- Do not wait for the technical root-cause to be fully understood before paging the DPO — the 72-hour clock runs from awareness, not from resolution.
+- **Page the security lead** (technical containment) **and the data protection officer / privacy owner** (breach assessment + the notification clock) **together**.
+- Do not wait for the technical root-cause to be fully understood before paging the data protection officer — the 72-hour clock runs from awareness, not from resolution.
 
 ---
 
@@ -370,24 +370,24 @@ The audit chain and its pseudonyms are only *pseudonymous* — Gate has no re-id
 
 | Symptom | Primary rule / signal | First non-destructive move | Escalation |
 | --- | --- | --- | --- |
-| (a) DENY spike, humans locked out | HR-12 misfire / route-scoped | Demote route to monitor | Distinct Approver for kill switch |
-| (b) Scraping / cred-stuffing | HR-19, HR-30 | Temporary `fp:` ban | Distinct Approver for permanent/CIDR |
-| (c) HTTP/2 flood | HR-21, `l5.h2dos.rapid_reset` | Confirm auto-DENY + limiter | Infra/network on-call |
-| (d) AI-agent wave | HR-20, `l4.agent.burst_silence` | Temporary `fp:` ban | Distinct Approver; Operator for route review |
-| (e) Integrity red | mismatch classes | Run offline verifier, preserve | Security lead (+ DPO if data-touching) |
+| (a) DENY spike, humans locked out | no interaction observed rule misfire / route-scoped | Demote route to monitor | Distinct Approver for kill switch |
+| (b) Scraping / cred-stuffing | cross-session correlation rule, decision-probing sweep protection | Temporary `fp:` ban | Distinct Approver for permanent/CIDR |
+| (c) HTTP/2 flood | Hypertext Transfer Protocol version 2 denial-of-service protection rule, `l5.h2dos.rapid_reset` | Confirm auto-DENY + limiter | Infra/network on-call |
+| (d) AI-agent wave | automated-browser interaction signature rule, `l4.agent.burst_silence` | Temporary `fp:` ban | Distinct Approver; Operator for route review |
+| (e) Integrity red | mismatch classes | Run offline verifier, preserve | Security lead (+ data protection officer if data-touching) |
 | (f) Dependency / supply-chain CVE | govulncheck / Trivy HIGH / Dependabot | Confirm reachable + fixable, patch on `main` | Maintainer/security-lead → release owner (tag) |
-| (g) Personal-data-breach tie-in | keystore/`HMN_UNSEAL`/vault compromise; `audit.integrity.violation.detected` | Preserve evidence, log time of awareness | Security lead **and** DPO together (72h clock) |
+| (g) Personal-data-breach tie-in | keystore/`HMN_UNSEAL`/vault compromise; `audit.integrity.violation.detected` | Preserve evidence, log time of awareness | Security lead **and** data protection officer together (72h clock) |
 
 ### Rules of engagement
 
 - **Kill switch and permanent/CIDR ban placement are dual-control** — always name and involve a **distinct Approver**; the requester never self-approves. **Ban lifts are single-Operator.**
-- **The kill switch is fleet-wide** — it stops hard-rule enforcement everywhere and exposes the origin; manual bans still enforce; roll it back (dual-control) the moment the cause is fixed.
+- **The reference kill switch is node-local** — a multi-node deployment needs external coordination before this action is node-local. Manual bans still enforce; restore rule enforcement through dual control when the cause is fixed.
 - **Fingerprint (`fp:`) beats IP (`ip:`)** against rotation; IP/CIDR beats fingerprint against a fixed hostile source; neither beats shared-egress false positives.
 - **Integrity red is a security incident** — verify offline, preserve evidence, do not paper over it with admin writes.
 
 ### Related pages
 
-- [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md)
+- [enforcement rules, verdicts & signal reference](../reference/hard-rules-verdicts.md)
 - [CLI, config & per-route policy reference](../reference/cli-config-policy.md)
 - [Right-to-erasure (crypto-shred) runbook](./erasure-crypto-shred.md)
 - [Cut a release](../how-to/cut-a-release.md) — the tag→rebuild→re-sign path for a supply-chain patch (f)

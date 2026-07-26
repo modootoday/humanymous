@@ -9,9 +9,9 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 **Diátaxis quadrant:** How-to. **Audience:** operators, security, and platform engineers running humanymous Gate.
 
-This guide describes the load-bearing key material in a humanymous Gate ("Gate" after first mention) deployment: what each key protects, how the sealed keystore persists node identity, what breaks if a key or passphrase is lost, and how to think about rotation. It is written against the reference implementation; production deployments add controls that the reference does not ship (prod-delta). For the boundary between the two, see [Production vs reference](../reference/production-vs-reference.md).
+This guide describes the load-bearing key material in a humanymous Gate ("Gate" after first mention) deployment: what each key protects, how the sealed keystore persists node identity, what breaks if a key or passphrase is lost, and how to think about rotation. It is written against the reference implementation; production deployments add controls that the reference does not ship (production responsibility). For the boundary between the two, see [Production vs reference](../reference/production-vs-reference.md).
 
-Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the detection bundle into HTML, scores layers L1–L7 inline, enforces the verdict at the edge, and writes every decision to a tamper-evident audit log. Several of the keys below are what make that audit log verifiable and what keeps pseudonymized subject data resolvable under dual-control.
+Gate is the reverse-proxy enforcement layer. It scores the evidence available to its current collector, enforces the verdict, and writes decisions to a tamper-evident audit log. Several keys below make that log verifiable and keep pseudonymous linkage data sealed.
 
 ---
 
@@ -19,8 +19,8 @@ Gate is the reverse-proxy enforcement layer. It terminates TLS, streams the dete
 
 | Key material | Protects / enables | Where it lives | Rotation in the reference |
 |--------------|--------------------|----------------|---------------------------|
-| **SigningSeed** (Ed25519) | Signs the audit log's Signed Tree Heads (STHs); the verifier confirms the chain with the matching public key. | Sealed keystore, or ephemeral in memory. | Not automated (prod-delta). |
-| **HMACKey** | Per-record HMAC over each audit record. | Sealed keystore, or ephemeral in memory. | Not automated (prod-delta). |
+| **SigningSeed** (Ed25519) | Signs the audit log's Signed Tree Heads (STHs); the verifier confirms the chain with the matching public key. | Sealed keystore, or ephemeral in memory. | Not automated (production responsibility). |
+| **HMACKey** | Per-record HMAC over each audit record. | Sealed keystore, or ephemeral in memory. | Not automated (production responsibility). |
 | **Vault snapshot** | Per-subject pseudonym linkage keys — resolve pseudonyms back to identifiers under dual-control. | Sealed keystore, or ephemeral in memory. | n/a (per-subject; destroyed by crypto-shred). |
 | **Origin-cloaking HMAC** (`-origin-key`) | Signs `X-Hmny-Origin-Auth` so the origin can verify traffic came through Gate. | `-origin-key` flag (separate from the keystore). | Operator-managed flag value. |
 | **Verdict-token epoch key** | Signs fingerprint-bound verdict trust tokens. | In-process only. | Rotates automatically every 15 minutes. |
@@ -79,7 +79,7 @@ stateDiagram-v2
 
 ## The separate origin-cloaking key
 
-The `-origin-key` flag is a **separate** HMAC key, unrelated to the keystore. Gate uses it to sign the `X-Hmny-Origin-Auth` header so the origin can confirm a request arrived through Gate rather than directly (supporting the direct-origin-hit hard rule). It is not part of the sealed node identity and is not stretched or stored in the keystore.
+The `-origin-key` flag is a **separate** HMAC key, unrelated to the keystore. Gate uses it to sign the `X-Hmny-Origin-Auth` header so the origin can confirm a request arrived through Gate rather than directly (supporting the direct-origin-hit enforcement rule). It is not part of the sealed node identity and is not stretched or stored in the keystore.
 
 If `-origin-key` is unset, an ephemeral random key is used per boot — the origin must be configured with the same value for validation to succeed, so an ephemeral key only works if the origin re-reads it each boot. Set an explicit `-origin-key` (and configure the matching secret at the origin) whenever the origin validates the header. Treat this value as a shared secret between Gate and the origin, and store it in your secrets manager alongside `HMN_UNSEAL`.
 
@@ -107,13 +107,13 @@ Note that a lost vault or an accidental ephemeral-restart mass-shred, while dest
 
 ---
 
-## Back up & restore the keystore + audit WAL
+## Back up & restore the keystore + audit write-ahead log
 
-The two pieces of durable node state live on the `hmn-data` named volume in the release compose (`deployments/compose.release.yaml`): the **sealed keystore** at `/data/keystore` and the **durable audit WAL** at `/data/audit`. ACME certificates live separately on `hmn-acme` (`/acme-cache`). Back up `hmn-data` on a schedule; the `HMN_UNSEAL` passphrase is backed up **out-of-band** and is never in the volume (see the warning below).
+The two pieces of durable node state live on the `hmn-data` named volume in the release compose (`deployments/compose.release.yaml`): the **sealed keystore** at `/data/keystore` and the **durable audit write-ahead log** at `/data/audit`. ACME certificates live separately on `hmn-acme` (`/acme-cache`). Back up `hmn-data` on a schedule; the `HMN_UNSEAL` passphrase is backed up **out-of-band** and is never in the volume (see the warning below).
 
 ### Capture (Docker named volume)
 
-Stop or quiesce the Gate first so the WAL is at rest, then tar the volume into a backup volume (or a host bind mount):
+Stop or quiesce the Gate first so the write-ahead log is at rest, then tar the volume into a backup volume (or a host bind mount):
 
 ```
 docker run --rm \
@@ -122,7 +122,7 @@ docker run --rm \
   alpine tar czf /backup/hmn-data-$(date +%F).tar.gz -C /data .
 ```
 
-`hmn-acme` (ACME certs) is reproducible — Let's Encrypt re-issues on the next boot — so it is optional to back up; the keystore and WAL are **not** reproducible.
+`hmn-acme` (ACME certs) is reproducible — Let's Encrypt re-issues on the next boot — so it is optional to back up; the keystore and write-ahead log are **not** reproducible.
 
 ### Restore (Docker named volume)
 
@@ -153,11 +153,11 @@ spec:
 YAML
 ```
 
-Restore by provisioning a new PVC with `spec.dataSource` pointing at the snapshot, then mounting it back at `/data`. Snapshot the volume while the pod is quiesced (or use an application-consistent snapshot) so the WAL is captured at rest.
+Restore by provisioning a new PVC with `spec.dataSource` pointing at the snapshot, then mounting it back at `/data`. Snapshot the volume while the pod is quiesced (or use an application-consistent snapshot) so the write-ahead log is captured at rest.
 
 ### Validate the restore
 
-A restored volume is only trustworthy if the chain still verifies. Replay + verify the WAL against the restored keystore before you put the node back in service — this is the same offline verification `gate` runs, exercised as a one-shot:
+A restored volume is only trustworthy if the chain still verifies. Replay + verify the write-ahead log against the restored keystore before you put the node back in service — this is the same offline verification `gate` runs, exercised as a one-shot:
 
 ```
 HMN_UNSEAL="<passphrase>" gate \
@@ -166,20 +166,20 @@ HMN_UNSEAL="<passphrase>" gate \
   -audit-verify
 ```
 
-It **requires** `-audit-wal` pointing at a non-empty WAL (an empty chain or omitting `-audit-wal` exits non-zero with `class=empty-chain` — a vacuous green is not a pass). It replays the WAL, verifies the hash chain / HMAC / Signed Tree Heads under the keystore's signing key, and checks independent **witness** co-signatures when a witness key is configured. Success prints `audit-verify: OK (<n> records)` and exits `0`; any mismatch prints `audit-verify: FAILED class=<class> seq=<n> …` and exits non-zero. A non-zero exit means the backup is corrupt, the keystore does not match the WAL, or witness attestation failed — do not return that node to service. (In a container, run the same flags as a one-shot against the `hmn-data` volume with `HMN_UNSEAL` supplied.)
+It **requires** `-audit-wal` pointing at a non-empty write-ahead log (an empty chain or omitting `-audit-wal` exits non-zero with `class=empty-chain` — a vacuous green is not a pass). It replays the write-ahead log, verifies the hash chain / HMAC / Signed Tree Heads under the keystore's signing key, and checks independent **witness** co-signatures when a witness key is configured. Success prints `audit-verify: OK (<n> records)` and exits `0`; any mismatch prints `audit-verify: FAILED class=<class> seq=<n> …` and exits non-zero. A non-zero exit means the backup is corrupt, the keystore does not match the write-ahead log, or witness attestation failed — do not return that node to service. (In a container, run the same flags as a one-shot against the `hmn-data` volume with `HMN_UNSEAL` supplied.)
 
 ### Loss blast radius
 
-- **Lose the WAL (`/data/audit`)** → you lose the local audit chain since the **last exported checkpoint (STH)**. Anything you archived via `GET /__hmn/admin/proof` / the `lastSTH` still verifies independently; the records appended after it are gone with the WAL. Export and archive checkpoints off-box so a WAL loss has a bounded tail.
+- **Lose the write-ahead log (`/data/audit`)** → you lose the local audit chain since the **last exported checkpoint (STH)**. Anything you archived via `GET /__hmn/admin/proof` / the `lastSTH` still verifies independently; the records appended after it are gone with the write-ahead log. Export and archive checkpoints off-box so a write-ahead log loss has a bounded tail.
 - **Lose the keystore or `HMN_UNSEAL` (`/data/keystore`)** → **mass crypto-shred**: the SigningSeed, HMACKey, and Vault snapshot all go together (they are one sealed blob). Chain-signing continuity breaks and every per-subject pseudonym linkage is unresolvable, exactly as in the [blast-radius table](#blast-radius--what-breaks-if-a-key-is-lost) above. This is why `HMN_UNSEAL` is backed up **out-of-band**, never inside `hmn-data`.
 
-> **Warning — crypto-shred ↔ backup interaction.** A backup taken **before** a right-to-erasure crypto-shred still contains the per-subject **linkage key** for the erased subject. Restoring that backup, or keeping it reachable, **re-arms re-identification** of a subject you were legally required to shred. Treat keystore backups as sensitive linkage material: scope their retention, and after an erasure either re-run the shred against restored/rotated copies or expire the pre-erasure backups on a schedule aligned with your erasure obligations. The WAL/records themselves stay crypto-shred-safe (the records survive but are unresolvable) — it is the **keystore backup** that carries the linkage key back.
+> **Warning — crypto-shred ↔ backup interaction.** A backup taken **before** a right-to-erasure crypto-shred still contains the per-subject **linkage key** for the erased subject. Restoring that backup, or keeping it reachable, **re-arms re-identification** of a subject you were legally required to shred. Treat keystore backups as sensitive linkage material: scope their retention, and after an erasure either re-run the shred against restored/rotated copies or expire the pre-erasure backups on a schedule aligned with your erasure obligations. The write-ahead log/records themselves stay crypto-shred-safe (the records survive but are unresolvable) — it is the **keystore backup** that carries the linkage key back.
 
 ---
 
 ## Rotation — concept only in the reference
 
-> **Important:** Automated rotation of the SigningSeed and HMACKey is **not implemented** in the reference. There is no shipped rotation command, endpoint, or scheduler for these keys. Rotating them would require re-anchoring the audit chain, so rotation is a prod-delta and an operational procedure — not something the reference binary does for you. Do not script against a rotation command; none exists here.
+> **Important:** Automated rotation of the SigningSeed and HMACKey is **not implemented** in the reference. There is no shipped rotation command, endpoint, or scheduler for these keys. Rotating them would require re-anchoring the audit chain, so rotation is a production responsibility and an operational procedure — not something the reference binary does for you. Do not script against a rotation command; none exists here.
 
 The reasoning: the SigningSeed anchors the audit log. Every Signed Tree Head is signed under it, and the verifier trusts a single public key for the chain. Swapping the seed changes the public key, so any checkpoint signed before the swap stops verifying under the new key. Rotation therefore cannot be a silent in-place key swap; it has to be a deliberate, recorded re-anchoring.
 
@@ -199,7 +199,7 @@ The 15-minute verdict-token epoch key already rotates on its own and needs none 
 ## Operational checklist
 
 - Run any node whose audit log or pseudonym linkage must survive a restart **with `-keystore` + `HMN_UNSEAL`**. An ephemeral node is only safe for throwaway/dev use.
-- **Back up two things separately:** the sealed keystore file, and the `HMN_UNSEAL` passphrase (out-of-band). Losing either loses the node identity. Back up the `hmn-data` volume (keystore + audit WAL) on a schedule and **validate every restore** with `gate -audit-wal … -keystore … -audit-verify` — see [Back up & restore the keystore + audit WAL](#back-up--restore-the-keystore--audit-wal).
+- **Back up two things separately:** the sealed keystore file, and the `HMN_UNSEAL` passphrase (out-of-band). Losing either loses the node identity. Back up the `hmn-data` volume (keystore + audit write-ahead log) on a schedule and **validate every restore** with `gate -audit-wal … -keystore … -audit-verify` — see [Back up & restore the keystore + audit write-ahead log](#back-up--restore-the-keystore--audit-wal).
 - **Expire pre-erasure keystore backups.** A keystore backup taken before a crypto-shred still holds the erased subject's linkage key; scope its retention so a restore cannot re-arm re-identification (same section).
 - Store `-origin-key` as a shared secret with the origin, in your secrets manager.
 - Publish and archive the **public** key so anyone can verify exported checkpoints — see [Verify the audit log](verify-audit-log.md). Reference surfaces: boot line `audit keys: …`, `GET /__hmn/admin/keys`, and `GET /__hmn/admin/checkpoints` (STHs + witness sigs).
@@ -211,7 +211,7 @@ The 15-minute verdict-token epoch key already rotates on its own and needs none 
 ## Related
 
 - [Verify the audit log](verify-audit-log.md) — how published STH/witness public keys verify the chain (and `hmac-unchecked` when no HMAC key), and how a key change affects verification.
-- [Production vs reference](../reference/production-vs-reference.md) — the prod-delta list, including automated key rotation and KMS/HSM.
+- [Production vs reference](../reference/production-vs-reference.md) — the production responsibility list, including automated key rotation and KMS/HSM.
 - [CLI, config & policy reference](../reference/cli-config-policy.md) — `-keystore`, `HMN_UNSEAL`, `-origin-key`, and startup lines.
 - [Right-to-erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — deliberate destruction of a per-subject linkage key.
 - [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the pseudonymization and audit-chain model the keys protect.

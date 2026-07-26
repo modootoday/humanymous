@@ -11,9 +11,9 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 This page is a compliance companion for a Data Protection Impact Assessment (Article 35 GDPR) covering an operator deployment of humanymous Gate. It is written as a **risk-and-mitigation register**, not a set of assurances. Each processing property below is stated first as the residual risk it carries, then as the mitigation the reference implementation provides, and — where the mitigation is incomplete or deferred — as an explicit limit the controller must accept or close.
 
-humanymous Gate ("Gate") is a reverse-proxy enforcement layer that terminates TLS, streams a detection bundle into HTML responses, scores each request across layers L1–L7, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes every decision to a tamper-evident audit log. This document does not repeat the field-level processing register; read it alongside the [data-processing inventory](../reference/data-processing-inventory.md), the [standards mapping](../reference/standards-mapping.md), the [erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md), and [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
+humanymous Gate ("Gate") is a reverse-proxy enforcement layer that scores the evidence its current collector supplies, enforces ALLOW, CHALLENGE, or DENY at the edge, and writes decisions to a tamper-evident audit log. Core's richer seven-stage collection path is a separate processing surface. This document does not repeat the field-level processing register; read it alongside the [data-processing inventory](../reference/data-processing-inventory.md), the [standards mapping](../reference/standards-mapping.md), the [erasure runbook](../runbooks/erasure-crypto-shred.md), and [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md).
 
-> **Important:** This document describes a **reference implementation**, not a production-hardened product. Several controls a DPIA would rely on in production are prod-deltas (identified inline). Gate is processing **tooling**; determining lawful basis, necessity, proportionality, and the DPIA conclusion for a specific deployment remains the responsibility of the operator acting as **data controller**.
+> **Important:** This document describes a **reference implementation**, not a production-hardened product. Several controls a DPIA would rely on in production are production responsibilities (identified inline). Gate is processing **tooling**; determining lawful basis, necessity, proportionality, and the DPIA conclusion for a specific deployment remains the responsibility of the operator acting as **data controller**.
 
 ---
 
@@ -35,7 +35,7 @@ The processing purpose is **distinguishing automated clients from human users** 
 
 ### 2.2 Necessity
 
-Necessity turns on whether the purpose can be met with less personal-data processing. The signals Gate evaluates (static client attributes, fingerprint material, client-integrity checks, behavioral timing, and network/protocol characteristics such as TLS and HTTP/2 fingerprints and header ordering) are the inputs that let the engine separate automation from humans across layers L1–L7. A cross-check-first, defense-in-depth design is used specifically so that no single identifier is decisive and low-false-positive verdicts can be reached deterministically.
+Necessity turns on whether the purpose can be met with less personal-data processing. Document only the evidence the deployed component actually collects. Core's full model includes browser, interaction, and network-protocol evidence; the current Gate supplies a smaller set. A cross-check-first design avoids treating one identifier as decisive, but it does not justify claiming collection that is absent from the deployed path.
 
 The proportionality-relevant design choices in the reference are:
 
@@ -45,16 +45,16 @@ The proportionality-relevant design choices in the reference are:
 
 ### 2.3 Proportionality and the false-positive residual
 
-Proportionality must account for the impact on **legitimate human users** who are wrongly challenged. The reference is designed for low false positives, and its hard rules are tiered by confidence: several are near-zero-false-positive automation tells, while at least one heuristic rule (no interaction over a window) can catch some humans and therefore issues a CHALLENGE rather than a DENY. The proportionate posture is that lower-confidence signals **challenge** (a recoverable proof-of-work interstitial) rather than **block**. The controller should document the residual risk that a human is challenged, and the accessibility of that challenge, as part of the balancing test. See also [Will this break my app?](will-this-break-my-app.md).
+Proportionality must account for the impact on **legitimate human users** who are wrongly challenged. Several rules use high-confidence automation evidence, while heuristics can match some humans and therefore issue CHALLENGE rather than DENY. CHALLENGE is still real user impact, and the reference Gate does not provide a complete recovery flow for every visitor. The controller must document challenge friction, effective lockout risk, and the accessibility of the deployed flow as part of the balancing test. See also [Will this break my app?](will-this-break-my-app.md).
 
-> **Note:** The reference challenge is a minimal interstitial. A full WCAG 2.2 AA challenge experience is a prod-delta and an operator responsibility; the accessibility of the production challenge is a proportionality input the DPIA should record.
+> **Note:** The reference challenge is a minimal response, not a complete visitor-recovery experience. The accessibility of the flow actually deployed is a proportionality input the impact assessment should record.
 
 ### 2.4 Behavioral biometrics, and how GPC/DNT are treated
 
 Two points an adopter must resolve for their jurisdiction, both stated candidly here:
 
-- **Behavioral timing is biometric-adjacent and component-scoped.** Layer 4 evaluates mouse-movement and keystroke *timing dynamics* (dwell/flight, velocity, trajectory) when the **full client detection path** (Core / WASM bundle) is in use. Depending on jurisdiction and how it is used, timing-dynamics profiling can attract heightened scrutiny (GDPR Article 9 special-category analysis, or PIPA sensitive-data duties). Controllers who deploy **only the Gate reverse proxy** must **remove "interaction timings" / mouse-keystroke dynamics from their Article 13 notice** unless they also run a client path that actually collects them — the Gate's injected loader does not reproduce the Core behavioral sample stream. Where the full path is enabled, the reference collects timing features as an input to the security verdict; it is not used to uniquely identify a person and is stored only as aggregate features under audit pseudonymization. There is currently **no built-in toggle** to disable behavioral collection — consent-gated collection is a prod-delta.
-- **GPC / DNT are read as a *privacy-posture* signal, not honored as a tracking opt-out.** A session presenting Global Privacy Control or Do-Not-Track (or Brave shields, ad-block, tracking protection) is treated as a **human/FP-mitigation** signal — it *lowers* suspicion and damps fingerprint-noise scoring — but it does **not** exempt the session from any server-authoritative hard rule: HR-19 (residential-proxy rotation) is deliberately never gated on a client-reported privacy flag, precisely so a proxy scraper cannot post `adBlock:true` to disarm it. It is **not** honored as an opt-out of the detection processing itself, because bot detection is security processing (typically legitimate interests / strictly-necessary), not advertising/tracking to which GPC/DNT legally attach. If your lawful-basis analysis concludes the processing is not strictly necessary for your context, you must add your own consent/opt-out gate; the reference does not do this for you.
+- **Behavioral timing is biometric-adjacent and component-scoped.** Layer 4 evaluates mouse-movement and keystroke *timing dynamics* (dwell/flight, velocity, trajectory) when the **full client detection path** (Core / WASM bundle) is in use. Depending on jurisdiction and how it is used, timing-dynamics profiling can attract heightened scrutiny (GDPR Article 9 special-category analysis, or PIPA sensitive-data duties). Controllers who deploy **only the Gate reverse proxy** must **remove "interaction timings" / mouse-keystroke dynamics from their Article 13 notice** unless they also run a client path that actually collects them — the Gate's injected loader does not reproduce the Core behavioral sample stream. Where the full path is enabled, the reference collects timing features as an input to the security verdict; it is not used to uniquely identify a person and is stored only as aggregate features under audit pseudonymization. There is currently **no built-in toggle** to disable behavioral collection — consent-gated collection is a production responsibility.
+- **GPC / DNT are read as a *privacy-posture* signal, not honored as a tracking opt-out.** A session presenting Global Privacy Control or Do-Not-Track (or Brave shields, ad-block, tracking protection) is treated as a **human/false positive-mitigation** signal — it *lowers* suspicion and damps fingerprint-noise scoring — but it does **not** exempt the session from any server-authoritative enforcement rule: cross-session correlation rule (residential-proxy rotation) is deliberately never gated on a client-reported privacy flag, precisely so a proxy scraper cannot post `adBlock:true` to disarm it. It is **not** honored as an opt-out of the detection processing itself, because bot detection is security processing (typically legitimate interests / strictly-necessary), not advertising/tracking to which GPC/DNT legally attach. If your lawful-basis analysis concludes the processing is not strictly necessary for your context, you must add your own consent/opt-out gate; the reference does not do this for you.
 
 ---
 
@@ -88,7 +88,7 @@ Pseudonymization protects against exposure of the **stored** value, not against 
 
 Re-identification — turning a stored pseudonym back into the underlying identifier — is **not a product API**. Gate does not expose a re-identification endpoint and does not perform re-identification in-process. Anyone who holds the **sealed keystore and `HMN_UNSEAL`** can resolve pseudonyms **offline, alone**, with **no second approver** and **no audit record** of that offline act.
 
-- **What dual-control actually covers.** Product dual-control (distinct second role) applies to **erasure**, **permanent/CIDR bans**, and the **kill switch** — not to re-identification. See [RBAC and separation of duties](../reference/rbac-separation-of-duties.md).
+- **What dual-control actually covers.** Product dual-control (distinct second role) applies to **erasure**, **permanent/CIDR bans**, and the **kill switch** — not to re-identification. See [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md).
 - **Necessity test (organizational).** Because re-identification is a custodial offline capability of the key material, the controller must control **who holds the keystore and the unseal secret**, not a second click in the console. Necessity is demonstrated by key-custody policy and operational access control, not by a dual-control product gate.
 - **No meta-audit of offline resolve.** The product cannot prove "who re-identified whom" for offline keystore use. Do not claim an audited re-identification trail that the reference does not emit.
 
@@ -114,7 +114,7 @@ Records written **after the last signed checkpoint** and before the next are **r
 
 **Residual accepted:** The in-window (post-last-checkpoint) residual and the co-located witness are accepted, documented limitations of the reference. The DPIA should record them as known integrity limits, not as external multi-party consensus.
 
-> **Note:** A standalone offline verifier **process**, RFC 3161 trusted timestamps, and external WORM/object-lock anchoring are prod-deltas (Section 7.3). They are recommended production anchors, not shipped features of the reference.
+> **Note:** A standalone offline verifier **process**, RFC 3161 trusted timestamps, and external WORM/object-lock anchoring are production responsibilities (Section 7.3). They are recommended production anchors, not shipped features of the reference.
 
 ---
 
@@ -122,16 +122,16 @@ Records written **after the last signed checkpoint** and before the next are **r
 
 The following measures are what the DPIA can cite as the reference's technical and organizational controls on the administrative plane:
 
-- **RBAC with four roles** — Auditor, Operator, Approver, DPO — with capabilities scoped per role (see [RBAC and separation of duties](../reference/rbac-separation-of-duties.md)).
-- **Separation of duties.** Read, operate, approve, and DPO-erasure capabilities are held by distinct roles; no single role holds all.
-- **Dual-control** on the highest-impact actions: permanent/CIDR bans and the kill switch must be committed by a **distinct Approver**; **erasure** must be committed by a **distinct DPO** (a generic Approver cannot approve erasure).
+- **role-based access control with four roles** — Auditor, Operator, Approver, data protection officer — with capabilities scoped per role (see [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md)).
+- **Separation of duties.** Read, operate, approve, and data protection officer-erasure capabilities are held by distinct roles; no single role holds all.
+- **Dual-control** on the highest-impact actions: permanent/CIDR bans and the kill switch must be committed by a **distinct Approver**; **erasure** must be committed by a **distinct data protection officer** (a generic Approver cannot approve erasure).
 - **Meta-audited reads and actions.** Administrative access and privileged actions are written to the audit log; the actor identity is **server-derived**, and any actor value supplied in a request body is ignored — so the accountability trail cannot be spoofed by the caller.
 - **Deny-by-default admin plane.** The admin API runs on a separate listener; the console and admin routes return 404 on the public edge, and missing or invalid bearer credentials return 404 rather than a distinguishable auth error. Bearer comparison is constant-time.
 - **Sealed keystore.** The signing seed (Ed25519 STH key), HMAC key, and vault snapshot are sealed with scrypt (N = 2^15) and AES-256-GCM under the operator-held unseal secret.
 
-> **Warning:** The **kill switch is fleet-wide**. Activating it demotes hard-rule enforcement to monitor mode across the entire fleet — detection stops and traffic flows to the origin — while manual bans continue to enforce. Its scope and dual-control (a distinct Approver) must be understood before use; record it in the DPIA as a control with fleet-wide blast radius.
+> **Warning:** The **kill switch is node-local**. Activating it demotes rule enforcement to monitor mode across the entire fleet — detection continues and affected traffic flows to the origin — while manual bans continue to enforce. Its scope and dual-control (a distinct Approver) must be understood before use; record it in the DPIA as a control with node-local blast radius.
 
-> **Note:** In the reference, admin authentication is bearer tokens with dev defaults; real KMS/HSM key custody, ACME certificates, and mTLS/SSO admin authentication are prod-deltas. The DPIA should record the production key-custody and admin-auth model the operator will actually deploy.
+> **Note:** In the reference, admin authentication is bearer tokens with dev defaults; real KMS/HSM key custody, ACME certificates, and mutual Transport Layer Security/SSO admin authentication are production responsibilities. The DPIA should record the production key-custody and admin-auth model the operator will actually deploy.
 
 ---
 
@@ -139,7 +139,7 @@ The following measures are what the DPIA can cite as the reference's technical a
 
 ### 7.1 Retention tiers
 
-The reference **declares** HOT / WARM / COLD age labels for documentation and a `Tier(age)` helper used in tests. **They are not enforced at runtime:** no production caller prunes, compresses, or relocates the WAL by tier; the Ledger Retention card is **hardcoded HTML**, not a read of `/admin/policy`. There is **no WORM** media or object-lock integration in the reference.
+The reference **declares** HOT / WARM / COLD age labels for documentation and a `Tier(age)` helper used in tests. **They are not enforced at runtime:** no production caller prunes, compresses, or relocates the write-ahead log by tier; the Ledger Retention card is **hardcoded HTML**, not a read of `/admin/policy`. There is **no WORM** media or object-lock integration in the reference.
 
 | Label (declared) | Approximate window | Enforcement in reference |
 | --- | --- | --- |
@@ -147,15 +147,15 @@ The reference **declares** HOT / WARM / COLD age labels for documentation and a 
 | WARM | ~1 year | **None** |
 | COLD | ~7 years | **None** (and not WORM) |
 
-**Audit durability defaults (honest residual):** without `-audit-wal` the chain is **in RAM and lost on restart**; with `-audit-wal` it **grows without bound**. Neither default implements a retention schedule. **Mitigation in the reference: none** — operators must supply external retention, archival, and deletion policy (prod-delta).
+**Audit durability defaults (honest residual):** without `-audit-wal` the chain is **in RAM and lost on restart**; with `-audit-wal` it **grows without bound**. Neither default implements a retention schedule. **Mitigation in the reference: none** — operators must supply external retention, archival, and deletion policy (production responsibility).
 
 The controller must reconcile any schedule with legal obligations (including PIPA where applicable) under Article 5(1)(e). Crypto-shred removes re-identifiability at any point without deleting records (Section 7.2); it is not a retention engine.
 
 ```mermaid
 flowchart LR
-  W["Decision written · (pseudonymized, hash-chained)"] --> A["WAL or in-memory chain · (no auto-tiering)"]
-  A -. "operator retention policy · (prod-delta)" .-> RET["Archived / retired"]
-  ER["Crypto-shred · (DPO + dual-control, ~5min hold)"] -. "destroy per-subject linkage key" .-> UN["Record retained, chain intact, · no longer linkable to subject"]
+  W["Decision written · (pseudonymized, hash-chained)"] --> A["Write-ahead log or in-memory chain · (no automatic tiering)"]
+  A -. "operator retention policy · (production responsibility)" .-> RET["Archived / retired"]
+  ER["Cryptographic erasure · (data protection officer + dual-control, about 5-minute hold)"] -. "destroy per-subject linkage key" .-> UN["Record retained, chain intact · no longer linkable to subject"]
   A -. any age .-> ER
 ```
 
@@ -169,20 +169,20 @@ This design is chosen precisely because it is **compatible with write-once-read-
 
 The erasure workflow provides:
 
-- **DPO gating and dual-control.** Erasure is committed by a distinct DPO; a generic Approver cannot.
+- **data protection officer gating and dual-control.** Erasure is committed by a distinct data protection officer; a generic Approver cannot.
 - **A cancellable hold window** (default ~5 minutes) before execution, cancellable via the erasure-cancel endpoint; a ticker executes due shreds.
-- **Completion evidence** sealed on **execution** — when the hold window elapses and the shred runs, not at commit; a cancelled erasure produces none. Evidence is an `erasure.completed` audit record (HMAC-chained; covered by the next STH), not a standalone independently-signed certificate blob (retrieval endpoint remains prod-delta).
+- **Completion evidence** sealed on **execution** — when the hold window elapses and the shred runs, not at commit; a cancelled erasure produces none. Evidence is an `erasure.completed` audit record (HMAC-chained; covered by the next STH), not a standalone independently-signed certificate blob (retrieval endpoint remains production responsibility).
 
 See the [erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) for the operational procedure.
 
 > **Warning:** Crypto-shred is **irreversible** and its scope is exact: it destroys the linkage key for the identified subject. Once the hold window elapses and the shred executes, the subject's records cannot be re-identified by any party, including the controller. Confirm the subject and the hold-window state before commit.
 
-### 7.3 Physical retirement and external anchoring are prod-deltas
+### 7.3 Physical retirement and external anchoring are production responsibilities
 
 Two lifecycle steps a production retention program would require are **not** implemented in the reference and must not be represented as shipped:
 
-- **Physical WORM retirement at COLD expiry** — the physical destruction or retirement of records once the COLD tier expires — is a prod-delta.
-- **External WORM/object-lock anchoring and RFC 3161 trusted timestamps** — anchoring the chain to an external immutable store or a trusted timestamp authority — are prod-deltas. They are recommended production anchors that would further constrain the in-window residual described in Section 5, but the reference does not ship them.
+- **Physical WORM retirement at COLD expiry** — the physical destruction or retirement of records once the COLD tier expires — is a production responsibility.
+- **External WORM/object-lock anchoring and RFC 3161 trusted timestamps** — anchoring the chain to an external immutable store or a trusted timestamp authority — are production responsibilities. They are recommended production anchors that would further constrain the in-window residual described in Section 5, but the reference does not ship them.
 
 The DPIA should record these as planned production controls with a defined owner, not as existing safeguards.
 
@@ -192,7 +192,7 @@ The DPIA should record these as planned production controls with a defined owner
 
 The cryptographic and regulatory anchors this design actually uses are enumerated in the [standards mapping](../reference/standards-mapping.md). In summary, the reference uses Ed25519 signatures (RFC 8032), a Merkle Signed Tree Head pattern modeled on Certificate Transparency (RFC 6962), scrypt key derivation (RFC 7914), and AES-256-GCM. GDPR articles engaged include Art. 4(5) and Recital 26 (pseudonymization), Art. 5 (principles and accountability), Art. 17 (erasure), Art. 25 (data protection by design and by default), Art. 30 (records of processing), Art. 32 (security of processing), and Art. 35 (DPIA). Where the operator processes personal data of data subjects in Korea, PIPA destruction and record-keeping obligations apply.
 
-RFC 3161 trusted timestamps and S3 Object-Lock/WORM external anchoring are **prod-deltas** — present them as recommended production anchors, not as controls the reference provides.
+RFC 3161 trusted timestamps and S3 Object-Lock/WORM external anchoring are **production responsibilities** — present them as recommended production anchors, not as controls the reference provides.
 
 ---
 
@@ -200,14 +200,14 @@ RFC 3161 trusted timestamps and S3 Object-Lock/WORM external anchoring are **pro
 
 | # | Risk | Mitigation in the reference | Residual / operator action |
 | --- | --- | --- | --- |
-| R1 | Human users wrongly challenged (false positive) | Low-FP design; heuristic rules challenge rather than block; monitor mode to measure before enforcing | Document FP residual and challenge accessibility (challenge WCAG UI is prod-delta) |
+| R1 | Human users wrongly challenged (false positive) | Low-false positive design; heuristic rules challenge rather than block; monitor mode to measure before enforcing | Document false positive residual and challenge accessibility (challenge WCAG UI is production responsibility) |
 | R2 | Audit log is personal data, not anonymous | Pseudonymization at rest (Art. 4(5)) | Treat log as personal data across its lifecycle |
 | R3 | Low-entropy identifier (e.g. IPv4) re-derivable if subject key/keystore leaks | Sealed keystore (scrypt N=2^15, AES-256-GCM); crypto-shred destroys the key | Protect `HMN_UNSEAL`; back up out-of-band; loss ≈ mass crypto-shred |
 | R4 | Unauthorized re-identification | Keystore custody only (no product dual-control or re-id API) | Split knowledge of `HMN_UNSEAL`; HSM/KMS in production; no offline-resolve audit trail in reference |
-| R5 | In-window history rewrite before next checkpoint | Witness co-sign stops silent rewrites; checkpoint every 32 records; public verification | Accept documented in-window residual; consider external anchoring (prod-delta) |
-| R6 | Privileged admin misuse | RBAC, separation of duties, dual-control, deny-by-default, server-derived actor, meta-audit | Deploy production admin auth (mTLS/SSO is prod-delta) |
-| R7 | Over-retention | **None in the reference** (labels only; WAL unbounded or RAM) | Operator retention schedule / archival / delete policy (prod-delta) |
-| R8 | Erasure breaking integrity / WORM conflict | Crypto-shred (key destruction), records retained, chain intact | Confirm subject and hold window; erasure is DPO dual-control |
+| R5 | In-window history rewrite before next checkpoint | Witness co-sign stops silent rewrites; checkpoint every 32 records; public verification | Accept documented in-window residual; consider external anchoring (production responsibility) |
+| R6 | Privileged admin misuse | role-based access control, separation of duties, dual-control, deny-by-default, server-derived actor, meta-audit | Deploy production admin auth (mutual Transport Layer Security/SSO is production responsibility) |
+| R7 | Over-retention | **None in the reference** (labels only; write-ahead log unbounded or RAM) | Operator retention schedule / archival / delete policy (production responsibility) |
+| R8 | Erasure breaking integrity / WORM conflict | Crypto-shred (key destruction), records retained, chain intact | Confirm subject and hold window; erasure is data protection officer dual-control |
 
 ---
 
@@ -216,5 +216,5 @@ RFC 3161 trusted timestamps and S3 Object-Lock/WORM external anchoring are **pro
 - [Data-processing inventory](../reference/data-processing-inventory.md) — field-level record of what is processed and stored.
 - [Standards mapping](../reference/standards-mapping.md) — cryptographic and regulatory anchors used versus aspirational.
 - [Erasure (crypto-shred) runbook](../runbooks/erasure-crypto-shred.md) — operational erasure procedure.
-- [RBAC and separation of duties](../reference/rbac-separation-of-duties.md) — roles, capabilities, and dual-control model.
-- [Production vs reference](../reference/production-vs-reference.md) — the full prod-delta boundary.
+- [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md) — roles, capabilities, and dual-control model.
+- [Production vs reference](../reference/production-vs-reference.md) — the full production responsibility boundary.

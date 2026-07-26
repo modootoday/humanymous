@@ -7,9 +7,9 @@ is viewable from the host; the bots (the automation catalog) run on demand and a
 
 Running everything in containers — rather than all on one loopback host, as the
 project originally did — is what finally exercises the **network layer** of
-detection: a real container IP is flagged `l5.ip.datacenter_asn`, and one
-fingerprint appearing across three real subnets raises
-`l5.correlation.proxy_rotation`. Neither can fire on 127.0.0.1.
+detection: the engine can recognize a container-network address and can notice
+one browser fingerprint appearing across three real subnets. Neither condition
+can be exercised faithfully when every participant uses `127.0.0.1`.
 
 ## Layout (golang-standards)
 
@@ -57,7 +57,7 @@ enforced by the network, not by convention.
 # from repo root — Make targets wrap compose (where `make` is available):
 make up             # build + start the detection stack (core :8443/demo, gate :8444, admin :8445)
 make attack         # run the bots (automation catalog) vs the engine (47 profiles)
-make e2e-assert     # assert last attack artifact (all bots blocked, no FP)
+make e2e-assert     # assert the last attack artifact (expected blocks, no baseline denial)
 make swarm          # multi-subnet correlation swarm (proxy_rotation across 3 subnets)
 make gate-e2e       # Gate proxy-layer conformance (34 checks)
 make e2e            # full Docker e2e suite (attack + assert + gate-e2e + swarm + overlays)
@@ -121,7 +121,7 @@ build — two images are published to GitHub Container Registry (Apache-2.0, mul
 `ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}` with **no `build:` and no
 dev tokens**, and runs Gate hardened (distroless, non-root, read-only rootfs, dropped
 capabilities) with ACME TLS on `:443`, a sealed keystore, and a durable, replay-verified
-audit WAL. Adopt it in three steps:
+durable write-ahead audit log. Adopt it in three steps:
 
 ```bash
 cp .env.example .env            # HMN_UPSTREAM, HMN_DOMAIN, HMN_UNSEAL, HMN_ADMIN_TOKENS
@@ -130,7 +130,8 @@ docker compose -f compose.release.yaml up -d
 ```
 
 Gate joins your existing origin network and proxies to your app. The admin listener stays
-host-loopback (`127.0.0.1:8445`) — keep it there or front it with mTLS/SSO. Liveness and
+host-loopback (`127.0.0.1:8445`) — keep it there or front it with mutually
+authenticated TLS or single sign-on. Liveness and
 readiness are HTTP probes on the edge (`GET /__hmn/healthz`, `/__hmn/readyz`); the
 distroless image has no shell, so there is **no Docker `HEALTHCHECK`** — point your
 orchestrator's `httpGet` probes at those paths. For a quick local demo of the published

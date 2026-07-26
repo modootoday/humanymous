@@ -1,320 +1,275 @@
-# humanymous Documentation Style Guide
+# Documentation style guide
 
 Source: https://humanymous.net/style-guide.html
 Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
 
 ---
 
-# humanymous Documentation Style Guide
+# Documentation style guide
 
-<!-- Quadrant: Reference. -->
-<!-- Audience: anyone who writes or reviews humanymous Gate user docs, UI strings, error microcopy, or release notes. -->
+**Diátaxis quadrant:** Reference — apply these rules while writing or reviewing.
+**Audience:** documentation authors, interface writers, reviewers, and maintainers.
 
-**Diátaxis quadrant:** Reference — look things up, do not read start to finish.
-**Audience:** doc authors and reviewers of humanymous Gate documentation, UI strings, error microcopy, and release notes.
+This guide governs public documentation, interface text, command help, ordinary logs, examples, release notes, and generated language-model mirrors. The [glossary](reference/glossary.md) is the single source of truth for reader-facing terminology.
 
-This guide defines how humanymous Gate documentation reads and what it must never claim. Every rule here is enforceable at review time. If a rule and a deadline conflict, the rule wins: an over-claim that ships is a defect, not a rough edge.
+humanymous Gate is a reference implementation, not a production-hardened service. Public text says so anywhere a reader could otherwise infer a production guarantee.
 
-humanymous Gate is a reference implementation, not a production-hardened product. Documentation says so wherever a reader might otherwise assume production guarantees.
+## Voice
 
----
+The product voice is calm, precise, candid, respectful, verifiable, and defensive-only.
 
-## 1. The six voice attributes
+### Calm
 
-The product voice is: **Calm, Precise, Candid, Respectful, Verifiable, Defensive-only.** Each attribute is a permission and a prohibition. The prohibition is the part reviewers check.
+State the mechanism without drama.
 
-### 1.1 Calm
+- Do not use urgency theatre or victory language.
+- Avoid exclamation marks and verbs such as “crushes”, “destroys”, or “slams”.
+- Describe a blocked request as an operational outcome, not a triumph.
 
-State the mechanism at room temperature. The reader is competent and busy.
+### Precise
 
-- **Forbids:** exclamation points; urgency theatre; verbs like "instantly", "slams", "crushes", "destroys".
-- **Forbids:** manufactured stakes ("before it's too late", "don't get caught out").
-- Let the facts carry weight. A blocked request is a log line, not a victory.
+Name the mechanism in words a reader can understand.
 
-### 1.2 Precise
+- Name the observed evidence, resulting verdict, route policy, and edge action.
+- Do not substitute an internal number for an explanation.
+- Do not anthropomorphize the software with “thinks”, “knows”, or “figures out”.
 
-Name the exact mechanism: this verdict, this hard rule ID, this layer, this flag, this endpoint.
+### Candid
 
-- **Forbids:** anthropomorphism — "the system decides", "it thinks", "the AI figures out".
-- **Forbids:** vague scope — "handles bots", "deals with automation". Say which layer, which hard rule, which verdict.
-- Prefer "hard rule HR-1 promotes the verdict to DENY" over "it catches Selenium".
+State the limit beside the capability.
 
-### 1.3 Candid
+- Pair detection claims with false-positive and challenge-friction risks.
+- State the coherent-automation detection boundary: internally consistent real-browser or human-assisted automation cannot be reliably separated from legitimate traffic by client and network signals alone.
+- Distinguish Core measurements from Gate measurements.
+- Label operator-supplied production responsibilities.
 
-State what a capability does **not** do beside what it does.
+### Respectful
 
-- **Forbids:** omitting the false-positive risk when one exists.
-- **Forbids:** hiding the T4 ceiling (anti-detect tooling plus real-human click-farms is an explicit design boundary, not solved — mitigated only by rate and reputation).
-- **Forbids:** implying production guarantees for a reference implementation. Label prod-only behaviour as prod-delta.
+Treat challenged or blocked traffic as belonging to real people until evidence and review establish otherwise.
 
-### 1.4 Respectful
+- Use “automated”, “not verified”, or a neutral description of the request.
+- Do not call a visitor an attacker, hacker, robot, or bad actor.
+- Threat-model documents may name an abstract capability class, but should not assign that label to ordinary traffic.
 
-Blocked traffic belongs to real people until proven otherwise.
+### Verifiable
 
-- **Forbids:** calling your own traffic "attacker", "hacker", "evil", "bad guy".
-- Use "automated" or "not verified as human" for blocked or challenged traffic.
-- Naming an **abstract** adversary or attacker tier (T0–T4) is allowed in threat-model and self-validation docs. See section 5.2.
+Give the reader a way to check the statement.
 
-### 1.5 Verifiable
+- Prefer a command, endpoint, expected log line, or test over a bare assertion.
+- Label performance, detection, and user-impact numbers as reference-measured and name the setup.
+- Do not invent a number where the reference has not measured one.
 
-Give the reader something to run.
+### Defensive-only
 
-- **Forbids:** unlabeled performance or accuracy numbers. Latency, false-positive rate, and block rate are not reader-reproducible — label them "reference-measured" and never invent a figure.
-- Prefer an endpoint to curl, a startup log line to expect, or a test to run over a bare assertion.
+Every validation or probing instruction targets a deployment the reader owns or is authorized to test.
 
-### 1.6 Defensive-only
+- Do not frame techniques as testing third-party systems.
+- Do not provide a free-form target path in a self-validation tool.
 
-Every red-team, validation, or probing instruction targets **your own** deployment.
+## Public terminology boundary
 
-- **Forbids:** framing any technique as probing a third party.
-- Self-validation language ("attack your own edge with…") is fine; third-party targeting is never fine.
+Reader-facing text uses full concepts from the glossary. The following remain internal:
 
----
+- internal specification and plan numbers;
+- numbered implementation phases and workstream labels;
+- numbered detection-stage codes;
+- numbered threat-tier codes;
+- numbered enforcement-rule identifiers;
+- raw dotted signal identifiers;
+- private mutation-class letters;
+- internal source type names used only by the implementation.
 
-## 2. Tone-by-context matrix
+These identifiers may remain in:
 
-Voice is constant; register shifts by document type. Match the row you are writing.
+- internal specifications and plans;
+- developer comments and tests;
+- exact compatibility fields in an application programming interface, raw event, or export;
+- commands where the reader must type the literal value.
 
-| Context | Register | Person / mood | Notable rule |
-|---|---|---|---|
-| Quickstart (tutorial) | Encouraging, concrete, linear | Second person, imperative | One happy path. No branching. State the expected output at each step. |
-| How-to (task) | Direct, goal-first | Second person, imperative | Assume competence. Link concepts, do not re-teach them. |
-| Reference | Flat, exhaustive, neutral | Third person / declarative | No persuasion, no narrative. Tables over prose. This guide is reference-flat. |
-| Runbook | Terse, sequenced, unambiguous | Second person, imperative | Number every step. One action per step. Name the exact endpoint, role, and expected result. Flag irreversible steps. |
-| Compliance / DPO | Formal, precise, cited | Third person, careful | Aim Grade 12+ where precision demands it. Cite the mechanism. No marketing verbs. Crypto-shred and retention claims are exact or absent. |
-| Explanation (concepts) | Measured, reasoned | Second/third person | Explain trade-offs, including what the design does not solve. Room for "why". |
-| Error microcopy (operator-facing) | Brief, actionable | Second person | Say what happened and the next action. May reference an endpoint or role. |
-| Blocked-user empathy (end-user-facing) | Plain, warm, non-technical | Second person | No internal identifiers. Plain language plus an incident handle. Assume the reader is a human who did nothing wrong. See section 6. |
+When an exact machine identifier is necessary:
 
-Prose target is Grade 9–11, except compliance and erasure docs, which are formal and precise and may run higher.
+1. Write the plain-language meaning first.
+2. Put the exact literal in code formatting.
+3. Keep it out of headings, navigation, buttons, default badges, tooltips, help prose, and ordinary logs.
+4. In an interface, place it under technical details or raw export rather than using it as the primary label.
 
----
+Do not teach internal identifiers as product vocabulary. The glossary defines concepts, not code coordinates.
 
-## 3. Terminology and capitalization
+## Acronyms and protocol names
 
-Use the canonical form in the left column. The right column is a rejection list, not a synonym list.
+Spell out a term on first use on each page. A standardized acronym may follow in parentheses only when a reader needs to recognize the external standard or exact protocol name.
 
-| Preferred (canonical) | Avoid |
+Examples:
+
+- role-based access control;
+- data protection impact assessment;
+- security information and event management system;
+- write-ahead log;
+- hash-based message authentication code;
+- mutual Transport Layer Security;
+- Content Security Policy;
+- Server-Sent Events;
+- Chrome DevTools Protocol;
+- Classless Inter-Domain Routing.
+
+Product-private abbreviations are not reused after expansion. Write “request-integrity token” and “proof-of-work challenge” in full.
+
+Flags, environment variables, header names, cookie names, metric names, and application programming interface fields remain exact and use code formatting.
+
+## Canonical product terms
+
+Use the [glossary](reference/glossary.md) form.
+
+| Use | Avoid |
 |---|---|
-| humanymous (lowercase always, even at sentence start) | Humanymous, HumanyMous, HUMANYMOUS |
-| Gate (capitalized; the reverse-proxy enforcement layer) | gate, the proxy, the gateway |
-| humanymous Gate (full name, first mention per page) | Gate alone on first mention |
-| Ledger | audit console, the dashboard, admin panel |
-| verdict; values ALLOW / CHALLENGE / DENY (uppercase) | allow/deny lowercase in a verdict value; "decision" as the value |
-| risk score (0–100, one decimal) | trust score, bot score, confidence % |
-| hard rule; HR-14 (hyphen, no space) | hardrule, HR 14, rule #14 |
-| L1–L7 (layers) | layer 1-7 written out inconsistently; "level" |
-| monitor / shadow / enforce (modes) | dry-run, test mode, live mode |
-| kill switch (fleet-wide) | killswitch (one word), panic button |
-| cryptographic erasure (crypto-shred) — expand on first use | delete, wipe, purge (as the formal term) |
-| proof-of-work / PoW | captcha (PoW is not a CAPTCHA) |
-| allowlist / denylist | whitelist / blacklist |
+| humanymous | capitalization variants |
+| humanymous Gate on first mention; Gate thereafter | “the gateway” as the product name |
+| Core detection engine | implying Core and Gate have identical coverage |
+| Ledger | dashboard, admin panel |
+| Detection Observatory | playground as the public product name |
+| origin application | backend and upstream used interchangeably |
+| verdict: ALLOW, CHALLENGE, or DENY | one ambiguous “blocked” state |
+| risk score | trust score, bot percentage |
+| enforcement rule | a bare internal rule number |
+| seven-stage detection pipeline | numbered stage shorthand |
+| coherent-automation detection boundary | a numbered threat ceiling |
+| runtime settings | implementation type names |
+| protection-increasing or protection-reducing change | private mutation-class letters |
+| network evidence policy | internal all-caps policy labels |
+| effective configuration version | a raw field name as the heading |
+| built-in defaults remain active | internal freeze shorthand |
+| cryptographic erasure | delete or wipe when describing the formal control |
 | pseudonymous | anonymous |
 | tamper-evident | tamper-proof |
-| origin (primary term) / upstream (the `-upstream` flag alias) | backend, target server used interchangeably |
-| verdict trust token (single form) | trust cookie, session token, auth token |
-| incident handle (single form) | case ID, ticket number, reference code |
-| fingerprint | signature, hash (when you mean the device/session fingerprint) |
-| dual-control (name the second role) | two-man rule, four-eyes without naming the role |
-| Auditor / Operator / Approver / DPO (RBAC roles, capitalized) | admin, superuser, reviewer |
-| reference implementation vs production-hardened / prod-delta | "the product", "GA" for reference-only behaviour |
-| signal IDs lowercase `l{n}.{group}.{item}`; layer tokens uppercase L1–L7; cross-checks in the `x.` namespace (`x.ua_vs_ja4`) | uppercase `L{n}.…` signal IDs; an `l6.x.…` prefix for cross-checks |
-| engine hard rules HR-1..HR-21 (score pipeline) vs Gate hard rules HR-22..HR-30 (proxy edge) | one flat HR list with no plane marker |
+| dual-control, naming the second role | two-man rule, four-eyes |
+| reference implementation and production responsibility | unexplained maturity shorthand |
 
-**First-mention rule:** the first time a page names the product, write "humanymous Gate", then "Gate" thereafter. "humanymous" stays lowercase even when it opens a sentence — rewrite the sentence if a leading lowercase word reads badly.
+## Context-specific register
 
-**Never leak internal signal names** — HR-IDs, JA3/JA4, entropy codes, layer references, dotted signal IDs like `l1.cdp.proxy_leak` — into any end-user-facing string. Those live in operator docs and the Ledger only.
+| Context | Register | Rule |
+|---|---|---|
+| Tutorial | Encouraging, concrete, linear | One working path with expected output. |
+| How-to | Direct, goal-first | Assume competence; link concepts instead of reteaching them. |
+| Reference | Flat, exhaustive, neutral | Prefer tables and exact values. |
+| Runbook | Terse, numbered, unambiguous | One action per step; state blast radius and rollback. |
+| Explanation | Measured and reasoned | Explain trade-offs and limits. |
+| Privacy and compliance | Formal, precise, cited | Describe controls, not legal conclusions. |
+| Operator interface | Brief and actionable | Plain label first; technical details second. |
+| Blocked-user help | Warm, non-technical | No detection details; give a usable next action. |
 
-**Never put internal spec identifiers** or Korean-spec references on any reader-facing page.
+Aim for Grade 9–11 prose. Privacy and legal material may be more formal where precision requires it.
 
----
+## End-user and operator boundary
 
-## 4. Banned words
+### End-user text
 
-### 4.1 Banned absolutes (over-claim)
+A challenged or blocked visitor may see:
 
-Never ship: **unhackable**, **blocks all bots**, **100%**, **zero false positives**, **bulletproof**, **tamper-proof**, **military-grade**, **AI-powered** (as hype), **makes you GDPR compliant**.
+- a plain statement of what happened;
+- whether retrying later may help;
+- an opaque incident handle when the deployment actually provides one;
+- the site operator's support path;
+- an accessible alternative when a challenge is present.
 
-Replace with bounded verbs: **reduces**, **raises the cost of**, **flags**, **challenges**, **blocks**, **supports / helps you meet**.
+The visitor must not see:
 
-### 4.2 Banned fear-selling words (dread)
+- internal rule or signal identifiers;
+- a risk score;
+- browser or network fingerprint details;
+- implementation or specification references;
+- language asserting that the visitor is automated.
 
-Never ship: **rampant**, **devastating**, **under constant attack**, **epidemic**, or any unquantified scale claim ("everyone is being targeted", "millions of bots").
+### Operator text
 
----
+Operator interfaces use full rule names, full signal descriptions, clear mode names, and the effective configuration version. Raw identifiers belong in technical details and exports.
 
-## 5. Honest-security and defensive-framing pre-merge checklist
+Do not promise controls the reference does not provide. Examples:
 
-Run this before approving any page. A single failed item blocks the merge.
+- the default reference block response does not provide a usable opaque incident handle in every case;
+- the current reference Gate does not route every challenge to a solvable Pass;
+- the reference witness is local, not independently operated;
+- the reference retention tiers are not physically enforced;
+- kill-switch and approval state are node-local until shared-state work lands.
 
-- [ ] **Bounded claims only.** No banned absolute (see section 4.1). Every capability claim uses a bounded verb.
-- [ ] **Candor present.** Where a capability has a false-positive risk or a ceiling, the page states it in the same section, not a distant footnote.
-- [ ] **T4 ceiling honored.** No page implies anti-detect tooling plus human click-farms is solved.
-- [ ] **Reference vs production honesty.** Prod-only behaviour is labeled prod-delta; reference limitations are not hidden.
-- [ ] **Numbers labeled.** Every latency, FPR, or block-rate figure is "reference-measured" or removed.
-- [ ] **Verifiability.** A security claim ships with something to run: an endpoint, a log line, or a test.
-- [ ] **No internal identifiers on reader-facing pages** (HR-IDs / signal IDs / internal spec numbers on end-user strings; internal spec numbers on any reader page).
-- [ ] **Fear-selling test passes** (see section 5.1).
-- [ ] **Adversary naming resolved** (see section 5.2).
+## Honest-security gate
 
-### 5.1 The mechanical fear-selling test
+A public change is not ready when any item below fails.
 
-Apply these three checks literally. Each is pass/fail.
+- [ ] Capability and limit appear together.
+- [ ] Core and Gate are not presented as having identical evidence or measured results.
+- [ ] No banned absolute claim appears.
+- [ ] No fear-selling or unquantified scale claim appears.
+- [ ] No internal coordinate label appears in reader prose or primary interface text.
+- [ ] Every acronym is expanded on first use.
+- [ ] Every operational claim has a verification path where practical.
+- [ ] Challenge friction and denial are reported separately.
+- [ ] The coherent-automation detection boundary remains explicit.
+- [ ] Self-validation targets only an owned or authorized deployment.
+- [ ] Reference behavior and production responsibility are distinct.
 
-1. **Dread-word scan.** Search the diff for the banned fear-selling list in section 4.2 plus any unquantified scale word. Any hit fails until removed or quantified with a reference-measured, cited figure.
-2. **Neutral-verb check.** Every threat sentence uses a neutral verb (observes, sends, requests, retries) and a bounded outcome verb (flags, challenges, blocks). Verbs that dramatize (slams, floods as hyperbole, devastates) fail.
-3. **Bounded-or-cited frame.** Any statement about how common or severe a threat is must be either (a) bounded and non-alarming, or (b) attached to a cited, reference-measured figure. An uncited scale claim fails.
+Never ship: “unhackable”, “blocks all bots”, “one hundred percent”, “zero false positives”, “bulletproof”, “tamper-proof”, “military-grade”, or “makes you compliant”.
 
-A threat sentence that passes reads: "Automated clients frequently retry blocked requests; Gate meters repeat attempts per fingerprint and subnet." It names the mechanism, uses neutral verbs, and makes no uncited scale claim.
+Use bounded verbs: reduces, raises the cost of, observes, flags, challenges, refuses, supports.
 
-### 5.2 Adversary-naming resolution
+## Accessibility and inclusive language
 
-- **Allowed:** naming an abstract adversary or an attacker tier (T0–T4) in threat-model and self-validation documents. These describe capability classes, not your users.
-- **Never:** calling your own traffic "attacker", "hacker", or any pejorative. Blocked or challenged traffic is "automated" or "not verified as human".
-- **Never:** framing a red-team or probing technique as targeting a third party. Self-validation targets your own deployment only (Defensive-only, see section 1.6).
+Copy-level Web Content Accessibility Guidelines version 2.2, level AA is a merge requirement.
 
----
+- Use allowlist and denylist.
+- Use primary and replica.
+- Use person-first, non-accusatory language.
+- Do not say “click here”; use meaningful link text.
+- Do not rely on direction or color alone.
+- Give every explanatory image meaningful alternative text.
+- Use sentence-case headings, one top-level heading, and no skipped heading levels.
+- Never gate a challenge on motor richness, speed, pressure, tremor, or pointer precision.
+- State a real time limit honestly and preserve work when a verification token must be renewed.
 
-## 6. End-user vs operator string boundary
+## Admonitions
 
-Two audiences, two vocabularies. Keep them apart.
+Use only:
 
-**Operator-facing** (Ledger, operator docs, runbooks, operator error microcopy) may use: HR-IDs, verdict values, layer references, signal IDs, risk scores, role names, flags, endpoints.
+- `> **Note:**` for useful context;
+- `> **Tip:**` for an optional shortcut;
+- `> **Important:**` for a condition that changes the result;
+- `> **Warning:**` for destructive, irreversible, or broad-impact consequences.
 
-**End-user-facing** (the blocked-user page, the challenge interstitial copy, appeal help) may use: plain language, a short explanation, and an **incident handle** only.
+Cryptographic erasure always carries an irreversibility warning. A kill switch always states its actual node or fleet scope.
 
-The blocked-user page never exposes:
+## Formatting
 
-- why the verdict fired (no HR-ID, no signal name, no layer);
-- the risk score or any internal number;
-- JA3/JA4, entropy codes, or dotted signal IDs;
-- internal spec identifiers.
+- Put the Diátaxis quadrant and audience directly below the title.
+- Use one quadrant per page.
+- Use sentence-case headings.
+- Put commands and exact identifiers in code formatting.
+- Use one command per fenced block and omit a leading shell prompt.
+- Write placeholders as `<descriptive-name>` and explain who supplies the value.
+- Keep a fact in one canonical page and link to it elsewhere.
+- Regenerate language-model mirrors after source documentation changes; do not edit generated mirrors by hand.
 
-An end user who wants to appeal gets: a plain statement that access was blocked, the incident handle to quote, and where to take it. Nothing that helps an adversary map the detection logic.
+## Review examples
 
----
+**Internal coordinate replaced with a mechanism**
 
-## 7. Accessibility and inclusive language
+- Before: “A numbered enforcement rule matched.”
+- After: “The headless browser also exposed a second automation indicator, so the enforcement rule raised the verdict to DENY.”
 
-Copy-level WCAG 2.2 AA is a merge requirement.
+**Detection stage replaced with a full name**
 
-- **Inclusive lists:** allowlist / denylist, never whitelist / blacklist. dual-control (name the second role), never "two-man rule".
-- **No "click here" / "read more"** as link text. Link the meaningful phrase: "see the [Quickstart](tutorials/quickstart-monitor-mode.md)".
-- **No direction-only instructions.** Never "the button on the right" or "below". Name the control or the heading: "select **Lift ban** in the Bans view".
-- **No color-only instructions.** Never "the red rows are denials". Pair color with a label or value: "rows with verdict DENY (shown red)".
-- **Meaningful link text and headings** so a screen-reader user scanning by link or heading gets the destination from the text alone.
-- **Alt text** on every explanatory image; describe what the reader needs, not "screenshot".
-- **Sentence-case headings**, one `H1` per page, no skipped heading levels.
-- **Plain language** and second-person active voice; expand an acronym on first use.
+- Before: “The cross-check stage disagreed with the network stage.”
+- After: “The browser's user-agent claim disagreed with the protocol implementation observed by the server.”
 
----
+**Threat tier replaced with its boundary**
 
-## 8. Formatting and the admonition ladder
+- Before: “The highest tier is unsolved.”
+- After: “Internally consistent real-browser or human-assisted automation cannot be reliably separated from legitimate traffic by client and network signals alone.”
 
-### 8.1 Page structure
+**Blocked-user text**
 
-- Announce the Diátaxis quadrant and audience in the first two lines of every page.
-- Sentence-case headings. Second person, active voice.
-- One command per fenced code block, **no leading `$`**, `<angle-bracket>` placeholders, and expected output shown where it aids verification.
+- Before: “Automation detected.”
+- After: “We could not complete this request. If you think this is a mistake, contact the site operator and quote the reference shown on this page.”
 
-Example:
+**Reference honesty**
 
-```
-bin/gate.exe -addr :8444 -admin-addr :8445 -upstream <origin-url>
-```
-
-Expected startup line:
-
-```
-humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false, tls=self-signed)
-```
-
-### 8.2 The admonition ladder
-
-Use exactly these four, lightest to heaviest. Do not invent others.
-
-- `> **Note:**` — a fact worth surfacing that changes nothing you do.
-- `> **Tip:**` — an optional shortcut or better practice.
-- `> **Important:**` — a step or condition that, if missed, causes the wrong result.
-- `> **Warning:**` — a consequence that is destructive, irreversible, or fleet-wide.
-
-Two topics **always** get a Warning:
-
-> **Warning:** Cryptographic erasure (crypto-shred) is irreversible. It destroys the per-subject linkage key. The hash chain and Merkle anchors stay intact and verifiable, but the subject's records can no longer be re-identified.
-
-> **Warning:** The kill switch is fleet-wide. It demotes hard-rule enforcement to monitor across every node — detection stops and traffic flows. Manual bans still enforce under the kill switch.
-
-### 8.3 Cross-linking
-
-Link the P0 doc set by relative repo path from the current file's location. From `docs/style-guide.md`, the Quickstart is `tutorials/quickstart-monitor-mode.md`; the Hard Rules reference is `reference/hard-rules-verdicts.md`.
-
----
-
-## 9. Before / after rewrites
-
-These span every register. The "after" is the shippable form.
-
-**1. Hype claim**
-
-- Before: humanymous Gate blocks all bots with AI-powered, military-grade detection.
-- After: humanymous Gate scores each request across layers L1–L7 and blocks or challenges traffic that is not verified as human. It reduces automated access; it does not claim to stop every bot.
-
-**2. Compliance over-claim**
-
-- Before: Deploying Gate makes you GDPR compliant.
-- After: Gate stores raw identifiers only as per-subject pseudonyms and supports right-to-erasure via cryptographic erasure. These capabilities help you meet GDPR obligations; compliance depends on your overall processing.
-
-**3. Runbook step**
-
-- Before: Go to the admin thing and kill the bad session, then check it worked.
-- After:
-  1. In the Ledger **Session Drill-down** view, locate the session by its incident handle.
-  2. Request a ban: `POST /__hmn/admin/bans` as the Operator.
-  3. Confirm the ban appears in the **Bans** view with `Source=manual`.
-
-**4. Blocked-user string**
-
-- Before: Access denied: HR-1 fired (l1.navigator.webdriver), risk score 82, verdict DENY.
-- After: We could not verify that this request came from a person, so we could not let it through. If you think this is a mistake, contact the site and quote this reference: `<incident-handle>`.
-
-**5. Absolute claim**
-
-- Before: Gate guarantees zero false positives and is bulletproof against headless browsers.
-- After: Gate weights low-confidence signals weakly to keep false positives low, and hard rule HR-7 promotes headless browsers with a second automation tell to DENY. Some real users can still be challenged; the design accepts a bounded false-positive rate.
-
-**6. Fear-selling threat line**
-
-- Before: Bots are rampant and your site is under constant attack from a devastating epidemic of automation.
-- After: Automated clients regularly probe public endpoints. Gate scores each request and meters repeat attempts per fingerprint and subnet.
-
-**7. tamper-proof → tamper-evident**
-
-- Before: The audit log is tamper-proof and cannot be altered.
-- After: The audit log is tamper-evident: an append-only hash chain with per-record HMAC and periodic signed checkpoints. Records written after the last signed checkpoint remain re-writable until the next checkpoint — a disclosed in-window residual.
-
-**8. anonymous → pseudonymous**
-
-- Before: All identifiers are stored anonymously, so nothing can be traced back.
-- After: Identifiers are stored pseudonymously — raw values are replaced by per-subject-key-derived pseudonyms, never stored raw. This is pseudonymous, not anonymous (GDPR Recital 26). Gate exposes no re-identification API; anyone holding the keystore and `HMN_UNSEAL` can resolve pseudonyms offline alone (custodial control, not dual-control).
-
-**9. Anthropomorphism → named mechanism** (bonus)
-
-- Before: The system thinks you might be a bot and decides to block you.
-- After: The request scored in the DENY band (risk 70–100), or a hard rule promoted the verdict to DENY. The edge blocks it and the origin is never contacted.
-
----
-
-## 10. Reviewer quick reference
-
-Approve only when all hold:
-
-- Quadrant and audience declared in the first two lines.
-- No banned absolute (section 4.1) and no fear-selling word (section 4.2).
-- Fear-selling test passes (section 5.1); adversary naming resolved (section 5.2).
-- Canonical terminology and capitalization (section 3); "humanymous" lowercase; full name on first mention.
-- No internal identifiers on reader-facing pages; no internal spec numbers anywhere reader-facing.
-- Numbers labeled reference-measured or removed.
-- Accessibility rules met (section 7): allowlist/denylist, no click-here, no direction- or color-only cues, meaningful link text.
-- End-user vs operator boundary held (section 6).
-- Correct admonition tier; crypto-shred and kill switch carry a Warning (see section 8.2).
-- Reserved presets `low` and `api` are **not** documented as working; they fall back to `balanced`.
+- Before: “Gate scores all browser and network evidence.”
+- After: “Core measures the full reference pipeline. The current Gate enforces traffic with a narrower set of browser, header, and source observations.”

@@ -1,184 +1,162 @@
-# Concepts & Glossary: How Gate sees a request
+# How humanymous evaluates a request
 
 Source: https://humanymous.net/concepts/how-gate-sees-a-request.html
 Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
 
 ---
 
-# Concepts & Glossary: How Gate sees a request
+# How humanymous evaluates a request
 
-> **Quadrant:** Explanation + glossary.
-> **Audience:** Everyone — integrators, operators, compliance/DPO, and evaluators. This page is the canonical shared vocabulary; other docs link their terms here.
+**Diátaxis quadrant:** Explanation — understand how the pieces fit together.
+**Audience:** integrators, operators, evaluators, and developers.
 
-humanymous Gate is a reverse proxy that sits in front of your origin app. It terminates TLS, streams a detection bundle into the HTML it serves, scores each request across seven layers, and enforces a verdict at the edge before your origin is ever contacted. This page explains how a single request travels through Gate and defines every term the rest of the documentation uses.
+This page explains the request path in plain language. The [glossary](../reference/glossary.md) is the canonical vocabulary reference.
 
-This repository is a **reference implementation**, not a production-hardened build. Where a capability differs in production, this page says so (see prod-delta in the glossary).
+humanymous has two execution surfaces that share scoring code but do not collect identical evidence:
 
-Two design principles run through everything below:
+- The **Core detection engine** serves the full browser detector and can observe the client's connection negotiation directly.
+- **humanymous Gate** is the deployable reverse proxy. It applies route policy and edge protections, but its current browser collector and network capture are narrower than Core's.
 
-- **Cross-check first.** No single signal produces a verdict. Inter-layer disagreement — for example, a user agent that claims one browser while the TLS and HTTP/2 fingerprints resolve to another engine — carries more weight than any single "botness" score. Defense-in-depth means no single-signal verdict.
-- **Low false positive.** Privacy browsers, browser extensions, and older devices must not be scored as bots. Low-confidence signals get weak weighting, not penalties. Scoring is deterministic: the same input produces the same score.
+Core's measured results therefore do not describe Gate's coverage.
 
-## 1. The request lifecycle
+## From request to verdict
 
-A request moves through Gate in this order:
+A complete Core evaluation follows seven named stages:
 
-1. **Browser → edge.** The end-user browser connects to Gate on the public edge listener (default `:8444`, HTTPS). Gate terminates TLS here.
-2. **Bundle injected.** For any route whose policy injects (see section 5), Gate streams the detection bundle into the served HTML. The bundle loads via the control plane (prefix `/__hmn/`).
-3. **Beacon to `/__hmn/collect`.** The browser runs the bundle and beacons the collected signals back to `/__hmn/collect` on the **same TLS connection** Gate used to serve the page. Using the same connection lets the server capture the L5 network and protocol signals (TLS and HTTP/2 fingerprints) and bind them to the client-side evidence.
-4. **L1–L7 scoring.** Gate aggregates the layer contributions into a risk score, then applies hard rules (see sections 2 and 3).
-5. **Verdict → enforce or pass.** The edge acts on the verdict: pass the request through to the origin, serve an accessible proof-of-work interstitial, or block it (see section 4). Every enforcement decision is written to the tamper-evident audit log **before** it takes effect.
+1. **Static client inspection** observes browser properties associated with direct automation.
+2. **Client fingerprinting** derives characteristics from rendering, audio, screen, and hardware observations.
+3. **Client integrity checks** look for modified browser functions and runtime hooks.
+4. **Interaction analysis** observes pointer, keyboard, scroll, and event characteristics without requiring motor richness or speed.
+5. **Network and protocol inspection** observes connection negotiation, Hypertext Transfer Protocol version 2 behavior, and header characteristics.
+6. **Consistency checks** compare what the browser claims with what the server observed.
+7. **Risk aggregation and verdict selection** combine evidence, apply active thresholds, and evaluate enforcement rules.
 
-The origin (the app Gate fronts; also reachable via the `-upstream` flag) is contacted only when the verdict is ALLOW.
-
-The same lifecycle as a sequence, from the browser's first request to the enforced verdict:
+No numbered stage code is needed to understand or operate this flow.
 
 ```mermaid
 sequenceDiagram
-  participant B as Browser
-  participant G as "Gate edge"
-  participant C as "Control plane (/__hmn/)"
-  participant O as Origin
-  B->>G: HTTPS request on :8444 (Gate terminates TLS)
-  Note over G: reads L5 network signals — JA3/JA4, HTTP/2 fp, header order
-  G-->>B: HTML with detection bundle injected
-  B->>C: beacon to /__hmn/collect (L1–L4, same TLS connection)
-  C->>C: aggregate L1–L7 into risk score, then apply hard rules
-  G->>G: verdict gate
-  alt ALLOW → pass
-    G->>O: forward to origin
-    O-->>B: origin response
-  else CHALLENGE → challenge_pow
-    G-->>B: accessible proof-of-work interstitial (origin never contacted)
-  else DENY → block
-    G-->>B: blocked page (origin never contacted)
+  participant B as Browser or client
+  participant E as Core or Gate edge
+  participant S as Shared scoring engine
+  participant O as Origin application
+  B->>E: Application request
+  E->>E: Collect the evidence available on this surface
+  E->>S: Sanitized observations and active policy
+  S->>S: Combine evidence and check consistency
+  S->>S: Select ALLOW, CHALLENGE, or DENY
+  E->>E: Record the decision before enforcement
+  alt ALLOW
+    E->>O: Forward request
+  else CHALLENGE
+    E-->>B: Require additional verification
+  else DENY
+    E-->>B: Refuse request
   end
-  Note over G,O: each decision is written to the tamper-evident audit log before it takes effect
 ```
 
-## 2. The seven layers (L1–L7)
+## Evidence is not identity
 
-Gate scores each request across seven layers. Layers L1–L4 run in the browser (JavaScript and WebAssembly); L5–L6 run on the Go server; L7 is the aggregation and decision step.
+The engine evaluates observations, not a person's identity.
 
-| Layer | Role (one line) | Where it runs |
-|-------|-----------------|---------------|
-| **L1 Static client** | Reads static automation tells (webdriver flag, headless indicators). | JS/WASM |
-| **L2 Fingerprint** | Hashes canvas/WebGL/audio output, screen, and hardware traits. | JS/WASM |
-| **L3 Client integrity** | Detects patched natives, proxies, and hooks (toString-native checks). | WASM |
-| **L4 Behavioral** | Observes mouse, keystroke, and scroll patterns and the `isTrusted` flag. | JS collect → WASM/server |
-| **L5 Network / protocol** | Reads JA3/JA4, the HTTP/2 fingerprint, and header order from the connection. | Go server |
-| **L6 Consistency cross-check** | Checks that UA, UA client hints, JS evidence, and TLS agree with each other. | Go server |
-| **L7 Scoring / decision** | Aggregates the L1–L6 contributions into the 0–100 risk score, then applies hard rules. | Go server |
+- A **signal** is one observation, such as a WebDriver flag, a protocol mismatch, or missing interaction.
+- A **consistency check** compares two claims or observations.
+- A **fingerprint** is a derived client characteristic used for token binding, request metering, and correlation.
+- A **risk score** summarizes the weighted evidence. It is not ground truth.
+- An **enforcement rule** can raise a score-based verdict when a predicate has enough confidence.
 
-L7 is both the seventh layer and the aggregation step: it turns everything the first six layers observed into one risk score, then lets hard rules override that score where warranted.
+Low-confidence evidence receives limited influence. Evidence from the same family is deduplicated, and a single stage has a bounded maximum contribution so a cluster of correlated observations cannot dominate the whole score.
 
-## 3. Risk score and verdict mapping
+## Verdicts
 
-The **risk score** is a number from 0 to 100 (one decimal place). Higher means more evidence that the request is automated. The policy thresholds map the score to a verdict:
+The result is one of three verdicts.
 
-| Risk score | Verdict |
-|------------|---------|
-| 0–29 | ALLOW |
-| 30–69 | CHALLENGE |
-| 70–100 | DENY |
+| Verdict | Meaning | Edge behavior |
+|---|---|---|
+| ALLOW | The active policy permits the request. | Forward to the origin, unless an attested route requires an additional proof. |
+| CHALLENGE | The request requires another verification step. | Do not contact the origin until verification succeeds. |
+| DENY | The active policy refuses the request. | Stop before contacting the origin. |
 
-Hard rules (HR) can **override** the score-based verdict. A hard rule is a high-confidence pattern that promotes the verdict regardless of where the score landed — for example, a hard automation artifact that maps directly to DENY. Cross-check first means inter-layer disagreement can trigger a hard rule even when no single layer's score is high.
+The built-in defaults challenge at a risk score of 30 and deny at 70. Runtime settings can change those thresholds. An enforcement rule can also promote a verdict independently of the score.
 
-One score-based path can be upgraded: a CHALLENGE that came from the **score** (no hard rule fired) becomes ALLOW if the session solved the proof-of-work (the `l7.pow.solved` signal). Proof-of-work never overrides a hard rule — it proves CPU work, not humanity.
+An unknown state is possible before enough evidence arrives. Ordinary safe-method routes may fail open; strict and state-changing routes fail closed.
 
-## 4. The three verdicts (and none)
+## What Core observes
 
-The engine emits one of three verdicts; the edge maps each to an action. There is also a fourth edge state, `none`, for requests with no evidence yet.
+Core is the reference measurement surface. When it directly terminates the browser connection, it can combine:
 
-| Verdict | Edge action | What happens |
-|---------|-------------|--------------|
-| **ALLOW** | `pass` | The request is forwarded to the origin. |
-| **CHALLENGE** | `challenge_pow` | Gate serves an accessible proof-of-work interstitial from the control plane. The origin is never contacted until the challenge is satisfied. |
-| **DENY** | `block` | The request is blocked before any upstream connection is made. The origin is never contacted. |
-| **none (Unknown)** | fail-open or fail-closed | No evidence yet. The edge either passes or challenges depending on route and method (see below). |
+- the complete browser-side detector;
+- interaction evidence;
+- Transport Layer Security ClientHello fingerprints;
+- Hypertext Transfer Protocol version 2 behavior;
+- header ordering and presence;
+- cross-session observations;
+- consistency checks between browser claims and network behavior.
 
-**Fail-open vs fail-closed on Unknown.** When the verdict is Unknown, the edge fails **closed** (→ CHALLENGE) if the route is strict or the HTTP method is unsafe (POST/PUT/PATCH/DELETE). It fails **open** (→ pass) only for safe-method requests (GET/HEAD) on non-strict routes. The safe-GET fail-open on balanced routes is a documented, accepted residual; it is covered meanwhile by fingerprint and subnet rate metering.
+A content delivery network or proxy that terminates and creates a new encrypted connection hides the original client's network fingerprint. Core must receive the raw client connection for those observations to describe the browser.
 
-End users who are challenged or blocked see plain language only (a production deployment's self-hosted page may also surface a per-visit incident handle) — never internal signal names, hard-rule IDs, or layer references.
+## What Gate observes
 
-## 5. Policy presets and modes
+Gate is the enforcement surface. The current reference build combines a narrower browser beacon with request headers, source-address intelligence, rate state, route policy, and edge protections.
 
-Gate matches each request to a route policy by **longest-prefix wins**; any unmatched route defaults to `balanced`. Five presets are implemented:
+Gate currently does not extract the same ClientHello and protocol evidence as Core. A page that says “the engine detects” must identify whether it means Core or Gate.
 
-| Preset | Injects bundle | Enforces | Notes |
-|--------|----------------|----------|-------|
-| **off** | No | No | Bypass — no injection, no enforcement. |
-| **monitor** | Yes | No | Scores and logs, enforces nothing. |
-| **balanced** | Yes | Yes | Default for any unmatched route; fails open on unknown safe-GET. |
-| **strict** | Yes | Yes | Fails closed (unknown verdict → challenge) and re-scores synchronously before mutation. |
-| **attested** | Yes | Yes | `strict` plus an attestation floor: on operator-marked high-value routes a scoring-ALLOW is priced, not fast-pathed — it must present possession (an existing WebAuthn / Privacy Pass / Web Bot Auth trust-upgrade) or an `hmn_su` step-up proof from a Pass solve. CHALLENGE→Pass only, never DENY. Refused on catch-all / public prefixes. |
+This difference is deliberate documentation truth, not a second scorer: both surfaces use the same scoring implementation for the evidence they actually provide.
 
-> **Note:** The `low` and `api` presets are reserved and are **not** implemented in the reference build. Requests naming them fall back to `balanced`. Do not treat them as shipping.
+## Trust tokens and replay protection
 
-The default route table ships as: `/login` → strict, `/checkout` → strict, `/admin` → strict, `/health` → off. Everything else → balanced.
+A valid **verdict trust token** can let an ordinary route reuse a previous ALLOW without scoring again. It is short-lived and bound to client characteristics.
 
-**Modes** describe how much of the pipeline enforces:
+A **request-integrity token** binds a request to its session and body using keyed message authentication. It makes tampering or replay detectable.
 
-- **monitor** — score and log, enforce nothing.
-- **shadow** — a log-only observer runs a *candidate* signal alongside live enforcement without ever touching the verdict, the ban ledger, or the enforcement path. Unlike monitor, enforcement stays on; the shadow signal is collected purely to measure its false-positive profile on real traffic before it earns any weight. The reference ships two such observers, both off by default and strictly non-acting: the `-anomaly-shadow` per-fingerprint inter-arrival outlier detector and the cohort/population behavioral shadow. This is the opposite of monitor, which turns enforcement off entirely (score-and-log).
-- **enforce** — act on the verdict at the edge.
+Neither token is human identity. A forged, expired, or incorrectly bound token is rejected.
 
-The `-monitor` flag or the kill switch downgrades enforcement to monitor **fleet-wide** (a global monitor mode that turns every route into score-and-log).
+## Challenges and attested routes
 
-> **Warning:** The kill switch is a dual-control flip that demotes hard-rule enforcement to monitor across the entire fleet — detection stops and traffic flows. Manual bans still enforce under the kill switch. Because its scope is fleet-wide, treat it accordingly.
+A proof-of-work challenge demonstrates computational effort, not humanity. It can clear a score-based challenge but cannot override a rule-promoted verdict.
 
-## 6. The verdict trust token
+An **attested route** is stricter. An otherwise allowed request must present an accepted possession proof or complete a step-up path. This prices access to a high-value route without claiming to identify every coherent automation setup.
 
-A **verdict trust token** is a fingerprint-bound token that records a prior verdict. When a valid trust token is present, an ALLOW verdict can take a fast path with no re-scoring. The token is bound to the client fingerprint: a token replayed from a different fingerprint, or forged, is rejected (hard rule HR-28) rather than honored.
+The current reference Gate does not yet route every challenged visitor through a complete, user-solvable Pass flow. Deployments must not promise that experience until they wire and test it.
 
-## 7. Attacker tiers (T0–T4)
+## Enforcement and audit
 
-The documentation uses a five-tier scale to describe the automation Gate is designed to resist. Naming an abstract adversary tier here is a threat-model description, not a claim about any real user.
+Gate evaluates edge protections before forwarding a request:
 
-| Tier | Description |
-|------|-------------|
-| **T0** | Non-browser HTTP clients. |
-| **T1** | Naive Selenium / Puppeteer. |
-| **T2** | Stealth-patched automation with residual leaks. |
-| **T3** | Real-engine automation (nodriver, camoufox, patchright). Behavior and network become the deciding signals; confidence is lower. |
-| **T4** | Anti-detect tooling plus real-human click-farms. |
+- source bans and request-rate limits;
+- request-smuggling rejection;
+- trusted-header protection;
+- trust-token validation;
+- long-lived connection upgrade checks;
+- decision-sweep detection;
+- route-specific fail-open or fail-closed behavior.
 
-**The T4 boundary.** T4 is an explicit design boundary — it is **not** solved. Real humans clicking through anti-detect browsers cannot be separated from legitimate users by client or network signals alone. Gate does not detect T4 by client or network signals; it mitigates the tier through rate limiting and reputation, and this documentation does not claim otherwise. On routes an operator opts into the `attested` preset there is one further, opt-in mitigation: it still does not detect a coherent T4 spoof, it **prices** the ALLOW — a scoring-ALLOW that cannot present possession or an `hmn_su` step-up is challenged to a Pass rather than fast-pathed, so unlimited free high-value passes become a per-session human solve.
+Gate writes the action to its audit sink before the action takes effect. The audit trail is tamper-evident, not tamper-proof.
 
-## 8. Glossary
+## Runtime settings
 
-Every canonical term used across the documentation, with a one-line plain definition. Other docs link here.
+Operators can change selected runtime settings without restarting Gate:
 
-| Term | Definition |
-|------|------------|
-| **humanymous** | The brand and detection engine. Always lowercase, even at the start of a sentence. |
-| **Gate** | The reverse-proxy enforcement layer that fronts your origin. First mention per page is "humanymous Gate", then "Gate". |
-| **Ledger** | The admin single-page app served from the separate admin listener, for reading verdicts, integrity, bans, policy, and erasure. |
-| **verdict** | The engine decision for a request: ALLOW, CHALLENGE, or DENY (values written uppercase). |
-| **risk score** | A 0–100 number (one decimal) that L7 aggregates from the layer contributions; maps to a verdict via policy thresholds. |
-| **hard rule / HR-14** | A high-confidence pattern that can override the score-based verdict. Written with a hyphen and no space, e.g. HR-14. |
-| **L1–L7** | The seven detection layers, from static client signals (L1) through scoring and decision (L7). |
-| **monitor / shadow / enforce** | The three modes: score-and-log, observe-alongside, and act-on-verdict. |
-| **kill switch** | A dual-control flip that demotes hard-rule enforcement to monitor fleet-wide. |
-| **cryptographic erasure (crypto-shred)** | Right-to-erasure by destroying the per-subject linkage key; the audit chain and anchors stay intact and verifiable. |
-| **proof-of-work / PoW** | CPU work a challenged session performs; can upgrade a score-based CHALLENGE to ALLOW, but never overrides a hard rule. |
-| **allowlist / denylist** | Explicit lists of entities to permit or block. |
-| **pseudonymous** | Raw identifiers are stored only as per-subject-key-derived pseudonyms, never raw. Not "anonymous". |
-| **tamper-evident** | Tampering with the audit log is detectable; the log is not "tamper-proof". |
-| **origin / upstream** | The app Gate fronts and does not control. "origin" is the primary term; "upstream" is the `-upstream` flag alias. |
-| **verdict trust token** | A fingerprint-bound token that lets a valid ALLOW take a fast path with no re-scoring. |
-| **incident handle** | The opaque per-visit reference (`INC-…`) recorded for a challenged or blocked visit, for appeals — shown to the operator in the Ledger; a production self-hosted page may also surface it to the end user (the minimal reference interstitial does not). |
-| **fingerprint** | A derived identifier for a client, combining signals such as TLS/HTTP2 traits and device characteristics. |
-| **dual-control** | A two-person control: a distinct second role (Approver, or DPO for erasure) must commit a pending action. |
-| **Auditor / Operator / Approver / DPO** | The admin RBAC roles: read-only, operate, approve two-person actions, and data-protection officer. |
-| **reference implementation vs production-hardened / prod-delta** | This repo is a reference build; features or behaviors that differ in production are labeled prod-delta. |
+- enforcement-rule modes;
+- challenge and denial thresholds;
+- signal-weight multipliers;
+- network evidence policy;
+- route policy;
+- request-rate limits.
 
-## Where to go next
+The server determines whether a change strengthens protection, weakens an ordinary safeguard, affects an integrity-critical safeguard, or weakens a sensitive route. Protection-reducing changes require a distinct Approver and expire.
 
-- New to integrating? See [Start here: Integrator](../start-here/integrator.md).
-- Running Gate? See [Start here: Operator](../start-here/operator.md).
-- Compliance and data protection? See [Start here: Compliance / DPO](../start-here/compliance-dpo.md).
-- Evaluating the detection? See [Start here: Evaluator](../start-here/evaluator.md).
-- Full hard-rule and signal-ID reference: [Hard Rules, Verdicts & Signal-ID Reference](../reference/hard-rules-verdicts.md).
-- Flags, config, and per-route policy: [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md).
-- Try it hands-on: [Quickstart (monitor mode, 30 min)](../tutorials/quickstart-monitor-mode.md).
+When no settings overlay is active, the built-in and startup behavior remains unchanged. That empty-overlay state is the reference baseline used for default regression measurements.
+
+## The detection boundary
+
+Internally consistent real-browser or human-assisted automation can resemble legitimate traffic across browser, network, and interaction evidence. Client and network signals alone cannot reliably separate that class from real users.
+
+humanymous raises its cost through request metering, reputation, and opt-in attested-route verification. It does not claim to solve the boundary.
+
+## Related
+
+- [Glossary](../reference/glossary.md) — canonical reader-facing terms.
+- [What Gate is and is not](../explanation/what-gate-is.md) — product scope and limits.
+- [Supported topologies](../reference/supported-topologies.md) — where network evidence is available.
+- [Verdicts and enforcement rules](../reference/hard-rules-verdicts.md) — exact decision behavior.
+- [Which piece am I using?](../explanation/which-piece-am-i-using.md) — Core, Gate, Ledger, and the Detection Observatory.

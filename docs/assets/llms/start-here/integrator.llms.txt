@@ -10,7 +10,7 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Start here: Integrator
 
-humanymous Gate is a reverse proxy you put in front of your app. It terminates TLS, streams a detection bundle into your HTML, scores every request across layers L1–L7 inline, enforces a verdict (ALLOW / CHALLENGE / DENY) at the edge, and writes each decision to a tamper-evident audit log — then forwards allowed traffic to your origin, which it fronts and does not modify. The drop-in promise: near-zero upstream changes (point Gate at your origin with `-upstream`; your app code stays as-is), reversible (start in monitor mode — score and log, enforce nothing — and turn enforcement on per route only when you trust the signal), and safe by default. This repository is a reference implementation, not a production-hardened build.
+humanymous Gate is a reverse proxy you put in front of your app. It scores the evidence its current collector supplies, enforces ALLOW, CHALLENGE, or DENY at the edge, records decisions, and forwards allowed traffic to your origin. Core's complete seven-stage evidence path is not present at Gate, so validate the proxy you will actually deploy. Start in monitor mode and treat this repository as a reference implementation, not a production-hardened shield.
 
 The drop-in shape and the monitor-first rollout it enables:
 
@@ -44,7 +44,7 @@ docker run -d -p 8444:8444 -p 127.0.0.1:8445:8445 \
 
 > **Decide your topology first.** Where you place Gate determines which detection layers are
 > even active. The network plane (JA3/JA4/H2) needs raw-TLS termination and does **not** fire
-> at the gate or behind a TLS-terminating CDN/L7-LB. Read [Supported topologies](../reference/supported-topologies.md)
+> at the gate or behind a TLS-terminating CDN/application-layer load balancer. Read [Supported topologies](../reference/supported-topologies.md)
 > before you wire anything, so you deploy the shape that matches the detection you expect.
 
 ## Your next 3 reads (in order)
@@ -57,6 +57,6 @@ Then, for high-value routes: once you trust the signal and want a ceiling-guard 
 
 ## Then
 
-For the vocabulary behind the verdicts — layers L1–L7, hard rules, risk score, fingerprint — read [Concepts & Glossary](../concepts/how-gate-sees-a-request.md).
+For the vocabulary behind the verdicts — the seven-stage pipeline, enforcement rules, risk score, fingerprint — read [Concepts & Glossary](../concepts/how-gate-sees-a-request.md).
 
 > **Tip:** When something misbehaves during rollout, the on-call [Incident Runbooks](../runbooks/incident-runbooks.md) cover the common failure modes and how to confirm them.

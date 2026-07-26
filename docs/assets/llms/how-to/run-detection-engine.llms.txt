@@ -17,7 +17,7 @@ This page gets the detection engine compiled and serving on `127.0.0.1:8443`, sh
 
 There are two binaries in this repo, and they do different jobs. The orientation map covers the full split — read [which piece am I using?](../explanation/which-piece-am-i-using.md) if you are unsure which one you want.
 
-Use the **standalone detection engine** (this page) when you want the engine's per-request scoring across L1–L7 **without**:
+Use the **standalone detection engine** (this page) when you want the engine's per-request scoring across seven detection stages **without**:
 
 - edge enforcement (the engine scores; it does not block a request at an edge),
 - TLS termination or streaming bundle injection,
@@ -36,7 +36,7 @@ Build the WASM bundle first:
 GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/
 ```
 
-> **Important:** `web/detector.wasm` is the browser-side detection bundle — the code that runs in the visitor's page to collect the L1–L4 client signals. The server serves it from `web/`, so if you skip this step the page loads without a detector and the client signals never arrive. Build it before (or alongside) the server.
+> **Important:** `web/detector.wasm` is the browser-side detection bundle — the code that runs in the visitor's page to collect the browser-side collection stages client signals. The server serves it from `web/`, so if you skip this step the page loads without a detector and the client signals never arrive. Build it before (or alongside) the server.
 
 Then build the server:
 
@@ -60,7 +60,7 @@ bin/server.exe -addr 127.0.0.1:8443 -web web
 |---|---|---|
 | `-addr` | `:8443` (from source) | Listen address. The published image overrides this to `:443` (see below). |
 | `-web` | `web` | Static web root — the directory holding `detector.wasm`, `index.html`, `demo.html`. |
-| `-rit` | `true` | Enable RIT anti-tamper (request-integrity token) verification. |
+| `-rit` | `true` | Enable request-integrity token anti-tamper (request-integrity token) verification. |
 | `-acme-domain` | `""` | Comma-separated domain(s) for a Let's Encrypt cert via TLS-ALPN-01 (needs binding `:443` directly). Empty = self-signed. |
 | `-acme-cache` | `acme-cache` | Directory to cache issued ACME certificates + the account key (persist this across restarts). |
 | `-acme-email` | `""` | Optional contact email for the ACME account. |
@@ -119,9 +119,9 @@ sequenceDiagram
   participant B as "Browser (detector.wasm)"
   participant S as "server.exe · /api/collect"
   participant E as "internal/scoring"
-  B->>B: collect L1–L4 client signals
+  B->>B: collect browser-side evidence
   B->>S: POST /api/collect (SessionReport)
-  S->>S: merge server-side L5/L6 network signals
+  S->>S: merge server-side network evidence and consistency checks
   S->>E: score all signals
   E-->>S: risk 0–100 + verdict + hardRuleFired
   S-->>B: ScoreResult JSON
@@ -135,7 +135,7 @@ sequenceDiagram
 node test/redteam/run-one.mjs human https://127.0.0.1:8443
 ```
 
-`run-one.mjs` prints a minimal JSON line — `{label, verdict, riskScore, hardRuleFired}` — and intentionally drops `topContributors`. For the full per-layer trace, use the Observatory's `/playground/explain/{id}` or the e2e `results.json`; see the [self-validation how-to](./self-validation-red-team.md).
+`run-one.mjs` prints a minimal JSON line — `{label, verdict, riskScore, hardRuleFired}` — and intentionally drops `topContributors`. For the full per-stage trace, use the Observatory's `/playground/explain/{id}` or the e2e `results.json`; see the [self-validation how-to](./self-validation-red-team.md).
 
 Post a minimal client report directly and read the verdict (the `-k` accepts the self-signed dev cert):
 
@@ -145,9 +145,9 @@ curl -sk -X POST https://127.0.0.1:8443/api/collect \
   -d '{"userAgent":"Mozilla/5.0 Chrome/126","signals":[{"id":"l1.navigator.webdriver","layer":"L1","verdict":"BOT","weight":40,"score":40,"confidence":0.95,"collected":"js"}]}'
 ```
 
-The response is the ScoreResult: `{"sessionId":…,"riskScore":…,"verdict":…,"hardRuleFired":…,"topContributors":[…],"policyVersion":…}`. The `signals` array is the client-collected L1–L4 portion; the server merges its own L5/L6 network signals before scoring.
+The response is the ScoreResult: `{"sessionId":…,"riskScore":…,"verdict":…,"hardRuleFired":…,"topContributors":[…],"policyVersion":…}`. The `signals` array is the client-collected browser-side collection stages portion; the server merges its own network and consistency-check network signals before scoring.
 
-The score itself comes from `internal/scoring`: each signal contributes `weight x severity x confidence`, the combiner deduplicates per group, caps each layer, and folds the layers with a noisy-OR into a 0–100 risk score, which policy `1.0.0` maps to `ALLOW` / `CHALLENGE` / `DENY` (challenge at 30, deny at 70). Hard rules HR-1..HR-21 can promote a verdict ahead of the score. For the full walk-through of how a request becomes a verdict, read [how Gate sees a request](../concepts/how-gate-sees-a-request.md) and [detection engine internals](../explanation/detection-engine-internals.md).
+The score comes from `internal/scoring`: each signal contributes `weight × severity × confidence`, the combiner deduplicates correlated evidence, caps each stage, and combines the stages into a 0–100 risk score. The built-in policy challenges at 30 and denies at 70; Runtime Settings can change those thresholds. Core's ordered enforcement rules can raise the score-based result. See [how humanymous evaluates a request](../concepts/how-gate-sees-a-request.md) and [detection engine internals](../explanation/detection-engine-internals.md).
 
 ## The boundary: what this engine does not do
 

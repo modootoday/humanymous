@@ -53,12 +53,12 @@ flowchart LR
 
 - **`/__hmn/loader.js`** — the bundle loader. This is the script the injected `<script>` tag points at. The browser fetches it from your origin's path space (it is same-origin to your page, because Gate is terminating TLS in front of you).
 - **`/__hmn/session`** — establishes the detection session that later signals are bound to.
-- **`/__hmn/collect`** — the signal beacon. The browser posts collected client-side signals here. It beacons on the **same TLS connection** the server is capturing L5 network- and protocol-layer signals from, which is what lets Gate line up client-side evidence with the JA3/JA4 and HTTP/2 fingerprint of the very same connection.
+- **`/__hmn/collect`** — the signal beacon. The browser posts the client evidence collected by Gate's current loader. Core can correlate a richer browser report with directly captured connection evidence; the current Gate does not extract that full ClientHello and HTTP/2 set.
 - **`/__hmn/csp-report`** — a Content-Security-Policy report sink. It accepts CSP violation reports and returns **HTTP 204** (no content).
 
-### The challenge / PoW interstitial
+### The challenge response
 
-When a verdict is CHALLENGE, Gate serves an accessible proof-of-work (PoW) interstitial from the control plane, and your origin is never contacted for that request. The reference ships a **minimal** interstitial — HTTP 401, `Cache-Control: no-store`, a short "Please complete a quick check to continue." message, and it loads `/__hmn/loader.js` to run the PoW. A full, self-hosted WCAG-conformant challenge experience is a production responsibility, not something the reference page claims to be. For the client's-eye view of that page, see [Why am I seeing this?](../help/why-am-i-seeing-this.md) and [Challenge accessibility](../help/challenge-accessibility.md).
+When a verdict is CHALLENGE, Gate returns HTTP 401 with `Cache-Control: no-store` and does not contact the origin. The reference response says that another check is required and loads `/__hmn/loader.js`, but it does **not** provide a complete usable recovery path for every visitor. A deployment must wire and test its own self-hosted, accessible verification flow before telling users that waiting, retrying, proof of work, or Pass will let them continue. See [Why am I seeing this?](../help/why-am-i-seeing-this.md) and [Challenge accessibility](../help/challenge-accessibility.md) for honest end-user wording.
 
 ### The admin plane is not here
 
@@ -72,9 +72,9 @@ All paths below are on the **public edge** (`-addr`) unless noted. "Origin conta
 |---|---|---|---|---|
 | `/__hmn/loader.js` | GET | Loads the detection bundle referenced by the injected `<script>` | JavaScript bundle loader | No — served by Gate |
 | `/__hmn/session` | GET/POST | Establishes the detection session signals bind to | **200**, JSON `{"sessionId": "<id>"}` | No — served by Gate |
-| `/__hmn/collect` | POST | Browser signal beacon; sent on the same TLS connection Gate captures L5 from | **200**, JSON `{"sessionId","riskScore","verdict","hardRuleFired"}`; non-POST returns **405** | No — served by Gate |
+| `/__hmn/collect` | POST | Browser signal beacon for Gate's current collector | **200**, JSON `{"sessionId","riskScore","verdict","hardRuleFired"}`; non-POST returns **405** | No — served by Gate |
 | `/__hmn/csp-report` | POST | CSP violation report sink | **204** No Content | No — served by Gate |
-| Challenge / PoW interstitial | (served on CHALLENGE) | Accessible PoW interstitial; loads `/__hmn/loader.js` | **401**, `Cache-Control: no-store` | No — origin never contacted |
+| Challenge response | (served on CHALLENGE) | Minimal reference response; production must provide and test a usable verification flow | **401**, `Cache-Control: no-store` | No — origin never contacted |
 | `/__hmn/admin/*` | — | Admin plane is **not** exposed on the public edge | **404** (deny-by-default) | No — 404 at the edge |
 
 > **Note:** These methods and shapes are read from the control-plane handlers in `internal/gate/control.go` (`handleSession`, `handleCollect`). `/collect` is POST-only and answers other methods with **405**; both paths sit under the `/__hmn/` control prefix and are served entirely by Gate.
@@ -97,7 +97,7 @@ Gate inserts exactly this markup once, at the first `<head>` boundary, using a b
 
 The leading `<!--hmn-injected-->` comment is an idempotency marker: if the injector sees it already present, it passes the page through untouched. If no head boundary is found within the 64 KiB look-ahead, the page is streamed through without injection (rather than buffering without bound).
 
-For the fuller picture of *what* the bundle collects across L1–L7, see [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
+For the complete Core model and the smaller evidence set currently available to Gate, see [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
 
 ## Avoiding collisions
 
@@ -133,6 +133,6 @@ Single-page apps route in the browser, so two things are worth checking:
 
 ## Where to go next
 
-- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the full L1–L7 lifecycle and the shared glossary.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the Core pipeline, Gate boundary, and shared terminology.
 - [Will this break my app?](./will-this-break-my-app.md) — exactly where Gate touches (and does not touch) a response, plus a monitor-first rollout.
 - [CLI, Config & Per-Route Policy Reference](../reference/cli-config-policy.md) — the `-addr`, `-admin-addr`, and preset flags behind the two listeners and the injecting routes.

@@ -13,7 +13,7 @@ This page maps the controls that humanymous Gate ("Gate" hereafter) implements i
 
 > **Note:** In your data-processing relationships, you (the operator) are the **data controller**. Gate is **processing tooling** you deploy and configure. This document describes controls Gate **provides** and how they **support** your obligations. Gate does not, and cannot, make you compliant — that determination rests with you and your supervisory authority. Read every "supports" and "provides controls for" below in that frame.
 
-Gate in the reference build is a **reference implementation, not a production-hardened product**. Several anchors that a production deployment would add are called out explicitly as **prod-delta** (not shipped in the reference). See [Production vs reference](./production-vs-reference.md) for the full boundary.
+Gate in the reference build is a **reference implementation, not a production-hardened product**. Several anchors that a production deployment would add are called out explicitly as **production responsibility** (not shipped in the reference). See [Production vs reference](./production-vs-reference.md) for the full boundary.
 
 ---
 
@@ -45,11 +45,11 @@ Gate in the reference build is a **reference implementation, not a production-ha
 | Control | Standard / requirement | What it supports | Where to verify |
 |---|---|---|---|
 | Raw identifiers (IP, JA4, HTTP/2 fingerprint, UA, SNI, device fingerprint) stored **only** as per-subject-key-derived pseudonyms (64-hex, scrypt-stretched) | GDPR Art. 4(5) + Recital 26 (pseudonymization) | Pseudonymization by default; identifiers are pseudonymous, **not anonymous** — re-identification is offline for keystore holders (no product dual-control API). | [Data processing inventory](./data-processing-inventory.md) |
-| Data-protection-by-design defaults: pseudonymize-at-write, fail-closed edge on strict/unsafe requests, least-privilege RBAC | GDPR Art. 25 (data protection by design and by default) | Controls that support privacy-preserving defaults rather than opt-in configuration. | [RBAC and separation of duties](./rbac-separation-of-duties.md) |
+| Data-protection-by-design defaults: pseudonymize-at-write, fail-closed edge on strict/unsafe requests, least-privilege role-based access control | GDPR Art. 25 (data protection by design and by default) | Controls that support privacy-preserving defaults rather than opt-in configuration. | [role-based access control and separation of duties](./rbac-separation-of-duties.md) |
 | Purpose-scoped, minimized processing recorded in a Records-of-Processing extract | GDPR Art. 5 (principles) | Evidence toward lawfulness, purpose limitation, data minimization, and storage limitation (retention tiers). | [Data processing inventory](./data-processing-inventory.md) |
 | Cryptographic erasure (crypto-shred): destroy the per-subject linkage key; chain intact; `erasure.completed` audit record on **execution** (not a standalone signed certificate blob; cancelled erasures produce none) | GDPR Art. 17 (right to erasure) | A repeatable, verifiable erasure mechanism that preserves audit integrity while severing re-identifiability for that session subject. | [Erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md) |
 | Records-of-Processing content to assemble a RoPA manually | GDPR Art. 30 (records of processing activities) | Provides the processing-activity content you assemble into your RoPA. **No machine-readable RoPA export ships** — the inventory is documentation you transcribe, not an exportable artifact. | [Data processing inventory](./data-processing-inventory.md) |
-| Tamper-evident hash chain + per-record HMAC + Ed25519 STH; role-based access control; dual-control on high-impact actions; meta-audit of every admin access | GDPR Art. 32 (security of processing) | Integrity, access control, and accountability controls that support security of processing. | Integrity view; [RBAC and separation of duties](./rbac-separation-of-duties.md) |
+| Tamper-evident hash chain + per-record HMAC + Ed25519 STH; role-based access control; dual-control on high-impact actions; meta-audit of every admin access | GDPR Art. 32 (security of processing) | Integrity, access control, and accountability controls that support security of processing. | Integrity view; [role-based access control and separation of duties](./rbac-separation-of-duties.md) |
 | DPIA companion content covering the processing, risks, and mitigations | GDPR Art. 35 (data protection impact assessment) | Structured input you adapt into your own DPIA. | [DPIA companion](../explanation/dpia-companion.md) |
 
 ### PIPA (Korea)
@@ -63,12 +63,12 @@ Gate in the reference build is a **reference implementation, not a production-ha
 
 ### Recommended production anchors — NOT shipped in the reference
 
-The following are established anchors a production deployment would add. They are **prod-delta**: they are **not implemented** in the reference build. Do not represent them as shipped features in a vendor assessment.
+The following are established anchors a production deployment would add. They are **production responsibility**: they are **not implemented** in the reference build. Do not represent them as shipped features in a vendor assessment.
 
 | Recommended anchor | Standard | Status |
 |---|---|---|
-| Trusted timestamps on STH checkpoints | RFC 3161 (Time-Stamp Protocol) | **Prod-delta — not shipped.** Recommended production anchor for externally attestable checkpoint time. |
-| External WORM / immutable object storage for chain and checkpoints | S3 Object-Lock / WORM retention | **Prod-delta — not shipped.** Recommended production anchor for off-node immutability. |
+| Trusted timestamps on STH checkpoints | RFC 3161 (Time-Stamp Protocol) | **production responsibility — not shipped.** Recommended production anchor for externally attestable checkpoint time. |
+| External WORM / immutable object storage for chain and checkpoints | S3 Object-Lock / WORM retention | **production responsibility — not shipped.** Recommended production anchor for off-node immutability. |
 
 > **Note:** Because RFC 3161 timestamping and external WORM anchoring are not shipped, the reference audit log is **tamper-evident, not tamper-proof**: records written after the last checkpoint remain re-writable until the next checkpoint anchors them (an unanchored in-window residual). The independent witness co-sign stops silent history rewrites of already-anchored records. Present this boundary honestly in any assessment.
 
@@ -87,7 +87,7 @@ Throughout, replace `<admin-host>` (default `localhost:8445`), `<token>` (an adm
 - [ ] **Erasure certificates and their verification** — Art. 17 / PIPA destruction
 - [ ] **Integrity reports** — audit-chain verification (Art. 32)
 - [ ] **Audit export** — filtered decisions and CSV (Art. 30 / Art. 32)
-- [ ] **RBAC and dual-control configuration** — separation of duties (Art. 25 / Art. 32)
+- [ ] **role-based access control and dual-control configuration** — separation of duties (Art. 25 / Art. 32)
 - [ ] **Admin-action meta-audit trail** — accountability (Art. 32)
 
 ### 1. RoPA extract
@@ -102,7 +102,7 @@ Adapt the [DPIA companion](../explanation/dpia-companion.md) into your own asses
 
 For a right-to-erasure request, follow the [erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md). The certificate is sealed on **execution** — when the cancellable hold window elapses and the shred actually runs — **not** on commit; a cancelled erasure produces **no** certificate.
 
-There is **no admin endpoint that returns the certificate** (prod-delta). The `/__hmn/admin/erasures` endpoint lists only erasures still **within** their hold window (scheduled but not yet executed); once the shred runs, the certificate is observable only as an `erasure.completed` **audit record** in the stream:
+There is **no admin endpoint that returns the certificate** (production responsibility). The `/__hmn/admin/erasures` endpoint lists only erasures still **within** their hold window (scheduled but not yet executed); once the shred runs, the certificate is observable only as an `erasure.completed` **audit record** in the stream:
 
 ```
 # List scheduled (in-hold-window) erasures only:
@@ -139,13 +139,13 @@ curl -k -H "Authorization: Bearer <token>" \
   "https://<admin-host>/__hmn/admin/audit?verdict=<ALLOW|CHALLENGE|DENY>&host=<host>&route=<route>&rule=<HR-id>&minRisk=<0-100>&before=<cursor>"
 ```
 
-Page through results with the returned `nextBefore` cursor. Each record carries the verdict, risk score, matched hard rule (if any), and the pseudonymized identifiers — never raw identifiers.
+Page through results with the returned `nextBefore` cursor. Each record carries the verdict, risk score, matched enforcement rule (if any), and the pseudonymized identifiers — never raw identifiers.
 
 For a human-readable snapshot, the Ledger Overview view has an **Export CSV** button that downloads `audit-feed.csv` (`text/csv`). See the [Ledger tour](../how-to/audit-console-tour.md).
 
-> **Note:** Observability in the reference build is the audit stream, the Integrity view/endpoint, the Overview KPIs, Prometheus `GET /__hmn/admin/metrics` on the admin plane, and edge `GET /__hmn/healthz` / `GET /__hmn/readyz`. SIEM shipping of the audit stream is still a prod-delta.
+> **Note:** Observability in the reference build is the audit stream, the Integrity view/endpoint, the Overview KPIs, Prometheus `GET /__hmn/admin/metrics` on the admin plane, and edge `GET /__hmn/healthz` / `GET /__hmn/readyz`. SIEM shipping of the audit stream is still a production responsibility.
 
-### 6. RBAC and dual-control configuration
+### 6. role-based access control and dual-control configuration
 
 Provide the effective policy, whose `config_version` is a signed HMAC hash of the effective policy (routes, rate, monitor, kill switch):
 
@@ -154,14 +154,14 @@ curl -k -H "Authorization: Bearer <token>" \
   https://<admin-host>/__hmn/admin/policy
 ```
 
-Pair this with [RBAC and separation of duties](./rbac-separation-of-duties.md), which documents the four roles and their capabilities:
+Pair this with [role-based access control and separation of duties](./rbac-separation-of-duties.md), which documents the four roles and their capabilities:
 
 - **Auditor** — read only.
 - **Operator** — read + operate (temp bans, lifts).
 - **Approver** — read + approve.
-- **DPO** — read + operate + approve, and the **only** role that can approve erasure.
+- **data protection officer** — read + operate + approve, and the **only** role that can approve erasure.
 
-Dual-control facts to state in the pack: a permanent or CIDR ban and the kill switch must be committed by a **distinct Approver**; an **erasure must be committed by a distinct DPO** (a generic Approver cannot). Temporary bans and lifts are single-Operator.
+Dual-control facts to state in the pack: a permanent or CIDR ban and the kill switch must be committed by a **distinct Approver**; an **erasure must be committed by a distinct data protection officer** (a generic Approver cannot). Temporary bans and lifts are single-Operator.
 
 ### 7. Admin-action meta-audit trail
 
@@ -190,7 +190,7 @@ The audit export has no event-type query parameter (its server-side filters are 
 - [Data processing inventory](./data-processing-inventory.md) — RoPA source content (Art. 30)
 - [DPIA companion](../explanation/dpia-companion.md) — DPIA input (Art. 35)
 - [Verify the audit log](../how-to/verify-audit-log.md) — integrity verification procedure
-- [RBAC and separation of duties](./rbac-separation-of-duties.md) — roles, capabilities, dual-control
+- [role-based access control and separation of duties](./rbac-separation-of-duties.md) — roles, capabilities, dual-control
 - [Erasure and crypto-shred runbook](../runbooks/erasure-crypto-shred.md) — right-to-erasure procedure
-- [Hard rules and verdicts](./hard-rules-verdicts.md) — verdict and hard-rule glossary
-- [Production vs reference](./production-vs-reference.md) — the full prod-delta boundary
+- [enforcement rules and verdicts](./hard-rules-verdicts.md) — verdict and enforcement-rule glossary
+- [Production vs reference](./production-vs-reference.md) — the full production responsibility boundary

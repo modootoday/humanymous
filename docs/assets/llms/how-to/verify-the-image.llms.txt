@@ -110,4 +110,4 @@ A failure at step 2 or 3 means the image is not authentically a humanymous relea
 - [Cut a release](cut-a-release.md) — the maintainer side: what a tag triggers, and where the signing/SBOM/provenance steps live in `release.yml`.
 - [Security policy](../../SECURITY.md) — how to report a supply-chain or verification concern.
 - [Security & code audit report](../reference/security-audit.md) — the supply-chain posture (govulncheck, CodeQL, Trivy, Dependabot) this verification complements.
-- [HTTPS / TLS certificates](https-tls-certificates.md) — securing the edge once you trust the image, including admin-plane mTLS.
+- [HTTPS / TLS certificates](https-tls-certificates.md) — securing the edge once you trust the image, including admin-plane mutual Transport Layer Security.

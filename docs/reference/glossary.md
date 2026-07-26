@@ -82,7 +82,7 @@ humanymous Gate is a reference implementation, not a production-hardened service
 
 **fail closed.** Gate challenges or refuses a request when required evidence or a supporting dependency is unavailable. State-changing and strict routes use this posture.
 
-**kill switch.** A dual-controlled emergency action that demotes enforcement to monitoring. Manual bans continue to apply. In the current reference build the control is node-local, not node-local.
+**kill switch.** A dual-controlled emergency action that demotes enforcement to monitoring. Manual bans continue to apply. In the current reference build the control is node-local, not fleet-wide.
 
 ## Detection evidence
 

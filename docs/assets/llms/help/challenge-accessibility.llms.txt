@@ -7,8 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 <!--
 Diátaxis quadrant: Reference (public, end-user facing).
-Audience: a blocked or challenged end user, plus the DPO/buyer who will ask about accessibility.
-No internal signal names, hard-rule IDs, layer refs, or SoT identifiers on this page.
+Audience: a blocked or challenged end user, plus the data protection officer/buyer who will ask about accessibility.
+No internal signal names, enforcement-rule identifiers, stage references, or specification identifiers on this page.
 -->
 
 # Challenge accessibility statement
@@ -19,27 +19,27 @@ technology, and what to do if it did not work for you. If you are here because a
 check would not complete, you are in the right place and there is a way forward
 below.
 
-## What the quick check is
+## What a deployed quick check should be
 
-When a site needs to confirm that a request is coming from a person rather than
-automated traffic, it may show a short verification step. In most cases you wait
-a moment for it to finish, or follow a simple on-screen prompt, and the page
-then loads as normal. You do not need to solve a puzzle or read distorted text.
+When a site needs more confidence before continuing, it may show a verification
+step. The open-source reference includes challenge components, but it does not
+ship a complete recovery path for every challenged visitor. The operator of
+the site is responsible for providing a usable alternative and explaining
+exactly what will happen after the step succeeds.
 
 ## Our accessibility commitment
 
-This deployment aims for the verification step to work with assistive
+Any deployed verification step must work with assistive
 technology, including:
 
 - Screen readers and other text-to-speech tools.
 - Keyboard-only navigation, without a mouse or trackpad.
 - Browser zoom and larger text settings.
 
-Our target is to meet the **WCAG 2.2 AA** accessibility standard, and to align
+The project target is **WCAG 2.2 AA**, with alignment to
 with **EN 301 549** and the **Americans with Disabilities Act (ADA)**. These are
-commitments we are working toward for the verification experience, not a claim
-that every check is already perfect. If a check did not work for you, we treat
-that as a defect to fix, described below.
+design requirements, not a conformance claim for the reference challenge or
+for every site using it. A site must test the exact flow it deploys.
 
 > **Note:** Accessibility of the deployed verification step is the
 > responsibility of the operator running this site. If you are evaluating the
@@ -52,8 +52,9 @@ that as a defect to fix, described below.
 You have options, and none of them require you to share personal details you are
 not comfortable with:
 
-- **Retry.** Refresh the page and complete the step again. A one-time glitch
-  will often clear on a second attempt.
+- **Retry only if the page offers a working step.** Refreshing may clear a
+  transient problem, but the reference page alone may not provide a way to
+  complete verification.
 - **Contact support.** If it still will not let you through, reach
   support@modoo.today. It helps us most if you include:
   - **Your incident handle, if shown** — some deployments display a short

@@ -25,22 +25,19 @@ before it can let you continue, and once in a while it gets a real person's
 visit wrong. Either way, this is about the connection, not about you, and there
 is a way forward below.
 
-## If you saw a quick check (challenge)
+## If you saw a request for another check
 
-You were asked to complete a short verification step before continuing. In most
-cases you just wait a moment for it to finish, or follow the simple on-screen
-prompt, and the page then loads as normal.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/pass-challenge-dark.webp" />
-  <img src="../assets/screenshots/framed/pass-challenge-light.webp" alt="The humanymous Pass verification check: slide three rows so each highlighted key lines up in the teal slot, then submit. It works by keyboard, by screen reader, and by tapping the on-screen arrows, and has no time limit." />
-</picture>
+The site asked for more verification before contacting its application. The
+open-source reference does not automatically connect every such response to a
+complete proof-of-work or Pass flow. Follow only the instructions the site
+actually presents. If there is no usable step or it does not complete, contact
+the site's operator; waiting alone is not guaranteed to continue the request.
 
 This step is meant to work for everyone, including people using a screen reader
 or other assistive technology. If the check will not complete, or you cannot
 use it:
 
-- Try refreshing the page and completing the step again.
+- Try refreshing only if the site presents a usable step.
 - If it still will not let you through, contact support at
   support@modoo.today. Tell them you were stopped by a verification step and
   could not complete it, and mention any assistive technology you use so they

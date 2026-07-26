@@ -22,13 +22,13 @@ flowchart TD
   R1 --> R2["Register 2: launchProfiles allowlist (cmd/server/launch.go)"]
   R2 --> R3["Register 3: Observatory catalog (web/playground.html)"]
   R3 --> V1["Verify: run-one.mjs — minimal verdict"]
-  V1 --> V2["Verify: Observatory — L1→L7 + why-this-verdict"]
+  V1 --> V2["Verify: Observatory — seven stages + why-this-verdict"]
   V2 --> V3["Verify: runner.mjs — full-suite bookkeeping"]
 ```
 
 ## Before you start
 
-You need the standalone detection engine running on loopback. It is the same L1–L7 engine your profile will exercise. Build the detector module and the server:
+You need the standalone detection engine running on loopback. It is the same seven detection stages engine your profile will exercise. Build the detector module and the server:
 
 ```
 GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/
@@ -119,7 +119,7 @@ The label is not cosmetic — the runner's `classify()` reads it to decide how a
 - For a `bot:` label, `classify()` counts **CHALLENGE or DENY as a true positive** (caught) and **ALLOW as a false negative** (missed).
 - For the human baseline, **DENY is a false positive**; everything else, including CHALLENGE, is a true negative.
 
-So align three things — the label, the expected verdict, and the expected hard rule — so the profile is self-checking. A profile that reproduces an automation tell should carry a `bot:` label and expect CHALLENGE or DENY; if it returns ALLOW, that is a real outcome the runner will record as a miss, not something to paper over.
+So align three things — the label, the expected verdict, and the expected enforcement rule — so the profile is self-checking. A profile that reproduces an automation tell should carry a `bot:` label and expect CHALLENGE or DENY; if it returns ALLOW, that is a real outcome the runner will record as a miss, not something to paper over.
 
 > **Important:** A label that does not start with `bot:` silently becomes a human-baseline sample. If your automation profile is accidentally mislabeled, every detection it triggers is counted as a false positive against your own numbers.
 
@@ -143,9 +143,9 @@ Run the profile on its own against your local engine:
 node test/redteam/run-one.mjs <name>.mjs https://127.0.0.1:8443
 ```
 
-Its stdout is deliberately minimal — `{label, verdict, riskScore, hardRuleFired}`. The `topContributors` and the full per-layer trace do not print here; they come from the Observatory's `/playground/explain/{id}` or from the e2e `results.json`.
+Its stdout is deliberately minimal — `{label, verdict, riskScore, hardRuleFired}`. The `topContributors` and the full per-stage trace do not print here; they come from the Observatory's `/playground/explain/{id}` or from the e2e `results.json`.
 
-Next, launch the profile in the Detection Observatory and watch it run. The L1→L7 waterfall and the "Why this verdict" hard-rule ladder should show what you expected — the tell you planted lighting up the layer you aimed at, and the verdict landing where your label assumes it will.
+Next, launch the profile in the Detection Observatory and watch it run. The seven-stage waterfall and the "Why this verdict" enforcement-rule ladder should show what you expected — the tell you planted lighting up the stage you aimed at, and the verdict landing where your label assumes it will.
 
 Finally, run the full suite **in Docker** and confirm the bookkeeping matches your intent:
 

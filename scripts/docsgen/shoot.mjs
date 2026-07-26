@@ -298,7 +298,7 @@ async function run() {
 }
 
 // Canned verdict/lanes render appended to demo.html — reproduces demo.js render() for a
-// recorded DENY/HR-7 fixture (see web/js/demo.js). Kept in sync with that DOM.
+// recorded denial fixture (see web/js/demo.js). Kept in sync with that DOM.
 function DEMO_RENDER_SRC() {
   const verdict = { verdict: 'DENY', riskScore: 75.2, hardRuleFired: 'HR-7', sessionId: 'demo' };
   const full = {
@@ -314,8 +314,36 @@ function DEMO_RENDER_SRC() {
       signals: [{ layer: 'L5', id: 'l5.h2.akamai_fp', score: 0, verdict: 'OK' }] },
     crosschecks: [{ id: 'x.ua_vs_gpu', consistent: false }, { id: 'x.ua_vs_tls', consistent: true }],
   };
-  const LAYERS = [['L1', 'static'], ['L2', 'fingerprint'], ['L3', 'integrity'], ['L4', 'behavioral'], ['L5', 'network'], ['L6', 'cross-check'], ['L7', 'scoring']];
+  const LAYERS = [
+    ['L1', 'Static client inspection'],
+    ['L2', 'Client fingerprinting'],
+    ['L3', 'Client integrity checks'],
+    ['L4', 'Interaction analysis'],
+    ['L5', 'Network and protocol inspection'],
+    ['L6', 'Consistency checks'],
+    ['L7', 'Risk aggregation and verdict selection'],
+  ];
+  const RULE_LABELS = {
+    'HR-1': 'automation artifact',
+    'HR-2': 'browser and network-engine mismatch',
+    'HR-7': 'headless browser plus another automation indicator',
+    'HR-8': 'stealth browser modification',
+    'HR-9': 'browser-control leak plus automation evidence',
+    'HR-11': 'hosting-network browser',
+    'HR-12': 'no interaction observed',
+    'HR-13': 'disabled developer console plus automation evidence',
+    'HR-14': 'in-session protocol-fingerprint rotation',
+    'HR-15': 'multi-axis identity rotation',
+    'HR-16': 'request-body integrity failure',
+    'HR-17': 'missing or replayed request-integrity token',
+    'HR-18': 'browser claim without execution evidence',
+    'HR-19': 'cross-session correlation',
+    'HR-20': 'automated-browser interaction signature',
+    'HR-21': 'HTTP/2 denial-of-service protection',
+  };
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const ruleLabel = (id) => RULE_LABELS[id] || 'enforcement rule';
+  const signalLabel = (id) => String(id || 'diagnostic signal').replace(/^l[1-7]\./i, '').replace(/^x\./i, '').replace(/[._-]+/g, ' ');
   const $ = (id) => document.getElementById(id);
   const vclass = (v) => v === 'DENY' ? 'deny' : v === 'CHALLENGE' ? 'challenge' : v === 'ALLOW' ? 'allow' : 'unknown';
   const vshape = (v) => v === 'DENY' ? '<svg class="vshape" viewBox="0 0 14 14"><rect width="14" height="14" fill="currentColor"/></svg>'
@@ -325,22 +353,22 @@ function DEMO_RENDER_SRC() {
   const gauge = $('gauge'); gauge.style.setProperty('--pct', risk); gauge.className = 'gauge ' + vclass(v);
   $('bignum').textContent = risk.toFixed(1); $('bignum').className = 'num ' + vclass(v);
   const vt = $('verdict'); vt.className = 'vt-main ' + vclass(v); vt.innerHTML = vshape(v) + esc(v);
-  $('vband').textContent = 'hard-rule override · ' + sc.hardRuleFired + ' → ' + v;
-  $('vsub').innerHTML = 'This session looks automated — hard rule <b>' + sc.hardRuleFired + '</b> overrode the score. <span class="faint">risk ' + risk + ' / 100 · policy ' + sc.policyVersion + '</span>';
+  $('vband').textContent = 'enforcement rule · ' + ruleLabel(sc.hardRuleFired) + ' → ' + v;
+  $('vsub').innerHTML = 'This session looks automated — the <b>' + ruleLabel(sc.hardRuleFired) + '</b> raised the verdict. <span class="faint">risk ' + risk + ' / 100 · policy ' + sc.policyVersion + '</span>';
   const byLayer = {}; LAYERS.forEach((l) => (byLayer[l[0]] = []));
   full.client.signals.concat(full.network.signals).forEach((s) => (byLayer[s.layer] = byLayer[s.layer] || []).push(s));
   let html = '';
   LAYERS.forEach(([L, name]) => {
     const sigs = (byLayer[L] || []).filter((s) => (s.score || 0) > 0 || s.verdict === 'BOT' || s.verdict === 'SUSPICIOUS');
-    let chips = sigs.map((s) => '<span class="sig ' + sigClass(s.verdict) + '">' + esc(s.id) + (s.score > 0 ? ' <b>+' + s.score.toFixed(0) + '</b>' : '') + '</span>').join('');
-    if (L === 'L5') chips = '<span class="sig srv">ja4=' + esc(full.network.ja4Engine + ' · ' + full.network.ja4).slice(0, 40) + '</span>' + chips;
-    if (L === 'L6') chips += full.crosschecks.map((x) => '<span class="xc ' + (x.consistent ? 'good' : 'bad') + '">' + esc(x.id) + ' · ' + (x.consistent ? 'consistent' : 'inconsistent') + '</span>').join('');
-    if (L === 'L7') chips += '<span class="sig srv">Σ ' + risk.toFixed(1) + ' → ' + esc(v) + '</span><span class="sig flag">' + esc(sc.hardRuleFired) + ' fired</span>';
-    html += '<div class="lane"><span class="ln">' + L + ' · <b>' + name + '</b></span><div class="sigs">' + (chips || '<span class="empty">clear — nothing suspicious</span>') + '</div>' + (chips ? '' : '<span class="pill clear">clear</span>') + '</div>';
+    let chips = sigs.map((s) => '<span class="sig ' + sigClass(s.verdict) + '">' + esc(signalLabel(s.id)) + (s.score > 0 ? ' <b>+' + s.score.toFixed(0) + '</b>' : '') + '</span>').join('');
+    if (L === 'L5') chips = '<span class="sig srv">connection fingerprint observed</span>' + chips;
+    if (L === 'L6') chips += full.crosschecks.map((x) => '<span class="xc ' + (x.consistent ? 'good' : 'bad') + '">' + esc(signalLabel(x.id)) + ' · ' + (x.consistent ? 'consistent' : 'inconsistent') + '</span>').join('');
+    if (L === 'L7') chips += '<span class="sig srv">combined risk ' + risk.toFixed(1) + ' → ' + esc(v) + '</span><span class="sig flag">' + esc(ruleLabel(sc.hardRuleFired)) + '</span>';
+    html += '<div class="lane"><span class="ln"><b>' + name + '</b></span><div class="sigs">' + (chips || '<span class="empty">clear — nothing suspicious</span>') + '</div>' + (chips ? '' : '<span class="pill clear">clear</span>') + '</div>';
   });
   $('lanes').innerHTML = html; $('result').hidden = false; $('lanesSection').hidden = false;
   $('botverdict').innerHTML = vshape('DENY') + 'DENY · 95';
-  $('botcatch').textContent = 'HR-7 fired: headless browser + navigator.webdriver=true → hard DENY';
+  $('botcatch').textContent = 'Headless browser plus another automation indicator → DENY';
 }
 
 run().catch((e) => { console.error(e); process.exit(1); });

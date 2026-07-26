@@ -1,167 +1,150 @@
-# Hard rules, verdicts and signal-ID reference
+# Verdicts, enforcement rules, and diagnostic signals
 
 Source: https://humanymous.net/reference/hard-rules-verdicts.html
 Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
 
 ---
 
-# Hard rules, verdicts and signal-ID reference
+# Verdicts, enforcement rules, and diagnostic signals
 
-**Quadrant:** Reference (lookup tables). **Audience:** operators, integrators and evaluators reading a single verdict row and needing to know exactly what fired it and what happened next.
+**Diátaxis quadrant:** Reference — look up an outcome or predicate.
+**Audience:** operators, integrators, evaluators, and developers.
 
-This page is a lookup reference for the values you see attached to a request in the Ledger and the audit log: the verdict, the edge action it produced, the hard rule (if any) that promoted it, and the drill-down signal IDs. It does not teach the model; for concepts, see [How Gate sees a request](../concepts/how-gate-sees-a-request.md). For where verdicts are enforced per route, see [CLI, Config & Per-Route Policy Reference](cli-config-policy.md).
+This page names rules by their meaning. Raw event and application programming interface payloads retain legacy technical identifiers for compatibility, but those identifiers are not a safe global vocabulary: some current Core and Gate identifiers overlap while referring to different predicates. Always use the plane and descriptive name together when reading raw data.
 
-humanymous Gate is a reference implementation, not a production-hardened build. Thresholds and rule set below reflect the reference build.
+humanymous Gate is a reference implementation. The tables describe current source behavior, not a universal policy.
 
-## Verdicts and edge actions
+## Score-based verdicts
 
-The engine emits one of three verdicts — ALLOW, CHALLENGE or DENY — derived from the 0–100 risk score and any hard rule that fired. The edge carries a fourth value, `none`, for a request with no evidence yet (Unknown). Each verdict maps to exactly one edge action.
+| Verdict | Built-in score range | Meaning | Gate action |
+|---|---:|---|---|
+| ALLOW | below 30 | Active policy permits the request. | Forward to the origin unless an attested route requires another proof. |
+| CHALLENGE | 30 through 69 | Additional verification is required. | Do not contact the origin until verification succeeds. |
+| DENY | 70 and above | Active policy refuses the request. | Stop before the origin. |
+| Unknown | no usable verdict | Evidence is not yet available. | Fail open or fail closed according to route policy and method. |
 
-| Verdict | Meaning | Risk band (score-based) | Edge action | Origin contacted? |
-|---------|---------|-------------------------|-------------|-------------------|
-| ALLOW | Not scored as automated; or a valid verdict trust token took the fast path | 0–29 | `pass` | Yes |
-| CHALLENGE | Ambiguous; prove work before proceeding | 30–69 | `challenge_pow` (accessible proof-of-work interstitial served from the control plane) | No |
-| DENY | Scored as automated, or a high-confidence hard rule fired | 70–100 | `block` | No |
-| none | Unknown — no evidence captured yet | n/a | fail-open or fail-closed (see below) | Depends on the fail rule |
+Runtime Settings can change the challenge and denial thresholds. Treat 30 and 70 as built-in defaults.
 
-Thresholds (policy 1.0.0): risk `0–29` → ALLOW, `30–69` → CHALLENGE, `70–100` → DENY. ChallengeAt is 30, DenyAt is 70. The risk score is 0–100 with one decimal. Hard rules can promote or override the score-based verdict.
+An enforcement rule can raise the score-based verdict. Rules are evaluated in a fixed order; the first matching rule whose mode is enforce wins. A matching rule in monitor mode is recorded as a shadow result and evaluation continues, so monitoring one heuristic cannot hide a later high-confidence match.
 
-Formally, the verdict is the score band, unless a hard rule fires and forces DENY:
+## Unknown-state behavior
 
-$$\text{verdict} = \begin{cases} \text{DENY} & \text{a hard rule fired, or } \text{risk} \ge 70 \\[2pt] \text{CHALLENGE} & 30 \le \text{risk} < 70 \\[2pt] \text{ALLOW} & \text{risk} < 30 \end{cases}$$
+Gate fails open only for safe methods on routes that do not require strict handling. It fails closed when:
 
-```mermaid
-flowchart TD
-  R{"risk 0–100"} -->|"0–29"| AL["ALLOW"]
-  R -->|"30–69"| CH["CHALLENGE"]
-  R -->|"70–100"| DN["DENY"]
-  HR["hard rule fired"] -->|"promote / override"| DN
-  AL --> PA["edge: pass → origin contacted"]
-  CH --> PW["edge: challenge_pow → PoW interstitial, origin NOT contacted"]
-  DN --> BL["edge: block → origin NOT contacted"]
-```
+- the route requires synchronous scoring or strict handling; or
+- the method can change state, including POST, PUT, PATCH, and DELETE.
 
+Every Gate enforcement action is sent to the audit sink before it takes effect.
 
-> **Note:** A fingerprint-bound verdict trust token, when present and valid, lets ALLOW take a fast path with no re-scoring — **except on an `attested` route.** There the attestation floor overrides the fast path: a valid verdict token does **not** fast-path; the request re-scores, and absent possession (a WebAuthn / Privacy Pass / Web Bot Auth trust-upgrade) or an `hmn_su` step-up proof, the ALLOW is priced to a CHALLENGE→Pass (never DENY). See the attestation-floor demotion rule below.
+## Proof-of-work upgrade
 
-### The `none` (Unknown) fail rule
+A completed proof-of-work challenge can upgrade a score-based CHALLENGE to ALLOW. It cannot override a rule-promoted verdict because it demonstrates computation, not that a person is present.
 
-When the edge has to act on an Unknown verdict — no evidence has arrived yet — the direction depends on the route policy and the HTTP method:
+The current reference Gate does not provide a complete, user-solvable proof-of-work or Pass path for every challenged visitor. Do not describe CHALLENGE as recoverable in a deployment unless that path is wired and tested.
 
-- **Fail open (→ `pass`)** only for safe-method requests (GET / HEAD) on non-strict routes. This is a documented, accepted residual: a safe GET on a `balanced` route is allowed through while unknown, and is covered meanwhile by fingerprint/subnet rate metering.
-- **Fail closed (→ `challenge`)** when the route is `strict` (failClosed or syncScore) **or** the HTTP method is unsafe (POST / PUT / PATCH / DELETE).
+## Attested-route demotion
 
-Every enforcement decision is written to the audit sink before it takes effect.
+On a route using the `attested` preset, an otherwise allowed request must present accepted possession evidence or a valid step-up proof. Without one, Gate changes the outcome to CHALLENGE, never directly to DENY.
 
-## The proof-of-work upgrade rule
+The attestation floor prices access to a high-value route. It does not detect coherent real-browser or human-assisted automation.
 
-A score-based CHALLENGE can be upgraded to ALLOW when the session has solved the proof-of-work challenge — the signal `l7.pow.solved` is present.
+## Core enforcement rules
 
-- The upgrade applies **only** to a CHALLENGE that came from the score (no hard rule fired).
-- PoW **never** overrides a hard rule. Solving the work proves CPU effort, not humanity: if a hard rule promoted the verdict, `l7.pow.solved` does not clear it.
+Core evaluates the following rules inside the shared scoring engine. “Heuristic” means the predicate can match legitimate traffic and therefore raises the verdict only to CHALLENGE.
 
-## The attestation-floor demotion rule (`attested` routes)
+| Public rule name | Predicate | Outcome | Confidence guidance |
+|---|---|---|---|
+| Hard automation artifact | Selenium, Puppeteer, Playwright, or Phantom-style artifact reported as confirmed automation | DENY | High confidence |
+| Browser and network-engine mismatch | Browser user-agent claim disagrees with both the connection-negotiation and Hypertext Transfer Protocol version 2 implementations | DENY | High confidence when Core directly observed the client connection |
+| Synthetic event plus browser-driver evidence | Untrusted events occur with WebDriver or browser-control evidence | DENY | High confidence |
+| WebDriver concealment | WebDriver state occurs with a modified native getter | DENY | High confidence |
+| Request-integrity failure plus protocol mismatch | Request-integrity authentication fails and the browser claim disagrees with the observed connection implementation | DENY | High confidence |
+| Runtime hook plus automation evidence | Runtime hooks or prototype changes occur with WebDriver or browser-control evidence | DENY | High confidence |
+| Headless browser plus another automation indicator | A headless user-agent token occurs with WebDriver, a chromeless window, or modified native code | DENY | High confidence |
+| Stealth browser modification | A modified native getter occurs in a chromeless or headless environment | DENY | High confidence |
+| Browser-control leak plus automation evidence | Browser-control protocol evidence occurs with another automation indicator | DENY | High confidence |
+| Disabled developer console plus automation evidence | The browser console is disabled and another chromeless or automation indicator is present | DENY | High confidence |
+| Missing browser evidence | No browser-side report is present | CHALLENGE | Heuristic; can affect script-blocking or unsupported clients |
+| Request-body integrity failure | A request-integrity token fails header, body, or keyed-authentication validation | DENY | High confidence |
+| In-session protocol-fingerprint rotation | The encrypted-connection implementation changes within one session | DENY | High confidence when Core directly observed the client connection |
+| Browser claim without execution evidence | A request claims a browser but supplies no browser execution evidence | DENY | High confidence only when the report provenance supports the predicate; Gate's narrower collector is a documented limitation |
+| Automated-browser interaction signature | A click without an approach trajectory occurs with another machine-interaction or browser-control indicator | DENY | High confidence for the combined predicate; individual behavior remains accessibility-sensitive |
+| Cross-session correlation | One fingerprint rotates across networks, fingerprint churn follows a proxy, or proof-of-work completes implausibly quickly | DENY | High confidence for the combined predicate; network policy can monitor correlation residuals |
+| Hypertext Transfer Protocol version 2 denial of service | Rapid Reset or continuation-frame flooding is observed | DENY | High confidence |
+| Multi-axis identity rotation | User agent changes together with connection or source-address rotation | DENY | High confidence |
+| Missing or replayed request-integrity token | An application programming interface call lacks the required token or reuses a stale one | CHALLENGE | Heuristic |
+| No interaction observed | No interaction occurs during the observation window | CHALLENGE | Heuristic; can match legitimate reading, assistive technology, or non-pointer use |
+| Datacenter-network browser | A consistent browser arrives from a datacenter network | CHALLENGE | Heuristic |
+| Advanced browser residual | Audio-rate, graphics-processor, or mobile-versus-desktop evidence remains inconsistent near the detection boundary | CHALLENGE | Heuristic |
+| Chromium-container residual | A Chrome claim lacks Widevine, media devices, and voices in the specific combined pattern | CHALLENGE | Heuristic |
+| Network residual policy | Enforced policy selects residual evidence involving proxy hops, virtual private networks, Tor, or source spoofing | CHALLENGE | Operator-controlled and heuristic; Transmission Control Protocol residuals never auto-enforce |
 
-On a route the operator marked with the `attested` preset (`strict` plus the attestation floor, ceiling-guard #1), an ALLOW is not free — it is priced. Both ALLOW paths described above are affected:
+Core uses the same ordered predicate table for the verdict and the Detection Observatory trace. This prevents the explanatory view from evaluating a second set of rules.
 
-- A **scoring-ALLOW** (risk < 30, no hard rule) and a **token-fast-path ALLOW** (a valid verdict trust token that would otherwise skip re-scoring) are **demoted to `challenge_pow`** unless the session presents possession — a WebAuthn / Privacy Pass / Web Bot Auth trust-upgrade (exempt, because the possession pre-gate forwards it first) — or a valid `hmn_su` step-up proof (minted on an LLM-resistant Pass solve, redeemed at `POST /__hmn/stepup`).
-- The demotion is **CHALLENGE→Pass only, never DENY**: an unattested human solves the same Pass an anonymous visitor solves, so there is no categorical human block and no lockout. It does **not** detect or resolve a coherent spoof past the ceiling; it prices the ALLOW so unlimited free high-value passes become possession-or-a-per-session human solve.
-- The floor applies only where it is armed. The preset is refused on a catch-all / public prefix, and without a wired credential verifier it degrades to a Pass-for-everyone friction wall.
+## Gate edge protections
 
-## Hard rules
+Gate edge protections run outside the scoring engine. Runtime Settings controls them by module name rather than by Core rule identifier.
 
-Hard rules can promote or override the score-based verdict. They fall in **two planes**, and knowing which is which prevents a common confusion:
+| Public protection name | Predicate or condition | Action | Monitoring behavior |
+|---|---|---|---|
+| Active ban | Source address, network range, or fingerprint has an active ban | Refuse before scoring or origin contact | Records what would have been refused |
+| Hard request-rate breach | Rolling source or fingerprint bucket exceeds the hard limit | Refuse and apply the ban ladder | Records the breach without refusing |
+| Request-smuggling protection | Ambiguous message framing such as conflicting length and transfer-encoding headers | Refuse before routing | Records what would have been refused |
+| Trusted-header forgery protection | A client supplies an internal trust or forwarding header reserved for Gate | Refuse and strip the forged input | Records what would have been refused |
+| Verdict-token replay and forgery protection | Trust token is forged, expired, lifted, or bound to different client characteristics | Refuse | Records the failed validation |
+| Connection-upgrade protection | WebSocket or Server-Sent Events upgrade lacks a prior fingerprint-bound verdict | Refuse the upgrade | Records what would have been refused |
+| Decision-probing sweep protection | One fingerprint creates enough near-identical sessions to map decision boundaries | Refuse after the threshold and apply a constant timing floor | Records the sweep |
+| Single-use proof replay protection | A beacon or proof nonce is reused | Reject the proof | Records the replay |
+| Response-injection safety guard | An eligible response is compressed unexpectedly, hostile, or larger than the bounded injection buffer | Pass the origin response through without injection | Records the skipped injection |
+| Direct-origin bypass protection | A request reaches the protected origin without Gate's authenticated origin header | Origin returns misdirected request | Enforced at the origin boundary |
 
-- **Engine-plane hard rules (HR-1..HR-21)** are evaluated by the detection engine inside the score pipeline (`internal/scoring`). These are the rules the Detection Observatory shows in its hard-rule ladder, and the ones you see on a scored request.
-- **Gate-plane hard rules (HR-22..HR-30)** are evaluated at the proxy edge (origin cloaking, request smuggling, token/beacon replay, upgrade tunnels, decision-probing). They never run in the detection engine and never appear in the Observatory's "HR-1 through HR-21" ladder — you only meet them on the running Gate proxy.
+The response-injection safety guard is deliberately fail open for origin content. It prevents Gate from buffering an unbounded response; it is not a blocked-client verdict.
 
-Each row lists what fires the rule, the action it drives, and its confidence class. The confidence class also tells you how to read a spike:
+## Machine-identifier collision
 
-- **High-confidence (FP~0):** a spike means automated traffic matching that pattern is arriving. Reading a spike as "attack" is safe.
-- **Heuristic (can catch some humans):** a spike may mean genuine humans are being mislabeled, not only automation. Investigate before treating it as attack volume.
+Current source contains overlapping legacy number ranges between recent Core rules and older Gate audit labels. Detection behavior is frozen, so this documentation change does not renumber predicates.
 
-### Engine-plane hard rules (HR-1..HR-21)
+Operational consequences:
 
-Evaluated by the detection engine; visualized in the Detection Observatory. Listed by number for lookup; the engine evaluates them in **first-match precedence order** (1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 10, 16, 14, 18, 20, 19, 21, 15, 17, 12, 11), so — for example — HR-13 is checked before HR-10.
+- do not interpret a raw rule identifier without the event type and plane;
+- use `engine` or `edge` in exported records and security-event-management parsing;
+- show the descriptive name in the Ledger;
+- keep raw identifiers in technical details and exports only;
+- do not build a new policy or alert keyed only to the unqualified legacy number.
 
-| Rule | What fires it | Action | Confidence | Reading a spike |
-|------|---------------|--------|------------|-----------------|
-| HR-1 | Hard automation artifact (Selenium / Puppeteer / Playwright) | DENY | High-confidence (FP~0) | Attack |
-| HR-2 | UA claims a browser but TLS **and** HTTP/2 both resolve to a different engine | DENY | High-confidence | Attack |
-| HR-3 | Synthetic (untrusted) events plus a webdriver/CDP tell | DENY | High-confidence | Attack |
-| HR-4 | `webdriver` flag plus a patched native getter hiding it | DENY | High-confidence | Attack |
-| HR-5 | RIT tamper / invalid HMAC together with a TLS engine mismatch | DENY | High-confidence | Attack |
-| HR-6 | Runtime hooking / prototype pollution plus a webdriver/CDP tell | DENY | High-confidence | Attack |
-| HR-7 | Headless browser plus a second automation indicator | DENY | High-confidence | Attack |
-| HR-8 | Patched native getter in a chromeless / headless window (stealth tool) | DENY | High-confidence | Attack |
-| HR-9 | A CDP leak together with any automation hint | DENY | High-confidence | Attack |
-| HR-10 | No client-side (WASM/JS) signals at all | CHALLENGE | Heuristic — can catch some humans | May be mislabeling humans |
-| HR-11 | A consistent browser from a datacenter ASN | CHALLENGE | Heuristic — can catch some humans | May be mislabeling humans |
-| HR-12 | Zero interaction over the observation window | CHALLENGE | Heuristic — can catch some humans | May be mislabeling humans |
-| HR-13 | A disabled Console API (Patchright) plus a chromeless / automation tell | DENY | High-confidence | Attack |
-| HR-14 | The TLS fingerprint rotated within one session | DENY | High-confidence | Attack |
-| HR-15 | Multi-axis rotation (UA changed together with TLS/IP rotation) | DENY | High-confidence | Attack |
-| HR-16 | A RIT token that fails the body HMAC (request-body tamper) | DENY | High-confidence | Attack |
-| HR-17 | A replayed or absent RIT token on an API call | CHALLENGE | Heuristic — can catch some humans | May be mislabeling humans |
-| HR-18 | A browser UA that delivered zero client-side JS evidence (HTTP parrot) | DENY | High-confidence | Attack |
-| HR-19 | One fingerprint across many subnets (residential-proxy rotation), or a proof-of-work solved implausibly fast | DENY | High-confidence | Attack |
-| HR-20 | AI browser-agent signature (teleport click plus a second agent/CDP tell) | DENY | High-confidence | Attack |
-| HR-21 | HTTP/2 DoS (Rapid Reset, CONTINUATION flood) | DENY | High-confidence | Attack |
+## Diagnostic signals
 
-> **Note:** These rows match the engine's own rule table (what the Observatory shows and what the engine did). For the exact predicate behind each rule (and how to author one), see [Inside the detection engine](../explanation/detection-engine-internals.md).
+Raw score traces contain dotted signal identifiers because they are machine contracts. Reader-facing interfaces should translate them into descriptions.
 
-> **Where request-flood and credential-stuffing velocity are handled (not HR-21).** A request **flood** (`l5.abuse.flood`, a shared `ja4|subnet` bucket) is deliberately **not** a categorical HR-21 DENY — that would lock out a busy carrier-NAT (CGNAT) subnet on strangers' traffic. It instead contributes to a **score-based CHALLENGE** (a real flood is challenged and then rate-limited/banned by the escalating **ban ladder**). High **credential-stuffing / failed-auth velocity** is likewise a rate-limit / ban-ladder concern, not a scoring hard rule. HR-21 covers only the unambiguous HTTP/2 protocol DoS attacks.
+| Description | Evidence family |
+|---|---|
+| Browser-control proxy leak | Static client inspection |
+| WebDriver state exposed | Static client inspection |
+| Graphics renderer and parameter mismatch | Client fingerprinting |
+| Click with no approach trajectory | Interaction analysis |
+| Machine-like burst and silence cadence | Interaction analysis |
+| Rapid Reset frame pattern | Network and protocol inspection |
+| One fingerprint rotating across networks | Cross-session correlation |
+| Request body does not match its integrity token | Request integrity |
+| Proof-of-work completed | Challenge state |
 
-### Gate-plane hard rules (HR-22..HR-30)
+Cross-check identifiers use a separate machine namespace. The public meanings are:
 
-Evaluated at the proxy edge, **not** in the detection engine — these never appear in the Observatory.
+- user-agent claim versus connection-negotiation implementation;
+- user-agent claim versus Hypertext Transfer Protocol version 2 implementation;
+- browser claim versus browser-side execution evidence.
 
-| Rule | What fires it | Action | Confidence | Reading a spike |
-|------|---------------|--------|------------|-----------------|
-| **HR-22** | *(retired number — never reassigned)* | — | — | Do not implement; docs must not invent a predicate for this id |
-| HR-23 | HTTP request smuggling (CL+TE / duplicate CL / bad TE) | DENY | High-confidence | Attack |
-| HR-24 | Direct origin hit bypassing Gate (origin cloaking) | 421 | High-confidence | Attack |
-| **HR-25** | *(retired — was "bundle injected but no beacon")* | — | — | **Not shipped.** Missing beacons are an ops/CSP signal, not a hard-rule CHALLENGE |
-| HR-26 | WebSocket / SSE upgrade with no prior fingerprint-bound verdict | DENY | High-confidence | Attack |
-| HR-27a | Injector abuse / oversized or hostile HTML body — skip injection | **passthrough** (fail-open) | High-confidence of abuse shape | Origin still served; no injection; audited as inject-skip |
-| HR-27b | Client forged a trust / internal forwarding header | DENY | High-confidence | Attack |
-| HR-28 | Verdict token replayed from a different fingerprint, or forged | DENY | High-confidence | Attack |
-| HR-29 | Replayed single-use proof (beacon / PoW nonce) | reject | High-confidence | Attack |
-| HR-30 | Decision-probing sweep: many sessions from one fingerprint | DENY | High-confidence | Attack |
+## Reading a rule spike
 
-> **Note:** HR-27a is deliberately **fail-open**: Gate refuses to buffer unbounded HTML and passes the response through without injection rather than DoS itself or DENY the client. Do not read a spike of HR-27a audit events as blocked attacks — they mean "injection skipped."
-
-## Reading TopContributors drill-down signal IDs
-
-When you open a session drill-down, the TopContributors panel lists the individual signals that pushed the risk score, each identified by a dotted signal ID. The namespace is:
-
-```
-l{n}.{group}.{item}
-```
-
-- `l{n}` — the detection layer that produced the signal (**layer tokens are uppercase L1–L7, but signal IDs are lowercase**, e.g. `l1.cdp.proxy_leak`). See the layer list in [How Gate sees a request](../concepts/how-gate-sees-a-request.md).
-- `{group}` — the signal family within that layer; it drives de-duplication (two tells in one group are collapsed so they aren't double-counted).
-- `{item}` — the specific signal.
-
-Real examples from the reference build:
-
-| Signal ID | Layer | Reads as |
-|-----------|-------|----------|
-| `l1.cdp.proxy_leak` | L1 Static Client | CDP proxy leak |
-| `l1.navigator.webdriver` | L1 Static Client | `navigator.webdriver` flag |
-| `l2.webgl.param_consistency` | L2 Fingerprint | WebGL renderer vs params mismatch |
-| `l4.mouse.click_no_trajectory` | L4 Behavioral | Click with no mouse trajectory |
-| `l4.agent.burst_silence` | L4 Behavioral | Agent burst/silence input cadence |
-| `l5.h2dos.rapid_reset` | L5 Network/Protocol | HTTP/2 Rapid Reset pattern |
-| `l5.correlation.proxy_rotation` | L5 Network/Protocol | Cross-session fingerprint correlation |
-| `l5.rit.body_mismatch` | L5 Network/Protocol | Request-integrity-token body tamper |
-| `l7.pow.solved` | L7 Scoring/Decision | Proof-of-work solved (drives the PoW upgrade above) |
-
-> **Note:** The **L6 consistency layer** uses a separate `x.` namespace for its cross-checks — not an `l6.` prefix. The real cross-check IDs are `x.ua_vs_ja4` (UA vs TLS fingerprint), `x.ua_vs_h2` (UA vs HTTP/2 fingerprint), and `x.browser_no_js` (a browser UA that produced no client-side JS). HR-2 fires when **both** `x.ua_vs_ja4` and `x.ua_vs_h2` are inconsistent; HR-18 fires on `x.browser_no_js`.
+- For a high-confidence combined predicate, verify representative records and the collection plane before treating the rise as automated traffic.
+- For a heuristic, investigate legitimate client changes, accessibility impact, script blocking, network topology, and challenge friction first.
+- A missing rule after a Settings change may indicate monitor mode rather than the predicate disappearing.
+- A network rule falling to zero may indicate encrypted-connection re-termination, not an improvement.
 
 ## Related
 
-- [CLI, Config & Per-Route Policy Reference](cli-config-policy.md) — how presets map verdicts to routes.
-- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the L1–L7 layers and glossary.
-- [Incident Runbooks](../runbooks/incident-runbooks.md) — responding to a rule spike on call.
-- [Will This Break My App?](../explanation/will-this-break-my-app.md) — fail-open behavior and rollout safety.
+- [Glossary](glossary.md)
+- [How humanymous evaluates a request](../concepts/how-gate-sees-a-request.md)
+- [Runtime policy and configuration](cli-config-policy.md)
+- [Incident runbooks](../runbooks/incident-runbooks.md)
+- [Supported topologies](supported-topologies.md)

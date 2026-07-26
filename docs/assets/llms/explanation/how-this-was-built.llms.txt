@@ -34,7 +34,7 @@ The backward arrows are the point: a tell a new profile hides, or a weak assumpt
 
 ## Specification before code
 
-Every capability began as a written specification — a single source of truth for one behavior — before any code existed. The spec fixed the vocabulary (which signal, which layer, which verdict), the decision rule, and the boundary of what the behavior does *not* cover. Implementation notes wired the spec to concrete files; tests verified the spec held.
+Every capability began as a written specification — a single source of truth for one behavior — before any code existed. The spec fixed the vocabulary (which signal, which stage, which verdict), the decision rule, and the boundary of what the behavior does *not* cover. Implementation notes wired the spec to concrete files; tests verified the spec held.
 
 The value of this order is traceability. When a signal fires in production, you can walk backward from the log line to the rule that promoted it, to the spec that defined the rule, to the reason the rule exists. Nothing in the scoring path is folklore; each contribution has a stated origin.
 
@@ -55,18 +55,18 @@ Two rules keep this honest and safe:
 - **Defensive-only, self-target-only.** Every profile in the catalog targets *your own* deployment. The harness has no third-party target and is never framed as probing one. See [self-validation: red-team your own deployment](../how-to/self-validation-red-team.md).
 - **The human baseline is a first-class case.** A real-browser profile runs alongside the automated ones. A design that blocks more bots by also challenging the human baseline has not improved; it has traded one error for another. False positives are measured, not assumed away.
 
-> **Important:** No detection is complete. Anti-detect tooling combined with real human click-farms (the T4 tier) is an explicit design boundary, not a solved problem — it is mitigated by rate and reputation, not eliminated. Any page that implies otherwise is wrong.
+> **Important:** No detection is complete. Anti-detect tooling combined with real human click-farms (the coherent browser or human-assisted automation tier) is an explicit design boundary, not a solved problem — it is mitigated by rate and reputation, not eliminated. Any page that implies otherwise is wrong.
 
 ## Scored, not a binary flag
 
-The engine does not emit a bot/human boolean. Each request is scored across seven layers — static client signals, fingerprint, client integrity, behavior, network and protocol, cross-check consistency, and the scoring step itself (L1–L7) — into a risk score from 0 to 100, which resolves to a verdict: ALLOW (0–29), CHALLENGE (30–69), or DENY (70–100).
+The engine does not emit a bot/human boolean. Each request is scored across seven layers — static client signals, fingerprint, client integrity, behavior, network and protocol, cross-check consistency, and the scoring step itself (seven detection stages) — into a risk score from 0 to 100, which resolves to a verdict: ALLOW (0–29), CHALLENGE (30–69), or DENY (70–100).
 
 Two mechanisms sit on top of the score:
 
-- **Hard rules** promote a verdict on high-confidence evidence. When a single tell is decisive — a headless browser that also declares `navigator.webdriver`, for instance — hard rule HR-7 promotes the verdict to DENY regardless of the accumulated score. The rules are a data-driven table, each with a stated reason, evaluated in a fixed order.
+- **enforcement rules** promote a verdict on high-confidence evidence. When a single tell is decisive — a headless browser that also declares `navigator.webdriver`, for instance — headless browser plus another automation indicator rule promotes the verdict to DENY regardless of the accumulated score. The rules are a data-driven table, each with a stated reason, evaluated in a fixed order.
 - **Cross-checks** (the `x.` namespace) score *consistency between layers* rather than any single layer. A client that claims one browser engine in its user-agent but presents another engine's TLS fingerprint is inconsistent, and the inconsistency is itself a signal.
 
-Weighting low-confidence signals weakly keeps the false-positive rate bounded; hard rules keep high-confidence evidence from being diluted by the score. The design accepts a bounded false-positive rate rather than claiming none.
+Weighting low-confidence signals weakly keeps the false-positive rate bounded; enforcement rules keep high-confidence evidence from being diluted by the score. The design accepts a bounded false-positive rate rather than claiming none.
 
 ## From an engine to an enforcement layer
 
@@ -74,11 +74,11 @@ The same scoring model was then promoted into humanymous Gate — a reverse prox
 
 - **Audit-log-first.** Nothing enforces until the decision has a home. Every verdict is written to a tamper-evident, append-only hash chain with periodic signed checkpoints *before* it takes effect.
 - **Fail-closed.** When a required signal is missing — a strict route with no returned detection beacon — the edge challenges rather than allows. The safe default is to withhold access, not grant it.
-- **Dual-control on sensitive actions.** Irreversible or fleet-wide actions (cryptographic erasure, the kill switch) require a second, distinct role to commit. No single principal can act alone.
+- **Dual-control on sensitive actions.** Irreversible or node-local actions (cryptographic erasure, the kill switch) require a second, distinct role to commit. No single principal can act alone.
 
 ## Observing the decision as it happens
 
-To make the layered decision inspectable during development, the engine can emit a live trace of how a score was assembled — each layer's contribution, the cross-checks, the hard-rule evaluation, and the final verdict — through a loopback-only developer surface, the Detection Observatory. It is a development tool: it fails closed if asked to bind anything other than loopback, so it cannot become a remotely reachable surface. See [the Observatory architecture](observatory-architecture.md).
+To make the stageed decision inspectable during development, the engine can emit a live trace of how a score was assembled — each stage's contribution, the cross-checks, the enforcement-rule evaluation, and the final verdict — through a loopback-only developer surface, the Detection Observatory. It is a development tool: it fails closed if asked to bind anything other than loopback, so it cannot become a remotely reachable surface. See [the Observatory architecture](observatory-architecture.md).
 
 ## Real networks, not one loopback host
 
@@ -102,10 +102,10 @@ make attack
 
 The method gives a traceable line from intent to verified behavior, a bounded and measured false-positive posture, and an enforcement layer whose every decision is recorded before it acts.
 
-It does not give a finished product. This is a reference implementation: it favors clarity and verifiability over the operational hardening a production deployment needs, it does not solve the T4 ceiling, and every accuracy figure is measured against a reference catalog rather than live adversarial traffic. Where a page states a limit, the limit is real.
+It does not give a finished product. This is a reference implementation: it favors clarity and verifiability over the operational hardening a production deployment needs, it does not solve the coherent browser or human-assisted automation ceiling, and every accuracy figure is measured against a reference catalog rather than live adversarial traffic. Where a page states a limit, the limit is real.
 
 ## Where to go next
 
 - [Which piece am I using?](which-piece-am-i-using.md) — the three surfaces (engine, Gate, Observatory) and how they differ.
-- [Detection engine internals](detection-engine-internals.md) — the layers, scoring, hard rules, and cross-checks in detail.
+- [Detection engine internals](detection-engine-internals.md) — the stages, scoring, enforcement rules, and cross-checks in detail.
 - [Self-validation: red-team your own deployment](../how-to/self-validation-red-team.md) — run the catalog against your own edge.

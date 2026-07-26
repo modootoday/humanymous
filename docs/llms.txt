@@ -1,12 +1,12 @@
 # humanymous
 
-> A defensive, multi-layer browser-automation / anti-bot detection engine (Go/WASM + JavaScript core, Go reverse-proxy "Gate"). Apache-2.0 reference implementation. It raises the cost of automation across seven detection layers (static client, fingerprint, integrity, behavioral biometrics, JA3/JA4 TLS + HTTP/2, cross-consistency, weighted scoring) into one verdict — ALLOW, CHALLENGE, or DENY — with a tamper-evident signed audit record.
+> humanymous is an Apache-2.0 reference implementation for reducing browser automation against an application you operate. The standalone Core engine combines browser, integrity, interaction, connection, and consistency evidence into an ALLOW, CHALLENGE, or DENY verdict. The Gate reverse proxy enforces its own request-time verdict at the edge and records decisions in a tamper-evident local audit log. Core and Gate share scoring code but do not observe identical evidence.
 
-Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppeteer/Playwright, headless tells, TLS parrots, naive proxy farms) but does not claim to beat a coherent real-engine spoof behind residential proxies (the documented T4 ceiling). Not a WAF, not a CDN, not a CAPTCHA.
+The project raises the cost of commodity automation; it does not prove that a caller is human or promise to stop coherent automation using a real browser and plausible network origin. Gate is an application-edge automation control, not a web application firewall, content delivery network, traffic-absorption service, or interactive human-verification product. The computational-work challenge is incomplete as a production recovery and accessibility path.
 
 ## Start here
 
-- [Start here: Compliance / DPO](https://humanymous.net/start-here/compliance-dpo.html)
+- [Start here: Compliance / data protection officer](https://humanymous.net/start-here/compliance-dpo.html)
 - [Start here: Developer (Red/Blue)](https://humanymous.net/start-here/developer.html)
 - [Start here: Evaluator](https://humanymous.net/start-here/evaluator.html)
 - [Start here: Integrator](https://humanymous.net/start-here/integrator.html)
@@ -24,7 +24,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 - [Cut a Release (semver tags + automated changelog)](https://humanymous.net/how-to/cut-a-release.html)
 - [Deployment & Policy Operations](https://humanymous.net/how-to/deployment-policy-operations.html)
 - [Watch detection happen live: the Detection Observatory](https://humanymous.net/how-to/detection-observatory.html)
-- [Extend the detector: add a signal, a cross-check, or a hard rule](https://humanymous.net/how-to/extend-detection.html)
+- [Extend the detector: add a signal, a cross-check, or an enforcement rule](https://humanymous.net/how-to/extend-detection.html)
 - [HTTPS / TLS Certificates (Let's Encrypt, BYO, behind a terminator)](https://humanymous.net/how-to/https-tls-certificates.html)
 - [Key Management, Rotation & Recovery](https://humanymous.net/how-to/key-management.html)
 - [Observability and SIEM integration](https://humanymous.net/how-to/observability-siem.html)
@@ -45,18 +45,18 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 - [Deployment cost, latency & operational footprint](https://humanymous.net/reference/deployment-cost-latency.html)
 - [Gate → origin request contract & origin-cloaking spec](https://humanymous.net/reference/gate-origin-contract.html)
 - [Glossary](https://humanymous.net/reference/glossary.html)
-- [Hard rules, verdicts and signal-ID reference](https://humanymous.net/reference/hard-rules-verdicts.html)
+- [Verdicts, enforcement rules, and diagnostic signals](https://humanymous.net/reference/hard-rules-verdicts.html)
 - [Install, system requirements & supported platforms](https://humanymous.net/reference/install-requirements.html)
 - [On-call quick reference card](https://humanymous.net/reference/on-call-quick-reference.html)
-- [Production-ready vs reference (prod-delta) & local↔production checklist](https://humanymous.net/reference/production-vs-reference.html)
-- [RBAC, Separation-of-Duties & Dual-Control Reference](https://humanymous.net/reference/rbac-separation-of-duties.html)
+- [Production-ready vs reference (production responsibility) & local↔production checklist](https://humanymous.net/reference/production-vs-reference.html)
+- [role-based access control, Separation-of-Duties & Dual-Control Reference](https://humanymous.net/reference/rbac-separation-of-duties.html)
 - [Red-team catalog reference: profiles, raw-protocol attacks and verdict classification](https://humanymous.net/reference/red-team-catalog.html)
 - [Red-team rules of engagement (defensive-only)](https://humanymous.net/reference/red-team-rules-of-engagement.html)
 - [humanymous — security & code audit report](https://humanymous.net/reference/security-audit.html)
 - [Security vulnerability disclosure policy](https://humanymous.net/reference/security-disclosure.html)
 - [Standards and regulatory mapping matrix, plus audit-response evidence pack](https://humanymous.net/reference/standards-mapping.html)
 - [Support, licensing & open-source notices](https://humanymous.net/reference/support-licensing.html)
-- [Supported topologies: where each detection layer is actually active](https://humanymous.net/reference/supported-topologies.html)
+- [Supported topologies: where each kind of evidence is actually available](https://humanymous.net/reference/supported-topologies.html)
 
 ## Explanation
 
@@ -74,7 +74,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 
 ## Concept
 
-- [Concepts & Glossary: How Gate sees a request](https://humanymous.net/concepts/how-gate-sees-a-request.html)
+- [How humanymous evaluates a request](https://humanymous.net/concepts/how-gate-sees-a-request.html)
 
 ## Runbook
 
@@ -90,8 +90,7 @@ Honest by design: it reliably stops the commodity-bot long tail (Selenium/Puppet
 
 ## Documentation
 
-- [AGENTS.md — `docs/`](https://humanymous.net/AGENTS.html)
-- [humanymous Documentation Style Guide](https://humanymous.net/style-guide.html)
+- [Documentation style guide](https://humanymous.net/style-guide.html)
 
 ## Source
 

@@ -1,28 +1,28 @@
-# Extend the detector: add a signal, a cross-check, or a hard rule
+# Extend the detector: add a signal, a cross-check, or an enforcement rule
 
 Source: https://humanymous.net/how-to/extend-detection.html
 Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
 
 ---
 
-# Extend the detector: add a signal, a cross-check, or a hard rule
+# Extend the detector: add a signal, a cross-check, or an enforcement rule
 
 **Quadrant:** How-to (task-oriented). **Audience:** Blue detection engineers and contributors adding coverage to **their own** engine.
 
 > **Warning:** This page is defensive-only, local-only, and self-target-only. It teaches you to extend the detection catalog of the engine **you build and run** on your own loopback (`127.0.0.1`), validated against automation simulators you launch yourself. It is not third-party evasion guidance and gives you nothing to point at a host you do not operate. Every number you produce here is reference-measured on your machine — it describes your run, not a guarantee about live traffic.
 
-This is the procedure for adding one unit of coverage — a signal, a cross-check, or a hard rule — to the standalone detection engine (`internal/scoring`, `internal/signals`) so it fires, scores honestly, and shows up truthfully in the Observatory and the reference tables. It assumes you can already build and run the engine and drive a red profile against it. If you cannot yet, do [Run the detection engine](run-detection-engine.md) first.
+This is the procedure for adding one unit of coverage — a signal, a cross-check, or an enforcement rule — to the standalone detection engine (`internal/scoring`, `internal/signals`) so it fires, scores honestly, and shows up truthfully in the Observatory and the reference tables. It assumes you can already build and run the engine and drive a red profile against it. If you cannot yet, do [Run the detection engine](run-detection-engine.md) first.
 
-For the model you are extending — layers, dedup, noisy-OR, the hard-rule table, and the ScoreTrace — read [Detection engine internals](../explanation/detection-engine-internals.md) alongside this page. The verdict tables you will update at the end live in [Hard rules, verdicts and signal-ID reference](../reference/hard-rules-verdicts.md).
+For the model you are extending — layers, dedup, noisy-OR, the enforcement-rule table, and the ScoreTrace — read [Detection engine internals](../explanation/detection-engine-internals.md) alongside this page. The verdict tables you will update at the end live in [enforcement rules, verdicts and signal reference](../reference/hard-rules-verdicts.md).
 
 The full procedure, end to end:
 
 ```mermaid
 flowchart TD
   S1["1. Choose layer + (layer, group)"] --> S2["2. Add the signal (internal/signals)"]
-  S2 --> S3["3. Cross-check (L6, x.* namespace) if it is a contradiction"]
+  S2 --> S3["3. Add a consistency check if the evidence contradicts"]
   S3 --> S4["4. Promotion rule as data (promotionRules) — optional"]
-  S4 --> S5["5. Guard the FP path (applyFPMitigation damp)"]
+  S4 --> S5["5. Guard the false-positive path with score damping"]
   S5 --> S6["6. Do not fork trace logic (golden test)"]
   S6 --> S7["7. Validate end to end (Observatory + Docker e2e)"]
   S7 --> S8["8. Update the reader surface in lockstep"]
@@ -32,13 +32,13 @@ flowchart TD
 
 - You have the engine building and running on loopback: `bin/server.exe -addr 127.0.0.1:8443 -web web` (and, for client tells, the rebuilt `web/detector.wasm`). See [Run the detection engine](run-detection-engine.md).
 - You can run the red harness: `node test/e2e/runner.mjs`. See [Red-team catalog](../reference/red-team-catalog.md).
-- You know which layer your evidence belongs to (L1–L7) and whether it is collected in the browser (`js`/`wasm`) or on the server. If not, read [Detection engine internals](../explanation/detection-engine-internals.md) first.
+- You know which stage your evidence belongs to (seven detection stages) and whether it is collected in the browser (`js`/`wasm`) or on the server. If not, read [Detection engine internals](../explanation/detection-engine-internals.md) first.
 
 > **Note:** Everything below changes the standalone engine (the one the tests and the Observatory exercise). Because Gate embeds the **same** `internal/scoring`/`internal/signals` engine, coverage you add here is the coverage the proxy runs at the edge. You do not edit two engines — see [Which piece am I using?](../explanation/which-piece-am-i-using.md).
 
-## Step 1 — Choose the layer and the group
+## Step 1 — Choose the stage and the group
 
-Every signal carries a `layer` (L1–L7) and an `id` of the form `l{n}.{group}.{item}` (lowercase; layer **tokens** are uppercase L1–L7, but signal **IDs** are lowercase). The `group` is not cosmetic — it drives dedup.
+Every signal carries a `layer` (seven detection stages) and an `id` of the form `l{n}.{group}.{item}` (lowercase; layer **tokens** are uppercase seven detection stages, but signal **IDs** are lowercase). The `group` is not cosmetic — it drives dedup.
 
 During combination, `dedupGroups` keeps the **highest-scoring** signal per `(layer, group)` correlation group and drops the rest. So the rule is:
 
@@ -52,7 +52,7 @@ Pick the group deliberately. Putting an independent tell in an existing group si
 Mint the id and set its fields honestly. The signal schema is in `internal/signals/signals.go`:
 
 - `id` — lowercase `l{n}.{group}.{item}`, e.g. `l1.cdp.proxy_leak`.
-- `layer` — `L1`..`L7`.
+- `layer` — the legacy machine value for one of the seven named detection stages.
 - `weight` — the **maximum** contribution, 0..100. This is the ceiling this signal can ever add.
 - `confidence` — 0..1, how sure you are the observation means what you think.
 - `verdict` — the **per-signal** verdict (`OK` | `SUSPICIOUS` | `BOT` | `UNKNOWN`), distinct from the request verdict. `SUSPICIOUS`-or-`BOT` is what `fired(id)` reads; `BOT` alone is what `firedBot(id)` reads (this matters in Step 4).
@@ -68,18 +68,18 @@ $$s_i = w_i \cdot \sigma(v_i) \cdot \operatorname{clamp}_{[0,1]}(c_i)$$
 
 Emit it from the right place:
 
-- **L1–L4 client tells** (navigator/CDP/UA/window, integrity/guard, mouse/key/event) are collected in the browser and emitted from **`cmd/wasm`** (`collected: wasm` or `js`), then carried in the `client.signals[]` of the `SessionReport`.
-- **L5/L6 signals** (traffic/RIT/correlation/abuse; cross-checks) are computed on the **server path** (`collected: server`) and land in `network.signals[]` / `crosschecks[]`.
+- **browser-side collection stages client tells** (navigator/Chrome DevTools Protocol/UA/window, integrity/guard, mouse/key/event) are collected in the browser and emitted from **`cmd/wasm`** (`collected: wasm` or `js`), then carried in the `client.signals[]` of the `SessionReport`.
+- **network and consistency-check signals** (traffic/request-integrity token/correlation/abuse; cross-checks) are computed on the **server path** (`collected: server`) and land in `network.signals[]` / `crosschecks[]`.
 
-## Step 3 — Add a cross-check (L6), if the tell is a contradiction
+## Step 3 — Add a cross-check (consistency-check stage), if the tell is a contradiction
 
-If your evidence is not a single observation but a **contradiction between two claims** — "the UA says Chrome but the TLS fingerprint says something else" — model it as a cross-check, not a plain signal. Cross-checks are the L6 family and carry the `x.` group prefix (e.g. `x.ua_vs_ja4`, `x.ua_vs_h2`, `x.browser_no_js`, `x.uach_present`) — **not** `l6.x.*`.
+If your evidence is not a single observation but a **contradiction between two claims** — for example, the user-agent header claims Chrome while the encrypted-connection fingerprint does not — model it as a cross-check, not a plain signal. Cross-check machine identifiers use the `x.` prefix. Existing examples include `x.ua_vs_ja4`, `x.ua_vs_h2`, `x.browser_no_js`, and `x.uach_present`.
 
-A `CrossCheck` (see `internal/signals/signals.go`) has: `id` (in the `x.` namespace), `inputs`, `claim`, `observed`, `consistent` (bool), `weight`, `score`. Fill `inputs`/`claim`/`observed` explicitly and set `consistent = false` when the two disagree. That is exactly what a hard rule reads through `crossFail(id)` in Step 4 — a cross-check that does not set `consistent` cannot be promoted.
+A `CrossCheck` (see `internal/signals/signals.go`) has: `id` (in the `x.` namespace), `inputs`, `claim`, `observed`, `consistent` (bool), `weight`, `score`. Fill `inputs`/`claim`/`observed` explicitly and set `consistent = false` when the two disagree. That is exactly what an enforcement rule reads through `crossFail(id)` in Step 4 — a cross-check that does not set `consistent` cannot be promoted.
 
 ## Step 4 — Author a promotion rule as data (optional)
 
-A signal or cross-check contributes to the risk score on its own. You only add a hard rule when a specific **combination** should promote the verdict regardless of the score. Hard rules are data, not code branches: append a `promoRule{id, verdict, pred, why}` to the `promotionRules` list in `internal/scoring/hardrules.go`.
+A signal or cross-check contributes to the risk score on its own. You only add an enforcement rule when a specific **combination** should promote the verdict regardless of the score. Enforcement rules are data, not code branches: append a `promoRule{id, verdict, pred, why}` to the `promotionRules` list in `internal/scoring/hardrules.go`.
 
 Build `pred` from the predicate helpers:
 
@@ -90,14 +90,14 @@ Build `pred` from the predicate helpers:
 
 Choose the verdict deliberately:
 
-- **DENY** only for a combination you are confident is automated — typically two independent tells (an artifact plus a webdriver/CDP tell), so a single false read cannot promote to a block.
-- **CHALLENGE** for a heuristic. **Any rule that can catch a real human must be CHALLENGE, never DENY.** The existing heuristics `HR-10`, `HR-11`, `HR-12`, `HR-17` are all CHALLENGE for exactly this reason (e.g. zero-interaction and datacenter-ASN can describe some real people).
+- **DENY** only for a combination you are confident is automated — typically two independent tells (an artifact plus a webdriver/Chrome DevTools Protocol tell), so a single false read cannot promote to a block.
+- **CHALLENGE** for a heuristic. **Any rule that can catch a real human must be CHALLENGE, never DENY.** Existing rules for zero interaction, missing expected browser graphics, automation-like timing, and browser claims from hosting networks all challenge because they can also describe real people.
 
-Place the rule by **precedence, not number.** `promotionRules` is evaluated in first-match order, which is not numeric order (see the ordered table in [Hard rules, verdicts and signal-ID reference](../reference/hard-rules-verdicts.md)). Insert your rule where its verdict should win relative to the rules around it — a broad CHALLENGE placed above a specific DENY will shadow the DENY.
+Place the rule by **precedence, not number.** `promotionRules` is evaluated in first-match order, which is not numeric order (see the ordered table in [enforcement rules, verdicts and signal reference](../reference/hard-rules-verdicts.md)). Insert your rule where its verdict should win relative to the rules around it — a broad CHALLENGE placed above a specific DENY will shadow the DENY.
 
-Write a plain-language `why` field. It is not an internal note: it **publishes** to the Observatory trace and to the hard-rules reference table. Name the mechanism in Blue voice ("a CDP leak together with any automation hint"), never third-party evasion framing, and never an internal spec identifier.
+Write a plain-language `why` field. It is not an internal note: it **publishes** to the Observatory trace and to the hard-rules reference table. Name the mechanism in Blue voice ("a Chrome DevTools Protocol leak together with any automation hint"), never third-party evasion framing, and never an internal spec identifier.
 
-> **Note:** Give your rule the next id in the engine-plane sequence for its plane. The detection engine evaluates **HR-1..HR-21 only**. `HR-22..HR-30` are Gate-plane rules (proxy edge: bans, rate-limit, smuggling, token) that this engine never evaluates and the Observatory never shows — do not reuse or extend into that range here.
+> **Note:** Give the rule a stable machine identifier in the Core engine namespace. Legacy Core and Gate identifiers overlap, so a number alone does not identify the plane or behavior. The Observatory traces Core rules only. Public labels and explanations must use the descriptive rule name.
 
 ## Step 5 — Guard the false-positive path
 
@@ -138,32 +138,32 @@ go test ./internal/scoring/ -run 'ScoreWithTrace|CombineTrace'
 
    Host `node test/e2e/runner.mjs` is for local debugging only — not completion authority.
 
-3. **Confirm the trade-off is honest.** Your change is good only if `botTPR` improved **without** raising `humanFPR`, and without a spike in the human baseline's challenge-rate (Step 5). If a bot profile that should now be caught still passes (FN), re-check your group choice (Step 1) and per-signal verdict (Step 2 — `fired` vs `firedBot`). If a human baseline flipped to DENY, prefer a damp (Step 5) or a CHALLENGE (Step 4) over the DENY.
+3. **Confirm the trade-off is honest.** Your change is good only if the automated-profile catch rate (`botTPR`) improved **without** raising the human denial rate (`humanFPR`), and without a spike in the human baseline's challenge rate. If an automated profile that should now be caught still passes, re-check the group choice and per-signal verdict. If a human baseline changes to DENY, prefer a damp or CHALLENGE over DENY.
 
 ## Step 8 — Update the reader surface in lockstep
 
-A rule that fires but is undocumented is a drift bug. When you add or change an engine hard rule:
+A rule that fires but is undocumented is a drift bug. When you add or change an engine enforcement rule:
 
-- Add the row to the **engine-plane** hard-rule table in [Hard rules, verdicts and signal-ID reference](../reference/hard-rules-verdicts.md) — id, verdict, the `why`, and the signal/cross-check IDs it fires on.
-- Keep it on the engine plane: HR-1..HR-21 only, no `HR-22..HR-30`.
+- Add the row to the **Core engine** enforcement-rule table in [enforcement rules, verdicts and signal reference](../reference/hard-rules-verdicts.md): descriptive name, verdict, explanation, and the exact machine signal identifiers it reads.
+- Keep it on the Core engine plane. Gate edge protections are separate and can have overlapping legacy identifiers.
 
-> **Important:** Reader-facing pages must never carry an internal source-of-truth identifier. Name the signal IDs (`l{n}.{group}.{item}`), the layer tokens (L1–L7), the cross-checks (`x.*`), and the hard rule (HR-N) — nothing else.
+> **Important:** Reader-facing pages lead with the complete descriptive name. Put an exact machine signal or cross-check identifier in code formatting only where a developer must configure, query, or test that value. Never expose internal specification numbers or legacy rule numbers as public concepts.
 
 ## Checklist
 
-- [ ] Layer and `(layer, group)` chosen so correlated tells share a group and independent tells do not.
-- [ ] Signal id lowercase `l{n}.{group}.{item}`; weight/confidence honest (low confidence → weak weight, no penalty); per-signal verdict set; emitted from `cmd/wasm` (L1–L4) or the server path (L5/L6).
+- [ ] Stage and `(stage, group)` chosen so correlated tells share a group and independent tells do not.
+- [ ] Signal identifier follows the machine schema; weight and confidence are honest (low confidence means weak weight, not a penalty); per-signal verdict is set; signal is emitted from `cmd/wasm` for browser-side collection or from the server path for network and consistency checks.
 - [ ] Cross-checks in the `x.` namespace with `inputs`/`claim`/`observed`/`consistent` set so `crossFail()` can read them.
-- [ ] Any hard rule appended as a `promoRule` to `promotionRules`, verdict chosen deliberately (human-catching heuristic ⇒ CHALLENGE), placed by precedence, with a plain `why`.
-- [ ] FP guarded: `applyFPMitigation` damp added where a legitimate client would trip; privacy-browser and old-device baselines re-checked before any DENY.
+- [ ] Any enforcement rule appended as a `promoRule` to `promotionRules`, verdict chosen deliberately (human-catching heuristic ⇒ CHALLENGE), placed by precedence, with a plain `why`.
+- [ ] false positive guarded: `applyFPMitigation` damp added where a legitimate client would trip; privacy-browser and old-device baselines re-checked before any DENY.
 - [ ] Golden test run (no forked trace logic): `trace.Score == Combine`, `ScoreWithTrace == Score`.
-- [ ] End-to-end (Docker): fires in the Observatory; `make e2e` / `make attack` shows `botTPR` up, `humanFPR` flat, challenge-rate on the human baseline inspected.
+- [ ] End-to-end in Docker: fires in the Observatory; `make e2e` or `make attack` shows the automated-profile catch rate up, the human denial rate flat, and the human baseline's challenge rate inspected.
 - [ ] Reader surface updated in lockstep: engine-plane row in `hard-rules-verdicts.md` + derivation-index row; no internal spec IDs on reader pages.
 
 ## Related
 
 - [Detection engine internals](../explanation/detection-engine-internals.md) — the model this page extends.
-- [Hard rules, verdicts and signal-ID reference](../reference/hard-rules-verdicts.md) — the table you update in Step 8.
+- [enforcement rules, verdicts and signal reference](../reference/hard-rules-verdicts.md) — the table you update in Step 8.
 - [Run the detection engine](run-detection-engine.md) — build and run the engine on loopback.
 - [Write a red profile](write-a-red-profile.md) — add the simulator that exercises your tell.
 - [Red-team catalog](../reference/red-team-catalog.md) — the bundled profiles and their expected verdicts.

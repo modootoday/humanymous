@@ -1,11 +1,11 @@
-# Start here: Compliance / DPO
+# Start here: Compliance / data protection officer
 
 Source: https://humanymous.net/start-here/compliance-dpo.html
 Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
 
 ---
 
-# Start here: Compliance / DPO
+# Start here: Compliance / data protection officer
 
 > **Quadrant:** How-to / navigation hub.
 > **Audience:** Data-protection officers, privacy counsel, and compliance owners evaluating or operating humanymous Gate.
@@ -14,21 +14,21 @@ humanymous Gate is a reference implementation, not a production-hardened build; 
 
 ## What Gate gives you
 
-Gate is built so that its bot-detection processing can be reasoned about under a data-protection regime. Raw identifiers — IP address, JA4, HTTP/2 fingerprint, user agent, SNI, device fingerprint — are never stored in the clear; each is written only as a per-subject-key-derived pseudonym (64-hex, scrypt KDF-stretched), so the audit record is **pseudonymous, not anonymous** (GDPR Recital 26): re-identification remains possible **offline** for anyone who holds the keystore and `HMN_UNSEAL` (Gate exposes no re-identification API; dual-control does **not** gate this). The audit **subject is a session**, not a natural person — many visits mean many unlinkable subject keys. Every enforcement decision is emitted to an append-only, hash-chained audit log with a per-record HMAC and an Ed25519 Signed Tree Head checkpointed every 32 records and co-signed by a **local** witness (same process / same keystore — not an external multi-party notary), giving you a **tamper-evident (not tamper-proof)** record. Right-to-erasure is cryptographic erasure (crypto-shred): destroying the per-subject linkage key renders that **session** subject's identifiers unrecoverable while the chain stays verifiable; completion evidence is an `erasure.completed` audit record (HMAC-chained, covered by the next STH — not a separately signed certificate blob). Administrative access uses RBAC (Auditor, Operator, Approver, DPO) with dual-control on permanent/CIDR bans, erasure (DPO), and the kill switch. **Behavioral interaction timings are component-scoped:** controllers who deploy **Gate only** (no Core Pass / full client behavioral path) must not claim mouse/keystroke timing dynamics in an Article 13 notice that the Gate deployment does not collect. Taken together, these features **support your GDPR/PIPA erasure and audit workflows; they do not, on their own, make you compliant.**
+Gate is built so that its bot-detection processing can be reasoned about under a data-protection regime. Raw identifiers — IP address, JA4, HTTP/2 fingerprint, user agent, SNI, device fingerprint — are never stored in the clear; each is written only as a per-subject-key-derived pseudonym (64-hex, scrypt KDF-stretched), so the audit record is **pseudonymous, not anonymous** (GDPR Recital 26): re-identification remains possible **offline** for anyone who holds the keystore and `HMN_UNSEAL` (Gate exposes no re-identification API; dual-control does **not** gate this). The audit **subject is a session**, not a natural person — many visits mean many unlinkable subject keys. Every enforcement decision is emitted to an append-only, hash-chained audit log with a per-record HMAC and an Ed25519 Signed Tree Head checkpointed every 32 records and co-signed by a **local** witness (same process / same keystore — not an external multi-party notary), giving you a **tamper-evident (not tamper-proof)** record. Right-to-erasure is cryptographic erasure (crypto-shred): destroying the per-subject linkage key renders that **session** subject's identifiers unrecoverable while the chain stays verifiable; completion evidence is an `erasure.completed` audit record (HMAC-chained, covered by the next STH — not a separately signed certificate blob). Administrative access uses role-based access control (Auditor, Operator, Approver, data protection officer) with dual-control on permanent/CIDR bans, erasure (data protection officer), and the kill switch. **Behavioral interaction timings are component-scoped:** controllers who deploy **Gate only** (no Core Pass / full client behavioral path) must not claim mouse/keystroke timing dynamics in an Article 13 notice that the Gate deployment does not collect. Taken together, these features **support your GDPR/PIPA erasure and audit workflows; they do not, on their own, make you compliant.**
 
 > **Warning:** Cryptographic erasure is irreversible. Once the per-subject linkage key is shredded, the pseudonyms for that session subject can no longer be resolved, and the `erasure.completed` audit record is the reference evidence of completion. A cancellable hold window (default 5 minutes) precedes execution; after that window, the shred cannot be undone.
 
 ## Your next three reads
 
-1. **[Right-to-Erasure (crypto-shred) Runbook](../runbooks/erasure-crypto-shred.md)** — the DPO-gated, two-person, two-phase procedure for accepting an erasure request, the hold window and its cancellation path, and how to retrieve the `erasure.completed` audit evidence. Read this first: it is the workflow you will operate.
+1. **[Right-to-Erasure (crypto-shred) Runbook](../runbooks/erasure-crypto-shred.md)** — the data protection officer-gated, two-person, two-phase procedure for accepting an erasure request, the hold window and its cancellation path, and how to retrieve the `erasure.completed` audit evidence. Read this first: it is the workflow you will operate.
 
 2. **[Concepts & Glossary](../concepts/how-gate-sees-a-request.md)** — audit-log and pseudonymization vocabulary (hash chain, STHs, local witness, integrity classes). Retention labels HOT/WARM/COLD are **declared only** in the reference — not auto-enforced.
 
-3. **[RBAC, separation-of-duties & dual-control reference](../reference/rbac-separation-of-duties.md)** — the role×capability matrix (Auditor / Operator / Approver / DPO), server-derived actor identity, and which actions need a distinct committer (permanent/CIDR bans and the kill switch need a distinct Approver; erasure needs a distinct DPO). This is your separation-of-duties evidence for an audit.
+3. **[role-based access control, separation-of-duties & dual-control reference](../reference/rbac-separation-of-duties.md)** — the role×capability matrix (Auditor / Operator / Approver / data protection officer), server-derived actor identity, and which actions need a distinct committer (permanent/CIDR bans and the kill switch need a distinct Approver; erasure needs a distinct data protection officer). This is your separation-of-duties evidence for an audit.
 
 ## Verify it yourself
 
-The audit and integrity surfaces are exposed on the authenticated admin listener (default `127.0.0.1:8445` (loopback)), under the admin API base `/__hmn/admin/` with bearer-token auth. Relevant read-only endpoints for a DPO or auditor include `GET /__hmn/admin/integrity`, `GET /__hmn/admin/audit` (filterable by verdict, host, route, rule, minimum risk, and a `before` cursor), and `GET /__hmn/admin/erasures`. Every authenticated access is itself meta-audited before the response is served.
+The audit and integrity surfaces are exposed on the authenticated admin listener (default `127.0.0.1:8445` (loopback)), under the admin API base `/__hmn/admin/` with bearer-token auth. Relevant read-only endpoints for a data protection officer or auditor include `GET /__hmn/admin/integrity`, `GET /__hmn/admin/audit` (filterable by verdict, host, route, rule, minimum risk, and a `before` cursor), and `GET /__hmn/admin/erasures`. Every authenticated access is itself meta-audited before the response is served.
 
 ---
 

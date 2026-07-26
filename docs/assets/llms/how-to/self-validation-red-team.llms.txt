@@ -11,7 +11,7 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 > **Warning:** This procedure validates a deployment **you operate**, on your own loopback interface (`127.0.0.1`). The bundled tools are labeled "local target only" and default to localhost for that reason. Never point them at any host, domain, or IP you do not run yourself. This page gives you no evasion, bypass, or attack guidance against third parties — it only helps you confirm that **your own** detection and enforcement behave as expected, and helps you measure your own false-positive rate before you enforce anything.
 
-<video autoplay loop muted playsinline poster="../assets/screenshots/anim/quickstart-cast-poster.webp" width="820" style="max-width:100%;border-radius:12px" aria-label="A self-validation run: `docker compose run --rm bots` streams the automation catalog against the local engine — each simulator resolves to DENY with its hard rule, the honest-human baseline clears ALLOW, ending 45/45 blocked with 0 false positives.">
+<video autoplay loop muted playsinline poster="../assets/screenshots/anim/quickstart-cast-poster.webp" width="820" style="max-width:100%;border-radius:12px" aria-label="A self-validation run: `docker compose run --rm bots` streams the automation catalog against the local engine — each simulator resolves to DENY with its enforcement rule, the honest-human baseline clears ALLOW, ending 45/45 blocked with 0 false positives.">
   <source src="../assets/screenshots/anim/quickstart-cast.webm" type="video/webm" />
   <source src="../assets/screenshots/anim/quickstart-cast.mp4" type="video/mp4" />
 </video>
@@ -54,7 +54,7 @@ Follow **[Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md)** e
 
 ## Step 2 — Understand what the harness targets
 
-The bundled harness measures the **detection engine** directly. It runs against the standalone detection server (`cmd/server`) on **`127.0.0.1:8443`** — the same L1–L7 engine and scoring that Gate embeds and runs inline at the edge.
+The bundled harness measures the **standalone Core detection engine** directly on **`127.0.0.1:8443`**. Gate reuses the scoring implementation but does not currently supply the same complete evidence set, so these results are not Gate accuracy results.
 
 > **Important:** The harness default target (`127.0.0.1:8443`, the standalone detection server) is **distinct** from the Gate reverse proxy, which listens on `:8444`. When you run the harness you are exercising the detection engine itself, not the proxy edge. Do not repoint the harness at your Gate edge or any other host.
 
@@ -136,22 +136,22 @@ Read it as follows:
 - **botTPR** is the detection (true-positive) rate across the automation profiles — your block-rate measurement.
 - **humanFPR** is the false-positive rate on the honest-human baseline — the number you most want near zero before enforcing.
 
-> **Important:** `humanFPR` counts only a hard **DENY** on the human baseline. A human that receives a **CHALLENGE** is scored TN, not FP — so `humanFPR` is a DENY-only metric and does not capture challenge friction on real people. Inspect the baseline's challenge rate separately (in the audit log or the [Detection Observatory](detection-observatory.md)). A nonzero `humanFPR` can also come from the heuristic hard rules (HR-11 / HR-12 / HR-17) firing on privacy browsers or older devices — expected, not a defect; see [hard rules and verdicts](../reference/hard-rules-verdicts.md).
+> **Important:** `humanFPR` counts only a hard **DENY** on the human baseline. A human that receives a **CHALLENGE** is scored TN, not false positive — so `humanFPR` is a DENY-only metric and does not capture challenge friction on real people. Inspect the baseline's challenge rate separately (in the audit log or the [Detection Observatory](detection-observatory.md)). A nonzero `humanFPR` can also come from the heuristic enforcement rules (datacenter-network browser rule / no interaction observed rule / missing or replayed request-integrity token rule) firing on privacy browsers or older devices — expected, not a defect; see [enforcement rules and verdicts](../reference/hard-rules-verdicts.md).
 
 Both are measurements from this run on your machine, not guarantees. If `humanFPR` is anything but zero, investigate the flagged baseline runs in the audit log **before** you move any route from monitor to enforce. That is the whole point of measuring first.
 
 ## What this exercise does — and does not — tell you
 
 - It **confirms** that your own detection engine responds to known automation stacks and to network/anti-tamper probes, and it **quantifies** your false-positive rate on an honest baseline. Those are real, reproducible signals about your deployment.
-- It does **not** prove your deployment blocks all automation. The simulators are a fixed catalog, not the full field of adversaries, and the T4 tier (anti-detect toolchains paired with real-human click-farms) is an explicit design boundary that this harness does not resolve — it is mitigated by rate limiting and reputation, not eliminated. See **[What Gate is (and is not)](../explanation/what-gate-is.md)** for the attacker-tier framing.
+- It does **not** prove your deployment blocks all automation. The simulators are a fixed catalog, not the full field of adversaries, and the coherent browser or human-assisted automation tier (anti-detect toolchains paired with real-human click-farms) is an explicit design boundary that this harness does not resolve — it is mitigated by rate limiting and reputation, not eliminated. See **[What Gate is (and is not)](../explanation/what-gate-is.md)** for the attacker-tier framing.
 - This page is **defensive-only by design.** It contains no tuning to make automation evade detection. If you find a profile that slips through, treat it as a finding about your own coverage to raise with the maintainers — not something to optimize against.
 
 > **Tip:** Re-run Steps 4–5 whenever you change detection configuration or upgrade the engine, and keep the `humanFPR` measurement in view. A change that raises detection but also raises false positives is a regression in the low-false-positive principle, not an improvement.
 
 ## Related
 
-- **[Watch detection happen live: the Detection Observatory](detection-observatory.md)** — the interactive, real-time version of this workflow: fire a profile and watch the L1→L7 pipeline reach its verdict.
+- **[Watch detection happen live: the Detection Observatory](detection-observatory.md)** — the interactive, real-time version of this workflow: fire a profile and watch the seven-stage pipeline reach its verdict.
 - **[Quickstart: monitor mode](../tutorials/quickstart-monitor-mode.md)** — stand up the monitor-first posture this procedure assumes.
 - **[Where Gate fits](../explanation/where-gate-fits.md)** — how the detection engine relates to the proxy edge.
 - **[Will this break my app?](../explanation/will-this-break-my-app.md)** — fail-open behavior and staged rollout before you enforce.
-- **[Hard rules and verdicts](../reference/hard-rules-verdicts.md)** — how verdicts and hard rules map to the ALLOW / CHALLENGE / DENY outcomes you see in the results.
+- **[enforcement rules and verdicts](../reference/hard-rules-verdicts.md)** — how verdicts and enforcement rules map to the ALLOW / CHALLENGE / DENY outcomes you see in the results.

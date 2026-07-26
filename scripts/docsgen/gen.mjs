@@ -94,7 +94,7 @@ function walk(dir){
     if(e.startsWith('_') || e==='assets' || e==='.well-known' || e==='node_modules') continue;
     const p=join(dir,e);
     if(statSync(p).isDirectory()) out=out.concat(walk(p));
-    else if(e.endsWith('.md')) out.push(p);
+    else if(e.endsWith('.md') && e.toLowerCase() !== 'agents.md') out.push(p);
   }
   return out;
 }
@@ -148,7 +148,7 @@ for(const file of pages){
 const bySection = {};
 for(const p of index){ (bySection[p.section] ||= []).push(p); }
 const order = ['Start here','Tutorial','How-to','Reference','Explanation','Concept','Runbook','Help','Documentation'];
-let llms = `# humanymous\n\n> A defensive, multi-layer browser-automation / anti-bot detection engine (Go/WASM + JavaScript core, Go reverse-proxy "Gate"). Apache-2.0 reference implementation. It raises the cost of automation across seven detection layers (static client, fingerprint, integrity, behavioral biometrics, JA3/JA4 TLS + HTTP/2, cross-consistency, weighted scoring) into one verdict — ALLOW, CHALLENGE, or DENY — with a tamper-evident signed audit record.\n\nHonest by design: it reliably stops the commodity-bot long tail (Selenium/Puppeteer/Playwright, headless tells, TLS parrots, naive proxy farms) but does not claim to beat a coherent real-engine spoof behind residential proxies (the documented T4 ceiling). Not a WAF, not a CDN, not a CAPTCHA.\n\n`;
+let llms = `# humanymous\n\n> humanymous is an Apache-2.0 reference implementation for reducing browser automation against an application you operate. The standalone Core engine combines browser, integrity, interaction, connection, and consistency evidence into an ALLOW, CHALLENGE, or DENY verdict. The Gate reverse proxy enforces its own request-time verdict at the edge and records decisions in a tamper-evident local audit log. Core and Gate share scoring code but do not observe identical evidence.\n\nThe project raises the cost of commodity automation; it does not prove that a caller is human or promise to stop coherent automation using a real browser and plausible network origin. Gate is an application-edge automation control, not a web application firewall, content delivery network, traffic-absorption service, or interactive human-verification product. The computational-work challenge is incomplete as a production recovery and accessibility path.\n\n`;
 for(const s of order){
   if(!bySection[s]) continue;
   llms += `## ${s}\n\n`;

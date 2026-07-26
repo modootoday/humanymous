@@ -11,7 +11,7 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 This page is a shelf of independent, goal-titled recipes. Each follows the same template — a goal, numbered steps, and a way to verify — so you can jump to the one task you need and stop. Concepts and full option tables are linked, not repeated here: for the mechanism behind a request see [How Gate sees a request](../concepts/how-gate-sees-a-request.md), and for every flag, preset, and threshold see the [CLI, config & per-route policy reference](../reference/cli-config-policy.md).
 
-> **Note:** This repository is a reference implementation, not a production-hardened build. **ACME (Let's Encrypt) and bring-your-own TLS ARE supported and wired in the reference binary** — see [HTTPS / TLS certificates](./https-tls-certificates.md) for the full walkthrough. What remains a prod-delta is automated signing-key rotation. Each recipe says so where it applies.
+> **Note:** This repository is a reference implementation, not a production-hardened build. **ACME (Let's Encrypt) and bring-your-own TLS ARE supported and wired in the reference binary** — see [HTTPS / TLS certificates](./https-tls-certificates.md) for the full walkthrough. What remains a production responsibility is automated signing-key rotation. Each recipe says so where it applies.
 
 Pick your recipe:
 
@@ -32,7 +32,7 @@ Pick your recipe:
 
 **Steps:**
 
-1. Use the pull-only Compose file. `deployments/compose.release.yaml` references `ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}` (multi-arch `linux/amd64` + `linux/arm64`, cosign-signed), so `compose up` is a **pull, not a source build**. It runs Gate hardened — distroless, non-root, read-only root filesystem, dropped capabilities — with ACME TLS on `:443`, a sealed keystore, and a durable, replay-verified audit WAL, all on named volumes.
+1. Use the pull-only Compose file. `deployments/compose.release.yaml` references `ghcr.io/modootoday/humanymous-gate:${HMN_VERSION:-latest}` (multi-arch `linux/amd64` + `linux/arm64`, cosign-signed), so `compose up` is a **pull, not a source build**. It runs Gate hardened — distroless, non-root, read-only root filesystem, dropped capabilities — with ACME TLS on `:443`, a sealed keystore, and a durable, replay-verified audit write-ahead log, all on named volumes.
 2. Provide config. From `deployments/`, copy the example env and route files and edit them:
 
    ```
@@ -52,7 +52,7 @@ Pick your recipe:
 
 **Verify:** the edge exposes HTTP probes — `GET /__hmn/healthz` (liveness) and `/__hmn/readyz` (readiness — 503s during drain). The image is distroless (no shell), so there is **no** Docker `HEALTHCHECK`; point your orchestrator's `httpGet` probes at those paths. The admin console is served at `https://<admin>/__hmn/admin/console` on the loopback-mapped admin listener (`127.0.0.1:8445`).
 
-> **Note:** `-admin-addr :8445` binds every container interface, so any container sharing the origin network can reach `gate:8445` — the host-loopback port mapping restricts *host* access, not intra-network access. Front the admin plane with mTLS/SSO or attach Gate to a dedicated internal admin network, and do not run untrusted workloads on the origin network. The standalone detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest`, for self-testing and the demo; its own runbook (flags, ports, and the published-image `docker run` recipes) lives in [Run the detection engine](../how-to/run-detection-engine.md). Building from source stays fully supported — see [Install requirements](../reference/install-requirements.md); the recipes below apply whether you run the published image or your own build.
+> **Note:** `-admin-addr :8445` binds every container interface, so any container sharing the origin network can reach `gate:8445` — the host-loopback port mapping restricts *host* access, not intra-network access. Front the admin plane with mutual Transport Layer Security/SSO or attach Gate to a dedicated internal admin network, and do not run untrusted workloads on the origin network. The standalone detection engine is published too, as `ghcr.io/modootoday/humanymous-core:latest`, for self-testing and the demo; its own runbook (flags, ports, and the published-image `docker run` recipes) lives in [Run the detection engine](../how-to/run-detection-engine.md). Building from source stays fully supported — see [Install requirements](../reference/install-requirements.md); the recipes below apply whether you run the published image or your own build.
 
 ---
 
@@ -82,7 +82,7 @@ For the complete certificate walkthrough — Let's Encrypt (with a persistent AC
 
 ## Recipe: cloak the origin so direct hits get a 421
 
-**Goal:** make sure clients cannot skip Gate by talking to the origin directly. A direct-to-origin request should be refused with a `421` (hard rule HR-24), so all traffic is forced through the edge where it is scored and enforced.
+**Goal:** make sure clients cannot skip Gate by talking to the origin directly. A direct-to-origin request should be refused with a `421` (enforcement rule direct-origin bypass protection), so all traffic is forced through the edge where it is scored and enforced.
 
 **Steps:**
 
@@ -103,7 +103,7 @@ For the complete certificate walkthrough — Let's Encrypt (with a persistent AC
 curl -i http://127.0.0.1:9000/
 ```
 
-Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-Origin-Auth`). The same path fetched through the edge (`https://localhost:8444/`) is served normally. In the Ledger, a direct-origin bypass attempt surfaces as HR-24. See the [Hard rules, verdicts & signal-ID reference](../reference/hard-rules-verdicts.md).
+Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-Origin-Auth`). The same path fetched through the edge (`https://localhost:8444/`) is served normally. In the Ledger, a direct-origin bypass attempt surfaces as direct-origin bypass protection. See the [enforcement rules, verdicts & signal reference](../reference/hard-rules-verdicts.md).
 
 > **Note:** validating `X-Hmny-Origin-Auth` (and returning `421` when it is absent or wrong) is the operator's responsibility, but you do **not** have to write the check from scratch. The reference ships the public, importable package `github.com/modootoday/humanymous/pkg/origincloak` — a Go origin validates with one call, `origincloak.Valid(key, r.Header.Get(origincloak.Header), time.Now())` — plus a worked reference validator (`validOriginAuth`) in `test/gate/e2e.mjs` you can port to njs/Lua. The full construction, the mandatory ±1-bucket epoch grace, and copy-paste Go and nginx/njs validators are in the [Gate → origin request contract](../reference/gate-origin-contract.md). The bundled demo origin (`deployments/origin/default.conf`, plain nginx) does **not** perform this check — it is there to be proxied, not to demonstrate cloaking enforcement.
 
@@ -123,7 +123,7 @@ Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-O
 
 2. Drive each verdict **through the edge** (`https://localhost:8444`), not against your app directly:
    - **ALLOW** — a normal browser-shaped request is served your app's response (`200`, your body). With a valid verdict token on the fast path it stays `200`.
-   - **CHALLENGE** — a request that scores as suspect on an enforcing route gets the PoW interstitial (or `401` on a strict route with no beacon); your origin is **not** contacted.
+   - **CHALLENGE** — a request that scores as suspect on an enforcing route gets the proof of work interstitial (or `401` on a strict route with no beacon); your origin is **not** contacted.
    - **DENY** — a request that scores automated (e.g. a `webdriver`/beacon signal) is blocked at the edge with `403`; your origin is **not** contacted.
    - **421** — a request sent **straight to your app** (bypassing Gate) lacks a valid `X-Hmny-Origin-Auth` and your validator returns `421 Misdirected Request`.
 
@@ -137,7 +137,7 @@ Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-O
 
 ## Recipe: stand up the admin listener with seeded role tokens
 
-**Goal:** run the authenticated admin listener with the four RBAC roles, using deterministic tokens you control instead of random per-boot tokens.
+**Goal:** run the authenticated admin listener with the four role-based access control roles, using deterministic tokens you control instead of random per-boot tokens.
 
 **Steps:**
 
@@ -148,7 +148,7 @@ Expected: `HTTP/1.1 421 Misdirected Request` from the origin (no valid `X-Hmny-O
    ```
 
 2. If you leave `HMN_ADMIN_TOKENS` unset, Gate mints **random tokens per boot** and prints them at startup. That is fine for a quick local look but changes on every restart; seed the variable when you want stable tokens.
-3. Keep the roles separate. The four roles map to distinct capabilities: **Auditor** reads only; **Operator** reads and operates (request bans/erasure, lift bans, cancel erasure); **Approver** reads and approves (ban/kill-switch commits); **DPO** reads, operates, approves, and is the only role that can commit an erasure. Dual-control actions require the second action to come from a **distinct** role holder — so hand each token to a different person. See the [RBAC & separation-of-duties reference](../reference/rbac-separation-of-duties.md).
+3. Keep the roles separate. The four roles map to distinct capabilities: **Auditor** reads only; **Operator** reads and operates (request bans/erasure, lift bans, cancel erasure); **Approver** reads and approves (ban/kill-switch commits); **data protection officer** reads, operates, approves, and is the only role that can commit an erasure. Dual-control actions require the second action to come from a **distinct** role holder — so hand each token to a different person. See the [role-based access control & separation-of-duties reference](../reference/rbac-separation-of-duties.md).
 
 **Verify:** call `whoami` with one of your tokens and confirm the server-derived identity. Actor identity comes from the token, not from any request body.
 
@@ -166,7 +166,7 @@ Then open the Ledger at `https://localhost:8445/__hmn/admin/console` and walk th
 
 **Goal:** take a route that is only scoring-and-logging and have it actually enforce verdicts (for example, promote a path from `monitor` to `balanced`, or to `strict`).
 
-> **Important:** Route presets are set at **startup** via the route table (`Config.Routes` in `cmd/gate/main.go`). There is **no runtime per-route policy-write endpoint** in the reference. Changing one route's preset means editing the route table and restarting the process. The only runtime enforcement levers are the fleet-wide kill switch and the boot-global `-monitor` flag.
+> **Important:** The startup route table remains the base posture. Runtime Settings can overlay known route prefixes and presets, subject to server validation and change-risk approval. An empty overlay preserves the startup table. The kill switch is node-local in the reference; coordinate it externally in a multi-node deployment.
 
 **Steps:**
 
@@ -185,7 +185,7 @@ Then open the Ledger at `https://localhost:8445/__hmn/admin/console` and walk th
 
 4. Make sure you are not globally demoting enforcement. If Gate is running with `-monitor`, or the kill switch is active, **every** route is downgraded to monitor regardless of its preset. Remove `-monitor` for the route to enforce.
 
-**Verify:** re-read `/__hmn/admin/policy` and confirm the route now shows the enforcing preset. Then send traffic that would score as automated and confirm the edge acts on it — a DENY blocks before the origin is contacted, a CHALLENGE serves the PoW interstitial. Watch the decision land in the Overview view of the Ledger; every decision is written to the audit log before it takes effect.
+**Verify:** re-read `/__hmn/admin/policy` and confirm the route now shows the enforcing preset. Then send traffic that would score as automated and confirm the edge acts on it — a DENY blocks before the origin is contacted, a CHALLENGE serves the proof of work interstitial. Watch the decision land in the Overview view of the Ledger; every decision is written to the audit log before it takes effect.
 
 > **Tip:** Roll out enforcement the low-risk way — start a route in `monitor`, watch its would-be verdicts in Overview for a while, then promote it. See [Will this break my app?](../explanation/will-this-break-my-app.md).
 
@@ -197,7 +197,7 @@ Then open the Ledger at `https://localhost:8445/__hmn/admin/console` and walk th
 
 **Steps:**
 
-1. Know the flood limiter. A per-IP sliding-window limiter guards the control-plane endpoints `/__hmn/collect` and `/__hmn/session`. Reference defaults: **window 10s**, **soft threshold 60**, **hard threshold 120**. A hard breach returns `429` *before* scoring. These defaults are set from config fields (`Config.RateWindow` / `Config.RateSoft` / `Config.RateHard`) at startup, the same way the route table is — changing them means editing the config and restarting, not a runtime call.
+1. Know the flood limiter. A sliding-window limiter guards the relevant edge paths. Startup defaults provide the base window and thresholds. Runtime Settings can dry-run and hot-apply approved changes while preserving the current rolling observations; a protection-reducing change requires approval.
 2. Understand the auto-ban ladder. Repeated abuse escalates with strike decay: **1h → 6h → 24h → permanent**. Auto bans are recorded with `Source=auto`; bans you add by hand are `Source=manual`. Ban keys are `ip:<addr>` or `fp:<fingerprint>`.
 
    ```mermaid
@@ -254,7 +254,7 @@ If you need to let known-good automation through today, the honest levers are th
 ## Related pages
 
 - [CLI, config & per-route policy reference](../reference/cli-config-policy.md) — every flag, preset, threshold, and endpoint.
-- [Kill switch & bans runbook](../runbooks/kill-switch-and-bans.md) — the fleet-wide kill switch and the full ban workflow.
+- [Kill switch & bans runbook](../runbooks/kill-switch-and-bans.md) — the node-local kill switch and the full ban workflow.
 - [Key management](./key-management.md) — the sealed keystore (`-keystore` / `HMN_UNSEAL`), persistent identity, and why unsealed keys are ephemeral.
-- [RBAC & separation-of-duties reference](../reference/rbac-separation-of-duties.md) — roles, capabilities, and dual-control.
-- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the L1–L7 pipeline and verdict flow behind these controls.
+- [role-based access control & separation-of-duties reference](../reference/rbac-separation-of-duties.md) — roles, capabilities, and dual-control.
+- [How Gate sees a request](../concepts/how-gate-sees-a-request.md) — the seven detection stages pipeline and verdict flow behind these controls.
