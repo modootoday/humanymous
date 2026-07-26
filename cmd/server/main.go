@@ -30,6 +30,8 @@ func main() {
 	acmeDomain := flag.String("acme-domain", "", "comma-separated domain(s) for a Let's Encrypt cert via TLS-ALPN-01 (requires binding :443 directly; empty = self-signed)")
 	acmeCache := flag.String("acme-cache", "acme-cache", "directory to cache issued ACME certificates")
 	acmeEmail := flag.String("acme-email", "", "optional contact email for the ACME account")
+	tlsCert := flag.String("tls-cert", "", "operator-provided TLS certificate chain; requires -tls-key and cannot be combined with ACME")
+	tlsKey := flag.String("tls-key", "", "operator-provided TLS private key; requires -tls-cert and cannot be combined with ACME")
 	logLevel := flag.String("log-level", "", "operational log level: off|debug|info|warn|error (default off; also HMN_LOG_LEVEL)")
 	logConsoleFormat := flag.String("log-console-format", "", "console log format: off|plain|jsonl (default plain; also HMN_LOG_CONSOLE_FORMAT)")
 	logConsoleStream := flag.String("log-console-stream", "", "console log stream: stderr|stdout (default stderr; also HMN_LOG_CONSOLE_STREAM)")
@@ -94,6 +96,8 @@ func main() {
 		acmeDomains: domains,
 		acmeCache:   *acmeCache,
 		acmeEmail:   *acmeEmail,
+		certFile:    *tlsCert,
+		keyFile:     *tlsKey,
 	})
 	if err != nil {
 		a.log.Error("TLS configuration failed.",
@@ -127,19 +131,17 @@ func main() {
 		}
 	}()
 
+	tlsMode := "self_signed"
 	if len(domains) > 0 {
-		a.log.Info("Core listener started.",
-			"component", "core.runtime",
-			"event", "runtime.started",
-			"tls_mode", "acme",
-			"rit_enabled", *ritOn)
-	} else {
-		a.log.Info("Core listener started.",
-			"component", "core.runtime",
-			"event", "runtime.started",
-			"tls_mode", "self_signed",
-			"rit_enabled", *ritOn)
+		tlsMode = "acme"
+	} else if *tlsCert != "" {
+		tlsMode = "operator_provided"
 	}
+	a.log.Info("Core listener started.",
+		"component", "core.runtime",
+		"event", "runtime.started",
+		"tls_mode", tlsMode,
+		"rit_enabled", *ritOn)
 
 	// Custom accept loop: we terminate TLS ourselves so we can peek the HTTP/2
 	// preface + SETTINGS + pseudo-header order (the Akamai fingerprint) before

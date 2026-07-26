@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"fmt"
 	"strings"
 
 	"golang.org/x/crypto/acme"
@@ -20,6 +21,8 @@ type tlsSettings struct {
 	acmeDomains []string // comma-separated -acme-domain; empty → self-signed
 	acmeCache   string   // DirCache path for issued certs + account key
 	acmeEmail   string   // optional ACME account contact
+	certFile    string   // optional operator-provided certificate chain
+	keyFile     string   // private key paired with certFile
 }
 
 // buildTLSConfig returns the *tls.Config for the accept loop. With no ACME
@@ -31,6 +34,23 @@ type tlsSettings struct {
 // when it sees that proto, and serves the real cert otherwise. We therefore add
 // acme.ALPNProto to NextProtos alongside h2/http-1.1.
 func buildTLSConfig(s tlsSettings) (*tls.Config, error) {
+	if (s.certFile == "") != (s.keyFile == "") {
+		return nil, fmt.Errorf("tls-cert and tls-key must be provided together")
+	}
+	if s.certFile != "" && len(s.acmeDomains) > 0 {
+		return nil, fmt.Errorf("operator-provided TLS and ACME are mutually exclusive")
+	}
+	if s.certFile != "" {
+		cert, err := tls.LoadX509KeyPair(s.certFile, s.keyFile)
+		if err != nil {
+			return nil, fmt.Errorf("load operator-provided TLS key pair: %w", err)
+		}
+		return &tls.Config{
+			Certificates: []tls.Certificate{cert},
+			MinVersion:   tls.VersionTLS12,
+			NextProtos:   []string{"h2", "http/1.1"},
+		}, nil
+	}
 	if len(s.acmeDomains) == 0 {
 		cert, err := selfSignedCert()
 		if err != nil {

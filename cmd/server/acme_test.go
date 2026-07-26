@@ -1,6 +1,11 @@
 package main
 
 import (
+	"crypto/ecdsa"
+	"crypto/x509"
+	"encoding/pem"
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -63,5 +68,61 @@ func TestBuildTLSConfigACME(t *testing.T) {
 	}
 	if !hasALPN {
 		t.Errorf("ACME mode must advertise %q in NextProtos, got %v", acme.ALPNProto, cfg.NextProtos)
+	}
+}
+
+func TestBuildTLSConfigProvidedKeyPair(t *testing.T) {
+	generated, err := selfSignedCert()
+	if err != nil {
+		t.Fatal(err)
+	}
+	key, ok := generated.PrivateKey.(*ecdsa.PrivateKey)
+	if !ok {
+		t.Fatalf("private key type = %T, want ECDSA", generated.PrivateKey)
+	}
+	keyDER, err := x509.MarshalECPrivateKey(key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	certFile := filepath.Join(dir, "server.pem")
+	keyFile := filepath.Join(dir, "server-key.pem")
+	if err := os.WriteFile(certFile, pem.EncodeToMemory(&pem.Block{
+		Type:  "CERTIFICATE",
+		Bytes: generated.Certificate[0],
+	}), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(keyFile, pem.EncodeToMemory(&pem.Block{
+		Type:  "EC PRIVATE KEY",
+		Bytes: keyDER,
+	}), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg, err := buildTLSConfig(tlsSettings{certFile: certFile, keyFile: keyFile})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(cfg.Certificates) != 1 || cfg.GetCertificate != nil {
+		t.Fatal("operator-provided mode must configure exactly one static certificate")
+	}
+}
+
+func TestBuildTLSConfigRejectsAmbiguousSources(t *testing.T) {
+	for name, settings := range map[string]tlsSettings{
+		"certificate without key": {certFile: "server.pem"},
+		"key without certificate": {keyFile: "server-key.pem"},
+		"certificate with ACME": {
+			certFile:    "server.pem",
+			keyFile:     "server-key.pem",
+			acmeDomains: []string{"example.test"},
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			if _, err := buildTLSConfig(settings); err == nil {
+				t.Fatal("expected configuration error")
+			}
+		})
 	}
 }
