@@ -1,58 +1,180 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
+	"log"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
+	"time"
 )
 
-// logging_test.go guards the PLAN-07 R11 opt-in invariants: logging is OFF by
-// default and adds neither cost nor behavior change when off, and when ON it
-// recovers a panicking handler into a clean 500 instead of a dropped connection.
+func preserveGlobalLogging(t *testing.T) {
+	t.Helper()
+	previousDefault := slog.Default()
+	previousWriter := log.Writer()
+	previousFlags := log.Flags()
+	previousPrefix := log.Prefix()
+	t.Cleanup(func() {
+		slog.SetDefault(previousDefault)
+		log.SetOutput(previousWriter)
+		log.SetFlags(previousFlags)
+		log.SetPrefix(previousPrefix)
+	})
+}
+
+func openTestCoreLogger(t *testing.T, a *app, cfg coreLoggingConfig) {
+	t.Helper()
+	preserveGlobalLogging(t)
+	runtime, err := a.configureLogging(cfg)
+	if err != nil {
+		t.Fatalf("configure logging: %v", err)
+	}
+	t.Cleanup(func() { closeOperationalLogger(runtime) })
+}
 
 func TestLoggingOffByDefault(t *testing.T) {
 	a := newTestApp(t, false)
-	a.configureLogging("") // no flag, no env → off
+	openTestCoreLogger(t, a, coreLoggingConfig{
+		Level:         "off",
+		ConsoleFormat: "plain",
+		ConsoleStream: "stderr",
+	})
 	if a.logEnabled {
-		t.Fatal("logging must default to OFF")
+		t.Fatal("logging must default to off")
 	}
-	// withObservability must be a no-op wrapper when off: it returns the very handler
-	// it was given, so there is zero added cost and net/http's panic handling is intact.
 	h := http.HandlerFunc(func(http.ResponseWriter, *http.Request) {})
 	got := a.withObservability(h)
-	// Func values aren't ==-comparable, so compare underlying code pointers: an
-	// unchanged return has the same pointer, a wrapper closure has a different one.
 	if reflect.ValueOf(got).Pointer() != reflect.ValueOf(h).Pointer() {
 		t.Error("withObservability must return the handler unchanged when logging is off")
 	}
 }
 
-func TestLogLevelParsing(t *testing.T) {
-	on := []string{"debug", "info", "warn", "warning", "error"}
-	for _, v := range on {
-		if _, ok := parseLogLevel(v); !ok {
-			t.Errorf("level %q should enable logging", v)
-		}
+func TestLoggingRejectsInvalidExplicitConfig(t *testing.T) {
+	tests := []coreLoggingConfig{
+		{Level: "", ConsoleFormat: "plain", ConsoleStream: "stderr"},
+		{Level: "verbose", ConsoleFormat: "plain", ConsoleStream: "stderr"},
+		{Level: "info", ConsoleFormat: "text", ConsoleStream: "stderr"},
+		{Level: "info", ConsoleFormat: "plain", ConsoleStream: "console"},
 	}
-	for _, v := range []string{"", "off", "none", "bogus"} {
-		if _, ok := parseLogLevel(v); ok {
-			t.Errorf("level %q should NOT enable logging", v)
+	for _, cfg := range tests {
+		a := newTestApp(t, false)
+		if runtime, err := a.configureLogging(cfg); err == nil {
+			closeOperationalLogger(runtime)
+			t.Errorf("configuration should fail: %+v", cfg)
 		}
 	}
 }
 
-func TestObservabilityRecoversPanic(t *testing.T) {
-	a := newTestApp(t, false)
-	a.configureLogging("error") // enabled → wrapping + recover active
-	if !a.logEnabled {
-		t.Fatal("expected logging enabled at level=error")
+func TestLogSettingPrecedence(t *testing.T) {
+	t.Setenv("HMN_TEST_LOG_SETTING", "jsonl")
+	if got := resolveLogSetting("plain", true, "HMN_TEST_LOG_SETTING", "off"); got != "plain" {
+		t.Fatalf("explicit flag must win, got %q", got)
 	}
-	panicking := http.HandlerFunc(func(http.ResponseWriter, *http.Request) { panic("boom") })
+	if got := resolveLogSetting("", false, "HMN_TEST_LOG_SETTING", "off"); got != "jsonl" {
+		t.Fatalf("environment must win over fallback, got %q", got)
+	}
+	os.Unsetenv("HMN_TEST_LOG_SETTING")
+	if got := resolveLogSetting("", false, "HMN_TEST_LOG_SETTING", "off"); got != "off" {
+		t.Fatalf("fallback mismatch: %q", got)
+	}
+}
+
+func TestLoggingAccumulatesPlainAndJSONLFiles(t *testing.T) {
+	dir := t.TempDir()
+	plainPath := filepath.Join(dir, "core.log")
+	jsonlPath := filepath.Join(dir, "core.jsonl")
+	a := newTestApp(t, false)
+	preserveGlobalLogging(t)
+	runtime, err := a.configureLogging(coreLoggingConfig{
+		Level:         "info",
+		ConsoleFormat: "off",
+		ConsoleStream: "stderr",
+		PlainFile:     plainPath,
+		JSONLFile:     jsonlPath,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	a.log.Info("Core test event.",
+		"component", "core.test",
+		"event", "test.dual_sink")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	if err := runtime.Flush(ctx); err != nil {
+		t.Fatal(err)
+	}
+	closeOperationalLogger(runtime)
+
+	plain, err := os.ReadFile(plainPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(plain), `component="core.test" event="test.dual_sink"`) {
+		t.Fatalf("plain event missing: %s", plain)
+	}
+	jsonLine, err := os.ReadFile(jsonlPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var record map[string]any
+	if err := json.Unmarshal(jsonLine, &record); err != nil {
+		t.Fatalf("JSONL record: %v", err)
+	}
+	if record["event"] != "test.dual_sink" || record["service"] != "core" {
+		t.Fatalf("unexpected JSONL envelope: %#v", record)
+	}
+}
+
+func TestObservabilityOmitsPathAndPanicMaterial(t *testing.T) {
+	dir := t.TempDir()
+	jsonlPath := filepath.Join(dir, "core.jsonl")
+	a := newTestApp(t, false)
+	preserveGlobalLogging(t)
+	runtime, err := a.configureLogging(coreLoggingConfig{
+		Level:         "debug",
+		ConsoleFormat: "off",
+		ConsoleStream: "stderr",
+		JSONLFile:     jsonlPath,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	const pathSecret = "path-secret"
+	const panicSecret = "panic-secret"
+	panicking := http.HandlerFunc(func(http.ResponseWriter, *http.Request) { panic(panicSecret) })
 	rr := httptest.NewRecorder()
-	// Must NOT propagate the panic; must convert it to a 500.
-	a.withObservability(panicking).ServeHTTP(rr, httptest.NewRequest(http.MethodGet, "/x", nil))
+	a.withObservability(panicking).ServeHTTP(
+		rr,
+		httptest.NewRequest(http.MethodGet, "/"+pathSecret, nil),
+	)
 	if rr.Code != http.StatusInternalServerError {
 		t.Errorf("recovered panic should yield 500, got %d", rr.Code)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	if err := runtime.Flush(ctx); err != nil {
+		t.Fatal(err)
+	}
+	closeOperationalLogger(runtime)
+
+	content, err := os.ReadFile(jsonlPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := string(content)
+	if strings.Contains(text, pathSecret) || strings.Contains(text, panicSecret) ||
+		strings.Contains(text, "goroutine") {
+		t.Fatalf("forbidden request or panic material reached operational log: %s", text)
+	}
+	if !strings.Contains(text, `"event":"http.panic_recovered"`) {
+		t.Fatalf("panic event missing: %s", text)
 	}
 }

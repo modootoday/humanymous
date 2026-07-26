@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"sort"
@@ -289,7 +290,12 @@ func readRecords(path string, lastSeg bool) ([]Record, error) {
 			if terr := os.Truncate(path, good); terr != nil {
 				return nil, fmt.Errorf("wal %s: torn tail, truncate failed: %w", path, terr)
 			}
-			fmt.Printf("WARNING: wal %s: truncated a torn trailing record at offset %d (crash/partial write recovered)\n", path, good)
+			// Operational recovery notice only; the WAL bytes and audit
+			// verification contract remain independent of the best-effort logger.
+			slog.Warn("Recovered a partial trailing audit write.",
+				"component", "gate.audit",
+				"event", "audit.wal_recovered",
+				"offset", good)
 			return out, nil
 		}
 		if rerr != nil { // io.EOF (clean end) or a read error

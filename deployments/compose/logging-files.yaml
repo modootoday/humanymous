@@ -1,0 +1,47 @@
+# Optional local operator overlay (SoT-40).
+#
+# The default Compose stack keeps bounded JSONL in Docker's `local` log driver.
+# This overlay additionally appends readable plain text and JSON Lines files to
+# deployments/artifacts/logs on the host. Create that directory before `up` and
+# keep it on a different storage failure domain from any audit WAL.
+services:
+  core:
+    command:
+      - "-addr"
+      - ":8443"
+      - "-web"
+      - "/app/web"
+      - "-log-level"
+      - "info"
+      - "-log-console-format"
+      - "jsonl"
+      - "-log-plain-file"
+      - "/var/log/humanymous/core.log"
+      - "-log-jsonl-file"
+      - "/var/log/humanymous/core.jsonl"
+    volumes:
+      - ./artifacts/logs:/var/log/humanymous
+
+  gate:
+    command:
+      - "-addr"
+      - ":8444"
+      - "-admin-addr"
+      - ":8445"
+      - "-upstream"
+      - "http://origin:80"
+      - "-node"
+      - "gate-1"
+      - "-settings-dir"
+      - "/var/lib/humanymous/settings"
+      - "-log-level"
+      - "info"
+      - "-log-console-format"
+      - "jsonl"
+      - "-log-plain-file"
+      - "/var/log/humanymous/gate.log"
+      - "-log-jsonl-file"
+      - "/var/log/humanymous/gate.jsonl"
+    volumes:
+      - gate-settings:/var/lib/humanymous/settings
+      - ./artifacts/logs:/var/log/humanymous

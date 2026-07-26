@@ -61,6 +61,18 @@ type Server struct {
 	// settingsStore holds the SoT-39 RuntimeOverlay (nil = empty overlay ≡ freeze defaults).
 	settingsStore *settings.FileStore
 	settingsStats settingsRuntimeStats
+	// operationalLogFn is a read-only snapshot seam for SoT-40 logger health.
+	// It never participates in scoring, enforcement, or audit writes.
+	operationalLogFn func() OperationalLogMetrics
+}
+
+// OperationalLogMetrics is the bounded, fixed-label view exported to Prometheus.
+type OperationalLogMetrics struct {
+	QueueDepth  int
+	QueueFull   [4]uint64 // debug, info, warn, error
+	Closed      [4]uint64
+	WriteErrors uint64
+	SinkHealthy bool
 }
 
 // RunDueShreds executes any erasures whose hold window has elapsed and seals an
@@ -108,6 +120,18 @@ func (s *Server) monitorOn() bool { return s.cfg.GlobalMonitor || s.killSwitch.L
 // projection sinks (Redis/ClickHouse) under backpressure/outage, so /metrics can expose it
 // (previously the drop count was only surfaced as a once-a-minute WARN log line). nil = 0.
 func (s *Server) SetProjectionDroppedFn(fn func() uint64) { s.droppedFn = fn }
+
+// SetOperationalLogMetricsFn wires the best-effort logger health snapshot.
+func (s *Server) SetOperationalLogMetricsFn(fn func() OperationalLogMetrics) {
+	s.operationalLogFn = fn
+}
+
+func (s *Server) operationalLogMetrics() OperationalLogMetrics {
+	if s.operationalLogFn == nil {
+		return OperationalLogMetrics{SinkHealthy: true}
+	}
+	return s.operationalLogFn()
+}
 
 // projectionDropped returns the wired projection drop total, or 0 if none is wired.
 func (s *Server) projectionDropped() uint64 {

@@ -35,11 +35,16 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 | `-acme-email` | `""` | Optional ACME account contact email (Let's Encrypt expiry/policy notices). |
 | `-acme-directory` | `""` (production Let's Encrypt) | ACME directory URL. Empty = production Let's Encrypt. Set the Let's Encrypt **staging** URL (`https://acme-staging-v02.api.letsencrypt.org/directory`) to dry-run issuance without burning production rate limits (staging certs use an untrusted root → browsers warn; validation only). Also accepts ZeroSSL or an internal step-ca directory URL. |
 | `-routes` | `""` (built-in presets) | Path to an external route-policy file (`<prefix> <preset>` per line). |
-| `-audit-wal` | `""` (ephemeral) | Durable audit write-ahead log directory (survives restarts). With `-audit-verify`, **required** and must be non-empty: replays the chain, checks HMACs (when a keystore supplies the key)/STHs/**witness** co-signatures, exits non-zero on empty chain or any break. Without `-keystore`, `-audit-verify` does **not** mint a random HMAC (that would always fail `hmac-invalid`); HMAC is skipped (`hmac-unchecked` path in the library). For a full verify of a production write-ahead log, pass the matching `-keystore` + `HMN_UNSEAL`. Boot also logs `audit keys: … sth_public=… witness_public=…` (public material only). |
+| `-audit-wal` | `""` (ephemeral) | Durable audit write-ahead log directory (survives restarts). With `-audit-verify`, **required** and must be non-empty: replays the chain, checks HMACs (when a keystore supplies the key)/STHs/**witness** co-signatures, exits non-zero on empty chain or any break. Without `-keystore`, `-audit-verify` does **not** mint a random HMAC (that would always fail `hmac-invalid`); HMAC is skipped (`hmac-unchecked` path in the library). For a full verify of a production write-ahead log, pass the matching `-keystore` + `HMN_UNSEAL`. Verification key bytes are not duplicated into operational log files. |
 | `-shutdown-grace` | `25s` | Graceful-shutdown drain timeout on `SIGINT`/`SIGTERM`. On signal the readiness probe (`/__hmn/readyz`) flips to draining, both listeners drain in-flight requests, then the keystore is sealed. Set this **≥ your orchestrator's termination grace** so the drain completes before the pod is killed. |
 | `-max-body` | `0` (unlimited) | Caps the request body forwarded to origin on the proxy path (bytes). A declared `Content-Length` over the cap returns **413** before it reaches origin. Gate's own control/admin JSON endpoints keep their own tighter caps regardless of this value. |
 | `-hsts` | `false` | Add a `Strict-Transport-Security` header to edge responses. Leave off in dev behind the self-signed cert; enable only once real certs and HTTPS-everywhere are in place. (Gate always adds, add-only — never overwriting an origin's own value — `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and `X-Frame-Options: SAMEORIGIN`, independent of this flag.) |
 | `-admin-mtls-ca` | `""` (disabled) | PEM file of client-cert CA(s). When set, the admin listener **requires** a client certificate signed by this CA (mutual Transport Layer Security, `tls.RequireAndVerifyClientCert`) **in addition to** the bearer token — the shippable half of "front the admin plane with mutual Transport Layer Security/SSO". |
+| `-log-level` | `info` | Operational log level: `off\|error\|warn\|info\|debug`. |
+| `-log-console-format` | `plain` | Console format: `off\|plain\|jsonl`. |
+| `-log-console-stream` | `stderr` | Console destination: `stderr\|stdout`. |
+| `-log-plain-file` | `""` | Optional append-only formatted plain-text file. |
+| `-log-jsonl-file` | `""` | Optional append-only JSON Lines file. May be enabled together with the plain file, but the paths must differ. |
 
 **Constraint-resolution features — all OFF by default, experimental. Read the trust caveat before enabling.**
 
@@ -60,7 +65,12 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 | Variable | Required when | Format / effect |
 |----------|---------------|-----------------|
 | `HMN_UNSEAL` | `-keystore` is set | Passphrase used to seal and open the keystore. Boot fails if `-keystore` is set and this is unset. |
-| `HMN_ADMIN_TOKENS` | Optional (dev) | Deterministic dev admin tokens. Format: `auditor:tok,operator:tok,approver:tok,dpo:tok`. If unset, random tokens are generated per boot and printed at startup. |
+| `HMN_ADMIN_TOKENS` | Optional (dev) | Deterministic dev admin tokens. Format: `auditor:tok,operator:tok,approver:tok,dpo:tok`. If unset, random tokens are generated per boot but bearer values are not written to operational logs. |
+| `HMN_LOG_LEVEL` | Optional | Default for `-log-level`; an explicit flag wins. |
+| `HMN_LOG_CONSOLE_FORMAT` | Optional | Default for `-log-console-format`: `off`, `plain`, or `jsonl`. |
+| `HMN_LOG_CONSOLE_STREAM` | Optional | Default for `-log-console-stream`: `stderr` or `stdout`. |
+| `HMN_LOG_PLAIN_FILE` | Optional | Append-only formatted plain-text operational log path. |
+| `HMN_LOG_JSONL_FILE` | Optional | Append-only JSON Lines operational log path. |
 | `HMN_REDIS_KEY` | Recommended with `-redis` | Fleet-shared secret (≥16 bytes; a demo/placeholder value is rejected at boot) that key-binds shared verdict/ban values. Unset ⇒ unsigned channel + a loud startup WARNING. |
 | `HMN_REDIS_PASSWORD` / `HMN_REDIS_USER` | Optional with `-redis` | Redis AUTH credential sent on every (re)connect. User may be empty for legacy password-only AUTH. |
 | `HMN_TOKEN_KEY` | Recommended for a fleet; **required for `attested` routes** | Hex (≥16 bytes) verdict-token HMAC key shared across nodes and restarts, so a returning human's trust token stays valid node-local. Unset ⇒ per-boot random key; a token minted elsewhere simply falls through to re-scoring (never a deny), and `-redis` mode logs a WARNING advising you to set it. It has a **second role** for the attestation floor: set the *same* value on the Core (which serves the Pass) and the Gate so a Pass-solve step-up receipt minted by the Core verifies at the Gate's `/__hmn/stepup`. If any route uses the `attested` preset without a shared key, both the Gate and the Core **refuse to start** (a malformed value is likewise fatal) — an attested route with no verifiable receipt would be an unredeemable Pass loop for real humans. |
@@ -69,12 +79,12 @@ Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` f
 
 ## Startup log lines
 
-Expect these lines on boot (values reflect defaults):
+With the default formatted plain-text logger, expect events like these on boot
+(timestamps and sequence values omitted here for readability):
 
 ```
-humanymous Gate dev on https://localhost:8444 -> http://127.0.0.1:9000 (monitor=false, tls=self-signed)
-humanymous Gate admin console on https://localhost:8445/__hmn/admin/console
-  dev tokens — auditor:<hex> operator:<hex> approver:<hex> dpo:<hex>
+INFO service=gate component=gate.runtime event=runtime.started message="humanymous Gate dev on https://localhost:8444 (monitor=false, tls=self-signed)"
+INFO service=gate component=gate.admin event=admin.started message="Admin console started."
 ```
 
 With `-keystore` set, one of these also appears:
@@ -87,7 +97,15 @@ keystore: created new sealed node identity at <path>
 keystore: resumed persisted node identity from <path>
 ```
 
-The `dev tokens` line prints only when tokens are generated (that is, when `HMN_ADMIN_TOKENS` is unset). When you supply `HMN_ADMIN_TOKENS`, use the values you provided.
+Bearer token values are never printed. Set `HMN_ADMIN_TOKENS` when an external
+client needs a known Auditor, Operator, Approver, or data protection officer
+credential. The local Docker demo supplies deterministic development values in
+`configs/dev.env`.
+
+Operational plain and JSONL files can be enabled together. They are
+best-effort diagnostics with a bounded queue; they are not durable,
+tamper-evident, or a replacement for the audit stream. Keep them on a separately
+rotated logging volume.
 
 ---
 

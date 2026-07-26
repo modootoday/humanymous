@@ -1,97 +1,158 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
-	"runtime/debug"
-	"strings"
+	"time"
+
+	"github.com/modootoday/humanymous/internal/logger"
 )
 
-// logging.go is the PLAN-07 R11 opt-in observability seam. Structured logging is
-// OFF by default: the engine emits nothing unless an operator sets -log-level (or
-// HMN_LOG_LEVEL). When disabled, a.log is a DiscardHandler and the withObservability
-// middleware returns the handler unwrapped — so there is zero hot-path cost AND zero
-// behavior change (net/http's own panic handling is left intact). Nothing here logs
-// a raw IP or User-Agent in cleartext; the session id is truncated before it is logged.
+const loggingShutdownTimeout = 2 * time.Second
 
-// configureLogging installs the structured logger from the flag value, falling back
-// to the HMN_LOG_LEVEL env var, then to "off". Levels: off|error|warn|info|debug.
-// When enabled it also becomes the slog default, so the shared httpx.WriteJSON
-// encode-error warnings route through the same handler/level.
-func (a *app) configureLogging(flagVal string) {
-	val := strings.ToLower(strings.TrimSpace(flagVal))
-	if val == "" {
-		val = strings.ToLower(strings.TrimSpace(os.Getenv("HMN_LOG_LEVEL")))
+type coreLoggingConfig struct {
+	Level         string
+	ConsoleFormat string
+	ConsoleStream string
+	PlainFile     string
+	JSONLFile     string
+}
+
+// configureLogging opens the SoT-40 operational logger and installs its handler
+// as the slog and standard-log compatibility bridge. Core remains off by
+// default, while explicit invalid configuration fails startup.
+func (a *app) configureLogging(cfg coreLoggingConfig) (*logger.Runtime, error) {
+	sinks, err := coreLogSinks(cfg)
+	if err != nil {
+		return nil, err
 	}
-	lvl, ok := parseLogLevel(val)
-	if !ok {
-		a.log = slog.New(slog.DiscardHandler)
-		a.logEnabled = false
+	runtime, err := logger.Open(logger.Config{
+		Service: "core",
+		Version: version,
+		Node:    coreLogNode(),
+		Level:   cfg.Level,
+		Sinks:   sinks,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	a.log = runtime.Logger()
+	a.logEnabled = cfg.Level != "off"
+
+	// Shared packages still using slog or the standard logger receive the same
+	// bounded handler and physical format. Core call sites continue to use a.log
+	// so they do not depend on mutable process-global state.
+	slog.SetDefault(a.log)
+	compat := slog.NewLogLogger(runtime.Handler(), slog.LevelInfo)
+	log.SetOutput(compat.Writer())
+	log.SetFlags(0)
+	log.SetPrefix("")
+	return runtime, nil
+}
+
+func coreLogSinks(cfg coreLoggingConfig) ([]logger.SinkConfig, error) {
+	switch cfg.Level {
+	case "off", "debug", "info", "warn", "error":
+	default:
+		return nil, fmt.Errorf("invalid log level %q", cfg.Level)
+	}
+	var consoleWriter *os.File
+	switch cfg.ConsoleStream {
+	case "stderr":
+		consoleWriter = os.Stderr
+	case "stdout":
+		consoleWriter = os.Stdout
+	default:
+		return nil, fmt.Errorf("invalid log console stream %q", cfg.ConsoleStream)
+	}
+
+	sinks := make([]logger.SinkConfig, 0, 3)
+	switch cfg.ConsoleFormat {
+	case "off":
+	case "plain":
+		sinks = append(sinks, logger.SinkConfig{
+			Name:   "console",
+			Format: logger.FormatPlain,
+			Writer: consoleWriter,
+		})
+	case "jsonl":
+		sinks = append(sinks, logger.SinkConfig{
+			Name:   "console",
+			Format: logger.FormatJSONL,
+			Writer: consoleWriter,
+		})
+	default:
+		return nil, fmt.Errorf("invalid log console format %q", cfg.ConsoleFormat)
+	}
+	if cfg.PlainFile != "" {
+		sinks = append(sinks, logger.SinkConfig{
+			Name:   "plain_file",
+			Format: logger.FormatPlain,
+			Path:   cfg.PlainFile,
+		})
+	}
+	if cfg.JSONLFile != "" {
+		sinks = append(sinks, logger.SinkConfig{
+			Name:   "jsonl_file",
+			Format: logger.FormatJSONL,
+			Path:   cfg.JSONLFile,
+		})
+	}
+	return sinks, nil
+}
+
+func coreLogNode() string {
+	node, err := os.Hostname()
+	if err != nil || node == "" {
+		return "unknown"
+	}
+	return node
+}
+
+func resolveLogSetting(flagValue string, flagSet bool, envName, fallback string) string {
+	if flagSet {
+		return flagValue
+	}
+	if value, ok := os.LookupEnv(envName); ok {
+		return value
+	}
+	return fallback
+}
+
+func closeOperationalLogger(runtime *logger.Runtime) {
+	if runtime == nil {
 		return
 	}
-	a.log = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))
-	a.logEnabled = true
-	slog.SetDefault(a.log)
+	ctx, cancel := context.WithTimeout(context.Background(), loggingShutdownTimeout)
+	defer cancel()
+	_ = runtime.Close(ctx)
 }
 
-// parseLogLevel maps a level name to an slog.Level. "off"/""/unknown → disabled.
-func parseLogLevel(v string) (slog.Level, bool) {
-	switch v {
-	case "debug":
-		return slog.LevelDebug, true
-	case "info":
-		return slog.LevelInfo, true
-	case "warn", "warning":
-		return slog.LevelWarn, true
-	case "error":
-		return slog.LevelError, true
-	default: // "off", "none", "", or unrecognized → logging disabled
-		return 0, false
-	}
-}
-
-// withObservability logs one structured line per request and recovers panics into a
-// clean 500 (instead of a dropped connection). It is strictly opt-in: when logging is
-// disabled it returns next unchanged, so there is no added cost and no change to the
-// default panic behavior.
+// withObservability is strictly opt-in. It emits only fixed event identifiers
+// and allowlisted protocol fields; request paths and panic material are excluded.
 func (a *app) withObservability(next http.Handler) http.Handler {
 	if !a.logEnabled {
 		return next
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			if rec := recover(); rec != nil {
-				a.log.Error("panic recovered",
-					"method", logSafe(r.Method), "path", logSafe(r.URL.Path), "err", rec, "stack", string(debug.Stack()))
+			if recover() != nil {
+				a.log.Error("HTTP handler panic recovered.",
+					"component", "core.http",
+					"event", "http.panic_recovered")
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()
 		next.ServeHTTP(w, r)
-		a.log.Info("request", "method", logSafe(r.Method), "path", logSafe(r.URL.Path), "proto", protoVer(r))
+		a.log.Info("HTTP request completed.",
+			"component", "core.http",
+			"event", "http.request_completed",
+			"method", r.Method,
+			"protocol", protoVer(r))
 	})
-}
-
-// logSafe strips ASCII control characters (including CR/LF and DEL) from a
-// client-controlled string before it is logged, so a crafted request path or
-// session id cannot forge or split log lines (CWE-117, log injection). slog already
-// quotes/escapes attribute values, but sanitizing at the source makes the guarantee
-// explicit and independent of the handler in use.
-func logSafe(s string) string {
-	return strings.Map(func(r rune) rune {
-		if r < 0x20 || r == 0x7f {
-			return -1 // drop control chars
-		}
-		return r
-	}, s)
-}
-
-// shortSID truncates a session id for logs: enough to correlate lines within a run,
-// not the full cookie value (which is a bearer-style secret and must not be logged whole).
-func shortSID(sid string) string {
-	sid = logSafe(sid) // the session id is a client-controlled cookie — never log it raw (CWE-117)
-	if len(sid) > 8 {
-		return sid[:8]
-	}
-	return sid
 }

@@ -7,19 +7,78 @@ keywords: ["bot detection SIEM integration","observability","admin audit stream"
 
 **Quadrant:** How-to. **Audience:** SRE and security engineers wiring humanymous Gate into your monitoring and SIEM.
 
-This guide shows you what observability surface the reference implementation of humanymous Gate exposes, how to pull edge decisions out of it with `curl`, how to scrape process metrics and wire liveness/readiness probes, and how to bridge decision data to a SIEM until native log shipping is in place.
+This guide shows you what observability surface the reference implementation of humanymous Gate exposes, how to collect its operational logs, how to pull edge decisions out of it with `curl`, how to scrape process metrics and wire liveness/readiness probes, and how to bridge decision data to a SIEM until native log shipping is in place.
 
-> **Important:** This repository is a reference implementation, not a production-hardened build. Gate now exposes a Prometheus metrics endpoint and load-balancer/orchestrator health probes (documented below); structured-log SIEM shipping in a standard schema is still a production delta, so the poll-and-forward pattern below remains the supported interim path for decision data.
+> **Important:** This repository is a reference implementation, not a production-hardened build. Core and Gate can emit local JSON Lines operational logs, but those diagnostic records are not a standard SIEM decision schema and are not the tamper-evident audit stream. The poll-and-forward pattern below remains the supported path for decision data.
 
 ## What exists today
 
-The reference Gate gives you five observability surfaces. Three are on the authenticated admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)); the metrics endpoint is on the admin listener too; the liveness/readiness probes are the exception — they answer unauthenticated on the **public edge** control plane so an orchestrator can reach them.
+The reference Gate gives you six observability surfaces. Four are on the authenticated admin listener (`-admin-addr`, default `127.0.0.1:8445` (loopback)); operational logs are written to configured process sinks; the liveness/readiness probes are the exception — they answer unauthenticated on the **public edge** control plane so an orchestrator can reach them.
 
 1. **The audit stream** — `GET /__hmn/admin/audit`, structured JSON records of every edge decision, with server-side filters and a paging cursor. This is your primary machine-readable feed, and the source of per-verdict rates (see below).
 2. **The Ledger Overview KPIs** — a human-facing live feed of allow/challenge/deny decisions with rollup counters, at `https://localhost:8445/__hmn/admin/console`. See the [Ledger tour](audit-console-tour.md).
 3. **Chain-integrity status** — the Integrity view and `GET /__hmn/admin/integrity`, which run live `SelfVerify` (hash chain + HMAC + Ed25519 STHs + witness when configured). Empty chains report `empty-chain`, not a green pass.
 4. **Prometheus metrics** — `GET /__hmn/admin/metrics` on the admin plane, process/chain/ban gauges and counters in text-exposition format (see [Scrape process metrics](#scrape-process-metrics-__hmnmetrics)).
 5. **Liveness and readiness probes** — `GET /__hmn/healthz` and `GET /__hmn/readyz`, unauthenticated on the public edge, for orchestrator probes and load-balancer drain ordering (see [Wire liveness and readiness probes](#wire-liveness-and-readiness-probes)).
+6. **Operational logs** — best-effort lifecycle, dependency, warning, and internal-error diagnostics in formatted plain text or JSON Lines. They intentionally omit raw request identifiers and do not duplicate the audit decision record.
+
+## Collect operational logs
+
+Core and Gate share the same logging controls:
+
+- `-log-level off|debug|info|warn|error`
+- `-log-console-format off|plain|jsonl`
+- `-log-console-stream stderr|stdout`
+- `-log-plain-file PATH`
+- `-log-jsonl-file PATH`
+
+The matching environment variables are `HMN_LOG_LEVEL`, `HMN_LOG_CONSOLE_FORMAT`,
+`HMN_LOG_CONSOLE_STREAM`, `HMN_LOG_PLAIN_FILE`, and `HMN_LOG_JSONL_FILE`.
+Explicit flags take precedence. Gate defaults to readable plain text at `info`;
+Core retains its opt-in `off` default. The Docker lab explicitly selects JSONL
+for both daemons and bounds Docker's local log storage.
+
+Plain and JSONL files can be enabled together. They append the same events in the
+same process order, but they are best-effort diagnostics: a full or unavailable
+sink may lose events. Do not place these files on the audit write-ahead-log,
+keystore, or settings volume, and configure external rotation and retention.
+
+For the local Docker lab:
+
+```bash
+mkdir -p deployments/artifacts/logs
+# Linux only:
+sudo chown 65532:65532 deployments/artifacts/logs
+docker compose -f deployments/compose.yaml \
+  -f deployments/compose/logging-files.yaml \
+  up -d --build core origin gate
+```
+
+The host then receives `core.log`, `core.jsonl`, `gate.log`, and `gate.jsonl`
+under `deployments/artifacts/logs/`. Each JSONL physical line is one JSON object
+with `schema_version`, UTC `ts`, `level`, `service`, `component`, `event`,
+`message`, process-local `sequence`, and `fields`.
+
+After startup, verify that both files carry the same event sequence and every
+JSONL line parses:
+
+```bash
+node scripts/assert-operational-logs.mjs
+```
+
+Operational logs never contain raw or shortened IP addresses, paths, headers,
+cookies, bodies, session identifiers, administrator tokens, panic values, or
+stacks. Verdicts and matched-rule details remain in the tamper-evident audit
+stream. A CHALLENGE is a normal verdict, including for the automated browser
+baseline named `human`; it is not an operational warning or error.
+
+Gate exposes logger health on its authenticated metrics endpoint as
+`hmn_gate_operational_log_queue_depth`,
+`hmn_gate_operational_log_dropped_total{reason,level}`,
+`hmn_gate_operational_log_write_errors_total`, and
+`hmn_gate_operational_log_sink_healthy`. Alert on new drops or write errors and a
+zero sink-health gauge; those conditions do not change enforcement or audit
+ordering.
 
 ## Where per-verdict rates come from
 
@@ -31,7 +90,7 @@ The metrics endpoint deliberately does **not** emit per-verdict rates (allow/cha
 
 The admin API base is `/__hmn/admin/` on the admin listener. Every request needs a bearer token; the comparison is constant-time, and a missing or invalid token returns `404` (deny-by-default — the admin plane does not advertise itself). Every authenticated access is meta-audited (an `admin.access` record) before anything is served.
 
-Tokens are configured through the `HMN_ADMIN_TOKENS` environment variable (`"auditor:tok,operator:tok,approver:tok,dpo:tok"`); if unset, Gate mints random tokens per boot and prints them at startup. For observability you only need read access, so use the **Auditor** token — Auditor is read-only (`canRead`) and cannot request or approve any change. See [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md) for the full role matrix.
+Tokens are configured through the `HMN_ADMIN_TOKENS` environment variable (`"auditor:tok,operator:tok,approver:tok,dpo:tok"`); if unset, Gate mints random tokens per boot but does not write bearer values to operational logs. For observability, configure and use an **Auditor** token — Auditor is read-only (`canRead`) and cannot request or approve any change. See [role-based access control and separation of duties](../reference/rbac-separation-of-duties.md) for the full role matrix.
 
 Set your token once:
 
@@ -201,7 +260,7 @@ This gives you allow/challenge/deny decisions, risk scores, matched routes, and 
 
 The following are **not** in the reference build. Do not document or configure them as working; plan for them as production deltas:
 
-- Native structured-log SIEM shipping in a standard schema (for example OCSF or CEF) — decision data still ships via the poll-and-forward pattern above.
+- Native SIEM shipping in a standard decision schema (for example OCSF or CEF) — local operational JSONL is diagnostic only; decision data still ships via the poll-and-forward pattern above.
 - Server-sent-events (SSE) live-push for the Console and downstream consumers — the reference Console refreshes and polls rather than receiving pushes.
 
 For the full list and the reasoning behind each, see [Production vs. reference](../reference/production-vs-reference.md).

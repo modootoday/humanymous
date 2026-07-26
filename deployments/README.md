@@ -102,6 +102,30 @@ Admin console: `https://localhost:8445/__hmn/admin/console` — dev token
 `operator:e2e-operator-token` (from `configs/dev.env`). Certs are self-signed;
 accept the browser warning.
 
+Core and Gate console logs are JSON Lines in the Docker lab, with Docker's local
+driver capped at three 10 MiB files per service. To accumulate readable plain
+text and JSONL on the host at the same time:
+
+```bash
+mkdir -p deployments/artifacts/logs
+# Linux only: the distroless daemons run as uid/gid 65532.
+sudo chown 65532:65532 deployments/artifacts/logs
+docker compose -f deployments/compose.yaml \
+  -f deployments/compose/logging-files.yaml \
+  up -d --build core origin gate
+```
+
+Inspect `deployments/artifacts/logs/core.log`, `core.jsonl`, `gate.log`, and
+`gate.jsonl`. These are best-effort operational diagnostics, not the
+tamper-evident audit stream. Rotate them externally and never put them on the
+audit, keystore, or settings storage volume.
+
+Validate both accumulated formats after startup:
+
+```bash
+node scripts/assert-operational-logs.mjs
+```
+
 ## Published images (pull-only production path)
 
 The `compose.yaml` above is the **local-build lab**: it builds images from source

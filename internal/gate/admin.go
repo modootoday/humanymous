@@ -379,6 +379,16 @@ func (s *Server) adminMetrics(w http.ResponseWriter) {
 	fmt.Fprintf(w, "hmn_gate_settings_apply_total{result=\"error\"} %d\n", s.settingsStats.errors.Load())
 	fmt.Fprintf(w, "# HELP hmn_gate_settings_store_errors_total Settings store load or persistence errors.\n# TYPE hmn_gate_settings_store_errors_total counter\nhmn_gate_settings_store_errors_total %d\n", s.settingsStats.storeErrors.Load())
 	fmt.Fprintf(w, "# HELP hmn_gate_config_version Effective signed Settings configuration version.\n# TYPE hmn_gate_config_version gauge\nhmn_gate_config_version{version=\"%s\"} 1\n", prometheusLabel(eff.ConfigVersion))
+	logMetrics := s.operationalLogMetrics()
+	fmt.Fprintf(w, "# HELP hmn_gate_operational_log_queue_depth Operational diagnostic records currently waiting for a sink.\n# TYPE hmn_gate_operational_log_queue_depth gauge\nhmn_gate_operational_log_queue_depth %d\n", logMetrics.QueueDepth)
+	fmt.Fprintf(w, "# HELP hmn_gate_operational_log_dropped_total Best-effort operational diagnostic records dropped before a sink.\n# TYPE hmn_gate_operational_log_dropped_total counter\n")
+	logLevels := [...]string{"debug", "info", "warn", "error"}
+	for index, level := range logLevels {
+		fmt.Fprintf(w, "hmn_gate_operational_log_dropped_total{reason=\"queue_full\",level=\"%s\"} %d\n", level, logMetrics.QueueFull[index])
+		fmt.Fprintf(w, "hmn_gate_operational_log_dropped_total{reason=\"closed\",level=\"%s\"} %d\n", level, logMetrics.Closed[index])
+	}
+	fmt.Fprintf(w, "# HELP hmn_gate_operational_log_write_errors_total Operational diagnostic sink write, flush, or close failures.\n# TYPE hmn_gate_operational_log_write_errors_total counter\nhmn_gate_operational_log_write_errors_total %d\n", logMetrics.WriteErrors)
+	fmt.Fprintf(w, "# HELP hmn_gate_operational_log_sink_healthy Whether every configured operational diagnostic sink has avoided a write error.\n# TYPE hmn_gate_operational_log_sink_healthy gauge\nhmn_gate_operational_log_sink_healthy %d\n", b01(logMetrics.SinkHealthy))
 	fmt.Fprintf(w, "# HELP hmn_gate_goroutines Current goroutine count.\n# TYPE hmn_gate_goroutines gauge\nhmn_gate_goroutines %d\n", runtime.NumGoroutine())
 	fmt.Fprintf(w, "# HELP hmn_gate_heap_alloc_bytes Heap bytes allocated and in use.\n# TYPE hmn_gate_heap_alloc_bytes gauge\nhmn_gate_heap_alloc_bytes %d\n", m.HeapAlloc)
 	fmt.Fprintf(w, "# HELP hmn_gate_sys_bytes Total memory obtained from the OS.\n# TYPE hmn_gate_sys_bytes gauge\nhmn_gate_sys_bytes %d\n", m.Sys)

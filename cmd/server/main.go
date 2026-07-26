@@ -30,9 +30,17 @@ func main() {
 	acmeDomain := flag.String("acme-domain", "", "comma-separated domain(s) for a Let's Encrypt cert via TLS-ALPN-01 (requires binding :443 directly; empty = self-signed)")
 	acmeCache := flag.String("acme-cache", "acme-cache", "directory to cache issued ACME certificates")
 	acmeEmail := flag.String("acme-email", "", "optional contact email for the ACME account")
-	logLevel := flag.String("log-level", "", "structured log level: off|error|warn|info|debug (default off; also HMN_LOG_LEVEL)")
+	logLevel := flag.String("log-level", "", "operational log level: off|debug|info|warn|error (default off; also HMN_LOG_LEVEL)")
+	logConsoleFormat := flag.String("log-console-format", "", "console log format: off|plain|jsonl (default plain; also HMN_LOG_CONSOLE_FORMAT)")
+	logConsoleStream := flag.String("log-console-stream", "", "console log stream: stderr|stdout (default stderr; also HMN_LOG_CONSOLE_STREAM)")
+	logPlainFile := flag.String("log-plain-file", "", "append formatted plain-text logs to PATH (also HMN_LOG_PLAIN_FILE)")
+	logJSONLFile := flag.String("log-jsonl-file", "", "append JSON Lines logs to PATH (also HMN_LOG_JSONL_FILE)")
 	opsToken := flag.String("ops-token", "", "operator bearer token enabling /api/explain + /api/counters (empty = disabled; also HMN_OPS_TOKEN)")
 	flag.Parse()
+	explicitFlags := make(map[string]bool)
+	flag.Visit(func(current *flag.Flag) {
+		explicitFlags[current.Name] = true
+	})
 
 	domains := splitDomains(*acmeDomain)
 
@@ -41,7 +49,7 @@ func main() {
 	// can never become remotely reachable (rewriting the launcher host is not
 	// enough if the socket itself is reachable off-box).
 	if playgroundEnabled() && !listenAddrIsLoopback(*addr) {
-		log.Fatalf("HMN_PLAYGROUND=1 requires a loopback -addr (got %q); refusing to expose the self-validation launcher off-host", *addr)
+		log.Fatalf("HMN_PLAYGROUND=1 requires a loopback -addr; refusing to expose the self-validation launcher off-host")
 	}
 	// The dev playground and public ACME serving are mutually exclusive: one is
 	// loopback-only, the other is a public domain on :443. Refuse the mix.
@@ -51,7 +59,7 @@ func main() {
 
 	masterKey := make([]byte, 32)
 	if _, err := rand.Read(masterKey); err != nil {
-		log.Fatalf("master key: %v", err)
+		log.Fatalf("master key generation failed")
 	}
 
 	a := newApp(*webDir, masterKey, *ritOn)
@@ -69,8 +77,18 @@ func main() {
 		}
 		a.stepUpKey = b
 	}
-	a.configureLogging(*logLevel) // PLAN-07 R11: opt-in structured logging (off by default)
-	a.configureOps(*opsToken)     // PLAN-07 R14/R17: operator-gated explain + counters (off by default)
+	logRuntime, err := a.configureLogging(coreLoggingConfig{
+		Level:         resolveLogSetting(*logLevel, explicitFlags["log-level"], "HMN_LOG_LEVEL", "off"),
+		ConsoleFormat: resolveLogSetting(*logConsoleFormat, explicitFlags["log-console-format"], "HMN_LOG_CONSOLE_FORMAT", "plain"),
+		ConsoleStream: resolveLogSetting(*logConsoleStream, explicitFlags["log-console-stream"], "HMN_LOG_CONSOLE_STREAM", "stderr"),
+		PlainFile:     resolveLogSetting(*logPlainFile, explicitFlags["log-plain-file"], "HMN_LOG_PLAIN_FILE", ""),
+		JSONLFile:     resolveLogSetting(*logJSONLFile, explicitFlags["log-jsonl-file"], "HMN_LOG_JSONL_FILE", ""),
+	})
+	if err != nil {
+		log.Fatal("operational logging configuration failed")
+	}
+	defer closeOperationalLogger(logRuntime)
+	a.configureOps(*opsToken) // PLAN-07 R14/R17: operator-gated explain + counters (off by default)
 
 	tlsConfig, err := buildTLSConfig(tlsSettings{
 		acmeDomains: domains,
@@ -78,13 +96,21 @@ func main() {
 		acmeEmail:   *acmeEmail,
 	})
 	if err != nil {
-		log.Fatalf("tls: %v", err)
+		a.log.Error("TLS configuration failed.",
+			"component", "core.runtime",
+			"event", "runtime.tls_configuration_failed")
+		closeOperationalLogger(logRuntime)
+		os.Exit(1)
 	}
 	handler := a.routes()
 
 	base, err := net.Listen("tcp", *addr)
 	if err != nil {
-		log.Fatalf("listen: %v", err)
+		a.log.Error("Listener startup failed.",
+			"component", "core.runtime",
+			"event", "runtime.listener_failed")
+		closeOperationalLogger(logRuntime)
+		os.Exit(1)
 	}
 	capL := &captureListener{Listener: base, reg: a.reg}
 
@@ -102,9 +128,17 @@ func main() {
 	}()
 
 	if len(domains) > 0 {
-		log.Printf("humanymous Core on %s (rit=%v) — ACME TLS for %v (cache %q)", *addr, *ritOn, domains, *acmeCache)
+		a.log.Info("Core listener started.",
+			"component", "core.runtime",
+			"event", "runtime.started",
+			"tls_mode", "acme",
+			"rit_enabled", *ritOn)
 	} else {
-		log.Printf("humanymous Core %s on https://localhost%s (rit=%v) — self-signed TLS", version, *addr, *ritOn)
+		a.log.Info("Core listener started.",
+			"component", "core.runtime",
+			"event", "runtime.started",
+			"tls_mode", "self_signed",
+			"rit_enabled", *ritOn)
 	}
 
 	// Custom accept loop: we terminate TLS ourselves so we can peek the HTTP/2
@@ -121,7 +155,11 @@ func main() {
 	for {
 		raw, err := capL.Accept()
 		if err != nil {
-			log.Fatalf("accept: %v", err)
+			a.log.Error("Listener accept failed.",
+				"component", "core.runtime",
+				"event", "runtime.accept_failed")
+			closeOperationalLogger(logRuntime)
+			os.Exit(1)
 		}
 		go a.serveConn(raw, tlsConfig, handler, h2srv)
 	}
@@ -138,7 +176,10 @@ func (a *app) serveConn(raw net.Conn, cfg *tls.Config, handler http.Handler, h2s
 	addr := raw.RemoteAddr().String()
 	proto := tconn.ConnectionState().NegotiatedProtocol
 	if debugH2 {
-		log.Printf("serveConn %s proto=%q", addr, proto)
+		a.log.Debug("Connection protocol negotiated.",
+			"component", "core.http",
+			"event", "http.protocol_negotiated",
+			"protocol", proto)
 	}
 	if proto == "h2" {
 		fp, r, perr := peekH2(tconn)
@@ -146,7 +187,18 @@ func (a *app) serveConn(raw net.Conn, cfg *tls.Config, handler http.Handler, h2s
 			a.reg.SetH2(addr, fp)
 		}
 		if debugH2 {
-			log.Printf("peekH2 %s err=%v settings=%d pseudo=%v", addr, perr, len(fp.Settings), fp.PseudoOrder)
+			settingsCount := 0
+			pseudoCount := 0
+			if fp != nil {
+				settingsCount = len(fp.Settings)
+				pseudoCount = len(fp.PseudoOrder)
+			}
+			a.log.Debug("HTTP/2 preface inspected.",
+				"component", "core.http",
+				"event", "http.h2_preface_inspected",
+				"success", perr == nil,
+				"settings_count", settingsCount,
+				"pseudo_header_count", pseudoCount)
 		}
 		rc := replayConn{
 			Conn: tconn,

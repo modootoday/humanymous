@@ -9,11 +9,24 @@ services:
     # The public image ENTRYPOINT targets :443 + ACME; for the local run we
     # override to self-signed TLS on :8443.
     entrypoint: ["/app/server"]
-    command: ["-addr", ":8443", "-web", "/app/web"]
+    command:
+      - "-addr"
+      - ":8443"
+      - "-web"
+      - "/app/web"
+      - "-log-level"
+      - "info"
+      - "-log-console-format"
+      - "jsonl"
     env_file:
       - ../../configs/dev.env
     ports:
       - "8443:8443"
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks: [web, lab-a, lab-b, lab-c]
 
   origin:
@@ -39,6 +52,10 @@ services:
       - "gate-1"
       - "-settings-dir"
       - "/var/lib/humanymous/settings"
+      - "-log-level"
+      - "info"
+      - "-log-console-format"
+      - "jsonl"
     env_file:
       - ../../configs/dev.env
     volumes:
@@ -46,6 +63,11 @@ services:
     ports:
       - "8444:8444"
       - "8445:8445"
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on: [origin]
     networks: [web, lab-a, lab-b, lab-c]
 

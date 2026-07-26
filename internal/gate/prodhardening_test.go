@@ -158,6 +158,10 @@ func TestAdminMetricsExposition(t *testing.T) {
 		"hmn_gate_settings_apply_total",
 		"hmn_gate_settings_store_errors_total",
 		"hmn_gate_config_version",
+		"hmn_gate_operational_log_queue_depth",
+		"hmn_gate_operational_log_dropped_total",
+		"hmn_gate_operational_log_write_errors_total",
+		"hmn_gate_operational_log_sink_healthy",
 	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("metrics missing %s\n%s", want, body)

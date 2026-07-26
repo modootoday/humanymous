@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/network"
@@ -137,14 +138,6 @@ func (a *app) scoreAndStore(sid string, now time.Time) (signals.ScoreResult, sig
 	rep, _ := a.store.Get(sid)
 	res := a.engine.Score(&rep)
 	a.store.StoreScored(sid, rep, now)
-	if a.logEnabled { // PLAN-07 R11: one structured verdict line, opt-in, no raw IP/UA
-		top := ""
-		if len(res.TopContributors) > 0 {
-			top = res.TopContributors[0].ID
-		}
-		a.log.Info("scored", "sid", shortSID(sid), "verdict", res.Verdict,
-			"risk", res.RiskScore, "hardRule", res.HardRuleFired, "top", top)
-	}
 	return res, rep
 }
 
@@ -159,7 +152,7 @@ func (a *app) publishScored(sid string, r *http.Request, rep *signals.SessionRep
 	a.hub.Publish("session.scored", buildLiveEvent(sid, liveSource(r), rep))
 	for _, ar := range network.AuditRecordsFromSignals(rep.Network.Signals) {
 		a.hub.Publish("network.residual", map[string]any{
-			"sid":       shortSID(sid),
+			"sid":       shortSessionReference(sid),
 			"eventType": ar.EventType,
 			"signalId":  ar.SignalID,
 			"verdict":   ar.Verdict,
@@ -168,6 +161,21 @@ func (a *app) publishScored(sid string, r *http.Request, rep *signals.SessionRep
 			"scoreExempt": true,
 		})
 	}
+}
+
+// shortSessionReference keeps the pre-existing local observatory correlation
+// label without making it part of the operational log stream.
+func shortSessionReference(sid string) string {
+	sid = strings.Map(func(current rune) rune {
+		if current < 0x20 || current == 0x7f {
+			return -1
+		}
+		return current
+	}, sid)
+	if len(sid) > 8 {
+		return sid[:8]
+	}
+	return sid
 }
 
 // writeCollectResponse writes the verdict JSON returned to the client.

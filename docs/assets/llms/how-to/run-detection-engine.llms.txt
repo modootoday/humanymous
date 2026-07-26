@@ -54,7 +54,7 @@ bin/server.exe -addr 127.0.0.1:8443 -web web
 
 ### Core flags (full set)
 
-`cmd/server` takes eight flags. The three above cover most local runs; the rest configure TLS, logging, and the operator surface.
+The three flags above cover most local runs; the remaining flags configure TLS, logging, and the operator surface.
 
 | Flag | Default | Purpose |
 |---|---|---|
@@ -65,7 +65,15 @@ bin/server.exe -addr 127.0.0.1:8443 -web web
 | `-acme-cache` | `acme-cache` | Directory to cache issued ACME certificates + the account key (persist this across restarts). |
 | `-acme-email` | `""` | Optional contact email for the ACME account. |
 | `-log-level` | `""` (off) | Structured log level: `off\|error\|warn\|info\|debug`. Also settable via `HMN_LOG_LEVEL`. |
+| `-log-console-format` | `plain` | Console format: `off\|plain\|jsonl`. Also settable via `HMN_LOG_CONSOLE_FORMAT`. |
+| `-log-console-stream` | `stderr` | Console stream: `stderr\|stdout`. Also settable via `HMN_LOG_CONSOLE_STREAM`. |
+| `-log-plain-file` | `""` | Optional append-only formatted plain-text file. Also settable via `HMN_LOG_PLAIN_FILE`. |
+| `-log-jsonl-file` | `""` | Optional append-only JSON Lines file. Also settable via `HMN_LOG_JSONL_FILE`. |
 | `-ops-token` | `""` (disabled) | Operator bearer token that enables `/api/explain` + `/api/counters`. Also settable via `HMN_OPS_TOKEN`. Empty = those endpoints are not registered. |
+
+Plain and JSONL files may be enabled together. They are bounded, best-effort
+diagnostics, not the tamper-evident decision audit. Put them on a separately
+rotated logging volume and never on an audit, key, or settings volume.
 
 > **Warning:** The engine serves over TLS with a **self-signed development certificate**. Your browser and `curl` will flag it as untrusted — that is expected for a local dev cert. Trust it locally or pass your client's insecure/skip-verify flag for loopback testing only; never carry that habit to a real endpoint.
 

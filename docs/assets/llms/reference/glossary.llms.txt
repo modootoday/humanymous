@@ -148,6 +148,12 @@ humanymous Gate is a reference implementation, not a production-hardened service
 
 **audit record.** A structured record of an administrative access, verdict, enforcement action, configuration change, approval, ban, or erasure event.
 
+**operational log.** A best-effort diagnostic record about process lifecycle, dependencies, warnings, or internal errors. Operational logs may be formatted plain text or JSON Lines. They can be lost when a bounded queue or sink is unavailable and are not the decision or forensic authority.
+
+**formatted plain text log.** A human-readable, one-event-per-line operational format with a UTC timestamp and stable named fields.
+
+**JSON Lines (JSONL).** A machine-readable format containing exactly one valid JavaScript Object Notation object per physical line. humanymous uses it for local operational diagnostics, not as a standard SIEM decision schema.
+
 **tamper-evident audit log.** An ordered record set whose hash links and signatures reveal later modification, deletion, or reordering. “Tamper-evident” does not mean impossible to alter.
 
 **hash chain.** A sequence in which each record commits to the previous record's hash.

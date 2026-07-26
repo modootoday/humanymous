@@ -21,6 +21,7 @@ import (
 	"encoding/hex"
 	"flag"
 	"log"
+	"log/slog"
 	"math/big"
 	"net"
 	"net/http"
@@ -101,7 +102,34 @@ func main() {
 	adminMTLSCA := flag.String("admin-mtls-ca", "", "PEM file containing trusted client-certificate authorities; when set, the admin listener requires a verified client certificate in addition to the bearer token")
 	// SoT-39 P1/P2 — RuntimeOverlay file dir (empty = no store, freeze-identical defaults).
 	settingsDir := flag.String("settings-dir", "", "directory for runtime settings persistence; empty provides read-only built-in and startup behavior with no overlay store")
+	// SoT-40 — bounded operational diagnostics. These sinks remain separate from
+	// the tamper-evident audit stream and cannot affect enforcement.
+	logLevel := flag.String("log-level", envOrDefault("HMN_LOG_LEVEL", "info"), "operational log level: off, debug, info, warn, or error")
+	logConsoleFormat := flag.String("log-console-format", envOrDefault("HMN_LOG_CONSOLE_FORMAT", "plain"), "console log format: off, plain, or jsonl")
+	logConsoleStream := flag.String("log-console-stream", envOrDefault("HMN_LOG_CONSOLE_STREAM", "stderr"), "console log stream: stderr or stdout")
+	logPlainFile := flag.String("log-plain-file", envOrDefault("HMN_LOG_PLAIN_FILE", ""), "append formatted plain-text operational logs to this file")
+	logJSONLFile := flag.String("log-jsonl-file", envOrDefault("HMN_LOG_JSONL_FILE", ""), "append JSON Lines operational logs to this file")
 	flag.Parse()
+
+	logRuntime, logErr := openGateLogger(gateLoggingConfig{
+		level:         *logLevel,
+		consoleFormat: *logConsoleFormat,
+		consoleStream: *logConsoleStream,
+		plainFile:     *logPlainFile,
+		jsonlFile:     *logJSONLFile,
+	}, *node, os.Stdout, os.Stderr)
+	if logErr != nil {
+		log.Fatal("operational logger configuration failed")
+	}
+	installGateLogger(logRuntime)
+	defer closeGateLogger(logRuntime)
+	slog.Info("Operational logging initialized.",
+		"component", "gate.runtime",
+		"event", "runtime.logging_configured",
+		"console_format", *logConsoleFormat,
+		"console_stream", *logConsoleStream,
+		"plain_file_enabled", *logPlainFile != "",
+		"jsonl_file_enabled", *logJSONLFile != "")
 
 	originKey := []byte(*originKeyHex)
 	if len(originKey) == 0 {
@@ -119,17 +147,19 @@ func main() {
 	unseal := os.Getenv("HMN_UNSEAL")
 	if *keystorePath != "" {
 		if unseal == "" {
-			log.Fatalf("keystore requires an unseal passphrase in HMN_UNSEAL")
+			gateFatalf("keystore requires an unseal passphrase in HMN_UNSEAL")
 		}
 		m, created, err := audit.LoadOrCreateKeys(*keystorePath, unseal)
 		if err != nil {
-			log.Fatalf("keystore: %v", err)
+			gateFatalf("keystore: %v", err)
 		}
 		hmacKey, signingSeed, witnessSeed, vault = m.HMACKey, m.SigningSeed, m.WitnessSeed, audit.LoadVault(m.Vault)
 		if created {
-			log.Printf("keystore: created new sealed node identity at %s", *keystorePath)
+			slog.Info("Created a sealed node identity.",
+				"component", "gate.keystore", "event", "keystore.created")
 		} else {
-			log.Printf("keystore: resumed persisted node identity from %s", *keystorePath)
+			slog.Info("Resumed the sealed node identity.",
+				"component", "gate.keystore", "event", "keystore.resumed")
 		}
 	} else {
 		// SoT-38 WS2: do not mint a random HMAC for -audit-verify. A random key
@@ -161,7 +191,7 @@ func main() {
 	if *auditWAL != "" {
 		ws, werr := audit.NewWALSink(*auditWAL)
 		if werr != nil {
-			log.Fatalf("audit-wal: %v", werr)
+			gateFatalf("audit-wal: %v", werr)
 		}
 		auditSink = ws
 	}
@@ -169,7 +199,9 @@ func main() {
 	var projections []audit.RecordSink
 	if *auditRedis != "" {
 		projections = append(projections, audit.NewRedisStreamSink(*auditRedis, "audit:"+*node, 100000, 8192))
-		log.Printf("audit projection: Redis Streams -> %s (audit:%s)", *auditRedis, *node)
+		slog.Info("Enabled the Redis audit projection.",
+			"component", "gate.audit", "event", "audit.projection_enabled",
+			"projection", "redis")
 	}
 	if *auditCH != "" {
 		ch := audit.NewCHSink(*auditCH, "audit_log", 10000, time.Second, 100000)
@@ -179,13 +211,15 @@ func main() {
 			ch.SetAuth(u, os.Getenv("HMN_CLICKHOUSE_PASSWORD"))
 		}
 		projections = append(projections, ch)
-		log.Printf("audit projection: ClickHouse -> %s (audit_log)", *auditCH)
+		slog.Info("Enabled the ClickHouse audit projection.",
+			"component", "gate.audit", "event", "audit.projection_enabled",
+			"projection", "clickhouse")
 	}
 	alog := audit.NewLog(audit.Config{NodeID: *node, HMACKey: hmacKey, CheckpointEvery: 32, Witness: witness, SigningSeed: signingSeed, WAL: auditSink, Projections: projections})
-	// Publish verification keys for out-of-band pinning (SoT-38 WS2). Public only —
-	// never log seeds or HMAC material.
-	log.Printf("audit keys: node=%s sth_public=%x witness_public=%x",
-		*node, alog.PublicKey(), alog.WitnessPublicKey())
+	// Verification material remains available through the audit interfaces; do
+	// not duplicate key bytes into longer-lived operational files (SoT-40).
+	slog.Info("Audit verification keys are available.",
+		"component", "gate.audit", "event", "audit.keys_ready")
 	// Restore the witness's monotonic fork-detection state from the last replayed
 	// checkpoint so the first post-restart co-sign still demands an append-only
 	// consistency proof (deep-review: no cross-restart amnesia).
@@ -198,10 +232,10 @@ func main() {
 		// instance.startup emit has not run yet, so the chain is empty and SelfVerify
 		// would report OK (0 records). Auditors must point at a real WAL directory.
 		if *auditWAL == "" {
-			log.Fatalf("audit-verify: FAILED class=%s seq=0 -audit-wal is required (empty in-memory chain is not a pass)", audit.ClassEmptyChain)
+			gateFatalf("audit-verify: FAILED class=%s seq=0 -audit-wal is required (empty in-memory chain is not a pass)", audit.ClassEmptyChain)
 		}
 		if alog.Len() == 0 {
-			log.Fatalf("audit-verify: FAILED class=%s seq=0 no records in WAL (empty chain is not a pass)", audit.ClassEmptyChain)
+			gateFatalf("audit-verify: FAILED class=%s seq=0 no records in WAL (empty chain is not a pass)", audit.ClassEmptyChain)
 		}
 		// SelfVerify includes VerifyWitness when a witness key is configured (P0-5).
 		res := alog.SelfVerify()
@@ -209,7 +243,7 @@ func main() {
 			log.Printf("audit-verify: OK (%d records)", alog.Len())
 			os.Exit(0)
 		}
-		log.Fatalf("audit-verify: FAILED class=%s seq=%d %s", res.Class, res.AtSeq, res.Detail)
+		gateFatalf("audit-verify: FAILED class=%s seq=%d %s", res.Class, res.AtSeq, res.Detail)
 	}
 	sink := audit.NewSink(alog)
 	sink.Emit(audit.Record{EventType: audit.EventInstanceStartup, Actor: audit.Actor{Kind: "system"}, TenantID: *node, KeyID: "k1"})
@@ -242,17 +276,16 @@ func main() {
 		}
 		redisKey := []byte(os.Getenv("HMN_REDIS_KEY"))
 		if len(redisKey) == 0 {
-			log.Printf("WARNING: -redis set WITHOUT HMN_REDIS_KEY — the shared verdict/ban channel is UNSIGNED; a weak-ACL or on-path Redis can inject ALLOW/DENY/ban state. Set HMN_REDIS_KEY (>=16 bytes, secret) AND HMN_REDIS_PASSWORD, and isolate Redis on a trusted network.")
+			slog.Warn("Shared state is enabled without message authentication; isolate Redis and configure a secret key.",
+				"component", "gate.redis", "event", "dependency.redis_unsigned")
 		} else if len(redisKey) < 16 || string(redisKey) == "fleet-shared-hmac-secret" {
-			log.Fatalf("HMN_REDIS_KEY must be a secret of at least 16 bytes (and not a demo/placeholder value)")
+			gateFatalf("HMN_REDIS_KEY must be a secret of at least 16 bytes (and not a demo/placeholder value)")
 		}
 		verdicts = gate.NewRedisVerdictLedger(rc, 30*time.Minute, redisKey)
 		sharedBans = gate.NewRedisBanLedger(rc, gate.DefaultRateWindow, gate.DefaultRateSoft, gate.DefaultRateHard, redisKey)
-		mode := "unsigned"
-		if len(redisKey) > 0 {
-			mode = "key-bound HMAC values"
-		}
-		log.Printf("shared state: Redis %s (%s; bans and sticky verdicts propagate across Gate nodes)", *redisAddr, mode)
+		slog.Info("Enabled shared ban and sticky-verdict state.",
+			"component", "gate.redis", "event", "dependency.redis_enabled",
+			"authenticated", len(redisKey) > 0)
 	}
 
 	// Verdict-token HMAC key. By default it is per-boot random (single node). For a
@@ -265,14 +298,15 @@ func main() {
 	if tk := os.Getenv("HMN_TOKEN_KEY"); tk != "" {
 		b, err := hex.DecodeString(tk)
 		if err != nil || len(b) < 16 {
-			log.Fatalf("HMN_TOKEN_KEY must be hex of at least 16 bytes")
+			gateFatalf("HMN_TOKEN_KEY must be hex of at least 16 bytes")
 		}
 		tokenKey = b
 		sharedTokenKey = true
 	} else {
 		mustRand(tokenKey)
 		if *redisAddr != "" {
-			log.Printf("WARNING: -redis (fleet mode) set WITHOUT HMN_TOKEN_KEY — verdict tokens are per-node, so a returning human is re-scored (not fast-pathed) on other nodes. Set a shared HMN_TOKEN_KEY across the fleet.")
+			slog.Warn("Fleet verdict tokens are node-local; configure a shared token key for cross-node fast paths.",
+				"component", "gate.tokens", "event", "tokens.fleet_key_missing")
 		}
 	}
 	// Shared rotating token epoch (SoT-28 WS6): the control plane mints under the
@@ -287,13 +321,16 @@ func main() {
 	if *settingsDir != "" {
 		st, sErr := settings.NewFileStore(*settingsDir)
 		if sErr != nil {
-			log.Fatalf("settings-dir: %v", sErr)
+			gateFatalf("settings-dir: %v", sErr)
 		}
 		settingsStore = st
 		if st.LoadError() != nil {
-			log.Printf("WARNING: settings store: %v", st.LoadError())
+			slog.Warn("The runtime settings store could not load its active overlay.",
+				"component", "gate.settings", "event", "settings.load_failed")
 		}
-		log.Printf("runtime settings store: %s (active overlay=%v)", *settingsDir, st.Active() != nil)
+		slog.Info("Runtime settings storage initialized.",
+			"component", "gate.settings", "event", "settings.store_ready",
+			"overlay_active", st.Active() != nil)
 	}
 
 	// PLAN-08 R3 — load the Web Bot Auth trusted-key allowlist, if configured.
@@ -301,14 +338,15 @@ func main() {
 	if *agentKeysFile != "" {
 		raw, err := os.ReadFile(*agentKeysFile)
 		if err != nil {
-			log.Fatalf("agent-keys: %v", err)
+			gateFatalf("agent-keys: %v", err)
 		}
 		dir, err := gate.NewStaticKeyDirectory(string(raw))
 		if err != nil {
-			log.Fatalf("agent-keys: %v", err)
+			gateFatalf("agent-keys: %v", err)
 		}
 		agentKeys = dir
-		log.Printf("Web Bot Auth enabled: verifying agent signatures against %s", *agentKeysFile)
+		slog.Info("Web Bot Auth verification enabled.",
+			"component", "gate.trust", "event", "trust.web_bot_auth_enabled")
 	}
 
 	// PLAN-08 R2 — load the Privacy Pass PAT issuer allowlist, if configured.
@@ -316,14 +354,15 @@ func main() {
 	if *patIssuersFile != "" {
 		raw, err := os.ReadFile(*patIssuersFile)
 		if err != nil {
-			log.Fatalf("pat-issuers: %v", err)
+			gateFatalf("pat-issuers: %v", err)
 		}
 		pv, err := gate.NewPATVerifier(raw)
 		if err != nil {
-			log.Fatalf("pat-issuers: %v", err)
+			gateFatalf("pat-issuers: %v", err)
 		}
 		patIssuers = pv
-		log.Printf("Privacy Pass enabled: verifying Private Access Tokens against %s", *patIssuersFile)
+		slog.Info("Private Access Token verification enabled.",
+			"component", "gate.trust", "event", "trust.private_access_token_enabled")
 	}
 
 	// PLAN-08 R2 — load the WebAuthn registered-credential allowlist, if configured.
@@ -331,17 +370,18 @@ func main() {
 	if *webauthnCredsFile != "" {
 		raw, err := os.ReadFile(*webauthnCredsFile)
 		if err != nil {
-			log.Fatalf("webauthn-creds: %v", err)
+			gateFatalf("webauthn-creds: %v", err)
 		}
 		wc, err := gate.NewWebAuthnRegistry(string(raw))
 		if err != nil {
-			log.Fatalf("webauthn-creds: %v", err)
+			gateFatalf("webauthn-creds: %v", err)
 		}
 		// PLAN-08 backlog — optional origin + RP-ID binding so an assertion minted for
 		// another site cannot be replayed here (empty = the respective check is off).
 		wc.SetBinding(os.Getenv("HMN_WEBAUTHN_ORIGIN"), os.Getenv("HMN_WEBAUTHN_RPID"))
 		webauthnCreds = wc
-		log.Printf("WebAuthn enabled: verifying possession assertions against %s", *webauthnCredsFile)
+		slog.Info("WebAuthn possession verification enabled.",
+			"component", "gate.trust", "event", "trust.webauthn_enabled")
 	}
 
 	cfg := gate.Config{
@@ -371,10 +411,12 @@ func main() {
 	if *routesFile != "" {
 		r, rErr := loadRoutes(*routesFile)
 		if rErr != nil {
-			log.Fatalf("routes: %v", rErr)
+			gateFatalf("routes: %v", rErr)
 		}
 		cfg.Routes = r
-		log.Printf("loaded %d route rule(s) from %s", len(r), *routesFile)
+		slog.Info("Route policy loaded.",
+			"component", "gate.policy", "event", "policy.routes_loaded",
+			"route_count", len(r))
 	}
 
 	// Ceiling-guard #1 startup validation (see validateAttestedRoutes): refuse to start if
@@ -386,19 +428,20 @@ func main() {
 	hasVerifier := agentKeys != nil || patIssuers != nil || webauthnCreds != nil
 	warns, err := validateAttestedRoutes(cfg.Routes, sharedTokenKey, hasVerifier)
 	if err != nil {
-		log.Fatalf("routes: %v", err)
+		gateFatalf("routes: %v", err)
 	}
-	for _, wmsg := range warns {
-		log.Printf("WARNING: %s", wmsg)
+	for range warns {
+		slog.Warn("Route policy has an unsafe configuration.",
+			"component", "gate.policy", "event", "policy.validation_warning")
 	}
 
 	srv, err := gate.NewServer(cfg, sink, vault, verdicts, control.Handler())
 	if err != nil {
-		log.Fatalf("proxy: %v", err)
+		gateFatalf("proxy: %v", err)
 	}
 	if settingsStore != nil {
 		if err := srv.SetSettingsStore(settingsStore); err != nil {
-			log.Fatalf("settings runtime: %v", err)
+			gateFatalf("settings runtime: %v", err)
 		}
 		control.WithEngineConfigurator(func(e *scoring.Engine) {
 			gate.ConfigureEngineFromEffective(e, srv.SettingsEffective())
@@ -415,12 +458,36 @@ func main() {
 		}
 		return total
 	})
+	srv.SetOperationalLogMetricsFn(func() gate.OperationalLogMetrics {
+		stats := logRuntime.Stats()
+		healthy := true
+		for _, sink := range stats.Sinks {
+			healthy = healthy && sink.Healthy
+		}
+		return gate.OperationalLogMetrics{
+			QueueDepth: stats.QueueDepth,
+			QueueFull: [4]uint64{
+				stats.Dropped.QueueFull.Debug,
+				stats.Dropped.QueueFull.Info,
+				stats.Dropped.QueueFull.Warn,
+				stats.Dropped.QueueFull.Error,
+			},
+			Closed: [4]uint64{
+				stats.Dropped.Closed.Debug,
+				stats.Dropped.Closed.Info,
+				stats.Dropped.Closed.Warn,
+				stats.Dropped.Closed.Error,
+			},
+			WriteErrors: stats.WriteErrors,
+			SinkHealthy: healthy,
+		}
+	})
 	srv.RefreshIntegrityMetrics() // seed the cached integrity/witness gauges before the first scrape
 
 	// Seed admin operators with bearer tokens (SoT-28 WS1/WS2). Production issues
-	// these via mTLS client certs or an SSO/operator-CA login; the reference
-	// prints dev tokens at startup. The console is injected with the operator
-	// token so it can read + request; approvals need a distinct approver token.
+	// these via mTLS client certs or an SSO/operator-CA login. In explicit local-demo
+	// mode the console receives the operator token in memory, but no token value is
+	// written to operational logs. Approvals need a distinct approver token.
 	toks := map[gate.Role]string{}
 	// Deterministic dev tokens via HMN_ADMIN_TOKENS="auditor:tok,operator:tok,..."
 	// (for e2e/demo); otherwise generate random per boot.
@@ -440,10 +507,10 @@ func main() {
 			lv := strings.ToLower(v)
 			if strings.HasPrefix(v, "e2e-") || strings.Contains(lv, "change") ||
 				strings.Contains(lv, "placeholder") || strings.Contains(lv, "example") || strings.Contains(lv, "your-") {
-				log.Fatalf("refusing to boot: %s is a shipped or placeholder value; set a real secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only", kind)
+				gateFatalf("refusing to boot: %s is a shipped or placeholder value; set a real secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only", kind)
 			}
 			if len(v) < 16 {
-				log.Fatalf("refusing to boot: %s is shorter than 16 characters; use a high-entropy secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only", kind)
+				gateFatalf("refusing to boot: %s is shorter than 16 characters; use a high-entropy secret, or HMN_ALLOW_DEV_TOKENS=1 for the local demo only", kind)
 			}
 		}
 		for role, v := range envToks {
@@ -478,11 +545,11 @@ func main() {
 		acmeDirectory: *acmeDirectory, certFile: *tlsCert, keyFile: *tlsKey,
 	})
 	if err != nil {
-		log.Fatalf("edge tls: %v", err)
+		gateFatalf("edge tls: %v", err)
 	}
 	adminCert, err := selfSignedCert()
 	if err != nil {
-		log.Fatalf("admin cert: %v", err)
+		gateFatalf("admin cert: %v", err)
 	}
 	adminCfg := &tls.Config{Certificates: []tls.Certificate{adminCert}, MinVersion: tls.VersionTLS12}
 	// Optional mTLS on the admin plane (prod-delta closure B1): require a client cert
@@ -491,15 +558,16 @@ func main() {
 	if *adminMTLSCA != "" {
 		caPEM, rerr := os.ReadFile(*adminMTLSCA)
 		if rerr != nil {
-			log.Fatalf("admin-mtls-ca: %v", rerr)
+			gateFatalf("admin-mtls-ca: %v", rerr)
 		}
 		pool := x509.NewCertPool()
 		if !pool.AppendCertsFromPEM(caPEM) {
-			log.Fatalf("admin-mtls-ca: no valid certificate found in %s", *adminMTLSCA)
+			gateFatalf("admin-mtls-ca: no valid certificate found")
 		}
 		adminCfg.ClientAuth = tls.RequireAndVerifyClientCert
 		adminCfg.ClientCAs = pool
-		log.Printf("admin listener: mTLS ENABLED — a client certificate signed by %s is required in addition to the bearer token", *adminMTLSCA)
+		slog.Info("Mutual TLS is enabled on the admin listener.",
+			"component", "gate.admin", "event", "admin.mtls_enabled")
 	}
 	mkServer := func(a string, h http.Handler, tc *tls.Config) *http.Server {
 		hs := &http.Server{
@@ -550,46 +618,48 @@ func main() {
 				}
 			}
 			if dropped > lastDropped {
-				log.Printf("WARN audit projection dropped %d records total because a projection was unavailable or backpressured; the write-ahead log remains the durability authority", dropped)
+				slog.Warn("An audit projection dropped records; the write-ahead log remains authoritative.",
+					"component", "gate.audit", "event", "audit.projection_dropped",
+					"dropped_total", dropped)
 				lastDropped = dropped
 			}
 		}
 	}()
 
 	if lo := strings.HasPrefix(*adminAddr, "127.0.0.1") || strings.HasPrefix(*adminAddr, "localhost") || strings.HasPrefix(*adminAddr, "[::1]"); !lo && !devTokens {
-		log.Printf("WARNING: admin listener %s is not bound to loopback and no mutual-TLS client authority is configured; front it with an identity-aware, mutually authenticated proxy or bind -admin-addr to 127.0.0.1. In Docker, keep the host port mapping loopback-only (127.0.0.1:8445:8445).", *adminAddr)
+		slog.Warn("The admin listener is not loopback-bound and mutual TLS is disabled.",
+			"component", "gate.admin", "event", "admin.exposure_warning")
 	}
 	adminSrv := mkServer(*adminAddr, srv.AdminHandler(), adminCfg)
 	go func() {
-		log.Printf("humanymous Gate admin console on https://%s/__hmn/admin/console", *adminAddr)
-		// SoT-31 R4 / audit SEC-2: NEVER echo admin bearer-token values at INFO level in a
-		// real deployment — env-supplied production tokens would land in stdout / docker logs
-		// / log shippers. Print the raw values only in the explicit local-demo mode; otherwise
-		// print role names only.
-		if devTokens {
-			log.Printf("  development tokens (demo mode) — auditor:%s operator:%s approver:%s privacy-officer:%s", toks[gate.RoleAuditor], toks[gate.RoleOperator], toks[gate.RoleApprover], toks[gate.RoleDPO])
-		} else {
-			log.Printf("  admin roles configured: auditor, operator, approver, privacy officer — token values are not logged; supply them via HMN_ADMIN_TOKENS (a random token was generated for any role left unset)")
-		}
+		slog.Info("Admin console started.",
+			"component", "gate.admin", "event", "admin.started")
+		// SoT-40: bearer values are forbidden in operational logs, including the
+		// explicit local demo. The console may still receive its in-memory token.
+		slog.Info("Admin roles configured; bearer values are not logged.",
+			"component", "gate.admin", "event", "admin.roles_configured")
 		if err := adminSrv.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("admin listener: %v", err)
+			gateFatalf("admin listener: %v", err)
 		}
 	}()
 
 	pubSrv := mkServer(*addr, srv, edgeCfg)
 	tlsMode := "self-signed"
 	if len(splitDomains(*acmeDomain)) > 0 {
-		tlsMode = "ACME " + *acmeDomain
+		tlsMode = "acme"
 	} else if *tlsCert != "" && *tlsKey != "" {
-		tlsMode = "BYO cert"
+		tlsMode = "operator_certificate"
 	}
-	log.Printf("humanymous Gate %s on https://localhost%s -> %s (monitor=%v, tls=%s)", version, *addr, *upstream, *monitor, tlsMode)
+	slog.Info("Gate listener started.",
+		"component", "gate.runtime", "event", "runtime.started",
+		"monitor", *monitor, "tls_mode", tlsMode)
 	// Topology honesty (deep-review): the gate does NOT capture the ClientHello, so JA3/JA4,
 	// grease, the H2 fingerprint and the UA-vs-TLS/H2 cross-checks (HR-2/HR-5/HR-11/HR-14) do
 	// NOT fire here — the network-fingerprint plane is a reference feature of the Core engine.
 	// Detection at the gate is client JS/WASM + header/behavior + IP-intel only. Additionally,
 	// if a CDN/L7 balancer terminates TLS in front, even the Core's TLS plane is inert.
-	log.Printf("NOTE: Gate does not capture the browser's encrypted-connection handshake or HTTP/2 frames and receives only its reduced browser report. For complete Core network observations, terminate the original encrypted connection at Core without a re-terminating intermediary in front.")
+	slog.Info("Gate receives the reduced browser report; complete network observations require direct Core termination.",
+		"component", "gate.runtime", "event", "runtime.network_observation_boundary")
 
 	// PLAN-08 R4 — behind an L4 passthrough LB: parse PROXY v2 (below TLS) from the
 	// trusted balancer CIDRs, recovering the real client IP. Without trusted proxies,
@@ -600,11 +670,11 @@ func main() {
 		if *trustedProxies != "" {
 			cidrs, perr := gate.ParseCIDRs(*trustedProxies)
 			if perr != nil {
-				log.Fatalf("trusted-proxies: %v", perr)
+				gateFatalf("trusted-proxies: %v", perr)
 			}
 			base, lerr := net.Listen("tcp", *addr)
 			if lerr != nil {
-				log.Fatalf("edge listener: %v", lerr)
+				gateFatalf("edge listener: %v", lerr)
 			}
 			log.Printf("  Proxy Protocol version 2 enabled for %d trusted load-balancer address range(s); the original client address is recovered behind transport pass-through", len(cidrs))
 			// PROXY header is read below TLS; then tls.NewListener terminates the handshake.
@@ -614,7 +684,7 @@ func main() {
 			err = pubSrv.ListenAndServeTLS("", "")
 		}
 		if err != nil && err != http.ErrServerClosed {
-			log.Fatalf("edge listener: %v", err)
+			gateFatalf("edge listener: %v", err)
 		}
 	}()
 
@@ -633,9 +703,11 @@ func main() {
 	_ = adminSrv.Shutdown(dctx)
 	if *keystorePath != "" {
 		if err := audit.SealKeys(*keystorePath, unseal, audit.KeyMaterial{SigningSeed: signingSeed, HMACKey: hmacKey, Vault: vault.Snapshot(), WitnessSeed: witnessSeed}); err != nil {
-			log.Printf("shutdown: keystore seal FAILED: %v", err)
+			slog.Error("Keystore sealing failed during shutdown.",
+				"component", "gate.keystore", "event", "keystore.seal_failed")
 		} else {
-			log.Printf("keystore: node identity + vault sealed on shutdown")
+			slog.Info("Node identity and vault sealed.",
+				"component", "gate.keystore", "event", "keystore.sealed")
 		}
 	}
 	log.Printf("shutdown: complete")

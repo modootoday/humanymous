@@ -31,13 +31,26 @@ for (let i = 0; i < N; i++) {
   try {
     const s = await req('GET', '/api/session');
     const cookie = (s.headers['set-cookie'] || ['']).map((c) => c.split(';')[0]).join('; ');
-    const report = JSON.stringify({ userAgent: 'Mozilla/5.0 (swarm participant)', signals: [], fingerprintId: FP });
+    // This fixture exercises cross-session network correlation, not the
+    // browser-without-JavaScript rule. Mark the synthetic browser probe as
+    // completed so that earlier rule does not hide the correlation contributor
+    // the swarm assertion is designed to observe.
+    const report = JSON.stringify({
+      userAgent: 'Mozilla/5.0 (swarm participant)',
+      signals: [],
+      fingerprintId: FP,
+      advanced: { probed: true },
+    });
     const c = await req('POST', '/api/collect', { cookie, body: report });
     let v = {}; try { v = JSON.parse(c.body); } catch { /* non-JSON */ }
     const corr = (v.topContributors || []).map((t) => t.id).filter((id) => /corr|proxy|shared|ip\.|subnet/i.test(id));
-    console.log(`[swarm] #${i} verdict=${v.verdict} risk=${v.riskScore} rule=${v.hardRuleFired || '-'} corr=[${corr.join(',') || '-'}]`);
+    const proxyRotation = corr.includes('l5.correlation.proxy_rotation') || v.hardRuleFired === 'HR-19';
+    console.log(`[swarm] #${i} verdict=${v.verdict} risk=${v.riskScore} rule=${v.hardRuleFired || '-'} corr=[${proxyRotation ? 'proxy_rotation' : (corr.join(',') || '-')}]`);
     completed++;
-    if (corr.includes('l5.correlation.proxy_rotation')) {
+    // Hard rules are reported separately from weighted top contributors. This
+    // fixture has no proof-of-work or fingerprint-churn input, so HR-19 here is
+    // precisely the shared-fingerprint, three-subnet rotation condition.
+    if (proxyRotation) {
       appendFileSync('/artifacts/swarm-correlation.ok', `proxy_rotation ${new Date().toISOString()}\n`);
     }
   } catch (e) {
