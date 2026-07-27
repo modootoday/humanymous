@@ -11,7 +11,7 @@ ADDR     ?= :8443
 IMAGE   ?= humanymous/core:local
 COMPOSE ?= docker compose -f deployments/compose.yaml
 
-.PHONY: all wasm wasmexec server gate report build test race e2e-deps e2e e2e-docker e2e-quick report-html run clean fmt vet \
+.PHONY: all wasm wasmexec server gate report build test race e2e-deps e2e e2e-docker e2e-quick e2e-assert report-html run clean fmt vet \
         docker up attack swarm gate-e2e down logs changelog-unreleased release-notes docs-assets docs-frames docs-anim
 
 all: build
@@ -50,7 +50,7 @@ race:
 fmt:
 	$(GO) fmt ./...
 vet:
-	$(GO) vet ./internal/... ./cmd/server/... ./cmd/report/...
+	$(GO) vet ./...
 
 ## docs-assets: (re)generate the docs OG images (brand WebP) + per-page llms.txt.
 ## Run after editing a page title/description (needs Node; sharp installs on first run).
@@ -144,4 +144,4 @@ e2e-assert:
 	$(COMPOSE) run --rm attack-assert
 
 clean:
-	rm -f $(SRV_OUT) $(RPT_OUT) $(WASM_OUT) test/e2e/results.json
+	rm -f $(SRV_OUT) $(GATE_OUT) $(RPT_OUT) $(WASM_OUT) test/e2e/results.json

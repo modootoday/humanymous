@@ -2,22 +2,22 @@
 # base compose so local builds never touch a backend they don't have. Used as:
 #   docker compose -f compose.yaml -f compose.ci.yaml build
 #
-# ROI note: this stack's build time is dominated by pulling the ~3.5GB Playwright
-# base image (a registry pull the layer cache can't shortcut). The gha cache still
-# saves the Go module download + compile layers shared by all three images.
+# The bots image installs only Chromium + Firefox from its locked Playwright
+# dependency. Export minimum caches so standard PR runs retain reusable final
+# layers without duplicating every intermediate build layer in Actions storage.
 # Distinct `scope`s stop the images clobbering each other's cache entries.
 services:
   core:
     build:
       cache_from: ["type=gha,scope=core"]
-      cache_to: ["type=gha,mode=max,scope=core"]
+      cache_to: ["type=gha,mode=min,scope=core"]
 
   gate:
     build:
       cache_from: ["type=gha,scope=gate"]
-      cache_to: ["type=gha,mode=max,scope=gate"]
+      cache_to: ["type=gha,mode=min,scope=gate"]
 
   bots:
     build:
       cache_from: ["type=gha,scope=bots"]
-      cache_to: ["type=gha,mode=max,scope=bots"]
+      cache_to: ["type=gha,mode=min,scope=bots"]

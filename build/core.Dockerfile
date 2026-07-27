@@ -8,7 +8,7 @@
 # Pin the builder to the BUILD platform and cross-compile to the TARGET arch, so
 # multi-arch (amd64+arm64) release builds compile natively instead of emulating
 # under QEMU (SoT-31 R6). The binary is static (CGO off), so this is free.
-FROM --platform=$BUILDPLATFORM golang:1.25 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS builder
 ARG TARGETOS
 ARG TARGETARCH
 WORKDIR /src
@@ -34,7 +34,7 @@ RUN mkdir -p /acme-cache && chown 65532:65532 /acme-cache
 # ---- runtime ---------------------------------------------------------------
 # distroless/static: no shell, no package manager, minimal attack surface. It
 # ships CA roots (needed for the Let's Encrypt ACME calls) and runs as nonroot.
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
 WORKDIR /app
 
 COPY --from=builder /out/server /app/server

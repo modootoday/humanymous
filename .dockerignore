@@ -8,6 +8,9 @@ plan/
 
 # Docs live on GitHub Pages, not in the engine image
 docs/
+build/
+deployments/
+scripts/
 
 # Red-team tooling and the whole test harness — must NOT be reachable in prod
 test/
@@ -30,6 +33,16 @@ web/detector.wasm
 # VCS / CI / editor / local
 .git/
 .github/
+.agent-runs/
+.cache/
+.tmp/
+.local-trust/
+.agents/
+.claude/
+.codex/
+.grok/
+SCRATCH/
+deployments/artifacts/
 .gitignore
 .dockerignore
 *.md

@@ -14,10 +14,10 @@
 # ---- curl-impersonate (Chrome ClientHello / JA4 parrot; musl) ---------------
 # Upstream image is Alpine/musl. We copy binaries + musl loader + libz so the
 # wrappers run on the Ubuntu Playwright base via the musl dynamic linker.
-FROM lwthiker/curl-impersonate:0.6-chrome AS curl-impersonate
+FROM lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64 AS curl-impersonate
 
 # ---- Go attack + gate binaries ----------------------------------------
-FROM golang:1.25 AS gobuild
+FROM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS gobuild
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
@@ -28,15 +28,75 @@ COPY scripts/gen-demo-keys ./scripts/gen-demo-keys
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/ \
- && go run ./scripts/gen-demo-keys
+ && CGO_ENABLED=0 go run ./scripts/gen-demo-keys
 
-# ---- Bots runtime: Node + Playwright browsers (Chromium + Firefox) ---------
-FROM mcr.microsoft.com/playwright:v1.61.1-noble
+# ---- Bots runtime: Node + only the two exercised Playwright browsers --------
+# The upstream Playwright image also carries WebKit and its OS dependencies.
+# Install from the repository lock instead so this local-only image contains the
+# headful Chromium and Firefox builds exercised by the catalog, and nothing else.
+FROM node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
 WORKDIR /app
 
+ARG DEBIAN_FRONTEND=noninteractive
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+# Copy the Go outputs before downloading browsers. This dependency makes
+# BuildKit finish and release the Go compilation peak before the large
+# Playwright extraction starts on 14 GiB standard runners.
 COPY --from=gobuild /out/redteam   /app/bin/redteam
 COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
-COPY --from=gobuild /out/gate  /app/bin/gate
+COPY --from=gobuild /out/gate      /app/bin/gate
+
+# The catalog uses new Chromium headless plus full headful Chromium. It never
+# launches the legacy headless-shell binary, so do not download that duplicate.
+COPY test/package.json test/package-lock.json /app/test/
+RUN dpkg-divert --local --rename --add /usr/bin/update-mime-database \
+ && ln -s /bin/true /usr/bin/update-mime-database \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+      ca-certificates \
+      fonts-dejavu-core \
+      fonts-liberation \
+      libasound2 \
+      libatk-bridge2.0-0 \
+      libatk1.0-0 \
+      libcairo2 \
+      libcups2 \
+      libdbus-1-3 \
+      libdbus-glib-1-2 \
+      libdrm2 \
+      libgbm1 \
+      libglib2.0-0 \
+      libgtk-3-0 \
+      libnspr4 \
+      libnss3 \
+      libpango-1.0-0 \
+      libx11-6 \
+      libx11-xcb1 \
+      libxcb1 \
+      libxcomposite1 \
+      libxdamage1 \
+      libxext6 \
+      libxfixes3 \
+      libxkbcommon0 \
+      libxrandr2 \
+      libxshmfence1 \
+      libxt6 \
+      libxtst6 \
+      xauth \
+      xvfb \
+ && cd /app/test \
+ && npm ci --no-audit --no-fund \
+ && ./node_modules/.bin/playwright-core install --no-shell chromium firefox \
+ && rm /usr/bin/update-mime-database \
+ && dpkg-divert --local --rename --remove /usr/bin/update-mime-database \
+ && rm -rf \
+      /root/.npm \
+      /tmp/* \
+      /var/cache/apt/* \
+      /var/lib/apt/lists/* \
+      /usr/share/doc/* \
+      /usr/share/man/*
 
 # curl-impersonate from lwthiker/curl-impersonate:0.6-chrome
 # User pattern: copy curl-impersonate, curl-impersonate-chrome, curl_chrome99_android
@@ -58,8 +118,6 @@ RUN ln -sf libz.so.1.2.13 /lib/libz.so.1 \
  && sed -i '1s|^#!.*|#!/bin/bash|' /app/curl-impersonate/bin/curl_chrome* \
  && chmod +x /app/curl-impersonate/bin/*
 
-COPY test/package.json test/package-lock.json /app/test/
-RUN cd /app/test && npm ci --no-audit --no-fund
 COPY test /app/test
 COPY scripts/assert-*.mjs /app/scripts/
 COPY deployments/bots/ /app/

@@ -4,7 +4,7 @@
 # the adjacent gate.Dockerfile.dockerignore re-includes cmd/gate.
 # Cross-compile to the target arch on the build platform (SoT-31 R6) so multi-arch
 # release builds compile natively instead of emulating under QEMU. Static, CGO off.
-FROM --platform=$BUILDPLATFORM golang:1.25 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS builder
 ARG TARGETOS
 ARG TARGETARCH
 WORKDIR /src
@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -trimpat
 # root-owned volume denies the non-root process and Gate cannot boot).
 RUN mkdir -p /out/data /out/acme-cache
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
 WORKDIR /app
 COPY --from=builder /out/gate /app/gate
 # Ship licence + third-party notices with the image (audit: BSD-3/MIT redistribution).

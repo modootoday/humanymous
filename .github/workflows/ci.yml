@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 # Cancel superseded runs on the same ref (saves runner minutes on rapid pushes).
 concurrency:
   group: ci-${{ github.ref }}
@@ -27,8 +30,21 @@ jobs:
           go-version: "1.25"
           cache: true
       - run: go build ./...
-      - run: go vet ./cmd/... ./internal/...
+      - run: go vet ./...
       - run: go test ./...
+      - name: External-input contract tests
+        run: |
+          node --test \
+            test/externalinput/*.test.mjs \
+            test/externalinput/dom-observer/*.test.mjs \
+            test/externalinput/kernel-runner/*.test.mjs \
+            test/externalinput/usb-broker/*.test.mjs \
+            test/externalinput/vusb/*.test.mjs \
+            scripts/assert-external-input*.test.mjs
+      - name: CI storage contract
+        run: node --test test/ci/*.test.mjs
+      - name: Public terminology convention
+        run: node scripts/check-public-terminology.mjs
       # SoT-38 §9.5 / v0.2.2 — race detector in CI (unit packages only; not the Docker e2e job).
       - name: go test -race
         run: go test -race ./...
@@ -66,6 +82,66 @@ jobs:
           bash scripts/agents/verify-agents-layout.sh
           node --test scripts/agents/workflow-runner.test.mjs scripts/agents/hooks/pre-tool-guard.test.mjs scripts/assert-attack.test.mjs
 
+  external-input-kernel-smoke:
+    name: compact independent-kernel smoke
+    runs-on: ubuntu-latest
+    needs: go
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Capture storage baseline
+        run: df -B1 --output=used / | tail -n 1 > /tmp/humanymous-storage-before
+
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+
+      # This target contains only QEMU plus the small kernel/initramfs gadget
+      # smoke. It deliberately excludes the browser VM and cannot satisfy a
+      # Mode 3V/4V detector measurement.
+      - name: Build compact kernel smoke
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: build/external-input-kernel-runner.Dockerfile
+          target: smoke
+          platforms: linux/amd64
+          load: true
+          provenance: false
+          sbom: false
+          tags: humanymous/external-input-kernel-smoke:ci
+          cache-from: type=gha,scope=external-input-kernel-smoke
+          cache-to: type=gha,mode=min,scope=external-input-kernel-smoke
+
+      - name: Enforce compact image budget
+        run: |
+          bytes="$(docker image inspect \
+            humanymous/external-input-kernel-smoke:ci \
+            --format '{{.Size}}')"
+          test "$bytes" -le 50331648
+          before="$(cat /tmp/humanymous-storage-before)"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          test "$delta" -ge 0
+          test "$delta" -le 536870912
+
+      - name: Run six-device kernel gadget smoke
+        run: |
+          mkdir -p deployments/artifacts/kernel-smoke-ci
+          docker run --rm \
+            --network none \
+            --read-only \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            --tmpfs /tmp \
+            -e HM_KERNEL_ACCEL=tcg \
+            -v "$PWD/deployments/artifacts/kernel-smoke-ci:/output" \
+            humanymous/external-input-kernel-smoke:ci
+          jq -e '
+            .status == "PASS" and
+            .kind == "kernel-runner" and
+            .accelerator == "tcg"
+          ' deployments/artifacts/kernel-smoke-ci/runner.json >/dev/null
+
   detector-vs-bots:
     name: docker detector-vs-bots
     runs-on: ubuntu-latest
@@ -77,19 +153,102 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+      - name: Capture detector storage baseline
+        run: |
+          set -euo pipefail
+          used="$(df -B1 --output=used / | tail -n 1)"
+          echo "$used" > "$RUNNER_TEMP/humanymous-detector-storage-before"
+          done_file="$RUNNER_TEMP/humanymous-detector-storage-sampling.done"
+          peak_file="$RUNNER_TEMP/humanymous-detector-storage-peak"
+          samples_file="$RUNNER_TEMP/humanymous-detector-storage-samples"
+          monitor_log="$RUNNER_TEMP/humanymous-detector-storage-monitor.log"
+          rm -f "$done_file" "$monitor_log"
+          echo "$used" > "$peak_file"
+          echo 0 > "$samples_file"
+          nohup env \
+            HM_STORAGE_DONE="$done_file" \
+            HM_STORAGE_PEAK="$peak_file" \
+            HM_STORAGE_SAMPLES="$samples_file" \
+            bash -c '
+              set -u
+              samples=0
+              while ! test -e "$HM_STORAGE_DONE"; do
+                used="$(df -B1 --output=used / | tail -n 1)"
+                peak="$(cat "$HM_STORAGE_PEAK")"
+                if test "$used" -gt "$peak"; then
+                  echo "$used" > "$HM_STORAGE_PEAK"
+                fi
+                samples="$((samples + 1))"
+                echo "$samples" > "$HM_STORAGE_SAMPLES"
+                sleep 0.25
+              done
+            ' </dev/null >"$monitor_log" 2>&1 &
+          monitor_pid="$!"
+          echo "$monitor_pid" > "$RUNNER_TEMP/humanymous-detector-storage-monitor.pid"
+          sleep 0.5
+          kill -0 "$monitor_pid"
+          echo "baseline_used_bytes=$used"
+          echo "storage_monitor_pid=$monitor_pid"
+          df -h /
+          docker system df
+
       # buildx (docker-container driver) is required for the gha cache backend.
       - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
 
       - name: Validate modular compose
         run: docker compose -f deployments/compose.yaml config -q
 
-      - name: Build all images (gha layer cache)
-        run: >
-          docker compose
-          -f deployments/compose.yaml -f deployments/compose.ci.yaml
-          --profile attack --profile gate-test --profile pass-test --profile swarm
-          --progress plain
-          build
+      # Every profiled test service reuses one of these three tagged images.
+      # Build the small defenders first, export their minimum remote cache, and
+      # reclaim local intermediates before the browser image starts. The
+      # job-wide quarter-second sampler records transient extraction and
+      # download peaks through scans, tests, and overlays as well as builds.
+      - name: Build canonical images under transient storage budget
+        run: |
+          set -euo pipefail
+          peak_file="$RUNNER_TEMP/humanymous-detector-storage-peak"
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          docker compose \
+            -f deployments/compose.yaml -f deployments/compose.ci.yaml \
+            --profile attack --progress plain build core gate
+          docker buildx prune --all --force
+          docker compose \
+            -f deployments/compose.yaml -f deployments/compose.ci.yaml \
+            --profile attack --progress plain build bots
+          peak="$(cat "$peak_file")"
+          peak_delta="$((peak - before))"
+          echo "peak_used_bytes=$peak"
+          echo "peak_delta_bytes=$peak_delta"
+          test "$peak_delta" -ge 0
+          test "$peak_delta" -le 2684354560
+
+      - name: Diagnose post-build storage phase
+        run: |
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          echo "post_build_used_bytes=$after"
+          echo "post_build_delta_bytes=$delta"
+          df -h /
+          docker system df
+          docker image ls
+          test "$delta" -ge 0
+
+      # The final images are loaded into Docker's image store. BuildKit's local
+      # intermediates would otherwise duplicate that content for the rest of the
+      # job even though the minimum reusable cache has already been exported.
+      - name: Reclaim build cache and enforce retained storage budget
+        run: |
+          docker buildx prune --all --force
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          echo "retained_after_build_used_bytes=$after"
+          echo "retained_after_build_delta_bytes=$delta"
+          df -h /
+          docker system df
+          test "$delta" -ge 0
+          test "$delta" -le 1879048192
 
       # Supply-chain: scan the release images for known-vulnerable OS/deps
       # (audit SUP-1 / OpenSSF Scorecard). Fail only on FIXABLE High/Critical.
@@ -136,15 +295,76 @@ jobs:
       - name: PLAN-08 feature overlays (Docker consistency)
         run: sh scripts/ci-overlays.sh
 
-      - name: Upload run artifacts
+      # All Docker-dependent checks are complete. On this ephemeral runner,
+      # retaining stopped overlay images and local build cache only consumes the
+      # same disk needed to package the bounded text/JSON evidence below.
+      - name: Reclaim completed test images
         if: always()
+        run: |
+          docker image prune --all --force
+          docker buildx prune --all --force
+
+      - name: Enforce final detector storage budget
+        if: always()
+        run: |
+          set -euo pipefail
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          done_file="$RUNNER_TEMP/humanymous-detector-storage-sampling.done"
+          peak_file="$RUNNER_TEMP/humanymous-detector-storage-peak"
+          samples_file="$RUNNER_TEMP/humanymous-detector-storage-samples"
+          monitor_pid="$(cat "$RUNNER_TEMP/humanymous-detector-storage-monitor.pid")"
+          kill -0 "$monitor_pid"
+          touch "$done_file"
+          for _ in $(seq 1 40); do
+            if ! kill -0 "$monitor_pid" 2>/dev/null; then break; fi
+            sleep 0.25
+          done
+          if kill -0 "$monitor_pid" 2>/dev/null; then
+            kill "$monitor_pid" || true
+            echo "storage monitor did not terminate cleanly" >&2
+            exit 1
+          fi
+          samples="$(cat "$samples_file")"
+          test "$samples" -ge 4
+          peak="$(cat "$peak_file")"
+          peak_delta="$((peak - before))"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          echo "whole_job_peak_used_bytes=$peak"
+          echo "whole_job_peak_delta_bytes=$peak_delta"
+          echo "whole_job_storage_samples=$samples"
+          echo "final_used_bytes=$after"
+          echo "final_delta_bytes=$delta"
+          df -h /
+          docker system df
+          docker image ls
+          test "$peak_delta" -ge 0
+          test "$peak_delta" -le 2684354560
+          test "$delta" -ge 0
+          test "$delta" -le 1879048192
+
+      - name: Enforce artifact upload input budget
+        id: artifact-budget
+        if: always()
+        run: |
+          bytes="$(
+            for path in deployments/artifacts; do
+              if test -e "$path"; then
+                du -sb --apparent-size "$path"
+              fi
+            done | awk '{ total += $1 } END { print total + 0 }'
+          )"
+          echo "artifact_input_bytes=$bytes"
+          test "$bytes" -le 4194304
+
+      - name: Upload run artifacts
+        if: ${{ always() && steps.artifact-budget.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: attack-artifacts
+          retention-days: 5
           path: |
             deployments/artifacts/
-            swarm.log
-            .agent-runs/e2e/
 
       - name: Tear down
         if: always()
