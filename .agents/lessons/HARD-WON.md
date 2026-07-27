@@ -104,6 +104,20 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     with `git-coord`. Rule `61` + skill `red-blue-wargame-round`.
 21b. **Plane honesty:** Core catalog ≠ Gate edge/admin ≠ Pass. Host runner is not e2e done.
 21c. **Never invent `test/wargame/`** — extend existing harnesses and the three Core registries.
+21d. **Observed-but-forgotten tells launder** (wargame 2026-07-27, R1). A per-attempt bot tell
+    that is DENY'd but not PERSISTED lets the attacker retry past the trigger and launder the
+    DENY into a trust upgrade — `l7.pow.too_fast` was re-scored per submit, so a native solver
+    revealed itself, got DENY, then resubmitted the same nonce after a delay for `pow.solved`.
+    Persist any impossible-for-a-human observation to the session (`powTooFast`, never cleared).
+21e. **Timing-based controls are fragile as catalog members** (R1). A control whose verdict
+    depends on network round-trip vs a threshold (too_fast fires only when RTT < the browser
+    floor) is non-deterministic across environments and leaks ALLOW ~20% on a slow path — keep
+    such attacks as `cmd/redteam` probes + a deterministic handler test, not flaky must-block
+    catalog entries (a member that sometimes ALLOWs breaks the assert intermittently).
+21f. **A defense comment can over-claim the mechanism** (R2). "Timeouts bound
+    connection-exhaustion" bounded per-connection DURATION, not CONCURRENCY — `Accept()` took
+    unlimited concurrent slowloris connections. Read what the code enforces, not what it says;
+    a concurrency cap (`netutil.LimitListener`) is the missing half.
 
 ## Git contention (multi-session)
 
