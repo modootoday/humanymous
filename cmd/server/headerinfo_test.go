@@ -80,3 +80,27 @@ func TestClientIP(t *testing.T) {
 		})
 	}
 }
+
+// The server reads headers from Go's net/http map, which loses on-wire order. The adapter
+// must report this honestly (OrderReliable=false) and expose Names as a SORTED set — never
+// as wire order — so the reserved l5.header.order / disabled l5.traffic.header_order_shift
+// never run on sorted map noise (SoT-38 truth-debt; wargame R4 2026-07-27).
+func TestHeaderInfoOrderIsNotReliable(t *testing.T) {
+	r, _ := http.NewRequest("GET", "http://x/", nil)
+	// Add headers in a deliberately non-alphabetical order.
+	r.Header.Set("User-Agent", "Mozilla/5.0 Chrome/126")
+	r.Header.Set("Accept", "*/*")
+	r.Header.Set("Sec-Fetch-Site", "same-origin")
+	hi := reqToHeaderInfo(r)
+
+	if hi.OrderReliable {
+		t.Error("server adapter must report OrderReliable=false (net/http loses wire order)")
+	}
+	// Names must be sorted (stable SET), not wire/insertion order.
+	for i := 1; i < len(hi.Names); i++ {
+		if hi.Names[i-1] > hi.Names[i] {
+			t.Errorf("Names must be sorted for a stable set hash, got %v", hi.Names)
+			break
+		}
+	}
+}

@@ -193,6 +193,11 @@ var (
 	// only — it does NOT move Combine risk, so the frozen verdict is unchanged (a separate
 	// detection-release event owns any verdict-altering enforcement).
 	_ = def(Definition{"l5.http2.unknown_under_browser", LayerNetwork, 0, true, "http2", "browser UA over an unclassifiable HTTP/2 profile (audit/admin)"})
+	// RESERVED — not wired (SoT-38 truth-debt). Static header-order-vs-browser detection
+	// needs raw on-wire header capture; the server reads headers from Go's net/http map,
+	// which loses order (see HeaderInfo.OrderReliable). Its mid-session sibling
+	// l5.traffic.header_order_shift is DISABLED for the same reason. Kept as a placeholder
+	// so the id is stable if a raw-capture front end is added; it emits no signal today.
 	_ = def(Definition{"l5.header.order", LayerNetwork, 20, nil, "header", "header order vs claimed browser"})
 	_ = def(Definition{"l5.header.h2_uppercase", LayerNetwork, 25, nil, "header", "uppercase header in h2 (malformed)"})
 	_ = def(Definition{"l5.header.sec_fetch_missing", LayerNetwork, 25, nil, "header", "Chrome UA but sec-fetch missing"})

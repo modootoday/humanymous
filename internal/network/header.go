@@ -9,17 +9,25 @@ import (
 // HeaderInfo struct rather than *http.Request so it is unit-testable and
 // decoupled from the server (SRP).
 
-// HeaderInfo is the decoupled, order-preserving view of a request's headers.
+// HeaderInfo is the decoupled view of a request's headers. Names preserve on-wire
+// ORDER only when OrderReliable (raw capture); the net/http server adapter loses order
+// and delivers a sorted set (see OrderReliable / CasingReliable).
 type HeaderInfo struct {
 	Method  string   // GET/POST/...
 	Version string   // "10"|"11"|"20"|"30"
 	IsH2    bool     // true for HTTP/2+
-	Names   []string // header names in wire order (original case)
+	Names   []string // header names — wire order ONLY when OrderReliable (see below)
 	// CasingReliable is true only when Names preserve on-the-wire casing (raw
 	// capture). Go's net/http canonicalizes names, so the server adapter sets
 	// this false and the h2-uppercase check is suppressed to avoid false
 	// positives (plan/02 §3.3).
 	CasingReliable bool
+	// OrderReliable is true only when Names preserve on-the-wire ORDER (raw capture).
+	// Go's net/http stores headers in a map, so the server adapter loses wire order
+	// and sorts Names for a stable header-SET hash — order-based checks (the reserved
+	// l5.header.order, and the DISABLED l5.traffic.header_order_shift) must gate on
+	// this flag so they never run on sorted map noise (SoT-38 truth-debt).
+	OrderReliable  bool
 	HasCookie      bool
 	HasReferer     bool
 	AcceptLanguage string

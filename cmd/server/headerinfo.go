@@ -42,7 +42,8 @@ func reqToHeaderInfo(r *http.Request) network.HeaderInfo {
 		Method:                r.Method,
 		Version:               version,
 		IsH2:                  r.ProtoMajor == 2,
-		Names:                 names,
+		Names:                 names, // sorted header SET (see OrderReliable) — NOT wire order
+		OrderReliable:         false, // net/http map loses on-wire header order (SoT-38)
 		HasCookie:             r.Header.Get("Cookie") != "",
 		HasReferer:            r.Header.Get("Referer") != "",
 		AcceptLanguage:        r.Header.Get("Accept-Language"),

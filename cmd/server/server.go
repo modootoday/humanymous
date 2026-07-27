@@ -152,13 +152,16 @@ func (a *app) withTrafficLog(next http.Handler) http.Handler {
 		hi := reqToHeaderInfo(r)
 		client := clientIP(r)
 		rec := trafficguard.TrafficRecord{
-			TS:          time.Now(),
-			SessionID:   sid,
-			RemoteAddr:  client,
-			Method:      r.Method,
-			Path:        r.URL.Path,
-			Proto:       protoVer(r),
-			UAHash:      trafficguard.HashUA(hi.UserAgent),
+			TS:         time.Now(),
+			SessionID:  sid,
+			RemoteAddr: client,
+			Method:     r.Method,
+			Path:       r.URL.Path,
+			Proto:      protoVer(r),
+			UAHash:     trafficguard.HashUA(hi.UserAgent),
+			// hi.Order() is a SORTED header-SET on this path (OrderReliable=false; net/http
+			// drops wire order), so this is a stable set hash, not an order hash. The
+			// order-based consumer (l5.traffic.header_order_shift) is DISABLED accordingly.
 			HeaderOrder: trafficguard.HashOrder(hi.Order()),
 			HasSecFetch: hi.SecFetchPresent(),
 		}
