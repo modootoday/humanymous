@@ -1,0 +1,9 @@
+{
+  "name": "org.humanymous.external_input_dom_observer",
+  "description": "Bounded native bridge for the Firefox document observer",
+  "path": "/opt/external-input/dom-observer/native-host.mjs",
+  "type": "stdio",
+  "allowed_extensions": [
+    "external-input-dom@humanymous.invalid"
+  ]
+}

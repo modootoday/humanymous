@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "humanymous.virtual-usb-conformance/v1",
+  "suite": "test/externalinput/vusb",
+  "profileModelId": "reference-relative-v1",
+  "requiredCases": [
+    "strict-json-duplicate-rejection",
+    "whole-rootfs-closed-layout",
+    "catalog-signature-and-hash",
+    "typed-report-guard",
+    "neutral-release",
+    "exact-six-device-mappings",
+    "parent-validated-cleanup",
+    "ime-direct-unicode-rejection",
+    "ime-controller-fixture-isolation",
+    "ime-preedit-and-commit-framebuffer-cues",
+    "ime-six-cell-separate-aggregation"
+  ]
+}

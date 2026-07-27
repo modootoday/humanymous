@@ -1,0 +1,7 @@
+**
+!LICENSE
+!deployments/
+!deployments/external-input/
+!deployments/external-input/vusb/
+!deployments/external-input/vusb/profile/
+!deployments/external-input/vusb/profile/**

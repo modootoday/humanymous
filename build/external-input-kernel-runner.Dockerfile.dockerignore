@@ -1,0 +1,5 @@
+**
+!deployments/
+!deployments/external-input/
+!deployments/external-input/kernel-runner/
+!deployments/external-input/kernel-runner/**

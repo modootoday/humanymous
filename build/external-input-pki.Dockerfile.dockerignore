@@ -1,0 +1,4 @@
+**
+!deployments/
+!deployments/external-input/
+!deployments/external-input/pki-entrypoint.sh

@@ -1,0 +1,319 @@
+# SoT-41 stock-browser pilot. A trusted host supervisor renders this file once
+# per mode with a fresh Compose project and volume set. It intentionally contains
+# no USB device mapping; Modes 3/4 require external-input-hil.yaml on a dedicated
+# Linux runner and otherwise report UNAVAILABLE.
+x-external-profile: &external-profile "${HM_EXTERNAL_COMPOSE_PROFILE:-external-input-m1}"
+x-external-browser-build: &external-browser-build
+  context: ..
+  dockerfile: build/external-input-browser.Dockerfile
+x-external-controller-build: &external-controller-build
+  context: ..
+  dockerfile: build/external-input-controller.Dockerfile
+
+services:
+  lab-pki:
+    build:
+      context: ..
+      dockerfile: build/external-input-pki.Dockerfile
+    image: "${HM_EXTERNAL_PKI_IMAGE:-humanymous/external-input-pki:local}"
+    profiles: [*external-profile]
+    volumes:
+      - external-input-pki:/pki
+    networks: [external-target]
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: "no"
+
+  core:
+    build:
+      context: ..
+      dockerfile: build/external-input-core.Dockerfile
+    image: "${HM_EXTERNAL_CORE_IMAGE:-humanymous/external-input-core:local}"
+    command:
+      - "-addr"
+      - ":8443"
+      - "-web"
+      - "/app/web"
+      - "-tls-cert"
+      - "/pki/core.pem"
+      - "-tls-key"
+      - "/pki/core-key.pem"
+      - "-log-level"
+      - "info"
+      - "-log-console-format"
+      - "jsonl"
+      - "-external-input-receipt-dir"
+      - "/score"
+    volumes:
+      - external-input-pki:/pki:ro
+      - "${HM_EXTERNAL_SCORE_DIR:-../deployments/artifacts/external-input/score}:/score"
+    depends_on:
+      lab-pki:
+        condition: service_completed_successfully
+    ports: !reset []
+    networks: !override [external-target]
+
+  external-display:
+    build:
+      <<: *external-browser-build
+      target: display
+    image: "${HM_EXTERNAL_DISPLAY_IMAGE:-humanymous/external-input-display:local}"
+    profiles: [*external-profile]
+    environment:
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_SCREEN: "1280x720"
+      HOME: "/run/external-input"
+      HM_EXTERNAL_RUN_ID: "${HM_EXTERNAL_RUN_ID:-pilot}"
+      HM_VUSB_SEAT_EVIDENCE: "/run/external-evidence/seat-events.json"
+    volumes:
+      - external-input-x11:/tmp/.X11-unix
+      - external-input-secrets:/run/external-secrets
+      - external-input-evidence:/run/external-evidence
+    networks: [external-control]
+    read_only: true
+    tmpfs:
+      - /run/external-input
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 5s
+
+  external-browser:
+    build:
+      <<: *external-browser-build
+      target: "${HM_EXTERNAL_BROWSER_TARGET:-browser-chromium}"
+    image: "${HM_EXTERNAL_BROWSER_IMAGE:-humanymous/external-input-browser:local}"
+    profiles: [*external-profile]
+    environment:
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_BROWSER: "${HM_EXTERNAL_BROWSER:-chromium}"
+      HM_EXTERNAL_TARGET: "https://core:8443/static/external-input.html?label=external-input/${HM_EXTERNAL_RUN_ID:-pilot}/${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_IME_LOCALE: "${HM_EXTERNAL_IME_LOCALE:-}"
+      HM_EXTERNAL_RUN_ID: "${HM_EXTERNAL_RUN_ID:-pilot}"
+      DISPLAY: ":99"
+    volumes:
+      - external-input-pki:/pki:ro
+      - external-input-x11:/tmp/.X11-unix:ro
+      - external-input-secrets:/run/external-secrets:ro
+      - external-input-browser-profile:/run/browser-profile
+      - external-input-evidence:/run/external-evidence
+    networks: [external-target]
+    depends_on:
+      core:
+        condition: service_started
+      external-display:
+        condition: service_started
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/extbrowser:uid=10001,gid=10001,mode=0700
+    # One 1280x720 lab tab does not need the Playwright image's broad default.
+    # The smaller tmpfs keeps the independent-kernel cell within 4 GiB RAM.
+    shm_size: 256m
+    cap_drop: [ALL]
+    # Chromium's setuid sandbox creates nested PID/network namespaces. Docker's
+    # default capability set omits SYS_ADMIN, so grant it only to the isolated,
+    # non-root browser container; privileged mode and host namespaces stay off.
+    cap_add: [SYS_ADMIN, SYS_CHROOT, SETUID, SETGID]
+    stop_grace_period: 5s
+
+  external-controller:
+    build:
+      context: ..
+      dockerfile: build/external-input-controller.Dockerfile
+    image: "${HM_EXTERNAL_CONTROLLER_IMAGE:-humanymous/external-input-controller:local}"
+    profiles: [*external-profile]
+    environment:
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_BROWSER: "${HM_EXTERNAL_BROWSER:-chromium}"
+      HM_EXTERNAL_IME_LOCALE: "${HM_EXTERNAL_IME_LOCALE:-}"
+      HM_EXTERNAL_RUN_ID: "${HM_EXTERNAL_RUN_ID:-pilot}"
+      HM_EXTERNAL_COMPOSE_PROJECT: "${HM_EXTERNAL_COMPOSE_PROJECT:-external-input-pilot}"
+      HM_EXTERNAL_SEED: "${HM_EXTERNAL_SEED:-sot41-pilot}"
+      HM_EXTERNAL_RFB_HOST: "external-display"
+      HM_EXTERNAL_RFB_PORT: "5900"
+      HM_EXTERNAL_RFB_PASSWORD_FILE: "/run/external-secrets/rfb.password"
+      HM_EXTERNAL_VISUAL_MANIFEST: "/run/external-input/visual-manifest.json"
+      HM_EXTERNAL_RESET_PROOF: "/run/external-input/reset-proof.json"
+      HM_EXTERNAL_PURITY_PATH: "/run/external-input/purity-proof.json"
+      HM_EXTERNAL_RUNTIME_EVIDENCE: "/run/external-input/runtime-evidence.json"
+      HM_EXTERNAL_ARTIFACT_ROOT: "/artifacts/external-input/${HM_EXTERNAL_RUN_ID:-pilot}"
+    volumes:
+      - external-input-secrets:/run/external-secrets:ro
+      - "${HM_EXTERNAL_CONTROL_DIR:-../deployments/artifacts/external-input/control}:/run/external-input:ro"
+      - ../deployments/artifacts:/artifacts
+    networks: [external-control]
+    depends_on:
+      external-display:
+        condition: service_started
+      external-browser:
+        condition: service_started
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    group_add: ["12001"]
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 5s
+
+  external-runtime-browser-probe:
+    build:
+      <<: *external-browser-build
+      target: "${HM_EXTERNAL_BROWSER_TARGET:-browser-chromium}"
+    image: "${HM_EXTERNAL_BROWSER_IMAGE:-humanymous/external-input-browser:local}"
+    profiles: [*external-profile]
+    entrypoint:
+      - node
+      - /opt/external-input/runtime-browser-probe.mjs
+    environment:
+      HM_EXTERNAL_RUN_ID: "${HM_EXTERNAL_RUN_ID:-pilot}"
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_BROWSER: "${HM_EXTERNAL_BROWSER:-chromium}"
+      HM_EXTERNAL_BROWSER_PROBE_PATH: "/runtime-output/browser-probe.json"
+    volumes:
+      - "${HM_EXTERNAL_CONTROL_DIR:-../deployments/artifacts/external-input/control}:/runtime-output"
+    pid: "service:external-browser"
+    network_mode: none
+    depends_on:
+      external-browser:
+        condition: service_started
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_EXTERNAL_HOST_UID:-1000}:12001"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-runtime-display-probe:
+    build:
+      <<: *external-browser-build
+      target: display
+    image: "${HM_EXTERNAL_DISPLAY_IMAGE:-humanymous/external-input-display:local}"
+    profiles: [*external-profile]
+    entrypoint:
+      - node
+      - /opt/external-input/runtime-display-probe.mjs
+    environment:
+      HM_EXTERNAL_RUN_ID: "${HM_EXTERNAL_RUN_ID:-pilot}"
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_DISPLAY_PROBE_PATH: "/runtime-output/display-probe.json"
+      DISPLAY: ":99"
+      XAUTHORITY: "/run/external-secrets/Xauthority"
+    volumes:
+      - external-input-x11:/tmp/.X11-unix:ro
+      - external-input-secrets:/run/external-secrets:ro
+      - "${HM_EXTERNAL_CONTROL_DIR:-../deployments/artifacts/external-input/control}:/runtime-output"
+    network_mode: none
+    depends_on:
+      external-display:
+        condition: service_started
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_EXTERNAL_HOST_UID:-1000}:12001"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-runtime-purity-evaluator:
+    build:
+      <<: *external-controller-build
+    image: "${HM_EXTERNAL_CONTROLLER_IMAGE:-humanymous/external-input-controller:local}"
+    profiles: [*external-profile]
+    entrypoint:
+      - node
+      - /app/test/externalinput/runtime-purity-evaluator.mjs
+    environment:
+      HM_EXTERNAL_RUN_ID: "${HM_EXTERNAL_RUN_ID:-pilot}"
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_BROWSER: "${HM_EXTERNAL_BROWSER:-chromium}"
+      HM_EXTERNAL_COMPOSE_PROJECT: "${HM_EXTERNAL_COMPOSE_PROJECT:-external-input-pilot}"
+      HM_EXTERNAL_COMPOSE_CONFIG_PATH: "/runtime-output/compose-config.json"
+      HM_EXTERNAL_PREPROJECT_CONTAINERS: "/runtime-output/preproject-containers.txt"
+      HM_EXTERNAL_PREPROJECT_NETWORKS: "/runtime-output/preproject-networks.txt"
+      HM_EXTERNAL_PREPROJECT_VOLUMES: "/runtime-output/preproject-volumes.txt"
+      HM_EXTERNAL_PREPROJECT_PROOF: "/runtime-output/preproject-proof.json"
+      HM_EXTERNAL_BROWSER_PROBE_PATH: "/runtime-output/browser-probe.json"
+      HM_EXTERNAL_DISPLAY_PROBE_PATH: "/runtime-output/display-probe.json"
+      HM_EXTERNAL_PURITY_PATH: "/runtime-output/purity-proof.json"
+      HM_EXTERNAL_RUNTIME_EVIDENCE: "/runtime-output/runtime-evidence.json"
+      HM_EXTERNAL_VISUAL_MANIFEST_SOURCE: "/app/test/externalinput/visual-manifest.json"
+      HM_EXTERNAL_VISUAL_MANIFEST: "/runtime-output/visual-manifest.json"
+      HM_EXTERNAL_RESET_PROOF: "/runtime-output/reset-proof.json"
+    volumes:
+      - "${HM_EXTERNAL_CONTROL_DIR:-../deployments/artifacts/external-input/control}:/runtime-output"
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_EXTERNAL_HOST_UID:-1000}:12001"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-score-trace-evaluator:
+    build:
+      <<: *external-controller-build
+    image: "${HM_EXTERNAL_CONTROLLER_IMAGE:-humanymous/external-input-controller:local}"
+    profiles: [*external-profile]
+    entrypoint:
+      - node
+      - /app/test/externalinput/score-trace-evaluator.mjs
+    environment:
+      HM_EXTERNAL_RUN_ID: "${HM_EXTERNAL_RUN_ID:-pilot}"
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:-external_input_virtual}"
+      HM_EXTERNAL_CORE_SCORE_RECEIPT: "/score/core.score.json"
+      HM_EXTERNAL_RESULT_PATH: "/artifacts/external-input/${HM_EXTERNAL_RUN_ID:-pilot}/${HM_EXTERNAL_MODE:-external_input_virtual}.result.json"
+      HM_EXTERNAL_SCORE_RECEIPT: "/score/${HM_EXTERNAL_MODE:-external_input_virtual}.score.json"
+    volumes:
+      - "${HM_EXTERNAL_SCORE_DIR:-../deployments/artifacts/external-input/score}:/score"
+      - ../deployments/artifacts:/artifacts:ro
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "65532:65532"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-input-assert:
+    image: "${HM_EXTERNAL_CONTROLLER_IMAGE:-humanymous/external-input-controller:local}"
+    build:
+      context: ..
+      dockerfile: build/external-input-controller.Dockerfile
+    profiles: [*external-profile]
+    entrypoint:
+      - node
+      - /app/scripts/assert-external-input.mjs
+      - "/artifacts/external-input/${HM_EXTERNAL_RUN_ID:-pilot}"
+    environment:
+      HM_EXTERNAL_BROWSER: "${HM_EXTERNAL_BROWSER:-chromium}"
+      HM_EXTERNAL_EXPECT_MODES: "${HM_EXTERNAL_EXPECT_MODES:-2}"
+    volumes:
+      - ../deployments/artifacts:/artifacts:ro
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  external-target:
+    driver: bridge
+    internal: true
+  external-control:
+    driver: bridge
+    internal: true
+
+volumes:
+  external-input-pki:
+  external-input-x11:
+  external-input-secrets:
+  external-input-browser-profile:
+  external-input-evidence:

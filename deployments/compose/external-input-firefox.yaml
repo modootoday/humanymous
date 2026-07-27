@@ -1,0 +1,6 @@
+# Firefox uses a seccomp-bpf content sandbox and can fall back to its packaged
+# chroot helper when a nested user namespace is unavailable. Keep the base
+# browser service's exact least-privilege capability set; the runtime probe
+# verifies the Web Content child after it has installed its own filter and
+# dropped every effective capability.
+services: {}

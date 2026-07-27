@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "humanymous external-input DOM observer",
+  "version": "1.0.0",
+  "description": "Read-only, fixed-fixture observer for the SoT-41 defensive Docker pilot.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA17vZo+vXl47VCoPU6a9hZdQuux2pTZQU5HcUPgaVi53kJ4KxHEz/HA+E6CiRR4IyHhddKKXZVKQaIg6D3QuC17XKH8psKWNCjnwnl5iXS3rdBEoiv4xc/sFgzt+mLFkjEUE+NoRwgTb5Y6pys3bL1rXxs54sbNwc8m7zWNgcjtqbpUt2o7TI/ZeOmf2+yf8y7JJAoltqEvY69SmdDCY3GTW2qhEz/NoFLNjy8ZCxg3xhEBn/pDO/P1sIoeqHJclxIytoUfxQYlGNgqqyBldoIvupTZeBOHzDRRkuc8Nho4XfC/B0tuwh3jaVVbFAsk8URIqjneXbuffhQMluEaHTMwIDAQAB",
+  "permissions": [
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "https://core/*"
+  ],
+  "background": {
+    "service_worker": "service-worker.mjs",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://core/*"
+      ],
+      "js": [
+        "content-script.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+# Canonical Modes 3/4 hardware-in-loop overlay. Never include this file on
+# Docker Desktop. The three host paths must be exact stable by-id symlinks on a
+# dedicated Linux seat; broad /dev/input and /dev/uinput mappings are forbidden.
+services:
+  external-display:
+    environment:
+      HM_EXTERNAL_HID_KEYBOARD: "/dev/input/external-keyboard"
+      HM_EXTERNAL_HID_POINTER: "/dev/input/external-pointer"
+    devices:
+      - "${HM_EXTERNAL_USB_KEYBOARD:?set exact keyboard /dev/input/by-id path}:/dev/input/external-keyboard:r"
+      - "${HM_EXTERNAL_USB_POINTER:?set exact pointer /dev/input/by-id path}:/dev/input/external-pointer:r"
+
+  external-usb-broker:
+    build:
+      context: ..
+      dockerfile: build/external-input-usb-broker.Dockerfile
+    image: humanymous/external-input-usb-broker:local
+    profiles: ["${HM_EXTERNAL_COMPOSE_PROFILE:-external-input-m3}"]
+    environment:
+      HM_EXTERNAL_USB_COMMAND_DEVICE: "/dev/external-input-command"
+      HM_EXTERNAL_USB_SOCKET: "/run/external-input/usb.sock"
+      HM_EXTERNAL_USB_ATTESTATION: "/run/external-proof/usb-attestation.json"
+    devices:
+      - "${HM_EXTERNAL_USB_COMMAND:?set exact command /dev/serial/by-id path}:/dev/external-input-command:rw"
+    volumes:
+      - external-input-usb-socket:/run/external-input
+      - "${HM_EXTERNAL_CONTROL_DIR:?set control evidence directory}:/run/external-proof:ro"
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    # One in-flight bounded command plus the shutdown release acknowledgement
+    # can exceed two seconds. The firmware dead-man remains authoritative while
+    # Compose allows the broker to finish its explicit release handshake.
+    stop_grace_period: 5s
+
+  external-controller:
+    environment:
+      HM_EXTERNAL_USB_COMMAND_PATH: "/run/external-input-usb/usb.sock"
+      HM_EXTERNAL_USB_ATTESTATION: "/run/external-input/usb-attestation.json"
+    volumes:
+      - external-input-usb-socket:/run/external-input-usb
+    depends_on:
+      external-usb-broker:
+        condition: service_started
+
+volumes:
+  external-input-usb-socket:

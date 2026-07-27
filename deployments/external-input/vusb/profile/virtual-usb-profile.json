@@ -1,0 +1,15 @@
+{
+  "contractVersion": "humanymous.virtual-usb-profile/v1",
+  "modelId": "reference-relative-v1",
+  "descriptorSetId": "reference-relative-v1",
+  "protocolVersion": "1.0.0",
+  "usbOrigin": "kernel-emulated",
+  "physicalCapable": false,
+  "limits": {
+    "maxReportsPerSecond": 120,
+    "maxRelativeStep": 127,
+    "maxKeyDwellMs": 250,
+    "maxPointerDwellMs": 250,
+    "deadManReleaseMs": 500
+  }
+}

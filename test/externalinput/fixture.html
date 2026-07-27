@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>humanymous external-input defensive fixture</title>
+  <link rel="stylesheet" href="/static/external-input.css">
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Defensive Docker test fixture</p>
+      <h1>External-input task sequence</h1>
+      <p>Complete each visible task. All content is synthetic and local to this deployment.</p>
+    </header>
+
+    <section id="ime-step" class="card" aria-labelledby="ime-heading" hidden>
+      <p class="eyebrow">Pinned local IME conformance fixture</p>
+      <h2 id="ime-heading">Composition input</h2>
+      <p>Use the active input method and commit the fixed synthetic phrase.</p>
+      <label for="ime-input">Composition field</label>
+      <input
+        id="ime-input"
+        name="ime-input"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        data-hmn-token="ime-input"
+        data-hmn-name-token="ime-input">
+      <div id="ime-status" class="ime-status ime-waiting" role="status" aria-live="polite">
+        <span class="ime-status-icon" aria-hidden="true"></span>
+        <span id="ime-status-text">Waiting for native composition</span>
+      </div>
+    </section>
+
+    <section id="read-step" class="card" aria-labelledby="read-heading">
+      <h2 id="read-heading">1. Read, then select</h2>
+      <p>The requested option is <strong>the square</strong>.</p>
+      <div class="actions">
+        <button type="button">Circle</button>
+        <button
+          type="button"
+          data-hmn-token="choice-correct"
+          data-hmn-name-token="choice-correct">Square</button>
+        <button type="button">Triangle</button>
+      </div>
+    </section>
+
+    <section id="form-step" class="card" aria-labelledby="form-heading" hidden>
+      <h2 id="form-heading">2. Enter and correct synthetic text</h2>
+      <p>Enter <code>HUMANYMOUS SYNTHETIC TASK</code>, correct any mistake, then press Enter.</p>
+      <form id="synthetic-form-shell">
+        <label for="synthetic-form">Synthetic text</label>
+        <input
+          id="synthetic-form"
+          name="synthetic-form"
+          autocomplete="off"
+          spellcheck="false"
+          data-hmn-token="synthetic-form"
+          data-hmn-name-token="synthetic-form">
+        <button type="submit">Continue</button>
+      </form>
+      <p id="form-error" class="error" role="status"></p>
+    </section>
+
+    <section id="nav-step" class="card" aria-labelledby="nav-heading" hidden>
+      <h2 id="nav-heading">3. Navigate and return</h2>
+      <button
+        type="button"
+        data-hmn-token="nav-branch"
+        data-hmn-name-token="nav-branch">Open the local branch</button>
+      <div id="branch-panel" hidden>
+        <div class="reading-space" aria-hidden="true">
+          <p>Local synthetic reading panel</p>
+        </div>
+        <button
+          type="button"
+          data-hmn-token="nav-return"
+          data-hmn-name-token="nav-return">Return to the task</button>
+      </div>
+    </section>
+
+    <section id="idle-step" class="card" aria-labelledby="idle-heading" hidden>
+      <h2 id="idle-heading">4. Pause, then resume</h2>
+      <p>Take a moment, re-orient, and continue when ready. There is no time limit.</p>
+      <button
+        type="button"
+        data-hmn-token="resume-action"
+        data-hmn-name-token="resume-action">Resume</button>
+    </section>
+
+    <section id="challenge-step" class="card" aria-labelledby="challenge-heading" hidden>
+      <h2 id="challenge-heading">5. Accessible visible check</h2>
+      <p>This local check has a keyboard-accessible path and no motor-speed requirement.</p>
+      <button
+        type="button"
+        data-hmn-token="challenge-action"
+        data-hmn-name-token="challenge-action">Complete visible check</button>
+    </section>
+
+    <section id="scoring-step" class="card" aria-live="polite" hidden>
+      <h2>Measuring this local session</h2>
+      <p id="scoring-status">The real browser detector and transport are running.</p>
+    </section>
+
+    <section id="verdict-region" class="verdict-card verdict-unknown" role="status" hidden>
+      <span id="verdict-icon" class="verdict-icon" aria-hidden="true">?</span>
+      <div>
+        <p class="eyebrow">Coarse detector outcome</p>
+        <p id="verdict-text" class="verdict-text">NO_RESPONSE</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/js/wasm_exec.js"></script>
+  <script type="module" src="/static/external-input.mjs"></script>
+</body>
+</html>

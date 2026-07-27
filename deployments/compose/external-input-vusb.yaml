@@ -1,0 +1,674 @@
+# SoT-42 Docker-only virtual USB overlay. The canonical supervisor supplies only
+# preloaded sha256 image IDs and invokes these profiles in the documented order.
+x-vusb-lifecycle-image: &vusb-lifecycle-image "${HM_VUSB_LIFECYCLE_IMAGE_ID:?preload lifecycle image ID}"
+x-vusb-gateway-image: &vusb-gateway-image "${HM_VUSB_GATEWAY_IMAGE_ID:?preload gateway image ID}"
+x-vusb-profile-mount-image: &vusb-profile-mount-image "${HM_VUSB_PROFILE_MOUNT_IMAGE:?preload verified profile image mount alias}"
+x-vusb-core-image: &vusb-core-image "${HM_VUSB_LAB_CORE_IMAGE_ID:?preload lab Core fixture image ID}"
+x-vusb-pki-image: &vusb-pki-image "${HM_VUSB_PKI_IMAGE_ID:?preload PKI image ID}"
+x-vusb-display-image: &vusb-display-image "${HM_VUSB_DISPLAY_IMAGE_ID:?preload display image ID}"
+x-vusb-browser-image: &vusb-browser-image "${HM_VUSB_BROWSER_IMAGE_ID:?preload selected browser image ID}"
+x-vusb-controller-image: &vusb-controller-image "${HM_VUSB_CONTROLLER_IMAGE_ID:?preload controller image ID}"
+x-vusb-receipts: &vusb-receipts
+  type: bind
+  source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}"
+  target: /receipts
+  read_only: true
+
+services:
+  lab-pki:
+    image: *vusb-pki-image
+    pull_policy: never
+    profiles: [vusb-run]
+
+  core:
+    build: !reset null
+    image: *vusb-core-image
+    pull_policy: never
+    profiles: [vusb-run]
+
+  external-display:
+    image: *vusb-display-image
+    pull_policy: never
+    profiles: [vusb-run]
+    environment:
+      HM_VUSB_IME_POLICY: "${HM_EXTERNAL_IME_LOCALE:+/ime-policy/ime-policy.json}"
+    volumes:
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/policy"
+        target: /ime-policy
+        read_only: true
+
+  external-browser:
+    image: *vusb-browser-image
+    pull_policy: never
+    profiles: [vusb-run]
+
+  external-runtime-browser-probe:
+    image: *vusb-browser-image
+    pull_policy: never
+    profiles: [vusb-run]
+
+  external-runtime-display-probe:
+    image: *vusb-display-image
+    pull_policy: never
+    profiles: [vusb-run]
+
+  external-runtime-purity-evaluator:
+    image: *vusb-controller-image
+    pull_policy: never
+    profiles: [vusb-run]
+
+  external-score-trace-evaluator:
+    build: !reset null
+    image: *vusb-controller-image
+    pull_policy: never
+    profiles: [vusb-run]
+
+  external-vusb-lock:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-parent]
+    entrypoint: ["/bin/sh", "/app/test/externalinput/vusb/lifecycle.sh", "lock"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_RECEIPT_ROOT: /output
+      HM_VUSB_INPUT_ROOT: /receipts
+      HM_VUSB_LOCK_FILE: /run/lock/humanymous-vusb.lock
+      HM_VUSB_OUTPUT_UID: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/lock"
+        target: /output
+      - type: bind
+        source: "${HM_VUSB_LOCK_DIR:?set non-root VM-wide lock directory}"
+        target: /run/lock
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-parent-provisional:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-parent-assert]
+    entrypoint: ["node", "/app/test/externalinput/vusb/parent-assert.mjs", "provisional"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_RECEIPT_ROOT: /receipts
+      HM_VUSB_PROVISIONAL_RECEIPT: /output/provisional-assertion.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/provisional"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-parent-assert:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-parent-assert]
+    entrypoint: ["node", "/app/test/externalinput/vusb/parent-assert.mjs", "terminal"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_CHILD_PROJECT: "${HM_VUSB_CHILD_PROJECT:?set exact child project}"
+      HM_VUSB_PARENT_PROJECT: "${HM_VUSB_PARENT_PROJECT:?set exact parent project}"
+      HM_VUSB_RECEIPT_ROOT: /receipts
+      HM_VUSB_TERMINAL_RECEIPT: /output/terminal.json
+      HM_VUSB_RELEASE_LOCK: /output/release-lock
+      HM_VUSB_LADDER_MANIFEST: /ladder/ladder.json
+      HM_VUSB_ATTEMPT_MANIFEST: /receipts/manifest/attempt.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/terminal"
+        target: /output
+      - type: bind
+        source: "${HM_VUSB_LADDER_MANIFEST_DIR:?set bounded ladder manifest directory}"
+        target: /ladder
+        read_only: true
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-admission:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-admission]
+    entrypoint: ["node", "/app/test/externalinput/vusb/admission.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_MODEL_ID: "${HM_VUSB_MODEL_ID:?set allowlisted model ID}"
+      HM_VUSB_CATALOG: /catalog/profiles.lock.json
+      HM_VUSB_CATALOG_SIGNATURE: /catalog/profiles.lock.sig
+      HM_VUSB_CATALOG_PUBLIC_KEY: /app/trust/catalog-ed25519.pub
+      HM_VUSB_ATTESTATION_BUNDLE: /catalog/reference.attestation.json
+      HM_VUSB_SBOM: /catalog/reference.spdx.json
+      HM_VUSB_VULNERABILITY_POLICY: /catalog/vulnerability-policy.json
+      HM_VUSB_REVOCATIONS: /catalog/revocations.json
+      HM_VUSB_LADDER_MANIFEST: /ladder/ladder.json
+      HM_VUSB_ATTEMPT_MANIFEST: /receipts/manifest/attempt.json
+      HM_VUSB_ADMISSION_RECEIPT: /output/admission.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/admission"
+        target: /output
+      - type: bind
+        source: "${HM_VUSB_CATALOG_DIR:?set preloaded signed catalog directory}"
+        target: /catalog
+        read_only: true
+      - type: bind
+        source: "${HM_VUSB_LADDER_MANIFEST_DIR:?set bounded ladder manifest directory}"
+        target: /ladder
+        read_only: true
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-profile-verify:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-admission]
+    entrypoint: ["node", "/app/test/externalinput/vusb/profile-verify.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_PROFILE_ROOT: /profile-image
+      HM_VUSB_ADMISSION_RECEIPT: /receipts/admission/admission.json
+      HM_VUSB_PROFILE_VERIFICATION_RECEIPT: /output/profile-verification.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/profile"
+        target: /output
+      - type: image
+        source: *vusb-profile-mount-image
+        target: /profile-image
+        read_only: true
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-ime-policy:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-ime-policy]
+    entrypoint:
+      - node
+      - /app/test/externalinput/vusb/ime-policy.mjs
+      - write
+      - "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      - "${HM_EXTERNAL_IME_LOCALE:-}"
+      - /output/ime-policy.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/policy"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-preflight:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-prepare]
+    entrypoint: ["/bin/sh", "/app/test/externalinput/vusb/lifecycle.sh", "preflight"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_RECEIPT_ROOT: /output
+      HM_VUSB_OUTPUT_UID: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/preflight"
+        target: /output
+      - type: bind
+        source: /lib/modules
+        target: /lib/modules
+        read_only: true
+      - type: bind
+        source: /boot
+        target: /boot
+        read_only: true
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-init:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-prepare]
+    entrypoint: ["/bin/sh", "/app/test/externalinput/vusb/lifecycle.sh", "setup"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_RECEIPT_ROOT: /output
+      HM_VUSB_INPUT_ROOT: /receipts
+      HM_VUSB_OUTPUT_UID: "${HM_VUSB_HOST_UID:?set native host user ID}"
+      HM_EXTERNAL_IME_LOCALE: "${HM_EXTERNAL_IME_LOCALE:-}"
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/setup"
+        target: /output
+      - type: bind
+        source: /lib/modules
+        target: /lib/modules
+        read_only: true
+      - type: bind
+        source: /sys/kernel/config
+        target: /sys/kernel/config
+      - type: bind
+        source: /dev
+        target: /dev
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    privileged: true
+    restart: "no"
+
+  external-vusb-discover:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-prepare]
+    entrypoint: ["node", "/app/test/externalinput/vusb/discover.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_HOST_DEV_ROOT: /host-dev
+      HM_VUSB_PREPARE_RECEIPT: /output/prepare.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/prepare"
+        target: /output
+      - type: bind
+        source: /dev
+        target: /host-dev
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /sys
+        read_only: true
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-render:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-prepare]
+    entrypoint: ["node", "/app/test/externalinput/vusb/render-devices.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_PREPARE_RECEIPT: /receipts/prepare/prepare.json
+      HM_VUSB_DEVICE_OVERRIDE: /output/device-override.json
+      HM_VUSB_MAPPING_RECEIPT: /output/device-mapping.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/mapping"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-attestation:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-prepare]
+    entrypoint: ["node", "/app/test/externalinput/vusb/make-attestation.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_ADMISSION_RECEIPT: /receipts/admission/admission.json
+      HM_VUSB_PREFLIGHT_RECEIPT: /receipts/preflight/preflight.json
+      HM_VUSB_SETUP_RECEIPT: /receipts/setup/setup.json
+      HM_VUSB_PREPARE_RECEIPT: /receipts/prepare/prepare.json
+      HM_VUSB_MAPPING_RECEIPT: /receipts/mapping/device-mapping.json
+      HM_VUSB_COMPOSE_GUARD_RECEIPT: /receipts/resolved-guard/compose-guard.json
+      HM_EXTERNAL_USB_ATTESTATION: /output/virtual-usb-attestation.json
+      HM_VUSB_GATEWAY_IMAGE_DIGEST: *vusb-gateway-image
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/attestation"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-static-compose-guard:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-prepare]
+    entrypoint: ["node", "/app/test/externalinput/vusb/compose-guard.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_COMPOSE_GUARD_PHASE: static
+      HM_VUSB_COMPOSE_CONFIG: /receipts/static-config/compose-config.json
+      HM_VUSB_COMPOSE_GUARD_RECEIPT: /output/compose-static-guard.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/static-guard"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-compose-guard:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-prepare]
+    entrypoint: ["node", "/app/test/externalinput/vusb/compose-guard.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_COMPOSE_GUARD_PHASE: resolved
+      HM_VUSB_COMPOSE_CONFIG: /receipts/resolved-config/compose-config.json
+      HM_VUSB_COMPOSE_GUARD_RECEIPT: /output/compose-guard.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/resolved-guard"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-gateway:
+    image: *vusb-gateway-image
+    pull_policy: never
+    profiles: [vusb-run]
+    environment:
+      HM_VUSB_COMMAND_DEVICE: /dev/vusb-command
+      HM_VUSB_KEYBOARD_DEVICE: /dev/vusb-keyboard
+      HM_VUSB_POINTER_DEVICE: /dev/vusb-pointer
+      HM_VUSB_PROFILE_ROOT: /profile
+      HM_VUSB_ADMISSION_RECEIPT: /receipts/profile/profile-verification.json
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_IME_POLICY: "${HM_EXTERNAL_IME_LOCALE:+/receipts/policy/ime-policy.json}"
+      HM_VUSB_HID_EVIDENCE: "${HM_EXTERNAL_IME_LOCALE:+/gateway-evidence/hid-report-evidence.json}"
+    volumes:
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}"
+        target: /receipts
+        read_only: true
+      - type: image
+        source: *vusb-profile-mount-image
+        target: /profile
+        read_only: true
+        image:
+          subpath: profile
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/gateway"
+        target: /gateway-evidence
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}:12001"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 2s
+    restart: "no"
+
+  external-vusb-broker:
+    image: *vusb-gateway-image
+    pull_policy: never
+    profiles: [vusb-run]
+    entrypoint: ["node", "/app/test/externalinput/vusb/broker-main.mjs"]
+    environment:
+      HM_VUSB_HOST_COMMAND_DEVICE: /dev/vusb-host-command
+      HM_EXTERNAL_USB_SOCKET: /run/external-input/usb.sock
+      HM_EXTERNAL_USB_ATTESTATION: /receipts/attestation/virtual-usb-attestation.json
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_IME_POLICY: "${HM_EXTERNAL_IME_LOCALE:+/receipts/policy/ime-policy.json}"
+      HM_VUSB_BROKER_EVIDENCE: "${HM_EXTERNAL_IME_LOCALE:+/broker-evidence/broker-policy-evidence.json}"
+    volumes:
+      - external-input-vusb-socket:/run/external-input
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}"
+        target: /receipts
+        read_only: true
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/broker"
+        target: /broker-evidence
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}:12001"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 2s
+    restart: "no"
+
+  external-controller:
+    image: *vusb-controller-image
+    pull_policy: never
+    profiles: [vusb-run]
+    environment:
+      HM_EXTERNAL_USB_COMMAND_PATH: /run/external-input-vusb/usb.sock
+      HM_EXTERNAL_USB_ATTESTATION: /run/external-vusb/attestation/virtual-usb-attestation.json
+    volumes:
+      - external-input-vusb-socket:/run/external-input-vusb
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/attestation"
+        target: /run/external-vusb/attestation
+        read_only: true
+    depends_on:
+      external-vusb-broker:
+        condition: service_started
+
+  external-vusb-ime-framebuffer-observer:
+    image: *vusb-controller-image
+    pull_policy: never
+    profiles: [vusb-ime-run]
+    entrypoint: ["node", "/app/test/externalinput/vusb/ime-framebuffer-observer.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_EXTERNAL_BROWSER: "${HM_EXTERNAL_BROWSER:?set browser engine}"
+      HM_EXTERNAL_IME_LOCALE: "${HM_EXTERNAL_IME_LOCALE:-}"
+      HM_EXTERNAL_RFB_HOST: external-display
+      HM_EXTERNAL_RFB_PORT: "5900"
+      HM_EXTERNAL_RFB_PASSWORD_FILE: /run/external-secrets/rfb.password
+      HM_VUSB_IME_FRAMEBUFFER_OBSERVATION: /output/ime-framebuffer-observation.json
+    volumes:
+      - *vusb-receipts
+      - external-input-secrets:/run/external-secrets:ro
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/ime-observer"
+        target: /output
+    networks: [external-control]
+    depends_on:
+      external-display:
+        condition: service_started
+      external-browser:
+        condition: service_started
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}:12001"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-run-receipt:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-run-receipt]
+    entrypoint: ["node", "/app/test/externalinput/vusb/run-receipt.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_RESULT_PATH: "/artifacts/external-input/${HM_VUSB_RUN_ID:?set canonical run ID}/${HM_EXTERNAL_MODE:?set vUSB mode}.result.json"
+      HM_VUSB_RUN_RECEIPT: /output/run.json
+      HM_VUSB_SEAT_EVIDENCE: /browser-evidence/seat-events.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/run"
+        target: /output
+      - ../artifacts:/artifacts:ro
+      - external-input-evidence:/browser-evidence:ro
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-ime-run-receipt:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-ime-run-receipt]
+    entrypoint: ["node", "/app/test/externalinput/vusb/ime-run-receipt.mjs"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_RESULT_PATH: "/artifacts/external-input/${HM_VUSB_RUN_ID:?set canonical run ID}/ime.result.json"
+      HM_VUSB_IME_FRAMEBUFFER_OBSERVATION: /observer-evidence/ime-framebuffer-observation.json
+      HM_VUSB_IME_POLICY: /receipts/policy/ime-policy.json
+      HM_VUSB_IME_READINESS: /browser-evidence/ime-readiness.json
+      HM_VUSB_IME_STOP: /browser-evidence/ime-stop.json
+      HM_VUSB_HID_EVIDENCE: /gateway-evidence/hid-report-evidence.json
+      HM_VUSB_BROKER_EVIDENCE: /broker-evidence/broker-policy-evidence.json
+      HM_VUSB_COMPOSE_GUARD_RECEIPT: /receipts/resolved-guard/compose-guard.json
+      HM_VUSB_SEAT_EVIDENCE: /browser-evidence/seat-events.json
+      HM_VUSB_RUN_RECEIPT: /output/run.json
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/run"
+        target: /output
+      - ../artifacts:/artifacts:ro
+      - external-input-evidence:/browser-evidence:ro
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/ime-observer"
+        target: /observer-evidence
+        read_only: true
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/gateway"
+        target: /gateway-evidence
+        read_only: true
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/broker"
+        target: /broker-evidence
+        read_only: true
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    group_add: ["12001"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-cleanup:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-cleanup]
+    entrypoint: ["/bin/sh", "/app/test/externalinput/vusb/lifecycle.sh", "cleanup"]
+    environment:
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_RECEIPT_ROOT: /output
+      HM_VUSB_INPUT_ROOT: /receipts
+      HM_VUSB_OUTPUT_UID: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    volumes:
+      - *vusb-receipts
+      - type: bind
+        source: "${HM_VUSB_RECEIPT_DIR:?set bounded per-run receipt directory}/cleanup"
+        target: /output
+      - type: bind
+        source: /lib/modules
+        target: /lib/modules
+        read_only: true
+      - type: bind
+        source: /sys/kernel/config
+        target: /sys/kernel/config
+      - type: bind
+        source: /dev
+        target: /dev
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    privileged: true
+    restart: "no"
+
+  external-vusb-ladder-assert:
+    image: *vusb-lifecycle-image
+    pull_policy: never
+    profiles: [vusb-ladder-assert]
+    entrypoint:
+      - node
+      - /app/scripts/assert-external-input-vusb.mjs
+      - /ladder
+    environment:
+      HM_VUSB_LADDER_RESULT: /output/ladder-result.json
+    volumes:
+      - type: bind
+        source: "${HM_VUSB_LADDER_ROOT:?set bounded ladder artifact directory}"
+        target: /ladder
+        read_only: true
+      - type: bind
+        source: "${HM_VUSB_LADDER_ROOT:?set bounded ladder artifact directory}/summary"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+volumes:
+  external-input-vusb-socket:
+  external-input-evidence:

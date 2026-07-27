@@ -1,0 +1,37 @@
+services:
+  external-kernel-runner:
+    build:
+      context: ..
+      dockerfile: build/external-input-kernel-runner.Dockerfile
+    image: "${HM_KERNEL_RUNNER_IMAGE:-humanymous/external-input-kernel-runner:local}"
+    pull_policy: never
+    environment:
+      HM_KERNEL_ACCEL: "${HM_KERNEL_ACCEL:-auto}"
+      HM_KERNEL_CPUS: "${HM_KERNEL_CPUS:-2}"
+      HM_KERNEL_MEMORY: "${HM_KERNEL_MEMORY:-768M}"
+      HM_KERNEL_RUNNER_OUTPUT: /output
+      HM_KERNEL_RUNNER_SEED: /seed/seed.json
+      HM_KERNEL_RUNNER_SEED_SHA256: "${HM_KERNEL_RUNNER_SEED_SHA256:-}"
+    devices:
+      - /dev/kvm:/dev/kvm:rwm
+    volumes:
+      - type: bind
+        source: "${HM_KERNEL_RUNNER_OUTPUT_DIR:?set bounded kernel-runner output directory}"
+        target: /output
+      - type: bind
+        source: "${HM_KERNEL_RUNNER_SEED_DIR:?set bounded kernel-runner seed directory}"
+        target: /seed
+        read_only: true
+      - type: volume
+        source: kernel-work
+        target: /run-kernel
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+volumes:
+  kernel-work:

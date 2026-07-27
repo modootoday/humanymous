@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "humanymous external-input document observer",
+  "version": "1.0.0",
+  "description": "Read-only, fixed-fixture observer for the defensive Docker laboratory.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "external-input-dom@humanymous.invalid",
+      "strict_min_version": "128.0"
+    }
+  },
+  "permissions": [
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "https://core/*"
+  ],
+  "background": {
+    "scripts": [
+      "service-worker.mjs"
+    ],
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://core/*"
+      ],
+      "js": [
+        "content-script.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

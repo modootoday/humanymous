@@ -1,0 +1,16 @@
+**
+!test/
+!test/externalinput/
+!test/externalinput/vusb/
+!test/externalinput/vusb/**
+!test/externalinput/*.mjs
+!test/externalinput/usb-broker/
+!test/externalinput/usb-broker/protocol.mjs
+!deployments/
+!deployments/external-input/
+!deployments/external-input/trust/
+!deployments/external-input/trust/catalog-ed25519.pub
+!scripts/
+!scripts/assert-external-input-vusb.mjs
+test/externalinput/**/*.test.mjs
+test/externalinput/vusb/seat-observer.mjs

@@ -1,0 +1,5 @@
+**
+!test/
+!test/externalinput/
+!test/externalinput/usb-broker/
+!test/externalinput/usb-broker/**

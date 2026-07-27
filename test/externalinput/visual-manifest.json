@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "pixelFormat": "BGRX8888",
+  "maxFrame": {
+    "width": 4096,
+    "height": 2160
+  },
+  "tokens": {
+    "choice-correct": {
+      "rgb": [255, 0, 255],
+      "minPixels": 96
+    },
+    "synthetic-form": {
+      "rgb": [0, 229, 255],
+      "minPixels": 96
+    },
+    "nav-branch": {
+      "rgb": [255, 230, 0],
+      "minPixels": 96
+    },
+    "nav-return": {
+      "rgb": [255, 122, 0],
+      "minPixels": 96
+    },
+    "resume-action": {
+      "rgb": [0, 230, 118],
+      "minPixels": 96
+    },
+    "challenge-action": {
+      "rgb": [140, 92, 255],
+      "minPixels": 96
+    },
+    "ime-input": {
+      "rgb": [255, 85, 255],
+      "minPixels": 96
+    }
+  },
+  "verdicts": {
+    "ALLOW": {
+      "rgb": [63, 185, 80],
+      "minComponentPixels": 80,
+      "frameMinWidth": 500,
+      "frameMinHeight": 100,
+      "iconMinSize": 55,
+      "iconMaxSize": 115
+    },
+    "CHALLENGE": {
+      "rgb": [214, 163, 39],
+      "minComponentPixels": 80,
+      "frameMinWidth": 500,
+      "frameMinHeight": 100,
+      "iconMinSize": 55,
+      "iconMaxSize": 115
+    },
+    "DENY": {
+      "rgb": [248, 81, 73],
+      "minComponentPixels": 80,
+      "frameMinWidth": 500,
+      "frameMinHeight": 100,
+      "iconMinSize": 55,
+      "iconMaxSize": 115
+    }
+  }
+}

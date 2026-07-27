@@ -1,0 +1,11 @@
+**
+!test/
+!test/externalinput/
+!test/externalinput/vusb/
+!test/externalinput/vusb/**
+!test/externalinput/usb-broker/
+!test/externalinput/usb-broker/**
+!test/externalinput/input.mjs
+!test/externalinput/errors.mjs
+test/externalinput/**/*.test.mjs
+test/externalinput/vusb/seat-observer.mjs

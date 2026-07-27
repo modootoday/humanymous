@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "humanymous.blue-human-mimic-disposition/v1",
+  "runId": "human-mimic-chromium-20260726c",
+  "browser": "chromium",
+  "challengeAt": 30,
+  "episodes": [
+    {
+      "profileId": "external_input_virtual",
+      "riskScore": 16.5,
+      "verdict": "CHALLENGE",
+      "hardRuleFired": "HR-23",
+      "policyVersion": "1.0.0",
+      "scoreReceiptSha256": "b61d227e3f460259f03bdc89b2a65cabc53b2ff3390b4c9a6093126210507b86",
+      "coreLogSha256": "c4325e415608bf517a5b4223a200681e98cd8f6037ddcd53d18430c7ea291432"
+    },
+    {
+      "profileId": "external_input_dom_virtual",
+      "riskScore": 16.5,
+      "verdict": "CHALLENGE",
+      "hardRuleFired": "HR-23",
+      "policyVersion": "1.0.0",
+      "scoreReceiptSha256": "ed4bf7f467ed166c83dff091996bff97d7881cb77cfe9bb157f2487d4780d454",
+      "coreLogSha256": "2c01964137301a4e36cc4de4973a9cdb2bd3e2229e4400225c89851795282103"
+    }
+  ],
+  "scoreTraceLimit": "The v1 external-input receipt records the final score and hard-rule identifier, but not TopContributors, BehaviorSummary, or the full ScoreTrace."
+}

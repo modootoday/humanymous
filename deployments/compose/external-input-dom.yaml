@@ -1,0 +1,25 @@
+# Add only for Modes 2/4. Its absence is the structural proof that framebuffer-
+# only modes do not load or mount the DOM observer.
+services:
+  external-browser:
+    build:
+      target: "${HM_EXTERNAL_BROWSER_TARGET_DOM:-browser-chromium-dom}"
+    environment:
+      HM_EXTERNAL_DOM_SOCKET: "/run/dom-observer/observer.sock"
+    volumes:
+      - external-input-dom:/run/dom-observer
+
+  external-runtime-browser-probe:
+    build:
+      target: "${HM_EXTERNAL_BROWSER_TARGET_DOM:-browser-chromium-dom}"
+    volumes:
+      - external-input-dom:/run/dom-observer:ro
+
+  external-controller:
+    environment:
+      HM_EXTERNAL_DOM_SOCKET: "/run/dom-observer/observer.sock"
+    volumes:
+      - external-input-dom:/run/dom-observer
+
+volumes:
+  external-input-dom:

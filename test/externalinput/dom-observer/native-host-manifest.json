@@ -1,0 +1,9 @@
+{
+  "name": "org.humanymous.external_input_dom_observer",
+  "description": "Bounded native bridge for the SoT-41 Chromium DOM observer pilot",
+  "path": "/opt/external-input/dom-observer/native-host.mjs",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://gapgaeefmeaooimpnofjjahjnhfgnjlm/"
+  ]
+}

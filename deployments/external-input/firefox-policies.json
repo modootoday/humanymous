@@ -1,0 +1,20 @@
+{
+  "policies": {
+    "DisableAppUpdate": true,
+    "DisableFirefoxAccounts": true,
+    "ExtensionSettings": {
+      "*": {
+        "installation_mode": "blocked"
+      },
+      "external-input-dom@humanymous.invalid": {
+        "installation_mode": "allowed"
+      }
+    },
+    "Preferences": {
+      "xpinstall.signatures.required": {
+        "Value": false,
+        "Status": "locked"
+      }
+    }
+  }
+}

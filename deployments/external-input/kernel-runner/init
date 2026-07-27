@@ -1,0 +1,169 @@
+#!/bin/busybox sh
+set -eu
+
+export PATH=/bin:/sbin
+GADGET=/sys/kernel/config/usb_gadget/humanymous
+
+emit_failure() {
+  message="$1"
+  printf 'HM_KERNEL_SMOKE:{"schemaVersion":1,"kind":"kernel-vusb-smoke","status":"FAIL","message":"%s"}\n' "$message"
+  poweroff -f
+}
+
+trap 'emit_failure init-failed' HUP INT TERM
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts
+modprobe configfs
+[ -d /sys/kernel/config ] || emit_failure configfs-mountpoint-missing
+mount -t configfs configfs /sys/kernel/config
+
+mdev -s
+
+modprobe dummy_hcd
+modprobe libcomposite
+modprobe usb_f_acm
+modprobe usb_f_hid
+modprobe cdc_acm
+modprobe usbhid
+modprobe hid_generic
+modprobe evdev
+
+[ -d /sys/kernel/config/usb_gadget ] || emit_failure configfs-gadget-missing
+
+mkdir "$GADGET"
+printf '0x1d6b' > "$GADGET/idVendor"
+printf '0x0104' > "$GADGET/idProduct"
+printf '0x0100' > "$GADGET/bcdDevice"
+printf '0x0200' > "$GADGET/bcdUSB"
+mkdir "$GADGET/strings/0x409"
+printf 'kernel-runner-smoke' > "$GADGET/strings/0x409/serialnumber"
+printf 'humanymous reference lab' > "$GADGET/strings/0x409/manufacturer"
+printf 'kernel-emulated USB HID' > "$GADGET/strings/0x409/product"
+
+mkdir "$GADGET/configs/c.1" "$GADGET/configs/c.1/strings/0x409"
+printf '120' > "$GADGET/configs/c.1/MaxPower"
+printf 'CDC plus keyboard and relative pointer' > "$GADGET/configs/c.1/strings/0x409/configuration"
+
+mkdir "$GADGET/functions/acm.usb0"
+mkdir "$GADGET/functions/hid.keyboard"
+printf '1' > "$GADGET/functions/hid.keyboard/protocol"
+printf '1' > "$GADGET/functions/hid.keyboard/subclass"
+printf '8' > "$GADGET/functions/hid.keyboard/report_length"
+printf '\005\001\011\006\241\001\005\007\031\340\051\347\025\000\045\001\165\001\225\010\201\002\225\001\165\010\201\001\225\005\165\001\005\010\031\001\051\005\221\002\225\001\165\003\221\001\225\006\165\010\025\000\045\145\005\007\031\000\051\145\201\000\300' > "$GADGET/functions/hid.keyboard/report_desc"
+
+mkdir "$GADGET/functions/hid.pointer"
+printf '2' > "$GADGET/functions/hid.pointer/protocol"
+printf '1' > "$GADGET/functions/hid.pointer/subclass"
+printf '4' > "$GADGET/functions/hid.pointer/report_length"
+printf '\005\001\011\002\241\001\011\001\241\000\005\011\031\001\051\003\025\000\045\001\225\003\165\001\201\002\225\001\165\005\201\001\005\001\011\060\011\061\011\070\025\201\045\177\165\010\225\003\201\006\300\300' > "$GADGET/functions/hid.pointer/report_desc"
+
+ln -s "$GADGET/functions/acm.usb0" "$GADGET/configs/c.1/acm.usb0"
+ln -s "$GADGET/functions/hid.keyboard" "$GADGET/configs/c.1/hid.keyboard"
+ln -s "$GADGET/functions/hid.pointer" "$GADGET/configs/c.1/hid.pointer"
+
+udc=
+for candidate in /sys/class/udc/dummy_udc*; do
+  [ -e "$candidate" ] || continue
+  [ -z "$udc" ] || emit_failure ambiguous-dummy-udc
+  udc="${candidate##*/}"
+done
+[ -n "$udc" ] || emit_failure dummy-udc-missing
+printf '%s' "$udc" > "$GADGET/UDC"
+
+gadget_command=
+gadget_keyboard=
+gadget_pointer=
+host_command=
+host_keyboard=
+host_pointer=
+
+attempt=0
+while [ "$attempt" -lt 50 ]; do
+  mdev -s
+  [ -c /dev/ttyGS0 ] && gadget_command=/dev/ttyGS0 || true
+  [ -c /dev/hidg0 ] && gadget_keyboard=/dev/hidg0 || true
+  [ -c /dev/hidg1 ] && gadget_pointer=/dev/hidg1 || true
+  [ -c /dev/ttyACM0 ] && host_command=/dev/ttyACM0 || true
+  for input in /sys/class/input/event*; do
+    [ -e "$input" ] || continue
+    input_path="$(readlink -f "$input/device")"
+    case "$input_path" in
+      *"/dummy_hcd.0/"*) ;;
+      *) continue ;;
+    esac
+    event="/dev/${input##*/}"
+    if [ ! -c "$event" ]; then
+      mkdir -p /dev/input
+      device_id="$(cat "$input/dev")"
+      mknod "$event" c "${device_id%:*}" "${device_id#*:}"
+    fi
+    [ -c "$event" ] || continue
+    rel="$(cat "$input/device/capabilities/rel" 2>/dev/null || printf 0)"
+    key="$(cat "$input/device/capabilities/key" 2>/dev/null || printf 0)"
+    if [ "$rel" != 0 ]; then
+      host_pointer="$event"
+    elif [ "$key" != 0 ]; then
+      host_keyboard="$event"
+    fi
+  done
+  if [ -n "$gadget_command" ] && [ -n "$gadget_keyboard" ] &&
+     [ -n "$gadget_pointer" ] && [ -n "$host_command" ] &&
+     [ -n "$host_keyboard" ] && [ -n "$host_pointer" ]; then
+    break
+  fi
+  sleep 0.1
+  attempt=$((attempt + 1))
+done
+
+[ -n "$gadget_command" ] || emit_failure gadget-command-missing
+[ -n "$gadget_keyboard" ] || emit_failure gadget-keyboard-missing
+[ -n "$gadget_pointer" ] || emit_failure gadget-pointer-missing
+[ -n "$host_command" ] || emit_failure host-command-missing
+[ -n "$host_keyboard" ] || emit_failure host-keyboard-missing
+[ -n "$host_pointer" ] || emit_failure host-pointer-missing
+
+ids=
+for node in "$gadget_command" "$gadget_keyboard" "$gadget_pointer" \
+            "$host_command" "$host_keyboard" "$host_pointer"; do
+  id="$(stat -Lc '%t:%T' "$node")"
+  case " $ids " in
+    *" $id "*) emit_failure duplicate-device-identity ;;
+  esac
+  ids="$ids $id"
+done
+
+command_driver="$(basename "$(readlink -f /sys/class/tty/ttyACM0/device/driver)")"
+keyboard_driver="$(basename "$(readlink -f "/sys/class/input/${host_keyboard##*/}/device/device/driver")")"
+pointer_driver="$(basename "$(readlink -f "/sys/class/input/${host_pointer##*/}/device/device/driver")")"
+[ "$command_driver" = cdc_acm ] || emit_failure wrong-command-driver
+case "$keyboard_driver" in hid-generic|usbhid) ;; *) emit_failure wrong-keyboard-driver ;; esac
+case "$pointer_driver" in hid-generic|usbhid) ;; *) emit_failure wrong-pointer-driver ;; esac
+
+# Release every key/button before disconnecting the virtual cable.
+printf '\000\000\000\000\000\000\000\000' > "$gadget_keyboard"
+printf '\000\000\000\000' > "$gadget_pointer"
+printf '' > "$GADGET/UDC"
+
+rm "$GADGET/configs/c.1/acm.usb0"
+rm "$GADGET/configs/c.1/hid.keyboard"
+rm "$GADGET/configs/c.1/hid.pointer"
+rmdir "$GADGET/functions/acm.usb0"
+rmdir "$GADGET/functions/hid.keyboard"
+rmdir "$GADGET/functions/hid.pointer"
+rmdir "$GADGET/configs/c.1/strings/0x409"
+rmdir "$GADGET/configs/c.1"
+rmdir "$GADGET/strings/0x409"
+rmdir "$GADGET"
+
+kernel="$(uname -r)"
+printf 'HM_KERNEL_SMOKE:{"schemaVersion":1,"kind":"kernel-vusb-smoke","status":"PASS","kernel":"%s","transport":"dummy_hcd","deviceNodeCount":6,"deviceNodes":["%s","%s","%s","%s","%s","%s"],"drivers":{"command":"%s","keyboard":"%s","pointer":"%s"},"neutralRelease":true,"configfsCleanup":true,"physicalUsb":false}\n' \
+  "$kernel" "$gadget_command" "$gadget_keyboard" "$gadget_pointer" \
+  "$host_command" "$host_keyboard" "$host_pointer" \
+  "$command_driver" "$keyboard_driver" "$pointer_driver"
+
+sync
+poweroff -f

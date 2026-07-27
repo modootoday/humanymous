@@ -1,0 +1,68 @@
+# Minimal Docker-only manifest authority. Keeping this graph separate from the
+# kernel/device graph prevents inactive services from forcing per-attempt device
+# interpolation while the immutable ladder identity is being published.
+services:
+  external-vusb-ladder-manifest:
+    image: "${HM_VUSB_LIFECYCLE_IMAGE_ID:?preload lifecycle image ID}"
+    pull_policy: never
+    entrypoint: ["node", "/app/test/externalinput/vusb/manifest.mjs", "ladder"]
+    environment:
+      HM_VUSB_LADDER_ID: "${HM_VUSB_LADDER_ID:?set canonical ladder ID}"
+      HM_VUSB_MODEL_ID: "${HM_VUSB_MODEL_ID:?set allowlisted model ID}"
+      HM_VUSB_CATALOG_SHA256: "${HM_VUSB_CATALOG_SHA256:?set verified catalog digest}"
+      HM_VUSB_LADDER_MANIFEST: /output/ladder.json
+      HM_VUSB_LAB_CORE_IMAGE_ID: "${HM_VUSB_LAB_CORE_IMAGE_ID:?preload lab Core fixture image ID}"
+      HM_VUSB_PKI_IMAGE_ID: "${HM_VUSB_PKI_IMAGE_ID:?preload PKI image ID}"
+      HM_VUSB_DISPLAY_IMAGE_ID: "${HM_VUSB_DISPLAY_IMAGE_ID:?preload display image ID}"
+      HM_VUSB_BROWSER_CHROMIUM_IMAGE_ID: "${HM_VUSB_BROWSER_CHROMIUM_IMAGE_ID:?preload Chromium image ID}"
+      HM_VUSB_BROWSER_CHROMIUM_DOM_IMAGE_ID: "${HM_VUSB_BROWSER_CHROMIUM_DOM_IMAGE_ID:?preload Chromium DOM image ID}"
+      HM_VUSB_BROWSER_CHROMIUM_IME_IMAGE_ID: "${HM_VUSB_BROWSER_CHROMIUM_IME_IMAGE_ID:?preload Chromium IME image ID}"
+      HM_VUSB_BROWSER_FIREFOX_IMAGE_ID: "${HM_VUSB_BROWSER_FIREFOX_IMAGE_ID:?preload Firefox image ID}"
+      HM_VUSB_BROWSER_FIREFOX_DOM_IMAGE_ID: "${HM_VUSB_BROWSER_FIREFOX_DOM_IMAGE_ID:?preload Firefox DOM image ID}"
+      HM_VUSB_BROWSER_FIREFOX_IME_IMAGE_ID: "${HM_VUSB_BROWSER_FIREFOX_IME_IMAGE_ID:?preload Firefox IME image ID}"
+      HM_VUSB_CONTROLLER_IMAGE_ID: "${HM_VUSB_CONTROLLER_IMAGE_ID:?preload controller image ID}"
+      HM_VUSB_LIFECYCLE_IMAGE_ID: "${HM_VUSB_LIFECYCLE_IMAGE_ID:?preload lifecycle image ID}"
+      HM_VUSB_GATEWAY_IMAGE_ID: "${HM_VUSB_GATEWAY_IMAGE_ID:?preload gateway image ID}"
+      HM_VUSB_PROFILE_IMAGE_ID: "${HM_VUSB_PROFILE_IMAGE_ID:?preload profile image ID}"
+    volumes:
+      - type: bind
+        source: "${HM_VUSB_LADDER_MANIFEST_DIR:?set bounded ladder manifest directory}"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  external-vusb-attempt-manifest:
+    image: "${HM_VUSB_LIFECYCLE_IMAGE_ID:?preload lifecycle image ID}"
+    pull_policy: never
+    entrypoint: ["node", "/app/test/externalinput/vusb/manifest.mjs", "attempt"]
+    environment:
+      HM_VUSB_LADDER_MANIFEST: /ladder/ladder.json
+      HM_VUSB_ATTEMPT_MANIFEST: /output/attempt.json
+      HM_VUSB_RUN_ID: "${HM_VUSB_RUN_ID:?set canonical run ID}"
+      HM_VUSB_AXIS: "${HM_VUSB_AXIS:?set canonical matrix axis}"
+      HM_VUSB_SEQUENCE: "${HM_VUSB_SEQUENCE:?set canonical matrix sequence}"
+      HM_EXTERNAL_BROWSER: "${HM_EXTERNAL_BROWSER:?set browser engine}"
+      HM_EXTERNAL_MODE: "${HM_EXTERNAL_MODE:?set canonical mode}"
+      HM_EXTERNAL_IME_LOCALE: "${HM_EXTERNAL_IME_LOCALE:-}"
+      HM_VUSB_CHILD_PROJECT: "${HM_VUSB_CHILD_PROJECT:?set exact child project}"
+      HM_VUSB_PARENT_PROJECT: "${HM_VUSB_PARENT_PROJECT:-}"
+    volumes:
+      - type: bind
+        source: "${HM_VUSB_LADDER_MANIFEST_DIR:?set bounded ladder manifest directory}"
+        target: /ladder
+        read_only: true
+      - type: bind
+        source: "${HM_VUSB_ATTEMPT_MANIFEST_DIR:?set bounded attempt manifest directory}"
+        target: /output
+    network_mode: none
+    read_only: true
+    tmpfs: [/tmp]
+    user: "${HM_VUSB_HOST_UID:?set native host user ID}"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
