@@ -5,7 +5,8 @@ keywords: ["Ledger console tour","humanymous Gate","audit log console","security
 
 # Ledger tour for operators
 
-> **How-to / annotated tour.** For a new or occasional on-call operator learning the humanymous Gate Ledger.
+**Diátaxis quadrant:** How-to.
+**Audience:** new or occasional on-call operators learning the humanymous Gate Ledger.
 > **Audience:** you are on the security-operator rotation, you have a token, and you need to know what each view answers and how to act from it — without breaking anything.
 
 This page walks the eight views of the Ledger in the order you will use them on a shift. For each view you get three things: the question it answers, what the badges and subtitles mean, and how to act from it. This is a reference implementation, not a production-hardened build, so treat the numbers you see as reference behavior and confirm before you widen the blast radius of any action.

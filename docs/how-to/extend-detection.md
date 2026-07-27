@@ -1,6 +1,7 @@
 # Extend the detector: add a signal, a cross-check, or an enforcement rule
 
-**Quadrant:** How-to (task-oriented). **Audience:** Blue detection engineers and contributors adding coverage to **their own** engine.
+**Diátaxis quadrant:** How-to.
+**Audience:** defensive detection engineers and contributors adding coverage to their own engine.
 
 > **Warning:** This page is defensive-only, local-only, and self-target-only. It teaches you to extend the detection catalog of the engine **you build and run** on your own loopback (`127.0.0.1`), validated against automation simulators you launch yourself. It is not third-party evasion guidance and gives you nothing to point at a host you do not operate. Every number you produce here is reference-measured on your machine — it describes your run, not a guarantee about live traffic.
 

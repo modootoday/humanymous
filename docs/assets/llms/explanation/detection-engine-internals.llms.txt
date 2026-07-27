@@ -5,8 +5,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 ---
 
-> **Quadrant:** Explanation (with embedded reference tables).
-> **Audience:** Blue detection engineers extending or debugging the engine, plus advanced evaluators who want to *predict* a score before running the request.
+**Diátaxis quadrant:** Explanation.
+**Audience:** Blue detection engineers extending or debugging the engine, plus advanced evaluators who want to predict a score before running the request.
 
 # Inside the detection engine: signals, scoring math and the score trace
 

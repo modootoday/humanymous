@@ -5,13 +5,10 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 ---
 
-<!--
-Diátaxis quadrant: Reference (public, end-user facing).
-Audience: a blocked or challenged end user, plus the data protection officer/buyer who will ask about accessibility.
-No internal signal names, enforcement-rule identifiers, stage references, or specification identifiers on this page.
--->
-
 # Challenge accessibility statement
+
+**Diátaxis quadrant:** Reference.
+**Audience:** a person who received a verification request or denial, and people evaluating the service's accessibility.
 
 Sometimes a site asks you to complete a quick verification step before it lets
 you continue. This page explains how that step is meant to work with assistive

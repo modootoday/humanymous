@@ -139,7 +139,7 @@ The default route table is set in `main.go`. Routes match by **longest-prefix wi
 | `/health` | `off` |
 | *(everything else)* | `balanced` |
 
-> **Note:** `-monitor` or the kill switch downgrades `enforce` to monitor everywhere (`GlobalMonitor`), regardless of a route's preset. See below.
+> **Note:** `-monitor` or the kill switch changes enforcement to monitor mode everywhere, regardless of a route's preset. See below.
 
 A request resolves route to preset to verdict to edge action along this path:
 
@@ -155,10 +155,10 @@ flowchart TD
   GM -->|"yes"| MON["inject, score and log, no enforce"]
   GM -->|"no"| SC["score available evidence to risk 0–100"]
   SC --> Rule{"enforcement rule matched?"}
-  HR -->|"yes"| DN["DENY to block"]
-  HR -->|"no"| VB{"risk band"}
+  Rule -->|"yes"| DN["DENY before origin contact"]
+  Rule -->|"no"| VB{"risk band"}
   VB -->|"0–29"| AL["ALLOW to pass"]
-  VB -->|"30–69"| CHV["CHALLENGE to challenge_pow"]
+  VB -->|"30–69"| CHV["CHALLENGE: verification required"]
   VB -->|"70–100"| DN
 ```
 

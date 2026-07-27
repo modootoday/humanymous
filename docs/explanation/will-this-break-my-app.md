@@ -1,11 +1,11 @@
 ---
-description: "Gate can score and log without enforcing (monitor mode), fails open on safe GET reads, and reverts instantly; an uncertain verdict becomes a proof of work challenge, never a silent block."
+description: "Understand how monitor mode, route policy, safe-method fail-open behavior, state-changing fail-closed behavior, and rollback affect legitimate requests in the humanymous Gate reference build."
 keywords: ["bot detection safety","monitor mode","fail-open fail-closed","safe rollout ladder","proof-of-work challenge","false positives","HTML-only injection","kill switch rollback","humanymous Gate","reference implementation"]
 ---
 
 # Will this break my app? Safety, fail-open, and monitor-first rollout
 
-> **Diátaxis:** Explanation, plus a how-to rollout runbook.
+> **Diátaxis quadrant:** Explanation.
 > **Audience:** Integrators and SRE reviewers doing a pre-go-live safety review.
 
 This is the trust document. Before you put humanymous Gate ("Gate") in front of real traffic, you want to know exactly what it can and cannot do to a legitimate request. This page answers that honestly: where Gate touches a response and where it does not, when an uncertain verdict lets traffic through versus holds it, and how to roll out so that any surprise is observable and reversible before it reaches a user.

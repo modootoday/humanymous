@@ -91,7 +91,7 @@ sequenceDiagram
   E->>E: reset stateful detectors, fire one profile
   E-->>U: SSE /playground/events — session.scored / attack.* / network.abuse
   U->>E: GET /playground/explain/{id} — decision trace
-  E-->>U: per-stage decomposition + ordered hard-rule ladder
+  E-->>U: per-stage decomposition + ordered enforcement-rule evaluation
 ```
 
 ## Step 6 — Read "why this verdict"

@@ -7,7 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Red-team catalog reference: profiles, raw-protocol attacks and verdict classification
 
-**Quadrant:** Reference (lookup tables). **Audience:** Red-team developers needing the authoritative catalog map and the profile contract.
+**Diátaxis quadrant:** Reference.
+**Audience:** defensive-test developers who need the authoritative catalog map and profile contract.
 
 This page is the authoritative human-readable map of the Red catalog: the profile contract every `.mjs` file honours, the labels used for evaluation, the verdict classification applied by the end-to-end runner, the **65 catalog entries**, and the Go raw-protocol client. It is a lookup reference, not a build guide. To author a profile, see [Write a Red profile](../how-to/write-a-red-profile.md); for how the pieces fit together, see [Red catalog architecture](../explanation/red-catalog-architecture.md).
 
@@ -56,7 +57,7 @@ return verdict === 'DENY' ? 'FP' : 'TN';
 | human (`label` = `human`) | DENY | false positive (wrongly denied) |
 | human | ALLOW **or** CHALLENGE | True negative |
 
-> **Note:** A `ceiling:` label is not a must-block bot. The single coherent browser or human-assisted automation `native_coherent_ceiling` profile is the documented detection ceiling: ALLOW is the honest expected result, priced via the attested / ceiling-guard mechanism (rate limiting plus cross-session reputation), not a bypass. A CHALLENGE or DENY on it is a bonus, not the pass condition.
+> **Note:** A `ceiling:` label is not an expected automated denial. The single `native_coherent_ceiling` profile represents the coherent-automation detection boundary: ALLOW is the honest expected result under the current reference policy. A CHALLENGE or DENY is an additional catch, not the pass condition.
 
 > **Note:** A human **CHALLENGE is scored as a true negative, not a false positive.** The `humanFPR` field is therefore a **denial-only** metric. It under-reports human friction because a challenged human does not count against it. Inspect the baseline challenge rate separately; do not read a clean field as "zero human friction".
 
@@ -64,7 +65,7 @@ return verdict === 'DENY' ? 'FP' : 'TN';
 
 The catalog is **65 entries = 63 automated behavior profiles + 1 coherent boundary case + 1 synthetic human baseline**. Rows are grouped by increasing attacker cost. “Expected enforcement rule” names the predicate the profile is designed to exercise; where no single predicate is pinned, the expected result is score-driven and must be verified from the run.
 
-The catalog is organised as the **five-band attacker cost ladder** defined in `test/e2e/tiers.mjs` — from the cheapest trivial script (direct HTTP automation) up to a funded real-engine adversary (real-browser automation) and the honest detection ceiling (coherent browser or human-assisted automation). `assertCoverage()` in `runner.mjs` fails loudly if this catalog and the tier ladder drift. The raw-protocol attacks are a parallel axis that eighteen `.mjs` catalog profiles shell into via `_bin.mjs`.
+The catalog is organised as a **five-band automation cost ladder** defined in `test/e2e/tiers.mjs` — from direct Hypertext Transfer Protocol automation through real-browser automation and the coherent browser or human-assisted automation boundary. `assertCoverage()` in `runner.mjs` fails if this catalog and the machine-readable ladder drift. The raw-protocol checks are a parallel axis that eighteen `.mjs` catalog profiles invoke through `_bin.mjs`.
 
 ```mermaid
 flowchart TD
@@ -182,13 +183,13 @@ Real-engine anti-detect (nodriver / camoufox / xvfb / anti-detect), full AI-agen
 | `stacked_proxy_vpn.mjs` | `bot:stacked-proxy-vpn` | false | Forward proxy stacked over a virtual-private-network exit | CHALLENGE / network residual policy |
 | `socks_exit_hop.mjs` | `bot:socks-exit-hop` | false | Tunneling exit hop combined with multi-hop forwarding evidence | CHALLENGE / network residual policy |
 
-### coherent browser or human-assisted automation · very high — the detection ceiling
+### Coherent browser or human-assisted automation · very high — documented boundary
 
 A fully coherent BotBrowser-class engine spoof (or genuine human behaviour on a real engine): **not separable by detection alone**. Blue's honest expectation: NOT solved. The coherent case scores ALLOW; it is priced only by rate limiting and cross-session reputation (the attested / ceiling-guard mechanism), not caught by a signal. This single profile carries the `ceiling:` label, so its ALLOW is the expected honest result, not a false negative.
 
 | File | `label` | `needsBrowser` | Tell reproduced | Expected verdict / enforcement rule |
 |------|---------|:--:|-----------------|-----------------------|
-| `native_coherent_ceiling.mjs` | `ceiling:native-coherent` | false | Fully-coherent Chrome-TLS engine spoof | **ALLOW by design** — the documented detection ceiling, priced via the attested / ceiling-guard mechanism, not a bypass |
+| `native_coherent_ceiling.mjs` | `ceiling:native-coherent` | false | Internally consistent browser and encrypted-connection implementation | **ALLOW by design** — the documented coherent-automation boundary under the current reference policy |
 
 > **Note:** The expected verdict and enforcement rule in these tables are reference-measured from the bundled catalog run against the local engine; run [self-validation](../how-to/self-validation-red-team.md) to reproduce them for your build. An enforcement rule fires on a specific tell (for example headless browser plus another automation indicator rule on a headless browser that also exposes `webdriver`), so it is stable across environments; the exact risk score is not, and a profile whose tell is score-driven rather than rule-driven can land on a different enforcement rule if signal availability changes.
 

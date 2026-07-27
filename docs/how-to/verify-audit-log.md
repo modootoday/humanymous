@@ -1,11 +1,11 @@
 ---
-description: "Verify humanymous Gate's tamper-evident audit log: append-only hash chain, optional HMAC, Ed25519 Signed Tree Heads, witness co-sign. Empty chain fails; public-key-only offline path may report hmac-unchecked."
+description: "Verify humanymous Gate's tamper-evident audit log: append-only hash chain, optional keyed record authentication, Ed25519-signed tree checkpoints, and local witness co-signing."
 keywords: ["tamper-evident audit log","audit log verification","Ed25519 Signed Tree Head","append-only hash chain","per-record HMAC","independent witness co-sign","public-key verification","verify without trusting the operator","crypto-shred erasure","humanymous Gate","integrity endpoint","offline verifier production responsibility"]
 ---
 
 # Independent audit-log verification guide
 
-> **Quadrant:** How-to + reference.
+> **Diátaxis quadrant:** How-to.
 > **Audience:** External or internal auditor, data protection officer, or forensic reviewer who needs to verify humanymous Gate's audit log **without trusting the operator**.
 
 humanymous Gate writes every edge decision — every ALLOW, CHALLENGE, and DENY, plus every administrative action — to a tamper-evident audit log. This page explains the verification model, shows how you check the log today in the reference build, gives a failure-class table for reading a mismatch, and is candid about exactly what verification proves and what it does not.

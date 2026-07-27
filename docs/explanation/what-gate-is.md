@@ -1,11 +1,12 @@
 ---
-description: "humanymous Gate is a reverse-proxy engine that scores seven browser signals into an ALLOW / CHALLENGE / DENY verdict. Reference build; names its coherent browser or human-assisted automation ceiling."
-keywords: ["humanymous Gate","reverse-proxy bot detection","seven-layer detection","ALLOW CHALLENGE DENY verdict","coherent browser or human-assisted automation ceiling","open source bot detection","self-hosted bot detection","JA3/JA4 fingerprinting","proof-of-work interstitial","headless browser detection"]
+description: "Technical overview of humanymous Gate: a reference reverse proxy that applies ALLOW, CHALLENGE, or DENY using the evidence Gate actually observes, with its coherent-automation detection boundary stated first."
+keywords: ["humanymous Gate","reverse-proxy automation detection","seven-stage detection pipeline","ALLOW CHALLENGE DENY verdict","coherent-automation detection boundary","open source automation detection","self-hosted automation controls","connection fingerprinting","proof-of-work challenge","headless browser detection"]
 ---
 
 # What Gate is (and is not): a technical overview
 
-> **Quadrant:** Explanation. **Audience:** engineering leaders, architects, and first-pass evaluators deciding whether humanymous Gate belongs in their stack.
+**Diátaxis quadrant:** Explanation.
+**Audience:** engineering leaders, architects, and first-pass evaluators deciding whether humanymous Gate belongs in their stack.
 
 This page is written engineer-to-engineer. It leads with the limits, because that is the honest way to evaluate a bot-mitigation layer: what a control does *not* do is as load-bearing as what it does. Read this before you read anything that sounds like a feature list.
 
@@ -85,7 +86,7 @@ Identifiers in the log (IP, JA4, HTTP/2 fingerprint, UA, SNI, device fingerprint
 ## What Gate is not
 
 - **Not a finished challenge product.** Gate does not depend on a third-party CAPTCHA service, but the reference challenge components are not a complete visitor-recovery experience. Operators must supply and test the accessible flow they intend to run.
-- **Not a WAF replacement.** Gate decides *whether the caller is a human-driven browser*. It does not inspect payloads for SQL injection, XSS, or application-layer exploits. It is **complementary** to a WAF, not a substitute — run both, each doing the job it is built for.
+- **Not a web application firewall replacement.** Gate assigns an automation-risk verdict from its available evidence. It does not inspect payloads for Structured Query Language injection, cross-site scripting, or application-layer exploits. It is complementary to a web application firewall, not a substitute.
 - **Not a guarantee.** Gate reduces automated abuse and raises its cost. It does not block all bots, and — per the limits section — it does not resolve human-assisted coherent browser or human-assisted automation traffic. Treat it as one control in a layered posture.
 
 ## Topology

@@ -26,5 +26,5 @@ Inherits root `AGENTS.md`. Overrides for the detection core packages.
 ## Verify
 
 ```bash
-go test ./internal/signals/ ./internal/scoring/ ./internal/network/ ...
+go test ./internal/signals/ ./internal/scoring/ ./internal/network/
 ```

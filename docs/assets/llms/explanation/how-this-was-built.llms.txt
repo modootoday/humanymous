@@ -59,7 +59,7 @@ Two rules keep this honest and safe:
 
 ## Scored, not a binary flag
 
-The engine does not emit a bot/human boolean. Each request is scored across seven layers — static client signals, fingerprint, client integrity, behavior, network and protocol, cross-check consistency, and the scoring step itself (seven detection stages) — into a risk score from 0 to 100, which resolves to a verdict: ALLOW (0–29), CHALLENGE (30–69), or DENY (70–100).
+The engine does not emit a bot/human boolean. Each request is scored across the seven-stage detection pipeline — static client inspection, client fingerprinting, client integrity checks, interaction analysis, network and protocol inspection, consistency checks, and risk aggregation with verdict selection — into a risk score from zero to one hundred. The built-in defaults resolve that score to ALLOW below 30, CHALLENGE from 30 through 69, or DENY from 70 upward.
 
 Two mechanisms sit on top of the score:
 

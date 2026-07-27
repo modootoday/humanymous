@@ -3,8 +3,10 @@ description: "Symptom-indexed on-call runbooks for a humanymous Gate deployment:
 keywords: ["humanymous Gate incident runbooks","on-call SOC runbook","false-positive storm triage","credential-stuffing response","HTTP/2 flood mitigation","AI-agent wave","audit integrity mismatch","dual-control kill switch","fingerprint vs IP ban","reverse-proxy bot detection"]
 ---
 
-> **Runbook** — operational procedures for SOC on-call responders.
-> **Audience:** on-call SOC / incident responders operating a running humanymous Gate deployment. Not an intro; if you have never seen the Ledger, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first.
+**Diátaxis quadrant:** Runbook.
+**Audience:** security-operations and incident responders operating a running humanymous Gate deployment.
+
+If you have never seen the Ledger, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first.
 
 # Incident runbooks: humanymous Gate on-call
 

@@ -76,7 +76,8 @@ Several LLM chats may run on this repo **at once**. Before non-trivial edits:
    ```
 
    Commit message canon: `.agents/sessions/COMMIT-CONVENTION.md` (rule `92`).
-   Emails must be GitHub-linked so co-author **profile photos** resolve.
+   Use only identities from the canonical registry; prefer its GitHub-linked
+   identity where one exists, and never invent an email to force an avatar.
 
 5. Release the **work lane** when done or switching providers; incomplete → board handover + `handover-pack`
 

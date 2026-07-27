@@ -1,6 +1,6 @@
 ---
 description: "Spec-first, adversarially self-validated: this bot detection method traces every scored signal from written intent to verified verdict, and names its coherent browser or human-assisted automation ceiling rather than hiding it."
-keywords: ["bot detection open source","spec-first detection method","adversarial self-validation","red-team your own deployment","seven-layer bot detection","JA3/JA4 TLS fingerprinting","ALLOW CHALLENGE DENY verdict","coherent browser or human-assisted automation ceiling","headless browser detection","reference implementation","humanymous Gate"]
+keywords: ["automation detection open source","spec-first detection method","adversarial self-validation","red-team your own deployment","seven-stage detection pipeline","connection fingerprinting","ALLOW CHALLENGE DENY verdict","coherent-automation detection boundary","headless browser detection","reference implementation","humanymous Gate"]
 ---
 
 <!-- Quadrant: Explanation. -->
@@ -57,7 +57,7 @@ Two rules keep this honest and safe:
 
 ## Scored, not a binary flag
 
-The engine does not emit a bot/human boolean. Each request is scored across seven layers — static client signals, fingerprint, client integrity, behavior, network and protocol, cross-check consistency, and the scoring step itself (seven detection stages) — into a risk score from 0 to 100, which resolves to a verdict: ALLOW (0–29), CHALLENGE (30–69), or DENY (70–100).
+The engine does not emit a bot/human boolean. Each request is scored across the seven-stage detection pipeline — static client inspection, client fingerprinting, client integrity checks, interaction analysis, network and protocol inspection, consistency checks, and risk aggregation with verdict selection — into a risk score from zero to one hundred. The built-in defaults resolve that score to ALLOW below 30, CHALLENGE from 30 through 69, or DENY from 70 upward.
 
 Two mechanisms sit on top of the score:
 

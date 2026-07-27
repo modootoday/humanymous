@@ -7,7 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Supported topologies: where each kind of evidence is actually available
 
-> **Quadrant:** Reference. **Audience:** integrators and platform engineers deciding *where in their stack* to place humanymous, and evaluators who need to know which detections will and will not fire in their topology before they benchmark.
+**Diátaxis quadrant:** Reference.
+**Audience:** integrators and platform engineers deciding where to place humanymous, and evaluators checking which evidence is available before benchmarking.
 
 This page is limitations-first. The single most important fact about deploying humanymous is that **its detection layers are not all active in every topology** — some depend on the process terminating raw TLS on its own accept loop, and one of the two shipped binaries does not capture them at all. If you benchmark the rich demo engine and then deploy the reverse proxy, or you place either behind a TLS-terminating CDN, you inherit a materially weaker detector *and nothing in the request path will tell you*. This page maps exactly what is active where, so you size expectations to your real topology, not the demo.
 

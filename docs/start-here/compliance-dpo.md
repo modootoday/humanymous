@@ -5,8 +5,8 @@ keywords: ["GDPR bot detection","data protection officer compliance","crypto-shr
 
 # Start here: Compliance / data protection officer
 
-> **Quadrant:** How-to / navigation hub.
-> **Audience:** Data-protection officers, privacy counsel, and compliance owners evaluating or operating humanymous Gate.
+**Diátaxis quadrant:** How-to.
+**Audience:** data protection officers, privacy counsel, and compliance owners evaluating or operating humanymous Gate.
 
 humanymous Gate is a reference implementation, not a production-hardened build; treat the behaviour described here as the documented design, and validate it against your own deployment.
 

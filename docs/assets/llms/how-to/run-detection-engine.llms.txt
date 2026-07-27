@@ -7,7 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Run the standalone detection engine (dev)
 
-**Quadrant: How-to.** **Audience: Blue and Red developers who want to build and run the raw detection engine (`bin/server.exe` on `127.0.0.1:8443`) directly** — the engine-side equivalent of the Gate proxy Quickstart.
+**Diátaxis quadrant:** How-to.
+**Audience:** defensive-test and detection developers who want to build and run the standalone engine (`bin/server.exe` on `127.0.0.1:8443`) directly.
 
 > **Note:** Defensive, local-only, self-target-only, educational. This page builds and runs *your own* detector on your own loopback so you can read its scoring output. It teaches nothing about evading third-party systems. Every number you observe is reference-measured on your machine, not a guarantee.
 

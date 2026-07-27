@@ -1,9 +1,12 @@
 ---
 title: FAQ
-description: "Straight answers about humanymous — what it detects, what it cannot (the coherent browser or human-assisted automation ceiling), whether it is a WAF/CAPTCHA, production-readiness, privacy, and how it compares."
+description: "Straight answers about humanymous Gate, including the evidence it observes, its coherent-automation detection boundary, adjacent controls, production responsibilities, and privacy limits."
 ---
 
 # Frequently asked questions
+
+**Diátaxis quadrant:** Reference.
+**Audience:** integrators, evaluators, operators, privacy reviewers, and people comparing adjacent controls.
 
 Straight answers about what humanymous Gate does, what it does not, and where its limits are.
 
@@ -11,17 +14,31 @@ Straight answers about what humanymous Gate does, what it does not, and where it
 
 humanymous is a defensive, open-source reference system for studying browser-automation detection. The standalone Core engine demonstrates the complete seven-stage pipeline. Gate is the reverse-proxy enforcement component; it applies the same scoring implementation to the smaller evidence set its current collector actually supplies, then records and enforces the resulting verdict at the edge.
 
-## Is it a WAF, a CDN, or a CAPTCHA?
+## Is it a web application firewall, content delivery network, or interactive verification service?
 
-No to all three. Gate is not a web application firewall — it does not inspect payloads for injection or apply signature rules to request bodies. It is not a CDN and does not cache or distribute your content. It is not a CAPTCHA vendor: the score-based proof-of-work step it can raise is a computational check on the client, not an image or puzzle test, and proof of work is not a CAPTCHA. Gate complements these tools rather than replacing any of them.
+No to all three. Gate is not a web application firewall: it does not inspect
+payloads for application exploits. It is not a content delivery network and
+does not cache or distribute content. Its proof-of-work challenge demonstrates
+computation, not that a person is present, and the reference does not provide a
+complete user-solvable recovery path for every CHALLENGE. Gate complements
+these controls rather than replacing them.
 
-## What can it reliably stop?
+## What evidence does it handle well?
 
-Gate reliably flags and blocks common automation stacks that carry observable tells: Selenium, Puppeteer, Playwright, and undetected-chromedriver; headless-browser markers; TLS fingerprint parrots that do not match their claimed client; and naive proxy or datacenter-IP farms. These are promoted toward CHALLENGE or DENY by enforcement rules and layered scoring. Detection reflects a reference-measured signal set, not an unbounded guarantee.
+Core's reference profiles cover common browser drivers, headless-browser
+markers, and client claims that disagree with directly observed protocol
+behavior. Gate shares the scoring implementation but supplies a narrower
+evidence set, so evaluate Gate against the proxy you will deploy rather than
+using a Core catalog result as a Gate claim. Enforcement rules and risk
+thresholds can produce CHALLENGE or DENY; neither outcome proves automation.
 
-## What can it NOT detect?
+## What can it not detect reliably?
 
-The honest boundary is the coherent browser or human-assisted automation ceiling: a coherent, real browser engine driven to spoof every layer consistently, arriving from residential proxies, is not solved. When automation presents a genuine engine with matching TLS, fingerprints, and interaction signals over a residential address, there is no clean tell to key on. Gate mitigates this case only by rate and reputation — metering repeat attempts per fingerprint and subnet — not by clean detection. We name this plainly rather than imply it is covered.
+The coherent-automation detection boundary is explicit: client and network
+signals alone cannot reliably separate internally consistent real-browser or
+human-assisted automation from legitimate traffic. Gate raises cost with
+request metering, reputation, and attested-route verification; it does not
+claim a clean detection answer for this class.
 
 ## Is it production-ready?
 

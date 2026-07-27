@@ -3,8 +3,8 @@ description: "Operator runbook for humanymous Gate's kill switch and bans. The k
 keywords: ["kill switch runbook","dual-control bans","humanymous Gate","fingerprint vs IP ban","escalating ban ladder","rule enforcement to monitor","on-call operator runbook","residential proxy rotation ban","self-hosted bot detection"]
 ---
 
-> **Runbook** — operational procedure for the two-person actions you reach for under pressure.
-> **Audience:** on-call Operator and the Approver they page. You are mid-incident; this page tells you what each control does, what it costs, how to roll it back, and who the distinct second role is that has to commit it.
+**Diátaxis quadrant:** Runbook.
+**Audience:** on-call Operators and the distinct Approver they page during an incident.
 
 # Kill switch & bans: blast radius, apply / escalate / lift, dual-control
 

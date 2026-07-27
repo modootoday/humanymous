@@ -5,8 +5,8 @@ keywords: ["/__hmn/ control plane","injected detection bundle","loader.js","csp-
 
 # The `/__hmn/` control plane and the injected detection bundle
 
-> **Quadrant:** Explanation (with an endpoint reference table).
-> **Audience:** Integrators debugging an integration, a Content-Security-Policy conflict, or a routing collision.
+**Diátaxis quadrant:** Explanation.
+**Audience:** integrators debugging an integration, a Content Security Policy conflict, or a routing collision.
 
 This page explains the two things humanymous Gate ("Gate") adds to the request/response path that you can observe from your own app: a namespace of client-facing endpoints under `/__hmn/`, and a small detection bundle that Gate streams into your HTML. If a route stopped working after you put Gate in front of your origin, if your CSP started reporting violations, or if your single-page-app router began fighting a path, this is the page that tells you why and where to look.
 

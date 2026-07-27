@@ -3,12 +3,10 @@ description: "You're seeing this because a site's bot-protection check flagged y
 keywords: ["why am I seeing this","bot protection check","complete verification challenge","blocked by bot detection","incident handle","ask support to review a block","screen-reader accessible check","WCAG 2.2 AA","pseudonymous connection signals","humanymous Gate"]
 ---
 
-<!--
-Diátaxis quadrant: Explanation (public, end-user facing).
-Audience: a real person who hit a CHALLENGE or DENY — possibly a paying customer, possibly using a screen reader or a privacy browser.
--->
-
 # Why am I seeing this?
+
+**Diátaxis quadrant:** Explanation.
+**Audience:** a person who received a verification request or denial, including people using assistive technology or privacy tools.
 
 If a page asked you to complete a quick check, or told you it could not let you
 through, this page explains what happened and how to get moving again. You are

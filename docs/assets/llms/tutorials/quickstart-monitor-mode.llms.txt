@@ -7,7 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Quickstart: Put Gate in front of an app in monitor mode (first 30 minutes)
 
-**Tutorial** (learning-oriented) · **Audience:** integrator or evaluator, first run.
+**Diátaxis quadrant:** Tutorial.
+**Audience:** integrators and evaluators completing their first local run.
 
 Welcome. In the next 30 minutes you will stand up **humanymous Gate** in front of a throwaway app on your own machine, running in **global monitor mode**. Gate scores the evidence its current collector supplies and logs the resulting decisions, but it enforces nothing. Core's richer seven-stage measurements are a separate surface and should not be used as Gate results.
 

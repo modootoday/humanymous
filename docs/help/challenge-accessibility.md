@@ -3,13 +3,10 @@ description: "If a human-verification step won't complete with your screen reade
 keywords: ["challenge accessibility","verification step screen reader","WCAG 2.2 AA bot check","EN 301 549","ADA verification","keyboard-only navigation","incident handle","assistive technology verification","humanymous Gate"]
 ---
 
-<!--
-Diátaxis quadrant: Reference (public, end-user facing).
-Audience: a blocked or challenged end user, plus the data protection officer/buyer who will ask about accessibility.
-No internal signal names, enforcement-rule identifiers, stage references, or specification identifiers on this page.
--->
-
 # Challenge accessibility statement
+
+**Diátaxis quadrant:** Reference.
+**Audience:** a person who received a verification request or denial, and people evaluating the service's accessibility.
 
 Sometimes a site asks you to complete a quick verification step before it lets
 you continue. This page explains how that step is meant to work with assistive

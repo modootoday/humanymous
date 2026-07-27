@@ -5,8 +5,10 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 ---
 
-> **Runbook** — operational procedures for SOC on-call responders.
-> **Audience:** on-call SOC / incident responders operating a running humanymous Gate deployment. Not an intro; if you have never seen the Ledger, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first.
+**Diátaxis quadrant:** Runbook.
+**Audience:** security-operations and incident responders operating a running humanymous Gate deployment.
+
+If you have never seen the Ledger, read [How Gate sees a request](../concepts/how-gate-sees-a-request.md) first.
 
 # Incident runbooks: humanymous Gate on-call
 

@@ -7,7 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Red-team rules of engagement (defensive-only)
 
-**Reference** (canonical policy) · **Audience:** Red-team developers and evaluators, read this **before** running or extending any bundled attack tooling.
+**Diátaxis quadrant:** Reference.
+**Audience:** defensive-test developers and evaluators; read this before running or extending bundled adversarial test tooling.
 
 > **Defensive, local-only, self-target-only, educational.** The bundled Red tooling exercises **your own** detector's test catalog on **your own** loopback interface. It teaches you to understand and extend the detection engine you run — never to evade a third party. Point every tool at a host you operate; keep it on `127.0.0.1`. If a check reveals a coverage gap, report it to the maintainers — never optimize it into an evasion.
 
@@ -15,7 +16,7 @@ This is the one page every advanced Red document links to for its safety framing
 
 ## Scope
 
-This tooling exercises **your own detector's test catalog on your own loopback** — the standalone detection engine on `127.0.0.1:8443`. It is a way to confirm that your detector fires the verdicts and enforcement rules you expect against known-automated samples, and to measure your own honest-human false-positive picture before you enforce anything.
+This tooling exercises **your own detector's test catalog on your own loopback** — the standalone detection engine on `127.0.0.1:8443`. It is a way to confirm that your detector fires the verdicts and enforcement rules you expect against known-automated samples, and to measure friction on the fixed synthetic human baseline before you enforce anything.
 
 It is **not** evasion guidance against any third party. Nothing here tells you how to defeat someone else's deployment, and the Red profiles reproduce *tells* an automated client leaves for your engine to catch — they are not a toolkit aimed outward. For what the catalog is and how it is wired, see **[Red-team catalog](red-team-catalog.md)** and **[Red catalog architecture](../explanation/red-catalog-architecture.md)**.
 
@@ -56,7 +57,7 @@ Detection is bounded and heuristic. When you report a result, carry these limits
 
 - **The coherent browser or human-assisted automation boundary is not solved.** Anti-detect tooling combined with real-human click-farms is a design boundary that is **mitigated by rate and reputation, not solved**. A pass or a block against a coherent browser or human-assisted automation-style sample does not close that gap.
 - **datacenter-network browser rule, no interaction observed rule, and missing or replayed request-integrity token rule are heuristics that can challenge real humans.** datacenter-network browser rule (a consistent browser from a datacenter ASN), no interaction observed rule (zero interaction over the observation window), and missing or replayed request-integrity token rule (a replayed or absent request-integrity token on an API call) issue **CHALLENGE**, not DENY, and can catch some genuine people. Do not report them as clean bot-only signals.
-- **Every number is reference-measured on your machine.** A detection rate or false-positive rate describes **that run on your box** — it is not a promise about live traffic. Inspect the honest-human baseline's challenge-rate separately; a human CHALLENGE is scored as a true negative, so a DENY-only false-positive rate under-reports human friction.
+- **Every number is reference-measured on your machine.** A detection rate or false-positive rate describes **that run on your box** — it is not a promise about live traffic. Inspect the fixed synthetic human baseline's challenge rate separately; a human CHALLENGE is scored as a true negative, so a DENY-only false-positive rate under-reports human friction.
 
 For the verdict thresholds and the Core enforcement-rule table, see **[enforcement rules, verdicts and signal reference](hard-rules-verdicts.md)**.
 

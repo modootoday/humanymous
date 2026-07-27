@@ -288,6 +288,73 @@ humanymous Gate is a reference implementation, not a production-hardened service
 
 **validation profile.** A reproducible client behavior used to exercise one or more controls.
 
+**external input control ladder.** Four sequential browser-control modes used
+for defensive self-validation: virtual input; read-only Document Object Model
+observation plus virtual input; physical Universal Serial Bus input; and
+read-only Document Object Model observation plus physical Universal Serial Bus
+input. The reference can run the first two modes in Docker. It declares the
+physical modes but reports them unavailable until independently attested
+hardware is supplied.
+
+**virtual input control.** Pointer and keyboard input delivered through a
+display server's software input path. It does not prove a physical device or a
+person is present.
+
+**read-only Document Object Model observation.** Browser document inspection
+that can locate or describe page elements but cannot type, click, execute a
+page action, or alter the document.
+
+**Universal Serial Bus (USB).** A hardware and protocol family used to attach
+devices. Public results distinguish physical USB evidence from a USB path
+created by the Linux kernel.
+
+**Human Interface Device (HID).** The USB device class commonly used for
+keyboards and pointers. HID keyboard reports carry key positions and
+press/release state, not Unicode text.
+
+**Virtual USB laboratory.** The isolated workflow in which an outer Docker
+Compose project manages a pinned QEMU micro virtual machine and an inner Compose
+project asks that guest's independent Linux kernel to create a Universal Serial
+Bus gadget through its virtual host-controller driver. It then drives a stock
+browser through the guest's normal Human Interface Device input path. The input
+actor cannot author the visual verdict: a separate read-only framebuffer
+observer records the ordered visual evidence. The result is virtual evidence,
+not physical USB or human-input evidence.
+
+**independent framebuffer observation.** A separate, read-only process records
+visible screen states without receiving a pointer, keyboard, browser-document,
+clipboard, or input-method control channel. Separating observation from the
+input actor prevents the actor from authoring its own visual success claim.
+
+**kernel-emulated USB.** A USB device and host-controller path created by the
+Linux kernel without an electrical cable or external device. It can exercise
+enumeration, descriptors, drivers, and input routing, but cannot attest physical
+transport, independent firmware, or external hardware.
+
+**physical USB evidence.** Evidence bound to an independently attested external
+device, firmware identity, physical USB path, exclusive input seat, and safety
+controls. Kernel-emulated USB and a mapped Docker device are not physical USB
+evidence.
+
+**input-method composition.** The native browser and operating-system process
+that turns a sequence of keyboard positions into a preedit value and then a
+committed Korean, Chinese, Japanese, or other composed string. USB HID carries
+keyboard usages, not Unicode text.
+
+**Intelligent Input Bus (IBus).** The input-method framework pinned inside the
+reference browser container for Korean, Simplified Chinese, and Japanese
+composition checks. The laboratory gives it a private session bus and
+non-persistent runtime, configuration, and cache directories; this is
+laboratory isolation, not a general production configuration.
+
+**preedit.** Text currently being composed by an input method before the user
+commits it. A preedit cue alone does not prove the final value.
+
+**committed input-method value.** Text accepted from the active input method
+after its composition lifecycle finishes. The Virtual USB laboratory verifies
+this separately from detector scoring and does not treat it as proof of human
+input.
+
 **human baseline.** A reference browser session used to detect accidental friction or denial of legitimate traffic. One synthetic baseline cannot establish a general false-positive rate.
 
 **false positive.** Legitimate traffic that is challenged or denied. Report challenge friction separately from outright denial.

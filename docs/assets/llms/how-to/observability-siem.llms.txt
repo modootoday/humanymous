@@ -7,7 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Observability and SIEM integration
 
-**Quadrant:** How-to. **Audience:** SRE and security engineers wiring humanymous Gate into your monitoring and SIEM.
+**Diátaxis quadrant:** How-to.
+**Audience:** site reliability and security engineers connecting humanymous Gate to monitoring and security information and event management systems.
 
 This guide shows you what observability surface the reference implementation of humanymous Gate exposes, how to collect its operational logs, how to pull edge decisions out of it with `curl`, how to scrape process metrics and wire liveness/readiness probes, and how to bridge decision data to a SIEM until native log shipping is in place.
 

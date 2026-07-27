@@ -1,9 +1,12 @@
 ---
-description: "Transparency report for humanymous bot detection: what data it collects, how ALLOW/CHALLENGE/DENY is decided, its GDPR basis, and the coherent browser or human-assisted automation ceiling it names."
-keywords: ["humanymous transparency report","bot detection transparency report","ALLOW CHALLENGE DENY verdict","JA3/JA4 data collected","behavioural timings not keystrokes","GDPR legitimate interest bot detection","notice and appeal GDPR Art. 22","cryptographic-shred erasure","reference-measured block rate","coherent browser or human-assisted automation detection ceiling","self-hosted bot detection"]
+description: "Transparency report for humanymous automation detection: collected data, verdict decisions, data-protection basis, and the documented coherent-automation boundary."
+keywords: ["humanymous transparency report","automation detection transparency","ALLOW CHALLENGE DENY verdict","connection fingerprints","behavioural timings not keystrokes","data-protection notice","cryptographic erasure","reference-measured detection","coherent-automation detection boundary","self-hosted automation detection"]
 ---
 
 # humanymous — transparency report
+
+**Diátaxis quadrant:** Explanation.
+**Audience:** end users, operators, privacy reviewers, and evaluators who need a plain-language account of behavior and limits.
 
 *This report explains, in plain language, what humanymous does, how well it works, what
 data it uses, and where its limits are. It is written to be honest rather than
@@ -42,7 +45,7 @@ screen-reader users).
 In a **single reference run (`n=1` per profile) on the maintainers' hardware** against a
 65-entry local catalog (**63 automated behavior profiles + 1 coherent boundary case + 1 synthetic human baseline**), all
 63 automated profiles were blocked and the baseline was not denied. The single coherent browser or human-assisted automation
-`native_coherent_ceiling` profile **ALLOWs by design** — the documented detection ceiling,
+`native_coherent_ceiling` profile **receives ALLOW by design** — the documented coherent-automation detection boundary,
 priced via the attested / ceiling-guard mechanism, not a bypass. **This is
 reference-measured, not a guarantee.**
 

@@ -5,8 +5,10 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 ---
 
-> **How-to / navigation hub.** Start here if you are a backend or platform developer dropping Gate in front of an existing app.
-> This page orients you and points to your next three reads.
+**Diátaxis quadrant:** How-to.
+**Audience:** backend and platform developers placing Gate in front of an existing application.
+
+This page orients you and points to your next three reads.
 
 # Start here: Integrator
 

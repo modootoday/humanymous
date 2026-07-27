@@ -5,7 +5,8 @@ keywords: ["humanymous Gate operator","bot detection console","Ledger admin surf
 
 # Start here: Operator
 
-> **How-to / navigation hub.** For the security operator or SOC on-call who runs the humanymous Gate Ledger during a shift.
+**Diátaxis quadrant:** How-to.
+**Audience:** security operators and security-operations on-call staff who use the humanymous Gate Ledger during a shift.
 
 You are the person watching humanymous Gate while it fronts the origin. Your working surface is the Ledger: you watch the Overview view ("live edge decisions") as ALLOW / CHALLENGE / DENY decisions land, and you decide whether a change in the pattern is a false-positive spike (real humans getting CHALLENGE or DENY) or an abuse surge (automated traffic Gate is correctly holding back). When you need to act, you have three levers — unblock a subject, ban a subject, or pull the kill switch — and you drill into a flagged session by its incident handle to read the enforcement rules and signal contributions behind the verdict. Gate is a reference implementation, not a production-hardened build; treat the numbers and thresholds you see as reference behavior, and confirm before you widen the blast radius of any action.
 

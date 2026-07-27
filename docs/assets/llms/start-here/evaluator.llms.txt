@@ -7,7 +7,8 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # Start here: Evaluator
 
-> **How-to / navigation hub.** For the engineering leader or security buyer deciding whether humanymous Gate fits your stack.
+**Diátaxis quadrant:** How-to.
+**Audience:** engineering leaders and security buyers deciding whether humanymous Gate fits their stack.
 
 humanymous Gate is a reverse proxy that sits in front of your origin app and enforces ALLOW, CHALLENGE, or DENY before origin contact. It reuses Core's scoring implementation, but its current collector does not supply Core's complete seven-stage browser and network evidence. Evaluate Core and Gate as different measurement surfaces. CHALLENGE withholds the request, but the reference does not provide a complete visitor-recovery flow for every challenge. Gate also does not solve coherent browser or human-assisted automation; rate limiting, reputation, and attested-route proof requirements raise cost without making that traffic detectable. This is a reference implementation, not a production-hardened build.
 
@@ -22,7 +23,7 @@ A verdict as it renders in the bundled `/demo` — the graded risk score and the
 
 Read these in order. Each builds on the last, and together they take you from "what is this" to "running it against my own traffic."
 
-1. **[What Gate Is (and Is Not)](../explanation/what-gate-is.md)** — The scope, the design principles (defense-in-depth, cross-check-first, low false-positive, deterministic), and the five attacker cost bands, from direct HTTP automation through coherent browser or human-assisted automation attacker tiers, including where the coherent browser or human-assisted automation ceiling sits. Start here to calibrate expectations before you look at mechanics.
+1. **[What Gate Is (and Is Not)](../explanation/what-gate-is.md)** — The scope, design principles, and five automation cost bands, from direct Hypertext Transfer Protocol automation through coherent browser or human-assisted automation, including the boundary that client and network evidence cannot reliably resolve. Start here to calibrate expectations before you look at mechanics.
 
 2. **[Will This Break My App?](../explanation/will-this-break-my-app.md)** — The false-positive and rollout story: how privacy browsers, extensions, and old devices are handled without being scored as bots, how the safe-GET fail-open works on balanced routes, and why you deploy monitor-first (score and log, enforce nothing) before you enforce anything.
 

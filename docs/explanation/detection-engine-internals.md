@@ -3,8 +3,8 @@ description: "How the humanymous detection engine scores signals into one ALLOW 
 keywords: ["detection engine internals","bot detection scoring math","noisy-OR risk score","per-stage cap","Core enforcement rules","ALLOW CHALLENGE DENY verdict","per-signal vs request verdict","consistency-check stage cross-check","score trace","JA3/JA4 UA cross-check"]
 ---
 
-> **Quadrant:** Explanation (with embedded reference tables).
-> **Audience:** Blue detection engineers extending or debugging the engine, plus advanced evaluators who want to *predict* a score before running the request.
+**Diátaxis quadrant:** Explanation.
+**Audience:** Blue detection engineers extending or debugging the engine, plus advanced evaluators who want to predict a score before running the request.
 
 # Inside the detection engine: signals, scoring math and the score trace
 

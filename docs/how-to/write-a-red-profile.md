@@ -1,6 +1,6 @@
 # Write or extend a Red-team profile
 
-**Quadrant:** How-to (task-oriented, guarded).
+**Diátaxis quadrant:** How-to.
 **Audience:** developers adding a new automation-tell profile to their own local catalog.
 
 > **Rules of engagement.** This profile fires at your own detection engine on `127.0.0.1` only. You are reproducing the *signature* of an automation stack to test your own detector — never building evasion against a system you do not operate. Findings about coverage go to the maintainers, never optimized into a bypass. See [Red-team rules of engagement](../reference/red-team-rules-of-engagement.md).
@@ -108,7 +108,7 @@ For a raw-protocol tell you can instead wrap an attack case through `test/redtea
 
 The label is not cosmetic — the runner's `classify()` reads it to decide how a verdict is scored.
 
-- A label that **starts with `bot:`** marks the sample as automation. The only non-bot label is `human.mjs`, the honest-human baseline; any label that does *not* start with `bot:` is treated as a human-baseline sample, so its detections flip into false-positive / true-negative accounting.
+- A label that **starts with `bot:`** marks the sample as automation. The only non-bot label is `human.mjs`, the fixed synthetic human baseline; any label that does *not* start with `bot:` is treated as a human-baseline sample, so its detections flip into false-positive / true-negative accounting.
 - For a `bot:` label, `classify()` counts **CHALLENGE or DENY as a true positive** (caught) and **ALLOW as a false negative** (missed).
 - For the human baseline, **DENY is a false positive**; everything else, including CHALLENGE, is a true negative.
 

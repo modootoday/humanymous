@@ -5,7 +5,8 @@ keywords: ["on-call quick reference","humanymous Gate","ALLOW CHALLENGE DENY ver
 
 # On-call quick reference card
 
-> **Quadrant:** Reference — a one-screen cheat sheet. **Audience:** SOC on-call, during and between incidents.
+**Diátaxis quadrant:** Reference.
+**Audience:** security-operations on-call staff during and between incidents.
 
 Fast lookup for a shift on humanymous Gate (the reverse-proxy enforcement layer, "Gate" after first mention). Scan it; do not read it. This is the reference build, not a production-hardened one. When you need the full procedure, jump to [Incident runbooks](../runbooks/incident-runbooks.md) and [Kill switch & bans](../runbooks/kill-switch-and-bans.md).
 

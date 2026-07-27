@@ -3,8 +3,10 @@ description: "Developer hub to extend the open-source bot detection engine: add 
 keywords: ["bot detection open source","extend detection engine","seven-layer scoring","enforcement rules verdict","Red test catalog","Detection Observatory","ScoreTrace","self-hosted bot detection","Selenium Puppeteer Playwright detection","humanymous Gate"]
 ---
 
-> **How-to / navigation hub.** For Red-team and Blue detection **developers** who want the depth tier — building on the detection engine and the local Red test catalog.
-> This page is a router: it points you at your next reads and nothing else.
+**Diátaxis quadrant:** How-to.
+**Audience:** Red-team and Blue detection developers extending the detection engine or local defensive catalog.
+
+This page is a router: it points you at your next reads and nothing else.
 
 # Start here: Developer (Red/Blue)
 
@@ -18,7 +20,7 @@ The two surfaces you work, both self-target-only on your own `127.0.0.1`:
 flowchart TD
   D["Developer on 127.0.0.1"] --> BL["Blue — understand and extend detection"]
   D --> RD["Red — understand and extend the test catalog"]
-  BL --> BE["Detection engine on :8443: signals, scoring, hard rules, ScoreTrace"]
+  BL --> BE["Detection engine on :8443: signals, scoring, enforcement rules, score trace"]
   RD --> ROE["Rules of engagement first — defensive, local-only, self-target-only"]
   ROE --> OBS["Dev-gated Observatory: launch profiles, watch the live scored feed"]
 ```

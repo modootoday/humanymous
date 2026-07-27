@@ -94,4 +94,5 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
 26. **Every agent commit must attribute the provider** via `Co-Authored-By` in the project
     registry (`COMMIT-CONVENTION.md` / rule `92`). Use `git-coord commit -Provider …`.
     Claude Code’s default trailer is not enough alone for multi-provider tracking — use
-    the stable `@agents.humanymous.local` identities (or keep both).
+    the canonical vendor/community identity from the registry; never invent a local
+    attribution domain.

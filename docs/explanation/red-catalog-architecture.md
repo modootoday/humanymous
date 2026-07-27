@@ -1,11 +1,12 @@
 ---
-description: "How humanymous builds its Red catalog: 65 local-only entries plus a Go raw-protocol client that test your own detector against a human baseline and an honest detection boundary."
-keywords: ["Red catalog architecture","bot detection test catalog","uTLS raw-protocol client","human baseline false-positive accounting","coherent browser or human-assisted automation detection ceiling","JA4 fingerprint consistency","request-integrity token anti-tamper","Selenium Puppeteer Playwright planted artifacts","enforcement rules verdict model","self-hosted bot detection"]
+description: "How humanymous builds its defensive catalog: 65 local-only entries plus a Go raw-protocol client that test your own detector against a synthetic human baseline and the coherent-automation detection boundary."
+keywords: ["defensive automation test catalog","local self-validation profiles","raw-protocol client","synthetic human baseline","coherent-automation detection boundary","connection fingerprint consistency","request-integrity token","Selenium Puppeteer Playwright test profiles","enforcement rules verdict model","self-hosted automation detection"]
 ---
 
 # The Red catalog: architecture of the bundled attack profiles and the raw-protocol client
 
-> Diátaxis quadrant: **Explanation**. Audience: **Red-team developers** who want to understand how the bundled defensive test catalog and the Go raw-protocol client are built — and what each profile proves about your own detector.
+**Diátaxis quadrant:** Explanation.
+**Audience:** Red-team developers who want to understand how the bundled defensive test catalog and the Go raw-protocol client are built and what each profile proves about their own detector.
 
 > **Important — rules of engagement.** This material is purely **defensive, local-only, and self-target-only**. The catalog exists to test, understand, and extend **your own** detector's coverage against **your own** loopback engine (`127.0.0.1:8443`). It is not a third-party evasion toolkit. Every profile reproduces a tell so your detector has something honest to catch; nothing here is a recipe for defeating someone else's system. See [Red-team rules of engagement](../reference/red-team-rules-of-engagement.md) before you run or extend anything.
 
@@ -27,10 +28,10 @@ There are **65 entries** in the runner's `PROFILES` order: **63 automated behavi
 
 `test/e2e/tiers.mjs` is the machine-readable membership list. `assertCoverage()` fails if it drifts from the runner catalog.
 
-Two of them carry a non-`bot:` label: `human.mjs` (the human baseline) and `native_coherent_ceiling.mjs` (the coherent browser or human-assisted automation detection ceiling). The baseline is load-bearing for false-positive accounting; the ceiling is the honest boundary the design does not claim to solve. `classify()` in `test/e2e/runner.mjs` reads the profile's exported `label`: a `bot:` prefix is an automated sample, a `ceiling:` prefix is the detection ceiling, and anything else is the human baseline. The classification rules are:
+Two carry a non-`bot:` label: `human.mjs` (the synthetic human baseline) and `native_coherent_ceiling.mjs` (the coherent browser or human-assisted automation boundary case). The baseline catches accidental friction in one fixed sample; it cannot establish a population-wide false-positive rate. The boundary case records the class the design does not claim to distinguish reliably. `classify()` in `test/e2e/runner.mjs` reads the profile's exported `label`: a `bot:` prefix is an automated sample, a `ceiling:` prefix is the boundary case, and anything else is the synthetic human baseline. The classification rules are:
 
 - **bot** profile → `CHALLENGE` or `DENY` is a true positive; `ALLOW` is a false negative.
-- **ceiling** profile → `ALLOW` is the honest expected result (the detection ceiling, priced via the attested / ceiling-guard mechanism, not a bypass); a `CHALLENGE` or `DENY` is a bonus catch, not the pass condition.
+- **boundary** profile → `ALLOW` is the honest expected result under the current reference policy; a `CHALLENGE` or `DENY` is an additional catch, not the pass condition.
 - **human** profile → `DENY` is a false positive; anything else is a true negative.
 
 That two-axis scoring — what the profile *is* against what the engine *did* — is what turns a raw verdict into a labelled outcome:

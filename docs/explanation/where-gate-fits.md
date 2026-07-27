@@ -1,33 +1,42 @@
 ---
-description: "humanymous Gate decides human vs automation at the edge, complementary to your WAF, CDN, and CAPTCHA. Reliable on commodity bots; names its coherent browser or human-assisted automation ceiling."
-keywords: ["bot detection vs WAF","bot detection vs CAPTCHA","CDN bot manager alternative","self-hosted bot detection","direct HTTP automation-coherent browser or human-assisted automation threat model","human-or-automation verdict","proof-of-work not CAPTCHA","cross-layer consistency detection","JA3/JA4 TLS fingerprinting","Selenium Puppeteer detection","coherent browser or human-assisted automation ceiling click-farms","where Gate fits"]
+description: "Where humanymous Gate fits alongside a web application firewall, content delivery network, and interactive verification service, including the evidence Gate lacks and the coherent-automation detection boundary."
+keywords: ["automation controls and web application firewall","automation controls and interactive verification","content delivery network bot manager","self-hosted automation detection","coherent-automation detection boundary","proof-of-work challenge","cross-layer consistency","connection fingerprinting","Selenium Puppeteer detection","where Gate fits"]
 ---
 
-# Where Gate fits: vs WAF, CDN bot manager, and CAPTCHA
+# Where Gate fits alongside adjacent controls
 
-> **Quadrant:** Explanation. **Audience:** security buyers, threat modelers, and skeptical reviewers deciding where humanymous Gate ("Gate") sits — or does not sit — in an existing stack.
+**Diátaxis quadrant:** Explanation.
+**Audience:** security buyers, threat modelers, and skeptical reviewers deciding where humanymous Gate sits—or does not sit—in an existing stack.
 
-This page is written engineer-to-engineer, limitations first. If you already run a WAF, a CDN bot manager, or a CAPTCHA vendor, the honest question is not "is Gate better" — it is "what does Gate decide that those do not, where does it overlap, and where is it simply not the right tool." This page answers that without selling. It names the threat tiers Gate is reliable on, the tier where it degrades gracefully, and the tier it does not solve at all.
+This page is written engineer-to-engineer, limitations first. If you already run a web application firewall, content delivery network bot manager, or interactive verification vendor, the honest question is not "is Gate better" — it is "what does Gate decide that those controls do not, where does it overlap, and where is it simply not the right tool." This page answers that without selling. It describes five automation cost bands and names the coherent-automation detection boundary that Gate does not solve.
 
 This repository is a **reference implementation**, not a production-hardened build. Where a capability is deferred to production (a production responsibility), this page says so and links the [production-vs-reference reference](../reference/production-vs-reference.md).
 
 ## The one-sentence placement
 
-Gate decides **whether the caller is a human-driven browser or an automated client**, using a risk score built from behavioral, TLS/HTTP-2, and cross-layer-consistency evidence — and it enforces that decision at the edge before your origin is contacted. It is not a payload firewall, not a network CDN, and not a CAPTCHA vending machine. It is complementary to all three.
+Gate assigns an **automation-risk verdict** from the evidence its current
+collector supplies and enforces that verdict at the edge. The standalone Core
+detection engine demonstrates the richer browser, encrypted-connection, and
+cross-layer evidence path; the current Gate collector does not reproduce all of
+it. Gate is not a payload firewall, content delivery network, or interactive
+human-verification product.
 
-Placed in a stack, each stage does its own job and Gate owns only the human-or-automation verdict:
+Placed in a stack, each component does its own job and Gate owns only its
+automation-risk verdict:
 
 ```mermaid
 flowchart LR
-  U["Browser"] --> CDN["CDN / bot manager · (capacity, DDoS, IP reputation)"]
-  CDN --> WAF["WAF · (payload / exploit filtering)"]
+  U["Browser"] --> CDN["Content delivery network / bot manager<br/>(capacity, denial-of-service absorption, source reputation)"]
+  CDN --> WAF["Web application firewall<br/>(payload and exploit filtering)"]
   WAF --> G["humanymous Gate · (score available evidence · verdict at edge)"]
   U -. "control plane /__hmn/* · loader and collection beacon" .-> G
   G -- "ALLOW only" --> O["Origin app"]
   G -- "CHALLENGE / DENY" --> Stop["Verification required or blocked · (origin never contacted)"]
 ```
 
-The CDN and WAF sit ahead of Gate for the jobs they own; Gate makes the per-request, auditable human-or-automation call the other two do not model.
+The content delivery network and web application firewall sit ahead of Gate for
+the jobs they own. Gate adds an auditable automation-risk verdict from its
+available evidence; that verdict is not proof that a person is present.
 
 ## Start with what it does not replace
 
@@ -35,7 +44,7 @@ Before the comparison, three boundaries that a buyer needs on the table first.
 
 - **It is not a WAF.** Gate does not inspect request payloads for SQL injection, cross-site scripting, path traversal, or application-layer exploits. If your problem is "a malformed request is exploiting my app," Gate is the wrong layer. Run a WAF for that, and run Gate alongside it for the "is this a human" question a WAF does not answer.
 - **It is not a finished CAPTCHA replacement.** Gate does not require a third-party CAPTCHA service. The reference includes proof-of-work and Pass components, but the Gate does not connect them into a complete recovery flow for every challenged visitor. A deployment must supply and test the accessible flow it promises.
-- **It does not solve human-assisted abuse.** Anti-detect browser stacks driven by real people (click-farms) are a stated design boundary, mitigated only by rate limiting and reputation. More on this in the threat-tier section below.
+- **It does not solve human-assisted abuse.** Anti-detect browser stacks driven by real people are a stated design boundary, mitigated only by request metering, reputation, and attested-route proof requirements. More on this in the cost-band section below.
 
 Everything that follows should be read against those three.
 
@@ -47,17 +56,20 @@ Gate is doing a different job with a different mechanism:
 
 | | Rule/signature WAF | humanymous Gate |
 | --- | --- | --- |
-| Core question | Is this request *shaped* like a known attack? | Is this caller a *human-driven browser* or automation? |
-| Method | Static rules / signatures matched per request | A risk score (0–100) aggregated across seven detection layers, then enforcement rules |
+| Core question | Is this request *shaped* like a known attack? | How much of the available evidence is associated with automation? |
+| Method | Static rules / signatures matched per request | A risk score from zero to one hundred across the evidence Gate collected, followed by enforcement rules |
 | Behavioral evidence | Not modeled | interaction analysis stage — mouse, keystroke, scroll, `isTrusted` |
-| TLS / HTTP-2 evidence | Not modeled | network and protocol inspection stage — JA3/JA4, HTTP/2 fingerprint, header order |
-| Cross-layer consistency | Not modeled | consistency-check stage — does the UA agree with UA-CH, the JS environment, and the TLS engine? |
+| Encrypted-connection and protocol evidence | Product-dependent | Full connection fingerprints are available on Core when it directly receives the client connection; current Gate does not collect Core's full set |
+| Cross-layer consistency | Product-dependent | Core compares browser claims with browser execution and directly observed protocol evidence; Gate has a narrower comparison set |
 | Output | Match / no-match (block or allow) | A score plus a verdict (ALLOW / CHALLENGE / DENY), deterministic and auditable |
 | A well-formed automated request | Passes (nothing matches) | Can still be flagged — the *engine*, not the payload, gives it away |
 
 The load-bearing difference is the last row. A stealth automation client can send a perfectly well-formed HTTP request that no WAF rule matches — correct headers, valid method, benign body. A WAF has nothing to catch. Gate is looking somewhere else: at the **disagreement between layers**. A user agent that claims Chrome while the TLS and HTTP/2 fingerprints resolve to a different engine (browser and network-engine mismatch rule) is not something a payload signature can see, because the payload is fine — it is the *consistency* that fails. Gate weights inter-layer disagreement above any single "botty" heuristic, precisely because consistency is harder to fake than any one attribute.
 
-So the two are not competitors. A WAF answers "is this request malicious in shape." Gate answers "is this caller a human." Run both. For the full layer model and enforcement-rule catalog, see [how Gate sees a request](../concepts/how-gate-sees-a-request.md).
+So the two are not competitors. A web application firewall asks whether the
+request matches an exploit or payload rule. Gate asks whether its available
+evidence warrants ALLOW, CHALLENGE, or DENY. For the full request model and
+enforcement-rule catalog, see [how Gate sees a request](../concepts/how-gate-sees-a-request.md).
 
 ## Gate and a CDN bot manager: complementary
 
@@ -68,7 +80,11 @@ Where they meet is the "is this a human" decision, and the honest framing is **c
 - A CDN bot manager typically scores from network-edge signals and its own reputation graph, and its detection logic is a managed black box you configure but do not see inside.
 - Gate scores the **evidence its current collector actually supplies**, and every decision is written to a **tamper-evident audit log**. Core demonstrates the richer browser and network correlation path; Gate does not currently extract Core's full ClientHello or HTTP/2 evidence. The reasoning remains inspectable per decision through contributors, descriptive rule names, and the score.
 
-A common shape: keep the CDN in front for capacity, DDoS, and coarse reputation; put Gate at the application edge for the fine-grained, auditable human-or-automation verdict on the routes that matter (login, checkout, admin). The CDN sheds volume; Gate makes the per-request call you can defend in an incident review.
+A common shape keeps the content delivery network in front for capacity,
+denial-of-service absorption, and coarse reputation, then places Gate at the
+application edge for an auditable automation-risk verdict on selected routes.
+The network edge sheds volume; Gate records the request-time decision for
+incident review.
 
 > **Note:** The reference does **not** ship a good-bot allowlist admin endpoint — that is a reserved concept, not exposed here. If your posture depends on allowlisting specific crawlers, that responsibility currently sits with your CDN layer, not Gate. See [production-vs-reference](../reference/production-vs-reference.md).
 
@@ -82,9 +98,9 @@ It is tempting to read "CHALLENGE" as "shows a CAPTCHA." It does not, and the di
 
 The reference ships only a **minimal HTTP 401 response**, not a complete accessible visitor-recovery experience. Any accessibility-conformance statement is a target for the deployed challenge, not a claim about the reference response. See [challenge accessibility](../help/challenge-accessibility.md).
 
-## The threat model in buyer language: five attacker cost bands, from direct HTTP automation through coherent browser or human-assisted automation
+## Five automation cost bands
 
-Gate's honesty is easiest to check against attacker tiers. Reliability degrades as the adversary gets closer to "a real browser driven by a real human," and the design says so explicitly.
+Gate's honesty is easiest to check against automation cost bands. Reliability degrades as automation gets closer to a real browser with internally consistent evidence or human assistance, and the design says so explicitly.
 
 - **direct HTTP automation — non-browser HTTP clients.** Scripts and tools that speak HTTP but are not a browser at all (curl-class clients, bare HTTP libraries). **Reliable.** A browser UA with zero client-side JS evidence trips an enforcement rule (browser claim without execution evidence rule); there is no engine to fake the client and network signals coherently.
 - **off-the-shelf browser automation — naive automation.** Off-the-shelf Selenium, Puppeteer, undetected-chromedriver with default tells. **Reliable.** Hard automation artifacts (hard automation artifact rule) and headless-plus-a-second-tell (headless browser plus another automation indicator rule) are high-confidence DENY conditions.
@@ -114,7 +130,7 @@ A calm buyer's checklist. Gate is **not the right addition** if:
 
 Gate **is** a fit — and complementary to the above — when:
 
-- You need a **human-or-automation** verdict on specific high-value routes (login, checkout, signup, admin), and you need that verdict to be **auditable** and defensible per-decision, not a black-box score.
+- You need an **automation-risk** verdict on specific high-value routes, and you need the evidence and action to be auditable per decision rather than only receiving a black-box score.
 - Your expected adversary is largely **direct HTTP automation–stealth-patched browser automation commodity automation** (Selenium/Puppeteer/undetected-chromedriver), with some real-browser automation you want flagged and rate-limited even at lower confidence.
 - You want **behavioral + TLS/HTTP-2 + cross-layer-consistency** evidence that a payload WAF and a network CDN structurally do not model.
 - You want to run it **alongside** your WAF and CDN, each doing its own job, rather than replacing either.

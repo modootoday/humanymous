@@ -7,6 +7,9 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 # humanymous — security & code audit report
 
+**Diátaxis quadrant:** Reference.
+**Audience:** security reviewers, maintainers, and evaluators assessing the recorded pre-release review.
+
 *Pre-release audit. Method: a multi-reviewer Red/Blue process (adversarial finders per
 dimension, independent verifiers that tried to refute each finding, and a final
 evaluation judge), anchored to the standards listed in the *Standards referenced*

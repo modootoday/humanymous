@@ -1,9 +1,12 @@
 ---
-description: "Pre-release Red/Blue security audit of the humanymous bot detection engine: GO-with-fixes; every confirmed finding remediated, residual coherent browser or human-assisted automation detection floor disclosed."
-keywords: ["security audit","open source bot detection","Red/Blue audit","GO with fixes","OWASP ASVS","OWASP WSTG","JA3/JA4 fingerprinting","coherent browser or human-assisted automation ceiling","tamper-evident audit chain","remediation summary","humanymous Gate"]
+description: "Pre-release adversarial security review of the humanymous automation-detection engine, including remediations recorded for confirmed findings and the documented coherent-automation boundary."
+keywords: ["security audit","open source bot detection","adversarial review","remediation record","OWASP ASVS","OWASP WSTG","connection fingerprinting","coherent-automation detection boundary","tamper-evident audit chain","humanymous Gate"]
 ---
 
 # humanymous — security & code audit report
+
+**Diátaxis quadrant:** Reference.
+**Audience:** security reviewers, maintainers, and evaluators assessing the recorded pre-release review.
 
 *Pre-release audit. Method: a multi-reviewer Red/Blue process (adversarial finders per
 dimension, independent verifiers that tried to refute each finding, and a final

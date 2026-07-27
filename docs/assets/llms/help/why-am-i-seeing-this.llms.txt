@@ -5,12 +5,10 @@ Project: humanymous — defensive anti-bot / browser-automation detection (Apach
 
 ---
 
-<!--
-Diátaxis quadrant: Explanation (public, end-user facing).
-Audience: a real person who hit a CHALLENGE or DENY — possibly a paying customer, possibly using a screen reader or a privacy browser.
--->
-
 # Why am I seeing this?
+
+**Diátaxis quadrant:** Explanation.
+**Audience:** a person who received a verification request or denial, including people using assistive technology or privacy tools.
 
 If a page asked you to complete a quick check, or told you it could not let you
 through, this page explains what happened and how to get moving again. You are
