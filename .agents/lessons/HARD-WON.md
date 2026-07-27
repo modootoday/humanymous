@@ -129,6 +129,13 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21i. **A weighted registry signal can be DEAD or STRUCTURALLY unobservable** (R4). `l5.header.order`
+    (w20) was never emitted, and the data it needs (h1 wire header order) is destroyed upstream —
+    Go's net/http map + `sort.Strings` in the adapter. A field doc claiming "wire order" while the
+    adapter delivers a sorted set is a truth-debt landmine (a stored "order" hash is really a set
+    hash; re-enabling an order check on it false-positives). Audit registered-vs-emitted signals;
+    mirror `CasingReliable` with an `OrderReliable` flag; keep the id/description byte-identical
+    when annotating (freeze). Same class as the JA4H dead-code removal (SoT-38 / rule 80).
 
 ## Git contention (multi-session)
 
