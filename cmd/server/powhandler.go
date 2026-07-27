@@ -90,9 +90,16 @@ func (a *app) handlePoW(w http.ResponseWriter, r *http.Request) {
 
 	if d > 0 && pow.Verify(a.masterKey, sid, d, body.Bucket, current, body.Nonce) {
 		// Solve-time analysis (SoT-15): a solution returned faster than a real
-		// browser JS solver could compute is a native/GPU solver.
+		// browser JS solver could compute is a native/GPU solver. The observation is
+		// PERMANENT — a session that ever revealed a super-human solve cannot launder
+		// its too-fast DENY into the pow.solved upgrade by resubmitting the same nonce
+		// after a browser-plausible delay (wargame round R1, 2026-07-27). No human
+		// solves under the conservative floor even once, so this is false-positive-safe.
 		elapsed := time.Since(a.store.PowIssuedAt(sid))
-		if issued := a.store.PowIssuedAt(sid); !issued.IsZero() && elapsed < plausibleBrowserSolve(d) {
+		issued := a.store.PowIssuedAt(sid)
+		tooFastNow := !issued.IsZero() && elapsed < plausibleBrowserSolve(d)
+		if tooFastNow || a.store.PowTooFast(sid) {
+			a.store.SetPowTooFast(sid)
 			rep.Network.Signals = append(rep.Network.Signals,
 				signals.New("l7.pow.too_fast", elapsed.Milliseconds(), signals.VerdictBot, 1.0,
 					signals.SourceServer, "PoW solved faster than a browser could (native/GPU solver)"))

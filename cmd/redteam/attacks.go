@@ -1,8 +1,13 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/pow"
 	utls "github.com/refraction-networking/utls"
 )
 
@@ -700,4 +705,159 @@ func itoa(n uint64) string {
 		n /= 10
 	}
 	return string(b[i:])
+}
+
+// powFastSolve exercises the /api/pow active-defense path (SoT-13) that NO other
+// catalog profile reaches: it drives a borderline session into the CHALLENGE band,
+// reads the server-issued X-HM-PoW work factor, solves it with a NATIVE Go SHA-256
+// loop (orders of magnitude past the ~3 MH/s Web-Crypto ceiling a real browser JS
+// solver is bounded by), and returns the solution within milliseconds of issuance.
+//
+// The Blue engine measures solve time from the FIRST issuance and, when a solution
+// beats plausibleBrowserSolve(difficulty), mints l7.pow.too_fast -> HR-19 DENY, so a
+// native/GPU PoW offloader cannot buy a trust upgrade by out-computing a browser.
+// The reported verdict is the FINAL /api/pow re-score (the honest outcome of the
+// active defense), with the issued difficulty and measured intent exposed for the
+// ledger. If no challenge is issued, the collect verdict is reported instead.
+func powFastSolve() (map[string]any, error) {
+	// Borderline session: a Firefox TLS ClientHello while the UA + report claim Chrome,
+	// so the UA-vs-JA4 cross-check disagrees and lands a score-based CHALLENGE (over
+	// HTTP/1.1 there is no observed H2 fingerprint, so the HR-2 hard DENY — which needs
+	// BOTH the JA4 and H2 cross-checks to fail — stays quiet; SoT-13 then issues PoW).
+	cookie, _, _, err := session(utls.HelloFirefox_Auto)
+	if err != nil {
+		return nil, err
+	}
+	// A couple of WebGL/hardware contradictions push risk into a solid CHALLENGE so the
+	// issued difficulty (and thus the too-fast wall-clock budget) is meaningful.
+	body := `{"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",` +
+		`"engineVersion":"wasm-1.0.0","advanced":{"probed":true,"webglVendor":"Google Inc. (Intel)","webglRenderer":"llvmpipe (LLVM 15)"},` +
+		`"environment":{"probed":true},` +
+		`"behavior":{"mouse":{"samples":8,"velocityStdDev":0.05},"events":{"totalEvents":4}},"signals":[]}`
+	hdr := withBrowserHeaders(map[string]string{"User-Agent": chromeUA, "Content-Type": "application/json"})
+	r, err := do(utls.HelloFirefox_Auto, "POST", "/api/collect", hdr, body, cookie)
+	if err != nil {
+		return nil, err
+	}
+	challenge := r.headers["X-Hm-Pow"]
+	if challenge == "" {
+		// No PoW issued (session not challenged or difficulty 0): report the collect verdict.
+		var v map[string]any
+		_ = json.Unmarshal(r.body, &v)
+		if v == nil {
+			v = map[string]any{}
+		}
+		v["powIssued"] = false
+		return v, nil
+	}
+	// X-HM-PoW is "seed:difficulty:bucket".
+	parts := strings.SplitN(challenge, ":", 3)
+	if len(parts) != 3 {
+		return nil, fmt.Errorf("malformed X-HM-PoW header: %q", challenge)
+	}
+	difficulty, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return nil, fmt.Errorf("bad PoW difficulty %q: %w", parts[1], err)
+	}
+	bucket, err := strconv.ParseUint(parts[2], 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("bad PoW bucket %q: %w", parts[2], err)
+	}
+	// Native solve: a tight Go SHA-256 loop finds the nonce in microseconds.
+	nonce, ok := pow.Solve(parts[0], difficulty, 1<<27)
+	if !ok {
+		return nil, fmt.Errorf("failed to solve PoW at difficulty %d", difficulty)
+	}
+	// Submit immediately -> elapsed since issuance << plausibleBrowserSolve(d).
+	solBody := fmt.Sprintf(`{"bucket":%d,"nonce":%q}`, bucket, nonce)
+	pr, err := do(utls.HelloFirefox_Auto, "POST", "/api/pow",
+		map[string]string{"User-Agent": chromeUA, "Content-Type": "application/json"}, solBody, cookie)
+	if err != nil {
+		return nil, err
+	}
+	var v map[string]any
+	_ = json.Unmarshal(pr.body, &v)
+	if v == nil {
+		v = map[string]any{}
+	}
+	v["powIssued"] = true
+	v["powDifficulty"] = difficulty
+	return v, nil
+}
+
+// powLaunder probes whether the too-fast native-solver TELL is REMEMBERED. It solves
+// the PoW natively (instant), submits once to reveal the native-solver speed (the server
+// mints l7.pow.too_fast -> HR-19 DENY for that attempt), then WAITS until elapsed since
+// issuance exceeds plausibleBrowserSolve(difficulty) and resubmits the SAME valid nonce.
+//
+// The question this round asks: does observing a solve no human could produce stick to the
+// session, or can the native solver launder its own DENY into the pow.solved trust upgrade
+// simply by timing the retry to look browser-plausible? handlePoW records nothing on a
+// too-fast hit (powIssued/powDiff persist, powSolved stays false), so the delayed resubmit
+// takes the success branch. The reported verdict is the SECOND (laundered) /api/pow re-score.
+func powLaunder() (map[string]any, error) {
+	cookie, _, _, err := session(utls.HelloFirefox_Auto)
+	if err != nil {
+		return nil, err
+	}
+	body := `{"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",` +
+		`"engineVersion":"wasm-1.0.0","advanced":{"probed":true,"webglVendor":"Google Inc. (Intel)","webglRenderer":"llvmpipe (LLVM 15)"},` +
+		`"environment":{"probed":true},` +
+		`"behavior":{"mouse":{"samples":8,"velocityStdDev":0.05},"events":{"totalEvents":4}},"signals":[]}`
+	hdr := withBrowserHeaders(map[string]string{"User-Agent": chromeUA, "Content-Type": "application/json"})
+	r, err := do(utls.HelloFirefox_Auto, "POST", "/api/collect", hdr, body, cookie)
+	if err != nil {
+		return nil, err
+	}
+	challenge := r.headers["X-Hm-Pow"]
+	if challenge == "" {
+		var v map[string]any
+		_ = json.Unmarshal(r.body, &v)
+		if v == nil {
+			v = map[string]any{}
+		}
+		v["powIssued"] = false
+		return v, nil
+	}
+	parts := strings.SplitN(challenge, ":", 3)
+	if len(parts) != 3 {
+		return nil, fmt.Errorf("malformed X-HM-PoW header: %q", challenge)
+	}
+	difficulty, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return nil, fmt.Errorf("bad PoW difficulty %q: %w", parts[1], err)
+	}
+	bucket, err := strconv.ParseUint(parts[2], 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("bad PoW bucket %q: %w", parts[2], err)
+	}
+	nonce, ok := pow.Solve(parts[0], difficulty, 1<<27)
+	if !ok {
+		return nil, fmt.Errorf("failed to solve PoW at difficulty %d", difficulty)
+	}
+	solBody := fmt.Sprintf(`{"bucket":%d,"nonce":%q}`, bucket, nonce)
+	powPost := func() map[string]any {
+		pr, e := do(utls.HelloFirefox_Auto, "POST", "/api/pow",
+			map[string]string{"User-Agent": chromeUA, "Content-Type": "application/json"}, solBody, cookie)
+		if e != nil {
+			return map[string]any{"error": e.Error()}
+		}
+		var v map[string]any
+		_ = json.Unmarshal(pr.body, &v)
+		if v == nil {
+			v = map[string]any{}
+		}
+		return v
+	}
+	// First submit: instant -> reveals the native solver -> expected too-fast DENY.
+	first := powPost()
+	// Wait past the browser-plausible floor for this difficulty, then resubmit the SAME nonce.
+	// plausibleBrowserSolve = 2^d / 3e6 s; add margin so elapsed since issuance clears it.
+	floor := time.Duration(float64(uint64(1)<<uint(difficulty)) / 3_000_000.0 * float64(time.Second))
+	time.Sleep(floor + 250*time.Millisecond)
+	second := powPost()
+	second["firstVerdict"] = first["verdict"]
+	second["powDifficulty"] = difficulty
+	second["laundered"] = second["ok"] == true || second["verdict"] == "ALLOW"
+	return second, nil
 }

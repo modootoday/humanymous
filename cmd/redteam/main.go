@@ -73,6 +73,10 @@ func main() {
 		v, err = privacyEvasion()
 	case "signal-forgery":
 		v, err = signalForgery()
+	case "pow-fast-solve":
+		v, err = powFastSolve()
+	case "pow-launder":
+		v, err = powLaunder()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":

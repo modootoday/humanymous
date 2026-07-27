@@ -20,6 +20,7 @@ type sessionState struct {
 	powSolved    bool      // SoT-13: session has solved a proof-of-work challenge
 	powIssued    time.Time // when the current PoW challenge was issued (solve-time)
 	powDiff      int       // difficulty the current PoW challenge was ISSUED at (verify against this)
+	powTooFast   bool      // SoT-13/15: session ever produced a super-human (too-fast) valid solve
 	ritBootstrap bool      // SoT-07: the one-shot tokenless RIT grace has been consumed
 	updated      time.Time
 }
@@ -158,6 +159,28 @@ func (s *Store) PowIssuedAt(id string) time.Time {
 		return st.powIssued
 	}
 	return time.Time{}
+}
+
+// SetPowTooFast records that a session produced a valid PoW solution faster than any
+// browser could (l7.pow.too_fast; SoT-13/15). The observation is PERMANENT: it is never
+// cleared on solve, so a native/GPU solver that revealed itself once cannot later launder
+// its too-fast DENY into the pow.solved trust upgrade by resubmitting after a delay.
+func (s *Store) SetPowTooFast(id string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if st, ok := s.m[id]; ok {
+		st.powTooFast = true
+	}
+}
+
+// PowTooFast reports whether a session ever produced a super-human (too-fast) PoW solve.
+func (s *Store) PowTooFast(id string) bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if st, ok := s.m[id]; ok {
+		return st.powTooFast
+	}
+	return false
 }
 
 // PowSolved reports whether a session has solved a PoW challenge.
