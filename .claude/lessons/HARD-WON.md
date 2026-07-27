@@ -118,6 +118,17 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     connection-exhaustion" bounded per-connection DURATION, not CONCURRENCY — `Accept()` took
     unlimited concurrent slowloris connections. Read what the code enforces, not what it says;
     a concurrency cap (`netutil.LimitListener`) is the missing half.
+21g. **An "unknown" classification under a KNOWN-only claim is a tell, not a pass** (R3,
+    web-researched 2026 h2 protocol-split). `EngineFromH2` returned "unknown" for a Go h2
+    frame layout and `engineConsistent` treated unknown as no-evidence → a Chrome-UA client
+    with a library HTTP/2 fingerprint reached ALLOW. A real browser ALWAYS has a KNOWN h2
+    fingerprint, so browser-UA + unknown-h2 is suspicious. Watch for stale classifier
+    heuristics (the Go-detection check `hasMaxConc && m[4]==65535` never matched modern Go).
+21h. **When the only fix is verdict-altering, split it: freeze-safe residual now, enforcement
+    on freeze-spend** (R3). A weight-0 score-exempt signal (referenced by no hard rule)
+    surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
+    construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
+    is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
 
 ## Git contention (multi-session)
 
