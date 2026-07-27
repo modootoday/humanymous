@@ -115,6 +115,9 @@ test('compact kernel smoke cannot silently expand into the full runner', async (
   assert.match(smoke, /sbom: false/);
   assert.match(smoke, /test "\$bytes" -le 50331648/);
   assert.match(smoke, /test "\$delta" -le 536870912/);
+  // A budget that fails without reporting what it measured cannot be acted on.
+  assert.match(smoke, /echo "smoke_image_bytes=\$bytes"/);
+  assert.match(smoke, /echo "smoke_storage_delta_bytes=\$delta"/);
   assert.match(
     smoke,
     /cache-to: type=gha,mode=min,scope=external-input-kernel-smoke/,
@@ -159,7 +162,7 @@ test('detector job bounds disk growth and artifact upload inputs', async () => {
     buildPhase.indexOf('docker buildx prune --all --force') <
       buildPhase.indexOf('build bots'),
   );
-  assert.match(buildPhase, /test "\$peak_delta" -le 2684354560/);
+  assert.match(buildPhase, /test "\$peak_delta" -le 6442450944/);
   assert.doesNotMatch(buildPhase, /--profile (gate-test|pass-test|swarm)/);
   assert.match(detector, /docker buildx prune --all --force/);
   assert.match(detector, /docker image prune --all --force/);
@@ -167,7 +170,14 @@ test('detector job bounds disk growth and artifact upload inputs', async () => {
     (detector.match(/test "\$delta" -le 1879048192/g) || []).length,
     2,
   );
-  assert.doesNotMatch(detector, /6442450944/);
+  // The final budget runs after a full image prune that also removes images the
+  // runner shipped with, so its retained delta is legitimately negative and must
+  // not carry a lower bound (run 30239251233: final_delta_bytes=-1784422400).
+  // The earlier reclaim step prunes only this job's buildx cache and keeps its
+  // lower bound, so this is scoped to the final step rather than the whole job.
+  const finalBudget = detector.slice(final, artifact);
+  assert.match(finalBudget, /test "\$delta" -le 1879048192/);
+  assert.doesNotMatch(finalBudget, /test "\$delta" -ge 0/);
   assert.match(
     detector,
     /while ! test -e "\$HM_STORAGE_DONE"/,
@@ -175,7 +185,7 @@ test('detector job bounds disk growth and artifact upload inputs', async () => {
   assert.match(detector, /sleep 0\.25/);
   assert.match(detector, /whole_job_peak_delta_bytes/);
   assert.equal(
-    (detector.match(/test "\$peak_delta" -le 2684354560/g) || []).length,
+    (detector.match(/test "\$peak_delta" -le 6442450944/g) || []).length,
     2,
   );
   assert.match(detector, /test "\$bytes" -le 4194304/);

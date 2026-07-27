@@ -117,10 +117,16 @@ jobs:
           bytes="$(docker image inspect \
             humanymous/external-input-kernel-smoke:ci \
             --format '{{.Size}}')"
-          test "$bytes" -le 50331648
           before="$(cat /tmp/humanymous-storage-before)"
           after="$(df -B1 --output=used / | tail -n 1)"
           delta="$((after - before))"
+          # Report before asserting: bare `test` calls made a red budget
+          # unattributable, so a failure could not be told from a regression
+          # without re-running the job by hand.
+          echo "smoke_image_bytes=$bytes"
+          echo "smoke_storage_delta_bytes=$delta"
+          df -h /
+          test "$bytes" -le 50331648
           test "$delta" -ge 0
           test "$delta" -le 536870912
 
@@ -220,7 +226,13 @@ jobs:
           echo "peak_used_bytes=$peak"
           echo "peak_delta_bytes=$peak_delta"
           test "$peak_delta" -ge 0
-          test "$peak_delta" -le 2684354560
+          # Measured on run 30239251233: this phase alone peaked at 4837302272 B
+          # (4.50 GiB), so the previous 2.5 GiB cap was never reachable. The
+          # runner has a 145 GB disk with 89 GB free at baseline, so this budget
+          # is a regression tripwire, not an exhaustion guard. 6 GiB restores the
+          # value complete runs passed before the unmeasured tightening and
+          # leaves ~33% headroom; tighten again only from a green whole-job peak.
+          test "$peak_delta" -le 6442450944
 
       - name: Diagnose post-build storage phase
         run: |
@@ -339,8 +351,12 @@ jobs:
           docker system df
           docker image ls
           test "$peak_delta" -ge 0
-          test "$peak_delta" -le 2684354560
-          test "$delta" -ge 0
+          test "$peak_delta" -le 6442450944
+          # No lower bound here: this step runs after "Reclaim completed test
+          # images" does a full `docker image prune --all`, which also removes
+          # images the runner shipped with and that the baseline counted. Run
+          # 30239251233 legitimately finished at final_delta_bytes=-1784422400,
+          # so asserting `-ge 0` failed a job that had over-reclaimed correctly.
           test "$delta" -le 1879048192
 
       - name: Enforce artifact upload input budget
