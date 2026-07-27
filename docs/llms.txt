@@ -30,6 +30,7 @@ The project raises the cost of commodity automation; it does not prove that a ca
 - [Observability and SIEM integration](https://humanymous.net/how-to/observability-siem.html)
 - [A guided tour of the Detection Observatory](https://humanymous.net/how-to/observatory-tour.html)
 - [Run the standalone detection engine (dev)](https://humanymous.net/how-to/run-detection-engine.html)
+- [Run the Virtual USB laboratory](https://humanymous.net/how-to/run-virtual-usb-lab.html)
 - [Self-validation: red-team your own Gate deployment (defensive-only)](https://humanymous.net/how-to/self-validation-red-team.html)
 - [Integration Troubleshooting & FAQ](https://humanymous.net/how-to/troubleshooting-faq.html)
 - [Upgrade, Migration & Zero-Downtime](https://humanymous.net/how-to/upgrade-migration.html)
@@ -68,7 +69,7 @@ The project raises the cost of commodity automation; it does not prove that a ca
 - [The Red catalog: architecture of the bundled attack profiles and the raw-protocol client](https://humanymous.net/explanation/red-catalog-architecture.html)
 - [humanymous — transparency report](https://humanymous.net/explanation/transparency-report.html)
 - [What Gate is (and is not): a technical overview](https://humanymous.net/explanation/what-gate-is.html)
-- [Where Gate fits: vs WAF, CDN bot manager, and CAPTCHA](https://humanymous.net/explanation/where-gate-fits.html)
+- [Where Gate fits alongside adjacent controls](https://humanymous.net/explanation/where-gate-fits.html)
 - [Which piece am I using? Detection engine, Gate proxy, and the Observatory](https://humanymous.net/explanation/which-piece-am-i-using.html)
 - [Will this break my app? Safety, fail-open, and monitor-first rollout](https://humanymous.net/explanation/will-this-break-my-app.html)
 

@@ -9,7 +9,7 @@
     - { title: "Operator", url: "/start-here/operator.html" }
     - { title: "Evaluator", url: "/start-here/evaluator.html" }
     - { title: "Developer", url: "/start-here/developer.html" }
-    - { title: "Compliance / DPO", url: "/start-here/compliance-dpo.html" }
+    - { title: "Data protection", url: "/start-here/compliance-dpo.html" }
 
 - label: "Tutorials"
   items:
@@ -18,15 +18,16 @@
 - label: "How-to"
   items:
     - { title: "Deployment & policy operations", url: "/how-to/deployment-policy-operations.html" }
-    - { title: "HTTPS / TLS certificates", url: "/how-to/https-tls-certificates.html" }
+    - { title: "Encrypted-connection certificates", url: "/how-to/https-tls-certificates.html" }
     - { title: "Verify a released image", url: "/how-to/verify-the-image.html" }
     - { title: "Configure attested routes", url: "/how-to/configure-attested-routes.html" }
     - { title: "Configure credential verifiers", url: "/how-to/configure-credential-verifiers.html" }
     - { title: "Cut a release", url: "/how-to/cut-a-release.html" }
     - { title: "Key management & recovery", url: "/how-to/key-management.html" }
     - { title: "Verify the audit log", url: "/how-to/verify-audit-log.html" }
-    - { title: "Observability & SIEM", url: "/how-to/observability-siem.html" }
+    - { title: "Observability & security-event export", url: "/how-to/observability-siem.html" }
     - { title: "Self-validation (red-team)", url: "/how-to/self-validation-red-team.html" }
+    - { title: "Virtual USB laboratory", url: "/how-to/run-virtual-usb-lab.html" }
     - { title: "Run the detection engine", url: "/how-to/run-detection-engine.html" }
     - { title: "Detection Observatory", url: "/how-to/detection-observatory.html" }
     - { title: "Ledger console tour", url: "/how-to/audit-console-tour.html" }
@@ -35,15 +36,15 @@
 
 - label: "Reference"
   items:
-    - { title: "CLI, config & policy", url: "/reference/cli-config-policy.html" }
-    - { title: "Hard rules & verdicts", url: "/reference/hard-rules-verdicts.html" }
+    - { title: "Command line, config & policy", url: "/reference/cli-config-policy.html" }
+    - { title: "Enforcement rules & verdicts", url: "/reference/hard-rules-verdicts.html" }
     - { title: "Gate → origin request contract", url: "/reference/gate-origin-contract.html" }
     - { title: "Supported topologies", url: "/reference/supported-topologies.html" }
     - { title: "Install requirements", url: "/reference/install-requirements.html" }
     - { title: "Red-team catalog", url: "/reference/red-team-catalog.html" }
     - { title: "Production vs reference", url: "/reference/production-vs-reference.html" }
     - { title: "Deployment cost & latency", url: "/reference/deployment-cost-latency.html" }
-    - { title: "RBAC & separation of duties", url: "/reference/rbac-separation-of-duties.html" }
+    - { title: "Access roles & separation of duties", url: "/reference/rbac-separation-of-duties.html" }
     - { title: "Standards mapping", url: "/reference/standards-mapping.html" }
     - { title: "Data-processing inventory", url: "/reference/data-processing-inventory.html" }
     - { title: "Security audit", url: "/reference/security-audit.html" }
@@ -71,6 +72,6 @@
     - { title: "Kill switch & bans", url: "/runbooks/kill-switch-and-bans.html" }
     - { title: "Erasure / crypto-shred", url: "/runbooks/erasure-crypto-shred.html" }
     - { title: "On-call quick reference", url: "/reference/on-call-quick-reference.html" }
-    - { title: "FAQ", url: "/help/faq.html" }
+    - { title: "Questions and answers", url: "/help/faq.html" }
     - { title: "Why am I seeing this?", url: "/help/why-am-i-seeing-this.html" }
     - { title: "Challenge accessibility", url: "/help/challenge-accessibility.html" }

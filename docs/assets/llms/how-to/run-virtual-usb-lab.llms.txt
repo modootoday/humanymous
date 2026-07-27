@@ -1,0 +1,216 @@
+# Run the Virtual USB laboratory
+
+Source: https://humanymous.net/how-to/run-virtual-usb-lab.html
+Project: humanymous — defensive anti-bot / browser-automation detection (Apache-2.0).
+
+---
+
+# Run the Virtual USB laboratory
+
+**Diátaxis quadrant:** How-to.  
+**Audience:** operators and evaluators running an isolated test machine they own.
+
+> **Important:** This is a reference laboratory for an authorized deployment. It
+> creates a Universal Serial Bus (USB) device in a Linux kernel with its virtual
+> host-controller driver; it does not use or attest physical USB hardware. A
+> complete result does not prove human input,
+> electrical transport, an external cable, independent firmware, or general
+> support for every input method.
+
+## Implementation status
+
+The accepted architecture uses an outer Docker Compose project to start and
+destroy a pinned QEMU micro virtual machine. That machine boots its own Linux
+kernel and pinned Docker Engine. Inner Compose projects run the detector, stock
+browsers, controller, observers, Virtual USB lifecycle, and evaluators inside the
+guest. The outer Docker host's kernel is not the measurement kernel.
+
+This independent-kernel runner is not implemented or measured yet. The repository's
+current Virtual USB script still expects a prepared native Linux host and can end
+in `UNAVAILABLE`; that path is now diagnostic only. Existing Chromium virtual
+control pilots cover the first two modes and observed a coarse framebuffer
+`CHALLENGE`, but they do not complete the Virtual USB modes and do not yet include
+the required server-authoritative score receipt. Do not report an 8/8 English
+ladder or 6/6 input-method result until the QEMU runner produces and validates
+those artifacts.
+
+The target QEMU service has no network interface, forwarded port, host input or
+display device, Docker socket, shared host filesystem, or QEMU keyboard/mouse
+input channel. A read-only seed image carries the fixed run manifest and preloaded
+inner images. Separate bounded serial channels carry one nonce-bound run command
+and the terminal result. A fresh copy-on-write guest disk is removed after every
+ladder.
+
+## What the run measures
+
+The English ladder runs first:
+
+1. virtual control with framebuffer observation;
+2. read-only document observation plus virtual control;
+3. framebuffer observation plus kernel-emulated USB control;
+4. read-only document observation plus kernel-emulated USB control.
+
+Chromium runs all four modes, followed by Firefox. Every mode uses a fresh
+browser profile and inner Compose project. Modes 3 and 4 must change the page
+through the guest kernel's Virtual USB gadget, Human Interface Device driver, and
+input-event path. QEMU keyboard, mouse, tablet, monitor input, native-host
+input-event devices, and schema-only receipts cannot substitute for a measured
+mode.
+
+For every English mode, the browser must load and instantiate the production
+WebAssembly detector, submit the normal collection report, and receive the one
+verdict calculated by Core. After interaction ends, a separate evaluator binds
+Core's risk score and verdict for that session to the coarse framebuffer verdict.
+It does not calculate a score or expose detector data to the controller. A missing
+WebAssembly signal, mismatched session, recomputed score, or different verdict
+invalidates the run.
+
+After the English ladder completes, a separate input-method axis sends only
+allowlisted United States keyboard-layout Human Interface Device (HID) key
+positions through the emulated USB device. Korean, Simplified Chinese, and
+Japanese run once in Chromium and once in Firefox. The pinned Intelligent Input
+Bus (IBus) engine creates the Unicode text; USB HID reports carry key positions,
+not Unicode.
+
+The input-method result requires a visible native-composition cue and a separate
+committed-value cue from the fixed local fixture. The input actor issues only
+the fixed pointer and key sequence and cannot write a framebuffer verdict. A
+separate read-only framebuffer observer records the preedit cue before the
+committed-value cue; it has no input or browser-document channel. Neither
+process receives the expected text, clipboard access, an input-method control
+socket, or a direct-Unicode command. The final receipt binds the actor, observer,
+fixed input policy, emulated-device reports, and exact keyboard press/release
+sequence. These six results are not averaged with detector verdicts.
+
+Each input-method run also records the selected engine, font, and keyboard-data
+package versions and content inventories. Its private session bus and
+input-method state live only in the browser container's temporary filesystem.
+The run fails unless the engine and its descendants stop and those state
+directories are removed without residue.
+
+## Provision pinned local images
+
+Provisioning is separate from a measured run. The target provisioning command
+builds the project-owned images plus the pinned QEMU image, guest kernel,
+initial memory filesystem, immutable base disk, guest Docker Engine and Compose
+plugin, and preloaded inner-image archive. It records every exact digest. A local
+build does not become canonical merely because it was signed. Canonical catalog
+generation additionally requires the release-produced attestation bundle and a
+private key matching the public verification key pinned in the verifier image.
+Do not commit the private key.
+
+```sh
+bash scripts/external-input-vusb-provision.sh
+```
+
+The measured command uses `pull_policy: never`. A missing approved guest bundle or
+preloaded image may return `UNAVAILABLE` before guest boot, but that status cannot
+complete Modes 3 or 4 or a canonical baseline. Missing hardware acceleration alone
+selects the separately keyed QEMU software-translation profile; it is not a final
+unavailable result. A digest, signature, profile, or policy mismatch is rejected
+before guest boot or kernel mutation. The catalog cannot replace its own
+verification key.
+
+## Run the canonical ladder
+
+Use the allowlisted reference profile:
+
+```sh
+bash scripts/external-input-vusb-docker.sh --model reference-relative-v1
+```
+
+This remains the intended single entrypoint after the QEMU runner is implemented.
+At present it invokes the legacy native-host diagnostic path and is not completion
+authority.
+
+The target supervisor runs Chromium modes 1 through 4, Firefox modes 1 through 4,
+then the six language/browser input-method cells. It does not retry a failed
+candidate selection or keep only successful attempts.
+
+Results are written below
+`deployments/artifacts/external-input-vusb/<run-id>/`. The bounded
+`ladder-result.json` summary separates:
+
+- English modes measured, defended outcomes, and honest residuals;
+- input-method cells measured and passed;
+- cleanup or purity failures.
+
+Exit status `0` means both axes and terminal cleanup completed. Status `1` means
+a test, purity check, or safety assertion failed, `2` means the command or
+admission configuration was invalid, `3` means the required host capability was
+unavailable, and `4` means a comparison result was intentionally non-canonical.
+
+> **Warning:** A safety abort means the disposable machine may retain USB gadget,
+> input-method, or Compose state. Do not start another measured run on that
+> machine. Inspect the receipts, then discard or restore the machine.
+
+## Show the status in Ledger
+
+Mount the artifact root read-only into the Gate container or process and set the
+result directory explicitly:
+
+```text
+-virtual-usb-results-dir /results/external-input-vusb
+```
+
+The equivalent environment variable is:
+
+```text
+HMN_VIRTUAL_USB_RESULTS_DIR=/results/external-input-vusb
+```
+
+Open Ledger and select **Virtual USB Lab**. The view is disabled by default and
+accepts only bounded summaries with the exact English and input-method schemas.
+This view performs schema checks only; it does not authenticate the artifact and
+labels it as an unverified laboratory summary. It does not read raw device paths,
+reports, typed text, screenshots, or detector signals, and it never recalculates
+a score.
+
+The acceptance target is shown separately. It is not the current measured status:
+
+```text
+English control ladder target: 8/8
+Input-method composition target: 6/6
+Physical USB evidence: not present
+```
+
+## Interpret incomplete results
+
+- `UNAVAILABLE` before guest boot means the pinned QEMU or guest bundle, image,
+  browser, pinned document observer, input method, font, or required Docker
+  capability was absent. It leaves the canonical ladder incomplete.
+- `PURITY_FAIL` means a forbidden input path, host state, stale profile,
+  direct-Unicode capability, or evidence mismatch was found.
+- `FAIL` means the measured task or composition did not complete in the pinned
+  environment.
+- `SAFETY_ABORT` means input neutralization or residue-free cleanup was not
+  proven.
+- A detector `ALLOW` result is retained as an honest residual. It is not rewritten
+  as a defended outcome.
+
+Firefox Extended Support Release uses the project-owned, hash-pinned observer
+from its distribution extension directory. The disposable image disables
+extension-signature enforcement only for this fixed laboratory extension, using
+the browser's supported enterprise configuration. This changes the extension
+surface and is not presented as an extension-free browser baseline.
+
+The two physical USB modes remain declared in the external input control ladder
+but are not part of this kernel-emulated result. They report unavailable until a
+separate, independently attested device, firmware identity, physical path,
+exclusive input seat, and safety controls are supplied.
+
+## Verify before the independent-kernel runner is available
+
+You may still run schema, gateway, profile, outer/inner Compose, and receipt
+contract tests. Those tests are useful implementation checks but cannot satisfy
+the kernel-emulated USB ladder because they do not prove QEMU booted the pinned
+independent Linux kernel, enumeration passed through that guest's virtual
+host-controller and Human Interface Device input path, Core produced the real
+WebAssembly-backed score, or inner and outer cleanup completed.
+
+## Related
+
+- [Self-validation: red-team your own deployment](self-validation-red-team.md)
+- [Detection Observatory](detection-observatory.md)
+- [Supported topologies](../reference/supported-topologies.md)
+- [Glossary](../reference/glossary.md)

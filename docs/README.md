@@ -5,7 +5,7 @@ description: "Documentation for the humanymous Core detection engine, Gate rever
 
 # humanymous Gate documentation
 
-**Diátaxis role:** Navigation hub.
+**Diátaxis quadrant:** Navigation hub.
 **Audience:** everyone arriving for the first time.
 
 humanymous Gate is an Apache-2.0 reference implementation for reverse-proxy enforcement, request metering, and tamper-evident operational audit. The related Core detection engine is the fuller development and measurement surface. Core and Gate share scoring code but do not collect identical evidence.
