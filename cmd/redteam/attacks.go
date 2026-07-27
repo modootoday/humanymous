@@ -439,8 +439,9 @@ func openvpnExit() (map[string]any, error) {
 }
 
 // torExit models Tor Browser behind a Tor circuit residual:
-//   1) ≥3-hop X-Forwarded-For (entry/middle/exit style) → l5.proxy.tor_circuit → HR-24
-//   2) same Tor-Browser-shaped fingerprint across ≥3 distinct exit subnets → HR-19
+//  1. ≥3-hop X-Forwarded-For (entry/middle/exit style) → l5.proxy.tor_circuit → HR-24
+//  2. same Tor-Browser-shaped fingerprint across ≥3 distinct exit subnets → HR-19
+//
 // Real Tor exit lists wire via SetTorExitCIDRs → l5.ip.tor_exit (also HR-24).
 // Firefox uTLS + Tor Browser UA so the path is not a Chrome HTTP parrot.
 func torExit() (map[string]any, error) {

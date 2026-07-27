@@ -224,7 +224,7 @@ func netClassMode(netPolicy map[string]string, class string) string {
 	if m, ok := netPolicy[class]; ok && m != "" {
 		return m
 	}
-	// Partial overlay: classes not listed stay enforce for correlation, monitor for others? 
+	// Partial overlay: classes not listed stay enforce for correlation, monitor for others?
 	// Spec: empty netPolicy map means code defaults. Non-empty map with missing key:
 	// treat as monitor (operator opted into explicit NET-POLICY surface).
 	if class == "net.correlation" {

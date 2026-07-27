@@ -69,13 +69,13 @@ func (n *nonceStore) consume(tok string) bool {
 var launchProfiles = map[string]bool{
 	"human.mjs": true, "http_client.mjs": true, "tls_parrot.mjs": true,
 	"curl_impersonate_chrome.mjs": true, "curl_impersonate_chrome99_android.mjs": true,
-	"selenium.mjs": true,
+	"selenium.mjs":  true,
 	"puppeteer.mjs": true, "puppeteer_stealth.mjs": true, "playwright_plain.mjs": true,
 	"playwright_stealth.mjs": true, "undetected.mjs": true, "patchright.mjs": true,
 	"rebrowser_cdp_stripped.mjs": true, "mobile_ua_desktop_profile.mjs": true,
 	"near_ceiling_audio_24k.mjs": true, "near_ceiling_no_widevine.mjs": true,
 	"browser_use_cdp.mjs": true,
-	"direct_cdp.mjs": true, "nodriver.mjs": true, "xvfb_headful.mjs": true, "antidetect.mjs": true,
+	"direct_cdp.mjs":      true, "nodriver.mjs": true, "xvfb_headful.mjs": true, "antidetect.mjs": true,
 	"camoufox.mjs": true, "tls_static.mjs": true, "tls_rotate.mjs": true, "ua_rotate.mjs": true,
 	"rit_replay.mjs": true, "rit_tamper.mjs": true, "video_scrape.mjs": true, "watermark_strip.mjs": true,
 	"ai_agent.mjs": true, "distributed.mjs": true, "xff_spoof.mjs": true, "flood.mjs": true, "rapid_reset.mjs": true,
@@ -94,6 +94,21 @@ var launchProfiles = map[string]bool{
 	"behavior_teleport_click.mjs": true, "behavior_bezier_mouse.mjs": true, "behavior_fixed_typing.mjs": true,
 	"ai_burst_silence.mjs": true, "ai_full_cadence.mjs": true, "adv_webgpu_mismatch.mjs": true,
 	"headless_ua_token.mjs": true, "native_coherent_ceiling.mjs": true,
+}
+
+// dockerOnlyLaunchProfiles are catalog entries whose execution contract requires
+// the isolated multi-container topology from SoT-41. They are deliberately not
+// members of launchProfiles: the local launcher has neither a Docker socket nor
+// authority to attach physical USB devices. Recognizing them separately lets the
+// API fail honestly instead of reporting "unknown profile" or trying to spawn a
+// single-process substitute.
+var dockerOnlyLaunchProfiles = map[string]bool{
+	"external_input_virtual":     true,
+	"external_input_dom_virtual": true,
+	"external_input_usb":         true,
+	"external_input_dom_usb":     true,
+	"external_input_vusb":        true,
+	"external_input_dom_vusb":    true,
 }
 
 // realRunProfile shells the thin per-profile wrapper against the local Blue. The
@@ -144,6 +159,10 @@ func (a *app) handlePlaygroundLaunch(w http.ResponseWriter, r *http.Request) {
 	}
 	if !a.nonces.consume(req.Nonce) {
 		http.Error(w, "invalid or expired launch nonce", http.StatusForbidden)
+		return
+	}
+	if dockerOnlyLaunchProfiles[req.ProfileID] {
+		http.Error(w, "Docker-only profile — run it through the isolated external-input harness", http.StatusConflict)
 		return
 	}
 	if !launchProfiles[req.ProfileID] {

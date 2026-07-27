@@ -37,10 +37,10 @@ type ja4Fan struct {
 
 // Registry tracks fingerprint -> {subnets, sessions} and JA4 fan-out for fp-churn.
 type Registry struct {
-	mu    sync.Mutex
-	m     map[string]*entry
-	ja4m  map[string]*ja4Fan
-	ttl   time.Duration
+	mu   sync.Mutex
+	m    map[string]*entry
+	ja4m map[string]*ja4Fan
+	ttl  time.Duration
 }
 
 // New returns a correlation registry with the given TTL.

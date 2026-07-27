@@ -14,9 +14,9 @@ import (
 // Captures today's Score() outputs for fixed SessionReports so a silent score
 // move fails CI unless the fixture is updated deliberately (with a ! commit).
 type freezeGolden struct {
-	ID     string               `json:"id"`
+	ID     string                `json:"id"`
 	Report signals.SessionReport `json:"report"`
-	Want   freezeWant           `json:"want"`
+	Want   freezeWant            `json:"want"`
 }
 
 type freezeWant struct {

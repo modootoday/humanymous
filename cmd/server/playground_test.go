@@ -214,6 +214,32 @@ func TestLaunchRejectsTargetOverrideAndUnknownProfile(t *testing.T) {
 	}
 }
 
+// External-input profiles require the SoT-41 multi-container topology. The local
+// launcher recognizes them for an honest error but must never call runProfile.
+func TestLaunchRejectsDockerOnlyProfilesWithoutSpawning(t *testing.T) {
+	a := newTestApp(t, true)
+	called := false
+	a.runProfile = func(ctx context.Context, profile, base string) ([]byte, error) {
+		called = true
+		return []byte("{}"), nil
+	}
+
+	for profile := range dockerOnlyLaunchProfiles {
+		n := a.nonces.issue()
+		rec := launchPost(a, `{"profileId":"`+profile+`","nonce":"`+n+`"}`)
+		if rec.Code != http.StatusConflict {
+			t.Errorf("%s: Docker-only launch status = %d, want %d (%s)",
+				profile, rec.Code, http.StatusConflict, rec.Body.String())
+		}
+		if !strings.Contains(rec.Body.String(), "Docker-only") {
+			t.Errorf("%s: response does not explain Docker-only execution: %q", profile, rec.Body.String())
+		}
+	}
+	if called {
+		t.Fatal("Docker-only profile reached runProfile; local spawning must be impossible")
+	}
+}
+
 // Launches are serialized: a second launch while one is in flight gets 429.
 func TestLaunchSerialized(t *testing.T) {
 	a := newTestApp(t, true)

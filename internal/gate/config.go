@@ -93,6 +93,10 @@ type Config struct {
 	// HSTS adds a Strict-Transport-Security header to edge responses. Off by default —
 	// enabling it in dev behind the self-signed cert would pin a bad cert in browsers.
 	HSTS bool
+	// VirtualUSBResultsDir enables a read-only operator view over bounded,
+	// terminal virtual-USB ladder summaries. Empty disables the view. The
+	// directory is never used by scoring, enforcement, or a mutation endpoint.
+	VirtualUSBResultsDir string
 }
 
 // DefaultCredFanoutCap bounds a single WebAuthn credential's /24 fan-out before its

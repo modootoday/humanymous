@@ -36,11 +36,11 @@ type HeaderInfo struct {
 	Forwarded       string // RFC 7239 Forwarded
 	// Client-identity laundering headers a browser never sends to origin.
 	// Scrapers forge these to impersonate a CDN/edge-resolved client IP.
-	CFConnectingIP         string // CF-Connecting-IP
-	TrueClientIP           string // True-Client-IP (Akamai)
-	XClientIP              string // X-Client-IP
-	XOriginalForwardedFor  string // X-Original-Forwarded-For
-	XBlueCoatVia           string // commercial proxy residual
+	CFConnectingIP        string // CF-Connecting-IP
+	TrueClientIP          string // True-Client-IP (Akamai)
+	XClientIP             string // X-Client-IP
+	XOriginalForwardedFor string // X-Original-Forwarded-For
+	XBlueCoatVia          string // commercial proxy residual
 }
 
 // SecFetchPresent reports whether any sec-fetch-* header is present.

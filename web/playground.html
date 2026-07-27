@@ -50,6 +50,9 @@
   .rcard.human .rh{color:var(--allow);border-color:rgba(63,185,80,.3)}
   .rcard .re{font-size:10px;color:var(--faint);margin-top:2px}
   .launchbar{display:flex;gap:8px;margin-top:12px;align-items:center}
+  .rcard.docker-only{cursor:default;border-style:dashed;background:#111a24}
+  .rcard.docker-only:hover{border-color:var(--line)}
+  .docker-badge{color:var(--challenge);font:700 9px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase}
   .btn{font-family:var(--mono);font-size:12px;border:0;border-radius:7px;padding:8px 12px;cursor:pointer;font-weight:600}
   .btn.go{background:var(--live);color:#04252b;flex:1}
   .btn.go:disabled{opacity:.5;cursor:not-allowed}
@@ -185,9 +188,9 @@
       </div>
 
       <div class="legend">
-        <span class="lg-deny"><i></i>■ BOT</span>
-        <span class="lg-chal"><i></i>◆ SUSPICIOUS</span>
-        <span class="lg-allow"><i></i>● OK</span>
+        <span class="lg-deny"><i></i>■ evidence associated with automation</span>
+        <span class="lg-chal"><i></i>◆ evidence requiring review</span>
+        <span class="lg-allow"><i></i>● no raised signal</span>
         <span>◻ inset = server-observed evidence</span>
       </div>
 
@@ -275,7 +278,7 @@ import { createFeed, prependRows } from '/static/js/feed.js';
       ["stacked_proxy_vpn.mjs","stacked proxy and VPN","network residual","forward proxy through a virtual private network"],
       ["socks_exit_hop.mjs","SOCKS exit","network residual","SOCKS proxy exit hop"],
       ["flood.mjs","request flood","request-rate protection","rapid application requests"],
-      ["rapid_reset.mjs","HTTP/2 Rapid Reset","protocol flood protection","Rapid Reset frames"],
+      ["rapid_reset.mjs","protocol Rapid Reset","protocol flood protection","Hypertext Transfer Protocol version 2 Rapid Reset frames"],
       ["near_ceiling_audio_24k.mjs","audio residual","advanced browser residual","unusual audio sample rate near the coherent-browser boundary"],
       ["near_ceiling_no_widevine.mjs","media residual","Chromium-container residual","Chrome claim without expected media capabilities"],
       ["behavior_untrusted.mjs","untrusted events","interaction residual","synthetic browser events"],
@@ -291,6 +294,14 @@ import { createFeed, prependRows } from '/static/js/feed.js';
       ["native_coherent_ceiling.mjs","coherent native browser","documented boundary","internally consistent real-browser automation"]
     ]]
   ];
+  var DOCKER_ONLY_CATALOG=[
+    {id:"external_input_virtual",executionKind:"docker-external-input",name:"virtual input control",expect:"Docker only",evidence:"framebuffer observation with virtual pointer and keyboard input"},
+    {id:"external_input_dom_virtual",executionKind:"docker-external-input",name:"document observation plus virtual input",expect:"Docker only",evidence:"read-only Document Object Model observation with virtual pointer and keyboard input"},
+    {id:"external_input_usb",executionKind:"docker-external-input",name:"physical Universal Serial Bus input control",expect:"Unavailable until hardware attestation",evidence:"declared physical-input mode; no physical device, cable, firmware, or hardware attestation is bundled"},
+    {id:"external_input_dom_usb",executionKind:"docker-external-input",name:"document observation plus physical Universal Serial Bus input",expect:"Unavailable until hardware attestation",evidence:"declared read-only document-observation mode; no physical hardware evidence is bundled"},
+    {id:"external_input_vusb",executionKind:"docker-external-input",name:"kernel-emulated Universal Serial Bus input",expect:"Docker only",evidence:"independent framebuffer observation with a Linux kernel-emulated keyboard and pointer"},
+    {id:"external_input_dom_vusb",executionKind:"docker-external-input",name:"document observation plus kernel-emulated Universal Serial Bus input",expect:"Docker only",evidence:"read-only Document Object Model observation with a Linux kernel-emulated keyboard and pointer"}
+  ];
   var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});};
   var RULE_LABELS={
     "HR-1":"automation artifact","HR-2":"browser and network-engine mismatch",
@@ -303,7 +314,7 @@ import { createFeed, prependRows } from '/static/js/feed.js';
     "HR-15":"multi-axis identity rotation","HR-16":"request-body integrity failure",
     "HR-17":"missing or replayed request-integrity token","HR-18":"browser claim without execution evidence",
     "HR-19":"cross-session correlation","HR-20":"automated-browser interaction signature",
-    "HR-21":"HTTP/2 denial-of-service protection","HR-22":"advanced browser residual",
+    "HR-21":"Hypertext Transfer Protocol version 2 denial-of-service protection","HR-22":"advanced browser residual",
     "HR-23":"Chromium-container residual","HR-24":"network residual policy"
   };
   var ruleLabel=function(id){return RULE_LABELS[id]||"enforcement rule";};
@@ -316,7 +327,7 @@ import { createFeed, prependRows } from '/static/js/feed.js';
   // meta
   fetch("/playground/meta").then(function(r){return r.json();}).then(function(m){
     var p=m.policy;
-    $("metaline").textContent="policy "+p.version+" · challenge≥"+p.challengeAt+" · deny≥"+p.denyAt+" · cap "+p.layerCap;
+    $("metaline").textContent="policy "+p.version+" · challenge≥"+p.challengeAt+" · deny≥"+p.denyAt+" · per-stage maximum "+p.layerCap;
   }).catch(function(){});
 
   // build launcher catalog
@@ -329,8 +340,12 @@ import { createFeed, prependRows } from '/static/js/feed.js';
         html+="<div class='rcard"+human+"' role='button' tabindex='0' data-p='"+esc(p[0])+"'><div class='rt'><span class='rn'>"+esc(p[1])+"</span><span class='rh'>"+esc(p[2])+"</span></div><div class='re'>"+esc(p[3])+"</div></div>";
       });
     });
+    html+="<div class='grp'>external input ladder</div>";
+    DOCKER_ONLY_CATALOG.forEach(function(p){
+      html+="<div class='rcard docker-only' role='note' aria-label='"+esc(p.name)+", Docker-only'><div class='rt'><span class='rn'>"+esc(p.name)+"</span><span class='docker-badge'>"+esc(p.expect)+"</span></div><div class='re'>"+esc(p.evidence)+". Use the isolated external-input Docker harness; local launch is unavailable.</div></div>";
+    });
     $("catalog").innerHTML=html;
-    Array.prototype.forEach.call(document.querySelectorAll(".rcard"),function(c){
+    Array.prototype.forEach.call(document.querySelectorAll(".rcard[data-p]"),function(c){
       var pick=function(){ selected=c.dataset.p;
         Array.prototype.forEach.call(document.querySelectorAll(".rcard"),function(x){x.classList.remove("sel");});
         c.classList.add("sel"); $("launch").disabled=false; };

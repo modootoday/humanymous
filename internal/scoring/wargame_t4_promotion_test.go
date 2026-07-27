@@ -29,7 +29,7 @@ func TestWargameR340_T4HonestCeilingMayAllow(t *testing.T) {
 	r := coherentLike(signals.Advanced{
 		Probed: true, MediaDeviceCount: 3, VoiceCount: 200, WidevineSupported: true,
 		WebGPUPresent: true, WebGPUVendor: "nvidia",
-		WebGLVendor: "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
+		WebGLVendor:     "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
 		AudioSampleRate: 48000, ConnectionPresent: true, ConnectionRTT: 50,
 		MaxTouchPoints: 0,
 	})
@@ -46,8 +46,8 @@ func TestWargameR341_NearCeilingAudio24kPromotedBlock(t *testing.T) {
 	r := coherentLike(signals.Advanced{
 		Probed: true, MediaDeviceCount: 2, VoiceCount: 80, WidevineSupported: true,
 		WebGPUPresent: true, WebGPUVendor: "nvidia",
-		WebGLVendor: "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
-		AudioSampleRate: 24000, // residual
+		WebGLVendor:       "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
+		AudioSampleRate:   24000, // residual
 		ConnectionPresent: true, ConnectionRTT: 40,
 	})
 	v := scoreOf(t, r)
@@ -73,7 +73,7 @@ func TestWargameR343_NearCeilingWebGPUMismatchPromotedBlock(t *testing.T) {
 	r := coherentLike(signals.Advanced{
 		Probed: true, MediaDeviceCount: 2, VoiceCount: 50, WidevineSupported: true,
 		WebGPUPresent: true, WebGPUVendor: "intel",
-		WebGLVendor: "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
+		WebGLVendor:     "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
 		AudioSampleRate: 48000, ConnectionPresent: true, ConnectionRTT: 40,
 	})
 	v := scoreOf(t, r)
@@ -87,7 +87,7 @@ func TestWargameR344_NearCeilingProxyRotationStillHR19(t *testing.T) {
 	r := coherentLike(signals.Advanced{
 		Probed: true, MediaDeviceCount: 3, VoiceCount: 100, WidevineSupported: true,
 		WebGPUPresent: true, WebGPUVendor: "nvidia",
-		WebGLVendor: "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
+		WebGLVendor:     "NVIDIA Corporation / NVIDIA GeForce RTX 3080",
 		AudioSampleRate: 48000, ConnectionPresent: true, ConnectionRTT: 50,
 	})
 	r.Network.Signals = append(r.Network.Signals, bot("l5.correlation.proxy_rotation"))

@@ -17,16 +17,16 @@ import "github.com/modootoday/humanymous/internal/signals"
 // ScoreExempt residual ids — never contribute to Combine risk.
 var scoreExemptIDs = map[string]struct{}{
 	// HTTP hop / proxy / VPN / Tor
-	"l5.header.proxy_hop":       {},
-	"l5.header.client_ip_spoof": {},
-	"l5.header.xff_multi_hop":   {},
+	"l5.header.proxy_hop":         {},
+	"l5.header.client_ip_spoof":   {},
+	"l5.header.xff_multi_hop":     {},
 	"l5.header.forwarded_private": {},
-	"l5.proxy.vpn_webrtc_leak":  {},
-	"l5.proxy.tor_circuit":      {},
-	"l5.proxy.anon_chain":       {},
-	"l5.ip.datacenter_asn":      {},
-	"l5.ip.proxy_vpn_tor":       {},
-	"l5.ip.tor_exit":            {},
+	"l5.proxy.vpn_webrtc_leak":    {},
+	"l5.proxy.tor_circuit":        {},
+	"l5.proxy.anon_chain":         {},
+	"l5.ip.datacenter_asn":        {},
+	"l5.ip.proxy_vpn_tor":         {},
+	"l5.ip.tor_exit":              {},
 	// TCP/L4 plane
 	"l5.tcp.not_observed": {},
 	"l5.tcp.ttl":          {},
@@ -34,10 +34,10 @@ var scoreExemptIDs = map[string]struct{}{
 	"l5.tcp.window":       {},
 	"l5.tcp.ttl_os":       {},
 	// Network correlation residual (admin-owned; policy may still hard-DENY)
-	"l5.correlation.proxy_rotation":  {},
-	"l5.correlation.fp_churn_proxy":  {},
+	"l5.correlation.proxy_rotation":     {},
+	"l5.correlation.fp_churn_proxy":     {},
 	"l5.correlation.shared_fingerprint": {},
-	"l5.traffic.ip_hop":              {},
+	"l5.traffic.ip_hop":                 {},
 }
 
 // IsScoreExempt reports whether a signal is network-plane residual (audit/admin).

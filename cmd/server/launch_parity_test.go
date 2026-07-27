@@ -18,6 +18,7 @@ import (
 // catalogProfileLit matches a quoted '<name>.mjs' entry in runner.mjs PROFILES.
 var catalogProfileLit = regexp.MustCompile(`'([a-z0-9_]+\.mjs)'`)
 var observatoryProfileLit = regexp.MustCompile(`\["([a-z0-9_]+\.mjs)"`)
+var observatoryDockerOnlyProfileLit = regexp.MustCompile(`\{id:"([a-z0-9_]+)",executionKind:"docker-external-input"`)
 
 func TestLaunchProfilesMatchCatalog(t *testing.T) {
 	// cwd is cmd/server during the test; the catalog lives at the module root.
@@ -80,6 +81,68 @@ func TestObservatoryCatalogMatchesLaunchProfiles(t *testing.T) {
 	}
 	if len(catalog) != len(launchProfiles) {
 		t.Errorf("size mismatch: Observatory has %d profiles, launcher has %d", len(catalog), len(launchProfiles))
+	}
+}
+
+func TestDockerOnlyProfilesMatchObservatoryAndNeverOverlapLocalLauncher(t *testing.T) {
+	wantOrder := []string{
+		"external_input_virtual",
+		"external_input_dom_virtual",
+		"external_input_usb",
+		"external_input_dom_usb",
+		"external_input_vusb",
+		"external_input_dom_vusb",
+	}
+	want := make(map[string]bool, len(wantOrder))
+	for _, name := range wantOrder {
+		want[name] = true
+	}
+	if len(dockerOnlyLaunchProfiles) != len(want) {
+		t.Errorf("Docker-only registry has %d profiles, want %d", len(dockerOnlyLaunchProfiles), len(want))
+	}
+	for name := range want {
+		if !dockerOnlyLaunchProfiles[name] {
+			t.Errorf("Docker-only registry is missing %q", name)
+		}
+	}
+	for name := range dockerOnlyLaunchProfiles {
+		if !want[name] {
+			t.Errorf("unexpected Docker-only profile %q", name)
+		}
+		if launchProfiles[name] {
+			t.Errorf("Docker-only profile %q must never enter the local launcher allowlist", name)
+		}
+	}
+
+	root := moduleRootFrom(t)
+	page := filepath.Join(root, "web", "playground.html")
+	src, err := os.ReadFile(page)
+	if err != nil {
+		t.Fatalf("read observatory %s: %v", page, err)
+	}
+	observatory := map[string]bool{}
+	matches := observatoryDockerOnlyProfileLit.FindAllStringSubmatch(string(src), -1)
+	for i, m := range matches {
+		observatory[m[1]] = true
+		if i >= len(wantOrder) || m[1] != wantOrder[i] {
+			t.Errorf("Docker-only Observatory order[%d] = %q, want canonical ladder %q", i, m[1], wantOrder)
+		}
+	}
+	for name := range dockerOnlyLaunchProfiles {
+		if !observatory[name] {
+			t.Errorf("Docker-only profile %q is missing from the Observatory catalog", name)
+		}
+	}
+	for name := range observatory {
+		if !dockerOnlyLaunchProfiles[name] {
+			t.Errorf("Observatory marks unknown profile %q as Docker-only", name)
+		}
+	}
+	if len(observatory) != len(dockerOnlyLaunchProfiles) {
+		t.Errorf("Docker-only size mismatch: Observatory has %d profiles, server has %d", len(observatory), len(dockerOnlyLaunchProfiles))
+	}
+	if !regexp.MustCompile(`querySelectorAll\("\.rcard\[data-p\]"\)`).Match(src) {
+		t.Error("Observatory local-launch event binding is not restricted to cards with data-p")
 	}
 }
 

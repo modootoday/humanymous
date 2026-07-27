@@ -102,6 +102,7 @@ func main() {
 	adminMTLSCA := flag.String("admin-mtls-ca", "", "PEM file containing trusted client-certificate authorities; when set, the admin listener requires a verified client certificate in addition to the bearer token")
 	// SoT-39 P1/P2 — RuntimeOverlay file dir (empty = no store, freeze-identical defaults).
 	settingsDir := flag.String("settings-dir", "", "directory for runtime settings persistence; empty provides read-only built-in and startup behavior with no overlay store")
+	vusbResultsDir := flag.String("virtual-usb-results-dir", envOrDefault("HMN_VIRTUAL_USB_RESULTS_DIR", ""), "read-only directory containing bounded virtual USB ladder results; empty disables the Console view")
 	// SoT-40 — bounded operational diagnostics. These sinks remain separate from
 	// the tamper-evident audit stream and cannot affect enforcement.
 	logLevel := flag.String("log-level", envOrDefault("HMN_LOG_LEVEL", "info"), "operational log level: off, debug, info, warn, or error")
@@ -385,20 +386,21 @@ func main() {
 	}
 
 	cfg := gate.Config{
-		Upstream:      *upstream,
-		NodeID:        *node,
-		ControlPath:   "/__hmn/",
-		GlobalMonitor: *monitor,
-		OriginKey:     originKey,
-		TokenKey:      tokenKey,
-		TokenEpochs:   epochs,
-		BanLedger:     sharedBans,     // shared Redis ban ledger, or nil for in-memory (PLAN-08 R1)
-		AgentKeys:     agentKeys,      // Web Bot Auth directory, or nil (PLAN-08 R3)
-		AnomalyShadow: *anomalyShadow, // R5 shadow observer (log-only), off by default
-		PATIssuers:    patIssuers,     // Privacy Pass PAT issuers, or nil (PLAN-08 R2)
-		WebAuthnCreds: webauthnCreds,  // WebAuthn credential registry, or nil (PLAN-08 R2)
-		MaxBodyBytes:  *maxBody,       // proxy-path request-body cap (0 = unlimited)
-		HSTS:          *hsts,          // Strict-Transport-Security on edge responses
+		Upstream:             *upstream,
+		NodeID:               *node,
+		ControlPath:          "/__hmn/",
+		GlobalMonitor:        *monitor,
+		OriginKey:            originKey,
+		TokenKey:             tokenKey,
+		TokenEpochs:          epochs,
+		BanLedger:            sharedBans,     // shared Redis ban ledger, or nil for in-memory (PLAN-08 R1)
+		AgentKeys:            agentKeys,      // Web Bot Auth directory, or nil (PLAN-08 R3)
+		AnomalyShadow:        *anomalyShadow, // R5 shadow observer (log-only), off by default
+		PATIssuers:           patIssuers,     // Privacy Pass PAT issuers, or nil (PLAN-08 R2)
+		WebAuthnCreds:        webauthnCreds,  // WebAuthn credential registry, or nil (PLAN-08 R2)
+		MaxBodyBytes:         *maxBody,       // proxy-path request-body cap (0 = unlimited)
+		HSTS:                 *hsts,          // Strict-Transport-Security on edge responses
+		VirtualUSBResultsDir: *vusbResultsDir,
 		Routes: map[string]string{
 			"/login":    "strict",
 			"/checkout": "strict",

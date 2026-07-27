@@ -23,10 +23,10 @@ const (
 	ClassSeqGap        MismatchClass = "seq-gap"
 	ClassLinkageBreak  MismatchClass = "linkage-break"
 	ClassCheckpointBad MismatchClass = "checkpoint-mismatch"
-	ClassWitnessBad     MismatchClass = "witness-invalid"
-	ClassEmptyChain     MismatchClass = "empty-chain"
-	ClassHMACUnchecked  MismatchClass = "hmac-unchecked"
-	ClassNodeMissing    MismatchClass = "node-missing"
+	ClassWitnessBad    MismatchClass = "witness-invalid"
+	ClassEmptyChain    MismatchClass = "empty-chain"
+	ClassHMACUnchecked MismatchClass = "hmac-unchecked"
+	ClassNodeMissing   MismatchClass = "node-missing"
 )
 
 // VerifyResult is the verifier's report.

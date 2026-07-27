@@ -6,8 +6,8 @@
 // In Docker it commonly scores CHALLENGE (not DENY) because of structural tells:
 //   l1.cdp.proxy_leak, l2.webgl.swiftshader, l4.mouse.coalesced_synthetic, no_voices…
 // humanFPR counts DENY only, so CHALLENGE is TN — inspect challenge friction separately.
-// Real-browser ALLOW checks: open the demo page in a normal Edge/Chrome window and
-// read /api/collect (see SCRATCH/wargame-gate-rb/REAL_BROWSER_VERIFY.md).
+// Real-browser ALLOW checks: follow docs/how-to/run-detection-engine.md in a
+// normal Edge/Chrome window and inspect the /api/collect response in DevTools.
 //
 // Blue must NOT DENY this session; CHALLENGE under CDP/container is expected.
 
