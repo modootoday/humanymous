@@ -41,10 +41,17 @@ type passProof struct {
 // wrapped around a fresh challenge (SoT-36 §5).
 func traceDigest(pr passProof) string {
 	h := sha256.New()
-	// Quantize before hashing (audit CWE-294): a replayed human trace must still collide
-	// after sub-ms noise is added to defeat an exact-match digest. Timings snap to 1ms and
-	// pressures to 0.05 — coarser than any perturbation an attacker can hide below, far
-	// finer than real human variance (tens of ms), so genuine distinct traces stay distinct.
+	// Quantize before hashing (audit CWE-294): an EXACT or sub-1ms-perturbed replay still
+	// collides. Timings snap to 1ms and pressures to 0.05 — fine enough that genuine distinct
+	// traces stay distinct (real human variance is tens of ms). This does NOT stop a
+	// PERTURBED replay: an attacker adding >=1ms jitter (well within human variance, invisible
+	// to the behavioral model) crosses the quantum and mints a fresh digest, so this layer
+	// bounds only exact/near-exact reuse. Mass reuse of a captured motor trace — which is
+	// placement-INDEPENDENT (this digest covers no puzzle coordinates) and can be paired with a
+	// brute-forced placement — is bounded instead by the per-solve COST axes (PoW difficulty +
+	// attestation budget + Pass velocity), by design (SoT-36 raises cost, not perfect
+	// human-ness). A stronger anti-replay would need a perturbation-robust or
+	// placement-bound proof WITHOUT an a11y-harming motor/speed gate (rule 61) — deferred.
 	q := func(xs []float64, quantum float64) {
 		for _, x := range xs {
 			fmt.Fprintf(h, "%d,", int64(math.Round(x/quantum)))
