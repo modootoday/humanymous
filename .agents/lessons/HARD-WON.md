@@ -34,6 +34,20 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
    `44/44` means "44 of the 44 that ran"); `ci.yml` runs `sync-adapters` *then*
    `verify-agents-layout`, auto-healing stale committed files. Fix shape: assert an expected
    floor (`bots.length >= 45`) and `git diff --exit-code` after any generate step.
+8c. **CI resource budgets are set from Actions runs, never from a local build.** A local
+   `bots:minimal` measurement produced a 2.5 GiB detector peak cap against a real peak of
+   4.50 GiB, and a 48 MiB kernel-smoke cap that `qemu-system-x86_64` alone (77.8 MiB of
+   layer) could never fit. Both shipped green because an earlier job failure meant the
+   Docker jobs never ran. Corollaries: **echo what you measured before asserting it** (bare
+   `test "$bytes" -le N` makes a red budget unattributable); and do not assert a lower
+   bound on retained storage after `docker image prune --all`, which legitimately drops
+   below the baseline the runner shipped with (measured `final_delta_bytes=-1784422400`).
+8d. **Shrinking an image can silently retire red coverage.** `playwright-core install
+   --no-shell` saved bytes and killed ten catalog profiles that launch Chromium's headless
+   shell; the ladder still printed `100%` because skipped profiles left the denominator
+   (see #8a). Size work on `bots` must be proven by a full catalog run, and profiles must
+   not be re-pointed at a different binary to fit a budget — that changes the very
+   fingerprint they exist to measure.
 8b. **The reference human must reach ALLOW, not CHALLENGE-scored-TN.** The canonical run
    reports `human FP 0` while the baseline sits at CHALLENGE — and with no enforcement path to
    `/pass`, that human is blocked with no recourse. A metric with no threshold is not a gate
@@ -74,6 +88,13 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     **project** `.gemini/settings.json` (committed). Re-run `sync-adapters` after skill edits.
 21. **Codex** may also load `~/.codex/AGENTS.md`; project root `AGENTS.md` must remain the
     sharper source of truth for this repo.
+21z. **`sync-adapters.sh` and `sync-adapters.ps1` must emit byte-identical trees.** CI runs
+    the **bash** one and `git diff --exit-code`s the result, so output committed from a
+    Windows `pwsh` sync fails every push. `Set-Content` appends a terminator to a body that
+    already ends in one (one stray newline per persona blocked CI for two days) and writes
+    CRLF; generated files are written with `WriteAllText` + explicit LF so the result does
+    not depend on the developer's `core.autocrlf`. Verify a generator change by running
+    **both** and diffing, not just the one on your platform.
 
 ## Red/blue wargame process
 

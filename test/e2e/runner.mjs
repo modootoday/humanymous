@@ -184,7 +184,14 @@ function tieredReport(results) {
     console.log(`       ${t.desc}`);
     console.log(`       expect: ${t.expect}`);
     if (bots.length) {
-      console.log(`       must-block: ${blocked}/${bots.length} blocked${skipped ? ` (+${skipped} skipped)` : ''} = ${rate}%`);
+      // The rate can only speak for profiles that actually ran, so a tier with
+      // skipped profiles must never render as a bare 100%: run 30239746911 read
+      // "7/7 blocked (+5 skipped) = 100%" while five profiles could not launch
+      // at all. State the block rate and the coverage loss as separate facts.
+      const coverage = skipped
+        ? ` — INCOMPLETE: ${skipped}/${t.profiles.length} profile(s) did not run`
+        : '';
+      console.log(`       must-block: ${blocked}/${bots.length} blocked = ${rate}% of attempted${coverage}`);
     }
     for (const c of ceilings) {
       const honest = c.verdict === 'ALLOW';

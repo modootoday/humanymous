@@ -175,7 +175,7 @@ test('detector job bounds disk growth and artifact upload inputs', async () => {
   assert.match(detector, /docker buildx prune --all --force/);
   assert.match(detector, /docker image prune --all --force/);
   assert.equal(
-    (detector.match(/test "\$delta" -le 1879048192/g) || []).length,
+    (detector.match(/test "\$delta" -le 2415919104/g) || []).length,
     2,
   );
   // The final budget runs after a full image prune that also removes images the
@@ -184,7 +184,7 @@ test('detector job bounds disk growth and artifact upload inputs', async () => {
   // The earlier reclaim step prunes only this job's buildx cache and keeps its
   // lower bound, so this is scoped to the final step rather than the whole job.
   const finalBudget = detector.slice(final, artifact);
-  assert.match(finalBudget, /test "\$delta" -le 1879048192/);
+  assert.match(finalBudget, /test "\$delta" -le 2415919104/);
   assert.doesNotMatch(finalBudget, /test "\$delta" -ge 0/);
   assert.match(
     detector,

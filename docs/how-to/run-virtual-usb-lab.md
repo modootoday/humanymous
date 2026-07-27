@@ -112,7 +112,7 @@ The provisioner enforces these storage ceilings:
 - 4 GiB additional host storage during a complete laboratory run.
 
 The standard detector-versus-bots continuous-integration job has a separate
-6 GiB whole-job peak ceiling and 1.75 GiB post-build retained ceiling. A
+6 GiB whole-job peak ceiling and 2.25 GiB post-build retained ceiling. A
 quarter-second sampler stays active through image scans, browser tests, and
 feature overlays. Build cache, guest disks, writable overlays, and inner-image
 archives are removed rather than uploaded. These are fail-closed ceilings, not

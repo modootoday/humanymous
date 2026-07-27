@@ -141,11 +141,18 @@ jobs:
       - name: Run six-device kernel gadget smoke
         run: |
           mkdir -p deployments/artifacts/kernel-smoke-ci
+          # The image has no USER, so the entrypoint would run as root — and
+          # `--cap-drop ALL` takes CAP_DAC_OVERRIDE with it, so root cannot
+          # write into a bind mount owned by the runner user. Run 30240235428
+          # died on "can't create /output/console.log: Permission denied".
+          # Running as the runner keeps the hardening flags and needs no
+          # world-writable directory; the guest artifacts are world-readable.
           docker run --rm \
             --network none \
             --read-only \
             --cap-drop ALL \
             --security-opt no-new-privileges:true \
+            --user "$(id -u):$(id -g)" \
             --tmpfs /tmp \
             -e HM_KERNEL_ACCEL=tcg \
             -v "$PWD/deployments/artifacts/kernel-smoke-ci:/output" \
@@ -268,7 +275,12 @@ jobs:
           df -h /
           docker system df
           test "$delta" -ge 0
-          test "$delta" -le 1879048192
+          # Measured on run 30240235428, the first run to retain a bots image
+          # with Chromium's headless shell restored: 1928437760 B (1.80 GiB),
+          # against a 1.75 GiB cap sized when that shell was missing. 2.25 GiB
+          # leaves ~17% headroom, which browser-version drift needs — Playwright
+          # updates move this figure by hundreds of MB at a time.
+          test "$delta" -le 2415919104
 
       # Supply-chain: scan the release images for known-vulnerable OS/deps
       # (audit SUP-1 / OpenSSF Scorecard). Fail only on FIXABLE High/Critical.
@@ -365,7 +377,7 @@ jobs:
           # images the runner shipped with and that the baseline counted. Run
           # 30239251233 legitimately finished at final_delta_bytes=-1784422400,
           # so asserting `-ge 0` failed a job that had over-reclaimed correctly.
-          test "$delta" -le 1879048192
+          test "$delta" -le 2415919104
 
       - name: Enforce artifact upload input budget
         id: artifact-budget
