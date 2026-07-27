@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -860,4 +861,69 @@ func powLaunder() (map[string]any, error) {
 	second["powDifficulty"] = difficulty
 	second["laundered"] = second["ok"] == true || second["verdict"] == "ALLOW"
 	return second, nil
+}
+
+// h2ProtocolSplit is the 2026 "protocol-split" evasion (web-research grounded): a client
+// that passes TLS/JA4 as a real Chrome (uTLS Chrome ClientHello) and sends a coherent Chrome
+// UA + full browser headers + JS-execution evidence — so every L5/L6 header and TLS check
+// stays quiet — but carries a LIBRARY HTTP/2 fingerprint (Go's golang.org/x/net/http2 SETTINGS
+// / WINDOW_UPDATE / pseudo-header layout) instead of Chrome's. Akamai-class detectors
+// specifically target bots that spoof TLS but not the HTTP/2 frame layout; this isolates
+// whether the engine derives H2Engine != Chrome and fires x.ua_vs_h2 / l5.http2.engine_mismatch,
+// or lets an "unknown" h2 profile through (engineConsistent treats unknown as no-evidence).
+func h2ProtocolSplit() (map[string]any, error) {
+	// Establish a cookied session over the SAME h2 path and capture the RIT seed, so the
+	// collects are correctly RIT-signed and HR-17 (rit.absent) stays quiet — isolating the
+	// HTTP/2 engine mismatch as the ONLY tell.
+	sess, err := doH2(utls.HelloChrome_Auto, "GET", "/api/session",
+		withBrowserHeaders(map[string]string{"User-Agent": chromeUA}), "", "")
+	if err != nil {
+		return nil, err
+	}
+	cookie := sess.cookie
+	sid := sidFromCookie(cookie)
+	var sj struct {
+		RitSeed string `json:"ritSeed"`
+		RitN    uint64 `json:"ritN"`
+	}
+	_ = json.Unmarshal(sess.body, &sj)
+	seed, _ := base64.RawURLEncoding.DecodeString(sj.RitSeed)
+	n := sj.RitN
+	// A FULLY COHERENT client report (every advanced capability present + self-consistent,
+	// rich human-shaped behavior) — identical in spirit to the T4 coherent-ceiling body — so
+	// the ONLY residual tell is the Go HTTP/2 frame layout. If this reaches ALLOW, the h2
+	// fingerprint failed to separate a library h2 client from a real Chrome.
+	body := `{"userAgent":"` + chromeUA + `","engineVersion":"wasm-1.0.0",` +
+		`"advanced":{"probed":true,"mediaDeviceCount":3,"hasAudioInput":true,"hasVideoInput":true,"voiceCount":200,` +
+		`"widevineSupported":true,"webgpuPresent":true,"webgpuVendor":"nvidia","webglVendor":"NVIDIA Corporation / NVIDIA GeForce RTX 3080",` +
+		`"audioSampleRate":48000,"connectionPresent":true,"connectionRtt":50,"batteryPresent":true,"batteryLevel":0.8,` +
+		`"timezoneIana":"America/New_York","language":"en-US","colorGamut":"srgb","maxTouchPoints":0},` +
+		`"environment":{"probed":true},` +
+		`"behavior":{"durationS":8,"mouse":{"samples":45,"velocityStdDev":0.6,"straightLineFrac":0.15,"accelEntropy":2.1,"meanJerk":0.4,"meanCurvature":0.3,"coalescedRatio":3.0},` +
+		`"key":{"keystrokes":14,"meanDwellMs":95,"dwellStdDevMs":28,"meanFlightMs":140,"flightStdDevMs":35},` +
+		`"events":{"totalEvents":60,"untrustedFrac":0,"clickCount":1}},"signals":[]}`
+	v := map[string]any{}
+	// Two signed collects: the h2 fingerprint is pinned on the first observation; the
+	// second re-scores with the session's pinned h2 engine.
+	for i := 0; i < 2; i++ {
+		hdr := withBrowserHeaders(map[string]string{"User-Agent": chromeUA, "Content-Type": "application/json"})
+		if seed != nil {
+			tb := nowTB()
+			nn := n + uint64(i+1)
+			hdr["X-HM-Token"] = ritToken(seed, sid, nn, tb, body)
+			hdr["X-HM-N"] = itoa(nn)
+			hdr["X-HM-TB"] = itoa(tb)
+		}
+		r, err := doH2(utls.HelloChrome_Auto, "POST", "/api/collect", hdr, body, cookie)
+		if err != nil {
+			return nil, err
+		}
+		_ = json.Unmarshal(r.body, &v)
+		if s := r.headers["X-Hm-Seed"]; s != "" {
+			if ns, e := base64.RawURLEncoding.DecodeString(s); e == nil {
+				seed = ns
+			}
+		}
+	}
+	return v, nil
 }

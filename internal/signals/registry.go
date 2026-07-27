@@ -186,6 +186,13 @@ var (
 	_ = def(Definition{"l5.tls.grease_absent", LayerNetwork, 15, nil, "tls", "no GREASE (non-browser)"})
 	_ = def(Definition{"l5.tls.pq_keyshare", LayerNetwork, 10, nil, "tls", "missing PQ keyshare for claimed Chrome"})
 	_ = def(Definition{"l5.http2.engine_mismatch", LayerNetwork, 30, nil, "http2", "h2 profile engine vs UA"})
+	// Score-exempt residual (weight 0): a browser-claiming UA over an HTTP/2 profile the
+	// engine cannot classify as any known browser (EngineFromH2 == unknown). A real browser
+	// always presents a KNOWN h2 fingerprint, so this is the 2026 "protocol-split" tell
+	// (Chrome TLS/JA4 + library h2 frame layout). It participates in Audit/Console/NET-POLICY
+	// only — it does NOT move Combine risk, so the frozen verdict is unchanged (a separate
+	// detection-release event owns any verdict-altering enforcement).
+	_ = def(Definition{"l5.http2.unknown_under_browser", LayerNetwork, 0, true, "http2", "browser UA over an unclassifiable HTTP/2 profile (audit/admin)"})
 	_ = def(Definition{"l5.header.order", LayerNetwork, 20, nil, "header", "header order vs claimed browser"})
 	_ = def(Definition{"l5.header.h2_uppercase", LayerNetwork, 25, nil, "header", "uppercase header in h2 (malformed)"})
 	_ = def(Definition{"l5.header.sec_fetch_missing", LayerNetwork, 25, nil, "header", "Chrome UA but sec-fetch missing"})

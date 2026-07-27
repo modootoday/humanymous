@@ -53,10 +53,11 @@ import (
 	"time"
 
 	utls "github.com/refraction-networking/utls"
+	"golang.org/x/net/http2"
 )
 
 var (
-	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|nonbrowser-ua|sec-chua-absent|sec-fetch-absent|rit-absent|ja4-churn|multi-axis-rotate|grease-absent-js|xff-spoof|squid-forward|openvpn-exit|wireguard-hop|tor-exit|anon-proxy-chain|elite-anon-proxy|cdn-ip-spoof|proxy-ua-rotate|fp-churn-proxy|stacked-proxy-vpn|socks-exit-hop")
+	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|pow-fast-solve|pow-launder|h2-protocol-split|nonbrowser-ua|sec-chua-absent|sec-fetch-absent|rit-absent|ja4-churn|multi-axis-rotate|grease-absent-js|xff-spoof|squid-forward|openvpn-exit|wireguard-hop|tor-exit|anon-proxy-chain|elite-anon-proxy|cdn-ip-spoof|proxy-ua-rotate|fp-churn-proxy|stacked-proxy-vpn|socks-exit-hop")
 	host   = flag.String("host", "127.0.0.1:8443", "target host:port")
 )
 
@@ -77,6 +78,8 @@ func main() {
 		v, err = powFastSolve()
 	case "pow-launder":
 		v, err = powLaunder()
+	case "h2-protocol-split":
+		v, err = h2ProtocolSplit()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":
@@ -169,6 +172,68 @@ func do(helloID utls.ClientHelloID, method, path string, hdr map[string]string, 
 		return nil, err
 	}
 	return httpRoundTrip(uconn, method, path, hdr, body, cookie)
+}
+
+// doH2 negotiates HTTP/2 over a uTLS handshake (ALPN left intact so h2 is offered),
+// then speaks HTTP/2 framing with Go's golang.org/x/net/http2 client. The TLS
+// ClientHello is a real browser's (JA4 engine = the browser), but the HTTP/2 SETTINGS /
+// WINDOW_UPDATE / pseudo-header layout is Go's — the 2026 "protocol-split" evasion where a
+// client passes TLS/JA4 but carries a library HTTP/2 fingerprint. Returns the response.
+func doH2(helloID utls.ClientHelloID, method, path string, hdr map[string]string, body, cookie string) (*resp, error) {
+	raw, err := net.Dial("tcp", *host)
+	if err != nil {
+		return nil, err
+	}
+	spec, err := utls.UTLSIdToSpec(helloID)
+	if err != nil {
+		raw.Close()
+		return nil, err
+	}
+	// NOTE: no forceHTTP11 — leave the browser ALPN (h2, http/1.1) so the server negotiates h2.
+	uconn := utls.UClient(raw, &utls.Config{ServerName: hostname(*host), InsecureSkipVerify: true}, utls.HelloCustom)
+	if err := uconn.ApplyPreset(&spec); err != nil {
+		raw.Close()
+		return nil, err
+	}
+	if err := uconn.Handshake(); err != nil {
+		raw.Close()
+		return nil, err
+	}
+	if p := uconn.ConnectionState().NegotiatedProtocol; p != "h2" {
+		uconn.Close()
+		return nil, fmt.Errorf("h2 not negotiated (ALPN=%q)", p)
+	}
+	tr := &http2.Transport{}
+	cc, err := tr.NewClientConn(uconn)
+	if err != nil {
+		uconn.Close()
+		return nil, err
+	}
+	defer cc.Close()
+	req, err := http.NewRequest(method, "https://"+hostname(*host)+path, strings.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	for k, v := range hdr {
+		req.Header.Set(k, v)
+	}
+	if cookie != "" {
+		req.Header.Set("Cookie", cookie)
+	}
+	r, err := cc.RoundTrip(req)
+	if err != nil {
+		return nil, err
+	}
+	defer r.Body.Close()
+	out, _ := io.ReadAll(r.Body)
+	res := &resp{status: r.StatusCode, body: out, headers: map[string]string{}}
+	for k := range r.Header {
+		res.headers[k] = r.Header.Get(k)
+	}
+	if sc := r.Header.Get("Set-Cookie"); sc != "" {
+		res.cookie = strings.SplitN(sc, ";", 2)[0]
+	}
+	return res, nil
 }
 
 // doStock sends one HTTP/1.1 request over Go's STOCK crypto/tls (no uTLS, no GREASE), so the

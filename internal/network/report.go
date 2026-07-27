@@ -78,6 +78,16 @@ func Build(obs Observation) signals.NetworkReport {
 	nr.SecFetchPresent = h.SecFetchPresent()
 	nr.SecCHUAPresent = h.SecCHUAPresent()
 
+	// Score-exempt residual (weight 0): a browser-claiming UA delivered over an HTTP/2
+	// profile the engine cannot classify as any known browser (EngineFromH2 == unknown).
+	// A real Chrome/Firefox/Safari always presents a KNOWN h2 fingerprint, so this is the
+	// 2026 "protocol-split" tell — a real browser TLS/JA4 carrying a library h2 frame layout.
+	// Surfaced for Audit/Console/NET-POLICY only; it carries no score and moves no verdict.
+	if obs.H2 != nil && nr.H2Engine == EngineUnknown && claimsBrowserUA(h.UserAgent) {
+		add("l5.http2.unknown_under_browser", true, signals.VerdictSuspicious,
+			"browser UA over an unclassifiable HTTP/2 profile (protocol-split residual)")
+	}
+
 	if h.HasUppercaseInH2() {
 		add("l5.header.h2_uppercase", true, signals.VerdictBot, "uppercase header in HTTP/2 (malformed)")
 	}
@@ -142,6 +152,19 @@ func Build(obs Observation) signals.NetworkReport {
 }
 
 // itoa avoids strconv import churn for small uint16 setting ids.
+// claimsBrowserUA reports whether the UA claims a mainstream browser (Chrome, Firefox,
+// or Safari). A real browser produces a KNOWN HTTP/2 fingerprint, so pairing such a claim
+// with an unclassifiable h2 profile is the protocol-split residual. Library UAs
+// (python-requests, Go-http-client, curl) return false and are covered by x.non_browser_ua.
+func claimsBrowserUA(ua string) bool {
+	l := strings.ToLower(ua)
+	if !strings.Contains(l, "mozilla/") {
+		return false
+	}
+	return strings.Contains(l, "chrome") || strings.Contains(l, "firefox") ||
+		strings.Contains(l, "safari")
+}
+
 func itoa(v uint16) string {
 	if v == 0 {
 		return "0"
