@@ -13,14 +13,22 @@ function Ensure-Dir([string]$Path) {
   }
 }
 
+function Write-LfText([string]$Path, [string]$Content) {
+  # Generated adapter files must be byte-identical to the bash variant's output
+  # (CI runs sync-adapters.sh and diffs), so pin LF regardless of core.autocrlf.
+  [System.IO.File]::WriteAllText($Path, ($Content -replace "`r`n", "`n"),
+    (New-Object System.Text.UTF8Encoding $false))
+}
+
 function Write-GeneratedMarker([string]$Dir, [string]$Kind) {
   Ensure-Dir $Dir
-  @"
+  Write-LfText (Join-Path $Dir "GENERATED.md") @"
 # GENERATED — do not edit
 
 Mirrored from ``.agents/$Kind`` by ``scripts/agents/sync-adapters``.
 Edit ``.agents/`` then re-run sync.
-"@ | Set-Content -Path (Join-Path $Dir "GENERATED.md") -Encoding utf8
+
+"@
 }
 
 function Copy-Tree([string]$Src, [string]$Dst) {
@@ -63,14 +71,17 @@ if (Test-Path $personasSrc) {
   Get-ChildItem $personasSrc -Filter "*.md" | ForEach-Object {
     $name = $_.BaseName
     $body = Get-Content $_.FullName -Raw
-    @"
+    # Must stay byte-identical to sync-adapters.sh (CI runs the bash variant and
+    # diffs the result): LF endings, and no newline beyond the body's own.
+    $content = @"
 ---
 name: $name
 description: Project persona $name (from .agents/personas). Use for multi-perspective design panels.
 ---
 
 $body
-"@ | Set-Content -Path (Join-Path $agentsDst "$name.md") -Encoding utf8
+"@
+    Write-LfText (Join-Path $agentsDst "$name.md") $content
   }
   Write-Host "Synced personas -> .claude/agents"
 }
