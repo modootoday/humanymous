@@ -14,10 +14,22 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"golang.org/x/net/http2"
+	"golang.org/x/net/netutil"
 )
+
+// envInt returns the integer value of env var name, or def if unset/invalid.
+func envInt(name string, def int) int {
+	if v := os.Getenv(name); v != "" {
+		if n, err := strconv.Atoi(v); err == nil {
+			return n
+		}
+	}
+	return def
+}
 
 // version is stamped at release via -ldflags "-X main.version=<tag>-<sha>-<date>"
 // so a running engine self-reports which build it is (audit LOW-4).
@@ -25,6 +37,7 @@ var version = "dev"
 
 func main() {
 	addr := flag.String("addr", ":8443", "listen address")
+	maxConns := flag.Int("max-conns", envInt("HMN_MAX_CONNS", 1024), "max concurrent accepted connections (slowloris/slow-POST accumulation cap; 0 disables)")
 	webDir := flag.String("web", "web", "web asset directory")
 	ritOn := flag.Bool("rit", true, "enable RIT anti-tamper token verification")
 	acmeDomain := flag.String("acme-domain", "", "comma-separated domain(s) for a Let's Encrypt cert via TLS-ALPN-01 (requires binding :443 directly; empty = self-signed)")
@@ -120,7 +133,18 @@ func main() {
 		closeOperationalLogger(logRuntime)
 		os.Exit(1)
 	}
-	capL := &captureListener{Listener: base, reg: a.reg}
+	// Bound the number of concurrently ACCEPTED connections. The per-connection
+	// ReadHeaderTimeout (below) caps each slow connection's DURATION, but without
+	// this a slowloris / slow-POST flood can still ACCUMULATE unbounded concurrent
+	// connections (open-rate × hold-time), each tying up a goroutine + TLS buffers
+	// (SoT-17). LimitListener holds excess connections in the OS backlog until a
+	// slot frees, converting unbounded accumulation into bounded back-pressure. The
+	// default is generous so it only trips under attack, not normal burst load.
+	var lst net.Listener = base
+	if *maxConns > 0 {
+		lst = netutil.LimitListener(base, *maxConns)
+	}
+	capL := &captureListener{Listener: lst, reg: a.reg}
 
 	// Background session GC.
 	go func() {
@@ -224,8 +248,10 @@ func (a *app) serveConn(raw net.Conn, cfg *tls.Config, handler http.Handler, h2s
 		h2srv.ServeConn(rc, &http2.ServeConnOpts{Handler: handler})
 		return
 	}
-	// HTTP/1.1: serve this single connection via a one-shot listener. Timeouts
-	// bound slowloris / slow-POST connection-exhaustion attacks (SoT-17).
+	// HTTP/1.1: serve this single connection via a one-shot listener. These
+	// timeouts bound each slow connection's DURATION; the LimitListener at the
+	// accept loop bounds concurrent ACCUMULATION (both SoT-17 slowloris /
+	// slow-POST defenses — duration + concurrency).
 	srv := &http.Server{
 		Handler:           handler,
 		ReadHeaderTimeout: 8 * time.Second,  // slowloris (slow headers)
