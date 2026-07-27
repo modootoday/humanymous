@@ -91,6 +91,7 @@ var adminRoutes = []adminRoute{
 		s.adminIncident(w, arg, op)
 	}},
 	{http.MethodGet, adminExact("policy"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminPolicy(w) }},
+	{http.MethodGet, adminExact("virtual-usb"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) { s.adminVirtualUSB(w) }},
 	// SoT-39 P1 — Settings read plane (writes land in P3 via Approvals).
 	{http.MethodGet, adminExact("settings/effective"), adminAnyRole, func(s *Server, w http.ResponseWriter, r *http.Request, op Operator, _ string) {
 		s.adminSettingsEffective(w)
