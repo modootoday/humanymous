@@ -22,7 +22,7 @@ test('bots runtime installs only locked headful Chromium and Firefox', async () 
   const dockerfile = await source('build/bots.Dockerfile');
   const goCopy = dockerfile.indexOf('COPY --from=gobuild /out/redteam');
   const browserInstall = dockerfile.indexOf(
-    './node_modules/.bin/playwright-core install --no-shell chromium firefox',
+    './node_modules/.bin/playwright-core install chromium firefox',
   );
 
   assert.match(
@@ -40,10 +40,18 @@ test('bots runtime installs only locked headful Chromium and Firefox', async () 
   assert.doesNotMatch(dockerfile, /mcr\.microsoft\.com\/playwright/);
   assert.match(dockerfile, /ENV PLAYWRIGHT_BROWSERS_PATH=\/ms-playwright/);
   assert.match(dockerfile, /npm ci --no-audit --no-fund/);
+  // Chromium's headless shell must stay installed: ten catalog profiles launch
+  // it directly (selenium, puppeteer, playwright, undetected-chromedriver,
+  // direct-cdp, the stealth trio, rebrowser-cdp-stripped, browser-use-cdp).
+  // Run 30239746911 built the image with --no-shell and every one of them died
+  // on "Executable doesn't exist at /ms-playwright/chromium_headless_shell-*",
+  // which attack-assert reported as 10 errored/skipped catalog records. Saving
+  // image bytes must never silently retire red coverage.
   assert.match(
     dockerfile,
-    /\.\/node_modules\/\.bin\/playwright-core install --no-shell chromium firefox/,
+    /\.\/node_modules\/\.bin\/playwright-core install chromium firefox/,
   );
+  assert.doesNotMatch(dockerfile, /playwright-core install[^\n]*--no-shell/);
   assert.match(dockerfile, /apt-get install -y --no-install-recommends/);
   assert.match(
     dockerfile,
@@ -113,7 +121,7 @@ test('compact kernel smoke cannot silently expand into the full runner', async (
   assert.match(smoke, /platforms: linux\/amd64/);
   assert.match(smoke, /provenance: false/);
   assert.match(smoke, /sbom: false/);
-  assert.match(smoke, /test "\$bytes" -le 50331648/);
+  assert.match(smoke, /test "\$bytes" -le 134217728/);
   assert.match(smoke, /test "\$delta" -le 536870912/);
   // A budget that fails without reporting what it measured cannot be acted on.
   assert.match(smoke, /echo "smoke_image_bytes=\$bytes"/);

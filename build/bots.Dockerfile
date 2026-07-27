@@ -87,7 +87,7 @@ RUN dpkg-divert --local --rename --add /usr/bin/update-mime-database \
       xvfb \
  && cd /app/test \
  && npm ci --no-audit --no-fund \
- && ./node_modules/.bin/playwright-core install --no-shell chromium firefox \
+ && ./node_modules/.bin/playwright-core install chromium firefox \
  && rm /usr/bin/update-mime-database \
  && dpkg-divert --local --rename --remove /usr/bin/update-mime-database \
  && rm -rf \

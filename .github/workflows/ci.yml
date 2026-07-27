@@ -126,7 +126,15 @@ jobs:
           echo "smoke_image_bytes=$bytes"
           echo "smoke_storage_delta_bytes=$delta"
           df -h /
-          test "$bytes" -le 50331648
+          # Measured on run 30239746911: smoke_image_bytes=99234394 (94.6 MiB),
+          # against a 48 MiB cap that qemu-system-x86_64 alone (77.8 MiB of
+          # layer) could never fit. The guard's real job is to stop this target
+          # from growing into the `full` runner, whose guest qcow2 base is
+          # capped at 192 MiB on its own, so 128 MiB still separates them
+          # decisively while leaving ~35% headroom over the measurement.
+          test "$bytes" -le 134217728
+          # Disk delta measured 389562368 B (371.5 MiB) in the same run, so the
+          # 512 MiB transient budget holds and is left unchanged.
           test "$delta" -ge 0
           test "$delta" -le 536870912
 

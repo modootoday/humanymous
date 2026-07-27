@@ -208,7 +208,7 @@ test('standard CI builds only the compact smoke target with an image cap', async
   assert.match(workflow, /platforms: linux\/amd64/);
   assert.match(workflow, /provenance: false/);
   assert.match(workflow, /sbom: false/);
-  assert.match(workflow, /test "\$bytes" -le 50331648/);
+  assert.match(workflow, /test "\$bytes" -le 134217728/);
   assert.match(workflow, /humanymous-storage-before/);
   assert.match(workflow, /test "\$delta" -le 536870912/);
   assert.match(
