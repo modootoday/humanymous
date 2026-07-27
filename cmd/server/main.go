@@ -37,6 +37,7 @@ func main() {
 	logConsoleStream := flag.String("log-console-stream", "", "console log stream: stderr|stdout (default stderr; also HMN_LOG_CONSOLE_STREAM)")
 	logPlainFile := flag.String("log-plain-file", "", "append formatted plain-text logs to PATH (also HMN_LOG_PLAIN_FILE)")
 	logJSONLFile := flag.String("log-jsonl-file", "", "append JSON Lines logs to PATH (also HMN_LOG_JSONL_FILE)")
+	externalInputReceiptDir := flag.String("external-input-receipt-dir", "", "lab-only directory for run-bound Core score receipts")
 	opsToken := flag.String("ops-token", "", "operator bearer token enabling /api/explain + /api/counters (empty = disabled; also HMN_OPS_TOKEN)")
 	flag.Parse()
 	explicitFlags := make(map[string]bool)
@@ -65,6 +66,9 @@ func main() {
 	}
 
 	a := newApp(*webDir, masterKey, *ritOn)
+	if err := a.configureExternalInputReceipts(*externalInputReceiptDir); err != nil {
+		log.Fatal("external-input receipt configuration failed")
+	}
 	// Ceiling-guard #1: when the Core serves the SoT-36 Pass as an attestation front-end
 	// behind a Gate, a solved Pass must produce a step-up receipt the Gate can verify. Read
 	// the SHARED HMN_TOKEN_KEY (the same var the Gate uses); absent it, no receipt is

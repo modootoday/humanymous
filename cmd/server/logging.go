@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/logger"
@@ -131,6 +132,26 @@ func closeOperationalLogger(runtime *logger.Runtime) {
 	ctx, cancel := context.WithTimeout(context.Background(), loggingShutdownTimeout)
 	defer cancel()
 	_ = runtime.Close(ctx)
+}
+
+const externalInputLabelPrefix = "external-input/"
+
+func canonicalExternalInputLabel(raw string) (string, bool) {
+	if len(raw) <= len(externalInputLabelPrefix) || len(raw) > 192 ||
+		!strings.HasPrefix(raw, externalInputLabelPrefix) {
+		return "", false
+	}
+	for _, current := range raw {
+		switch {
+		case current >= 'a' && current <= 'z':
+		case current >= 'A' && current <= 'Z':
+		case current >= '0' && current <= '9':
+		case strings.ContainsRune("-._/:", current):
+		default:
+			return "", false
+		}
+	}
+	return raw, true
 }
 
 // withObservability is strictly opt-in. It emits only fixed event identifiers

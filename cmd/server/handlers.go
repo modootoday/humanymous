@@ -85,7 +85,17 @@ func (a *app) handleCollect(w http.ResponseWriter, r *http.Request) {
 	a.enrichServerSignals(sid, r, client, ritSig, now)
 
 	res, rep := a.scoreAndStore(sid, now)
-	a.publishScored(sid, r, &rep)                        // SoT-30 tap A
+	a.publishScored(sid, r, &rep) // SoT-30 tap A
+	if err := a.writeExternalInputScoreReceipt(
+		r.URL.Query().Get("label"), sid, res, rep,
+	); err != nil {
+		a.log.Error("External-input evidence receipt failed.",
+			"component", "core.measurement",
+			"event", "measurement.receipt_failed",
+			"error_class", "receipt_write")
+		http.Error(w, "measurement receipt failed", http.StatusInternalServerError)
+		return
+	}
 	a.issuePoWHeader(w, sid, res.Verdict, res.RiskScore) // SoT-13
 	writeCollectResponse(w, sid, res)
 }

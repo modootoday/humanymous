@@ -46,8 +46,9 @@ type app struct {
 	webDir    string
 	ritOn     bool
 
-	log        *slog.Logger // PLAN-07 R11 structured logger (DiscardHandler unless -log-level set)
-	logEnabled bool         // fast gate: hot-path verdict/request emits are skipped entirely when off
+	log                   *slog.Logger // PLAN-07 R11 structured logger (DiscardHandler unless -log-level set)
+	logEnabled            bool         // fast gate: hot-path verdict/request emits are skipped entirely when off
+	externalInputReceipts *externalInputReceiptWriter
 
 	started  time.Time // process start, for /healthz + counters uptime (PLAN-07 R17)
 	opsToken string    // operator bearer for /api/explain + /api/counters (empty = routes absent, PLAN-07 R14/R17)

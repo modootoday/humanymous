@@ -178,3 +178,23 @@ func TestObservabilityOmitsPathAndPanicMaterial(t *testing.T) {
 		t.Fatalf("panic event missing: %s", text)
 	}
 }
+
+func TestCanonicalExternalInputLabel(t *testing.T) {
+	for _, value := range []string{
+		"",
+		"external-input/",
+		"external-input/run id/profile",
+		"external-input/run\n/profile",
+		"other/run/profile",
+		strings.Repeat("x", 193),
+	} {
+		if _, ok := canonicalExternalInputLabel(value); ok {
+			t.Errorf("accepted unsafe label %q", value)
+		}
+	}
+	if got, ok := canonicalExternalInputLabel(
+		"external-input/run-1/external_input_dom_vusb",
+	); !ok || got == "" {
+		t.Fatal("canonical lab label was rejected")
+	}
+}
