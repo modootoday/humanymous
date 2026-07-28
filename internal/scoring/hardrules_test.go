@@ -166,6 +166,27 @@ func TestHR24_ProxyVPNResiduals(t *testing.T) {
 	}
 }
 
+// TestHR24_H2ProtocolSplit pins the freeze-spend (2026-07-28) enforcement of the HTTP/2
+// protocol-split residuals (wargame R3/R6): a browser-UA client whose h2 fingerprint is not
+// a coherent real browser's → HR-24 CHALLENGE under the default net.h2.spoof=enforce, and
+// disarmed to observability by an operator net.h2.spoof=monitor (h2-reframing-proxy deployment).
+func TestHR24_H2ProtocolSplit(t *testing.T) {
+	for _, id := range []string{"l5.http2.unknown_under_browser", "l5.http2.browser_settings_atypical"} {
+		r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+			[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+		r.Network.Signals = append(r.Network.Signals,
+			signals.New(id, true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+		if v := NewEngine().Score(r); v.HardRuleFired != "HR-24" || v.Verdict != VerdictChallenge {
+			t.Fatalf("%s want CHALLENGE/HR-24 got %s/%s", id, v.Verdict, v.HardRuleFired)
+		}
+		e := NewEngine()
+		e.ConfigureFull(DefaultPolicy(), nil, nil, map[string]string{"net.h2.spoof": "monitor"})
+		if v := e.Score(r); v.HardRuleFired == "HR-24" {
+			t.Fatalf("%s under net.h2.spoof monitor must NOT fire HR-24, got %s/%s", id, v.Verdict, v.HardRuleFired)
+		}
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),

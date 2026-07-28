@@ -201,6 +201,18 @@ var promotionRules = []promoRule{
 			(c.fired("l5.proxy.tor_circuit") || c.fired("l5.ip.tor_exit")) {
 			return true
 		}
+		// HTTP/2 protocol-split (wargame R3/R6, freeze-spend 2026-07-28): a browser-UA
+		// client whose HTTP/2 fingerprint is not a coherent real browser's — the engine is
+		// unclassifiable (unknown pseudo-order) OR classified as a browser purely by
+		// pseudo-order while shipping a non-browser SETTINGS profile (no HEADER_TABLE_SIZE).
+		// A real browser connecting directly always presents a coherent h2 profile, so this
+		// is FP-safe for direct clients; the one deployment-delta is an h2-reframing reverse
+		// proxy in front (which also trips l5.tls.not_observed) — operators set net.h2.spoof
+		// to monitor there, exactly as for the proxy/VPN/Tor residuals. CHALLENGE, not DENY.
+		if netClassMode(c.netPolicy, "net.h2.spoof") == "enforce" && c.browserClaim &&
+			(c.fired("l5.http2.unknown_under_browser") || c.fired("l5.http2.browser_settings_atypical")) {
+			return true
+		}
 		if netClassMode(c.netPolicy, "net.proxy.hop") == "enforce" &&
 			c.fired("l5.header.xff_multi_hop") && c.fired("l5.traffic.ip_hop") {
 			return true
