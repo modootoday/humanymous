@@ -129,6 +129,15 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21q. **Match the vendor gate to how widely the tell is shared** (R12, TLS certificate_compression
+    absence, freeze-spend). compress_certificate (RFC 8879, ext 27) is sent by ALL modern browser
+    engines (Chrome, Firefox, Safari) — unlike ALPS (R10), which is Chromium-only. So the gate is
+    the BROADER `claimsBrowserUA` (Chrome/Firefox/Safari), not the Chromium-only `chrome/` token:
+    a too-narrow gate would MISS a Firefox/Safari-UA impersonator that omits ext 27; a too-broad
+    "any client" gate would FP the UA-less h2 health-checkers the Docker baseline actually
+    contained. Keep the same precondition gate (h2-in-ALPN) and the same residual→HR-24 pattern
+    (new class net.tls.certcomp, operator monitor override for a cert-compression-stripping
+    middlebox). Measure: every real browser (Chrome/Firefox/Safari) carries ext 27, so human FP 0.
 21p. **A multi-component fingerprint isn't closed until every component is checked; use a
     threshold with margin, not an exact value** (R11, HTTP/2 flow-control WINDOW_UPDATE,
     freeze-spend). The Akamai h2 fingerprint is SETTINGS|WINDOW_UPDATE|PRIORITY|pseudo-order;
