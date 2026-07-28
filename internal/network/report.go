@@ -2,6 +2,8 @@ package network
 
 import (
 	"net"
+	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/modootoday/humanymous/internal/signals"
@@ -51,6 +53,15 @@ func Build(obs Observation) signals.NetworkReport {
 		add("l5.tls.ja3", ja3h, signals.VerdictUnknown, "compat")
 		if !hasGREASE(obs.Hello) {
 			add("l5.tls.grease_absent", true, signals.VerdictBot, "no GREASE (non-browser TLS stack)")
+		}
+		// Score-exempt residual: a UA claiming Chrome >= 131 (or Firefox >= 132) whose TLS
+		// ClientHello supported_groups lacks the X25519MLKEM768 post-quantum group (0x11EC).
+		// Real Chrome 131+ / Firefox 132+ send it by default (measured against real headless
+		// Chromium 149 — pq=true); a scraper pinning a pre-PQ profile (old uTLS / HelloChrome_120
+		// / curl-impersonate) does not. 2026 vector; SoT-02. Acted on by HR-24 NET-POLICY only.
+		if claimsPQBrowser(obs.Header.UserAgent) && !hasPQKeyShare(obs.Hello.Curves) {
+			add("l5.tls.pq_keyshare", true, signals.VerdictSuspicious,
+				"UA claims a PQ-era browser but the TLS ClientHello omits X25519MLKEM768")
 		}
 	} else {
 		// No ClientHello captured — the entire TLS/JA3/JA4 network plane is INACTIVE for this
@@ -200,6 +211,53 @@ func chromeUAOrderAnomaly(h HeaderInfo) bool {
 		}
 	}
 	return uaPos >= 0 && chPos >= 0 && uaPos < chPos
+}
+
+// pqGroupX25519MLKEM768 is the IANA supported-group codepoint for the hybrid post-quantum
+// key exchange Chrome 131+ / Firefox 132+ send by default (2026).
+const pqGroupX25519MLKEM768 = 0x11EC
+
+// hasPQKeyShare reports whether the TLS supported_groups advertise X25519MLKEM768.
+func hasPQKeyShare(curves []uint16) bool {
+	return slices.Contains(curves, pqGroupX25519MLKEM768)
+}
+
+// claimsPQBrowser reports whether the UA claims a browser version that ships the
+// post-quantum key share by DEFAULT — Chrome/Chromium >= 131 or Firefox >= 132. The check
+// is version-gated so a genuine older browser (which never sent PQ) is never accused; only a
+// client asserting a PQ-era version without the key share is a mismatch. Edge is excluded
+// (its rollout differs).
+func claimsPQBrowser(ua string) bool {
+	l := strings.ToLower(ua)
+	if strings.Contains(l, "edg/") {
+		return false
+	}
+	if v := uaVersionAfter(l, "chrome/"); v >= 131 {
+		return true
+	}
+	if v := uaVersionAfter(l, "firefox/"); v >= 132 {
+		return true
+	}
+	return false
+}
+
+// uaVersionAfter extracts the integer major version immediately following token in ua
+// (e.g. "chrome/149.0.7827.55" -> 149). Returns 0 if absent/unparseable.
+func uaVersionAfter(ua, token string) int {
+	i := strings.Index(ua, token)
+	if i < 0 {
+		return 0
+	}
+	rest := ua[i+len(token):]
+	end := 0
+	for end < len(rest) && rest[end] >= '0' && rest[end] <= '9' {
+		end++
+	}
+	if end == 0 {
+		return 0
+	}
+	n, _ := strconv.Atoi(rest[:end])
+	return n
 }
 
 func claimsBrowserUA(ua string) bool {

@@ -84,6 +84,8 @@ func main() {
 		v, err = h2SettingsSplit()
 	case "header-order-split":
 		v, err = headerOrderSplit()
+	case "pq-absent":
+		v, err = pqAbsent()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":

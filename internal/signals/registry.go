@@ -184,7 +184,12 @@ var (
 	_ = def(Definition{"l5.tls.not_observed", LayerNetwork, 0, true, "tls", "no ClientHello captured (network plane inactive)"})
 	_ = def(Definition{"l5.tls.ja4_engine", LayerNetwork, 30, nil, "tls", "JA4 engine vs UA"})
 	_ = def(Definition{"l5.tls.grease_absent", LayerNetwork, 15, nil, "tls", "no GREASE (non-browser)"})
-	_ = def(Definition{"l5.tls.pq_keyshare", LayerNetwork, 10, nil, "tls", "missing PQ keyshare for claimed Chrome"})
+	// WIRED (wargame R9, freeze-spend 2026-07-28): score-exempt (weight 10 -> 0). A UA claiming
+	// a post-quantum-era browser (Chrome >= 131 / Firefox >= 132) whose TLS ClientHello omits
+	// the X25519MLKEM768 group (0x11EC) that those browsers send by default (measured vs real
+	// headless Chromium 149). Acted on by HR-24 NET-POLICY (net.tls.pq, operator-overridable —
+	// a PQ-disabling middlebox/policy is the deployment-delta), not risk combine.
+	_ = def(Definition{"l5.tls.pq_keyshare", LayerNetwork, 0, true, "tls", "missing PQ keyshare for claimed Chrome"})
 	_ = def(Definition{"l5.http2.engine_mismatch", LayerNetwork, 30, nil, "http2", "h2 profile engine vs UA"})
 	// Score-exempt residual (weight 0): a browser-claiming UA over an HTTP/2 profile the
 	// engine cannot classify as any known browser (EngineFromH2 == unknown). A real browser

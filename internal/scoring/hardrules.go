@@ -223,6 +223,14 @@ var promotionRules = []promoRule{
 			c.fired("l5.header.order") {
 			return true
 		}
+		// Post-quantum TLS mismatch (wargame R9, freeze-spend 2026-07-28): a UA claiming a
+		// PQ-era browser (Chrome >= 131 / Firefox >= 132) whose ClientHello omits X25519MLKEM768.
+		// Real PQ-era browsers send it by default (measured); FP-safe. The deployment-delta is a
+		// PQ-disabling middlebox/enterprise policy — operators set net.tls.pq to monitor there.
+		if netClassMode(c.netPolicy, "net.tls.pq") == "enforce" && c.browserClaim &&
+			c.fired("l5.tls.pq_keyshare") {
+			return true
+		}
 		if netClassMode(c.netPolicy, "net.proxy.hop") == "enforce" &&
 			c.fired("l5.header.xff_multi_hop") && c.fired("l5.traffic.ip_hop") {
 			return true

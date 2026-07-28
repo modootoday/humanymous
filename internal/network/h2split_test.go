@@ -117,3 +117,37 @@ func TestHeaderOrderAnomalyResidual(t *testing.T) {
 		t.Error("a non-Chrome UA must NOT fire the Chrome-scoped header-order residual")
 	}
 }
+
+// A UA claiming a post-quantum-era browser (Chrome >= 131 / Firefox >= 132) whose TLS
+// supported_groups omit X25519MLKEM768 (0x11EC) is a scraper pinning a pre-PQ profile. Real
+// PQ-era browsers send it by default (measured vs real headless Chromium 149: curves include
+// 4588). Version-gated so an older browser is never accused. Wargame R9 (2026-07-28).
+func TestPQKeyShareResidual(t *testing.T) {
+	fire := func(ua string, curves []uint16) bool {
+		return buildIDs(Observation{Hello: &ClientHello{Curves: curves}, Header: HeaderInfo{UserAgent: ua}})["l5.tls.pq_keyshare"]
+	}
+	chrome149 := "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36"
+	realCurves := []uint16{51914, 0x11EC, 29, 23, 24} // measured real Chromium 149 (has PQ)
+	preCurves := []uint16{64250, 29, 23, 24}          // pre-PQ parrot (no 0x11EC)
+
+	// Real Chrome 149 curves (with 0x11EC): quiet.
+	if fire(chrome149, realCurves) {
+		t.Error("real Chrome 149 (with X25519MLKEM768) must NOT fire l5.tls.pq_keyshare")
+	}
+	// Chrome/149 UA but pre-PQ curves (the spoof): fires.
+	if !fire(chrome149, preCurves) {
+		t.Error("Chrome/149 UA without X25519MLKEM768 must fire l5.tls.pq_keyshare")
+	}
+	// Older Chrome (126, pre-PQ era) without 0x11EC: quiet (version-gated, no false accusation).
+	if fire("Mozilla/5.0 (Windows NT 10.0) Chrome/126.0.0.0 Safari/537.36", preCurves) {
+		t.Error("Chrome/126 (pre-PQ era) must NOT fire — version gate")
+	}
+	// Edge (different rollout) claiming 131 without PQ: quiet.
+	if fire("Mozilla/5.0 (Windows NT 10.0) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0", preCurves) {
+		t.Error("Edge must NOT fire the PQ residual")
+	}
+	// Firefox 132 without PQ: fires.
+	if !fire("Mozilla/5.0 (Windows NT 10.0; rv:132.0) Gecko/20100101 Firefox/132.0", preCurves) {
+		t.Error("Firefox/132 without X25519MLKEM768 must fire l5.tls.pq_keyshare")
+	}
+}

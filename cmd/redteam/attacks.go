@@ -928,6 +928,36 @@ func h2ProtocolSplit() (map[string]any, error) {
 	return v, nil
 }
 
+// chromePQUA claims Chrome 131 — the first stable Chrome that ships the X25519MLKEM768
+// hybrid post-quantum key share by DEFAULT (2026). A scraper that keeps a pre-PQ TLS
+// fingerprint while advertising this UA is the exact PQ mismatch R9 catches.
+const chromePQUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+
+// coherentReportBodyPQ is coherentReportBody with the UA bumped to the PQ-era Chrome so the
+// report body, header UA, and sec-ch-ua all agree — isolating the TLS PQ omission as the tell.
+func coherentReportBodyPQ() string {
+	return strings.Replace(coherentReportBody(), chromeUA, chromePQUA, 1)
+}
+
+// pqAbsent pins a scraper that keeps a PRE-post-quantum uTLS fingerprint (HelloChrome_100,
+// whose ClientHello supported_groups lack X25519MLKEM768 / 0x11EC) while its UA claims
+// Chrome 131 — the first stable Chrome that sends the PQ key share by default (measured vs
+// real headless Chromium 149, which does send it). Headers, sec-ch-ua, report body, and RIT
+// are all coherent, so the ONLY residual tell is the TLS PQ omission -> l5.tls.pq_keyshare
+// -> HR-24 CHALLENGE. Web-research grounding: Chrome shipped X25519MLKEM768 on by default in
+// M131 (Nov 2024); Firefox 132; scrapers pinning older parrots (curl_cffi, older uTLS) lack it.
+func pqAbsent() (map[string]any, error) {
+	cookie, seed, n, err := session(utls.HelloChrome_100)
+	if err != nil {
+		return nil, err
+	}
+	sid := sidFromCookie(cookie)
+	body := coherentReportBodyPQ()
+	v, _, err := signedCollectHdr(utls.HelloChrome_100, chromePQUA, cookie, sid, seed, n+1, body,
+		map[string]string{"sec-ch-ua": `"Chromium";v="131", "Google Chrome";v="131", "Not.A/Brand";v="24"`})
+	return v, err
+}
+
 // headerOrderSplit sends a coherent Chrome client (real Chrome uTLS, coherent report, RIT-
 // signed) over HTTP/1.1 but with the request headers in a NON-BROWSER order: user-agent
 // BEFORE the sec-ch-ua client-hints. Real Chrome always emits the client-hints cluster
