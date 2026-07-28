@@ -129,6 +129,14 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21k. **A composite fingerprint checked on ONE component is spoofable on that component**
+    (R6, web-researched h2 SETTINGS split). The 2026 h2 fingerprint = pseudo-order + SETTINGS +
+    WINDOW_UPDATE, but `EngineFromH2` keyed the browsers on pseudo-order ALONE, so a raw framer
+    sending Chrome's m,a,s,p with Go SETTINGS is misclassified Chrome and reaches ALLOW. Prove
+    the classifier bug with a deterministic unit test; freeze-safe residual keys on a
+    protocol-stable component the mimic omits (HEADER_TABLE_SIZE — all browsers send it, Go
+    doesn't). Live h2 note: send SETTINGS + first HEADERS back-to-back (peekH2 captures the
+    order before the server's SETTINGS; waiting deadlocks the fingerprint capture).
 21j. **Verify WHICH layer actually defends — a comment can mis-attribute it** (R5, web-researched
     Pass token-reuse). The SoT-36 Pass anti-replay `traceDigest` claimed 1ms quantization was
     "coarser than any perturbation an attacker can hide below" — false: ≥1ms jitter is within
