@@ -129,6 +129,13 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21j. **Verify WHICH layer actually defends — a comment can mis-attribute it** (R5, web-researched
+    Pass token-reuse). The SoT-36 Pass anti-replay `traceDigest` claimed 1ms quantization was
+    "coarser than any perturbation an attacker can hide below" — false: ≥1ms jitter is within
+    human variance, so a captured placement-INDEPENDENT motor trace replays across brute-forced
+    placements. The system still HOLDS, but via the per-solve COST axes (velocity + attestation
+    + PoW), not the anti-replay. Fix the over-claim; do NOT add a motor/speed gate (rule 61 Pass
+    a11y). Real anti-replay hardening (placement-bound proof) is a11y-sensitive → user decision.
 21i. **A weighted registry signal can be DEAD or STRUCTURALLY unobservable** (R4). `l5.header.order`
     (w20) was never emitted, and the data it needs (h1 wire header order) is destroyed upstream —
     Go's net/http map + `sort.Strings` in the adapter. A field doc claiming "wire order" while the
