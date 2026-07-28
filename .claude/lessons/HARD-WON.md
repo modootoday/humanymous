@@ -129,6 +129,13 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21l. **Enforce a detection residual via NET-POLICY, not a categorical block** (R7, user-authorized
+    freeze-spend). To convert the R3/R6 h2 residuals to live CHALLENGE without an
+    isDatacenterIP-class mass-FP, route them through HR-24 under a new operator-overridable
+    class (net.h2.spoof, enforce default / monitor override). FP-safe because a DIRECT browser
+    has a coherent h2; the only deployment-delta (an h2-reframing proxy) is what monitor is for.
+    Verdict-altering ⇒ SoT-37 policy-version, `!` marker; MANDATORY Docker gate (human FP 0 is
+    the decisive check — the real-Chromium baseline was byte-identical before/after).
 21k. **A composite fingerprint checked on ONE component is spoofable on that component**
     (R6, web-researched h2 SETTINGS split). The 2026 h2 fingerprint = pseudo-order + SETTINGS +
     WINDOW_UPDATE, but `EngineFromH2` keyed the browsers on pseudo-order ALONE, so a raw framer
