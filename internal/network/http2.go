@@ -48,6 +48,22 @@ func (f H2Fingerprint) Akamai() string {
 // PseudoString returns the pseudo-header order joined (e.g. "m,a,s,p").
 func (f H2Fingerprint) PseudoString() string { return strings.Join(f.PseudoOrder, ",") }
 
+// isBrowserEngine reports whether an engine label is one of the three real browsers
+// (EngineFromH2 keys these on pseudo-order alone).
+func isBrowserEngine(engine string) bool {
+	return engine == EngineChrome || engine == EngineFirefox || engine == EngineSafari
+}
+
+// hasSetting reports whether the client sent the given SETTINGS id.
+func (f H2Fingerprint) hasSetting(id uint16) bool {
+	for _, s := range f.Settings {
+		if s.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
 // settingsMap returns the SETTINGS as an id->value map (order lost).
 func (f H2Fingerprint) settingsMap() map[uint16]uint32 {
 	m := map[uint16]uint32{}

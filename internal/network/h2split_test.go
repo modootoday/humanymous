@@ -45,3 +45,41 @@ func TestH2UnknownUnderBrowserResidual(t *testing.T) {
 		t.Error("an h1 connection (no h2 fingerprint) must NOT raise the residual")
 	}
 }
+
+// EngineFromH2 classifies the three browsers on pseudo-order ALONE, so a library that
+// mimics Chrome's m,a,s,p but ships a non-browser SETTINGS profile is accepted as Chrome.
+// Every real browser sends SETTINGS_HEADER_TABLE_SIZE (id 1); Go and many h2 clients omit
+// it — the score-exempt residual l5.http2.browser_settings_atypical flags that split.
+// Wargame R6 (2026-07-27).
+func TestH2BrowserSettingsAtypicalResidual(t *testing.T) {
+	chromeUA := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+
+	// Chrome pseudo-order + Go's SETTINGS (no HEADER_TABLE_SIZE): misclassified Chrome -> residual.
+	mimic := &H2Fingerprint{
+		PseudoOrder:  []string{"m", "a", "s", "p"},
+		Settings:     []H2Setting{{2, 0}, {4, 4194304}, {5, 16384}, {6, 10485760}},
+		WindowUpdate: 1073741824,
+	}
+	if EngineFromH2(*mimic) != EngineChrome {
+		t.Fatal("precondition: mimic must classify as Chrome by pseudo-order")
+	}
+	if !buildIDs(Observation{H2: mimic, Header: HeaderInfo{UserAgent: chromeUA}})["l5.http2.browser_settings_atypical"] {
+		t.Error("Chrome pseudo-order without HEADER_TABLE_SIZE must raise the residual")
+	}
+
+	// Real Chrome SETTINGS (with HEADER_TABLE_SIZE id 1): quiet.
+	realChrome := &H2Fingerprint{
+		PseudoOrder:  []string{"m", "a", "s", "p"},
+		Settings:     []H2Setting{{1, 65536}, {2, 0}, {4, 6291456}, {6, 262144}},
+		WindowUpdate: 15663105,
+	}
+	if buildIDs(Observation{H2: realChrome, Header: HeaderInfo{UserAgent: chromeUA}})["l5.http2.browser_settings_atypical"] {
+		t.Error("a real Chrome SETTINGS profile (with HEADER_TABLE_SIZE) must NOT raise the residual")
+	}
+
+	// Non-browser pseudo-order (Go a,m,p,s -> unknown): quiet (covered by unknown_under_browser).
+	goPseudo := &H2Fingerprint{PseudoOrder: []string{"a", "m", "p", "s"}, Settings: []H2Setting{{2, 0}, {4, 4194304}}}
+	if buildIDs(Observation{H2: goPseudo, Header: HeaderInfo{UserAgent: chromeUA}})["l5.http2.browser_settings_atypical"] {
+		t.Error("a non-browser pseudo-order must NOT raise the browser-scoped residual")
+	}
+}

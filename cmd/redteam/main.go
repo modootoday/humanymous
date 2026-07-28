@@ -57,7 +57,7 @@ import (
 )
 
 var (
-	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|pow-fast-solve|pow-launder|h2-protocol-split|nonbrowser-ua|sec-chua-absent|sec-fetch-absent|rit-absent|ja4-churn|multi-axis-rotate|grease-absent-js|xff-spoof|squid-forward|openvpn-exit|wireguard-hop|tor-exit|anon-proxy-chain|elite-anon-proxy|cdn-ip-spoof|proxy-ua-rotate|fp-churn-proxy|stacked-proxy-vpn|socks-exit-hop")
+	attack = flag.String("attack", "", "tls-static|tls-rotate|ua-rotate|rit-replay|rit-tamper|flood|distributed|privacy-evasion|signal-forgery|pow-fast-solve|pow-launder|h2-protocol-split|h2-settings-split|nonbrowser-ua|sec-chua-absent|sec-fetch-absent|rit-absent|ja4-churn|multi-axis-rotate|grease-absent-js|xff-spoof|squid-forward|openvpn-exit|wireguard-hop|tor-exit|anon-proxy-chain|elite-anon-proxy|cdn-ip-spoof|proxy-ua-rotate|fp-churn-proxy|stacked-proxy-vpn|socks-exit-hop")
 	host   = flag.String("host", "127.0.0.1:8443", "target host:port")
 )
 
@@ -80,6 +80,8 @@ func main() {
 		v, err = powLaunder()
 	case "h2-protocol-split":
 		v, err = h2ProtocolSplit()
+	case "h2-settings-split":
+		v, err = h2SettingsSplit()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":

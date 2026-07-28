@@ -106,6 +106,25 @@ func TestEngineFromH2(t *testing.T) {
 	}
 }
 
+// EngineFromH2 classifies by pseudo-header ORDER ALONE for the three browsers — a
+// client that mimics Chrome's m,a,s,p order but ships a NON-Chrome SETTINGS/
+// WINDOW_UPDATE profile (the real Go layout measured in R3: no HEADER_TABLE_SIZE,
+// a 1 GiB window update) is still classified as Chrome, so x.ua_vs_h2 stays
+// consistent. This is the 2026 "HTTP/2 fingerprint = pseudo-order + SETTINGS +
+// WINDOW_UPDATE" gap: pseudo-order is only one of three components. Wargame R6.
+func TestEngineFromH2MisclassifiesBySettings(t *testing.T) {
+	mimic := H2Fingerprint{
+		PseudoOrder:  []string{"m", "a", "s", "p"},                                 // Chrome's order
+		Settings:     []H2Setting{{2, 0}, {4, 4194304}, {5, 16384}, {6, 10485760}}, // Go's — no id1
+		WindowUpdate: 1073741824,                                                   // 1 GiB — no browser does this
+	}
+	if got := EngineFromH2(mimic); got != EngineChrome {
+		t.Fatalf("precondition: pseudo-order-only classification should call this Chrome, got %s", got)
+	}
+	// Documents the gap: a library SETTINGS profile is accepted as Chrome purely on
+	// pseudo-order. The freeze-safe residual (l5.http2.browser_settings_atypical) flags it.
+}
+
 func TestH2Akamai(t *testing.T) {
 	f := H2Fingerprint{
 		Settings:     []H2Setting{{1, 65536}, {2, 0}, {4, 6291456}, {6, 262144}},

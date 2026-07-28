@@ -193,6 +193,14 @@ var (
 	// only — it does NOT move Combine risk, so the frozen verdict is unchanged (a separate
 	// detection-release event owns any verdict-altering enforcement).
 	_ = def(Definition{"l5.http2.unknown_under_browser", LayerNetwork, 0, true, "http2", "browser UA over an unclassifiable HTTP/2 profile (audit/admin)"})
+	// Score-exempt residual (weight 0): a client whose HTTP/2 pseudo-header order was
+	// classified as a browser (Chrome/Firefox/Safari) but whose SETTINGS profile is not a
+	// real browser's — specifically it omits SETTINGS_HEADER_TABLE_SIZE (id 1), which every
+	// real browser sends and libraries (Go/many h2 clients) do not. EngineFromH2 keys the
+	// browser engines on pseudo-order ALONE, so a library that mimics the order but not the
+	// full Akamai SETTINGS/WINDOW_UPDATE profile is accepted as that browser. Audit/Console/
+	// NET-POLICY only — it moves no Combine risk, so the frozen verdict is unchanged.
+	_ = def(Definition{"l5.http2.browser_settings_atypical", LayerNetwork, 0, true, "http2", "browser HTTP/2 pseudo-order with a non-browser SETTINGS profile (audit/admin)"})
 	// RESERVED — not wired (SoT-38 truth-debt). Static header-order-vs-browser detection
 	// needs raw on-wire header capture; the server reads headers from Go's net/http map,
 	// which loses order (see HeaderInfo.OrderReliable). Its mid-session sibling

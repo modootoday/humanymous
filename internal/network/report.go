@@ -70,6 +70,15 @@ func Build(obs Observation) signals.NetworkReport {
 		for _, s := range obs.H2.Settings {
 			nr.H2Settings[itoa(s.ID)] = s.Value
 		}
+		// Score-exempt residual: EngineFromH2 keys the browser engines on pseudo-order
+		// ALONE, so a library that mimics Chrome/Firefox/Safari's order but not its SETTINGS
+		// is accepted as that browser (the 2026 h2 fingerprint is order + SETTINGS + window).
+		// Every real browser sends SETTINGS_HEADER_TABLE_SIZE (id 1); Go and many h2 clients
+		// do not — so a browser-classified profile missing it is the protocol-split tell.
+		if isBrowserEngine(nr.H2Engine) && !obs.H2.hasSetting(1) {
+			add("l5.http2.browser_settings_atypical", true, signals.VerdictSuspicious,
+				"browser HTTP/2 pseudo-order with a non-browser SETTINGS profile (no HEADER_TABLE_SIZE)")
+		}
 	}
 
 	// --- Headers ---
