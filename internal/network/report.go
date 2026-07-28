@@ -97,6 +97,15 @@ func Build(obs Observation) signals.NetworkReport {
 			"browser UA over an unclassifiable HTTP/2 profile (protocol-split residual)")
 	}
 
+	// Score-exempt residual (weight 0): a Chrome-claiming request whose on-wire header order
+	// (only when OrderReliable — raw h1 peek / h2 HEADERS frame) places user-agent BEFORE the
+	// sec-ch-ua client-hints. Real Chrome always emits the client-hints cluster first (measured
+	// against real headless Chromium; SoT-02 / R8). Acted on by HR-24 NET-POLICY only.
+	if h.OrderReliable && chromeUAOrderAnomaly(h) {
+		add("l5.header.order", true, signals.VerdictSuspicious,
+			"Chrome UA but user-agent precedes sec-ch-ua on the wire (non-browser header order)")
+	}
+
 	if h.HasUppercaseInH2() {
 		add("l5.header.h2_uppercase", true, signals.VerdictBot, "uppercase header in HTTP/2 (malformed)")
 	}
@@ -165,6 +174,34 @@ func Build(obs Observation) signals.NetworkReport {
 // or Safari). A real browser produces a KNOWN HTTP/2 fingerprint, so pairing such a claim
 // with an unclassifiable h2 profile is the protocol-split residual. Library UAs
 // (python-requests, Go-http-client, curl) return false and are covered by x.non_browser_ua.
+// chromeUAOrderAnomaly reports whether a Chrome-claiming request placed user-agent BEFORE
+// the sec-ch-ua client-hints on the wire. Real Chrome always sends the sec-ch-ua cluster
+// before user-agent (client-hints-first, stable across versions and request types — nav and
+// fetch); a header-spoofing library that appends the client hints after user-agent inverts
+// it. FP-safe: fires ONLY when both headers are present AND the order is inverted, so a real
+// browser (sec-ch-ua first, or no sec-ch-ua) never trips it. Names must be wire order
+// (OrderReliable) — the caller gates on that.
+func chromeUAOrderAnomaly(h HeaderInfo) bool {
+	l := strings.ToLower(h.UserAgent)
+	if !strings.Contains(l, "chrome") || strings.Contains(l, "edg/") {
+		return false
+	}
+	uaPos, chPos := -1, -1
+	for i, n := range h.Names {
+		switch strings.ToLower(n) {
+		case "user-agent":
+			if uaPos < 0 {
+				uaPos = i
+			}
+		case "sec-ch-ua":
+			if chPos < 0 {
+				chPos = i
+			}
+		}
+	}
+	return uaPos >= 0 && chPos >= 0 && uaPos < chPos
+}
+
 func claimsBrowserUA(ua string) bool {
 	l := strings.ToLower(ua)
 	if !strings.Contains(l, "mozilla/") {

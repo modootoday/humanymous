@@ -215,6 +215,7 @@ func (a *app) serveConn(raw net.Conn, cfg *tls.Config, handler http.Handler, h2s
 		fp, r, perr := peekH2(tconn)
 		if fp != nil {
 			a.reg.SetH2(addr, fp)
+			a.reg.SetHeaderOrder(addr, fp.HeaderOrder)
 		}
 		if debugH2 {
 			settingsCount := 0
@@ -260,7 +261,11 @@ func (a *app) serveConn(raw net.Conn, cfg *tls.Config, handler http.Handler, h2s
 		IdleTimeout:       60 * time.Second,
 		MaxHeaderBytes:    1 << 20,
 	}
-	_ = srv.Serve(&oneConnListener{conn: tconn})
+	// Capture the on-wire header ORDER (SoT-02 / R4) before net/http maps it, then replay
+	// the consumed bytes so the standard server serves the request unchanged.
+	order, r, _ := peekH1HeaderOrder(tconn)
+	a.reg.SetHeaderOrder(addr, order)
+	_ = srv.Serve(&oneConnListener{conn: replayReadConn{Conn: tconn, r: r}})
 }
 
 // oneConnListener yields a single connection then signals the server to stop

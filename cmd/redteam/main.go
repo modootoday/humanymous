@@ -82,6 +82,8 @@ func main() {
 		v, err = h2ProtocolSplit()
 	case "h2-settings-split":
 		v, err = h2SettingsSplit()
+	case "header-order-split":
+		v, err = headerOrderSplit()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":
@@ -236,6 +238,55 @@ func doH2(helloID utls.ClientHelloID, method, path string, hdr map[string]string
 		res.cookie = strings.SplitN(sc, ";", 2)[0]
 	}
 	return res, nil
+}
+
+// doOrderedH1 sends one HTTP/1.1 request over a uTLS ClientHello with the given headers
+// written in the EXACT slice order (not a Go map), so the Red team controls the on-wire
+// header ORDER the server observes (SoT-02 / R8 header-order capture).
+func doOrderedH1(helloID utls.ClientHelloID, method, path string, ordered [][2]string, body, cookie string) (map[string]any, error) {
+	raw, err := net.Dial("tcp", *host)
+	if err != nil {
+		return nil, err
+	}
+	defer raw.Close()
+	spec, err := utls.UTLSIdToSpec(helloID)
+	if err != nil {
+		return nil, err
+	}
+	forceHTTP11(&spec)
+	uconn := utls.UClient(raw, &utls.Config{ServerName: hostname(*host), InsecureSkipVerify: true}, utls.HelloCustom)
+	if err := uconn.ApplyPreset(&spec); err != nil {
+		return nil, err
+	}
+	if err := uconn.Handshake(); err != nil {
+		return nil, err
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s %s HTTP/1.1\r\n", method, path)
+	fmt.Fprintf(&b, "Host: %s\r\n", hostname(*host))
+	for _, kv := range ordered {
+		fmt.Fprintf(&b, "%s: %s\r\n", kv[0], kv[1])
+	}
+	if cookie != "" {
+		fmt.Fprintf(&b, "Cookie: %s\r\n", cookie)
+	}
+	if body != "" {
+		fmt.Fprintf(&b, "Content-Length: %d\r\n", len(body))
+	}
+	b.WriteString("Connection: close\r\n\r\n")
+	b.WriteString(body)
+	if _, err := io.WriteString(uconn, b.String()); err != nil {
+		return nil, err
+	}
+	r, err := http.ReadResponse(bufio.NewReader(uconn), nil)
+	if err != nil {
+		return nil, err
+	}
+	defer r.Body.Close()
+	out, _ := io.ReadAll(r.Body)
+	var v map[string]any
+	_ = json.Unmarshal(out, &v)
+	return v, nil
 }
 
 // doStock sends one HTTP/1.1 request over Go's STOCK crypto/tls (no uTLS, no GREASE), so the

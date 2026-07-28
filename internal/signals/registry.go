@@ -201,12 +201,13 @@ var (
 	// full Akamai SETTINGS/WINDOW_UPDATE profile is accepted as that browser. Audit/Console/
 	// NET-POLICY only — it moves no Combine risk, so the frozen verdict is unchanged.
 	_ = def(Definition{"l5.http2.browser_settings_atypical", LayerNetwork, 0, true, "http2", "browser HTTP/2 pseudo-order with a non-browser SETTINGS profile (audit/admin)"})
-	// RESERVED — not wired (SoT-38 truth-debt). Static header-order-vs-browser detection
-	// needs raw on-wire header capture; the server reads headers from Go's net/http map,
-	// which loses order (see HeaderInfo.OrderReliable). Its mid-session sibling
-	// l5.traffic.header_order_shift is DISABLED for the same reason. Kept as a placeholder
-	// so the id is stable if a raw-capture front end is added; it emits no signal today.
-	_ = def(Definition{"l5.header.order", LayerNetwork, 20, nil, "header", "header order vs claimed browser"})
+	// WIRED (wargame R8, freeze-spend 2026-07-28): a raw on-wire header-order capture now
+	// feeds this (h1 peek / h2 HEADERS frame → HeaderInfo.OrderReliable). Score-exempt
+	// (weight 0): a Chrome-UA request whose client-hints (sec-ch-ua) come AFTER user-agent is
+	// a non-browser order — real Chrome always sends the client-hints cluster before user-agent
+	// (measured against real headless Chromium). Acted on by HR-24 NET-POLICY (net.header.order,
+	// operator-overridable), not risk combine, so the frozen score is unchanged.
+	_ = def(Definition{"l5.header.order", LayerNetwork, 0, true, "header", "header order vs claimed browser"})
 	_ = def(Definition{"l5.header.h2_uppercase", LayerNetwork, 25, nil, "header", "uppercase header in h2 (malformed)"})
 	_ = def(Definition{"l5.header.sec_fetch_missing", LayerNetwork, 25, nil, "header", "Chrome UA but sec-fetch missing"})
 	_ = def(Definition{"l5.header.accept_encoding", LayerNetwork, 8, nil, "header", "accept-encoding mismatch"})

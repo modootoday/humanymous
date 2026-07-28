@@ -187,6 +187,24 @@ func TestHR24_H2ProtocolSplit(t *testing.T) {
 	}
 }
 
+// TestHR24_HeaderOrder pins the R8 freeze-spend enforcement: a Chrome-UA request whose
+// on-wire header order fired l5.header.order → HR-24 CHALLENGE by default (net.header.order
+// enforce), disarmed by an operator net.header.order=monitor (header-reordering proxy).
+func TestHR24_HeaderOrder(t *testing.T) {
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r.Network.Signals = append(r.Network.Signals,
+		signals.New("l5.header.order", true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r); v.HardRuleFired != "HR-24" || v.Verdict != VerdictChallenge {
+		t.Fatalf("header-order anomaly want CHALLENGE/HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+	e := NewEngine()
+	e.ConfigureFull(DefaultPolicy(), nil, nil, map[string]string{"net.header.order": "monitor"})
+	if v := e.Score(r); v.HardRuleFired == "HR-24" {
+		t.Fatalf("header-order under net.header.order monitor must NOT fire HR-24, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),

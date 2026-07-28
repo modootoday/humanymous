@@ -213,6 +213,16 @@ var promotionRules = []promoRule{
 			(c.fired("l5.http2.unknown_under_browser") || c.fired("l5.http2.browser_settings_atypical")) {
 			return true
 		}
+		// On-wire header ORDER anomaly (wargame R8, freeze-spend 2026-07-28): a Chrome-UA
+		// request whose user-agent precedes the sec-ch-ua client-hints — real Chrome sends the
+		// client-hints cluster first. FP-safe for direct browsers (validated against real
+		// headless Chromium; fires only when both headers are present AND inverted). The
+		// deployment-delta is a header-reordering proxy in front — operators set
+		// net.header.order to monitor there.
+		if netClassMode(c.netPolicy, "net.header.order") == "enforce" && c.browserClaim &&
+			c.fired("l5.header.order") {
+			return true
+		}
 		if netClassMode(c.netPolicy, "net.proxy.hop") == "enforce" &&
 			c.fired("l5.header.xff_multi_hop") && c.fired("l5.traffic.ip_hop") {
 			return true

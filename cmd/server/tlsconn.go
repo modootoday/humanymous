@@ -76,18 +76,42 @@ func (c *captureConn) Close() error {
 // so we key by remote address which is unique per connection). It also holds the
 // captured HTTP/2 fingerprint per address (SoT-02 §HTTP/2).
 type connRegistry struct {
-	mu    sync.Mutex
-	m     map[string]*captureConn
-	h2    map[string]*network.H2Fingerprint
-	abuse map[string]string // remoteAddr -> HTTP/2 DoS signal id (SoT-17)
+	mu       sync.Mutex
+	m        map[string]*captureConn
+	h2       map[string]*network.H2Fingerprint
+	abuse    map[string]string   // remoteAddr -> HTTP/2 DoS signal id (SoT-17)
+	hdrOrder map[string][]string // remoteAddr -> on-wire request header names (SoT-02 header order)
 }
 
 func newConnRegistry() *connRegistry {
 	return &connRegistry{
-		m:     map[string]*captureConn{},
-		h2:    map[string]*network.H2Fingerprint{},
-		abuse: map[string]string{},
+		m:        map[string]*captureConn{},
+		h2:       map[string]*network.H2Fingerprint{},
+		abuse:    map[string]string{},
+		hdrOrder: map[string][]string{},
 	}
+}
+
+// SetHeaderOrder records the on-wire request header-name order for a remote address,
+// captured before Go's net/http map destroys it (h1 raw peek / h2 HEADERS frame).
+// First-write-wins: the first request on the connection pins the order.
+func (r *connRegistry) SetHeaderOrder(addr string, order []string) {
+	if len(order) == 0 {
+		return
+	}
+	r.mu.Lock()
+	if _, ok := r.hdrOrder[addr]; !ok {
+		r.hdrOrder[addr] = order
+	}
+	r.mu.Unlock()
+}
+
+// HeaderOrder returns the captured on-wire header-name order for an address (nil if none).
+func (r *connRegistry) HeaderOrder(addr string) []string {
+	r.mu.Lock()
+	o := r.hdrOrder[addr]
+	r.mu.Unlock()
+	return o
 }
 
 // SetAbuse flags a remote address as an HTTP/2 DoS source.
@@ -134,6 +158,7 @@ func (r *connRegistry) remove(addr string) {
 	delete(r.m, addr)
 	delete(r.h2, addr)
 	delete(r.abuse, addr)
+	delete(r.hdrOrder, addr)
 	r.mu.Unlock()
 }
 

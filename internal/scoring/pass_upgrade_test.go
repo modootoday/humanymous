@@ -27,7 +27,10 @@ func passChallengeReport() *signals.SessionReport {
 		Network: signals.NetworkReport{
 			JA4Engine: "chrome", H2Engine: "chrome", SecFetchPresent: true, SecCHUAPresent: true,
 			Signals: []signals.Signal{
-				signals.New("l5.header.order", true, signals.VerdictBot, 1, signals.SourceServer, ""), // L5, weight 20
+				// Generic L5 weight filler (no hard rule) to keep the session borderline-CHALLENGE.
+				// Previously l5.header.order was used here, but that id is now a wired header-order
+				// residual acted on by HR-24 (R8), so it would change the verdict path.
+				signals.New("l5.header.h2_uppercase", true, signals.VerdictBot, 1, signals.SourceServer, ""), // L5, weight 25
 			},
 		},
 	}

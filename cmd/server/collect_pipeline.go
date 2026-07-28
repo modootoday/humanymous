@@ -50,10 +50,18 @@ func parseClientReport(w http.ResponseWriter, body []byte, sid string) (signals.
 // report into the session (network is pinned on the first collect).
 func (a *app) mergeObservation(sid string, r *http.Request, client signals.ClientReport, now time.Time) {
 	cip := clientIP(r)
+	hi := reqToHeaderInfo(r)
+	// Prefer the on-wire header ORDER captured before net/http mapped it (h1 raw peek /
+	// h2 HEADERS frame). When present, Names carries wire order and OrderReliable is true,
+	// so the header-order-vs-browser check (SoT-02 / R4) becomes observable.
+	if order := a.reg.HeaderOrder(r.RemoteAddr); len(order) > 0 {
+		hi.Names = order
+		hi.OrderReliable = true
+	}
 	obs := network.Observation{
 		Hello:             a.reg.Hello(r.RemoteAddr),
 		H2:                a.reg.H2(r.RemoteAddr),
-		Header:            reqToHeaderInfo(r),
+		Header:            hi,
 		IsDatacenterIP:    isDatacenterIP(cip),
 		IsProxy:           isProxyVPNIP(cip),
 		IsTorExit:         isTorExitIP(cip),

@@ -69,7 +69,11 @@ func peekH2(conn net.Conn) (*network.H2Fingerprint, io.Reader, error) {
 					if code := pseudoCode(hf.Name); code != "" {
 						fp.PseudoOrder = append(fp.PseudoOrder, code)
 					}
+					continue
 				}
+				// Regular header names in wire order (h2 mandates lowercase) — the
+				// h2 analogue of the h1 header-order capture (SoT-02 / R4).
+				fp.HeaderOrder = append(fp.HeaderOrder, hf.Name)
 			}
 			return fp, replay(&buf, conn), nil // first HEADERS -> done
 		}

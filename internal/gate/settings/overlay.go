@@ -96,7 +96,7 @@ var KnownGates = []string{
 // NetPolicyClasses known residual classes (SoT-39 §3.5).
 var NetPolicyClasses = []string{
 	"net.proxy.hop", "net.proxy.anon", "net.proxy.spoof", "net.vpn",
-	"net.tor", "net.tcp", "net.correlation", "net.h2.spoof",
+	"net.tor", "net.tcp", "net.correlation", "net.h2.spoof", "net.header.order",
 }
 
 // CanonicalJSON returns stable JSON for signing / config_version (sorted maps).

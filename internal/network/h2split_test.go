@@ -83,3 +83,37 @@ func TestH2BrowserSettingsAtypicalResidual(t *testing.T) {
 		t.Error("a non-browser pseudo-order must NOT raise the browser-scoped residual")
 	}
 }
+
+// A Chrome-UA request whose on-wire header order places user-agent BEFORE sec-ch-ua is a
+// non-browser order (real Chrome sends the client-hints cluster first — measured against real
+// headless Chromium). The score-exempt residual l5.header.order fires ONLY when the order is
+// reliable AND both headers are present AND inverted. Wargame R8 (2026-07-28).
+func TestHeaderOrderAnomalyResidual(t *testing.T) {
+	chromeUA := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+	fire := func(order []string, reliable bool, ua string) bool {
+		return buildIDs(Observation{Header: HeaderInfo{UserAgent: ua, Names: order, OrderReliable: reliable}})["l5.header.order"]
+	}
+	// Real Chrome navigation order (measured): sec-ch-ua BEFORE user-agent → quiet.
+	realNav := []string{"sec-ch-ua", "sec-ch-ua-mobile", "sec-ch-ua-platform", "upgrade-insecure-requests", "user-agent", "accept", "sec-fetch-site", "accept-encoding"}
+	if fire(realNav, true, chromeUA) {
+		t.Error("real Chrome nav order (sec-ch-ua first) must NOT fire l5.header.order")
+	}
+	// Real Chrome fetch order (measured): no sec-ch-ua → quiet.
+	realFetch := []string{"host", "connection", "content-type", "user-agent", "accept", "accept-language", "sec-fetch-mode", "accept-encoding", "content-length"}
+	if fire(realFetch, true, chromeUA) {
+		t.Error("real Chrome fetch order (no sec-ch-ua) must NOT fire l5.header.order")
+	}
+	// Spoofer: user-agent BEFORE sec-ch-ua → fires.
+	spoof := []string{"host", "user-agent", "accept", "sec-ch-ua", "sec-ch-ua-mobile", "content-type"}
+	if !fire(spoof, true, chromeUA) {
+		t.Error("user-agent before sec-ch-ua under a Chrome UA must fire l5.header.order")
+	}
+	// Same inverted order but OrderReliable=false (net/http map, unknown order) → quiet (no false accusation).
+	if fire(spoof, false, chromeUA) {
+		t.Error("an unreliable (sorted map) order must NEVER fire l5.header.order")
+	}
+	// Non-Chrome UA → quiet (sec-ch-ua invariant is Chrome-specific).
+	if fire(spoof, true, "Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101 Firefox/115.0") {
+		t.Error("a non-Chrome UA must NOT fire the Chrome-scoped header-order residual")
+	}
+}

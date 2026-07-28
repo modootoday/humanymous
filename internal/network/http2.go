@@ -25,6 +25,7 @@ type H2Fingerprint struct {
 	WindowUpdate uint32      // first connection-level WINDOW_UPDATE increment
 	Priorities   []string    // "streamID:excl:dep:weight" tuples
 	PseudoOrder  []string    // subset/order of m,a,s,p
+	HeaderOrder  []string    // regular (non-pseudo) header names in wire order
 }
 
 // Akamai renders the canonical pipe-separated Akamai HTTP/2 fingerprint string.

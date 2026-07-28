@@ -927,3 +927,42 @@ func h2ProtocolSplit() (map[string]any, error) {
 	}
 	return v, nil
 }
+
+// headerOrderSplit sends a coherent Chrome client (real Chrome uTLS, coherent report, RIT-
+// signed) over HTTP/1.1 but with the request headers in a NON-BROWSER order: user-agent
+// BEFORE the sec-ch-ua client-hints. Real Chrome always emits the client-hints cluster
+// first (measured), so this is the 2026 header-order tell. With the raw-capture front end
+// (R8) the server now observes the wire order and fires l5.header.order -> HR-24 CHALLENGE.
+func headerOrderSplit() (map[string]any, error) {
+	cookie, seed, n, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	sid := sidFromCookie(cookie)
+	body := coherentReportBody() // coherent report so the ONLY residual tell is the header order
+	tb := nowTB()
+	nn := n + 1
+	// Ordered headers: user-agent FIRST, then the sec-ch-ua cluster AFTER (inverted vs a
+	// real browser). Content-Type + RIT headers included so the collect is well-formed.
+	ordered := [][2]string{
+		{"user-agent", chromeUA},
+		{"accept", "*/*"},
+		{"content-type", "application/json"},
+		{"sec-fetch-site", "same-origin"},
+		{"sec-fetch-mode", "cors"},
+		{"sec-fetch-dest", "empty"},
+		{"sec-ch-ua", `"Chromium";v="126", "Google Chrome";v="126", "Not.A/Brand";v="24"`},
+		{"sec-ch-ua-mobile", "?0"},
+		{"sec-ch-ua-platform", `"Windows"`},
+		{"accept-encoding", "gzip, deflate, br, zstd"},
+		{"accept-language", "en-US,en;q=0.9"},
+		{"x-hm-token", ritToken(seed, sid, nn, tb, body)},
+		{"x-hm-n", itoa(nn)},
+		{"x-hm-tb", itoa(tb)},
+	}
+	v, err := doOrderedH1(utls.HelloChrome_Auto, "POST", "/api/collect", ordered, body, cookie)
+	if err != nil {
+		return nil, err
+	}
+	return v, nil
+}
