@@ -129,6 +129,14 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21m. **To enforce a structurally-unobservable signal, build the capture first, then MEASURE the
+    FP baseline** (R8, R4 header-order enforcement). Go's net/http map destroys h1 wire order, so
+    l5.header.order was dead — a raw h1 peek + replay (mirroring peekH2) makes it observable
+    (OrderReliable). Do NOT guess the browser-order model: measure real headless Chromium (it
+    always sends the sec-ch-ua cluster before user-agent, or omits it), then flag ONLY the
+    measured inversion (user-agent before sec-ch-ua). Enforce via HR-24 net.header.order
+    (operator-overridable). Human FP 0 in the Docker gate is the proof the capture didn't
+    mis-order real browsers.
 21l. **Enforce a detection residual via NET-POLICY, not a categorical block** (R7, user-authorized
     freeze-spend). To convert the R3/R6 h2 residuals to live CHALLENGE without an
     isDatacenterIP-class mass-FP, route them through HR-24 under a new operator-overridable
