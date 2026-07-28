@@ -58,6 +58,14 @@ func coherentReportBody() string {
 // dialRawH2 completes a uTLS handshake (h2 ALPN) and the HTTP/2 SETTINGS exchange, sending
 // the caller's SETTINGS verbatim (so their order/values are the observed fingerprint).
 func dialRawH2(helloID utls.ClientHelloID, settings []http2.Setting) (*rawH2Conn, error) {
+	return dialRawH2WU(helloID, settings, 0)
+}
+
+// dialRawH2WU is dialRawH2 that ALSO sends a connection-level WINDOW_UPDATE (stream 0) with the
+// given increment right after SETTINGS, so the Red team controls the h2 flow-control window the
+// server's peek observes (increment 0 = send none, real-Chrome behaviour for that framer). A
+// gigabyte increment mimics Go's http2 default — the flow-control tell (R11).
+func dialRawH2WU(helloID utls.ClientHelloID, settings []http2.Setting, windowUpdate uint32) (*rawH2Conn, error) {
 	raw, err := net.Dial("tcp", *host)
 	if err != nil {
 		return nil, err
@@ -95,6 +103,14 @@ func dialRawH2(helloID utls.ClientHelloID, settings []http2.Setting) (*rawH2Conn
 	if err := c.fr.WriteSettings(settings...); err != nil {
 		uconn.Close()
 		return nil, err
+	}
+	// Connection-level WINDOW_UPDATE (stream 0) between SETTINGS and the first HEADERS, matching
+	// where real browsers place it, so the server's peekH2 captures the increment.
+	if windowUpdate > 0 {
+		if err := c.fr.WriteWindowUpdate(0, windowUpdate); err != nil {
+			uconn.Close()
+			return nil, err
+		}
 	}
 	return c, nil
 }
@@ -224,6 +240,33 @@ func h2SettingsSplit() (map[string]any, error) {
 	}
 	// Session over the same raw-h2 profile to capture the RIT seed.
 	c1, err := dialRawH2(utls.HelloChrome_Auto, settings)
+	return h2RawEvasion(c1, err, settings, 0)
+}
+
+// h2FlowControlSplit is the R11 live exploit: a raw HTTP/2 client that ships Chrome's m,a,s,p
+// pseudo-order AND a COHERENT Chrome SETTINGS profile (includes HEADER_TABLE_SIZE, so the R6
+// residual stays quiet) but opens a 1 GiB connection flow-control window (Go's http2 default) —
+// no browser does this. With a coherent Chrome UA + report + RIT signing, the ONLY residual tell
+// is the gigabyte WINDOW_UPDATE under a browser pseudo-order + coherent SETTINGS. Isolates the
+// flow-control (W) dimension R6 (SETTINGS) and R7 (pseudo-order) do not cover.
+func h2FlowControlSplit() (map[string]any, error) {
+	const oneGiB = 1073741824
+	// Coherent Chrome SETTINGS (with HEADER_TABLE_SIZE id 1) so browser_settings_atypical is quiet.
+	settings := []http2.Setting{
+		{ID: http2.SettingHeaderTableSize, Val: 65536},
+		{ID: http2.SettingEnablePush, Val: 0},
+		{ID: http2.SettingInitialWindowSize, Val: 6291456},
+		{ID: http2.SettingMaxHeaderListSize, Val: 262144},
+	}
+	c1, err := dialRawH2WU(utls.HelloChrome_Auto, settings, oneGiB)
+	return h2RawEvasion(c1, err, settings, oneGiB)
+}
+
+// h2RawEvasion runs the shared raw-h2 session→2×collect flow for the R6/R11 evasions: it takes
+// the already-dialed session conn, replays the same SETTINGS (+ windowUpdate) on each collect,
+// signs RIT, and returns the re-scored verdict. windowUpdate 0 = send none (R6).
+func h2RawEvasion(c1 *rawH2Conn, dialErr error, settings []http2.Setting, windowUpdate uint32) (map[string]any, error) {
+	err := dialErr
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +289,7 @@ func h2SettingsSplit() (map[string]any, error) {
 	body := coherentReportBody()
 	v := map[string]any{}
 	for i := 0; i < 2; i++ {
-		c, err := dialRawH2(utls.HelloChrome_Auto, settings)
+		c, err := dialRawH2WU(utls.HelloChrome_Auto, settings, windowUpdate)
 		if err != nil {
 			return nil, err
 		}

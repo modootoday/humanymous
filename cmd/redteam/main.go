@@ -88,6 +88,8 @@ func main() {
 		v, err = pqAbsent()
 	case "alps-absent":
 		v, err = alpsAbsent()
+	case "h2-flow-control":
+		v, err = h2FlowControlSplit()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":

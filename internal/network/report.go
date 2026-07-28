@@ -9,6 +9,12 @@ import (
 	"github.com/modootoday/humanymous/internal/signals"
 )
 
+// h2FlowControlAbuseFloor is the connection-level WINDOW_UPDATE increment above which a
+// browser-classified h2 profile is treated as a non-browser flow-control window. Real browsers
+// stay well under 20 MB (Chrome 15663105, Firefox ~12 MB); Go's http2 default is 1 GiB. 64 MiB
+// is >3x the largest browser window and ~16x below the Go value — a wide FP-safe margin.
+const h2FlowControlAbuseFloor = 64 << 20 // 64 MiB
+
 // report.go assembles a signals.NetworkReport from captured TLS/H2/header
 // observations. It is the seam between the network package (fingerprint math)
 // and the shared signal schema. Cross-checks (L6) are done in internal/scoring;
@@ -100,6 +106,15 @@ func Build(obs Observation) signals.NetworkReport {
 		if isBrowserEngine(nr.H2Engine) && !obs.H2.hasSetting(1) {
 			add("l5.http2.browser_settings_atypical", true, signals.VerdictSuspicious,
 				"browser HTTP/2 pseudo-order with a non-browser SETTINGS profile (no HEADER_TABLE_SIZE)")
+		}
+		// Score-exempt residual: a browser-classified h2 profile (correct pseudo-order) whose
+		// connection-level WINDOW_UPDATE opens a gigabyte-scale flow-control window. Real browsers
+		// use a bounded connection window (Chrome 15663105 ~15 MB; Firefox ~12 MB); Go's http2
+		// default is 1 GiB (1073741824). Browser pseudo-order + a gigabyte window is the
+		// flow-control (W) dimension of the h2 fingerprint that pseudo-order + SETTINGS miss.
+		if isBrowserEngine(nr.H2Engine) && obs.H2.WindowUpdate >= h2FlowControlAbuseFloor {
+			add("l5.http2.flow_control_atypical", true, signals.VerdictSuspicious,
+				"browser HTTP/2 pseudo-order with a gigabyte connection flow-control window")
 		}
 	}
 

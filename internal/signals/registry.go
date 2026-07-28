@@ -212,6 +212,13 @@ var (
 	// full Akamai SETTINGS/WINDOW_UPDATE profile is accepted as that browser. Audit/Console/
 	// NET-POLICY only — it moves no Combine risk, so the frozen verdict is unchanged.
 	_ = def(Definition{"l5.http2.browser_settings_atypical", LayerNetwork, 0, true, "http2", "browser HTTP/2 pseudo-order with a non-browser SETTINGS profile (audit/admin)"})
+	// WIRED (wargame R11, freeze-spend 2026-07-28): score-exempt residual (weight 0). A client
+	// whose HTTP/2 pseudo-header order classified as a browser but whose connection-level
+	// WINDOW_UPDATE opens a gigabyte-scale flow-control window. Real browsers use a bounded
+	// window (Chrome ~15 MB / 15663105; Firefox ~12 MB); Go's http2 default is 1 GiB. This is the
+	// flow-control (W) dimension of the Akamai h2 fingerprint — R6 covered SETTINGS, R7 the
+	// pseudo-order. HR-24 net.h2.spoof (same class as the other h2-spoof residuals), not combine.
+	_ = def(Definition{"l5.http2.flow_control_atypical", LayerNetwork, 0, true, "http2", "browser HTTP/2 pseudo-order with a gigabyte flow-control window (audit/admin)"})
 	// WIRED (wargame R8, freeze-spend 2026-07-28): a raw on-wire header-order capture now
 	// feeds this (h1 peek / h2 HEADERS frame → HeaderInfo.OrderReliable). Score-exempt
 	// (weight 0): a Chrome-UA request whose client-hints (sec-ch-ua) come AFTER user-agent is

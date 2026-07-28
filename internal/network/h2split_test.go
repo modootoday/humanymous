@@ -193,3 +193,34 @@ func TestALPSAbsentResidual(t *testing.T) {
 		t.Error("Edge (Chromium) over h2 without ALPS must fire l5.tls.alps_absent")
 	}
 }
+
+// A browser-classified h2 profile (Chrome pseudo-order) whose connection-level WINDOW_UPDATE
+// opens a gigabyte-scale flow-control window is a library mimicking the pseudo-order but not the
+// browser's bounded flow control. Real browsers stay well under 20 MB (Chrome 15663105); Go's
+// http2 default is 1 GiB. The flow-control (W) dimension of the h2 fingerprint. Wargame R11.
+func TestH2FlowControlResidual(t *testing.T) {
+	fire := func(fp *H2Fingerprint, ua string) bool {
+		return buildIDs(Observation{H2: fp, Header: HeaderInfo{UserAgent: ua}})["l5.http2.flow_control_atypical"]
+	}
+	chromeUA := "Mozilla/5.0 (Windows NT 10.0) Chrome/133 Safari/537.36"
+	chromeOrder := []string{"m", "a", "s", "p"}
+	coherentSettings := []H2Setting{{1, 65536}, {2, 0}, {4, 6291456}, {6, 262144}}
+
+	// Browser pseudo-order + real Chrome window (15663105 ~15 MB): quiet.
+	if fire(&H2Fingerprint{PseudoOrder: chromeOrder, Settings: coherentSettings, WindowUpdate: 15663105}, chromeUA) {
+		t.Error("real Chrome window (15663105) must NOT fire l5.http2.flow_control_atypical")
+	}
+	// Browser pseudo-order + no WINDOW_UPDATE (increment 0): quiet.
+	if fire(&H2Fingerprint{PseudoOrder: chromeOrder, Settings: coherentSettings, WindowUpdate: 0}, chromeUA) {
+		t.Error("absent WINDOW_UPDATE (0) must NOT fire — absence != gigabyte window")
+	}
+	// Browser pseudo-order + 1 GiB window (the Go/library signature): fires.
+	if !fire(&H2Fingerprint{PseudoOrder: chromeOrder, Settings: coherentSettings, WindowUpdate: 1073741824}, chromeUA) {
+		t.Error("browser pseudo-order + 1 GiB flow-control window must fire l5.http2.flow_control_atypical")
+	}
+	// Non-browser h2 profile (unknown engine) + 1 GiB window: quiet — the residual is only for a
+	// client that already mimics a browser pseudo-order (isBrowserEngine), not a raw library.
+	if fire(&H2Fingerprint{PseudoOrder: []string{"a", "m", "p", "s"}, Settings: coherentSettings, WindowUpdate: 1073741824}, chromeUA) {
+		t.Error("non-browser pseudo-order must NOT fire (residual is gated on browser classification)")
+	}
+}

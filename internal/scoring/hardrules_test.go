@@ -171,7 +171,7 @@ func TestHR24_ProxyVPNResiduals(t *testing.T) {
 // a coherent real browser's → HR-24 CHALLENGE under the default net.h2.spoof=enforce, and
 // disarmed to observability by an operator net.h2.spoof=monitor (h2-reframing-proxy deployment).
 func TestHR24_H2ProtocolSplit(t *testing.T) {
-	for _, id := range []string{"l5.http2.unknown_under_browser", "l5.http2.browser_settings_atypical"} {
+	for _, id := range []string{"l5.http2.unknown_under_browser", "l5.http2.browser_settings_atypical", "l5.http2.flow_control_atypical"} {
 		r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/126 Safari/537.36",
 			[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
 		r.Network.Signals = append(r.Network.Signals,
