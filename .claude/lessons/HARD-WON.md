@@ -129,6 +129,19 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21p. **A multi-component fingerprint isn't closed until every component is checked; use a
+    threshold with margin, not an exact value** (R11, HTTP/2 flow-control WINDOW_UPDATE,
+    freeze-spend). The Akamai h2 fingerprint is SETTINGS|WINDOW_UPDATE|PRIORITY|pseudo-order;
+    R6 closed SETTINGS and R7 pseudo-order, leaving a coherent-SETTINGS + Chrome-pseudo-order
+    spoof that still shipped Go's 1 GiB connection window. Close the remaining component as its
+    own residual under the SAME operator class (net.h2.spoof) — don't proliferate net-policy
+    classes for one fingerprint family. FP-safety: browsers use bounded, slightly-varying windows
+    (measured: Chrome 15663105, Firefox 12517377), so DON'T hardcode a browser value — use a
+    floor (64 MiB) with a wide margin above the largest browser and far below the library value
+    (1 GiB), and require the abusive direction only (>= floor; an absent/small window never
+    fires). Gate on the browser CLASSIFICATION (isBrowserEngine) so only a client already
+    mimicking a browser is judged. human FP 0 in the Docker gate, with a real Firefox in the
+    baseline as extra headroom proof.
 21o. **A vendor-specific "always-present" tell needs a vendor gate AND a precondition gate**
     (R10, ALPS application_settings absence, freeze-spend). ALPS is Chromium-only and is sent
     only when the ClientHello offers h2. Two independent FP traps: (a) Firefox/Safari legitimately
