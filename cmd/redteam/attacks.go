@@ -958,6 +958,59 @@ func pqAbsent() (map[string]any, error) {
 	return v, err
 }
 
+// stripALPS removes the ALPS (application_settings) extension(s) from a ClientHello spec,
+// keeping every other extension in place — so the only delta from a real Chrome hello is the
+// missing ALPS. Both codepoint variants are removed (Chrome migrated 17513 -> 17613).
+func stripALPS(exts []utls.TLSExtension) []utls.TLSExtension {
+	out := exts[:0:0]
+	for _, e := range exts {
+		switch e.(type) {
+		case *utls.ApplicationSettingsExtension, *utls.ApplicationSettingsExtensionNew:
+			continue // drop ALPS
+		default:
+			out = append(out, e)
+		}
+	}
+	return out
+}
+
+// alpsAbsent pins a non-Chromium TLS stack wearing a Chrome UA: it sends a real Chrome_Auto
+// ClientHello with the ALPS (application_settings) extension STRIPPED, over h2 (ALPN offers h2),
+// with a coherent RIT-signed Chrome report. Every genuine Chromium build sends ALPS on h2;
+// Firefox/Safari/Go/curl send none — so the missing ALPS is the only residual tell, isolated
+// from all other fingerprints. -> l5.tls.alps_absent -> HR-24 net.tls.alps CHALLENGE.
+// Web-research grounding: ALPS (application_settings, codepoint 17513/17613) is a Chromium-only
+// TLS extension advertising per-ALPN settings for h2; non-Chromium stacks impersonating Chrome
+// omit it (a 2025-2026 TLS-fingerprint tell alongside JA3/JA4).
+func alpsAbsent() (map[string]any, error) {
+	cookie, seed, n, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	sid := sidFromCookie(cookie)
+	body := coherentReportBody() // coherent Chrome report; the ONLY residual is the missing ALPS
+	spec, err := utls.UTLSIdToSpec(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	spec.Extensions = stripALPS(spec.Extensions)
+	tb := nowTB()
+	nn := n + 1
+	hdr := withBrowserHeaders(map[string]string{
+		"User-Agent": chromeUA,
+		"X-HM-Token": ritToken(seed, sid, nn, tb, body),
+		"X-HM-N":     itoa(nn),
+		"X-HM-TB":    itoa(tb),
+	})
+	r, err := doH2Spec(spec, "POST", "/api/collect", hdr, body, cookie)
+	if err != nil {
+		return nil, err
+	}
+	v := map[string]any{}
+	_ = json.Unmarshal(r.body, &v)
+	return v, nil
+}
+
 // headerOrderSplit sends a coherent Chrome client (real Chrome uTLS, coherent report, RIT-
 // signed) over HTTP/1.1 but with the request headers in a NON-BROWSER order: user-agent
 // BEFORE the sec-ch-ua client-hints. Real Chrome always emits the client-hints cluster

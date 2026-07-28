@@ -63,6 +63,17 @@ func Build(obs Observation) signals.NetworkReport {
 			add("l5.tls.pq_keyshare", true, signals.VerdictSuspicious,
 				"UA claims a PQ-era browser but the TLS ClientHello omits X25519MLKEM768")
 		}
+		// Score-exempt residual: a Chromium-claiming UA offering h2 whose ClientHello omits the
+		// ALPS (application_settings) extension. Every Chromium build (Chrome/Edge/Brave/Opera)
+		// sends ALPS listing "h2" in the ClientHello when it offers the h2 ALPN — codepoint 17513
+		// (<= Chrome ~123) or 17613 (>= ~124). Firefox/Safari/Go/curl TLS stacks send neither, so
+		// a Chrome-UA client over h2 without ALPS is a non-Chromium TLS stack wearing a Chrome UA.
+		// Gated on h2-in-ALPN so an http/1.1-only client (which legitimately omits ALPS) is never
+		// flagged. 2026 vector; SoT-02. Acted on by HR-24 NET-POLICY only.
+		if claimsChromiumUA(obs.Header.UserAgent) && alpnOffersH2(obs.Hello.ALPN) && !hasALPS(obs.Hello.Extensions) {
+			add("l5.tls.alps_absent", true, signals.VerdictSuspicious,
+				"Chromium UA offering h2 but the TLS ClientHello omits the ALPS extension")
+		}
 	} else {
 		// No ClientHello captured — the entire TLS/JA3/JA4 network plane is INACTIVE for this
 		// request (the gate never captures it; a TLS-terminating CDN/L7-LB in front strips it
@@ -220,6 +231,31 @@ const pqGroupX25519MLKEM768 = 0x11EC
 // hasPQKeyShare reports whether the TLS supported_groups advertise X25519MLKEM768.
 func hasPQKeyShare(curves []uint16) bool {
 	return slices.Contains(curves, pqGroupX25519MLKEM768)
+}
+
+// ALPS (application_settings) TLS extension codepoints. Chromium migrated the codepoint mid-2024
+// (Chrome ~124): older builds sent 17513 (0x4469), newer send 17613 (0x470D). Neither is
+// IANA-assigned; both are Chromium-specific. Firefox/Safari/Go/curl send neither.
+const (
+	alpsExtOld = 17513 // 0x4469 application_settings
+	alpsExtNew = 17613 // 0x470D application_settings (new codepoint)
+)
+
+// hasALPS reports whether the ClientHello carries the ALPS extension on either codepoint.
+func hasALPS(exts []uint16) bool {
+	return slices.Contains(exts, alpsExtOld) || slices.Contains(exts, alpsExtNew)
+}
+
+// alpnOffersH2 reports whether the ClientHello's offered ALPN list includes h2.
+func alpnOffersH2(alpn []string) bool {
+	return slices.Contains(alpn, "h2")
+}
+
+// claimsChromiumUA reports whether the UA claims a Chromium-based browser (Chrome/Edge/Brave/
+// Opera all carry the "chrome/" token and all send ALPS). Firefox and Safari carry no such
+// token and legitimately omit ALPS, so they are excluded.
+func claimsChromiumUA(ua string) bool {
+	return strings.Contains(strings.ToLower(ua), "chrome/")
 }
 
 // claimsPQBrowser reports whether the UA claims a browser version that ships the

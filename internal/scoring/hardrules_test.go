@@ -223,6 +223,24 @@ func TestHR24_TLSPQ(t *testing.T) {
 	}
 }
 
+// TestHR24_TLSALPS pins the R10 freeze-spend enforcement: a Chromium-UA request whose
+// ClientHello omitted the ALPS extension fired l5.tls.alps_absent → HR-24 CHALLENGE by default
+// (net.tls.alps enforce), disarmed by an operator net.tls.alps=monitor (TLS-inspecting proxy).
+func TestHR24_TLSALPS(t *testing.T) {
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/133 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r.Network.Signals = append(r.Network.Signals,
+		signals.New("l5.tls.alps_absent", true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r); v.HardRuleFired != "HR-24" || v.Verdict != VerdictChallenge {
+		t.Fatalf("ALPS-absent anomaly want CHALLENGE/HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+	e := NewEngine()
+	e.ConfigureFull(DefaultPolicy(), nil, nil, map[string]string{"net.tls.alps": "monitor"})
+	if v := e.Score(r); v.HardRuleFired == "HR-24" {
+		t.Fatalf("ALPS-absent under net.tls.alps monitor must NOT fire HR-24, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),

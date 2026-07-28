@@ -190,6 +190,12 @@ var (
 	// headless Chromium 149). Acted on by HR-24 NET-POLICY (net.tls.pq, operator-overridable —
 	// a PQ-disabling middlebox/policy is the deployment-delta), not risk combine.
 	_ = def(Definition{"l5.tls.pq_keyshare", LayerNetwork, 0, true, "tls", "missing PQ keyshare for claimed Chrome"})
+	// WIRED (wargame R10, freeze-spend 2026-07-28): score-exempt residual (weight 0). A Chromium-
+	// claiming UA (chrome/ token) offering h2 whose ClientHello omits the ALPS application_settings
+	// extension (codepoint 17513 or 17613) that every Chromium build sends. Firefox/Safari/Go/curl
+	// send neither. Gated on h2-in-ALPN so an http/1.1-only client is never flagged. Acted on by
+	// HR-24 NET-POLICY (net.tls.alps, operator-overridable), not risk combine.
+	_ = def(Definition{"l5.tls.alps_absent", LayerNetwork, 0, true, "tls", "Chromium UA over h2 without the ALPS extension"})
 	_ = def(Definition{"l5.http2.engine_mismatch", LayerNetwork, 30, nil, "http2", "h2 profile engine vs UA"})
 	// Score-exempt residual (weight 0): a browser-claiming UA over an HTTP/2 profile the
 	// engine cannot classify as any known browser (EngineFromH2 == unknown). A real browser

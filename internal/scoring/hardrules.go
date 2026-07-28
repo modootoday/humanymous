@@ -231,6 +231,15 @@ var promotionRules = []promoRule{
 			c.fired("l5.tls.pq_keyshare") {
 			return true
 		}
+		// ALPS extension absence (wargame R10, freeze-spend 2026-07-28): a Chromium-claiming UA
+		// offering h2 whose ClientHello omits ALPS (application_settings). Every Chromium build
+		// sends it; Firefox/Safari/Go/curl do not. FP-safe (h2-in-ALPN gated; measured real
+		// Chromium sends it). Operator net.tls.alps=monitor for a TLS-inspecting middlebox that
+		// rewrites the ClientHello.
+		if netClassMode(c.netPolicy, "net.tls.alps") == "enforce" && c.browserClaim &&
+			c.fired("l5.tls.alps_absent") {
+			return true
+		}
 		if netClassMode(c.netPolicy, "net.proxy.hop") == "enforce" &&
 			c.fired("l5.header.xff_multi_hop") && c.fired("l5.traffic.ip_hop") {
 			return true

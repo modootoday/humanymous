@@ -151,3 +151,45 @@ func TestPQKeyShareResidual(t *testing.T) {
 		t.Error("Firefox/132 without X25519MLKEM768 must fire l5.tls.pq_keyshare")
 	}
 }
+
+// A Chromium-claiming UA (chrome/ token) offering h2 whose ClientHello omits the ALPS
+// application_settings extension (codepoint 17513 or 17613) is a non-Chromium TLS stack wearing
+// a Chrome UA — every Chromium build sends ALPS on h2; Firefox/Safari/Go/curl send none. Gated
+// on h2-in-ALPN so an http/1.1-only client is never flagged. Wargame R10 (2026-07-28).
+func TestALPSAbsentResidual(t *testing.T) {
+	fire := func(ua string, alpn []string, exts []uint16) bool {
+		return buildIDs(Observation{
+			Hello:  &ClientHello{ALPN: alpn, Extensions: exts},
+			Header: HeaderInfo{UserAgent: ua},
+		})["l5.tls.alps_absent"]
+	}
+	chromeUA := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+	h2 := []string{"h2", "http/1.1"}
+	withALPSNew := []uint16{0x0000, 0x000a, 17613, 0x0010} // Chrome >= ~124
+	withALPSOld := []uint16{0x0000, 0x000a, 17513, 0x0010} // Chrome <= ~123
+	noALPS := []uint16{0x0000, 0x000a, 0x000d, 0x0010}
+
+	// Chrome UA + h2 + ALPS present (either codepoint): quiet.
+	if fire(chromeUA, h2, withALPSNew) {
+		t.Error("real Chrome (ALPS 17613) must NOT fire l5.tls.alps_absent")
+	}
+	if fire(chromeUA, h2, withALPSOld) {
+		t.Error("older Chrome (ALPS 17513) must NOT fire l5.tls.alps_absent")
+	}
+	// Chrome UA + h2 + NO ALPS (the spoof): fires.
+	if !fire(chromeUA, h2, noALPS) {
+		t.Error("Chrome UA over h2 without ALPS must fire l5.tls.alps_absent")
+	}
+	// Chrome UA but http/1.1-only ALPN (legitimately omits ALPS): quiet — the h2 gate.
+	if fire(chromeUA, []string{"http/1.1"}, noALPS) {
+		t.Error("http/1.1-only Chrome must NOT fire — ALPS is only sent when offering h2")
+	}
+	// Firefox (never sends ALPS): quiet — Chromium-only gate.
+	if fire("Mozilla/5.0 (Windows NT 10.0; rv:132.0) Gecko/20100101 Firefox/132.0", h2, noALPS) {
+		t.Error("Firefox must NOT fire the ALPS residual (non-Chromium)")
+	}
+	// Edge (Chromium — sends ALPS; without it, the spoof): fires.
+	if !fire("Mozilla/5.0 (Windows NT 10.0) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0", h2, noALPS) {
+		t.Error("Edge (Chromium) over h2 without ALPS must fire l5.tls.alps_absent")
+	}
+}

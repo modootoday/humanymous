@@ -76,7 +76,8 @@ var launchProfiles = map[string]bool{
 	"near_ceiling_audio_24k.mjs": true, "near_ceiling_no_widevine.mjs": true,
 	"browser_use_cdp.mjs": true,
 	"direct_cdp.mjs":      true, "nodriver.mjs": true, "xvfb_headful.mjs": true, "antidetect.mjs": true,
-	"camoufox.mjs": true, "tls_static.mjs": true, "pq_absent.mjs": true, "tls_rotate.mjs": true, "ua_rotate.mjs": true,
+	"camoufox.mjs": true, "tls_static.mjs": true, "pq_absent.mjs": true, "alps_absent.mjs": true,
+	"tls_rotate.mjs": true, "ua_rotate.mjs": true,
 	"rit_replay.mjs": true, "rit_tamper.mjs": true, "video_scrape.mjs": true, "watermark_strip.mjs": true,
 	"ai_agent.mjs": true, "distributed.mjs": true, "xff_spoof.mjs": true, "flood.mjs": true, "rapid_reset.mjs": true,
 	// deployment-review-hardened evasions (rounds 3 & 5) — permanent regression wargame cases.

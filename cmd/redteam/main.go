@@ -86,6 +86,8 @@ func main() {
 		v, err = headerOrderSplit()
 	case "pq-absent":
 		v, err = pqAbsent()
+	case "alps-absent":
+		v, err = alpsAbsent()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":
@@ -186,13 +188,19 @@ func do(helloID utls.ClientHelloID, method, path string, hdr map[string]string, 
 // WINDOW_UPDATE / pseudo-header layout is Go's — the 2026 "protocol-split" evasion where a
 // client passes TLS/JA4 but carries a library HTTP/2 fingerprint. Returns the response.
 func doH2(helloID utls.ClientHelloID, method, path string, hdr map[string]string, body, cookie string) (*resp, error) {
-	raw, err := net.Dial("tcp", *host)
+	spec, err := utls.UTLSIdToSpec(helloID)
 	if err != nil {
 		return nil, err
 	}
-	spec, err := utls.UTLSIdToSpec(helloID)
+	return doH2Spec(spec, method, path, hdr, body, cookie)
+}
+
+// doH2Spec is doH2 with a caller-supplied (possibly mutated) ClientHello spec, so a Red
+// profile can strip or alter a single extension (e.g. ALPS) while keeping the browser ALPN
+// (h2, http/1.1) so the server negotiates h2. The ONLY delta is the caller's spec edit.
+func doH2Spec(spec utls.ClientHelloSpec, method, path string, hdr map[string]string, body, cookie string) (*resp, error) {
+	raw, err := net.Dial("tcp", *host)
 	if err != nil {
-		raw.Close()
 		return nil, err
 	}
 	// NOTE: no forceHTTP11 — leave the browser ALPN (h2, http/1.1) so the server negotiates h2.
