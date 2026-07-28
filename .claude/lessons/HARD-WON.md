@@ -129,6 +129,17 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21n. **Version-gate a "modern default is missing" tell, and MEASURE the default before shipping**
+    (R9, post-quantum TLS enforcement, freeze-spend). Chrome shipped X25519MLKEM768 (0x11EC) on
+    by default in M131 / Firefox 132; a scraper pinning an older TLS parrot claims a modern UA
+    but omits the PQ group. The trap: flag it unconditionally and you FP every genuinely-older
+    browser (which never sent PQ) and any UA that predates the default. The fix is a VERSION GATE
+    (fire only when the UA claims >= the version that made it default) plus a real-baseline
+    measurement — headless Chromium 149 sends 0x11EC, so the gated check cannot flag a real modern
+    browser. Enforce via HR-24 net.tls.pq (operator monitor override for a PQ-stripping middlebox
+    / TLS-inspecting proxy — the legitimate deployment-delta). Same score-exempt residual → HR-24
+    NET-POLICY pattern as R7/R8; verdict-altering ⇒ SoT-37 policy event, `!`; human FP 0 in the
+    Docker gate is the proof.
 21m. **To enforce a structurally-unobservable signal, build the capture first, then MEASURE the
     FP baseline** (R8, R4 header-order enforcement). Go's net/http map destroys h1 wire order, so
     l5.header.order was dead — a raw h1 peek + replay (mirroring peekH2) makes it observable
