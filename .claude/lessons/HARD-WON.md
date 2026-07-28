@@ -129,6 +129,17 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21o. **A vendor-specific "always-present" tell needs a vendor gate AND a precondition gate**
+    (R10, ALPS application_settings absence, freeze-spend). ALPS is Chromium-only and is sent
+    only when the ClientHello offers h2. Two independent FP traps: (a) Firefox/Safari legitimately
+    never send it — so gate on the vendor (`chrome/` token), not "is a browser"; the Docker
+    baseline literally contained a real Firefox with h2+no-ALPS that a naive check would have
+    DENYed. (b) An http/1.1-only Chrome also omits it — so gate on the precondition (h2 in ALPN).
+    Also make the presence check tolerant of a moving codepoint (ALPS migrated 17513→17613): match
+    EITHER, or a codepoint bump silently turns the tell into a mass-FP. Measure the real vendor
+    build (headless Chromium 149 sends 17613) to confirm before enforcing. HR-24 net.tls.alps,
+    operator monitor override for a ClientHello-rewriting middlebox. Same residual→HR-24 pattern
+    as R7/R8/R9; human FP 0 in the Docker gate is the proof.
 21n. **Version-gate a "modern default is missing" tell, and MEASURE the default before shipping**
     (R9, post-quantum TLS enforcement, freeze-spend). Chrome shipped X25519MLKEM768 (0x11EC) on
     by default in M131 / Firefox 132; a scraper pinning an older TLS parrot claims a modern UA
