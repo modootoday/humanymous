@@ -196,6 +196,12 @@ var (
 	// send neither. Gated on h2-in-ALPN so an http/1.1-only client is never flagged. Acted on by
 	// HR-24 NET-POLICY (net.tls.alps, operator-overridable), not risk combine.
 	_ = def(Definition{"l5.tls.alps_absent", LayerNetwork, 0, true, "tls", "Chromium UA over h2 without the ALPS extension"})
+	// WIRED (wargame R12, freeze-spend 2026-07-29): score-exempt residual (weight 0). A browser-
+	// claiming UA offering h2 whose ClientHello omits the compress_certificate extension (RFC 8879,
+	// codepoint 27) that every modern browser (Chrome/Firefox/Safari) sends. Broader than ALPS
+	// (all engines, not just Chromium). Gated on h2-in-ALPN. HR-24 NET-POLICY (net.tls.certcomp,
+	// operator-overridable — a cert-compression-stripping middlebox is the deployment-delta).
+	_ = def(Definition{"l5.tls.cert_compression_absent", LayerNetwork, 0, true, "tls", "browser UA over h2 without certificate compression"})
 	_ = def(Definition{"l5.http2.engine_mismatch", LayerNetwork, 30, nil, "http2", "h2 profile engine vs UA"})
 	// Score-exempt residual (weight 0): a browser-claiming UA over an HTTP/2 profile the
 	// engine cannot classify as any known browser (EngineFromH2 == unknown). A real browser

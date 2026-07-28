@@ -241,6 +241,24 @@ func TestHR24_TLSALPS(t *testing.T) {
 	}
 }
 
+// TestHR24_TLSCertComp pins the R12 freeze-spend enforcement: a browser-UA request whose
+// ClientHello omitted compress_certificate fired l5.tls.cert_compression_absent → HR-24 CHALLENGE
+// by default (net.tls.certcomp enforce), disarmed by an operator net.tls.certcomp=monitor.
+func TestHR24_TLSCertComp(t *testing.T) {
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/133 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r.Network.Signals = append(r.Network.Signals,
+		signals.New("l5.tls.cert_compression_absent", true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r); v.HardRuleFired != "HR-24" || v.Verdict != VerdictChallenge {
+		t.Fatalf("cert-compression anomaly want CHALLENGE/HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+	e := NewEngine()
+	e.ConfigureFull(DefaultPolicy(), nil, nil, map[string]string{"net.tls.certcomp": "monitor"})
+	if v := e.Score(r); v.HardRuleFired == "HR-24" {
+		t.Fatalf("cert-compression under net.tls.certcomp monitor must NOT fire HR-24, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),

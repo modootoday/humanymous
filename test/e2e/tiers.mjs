@@ -28,7 +28,7 @@ export const TIERS = [
     profiles: [
       'nonbrowser_ua.mjs', 'http_client.mjs', 'tls_parrot.mjs',
       'curl_impersonate_chrome.mjs', 'curl_impersonate_chrome99_android.mjs',
-      'tls_static.mjs', 'pq_absent.mjs', 'alps_absent.mjs',
+      'tls_static.mjs', 'pq_absent.mjs', 'alps_absent.mjs', 'cert_compression_absent.mjs',
       'sec_chua_absent.mjs', 'sec_fetch_absent.mjs', 'rit_absent.mjs', 'rit_replay.mjs',
       'rit_tamper.mjs', 'ua_rotate.mjs', 'xff_spoof.mjs',
       'behavior_no_interaction.mjs', 'behavior_untrusted.mjs',

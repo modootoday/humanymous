@@ -224,3 +224,46 @@ func TestH2FlowControlResidual(t *testing.T) {
 		t.Error("non-browser pseudo-order must NOT fire (residual is gated on browser classification)")
 	}
 }
+
+// A browser-claiming UA offering h2 whose ClientHello omits compress_certificate (RFC 8879, ext
+// 27) is a non-browser TLS stack wearing a browser UA — every modern browser (Chrome/Firefox/
+// Safari) advertises it. Broader than ALPS (all engines, not just Chromium). Gated on h2-in-ALPN.
+// Wargame R12 (2026-07-29).
+func TestCertCompressionAbsentResidual(t *testing.T) {
+	fire := func(ua string, alpn []string, exts []uint16) bool {
+		return buildIDs(Observation{
+			Hello:  &ClientHello{ALPN: alpn, Extensions: exts},
+			Header: HeaderInfo{UserAgent: ua},
+		})["l5.tls.cert_compression_absent"]
+	}
+	chromeUA := "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+	firefoxUA := "Mozilla/5.0 (Windows NT 10.0; rv:132.0) Gecko/20100101 Firefox/132.0"
+	h2 := []string{"h2", "http/1.1"}
+	withCC := []uint16{0x0000, 0x000a, 27, 0x0010}
+	noCC := []uint16{0x0000, 0x000a, 0x000d, 0x0010}
+
+	// Chrome UA + h2 + cert compression present: quiet.
+	if fire(chromeUA, h2, withCC) {
+		t.Error("Chrome with compress_certificate must NOT fire l5.tls.cert_compression_absent")
+	}
+	// Firefox UA + h2 + present: quiet (all browsers send it).
+	if fire(firefoxUA, h2, withCC) {
+		t.Error("Firefox with compress_certificate must NOT fire")
+	}
+	// Chrome UA + h2 + NO cert compression (the spoof): fires.
+	if !fire(chromeUA, h2, noCC) {
+		t.Error("Chrome UA over h2 without compress_certificate must fire")
+	}
+	// Firefox UA + h2 + NO cert compression: fires (broader than ALPS — all browser engines).
+	if !fire(firefoxUA, h2, noCC) {
+		t.Error("Firefox UA over h2 without compress_certificate must fire")
+	}
+	// Chrome UA but http/1.1-only ALPN: quiet — the h2 gate.
+	if fire(chromeUA, []string{"http/1.1"}, noCC) {
+		t.Error("http/1.1-only client must NOT fire — h2 gate")
+	}
+	// Non-browser UA (Go client) without cert compression: quiet — browser-UA gate.
+	if fire("Go-http-client/2.0", h2, noCC) {
+		t.Error("non-browser UA must NOT fire the cert-compression residual")
+	}
+}

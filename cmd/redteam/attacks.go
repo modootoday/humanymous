@@ -1011,6 +1011,56 @@ func alpsAbsent() (map[string]any, error) {
 	return v, nil
 }
 
+// stripCertCompression removes the compress_certificate (RFC 8879, ext 27) extension from a
+// ClientHello spec, keeping every other extension — so the only delta from a real Chrome hello
+// is the missing certificate-compression extension.
+func stripCertCompression(exts []utls.TLSExtension) []utls.TLSExtension {
+	out := exts[:0:0]
+	for _, e := range exts {
+		if _, ok := e.(*utls.UtlsCompressCertExtension); ok {
+			continue // drop compress_certificate
+		}
+		out = append(out, e)
+	}
+	return out
+}
+
+// certCompressionAbsent pins a non-browser TLS stack wearing a Chrome UA: a real Chrome_Auto
+// ClientHello over h2 with the compress_certificate (ext 27) extension STRIPPED, plus a coherent
+// RIT-signed Chrome report. Every modern browser (Chrome/Firefox/Safari) advertises cert
+// compression; Go/curl-plain stacks do not — so the missing extension is the sole residual tell.
+// -> l5.tls.cert_compression_absent -> HR-24 net.tls.certcomp CHALLENGE. Web-research grounding:
+// compress_certificate (RFC 8879) is universal in modern browsers; its absence under a browser
+// UA is a 2025-2026 TLS-fingerprint tell alongside JA3/JA4/ALPS.
+func certCompressionAbsent() (map[string]any, error) {
+	cookie, seed, n, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	sid := sidFromCookie(cookie)
+	body := coherentReportBody() // coherent Chrome report; the ONLY residual is the missing ext 27
+	spec, err := utls.UTLSIdToSpec(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	spec.Extensions = stripCertCompression(spec.Extensions)
+	tb := nowTB()
+	nn := n + 1
+	hdr := withBrowserHeaders(map[string]string{
+		"User-Agent": chromeUA,
+		"X-HM-Token": ritToken(seed, sid, nn, tb, body),
+		"X-HM-N":     itoa(nn),
+		"X-HM-TB":    itoa(tb),
+	})
+	r, err := doH2Spec(spec, "POST", "/api/collect", hdr, body, cookie)
+	if err != nil {
+		return nil, err
+	}
+	v := map[string]any{}
+	_ = json.Unmarshal(r.body, &v)
+	return v, nil
+}
+
 // headerOrderSplit sends a coherent Chrome client (real Chrome uTLS, coherent report, RIT-
 // signed) over HTTP/1.1 but with the request headers in a NON-BROWSER order: user-agent
 // BEFORE the sec-ch-ua client-hints. Real Chrome always emits the client-hints cluster

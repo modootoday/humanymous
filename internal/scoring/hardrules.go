@@ -241,6 +241,14 @@ var promotionRules = []promoRule{
 			c.fired("l5.tls.alps_absent") {
 			return true
 		}
+		// Certificate-compression absence (wargame R12, freeze-spend 2026-07-29): a browser-claiming
+		// UA offering h2 whose ClientHello omits compress_certificate (RFC 8879, ext 27). Every
+		// modern browser sends it; FP-safe (measured Chrome + Firefox both advertise it). Operator
+		// net.tls.certcomp=monitor for a cert-compression-stripping TLS middlebox.
+		if netClassMode(c.netPolicy, "net.tls.certcomp") == "enforce" && c.browserClaim &&
+			c.fired("l5.tls.cert_compression_absent") {
+			return true
+		}
 		if netClassMode(c.netPolicy, "net.proxy.hop") == "enforce" &&
 			c.fired("l5.header.xff_multi_hop") && c.fired("l5.traffic.ip_hop") {
 			return true

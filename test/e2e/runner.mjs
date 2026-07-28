@@ -38,6 +38,7 @@ const PROFILES = [
   'tls_static.mjs',                // static parrot (no TLS permutation)
   'pq_absent.mjs',                 // Chrome/131 UA over a pre-PQ uTLS parrot (no X25519MLKEM768) -> HR-24
   'alps_absent.mjs',               // Chrome UA over h2 without the ALPS extension (non-Chromium TLS stack) -> HR-24
+  'cert_compression_absent.mjs',   // browser UA over h2 without compress_certificate (RFC 8879 ext 27) -> HR-24
   'sec_chua_absent.mjs',           // Chrome UA without Sec-CH-UA -> x.uach_present
   'sec_fetch_absent.mjs',          // Chrome UA without Sec-Fetch-* -> sec_fetch_missing
   'rit_absent.mjs',                // API call with no RIT token -> HR-17

@@ -77,6 +77,7 @@ var launchProfiles = map[string]bool{
 	"browser_use_cdp.mjs": true,
 	"direct_cdp.mjs":      true, "nodriver.mjs": true, "xvfb_headful.mjs": true, "antidetect.mjs": true,
 	"camoufox.mjs": true, "tls_static.mjs": true, "pq_absent.mjs": true, "alps_absent.mjs": true,
+	"cert_compression_absent.mjs": true,
 	"tls_rotate.mjs": true, "ua_rotate.mjs": true,
 	"rit_replay.mjs": true, "rit_tamper.mjs": true, "video_scrape.mjs": true, "watermark_strip.mjs": true,
 	"ai_agent.mjs": true, "distributed.mjs": true, "xff_spoof.mjs": true, "flood.mjs": true, "rapid_reset.mjs": true,

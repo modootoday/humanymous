@@ -80,6 +80,15 @@ func Build(obs Observation) signals.NetworkReport {
 			add("l5.tls.alps_absent", true, signals.VerdictSuspicious,
 				"Chromium UA offering h2 but the TLS ClientHello omits the ALPS extension")
 		}
+		// Score-exempt residual: a browser-claiming UA offering h2 whose ClientHello omits the
+		// certificate-compression extension (compress_certificate / RFC 8879, codepoint 27). Every
+		// modern browser (Chrome, Firefox, Safari) advertises it; a non-browser TLS stack (Go,
+		// curl without impersonation) does not. Broader than ALPS (which is Chromium-only) — all
+		// browser engines send cert-compression. Gated on h2-in-ALPN. Acted on by HR-24 NET-POLICY.
+		if claimsBrowserUA(obs.Header.UserAgent) && alpnOffersH2(obs.Hello.ALPN) && !hasCertCompression(obs.Hello.Extensions) {
+			add("l5.tls.cert_compression_absent", true, signals.VerdictSuspicious,
+				"browser UA offering h2 but the TLS ClientHello omits certificate compression")
+		}
 	} else {
 		// No ClientHello captured — the entire TLS/JA3/JA4 network plane is INACTIVE for this
 		// request (the gate never captures it; a TLS-terminating CDN/L7-LB in front strips it
@@ -259,6 +268,15 @@ const (
 // hasALPS reports whether the ClientHello carries the ALPS extension on either codepoint.
 func hasALPS(exts []uint16) bool {
 	return slices.Contains(exts, alpsExtOld) || slices.Contains(exts, alpsExtNew)
+}
+
+// certCompressionExt is the compress_certificate TLS extension codepoint (RFC 8879 §7.1).
+// Every modern browser (Chrome/Firefox/Safari) advertises it; non-browser stacks omit it.
+const certCompressionExt = 27
+
+// hasCertCompression reports whether the ClientHello carries the compress_certificate extension.
+func hasCertCompression(exts []uint16) bool {
+	return slices.Contains(exts, certCompressionExt)
 }
 
 // alpnOffersH2 reports whether the ClientHello's offered ALPN list includes h2.
