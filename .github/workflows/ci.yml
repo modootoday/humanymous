@@ -3,6 +3,7 @@ name: ci
 on:
   push:
     branches: [main]
+    tags: ["v*.*.*"] # a release tag runs the FULL gate (incl. Docker) so release.yml can require it
   pull_request:
   workflow_dispatch: # manual full-gate run at milestones (Actions → ci → Run workflow)
 
@@ -91,7 +92,7 @@ jobs:
   external-input-kernel-smoke:
     name: compact independent-kernel smoke
     # Heavy Docker job: PR + manual only, not every push to main (Actions minute budget).
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     needs: go
     timeout-minutes: 15
@@ -176,7 +177,7 @@ jobs:
     # The integration gate (~35 min, real containers) is the biggest minute sink:
     # PR + manual only, not every push to main. Rule 60 keeps the identical local
     # Docker stack (scripts/e2e-docker.*) as the authority for work on main.
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     needs: go
     timeout-minutes: 35

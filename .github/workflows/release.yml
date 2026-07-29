@@ -19,8 +19,11 @@ permissions:
   actions: read          # require-ci lists workflow runs for this SHA
 
 jobs:
-  # SoT-38 §9.7 / v0.2.2 — a tag must not publish images unless CI already passed
-  # on this exact commit. release.yml does not re-run unit/e2e tests itself.
+  # SoT-38 §9.7 / v0.2.2 — a tag must not publish images unless the FULL ci.yml gate
+  # (including the Docker red/blue detector-vs-bots job, rule 60) passed on this exact
+  # commit. release.yml does not re-run the tests itself; the release tag triggers
+  # ci.yml's full gate, and this job requires the detector-vs-bots job green — a
+  # unit-only push run is NOT sufficient to publish.
   require-ci:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -47,7 +50,18 @@ jobs:
               echo "  run $id status=$st conclusion=$concl"
               if [ "$st" = "completed" ]; then
                 if [ "$concl" = "success" ]; then
-                  completed_ok=1
+                  # A green ci.yml run authorizes a release ONLY IF it actually ran the
+                  # Docker red/blue detection gate (rule 60). The fast unit-only `go` job
+                  # that runs on push-to-main does NOT, so it must never publish a release;
+                  # the release tag triggers ci.yml's full gate (incl. detector-vs-bots).
+                  dg=$(gh run view "$id" --repo "$REPO" --json jobs \
+                    --jq '[.jobs[] | select(.name=="docker detector-vs-bots" and .conclusion=="success")] | length' 2>/dev/null || echo 0)
+                  if [ "${dg:-0}" -gt 0 ]; then
+                    completed_ok=1
+                  else
+                    echo "  run $id is green but did NOT run 'docker detector-vs-bots' (unit-only) — not sufficient for a release"
+                    in_flight=1  # keep waiting for the tag's full-gate run
+                  fi
                 else
                   echo "ci run $id finished with conclusion=$concl — refusing to publish"
                   exit 1
@@ -67,7 +81,7 @@ jobs:
             fi
             sleep 30
           done
-          echo "timed out waiting for green ci.yml on $SHA — push CI on main for this commit, then re-tag fix-forward if needed"
+          echo "timed out waiting for a green ci.yml run WITH the Docker detector-vs-bots gate on $SHA — ensure the tag triggered the full gate (or run it via workflow_dispatch on this SHA), then re-tag fix-forward if needed"
           exit 1
 
   images:
