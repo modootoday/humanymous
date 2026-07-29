@@ -55,16 +55,6 @@ func main() {
 	if *oracle != "" {
 		samples = append(samples, mustRead(*oracle, "oracle")...)
 	}
-	if len(samples) < 100 {
-		fatal(fmt.Errorf("need >=100 samples, got %d", len(samples)))
-	}
-
-	// TESSERACT: train on the past, evaluate on the future.
-	train, test := mltrain.TesseractSplit(samples, *testFrac)
-	if len(test) == 0 {
-		fatal(fmt.Errorf("empty test window — cannot validate a candidate; refusing to emit"))
-	}
-	fmt.Fprintf(os.Stderr, "mlcorrect-train: %d train / %d test (TESSERACT time-split)\n", len(train), len(test))
 
 	// Warm-start from the current bundle when provided (incremental adapter continuity).
 	var baseBundle *mlserve.MLPBundle
@@ -78,57 +68,47 @@ func main() {
 		fmt.Fprintf(os.Stderr, "mlcorrect-train: warm-starting from %s (%s)\n", *base, m.BundleVersion())
 	}
 
-	mean, std := mltrain.Standardize(train)
-	version := "mlp-corrected-" + time.Now().UTC().Format("20060102-150405")
-	cand := mltrain.Train(mltrain.Config{Hidden: *hidden, Epochs: *epochs, LR: float32(*lr), Seed: *seed, Version: version}, train, mean, std, baseBundle)
-
-	// --- promotion gates (fail-closed) ---
-	acc, aggFPR, botTPR := mltrain.Evaluate(cand, test)
-	aut := mltrain.AUT(cand, test, 5)
-	cohorts := mltrain.CohortFPR(cand, test)
-	fmt.Fprintf(os.Stderr, "mlcorrect-train: test acc=%.3f  botTPR=%.3f  aggHumanFPR=%.3f  AUT=%.3f\n", acc, botTPR, aggFPR, aut)
-
-	var failures []string
-	// per-cohort human-FP gate (BLOCKING, never aggregate)
-	names := make([]string, 0, len(cohorts))
-	for c := range cohorts {
-		names = append(names, c)
+	res, err := runGate(samples, baseBundle, gateConfig{
+		Version:  "mlp-corrected-" + time.Now().UTC().Format("20060102-150405"),
+		Hidden:   *hidden, Epochs: *epochs, LR: *lr, Seed: *seed, TestFrac: *testFrac,
+		MaxHumanFPR: *maxHumanFPR, MinBotTPR: *minBotTPR, MinCohortHumans: *minCohortHumans,
+	})
+	if err != nil {
+		fatal(err)
 	}
-	sort.Strings(names)
-	for _, c := range names {
-		st := cohorts[c]
-		status := "ok"
-		if st.Humans < *minCohortHumans {
-			status = "UNVALIDATED (too few humans → fail-closed)"
-			failures = append(failures, fmt.Sprintf("cohort %q has only %d humans (<%d): cannot confirm human-FP≈0", c, st.Humans, *minCohortHumans))
-		} else if float64(st.FPR) > *maxHumanFPR {
-			status = "FAIL"
-			failures = append(failures, fmt.Sprintf("cohort %q human FPR %.4f > %.4f", c, st.FPR, *maxHumanFPR))
-		}
-		fmt.Fprintf(os.Stderr, "  cohort %-12s humans=%-4d FP=%-3d FPR=%.4f  %s\n", c, st.Humans, st.FP, st.FPR, status)
-	}
-	// catalog no-regression
-	if float64(botTPR) < *minBotTPR {
-		failures = append(failures, fmt.Sprintf("bot TPR %.3f < floor %.3f (catalog regression)", botTPR, *minBotTPR))
+	fmt.Fprintf(os.Stderr, "mlcorrect-train: %d train / %d test (TESSERACT time-split)\n", res.NTrain, res.NTest)
+	fmt.Fprintf(os.Stderr, "mlcorrect-train: test acc=%.3f  botTPR=%.3f  aggHumanFPR=%.3f  AUT=%.3f\n", res.Acc, res.BotTPR, res.AggHumanFPR, res.AUT)
+	for _, c := range sortedCohorts(res.Cohorts) {
+		st := res.Cohorts[c]
+		fmt.Fprintf(os.Stderr, "  cohort %-12s humans=%-4d FP=%-3d FPR=%.4f\n", c, st.Humans, st.FP, st.FPR)
 	}
 
-	if len(failures) > 0 {
+	if res.Candidate == nil {
 		fmt.Fprintln(os.Stderr, "mlcorrect-train: PROMOTION GATES FAILED — candidate discarded, nothing written:")
-		for _, f := range failures {
+		for _, f := range res.Failures {
 			fmt.Fprintln(os.Stderr, "  ✗", f)
 		}
 		os.Exit(3)
 	}
 
-	raw, _ := json.MarshalIndent(cand, "", " ")
+	raw, _ := json.MarshalIndent(res.Candidate, "", " ")
 	if err := os.WriteFile(*out, raw, 0o644); err != nil {
 		fatal(err)
 	}
 	digest := mlcorrect.Digest(raw)
 	fmt.Fprintf(os.Stderr, "mlcorrect-train: GATES PASSED — wrote %s (%d bytes)\n", *out, len(raw))
-	fmt.Fprintf(os.Stderr, "mlcorrect-train: bundle=%s digest=%s\n", cand.Version, digest)
+	fmt.Fprintf(os.Stderr, "mlcorrect-train: bundle=%s digest=%s\n", res.Candidate.Version, digest)
 	// stdout carries the digest for the signing/staging step to consume.
 	fmt.Println(digest)
+}
+
+func sortedCohorts(m map[string]mltrain.CohortStat) []string {
+	names := make([]string, 0, len(m))
+	for c := range m {
+		names = append(names, c)
+	}
+	sort.Strings(names)
+	return names
 }
 
 // bundleOf recovers the on-disk MLPBundle by reloading it (mlserve.MLP does not expose its bundle;
