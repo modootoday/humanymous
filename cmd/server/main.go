@@ -18,7 +18,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/correlation"
 	"github.com/modootoday/humanymous/internal/mltrain"
+	"github.com/modootoday/humanymous/internal/redis"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/netutil"
 )
@@ -64,6 +66,7 @@ func main() {
 	mlCanary := flag.Bool("ml-canary", false, "SoT-42: put the loaded model on probation — auto-disable it (revert to heuristics) if realized human-FP breaches -ml-canary-max-fp, or on drift/poisoning. Requires -ml-bundle")
 	mlCanaryMaxFP := flag.Float64("ml-canary-max-fp", 0.02, "SoT-42 canary: realized human-FP ceiling during probation before auto-rollback")
 	mlCanaryProbation := flag.Int("ml-canary-probation", 200, "SoT-42 canary: confirmed humans to observe breach-free before the model graduates")
+	redisAddr := flag.String("redis", os.Getenv("HMN_REDIS"), "Redis host:port for FLEET-WIDE correlation velocity (ip_velocity aggregated across nodes); empty = per-node. HMN_REDIS_PASSWORD/USER/KEY apply")
 	flag.Parse()
 	explicitFlags := make(map[string]bool)
 	flag.Visit(func(current *flag.Flag) {
@@ -112,6 +115,17 @@ func main() {
 			defer sink.Close()
 			log.Printf("ml-trace-dir: appending oracle-confirmed traces to %s", *mlTraceDir)
 		}
+	}
+	// NG-detection C1 fleet-wide: with -redis, the cross-session correlation velocity is aggregated
+	// across nodes (a campaign split behind a load balancer counts as one). Verdict-neutral (the
+	// affected signal is weight-0) and fail-OPEN: on any Redis error it degrades to per-node counting.
+	if *redisAddr != "" {
+		rc := redis.New(*redisAddr)
+		if pw := os.Getenv("HMN_REDIS_PASSWORD"); pw != "" {
+			rc.SetAuth(os.Getenv("HMN_REDIS_USER"), pw)
+		}
+		a.corr = correlation.NewShared(60*time.Minute, rc, []byte(os.Getenv("HMN_REDIS_KEY")))
+		log.Printf("redis: fleet-wide correlation velocity via %s (per-node fallback on outage)", *redisAddr)
 	}
 	if err := a.configureExternalInputReceipts(*externalInputReceiptDir); err != nil {
 		log.Fatal("external-input receipt configuration failed")

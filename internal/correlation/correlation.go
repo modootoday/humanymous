@@ -6,12 +6,53 @@
 package correlation
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+	"math"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/anomaly"
+	"github.com/modootoday/humanymous/internal/redis"
 	"github.com/modootoday/humanymous/internal/signals"
 )
+
+// doer is the minimal Redis seam (satisfied by *redis.Client) so the fleet path is mockable in a
+// unit test without a live Redis. nil ⇒ the registry is pure per-process, byte-identical to before.
+type doer interface {
+	Do(args ...string) (redis.Reply, error)
+}
+
+// fleetCorrLua is the atomic fleet-wide correlation step (one round-trip, mirroring
+// redisratelimit.go's slidingWindowLua). KEYS[1]=distinct-/24 SET, KEYS[2]=arrival ZSET.
+// ARGV: [1]=now_ns [2]=velWindow_ns [3]=ttl_ms [4]=subnet. It records the /24, and — only when the
+// /24 is GLOBALLY new (SADD==1, matching the in-memory "append arrival on newSubnet" semantic) —
+// stamps it into the velocity window. Returns {added(0/1), fleetVelocity}. The distinct-/24 SCARD
+// (fleet proxy_rotation count) is deliberately NOT returned/consumed here: feeding it to
+// proxy_rotation would alter a verdict (HR-19 lone-DENYs on it) — a detection-freeze event plus a
+// coordinator-injection risk — so that stays a named follow-up. ip_velocity is weight-0, so taking
+// its count fleet-wide is verdict-neutral.
+const fleetCorrLua = `local added = redis.call('SADD', KEYS[1], ARGV[4])
+redis.call('PEXPIRE', KEYS[1], tonumber(ARGV[3]))
+if added == 1 then redis.call('ZADD', KEYS[2], ARGV[1], ARGV[4]) end
+redis.call('ZREMRANGEBYSCORE', KEYS[2], 0, tonumber(ARGV[1]) - tonumber(ARGV[2]))
+redis.call('PEXPIRE', KEYS[2], tonumber(ARGV[3]))
+return { added, redis.call('ZCARD', KEYS[2]) }`
+
+// keyDigest maps the (high-entropy) correlation key to a fixed-width hex handle so the coordinator
+// never stores raw fingerprint/JA4 bytes at rest (PII-minimization). HMAC when a fleet key is
+// configured, else a plain SHA-256 — 1:1 with the key either way, so counts are unaffected.
+func keyDigest(sign []byte, key string) string {
+	if len(sign) > 0 {
+		m := hmac.New(sha256.New, sign)
+		m.Write([]byte(key))
+		return hex.EncodeToString(m.Sum(nil))
+	}
+	sum := sha256.Sum256([]byte(key))
+	return hex.EncodeToString(sum[:])
+}
 
 // Thresholds for flagging shared fingerprints (SoT-15 §2).
 const (
@@ -56,9 +97,11 @@ type Registry struct {
 	ja4m map[string]*ja4Fan
 	ttl  time.Duration
 	vel  *anomaly.Detector // fleet-velocity: per-key subnet-acquisition-rate MAD detector
+	rc   doer              // optional Redis coordinator for FLEET-WIDE counting; nil = per-process
+	sign []byte            // fleet HMAC key for the coordinator key digest; nil = SHA-256
 }
 
-// New returns a correlation registry with the given TTL.
+// New returns a per-process correlation registry with the given TTL.
 func New(ttl time.Duration) *Registry {
 	return &Registry{
 		m: map[string]*entry{}, ja4m: map[string]*ja4Fan{}, ttl: ttl,
@@ -66,6 +109,43 @@ func New(ttl time.Duration) *Registry {
 		// keeps a near-constant (organic) rate from over-flagging on integer wobble.
 		vel: anomaly.New(anomaly.Config{Window: 256, K: 6, Warmup: 20, MADFloor: 1, MaxKeys: 16}),
 	}
+}
+
+// NewShared returns a registry whose distinct-/24 velocity count is aggregated FLEET-WIDE through the
+// Redis coordinator, so a campaign split across nodes behind a load balancer (each node seeing 1 /24
+// per fingerprint) is counted as one. The per-process maps are still maintained (for Stats() and as
+// the outage fallback): on any Redis error the ip_velocity path degrades to exactly the per-process
+// behavior — fail-OPEN, never fail-closed, because these signals are audit corroborators that never
+// drive a lone DENY. Only the weight-0 ip_velocity consumes the fleet count; proxy_rotation stays
+// per-node (its verdict is HR-19-load-bearing; taking it fleet-wide is a separate freeze-spend).
+func NewShared(ttl time.Duration, rc doer, signKey []byte) *Registry {
+	r := New(ttl)
+	r.rc = rc
+	r.sign = signKey
+	return r
+}
+
+// observeFleet runs the atomic fleet step and returns (globallyNewSubnet, fleetVelocity, ok). ok is
+// false on any Redis error, signalling the caller to fall back to per-process counts.
+func (r *Registry) observeFleet(key, subnet string, now time.Time) (added bool, vel int, ok bool) {
+	h := keyDigest(r.sign, key)
+	nowNs := now.UnixNano()
+	rep, err := r.rc.Do("EVAL", fleetCorrLua, "2", "hmn:corr:sub:"+h, "hmn:corr:vel:"+h,
+		strconv.FormatInt(nowNs, 10),
+		strconv.FormatInt(velWindow.Nanoseconds(), 10),
+		strconv.FormatInt(r.ttl.Milliseconds(), 10),
+		subnet,
+	)
+	if err != nil || len(rep.Array) < 2 {
+		return false, 0, false // outage/malformed → caller uses the local count
+	}
+	v := rep.Array[1].Int
+	if v < 0 {
+		v = 0
+	} else if v > math.MaxInt32 {
+		v = math.MaxInt32
+	}
+	return rep.Array[0].Int == 1, int(v), true
 }
 
 // velocity counts the new-/24 arrivals for a key within the trailing velWindow, pruning older ones.
@@ -130,11 +210,22 @@ func (r *Registry) Observe(key, subnet, sessionID string, now time.Time) []signa
 	// fleet, not a handful) so a tiny outlier over a near-zero norm cannot fire. Weight-0 → audit only;
 	// asymmetric — it corroborates proxy_rotation, never a lone DENY. (Honest limit: a campaign that
 	// dominates the recent population poisons the norm; monitor-first + corroboration is why.)
-	if r.vel != nil && newSubnet {
-		res := r.vel.Observe(velPopKey, float64(vel), now)
-		if vel >= velFloor && res.Anomalous {
+	//
+	// When a Redis coordinator is configured, the "new /24" decision and the windowed count are taken
+	// FLEET-WIDE (aggregated across nodes) so a campaign split behind a load balancer is counted as
+	// one; on any Redis error we fall back to the per-process values already computed above (fail-open).
+	// The MAD population baseline stays per-node — the COUNT is the fleet-wide part.
+	useNew, useVel := newSubnet, vel
+	if r.rc != nil && subnet != "" {
+		if fleetNew, fleetVel, ok := r.observeFleet(key, subnet, now); ok {
+			useNew, useVel = fleetNew, fleetVel
+		}
+	}
+	if r.vel != nil && useNew {
+		res := r.vel.Observe(velPopKey, float64(useVel), now)
+		if useVel >= velFloor && res.Anomalous {
 			out = append(out, signals.New("l5.correlation.ip_velocity",
-				map[string]any{"newSubnetsInWindow": vel, "madScore": res.Score},
+				map[string]any{"newSubnetsInWindow": useVel, "madScore": res.Score},
 				signals.VerdictSuspicious, 0.6, signals.SourceServer,
 				"one fingerprint acquiring /24 subnets abnormally fast (fleet-velocity)"))
 		}
