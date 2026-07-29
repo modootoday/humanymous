@@ -56,6 +56,19 @@ ml-model:
 	$(GO) run ./cmd/ml-train $(if $(DATA),-data $(DATA),-gen 20000) -out configs/ml/behavioral.json
 	@echo "load with: -ml-bundle configs/ml/behavioral.json (or HMN_ML_BUNDLE=...)"
 
+## ml-retrain: self-correcting offline retrain (SoT-42 Pillar A, cmd/mlcorrect-train).
+## Trains from the frozen gold ANCHOR + ORACLE-confirmed labels (never the model's own outputs),
+## warm-starting from BASE if given, and emits a CANDIDATE bundle ONLY IF the promotion gates pass:
+## per-cohort human-FP~0 (BLOCKING), catalog no-regression, on a TESSERACT time-split + AUT. A failed
+## gate exits non-zero and writes nothing (fail-closed). The candidate is then signed + Staged/Promoted
+## via internal/mlcorrect.BundleManager under dual control — this target does NOT deploy.
+## Usage: make ml-retrain ANCHOR=gold.jsonl ORACLE=confirmed.jsonl [BASE=configs/ml/behavioral.json]
+ml-retrain:
+	@test -n "$(ANCHOR)" || { echo "set ANCHOR=path/to/gold.jsonl (frozen anchor is required)"; exit 2; }
+	@mkdir -p configs/ml
+	$(GO) run ./cmd/mlcorrect-train -anchor $(ANCHOR) $(if $(ORACLE),-oracle $(ORACLE),) $(if $(BASE),-base $(BASE),) -out configs/ml/candidate.json
+	@echo "candidate at configs/ml/candidate.json — sign + Stage/Promote via mlcorrect.BundleManager (dual control)"
+
 fmt:
 	$(GO) fmt ./...
 vet:

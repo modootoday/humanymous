@@ -1,6 +1,7 @@
 // Command ml-train trains the small policy-specific behavioral MLP (SoT-42 Pillar A) into a JSON
 // bundle that internal/mlserve loads at the edge. Pure Go, no ML framework — the whole pipeline
-// (feature transform → train → serve) runs in Docker with the Go toolchain only.
+// (feature transform → train → serve) runs in Docker with the Go toolchain only. The training math
+// itself lives in internal/mltrain, shared with the self-correcting retrainer (cmd/mlcorrect-train).
 //
 //	ml-train -gen 20000 -out model.json          # bootstrap on synthetic grounded data
 //	ml-train -data labeled.jsonl -out model.json # real labeled traces (JSONL {label, behavior})
@@ -17,25 +18,18 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"math"
 	"math/rand"
 	"os"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/behavior"
-	"github.com/modootoday/humanymous/internal/mlserve"
+	"github.com/modootoday/humanymous/internal/mltrain"
 	"github.com/modootoday/humanymous/internal/signals"
 )
 
 type labeled struct {
-	Label    int                       `json:"label"` // 1 = bot, 0 = human
-	Behavior signals.BehaviorSummary   `json:"behavior"`
-}
-
-type sample struct {
-	x     behavior.FeatureVector
-	y     float32
-	human bool
+	Label    int                     `json:"label"` // 1 = bot, 0 = human
+	Behavior signals.BehaviorSummary `json:"behavior"`
 }
 
 func main() {
@@ -49,7 +43,7 @@ func main() {
 	flag.Parse()
 
 	rng := rand.New(rand.NewSource(*seed))
-	var samples []sample
+	var samples []mltrain.Sample
 	if *data != "" {
 		s, err := readData(*data)
 		if err != nil {
@@ -69,17 +63,15 @@ func main() {
 		fatal(fmt.Errorf("need >=100 samples, got %d", len(samples)))
 	}
 
-	// train/val split
 	rng.Shuffle(len(samples), func(i, j int) { samples[i], samples[j] = samples[j], samples[i] })
 	nVal := len(samples) / 5
 	val, train := samples[:nVal], samples[nVal:]
 
-	mean, std := standardize(train)
-	b := trainMLP(rng, train, mean, std, *hidden, *epochs, float32(*lr))
+	mean, std := mltrain.Standardize(train)
+	version := "mlp-bootstrap-" + time.Now().UTC().Format("20060102") + fmt.Sprintf("-h%d", *hidden)
+	b := mltrain.Train(mltrain.Config{Hidden: *hidden, Epochs: *epochs, LR: float32(*lr), Seed: *seed, Version: version}, train, mean, std, nil)
 
-	// eval
-	m := &mlpForward{b: b}
-	acc, humanFPR, botTPR := evaluate(m, val)
+	acc, humanFPR, botTPR := mltrain.Evaluate(b, val)
 	fmt.Fprintf(os.Stderr, "ml-train: val acc=%.3f  bot TPR=%.3f  human FPR=%.3f  (bundle %s, schema %s)\n",
 		acc, botTPR, humanFPR, b.Version, b.SchemaHash)
 
@@ -92,13 +84,13 @@ func main() {
 
 // --- data ---
 
-func readData(path string) ([]sample, error) {
+func readData(path string) ([]mltrain.Sample, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	var out []sample
+	var out []mltrain.Sample
 	sc := bufio.NewScanner(f)
 	sc.Buffer(make([]byte, 1<<20), 1<<20)
 	for sc.Scan() {
@@ -110,20 +102,20 @@ func readData(path string) ([]sample, error) {
 		if err := json.Unmarshal(line, &l); err != nil {
 			return nil, fmt.Errorf("bad JSONL line: %w", err)
 		}
-		out = append(out, sample{x: behavior.Extract(l.Behavior), y: float32(l.Label), human: l.Label == 0})
+		out = append(out, mltrain.Sample{X: behavior.Extract(l.Behavior), Y: float32(l.Label), Human: l.Label == 0})
 	}
 	return out, sc.Err()
 }
 
 // --- synthetic bootstrap (grounded in catalog bot values + test human values) ---
 
-func genSynthetic(rng *rand.Rand, n int) []sample {
-	out := make([]sample, 0, n)
+func genSynthetic(rng *rand.Rand, n int) []mltrain.Sample {
+	out := make([]mltrain.Sample, 0, n)
 	for i := 0; i < n; i++ {
 		if i%2 == 0 {
-			out = append(out, sample{x: behavior.Extract(humanBehavior(rng)), y: 0, human: true})
+			out = append(out, mltrain.Sample{X: behavior.Extract(humanBehavior(rng)), Y: 0, Human: true})
 		} else {
-			out = append(out, sample{x: behavior.Extract(botBehavior(rng)), y: 1, human: false})
+			out = append(out, mltrain.Sample{X: behavior.Extract(botBehavior(rng)), Y: 1, Human: false})
 		}
 	}
 	return out
@@ -178,157 +170,4 @@ func botBehavior(rng *rand.Rand) signals.BehaviorSummary {
 	}
 }
 
-// --- standardization + MLP training (mini-batch SGD, BCE) ---
-
-func standardize(s []sample) (mean, std []float32) {
-	d := behavior.FeatureDim
-	mean = make([]float32, d)
-	std = make([]float32, d)
-	for _, sm := range s {
-		for i := 0; i < d; i++ {
-			mean[i] += sm.x[i]
-		}
-	}
-	n := float32(len(s))
-	for i := range mean {
-		mean[i] /= n
-	}
-	for _, sm := range s {
-		for i := 0; i < d; i++ {
-			dd := sm.x[i] - mean[i]
-			std[i] += dd * dd
-		}
-	}
-	for i := range std {
-		std[i] = float32(math.Sqrt(float64(std[i]/n))) + 1e-6
-	}
-	return
-}
-
-func trainMLP(rng *rand.Rand, train []sample, mean, std []float32, hidden, epochs int, lr float32) mlserve.MLPBundle {
-	d := behavior.FeatureDim
-	// He-init
-	w1 := make([][]float32, hidden)
-	b1 := make([]float32, hidden)
-	for h := range w1 {
-		w1[h] = make([]float32, d)
-		scale := float32(math.Sqrt(2.0 / float64(d)))
-		for i := range w1[h] {
-			w1[h][i] = float32(rng.NormFloat64()) * scale
-		}
-	}
-	w2 := make([]float32, hidden)
-	for h := range w2 {
-		w2[h] = float32(rng.NormFloat64()) * float32(math.Sqrt(2.0/float64(hidden)))
-	}
-	var b2 float32
-
-	norm := func(x behavior.FeatureVector) []float32 {
-		z := make([]float32, d)
-		for i := range x {
-			z[i] = (x[i] - mean[i]) / std[i]
-		}
-		return z
-	}
-
-	for ep := 0; ep < epochs; ep++ {
-		rng.Shuffle(len(train), func(i, j int) { train[i], train[j] = train[j], train[i] })
-		for _, sm := range train {
-			z := norm(sm.x)
-			// forward
-			hpre := make([]float32, hidden)
-			hact := make([]float32, hidden)
-			logit := b2
-			for h := 0; h < hidden; h++ {
-				acc := b1[h]
-				for i := 0; i < d; i++ {
-					acc += w1[h][i] * z[i]
-				}
-				hpre[h] = acc
-				if acc > 0 {
-					hact[h] = acc
-				}
-				logit += w2[h] * hact[h]
-			}
-			p := sigmoid(logit)
-			// backward (BCE): dL/dlogit = p - y
-			dLogit := p - sm.y
-			for h := 0; h < hidden; h++ {
-				gW2 := dLogit * hact[h]
-				dHact := dLogit * w2[h]
-				var dHpre float32
-				if hpre[h] > 0 {
-					dHpre = dHact
-				}
-				for i := 0; i < d; i++ {
-					w1[h][i] -= lr * dHpre * z[i]
-				}
-				b1[h] -= lr * dHpre
-				w2[h] -= lr * gW2
-			}
-			b2 -= lr * dLogit
-		}
-	}
-	return mlserve.MLPBundle{
-		Version: "mlp-bootstrap-" + time.Now().UTC().Format("20060102") + "-h" + itoa(hidden),
-		SchemaHash: behavior.SchemaHash(), FeatureDim: d, Hidden: hidden,
-		Mean: mean, Std: std, W1: w1, B1: b1, W2: w2, B2: b2, CalA: 1, CalB: 0,
-	}
-}
-
-func sigmoid(x float32) float32 { return float32(1 / (1 + math.Exp(float64(-x)))) }
-
-// mlpForward is a minimal forward-only view for in-process eval (mirrors mlserve.MLP.Predict).
-type mlpForward struct{ b mlserve.MLPBundle }
-
-func (m *mlpForward) predict(x behavior.FeatureVector) float32 {
-	b := m.b
-	logit := b.B2
-	for h := 0; h < b.Hidden; h++ {
-		acc := b.B1[h]
-		for i := 0; i < b.FeatureDim; i++ {
-			acc += b.W1[h][i] * ((x[i] - b.Mean[i]) / b.Std[i])
-		}
-		if acc < 0 {
-			acc = 0
-		}
-		logit += b.W2[h] * acc
-	}
-	return sigmoid(b.CalA*logit + b.CalB)
-}
-
-func evaluate(m *mlpForward, val []sample) (acc, humanFPR, botTPR float32) {
-	var correct, humans, humanFP, bots, botTP int
-	for _, s := range val {
-		p := m.predict(s.x)
-		pred := 0
-		if p >= 0.5 {
-			pred = 1
-		}
-		if float32(pred) == s.y {
-			correct++
-		}
-		if s.human {
-			humans++
-			if pred == 1 {
-				humanFP++
-			}
-		} else {
-			bots++
-			if pred == 1 {
-				botTP++
-			}
-		}
-	}
-	acc = float32(correct) / float32(len(val))
-	if humans > 0 {
-		humanFPR = float32(humanFP) / float32(humans)
-	}
-	if bots > 0 {
-		botTPR = float32(botTP) / float32(bots)
-	}
-	return
-}
-
-func itoa(i int) string { return fmt.Sprintf("%d", i) }
-func fatal(err error)   { fmt.Fprintln(os.Stderr, "ml-train:", err); os.Exit(1) }
+func fatal(err error) { fmt.Fprintln(os.Stderr, "ml-train:", err); os.Exit(1) }
