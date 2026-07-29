@@ -77,7 +77,7 @@ Core evaluates the following rules inside the shared scoring engine. “Heuristi
 | Datacenter-network browser | A consistent browser arrives from a datacenter network | CHALLENGE | Heuristic |
 | Advanced browser residual | Audio-rate, graphics-processor, or mobile-versus-desktop evidence remains inconsistent near the detection boundary | CHALLENGE | Heuristic |
 | Chromium-container residual | A Chrome claim lacks Widevine, media devices, and voices in the specific combined pattern | CHALLENGE | Heuristic |
-| Network residual policy | Enforced policy selects residual evidence involving proxy hops, virtual private networks, Tor, or source spoofing | CHALLENGE | Operator-controlled and heuristic; Transmission Control Protocol residuals never auto-enforce |
+| Network residual policy | Enforced policy selects a residual class of transport evidence: proxy hops, virtual private networks, Tor, or source spoofing; a Transport-Layer-Security handshake that omits an extension every current browser sends (the post-quantum key share, application settings, certificate compression, or encrypted client hello); a Hypertext-Transfer-Protocol-version-2 profile inconsistent with the claimed browser (settings, connection flow-control window, stream priority, or frame order); or a browser Transport-Layer-Security stack delivered over Hypertext Transfer Protocol version 1.1 | CHALLENGE | Operator-controlled and heuristic; each residual class is individually settable to monitor for a network with a legitimate middlebox (an inspecting proxy, a policy that strips an extension, or a downgrade), so a deployment can quiet one class without disabling the rest; Transmission Control Protocol residuals never auto-enforce |
 
 Core uses the same ordered predicate table for the verdict and the Detection Observatory trace. This prevents the explanatory view from evaluating a second set of rules.
 
@@ -124,6 +124,10 @@ Raw score traces contain dotted signal identifiers because they are machine cont
 | Click with no approach trajectory | Interaction analysis |
 | Machine-like burst and silence cadence | Interaction analysis |
 | Rapid Reset frame pattern | Network and protocol inspection |
+| Transport-Layer-Security handshake missing a current-browser extension | Network and protocol inspection |
+| Hypertext Transfer Protocol version 2 profile inconsistent with the browser claim | Network and protocol inspection |
+| Browser Transport-Layer-Security stack delivered over an older Hypertext Transfer Protocol version | Cross-layer consistency |
+| Request header order that does not match a real browser | Network and protocol inspection |
 | One fingerprint rotating across networks | Cross-session correlation |
 | Request body does not match its integrity token | Request integrity |
 | Proof-of-work completed | Challenge state |
