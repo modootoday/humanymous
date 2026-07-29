@@ -129,6 +129,18 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21t. **Measure a marginal candidate before building it — a negative result is a valid, honest
+    round outcome** (R17 frame-order DROPPED; and the HPACK-Huffman decline). When the fingerprint
+    frontier thins, the temptation is to ship the last "technically-uncaptured" dimension. Resist
+    it: instrument and MEASURE the real-browser baseline first. HTTP/2 frame ARRIVAL order looked
+    like the last untouched h2 dimension, but measurement killed it on two counts — real Firefox
+    is INCONSISTENT (it sent both `s,w,h` and `s,h`, so any tell requiring the WINDOW_UPDATE frame
+    false-positives a real browser), AND the only variation observed was WINDOW_UPDATE presence,
+    which R11 already covers (redundant). HPACK-Huffman was declined earlier because no realistic
+    client differs (every stack Huffman-encodes) — the red would be artificial. Both are the SAME
+    discipline: do not build a check that FPs a real browser or that only a hand-crafted red trips
+    (vacuous-green). "We measured it and it's not a real, FP-safe, non-redundant tell" is a
+    complete and honest answer — and the correct place to STOP.
 21s. **A skipped cross-check is a blind spot; and a "ceiling" profile must be genuinely coherent
     or it over-claims** (R15, JA4↔JA4H browser-TLS-over-h1, freeze-spend). The x.ua_vs_h2
     cross-check only ran when an h2 fingerprint existed, so a browser-TLS parrot speaking HTTP/1.1
