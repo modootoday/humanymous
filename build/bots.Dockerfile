@@ -25,10 +25,14 @@ COPY cmd ./cmd
 COPY internal ./internal
 COPY pkg ./pkg
 COPY scripts/gen-demo-keys ./scripts/gen-demo-keys
+COPY scripts/gen-ml-demo-bundle ./scripts/gen-ml-demo-bundle
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/ \
  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/ \
- && CGO_ENABLED=0 go run ./scripts/gen-demo-keys
+ && CGO_ENABLED=0 go run ./scripts/gen-demo-keys \
+ && mkdir -p /src/configs/ml \
+ && CGO_ENABLED=0 go run ./cmd/ml-train -gen 12000 -out /src/configs/ml/behavioral.json \
+ && CGO_ENABLED=0 go run ./scripts/gen-ml-demo-bundle -bundle /src/configs/ml/behavioral.json -outdir /src/configs/ml
 
 # ---- Bots runtime: Node + only the two exercised Playwright browsers --------
 # The upstream Playwright image also carries WebKit and its OS dependencies.
@@ -124,6 +128,10 @@ COPY deployments/bots/ /app/
 # Seed lives outside the runtime mount point so an empty named volume cannot hide keys.
 COPY --from=gobuild /src/deployments/patissuers /app/demo-keys-seed/patissuers
 COPY --from=gobuild /src/deployments/webauthncreds /app/demo-keys-seed/webauthncreds
+# Signed behavioral-model bundle (behavioral.json + pub.pem + bundle.sig), trained + signed in the
+# gobuild stage from the SAME source as the Core image so its feature-schema hash matches at admission
+# time. Seeds the ml.yaml overlay's SIGNED -ml-bundle admission proof (scripts/assert-ml.mjs).
+COPY --from=gobuild /src/configs/ml /app/demo-keys-seed/ml
 # CRLF fix for shell only — never sed the musl ELF binaries (corrupts them → segfault).
 RUN sed -i 's/\r$//' /app/*.sh /app/curl-impersonate/bin/curl_chrome* \
  && chmod +x /app/*.sh /app/curl-impersonate/bin/*

@@ -16,7 +16,7 @@ cd "$(dirname "$0")/.."
 # still-running base gate for the port.
 docker compose -p "$BASE_PROJECT" -f deployments/compose.yaml --profile swarm down -v >/dev/null 2>&1 || true
 docker compose $BASE down -v >/dev/null 2>&1 || true
-echo "[overlay] PLAN redis-ha -> proxyproto -> webbotauth -> privacypass -> webauthn -> redis-hardened -> audit-ch(clickhouse)"
+echo "[overlay] PLAN redis-ha -> proxyproto -> webbotauth -> privacypass -> webauthn -> redis-hardened -> audit-ch(clickhouse) -> ml -> core-fleet"
 
 run_timed() { # label command...
   local label=$1 command_pid heartbeat_pid rc
@@ -77,4 +77,7 @@ run privacypass    "origin demo-keys-init gate"            assert-privacypass
 run webauthn       "origin demo-keys-init gate"            assert-webauthn
 run redis-hardened "origin redis gate"                     assert-redis-hardening
 run audit-ch       "origin clickhouse gate"                assert-audit-clickhouse 4
+# Core detection-plane overlays (SoT-42 Pillar A signed model; NG C1 fleet-wide correlation).
+run ml             "origin ml-bundle-init core"            assert-ml 4
+run core-fleet     "origin redis core core-b"              assert-core-fleet 4
 echo "ALL PLAN-08 overlays passed"

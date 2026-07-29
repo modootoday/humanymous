@@ -85,5 +85,27 @@ services:
       CH: "http://clickhouse:8123"
     networks: [web]
 
+  # SoT-42 Pillar A — SIGNED behavioral-model admission proof (measured H4). Reads the Core ops
+  # rollup and asserts the signed bundle admitted → promoted → SERVING with the canary armed.
+  assert-ml:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-ml.mjs"]
+    environment:
+      CORE: "https://core:8443"
+      OP_TOKEN: "e2e-core-operator-token"
+    networks: [lab-a]
+
+  # NG-detection Pillar C1 — FLEET-WIDE correlation velocity proof (measured H5). Splits distinct-/24
+  # observations for one fingerprint across two Core nodes and asserts ip_velocity fires on the node
+  # that saw only a minority locally — provable only via the shared Redis count.
+  assert-core-fleet:
+    <<: *assert
+    entrypoint: ["node", "/app/scripts/assert-core-fleet.mjs"]
+    environment:
+      A: "https://core:8443"
+      B: "https://core-b:8443"
+      OP_TOKEN: "e2e-core-operator-token"
+    networks: [lab-a]
+
 volumes:
   demo-keys:

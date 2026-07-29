@@ -1,0 +1,63 @@
+# NG-detection Pillar C1 — FLEET-WIDE (Redis) correlation velocity proof (measured H5).
+#
+# The per-process correlation registry cannot see a campaign SPLIT across nodes behind a load
+# balancer: each node sees only a fraction of the distinct /24s per fingerprint, below the
+# ip_velocity floor. This overlay adds a Redis coordinator and a SECOND Core node, both pointed at
+# the same Redis with the SAME HMN_REDIS_KEY (so their digested per-fingerprint keys collide). This
+# is the real infrastructure scripts/assert-core-fleet.mjs measures: it drives distinct-/24
+# observations for one fingerprint SPLIT across the two nodes such that NEITHER node alone crosses
+# the per-node floor, yet the fleet count does — and asserts ip_velocity fires on the node that only
+# saw a minority of the subnets locally. That is only possible if the count is shared via Redis.
+#
+#   docker compose -f deployments/compose.yaml -f deployments/compose/core-fleet.yaml \
+#       -f deployments/compose/assertions.yaml up -d origin redis core core-b
+#   node scripts/assert-core-fleet.mjs   # or: docker compose ... run --rm assert-core-fleet
+#
+# l5.correlation.ip_velocity is WEIGHT-0 / audit-only: it corroborates, it never lone-DENYs, and the
+# fleet path FAILS OPEN (any Redis error degrades to per-node counting). This overlay proves the
+# aggregation, not an enforcement change — detection stays frozen. Paths are relative to this file's
+# directory (deployments/compose/), matching defenders.yaml.
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    networks: [web]
+
+  # Node A: share the fleet correlation count via Redis. -redis is read from HMN_REDIS, so the base
+  # command is untouched; HMN_REDIS_KEY keys the at-rest digest (must match node B). env_file
+  # (dev.env → HMN_OPS_TOKEN) is merged from defenders.yaml, so /api/report stays operator-readable.
+  core:
+    environment:
+      HMN_REDIS: "redis:6379"
+      HMN_REDIS_KEY: "fleet-demo-key"
+    depends_on: [origin, redis]
+
+  # Node B: a distinct Core container (distinct host ports), SAME image + Redis + key — a peer, not a
+  # copy of A's per-process state. New service, so it re-declares the base self-signed :8443 command.
+  # The operator token + dev-token permit are INLINED (not env_file) so path resolution is invariant
+  # to how this overlay is loaded via -f — mirroring redis-ha.yaml's gate-b (env_file relative paths
+  # resolve against the base project dir, not this file's dir, and would miss configs/dev.env).
+  core-b:
+    build:
+      context: ../../
+      dockerfile: build/core.Dockerfile
+    image: humanymous/core:local
+    entrypoint: ["/app/server"]
+    command:
+      - "-addr"
+      - ":8443"
+      - "-web"
+      - "/app/web"
+      - "-log-level"
+      - "info"
+      - "-log-console-format"
+      - "jsonl"
+    environment:
+      HMN_OPS_TOKEN: "e2e-core-operator-token"
+      HMN_ALLOW_DEV_TOKENS: "1"
+      HMN_REDIS: "redis:6379"
+      HMN_REDIS_KEY: "fleet-demo-key"
+    ports:
+      - "8449:8443"
+    networks: [web, lab-a, lab-b, lab-c]
+    depends_on: [origin, redis]

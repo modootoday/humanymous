@@ -54,6 +54,13 @@ bin/server.exe \
 
 With `-ml-pubkey` set, an artifact with a missing or invalid signature is **refused**, and the engine falls back to heuristics rather than serve an unverifiable model. A pinned `-ml-bundle-digest` is refused on any mismatch. This is what keeps "the model in effect" equal to "the artifact you signed and deployed."
 
+**Worked Docker example.** `deployments/compose/ml.yaml` stands the Core up on the signed path end-to-end: a build step trains a bootstrap bundle and signs it with a throwaway demo key (`scripts/gen-ml-demo-bundle`), an init container seeds it, and the Core mounts it read-only with `-ml-pubkey`/`-ml-bundle-sig`/`-ml-canary`. `scripts/assert-ml.mjs` then confirms the signed bundle was admitted and is actually serving. It is a lab reference (the demo key is not real key management), but it is the fastest way to see signed admission work:
+
+```bash
+docker compose -f deployments/compose.yaml -f deployments/compose/ml.yaml \
+    -f deployments/compose/assertions.yaml run --rm assert-ml
+```
+
 ### Tune the human-false-positive budget
 
 ```bash

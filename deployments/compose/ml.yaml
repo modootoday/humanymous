@@ -1,0 +1,61 @@
+# SoT-42 Pillar A — SIGNED behavioral-model admission proof (measured H4).
+#
+# Stands the Core up with a SIGNED -ml-bundle and proves the traffic-facing admission path
+# (schema-pin + ed25519 signature verify → Stage → Promote → serving, canary armed). The bundle,
+# its PKIX public key and its detached signature are minted in the bots-image build from the SAME
+# source as the Core, so the feature-schema hash matches at admission time. This is the real
+# infrastructure scripts/assert-ml.mjs measures — a decorative overlay that only booted would not
+# prove the signature/schema gate actually admitted a SERVING model.
+#
+#   go run ./cmd/ml-train -gen 12000 -out configs/ml/behavioral.json   # (baked into the bots image; shown for clarity)
+#   go run ./scripts/gen-ml-demo-bundle -bundle configs/ml/behavioral.json -outdir configs/ml
+#   docker compose -f deployments/compose.yaml -f deployments/compose/ml.yaml \
+#       -f deployments/compose/assertions.yaml up -d origin ml-bundle-init core
+#   node scripts/assert-ml.mjs   # or: docker compose ... run --rm assert-ml
+#
+# DEMO signing key only: the keypair is ephemeral (minted at image build, public half + signature
+# baked together). A real deployment signs bundles with an out-of-band operator key. Paths are
+# relative to this file's directory (deployments/compose/), matching defenders.yaml.
+services:
+  # One-shot: copy the baked, signed bundle seed into a named volume the Core mounts read-only.
+  # Mirrors demo-keys-init (webauthn.yaml) so an empty named volume cannot mask the seed.
+  ml-bundle-init:
+    image: humanymous/bots:local
+    build:
+      context: ../../
+      dockerfile: build/bots.Dockerfile
+    entrypoint: ["sh", "-c", "cp -a /app/demo-keys-seed/ml/. /app/ml/ && ls -la /app/ml"]
+    volumes:
+      - ml-bundle:/app/ml
+
+  # Override the Core to admit the SIGNED bundle. command is a full replacement, so the base args
+  # from defenders.yaml are repeated here verbatim, then the -ml-* flags are appended. env_file
+  # (configs/dev.env, carrying HMN_OPS_TOKEN) is merged from the base, so /api/counters stays
+  # operator-readable for the assert.
+  core:
+    command:
+      - "-addr"
+      - ":8443"
+      - "-web"
+      - "/app/web"
+      - "-log-level"
+      - "info"
+      - "-log-console-format"
+      - "jsonl"
+      - "-ml-bundle"
+      - "/app/ml/behavioral.json"
+      - "-ml-pubkey"
+      - "/app/ml/pub.pem"
+      - "-ml-bundle-sig"
+      - "/app/ml/bundle.sig"
+      - "-ml-canary"
+    volumes:
+      - ml-bundle:/app/ml:ro
+    depends_on:
+      origin:
+        condition: service_started
+      ml-bundle-init:
+        condition: service_completed_successfully
+
+volumes:
+  ml-bundle:
