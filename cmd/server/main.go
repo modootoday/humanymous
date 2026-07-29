@@ -120,6 +120,16 @@ func main() {
 	// across nodes (a campaign split behind a load balancer counts as one). Verdict-neutral (the
 	// affected signal is weight-0) and fail-OPEN: on any Redis error it degrades to per-node counting.
 	if *redisAddr != "" {
+		// Posture warnings symmetric with the Gate (which guards its Redis key at boot). The Core
+		// fleet path is weight-0/verdict-neutral, so an unsigned or unauthenticated coordinator is a
+		// posture risk (audit-line inflation + a fingerprint-confirmation oracle), not a verdict risk —
+		// hence a loud WARNING rather than a fail-closed boot, but it must not be silent.
+		if os.Getenv("HMN_REDIS_KEY") == "" {
+			log.Printf("WARNING: -redis set without HMN_REDIS_KEY — the fleet correlation key digest falls back to unsigned SHA-256; a read-capable Redis can confirm which fingerprints are present and a write-capable one can inflate the weight-0 ip_velocity audit line. Set HMN_REDIS_KEY (>=16 bytes) in production.")
+		}
+		if os.Getenv("HMN_REDIS_PASSWORD") == "" {
+			log.Printf("WARNING: -redis set without HMN_REDIS_PASSWORD — connecting to an unauthenticated Redis coordinator. Provision AUTH + network isolation in production.")
+		}
 		rc := redis.New(*redisAddr)
 		if pw := os.Getenv("HMN_REDIS_PASSWORD"); pw != "" {
 			rc.SetAuth(os.Getenv("HMN_REDIS_USER"), pw)

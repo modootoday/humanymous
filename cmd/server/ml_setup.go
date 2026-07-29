@@ -90,6 +90,9 @@ func setupBehavioralML(f mlFlags) mlSetup {
 	}
 
 	ver, dig := bm.Active()
+	if pubPEM == nil && f.digest == "" {
+		log.Printf("WARNING: ml-bundle admitted with NEITHER -ml-pubkey NOR -ml-bundle-digest — integrity rests on the feature-schema pin alone (any schema-matching artifact at this path is served). Set -ml-pubkey (signature) or at least -ml-bundle-digest (sha256 pin) for signed/pinned admission in production.")
+	}
 	ctrl := mlcorrect.NewController(float32(f.fpBudget), 0.5, 0.01)
 	mlserve.SetThresholdProvider(ctrl)
 	mlserve.SetFeatureObserver(ctrl) // covariate-drift tap (hot path, model-loaded only)

@@ -31,6 +31,34 @@ func TestRegistryIntegrity(t *testing.T) {
 	}
 }
 
+// TestScoreExemptResidualsAreWeightZero pins the load-bearing invariant the docs stake the
+// behavioral-model and fleet-correlation safety on: these residuals are AUDIT-ONLY. They are emitted
+// and audited (and feed the admin/NET-POLICY plane) but must contribute NOTHING to the risk score,
+// so a build with the model loaded yields byte-identical verdicts to one without, and taking a
+// correlation signal fleet-wide never moves a verdict. A future edit that gives one of these a weight
+// is a deliberate detection-freeze/policy event — this test makes such an edit fail loudly instead of
+// silently changing what gets blocked (TestRegistryIntegrity above only bounds weights to [0,100]).
+func TestScoreExemptResidualsAreWeightZero(t *testing.T) {
+	scoreExempt := []string{
+		"l4.ml.behavioral",
+		"l5.correlation.proxy_rotation",
+		"l5.correlation.shared_fingerprint",
+		"l5.correlation.fp_churn_proxy",
+		"l5.correlation.ip_velocity",
+	}
+	for _, id := range scoreExempt {
+		d, ok := Lookup(id)
+		if !ok {
+			t.Errorf("score-exempt residual %q is not registered", id)
+			continue
+		}
+		if d.Weight != 0 {
+			t.Errorf("%q must be WEIGHT-0 (audit-only, never a verdict); got weight %.0f — this is a "+
+				"detection-freeze event, not a silent edit", id, d.Weight)
+		}
+	}
+}
+
 // New applies the registered weight and computes the score; an unknown id is
 // UNKNOWN-safe (weight 0), never a crash.
 func TestNewAppliesRegistryWeightAndScore(t *testing.T) {

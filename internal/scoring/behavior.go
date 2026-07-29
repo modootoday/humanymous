@@ -146,7 +146,9 @@ func BehaviorSignals(b signals.BehaviorSummary) []signals.Signal {
 	// registry): the small policy-specific model scores the shared feature vector and, when a
 	// bundle is loaded and NOT abstaining, surfaces a calibrated p(bot) for Audit/Console/
 	// NET-POLICY. It moves no Combine risk until an operator opts it into a weight (freeze-spend),
-	// and it is asymmetric-by-design in scoring (can nudge toward CHALLENGE, never alone to DENY).
+	// It emits a VerdictSuspicious label (never Bot) so that IF weighted it would nudge toward
+	// CHALLENGE not DENY — but that is a property of the emitted label, not an enforced guard; a
+	// future weighting would still need its own never-alone-to-DENY rule.
 	// With no model loaded (the default) mlserve.Score abstains and NOTHING is emitted — the
 	// engine scores exactly as before, so the seam is freeze-safe by construction. ---
 	if pred := mlserve.Score(behavior.Extract(b)); !pred.Abstain {
