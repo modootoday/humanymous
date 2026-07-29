@@ -117,6 +117,8 @@ When set, the engine appends a labeled trace — the session's **aggregate** beh
 
 > **Privacy caveat.** This writes labeled behavioral summaries to disk in plaintext. It is not covered by the engine's pseudonymization or erasure primitives. Enable it only on an operator-owned lab host, and **record it in your data inventory first** — see [Data processing & personal-data inventory](../reference/data-processing-inventory.md), which describes exactly what the file contains, its retention, and why per-subject erasure does not reach it.
 
+> **Disk caveat.** The trace file is **append-only with no rotation, size cap, or retention** in the reference build — it grows unbounded (slowly: one line per solved Pass). Put it on its own volume (never co-located with the audit log or key storage), enforce a `logrotate`/retention policy, and alert on disk usage. A write failure is fail-safe (logged, the request is not blocked), but a full volume can starve co-located writers. This is another reason to keep it lab-only until you have that policy.
+
 ## Troubleshooting
 
 | Symptom | Where to look | What it means |

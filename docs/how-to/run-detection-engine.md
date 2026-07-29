@@ -64,6 +64,7 @@ The three flags above cover most local runs; the remaining flags configure TLS, 
 | `-log-plain-file` | `""` | Optional append-only formatted plain-text file. Also settable via `HMN_LOG_PLAIN_FILE`. |
 | `-log-jsonl-file` | `""` | Optional append-only JSON Lines file. Also settable via `HMN_LOG_JSONL_FILE`. |
 | `-ops-token` | `""` (disabled) | Operator bearer token that enables `/api/explain` + `/api/counters` + `/api/mlcorrect`. Also settable via `HMN_OPS_TOKEN`. Empty = those endpoints are not registered. |
+| `-redis` | `""` (per-node) | Redis `host:port` for **fleet-wide** cross-session correlation velocity (`l5.correlation.ip_velocity` counted across nodes behind a load balancer). Also `HMN_REDIS`. Verdict-neutral (the signal is weight-0) and **fail-open** (any Redis error → per-node counting). **Set `HMN_REDIS_KEY`** (≥16 bytes) so the coordinator key is HMAC-bound, and `HMN_REDIS_PASSWORD`/`HMN_REDIS_USER` for AUTH — the Core logs a warning if either is missing. This is a Core capability and a **different flag** from the Gate's `-redis` (which shares ban/verdict state). See [the data-processing inventory](../reference/data-processing-inventory.md) — enabling it adds a coordinator-side store to your RoPA. |
 
 Plain and JSONL files may be enabled together. They are bounded, best-effort
 diagnostics, not the tamper-evident decision audit. Put them on a separately
