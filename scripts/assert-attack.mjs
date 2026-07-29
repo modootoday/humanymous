@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-export function evaluateAttackResults(records, expectedProfiles = 70) {
+export function evaluateAttackResults(records, expectedProfiles = 71) {
   if (!Array.isArray(records)) return { ok: false, failures: ['results root must be an array'] };
 
   const bots = records.filter((x) => x.label?.startsWith('bot:') && !x.skipped && !x.error);
@@ -44,7 +44,7 @@ export function evaluateAttackResults(records, expectedProfiles = 70) {
 
 export function main(path = process.argv[2] || '/artifacts/core-results.json') {
   const records = JSON.parse(readFileSync(path, 'utf8'));
-  const result = evaluateAttackResults(records, Number(process.env.HM_EXPECTED_PROFILES || 70));
+  const result = evaluateAttackResults(records, Number(process.env.HM_EXPECTED_PROFILES || 71));
   const s = result.summary || {};
   console.log(`bots ${s.blocked || 0}/${s.bots || 0} blocked | escaped ${s.escaped || 0} | human FP ${s.humanFP || 0} | errored ${s.errored || 0} | skipped ${s.skipped || 0} | profiles ${s.profiles || 0}`);
   for (const failure of result.failures) console.error('FAIL: ' + failure);

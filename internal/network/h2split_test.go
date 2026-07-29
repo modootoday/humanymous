@@ -298,3 +298,31 @@ func TestH2PriorityAbsentResidual(t *testing.T) {
 		t.Error("Firefox pseudo-order with no priority signal must fire")
 	}
 }
+
+// A browser TLS stack (JA4 engine Chrome/Firefox/Safari) whose request was delivered over
+// HTTP/1.1 is a browser-TLS parrot on an h1 client — real browsers always speak h2 to an
+// h2-capable server (the JA4↔JA4H cross-layer tell). Requires a captured ClientHello. Wargame R15.
+func TestBrowserTLSOverH1Residual(t *testing.T) {
+	fire := func(hello *ClientHello, isH2 bool) bool {
+		return buildIDs(Observation{Hello: hello, Header: HeaderInfo{UserAgent: "Mozilla/5.0 Chrome/133", IsH2: isH2}})["l5.http.browser_tls_over_h1"]
+	}
+	// A real Chrome ClientHello (GREASE + compress_certificate -> EngineChrome).
+	chromeHello := &ClientHello{
+		CipherSuites: []uint16{0x0a0a, 0x1301, 0x1302, 0x1303, 0xc02b, 0xc02f, 0xc02c, 0xc030, 0xcca9, 0xcca8, 0xc013, 0xc014, 0x009c, 0x009d, 0x002f, 0x0035},
+		Extensions:   []uint16{0x0a0a, 27, 0x000a, 0x000d}, // GREASE + compress_certificate(27)
+	}
+	goHello := &ClientHello{CipherSuites: []uint16{0x1301, 0x1302, 0x1303}, Extensions: []uint16{0x000a}} // no GREASE -> EngineGo
+
+	// Chrome JA4 over HTTP/1.1 (the spoof): fires.
+	if !fire(chromeHello, false) {
+		t.Error("Chrome JA4 over HTTP/1.1 must fire l5.http.browser_tls_over_h1")
+	}
+	// Chrome JA4 over h2 (a real browser): quiet.
+	if fire(chromeHello, true) {
+		t.Error("Chrome JA4 over h2 must NOT fire (real browsers speak h2)")
+	}
+	// Non-browser TLS (Go) over HTTP/1.1: quiet — not a browser JA4.
+	if fire(goHello, false) {
+		t.Error("non-browser (Go) TLS over h1 must NOT fire the browser-TLS-over-h1 residual")
+	}
+}

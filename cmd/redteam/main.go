@@ -92,6 +92,8 @@ func main() {
 		v, err = h2FlowControlSplit()
 	case "h2-priority-absent":
 		v, err = h2PriorityAbsent()
+	case "browser-tls-h1":
+		v, err = browserTLSOverH1()
 	case "cert-compression-absent":
 		v, err = certCompressionAbsent()
 	case "nonbrowser-ua":

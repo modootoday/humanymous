@@ -56,6 +56,7 @@ export const TIERS = [
       'rebrowser_cdp_stripped.mjs', 'mobile_ua_desktop_profile.mjs',
       'near_ceiling_audio_24k.mjs', 'near_ceiling_no_widevine.mjs', 'browser_use_cdp.mjs',
       'multi_axis_rotate.mjs', 'adv_webgpu_mismatch.mjs', 'headless_ua_token.mjs', 'signal_forgery.mjs',
+      'browser_tls_h1.mjs',
       'behavior_machine_keystroke.mjs', 'behavior_teleport_click.mjs', 'behavior_bezier_mouse.mjs',
       'behavior_fixed_typing.mjs', 'ai_burst_silence.mjs',
     ],

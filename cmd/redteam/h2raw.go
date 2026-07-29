@@ -26,6 +26,16 @@ type rawH2Conn struct {
 	hbuf          bytes.Buffer
 	lastSetCookie string
 	lastSeed      string // X-Hm-Seed rotated seed from the response
+	chromePrio    bool   // set the Chrome HEADERS priority (excl=1, dep=0, weight=255) on requests
+}
+
+// chromeH2HeaderOrder is Chrome's canonical HTTP/2 request header wire order (the sec-ch-ua
+// client-hints cluster precedes user-agent), so the raw framer's on-wire order matches a real
+// browser instead of Go's random map iteration (which trips the header-order anomaly, R8).
+var chromeH2HeaderOrder = []string{
+	"sec-ch-ua", "sec-ch-ua-mobile", "sec-ch-ua-platform", "upgrade-insecure-requests",
+	"user-agent", "content-type", "accept", "sec-fetch-site", "sec-fetch-mode", "sec-fetch-dest",
+	"accept-encoding", "accept-language", "x-hm-token", "x-hm-n", "x-hm-tb",
 }
 
 // browserHeaders2 returns the spoofed Chrome header set with LOWERCASE names (HTTP/2
@@ -124,15 +134,33 @@ func (c *rawH2Conn) request(streamID uint32, method, path string, headers map[st
 	c.enc.WriteField(hpack.HeaderField{Name: ":authority", Value: hostname(*host)})
 	c.enc.WriteField(hpack.HeaderField{Name: ":scheme", Value: "https"})
 	c.enc.WriteField(hpack.HeaderField{Name: ":path", Value: path})
+	// Write headers in Chrome's canonical wire order (the sec-ch-ua client-hints cluster BEFORE
+	// user-agent), matching a real browser — the raw Go map has no stable order, which trips the
+	// header-order anomaly (R8). Known headers first in this order, then any remainder.
+	lc := make(map[string]string, len(headers))
 	for k, v := range headers {
-		c.enc.WriteField(hpack.HeaderField{Name: lower(k), Value: v})
+		lc[lower(k)] = v
+	}
+	for _, name := range chromeH2HeaderOrder {
+		if v, ok := lc[name]; ok {
+			c.enc.WriteField(hpack.HeaderField{Name: name, Value: v})
+			delete(lc, name)
+		}
+	}
+	for k, v := range lc {
+		c.enc.WriteField(hpack.HeaderField{Name: k, Value: v})
 	}
 	if cookie != "" {
 		c.enc.WriteField(hpack.HeaderField{Name: "cookie", Value: cookie})
 	}
-	if err := c.fr.WriteHeaders(http2.HeadersFrameParam{
+	hp := http2.HeadersFrameParam{
 		StreamID: streamID, BlockFragment: c.hbuf.Bytes(), EndHeaders: true, EndStream: body == "",
-	}); err != nil {
+	}
+	if c.chromePrio {
+		// Chrome's HEADERS-frame priority (RFC 9218 era): exclusive=1, dep=0, weight=255 (~256).
+		hp.Priority = http2.PriorityParam{StreamDep: 0, Exclusive: true, Weight: 255}
+	}
+	if err := c.fr.WriteHeaders(hp); err != nil {
 		return nil, err
 	}
 	if body != "" {
@@ -240,7 +268,7 @@ func h2SettingsSplit() (map[string]any, error) {
 	}
 	// Session over the same raw-h2 profile to capture the RIT seed.
 	c1, err := dialRawH2(utls.HelloChrome_Auto, settings)
-	return h2RawEvasion(c1, err, settings, 0)
+	return h2RawEvasion(c1, err, settings, 0, false)
 }
 
 // h2FlowControlSplit is the R11 live exploit: a raw HTTP/2 client that ships Chrome's m,a,s,p
@@ -259,7 +287,7 @@ func h2FlowControlSplit() (map[string]any, error) {
 		{ID: http2.SettingMaxHeaderListSize, Val: 262144},
 	}
 	c1, err := dialRawH2WU(utls.HelloChrome_Auto, settings, oneGiB)
-	return h2RawEvasion(c1, err, settings, oneGiB)
+	return h2RawEvasion(c1, err, settings, oneGiB, false)
 }
 
 // h2PriorityAbsent is the R14 live exploit: a raw HTTP/2 client that ships Chrome's m,a,s,p
@@ -278,17 +306,38 @@ func h2PriorityAbsent() (map[string]any, error) {
 		{ID: http2.SettingMaxHeaderListSize, Val: 262144},
 	}
 	c1, err := dialRawH2WU(utls.HelloChrome_Auto, settings, chromeWindow)
-	return h2RawEvasion(c1, err, settings, chromeWindow)
+	return h2RawEvasion(c1, err, settings, chromeWindow, false)
 }
 
-// h2RawEvasion runs the shared raw-h2 session→2×collect flow for the R6/R11 evasions: it takes
-// the already-dialed session conn, replays the same SETTINGS (+ windowUpdate) on each collect,
-// signs RIT, and returns the re-scored verdict. windowUpdate 0 = send none (R6).
-func h2RawEvasion(c1 *rawH2Conn, dialErr error, settings []http2.Setting, windowUpdate uint32) (map[string]any, error) {
+// coherentBrowserH2 is the honest T4 detection ceiling: a raw-h2 client that reproduces the FULL
+// Chrome HTTP/2 fingerprint — Chrome JA4 (HelloChrome_Auto), coherent Chrome SETTINGS (passes R6),
+// m,a,s,p pseudo-order (R7), the real Chrome connection window 15663105 (R11), AND the Chrome
+// HEADERS priority excl=1/weight=255 (R14) — delivered over h2 (R15), with a coherent report +
+// RIT + browser headers. Nothing is inconsistent, so this is the genuine "we cannot separate it
+// from a real browser by detection alone" case: ALLOW is the honest ceiling.
+func coherentBrowserH2() (map[string]any, error) {
+	const chromeWindow = 15663105
+	settings := []http2.Setting{
+		{ID: http2.SettingHeaderTableSize, Val: 65536},
+		{ID: http2.SettingEnablePush, Val: 0},
+		{ID: http2.SettingInitialWindowSize, Val: 6291456},
+		{ID: http2.SettingMaxHeaderListSize, Val: 262144},
+	}
+	c1, err := dialRawH2WU(utls.HelloChrome_Auto, settings, chromeWindow)
+	return h2RawEvasion(c1, err, settings, chromeWindow, true) // sendPriority=true -> full Chrome h2 FP
+}
+
+// h2RawEvasion runs the shared raw-h2 session→2×collect flow for the R6/R11/R15 profiles: it
+// takes the already-dialed session conn, replays the same SETTINGS (+ windowUpdate) on each
+// collect, signs RIT, and returns the re-scored verdict. windowUpdate 0 = send none (R6).
+// sendPriority sets Chrome's HEADERS priority (excl=1/weight=255) — true for the fully coherent
+// h2 ceiling, false for the priority-absent tell (R14).
+func h2RawEvasion(c1 *rawH2Conn, dialErr error, settings []http2.Setting, windowUpdate uint32, sendPriority bool) (map[string]any, error) {
 	err := dialErr
 	if err != nil {
 		return nil, err
 	}
+	c1.chromePrio = sendPriority
 	sessBody, err := c1.request(1, "GET", "/api/session",
 		browserHeaders2(map[string]string{"user-agent": chromeUA}), "", "")
 	c1Cookie := c1.lastSetCookie
@@ -312,6 +361,7 @@ func h2RawEvasion(c1 *rawH2Conn, dialErr error, settings []http2.Setting, window
 		if err != nil {
 			return nil, err
 		}
+		c.chromePrio = sendPriority
 		hdr := browserHeaders2(map[string]string{"user-agent": chromeUA, "content-type": "application/json"})
 		if seed != nil {
 			tb := nowTB()

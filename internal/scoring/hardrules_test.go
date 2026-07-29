@@ -259,6 +259,24 @@ func TestHR24_TLSCertComp(t *testing.T) {
 	}
 }
 
+// TestHR24_HTTPh1 pins the R15 freeze-spend enforcement: a browser-UA request whose browser TLS
+// was delivered over HTTP/1.1 fired l5.http.browser_tls_over_h1 → HR-24 CHALLENGE by default
+// (net.http.h1 enforce), disarmed by an operator net.http.h1=monitor (h2->h1 downgrade middlebox).
+func TestHR24_HTTPh1(t *testing.T) {
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/133 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r.Network.Signals = append(r.Network.Signals,
+		signals.New("l5.http.browser_tls_over_h1", true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r); v.HardRuleFired != "HR-24" || v.Verdict != VerdictChallenge {
+		t.Fatalf("browser-TLS-over-h1 want CHALLENGE/HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+	e := NewEngine()
+	e.ConfigureFull(DefaultPolicy(), nil, nil, map[string]string{"net.http.h1": "monitor"})
+	if v := e.Score(r); v.HardRuleFired == "HR-24" {
+		t.Fatalf("browser-TLS-over-h1 under net.http.h1 monitor must NOT fire HR-24, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),

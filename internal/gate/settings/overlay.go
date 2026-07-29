@@ -97,7 +97,7 @@ var KnownGates = []string{
 var NetPolicyClasses = []string{
 	"net.proxy.hop", "net.proxy.anon", "net.proxy.spoof", "net.vpn",
 	"net.tor", "net.tcp", "net.correlation", "net.h2.spoof", "net.header.order", "net.tls.pq",
-	"net.tls.alps", "net.tls.certcomp",
+	"net.tls.alps", "net.tls.certcomp", "net.http.h1",
 }
 
 // CanonicalJSON returns stable JSON for signing / config_version (sorted maps).

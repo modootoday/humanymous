@@ -231,6 +231,13 @@ var (
 	// HEADERS priority excl=1/weight=255, Firefox excl=0/weight=41 (both always present); a
 	// raw-framer library omits it. The 4th (priority) Akamai h2 component. HR-24 net.h2.spoof.
 	_ = def(Definition{"l5.http2.priority_atypical", LayerNetwork, 0, true, "http2", "browser HTTP/2 pseudo-order with no priority signal (audit/admin)"})
+	// WIRED (wargame R15, freeze-spend 2026-07-29): score-exempt residual (weight 0). A browser
+	// TLS stack (JA4 engine Chrome/Firefox/Safari) whose request was delivered over HTTP/1.1, not
+	// h2. Real modern browsers ALWAYS negotiate and speak h2 to an h2-capable server; a browser-TLS
+	// parrot driven by an HTTP/1.1 client library speaks h1 — the JA4↔JA4H cross-layer tell ("JA4
+	// says Chrome, JA4H says HTTP/1.1"). HR-24 net.http.h1 (operator monitor for a TLS-inspecting
+	// h2->h1 downgrade middlebox), not risk combine.
+	_ = def(Definition{"l5.http.browser_tls_over_h1", LayerNetwork, 0, true, "http", "browser TLS fingerprint delivered over HTTP/1.1 (audit/admin)"})
 	// WIRED (wargame R8, freeze-spend 2026-07-28): a raw on-wire header-order capture now
 	// feeds this (h1 peek / h2 HEADERS frame → HeaderInfo.OrderReliable). Score-exempt
 	// (weight 0): a Chrome-UA request whose client-hints (sec-ch-ua) come AFTER user-agent is

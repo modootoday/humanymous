@@ -64,22 +64,12 @@ func browserHeadersExcept(drop ...string) map[string]string {
 // rich human-shaped behavior (high-variance mouse + human typing, no synthetic events). Every
 // plane reconciles, so it SCORES ALLOW — the honest limit where detection alone cannot separate
 // an engine-level spoof (BotBrowser-class) from a real human. Retained to keep the ceiling honest.
+// coherentBrowser is the T4 detection ceiling. It now reproduces the FULL Chrome HTTP/2
+// fingerprint over h2 (coherentBrowserH2) — the earlier version delivered the coherent report
+// over HTTP/1.1, which R15 (JA4↔JA4H) now catches, so it was no longer the honest "undetectable"
+// ceiling. A genuinely coherent spoof speaks h2 like a real browser; that is the honest ALLOW.
 func coherentBrowser() (map[string]any, error) {
-	cookie, _, _, err := session(utls.HelloChrome_Auto)
-	if err != nil {
-		return nil, err
-	}
-	body := `{"userAgent":"` + chromeUA + `","engineVersion":"wasm-1.0.0",` +
-		`"advanced":{"probed":true,"mediaDeviceCount":3,"hasAudioInput":true,"hasVideoInput":true,"voiceCount":200,` +
-		`"widevineSupported":true,"webgpuPresent":true,"webgpuVendor":"nvidia","webglVendor":"NVIDIA Corporation / NVIDIA GeForce RTX 3080",` +
-		`"audioSampleRate":48000,"connectionPresent":true,"connectionRtt":50,"batteryPresent":true,"batteryLevel":0.8,` +
-		`"timezoneIana":"America/New_York","language":"en-US","colorGamut":"srgb","maxTouchPoints":0},` +
-		`"environment":{"probed":true},` +
-		`"behavior":{"durationS":8,"mouse":{"samples":45,"velocityStdDev":0.6,"straightLineFrac":0.15,"accelEntropy":2.1,"meanJerk":0.4,"meanCurvature":0.3,"coalescedRatio":3.0},` +
-		`"key":{"keystrokes":14,"meanDwellMs":95,"dwellStdDevMs":28,"meanFlightMs":140,"flightStdDevMs":35},` +
-		`"events":{"totalEvents":60,"untrustedFrac":0,"clickCount":1}},"signals":[]}`
-	v, _ := collect(utls.HelloChrome_Auto, chromeUA, cookie, withBrowserHeaders(nil), body)
-	return v, nil
+	return coherentBrowserH2()
 }
 
 // nonBrowserUA: the cheapest bot — a bare HTTP library (library User-Agent, no browser
@@ -1058,6 +1048,21 @@ func certCompressionAbsent() (map[string]any, error) {
 	}
 	v := map[string]any{}
 	_ = json.Unmarshal(r.body, &v)
+	return v, nil
+}
+
+// browserTLSOverH1 is the R15 red: a fully coherent Chrome client — real Chrome uTLS (Chrome
+// JA4), coherent report, browser headers — delivered over HTTP/1.1 (the collect() path forces an
+// http/1.1-only ALPN). Real browsers negotiate and speak h2 to an h2-capable server; this
+// browser-TLS parrot driven by an HTTP/1.1 client library speaks h1. Everything else is coherent,
+// so the SOLE residual is the JA4↔JA4H cross-layer version mismatch ("JA4 says Chrome, JA4H says
+// HTTP/1.1") -> l5.http.browser_tls_over_h1 -> HR-24 net.http.h1 CHALLENGE.
+func browserTLSOverH1() (map[string]any, error) {
+	cookie, _, _, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	v, _ := collect(utls.HelloChrome_Auto, chromeUA, cookie, withBrowserHeaders(nil), coherentReportBody())
 	return v, nil
 }
 

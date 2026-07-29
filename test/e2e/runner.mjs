@@ -76,6 +76,7 @@ const PROFILES = [
   'adv_webgpu_mismatch.mjs',       // WebGL vs WebGPU vendor contradiction -> l2.adv.webgpu_mismatch
   'headless_ua_token.mjs',         // HeadlessChrome UA token + a second tell
   'signal_forgery.mjs',            // forged l7.pass.solved/l7.pow.solved -> stripped, no ALLOW (round-3)
+  'browser_tls_h1.mjs',            // coherent Chrome JA4 delivered over HTTP/1.1 (JA4 vs JA4H) -> HR-24
   'behavior_machine_keystroke.mjs',// sub-25ms machine typing -> l4.key.machine_speed
   'behavior_teleport_click.mjs',   // clicks with no approach trajectory -> l4.mouse.click_no_trajectory
   'behavior_bezier_mouse.mjs',     // pathologically smooth ghost-cursor path -> l4.mouse.*

@@ -145,6 +145,18 @@ func Build(obs Observation) signals.NetworkReport {
 	nr.SecFetchPresent = h.SecFetchPresent()
 	nr.SecCHUAPresent = h.SecCHUAPresent()
 
+	// Score-exempt residual: a browser TLS stack (JA4 engine Chrome/Firefox/Safari) whose request
+	// was delivered over HTTP/1.1 rather than h2. Real modern browsers ALWAYS negotiate and speak
+	// h2 to an h2-capable server; a browser-TLS parrot driven by an HTTP/1.1 client library speaks
+	// h1 — the JA4↔JA4H cross-layer inconsistency ("JA4 says Chrome, JA4H says HTTP/1.1"). Requires
+	// a captured ClientHello (obs.Hello != nil), so a TLS-terminating CDN in front (JA4Engine
+	// unknown) never trips it. HR-24 net.http.h1; the deployment-delta is a TLS-inspecting
+	// middlebox that downgrades h2->h1 (operator monitor override).
+	if obs.Hello != nil && isBrowserEngine(nr.JA4Engine) && !h.IsH2 {
+		add("l5.http.browser_tls_over_h1", true, signals.VerdictSuspicious,
+			"browser TLS fingerprint delivered over HTTP/1.1 (real browsers speak h2)")
+	}
+
 	// Score-exempt residual (weight 0): a browser-claiming UA delivered over an HTTP/2
 	// profile the engine cannot classify as any known browser (EngineFromH2 == unknown).
 	// A real Chrome/Firefox/Safari always presents a KNOWN h2 fingerprint, so this is the

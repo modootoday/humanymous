@@ -249,6 +249,14 @@ var promotionRules = []promoRule{
 			c.fired("l5.tls.cert_compression_absent") {
 			return true
 		}
+		// Browser TLS delivered over HTTP/1.1 (wargame R15, freeze-spend 2026-07-29): a browser JA4
+		// stack that spoke h1, not h2 — the JA4↔JA4H cross-layer tell. Real browsers always speak
+		// h2 (measured); FP-safe. Operator net.http.h1=monitor for a TLS-inspecting h2->h1
+		// downgrade middlebox.
+		if netClassMode(c.netPolicy, "net.http.h1") == "enforce" && c.browserClaim &&
+			c.fired("l5.http.browser_tls_over_h1") {
+			return true
+		}
 		if netClassMode(c.netPolicy, "net.proxy.hop") == "enforce" &&
 			c.fired("l5.header.xff_multi_hop") && c.fired("l5.traffic.ip_hop") {
 			return true

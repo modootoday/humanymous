@@ -83,7 +83,7 @@ var launchProfiles = map[string]bool{
 	"ai_agent.mjs": true, "distributed.mjs": true, "xff_spoof.mjs": true, "flood.mjs": true, "rapid_reset.mjs": true,
 	"h2_flow_control.mjs": true, "h2_priority_absent.mjs": true,
 	// deployment-review-hardened evasions (rounds 3 & 5) — permanent regression wargame cases.
-	"signal_forgery.mjs": true, "privacy_evasion.mjs": true,
+	"signal_forgery.mjs": true, "privacy_evasion.mjs": true, "browser_tls_h1.mjs": true,
 	// proxy/VPN/Tor residual layer (Squid, OpenVPN, WireGuard, Tor, anonymous chains…).
 	"squid_forward.mjs": true, "openvpn_exit.mjs": true, "wireguard_hop.mjs": true, "tor_exit.mjs": true,
 	"anon_proxy_chain.mjs": true, "elite_anon_proxy.mjs": true, "cdn_ip_spoof.mjs": true,
