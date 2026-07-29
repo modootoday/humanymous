@@ -59,6 +59,7 @@ func main() {
 	mlBundle := flag.String("ml-bundle", os.Getenv("HMN_ML_BUNDLE"), "path to a behavioral model bundle (SoT-42 Pillar A); empty = no model (l4.ml.behavioral abstains, engine unchanged)")
 	mlFPBudget := flag.Float64("ml-fp-budget", 0.005, "SoT-42 self-calibration: tolerated human false-positive rate the ML residual's threshold maintains (only used when -ml-bundle is set)")
 	mlTraceDir := flag.String("ml-trace-dir", "", "SoT-42 lab-only: directory to append oracle-confirmed labeled behavioral traces (JSONL) for offline retraining; empty = disabled")
+	mlShadowBundle := flag.String("ml-shadow-bundle", "", "SoT-42: a CANDIDATE bundle scored in shadow (parallel, NEVER served) vs the active model; divergence at /api/mlcorrect. Requires -ml-bundle")
 	flag.Parse()
 	explicitFlags := make(map[string]bool)
 	flag.Visit(func(current *flag.Flag) {
@@ -85,7 +86,21 @@ func main() {
 			mlserve.SetFeatureObserver(mlCtrl) // covariate-drift tap (hot path, model-loaded only)
 			log.Printf("ml-bundle: loaded %s (schema %s); self-calibration active (budget=%.4f θ0=%.2f)",
 				m.BundleVersion(), m.SchemaHash(), *mlFPBudget, mlCtrl.FireThreshold())
+			// SoT-42 ⑦ SHADOW: score a candidate in parallel (never served) to preview a promotion.
+			// Requires the active model above so there is something to compare against.
+			if *mlShadowBundle != "" {
+				if sm, err := mlserve.LoadMLP(*mlShadowBundle); err != nil {
+					log.Printf("ml-shadow-bundle: load failed (%v) — shadow evaluation disabled", err)
+				} else {
+					mlserve.SetShadow(sm)
+					mlserve.SetShadowObserver(mlCtrl)
+					log.Printf("ml-shadow-bundle: shadow-scoring candidate %s (never served; divergence at /api/mlcorrect)", sm.BundleVersion())
+				}
+			}
 		}
+	}
+	if *mlShadowBundle != "" && mlCtrl == nil {
+		log.Printf("ml-shadow-bundle: ignored — requires a loaded -ml-bundle (no active model to compare against)")
 	}
 
 	domains := splitDomains(*acmeDomain)

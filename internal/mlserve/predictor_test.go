@@ -47,3 +47,41 @@ func TestScore_StaleSchemaAbstains(t *testing.T) {
 		t.Fatalf("stale-schema predictor must abstain (fail closed), got %+v", got)
 	}
 }
+
+type captureShadowObs struct {
+	active, shadow Prediction
+	n              int
+}
+
+func (c *captureShadowObs) ObserveShadow(a, s Prediction) { c.active, c.shadow = a, s; c.n++ }
+
+func TestScore_ShadowObservedNeverServed(t *testing.T) {
+	Set(fakePredictor{p: 0.3, schema: behavior.SchemaHash()})
+	SetShadow(fakePredictor{p: 0.9, schema: behavior.SchemaHash()})
+	obs := &captureShadowObs{}
+	SetShadowObserver(obs)
+	defer func() { Set(nil); SetShadow(nil); SetShadowObserver(nil) }()
+
+	got := Score(emptyFV)
+	if got.Abstain || got.PBot != 0.3 {
+		t.Fatalf("Score must return the ACTIVE prediction (0.3), never the shadow, got %+v", got)
+	}
+	if obs.n != 1 || obs.active.PBot != 0.3 || obs.shadow.PBot != 0.9 {
+		t.Fatalf("shadow observer must see (active=0.3, shadow=0.9), got n=%d %+v / %+v", obs.n, obs.active, obs.shadow)
+	}
+}
+
+func TestScore_ShadowStaleSchemaSkipped(t *testing.T) {
+	Set(fakePredictor{p: 0.3, schema: behavior.SchemaHash()})
+	SetShadow(fakePredictor{p: 0.9, schema: "stale-schema-hash"})
+	obs := &captureShadowObs{}
+	SetShadowObserver(obs)
+	defer func() { Set(nil); SetShadow(nil); SetShadowObserver(nil) }()
+
+	if got := Score(emptyFV); got.PBot != 0.3 {
+		t.Fatalf("active still served, got %+v", got)
+	}
+	if obs.n != 0 {
+		t.Fatal("a stale-schema shadow must be skipped, never observed")
+	}
+}

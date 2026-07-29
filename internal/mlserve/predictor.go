@@ -115,6 +115,35 @@ func SetFeatureObserver(o FeatureObserver) {
 	featureObs.Store(&o)
 }
 
+// shadow holds an optional CANDIDATE predictor scored in parallel with the active one for
+// pre-promotion evaluation (SELF-CORRECTION.md ⑦ SHADOW). Its output is NEVER served — Score always
+// returns the active prediction. Off by default; installed by the operator (-ml-shadow-bundle).
+var shadow atomic.Pointer[Predictor]
+
+// SetShadow installs (or clears, on nil) the shadow candidate predictor.
+func SetShadow(p Predictor) {
+	if p == nil {
+		shadow.Store(nil)
+		return
+	}
+	shadow.Store(&p)
+}
+
+// ShadowObserver receives the (active, shadow) prediction pair for each scored session so a
+// comparator can quantify how a candidate would differ from the live model BEFORE promotion.
+type ShadowObserver interface{ ObserveShadow(active, shadow Prediction) }
+
+var shadowObs atomic.Pointer[ShadowObserver]
+
+// SetShadowObserver installs the shadow comparator (nil detaches it).
+func SetShadowObserver(o ShadowObserver) {
+	if o == nil {
+		shadowObs.Store(nil)
+		return
+	}
+	shadowObs.Store(&o)
+}
+
 // Score is the convenience entry the scoring layer calls. It enforces the stale-model guard: if
 // the active predictor's schema hash does not match the current feature schema, it abstains rather
 // than feed a model features it was not trained on. An empty predictor hash (AbstainPredictor)
@@ -133,5 +162,16 @@ func Score(fv behavior.FeatureVector) Prediction {
 	if o := featureObs.Load(); o != nil {
 		(*o).ObserveFeatures(fv)
 	}
-	return p.Predict(fv)
+	active := p.Predict(fv)
+	// SHADOW tap (SELF-CORRECTION.md ⑦): a staged CANDIDATE is scored in parallel and compared to the
+	// active model to quantify how promotion would change behavior — but its output is NEVER served.
+	// Off unless the operator installed a shadow bundle; schema-guarded like the active model.
+	if s := shadow.Load(); s != nil {
+		if sp := *s; sp.SchemaHash() == behavior.SchemaHash() {
+			if o := shadowObs.Load(); o != nil {
+				(*o).ObserveShadow(active, sp.Predict(fv))
+			}
+		}
+	}
+	return active
 }

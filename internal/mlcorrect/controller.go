@@ -8,10 +8,12 @@ import (
 )
 
 // Controller must satisfy the mlserve seams (dependency inversion: scoring/mlserve read the
-// interfaces, this package implements them) — the fire-threshold source and the covariate observer.
+// interfaces, this package implements them) — the fire-threshold source, the covariate observer, and
+// the shadow comparator.
 var (
 	_ mlserve.ThresholdProvider = (*Controller)(nil)
 	_ mlserve.FeatureObserver   = (*Controller)(nil)
+	_ mlserve.ShadowObserver    = (*Controller)(nil)
 )
 
 // controller.go fuses the self-correcting sensors into one control plane and exposes it as the
@@ -25,20 +27,22 @@ var (
 // ObservePass / UpdateCovariate) is fed from the independent-oracle outcome path; until those events
 // flow, θ holds at θ0 and the residual annotates exactly as before.
 type Controller struct {
-	thr   *ConformalThreshold
-	drift *DriftMonitor
-	guard *PassGuard
-	feat  *FeatureMonitor
+	thr    *ConformalThreshold
+	drift  *DriftMonitor
+	guard  *PassGuard
+	feat   *FeatureMonitor
+	shadow *ShadowComparator
 }
 
 // NewController builds the control plane. budget is the tolerated human false-positive rate the ACI
 // threshold maintains; theta0 the starting fire threshold; gamma the adaptation rate.
 func NewController(budget, theta0, gamma float32) *Controller {
 	return &Controller{
-		thr:   NewConformalThreshold(budget, theta0, gamma),
-		drift: NewDriftMonitor(),
-		guard: NewPassGuard(0.4, 0.6),
-		feat:  NewFeatureMonitor(0),
+		thr:    NewConformalThreshold(budget, theta0, gamma),
+		drift:  NewDriftMonitor(),
+		guard:  NewPassGuard(0.4, 0.6),
+		feat:   NewFeatureMonitor(0),
+		shadow: &ShadowComparator{},
 	}
 }
 
@@ -92,12 +96,20 @@ func (c *Controller) ObserveFeatures(fv behavior.FeatureVector) {
 	}
 }
 
+// ObserveShadow implements mlserve.ShadowObserver: it compares a staged candidate's prediction to the
+// active model's, at the live fire threshold θ, so an operator can see how a promotion would change
+// behavior before committing. Monitor-only — the shadow output is never served.
+func (c *Controller) ObserveShadow(active, shadow mlserve.Prediction) {
+	c.shadow.observe(active.PBot, shadow.PBot, active.Abstain, shadow.Abstain, c.thr.Threshold())
+}
+
 // ControllerSnapshot is the no-PII observability view for the Ledger / admin console / canary guard.
 type ControllerSnapshot struct {
-	Calibration   Stats      // θ, budget, realized human-FP EMA, counts
-	Drift         DriftEvent // current 2-of-3 gate + component alarms
+	Calibration   Stats       // θ, budget, realized human-FP EMA, counts
+	Drift         DriftEvent  // current 2-of-3 gate + component alarms
 	PassSolveRate float32
-	PassAnomalous bool // Pass solve-rate abnormal ⇒ suspected oracle poisoning
+	PassAnomalous bool        // Pass solve-rate abnormal ⇒ suspected oracle poisoning
+	Shadow        ShadowStats // active-vs-candidate divergence (zero-valued when no shadow installed)
 }
 
 // Snapshot returns the current control-plane state.
@@ -107,5 +119,6 @@ func (c *Controller) Snapshot() ControllerSnapshot {
 		Drift:         c.drift.Gate(),
 		PassSolveRate: c.guard.SolveRate(),
 		PassAnomalous: c.guard.SolveRateAnomalous(),
+		Shadow:        c.shadow.Snapshot(),
 	}
 }

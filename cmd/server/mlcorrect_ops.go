@@ -35,6 +35,7 @@ func (a *app) handleMLCorrect(w http.ResponseWriter, r *http.Request) {
 		"drift":         snap.Drift,
 		"passSolveRate": snap.PassSolveRate,
 		"passAnomalous": snap.PassAnomalous,
+		"shadow":        snap.Shadow, // active-vs-candidate divergence (zero when no shadow bundle)
 	})
 }
 
