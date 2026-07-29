@@ -63,7 +63,7 @@ The three flags above cover most local runs; the remaining flags configure TLS, 
 | `-log-console-stream` | `stderr` | Console stream: `stderr\|stdout`. Also settable via `HMN_LOG_CONSOLE_STREAM`. |
 | `-log-plain-file` | `""` | Optional append-only formatted plain-text file. Also settable via `HMN_LOG_PLAIN_FILE`. |
 | `-log-jsonl-file` | `""` | Optional append-only JSON Lines file. Also settable via `HMN_LOG_JSONL_FILE`. |
-| `-ops-token` | `""` (disabled) | Operator bearer token that enables `/api/explain` + `/api/counters`. Also settable via `HMN_OPS_TOKEN`. Empty = those endpoints are not registered. |
+| `-ops-token` | `""` (disabled) | Operator bearer token that enables `/api/explain` + `/api/counters` + `/api/mlcorrect`. Also settable via `HMN_OPS_TOKEN`. Empty = those endpoints are not registered. |
 
 Plain and JSONL files may be enabled together. They are bounded, best-effort
 diagnostics, not the tamper-evident decision audit. Put them on a separately
@@ -73,12 +73,31 @@ rotated logging volume and never on an audit, key, or settings volume.
 
 There is **no admin listener here** — the engine exposes `127.0.0.1:8443` only. The `:8445` admin plane and the `:8444` edge belong to the Gate proxy, not to this binary.
 
+### Behavioral model flags (optional)
+
+The Core can load an optional [behavioral model](../explanation/self-correcting-behavioral-model.md) that emits one **weight-0 / audit-only** signal (`l4.ml.behavioral`) — loading it changes **no verdicts**. Full task guide: [Operate the behavioral model](./operate-behavioral-model.md). These flags exist on the **Core** binary only; they are not Gate flags.
+
+| Flag | Default | Purpose |
+|---|---|---|
+| `-ml-bundle` | `""` (disabled) | Path to the signed behavioral-model artifact. Also `HMN_ML_BUNDLE`. Empty = no model; the signal never fires. A load/verify failure is non-fatal → heuristics. |
+| `-ml-pubkey` | `""` | PKIX Ed25519 public-key PEM. When set, the artifact's signature is **required** on the served model. |
+| `-ml-bundle-sig` | `""` | Detached Ed25519 signature file over the artifact bytes (needed when `-ml-pubkey` is set). |
+| `-ml-bundle-digest` | `""` | Optional pinned sha256 (hex) of the artifact; admission is refused on mismatch. |
+| `-ml-fp-budget` | `0.005` | Realized human false-positive rate the model's (weight-0) fire threshold self-maintains. |
+| `-ml-shadow-bundle` | `""` | A candidate scored in parallel and **never served**; divergence at `/api/mlcorrect`. Requires `-ml-bundle`. |
+| `-ml-canary` | `false` | Arm autonomous auto-rollback: disable the model (→ heuristics) on a human-FP / drift / poisoning breach. Requires `-ml-bundle`. |
+| `-ml-canary-max-fp` | `0.02` | Human-FP ceiling during canary probation before auto-rollback. |
+| `-ml-canary-probation` | `200` | Confirmed humans to observe breach-free before the model graduates. |
+| `-ml-trace-dir` | `""` (disabled) | **Lab-only.** Append oracle-confirmed human traces (JSONL) for offline retraining. Writes behavioral aggregates to disk — read the [data-processing inventory](../reference/data-processing-inventory.md) first. |
+
+When a model is admitted you will see a startup line like `ml-bundle: admitted <version> (digest …, signed=true)`; `-ml-canary` adds `ml-canary: probation armed …`, and an auto-rollback logs `ml-canary: AUTO-ROLLBACK …`.
+
 ### Core ops surface
 
 The Core has a small, deliberately minimal operations surface:
 
 - **`GET /healthz`** — always on, **unauthenticated** liveness at the **root path** (not under `/__hmn/`). Returns `status`, `version`, and `uptimeSec`.
-- **`GET /api/explain/{id}`** and **`GET /api/counters`** — mounted **only** when `-ops-token` / `HMN_OPS_TOKEN` is set, and require that bearer token (a missing or wrong token gets `404`, so the surface is non-discoverable). `/api/explain/{id}` returns the `ScoreTrace` for a stored session (re-scored from a copy); `/api/counters` returns runtime counters (uptime, goroutines, heap, GC).
+- **`GET /api/explain/{id}`**, **`GET /api/counters`**, and **`GET /api/mlcorrect`** — mounted **only** when `-ops-token` / `HMN_OPS_TOKEN` is set, and require that bearer token (a missing or wrong token gets `404`, so the surface is non-discoverable). `/api/explain/{id}` returns the `ScoreTrace` for a stored session (re-scored from a copy); `/api/counters` returns runtime counters (uptime, goroutines, heap, GC); `/api/mlcorrect` returns the behavioral model's read-only status (active artifact version/digest, calibration, drift, shadow, canary — no personal data), or `{"enabled":false}` when no model is loaded.
 
 Unlike the Gate, the Core has **no `/readyz` readiness probe and no Prometheus `/metrics` endpoint** — health is the single `/healthz` liveness check.
 

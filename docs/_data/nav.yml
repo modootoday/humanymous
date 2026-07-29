@@ -29,6 +29,7 @@
     - { title: "Self-validation (red-team)", url: "/how-to/self-validation-red-team.html" }
     - { title: "Virtual USB laboratory", url: "/how-to/run-virtual-usb-lab.html" }
     - { title: "Run the detection engine", url: "/how-to/run-detection-engine.html" }
+    - { title: "Operate the behavioral model", url: "/how-to/operate-behavioral-model.html" }
     - { title: "Detection Observatory", url: "/how-to/detection-observatory.html" }
     - { title: "Ledger console tour", url: "/how-to/audit-console-tour.html" }
     - { title: "Upgrade & migration", url: "/how-to/upgrade-migration.html" }
@@ -60,6 +61,7 @@
     - { title: "Will this break my app?", url: "/explanation/will-this-break-my-app.html" }
     - { title: "How a request is seen", url: "/concepts/how-gate-sees-a-request.html" }
     - { title: "Detection engine internals", url: "/explanation/detection-engine-internals.html" }
+    - { title: "Self-correcting behavioral model", url: "/explanation/self-correcting-behavioral-model.html" }
     - { title: "Control plane & bundle", url: "/explanation/control-plane-and-bundle.html" }
     - { title: "Observatory architecture", url: "/explanation/observatory-architecture.html" }
     - { title: "Red catalog architecture", url: "/explanation/red-catalog-architecture.html" }

@@ -20,6 +20,8 @@ Gate is the reverse-proxy enforcement layer. It injects its current browser coll
 
 Flags are defined in `cmd/gate/main.go`. The binary is built to `bin/gate.exe` from `./cmd/gate` (module `github.com/modootoday/humanymous`).
 
+> **This page is the Gate binary.** The optional behavioral model's flags (`-ml-bundle`, `-ml-canary`, …) and its `/api/mlcorrect` status endpoint are **Core** surfaces, documented in [Run the standalone detection engine](../how-to/run-detection-engine.md#behavioral-model-flags-optional) — they are **not** Gate flags. Core's measurements are not Gate's.
+
 | Flag | Default | Meaning |
 |------|---------|---------|
 | `-addr` | `:8444` | Public edge listen address (HTTPS). Terminates TLS, injects the bundle, scores, and enforces. |

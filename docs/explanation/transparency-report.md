@@ -93,9 +93,13 @@ Art. 22 and the Santa Clara Principles — not a rubber stamp.
 
 Telemetry, IP/fingerprint bans, and the audit log have bounded retention configured by
 the operator. The admin plane supports **cryptographic-shred erasure** (deleting the
-linkage key renders pseudonymized records unlinkable) with two-person control. One store
-is out of that path and disclosed here for honesty: the in-memory **resource-watermark
-ledger self-expires on a ~24-hour TTL** and is not part of the shred flow.
+linkage key renders pseudonymized records unlinkable) with two-person control. Two stores
+are out of that path and disclosed here for honesty: the in-memory **resource-watermark
+ledger self-expires on a ~24-hour TTL** and is not part of the shred flow; and, **only if
+an operator enables it**, the lab-only **behavioral training-trace store** writes
+confirmed-human interaction *aggregates* to disk to retrain the (audit-only) behavioral
+model — a purpose beyond live scoring, with no linkage key, so cryptographic-shred does
+not reach it and the operator must set a file-level retention/retire policy.
 
 ## Accessibility of the Pass challenge
 

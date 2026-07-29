@@ -96,6 +96,18 @@ humanymous Gate is a reference implementation, not a production-hardened service
 
 **interaction analysis.** Observation of pointer, keyboard, scroll, and event characteristics. Accessibility policy forbids requiring motor richness or speed as proof of humanity.
 
+**behavioral model.** An optional, policy-specific model the Core engine can load to score the aggregate features from interaction analysis. It emits one signal (`l4.ml.behavioral`) that is **weight-0 / audit-only** — it annotates the record but is never a cause of a verdict. See [How the self-correcting behavioral model works](../explanation/self-correcting-behavioral-model.md).
+
+**behavioral model artifact.** The signed file the behavioral model is loaded from (the Core `-ml-bundle` flag). It is a different object from the **bundle** below; reserve the bare word "bundle" for the client-side loader.
+
+**bundle (detection bundle).** The small client-side detection loader Gate injects into a page's HTML (the loader plus `detector.wasm`). Unrelated to the behavioral model artifact despite the `-ml-bundle` flag name.
+
+**self-calibration.** The behavioral model's automatic adjustment of its weight-0 fire threshold so the realized false-positive rate on oracle-confirmed humans tracks an operator budget. It moves an annotation threshold, never a verdict.
+
+**shadow candidate.** A second behavioral model artifact scored in parallel with the live one to preview a promotion; its output is never served or enforced. Distinct from **shadow result** (a Gate monitor-mode "would have enforced" record).
+
+**canary (behavioral model).** A probation state for a newly deployed behavioral model that autonomously disables it — reverting to the heuristics baseline — on a false-positive, drift, or poisoning breach. Only this safe rollback direction is automatic; promotion is a redeploy.
+
 **network and protocol inspection.** Server-side observation of connection negotiation, Hypertext Transfer Protocol version 2 behavior, and header characteristics. Core can collect the full reference set when it directly terminates the connection. The current Gate does not extract the client's full connection-negotiation fingerprint.
 
 **consistency check.** A comparison between claims and observations, such as a browser's user agent versus the protocol implementation seen by the server. Disagreement can be stronger evidence than either value alone.

@@ -83,6 +83,8 @@ Auto-bans climb on repeat strikes, with strike decay downward:
 4. **Shared handle?** Spike keyed to one `fp:` across subnets = cross-session correlation rule rotation (ban the `fp:`). Spike behind one NAT/carrier `ip:` = likely shared-egress false positive (do **not** IP-ban).
 5. **Verdict:** Attack → escalate bans, keep enforcement on. False-positive storm locking out customers → route-table demote + restart, or the node-local kill switch. Unsure → run the triage in [Incident runbooks](../runbooks/incident-runbooks.md) before touching the switch.
 
+> **Not the behavioral model.** If the Core runs the optional behavioral model, its signal (`l4.ml.behavioral`) is **weight-0 / audit-only** — it is never the cause of a block. Never point a false-positive investigation at it, and if its **canary auto-rollback** fires (`ml-canary: AUTO-ROLLBACK` in the Core log, or `canary` rolled-back at `/api/mlcorrect`) the model simply reverted to heuristics: **verdicts are unaffected — do not page it as an outage.** Confirm the revert, then redeploy the previous Core image tag to restore a known-good artifact.
+
 ---
 
 ## Endpoints you'll actually hit
@@ -97,6 +99,8 @@ Auto-bans climb on repeat strikes, with strike decay downward:
 | Commit a dual-control request | `POST /__hmn/admin/approvals/<id>` (find id: `GET /__hmn/admin/approvals`) |
 
 Console: `https://localhost:8445/__hmn/admin/console` (separate admin listener; 404 on the public edge). Bearer auth on every call — a missing/invalid token returns `404`, which is deny-by-default, not a bug.
+
+The table above is the **Gate** admin plane. Separately, if the **Core** runs the behavioral model, `GET /api/mlcorrect` (Core ops-token, read-only, no personal data) reports the model's health — active artifact version/digest, calibration, drift, shadow, and canary state. See [Operate the behavioral model](../how-to/operate-behavioral-model.md).
 
 > **Note:** Bodies — `POST /bans` `{"Key","Reason","Incident","DurationSec"}`; `/killswitch` `{"On":true}`; `/bans/lift` uses a **`?key=<ban-key>` query parameter, not a body**. Full shapes: [CLI, config & policy reference](cli-config-policy.md#request--response-shapes).
 

@@ -143,6 +143,8 @@ A rule that fires but is undocumented is a drift bug. When you add or change an 
 
 > **Important:** Reader-facing pages lead with the complete descriptive name. Put an exact machine signal or cross-check identifier in code formatting only where a developer must configure, query, or test that value. Never expose internal specification numbers or legacy rule numbers as public concepts.
 
+> **Weight-0 signals.** A signal can also be added as **score-exempt** (weight 0): it is emitted and audited but contributes nothing to the risk score and matches no rule. The optional behavioral model's `l4.ml.behavioral` is the reference example — see [How the self-correcting behavioral model works](../explanation/self-correcting-behavioral-model.md). Giving such a signal a real weight is a deliberate detection-policy (freeze) decision, not a docs edit.
+
 ## Checklist
 
 - [ ] Stage and `(stage, group)` chosen so correlated tells share a group and independent tells do not.
