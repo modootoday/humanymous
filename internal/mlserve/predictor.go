@@ -97,6 +97,24 @@ func FireThreshold() float32 {
 	return 0.5
 }
 
+// FeatureObserver receives every feature vector the model actually scores, for label-free covariate
+// monitoring (the third arm of the self-correction drift gate). Like ThresholdProvider it is a
+// dependency-inversion seam so the scoring core never imports the monitor. The observer runs ONLY on
+// the hot path once a real (schema-matching) model is loaded — with no bundle Score short-circuits
+// before it, so the default deployment pays nothing. Implementations must be cheap and non-blocking.
+type FeatureObserver interface{ ObserveFeatures(fv behavior.FeatureVector) }
+
+var featureObs atomic.Pointer[FeatureObserver]
+
+// SetFeatureObserver installs the covariate monitor (nil detaches it).
+func SetFeatureObserver(o FeatureObserver) {
+	if o == nil {
+		featureObs.Store(nil)
+		return
+	}
+	featureObs.Store(&o)
+}
+
 // Score is the convenience entry the scoring layer calls. It enforces the stale-model guard: if
 // the active predictor's schema hash does not match the current feature schema, it abstains rather
 // than feed a model features it was not trained on. An empty predictor hash (AbstainPredictor)
@@ -109,6 +127,11 @@ func Score(fv behavior.FeatureVector) Prediction {
 	}
 	if sh != behavior.SchemaHash() {
 		return Abstained() // stale/mismatched model bundle — fail closed to heuristics
+	}
+	// Covariate monitor tap: only reached when a schema-matching model is live (never in the
+	// no-bundle default). Feeds the drift gate's covariate arm without the scoring core knowing.
+	if o := featureObs.Load(); o != nil {
+		(*o).ObserveFeatures(fv)
 	}
 	return p.Predict(fv)
 }

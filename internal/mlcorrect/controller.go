@@ -3,12 +3,16 @@ package mlcorrect
 import (
 	"math"
 
+	"github.com/modootoday/humanymous/internal/behavior"
 	"github.com/modootoday/humanymous/internal/mlserve"
 )
 
-// Controller must satisfy the mlserve fire-threshold seam (dependency inversion: scoring reads the
-// interface, this package implements it).
-var _ mlserve.ThresholdProvider = (*Controller)(nil)
+// Controller must satisfy the mlserve seams (dependency inversion: scoring/mlserve read the
+// interfaces, this package implements them) — the fire-threshold source and the covariate observer.
+var (
+	_ mlserve.ThresholdProvider = (*Controller)(nil)
+	_ mlserve.FeatureObserver   = (*Controller)(nil)
+)
 
 // controller.go fuses the self-correcting sensors into one control plane and exposes it as the
 // behavioral residual's live fire-threshold source (SoT-42 Pillar A, SELF-CORRECTION.md step ①
@@ -24,6 +28,7 @@ type Controller struct {
 	thr   *ConformalThreshold
 	drift *DriftMonitor
 	guard *PassGuard
+	feat  *FeatureMonitor
 }
 
 // NewController builds the control plane. budget is the tolerated human false-positive rate the ACI
@@ -33,6 +38,7 @@ func NewController(budget, theta0, gamma float32) *Controller {
 		thr:   NewConformalThreshold(budget, theta0, gamma),
 		drift: NewDriftMonitor(),
 		guard: NewPassGuard(0.4, 0.6),
+		feat:  NewFeatureMonitor(0),
 	}
 }
 
@@ -75,6 +81,16 @@ func (c *Controller) ObservePass(solved bool) { c.guard.ObservePassAttempt(solve
 // UpdateCovariate feeds the max per-feature PSI vs the frozen reference (from a batch feature
 // monitor) into the covariate-shift arm of the 2-of-3 drift gate.
 func (c *Controller) UpdateCovariate(maxFeaturePSI float64) { c.drift.UpdatePSI(maxFeaturePSI) }
+
+// ObserveFeatures implements mlserve.FeatureObserver: it taps every scored feature vector into the
+// covariate monitor and, when a window closes, pushes the fresh max-PSI into the drift gate's
+// covariate arm. This runs on the hot path (only when a model is live) — the per-call work is a
+// handful of bucket comparisons; PSI is computed once per closed window, not per call.
+func (c *Controller) ObserveFeatures(fv behavior.FeatureVector) {
+	if maxPSI, closed := c.feat.Observe(fv); closed {
+		c.drift.UpdatePSI(maxPSI)
+	}
+}
 
 // ControllerSnapshot is the no-PII observability view for the Ledger / admin console / canary guard.
 type ControllerSnapshot struct {

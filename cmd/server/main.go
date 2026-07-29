@@ -79,6 +79,7 @@ func main() {
 			// verdict. With no bundle the provider is never installed and FireThreshold() stays 0.5.
 			mlCtrl = mlcorrect.NewController(float32(*mlFPBudget), 0.5, 0.01)
 			mlserve.SetThresholdProvider(mlCtrl)
+			mlserve.SetFeatureObserver(mlCtrl) // covariate-drift tap (hot path, model-loaded only)
 			log.Printf("ml-bundle: loaded %s (schema %s); self-calibration active (budget=%.4f θ0=%.2f)",
 				m.BundleVersion(), m.SchemaHash(), *mlFPBudget, mlCtrl.FireThreshold())
 		}
