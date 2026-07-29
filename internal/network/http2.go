@@ -23,7 +23,8 @@ type H2Setting struct {
 type H2Fingerprint struct {
 	Settings     []H2Setting // in sent order
 	WindowUpdate uint32      // first connection-level WINDOW_UPDATE increment
-	Priorities   []string    // "streamID:excl:dep:weight" tuples
+	Priorities   []string    // "streamID:excl:dep:weight" tuples (separate PRIORITY frames)
+	HeadersPrio  string      // HEADERS-frame priority "excl:dep:weight" (RFC 9218-era Chrome), "" if none
 	PseudoOrder  []string    // subset/order of m,a,s,p
 	HeaderOrder  []string    // regular (non-pseudo) header names in wire order
 }

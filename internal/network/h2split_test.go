@@ -267,3 +267,34 @@ func TestCertCompressionAbsentResidual(t *testing.T) {
 		t.Error("non-browser UA must NOT fire the cert-compression residual")
 	}
 }
+
+// A Chrome/Firefox-classified h2 profile (by pseudo-order) that sends NO priority signal —
+// neither a HEADERS-frame priority field nor a separate PRIORITY frame — is a raw-framer library
+// mimicking the pseudo-order. Measured: real Chrome sets HEADERS priority excl=1/weight=255,
+// Firefox excl=0/weight=41 (both always present). Safari excluded (unmeasured). Wargame R14.
+func TestH2PriorityAbsentResidual(t *testing.T) {
+	fire := func(fp *H2Fingerprint, ua string) bool {
+		return buildIDs(Observation{H2: fp, Header: HeaderInfo{UserAgent: ua}})["l5.http2.priority_atypical"]
+	}
+	chromeUA := "Mozilla/5.0 (Windows NT 10.0) Chrome/133 Safari/537.36"
+	chromeOrder := []string{"m", "a", "s", "p"}       // -> EngineChrome
+	firefoxOrder := []string{"m", "p", "a", "s"}      // -> EngineFirefox
+	settings := []H2Setting{{1, 65536}, {4, 6291456}}
+
+	// Chrome pseudo-order WITH a HEADERS priority: quiet.
+	if fire(&H2Fingerprint{PseudoOrder: chromeOrder, Settings: settings, HeadersPrio: "0:1:0:255"}, chromeUA) {
+		t.Error("Chrome with HEADERS priority must NOT fire l5.http2.priority_atypical")
+	}
+	// Chrome pseudo-order with a separate PRIORITY frame (older-style): quiet.
+	if fire(&H2Fingerprint{PseudoOrder: chromeOrder, Settings: settings, Priorities: []string{"3:0:0:200"}}, chromeUA) {
+		t.Error("a separate PRIORITY frame must NOT fire priority_atypical")
+	}
+	// Chrome pseudo-order but NO priority signal at all (the raw-framer spoof): fires.
+	if !fire(&H2Fingerprint{PseudoOrder: chromeOrder, Settings: settings}, chromeUA) {
+		t.Error("Chrome pseudo-order with no priority signal must fire l5.http2.priority_atypical")
+	}
+	// Firefox pseudo-order but no priority signal: fires (Firefox also always sends one).
+	if !fire(&H2Fingerprint{PseudoOrder: firefoxOrder, Settings: settings}, "Mozilla/5.0 Firefox/132.0") {
+		t.Error("Firefox pseudo-order with no priority signal must fire")
+	}
+}

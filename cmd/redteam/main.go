@@ -90,6 +90,8 @@ func main() {
 		v, err = alpsAbsent()
 	case "h2-flow-control":
 		v, err = h2FlowControlSplit()
+	case "h2-priority-absent":
+		v, err = h2PriorityAbsent()
 	case "cert-compression-absent":
 		v, err = certCompressionAbsent()
 	case "nonbrowser-ua":

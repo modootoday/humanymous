@@ -125,6 +125,18 @@ func Build(obs Observation) signals.NetworkReport {
 			add("l5.http2.flow_control_atypical", true, signals.VerdictSuspicious,
 				"browser HTTP/2 pseudo-order with a gigabyte connection flow-control window")
 		}
+		// Score-exempt residual: a Chrome/Firefox-classified h2 profile (by pseudo-order) that
+		// carries NO priority signal at all — neither a HEADERS-frame priority field nor a
+		// separate PRIORITY frame. Measured: real Chrome sets HEADERS priority excl=1/dep=0/
+		// weight=255 (~256), real Firefox excl=0/weight=41 — both ALWAYS present. A raw-framer
+		// library that mimics the pseudo-order but omits priority sends none. The 4th (priority)
+		// Akamai h2 component that pseudo-order + SETTINGS + WINDOW_UPDATE miss (R6/R7/R11).
+		// Gated to the two engines measured to always send it (Safari unmeasured -> excluded).
+		if (nr.H2Engine == EngineChrome || nr.H2Engine == EngineFirefox) &&
+			obs.H2.HeadersPrio == "" && len(obs.H2.Priorities) == 0 {
+			add("l5.http2.priority_atypical", true, signals.VerdictSuspicious,
+				"browser HTTP/2 pseudo-order with no priority signal (no HEADERS priority, no PRIORITY frame)")
+		}
 	}
 
 	// --- Headers ---

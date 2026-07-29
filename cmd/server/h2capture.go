@@ -63,6 +63,13 @@ func peekH2(conn net.Conn) (*network.H2Fingerprint, io.Reader, error) {
 			fp.Priorities = append(fp.Priorities,
 				itoaFrame(frame.StreamID, p.Exclusive, p.StreamDep, p.Weight))
 		case *http2.HeadersFrame:
+			// HEADERS-frame priority field (RFC 7540 §6.2 priority flag) — modern Chrome (105+,
+			// RFC 9218 era) carries priority HERE (exclusive=1, dep=0, weight=255-on-wire ≈ 256)
+			// instead of a separate PRIORITY frame. The 4th Akamai h2 component (SoT-02 / R14).
+			if frame.HasPriority() {
+				p := frame.Priority
+				fp.HeadersPrio = itoaFrame(0, p.Exclusive, p.StreamDep, p.Weight)
+			}
 			fields, _ := dec.DecodeFull(frame.HeaderBlockFragment())
 			for _, hf := range fields {
 				if len(hf.Name) > 0 && hf.Name[0] == ':' {

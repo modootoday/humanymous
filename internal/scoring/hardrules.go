@@ -211,7 +211,7 @@ var promotionRules = []promoRule{
 		// to monitor there, exactly as for the proxy/VPN/Tor residuals. CHALLENGE, not DENY.
 		if netClassMode(c.netPolicy, "net.h2.spoof") == "enforce" && c.browserClaim &&
 			(c.fired("l5.http2.unknown_under_browser") || c.fired("l5.http2.browser_settings_atypical") ||
-				c.fired("l5.http2.flow_control_atypical")) {
+				c.fired("l5.http2.flow_control_atypical") || c.fired("l5.http2.priority_atypical")) {
 			return true
 		}
 		// On-wire header ORDER anomaly (wargame R8, freeze-spend 2026-07-28): a Chrome-UA

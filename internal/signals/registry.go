@@ -225,6 +225,12 @@ var (
 	// flow-control (W) dimension of the Akamai h2 fingerprint — R6 covered SETTINGS, R7 the
 	// pseudo-order. HR-24 net.h2.spoof (same class as the other h2-spoof residuals), not combine.
 	_ = def(Definition{"l5.http2.flow_control_atypical", LayerNetwork, 0, true, "http2", "browser HTTP/2 pseudo-order with a gigabyte flow-control window (audit/admin)"})
+	// WIRED (wargame R14, freeze-spend 2026-07-29): score-exempt residual (weight 0). A Chrome/
+	// Firefox-classified h2 profile (by pseudo-order) that sends NO priority signal — neither a
+	// HEADERS-frame priority field nor a separate PRIORITY frame. Measured: real Chrome sets
+	// HEADERS priority excl=1/weight=255, Firefox excl=0/weight=41 (both always present); a
+	// raw-framer library omits it. The 4th (priority) Akamai h2 component. HR-24 net.h2.spoof.
+	_ = def(Definition{"l5.http2.priority_atypical", LayerNetwork, 0, true, "http2", "browser HTTP/2 pseudo-order with no priority signal (audit/admin)"})
 	// WIRED (wargame R8, freeze-spend 2026-07-28): a raw on-wire header-order capture now
 	// feeds this (h1 peek / h2 HEADERS frame → HeaderInfo.OrderReliable). Score-exempt
 	// (weight 0): a Chrome-UA request whose client-hints (sec-ch-ua) come AFTER user-agent is

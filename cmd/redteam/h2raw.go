@@ -262,6 +262,25 @@ func h2FlowControlSplit() (map[string]any, error) {
 	return h2RawEvasion(c1, err, settings, oneGiB)
 }
 
+// h2PriorityAbsent is the R14 live exploit: a raw HTTP/2 client that ships Chrome's m,a,s,p
+// pseudo-order, a COHERENT Chrome SETTINGS profile (passes R6), AND a real Chrome connection
+// window (15663105, passes R11) — but its HEADERS frame carries NO priority field and it sends
+// no separate PRIORITY frame. Every real browser signals priority (measured: Chrome HEADERS
+// excl=1/weight=255, Firefox excl=0/weight=41); the raw framer omits it. With a coherent Chrome
+// UA + report + RIT, the ONLY residual tell is the missing priority — the 4th Akamai h2
+// component that R6 (SETTINGS), R7 (pseudo-order) and R11 (WINDOW_UPDATE) do not cover.
+func h2PriorityAbsent() (map[string]any, error) {
+	const chromeWindow = 15663105 // real Chrome connection WINDOW_UPDATE (passes R11)
+	settings := []http2.Setting{
+		{ID: http2.SettingHeaderTableSize, Val: 65536},
+		{ID: http2.SettingEnablePush, Val: 0},
+		{ID: http2.SettingInitialWindowSize, Val: 6291456},
+		{ID: http2.SettingMaxHeaderListSize, Val: 262144},
+	}
+	c1, err := dialRawH2WU(utls.HelloChrome_Auto, settings, chromeWindow)
+	return h2RawEvasion(c1, err, settings, chromeWindow)
+}
+
 // h2RawEvasion runs the shared raw-h2 session→2×collect flow for the R6/R11 evasions: it takes
 // the already-dialed session conn, replays the same SETTINGS (+ windowUpdate) on each collect,
 // signs RIT, and returns the re-scored verdict. windowUpdate 0 = send none (R6).

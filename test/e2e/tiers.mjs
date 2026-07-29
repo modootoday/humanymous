@@ -43,7 +43,7 @@ export const TIERS = [
       'selenium.mjs', 'puppeteer.mjs', 'playwright_plain.mjs', 'undetected.mjs', 'direct_cdp.mjs',
       'tls_rotate.mjs', 'ja4_churn.mjs', 'grease_absent_js.mjs',
       'video_scrape.mjs', 'watermark_strip.mjs', 'flood.mjs', 'rapid_reset.mjs',
-      'h2_flow_control.mjs',
+      'h2_flow_control.mjs', 'h2_priority_absent.mjs',
     ],
   },
   {

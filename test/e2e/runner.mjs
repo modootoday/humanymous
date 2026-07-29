@@ -62,6 +62,7 @@ const PROFILES = [
   'flood.mjs',                     // application-layer request flood -> score CHALLENGE + ban ladder
   'rapid_reset.mjs',               // HTTP/2 Rapid Reset DoS (CVE-2023-44487) -> HR-21 (SoT-17)
   'h2_flow_control.mjs',           // Chrome h2 pseudo-order+SETTINGS but 1 GiB flow-control window -> HR-24
+  'h2_priority_absent.mjs',        // Chrome h2 pseudo-order+SETTINGS+window but no priority signal -> HR-24
   // --- T2 · moderate ($$, stealth / rotation / fingerprint-spoof / humanizers) ---
   'puppeteer_stealth.mjs',         // stealth-patched natives (L3) (HR-8)
   'playwright_stealth.mjs',        // patched natives (L3) (HR-8)
