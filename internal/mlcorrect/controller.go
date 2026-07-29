@@ -32,6 +32,7 @@ type Controller struct {
 	guard  *PassGuard
 	feat   *FeatureMonitor
 	shadow *ShadowComparator
+	canary *CanaryGuard // nil unless a probation is armed
 }
 
 // NewController builds the control plane. budget is the tolerated human false-positive rate the ACI
@@ -74,7 +75,9 @@ func (c *Controller) ObserveOutcome(o Outcome, pBot float32, engineBot bool) Dri
 		}
 		c.drift.ObserveOracleError(errInd)
 	}
-	return c.drift.Gate()
+	ev := c.drift.Gate()
+	c.evaluateCanary() // ⑧ probation guard: auto-rollback on the first breach (safe direction only)
+	return ev
 }
 
 // ObservePass records a Pass attempt outcome for the poisoning-guard solve-rate monitor. An abnormal
@@ -103,6 +106,25 @@ func (c *Controller) ObserveShadow(active, shadow mlserve.Prediction) {
 	c.shadow.observe(active.PBot, shadow.PBot, active.Abstain, shadow.Abstain, c.thr.Threshold())
 }
 
+// ArmCanary puts the live model on probation: each subsequent oracle confirmation re-checks the
+// budget, and the first breach fires onRollback (the caller reverts to a safer model or disables the
+// residual to the heuristics-only baseline). Replaces any prior guard.
+func (c *Controller) ArmCanary(b CanaryBudget, onRollback func(reason string)) {
+	g := NewCanaryGuard(b, onRollback)
+	g.Arm(c.thr.Snapshot().HumansSeen)
+	c.canary = g
+}
+
+// evaluateCanary re-checks the probation guard against the current control-plane metrics. Called at
+// the end of each oracle-confirmed ObserveOutcome. No-op when no canary is armed.
+func (c *Controller) evaluateCanary() {
+	if c.canary == nil {
+		return
+	}
+	cal := c.thr.Snapshot()
+	c.canary.evaluate(cal.HumansSeen, cal.HumanFPEst, c.drift.Gate().Fired, c.guard.SolveRateAnomalous())
+}
+
 // ControllerSnapshot is the no-PII observability view for the Ledger / admin console / canary guard.
 type ControllerSnapshot struct {
 	Calibration   Stats       // θ, budget, realized human-FP EMA, counts
@@ -110,15 +132,22 @@ type ControllerSnapshot struct {
 	PassSolveRate float32
 	PassAnomalous bool        // Pass solve-rate abnormal ⇒ suspected oracle poisoning
 	Shadow        ShadowStats // active-vs-candidate divergence (zero-valued when no shadow installed)
+	Canary        CanaryStats // probation/auto-rollback state ("off" when no canary armed)
 }
 
 // Snapshot returns the current control-plane state.
 func (c *Controller) Snapshot() ControllerSnapshot {
+	cal := c.thr.Snapshot()
+	canary := CanaryStats{State: "off"}
+	if c.canary != nil {
+		canary = c.canary.Snapshot(cal.HumansSeen)
+	}
 	return ControllerSnapshot{
-		Calibration:   c.thr.Snapshot(),
+		Calibration:   cal,
 		Drift:         c.drift.Gate(),
 		PassSolveRate: c.guard.SolveRate(),
 		PassAnomalous: c.guard.SolveRateAnomalous(),
 		Shadow:        c.shadow.Snapshot(),
+		Canary:        canary,
 	}
 }

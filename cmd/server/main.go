@@ -60,6 +60,9 @@ func main() {
 	mlFPBudget := flag.Float64("ml-fp-budget", 0.005, "SoT-42 self-calibration: tolerated human false-positive rate the ML residual's threshold maintains (only used when -ml-bundle is set)")
 	mlTraceDir := flag.String("ml-trace-dir", "", "SoT-42 lab-only: directory to append oracle-confirmed labeled behavioral traces (JSONL) for offline retraining; empty = disabled")
 	mlShadowBundle := flag.String("ml-shadow-bundle", "", "SoT-42: a CANDIDATE bundle scored in shadow (parallel, NEVER served) vs the active model; divergence at /api/mlcorrect. Requires -ml-bundle")
+	mlCanary := flag.Bool("ml-canary", false, "SoT-42: put the loaded model on probation — auto-disable it (revert to heuristics) if realized human-FP breaches -ml-canary-max-fp, or on drift/poisoning. Requires -ml-bundle")
+	mlCanaryMaxFP := flag.Float64("ml-canary-max-fp", 0.02, "SoT-42 canary: realized human-FP ceiling during probation before auto-rollback")
+	mlCanaryProbation := flag.Int("ml-canary-probation", 200, "SoT-42 canary: confirmed humans to observe breach-free before the model graduates")
 	flag.Parse()
 	explicitFlags := make(map[string]bool)
 	flag.Visit(func(current *flag.Flag) {
@@ -86,6 +89,22 @@ func main() {
 			mlserve.SetFeatureObserver(mlCtrl) // covariate-drift tap (hot path, model-loaded only)
 			log.Printf("ml-bundle: loaded %s (schema %s); self-calibration active (budget=%.4f θ0=%.2f)",
 				m.BundleVersion(), m.SchemaHash(), *mlFPBudget, mlCtrl.FireThreshold())
+			// SoT-42 ⑧ CANARY: put the loaded model on probation with an auto-rollback watchdog. The
+			// SAFE direction (disable → heuristics baseline) is automatic; the residual is weight-0 so a
+			// trip only makes detection more conservative, never breaks a verdict.
+			if *mlCanary {
+				mlCtrl.ArmCanary(mlcorrect.CanaryBudget{
+					MaxHumanFP:            float32(*mlCanaryMaxFP),
+					ProbationHumans:       uint64(*mlCanaryProbation),
+					RollbackOnDrift:       true,
+					RollbackOnPassAnomaly: true,
+				}, func(reason string) {
+					log.Printf("ml-canary: AUTO-ROLLBACK — %s; disabling the behavioral model (reverting to heuristics)", reason)
+					mlserve.Set(nil)       // residual abstains → engine on heuristics (the freeze-safe baseline)
+					mlserve.SetShadow(nil) // stop shadow-scoring too
+				})
+				log.Printf("ml-canary: probation armed (max human-FP=%.4f, graduate after %d humans)", *mlCanaryMaxFP, *mlCanaryProbation)
+			}
 			// SoT-42 ⑦ SHADOW: score a candidate in parallel (never served) to preview a promotion.
 			// Requires the active model above so there is something to compare against.
 			if *mlShadowBundle != "" {
