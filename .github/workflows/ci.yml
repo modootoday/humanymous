@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch: # manual full-gate run at milestones (Actions → ci → Run workflow)
 
 permissions:
   contents: read
@@ -13,9 +14,14 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-# The Docker detector-vs-bots stack is the integration gate: it runs the whole
-# attack in real containers (real network boundary), so the network-layer
-# detection that a loopback host can't exercise is actually verified in CI.
+# Runner-minute budget (Actions quota): the fast `go` job (build + unit + vet +
+# race + vulncheck + wasm) runs on EVERY push to main and on PRs. The two heavy
+# Docker jobs (compact kernel smoke, and the detector-vs-bots integration gate
+# that runs the whole attack in real containers) are the real minute sinks, so
+# they are gated to pull_request + workflow_dispatch — NOT every push to main.
+# Rule 60 makes the local Docker compose stack (scripts/e2e-docker.*) the same
+# authority as CI, so intermediate work on main is validated locally; the full
+# gate runs on the PR that merges it, or on demand via "Run workflow".
 jobs:
   go:
     name: build + unit tests
@@ -84,6 +90,8 @@ jobs:
 
   external-input-kernel-smoke:
     name: compact independent-kernel smoke
+    # Heavy Docker job: PR + manual only, not every push to main (Actions minute budget).
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     needs: go
     timeout-minutes: 15
@@ -165,6 +173,10 @@ jobs:
 
   detector-vs-bots:
     name: docker detector-vs-bots
+    # The integration gate (~35 min, real containers) is the biggest minute sink:
+    # PR + manual only, not every push to main. Rule 60 keeps the identical local
+    # Docker stack (scripts/e2e-docker.*) as the authority for work on main.
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     needs: go
     timeout-minutes: 35
