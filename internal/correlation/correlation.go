@@ -12,6 +12,7 @@ import (
 	"math"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/anomaly"
@@ -99,6 +100,12 @@ type Registry struct {
 	vel  *anomaly.Detector // fleet-velocity: per-key subnet-acquisition-rate MAD detector
 	rc   doer              // optional Redis coordinator for FLEET-WIDE counting; nil = per-process
 	sign []byte            // fleet HMAC key for the coordinator key digest; nil = SHA-256
+
+	// fleetFallback counts how many times the fleet path degraded to per-process counting (Redis
+	// outage OR a malformed EVAL reply). It is the on-call tell for a coordinator being down or a
+	// broken fleet script: fleetFallback climbing (esp. == fleet-query rate) means correlation is
+	// silently no longer fleet-wide. Atomic because the fleet branch in Observe runs OUTSIDE r.mu.
+	fleetFallback atomic.Uint64
 }
 
 // New returns a per-process correlation registry with the given TTL.
@@ -219,6 +226,8 @@ func (r *Registry) Observe(key, subnet, sessionID string, now time.Time) []signa
 	if r.rc != nil && subnet != "" {
 		if fleetNew, fleetVel, ok := r.observeFleet(key, subnet, now); ok {
 			useNew, useVel = fleetNew, fleetVel
+		} else {
+			r.fleetFallback.Add(1) // Redis error or malformed reply → degraded to per-process (observable)
 		}
 	}
 	if r.vel != nil && useNew {
@@ -295,6 +304,10 @@ func (r *Registry) Stats(key string) (int, int) {
 	}
 	return 0, 0
 }
+
+// FleetFallbacks returns how many fleet-wide observations degraded to per-process counting (Redis
+// outage or malformed reply). Read-only observability for the ops surface; 0 when -redis is unset.
+func (r *Registry) FleetFallbacks() uint64 { return r.fleetFallback.Load() }
 
 // Reset clears all cross-session correlation state (SoT-30 §10 run isolation).
 func (r *Registry) Reset() {

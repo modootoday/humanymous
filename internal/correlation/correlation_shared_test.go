@@ -12,11 +12,12 @@ import (
 // fakeDoer scripts the Redis EVAL reply and records the commands issued, so the fleet path is
 // unit-testable with no live Redis.
 type fakeDoer struct {
-	mu    sync.Mutex
-	calls [][]string
-	vels  []int // scripted fleet velocity per call; `added` is always 1 (globally-new /24)
-	i     int
-	err   error // when set, every call returns this (simulates a coordinator outage)
+	mu        sync.Mutex
+	calls     [][]string
+	vels      []int // scripted fleet velocity per call; `added` is always 1 (globally-new /24)
+	i         int
+	err       error // when set, every call returns this (simulates a coordinator outage)
+	malformed bool  // when set, returns a short (1-element) reply (simulates a broken EVAL script)
 }
 
 func (f *fakeDoer) Do(args ...string) (redis.Reply, error) {
@@ -25,6 +26,9 @@ func (f *fakeDoer) Do(args ...string) (redis.Reply, error) {
 	f.calls = append(f.calls, append([]string(nil), args...))
 	if f.err != nil {
 		return redis.Reply{}, f.err
+	}
+	if f.malformed {
+		return redis.Reply{Array: []redis.Reply{{Int: 1}}}, nil // len < 2 → observeFleet ok=false
 	}
 	v := 1
 	if f.i < len(f.vels) {
@@ -98,6 +102,60 @@ func TestShared_RedisOutageFallsBackToLocal(t *testing.T) {
 	// the coordinator was consulted (and errored) at least once
 	if len(f.calls) == 0 {
 		t.Fatal("the fleet path must have attempted the coordinator")
+	}
+}
+
+func TestShared_FleetFallbackCounter(t *testing.T) {
+	t0 := time.Unix(1_700_000_000, 0)
+	obsN := func(r *Registry, n int) {
+		for i := 0; i < n; i++ {
+			r.Observe(fmt.Sprintf("fp-%d|ja4", i), fmt.Sprintf("10.%d.0", i), fmt.Sprintf("s-%d", i), t0)
+		}
+	}
+	// healthy coordinator → 0 fallbacks
+	h := NewShared(time.Hour, &fakeDoer{}, nil)
+	obsN(h, 20)
+	if h.FleetFallbacks() != 0 {
+		t.Fatalf("a healthy fleet must record 0 fallbacks, got %d", h.FleetFallbacks())
+	}
+	// coordinator down → every fleet observation degrades → counted
+	d := NewShared(time.Hour, &fakeDoer{err: redis.ErrBreakerOpen}, nil)
+	obsN(d, 20)
+	if d.FleetFallbacks() != 20 {
+		t.Fatalf("a down coordinator must count 20 fallbacks, got %d", d.FleetFallbacks())
+	}
+	// malformed EVAL reply (the H5 broken-Lua case) also surfaces as a fallback
+	m := NewShared(time.Hour, &fakeDoer{malformed: true}, nil)
+	obsN(m, 20)
+	if m.FleetFallbacks() != 20 {
+		t.Fatalf("a malformed fleet reply must count as fallback (silent no-op made observable), got %d", m.FleetFallbacks())
+	}
+	// per-process registry (no coordinator) never touches the counter
+	p := New(time.Hour)
+	obsN(p, 20)
+	if p.FleetFallbacks() != 0 {
+		t.Fatalf("per-process registry must report 0 fallbacks, got %d", p.FleetFallbacks())
+	}
+}
+
+func TestShared_FleetFallbackCounter_Concurrent(t *testing.T) {
+	// The fleet branch runs OUTSIDE r.mu, so the counter must be race-free (run under -race).
+	r := NewShared(time.Hour, &fakeDoer{err: redis.ErrBreakerOpen}, nil)
+	t0 := time.Unix(1_700_000_000, 0)
+	const g, n = 8, 50
+	var wg sync.WaitGroup
+	for gi := 0; gi < g; gi++ {
+		wg.Add(1)
+		go func(gi int) {
+			defer wg.Done()
+			for i := 0; i < n; i++ {
+				r.Observe(fmt.Sprintf("fp-%d-%d|ja4", gi, i), fmt.Sprintf("10.%d.%d", gi, i), fmt.Sprintf("s-%d-%d", gi, i), t0)
+			}
+		}(gi)
+	}
+	wg.Wait()
+	if got := r.FleetFallbacks(); got != g*n {
+		t.Fatalf("concurrent fallbacks must not be lost: got %d want %d", got, g*n)
 	}
 }
 

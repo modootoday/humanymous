@@ -102,6 +102,8 @@ Console: `https://localhost:8445/__hmn/admin/console` (separate admin listener; 
 
 The table above is the **Gate** admin plane. Separately, if the **Core** runs the behavioral model, `GET /api/mlcorrect` (Core ops-token, read-only, no personal data) reports the model's health — active artifact version/digest, calibration, drift, shadow, and canary state. See [Operate the behavioral model](../how-to/operate-behavioral-model.md).
 
+For a **quick Core health rollup**, `GET /api/counters` (same Core ops-token) now carries two on-call tells alongside version/uptime: **`ml.canaryState`** — if it reads `tripped`, the behavioral model auto-disabled itself (a self-disable is otherwise only in the log; verdicts are unaffected since the signal is weight-0); and **`fleet.redisFallbackTotal`** — a monotonic count of fleet-correlation observations that degraded to per-node (Redis coordinator down or a broken script). Alert on that total's **rate**: a rising `redisFallbackTotal` means cross-node correlation is silently no longer fleet-wide (again verdict-neutral — fail-open by design — but worth fixing the coordinator).
+
 > **Note:** Bodies — `POST /bans` `{"Key","Reason","Incident","DurationSec"}`; `/killswitch` `{"On":true}`; `/bans/lift` uses a **`?key=<ban-key>` query parameter, not a body**. Full shapes: [CLI, config & policy reference](cli-config-policy.md#request--response-shapes).
 
 ---

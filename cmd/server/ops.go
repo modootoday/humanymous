@@ -100,11 +100,35 @@ func (a *app) handleCounters(w http.ResponseWriter, r *http.Request) {
 	}
 	var ms runtime.MemStats
 	runtime.ReadMemStats(&ms)
+
+	// Behavioral-model rollup — the on-call tell for a CANARY AUTO-ROLLBACK (the rollback itself is
+	// only logged), so a self-disabled model is visible here without grepping stdout. Compact rollup;
+	// full calibration/drift/shadow detail lives at /api/mlcorrect. Nil-safe when no model is loaded.
+	ml := map[string]any{"enabled": a.ctrl != nil}
+	if a.ctrl != nil {
+		snap := a.ctrl.Snapshot()
+		ml["canaryState"] = snap.Canary.State // off | armed | tripped | graduated
+		if snap.Canary.Reason != "" {
+			ml["canaryReason"] = snap.Canary.Reason
+		}
+		ml["fireThreshold"] = a.ctrl.FireThreshold()
+		if a.mlBundles != nil {
+			ver, _ := a.mlBundles.Active()
+			ml["activeBundle"] = ver
+		}
+	}
+	ml["oracleTraces"] = a.traceSink.Count() // nil-safe
+
 	writeJSON(w, map[string]any{
 		"version":        version,
 		"uptimeSec":      int(time.Since(a.started).Seconds()),
 		"goroutines":     runtime.NumGoroutine(),
 		"heapAllocBytes": ms.HeapAlloc,
 		"numGC":          ms.NumGC,
+		"ml":             ml,
+		// Fleet correlation health. redisFallbackTotal is a MONOTONIC count of fleet observations that
+		// degraded to per-node (Redis outage or a broken EVAL): alert on its RATE — a nonzero-and-rising
+		// total means cross-node correlation is silently no longer fleet-wide. 0 when -redis is unset.
+		"fleet": map[string]any{"redisFallbackTotal": a.corr.FleetFallbacks()},
 	})
 }
