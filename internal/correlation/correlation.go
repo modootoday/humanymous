@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/anomaly"
 	"github.com/modootoday/humanymous/internal/signals"
 )
 
@@ -20,11 +21,24 @@ const (
 	// still fans out across many subnets (anonymous-proxy / residential evasion).
 	ja4SubnetsForFPChurn = 3
 	ja4FPsForFPChurn     = 3
+
+	// Fleet-velocity residual (NG-detection Pillar C1). proxy_rotation above fires on the ABSOLUTE
+	// distinct-subnet count (>=3), which cannot tell an organic popular-fingerprint that accumulates
+	// /24s slowly over days from a residential-proxy CAMPAIGN that lights up many /24s in minutes.
+	// This tracks the DERIVATIVE: new /24s per key within velWindow, flagged by the streaming MAD
+	// detector when a key's rate STEPS above its own recent baseline AND clears velFloor (so a step
+	// alone on tiny numbers, or a slow organic ramp, does not fire). It is a WEIGHT-0 / score-exempt
+	// residual (audit only), asymmetric by design: it corroborates proxy_rotation, never a lone DENY.
+	velWindow  = 2 * time.Minute // trailing window over which new-subnet arrivals are counted
+	velFloor   = 8               // min new /24s in the window before a step is even considered a fleet
+	velRingCap = 512             // per-key arrival ring bound (memory)
+	velPopKey  = "pop"           // single shared series: the population norm of per-fp burst-rate
 )
 
 type entry struct {
 	subnets  map[string]struct{}
 	sessions map[string]struct{}
+	arrivals []time.Time // first-seen times of new /24s, pruned to velWindow (fleet-velocity)
 	updated  time.Time
 }
 
@@ -41,11 +55,31 @@ type Registry struct {
 	m    map[string]*entry
 	ja4m map[string]*ja4Fan
 	ttl  time.Duration
+	vel  *anomaly.Detector // fleet-velocity: per-key subnet-acquisition-rate MAD detector
 }
 
 // New returns a correlation registry with the given TTL.
 func New(ttl time.Duration) *Registry {
-	return &Registry{m: map[string]*entry{}, ja4m: map[string]*ja4Fan{}, ttl: ttl}
+	return &Registry{
+		m: map[string]*entry{}, ja4m: map[string]*ja4Fan{}, ttl: ttl,
+		// K=6 MADs and warmup=12 mirror the shadow anomaly detector already in tree; MADFloor 1
+		// keeps a near-constant (organic) rate from over-flagging on integer wobble.
+		vel: anomaly.New(anomaly.Config{Window: 256, K: 6, Warmup: 20, MADFloor: 1, MaxKeys: 16}),
+	}
+}
+
+// velocity counts the new-/24 arrivals for a key within the trailing velWindow, pruning older ones.
+// Caller holds r.mu.
+func (e *entry) velocity(now time.Time) int {
+	cut := now.Add(-velWindow)
+	i := 0
+	for i < len(e.arrivals) && e.arrivals[i].Before(cut) {
+		i++
+	}
+	if i > 0 {
+		e.arrivals = e.arrivals[i:]
+	}
+	return len(e.arrivals)
 }
 
 // Observe records that (subnet, sessionID) presented the given correlation key
@@ -61,12 +95,20 @@ func (r *Registry) Observe(key, subnet, sessionID string, now time.Time) []signa
 		e = &entry{subnets: map[string]struct{}{}, sessions: map[string]struct{}{}}
 		r.m[key] = e
 	}
+	newSubnet := false
 	if subnet != "" {
-		e.subnets[subnet] = struct{}{}
+		if _, seen := e.subnets[subnet]; !seen {
+			e.subnets[subnet] = struct{}{}
+			newSubnet = true
+			if len(e.arrivals) < velRingCap {
+				e.arrivals = append(e.arrivals, now)
+			}
+		}
 	}
 	e.sessions[sessionID] = struct{}{}
 	e.updated = now
 	nSubnets, nSessions := len(e.subnets), len(e.sessions)
+	vel := e.velocity(now)
 	r.mu.Unlock()
 
 	var out []signals.Signal
@@ -78,6 +120,24 @@ func (r *Registry) Observe(key, subnet, sessionID string, now time.Time) []signa
 		out = append(out, signals.New("l5.correlation.shared_fingerprint", nSessions,
 			signals.VerdictSuspicious, 1.0, signals.SourceServer,
 			"one fingerprint shared by many sessions (coordinated botnet)"))
+	}
+
+	// Fleet-velocity residual. On every new /24 we feed this key's windowed acquisition rate into ONE
+	// shared "population" series, so the detector learns the NORMAL burst-rate of ordinary
+	// fingerprints (≈1 new /24 per window). A residential-proxy campaign lighting up many /24s in
+	// minutes is a MAD outlier against that norm — caught from birth, unlike a per-key baseline that a
+	// fleet would poison on sample 1. We only EMIT when the rate also clears velFloor (a meaningful
+	// fleet, not a handful) so a tiny outlier over a near-zero norm cannot fire. Weight-0 → audit only;
+	// asymmetric — it corroborates proxy_rotation, never a lone DENY. (Honest limit: a campaign that
+	// dominates the recent population poisons the norm; monitor-first + corroboration is why.)
+	if r.vel != nil && newSubnet {
+		res := r.vel.Observe(velPopKey, float64(vel), now)
+		if vel >= velFloor && res.Anomalous {
+			out = append(out, signals.New("l5.correlation.ip_velocity",
+				map[string]any{"newSubnetsInWindow": vel, "madScore": res.Score},
+				signals.VerdictSuspicious, 0.6, signals.SourceServer,
+				"one fingerprint acquiring /24 subnets abnormally fast (fleet-velocity)"))
+		}
 	}
 	return out
 }
@@ -127,6 +187,9 @@ func (r *Registry) GC(now time.Time) {
 			delete(r.ja4m, k)
 		}
 	}
+	if r.vel != nil {
+		r.vel.GC(now, r.ttl)
+	}
 }
 
 // Stats returns (subnets, sessions) currently associated with a key. It is the
@@ -147,5 +210,6 @@ func (r *Registry) Reset() {
 	r.mu.Lock()
 	r.m = map[string]*entry{}
 	r.ja4m = map[string]*ja4Fan{}
+	r.vel = anomaly.New(anomaly.Config{Window: 256, K: 6, Warmup: 20, MADFloor: 1, MaxKeys: 16})
 	r.mu.Unlock()
 }

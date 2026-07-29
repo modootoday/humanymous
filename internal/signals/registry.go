@@ -359,5 +359,6 @@ var (
 	_ = def(Definition{"l5.correlation.proxy_rotation", LayerNetwork, 0, true, "correlation", "one fingerprint across many subnets (audit + NET-POLICY)"})
 	_ = def(Definition{"l5.correlation.shared_fingerprint", LayerNetwork, 0, true, "correlation", "one fingerprint shared by many sessions (audit)"})
 	_ = def(Definition{"l5.correlation.fp_churn_proxy", LayerNetwork, 0, true, "correlation", "mid-session fingerprintId churn (audit + NET-POLICY)"})
+	_ = def(Definition{"l5.correlation.ip_velocity", LayerNetwork, 0, true, "correlation", "one fingerprint acquiring /24 subnets abnormally fast — fleet-velocity derivative (audit)"})
 	_ = def(Definition{"l7.pow.too_fast", LayerScoring, 30, nil, "pow", "PoW solved faster than JS-on-claimed-hardware (native/GPU solver)"})
 )
