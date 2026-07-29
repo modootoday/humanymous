@@ -129,7 +129,19 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
-21r. **When two engines send a signal with DIFFERENT values, test presence-vs-absence, not the
+21s. **A skipped cross-check is a blind spot; and a "ceiling" profile must be genuinely coherent
+    or it over-claims** (R15, JA4↔JA4H browser-TLS-over-h1, freeze-spend). The x.ua_vs_h2
+    cross-check only ran when an h2 fingerprint existed, so a browser-TLS parrot speaking HTTP/1.1
+    (no h2 fingerprint) was skipped by it AND consistent under x.ua_vs_ja4 — a coherent Chrome
+    parrot over h1 evaded both. Close it with a residual gated on the observable invariant (browser
+    JA4 + !IsH2; real browsers always speak h2). SECOND lesson: adding this caught the T4 "coherent
+    ceiling" profile itself — because that profile was a Chrome parrot over h1, not the honest
+    undetectable case. A ceiling that your own new rule catches was never an honest ceiling. Upgrade
+    it to a genuine full-protocol spoof (raw-framer FULL Chrome h2 fingerprint: SETTINGS + pseudo-
+    order + window + HEADERS priority + ordered headers) so ALLOW is earned, not asserted — and
+    when it still gets caught, DEBUG which signal (here a Go-map random header order tripping R8),
+    don't just relabel. Measurement (CEILDEBUG) named the exact tell; the fix (canonical header
+    order) made the ceiling 11/11 ALLOW.21r. **When two engines send a signal with DIFFERENT values, test presence-vs-absence, not the
     value** (R14, HTTP/2 HEADERS-frame priority, freeze-spend). Modern Chrome carries priority in
     the HEADERS frame (excl=1/weight=255), Firefox does too but differently (excl=0/weight=41) —
     both ALWAYS present, values engine-specific. Hardcoding "must equal Chrome's value" would FP
