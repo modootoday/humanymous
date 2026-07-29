@@ -69,6 +69,34 @@ func Set(p Predictor) {
 // Default returns the active predictor (never nil).
 func Default() Predictor { return *current.Load() }
 
+// ThresholdProvider yields the p(bot) cut-point at which the behavioral residual "fires" (annotates
+// the session as model-suspicious). It is a dependency-inversion seam: the pure scoring core reads
+// FireThreshold() and never imports the self-calibration package. The default is a static 0.5; a
+// self-calibrating implementation (internal/mlcorrect, ACI) can be installed at startup so the
+// residual fires at a threshold that holds the human false-positive budget over time. Because the
+// l4.ml.behavioral signal is weight-0 / score-exempt, moving this cut-point changes only the audit
+// annotation, never a verdict — so calibration is monitor-first and freeze-safe.
+type ThresholdProvider interface{ FireThreshold() float32 }
+
+var threshold atomic.Pointer[ThresholdProvider]
+
+// SetThresholdProvider installs the fire-threshold source (nil resets to the static default).
+func SetThresholdProvider(p ThresholdProvider) {
+	if p == nil {
+		threshold.Store(nil)
+		return
+	}
+	threshold.Store(&p)
+}
+
+// FireThreshold returns the current residual fire cut-point (0.5 when none is installed).
+func FireThreshold() float32 {
+	if p := threshold.Load(); p != nil {
+		return (*p).FireThreshold()
+	}
+	return 0.5
+}
+
 // Score is the convenience entry the scoring layer calls. It enforces the stale-model guard: if
 // the active predictor's schema hash does not match the current feature schema, it abstains rather
 // than feed a model features it was not trained on. An empty predictor hash (AbstainPredictor)

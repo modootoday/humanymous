@@ -151,7 +151,7 @@ func BehaviorSignals(b signals.BehaviorSummary) []signals.Signal {
 	// engine scores exactly as before, so the seam is freeze-safe by construction. ---
 	if pred := mlserve.Score(behavior.Extract(b)); !pred.Abstain {
 		v := signals.VerdictOK
-		if pred.PBot >= 0.5 {
+		if pred.PBot >= mlserve.FireThreshold() {
 			v = signals.VerdictSuspicious
 		}
 		add("l4.ml.behavioral", pred.PBot, v, float64(mlConfidence(pred.PBot)),

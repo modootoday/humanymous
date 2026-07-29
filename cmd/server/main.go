@@ -17,6 +17,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/mlcorrect"
 	"github.com/modootoday/humanymous/internal/mlserve"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/netutil"
@@ -54,6 +55,7 @@ func main() {
 	externalInputReceiptDir := flag.String("external-input-receipt-dir", "", "lab-only directory for run-bound Core score receipts")
 	opsToken := flag.String("ops-token", "", "operator bearer token enabling /api/explain + /api/counters (empty = disabled; also HMN_OPS_TOKEN)")
 	mlBundle := flag.String("ml-bundle", os.Getenv("HMN_ML_BUNDLE"), "path to a behavioral model bundle (SoT-42 Pillar A); empty = no model (l4.ml.behavioral abstains, engine unchanged)")
+	mlFPBudget := flag.Float64("ml-fp-budget", 0.005, "SoT-42 self-calibration: tolerated human false-positive rate the ML residual's threshold maintains (only used when -ml-bundle is set)")
 	flag.Parse()
 	explicitFlags := make(map[string]bool)
 	flag.Visit(func(current *flag.Flag) {
@@ -69,7 +71,15 @@ func main() {
 			log.Printf("ml-bundle: load failed (%v) — behavioral model disabled, engine runs on heuristics", err)
 		} else {
 			mlserve.Set(m)
-			log.Printf("ml-bundle: loaded %s (schema %s)", m.BundleVersion(), m.SchemaHash())
+			// SoT-42 Pillar A — install the self-calibrating control plane as the residual's fire
+			// threshold (monitor-first). It starts at θ0=0.5 (identical to the prior static cut) and
+			// only self-adjusts from oracle-confirmed outcomes fed on the verdict path; because
+			// l4.ml.behavioral is weight-0/score-exempt, this moves only the audit annotation, never a
+			// verdict. With no bundle the provider is never installed and FireThreshold() stays 0.5.
+			ctrl := mlcorrect.NewController(float32(*mlFPBudget), 0.5, 0.01)
+			mlserve.SetThresholdProvider(ctrl)
+			log.Printf("ml-bundle: loaded %s (schema %s); self-calibration active (budget=%.4f θ0=%.2f)",
+				m.BundleVersion(), m.SchemaHash(), *mlFPBudget, ctrl.FireThreshold())
 		}
 	}
 
