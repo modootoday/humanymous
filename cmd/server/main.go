@@ -17,6 +17,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/modootoday/humanymous/internal/mlserve"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/netutil"
 )
@@ -52,11 +53,25 @@ func main() {
 	logJSONLFile := flag.String("log-jsonl-file", "", "append JSON Lines logs to PATH (also HMN_LOG_JSONL_FILE)")
 	externalInputReceiptDir := flag.String("external-input-receipt-dir", "", "lab-only directory for run-bound Core score receipts")
 	opsToken := flag.String("ops-token", "", "operator bearer token enabling /api/explain + /api/counters (empty = disabled; also HMN_OPS_TOKEN)")
+	mlBundle := flag.String("ml-bundle", os.Getenv("HMN_ML_BUNDLE"), "path to a behavioral model bundle (SoT-42 Pillar A); empty = no model (l4.ml.behavioral abstains, engine unchanged)")
 	flag.Parse()
 	explicitFlags := make(map[string]bool)
 	flag.Visit(func(current *flag.Flag) {
 		explicitFlags[current.Name] = true
 	})
+
+	// SoT-42 Pillar A — load the behavioral model bundle if configured. A load failure is
+	// NON-FATAL: the seam stays in Abstain, so a missing/corrupt/foreign bundle degrades to the
+	// heuristics-only engine rather than taking the edge down (fail-open on the model, never block
+	// a human on model plumbing). With no bundle the l4.ml.behavioral residual never fires.
+	if *mlBundle != "" {
+		if m, err := mlserve.LoadMLP(*mlBundle); err != nil {
+			log.Printf("ml-bundle: load failed (%v) — behavioral model disabled, engine runs on heuristics", err)
+		} else {
+			mlserve.Set(m)
+			log.Printf("ml-bundle: loaded %s (schema %s)", m.BundleVersion(), m.SchemaHash())
+		}
+	}
 
 	domains := splitDomains(*acmeDomain)
 

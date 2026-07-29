@@ -169,6 +169,12 @@ var (
 	_ = def(Definition{"l4.event.no_interaction", LayerBehavioral, 15, nil, "event", "no human interaction over observation window"})
 	_ = def(Definition{"l4.mouse.coalesced_synthetic", LayerBehavioral, 15, nil, "mouse", "movement without coalesced sub-events (CDP/OS-injected input)"})
 	_ = def(Definition{"l4.mouse.jerk_anomaly", LayerBehavioral, 8, nil, "mouse", "abnormal jerk profile (scripted trajectory)"})
+	// WIRED (SoT-42 Pillar A): score-exempt residual (weight 0). A small policy-specific model
+	// (internal/mlserve) scores the shared behavioral feature vector (internal/behavior) and emits
+	// a calibrated p(bot). Surfaced for Audit/Console/NET-POLICY only; moves no Combine risk until
+	// an operator opts it into a weight (freeze-spend). With no model bundle loaded the seam
+	// abstains and this signal is never emitted (freeze-safe by construction).
+	_ = def(Definition{"l4.ml.behavioral", LayerBehavioral, 0, true, "ml", "behavioral model p(bot) (audit/admin)"})
 	// AI-agent behavioral tells (SoT-16, FP-Agent arXiv 2605.01247).
 	_ = def(Definition{"l4.agent.burst_silence", LayerBehavioral, 25, nil, "agent", "LLM inference-loop cadence (think-pause -> instant action burst)"})
 	_ = def(Definition{"l4.mouse.click_no_trajectory", LayerBehavioral, 20, nil, "agent", "mouse events only at click time (no approach trajectory)"})

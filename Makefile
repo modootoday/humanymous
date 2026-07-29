@@ -47,6 +47,15 @@ test:
 race:
 	$(GO) test -race ./...
 
+## ml-model: train the small policy-specific behavioral model bundle (SoT-42 Pillar A).
+## Pure Go, Docker-native — no Python/ONNX. Bootstrap on synthetic grounded data by default;
+## pass DATA=path/to/labeled.jsonl for real traces. The core loads a bundle via -ml-bundle
+## (default: no bundle -> l4.ml.behavioral abstains, engine unchanged).
+ml-model:
+	@mkdir -p configs/ml
+	$(GO) run ./cmd/ml-train $(if $(DATA),-data $(DATA),-gen 20000) -out configs/ml/behavioral.json
+	@echo "load with: -ml-bundle configs/ml/behavioral.json (or HMN_ML_BUNDLE=...)"
+
 fmt:
 	$(GO) fmt ./...
 vet:

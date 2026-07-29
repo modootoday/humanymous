@@ -1,6 +1,10 @@
 package scoring
 
-import "github.com/modootoday/humanymous/internal/signals"
+import (
+	"github.com/modootoday/humanymous/internal/behavior"
+	"github.com/modootoday/humanymous/internal/mlserve"
+	"github.com/modootoday/humanymous/internal/signals"
+)
 
 // behavior.go turns a reduced behavioral feature vector (L4) into signals using
 // explainable heuristic thresholds (SoT-03 §5). Thresholds are conservative to
@@ -138,7 +142,33 @@ func BehaviorSignals(b signals.BehaviorSummary) []signals.Signal {
 			"field populated by paste with no keystrokes")
 	}
 
+	// --- Behavioral ML residual (SoT-42 Pillar A). Score-exempt by default (weight 0 in the
+	// registry): the small policy-specific model scores the shared feature vector and, when a
+	// bundle is loaded and NOT abstaining, surfaces a calibrated p(bot) for Audit/Console/
+	// NET-POLICY. It moves no Combine risk until an operator opts it into a weight (freeze-spend),
+	// and it is asymmetric-by-design in scoring (can nudge toward CHALLENGE, never alone to DENY).
+	// With no model loaded (the default) mlserve.Score abstains and NOTHING is emitted — the
+	// engine scores exactly as before, so the seam is freeze-safe by construction. ---
+	if pred := mlserve.Score(behavior.Extract(b)); !pred.Abstain {
+		v := signals.VerdictOK
+		if pred.PBot >= 0.5 {
+			v = signals.VerdictSuspicious
+		}
+		add("l4.ml.behavioral", pred.PBot, v, float64(mlConfidence(pred.PBot)),
+			"behavioral model p(bot)")
+	}
+
 	return out
+}
+
+// mlConfidence maps a calibrated p(bot) to a signal confidence in [0,1] — most confident at the
+// extremes, least near 0.5 (the abstain-adjacent band).
+func mlConfidence(p float32) float32 {
+	d := p - 0.5
+	if d < 0 {
+		d = -d
+	}
+	return 2 * d
 }
 
 // sampleConfidence ramps from 0.5 at the minimum sample count toward 1.0 as
