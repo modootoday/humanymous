@@ -64,6 +64,11 @@ type app struct {
 	// verdict.
 	ctrl *mlcorrect.Controller
 
+	// mlBundles owns the served behavioral-model identity (version + digest) and the canary rollback.
+	// Non-nil only when -ml-bundle admitted. It is NOT a runtime mutation API — promotion is a deploy
+	// (SoT-42 panel decision); this handle only surfaces the active identity read-only at /api/mlcorrect.
+	mlBundles *mlcorrect.BundleManager
+
 	// traceSink appends oracle-confirmed labeled traces (solved Pass ⇒ human) for offline retraining.
 	// Non-nil only when -ml-trace-dir is set (lab/operator use). Append is fail-safe and nil-safe.
 	traceSink *mltrain.TraceSink

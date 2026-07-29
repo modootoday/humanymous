@@ -28,8 +28,13 @@ func (a *app) handleMLCorrect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	snap := a.ctrl.Snapshot()
+	activeVer, activeDigest := "", ""
+	if a.mlBundles != nil {
+		activeVer, activeDigest = a.mlBundles.Active()
+	}
 	writeJSON(w, map[string]any{
 		"enabled":       true,
+		"activeBundle":  map[string]any{"version": activeVer, "digest": activeDigest},
 		"fireThreshold": a.ctrl.FireThreshold(),
 		"calibration":   snap.Calibration,
 		"drift":         snap.Drift,

@@ -18,8 +18,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/modootoday/humanymous/internal/mlcorrect"
-	"github.com/modootoday/humanymous/internal/mlserve"
 	"github.com/modootoday/humanymous/internal/mltrain"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/netutil"
@@ -59,6 +57,9 @@ func main() {
 	mlBundle := flag.String("ml-bundle", os.Getenv("HMN_ML_BUNDLE"), "path to a behavioral model bundle (SoT-42 Pillar A); empty = no model (l4.ml.behavioral abstains, engine unchanged)")
 	mlFPBudget := flag.Float64("ml-fp-budget", 0.005, "SoT-42 self-calibration: tolerated human false-positive rate the ML residual's threshold maintains (only used when -ml-bundle is set)")
 	mlTraceDir := flag.String("ml-trace-dir", "", "SoT-42 lab-only: directory to append oracle-confirmed labeled behavioral traces (JSONL) for offline retraining; empty = disabled")
+	mlPubkey := flag.String("ml-pubkey", "", "SoT-42: PKIX ed25519 public-key PEM; when set, the served -ml-bundle's signature is REQUIRED (verified on the traffic-facing path)")
+	mlBundleSig := flag.String("ml-bundle-sig", "", "SoT-42: detached ed25519 signature file over the -ml-bundle bytes (needed when -ml-pubkey is set)")
+	mlBundleDigest := flag.String("ml-bundle-digest", "", "SoT-42: optional pinned sha256 hex of the -ml-bundle; admission is refused on mismatch")
 	mlShadowBundle := flag.String("ml-shadow-bundle", "", "SoT-42: a CANDIDATE bundle scored in shadow (parallel, NEVER served) vs the active model; divergence at /api/mlcorrect. Requires -ml-bundle")
 	mlCanary := flag.Bool("ml-canary", false, "SoT-42: put the loaded model on probation — auto-disable it (revert to heuristics) if realized human-FP breaches -ml-canary-max-fp, or on drift/poisoning. Requires -ml-bundle")
 	mlCanaryMaxFP := flag.Float64("ml-canary-max-fp", 0.02, "SoT-42 canary: realized human-FP ceiling during probation before auto-rollback")
@@ -69,58 +70,13 @@ func main() {
 		explicitFlags[current.Name] = true
 	})
 
-	// SoT-42 Pillar A — load the behavioral model bundle if configured. A load failure is
-	// NON-FATAL: the seam stays in Abstain, so a missing/corrupt/foreign bundle degrades to the
-	// heuristics-only engine rather than taking the edge down (fail-open on the model, never block
-	// a human on model plumbing). With no bundle the l4.ml.behavioral residual never fires.
-	var mlCtrl *mlcorrect.Controller
-	if *mlBundle != "" {
-		if m, err := mlserve.LoadMLP(*mlBundle); err != nil {
-			log.Printf("ml-bundle: load failed (%v) — behavioral model disabled, engine runs on heuristics", err)
-		} else {
-			mlserve.Set(m)
-			// SoT-42 Pillar A — install the self-calibrating control plane as the residual's fire
-			// threshold (monitor-first). It starts at θ0=0.5 (identical to the prior static cut) and
-			// only self-adjusts from oracle-confirmed outcomes fed on the verdict path; because
-			// l4.ml.behavioral is weight-0/score-exempt, this moves only the audit annotation, never a
-			// verdict. With no bundle the provider is never installed and FireThreshold() stays 0.5.
-			mlCtrl = mlcorrect.NewController(float32(*mlFPBudget), 0.5, 0.01)
-			mlserve.SetThresholdProvider(mlCtrl)
-			mlserve.SetFeatureObserver(mlCtrl) // covariate-drift tap (hot path, model-loaded only)
-			log.Printf("ml-bundle: loaded %s (schema %s); self-calibration active (budget=%.4f θ0=%.2f)",
-				m.BundleVersion(), m.SchemaHash(), *mlFPBudget, mlCtrl.FireThreshold())
-			// SoT-42 ⑧ CANARY: put the loaded model on probation with an auto-rollback watchdog. The
-			// SAFE direction (disable → heuristics baseline) is automatic; the residual is weight-0 so a
-			// trip only makes detection more conservative, never breaks a verdict.
-			if *mlCanary {
-				mlCtrl.ArmCanary(mlcorrect.CanaryBudget{
-					MaxHumanFP:            float32(*mlCanaryMaxFP),
-					ProbationHumans:       uint64(*mlCanaryProbation),
-					RollbackOnDrift:       true,
-					RollbackOnPassAnomaly: true,
-				}, func(reason string) {
-					log.Printf("ml-canary: AUTO-ROLLBACK — %s; disabling the behavioral model (reverting to heuristics)", reason)
-					mlserve.Set(nil)       // residual abstains → engine on heuristics (the freeze-safe baseline)
-					mlserve.SetShadow(nil) // stop shadow-scoring too
-				})
-				log.Printf("ml-canary: probation armed (max human-FP=%.4f, graduate after %d humans)", *mlCanaryMaxFP, *mlCanaryProbation)
-			}
-			// SoT-42 ⑦ SHADOW: score a candidate in parallel (never served) to preview a promotion.
-			// Requires the active model above so there is something to compare against.
-			if *mlShadowBundle != "" {
-				if sm, err := mlserve.LoadMLP(*mlShadowBundle); err != nil {
-					log.Printf("ml-shadow-bundle: load failed (%v) — shadow evaluation disabled", err)
-				} else {
-					mlserve.SetShadow(sm)
-					mlserve.SetShadowObserver(mlCtrl)
-					log.Printf("ml-shadow-bundle: shadow-scoring candidate %s (never served; divergence at /api/mlcorrect)", sm.BundleVersion())
-				}
-			}
-		}
-	}
-	if *mlShadowBundle != "" && mlCtrl == nil {
-		log.Printf("ml-shadow-bundle: ignored — requires a loaded -ml-bundle (no active model to compare against)")
-	}
+	// SoT-42 Pillar A — admit + install the behavioral model at startup (see ml_setup.go). Promotion
+	// is a deploy-time event per the expert-panel decision; there is no runtime mutation endpoint.
+	mlDone := setupBehavioralML(mlFlags{
+		bundle: *mlBundle, pubkey: *mlPubkey, sig: *mlBundleSig, digest: *mlBundleDigest,
+		fpBudget: *mlFPBudget, shadowBundle: *mlShadowBundle,
+		canary: *mlCanary, canaryMaxFP: *mlCanaryMaxFP, canaryProbation: *mlCanaryProbation,
+	})
 
 	domains := splitDomains(*acmeDomain)
 
@@ -143,7 +99,8 @@ func main() {
 	}
 
 	a := newApp(*webDir, masterKey, *ritOn)
-	a.ctrl = mlCtrl // SoT-42 self-correcting control plane (nil unless a bundle loaded)
+	a.ctrl = mlDone.ctrl       // SoT-42 self-correcting control plane (nil unless a bundle loaded)
+	a.mlBundles = mlDone.bundles // served-model identity for /api/mlcorrect (nil unless a bundle loaded)
 	// SoT-42 lab-only oracle-trace collection: append confirmed-human traces for offline retraining.
 	// Operator-gated (off by default). A sink open failure is non-fatal — training-data collection
 	// must never stop the edge from serving.
