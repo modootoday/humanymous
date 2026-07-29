@@ -257,6 +257,14 @@ var promotionRules = []promoRule{
 			c.fired("l5.http.browser_tls_over_h1") {
 			return true
 		}
+		// ECH extension absence (wargame R16, freeze-spend 2026-07-29): a UA claiming an ECH-era
+		// browser (Chrome >= 117 / Firefox >= 118) whose ClientHello omits Encrypted Client Hello
+		// (0xfe0d). Real ECH-era browsers send it by default (measured); FP-safe. Operator
+		// net.tls.ech=monitor for an ECH-disabling enterprise policy/middlebox.
+		if netClassMode(c.netPolicy, "net.tls.ech") == "enforce" && c.browserClaim &&
+			c.fired("l5.tls.ech_absent") {
+			return true
+		}
 		if netClassMode(c.netPolicy, "net.proxy.hop") == "enforce" &&
 			c.fired("l5.header.xff_multi_hop") && c.fired("l5.traffic.ip_hop") {
 			return true

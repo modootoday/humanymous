@@ -326,3 +326,44 @@ func TestBrowserTLSOverH1Residual(t *testing.T) {
 		t.Error("non-browser (Go) TLS over h1 must NOT fire the browser-TLS-over-h1 residual")
 	}
 }
+
+// A UA claiming an ECH-era browser (Chrome >= 117 / Firefox >= 118) offering h2 whose ClientHello
+// omits the Encrypted Client Hello extension (0xfe0d) is a scraper pinning a pre-ECH profile.
+// Real ECH-era browsers send ECH (real or GREASE) by default (measured). Version-gated. Wargame R16.
+func TestECHAbsentResidual(t *testing.T) {
+	fire := func(ua string, alpn []string, exts []uint16) bool {
+		return buildIDs(Observation{
+			Hello:  &ClientHello{ALPN: alpn, Extensions: exts},
+			Header: HeaderInfo{UserAgent: ua},
+		})["l5.tls.ech_absent"]
+	}
+	chrome149 := "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.0.0 Safari/537.36"
+	h2 := []string{"h2", "http/1.1"}
+	withECH := []uint16{0x0000, 0x000a, 0xfe0d, 0x0010}
+	noECH := []uint16{0x0000, 0x000a, 0x000d, 0x0010}
+
+	// Chrome/149 with ECH (0xfe0d): quiet.
+	if fire(chrome149, h2, withECH) {
+		t.Error("Chrome/149 with ECH must NOT fire l5.tls.ech_absent")
+	}
+	// Chrome/149 + h2 + NO ECH (the spoof): fires.
+	if !fire(chrome149, h2, noECH) {
+		t.Error("Chrome/149 over h2 without ECH must fire l5.tls.ech_absent")
+	}
+	// Older Chrome/110 (pre-ECH era) without ECH: quiet (version gate).
+	if fire("Mozilla/5.0 (Windows NT 10.0) Chrome/110.0.0.0 Safari/537.36", h2, noECH) {
+		t.Error("Chrome/110 (pre-ECH era) must NOT fire — version gate")
+	}
+	// Edge without ECH: quiet (excluded).
+	if fire("Mozilla/5.0 (Windows NT 10.0) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0", h2, noECH) {
+		t.Error("Edge must NOT fire the ECH residual")
+	}
+	// http/1.1-only Chrome/149: quiet (h2 gate).
+	if fire(chrome149, []string{"http/1.1"}, noECH) {
+		t.Error("http/1.1-only client must NOT fire — h2 gate")
+	}
+	// Firefox/118 without ECH: fires.
+	if !fire("Mozilla/5.0 (Windows NT 10.0; rv:118.0) Gecko/20100101 Firefox/118.0", h2, noECH) {
+		t.Error("Firefox/118 over h2 without ECH must fire l5.tls.ech_absent")
+	}
+}

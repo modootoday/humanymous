@@ -1051,6 +1051,55 @@ func certCompressionAbsent() (map[string]any, error) {
 	return v, nil
 }
 
+// stripECH removes the Encrypted Client Hello (GREASE) extension (0xfe0d) from a ClientHello
+// spec, keeping every other extension — so the only delta from a real Chrome hello is the
+// missing ECH.
+func stripECH(exts []utls.TLSExtension) []utls.TLSExtension {
+	out := exts[:0:0]
+	for _, e := range exts {
+		if _, ok := e.(*utls.GREASEEncryptedClientHelloExtension); ok {
+			continue // drop ECH GREASE
+		}
+		out = append(out, e)
+	}
+	return out
+}
+
+// echAbsent pins a scraper that pins a PRE-ECH uTLS fingerprint: a real Chrome_Auto ClientHello
+// over h2 with the Encrypted Client Hello (0xfe0d) extension STRIPPED, plus a coherent RIT-signed
+// Chrome report. Chrome 117+ / Firefox 118+ send ECH (real or GREASE) by default (measured vs
+// real Chrome/149 + Firefox/151); a pre-ECH parrot omits it. The sole residual is the missing ECH
+// -> l5.tls.ech_absent -> HR-24 net.tls.ech CHALLENGE. Web-research grounding: ECH (RFC 9849) is a
+// growing 2026 TLS-fingerprint vector; scrapers pinning older uTLS profiles lack it.
+func echAbsent() (map[string]any, error) {
+	cookie, seed, n, err := session(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	sid := sidFromCookie(cookie)
+	body := coherentReportBody() // coherent Chrome report; the ONLY residual is the missing ECH
+	spec, err := utls.UTLSIdToSpec(utls.HelloChrome_Auto)
+	if err != nil {
+		return nil, err
+	}
+	spec.Extensions = stripECH(spec.Extensions)
+	tb := nowTB()
+	nn := n + 1
+	hdr := withBrowserHeaders(map[string]string{
+		"User-Agent": chromeUA,
+		"X-HM-Token": ritToken(seed, sid, nn, tb, body),
+		"X-HM-N":     itoa(nn),
+		"X-HM-TB":    itoa(tb),
+	})
+	r, err := doH2Spec(spec, "POST", "/api/collect", hdr, body, cookie)
+	if err != nil {
+		return nil, err
+	}
+	v := map[string]any{}
+	_ = json.Unmarshal(r.body, &v)
+	return v, nil
+}
+
 // browserTLSOverH1 is the R15 red: a fully coherent Chrome client — real Chrome uTLS (Chrome
 // JA4), coherent report, browser headers — delivered over HTTP/1.1 (the collect() path forces an
 // http/1.1-only ALPN). Real browsers negotiate and speak h2 to an h2-capable server; this

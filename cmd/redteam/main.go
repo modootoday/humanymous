@@ -96,6 +96,8 @@ func main() {
 		v, err = browserTLSOverH1()
 	case "cert-compression-absent":
 		v, err = certCompressionAbsent()
+	case "ech-absent":
+		v, err = echAbsent()
 	case "nonbrowser-ua":
 		v, err = nonBrowserUA()
 	case "sec-chua-absent":

@@ -202,6 +202,12 @@ var (
 	// (all engines, not just Chromium). Gated on h2-in-ALPN. HR-24 NET-POLICY (net.tls.certcomp,
 	// operator-overridable — a cert-compression-stripping middlebox is the deployment-delta).
 	_ = def(Definition{"l5.tls.cert_compression_absent", LayerNetwork, 0, true, "tls", "browser UA over h2 without certificate compression"})
+	// WIRED (wargame R16, freeze-spend 2026-07-29): score-exempt residual (weight 0). A UA claiming
+	// an ECH-era browser (Chrome >= 117 / Firefox >= 118) offering h2 whose ClientHello omits the
+	// Encrypted Client Hello extension (0xfe0d) that those browsers send by default (measured vs
+	// real Chrome/149 + Firefox/151). Version-gated. HR-24 NET-POLICY (net.tls.ech, operator monitor
+	// for an ECH-disabling enterprise policy), not risk combine.
+	_ = def(Definition{"l5.tls.ech_absent", LayerNetwork, 0, true, "tls", "ECH-era browser UA over h2 without Encrypted Client Hello"})
 	_ = def(Definition{"l5.http2.engine_mismatch", LayerNetwork, 30, nil, "http2", "h2 profile engine vs UA"})
 	// Score-exempt residual (weight 0): a browser-claiming UA over an HTTP/2 profile the
 	// engine cannot classify as any known browser (EngineFromH2 == unknown). A real browser

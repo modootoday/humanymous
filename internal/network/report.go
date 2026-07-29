@@ -89,6 +89,16 @@ func Build(obs Observation) signals.NetworkReport {
 			add("l5.tls.cert_compression_absent", true, signals.VerdictSuspicious,
 				"browser UA offering h2 but the TLS ClientHello omits certificate compression")
 		}
+		// Score-exempt residual: a UA claiming an ECH-era browser (Chrome >= 117 / Firefox >= 118)
+		// offering h2 whose ClientHello omits the Encrypted Client Hello extension (ext 0xfe0d /
+		// 65037). Modern Chrome/Firefox send ECH GREASE by default (measured: Chrome/149,
+		// HeadlessChrome/149, Firefox/151 all carry 65037); a parrot pinning a pre-ECH profile
+		// omits it. Version-gated so a genuinely older browser is never accused. 2026 vector.
+		// Acted on by HR-24 NET-POLICY (net.tls.ech, operator monitor for an ECH-disabling policy).
+		if claimsECHBrowser(obs.Header.UserAgent) && alpnOffersH2(obs.Hello.ALPN) && !hasECH(obs.Hello.Extensions) {
+			add("l5.tls.ech_absent", true, signals.VerdictSuspicious,
+				"UA claims an ECH-era browser but the TLS ClientHello omits Encrypted Client Hello")
+		}
 	} else {
 		// No ClientHello captured — the entire TLS/JA3/JA4 network plane is INACTIVE for this
 		// request (the gate never captures it; a TLS-terminating CDN/L7-LB in front strips it
@@ -301,6 +311,33 @@ const certCompressionExt = 27
 // hasCertCompression reports whether the ClientHello carries the compress_certificate extension.
 func hasCertCompression(exts []uint16) bool {
 	return slices.Contains(exts, certCompressionExt)
+}
+
+// echExt is the Encrypted Client Hello TLS extension codepoint (0xfe0d, draft-ietf-tls-esni-17 /
+// RFC 9849). Chrome 117+ and Firefox 118+ send ECH (real or GREASE) by default; older browsers
+// and pre-ECH parrots omit it.
+const echExt = 0xfe0d
+
+// hasECH reports whether the ClientHello carries the Encrypted Client Hello extension.
+func hasECH(exts []uint16) bool {
+	return slices.Contains(exts, echExt)
+}
+
+// claimsECHBrowser reports whether the UA claims a browser version that ships ECH by DEFAULT —
+// Chrome/Chromium >= 117 or Firefox >= 118. Version-gated so a genuine older browser (which never
+// sent ECH) is never accused; Edge is excluded (its ECH rollout differs).
+func claimsECHBrowser(ua string) bool {
+	l := strings.ToLower(ua)
+	if strings.Contains(l, "edg/") {
+		return false
+	}
+	if v := uaVersionAfter(l, "chrome/"); v >= 117 {
+		return true
+	}
+	if v := uaVersionAfter(l, "firefox/"); v >= 118 {
+		return true
+	}
+	return false
 }
 
 // alpnOffersH2 reports whether the ClientHello's offered ALPN list includes h2.

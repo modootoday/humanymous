@@ -277,6 +277,24 @@ func TestHR24_HTTPh1(t *testing.T) {
 	}
 }
 
+// TestHR24_TLSECH pins the R16 freeze-spend enforcement: an ECH-era browser-UA request whose
+// ClientHello omitted Encrypted Client Hello fired l5.tls.ech_absent -> HR-24 CHALLENGE by default
+// (net.tls.ech enforce), disarmed by an operator net.tls.ech=monitor (ECH-disabling policy).
+func TestHR24_TLSECH(t *testing.T) {
+	r := base("Mozilla/5.0 (Windows NT 10.0) Chrome/120 Safari/537.36",
+		[]signals.Signal{wd(signals.VerdictOK)}, humanBeh, chromeNet)
+	r.Network.Signals = append(r.Network.Signals,
+		signals.New("l5.tls.ech_absent", true, signals.VerdictSuspicious, 1, signals.SourceServer, ""))
+	if v := NewEngine().Score(r); v.HardRuleFired != "HR-24" || v.Verdict != VerdictChallenge {
+		t.Fatalf("ECH-absent anomaly want CHALLENGE/HR-24 got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+	e := NewEngine()
+	e.ConfigureFull(DefaultPolicy(), nil, nil, map[string]string{"net.tls.ech": "monitor"})
+	if v := e.Score(r); v.HardRuleFired == "HR-24" {
+		t.Fatalf("ECH-absent under net.tls.ech monitor must NOT fire HR-24, got %s/%s", v.Verdict, v.HardRuleFired)
+	}
+}
+
 func TestCatalog_HeadlessWebdriver_DenyHR7(t *testing.T) {
 	sigs := []signals.Signal{
 		signals.New("l1.ua.headless_token", true, signals.VerdictBot, 1, signals.SourceWASM, ""),
