@@ -129,6 +129,17 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     surfaces the tell in Audit/Console/NET-POLICY without moving the verdict — freeze-safe by
     construction (empty-overlay verdict unchanged; freeze golden passes). Verdict enforcement
     is a separate, user-authorized detection event (rule 20/61). Ask before spending freeze.
+21r. **When two engines send a signal with DIFFERENT values, test presence-vs-absence, not the
+    value** (R14, HTTP/2 HEADERS-frame priority, freeze-spend). Modern Chrome carries priority in
+    the HEADERS frame (excl=1/weight=255), Firefox does too but differently (excl=0/weight=41) —
+    both ALWAYS present, values engine-specific. Hardcoding "must equal Chrome's value" would FP
+    Firefox; checking a per-engine value table is fragile. The robust FP-safe tell is the
+    value-AGNOSTIC invariant they SHARE: a real browser always sends *some* priority signal, so
+    "browser-classified h2 with NO priority signal at all (no HEADERS priority AND no PRIORITY
+    frame)" catches the raw-framer library that omits it, and never fires on either real engine.
+    Gate to the engines actually MEASURED (Chrome+Firefox; exclude unmeasured Safari). Completes
+    the Akamai h2 fingerprint (SETTINGS/pseudo-order/WINDOW_UPDATE/priority = R6/R7/R11/R14) under
+    the single net.h2.spoof class. Web-research (RFC 9218 era) found it; measurement made it safe.
 21q. **Match the vendor gate to how widely the tell is shared** (R12, TLS certificate_compression
     absence, freeze-spend). compress_certificate (RFC 8879, ext 27) is sent by ALL modern browser
     engines (Chrome, Firefox, Safari) — unlike ALPS (R10), which is Chromium-only. So the gate is
