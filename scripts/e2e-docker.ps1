@@ -28,7 +28,14 @@ $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
 
-$projectSeed = if ($env:E2E_PROJECT_NAME) { $env:E2E_PROJECT_NAME } else { "hmn-e2e-$([guid]::NewGuid().ToString('N').Substring(0, 8))" }
+# Deterministic project name (NOT random). The lab networks pin FIXED subnets (networks.yaml,
+# 172.30-32.0.0/24, internal:true) so the multi-subnet correlation test is real — but fixed subnets
+# are SINGLETONS on the daemon, so only one stack can hold them at a time. A random per-run name made
+# runs non-idempotent: a crashed run left an unfindable stack holding the subnets, and the next run
+# collided ("Pool overlaps"). A stable name means a re-run replaces its own prior stack, and the
+# pre-flight below frees the subnets from any OTHER holder — giving local the clean-slate guarantee
+# CI gets for free on an ephemeral runner. Override with E2E_PROJECT_NAME.
+$projectSeed = if ($env:E2E_PROJECT_NAME) { $env:E2E_PROJECT_NAME } else { "hmn-e2e" }
 $project = ($projectSeed.ToLowerInvariant() -replace '[^a-z0-9-]', '-').Trim('-')
 $composeArgs = @("-p", $project, "-f", "deployments/compose.yaml")
 $runId = if ($env:E2E_RUN_ID) { $env:E2E_RUN_ID } else { "$(Get-Date -Format 'yyyyMMddTHHmmss')-$project" }
@@ -86,16 +93,37 @@ function Invoke-Compose {
   Invoke-DockerStep -Step $Step -DockerArgs (@("compose") + $composeArgs + $Command) | Out-Null
 }
 
+# Clear-LabSubnets frees the fixed lab subnets before we build/up, so a leftover stack (this
+# project's own prior run, a `make up` under the default `deployments` project, or any other holder)
+# can't block us with an opaque "Pool overlaps". This is the local equivalent of CI's ephemeral clean
+# runner; on an already-clean daemon it is a no-op. Generic by design: it downs whatever compose
+# project currently owns a `*_lab-[abc]` network, then removes any dangling lab network.
+function Clear-LabSubnets {
+  Write-Host "[e2e-docker] pre-flight: freeing lab subnets (removing any conflicting stack)..."
+  & docker compose @composeArgs --profile swarm down -v --remove-orphans 2>$null | Out-Null
+  $labNets = @(& docker network ls --format '{{.Name}}' 2>$null | Where-Object { $_ -match '_lab-[abc]$' })
+  foreach ($n in $labNets) {
+    $proj = (& docker network inspect $n --format '{{index .Labels "com.docker.compose.project"}}' 2>$null)
+    if ($proj) {
+      Write-Host "[e2e-docker] pre-flight: tearing down stack '$proj' holding $n"
+      & docker compose -p $proj -f deployments/compose.yaml down -v --remove-orphans 2>$null | Out-Null
+    }
+    & docker network rm $n 2>$null | Out-Null
+  }
+  & docker network prune -f 2>$null | Out-Null
+}
+
 $cleanup = {
   if (-not $Keep) {
     Write-Host "[e2e-docker] tearing down stack..."
-    & docker compose @composeArgs --profile swarm down -v 2>$null | Out-Null
+    & docker compose @composeArgs --profile swarm down -v --remove-orphans 2>$null | Out-Null
   } else {
     Write-Host "[e2e-docker] -Keep set — leaving stack running"
   }
 }
 
 try {
+  Clear-LabSubnets
   Write-Host "[e2e-docker] validate compose..."
   # Use long Docker flags here: PowerShell can bind short flags such as -d to
   # the wrapper function's own common parameters instead of forwarding them.

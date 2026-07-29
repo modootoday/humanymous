@@ -18,7 +18,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-PROJECT="${E2E_PROJECT_NAME:-hmn-e2e-${CI_RUN_ID:-$$}}"
+# Deterministic project name (NOT a per-run PID). The lab networks pin FIXED subnets (networks.yaml,
+# 172.30-32.0.0/24, internal:true) so multi-subnet correlation is real — but fixed subnets are
+# SINGLETONS on the daemon: only one stack can hold them. A random per-run name made runs
+# non-idempotent (a crashed run left an unfindable stack holding the subnets → next run "Pool
+# overlaps"). A stable name means a re-run replaces its own prior stack, and preflight_clean below
+# frees the subnets from any OTHER holder — the local equivalent of CI's ephemeral clean runner.
+PROJECT="${E2E_PROJECT_NAME:-hmn-e2e}"
 PROJECT="$(printf '%s' "$PROJECT" | tr '[:upper:]_' '[:lower:]-' | tr -cd 'a-z0-9-')"
 COMPOSE_FILES=(-f deployments/compose.yaml)
 if [[ -f deployments/compose.ci.yaml && "${E2E_USE_CI_COMPOSE:-0}" == "1" ]]; then
@@ -103,7 +109,7 @@ cleanup() {
     return 0
   fi
   echo "[e2e-docker] tearing down stack..."
-  timeout 90s "${COMPOSE[@]}" --profile swarm down -v || true
+  timeout 90s "${COMPOSE[@]}" --profile swarm down -v --remove-orphans || true
 }
 on_exit() {
   local rc=$?
@@ -115,6 +121,27 @@ on_exit() {
   fi
 }
 trap on_exit EXIT
+
+# preflight_clean frees the fixed lab subnets before we build/up, so a leftover stack (our own prior
+# run, a `make up` under the default `deployments` project, or any other holder) can't block us with
+# an opaque "Pool overlaps". This gives local the clean-slate guarantee CI gets from an ephemeral
+# runner; on an already-clean daemon it is a no-op. Generic: it downs whatever compose project owns a
+# `*_lab-[abc]` network, then removes any dangling lab network.
+preflight_clean() {
+  echo "[e2e-docker] pre-flight: freeing lab subnets (removing any conflicting stack)..."
+  timeout 90s "${COMPOSE[@]}" --profile swarm down -v --remove-orphans >/dev/null 2>&1 || true
+  local n proj
+  for n in $(docker network ls --format '{{.Name}}' 2>/dev/null | grep -E '_lab-[abc]$' || true); do
+    proj="$(docker network inspect "$n" --format '{{index .Labels "com.docker.compose.project"}}' 2>/dev/null || true)"
+    if [[ -n "$proj" ]]; then
+      echo "[e2e-docker] pre-flight: tearing down stack '$proj' holding $n"
+      timeout 90s docker compose -p "$proj" -f deployments/compose.yaml down -v --remove-orphans >/dev/null 2>&1 || true
+    fi
+    docker network rm "$n" >/dev/null 2>&1 || true
+  done
+  docker network prune -f >/dev/null 2>&1 || true
+}
+preflight_clean
 
 run_step validate-compose 60 "${COMPOSE[@]}" config -q
 run_step build-images "$BUILD_TIMEOUT" "${COMPOSE[@]}" \

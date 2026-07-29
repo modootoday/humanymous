@@ -311,6 +311,13 @@ jobs:
           ignore-unfixed: true
           exit-code: "1"
 
+      # Free the fixed lab subnets before `up`, symmetric with scripts/e2e-docker.* preflight. The
+      # lab networks pin singleton subnets (networks.yaml, internal:true), so a leftover stack would
+      # fail `up` with "Pool overlaps". A GitHub-hosted runner is ephemeral (this is a no-op), but
+      # this keeps CI and local bring-up identical and self-heals on a reused/self-hosted runner.
+      - name: Free lab subnets (pre-flight)
+        run: docker compose -f deployments/compose.yaml down -v --remove-orphans || true
+
       - name: Start the detection stack
         run: docker compose -f deployments/compose.yaml up -d --no-build core origin gate
 
