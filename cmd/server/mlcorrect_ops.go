@@ -55,6 +55,7 @@ func (a *app) feedPassOutcome(rep signals.SessionReport, solved bool) {
 			Label:    0, // human
 			Behavior: rep.Client.Behavior,
 			TS:       rep.Timestamp.Unix(),
+			Cohort:   cohortOf(rep.Client.Behavior),
 			Source:   "pass",
 		}); err != nil {
 			a.log.Warn("ml oracle-trace append failed", "err", err)
@@ -73,4 +74,23 @@ func (a *app) feedPassOutcome(rep signals.SessionReport, solved bool) {
 	}
 	engineBot := rep.Scoring.Verdict == scoring.VerdictDeny // STUDD teacher: engine's own automation call
 	a.ctrl.ObserveOutcome(mlcorrect.OutcomePassSolved, pred.PBot, engineBot)
+}
+
+// cohortOf classifies a session's input MODALITY into an accessibility-relevant cohort, so collected
+// traces let the offline retrain gate enforce human-FP≈0 PER modality. This matters because a
+// motor-behavior model is most likely to over-flag exactly the users who generate little pointer
+// microstructure — keyboard-only, switch-access, and other assistive-tech users — and an aggregate
+// gate would hide that regression behind the pointer-using majority. It is a coarse, honest proxy
+// from the aggregate summary (the threshold mirrors l4.event.no_interaction's <4 mouse samples):
+//   - typed but little/no pointer motion ⇒ "keyboard" (the AT-adjacent lane),
+//   - real pointer motion               ⇒ "pointer",
+//   - neither                           ⇒ "default".
+func cohortOf(b signals.BehaviorSummary) string {
+	if b.Mouse.Samples < 4 {
+		if b.Key.Keystrokes > 0 {
+			return "keyboard"
+		}
+		return "default"
+	}
+	return "pointer"
 }

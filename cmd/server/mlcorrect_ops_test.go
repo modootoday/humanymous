@@ -74,7 +74,8 @@ func TestFeedPassOutcome_SolvedWritesHumanTrace(t *testing.T) {
 	a := &app{traceSink: sink} // sink on, no controller
 	var rep signals.SessionReport
 	rep.Timestamp = time.Unix(4242, 0)
-	rep.Client.Behavior = signals.BehaviorSummary{DurationS: 7}
+	// a pointer-using session → the "pointer" cohort.
+	rep.Client.Behavior = signals.BehaviorSummary{DurationS: 7, Mouse: signals.MouseFeatures{Samples: 40}}
 
 	a.feedPassOutcome(rep, true)  // confirmed human → one trace
 	a.feedPassOutcome(rep, false) // failure → NOT a trace (only the solve-rate guard, absent here)
@@ -88,8 +89,26 @@ func TestFeedPassOutcome_SolvedWritesHumanTrace(t *testing.T) {
 	if err := json.Unmarshal([]byte(strings.TrimSpace(string(data))), &r); err != nil {
 		t.Fatalf("trace parse: %v", err)
 	}
-	if r.Label != 0 || r.Source != "pass" || r.TS != 4242 {
-		t.Fatalf("trace must be a labeled human Pass record, got %+v", r)
+	if r.Label != 0 || r.Source != "pass" || r.TS != 4242 || r.Cohort != "pointer" {
+		t.Fatalf("trace must be a labeled, cohort-tagged human Pass record, got %+v", r)
+	}
+}
+
+func TestCohortOf_InputModality(t *testing.T) {
+	cases := []struct {
+		name string
+		b    signals.BehaviorSummary
+		want string
+	}{
+		{"pointer", signals.BehaviorSummary{Mouse: signals.MouseFeatures{Samples: 30}}, "pointer"},
+		{"keyboard", signals.BehaviorSummary{Key: signals.KeyFeatures{Keystrokes: 12}}, "keyboard"},
+		{"keyboard-few-mouse", signals.BehaviorSummary{Mouse: signals.MouseFeatures{Samples: 2}, Key: signals.KeyFeatures{Keystrokes: 5}}, "keyboard"},
+		{"default", signals.BehaviorSummary{}, "default"},
+	}
+	for _, c := range cases {
+		if got := cohortOf(c.b); got != c.want {
+			t.Errorf("%s: cohortOf = %q, want %q", c.name, got, c.want)
+		}
 	}
 }
 
