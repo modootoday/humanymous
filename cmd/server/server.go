@@ -13,6 +13,7 @@ import (
 	"github.com/modootoday/humanymous/internal/collector"
 	"github.com/modootoday/humanymous/internal/correlation"
 	"github.com/modootoday/humanymous/internal/livefeed"
+	"github.com/modootoday/humanymous/internal/mlcorrect"
 	"github.com/modootoday/humanymous/internal/network"
 	"github.com/modootoday/humanymous/internal/resource"
 	"github.com/modootoday/humanymous/internal/scoring"
@@ -54,6 +55,13 @@ type app struct {
 	opsToken string    // operator bearer for /api/explain + /api/counters (empty = routes absent, PLAN-07 R14/R17)
 
 	pass *passStore // SoT-36 humanymous Pass challenge state (per-session, in-memory)
+
+	// ctrl is the SoT-42 Pillar A self-correcting control plane (ACI calibration + drift + Pass
+	// poisoning guard). Non-nil ONLY when a -ml-bundle is loaded; every feed/read site nil-guards.
+	// It is fed monitor-first from the Pass outcome path (solved ⇒ human oracle) and exposed
+	// read-only at /api/mlcorrect. It moves only the weight-0 l4.ml.behavioral annotation, never a
+	// verdict.
+	ctrl *mlcorrect.Controller
 
 	// SoT-30 Phase-3 local Red launcher (all nil/zero unless HMN_PLAYGROUND=1).
 	nonces       *nonceStore
@@ -132,6 +140,7 @@ func (a *app) routes() http.Handler {
 	if a.opsToken != "" {
 		mux.HandleFunc("/api/explain/", a.handleExplain)  // R14: ScoreTrace over a re-scored COPY
 		mux.HandleFunc("/api/counters", a.handleCounters) // R17: runtime/ops counters
+		mux.HandleFunc("/api/mlcorrect", a.handleMLCorrect) // SoT-42: self-calibration snapshot (no-PII)
 	}
 	// SoT-30: the read-only Detection Observatory surface, mounted only when the
 	// live-telemetry hub is present (HMN_PLAYGROUND=1).

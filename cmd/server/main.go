@@ -66,6 +66,7 @@ func main() {
 	// NON-FATAL: the seam stays in Abstain, so a missing/corrupt/foreign bundle degrades to the
 	// heuristics-only engine rather than taking the edge down (fail-open on the model, never block
 	// a human on model plumbing). With no bundle the l4.ml.behavioral residual never fires.
+	var mlCtrl *mlcorrect.Controller
 	if *mlBundle != "" {
 		if m, err := mlserve.LoadMLP(*mlBundle); err != nil {
 			log.Printf("ml-bundle: load failed (%v) — behavioral model disabled, engine runs on heuristics", err)
@@ -76,10 +77,10 @@ func main() {
 			// only self-adjusts from oracle-confirmed outcomes fed on the verdict path; because
 			// l4.ml.behavioral is weight-0/score-exempt, this moves only the audit annotation, never a
 			// verdict. With no bundle the provider is never installed and FireThreshold() stays 0.5.
-			ctrl := mlcorrect.NewController(float32(*mlFPBudget), 0.5, 0.01)
-			mlserve.SetThresholdProvider(ctrl)
+			mlCtrl = mlcorrect.NewController(float32(*mlFPBudget), 0.5, 0.01)
+			mlserve.SetThresholdProvider(mlCtrl)
 			log.Printf("ml-bundle: loaded %s (schema %s); self-calibration active (budget=%.4f θ0=%.2f)",
-				m.BundleVersion(), m.SchemaHash(), *mlFPBudget, ctrl.FireThreshold())
+				m.BundleVersion(), m.SchemaHash(), *mlFPBudget, mlCtrl.FireThreshold())
 		}
 	}
 
@@ -104,6 +105,7 @@ func main() {
 	}
 
 	a := newApp(*webDir, masterKey, *ritOn)
+	a.ctrl = mlCtrl // SoT-42 self-correcting control plane (nil unless a bundle loaded)
 	if err := a.configureExternalInputReceipts(*externalInputReceiptDir); err != nil {
 		log.Fatal("external-input receipt configuration failed")
 	}

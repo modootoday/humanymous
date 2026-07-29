@@ -234,6 +234,7 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 
 	reject := func(why string) {
 		a.pass.record(label, diff, false)
+		a.feedPassOutcome(rep0, false) // SoT-42: solve-rate guard only (a failed Pass is not a bot; ACC-1)
 		a.publishPass(sid, false, why)
 		writeJSON(w, map[string]any{"ok": false, "reason": why, "triesLeft": passMaxTries - tries})
 	}
@@ -311,6 +312,7 @@ func (a *app) handlePassSolve(w http.ResponseWriter, r *http.Request) {
 	rep.Network.Signals = append(rep.Network.Signals, passSolvedSignal())
 	res := a.engine.Score(&rep)
 	a.store.StoreScored(sid, rep, time.Now())
+	a.feedPassOutcome(rep0, true) // SoT-42: a solved Pass is a confirmed human — the ACI oracle signal
 	out := map[string]any{"ok": true, "verdict": res.Verdict, "riskScore": res.RiskScore}
 	// Ceiling-guard #1: a verified human Pass solve is exactly the step-up the attestation
 	// floor demands. When the Core runs as a Pass front-end behind a Gate (shared token
