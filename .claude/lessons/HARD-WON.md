@@ -141,7 +141,8 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
     order + window + HEADERS priority + ordered headers) so ALLOW is earned, not asserted — and
     when it still gets caught, DEBUG which signal (here a Go-map random header order tripping R8),
     don't just relabel. Measurement (CEILDEBUG) named the exact tell; the fix (canonical header
-    order) made the ceiling 11/11 ALLOW.21r. **When two engines send a signal with DIFFERENT values, test presence-vs-absence, not the
+    order) made the ceiling 11/11 ALLOW.
+21r. **When two engines send a signal with DIFFERENT values, test presence-vs-absence, not the
     value** (R14, HTTP/2 HEADERS-frame priority, freeze-spend). Modern Chrome carries priority in
     the HEADERS frame (excl=1/weight=255), Firefox does too but differently (excl=0/weight=41) —
     both ALWAYS present, values engine-specific. Hardcoding "must equal Chrome's value" would FP
