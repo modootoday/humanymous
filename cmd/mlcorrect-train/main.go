@@ -28,20 +28,10 @@ import (
 	"sort"
 	"time"
 
-	"github.com/modootoday/humanymous/internal/behavior"
 	"github.com/modootoday/humanymous/internal/mlcorrect"
 	"github.com/modootoday/humanymous/internal/mlserve"
 	"github.com/modootoday/humanymous/internal/mltrain"
-	"github.com/modootoday/humanymous/internal/signals"
 )
-
-type record struct {
-	Label    int                     `json:"label"`
-	Behavior signals.BehaviorSummary `json:"behavior"`
-	TS       int64                   `json:"ts"`
-	Cohort   string                  `json:"cohort"`
-	Source   string                  `json:"source"`
-}
 
 func main() {
 	anchor := flag.String("anchor", "", "frozen GOLD ANCHOR JSONL (catalog bots + confirmed humans) — required")
@@ -170,13 +160,11 @@ func mustRead(path, kind string) []mltrain.Sample {
 		if len(line) == 0 {
 			continue
 		}
-		var r record
+		var r mltrain.Record
 		if err := json.Unmarshal(line, &r); err != nil {
 			fatal(fmt.Errorf("%s: bad JSONL line: %w", kind, err))
 		}
-		out = append(out, mltrain.Sample{
-			X: behavior.Extract(r.Behavior), Y: float32(r.Label), Human: r.Label == 0, TS: r.TS, Cohort: r.Cohort,
-		})
+		out = append(out, r.Sample())
 	}
 	if err := sc.Err(); err != nil {
 		fatal(err)

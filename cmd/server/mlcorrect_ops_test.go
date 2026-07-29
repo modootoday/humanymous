@@ -1,13 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/modootoday/humanymous/internal/behavior"
 	"github.com/modootoday/humanymous/internal/mlcorrect"
 	"github.com/modootoday/humanymous/internal/mlserve"
+	"github.com/modootoday/humanymous/internal/mltrain"
 	"github.com/modootoday/humanymous/internal/scoring"
 	"github.com/modootoday/humanymous/internal/signals"
 )
@@ -55,9 +60,37 @@ func TestFeedPassOutcome_FailedIsNotABotLabel(t *testing.T) {
 }
 
 func TestFeedPassOutcome_NilControllerIsNoop(t *testing.T) {
-	a := &app{} // no bundle → ctrl nil
+	a := &app{} // no bundle → ctrl nil, no sink
 	a.feedPassOutcome(signals.SessionReport{}, true)
 	a.feedPassOutcome(signals.SessionReport{}, false) // must not panic
+}
+
+func TestFeedPassOutcome_SolvedWritesHumanTrace(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "oracle.jsonl")
+	sink, err := mltrain.NewTraceSink(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := &app{traceSink: sink} // sink on, no controller
+	var rep signals.SessionReport
+	rep.Timestamp = time.Unix(4242, 0)
+	rep.Client.Behavior = signals.BehaviorSummary{DurationS: 7}
+
+	a.feedPassOutcome(rep, true)  // confirmed human → one trace
+	a.feedPassOutcome(rep, false) // failure → NOT a trace (only the solve-rate guard, absent here)
+	if got := sink.Count(); got != 1 {
+		t.Fatalf("only the solved Pass must be persisted as a trace, got %d", got)
+	}
+
+	sink.Close()
+	data, _ := os.ReadFile(path)
+	var r mltrain.Record
+	if err := json.Unmarshal([]byte(strings.TrimSpace(string(data))), &r); err != nil {
+		t.Fatalf("trace parse: %v", err)
+	}
+	if r.Label != 0 || r.Source != "pass" || r.TS != 4242 {
+		t.Fatalf("trace must be a labeled human Pass record, got %+v", r)
+	}
 }
 
 func TestHandleMLCorrect_GateAndShape(t *testing.T) {

@@ -6,6 +6,7 @@ import (
 	"github.com/modootoday/humanymous/internal/behavior"
 	"github.com/modootoday/humanymous/internal/mlcorrect"
 	"github.com/modootoday/humanymous/internal/mlserve"
+	"github.com/modootoday/humanymous/internal/mltrain"
 	"github.com/modootoday/humanymous/internal/scoring"
 	"github.com/modootoday/humanymous/internal/signals"
 )
@@ -47,6 +48,18 @@ func (a *app) handleMLCorrect(w http.ResponseWriter, r *http.Request) {
 // the frozen engine's own verdict is the STUDD teacher. No-op when the control plane is absent or
 // the model abstains — never self-labels, never touches a verdict.
 func (a *app) feedPassOutcome(rep signals.SessionReport, solved bool) {
+	if solved {
+		// A solved Pass is a confirmed human: persist the labeled trace for offline retraining if the
+		// operator enabled collection. Fail-safe + nil-safe — never blocks or fails the request.
+		if err := a.traceSink.Append(mltrain.Record{
+			Label:    0, // human
+			Behavior: rep.Client.Behavior,
+			TS:       rep.Timestamp.Unix(),
+			Source:   "pass",
+		}); err != nil {
+			a.log.Warn("ml oracle-trace append failed", "err", err)
+		}
+	}
 	if a.ctrl == nil {
 		return
 	}

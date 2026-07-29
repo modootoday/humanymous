@@ -27,11 +27,6 @@ import (
 	"github.com/modootoday/humanymous/internal/signals"
 )
 
-type labeled struct {
-	Label    int                     `json:"label"` // 1 = bot, 0 = human
-	Behavior signals.BehaviorSummary `json:"behavior"`
-}
-
 func main() {
 	gen := flag.Int("gen", 0, "generate N synthetic bootstrap samples instead of reading -data")
 	data := flag.String("data", "", "path to labeled JSONL {label:0|1, behavior:{...}} (real traces)")
@@ -98,11 +93,11 @@ func readData(path string) ([]mltrain.Sample, error) {
 		if len(line) == 0 {
 			continue
 		}
-		var l labeled
-		if err := json.Unmarshal(line, &l); err != nil {
+		var rec mltrain.Record
+		if err := json.Unmarshal(line, &rec); err != nil {
 			return nil, fmt.Errorf("bad JSONL line: %w", err)
 		}
-		out = append(out, mltrain.Sample{X: behavior.Extract(l.Behavior), Y: float32(l.Label), Human: l.Label == 0})
+		out = append(out, rec.Sample())
 	}
 	return out, sc.Err()
 }

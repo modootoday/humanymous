@@ -14,11 +14,13 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
 	"github.com/modootoday/humanymous/internal/mlcorrect"
 	"github.com/modootoday/humanymous/internal/mlserve"
+	"github.com/modootoday/humanymous/internal/mltrain"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/netutil"
 )
@@ -56,6 +58,7 @@ func main() {
 	opsToken := flag.String("ops-token", "", "operator bearer token enabling /api/explain + /api/counters (empty = disabled; also HMN_OPS_TOKEN)")
 	mlBundle := flag.String("ml-bundle", os.Getenv("HMN_ML_BUNDLE"), "path to a behavioral model bundle (SoT-42 Pillar A); empty = no model (l4.ml.behavioral abstains, engine unchanged)")
 	mlFPBudget := flag.Float64("ml-fp-budget", 0.005, "SoT-42 self-calibration: tolerated human false-positive rate the ML residual's threshold maintains (only used when -ml-bundle is set)")
+	mlTraceDir := flag.String("ml-trace-dir", "", "SoT-42 lab-only: directory to append oracle-confirmed labeled behavioral traces (JSONL) for offline retraining; empty = disabled")
 	flag.Parse()
 	explicitFlags := make(map[string]bool)
 	flag.Visit(func(current *flag.Flag) {
@@ -107,6 +110,18 @@ func main() {
 
 	a := newApp(*webDir, masterKey, *ritOn)
 	a.ctrl = mlCtrl // SoT-42 self-correcting control plane (nil unless a bundle loaded)
+	// SoT-42 lab-only oracle-trace collection: append confirmed-human traces for offline retraining.
+	// Operator-gated (off by default). A sink open failure is non-fatal — training-data collection
+	// must never stop the edge from serving.
+	if *mlTraceDir != "" {
+		if sink, err := mltrain.NewTraceSink(filepath.Join(*mlTraceDir, "oracle-traces.jsonl")); err != nil {
+			log.Printf("ml-trace-dir: sink open failed (%v) — oracle-trace collection disabled", err)
+		} else {
+			a.traceSink = sink
+			defer sink.Close()
+			log.Printf("ml-trace-dir: appending oracle-confirmed traces to %s", *mlTraceDir)
+		}
+	}
 	if err := a.configureExternalInputReceipts(*externalInputReceiptDir); err != nil {
 		log.Fatal("external-input receipt configuration failed")
 	}

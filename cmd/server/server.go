@@ -14,6 +14,7 @@ import (
 	"github.com/modootoday/humanymous/internal/correlation"
 	"github.com/modootoday/humanymous/internal/livefeed"
 	"github.com/modootoday/humanymous/internal/mlcorrect"
+	"github.com/modootoday/humanymous/internal/mltrain"
 	"github.com/modootoday/humanymous/internal/network"
 	"github.com/modootoday/humanymous/internal/resource"
 	"github.com/modootoday/humanymous/internal/scoring"
@@ -62,6 +63,10 @@ type app struct {
 	// read-only at /api/mlcorrect. It moves only the weight-0 l4.ml.behavioral annotation, never a
 	// verdict.
 	ctrl *mlcorrect.Controller
+
+	// traceSink appends oracle-confirmed labeled traces (solved Pass ⇒ human) for offline retraining.
+	// Non-nil only when -ml-trace-dir is set (lab/operator use). Append is fail-safe and nil-safe.
+	traceSink *mltrain.TraceSink
 
 	// SoT-30 Phase-3 local Red launcher (all nil/zero unless HMN_PLAYGROUND=1).
 	nonces       *nonceStore
