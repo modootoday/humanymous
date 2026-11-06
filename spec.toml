@@ -1,0 +1,22 @@
+# specfold configuration. Run `spec explain config` for every key.
+[spec]
+schema = 1
+
+[owners]
+root = "root"
+
+[local]
+path = ".spec.local"
+
+# Full local advisory streams can exceed 2 MiB; scan their entire contents.
+[files]
+inline_max_bytes = 4194304
+scan_max_bytes = 4194304
+
+[verify]
+timeout_ms = 600000
+jobs = 2
+
+# Plain markdown outside documents whose <!-- spec:count --> markers N1 keeps current.
+# [check]
+# count_paths = ["README.md", "docs/**/*.md"]

@@ -1,0 +1,120 @@
+---
+id: sot:root/rust-migration
+title: Rust migration conventions
+status: active
+created: 2026-11-06T19:40:11Z
+updated: 2026-11-06T19:40:11Z
+verify:
+  - cargo fmt --all -- --check
+  - cargo clippy --workspace --all-targets -- -D warnings
+  - cargo test --workspace --locked
+rel:
+  governs: [Cargo.toml, crates/**, AGENTS.md, spec.toml]
+---
+
+# Rust migration conventions
+
+## Rule
+
+Port the complete product to a Cargo workspace on `codex/rust`. Preserve observable
+behavior, scoring weights, hard-rule predicates, verdict bands, signal IDs and
+wire formats. The Go implementation remains the differential oracle until each
+context is proven equivalent. A Rust wrapper around Go is not completion.
+
+### Structure and naming
+
+- Each crate has one bounded-context responsibility, a kebab-case package name,
+  `Cargo.toml`, `src/lib.rs` or `src/main.rs`, and a small public API.
+- Use standard Rust snake_case modules/functions/variables, PascalCase types and
+  traits, and SCREAMING_SNAKE_CASE constants. Public APIs have rustdoc contracts.
+- Group files by domain context and responsibility. Do not copy the flat Gate
+  catalog into a directory of unrelated Rust files or make a catch-all utility
+  module. Use request, credentials, administration and configuration submodules.
+- Composition roots only wire services. Detection owns verdict computation;
+  enforcement consumes it and never duplicates scoring.
+- Keep pure transforms separate from I/O, clocks and randomness. Inject these
+  dependencies at boundaries. Avoid unsafe code unless separately justified.
+- Unit tests are mandatory for every implemented responsibility and negative
+  boundary. Put unit tests beside the implementation, integration tests under
+  crate `tests/`, fixtures under a context-specific fixture directory.
+
+### Non-negotiable parity
+
+1. Preserve all existing scoring fixtures and regression cases, including Core
+   versus Gate premises. Add differential boundary tests; six freeze goldens alone
+   do not establish full-engine parity. Never regenerate expectations to hide drift.
+2. Capture raw ClientHello, ordered HTTP headers, HTTP/2 SETTINGS and priorities
+   before frameworks normalize them. Prove raw-socket rejection/forwarding parity.
+3. Preserve HMAC domain separation, UTF-8 canonicalization, big-endian integers,
+   base64url padding rules, constant-time comparisons and credential expiry/binding.
+4. Audit canonicalization must preserve NFC, byte lengths, sorted collections,
+   decimal formatting and empty fields. Existing WALs and proofs must still verify.
+5. Missing required signals, replay, invalid signatures/settings and storage
+   outages must retain fail-closed behavior. Erasure, kill switch and permanent
+   bans retain dual control. Never gate Pass on motor richness or speed.
+6. Rust WASM must preserve browser exports and collector behavior; update its
+   loader and remove Go runtime dependency only after real-browser comparison.
+7. Preserve T4 ceiling and defense-only lab isolation. Measured catalog results
+   must never become claims of universal bot detection.
+
+### Records and documentation
+
+All new specifications, decisions, execution records and evidence covers belong
+to Specfold documents. `.spec/` stores reviewable canon; `.spec.local/` stores
+private working notes and raw local evidence and is gitignored. Do not copy keys,
+tokens or personal data into either tier. Historical SoT references remain
+provenance; unavailable `sots/` contents must not be invented or claimed imported.
+
+Rebuild public docs using `modootoday/jekyll-theme-modootoday`, pinned dependencies,
+plain Markdown, standard GitHub Pages hosting and the theme's source/built-site
+checker. The latest user objective replaces the earlier Actions-specific wording;
+use the theme's supported Pages configuration and validate the published site.
+Documentation must describe verified shipped behavior, with English public prose.
+
+### Completion and integration
+
+Audit all final Rust runtime/build/test dependencies, Node, Ruby/theme and
+container bases against current vulnerability databases. Resolve reported
+CVE/advisory findings with maintained fixed versions and rerun the relevant
+tests/scans. A required scan that did not run is not a clean result. Record
+advisory IDs, affected paths, fixed versions, database time and residuals in
+Specfold evidence. Prefer vetted maintained crypto over custom cryptography;
+any replacement implementation requires its own normative contract and tests.
+
+This session targets the new Rust branch, not maintenance of the old Go product.
+Keep Go source/dependency manifests frozen as the migration oracle; its baseline
+vulnerability findings are provenance, not a Go patch backlog. Remove Go from
+final shipped build/deployment paths as Rust replacements pass their gates.
+
+Every Go source and test responsibility must be mapped to implemented Rust code
+and evidence. All binaries, WASM, Docker images, Compose, CI/release paths and
+public adapters must ship Rust. Pilot/restart/replay/failure tests and the complete
+Docker attack, Gate, Pass and swarm suite are mandatory; host runners do not count.
+Run formatting, Clippy with warnings denied, workspace tests and WASM builds.
+
+Only after all gates pass, acquire the git mutex, fetch shared main, integrate it
+into the migration, rerun gates, merge to shared main without force and publish.
+Delete the completed migration branch locally/remotely after confirming main
+contains it. Do not delete unrelated contributors' branches. No partial migration
+may be called complete or merged as the final Rust replacement.
+
+## Why
+
+The user requested complete Rust refactoring with mandatory modularity, tests,
+Specfold canon and a fresh documentation site. Existing AGENTS hard constraints
+remain binding. Source analysis found 26 internal contexts and 804 Go test
+functions. Gate, network capture and audit continuity dominate migration risk.
+
+The design panel and adversarial review identified the parity requirements above
+as ship blockers. SRE requires real deployment/restart evidence; privacy requires
+audit/erasure continuity; evaluator requires honest measured claims. No new
+scoring policy is authorized by a language refactor.
+
+## Verification
+
+- `spec check` validates the canonical document graph.
+- `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`
+  and `cargo test --workspace --locked` validate Rust slices.
+- `go test ./...` preserves the oracle until cutover.
+- `bash scripts/e2e-docker.sh` is the mandatory full-lab authority after Rust wiring.
+- Module inventory and execution records track remaining work explicitly.

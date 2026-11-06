@@ -17,6 +17,10 @@ Raise the cost of automation. Apache-2.0 **reference** build: honesty over over-
 
 ## Progressive disclosure (read more only when needed)
 
+Rust migration canon: `.spec/sot/rust-migration.sot.md`; execution and evidence
+live in `.spec/` and private `.spec.local/`. Before editing, run `spec context <path>`;
+before committing, run `spec check`. Rust conventions in that SoT are mandatory.
+
 | If you are working on… | Read next |
 |------------------------|-----------|
 | Package layout / scoring / signals | `internal/AGENTS.md` |
