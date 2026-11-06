@@ -209,3 +209,12 @@ No named vendor blocking performance or runtime implementation was measured.
 
 Vercel agent-desktop v1.2.0 mechanisms, observation limits, AX-01 through AX-07 and owned-lab qualification cases are canonical in sot:root/accessibility-agent-tools. Accessibility semantic actions, physical synthesis, CDP and direct API phases have distinct provenance. Vendor attribution and blocking performance remain unmeasured; scoring and a11y constraints are unchanged.
 
+## Mobile device automation research
+
+Android Monkey, UI Automator, Appium, accessibility/input paths, Apple XCTest/WDA,
+Maestro and AI/MCP orchestration are canonical in sot:root/mobile-agent-tools.
+MOB-01 through MOB-09 distinguish hardware/app/request integrity from human
+operation, preserve AT controls and require independent origin-effect evidence.
+All mobile pilots remain not_run; no native attestation adapter or scoring change
+is shipped. Real-device farms do not prove carrier egress or unautomated use.
+
