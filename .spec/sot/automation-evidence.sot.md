@@ -204,3 +204,8 @@ reader/mobile/VDI controls; stale feeds; robots cache/redirect/errors; cross-
 tenant/body/stream receipts; discovery SSRF; cardinality/disk/queue loss; and
 streaming/idempotent origin effects. Record all outcomes and full denominators.
 No named vendor blocking performance or runtime implementation was measured.
+
+## Accessibility desktop tools research
+
+Vercel agent-desktop v1.2.0 mechanisms, observation limits, AX-01 through AX-07 and owned-lab qualification cases are canonical in sot:root/accessibility-agent-tools. Accessibility semantic actions, physical synthesis, CDP and direct API phases have distinct provenance. Vendor attribution and blocking performance remain unmeasured; scoring and a11y constraints are unchanged.
+
