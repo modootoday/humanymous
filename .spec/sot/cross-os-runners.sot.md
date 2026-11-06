@@ -187,3 +187,44 @@ Pricing is an observation, not a fixed project constant: standard public hosted
 and self-hosted Actions usage are currently free; larger and underlying fleet
 resources may be billed. Verify account policy and current pricing before paid
 provisioning. No paid fleet was provisioned by this research.
+
+## Standard-user Windows implemented-test execution
+
+On disposable GitHub-hosted Windows only, compile all workspace/all-target test
+harnesses as the runner administrator using Cargo JSON compiler-artifact records.
+Deduplicate actual test executable paths and retain their package/target identity
+and SHA256. Execute every manifest harness under a newly created local account
+whose only local group is built-in Users (SID S-1-5-32-545). Never weaken CLI DACL
+or token predicates. Fail if provisioning, logon, token verification, enumeration,
+execution, cleanup or complete manifest coverage is unavailable.
+
+Use Microsoft New-LocalUser with an ephemeral SecureString password and .NET
+ProcessStartInfo with UseShellExecute=false, UserName, local Domain, Password,
+LoadUserProfile=true and CreateNoWindow=true. Clear the environment and explicitly
+supply only Windows runtime paths and account-owned temporary storage. Verify the
+child's actual SID, absence of Administrators membership and token elevation via
+GetTokenInformation(TokenElevation); configuration alone is insufficient. Grant
+the account workspace read/execute only and a separate protected scratch tree.
+Do not copy the runner environment, credentials, Git configuration or toolchain
+home into the child. Retain only enumerated harness logs/results; delete the
+account in finally. No WinRM, scheduled tasks, UAC/security policy modifications.
+
+List each harness before execution, retain the discovered test count and compare
+it with the execution summary. Zero-test binary harnesses remain explicit and
+must have a successful zero-test summary; they cannot satisfy positive test
+coverage. Required ignored/filtered/failed tests block success. This native probe
+is not Docker product e2e or full migration qualification. Local nonadministrator
+machines validate parsing/contract only; account provisioning is remote-only.
+
+Microsoft API sources checked 2026-11-07 KST:
+- https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.localaccounts/new-localuser
+- https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.username
+- https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.password
+- https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.loaduserprofile
+- https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.createnowindow
+- https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createprocesswithlogonw
+- https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-gettokeninformation
+
+CreateNoWindow is requested but Microsoft documents it is ignored when alternate
+credentials are supplied. WindowStyle=Hidden additionally requests hidden startup;
+this does not change the required token or introduce an interactive handoff.
