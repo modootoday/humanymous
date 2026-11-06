@@ -8,7 +8,8 @@ try {
     $principal = [Security.Principal.WindowsPrincipal]::new($identity)
     $adminSid = [Security.Principal.SecurityIdentifier]::new('S-1-5-32-544')
     if ($identity.User.Value -ne $ExpectedSid -or $identity.Groups.Value -contains $adminSid.Value -or $principal.IsInRole($adminSid)) { throw 'Unexpected child SID/admin membership' }
-    New-Item -ItemType Directory -Path $env:TEMP -ErrorAction Stop | Out-Null
+    # PowerShell itself can create TEMP during startup under this same token.
+    [IO.Directory]::CreateDirectory($env:TEMP) | Out-Null
     if ((Get-Acl -LiteralPath $env:TEMP).Owner -ne $identity.Name) { throw 'Temporary directory not owned by child' }
     Add-Type @'
 using System;

@@ -74,5 +74,5 @@ finally {
     if ([IO.Path]::GetFullPath($scratch) -ne $expected -or $name -notmatch '^hmp[0-9a-f]{12}$') { throw 'Unsafe scratch cleanup path' }
     if (Test-Path -LiteralPath $scratch) { Remove-Item -LiteralPath $scratch -Recurse -Force }
 }
-if ($failure) { throw $failure }
 @{ account_deleted = $true; scratch_deleted = $true } | ConvertTo-Json | Set-Content (Join-Path $ReportDirectory 'cleanup.json')
+if ($failure) { throw $failure }
