@@ -29,7 +29,8 @@ and public publication remain outside this lane.
 - [x] Complete current 201-source review inventory and 12 required capability/check mappings.
 - [x] Remove obsolete tracked OG/LLM/screenshot/image assets through bounded git-mutex transaction.
 - [x] Run seven source/output negative cases and public Specfold check; prepare attributed checkpoint.
-- [ ] Release docs/git-ops after the checkpoint transaction.
+- [x] Create attributed checkpoint 11f2f3c; release git-ops after the transaction.
+- [x] Prepare docs integration handover; release lane via session board after cleanup commit.
 
 ## Progress
 
@@ -107,3 +108,33 @@ spec check
 
 Actual logs and browser artifacts remain private. No remote Pages build/deploy,
 external standards submission or Rust runtime acceptance is asserted.
+
+## Handover for main integration
+
+Mission: complete the authored Pages migration without overstating the unfinished
+Rust product. Docs lane can be released; no local implementation work is running.
+
+Done: checkpoint 11f2f3c replaces legacy pages/layout/generators/assets, pins
+theme v1.5.0 SHA, provides locked Jekyll builds and read-only checks. Both actual
+baseurl builds pass 77-page theme/link/canonical checks. Chrome's 72 combinations
+and eight keyboard checks pass; seven validator boundary tests and Ruby/theme/tool
+dependency audits pass. Raw evidence is [[evidence:root/20261106223502]], and the
+inherited standards pilot now records actual execution. A follow-up removes four
+accidentally staged Python cache files and adds a local script ignore rule.
+
+In progress: no docs process remains. Runtime work continues in main/other lanes.
+The current 201-source ledger is valid on the reviewed Windows tree only.
+
+Next actions: main/CI resolves the 53-source CRLF/LF hashing policy, renews source
+reviews after its runtime changes and runs same-commit native/browser/Docker and
+remote Actions gates. Resolve the separate Node private-attachment metadata
+errors before claiming full spec check. Scan retained builder OS packages before
+calling the final dependency audit complete. Publish only after authorized full
+migration acceptance; do not deploy this local preview as a qualified runtime.
+
+Verify commands are above. Read AGENTS.md, `.agents/lessons/HARD-WON.md`, this plan,
+[[sot:root/pages-implementation]], docs/reviews.json and the CI-owned
+scripts/ci/README.md. Persistent details are in these files, not provider-only
+memory; this residual chat is Codex-owned. Detection scoring/predicates/bands did
+not change. Main merge, tags, push, publication, third-party probing and external
+standards communications are outside this lane.
