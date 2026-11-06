@@ -1,5 +1,5 @@
-//! Historical sealed-key compatibility. This module is staged for workspace
-//! dependency integration; storage/permission and dual-control are separate.
+//! Historical sealed-key compatibility and subject linkage. Durable file
+//! storage/permissions and operational dual-control remain separate boundaries.
 pub mod vault;
 use aes_gcm::{
     Aes256Gcm, Nonce,

@@ -1,11 +1,11 @@
 # Sealed key compatibility integration
 
-The source at `src/keys/mod.rs` is tested directly as the library of a temporary
-standalone Cargo package. It is not yet exported by humanymous-audit because the
-authority chat exclusively owns shared Cargo.toml/Cargo.lock during integration.
-No shared dependency file was overwritten and no workspace pass is claimed here.
+The source at `src/keys/mod.rs` is exported by humanymous-audit on native targets.
+It was first verified directly as an isolated Cargo library, then connected to
+the actual workspace after the authority owner handed back shared Cargo files.
+WASM builds retain the pure audit APIs without host key-entropy dependencies.
 
-Required native target dependencies when ownership is handed back:
+Native target dependencies:
 
 ```toml
 base64.workspace = true
@@ -14,10 +14,9 @@ scrypt = { version = "0.12.0", default-features = false }
 zeroize = { version = "1.9.1", features = ["serde"] }
 ```
 
-Export `keys` under the same native cfg as getrandom-backed Log, regenerate the
-workspace lock under its owner, then run actual audit/workspace/MSRV/audit/WASM
-checks. The temporary package uses MSRV 1.88 and selects aes 0.9.2 because newer
-0.9.4 requires Rust 1.89; its recorded advisory scan has no findings.
+Run actual audit/workspace/MSRV/advisory/WASM checks after changes. The declared
+MSRV 1.88 selects aes 0.9.2 because newer 0.9.4 requires Rust 1.89; do not raise
+the supported toolchain silently. Refer to execution evidence for scan results.
 
 This is the frozen scrypt N=32768/r=8/p=1, 16-byte salt, 12-byte nonce,
 AES256-GCM compatibility envelope. It is not a new stronger KDF policy or
@@ -25,7 +24,7 @@ versioned storage migration. Wrong password/tamper never creates fresh keys.
 Normal seal/open reject empty passwords; explicit import_legacy exists only to
 migrate historical stores. Null versus empty vault data is retained.
 
-The staged vault also matches all 54 frozen HMAC/scrypt vectors, preserves
+The vault also matches all 54 frozen HMAC/scrypt vectors, preserves
 snapshot tombstones and removes reverse links on shred. Its erasure capability
 has no production issuer until verified dual control is implemented.
 
