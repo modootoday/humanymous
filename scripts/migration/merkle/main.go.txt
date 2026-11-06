@@ -1,0 +1,34 @@
+package main
+
+import (
+    "encoding/hex"
+    "encoding/json"
+    "fmt"
+    "os"
+)
+
+func main() {
+    type inclusion struct { Index int `json:"index"`; Proof []string `json:"proof"` }
+    type consistency struct { Old int `json:"old"`; Root string `json:"root"`; Proof []string `json:"proof"` }
+    type vector struct { Leaves []string `json:"leaves"`; Root string `json:"root"`; Inclusion []inclusion `json:"inclusion"`; Consistency []consistency `json:"consistency"` }
+    encode:=func(proof [][]byte)[]string{out:=[]string{};for _,node:=range proof{out=append(out,hex.EncodeToString(node))};return out}
+    vectors:=[]vector{}
+    for size:=0;size<=65;size++ {
+        leaves:=[][]byte{}
+        for index:=0;index<size;index++ {leaves=append(leaves,[]byte(fmt.Sprintf("record-%d",index)))}
+        v:=vector{Leaves:encode(leaves),Root:hex.EncodeToString(merkleRoot(leaves)),Inclusion:[]inclusion{},Consistency:[]consistency{}}
+        for index:=0;index<size;index++ {
+            proof:=inclusionProof(leaves,index)
+            if !verifyInclusion(leaves[index],index,size,proof,merkleRoot(leaves)){panic("Go inclusion baseline failed")}
+            v.Inclusion=append(v.Inclusion,inclusion{index,encode(proof)})
+        }
+        for old:=1;old<size;old++ {
+            proof:=consistencyProof(leaves,old)
+            root:=merkleRoot(leaves[:old])
+            if !verifyConsistency(old,size,proof,root,merkleRoot(leaves)){panic("Go consistency baseline failed")}
+            v.Consistency=append(v.Consistency,consistency{old,hex.EncodeToString(root),encode(proof)})
+        }
+        vectors=append(vectors,v)
+    }
+    if err:=json.NewEncoder(os.Stdout).Encode(vectors);err!=nil{panic(err)}
+}

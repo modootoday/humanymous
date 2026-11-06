@@ -123,6 +123,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "humanymous-audit"
+version = "0.1.0"
+dependencies = [
+ "hex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "humanymous-behavior"
 version = "0.1.0"
 dependencies = [

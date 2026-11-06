@@ -676,8 +676,11 @@
       "path": "internal/audit/merkle.go",
       "sha256": "747deb53325ddbef67700168290725824ac8ada677081b4f054ede2436776fe0",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/merkle/mod.rs",
+        "crates/audit/tests/merkle_parity.rs"
+      ]
     },
     {
       "path": "internal/audit/noderegistry_test.go",

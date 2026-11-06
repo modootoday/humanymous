@@ -56,6 +56,13 @@ context is proven equivalent. A Rust wrapper around Go is not completion.
    base64url padding rules, constant-time comparisons and credential expiry/binding.
 4. Audit canonicalization must preserve NFC, byte lengths, sorted collections,
    decimal formatting and empty fields. Existing WALs and proofs must still verify.
+   The baseline Go 1.26.3 selects x/text normalization Unicode 15.0.0; x/text's
+   alternate Unicode 17 table is selected only by Go 1.27+. Pin the baseline
+   behavior, including stream-safe CGJ insertion, rather than using an arbitrary
+   newer normalizer. Normalization-version compatibility needs explicit vectors.
+   Valid Merkle roots/proofs stay byte-identical. Invalid proof framing may be
+   hardened fail-closed: reject extra inclusion-path nodes and malformed hash
+   widths, including fabricated roots for structurally impossible paths.
 5. Missing required signals, replay, invalid signatures/settings and storage
    outages must retain fail-closed behavior. Erasure, kill switch and permanent
    bans retain dual control. Never gate Pass on motor richness or speed.

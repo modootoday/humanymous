@@ -36,6 +36,7 @@ web/detector.wasm
 .agent-runs/
 .spec/
 .spec.local/
+.specfold/
 target/
 .cache/
 .tmp/
