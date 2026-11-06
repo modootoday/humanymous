@@ -1,0 +1,14 @@
+# One shared hardening policy, inherited by contextual services through extends.
+services:
+  sandbox:
+    user: "65532:65532"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 128m
+    cpus: 0.5
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=8m,mode=1777"]
+    labels:
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:-0}"

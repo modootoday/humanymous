@@ -3,15 +3,16 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-06T22:41:55Z
+updated: 2026-11-06T23:10:00Z
 verify: manual
 rel:
+  governs: [deployments/lab/**, build/rust/**, test/lab/**]
   depends_on: [sot:root/cross-os-runners, sot:root/adapter-ecosystem, sot:root/automation-evidence]
 ---
 
 # Container product-test environments
 
-Version 0.1.0. Research checked 2026-11-07 KST by three read-only agents.
+Version 0.2.0. Research and scoped Docker implementation checked 2026-11-07 KST.
 Accepted design, not a claim of implemented Rust full-lab or Cloudflare deployment.
 
 ## Decision
@@ -193,6 +194,68 @@ gate. Add provider-local and protected remote compatibility profiles afterward.
 Current repo has no Wrangler config; Cloudflare account operations use cf CLI
 unless that project condition changes. Documentation examples mentioning Wrangler
 are product research, not permission to install or migrate to Wrangler.
+
+## Implemented-context acceptance boundaries
+
+The base `deployments/lab/compose.yaml` owns synthetic origin/canary controls
+and hardened Docker client images. It contains no substitute Gate, collector,
+state service or witness. Its results are `topology-fixture`, never
+`rust-product-lab`. All three networks are internal; an owned canary on a
+separate bridge tests actual inter-network denial without third-party traffic.
+Direct origin IP denial is paired with a healthy backend positive control.
+DNS denial alone is insufficient. Gateway Docker API and metadata probes cover
+specific addresses/ports, not every host service or IPv6. These residuals stay
+unavailable rather than being converted into broad no-host/no-internet claims.
+
+The contextual `compose.authority.yaml` adds the actual available Rust authority
+and installed Node Express/Hono adapters in a network-none container. It uses
+the authority owner's private inherited-stdin configuration and piped-readiness
+contract; tokens and ephemeral test audit keys are not image/config/environment
+data or persisted evidence. Same-process supervisory custody is intentional,
+not independent witness operation. Its evidence type is
+`rust-authority-node-ipc`; application-HTTP observations cannot qualify original
+TLS/H2/browser capture. nginx remains unexecuted against Rust because its pilot
+protocol differs. Per-process restart/WAL authentication in tmpfs is distinct
+from durable volume/container recreation, external latest-head or power loss.
+
+`test/lab/run.py` coordinates unique owned projects and runs network clients
+inside Docker. Required product checks missing at the end force
+`releaseReady=false`; `--require-full` exits 2 after scoped cases pass. Execution
+failures exit 1. Cleanup runs in finally and checks project resources are gone.
+Resources carry an explicit 1800-second expiry and owner labels; an external
+operator/runner can invoke `test/lab/cleanup.py` to reap only expired projects
+matching the generated project grammar. No active external scheduler is implied.
+
+Images use context allowlists and pinned base digests. Build/dependency fetches
+are control-plane activity before network-isolated tests. Runtime keys are
+generated after image creation; image provenance and vulnerability/package scans
+are separate required outputs. A scanner authentication/download error is
+`not_run`, never a clean CVE result. Shared-checkout source/config digests and
+dirty paths accompany Git SHA because another chat can change an unrelated
+crate between builds. Do not describe a dirty working-tree build as exactly the
+committed SHA.
+
+### Provider opt-in contract (not implemented deployment)
+
+Named Tunnel/Access and Browser Run remain disabled. Before any future provider
+profile can execute, require an explicit opt-in, owned exact hostname, Access
+team/audience, separate Tunnel/Access/browser credentials, bounded budget and
+expiry, a qualified Gate data listener and external cancellation janitor. Missing
+inputs must cause a nonzero preflight before cf account operations. Browser
+allowedDomains contains only the exact owned fixture host, redirects and
+subresource credential leakage have negative cases, ingress has a catch-all
+reject, origin TLS verification is enabled, and no management listener/socket is
+mounted or routed. This implementation performs no paid provisioning, public
+tunnel or account mutation. Cloudflare DinD/ephemeral WAL is not equivalent to
+canonical internal bridges/independently anchored durable state.
+
+### Documentation integration note
+
+Public docs owners should describe the topology control and actual authority IPC
+slice separately. Full Rust Gate/TLS/capture, real browser human/a11y controls,
+independent witness key/state, physical crash recovery and provider profiles
+remain release blockers until their own measured evidence lands. No docs/**
+files are edited by this lane.
 
 ## Official sources, checked 2026-11-07
 

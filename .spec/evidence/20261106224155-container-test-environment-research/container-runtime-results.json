@@ -1,0 +1,114 @@
+{
+  "evidenceTypes": [
+    "topology-fixture",
+    "rust-authority-node-ipc"
+  ],
+  "gitHeadAtSnapshot": "c6a245751e3dd4654157f5482f8ef8757a153707",
+  "workingTreeDirty": true,
+  "sourceManifestSha256": "496299bc2c5ce033134ec3494c4ad7864fb0ae22041c940f815559b88063287b",
+  "resolvedComposeSha256": "c03dc08c86184d6856f8de22fea7678e9bdeb97298708d89be00549c87d390de",
+  "orchestration": {
+    "passed": 26,
+    "total": 26
+  },
+  "actualAuthority": {
+    "passed": 22,
+    "total": 22,
+    "originEffects": 0,
+    "observableVerdict": "CHALLENGE"
+  },
+  "audit": {
+    "scanner": "aquasec/trivy@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb",
+    "scans": [
+      {
+        "image": "fixture",
+        "imageId": "sha256:9a5075aab95e9359cf90ac295bf97710fb8accfc5ffca23f452274049a60f4bf",
+        "exportArchiveSha256": "d6db4e34f23a083c9991cb631c2c2f72f61613c75eca7fac9cfe8930ea12e230",
+        "scannedConfigId": "sha256:0d72d14dc25c2f4614eae924f8f1068d9f34588d12232c4d90fa621a4eef29a4",
+        "scannedAt": "2026-11-06T23:09:35.988799351Z",
+        "status": "passed",
+        "findings": []
+      },
+      {
+        "image": "authority",
+        "imageId": "sha256:0b40cee553bed2355160be339141dc026c7f4a9530a3ea61d4651cc93cce0225",
+        "exportArchiveSha256": "155d62cd47578552db542aacf39e4e9a9c9c5769c7f4e5449822e496ab8b050d",
+        "scannedConfigId": "sha256:a2f19385e1cfa427da639841c893e1161a6dbcd2ac6800691aadf4d295561a1e",
+        "scannedAt": "2026-11-06T23:09:44.034576315Z",
+        "status": "passed",
+        "findings": []
+      }
+    ],
+    "clean": true,
+    "database": {
+      "Version": 2,
+      "NextUpdate": "2026-11-07T18:59:52.855177045Z",
+      "UpdatedAt": "2026-11-06T18:59:52.855177206Z",
+      "DownloadedAt": "2026-11-06T23:09:34.957190532Z"
+    },
+    "cargo": {
+      "exit": 0,
+      "lockSha256": "532610302cc7b6ab76a5c467c8f90050bdfc588f754a0255fdfac9c16bd0e09d",
+      "matchesBuiltLock": true
+    },
+    "npm": {
+      "exit": 0,
+      "matchesBuiltLock": true
+    }
+  },
+  "remediation": {
+    "fixtureBeforeFindingCount": 8,
+    "authorityBeforeFindingCount": 260,
+    "fixtureAdvisories": [
+      "CVE-2025-47273",
+      "CVE-2026-114613",
+      "CVE-2026-59890",
+      "CVE-2026-97687",
+      "CVE-2026-97688",
+      "CVE-2026-97689",
+      "GHSA-6v7p-g79w-8964",
+      "GHSA-xmj3-9gf7-h52w"
+    ],
+    "actions": [
+      "Removed unused pip/ensurepip and vendored Python packages",
+      "Node24 Debian12 replaced by pinned Node26 Alpine3.24.4 and musl Rust binary",
+      "Separate pinned Express/Hono lock omits TypeScript build tools",
+      "Removed npm/yarn/corepack from authority runtime"
+    ],
+    "scannerFailures": [
+      "Docker Scout login missing: not_run",
+      "Initial Trivy cache tmpfs exhausted: not_run; replaced by isolated temporary disk cache"
+    ]
+  },
+  "iterationFailures": [
+    "Initial Compose tmpfs quoting error corrected before final controls",
+    "Stopped-container inspection failed in evidence:root/20261106230215; fixed with compose ps --all"
+  ],
+  "requiredUnavailable": [
+    "actual-gate-core-http-tls",
+    "installation-cryptographic-network-target-binding",
+    "independent-witness-durable-head",
+    "browser-human-allow-control",
+    "keyboard-challenge",
+    "assistive-challenge",
+    "zero-motor-control",
+    "coherent-browser-ceiling",
+    "host-all-ports-ipv6",
+    "actual-nginx-authority",
+    "provider-remote",
+    "persistent-volume-container-recreation",
+    "physical-power-loss",
+    "native-multi-user-ipc-peer-denial",
+    "provider-local",
+    "scheduled-external-ttl-janitor"
+  ],
+  "cleanup": {
+    "id": "cleanup-owned-project",
+    "status": "passed",
+    "detail": "hm-rust-lab-23f0f8082fdb"
+  },
+  "fullRequiredExit": 2,
+  "releaseReady": false,
+  "privateRawEvidence": "evidence:root/20261106230622",
+  "limits": "Mock, engine, Go, native and provider evidence are not aggregated as Rust full-product success."
+}

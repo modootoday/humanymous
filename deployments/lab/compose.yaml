@@ -1,0 +1,59 @@
+# Fixtures and controls only. No Gate, witness or browser is fabricated here.
+x-fixture: &fixture
+  extends: {file: topology/sandbox.yaml, service: sandbox}
+  image: humanymous/lab-fixtures:${HM_LAB_IMAGE_TAG:-local}
+  build:
+    context: ${HM_LAB_BUILD_CONTEXT:-../..}
+    dockerfile: build/rust/lab-fixtures.Dockerfile
+  environment:
+    PYTHONDONTWRITEBYTECODE: "1"
+  labels:
+    org.humanymous.evidence: topology-fixture
+services:
+  origin:
+    <<: *fixture
+    command: [python, /lab/fixture.py, origin]
+    networks: [backend]
+    healthcheck:
+      test: [CMD, python, /lab/fixture.py, health]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+  attacker:
+    <<: *fixture
+    command: [python, /lab/probe.py]
+    networks: [ingress]
+    profiles: [controls]
+  backend-control:
+    <<: *fixture
+    command: [python, /lab/fixture.py, control, origin]
+    networks: [backend]
+    profiles: [controls]
+    depends_on:
+      origin: {condition: service_healthy}
+  outside-canary:
+    <<: *fixture
+    command: [python, /lab/fixture.py, outside-canary]
+    networks: [outside]
+    profiles: [controls]
+    healthcheck:
+      test: [CMD, python, /lab/fixture.py, health]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+networks:
+  ingress:
+    internal: true
+    enable_ipv6: false
+    labels: &network-labels
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:-0}"
+  backend:
+    internal: true
+    enable_ipv6: false
+    labels: *network-labels
+  # Owned reachability canary on a separate bridge; no third-party traffic.
+  outside:
+    internal: true
+    enable_ipv6: false
+    labels: *network-labels
