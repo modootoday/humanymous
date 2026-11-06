@@ -47,6 +47,23 @@ not for the whole coding session. Typical pattern:
 7. Prefer **one logical commit per lane batch**; avoid mega-commits that mix `docs` +
    detection freeze breaks.
 
+When another lane already has staged entries, never commit the whole shared
+index or unstage its work. After claiming git-ops, stage only your paths and use
+the attributed wrapper's path-scoped commit (invoke in PowerShell so the array
+is preserved):
+
+```powershell
+& ./scripts/agents/git-coord.ps1 commit -Provider codex `
+  -Subject 'refactor(audit): preserve canonical hashes' `
+  -OnlyPaths @('crates/audit', 'Cargo.toml', 'Cargo.lock')
+```
+
+OnlyPaths accepts repository-relative literal file/directory paths, uses
+`git commit --only`, and leaves other staged paths intact. It does not waive the
+global mutex, ownership checks or required attribution. Without OnlyPaths the
+wrapper keeps its original whole-index behavior; use that only when every
+staged path belongs to the same agreed transaction.
+
 ## Pre-push checklist
 
 1. Still hold `git-ops`.

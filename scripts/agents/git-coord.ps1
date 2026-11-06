@@ -22,6 +22,7 @@ param(
   [string]$Subject = "",
   [string]$Body = "",
   [string]$MessageFile = "",
+  [string[]]$OnlyPaths = @(),
   [switch]$Force
 )
 
@@ -205,7 +206,20 @@ function Action-Commit {
   $tmp = Join-Path $env:TEMP ("hmn-commit-" + [guid]::NewGuid().ToString("N") + ".txt")
   Set-Content -Path $tmp -Value $msg -Encoding utf8
   try {
-    git commit -F $tmp
+    if ($OnlyPaths.Count -gt 0) {
+      $literalPaths = foreach ($ownedPath in $OnlyPaths) {
+        if ([string]::IsNullOrWhiteSpace($ownedPath) -or [IO.Path]::IsPathRooted($ownedPath) -or
+            ($ownedPath -split '[/\\]') -contains '..') {
+          throw "OnlyPaths requires nonempty repository-relative owned paths"
+        }
+        ":(top,literal)$($ownedPath.Replace('\', '/'))"
+      }
+      # Preserve other lanes' staged entries. Git updates only these paths in
+      # its commit index; callers still hold git-ops throughout the transaction.
+      git commit -F $tmp --only -- @literalPaths
+    } else {
+      git commit -F $tmp
+    }
     if ($LASTEXITCODE -ne 0) { throw "git commit failed ($LASTEXITCODE)" }
     $sha = git rev-parse --short HEAD
     Write-Host "OK committed $sha with $trailer"
