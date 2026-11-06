@@ -110,6 +110,60 @@ Delete the completed migration branch locally/remotely after confirming main
 contains it. Do not delete unrelated contributors' branches. No partial migration
 may be called complete or merged as the final Rust replacement.
 
+Before that final merge, remove the Go product sources, obsolete Go build/WASM
+runtime paths, migration-only Go generators, retired documentation generators,
+unused legacy assets/configuration and stale CI/deployment references. Retain
+required frozen fixtures and provenance in their canonical Rust/Specfold homes.
+Optimize .gitignore, Docker build contexts and Cargo package include surfaces:
+private .spec.local evidence, caches, local credentials, generated outputs and
+the defense lab must not leak into public runtime/package artifacts. Verify the
+cleaned final tree through the complete gates before merging; cleanup is not an
+untested post-merge action, and published Git history is not rewritten.
+
+## Integration adapters and agent surfaces
+
+Deliver a Rust humanymous CLI for supported operating systems and server
+environments. Include doctor diagnostics and install --dry-run planning before
+installation: dry-run must not modify files, services, privileges or network
+configuration, and actual install must report exact managed changes and support
+safe repeat execution. Validate native OS detection, prerequisite failures,
+configuration conflicts, local-only management binding, rollback/error handling
+and generated service configuration through unit tests and real OS pilots.
+Ship CLI artifacts through the same verified cross-OS release pipeline.
+
+The engine uses one stable combination implementation for scoring and traces,
+following the existing Go trace path's first-seen group/layer ordering. Frozen
+finite policy values, caps, weights, verdict bands and promotion predicates are
+unchanged. Non-finite numeric policy/contributions return a typed error; callers
+must fail closed rather than manufacture an ALLOW verdict from invalid arithmetic.
+This input-validity boundary does not authorize scoring-policy changes.
+
+The final Rust delivery includes a Node/Bun adapter package supporting Express
+and Hono, published to npm through GitHub Actions trusted OIDC publishing, and
+an nginx plugin adapter. Adapters activate the shared security and management
+capabilities without duplicating the Rust policy engine. Management access must
+be local-only by default; forwarded client headers cannot establish local trust.
+Verify header validation, security-layer insertion, route reservation/collision,
+streaming and existing application behavior in unit, pilot and Docker e2e tests.
+Document capability and transport boundaries honestly rather than claiming all
+features are automatically available through middleware alone.
+
+Before final cutover, consolidate development instructions into AGENTS.md and
+.agents/{rules,skills,agents}, rewriting them for the Rust development workflow.
+Remove obsolete .gemini, .codex, .claude, .grok, .cache and .agent-rules trees
+after preserving necessary evidence under .spec/.spec.local. Stop generating
+vendor mirrors. User-facing Agent Skills belong in root skills/, each in its
+own context directory with a standards-compliant SKILL.md and only necessary
+supporting resources; keep them separate from developer-only .agents/skills.
+
+All final skills require measured evaluation and improvement with modoo.today
+skills' modootoday/skill-factory/codex-plugin-eval. Retain paired with/without
+results, activation evidence, case-level graders and review of failures under
+.spec.local, with a canonical acceptance summary in .spec. A successful syntax
+check or ungraded/null result is not performance acceptance. Install the complete
+skill-factory package because the evaluator imports shared resources; use its
+Linux isolation requirements and bounded authenticated evaluation configuration.
+
 ## Why
 
 The user requested complete Rust refactoring with mandatory modularity, tests,

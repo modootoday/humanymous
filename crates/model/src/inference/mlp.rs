@@ -119,6 +119,9 @@ mod tests {
         assert_eq!(model.bundle_version(), "test");
         assert!(Mlp::from_json(b"{}").is_err());
         assert!(Mlp::from_json(b"invalid").is_err());
+        let mut overflow = serde_json::to_value(bundle()).unwrap();
+        overflow["calA"] = serde_json::json!(1e100);
+        assert!(Mlp::from_json(&serde_json::to_vec(&overflow).unwrap()).is_err());
         let path = std::env::temp_dir().join(format!(
             "humanymous-mlp-{}-{}.json",
             std::process::id(),

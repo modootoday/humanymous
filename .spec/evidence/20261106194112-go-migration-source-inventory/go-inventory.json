@@ -2743,8 +2743,10 @@
       "path": "internal/scoring/combine.go",
       "sha256": "08f6fd542deb708c252e2abcbcad85aa611642465c9ed5d3ce7a63fbad01fe4f",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/combination/mod.rs"
+      ]
     },
     {
       "path": "internal/scoring/crosscheck.go",
@@ -2775,8 +2777,12 @@
       "path": "internal/scoring/engine.go",
       "sha256": "6df2b0e08c322400285f8f1637e119cd9e4bdfc5bd07cf77ad059de65c17d57c",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/engine/mod.rs",
+        "crates/scoring/tests/engine_parity.rs",
+        "crates/scoring/tests/trust_upgrades.rs"
+      ]
     },
     {
       "path": "internal/scoring/environment.go",
@@ -2794,8 +2800,11 @@
       "tests": [
         "TestFreezeGoldenCorpus"
       ],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/tests/engine_parity.rs",
+        "crates/scoring/tests/fixtures/frozen"
+      ]
     },
     {
       "path": "internal/scoring/frontier_test.go",
@@ -2848,8 +2857,11 @@
       "path": "internal/scoring/hardrules.go",
       "sha256": "5a4dae9670a264ae45582c5d79bb7e982f412b5251d7e7359abc368988564f2e",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/promotion/mod.rs",
+        "crates/scoring/tests/engine_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/pass_upgrade_test.go",
@@ -2859,8 +2871,10 @@
         "TestPassUpgrade_ClientForgedSignalIgnored",
         "TestPassUpgrade_NeverLaundersHardDeny"
       ],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/tests/trust_upgrades.rs"
+      ]
     },
     {
       "path": "internal/scoring/policy.go",
@@ -2911,8 +2925,12 @@
       "path": "internal/scoring/scoretrace.go",
       "sha256": "76eb46ad02216a800d2a6456369c6bf576f80b5577247d972039a5577b1b26af",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/trace/mod.rs",
+        "crates/scoring/src/combination/mod.rs",
+        "crates/scoring/tests/engine_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/ua.go",

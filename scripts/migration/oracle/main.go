@@ -31,6 +31,10 @@ type parseCase struct {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "engine" {
+		exportEngine()
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "behavior-signals" {
 		exportBehaviorSignals()
 		return
