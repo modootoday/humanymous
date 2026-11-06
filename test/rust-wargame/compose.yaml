@@ -1,0 +1,12 @@
+# Engine-only pilot: no ports, sockets, host mounts, or networking.
+services:
+  engine-pilot:
+    image: humanymous/rust-wargame:local
+    network_mode: none
+    read_only: true
+    user: "65534:65534"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 32
+    mem_limit: 256m
+    command: ["--seed", "42"]
