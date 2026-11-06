@@ -21,6 +21,13 @@ public static class ProbeToken {
     $elevated = [ProbeToken]::Elevated($identity.Token)
     if ($elevated) { throw 'Elevated child token forbidden' }
     $result.token = @{ sid = $identity.User.Value; elevated = $elevated; administrator_group = $false; groups = @($identity.Groups.Value) }
+    $writeDenied = $false
+    try {
+        $stream = [IO.File]::Open((Join-Path $Workspace ('write-probe-' + $ExpectedSid)), [IO.FileMode]::CreateNew, [IO.FileAccess]::Write)
+        $stream.Dispose()
+    } catch [UnauthorizedAccessException] { $writeDenied = $true }
+    if (!$writeDenied) { throw 'Workspace is writable by standard-user account' }
+    $result.workspace_write_denied = $writeDenied
     Set-Location -LiteralPath $Workspace
     $entries = @(Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json)
     for ($index = 0; $index -lt $entries.Count; $index++) {

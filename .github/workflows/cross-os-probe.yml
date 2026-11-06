@@ -39,6 +39,8 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: '3.12'
+      - name: Validate probe coverage accounting
+        run: python -m unittest discover -s scripts/ci/runner-probe -p "test_*.py"
       - name: Observe native tuple and execute implemented workspace tests
         run: python scripts/ci/runner-probe/probe.py --os ${{ matrix.os }} --arch ${{ matrix.arch }} --report target/runner-probe/report.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

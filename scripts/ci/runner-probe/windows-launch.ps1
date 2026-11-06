@@ -30,6 +30,10 @@ try {
     # Add this SID only; preserve existing workspace permissions. No write grant.
     & icacls.exe $Workspace /grant "*$($user.SID.Value):(OI)(CI)(RX)" /T /Q | Out-Null
     if ($LASTEXITCODE) { throw 'Workspace read/execute grant failed' }
+    # A hosted image can inherit broad Users write permissions. Restrict this
+    # disposable SID explicitly without changing any preexisting principal.
+    & icacls.exe $Workspace /deny "*$($user.SID.Value):(OI)(CI)(W,D,WDAC,WO)" /T /Q | Out-Null
+    if ($LASTEXITCODE) { throw 'Workspace write restriction failed' }
     $start = [Diagnostics.ProcessStartInfo]::new()
     $start.FileName = (Get-Command pwsh).Source
     $start.UseShellExecute = $false
