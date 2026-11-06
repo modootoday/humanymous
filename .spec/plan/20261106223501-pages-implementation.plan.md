@@ -149,3 +149,41 @@ serves only the public built tree at
 `C:/Users/smile/.codex/tmp/humanymous-pages-20261106223502/apex-final`.
 It is not a public deployment. This user-requested preview should remain running
 while the user reviews it; server exec session is 24031.
+
+## Public terminology audit requested by user
+
+Scope: current in-progress docs only; deployed humanymous.net is explicitly
+excluded. Completed read-only review of all 77 reader sources and 193 built
+files. Inventory and source hashes are private under
+`.spec.local/root/evidence/20261106222723-pages-public-terminology-audit/`.
+No public content or runtime was modified by this audit.
+
+Findings and proposed follow-up:
+
+- Public requirement labels P-01..P-10 are legitimate local draft identifiers,
+  not priority levels or assigned standards IDs. There is no standalone P0/P-0.
+  However profile.md:41 and conformance.md:36 use an unexplained prefix and
+  code-only references. Add descriptive requirement names, define the label
+  scope, stable anchors and requirement-specific conformance links. Ten
+  definitions and nine literal displayed references/range endpoints are present.
+- security-privacy.md:31 and :57 use uppercase MUST NOT in an initial self-review
+  without its own BCP 14 scope or explicit normative cross-reference. Either
+  make the review informative in ordinary language and point to the requirements,
+  or declare the intended project-normative scope. This is clarity, not evidence
+  of an external adoption claim.
+- Expand less familiar ABI (supported-topologies.md:19), SSRF
+  (security-privacy.md:28), RFCXML/IPR/TAG (preparation.md:39/:63/:64) on first
+  use or link clear definitions. These are normal technical terms, not internal
+  project codes. Existing protocol RFC numbers, BCP 14, HTTP versions, Draft v0,
+  Internet-Draft -00 and synthetic wire fields should remain where needed.
+- Production output includes 43 CSS source maps with temporary upstream theme
+  build paths. Consider sass sourcemap: never after checking converter support.
+  This is optional public-surface cleanup; no private spec ID/key hit was found.
+
+No internal SoT/private paths, tier/layer/hard-rule/gate codes or project
+phase/ADR/sprint/TODO markers were found in rendered reader content. All
+decodable output assets also passed the bounded private-ID/key-pattern scan.
+Primary references: https://www.rfc-editor.org/rfc/rfc8174.html and
+https://www.w3.org/TR/qaframe-spec/. No new runtime conformance, complete secret
+audit, or publication claim follows. Corrections await implementation scope;
+the user asked for investigation, so authored pages were preserved.
