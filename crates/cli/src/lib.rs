@@ -301,16 +301,20 @@ impl Plan {
 #[cfg(test)]
 mod tests {
     use super::*;
+    static NEXT_FIXTURE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
     struct Fixture(PathBuf);
     impl Fixture {
         fn new() -> Self {
-            let path = std::env::temp_dir().join(format!(
+            // macOS temp paths can traverse /var -> /private/var. Resolve the
+            // trusted OS fixture root, keeping product symlink rejection intact.
+            #[cfg(unix)]
+            let root = fs::canonicalize(std::env::temp_dir()).expect("native temporary root");
+            #[cfg(not(unix))]
+            let root = std::env::temp_dir();
+            let path = root.join(format!(
                 "humanymous-test-{}-{}",
                 std::process::id(),
-                std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .expect("time")
-                    .as_nanos()
+                NEXT_FIXTURE.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
             ));
             fs::create_dir(&path).expect("fixture");
             #[cfg(unix)]

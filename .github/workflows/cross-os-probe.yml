@@ -6,6 +6,9 @@ on:
     paths:
       - .github/workflows/cross-os-probe.yml
       - scripts/ci/runner-probe/**
+      - crates/**
+      - Cargo.toml
+      - Cargo.lock
 permissions:
   contents: read
 concurrency:
