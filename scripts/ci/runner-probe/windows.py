@@ -30,7 +30,7 @@ def verify_results(manifest, result, directory):
         log = (directory / f"harness-{index}-run.log").read_text(encoding="utf-8-sig")
         discovered = len(re.findall(r"^.+: test$", listing, re.MULTILINE))
         summaries = SUMMARY.findall(log)
-        if row["list_exit"] or row["run_exit"] or len(summaries) != 1:
+        if row["list_exit"] != 0 or row["run_exit"] != 0 or len(summaries) != 1:
             raise RuntimeError(f"harness {index} failed enumeration/execution/summary")
         passed, failed, ignored, measured, filtered = map(int, summaries[0])
         if failed or ignored or measured or filtered or passed != discovered:

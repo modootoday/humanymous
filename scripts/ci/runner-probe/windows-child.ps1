@@ -3,6 +3,24 @@ param([string]$Manifest, [string]$Scratch, [string]$ExpectedSid, [string]$Worksp
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 $result = @{ status = 'failed'; harnesses = @() }
+function Invoke-Harness([string]$Executable, [string[]]$HarnessArguments, [string]$Log) {
+    $start = [Diagnostics.ProcessStartInfo]::new()
+    $start.FileName = $Executable
+    $start.WorkingDirectory = $Workspace
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    foreach ($argument in $HarnessArguments) { $start.ArgumentList.Add($argument) }
+    $native = [Diagnostics.Process]::Start($start)
+    try {
+        $stdout = $native.StandardOutput.ReadToEndAsync()
+        $stderr = $native.StandardError.ReadToEndAsync()
+        if (!$native.WaitForExit(300000)) { $native.Kill($true); $native.WaitForExit(); throw 'Harness timed out' }
+        ($stdout.GetAwaiter().GetResult() + "`n" + $stderr.GetAwaiter().GetResult()) | Set-Content -LiteralPath $Log -Encoding utf8
+        return $native.ExitCode
+    } finally { $native.Dispose() }
+}
 try {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = [Security.Principal.WindowsPrincipal]::new($identity)
@@ -34,10 +52,8 @@ public static class ProbeToken {
     for ($index = 0; $index -lt $entries.Count; $index++) {
         $entry = $entries[$index]
         if ((Get-FileHash -LiteralPath $entry.executable -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) { throw 'Executable identity changed' }
-        & $entry.executable --list --format terse *> (Join-Path $Scratch "harness-$index-list.log")
-        $listExit = $LASTEXITCODE
-        & $entry.executable --format pretty *> (Join-Path $Scratch "harness-$index-run.log")
-        $runExit = $LASTEXITCODE
+        $listExit = Invoke-Harness $entry.executable @('--list','--format','terse') (Join-Path $Scratch "harness-$index-list.log")
+        $runExit = Invoke-Harness $entry.executable @('--format','pretty') (Join-Path $Scratch "harness-$index-run.log")
         $result.harnesses += @{ executable = $entry.executable; list_exit = $listExit; run_exit = $runExit }
     }
     $result.status = 'executed'
