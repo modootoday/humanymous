@@ -5,8 +5,10 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"sort"
 
 	"github.com/modootoday/humanymous/internal/pow"
+	"github.com/modootoday/humanymous/internal/signals"
 )
 
 type workCase struct {
@@ -29,6 +31,56 @@ type parseCase struct {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "behavior-signals" {
+		exportBehaviorSignals()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "mlp" {
+		exportMLP()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "crosschecks" {
+		exportCrossChecks()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "unicode" {
+		exportUnicode()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "derivation" {
+		exportDerivation()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "behavior" {
+		exportBehavior()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "reports" {
+		exportReports()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "resource" {
+		exportResource()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "signals" {
+		exportSignals()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "rit" {
+		exportRIT()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "registry" {
+		definitions := signals.All()
+		sort.Slice(definitions, func(i, j int) bool { return definitions[i].ID < definitions[j].ID })
+		encoder := json.NewEncoder(os.Stdout)
+		encoder.SetIndent("", "  ")
+		if err := encoder.Encode(definitions); err != nil {
+			panic(err)
+		}
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "integrity" {
 		exportIntegrity()
 		return

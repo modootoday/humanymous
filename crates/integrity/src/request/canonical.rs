@@ -1,3 +1,4 @@
+use humanymous_signals::wire::simple_lowercase;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 
@@ -46,15 +47,7 @@ pub fn canonical(input: CanonicalInput<'_>) -> String {
 pub fn lower_header_map(input: &BTreeMap<String, String>) -> BTreeMap<String, String> {
     input
         .iter()
-        .map(|(name, value)| {
-            // Go uses Unicode simple lowercase per rune, without contextual
-            // final sigma or full dotted-I expansion.
-            let name = name
-                .chars()
-                .map(|ch| ch.to_lowercase().next().unwrap_or(ch))
-                .collect();
-            (name, value.clone())
-        })
+        .map(|(name, value)| (simple_lowercase(name), value.clone()))
         .collect()
 }
 

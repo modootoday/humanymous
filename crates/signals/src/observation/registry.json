@@ -1,0 +1,1146 @@
+[
+  {
+    "ID": "l1.artifact.phantom",
+    "Layer": "L1",
+    "Weight": 30,
+    "ExpectedHuman": false,
+    "Group": "artifact",
+    "Desc": "phantomjs globals"
+  },
+  {
+    "ID": "l1.artifact.playwright",
+    "Layer": "L1",
+    "Weight": 40,
+    "ExpectedHuman": false,
+    "Group": "artifact",
+    "Desc": "playwright globals"
+  },
+  {
+    "ID": "l1.artifact.selenium",
+    "Layer": "L1",
+    "Weight": 40,
+    "ExpectedHuman": false,
+    "Group": "artifact",
+    "Desc": "selenium/cdc_ artifacts"
+  },
+  {
+    "ID": "l1.cdp.proxy_leak",
+    "Layer": "L1",
+    "Weight": 8,
+    "ExpectedHuman": false,
+    "Group": "cdp",
+    "Desc": "CDP prototype-Proxy preview leak (current Chrome over CDP)"
+  },
+  {
+    "ID": "l1.cdp.runtime_enable",
+    "Layer": "L1",
+    "Weight": 12,
+    "ExpectedHuman": false,
+    "Group": "cdp",
+    "Desc": "CDP Runtime.enable leak (weak, mostly patched)"
+  },
+  {
+    "ID": "l1.navigator.languages_empty",
+    "Layer": "L1",
+    "Weight": 8,
+    "ExpectedHuman": false,
+    "Group": "languages",
+    "Desc": "empty languages"
+  },
+  {
+    "ID": "l1.navigator.pdfviewer",
+    "Layer": "L1",
+    "Weight": 6,
+    "ExpectedHuman": true,
+    "Group": "plugins",
+    "Desc": "pdfViewerEnabled false"
+  },
+  {
+    "ID": "l1.navigator.plugins_empty",
+    "Layer": "L1",
+    "Weight": 8,
+    "ExpectedHuman": false,
+    "Group": "plugins",
+    "Desc": "empty plugins array"
+  },
+  {
+    "ID": "l1.navigator.webdriver",
+    "Layer": "L1",
+    "Weight": 15,
+    "ExpectedHuman": false,
+    "Group": "webdriver",
+    "Desc": "navigator.webdriver true"
+  },
+  {
+    "ID": "l1.permissions.mismatch",
+    "Layer": "L1",
+    "Weight": 18,
+    "ExpectedHuman": false,
+    "Group": "permissions",
+    "Desc": "Notification vs permissions.query mismatch"
+  },
+  {
+    "ID": "l1.ua.headless_token",
+    "Layer": "L1",
+    "Weight": 25,
+    "ExpectedHuman": false,
+    "Group": "headless",
+    "Desc": "HeadlessChrome UA token"
+  },
+  {
+    "ID": "l1.window.chrome_missing",
+    "Layer": "L1",
+    "Weight": 8,
+    "ExpectedHuman": true,
+    "Group": "chrome",
+    "Desc": "window.chrome absent"
+  },
+  {
+    "ID": "l1.window.outer_eq_inner",
+    "Layer": "L1",
+    "Weight": 10,
+    "ExpectedHuman": false,
+    "Group": "windowsize",
+    "Desc": "outer==inner (no chrome UI)"
+  },
+  {
+    "ID": "l2.adv.audio_24k",
+    "Layer": "L2",
+    "Weight": 20,
+    "ExpectedHuman": null,
+    "Group": "adv-audio",
+    "Desc": "AudioContext sampleRate 24000 (headless)"
+  },
+  {
+    "ID": "l2.adv.measure_mem_throws",
+    "Layer": "L2",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "adv-mem",
+    "Desc": "measureUserAgentSpecificMemory throws (new-headless)"
+  },
+  {
+    "ID": "l2.adv.mobile_inconsistent",
+    "Layer": "L2",
+    "Weight": 20,
+    "ExpectedHuman": null,
+    "Group": "adv-mobile",
+    "Desc": "mobile UA but desktop sensor/touch profile"
+  },
+  {
+    "ID": "l2.adv.no_media_devices",
+    "Layer": "L2",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "adv-media",
+    "Desc": "no media devices under desktop UA"
+  },
+  {
+    "ID": "l2.adv.no_voices",
+    "Layer": "L2",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "adv-voice",
+    "Desc": "no speech-synthesis voices (headless)"
+  },
+  {
+    "ID": "l2.adv.no_widevine",
+    "Layer": "L2",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "adv-drm",
+    "Desc": "Widevine unsupported under Chrome UA (plain Chromium)"
+  },
+  {
+    "ID": "l2.adv.rtt_zero",
+    "Layer": "L2",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "adv-net",
+    "Desc": "connection.rtt 0 (headless/datacenter)"
+  },
+  {
+    "ID": "l2.adv.webgpu_mismatch",
+    "Layer": "L2",
+    "Weight": 25,
+    "ExpectedHuman": null,
+    "Group": "adv-gpu",
+    "Desc": "WebGL vendor vs WebGPU vendor mismatch"
+  },
+  {
+    "ID": "l2.audio.hash",
+    "Layer": "L2",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "audio",
+    "Desc": "implausible audio hash"
+  },
+  {
+    "ID": "l2.audio.samplerate",
+    "Layer": "L2",
+    "Weight": 6,
+    "ExpectedHuman": null,
+    "Group": "audio",
+    "Desc": "anomalous sampleRate"
+  },
+  {
+    "ID": "l2.canvas.hash",
+    "Layer": "L2",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "canvas",
+    "Desc": "low-entropy/farm canvas hash"
+  },
+  {
+    "ID": "l2.canvas.tampered",
+    "Layer": "L2",
+    "Weight": 15,
+    "ExpectedHuman": false,
+    "Group": "canvas",
+    "Desc": "canvas API not native"
+  },
+  {
+    "ID": "l2.env.adblock",
+    "Layer": "L2",
+    "Weight": 0,
+    "ExpectedHuman": null,
+    "Group": "env",
+    "Desc": "ad-block present (privacy human)"
+  },
+  {
+    "ID": "l2.env.privacy_inconsistent",
+    "Layer": "L2",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "env",
+    "Desc": "claimed privacy posture vs observed blocking mismatch"
+  },
+  {
+    "ID": "l2.env.probe_dead",
+    "Layer": "L2",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "env",
+    "Desc": "environment probe did not execute (no liveness)"
+  },
+  {
+    "ID": "l2.env.tracking_protection",
+    "Layer": "L2",
+    "Weight": 0,
+    "ExpectedHuman": null,
+    "Group": "env",
+    "Desc": "tracking protection present"
+  },
+  {
+    "ID": "l2.font.count",
+    "Layer": "L2",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "font",
+    "Desc": "sparse fonts vs claimed OS"
+  },
+  {
+    "ID": "l2.hardware.concurrency",
+    "Layer": "L2",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "hardware",
+    "Desc": "hardwareConcurrency worker mismatch"
+  },
+  {
+    "ID": "l2.hardware.devicememory",
+    "Layer": "L2",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "hardware",
+    "Desc": "deviceMemory quantization violation"
+  },
+  {
+    "ID": "l2.screen.dpr",
+    "Layer": "L2",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "screen",
+    "Desc": "devicePixelRatio inconsistency"
+  },
+  {
+    "ID": "l2.screen.metrics",
+    "Layer": "L2",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "screen",
+    "Desc": "avail==full / default viewport"
+  },
+  {
+    "ID": "l2.webgl.param_consistency",
+    "Layer": "L2",
+    "Weight": 25,
+    "ExpectedHuman": true,
+    "Group": "webgl",
+    "Desc": "renderer vs params mismatch"
+  },
+  {
+    "ID": "l2.webgl.swiftshader",
+    "Layer": "L2",
+    "Weight": 30,
+    "ExpectedHuman": false,
+    "Group": "webgl",
+    "Desc": "SwiftShader software renderer"
+  },
+  {
+    "ID": "l3.guard.console_disabled",
+    "Layer": "L3",
+    "Weight": 22,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "Console API disabled/non-native (Patchright)"
+  },
+  {
+    "ID": "l3.guard.csp_violation",
+    "Layer": "L3",
+    "Weight": 18,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "server CSP violation report"
+  },
+  {
+    "ID": "l3.guard.eval_used",
+    "Layer": "L3",
+    "Weight": 15,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "eval/indirect-eval/new Function/string setTimeout/dynamic import"
+  },
+  {
+    "ID": "l3.guard.func_ctor",
+    "Layer": "L3",
+    "Weight": 15,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "Function constructor code generation"
+  },
+  {
+    "ID": "l3.guard.native_hooked",
+    "Layer": "L3",
+    "Weight": 25,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "fetch/XHR/JSON/toString monkeypatched"
+  },
+  {
+    "ID": "l3.guard.proto_polluted",
+    "Layer": "L3",
+    "Weight": 25,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "core prototype mutated"
+  },
+  {
+    "ID": "l3.guard.script_injected",
+    "Layer": "L3",
+    "Weight": 20,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "no-nonce script node injected"
+  },
+  {
+    "ID": "l3.guard.trusted_types_off",
+    "Layer": "L3",
+    "Weight": 8,
+    "ExpectedHuman": false,
+    "Group": "guard",
+    "Desc": "Trusted Types unsupported/bypassed"
+  },
+  {
+    "ID": "l3.integrity.error_stack",
+    "Layer": "L3",
+    "Weight": 15,
+    "ExpectedHuman": false,
+    "Group": "integrity",
+    "Desc": "injected script url in stack"
+  },
+  {
+    "ID": "l3.integrity.iframe_recheck",
+    "Layer": "L3",
+    "Weight": 30,
+    "ExpectedHuman": true,
+    "Group": "integrity",
+    "Desc": "iframe realm exposes top-level patch"
+  },
+  {
+    "ID": "l3.integrity.illegal_invocation",
+    "Layer": "L3",
+    "Weight": 20,
+    "ExpectedHuman": true,
+    "Group": "integrity",
+    "Desc": "missing TypeError on illegal invocation"
+  },
+  {
+    "ID": "l3.integrity.native_tostring",
+    "Layer": "L3",
+    "Weight": 30,
+    "ExpectedHuman": true,
+    "Group": "integrity",
+    "Desc": "patched getter non-native"
+  },
+  {
+    "ID": "l3.integrity.proxy",
+    "Layer": "L3",
+    "Weight": 25,
+    "ExpectedHuman": false,
+    "Group": "integrity",
+    "Desc": "proxy-wrapped native"
+  },
+  {
+    "ID": "l3.integrity.worker_recheck",
+    "Layer": "L3",
+    "Weight": 25,
+    "ExpectedHuman": true,
+    "Group": "integrity",
+    "Desc": "worker context value mismatch"
+  },
+  {
+    "ID": "l4.agent.burst_silence",
+    "Layer": "L4",
+    "Weight": 25,
+    "ExpectedHuman": null,
+    "Group": "agent",
+    "Desc": "LLM inference-loop cadence (think-pause -\u003e instant action burst)"
+  },
+  {
+    "ID": "l4.event.no_interaction",
+    "Layer": "L4",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "event",
+    "Desc": "no human interaction over observation window"
+  },
+  {
+    "ID": "l4.event.no_move_click",
+    "Layer": "L4",
+    "Weight": 20,
+    "ExpectedHuman": null,
+    "Group": "event",
+    "Desc": "clicks without movement"
+  },
+  {
+    "ID": "l4.event.perfect_timing",
+    "Layer": "L4",
+    "Weight": 18,
+    "ExpectedHuman": null,
+    "Group": "event",
+    "Desc": "zero-jitter integer-ms timing"
+  },
+  {
+    "ID": "l4.event.untrusted",
+    "Layer": "L4",
+    "Weight": 40,
+    "ExpectedHuman": 0,
+    "Group": "event",
+    "Desc": "isTrusted=false events"
+  },
+  {
+    "ID": "l4.key.dwell_std",
+    "Layer": "L4",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "key",
+    "Desc": "near-zero dwell variance"
+  },
+  {
+    "ID": "l4.key.flight_std",
+    "Layer": "L4",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "key",
+    "Desc": "near-zero flight variance"
+  },
+  {
+    "ID": "l4.key.machine_speed",
+    "Layer": "L4",
+    "Weight": 18,
+    "ExpectedHuman": null,
+    "Group": "agent",
+    "Desc": "machine-speed inter-key latency (\u003c15ms)"
+  },
+  {
+    "ID": "l4.key.paste",
+    "Layer": "L4",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "key",
+    "Desc": "field filled by paste, no keystrokes"
+  },
+  {
+    "ID": "l4.key.zero_dwell_frac",
+    "Layer": "L4",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "key",
+    "Desc": "synthetic zero-dwell keys"
+  },
+  {
+    "ID": "l4.ml.behavioral",
+    "Layer": "L4",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "ml",
+    "Desc": "behavioral model p(bot) (audit/admin)"
+  },
+  {
+    "ID": "l4.mouse.accel_entropy",
+    "Layer": "L4",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "mouse",
+    "Desc": "low acceleration entropy"
+  },
+  {
+    "ID": "l4.mouse.click_no_trajectory",
+    "Layer": "L4",
+    "Weight": 20,
+    "ExpectedHuman": null,
+    "Group": "agent",
+    "Desc": "mouse events only at click time (no approach trajectory)"
+  },
+  {
+    "ID": "l4.mouse.coalesced_synthetic",
+    "Layer": "L4",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "mouse",
+    "Desc": "movement without coalesced sub-events (CDP/OS-injected input)"
+  },
+  {
+    "ID": "l4.mouse.jerk_anomaly",
+    "Layer": "L4",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "mouse",
+    "Desc": "abnormal jerk profile (scripted trajectory)"
+  },
+  {
+    "ID": "l4.mouse.max_teleport",
+    "Layer": "L4",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "mouse",
+    "Desc": "large instantaneous jump"
+  },
+  {
+    "ID": "l4.mouse.samples",
+    "Layer": "L4",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "mouse",
+    "Desc": "click with no preceding move"
+  },
+  {
+    "ID": "l4.mouse.straightness",
+    "Layer": "L4",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "mouse",
+    "Desc": "straightness ~1.0 / fixed"
+  },
+  {
+    "ID": "l4.mouse.velocity_std",
+    "Layer": "L4",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "mouse",
+    "Desc": "near-zero velocity variance"
+  },
+  {
+    "ID": "l4.pointer.scroll_no_wheel",
+    "Layer": "L4",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "pointer",
+    "Desc": "scroll change without wheel"
+  },
+  {
+    "ID": "l4.pointer.touch_mismatch",
+    "Layer": "L4",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "pointer",
+    "Desc": "mobile UA but maxTouchPoints 0"
+  },
+  {
+    "ID": "l5.abuse.flood",
+    "Layer": "L5",
+    "Weight": 45,
+    "ExpectedHuman": null,
+    "Group": "abuse",
+    "Desc": "request flood over hard threshold (DoS/credential-stuffing)"
+  },
+  {
+    "ID": "l5.abuse.rate_exceeded",
+    "Layer": "L5",
+    "Weight": 25,
+    "ExpectedHuman": null,
+    "Group": "abuse",
+    "Desc": "request rate over soft threshold (per fingerprint)"
+  },
+  {
+    "ID": "l5.correlation.fp_churn_proxy",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "correlation",
+    "Desc": "mid-session fingerprintId churn (audit + NET-POLICY)"
+  },
+  {
+    "ID": "l5.correlation.ip_velocity",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "correlation",
+    "Desc": "one fingerprint acquiring /24 subnets abnormally fast — fleet-velocity derivative (audit)"
+  },
+  {
+    "ID": "l5.correlation.proxy_rotation",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "correlation",
+    "Desc": "one fingerprint across many subnets (audit + NET-POLICY)"
+  },
+  {
+    "ID": "l5.correlation.shared_fingerprint",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "correlation",
+    "Desc": "one fingerprint shared by many sessions (audit)"
+  },
+  {
+    "ID": "l5.embed.origin_disallowed",
+    "Layer": "L5",
+    "Weight": 12,
+    "ExpectedHuman": null,
+    "Group": "embed",
+    "Desc": "embed from disallowed origin"
+  },
+  {
+    "ID": "l5.embed.token_stripped",
+    "Layer": "L5",
+    "Weight": 22,
+    "ExpectedHuman": null,
+    "Group": "embed",
+    "Desc": "RIT token absent in embed context"
+  },
+  {
+    "ID": "l5.h2dos.continuation_flood",
+    "Layer": "L5",
+    "Weight": 45,
+    "ExpectedHuman": null,
+    "Group": "abuse",
+    "Desc": "HTTP/2 CONTINUATION flood (no END_HEADERS)"
+  },
+  {
+    "ID": "l5.h2dos.rapid_reset",
+    "Layer": "L5",
+    "Weight": 45,
+    "ExpectedHuman": null,
+    "Group": "abuse",
+    "Desc": "HTTP/2 Rapid Reset (HEADERS then immediate RST_STREAM flood)"
+  },
+  {
+    "ID": "l5.header.accept_encoding",
+    "Layer": "L5",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "header",
+    "Desc": "accept-encoding mismatch"
+  },
+  {
+    "ID": "l5.header.client_ip_spoof",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "proxy",
+    "Desc": "forged CDN/edge client-IP (audit/admin)"
+  },
+  {
+    "ID": "l5.header.forwarded_private",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "header",
+    "Desc": "forwarded client IP is private/reserved (audit/admin)"
+  },
+  {
+    "ID": "l5.header.h2_uppercase",
+    "Layer": "L5",
+    "Weight": 25,
+    "ExpectedHuman": null,
+    "Group": "header",
+    "Desc": "uppercase header in h2 (malformed)"
+  },
+  {
+    "ID": "l5.header.order",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "header",
+    "Desc": "header order vs claimed browser"
+  },
+  {
+    "ID": "l5.header.proxy_hop",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "proxy",
+    "Desc": "forward-proxy hop residual (audit/admin)"
+  },
+  {
+    "ID": "l5.header.sec_fetch_missing",
+    "Layer": "L5",
+    "Weight": 25,
+    "ExpectedHuman": null,
+    "Group": "header",
+    "Desc": "Chrome UA but sec-fetch missing"
+  },
+  {
+    "ID": "l5.header.xff_multi_hop",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "proxy",
+    "Desc": "multi-hop XFF chain (audit/admin)"
+  },
+  {
+    "ID": "l5.http.browser_tls_over_h1",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "http",
+    "Desc": "browser TLS fingerprint delivered over HTTP/1.1 (audit/admin)"
+  },
+  {
+    "ID": "l5.http2.browser_settings_atypical",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "http2",
+    "Desc": "browser HTTP/2 pseudo-order with a non-browser SETTINGS profile (audit/admin)"
+  },
+  {
+    "ID": "l5.http2.engine_mismatch",
+    "Layer": "L5",
+    "Weight": 30,
+    "ExpectedHuman": null,
+    "Group": "http2",
+    "Desc": "h2 profile engine vs UA"
+  },
+  {
+    "ID": "l5.http2.flow_control_atypical",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "http2",
+    "Desc": "browser HTTP/2 pseudo-order with a gigabyte flow-control window (audit/admin)"
+  },
+  {
+    "ID": "l5.http2.priority_atypical",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "http2",
+    "Desc": "browser HTTP/2 pseudo-order with no priority signal (audit/admin)"
+  },
+  {
+    "ID": "l5.http2.unknown_under_browser",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "http2",
+    "Desc": "browser UA over an unclassifiable HTTP/2 profile (audit/admin)"
+  },
+  {
+    "ID": "l5.ip.datacenter_asn",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "ip",
+    "Desc": "datacenter/hosting ASN (audit/admin)"
+  },
+  {
+    "ID": "l5.ip.proxy_vpn_tor",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "ip",
+    "Desc": "proxy/vpn exit (audit/admin)"
+  },
+  {
+    "ID": "l5.ip.tor_exit",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "ip",
+    "Desc": "Tor exit relay (audit/admin)"
+  },
+  {
+    "ID": "l5.media.hotlink",
+    "Layer": "L5",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "media",
+    "Desc": "external referer media fetch"
+  },
+  {
+    "ID": "l5.media.no_playback_fetch",
+    "Layer": "L5",
+    "Weight": 18,
+    "ExpectedHuman": null,
+    "Group": "media",
+    "Desc": "full media fetched without playback"
+  },
+  {
+    "ID": "l5.media.range_storm",
+    "Layer": "L5",
+    "Weight": 25,
+    "ExpectedHuman": null,
+    "Group": "media",
+    "Desc": "parallel Range request storm"
+  },
+  {
+    "ID": "l5.proxy.anon_chain",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "proxy",
+    "Desc": "≥4-hop anon open-proxy chain (audit/admin)"
+  },
+  {
+    "ID": "l5.proxy.tor_circuit",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "proxy",
+    "Desc": "≥3-hop XFF Tor-class path (audit/admin)"
+  },
+  {
+    "ID": "l5.proxy.vpn_webrtc_leak",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "proxy",
+    "Desc": "WebRTC≠TCP VPN leak (audit/admin)"
+  },
+  {
+    "ID": "l5.resource.hotlink",
+    "Layer": "L5",
+    "Weight": 8,
+    "ExpectedHuman": null,
+    "Group": "resource",
+    "Desc": "external referer resource fetch"
+  },
+  {
+    "ID": "l5.resource.mass_fetch",
+    "Layer": "L5",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "resource",
+    "Desc": "many resources in short window"
+  },
+  {
+    "ID": "l5.resource.no_referer",
+    "Layer": "L5",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "resource",
+    "Desc": "direct resource fetch, no navigation"
+  },
+  {
+    "ID": "l5.resource.rit_absent",
+    "Layer": "L5",
+    "Weight": 20,
+    "ExpectedHuman": null,
+    "Group": "resource",
+    "Desc": "resource fetch without RIT"
+  },
+  {
+    "ID": "l5.rit.absent",
+    "Layer": "L5",
+    "Weight": 30,
+    "ExpectedHuman": null,
+    "Group": "rit",
+    "Desc": "no RIT token on API call"
+  },
+  {
+    "ID": "l5.rit.body_mismatch",
+    "Layer": "L5",
+    "Weight": 35,
+    "ExpectedHuman": null,
+    "Group": "rit",
+    "Desc": "body hash mismatch (fetch hook)"
+  },
+  {
+    "ID": "l5.rit.bootstrap",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "rit",
+    "Desc": "first-request token grace (one-shot)"
+  },
+  {
+    "ID": "l5.rit.header_tampered",
+    "Layer": "L5",
+    "Weight": 40,
+    "ExpectedHuman": null,
+    "Group": "rit",
+    "Desc": "signed headers != observed"
+  },
+  {
+    "ID": "l5.rit.invalid_hmac",
+    "Layer": "L5",
+    "Weight": 35,
+    "ExpectedHuman": null,
+    "Group": "rit",
+    "Desc": "RIT HMAC invalid"
+  },
+  {
+    "ID": "l5.rit.ok",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "rit",
+    "Desc": "valid RIT token (no tamper)"
+  },
+  {
+    "ID": "l5.rit.stale_replay",
+    "Layer": "L5",
+    "Weight": 30,
+    "ExpectedHuman": null,
+    "Group": "rit",
+    "Desc": "RIT counter/timebucket out of window"
+  },
+  {
+    "ID": "l5.tcp.mss",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tcp",
+    "Desc": "TCP MSS option (audit)"
+  },
+  {
+    "ID": "l5.tcp.not_observed",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tcp",
+    "Desc": "TCP L4 plane inactive (no SYN/PROXY TLV)"
+  },
+  {
+    "ID": "l5.tcp.ttl",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tcp",
+    "Desc": "observed IP TTL (audit)"
+  },
+  {
+    "ID": "l5.tcp.ttl_os",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tcp",
+    "Desc": "TTL/OS vs UA OS mismatch (audit/admin)"
+  },
+  {
+    "ID": "l5.tcp.window",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tcp",
+    "Desc": "TCP initial window (audit)"
+  },
+  {
+    "ID": "l5.tls.alps_absent",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tls",
+    "Desc": "Chromium UA over h2 without the ALPS extension"
+  },
+  {
+    "ID": "l5.tls.cert_compression_absent",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tls",
+    "Desc": "browser UA over h2 without certificate compression"
+  },
+  {
+    "ID": "l5.tls.ech_absent",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tls",
+    "Desc": "ECH-era browser UA over h2 without Encrypted Client Hello"
+  },
+  {
+    "ID": "l5.tls.grease_absent",
+    "Layer": "L5",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "tls",
+    "Desc": "no GREASE (non-browser)"
+  },
+  {
+    "ID": "l5.tls.ja3",
+    "Layer": "L5",
+    "Weight": 2,
+    "ExpectedHuman": null,
+    "Group": "tls",
+    "Desc": "JA3 (compat/logging)"
+  },
+  {
+    "ID": "l5.tls.ja4_engine",
+    "Layer": "L5",
+    "Weight": 30,
+    "ExpectedHuman": null,
+    "Group": "tls",
+    "Desc": "JA4 engine vs UA"
+  },
+  {
+    "ID": "l5.tls.not_observed",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tls",
+    "Desc": "no ClientHello captured (network plane inactive)"
+  },
+  {
+    "ID": "l5.tls.pq_keyshare",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "tls",
+    "Desc": "missing PQ keyshare for claimed Chrome"
+  },
+  {
+    "ID": "l5.traffic.alpn_flap",
+    "Layer": "L5",
+    "Weight": 10,
+    "ExpectedHuman": null,
+    "Group": "traffic",
+    "Desc": "unstable ALPN across requests"
+  },
+  {
+    "ID": "l5.traffic.engine_rotation",
+    "Layer": "L5",
+    "Weight": 40,
+    "ExpectedHuman": null,
+    "Group": "traffic",
+    "Desc": "TLS engine family changed mid-session"
+  },
+  {
+    "ID": "l5.traffic.header_order_shift",
+    "Layer": "L5",
+    "Weight": 18,
+    "ExpectedHuman": null,
+    "Group": "traffic",
+    "Desc": "header order changed under same UA"
+  },
+  {
+    "ID": "l5.traffic.ip_hop",
+    "Layer": "L5",
+    "Weight": 0,
+    "ExpectedHuman": true,
+    "Group": "traffic",
+    "Desc": "remote IP /24 changed mid-session (audit/admin)"
+  },
+  {
+    "ID": "l5.traffic.ja4_rotation",
+    "Layer": "L5",
+    "Weight": 35,
+    "ExpectedHuman": null,
+    "Group": "traffic",
+    "Desc": "JA4 fingerprint changed mid-session"
+  },
+  {
+    "ID": "l5.traffic.proto_downgrade",
+    "Layer": "L5",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "traffic",
+    "Desc": "repeated h2-\u003eh1 downgrade"
+  },
+  {
+    "ID": "l5.traffic.tls_no_permutation",
+    "Layer": "L5",
+    "Weight": 30,
+    "ExpectedHuman": null,
+    "Group": "traffic",
+    "Desc": "Chrome TLS extension order never permutes (static parrot)"
+  },
+  {
+    "ID": "l5.traffic.ua_rotation",
+    "Layer": "L5",
+    "Weight": 30,
+    "ExpectedHuman": null,
+    "Group": "traffic",
+    "Desc": "User-Agent changed mid-session"
+  },
+  {
+    "ID": "l7.pass.flood",
+    "Layer": "L7",
+    "Weight": 45,
+    "ExpectedHuman": null,
+    "Group": "pass",
+    "Desc": "Pass challenge/solve flood (mass automation)"
+  },
+  {
+    "ID": "l7.pass.solved",
+    "Layer": "L7",
+    "Weight": 0,
+    "ExpectedHuman": null,
+    "Group": "pass",
+    "Desc": "humanymous Pass cleared (trust upgrade)"
+  },
+  {
+    "ID": "l7.pass.velocity",
+    "Layer": "L7",
+    "Weight": 25,
+    "ExpectedHuman": null,
+    "Group": "pass",
+    "Desc": "elevated Pass challenge/solve velocity (automation cadence)"
+  },
+  {
+    "ID": "l7.pow.failed",
+    "Layer": "L7",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "pow",
+    "Desc": "invalid/expired PoW solution"
+  },
+  {
+    "ID": "l7.pow.refused",
+    "Layer": "L7",
+    "Weight": 15,
+    "ExpectedHuman": null,
+    "Group": "pow",
+    "Desc": "PoW challenge ignored"
+  },
+  {
+    "ID": "l7.pow.solved",
+    "Layer": "L7",
+    "Weight": 0,
+    "ExpectedHuman": null,
+    "Group": "pow",
+    "Desc": "valid PoW solution (trust upgrade)"
+  },
+  {
+    "ID": "l7.pow.too_fast",
+    "Layer": "L7",
+    "Weight": 30,
+    "ExpectedHuman": null,
+    "Group": "pow",
+    "Desc": "PoW solved faster than JS-on-claimed-hardware (native/GPU solver)"
+  }
+]

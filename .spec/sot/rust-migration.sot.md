@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-06T19:40:11Z
+updated: 2026-11-06T20:40:50Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -32,6 +32,13 @@ context is proven equivalent. A Rust wrapper around Go is not completion.
   module. Use request, credentials, administration and configuration submodules.
 - Composition roots only wire services. Detection owns verdict computation;
   enforcement consumes it and never duplicates scoring.
+- Do not duplicate features, create parallel implementations inside Rust, or
+  fragment cohesive code into forwarding-only modules. Each responsibility has
+  one owning implementation and one contract; all consumers reuse it. Extract
+  shared code when repeated semantics justify it, within the context that owns
+  those semantics. File/crate boundaries need a responsibility or dependency reason.
+  Standard lib.rs/mod.rs namespace facades are allowed; redundant forwarding
+  functions and artificial modules without a boundary responsibility are not.
 - Keep pure transforms separate from I/O, clocks and randomness. Inject these
   dependencies at boundaries. Avoid unsafe code unless separately justified.
 - Unit tests are mandatory for every implemented responsibility and negative
@@ -65,10 +72,15 @@ private working notes and raw local evidence and is gitignored. Do not copy keys
 tokens or personal data into either tier. Historical SoT references remain
 provenance; unavailable `sots/` contents must not be invented or claimed imported.
 
-Rebuild public docs using `modootoday/jekyll-theme-modootoday`, pinned dependencies,
-plain Markdown, standard GitHub Pages hosting and the theme's source/built-site
-checker. The latest user objective replaces the earlier Actions-specific wording;
-use the theme's supported Pages configuration and validate the published site.
+Rebuild public docs as authored Markdown using pinned
+`remote_theme: modootoday/jekyll-theme-modootoday@<reviewed tag or commit>` and
+standard GitHub Pages configuration. Do not generate documentation content using
+the legacy docsgen scripts. Migrate existing design tokens to the theme's supported
+token overrides. Validate source and built site with the theme checker. GitHub
+Actions must enforce documentation freshness before releases and build/test across
+Linux, macOS and Windows. Design and implement crates.io Trusted Publishing through
+OIDC, preserving least-privilege job permissions and protected release environments.
+No long-lived crates.io token is a substitute for the requested OIDC release path.
 Documentation must describe verified shipped behavior, with English public prose.
 
 ### Completion and integration

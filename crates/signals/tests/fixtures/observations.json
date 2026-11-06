@@ -1,0 +1,2451 @@
+[
+  {
+    "id": "l1.artifact.phantom",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 30,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.artifact.playwright",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 40,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.artifact.selenium",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 40,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.cdp.proxy_leak",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 8,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.cdp.runtime_enable",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 12,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.navigator.languages_empty",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.navigator.pdfviewer",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 6,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.navigator.plugins_empty",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.permissions.mismatch",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 18,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.ua.headless_token",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 25,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.window.chrome_missing",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 8,
+    "score": 1,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l1.window.outer_eq_inner",
+    "layer": "L1",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 10,
+    "score": 2.5,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.audio_24k",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 20,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.measure_mem_throws",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 10,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.mobile_inconsistent",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 20,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.no_media_devices",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 12,
+    "score": 6,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.no_voices",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 12,
+    "score": 12,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.no_widevine",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 12,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.rtt_zero",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 12,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.adv.webgpu_mismatch",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 25,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.audio.hash",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 8,
+    "score": 4,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.audio.samplerate",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 6,
+    "score": 6,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.canvas.hash",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 10,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.canvas.tampered",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.env.adblock",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.env.privacy_inconsistent",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 12,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.env.probe_dead",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 10,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.env.tracking_protection",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.font.count",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 12,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.hardware.concurrency",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.hardware.devicememory",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.screen.dpr",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 10,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.screen.metrics",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 12,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.webgl.param_consistency",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "future",
+    "weight": 25,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l2.webgl.swiftshader",
+    "layer": "L2",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 30,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.console_disabled",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 22,
+    "score": 2.75,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.csp_violation",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 18,
+    "score": 4.5,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.eval_used",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.func_ctor",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.native_hooked",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 25,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.proto_polluted",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 25,
+    "score": 12.5,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.script_injected",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 20,
+    "score": 20,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.guard.trusted_types_off",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 8,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.integrity.error_stack",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.integrity.iframe_recheck",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 30,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.integrity.illegal_invocation",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 20,
+    "score": 10,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.integrity.native_tostring",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 30,
+    "score": 30,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.integrity.proxy",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 25,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l3.integrity.worker_recheck",
+    "layer": "L3",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "future",
+    "weight": 25,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.agent.burst_silence",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 25,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.event.no_interaction",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 15,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.event.no_move_click",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 20,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.event.perfect_timing",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 18,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.event.untrusted",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": 0,
+    "verdict": "future",
+    "weight": 40,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.key.dwell_std",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 10,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.key.flight_std",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.key.machine_speed",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 18,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.key.paste",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.key.zero_dwell_frac",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.ml.behavioral",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.accel_entropy",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 8,
+    "score": 1,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.click_no_trajectory",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 20,
+    "score": 5,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.coalesced_synthetic",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.jerk_anomaly",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.max_teleport",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 10,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.samples",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 8,
+    "score": 4,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.straightness",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 12,
+    "score": 12,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.mouse.velocity_std",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 10,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.pointer.scroll_no_wheel",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 12,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l4.pointer.touch_mismatch",
+    "layer": "L4",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 12,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.abuse.flood",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 45,
+    "score": 22.5,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.abuse.rate_exceeded",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 25,
+    "score": 25,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.correlation.fp_churn_proxy",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.correlation.ip_velocity",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.correlation.proxy_rotation",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.correlation.shared_fingerprint",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.embed.origin_disallowed",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 12,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.embed.token_stripped",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 22,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.h2dos.continuation_flood",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 45,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.h2dos.rapid_reset",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 45,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.accept_encoding",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 8,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.client_ip_spoof",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.forwarded_private",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.h2_uppercase",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 25,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.order",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.proxy_hop",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.sec_fetch_missing",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 25,
+    "score": 6.25,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.header.xff_multi_hop",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.http.browser_tls_over_h1",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.http2.browser_settings_atypical",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.http2.engine_mismatch",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 30,
+    "score": 15,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.http2.flow_control_atypical",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.http2.priority_atypical",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.http2.unknown_under_browser",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.ip.datacenter_asn",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.ip.proxy_vpn_tor",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.ip.tor_exit",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.media.hotlink",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 10,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.media.no_playback_fetch",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 18,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.media.range_storm",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 25,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.proxy.anon_chain",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.proxy.tor_circuit",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.proxy.vpn_webrtc_leak",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.resource.hotlink",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 8,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.resource.mass_fetch",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.resource.no_referer",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 10,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.resource.rit_absent",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 20,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.rit.absent",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 30,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.rit.body_mismatch",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 35,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.rit.bootstrap",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.rit.header_tampered",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 40,
+    "score": 5,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.rit.invalid_hmac",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 35,
+    "score": 8.75,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.rit.ok",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.rit.stale_replay",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 30,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tcp.mss",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tcp.not_observed",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tcp.ttl",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tcp.ttl_os",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tcp.window",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.alps_absent",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.cert_compression_absent",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.ech_absent",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.grease_absent",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.ja3",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 2,
+    "score": 0,
+    "confidence": 2,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.ja4_engine",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 30,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.not_observed",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.tls.pq_keyshare",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.alpn_flap",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 10,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.engine_rotation",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 40,
+    "score": 0,
+    "confidence": -1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.header_order_shift",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 18,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.ip_hop",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "expectedHuman": true,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.ja4_rotation",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 35,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.proto_downgrade",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.tls_no_permutation",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 30,
+    "score": 0,
+    "confidence": 0,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l5.traffic.ua_rotation",
+    "layer": "L5",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 30,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l7.pass.flood",
+    "layer": "L7",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 45,
+    "score": 5.625,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l7.pass.solved",
+    "layer": "L7",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l7.pass.velocity",
+    "layer": "L7",
+    "value": {
+      "observed": true
+    },
+    "verdict": "UNKNOWN",
+    "weight": 25,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l7.pow.failed",
+    "layer": "L7",
+    "value": {
+      "observed": true
+    },
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l7.pow.refused",
+    "layer": "L7",
+    "value": {
+      "observed": true
+    },
+    "verdict": "OK",
+    "weight": 15,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l7.pow.solved",
+    "layer": "L7",
+    "value": {
+      "observed": true
+    },
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l7.pow.too_fast",
+    "layer": "L7",
+    "value": {
+      "observed": true
+    },
+    "verdict": "BOT",
+    "weight": 30,
+    "score": 30,
+    "confidence": 1,
+    "collected": "server",
+    "notes": "oracle"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "OK",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "SUSPICIOUS",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "BOT",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "UNKNOWN",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l9.migration.unknown",
+    "layer": "",
+    "value": null,
+    "verdict": "future",
+    "weight": 0,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 15,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 15,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "OK",
+    "weight": 15,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 15,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 15,
+    "score": 1.875,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 15,
+    "score": 7.5,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "SUSPICIOUS",
+    "weight": 15,
+    "score": 7.5,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 15,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 15,
+    "score": 3.75,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 15,
+    "score": 15,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "BOT",
+    "weight": 15,
+    "score": 15,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "UNKNOWN",
+    "weight": 15,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": -1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 0.25,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 1,
+    "collected": "wasm"
+  },
+  {
+    "id": "l1.navigator.webdriver",
+    "layer": "L1",
+    "value": null,
+    "expectedHuman": false,
+    "verdict": "future",
+    "weight": 15,
+    "score": 0,
+    "confidence": 2,
+    "collected": "wasm"
+  }
+]

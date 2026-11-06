@@ -1,0 +1,1153 @@
+[
+  {
+    "kind": "zero",
+    "input": {
+      "sessionId": "",
+      "ts": "0001-01-01T00:00:00Z",
+      "client": {
+        "sessionId": "",
+        "userAgent": "",
+        "uaClientHints": {
+          "mobile": false
+        },
+        "signals": null,
+        "behavior": {
+          "mouse": {
+            "samples": 0,
+            "meanCurvature": 0,
+            "velocityStdDev": 0,
+            "accelEntropy": 0,
+            "straightLineFrac": 0,
+            "pauseCount": 0,
+            "maxTeleportPx": 0,
+            "meanJerk": 0,
+            "coalescedRatio": 0
+          },
+          "key": {
+            "keystrokes": 0,
+            "meanDwellMs": 0,
+            "dwellStdDevMs": 0,
+            "meanFlightMs": 0,
+            "flightStdDevMs": 0,
+            "pasteEvents": 0,
+            "zeroDwellFrac": 0
+          },
+          "events": {
+            "totalEvents": 0,
+            "untrustedFrac": 0,
+            "noMoveClicks": 0,
+            "syntheticFlags": 0,
+            "clickCount": 0,
+            "longGapCount": 0,
+            "burstVarMs": 0,
+            "minReactionMs": 0
+          },
+          "durationS": 0
+        },
+        "environment": {
+          "probed": false,
+          "adBlock": false,
+          "trackingProtection": false,
+          "doNotTrack": "",
+          "gpc": false,
+          "collectorBlocked": false,
+          "braveShields": false
+        },
+        "guard": {
+          "reported": false,
+          "evalUsed": 0,
+          "funcCtor": 0,
+          "scriptInjected": 0,
+          "protoPolluted": false,
+          "nativeHooked": false,
+          "consoleDisabled": false
+        },
+        "advanced": {
+          "probed": false,
+          "mediaDeviceCount": 0,
+          "hasAudioInput": false,
+          "hasVideoInput": false,
+          "voiceCount": 0,
+          "widevineSupported": false,
+          "webgpuPresent": false,
+          "webgpuVendor": "",
+          "webgpuFallback": false,
+          "webglVendor": "",
+          "audioSampleRate": 0,
+          "connectionPresent": false,
+          "connectionRtt": 0,
+          "batteryPresent": false,
+          "batteryLevel": 0,
+          "batteryCharging": false,
+          "timezoneIana": "",
+          "timezoneOffsetMin": 0,
+          "language": "",
+          "colorGamut": "",
+          "dynamicRange": "",
+          "pointerCoarse": false,
+          "maxTouchPoints": 0,
+          "perfMemoryPresent": false,
+          "measureMemThrows": false,
+          "mobileUA": false
+        },
+        "fingerprintId": "",
+        "engineVersion": ""
+      },
+      "network": {
+        "ja3": "",
+        "ja3Text": "",
+        "ja4": "",
+        "secFetchPresent": false,
+        "secChUaPresent": false,
+        "signals": null
+      },
+      "crosschecks": null,
+      "scoring": {
+        "riskScore": 0,
+        "verdict": "",
+        "topContributors": null,
+        "policyVersion": ""
+      }
+    },
+    "expected": {
+      "sessionId": "",
+      "ts": "0001-01-01T00:00:00Z",
+      "client": {
+        "sessionId": "",
+        "userAgent": "",
+        "uaClientHints": {
+          "mobile": false
+        },
+        "signals": null,
+        "behavior": {
+          "mouse": {
+            "samples": 0,
+            "meanCurvature": 0,
+            "velocityStdDev": 0,
+            "accelEntropy": 0,
+            "straightLineFrac": 0,
+            "pauseCount": 0,
+            "maxTeleportPx": 0,
+            "meanJerk": 0,
+            "coalescedRatio": 0
+          },
+          "key": {
+            "keystrokes": 0,
+            "meanDwellMs": 0,
+            "dwellStdDevMs": 0,
+            "meanFlightMs": 0,
+            "flightStdDevMs": 0,
+            "pasteEvents": 0,
+            "zeroDwellFrac": 0
+          },
+          "events": {
+            "totalEvents": 0,
+            "untrustedFrac": 0,
+            "noMoveClicks": 0,
+            "syntheticFlags": 0,
+            "clickCount": 0,
+            "longGapCount": 0,
+            "burstVarMs": 0,
+            "minReactionMs": 0
+          },
+          "durationS": 0
+        },
+        "environment": {
+          "probed": false,
+          "adBlock": false,
+          "trackingProtection": false,
+          "doNotTrack": "",
+          "gpc": false,
+          "collectorBlocked": false,
+          "braveShields": false
+        },
+        "guard": {
+          "reported": false,
+          "evalUsed": 0,
+          "funcCtor": 0,
+          "scriptInjected": 0,
+          "protoPolluted": false,
+          "nativeHooked": false,
+          "consoleDisabled": false
+        },
+        "advanced": {
+          "probed": false,
+          "mediaDeviceCount": 0,
+          "hasAudioInput": false,
+          "hasVideoInput": false,
+          "voiceCount": 0,
+          "widevineSupported": false,
+          "webgpuPresent": false,
+          "webgpuVendor": "",
+          "webgpuFallback": false,
+          "webglVendor": "",
+          "audioSampleRate": 0,
+          "connectionPresent": false,
+          "connectionRtt": 0,
+          "batteryPresent": false,
+          "batteryLevel": 0,
+          "batteryCharging": false,
+          "timezoneIana": "",
+          "timezoneOffsetMin": 0,
+          "language": "",
+          "colorGamut": "",
+          "dynamicRange": "",
+          "pointerCoarse": false,
+          "maxTouchPoints": 0,
+          "perfMemoryPresent": false,
+          "measureMemThrows": false,
+          "mobileUA": false
+        },
+        "fingerprintId": "",
+        "engineVersion": ""
+      },
+      "network": {
+        "ja3": "",
+        "ja3Text": "",
+        "ja4": "",
+        "secFetchPresent": false,
+        "secChUaPresent": false,
+        "signals": null
+      },
+      "crosschecks": null,
+      "scoring": {
+        "riskScore": 0,
+        "verdict": "",
+        "topContributors": null,
+        "policyVersion": ""
+      }
+    }
+  },
+  {
+    "kind": "populated",
+    "input": {
+      "sessionId": "sample",
+      "ts": "2026-11-07T04:00:00.000009+09:00",
+      "client": {
+        "sessionId": "sample",
+        "userAgent": "sample",
+        "uaClientHints": {
+          "brands": [
+            {
+              "brand": "sample",
+              "version": "sample"
+            }
+          ],
+          "fullVersionList": [
+            {
+              "brand": "sample",
+              "version": "sample"
+            }
+          ],
+          "mobile": true,
+          "platform": "sample",
+          "platformVersion": "sample",
+          "architecture": "sample",
+          "bitness": "sample",
+          "model": "sample"
+        },
+        "signals": [
+          {
+            "id": "sample",
+            "layer": "sample",
+            "value": {
+              "sample": true
+            },
+            "expectedHuman": {
+              "sample": true
+            },
+            "verdict": "sample",
+            "weight": 7.25,
+            "score": 7.25,
+            "confidence": 7.25,
+            "collected": "sample",
+            "notes": "sample"
+          }
+        ],
+        "behavior": {
+          "mouse": {
+            "samples": 7,
+            "meanCurvature": 7.25,
+            "velocityStdDev": 7.25,
+            "accelEntropy": 7.25,
+            "straightLineFrac": 7.25,
+            "pauseCount": 7,
+            "maxTeleportPx": 7.25,
+            "meanJerk": 7.25,
+            "coalescedRatio": 7.25
+          },
+          "key": {
+            "keystrokes": 7,
+            "meanDwellMs": 7.25,
+            "dwellStdDevMs": 7.25,
+            "meanFlightMs": 7.25,
+            "flightStdDevMs": 7.25,
+            "pasteEvents": 7,
+            "zeroDwellFrac": 7.25
+          },
+          "events": {
+            "totalEvents": 7,
+            "untrustedFrac": 7.25,
+            "noMoveClicks": 7,
+            "syntheticFlags": 7,
+            "clickCount": 7,
+            "longGapCount": 7,
+            "burstVarMs": 7.25,
+            "minReactionMs": 7.25
+          },
+          "durationS": 7.25
+        },
+        "environment": {
+          "probed": true,
+          "adBlock": true,
+          "trackingProtection": true,
+          "doNotTrack": "sample",
+          "gpc": true,
+          "collectorBlocked": true,
+          "braveShields": true
+        },
+        "guard": {
+          "reported": true,
+          "evalUsed": 7,
+          "funcCtor": 7,
+          "scriptInjected": 7,
+          "protoPolluted": true,
+          "nativeHooked": true,
+          "consoleDisabled": true
+        },
+        "advanced": {
+          "probed": true,
+          "mediaDeviceCount": 7,
+          "hasAudioInput": true,
+          "hasVideoInput": true,
+          "voiceCount": 7,
+          "widevineSupported": true,
+          "webgpuPresent": true,
+          "webgpuVendor": "sample",
+          "webgpuFallback": true,
+          "webglVendor": "sample",
+          "audioSampleRate": 7.25,
+          "connectionPresent": true,
+          "connectionRtt": 7.25,
+          "batteryPresent": true,
+          "batteryLevel": 7.25,
+          "batteryCharging": true,
+          "timezoneIana": "sample",
+          "timezoneOffsetMin": 7,
+          "language": "sample",
+          "colorGamut": "sample",
+          "dynamicRange": "sample",
+          "pointerCoarse": true,
+          "maxTouchPoints": 7,
+          "perfMemoryPresent": true,
+          "measureMemThrows": true,
+          "mobileUA": true,
+          "webrtcHostAddrs": [
+            "sample"
+          ],
+          "webrtcPublicAddrs": [
+            "sample"
+          ]
+        },
+        "fingerprintId": "sample",
+        "engineVersion": "sample"
+      },
+      "network": {
+        "ja3": "sample",
+        "ja3Text": "sample",
+        "ja4": "sample",
+        "ja4Raw": "sample",
+        "ja4Engine": "sample",
+        "h2Engine": "sample",
+        "akamaiH2": "sample",
+        "secFetchPresent": true,
+        "secChUaPresent": true,
+        "h2Settings": {
+          "sample": 7
+        },
+        "pseudoHeaderOrder": [
+          "sample"
+        ],
+        "headerOrder": [
+          "sample"
+        ],
+        "tlsVersion": "sample",
+        "negotiatedAlpn": "sample",
+        "signals": [
+          {
+            "id": "sample",
+            "layer": "sample",
+            "value": {
+              "sample": true
+            },
+            "expectedHuman": {
+              "sample": true
+            },
+            "verdict": "sample",
+            "weight": 7.25,
+            "score": 7.25,
+            "confidence": 7.25,
+            "collected": "sample",
+            "notes": "sample"
+          }
+        ]
+      },
+      "crosschecks": [
+        {
+          "id": "sample",
+          "inputs": [
+            "sample"
+          ],
+          "claim": "sample",
+          "observed": "sample",
+          "consistent": true,
+          "weight": 7.25,
+          "score": 7.25,
+          "notes": "sample"
+        }
+      ],
+      "scoring": {
+        "riskScore": 7.25,
+        "verdict": "sample",
+        "hardRuleFired": "sample",
+        "topContributors": [
+          {
+            "id": "sample",
+            "score": 7.25
+          }
+        ],
+        "policyVersion": "sample"
+      },
+      "label": "sample"
+    },
+    "expected": {
+      "sessionId": "sample",
+      "ts": "2026-11-07T04:00:00.000009+09:00",
+      "client": {
+        "sessionId": "sample",
+        "userAgent": "sample",
+        "uaClientHints": {
+          "brands": [
+            {
+              "brand": "sample",
+              "version": "sample"
+            }
+          ],
+          "fullVersionList": [
+            {
+              "brand": "sample",
+              "version": "sample"
+            }
+          ],
+          "mobile": true,
+          "platform": "sample",
+          "platformVersion": "sample",
+          "architecture": "sample",
+          "bitness": "sample",
+          "model": "sample"
+        },
+        "signals": [
+          {
+            "id": "sample",
+            "layer": "sample",
+            "value": {
+              "sample": true
+            },
+            "expectedHuman": {
+              "sample": true
+            },
+            "verdict": "sample",
+            "weight": 7.25,
+            "score": 7.25,
+            "confidence": 7.25,
+            "collected": "sample",
+            "notes": "sample"
+          }
+        ],
+        "behavior": {
+          "mouse": {
+            "samples": 7,
+            "meanCurvature": 7.25,
+            "velocityStdDev": 7.25,
+            "accelEntropy": 7.25,
+            "straightLineFrac": 7.25,
+            "pauseCount": 7,
+            "maxTeleportPx": 7.25,
+            "meanJerk": 7.25,
+            "coalescedRatio": 7.25
+          },
+          "key": {
+            "keystrokes": 7,
+            "meanDwellMs": 7.25,
+            "dwellStdDevMs": 7.25,
+            "meanFlightMs": 7.25,
+            "flightStdDevMs": 7.25,
+            "pasteEvents": 7,
+            "zeroDwellFrac": 7.25
+          },
+          "events": {
+            "totalEvents": 7,
+            "untrustedFrac": 7.25,
+            "noMoveClicks": 7,
+            "syntheticFlags": 7,
+            "clickCount": 7,
+            "longGapCount": 7,
+            "burstVarMs": 7.25,
+            "minReactionMs": 7.25
+          },
+          "durationS": 7.25
+        },
+        "environment": {
+          "probed": true,
+          "adBlock": true,
+          "trackingProtection": true,
+          "doNotTrack": "sample",
+          "gpc": true,
+          "collectorBlocked": true,
+          "braveShields": true
+        },
+        "guard": {
+          "reported": true,
+          "evalUsed": 7,
+          "funcCtor": 7,
+          "scriptInjected": 7,
+          "protoPolluted": true,
+          "nativeHooked": true,
+          "consoleDisabled": true
+        },
+        "advanced": {
+          "probed": true,
+          "mediaDeviceCount": 7,
+          "hasAudioInput": true,
+          "hasVideoInput": true,
+          "voiceCount": 7,
+          "widevineSupported": true,
+          "webgpuPresent": true,
+          "webgpuVendor": "sample",
+          "webgpuFallback": true,
+          "webglVendor": "sample",
+          "audioSampleRate": 7.25,
+          "connectionPresent": true,
+          "connectionRtt": 7.25,
+          "batteryPresent": true,
+          "batteryLevel": 7.25,
+          "batteryCharging": true,
+          "timezoneIana": "sample",
+          "timezoneOffsetMin": 7,
+          "language": "sample",
+          "colorGamut": "sample",
+          "dynamicRange": "sample",
+          "pointerCoarse": true,
+          "maxTouchPoints": 7,
+          "perfMemoryPresent": true,
+          "measureMemThrows": true,
+          "mobileUA": true,
+          "webrtcHostAddrs": [
+            "sample"
+          ],
+          "webrtcPublicAddrs": [
+            "sample"
+          ]
+        },
+        "fingerprintId": "sample",
+        "engineVersion": "sample"
+      },
+      "network": {
+        "ja3": "sample",
+        "ja3Text": "sample",
+        "ja4": "sample",
+        "ja4Raw": "sample",
+        "ja4Engine": "sample",
+        "h2Engine": "sample",
+        "akamaiH2": "sample",
+        "secFetchPresent": true,
+        "secChUaPresent": true,
+        "h2Settings": {
+          "sample": 7
+        },
+        "pseudoHeaderOrder": [
+          "sample"
+        ],
+        "headerOrder": [
+          "sample"
+        ],
+        "tlsVersion": "sample",
+        "negotiatedAlpn": "sample",
+        "signals": [
+          {
+            "id": "sample",
+            "layer": "sample",
+            "value": {
+              "sample": true
+            },
+            "expectedHuman": {
+              "sample": true
+            },
+            "verdict": "sample",
+            "weight": 7.25,
+            "score": 7.25,
+            "confidence": 7.25,
+            "collected": "sample",
+            "notes": "sample"
+          }
+        ]
+      },
+      "crosschecks": [
+        {
+          "id": "sample",
+          "inputs": [
+            "sample"
+          ],
+          "claim": "sample",
+          "observed": "sample",
+          "consistent": true,
+          "weight": 7.25,
+          "score": 7.25,
+          "notes": "sample"
+        }
+      ],
+      "scoring": {
+        "riskScore": 7.25,
+        "verdict": "sample",
+        "hardRuleFired": "sample",
+        "topContributors": [
+          {
+            "id": "sample",
+            "score": 7.25
+          }
+        ],
+        "policyVersion": "sample"
+      },
+      "label": "sample"
+    }
+  },
+  {
+    "kind": "null-leaves",
+    "input": {
+      "client": {
+        "advanced": {
+          "audioSampleRate": null,
+          "batteryCharging": null,
+          "batteryLevel": null,
+          "batteryPresent": null,
+          "colorGamut": null,
+          "connectionPresent": null,
+          "connectionRtt": null,
+          "dynamicRange": null,
+          "hasAudioInput": null,
+          "hasVideoInput": null,
+          "language": null,
+          "maxTouchPoints": null,
+          "measureMemThrows": null,
+          "mediaDeviceCount": null,
+          "mobileUA": null,
+          "perfMemoryPresent": null,
+          "pointerCoarse": null,
+          "probed": null,
+          "timezoneIana": null,
+          "timezoneOffsetMin": null,
+          "voiceCount": null,
+          "webglVendor": null,
+          "webgpuFallback": null,
+          "webgpuPresent": null,
+          "webgpuVendor": null,
+          "webrtcHostAddrs": [
+            null
+          ],
+          "webrtcPublicAddrs": [
+            null
+          ],
+          "widevineSupported": null
+        },
+        "behavior": {
+          "durationS": null,
+          "events": {
+            "burstVarMs": null,
+            "clickCount": null,
+            "longGapCount": null,
+            "minReactionMs": null,
+            "noMoveClicks": null,
+            "syntheticFlags": null,
+            "totalEvents": null,
+            "untrustedFrac": null
+          },
+          "key": {
+            "dwellStdDevMs": null,
+            "flightStdDevMs": null,
+            "keystrokes": null,
+            "meanDwellMs": null,
+            "meanFlightMs": null,
+            "pasteEvents": null,
+            "zeroDwellFrac": null
+          },
+          "mouse": {
+            "accelEntropy": null,
+            "coalescedRatio": null,
+            "maxTeleportPx": null,
+            "meanCurvature": null,
+            "meanJerk": null,
+            "pauseCount": null,
+            "samples": null,
+            "straightLineFrac": null,
+            "velocityStdDev": null
+          }
+        },
+        "engineVersion": null,
+        "environment": {
+          "adBlock": null,
+          "braveShields": null,
+          "collectorBlocked": null,
+          "doNotTrack": null,
+          "gpc": null,
+          "probed": null,
+          "trackingProtection": null
+        },
+        "fingerprintId": null,
+        "guard": {
+          "consoleDisabled": null,
+          "evalUsed": null,
+          "funcCtor": null,
+          "nativeHooked": null,
+          "protoPolluted": null,
+          "reported": null,
+          "scriptInjected": null
+        },
+        "sessionId": null,
+        "signals": [
+          {
+            "collected": null,
+            "confidence": null,
+            "expectedHuman": {
+              "sample": null
+            },
+            "id": null,
+            "layer": null,
+            "notes": null,
+            "score": null,
+            "value": {
+              "sample": null
+            },
+            "verdict": null,
+            "weight": null
+          }
+        ],
+        "uaClientHints": {
+          "architecture": null,
+          "bitness": null,
+          "brands": [
+            {
+              "brand": null,
+              "version": null
+            }
+          ],
+          "fullVersionList": [
+            {
+              "brand": null,
+              "version": null
+            }
+          ],
+          "mobile": null,
+          "model": null,
+          "platform": null,
+          "platformVersion": null
+        },
+        "userAgent": null
+      },
+      "crosschecks": [
+        {
+          "claim": null,
+          "consistent": null,
+          "id": null,
+          "inputs": [
+            null
+          ],
+          "notes": null,
+          "observed": null,
+          "score": null,
+          "weight": null
+        }
+      ],
+      "label": null,
+      "network": {
+        "akamaiH2": null,
+        "h2Engine": null,
+        "h2Settings": {
+          "sample": null
+        },
+        "headerOrder": [
+          null
+        ],
+        "ja3": null,
+        "ja3Text": null,
+        "ja4": null,
+        "ja4Engine": null,
+        "ja4Raw": null,
+        "negotiatedAlpn": null,
+        "pseudoHeaderOrder": [
+          null
+        ],
+        "secChUaPresent": null,
+        "secFetchPresent": null,
+        "signals": [
+          {
+            "collected": null,
+            "confidence": null,
+            "expectedHuman": {
+              "sample": null
+            },
+            "id": null,
+            "layer": null,
+            "notes": null,
+            "score": null,
+            "value": {
+              "sample": null
+            },
+            "verdict": null,
+            "weight": null
+          }
+        ],
+        "tlsVersion": null
+      },
+      "scoring": {
+        "hardRuleFired": null,
+        "policyVersion": null,
+        "riskScore": null,
+        "topContributors": [
+          {
+            "id": null,
+            "score": null
+          }
+        ],
+        "verdict": null
+      },
+      "sessionId": null,
+      "ts": null
+    },
+    "expected": {
+      "sessionId": "",
+      "ts": "0001-01-01T00:00:00Z",
+      "client": {
+        "sessionId": "",
+        "userAgent": "",
+        "uaClientHints": {
+          "brands": [
+            {
+              "brand": "",
+              "version": ""
+            }
+          ],
+          "fullVersionList": [
+            {
+              "brand": "",
+              "version": ""
+            }
+          ],
+          "mobile": false
+        },
+        "signals": [
+          {
+            "id": "",
+            "layer": "",
+            "value": {
+              "sample": null
+            },
+            "expectedHuman": {
+              "sample": null
+            },
+            "verdict": "",
+            "weight": 0,
+            "score": 0,
+            "confidence": 0,
+            "collected": ""
+          }
+        ],
+        "behavior": {
+          "mouse": {
+            "samples": 0,
+            "meanCurvature": 0,
+            "velocityStdDev": 0,
+            "accelEntropy": 0,
+            "straightLineFrac": 0,
+            "pauseCount": 0,
+            "maxTeleportPx": 0,
+            "meanJerk": 0,
+            "coalescedRatio": 0
+          },
+          "key": {
+            "keystrokes": 0,
+            "meanDwellMs": 0,
+            "dwellStdDevMs": 0,
+            "meanFlightMs": 0,
+            "flightStdDevMs": 0,
+            "pasteEvents": 0,
+            "zeroDwellFrac": 0
+          },
+          "events": {
+            "totalEvents": 0,
+            "untrustedFrac": 0,
+            "noMoveClicks": 0,
+            "syntheticFlags": 0,
+            "clickCount": 0,
+            "longGapCount": 0,
+            "burstVarMs": 0,
+            "minReactionMs": 0
+          },
+          "durationS": 0
+        },
+        "environment": {
+          "probed": false,
+          "adBlock": false,
+          "trackingProtection": false,
+          "doNotTrack": "",
+          "gpc": false,
+          "collectorBlocked": false,
+          "braveShields": false
+        },
+        "guard": {
+          "reported": false,
+          "evalUsed": 0,
+          "funcCtor": 0,
+          "scriptInjected": 0,
+          "protoPolluted": false,
+          "nativeHooked": false,
+          "consoleDisabled": false
+        },
+        "advanced": {
+          "probed": false,
+          "mediaDeviceCount": 0,
+          "hasAudioInput": false,
+          "hasVideoInput": false,
+          "voiceCount": 0,
+          "widevineSupported": false,
+          "webgpuPresent": false,
+          "webgpuVendor": "",
+          "webgpuFallback": false,
+          "webglVendor": "",
+          "audioSampleRate": 0,
+          "connectionPresent": false,
+          "connectionRtt": 0,
+          "batteryPresent": false,
+          "batteryLevel": 0,
+          "batteryCharging": false,
+          "timezoneIana": "",
+          "timezoneOffsetMin": 0,
+          "language": "",
+          "colorGamut": "",
+          "dynamicRange": "",
+          "pointerCoarse": false,
+          "maxTouchPoints": 0,
+          "perfMemoryPresent": false,
+          "measureMemThrows": false,
+          "mobileUA": false,
+          "webrtcHostAddrs": [
+            ""
+          ],
+          "webrtcPublicAddrs": [
+            ""
+          ]
+        },
+        "fingerprintId": "",
+        "engineVersion": ""
+      },
+      "network": {
+        "ja3": "",
+        "ja3Text": "",
+        "ja4": "",
+        "secFetchPresent": false,
+        "secChUaPresent": false,
+        "h2Settings": {
+          "sample": 0
+        },
+        "pseudoHeaderOrder": [
+          ""
+        ],
+        "headerOrder": [
+          ""
+        ],
+        "signals": [
+          {
+            "id": "",
+            "layer": "",
+            "value": {
+              "sample": null
+            },
+            "expectedHuman": {
+              "sample": null
+            },
+            "verdict": "",
+            "weight": 0,
+            "score": 0,
+            "confidence": 0,
+            "collected": ""
+          }
+        ]
+      },
+      "crosschecks": [
+        {
+          "id": "",
+          "inputs": [
+            ""
+          ],
+          "claim": "",
+          "observed": "",
+          "consistent": false,
+          "weight": 0,
+          "score": 0
+        }
+      ],
+      "scoring": {
+        "riskScore": 0,
+        "verdict": "",
+        "topContributors": [
+          {
+            "id": "",
+            "score": 0
+          }
+        ],
+        "policyVersion": ""
+      }
+    }
+  },
+  {
+    "kind": "untyped-number-decoding",
+    "input": {
+      "client": {
+        "signals": [
+          {
+            "id": "l1.navigator.webdriver",
+            "value": {
+              "large": 9007199254740993,
+              "max": 18446744073709551615,
+              "fraction": 0.9166666666666667
+            },
+            "expectedHuman": 9007199254740993
+          }
+        ]
+      }
+    },
+    "expected": {
+      "sessionId": "",
+      "ts": "0001-01-01T00:00:00Z",
+      "client": {
+        "sessionId": "",
+        "userAgent": "",
+        "uaClientHints": {
+          "mobile": false
+        },
+        "signals": [
+          {
+            "id": "l1.navigator.webdriver",
+            "layer": "",
+            "value": {
+              "fraction": 0.9166666666666667,
+              "large": 9007199254740992,
+              "max": 18446744073709552000
+            },
+            "expectedHuman": 9007199254740992,
+            "verdict": "",
+            "weight": 0,
+            "score": 0,
+            "confidence": 0,
+            "collected": ""
+          }
+        ],
+        "behavior": {
+          "mouse": {
+            "samples": 0,
+            "meanCurvature": 0,
+            "velocityStdDev": 0,
+            "accelEntropy": 0,
+            "straightLineFrac": 0,
+            "pauseCount": 0,
+            "maxTeleportPx": 0,
+            "meanJerk": 0,
+            "coalescedRatio": 0
+          },
+          "key": {
+            "keystrokes": 0,
+            "meanDwellMs": 0,
+            "dwellStdDevMs": 0,
+            "meanFlightMs": 0,
+            "flightStdDevMs": 0,
+            "pasteEvents": 0,
+            "zeroDwellFrac": 0
+          },
+          "events": {
+            "totalEvents": 0,
+            "untrustedFrac": 0,
+            "noMoveClicks": 0,
+            "syntheticFlags": 0,
+            "clickCount": 0,
+            "longGapCount": 0,
+            "burstVarMs": 0,
+            "minReactionMs": 0
+          },
+          "durationS": 0
+        },
+        "environment": {
+          "probed": false,
+          "adBlock": false,
+          "trackingProtection": false,
+          "doNotTrack": "",
+          "gpc": false,
+          "collectorBlocked": false,
+          "braveShields": false
+        },
+        "guard": {
+          "reported": false,
+          "evalUsed": 0,
+          "funcCtor": 0,
+          "scriptInjected": 0,
+          "protoPolluted": false,
+          "nativeHooked": false,
+          "consoleDisabled": false
+        },
+        "advanced": {
+          "probed": false,
+          "mediaDeviceCount": 0,
+          "hasAudioInput": false,
+          "hasVideoInput": false,
+          "voiceCount": 0,
+          "widevineSupported": false,
+          "webgpuPresent": false,
+          "webgpuVendor": "",
+          "webgpuFallback": false,
+          "webglVendor": "",
+          "audioSampleRate": 0,
+          "connectionPresent": false,
+          "connectionRtt": 0,
+          "batteryPresent": false,
+          "batteryLevel": 0,
+          "batteryCharging": false,
+          "timezoneIana": "",
+          "timezoneOffsetMin": 0,
+          "language": "",
+          "colorGamut": "",
+          "dynamicRange": "",
+          "pointerCoarse": false,
+          "maxTouchPoints": 0,
+          "perfMemoryPresent": false,
+          "measureMemThrows": false,
+          "mobileUA": false
+        },
+        "fingerprintId": "",
+        "engineVersion": ""
+      },
+      "network": {
+        "ja3": "",
+        "ja3Text": "",
+        "ja4": "",
+        "secFetchPresent": false,
+        "secChUaPresent": false,
+        "signals": null
+      },
+      "crosschecks": null,
+      "scoring": {
+        "riskScore": 0,
+        "verdict": "",
+        "topContributors": null,
+        "policyVersion": ""
+      }
+    }
+  }
+]

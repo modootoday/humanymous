@@ -11,22 +11,22 @@
         "TestOpenGateLoggerRejectsFileOpenFailure",
         "TestGateFatalClassDoesNotReflectDynamicErrorText"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/gate/logging.go",
       "sha256": "f8c0dcf905c346dae9ab74d542a61895602c1387462714cf1821b0b82114bca9",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/gate/main.go",
       "sha256": "29464bb31c8df7ccef2f11769525345def1503ac931072cbfe9093bf0816c6e3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/gate/routes_test.go",
@@ -39,15 +39,15 @@
         "TestLoadRoutesMalformed",
         "TestLoadRoutesMissingFile"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/gate/routes.go",
       "sha256": "e42719b79cc491b8a77d4884300b4bd34d10112f7523c3ea295e25bc7d362602",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/gate/tls_test.go",
@@ -59,22 +59,22 @@
         "TestBuildEdgeTLSBadCert",
         "TestSplitDomains"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/gate/tls.go",
       "sha256": "d903195645f60412d126e8fb8b8a039bc05a04e7ead3e18f84a847f06f1ecc59",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/ml-train/main.go",
       "sha256": "de595b07923ecf0253a365960edb040c6308f58822d00d97a808b32089029f4c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/mlcorrect-train/gate_test.go",
@@ -84,50 +84,50 @@
         "TestRunGate_PoisonedCohortBlocksCandidate_FailClosed",
         "TestRunGate_TooFewSamplesIsAPreconditionError"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/mlcorrect-train/gate.go",
       "sha256": "c25c2a7fffe71fe2097265ea5410d98e6c827394df66d170472d04d1c20e9cf2",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/mlcorrect-train/main.go",
       "sha256": "dc5c9c842edc2a9f3951a3d124951cbbeae04ae8c2b3eb084c31e3cdc3d5f65b",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/redteam/attacks.go",
       "sha256": "0228a2f015eb3d0285cb45d0eb287963a2140c3ac0da2ccc4d9236012aaf7f8a",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/redteam/h2raw.go",
       "sha256": "48a6c3b6ce924582e49d1b03a27dbc72a10690e0cca1806995d8801e6e3f7331",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/redteam/main.go",
       "sha256": "26353f9918f3fa2b4e49510032c22b4324acbb7c552a0ce267aa07321d7d95c3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/report/main.go",
       "sha256": "dce675887a821be70d23be5a9c4c6540254b16352afc67632e6412886b099acb",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/acme_test.go",
@@ -139,29 +139,29 @@
         "TestBuildTLSConfigProvidedKeyPair",
         "TestBuildTLSConfigRejectsAmbiguousSources"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/acme.go",
       "sha256": "11f2aec9a2217ee76d38503125e3dfa1a9e0626d4afc3740710473fa0ed51e63",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/cert.go",
       "sha256": "9157738cf36cf80437b4a6725a0d9b99a90202fdaa579e1c2700e5ff658177a5",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/collect_pipeline.go",
       "sha256": "5a463a209c28f3d27298aa5d5f275a71d82eb919c98d74e8c91065381c24ddd7",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/counters_test.go",
@@ -170,8 +170,8 @@
         "TestHandleCounters_ShowsTrippedCanary",
         "TestHandleCounters_NilSafeWithoutModel"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/demo_test.go",
@@ -181,8 +181,8 @@
         "TestDemoIssuesSession",
         "TestDemoIndependentOfPlayground"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/external_input_receipt_test.go",
@@ -193,43 +193,43 @@
         "TestExternalInputReceiptConfigurationIsExplicit",
         "TestExternalInputReceiptNeverUsesOperationalLog"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/external_input_receipt.go",
       "sha256": "faf1218bc18dd1034d8d0b6c8c02166830d3e42ce0ee9acbb6a9638000b57bdd",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/h1capture.go",
       "sha256": "ef33914cc25d7c6973c019f5d7354b77ea86f3d026a1c71cb9ff3a207e27505a",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/h2capture.go",
       "sha256": "badc1c568fb500241b926c550c91d8e8ed83af97cdb6a9dc662f233457313438",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/h2monitor.go",
       "sha256": "35cf9c998d1d926a83ef71b0bef15a47ad104d7bc39d94cd816b3fb1fbbd5966",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/handlers.go",
       "sha256": "61185c019d478abe0a7c9427d3c7c5727683b54972d87a2e59a4637876f2f1a5",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/headerinfo_test.go",
@@ -241,22 +241,22 @@
         "TestClientIP",
         "TestHeaderInfoOrderIsNotReliable"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/headerinfo.go",
       "sha256": "07b730e5bdade830d508ef727380532c8de392d53970a67038ee355b0fe10b06",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/helpers.go",
       "sha256": "35651d0b0c0cc50edd74ec37915c14c5ca1d98dc4988e3e51d1ceb772bd6ff8a",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/launch_parity_test.go",
@@ -266,15 +266,15 @@
         "TestObservatoryCatalogMatchesLaunchProfiles",
         "TestDockerOnlyProfilesMatchObservatoryAndNeverOverlapLocalLauncher"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/launch.go",
       "sha256": "db454f13557deae2b6ca52534e1b930954ff35b0466101b2926485fea1d672c0",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/logging_test.go",
@@ -287,22 +287,22 @@
         "TestObservabilityOmitsPathAndPanicMaterial",
         "TestCanonicalExternalInputLabel"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/logging.go",
       "sha256": "6473d610f8e6fc31383168d9f4ae879a938f7ce31f6296d8100e40569cfdcd5b",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/main.go",
       "sha256": "cdd8010a55b92343e573ee467cbba90400bb69d3531e170f427c916245e9ab56",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/maxconns_test.go",
@@ -310,8 +310,8 @@
       "tests": [
         "TestConnConcurrencyIsCapped"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/ml_setup_test.go",
@@ -321,15 +321,15 @@
         "TestSetupBehavioralML_RefusesSignatureRequiredButMissing",
         "TestSetupBehavioralML_AdmitsProperlySignedBundle"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/ml_setup.go",
       "sha256": "cbabdceaefd9e94384cf19aaff2a576fb0ec88f4e161bf4ad0884a0e00808792",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/mlcorrect_ops_test.go",
@@ -342,15 +342,15 @@
         "TestCohortOf_InputModality",
         "TestHandleMLCorrect_GateAndShape"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/mlcorrect_ops.go",
       "sha256": "9bb90e15d8837c643675b13cc912820cf8b3bd6690c124d199e53460bbe1a8e8",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/ops_test.go",
@@ -360,15 +360,15 @@
         "TestOpsEndpointsAbsentWithoutToken",
         "TestOpsEndpointsGated"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/ops.go",
       "sha256": "60d30e7def70279bc6aa037d0b0258cc499c1e78f0ec839c0b367cba98974b63",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/pass_handler_test.go",
@@ -383,36 +383,36 @@
         "TestAttestIssuanceBudget",
         "TestBehaviorTimingTells"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/pass_handler.go",
       "sha256": "bb1ef8c5cd52e0a03681053985ba59af729b9d3cbe134bed5be7402b6c7a99a1",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/pass_proof.go",
       "sha256": "0b83885286ba80d830da51d8345824b0d1a83999372759c9ecd9ee15a795499d",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/pass_scoring.go",
       "sha256": "6f81babc06bf4d9b1b10e1c0a69f53e59dc96e81c5440e515b6eb4320daa0274",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/pass_store.go",
       "sha256": "613a67d1cbe4f0bd02f4255c89cadc56fd6e613ada803aea898ae637cec33929",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/pass_wargame_axis_test.go",
@@ -425,8 +425,8 @@
         "TestWargameR337_PassVelocityFloodElevates",
         "TestWargameR338_PassAxisHandlerClose"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/playground_test.go",
@@ -447,15 +447,15 @@
         "TestListenAddrIsLoopback",
         "TestHostIsLoopback"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/playground.go",
       "sha256": "8e29241f662e80645855dcae31f1ce976eff6dccea75ce2030329f72ecf4fac3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/powhandler_launder_test.go",
@@ -463,36 +463,36 @@
       "tests": [
         "TestPoWTooFastCannotBeLaunderedByDelayedResubmit"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/powhandler.go",
       "sha256": "813626cbeb9c192a16a46919f33fa11fd6e72cb2641296aee56f2943c884860b",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/resource_handlers.go",
       "sha256": "3fec7408c0b623263c3730332b6e2510599a1d3c2f3311e491b342bb9cc5eae0",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/rit.go",
       "sha256": "78948ff4cdec34186f9f249931b19c886b760118b989a2001cb7ed4373a442c8",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/server.go",
       "sha256": "e89b067fab0b83aa483fe9e82e1a1feaea68eaf1a433e7bb39f5ebcb7f576034",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/sot31_test.go",
@@ -501,29 +501,29 @@
         "TestRandHex",
         "TestConnRegistryRemoveClearsAllMaps"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/server/tlsconn.go",
       "sha256": "e98a4bf0a5682e31d3dc81bef25a272115ff70d2ae027d6a123b7f0cb67b1814",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/tlsparrot/main.go",
       "sha256": "cd19f7463aaba99ffc1ade511beeef72c94173293f2e23316068bf44731bd94f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "cmd/wasm/main.go",
       "sha256": "4a499d23607729fcff5214aa8247b6dd95f6d5dea6b03ea059a9a36f4010c229",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/abuse/ratelimit_test.go",
@@ -535,15 +535,15 @@
         "TestLimiter_EmptyKeyIgnored",
         "TestLimiterConfigurePreservesRollingHits"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/abuse/ratelimit.go",
       "sha256": "df00cf878c143d5f73f113fbbc7e4e4c81eb5103eb6b95aaca9a6ede819928e8",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/anomaly/detector_test.go",
@@ -555,15 +555,15 @@
         "TestMADFloorPreventsOverFlagging",
         "TestBoundedCardinality"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/anomaly/detector.go",
       "sha256": "e918eda7b74d70c5f78e2794ecb49febccdafa8177817bd8e7ababf3400f30e1",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/attestation/attestation_test.go",
@@ -575,15 +575,20 @@
         "TestStaleTokenRejected",
         "TestEmptyTokenRejected"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/challenge/src/attestation",
+        "crates/challenge/tests/attestation_parity.rs"
+      ]
     },
     {
       "path": "internal/attestation/attestation.go",
       "sha256": "117348c69d57abc2a41b4b9f6f57581f68762ee49c8965ce53f33648bb7b409c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/challenge/src/attestation"
+      ]
     },
     {
       "path": "internal/audit/audit_test.go",
@@ -599,22 +604,22 @@
         "TestSinkRefusesUnaudited",
         "TestSinkAuditBeforeEffect"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/canonical.go",
       "sha256": "744f422e6d3a3659a4792e94b146c8a0ea235195aab0b43760c56cea2770481e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/chain.go",
       "sha256": "27038b5aac6d4db2b941796b669847314d1549a4a915f44bf09020fcb722ee03",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/id_test.go",
@@ -624,15 +629,15 @@
         "TestNewEventIDUnique",
         "TestAppendStampsIDAndTS"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/id.go",
       "sha256": "aadc5794d2cb23694f75212d5088be20b12f7eafacef9c9c11d9584be67c1f27",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/keystore_test.go",
@@ -643,15 +648,15 @@
         "TestPersistedSeedStablePubkey",
         "TestVaultPersistence"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/keystore.go",
       "sha256": "542b61f148719ed97e8b8f0ec2f2a6cc07ee3075ed311933d86ed779a0364fb6",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/merkle_test.go",
@@ -661,15 +666,15 @@
         "TestMerkleConsistencyAllSizes",
         "TestMerkleRootEmptyAndSingle"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/merkle.go",
       "sha256": "747deb53325ddbef67700168290725824ac8ada677081b4f054ede2436776fe0",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/noderegistry_test.go",
@@ -677,15 +682,15 @@
       "tests": [
         "TestNodeSuppressionDetected"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/noderegistry.go",
       "sha256": "05e8596d627e87cdb3cf25fe16f55a3ebbee6df7e14f0aa1197d96bbc9e83de5",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/proofs_test.go",
@@ -695,36 +700,36 @@
         "TestConsistencyProofAcrossCheckpoints",
         "TestTamperedMerkleRootBreaksSTH"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/proofs.go",
       "sha256": "859a8459e5889389c4f10c97e3002746bb9fa884b7ce63e2ce0b50559f9bc0ca",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/pseudonym.go",
       "sha256": "1e0e6cb268feda3b15d6fe5f175a5fb804f477fa270271921a237eecca2d5908",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/record.go",
       "sha256": "e1f51c6a2a937189989800b2d834b46bb75fa73921efa5d2bf9a14540b691f16",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/retention.go",
       "sha256": "2e38bd1495f13e6ffaefe987713b56ec820ef492cbf95288af7d7c6a485584d9",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/sink_adapters_test.go",
@@ -736,43 +741,43 @@
         "TestCHSinkInsert",
         "TestCHTableNameValidation"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/sink_clickhouse.go",
       "sha256": "9140fa5057179034d69a78a6ad8e5f7df22df66a471e634e466b8e2fca0bbedc",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/sink_record.go",
       "sha256": "fdb115ef97240beee145318b51dc9b2fb66337f1d6845e63a729fafd26edf58d",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/sink_redis.go",
       "sha256": "eee73a628c858934de2808c0af06c7f2a16ac5c8e41e7f682f051a8f4a963c3f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/sink_wal.go",
       "sha256": "09791a49c928ee5dcbede59bb49c34afe4b42098b4e91b044d4bc645d8d29f72",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/sink.go",
       "sha256": "fbe261742f67ce26c6cfef3e0853954c5b7c90c7eb1714ce8c1e79fdd9c65142",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/verifier_p0_test.go",
@@ -784,15 +789,15 @@
         "TestVerifyNilHMACSkipsSecondaryLayer",
         "TestVerifyAloneDoesNotCheckWitness"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/verifier.go",
       "sha256": "948874f7af997dcb7b9a5fe5d3040bd3b2012b23f2638c640091557e2bb99431",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/wal_test.go",
@@ -805,8 +810,8 @@
         "TestWALRingBoundsMemory",
         "TestWALAppendFailClosed"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/witness_test.go",
@@ -818,15 +823,15 @@
         "TestForgedChainFailsWitness",
         "TestWitnessRejectsFork"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/witness.go",
       "sha256": "8bed1a7701cf1c77db7d120721d760f7137e7e4eb135196c72cd87eeb0dad665",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/audit/ws8_test.go",
@@ -835,8 +840,8 @@
         "TestPseudonymStretch",
         "TestRetentionTiers"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/behavior/features_test.go",
@@ -847,15 +852,20 @@
         "TestExtract_EmptyIsFinite",
         "TestSchemaHash_StableAndSensitive"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/behavior/src/features",
+        "crates/behavior/tests/feature_parity.rs"
+      ]
     },
     {
       "path": "internal/behavior/features.go",
       "sha256": "3782fda96411cc603bd28a7ad47afe8a0c686b916e0a8c94a07ed6fb651dc288",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/behavior/src/features"
+      ]
     },
     {
       "path": "internal/collector/collector_test.go",
@@ -867,22 +877,22 @@
         "TestMergeNetwork_RequestScopedHopResiduals",
         "TestMergeClientAndLabel"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/collector/merge.go",
       "sha256": "3854a55e9a6ae7167511ab611ee24d524f53bd7282f6f9add2b28db92caf2ed3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/collector/session.go",
       "sha256": "c8d62e3143dc153f96617e2dd70a4e30e64c3a47019322da3cc72d4ae0a7d0e7",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/correlation/correlation_shared_test.go",
@@ -895,8 +905,8 @@
         "TestShared_FleetFallbackCounter_Concurrent",
         "TestKeyDigest_StableAndKeyed"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/correlation/correlation_test.go",
@@ -908,15 +918,15 @@
         "TestEmptyKeyIgnored",
         "TestFPChurnProxyDetected"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/correlation/correlation.go",
       "sha256": "af84ecd6e37261479c820d9582882234c0f29b96c21177d1f5fca8d462ad2860",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/correlation/velocity_test.go",
@@ -926,43 +936,43 @@
         "TestVelocity_FiresOnBurstAgainstPopulation",
         "TestVelocity_SilentOnSlowOrganicAccumulation"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/detect/bridge.go",
       "sha256": "1b18a14a9b0af61ebe100ff0307fd6e5588ae39d83f41b7d8d8364cd764fe250",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/detect/collect.go",
       "sha256": "64270a28bb3e6fed5ce38013718fde2ae0770c468eb10f619fdfe63bb0c2e6ab",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/detect/l1_static.go",
       "sha256": "0dd517d97a94b0cfa292cde215e3fd92c818e26174b25bf808dca1d87679f986",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/detect/l2_fingerprint.go",
       "sha256": "de8239febd65f31aaeb7833ac059173baec01733978d51dbd44f1fd6a42ae69a",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/detect/l3_integrity.go",
       "sha256": "62e7a16f47b82dba9ba12f24ae577cce973e3584b4ebd36f510adc0125fe3b65",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin_integrity_empty_test.go",
@@ -970,8 +980,8 @@
       "tests": [
         "TestAdminIntegrityEmptyChain"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin_offline_verify_test.go",
@@ -979,8 +989,8 @@
       "tests": [
         "TestAdminKeysEnableOfflineVerify"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin_settings_test.go",
@@ -997,15 +1007,15 @@
         "TestSettingsProposeRateLoosenIsB",
         "TestConfigureEngineFromEffectiveNetPolicy"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin_settings.go",
       "sha256": "f6a9e4134dc50b2af207b11e4a3a9019163475251d339e2fb8680f15cbfb14d3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin_test.go",
@@ -1014,8 +1024,8 @@
         "TestAdminReadAPIs",
         "TestAdminConsoleAndFeatures"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin_vusb_test.go",
@@ -1025,50 +1035,50 @@
         "TestAdminVirtualUSBReadsOnlyBoundedTerminalSummary",
         "TestAdminVirtualUSBRejectsUnboundedOrUnknownResultSchema"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin_vusb.go",
       "sha256": "0c3e7554d97bb3f620b016c3fa54c5dc1f1817a8374283d7dc2b61c889233d86",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/admin.go",
       "sha256": "12f607bcef0b531081889b5b03377aeb10cbaa5dddca8849658d2ce7d9bc90a6",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/adminauth.go",
       "sha256": "8be0313a0c44f6a6d35953670a64055abc4bd6cccedf4565a1826a2c52629fae",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/adminhelpers_test.go",
       "sha256": "71d2ad1cde0ad2ab4695cf8b0b9605e38aff58019930b38a1efd35d0188ff982",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/anomaly_shadow.go",
       "sha256": "30039720d21aca7c2e52713a5b098b75b065f929f9ae551c62bc822154752511",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/approval.go",
       "sha256": "ba9efc68126eedb26d97f869a93d58d5ffcd2acc2b92f47077108d8d97f3da0f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/attestfloor_test.go",
@@ -1089,8 +1099,8 @@
         "TestCohortShadowFlagsSharedGenerator",
         "TestStepUpTokenVerify"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ban_integration_test.go",
@@ -1100,8 +1110,8 @@
         "TestFingerprintAutoBan",
         "TestConsoleBanManagement"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ban_test.go",
@@ -1112,29 +1122,29 @@
         "TestPermanentBanAndLift",
         "TestBanList"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ban.go",
       "sha256": "0d0aa9f056b204eaed3e08ce0d72d88b33968200c7cf2ec2ea73c8feed48e85e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/cohort_shadow.go",
       "sha256": "0f2c77986a2ef3f68f2385061debce0f08f2ee69b9787156822fb9edf5dbb649",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/config.go",
       "sha256": "22f97587958fb0d34e03c7628d7a25b30f3778353cb3f8d7dc8ef515b6741f2c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/configsign_test.go",
@@ -1142,15 +1152,15 @@
       "tests": [
         "TestConfigVersionSignedAndStable"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/configsign.go",
       "sha256": "8c298858962f1c0ab12ed2e6618fef6c642ef6fb1b6c9fadf3425ae9e4097904",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/console_test.go",
@@ -1160,36 +1170,36 @@
         "TestConsoleCSSNonEmpty",
         "TestConsoleJavaScriptSyntax"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/console.go",
       "sha256": "7a35977539b00b1574cda8987aa3cce4aa86291ed084bed3337030fa826eaa2e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/control_collect.go",
       "sha256": "a6e71b811febaa829c7f576c72e32a5e112afb6f95ce34981df1de26fc71ade8",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/control.go",
       "sha256": "fb82ba05def759b11ef9d8d12d440b1070ce7da69f8367eb3ab943ef281cd71c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/enforce.go",
       "sha256": "74d201189631624f004577105195910dedf9bc61e43eac30f5d80cec064de8cc",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/epoch_test.go",
@@ -1197,22 +1207,22 @@
       "tests": [
         "TestTokenEpochRotation"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/epoch.go",
       "sha256": "ee9141131884efeedc7a285adcdf7265eb4092cd4dbdc9053ba1dfeb276093b3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/erasure.go",
       "sha256": "28f489f61f3ec9b927edaae5f309649fa1fbfdc647c15bbe7a92c2973c593055",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/forward_fidelity_test.go",
@@ -1221,22 +1231,22 @@
         "TestProxyForwardsClientRequestFaithfully",
         "TestProxyBlocksSpoofedTrustHeaders"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/gate.go",
       "sha256": "a6c73ff28613a88f8dab7db29449f78ef274e7c78346c1d114feaf03ee1e4299",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/gates.go",
       "sha256": "1d50c360ce1a9e1baa7492cfb82b1504cabfca059bcd1c8e22cd5cdd7bb6dd8d",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/gc_test.go",
@@ -1247,22 +1257,22 @@
         "TestSweepDetectorGC",
         "TestServerGCRunsWithoutPanic"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/guard.go",
       "sha256": "36da70e5bf47c2bbbe64b4aa01289dbf9bc21c8f8d161e63012efe219cb5e4a0",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/incident.go",
       "sha256": "e205d984354d87e556b116b6cda0efbc43bd928ef74ca264235ea1cbf66da508",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/inject_test.go",
@@ -1274,15 +1284,15 @@
         "TestNoHTMLPassThrough",
         "TestOversizeHeadlessBodyGivesUp"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/inject.go",
       "sha256": "b20dcc136447faa9f04b6aeb9edd181ba29c70543d8e67ccb045bbf0188baa40",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/integration_test.go",
@@ -1290,8 +1300,8 @@
       "tests": [
         "TestProxyEnforcementAndAudit"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/killswitch_test.go",
@@ -1299,8 +1309,8 @@
       "tests": [
         "TestKillSwitchDualControlAndEffect"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/privacypass_test.go",
@@ -1312,15 +1322,15 @@
         "TestPATNone",
         "TestPATDoubleSpend"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/privacypass.go",
       "sha256": "bdc5de21f8274fba501f3d96997400ebdb8fd39e8f04e163df65a72239d3ec81",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/prodhardening_test.go",
@@ -1333,8 +1343,8 @@
         "TestAdminMetricsExposition",
         "TestAuditSubjectFilter"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/proxyproto_test.go",
@@ -1346,22 +1356,22 @@
         "TestProxyListenerTrustGate",
         "TestParseCIDRsRejectsBroad"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/proxyproto.go",
       "sha256": "0bd922f70e72183d9aa481948c6376f08472262dbef9ad4b83b2d6a998259860",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/recon.go",
       "sha256": "0adf60523cdc670aabde7d2eb8b61571afed5685677ea33ecca2333f5a66ce9a",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/redisledger_test.go",
@@ -1369,29 +1379,29 @@
       "tests": [
         "TestSealOpenValue"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/redisledger.go",
       "sha256": "881724e2f023bfc254b4523c3a006b517221f1ddc6f09a4dd26109ae624ff2b0",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/redisratelimit.go",
       "sha256": "34de7839cccf7335c2cb51c215d5fca56fd55bc3c5cb5480a9198d27f03cdaec",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/request.go",
       "sha256": "2251adc6883c77e70ea231a59e26909b91f2b96194fe289ca341aeb6e7efd30e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/resolve_test.go",
@@ -1399,8 +1409,8 @@
       "tests": [
         "TestResolve_PathConfusionSelectsStrict"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/round3_test.go",
@@ -1410,22 +1420,22 @@
         "TestSweepDetector",
         "TestSweepWindowExpiry"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/seams.go",
       "sha256": "64d05a8448675d440662ad2e1ff090aaf5324f003bb94c241f8d86dbf39270da",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings_engine.go",
       "sha256": "29b3b1e3fcf7e40ae4f6594ef8e2ee146e472f39f8e4f1dd038f6a7e562da721",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings_runtime_test.go",
@@ -1440,15 +1450,15 @@
         "TestSettingsAttestationFloorMonitorAllowsVerdictTokenFastPath",
         "TestSettingsMetricsReflectApply"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings_runtime.go",
       "sha256": "407dfff89c1020709f08206923d3b59a089a83407b4c3d16727c695417867b1c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings/classify_test.go",
@@ -1463,29 +1473,29 @@
         "TestClassifyRateHardRaiseIsB",
         "TestClassifyRateWindowShorterIsB"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings/classify.go",
       "sha256": "04045a9be675d2648ae0a654df452739bd005cef7f6f91425df15091ec847d40",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings/overlay.go",
       "sha256": "99cce019aae6c438f2046fc3eef2f609be8942645a2e171239e4f54f596a8bd3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings/resolve.go",
       "sha256": "fb70a4af82365c594f194ce0a883c960fd46dce69378bab734b096f9ed9038c1",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings/settings_test.go",
@@ -1500,22 +1510,22 @@
         "TestResolveOverlayScoringAndKill",
         "TestFileStoreRoundTrip"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings/store_file.go",
       "sha256": "00f15b6ef6727625e3cfb32459494b11330db523d3dc27a2d4df9adcb1015455",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/settings/validate.go",
       "sha256": "5851c6bdc165fca81b5c2b61fb180d0a1f6590441500082e1611ee5ff0a5159a",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/smuggle_wargame_test.go",
@@ -1523,15 +1533,15 @@
       "tests": [
         "TestSmuggleScanResidualWargame"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/smuggle.go",
       "sha256": "6b92f0cd4d6ad92aa1dd24f57a030d0d9d40d582c38bfe5970c5d5215fbfd78b",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/token_test.go",
@@ -1544,15 +1554,15 @@
         "TestVerdictTokenExpiry",
         "TestNonceReplay"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/token.go",
       "sha256": "6481614aeabb726e6ae89914832faafecd66af693cbafaaf0cd279acdf9aecad",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/upstream_error_test.go",
@@ -1560,8 +1570,8 @@
       "tests": [
         "TestUpstreamErrorAudited"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_axis_cred_r201_test.go",
@@ -1608,8 +1618,8 @@
         "TestWargameR239_StaticKeyDirectoryIgnoresBadLines",
         "TestWargameR240_AxisCloseRegression"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_axis_redis_r241_test.go",
@@ -1626,8 +1636,8 @@
         "TestWargameR249_RedisTagTruncationRejected",
         "TestWargameR250_AxisRedisClose"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_axis_shadow_rate_r251_test.go",
@@ -1664,8 +1674,8 @@
         "TestWargameR279_ShadowDoesNotAutoBan",
         "TestWargameR280_AxisDClose"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_escalation_r121_test.go",
@@ -1712,8 +1722,8 @@
         "TestWargameR159_BindMismatchOnVerdict",
         "TestWargameR160_ExpiredVerdict"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_escalation_r161_test.go",
@@ -1760,8 +1770,8 @@
         "TestWargameR199_SeriesRegressionValidBanKeyMatrix",
         "TestWargameR200_SeriesClosePackageGreen"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_escalation_r51_test.go",
@@ -1798,8 +1808,8 @@
         "TestWargameR079_ErasureRequiresDPONotApprover",
         "TestWargameR080_KillswitchRequiresDistinctApprover"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_escalation_r81_test.go",
@@ -1846,8 +1856,8 @@
         "TestWargameR119_BanKeyRejectsTabChar",
         "TestWargameR120_FPWithSpacesRejected"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_r01_ban_test.go",
@@ -1855,8 +1865,8 @@
       "tests": [
         "TestPermanentBanIgnoresBodyApprover"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/wargame_t4_promotion_test.go",
@@ -1866,8 +1876,8 @@
         "TestWargameR347_T4StepUpUnlocksAttestedAfterProof",
         "TestWargameR348_T4StickyAllowCannotSkipFloor"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/webauthn_test.go",
@@ -1879,15 +1889,15 @@
         "TestWebAuthnNone",
         "TestWebAuthnOriginBinding"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/webauthn.go",
       "sha256": "1cd3790bfc681abdb416156304d9e5b65fdf059918793535a5c53581aec240a2",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/webbotauth_test.go",
@@ -1904,15 +1914,15 @@
         "TestVerifyAgentNone",
         "TestVerifyAgentLifetimeBound"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/webbotauth.go",
       "sha256": "e1cf00ea0fa1a4ddc9f43c18ec5ffb73be46c6105991e084600f0349b4c74808",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ws12_test.go",
@@ -1925,8 +1935,8 @@
         "TestDualControlPermanentBan",
         "TestApprovalStoreRules"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ws3_test.go",
@@ -1935,8 +1945,8 @@
         "TestErasureHoldWindowAndReverseResolve",
         "TestErasureCancel"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ws4_test.go",
@@ -1945,8 +1955,8 @@
         "TestIncidentEnumerationCap",
         "TestIncidentHandleOpaque"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ws5_test.go",
@@ -1955,8 +1965,8 @@
         "TestUnsafeMethodFailsClosed",
         "TestFailClosedActionMapping"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ws7_test.go",
@@ -1964,8 +1974,8 @@
       "tests": [
         "TestControlPlaneFloodMetered"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/gate/ws9_test.go",
@@ -1974,22 +1984,24 @@
         "TestAuditSearchAndPagination",
         "TestBulkBan"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/httpx/json.go",
       "sha256": "97e09355a304777f49045433c7a864d10c502e95cb09993a65671edebd1c63cf",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/integrity/canonical.go",
       "sha256": "ae66dca99ea57ac66954154a8b819ed213b52af44722b3740b123806d964bfb1",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/integrity/src/request/canonical.rs"
+      ]
     },
     {
       "path": "internal/integrity/integrity_test.go",
@@ -2001,36 +2013,48 @@
         "TestRIT_ReplayOutOfSequence",
         "TestRIT_FirstRequestGrace"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/integrity/src/request",
+        "crates/integrity/tests/request_parity.rs",
+        "crates/integrity/tests/verification_parity.rs"
+      ]
     },
     {
       "path": "internal/integrity/key.go",
       "sha256": "a3168171ed881266bc639326ac2971d70dbd429c581017c7f743afbc64990b5b",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/integrity/src/request/rotation.rs"
+      ]
     },
     {
       "path": "internal/integrity/seed.go",
       "sha256": "b19d2a9e83a488406af008c7fa34a92ade75f73c2853ffe1c34a8522b2a71593",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/integrity/src/request/rotation.rs"
+      ]
     },
     {
       "path": "internal/integrity/token.go",
       "sha256": "e0e5c338d25d488110d4d8bf86346f73b5f9d02f623a13d62bfa5492bb51a557",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/integrity/src/request/token.rs"
+      ]
     },
     {
       "path": "internal/integrity/verify.go",
       "sha256": "528bd3744987b31aa14abcb1b8669ea3317288137694817e3801846449e6bf9f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/integrity/src/request/verification.rs"
+      ]
     },
     {
       "path": "internal/livefeed/hub_test.go",
@@ -2043,22 +2067,22 @@
         "TestCancelStopsDelivery",
         "TestEventPayloadShape"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/livefeed/hub.go",
       "sha256": "a74236a62696a27fc888dcdfe03a69c884ee1463241004351c3fa80e70c4030b",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/logger/handler.go",
       "sha256": "bf38323f20cca5096567edeb6265ec786d184760d07749873121270fee41698d",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/logger/logger_test.go",
@@ -2072,22 +2096,22 @@
         "TestOneFailedSinkDoesNotSuppressAnother",
         "TestFlushAndCloseAreBoundedAndIdempotent"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/logger/logger.go",
       "sha256": "703de7f7d8b96ac9ccaea8e33fb7fdfd8685f1423f21b6122edb64402c96ca68",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/logger/record.go",
       "sha256": "3297e4a074bee143451b07f32ced9f867d865aa66d9ebb55bd3533f6cd93a5b7",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/logger/sink_test.go",
@@ -2098,15 +2122,15 @@
         "TestFileSinkRejectsSymlink",
         "TestFlushHonorsContextWhenSinkIsBlocked"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/logger/sink.go",
       "sha256": "1e6afb02cc33554acc3359e2765e27a91be1118f528820c6436c471336392fd0",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/bundle_test.go",
@@ -2119,15 +2143,15 @@
         "TestPromoteAndRollback",
         "TestPromote_RequiresStaged"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/bundle.go",
       "sha256": "79fb962102860cf905c2eed92bdca4d0ca948d670e53c4035e217655c4f690ea",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/calibrate_test.go",
@@ -2138,15 +2162,15 @@
         "TestConformal_BotsDoNotMoveThreshold",
         "TestConformal_FloorHolds"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/calibrate.go",
       "sha256": "875d0dc16ecfdfd685e2294eec48620cdb8b74d50a7c19e27bae0a886e192c43",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/canary_test.go",
@@ -2157,15 +2181,15 @@
         "TestCanaryGuard_TripsOnDriftAndPoisoning",
         "TestController_ArmCanary_RollsBackOnOverFlagging"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/canary.go",
       "sha256": "88f229041984ec971e8469d873e3071eb4e55afcdb5dd6a03e2d4ea55ab048b7",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/controller_test.go",
@@ -2177,15 +2201,15 @@
         "TestController_DriftFiresOnStuddPlusCovariate",
         "TestController_PassSolveAnomalySurfaces"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/controller.go",
       "sha256": "b21258bc9b3773067b53ef55861b61df80fe7a53c534f844f4afab84e6e0d6a6",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/drift_test.go",
@@ -2195,15 +2219,15 @@
         "TestPSI_StableVsShifted",
         "TestDriftMonitor_2of3Gate"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/drift.go",
       "sha256": "8274153f955dabd2ce662f19b0a5f5d0f372cecb89297f93ee606c13ab188ed6",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/features_monitor_test.go",
@@ -2214,15 +2238,15 @@
         "TestFeatureMonitor_ShiftedTrafficHighPSI",
         "TestController_FeatureObserverDrivesCovariateArm"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/features_monitor.go",
       "sha256": "9d6899da931894c1b6a3b27300e04ea3be44903aaf34d8be14aaa18b2af37513",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/oracle_test.go",
@@ -2232,15 +2256,15 @@
         "TestPassGuard_CapsFraction",
         "TestPassGuard_AnomalyStopsIngestion"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/oracle.go",
       "sha256": "0e498cebe52f740d292ac777c132283947f5b111d5b796e6bd1e4cf0bbb93a5e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/shadow_test.go",
@@ -2250,15 +2274,15 @@
         "TestShadowComparator_AgreementAndAbstain",
         "TestController_ObserveShadow_FeedsSnapshot"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlcorrect/shadow.go",
       "sha256": "c8581453322a0cdc14665d6ef67161fbfe13e8dc88eac032990c6f6b6c3d433f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mlserve/mlp_test.go",
@@ -2268,15 +2292,22 @@
         "TestMLP_Validate_Rejects",
         "TestMLP_LoadRoundTrip"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/model/src/inference/mlp.rs",
+        "crates/model/tests/inference_parity.rs"
+      ]
     },
     {
       "path": "internal/mlserve/mlp.go",
       "sha256": "0d3f922fbaf962587390bce8bb472b45a981a87e2c12f5d084134e45ea48eb2f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/model/src/inference/bundle.rs",
+        "crates/model/src/inference/mlp.rs",
+        "crates/model/tests/inference_parity.rs"
+      ]
     },
     {
       "path": "internal/mlserve/predictor_test.go",
@@ -2288,22 +2319,26 @@
         "TestScore_ShadowObservedNeverServed",
         "TestScore_ShadowStaleSchemaSkipped"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/model/src/inference/runtime.rs"
+      ]
     },
     {
       "path": "internal/mlserve/predictor.go",
       "sha256": "ddc920c4cc4dd9ce51bb22c9d6114bcd1be476772461b66b573137b0fa4f6406",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/model/src/inference/runtime.rs"
+      ]
     },
     {
       "path": "internal/mltrain/record.go",
       "sha256": "b10f323c1e8c78da1bb4c71e4e10ae14a757b7c480a103a6ec52fe18e0a22f3c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mltrain/sink_test.go",
@@ -2313,15 +2348,15 @@
         "TestTraceSink_NilIsNoop",
         "TestTraceSink_AppendsAcrossReopen"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mltrain/sink.go",
       "sha256": "9c30dc065297e19c155160b306f14dd3367447ad82a6bad990349cc9c94839af",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mltrain/train_test.go",
@@ -2333,57 +2368,57 @@
         "TestCohortFPR_IsPerCohort",
         "TestAUT_BoundedAndFull"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/mltrain/train.go",
       "sha256": "55ecd6e3d270c6a83584390efd82b6e16dfeb920a1e46f8a952b2825b99b8846",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/audit_emit.go",
       "sha256": "b82c4a160c9d48ecdab8db839616c5027f92dbf2f3112d6e666022ef53024815",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/bytes.go",
       "sha256": "e5d7879895502f2757bb37164a520142c4c916097ca73d97419f6ce916f12d82",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/clienthello.go",
       "sha256": "a58fcf372ffb2e53322d2163b0f84a55215802bb71dfa14ab434143e24de6ab4",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/enginemap.go",
       "sha256": "e153e8f9f25a6406e8abfade1ee1c0d3ca9da16f3ff30c2c23d08db87aec1f50",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/fuzz_test.go",
       "sha256": "28d7c1836a26c06a4550d417c255c83bde056aa2d25c4d6f7064e087b4d5a67c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/grease.go",
       "sha256": "902dbb839587b6e246c1cbad73b94f736d9818e366ed6f5751766e919d97294e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/h2split_test.go",
@@ -2400,29 +2435,29 @@
         "TestBrowserTLSOverH1Residual",
         "TestECHAbsentResidual"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/header.go",
       "sha256": "f3d9420a6afa960ec1600e0fc27496bd629eda25fba412e6ce0451e0b60bc139",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/http2.go",
       "sha256": "4eedd3688cfba5fabd8dce52aa01c7deb10926c98c57df6d23aaa2e42824b3b0",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/ja3.go",
       "sha256": "38c11348dd13cefc0d4f495736a80ff4b8d819bd24fd1974cf3eb97d0d05fb70",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/ja4_test.go",
@@ -2432,15 +2467,15 @@
         "TestJA4StripsGREASE",
         "TestJA4Deterministic"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/ja4.go",
       "sha256": "119f40ebb5fa8ca4ed6cc39d526d22a49e0265d16ad8f64137a44932919abc49",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/network_test.go",
@@ -2455,15 +2490,15 @@
         "TestH2Akamai",
         "TestHeaderAnomalies"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/permutation.go",
       "sha256": "51f0b73bbff92da800b1e3bb79f58d81cfda604087318070c0cbbc834fdb4666",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/report_test.go",
@@ -2478,15 +2513,15 @@
         "TestClientIPSpoofAndAnonChain",
         "TestTorExitAndCircuitSignals"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/report.go",
       "sha256": "7d4a2376856d4178b6d13fb629ee3c299077f0b8175b3f9efb2715657baf2027",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/residual_test.go",
@@ -2495,15 +2530,15 @@
         "TestScoreExemptResiduals",
         "TestAuditRecordsFromSignals"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/residual.go",
       "sha256": "d7b9160ff40658fe874e7bb03a852096462ddf04d2f28566d93c8ca1fcd8c4d1",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/tcp_test.go",
@@ -2513,15 +2548,15 @@
         "TestTCPTTLOSMismatchAuditOnly",
         "TestAuditEventMapping"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/network/tcp.go",
       "sha256": "58caddce7551aff8e46022dde8f17987684e2722167d3b7c4798d840fc010caf",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/pass/pass_test.go",
@@ -2533,15 +2568,15 @@
         "TestWrongOffsetsFail",
         "TestStaleBucketRejected"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/pass/pass.go",
       "sha256": "5ef9cc9ca7a9e75bc9283356010a83ee91106684116ede7da3bd2a0e85213bc3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/pass/wargame_axis_pass_r322_test.go",
@@ -2559,8 +2594,8 @@
         "TestWargameR331_PassDifferentDifficultyDifferentSolution",
         "TestWargameR332_PassAxisClose"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/pow/pow_test.go",
@@ -2571,15 +2606,20 @@
         "TestDifficultyScales",
         "TestParseSolution"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/challenge/src/proof_of_work",
+        "crates/challenge/tests/proof_of_work_parity.rs"
+      ]
     },
     {
       "path": "internal/pow/pow.go",
       "sha256": "e616c5480d41f69cc2f6f02a5313d687ccabf22fe8f87b9e24a898010f830027",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/challenge/src/proof_of_work"
+      ]
     },
     {
       "path": "internal/redis/client_test.go",
@@ -2593,29 +2633,29 @@
         "TestBreakerTripsAndFastFails",
         "TestReadReplyRejectsDeepNesting"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/redis/client.go",
       "sha256": "e0a6410a51379054e058e2051d544647923194523875a7e29041187434bab9d3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/report/aggregate.go",
       "sha256": "9835b15a15cce93e47017351ce5a4b031f52b98822ae6e6668246009445c625f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/report/html.go",
       "sha256": "2585ed90ce8082db6f49e1ba14b704cf14aa93cf65147c7a5b54bb27bbefedd3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/report/report_test.go",
@@ -2624,36 +2664,36 @@
         "TestAggregate_TPRandFPR",
         "TestAggregate_MissedBotLowersTPR"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/resource/classify.go",
       "sha256": "80a9991625049597f7a9c9af78f4e91a09ce3cc07d0dd886a771c374cfc83d7e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/resource/embed.go",
       "sha256": "17a9654fe1e1fe7b88202d5b8dae9805922d965f51a70531ad0235b47968f337",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/resource/gate.go",
       "sha256": "17253030e42facf5d18998b9a4542faf4b1c53ada8d3dabeb6b0dbe74c5ed91d",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/resource/media.go",
       "sha256": "bc49ed48923bee58da8c53425b39cfc4eb67f7620519211dcf232928331bcf23",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/resource/resource_test.go",
@@ -2666,43 +2706,55 @@
         "TestSignedURL_ExpiryAndTamper",
         "TestEmbedTokenStripped"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/resource/signurl.go",
       "sha256": "15e7db3f90934a0faf523135553fdf884547cc25e3a2f0677cc60aa768abe436",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/integrity/src/resource",
+        "crates/integrity/tests/resource_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/advanced.go",
       "sha256": "bb2351e082012a85d7d53aae953d105e32a41464fb801231bb04037fe0eddb43",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/derivation/advanced.rs",
+        "crates/scoring/tests/derivation_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/behavior.go",
       "sha256": "5bf4995699d40aa04945e80c72a661e4a7b00f050302160127c44931d168e64e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/derivation/behavior.rs",
+        "crates/scoring/tests/behavior_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/combine.go",
       "sha256": "08f6fd542deb708c252e2abcbcad85aa611642465c9ed5d3ce7a63fbad01fe4f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/crosscheck.go",
       "sha256": "250b3c93fc7cf80a817b35a084ad1ebec938f33d9241d0e2cb96c9eb753a0c73",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/consistency/crosschecks.rs",
+        "crates/scoring/tests/crosscheck_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/engine_test.go",
@@ -2716,22 +2768,25 @@
         "TestScore_NoClient_ChallengeHR10",
         "TestScore_Deterministic"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/engine.go",
       "sha256": "6df2b0e08c322400285f8f1637e119cd9e4bdfc5bd07cf77ad059de65c17d57c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/environment.go",
       "sha256": "f162724e6adc0a881814e9fafd67875a73b1e6003243d7fa3505569bb6a58169",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/derivation/environment.rs",
+        "crates/scoring/tests/derivation_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/freeze_golden_test.go",
@@ -2739,8 +2794,8 @@
       "tests": [
         "TestFreezeGoldenCorpus"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/frontier_test.go",
@@ -2751,15 +2806,18 @@
         "TestCorrelation_ProxyRotation_DenyHR19",
         "TestPoW_TooFast_DenyHR19"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/guard.go",
       "sha256": "c4bf97283630f999735ac5eb6d991b2686f93a401a3cd9fc04a3c3e716f88766",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/derivation/guard.rs",
+        "crates/scoring/tests/derivation_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/hardrules_test.go",
@@ -2783,15 +2841,15 @@
         "TestCatalog_Patchright_ConsoleDisabled_DenyHR13",
         "TestFP_DeviceMemoryPowerOfTwo_NotFlagged"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/hardrules.go",
       "sha256": "5a4dae9670a264ae45582c5d79bb7e982f412b5251d7e7359abc368988564f2e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/pass_upgrade_test.go",
@@ -2801,15 +2859,17 @@
         "TestPassUpgrade_ClientForgedSignalIgnored",
         "TestPassUpgrade_NeverLaundersHardDeny"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/policy.go",
       "sha256": "23fa4e12c4df77b99951b05a535bc898bbbae4a6a0ec60a3fe49d4f17c2279bd",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/policy.rs"
+      ]
     },
     {
       "path": "internal/scoring/resolution_test.go",
@@ -2819,8 +2879,8 @@
         "TestRuleCrossCheckIDsResolve",
         "TestPromotionRulesWellFormed"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/runtime_test.go",
@@ -2833,8 +2893,8 @@
         "TestNetPolicyMonitorDisarmsHR24ProxyHop",
         "TestNetPolicyMonitorDisarmsHR19CorrelationNotPow"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/scoretrace_test.go",
@@ -2844,22 +2904,25 @@
         "TestScoreWithTraceMatchesScore",
         "TestTraceWinnerEqualsApply"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/scoretrace.go",
       "sha256": "76eb46ad02216a800d2a6456369c6bf576f80b5577247d972039a5577b1b26af",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/ua.go",
       "sha256": "80700ec82cd308b7e843dcef6007f134ff0edec690644f1e4be45bf299159964",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/scoring/src/consistency/user_agent.rs",
+        "crates/scoring/tests/crosscheck_parity.rs"
+      ]
     },
     {
       "path": "internal/scoring/wargame_axis_core_r281_test.go",
@@ -2908,8 +2971,8 @@
         "TestWargameR321_RebrowserCDPStrippedResidual",
         "TestWargameR320_AxisECloseLadder"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/scoring/wargame_t4_promotion_test.go",
@@ -2922,8 +2985,8 @@
         "TestWargameR344_NearCeilingProxyRotationStillHR19",
         "TestWargameR345_T4PromotionDoctrineSummary"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/signals/global_resolution_test.go",
@@ -2931,15 +2994,20 @@
       "tests": [
         "TestAllSourceSignalIDsResolve"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/signals/tests/registry_integrity.rs"
+      ]
     },
     {
       "path": "internal/signals/registry.go",
       "sha256": "929e8b4e632bcd3f03cea115a827402fd015d20a2dde8f93cd833362e84c789e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/signals/src/observation/registry.rs",
+        "crates/signals/src/observation/registry.json"
+      ]
     },
     {
       "path": "internal/signals/signals_test.go",
@@ -2951,43 +3019,51 @@
         "TestSeverityAndComputeScoreClamp",
         "TestGroupOf"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/signals/src/observation",
+        "crates/signals/tests/observation_parity.rs"
+      ]
     },
     {
       "path": "internal/signals/signals.go",
       "sha256": "9df5e4f5846bc766c727a915393ea48aca1a1d5131c4c4cc08fd7086d2bb3f73",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/signals/src/observation",
+        "crates/signals/src/report"
+      ]
     },
     {
       "path": "internal/signals/verdict.go",
       "sha256": "e3df1df2cb025513bba62f7b906a1952519d0f1f58668c7a28c8c7441db73ace",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/signals/src/observation/verdict.rs"
+      ]
     },
     {
       "path": "internal/trafficguard/consistency.go",
       "sha256": "5a76dfb67fe05c866d21723071b56aba73135e28351b3ae62fa272031a40c7e8",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/trafficguard/log.go",
       "sha256": "b03f531d6a032e6acfa34585e13eafd2004a719375368c80e2b6638c4d49671e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/trafficguard/record.go",
       "sha256": "29e694eb4f8a39f9693cb455d61262948cb83fba907b2c6e64c5fbddeeb989a5",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/trafficguard/trafficguard_test.go",
@@ -3001,85 +3077,85 @@
         "TestConsistency_HeaderOrderTracked",
         "TestSubnet24"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/codec_binary.go",
       "sha256": "9c09a8a6477a42382de7bfb294d56300e94537e32724b7b4fca1ece3a831611d",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/codec_lsb.go",
       "sha256": "cb8029b97101f9d5edc8729433b4458fdbd83ba6270646fb8e34def8373d11e3",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/codec_png_multi.go",
       "sha256": "80784a3ce3fcfeacc813179fce8a15d533de88c9f76ae84bac5151498fa02047",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/codec_png.go",
       "sha256": "0dd3e4f756c8bbf4d8dfa567924304b0daa95fd744e3deabf14281b0be61bf4e",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/codec_text.go",
       "sha256": "492e03ebc2b329498c652bbac99edc2827d08305faccd186cf261097a8944e96",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/codec.go",
       "sha256": "364088c28645a8995fca5770d6390009ad554b4cace12f54a088ee59da71b63b",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/codecwasm.go",
       "sha256": "10b0856d488734b753573bc886c84f76aad4f6e245d9213075ab63b208e226d1",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/ecc.go",
       "sha256": "194d4a965ea22700b05f62bf12b750495390a60ef08603fc84f65a166edf3a50",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/extract.go",
       "sha256": "3677bf29eab2366bf81f72c7f0caad4d34f740834a567022d68a4fed541ce88f",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/inject.go",
       "sha256": "c96fa3c65ee8e6ac56154ed78859c3433cee16d51d4750c12ca43a763a699e2c",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/ledger.go",
       "sha256": "fdf14b277198e4323fa0d3d488f19d6fda6851821804ccc4d0be2ab23d32f9f6",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/lsb_test.go",
@@ -3088,15 +3164,15 @@
         "TestLSB_SurvivesMetadataStrip",
         "TestLSB_DirectRoundTrip"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/payload.go",
       "sha256": "8ae90bae1c1560637fbbbd8cfb3773ce47b511e9bbc0245b1f302f8e1357fffc",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "internal/watermark/watermark_test.go",
@@ -3109,8 +3185,8 @@
         "TestTrace_IdentifiesSessionAndDetectsForgery",
         "TestFrameUnframe"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "pkg/origincloak/origincloak_test.go",
@@ -3121,15 +3197,15 @@
         "TestValidWithGrace",
         "TestOriginHandlerExample"
       ],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     },
     {
       "path": "pkg/origincloak/origincloak.go",
       "sha256": "4bdb61167f10f832e3117751d938b5bc1d7b29c6534d10f39a8c0e80f402e5ec",
       "tests": [],
-      "rust_path": null,
-      "parity_status": "pending"
+      "parity_status": "pending",
+      "rust_paths": []
     }
   ],
   "go_test_count": 804
