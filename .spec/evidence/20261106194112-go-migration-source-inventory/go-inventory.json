@@ -221,8 +221,11 @@
       "path": "cmd/server/h2monitor.go",
       "sha256": "35cf9c998d1d926a83ef71b0bef15a47ad104d7bc39d94cd816b3fb1fbbd5966",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/http2/monitor.rs",
+        "crates/network/tests/monitor_parity.rs"
+      ]
     },
     {
       "path": "cmd/server/handlers.go",
@@ -2382,29 +2385,39 @@
       "path": "internal/network/audit_emit.go",
       "sha256": "b82c4a160c9d48ecdab8db839616c5027f92dbf2f3112d6e666022ef53024815",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/residual/mod.rs",
+        "crates/network/tests/report_parity.rs"
+      ]
     },
     {
       "path": "internal/network/bytes.go",
       "sha256": "e5d7879895502f2757bb37164a520142c4c916097ca73d97419f6ce916f12d82",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tls/hello.rs"
+      ]
     },
     {
       "path": "internal/network/clienthello.go",
       "sha256": "a58fcf372ffb2e53322d2163b0f84a55215802bb71dfa14ab434143e24de6ab4",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tls/hello.rs",
+        "crates/network/tests/tls_parity.rs"
+      ]
     },
     {
       "path": "internal/network/enginemap.go",
       "sha256": "e153e8f9f25a6406e8abfade1ee1c0d3ca9da16f3ff30c2c23d08db87aec1f50",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tls/fingerprint.rs"
+      ]
     },
     {
       "path": "internal/network/fuzz_test.go",
@@ -2417,8 +2430,10 @@
       "path": "internal/network/grease.go",
       "sha256": "902dbb839587b6e246c1cbad73b94f736d9818e366ed6f5751766e919d97294e",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tls/mod.rs"
+      ]
     },
     {
       "path": "internal/network/h2split_test.go",
@@ -2442,22 +2457,31 @@
       "path": "internal/network/header.go",
       "sha256": "f3d9420a6afa960ec1600e0fc27496bd629eda25fba412e6ce0451e0b60bc139",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/http/headers.rs",
+        "crates/network/tests/report_parity.rs"
+      ]
     },
     {
       "path": "internal/network/http2.go",
       "sha256": "4eedd3688cfba5fabd8dce52aa01c7deb10926c98c57df6d23aaa2e42824b3b0",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/http2/mod.rs",
+        "crates/network/tests/h2_parity.rs"
+      ]
     },
     {
       "path": "internal/network/ja3.go",
       "sha256": "38c11348dd13cefc0d4f495736a80ff4b8d819bd24fd1974cf3eb97d0d05fb70",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tls/fingerprint.rs",
+        "crates/network/tests/tls_parity.rs"
+      ]
     },
     {
       "path": "internal/network/ja4_test.go",
@@ -2474,8 +2498,11 @@
       "path": "internal/network/ja4.go",
       "sha256": "119f40ebb5fa8ca4ed6cc39d526d22a49e0265d16ad8f64137a44932919abc49",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tls/fingerprint.rs",
+        "crates/network/tests/tls_parity.rs"
+      ]
     },
     {
       "path": "internal/network/network_test.go",
@@ -2497,8 +2524,10 @@
       "path": "internal/network/permutation.go",
       "sha256": "51f0b73bbff92da800b1e3bb79f58d81cfda604087318070c0cbbc834fdb4666",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tls/fingerprint.rs"
+      ]
     },
     {
       "path": "internal/network/report_test.go",
@@ -2520,8 +2549,13 @@
       "path": "internal/network/report.go",
       "sha256": "7d4a2376856d4178b6d13fb629ee3c299077f0b8175b3f9efb2715657baf2027",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/report/mod.rs",
+        "crates/network/src/report/claims.rs",
+        "crates/network/src/report/assembly.rs",
+        "crates/network/tests/report_parity.rs"
+      ]
     },
     {
       "path": "internal/network/residual_test.go",
@@ -2537,8 +2571,11 @@
       "path": "internal/network/residual.go",
       "sha256": "d7b9160ff40658fe874e7bb03a852096462ddf04d2f28566d93c8ca1fcd8c4d1",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/residual/mod.rs",
+        "crates/network/tests/report_parity.rs"
+      ]
     },
     {
       "path": "internal/network/tcp_test.go",
@@ -2555,8 +2592,11 @@
       "path": "internal/network/tcp.go",
       "sha256": "58caddce7551aff8e46022dde8f17987684e2722167d3b7c4798d840fc010caf",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/network/src/tcp/mod.rs",
+        "crates/network/tests/report_parity.rs"
+      ]
     },
     {
       "path": "internal/pass/pass_test.go",

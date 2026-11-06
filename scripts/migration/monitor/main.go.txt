@@ -1,0 +1,39 @@
+package main
+
+import (
+    "encoding/hex"
+    "encoding/json"
+    "os"
+)
+
+func main() {
+    type vector struct {
+        Input string `json:"input"`
+        ChunkSize int `json:"chunk_size"`
+        Expected []string `json:"expected"`
+    }
+    var vectors []vector
+    for _, kind := range []byte{0,1,2,3,4,6,8,9,255} {
+        for _, payload := range [][]byte{{},{0},{0,0,0,0},{128,0,0,0},{0,0,0,1},{0,0,0,0,0},{0,0,0,0,0,0,0,0}} {
+            for _, count := range []int{10,11,15,16,20,21,300,301} {
+                input := make([]byte,24)
+                for i:=0;i<count;i++ {
+                    input=append(input,0,0,byte(len(payload)),kind,0,0,0,0,1)
+                    input=append(input,payload...)
+                }
+                for _,chunkSize:=range []int{1,7,9,64,len(input)} {
+                    monitor:=newFrameMonitor()
+                    expected:=[]string{}
+                    for offset:=0;offset<len(input);offset+=chunkSize {
+                        end:=offset+chunkSize
+                        if end>len(input){end=len(input)}
+                        monitor.feed(input[offset:end])
+                        expected=append(expected,monitor.abuse)
+                    }
+                    vectors=append(vectors,vector{hex.EncodeToString(input),chunkSize,expected})
+                }
+            }
+        }
+    }
+    if err:=json.NewEncoder(os.Stdout).Encode(vectors);err!=nil{panic(err)}
+}

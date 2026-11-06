@@ -31,6 +31,18 @@ type parseCase struct {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "network" {
+		exportNetwork()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "h2" {
+		exportH2()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "tls" {
+		exportTLS()
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "engine" {
 		exportEngine()
 		return
