@@ -1,0 +1,40 @@
+# Canon: .spec/sot/delivery.sot.md; reproduce with scripts/ci/render_workflows.py
+name: Checked Pages artifact
+'on':
+  workflow_call: null
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: ruby/setup-ruby@9d13dd6ce2979b207024f719160a99112fb38eea
+      with:
+        ruby-version: 3.3.12
+        working-directory: docs
+        bundler-cache: true
+    - run: 'test -s Gemfile.lock
+
+        test -f scripts/validate-pages.sh
+
+        bundle check
+
+        bundle exec bundle-audit check --update'
+    - run: 'bash scripts/validate-pages.sh --destination "$RUNNER_TEMP/pages-apex" --baseurl ''''
+
+        bash scripts/validate-pages.sh --destination "$RUNNER_TEMP/pages-subpath" --baseurl /humanymous'
+    - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
+      with:
+        name: checked-pages-${{ github.sha }}
+        path: ${{ runner.temp }}/pages-apex
+    env:
+      BUNDLE_FROZEN: 'true'
+    defaults:
+      run:
+        working-directory: docs
+        shell: bash

@@ -3,10 +3,13 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-06T20:40:50Z
-verify: manual
+updated: 2026-11-06T22:06:50Z
+verify:
+  - python scripts/ci/delivery.py policy
+  - python -m unittest discover -s scripts/ci -p "test_*.py"
+  - cargo test --locked --manifest-path scripts/ci/docs-review/Cargo.toml
 rel:
-  governs: [docs/**, .github/workflows/**]
+  governs: [docs/**, .github/workflows/**, scripts/ci/**]
   depends_on: [sot:root/rust-migration]
 ---
 
@@ -153,6 +156,61 @@ The adversarial review additionally forbids stale-SHA authorization, token
 fallbacks, vacuous documentation gates and treating registry errors as success.
 
 ## Verification
+
+### Workflow implementation boundary (2026-11-07 KST)
+
+The reusable `.github/workflows/rust-validation.yml` now owns mandatory native
+Linux/macOS/Windows, 1.88.0 MSRV, stable format/Clippy, actual WASM/browser,
+Linux Docker lab, defender image scans, packages, Node/Bun, advisory, authored
+documentation review and Pages jobs. The aggregate explicitly rejects any
+skipped/failed/cancelled required job. `ci.yml`, `release.yml` and Pages deployment
+call this workflow at their own checkout commit. No historical run lookup grants
+publication. Frozen Go CI remains a manual oracle and its original release YAML
+is inert provenance under scripts/ci, never a shipping path.
+
+`scripts/ci/README.md` fixes the integration interfaces and execution-report
+requirements. Runtime reports bind exact source SHA and authored documentation
+review SHA-256, require all named cases (including executable documentation
+examples), and reject skips/errors. Docker evidence additionally requires Rust,
+Docker isolation and immutable image identities. Runner code review and actual
+execution remain required; a JSON report alone is not behavioral proof.
+
+The isolated Rust tool at scripts/ci/docs-review is read-only. Its schema-1
+docs/reviews.json interface requires exact SHA-256 source inventory, authored
+review notes/pages, and fixed command/API/configuration/capability coverage with
+named pilot cases. It cannot repair evidence, drop source paths through a
+manifest exclusion, or accept a Markdown-only edit as source re-review. Pages
+build validates both baseurls through the Pages owner's pinned-theme checker.
+
+Release publication uses protected release environments and job-scoped OIDC.
+The official crates authentication action uses the reviewed v1.0.6 commit above.
+Dependency-first waves include versioned dev dependencies and reauthenticate
+before each wave (maximum eight reviewed waves; a deeper graph blocks until
+the workflow is extended). Registry errors and existing immutable versions fail;
+there is no blind rerun skip or token fallback. Partial reruns require artifact
+identity review; automated identity-aware resume is not implemented. npm uses
+Node 24/npm 11.16.0 trusted publishing with provenance. New npm trust settings
+must explicitly permit direct `npm publish` (the current default grants staged
+publication only), bind release.yml/release, and establish package ownership.
+
+Current registry prerequisites are explicitly unverified in
+scripts/ci/registry-prerequisites.json. All library manifests remain publish=false;
+Rust runtime binaries, WASM/browser integration, isolated full Rust lab, native
+startup pilots are not delivered by workflow files. The Pages owner has authored
+the initial source/capability review manifest; concurrent Rust source changes
+correctly make individual digests stale until an explicit renewed review.
+The canonical source/test inventory must mark every responsibility
+verified_runtime_parity with existing Rust paths and CI-visible parity_evidence,
+or retired_with_review with an authored disposition and the same evidence.
+Pending/unit-only rows and tracked Go source/manifests block final cutover.
+Their absence fails validation/readiness instead of skipping. Native release
+archives and retained defender GHCR SBOM/provenance/signing machinery
+are wired but not publication-tested. Cross-OS Actions execution and live OIDC
+must still be demonstrated after these prerequisites land. No publish occurred.
+
+Official interface checks: [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/),
+[Cargo package](https://doc.rust-lang.org/cargo/commands/cargo-package.html),
+[reusable workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows).
 
 Design evidence is the inspected repository plus primary sources above. Code
 and live account setup are pending. Implementation acceptance requires

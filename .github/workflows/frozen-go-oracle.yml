@@ -1,0 +1,423 @@
+name: frozen-go-oracle
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref (saves runner minutes on rapid pushes).
+concurrency:
+  group: frozen-go-oracle-${{ github.ref }}
+  cancel-in-progress: true
+
+# Runner-minute budget (Actions quota): the fast `go` job (build + unit + vet +
+# race + vulncheck + wasm) runs on EVERY push to main and on PRs. The two heavy
+# Docker jobs (compact kernel smoke, and the detector-vs-bots integration gate
+# that runs the whole attack in real containers) are the real minute sinks, so
+# they are gated to pull_request + workflow_dispatch — NOT every push to main.
+# Rule 60 makes the local Docker compose stack (scripts/e2e-docker.*) the same
+# authority as CI, so intermediate work on main is validated locally; the full
+# gate runs on the PR that merges it, or on demand via "Run workflow".
+jobs:
+  go:
+    name: build + unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0        # full history + tags for the git-cliff config check below
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: "1.25"
+          cache: true
+      - run: go build ./...
+      - run: go vet ./...
+      - run: go test ./...
+      - name: External-input contract tests
+        run: |
+          node --test \
+            test/externalinput/*.test.mjs \
+            test/externalinput/dom-observer/*.test.mjs \
+            test/externalinput/kernel-runner/*.test.mjs \
+            test/externalinput/usb-broker/*.test.mjs \
+            test/externalinput/vusb/*.test.mjs \
+            scripts/assert-external-input*.test.mjs
+      - name: CI storage contract
+        run: node --test test/ci/*.test.mjs
+      - name: Public terminology convention
+        run: node scripts/check-public-terminology.mjs
+      # SoT-38 §9.5 / v0.2.2 — race detector in CI (unit packages only; not the Docker e2e job).
+      - name: go test -race
+        run: go test -race ./...
+      # PLAN-08 backlog: fail if a module compiled into the shipped binaries is missing
+      # from the third-party licence index (prevents licence drift).
+      - name: licence-index drift check
+        run: bash scripts/check-licenses.sh
+      # PLAN-07 R6: the WASM client-side detection (cmd/wasm + internal/detect) is only
+      # built for GOOS=js — without this step it can break the build with a green CI.
+      - name: wasm build + vet (GOOS=js)
+        run: |
+          GOOS=js GOARCH=wasm go build ./cmd/wasm/
+          GOOS=js GOARCH=wasm go vet ./cmd/wasm/ ./internal/detect/
+      # Supply-chain: fail CI on a known-vulnerable dependency reachable from our code
+      # (audit — OpenSSF Scorecard "Vulnerabilities" baseline). Reachability-aware, so it
+      # only flags CVEs in code paths we actually call.
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
+          "$(go env GOPATH)/bin/govulncheck" ./...
+      # Validate the changelog config so a broken cliff.toml is caught here, not at release
+      # time (release.yml generates the release notes from it). Full history is needed to
+      # render commit sections.
+      - name: changelog config check (git-cliff)
+        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4
+        with:
+          config: cliff.toml
+          args: --context
+      # Multi-provider agent layout (AGENTS.md + .agents skills/personas).
+      # Sync adapters so Claude/Codex/Gemini/Grok skill trees match the canon.
+      - name: agent layout sync + verify
+        run: |
+          bash scripts/agents/sync-adapters.sh
+          git diff --exit-code -- .claude .grok .gemini .codex/skills .codex/hooks.json
+          bash scripts/agents/verify-agents-layout.sh
+          node --test scripts/agents/workflow-runner.test.mjs scripts/agents/hooks/pre-tool-guard.test.mjs scripts/assert-attack.test.mjs
+
+  external-input-kernel-smoke:
+    name: compact independent-kernel smoke
+    # Heavy Docker job: PR + manual only, not every push to main (Actions minute budget).
+    if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: go
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Capture storage baseline
+        run: df -B1 --output=used / | tail -n 1 > /tmp/humanymous-storage-before
+
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+
+      # This target contains only QEMU plus the small kernel/initramfs gadget
+      # smoke. It deliberately excludes the browser VM and cannot satisfy a
+      # Mode 3V/4V detector measurement.
+      - name: Build compact kernel smoke
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: build/external-input-kernel-runner.Dockerfile
+          target: smoke
+          platforms: linux/amd64
+          load: true
+          provenance: false
+          sbom: false
+          tags: humanymous/external-input-kernel-smoke:ci
+          cache-from: type=gha,scope=external-input-kernel-smoke
+          cache-to: type=gha,mode=min,scope=external-input-kernel-smoke
+
+      - name: Enforce compact image budget
+        run: |
+          bytes="$(docker image inspect \
+            humanymous/external-input-kernel-smoke:ci \
+            --format '{{.Size}}')"
+          before="$(cat /tmp/humanymous-storage-before)"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          # Report before asserting: bare `test` calls made a red budget
+          # unattributable, so a failure could not be told from a regression
+          # without re-running the job by hand.
+          echo "smoke_image_bytes=$bytes"
+          echo "smoke_storage_delta_bytes=$delta"
+          df -h /
+          # Measured on run 30239746911: smoke_image_bytes=99234394 (94.6 MiB),
+          # against a 48 MiB cap that qemu-system-x86_64 alone (77.8 MiB of
+          # layer) could never fit. The guard's real job is to stop this target
+          # from growing into the `full` runner, whose guest qcow2 base is
+          # capped at 192 MiB on its own, so 128 MiB still separates them
+          # decisively while leaving ~35% headroom over the measurement.
+          test "$bytes" -le 134217728
+          # Disk delta measured 389562368 B (371.5 MiB) in the same run, so the
+          # 512 MiB transient budget holds and is left unchanged.
+          test "$delta" -ge 0
+          test "$delta" -le 536870912
+
+      - name: Run six-device kernel gadget smoke
+        run: |
+          mkdir -p deployments/artifacts/kernel-smoke-ci
+          # The image has no USER, so the entrypoint would run as root — and
+          # `--cap-drop ALL` takes CAP_DAC_OVERRIDE with it, so root cannot
+          # write into a bind mount owned by the runner user. Run 30240235428
+          # died on "can't create /output/console.log: Permission denied".
+          # Running as the runner keeps the hardening flags and needs no
+          # world-writable directory; the guest artifacts are world-readable.
+          docker run --rm \
+            --network none \
+            --read-only \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            --user "$(id -u):$(id -g)" \
+            --tmpfs /tmp \
+            -e HM_KERNEL_ACCEL=tcg \
+            -v "$PWD/deployments/artifacts/kernel-smoke-ci:/output" \
+            humanymous/external-input-kernel-smoke:ci
+          jq -e '
+            .status == "PASS" and
+            .kind == "kernel-runner" and
+            .accelerator == "tcg"
+          ' deployments/artifacts/kernel-smoke-ci/runner.json >/dev/null
+
+  detector-vs-bots:
+    name: docker detector-vs-bots
+    # The integration gate (~35 min, real containers) is the biggest minute sink:
+    # PR + manual only, not every push to main. Rule 60 keeps the identical local
+    # Docker stack (scripts/e2e-docker.*) as the authority for work on main.
+    if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: go
+    timeout-minutes: 35
+    env:
+      COMPOSE_ANSI: never
+      BUILDKIT_PROGRESS: plain
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Capture detector storage baseline
+        run: |
+          set -euo pipefail
+          used="$(df -B1 --output=used / | tail -n 1)"
+          echo "$used" > "$RUNNER_TEMP/humanymous-detector-storage-before"
+          done_file="$RUNNER_TEMP/humanymous-detector-storage-sampling.done"
+          peak_file="$RUNNER_TEMP/humanymous-detector-storage-peak"
+          samples_file="$RUNNER_TEMP/humanymous-detector-storage-samples"
+          monitor_log="$RUNNER_TEMP/humanymous-detector-storage-monitor.log"
+          rm -f "$done_file" "$monitor_log"
+          echo "$used" > "$peak_file"
+          echo 0 > "$samples_file"
+          nohup env \
+            HM_STORAGE_DONE="$done_file" \
+            HM_STORAGE_PEAK="$peak_file" \
+            HM_STORAGE_SAMPLES="$samples_file" \
+            bash -c '
+              set -u
+              samples=0
+              while ! test -e "$HM_STORAGE_DONE"; do
+                used="$(df -B1 --output=used / | tail -n 1)"
+                peak="$(cat "$HM_STORAGE_PEAK")"
+                if test "$used" -gt "$peak"; then
+                  echo "$used" > "$HM_STORAGE_PEAK"
+                fi
+                samples="$((samples + 1))"
+                echo "$samples" > "$HM_STORAGE_SAMPLES"
+                sleep 0.25
+              done
+            ' </dev/null >"$monitor_log" 2>&1 &
+          monitor_pid="$!"
+          echo "$monitor_pid" > "$RUNNER_TEMP/humanymous-detector-storage-monitor.pid"
+          sleep 0.5
+          kill -0 "$monitor_pid"
+          echo "baseline_used_bytes=$used"
+          echo "storage_monitor_pid=$monitor_pid"
+          df -h /
+          docker system df
+
+      # buildx (docker-container driver) is required for the gha cache backend.
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+
+      - name: Validate modular compose
+        run: docker compose -f deployments/compose.yaml config -q
+
+      # Every profiled test service reuses one of these three tagged images.
+      # Build the small defenders first, export their minimum remote cache, and
+      # reclaim local intermediates before the browser image starts. The
+      # job-wide quarter-second sampler records transient extraction and
+      # download peaks through scans, tests, and overlays as well as builds.
+      - name: Build canonical images under transient storage budget
+        run: |
+          set -euo pipefail
+          peak_file="$RUNNER_TEMP/humanymous-detector-storage-peak"
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          docker compose \
+            -f deployments/compose.yaml -f deployments/compose.ci.yaml \
+            --profile attack --progress plain build core gate
+          docker buildx prune --all --force
+          docker compose \
+            -f deployments/compose.yaml -f deployments/compose.ci.yaml \
+            --profile attack --progress plain build bots
+          peak="$(cat "$peak_file")"
+          peak_delta="$((peak - before))"
+          echo "peak_used_bytes=$peak"
+          echo "peak_delta_bytes=$peak_delta"
+          test "$peak_delta" -ge 0
+          # Measured on run 30239251233: this phase alone peaked at 4837302272 B
+          # (4.50 GiB), so the previous 2.5 GiB cap was never reachable. The
+          # runner has a 145 GB disk with 89 GB free at baseline, so this budget
+          # is a regression tripwire, not an exhaustion guard. 6 GiB restores the
+          # value complete runs passed before the unmeasured tightening and
+          # leaves ~33% headroom; tighten again only from a green whole-job peak.
+          test "$peak_delta" -le 6442450944
+
+      - name: Diagnose post-build storage phase
+        run: |
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          echo "post_build_used_bytes=$after"
+          echo "post_build_delta_bytes=$delta"
+          df -h /
+          docker system df
+          docker image ls
+          test "$delta" -ge 0
+
+      # The final images are loaded into Docker's image store. BuildKit's local
+      # intermediates would otherwise duplicate that content for the rest of the
+      # job even though the minimum reusable cache has already been exported.
+      - name: Reclaim build cache and enforce retained storage budget
+        run: |
+          docker buildx prune --all --force
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          echo "retained_after_build_used_bytes=$after"
+          echo "retained_after_build_delta_bytes=$delta"
+          df -h /
+          docker system df
+          test "$delta" -ge 0
+          # Measured on run 30240235428, the first run to retain a bots image
+          # with Chromium's headless shell restored: 1928437760 B (1.80 GiB),
+          # against a 1.75 GiB cap sized when that shell was missing. 2.25 GiB
+          # leaves ~17% headroom, which browser-version drift needs — Playwright
+          # updates move this figure by hundreds of MB at a time.
+          test "$delta" -le 2415919104
+
+      # Supply-chain: scan the release images for known-vulnerable OS/deps
+      # (audit SUP-1 / OpenSSF Scorecard). Fail only on FIXABLE High/Critical.
+      - name: Trivy image scan (core)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: humanymous/core:local
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Trivy image scan (gate)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: humanymous/gate:local
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+      # Free the fixed lab subnets before `up`, symmetric with scripts/e2e-docker.* preflight. The
+      # lab networks pin singleton subnets (networks.yaml, internal:true), so a leftover stack would
+      # fail `up` with "Pool overlaps". A GitHub-hosted runner is ephemeral (this is a no-op), but
+      # this keeps CI and local bring-up identical and self-heals on a reused/self-hosted runner.
+      - name: Free lab subnets (pre-flight)
+        run: docker compose -f deployments/compose.yaml down -v --remove-orphans || true
+
+      - name: Start the detection stack
+        run: docker compose -f deployments/compose.yaml up -d --no-build core origin gate
+
+      - name: Run the bots (automation catalog) vs the engine
+        run: docker compose -f deployments/compose.yaml run --rm -T bots
+
+      - name: Assert attack gate (Docker — complete catalog, no escape/FP/error/skip)
+        run: docker compose -f deployments/compose.yaml run --rm -T attack-assert
+
+      - name: Gate proxy-layer conformance (34 checks)
+        run: docker compose -f deployments/compose.yaml run --rm -T gate-e2e
+
+      - name: Pass contract + wargame
+        run: |
+          docker compose -f deployments/compose.yaml run --rm -T pass-e2e
+          docker compose -f deployments/compose.yaml restart core
+          docker compose -f deployments/compose.yaml run --rm -T pass-wargame
+
+      - name: Multi-subnet swarm — assert cross-subnet correlation fires
+        run: |
+          docker compose -f deployments/compose.yaml run --rm -T swarm-reset
+          docker compose -f deployments/compose.yaml --profile swarm up \
+            --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c
+          docker compose -f deployments/compose.yaml run --rm -T swarm-assert
+
+      - name: PLAN-08 feature overlays (Docker consistency)
+        run: sh scripts/ci-overlays.sh
+
+      # All Docker-dependent checks are complete. On this ephemeral runner,
+      # retaining stopped overlay images and local build cache only consumes the
+      # same disk needed to package the bounded text/JSON evidence below.
+      - name: Reclaim completed test images
+        if: always()
+        run: |
+          docker image prune --all --force
+          docker buildx prune --all --force
+
+      - name: Enforce final detector storage budget
+        if: always()
+        run: |
+          set -euo pipefail
+          before="$(cat "$RUNNER_TEMP/humanymous-detector-storage-before")"
+          done_file="$RUNNER_TEMP/humanymous-detector-storage-sampling.done"
+          peak_file="$RUNNER_TEMP/humanymous-detector-storage-peak"
+          samples_file="$RUNNER_TEMP/humanymous-detector-storage-samples"
+          monitor_pid="$(cat "$RUNNER_TEMP/humanymous-detector-storage-monitor.pid")"
+          kill -0 "$monitor_pid"
+          touch "$done_file"
+          for _ in $(seq 1 40); do
+            if ! kill -0 "$monitor_pid" 2>/dev/null; then break; fi
+            sleep 0.25
+          done
+          if kill -0 "$monitor_pid" 2>/dev/null; then
+            kill "$monitor_pid" || true
+            echo "storage monitor did not terminate cleanly" >&2
+            exit 1
+          fi
+          samples="$(cat "$samples_file")"
+          test "$samples" -ge 4
+          peak="$(cat "$peak_file")"
+          peak_delta="$((peak - before))"
+          after="$(df -B1 --output=used / | tail -n 1)"
+          delta="$((after - before))"
+          echo "whole_job_peak_used_bytes=$peak"
+          echo "whole_job_peak_delta_bytes=$peak_delta"
+          echo "whole_job_storage_samples=$samples"
+          echo "final_used_bytes=$after"
+          echo "final_delta_bytes=$delta"
+          df -h /
+          docker system df
+          docker image ls
+          test "$peak_delta" -ge 0
+          test "$peak_delta" -le 6442450944
+          # No lower bound here: this step runs after "Reclaim completed test
+          # images" does a full `docker image prune --all`, which also removes
+          # images the runner shipped with and that the baseline counted. Run
+          # 30239251233 legitimately finished at final_delta_bytes=-1784422400,
+          # so asserting `-ge 0` failed a job that had over-reclaimed correctly.
+          test "$delta" -le 2415919104
+
+      - name: Enforce artifact upload input budget
+        id: artifact-budget
+        if: always()
+        run: |
+          bytes="$(
+            for path in deployments/artifacts; do
+              if test -e "$path"; then
+                du -sb --apparent-size "$path"
+              fi
+            done | awk '{ total += $1 } END { print total + 0 }'
+          )"
+          echo "artifact_input_bytes=$bytes"
+          test "$bytes" -le 4194304
+
+      - name: Upload run artifacts
+        if: ${{ always() && steps.artifact-budget.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: attack-artifacts
+          retention-days: 5
+          path: |
+            deployments/artifacts/
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f deployments/compose.yaml --profile swarm down -v

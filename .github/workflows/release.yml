@@ -1,222 +1,270 @@
+# Canon: .spec/sot/delivery.sot.md; reproduce with scripts/ci/render_workflows.py
 name: release
-
-# SoT-31 R6 — publish the engine + Gate images to ghcr.io on a semver tag so
-# adopters `compose up` a pulled image instead of building from source. The `bots`
-# attacker image is NEVER published.
-on:
+'on':
   push:
-    tags: ["v*.*.*"]
-
-# Queue tag publishes; never cancel a mid-flight multi-arch push (partial ghcr).
+    tags:
+    - v*.*.*
+permissions:
+  contents: read
 concurrency:
   group: release
   cancel-in-progress: false
-
-permissions:
-  contents: read
-  packages: write        # push to ghcr.io
-  id-token: write        # cosign keyless (OIDC)
-  actions: read          # require-ci lists workflow runs for this SHA
-
 jobs:
-  # SoT-38 §9.7 / v0.2.2 — a tag must not publish images unless the FULL ci.yml gate
-  # (including the Docker red/blue detector-vs-bots job, rule 60) passed on this exact
-  # commit. release.yml does not re-run the tests itself; the release tag triggers
-  # ci.yml's full gate, and this job requires the detector-vs-bots job green — a
-  # unit-only push run is NOT sufficient to publish.
-  require-ci:
+  validate:
+    uses: ./.github/workflows/rust-validation.yml
+  readiness:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
-      - name: Require green ci.yml on this tag SHA
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          SHA: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          echo "Looking for successful ci.yml run on $SHA"
-          for i in $(seq 1 40); do
-            # Prefer a completed run for this exact commit.
-            mapfile -t rows < <(gh run list --repo "$REPO" --commit "$SHA" --workflow=ci.yml \
-              --json databaseId,status,conclusion --jq '.[] | [.databaseId, .status, (.conclusion // "")] | @tsv' 2>/dev/null || true)
-            completed_ok=""
-            in_flight=0
-            for row in "${rows[@]:-}"; do
-              [ -z "$row" ] && continue
-              id=$(echo "$row" | cut -f1)
-              st=$(echo "$row" | cut -f2)
-              concl=$(echo "$row" | cut -f3)
-              echo "  run $id status=$st conclusion=$concl"
-              if [ "$st" = "completed" ]; then
-                if [ "$concl" = "success" ]; then
-                  # A green ci.yml run authorizes a release ONLY IF it actually ran the
-                  # Docker red/blue detection gate (rule 60). The fast unit-only `go` job
-                  # that runs on push-to-main does NOT, so it must never publish a release;
-                  # the release tag triggers ci.yml's full gate (incl. detector-vs-bots).
-                  dg=$(gh run view "$id" --repo "$REPO" --json jobs \
-                    --jq '[.jobs[] | select(.name=="docker detector-vs-bots" and .conclusion=="success")] | length' 2>/dev/null || echo 0)
-                  if [ "${dg:-0}" -gt 0 ]; then
-                    completed_ok=1
-                  else
-                    echo "  run $id is green but did NOT run 'docker detector-vs-bots' (unit-only) — not sufficient for a release"
-                    in_flight=1  # keep waiting for the tag's full-gate run
-                  fi
-                else
-                  echo "ci run $id finished with conclusion=$concl — refusing to publish"
-                  exit 1
-                fi
-              else
-                in_flight=1
-              fi
-            done
-            if [ -n "$completed_ok" ]; then
-              echo "ci green on $SHA"
-              exit 0
-            fi
-            if [ "$in_flight" -eq 0 ]; then
-              echo "attempt $i/40: no ci.yml run for $SHA yet (tag may have landed before push CI); waiting 30s..."
-            else
-              echo "attempt $i/40: ci still in progress; waiting 30s..."
-            fi
-            sleep 30
-          done
-          echo "timed out waiting for a green ci.yml run WITH the Docker detector-vs-bots gate on $SHA — ensure the tag triggered the full gate (or run it via workflow_dispatch on this SHA), then re-tag fix-forward if needed"
-          exit 1
-
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: stable
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+      with:
+        node-version: '24'
+    - run: python3 scripts/ci/delivery.py release
+    - run: python3 scripts/ci/delivery.py crate-waves
+      id: waves
+    needs: validate
+    outputs:
+      count: ${{ steps.waves.outputs.count }}
   images:
-    needs: require-ci
+    needs: readiness
     runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:
-      # Let both legs finish for diagnostics; gh-release still needs *all* matrix
-      # cells green. A failed leg can still leave the successful image on ghcr —
-      # cut a new SemVer (fix-forward); never force-move the git tag.
       fail-fast: false
       matrix:
         include:
-          - name: core
-            dockerfile: build/core.Dockerfile
-          - name: gate
-            dockerfile: build/gate.Dockerfile
+        - name: core
+          dockerfile: build/core.Dockerfile
+        - name: gate
+          dockerfile: build/gate.Dockerfile
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3  arm64 emulation fallback
-      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
-      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - id: meta
-        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/humanymous-${{ matrix.name }}
-          # Tag-only workflow: always emit :latest for successful SemVer cuts.
-          # Do NOT use enable={{is_default_branch}} — tag refs are never the
-          # default *branch*, so latest was silently skipped (SoT-37 / adopters
-          # using HMN_VERSION=latest). See docker/metadata-action flavor latest.
-          flavor: |
-            latest=true
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha,format=long
-      - id: build
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
-        with:
-          context: .
-          file: ${{ matrix.dockerfile }}
-          platforms: linux/amd64,linux/arm64      # Dockerfiles cross-compile via TARGETARCH
-          build-args: |
-            VERSION=${{ steps.meta.outputs.version }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          provenance: mode=max                     # SLSA provenance attestation
-          sbom: true                               # SPDX SBOM attestation
-      - uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
-      - name: Sign the pushed image
-        run: |
-          cosign sign --yes \
-            ghcr.io/${{ github.repository_owner }}/humanymous-${{ matrix.name }}@${{ steps.build.outputs.digest }}
-      - name: Export digest for gate job
-        run: |
-          mkdir -p "${{ runner.temp }}/digests"
-          # build-push outputs digest like sha256:…
-          echo -n "${{ steps.build.outputs.digest }}" > "${{ runner.temp }}/digests/${{ matrix.name }}"
-      - name: Upload digest artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: digest-${{ matrix.name }}
-          path: ${{ runner.temp }}/digests/${{ matrix.name }}
-          if-no-files-found: error
-          retention-days: 5
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130
+    - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
+    - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - id: meta
+      uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/humanymous-${{ matrix.name }}
+        flavor: 'latest=true
 
-  # Require both matrix legs to have produced digests before GH Release.
-  # (needs: images already requires all matrix cells success; this makes the
-  # contract explicit for operators reading the Actions graph.)
+          '
+        tags: 'type=semver,pattern={{version}}
+
+          type=semver,pattern={{major}}.{{minor}}
+
+          type=semver,pattern={{major}}
+
+          type=sha,format=long
+
+          '
+    - id: build
+      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+      with:
+        context: .
+        file: ${{ matrix.dockerfile }}
+        platforms: linux/amd64,linux/arm64
+        build-args: 'VERSION=${{ steps.meta.outputs.version }}
+
+          '
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        provenance: mode=max
+        sbom: true
+    - uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac
+    - name: Sign the pushed image
+      run: "cosign sign --yes \\\n  ghcr.io/${{ github.repository_owner }}/humanymous-${{ matrix.name\
+        \ }}@${{ steps.build.outputs.digest }}\n"
+    - name: Export digest for gate job
+      run: "mkdir -p \"${{ runner.temp }}/digests\"\n# build-push outputs digest like sha256:\u2026\n\
+        echo -n \"${{ steps.build.outputs.digest }}\" > \"${{ runner.temp }}/digests/${{ matrix.name }}\"\
+        \n"
+    - name: Upload digest artifact
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: digest-${{ matrix.name }}
+        path: ${{ runner.temp }}/digests/${{ matrix.name }}
+        if-no-files-found: error
+        retention-days: 5
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    environment: release
   images-ok:
     runs-on: ubuntu-latest
     needs: images
     timeout-minutes: 10
     steps:
-      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
-      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download digests
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          path: digests
-          pattern: digest-*
-          merge-multiple: true
-      - name: Assert core + gate digests present
-        env:
-          OWNER: ${{ github.repository_owner }}
-          # github.ref_name is vX.Y.Z on tag pushes; image tags omit the leading v
-          # when using type=semver pattern={{version}}
-          TAG: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          test -s digests/core
-          test -s digests/gate
-          CORE_DIGEST=$(cat digests/core)
-          GATE_DIGEST=$(cat digests/gate)
-          echo "core digest=$CORE_DIGEST"
-          echo "gate digest=$GATE_DIGEST"
-          # Strip leading v for docker semver tags (v0.2.0 → 0.2.0)
-          VER="${TAG#v}"
-          docker buildx imagetools inspect "ghcr.io/${OWNER}/humanymous-core:${VER}"
-          docker buildx imagetools inspect "ghcr.io/${OWNER}/humanymous-gate:${VER}"
-          docker buildx imagetools inspect "ghcr.io/${OWNER}/humanymous-core:latest"
-          docker buildx imagetools inspect "ghcr.io/${OWNER}/humanymous-gate:latest"
-
+    - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
+    - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Download digests
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        path: digests
+        pattern: digest-*
+        merge-multiple: true
+    - name: Assert core + gate digests present
+      env:
+        OWNER: ${{ github.repository_owner }}
+        TAG: ${{ github.ref_name }}
+      run: "set -euo pipefail\ntest -s digests/core\ntest -s digests/gate\nCORE_DIGEST=$(cat digests/core)\n\
+        GATE_DIGEST=$(cat digests/gate)\necho \"core digest=$CORE_DIGEST\"\necho \"gate digest=$GATE_DIGEST\"\
+        \n# Strip leading v for docker semver tags (v0.2.0 \u2192 0.2.0)\nVER=\"${TAG#v}\"\ndocker buildx\
+        \ imagetools inspect \"ghcr.io/${OWNER}/humanymous-core:${VER}\"\ndocker buildx imagetools inspect\
+        \ \"ghcr.io/${OWNER}/humanymous-gate:${VER}\"\ndocker buildx imagetools inspect \"ghcr.io/${OWNER}/humanymous-core:latest\"\
+        \ndocker buildx imagetools inspect \"ghcr.io/${OWNER}/humanymous-gate:latest\"\n"
+    permissions:
+      contents: read
+      packages: read
   gh-release:
     runs-on: ubuntu-latest
-    needs: [images, images-ok]
+    needs:
+    - images
+    - images-ok
+    - crates
+    - npm
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          fetch-depth: 0        # git-cliff needs the full history + tags to diff since the previous tag
-      # Generate the release notes for THIS tag from the Conventional Commits since
-      # the previous tag (git-cliff, config in cliff.toml). Deterministic, grouped
-      # into Keep a Changelog sections — replaces GitHub's generic auto-notes.
-      - name: Generate release notes (git-cliff)
-        id: notes
-        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4
-        with:
-          config: cliff.toml
-          args: --latest --strip header
-        env:
-          OUTPUT: RELEASE_NOTES.md
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # enables commit/PR enrichment
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
-        with:
-          body: ${{ steps.notes.outputs.content }}
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        pattern: native-binaries-*
+        path: release-assets
+        merge-multiple: true
+    - name: Generate release notes (git-cliff)
+      id: notes
+      uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5
+      with:
+        config: cliff.toml
+        args: --latest --strip header
+      env:
+        OUTPUT: RELEASE_NOTES.md
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+      with:
+        body: ${{ steps.notes.outputs.content }}
+        files: release-assets/*
+        fail_on_unmatched_files: true
+    environment: release
+  crates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: stable
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth0
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 0 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 0
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 0 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth0.outputs.token }}
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth1
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 1 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 1
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 1 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth1.outputs.token }}
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth2
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 2 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 2
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 2 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth2.outputs.token }}
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth3
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 3 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 3
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 3 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth3.outputs.token }}
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth4
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 4 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 4
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 4 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth4.outputs.token }}
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth5
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 5 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 5
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 5 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth5.outputs.token }}
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth6
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 6 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 6
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 6 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth6.outputs.token }}
+    - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9
+      id: auth7
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 7 }}
+    - run: python3 scripts/ci/delivery.py publish-wave 7
+      if: ${{ fromJSON(needs.readiness.outputs.count) > 7 }}
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth7.outputs.token }}
+    needs: readiness
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+  npm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: stable
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+      with:
+        node-version: '24'
+    - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+      with:
+        bun-version: 1.3.14
+    - run: npm install --global npm@11.16.0
+    - run: python3 scripts/ci/delivery.py publish-npm
+    needs:
+    - readiness
+    - crates
+    environment: release
+    permissions:
+      contents: read
+      id-token: write

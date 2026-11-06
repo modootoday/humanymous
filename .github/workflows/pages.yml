@@ -1,0 +1,31 @@
+# Canon: .spec/sot/delivery.sot.md; reproduce with scripts/ci/render_workflows.py
+name: Pages deployment
+'on':
+  push:
+    branches:
+    - main
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: pages-production
+  cancel-in-progress: false
+jobs:
+  validate:
+    uses: ./.github/workflows/rust-validation.yml
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+      with:
+        artifact_name: checked-pages-${{ github.sha }}
+      id: deployment
+    if: github.ref == 'refs/heads/main'
+    needs: validate
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
