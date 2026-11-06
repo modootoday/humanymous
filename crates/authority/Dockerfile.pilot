@@ -1,0 +1,8 @@
+# Isolated authority contract/security pilot, not a full Rust product runtime.
+FROM rust:1.88-slim-bookworm@sha256:38bc5a86d998772d4aec2348656ed21438d20fcdce2795b56ca434cf21430d89
+WORKDIR /lab
+COPY Cargo.toml Cargo.lock ./
+COPY crates/ ./crates/
+RUN cargo test --locked -p humanymous-authority --no-run
+ENV CARGO_NET_OFFLINE=true
+CMD ["cargo", "test", "--locked", "--offline", "-p", "humanymous-authority", "--", "--nocapture"]
