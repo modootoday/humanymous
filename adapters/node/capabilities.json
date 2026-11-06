@@ -1,0 +1,26 @@
+{
+  "adapter": "humanymous.node",
+  "version": "0.1.0-experimental.1",
+  "protocol": "humanymous.adapter/0.1",
+  "status": "experimental-mock-conformance",
+  "profiles": ["node-http1-express-root", "fetch-hono-wrapper"],
+  "capabilities": {
+    "rawClientTls": "unavailable",
+    "originalH2": "unavailable",
+    "h3": "unavailable",
+    "rawHeaderOrder": "conditional:Node HTTP1 rawHeaders only",
+    "originalRawTarget": "conditional:Node HTTP1 only",
+    "completeBody": "conditional:bounded transfer-decoded content-encoded bytes",
+    "requestStreaming": "unavailable",
+    "responseStreaming": "available:unchanged handler response",
+    "websocket": "unavailable",
+    "grpc": "unavailable",
+    "trailers": "unavailable",
+    "collectorChallenge": "unavailable:reserved namespace fails closed",
+    "htmlInsertion": "conditional:explicit application template and CSP nonce",
+    "localAdmin": "unavailable:never mounted or proxied",
+    "auditDurability": "conditional:Rust authority integration pending",
+    "authenticatedPeer": "conditional:Rust IPC peer and ACL provisioning pending"
+  },
+  "releaseQualifiedTuples": []
+}
