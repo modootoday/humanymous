@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-06T20:40:50Z
+updated: 2026-11-06T21:27:12Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -121,6 +121,20 @@ cleaned final tree through the complete gates before merging; cleanup is not an
 untested post-merge action, and published Git history is not rewritten.
 
 ## Integration adapters and agent surfaces
+
+The expanded Cross-OS/Cross-Platform/Cross-Lang development scope, architecture,
+target-family catalog and conformance gates are canonical in
+[[sot:root/adapter-ecosystem]]. Adapters must satisfy that contract in addition
+to the migration invariants below.
+
+Include systematic Rust attacker/defender wargame simulation crates and an
+extensible bypass regression catalog. Targets are restricted to this project's
+isolated deployment; third-party probing is prohibited. Keep attacker artifacts
+out of public defender runtime images and normal installation. Record attack
+attempts, errors, skips, verdicts and human control outcomes without excluding
+failures from denominators or calling CHALLENGE an ALLOW. Docker full-lab pilots
+must demonstrate reproducible attack-to-enforcement evidence. Wargame expansion
+does not authorize changes to frozen scoring weights, predicates or verdict bands.
 
 Deliver a Rust humanymous CLI for supported operating systems and server
 environments. Include doctor diagnostics and install --dry-run planning before
