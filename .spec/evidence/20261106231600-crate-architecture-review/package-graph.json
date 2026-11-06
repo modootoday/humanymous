@@ -1,0 +1,665 @@
+{
+  "observed": "2026-11-07",
+  "scope": "static cargo metadata, not publication readiness",
+  "packages": [
+    {
+      "name": "humanymous-attacker",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_attacker",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "humanymous-attacker",
+          "kind": [
+            "bin"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-defender",
+          "kind": "normal",
+          "version": "*"
+        },
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-audit",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_audit",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "checkpoint_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "merkle_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "record_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "verification_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-test-support",
+          "kind": "dev",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-authority",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_authority",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "humanymous-authority",
+          "kind": [
+            "bin"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "decisions",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "native_process",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-audit",
+          "kind": "normal",
+          "version": "*"
+        },
+        {
+          "name": "humanymous-integrity",
+          "kind": "normal",
+          "version": "*"
+        },
+        {
+          "name": "humanymous-network",
+          "kind": "normal",
+          "version": "*"
+        },
+        {
+          "name": "humanymous-scoring",
+          "kind": "normal",
+          "version": "*"
+        },
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-behavior",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_behavior",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "feature_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-challenge",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_challenge",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "attestation_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "proof_of_work_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": []
+    },
+    {
+      "name": "humanymous-cli",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_cli",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "humanymous",
+          "kind": [
+            "bin"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": []
+    },
+    {
+      "name": "humanymous-defender",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_defender",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-scoring",
+          "kind": "normal",
+          "version": "*"
+        },
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-integrity",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_integrity",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "request_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "resource_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "verification_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-test-support",
+          "kind": "dev",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-model",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_model",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "inference_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-behavior",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-test-support",
+          "kind": "dev",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-network",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_network",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "h2_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "monitor_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "report_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "tls_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-test-support",
+          "kind": "dev",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-scoring",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_scoring",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "behavior_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "crosscheck_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "derivation_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "engine_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "trust_upgrades",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-behavior",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-model",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-signals",
+          "kind": "normal",
+          "version": "^0.1.0"
+        },
+        {
+          "name": "humanymous-test-support",
+          "kind": "dev",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-signals",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_signals",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        },
+        {
+          "name": "observation_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "registry_integrity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        },
+        {
+          "name": "report_parity",
+          "kind": [
+            "test"
+          ],
+          "crate_types": [
+            "bin"
+          ]
+        }
+      ],
+      "workspace_dependencies": [
+        {
+          "name": "humanymous-test-support",
+          "kind": "dev",
+          "version": "^0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "humanymous-test-support",
+      "version": "0.1.0",
+      "edition": "2024",
+      "rust_version": "1.88",
+      "publish": [],
+      "description": null,
+      "targets": [
+        {
+          "name": "humanymous_test_support",
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ]
+        }
+      ],
+      "workspace_dependencies": []
+    }
+  ],
+  "source_head": "6d46e2dee158a62be3e821e09113af3c53374efd",
+  "manifest_sha256": {
+    "Cargo.toml": "de238b1e110160177d0db963cc272c0c1237280f8495b35f302e60e76f5f66e9",
+    "crates/attacker/Cargo.toml": "cd4d610d4d1c14b58459c3d6b6602ab38eedb25f4e8c588b9a826cb805fd480d",
+    "crates/audit/Cargo.toml": "e0a86151d38001117657867b6a249cc594162b79ee3cdf61da6dc9fcb544f875",
+    "crates/authority/Cargo.toml": "51d9378fe3b3cfd154b7ce7812d8c650d0376880cddffbe6e0b8e1880d9dc96f",
+    "crates/behavior/Cargo.toml": "0964230abbca835e7b2815f1b56261743f47336a4162f2dfb95e69cba6e5a9a0",
+    "crates/challenge/Cargo.toml": "479c807d35cfc2a3f257cfc4183079d2c0b556b46917b76f8e1b52438b867ff7",
+    "crates/cli/Cargo.toml": "404d9f2944672979ee8e2e6b07dcbd74c5d42e46396cdc95b4fe8e18ecd3068b",
+    "crates/defender/Cargo.toml": "e73ce95f3d8982d4a8fbc1bcaf59d2f864987046a0227f8b86fe7ccd4ab8a332",
+    "crates/integrity/Cargo.toml": "7d348409840b94728a2d385269597167e31f629c45981276dcc9d13e60f7c22f",
+    "crates/model/Cargo.toml": "b9cb23e03aff36f9b178496757d071f64aa7d3c40b4eeec561177ad4163b0fbd",
+    "crates/network/Cargo.toml": "45427b23f221262aa2bb409fa2678200ed67b360bff29186a2605e1400ae54f8",
+    "crates/scoring/Cargo.toml": "22b6220a7d993e35b38d2da965be606518a9071b3fdc3c588c33b29a296d274e",
+    "crates/signals/Cargo.toml": "9cfd61796e5b60b8aadf2f70545816390436ff0ffbcf7e247a8a086b433ea97e",
+    "crates/test-support/Cargo.toml": "0c85873065399ed81b5d31cce03ecf3c5ca98491ad3f63bca08386c53ce56177"
+  }
+}
