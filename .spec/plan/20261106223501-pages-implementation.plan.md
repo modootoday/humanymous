@@ -61,17 +61,17 @@ not completed pilots. Reviews were explicitly renewed for the newly expanded
 record/checkpoint corpus and JSON escaping changes after parallel edits made
 the freshness gate fail stale. Ongoing source changes must be re-reviewed.
 
-**Cross-OS freshness blocker discovered before checkpoint:** core.autocrlf=true
-leaves 53 existing build/web assets as CRLF in this Windows checkout while Git
-stores LF. The CI-owned Rust verifier hashes raw working-tree bytes, so the
-current locally passing review digests differ on a fresh Linux checkout for
-those sources. Evidence `freshness-line-endings.json` records both digests and
-exact paths. Main/CI owner must choose a canonical policy: preferably enforce
-LF text checkout in root attributes and review that canonical inventory, or
-explicitly normalize recognized UTF-8 text in the verifier while hashing binary
-files unchanged, with CRLF/LF/binary negative tests. Do not just refresh hashes
-per runner or claim cross-OS freshness acceptance. No out-of-lane source or
-verifier was changed to conceal the issue.
+**LF policy selected by user:** added root `.gitattributes` with
+`* text=auto eol=lf` and explicit binary rules. Of 53 files containing CRLF bytes,
+52 are UTF-8 text; the PNG header's CRLF is binary and must not be normalized.
+Renewed the ledger for canonical LF text, retaining exact binary hashes. A
+canonical export of all 201 governed files passes the unchanged Rust verifier.
+Actual Git clean-filter tests cover LF/CRLF text and unchanged binary bytes.
+Evidence: `lf-policy.json`, `git-lf-policy-check.json`, `canonical-review.log`.
+No shared runtime working file was rewritten while its owning session edits it.
+Main must safely refresh existing CRLF working text or use a fresh checkout;
+otherwise its raw-byte local review will remain stale. New Windows/Unix
+checkouts enforce LF. Real cross-OS Actions execution remains pending.
 
 Public `spec check --no-local` passes. Full `spec check` still reports eight
 unregistered files in the separate Node adapter private evidence bundle, outside
@@ -118,15 +118,17 @@ Done: checkpoint 11f2f3c replaces legacy pages/layout/generators/assets, pins
 theme v1.5.0 SHA, provides locked Jekyll builds and read-only checks. Both actual
 baseurl builds pass 77-page theme/link/canonical checks. Chrome's 72 combinations
 and eight keyboard checks pass; seven validator boundary tests and Ruby/theme/tool
-dependency audits pass. Raw evidence is [[evidence:root/20261106223502]], and the
+dependency audits pass. Raw evidence is stored privately under
+`.spec.local/root/evidence/20261106223502-pages-build/`, and the
 inherited standards pilot now records actual execution. A follow-up removes four
 accidentally staged Python cache files and adds a local script ignore rule.
 
 In progress: no docs process remains. Runtime work continues in main/other lanes.
 The current 201-source ledger is valid on the reviewed Windows tree only.
 
-Next actions: main/CI resolves the 53-source CRLF/LF hashing policy, renews source
-reviews after its runtime changes and runs same-commit native/browser/Docker and
+Next actions: main safely applies the user-selected LF checkout policy to its
+existing shared worktree, renews source reviews after runtime changes and runs
+same-commit native/browser/Docker and
 remote Actions gates. Resolve the separate Node private-attachment metadata
 errors before claiming full spec check. Scan retained builder OS packages before
 calling the final dependency audit complete. Publish only after authorized full
@@ -138,3 +140,12 @@ scripts/ci/README.md. Persistent details are in these files, not provider-only
 memory; this residual chat is Codex-owned. Detection scoring/predicates/bands did
 not change. Main merge, tags, push, publication, third-party probing and external
 standards communications are outside this lane.
+
+## User-facing local preview
+
+The verified apex artifact is open as a retained deliverable tab in the Codex
+in-app browser at http://127.0.0.1:8765/. The loopback-only Python static server
+serves only the public built tree at
+`C:/Users/smile/.codex/tmp/humanymous-pages-20261106223502/apex-final`.
+It is not a public deployment. This user-requested preview should remain running
+while the user reviews it; server exec session is 24031.

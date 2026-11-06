@@ -7,7 +7,7 @@ updated: 2026-11-06T22:35:00Z
 verify:
   - python docs/scripts/check-site.py source
 rel:
-  governs: [docs/**, scripts/docsgen/**]
+  governs: [docs/**, scripts/docsgen/**, .gitattributes]
   depends_on: [sot:root/delivery, sot:root/standards-governance, sot:root/automation-evidence]
 ---
 
@@ -78,10 +78,13 @@ exact source mappings are required; a placeholder is a release blocker.
 
 Freshness must be portable across supported OS checkouts. A raw digest of CRLF
 Windows text is not equivalent to the LF Git object checked out on Linux.
-Main/CI owns the canonical text-checkout/digest policy and its cross-OS/binary
-tests. Until that policy is implemented and the source ledger renewed, a local
-Windows pass is not cross-OS freshness acceptance. Binary source bytes must not
-be normalized. The current 53-path mismatch is recorded in the pages evidence.
+The user selected root `.gitattributes`: `* text=auto eol=lf` plus explicit
+binary suffix rules. The source ledger now hashes canonical LF text and exact
+binary bytes. A canonical LF export passes the unchanged CI-owned verifier.
+Existing actively edited shared files are not rewritten by this lane; their
+owning session must refresh/normalize its working text without discarding edits.
+Subsequent checkouts enforce LF on Windows as well as Unix. Actual cross-OS CI
+remains a separate execution gate. The original 53-path mismatch is recorded.
 
 Reader mapping: Rust detection/network/model responsibilities map to computation,
 capability and model-limit pages; integrity to request-integrity/origin-contract;
