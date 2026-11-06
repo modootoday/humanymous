@@ -62,6 +62,7 @@ The [glossary](reference/glossary.md) is the single source of truth for product 
 - [Deployment cost, latency, and footprint](reference/deployment-cost-latency.md)
 - [On-call quick reference](reference/on-call-quick-reference.md)
 - [Standards and regulatory mapping](reference/standards-mapping.md)
+- [Public standards research and Draft v0](standards/index.md)
 - [Defensive validation catalog](reference/red-team-catalog.md)
 - [Defensive validation rules of engagement](reference/red-team-rules-of-engagement.md)
 - [Security audit](reference/security-audit.md)

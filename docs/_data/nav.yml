@@ -68,6 +68,11 @@
     - { title: "Transparency report", url: "/explanation/transparency-report.html" }
     - { title: "How this was built", url: "/explanation/how-this-was-built.html" }
 
+- label: "Standards research"
+  items:
+    - { title: "Project drafts", url: "/standards/" }
+    - { title: "Evidence interoperability · Draft v0", url: "/standards/draft-v0/" }
+
 - label: "Runbooks & help"
   items:
     - { title: "Incident runbooks", url: "/runbooks/incident-runbooks.html" }
