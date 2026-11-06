@@ -198,6 +198,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "getrandom"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "300e883d756b2e4ec94e02791f39b04b522276138852cfc41d9fb7e904106099"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "r-efi",
+]
+
+[[package]]
 name = "hex"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -213,11 +224,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "humanymous-attacker"
+version = "0.1.0"
+dependencies = [
+ "humanymous-defender",
+ "humanymous-signals",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "humanymous-audit"
 version = "0.1.0"
 dependencies = [
  "ed25519-dalek",
  "fs4",
+ "getrandom",
  "hex",
  "hmac",
  "humanymous-signals",
@@ -226,6 +248,7 @@ dependencies = [
  "serde_json",
  "sha2 0.10.9",
  "subtle",
+ "time",
  "unicode-normalization",
 ]
 
@@ -250,6 +273,22 @@ dependencies = [
  "serde_json",
  "sha2 0.10.9",
  "subtle",
+]
+
+[[package]]
+name = "humanymous-cli"
+version = "0.1.0"
+dependencies = [
+ "sha2 0.10.9",
+]
+
+[[package]]
+name = "humanymous-defender"
+version = "0.1.0"
+dependencies = [
+ "humanymous-scoring",
+ "humanymous-signals",
+ "serde",
 ]
 
 [[package]]
@@ -392,6 +431,12 @@ checksum = "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001"
 dependencies = [
  "proc-macro2",
 ]
+
+[[package]]
+name = "r-efi"
+version = "6.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf"
 
 [[package]]
 name = "rustc_version"

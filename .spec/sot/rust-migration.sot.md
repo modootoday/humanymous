@@ -237,3 +237,11 @@ grow and include Merkle commitments. An independently retained trusted head must
 be present exactly before restoring chain state. Empty history is valid only for
 an explicitly authorized first installation without an existing trusted head.
 No local verification can prove preservation of an externally unanchored tail.
+
+Durable Log must authenticate recovered state before append, persist records
+before advancing the chain, and persist due checkpoints before reporting
+success. Any disk failure poisons the writer. Emit-and-act releases its closure
+only after these boundaries; a durable record followed by checkpoint failure is
+an ambiguous logical operation requiring explicit recovery, never blind retry.
+UUIDv7 uses OS entropy and fails closed if entropy is unavailable. Local writer
+signatures are not independent witness anchoring.

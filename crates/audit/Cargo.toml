@@ -23,6 +23,8 @@ humanymous-test-support.workspace = true
 
 [target.'cfg(any(unix, windows))'.dependencies]
 fs4.workspace = true
+getrandom.workspace = true
+time.workspace = true
 
 [lints]
 workspace = true
