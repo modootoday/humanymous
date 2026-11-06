@@ -1,0 +1,2371 @@
+{
+  "schema": 1,
+  "reviews": [
+    {
+      "source": "adapters/contracts/adapter-0.1-request.schema.json",
+      "sha256": "90ca279de5c278af198608ec087941a03a8edc3fd81474a1788f513567b39b58",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/contracts/adapter-0.1-response.schema.json",
+      "sha256": "ffeb0eb50bf01d249a0374db1b5a781297fcda238d8d3e5164c68fb0ec4dc538",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/contracts/README.md",
+      "sha256": "50dee26af4d5a3685a7dee8649829c25d70cd3524b4503bc74fad1996e6cf062",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/.gitignore",
+      "sha256": "ba79bbc25fa8951489e77f28f1561c2e9388115cb33f1c606424f8e08169f96b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/capabilities.json",
+      "sha256": "dc76ebe8521634d60c17bafd315d9fecc2cdc3da22b1e47c8f688a3a661df0b8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/LICENSE",
+      "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/package-lock.json",
+      "sha256": "7b8a1890c75e45aeb729113dc2be648e4ee5cb789905c6680930b443331bdc1d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/package.json",
+      "sha256": "221225c94e3b2fa4f625585ec009dfdc658b4ee4279cfa8ba801c7b67516c75c",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/README.md",
+      "sha256": "40b48482d82511862200f4dc388e8119b4b3ddd055d4e5cf0edf5d5180f576b9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/src/index.cjs",
+      "sha256": "9039b26e0eb867715b3a5a28a4119552e1bf5f25aa169efdf61024f9d572e7c9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/src/index.d.cts",
+      "sha256": "4d15cc2bc349ef52181555475b49bdbb7cb49e2bda72687b7907ff326e2f77bc",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/src/index.d.mts",
+      "sha256": "367b9e4e891801071f84072950f452e70bb63372ab988d06479cfb0d2e848983",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/src/index.mjs",
+      "sha256": "940331bb0246ba144ccca0c5d7c8c3098b9b8a2b67efe9cca2e0c0e04d50245a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/test/conformance.test.mjs",
+      "sha256": "5b97faa75808105cf40b3e20c1a1167e82589323600a217e54c5fbd07dddb51d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/test/package.mjs",
+      "sha256": "f79ae947e11347722b6b582d7b7cfed7b9b8356cc227e1c8d3880ff4b6701bad",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/test/pilot.mjs",
+      "sha256": "0cb661374edbd9fbac31c22c11c296133da28fb3c17f89df0cf8b588f5255029",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/test/types.cts",
+      "sha256": "4aabba7f2c17ddbb45bb67be3f60993bb6544e0d41cb8565e7b4756efdb5269a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "adapters/node/test/types.mts",
+      "sha256": "978f2b170c06fc23ebc604b146a3647dfac1a30945f2856baaa96b4e88410e7f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/integrator.md",
+        "docs/explanation/will-this-break-my-app.md"
+      ]
+    },
+    {
+      "source": "build/bots.Dockerfile",
+      "sha256": "559b3117375ae41f4d3eecb009a1c15c79cc4b84aa4e7974efe5e11e0f9145d9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/bots.Dockerfile.dockerignore",
+      "sha256": "d9ca2df3ec02d63752bae5b84d5d3eebeb31d0c5e5b193297f50d39a74a2f9c1",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/core.Dockerfile",
+      "sha256": "21c178708a3757df14569078898199be64d907499a8a1b388f249cb571d4fe8f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-browser.Dockerfile",
+      "sha256": "cdaaf0ab8fde2298376540fe6a709b2977597e7e08cf490ec24f14690a5fe6ac",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-browser.Dockerfile.dockerignore",
+      "sha256": "cac88f95a4c6d2de34ee410e552506ca0a39e11fa9c8e72d3d3ffc45a35955be",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-controller.Dockerfile",
+      "sha256": "c162b81b12efda39bc879b276ae40c646910d9ded8484108e59067ca173becb5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-controller.Dockerfile.dockerignore",
+      "sha256": "d5c39aac80fb16ef72f444934147953b2e853f3c3a2d837f8157939f54bb5624",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-core.Dockerfile",
+      "sha256": "1a7772b600955139b49381c39ea4bb6462e6f1e0cc7793800b200b0b22cc2d0d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-core.Dockerfile.dockerignore",
+      "sha256": "e1d1ae81c6cfd5a9726227985ea69b5d32bdee300772ef49a0fdced636da98d0",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-kernel-runner.Dockerfile",
+      "sha256": "37157655cae2095a631a5d9bb425db9e2a4a2b3c7caa78457e868e4e8a8b3cfc",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-kernel-runner.Dockerfile.dockerignore",
+      "sha256": "16164ff338d23b17dffd5b8427fdb1251f76369d0f79a76794f412450314f71f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-pki.Dockerfile",
+      "sha256": "a4f7eafeda82a80226279a4eaf31a8fba0ee77b3943e7165f65fa90b95669e18",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-pki.Dockerfile.dockerignore",
+      "sha256": "b81d0673196c4986074c6a991b2333157cfc829b34d9ce0078084c0bf83a4520",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-usb-broker.Dockerfile",
+      "sha256": "f55b1c6eacf660855fbd2a5be9873f258ed80de0fb04bd91ed0c689105ec8858",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-usb-broker.Dockerfile.dockerignore",
+      "sha256": "5f585df0f21601abdeca1a66e95046b85fe013596745b3e34a12e4a503147209",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-vusb-gateway.Dockerfile",
+      "sha256": "6f2fdd4516d959a6b250e03a24b5278cb60fdc4144c057d3823450267dea74b3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-vusb-gateway.Dockerfile.dockerignore",
+      "sha256": "93e319fa149fddf0fc1017c39accc71e6c635ca92a20c891075dd1ff3c839703",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-vusb-lifecycle.Dockerfile",
+      "sha256": "f1e6ddd137dd1d312e18cc0fbadbf129a5cddd6cfe6e7389c279ba05d1f6a1b5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-vusb-lifecycle.Dockerfile.dockerignore",
+      "sha256": "aa0d5fb3d55b6b52b656c817514c3eac1d86cde81259ebfa5d9dd632a53dcee9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-vusb-profile.Dockerfile",
+      "sha256": "cc808ffac1b5fb77a0a85fa4434a56410f6660713ee2f81a75b5fab53484914a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/external-input-vusb-profile.Dockerfile.dockerignore",
+      "sha256": "66ada7de68e52775ed3f3bd9628d700433e18a38f9f115323b468e372d2611e8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/gate.Dockerfile",
+      "sha256": "5e66d0b83be2d4b186ab919e3f181f16704d8dbf25615fbbf950d2f8a2b3511c",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "build/gate.Dockerfile.dockerignore",
+      "sha256": "360e520e0c9ead72e6cd902b3314d0df90b1822387f972da1e786326aaf5eab9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing build definitions remain historical Go/lab paths, not qualified Rust artifacts. Reader pages deliberately provide no runtime image command and require replacement provenance, defender-only contents and isolated deployment verification before release.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/red-team-rules-of-engagement.md"
+      ]
+    },
+    {
+      "source": "Cargo.lock",
+      "sha256": "93ccc4f47b2b5d84d64128eb60e974e83473d3f7a6de76b74593298e03aa5b9e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Workspace metadata/test support describes library migration state rather than a distributable service. Reader pages provide no executable installation example or OS support guarantee; exact artifact/native/runtime qualification remains required.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/developer.md",
+        "docs/reference/install-requirements.md"
+      ]
+    },
+    {
+      "source": "Cargo.toml",
+      "sha256": "d90186dd92e323e3d6d2737047096bf0336a1ab2fdef947951050f3435aba067",
+      "reviewer": "codex/rust-pages",
+      "notes": "Workspace metadata/test support describes library migration state rather than a distributable service. Reader pages provide no executable installation example or OS support guarantee; exact artifact/native/runtime qualification remains required.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/developer.md",
+        "docs/reference/install-requirements.md"
+      ]
+    },
+    {
+      "source": "crates/audit/Cargo.toml",
+      "sha256": "50ce3738c9b6d70e707696130aeceddf60bd8bc4e1edbb574685210ca944ef04",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/LICENSE-Go.txt",
+      "sha256": "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/checkpoint/mod.rs",
+      "sha256": "ad77ab9eabf12dba2f2bb3332c705e0485332cde3c4f687135d3d2876eaec7b9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/checkpoint/witness.rs",
+      "sha256": "ff0e73139ddcf2d94d37b54d5d23a7207e34912125deccdd05886a0d1b98f602",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/lib.rs",
+      "sha256": "5be56cfdc6328286d55e1b469f6da61333814fad7a9809a90d2226d4e193b8f2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/merkle/mod.rs",
+      "sha256": "f57eb0e19b0c93e98ad1c1a18f00b49a81868d4d348472579e37d0880fd84ae5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/record/canonical.rs",
+      "sha256": "ba836c5984a774a793fafbc48fa6787b590721fad296cde21fd7c98574253e7f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/record/mod.rs",
+      "sha256": "d3b78870106e12d1bb872dcd347c889ca02fdcff8666e4a8342fddf5b37d891e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/record/normalization.rs",
+      "sha256": "f461a07efa734842a1c26f08e4152b9478ca1dcd9e64306b57fc61a6122f25cf",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/record/ordering.rs",
+      "sha256": "0d11a0bd8be69ce75d4fdaae57dec312112160207c85f214422cdf4474083e2b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/mod.rs",
+      "sha256": "df240507c4fa8109c71975829217a388389ac2a20b110c3773f8e649b664718e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/checkpoint_parity.rs",
+      "sha256": "09aac015de6d7e45343095afc63c4745aee2749e15d59322567956373c4be0b9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed 180 checkpoint/key/MAC vectors and stateful append-only witness signature/restore comparisons. This does not qualify durable witness persistence, service restart or deployment; audit guide retains those explicit pending limits.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/fixtures/checkpoints.json",
+      "sha256": "a28b057c83ed946d407e05fa4c7766ede4700c737617d27d231d46f0180716ef",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/fixtures/merkle.json",
+      "sha256": "c0a755b9264539ebad9a1dc999ccaa77c6e088c4c440762293a97cde7560f067",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/fixtures/records.json",
+      "sha256": "7175918e0ab3121b62f1ab8cbbd8d9b23b8382353a37273d10f2f95629499cdc",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/fixtures/verification.json",
+      "sha256": "508f619c652d97be515f12a04f517acedc5b5b3ec959f6d2e6de5fad0a119300",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/merkle_parity.rs",
+      "sha256": "a7e133486fe7de0bd8c4462b8b807bf29f3a0398c56dde2259f01ecb73c95f12",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/record_parity.rs",
+      "sha256": "cce55f1007da9448ae669f83425f5d1493b9406649c29af7674d1a6cf83f831d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed expanded 92-record Unicode-15 comparison corpus and no-mutation assertions. These tests remain record-wire/hash evidence only; reader audit guide still withholds durable runtime, CLI, restart and erasure qualification.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/audit/tests/verification_parity.rs",
+      "sha256": "c5c70aa060cc1e794274ae2c64aa32a8c5bdafd1422b4c7bfebb6a6f07691343",
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/runbooks/erasure-crypto-shred.md"
+      ]
+    },
+    {
+      "source": "crates/behavior/Cargo.toml",
+      "sha256": "0964230abbca835e7b2815f1b56261743f47336a4162f2dfb95e69cba6e5a9a0",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/behavior/src/features/extraction.rs",
+      "sha256": "e03e68395624c97603952e347b23fb9e1d56a2fc48317795f162f152d73633ad",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/behavior/src/features/mod.rs",
+      "sha256": "b8b14880eb5590c0b5329b5cdcb961926eba9db36d9fb02d51699230470daa84",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/behavior/src/features/schema.rs",
+      "sha256": "29adeca7af946df76539609d60e7364a613cd7cdca9d17131cf5c18bd68f484a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/behavior/src/lib.rs",
+      "sha256": "41d5579b01eb6cd36ca5918bdc75b562698272fa04a9e35f8f58c715267d98aa",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/behavior/tests/feature_parity.rs",
+      "sha256": "42e31bdbe7ed4826dd63454bf1007a6116e61345aab7f994c984d382258636b9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/behavior/tests/fixtures/features.json",
+      "sha256": "e4757db0f9b8a9249868de17e72685061f4e86a2a9e2b2809a233c49eb02a491",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/Cargo.toml",
+      "sha256": "479c807d35cfc2a3f257cfc4183079d2c0b556b46917b76f8e1b52438b867ff7",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/src/attestation/mod.rs",
+      "sha256": "afc4d50903dc503298547b42f0fd9e15c82acbffaaa21c35809ec3ba1522d1dc",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/src/lib.rs",
+      "sha256": "8aa902a1e0291752894c14851996dd7d7ca444dd621e66f7fee803ed8a0df2f2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/src/proof_of_work/challenge.rs",
+      "sha256": "95e6ddb7d70066246b1d6d0d3174984bc59ba1f7f4bca7d59aca48a0554a8a83",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/src/proof_of_work/mod.rs",
+      "sha256": "326c7ceb965c57564313ad99edcc0b6d2c7e558cd2e4fb525e7f9ff0fa3a65b4",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/src/proof_of_work/target.rs",
+      "sha256": "62a5ff5abe629d0b9d1a9f67ac6873e3d6efa3a3c03789bb5417e30cf78e597e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/tests/attestation_parity.rs",
+      "sha256": "b5fc227df6d39190ec0ccffc08a27e806b155d2eb42f051ab0e93685cc69e4a9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/tests/fixtures/attestation.json",
+      "sha256": "bb0f1ea2979aa2537931bc97843d2e68c778443921f88a237dbe4e251fee22c4",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/tests/fixtures/proof_of_work.json",
+      "sha256": "26941932d627f79f4f9c2b2165c8d9fe54aef78ccbb297bf3a1ba37c86cb61b3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/challenge/tests/proof_of_work_parity.rs",
+      "sha256": "6e4a9e795fac6d1f6a947c0cd254d9f11e49ce7400c4dddf41148450f13c9296",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stateless challenge/attestation primitives and vectors do not establish a browser recovery service. Reader pages preserve motor/speed independence and explicitly mark Rust browser/accessibility pilot acceptance pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/Cargo.toml",
+      "sha256": "952b33c8c18b09df5e68205ad8f574afbc40475f9aa1ddd3c6403b86aed04502",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/lib.rs",
+      "sha256": "de3f90370225a907d986bda42fa18cbf046959a0d0d78f1ac50f1f396f17b23a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/canonical.rs",
+      "sha256": "70439a4a0050edb85db942d797ad8801a47f39f058081647467b5994a58f0990",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/mod.rs",
+      "sha256": "8616303a73bb1f706640197d2c7c5701568b7c376ff0abc681193eaa61029f89",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/rotation.rs",
+      "sha256": "369eaed99785b14d2d7b4bf4e328de67ef4f60f7be9970b02476699516f0d0b8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/token.rs",
+      "sha256": "e7962488aac1bed6d7452c8b56327480fff486816094001a7d30fa93be452e9b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/verification.rs",
+      "sha256": "6b097215fd0d622295caffcd64a99f9b00c1d6093730ae5eeebae3a6e126e4ab",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/resource/mod.rs",
+      "sha256": "ccad57be6d531b02962655189289f86a87875ea48d594f47ddf40471c66e6033",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/tests/fixtures/request.json",
+      "sha256": "6ee2be626741c3168b03a9da9948545c5d831aa0d6a8a805368112f630cbde58",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/tests/fixtures/resource.json",
+      "sha256": "6d6d27e642bcf4ce1ac45b3dbe57f9787170f50526a532285486100463c0e7df",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/tests/fixtures/verification.json",
+      "sha256": "d623988f446c2d11fce701c9b070f06771f8a10ba3cc264dec794906928908ff",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/tests/request_parity.rs",
+      "sha256": "453a9815fc4de7901599a50b2dcbd94e73c853ad4ed9d24b955f4f18a97d3a26",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/tests/resource_parity.rs",
+      "sha256": "470d9c40e1d68c82ff478cd684698e1fcb139da570b5fd6d4a67a88811a6ac7f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/tests/verification_parity.rs",
+      "sha256": "e8c1f61b6a5c1b0a2a88a0aff6a6adcf2892fa49f1d541c58b6a72fcc5c65f7a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/how-to/configure-attested-routes.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/model/Cargo.toml",
+      "sha256": "b9cb23e03aff36f9b178496757d071f64aa7d3c40b4eeec561177ad4163b0fbd",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/model/src/inference/bundle.rs",
+      "sha256": "0c263b5f509ab5e6ef8165f46106247429d546150078cac5500481de7e88c9af",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/model/src/inference/mlp.rs",
+      "sha256": "85f980297bdeecf7a74a858fc883d36c3b400cb76cbbcb2b21524a83bf92c254",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/model/src/inference/mod.rs",
+      "sha256": "ab3db88975c14310c655d480079332e11c92467215756bfb90a638fda67cb13e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/model/src/inference/runtime.rs",
+      "sha256": "c0a1f08bb6d9a04e2f32eba8e5da100279d475499a5a44cc99272a7a3fbc7382",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/model/src/lib.rs",
+      "sha256": "60eda1da4d69c8f854b1bb9a7b705c6029e745216934976fc3a8fc9ad661c15f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/model/tests/fixtures/inference.json",
+      "sha256": "5b6764eac0aadcba60ed619126b7174b012e40be6deb8f32bfc7995ba354a9fe",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/model/tests/inference_parity.rs",
+      "sha256": "a412c4b53f824e4ef9bd140c253a44ada288198f6984656acaa11b13fb8e2aa0",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure feature/inference implementation and fixtures are migration-only, not an operational training/update loop. Reader page makes no automatic learning or deployment claim and preserves sparse-input/accessibility counterexamples.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/self-correcting-behavioral-model.md"
+      ]
+    },
+    {
+      "source": "crates/network/Cargo.toml",
+      "sha256": "45427b23f221262aa2bb409fa2678200ed67b360bff29186a2605e1400ae54f8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/http/headers.rs",
+      "sha256": "afc5ebac8a99902a4e0482653242e4c97ebf98d5f426b663c4f0280a308fd0f8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/http/mod.rs",
+      "sha256": "72c33358a014143140ca9c71afb8fc1cae9c2ea0153836bf3505e5144f5c4e4e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/http2/mod.rs",
+      "sha256": "f6ddb657dc4d964ad822ced39b69512cb310a2e24e82aef60d714580e90c2781",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/http2/monitor.rs",
+      "sha256": "c817c1f1ef0785ab9b4f83313060b5639df3b6b93ab6abf67ea95bf09e409f46",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/lib.rs",
+      "sha256": "4b4355e176791191741ef51e7aaf05611a61a9030a5c8bab20166c72f629b84f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/report/assembly.rs",
+      "sha256": "8e1fb60339e6f6cc0f01d5691cd21bd1846fa630612c629efa07a56a0bbeb7c6",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/report/claims.rs",
+      "sha256": "e4d798876767b3233d3806f6cecd22ba4c67b90522f6be99faab8ade6c622ea8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/report/mod.rs",
+      "sha256": "6505735608b8a39d73ecb9f57a130e9a415b86af7305876450acebd2e50f19b1",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/residual/mod.rs",
+      "sha256": "1e0a4cf5377b553e907bd47e6d52399e7807a8a623afecd7bbfbfcf4858a35b5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/tcp/mod.rs",
+      "sha256": "966663d089f9e6d6014992a915a3c0aad831ab04a8c54f3bc8c821434dad5abd",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/tls/fingerprint.rs",
+      "sha256": "6c10ab922e86d7f0504508f84497fdb85fb460220870ee582eb48d300e21a192",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/tls/hello.rs",
+      "sha256": "d95a2c3400ab6984a9e8f6bb6b533600febba36b8d4b2cb8756aa18f09e7a10e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/src/tls/mod.rs",
+      "sha256": "2e228aa45058301fdba6fa05533884f24fdd7fcfee140487b994d19f9279de02",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/fixtures/h2.json",
+      "sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/fixtures/monitor.json",
+      "sha256": "e0c640671f8ebe0cbf47f0ec893ede98255710f5b9eb95448c33b81d6f9f874f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/fixtures/reports.json",
+      "sha256": "f4b534f80e214eb4b37f34cacc12aba3c3081aaeb920cf3be242752199fcf06e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/fixtures/tls.json",
+      "sha256": "048c7fb450ff33db5a91f1b8f6ddc9e480504b3a767971519b94ccc37c6e9540",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/h2_parity.rs",
+      "sha256": "51600f099b6ff78dfff0d099a9c3574f9373839a2c5f3c558d5932824f8d58cb",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/monitor_parity.rs",
+      "sha256": "3e3ce87642eb5c49ff428860e8f5fcbf99dda133b4f50c4b65432971a551a371",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/report_parity.rs",
+      "sha256": "9d28088b687b038d18a226951889ecb8d83518b56f3934eb02f7ee6db92008d5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/network/tests/tls_parity.rs",
+      "sha256": "32572b1c0a023eda9820aea849211598806f294ba1c3df07dce29cc8ef108153",
+      "reviewer": "codex/rust-pages",
+      "notes": "Protocol transforms/monitor source and fixtures do not qualify a live raw-ingress server. Reader pages preserve original-client versus upstream TLS, normalization and unavailable-capability boundaries; no HTTP3 capture support is claimed.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/supported-topologies.md",
+        "docs/concepts/how-gate-sees-a-request.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/Cargo.toml",
+      "sha256": "22b6220a7d993e35b38d2da965be606518a9071b3fdc3c588c33b29a296d274e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/combination/mod.rs",
+      "sha256": "089ce1bc184d944946360d41af43795463819f5b077d493e1d9422e71c74ee2a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/consistency/crosschecks.rs",
+      "sha256": "d7efd1eb653f708ff248adffc7a2ea13f6c7cd959a52a2054b41c4de79eaeb90",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/consistency/mod.rs",
+      "sha256": "0f5e045437cd64bfcc5abbb640638a34f626ae89ae4af453895aeb750b7a5f60",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/consistency/user_agent.rs",
+      "sha256": "4eefab99a69224513ce5f395f94c8421b76bf27fc1abd404328d3e491e4935bd",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/derivation/advanced.rs",
+      "sha256": "1742ddb6ad14cdcf846b6c121cf19bbcfa7a43e3e78d4ab01de09094ba11b714",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/derivation/behavior.rs",
+      "sha256": "c100b82d922651eb163092a6f79d0b40ecab55ced246379e779d7f2ebfe0e003",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/derivation/environment.rs",
+      "sha256": "f9f622ac113719f577e8e98b9d40a8ff769cd04cfe41f90474bc008f3b20bc43",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/derivation/guard.rs",
+      "sha256": "5e1b296bb5da4d1bf695f2911e265aab478033a844b7486ec839ab195573c989",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/derivation/mod.rs",
+      "sha256": "37f9c2e98ec8ccee9297da96a5610765726bf10792ca663340f994730f524b61",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/engine/mod.rs",
+      "sha256": "d9e7e9acc0c325f84bb0228a8f37c11ebcbee2570047ccfb2a7f7b50c04917dd",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/lib.rs",
+      "sha256": "7a4be6c9a27087e9f5500316bc015b3cd7cdbf48740320f8be8d7d221e22ae66",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/policy.rs",
+      "sha256": "4c414bec267fe120957c5a04729aad5cc6eeccc83f5634aa885a3ea03b110930",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/promotion/mod.rs",
+      "sha256": "b50de5a58e4883ca369ca278c9e12c993f8e531bc082ca0a094c45df57c95c2d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/src/trace/mod.rs",
+      "sha256": "7e6d02c6b6589b34ca29f86dc0a18aa23480093b7d7ec78be59ad96da8605c12",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/behavior_parity.rs",
+      "sha256": "931c8209e1482663c40519c2c6cc67f9db754796b61b6722f2af89dc4920f047",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/crosscheck_parity.rs",
+      "sha256": "0d7b94bbf0e75a5d5135914a5e9bda31514321b7e10f2dced0e473ed942c5b9f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/derivation_parity.rs",
+      "sha256": "c9cf16db20384501c7b910a527a10022027ce4acf393b2519789547ee787ca07",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/engine_parity.rs",
+      "sha256": "e4159f277417c41e29719ab4ef2fcf6a2f7af1b93d3f30c82cd9bd17f63d06b2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/behavior.json",
+      "sha256": "c30b64c72d5ba5f279ec8e09109d05d6d247283fbbbaa1df1957e6ef39f15509",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/crosschecks.json",
+      "sha256": "605c8968e636537dc9f3ed397f6990a4dedddf43496bde5d3dcd2ceda91b73c3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/derivation.json",
+      "sha256": "a2df6bdb401cd49f5e63ade51cbfb82140856bf8dbf19c059fa13684f9bbdd97",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/engine.json",
+      "sha256": "27e5d6e8e96e0e312a98da52e0077b2681ab980c217997dc47ffb6beb7ef13bf",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+      "sha256": "04eb9bd2a02d70ea1dd7796c8128ef03b2cc10f41bcafb97d91c61873ef264b2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/frozen/go-http-client.json",
+      "sha256": "5fd5941b45ee6a43a113a91c132f5928a93bdaedc5f1fb447e13e3eca11a0725",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/frozen/human-chrome-allow.json",
+      "sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/frozen/no-client-hr10.json",
+      "sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/frozen/selenium-hr1.json",
+      "sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/fixtures/frozen/ua-tls-h2-hr2.json",
+      "sha256": "3a8474c8e3de9dd33d56a470ec79a20743b184699401c6311720f2af38be2236",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/scoring/tests/trust_upgrades.rs",
+      "sha256": "5823d9dec65c37710fa6079a315e0adf5b10b4fadaa6502f50abff841f6ea493",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/Cargo.toml",
+      "sha256": "9cfd61796e5b60b8aadf2f70545816390436ff0ffbcf7e247a8a086b433ea97e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/lib.rs",
+      "sha256": "439c8078d4e7eda349d62babfc51e6e3af31925c6fe76d5c3d27226b8a43c2c1",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/observation/mod.rs",
+      "sha256": "89d4b01e8bf265133e577ea5d1e8b6e72c3c3054b4a9fc30aeec5f76da92d7ef",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/observation/registry.json",
+      "sha256": "daa6d3f397c1f0b80e84e38e0bc08ad800eac1d35dbc72ddb9532c5fae14312e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/observation/registry.rs",
+      "sha256": "a3ded1435bb3c1e0ba4cf5a3ed6bade87b890a6deb0d3eef13d2fd731516f631",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/observation/signal.rs",
+      "sha256": "ba42b74765c5fa9a66d8bc5589e20cdb580676a82f6995c9793441931cc34184",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/observation/verdict.rs",
+      "sha256": "c7f57dbda88e71a59c6ba2dac3615f8148a3ec6cd012fb18ca496ca433fc4d9f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/observation/vocabulary.rs",
+      "sha256": "14bfe697108b680a1911fbf058e9276432de6671bf6445661c25587ae101de1b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/aggregation.rs",
+      "sha256": "824192b7c149d5809eb05a28ab0eeea6caaf808ce79512a24f015f4c11ce916c",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/behavior.rs",
+      "sha256": "1fe90181c6d158038336358e203fd05f663e63d926e69b5d1cdefe4ae0ca6bb6",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/client.rs",
+      "sha256": "9139618e60152294c21705584fed6b1973b2dbf46130e1fec81cbbadb8b660f6",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/mod.rs",
+      "sha256": "907c1acbc341c52cb4169e0d43997648d0389e5aa94b8a6b735644e8fcc9515d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/network.rs",
+      "sha256": "3d126f8d7c09847051998d7d1bd267dcc47f09b214b61d2ff61b7665199eb362",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/scoring.rs",
+      "sha256": "518497ccc0abd1b64589d81418241263a6a1b133b4ee59723cd5a9320b0aa402",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/session.rs",
+      "sha256": "9c84a402f71690b646e3b2c64e23aee5e1a217bad38622440cb3b2d81455abe5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/report/timestamp.rs",
+      "sha256": "552dd3ba2af72d0ec762235da00b2bcec3543d1e4cce690a347f67606c08a72b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/wire/decode.rs",
+      "sha256": "af3d540fdf0fbf10f7f165a73a93ec0e56def8478e4c13a57caf88bd97891341",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/wire/mod.rs",
+      "sha256": "5f6cf18336c6e6af907feb41e0ebb00ed6609a1d820e6286e8fd0b0a6bd080ea",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed new Go-compatible JSON string escaping for HTML and Unicode line separators plus explicit tests. This is a narrow wire primitive, not general JSON canonicalization or full server parity; reader computation/status limits remain correct.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/wire/unicode.json",
+      "sha256": "b1415483c6e97b437c7211e7e86d5c1772f9664e8a7ac32e0ca62c14484d2e17",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/tests/fixtures/observations.json",
+      "sha256": "02fe6436254a243448e095855337e5ab5238771a96cd8314ed8061ae816a6e44",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/tests/fixtures/reports.json",
+      "sha256": "84c7f771d7f70ff4473a5ced3c46a8074c58deb0fa89ec4f89688c2c8c247f13",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/tests/observation_parity.rs",
+      "sha256": "fc35eafbd8a627e8be25161bf742d81e6b3dd8e18028ec800694e9dc58f44a4b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/tests/registry_integrity.rs",
+      "sha256": "e3d9956397991c270946754fd234181510c4b1e250597b5b4d7ff1c9de5cbf67",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/signals/tests/report_parity.rs",
+      "sha256": "4e4db0ff36539a095c2aeffcfe12d1bbbb7024bb22776ed24e7be0f74d4c9d35",
+      "reviewer": "codex/rust-pages",
+      "notes": "Shared observation/scoring transforms and comparison fixtures do not prove complete deployed-engine parity. Reader pages retain frozen policy, provenance, missing-input/error distinctions and explicitly withhold full Rust equivalence claims.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/explanation/detection-engine-internals.md",
+        "docs/reference/hard-rules-verdicts.md"
+      ]
+    },
+    {
+      "source": "crates/test-support/Cargo.toml",
+      "sha256": "0c85873065399ed81b5d31cce03ecf3c5ca98491ad3f63bca08386c53ce56177",
+      "reviewer": "codex/rust-pages",
+      "notes": "Workspace metadata/test support describes library migration state rather than a distributable service. Reader pages provide no executable installation example or OS support guarantee; exact artifact/native/runtime qualification remains required.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/developer.md",
+        "docs/reference/install-requirements.md"
+      ]
+    },
+    {
+      "source": "crates/test-support/src/lib.rs",
+      "sha256": "702cf04e1bfb2f5bab51c7505db50a40ff06fd2f805e7af0fafadbf7b7c0b0c3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Workspace metadata/test support describes library migration state rather than a distributable service. Reader pages provide no executable installation example or OS support guarantee; exact artifact/native/runtime qualification remains required.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/start-here/developer.md",
+        "docs/reference/install-requirements.md"
+      ]
+    },
+    {
+      "source": "web/AGENTS.md",
+      "sha256": "e29e6141029deb802d1a15321abd2cf59a311365c296585c4cb53e2bcebfdfb4",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/demo.html",
+      "sha256": "3c6679f6ee5f7ff12b139f4cb9f152f233aafc0873b45a476dd498a6b2d51078",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/honeypot/analytics.js",
+      "sha256": "49febe1334a4041424d385d91144936071f30ba1f197831c8b3a1c7f032341d9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/img/sample.png",
+      "sha256": "9c18ecf06fdfe259f9a20c9bedcec821004edf0a067fd738e40b265b2ad443b0",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/index.html",
+      "sha256": "060f2aa4f001894b2b1bae5aa59fe357bb7c47733ca35cfbedcc2bcfc06d8d50",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/advanced.js",
+      "sha256": "1f59032a8e8dccf18c542ce003755e44dd2275901361566b5694bfb211e7ed41",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/collector.js",
+      "sha256": "ba550dfb398f2f5747f368423a212d561cf6beeca9768b1943c5f68e32999aba",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/demo.js",
+      "sha256": "334ddb25c2348dc5eff317605b5dfd7afe68d90570c11400aaf44b0bf880e100",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/env.js",
+      "sha256": "a54fceebcd602a50f86a23ac122b5087d44733e6e08e77db515a49746a5a0c8a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/features/keystroke.js",
+      "sha256": "55340386b204b6ca09edba1cb7f457a3a0cd92b16e809f51a3a9eccb6ce94b17",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/features/mouse.js",
+      "sha256": "da795e6c64cafea5f53eb2230eadebed9719e49d6dde1e911a1f01bd051dba96",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/feed.js",
+      "sha256": "e4e32eab09b617a33183ea62bfcc587284660e5f7e2209404afd42e10d1f715a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/injector.js",
+      "sha256": "5ee63cf133be97d3b07f3e13594a9fca256c2a481a1ce917e8fdaf3f7209368b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/loader.js",
+      "sha256": "bf2b3d936540609272b185090bdba88c9905bcbd0e2f0ba17a90381d1ac5d7da",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/pow.js",
+      "sha256": "817d9dda57a110f8635a7bc1aed6b1aa8389d7ef8cbf82491090bfc07991e181",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/rit.js",
+      "sha256": "392963a8544fc81309cd5d46aca5a5283548fe6f8fbcb3418631cfe347638a3f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/sse-worker.js",
+      "sha256": "bf2dbfa5a53320fd39edca7ae5f88f30faf588fe0843ca373edff4dc36b38483",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/transport.js",
+      "sha256": "1ded6f607369fbb96ae358e21b58cff714853bd7888245dc3b2a43ba534e8e6b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/js/wasm_exec.js",
+      "sha256": "4703f2fbe910e05faceea7cc2c38a7e3b4083ed9bb09f76efe5d6c1edfede695",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/media/sample.mp4",
+      "sha256": "bbd05cf6097ac9b1f89ea29d2542c1b7b67ee46848393895f5a9e43fa1f621e5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/pass.html",
+      "sha256": "c7deaaf78057e92c7b71d81c2b2e886fb32ef1a09099dc4cf90526fae0f3adc8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    },
+    {
+      "source": "web/playground.html",
+      "sha256": "63417313fd4c4a99f12125dd2b1f8be7837ecad45b3e83cf5dac8fe639d88c5e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing browser assets still include Go WASM loader/runtime paths and historical demonstrations. Reader pages do not offer these as the new Rust installation or verified UI, and browser/accessibility parity remains a migration gate.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/help/challenge-accessibility.md",
+        "docs/how-to/upgrade-migration.md"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "cli-doctor",
+      "sources": [
+        "Cargo.toml"
+      ],
+      "pages": [
+        "docs/reference/install-requirements.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "No Rust doctor binary is qualified. Reviewed workspace-library boundary; the reader page explicitly requires actual topology diagnostics and leaves the native doctor pilot pending.",
+      "checks": [
+        "native/doctor"
+      ]
+    },
+    {
+      "id": "cli-install",
+      "sources": [
+        "Cargo.toml"
+      ],
+      "pages": [
+        "docs/reference/install-requirements.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "No Rust installer is qualified. Reader requirements forbid mutation during dry run and retain repeat/rollback/native acceptance before an installation example can be published.",
+      "checks": [
+        "native/install-dry-run-no-mutation"
+      ]
+    },
+    {
+      "id": "configuration",
+      "sources": [
+        "Cargo.toml"
+      ],
+      "pages": [
+        "docs/reference/install-requirements.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Runtime configuration and invalid-setting acceptance remain pending. Workspace manifests alone cannot establish executable configuration support; reader page preserves that boundary.",
+      "checks": [
+        "native/configuration-invalid"
+      ]
+    },
+    {
+      "id": "server-api",
+      "sources": [
+        "crates/signals/src/lib.rs"
+      ],
+      "pages": [
+        "docs/reference/hard-rules-verdicts.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Observation library is not a server API. Reader page requires missing-input/error separation and fail-closed behavior, with actual missing-signals browser pilot still required.",
+      "checks": [
+        "browser/missing-signals-closed"
+      ]
+    },
+    {
+      "id": "gate-proxy",
+      "sources": [
+        "build/gate.Dockerfile"
+      ],
+      "pages": [
+        "docs/how-to/verify-the-image.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing Gate Dockerfile is Go-based; it is not the qualified Rust proxy. Reader image guide supplies no install command and requires a replacement artifact and actual Docker forwarding acceptance.",
+      "checks": [
+        "docker/gate"
+      ]
+    },
+    {
+      "id": "local-management",
+      "sources": [
+        "adapters/node/capabilities.json"
+      ],
+      "pages": [
+        "docs/start-here/integrator.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Experimental adapter descriptor does not expose or qualify management. Reader guide requires separate local authenticated administration and independent native peer/ACL/dual-control pilots.",
+      "checks": [
+        "native/local-only-admin"
+      ]
+    },
+    {
+      "id": "audit",
+      "sources": [
+        "crates/audit/src/lib.rs"
+      ],
+      "pages": [
+        "docs/how-to/verify-audit-log.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Audit primitives do not implement a released durable service. Reader guide labels CLI and restart/storage acceptance pending and limits proof meaning to its exact commitment scope.",
+      "checks": [
+        "docker/audit-restart"
+      ]
+    },
+    {
+      "id": "browser-wasm",
+      "sources": [
+        "web/js/loader.js"
+      ],
+      "pages": [
+        "docs/how-to/upgrade-migration.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Existing loader instantiates Go WASM and remains historical. Reader migration guide forbids replacing a working deployment from this branch; Rust collector comparison is still required.",
+      "checks": [
+        "browser/collector-parity"
+      ]
+    },
+    {
+      "id": "accessible-recovery",
+      "sources": [
+        "web/pass.html"
+      ],
+      "pages": [
+        "docs/help/challenge-accessibility.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Historical Pass page is not a qualified Rust recovery flow. Reader page preserves keyboard/assistive alternatives and no motor/speed gating; actual replacement recovery pilot remains pending.",
+      "checks": [
+        "browser/challenge-assistive"
+      ]
+    },
+    {
+      "id": "node-adapter",
+      "sources": [
+        "adapters/node/capabilities.json"
+      ],
+      "pages": [
+        "docs/start-here/integrator.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Descriptor release-qualified tuples are empty. Reader guide treats Node/Bun as target integrations; mock/local adapter tests cannot certify Rust authority, ACLs or a deployed browser flow.",
+      "checks": [
+        "node/test:pilot"
+      ]
+    },
+    {
+      "id": "nginx-adapter",
+      "sources": [
+        "build/gate.Dockerfile"
+      ],
+      "pages": [
+        "docs/how-to/verify-the-image.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "No nginx Rust module is present or qualified in the reviewed source inventory. Existing Go edge image is not that module; reader image page requires exact candidate provenance and deployment evidence.",
+      "checks": [
+        "docker/deployment"
+      ]
+    },
+    {
+      "id": "capability-boundaries",
+      "sources": [
+        "crates/network/src/lib.rs"
+      ],
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "reviewer": "codex/rust-pages",
+      "notes": "Network transforms are not a live qualified ingress. Reader profiles preserve original client versus CDN TLS, unavailable observations and HTTP3 limits; raw capture Docker pilot remains required.",
+      "checks": [
+        "docker/raw-tls-h2"
+      ]
+    }
+  ]
+}

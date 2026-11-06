@@ -1,0 +1,27 @@
+$mt-overrides-base: (
+  font-sans: (system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif),
+  font-mono: (ui-monospace, SFMono-Regular, Consolas, monospace),
+  measure: 820px, radius: 10px, radius-lg: 14px
+);
+$mt-overrides: (
+  background: #eef1f6, foreground: #14202e,
+  card: #ffffff, card-foreground: #14202e,
+  muted: #f6f8fb, muted-foreground: #566579,
+  code-background: #f6f8fb, border: #d9e0ea, accent: #ffffff,
+  primary: #0e9c8a, brand: #0e9c8a, ring: #0e9c8a,
+  primary-foreground: #04120f, link: #08695e, link-hover: #064c45,
+  tip: #1f9d43, status-available: #1f9d43,
+  warning: #b3811f, status-partial: #b3811f,
+  caution: #d63a52, note: #2b7fe0
+);
+$mt-overrides-dark: (
+  background: #0a0e14, foreground: #e4ecf5,
+  card: #111722, card-foreground: #e4ecf5,
+  muted: #0d131c, muted-foreground: #9aa9bc,
+  code-background: #0d131c, border: #202a38, accent: #16202c,
+  primary: #35d0ba, brand: #35d0ba, ring: #35d0ba,
+  primary-foreground: #04120f, link: #35d0ba, link-hover: #83e6d7,
+  tip: #3fb950, status-available: #3fb950,
+  warning: #d9a441, status-partial: #d9a441,
+  caution: #f0556a, note: #4a9eff
+);

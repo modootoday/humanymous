@@ -1,146 +1,18 @@
 ---
-description: "Run the Detection Observatory, a development-only, loopback-only page that streams the seven-stage Core scoring path so you can inspect ALLOW, CHALLENGE, and DENY."
-keywords: ["Detection Observatory","humanymous","live Core detection pipeline","watch bot detection verdict","enforcement-rule evaluation","risk score to verdict model","self-hosted bot detection","Selenium Puppeteer Playwright profiles","loopback development tool","Server-Sent Events feed"]
+layout: doc
+title: Prepare an observatory review
+permalink: /how-to/detection-observatory.html
+reviewed: 2026-11-07
 ---
+# Prepare an observatory review
 
-# Watch detection happen live: the Detection Observatory
+**Diátaxis quadrant:** How-to. **Audience:** evaluators.
 
-**Diátaxis quadrant:** How-to. **Audience:** Red/Blue developers who want to *see* the detection engine reach a verdict, layer by layer, while testing on their own machine.
+The Rust observatory is not qualified. Review a candidate with synthetic data
+and confirm that every displayed observation states its provenance and
+availability. Distinguish a demonstration, live capture and enforced origin result.
 
-The Detection Observatory is a real-time, local-only web page served by the detection engine. You fire a bundled attack profile — or just browse — at your own engine and watch the seven-stage pipeline light up: which signals fired, how the risk score built to its band, and which enforcement rule (if any) overrode it. It turns the terminal-only test run into something you can watch and learn from.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/observatory-dark.webp" />
-  <img src="../assets/screenshots/framed/observatory-light.webp" alt="The Detection Observatory scoring a headless puppeteer session live: an 82.4 DENY with headless browser plus another automation indicator rule fired, the seven-stage pipeline of signals, and the server-truth enforcement-rule ladder showing headless browser plus another automation indicator rule winning over the score band, beside the Red launcher catalog." />
-</picture>
-
-> **Tip:** Want to see what it looks like first? The **[guided tour](observatory-tour.md)** is an annotated screenshot walkthrough.
-
-> **Note:** The Observatory runs on the standalone detection engine (`bin/server.exe` on `127.0.0.1:8443`) — **not** the Gate proxy (`bin/gate.exe` on `:8444`/`:8445`) you build in the Quickstart. It is a separate binary for watching the seven-stage scoring in isolation, and it is not the Ledger. If those two binaries are new to you, read [Which piece am I using?](../explanation/which-piece-am-i-using.md) first. For how the live feed and safety model work, see [Inside the Detection Observatory](../explanation/observatory-architecture.md).
-
-> **Warning:** The Observatory is a **development-only, loopback-only** surface. It spawns local test processes and streams raw detection telemetry, so it is disabled by default and refuses to start on a non-loopback address. Never enable it on a production or internet-reachable deployment. It is a Core feature, and the published core image never exposes it (`HMN_PLAYGROUND` is unset there); a Gate build has no Observatory at all.
-
-> **Note:** This validates *your own* engine on `127.0.0.1`. There is no target field — the Red side can only fire the bundled catalog at your local engine. It is not a tool for probing systems you do not operate, and it contains no evasion tuning.
-
----
-
-## Step 1 — Build the detection engine
-
-From the repository root, build the browser detection bundle and the server:
-
-```
-GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/
-go build -o bin/server.exe ./cmd/server/
-```
-
-## Step 2 — Start the engine with the Observatory enabled
-
-The Observatory is gated behind an environment variable and a **loopback** listen address. Set `HMN_PLAYGROUND=1` and bind to `127.0.0.1`:
-
-```
-HMN_PLAYGROUND=1 bin/server.exe -addr 127.0.0.1:8443 -web web
-```
-
-> **Important:** With `HMN_PLAYGROUND=1`, the server **refuses to start** on a non-loopback address (for example `-addr :8443`, which binds all interfaces). This is deliberate: the launch endpoint spawns local processes, so the surface must never be remotely reachable. If you see `requires a loopback -addr`, change `-addr` to `127.0.0.1:8443` or `localhost:8443`.
-
-When the flag is unset, none of the `/playground` routes exist and the engine serves exactly as it does normally — there is zero added surface and zero added cost on the request path.
-
-## Step 3 — Open the page
-
-Open the Observatory in a browser:
-
-```
-https://127.0.0.1:8443/playground
-```
-
-Expect a certificate warning — the development certificate is self-signed. Accept it to proceed. The status indicator reads **live · SSE connected** once the page has attached to the live feed.
-
-## Step 4 — Watch your own session
-
-The simplest thing to observe is your own browser. As the page loads it is scored like any other visitor, and the result streams onto the pipeline. You will see:
-
-- **The risk gauge and verdict banner** — the 0–100 score, the active verdict band, and any enforcement rule that matched.
-- **The seven-stage waterfall** — each firing signal as a chip in its layer lane, colored and shape-coded by its verdict (■ BOT, ◆ SUSPICIOUS, ● OK). Server-observed network signals (network and consistency-check) carry an inset tint.
-- **The cross-check board (consistency-check stage)** — each identity-consistency check as consistent or inconsistent.
-
-## Step 5 — Fire a bundled profile at your engine
-
-The **Red launcher** on the left lists the bundled catalog, grouped (baseline / browser-drivers / stealth / non-browser / anti-bypass / frontier), each card showing its documented tell and the enforcement rule you expect it to trip.
-
-1. Click a profile (for example `selenium` → hard automation artifact rule, or `direct_cdp` → browser-control leak plus automation evidence rule).
-2. Optionally set **runs** (1–5).
-3. Click **Launch (local)**.
-
-The launcher requests a single-use nonce, then fires exactly that one profile at `127.0.0.1:8443` — the target is fixed in the server; there is no host field. The run drives a real request through the engine, and the scored session streams onto the pipeline. The **Abort** button cancels an in-flight run.
-
-> **Note:** Browser-driver profiles (`selenium`, `puppeteer`, `playwright`, …) need a local browser (Playwright / Edge) installed. If a profile's dependency is absent, the run reports a skip reason in the live event log rather than failing silently. The `human`, `http_client`, and `tls_*` profiles run without a browser.
-
-Before each launch the engine's stateful detectors (rate limiter, cross-session correlation, traffic log) are reset, and launches are serialized — so a flood run cannot poison the baseline of your next run, and a second launch while one is in flight returns "a launch is already in flight."
-
-The launch is nonce-gated, fixed to the local engine, and streamed back over SSE:
-
-```mermaid
-sequenceDiagram
-  participant U as "Observatory page"
-  participant E as "Detection engine (fixed 127.0.0.1:8443)"
-  U->>E: GET /playground/nonce
-  E-->>U: single-use nonce
-  U->>E: POST /playground/launch {profileId, runs, nonce} — host/url rejected
-  E->>E: reset stateful detectors, fire one profile
-  E-->>U: SSE /playground/events — session.scored / attack.* / network.abuse
-  U->>E: GET /playground/explain/{id} — decision trace
-  E-->>U: per-stage decomposition + ordered enforcement-rule evaluation
-```
-
-## Step 6 — Read "why this verdict"
-
-Under the pipeline, the **Why this verdict** panel shows the server's own decision trace for the current session — not a re-implementation:
-
-- **The enforcement-rule ladder** — every engine rule (the Core enforcement-rule set) evaluated in **first-match precedence order** (not numeric order — for example disabled developer console plus automation evidence rule is checked before missing browser evidence rule), with the matched ones highlighted and the **winner** marked. The winner overrides the score band regardless of the number, and each rule shows a plain-language reason. (the Gate edge-protection set are Gate-plane rules and never appear here.)
-- **The per-stage decomposition** — each stage's combined probability, and where the per-stage cap clamped a saturated stage (for example, consistency checks at 84% are capped at 60%).
-- **Dedup drops** — where two tells from the same root cause were de-duplicated so they weren't double-counted.
-
-This is the honest explanation of how the score and verdict were reached.
-
-## Step 7 — Network-layer attacks
-
-Some attacks never complete a normal scored request — an HTTP/2 Rapid Reset (`rapid_reset`) resets its streams by design. These surface on the live event log as a **network.abuse** event, so the pipeline is not blank for exactly the connection-level attacks. Fire `rapid_reset` and watch for it.
-
----
-
-## Endpoints (for scripting)
-
-All routes are loopback-only and exist only when `HMN_PLAYGROUND=1`.
-
-| Method & path | Purpose |
-|---|---|
-| `GET /playground` | The Observatory page. |
-| `GET /playground/meta` | Policy constants (thresholds, layer cap) and the enforcement-rule range. |
-| `GET /playground/events` | The live SSE feed (`session.scored`, `attack.*`, `network.abuse`). Honors `Last-Event-ID`. |
-| `GET /playground/explain/{id}` | The decision trace (per-stage decomposition, ordered enforcement-rule evaluation) for a stored session. |
-| `GET /playground/nonce` | A single-use launch nonce. |
-| `POST /playground/launch` | Fire one bundled profile: `{"profileId":"selenium.mjs","runs":1,"nonce":"…"}`. Any `host`/`url`/`upstream` key is rejected. |
-| `POST /playground/abort` | Cancel the in-flight run. |
-
-Example — fire one profile from the shell:
-
-```
-NONCE=$(curl -sk https://127.0.0.1:8443/playground/nonce | grep -o '"nonce":"[^"]*"' | cut -d'"' -f4)
-curl -sk -X POST https://127.0.0.1:8443/playground/launch \
-  -H "Content-Type: application/json" \
-  -d "{\"profileId\":\"http_client.mjs\",\"runs\":1,\"nonce\":\"$NONCE\"}"
-```
-
----
-
-## What it is — and is not
-
-- It **shows you, live, how your own engine decides.** The score decomposition and enforcement-rule ladder come straight from the engine's own scoring, so what you see is what the engine did.
-- It does **not** block all automation, and it is **not** a production console. Browser-driver profiles depend on a local browser; the coherent browser or human-assisted automation tier (anti-detect toolchains with real-human click-farms) is a design boundary the catalog does not resolve; and datacenter-network browser rule/no interaction observed rule are heuristics that can challenge some real humans. The page labels these honestly.
-- It is **separate from, and never touches, the authenticated Ledger** — it holds no admin tokens or signing keys and serves only public detection output.
-
-## Related
-
-- **[Self-validation: red-team your own deployment](self-validation-red-team.md)** — the terminal workflow that runs the whole catalog and reports your block-rate / false-positive rate.
-- **[enforcement rules and verdicts](../reference/hard-rules-verdicts.md)** — what each enforcement rule and verdict means.
-- **[Concepts & glossary](../concepts/how-gate-sees-a-request.md)** — the seven-stage pipeline and the risk-score → verdict model the page visualizes.
+Check keyboard access, screen-reader labels, light/dark contrast and narrow
+screens. Verify redaction and authorized access to diagnostics. A polished
+visualization is not a runtime acceptance result.
+See [observatory boundaries](../explanation/observatory-architecture.md).

@@ -1,32 +1,23 @@
 ---
-description: "Evaluate reverse-proxy automation controls without confusing Core and Gate measurements: inspect ALLOW, CHALLENGE, and DENY, start in monitor mode, and account for the coherent-automation detection boundary."
-keywords: ["evaluate open source automation detection","self-hosted automation controls","reverse proxy automation detection","ALLOW CHALLENGE DENY verdict","monitor mode evaluation","seven-stage detection pipeline","coherent-automation detection boundary","humanymous Gate","graded risk score"]
+layout: doc
+title: Evaluator guide
+permalink: /start-here/evaluator.html
+reviewed: 2026-11-07
 ---
+# Evaluator guide
 
-# Start here: Evaluator
+**Diátaxis quadrant:** How-to. **Audience:** technical reviewers and researchers.
 
-**Diátaxis quadrant:** How-to.
-**Audience:** engineering leaders and security buyers deciding whether humanymous Gate fits their stack.
+Assess one version and topology at a time. The Rust migration has no completed
+full-system qualification report. Historical Go measurements do not establish
+Rust parity or production suitability.
 
-humanymous Gate is a reverse proxy that sits in front of your origin app and enforces ALLOW, CHALLENGE, or DENY before origin contact. It reuses Core's scoring implementation, but its current collector does not supply Core's complete seven-stage browser and network evidence. Evaluate Core and Gate as different measurement surfaces. CHALLENGE withholds the request, but the reference does not provide a complete visitor-recovery flow for every challenge. Gate also does not solve coherent browser or human-assisted automation; rate limiting, reputation, and attested-route proof requirements raise cost without making that traffic detectable. This is a reference implementation, not a production-hardened build.
+Ask for the artifact digest, configuration revision, source revision, observed
+capabilities and complete case ledger. Count attempts, allows, challenges,
+denials, errors and skips separately. A challenge is not an allow; an error is
+not a successful detection. Include keyboard-only, assistive-technology,
+mobile, shared-network and coherent-browser controls.
 
-A verdict as it renders in the bundled `/demo` — the graded risk score and the enforcement rules behind a DENY, not a bare bot/not-bot flag:
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/framed/verdict-detail-dark.webp" />
-  <img src="../assets/screenshots/framed/verdict-detail-light.webp" alt="A humanymous /demo verdict card showing a DENY decision with its risk score and contributing enforcement rules" />
-</picture>
-
-## Next 3 reads
-
-Read these in order. Each builds on the last, and together they take you from "what is this" to "running it against my own traffic."
-
-1. **[What Gate Is (and Is Not)](../explanation/what-gate-is.md)** — The scope, design principles, and five automation cost bands, from direct Hypertext Transfer Protocol automation through coherent browser or human-assisted automation, including the boundary that client and network evidence cannot reliably resolve. Start here to calibrate expectations before you look at mechanics.
-
-2. **[Will This Break My App?](../explanation/will-this-break-my-app.md)** — The false-positive and rollout story: how privacy browsers, extensions, and old devices are handled without being scored as bots, how the safe-GET fail-open works on balanced routes, and why you deploy monitor-first (score and log, enforce nothing) before you enforce anything.
-
-3. **[Quickstart (monitor mode, 30 min)](../tutorials/quickstart-monitor-mode.md)** — Stand up Gate in front of a test origin, watch it score real requests in the Ledger, and enforce nothing while you build confidence. This is the fastest way to see the graded score and the ALLOW/CHALLENGE/DENY model against your own traffic.
-
-> **Tip:** If you are evaluating with a security team, run monitor mode against a mirror of production traffic first. You get the full risk score and verdict stream in the audit log with zero enforcement risk to live users.
-
-> **Read before you benchmark:** [Supported topologies](../reference/supported-topologies.md) explains why the numbers you measure depend on *where you place it*. The network plane (JA3/JA4/H2) only fires when the process terminates raw TLS itself — it is inert behind a CDN/application-layer load balancer and absent at the `cmd/gate` proxy — so benchmarking the Core engine and deploying the gate, or sitting behind a CDN, measures a different detector than you deploy.
+Repeat only in an owned isolated lab. A detector-only result cannot establish
+edge enforcement or origin isolation. See [evaluation boundaries](../reference/red-team-catalog.md)
+and [transparency reporting](../explanation/transparency-report.md).

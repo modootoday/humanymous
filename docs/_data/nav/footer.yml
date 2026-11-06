@@ -1,0 +1,7 @@
+columns:
+  - title: Project
+    items:
+      - {title: Source, url: "https://github.com/modootoday/humanymous"}
+      - {title: Limits and status, url: /reference/production-vs-reference.html}
+      - {title: Security disclosure, url: /reference/security-disclosure.html}
+copyright: "humanymous contributors · Apache-2.0 reference implementation"

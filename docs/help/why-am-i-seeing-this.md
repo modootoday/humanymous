@@ -1,90 +1,21 @@
 ---
-description: "You're seeing this because a site's bot-protection check flagged your connection, not you. Complete the quick verification, or contact support to review a block via your incident handle."
-keywords: ["why am I seeing this","bot protection check","complete verification challenge","blocked by bot detection","incident handle","ask support to review a block","screen-reader accessible check","WCAG 2.2 AA","pseudonymous connection signals","humanymous Gate"]
+layout: doc
+title: Why am I seeing a challenge or block?
+permalink: /help/why-am-i-seeing-this.html
+reviewed: 2026-11-07
 ---
+# Why am I seeing a challenge or block?
 
-# Why am I seeing this?
+**Diátaxis quadrant:** Explanation. **Audience:** visitors of a protected site.
 
-**Diátaxis quadrant:** Explanation.
-**Audience:** a person who received a verification request or denial, including people using assistive technology or privacy tools.
+A site may ask for another step when required request evidence is missing or
+inconsistent. That outcome does not establish that you are automated or acting
+improperly. Shared networks, browser settings and service faults can affect it.
 
-If a page asked you to complete a quick check, or told you it could not let you
-through, this page explains what happened and how to get moving again. You are
-in the right place, and this is not an accusation.
+Follow the site's displayed recovery instructions. If the step is inaccessible
+or repeatedly fails, contact that site's operator and request another way to
+complete your task. Share only a displayed support reference and the approximate
+time. Do not send passwords, session cookies or a full browser recording.
 
-## What happened
-
-The site you were visiting sits behind an automated-abuse protection check.
-That check looks at technical signals from the connection to tell ordinary
-visitors apart from automated traffic. Sometimes it needs a quick extra step
-before it can let you continue, and once in a while it gets a real person's
-visit wrong. Either way, this is about the connection, not about you, and there
-is a way forward below.
-
-## If you saw a request for another check
-
-The site asked for more verification before contacting its application. The
-open-source reference does not automatically connect every such response to a
-complete proof-of-work or Pass flow. Follow only the instructions the site
-actually presents. If there is no usable step or it does not complete, contact
-the site's operator; waiting alone is not guaranteed to continue the request.
-
-This step is meant to work for everyone, including people using a screen reader
-or other assistive technology. If the check will not complete, or you cannot
-use it:
-
-- Try refreshing only if the site presents a usable step.
-- If it still will not let you through, contact support at
-  support@modoo.today. Tell them you were stopped by a verification step and
-  could not complete it, and mention any assistive technology you use so they
-  can help directly.
-
-> **Note:** If you were blocked on **someone else's** website, contact **that
-> site's operator** first — they control the deployment and the unblock path.
-> `support@modoo.today` reaches the **maintainers of the humanymous software**,
-> not every site that runs it.
-
-We would rather hear from you than leave you stuck.
-
-## If you were blocked (denied)
-
-If the page told you it could not let you through, you can ask us to take
-another look. Please contact support at support@modoo.today and include:
-
-- **Your incident handle, if the page shows one** — some deployments display a
-  short reference code on the block/verification page. If you see one, include it;
-  it is the fastest way for us to find your specific visit. If not, the details
-  below still let us locate it.
-- **Roughly when you were browsing** — the date and approximate time, and your
-  timezone if you know it.
-- **What you were trying to do** — for example, signing in, checking out, or
-  opening a particular page.
-
-With those details, support can review the decision and, where appropriate, let
-you back in. If you were in the middle of a purchase or another time-sensitive
-task, please say so and we will treat it as a priority.
-
-> **Note:** A block is a decision about a single visit, not a permanent
-> judgment about you. Reviewing it is a normal part of how this protection is
-> meant to work.
-
-## Accessibility
-
-We aim for the quick check to meet the WCAG 2.2 AA accessibility standard, so
-that it works with screen readers, keyboard navigation, and other assistive
-technology. If it did not work for you, that is a bug we want to fix. Please
-report it to support@modoo.today and describe what happened and what you were
-using, and we will follow up.
-
-## Your privacy
-
-We identify visits by pseudonymous technical signals from the connection — for
-example characteristics of the browser and network session — not by your name,
-your account, or your personal identity. These signals are stored in a
-pseudonymous form rather than as raw details. When you contact support, the
-incident handle is what links your message to the specific visit, so you do not
-need to share more personal information than you are comfortable with.
-
-> **Note:** If you have a data or privacy request about your visit, you can
-> raise it with support at support@modoo.today and it will be routed to the right
-> team.
+This project's Rust replacement is still under development; each deployed site
+owns its policy and assistance channel. See [accessible recovery](challenge-accessibility.md).

@@ -27,7 +27,7 @@ specific interoperability problem.
 3. Obtain independent implementation and [validation evidence](../validation/conformance.md).
    Publish only synthetic or appropriately reviewed public-safe artifacts.
 4. Complete the [horizontal self-review](../reviews/security-privacy.md), then
-   prepare concrete security/privacy/accessibility/internationalization review
+   prepare concrete security, privacy, accessibility and internationalization review
    requests and a disposition record. A self-review is not an external response.
 5. Select the venue and review its current scope and contribution policies.
    Record editor/contributor authority and rights review separately from the

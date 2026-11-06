@@ -1,0 +1,38 @@
+- {title: Overview, url: /}
+- title: Start here
+  items:
+    - {title: Integrators, url: /start-here/integrator.html}
+    - {title: Operators, url: /start-here/operator.html}
+    - {title: Evaluators, url: /start-here/evaluator.html}
+    - {title: Developers, url: /start-here/developer.html}
+    - {title: Data protection, url: /start-here/compliance-dpo.html}
+- title: Reference
+  items:
+    - {title: Full reference directory, url: /reference/}
+    - {title: Implementation status, url: /reference/production-vs-reference.html}
+    - {title: Deployment boundaries, url: /reference/supported-topologies.html}
+    - {title: Requirements, url: /reference/install-requirements.html}
+    - {title: Security disclosure, url: /reference/security-disclosure.html}
+    - {title: Glossary, url: /reference/glossary.html}
+- title: Understand the design
+  items:
+    - {title: All explanations, url: /explanation/}
+    - {title: Preparation guides, url: /how-to/}
+    - {title: Operational preparation, url: /runbooks/}
+    - {title: Gate, url: /explanation/what-gate-is.html}
+    - {title: Application compatibility, url: /explanation/will-this-break-my-app.html}
+    - {title: Evaluation method, url: /explanation/how-this-was-built.html}
+- title: Standards research
+  items:
+    - {title: Project drafts, url: /standards/}
+    - {title: Draft v0, url: /standards/draft-v0/}
+    - {title: Explainer, url: /standards/draft-v0/explainer/}
+    - {title: Protocol profile, url: /standards/draft-v0/protocol/profile/}
+    - {title: Security and privacy, url: /standards/draft-v0/reviews/security-privacy/}
+    - {title: Conformance, url: /standards/draft-v0/validation/conformance/}
+    - {title: Preparation, url: /standards/draft-v0/process/preparation/}
+- title: Visitor help
+  items:
+    - {title: Why am I seeing this?, url: /help/why-am-i-seeing-this.html}
+    - {title: Accessible recovery, url: /help/challenge-accessibility.html}
+    - {title: FAQ, url: /help/faq.html}

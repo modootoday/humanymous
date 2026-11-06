@@ -1,74 +1,22 @@
 ---
-description: "If a human-verification step won't complete with your screen reader or keyboard, that's treated as a defect to fix — retry, or contact support with your incident handle."
-keywords: ["challenge accessibility","verification step screen reader","WCAG 2.2 AA bot check","EN 301 549","ADA verification","keyboard-only navigation","incident handle","assistive technology verification","humanymous Gate"]
+layout: doc
+title: Accessible challenge recovery
+permalink: /help/challenge-accessibility.html
+reviewed: 2026-11-07
 ---
+# Accessible challenge recovery
 
-# Challenge accessibility statement
+**Diátaxis quadrant:** Reference. **Audience:** visitors and accessibility reviewers.
 
-**Diátaxis quadrant:** Reference.
-**Audience:** a person who received a verification request or denial, and people evaluating the service's accessibility.
+Access must not depend on rich pointer movement, fine motor control or speed.
+Keyboard-only use, reduced motion and assistive technology are legitimate ways
+to use a service. Sparse interaction is not proof of abuse.
 
-Sometimes a site asks you to complete a quick verification step before it lets
-you continue. This page explains how that step is meant to work with assistive
-technology, and what to do if it did not work for you. If you are here because a
-check would not complete, you are in the right place and there is a way forward
-below.
+An operator should provide clear focus order, readable status messages, enough
+time and an alternative recovery route. A challenge should explain what is
+required without asking for secrets. Repeated failure needs a support path,
+not an endless loop.
 
-## What a deployed quick check should be
-
-When a site needs more confidence before continuing, it may show a verification
-step. The open-source reference includes challenge components, but it does not
-ship a complete recovery path for every challenged visitor. The operator of
-the site is responsible for providing a usable alternative and explaining
-exactly what will happen after the step succeeds.
-
-## Our accessibility commitment
-
-Any deployed verification step must work with assistive
-technology, including:
-
-- Screen readers and other text-to-speech tools.
-- Keyboard-only navigation, without a mouse or trackpad.
-- Browser zoom and larger text settings.
-
-The project target is **WCAG 2.2 AA**, with alignment to
-with **EN 301 549** and the **Americans with Disabilities Act (ADA)**. These are
-design requirements, not a conformance claim for the reference challenge or
-for every site using it. A site must test the exact flow it deploys.
-
-> **Note:** Accessibility of the deployed verification step is the
-> responsibility of the operator running this site. If you are evaluating the
-> open-source software itself and need the current conformance status in
-> writing, contact support@modoo.today (maintainers of humanymous — not the
-> operator of every site that deploys it).
-
-## If the check did not work for you
-
-You have options, and none of them require you to share personal details you are
-not comfortable with:
-
-- **Retry only if the page offers a working step.** Refreshing may clear a
-  transient problem, but the reference page alone may not provide a way to
-  complete verification.
-- **Contact support.** If it still will not let you through, reach
-  support@modoo.today. It helps us most if you include:
-  - **Your incident handle, if shown** — some deployments display a short
-    reference code on the check page. If you see one, include it — it is the
-    fastest way to find your specific visit.
-  - **The assistive technology you use** — for example, the screen reader,
-    browser, and device — so we can reproduce what happened.
-  - **What you were trying to do** — for example, signing in or checking out.
-
-We would rather hear from you than leave you stuck.
-
-## Failing the check is treated as a bug, not a judgment
-
-If the verification step blocks you or will not complete with your assistive
-technology, that is a defect on our side. It is not a decision about you, and it
-is not a sign that you did anything wrong. Reports like yours are how we find and
-fix these problems, so please do send them in.
-
-## Related help
-
-- [Why am I seeing this?](why-am-i-seeing-this.md) — what the check is, and what
-  to do if you were asked to verify or were blocked.
+The Rust migration has not completed browser and accessibility pilots. Report
+the affected step and assistive setup to the site's operator without including
+sensitive page contents. See [visitor questions](faq.md).

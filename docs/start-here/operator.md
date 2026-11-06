@@ -1,56 +1,26 @@
 ---
-description: "Operator guide to running the humanymous Gate Ledger: watch ALLOW / CHALLENGE / DENY, triage false-positive spikes vs abuse surges, and use unblock, ban, and the dual-control kill switch. Reference build."
-keywords: ["humanymous Gate operator","bot detection console","Ledger admin surface","ALLOW CHALLENGE DENY triage","unblock ban kill switch","dual-control approval","false-positive vs abuse surge","incident drill-down","SOC on-call runbook","fingerprint ban ladder"]
+layout: doc
+title: Operator guide
+permalink: /start-here/operator.html
+reviewed: 2026-11-07
 ---
+# Operator guide
 
-# Start here: Operator
+**Diátaxis quadrant:** How-to. **Audience:** service operators.
 
-**Diátaxis quadrant:** How-to.
-**Audience:** security operators and security-operations on-call staff who use the humanymous Gate Ledger during a shift.
+The Rust runtime has not completed deployment qualification. Do not expose a
+migration build to public traffic based on these preparation notes.
 
-You are the person watching humanymous Gate while it fronts the origin. Your working surface is the Ledger: you watch the Overview view ("live edge decisions") as ALLOW / CHALLENGE / DENY decisions land, and you decide whether a change in the pattern is a false-positive spike (real humans getting CHALLENGE or DENY) or an abuse surge (automated traffic Gate is correctly holding back). When you need to act, you have three levers — unblock a subject, ban a subject, or pull the kill switch — and you drill into a flagged session by its incident handle to read the enforcement rules and signal contributions behind the verdict. Gate is a reference implementation, not a production-hardened build; treat the numbers and thresholds you see as reference behavior, and confirm before you widen the blast radius of any action.
+Prepare a dedicated lab with an origin that rejects direct bypass, a local
+management channel, scoped service identities and bounded storage. Document
+certificate ownership, audit retention, recovery contacts and rollback authority.
+Local management still requires authentication; forwarded headers do not prove
+that an administrative caller is local.
 
-<video autoplay loop muted playsinline poster="../assets/screenshots/anim/ledger-live-poster.webp" width="820" style="max-width:100%;border-radius:12px" aria-label="The Ledger Overview view: a live scrolling feed of edge decisions (ALLOW / CHALLENGE / DENY) with enforcement-rule badges and recent-window counters.">
-  <source src="../assets/screenshots/anim/ledger-live.webm" type="video/webm" />
-  <source src="../assets/screenshots/anim/ledger-live.mp4" type="video/mp4" />
-</video>
+Before deployment, require startup, restart, audit replay, storage-outage,
+unauthorized-management and origin-bypass pilots against the actual artifact.
+Record the exact configuration revision and tested topology. An incomplete or
+skipped required case blocks qualification.
 
-Your read-decide-act loop, from a pattern change on the Overview view to the lever you reach for:
-
-```mermaid
-flowchart TD
-  O["Pattern change on the Overview view"] --> Q{"False-positive spike or abuse surge?"}
-  Q -->|"humans getting CHALLENGE / DENY on routes that pass"| Wrong["False-positive spike"]
-  Q -->|"one fingerprint across subnets, or a flood"| AB["Abuse surge"]
-  Wrong --> U["Drill in by incident handle, read signals; if unjust: unblock"]
-  U --> KS["Broad lockout: kill switch — dual-control, node-local"]
-  AB --> C["Confirm the enforcement rule that matched"]
-  C --> BAN["Ban the subject — temporary fp: is single Operator; permanent / CIDR is dual-control"]
-```
-
-## Triage, in short
-
-- **false positive spike** — humans reporting blocks, a jump in CHALLENGE/DENY on routes that normally pass. Drill into a sample session, read the contributing signals, and if the verdict is unjust, unblock and consider whether a route preset is too tight.
-- **Abuse surge** — one fingerprint across many subnets, a destructive flood, a fingerprint sweeping many sessions. Confirm the enforcement rule that matched, then ban the subject.
-
-## The three levers
-
-| Lever | What it does | Second Approver? |
-| --- | --- | --- |
-| **Unblock** (lift a ban) | `POST /__hmn/admin/bans/lift` — releases an IP or fingerprint ban so the subject is scored fresh again. | No — a single Operator action. |
-| **Ban** | `POST /__hmn/admin/bans` — an IP (`ip:<addr>`) or fingerprint (`fp:<fingerprint>`) ban on the escalating ladder (1h → 6h → 24h → permanent). | A **temporary** ban is a single Operator action. A **permanent or CIDR** ban is dual-control — a distinct **Approver** (not you) commits it via `POST /__hmn/admin/approvals/{id}`. |
-| **Kill switch** | `POST /__hmn/admin/killswitch` — demotes rule enforcement for every route on the current node. Detection keeps scoring and logging; manual bans still enforce. | Yes — dual-control. A distinct **Approver** commits the flip. |
-
-> **Warning:** The kill switch is node-local and not route-scoped. Coordinate and verify each node separately in a fleet.
-
-> **Note:** Your identity is derived by the server from your bearer token — the Console reads and requests with the Operator token. Dual-control actions need a genuinely distinct Approver token; you cannot approve your own request.
-
-> **Note:** On a route running the `attested` preset, a scoring-ALLOW is deliberately priced to CHALLENGE → Pass by the attestation floor. This is **not** a false positive, **not** a bug, and **not** a lockout — it is the configured behavior for that route. A real human self-resolves it: they solve the Pass, the solve returns a session-bound receipt, the client redeems it at `POST /__hmn/stepup`, and the resulting `hmn_su` proof fast-paths later requests on the route. Neither lever fits here — **Unblock** lifts bans, and there is no ban to lift; the kill switch demotes rule enforcement but does not clear the attestation floor. If unattested humans are looping instead of self-resolving, the cause is a topology one (a diverged `hsid` cookie jar or a missing shared `HMN_TOKEN_KEY`), covered in [Supported topologies](../reference/supported-topologies.md), not an action for the levers.
-
-## Your next 3 reads
-
-1. **[Incident Runbooks](../runbooks/incident-runbooks.md)** — the on-call playbooks for false positive spikes, abuse surges, and the exact steps behind each lever.
-2. **[Verdicts, enforcement rules, and diagnostic signals](../reference/hard-rules-verdicts.md)** — what each descriptive rule means and how to interpret dotted machine identifiers in a drill-down.
-3. **[The Ledger](https://localhost:8445/__hmn/admin/console)** — the live surface itself, eight views: Overview, Integrity, Sessions, Rate Limits & Bans, Policy, Settings, Approvals, and Compliance.
-
-> **Tip:** The Ledger is served on the separate admin listener (default `127.0.0.1:8445` (loopback)), not on the public edge. In dev it uses a self-signed certificate, so expect a browser certificate warning.
+Use the [incident preparation guide](../runbooks/incident-runbooks.md) and
+[requirements](../reference/install-requirements.md) to prepare the evidence.
