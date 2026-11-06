@@ -1,0 +1,47 @@
+name: Cross OS implemented-crate probe
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/rust]
+    paths:
+      - .github/workflows/cross-os-probe.yml
+      - scripts/ci/runner-probe/**
+permissions:
+  contents: read
+concurrency:
+  group: cross-os-probe-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native:
+    name: native-${{ matrix.os }}-${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {runner: ubuntu-24.04, os: linux, arch: x64}
+          - {runner: ubuntu-24.04-arm, os: linux, arch: arm64}
+          - {runner: windows-2025, os: windows, arch: x64}
+          - {runner: windows-11-arm, os: windows, arch: arm64}
+          - {runner: macos-15-intel, os: macos, arch: x64}
+          - {runner: macos-15, os: macos, arch: arm64}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: stable
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Observe native tuple and execute implemented workspace tests
+        run: python scripts/ci/runner-probe/probe.py --os ${{ matrix.os }} --arch ${{ matrix.arch }} --report target/runner-probe/report.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: probe-${{ matrix.os }}-${{ matrix.arch }}-${{ github.sha }}
+          path: target/runner-probe/
+          if-no-files-found: error
+          retention-days: 14
