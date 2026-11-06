@@ -258,3 +258,9 @@ outside the watched process, expected-node provisioning and authenticated/replay
 checked receipts before state transition. The state registry does not authenticate
 messages. Invalid cadence, duplicate registration or observer-clock regression
 must not reset deadlines or return a false healthy indication.
+
+Proof export must distinguish unsigned current/prefix roots from exact persisted
+signed checkpoints. Verification reuses the shared Merkle implementation and
+requires separately trusted writer/witness keys. A required witness must anchor
+the first durable record immediately before periodic cadence begins, preserving
+strict recovery after an early restart without relaxing witness coverage.

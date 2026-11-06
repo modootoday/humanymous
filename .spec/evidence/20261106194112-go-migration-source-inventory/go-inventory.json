@@ -725,8 +725,11 @@
       "path": "internal/audit/proofs.go",
       "sha256": "859a8459e5889389c4f10c97e3002746bb9fa884b7ce63e2ce0b50559f9bc0ca",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/log/proofs.rs",
+        "crates/audit/src/merkle/mod.rs"
+      ]
     },
     {
       "path": "internal/audit/pseudonym.go",

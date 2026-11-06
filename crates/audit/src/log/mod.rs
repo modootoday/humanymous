@@ -1,4 +1,5 @@
 //! Durable per-node sealing. The WAL is the authority; projections are not.
+mod proofs;
 mod stamp;
 use crate::{
     checkpoint::{Checkpoint, Witness},
@@ -7,6 +8,7 @@ use crate::{
     storage::{RecoveryPolicy, Wal},
 };
 use ed25519_dalek::SigningKey;
+pub use proofs::{CheckpointInclusion, InclusionProof};
 use std::io;
 
 /// Stable provisioned identities. No malformed or absent key silently creates
@@ -118,7 +120,12 @@ impl Log {
         self.head = record.record_hash.clone();
         self.leaves.push(record.record_hash.as_bytes().to_vec());
         let last = self.checkpoints.last().map_or(0, |cp| cp.tree_size);
-        if self.sequence - last >= self.config.checkpoint_every {
+        // Recovery with a required witness refuses zero anchor coverage. Seal
+        // the first record immediately, so a crash before the periodic cadence
+        // does not strand an otherwise durable newly initialized history.
+        if (self.config.witness.is_some() && self.checkpoints.is_empty())
+            || self.sequence - last >= self.config.checkpoint_every
+        {
             self.checkpoint()?;
         }
         Ok(record)
@@ -405,6 +412,109 @@ mod tests {
         assert!(!acted.get());
         assert!(log.checkpoint().is_err());
         drop(log);
+        clean(&dir);
+    }
+
+    #[test]
+    fn proofs_bind_persisted_heads_and_survive_restart() {
+        use crate::merkle::verify_consistency;
+        let dir = dir();
+        let mut cfg = witnessed_config("node");
+        cfg.checkpoint_every = 4;
+        let writer = SigningKey::from_bytes(&cfg.signing_seed)
+            .verifying_key()
+            .to_bytes();
+        let witness = cfg.witness.as_ref().unwrap().public_key();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            cfg,
+            None,
+            true,
+        )
+        .unwrap();
+        for _ in 0..3 {
+            log.append(event()).unwrap();
+        }
+        let old = log.checkpoint().unwrap().unwrap();
+        let old_root: crate::merkle::Hash =
+            hex::decode(&old.merkle_root).unwrap().try_into().unwrap();
+        for _ in 0..3 {
+            log.append(event()).unwrap();
+        }
+        let anchored = log.checkpointed_inclusion(2, &old).unwrap().unwrap();
+        assert!(anchored.verify(&writer, Some(&witness)));
+        assert!(!anchored.verify(&writer, Some(&[0; 32])));
+        assert_eq!(anchored.inclusion.tree_size, 3);
+        assert!(!anchored.inclusion.verify(&log.merkle_root().unwrap()));
+        let current = log.inclusion_proof(2).unwrap().unwrap();
+        assert_eq!(current.tree_size, 6);
+        assert!(current.verify(&log.merkle_root().unwrap()));
+        assert!(verify_consistency(
+            3,
+            6,
+            &log.consistency_proof(3).unwrap().unwrap(),
+            &old_root,
+            &log.merkle_root().unwrap()
+        ));
+        let mut forged = old.clone();
+        forged.root = "0".repeat(64);
+        forged.sign(&SigningKey::from_bytes(&[7; 32]));
+        assert!(log.checkpointed_inclusion(2, &forged).unwrap().is_none());
+        for (seq, size) in [(0, 3), (4, 3), (1, 0), (1, u64::MAX)] {
+            assert!(log.inclusion_proof_at(seq, size).unwrap().is_none());
+        }
+        assert!(log.consistency_proof(0).unwrap().is_none());
+        assert!(log.consistency_proof(6).unwrap().is_none());
+        drop(log);
+        let mut cfg = witnessed_config("node");
+        cfg.checkpoint_every = 4;
+        let reopened = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            cfg,
+            Some(&old),
+            false,
+        )
+        .unwrap();
+        assert_eq!(
+            reopened.checkpointed_inclusion(2, &old).unwrap(),
+            Some(anchored.clone())
+        );
+        let mut tampered = anchored;
+        tampered.inclusion.leaf_data[0] ^= 1;
+        assert!(!tampered.verify(&writer, Some(&witness)));
+        drop(reopened);
+        clean(&dir);
+    }
+
+    #[test]
+    fn required_witness_bootstraps_before_periodic_cadence() {
+        let dir = dir();
+        let mut cfg = witnessed_config("node");
+        cfg.checkpoint_every = 16;
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            cfg,
+            None,
+            true,
+        )
+        .unwrap();
+        log.append(event()).unwrap();
+        assert_eq!(log.checkpoints.len(), 1);
+        assert_eq!(log.checkpoints[0].tree_size, 1);
+        log.append(event()).unwrap();
+        assert_eq!(log.checkpoints.len(), 1);
+        drop(log);
+        let mut cfg = witnessed_config("node");
+        cfg.checkpoint_every = 16;
+        let reopened = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            cfg,
+            None,
+            false,
+        )
+        .unwrap();
+        assert_eq!(reopened.sequence(), 2);
+        drop(reopened);
         clean(&dir);
     }
 }
