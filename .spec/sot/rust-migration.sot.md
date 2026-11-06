@@ -264,3 +264,17 @@ signed checkpoints. Verification reuses the shared Merkle implementation and
 requires separately trusted writer/witness keys. A required witness must anchor
 the first durable record immediately before periodic cadence begins, preserving
 strict recovery after an early restart without relaxing witness coverage.
+
+Sealed key compatibility preserves the frozen scrypt/AES256-GCM format while
+rejecting malformed key widths, noncanonical envelope encodings and ordinary
+empty-passphrase operation. Any authentication/parse failure must return an
+error, never mint replacement identity or silently empty a linkage vault.
+Compatibility import, physical durable storage and dual-control erasure are
+separate gates. Owned-buffer zeroization is not proof of backup/OS erasure.
+
+Per-subject linkage vault restore must reject duplicate keys, invalid widths,
+key/tombstone conflicts and dangling reverse handles. Shredded subjects cannot
+be reminted. Derivation and key destruction serialize on one state lock. KDF
+failure never falls back to a cheaper algorithm. Exposing erasure requires a
+verified dual-control permit and durable persistence of the resulting snapshot;
+a test-only permit does not constitute an operational approval workflow.

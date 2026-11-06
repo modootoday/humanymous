@@ -1,0 +1,86 @@
+package main
+
+import (
+    "bytes"
+    "crypto/rand"
+    "encoding/hex"
+    "encoding/json"
+    "os"
+    "path/filepath"
+    "runtime"
+)
+
+// This is fixture setup around the unmodified frozen implementations, not a
+// second implementation of the KDF, cipher or vault algorithms. Seeds and
+// passphrases below are public synthetic test data, never deployment secrets.
+func main() {
+    type pseudonymCase struct {
+        Snapshot json.RawMessage `json:"snapshot"`
+        Subject string `json:"subject"`
+        Value string `json:"value"`
+        Stretch bool `json:"stretch"`
+        Expected string `json:"expected"`
+    }
+    type sealedCase struct {
+        Passphrase string `json:"passphrase"`
+        Material KeyMaterial `json:"material"`
+        Blob json.RawMessage `json:"blob"`
+    }
+    output := struct {
+        Go string `json:"go"`
+        Pseudonyms []pseudonymCase `json:"pseudonyms"`
+        Sealed []sealedCase `json:"sealed"`
+        ShreddedSnapshot json.RawMessage `json:"shredded_snapshot"`
+        Tombstone string `json:"tombstone"`
+    }{Go:runtime.Version(),Pseudonyms:[]pseudonymCase{},Sealed:[]sealedCase{}}
+    key := func(offset byte) []byte {
+        value:=make([]byte,32)
+        for i:=range value {value[i]=byte(i)+offset}
+        return value
+    }
+    snapshot,_:=json.Marshal(map[string]any{
+        "keys":map[string]string{"subject-A":hex.EncodeToString(key(0)),"subject-B":hex.EncodeToString(key(32)),"한국어":hex.EncodeToString(key(64))},
+        "shredded":[]string{},"index":map[string]string{},
+    })
+    for _,subject:=range []string{"subject-A","subject-B","한국어"} {
+        for _,value:=range []string{"","1.2.3.4","2001:db8::1","example.test","Agent/1.0","e\u0301","é","한글","nul\x00line\n"} {
+            for _,stretch:=range []bool{false,true} {
+                vault:=LoadVault(snapshot).SetStretch(stretch)
+                expected:=vault.Pseudonymize(subject,value)
+                if vault.Pseudonymize(subject,value)!=expected {panic("nondeterministic frozen pseudonym")}
+                output.Pseudonyms=append(output.Pseudonyms,pseudonymCase{snapshot,subject,value,stretch,expected})
+            }
+        }
+    }
+    vault:=LoadVault(snapshot)
+    vault.Link("handle-A","subject-A")
+    vault.Link("handle-B","subject-B")
+    if !vault.Shred("subject-A") {panic("expected key to shred")}
+    vault.Link("must-not-relink","subject-A")
+    if _,exists:=vault.Resolve("handle-A");exists {panic("reverse link survived shred")}
+    output.ShreddedSnapshot=vault.Snapshot()
+    output.Tombstone=vault.Pseudonymize("subject-A","1.2.3.4")
+
+    directory,err:=os.MkdirTemp("","hmn-key-oracle-")
+    if err!=nil {panic(err)}
+    path:=filepath.Join(directory,"synthetic-keys.sealed")
+    defer os.Remove(directory)
+    defer os.Remove(path)
+    originalReader:=rand.Reader
+    defer func(){rand.Reader=originalReader}()
+    for i,passphrase:=range []string{"fixture-passphrase","한글 암호",""} {
+        material:=KeyMaterial{SigningSeed:key(byte(i)),HMACKey:key(byte(i+32)),Vault:snapshot,WitnessSeed:key(byte(i+64))}
+        // Exactly the source's salt+nonce entropy, isolated to public fixtures.
+        entropy:=make([]byte,28)
+        for n:=range entropy {entropy[n]=byte(n+i*41)}
+        rand.Reader=bytes.NewReader(entropy)
+        if err:=SealKeys(path,passphrase,material);err!=nil {panic(err)}
+        blob,err:=os.ReadFile(path)
+        if err!=nil {panic(err)}
+        opened,err:=OpenKeys(path,passphrase)
+        if err!=nil || !bytes.Equal(opened.SigningSeed,material.SigningSeed) {panic("frozen key roundtrip failed")}
+        if _,err:=OpenKeys(path,"wrong-fixture-passphrase");err==nil {panic("wrong passphrase accepted")}
+        output.Sealed=append(output.Sealed,sealedCase{passphrase,material,blob})
+    }
+    if err:=json.NewEncoder(os.Stdout).Encode(output);err!=nil {panic(err)}
+}
