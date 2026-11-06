@@ -251,3 +251,10 @@ refusal. Restore must verify persisted witness signatures and must not reset an
 already-known witness head to empty/older local storage. Reference in-process
 co-signing is separate from actual independent authority and durable antirollback
 state; checkpoint cadence limits independent anchor coverage explicitly.
+
+Audit lifecycle classification preserves cumulative inclusive retention windows;
+no tier label claims physical archival or erasure. Liveness requires an observer
+outside the watched process, expected-node provisioning and authenticated/replay-
+checked receipts before state transition. The state registry does not authenticate
+messages. Invalid cadence, duplicate registration or observer-clock regression
+must not reset deadlines or return a false healthy indication.

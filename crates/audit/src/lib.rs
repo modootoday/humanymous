@@ -1,5 +1,6 @@
 //! Audit integrity, independent verification and durable enforcement evidence.
 pub mod checkpoint;
+pub mod lifecycle;
 #[cfg(any(unix, windows))]
 pub mod log;
 pub mod merkle;

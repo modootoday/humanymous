@@ -696,15 +696,19 @@
       "tests": [
         "TestNodeSuppressionDetected"
       ],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/lifecycle/registry.rs"
+      ]
     },
     {
       "path": "internal/audit/noderegistry.go",
       "sha256": "05e8596d627e87cdb3cf25fe16f55a3ebbee6df7e14f0aa1197d96bbc9e83de5",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "partial_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/lifecycle/registry.rs"
+      ]
     },
     {
       "path": "internal/audit/proofs_test.go",
@@ -745,8 +749,10 @@
       "path": "internal/audit/retention.go",
       "sha256": "2e38bd1495f13e6ffaefe987713b56ec820ef492cbf95288af7d7c6a485584d9",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/lifecycle/retention.rs"
+      ]
     },
     {
       "path": "internal/audit/sink_adapters_test.go",
