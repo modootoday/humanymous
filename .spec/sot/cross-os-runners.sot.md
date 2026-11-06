@@ -3,7 +3,7 @@ id: sot:root/cross-os-runners
 title: Cross OS runner qualification and infrastructure research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-06T22:37:47Z
+updated: 2026-11-06T23:09:29Z
 verify: manual
 rel:
   depends_on: [sot:root/delivery, sot:root/adapter-ecosystem]
@@ -11,7 +11,7 @@ rel:
 
 # Cross OS runner qualification
 
-Document version: 0.1.0. Research checked 2026-11-07 KST. Accepted execution
+Document version: 0.2.0. Research checked 2026-11-07 KST. Accepted execution
 design; remote results must be attached separately. This does not certify the
 unfinished Rust runtime or change detection scoring.
 
@@ -228,3 +228,33 @@ Microsoft API sources checked 2026-11-07 KST:
 CreateNoWindow is requested but Microsoft documents it is ignored when alternate
 credentials are supplied. WindowStyle=Hidden additionally requests hidden startup;
 this does not change the required token or introduce an interactive handoff.
+
+Write-denial implementation uses icacls advanced WD/AD/WEA/WA/DE/DC/WDAC/WO
+bits for only the newly generated SID. Generic write masks can overlap ordinary
+read handles via shared standard rights; preserve READ_CONTROL/SYNCHRONIZE.
+The child must prove workspace create-file denial before executing harnesses.
+Source: https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/icacls
+Account provisioning is never attempted locally. Child process startup output is
+retained separately from harness output; environment/credentials are never dumped.
+
+## Observed standard-user completion
+
+Run https://github.com/modootoday/humanymous/actions/runs/42309353245 at exact
+source c6a245751e3dd4654157f5482f8ef8757a153707 passed all six required native
+tuples. Each Linux/macOS tuple passed 130 tests; each Windows tuple passed 131.
+Windows x64 and ARM64 each executed all 37 Cargo JSON manifest harnesses:
+36 positive-test harnesses and one successful zero-test harness. All six CLI
+security tests passed on both Windows architectures. Ignored/filtered counts
+were zero. Actual SID/no Administrators group/TokenElevation=0, workspace write
+denial and account/scratch deletion were observed in both Windows artifacts.
+
+The private evidence:root/20261106225537 bundle retains raw per-run/per-tuple
+reports and logs. Public evidence:root/20261106223747 retains run/job URLs,
+immutable artifact IDs/digests and the exact-set, SHA-checked quantitative
+summary. The attached summarizer rejects duplicate/missing tuples, source or
+artifact mismatch, ignored/filtered work, incomplete manifest execution and
+missing cleanup/token prerequisites. Four earlier failed iterations remain
+explicitly failed. The final native run proves only implemented crates at that
+SHA; later shared-checkout changes need their own execution. Full runtime,
+Docker product e2e and dedicated Windows remote-client/privilege tests remain
+unqualified. This probe does not authorize main merge, publication or deployment.
