@@ -245,3 +245,9 @@ only after these boundaries; a durable record followed by checkpoint failure is
 an ambiguous logical operation requiring explicit recovery, never blind retry.
 UUIDv7 uses OS entropy and fails closed if entropy is unavailable. Local writer
 signatures are not independent witness anchoring.
+
+Configured witness co-signing must fail closed: no writer-only fallback after
+refusal. Restore must verify persisted witness signatures and must not reset an
+already-known witness head to empty/older local storage. Reference in-process
+co-signing is separate from actual independent authority and durable antirollback
+state; checkpoint cadence limits independent anchor coverage explicitly.

@@ -1,7 +1,7 @@
 //! Durable per-node sealing. The WAL is the authority; projections are not.
 mod stamp;
 use crate::{
-    checkpoint::Checkpoint,
+    checkpoint::{Checkpoint, Witness},
     merkle::Tree,
     record::{Record, record_hash, record_mac},
     storage::{RecoveryPolicy, Wal},
@@ -20,11 +20,14 @@ pub struct Config {
     pub signing_seed: [u8; 32],
     /// Nonzero number of records between durable signed heads.
     pub checkpoint_every: u64,
+    /// Required co-signer when present. This object does not by itself provide
+    /// independent process isolation or rollback-protected head persistence.
+    pub witness: Option<Witness>,
 }
 
 /// Single-owner chain state restored only after authenticated WAL recovery.
-/// This initial local writer has no independent witness authority; deployments
-/// requiring a witness must not advertise this as independently anchored.
+/// A configured co-signer is mandatory on every emitted checkpoint. Independent
+/// key/process/head persistence must still be established by the deployment.
 pub struct Log {
     config: Config,
     signer: SigningKey,
@@ -49,11 +52,12 @@ impl Log {
         }
         let signer = SigningKey::from_bytes(&config.signing_seed);
         let public = signer.verifying_key().to_bytes();
+        let witness_public = config.witness.as_ref().map(Witness::public_key);
         let history = wal.verified_history(RecoveryPolicy {
             node_id: &config.node_id,
             hmac_key: &config.hmac_key,
             writer_public: &public,
-            witness_public: None,
+            witness_public: witness_public.as_ref(),
             trusted_head,
             allow_new,
         })?;
@@ -65,6 +69,15 @@ impl Log {
             .map(|r| r.record_hash.as_bytes().to_vec())
             .collect();
         let checkpoints = history.checkpoints().to_vec();
+        if let Some(witness) = &config.witness {
+            if let Some(last) = checkpoints.last() {
+                witness.restore(last).map_err(io::Error::other)?;
+            } else if witness.last_size().map_err(io::Error::other)? != 0 {
+                return Err(io::Error::other(
+                    "witness already has a head absent from local storage",
+                ));
+            }
+        }
         Ok(Self {
             config,
             signer,
@@ -137,6 +150,27 @@ impl Log {
             ..Default::default()
         };
         cp.sign(&self.signer);
+        if let Some(witness) = &self.config.witness {
+            let result = (|| {
+                let last = witness.last_size().map_err(io::Error::other)?;
+                let proof = if last > 0 && last < self.sequence {
+                    let old = usize::try_from(last).map_err(io::Error::other)?;
+                    Tree::new(&self.leaves)
+                        .consistency_proof(old)
+                        .ok_or_else(|| io::Error::other("witness consistency proof unavailable"))?
+                } else {
+                    Vec::new()
+                };
+                witness.counter_sign(&cp, &proof).map_err(io::Error::other)
+            })();
+            match result {
+                Ok(signature) => cp.witness_sig = signature,
+                Err(error) => {
+                    self.poisoned = true;
+                    return Err(error);
+                }
+            }
+        }
         if let Err(error) = self.wal.append_checkpoint(&cp) {
             self.poisoned = true;
             return Err(error);
@@ -200,6 +234,7 @@ mod tests {
             hmac_key: b"secret".to_vec(),
             signing_seed: [7; 32],
             checkpoint_every: 1,
+            witness: None,
         }
     }
     fn event() -> Record {
@@ -294,6 +329,82 @@ mod tests {
         assert_eq!(restored.sequence(), 1);
         restored.checkpoint().unwrap();
         drop(restored);
+        clean(&dir);
+    }
+
+    fn witnessed_config(node: &str) -> Config {
+        let mut config = config();
+        let writer = SigningKey::from_bytes(&config.signing_seed)
+            .verifying_key()
+            .to_bytes();
+        config.witness = Some(Witness::from_seed(&[9; 32], writer, node.into()));
+        config
+    }
+    #[test]
+    fn witnessed_heads_survive_restart_and_missing_signatures_block_boot() {
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            witnessed_config("node"),
+            None,
+            true,
+        )
+        .unwrap();
+        for _ in 0..3 {
+            log.append(event()).unwrap();
+        }
+        let anchor = log.checkpoint().unwrap().unwrap();
+        assert!(!anchor.witness_sig.is_empty());
+        drop(log);
+        let mut reopened = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            witnessed_config("node"),
+            Some(&anchor),
+            false,
+        )
+        .unwrap();
+        reopened.append(event()).unwrap();
+        let next = reopened.checkpoint().unwrap().unwrap();
+        assert_eq!(next.tree_size, 4);
+        assert!(next.verify_witness(&witnessed_config("node").witness.unwrap().public_key()));
+        drop(reopened);
+        let path = dir.join("checkpoints.jsonl");
+        let lines = fs::read_to_string(&path).unwrap();
+        let corrupted = lines
+            .lines()
+            .map(|line| {
+                let mut cp: Checkpoint = serde_json::from_str(line).unwrap();
+                cp.witness_sig.clear();
+                serde_json::to_string(&cp).unwrap() + "\n"
+            })
+            .collect::<String>();
+        fs::write(path, corrupted).unwrap();
+        assert!(
+            Log::open(
+                Wal::open(&dir, WalOptions::default()).unwrap(),
+                witnessed_config("node"),
+                None,
+                false
+            )
+            .is_err()
+        );
+        clean(&dir);
+    }
+    #[test]
+    fn witness_refusal_is_not_silently_downgraded_to_writer_only() {
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            witnessed_config("other-node"),
+            None,
+            true,
+        )
+        .unwrap();
+        let acted = std::cell::Cell::new(false);
+        assert!(log.emit_and_act(event(), |_| acted.set(true)).is_err());
+        assert!(!acted.get());
+        assert!(log.checkpoint().is_err());
+        drop(log);
         clean(&dir);
     }
 }

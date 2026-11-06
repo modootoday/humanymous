@@ -272,6 +272,24 @@ mod tests {
     fn exclusive_writer_rotation_checkpoint_and_restart() {
         let dir = directory();
         let mut wal = Wal::open(&dir, options()).unwrap();
+        let child = std::process::Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "storage::wal::tests::process_lock_probe",
+                "--nocapture",
+            ])
+            .env("HUMANYMOUS_WAL_LOCK_PROBE", &dir)
+            .output()
+            .unwrap();
+        assert!(
+            child.status.success(),
+            "{}",
+            String::from_utf8_lossy(&child.stderr)
+        );
+        assert!(
+            String::from_utf8_lossy(&child.stdout).contains("1 passed; 0 failed"),
+            "lock probe test did not execute"
+        );
         assert_eq!(
             Wal::open(&dir, options()).err().unwrap().kind(),
             io::ErrorKind::WouldBlock
@@ -307,6 +325,16 @@ mod tests {
             fs::remove_file(entry.unwrap().path()).unwrap();
         }
         fs::remove_dir(dir).unwrap();
+    }
+    #[test]
+    fn process_lock_probe() {
+        let Some(dir) = std::env::var_os("HUMANYMOUS_WAL_LOCK_PROBE") else {
+            return;
+        };
+        assert_eq!(
+            Wal::open(Path::new(&dir), options()).err().unwrap().kind(),
+            io::ErrorKind::WouldBlock
+        );
     }
     #[test]
     fn rotation_failure_permanently_poisoned_until_restart() {
