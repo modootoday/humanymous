@@ -32,7 +32,9 @@ try {
     if ($LASTEXITCODE) { throw 'Workspace read/execute grant failed' }
     # A hosted image can inherit broad Users write permissions. Restrict this
     # disposable SID explicitly without changing any preexisting principal.
-    & icacls.exe $Workspace /deny "*$($user.SID.Value):(OI)(CI)(W,D,WDAC,WO)" /T /Q | Out-Null
+    # Specific write bits preserve READ_CONTROL/SYNCHRONIZE shared by generic
+    # read and write masks; denying generic W would also break script reads.
+    & icacls.exe $Workspace /deny "*$($user.SID.Value):(OI)(CI)(WD,AD,WEA,WA,DE,DC,WDAC,WO)" /T /Q | Out-Null
     if ($LASTEXITCODE) { throw 'Workspace write restriction failed' }
     $start = [Diagnostics.ProcessStartInfo]::new()
     $start.FileName = (Get-Command pwsh).Source
@@ -44,6 +46,8 @@ try {
     $start.CreateNoWindow = $true
     $start.WindowStyle = [Diagnostics.ProcessWindowStyle]::Hidden
     $start.WorkingDirectory = $Workspace
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
     $start.Environment.Clear()
     $start.Environment['SystemRoot'] = $env:SystemRoot
     $start.Environment['WINDIR'] = $env:SystemRoot
@@ -53,7 +57,11 @@ try {
     $start.Environment['TMP'] = Join-Path $scratch 'tmp'
     foreach ($argument in @('-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'windows-child.ps1'),'-Manifest',$Manifest,'-Scratch',$scratch,'-ExpectedSid',$user.SID.Value,'-Workspace',$Workspace)) { $start.ArgumentList.Add($argument) }
     $process = [Diagnostics.Process]::Start($start)
+    $stdout = $process.StandardOutput.ReadToEndAsync()
+    $stderr = $process.StandardError.ReadToEndAsync()
     if (!$process.WaitForExit(1200000)) { $process.Kill($true); $process.WaitForExit(); throw 'Child execution timed out' }
+    $stdout.GetAwaiter().GetResult() | Set-Content (Join-Path $ReportDirectory 'child-stdout.log')
+    $stderr.GetAwaiter().GetResult() | Set-Content (Join-Path $ReportDirectory 'child-stderr.log')
     # Copy only expected evidence; never copy account profiles/temp contents.
     $entries = @(Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json)
     foreach ($file in @('launcher-result.json') + @(0..($entries.Count-1) | ForEach-Object { "harness-$_-list.log"; "harness-$_-run.log" })) {
