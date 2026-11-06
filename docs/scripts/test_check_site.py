@@ -72,6 +72,12 @@ class OutputBoundaryTests(unittest.TestCase):
         (site / 'reviews.json').write_text('{}')
         self.assertTrue(any('non-public' in e for e in check.built(site, '')))
 
+    def test_debug_source_map_fails(self):
+        site = self.build('<html lang="en"><link rel="canonical" href="https://humanymous.net/">'
+                          '<main><h1>Example</h1></main></html>')
+        (site / 'theme.css.map').write_text('{}')
+        self.assertTrue(any('debug source map' in e for e in check.built(site, '')))
+
 
 if __name__ == '__main__':
     unittest.main()

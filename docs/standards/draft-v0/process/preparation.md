@@ -36,7 +36,8 @@ specific interoperability problem.
    links, anchors, status/version, navigation, accessibility, sensitive-data
    exclusion and both apex and repository-subpath URLs.
 7. Prepare the venue-specific submission package. If preparing an IETF draft,
-   use current RFCXML v3 guidance, required boilerplate and format/nits checks,
+   use the RFCXML version 3 XML document format, required boilerplate and
+   formatting and editorial checks (often called nits checks),
    and read the rendered result. Avoid two divergent normative sources.
 8. Submit or request external review only through an authorized maintainer action.
    Record the actual resulting URL/state. Preparation is not submission; an
@@ -60,8 +61,8 @@ must not be substituted for current policy.
 
 ## Official preparation references
 
-- [IETF drafts](https://www.ietf.org/participate/ids/), [process](https://www.ietf.org/process/process/), [submission tool](https://datatracker.ietf.org/submit/tool-instructions/), [required content](https://authors.ietf.org/en/required-content), [IPR](https://www.ietf.org/process/ipr/).
-- [W3C Process](https://www.w3.org/policies/process/), [incubation](https://www.w3.org/guide/incubation.html), [document review](https://www.w3.org/guide/documentreview/), [Patent Policy](https://www.w3.org/policies/patent-policy/), [TAG explainer](https://github.com/w3ctag/explainer-explainer/blob/main/template.md).
+- [IETF drafts](https://www.ietf.org/participate/ids/), [process](https://www.ietf.org/process/process/), [submission tool](https://datatracker.ietf.org/submit/tool-instructions/), [required content](https://authors.ietf.org/en/required-content), [intellectual property rights (IPR)](https://www.ietf.org/process/ipr/).
+- [W3C Process](https://www.w3.org/policies/process/), [incubation](https://www.w3.org/guide/incubation.html), [document review](https://www.w3.org/guide/documentreview/), [Patent Policy](https://www.w3.org/policies/patent-policy/), [Technical Architecture Group (TAG) explainer](https://github.com/w3ctag/explainer-explainer/blob/main/template.md).
 - [WHATWG Working Mode](https://whatwg.org/working-mode), [stages](https://whatwg.org/stages), [IANA requests](https://www.iana.org/protocols/apply).
 - [ISO directives](https://www.iso.org/sites/directives/current/consolidated/index.html), [Ecma bylaws](https://ecma-international.org/policies/by-laws/).
 

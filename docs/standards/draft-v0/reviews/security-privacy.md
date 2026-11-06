@@ -17,6 +17,10 @@ legal compliance certification or standards-body approval is claimed.
 The profile cannot prove that every authenticated request was made by a person
 or that a real-browser user has benign intent.
 
+This page is an informative review checklist. Candidate protocol requirements
+belong to the [proposed profile](../protocol/profile.md#requirement-language);
+this review does not add a separate set of conformance requirements.
+
 ## Threat boundaries
 
 | Boundary | Required review and negative test |
@@ -25,10 +29,11 @@ or that a real-browser user has benign intent.
 | Collector to decision service | Producer impersonation, replay, wrong tenant/body/stream/route, expiry and key rotation |
 | Decision to origin effect | Route mutation, double execution, body validation after a side effect, retries after partial forwarding |
 | Key discovery | Private/loopback/link-local targets, redirects, DNS changes, large/churning key documents and resource exhaustion |
-| Public to administration | Separate listeners/credentials, forwarding spoof, application SSRF, browser localhost attacks and unauthorized local processes |
+| Public to administration | Separate listeners/credentials, forwarding spoof, application server-side request forgery (SSRF), browser localhost attacks and unauthorized local processes |
 | Audit to analytics | Sampling, dropped queues, disk failure and misleading incomplete measurement denominators |
 
-Administration MUST NOT be mounted in the public adapter namespace. Locality is
+Review that administration is absent from the public adapter namespace, as
+described by [decision containment](../protocol/profile.md#p-09-decision-containment-and-revalidation). Locality is
 not authentication: shared container loopback and default named-pipe permissions
 can cross unintended trust boundaries. Service identity, restrictive permissions,
 remote-client rejection where needed, authorization and sensitive-operation
@@ -54,8 +59,9 @@ Statement, not a compliance certificate for an implementation.
 
 ## Accessibility and human recovery
 
-Pointer richness, typing speed and rapid completion MUST NOT be prerequisites
-for an accessible verification route. Include keyboard-only, assistive
+Verify that accessible recovery does not depend on pointer richness, typing
+speed or rapid completion. See the [accessible recovery contract](../../../help/challenge-accessibility.md).
+Include keyboard-only, assistive
 technology, reduced-motion, mobile and slow-user controls. A low event count
 does not establish abuse. Authentication and resource controls must provide
 legitimate API-client paths without injecting browser challenge markup into API

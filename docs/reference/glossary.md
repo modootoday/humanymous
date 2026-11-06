@@ -22,3 +22,8 @@ reviewed: 2026-11-07
 | Coherent-browser ceiling | The limit of distinguishing consistent real-browser automation from legitimate use |
 | Qualification | Evidence for an exact version, topology and capability set |
 | Project draft | A developing proposal without implied external adoption or conformance |
+| ABI | Application binary interface: the calling, data-layout and linking contract between compiled components |
+| SSRF | Server-side request forgery: causing a server to send requests to an unintended destination |
+| RFCXML | The XML document format used to prepare RFCs and Internet-Drafts |
+| IPR | Intellectual property rights; contribution obligations depend on the relevant venue |
+| TAG | W3C Technical Architecture Group, which reviews Web architecture and proposed designs |

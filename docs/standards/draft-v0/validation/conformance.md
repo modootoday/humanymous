@@ -31,14 +31,21 @@ system or runtime does not qualify every combination.
 
 ## Required corpus
 
+Each row links to a named candidate requirement in the proposed profile.
+The `P` identifiers refer to that profile, not test priority or external approval.
+
 | Requirement | Positive and negative evidence |
 | --- | --- |
-| P-01–P-02 | Direct, forwarded, asserted, partial and absent evidence; forged source and missing required capture |
-| P-03–P-05 | Correct binding and duplicate delivery; wrong tenant/route/body/stream, replay, expiry and restart |
-| P-06 | Separate verdicts from malformed input, timeout, unavailable dependency and unknown version |
-| P-07–P-08 | Complete finite bodies before effects; partial/oversized/compressed/multipart and streaming lifecycle cases |
-| P-09 | Mutation allowlists, final-route changes, no public administration and no credential leakage |
-| P-10 | Sampling, queue overflow, disk failure and unsampled outcome denominators |
+| [Observation provenance (P-01)](../protocol/profile.md#p-01-observation-provenance) | Direct, forwarded, asserted and absent evidence; forged source |
+| [Required capability availability (P-02)](../protocol/profile.md#p-02-required-capability-availability) | Available, partial and missing required capture; route-readiness refusal |
+| [Request and decision binding (P-03)](../protocol/profile.md#p-03-request-and-decision-binding) | Correct binding; wrong tenant, route or body, replay and expiry |
+| [Connection and stream isolation (P-04)](../protocol/profile.md#p-04-connection-and-stream-isolation) | Correct multiplexing; cross-connection or cross-stream attribution and forged trace IDs |
+| [Idempotent delivery (P-05)](../protocol/profile.md#p-05-idempotent-delivery) | Retries and duplicate delivery without double consumption or origin effects, including after restart |
+| [Decisions and errors (P-06)](../protocol/profile.md#p-06-decisions-and-errors) | Separate verdicts from malformed input, timeout, unavailable dependency and unknown version |
+| [Complete-body verification before effects (P-07)](../protocol/profile.md#p-07-complete-body-verification-before-effects) | Finite bodies before effects; partial, oversized, compressed and multipart inputs |
+| [Streaming integrity lifecycle (P-08)](../protocol/profile.md#p-08-streaming-integrity-lifecycle) | Explicit stream authorization, partial-stream failure and lifecycle cases |
+| [Decision containment and revalidation (P-09)](../protocol/profile.md#p-09-decision-containment-and-revalidation) | Mutation allowlists, final-route changes, no public administration and no credential leakage |
+| [Audit independence and visible loss (P-10)](../protocol/profile.md#p-10-audit-independence-and-visible-loss) | Sampling, queue overflow, disk failure and unsampled outcome denominators |
 
 Vectors must specify byte-exact inputs/outputs, supported version, expected error
 and source revision. They must include absent/null/empty/duplicate/unknown fields,

@@ -127,6 +127,8 @@ def built(site, baseurl):
     for forbidden in ('AGENTS.md', 'Gemfile', 'Gemfile.lock', 'reviews.json', 'scripts', 'assets/llms', 'assets/og', 'assets/screenshots', 'images'):
         if (site / forbidden).exists():
             errors.append(f'non-public/retired output exists: {forbidden}')
+    for source_map in site.rglob('*.map'):
+        errors.append(f'debug source map in public output: {source_map.relative_to(site)}')
     return sorted(set(errors))
 
 

@@ -23,6 +23,12 @@ described in [BCP 14](https://www.rfc-editor.org/rfc/rfc8174.html) only when
 they appear in uppercase. They express candidate requirements of this project
 profile, not a statement that an external standards body has approved them.
 
+Requirement identifiers `P-01` through `P-10` label the candidate requirements
+of this **profile**. They are stable project-draft references, not priority
+levels or identifiers assigned by a standards organization. Each requirement
+has a descriptive heading; the [validation matrix](../validation/conformance.md#required-corpus)
+links to those headings.
+
 ## Actors and deployment profiles
 
 A **collector** supplies observations with provenance. A **decision service**
@@ -38,12 +44,16 @@ trust domain and is not a participant in public request routing.
 | Application | Framework observations after its server's processing and normalization |
 | Managed runtime | Only the metadata and lifecycle hooks provided by that host |
 
-**P-01.** A producer MUST identify whether a fact is directly server-observed,
+### P-01: Observation provenance
+
+A producer MUST identify whether a fact is directly server-observed,
 authenticated-forwarded, application-asserted, browser-asserted, derived or
 not observed. A consumer MUST NOT promote an unauthenticated assertion into a
 server observation.
 
-**P-02.** A producer MUST declare unavailable and partial capabilities. A consumer
+### P-02: Required capability availability
+
+A producer MUST declare unavailable and partial capabilities. A consumer
 MUST reject a protected route's readiness when a required capability cannot be
 provided; it MUST NOT invent a fingerprint or silently substitute another peer.
 
@@ -60,16 +70,22 @@ provided; it MUST NOT invent a fingerprint or silently substitute another peer.
 | Credential | Verified type, principal reference and authorized scope; never the private key or bearer token |
 | Quality | Dropped/truncated/overflow state and reason, separate from the security outcome |
 
-**P-03.** The receiver MUST bind evidence and decisions to producer, tenant,
+### P-03: Request and decision binding
+
+The receiver MUST bind evidence and decisions to producer, tenant,
 connection and request/stream, method, target, relevant body/header commitments,
 final route/origin, policy revision, freshness and a replay-resistant correlation
 value. It MUST reject mismatched, expired, oversized or unsupported envelopes.
 
-**P-04.** A connection-level observation MUST NOT be reassigned to another
+### P-04: Connection and stream isolation
+
+A connection-level observation MUST NOT be reassigned to another
 connection, tenant or unrelated multiplexed stream. A client-supplied request or
 trace identifier MUST NOT itself establish authoritative identity.
 
-**P-05.** Retransmission MUST NOT duplicate budget consumption, audit commitment
+### P-05: Idempotent delivery
+
+Retransmission MUST NOT duplicate budget consumption, audit commitment
 or an origin side effect. A cached decision MUST retain its original binding.
 
 The following illustrates relationships only. It is not a normative encoding:
@@ -92,23 +108,33 @@ NOT be used as a production request or treated as an accepted complete envelope.
 
 ## Decision and effect boundary
 
-**P-06.** A decision MUST distinguish ALLOW, CHALLENGE and DENY from invalid input,
+### P-06: Decisions and errors
+
+A decision MUST distinguish ALLOW, CHALLENGE and DENY from invalid input,
 missing capture, dependency failure and timeout. An adapter MUST NOT translate
 an unknown decision or required-version mismatch into ALLOW.
 
-**P-07.** Where complete-body integrity is required, verification MUST finish
+### P-07: Complete-body verification before effects
+
+Where complete-body integrity is required, verification MUST finish
 before forwarding body bytes or invoking an origin handler that can cause side
 effects. Buffering or spooling MUST have explicit size/time/resource bounds.
 
-**P-08.** Unbounded streaming, WebSocket and streaming remote procedure calls
+### P-08: Streaming integrity lifecycle
+
+Unbounded streaming, WebSocket and streaming remote procedure calls
 MUST use a separately specified authorization/integrity lifecycle. A unary or
 partial-body check MUST NOT be described as whole-stream integrity.
 
-**P-09.** Decisions MUST carry only explicitly permitted mutations and challenge
+### P-09: Decision containment and revalidation
+
+Decisions MUST carry only explicitly permitted mutations and challenge
 references. They MUST NOT carry management credentials or operations. Final-route
 mutation after authorization MUST trigger revalidation or be rejected.
 
-**P-10.** Security audit and required admission controls MUST NOT depend on an
+### P-10: Audit independence and visible loss
+
+Security audit and required admission controls MUST NOT depend on an
 untrusted trace sampling flag. Observation/export loss MUST remain visible.
 
 ## Compatibility and unresolved wire rules

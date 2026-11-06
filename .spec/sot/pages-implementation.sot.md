@@ -52,6 +52,14 @@ baseurl-aware canonical URL, local target/anchor integrity, alt attributes,
 unique IDs and exclusion of retired/private surfaces. This is bounded static
 validation, not a complete secret scan or accessibility certification.
 
+Public profile requirement IDs are allowed when their scope is defined and each
+has a descriptive heading and an individual validation link. They are distinct
+from private specification IDs and internal priorities. Keep review checklists
+explicitly informative and reserve uppercase BCP 14 language for declared
+candidate normative content. Expand unfamiliar abbreviations at first use or
+link a public glossary. Configure Sass sourcemap: never; the output checker
+rejects any .map debug artifact, including future accidental reintroduction.
+
 ### Tokens
 
 Only the three supported override maps exist in

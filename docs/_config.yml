@@ -8,7 +8,7 @@ lang: en
 remote_theme: modootoday/jekyll-theme-modootoday@ba2b23f0e1639f92ccefbb882f43092bfe5b16b7
 markdown: kramdown
 kramdown: {input: GFM, syntax_highlighter: rouge}
-sass: {silence_deprecations: [import, global-builtin]}
+sass: {silence_deprecations: [import, global-builtin], sourcemap: never}
 permalink: pretty
 plugins: [jekyll-remote-theme, jekyll-relative-links, jekyll-seo-tag, jekyll-sitemap]
 defaults:

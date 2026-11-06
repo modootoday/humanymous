@@ -16,7 +16,7 @@ These are qualification profiles, not a list of released Rust deployments.
 | CDN or load-balancer origin | Upstream TLS is not the client's TLS; original facts are unavailable without an authenticated supported channel |
 | Framework middleware | Request lifecycle hooks do not imply raw network or response-transformation capability |
 | Managed edge hook | Provider observations, body access and execution limits require explicit qualification |
-| Native server module | Worker, reload, ABI and ownership behavior need independent pilots |
+| Native server module | Worker, reload, application binary interface (ABI) and ownership behavior need independent pilots |
 
 Required unavailable capabilities prevent route readiness. A deliberately limited
 profile must declare its gaps. HTTP/3 capture is not qualified by an HTTP/2

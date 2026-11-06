@@ -146,9 +146,9 @@ standards communications are outside this lane.
 The verified apex artifact is open as a retained deliverable tab in the Codex
 in-app browser at http://127.0.0.1:8765/. The loopback-only Python static server
 serves only the public built tree at
-`C:/Users/smile/.codex/tmp/humanymous-pages-20261106223502/apex-final`.
+`C:/Users/smile/.codex/tmp/humanymous-pages-20261106223502/polish-apex`.
 It is not a public deployment. This user-requested preview should remain running
-while the user reviews it; server exec session is 24031.
+while the user reviews it; server exec session is 58554.
 
 ## Public terminology audit requested by user
 
@@ -187,3 +187,36 @@ Primary references: https://www.rfc-editor.org/rfc/rfc8174.html and
 https://www.w3.org/TR/qaframe-spec/. No new runtime conformance, complete secret
 audit, or publication claim follows. Corrections await implementation scope;
 the user asked for investigation, so authored pages were preserved.
+
+## Public terminology corrections authorized by user
+
+Implemented after the user requested improvements:
+
+- Preserved public P-01..P-10 references, defined P as profile scope and explicitly
+  distinguished identifiers from priorities/standards assignments. Each now has
+  a descriptive heading. Expanded the validation matrix to ten named, individually
+  linked requirements instead of opaque ranges; real built anchor checks pass.
+- Marked the security/privacy page as informative. Reworded the two uppercase
+  MUST NOT statements as review checks and linked the governing public requirement
+  or accessibility contract. No security/detection/accessibility policy changed.
+- Expanded ABI and SSRF at first use; clarified RFCXML and editorial/nits checks,
+  IPR and TAG references. Added all five public glossary definitions.
+- Disabled CSS source maps using the supported Sass setting. Added a built-site
+  rejection and negative test for debug maps. Actual fresh builds contain zero
+  maps, down from 43. The validator now has eight passing boundary tests.
+
+Locked actual apex and /humanymous builds pass exact-theme --strict plus all
+77-page local target/anchor/canonical checks. Chrome 155.0.8059.86 passed 88
+page/baseurl/light-dark/desktop-mobile combinations with zero axe A/AA
+violations and zero page-width overflow. Eight keyboard skip checks passed.
+The local loopback preview was switched to the new artifact, refreshed in the
+in-app browser and retained as a deliverable; expanded RFCXML/IPR/TAG text was
+visibly confirmed. Built output is 150 files with zero maps or sourceMappingURL
+directives; all ten requirement anchors and matrix links exist. Private evidence bundle:
+`.spec.local/root/evidence/20261106223158-pages-public-terminology-improvements/`.
+No currently deployed-site audit or publication is part of this scope.
+
+Global `spec check --no-local` is currently blocked by the separate wargame
+plan's link to private evidence (and its missing verification warning), outside
+the docs lane. This task's changed documents do not introduce those findings.
+No runtime/source-review hashes were refreshed to conceal parallel code changes.
