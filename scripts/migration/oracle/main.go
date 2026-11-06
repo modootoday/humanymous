@@ -31,6 +31,14 @@ type parseCase struct {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "audit-verify" {
+		exportAuditVerification()
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "checkpoint" {
+		exportCheckpoints()
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "network" {
 		exportNetwork()
 		return

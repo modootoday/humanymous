@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-06T21:27:12Z
+updated: 2026-11-06T22:15:36Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -63,6 +63,14 @@ context is proven equivalent. A Rust wrapper around Go is not completion.
    Valid Merkle roots/proofs stay byte-identical. Invalid proof framing may be
    hardened fail-closed: reject extra inclusion-path nodes and malformed hash
    widths, including fabricated roots for structurally impossible paths.
+   Audit duplicate signal IDs retain the Go 1.26 sort.Slice permutation; a
+   stable Rust sort is not historical hash parity. The narrow Rust compatibility
+   implementation retains the upstream BSD notice. Array rule/verdict bytes
+   preserve their source behavior instead of applying extra normalization.
+   Witness hardening rejects a replayed older head even if previously observed,
+   a changed Merkle root at the same size, missing/malformed roots, wrong node
+   or invalid writer signature. Restore authenticates the prior witness signature;
+   deployment still needs independently durable latest-head/anti-rollback state.
 5. Missing required signals, replay, invalid signatures/settings and storage
    outages must retain fail-closed behavior. Erasure, kill switch and permanent
    bans retain dual control. Never gate Pass on motor richness or speed.

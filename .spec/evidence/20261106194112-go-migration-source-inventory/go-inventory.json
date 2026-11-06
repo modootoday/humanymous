@@ -614,15 +614,23 @@
       "path": "internal/audit/canonical.go",
       "sha256": "744f422e6d3a3659a4792e94b146c8a0ea235195aab0b43760c56cea2770481e",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "ported_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/record/canonical.rs",
+        "crates/audit/src/record/normalization.rs",
+        "crates/audit/src/record/ordering.rs",
+        "crates/audit/tests/record_parity.rs"
+      ]
     },
     {
       "path": "internal/audit/chain.go",
       "sha256": "27038b5aac6d4db2b941796b669847314d1549a4a915f44bf09020fcb722ee03",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "partial_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/checkpoint/mod.rs",
+        "crates/audit/tests/checkpoint_parity.rs"
+      ]
     },
     {
       "path": "internal/audit/id_test.go",
@@ -727,8 +735,11 @@
       "path": "internal/audit/record.go",
       "sha256": "e1f51c6a2a937189989800b2d834b46bb75fa73921efa5d2bf9a14540b691f16",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "partial_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/record/mod.rs",
+        "crates/audit/tests/record_parity.rs"
+      ]
     },
     {
       "path": "internal/audit/retention.go",
@@ -802,8 +813,11 @@
       "path": "internal/audit/verifier.go",
       "sha256": "948874f7af997dcb7b9a5fe5d3040bd3b2012b23f2638c640091557e2bb99431",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "partial_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/verification/mod.rs",
+        "crates/audit/tests/verification_parity.rs"
+      ]
     },
     {
       "path": "internal/audit/wal_test.go",
@@ -836,8 +850,11 @@
       "path": "internal/audit/witness.go",
       "sha256": "8bed1a7701cf1c77db7d120721d760f7137e7e4eb135196c72cd87eeb0dad665",
       "tests": [],
-      "parity_status": "pending",
-      "rust_paths": []
+      "parity_status": "partial_unit_parity_not_runtime",
+      "rust_paths": [
+        "crates/audit/src/checkpoint/witness.rs",
+        "crates/audit/tests/checkpoint_parity.rs"
+      ]
     },
     {
       "path": "internal/audit/ws8_test.go",

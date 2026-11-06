@@ -1,0 +1,71 @@
+package main
+
+import (
+    "encoding/hex"
+    "encoding/json"
+    "math"
+    "os"
+    "strings"
+    "sort"
+    "golang.org/x/text/unicode/norm"
+)
+
+func main() {
+    if norm.Version!="15.0.0" {panic("baseline normalization data changed")}
+    type textCase struct {Input string `json:"input"`; Expected string `json:"expected"`}
+    type recordCase struct {Input json.RawMessage `json:"input"`; JSON json.RawMessage `json:"json"`; Previous string `json:"previous"`; Canonical string `json:"canonical"`; Hash string `json:"hash"`}
+    type orderingCase struct {IDs []string `json:"ids"`; Expected []int `json:"expected"`}
+    output:=struct{Unicode string `json:"unicode"`; Texts []textCase `json:"texts"`; Records []recordCase `json:"records"`; Orderings []orderingCase `json:"orderings"`}{Unicode:norm.Version,Texts:[]textCase{},Records:[]recordCase{},Orderings:[]orderingCase{}}
+    addText:=func(input string){output.Texts=append(output.Texts,textCase{input,norm.NFC.String(input)})}
+    for r:=rune(0);r<=0x10ffff;r++ {
+        if r>=0xd800&&r<=0xdfff {continue}
+        s:=string(r)
+        decomposed:=norm.NFD.String(s)
+        if decomposed!=s {addText(decomposed)}
+    }
+    for _,mark:=range []string{"\u0300","\u0315","\u0344","\u0f73","\u0f75","\u1161","\u11a8"} {
+        for _,count:=range []int{0,1,15,16,29,30,31,32,60,61,100} {
+            addText("a"+strings.Repeat(mark,count))
+            addText("\u1100"+strings.Repeat(mark,count))
+            addText(strings.Repeat(mark,count)+"z")
+        }
+    }
+    add:=func(input json.RawMessage,previous string) {
+        var record Record
+        if err:=json.Unmarshal(input,&record);err!=nil {panic(err)}
+        encoded,err:=json.Marshal(record);if err!=nil{panic(err)}
+        output.Records=append(output.Records,recordCase{input,encoded,previous,hex.EncodeToString(canonicalBytes(&record)),computeRecordHash(&record,previous)})
+    }
+    add(json.RawMessage(`{}`),"")
+    add(json.RawMessage(`{"seq":null,"actor":null,"risk_score":null,"triggered_rules":[null,"b","a"],"top_signals":[null,{"id":null,"conf":null}],"upstream":{},"tls":{}}`),"previous")
+    for size:=0;size<90;size++ {
+        record:=Record{
+            EventID:"e\u0301",Seq:uint64(size),NodeID:"node",TS:"2026-11-07T00:00:00Z",EventType:"scoring.evaluated",EventVer:"1.0.0",
+            Actor:Actor{Kind:"subject",IDPsn:"주체"},TenantID:"tenant",SessionPsn:"session",RequestID:"request",Correlation:"correlation",Host:"example.invalid",RouteClass:"api",Verdict:"challenge",
+            RiskScore:-int(size),Rules:[]string{"z","e\u0301","é","a,b","a"},Action:"challenge",Mode:"enforce",FailMode:"none",FailReason:strings.Repeat("\u0300",size),LatencyUS:uint32(size),
+            Upstream:&Upstream{Status:200,ErrorClass:""},TLS:&TLSPsn{JA4Psn:"ja4",H2FPPsn:"h2",SNIPsn:"sni"},ConfigVer:"config",KeyID:"key",DataClass:"pseudonymous",
+            PrevHash:"excluded",RecordHash:"excluded",HMAC:"excluded",Incident:"excluded",
+        }
+        if size%3==0 {record.Seq=math.MaxUint64;record.LatencyUS=math.MaxUint32;record.Upstream=nil}
+        for index:=0;index<size;index++ {
+            record.TopSignals=append(record.TopSignals,Signal{ID:[]string{"z","a","m","a","é","e\u0301"}[(index*7+size)%6],Verdict:[]string{"BOT","e\u0301","UNKNOWN"}[index%3],Conf:[]float64{0,math.Copysign(0,-1),0.0005,0.0015,0.9995,1.2345,math.MaxFloat64,math.SmallestNonzeroFloat64}[index%8]})
+        }
+        encoded,err:=json.Marshal(record);if err!=nil{panic(err)}
+        add(encoded,strings.Repeat("f",size%3*32))
+    }
+    for _,size:=range []int{0,1,2,12,13,49,50,51,64,90,127,256,1024} {
+        for pattern:=0;pattern<8;pattern++ {
+            ids:=[]string{};indices:=[]int{}
+            random:=uint64(size+1)
+            for index:=0;index<size;index++ {
+                random^=random<<13;random^=random>>7;random^=random<<17
+                value:=int(random%23)
+                switch pattern {case 0:value=index;case 1:value=size-index;case 2:value=index%3;case 3:value=0;case 4:if index<size/2{value=index}else{value=size-index};case 5:value=(index+size/2)%size;case 6:value=index%17}
+                ids=append(ids,strings.Repeat("x",value%31));indices=append(indices,index)
+            }
+            sort.Slice(indices,func(i,j int)bool{return ids[indices[i]]<ids[indices[j]]})
+            output.Orderings=append(output.Orderings,orderingCase{ids,indices})
+        }
+    }
+    if err:=json.NewEncoder(os.Stdout).Encode(output);err!=nil{panic(err)}
+}

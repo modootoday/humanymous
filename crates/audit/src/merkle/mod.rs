@@ -43,6 +43,12 @@ impl<'a> Tree<'a> {
         self.subtree(0, self.leaves.len())
     }
 
+    /// Root of a checked prefix using the same subtree cache; None for a size
+    /// beyond the borrowed leaf view. Zero is the standard empty-tree root.
+    pub fn root_at(&mut self, size: usize) -> Option<Hash> {
+        (size <= self.leaves.len()).then(|| self.subtree(0, size))
+    }
+
     /// Leaf-to-root inclusion path, or None for an out-of-range index.
     pub fn inclusion_proof(&mut self, index: usize) -> Option<Vec<Hash>> {
         if index >= self.leaves.len() {

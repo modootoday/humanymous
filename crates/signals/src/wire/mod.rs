@@ -23,6 +23,18 @@ pub fn unicode_version() -> &'static str {
     &unicode().version
 }
 
+/// Quote a UTF-8 string with Go encoding/json's default HTML and line-separator
+/// escaping. This does not claim general JSON number/struct canonicalization.
+pub fn quote_json_go(value: &str) -> String {
+    serde_json::to_string(value)
+        .expect("string serialization cannot fail")
+        .replace('<', "\\u003c")
+        .replace('>', "\\u003e")
+        .replace('&', "\\u0026")
+        .replace('\u{2028}', "\\u2028")
+        .replace('\u{2029}', "\\u2029")
+}
+
 /// Represent a float32 payload using its shortest round-trip decimal, as Go's
 /// JSON encoder does for float32 interface values. Nonfinite values become null,
 /// matching serde_json's float serialization; valid model outputs are finite.
@@ -93,6 +105,15 @@ mod tests {
     #[test]
     fn unicode_simple_mapping_does_not_expand_or_depend_on_context() {
         assert_eq!(simple_lowercase("İ ΟΣ User-Agent"), "i οσ user-agent");
+    }
+    #[test]
+    fn json_string_escaping_preserves_go_signed_byte_contracts() {
+        assert_eq!(
+            quote_json_go("<&>\u{2028}\u{2029}"),
+            "\"\\u003c\\u0026\\u003e\\u2028\\u2029\""
+        );
+        assert_eq!(quote_json_go("é\n\"\\\0"), "\"é\\n\\\"\\\\\\u0000\"");
+        assert_eq!(quote_json_go("\\u003c"), "\"\\\\u003c\"");
     }
     #[test]
     fn tables_and_quoting_match_frozen_unicode_contract() {
