@@ -213,3 +213,19 @@ scoring policy is authorized by a language refactor.
 - `go test ./...` preserves the oracle until cutover.
 - `bash scripts/e2e-docker.sh` is the mandatory full-lab authority after Rust wiring.
 - Module inventory and execution records track remaining work explicitly.
+
+## Audit storage recovery boundary
+
+JSONL recovery is bounded per frame including its newline. Fully framed corrupt
+records are fatal. Only an incomplete final frame of the terminal segment may
+be discarded, with truncation synced before success. Recovery reports loss and
+never constitutes hash/HMAC/checkpoint verification. The caller must own the
+writer lock and a service-controlled directory; symlink rejection alone does
+not establish safety against concurrent hostile directory replacement.
+
+The native WAL holds a cooperative OS lock for its lifetime; mutation requires
+exclusive Rust access. Each append must write all framing bytes and sync before
+success. Any disk error poisons the writer until restart. Segment indices are
+contiguous and bounded to the ten-digit filename domain. Missing checkpoints
+are explicitly distinct from independent anchoring. Native permissions and
+cross-process/power-loss validation remain deployment gates.

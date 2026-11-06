@@ -2,4 +2,5 @@
 pub mod checkpoint;
 pub mod merkle;
 pub mod record;
+pub mod storage;
 pub mod verification;

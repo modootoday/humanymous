@@ -25,6 +25,7 @@ subtle = "2.6.1"
 # Unicode 15 data is part of historical audit hashes; upgrades require parity.
 unicode-normalization = "=0.1.22"
 ed25519-dalek = "3.0.0"
+fs4 = "1.1.0"
 time = { version = "0.3.55", features = ["formatting", "parsing", "serde-well-known"] }
 
 [workspace.lints.rust]
