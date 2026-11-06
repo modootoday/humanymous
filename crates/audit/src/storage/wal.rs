@@ -37,6 +37,14 @@ pub struct Wal {
 }
 
 impl Wal {
+    /// Authenticate a consistent disk snapshot while retaining the OS writer
+    /// lock. The history is not trusted merely because JSON parsing succeeded.
+    pub fn verified_history(
+        &self,
+        policy: super::RecoveryPolicy<'_>,
+    ) -> io::Result<super::VerifiedHistory> {
+        super::verify_history(self.records()?, self.checkpoints()?, policy).map_err(invalid)
+    }
     /// Acquire the OS writer lock, validate all frames and repair only a torn
     /// terminal record. Malformed checkpoints prevent opening. Cryptographic
     /// verification is still required before restoring trusted chain state.

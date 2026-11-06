@@ -229,3 +229,11 @@ success. Any disk error poisons the writer until restart. Segment indices are
 contiguous and bounded to the ten-digit filename domain. Missing checkpoints
 are explicitly distinct from independent anchoring. Native permissions and
 cross-process/power-loss validation remain deployment gates.
+
+Startup authentication must reuse the audit verifier and require expected node,
+nonempty HMAC key and trusted writer key from installation state. A required
+witness implies nonzero witnessed checkpoint coverage. Checkpoints must strictly
+grow and include Merkle commitments. An independently retained trusted head must
+be present exactly before restoring chain state. Empty history is valid only for
+an explicitly authorized first installation without an existing trusted head.
+No local verification can prove preservation of an externally unanchored tail.
