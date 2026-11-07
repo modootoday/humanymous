@@ -279,3 +279,9 @@ receipt independently re-audited through2742tar+Gitblob source comparisons and
 saved5closuregroups; actualtests0 keeps HANDOFFOPEN. User adapter-family target
 recorded as coordinated-root migration gate, no unilateralrename/historical
 evidence changes. No audit compiler/native/WSL/UNC/Docker workload.
+
+Maintenance doctor/selected-input CLI and local/native HTTP boundary source
+reviews now bind11unchanged leaves in canonical evidence. Fixed trusted-tool
+cooperative limits and restricted protocol profiles remain explicit; no new
+defect confirmed in read methods, no full-module/network/native/runtime pass.
+Actual process/host/product gates and complete migration coverage remain open.

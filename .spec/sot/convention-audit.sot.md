@@ -914,3 +914,29 @@ Host ABI/library/module names require explicit compatibility mapping and actual
 host-import verification. Shared native ABI/security providers are not host
 adapters by association. This audit owns no package or ABI implementation;
 historical commands, payloads, source identities and hashes remain unchanged.
+
+### Maintenance diagnostics and HTTP boundary coverage
+
+Two additional private source reviews bind eleven leaves, rehashed unchanged
+before this update. Doctor discovery does not execute programs; explicit Windows
+probes use fixed version arguments and hidden windows. Presence, version, SDK
+file observation and real runtime/link qualification remain distinct. Proposed
+PYO3_PYTHON is a child configuration path, not global environment mutation.
+The fixed trusted-tool polling/capture profile explicitly excludes hard syscall
+deadlines and arbitrary-child containment; it cannot close CA-LIFETIME01.
+Selected-input CLI parsing has a closed bounded schema and non-value error codes;
+one original monotonic clock and cumulative byte accounting cover request reads
+and selected-file observation. Cooperative metadata is not native identity,
+immutable snapshot, execution or cache authority. No new defect was confirmed
+in these reviewed methods; newer owner test results were not qualified here.
+
+Authority local framing and runtime origin response/stream methods were read,
+with targeted request encoding and the application's Origin caller. Duplicate
+lengths, conflicting transfer framing, unsupported trailers, malformed chunks and
+trailing bytes are refused in the reviewed profiles. Response encoding removes
+reserved gateway and nominated hop fields while preserving ordinary duplicates.
+Native streaming has byte/chunk limits and EOF checks; its caller wraps origin
+I/O in the original connection/decision deadline and rechecks before the first
+origin write. These are restricted protocol profiles, not general HTTP conformance
+or actual network/product qualification. Partial application/http reads are not
+full-module review. No new compiler, process, network, SDK or Docker run occurred.

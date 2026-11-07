@@ -428,5 +428,15 @@
     "python_actual_tests": 0,
     "handoff_closed": false,
     "adapter_naming": "Target humanymous-adapter-<context>; root-coordinated graph migration only; historical evidence unchanged"
+  },
+  "followup_maintenance_http_boundaries": {
+    "private_review_sha256": {
+      "maintenance-doctor-source-review-001.json": "db0d08cd762cb7be5a61ad543535770ef148fa2ba9ed60f4d6d71b4f0bb63522",
+      "http-framing-source-review-002.json": "6b343fa1df5bdbe060d14d94c7be17ff21b15a02a766c375e3ce89f499c37953"
+    },
+    "source_leaves_rehashed_unchanged": 11,
+    "new_confirmed_violations": 0,
+    "new_actual_runtime_tests": 0,
+    "whole_module_or_migration_qualified": false
   }
 }
