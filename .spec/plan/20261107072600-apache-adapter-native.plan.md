@@ -29,6 +29,10 @@ child/request lifecycle, meaningful pure tests, integration and pilot contract.
 - [ ] Spec check, owned attributed commit and integration evidence.
 
 Current tests are NOT_RUN. No actual httpd, Docker, IPC or origin pilot ran locally.
+Followup adds a detached atomic cleanup signal and !Send/!Sync host request owner;
+six pure tests are now authored. Cleanup signal revocation is unit-contract only,
+not actual APR cleanup qualification. Existing workspace/profile/slot remains
+absent on direct current-source reinspection; no Cargo task was started.
 No dependency lock, workspace, workflow or public docs changes are owned here.
 Native ABI is blocked pending explicit exception approval; independent safe Rust
 work continues. No foreign executable source/string/template workaround.

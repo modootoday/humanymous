@@ -1,5 +1,7 @@
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
+use std::{marker::PhantomData, rc::Rc};
 
 /// Apache process model, provisioned at child initialization.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -104,6 +106,8 @@ impl Child {
             length,
             bytes: Vec::new(),
             phase: Phase::Reading,
+            cancellation: Cancellation(Arc::new(AtomicBool::new(false))),
+            host_thread: PhantomData,
         })
     }
 }
@@ -113,19 +117,36 @@ enum Phase {
     Complete,
     Closed,
 }
+/// Cleanup signal retained independently by Apache's request-pool cleanup.
+/// It contains no request memory and cannot authorize or revive a request.
+#[derive(Clone)]
+pub struct Cancellation(Arc<AtomicBool>);
+impl Cancellation {
+    /// Idempotently revoke outstanding work, including an authority await.
+    pub fn cancel(&self) {
+        self.0.store(true, Ordering::Release);
+    }
+}
 /// Owned input and permit; dropping always releases same-process admission.
 /// No Apache pointer is accepted or retained by this safe boundary.
+/// This owner is deliberately !Send and !Sync: only owned IPC observations may
+/// cross a worker boundary. Final body replay stays on the Apache request thread.
 pub struct Request {
     child: Child,
     until: Instant,
     length: usize,
     bytes: Vec<u8>,
     phase: Phase,
+    cancellation: Cancellation,
+    host_thread: PhantomData<Rc<()>>,
 }
 impl Request {
     fn live(&self) -> Result<(), Error> {
         self.child.process()?;
-        if self.phase == Phase::Closed || Instant::now() >= self.until {
+        if self.phase == Phase::Closed
+            || self.cancellation.0.load(Ordering::Acquire)
+            || Instant::now() >= self.until
+        {
             return Err(Error::RequestClosed);
         }
         if !self
@@ -178,8 +199,14 @@ impl Request {
     }
     /// Pool cleanup/abort closes input; cancellation never grants origin effects.
     pub fn cancel(&mut self) {
+        self.cancellation.cancel();
         self.phase = Phase::Closed;
         self.bytes.clear();
+    }
+    /// Register this signal with native pool cleanup before any host body read.
+    /// Registration and actual cleanup invocation require the native ABI pilot.
+    pub fn cancellation(&self) -> Cancellation {
+        self.cancellation.clone()
     }
 }
 impl Drop for Request {
@@ -271,5 +298,21 @@ mod tests {
         r.until = Instant::now();
         assert!(r.finish().is_err());
         assert!(r.remaining().is_err());
+    }
+    #[test]
+    fn detached_cleanup_signal_revokes_complete_body_and_keeps_admission() {
+        let c = child();
+        let mut r = begin(&c, 0).unwrap();
+        let cleanup = r.cancellation();
+        r.finish().unwrap();
+        cleanup.cancel();
+        cleanup.cancel();
+        assert!(r.body().is_err());
+        assert!(r.remaining().is_err());
+        assert!(begin(&c, 0).is_err());
+        drop(r);
+        assert!(begin(&c, 0).is_ok());
+        cleanup.cancel();
+        assert!(begin(&c, 0).is_ok());
     }
 }

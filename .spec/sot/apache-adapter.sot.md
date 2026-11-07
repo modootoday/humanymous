@@ -29,6 +29,11 @@ Each request owns bounded copied input, exact method/target/authority/header
 observations and a single monotonic budget. No request_rec/APR pool pointer may
 cross an await, thread or pool cleanup. Pool cleanup cancels the request, and
 origin handoff consumes an authenticated authority response exactly once.
+The safe request owner is !Send/!Sync, enforcing host-thread replay affinity.
+A separate idempotent cancellation signal can be retained by pool cleanup while
+authority work is pending. Cancellation retains admission until request drop;
+it cannot revive work or mint an authorization. Native cleanup registration is
+still unimplemented and must be measured separately from these pure contracts.
 Subrequests and internal redirects do not inherit authorization; initial native
 coverage rejects them until separately qualified. Cache quick handlers and
 request rewrites must not bypass guard or change an authorized request binding.
