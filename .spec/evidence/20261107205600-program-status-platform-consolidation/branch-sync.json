@@ -1,0 +1,43 @@
+{
+  "schema": "humanymous.coordinated-branch-sync/1",
+  "recorded_utc": "2026-11-07T21:28:07.5340450+00:00",
+  "source_commit": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "update_mode": "atomic fast-forward, no force",
+  "updated_branches": [
+    "codex/rust",
+    "codex/browser-product-validation"
+  ],
+  "remaining_validation_refs": 9,
+  "main_updated": false,
+  "release_or_publication": false,
+  "runtime_uncommitted_data_source_included": false,
+  "events": {
+    "dedicated_browser_run": 42415763028,
+    "attempt": 1,
+    "event": "push",
+    "full_ci_run": 42415763189
+  },
+  "monitor_owners": {
+    "dedicated_browser": "Lab",
+    "root": "discovery/source coordination only",
+    "full_ci": "Delivery"
+  },
+  "scope": "local scoped component validation; full product and final main gates remain pending",
+  "artifacts": [
+    {
+      "private_relative_path": "remote-refs.txt",
+      "sha256": "d0c4cae75f669bf56af255698e8942b7b4dea77a798582be69451000bb6274b6",
+      "bytes": 148
+    },
+    {
+      "private_relative_path": "run-42415763189.json",
+      "sha256": "20bcf20eeaff38a06e08f11245896663080242cf490d89ed5da95d6ff837c3af",
+      "bytes": 12909
+    },
+    {
+      "private_relative_path": "run-42415763028.json",
+      "sha256": "de84f5fbcc54de120903926c7ccf330316b34bfb27f97e7598bba0e631b3c690",
+      "bytes": 12599
+    }
+  ]
+}

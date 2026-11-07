@@ -34,7 +34,7 @@ The earlier fast-forward of codex/rust to9586f7e4 and its CI remain historical
 source-bound observations. Main integration still requires the final migration
 gates; publication remains unauthorized.
 
-Read-only research found41 workspace packages, all currently publish=false,
+The initial workspace census found41 packages, all then publish=false,
 22 binary targets and10 cdylib-bearing packages. These are not41 deployed
 products. The current facade's declared normal/build local dependency closure,
 including optional/target declarations, spans15 packages. A facade re-export
@@ -54,10 +54,10 @@ faster builds is established without the required measurements and role audit.
 | humanymous-platform | approved windows-object-bridge and reusable process/test support, with explicit testing capability | 2 |
 | humanymous-collector | Browser/WASM collection and its target-specific dependency graph | 1 |
 | humanymous-adapters | Apache safe/native, .NET safe/export, framework, Go, nginx, Node, Python, Ruby, native-abi safe/export | 12 |
-| humanymous-cli | CLI/native-cli, attacker/defender, maintenance, Delivery, Pages tooling, lab runner/runtime pilot modules and targets | 9 |
+| humanymous-cli | CLI/native-cli, attacker/defender, maintenance, Delivery, Pages, lab modules; standalone CEF pilot, Windows native runner, docs review and local parity qualification tools | 13 |
 | humanymous-browser | Browser model, CEF bootstrap and desktop roles | 3 |
 
-The mapping covers41 packages exactly. Every survivor needs a deliberate public
+The complete maintained-package mapping covers45 initial packages:41 workspace members plus four standalone tools. Every survivor needs a deliberate public
 API or application/distribution purpose and registry-compatible dependency plan;
 there are no hidden permanent helper packages. Temporary publication-disabled
 flags remain release guards during design/verification. A necessary additional
@@ -206,10 +206,12 @@ Preserve every old source receipt. Validate default feature dependency absence,
 testing-only and Windows-only roles, legitimate imports plus sibling-forgery
 compiler negatives, and target-appropriate consumers on the new graph.
 
-The package-count milestones are41 initially,35 after core,34 after platform,
+The workspace-member milestones are41 initially,35 after core,34 after platform,
 29 after runtime,21 after tools,10 after adapters and8 after browser. Relocating
 the facade and collector changes paths without reducing this count. These are
 planned structural counts, not functional completion or performance claims.
+
+The complete maintained-package totals are45 initially,39 after core,38 after platform,33 after runtime,21 after tools,10 after adapters and8 after browser. Four standalone packages under scripts/ci/{cef-pilot,windows-native-runner,docs-review,local-parity} each have an isolated workspace today. All four join the CLI qualification responsibility at the tools stage; they are not permanent private helpers. The current tracked census is39 Cargo manifests: one virtual root,34 main-workspace members and four standalone packages. Historical workspace-only counts remain valid within their original scope.
 
 Cargo package IDs are opaque join keys. The observed new core/platform IDs end
 in #0.1.0 because their leaf directory matches their package name, while older

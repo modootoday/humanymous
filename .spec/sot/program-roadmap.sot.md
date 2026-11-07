@@ -30,7 +30,9 @@ and resource admission; follow the exact live run or process handle.
 | Adapters | 10 | Role/loader/unsafe gates and owner handoffs prepared; implementation not consolidated |
 | Browser | 8 | Separate artifact/loader decisions required; implementation not consolidated |
 
-These counts describe the accepted consolidation sequence, not package feature
+Current maintained-package census:34 workspace members plus four standalone qualification tools equals38 packages. Initially41 plus four equalled45. Complete totals by stage are Core39, Platform38, Runtime33, Tools21, Adapters10 and Browser8. All four standalone tools are absorbed into CLI qualification with its nine original workspace responsibilities; no permanent private helper exception is introduced.
+
+These workspace counts describe the accepted consolidation sequence, not package feature
 completion. Facade/collector path relocation and final Cross-OS/product gates
 remain required independently of reaching eight members.
 
