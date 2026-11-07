@@ -1,0 +1,60 @@
+{
+  "schema": "humanymous.native-abi-verification/1",
+  "classification": "source-bound-local-pure-component",
+  "source": {
+    "observedHead": "20b57d2bfaae460d40bfcd4ba0c95279d66a2463",
+    "ownerCheckpoint": "6e33131617338e0d00246ff658317550dbc0a9ab",
+    "workingTreeReceipt": true,
+    "capturedFiles": 18,
+    "changedFiles": 0,
+    "headUnchanged": true,
+    "cargoTomlSha256": "c304cad065cd0b9f274a940bc6d8f010e4f84eaa4b042a767c50d932ba622705",
+    "cargoLockSha256": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+    "toolchainFileSha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+  },
+  "runner": {
+    "os": "windows",
+    "architecture": "x86_64",
+    "rust": "1.99.1",
+    "edition": "2024",
+    "targetTriple": "x86_64-pc-windows-msvc",
+    "buildJobs": 1,
+    "incremental": false,
+    "scope": "root-assigned-lightweight-B"
+  },
+  "tests": {
+    "command": "cargo test --locked -p humanymous-native-abi -p humanymous-native-abi-export --all-targets -- --test-threads=1",
+    "core": 16,
+    "export": 6,
+    "headerDiagnosticParser": 3,
+    "passed": 25,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0,
+    "exitCode": 0
+  },
+  "clippy": {
+    "command": "cargo clippy --locked -p humanymous-native-abi -p humanymous-native-abi-export --all-targets -- -D warnings",
+    "exitCode": 0
+  },
+  "rawEvidence": {
+    "privateBundle": "20261107081250-native-abi-local-pure-verification",
+    "sourceBeforeSha256": "abb0b7fbcfa163916364169958a05104f2cf06ea5a4fa54302b6fccf5ccf942c",
+    "sourceAfterSha256": "1fbb854a031c4bdc97f09e94ad3679aaf609c65833b60712e1a7bf9bd46aabee",
+    "sourceVerificationSha256": "18fbe1c74fd2665b0f54106881570c2cae2550f831cdb0672b44f7360517dc00",
+    "testsLogSha256": "d21508d8ad759fd44b68b902fff497f929fedaa292b7b6678aa31619ec53a266",
+    "clippyLogSha256": "4091fa725a709f274d417e955c134c05a55f813bb2f9368a0021c621ea4b3d22",
+    "metadataCorrection": "Original empty changed_paths encoded as [null]; original preserved, independent sidecar confirms zero changes."
+  },
+  "notRun": [
+    "cbindgen-header-generation",
+    "actual-hosted-c-and-cpp-compiler-layout",
+    "actual-generic-dynamic-library-loading",
+    "managed-host-pinvoke-gc-nativeaot",
+    "cpp-raii-exception-allocator-lifecycle",
+    "cross-os-native-runtime",
+    "full-product-docker-e2e"
+  ],
+  "productSuccess": false
+}

@@ -62,6 +62,18 @@ registry or pass handles across independently loaded libraries. Latest authored
 pure scope is core16/export6/header-example3; prior root passes are not a new
 combined25case validation receipt.
 
+Latest direct receipt now supersedes that pending note: evidence:root/20261107081545
+records core16/export6/example3 passing and strict all-target Clippy passing, with
+zero failed/ignored/measured/filtered. Root assigned B, target/validation-agents,
+jobs1/incremental0; all18 captured files and HEAD were unchanged. B returned.
+Raw private bundle20261107081250-native-abi-local-pure-verification retains the
+original metadata empty-array encoding issue and independent verification sidecar.
+The example's compiler main program did not run. Header generation, hosted Clang
+layout execution and actual native loading remain pending. The .NET owner agreed
+to a separate optional generic_probe profile within its approved pilot file;
+supply the generic native library separately and do not mix its case denominator
+with the .NET middleware/facade profile or C++ qualification.
+
 Public docs delta for docs owner: safe ownership foundation is being implemented;
 C/C++ integration remains unqualified/not_run. Do not advertise native SDK,
 human detection, callback/worker cleanup, allocator compatibility or ready bindings.

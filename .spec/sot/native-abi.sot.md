@@ -159,18 +159,23 @@ approved slice. P0 stale ID alias after close -> one never-reused shared sequenc
 P1 wrong-owner free -> context association checked before any removal. P1 memory
 exhaustion -> context/count/byte caps and fallible allocation. P1 close looks like
 worker cleanup -> current zero-worker scope explicit. P1 panic payload destructor
-repanics -> boundary forgets caught payload, retaining bounded-process residual
-panic leakage per poisoned boundary rather than allowing a second unwind. P1 overclaim -> ABI-06 and
+repanics -> boundary forgets the caught payload at the poisoned boundary rather
+than allowing a second unwind; this does not promise a global payload memory cap.
+P1 overclaim -> ABI-06 and
 separate unexecuted qualification denominator.
 
 ## Verification and residuals
 
-Pure Rust units cover negotiation, stale/wrong-kind/wrong-owner handles, caps,
-overflow/bounds, all-or-nothing invalid writes, close, ID exhaustion and panic
-status. Actual allocator failure injection is not_run. Scoped locked Cargo/fmt/Clippy await root's one-slot
-schedule and workspace registration. Exports/header generation, dynamic ABI,
-C/C++ compiler/RAII/exception/allocator tests, cross-OS and full product Docker
-e2e are not_run. No local process/Docker/browser execution is authorized here.
+The latest local pure receipt is evidence:root/20261107081545: 25 tests passed
+(16 core, 6 export, 3 header diagnostics), with zero failed, ignored, measured or
+filtered. Locked all-target tests and strict all-target Clippy ran on Windows
+x86_64, Rust 1.99.1/edition 2024, in root-assigned slot B. Eighteen recursively
+captured owned/shared files and HEAD stayed unchanged. Formatting checks passed.
+Actual allocator failure injection remains not_run. These are component units;
+the header example's main program did not execute. Header generation, hosted
+C/C++ compiler/layout execution, actual dynamic ABI, C++ RAII/exception/allocator
+host behavior, cross-OS runtime and full product Docker e2e are not_run.
+No local product process/Docker/browser execution is authorized here.
 
 Primary references checked2026-11-07: Rust FFI safety
 https://doc.rust-lang.org/nomicon/ffi.html ; panic limits
