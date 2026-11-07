@@ -3,9 +3,10 @@ mod resources;
 #[cfg(test)]
 mod tests;
 use super::reflection::{call, get, int, string, truthy};
+use super::resources::{Settlement, Timer, settle};
 use humanymous_signals::report::Environment;
 use js_sys::{Array, Object, Promise, Reflect};
-use resources::{Abort, Bait, Timer};
+use resources::{Abort, Bait};
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 
@@ -97,7 +98,6 @@ async fn tracking_protection(global: &JsValue) -> Result<bool, JsValue> {
         set(&options, key, &value.into())?;
     }
     set(&options, "signal", &get(&abort.0, "signal")?)?;
-    let mut timer = Timer::start(global, 400)?;
     let measured = async {
         let response = match call(
             global,
@@ -109,17 +109,13 @@ async fn tracking_protection(global: &JsValue) -> Result<bool, JsValue> {
                 .map_err(|_| JsValue::from_str("fetch promise required"))?,
             Err(_) => return Ok(true),
         };
-        let candidates = Array::new();
-        candidates.push(&response);
-        candidates.push(&timer.promise);
         // HTTP status is deliberately not inspected: fetch resolves on 404/500.
-        Ok(match JsFuture::from(Promise::race(&candidates)).await {
-            Ok(value) => value.is_undefined(),
-            Err(_) => true,
+        Ok(match settle(global, &response, 400).await? {
+            Settlement::Fulfilled(value) => value.is_undefined(),
+            Settlement::Rejected | Settlement::TimedOut => true,
         })
     }
     .await;
     let request_cleanup = abort.abort();
-    let timer_cleanup = timer.cancel();
-    measured.and_then(|value| request_cleanup.and(timer_cleanup).map(|()| value))
+    measured.and_then(|value| request_cleanup.map(|()| value))
 }

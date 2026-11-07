@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T03:51:42Z
+updated: 2026-11-07T03:56:03Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -34,6 +34,7 @@ files:
   - {path: windows-native-wiring.json, sha256: 16a43f7011fe0c348957378d1b8f90eda5be4d6bda5179ce5efa05b83f580b93, bytes: 964, store: repo}
   - {path: pages-remote-results.json, sha256: 5f50af9469bf9f371506219c30c86b355dbde9d3b11d8b113d7a31e895bb20a7, bytes: 920, store: repo}
   - {path: environment-collector-results.json, sha256: 33ce91aa7f9937bcbcb9c99b17f8d2693355eb06fab3c5fdb1a7536c9c48d6e1, bytes: 6044, store: repo}
+  - {path: async-probe-results.json, sha256: 9120fcd2fca8f927772713dec72c9c2eca86e0e98696202aa25962510cb06ce2, bytes: 5715, store: repo}
 ---
 
 # Program status

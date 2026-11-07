@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-07T03:48:54Z
+updated: 2026-11-07T03:56:02Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -12,6 +12,24 @@ rel:
 ---
 
 # Browser collector migration
+
+## Advanced probe asynchronous ownership prerequisite
+
+Environment and advanced observations share one browser timer owner. A deadline
+must distinguish a Promise fulfilled with undefined from timeout, preserve
+rejection as a separate outcome and cancel its timer after every settlement.
+Use a per-timer opaque object sentinel passed to the native Promise resolver;
+do not compare only an undefined value, allocate Rust callbacks retained by the
+browser or duplicate timeout implementation per API. Timer/cleanup setup failure
+is an explicit error. Browser event-loop stalls are not wall-clock guarantees.
+This prerequisite does not mark advanced.probed or qualify any new plane.
+
+The advanced migration must separately cover device counts/kinds without labels,
+voices with owned event cleanup, EME and GPU800ms fallbacks, WebGL/audio lifecycle,
+connection/battery, locale/display/memory and existing wire defaults. Preserve
+frozen server interpretation, no permission prompts or raw device identifiers.
+DRM absence alone is not a new blocking rule. Source advanced.js fingerprint-ID
+and WebRTC ICE/session correlation remain distinct required responsibilities.
 
 ## First-party environment probe extension
 

@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T03:51:16Z
+updated: 2026-11-07T03:56:02Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -18,6 +18,9 @@ The collector adds an explicit Rust asynchronous first-party environment probe
 with shared Environment wire type, owned DOM/timers/abort and bounded privacy
 metadata. Its standalone measured API does not qualify snapshot/session transport.
 Evidence: evidence:root/20261106235519/environment-collector-results.json.
+Its subsequent asynchronous prerequisite shares one timer owner and distinguishes
+fulfilled undefined, rejection and timeout; no duplicated per-probe timeout logic.
+Advanced field collection remains unimplemented until its own acceptance tests pass.
 
 ## Collector implementation delta c3389b6
 

@@ -1,0 +1,150 @@
+{
+  "schema": "humanymous.async-probe/1",
+  "observed_at": "2026-11-07T03:56:03.1066617Z",
+  "parent_commit": "f6d289318236f71f4434e30949543f7ac2ff2952",
+  "source": [
+    {
+      "sha256": "2e240baea769c9092e84d1d50cea8602b5053b5cce8be2c47f5cf4e53e44aa55",
+      "path": "Cargo.toml"
+    },
+    {
+      "sha256": "2c2f443dac7bf740fa6af88cb58673e58c1153c442ad8945c65644c5288e2e28",
+      "path": "Cargo.lock"
+    },
+    {
+      "sha256": "27e141c4eecdd8db7aeb0a9458b04d1a721162b232dea3b04a8b60cddd87d146",
+      "path": "crates/collector/Cargo.toml"
+    },
+    {
+      "sha256": "d68bf7e87f90398570ea86fe7a313c97a548f4883e5449d6ec9cfe70405f7df6",
+      "path": "crates/collector/src/lib.rs"
+    },
+    {
+      "sha256": "4f4e62064ca22f5a6390fdff8db9b1241a353efd7dc04f488e75cfd48ec880d2",
+      "path": "crates/collector/src/detection/tests.rs"
+    },
+    {
+      "sha256": "d567f867f24ffa067622dd72db7d5e35daff9ef0101b82a55bdd9729e96b324a",
+      "path": "crates/collector/src/detection/static_client.rs"
+    },
+    {
+      "sha256": "e8c3262b6f0a96b0ff0eb3786b9e26d142ba4c535b9089dc81d586511f598c0c",
+      "path": "crates/collector/src/detection/snapshot.rs"
+    },
+    {
+      "sha256": "58f4dc31b0d0f52fe5c6491ae4dfd916609793267a57825fc9b2f82e403519c3",
+      "path": "crates/collector/src/detection/mod.rs"
+    },
+    {
+      "sha256": "22dede93a5b7ca07ce7250b4f09cf202e2a4cbf0ed510396a5acca47e844482d",
+      "path": "crates/collector/src/detection/integrity.rs"
+    },
+    {
+      "sha256": "688e6851e14bf570c229360721aa5956882f8f4ef0964d544e1c6b7ec6fe468e",
+      "path": "crates/collector/src/detection/fingerprint.rs"
+    },
+    {
+      "sha256": "999784e0cc5e025825fe92f780fe4434da9c7585ea4db3a2f3cbe7f2ddb4b63a",
+      "path": "crates/collector/src/browser/resources/timer.rs"
+    },
+    {
+      "sha256": "667ba2b5fc4625ac4677cfcc6554556a84dc5ef75f7f3959bd066666a0fee9a8",
+      "path": "crates/collector/src/browser/resources/timer/tests.rs"
+    },
+    {
+      "sha256": "201fe2eea9a7ff80d2670aebd1681d6ff24a5d2e55ba20865f081cdc4d27c43c",
+      "path": "crates/collector/src/browser/resources/mod.rs"
+    },
+    {
+      "sha256": "04ae46a0e04c62d34ce28ec4ee0f1bad792bfcc3fe2a0fd0f0f7e2b7493055b2",
+      "path": "crates/collector/src/browser/reflection.rs"
+    },
+    {
+      "sha256": "b5f03e567c0d0d42d2246b11ce3d86d29ae50321c75aecd7c38eadfc49eeda7d",
+      "path": "crates/collector/src/browser/mod.rs"
+    },
+    {
+      "sha256": "b311dde0396222340759de1eda95b2198c11f3d0f29c430e1e99d17d3d1ee3b3",
+      "path": "crates/collector/src/browser/integrity.rs"
+    },
+    {
+      "sha256": "37b1c7a8877245bd1aec65c53427c302f09f1a8d6820f5e8cbbe3f34f151a268",
+      "path": "crates/collector/src/browser/fingerprint.rs"
+    },
+    {
+      "sha256": "4ff01e154b9aca46b14208c07fca8a510b0591795bb6e2c1e4cb90e67df142ed",
+      "path": "crates/collector/src/browser/environment/tests.rs"
+    },
+    {
+      "sha256": "490b3a29051c074ccce1ec6e6fb186e9e6836a2af9b4edfdea1784367d3d4e39",
+      "path": "crates/collector/src/browser/environment/resources.rs"
+    },
+    {
+      "sha256": "d7d5040f43486e0ed1de274a1b2d15e6d3126ec7d8534af96e3975575a829a09",
+      "path": "crates/collector/src/browser/environment/mod.rs"
+    },
+    {
+      "sha256": "70c4d058af681f507c9b23d34cdaeeb35f6671dd7c9f23ebfb2908dc49ac2f49",
+      "path": "crates/collector/src/browser/behavior.rs"
+    },
+    {
+      "sha256": "1fb1c1ecaae3c617be81deb7d04b05f7678cba48ccecde57e7299c32ac939440",
+      "path": "crates/collector/src/browser/behavior/tests.rs"
+    },
+    {
+      "sha256": "1bfe035bca056a73107c4b549538309a2d16a44dbbae2d2a7fc43447e50e25af",
+      "path": "crates/collector/src/behavior/tests.rs"
+    },
+    {
+      "sha256": "a4f06c0949685a5f802e454273e02426dd9bfc32528902a128504b6bb5e0fbad",
+      "path": "crates/collector/src/behavior/statistics.rs"
+    },
+    {
+      "sha256": "8c4610d77106354314a9f2fee98bdfdbf7cc02ea9222905839b6d9250e475788",
+      "path": "crates/collector/src/behavior/pointer.rs"
+    },
+    {
+      "sha256": "90606313dfcb9b84984455907ef1e73ea23511e05548c6ffb972df49577f971d",
+      "path": "crates/collector/src/behavior/oracle_tests.rs"
+    },
+    {
+      "sha256": "d4b1b3636dc280248762e96c7082d297b7640972184134ba61d6838f8a38b058",
+      "path": "crates/collector/src/behavior/mod.rs"
+    },
+    {
+      "sha256": "8458e89a25b6f2c44ca28b4a3fd1f5e123076947c5d852653c1ebd1f9d0f79e7",
+      "path": "crates/collector/src/behavior/keyboard.rs"
+    },
+    {
+      "sha256": "7cb14b5e27fe202cb36df637c99cb55418ff42898b44a4e6610c55549c95ac82",
+      "path": "crates/collector/src/behavior/cadence.rs"
+    }
+  ],
+  "results": {
+    "native_and_wasm_clippy": "passed",
+    "native_passed": 13,
+    "image_id": "sha256:a4034730d80334f737de0902106cada7820e610f0a5d2b800fba3fb6adb6c2f2",
+    "wasm_release": "passed",
+    "actual_docker_firefox_passed": 18
+  },
+  "coverage": [
+    "One timer owner shared with environment",
+    "Native Promise resolves opaque per-timer marker",
+    "Undefined/null/false/object fulfillment remains distinct from rejection and timeout",
+    "Missing timer rejects; explicit timer cancellation; environment4-case regression"
+  ],
+  "remote_previous": {
+    "status": "success",
+    "commit": "f6d289318236f71f4434e30949543f7ac2ff2952",
+    "actual_browser_passed": 17,
+    "run": 42335890765
+  },
+  "limits": {
+    "image_scope": "all crates copied including foreign browser edits, but collector/signals only compiled",
+    "deadline": "configured browser delay, not wall-clock guarantee",
+    "full_runtime_qualified": false,
+    "advanced_fields": "not implemented by this prerequisite",
+    "current_source_remote": "pending",
+    "human_or_at_executed": false
+  }
+}
