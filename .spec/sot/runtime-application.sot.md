@@ -547,3 +547,12 @@ durability explicitly; file-sync never implies directory durability. This source
 uses authenticated SealedAudit records and a shared native store, not arbitrary
 HTTP evidence. Operator route/apply/session invalidation/hosted failure pilots
 remain separate required joins, with all writes refused until wired.
+R15 shared readiness identity: service::standalone_profile(&Configuration) is a
+pure expected full host-profile builder for the standalone executable (no witness,
+management, recovery or persisted settings). ServiceHost uses the same builder
+with actual owned startup facts. Defender/lab must compare the complete result,
+not drop strict identity/scope checks or duplicate optional-field defaults.
+Configuration::readiness remains a capability/configuration view, not the full
+host manifest. Expected profile construction is not listener/producer attestation.
+Source813 Docker receipt26=0evaluation/19errors remains unchanged; readiness-field
+mismatch is a source-proven incompatibility, not a recovered raw failure cause.

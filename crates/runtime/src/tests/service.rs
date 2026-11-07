@@ -283,7 +283,10 @@ async fn unix_service_management_drains_before_custody_release() {
 #[tokio::test]
 async fn unix_closed_shutdown_controller_cannot_report_stopped() {
     let fixture = PrivateFixture::new();
-    let host = ServiceHost::bind(fixture.configuration()).await.unwrap();
+    let config = fixture.configuration();
+    let expected = crate::service::standalone_profile(&config);
+    let host = ServiceHost::bind(config).await.unwrap();
+    assert_eq!(host.readiness().profile, expected);
     let (sender, receiver) = tokio::sync::watch::channel(None);
     drop(sender);
     let failure = host.run_report(receiver).await.err().unwrap();

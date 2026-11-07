@@ -393,3 +393,11 @@ rustls0.23.46 std/ring/tls12(defaultfalse) were written and frozen; root owns lo
 resolution. No Cargo command, push or dispatch from this owner. Source8132117
 actual run42355168729 is separate from these worktree changes. Its predecessor
 42354873001/a26d startup_failure with0jobs/0tests remains a failed attempt.
+Readiness source fix: service::standalone_profile(&Configuration) and ServiceHost
+now share service/readiness.rs. Pure schema-default/managed-difference fixture and
+hosted actual standalone-host parity assertion are authored NOT_RUN. Defender
+owner consumes the full result and preserves exact identity/capability checks;
+no subset fallback or duplicated expected JSON. Root graph6500ec23 resolves the
+approved38member dependency window; this owner ran no Cargo. Exact813 run is live
+and remains separate from this source fix. Operational Rust source will freeze
+for root-assigned compile/pure validation after this checkpoint.

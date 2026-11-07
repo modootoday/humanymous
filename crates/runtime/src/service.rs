@@ -17,8 +17,10 @@ use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
 mod lifecycle;
 mod outcome;
+mod readiness;
 mod shutdown;
 pub use outcome::{ExitFailure, ExitReport, ExitStage};
+pub use readiness::standalone_profile;
 pub use shutdown::{ShutdownRequest, StopBudget};
 
 /// Read one private document. Validating the opened input's provenance is the
@@ -178,15 +180,13 @@ impl ServiceHost {
         }));
         let audit = Arc::new(Mutex::new(sealed));
         let listener = TcpListener::bind(configuration.listen).await?;
-        let mut profile = configuration.readiness();
-        profile["audit_external_witness"] = serde_json::json!(witness_durability.is_some());
-        profile["audit_witness_required_durability"] = serde_json::json!(witness_durability);
-        profile["audit_witness_independence_qualified"] = serde_json::json!(false);
-        profile["audit_startup_recovery"] = serde_json::json!(recovery);
-        profile["administration"] = serde_json::json!(management_policy.is_some());
-        profile["administration_writable"] = serde_json::json!(false);
-        profile["operational_revision"] =
-            serde_json::json!(settings.as_ref().map(|store| store.snapshot().revision()));
+        let profile = readiness::profile(
+            &configuration,
+            witness_durability,
+            recovery,
+            management_policy.is_some(),
+            settings.as_ref().map(|store| store.snapshot().revision()),
+        );
         let management = management_policy
             .map(|policy| Management::bind(policy, &configuration, profile.clone()))
             .transpose()?;
