@@ -523,3 +523,35 @@ f224faca4b6fc7a3b336d750c1c99066eb23a19eea05a25ec05a8bc01d99b1cd.
 No archive body was retrieved or automatically uploaded. Main serving transport,
 browser/AT, substantive review freshness and full-product qualification remain
 unrun/unqualified; the historical 8624 artifact failure remains separate.
+
+Root accepted a source-only dedicated browser-product diagnostic caller using
+the existing full-gate delivery command and safe startup marker projection.
+The caller and catalog retain read-only permissions, no artifacts, exact-source
+preflight and an independent bounded product job. Policy rejects bypassed
+preflight, unconditional product execution, command success masking and
+continue-on-error. No owner parser or public receipt field was added. Source
+and actionlint checks do not establish execution; local Cargo awaits an explicit
+resource allocation and hosted dispatch follows the current Go run's terminal
+result and root's exact candidate review.
+
+Go run 42369171124 at exact 15f63fef terminated with preflight success and
+product failure, zero artifacts. Actual Go10, lab16 and delivery65 suites had
+zero failures, ignored or filtered tests. All eight product cases attempted
+actor startup and failed with actor_writer_mount; zero were evaluated and all
+eight assertion counts remain unknown/null. Cleanup succeeded and source stayed
+unchanged; the bounded requirement and full-product qualification remain false.
+This stage-entry marker narrows the failure window without proving a precise
+operation or root cause. Earlier build failures retain their original unknown
+causes. Safe terminal evidence is attached as go-15f63fef-summary.json; private
+normalized REST and decoded log wrappers have registered index SHA256
+97a47bf664f0634dcffea2b41d481a5b3e9316e175768a81bef0e4b282c94aa7.
+
+Root-allocated warm slot B subsequently passed delivery66 unfiltered tests,
+strict all-target Clippy, the newly compiled workflow policy and whole-workflow
+actionlint. All commands exited zero and the 50-file delivery/workflow/catalog/
+root-input closure was unchanged. Admission was 80.81 percent committed memory
+with 33,871,712 KiB free physical memory; jobs one and incremental zero used the
+exclusive delivery target. B was returned. Private validation index SHA256 is
+c69a18913c6e137c231dfe1fe949da1f85ff913dfc28e4e1c5518cd4981b3a32.
+These checks qualify caller/policy helpers, not actual browser execution. The
+shared actor mount investigation must precede another Go/browser actual run.

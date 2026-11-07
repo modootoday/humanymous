@@ -1129,3 +1129,16 @@ artifact and runs the owner archive-check against its original manifest before
 the build may release deployment readiness. Final source/transfer outcome is
 written before the terminal outcomes artifact. Branch uploads remain disabled.
 Observed archive integrity is distinct from browser/AT and full-product proof.
+
+The dedicated browser-product diagnostic caller is restricted to
+codex/browser-product-validation pushes and manual dispatch on Ubuntu 24.04.
+Exact-source owner and delivery units, Unix runtime actor compilation, strict
+selected Clippy and workflow policy precede its separate product job. It invokes
+the existing delivery pilot browser-product path, including the owning lab's
+--browser-product --require-full requirement. Owner exits one and two remain
+failures; no diagnostic exception or component success contract is introduced.
+Public output reuses the existing source/image hashes, assertion accounting and
+sole-allowlist startup stage projection. Raw process output stays private.
+Read-only permissions, pinned actions, a bounded job deadline and disabled
+automatic artifacts/cache writes apply. This lane does not establish human,
+assistive-technology, deployment or full-product readiness from partial results.
