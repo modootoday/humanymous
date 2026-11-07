@@ -35,7 +35,12 @@ outside the exact assigned consumer is performed here.
   descriptors from the existing CLI callsites. Three new memory-only tests
   cover dispatch, owner/source/proof failures without payload output, semantic
   no-frame behavior and closed writer/flush failures. Source is formatted;
-  tests have NOT run. Expected Delivery113 remains a hypothesis.
+  initial source checkpoint was uncompiled. The subsequent Root-allocated
+  local window at ba588e22c30b1434044ec412716a976dd4ffcf8a executed all113
+  tests successfully, plus all-target check/strict Clippy/fmt/policy with
+  exit0. Its2112-file local snapshot had no differences. The sanitized
+  receipt is attached under [[evidence:root/20261107052001]]. This is local
+  Delivery evidence, not an actual closed producer or retained receiver.
 
 # Exact owned source handoff
 
@@ -43,7 +48,7 @@ outside the exact assigned consumer is performed here.
 | --- | --- | --- |
 | crates/defender/src/lib.rs | 78f5f341c4a3cf1990ba4f70692100232285c960552eb13101860c47d789cafb | Root-delegated consumer import; no further writer edits |
 | crates/defender/src/lab/client.rs | 3abae8a330ef86ca8b548172d0970483a767faa1ecfc81694dfbaa03a5d5f198 | Root-side rustfmt observed after initial99c1d6 handoff |
-| scripts/ci/delivery/src/components.rs | f96dd028b75afe3535589654b71e126e4989df569f2719ecf78334814218d9d3 | Authored Header scope split; uncompiled |
+| scripts/ci/delivery/src/components.rs | f96dd028b75afe3535589654b71e126e4989df569f2719ecf78334814218d9d3 | Header scope split; subsequent local113 passed |
 | [[sot:root/delivery]] | 3a35ad50b7b61e9a94a6f560887f91ea90139f2152e71650a6be2d1edbbd4600 | Header scope canon delta |
 | [[plan:root/20261107172649]] | 1d14a78c156a2decc68422c6be25388a8c68b7860bcb46856ca4ff26ffbf68db | Exact9586 failure and new-source limits |
 
@@ -91,9 +96,9 @@ The overall run remains monitored through terminal and all required statuses.
 
 1. Root owns the committed Core Cargo/lock integration and the remaining
    consumer qualification. No consumer compile before explicit allocation.
-2. Checkpoint Header source separately; before consuming shared resources
-   propose one jobs1/incremental0 bounded Delivery unit/check/strict-Clippy
-   window on an exact source with no hidden overlays or retry.
+2. Header source checkpoint d540269a and its allocated jobs1/incremental0
+   local unit/check/strict-Clippy window are complete, without overlays or
+   retry. No additional compiler lease is held.
 3. Keep the original hosted watch and capture terminal jobs, annotations,
    source-specific failures and raw-evidence availability limits.
 4. Route any adapter/native owner path changes through Root. Audit f9 source

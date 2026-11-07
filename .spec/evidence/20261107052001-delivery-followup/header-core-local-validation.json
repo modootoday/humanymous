@@ -1,0 +1,48 @@
+{
+  "schema": "humanymous.delivery-local-header-validation/1",
+  "source_sha": "ba588e22c30b1434044ec412716a976dd4ffcf8a",
+  "source_checkpoint": "d540269a8bb27fafd2dcf6e1b84a646671c66a92",
+  "core_checkpoint": "c67d07c0114bd04793410f82f7182de7bfa6df2c",
+  "component_sha256": "f96dd028b75afe3535589654b71e126e4989df569f2719ecf78334814218d9d3",
+  "host": "x86_64-pc-windows-msvc",
+  "rustc": "1.99.1",
+  "inventory": 113,
+  "tests": {
+    "passed": 113,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "phase_exit_codes": {
+    "inventory": 0,
+    "tests": 0,
+    "check_all_targets": 0,
+    "strict_clippy_all_targets": 0,
+    "fmt": 0,
+    "policy": 0
+  },
+  "bounded_execution": {
+    "jobs": 1,
+    "incremental": false,
+    "offline": true,
+    "locked": true,
+    "elapsed_seconds": 70.4944347,
+    "work_budget_seconds": 390,
+    "cleanup_budget_seconds": 450,
+    "retries": 0
+  },
+  "local_snapshot": {
+    "before_files": 2112,
+    "after_files": 2112,
+    "differences": 0,
+    "scope": "Git-listed tracked and untracked nonignored files excluding Spec, target and Git internals; not a full toolchain/transitive read closure"
+  },
+  "binary_sha256": "e394ab52a8dae4b2dc737d274d6ea713f61d861018de3b24d69344a67cdc16a6",
+  "private_evidence_index_sha256": "896fbd245e478e0d13070e8c87f09ee6dec10e7adef214d22ba5ffcb329ecda9",
+  "scope": "Current local Delivery pure units, compile/lint/format and workflow policy only",
+  "closed_header_actual_producer_executed": false,
+  "retained_header_proof_complete": false,
+  "hosted_run_requalified": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}
