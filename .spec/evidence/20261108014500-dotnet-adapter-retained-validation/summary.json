@@ -1,0 +1,75 @@
+{
+  "schema": "humanymous.dotnet-pure-validation/1",
+  "source_kind": "immutable-base-plus-four-exact-overlays",
+  "base_source": "62f47765a66db03acd0063846d57de4f8a32a4cc",
+  "source_index_sha256": "fa28819a0d63e0262a7848fd27ce51a20971d7ab7f3dcf084ef704bf37a13a9d",
+  "source_archive_sha256": "b8d39a42ffb5b0201ba9f172bbe1a3ddad6cbd93684494548a49b9236c3d3dbe",
+  "rust": "1.99.1",
+  "target": "x86_64-pc-windows-msvc",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "execution_seconds": 81.1485032,
+  "tests": [
+    {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 8,
+      "filtered": 13,
+      "name": "launch"
+    },
+    {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 8,
+      "filtered": 13,
+      "name": "protocol"
+    },
+    {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 1,
+      "filtered": 0,
+      "name": "managed_scope"
+    }
+  ],
+  "fmt_exit": 0,
+  "check_exit": 0,
+  "clippy_exit": 0,
+  "first_failure": null,
+  "input_rows": 11521,
+  "input_kinds": [
+    {
+      "kind": "archive-source",
+      "rows": 2798
+    },
+    {
+      "kind": "cargo-config",
+      "rows": 12
+    },
+    {
+      "kind": "registry",
+      "rows": 8707
+    },
+    {
+      "kind": "tool",
+      "rows": 4
+    }
+  ],
+  "input_drift": 0,
+  "registry_packages": 99,
+  "retained_dependency_info_files": 222,
+  "all_started_processes_exited": true,
+  "target_lease_returned": true,
+  "actual_host": false,
+  "nativeaot": false,
+  "package_install": false,
+  "full_product": false,
+  "limitations": [
+    "Pure tests and Rust compilation only; no ignored host fixture ran.",
+    "Selected dependency graph, archive sources, Cargo config candidates and four tool executables were hashed; no sysroot or full-machine closure claimed.",
+    "flags-after repeats the configured launch flags receipt; it is not an independent environment observation.",
+    "No native producer, actor, Job, SCM, SDK, Kestrel, GC-await, AOT, package or WSL execution."
+  ]
+}

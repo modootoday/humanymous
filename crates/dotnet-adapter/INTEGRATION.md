@@ -2,6 +2,92 @@
 
 ## Current approved continuation
 
+Latest pure checkpoint: evidence:root/20261108014500 records immutable62f47765
+plus exact four overlays, actual launch8/protocol8/managed_scope1 passing,
+fmt/check/strict Clippy passing and0input drift across11521rows. The previously
+unrun four binding cases are now covered for that exact source. No actual host,
+GC-await, AOT, package or native admission ran. Native v1.6 interactive transport
+proposal is consumer-aligned at contract level; implementation/source review and
+actual lower-boundary qualification remain required before hosted.rs migration.
+
+### Retained host source checkpoint and current naming target
+
+The plan's retained-host checkpoint records source7e0c7b01 and the exact next
+selected17 pure cases. Actual hosted.rs still uses the legacy duplex helper,
+inherited environment/cwd, suppressed stderr and detached stdout reader. Its
+partial-start and final direct-child wait are NOT retained worker/tree cleanup
+qualification. Do not run it as such. Native's finite CaptureAttempt and
+intentionally unread RetainedDirectPipeAttempt do not supply interactive host
+ownership. Root holds the request for the current Native controller interface;
+no adapter-local process provider or protected admission is fabricated.
+
+All21 actual-host contract cases, real GC/Kestrel, NativeAOT and package install
+remain NOT_RUN. The plan separates authored scenarios from incomplete dropped
+pending/expiry/wrong-peer/restart/dispose-race/shutdown-active fixtures and gives
+a first source-JIT Windows transaction with separate later mode allocations.
+Process-lived shutdown means retained work settlement and process exit, not
+native runtime unload or direct-child disappearance as descendant proof.
+
+Latest target names supersede earlier filename proposals: public NuGet identity
+humanymous, managed assembly/file humanymous.dll, C# namespace Humanymous; native
+logical stem humanymous-native (Windows humanymous-native.dll, Unix
+libhumanymous-native.so/.dylib). Internal Cargo adapter identities remain separate.
+Legacy source names are migration inputs, not exceptions. No rename has occurred.
+Trusted role/ABI paths, manifest/resolver, single-role and process-lived restrictions
+still apply. Historical commands, source IDs, artifacts and hashes remain intact.
+
+### L4 consumer contract after the bottom-up role assignment
+
+The structural-development registry preserves this adapter's full goal and three
+approved C# paths. Native/ABI/Authority remain lower-layer owners; this lane does
+not implement another process, worker, object-bridge or authentication provider.
+Cargo.toml and the shared lock remain root-owned and excluded from this claim.
+
+The shared binding codec is now committed at b06fddae, with seven parent/binding
+pure cases recorded by the native owner. This supersedes the earlier uncommitted
+dependency note below. The four additional L4 byte-commitment cases remain
+format-checked only; they need the next allocated selected validation batch.
+
+The existing lower APIs do not yet provide the interactive Kestrel transport:
+CaptureAttempt accepts one startup input and captures output until exit;
+RetainedDirectPipeAttempt intentionally holds unread endpoints/prefixes and
+provides no IO workers or EOF/join receipt. The legacy raw-pipe helper transfers
+ownership but does not supply the new retained interactive worker lifecycle.
+
+| Consumer operation | Required lower transport contract | L4 responsibility |
+| --- | --- | --- |
+| Start | Actual retained child/PID and original run/cleanup thresholds, preserving partial setup ownership | Require native admission before constructing the fixed apphost Command; fixed environment/cwd only |
+| Startup | Deferred, single bounded write after actual PID observation; maximum64KiB | Build private authority configuration after binding that PID; never put credentials in the context carrier |
+| Control | Bounded nonblocking enqueue, maximum1024bytes per message and64pending messages; explicit input close | Serialize only the existing closed command/mode enum |
+| Output | Incremental bounded stdout/stderr observations with sticky IO/overflow errors and explicit EOF | Decode PID-bound ordered JSON frames,4096bytes per frame and256KiB per stream; no detached reader |
+| Failure | SAME direct-child/worker owner returned until explicit settlement; stop is a request, not proof | Stop consuming effects and retain failure; never convert a timeout into success |
+| Settlement | Actual child status and started/joined worker facts, separate from EOF and external Job/descendant proof | Emit a host observation only after required facts; preserve unsupported/missing cases |
+
+These are requested consumer semantics, not names or claims of implemented L2
+functions. The L2 owner chooses the shared implementation and authoritative API.
+The L4 state/parser/byte-commitment code can mature while that boundary is proved.
+Native producer identity remains Unsupported; no path/hash/metadata or this table
+can upgrade it. Actual Kestrel/GC/AOT/package still require the genuine-hosted
+transaction and their own source-bound evidence.
+
+### Pending held-byte commitments and native origin gate
+
+Four new launch.rs tests consume the sole shared binding codec and standard sha2
+primitive from root's e843fc14 dev-only manifest/lock change. They compare exact
+context/provenance byte commitments and supplied actor/namespace facts, returning
+only unverified metadata with one conserved budget. Rustfmt/diff checks pass;
+these additions are NOT_COMPILED/NOT_RUN and depend on Native's uncommitted frozen
+binding API. Earlier46074c96 evidence remains its own13-test snapshot.
+
+Producer API66c59c59 and helper1b2e8bb2 are coherent native commits. The former's
+inspection retains real file guards but require_exact_producer_identity remains
+Unsupported. Propagate that before any Command; protected paths, hashes, labels
+and decoded bindings cannot bypass it. Root froze harness-only carrier variables
+HUMANYMOUS_PARENT_CONTEXT_PATH/SHA256 and forbids local/current-user fallback.
+ActualHostIO source waits for the exact codec handoff/commit and retained native
+admission interface; actual ASP.NET/SDK execution is genuine-hosted only and has
+no current allocation. No fourth C# file or additional exception was requested.
+
 ### Shared parent-context consumer, pure validation complete
 
 Test-only hosted/launch.rs consumes the native owner's exact shared

@@ -41,7 +41,7 @@
     {"id": "gc-pressure", "expect": "actual managed collections during awaited calls cannot free retained native resources early"},
     {"id": "dispose-race", "expect": "deterministic release and stale SafeHandle calls cannot target a replacement request"},
     {"id": "pooled-buffer-reuse", "expect": "mutating or returning host read buffers does not alter approved replay bytes"},
-    {"id": "shutdown-active", "expect": "cancel pending input and IPC before native library unload, no callbacks afterward"},
+    {"id": "shutdown-active", "expect": "cancel pending input and IPC, settle owned host work before process exit; initial process-lived profile rejects collectible load and reload and does not claim native runtime unload"},
     {"id": "unsupported-upgrade", "expect": "upgrade and CONNECT never invoke a protected application delegate"},
     {"id": "response-semantics", "expect": "HEAD/204/304, duplicate Set-Cookie and ordinary response streaming remain correct"},
     {"id": "package-install", "expect": "same source-bound package installs in a clean host without development-path native library fallback"}
