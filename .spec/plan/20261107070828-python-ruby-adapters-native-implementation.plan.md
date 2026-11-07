@@ -730,3 +730,17 @@ source/target allocation: cargo test --locked --offline -p humanymous-python-ada
 --test-threads=1 --nocapture, preceded by scoped check/strict Clippy. Required3,
 executed0. Full ASGI queued invocation and actual Node host controls still require
 their separate genuine native/controller receipts and bounded runtime allocation.
+
+### Owned workflow action runtime migration
+
+Root assigned the Python workflow checkout pin migration after its full Actions
+annotation inventory identified deprecated Node20 checkout warnings, including
+successful historical runs. Verified public action.yml at exact checkout commit
+d23441a48e516b6c34aea4fa41551a30e30af803 declares node24 with dist/index.js for
+main/post; the other and only action, pinned dtolnay/rust-toolchain683b588c,
+declares composite rather than a Node runtime. Updated only the owned workflow's
+checkout SHA and coordinated Delivery's shared pin policy. Original permissions,
+source ref, credential persistence, concurrency, private diagnostics and the
+NOT_ACCEPTED controller gate remain unchanged. Historical warnings/raw receipts
+are immutable. Actionlint validates source syntax only; a fresh source-bound
+hosted run and its annotation inventory remain pending root dispatch/push.
