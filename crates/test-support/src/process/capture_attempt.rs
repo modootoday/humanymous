@@ -125,6 +125,8 @@ pub struct CapturedDirectChild {
     stderr: Vec<u8>,
     /// Sticky failures, including forced stop and missed original thresholds.
     issues: Vec<CaptureIssue>,
+    io_workers_started: u8,
+    io_workers_joined: u8,
 }
 impl CapturedDirectChild {
     /// Actual captured PID; not a reusable native identity or authorization.
@@ -146,6 +148,11 @@ impl CapturedDirectChild {
     /// Sticky redacted failures; caller cannot replace actual receipt fields.
     pub fn issues(&self) -> &[CaptureIssue] {
         &self.issues
+    }
+    /// Actual started and joined IO worker counts, including joined panics.
+    /// A missing worker in partial setup is not counted as started or joined.
+    pub fn io_worker_counts(&self) -> (u8, u8) {
+        (self.io_workers_started, self.io_workers_joined)
     }
     /// Natural observed successful execution with successful IO and actual joins.
     /// Descendant/tree coverage remains Unknown, including when this returns true.
@@ -188,6 +195,8 @@ pub struct CaptureAttempt {
     stderr: Option<Worker<Vec<u8>>>,
     deadlines: CaptureDeadlines,
     issues: Vec<CaptureIssue>,
+    #[cfg(test)]
+    writer_observation: std::sync::Arc<std::sync::atomic::AtomicU8>,
 }
 impl CaptureAttempt {
     /// Synchronous OS spawn can block: caller MUST provide independent supervision.
@@ -199,7 +208,29 @@ impl CaptureAttempt {
         limits: CaptureLimits,
         deadlines: CaptureDeadlines,
     ) -> Result<Self, CaptureStartFailure> {
-        if input.len() > 4096 || Instant::now() >= deadlines.run {
+        Self::start_inner(command, input, limits, deadlines, 4096)
+    }
+
+    // Same native start and worker path; only this private test-only entry may
+    // admit bounded synthetic nonsecret input above production's 4096byte limit.
+    #[cfg(test)]
+    fn start_synthetic(
+        command: &mut Command,
+        input: Vec<u8>,
+        limits: CaptureLimits,
+        deadlines: CaptureDeadlines,
+    ) -> Result<Self, CaptureStartFailure> {
+        Self::start_inner(command, input, limits, deadlines, 8 * 1024 * 1024)
+    }
+
+    fn start_inner(
+        command: &mut Command,
+        input: Vec<u8>,
+        limits: CaptureLimits,
+        deadlines: CaptureDeadlines,
+        input_limit: usize,
+    ) -> Result<Self, CaptureStartFailure> {
+        if input.len() > input_limit || Instant::now() >= deadlines.run {
             return Err(CaptureStartFailure::NotStarted(io::Error::other(
                 "capture input or original run budget refused",
             )));
@@ -214,6 +245,8 @@ impl CaptureAttempt {
             stderr: None,
             deadlines,
             issues: Vec::new(),
+            #[cfg(test)]
+            writer_observation: std::sync::Arc::new(std::sync::atomic::AtomicU8::new(0)),
         };
         if owner.start_workers(input, limits).is_err() {
             owner.record(CaptureIssue::SetupFailed);
@@ -235,8 +268,15 @@ impl CaptureAttempt {
             read_capped(stderr, limits.stderr)
         })?);
         let mut stdin = self.child.stdin.take().ok_or_else(missing_pipe)?;
+        #[cfg(test)]
+        let observation = self.writer_observation.clone();
         self.input = Some(Worker::start("capture-stdin", move || {
-            stdin.write_all(&input)
+            #[cfg(test)]
+            observation.store(1, std::sync::atomic::Ordering::Release);
+            let result = stdin.write_all(&input);
+            #[cfg(test)]
+            observation.store(2, std::sync::atomic::Ordering::Release);
+            result
         })?);
         Ok(())
     }
@@ -372,6 +412,12 @@ impl CaptureAttempt {
         drop(self.child.stdout.take());
         drop(self.child.stderr.take());
         self.poll();
+        let io_workers_started = u8::from(self.input.is_some())
+            + u8::from(self.stdout.is_some())
+            + u8::from(self.stderr.is_some());
+        let io_workers_joined = u8::from(self.input.as_ref().is_some_and(Worker::joined))
+            + u8::from(self.stdout.as_ref().is_some_and(Worker::joined))
+            + u8::from(self.stderr.as_ref().is_some_and(Worker::joined));
         Ok(CapturedDirectChild {
             pid: self.pid,
             status,
@@ -384,6 +430,8 @@ impl CaptureAttempt {
                 .and_then(Worker::into_output)
                 .unwrap_or_default(),
             issues: self.issues,
+            io_workers_started,
+            io_workers_joined,
         })
     }
 }
@@ -402,3 +450,6 @@ fn read_capped(output: impl Read, limit: usize) -> io::Result<Vec<u8>> {
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod actual_tests;

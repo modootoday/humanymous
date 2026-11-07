@@ -337,3 +337,96 @@ from real Worker joined states; do not add a constant-true getter. Partial worke
 failure requires a separately reviewed deterministic injection seam and cannot
 be inferred from these five parents. All five are proposed NOT_AUTHORED/NOT_RUN
 until their full source and cleanup contract are reviewed for allocation.
+
+## Accepted synthetic seam and authored actual parents v0.6
+
+Root accepted a PRIVATE cfg(test) synthetic-input entry capped8MiB, sharing the
+SAME start_inner, writer/drainers and actual owner; no public/release input cap
+increase. Production CaptureAttempt::start still passes4096. Test-only atomic
+writer observations mark not-entered/entered-before-write/write-returned; these
+show a pending write operation, NOT kernel-blocked-versus-descheduled certainty.
+No native pipe geometry/unsafe/dependency is introduced. CapturedDirectChild now
+reports started/joined IO worker counts computed from actual Worker states,
+including joined panic outcomes, never a constant-true fabricated receipt.
+
+Source actual_tests.rs now authors FIVE ignored-by-default parents, reusing the
+existing ignored subprocess fixture and its both/hang/flood/stderr-flood modes:
+
+- process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins
+- process::capture_attempt::actual_tests::retained_synthetic_pending_stdin_expires_original_run
+- process::capture_attempt::actual_tests::retained_stdout_cap_is_sticky
+- process::capture_attempt::actual_tests::retained_stderr_cap_is_sticky
+- process::capture_attempt::actual_tests::retained_stop_request_preserves_observed_exit_zero
+
+This supersedes v0.5's nonreading public-payload case with the explicit8MiB
+synthetic pending-writer parent. Its original run1s/cleanup7s precedes allocation
+and spawn. Parent observes writer-entered and input-not-completed, then original
+expiry, stop request, actual child status, write-returned and three actual joins.
+Fixed hang helper sleeps5s and creates no children. Normal/flood/stop-classification
+parents have original run3s/cleanup7s, finite helpers and1024byte flood caps above
+ordinary harness headers. Stop-after-observed-exit0 is explicitly a REQUEST
+classification case, not a claim that the OS killed a process with exit0.
+
+Cleanup helper keeps owner in one slot, recovering every settle error via
+into_owner before another branch. Assertions occur only after actual settlement;
+partial-start failure is settled before assertion failure. It never invokes
+Child::wait or resets thresholds. Potentially blocking stop/joins require the
+independent outer supervisor; late cleanup remains a failure. All five actual
+parents, their helper invocations, the new compile/check source and worker-count
+observations are AUTHORED_NOT_RUN pending an explicit Root allocation. Prior
+pure14 evidence remains attached to its earlier exact capture source.
+
+## CLI unread-output common backing proposal v0.7
+
+Source design only, not a second process lifecycle implementation. Extract ONE
+private OwnedDirectChild backing from current CaptureAttempt to own actual Child,
+PID/status, sticky stop/error state and original clock ledger. It uses the SAME
+piped_child factory, internal real-clock observations, borrowed actual kill
+request and retained failure semantics. CaptureAttempt composes that backing with
+its existing drainer/writer workers; a distinct RetainedDirectPipeAttempt composes
+it with intentionally held pipes. No legacy ManagedChild wrapper or PID constructor.
+Actual backing extraction/API implementation requires Root's scoped review.
+
+```rust
+pub struct RetainedDirectPipeAttempt { /* one OwnedDirectChild, held actual pipes */ }
+pub struct SettledClosedPipeChild { /* private status/close facts, NO output/EOF proof */ }
+impl RetainedDirectPipeAttempt {
+    pub fn start(command: &mut Command, deadlines: CaptureDeadlines)
+        -> Result<Self, DirectPipeStartFailure>;
+    pub fn close_input(&mut self);
+    pub fn poll(&mut self) -> DirectChildProgress;
+    pub fn request_stop(&mut self) -> io::Result<()>;
+    pub fn read_stdout_prefix(&mut self, expected: &[u8]) -> io::Result<()>;
+    pub fn read_stderr_prefix(&mut self, expected: &[u8]) -> io::Result<()>;
+    pub fn settle_closing_pipes(self)
+        -> Result<SettledClosedPipeChild, RetainedDirectPipeFailure>;
+}
+```
+
+No output background reads or writer threads are started in the pipe-retention
+profile. close_input closes only the owned input endpoint. Prefix methods admit
+one fixed expected prefix<=256bytes per stream, allocate only that bound and
+read_exact that many bytes from the retained endpoint, never drain beyond it.
+These synchronous methods may BLOCK and explicitly require independent outer
+supervision; they do not implement an internal read-time guarantee. Prefix failure
+is sticky and retains the owner; no pipe ownership escapes or unjoined reader is
+created. The CLI parent reads its controlled fixture's writer-entered marker,
+then holds the remaining output unread. Marker observation demonstrates writer
+entry, not certainty of kernel blocked state versus descheduling.
+
+poll observes actual direct-child exit without reading outputs. request_stop is
+an actual borrowed-child OS request with the same potentially blocking caveat.
+settle_closing_pipes requires actual observed child exit, closes all held pipe
+endpoints and returns a DISTINCT private result recording child status and closed
+handles. It must not return CapturedDirectChild, label held/unread output EOF,
+claim three IO joins, or infer descendant/process-tree settlement. If child exit
+is pending it returns the SAME owner. All clocks are sampled internally and
+threshold failures stay sticky; original run/cleanup thresholds are never reset.
+
+CLI watchdog positive0 versus watchdog74 is read from actual child ExitStatus;
+the fixed8MiB synthetic-pressure source, writer-entry marker and intentionally
+held remainder are separately reported. A watchdog exit74 before an observed
+marker fails the intended parent case. Closing parent pipe handles after child
+exit is an actual local handle-close fact, NOT daemon/service/Job cleanup proof.
+Public result ownership and Drop limitations remain explicit; no new dependencies,
+unsafe, process creation path or automatic account/SCM authority is proposed.
