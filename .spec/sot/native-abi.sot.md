@@ -165,6 +165,23 @@ local runner and cannot spoof GitHub environment variables to bypass the current
 hosted guard. Root's measured execution-policy decision and explicit allocation
 precede new local commands.
 
+## Closed original proof return
+
+ABI-15: adapters/native/header-proof-profile.json is the sole owning candidate
+for the closed original header-proof payload inventory and observed R3 tuple.
+It defines sixteen flat-path file IDs, exact-byte header/compiler metadata/AST
+digests and finite bounds. Its current candidate status is not production
+admission or dispatch authority. Delivery owns strict Rust validation, transport
+and reconstruction; no duplicate profile constants or permissive unknown-output
+fallback may replace this owning data. Full source-before/after originals need
+the exact immutable candidate's canonical public path set and measured count/
+size acceptance before dispatch. All sixteen payloads must validate before any
+payload chunk is emitted; duplicate/unknown/reordered/truncated/mismatched data
+cannot complete a proof. Exact byte privacy admission does not replace the
+owning semantic layout checks or establish a hosted compiler tuple by itself.
+Local R1/R2 failures, R3 Docker grammar observation and future hosted execution
+remain separate source-bound records. No dynamic ABI scope is added here.
+
 ## C++ contract
 
 ABI-14: The separately authorized local Windows x64 profile uses the explicit

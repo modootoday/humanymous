@@ -1,0 +1,93 @@
+{
+  "schema": "humanymous.header-proof-profile/1",
+  "profile": "clang18-bookworm-amd64-r3-exact-bytes",
+  "admission": "candidate-requires-integration-review-and-delivery-validation",
+  "observationEvidence": "evidence:root/20261107173322",
+  "observationVenue": "local-docker-desktop-linux",
+  "hostedQualified": false,
+  "dynamicAbiQualified": false,
+  "toolProvenance": "third-party-silkeh-image-not-official-llvm-or-attested-toolchain",
+  "image": "docker.io/silkeh/clang@sha256:9388794775d1393c16b6897b4775b6d3e29459319de0bfafec59a20262e1fa68",
+  "platform": "linux/amd64",
+  "compiler": {
+    "cCommand": "clang",
+    "cppCommand": "clang++",
+    "resolvedPath": "/usr/lib/llvm-18/bin/clang",
+    "sha256": "f560497bdaa7590c3111ec89f2df56288f6b5d03b1cba579e9c052ede2e28e19",
+    "requireUnchangedAfter": true,
+    "target": "x86_64-pc-linux-gnu",
+    "versionBytes": 157,
+    "versionSha256": "0593cf88b83c0363eb1abce80230871aa8298fe528869845f31e64edc61ccf56",
+    "targetBytes": 20,
+    "targetSha256": "1c7da408e283702561a445e700b61c0f55a082230a3cfe323208841221274a6a"
+  },
+  "header": {
+    "generator": "cbindgen 0.29.4",
+    "bytes": 4600,
+    "sha256": "1b96ad497c7c17f4fcd032b08080d783a0bbfa31287e20c9821195776709d10a",
+    "owningVerifier": "crates/native-abi/export/examples/header_conformance.rs"
+  },
+  "layoutOutputs": {
+    "c": {
+      "standard": "c11",
+      "bytes": 2443,
+      "sha256": "e3a3fd24fa31257890b787dce3a83c3f14f152377c6ccd46f93844967a190bec",
+      "lines": 79,
+      "rootRecords": 10
+    },
+    "cpp": {
+      "standard": "c++11",
+      "bytes": 12430,
+      "sha256": "757dfc4219187e9b568d7cad1ed76de8f597096f4bae358302566d127f4442a3",
+      "lines": 337,
+      "rootRecords": 34
+    }
+  },
+  "requireEmptyStderr": true,
+  "ownerSuccessMarker": "C/C++ generated header layout conformance passed; actual dynamic ABI not_run",
+  "ownerScopeText": "C11 and C++11 header syntax and record layouts match Rust. Actual dynamic loading, RAII, exceptions, allocator host glue and product e2e: not_run.\n",
+  "unknownOutput": "retention-incomplete-no-payload-export",
+  "sourceSnapshots": {
+    "schema": "humanymous.delivery-source/1",
+    "requireOriginalBytes": true,
+    "requireCleanExactSourceAndUnchanged": true,
+    "requireCandidateCanonicalPublicPathSet": true,
+    "candidatePathCountAndSizeApproval": "required-before-hosted-dispatch"
+  },
+  "fileIdsInOrder": [
+    {"id": 0, "path": "native-abi-v1.h"},
+    {"id": 1, "path": "header-compiler/scope.txt"},
+    {"id": 2, "path": "header-compiler/c-version.txt"},
+    {"id": 3, "path": "header-compiler/c-version-stderr.txt"},
+    {"id": 4, "path": "header-compiler/c-target.txt"},
+    {"id": 5, "path": "header-compiler/c-target-stderr.txt"},
+    {"id": 6, "path": "header-compiler/c-stdout.txt"},
+    {"id": 7, "path": "header-compiler/c-stderr.txt"},
+    {"id": 8, "path": "header-compiler/cpp-version.txt"},
+    {"id": 9, "path": "header-compiler/cpp-version-stderr.txt"},
+    {"id": 10, "path": "header-compiler/cpp-target.txt"},
+    {"id": 11, "path": "header-compiler/cpp-target-stderr.txt"},
+    {"id": 12, "path": "header-compiler/cpp-stdout.txt"},
+    {"id": 13, "path": "header-compiler/cpp-stderr.txt"},
+    {"id": 14, "path": "source-before.json"},
+    {"id": 15, "path": "source-after.json"}
+  ],
+  "limits": {
+    "headerBytes": 131072,
+    "sourceSnapshotBytesEach": 2097152,
+    "otherFileBytesEach": 65536,
+    "totalDecodedBytes": 6291456,
+    "decodedChunkBytes": 3072,
+    "retainedLogBytes": 16777216,
+    "protocolLineBytes": 16384
+  },
+  "acceptance": {
+    "ownerSemanticLayoutChecksStillRequired": true,
+    "requireOriginalByteRoundTripAndDigests": true,
+    "requireAllFilesValidatedBeforeFirstChunk": true,
+    "requireOneCompleteEnvelopeBoundToOfficialRunAndJob": true,
+    "requireFreshPrivateReconstructionRoot": true,
+    "partialOrUnknownNeverCompletesProof": true,
+    "profileDoesNotAuthorizeDispatchOrPublication": true
+  }
+}
