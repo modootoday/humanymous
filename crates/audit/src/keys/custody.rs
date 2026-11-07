@@ -1,6 +1,8 @@
 //! Exclusive local sealed custody. Provision the service directory privately
 //! before opening; trusted ancestors and same-owner processes remain premises.
 pub(crate) mod permissions;
+mod rotation;
+pub use rotation::PreparedRotation;
 #[cfg(all(test, unix))]
 mod tests;
 use super::{KeyMaterial, LIMIT, open, seal, vault::Vault};
@@ -283,11 +285,17 @@ impl Custody {
     }
     fn commit(&mut self, material: &KeyMaterial, passphrase: &[u8]) -> io::Result<Durability> {
         let sealed = seal(material, passphrase).map_err(crypto)?;
+        self.commit_envelope(&sealed)
+    }
+    fn commit_envelope(&mut self, sealed: &[u8]) -> io::Result<Durability> {
+        if sealed.is_empty() || sealed.len() > LIMIT {
+            return Err(crypto(super::KeyError::SizeLimit));
+        }
         self.poisoned = true;
         let result = (|| {
             let mut pending = permissions::create(&self.dir.join("keys.pending"))?;
             permissions::file(&pending, &self.owner)?;
-            pending.write_all(&sealed)?;
+            pending.write_all(sealed)?;
             pending.sync_all()?;
             drop(pending);
             self.promote()

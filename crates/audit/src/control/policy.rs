@@ -308,7 +308,7 @@ fn valid_identity(value: &str, limit: usize) -> bool {
         && value.trim() == value
         && !value.chars().any(char::is_control)
 }
-fn valid_scope(scope: &Scope) -> Result<(), ControlError> {
+pub(super) fn valid_scope(scope: &Scope) -> Result<(), ControlError> {
     if !valid_identity(&scope.installation, 512) || !valid_identity(&scope.node, 512) {
         return Err(ControlError::Malformed);
     }

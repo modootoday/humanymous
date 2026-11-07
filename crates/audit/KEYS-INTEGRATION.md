@@ -28,8 +28,52 @@ unit successes. Source evidence:root/20261107073654. Slot returned; goal active.
 Runtime must adopt while preserving public startup wrappers; authority owns its
 local DurableAudit trait impl for SealedLog. Product-lab consumes typed coverage
 and explicit recovery rather than reconstructing verifier/proof algorithms.
-Prepared-ciphertext rotation and retained-action/control-anchor path remain the
-next source slice; old local-only grants never prove external retention.
+Old local-only grants never prove external retention.
+
+## Retained control source checkpoint
+
+`ControlAuthority::authorize_retained_action` accepts an `ApprovalRequest`, a
+trusted `ControlAnchorRetainer` and explicit `RetentionRequirement`. It requires
+the exact independent current anchor and provisioned scope/public identity,
+consumes locally, retains the signed successor independently, checks the exact
+acknowledgement and only then issues `RetainedActionPermit`. Local `ActionPermit`
+is a distinct type. A post-consumption error leaves the nonce spent and issues
+no grant; no generic effect retry or grant-reissue endpoint is implemented.
+Runtime owns audit-before-apply, committed effect state and restart semantics.
+
+`NativeAnchorRetainer` owns verification-only bounded private state and its
+lifetime lock, with explicit initial revision-zero provisioning, exact latest
+external-pin restore and exact signed pending-transition recovery. It contains
+no authority seed and preserves original LedgerAnchor signatures. Provision each
+authority key uniquely with one scope; anchor bytes do not independently expose
+the signed ledger body's scope. Whole-directory rollback still requires a pin
+held outside that directory. Local construction never proves independence.
+
+`control::retention_service` provides a shared verified `RetentionServiceClient`
+and supervisor-owned private-pipe `serve`; Cargo auto-discovers the native
+`audit-control-retainer` binary. Existing checkpoint framing enforces128KiB
+newline frames. The broker owns pipe authentication/deadlines/child reaping;
+the runtime receives no authority seed. Refused, malformed, unexpected or stale
+responses poison the client. No network endpoint or filesystem reset exists.
+The persistence field preserves Windows namespace uncertainty and cannot satisfy
+`RetentionRequirement::FileAndDirectory` there.
+
+Seven deterministic policy/client/target tests and seven hosted-only actual-file tests
+are authored. Compilation, execution, independent process/owner/volume evidence,
+runtime kill-switch adoption and Docker product qualification remain not_run
+until exact-source checks are observed. No new dependency or shared Cargo delta.
+
+`keys::custody::PreparedRotation` holds only a private encrypted candidate and
+source/target commitments, with no public constructor, serializer, clone or Debug.
+`Custody::prepare_rotation(old,new)` authenticates and seals the unchanged complete
+material before approval. `target()` binds a versioned source+ciphertext-candidate
+descriptor through normal target_commitment; it is not a credential hash.
+`apply_prepared_rotation(prepared,retained_grant,scope,now)` checks current source
+and exact retained proposal binding, then writes precisely the approved bytes
+through the shared existing custody transaction. No post-approval re-encryption
+or seed generation occurs. Local generation-only rotate_approved remains a
+different lower-level API. Hosted wrong-password/empty-password, complete snapshot
+identity, substituted candidate and stale source cases are authored, not executed.
 
 ## Test-output correction for strict workspace accounting
 

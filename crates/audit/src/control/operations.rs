@@ -1,4 +1,7 @@
-use super::{Action, Approval, ControlAuthority, ControlReceipt, Proposal, Scope};
+use super::{
+    Action, Approval, ControlAnchorRetainer, ControlAuthority, ControlReceipt, Proposal,
+    RetainedControlAnchor, RetentionRequirement, Scope,
+};
 use std::io;
 /// One immutable signed administrative request plus trusted observer time.
 pub struct ApprovalRequest<'a> {
@@ -14,6 +17,33 @@ pub struct ApprovalRequest<'a> {
 pub struct ActionPermit {
     proposal: Proposal,
     receipt: ControlReceipt,
+}
+/// Single-owner grant issued only after exact independent durable retention.
+/// Consumers must accept this type explicitly rather than a local ActionPermit.
+pub struct RetainedActionPermit {
+    local: ActionPermit,
+    retained: RetainedControlAnchor,
+}
+impl RetainedActionPermit {
+    /// Immutable signed effect binding.
+    pub fn proposal(&self) -> &Proposal {
+        self.local.proposal()
+    }
+    /// Independent exact-anchor acknowledgement, not effect completion.
+    pub fn retention(&self) -> &RetainedControlAnchor {
+        &self.retained
+    }
+    /// Consume the exact grant once. The callback owns durable audit-before-apply.
+    pub fn execute<T>(
+        self,
+        scope: &Scope,
+        action: Action,
+        target: &str,
+        now: u64,
+        effect: impl FnOnce(&ControlReceipt) -> io::Result<T>,
+    ) -> io::Result<T> {
+        self.local.execute(scope, action, target, now, effect)
+    }
 }
 impl ActionPermit {
     /// Inspect the signed immutable binding before selecting a runtime handler.
@@ -48,6 +78,33 @@ impl ActionPermit {
     }
 }
 impl ControlAuthority {
+    /// Spend locally, retain independently, then issue. Any post-consumption
+    /// error leaves the nonce spent and produces no grant or automatic effect.
+    pub fn authorize_retained_action(
+        &mut self,
+        request: ApprovalRequest<'_>,
+        retainer: &mut dyn ControlAnchorRetainer,
+        requirement: RetentionRequirement,
+    ) -> io::Result<RetainedActionPermit> {
+        let public = self.public_key();
+        let previous = self.anchor().clone();
+        if retainer.scope() != &request.proposal.scope
+            || retainer.authority_public() != public
+            || retainer.current()? != previous
+        {
+            return Err(io::Error::other("control retention peer binding mismatch"));
+        }
+        let local = self.authorize_action(request)?;
+        let retained = retainer.retain(&previous, &local.receipt.anchor)?;
+        if !retained.matches(&local.proposal.scope, &public, &local.receipt.anchor)
+            || !requirement.accepts(retained.durability())
+        {
+            return Err(io::Error::other(
+                "control retention acknowledgement mismatch",
+            ));
+        }
+        Ok(RetainedActionPermit { local, retained })
+    }
     /// Consume a fully signed request and issue a single-owner runtime grant.
     /// Kill switch and permanent ban consumers must use execute's exact binding.
     pub fn authorize_action(&mut self, request: ApprovalRequest<'_>) -> io::Result<ActionPermit> {

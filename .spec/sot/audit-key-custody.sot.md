@@ -243,6 +243,51 @@ do not replace Docker product e2e or independent witness/admin qualification.
 
 ## Why
 
+### Independent control-anchor retention contract
+
+The retained-action boundary consumes the local signed approval ledger first,
+then requests an exact previous-to-next anchor transition from an independently
+owned retention service. Only its durable exact acknowledgement issues a
+noncloneable retained-action capability. Failure leaves the nonce spent and
+issues no capability; it never retries the protected effect. The existing local
+ActionPermit remains a distinct lower-level capability.
+
+Retention provisions one authority public key and scope together; that key must
+not be reused across scopes because LedgerAnchor signs the ledger digest rather
+than a separately recoverable scope field. Verify with the existing anchor
+verifier, require exact previous anchor and revision+1, and persist before reply.
+Same-revision rewrites, skipped revisions and stale parents fail closed. Restore
+requires an independently retained exact latest anchor; a local signed snapshot
+alone does not prove freshness. An acknowledgement does not prove the eventual
+runtime effect, which still requires audit-before-apply and restart handling.
+
+Native retention reuses PrivateState permissions, lifetime lock, bounded atomic
+replacement and explicit durability. A transport implementation is a trusted
+boundary responsible for authenticating its independent peer and bounded framing;
+neither a trait implementation nor a local store establishes process, volume or
+organizational independence. Windows namespace persistence uncertainty must be
+reported and cannot satisfy a FileAndDirectory requirement. Hosted file, ACL,
+crash, process and product qualification remain required.
+
+### Prepared rotation binding
+
+Prepare rotation under the existing exclusive custody guard: authenticate the
+current envelope, seal its unchanged complete material with the destination
+credential, then retain only the encrypted candidate and source/candidate
+ciphertext commitments. A versioned domain-separated descriptor binds both
+digests; administrators sign its normal target commitment, never a plaintext
+credential or an unsalted credential hash. The prepared object has no public
+constructor, serialization, cloning or Debug output.
+
+Apply requires the exact current source digest, exact prepared target and a
+retained-only rotation grant bound to the provisioned scope and trusted time.
+Persist the exact prepared encrypted bytes through the existing pending/rename/
+sync transaction; do not regenerate ciphertext after approval. The source
+identity, HMAC key, witness material and complete vault snapshot remain unchanged.
+Unknown output requires explicit authenticated recovery, never automatic grant
+reissue or effect replay. Existing generation-only rotate_approved remains a
+distinct lower-level primitive and is not destination-bound product authority.
+
 ## Verification
 
 ### Accepted execution-policy reference

@@ -17,7 +17,7 @@ An actual active Codex goal was created at the user's explicit request:
 sealed custody/vault/durable audit/independent witness/recovery/permissions/dual
 control through real product integration, hosted pilots/e2e, strict accounting,
 Specfold evidence and owned commits. Prior checkpoints are not completion of
-this goal. The official chat title is Humanymous · 감사 · 키 보관과 영속성.
+this goal. The chat covers Humanymous audit, key custody and persistence.
 
 Implement the accepted native sealed-custody boundary without changing scoring,
 wire envelope, KDF or shared Cargo ownership. The original scope excluded the
@@ -61,6 +61,24 @@ Next required work remains active: authored hosted tests for shared lifetime,
 missing-witness-before-secret consumption, tail preservation and witness-ahead
 repair; runtime/authority adoption and product-lab actual observation; prepared
 rotation and external retained-control grant. Pure6 do not complete this goal.
+
+Retained-control source checkpoint: independent verifier-only anchor store,
+bounded inherited-pipe service/client and retained-only action capability are
+implemented under the audit lane. Existing signature verification, scope policy,
+private atomic storage and wire framing are reused. Local nonce consumption
+precedes independent durable exact acknowledgement; no acknowledgement means
+no effect grant. Seven pure tests and seven actual-file tests are authored; the
+latter require hosted execution. No generic consumed-operation effect retry is
+implemented. Runtime owns actual kill activation, audit commit and restart;
+deployment must prove different process/owner/volume and external latest-pin
+custody. New compilation/execution remains not_run pending root allocation.
+Evidence: [[evidence:root/20261107075025]]. PreparedRotation now binds both source
+and encrypted candidate, applies only with retained-only exact scope/action/target
+grant and persists exact approved bytes through the existing custody transaction.
+Its new pure target test and two hosted file tests remain not_run alongside the
+retention source. Existing generation-only APIs are not reclassified as stronger
+product authorization. Actual rotation crash/restart and runtime routes remain
+required; no generic consumed-action retry is introduced.
 
 1. Record contracts and critique before implementation.
 2. Implement safe native permission validation and lifetime exclusive custody.

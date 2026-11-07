@@ -3,8 +3,9 @@
 use ed25519_dalek::{Signer, SigningKey};
 use humanymous_audit::{
     control::{
-        Action, Administrators, Approval, ApprovalRequest, ControlAuthority, LedgerBootstrap,
-        Proposal, Scope, target_commitment,
+        Action, Administrators, Approval, ApprovalRequest, ControlAnchorRetainer, ControlAuthority,
+        LedgerAnchor, LedgerBootstrap, NativeAnchorRetainer, Proposal, RetainedControlAnchor,
+        RetentionRequirement, Scope, target_commitment,
     },
     keys::{
         KeyMaterial,
@@ -133,6 +134,569 @@ fn request<'a>(proposal: &'a Proposal, approvals: &'a [Approval]) -> ApprovalReq
 }
 fn material() -> Result<KeyMaterial, humanymous_audit::keys::KeyError> {
     KeyMaterial::new([7; 32], vec![8; 32], None, None)
+}
+
+struct SealedFixture {
+    keys: Dir,
+    wal: Dir,
+    witness: Dir,
+}
+impl SealedFixture {
+    fn new() -> Self {
+        let fixture = Self {
+            keys: Dir::new(),
+            wal: Dir::new(),
+            witness: Dir::new(),
+        };
+        let mut custody = fixture.keys.custody();
+        custody
+            .load_or_create(b"synthetic-sealed-passphrase", material)
+            .unwrap();
+        fixture
+    }
+    fn options(
+        &self,
+        head: Option<humanymous_audit::checkpoint::Checkpoint>,
+    ) -> humanymous_audit::log::SealedLogOptions {
+        humanymous_audit::log::SealedLogOptions {
+            key_directory: self.keys.0.clone(),
+            wal_directory: self.wal.0.clone(),
+            owner: owner(&self.keys.0),
+            node_id: "node".into(),
+            checkpoint_every: 2,
+            allow_new_history: head.is_none(),
+            trusted_head: head,
+            require_external_witness: true,
+        }
+    }
+    fn client(
+        &self,
+        head: Option<&humanymous_audit::checkpoint::Checkpoint>,
+    ) -> humanymous_audit::log::PinnedWitness {
+        use humanymous_audit::{
+            checkpoint::{DurableWitness, WitnessBootstrap},
+            log::{PinnedWitness, WitnessDurability},
+        };
+        let writer = SigningKey::from_bytes(&[7; 32]).verifying_key().to_bytes();
+        let bootstrap = match head {
+            Some(minimum) => WitnessBootstrap::Pinned {
+                minimum,
+                consistency_proof: &[],
+            },
+            None => WitnessBootstrap::CreateNew,
+        };
+        let witness = DurableWitness::open(
+            &self.witness.0,
+            owner(&self.witness.0),
+            &[22; 32],
+            writer,
+            "node".into(),
+            bootstrap,
+        )
+        .unwrap();
+        let public = witness.public_key();
+        PinnedWitness::new(Box::new(witness), public, WitnessDurability::FileSynced).unwrap()
+    }
+}
+
+#[test]
+fn sealed_owner_retains_both_locks_and_repairs_only_missing_external_checkpoint() {
+    use humanymous_audit::{
+        log::{SealedLog, UnlockCredential},
+        record::Record,
+        storage::{TailRecovery, Wal, WalOptions},
+    };
+    use zeroize::Zeroizing;
+    let fixture = SealedFixture::new();
+    let original = fs::read(fixture.keys.0.join("keys.sealed")).unwrap();
+    let mut password = Zeroizing::new(b"synthetic-sealed-passphrase".to_vec());
+    let mut log = SealedLog::open(
+        &fixture.options(None),
+        UnlockCredential::Bytes(&mut password),
+        Some(fixture.client(None)),
+    )
+    .unwrap();
+    assert!(password.is_empty());
+    assert!(Custody::acquire(&fixture.keys.0, owner(&fixture.keys.0)).is_err());
+    assert!(Wal::open(&fixture.wal.0, WalOptions::default()).is_err());
+    for _ in 0..2 {
+        log.append(Record {
+            event_type: "test.synthetic".into(),
+            ..Default::default()
+        })
+        .unwrap();
+    }
+    log.flush().unwrap();
+    let checkpoints = log.checkpoints().unwrap();
+    let head = checkpoints.last().unwrap().clone();
+    drop(log);
+    let checkpoint_path = fixture.wal.0.join("checkpoints.jsonl");
+    let bytes = fs::read(&checkpoint_path).unwrap();
+    let prefix_end = bytes.iter().position(|byte| *byte == b'\n').unwrap() + 1;
+    fs::write(&checkpoint_path, &bytes[..prefix_end]).unwrap();
+    let options = fixture.options(Some(head.clone()));
+    let mut password = Zeroizing::new(b"synthetic-sealed-passphrase".to_vec());
+    let repaired = SealedLog::recover_pinned(
+        &options,
+        UnlockCredential::Bytes(&mut password),
+        fixture.client(Some(&head)),
+        TailRecovery::RequireCovered,
+    )
+    .unwrap();
+    assert_eq!(repaired.sequence(), 2);
+    assert_eq!(repaired.checkpoints().unwrap(), checkpoints);
+    let receipt = repaired.recovery_receipt().unwrap();
+    assert!(receipt.checkpoint_appended);
+    assert!(receipt.persistence.is_some());
+    assert_eq!(receipt.coverage.ambiguous_tail_len, 0);
+    assert!(receipt.coverage.fully_witnessed);
+    assert_eq!(
+        fs::read(fixture.keys.0.join("keys.sealed")).unwrap(),
+        original
+    );
+}
+
+#[test]
+fn sealed_recovery_preserves_ambiguous_complete_tail_without_checkpoint_acknowledgement() {
+    use humanymous_audit::{
+        log::{SealedLog, UnlockCredential},
+        record::Record,
+        storage::TailRecovery,
+    };
+    use zeroize::Zeroizing;
+    let fixture = SealedFixture::new();
+    let original = fs::read(fixture.keys.0.join("keys.sealed")).unwrap();
+    let mut password = Zeroizing::new(b"synthetic-sealed-passphrase".to_vec());
+    let mut log = SealedLog::open(
+        &fixture.options(None),
+        UnlockCredential::Bytes(&mut password),
+        Some(fixture.client(None)),
+    )
+    .unwrap();
+    for _ in 0..2 {
+        log.append(Record {
+            event_type: "test.synthetic".into(),
+            ..Default::default()
+        })
+        .unwrap();
+    }
+    log.flush().unwrap();
+    let head = log.checkpoints().unwrap().last().unwrap().clone();
+    assert_eq!(head.tree_size, 2);
+    log.append(Record {
+        event_type: "test.synthetic".into(),
+        ..Default::default()
+    })
+    .unwrap();
+    let records = log.records().unwrap();
+    drop(log);
+    let options = fixture.options(Some(head.clone()));
+    let mut password = Zeroizing::new(b"synthetic-sealed-passphrase".to_vec());
+    assert!(
+        SealedLog::open(
+            &options,
+            UnlockCredential::Bytes(&mut password),
+            Some(fixture.client(Some(&head)))
+        )
+        .is_err()
+    );
+    let mut password = Zeroizing::new(b"synthetic-sealed-passphrase".to_vec());
+    assert!(
+        SealedLog::recover_pinned(
+            &options,
+            UnlockCredential::Bytes(&mut password),
+            fixture.client(Some(&head)),
+            TailRecovery::RequireCovered
+        )
+        .is_err()
+    );
+    let mut password = Zeroizing::new(b"synthetic-sealed-passphrase".to_vec());
+    let recovered = SealedLog::recover_pinned(
+        &options,
+        UnlockCredential::Bytes(&mut password),
+        fixture.client(Some(&head)),
+        TailRecovery::PreserveAmbiguousTail,
+    )
+    .unwrap();
+    assert_eq!(recovered.sequence(), 3);
+    assert_eq!(
+        serde_json::to_vec(&recovered.records().unwrap()).unwrap(),
+        serde_json::to_vec(&records).unwrap()
+    );
+    let receipt = recovered.recovery_receipt().unwrap();
+    assert!(!receipt.checkpoint_appended);
+    assert!(receipt.persistence.is_none());
+    assert_eq!(receipt.coverage.ambiguous_tail_len, 1);
+    assert!(!receipt.coverage.fully_witnessed);
+    assert_eq!(
+        fs::read(fixture.keys.0.join("keys.sealed")).unwrap(),
+        original
+    );
+}
+
+#[test]
+fn retained_grant_requires_independent_anchor_and_exact_restart_pin() {
+    let local = Dir::new();
+    let independent = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let initial = authority.anchor().clone();
+    let public = authority.public_key();
+    let mut retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        public,
+        &initial,
+        true,
+    )
+    .unwrap();
+    let original = fs::read(independent.0.join("control-anchor.json")).unwrap();
+    let proposal = authority
+        .propose(
+            Action::KillSwitch,
+            target_commitment(b"activate-only"),
+            10,
+            100,
+        )
+        .unwrap();
+    let signatures = approvals(&proposal);
+    let grant = authority
+        .authorize_retained_action(
+            request(&proposal, &signatures),
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    let latest = grant.retention().anchor().clone();
+    assert_eq!(retainer.current().unwrap(), latest);
+    let mut effects = 0;
+    grant
+        .execute(&scope(), Action::KillSwitch, &proposal.target, 20, |_| {
+            effects += 1;
+            Ok(())
+        })
+        .unwrap();
+    assert_eq!(effects, 1);
+    assert!(
+        authority
+            .authorize_retained_action(
+                request(&proposal, &signatures),
+                &mut retainer,
+                RetentionRequirement::FileSynced
+            )
+            .is_err()
+    );
+    drop(retainer);
+    assert!(
+        NativeAnchorRetainer::open(
+            &independent.0,
+            owner(&independent.0),
+            scope(),
+            public,
+            &initial,
+            false
+        )
+        .is_err()
+    );
+    let restored = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        public,
+        &latest,
+        false,
+    )
+    .unwrap();
+    drop(restored);
+    fs::write(independent.0.join("control-anchor.json"), original).unwrap();
+    assert!(
+        NativeAnchorRetainer::open(
+            &independent.0,
+            owner(&independent.0),
+            scope(),
+            public,
+            &latest,
+            false
+        )
+        .is_err()
+    );
+}
+
+struct UnavailableRetainer {
+    scope: Scope,
+    public: [u8; 32],
+    anchor: LedgerAnchor,
+}
+impl ControlAnchorRetainer for UnavailableRetainer {
+    fn scope(&self) -> &Scope {
+        &self.scope
+    }
+    fn authority_public(&self) -> [u8; 32] {
+        self.public
+    }
+    fn current(&mut self) -> std::io::Result<LedgerAnchor> {
+        Ok(self.anchor.clone())
+    }
+    fn retain(
+        &mut self,
+        _: &LedgerAnchor,
+        _: &LedgerAnchor,
+    ) -> std::io::Result<RetainedControlAnchor> {
+        Err(std::io::Error::other(
+            "synthetic unavailable independent retention peer",
+        ))
+    }
+}
+
+#[test]
+fn external_retention_failure_spends_nonce_without_issuing_effect_grant() {
+    let local = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let mut unavailable = UnavailableRetainer {
+        scope: scope(),
+        public: authority.public_key(),
+        anchor: authority.anchor().clone(),
+    };
+    let proposal = authority
+        .propose(
+            Action::KillSwitch,
+            target_commitment(b"activate-only"),
+            10,
+            100,
+        )
+        .unwrap();
+    let signatures = approvals(&proposal);
+    assert!(
+        authority
+            .authorize_retained_action(
+                request(&proposal, &signatures),
+                &mut unavailable,
+                RetentionRequirement::FileSynced
+            )
+            .is_err()
+    );
+    assert_eq!(authority.anchor().revision, 1);
+    authority.verify_consumed(&proposal).unwrap();
+    assert!(
+        authority
+            .authorize_action(request(&proposal, &signatures))
+            .is_err()
+    );
+    let latest = authority.anchor().clone();
+    drop(authority);
+    let mut reopened = local.authority(LedgerBootstrap::Pinned(&latest)).unwrap();
+    assert!(
+        reopened
+            .authorize_action(request(&proposal, &signatures))
+            .is_err()
+    );
+}
+
+#[test]
+fn independent_retainer_recovers_only_exact_authenticated_pending_transition() {
+    let local = Dir::new();
+    let independent = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let previous = authority.anchor().clone();
+    let public = authority.public_key();
+    let retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        public,
+        &previous,
+        true,
+    )
+    .unwrap();
+    drop(retainer);
+    let proposal = authority
+        .propose(
+            Action::KillSwitch,
+            target_commitment(b"activate-only"),
+            10,
+            100,
+        )
+        .unwrap();
+    let next = authority
+        .consume(&proposal, &approvals(&proposal), 20)
+        .unwrap()
+        .anchor;
+    let pending = serde_json::json!({"scope":scope(), "authority_public":public, "anchor":next});
+    let pending_path = independent.0.join("control-anchor.pending");
+    fs::copy(independent.0.join("control-anchor.json"), &pending_path).unwrap();
+    fs::write(&pending_path, serde_json::to_vec(&pending).unwrap()).unwrap();
+    assert!(
+        NativeAnchorRetainer::open(
+            &independent.0,
+            owner(&independent.0),
+            scope(),
+            public,
+            &previous,
+            false
+        )
+        .is_err()
+    );
+    assert!(
+        NativeAnchorRetainer::recover_pending(
+            &independent.0,
+            owner(&independent.0),
+            scope(),
+            public,
+            &next,
+            &previous
+        )
+        .is_err()
+    );
+    let (mut recovered, acknowledgement) = NativeAnchorRetainer::recover_pending(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        public,
+        &previous,
+        &next,
+    )
+    .unwrap();
+    assert_eq!(acknowledgement.anchor(), &next);
+    assert_eq!(recovered.current().unwrap(), next);
+    assert!(!pending_path.exists());
+}
+
+#[test]
+fn prepared_rotation_applies_exact_retained_destination_and_preserves_identity() {
+    let local = Dir::new();
+    let independent = Dir::new();
+    let keys = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let mut retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        authority.public_key(),
+        authority.anchor(),
+        true,
+    )
+    .unwrap();
+    let mut custody = keys.custody();
+    let vault = Vault::new_scoped(Mode::Hmac, 20, scope()).unwrap();
+    vault.pseudonymize("subject-a", "synthetic-value").unwrap();
+    let snapshot = vault.snapshot().unwrap();
+    custody
+        .load_or_create(b"old-synthetic-passphrase", || {
+            KeyMaterial::new([7; 32], vec![8; 32], Some(snapshot.to_vec()), Some([9; 32]))
+        })
+        .unwrap();
+    assert!(
+        custody
+            .prepare_rotation(b"wrong", b"new-synthetic-passphrase")
+            .is_err()
+    );
+    assert!(
+        custody
+            .prepare_rotation(b"old-synthetic-passphrase", b"")
+            .is_err()
+    );
+    let prepared = custody
+        .prepare_rotation(b"old-synthetic-passphrase", b"new-synthetic-passphrase")
+        .unwrap();
+    let proposal = authority
+        .propose(Action::RotatePassphrase, prepared.target().into(), 10, 100)
+        .unwrap();
+    let signatures = approvals(&proposal);
+    let grant = authority
+        .authorize_retained_action(
+            request(&proposal, &signatures),
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    custody
+        .apply_prepared_rotation(prepared, grant, &scope(), 20)
+        .unwrap();
+    assert!(
+        custody
+            .load_or_create(b"old-synthetic-passphrase", material)
+            .is_err()
+    );
+    let (reopened, created) = custody
+        .load_or_create(b"new-synthetic-passphrase", || {
+            panic!("rotation never regenerates identity")
+        })
+        .unwrap();
+    assert!(created.is_none());
+    assert_eq!(reopened.signing_seed(), &[7; 32]);
+    assert_eq!(reopened.hmac_key(), &[8; 32]);
+    assert_eq!(reopened.vault(), Some(snapshot.as_slice()));
+    assert_eq!(reopened.witness_seed(), Some(&[9; 32]));
+}
+
+#[test]
+fn prepared_rotation_rejects_substituted_destination_and_stale_source() {
+    let local = Dir::new();
+    let independent = Dir::new();
+    let keys = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let mut retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        authority.public_key(),
+        authority.anchor(),
+        true,
+    )
+    .unwrap();
+    let mut custody = keys.custody();
+    custody
+        .load_or_create(b"old-synthetic-passphrase", material)
+        .unwrap();
+    let original = fs::read(keys.0.join("keys.sealed")).unwrap();
+    let approved = custody
+        .prepare_rotation(b"old-synthetic-passphrase", b"approved-destination")
+        .unwrap();
+    let substituted = custody
+        .prepare_rotation(b"old-synthetic-passphrase", b"unapproved-destination")
+        .unwrap();
+    assert_ne!(approved.target(), substituted.target());
+    let proposal = authority
+        .propose(Action::RotatePassphrase, approved.target().into(), 10, 100)
+        .unwrap();
+    let signatures = approvals(&proposal);
+    let grant = authority
+        .authorize_retained_action(
+            request(&proposal, &signatures),
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    assert!(
+        custody
+            .apply_prepared_rotation(substituted, grant, &scope(), 20)
+            .is_err()
+    );
+    assert_eq!(fs::read(keys.0.join("keys.sealed")).unwrap(), original);
+    assert!(!keys.0.join("keys.pending").exists());
+    authority.verify_consumed(&proposal).unwrap();
+    let retry = authority
+        .propose(Action::RotatePassphrase, approved.target().into(), 10, 100)
+        .unwrap();
+    let retry_signatures = approvals(&retry);
+    let grant = authority
+        .authorize_retained_action(
+            request(&retry, &retry_signatures),
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    custody
+        .rotate(b"old-synthetic-passphrase", b"newer-local-generation")
+        .unwrap();
+    let newer = fs::read(keys.0.join("keys.sealed")).unwrap();
+    assert!(
+        custody
+            .apply_prepared_rotation(approved, grant, &scope(), 20)
+            .is_err()
+    );
+    assert_eq!(fs::read(keys.0.join("keys.sealed")).unwrap(), newer);
+    assert!(!keys.0.join("keys.pending").exists());
 }
 
 #[test]
