@@ -69,8 +69,10 @@ impl Fixture {
                 assert_eq!(get(&request,"mode")?.as_string().as_deref(),Some("same-origin"));
                 assert_eq!(get(&request,"credentials")?.as_string().as_deref(),Some("omit"));
                 assert_eq!(get(&request,"redirect")?.as_string().as_deref(),Some("error"));
-                assert_eq!(get(&request,"referrer")?.as_string().as_deref(),Some(""));
+                let origin=request::origin(&global,&scope)?;
+                assert_eq!(get(&request,"referrer")?.as_string(),Some(format!("{origin}/")));
                 assert_eq!(get(&request,"referrerPolicy")?.as_string().as_deref(),Some("same-origin"));
+                assert_eq!(get(&request,"cache")?.as_string().as_deref(),Some("no-store"));
                 if bootstrap {
                     if (15..=18).contains(&mode) {
                         let body: &[u8] = match mode {
@@ -191,6 +193,51 @@ fn actual_final_url_keeps_empty_query_and_encoded_query_data() {
             request::final_target(&fixture.global, &origin, &request).unwrap(),
             target
         );
+    }
+    let actual: JsValue = js_sys::global().into();
+    let history = get(&actual, "history").unwrap();
+    let original_state = get(&history, "state").unwrap();
+    let original_url = get(&get(&actual, "location").unwrap(), "href").unwrap();
+    call(
+        &history,
+        "replaceState",
+        &[
+            JsValue::NULL,
+            "".into(),
+            "/private-document/path?private-query=fixture#private-fragment".into(),
+        ],
+    )
+    .unwrap();
+    let observed = (|| -> Result<Vec<JsValue>, JsValue> {
+        ["/_humanymous/browser/session", "/api?effect=fixture"]
+            .into_iter()
+            .map(|target| {
+                let request = request::build(
+                    &fixture.global,
+                    &origin,
+                    "POST",
+                    target,
+                    "[]",
+                    b"{}",
+                    &abort,
+                )?;
+                get(&request, "referrer")
+            })
+            .collect()
+    })();
+    // Restore document history before inspecting any fallible observations.
+    call(
+        &history,
+        "replaceState",
+        &[original_state, "".into(), original_url.clone()],
+    )
+    .unwrap();
+    assert_eq!(
+        get(&get(&actual, "location").unwrap(), "href").unwrap(),
+        original_url
+    );
+    for referrer in observed.unwrap() {
+        assert_eq!(referrer.as_string(), Some(format!("{origin}/")));
     }
 }
 

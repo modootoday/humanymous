@@ -111,11 +111,12 @@ pub(super) fn build(
         ("credentials", "omit"),
         ("redirect", "error"),
         ("cache", "no-store"),
-        ("referrer", ""),
         ("referrerPolicy", "same-origin"),
     ] {
         set(&options, name, &value.into())?;
     }
+    // Disclose only the already selected origin, never the document URL.
+    set(&options, "referrer", &format!("{origin}/").into())?;
     set(&options, "headers", &headers)?;
     set(&options, "signal", &get(&abort.0, "signal")?)?;
     if !body.is_empty() {

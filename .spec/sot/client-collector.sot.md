@@ -71,8 +71,11 @@ required; runtime execution of this new source is currently not_run.
 BrowserSession owns actual Request/Headers/AbortController and one whole-request
 timer through complete bounded response consumption. Use same-origin,
 credentialsomit, redirecterror and no-store. Set the explicit Request referrer to
-the empty string and referrerPolicy to same-origin: suppress Referer while
-preserving the browser-generated same-origin Origin on non-GET/HEAD requests.
+the canonical selected origin plus '/' and referrerPolicy to same-origin. This
+intentionally changes the prior no-Referer privacy contract: only the already
+selected origin-root may be disclosed, never document username, path, query or
+fragment. Do not use location.href, document.referrer or about:client as fallback.
+The user agent may suppress its header; server admission must still fail closed.
 The former no-referrer policy nulls that Origin under the
 [Fetch Origin algorithm](https://fetch.spec.whatwg.org/#origin-header), conflicting
 with the unchanged strict server Origin check. Application-supplied Origin and
@@ -442,3 +445,21 @@ remains unproven. Do not accept null Origin, derive authorization from Referer,
 set application Origin/Referer headers, change request mode to bypass admission,
 or weaken server policy. A separately reviewed client-only origin-root referrer
 experiment is under consideration; no source fix or successful rerun is implied.
+
+## Reviewed origin-root client experiment
+
+Root accepted the independent privacy review after the5d68 B null observation.
+The current source experiment changes only Request referrer data; same-origin
+mode, credentials omit, redirect error, cache no-store, strict server Origin and
+reserved-header rejection remain. Real-Request/mock-Fetch assertions require the
+exact canonical origin-root for bootstrap and signed effects. The existing actual
+Request URL test temporarily sets a synthetic sensitive same-origin document
+path/query/fragment and restores history before assertions, then checks neither
+request inherits those values. Test inventory count is unchanged.
+
+These are authored unexecuted browser tests until separately qualified. The
+[WHATWG Fetch rules](https://fetch.spec.whatwg.org/#append-a-request-origin-header)
+describe Origin/referrer processing but do not prove empty-referrer causality in
+this Firefox run. Actual isolated browser and Docker product execution must
+measure the new source; no manual Origin, Referer authorization fallback, CORS
+mode change, policy relaxation or successful wire result is claimed.
