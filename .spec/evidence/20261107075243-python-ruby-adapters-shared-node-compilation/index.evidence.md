@@ -20,6 +20,7 @@ files:
   - {path: summary-011.json, sha256: 6d7e8054f717f621803acd8ec7628e4332692cdc9830813a9c4ba94008717477, bytes: 1963, store: repo}
   - {path: summary-012.json, sha256: b56d67b4cd5ca9c7a78d8d524bd033ef8bc739e9c9e97e92d15b640bc44734be, bytes: 1888, store: repo}
   - {path: summary-013.json, sha256: 1cf7b1c41eb5208d7d90ec90a7529163e6f7ffafed8feb042311862297b6eb3c, bytes: 2319, store: repo}
+  - {path: summary-014.json, sha256: f7b69201c3c03dcf4d91a923efc29164ca6052cf948d5492ede27aa59f73d7e2, bytes: 3185, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -203,3 +204,21 @@ exited and B returned terminal0. No setup/import/server/controller/pilot/install
 signals occurred. All previous failures remain retained. Typechecking the new
 ASGI source and running these two pure tests does not qualify actual ASGI42,
 refactored WSGI28, packages, hosted execution or the blocked lifecycle API.
+
+## CA-API-01 admission construction invariant verified and independently closed
+
+Summary014 binds the private-field fix to exactac7dc4a9 and fixed file SHA256
+e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3.
+Scoped check15.03s/strict Clippy1.98s passed, as did6units and2external rustdoc
+compile controls (supported acquire/no-run and original direct-constructor
+compile-fail). All footers have0failed/ignored/filtered. Source2522/registry20266/
+configuration11 before/after ledgers matched exactly; batch exited0 and C returned.
+Readonly broad fmt was disclosed; it did not compile/test the whole workspace.
+
+The independent auditor subsequently reread the exact canonical source, raw
+output, public summary and actual native before/after ledgers via read-only UNC,
+confirmed the framework leaf hash and literal batch.exit0, and accepted closure
+of the safe external Rust API ownership invariant. Summary014 preserves its
+earlier generated pending-review wording; this later disposition supersedes that
+wording without rewriting the audited attachment. No remote HTTP, SDK/host,
+controller, native lifecycle or full-product qualification follows.

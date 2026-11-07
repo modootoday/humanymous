@@ -1,0 +1,36 @@
+{
+  "scope":"CA-API-01 acquire-only shared admission ownership correction",
+  "sourceSha":"ac7dc4a97d4154308dbdce1dd05541df6b477d4c",
+  "fixedFile":"crates/framework-adapter/src/lib.rs",
+  "fixedFileSha256":"e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3",
+  "fixedFileGitBlob":"ebd407862b5de391d8c88a3abc3fd32a04d52d50",
+  "archiveSha256":"112fbc7222cbb49225ee0a58c73d6c2d8e1b41ce29c3f962e6a02b3faff6d118",
+  "archiveBytes":69181440,
+  "environment":"REA-Ubuntu WSL native, ordinary UID1000, Rust/Cargo1.99.1, offline/locked, jobs1/incremental0, exclusive framework-admission target",
+  "admission":{"commitPercent":80,"freePhysicalGiB":31.39},
+  "closure":{
+    "source":{"regularFiles":2522,"beforeAndAfterManifestSha256":"bad3b1c8d7733d6134e0c433e00f9fb9788b71922d7b5833ef0b5edf6cc938e8","drift":0},
+    "cargoRegistry":{"regularFiles":20266,"beforeAndAfterManifestSha256":"54ec0c930ae24b124779ecaf96d0f080be5b592493c68b8fff0f3e4e2db1d240","drift":0},
+    "cargoAndRustupConfiguration":{"entriesIncludingAbsentPaths":11,"beforeAndAfterManifestSha256":"36f4819d4e908109b0ebc152fb5435bf0880cd62a890c13f8be0f1503e2d82d0","drift":0},
+    "workspaceAndRegistrySymlinksObserved":0
+  },
+  "commands":[
+    {"id":"format-check","status":"PASS","exitCode":0,"scopeNote":"Readonly cargo fmt --all was broader than the intended package-only fmt scope; no source mutation or whole-workspace compile/test occurred."},
+    {"id":"framework-all-targets-check","status":"PASS","exitCode":0,"elapsedSeconds":15.03},
+    {"id":"framework-all-targets-clippy-Dwarnings","status":"PASS","exitCode":0,"elapsedSeconds":1.98},
+    {"id":"framework-unit-tests","status":"PASS","exitCode":0,"buildSeconds":16.14,"passed":6,"failed":0,"ignored":0,"filtered":0},
+    {"id":"external-positive-no-run-rustdoc","status":"PASS","exitCode":0,"passed":1,"failed":0,"ignored":0,"filtered":0,"executionScope":"Compile supported acquire/drop API only; body not run."},
+    {"id":"external-direct-constructor-compile-fail-rustdoc","status":"PASS","exitCode":0,"passed":1,"failed":0,"ignored":0,"filtered":0,"executionScope":"Original drop(Admission) expression rejected by external Rust compilation."}
+  ],
+  "batchExitCode":0,
+  "privateWindowsTeeLogSha256":"02f06649dd539ed99d2395aa1e04c82ad10a16038d1734507c4c22931baa9f99",
+  "privateCliOrchestrationSha256":"d749bec668e041b3edd6bc21d22cfe9f7e001369743ed7bf1bf8fb7ded60caad",
+  "toolchainBinarySha256":{"cargo":"a670e02cfa39ac2e53f77a2d911ca1fc9e2c479b0603ec956625be1daf24e3af","rustc":"b53b780f77f952062f8ca8a3b70aef2390b1e45ad91939be94afdc9543026853"},
+  "ownedCleanup":"Handle11077 exited0; C returned terminal0, no owned active workload or slot.",
+  "findingScope":"Safe external Rust constructor/RAII invariant only; capacity64 and policy/scoring unchanged. No remote HTTP exploitation or SDK behavior is alleged/proved.",
+  "independentDisposition":"Source review accepts the narrow private-field fix; final finding closure awaits auditor reread of this exact receipt/source.",
+  "sdkOrHostOrControllerExecuted":false,
+  "sharedNativeLifecycle":"NOT_ACCEPTED unchanged",
+  "wholeProductQualified":false,
+  "productionBrowserEvidence":false
+}

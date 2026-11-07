@@ -372,6 +372,13 @@ Rust API ownership invariant shared by Node/Python/Ruby; no remote HTTP exploit,
 score change, threshold change or new signal is claimed. Actual scoped unit,
 doctest and Clippy receipts are required before marking the correction verified.
 
+CA-API-01 verification is now recorded in summary014 on exactac7dc4a9:6units,
+external positive/no-run and direct-constructor/compile-fail controls, scoped
+check and strict Clippy all passed. Source/registry/config ledgers were stable;
+the independent auditor reread the actual saved manifests/output and accepted
+this narrow source invariant/regression closure. Capacity64, scoring and policy
+remain unchanged. Native SDK/HTTP/lifecycle/product qualification is separate.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

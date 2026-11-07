@@ -543,3 +543,18 @@ existing slot-reuse unit while63 guards remain. Expected scoped counts are
 6existing unit tests and2rustdoc compile cases, not SDK/framework host execution.
 No remote HTTP exploitation, scoring change or audit edit is alleged. Source
 changes remain unverified until root allocates scoped units/doctest/Clippy.
+
+Root allocated C for exact immutableac7dc4a9. Private-field correction passed
+scoped check15.03s/strict Clippy1.98s,6units and2external rustdoc compile cases:
+supported acquire/no-run and original forged constructor/compile-fail. All
+fail/ignore/filter counts were0. Source2522/registry20266/configuration11 ledgers
+were identical before/after, with batch_exit0. C handle11077 returned terminal0.
+No SDK/host/controller/pilot/install or cleanup signal ran. Summary014 records
+the exact fixed leaf, Git blob, archive, toolchain and raw output/closure hashes.
+
+Independent auditor reread canonical source, raw output, summary and actual
+native manifests via UNC, confirmed every count/hash and batch.exit0, and
+accepted CA-API-01 closure for the safe Rust invariant/regression. No remote
+HTTP or adapter-native/full-product claim follows. Root performance quiet
+window started after C returned; no further compilation or expanded regression
+is started. Evidence checkpoint follows required checks outside that window.
