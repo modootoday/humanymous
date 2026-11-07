@@ -70,10 +70,11 @@ Its runtime configuration must be current-service owner-only, digest-pinned and
 contain an empty passphrase. NativeSecrets consumes only shared native-security
 service credential reads; no passphrase is accepted through argv/env/plain files.
 
-Root reported initial runtime-service compile success with three warnings; those
-source warnings were fixed before further accounting/input changes. Current
-source has seven pure runtime_host tests and direct rustfmt passed, but current
-Cargo/Clippy and actual lifecycle require source-bound root/hosted results. Do not
+Current implementation2679089e passed root-allocated locked offline all-target
+check, seven reviewed pure runtime_host tests and all-target warnings-denied
+Clippy. Evidence23cb314a records the stable working dependency closure and its
+canonical Git mismatches; it is not clean single-revision or actual service
+qualification. This documentation follow-up is outside that recorded snapshot. Do not
 run the entire CLI lib harness as a local pure check: existing service tests touch
 real files, ACLs and ports. The scoped pure filter is `--features runtime-service
 --lib runtime_host::` under an explicit shared Cargo slot.
@@ -88,22 +89,34 @@ prefix). Run with `--features runtime-service-pilot --ignored --exact` only in t
 disposable hosted actor. Controller metadata HUMANYMOUS_SERVICE_PILOT_RUN_ID and
 HUMANYMOUS_SERVICE_PILOT_SOURCE_SHA is copied into pinned nonsecret launch input;
 the service never assumes job environment inheritance. The parent independently
-correlates both actual SCM PIDs/statuses with bounded receipt fields and prints
+correlates three positive actual SCM PIDs/statuses and a separate negative PID
+with bounded receipt fields and prints
 exactly one aggregate `humanymous.runtime-service-pilot/1` JSON line. Private raw
 receipts contain service PID; public aggregate has only booleans/source/run/case.
-The next authored lifecycle expansion covers actual runtime upgrade/rollback and
+The authored lifecycle expansion covers actual runtime upgrade/rollback and
 requires runtime_upgrade_verified/runtime_rollback_verified/replay_floor_verified.
 The readiness follow-up additionally requires full_readiness_manifest_verified:
 the private service receipt retains actual HostReadiness, while the parent checks
 the complete runtime profile via shared service::standalone_profile against its
 signed fixture inputs and independent native/process/listener facts. A public
 ready string or expected profile alone cannot satisfy this gate. Negative missing
-credential startup must have no readiness manifest. This newest source still
-requires its own compile/hosted gate; preceding source successes remain separate.
+credential startup must have no readiness manifest. Latest scoped compile/pure/
+Clippy passed as recorded above; actual hosted execution remains pending.
 Its receipt filename is the signed receipt base plus `-PID`, create-new per
 observed process. This newer source is not qualified by the preceding d9 local
-pure/Clippy result or the immutable8132117 hosted run. Compile/actual gates remain
-pending for the expansion; runner must require the matching source/receipt fields.
+pure/Clippy result or the immutable8132117 hosted run. Actual gates remain pending
+for the expansion; runner must require the matching source/receipt fields.
+
+Delivery integration consumes the existing runner catalog and receipt verifier,
+not a second copy of native tests. The genuine hosted standard-user-service
+profile must run both catalog cases. A successful runtime aggregate has exactly
+the schema/case/source/run binding and thirteen true facts emitted by
+tests/runtime_service_process.rs; product_qualified remains false. Private raw
+receipt fields must not be copied into public summaries. The ordinary native
+delivery profile does not select this service profile. Runner exit2 retains its
+global blocked accounting even when this component succeeds; neither blanket
+exit2 acceptance nor fabricated global success is permitted. The separate
+after-grant negative actor case must preserve non-launch and cleanup evidence.
 Linux/macOS protected-secret
 providers currently return Unsupported. Fresh authenticated observer provisioning,
 trusted external-witness production input, recoverable Windows typed failure
