@@ -1,0 +1,19 @@
+{
+  "schema": "humanymous.apache.compilation-evidence/0.1",
+  "sourceCommit": "271b14e1c46355bd71cce11c4e80efbcb6945150",
+  "sourceArchiveSha256": "913db93f2297298d62368324fef36aeb1720b418d7612b55c9fbc5114b52e57d",
+  "sourceInventoryBeforeSha256": "5114200a61a2f4048f99b198297f391ef3321b00756253434f83076251d3eca9",
+  "sourceInventoryAfterSha256": "5114200a61a2f4048f99b198297f391ef3321b00756253434f83076251d3eca9",
+  "runner": "WSL REA-Ubuntu Linux",
+  "rustVersion": "1.99.1",
+  "slot": "B",
+  "jobs": 1,
+  "incremental": false,
+  "tests": {"passed": 10, "failed": 0, "ignored": 0, "filtered": 0, "exit": 0},
+  "check": {"features": ["pilot"], "allTargets": true, "exit": 0},
+  "clippy": {"features": ["pilot"], "allTargets": true, "denyWarnings": true, "exit": 0},
+  "nativeHttpdBuild": "not_run",
+  "requiredNativeScenarios": 45,
+  "nativePilot": "not_run",
+  "fullProductSuccess": false
+}
