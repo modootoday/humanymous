@@ -1586,5 +1586,27 @@
     "source": "889eb6f8",
     "verdict": "source-only ready; no additional P0/P1; actual WASM/browser qualification remains pending",
     "goal_complete": false
+  },
+  "followup_exact_positional_actual_and_cli_lint_contract": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\public-role-be9-actual-source-review-001.json",
+        "sha256": "1da20302d199b1eaae6104852ebd966d66a5b7f6925b25c99d3dee6b37a49d31",
+        "bytes": 2871
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\cli-qualification-lint-isolation-review-001.json",
+        "sha256": "37e28f126088e281bdbaa407b7107ee5a6c3ee64c1d673390db9c871f4d50cc9",
+        "bytes": 962
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\cli-qualification-lint-isolation-review-002.json",
+        "sha256": "87fbf549e78cfe4fa1941e023244e48f5272ae4677b0aa98508aad88b104f4c6",
+        "bytes": 900
+      }
+    ],
+    "positional": "be9eec6d exact1pass/97filtered;31rawmatch;3039fullarchiveGitblob+manifest+frozensnapshot0issues; actual55.69seconds/ownedcleanup; notfull19/98",
+    "cli_lint": "50cd391e addresses d45 P2 verification omissions in DESIGN only; alltargetroots/approvedunsafeoperationinventory/linkage/finalfeaturesartifact/native role negatives required; implementation not qualified",
+    "goal_complete": false
   }
 }

@@ -2155,3 +2155,28 @@ Four authored fixture modes in the existing WASM case are not execution proof.
 No P0/P1 was confirmed in this source slice. Actual WASM/compiler/browser/product
 qualification remains with Root; no old403 cause is retrospectively inferred.
 Private source hashes and review are bound in baseline.json.
+## Exact positional controls and CLI lint contract re-audit
+
+The strengthened be9eec6d positional-array test now has independently verified
+actual evidence: one exact pass,97 filtered, zero failed/ignored. All31 raw
+attachments match hash/size and are copied. Its3039 unique regular archive
+members match the entire exact Git tree by blob identity and SHA256 source
+manifest/current frozen snapshot, with zero differences. Source3039, registry6576,
+tools69, config18 and environment14 before/after manifests are byte-identical;
+external registry/tool files were not individually rehashed here. Fmt/check/
+strict Clippy phase receipts exit0, elapsed55.69seconds, lease closed, marker
+removed and zero live target processes. This is the exact strengthened test,
+not a new full19/98 suite, provider/native/Ready or product pass.
+
+The d45e600d tools lint exception was reviewed as conditional design, exposing
+P2 verification omissions: two allow-site counts cannot prevent new unsafe inside
+already-allowed modules, and production/four-binary roots omit other crate roots.
+Root50cd391e now explicitly requires every compiled root (tests/examples/benches/
+build scripts), generated/macro effects, approved actor source/unsafe-operation
+inventory before/after, only reviewed mechanical rewiring, and rejection of new
+module/path/include/macro linkage into an allowed subtree. Final release artifact
+inventory/transitive production features and target/kind/source/features/profile/
+executable native-role joins with sibling negatives are required. The bounded
+contract omissions are addressed; no consolidated implementation, unsafe isolation
+or release qualification is proved. Original review001 and correction002 remain
+separate. Private review hashes are bound in baseline.json; full audit stays OPEN.
