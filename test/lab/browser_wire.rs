@@ -82,9 +82,9 @@ mod tests {
     use super::*;
     use serde_json::json;
 
-    fn origin_hits(matched: u64, other: u64, absent: u64, null: u64) -> Value {
+    fn origin_hits(matched: u64, other: u64, absent: u64, null_count: u64) -> Value {
         json!({"wire_origin_matched":matched,"wire_origin_other":other,
-            "wire_origin_absent":absent,"wire_origin_null":null,
+            "wire_origin_absent":absent,"wire_origin_null":null_count,
             "/_humanymous/browser/session":1,
             "response:/_humanymous/browser/session:403:ack_false":1})
     }

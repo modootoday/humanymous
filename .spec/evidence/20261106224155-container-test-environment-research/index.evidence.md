@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T22:48:10Z
+updated: 2026-11-07T22:55:11Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -53,6 +53,7 @@ files:
   - {path: source-execution-index.json, sha256: 014f982c57862bb58dba712fb8cb161265a1691b1988751a608904001688e67e, bytes: 8328, store: repo}
   - {path: browser-origin-wire-proposal.json, sha256: 2175d95f77b1196526421cdcd01cdddc7ea0fdbba535b36bde49815918cd1ffc, bytes: 4228, store: repo}
   - {path: browser-wire-36373e79-first-fmt-failure.json, sha256: 691b599ac838e1d38795ed7824b075354f31dfa1b3e9b90a0e1ba014d8992bea, bytes: 1838, store: repo}
+  - {path: browser-wire-ad1bb8b8-first-clippy-failure.json, sha256: 381cdfa005f638015df185706451c9818e3d5bd5f1025a1e85f1837127a220d9, bytes: 1511, store: repo}
 ---
 
 # Container test environment research
