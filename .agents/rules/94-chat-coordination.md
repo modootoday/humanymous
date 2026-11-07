@@ -87,6 +87,25 @@ Guard events reduce subsequent allocations; owned stop actions follow only their
 explicit profile, never another owner's processes. GPU inference needs a separate
 explicit bounded allocation and owned-process stop policy.
 
+Every future unit/runtime allocation must identify the resolved absolute physical
+target directory, workspace/source checkpoint, provider/session and exact lease
+marker/identity. A logical target label or board file alone proves neither physical
+exclusivity nor warm-cache provenance. Confirm the command's actual absolute
+CARGO_TARGET_DIR agrees with the assigned target before launch. Warm handoff needs
+the previous owner's actual terminal handle/status and explicit target/lease
+release, followed by the next owner's distinct acquisition. Unknown aliases,
+junctions or unresolved physical identity defer admission; a spelling difference
+does not establish separate storage. Do not infer ownership from an idle chat.
+
+On2026-11-08 root reported a possible logical validation-native label collision
+between Native fault-run allocation and Browser warm-target use. Browser was
+terminal/returned when reported; actual physical write overlap was not proven.
+Both owners were asked for absolute target and lease identities. Keep that incident
+pending until owner evidence resolves it; preserve original sources, binaries and
+receipts. No foreign process kill, lease release, global scan or overwritten
+incident evidence follows from this report. This prospective rule does not rewrite
+the scope or recorded identities of earlier executions.
+
 Root's later guard observation reached88.2594% host commit while initial WSL
 runtime/Python compilation overlapped an Apache Docker build. The exact owned
 Apache build was stopped and cleaned up; its45 cases remained NOT_RUN. This is
