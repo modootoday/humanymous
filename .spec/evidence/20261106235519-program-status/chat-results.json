@@ -1,0 +1,150 @@
+{
+  "observedAt": "2026-11-06T23:55:20Z",
+  "scope": "Nine user-created Humanymous project chats; latest returned turn only, cross-checked against repository evidence",
+  "chats": [
+    {
+      "threadId": "01a1b30d-439d-7030-8e38-789bc0b70f6a",
+      "title": "Windows 러너 · 표준 사용자 네이티브 테스트",
+      "status": {
+        "type": "idle"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794006634,
+          "final": [
+            "완료했습니다. [원격 실행 42309353245](https://github.com/modootoday/humanymous/actions/runs/42309353245)에서 6개 tuple 모두 통과했습니다.\n\n- Windows x64/ARM64 각각 37/37 harness, 테스트 131개, CLI 보안 테스트 6개 통과\n- ignored/filtered 0, 정상적인 0-test harness 1개 별도 기록\n- 실제 비상승·비관리자 토큰, workspace 쓰기 거부, 계정/scratch 삭제 검증\n- Linux/macOS 각 130개 테스트 통과\n\n검증 SHA는 `c6a2457`, 최종 근거는 `99cf472`까지 push했습니다. Git mutex와 lane을 해제했고 다른 채팅의 변경은 보존했습니다.\n\n전체 런타임·Docker e2e·전용 Windows 원격 클라이언트 검증은 별도 잔여 범위입니다."
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b30d-454e-7a50-9ab1-48358dbd0ff1",
+      "title": "Rust authority · IPC 인증과 실제 어댑터 연결",
+      "status": {
+        "type": "idle"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794006828,
+          "final": [
+            "`6f5d83a`에 Rust authority 구현을 귀속 커밋했습니다. lane과 공통 Cargo 소유권을 해제했습니다.\n\n- Windows named pipe·Linux UDS, peer/auth/scope/replay, bounded HTTP, route readiness, 공유 scoring·durable audit 구현.\n- Windows 15개, Linux Docker 14개 및 실제 다른 UID 접근 거부 시험 통과.\n- Rust 1.88, Clippy, formatting, workspace tests, Cargo audit 통과.\n- browser/RIT/admin, 원격 Windows·macOS 및 전체 제품 자격화는 미완료로 명시했습니다.\n\n실행·통합 계약과 잔여 사항은 [INTEGRATION.md](/C:/workspaces/humanymous/crates/authority/INTEGRATION.md)에 정리했습니다. 정본 spec 검사는 통과했으며, 전체 검사에는 다른 세션의 미등록 private evidence가 남아 있습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b30d-4736-7281-a54f-5cb3a5fa4fe4",
+      "title": "Rust Compose · 격리 제품랩과 Cloudflare 프로필",
+      "status": {
+        "type": "idle"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794006761,
+          "final": [
+            "`3b9c306`에 소유 경로만 커밋하고 lane을 해제했습니다.\n\n- Docker 토폴로지·오케스트레이션 26/26 통과\n- 실제 Rust authority + Express/Hono 검증 22/22 통과\n- 경계 단위 테스트 2개 통과\n- 최종 이미지 CVE 0건, Cargo/npm 감사 통과\n- 소유 Docker 리소스 정리 확인\n\n전체 Gate·브라우저/a11y·독립 witness·provider 검증은 미완료입니다. 따라서 `releaseReady=false`, 전체 필수 검증 명령은 종료 코드 `2`를 반환합니다. 전역 `spec check`에는 다른 lane의 오류가 남아 있습니다.\n\n[검증 결과와 잔여 통합 계약](C:/workspaces/humanymous/.spec/plan/20261106224156-container-test-environments.plan.md)"
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b2da-2656-7a23-a60b-08a681b23117",
+      "title": "Rust docs · Pages와 공개 Draft v0",
+      "status": {
+        "type": "notLoaded"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794004551,
+          "final": [
+            "개선 완료했습니다. 내장 브라우저 미리보기도 갱신했습니다.\n\n- 요구사항 10개에 이름·설명·직접 링크 추가\n- 검토 문서의 규범적 표현 정리 및 약어 설명 보완\n- 공개 CSS 소스맵 43개 제거와 재발 방지 검사 추가\n\n두 baseurl의 77개 문서 빌드, 테스트 8건, 브라우저 88개 조합이 통과했습니다.\n\n커밋: `2d98934`  \n전체 Specfold 검사에는 다른 작업의 문서 참조 오류가 남아 있습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b2da-7d8a-73f2-9bb2-78bde5ae33f9",
+      "title": "Rust CI/CD · Cross-OS와 OIDC 릴리스",
+      "status": {
+        "type": "notLoaded"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794003251,
+          "final": [
+            "`44e79a4`에 담당 범위를 커밋하고 lane을 해제했습니다. 다른 채팅의 staged 변경은 그대로 보존했습니다.\n\n- 공통 Rust 검증, crates/npm OIDC 릴리스, Pages 워크플로와 문서 freshness 도구 구현\n- Rust 7개·Python 9개 테스트, actionlint, action pin 24개 검증, MSRV·Clippy·도구 audit 통과\n- 최신 문서 검토 검사 통과. 전체 `spec check`는 Pages 사적 증거 오류가 남아 있습니다.\n- 실제 Rust runtime/native/browser/Docker 통합과 registry 설정은 미완료이며, 릴리스는 계속 차단됩니다. push·tag·publish는 하지 않았습니다.\n\n통합 계약과 남은 작업: [CI 인터페이스](C:/workspaces/humanymous/scripts/ci/README.md), [delivery 계획](C:/workspaces/humanymous/.spec/plan/20261106220650-rust-delivery.plan.md)."
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b2da-d1e9-7a22-9052-9a90a8cba54f",
+      "title": "Rust 연동 · Node/Bun 어댑터와 서비스 계약",
+      "status": {
+        "type": "notLoaded"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794002635,
+          "final": [
+            "커밋 `6941032` 완료, lane과 Git 잠금을 해제했습니다.\n\n- [실험용 IPC 계약](C:/workspaces/humanymous/.spec/sot/adapter-service-contract.sot.md), JSON Schema, Express/Hono Node·Fetch 어댑터 구현\n- 테스트 14개 그룹 통과, Node/Bun 실제 HTTP 파일럿 통과\n- ESM/CJS·타입·npm pack 검사 통과, npm audit 취약점 0건\n\n[통합 계획](C:/workspaces/humanymous/.spec/plan/20261107071000-node-adapter.plan.md)에 Rust IPC 인증·peer/ACL·replay·audit 및 browser/Docker 검증을 남겼습니다. 현재 테스트는 **mock conformance**이며 실제 Rust e2e 완료를 뜻하지 않습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b2f5-e927-7a03-9d47-9d1084d14c53",
+      "title": "Rust CLI · doctor와 안전한 install",
+      "status": {
+        "type": "notLoaded"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794004339,
+          "final": [
+            "`fe26b4d`에 CLI 구현을 커밋하고 lane을 해제했습니다.\n\n- `doctor`, `install --dry-run`, 설치·반복 실행·rollback 구현\n- SHA-256·경로·ACL 검증, 덮어쓰기 거부, 부분 실패 정리\n- Windows 테스트 6개, 실제 CLI 파일럿, workspace 패키지 Clippy 통과\n- dry-run 무변경과 반복 설치 무변경 확인\n\n[통합 안내](C:/workspaces/humanymous/crates/cli/INTEGRATION.md)\n\nLinux/macOS 파일럿, 실제 서버의 로컬 관리·IPC 검증은 남아 있습니다. 서비스 등록과 권한승격은 명시적으로 거부하며 서버 설치 성공을 주장하지 않습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b2f5-ea98-7023-b7af-ad527b820084",
+      "title": "Rust nginx · 플러그인 어댑터와 계약 검증",
+      "status": {
+        "type": "notLoaded"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794004320,
+          "final": [
+            "`b1e10ae`로 nginx njs 어댑터 파일럿을 커밋했습니다.\n\n- 전체 요청·본문 바인딩 후 ALLOW일 때만 origin 접근\n- IPC 장애·timeout·잘못된 판정은 fail-closed\n- 단위 24개, 실제 nginx Docker 파일럿 28개 통과\n- 중복 Set-Cookie·응답 헤더·SSE 전달 검증\n- Docker 자원 정리, lane/mutex 해제 완료\n\n[통합 요청서](C:/workspaces/humanymous/adapters/nginx/INTEGRATION.md)에 남은 인터페이스를 기록했습니다. **실제 Rust authority·공유 계약·peer/ACL/replay/audit 연결과 전체 제품 e2e는 미완료**입니다. 검증은 mock authority 범위입니다.\n\n구현 근거: [공식 njs API](https://nginx.org/en/docs/njs/reference.html)."
+          ]
+        }
+      ]
+    },
+    {
+      "threadId": "01a1b2f5-ec55-7c91-863d-f539c70417be",
+      "title": "Rust 워게임 · attacker와 defender 격리 실험실",
+      "status": {
+        "type": "notLoaded"
+      },
+      "turns": [
+        {
+          "status": "completed",
+          "completedAt": 1794004508,
+          "final": [
+            "커밋 `671e88a`에 구현했습니다. lane과 Git mutex는 해제했습니다.\n\n- 실제 기존 Rust `Engine`을 호출하는 attacker/defender 시뮬레이션과 JSON 보고서 구현.\n- 단위테스트 8개, Clippy, rustfmt 통과.\n- Docker network-none 파일럿 2회와 Windows 실행 결과가 동일 seed에서 바이트 단위 일치.\n- 12개 예약: 실제 평가 8, 미지원 4. ALLOW 2·CHALLENGE 3·DENY 3, 오류·skip·회귀 불일치 0.\n- 접근성 control의 기존 HR-12 CHALLENGE를 보존하며 `human_controls_all_allow=false`로 명시했습니다.\n\n통합 담당자는 [INTEGRATION.md](C:/workspaces/humanymous/crates/attacker/INTEGRATION.md)를 따라 workspace members와 lockfile을 반영한 뒤 실제 workspace 테스트를 실행해야 합니다. 공통 Cargo 파일은 수정하지 않았습니다.\n\nFull Gate·브라우저·Pass 실행, signed installation binding, 향후 내부망 topology 검증과 이미지 취약점 검사는 남아 있습니다. 현재 네트워크 runner는 제공하지 않습니다.\n\n[검증 evidence](C:/workspaces/humanymous/.spec.local/root/evidence/20261106222914-rust-wargame/index.evidence.md) · [SoT](C:/workspaces/humanymous/.spec/sot/rust-wargame.sot.md)"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -23,6 +23,17 @@ context is proven equivalent. A Rust wrapper around Go is not completion.
 
 ### Structure and naming
 
+Current program status and follow-through are canonical in
+[[sot:root/program-roadmap]]. The latest Rust-authored-code requirement includes
+new application UI/adapters/tests and the disposition of existing executable
+foreign-language scripts, including script strings embedded in Rust. Do not
+classify those as Rust merely by container file extension. Existing non-Rust
+prototypes remain explicit migration debt until reconciled.
+
+The laboratory-browser UI uses user-selected Meari. Its current newer toolchain
+is a separate desktop build boundary and does not silently change core MSRV1.88.
+Chromium/CEF is an external native engine dependency, not a Rust implementation.
+
 - Each crate has one bounded-context responsibility, a kebab-case package name,
   `Cargo.toml`, `src/lib.rs` or `src/main.rs`, and a small public API.
 - Use standard Rust snake_case modules/functions/variables, PascalCase types and

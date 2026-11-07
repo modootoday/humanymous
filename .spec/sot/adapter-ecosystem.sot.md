@@ -11,6 +11,10 @@ rel:
 
 # Cross-platform adapter ecosystem
 
+Detailed server/framework expansion and the latest Rust-authored-code constraint
+are canonical in [[sot:root/server-adapter-expansion]]. Browser-observation helpers
+are a separate lab-tool concern, not substitutes for Node/nginx-like integration.
+
 ## Rule
 
 Document version: 0.1.0. This document fixes the adapter architecture and
