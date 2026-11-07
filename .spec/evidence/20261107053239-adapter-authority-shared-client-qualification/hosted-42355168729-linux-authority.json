@@ -1,0 +1,90 @@
+{
+  "schema": "humanymous.authority.hosted-linux-result/1",
+  "source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "job_id": 128359709010,
+  "job_name": "validate / msrv",
+  "job_conclusion": "success",
+  "command": "cargo test --workspace --all-targets --locked",
+  "scope": "observed authority harness subset in direct workspace test step",
+  "os": "ubuntu-24.04",
+  "passed": 30,
+  "failed": 0,
+  "ignored": 2,
+  "filtered": 0,
+  "harnesses": [
+    {
+      "name": "lib",
+      "passed": 13,
+      "ignored": 0
+    },
+    {
+      "name": "main",
+      "passed": 0,
+      "ignored": 0
+    },
+    {
+      "name": "decisions",
+      "passed": 7,
+      "ignored": 0
+    },
+    {
+      "name": "local_service",
+      "passed": 3,
+      "ignored": 0
+    },
+    {
+      "name": "native_process",
+      "passed": 7,
+      "ignored": 2
+    }
+  ],
+  "named_passed_tests": [
+    "client::tests::consuming_rechecks_authority_and_monotonic_expiry",
+    "client::tests::response_framing_rejects_truncation_smuggling_and_extra_bytes",
+    "client::tests::rejects_omission_duplicate_unknown_mismatch_and_expiry",
+    "configuration::tests::provisioning_selects_exact_profile_and_rejects_wire_names",
+    "configuration::tests::provisioned_server_profiles_reject_mixed_wire_identity_and_mode",
+    "credentials::tests::independent_epochs_and_exact_scheme",
+    "credentials::tests::private_provisioning_rejects_noncanonical_secrets_and_exact_bearer_mutations",
+    "startup::tests::missing_witness_does_not_consume_unlock_or_open_state",
+    "startup::tests::explicit_sources_reject_mixed_absent_and_unknown_unlock",
+    "transport::tests::rate_window_has_no_unbounded_peer_map",
+    "transport::tests::invalid_limits_and_unbounded_or_non_json_response_reject",
+    "configuration::tests::normalized_readiness_never_inherits_another_profile_or_missing_plane",
+    "protocol::tests::bounds_framing_and_single_endpoint",
+    "auth_scope_revision_inventory_and_no_admin",
+    "cancellation_before_commit_discards_work_but_keeps_nonce",
+    "atomic_replay_and_restart_credential_rotation",
+    "clock_rollback_cannot_revive_an_evicted_nonce",
+    "body_schema_audit_failure_expiry_capacity",
+    "exact_binding_and_fixture_allow_only_after_audit",
+    "no_fabricated_collector_allow_and_explicit_required_signals",
+    "explicit_stop_waits_for_blocking_context_and_never_reports_early_drain",
+    "native_handler_separates_peer_credentials_routes_and_origin_policy",
+    "cancelled_blocking_work_retains_admission_and_cannot_act",
+    "private_directory_and_endpoint_configuration_fail_closed",
+    "concurrent_nonce_reservation_and_durable_failure",
+    "real_ipc_auth_replay_body_scope_capture_and_restart_epoch",
+    "shared_client_checks_real_server_and_profile_bound_credentials",
+    "normalized_producers_are_bound_by_native_authority_credentials",
+    "native_capacity_and_whole_connection_timeout",
+    "sealed_startup_retains_custody_and_reuses_existing_identity"
+  ],
+  "required_not_run": [
+    "unix_other_user_is_denied_by_actual_socket_acl"
+  ],
+  "ignored_child_helper": "unix_unprivileged_connect_probe",
+  "sealed_unlock_mode": "controlled inherited private pipe; no OS-store attestation",
+  "sealed_restart_scope": "custody guard/release and unchanged existing sealed keys, wrong-unlock/missing-witness refusal; child kill/reap, not graceful service flush",
+  "strict_workspace_qualified": false,
+  "other_os_current_source_sealed_ipc": "not_run_in_native_actor_steps",
+  "post_candidate_audit_a04603e_qualified": false,
+  "raw_job_log_sha256": "fdd0b9b0bd84be19c16d9608e28bd6c3b5d4356d95e7ab11a14f40e15906a6e2",
+  "derived_extract_sha256": "7e61ce8722f8810fb4136d71a505d25d62047a9d575c9d2e946856d5aafe414c",
+  "derived_extract_transforms": [
+    "remove timestamp prefixes",
+    "remove ANSI CSI color/control sequences"
+  ],
+  "private_actor_report_recovered": false
+}

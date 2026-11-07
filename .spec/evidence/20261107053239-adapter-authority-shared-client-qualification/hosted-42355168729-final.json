@@ -1,0 +1,136 @@
+{
+  "schema": "humanymous.authority.hosted-final-result/1",
+  "source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "attempt": 1,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42355168729",
+  "status": "completed",
+  "conclusion": "failure",
+  "job_count": 19,
+  "successful_jobs": 5,
+  "failed_jobs": 14,
+  "authority_linux_result": "hosted-42355168729-linux-authority.json",
+  "authority_linux_passed": 30,
+  "authority_linux_failed": 0,
+  "authority_linux_ignored": 2,
+  "authority_linux_filtered": 0,
+  "native_actor_matrix": "hosted-42355168729-native-actors.json",
+  "full_product_qualified": false,
+  "strict_workspace_qualified": false,
+  "raw_public_job_logs_recovered": true,
+  "private_actor_report_recovered": false,
+  "remaining": [
+    "isolated Docker required UID parent and its child probe",
+    "current-source Windows/macOS sealed startup and native IPC execution",
+    "authority OS service-store unlock and independent remote Windows peer denial",
+    "private typed one-shot broker provisioning channel",
+    "post-813 audit a04603e and c34c3e91 dependency/integration revalidation"
+  ],
+  "jobs": [
+    {
+      "id": 128351571194,
+      "name": "validate / policy",
+      "conclusion": "success"
+    },
+    {
+      "id": 128351926068,
+      "name": "validate / docker",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128351926084,
+      "name": "validate / native (macos-15)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128351926093,
+      "name": "validate / native (ubuntu-24.04)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128351926153,
+      "name": "validate / native (windows-2025)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128353483559,
+      "name": "validate / browser",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128355522898,
+      "name": "validate / browser-product",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128358355202,
+      "name": "validate / nginx",
+      "conclusion": "success"
+    },
+    {
+      "id": 128359709010,
+      "name": "validate / msrv",
+      "conclusion": "success"
+    },
+    {
+      "id": 128359821189,
+      "name": "validate / rust-images",
+      "conclusion": "success"
+    },
+    {
+      "id": 128360847587,
+      "name": "validate / quality",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128360953683,
+      "name": "validate / images (gate)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128360953728,
+      "name": "validate / images (core)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128361293298,
+      "name": "validate / documentation",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128361401308,
+      "name": "validate / pages / build",
+      "conclusion": "success"
+    },
+    {
+      "id": 128361465721,
+      "name": "validate / packages",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128361689495,
+      "name": "validate / node",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128362579030,
+      "name": "validate / advisories",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128364674797,
+      "name": "validate / ready",
+      "conclusion": "failure"
+    }
+  ],
+  "raw_metadata": [
+    {
+      "name": "hosted-42355168729-final-run.json",
+      "sha256": "50e39b0d8f3c2aadc31e2a86b3d6ddac56f1a755e61f14dd57517f9ed60be9c4"
+    },
+    {
+      "name": "hosted-42355168729-final-jobs.json",
+      "sha256": "f86e36e2f22a242e6bcb3176b6f784cff550d281c2f8da7e64aed7c05193fca5"
+    }
+  ]
+}

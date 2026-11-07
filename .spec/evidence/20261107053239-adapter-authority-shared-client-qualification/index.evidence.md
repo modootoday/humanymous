@@ -3,7 +3,7 @@ id: evidence:root/20261107053239
 title: Adapter authority shared client qualification
 status: active
 created: 2026-11-07T05:32:38Z
-updated: 2026-11-07T08:34:27Z
+updated: 2026-11-07T09:26:22Z
 rel:
   depends_on: [sot:root/adapter-authority]
 files:
@@ -14,6 +14,9 @@ files:
   - {path: sealed-revalidation-scope.json, sha256: dfc1e2de11efb2660320aa72ee9d65370fe868d9bd89febc80268d85af44c265, bytes: 2561, store: repo}
   - {path: hosted-42354873001.json, sha256: feaebd98451516d314b97ed8e6e18ac91be9ecfce0bee6013df48622698db73d, bytes: 1827, store: repo}
   - {path: hosted-42355168729-partial.json, sha256: 18b3c1d5b84c2716c8221747709d991a35632630f4255131c950b7c6cc53bd8a, bytes: 1453, store: repo}
+  - {path: hosted-42355168729-linux-authority.json, sha256: c57523c51f4eec4684251240e9f4e5276bc06f41f9f0096fa5db80a4b7e23e43, bytes: 3900, store: repo}
+  - {path: hosted-42355168729-native-actors.json, sha256: 8836ddf829e2870ce429923e97df7818a06d090ab987cb331b63e3c10b38278e, bytes: 2538, store: repo}
+  - {path: hosted-42355168729-final.json, sha256: 700e5c6809383fc61e0b9edc691cd5d38c38006a01188f62e9bda238e9e39f61, bytes: 3552, store: repo}
 ---
 
 # Adapter authority shared client qualification

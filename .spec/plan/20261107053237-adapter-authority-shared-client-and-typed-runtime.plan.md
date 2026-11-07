@@ -353,3 +353,74 @@ UID65534/PermissionDenied. Only the child is a subprocess helper. Runner/CI
 owners were notified not to waive/reclassify the parent. Current813 actor will
 otherwise reject ignored authority coverage when it eventually reaches this
 harness; that is incomplete qualification, not failure of executed sealed cases.
+
+## User-authorized local comparison and benchmark quiet window
+
+The user explicitly authorized actual local Windows/WSL validation for measured
+comparison with hosted execution, superseding the former blanket hosted-only
+restriction. Root declared a benchmark quiet window: no new Cargo, native pilot,
+runtime, model or Docker command until an explicit allocation follows measurement.
+Authority owns no local validation process, Cargo slot, model/GPU server or Docker
+container. Existing lightweight remote status watcher session29096 remains the
+only owned operational process, observing run42355168729 without a new dispatch.
+Do not infer local execution from this authorization; no such pilot has run.
+Shared execution policy remains root-owned and is not redefined by this plan.
+Local comparison receipts will remain labelled local; they do not establish the
+explicit hosted execution requirements of this authority goal.
+
+## Independent Linux hosted execution in the MSRV job
+
+Exact source8132117, run42355168729, successful job128359709010 executed
+`cargo test --workspace --all-targets --locked` after the native actor failures.
+Recovered raw job log shows authority lib13/main0/decisions7/local_service3/
+native_process7 passed, total30passed/0failed/2ignored/0filtered. The two ignored
+entries are the required privileged Docker parent and its child helper, not two
+validated helper successes. Named sealed_startup_retains_custody_and_reuses_existing_identity,
+normalized_producers_are_bound_by_native_authority_credentials, real IPC/replay,
+capacity, native server checks and explicit cancellation/drain tests all show ok.
+This independently closes the observed Linux sealed read/unlock/guard/restart
+revalidation for audit20b57d2; it does not retroactively change the failed native
+actor steps. Windows/macOS sealed IPC remains unexecuted in those actor steps.
+
+The source-controlled parent passes an inherited fixture secret through private
+pipes; this is not OS-store attestation or independent witness qualification.
+Sealed process termination is kill/reap, not graceful service flush; generic
+explicit drain tests are separate. Strict workspace/full product qualification
+is still false. Future audit a04603e is outside this source and needs its own
+compile/regression receipts. Raw log and derived authority extract are attached
+privately; public hosted-42355168729-linux-authority.json lists exact named
+results. Extraction first failed on ANSI-prefixed Cargo headers; the corrected
+derived extract explicitly strips timestamps/ANSI CSI while preserving raw bytes.
+
+Node owner confirmed that exact813 job128361689495 executes native build and
+inspection but reaches the missing qualification.json gate before any host-test
+execution. Those successful component commands do not establish actual Node/Bun
+framework/authority qualification. No replacement qualification receipt is minted.
+Global quality job128360847587 fails audit retention.rs items-after-test-module;
+audit owner already has a separately recorded future fix c34c3e91 without lint
+allowance. That fix is not in813, so this quality result stays failed.
+
+## Terminal hosted run and remaining authority work
+
+Run42355168729/attempt1/source8132117 completed failure: actual API inventory
+19jobs,5success/14failure. Ready failed. Status watcher29096 exited1 and was reaped;
+no authority-owned Cargo/runtime/Docker/model process or server remains. Final
+run/jobs metadata and status transcript are retained privately with public hash
+links. The independent successful Linux MSRV authority30passed/2ignored receipt
+remains valid for this frozen source; no actor, product or whole-run green follows.
+
+Pending: isolated Docker UID parent/probe proof; Windows/macOS sealed/native IPC;
+protected OS-store authority unlock; independent remote Windows denial; accepted
+typed one-shot private broker provisioning; and integration after post813 audit
+fixes. Current authority source had no failing assertion to correct in the observed
+Linux run. Foreign-scope CI/runner/audit failures were routed to their actual owners.
+Local actual validation is user-authorized but remains unexecuted during root's
+benchmark quiet window. Preserve the full goal; this checkpoint is not completion.
+
+Root's new Docker canon selects Windows Docker Desktop desktop-linux explicitly
+through the Windows docker.exe path. Historical local authority Docker evidence
+used the different WSL-native29.1.3 engine, not Desktop29.9.2; preserve its original
+identity and results without relabelling. No automatic WSL fallback is allowed.
+Future local Docker needs context endpoint/server ID/version/OSType preflight and
+an allocated window. Hosted Linux runner Docker remains a separate profile.
+No Docker command was started during this quiet window.

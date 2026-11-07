@@ -3,8 +3,9 @@
 Package/binary: `humanymous-authority` (publish=false). Build with
 `cargo build --locked --release -p humanymous-authority`; executable at
 `target/release/humanymous-authority[.exe]`. No TCP, admin, collector or browser
-recovery endpoints are added to this binary. Node and explicitly provisioned
-nginx use `humanymous.adapter/0.1` POST `/adapter/v0.1/decision`.
+recovery endpoints are added to this binary. Explicitly provisioned Node, nginx,
+Python ASGI/WSGI, Ruby Rack, Apache and ASP.NET Core profiles use
+`humanymous.adapter/0.1` POST `/adapter/v0.1/decision`.
 The old nginx mock projection is not this native contract.
 
 ## Current follow-up shared interfaces
@@ -19,7 +20,8 @@ hosted execution remains NOT_RUN until source-bound results are retained.
 This is component qualification; runtime admin/RIT and full product remain open.
 All new code/tests use Rust1.99.1/edition2024; no authored foreign-language glue.
 
-Startup JSON accepts `node`, `nginx`, `python-asgi`, `python-wsgi`, `ruby-rack`
+Startup JSON accepts `node`, `nginx`, `python-asgi`, `python-wsgi`, `ruby-rack`,
+`apache`, `aspnetcore`
 in the optional `adapter` field (omitted means Node).
 Configuration.adapter is the shared integrity::adapter::AdapterProfile. It is
 credential scope, never selected from wire contents. Native nginx identity is
@@ -242,3 +244,21 @@ accounting before authority native_process/local_service. These host pilots are
 not helper ignores and cannot be waived to publish green. Sealed startup/native
 IPC and drain are still NOT_RUN for Linux; other OS results remain pending.
 Public job logs were recovered; private actor raw report was not uploaded.
+
+The later successful MSRV job128359709010 in the SAME exact8132117 run independently
+executed direct workspace tests. Its recovered named authority receipts show
+30passed/0failed/2ignored/0filtered: lib13, decisions7, local_service3, native7,
+main0. Sealed startup/custody/restart, normalized producer binding, native peer/
+replay/capacity and cancellation/drain tests actually ran on Linux. See public
+hosted-42355168729-linux-authority.json for named results and raw-log hashes.
+The earlier failed native actor steps remain failed; the required privileged
+Docker UID parent and child probe remain ignored. This is controlled-parent
+inherited unlock, not OS-store/witness/remote-Windows qualification or graceful
+sealed-service flush. Post813 audit a04603e and Windows/macOS sealed IPC still
+require fresh execution. No full strict workspace/product success is claimed.
+
+Local Docker defaults now require Windows Docker Desktop desktop-linux with an
+explicit Windows docker.exe/context and recorded engine identity. Historical
+authority Docker results used the distinct WSL-native29.1.3 engine; they are not
+Desktop qualification. Hosted Linux receipts are a third execution profile. Do
+not silently switch engines or reinterpret historical image/source receipts.
