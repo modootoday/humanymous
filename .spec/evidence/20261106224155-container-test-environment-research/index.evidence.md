@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T23:10:20Z
+updated: 2026-11-07T23:22:20Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -55,8 +55,10 @@ files:
   - {path: browser-wire-ad1bb8b8-first-clippy-failure.json, sha256: 381cdfa005f638015df185706451c9818e3d5bd5f1025a1e85f1837127a220d9, bytes: 1511, store: repo}
   - {path: browser-wire-1f2b9a93-checks.json, sha256: e197064b67465af27acd96dcaf504b251cdbc7443883e803d9f1ddd6ed6b95e0, bytes: 1775, store: repo}
   - {path: hosted-gnu-producer-1f2b9a93-checks.json, sha256: 6810613b22402a9b7eaf4c94712a343b26fedf8d53768c0a3ab970f9e719f313, bytes: 1795, store: repo}
-  - {path: source-execution-index.json, sha256: b8018eff128560d77efd1147b263caa724ee725f6bebb891680e0aaf9f2f86f4, bytes: 9122, store: repo}
-  - {path: full-ci-1f87-browser-source-join.json, sha256: 62cba5352695af5a372d969e6ce9d0b2cd3df9f3ce5598d5dbfed9b220985a37, bytes: 4723, store: repo}
+  - {path: full-ci-1f87-browser-source-join.json, sha256: 063fcd951349dd5845d7c6d29fb02248a43bf41581be0efdf50d06c00e6edc0e, bytes: 4963, store: repo}
+  - {path: full-ci-1f87-link-encoding-erratum.json, sha256: bf977e13a89dc751f1a41bd229a343b3715186ec8c9f9ef41dc4451b3fec0070, bytes: 1525, store: repo}
+  - {path: hosted-browser-1f2b9a93-build-failure.json, sha256: 77d3a726381ccb55c30450f89e88c931bfdd081ca2bc7d625380a80298b5a76c, bytes: 3596, store: repo}
+  - {path: source-execution-index.json, sha256: cfc5d18bd627b48340fb8a6b5aa0e9457cd11b5b67cb0744c299d7e13c17b640, bytes: 9691, store: repo}
 ---
 
 # Container test environment research

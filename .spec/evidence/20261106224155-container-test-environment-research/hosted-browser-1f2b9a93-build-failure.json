@@ -1,0 +1,98 @@
+{
+  "schema": "humanymous.lab-hosted-1f2-gate-build-failure/1",
+  "source": "1f2b9a93d68deb310ffd53f927977a75d807e007",
+  "run": 42423423776,
+  "attempt": 1,
+  "event": "push",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42423423776",
+  "preflight_receipt": "hosted-gnu-producer-1f2b9a93-checks.json",
+  "preflight_job": 128556526237,
+  "preflight_status": "success",
+  "gnu_producer": {
+    "ignored": 0,
+    "filtered_other_tests": 6,
+    "passed": 3,
+    "failed": 0
+  },
+  "lab_unit_tests": 40,
+  "delivery_unit_tests": 121,
+  "product": {
+    "images": [],
+    "conclusion": "failure",
+    "job": 128557090823,
+    "isolation": "docker",
+    "private_report_sha256_source_reported": "48f739327e0928df9da5996293fbf92b2795fac4bbd25724733ecf61473e04e7",
+    "assertions": {
+      "failed": 1,
+      "other": 0,
+      "passed": 2,
+      "total": 3
+    },
+    "source_manifest_sha256": "1b763d3e3456e1ab354f9a8ecd3abd52d7c8a5c0a420c3c82e802ed60bb986ce",
+    "required_unavailable": 9,
+    "source_changed": false,
+    "owner_exit": 1,
+    "safe_diagnostics": {
+      "browser_actor": {
+        "dns_finish": "unknown",
+        "exit_code": null,
+        "filtered_count": null,
+        "full_product_qualified": false,
+        "inventory_count": null,
+        "inventory_matched": null,
+        "parser_summary_matched": null,
+        "process_success": null,
+        "schema": "humanymous.lab-browser-actor-outcome/1",
+        "selected_count": null,
+        "source_prefix_authenticated": false,
+        "state": "not_observed",
+        "test_passed": null
+      },
+      "failure_count": 1,
+      "failures": [
+        {
+          "case_id": "execution",
+          "error_code": "browser_gate_build",
+          "status": "failed"
+        }
+      ],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    }
+  },
+  "actual_browser_wire_class": "UNKNOWN: browser actor not observed",
+  "finding": "Actual browser_gate_build failure; exact failing Docker RUN/substep unavailable in retained public output",
+  "source_defect_candidate": {
+    "removed_package": "humanymous-audit",
+    "path": "deployments/lab/images/product.Dockerfile",
+    "obsolete_command": "cargo build --release --locked -p humanymous-audit --bin audit-witness",
+    "causal_limit": "Stale caller is deterministic, but earlier RUN commands may have failed first; not an asserted measured inner cause",
+    "proof": "Read-only git show of exact1f2 Dockerfile and workspace metadata",
+    "owning_replacement": "humanymous-runtime feature audit, existing audit-witness binary"
+  },
+  "private_evidence": "evidence:root/20261107230459",
+  "official_run_archive_sha256": "807fda48ad774e94b7021c47575ce36b93c98b65537cbfba21802776b8078dc1",
+  "connector_api_projection_byte_equal": true,
+  "artifact_count": 0,
+  "original_private_report_recovered": false,
+  "private_report_locally_rehashed": false,
+  "watch_exit": 1,
+  "remaining_watch": 0,
+  "free_hosted_compute": {
+    "actual_product_labels": [
+      "ubuntu-24.04"
+    ],
+    "runner_group": "GitHub Actions",
+    "invoice_audited": false,
+    "official_policy": "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "repository_public": true
+  },
+  "full_product_qualified": false,
+  "release_ready": false,
+  "limits": [
+    "GNU3 and Lab40 successes do not qualify actual browser execution.",
+    "No Origin class, actual request, Gate/Runtime header or cleanup outcome inferred.",
+    "No retry/dispatch or source correction within immutable run.",
+    "Oldedc Origin403 remains a separate execution."
+  ]
+}

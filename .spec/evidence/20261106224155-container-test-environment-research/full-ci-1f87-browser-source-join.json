@@ -6,7 +6,7 @@
   "conclusion": "failure",
   "canonical_commit": "0f9ca501b91dcd6e88e18b17f242172133ca2b54",
   "canonical_path": ".spec/evidence/20261107052001-delivery-followup/hosted-1f87-terminal.json",
-  "canonical_sha256": "f110aa97456550990cb184a86522e493d089616c8d504a46c03e986bdbd1279e",
+  "canonical_sha256": "c0620a8927900fc86a4186201d5a22376bbdc07c27e8194b18e6499b35ba05d7",
   "sealed_private_index_sha256": "2ce42ff37f2d32240c8f3378e11e4ece78f32f870d951a7753847b8fdfbcaecd",
   "official_archive": {
     "sha256": "772fdfaf6790c6e8f6cb88085ec0026a9d84a455c6f99fb45756f62fcee07e3c",
@@ -119,5 +119,9 @@
     "Generic HTTP403 on this source, not lateredc Origin-specific classification.",
     "Original official archive/member bytes are distinct from unrecovered private actor/ledger bytes.",
     "Only the two relevant Lab jobs are joined here; complete19job result stays with Delivery."
-  ]
+  ],
+  "captured_working_view_sha256": "f110aa97456550990cb184a86522e493d089616c8d504a46c03e986bdbd1279e",
+  "captured_working_view_bytes": 29587,
+  "canonical_git_bytes": 28800,
+  "hash_role_erratum": "full-ci-1f87-link-encoding-erratum.json"
 }

@@ -1,0 +1,23 @@
+{
+  "schema": "humanymous.lab-full-ci-link-encoding-erratum/1",
+  "affected_original_commit": "a92ba0f4b313ece316db6038130fc901e0351b8d",
+  "affected_record": "full-ci-1f87-browser-source-join.json",
+  "affected_field": "canonical_sha256",
+  "old_value": "f110aa97456550990cb184a86522e493d089616c8d504a46c03e986bdbd1279e",
+  "old_value_meaning": "Observed Windows CRLF working bytes; formerly mislabeled as canonical",
+  "correct_canonical_git_sha256": "c0620a8927900fc86a4186201d5a22376bbdc07c27e8194b18e6499b35ba05d7",
+  "canonical_git_bytes": 28800,
+  "captured_working_bytes": 29587,
+  "original_canonical_commit": "0f9ca501b91dcd6e88e18b17f242172133ca2b54",
+  "delivery_repair_commit": "a9cbbdf0f805321f94b396e3e5500f6c245d7555",
+  "view_manifest": ".spec/evidence/20261107052001-delivery-followup/encoding-views.json",
+  "view_manifest_git_sha256": "264a508299f2ebf367a7c42decaa6a3ebfe1f33916b3a70155c43e6866ca104a",
+  "retained_before_copy": ".spec.local/root/evidence/20261107231200-delivery-public-metadata-encoding-repair/before/hosted-1f87-terminal.json",
+  "before_copy_independently_rehashed": true,
+  "canonical_git_blob_independently_rehashed": true,
+  "canonical_body_unchanged_in_delivery_repair": true,
+  "terminal_facts_or_qualification_changed": false,
+  "original_job_logs_or_sealed_private_index_changed": false,
+  "old_commit_rewritten": false,
+  "correction": "Current link canonical hash now means actual Git-LF bytes; original working-view digest remains explicit in both link and view manifest."
+}

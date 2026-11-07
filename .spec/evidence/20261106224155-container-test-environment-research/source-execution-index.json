@@ -167,6 +167,15 @@
       "result": "failure",
       "facts": "18assertions16pass2fail;genericbootstrapHTTP403;DNSsucceeded67/1/66matched. Sealed originalmember verified; no laterOriginclassification transferred.",
       "evidence": "full-ci-1f87-browser-source-join.json"
+    },
+    {
+      "source": "1f2b9a93d68deb310ffd53f927977a75d807e007",
+      "run": 42423423776,
+      "job": 128557090823,
+      "profile": "browser_product",
+      "result": "gate_build_failed_before_browser",
+      "facts": "PreflightLab40/Delivery121/GNUproducer3passed6filtered/Go10+1/facade2+2+2/Unixcheck/Clippy/policy pass. Product3assertions2pass1fail browser_gate_build, actor not_observed. No actual wire class; staleAuditpackage caller is source defect, not proven first failed Docker RUN.",
+      "evidence": "hosted-browser-1f2b9a93-build-failure.json"
     }
   ],
   "unmeasured": [
