@@ -1,5 +1,17 @@
 # Browser native integration
 
+## Current execution authorization
+
+The user subsequently authorized actual local Windows/WSL validation to compare
+timings and resource use with GitHub. This supersedes the prior hosted-only
+blanket; historical not_run records remain unchanged. Root has opened a benchmark
+quiet window: no new Cargo/native/runtime/model/Docker execution until allocation
+resumes. Browser owns no active execution handle or local slot. Root measures an
+isolated committed checkout and owns the resulting policy decision. No local CEF
+experiment has been started under this new authorization, and no benchmark result
+or supported tuple is inferred from it. Follow the root program/delivery canon
+for subsequent allocation rather than duplicating resource policy here.
+
 ## Pending correlated canary source
 
 UI-29/30 adds an independent hosted-report verifier and file-probe schema2.

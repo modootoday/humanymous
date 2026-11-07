@@ -99,3 +99,11 @@ variables HUMANYMOUS_CEF_POSITIVE_BUNDLE and HUMANYMOUS_CEF_CANCELLED_BUNDLE:
 Require exactly2 passed/0 ignored; default tests do not discharge this gate.
 No Cargo or native execution occurred during this graph window. Source/artifact
 provisioning and raw receipt retention remain the owning hosted runner's duties.
+
+The user subsequently authorized actual local Windows/WSL validation for measured
+comparison with GitHub, superseding the blanket hosted-only restriction. A root
+benchmark quiet window is currently active: no new Cargo/native/runtime/model/
+Docker commands. Browser owns no active execution handle or allocated pipeline.
+Root will measure an isolated committed checkout before revising execution policy;
+this authorization is not a benchmark result or tuple qualification. Historical
+not_run records are preserved. Common manifests/locks/toolchain remain root-owned.
