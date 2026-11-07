@@ -257,7 +257,7 @@ fn oracle_digest_is_stable_keyed_and_known_answer_compatible() {
 }
 #[test]
 fn oracle_velocity_remains_weight_zero() {
-    let definition = humanymous_signals::lookup("l5.correlation.ip_velocity").unwrap();
+    let definition = humanymous_signals::observation::lookup("l5.correlation.ip_velocity").unwrap();
     assert_eq!(definition.weight, 0.0);
 }
 #[test]

@@ -1,6 +1,6 @@
 use super::{Limits, Record, subnet_key};
 use crate::history::Unavailable;
-use humanymous_signals::{Signal, Source, Verdict};
+use humanymous_signals::observation::{Signal, Source, Verdict};
 use serde_json::json;
 use std::collections::{BTreeMap, BTreeSet};
 
