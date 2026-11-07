@@ -1,0 +1,85 @@
+{
+  "schema": "humanymous.native-gpu-research/1",
+  "state": "PROPOSAL_NOT_ACCEPTED_NOT_IMPLEMENTED",
+  "retrieved_utc": "2026-11-07T18:35:02.3617433Z",
+  "source_plan": ".spec/plan/20261107183500-cross-os-runners-gpu-lifecycle.plan.md",
+  "source_plan_sha256": "b3473393160234860d5bb1f02b8ba990ead8c050a61f22eb54c7feaff57328b6",
+  "reference_only": {
+    "tag_tree_fetch": "restricted",
+    "release_and_full_commit_page": "readable",
+    "tag": "v30.0.1",
+    "project_rust": "1.99.1",
+    "rust_msrv_documented": "1.87",
+    "wgpu_version": "30.0.1",
+    "new_dependency_approved": false,
+    "commit": "40f4a34ebaf56f9a046231f54125ad046239d3f3"
+  },
+  "local": {
+    "reported_controller_count": 1,
+    "gpu_allocations_or_submissions": 0,
+    "driver_or_sdk_install": false,
+    "adapter_type_hardware_attested": false,
+    "gpu_compute_test_count": 0,
+    "os_metadata_only": true,
+    "reported_vendor": "NVIDIA",
+    "model_or_backend_switch": false,
+    "root_gpu_dependency_search_hits": 0,
+    "search_profile": "Cargo.toml/lock names wgpu,wgpu-core,wgpu-hal,wgpu-types,naga,ash,metal,cuda; not proof no external/browser GPU",
+    "compute_backend_created": false
+  },
+  "capability": "No GPU NativeProof/Ready/ABI v1 descriptor",
+  "policy_owner": "Root structural-development; this native lifecycle proposal is not a global priority change",
+  "remaining": [
+    "Independent root/X/consumer design critique",
+    "Exact backend/package/shader-language and graph approval",
+    "OS/arch/vendor/driver feature+limits probes",
+    "Resource cap and recovery supervisor contract",
+    "Actual transfer/queue/readback/parity/cancel/loss/drain measurements",
+    "CPU fallback only known safe effects, RequireGpu fail closed",
+    "Existing native producer/interactive/SCM/host gates remain open"
+  ],
+  "primary_sources": [
+    "https://developer.apple.com/documentation/metal/mtlcommandbuffer/status",
+    "https://developer.apple.com/documentation/metal/mtlcommandbuffer/waituntilcompleted%28%29",
+    "https://developer.apple.com/documentation/metal/mtldevice/recommendedmaxworkingsetsize",
+    "https://docs.github.com/en/actions/concepts/runners/github-hosted-runners",
+    "https://docs.github.com/en/actions/reference/runners/larger-runners",
+    "https://docs.nvidia.com/deploy/cuda-compatibility/latest/",
+    "https://docs.rs/wgpu/30.0.1/wgpu/",
+    "https://docs.rs/wgpu/30.0.1/wgpu/enum.DeviceType.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.AdapterInfo.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Device.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.DownlevelFlags.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Limits.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Queue.html",
+    "https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html",
+    "https://github.com/gfx-rs/wgpu/commit/40f4a34ebaf56f9a046231f54125ad046239d3f3",
+    "https://github.com/gfx-rs/wgpu/releases/tag/v30.0.1",
+    "https://gpuweb.github.io/gpuweb/wgsl/#floating-point-evaluation",
+    "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-videocontroller",
+    "https://learn.microsoft.com/en-us/windows/win32/direct3d12/hardware-feature-levels",
+    "https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp"
+  ],
+  "attachments": [
+    {
+      "bytes": 506,
+      "path": ".spec.local/root/evidence/20261107183500-windows-runner-gpu-design/os-video-metadata.json",
+      "sha256": "9bf04d3e5afec9ecd0b3ebe75412fab492347d3334d6c6b74638029dd1f2a5ca"
+    }
+  ],
+  "input_reference_sha": "0954deb8e7ef859f3da6b7126dd5ba2a92999603",
+  "root_input_hashes": [
+    {
+      "sha256": "2db4c87cb1d2524f75aa63a6cee6927a70623397b89f4df2a58cc755983873ad",
+      "name": "Cargo.toml"
+    },
+    {
+      "sha256": "91c6d6124e808e9cc4ba652c59598b96e88b551cb1c8913afcfa673e8fa3fe06",
+      "name": "Cargo.lock"
+    },
+    {
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+      "name": "rust-toolchain.toml"
+    }
+  ]
+}

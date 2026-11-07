@@ -1107,3 +1107,14 @@ uses the explicitly historical baseline and is not an immediate-pre claim.
 No blocked IO/interactive/descendant-pipe, unassigned-fault, protected producer or
 hosted capability follows. Interactive contract v1.6 is accepted design only;
 implementation and actual consumer qualification remain pending.
+
+Native GPU lifecycle research is separately drafted in
+plan:root/20261107183500 with registered gpu-lifecycle-research-summary.json.
+It separates OS/backend observations, actual feature/limit support, coordinator
+reservation, retained submission/completion/maps/callbacks, cancellation/device
+loss and final drain. Enumeration is not hardware attestation or NativeProof;
+CPU replay is prohibited at uncertain submission/commit boundaries. Backend,
+dependency, shader language/unsafe exceptions and actual workload remain
+unapproved; current GPU execution evidence is0. Cross-cutting CPU/GPU policy
+belongs to Root structural canon, not this component proposal. Existing CPU
+experiments, detection freeze, ABI v1 and native/hosted qualification gaps persist.
