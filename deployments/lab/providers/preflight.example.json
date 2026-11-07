@@ -1,0 +1,13 @@
+{
+  "provider": "cloudflare",
+  "explicit_opt_in": false,
+  "owned_hostname": "owned.invalid",
+  "owned_installation_confirmed": false,
+  "budget_usd": 0,
+  "expires_unix": 0,
+  "external_janitor_ready": false,
+  "qualified_gate_manifest": "",
+  "allowed_domains": ["owned.invalid"],
+  "access_team": "",
+  "access_audience": ""
+}

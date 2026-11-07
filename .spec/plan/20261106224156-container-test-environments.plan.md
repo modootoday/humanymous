@@ -10,6 +10,31 @@ rel:
 
 # Container environment research and rollout
 
+## Rust-only v2 continuation (2026-11-07 KST)
+
+- [x] Root-integrated humanymous-lab-runner, inherited existing dependencies only.
+- [x] Rust Docker transport/snapshots, fixtures, direct-IP probes and owned TTL cleanup.
+- [x] Rust local provider preflight; missing opt-in/budget/expiry/Gate/credentials refuses with exit2.
+- [x] Unit4 and Clippy; actual Docker topology-only25 assertions, exit2, runtime explicitly not_run.
+- [ ] Fresh complete default runtime source pilot after concurrent audit source checkpoint.
+- [ ] Fresh collector component profile and image advisory closure for v2 source.
+- [ ] Sequential lane handoff to wargame; consume OwnedLab/VerifiedSnapshot without signer duplication.
+- [ ] Actual independent witness binary/key/head-state integration after custody owner supplies contract.
+- [ ] Product browser/bootstrap/session, independent origin/audit effects and human/AT qualification.
+
+First runtime source snapshot failed at an audit service module declaration whose
+file was still being authored in another lane. Raw failure is private
+evidence:root/20261107050621. Source-bound Rust topology pass is private
+evidence:root/20261107051412. Neither result claims current product completion.
+No new foreign-language implementation/test was authored. Existing Python/Node
+prototypes are historical debt and excluded from canonical v2 execution.
+The root workspace now owns runner registration/lock. deployments/lab/INTEGRATION.md
+defines stable commands/report schema and exact source/image artifacts for CI.
+The current red-catalog checkpoint is released to the attacker owner next, then
+Compose reacquires the same lane for its context integration. No force claim.
+
+## Original research checklist
+
 - [x] Three subagents researched managed Containers, Tunnel/Access/Browser Run and repo Compose gaps.
 - [x] Official sources and actual repository boundaries synthesized in canonical SoT.
 - [x] Separate engine/mock/Rust product/provider-local/provider-remote evidence types.

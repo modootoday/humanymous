@@ -1,0 +1,6 @@
+services:
+  collector-browser:
+    extends: {file: compose.collector.yaml, service: collector-browser}
+    image: humanymous/collector-component:${HM_LAB_IMAGE_TAG:?Rust runner must supply owned tag}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:?Rust runner must supply immutable source}

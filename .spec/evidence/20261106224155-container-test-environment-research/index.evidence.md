@@ -3,10 +3,11 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T04:43:43Z
+updated: 2026-11-07T05:15:53Z
 files:
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
   - {path: provenance.md, sha256: 881be44b70ea201eaa97ab25f0d4ab5b0bacb8580fb5368d65d8dc7cfc8ce108, bytes: 884, store: repo}
+  - {path: rust-runner-v2/lab-report.json, sha256: 75012d28bd66998abacf3d43efb84d58eefb31d69a226bee3b2ab09628eb801d, bytes: 4365, store: repo}
 ---
 
 # Container test environment research

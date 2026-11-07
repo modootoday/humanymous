@@ -1,0 +1,173 @@
+{
+  "cases": [
+    {
+      "detail": "7b556f01015fed38c1df3a92d31d264f6dd07b61501ff2d68a67c56944b19e89",
+      "id": "no-published-ports",
+      "status": "passed"
+    },
+    {
+      "detail": "999730e3b34b90150cf3eebe8054bad7fb34923c4b4d8d35bdf99dcc69441db3",
+      "id": "owned-container-origin",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-origin",
+      "status": "passed"
+    },
+    {
+      "detail": "51d61e129bb86336ba760184a00a5014eecade18ab6e91f5e3a96a392acde244",
+      "id": "owned-container-outside-canary",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-outside-canary",
+      "status": "passed"
+    },
+    {
+      "detail": "9a6cb67dc6cdd43b3185fe319b8e44003aaac876c9a0721210e6e3531fddbfeb",
+      "id": "owned-container-attacker",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-attacker",
+      "status": "passed"
+    },
+    {
+      "detail": "owned backend client reached same live fixture",
+      "id": "origin-positive-control",
+      "status": "passed"
+    },
+    {
+      "detail": "three internal IPv4 bridges; IPv6 unqualified",
+      "id": "internal-networks",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.19.0.2",
+        "port": 8080
+      },
+      "id": "no-origin-bypass-direct-ip",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.18.0.2",
+        "port": 8080
+      },
+      "id": "no-outside-bridge-direct-ip",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.20.0.1",
+        "port": 2375
+      },
+      "id": "no-host-docker-api",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.20.0.1",
+        "port": 2376
+      },
+      "id": "no-host-docker-tls",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "169.254.169.254",
+        "port": 80
+      },
+      "id": "no-metadata-http",
+      "status": "passed"
+    },
+    {
+      "detail": "paired direct-IP denial",
+      "id": "no-private-dns-origin",
+      "status": "passed"
+    },
+    {
+      "detail": "paired direct-IP denial",
+      "id": "no-private-dns-outside-canary",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "nonroot-client",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "capabilities-empty",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "no-new-privileges",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "no-container-api-mount",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "no-default-ipv4-route",
+      "status": "passed"
+    },
+    {
+      "detail": "requires EROFS, not generic permission failure",
+      "id": "read-only-rootfs",
+      "status": "passed"
+    },
+    {
+      "detail": "only inspected owned addresses; no public probe",
+      "id": "topology-probe-exit",
+      "status": "passed"
+    },
+    {
+      "detail": "positive control fails after origin stop",
+      "id": "fixture-dependency-loss",
+      "status": "passed"
+    },
+    {
+      "detail": "hm-rust-lab-de2d667d5ecdee2d",
+      "id": "cleanup-owned-project",
+      "status": "passed"
+    }
+  ],
+  "components": {
+    "runtime": {
+      "reason": "explicit topology-only phase",
+      "status": "not_run"
+    }
+  },
+  "evidence_types": [
+    "topology-control",
+    "runtime-process"
+  ],
+  "full_product_qualified": false,
+  "project": "hm-rust-lab-de2d667d5ecdee2d",
+  "release_ready": false,
+  "required_unavailable": [
+    "full Gate TLS/H2/capture",
+    "session-bound real browser collector",
+    "Pass recovery",
+    "human/keyboard/assistive controls",
+    "independent witness latest-head",
+    "cross-namespace origin/audit effect product binding",
+    "signed remote target attestation",
+    "native OS qualification",
+    "provider deployment"
+  ],
+  "schema": "humanymous.product-lab/2",
+  "ttl": {
+    "expires_unix": 1794030265,
+    "external_janitor_scheduled": false
+  }
+}

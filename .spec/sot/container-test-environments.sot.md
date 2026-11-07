@@ -294,6 +294,55 @@ mounted or routed. This implementation performs no paid provisioning, public
 tunnel or account mutation. Cloudflare DinD/ephemeral WAL is not equivalent to
 canonical internal bridges/independently anchored durable state.
 
+### Rust-only continuation and provider preparation (2026-11-07 KST)
+
+The canonical v2 coordinator is `humanymous-lab-runner`, a normal root workspace
+member at test/lab/runner. It owns bounded Docker subprocesses, immutable source
+snapshots, actual inspect checks, Rust HTTP fixtures and negative clients,
+project-scoped cleanup and non-mutating provider preflight. No Python/Node or
+embedded foreign-language execution string implements these responsibilities.
+Legacy run.py/cleanup.py/audit.py and Node prototype profiles remain historical
+migration debt and are not invoked by compose.rust.yaml. Their old scan/pass
+results do not qualify new images. Full source-bound execution results are
+recorded separately after each immutable snapshot.
+
+The runtime process container preserves its existing loopback-only native
+protocol. Rust client, owned origin and runtime share network-none; actual
+origin/audit counts are meaningful component effects, not independent L5
+isolation. Separate live fixtures on backend/outside bridges establish bounded
+direct-IP negatives from the ingress client. Absence of a default IPv4 route is
+observed in addition to finite probes. No third-party egress destination is
+probed. Full runtime cross-namespace origin/audit effects, IPv6/host breadth,
+session-bound real browser evidence, independent witness and human/AT remain
+required unavailable gates. Sandbox-disabling flags remain prohibited.
+
+Provider execution preparation is an explicit local manifest/preflight only.
+The example is fail-closed: opt-in false, zero budget/expiry and missing Gate
+commitment. Preflight checks exact owned hostname, positive budget, expiry within
+one hour, an external cancellation janitor, Gate source commitment and credential
+presence without reading/printing values. Cloudflare also requires exact
+allowedDomains plus Access team/audience. Passing prerequisites does not enable
+deployment; the command exits 2 and performs no account/resource operation.
+
+AWS Lightsail Containers expose a managed TLS endpoint and optional private
+service domain. Omitting its public endpoint does not establish per-container
+Compose bridge policies or original-client TLS capture. Its price depends on
+power and scale; no fixed cost or free operation is assumed. An EC2/Lightsail VM
+profile would require a separately approved instance, firewall/metadata-egress
+policy, independent witness storage/account, artifact/boot provenance and TTL
+cleanup before execution. Neither managed-provider ingress nor same-VM namespace
+sharing certifies canonical isolation. Cloudflare enableInternet=false plus
+allowed destinations and ephemeral/snapshot filesystem limitations remain
+separate provider semantics. No paid resource or external deployment is created.
+
+Official preparation sources checked 2026-11-07:
+
+- https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-services.html
+- https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-container-services.html
+- https://aws.amazon.com/lightsail/pricing/
+- https://developers.cloudflare.com/containers/configuration/outbound-traffic/
+- https://developers.cloudflare.com/containers/faq/
+
 ### Documentation integration note
 
 Public docs owners should describe the topology control and actual authority IPC
