@@ -1760,3 +1760,13 @@ Read actual pages-build workflow and current CLI: dualbaseurl staticvalidate is
 wired, browser stage is absent. Windows PATH supplies Ruby33 and bundle.bat but
 no chromedriver/msedgedriver found. These are discovery observations, not an
 executed build or browser availability conclusion; no new server/driver started.
+### Browser manifest/bootstrap and historical evidence scope
+
+Read complete browser and bootstrap manifests and bootstrap lib.rs; added three
+manual receipts. Public reference now names empty default/native-ui binary gate,
+Windows-only pinned sandbox bootstrap and trusted sibling DLL/ABI premises.
+Read actual root cef-root-integration-results.json: historical a924603 native7
+and explicit1test/4flags pass, zeroignored, GUI/IME/ATnotrun. Read registration
+source record: later native registration delta compile/positive/refusalnotrun.
+Documented both scopes without either discarding actual historical execution or
+transferring it to changed native consumers. No CEF/browser/server launched.

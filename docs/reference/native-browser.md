@@ -29,6 +29,32 @@ prototype or test pass. Native source, CEF distribution, OS/architecture and
 packaged artifact identity all matter. Specific desktop/DPI observations must
 not be transferred to an untested revision or operating system.
 
+The workspace browser has no default features; its executable requires the
+explicit `native-ui` feature. A default package check does not build or exercise
+the native window. Meari dependencies are pinned to one source revision, while
+the separate Windows CEF bootstrap pins its own upstream revision and enables
+the sandbox feature. These dependency declarations are not packaged-artifact
+or runtime sandbox evidence.
+
+The bootstrap source rejects a missing sandbox pointer and listed weakening or
+remote-debugging switches before loading the desktop DLL. It calls CEF process
+dispatch before application I/O and UI loading, then loads a fixed sibling
+`humanymous_cef_desktop.dll` only in the browser process. This assumes the matching
+pinned bootstrap ABI and a trusted private bundle; the fixed filename alone
+does not authenticate DLL bytes. The feature-gated native refusal fixture checks
+four switch forms, exit code and unchanged synthetic-profile directory names.
+It does not establish comprehensive switch coverage, process isolation or
+current native execution. Preserve those as separate qualification gates.
+
+The historical Windows integration receipt for browser source `a924603` records
+seven native unit tests and one explicitly enabled refusal test covering four
+switch forms, with zero ignored tests. That narrower run did not test GUI
+keyboard, IME or assistive technology. Later process-local scheme-registration
+changes have separate source records with native compilation, initialization
+and missing-registration failure execution still unverified. Do not transfer
+the earlier passing receipt to those changed paths or describe all browser
+execution as absent.
+
 The process-owning prototype DLL is not the planned embeddable SDK. SDK lifecycle,
 versioned ABI, consumer ownership/unload and framework compatibility remain
 separate responsibilities. The `humanymous-native init` planner can describe a

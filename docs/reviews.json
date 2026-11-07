@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/bootstrap/src/lib.rs",
+  "sha256": "bf664f50f20875c849a9f90c2ae466e508be85e6de0d24f8ec5d36d29ad1ca74",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete file: browser default feature emptiness/native-ui binary gate or separate Windows pinned sandbox bootstrap composition; documented source/ABI/private sibling DLL and limited security-switch fixture boundaries. Manifest or pure/refusal fixture source does not qualify current native process, artifact authentication or OS sandbox.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/bootstrap/Cargo.toml",
+  "sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete file: browser default feature emptiness/native-ui binary gate or separate Windows pinned sandbox bootstrap composition; documented source/ABI/private sibling DLL and limited security-switch fixture boundaries. Manifest or pure/refusal fixture source does not qualify current native process, artifact authentication or OS sandbox.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/Cargo.toml",
+  "sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete file: browser default feature emptiness/native-ui binary gate or separate Windows pinned sandbox bootstrap composition; documented source/ABI/private sibling DLL and limited security-switch fixture boundaries. Manifest or pure/refusal fixture source does not qualify current native process, artifact authentication or OS sandbox.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/authority/tests/decisions.rs",
   "sha256": "3a0f2a2894e1fd32532936110b78b6187ff09ff722eec9597b4cbe829ad2b06d",
   "reviewer": "codex/rust-pages",
