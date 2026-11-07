@@ -1,0 +1,94 @@
+{
+  "source": "d75c351c1e05d807380282a02d0d58a0a57709d8",
+  "venue": "local Windows x64 immutable Git archive",
+  "features": "native-ui",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "tests": {
+    "filtered": 0,
+    "ignored": 0,
+    "failed": 0,
+    "passed": 42
+  },
+  "all_target_check_exit": 0,
+  "strict_all_target_clippy_exit": 0,
+  "rustfmt_exit": 0,
+  "closure": {
+    "files": 87,
+    "scope": "browser authored Rust/contracts/manifests and archived Cargo manifests/root graph",
+    "before_sha256": "70c3955d7f025ee38a56f923a3f1734eb7106049f913143eaca0d8df502ccc9c",
+    "after_sha256": "70c3955d7f025ee38a56f923a3f1734eb7106049f913143eaca0d8df502ccc9c",
+    "difference_records": 0
+  },
+  "prior_failures": [
+    {
+      "source": "22ac1b361a19823ff16f18a6b3db664e218d9a08",
+      "tests": 41,
+      "passed": 39,
+      "failed": 2,
+      "ignored": 0,
+      "filtered": 0,
+      "exit": 101,
+      "failure": "required native AX actions unsupported after direct mutation",
+      "closure_files": 86,
+      "difference_records": 0,
+      "log_sha256": "1fc0b4f130c4bc869c0de01696c9f92dc7033039db12f1352d88a0771be1582d"
+    },
+    {
+      "source": "74f14b474cf91f42a7a31bb5f11b35d4d0f32f9a",
+      "tests": 41,
+      "passed": 40,
+      "failed": 1,
+      "ignored": 0,
+      "filtered": 0,
+      "exit": 101,
+      "failure": "explicit disabled migration required by pinned retained reload contract",
+      "closure_files": 87,
+      "difference_records": 0,
+      "log_sha256": "2ddc1cd3b302bdf806ac4619ccfd31dc0e0eae7ba657fd67d7a20fc21e3a28d3"
+    },
+    {
+      "source": "274f23886568d940b1006f148ff12ec8904232ce",
+      "tests": 42,
+      "passed": 41,
+      "failed": 1,
+      "ignored": 0,
+      "filtered": 0,
+      "exit": 101,
+      "failure": "new negative used empty String IR disabled rather than typed Bool; not proven provider exploit",
+      "closure_files": 87,
+      "difference_records": 0,
+      "log_sha256": "cb102a1960fbe1871b3b468a7ddcb143074f23d81ec03289d447bc6fef9f824c"
+    }
+  ],
+  "final_logs": [
+    {
+      "stage": "test",
+      "sha256": "bc386e7c47e3a19f1cf865c4c719f7a35cfeb07d0a371d1a2bde1e398e8c6b03"
+    },
+    {
+      "stage": "check",
+      "sha256": "5b8ab0b6c14b1e1053bc3facacc2eab57b180ab938f9cf033a3bc7d02b3fd619"
+    },
+    {
+      "stage": "clippy",
+      "sha256": "98faf80b47c10c828dbc5f7fa8d7465592f0306fb4c5baa8f2d7dc974f10b5e8"
+    }
+  ],
+  "behavior": [
+    "native document history and Stop AX Click",
+    "selected tab names and close/select/new AX actions",
+    "disabled action rejection",
+    "dirty address/node/focus preservation",
+    "unrelated control migration rejection"
+  ],
+  "cef_execution": "not_run",
+  "gui_execution": "not_run",
+  "os_screen_reader": "not_run",
+  "full_sandbox": "unqualified",
+  "browser_ready": false,
+  "compiler_reservation": "returned",
+  "live_owned_handles": 0
+}

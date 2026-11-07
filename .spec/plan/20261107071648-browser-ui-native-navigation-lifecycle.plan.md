@@ -13,6 +13,14 @@ rel:
 
 ## Actual bounded Windows CEF gate passed
 
+Latest native-ui document gate passed42/42 at d75c351c, zero ignored/filtered;
+all-target check, strict Clippy and formatter passed. The87-file declared closure
+is unchanged. controls-scene-validation.json preserves22ac39/2 (unsupported AX
+actions),74f40/1 (explicit disabled migration contract),27441/1 (negative fixture
+used String rather than Bool disabled) and the corrected success. No assertion
+was removed or warning suppressed. CEF compilation, actual history/tab/keyboard/
+IME/AT and full sandbox remain separate, unexecuted gates for this new source.
+
 UI-32/33 pure validation passed on browser source ce05c45e with the literal
 173008f0 graph overlay (Cargo.lock and CLI Cargo.toml):30 passed, zero failed,
 ignored or filtered; default all-target check, strict Clippy and frozen-source

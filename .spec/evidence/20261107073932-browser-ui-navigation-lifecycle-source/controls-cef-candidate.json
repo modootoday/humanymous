@@ -1,0 +1,218 @@
+{
+  "kind": "source-only CEF tab/history candidate",
+  "native_compile": "not_run",
+  "native_feature_clippy": "not_run",
+  "actual_gui": "not_run",
+  "browser_ready": false,
+  "scene_proof_source": "d75c351c1e05d807380282a02d0d58a0a57709d8",
+  "scene_source_diff": "empty for crates/browser/src",
+  "native_delta_after_scene": [
+    "retain actual CEF browser identifiers after close",
+    "private per-tab fixed-route navigation and cleanup receipts"
+  ],
+  "meari_pin": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+  "cef_rs_pin": "224a785c7b41758b51821cbb7395ea57ba493a63",
+  "cef_expected": "156.0.15",
+  "chromium_expected": "156.0.8078.80",
+  "sdk_expected_platform": "windows-x86_64",
+  "sdk_expected_archive_sha1": "b690e035689ee20ba9d2500ac8953815bc7ed46a",
+  "expected_native_build": "cargo build --locked -p humanymous-cef-bootstrap -p humanymous-cef-desktop",
+  "existing_runner": "cargo run --locked --manifest-path scripts/ci/cef-pilot/Cargo.toml -- target/cef-native-evidence",
+  "new_graph_edges": [],
+  "inputs": [
+    {
+      "path": "Cargo.lock",
+      "sha256": "8fe664fe4d58ca61f0d5bb6d357090a78b300ed31c1b611040a1deed7e72583f"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "2db4c87cb1d2524f75aa63a6cee6927a70623397b89f4df2a58cc755983873ad"
+    },
+    {
+      "path": "crates/browser/Cargo.toml",
+      "sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/Cargo.toml",
+      "sha256": "5f52293d6ddfc2fcbb9d29c8a7d27bb9a3f1340a42b08a92ffbc4ec74c4f303a"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/lib.rs",
+      "sha256": "41450a30601621cf922a2c2af0339328f8494a5e295b2995a42072c020e813a9"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/negative_pilot.rs",
+      "sha256": "614230683c879f900ebe2151d447a6ad4d1a612b4f27aac4775a65047f4504e2"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/renderer_probe.rs",
+      "sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0"
+    },
+    {
+      "path": "crates/browser/native/desktop/Cargo.toml",
+      "sha256": "5ef4a7183cfa2a363f58ef073a650372019373f7415ff617f1f605a94a38bd34"
+    },
+    {
+      "path": "crates/browser/native/desktop/pilot-contract.json",
+      "sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/browser_controls.rs",
+      "sha256": "38eb395b04277c4800506ca13aa1e7aff09372ce9a4a55735cbdd6fd010cb701"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/child.rs",
+      "sha256": "ac95b7177126926800920b610234fd763084c180c2bcc22bef06d3165e2c9d4e"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/fixture.rs",
+      "sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/history.rs",
+      "sha256": "25753d9ed23f5a05c6863c9aefb1253c2a6c488d58f3b77bb8743317d8e5e8b4"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host_report.rs",
+      "sha256": "1f74d25d9986f9010cb15ce98e600bfd5bb1b0c689aae4b9928e1068447afb46"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host.rs",
+      "sha256": "1107098d11fd309e6658a6f2420d8c27725e0545ab24df797c1ec12a1cac9874"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/internal_probe.rs",
+      "sha256": "5143b3ea4acfb82546955815f1c1499493180e10af5c4a21638b30b953854464"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "sha256": "878fcac4609f07e724ddb4538a56982e57e1ccaec3db5a4fdb3a7cd47ddba1ce"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/local_page.rs",
+      "sha256": "79f77f0528db58de405c38eed65bdf78ea790439164533c13a12abe0993fa837"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/measured_input.rs",
+      "sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/native.rs",
+      "sha256": "c37be54a5c5e71a00257f1b9a52475edbbeda95217bec69bdfebffd36612c3f3"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/navigation.rs",
+      "sha256": "99ba0e5a8447a14168b06b1dacb314dea079edf7ac3e2f718ef20564e4823101"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_assertions.rs",
+      "sha256": "c43457e75c46ef5d972c4e0bade7ebce17f2a41bd5af6abfd110b4734dac1bfd"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_process.rs",
+      "sha256": "6df47121e6f94167932365f8f8587d5529f6ee74df560f3c9d4792c12917986d"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/tab_sessions.rs",
+      "sha256": "65d9c7d78b0f87606ada7274184cd09909921095042b264ad560d7e89a50f222"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/tab_windows.rs",
+      "sha256": "d401721d23c546601889774de04e2effc517395d3d55fee073ef85d556b43598"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/window_frame.rs",
+      "sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb"
+    },
+    {
+      "path": "crates/browser/native/shared/scheme.rs",
+      "sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9"
+    },
+    {
+      "path": "crates/browser/src/frame_geometry.rs",
+      "sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247"
+    },
+    {
+      "path": "crates/browser/src/history.rs",
+      "sha256": "1a3c7e9fecf5e10a25dae82e4db2b0bb8af4fda1cd761a9bed774c5ebf3ff1fb"
+    },
+    {
+      "path": "crates/browser/src/icons.rs",
+      "sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5"
+    },
+    {
+      "path": "crates/browser/src/input.rs",
+      "sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c"
+    },
+    {
+      "path": "crates/browser/src/internal_urls.rs",
+      "sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161"
+    },
+    {
+      "path": "crates/browser/src/lib.rs",
+      "sha256": "57f5705b241f3e1a470fb2b49f544caeda48a75e38a623b7eec8a76d5d87ce0c"
+    },
+    {
+      "path": "crates/browser/src/lifecycle.rs",
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344"
+    },
+    {
+      "path": "crates/browser/src/main.rs",
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8"
+    },
+    {
+      "path": "crates/browser/src/navigation.rs",
+      "sha256": "1e20f58edff8fadb9cd721c3ca763c638fc61620f98ef69efeb14d311bc93440"
+    },
+    {
+      "path": "crates/browser/src/newtab.rs",
+      "sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2"
+    },
+    {
+      "path": "crates/browser/src/policy.rs",
+      "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626"
+    },
+    {
+      "path": "crates/browser/src/scene_projection.rs",
+      "sha256": "730f4c4a82a7f28c561b13b1632d6505cb0ec931b206093cfedac98b7c23511f"
+    },
+    {
+      "path": "crates/browser/src/tabs_ui.rs",
+      "sha256": "43e9afb15e87723b32ef2af3f61cc71f97ec8156e3ce5f58dada396ee0672a08"
+    },
+    {
+      "path": "crates/browser/src/tabs.rs",
+      "sha256": "34d82972ef8c6d725d158ffe6e6b6f25c18d7e451832edf263d975852908bc4a"
+    },
+    {
+      "path": "crates/browser/src/ui_navigation.rs",
+      "sha256": "70e2dfc2e877cf80d8c417432698bc142654e104245ab7d5e20c72f3fc377ff9"
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "sha256": "522e4476927b5871fd0e9faac3218c883d067509cb3e7f5d6a8df89d6113e20d"
+    },
+    {
+      "path": "crates/browser/src/viewport.rs",
+      "sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329"
+    },
+    {
+      "path": "crates/browser/src/window_chrome.rs",
+      "sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    }
+  ],
+  "excluded_owned_source_deltas": [],
+  "stat_only_paths": [
+    "crates/browser/native/desktop/src/native.rs",
+    "crates/browser/src/viewport.rs"
+  ],
+  "limits": [
+    "pins and authored inputs only; not full registry/SDK/toolchain closure",
+    "existing workflow runner Clippy is not native-feature Clippy",
+    "hosted process smoke does not prove actual multi-tab keyboard/IME/AT behavior"
+  ]
+}

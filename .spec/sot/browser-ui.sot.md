@@ -670,6 +670,9 @@ closing children cannot issue window-level tab/address commands. Close uses the
 existing lifecycle release barrier; late-created revoked children close, and
 closing the last tab requests coordinated window close. Parent teardown drains
 all registered children; one active child's receipt is insufficient.
+Private tab receipts retain actual CEF browser IDs after close, per-tab fixed
+local route/navigation receipts and loss counts. Distinct UI labels alone do not
+prove distinct browsers or retained history. Missing IDs/receipts stay unknown.
 
 Ctrl+T/W/Tab/Shift+Tab/L, Ctrl+R/F5 and Alt+Left/Right share a bounded native intent
 queue from both Meari and CEF focus. Ctrl+Shift+Tab means previous tab. Repeated

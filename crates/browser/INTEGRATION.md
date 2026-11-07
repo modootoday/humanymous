@@ -12,7 +12,7 @@ entry stream must be ordered, complete, bounded and locally allowlisted; the
 current committed route and request/control epoch are rechecked before issuing
 the native history action. Stop invalidates outstanding entry visitors even when
 no document load is pending. Button disabled state is projected to both source
-and rendered native documents. Pure/document/native/actual GUI gates for this
+and rendered native documents. Native/actual GUI gates for this
 new slice are pending; the earlier executable preview does not contain it.
 
 Default pure validation subsequently passed30 tests, all-target check and strict
@@ -26,6 +26,13 @@ shared native shortcut commands from Meari and active CEF focus. Tab IDs never
 reuse; closing children retain capacity through before-close and lifecycle poll.
 All-child cleanup counts supplement the initial child's historical receipts.
 This multi-child source has not yet passed native compilation or a GUI pilot.
+
+Native-ui document source d75c351c passed42 tests plus all-target check/strict
+Clippy/fmt, with87 declared files unchanged. Retained source prepare/commit and
+explicit four-button disabled migration synchronize actual AX actions and layout,
+preserving input nodes, dirty address and focus. The39/2,40/1 and41/1 earlier scene
+failures remain separate in controls-scene-validation.json. These document tests
+do not initialize CEF or qualify an OS screen reader, native keyboard or IME.
 
 The actual controls pilot must start with a fresh synthetic profile and owner
 newtab, observe Back/Forward disabled, open Version, return with Back, restore

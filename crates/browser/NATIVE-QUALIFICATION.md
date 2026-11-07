@@ -10,7 +10,10 @@ owns the Meari/CEF integration. CI owns the existing provisioning runner.
 
 Newer UI-32/33 history/tab/shortcut source ce05c45e passed30 default pure tests,
 default check/strict Clippy and formatter with explicit173008f0 graph overlay.
-It has not passed native-ui scene, CEF compilation or an actual multi-tab pilot.
+Subsequent d75c351c passed42 native-ui document tests, check/strict Clippy/fmt with
+87 declared files unchanged. Required native document AX actions and retained
+input/focus passed after three preserved scene failures. CEF compilation and an
+actual multi-tab GUI pilot remain unexecuted for this new lifecycle source.
 The old single-child ec4 results below do not qualify the new lifecycle source.
 
 Windows x64 sourceec4 passed native compilation, desktop synthetic protocol4,

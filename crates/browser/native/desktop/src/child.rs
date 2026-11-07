@@ -13,6 +13,7 @@ pub struct State {
     pub commands: Option<crate::tab_sessions::Queue>,
     pub surface_error: Option<&'static str>,
     pub browser: Option<Browser>,
+    pub browser_id: Option<i32>,
     pub navigation: crate::navigation::State,
     pub created: bool,
     pub creation_requested: bool,
@@ -275,6 +276,7 @@ wrap_life_span_handler! {
             let mut close = false;
             if let Ok(mut state) = self.state.lock() {
                 state.created = true;
+                state.browser_id = browser.as_ref().map(|browser|browser.identifier());
                 state.browser = browser.clone();
                 close = state.revoked;
                 state.late_created_after_cancel = close;

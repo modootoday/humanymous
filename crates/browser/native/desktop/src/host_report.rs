@@ -2,6 +2,7 @@
 use crate::native;
 #[derive(Default, serde::Serialize)]
 pub(super) struct Report {
+    pub(super) tabs: Vec<TabReceipt>,
     pub(super) tabs_created: usize,
     pub(super) tabs_before_close: usize,
     pub(super) tabs_incomplete: usize,
@@ -47,12 +48,34 @@ pub(super) struct Report {
     pub(super) page_allocations: Vec<([i32; 4], u32)>,
 }
 
+#[derive(serde::Serialize)]
+pub(super) struct TabReceipt {
+    tab_id: usize,
+    browser_id: Option<i32>,
+    creation_requested: bool,
+    created: bool,
+    before_close: bool,
+    committed_route: Option<&'static str>,
+    navigation_receipts: Vec<crate::navigation::Receipt>,
+    navigation_receipts_dropped: u64,
+}
+
 impl Report {
     pub(super) fn observe_tabs(&mut self, tabs: &[crate::child::Shared]) -> std::io::Result<()> {
         for tab in tabs {
             let tab = tab
                 .lock()
                 .map_err(|_| std::io::Error::other("tab state poisoned"))?;
+            self.tabs.push(TabReceipt {
+                tab_id: tab.tab_id,
+                browser_id: tab.browser_id,
+                creation_requested: tab.creation_requested,
+                created: tab.created,
+                before_close: tab.closed,
+                committed_route: tab.navigation.committed().map(|(_, route)| route.url()),
+                navigation_receipts: tab.navigation.receipts.clone(),
+                navigation_receipts_dropped: tab.navigation.receipts_dropped,
+            });
             if tab.creation_requested || tab.created {
                 self.tabs_created += 1;
                 if tab.closed {
