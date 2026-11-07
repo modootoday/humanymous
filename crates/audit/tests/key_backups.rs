@@ -308,85 +308,97 @@ fn retained_retirement_refuses_missing_inventory_foreign_authority_and_expired_g
 #[test]
 fn retained_retirement_sharing_fault_requires_fresh_exact_reconciliation() {
     use std::os::windows::fs::OpenOptionsExt;
-    let temp = Temp::new();
-    let path = temp.sub("archive");
-    let control_path = temp.sub("control");
-    let retention_path = temp.sub("retention");
-    let mut store = inventory(&path, BackupBootstrap::New);
-    let mut control = authority(&control_path, LedgerBootstrap::New);
-    let mut retainer = NativeAnchorRetainer::open(
-        &retention_path,
-        owner(&retention_path),
-        scope(),
-        control.public_key(),
-        control.anchor(),
-        true,
-    )
-    .unwrap();
-    let digest = store.create(&sealed(), b"fixture-pass").unwrap().digest;
-    let file = path.join(format!("{digest}.sealed"));
-    let prior = proposal(&digest, 54);
-    let grant = retained(&mut control, &mut retainer, &prior);
-    let blocker = fs::OpenOptions::new()
-        .read(true)
-        .share_mode(1)
-        .open(&file)
+    for already_unlinked in [false, true] {
+        let temp = Temp::new();
+        let path = temp.sub("archive");
+        let control_path = temp.sub("control");
+        let retention_path = temp.sub("retention");
+        let mut store = inventory(&path, BackupBootstrap::New);
+        let mut control = authority(&control_path, LedgerBootstrap::New);
+        let mut retainer = NativeAnchorRetainer::open(
+            &retention_path,
+            owner(&retention_path),
+            scope(),
+            control.public_key(),
+            control.anchor(),
+            true,
+        )
         .unwrap();
-    assert!(store.retire_retained(&control, grant, 110).is_err());
-    assert!(file.exists());
-    let pin = store.anchor().clone();
-    drop(blocker);
-    drop(store);
-    let mut store = inventory(&path, BackupBootstrap::Pinned(&pin));
-    assert!(matches!(&store.list().unwrap()[0].status,
+        let digest = store.create(&sealed(), b"fixture-pass").unwrap().digest;
+        let file = path.join(format!("{digest}.sealed"));
+        let prior = proposal(&digest, 54);
+        let grant = retained(&mut control, &mut retainer, &prior);
+        let blocker = fs::OpenOptions::new()
+            .read(true)
+            .share_mode(1)
+            .open(&file)
+            .unwrap();
+        assert!(store.retire_retained(&control, grant, 110).is_err());
+        assert!(file.exists());
+        let pin = store.anchor().clone();
+        drop(blocker);
+        drop(store);
+        let mut store = inventory(&path, BackupBootstrap::Pinned(&pin));
+        assert!(matches!(&store.list().unwrap()[0].status,
         BackupStatus::Retiring { proposal } if proposal == &prior));
-    assert!(
-        control
+        assert!(
+            control
+                .authorize_retained_action(
+                    ApprovalRequest {
+                        proposal: &prior,
+                        approvals: &approvals(&prior),
+                        now: 110
+                    },
+                    &mut retainer,
+                    RetentionRequirement::FileSynced,
+                )
+                .is_err()
+        );
+        let fresh = proposal(&digest, 55);
+        let grant = retained(&mut control, &mut retainer, &fresh);
+        let mut wrong_prior = prior.clone();
+        wrong_prior.operation_id = hex::encode([56; 32]);
+        assert!(
+            store
+                .reconcile_retained(&control, &wrong_prior, grant, 110)
+                .is_err()
+        );
+        assert!(file.exists());
+        let mut fresh = proposal(&digest, 57);
+        if already_unlinked {
+            // Model the authenticated on-disk state of a crash after unlink. This
+            // is an explicit native fixture, not proof of an actual power failure.
+            fs::remove_file(&file).unwrap();
+            drop(store);
+            store = inventory(&path, BackupBootstrap::Pinned(&pin));
+            assert!(store.read(&digest, b"fixture-pass").is_err());
+            assert!(matches!(&store.list().unwrap()[0].status,
+            BackupStatus::Retiring { proposal } if proposal == &prior));
+        }
+        fresh.issued_at = 200;
+        fresh.expires_at = 260;
+        let grant = control
             .authorize_retained_action(
                 ApprovalRequest {
-                    proposal: &prior,
-                    approvals: &approvals(&prior),
-                    now: 110
+                    proposal: &fresh,
+                    approvals: &approvals(&fresh),
+                    now: 210,
                 },
                 &mut retainer,
                 RetentionRequirement::FileSynced,
             )
-            .is_err()
-    );
-    let fresh = proposal(&digest, 55);
-    let grant = retained(&mut control, &mut retainer, &fresh);
-    let mut wrong_prior = prior.clone();
-    wrong_prior.operation_id = hex::encode([56; 32]);
-    assert!(
-        store
-            .reconcile_retained(&control, &wrong_prior, grant, 110)
-            .is_err()
-    );
-    assert!(file.exists());
-    let mut fresh = proposal(&digest, 57);
-    fresh.issued_at = 200;
-    fresh.expires_at = 260;
-    let grant = control
-        .authorize_retained_action(
-            ApprovalRequest {
-                proposal: &fresh,
-                approvals: &approvals(&fresh),
-                now: 210,
-            },
-            &mut retainer,
-            RetentionRequirement::FileSynced,
-        )
-        .unwrap();
-    let (receipt, authorization) = store
-        .reconcile_retained(&control, &prior, grant, 210)
-        .unwrap();
-    assert_eq!(authorization.operation_id, fresh.operation_id);
-    assert!(!file.exists());
-    let pin = receipt.anchor;
-    drop(store);
-    let store = inventory(&path, BackupBootstrap::Pinned(&pin));
-    assert!(matches!(&store.list().unwrap()[0].status,
+            .unwrap();
+        let (receipt, authorization) = store
+            .reconcile_retained(&control, &prior, grant, 210)
+            .unwrap();
+        assert_eq!(authorization.operation_id, fresh.operation_id);
+        assert!(!file.exists());
+        let pin = receipt.anchor;
+        drop(store);
+        let store = inventory(&path, BackupBootstrap::Pinned(&pin));
+        assert!(matches!(&store.list().unwrap()[0].status,
         BackupStatus::Retired { operation_id } if operation_id == &prior.operation_id));
+    }
 }
 
 #[test]

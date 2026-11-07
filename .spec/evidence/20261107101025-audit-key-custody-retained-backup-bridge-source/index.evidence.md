@@ -37,6 +37,12 @@ restoration leaves Active. Recovery also requires rejection of reauthorizing
 the spent prior operation before obtaining a different fresh grant. These are
 authored native cases within the same two test functions, not additional passes.
 
+The Windows case additionally covers both Retiring/file-present and an explicit
+Retiring/file-already-unlinked fixture. The latter uses actual owned-file unlink,
+reopens at the authenticated Retiring pin, refuses restore and requires fresh
+exact reconciliation. It models post-unlink disk state; it does not claim an
+actual process crash or power-loss observation. Test-function count is unchanged.
+
 ## How to read it
 
 Independent implementation review after aa655e7b found no new P0/P1 and judged
