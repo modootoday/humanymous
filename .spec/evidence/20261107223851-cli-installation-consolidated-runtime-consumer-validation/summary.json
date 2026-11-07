@@ -1,0 +1,125 @@
+{
+  "schema": "humanymous.cli-runtime-consumer-validation/1",
+  "status": "passed-scoped-consolidated-runtime-consumer",
+  "source_sha": "8e51e55881c5e3d6389ab2bb853d6236748805ca",
+  "consumer_commit": "ab08d065fb878fd30917ebc497d73977855fd849",
+  "consumer_format_commit": "b4cd31ec54c6f4ceca1be4ee0cdc2e0e68f7baba",
+  "venue": "local Windows x86_64-pc-windows-msvc",
+  "toolchain": "Rust1.99.1 edition2024",
+  "overlay": false,
+  "retry": false,
+  "fmt_scope": "exact17frozenconsumerfiles,edition2024,skip_children=true",
+  "normal_runtime_features": [
+    "native-security"
+  ],
+  "normal_gateway_enabled": false,
+  "check_profiles": [
+    "all-targets no-default-features",
+    "all-targets all-features"
+  ],
+  "strict_clippy": "all-targets all-features -D warnings",
+  "tests": {
+    "historical_names_exactly_matched": true,
+    "inventory": 11,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 15
+  },
+  "steps": [
+    {
+      "name": "fmt",
+      "exit": 0
+    },
+    {
+      "name": "normal-tree",
+      "exit": 0
+    },
+    {
+      "name": "metadata",
+      "exit": 0
+    },
+    {
+      "name": "check-normal",
+      "exit": 0
+    },
+    {
+      "name": "check-all",
+      "exit": 0
+    },
+    {
+      "name": "clippy",
+      "exit": 0
+    },
+    {
+      "name": "list",
+      "exit": 0
+    },
+    {
+      "name": "pure11",
+      "exit": 0
+    }
+  ],
+  "clock": {
+    "source": "8e51e55881c5e3d6389ab2bb853d6236748805ca",
+    "start_utc": "2026-11-08T07:36:34.8638504+09:00",
+    "work_deadline_utc": "2026-11-08T07:43:04.8638504+09:00",
+    "cleanup_deadline_utc": "2026-11-08T07:44:04.8638504+09:00"
+  },
+  "work_ended": "2026-11-08T07:38:23.053281+09:00",
+  "cleanup_utc": "2026-11-08T07:38:43.6293686+09:00",
+  "lease_removed": true,
+  "all_handles_terminal": true,
+  "target_returned": true,
+  "selected_packages": 132,
+  "coverage": {
+    "local_packages": 5,
+    "local_manifests": 5,
+    "expected_rust_files": 471,
+    "expected_all_local_root_files": 546,
+    "recorded_all_local_root_files": 546,
+    "missing_paths": [],
+    "exact_input_present": true,
+    "canonical_mismatches": 0,
+    "counts": [
+      {
+        "category": "local",
+        "files": 543
+      },
+      {
+        "category": "registry",
+        "files": 6666
+      },
+      {
+        "category": "root",
+        "files": 3
+      },
+      {
+        "category": "toolchain",
+        "files": 66
+      }
+    ]
+  },
+  "before_files": 7278,
+  "after_files": 7278,
+  "difference_rows": 0,
+  "environment_variables": 17,
+  "environment_unchanged": true,
+  "source_archive_sha256": "9b95adafbb965d8abb2b33605751c2057d4fee327ddb0aaa291eeada4788141e",
+  "before_manifest_sha256": "d9aab3dbc364bbc1b7f778c0ebe00d399d9b09daa44da979a2b6610316b7e9c7",
+  "after_manifest_sha256": "d9aab3dbc364bbc1b7f778c0ebe00d399d9b09daa44da979a2b6610316b7e9c7",
+  "environment_sha256": "776025a055b6041a131858f982d724e27b0267c5852e768e1d13441150e0eb6d",
+  "raw_inventory_sha256": "623f92bd6f6fc3bc4473675a6cf99cca1ba5ffc24f4914b3f6daf9c2d7e2bcff",
+  "raw_receipt": "evidence:root/20261107223854",
+  "native_preparation": "Unsupported",
+  "actual_service_validation": "NOT_RUN",
+  "product_qualified": false,
+  "limits": [
+    "Compile/check/Clippy of other target bodies is not their actual execution; only exact11reviewedpurelibrarytests ran.",
+    "Default/normal dependency tree exposes Runtime native-security only; service contexts use explicit all-feature consumer selection.",
+    "No SCM/account/service/listener/owned-process/Docker/CI pilot; compiler and pure harness processes only.",
+    "No native proof, Ready, real service lifecycle, audit drain/flush, container shipping or product e2e qualification.",
+    "Selected dependency/tool/config/environment closure is recorded, not a complete OS image census."
+  ]
+}

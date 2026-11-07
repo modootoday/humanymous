@@ -409,6 +409,16 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Consolidated Runtime consumer source8e51e558 passed allocated immutable Windows
+validation: [[evidence:root/20261107223851]]. Exact17fmt-first, normal Runtime
+native-security-only tree, separate no-default/all-feature all-target checks,
+strict Clippy and exact historical11pure tests (15filtered) passed. All546local/
+root Git joins,7278selected inputs and17environment variables match before/after.
+Work108.19s, actual marker cleanup128.77s within390/450original budget; all handles
+and exclusive target returned. No overlays/retries/source fix/native/service/
+account/process pilot. Actual native preparation/service/container gates remain
+open. Older NOT_RUN notes below are historical authoring state, not this result.
+
 Root subsequently authorized scoped rustfmt on exactly the17frozen ab08d065
 consumer files. rustfmt edition2024/skip_children=true and its check passed;
 4files changed formatting only. runtime-slice02-formatted.json under
