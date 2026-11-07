@@ -1,0 +1,204 @@
+{
+  "source": "319a5992d2c0e6fc19c4b7c05c2a0220454123b7",
+  "rustSource": "14f3fbdd",
+  "venue": "ordinary-user Windows local",
+  "slot": "C",
+  "passed": 140,
+  "rawIgnored": 5,
+  "zeroTestHarnesses": 2,
+  "harnesses": [
+    {
+      "target": "humanymous_audit",
+      "discovered": 82,
+      "passed": 81,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "storage::wal::tests::process_lock_probe"
+      ],
+      "requiredParents": [
+        "storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"
+      ],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 23.03
+    },
+    {
+      "target": "audit_control_retainer",
+      "discovered": 0,
+      "passed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": [],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.0
+    },
+    {
+      "target": "audit_witness",
+      "discovered": 0,
+      "passed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": [],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.0
+    },
+    {
+      "target": "checkpoint_parity",
+      "discovered": 2,
+      "passed": 2,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": [],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 3.21
+    },
+    {
+      "target": "control_operations",
+      "discovered": 21,
+      "passed": 21,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": [],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 90.45
+    },
+    {
+      "target": "durable_witness",
+      "discovered": 14,
+      "passed": 13,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "child_witness_probe"
+      ],
+      "requiredParents": [
+        "witness_process_lifetime_and_interrupted_recovery"
+      ],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 9.65
+    },
+    {
+      "target": "key_backups",
+      "discovered": 11,
+      "passed": 10,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "child_retire_without_pin_acknowledgement"
+      ],
+      "requiredParents": [
+        "crash_reconcile_preserves_consumed_authorization"
+      ],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 27.28
+    },
+    {
+      "target": "key_custody",
+      "discovered": 12,
+      "passed": 10,
+      "rawIgnored": 2,
+      "ignoredNames": [
+        "child_interrupted_writer",
+        "child_lock_probe"
+      ],
+      "requiredParents": [
+        "competing_process_cannot_load_or_create",
+        "process_exit_releases_lock_and_rotation_pending_requires_recovery"
+      ],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 45.37
+    },
+    {
+      "target": "merkle_parity",
+      "discovered": 1,
+      "passed": 1,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": [],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.19
+    },
+    {
+      "target": "record_parity",
+      "discovered": 1,
+      "passed": 1,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": [],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.09
+    },
+    {
+      "target": "verification_parity",
+      "discovered": 1,
+      "passed": 1,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": [],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 2.02
+    }
+  ],
+  "sourceFiles": 128,
+  "sourceHashDriftIndicators": 0,
+  "pathInventoryDrift": 2,
+  "outerMarkerLeaks": 0,
+  "inventoryClassification": {
+    "observedPaths": 128,
+    "observedHashDrift": 0,
+    "newPaths": [
+      {
+        "path": "crates/test-support\\src\\parent_context.rs",
+        "side": "=>",
+        "sha256": "bbd2ba995c6a9ef7167ce88ab1bc86f52a3bd0aad56bdc8170776fd3e67dea93"
+      },
+      {
+        "path": "crates/test-support\\src\\parent_context\\tests.rs",
+        "side": "=>",
+        "sha256": "51d5fcfba7336cb7aa1cfeb0e9d115f08a48a087621b0491fa9c5780de286b18"
+      }
+    ],
+    "compiledDepfileMentionsParentContext": 0,
+    "newFilesWiredInLib": 1,
+    "interpretation": "Two new parent_context Rust paths appeared during batch, absent actual Audit target depfiles. Captured128 paths including test-support/lib.rs before/after have identical hashes. Module activation changed lib.rs AFTER closing snapshot; current primary tree is a NEW candidate not qualified by140. First metadata attempt incorrectly called currentlib unwired despite newFilesWiredInLib1; preserved and corrected here. No broad recursive inventory zero-drift claim.",
+    "closingLibIdentity": {
+      "before": "f6d73bbafa33375998c6f340cc6311ed91c728600308974dd97b67ee2c218e92",
+      "after": "f6d73bbafa33375998c6f340cc6311ed91c728600308974dd97b67ee2c218e92",
+      "current": "c452fc623e9ab67d11745d6b3866c49283957796347f7173cf27365d4b795bac",
+      "fullSnapshotWritten": "2026-11-07T12:22:53.67396Z",
+      "currentLibWritten": "2026-11-07T12:23:11.6075517Z"
+    }
+  },
+  "terminal": "session95952 exit0",
+  "scope": "full audit package, not workspace/native protected profiles/product e2e/remote independence/bounded memory"
+}

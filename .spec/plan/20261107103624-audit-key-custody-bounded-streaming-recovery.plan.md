@@ -183,11 +183,28 @@ This mirrors existing bounded-object WitnessRecoveryPlan semantics without
 materializing full records/checkpoints. Legacy candidate Report counts remain
 compatible; new receipts separately disclose physical versus virtual work.
 Phase B streams record authentication and Merkle frontier construction. Use at
-most64 hash slots plus one current record and previous linear hash. A second
+most64 hash slots plus one current record and ONE previous raw hash string bounded
+by the configured frame limit (up to4MiB in the proposed profile). A valid prefix
+hash is64 bytes, but malformed history can contain a larger record_hash before
+refusal. Root accepted explicitly accounting this extra live buffer/peak rather
+than truncating to64, inventing a new wire limit or skipping later cryptographic
+checks after the first record failure. The compatibility Scope remains the first
+successful prefix; actual continued attempts/successes remain separate. A second
 checkpoint cursor joins strictly increasing tree sizes to exact prefix linear
 and Merkle roots. Keep first base-checkpoint and first witness failures separately;
 finish all record checks and prioritize base failure before witness failure,
 matching frozen verification behavior. Checked counters prevent overflow.
+
+Read-only scanner composition uses an owner-private sealed Source with one reader
+per segment and a separate checkpoint reader, finite segment count and an
+unchanged check under the same nonextractable native lock. Never concatenate
+segments: an incomplete nonterminal frame must not join later bytes into a valid
+record. Root accepted this direction only for S1 diagnostic Reports, not
+VerifiedScan, healthy-owner publication or S2 authority. Native source production
+stays Unsupported until actual opened-handle/reopened-path identity is accepted;
+no caller boolean, path/mtime surrogate or unchecked provider may stand in for
+that boundary. A native helper/dependency edge requires the owning root/native
+decision and qualification; Audit introduces none independently.
 
 Review condition: keep a separate COMPATIBILITY accumulator for error priority
 and historical Scope snapshots, distinct from actual interleaved work counters.
@@ -399,6 +416,16 @@ refactoring. Residual same-owner modification and O(history) proof I/O are expli
 Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
+
+Captured319a5992 (Rust14f3) full audit package at allocated C actually passed140,
+failed/filter/measured0;5 exact ignored helpers and2 zero binaries excluded,
+11 single summaries and all named parents reconcile. Raw121350/full-*, public
+122437. Captured128 path hashes unchanged; two new uncompiled parent_context
+sources appeared and test-support/lib.rs activated them AFTER closing snapshot.
+Current later dependency source is not qualified by140. Original mistaken derived
+unwired-current classification is preserved/corrected; no broad inventory0 claim.
+Session95952 terminal/C returned. Focused11 overlap140. No protected/hosted/
+product/complete-S1/128MiB or production S2/S3 qualification.
 
 Exact14f3fbdd first-attempt allocated A check/strict Clippy and11 unique Rust tests
 actually pass:verification7/75filtered, Go verifier1/840rows, record1/92rows and

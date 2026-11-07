@@ -1,5 +1,18 @@
 # Sealed key compatibility integration
 
+## Captured full audit regression140, later dependency activation excluded
+
+Root C full package all-target locked tests at319a5992 (Rust14f3) passed140;
+failed/filter/measured0,5 named ignored helpers excluded,2 zero bins excluded.
+11 single outer summaries/required parents reconcile, no child marker leakage.
+Actual WAL/retained custody/backup/witness regressions ran. Evidence122437,
+raw121350/full-*. Captured128 path hashes unchanged;2 new parent_context sources
+were not in actual Audit depfiles. test-support/lib.rs activated that module
+AFTER the closing snapshot and changed hash; later primary source is not this
+140 proof. Broad recursive inventory0 is NOT claimed. Derived classification
+mistake/correction retained. Session95952 terminal/C returned. Focused11 overlap
+140, not151unique; no protected/hosted/product/bounded-memory or whole-S1 claim.
+
 ## Latest incremental diagnostic qualification
 
 Exact14f3fbdd passed first-attempt all-target locked check/strict Clippy and11

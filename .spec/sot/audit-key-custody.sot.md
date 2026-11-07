@@ -33,18 +33,23 @@ for incremental diagnostic checking,14f3fbdd, passed scoped check/strict Clippy
 and11 focused Rust tests in [[evidence:root/20261107121521]], with128-path zero
 drift. Shared checks, bounded hash/signature entrypoints and test-only compatibility/
 work accumulator source is [[evidence:root/20261107120913]]. No actual native/EOF/
-source verification or production consumer is wired; full current audit remains
-NOT_RUN.
+source verification or production consumer is wired. Captured319a5992 full audit
+regression passed140 in [[evidence:root/20261107122437]], with5 exact helpers and
+2 zero binaries excluded.128 captured path hashes unchanged;2 new uncompiled
+parent_context paths appeared, and test-support/lib.rs activated them AFTER the
+closing snapshot. No broad recursive inventory0 or qualification of that later
+dependency activation is claimed. Current primary source therefore differs from
+the captured full-regression closure; new dependency tests require their own proof.
 The preceding qualified source
 c26a5b53 plus explicit depth:usize correction and shared signals56a2 passed
 scoped check/Clippy and26 focused Rust tests in
 [[evidence:root/20261107120052]]. The125-path closure had zero drift. Full current
-package regression remains NOT_RUN. Do not present a historical full package
+package regression was later run only at the captured closure above. Do not present a historical full package
 result as current-source success after these cryptographic/framing changes.
 
 | Obligation | Authoritative observed state | Still required |
 |---|---|---|
-| Sealed custody, vault and native durable state | Historical ordinary-user Windows full audit115 passes atf88e76f4, [[evidence:root/20261107112110]] | Fresh current-source regression, supported OS/protected profiles and actual composition qualification |
+| Sealed custody, vault and native durable state | Captured ordinary-user Windows full audit140 at319a5992, [[evidence:root/20261107122437]]; later dependency activation excluded | Supported OS/protected profiles, later source/dependency qualification and actual composition qualification |
 | Canonical/NFC bytes | f88 focused vectors92 canonical/13464 Unicode, [[evidence:root/20261107111706]] | Preserve admitted-input bytes as later bounded consumers replace legacy paths |
 | Bounded Merkle primitives | Scoped9 tests/check/Clippy at9c5f4e7c plus test-expression correction, [[evidence:root/20261107114310]] | Operational no-history recovery/proofs; legacy Tree still retains borrowed leaves and subtree memo |
 | Frame and predecode limits | Focused framing13 passed, [[evidence:root/20261107120052]]; source [[evidence:root/20261107115240]] | Actual bounded inspector wiring and native fault/capacity evidence; preflight is currently test-compiled only |
