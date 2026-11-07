@@ -2,6 +2,60 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/node/Dockerfile.pilot",
+  "sha256": "84e452cd5f4657afae121fbe9fe0fd1b3ee53333bcf464aa5037606740ae6aa4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full pinned Node/Bun/Rust image, workspace source and authority build, generated upstream host preload, host test compilation, offline runtime selection and UID65532 entrypoint. Public Node reference labels component test image, not production app or full browser deployment. Dockerfile comment requires caller isolation/resource flags; source alone does not prove effective controls or fresh execution.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "adapters/node/Dockerfile.pilot.dockerignore",
+  "sha256": "bf3c5fe2dc0a7039edef1e188051037ac34409187d58c46128455dd6e723c124",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read deny-by-default context with explicit source/member inputs and package metadata plus target/node_modules/Git/private-evidence/native-binary exclusions. Public Node reference distinguishes build/test container from production runtime; filtering source context does not establish final-image confidentiality or runtime qualification.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "adapters/nginx/legacy-njs/README.md",
+  "sha256": "1d8b57d2aa1f99334aa1522bbf386f6823caa52161edb38952ace4750bfbc330",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full historical mock-only protocol guide, stale pre-move commands, five-header and64KiB bounds, root worker and fixture credential caveats. Public nginx reference explicitly distinguishes archive from current native instructions and shared authority. Old commands are not endorsed or executed and historical results do not qualify Rust.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
+  "source": "adapters/nginx/legacy-njs/INTEGRATION.md",
+  "sha256": "96ed31cadb14247645d043fc52a7edc29433243137a749769894455eba521c90",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read archived Node-only schema limitation and mock nginx-pilot protocol integration request. Public nginx reference identifies those assumptions as historical, superseded by current explicit nginx profile rather than silently treating archive as current shared-service contract. No old foreign-language source edited.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
+  "source": "adapters/nginx/legacy-njs/compose.yaml",
+  "sha256": "188063a6dd6a1fc09ba081b31b4162e97d049808aae177e9f6dfc796f9faaa65",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read historical pinned Python mock fixture/nginx images, local mounts/IPC volume and internal lab network. Current public nginx reference excludes this mock topology from native/full deployment qualification and preserves root/fixture limitations. No historical Compose execution repeated.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
+  "source": "adapters/nginx/legacy-njs/nginx.conf",
+  "sha256": "e809de0ccb7699edb0a1a45b208f80021ea229d654faf7e85420ec9692083557",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read root worker, njs gate,64KiB body and time bounds, internal mock IPC with fixed fixture credential and five-header origin projection, no proxy retry/buffering and X-Accel restrictions. Public nginx reference labels all as archived mock conditions, not secure current native provisioning, authenticated shared authority or production support.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
   "source": "crates/nginx-adapter/src/native.rs",
   "sha256": "c65131ac337558b87566eb9211d7c36ef823b728f337c4f59de83a705404393d",
   "reviewer": "codex/rust-pages",

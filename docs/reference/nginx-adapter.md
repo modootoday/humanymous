@@ -95,3 +95,12 @@ paths, not the Node adapter's uniform input-error mapping or generic Draft v0
 status rules. Pool cleanup aborts owned tasks and deletes owned timers in source;
 actual cancellation, finalization, reload and ABI lifetime safety need native
 execution and review against the exact engine/build flags.
+
+## Historical njs mock fixture
+
+The archived njs fixture is a different mock protocol and authority. Its root
+worker, fixed fixture credential, five-header projection and 64 KiB body limit
+are historical test conditions, not current native deployment instructions.
+Archived commands and old Node-only schema assumptions do not describe the
+current Rust nginx profile. Do not infer native peer authentication, audit,
+collector recovery or production qualification from that fixture's old results.

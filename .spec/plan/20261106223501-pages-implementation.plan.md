@@ -680,3 +680,12 @@ Initial16test run:15pass/1failure (fixture existing _data directory); fixed fixt
 create_dir_all, rerun16pass0fail, scoped lib Clippy-Dwarnings pass. Current rebuilt
 source command88pages/errors0. No Jekyll/Docker/browser/native service execution.
 The new check is not arbitrary YAML or render/AT authority.
+
+## Component image and historical archive review
+
+Read two Node Docker context files and four archived nginx metadata/config files.
+Added public component-image versus production and legacy mock versus native
+contract distinctions; pinned six manual source reviews. Archived commands/token/
+root conditions remain historical, not executed or newly authored foreign code.
+CI42348518353 queued at63f69ae observed; ancestry excludes51f5d1c nav guard, so
+current88 source/build not qualified by it. No duplicate dispatch or local runtime.

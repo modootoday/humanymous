@@ -129,3 +129,13 @@ loader import success and provenance hashes do not establish release-qualified
 OS/architecture/runtime tuples. A source-bound qualification receipt and actual
 authority/origin, archive and platform gates remain required; no npm publication
 or generally supported installation is implied here.
+
+## Component container boundary
+
+The Node pilot image contains pinned Node/Bun hosts, Rust build inputs, generated
+preload glue and compiled host tests plus the actual authority executable. Its
+entrypoint runs the native host test driver; it is not an application runtime
+image or a full browser deployment. The Dockerfile selects a non-root UID, but
+network isolation, read-only filesystem and resource bounds must also be applied
+and verified by the caller. Copying those settings into a test description does
+not establish that they were effective in a particular run.
