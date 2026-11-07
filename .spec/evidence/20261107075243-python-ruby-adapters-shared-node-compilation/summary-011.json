@@ -1,0 +1,29 @@
+{
+  "scope": "Allocated immutable Unix compile and receipt-pure-only batch",
+  "sourceSha": "c5de4ae54f2ca18a0ffff46ec22718988d957fc7",
+  "archiveSha256": "ec3ff6ef53e674bb799c1d0523ddcb821e638cc91352fe42e0e705ea6eee4a5f",
+  "archiveBytes": 66529280,
+  "sourceManifestRows": 2302,
+  "sourceManifestBeforeAndAfterSha256": "eb677b50ff40a44ad2a46890d93f6a3f16f81c09164d3ddd04bcd6de8fa64b30",
+  "closureExitCode": 0,
+  "actorUid": 1000,
+  "environment": "REA-Ubuntu WSL native; existing python-native target; locked offline dependencies; jobs1/incremental0; no package installation",
+  "admission": {"commitPercent":80,"freePhysicalGiB":32.42},
+  "commands": [
+    {"id":"host-pilot-all-targets-check","status":"FAIL","exitCode":101,"reason":"E0433: common HTTP case extraction omitted the parent http module import; unresolved uses at lines114 and303."},
+    {"id":"host-pilot-all-targets-clippy","status":"NOT_RUN","exitCode":null},
+    {"id":"receipt-pure-tests","status":"NOT_RUN","exitCode":null,"requiredTests":2,"executionCounts":null}
+  ],
+  "batchExitCode":101,
+  "privateWindowsTeeLogSha256":"011faa867062af139ef9241e1450f4b48437dae17d646251e2d0b2eb6f855b98",
+  "privateCliOrchestrationSha256":"3e4da0e6df8f40d7380fbc1ab3432099e5f215765d04394f55ef517b148edbcb",
+  "followup":"Primary source adds the missing super::http import only. Original immutable source is untouched; corrected source has not been compiled. A new checkpoint and renewed bounded allocation are required.",
+  "ownedCleanup":"Batch exited101 at first command; no later command or process pilot started. Allocation B returned, no owned active workload.",
+  "frameworkOrNativeModuleImported":false,
+  "controllerExecuted":false,
+  "serverExecuted":false,
+  "sharedLifecycle":"NOT_ACCEPTED refusal unchanged",
+  "wholeProductQualified":false,
+  "productionBrowserEvidence":false,
+  "historicalWsgi28Evidence":"summary010 remains bound to7842b6a8 and does not qualify this changed source."
+}

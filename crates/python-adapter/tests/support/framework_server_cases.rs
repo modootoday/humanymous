@@ -1,6 +1,7 @@
 //! One actual HTTP scenario implementation shared by WSGI and ASGI harnesses.
 use super::{
     authority_fixture::audit_log,
+    http,
     wsgi_authority::{Gate, Running},
     wsgi_host::{Directory, Host, configuration, executable, request, stop},
 };

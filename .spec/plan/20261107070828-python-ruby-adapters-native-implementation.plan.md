@@ -481,3 +481,20 @@ Starlette/FastAPI use on. No Django lifespan qualification is inferred.
 Formatting passed. New files, shared case extraction and all changed fixture
 bytes remain uncompiled/unexecuted pending root allocation. Existing WSGI28
 success remains historical7842b6a8 evidence. No runtime/allocation is held.
+
+### First allocated refactor check failed; primary import correction
+
+After three unchanged blocker revalidations, wrote private handover and released
+the lane. Root allocation arrived before any blocked goal-status mutation; goal
+stayed active and the same lane was reclaimed. B was explicitly compile/parser
+only. Admission80%commit/free32.42GiB passed. Sourcec5de4ae5 archive and2302-file
+before/after closure were identical. Actual all-targets check failed101/E0433:
+the extracted common cases omitted super::http at two uses. The batch stopped;
+Clippy and two receipt pure tests remain NOT_RUN. No controller/server/import/
+package/pilot or cleanup signal ran. B returned terminal101.
+
+Primary-only correction adds the missing parent http module import. No snapshot
+was edited; corrected source is formatted but not compiled. Summary011 preserves
+the first failure and private output hashes. New immutable checkpoint and renewed
+allocation are required. Shared lifecycle remains NOT_ACCEPTED; no historical
+WSGI28 or planned ASGI42 result is inferred for the changed source.

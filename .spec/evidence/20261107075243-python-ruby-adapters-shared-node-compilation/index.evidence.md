@@ -17,6 +17,7 @@ files:
   - {path: summary-008.json, sha256: b511ed53a3b304ec13377284924e276beb6a569345d5cc2fe299a60698f0bc57, bytes: 3114, store: repo}
   - {path: summary-009.json, sha256: ad1a83dfba2d2f953fdfe398fff5cc2b304a11ca949c3339d75b6d9e98e492b4, bytes: 2327, store: repo}
   - {path: summary-010.json, sha256: add5762fcb709a466af4976002d41bc46399f798d36539c7c44c3091606b39ec, bytes: 2763, store: repo}
+  - {path: summary-011.json, sha256: 6d7e8054f717f621803acd8ec7628e4332692cdc9830813a9c4ba94008717477, bytes: 1963, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -163,3 +164,15 @@ Source2254-file and reused private dependency manifests stayed unchanged before
 and after execution. The owned-process scan was empty and allocation B returned.
 The earlier failed attempt remains retained. WSL component success establishes
 neither hosted execution, production-browser evidence nor whole-product readiness.
+
+## Immutable refactored-source compilation found a missing import
+
+Summary011 records the renewed compile/parser-only allocation on exactc5de4ae5.
+Admission80%commit/free32.42GiB passed. Ordinary UID1000 all-targets check failed
+E0433: the shared case extraction omitted its parent http module import at two
+uses. The batch stopped with101; Clippy and the two receipt pure tests did not
+run. No controller, native framework import, server, package install or actual
+pilot ran. All2302source-file hashes stayed unchanged. B returned terminal101.
+The primary-only missing-import correction requires its own new checkpoint and
+retry; no passing result is inferred from formatting. Historical WSGI28 success
+remains tied to7842b6a8; shared lifecycle refusal remains NOT_ACCEPTED.
