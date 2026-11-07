@@ -13,6 +13,13 @@ rel:
 
 ## What was measured
 
+First allocated immutable8dbb attempt compiled with three private-interface
+warnings, then strict Clippy failed101 before any tests. Source fix narrows
+inspect and Diagnostic to the private scan module, matching the accepted sealed
+S1 boundary. No type widening/lint suppression or crypto behavior change. Original
+snapshot/logs remain in private evidence:root/20261107132346; corrected source
+requires a fresh immutable snapshot and the same bounded allocated checks.
+
 Source-only accepted private S1 Phase B. No Cargo workload; compilation, Clippy
 and tests NOT_RUN. Eight new pipeline tests authored, formatting/diff only. The
 same sealed Source/finite Limits/Control context runs complete Phase A then B.

@@ -16,12 +16,12 @@ struct Context<'scan, 'keys, 'cancel> {
     control: &'scan limits::Control<'cancel>,
 }
 
-pub(super) struct Diagnostic {
+struct Diagnostic {
     pub report: Option<Report>,
     pub work: Work,
 }
 
-pub(super) fn inspect(
+fn inspect(
     source: &impl source::Source,
     policy: &RecoveryPolicy<'_>,
     limits: &limits::Limits,
