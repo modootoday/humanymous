@@ -119,7 +119,7 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
                 .map_err(|e| e.to_string())?;
             Ok(success
                 && observed.as_ref().is_ok_and(|count| *count == expected)
-                && runtime::execution(&text, expected))
+                && runtime::execution(&text, expected, 0))
         })();
         if outcome == Ok(true) {
             report["test_counts"][&target]["passed"] = json!(expected);

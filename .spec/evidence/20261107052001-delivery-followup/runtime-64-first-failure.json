@@ -1,0 +1,59 @@
+{
+  "schema": "humanymous.delivery-runtime-first-failure/1",
+  "source_sha": "64f74c7ac64a8f5380172504bf73a8d03b961afc",
+  "source_kind": "immutable Git archive, no overlays",
+  "archive_sha256": "c9fce9b071a5553f40db0bd7a39ae52c90fba76586ba28bbe0079953b86f54ab",
+  "runner_exit_code": 0,
+  "fmt_exit_code": 0,
+  "check_exit_code": 101,
+  "first_failure": {
+    "code": "E0061",
+    "file": "scripts/ci/delivery/src/components/maintenance.rs",
+    "line": 122,
+    "cause": "Shared runtime execution summary function gained explicit filtered count; maintenance caller omitted third argument"
+  },
+  "not_run": [
+    "strict Clippy",
+    "test discovery",
+    "unit tests",
+    "policy"
+  ],
+  "tests_passed": null,
+  "source_fix": {
+    "state": "authored-uncompiled separate working source; old archive unchanged",
+    "file": "scripts/ci/delivery/src/components/maintenance.rs",
+    "sha256": "02d65157e0553f71f15c2ecc601bc09245eed43ee049f0a5dc80f37da80558ee",
+    "change": "explicit third argument0 preserves maintenance zero-filter requirement"
+  },
+  "closure": {
+    "source_files": 3083,
+    "source_file_differences": 0,
+    "registry_archives": 1122,
+    "registry_archive_differences": 0,
+    "tool_files": 4,
+    "tool_differences": 0,
+    "config_inputs": 7,
+    "config_differences": 0,
+    "environment_differences": 0,
+    "extracted_registry_sources_measured": false,
+    "whole_transitive_read_closure_verified": false
+  },
+  "terminal": {
+    "target_closed": true,
+    "owned_child_processes_remaining": 0,
+    "runner_complete": true,
+    "elapsed_seconds": 49.9937366
+  },
+  "process_closure": {
+    "live_processes": [],
+    "checked_pids": [
+      9964,
+      36432,
+      25960
+    ],
+    "target_lease_present": false
+  },
+  "private_index_sha256": "a332b495d6a57de458c848abceff707d4d7e38176cc27edc7a59472215606208",
+  "full_runtime_qualified": false,
+  "full_product_qualified": false
+}
