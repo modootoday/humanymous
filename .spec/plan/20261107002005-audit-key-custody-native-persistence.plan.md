@@ -3,7 +3,7 @@ id: plan:root/20261107002005
 title: Audit key custody native persistence
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T06:15:14Z
+updated: 2026-11-07T06:35:58Z
 rel:
   governs: [crates/audit/**]
   depends_on: [sot:root/audit-key-custody]
@@ -116,3 +116,31 @@ No runtime/authority/public production API or dependency delta. Next: runner
 owner reruns whole workspace against correction commit; audit then releases
 gate-edge to runtime. Remaining M3 requirements above are unchanged, not closed
 by this test-only correction.
+
+## Accepted validation placement and remaining execution
+
+Root collected all13 owner views and finalized the user-directed execution policy.
+The sole policy canon is [[sot:root/program-roadmap]] with implementation contract
+[[sot:root/delivery]]; audit consumes those references rather than replicating
+workflow lane/parallelism/storage logic. The earlier remote-parallelism opinion
+was a proposal, now superseded by that accepted policy. This two-document update
+uses root's explicit docs-only misc-lane exception; runtime's gate-edge/P0 source
+ownership is unchanged.
+
+Local candidates are resource-bounded deterministic pure policy/canonical/
+verification/Merkle units. Actual audit ACL/files/locks/process/IPC/crash/witness/
+backup/sink tests belong to hosted runtime qualification, including tests housed
+under a library module. No local runtime/build/browser/Docker or broad private
+spec scan was started for this update. Existing5528d74 targeted results and strict
+helper/parent evidence remain historical source-bound facts, not qualification
+of the next integrated candidate.
+
+Still not_run for the next source-closed candidate: hosted full audit/native
+cross-OS and downstream runtime/authority qualification, complete product Docker
+and deployment/isolation requirements listed above. CI owner supplies hosted DAG;
+root fixes candidate/dispatch and gathers sanitized source-bound results; runner/
+lab owners retain exact helper and actual process evidence. Unknown/ignored,
+missing or unsupported gates stay fail-closed. Required private originals not
+retrieved through an approved private channel must be recorded as unavailable.
+No paid resource creation, duplicated dispatch, gate removal or production API
+change is authorized by this documentation-only placement update.

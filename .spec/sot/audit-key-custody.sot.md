@@ -3,7 +3,7 @@ id: sot:root/audit-key-custody
 title: Audit key custody
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T06:15:14Z
+updated: 2026-11-07T06:35:58Z
 verify: [cargo test -p humanymous-audit --locked]
 rel:
   governs: [crates/audit/**]
@@ -183,6 +183,35 @@ do not replace Docker product e2e or independent witness/admin qualification.
 ## Why
 
 ## Verification
+
+### Accepted execution-policy reference
+
+Execution placement, scheduling, free-runner storage/privacy and readiness policy
+are canonical only in [[sot:root/program-roadmap]] and [[sot:root/delivery]].
+This section records audit's boundary, not a second scheduler or CI policy.
+
+Selected deterministic in-memory administrator-policy, canonical-byte,
+verification and Merkle units are eligible for resource-bounded local checks.
+The Cargo `--lib` label alone is insufficient: existing library tests also open
+WALs, acquire locks and exercise real files. Actual file ACL/mode/reparse/UID,
+fsync/rename-sharing, IPC, child lifetime/crash/restart, witness-service/client,
+backup retirement and sink-persistence tests require the hosted runtime tier.
+They must not be relabeled as pure units to bypass the placement policy.
+
+Audit API/control/WAL changes require downstream runtime/authority impact review;
+while the accepted impact classifier is unimplemented, no required gate is
+removed by path filtering. Hosted OS labels do not prove actor rights, HSM or
+independent organizational witness custody, physical power-loss durability or
+human/AT behavior. Each requires its appropriate direct evidence or an explicit
+not_run limitation. Earlier source-bound green never qualifies a newer candidate.
+
+Audit emits sanitized counts/status/source and byte hashes for the free branch
+profile. Private keys, sealed custody material, private traces and raw evidence
+are not public artifacts. If required private originals cannot be recovered
+through an approved private channel, record that absence; do not claim recovery.
+No new execution or workflow dispatch was performed for this policy-reference
+update. Candidate hosted qualification and unresolved runtime/deployment gates
+remain not_run pending root's source closure and execution assignment.
 
 ### Native helper accounting contract, version 0.1
 
