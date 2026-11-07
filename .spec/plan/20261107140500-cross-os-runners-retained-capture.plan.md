@@ -1086,3 +1086,39 @@ test-binary pins. Foreign process identifiers/paths stay private raw evidence.
 Actual interactive child/IO worker/descendant EOF/Host/SCM/GPU cases remain0.
 Pure ledger retention is not actual retained-child proof; native producer remains
 Unsupported. New .NET style bytes require their own coherent review/validation.
+
+## Minimal .NET style verification R4/R4b/R4c history
+
+Root allocated ONLY fmt and .NET all-target strict Clippy on35ec plus the five
+frozen045000 overlays/index82255217ad5da22f049f102bf475d4650e035d2189754247e9dfd70a0c4bfd33.
+No37-test rerun or actual Host permission. Prior R3 source/report stays immutable.
+
+R4 failed BEFORE fmt/Cargo: an abbreviated PowerShell helper H resolved the
+built-in Get-History alias, causing a DateTime-to-Count binding failure. Actual
+lease was removed, handles0, raw original180/240 budget retained. Root approved
+one fresh R4b, which also failed before lease/fmt/Cargo: a reused initializer
+incorrectly attempted New-Item on the EXISTING cache directory. Empty new source/
+bin dirs were preserved, no compiler/cache writes or lease occurred. Its clock
+value was not yet persisted; only directory creation UTC is known, not fabricated
+as an exact original clock. Both are orchestration failures, not .NET Rust failures.
+
+Root then reviewed the literal R4c startup/cleanup commands before granting ONE
+new transaction. All fully named helper command types are checked BEFORE clock.
+The FIRST filesystem IO after start CreateNew-writes and flushes the original
+clock sidecar in an existing evidence parent. Only fresh source/bin directories
+are created; existing cache is checked separately. The transaction tracks whether
+it actually created the marker and removes it only after own gate PIDs are absent
+and exact provider/session/source/index readback still matches. No foreign marker
+removal or observation-timeout settlement inference.
+
+R4c SUCCESS: new immutable35ec+045000 workspace, same explicitly admitted cache
+under new lease; original start19:03:13.8084461Z/work180s/total240s. Fmt0 and ONLY
+.NET all-target strictClippy0, compiler terminal19:03:21.311Z. Actual marker
+removed19:03:21.321Z; metadata terminal19:03:22.440Z, handles0. Source410,
+selected86packages4359files/config34/recursive76tools/environment7 before/after
+identical, including all five overlays. Registered
+dotnet-minimal-style-verification-summary.json retains34raw attachment hashes
+including both failed preps and original clock sidecar. NO tests repeated; no
+new test-executable proof. Prior37 source-specific pure passes remain their own
+receipt, not37 tests on the changed style bytes. Actual retained child/Host/
+SCM/GPU/native producer gates remain open.

@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: dotnet-minimal-style-verification-summary.json, sha256: 6ce52c028f355fb39b27cdcdb16a0cbaa44b80daaf260af48c9ec2c5ca2db396, bytes: 12154, store: repo}
   - {path: native-dotnet-targeted-pure-summary.json, sha256: dcc02f39df3dfc285184bd4f9a295641554e92f8c2116bc4a709460ecb4ba579, bytes: 25952, store: repo}
   - {path: gpu-lifecycle-research-summary.json, sha256: 1705038b354653c2136ca29c619df0908702090311f705f7feb9992f49bbe5ea, bytes: 4015, store: repo}
   - {path: native-dotnet-pure-first-failure-summary.json, sha256: 65310956cc9627accc16906b7ed624b85afbb0a41af1263d4f04653849528dae, bytes: 19620, store: repo}

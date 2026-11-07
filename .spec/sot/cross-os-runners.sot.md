@@ -1127,3 +1127,10 @@ the combined candidate failed; no hidden retry or changed-source promotion.
 Registered native-dotnet-targeted-pure-summary.json preserves exact closure,
 footers, first failure and terminal lease removal. Actual interactive workers,
 retained partial failure, descendant EOF, provider/Host/SCM/GPU remain unqualified.
+
+The explicitly allocated R4c addendum on35ec950d plus frozen .NET045000
+style-only overlays passes fmt and .NET all-target strictClippy, with exact
+input closure and actual lease removal. It executes NO tests and does not
+retroactively rerun37 or relabel prior R3 failure. The registered minimal-style
+summary also preserves R4/R4b precompiler orchestration failures. Static source
+gate completion remains separate from actual process/host/provider qualification.
