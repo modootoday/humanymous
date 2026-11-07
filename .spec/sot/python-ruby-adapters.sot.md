@@ -527,6 +527,22 @@ Registration failure still lacks a guaranteed anchor if no callback attached;
 partial creation/factory failure needs a separate retained-failure keeper/profile.
 No current Windows private-parent/peer or interactive host dependency is waived.
 
+### Next public facade candidates, pending acceptance
+
+The owned framework INTEGRATION now records proposal0.1 for adapter-framework,
+adapter-node, adapter-python and deferred adapter-ruby modules under humanymous.
+Current root manifest still admits only []/[adapter-go]. Shared and Node Rust
+surfaces already exist; Python classes are hidden by private modules/constructors
+and Ruby has no public Rust binding API, so empty crate aliases cannot be called
+usable adapters. Root must accept any existing-type visibility change first.
+The proposal separates SDK-free-host Rust, host-qualified Rust, Node cdylib,
+Python extension/embedding and Ruby extension products, explicit feature sets,
+generated loaders, host init names and restored-package gates. Additive Cargo
+features require separate extension/embedding build closures and no production
+fixture/tool exports. No root Cargo/features/deps, leaf API or runtime changed.
+Registry availability, current namespace and historical SDK checks do not qualify
+the proposed profiles. Independent critique and root acceptance precede wiring.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;
