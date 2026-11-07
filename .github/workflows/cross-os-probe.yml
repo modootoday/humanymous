@@ -1,4 +1,4 @@
-name: Cross OS implemented-crate probe
+name: CI / Cross OS
 on:
   workflow_dispatch:
   push:

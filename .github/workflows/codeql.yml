@@ -1,5 +1,5 @@
 # Frozen Go-oracle static analysis; it does not qualify Rust delivery.
-name: codeql
+name: Legacy / CodeQL
 on:
   push:
     branches: [main]

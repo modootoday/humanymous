@@ -275,8 +275,13 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
     Ok(())
 }
 pub fn check(root: &Path) -> Result<()> {
-    for (name, doc) in workflows(root)? {
-        document(&name, &doc)?;
+    let docs = workflows(root)?;
+    catalog(
+        &crate::read_json(&root.join("scripts/ci/workflows.json"))?,
+        &docs,
+    )?;
+    for (name, doc) in &docs {
+        document(name, doc)?;
     }
     // Only newly authored Rust/workflow sources are owned here; legacy oracles
     // remain distinct. Enforce actual bytes, not a post-hash newline rewrite.
@@ -302,6 +307,78 @@ pub fn check(root: &Path) -> Result<()> {
     )?;
     println!("Rust workflow authorization/LF policy passed");
     Ok(())
+}
+fn catalog(catalog: &Value, docs: &[(String, Value)]) -> Result<()> {
+    require(
+        catalog["schema"] == "humanymous.workflow-catalog/1",
+        "workflow catalog schema mismatch",
+    )?;
+    let entries = catalog["workflows"]
+        .as_array()
+        .ok_or("workflow catalog entries absent")?;
+    let mut files = BTreeSet::new();
+    let mut names = BTreeSet::new();
+    for entry in entries {
+        let file = entry["file"].as_str().ok_or("workflow filename absent")?;
+        let name = entry["name"]
+            .as_str()
+            .ok_or("workflow display name absent")?;
+        require(
+            files.insert(file) && names.insert(name),
+            "duplicate workflow identity",
+        )?;
+        require(
+            ["CI / ", "Docs / ", "Release / ", "Legacy / "]
+                .iter()
+                .any(|prefix| name.starts_with(prefix)),
+            "workflow display namespace absent",
+        )?;
+        let doc = &docs
+            .iter()
+            .find(|(actual, _)| actual == file)
+            .ok_or_else(|| format!("catalog workflow missing: {file}"))?
+            .1;
+        require(
+            doc["name"] == name,
+            format!("workflow display drift: {file}"),
+        )?;
+        let jobs = doc["jobs"].as_object().ok_or("workflow jobs absent")?;
+        require(
+            jobs.keys().cloned().collect::<BTreeSet<_>>() == strings(&entry["jobs"]),
+            format!("workflow job identity drift: {file}"),
+        )?;
+        require(
+            doc["concurrency"] == entry["concurrency"],
+            format!("workflow concurrency drift: {file}"),
+        )?;
+        let mut artifacts = BTreeSet::new();
+        for step in jobs
+            .values()
+            .filter_map(|job| job["steps"].as_array())
+            .flatten()
+        {
+            if step["uses"].as_str().is_some_and(|action| {
+                action.starts_with("actions/upload-artifact@")
+                    || action.starts_with("actions/upload-pages-artifact@")
+            }) {
+                let artifact = step["with"]["name"]
+                    .as_str()
+                    .ok_or("explicit artifact identity required")?;
+                require(
+                    artifacts.insert(artifact.to_owned()),
+                    "duplicate artifact identity within workflow",
+                )?;
+            }
+        }
+        require(
+            artifacts == strings(&entry["artifacts"]),
+            format!("workflow artifact identity drift: {file}"),
+        )?;
+    }
+    require(
+        files == docs.iter().map(|(file, _)| file.as_str()).collect() && files.len() == docs.len(),
+        "unknown or duplicate workflow outside catalog",
+    )
 }
 pub fn pins(root: &Path) -> Result<()> {
     let mut actions = BTreeSet::new();
@@ -387,6 +464,50 @@ pub fn jobs(raw: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn workflow_catalog_rejects_unknown_duplicate_and_drifted_identities() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = crate::read_json(&root.join("scripts/ci/workflows.json")).unwrap();
+        let docs = workflows(&root).unwrap();
+        assert!(catalog(&original, &docs).is_ok());
+        let mut unknown = docs.clone();
+        unknown.push(("unknown.yml".into(), json!({})));
+        assert!(catalog(&original, &unknown).is_err());
+        let mut duplicate = original.clone();
+        duplicate["workflows"][1]["name"] = duplicate["workflows"][0]["name"].clone();
+        assert!(catalog(&duplicate, &docs).is_err());
+        for mutation in 0..3 {
+            let mut changed = docs.clone();
+            let doc = &mut changed
+                .iter_mut()
+                .find(|(file, _)| file == "rust-validation.yml")
+                .unwrap()
+                .1;
+            match mutation {
+                0 => doc["name"] = json!("CI / Unexpected"),
+                1 => {
+                    doc["jobs"].as_object_mut().unwrap().remove("docker");
+                }
+                _ => {
+                    doc["concurrency"] = json!({"group":"all-workflows","cancel-in-progress":true})
+                }
+            }
+            assert!(catalog(&original, &changed).is_err());
+        }
+    }
+    #[test]
+    fn naming_catalog_does_not_authorize_manual_release() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let mut release = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "release.yml")
+            .unwrap()
+            .1;
+        assert!(document("release.yml", &release).is_ok());
+        release["on"]["workflow_dispatch"] = Value::Null;
+        assert!(document("release.yml", &release).is_err());
+    }
     #[test]
     fn public_commit_json_requires_exact_identity() {
         let sha = "ed142fd0673e97e23eac54620cfb913e5ce36c25";

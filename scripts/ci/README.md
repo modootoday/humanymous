@@ -1,6 +1,10 @@
 # Rust delivery validation
 
 The reusable rust-validation.yml is the unprivileged PR/main/tag authority.
+Workflow UI names use CI /, Docs /, Release / and Legacy / categories. The single
+[workflow catalog](workflows.json) fixes technical file/job, concurrency and
+artifact identities; Rust policy rejects unknown workflows or naming drift.
+Filenames/job keys are stable API contracts, distinct from UI labels.
 Release reruns it on the exact tag source. Every required job must succeed;
 skipped, cancelled, component-only and blocked outcomes cannot authorize shipping.
 The frozen Go oracle and inert original workflows remain historical comparison

@@ -205,6 +205,36 @@ loop or paid fixed-IP service. Shared-host unauthenticated quota is a stability
 limitation. Local read-only direct public commit+raw metadata lookup succeeded;
 the corrected hosted source still requires its own actual run.
 
+### Workflow identity convention
+
+`scripts/ci/workflows.json` (humanymous.workflow-catalog/1) is the single machine
+catalog for exact filenames, UI names, stable job keys, concurrency and uploaded
+artifact identities. Category/title display syntax is `CI / ...`, `Docs / ...`,
+`Release / ...`, `Legacy / ...`. Technical filenames/job keys are stable APIs,
+not presentation labels. ci.yml/release.yml/pages.yml, reusable references,
+registry release.yml trust and OIDC certificate identity stay unchanged. Current
+kebab-case component filenames also stay stable: a ci-* rename offers little UI
+benefit while migrating policy, paths, docs and external run consumers. Revisit
+only as an explicit coordinated migration, not an incidental cosmetic change.
+
+Catalog validator checks exact inventory, unique filename/display identity,
+exact job sets, concurrency and upload names. Existing permission/required-gate,
+release/tag and pin verification still run separately. Naming registration is
+not authorization. The UI is normalized without changing job keys, artifact
+prefixes/download contracts or resource-targeted concurrency cancellation.
+
+New artifact contracts must include source SHA, run ID and run attempt plus
+matrix tuple where needed, with all consumers/catalog updated atomically. Current
+legacy SHA-only and digest/attack names remain explicitly grandfathered stable
+contracts, not attempt-unique uploads; this is unresolved migration debt. Free
+branch upload is off, so no new run-attempt safety claim derives from renaming.
+observation/2 exact ID/source/attempt/time checks remain necessary for retrieval.
+
+Static naming verification:9policy units pass (16unrelated filtered), live local
+policy command and actionlint pass. No local runtime or hosted qualification is
+implied. First failed run keeps its old display names at immutable bfc9f623;
+new display names and catalog require their own next hosted source result.
+
 Accepted for implementation by the explicit parallel-completion request on
 2026-11-07 KST. New authored implementation/tests use Rust1.99.1/edition2024.
 The existing upstream action/Jekyll/theme/generated glue and frozen legacy

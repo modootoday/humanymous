@@ -1,5 +1,5 @@
 # Authored workflow; canon: .spec/sot/delivery.sot.md
-name: ci
+name: CI / Validate
 'on':
   push:
     branches:

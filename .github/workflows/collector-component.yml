@@ -1,4 +1,4 @@
-name: Rust collector browser component
+name: CI / Collector
 on:
   workflow_dispatch:
   push:

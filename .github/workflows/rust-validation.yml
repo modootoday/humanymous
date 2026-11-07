@@ -1,5 +1,5 @@
 # Authored workflow; canon: .spec/sot/delivery.sot.md
-name: Rust validation authority
+name: CI / Rust
 'on':
   workflow_call: null
 permissions:

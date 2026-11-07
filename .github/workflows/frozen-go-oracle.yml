@@ -1,4 +1,4 @@
-name: frozen-go-oracle
+name: Legacy / Go Oracle
 
 on:
   workflow_dispatch:

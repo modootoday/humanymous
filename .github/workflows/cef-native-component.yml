@@ -1,4 +1,4 @@
-name: Rust CEF native component
+name: CI / CEF
 on:
   workflow_dispatch:
   push:

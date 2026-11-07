@@ -12,6 +12,13 @@ rel:
 
 ## Scope and order
 
+Workflow naming follow-up after separate pinfixec14b90: normalize display
+namespace only; keep all10technical filenames/jobkeys/OIDC/registry paths stable.
+Add single workflows.json catalog + actual Rust inventory/name/job/concurrency/
+artifact validation;9purepolicytests and staticpolicy/actionlintpass. File rename
+ci-* migration deferred with rationale; existing artifacts not attempt-unique
+remain named debt. No security gate removed or broad paths classifier introduced.
+
 First actual free-hosted run42347732666 attempt1 bfc9f623 completedfailure:
 22deliverytests/policy passed, action-pins authenticated aquasecurity public
 commit API HTTP403 due orgIPallowlist. Heavy lanes not_run/ready failed asrequired.

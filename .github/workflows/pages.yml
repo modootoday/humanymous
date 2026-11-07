@@ -1,5 +1,5 @@
 # Authored workflow; canon: .spec/sot/delivery.sot.md
-name: Pages deployment
+name: Docs / Deploy
 'on':
   push:
     branches:

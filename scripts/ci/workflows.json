@@ -1,0 +1,15 @@
+{
+  "schema": "humanymous.workflow-catalog/1",
+  "workflows": [
+    {"file":"ci.yml","name":"CI / Validate","jobs":["validate"],"concurrency":{"group":"rust-ci-${{ github.ref }}","cancel-in-progress":true},"artifacts":[]},
+    {"file":"rust-validation.yml","name":"CI / Rust","jobs":["policy","native","msrv","quality","browser","docker","images","packages","node","advisories","documentation","pages","ready"],"concurrency":null,"artifacts":["native-workspace-${{ matrix.os }}-${{ github.sha }}","native-binaries-${{ matrix.os }}-${{ github.sha }}","native-${{ matrix.os }}-${{ github.sha }}","browser-linux-${{ github.sha }}","docker-linux-${{ github.sha }}","validated-crates-${{ github.sha }}","node-native-${{ github.sha }}","advisories-${{ github.sha }}"]},
+    {"file":"collector-component.yml","name":"CI / Collector","jobs":["firefox-component"],"concurrency":{"group":"collector-component-${{ github.ref }}","cancel-in-progress":true},"artifacts":["collector-component-${{ github.sha }}"]},
+    {"file":"cef-native-component.yml","name":"CI / CEF","jobs":["windows-x64"],"concurrency":{"group":"cef-component-${{ github.ref }}","cancel-in-progress":true},"artifacts":["cef-native-component-${{ github.sha }}"]},
+    {"file":"cross-os-probe.yml","name":"CI / Cross OS","jobs":["native"],"concurrency":{"group":"cross-os-probe-${{ github.ref }}","cancel-in-progress":true},"artifacts":["probe-${{ matrix.os }}-${{ matrix.arch }}-${{ github.sha }}"]},
+    {"file":"pages-build.yml","name":"Docs / Build","jobs":["build"],"concurrency":null,"artifacts":["checked-pages-${{ github.sha }}"]},
+    {"file":"pages.yml","name":"Docs / Deploy","jobs":["validate","deploy"],"concurrency":{"group":"pages-production","cancel-in-progress":false},"artifacts":[]},
+    {"file":"release.yml","name":"Release / Publish","jobs":["validate","readiness","images","images-ok","gh-release","crates","npm"],"concurrency":{"group":"release","cancel-in-progress":false},"artifacts":["digest-${{ matrix.name }}","image-verification-${{ github.sha }}"]},
+    {"file":"codeql.yml","name":"Legacy / CodeQL","jobs":["analyze"],"concurrency":null,"artifacts":[]},
+    {"file":"frozen-go-oracle.yml","name":"Legacy / Go Oracle","jobs":["go","external-input-kernel-smoke","detector-vs-bots"],"concurrency":{"group":"frozen-go-oracle-${{ github.ref }}","cancel-in-progress":true},"artifacts":["attack-artifacts"]}
+  ]
+}

@@ -1,5 +1,5 @@
 # Authored workflow; canon: .spec/sot/delivery.sot.md
-name: Checked Pages artifact
+name: Docs / Build
 'on':
   workflow_call: null
 permissions:
