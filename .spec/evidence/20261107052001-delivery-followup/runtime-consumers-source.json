@@ -17,7 +17,7 @@
     },
     {
       "path": "scripts/ci/delivery/src/components/runtime.rs",
-      "sha256": "6c5925e15ca3640d12ad7341111f4c197bc823422e71063276c93e720eb7ef72"
+      "sha256": "f433403426d81ca2e3b5d1bf49ac8ac0c2ffca52c249cc99ce874a3ca7adcc35"
     },
     {
       "path": "scripts/ci/delivery/src/header_proof/private_io.rs",

@@ -134,7 +134,7 @@ fn context_inventory(
                 "native_security::",
             ]
             .iter()
-            .any(|prefix| name.starts_with(prefix))
+            .any(|prefix| name.starts_with(*prefix))
         }),
         "unknown Runtime context cannot be silently filtered",
     )?;
