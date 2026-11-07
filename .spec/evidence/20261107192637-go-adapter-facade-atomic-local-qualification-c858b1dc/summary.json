@@ -1,0 +1,130 @@
+{
+  "schema": "humanymous.go-facade-local-evidence/1",
+  "source": "c858b1dc40d60c2d22f10411531a8b72b70aea63",
+  "venue": "local-windows",
+  "public_package": "humanymous",
+  "internal_package": "humanymous-adapter-go",
+  "feature": "adapter-go",
+  "public_namespace": "humanymous::adapters::go",
+  "results": {
+    "leaf_lib_passed": 10,
+    "leaf_integration_passed": 1,
+    "facade_default_lib_passed": 2,
+    "facade_default_consumer_executed": 0,
+    "facade_enabled_lib_passed": 2,
+    "facade_enabled_consumer_passed": 2,
+    "facade_distinct_tests": 4,
+    "facade_test_executions": 6,
+    "delivery_passed": 110,
+    "test_failed": 0,
+    "test_ignored": 0,
+    "test_filtered": 0,
+    "windows_actor_check_exit": 0,
+    "unix_actor_compile": "NOT_RUN",
+    "default_facade_clippy_exit": 0,
+    "enabled_facade_clippy_exit": 0,
+    "selected_consumers_clippy_exit": 0,
+    "cli_admission_default_exit": 0,
+    "cli_admission_adapter_go_exit": 0,
+    "workflow_policy_exit": 0,
+    "fmt_and_actionlint": "ROOT_REPORTED_PASS",
+    "default_normal_dependency_tree": "humanymous-only",
+    "fresh_hosted_docker_go8": "NOT_RUN",
+    "full_product_qualified": false,
+    "release_ready": false
+  },
+  "input_comparison": {
+    "filesystem_records": 3004,
+    "nested_old_target_output_records": 2917,
+    "nontarget_records": 87,
+    "before_after_differences": 0,
+    "workflow_checks": "separate delegated before/final hash checks reported by Root",
+    "full_transitive_tool_read_closure_attested": false
+  },
+  "limits": [
+    "Windows actor check excludes the Unix-only Go module.",
+    "Pure public API/evaluator tests do not prove actual Go host execution.",
+    "3004 records are not 3004 source files: 2917 are nested old target outputs.",
+    "Selected before/after equality does not attest all compiled transitive source or tool bytes.",
+    "No new hosted image/fixture/configuration/engine tuple exists in this local projection.",
+    "Historical c321/42375310198 remains a separate unchanged exact-source Go8 result."
+  ],
+  "raw_evidence": "evidence:root/20261106194410",
+  "raw_files": [
+    {
+      "name": "go-facade-01-actor-check.log",
+      "bytes": 1704,
+      "sha256": "368fb0f411bbf3236263f31fa7d05b653008aa5322cc956038b20af428891982"
+    },
+    {
+      "name": "go-facade-01-consumers-clippy.log",
+      "bytes": 931,
+      "sha256": "dfd0289b67e04b184c80301bd2d431524bc85c2e41aeac66b31bb4f3ec624c7d"
+    },
+    {
+      "name": "go-facade-01-default-clippy.log",
+      "bytes": 184,
+      "sha256": "4e35c9f57a157bf6c7c16237a458897f1c3a4f075e558afa9ab243380d42928d"
+    },
+    {
+      "name": "go-facade-01-default-normal-tree.txt",
+      "bytes": 64,
+      "sha256": "f41c0b37d8e84d8349c0ab8fde40fae190edee5ad2e5f37fd6a87c33fcc522c0"
+    },
+    {
+      "name": "go-facade-01-delivery.log",
+      "bytes": 10758,
+      "sha256": "33b7521a08f1a3e42dce8d9bedba4e800589dab1b62b77381d2d0e30c34c0c2b"
+    },
+    {
+      "name": "go-facade-01-facade-default.log",
+      "bytes": 754,
+      "sha256": "82a166452ebf4b7954a93512c45597cba70d1e1cb9748de5421108ef18e56542"
+    },
+    {
+      "name": "go-facade-01-facade-go.log",
+      "bytes": 888,
+      "sha256": "2d0151c336bbe305713b805e609c4352faf5626a706c3b0afd08e61a2d56491a"
+    },
+    {
+      "name": "go-facade-01-go-clippy.log",
+      "bytes": 238,
+      "sha256": "c76f1babd2331bf0485fa4dda8b9351b93cb59468b87d3f60df183b0c1c06188"
+    },
+    {
+      "name": "go-facade-01-leaf.log",
+      "bytes": 1577,
+      "sha256": "b2f77f039d31526efd3b5e84c835f779a96cac36d7f4146d4dfe7d901cbe7c7c"
+    },
+    {
+      "name": "go-facade-01-policy.log",
+      "bytes": 179,
+      "sha256": "3112c37d7f19d8c450b3bf506876f735ef4889b80536c779e932f9305c0becaa"
+    },
+    {
+      "name": "go-facade-01-profile-default.log",
+      "bytes": 242,
+      "sha256": "f34fc580eeffbb3b0c407faceb6dfb81619b105216305d7dfdc59a901baebe92"
+    },
+    {
+      "name": "go-facade-01-profile-go.log",
+      "bytes": 165,
+      "sha256": "ef400c0c8c8fb286b4f38f5c2b3044cca2987d4c4bdc057f06682cd22a24fe1c"
+    },
+    {
+      "name": "go-facade-01-results.json",
+      "bytes": 3921,
+      "sha256": "2d7bfbc9bb3525a2afa8affbd335fdf8066913ac53f8ef37cdc91c113cf71fff"
+    },
+    {
+      "name": "go-facade-01-source-after.json",
+      "bytes": 825400,
+      "sha256": "131b06492127c3ea8bf2b33de3a98f0e1c8222e61eb02123fbf1b5df01c03e7f"
+    },
+    {
+      "name": "go-facade-01-source-before.json",
+      "bytes": 825400,
+      "sha256": "131b06492127c3ea8bf2b33de3a98f0e1c8222e61eb02123fbf1b5df01c03e7f"
+    }
+  ]
+}

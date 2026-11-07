@@ -1,6 +1,26 @@
 # Root integration
 
-## Active GO-FACADE-01 atomic source batch
+## Current GO-FACADE-01 committed local validation
+
+Atomic commit c858b1dc40d60c2d22f10411531a8b72b70aea63 completed the public
+humanymous / internal humanymous-adapter-go graph and Lab public imports.
+Evidence:root/20261107192637 records owner-reviewed Root local Windows logs:
+leaf10 library plus1 integration passed; facade default2 library/0 gated consumer,
+enabled2 library+2 consumer passed (4 distinct facade tests/6 executions);
+Delivery110 passed. Default/enabled facade and selected consumer strict Clippy,
+Windows actor check, both CLI admissions and workflow policy exited0; Root also
+reports fmt/actionlint pass. No owner rerun or new workload is required here.
+
+The selected before/after snapshot has3004 filesystem records:2917 nested old
+target outputs plus87 non-target files, differences0. Separate delegated workflow
+hash checks do not make this full transitive/tool/read-closure attestation.
+Windows actor compilation excludes the Unix-only Go module. Actual Linux actor
+compile and fresh genuine hosted Docker8 remain required and Root-dispatched;
+this owner has requested the exact next candidate/run. Historical c321 receipts
+remain unchanged, full_product_qualified/release_ready remain false. No live
+owner process, target lease, Git claim or hosted handle is retained.
+
+## Historical GO-FACADE-01 atomic source preparation
 
 Mission: finish public `humanymous` / internal `humanymous-adapter-go` migration
 and actual consumer requalification, preserving historical Go8 evidence.

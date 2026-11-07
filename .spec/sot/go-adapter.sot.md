@@ -34,6 +34,13 @@ scenario APIs; `evaluate` remains `scenario::evaluate`. Lab owns the public
 consumer imports and Delivery owns current workflow/policy selectors. No owner
 may commit or compile the intermediate mixed graph. Source preparation and the
 earlier facade component checks do not qualify the renamed runtime candidate.
+The atomic graph is now committed at c858b1dc40d60c2d22f10411531a8b72b70aea63.
+Local Windows leaf10+integration1 and scoped strict Clippy passed, alongside
+facade component tests and Delivery checks. Evidence:root/20261107192637 records
+the exact counts and limits:3004 snapshot records are2917 old target outputs
+plus87 non-target files, not a full transitive/tool/read closure. The Windows
+actor check excludes Unix Go code; actual Linux compilation and fresh hosted
+Docker Go8 are still required at the renamed source.
 Fresh scoped tests, strict Clippy, actual public consumer and hosted Docker Go8
 are required at the renamed source. Preserve original c321 Go8 receipts and raw
 commands as historical exact-source evidence, without relabelling their result.
