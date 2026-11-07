@@ -1,0 +1,174 @@
+{
+  "schema": "humanymous.hosted-go-source-evidence/1",
+  "source_sha": "438a3feea0ea2f5e305aa6e3816dc7b60a069bd6",
+  "run_id": 42365025258,
+  "run_attempt": 1,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42365025258",
+  "preflight": {
+    "job_id": 128381166108,
+    "conclusion": "success",
+    "go_tests": {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "lab_tests": {
+      "passed": 15,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "delivery_tests": {
+      "passed": 64,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "all_target_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "product": {
+    "job_id": 128381682745,
+    "conclusion": "failure",
+    "summary": {
+      "cleanup_observed": true,
+      "component_status": "not_verified",
+      "diagnostics": {
+        "failure_count": 1,
+        "failures": [
+          {
+            "case_id": "execution",
+            "error_code": "runtime_build",
+            "status": "failed"
+          }
+        ],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "full_product_gate": "not_requested_in_bounded_profile",
+      "full_product_qualified": false,
+      "owner_exit_code": 1,
+      "receipt": {
+        "case_statuses": [
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "binary-allow",
+            "index": 0,
+            "status": "not_run"
+          },
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "dependency-down",
+            "index": 1,
+            "status": "not_run"
+          },
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "cancellation",
+            "index": 2,
+            "status": "not_run"
+          },
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "incomplete-body",
+            "index": 3,
+            "status": "not_run"
+          },
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "forged-provenance",
+            "index": 4,
+            "status": "not_run"
+          },
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "origin-bypass",
+            "index": 5,
+            "status": "not_run"
+          },
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "upgrade",
+            "index": 6,
+            "status": "not_run"
+          },
+          {
+            "assertions": 0,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": false,
+            "id": "response-semantics",
+            "index": 7,
+            "status": "not_run"
+          }
+        ],
+        "full_product_qualified": false,
+        "private_receipt_schema": "humanymous.go-product-ledger/1",
+        "private_receipt_sha256": "fc21fa7271d03df286bc2ac84d56526ee54f4c49a8eed3901453b9ae70f7534b",
+        "profile": "humanymous.go-gate/bounded-http-8-case/2",
+        "qualified_component": false,
+        "raw_contents_included": false,
+        "run_context": {
+          "authenticated_provenance": false,
+          "hosted_qualification_admitted": true,
+          "job": "product",
+          "kind": "github-hosted-linux",
+          "repository": "modootoday/humanymous",
+          "requires_external_job_verification": true,
+          "run_attempt": 1,
+          "run_id": 42365025258,
+          "workflow_sha": "438a3feea0ea2f5e305aa6e3816dc7b60a069bd6"
+        },
+        "schema": "humanymous.lab-go-public/1",
+        "setup_or_qualification_error_code": "runtime_build",
+        "source_manifest_sha256": "63d782770ab51a65f6e373ae7a653f5e513f008643669e903cab9d0e8ddca61a",
+        "source_sha": "438a3feea0ea2f5e305aa6e3816dc7b60a069bd6",
+        "totals": {
+          "evaluated": 0,
+          "failed": 0,
+          "known_assertions": 0,
+          "not_run": 8,
+          "passed": 0,
+          "scheduled": 8,
+          "unknown_assertion_cases": 0
+        }
+      },
+      "receipt_valid": true,
+      "release_ready": false,
+      "requirement": {
+        "full_product_qualified": false,
+        "kind": "go-component",
+        "satisfied": false,
+        "schema": "humanymous.lab-requirement/1"
+      },
+      "schema": "humanymous.go-delivery-summary/1",
+      "source_changed": false,
+      "source_manifest_sha256": "884e8f5d8aca61b7edd3f250604c50d709deef690a5254b9d47efe0b5d81583c",
+      "source_sha": "438a3feea0ea2f5e305aa6e3816dc7b60a069bd6"
+    }
+  },
+  "cause_scope": "runtime_build; exact internal build/compiler cause unavailable in the safe projection",
+  "full_product_qualified": false
+}
