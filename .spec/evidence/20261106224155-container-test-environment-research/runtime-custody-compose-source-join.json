@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.lab-custody-runtime-source-join/1",
+  "delivery_checkpoint": "3b51008ea2a43de93764cf44f037d4de593262fa",
+  "compose": "deployments/lab/compose.custody.yaml",
+  "compose_sha256": "a64aaa42acd55aa01e0e0a1ea3fc5d2b35a98a702cca4d53881035a72a8cd1c5",
+  "dockerfile": "build/rust/custody-check.Dockerfile",
+  "dockerfile_sha256": "43514dca939bce144f9e05428775f24f2a3d9c7e5a18691d5ad93527e10d2603",
+  "docker_matches_declared_delivery_commit": true,
+  "custody_entrypoint": [
+    "/usr/local/bin/runtime-context-tests",
+    "audit::"
+  ],
+  "custody_compose_override": false,
+  "peer_entrypoint": "/usr/local/bin/authority-native-tests",
+  "peer_command": [
+    "--exact",
+    "unix_other_user_is_denied_by_actual_socket_acl",
+    "--ignored",
+    "--nocapture"
+  ],
+  "profiles": [
+    "custody",
+    "peer"
+  ],
+  "network_mode": "none",
+  "compose_source_changed": false,
+  "verification": "Read-only source/caller inspection; direct Rust binaries, generated wrapper removed by Delivery, obsolete authority-tests has no caller",
+  "execution": "NOTRUN; no Docker/browser/native execution allocated",
+  "historical_counts": "No old custody or authority count promoted to new Runtime graph",
+  "full_product_qualified": false
+}
