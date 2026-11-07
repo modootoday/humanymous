@@ -1002,3 +1002,12 @@ publisher/ownership/bootstrap or OIDC exchange; source prerequisite flags remain
 false. Attached public scalars and the sealed private API index preserve that
 partial preparation boundary. Browser306 actual diagnostic remains live under
 one push-triggered run; no generic26 rerun or remote CEF retry was performed.
+
+A canonical Git archive audit caught two CRLF-derived public evidence index
+hash/size mismatches after commit. The targeted306 and registry-environment JSON
+payload Git blobs were already LF; only their index metadata needed correction.
+Normalize authored public projections before attaching, then compare the indexed
+hashes/sizes to actual Git payload bytes. All28 indexed payloads now match; first
+mismatches and original CRLF working projections are privately retained. No
+private log or actual execution fact changed. This is not a waiver for normalizing
+raw evidence, whose original bytes and immutable indexes must remain untouched.

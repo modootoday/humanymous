@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:21:14Z
+updated: 2026-11-07T16:22:31Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -27,12 +27,12 @@ files:
   - {path: native-artifact-caller-validation.json, sha256: 52ccd28684bac0cd13146d08311c6ae4687816a04a96885527dc222b06f63045, bytes: 2830, store: repo}
   - {path: native-b09e98cf-summary.json, sha256: 91a0f60a662ab9c1fbf7412134b9079a9f53fc35af5316fa5ffb3344ebf02f40, bytes: 2575, store: repo}
   - {path: coherent-helper-90-validation.json, sha256: fbca7da38d124df2ec1007765d36177af2c8f93979b426ae710a11b49f70b063, bytes: 2706, store: repo}
-  - {path: wargame-306eedc8-targeted-preflight.json, sha256: fd4bb0d70ec7331eb60ccf7e515bc31b3f736ac8ce692dd60c4aa92915bd411e, bytes: 1804, store: repo}
   - {path: wargame-306eedc8-hosted-summary.json, sha256: 3d33c57f6ef9a4ba712f47cee437694a0c99cff9b271688a39c06b7a0a52b978, bytes: 9973, store: repo}
   - {path: wargame-306eedc8-required-boundaries.json, sha256: 6918ae9e80c45db9877dce443dbe260ff9aacad65f92afd0e15fc1d5b4b1fa48, bytes: 6632, store: repo}
   - {path: cef-d2148b0a-summary.json, sha256: 871653c0fb57934505e5ab4cfbe9deeaa7b7e043d86fc2e5c605deb8f448b4ee, bytes: 4008, store: repo}
   - {path: pages-29096f78-summary.json, sha256: 9ec48b7be63c94f8fd23e71a9708647b640e6c47050bf887020374a58b71ef8f, bytes: 7425, store: repo}
-  - {path: registry-environment-observation.json, sha256: c78d67a2add2eac3a74ba5574a1627384da75fa9837de87fe3137a828fd0688c, bytes: 3376, store: repo}
+  - {path: wargame-306eedc8-targeted-preflight.json, sha256: 6e216f5f59948fb822811c21928fb47a21b33f7a356795e79c3c460d874ff7ac, bytes: 1748, store: repo}
+  - {path: registry-environment-observation.json, sha256: 67e920e9b0fbfbe665941d4465380c3fc1137312d0eb17a4b1e8c4504d823e65, bytes: 3282, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -523,3 +523,16 @@ was granted. The release environment required by release.yml was absent from the
 observed complete five-environment collection; no setting was created or edited.
 Sequential API reads are not an atomic cross-service attestation. Private capture
 index SHA256 iseafcecea5357d9c51cf2fd38a1e4d8b7fa7d69e5adcd4958516bc0dd22e9873e.
+
+## Canonical Git payload byte correction
+
+A28-payload audit against an actual Git archive found two index entries whose
+hash/size described Windows CRLF working bytes, while Git stored LF bytes:
+wargame-306eedc8-targeted-preflight.json and registry-environment-observation.json.
+The authored public projections were normalized to LF and reattached; their Git
+payloads and semantic facts did not change. The corrected index matches all28
+actual Git payload hashes and sizes, zero differences. The first two mismatches
+and original working projections remain in a separate immutable private audit,
+index SHA256 e5feeb5d31e4243a45f3faa5373d98876d573a7441771160ef31004666b4da13.
+This corrects published evidence metadata, not private original logs, raw report
+hashes, execution outcomes or source qualification.
