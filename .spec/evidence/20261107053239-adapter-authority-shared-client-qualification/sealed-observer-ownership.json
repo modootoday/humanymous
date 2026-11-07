@@ -1,0 +1,78 @@
+{
+  "schema": "humanymous.authority.sealed-observer-ownership/1",
+  "authority_source": "fecdb4d1",
+  "dependency_binding": "captured source/registry/config/tool closure, not a clean whole-workspace assertion",
+  "venue": "local Windows x86_64-pc-windows-msvc rustc1.99.1",
+  "allocation": "A warm jobs1 incremental0 target/validation-authority locked offline",
+  "admission": {
+    "commit_percent": 81,
+    "free_physical_gib": 31.56
+  },
+  "resolved_packages": 95,
+  "source_registry_config_tool_inputs": 4601,
+  "changed_inputs": [],
+  "library": {
+    "filtered": 0,
+    "exit": 0,
+    "ignored": 0,
+    "passed": 21,
+    "failed": 0,
+    "new_internal_cases": 7
+  },
+  "check_all_targets_exit": 0,
+  "clippy_all_targets_exit": 0,
+  "fmt_scoped_exit": 0,
+  "public_api": [
+    "startup::observer::native_preparation -> Unsupported ONLY",
+    "VerifiedObserverPreparation/PreparedObserverSession private empty NativeProof, uninhabitable even in tests",
+    "effect_gate diagnostic snapshot ONLY",
+    "cancel consumes phase guard and retains revoked Owner in ObserverStartupFailure"
+  ],
+  "not_implemented": [
+    "native/W/accepted-publication producer",
+    "actual bounded transport/credential receipt producer",
+    "owned native monitor cancellation/join",
+    "atomic actual kernel effect acceptance",
+    "Runtime-private production Ready activation"
+  ],
+  "limits": [
+    "7 internal state models are not native or production authority",
+    "no test-only NativeProof constructor",
+    "no actual IPC/handler/SCM/account or hosted execution",
+    "historical native IPC proof is not extended to this new source"
+  ],
+  "raw": [
+    {
+      "name": "observer-tree.log",
+      "sha256": "bb156d5b59481ed1ab92a730b3da063ae87c0b471e392348771de282da980143"
+    },
+    {
+      "name": "observer-metadata.json",
+      "sha256": "46aeb5e21227befc3c972c9f6c0e81dc928c28d74dfeb13dee5ddbffca6263b7"
+    },
+    {
+      "name": "observer-before.json",
+      "sha256": "b0edb6249541fd069983b50368649c54dba1340d905b7149fdb527feacc9d2af"
+    },
+    {
+      "name": "observer-after.json",
+      "sha256": "c896ff68fd232828b52e1a9fb0e0895f20bceaedd6e994078b3435bfd3f10a8c"
+    },
+    {
+      "name": "observer-lib.log",
+      "sha256": "3a07c5f57db48c4f0cc5adb091212e287e35aac8ae6200ebf63decf079c67171"
+    },
+    {
+      "name": "observer-check.log",
+      "sha256": "f14043f63e03726caf0698937964dcfed77dc6a3cd8b4ffafd02b5d37e9c7bba"
+    },
+    {
+      "name": "observer-clippy.log",
+      "sha256": "dd58889c5492b133f7552a6bfd00ed3ee5d3750b1ef5180e5e4d67e0dd5a97ab"
+    },
+    {
+      "name": "observer-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

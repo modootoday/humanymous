@@ -262,3 +262,26 @@ explicit Windows docker.exe/context and recorded engine identity. Historical
 authority Docker results used the distinct WSL-native29.1.3 engine; they are not
 Desktop qualification. Hosted Linux receipts are a third execution profile. Do
 not silently switch engines or reinterpret historical image/source receipts.
+
+## Sealed observer ownership API checkpoint fecdb4d1
+
+Available Rust API: startup::observer::{VerifiedObserverPreparation,
+PreparedObserverSession, ObserverStartupFailure, ObserverEffectGate, StartupStage,
+ReadyDelivery, LossCause, Revocation}. native_preparation() returns Unsupported
+ONLY. Both production phase types and failure retain a private EMPTY NativeProof,
+uninhabitable even in tests; no Clone/Default/serde constructor. effect_gate()
+returns a restricted diagnostic snapshot view; it grants no origin/Ready effect.
+cancel(self, cause) consumes the phase guard, synchronously revokes and retains
+unique Authority ownership in the failure; Drop is not async join/flush proof.
+Runtime owns its resources R alongside an enum of these guards, before any unseal.
+No public receipt/transport/activation factory or generic identity callback exists.
+
+Actual Windows pure library21passed (7new internal state cases),0failed/ignored/
+filtered, all-target check/strict Clippy/scoped fmt passed. Source/registry/config/
+tool closure4601inputs/95packages unchanged; exact public receipt is
+.spec/evidence/20261107053239-adapter-authority-shared-client-qualification/sealed-observer-ownership.json.
+This is a captured dependency graph, not clean whole-workspace or hosted proof.
+Native/W producer, actual receipt/bounded transport, native monitor cancel/join,
+atomic kernel effects and Runtime-private Ready remain unimplemented/unqualified.
+No new Cargo edge, unsafe or OS mutation. Prior native IPC results stay historical
+for their earlier source and are not silently extended by these21pure cases.

@@ -782,3 +782,23 @@ Root read observer.rs/state.rs and accepted this uninhabited/Unsupported/restric
 gate/consuming-cancel direction. Freeze checkpoint before explicit A warm pure21,
 all-target check, strict Clippy and fmt allocation. No native/handler/service,
 no new Cargo edge or production/test constructor is authorized.
+
+## Frozen sealed ownership actual validation and Runtime API handoff
+
+Authority source frozen/committed fecdb4d1 BEFORE execution. Root A warm admission
+commit81percent/free31.56GiB, jobs1/inc0/offline/locked exclusive validation-authority.
+Actual library21passed (7new internal cases),0failed/ignored/filtered; all-target
+check0, strict Clippy0 and scoped fmt0. All4601 captured source/registry/config/tool
+inputs across95resolved packages unchanged before/after. This binds the captured
+dependency graph, not a clean whole-workspace assertion. Public
+sealed-observer-ownership.json and hashed private metadata/snapshots/logs attached.
+Slot terminal/returned; no owned validation process or actual IPC/native service.
+
+Concrete source API checkpoint handed to Runtime: startup::observer opaque
+VerifiedObserverPreparation and PreparedObserverSession, effect_gate diagnostic
+clone, consuming cancel -> ObserverStartupFailure with retained unique Owner and
+stage/delivery. native_preparation is Unsupported-only; private EMPTY NativeProof
+has NO test constructor. Runtime confirmed sole ownership of its generic R and
+AuthorityGuard enum; no reverse edge or second production gate. Actual receipt/
+bounded transport/native monitor/atomic kernel effects/private Ready remain absent.
+The21pure result is not production startup, actual native or hosted qualification.
