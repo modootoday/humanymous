@@ -1,10 +1,24 @@
 # Apache adapter integration frontier
 
+The requested Apache component scope is complete at exact source
+b400094480483d9abb8328234f9de12520b71b65. Root registered the native crate and
+approved its narrow generated ABI. Genuine hosted run42374566498/job128409407533
+passed safe12/native13 tests, checks and warnings-denied Clippy; built actual
+production/probe modules; passed all45MPM cases (15each); and verified pilot,
+container/image and separate ledger cleanup. Evidence:root/20261107130407 binds
+the source/manifest/image/five artifact identities and complete outcomes.
+Independent prefork CLI exit0, owned masterexit0/reap and group isolation were
+observed. This qualifies the pinned H1 explicit-Content-Length component tuple
+only; synthetic frozen ALLOW is not full product/browser provenance. Later
+source, SSL/H2 and broader version/module matrices are not implicitly qualified.
+
+## Historical implementation and qualification checkpoints
+
 Safe std-only lifecycle/replay crate is registered. Root-assigned A passed9pure
 units and all-target Clippy with warnings denied; evidence:root/20261107082159.
 Root has registered the native workspace member and lock entry. Actual hosted
 source8042c6bc built production/probe modules and completed strict Clippy, then
-ran all45MPM pairs:23passed/22failed/0not_run. No httpd tuple is qualified.
+ran all45MPM pairs:23passed/22failed/0not_run. That source remained unqualified.
 Root-assigned D passed native DEFAULT all-target check/Clippy without headers or
 bindgen; evidence:root/20261107085316 binds identical before/after graph/source.
 
@@ -41,10 +55,17 @@ remained false. Source d65da705 then passed the actual coordinator11units and
 reported event14/15, worker8/15 and prefork1/15. Evidence:root/20261107113711
 retains these failed outcomes. The candidate fixes pinned MPM query selection
 and test-only rejected lookup handling, adding three safe capability tests.
-Next expected pure denominators12safe/11coordinator remain unrun for new bytes.
+At that checkpoint12safe/11coordinator were expected but unrun for those bytes.
+Subsequent33/12and35/10actual results remain failed historical evidence. The
+final source isolates each foreground master/helper process group at birth,
+checks real kernel ownership after pidfd capture and signals only owned pidfds.
+This prevents the pinned prefork shutdown group signal from reaching sibling
+fixture masters; prior numeric group identities were not recorded.
 
 Hosted pilot interface: adapters/apache/pilot-contract.json. Product-lab owns
 Compose orchestration; Apache owns only the root/CI-delegated standalone
 apache-validation.yml, CI owns catalog/policy, and root controls push/dispatch.
-Public docs delta: Apache now has actual native build/Clippy and a failed
-45-case hosted fixture, with no qualified proxy/module/MPM tuple.
+Public docs delta: Apache has a source-bound passed45case hosted component
+tuple, with true cleanup and fullProductSuccessfalse. Root owns roadmap and
+Pages owns public docs; exact qualification never extends to newer source by
+proximity to the passing commit.

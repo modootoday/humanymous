@@ -1,11 +1,12 @@
 {
   "schema": "humanymous.apache.pilot-contract/0.1",
   "report_schema": "humanymous.apache.pilot/0.1",
-  "implemented": false,
+  "implemented": true,
   "sourceImplemented": true,
-  "status": "not_run",
+  "status": "passed",
   "fullProductSuccess": false,
-  "qualification": "Unqualified source candidate; actual hosted results required. Frozen ALLOW evidence is component-only.",
+  "qualification": "Source-bound Apache H1 component only: all45 passed at b4000944. Frozen ALLOW evidence is not product provenance; later source commits are not implicitly qualified.",
+  "qualificationEvidence": {"sourceCommit":"b400094480483d9abb8328234f9de12520b71b65","workflowRun":42374566498,"workflowJob":128409407533,"evidence":"evidence:root/20261107130407"},
   "buildCandidate": {
     "available": true,
     "dockerfile": "adapters/apache/Dockerfile.native",
@@ -169,8 +170,8 @@
   },
   "results": [],
   "limitations": [
-    "native-build-not-run",
-    "hosted-pilot-not-run",
+    "qualified-exact-source-component-only",
+    "HTTP1-explicit-content-length-only",
     "synthetic-evidence-not-product-provenance"
   ]
 }

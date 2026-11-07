@@ -1,15 +1,26 @@
 ---
 id: plan:root/20261107072600
 title: Apache native module implementation and hosted qualification
-status: active
+status: archived
+phase: completed
 created: 2026-11-07T07:26:00Z
-updated: 2026-11-07T07:26:00Z
+updated: 2026-11-07T13:04:07Z
 rel:
   governs: [crates/apache-adapter/**, adapters/apache/**]
   depends_on: [sot:root/apache-adapter]
+  evidence: [evidence:root/20261107130407]
 ---
 
 # Apache native module implementation
+
+Completed requested scope at exactb400094480483d9abb8328234f9de12520b71b65:
+root registered the native crate and approved the narrow generated ABI; safe12/
+native13 tests, checks and warnings-denied Clippy passed; genuine hosted
+run42374566498/job128409407533 built production/probe modules and passed45/0/0
+with actual pilot/container/image/ledger cleanup. Evidence:root/20261107130407.
+The sections below retain chronological candidate/failure history. Statements
+of not-run/unqualified in those checkpoints describe their old source only.
+Full product e2e, SSL/H2 and broader module/version matrices remain separate.
 
 Goal active; lane adapter-apache session rust-apache-goal claimed after root
 071ccef authorization. Previous turn researched native hook ordering and shared
@@ -21,15 +32,16 @@ child/request lifecycle, meaningful pure tests, integration and pilot contract.
 - [x] Adversarial bypass/fork/pool/body findings reflected in owning SoT.
 - [x] Safe child generation/MPM admission, complete bounded body and cancellation.
 - [x] Root safe workspace registration and assigned A slot;9pure units/fmt/Clippy.
-- [ ] Apache integrity/authority/framework profile owned by corresponding owners.
-- [ ] Single-consumption authority response and exact final request handoff.
+- [x] Apache integrity/authority/framework profile owned by corresponding owners.
+- [x] Single-consumption authority response and exact final request handoff.
 - [x] Approved minimal isolated unsafe native ABI and pinned upstream inputs.
-- [ ] Native crate registration; generated binding/build provenance and execution.
-- [ ] Actual native module hooks/input replay/pool cleanup/child initialization.
-- [ ] Source-bound free hosted Docker MPM and outage/cancellation/reload pilots.
-- [ ] Spec check, owned attributed commit and integration evidence.
+- [x] Native crate registration; generated binding/build provenance and execution.
+- [x] Actual native module hooks/input replay/pool cleanup/child initialization.
+- [x] Source-bound free hosted Docker MPM and outage/cancellation/reload pilots.
+- [x] Spec check, owned attributed commit and integration evidence.
 
-Current tests are NOT_RUN. No actual httpd, Docker, IPC or origin pilot ran locally.
+At the initial checkpoint tests were NOT_RUN and no actual httpd, Docker, IPC
+or origin pilot had run locally.
 Followup adds a detached atomic cleanup signal and !Send/!Sync host request owner;
 six pure tests are now authored. Cleanup signal revocation is unit-contract only,
 not actual APR cleanup qualification. Existing workspace/profile/slot remains

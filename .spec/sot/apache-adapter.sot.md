@@ -4,10 +4,11 @@ title: Apache native adapter lifecycle and authority boundary
 status: active
 verify: manual
 created: 2026-11-07T07:26:00Z
-updated: 2026-11-07T07:26:00Z
+updated: 2026-11-07T13:04:07Z
 rel:
   governs: [crates/apache-adapter/**, adapters/apache/**, .github/workflows/apache-validation.yml]
   depends_on: [sot:root/rust-migration, sot:root/adapter-service-contract]
+  evidence: [evidence:root/20261107130407]
 ---
 
 # Apache native adapter
@@ -31,7 +32,15 @@ runs even after a failed started pilot step. Missing cases, failed process
 exits, source/artifact drift and cleanup failure remain failures. An incomplete
 or unrun component never establishes a qualified Apache tuple.
 
-Version0.1 experimental target; no Apache tuple is currently qualified.
+Version0.1 experimental target. The exact source-bound Apache2.4.70/APR1.7.6/
+APR-util1.6.6 H1 explicit-Content-Length component tuple is qualified at
+b400094480483d9abb8328234f9de12520b71b65: actual hosted45/0/0, event/worker/
+prefork15each, production/probe ABI builds and Clippy, all cleanup passed.
+Evidence:root/20261107130407 binds actual run42374566498/job128409407533,
+source manifest, image and five artifact hashes. Isolated CLI exit0 and master
+exit0/reap were observed separately. Frozen ALLOW evidence is component-only;
+fullProductSuccess remains false. This qualification does not extend silently
+to later source, SSL/H2, other versions/module graphs or general CLI operation.
 Authored implementation/tests are Rust1.99.1 edition2024. Native ABI unsafe is
 approved only for a separate reviewed native crate by root on2026-11-07; the
 safe lifecycle crate retains unsafe-forbid. ABI-SAFETY.md defines per-operation

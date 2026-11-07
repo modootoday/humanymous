@@ -1,0 +1,370 @@
+{
+  "artifactHashes": {
+    "abiReceiptSha256": "23d1302f81410f64ae1204d81e1021b0b607cd3ee9dca4f4ece44a0d7011d755",
+    "httpdSha256": "157af30c50a8db580851c9fe0a0e5782a84d65ef2452219d948392c275b82b2e",
+    "lockSha256": "339aa10ba586aa534fccfb0a4b1ebfe9aec0730be0e8304acbb167d2c02e2443",
+    "moduleSha256": "1cb0dc3a54c8c22cec0aa92e81b011954c6fbe07e478b5340724db07aad4bd18",
+    "probeModuleSha256": "151f74a995cfaa68090cf986af38ea38ab683ca6912b9bf7b93fb7e5f86cdee0"
+  },
+  "caseDiagnostics": {},
+  "caseOutcomes": [
+    {
+      "id": "event/binary-body-replay",
+      "mpm": "event",
+      "name": "binary-body-replay",
+      "result": "passed"
+    },
+    {
+      "id": "event/spoofed-provenance",
+      "mpm": "event",
+      "name": "spoofed-provenance",
+      "result": "passed"
+    },
+    {
+      "id": "event/subrequest-rejection",
+      "mpm": "event",
+      "name": "subrequest-rejection",
+      "result": "passed"
+    },
+    {
+      "id": "event/internal-redirect-rejection",
+      "mpm": "event",
+      "name": "internal-redirect-rejection",
+      "result": "passed"
+    },
+    {
+      "id": "event/cache-bypass-denial",
+      "mpm": "event",
+      "name": "cache-bypass-denial",
+      "result": "passed"
+    },
+    {
+      "id": "event/deny",
+      "mpm": "event",
+      "name": "deny",
+      "result": "passed"
+    },
+    {
+      "id": "event/challenge",
+      "mpm": "event",
+      "name": "challenge",
+      "result": "passed"
+    },
+    {
+      "id": "event/required-capture",
+      "mpm": "event",
+      "name": "required-capture",
+      "result": "passed"
+    },
+    {
+      "id": "event/unknown-route",
+      "mpm": "event",
+      "name": "unknown-route",
+      "result": "passed"
+    },
+    {
+      "id": "event/request-cancellation",
+      "mpm": "event",
+      "name": "request-cancellation",
+      "result": "passed"
+    },
+    {
+      "id": "event/graceful-reload",
+      "mpm": "event",
+      "name": "graceful-reload",
+      "result": "passed"
+    },
+    {
+      "id": "event/deadline-expiry",
+      "mpm": "event",
+      "name": "deadline-expiry",
+      "result": "passed"
+    },
+    {
+      "id": "event/origin-witness-denial",
+      "mpm": "event",
+      "name": "origin-witness-denial",
+      "result": "passed"
+    },
+    {
+      "id": "event/authority-outage",
+      "mpm": "event",
+      "name": "authority-outage",
+      "result": "passed"
+    },
+    {
+      "id": "event/cleanup",
+      "mpm": "event",
+      "name": "cleanup",
+      "result": "passed"
+    },
+    {
+      "id": "worker/binary-body-replay",
+      "mpm": "worker",
+      "name": "binary-body-replay",
+      "result": "passed"
+    },
+    {
+      "id": "worker/spoofed-provenance",
+      "mpm": "worker",
+      "name": "spoofed-provenance",
+      "result": "passed"
+    },
+    {
+      "id": "worker/subrequest-rejection",
+      "mpm": "worker",
+      "name": "subrequest-rejection",
+      "result": "passed"
+    },
+    {
+      "id": "worker/internal-redirect-rejection",
+      "mpm": "worker",
+      "name": "internal-redirect-rejection",
+      "result": "passed"
+    },
+    {
+      "id": "worker/cache-bypass-denial",
+      "mpm": "worker",
+      "name": "cache-bypass-denial",
+      "result": "passed"
+    },
+    {
+      "id": "worker/deny",
+      "mpm": "worker",
+      "name": "deny",
+      "result": "passed"
+    },
+    {
+      "id": "worker/challenge",
+      "mpm": "worker",
+      "name": "challenge",
+      "result": "passed"
+    },
+    {
+      "id": "worker/required-capture",
+      "mpm": "worker",
+      "name": "required-capture",
+      "result": "passed"
+    },
+    {
+      "id": "worker/unknown-route",
+      "mpm": "worker",
+      "name": "unknown-route",
+      "result": "passed"
+    },
+    {
+      "id": "worker/request-cancellation",
+      "mpm": "worker",
+      "name": "request-cancellation",
+      "result": "passed"
+    },
+    {
+      "id": "worker/graceful-reload",
+      "mpm": "worker",
+      "name": "graceful-reload",
+      "result": "passed"
+    },
+    {
+      "id": "worker/deadline-expiry",
+      "mpm": "worker",
+      "name": "deadline-expiry",
+      "result": "passed"
+    },
+    {
+      "id": "worker/origin-witness-denial",
+      "mpm": "worker",
+      "name": "origin-witness-denial",
+      "result": "passed"
+    },
+    {
+      "id": "worker/authority-outage",
+      "mpm": "worker",
+      "name": "authority-outage",
+      "result": "passed"
+    },
+    {
+      "id": "worker/cleanup",
+      "mpm": "worker",
+      "name": "cleanup",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/binary-body-replay",
+      "mpm": "prefork",
+      "name": "binary-body-replay",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/spoofed-provenance",
+      "mpm": "prefork",
+      "name": "spoofed-provenance",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/subrequest-rejection",
+      "mpm": "prefork",
+      "name": "subrequest-rejection",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/internal-redirect-rejection",
+      "mpm": "prefork",
+      "name": "internal-redirect-rejection",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/cache-bypass-denial",
+      "mpm": "prefork",
+      "name": "cache-bypass-denial",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/deny",
+      "mpm": "prefork",
+      "name": "deny",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/challenge",
+      "mpm": "prefork",
+      "name": "challenge",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/required-capture",
+      "mpm": "prefork",
+      "name": "required-capture",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/unknown-route",
+      "mpm": "prefork",
+      "name": "unknown-route",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/request-cancellation",
+      "mpm": "prefork",
+      "name": "request-cancellation",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/graceful-reload",
+      "mpm": "prefork",
+      "name": "graceful-reload",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/deadline-expiry",
+      "mpm": "prefork",
+      "name": "deadline-expiry",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/origin-witness-denial",
+      "mpm": "prefork",
+      "name": "origin-witness-denial",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/authority-outage",
+      "mpm": "prefork",
+      "name": "authority-outage",
+      "result": "passed"
+    },
+    {
+      "id": "prefork/cleanup",
+      "mpm": "prefork",
+      "name": "cleanup",
+      "result": "passed"
+    }
+  ],
+  "cliDiagnostic": {
+    "apacheCodes": [],
+    "cleanupPassed": true,
+    "cliExit": 0,
+    "cliReaped": true,
+    "cliSignal": null,
+    "cliStarted": true,
+    "cliTimedOut": false,
+    "forcedCleanup": false,
+    "masterAfterCliAlive": true,
+    "masterBeforeAlive": true,
+    "masterExit": 0,
+    "masterReaped": true,
+    "masterSignal": null,
+    "mpm": "prefork",
+    "nestedProof": true,
+    "outputLimited": false,
+    "pidFileMatches": true,
+    "role": "isolated-cli-stop-observation",
+    "schema": "humanymous.apache.cli-diagnostic/0.1",
+    "stderrBytes": 0,
+    "stdoutBytes": 0
+  },
+  "compilerDiagnostics": {
+    "errorCodes": [],
+    "labels": [],
+    "sourceLocations": []
+  },
+  "containerImageCleanupObserved": true,
+  "engine": {
+    "clientPath": "docker",
+    "context": "default",
+    "endpoint": "unix:///var/run/docker.sock",
+    "osType": "linux",
+    "profile": "github-hosted-linux",
+    "serverId": "aeba5083-36f4-4ab3-a6cd-5185eccc7a63",
+    "serverVersion": "28.0.4",
+    "verified": true
+  },
+  "executionContext": "github-hosted",
+  "failure": null,
+  "fullProductSuccess": false,
+  "imageDigest": "sha256:25b59f3ff6d678d68a83299aca957fa38577ff49f74f7c9ee1cd29bf36d3c1eb",
+  "lastCommand": {
+    "category": "inspect-cleanup",
+    "elapsedMs": 50,
+    "exit": 0,
+    "kind": "exited"
+  },
+  "observedCounts": {
+    "failed": 0,
+    "not_run": 0,
+    "passed": 45
+  },
+  "pilotCleanupObserved": true,
+  "processExits": {
+    "attach": 0,
+    "container": 0
+  },
+  "requiredScenarioCount": 45,
+  "schema": "humanymous.apache.coordinator/0.1",
+  "sourceCommit": "b400094480483d9abb8328234f9de12520b71b65",
+  "sourceManifestSha256": "e47389656546785f9294f000a133d361b4200f099382d1f1c90a25981794e394",
+  "stage": "complete",
+  "status": "passed",
+  "timingsMs": {
+    "artifact-copy": 250,
+    "build": 374771,
+    "create": 451,
+    "git": 1102,
+    "inspect-cleanup": 3003,
+    "run": 9116
+  },
+  "workflowRun": 42374566498,
+  "workflowJob": 128409407533,
+  "workflowConclusion": "success",
+  "ledgerCleanup": {
+    "status": "passed",
+    "containerImageCleanupObserved": true,
+    "fullProductSuccess": false
+  },
+  "pureTests": {
+    "safe": 12,
+    "native": 13,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  }
+}
