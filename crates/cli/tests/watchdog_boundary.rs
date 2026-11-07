@@ -3,7 +3,7 @@
 #![cfg(all(feature = "runtime-service-pilot", feature = "service-pilot"))]
 
 use humanymous_cli::runtime_host::watchdog_fixture::WRITER_ENTRY;
-use humanymous_test_support::process::{
+use humanymous_platform::testing::process::{
     CaptureDeadlines, CaptureIssue, RetainedDirectPipeAttempt, await_controlled_fixture_grant,
 };
 use std::{

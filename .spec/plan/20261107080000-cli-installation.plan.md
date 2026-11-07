@@ -409,6 +409,17 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+PLATFORM-SLICE-02 Root-authorized consumer edit changes only the import in
+crates/cli/tests/watchdog_boundary.rs from humanymous_test_support::process to
+humanymous_platform::testing::process. All imported suffixes, watchdog controls,
+test behavior and authority boundaries remain identical. Source SHA256 after:
+084fa9dab254ba424f96de9fac4c80b05e05649f71a06d926c347f66d315c05f.
+There are no CLI Rust references to the old test-support/windows-object packages.
+Root alone owns all manifests/lock and frozen-file moves; no compatibility shim
+or dependency category change is authored here. Compiler, tests, Clippy, CI and
+format execution are NOT_RUN pending a coherent root allocation. No actual
+process/service/account action occurred. The lane excludes CLI manifests.
+
 Accepted eight-public-package transition handoff:
 [[evidence:root/20261107200932]] pins32current owned files, no dirty source/live
 handles/target leases/path moves, existing API/feature/authority hazards and
