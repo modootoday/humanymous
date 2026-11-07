@@ -498,7 +498,21 @@ toolchain discovery supplied a process-local PATH without disabling sandboxing;
 retry discovered73 harnesses and executed10, then failed exact unknown ignored
 child_witness_probe in audit durable_witness. Its nested summary is preserved.
 Audit owner is preparing captured subprocess output/assertions for durable_witness
-and key_backups. Neither new ignored helper is currently accepted. Raw reports
+and key_backups. The accepted next contract is limited to audit kind[test]:
+durable_witness helper child_witness_probe with parent
+witness_process_lifetime_and_interrupted_recovery; key_backups helper
+child_retire_without_pin_acknowledgement with parent
+crash_reconcile_preserves_consumed_authorization. Each requires exactly one raw
+ignored entry with that exact name, its exact parent actually passed, exit0,
+one summary with passed+1=discovered and failed/measured/filtered0. Parent captures
+child stdout/stderr with shared capture_with_stderr(deadline60s,budget64KiB),
+checks actual exit0/stderr empty/static flushed marker and signed-state/recovery
+effects. Child summaries cannot leak into parent output. Old nested-summary sources
+therefore still fail. Raw ignored helpers total4 across these three audit targets
+and never add to passed tests; no arbitrary ignored case inherits the exception.
+Runner negative tests cover absent/wrong parent/helper, extra summary, nonzero exit
+and missing test. Canonical audit implementation and actual rerun remain pending.
+Raw reports
 and all list/run/build logs remain private; sanitized failure/component summaries
 are registered in evidence:root/20261106223747. Passed workspace summaries require
 complete coverage, every row validated, zero failed/errors/skips, required count

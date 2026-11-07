@@ -1,0 +1,396 @@
+{
+  "arch": "x86_64",
+  "coverage_complete": true,
+  "documentation_examples_executed": false,
+  "errors": 0,
+  "executed_harnesses": 14,
+  "failed_tests": 0,
+  "full_runtime_qualified": false,
+  "harnesses": [
+    {
+      "discovered": 7,
+      "executable_sha256": "bce3372193a16f399fe8d36f18d734539ffad173c6c6b7eee1f45e7fe3a146c4",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 7,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "d922ad4d65126140648c4eb4a13e0ef88296f920a480fe959895aaaa43a8e83b",
+      "subprocess_helpers": null,
+      "target": "decisions",
+      "validated": true
+    },
+    {
+      "discovered": 1,
+      "executable_sha256": "617229a7ff956ca96dd7fee6012dd80ded3ac29657cb19dd2b710deb584a8f4e",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 1,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "e2fbc84d720d329eef6474d422969cdcdf139a17996f48fb4041535cb5e52aec",
+      "subprocess_helpers": null,
+      "target": "humanymous",
+      "validated": true
+    },
+    {
+      "discovered": 7,
+      "executable_sha256": "967acb21a5c430e398a17d6460a060eb42b6957e7aacbf2fee15111b37027280",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 7,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "07a8b17392fd32721567ceee750c72cf4fcd4cdedc7d9dad6a8ce05ca9ded7e9",
+      "subprocess_helpers": null,
+      "target": "humanymous_authority",
+      "validated": true
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "42afd52c37718862f01fc677ac96d3ab9688bafd4a4072b64616a1082e83efd5",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "humanymous-authority",
+      "validated": true
+    },
+    {
+      "discovered": 15,
+      "executable_sha256": "36310bed082d90d971800abcfbc9f83665a8d919a298097c17068fc8210ce73d",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 15,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "993cdca9a8a96956df783488490ad7e89da1d7b459dbc6fa6ed67d6fefb3918f",
+      "subprocess_helpers": null,
+      "target": "humanymous_cli",
+      "validated": true
+    },
+    {
+      "discovered": 10,
+      "executable_sha256": "8e8110499718243ba31c71dc1c5bc1a8792d3f308418db0d968e75e9956e2241",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 10,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "9637d0c3985b2d84d45e386347cbb6f7f4905c85f79229c442c0ddee486f5615",
+      "subprocess_helpers": null,
+      "target": "humanymous_native_security",
+      "validated": true
+    },
+    {
+      "discovered": 13,
+      "executable_sha256": "3acdb0ff694d526d9788b87cf97dd20188d303602c37773ec05caf09defa8271",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 13,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "1dcfdb19a9ea849b74463ced5ba3b0e5bc30c649e4fde3d5c53bd4aa9c6cdd50",
+      "subprocess_helpers": null,
+      "target": "humanymous_runtime",
+      "validated": true
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "e5b2d1b70ea0784c41a37a14e1b64e4b53952f369a0abf1c6415fc839cea38ba",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "humanymous-runtime",
+      "validated": true
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "b710d5497baa0636ee62f927ca00a1fa3487e224fab5de9abdc6ec61d9239359",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "humanymous-service-fixture",
+      "validated": true
+    },
+    {
+      "discovered": 3,
+      "executable_sha256": "cd293847d60625cf054652fadf5f27116521301eac0de47ae0e6b2c0492f6efe",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 3,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "51192754c59b8266906235194f5f8d1fb686be1e2d2bad7d8c94c208aa4e4ac1",
+      "subprocess_helpers": null,
+      "target": "local_service",
+      "validated": true
+    },
+    {
+      "discovered": 8,
+      "executable_sha256": "e2f4b56b4208160fc219dba36092cf91097838160f6e111efbd93dca516251c8",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 8,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "ba24a100701ec05b0373f0c69d74350e54009e8c94dba32fa9bfee34143b20f0",
+      "subprocess_helpers": null,
+      "target": "native_process",
+      "validated": true
+    },
+    {
+      "discovered": 1,
+      "executable_sha256": "ff9152b95120bb39f9ecadc9159859aa0b5fa9585fcf99595f00e9653293888b",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 1,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "5e4290559b38b58a098a8069bdf155088a6d9517cb116284f5099e62750c2bcc",
+      "subprocess_helpers": null,
+      "target": "native_process",
+      "validated": true
+    },
+    {
+      "discovered": 3,
+      "executable_sha256": "a416ac3a062b05b8858b7d8d49819c5e5f04380c904338c469cb80667502da0c",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 1,
+      "ignored_subprocess_helpers": null,
+      "passed": 2,
+      "required_not_run": [
+        "native_service_install_upgrade_rollback_and_remove"
+      ],
+      "required_parent_tests": null,
+      "stdout_sha256": "774adafb90547c3a42ab91c35271757375724a421e6a5a8bd08b6c2f17cad088",
+      "subprocess_helpers": null,
+      "target": "service_process",
+      "validated": true
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "7e7ccff721779e944c20919d07a5169313cca9794f1a8d63454d199ea78c21f7",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "service_evidence",
+      "validated": true
+    }
+  ],
+  "missing_required_cases": [
+    "local-only-admin",
+    "documentation-examples"
+  ],
+  "os": "windows",
+  "own_source_git_bytes": {
+    "crates/native-security/Cargo.toml": {
+      "canonical_git_sha256": "c119a4d812c7d00d3e1b1e5de44e33ead8c5398d7a7ecf1bf117d98017965345",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "c119a4d812c7d00d3e1b1e5de44e33ead8c5398d7a7ecf1bf117d98017965345"
+    },
+    "crates/native-security/src/lib.rs": {
+      "canonical_git_sha256": "72b4616da895650e08dd595cfb542ccb0bb26780a64104e368d857374c066a1b",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "72b4616da895650e08dd595cfb542ccb0bb26780a64104e368d857374c066a1b"
+    },
+    "crates/native-security/src/process/mod.rs": {
+      "canonical_git_sha256": "efe7784a4b5d3f878923fd66e1235bc719a3116471e7d6ce692c62ebb54becbe",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "efe7784a4b5d3f878923fd66e1235bc719a3116471e7d6ce692c62ebb54becbe"
+    },
+    "crates/native-security/src/process/windows.rs": {
+      "canonical_git_sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b"
+    },
+    "crates/native-security/src/storage/mod.rs": {
+      "canonical_git_sha256": "5ee09d86ad5e4e6e59d0b07ae4180cd2d5c0a2e6017d42ff954f981ff8ce034e",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "5ee09d86ad5e4e6e59d0b07ae4180cd2d5c0a2e6017d42ff954f981ff8ce034e"
+    },
+    "crates/native-security/src/storage/service.rs": {
+      "canonical_git_sha256": "365f949d4f78cdf6e3c922f9fc716006b7e33d912bd79f2b1defa27e4190ce61",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "365f949d4f78cdf6e3c922f9fc716006b7e33d912bd79f2b1defa27e4190ce61"
+    },
+    "crates/native-security/src/storage/windows.rs": {
+      "canonical_git_sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f"
+    },
+    "crates/native-security/src/volume/mod.rs": {
+      "canonical_git_sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956"
+    },
+    "crates/test-support/Cargo.toml": {
+      "canonical_git_sha256": "0c85873065399ed81b5d31cce03ecf3c5ca98491ad3f63bca08386c53ce56177",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "0c85873065399ed81b5d31cce03ecf3c5ca98491ad3f63bca08386c53ce56177"
+    },
+    "crates/test-support/src/lib.rs": {
+      "canonical_git_sha256": "044accbbe9550b75b72b2cd4d9ac46c6b69348897635c4982cb21d454331c0de",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "044accbbe9550b75b72b2cd4d9ac46c6b69348897635c4982cb21d454331c0de"
+    },
+    "crates/test-support/src/process.rs": {
+      "canonical_git_sha256": "dd0333c783a27ad37880a6b9537ee6efa479df2bc404b0b59aa23455eb68a8e6",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "dd0333c783a27ad37880a6b9537ee6efa479df2bc404b0b59aa23455eb68a8e6"
+    },
+    "scripts/ci/windows-native-runner/Cargo.lock": {
+      "canonical_git_sha256": "4b0c75f5e0193c9e491b12ec5361a8834a35def9f21d5208dc4de1a32d11ddb5",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "4b0c75f5e0193c9e491b12ec5361a8834a35def9f21d5208dc4de1a32d11ddb5"
+    },
+    "scripts/ci/windows-native-runner/Cargo.toml": {
+      "canonical_git_sha256": "2dd231fee4d83e01148aa59be9ab6c815a1e2d99896d570e0e2d19e23fea5d53",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "2dd231fee4d83e01148aa59be9ab6c815a1e2d99896d570e0e2d19e23fea5d53"
+    },
+    "scripts/ci/windows-native-runner/src/actor.rs": {
+      "canonical_git_sha256": "a8f1e1a0afc94dfc9322ee814235cd73af8936f23ef142ad20a5e6fb89a072e8",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "a8f1e1a0afc94dfc9322ee814235cd73af8936f23ef142ad20a5e6fb89a072e8"
+    },
+    "scripts/ci/windows-native-runner/src/actor/scm.rs": {
+      "canonical_git_sha256": "48acd4982b48d72ef457c70f2adc03623d8c237cc99257e4e71a95904280169b",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "48acd4982b48d72ef457c70f2adc03623d8c237cc99257e4e71a95904280169b"
+    },
+    "scripts/ci/windows-native-runner/src/evidence.rs": {
+      "canonical_git_sha256": "518d22315ba2ca04cdde2d25a9e109d68bceb8f09b30a91d0cc4d096704b2ab6",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "518d22315ba2ca04cdde2d25a9e109d68bceb8f09b30a91d0cc4d096704b2ab6"
+    },
+    "scripts/ci/windows-native-runner/src/fixture.rs": {
+      "canonical_git_sha256": "a88b23b5034535dceb258e9c5d93e037c0f6ed423f873a7ee599217b68257743",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "a88b23b5034535dceb258e9c5d93e037c0f6ed423f873a7ee599217b68257743"
+    },
+    "scripts/ci/windows-native-runner/src/harness.rs": {
+      "canonical_git_sha256": "26e3855c0b2cbbae30fb13c942cb0056e993e836b92e3bd15004785ebc960a27",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "26e3855c0b2cbbae30fb13c942cb0056e993e836b92e3bd15004785ebc960a27"
+    },
+    "scripts/ci/windows-native-runner/src/main.rs": {
+      "canonical_git_sha256": "018802103ee74308f81283d9bfb90d5ffbf316f9bc5ed3bab0b9f714e7f53758",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "018802103ee74308f81283d9bfb90d5ffbf316f9bc5ed3bab0b9f714e7f53758"
+    },
+    "scripts/ci/windows-native-runner/src/pilot.rs": {
+      "canonical_git_sha256": "303bece2a72bcdcb61f79cf447b64a89918b88057a700384eed5e3b493399676",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "303bece2a72bcdcb61f79cf447b64a89918b88057a700384eed5e3b493399676"
+    },
+    "scripts/ci/windows-native-runner/src/service.rs": {
+      "canonical_git_sha256": "b300a4044148a8ba953f46e1702f6220d496bc9b69de76d26d875467e5bdb4a5",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "b300a4044148a8ba953f46e1702f6220d496bc9b69de76d26d875467e5bdb4a5"
+    },
+    "scripts/ci/windows-native-runner/src/workspace.rs": {
+      "canonical_git_sha256": "9cee6fb89631353d19022b361ad0865d2768f8017ee6900ec949f9248dd3f1ad",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "9cee6fb89631353d19022b361ad0865d2768f8017ee6900ec949f9248dd3f1ad"
+    }
+  },
+  "passed_tests": 67,
+  "qualification": "component-only",
+  "raw_ignored_tests": 1,
+  "raw_report_sha256": "bf0f3d8c24d8c30c92de3e67039d6fadd478d73a7876a755130d2cd002bf1e4a",
+  "required_harnesses": 14,
+  "runner_provenance": {},
+  "schema": "humanymous.native-runner-summary/1",
+  "scope": "four-package-native-process-component",
+  "skips": 1,
+  "source_manifest_sha256": "232e1de134350d83ae1f1df3e2fd96614aa3f9d6337bd92544e1300113dbb02c",
+  "source_sha": "91f93c53c1f9c8600e4b254f3dbfcef418df2c2e",
+  "status": "blocked",
+  "unsupported": [
+    "raw-tls-h2-positive-capture",
+    "real-browser-collector",
+    "OS-service-activation",
+    "remote-machine-peer-denial"
+  ],
+  "validated_worktree_dirty": true,
+  "zero_test_harnesses": 4
+}

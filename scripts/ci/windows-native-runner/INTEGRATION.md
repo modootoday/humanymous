@@ -129,3 +129,12 @@ required parent successes, actual nested lock proof and both strict summaries.
 Native4package service-feature still returnsblocked2 with1required service test
 not_run. Parent source snapshot spans all crate source/manifests and the expected
 runner architecture must equal the compiled executable architecture.
+Audit captured-helper contract: only `humanymous-audit` integration target
+`durable_witness` helper `child_witness_probe` with parent
+`witness_process_lifetime_and_interrupted_recovery`, or `key_backups` helper
+`child_retire_without_pin_acknowledgement` with parent
+`crash_reconcile_preserves_consumed_authorization`. Require exact ignored1,
+parent passed, exit0, one summary, passed+1=discovered, no failed/measured/filtered.
+Parents must capture/assert actual child status, marker and state/recovery.
+Raw ignored helper counts remain separate from passed counts. Old nested child
+summaries fail this contract. These add two to existing custody helper count2.

@@ -192,6 +192,24 @@ pub fn execute(
             && entry["target"] == "key_custody"
             && entry["kind"] == json!(["test"])
             && package.contains("#humanymous-audit@");
+        let captured_helper = if scope == Scope::Workspace
+            && entry["kind"] == json!(["test"])
+            && package.contains("#humanymous-audit@")
+        {
+            match entry["target"].as_str() {
+                Some("durable_witness") => Some((
+                    "child_witness_probe",
+                    "witness_process_lifetime_and_interrupted_recovery",
+                )),
+                Some("key_backups") => Some((
+                    "child_retire_without_pin_acknowledgement",
+                    "crash_reconcile_preserves_consumed_authorization",
+                )),
+                _ => None,
+            }
+        } else {
+            None
+        };
         let required_service = "native_service_install_upgrade_rollback_and_remove";
         let pending = usize::from(service);
         if service
@@ -210,6 +228,8 @@ pub fn execute(
         };
         let accounting = if custody {
             custody_account(&output, count, execution.status.success())
+        } else if let Some((helper, parent)) = captured_helper {
+            captured_helper_account(&output, count, execution.status.success(), helper, parent)
         } else {
             account_pending(&output, count, execution.status.success(), pending)
         };
@@ -222,6 +242,12 @@ pub fn execute(
                 "competing_process_cannot_load_or_create",
                 "process_exit_releases_lock_and_rotation_pending_requires_recovery"
             ]);
+        }
+        if let Some((helper, parent)) = captured_helper {
+            let row = rows.last_mut().unwrap();
+            row["ignored_subprocess_helpers"] = json!(usize::from(accounting.is_ok()));
+            row["subprocess_helpers"] = json!([helper]);
+            row["required_parent_tests"] = json!([parent]);
         }
         progress["executed_harnesses"] = json!(rows.len());
         progress["harnesses"] = json!(rows);
@@ -259,6 +285,31 @@ pub fn execute(
     Ok(())
 }
 use sha2::Digest;
+fn captured_helper_account(
+    log: &str,
+    discovered: usize,
+    success: bool,
+    helper: &str,
+    parent: &str,
+) -> io::Result<usize> {
+    let ignored: Vec<_> = log
+        .lines()
+        .filter_map(|line| {
+            line.strip_prefix("test ")
+                .and_then(|s| s.split_once(" ... ignored").map(|(name, _)| name))
+        })
+        .collect();
+    if ignored != [helper]
+        || !log
+            .lines()
+            .any(|line| line == format!("test {parent} ... ok"))
+    {
+        return Err(io::Error::other(
+            "captured subprocess helper/parent inventory differs",
+        ));
+    }
+    account_pending(log, discovered, success, 1)
+}
 fn account_pending(
     log: &str,
     discovered: usize,
@@ -346,6 +397,23 @@ fn custody_account(log: &str, discovered: usize, success: bool) -> io::Result<us
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn captured_helpers_require_single_summary_exact_helper_and_parent() {
+        let good = "test helper ... ignored\ntest parent ... ok\ntest result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.1s";
+        assert_eq!(
+            captured_helper_account(good, 2, true, "helper", "parent").unwrap(),
+            1
+        );
+        for bad in [
+            good.replace("test parent ... ok\n", ""),
+            good.replace("test helper", "test unknown"),
+            format!("{good}\n{good}"),
+        ] {
+            assert!(captured_helper_account(&bad, 2, true, "helper", "parent").is_err());
+        }
+        assert!(captured_helper_account(good, 2, false, "helper", "parent").is_err());
+        assert!(captured_helper_account(good, 3, true, "helper", "parent").is_err());
+    }
     #[test]
     fn summary_rejects_skips_missing_tests_and_bad_exit() {
         let good = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.1s";
