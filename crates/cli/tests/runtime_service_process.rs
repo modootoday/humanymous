@@ -1,11 +1,11 @@
 //! Actual SCM/OS-store/ServiceHost qualification; disposable hosted actor only.
 #![cfg(all(windows, feature = "runtime-service-pilot"))]
 use ed25519_dalek::{Signer, SigningKey};
-use humanymous_runtime::authority::credentials::Credential;
 use humanymous_cli::{
     release::{Descriptor, SignedRelease, signing_bytes},
     service::{self, ServicePlan},
 };
+use humanymous_runtime::authority::credentials::Credential;
 use humanymous_runtime::native_security::process::current_identity;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
@@ -313,7 +313,8 @@ impl Fixture {
         let private = Path::new(self.metadata["configuration"].as_str().unwrap())
             .parent()
             .unwrap();
-        let sid = humanymous_runtime::native_security::storage::resolve_service_sid(&self.name).unwrap();
+        let sid =
+            humanymous_runtime::native_security::storage::resolve_service_sid(&self.name).unwrap();
         // Independently reconstruct the signed fixture's expected nonsecret input;
         // actual readiness must match the shared complete schema, not a subset.
         let expected=serde_json::to_vec(&json!({

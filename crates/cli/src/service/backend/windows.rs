@@ -65,7 +65,8 @@ impl Manager for Native {
             service
                 .set_config_service_sid_info(ServiceSidType::Unrestricted)
                 .map_err(io)?;
-            let sid = humanymous_runtime::native_security::storage::resolve_service_sid(&d.service_name)?;
+            let sid =
+                humanymous_runtime::native_security::storage::resolve_service_sid(&d.service_name)?;
             Ok(Identity {
                 configuration: fingerprint(&service)?,
                 service_sid: Some(sid),

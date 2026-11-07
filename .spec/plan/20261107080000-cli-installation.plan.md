@@ -409,6 +409,13 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Root subsequently authorized scoped rustfmt on exactly the17frozen ab08d065
+consumer files. rustfmt edition2024/skip_children=true and its check passed;
+4files changed formatting only. runtime-slice02-formatted.json under
+[[evidence:root/20261107200932]] pins all17post-format hashes. No compiler/tests/
+Clippy or other source/Cargo edits occurred. These consumer files are now frozen
+for Root's coherent consumer check; no new proof is inherited from Runtime gates.
+
 RUNTIME-SLICE-02 Root-authorized source-only CLI consumer transition changes17Rust
 files under src/tests. Existing humanymous_runtime prefixes become gateway first;
 retired authority/audit/capture/network/native_security package paths then become

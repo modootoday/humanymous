@@ -44,12 +44,17 @@ impl HostAuthorizationData {
     pub fn into_runtime_data(
         self,
     ) -> Result<
-        (HostPlan, humanymous_runtime::gateway::service::AuthorizationData),
+        (
+            HostPlan,
+            humanymous_runtime::gateway::service::AuthorizationData,
+        ),
         humanymous_runtime::gateway::service::AuthorizationDataError,
     > {
         let (plan, configuration, authorization) = self.into_parts();
-        let data =
-            humanymous_runtime::gateway::service::AuthorizationData::bind(configuration, authorization)?;
+        let data = humanymous_runtime::gateway::service::AuthorizationData::bind(
+            configuration,
+            authorization,
+        )?;
         Ok((plan, data))
     }
 }

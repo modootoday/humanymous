@@ -1,0 +1,98 @@
+{
+  "schema": "humanymous.cli-runtime-consumer-format/1",
+  "observed_utc": "2026-11-07T22:17:17.5895019+00:00",
+  "source_commit": "ab08d065fb878fd30917ebc497d73977855fd849",
+  "scope": "exact17frozenCLIconsumerfiles; rustfmt edition2024 skip_children=true",
+  "fmt_exit": 0,
+  "check_exit": 0,
+  "compiler": "NOT_RUN",
+  "tests": "NOT_RUN",
+  "clippy": "NOT_RUN",
+  "files": [
+    {
+      "path": "crates/cli/tests/service_process.rs",
+      "before_fmt_sha256": "c2ffbc93cb212c6dc9817b61e030453b2cd918e4b0b20618fd2abe1ad0c4b005",
+      "after_fmt_sha256": "c2ffbc93cb212c6dc9817b61e030453b2cd918e4b0b20618fd2abe1ad0c4b005"
+    },
+    {
+      "path": "crates/cli/tests/runtime_service_process.rs",
+      "before_fmt_sha256": "59153bdf4f0b1d627b5954742ebf6dc27cd78eb16cb3afe7686482cddf7c739b",
+      "after_fmt_sha256": "d2dd6db5dc9b890abf532479c78632b478261f1cc8336183038b9fccc5b169fe"
+    },
+    {
+      "path": "crates/cli/src/service/storage.rs",
+      "before_fmt_sha256": "7d7a5cd4ed0aee527f5052c7ea21925f261232edbd4d3fc4b817eac7cb95cd7e",
+      "after_fmt_sha256": "7d7a5cd4ed0aee527f5052c7ea21925f261232edbd4d3fc4b817eac7cb95cd7e"
+    },
+    {
+      "path": "crates/cli/src/installation/tests.rs",
+      "before_fmt_sha256": "60b390d23dca49678ae87a988516d89b981d286943cf893833c92d84b2d78cbc",
+      "after_fmt_sha256": "60b390d23dca49678ae87a988516d89b981d286943cf893833c92d84b2d78cbc"
+    },
+    {
+      "path": "crates/cli/src/service/backend.rs",
+      "before_fmt_sha256": "cd097237e9dbfb47c91775f2a3a5bcc3bf28a42cb7c444f3801746b3428f0363",
+      "after_fmt_sha256": "55714fd4b62b9932baddf94cdf54a8d41c48e9a8204ad0d62a46bbd1d837186e"
+    },
+    {
+      "path": "crates/cli/src/service/backend/windows.rs",
+      "before_fmt_sha256": "a79ae30bff5539902cecb37503e5500f45ac2f89c52fab56229d6db799e63858",
+      "after_fmt_sha256": "7fb592d9f43092cc7f59f394eece67fb25f9479e49f04050ff40692ae000097f"
+    },
+    {
+      "path": "crates/cli/src/installation/permissions/windows.rs",
+      "before_fmt_sha256": "c8d31041e252e2a294b7c8f72995a0298d0fdf59c935c4067d71d03e49c50f48",
+      "after_fmt_sha256": "c8d31041e252e2a294b7c8f72995a0298d0fdf59c935c4067d71d03e49c50f48"
+    },
+    {
+      "path": "crates/cli/src/installation/mod.rs",
+      "before_fmt_sha256": "604179b95e46e25243867a1a98bfd0068d2e921c8c308eefe1fa79b194b7d6c1",
+      "after_fmt_sha256": "604179b95e46e25243867a1a98bfd0068d2e921c8c308eefe1fa79b194b7d6c1"
+    },
+    {
+      "path": "crates/cli/src/installation/permissions/mod.rs",
+      "before_fmt_sha256": "90c365f251d307534c3dd0e76ea8f2506ce387e221951f71aea01f4108ab7342",
+      "after_fmt_sha256": "90c365f251d307534c3dd0e76ea8f2506ce387e221951f71aea01f4108ab7342"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/activation.rs",
+      "before_fmt_sha256": "4c91812c50d02b26a8d18587428791242dfc4c2dc0b751479ff2b898568e0a6d",
+      "after_fmt_sha256": "4c91812c50d02b26a8d18587428791242dfc4c2dc0b751479ff2b898568e0a6d"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/control.rs",
+      "before_fmt_sha256": "f01773999f030e826c250252483c394b9b7c87d9c4f762297fee9a1f4050593b",
+      "after_fmt_sha256": "f01773999f030e826c250252483c394b9b7c87d9c4f762297fee9a1f4050593b"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/failure.rs",
+      "before_fmt_sha256": "095c5c6842ae6f139ffb907e5200558110e6ae883d2e175d9e6fc36517c2141d",
+      "after_fmt_sha256": "095c5c6842ae6f139ffb907e5200558110e6ae883d2e175d9e6fc36517c2141d"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/input.rs",
+      "before_fmt_sha256": "a7468df2c95a28650544763d9df7c6dbf0e66211a335064ef60879b98e644c16",
+      "after_fmt_sha256": "9691bba6a8679db192c183bd27779671c101136ade57029f20942eacddc4b963"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/mod.rs",
+      "before_fmt_sha256": "b13305c020fe47cd7236dabae19b5cd1802bb32f56bad515f8aca7672082a83d",
+      "after_fmt_sha256": "b13305c020fe47cd7236dabae19b5cd1802bb32f56bad515f8aca7672082a83d"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/plan.rs",
+      "before_fmt_sha256": "86ccf0dbacd2346d0f0a803eaf7576e13dc6cca5826c9e072355bd19a1b7ed59",
+      "after_fmt_sha256": "86ccf0dbacd2346d0f0a803eaf7576e13dc6cca5826c9e072355bd19a1b7ed59"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/watchdog_fixture.rs",
+      "before_fmt_sha256": "2d97ce672a9c4d22c3f251cf2e38055657c26670938a5075a839c798cfc2b801",
+      "after_fmt_sha256": "2d97ce672a9c4d22c3f251cf2e38055657c26670938a5075a839c798cfc2b801"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/pilot.rs",
+      "before_fmt_sha256": "cbe5a9483dd48182a2fc26feae8124e3102f11092592338fc18797b345f838af",
+      "after_fmt_sha256": "cbe5a9483dd48182a2fc26feae8124e3102f11092592338fc18797b345f838af"
+    }
+  ]
+}
