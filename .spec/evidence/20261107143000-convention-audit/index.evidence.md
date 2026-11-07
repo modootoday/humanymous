@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 2242d69df6d42dd1439b42b69853738437568c7c3d0aa6a470408202357a9c15, bytes: 54340, store: repo}
+  - {path: baseline.json, sha256: 0f72ee843c318bb3e259c85cc6735dfd92f308c6dcfa13f9f03f88bacb19347d, bytes: 55489, store: repo}
 ---
 
 # Convention audit baseline
@@ -682,3 +682,24 @@ remain OPEN. Prior29 pure cases do not qualify a future graph. Registry/command
 test fixtures were not exhaustively rereviewed and no workload was started.
 Exact source hashes and scope are retained in the private review bound by baseline.
 Complete migration qualification remains OPEN.
+
+## Delivery archive and publication boundaries
+
+Selected sections across six Delivery files were independently reviewed: graph/
+safe-files, native archive producer, Cargo receipt identity, member/known-notice
+verification and hosted admission. No new confirmed defect is found. Missing,
+duplicate, nonregular, size/hash-mismatched expected members refuse; known notice
+bytes are bounded/exact and gzip footer is drained. Bound native build receipts
+require exactly two executable identities and an unchanged source window.
+
+Two candidates are explicitly not defects: normal/build/dev path-dependency
+publication closure is the documented stricter project policy; extensionless
+native receipt paths belong to the Linux-x64 hosted archive caller, not a Windows
+support claim. Unbound previews report build-source proof false and never claim
+full product/release readiness. First tar/gzip stream, trailing/concatenated data,
+general extraction and exhaustive secret detection remain distinct limitations.
+CA-NOTICE-01 actual binary archive/final image gates remain OPEN. Consolidation
+must update exact package IDs/selectors/receipt paths/notices/source inventories
+together and cannot inherit old receipts. This is bounded section review, not
+complete six-file/test conformance or new artifact/image execution. Exact review
+hashes are bound in baseline.json; the full migration audit remains OPEN.

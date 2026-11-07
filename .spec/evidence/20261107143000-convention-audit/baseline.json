@@ -1051,5 +1051,17 @@
     "remaining": "Newgraph/typeidentity/features/artifact and dynamicload/wrongABI/unload/OSarchitecture/C++ qualification, fresh receipts, no old29inheritance",
     "new_audit_workload": 0,
     "goal_complete": false
+  },
+  "followup_delivery_archive_boundaries": {
+    "private_review": "delivery-archive-boundary-review-001.json",
+    "private_review_sha256": "96f78ffa0e8cc2431e65f15cb1aee3b2454f747957ceaa9360adf594d7c182f5",
+    "scope": "Selected graph/safefiles/nativearchive/receipt/member/notice/hostedadmission sections of6files; not full6file/test coverage",
+    "new_confirmed_defects": [],
+    "source_invariants": "Knownmembers missing/duplicate/nonregular/size/hash refuse, knownnoticeexactbound, gzipfooterdrained, exact2Cargoexecutableidentity/sourcewindow, Linuxx64 hostedarchive gate",
+    "false_positive_candidates": "All normal/build/dev pathdependencies are deliberate stricterpublicationpolicy; extensionless paths are Linuxscope, not Windows support",
+    "limits": "Firsttar/gzipstream only, explicitdenylist not universal secret detection, unbound preview buildsourcefalse/fullproductfalse/releasereadyfalse",
+    "remaining": "CA-NOTICE-01 actualbinaryarchive/finalimage verification and consolidatedgraph selectors/receiptpaths/packageIDs/notices/sourcewindow, no inheritedproof",
+    "new_audit_workload": 0,
+    "goal_complete": false
   }
 }
