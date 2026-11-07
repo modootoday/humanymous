@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 591efd141efeab098551a819fa93345602372ece9dcaa324abc0c17ad696d11a, bytes: 58774, store: repo}
+  - {path: baseline.json, sha256: 4e7ec8741faf4246194f8c024b2d2d18a56b2ba8204cf4b7b6f2906a3c6ed5ac, bytes: 59932, store: repo}
 ---
 
 # Convention audit baseline
@@ -750,3 +750,18 @@ has no path move, package/import rename, structural worktree/branch, push/refsyn
 new crate or speculative shim in flight and adopts no new topology. Existing
 owned-path audit/prose follow-through continues. Exact source review hash is in
 baseline.json; this gate does not cancel or complete the full migration audit.
+
+## ASGI source-overclaim closure
+
+CA-ASGI-DROP-01 is CLOSED only for the misleading comment/contract. Durable
+8cc24ee7 changes the comment before StateMutexlock and updates owning SoT/
+Integration to state mutex/GIL blocking, interpreter-state panic, loop execution
+and failed scheduling uncertainty. No executable statement, runtime API, unsafe,
+dependency, topology or ref changed. try_attach is not claimed a bounded fix.
+Six named future controls cover mutex/GIL contention, interpreter shutdown/GC,
+stopped loop and schedule failure, each still NOT_RUN with independent original
+budget/supervision and retained owner/permit requirements. Existing three Future
+completion controls do not test GuardDrop. Global CA-HANDOFF/CA-LIFETIME and
+actual SDK/native/product gates remain OPEN. This prose correction needs no new
+runtime test; exact reviewed hashes are in baseline.json. The user topology
+confirmation gate remains honored and the complete audit remains active.

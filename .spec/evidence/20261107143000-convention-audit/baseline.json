@@ -172,7 +172,7 @@
       "id": "CA-ASGI-DROP-01",
       "priority": "P2",
       "owner": "Framework adapters/root",
-      "state": "CONFIRMED source comment overclaim; current-path prose/SoT correction requested; GIL/loop teardown and broad lifetime/handoff gates OPEN",
+      "state": "CLOSED scoped source-comment/SoT overclaim at8cc24ee7; executable behavior unchanged. Actual teardown/CA-HANDOFF/CA-LIFETIME gates remainOPEN",
       "trigger": "GuardDrop states no blocking wait, but stdMutex::lock/Pythonattach and loopmethod invocation can block orpanic",
       "actual_hang_or_shutdown_failure_observed": false,
       "private_review_sha256": "f6eb3d45f523e8b318ab5972e30aed2130e506fb89450713242e57e33ea42893"
@@ -1114,6 +1114,27 @@
     "user_confirmation_gate": "Root relayed explicit userconfirmation required before package/path restructuring and allbranchsync; proposed graph unaccepted, no adoption by audit",
     "inflight_structure_or_ref_mutations": 0,
     "new_unsafe_deps_shim_or_SDKrun": 0,
+    "goal_complete": false
+  },
+  "followup_asgi_drop_prose_correction": {
+    "private_review": "asgi-drop-prose-followup-002.json",
+    "private_review_sha256": "7b133275183269b969784a02bc221785e6d0326a35e71730fdac30a6ec40335a",
+    "owner_commit": "8cc24ee7616a60b521d8b7276a4151cffa30ed0f",
+    "source_statement_change": "Comment before StateMutexlock now explicitlybest-effort, mutex/GILmayblock, unsupportedinterpreterstatesmaypanic, loopmethodPython/schedulingfailure, not terminalsettlement",
+    "executable_change": false,
+    "scope": "Sourcecomment+SoT+Integration truthfulness only, no lifecycle/runtime implementation qualification",
+    "future_controls": [
+      "asgi_drop_contended_state_mutex",
+      "asgi_drop_contended_gil",
+      "asgi_drop_interpreter_shutdown",
+      "asgi_drop_gc_traversal",
+      "asgi_drop_stopped_loop",
+      "asgi_drop_schedule_failure"
+    ],
+    "actual_future_controls": "NOT_RUN; independentbudget/supervisor/retainedownerpermit exactdesign and admittedSDK required",
+    "existing_three_future_controls_do_not_test_guard_drop": true,
+    "topology_gate_honored": true,
+    "new_audit_workload": 0,
     "goal_complete": false
   }
 }
