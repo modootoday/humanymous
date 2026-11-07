@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T10:57:42Z
+updated: 2026-11-07T11:24:17Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -11,6 +11,7 @@ files:
   - {path: apache-workflow-review.json, sha256: 822d27f101456cd6888327410ae3fe97c38d4376e7c140f5c25ba07d73781c9a, bytes: 945, store: repo}
   - {path: pages-8624b57-summary.json, sha256: 68c72b8bf92dd11e7acd0f10c68d2779f5abaee2b08ce3e8f1427777e72c4079, bytes: 2857, store: repo}
   - {path: go-438a3fee-summary.json, sha256: d0c9cff601c48cfd11c6c978138006b352cd446d155ebf02451453e2caefdd6e, bytes: 5911, store: repo}
+  - {path: pages-44876534-archive-summary.json, sha256: 75bf113b3a71d9eecf3e2a6d668909e906e2f0d17a9caa5f3de897f794e5fd8c, bytes: 4478, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -200,3 +201,15 @@ b29903d49f5bdeda8583e174c2cd9a1b74d385c26cd5545db6b35638f7dde502.
 No SDK/native GUI/process/Docker or fresh complete-site archive ran locally.
 The attached Go first-run terminal summary preserves eight NOT_RUN and an
 unknown private compiler cause; successful prior units do not qualify Go8.
+
+## Fresh public-site archive execution
+
+The attached pages-44876534-archive-summary.json records actual successful run
+42367274252, two successful jobs and zero artifacts. Preflight delivery65 and
+Pages37 passed; both base builds and both package/second-consumer checks passed
+with unchanged clean source and 165 public files per archive. Owning review
+counts are 88 rendered pages per base with zero errors. Private decoded capture
+index SHA256 is f224faca4b6fc7a3b336d750c1c99066eb23a19eea05a25ec05a8bc01d99b1cd.
+Exact tar/manifest/inventory hashes are retained in the safe summary. Actual
+tar bodies were not acquired, branch uploads stayed off, and main serving
+transfer/browser/AT/full documentation review freshness remain unqualified.

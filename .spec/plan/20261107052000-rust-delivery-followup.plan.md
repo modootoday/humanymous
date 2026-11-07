@@ -508,3 +508,18 @@ same checked addition and atomic orderings; its new immutable Unix check and
 strict Clippy both passed. That fix is an ancestor of the next CI checkpoint.
 The original private Docker transcript remains unrecovered; the separate
 reproduction and new-source proof do not rewrite the first hosted observation.
+
+Fresh Pages run 42367274252 at immutable 44876534 completed successfully.
+Independent REST verification found two successful jobs and zero artifacts.
+Actual preflight counts were delivery65 and Pages37, all zero failed/ignored/
+filtered, plus strict Clippy and policy success. The owning Pages review reports
+88 rendered pages per base and zero errors. Final safe metadata confirms all
+eight install/audit/build/package/consumer stages succeeded, clean unchanged
+source, and 165 public files in each archive. Both use input SHA256
+836e77d2565e8ee0ff6b0cec7f4a32c8a2e8fefb69a202c45615a62b05ed03c8;
+tar/manifest/inventory hashes remain variant-specific in the attached summary.
+Decoded private log/REST captures have registered index SHA256
+f224faca4b6fc7a3b336d750c1c99066eb23a19eea05a25ec05a8bc01d99b1cd.
+No archive body was retrieved or automatically uploaded. Main serving transport,
+browser/AT, substantive review freshness and full-product qualification remain
+unrun/unqualified; the historical 8624 artifact failure remains separate.

@@ -1,0 +1,122 @@
+{
+  "schema": "humanymous.pages-archive-hosted-evidence/1",
+  "run_id": 42367274252,
+  "attempt": 1,
+  "source_sha": "448765343b14e6e138dede756fecc4178a3820e4",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs_total": 2,
+  "artifacts_total": 0,
+  "preflight": {
+    "job_id": 128387880307,
+    "delivery_passed": 65,
+    "pages_passed": 37,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "all_target_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "build": {
+    "job_id": 128388470734,
+    "owning_pages_review": {
+      "apex_pages": 88,
+      "subpath_pages": 88,
+      "rendered_html_each": 88,
+      "errors_each": 0
+    },
+    "safe_delivery_summary": {
+      "assistive_technology_qualified": false,
+      "browser_qualified": false,
+      "deployment_performed": false,
+      "full_product_qualified": false,
+      "packages": {
+        "apex": {
+          "archive_sha256": "c12cd2ec27c4a00544e4030333d7a9ba90b241fb8814de7a3227c3c3aaa7c10d",
+          "inventory_sha256": "905a992e58373ef8ad9dbd3fe69b8152043a13f09e6836448a50d2fbf09120b3",
+          "manifest_sha256": "0f5928634b448cc7eb6a41e4d4534856dfa8b4b8f3c24502d829c0a755a7b4be",
+          "manifest_source_input_sha256": "836e77d2565e8ee0ff6b0cec7f4a32c8a2e8fefb69a202c45615a62b05ed03c8",
+          "owner_archive_check_outcome": "success",
+          "public_files": 165,
+          "status": "observed"
+        },
+        "subpath": {
+          "archive_sha256": "72502203e9fa4bbf82989885d5f48de86533e5531ac4ca6e6760565c61d0e442",
+          "inventory_sha256": "220d0b8873aefa4e9b6946b50def925252d7510f19429cf7ec24a68c48a7970a",
+          "manifest_sha256": "38f23deed72578392ccab8b6fa90845537b6892daff888ad64ecaceedbd1f6d3",
+          "manifest_source_input_sha256": "836e77d2565e8ee0ff6b0cec7f4a32c8a2e8fefb69a202c45615a62b05ed03c8",
+          "owner_archive_check_outcome": "success",
+          "public_files": 165,
+          "status": "observed"
+        }
+      },
+      "schema": "humanymous.pages-build-summary/1",
+      "serving_transfer_roundtrip": null,
+      "source": {
+        "cargo_lock_sha256": "339aa10ba586aa534fccfb0a4b1ebfe9aec0730be0e8304acbb167d2c02e2443",
+        "config_sha256": "c0734b7901aceadea297d50cdd39788087c4e3ab659120f32187da182a606f8e",
+        "docs_dirty": false,
+        "docs_git_tree": "c434ddf5a968f5e7d25c445eb0ca86c207c152e4",
+        "gemfile_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+        "rust_source_dirty": false,
+        "rust_source_manifest_sha256": "f368d586579bef600cdcb06918c932bb838157a59dfe9acde7723f4de6b68515",
+        "source_sha": "448765343b14e6e138dede756fecc4178a3820e4"
+      },
+      "source_unchanged": true,
+      "stages": {
+        "apex": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "archive_apex": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "archive_subpath": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "bundle_audit": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "bundle_install": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "package_apex": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "package_subpath": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "subpath": {
+          "exit_code": 0,
+          "outcome": "success"
+        }
+      },
+      "status": "passed",
+      "validation_scope": "two base URLs; trusted step outcomes only, no mixed log parser"
+    }
+  },
+  "qualification": {
+    "fresh_public_site_serialized_archive_checks": "passed for both base variants",
+    "automatic_branch_uploads": "disabled; actual artifacts zero",
+    "serving_artifact_transport": "not_run; main-only path",
+    "downloaded_artifact_qualified": false,
+    "browser_qualified": false,
+    "assistive_technology_qualified": false,
+    "full_documentation_review_freshness_qualified": false,
+    "full_product_qualified": false,
+    "deployment_performed": false
+  },
+  "evidence": {
+    "capture_kind": "saved GitHub connector decoded REST JSON and job log text; not HTTP wire bytes",
+    "individual_captures_registered": true,
+    "private_capture_index_sha256": "f224faca4b6fc7a3b336d750c1c99066eb23a19eea05a25ec05a8bc01d99b1cd",
+    "original_site_tar_and_manifest_bodies_retrieved": false,
+    "whole_run_archive_sha256": null
+  }
+}
