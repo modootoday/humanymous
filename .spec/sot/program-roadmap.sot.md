@@ -21,6 +21,26 @@ freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
+### Integration delta after the 17:27 snapshot
+
+This table supersedes the corresponding older status below; it does not replace
+the final candidate gates or imply that changing inputs retain previous proof.
+
+| Area | Verified progress | Remaining gate |
+| --- | --- | --- |
+| Delivery graph | 0954deb8 adds only the existing native-security workspace/lock edge; locked offline no-deps metadata passed | Header frontend compilation, private receiver parent and hosted execution |
+| Collector transport | c66c5ca2 uses empty Request referrer with same-origin policy; 26 native library tests, WASM check, WASM all-target strict Clippy and format check passed | Actual wire Origin/Referer and repaired-source Docker product run; native tests do not execute the browser fixture |
+| Original browser failure | Exact pre-fix diagnostic e70edeeb pushed once; run42402268161 observed in progress at preflight, job128492411204 | Observe the same handle to terminal and classify the actual assertion; no retry or inferred original cause |
+| Native/.NET deadlines | Root reviewed35ec950d stored original-deadline forwarding; consumer snapshot20261108042000 removes replacement deadline arguments | Combined source review and scoped compilation/tests; pure ledger conservation is not retained-process qualification |
+| GPU policy | 2ad0d6a7 incorporates independent safety review: original deadlines, retained uncertain work, bounded non-secret uploads, CPU authority and workload-specific selection | All actual backend, hardware, parity, performance and recovery qualification remains open; no GPU activation or new dependency admitted |
+| Local CPU model study | Owner reports both32-attempt arms terminal, each30 complete/2 incomplete; foreground server stopped before original deadline | Canonical raw closure and independent quality review; these totals do not prove safe answers or benefit |
+
+ABI has one separately bounded jobs1 validation allocation for its29 candidate
+pure tests/check/Clippy on its exclusive physical target. Allocation is not an
+execution or pass receipt. Native/.NET must return the combined frozen filters,
+counts and selected closure before a separate allocation. Hosted browser
+diagnostics and later repaired-source product proof remain distinct runs.
+
 Snapshot: 2026-11-07T17:27:03Z. The preceding checkpoint is retained below as
 history; its queued/running descriptions are not current status. Component
 receipts qualify their exact inputs, not the final migration candidate.
