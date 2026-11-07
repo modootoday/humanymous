@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/src/protocol/framing.rs",
+  "sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete shared local HTTP head/entity decoder:16384delimiter-inclusive header bytes/100headers, singleton-only duplicate refusal, ASCII framing and forbidden coding/TE/trailer/Expect/upgrade, canonical decimal length, exact bounded entity without EOF, buffered extra refusal and caller-owned deadline. Source review corrects overbroad public duplicate/trailing claims; no execution or new generic wire.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
   "source": "adapters/ruby/host-pilot-contract.json",
   "sha256": "1edd3f31e58bf54625d8d1cce15a3d919a1c9041aabde7d13eba8837d2526521",
   "reviewer": "codex/rust-pages",

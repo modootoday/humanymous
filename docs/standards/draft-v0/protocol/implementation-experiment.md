@@ -25,11 +25,25 @@ per request. It has no TCP fallback or administration method. Authentication
 checks the real operating-system peer and a separately provisioned scoped
 bearer credential; forwarding headers do not establish locality.
 
-The service header bound is 16384 bytes, JSON envelope bound 1600000 bytes and
+The service header bound is 16384 bytes including the terminating delimiter,
+with at most 100 service headers. The JSON envelope bound is 1600000 bytes and
 response bound 65536 bytes. Host, Authorization, `Content-Type: application/json`
-and exact Content-Length are required. Repeated service-envelope headers,
-ambiguous framing, upgrade/trailer forms and truncated/trailing frames reject.
+and exact Content-Length are required. Repeated Authorization, Host,
+Content-Length, Content-Type and Connection headers reject; other service-header
+duplicates remain ordered input for the handler's policy. Transfer-Encoding, TE,
+Trailer, Expect and Upgrade reject. Content-Length uses unsigned decimal without
+leading zeroes, except the single digit zero. Service header names are ASCII
+tokens; values are ASCII with permitted horizontal tabs trimmed at their edges.
 These are service framing rules, not a claim to preserve arbitrary origin bytes.
+
+The decoder rejects truncated input and bytes already buffered beyond the declared
+entity. It reads the exact entity without waiting for EOF; it does not prove that
+no additional bytes could arrive later. The caller closes the connection and
+does not interpret a second response. Request Connection values of close or
+keep-alive are syntactically accepted, but do not enable persistent multiplexed
+service requests; responses require Connection: close. Callers supply the
+whole-connection deadline; framing alone does not
+install a timer.
 
 ## JSON model
 

@@ -1547,3 +1547,15 @@ failure refuse admission; real server callback/deadline/GC/GVL remain unqualifie
 Two manual receipts; native.rs/hosted.rs excerpts do not renew whole-file reviews.
 Audit owner accepted earlier custody-helper issue; fix pending, no current-source
 execution claimed. Continued source-only work during benchmark quiet window.
+
+### Experimental HTTP framing corrections from actual decoder
+
+Read complete authority protocol/framing plus exact protocol response/header
+call sites. Corrected overbroad prose: only five singleton header names reject
+duplicates; ordinary service duplicates remain handler-policy input.16384includes
+delimiter and100service headers, canonical decimal lengths, ASCII token/value
+and forbidden TE/coding/trailer/Expect/Upgrade stated. Buffered trailing bytes
+reject but decoder does not await EOF/prove absent later bytes; caller closes,
+responses require close while requests accept close/keep-alive, deadline owned
+by caller. Added one manual receipt for complete decoder only, not partial parent
+protocol/configuration modules. No implementation/scoring/generic wire changed.
