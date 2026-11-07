@@ -285,3 +285,20 @@ Native/W producer, actual receipt/bounded transport, native monitor cancel/join,
 atomic kernel effects and Runtime-private Ready remain unimplemented/unqualified.
 No new Cargo edge, unsafe or OS mutation. Prior native IPC results stay historical
 for their earlier source and are not silently extended by these21pure cases.
+
+## Encoded inline-secret ownership remediation 2ca6e4fa
+
+Audit hmac_key_hex/signing_seed_hex now use Zeroizing<String> from deserialization;
+preflight refusal retains zeroizing ownership, and successful handoff takes those
+wrappers directly. JSON stays string-compatible; direct Rust field construction
+requires Zeroizing<String>. No consumer literal migration was found. No Debug/
+Serialize, inline production promotion or private/witness preflight reordering.
+Original caller JSON and serde/transport/provider copies are NOT erased by these
+field types; no universal RAM claim. Regression covers typed retained ownership
+and same-allocation handoff, without freed-memory inspection.
+
+Actual local Windows pure22passed0failed/ignored/filtered, all-target check/strict
+Clippy/scoped fmt passed with Network306eedc8;4632inputs/96packages unchanged.
+Earlier dependency compile failure (absent signals root exports) remains recorded,
+not retroactive green. Receipt: encoded-key-retry.json in owning public evidence.
+No native IPC/key provider/store/account/SCM/Ready execution in this batch.

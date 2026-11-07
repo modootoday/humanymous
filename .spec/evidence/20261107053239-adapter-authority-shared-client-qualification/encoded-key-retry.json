@@ -1,0 +1,68 @@
+{
+  "schema": "humanymous.authority.encoded-key-validation/2",
+  "authority_source": "2ca6e4fa",
+  "network_source": "306eedc8",
+  "head_at_start": "eec7a7970c118cac065db3858dabef1c7002b8c6",
+  "dependency_binding": "captured source/registry/config/tool closure, not clean whole-workspace assertion",
+  "venue": "local Windows x86_64-pc-windows-msvc rustc1.99.1",
+  "allocation": "returned exclusive warm validation-authority jobs1 incremental0 locked offline",
+  "admission": {
+    "free_physical_gib": 32.91,
+    "commit_percent": 81
+  },
+  "packages": 96,
+  "inputs": 4632,
+  "changed_inputs": [],
+  "library": {
+    "exit": 0,
+    "passed": 22,
+    "ignored": 0,
+    "failed": 0,
+    "filtered": 0
+  },
+  "check_all_targets_exit": 0,
+  "clippy_all_targets_exit": 0,
+  "fmt_scoped_exit": 0,
+  "regression": "startup::tests::inline_preflight_refusal_retains_zeroizing_keys_for_later_owned_handoff",
+  "first_failure": "encoded-key-first-failure.json remains failed exit101/tests0 at prior dependency graph",
+  "limits": [
+    "CA-SECRET-01 encoded-field ownership and preserved preflight verified; no universal-copy/RAM erasure proof",
+    "no actual native IPC/key store/SCM/account/producer activation",
+    "new-source hosted/native/product gates remain separate NOT_RUN"
+  ],
+  "reservation": "returned terminal; no owned validation process",
+  "raw": [
+    {
+      "name": "keys22-retry-tree.log",
+      "sha256": "8f04ab8ee5e0d7fe35ee5530b63f393d3741d2e68e9e0cbbd0679b7bc60ae90d"
+    },
+    {
+      "name": "keys22-retry-metadata.json",
+      "sha256": "8e5db1ef4f9a60b1981e1b115ee3d57a1cc1d2975f6066e2c16997c3b0bc2934"
+    },
+    {
+      "name": "keys22-retry-before.json",
+      "sha256": "36d2b18318ee1ea5a2c89b4e2f60a0d65da7e2ade7a705d3acff9be64fea29ed"
+    },
+    {
+      "name": "keys22-retry-after.json",
+      "sha256": "43495fd47d6d62278f206e14ef2c4fad943d86969ca0b533980676e7f492e775"
+    },
+    {
+      "name": "keys22-retry-lib.log",
+      "sha256": "31b36cba5d815f08fbe31312ae9e7629c2dcf882451623861323d0f4bb050329"
+    },
+    {
+      "name": "keys22-retry-check.log",
+      "sha256": "97688aa69172f8f0830c51c3c04dbe2ae1ada97877fbc5d2b209075f2d24390f"
+    },
+    {
+      "name": "keys22-retry-clippy.log",
+      "sha256": "c3b2c16cc460bdb115c4c18d23f0fa087545ca34217dde32139f6a85be119571"
+    },
+    {
+      "name": "keys22-retry-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

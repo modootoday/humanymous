@@ -840,3 +840,18 @@ SCM execution. Reservation returned terminal, no owned process. Root and Network
 owner received the concrete source dependency blocker; no foreign edit or guessed
 export/overlay fallback. Corrected dependency source must be frozen and separately
 revalidated; historical21pure cannot close CA-SECRET-01's validation gate.
+
+## Encoded-key corrected-source retry terminal success
+
+Root authorized retry of the SAME batch after Network canonical imports0429731c
+and frozen doc-only successor306eedc8. No new approval loop, foreign edits or
+signals export fallback. New admission81percent/free32.91GiB; Authority2ca6e4fa and
+Network306eedc8 plus captured actual graph. Library22passed0failed/ignored/filtered,
+all-target check0, strict Clippy0 and scoped fmt0. All4632source/registry/config/tool
+inputs across96packages stayed unchanged. Public encoded-key-retry.json binds
+exact source/head/raw hashes; private snapshots/logs attached. Prior failed
+compile101/tests0 remains separately preserved in encoded-key-first-failure.json
+and d3e03749. This closes CA-SECRET-01's scoped pure/check/lint validation gate;
+no all-copy/RAM erasure claim. Native/store/IPC/SCM/account/producer activation and
+new-source hosted/product verification remain NOT_RUN. Target returned terminal,
+no owned validation process. Root notified before evidence commit for CI handoff.
