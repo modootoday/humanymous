@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T20:55:20Z
+updated: 2026-11-07T21:50:20Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -40,11 +40,12 @@ files:
   - {path: core-slice-01-client-consumer.json, sha256: d3c35979f4e7fe31eb6a0f225fc28bbeff60a53c56525c6f22c06619fd0fd2ad, bytes: 595, store: repo}
   - {path: hosted-browser-component-9586f7e4-failure-join.json, sha256: 4bff70d633c19bfd08cf7871151cf7a56f78a408da8e4186798c0bbc35cfaced, bytes: 2400, store: repo}
   - {path: hosted-browser-product-9586f7e4-bootstrap-failure.json, sha256: 56b403924ba97b12d10b3ef7790a73afc50218512d4a2a1b3fda75140a7c5ddb, bytes: 2882, store: repo}
-  - {path: source-execution-index.json, sha256: 58c510f0ba22dfe569528c059a7e6e8e6b31e3cf97ff775b56cee156d77849d2, bytes: 7275, store: repo}
   - {path: bootstrap-subfailure-parser-contract.json, sha256: aec4f836ab57b087e722b5febc357d1045674b24864f08d9b881a1cbfe42b146, bytes: 2456, store: repo}
   - {path: bootstrap-subfailure-parser-checks.json, sha256: bd9e5902a807296ab54c31abff1b3d6608eea54df2e994efb2ee167d71ea9a9f, bytes: 1390, store: repo}
   - {path: platform-slice-02-lab-consumers.json, sha256: 8d7acac525e32bb505566f9d9d917eeb6a4ec8d786672d02f24cc61a436f1062, bytes: 5202, store: repo}
   - {path: platform-slice-02-lab-format.json, sha256: 4f425997bc37e3489304c1b469244ca4787c7dccd003e6489421b78973fb3644, bytes: 961, store: repo}
+  - {path: hosted-browser-1f87d310-http-forbidden.json, sha256: 469d806b3debd14e675d4555d20733135b0271b4cb898259e908595df45376cc, bytes: 3350, store: repo}
+  - {path: source-execution-index.json, sha256: 4556973e4028190b5dd9ed9201e03e20e508b9ab41cad9d8c7e4155341527b85, bytes: 7787, store: repo}
 ---
 
 # Container test environment research

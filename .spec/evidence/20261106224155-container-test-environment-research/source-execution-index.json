@@ -131,6 +131,15 @@
       "result": "failed_bootstrap_panic",
       "facts": "18assertions16pass2fail. Finite browser_panic_bootstrap identifies fixed c61 runtime_pilot.rs line22;DNSsucceeded67/1/66matched,process exit1. Inner bootstrap failure and original e70 cause unknown;fullfalse.",
       "evidence": "hosted-browser-product-9586f7e4-bootstrap-failure.json"
+    },
+    {
+      "source": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "run": 42415763028,
+      "job": 128534175499,
+      "profile": "browser_product",
+      "result": "bootstrap_http403",
+      "facts": "PreflightLab36/Delivery116/Go10+1/facade2+2+2/Unixcheck/Clippy/policy passes. Product18/16pass2fail, finite browser_bootstrap_http_forbidden;DNSsucceeded67/1/66matched. Nested runtime403reason unknown;originale70cause notinferred.",
+      "evidence": "hosted-browser-1f87d310-http-forbidden.json"
     }
   ],
   "unmeasured": [
