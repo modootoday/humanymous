@@ -200,3 +200,21 @@ Direct rustfmt and whitespace check passed; no local process/IPC test executed.
 Public spec check at this checkpoint returned1 E1 from runtime's concurrently
 changed source-commitments.json attachment and1 pre-existing binary U2 warning.
 Owner notified; no modification or waiver of other-owner evidence. No pass claim.
+
+## Reopened source-bound unit qualification
+
+Root integrated the authority zeroize lock edge. Read private execution summary
+shared-language-integration-38.json in evidence:root/20261106194410, execution
+HEAD d3d5a839fb2621b0316ed1629e86aa861f0c5bae. Locked pure lib counts:
+authority10, integrity22, framework6, failed/ignored/filtered0; scoped lib
+Clippy-Dwarnings passed. Authority credentials/configuration SHA256 exactly
+match the retained execution record at this observation. Raw console output was
+not recovered as a file: summary/tool-output evidence only, explicitly limited.
+Actual IPC and host pilot remain NOT_RUN. Do not count38 as authority tests.
+
+Native fixture now owns the child in its Process RAII wrapper immediately after
+spawn, before provisioning/readiness parsing; all panic paths kill and wait via
+Drop, including startup timeout and malformed readiness. No extra process is
+started to verify this locally. Direct rustfmt and whitespace check passed; this
+changed integration fixture is NOT_RUN and not covered by the pure-lib result.
+Audit confirms shared sealed startup owner is being authored, not yet available.

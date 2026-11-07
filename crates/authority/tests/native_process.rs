@@ -17,19 +17,27 @@ struct Process {
 }
 impl Process {
     fn start(config: &Value) -> Self {
-        let mut child = Command::new(env!("CARGO_BIN_EXE_humanymous-authority"))
+        let child = Command::new(env!("CARGO_BIN_EXE_humanymous-authority"))
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
             .unwrap();
-        child
+        // Own the child before any fallible provisioning/readiness operation so
+        // unwinding always kills and reaps it through Process::drop.
+        let mut process = Self {
+            child,
+            endpoint: String::new(),
+            credential: String::new(),
+        };
+        process
+            .child
             .stdin
             .take()
             .unwrap()
             .write_all(&serde_json::to_vec(config).unwrap())
             .unwrap();
-        let stdout = child.stdout.take().unwrap();
+        let stdout = process.child.stdout.take().unwrap();
         let (tx, rx) = std::sync::mpsc::channel();
         std::thread::spawn(move || {
             let mut line = String::new();
@@ -39,13 +47,13 @@ impl Process {
         let (_, line) = rx
             .recv_timeout(Duration::from_secs(15))
             .unwrap_or_else(|_| {
-                let _ = child.kill();
                 panic!("authority readiness timed out");
             });
         if line.is_empty() {
-            let _ = child.kill();
+            let _ = process.child.kill();
             let mut error = String::new();
-            std::io::Read::read_to_string(&mut child.stderr.take().unwrap(), &mut error).unwrap();
+            std::io::Read::read_to_string(&mut process.child.stderr.take().unwrap(), &mut error)
+                .unwrap();
             panic!("authority startup rejected: {error}");
         }
         let ready: Value = serde_json::from_str(&line).unwrap();
@@ -55,11 +63,9 @@ impl Process {
         let provisioned: humanymous_authority::configuration::Configuration =
             serde_json::from_value(config.clone()).unwrap();
         assert_eq!(ready["profile"], provisioned.capability_manifest());
-        Self {
-            child,
-            endpoint: ready["endpoint"].as_str().unwrap().into(),
-            credential: ready["credential"].as_str().unwrap().into(),
-        }
+        process.endpoint = ready["endpoint"].as_str().unwrap().into();
+        process.credential = ready["credential"].as_str().unwrap().into();
+        process
     }
     async fn send(&self, credential: &str, request: &Value) -> (u16, Value) {
         let body = envelope(request);

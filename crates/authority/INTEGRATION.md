@@ -193,3 +193,13 @@ Readiness keys asgi_normalized/wsgi_normalized/rack_normalized are exact-profile
 only and false whenever required raw TLS/H2/header order/collector/RIT is absent.
 ASGI ordered duplicate pairs do not claim original casing; CGI map order and
 duplicate loss remain explicit. Native client/server peer checks are unchanged.
+
+## Later pure-library result
+
+Root's source-bound shared-language-integration-38.json (evidence:root/20261106194410)
+records authority10 pure lib tests passed, failed/ignored/filtered0 and scoped
+lib Clippy passed. Its credentials.rs/configuration.rs SHA256 match the current
+source at observation; execution HEAD d3d5a839fb2621b0316ed1629e86aa861f0c5bae.
+Raw console was tool-output only, not recovered as a file. This supersedes the
+pure-library NOT_RUN statement for those exact inputs only. Native process/IPC,
+new producer host pilots and the later startup child-guard change remain NOT_RUN.
