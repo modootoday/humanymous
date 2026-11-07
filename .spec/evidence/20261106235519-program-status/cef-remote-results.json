@@ -1,0 +1,115 @@
+{
+  "schema": "humanymous.cef-integration-remote/1",
+  "source_sha": "ac560ff580d7ae9dc91b42d9360f521d9f8cf383",
+  "native_run": 42329288807,
+  "native_conclusion": "success",
+  "cef_component_run": 42329288946,
+  "cef_component_conclusion": "success",
+  "cef_pilot_passed": 1,
+  "rejected_override_cases": 4,
+  "cef_report_sha256": "94bf611931fe7a6c96903c1bdbd75afd1bf8d231261c6eda139db90e7c243325",
+  "cef_artifacts": {
+    "humanymous_cef_bootstrap.dll": "887d329994496804c4cf70efe1edb90f0bea76080417c44b0a362c68ac41679e",
+    "humanymous_cef_bootstrap.exe": "f3992741bc06d43cafc568aefcc80b2c740121d9adf0eda19a314e1a72699ded",
+    "humanymous_cef_desktop.dll": "a205aa215ead3d62553b949824fea9bc48389bdb9174bbb02e54dac374dd5ad8",
+    "libcef.dll": "07168eacd81bc09ab9ab895d39bc1a80913b09c844f0b5a4730f5f89a71133f5"
+  },
+  "full_runtime_qualified": false,
+  "browser_ready": false,
+  "later_behavior_source_excluded": true,
+  "full_delivery_ci": {
+    "wiring_defects": [
+      "missing humanymous-wasm package name",
+      "Windows full-validation tests run with administrator token",
+      "Ruby3.3.12 unsupported by pinned setup action"
+    ],
+    "conclusion": "failure",
+    "code_defects": [
+      "Unix custody reacquisition WouldBlock observed; inherited-description race is a hypothesis awaiting deterministic reproduction",
+      "Unix authority native_process Clippy err_expect"
+    ],
+    "run": 42329288896,
+    "remaining_delivery_gates": [
+      "full native/browser/Docker runners unimplemented",
+      "docs source inventory stale",
+      "all packages publish=false",
+      "Go shipping paths and legacy Go advisories remain"
+    ]
+  },
+  "native_reports": [
+    {
+      "tuple": {
+        "os": "linux",
+        "arch": "arm64"
+      },
+      "source_sha": "ac560ff580d7ae9dc91b42d9360f521d9f8cf383",
+      "status": "passed",
+      "report_sha256": "25aef4c67cc96cb12783a7b9dc55790d87527473bc4f33712cb98ed3a3a343b8",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "linux",
+        "arch": "x64"
+      },
+      "source_sha": "ac560ff580d7ae9dc91b42d9360f521d9f8cf383",
+      "status": "passed",
+      "report_sha256": "ee7d024ed3cc57eefab6b4f2be963fe559aab467bc484e89d71ea7f73db87a24",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "macos",
+        "arch": "arm64"
+      },
+      "source_sha": "ac560ff580d7ae9dc91b42d9360f521d9f8cf383",
+      "status": "passed",
+      "report_sha256": "7ebb58a5f542d4c69b22898e6976425dbf4ce0d0b05c729230ce26b57d8f15e0",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "macos",
+        "arch": "x64"
+      },
+      "source_sha": "ac560ff580d7ae9dc91b42d9360f521d9f8cf383",
+      "status": "passed",
+      "report_sha256": "5798cf07556961493aa557f895e4a05b0d9dac38a3ffcd4dddbc5fa4c34f8a61",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "windows",
+        "arch": "arm64"
+      },
+      "source_sha": "ac560ff580d7ae9dc91b42d9360f521d9f8cf383",
+      "status": "passed",
+      "report_sha256": "6c978691bda52f0409dfbe84bafc2f40c978c2fd13df195746dba16a8932f8c1",
+      "coverage": {
+        "required_harnesses": 51,
+        "executed_harnesses": 51,
+        "passed_tests": 204,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    },
+    {
+      "tuple": {
+        "os": "windows",
+        "arch": "x64"
+      },
+      "source_sha": "ac560ff580d7ae9dc91b42d9360f521d9f8cf383",
+      "status": "passed",
+      "report_sha256": "327d596ec94a587055f58226714662e01deafeeaadc282c4a5f5f1751023f915",
+      "coverage": {
+        "required_harnesses": 51,
+        "executed_harnesses": 51,
+        "passed_tests": 204,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-07T01:30:00Z
+updated: 2026-11-07T02:59:58Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -12,6 +12,51 @@ rel:
 ---
 
 # Browser collector migration
+
+## Passive behavior extension
+
+Port the read-only oracle web/js/collector.js and features/{mouse,keystroke}.js
+into one pure Rust behavior reduction context and a separate passive browser
+listener owner. The existing humanymous-behavior crate owns summary-to-tensor
+transforms; it does not already implement these event-to-summary reductions.
+Do not fork the reducers or alter scoring to compensate for their limitations.
+
+Preserve first600 sample/timeline caps (the oracle is not actually rolling),
+uncapped aggregate event counts, exact event inclusion/trust rules, coalesced
+fallback1,800ms no-move boundary,120ms pause,0.995 straightness,12entropy bins,
+1500ms cadence boundary and all population-variance formulas. Preserve the
+oracle's unusual latest-down-per-code pairing over the entire buffered window,
+including possible negative dwell; do not silently replace it with causal pairs.
+Flight remains press-to-press despite the older wire field's description.
+These frozen heuristics are measurements, not proofs of AI/human identity.
+
+Use an explicit owned BrowserCollector with passive listeners, no preventDefault,
+finite/bounded API observations and one reusable pure Recorder. Event.key, text,
+input values and clipboard contents are never read. Physical event.code is used
+only for bounded transient pairing through per-instance opaque IDs; no code or
+ordered key identity is serialized/logged. Clear the intern map and raw buffers
+on stop/drop. The bounded intern table holds JS string handles and uses strict
+identity/value comparison without mutable JS Map prototype calls. Validate the
+physical code's128UTF16-unit budget before copying any string into Rust.
+A new instance starts a fresh epoch; stop freezes the final summary.
+Multiple registrations must be detachable and construction failure must undo
+partial registration. Inactive callbacks are no-ops. If removal itself throws,
+return failure and preserve a no-op callback lifetime rather than a dangling
+freed Rust closure; bound this residual to that instance's six callbacks.
+
+Malformed observations/reentrancy fail the report rather than synthesize empty
+success. The legacy optional coalesced-events probe deliberately retains its
+catch-and-fallback1 semantics; this exception is not full input provenance.
+Behavior reports remain client-asserted. snapshot_json combines measured behavior
+with the shared L1-L3 report but leaves environment/guard/advanced/session and
+transport unqualified. The free detect_json remains a stateless L1-L3 API.
+
+Critique reflected: no text/key export, bounded state, exact repeat-key behavior,
+explicit callback cleanup failure and negative/unknown provenance; no new signal,
+threshold, hard rule or a11y speed/motor requirement. Required tests include
+independent analytic boundary vectors, differential tests against the unchanged
+existing feature modules, actual browser dispatch/lifecycle/cleanup and error
+paths. Synthetic dispatch is not a real human/AT baseline or full product e2e.
 
 Port frozen internal/detect/{l1_static,l2_fingerprint,l3_integrity,collect,bridge}.go
 without changing IDs, predicates, notes, verdict/confidence or registry weights.
@@ -39,9 +84,10 @@ An owned hidden same-origin iframe is removed on success/error. No permission
 request, navigation, telemetry, raw key/text collection, credential or server plane
 is added. Browser metadata remains client-asserted and tamperable at the T4 ceiling.
 
-This slice produces L1-L3 partial ClientReport only. Environment.probed remains
-false, behavior/advanced/guard remain unmeasured defaults, sessionId is not minted.
-L4 events, environment/guard/advanced probes, generated bootstrap/distribution,
+The stateless detect_json produces L1-L3 partial ClientReport only. Its behavior
+remains at unmeasured defaults. BrowserCollector explicitly adds measured
+behavior; environment.probed remains false, advanced/guard are unmeasured and
+sessionId is not minted. Environment/guard/advanced probes, generated bootstrap/distribution,
 collector/RIT transport and recovery are mandatory later slices. Runtime routes
 requiring a qualified collector stay fail-closed; an exported JSON function or
 WASM compile is not an authenticated collector or human ALLOW.

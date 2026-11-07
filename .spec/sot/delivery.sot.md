@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T02:26:16Z
+updated: 2026-11-07T02:59:58Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -27,6 +27,18 @@ the final delivery runner requirements remain unchanged.
 # Rust delivery and Pages contracts
 
 ## Native CEF component integration
+
+The actual ac560ff source subsequently passed all6native tuples and the Windows
+CEF build/provisioned rejection component. Downloaded source-bound receipts are
+registered in evidence:root/20261106235519/cef-remote-results.json. Full delivery
+run42329288896 remains failed with separately recorded product and wiring defects;
+these component passes do not waive any release gate.
+
+The collector component now also executes passive behavior/lifecycle tests and
+unchanged existing JS reducer oracles from a test-only Docker image. Workflow
+path coverage includes those oracle files. Release WASM excludes cfg(test) oracle
+imports. This exception is migration evidence, not a new foreign-language product
+implementation; final oracle retirement remains mandatory.
 
 The root workspace now registers the Windows bootstrap and desktop CEF packages.
 scripts/ci/cef-pilot is an independently locked Rust CI tool: build actual DLLs,

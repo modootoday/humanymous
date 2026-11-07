@@ -1,5 +1,36 @@
 # Rust browser collector integration
 
+## Passive behavior epoch
+
+The exported `BrowserCollector` starts six passive listeners. `behavior_json`
+returns reduced features; `snapshot_json` adds those measured features to L1-L3.
+`stop` freezes duration/summary, clears pairing/raw buffers and detaches callbacks;
+Rust Drop also stops. Construction failure removes attempted registrations.
+The stateless free `detect_json` remains L1-L3 only.
+
+One pure `behavior::Recorder` owns first600 pointer/down/up/timeline buffers and
+aggregate counters. It preserves the original inclusion/trust asymmetries,
+strict800/120/1500ms boundaries,0.995 geometry and population statistics.
+Repeated keys deliberately retain the old whole-window latest-down pairing,
+including negative dwell and press-to-press flight. These legacy measurements
+are not reliable human/AI proofs; no scoring/a11y rule is changed here.
+
+No Event.key, input text or clipboard content is read. A bounded browser-engine
+intern table of browser string handles uses physical event.code only transiently
+to assign epoch-local pairing IDs without copying names into Rust timing buffers;
+Rust timing buffers hold those IDs, and reports/logs export neither codes nor
+ordered key traces. Stop clears this map and drops raw buffers; this is not a
+claim of cryptographic memory erasure. Removal exceptions return failure and
+retain at most six inactive callback lifetimes for that instance, avoiding a
+freed Rust callback still reachable from the page. Reentrant event/stop paths
+fail collection and clear buffers after an active callback returns.
+
+The unchanged web/js/features/{mouse,keystroke}.js files are read-only differential
+oracles in cfg(test) WASM bindings and the test-only Docker image. No JS source is
+newly authored or copied into product code. They are absent from release builds
+and must be retired with validated golden evidence at the final foreign-source
+cleanup gate. Synthetic dispatch tests are not human/AT or product e2e evidence.
+
 `humanymous-collector` is a root workspace member with pure L1-L3 evaluation and
 a wasm32-only browser I/O boundary. It reuses `humanymous-signals` constructors,
 registry and `ClientReport`; no scoring implementation is duplicated.
@@ -43,7 +74,7 @@ not an ordinary-human baseline.
 The standard wasm-bindgen runner Chrome/Edge branches append no-sandbox; they are
 prohibited here. Firefox is only a component-test engine; product UI stays Meari+CEF.
 
-Remaining: full loader/distribution, L4 events, environment/guard/advanced probes,
+Remaining: full loader/distribution, environment/guard/advanced probes,
 session-bound collector/RIT transport/recovery, actual Pass, ordinary-browser/AT
 controls, and product Docker e2e. A native/WASM build or component test does not
 complete these. Public summary and source manifest are in

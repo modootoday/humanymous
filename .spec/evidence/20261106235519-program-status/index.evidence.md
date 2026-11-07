@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T02:25:42Z
+updated: 2026-11-07T03:02:01Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -24,6 +24,8 @@ files:
   - {path: collector-results.json, sha256: 3a0afe47af6ea3c8e05d9366dd21daa174d0f09775dcfb03cf94007bee30bcc8, bytes: 9633, store: repo}
   - {path: collector-remote-results.json, sha256: a2b185e44ece98c992302c0cefc3d7f9ac02612655ce1135318ffcdce7b2134a, bytes: 2888, store: repo}
   - {path: cef-root-integration-results.json, sha256: 9443590ebbe69049afa90d0a519918bfb5fea43656d5efaef248648ae6c772d3, bytes: 4534, store: repo}
+  - {path: cef-remote-results.json, sha256: 257c77da6031b0dd7f7f15d61cc0df5ca79df80c2ec105e5bf797cbdbf3a4a5f, bytes: 3831, store: repo}
+  - {path: behavior-collector-results.json, sha256: 45ef89dc623130800283721f1fd52d4cd7f8757bfc312a9ed74b4e705c9cdea0, bytes: 7070, store: repo}
 ---
 
 # Program status

@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T02:26:16Z
+updated: 2026-11-07T02:59:58Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -33,6 +33,13 @@ scripts/ci/cef-pilot tool explicitly validates provisioned negative cases and
 never substitutes them for GUI/human/AT or full sandbox evidence.
 
 ## Rule
+
+The passive browser behavior port extends humanymous-collector with one bounded
+pure Recorder and owned passive WASM listeners. Existing JS reducers are unchanged
+cfg(test)-only differential oracles in the component lab, not new authored code
+or product glue. Retire them only with validated replacement golden evidence at
+the final foreign-source gate. No scoring/a11y policy changes or full-runtime
+qualification follow from this component result.
 
 Port the complete product to a Cargo workspace on `codex/rust`. Preserve observable
 behavior, scoring weights, hard-rule predicates, verdict bands, signal IDs and

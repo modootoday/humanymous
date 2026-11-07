@@ -27,6 +27,13 @@ pub(super) fn call(object: &JsValue, key: &str, args: &[JsValue]) -> Result<JsVa
     let function = get(object, key)?
         .dyn_into::<js_sys::Function>()
         .map_err(|_| JsValue::from_str("browser method unavailable"))?;
+    apply(&function, object, args)
+}
+pub(super) fn apply(
+    function: &js_sys::Function,
+    object: &JsValue,
+    args: &[JsValue],
+) -> Result<JsValue, JsValue> {
     let values = js_sys::Array::new();
     for value in args {
         values.push(value);

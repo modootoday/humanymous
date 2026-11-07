@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T02:06:22Z
+updated: 2026-11-07T02:59:58Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -24,6 +24,16 @@ is unqualified. Headless/WebDriver preferences are interventions, not a human
 baseline. This component lab does not qualify full product e2e or Meari+CEF.
 
 # Container product-test environments
+
+## Passive behavior component extension
+
+The collector-browser test image includes only the unchanged existing
+web/js/features/{mouse,keystroke}.js as read-only differential oracles alongside
+Rust WASM tests. New reducer/listener/lifecycle implementation and tests are Rust.
+Native13/browser13 pass within the recorded source manifest, including16oracle
+datasets and real synthetic dispatch/cleanup/reentrancy. This is not a human/AT
+baseline or product e2e. Production WASM excludes these cfg(test) imports; retain
+the final foreign-source cleanup gate and all network-none/non-root restrictions.
 
 Version 0.2.0. Research and scoped Docker implementation checked 2026-11-07 KST.
 Accepted design, not a claim of implemented Rust full-lab or Cloudflare deployment.

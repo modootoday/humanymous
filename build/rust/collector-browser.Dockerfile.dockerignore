@@ -5,3 +5,8 @@
 !crates/**
 **/target/
 **/INTEGRATION.md
+!web/
+!web/js/
+!web/js/features/
+!web/js/features/mouse.js
+!web/js/features/keystroke.js

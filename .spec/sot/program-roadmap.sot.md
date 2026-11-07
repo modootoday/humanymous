@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T02:26:16Z
+updated: 2026-11-07T02:59:58Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui]
@@ -48,20 +48,21 @@ Cross-Lang은 대상 서비스와 상호운용하는 계약이며 새 JS/njs 제
 
 | 항목 | 실제 근거와 범위 | 남는 제한 |
 |---|---|---|
-| 공통 Rust | MSRV/toolchain1.99.1, edition2024,collector까지 커밋된 root17 packages;native CEF2개 root 통합 진행 | root19 membership의 Windows DLL/workspace·Clippy·WASM9 검증 관찰;동시 dirty browser source는 최종 SHA 자격화가 아님 |
+| 공통 Rust | MSRV/toolchain1.99.1, edition2024,root19 packages;ac560ff CEF 통합 remote 검증 완료 | native component와 전체 delivery·GUI 자격화를 구분;후속 behavior source는 별도 검증 |
 | 순수 엔진 이전 | 기존 inventory314행 중 ported54/partial5/pending255, 원본 함수804개 | 과거 단위 이전 inventory이며 최신 전체 재집계·runtime parity 증거가 아님;verified_runtime_parity0 |
-| native CI | c3389b6, run42327415663, Linux/macOS/Windows x64·ARM64 모두 성공 | implemented-crate-native-tests;full_runtime_qualified=false;후속 native CEF root 통합 제외 |
-| Windows 분모 | 각48/48 required harness,193passed,workspace 쓰기 거부 | raw ignored2/helper2를 보존;일반 skip 성공 처리 금지 |
+| native CI | ac560ff, run42329288807, Linux/macOS/Windows x64·ARM64 모두 성공 | implemented-crate-native-tests;full_runtime_qualified=false;새 behavior delta 제외 |
+| Windows 분모 | 각51/51 required harness,204passed,workspace 쓰기 거부 | raw ignored2/helper2를 보존;일반 skip 성공 처리 금지 |
 | 실제 runtime 프로세스 | network-none,UID65532,read-only,cap-drop ALL;origin2/audit4,재시작·replay·변조·sealed custody 부정 시험 | typed fixture이며 실제 browser/human/AT 또는 full Gate가 아님 |
 | CLI provisioning | 실제 binary doctor/dry-run/install/repeat/rollback,digest·변조·mode0500parent 거절 | 서비스 활성화·서명 package 설치·제품 readiness는 미완료 |
 | CEF Windows 파일럿 | 43044be: 실제 Meari child 부착·resize/focus·정상/late-cancel 종료,UIA Unicode 값;core9/native4,보안 완화4종 거절 | 별도 source-linked native workspace;BrowserReady=false,전체 sandbox·IME·AX 미자격화 |
-| Rust collector | L1-L3 17signal 순수 evaluator,실제 WASM API 경계;native6·Docker 실제 Firefox3·workspace/WASM Clippy 통과 | source manifest 귀속;transport/L4/guard 등 미완료,제품 전체 자격화 아님 |
+| Rust collector | L1-L3 17signal 및 passive behavior epoch 구현;native13·Docker 실제 Firefox13·WASM release/Clippy 통과 | source manifest 귀속;환경/guard/advanced·distribution·transport 미완료,제품 전체 자격화 아님 |
 | 공급망 | 최근 Cargo audit 알려진 취약점0 | ttf-parser0.25.1 RUSTSEC-2026-0192 유지보수 경고1;최종 closure 재스캔 필요 |
 
 native6tuple 원본 report6개를 내려받아 SHA/status/범위를 대조했다. 최신 정제
-요약은 collector-remote-results.json이며 같은 c3389b6의 actual browser3개
-component CI도 성공했다. [native run](https://github.com/modootoday/humanymous/actions/runs/42327415663),
-[browser run](https://github.com/modootoday/humanymous/actions/runs/42327415870).
+요약은 cef-remote-results.json이다. 같은 ac560ff의 Windows CEF DLL build와
+명시 거부1case/4flags도 clean exact source에서 성공했다.
+[native run](https://github.com/modootoday/humanymous/actions/runs/42329288807),
+[CEF run](https://github.com/modootoday/humanymous/actions/runs/42329288946).
 CEF 초기 근거는 evidence:root/20261107012426이며 브라우저 프로세스의 일부 제한
 토큰 관찰을 전체 sandbox 증명으로 바꾸지 않는다. native2개는 root19 안에
 합산하며 독립 CI helper package를 제품 crate 수에 추가하지 않는다.
@@ -75,7 +76,7 @@ CEF 초기 근거는 evidence:root/20261107012426이며 브라우저 프로세�
 | M2 | network·raw capture | 부분 구현 | 실제 TLS ClientHello·ordered headers·HPACK/H2 SETTINGS/priority 관찰,connection/session binding | M1 |
 | M3 | audit·keys·state | 부분 구현 | sealed custody/atomic ACL 기반 위 rotation·독립 durable witness·dual-control erasure·운영 sinks | M1 |
 | M4 | Core/Gate·local authority | 제한된 runtime 구현 | raw capture·collector/RIT 전체 연결,proxy/settings/abuse/admin·dual control;필수 경로 실제 동작 | M1-M3 |
-| M5 | Rust browser/WASM data plane | 진행 중 / 부분 구현 | L1-L3 실제 browser 검증→L4/env/guard/advanced·loader→session/RIT transport·recovery·Pass;ordinary browser/AT | M2-M4 |
+| M5 | Rust browser/WASM data plane | L1-L3·passive behavior 부분 구현 | env/guard/advanced·loader→session/RIT transport·recovery·Pass;ordinary browser/AT | M2-M4 |
 | M6 | 서버 adapter 생태계 | 부분 구현 / 확장 연구 완료 | Node/nginx Rust-only binding·실제 authority,typed provenance·body/stream·proxy 신뢰 계약;서비스별 실행 matrix | M4-M5 |
 | M7 | CLI·설치·서비스 | provisioning 구현 | 서명 artifact 검증→native 서비스 활성/readiness→재설치·rollback·remote peer 부정 파일럿 | M4 |
 | M8 | 제품랩·공격/방어 | 제한된 Docker 검증 | live Gate/browser/Pass,egress 격리,origin/audit 실제 효과,공격/정상·human/AT 분모의 제품 e2e | M4-M6 |
@@ -179,7 +180,7 @@ flowchart TD
 6. M12는 위 필수 gate 이후에만 진행한다. 기존 Go/oracle 제거·main 병합·branch
    삭제·publish를 현 상태에서 완료 처리하지 않는다.
 
-CEF 프로필31개는 비공개 생성 cache로 남아 있다. 사용자 삭제 승인 이후에도
+CEF 프로필33개는 browser 최신 evidence 기준 비공개 생성 cache로 남아 있다. 사용자 삭제 승인 이후에도
 자동 승인 검토가 path-validated recursive 삭제를 `blocked by policy`로 거절했고
 실행·우회하지 않았다. 프로세스/창 종료와
 디스크 삭제는 별개다. 공개하지 않으며 삭제 완료라고 표시하지 않는다.
@@ -203,3 +204,23 @@ browser 후속 a924603과 evidence:root/20261107021004의 source hash를 root에
 UIA 값 동작 및 renderer canary read/create denied5는 해당 browser 파일럿의
 증거이며 후보창·full AX·전체 sandbox는 계속 미검증이다. root 통합 정제 근거는
 cef-root-integration-results.json이다. stage/CI의 exact SHA 결과는 별도 필요하다.
+
+ac560ff의 native6tuple 및 CEF component remote 결과가 성공하여 위 통합 검증
+대기는 해당 범위에서 해소됐다. 후속 passive behavior는 native13/browser13,
+unchanged JS oracle16datasets 및 production WASM build로 검증했다. raw key/text/
+clipboard 내용은 읽거나 내보내지 않으며 first600 cap·반복키 음수 dwell 등
+기존 의미를 유지한다. 세션·인간·AT·제품 전체 e2e 자격화가 아니다.
+
+## 전체 delivery CI 실패의 후속 수리
+
+ac560ff의 전체 run42329288896는 failure이며 component green으로 대체하지 않는다.
+정제 분류는 cef-remote-results.json,원시 로그는 private evidence에 등록했다.
+
+| 우선 | 관측된 실패 | 후속 완료 조건 |
+|---|---|---|
+| P1 | Unix custody 재획득 WouldBlock | 경쟁/상속 file description 원인 재현 후 guard 수명·해제 회귀;재시도로 숨기지 않음 |
+| P1 | Unix authority native_process Clippy err_expect | 실제 부정 시험 의미를 보존한 Rust 수정·Linux 검증 |
+| P1 | browser job의 없는 humanymous-wasm 패키지 | 실제 collector/명시 WASM target 계약과 배포 runner 연결 |
+| P1 | 전체 Windows job이 관리자 token으로 CLI tests 실행 | 기존 엄격한 비관리자 검증을 공유하고 actor 조건 완화 금지 |
+| P1 | Pages Ruby3.3.12를 pinned action이 지원하지 않음 | 공식 지원 버전 확인·pin·실제 Pages build |
+| 제품 gate | full runner3개·docs freshness·publish=false·Go shipping/CVE | 미구현 제품 경로/정리/검토를 실제 완료;gate 삭제·skip·ignore 금지 |

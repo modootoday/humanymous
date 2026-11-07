@@ -5,6 +5,8 @@ on:
     branches: [codex/rust, main]
     paths:
       - 'crates/**'
+      - 'web/js/features/mouse.js'
+      - 'web/js/features/keystroke.js'
       - 'Cargo.toml'
       - 'Cargo.lock'
       - 'build/rust/collector-browser.Dockerfile*'
@@ -14,6 +16,8 @@ on:
   pull_request:
     paths:
       - 'crates/**'
+      - 'web/js/features/mouse.js'
+      - 'web/js/features/keystroke.js'
       - 'Cargo.toml'
       - 'Cargo.lock'
       - 'build/rust/collector-browser.Dockerfile*'
