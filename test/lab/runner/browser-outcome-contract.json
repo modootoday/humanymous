@@ -1,0 +1,74 @@
+{
+  "schema": "humanymous.lab-browser-actor-outcome-contract/1",
+  "outcome_schema": "humanymous.lab-browser-actor-outcome/1",
+  "diagnostic_field": "browser_actor",
+  "fields": [
+    "schema",
+    "state",
+    "process_success",
+    "exit_code",
+    "inventory_matched",
+    "inventory_count",
+    "selected_count",
+    "filtered_count",
+    "parser_summary_matched",
+    "test_passed",
+    "dns_finish",
+    "source_prefix_authenticated",
+    "full_product_qualified"
+  ],
+  "states": [
+    "observed",
+    "not_observed",
+    "missing",
+    "invalid",
+    "capture_deadline",
+    "capture_failed"
+  ],
+  "nullable_booleans": [
+    "process_success",
+    "inventory_matched",
+    "parser_summary_matched",
+    "test_passed"
+  ],
+  "nullable_counts": [
+    "inventory_count",
+    "selected_count",
+    "filtered_count"
+  ],
+  "maximum_inventory": 10000,
+  "maximum_filtered": 10000,
+  "maximum_selected": 1,
+  "dns_states": [
+    "succeeded",
+    "failed",
+    "unknown"
+  ],
+  "actor_schema": "humanymous.browser-product-actor/1",
+  "actor_fields": [
+    "schema",
+    "expected",
+    "status",
+    "test_output",
+    "test_stderr",
+    "test_inventory",
+    "selected_test",
+    "declared_selected",
+    "declared_filtered",
+    "summary_verified",
+    "proxy_hits",
+    "namespace_controls",
+    "connection_refusals",
+    "hardening",
+    "dns_control",
+    "dns_policy",
+    "full_product_qualified",
+    "test_process_success",
+    "test_exit_code",
+    "parser_summary_matched",
+    "dns_finish"
+  ],
+  "source_prefix_authenticated": false,
+  "full_product_qualified": false,
+  "maximum_name_bytes": 1024
+}

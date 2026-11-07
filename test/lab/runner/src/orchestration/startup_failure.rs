@@ -29,8 +29,12 @@ pub(super) fn classify(logs: &str) -> Option<&'static str> {
                 "actor_browser_proxy" => Some("actor_browser_proxy"),
                 "actor_browser_inventory" => Some("actor_browser_inventory"),
                 "actor_browser_test" => Some("actor_browser_test"),
+                "actor_browser_test_passed" => Some("actor_browser_test_passed"),
+                "actor_browser_test_failed" => Some("actor_browser_test_failed"),
                 "actor_browser_negative_proxy" => Some("actor_browser_negative_proxy"),
                 "actor_browser_dns_finish" => Some("actor_browser_dns_finish"),
+                "actor_browser_dns_finished" => Some("actor_browser_dns_finished"),
+                "actor_browser_dns_finish_failed" => Some("actor_browser_dns_finish_failed"),
                 _ => None,
             },
         )
@@ -98,8 +102,12 @@ mod tests {
             "actor_browser_proxy",
             "actor_browser_inventory",
             "actor_browser_test",
+            "actor_browser_test_passed",
+            "actor_browser_test_failed",
             "actor_browser_negative_proxy",
             "actor_browser_dns_finish",
+            "actor_browser_dns_finished",
+            "actor_browser_dns_finish_failed",
         ] {
             assert_eq!(
                 super::classify(&format!("HM-LAB-ACTOR-STEP {stage}")),

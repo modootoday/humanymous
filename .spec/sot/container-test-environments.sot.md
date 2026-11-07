@@ -218,6 +218,62 @@ use the genuine hosted outer job ceiling with those limits explicit; migrate
 process ownership through the native/shared owner's retained-owner API rather
 than implementing another local process primitive or relaxing failure gates.
 
+### Typed browser actor diagnostic outcome v1
+
+The bb763c1f/run42381878489 diagnostic reaches actor_browser_dns_finish but
+still fails the unchanged witness-exchange assertion. Its original private
+actor JSON is not recovered locally. Reuse that existing actor report before
+the assertion; do not add another JSON-on-stderr protocol or publish raw tool
+output. This slice changes diagnosis only, not scoring, test selection, fixture
+request counts, image recipes, deadlines or product qualification.
+
+The optional safe_diagnostics.browser_actor object uses
+humanymous.lab-browser-actor-outcome/1 and the sole
+test/lab/runner/browser-outcome-contract.json. Its exact fields are schema,
+state, process_success, exit_code, inventory_matched, inventory_count,
+selected_count, filtered_count, parser_summary_matched, test_passed,
+dns_finish, source_prefix_authenticated and full_product_qualified. States are
+observed, not_observed, missing, invalid, capture_deadline and capture_failed.
+Unknown facts are null, never fabricated zero or false. Inventory/filtered
+counts are unsigned and at most10000; selected count is at most1. Private
+inventory names must be nonempty, unique and at most1024bytes; they never
+enter the public outcome. Exit code is
+null or a signed32-bit integer. A known successful process requires exit0;
+known failure cannot carry exit0, while an unavailable numeric exit code is
+allowed for a failed process. Inventory count must equal selected plus filtered
+when observed. Test pass requires actual process success, matched inventory and
+the independently parsed exact test summary. DNS state is succeeded, failed or
+unknown; success/failure requires actual finish result in the owning report.
+All non-observed states retain null scalar facts and unknown DNS. Both provenance
+authentication and full-product qualification are always false.
+
+The runtime adds actual test process success/exit and independent parser result
+to its existing private report. It emits fixed test_passed/test_failed markers
+after computing the predicate and dns_finished/dns_finish_failed markers after
+the actual finish result. Preserve the private report on DNS finish failure
+before returning the same error. The parent strictly decodes one bounded JSON
+report, rejects duplicate or unknown fields and ambiguous inventories, compares
+the fixed selected name and expected fixture with the frozen source, and builds
+only the approved scalar object before the unchanged witness assertion. Failed
+capture, missing report and invalid report remain distinct non-observations.
+
+One pure test/lab/browser_outcome.rs validator reconstructs this closed public
+object for both Lab and Delivery using existing dependencies. Delivery must
+reject an invalid optional object, never silently copy or discard it. Existing
+diagnostic failure rows and all fail-closed/full-required outcomes stay intact.
+Compile and test the newly consumed contract in both owners; retain full source,
+registry and effective configuration closure, then require a separately reviewed
+literal source for one genuine Docker diagnostic run.
+
+The architecture, red, operations, privacy and evaluator review converges on a
+diagnostic-only boundary. Critique reflected: malformed/extra/duplicate data and
+counter contradictions reject; unknown observations remain null; raw strings
+cannot enter the rebuilt object; process exit and stage markers cannot stand in
+for browser effects, authenticated witness exchange or cleanup. Combined actor
+and child output is not independently attested, and shared subprocess lifecycle
+limits remain explicit residuals. The source design is ready for implementation;
+actual browser behavior and full product remain unmeasured by this delta.
+
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
 pass. evidence:root/20261107083259 preserves the decoded public log and derived

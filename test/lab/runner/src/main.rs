@@ -2,6 +2,8 @@
 mod audit;
 #[path = "../../browser_expectations.rs"]
 mod browser_expectations;
+#[path = "../../browser_outcome.rs"]
+mod browser_outcome;
 mod docker;
 mod fixture;
 #[path = "../../mount_policy.rs"]

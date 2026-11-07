@@ -45,6 +45,7 @@ fn safe_diagnostics(cases: &[Value]) -> Value {
     json!({"schema":"humanymous.lab-safe-diagnostics/1","failures":failures,"failure_count":failed.len(),"partial":failed.len()>512})
 }
 mod browser;
+mod browser_actor;
 mod go;
 mod go_fixture;
 mod go_public;
@@ -679,7 +680,10 @@ pub fn run(args: &[String]) -> Result<i32> {
             evidence_types.push(kind);
         }
     }
-    let diagnostics = safe_diagnostics(&lab.cases);
+    let mut diagnostics = safe_diagnostics(&lab.cases);
+    if let Some(outcome) = lab.components.get("browser_actor_diagnostic") {
+        diagnostics["browser_actor"] = crate::browser_outcome::public_outcome(outcome)?;
+    }
     let report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(

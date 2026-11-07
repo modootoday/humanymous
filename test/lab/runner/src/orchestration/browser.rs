@@ -68,6 +68,7 @@ fn dns_snapshot(lab: &mut Lab, id: &str) -> Result<Value> {
 }
 
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
+    lab.components["browser_actor_diagnostic"] = super::browser_actor::unavailable("not_observed");
     lab.stage = "browser_config";
     let fixture: Value = decode_strict_json(
         &std::fs::read(lab.config_file("crates/collector/pilot/fixture.json")?)?,
@@ -284,6 +285,8 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         // can terminate the run. Raw output remains in the private bundle.
         match &captured {
             Ok(result) => {
+                lab.components["browser_actor_diagnostic"] =
+                    super::browser_actor::from_stdout(&result.stdout, &fixture, &expected);
                 if let Some(stage) =
                     super::startup_failure::classify(&String::from_utf8_lossy(&result.stderr))
                 {
@@ -291,6 +294,13 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
                 }
             }
             Err(error) => {
+                lab.components["browser_actor_diagnostic"] = super::browser_actor::unavailable(
+                    if error.kind() == std::io::ErrorKind::TimedOut {
+                        "capture_deadline"
+                    } else {
+                        "capture_failed"
+                    },
+                );
                 lab.stage = if error.kind() == std::io::ErrorKind::TimedOut {
                     "browser_capture_deadline"
                 } else {

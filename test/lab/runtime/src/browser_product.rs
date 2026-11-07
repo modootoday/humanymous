@@ -223,7 +223,10 @@ pub fn browser() -> Result<()> {
         }).await?;
         let (result,name,inventory)=result?;
         let output=String::from_utf8(result.stdout)?;
-        let passed=result.status.success() && crate::browser_result::completed(&output,&name,inventory.len()-1);
+        let process_success=result.status.success();
+        let parser_summary_matched=crate::browser_result::completed(&output,&name,inventory.len()-1);
+        let passed=process_success && parser_summary_matched;
+        eprintln!("HM-LAB-ACTOR-STEP {}",if passed{"actor_browser_test_passed"}else{"actor_browser_test_failed"});
         eprintln!("HM-LAB-ACTOR-STEP actor_browser_negative_proxy");
         for (name,request) in [("foreign_proxy_authority_refused",b"GET http://169.254.169.254/ HTTP/1.1\r\nHost: 169.254.169.254\r\n\r\n".as_slice()),("unknown_proxy_api_refused",b"POST http://127.0.0.1:31111/_humanymous/forbidden HTTP/1.1\r\nHost: 127.0.0.1:31111\r\nContent-Length: 0\r\n\r\n".as_slice())] {
             use tokio::io::{AsyncReadExt,AsyncWriteExt};
@@ -236,9 +239,14 @@ pub fn browser() -> Result<()> {
             if !refused {return Err("proxy negative control failed".into());}
         }
         stop.send(true).map_err(|_|io::Error::other("proxy stopped"))?;proxy.await??;
+        let mut report=json!({"schema":"humanymous.browser-product-actor/1","expected":expected,"status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":null,"test_process_success":process_success,"test_exit_code":result.status.code(),"parser_summary_matched":parser_summary_matched,"dns_finish":"unknown","full_product_qualified":false});
         eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_finish");
-        let dns_policy=dns.finish()?;
-        println!("{}",json!({"schema":"humanymous.browser-product-actor/1","expected":expected,"status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":dns_policy,"full_product_qualified":false}));
+        let dns_error=match dns.finish(){
+            Ok(policy)=>{report["dns_policy"]=policy;report["dns_finish"]=json!("succeeded");eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_finished");None},
+            Err(error)=>{report["dns_finish"]=json!("failed");eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_finish_failed");Some(error)}
+        };
+        println!("{report}");
+        if let Some(error)=dns_error{return Err(error.into());}
         if !passed {return Err("actual browser runtime pilot failed".into());}
         Ok::<(),Box<dyn std::error::Error>>(())
     })

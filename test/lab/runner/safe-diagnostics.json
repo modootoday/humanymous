@@ -3,6 +3,8 @@
   "report_schema": "humanymous.lab-safe-diagnostics/1",
   "case_id_max": 96,
   "max_failures": 512,
+  "optional_fields": ["browser_actor"],
+  "browser_actor_contract": "browser-outcome-contract.json",
   "error_codes": [
     "initialization", "compose_config", "controls_build", "topology_controls",
     "runtime_build", "runtime_process", "wargame_process", "witness_component",
@@ -16,6 +18,8 @@
     "actor_browser_dns_probe", "actor_browser_namespace", "actor_browser_proxy",
     "actor_browser_inventory", "actor_browser_test", "actor_browser_negative_proxy",
     "actor_browser_dns_finish",
+    "actor_browser_test_passed", "actor_browser_test_failed",
+    "actor_browser_dns_finished", "actor_browser_dns_finish_failed",
     "assertion_failed", "execution_failed", "cleanup_failed",
     "go_fixture", "go_case", "actor_hardening", "actor_root_probe_eacces",
     "actor_root_probe_unknown", "actor_installation", "actor_writer_mount",
