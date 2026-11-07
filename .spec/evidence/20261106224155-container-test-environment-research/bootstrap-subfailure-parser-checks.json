@@ -1,0 +1,33 @@
+{
+  "schema": "humanymous.lab-bootstrap-diagnostic-checks/1",
+  "source_checkpoint": "d5c46903b2122b82143e4974c660a2f3f6c14c1b",
+  "source_note": "Actual selected closure includes Root frozen live Collector/core integration, not immutable d5 alone",
+  "private_evidence": "evidence:root/20261107204322",
+  "private_summary_sha256": "9b9a67a9890307c8e6543b658d3e455bf6e5e8bb8d312095b016a6977fcdda60",
+  "inventory": 36,
+  "passed": 36,
+  "failed": 0,
+  "ignored": 0,
+  "filtered": 0,
+  "all_target_check_exit": 0,
+  "strict_clippy_exit": 0,
+  "fmt_exit": 0,
+  "first_failure": null,
+  "inputs_before": 7908,
+  "inputs_after": 7908,
+  "difference_records": 0,
+  "selected_package_superset": 92,
+  "toolchain": "Rust1.99.1 edition2024",
+  "work_elapsed_seconds": 90.3588189,
+  "total_elapsed_seconds": 119.5382275,
+  "allocation_released": true,
+  "remaining_processes": 0,
+  "full_compiler_binary_environment_closure": false,
+  "limitations": [
+    "Selected manifest/registry/config source file superset comparison; not a complete compiler/OS read closure.",
+    "Actual selected source includes frozen live Root integration, not immutable commit alone.",
+    "No actual WASM, browser, Docker or hosted execution in this local allocation.",
+    "9586 typed subfailure and originale70 inner cause remain unknown until new immutable Docker execution."
+  ],
+  "full_product_qualified": false
+}
