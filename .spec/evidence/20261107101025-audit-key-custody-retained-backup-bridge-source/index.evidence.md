@@ -5,11 +5,19 @@ status: active
 created: 2026-11-07T10:10:25Z
 updated: 2026-11-07T10:10:25Z
 rel:
-  governs: [crates/audit/src/keys/backups.rs]
   depends_on: [sot:root/audit-key-custody]
 ---
 
 # Audit key custody retained backup bridge source
+
+## Historical scope
+
+Original governing path: `crates/audit/src/keys/backups.rs` in the former
+humanymous-audit package. Initial evidence/source-recording commit:
+aa655e7baf1d7835eacadab160f0db76518de32d. The design a2974a44, subsequent authored
+case refinements and compile/native NOT_RUN scope remain unchanged below.
+After Runtime relocation64f74c7a this retained evidence has no active path
+governance; it does not qualify the moved Runtime backup/retirement bridge.
 
 ## What was measured
 

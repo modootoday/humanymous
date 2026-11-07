@@ -5,11 +5,19 @@ status: active
 created: 2026-11-07T09:54:43Z
 updated: 2026-11-07T09:54:43Z
 rel:
-  governs: [crates/audit/src/control/ledger.rs]
   depends_on: [sot:root/audit-key-custody]
 ---
 
 # Audit key custody live consumed membership authentication
+
+## Historical scope
+
+Original governing path: `crates/audit/src/control/ledger.rs` in the former
+humanymous-audit package. Evidence/source-recording commit:
+c09d6897b3ee3435792a74ffc9e2dae681a50ce7. The authored live-state correction,
+unexecuted native cases and external-freshness exclusions remain unchanged below.
+After Runtime relocation64f74c7a this retained evidence has no active path
+governance; it does not qualify the moved Runtime ledger implementation.
 
 ## What was measured
 

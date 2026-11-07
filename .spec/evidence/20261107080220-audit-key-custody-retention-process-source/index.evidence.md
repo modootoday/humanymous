@@ -5,13 +5,21 @@ status: active
 created: 2026-11-07T08:02:20Z
 updated: 2026-11-07T08:04:29Z
 rel:
-  governs: [crates/audit/tests/control_operations.rs]
   depends_on: [sot:root/audit-key-custody]
 files:
   - {path: validation-facts.json, sha256: b7d5656f7f9d6306136e30cb99461d6ccd9a2b8ce9d3f0110e1ae86df54c35b7, bytes: 2613, store: repo}
 ---
 
 # Audit key custody retention process source
+
+## Historical scope
+
+Original governing path: `crates/audit/tests/control_operations.rs` in the former
+humanymous-audit package. Evidence/source-recording commit:
+c6a6492651c2a9c414a2b99ab4c90bda99b91013. The original fa327b7 baseline and
+real-child test overlay, including native execution count zero, stay as recorded
+below and in validation-facts.json. After Runtime relocation64f74c7a this retained
+evidence has no active path governance and does not qualify the moved Runtime.
 
 ## What was measured
 

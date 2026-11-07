@@ -5,11 +5,19 @@ status: active
 created: 2026-11-07T09:50:31Z
 updated: 2026-11-07T09:50:31Z
 rel:
-  governs: [crates/audit/tests/durable_witness.rs]
   depends_on: [sot:root/audit-key-custody]
 ---
 
 # Audit key custody witness fixture lifetime source
+
+## Historical scope
+
+Original governing path: `crates/audit/tests/durable_witness.rs` in the former
+humanymous-audit package. Initial evidence/source-recording commit:
+54fe5b8b52c3884fe936811416b99c75517e227c. The follow-up source correction and
+NOT_RUN compile/process status remain exactly as recorded below.
+After Runtime relocation64f74c7a this retained evidence has no active path
+governance; it is not measured lifetime proof for the moved Runtime fixtures.
 
 ## What was measured
 

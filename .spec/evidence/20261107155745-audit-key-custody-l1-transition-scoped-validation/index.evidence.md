@@ -5,13 +5,22 @@ status: active
 created: 2026-11-07T15:57:45Z
 updated: 2026-11-07T16:02:48Z
 rel:
-  governs: [crates/audit/src/verification/scan/recovery_transition.rs]
   depends_on: [plan:root/20261107151758]
 files:
   - {path: facts.json, sha256: 4686b3983a0800d84248c41f91436ad917c6d6b36ec7d3fc3221ea6aa39b89c7, bytes: 7985, store: repo}
 ---
 
 # Audit key custody L1 transition scoped validation
+
+## Historical scope
+
+Original governing path:
+`crates/audit/src/verification/scan/recovery_transition.rs` in the former package.
+Tested source:8cbc0397e14511b883299a865b29ff700b6510cb; evidence-recording commit:
+a5cd6a856a2e4ada8476d73ec1b725225ba618a8. All original tool/input hashes, exact
+five-test scope and private raw attachments remain unchanged below/in facts.json.
+After Runtime relocation64f74c7a this retained evidence has no active path
+governance; it does not qualify the moved Runtime or its later clock alias change.
 
 ## What was measured
 

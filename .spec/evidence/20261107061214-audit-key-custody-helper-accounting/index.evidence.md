@@ -5,13 +5,21 @@ status: active
 created: 2026-11-07T06:12:14Z
 updated: 2026-11-07T06:14:39Z
 rel:
-  governs: [crates/audit/tests/durable_witness.rs]
   depends_on: [sot:root/audit-key-custody]
 files:
   - {path: contract.json, sha256: 8d61b8fdacd268845eaaac62ffcabd837eb5e8834512a840e6cd38a50df7b95d, bytes: 3013, store: repo}
 ---
 
 # Audit key custody helper accounting
+
+## Historical scope
+
+Original governing path: `crates/audit/tests/durable_witness.rs` in the former
+humanymous-audit package. Evidence/source-recording commit:
+5528d74fe397c536aa9742f03b05f54f4cfd56e4. The original working-source hash and
+post-commit equality distinctions below and in contract.json remain unchanged.
+After Runtime relocation64f74c7a this retained evidence has no active path
+governance; it does not qualify the moved Runtime implementation or rerun tests.
 
 ## What was measured
 

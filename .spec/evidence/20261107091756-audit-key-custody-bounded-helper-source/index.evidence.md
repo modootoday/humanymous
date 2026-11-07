@@ -5,11 +5,19 @@ status: active
 created: 2026-11-07T09:17:56Z
 updated: 2026-11-07T09:17:56Z
 rel:
-  governs: [crates/audit/tests/key_custody.rs]
   depends_on: [sot:root/audit-key-custody]
 ---
 
 # Audit key custody bounded helper source
+
+## Historical scope
+
+Original governing path: `crates/audit/tests/key_custody.rs` in the former
+humanymous-audit package. Evidence/source-recording commit:
+de33864b0130b34f1b7cd7f43a839a56701d4b1a. The original source-only/quiet-window
+scope and comparison with the older8132117 contract remain unchanged below.
+After Runtime relocation64f74c7a this retained evidence has no active path
+governance; it does not qualify the moved Runtime or create new test results.
 
 ## What was measured
 
