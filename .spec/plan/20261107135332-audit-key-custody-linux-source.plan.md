@@ -11,7 +11,7 @@ rel:
 
 # Audit key custody Linux retained source admission
 
-Version0.1, proposed for Root acceptance. This document authorizes no producer,
+Version0.2, proposed for Root acceptance. This document authorizes no producer,
 dependency change, validation workload or production route. Phase-B qualification
 remains exactly [[evidence:root/20261107133648]]. Current native Source remains
 Unsupported and scanner composition remains test-only.
@@ -154,7 +154,8 @@ separate from native file identity.
 ## Verification gates and requested decision
 
 Root must accept the premises, dedicated-directory naming policy, root binding,
-finite descriptor ledger and private diagnostic-only slice before code. Then:
+finite descriptor ledger, existing-file permission policy and private
+diagnostic-only slice before code. Then:
 
 - Pure Rust tests cover checked offsets, limits, poison, lifetime/last-reader
   lock retention and unchanged compatibility Report/Work semantics.
@@ -193,6 +194,30 @@ Required delta: admit exact total/peak descriptor budget and fail without evicti
 P1: Existing Wal ignores unrelated names; a generic producer could accidentally
 accept co-located mutable state or reject real deployments without declaring it.
 Required delta: explicit proposed dedicated-directory allowlist and Root decision.
+
+P1: Actual writer creation does not currently guarantee the proposed0600 files.
+Source inspection: storage/wal.rs::open_append uses create/append/read without
+Unix OpenOptionsExt::mode; rotation's create_new also omits a mode. An ordinary
+022 umask can therefore produce0644 files inside the private0700 WAL directory.
+log/sealed.rs::open_inner checks custody/WAL directories but does not apply
+custody::permissions::file to WAL members. Existing successful native component
+tests do not establish the proposed exact0600 admission for every produced file.
+Local sketch: write/rotate/checkpoint through the actual Wal then inspect all
+three created file classes and attempt the new Source. A hand-made0600 source
+fixture would hide this product mismatch.
+Required delta: Root decision on prospective0600 creation in BOTH writer paths
+and explicit existing-history policy. Recommend future creations request0600
+without changing process umask; inspection must never chmod or silently repair
+existing files. Exact0600 may refuse legitimately existing0644 history and must
+be an explicit migration requirement, not an undisclosed compatibility claim.
+Any creation fix needs actual source-bound creation/rotation/sidecar tests plus
+preservation of existing-file modes. No such fix or test is authored/run here.
+
+Read-only consumer mapping: runtime/src/startup.rs passes separate configured
+key_directory and wal_directory into SealedLogOptions; runtime service fixtures
+use sibling keys/audit directories; current lab Compose mounts writer-key and
+writer-wal separately. This supports considering a dedicated-WAL profile but
+does not prove all deployment layouts, filesystem type or permissions.
 
 P1: Quiescent metadata checks and absolute deadlines can be overstated as
 snapshot/ABA/hard-time guarantees. Required delta: retain all residuals above;
