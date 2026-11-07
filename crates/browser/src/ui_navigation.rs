@@ -295,6 +295,23 @@ mod tests {
             );
         }
         let back = doc.renderer.document.get_element_by_id("nav-back").unwrap();
+        let forward = doc
+            .renderer
+            .document
+            .get_element_by_id("nav-forward")
+            .unwrap();
+        assert!(
+            meari_native::infrastructure::accessibility::act(
+                &mut doc,
+                &accesskit::ActionRequest {
+                    action: accesskit::Action::Click,
+                    target_tree: accesskit::TreeId::ROOT,
+                    target_node: accesskit::NodeId(forward.as_u64()),
+                    data: None,
+                }
+            )
+            .is_err()
+        );
         meari_native::infrastructure::accessibility::act(
             &mut doc,
             &accesskit::ActionRequest {

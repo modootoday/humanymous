@@ -696,6 +696,11 @@ API so action metadata, layout and AX state agree with pixels. Direct DOM paint
 mutation is insufficient. The shell owns a fail-closed browserReady=false state
 binding; mounting that source program does not qualify CEF or grant navigation.
 Retained updates must preserve dirty address content, node identity and focus.
+The pinned reload contract requires explicit disabled-path migration. Permit its
+set delta only for the four standalone host navigation buttons, never composite
+roots/triggers/items/close paths or other controls. Preserve widget state and
+restore the prior disabled set if preparation/commit fails; unexpected migration
+fails the host update. Native AX actions remain the required behavior oracle.
 Home, Reload and address submission retain typed local routing and IME guards.
 Multi-tab, external navigation, downloads, persistence and Chrome parity remain
 separate gates; implemented controls do not imply BrowserReady. Pure snapshot and

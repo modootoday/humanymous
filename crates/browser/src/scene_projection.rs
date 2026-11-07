@@ -12,6 +12,64 @@ pub(crate) fn commit(doc: &mut InteractiveDocument) -> Result<(), String> {
             value: Value::State("browserReady".into()),
         });
     }
-    let prepared = doc.prepare_source_replacement(source)?;
-    doc.commit_source_replacement(prepared)
+    let next = meari_native::domain::widgets::Session::from_tree(&source.root)?;
+    let allowed: std::collections::BTreeSet<_> = doc
+        .elements()
+        .iter()
+        .filter(|element| {
+            matches!(
+                element.id.as_str(),
+                "nav-back" | "nav-forward" | "nav-reload" | "nav-stop"
+            )
+        })
+        .map(|element| element.path.clone())
+        .collect();
+    for changed in doc
+        .session
+        .disabled_paths
+        .symmetric_difference(&next.disabled_paths)
+    {
+        if !allowed.contains(changed)
+            || doc.session.widgets.values().any(|widget| {
+                widget.root == *changed
+                    || widget.trigger.as_ref() == Some(changed)
+                    || widget.close_paths.contains(changed)
+                    || widget.items.iter().any(|item| item.path == *changed)
+            })
+        {
+            return Err("shell disabled migration exceeds standalone navigation controls".into());
+        }
+    }
+    // The pinned reload contract requires explicit disabled-path migration. Only
+    // these four standalone host buttons may change; composite widget state stays owned.
+    let previous = std::mem::replace(&mut doc.session.disabled_paths, next.disabled_paths);
+    let result = doc
+        .prepare_source_replacement(source)
+        .and_then(|prepared| doc.commit_source_replacement(prepared));
+    if result.is_err() {
+        doc.session.disabled_paths = previous;
+    }
+    result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn unrelated_widget_disabled_changes_cannot_use_navigation_migration() {
+        let mut doc = InteractiveDocument::new(
+            crate::ui::component_with_window_controls(true),
+            crate::ui::management_styles(),
+            meari_native::domain::Viewport {
+                width: 1100,
+                height: 720,
+                dark: true,
+            },
+        )
+        .unwrap();
+        let before = doc.session.disabled_paths.clone();
+        crate::ui_navigation::attribute(&mut doc, "dock-right", "disabled", Some(""));
+        assert!(commit(&mut doc).is_err());
+        assert_eq!(doc.session.disabled_paths, before);
+    }
 }
