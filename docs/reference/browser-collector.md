@@ -121,6 +121,13 @@ startup from a selected-test assertion failure or identify a Firefox, proxy,
 bootstrap or witness cause. Cleanup, ordinary-human recovery and the positive
 browser-to-origin join remain unqualified.
 
+A separate [run `42415763028`](https://github.com/modootoday/humanymous/actions/runs/42415763028)
+at source `1f87d310` also failed the Docker product job, with 16 assertions passing
+and two failing. The retained source-bound diagnostic records an HTTP 403 during
+bootstrap. The specific origin or Fetch Metadata predicate responsible remains
+unknown; the status code does not establish its cause or successful browser
+integration. This observation does not qualify the full browser-to-origin flow.
+
 ```console
 cargo test --locked -p humanymous-collector
 cargo build --locked -p humanymous-collector --target wasm32-unknown-unknown --release

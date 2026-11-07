@@ -30,15 +30,21 @@ delivery changes; they add no protocol requirement or interoperability result.
 Hosted execution and absence of historical annotations remain separate gates.
 
 Core and Platform consolidation at `c67d07c0` and `89715c04` changes package
-ownership, not the generic Draft v0 protocol. There are 34 workspace packages at
-that checkpoint against an accepted eight-role target. Core contextual APIs live
+ownership, not the generic Draft v0 protocol. There are 34 workspace packages plus
+four standalone qualification-tool packages at that checkpoint: 38 maintained
+packages against an accepted eight-role target. The complete structural totals
+are 45 → 39 → 38 → 33 → 21 → 10 → 8; these are package-count stages, not capability
+or deployment milestones. Core contextual APIs live
 under `crates/sdk/humanymous-core`; Platform's separate optional `testing` and
 `windows-object` roles live under `crates/integrations/humanymous-platform`.
 Neither a public package role nor a testing feature establishes authenticated
 observations, provider availability, registry publication or conformance.
 
-The first pure public-role data parser contract is accepted for implementation;
-source is under construction. Its data declarations are caller assertions, not
+The first pure public-role data parser is implemented at source `2e9934fe`, with
+19 scoped Windows parser tests passing and 79 other library tests filtered out,
+as retained at `e8f71220`. Later test-only
+stronger array controls remain outside that executed source. Its data declarations
+are caller assertions, not
 actual provider admission, native ownership, replay/freshness verification or a
 Ready producer. This acceptance selects no public listener, endpoint, discovery
 or generic Draft v0 wire contract. The existing private-loopback configuration

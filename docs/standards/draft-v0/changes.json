@@ -8,6 +8,14 @@
   "changes": [
 {
   "kind": "implementation-evidence",
+  "paths": ["../../start-here/developer.md", "../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
+  "summary": "Correct current maintained-package census to34workspace plus4standalone tools=38, initial45, preserving historical workspace-only counts. Record2e9934fe scoped19-test pure DATA parser proof and separate1f87d310 bootstrapHTTP403 product failure without predicate-cause or browser-success claims; later stronger array tests remain unexecuted.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
   "paths": [
     "../../start-here/developer.md",
     "../../how-to/run-detection-engine.md",

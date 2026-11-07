@@ -2532,3 +2532,19 @@ Evidence07052815/core-platform-current-docs.json records all five exact changed
 paths/SHA256/bytes and source checkpoints. Existing frozen checker reports88pages/
 errors0; diff check passes. No build, preview, compiler, GHA or publish run.
 New authored bytes remain unrendered pending a bounded allocation.
+
+### Complete maintained census and scoped parser/browser evidence correction
+
+Consumed root86e9240e: workspace34 plus four standalone qualification tools is
+38maintained packages, from initial45; total stages45/39/38/33/21/10/8, CLI9+4=13
+responsibilities. Historical workspace-only34 remains valid within its scope;
+raw receipts and prior docs execution checkpoints were not rewritten.
+
+Current public parser wording now reflects e8f71220's actual2e9934fe19passed/
+79filtered pure DATA cases. Later be9 stronger-array test controls remain
+unexecuted; no ingress/native/provider/Ready or full98-library claim.
+Browser collector records c5df26fd's separate1f87d310/run42415763028 actual
+bootstrapHTTP403,16passed/2failed, unknown Origin/FetchMetadata predicate and
+no full browser success or cleanup inference. Evidence07052815/census-parser-
+browser-reconciliation.json records five exact changed path hashes and limits.
+Frozen checker88pages/errors0 and diffcheck pass; no new execution or render.

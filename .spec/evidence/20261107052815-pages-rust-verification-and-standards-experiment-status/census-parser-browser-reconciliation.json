@@ -1,0 +1,38 @@
+{
+  "schema": "humanymous.pages-census-parser-browser-reconciliation/1",
+  "accepted_census": "86e9240e21d03e1c9cf7e0bf3d034392974c55af",
+  "runtime_proof": "e8f71220 at executed2e9934fe7c7333559c87d8395a40c40dd787024e",
+  "browser_proof": "c5df26fd:run42415763028/source1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "changed_files": [
+    {
+      "path": "docs/start-here/developer.md",
+      "sha256": "989b21b325bfe4ebff85d308527e448d760dda51469b2bc0fe3cf58c136453e7",
+      "bytes": 2644
+    },
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "edbc1daccf004d2cd3277c965cdf4393a8e352ba6812e46c705b7064fbe46184",
+      "bytes": 8068
+    },
+    {
+      "path": "docs/reference/browser-collector.md",
+      "sha256": "49add1cebcb94259e40d62bee877b88a1fea5f3f19b2e39438ff085d00c6d316",
+      "bytes": 9509
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "574c3fd4331081ce1e07bf1f3e81213b2e4af2023ba55a02eabb2eac05983911",
+      "bytes": 13638
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "e6ce822bb373d57c9db79dd233a5abb275719f179796f4b9b32b1d380e723024",
+      "bytes": 15116
+    }
+  ],
+  "current_census": "34workspace+4standalone=38maintained; initial41+4=45; totalstages45->39->38->33->21->10->8; CLI9+4=13 responsibilities; workspacecurveunchanged",
+  "runtime_scope": "19passed/79filtered pureDATAparser only; laterbe9 strongerarraytestcontrols notexecuted; no publicingress/native/provider/Ready/full98-library",
+  "browser_scope": "ActualsourceboundbootstrapHTTP403/16passed2failed; Origin versus FetchMetadata predicateunknown; nofullbrowsersuccess/cleanupinference",
+  "validation": "Existingimmutablechecker88pages/errors0; diffcheckpass; no compiler/build/browser/GHA/publish run",
+  "historical": "Priorcurrent-docsreceipt and rawproofs unchanged; these newauthoredbytes unrendered"
+}

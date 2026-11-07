@@ -13,8 +13,11 @@ contracts. Building an individual crate does not qualify the complete Gate,
 browser flow or activated service installation.
 
 The accepted design consolidates the workspace into eight public package roles.
-At the Platform integration checkpoint `89715c04`, 34 workspace packages remain;
-the eight-package migration is not complete and registry availability is not
+At the Platform integration checkpoint `89715c04`, 34 workspace packages and four
+standalone qualification-tool packages remain: 38 maintained packages in total.
+The planned CLI consolidation includes nine workspace packages and those four
+standalone tools, accounting for 13 existing package responsibilities.
+The eight-package migration is not complete and registry availability is not
 claimed. Core now lives at `crates/sdk/humanymous-core`, with signals, behavior,
 model, scoring, integrity, challenge and watermark as contextual modules.
 Platform lives at `crates/integrations/humanymous-platform`; its optional
