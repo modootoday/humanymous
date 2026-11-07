@@ -832,3 +832,21 @@ Content equality is not producer identity or Ready. The native producer-identity
 gate remains mandatory and Unsupported must stop before any Host command.
 Actual offline graph resolution and subsequent locked offline resolution passed.
 Future consumer code and actual hosted process behavior require separate proof.
+
+## Resource watermark initial context registration
+
+Root accepts the source-reconstructed watermark contract anchored to14 baseline
+Go files; original SoT-08 remains NOT_FOUND, never claimed recovered. The cohesive
+humanymous-watermark context becomes workspace member39. Initial frozen source
+contains exact legacy-v1 HMAC/carrier and bounded volatile ledger/reservations,
+not resource codecs, authenticated HTTP trace or product qualification. No scoring
+or automated ban change is introduced. Existing hmac0.12.1/sha20.10.9/subtle2.6.1/
+zeroize1.9.1 are reused without external package/version changes. Typed secret
+ownership does not claim erasure of upstream transient crypto state. New issuance
+rejects invalid identifiers/ID0, IDs never wrap or reuse, explicit TTL/monotonic
+clock/capacity/poison/cancellation rules remain mandatory. Lookup is unverified
+operator metadata until separate MAC/authentication/audit integration.
+All10 frozen package files match the owner handoff hashes. Actual offline tree
+and subsequent locked workspace tree resolved39 members;16 authored tests are
+NOT_RUN. Codec dependencies, resource semantics, native/HTTP/browser/Docker V2-V5
+remain separate required gates. Legacy Go removal is not authorized by registration.

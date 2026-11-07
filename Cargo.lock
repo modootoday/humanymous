@@ -2445,6 +2445,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "humanymous-watermark"
+version = "0.1.0"
+dependencies = [
+ "hmac 0.12.1",
+ "sha2 0.10.9",
+ "subtle",
+ "zeroize",
+]
+
+[[package]]
 name = "hybrid-array"
 version = "0.4.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"

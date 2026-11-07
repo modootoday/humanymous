@@ -3,7 +3,7 @@ members = [
   # Shared security and service contexts.
   "crates/audit", "crates/authority", "crates/behavior", "crates/challenge",
   "crates/capture", "crates/collector", "crates/integrity", "crates/model", "crates/network",
-  "crates/runtime", "crates/scoring", "crates/signals",
+  "crates/runtime", "crates/scoring", "crates/signals", "crates/watermark",
   # Native host and framework boundaries.
   "crates/apache-adapter", "crates/apache-adapter/native",
   "crates/dotnet-adapter", "crates/dotnet-adapter/export", "crates/framework-adapter",
