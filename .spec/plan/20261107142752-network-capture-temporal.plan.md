@@ -11,11 +11,14 @@ rel:
 
 # Temporal network producer proposal
 
-Version0.1.0. Design/source inventory only, pending Root placement review.
+Version0.2.0. Root accepted placement and the generic pure MAD source slice;
+37936ee0 implements that slice with12authored tests, NOT_RUN. Correlation/traffic
+producer implementation, runtime integration and qualification remain pending.
 Root requested eight additional retirement rows beyond the20network rows and
 subsequently assigned the two anomaly prerequisite rows to this owner.
-Source inspected at734c62da0e493478bb2aa4d998664f11e432945c; no Rust source,
-dependencies, scoring, retirement inventory or execution was changed here.
+Initial inventory inspected734c62da0e493478bb2aa4d998664f11e432945c without source
+changes. The subsequent accepted source slice is recorded below. Dependencies,
+scoring, retirement inventory and execution remain unchanged by this continuation.
 Existing capture actual5 proof remains evidence:root/20261107122900; this proposal
 does not extend its scope. No subagents or test processes were started.
 
