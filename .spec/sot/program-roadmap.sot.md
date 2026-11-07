@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T08:08:33Z
+updated: 2026-11-07T08:44:29Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -22,7 +22,7 @@ No package publication, release tag, OIDC token exchange or main merge occurred.
 | Milestone | Current evidence | Next required action and owner |
 |---|---|---|
 | Coherent graph | 38-member metadata and scoped spec check pass; lock incorporates approved edges without unrelated version downgrade | Compile latest native packages and freeze all required source; integration and package owners |
-| Local component closure | Go latest 10 pure tests and all-targets Clippy pass; maintenance latest 36 pure tests/check/Clippy pass; Pages latest 26 pure tests/check/Clippy pass | Register exact-source evidence; CLI owns A and Capture owns B for bounded validation |
+| Local component closure | Go latest 10 pure tests and all-targets Clippy pass; maintenance latest 36 pure tests/check/Clippy pass; Pages latest 26 pure tests/check/Clippy pass; Capture latest 22 pure tests, feature Clippy and five hosted-test compilation pass | CLI latest seven pure/check/Clippy passes remain provisional because shared inputs moved; .NET owns A and delivery owns B for bounded validation |
 | Hosted policy | Run 42355168729, source 8132117: policy succeeds | Preserve narrow permissions and mandatory component gates; CI owner |
 | Hosted native execution | Ubuntu builds all targets; actor executes 15 of 88 harnesses, 51 tests pass, then coverage validation fails | Provision mandatory Node/Bun pilots; collect later contained harness results while retaining final failure; host and OS-runner owners |
 | Docker product lab | Actual 35 checks: 33 pass and two fail; wargame evaluates zero of 26 scheduled cases, with 19 errors and seven unsupported | Fix readiness contract mismatch and recover actual evaluation; runtime, wargame and lab owners |
