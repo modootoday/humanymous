@@ -1,0 +1,52 @@
+{
+  "schema": "humanymous.sgd-next-slice-proposal/1",
+  "status": "DESIGN_ONLY_ROOT_REVIEW_PENDING_NO_EXECUTION",
+  "sources": [
+    {
+      "sha256": "55ecd6e3d270c6a83584390efd82b6e16dfeb920a1e46f8a952b2825b99b8846",
+      "path": "internal/mltrain/train.go"
+    },
+    {
+      "sha256": "50bcbdc205134fb3d8a3fc22e026c33b860237c7719ff07b1c1b076533615601",
+      "path": "internal/mltrain/train_test.go"
+    },
+    {
+      "sha256": "0f98f8588ac55ea29e3485bf7dc5f737da393efcb38378ce583909d19f53c1f3",
+      "path": "crates/sdk/humanymous-core/src/model/training/mod.rs"
+    },
+    {
+      "sha256": "45bae023a845737e36567fadc6d30ab0e7232e67e52211163acd57dfe2e613e3",
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/initialize.rs"
+    },
+    {
+      "sha256": "2c709638f1b67538672e400ebbd7b854f775b961784e7d2eb12b73c7e3c32305",
+      "path": "crates/sdk/humanymous-core/src/model/training/standardize.rs"
+    },
+    {
+      "sha256": "941c940d46676687d4ea770b0a0c55f3aea18324dc8f12ef26a6f2bdf027783c",
+      "path": "crates/sdk/humanymous-core/src/model/training/evaluate.rs"
+    },
+    {
+      "sha256": "17631d082ea1ba0f575a68de3031244deb2484542e9b1b843ff3d09c7c4de6e2",
+      "path": "crates/sdk/humanymous-core/src/model/inference/mlp.rs"
+    }
+  ],
+  "scope": "Real bounded offline ordered f32 online SGD; immutable inputs; private Core model training; existing RNG/statistics/inference/evaluation",
+  "proposed_paths": [
+    "crates/sdk/humanymous-core/src/model/training/sgd.rs",
+    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs",
+    "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs",
+    "crates/sdk/humanymous-core/src/model/training/mod.rs"
+  ],
+  "not_run": [
+    "implementation",
+    "formatter",
+    "compiler",
+    "SGD tests",
+    "offline file pilot",
+    "Go oracle"
+  ],
+  "production_activation": false,
+  "new_dependencies": [],
+  "details": "plan:root/20261107140000 Proposed next allocation section"
+}

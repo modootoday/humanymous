@@ -485,3 +485,164 @@ Go internal states remain unobserved. No product e2e, training/CLI pilot, activa
 GPU or additional-platform parity is established. Prior NOT_RUN statements describe
 the historical checkpoints; the moved tuple now has this separately bound receipt.
 This owner started no formatter/compiler/test. Root's implementation freeze remains.
+
+## Proposed next allocation: real offline online-SGD kernel (review only)
+
+Status: DESIGN_READY_FOR_ROOT_REVIEW; no implementation, Cargo change, compiler or
+pilot allocation. This accepted-RNG successor implements legacy Train and connects
+existing Standardize, Mlp inference and Evaluate into a real offline experiment.
+It does not close all mltrain rows, correction, temporal/cohort gates or CLI work.
+The legacy train.go comment calls this mini-batch SGD; lines121-154 actually update
+immediately after EACHsample. Preserve online SGD, not an optimizer reinterpretation.
+
+### Exact implementation boundary and private API
+
+Root allocation would loan only core src/model/training/sgd.rs, sibling
+sgd/tests.rs and sgd/pilot.rs, plus training/mod.rs for a pub(crate) mod sgd.
+No manifest, public facade, inference math, RNG tables, scoring or runtime edits.
+All new types/functions are pub(crate) at most, subordinate to Core model::training;
+no compatibility crate, GPU, tensor library, new dependency, download or executable
+foreign-language template. Existing serde/serde_json suffice for the pilot only.
+
+Proposed API: train(config, reviewed_rows, statistics, expected_schema, base,
+limits) -> Result<TrainingResult, TrainError>. TrainConfig carries signed hidden/
+epoch fields, f32 learning_rate, i64 seed and bounded version. TrainingRow borrows
+FeatureVector plus binary label; construction from Record/Sample remains an explicit
+caller review decision, NOT an automatic promotion of Admission::ReviewRequired.
+Quarantined rows must never enter the record-to-training pilot adapter. Pure numeric
+rows are mathematically usable but do not claim provenance authentication.
+Standardization is the existing typed statistics; base is Option<&MlpBundle>.
+TrainingResult owns candidate MlpBundle and bounded summary (effective config,
+updates, epochs, RNG draws and final row-ID order). No per-update production trace,
+partial candidate, callback, filesystem writes, activation or evaluation threshold
+change. Test-only intermediate snapshots stay cfg(test), bounded tiny fixtures.
+The kernel borrows rows/base/stats immutably; it permutes owned row IDs instead of
+mutating caller data. This preserves Go's arithmetic/sample sequence while making
+its caller-visible in-place train-slice shuffle an explicit nonmutation delta.
+
+### Source contract and numerical order
+
+Source anchors: internal/mltrain/train.go lines76-160 Train,162 Sigmoid,165-181
+Forward and185-219 Evaluate; train_test.go lines37-65 existing learnability/warm
+tests. Bind exact file hashes in sgd-next-slice-proposal.json before implementation.
+
+Normalize hidden<=0 to16 and finite LR<=0 to0.05 as Go; signed epochs<=0 performs
+zero updates as Go. Reject NaN/infinite LR before defaulting. Hidden>256 or epochs
+above1000 is a typed limit failure; no truncation. Version<=128UTF-8bytes. Validate
+schema, binary labels, every finite feature/stat/base weight, 27-wide shapes and
+STRICTLY positive std before allocating the working candidate. Zero/negative std
+is rejected: Go Train divides directly whereas Forward substitutes1for zero; this
+is an explicit fail-closed admitted-domain delta. Do not silently reuse Forward's
+zero-std fallback in training. Finite negative features remain signed.
+
+Create ONEGoRng(seed, explicit draw budget); initialize on that same stream using
+the qualified cold/warm API. Requested malformed warm base stays an error; never
+silent cold fallback. Initialize biases0 cold, copy every base weight/bias warm;
+use caller's new mean/std and requested version/schema, reset CalA=1,CalB=0 even
+when base calibration differs (Go behavior). No RNG draw for valid warm copy.
+Initialize IDs0..n once; for each epoch shuffle the CURRENTID order on the existing
+stream, without reseeding or restoring identity. Empty input and zero epochs may
+return valid initialized candidates with zero updates; these are NOT learnability
+or admission success. Avoid repeated empty-epoch loops while preserving zero draws.
+
+For each sample: z[i]=(x[i]-mean[i])/std[i], ordered f32 subtract then divide;
+hidden h ascending, acc=b1[h], i ascending acc=acc+w1[h][i]*z[i]; save hpre and
+hact=(acc>0 ? acc : +0); logit starts b2 and accumulates w2[h]*hact[h] in h order.
+p=float32(1/(1+exp(float64(-logit)))) with negation in f32, exp/division f64 then
+cast. No clamp, FMA/mul_add, vector reduction, batching, momentum, regularization,
+loss clipping, learning-rate schedule or parallelism. BCE derivative d=p-label.
+For each h: gW2=d*hact[h]; dHact=d*OLDw2[h]; dHpre=dHact iff hpre[h]>0 else+0;
+then ascending i w1[h][i]=w1[h][i]-((lr*dHpre)*z[i]); b1[h]-=lr*dHpre;
+w2[h]-=lr*gW2. Only after all h update b2-=lr*d. Computing dHact from updated W2
+is wrong and must have a discriminating fixture. ReLU derivative is zero at±0.
+Every semantic intermediate/product/update must be finite or reject the entire
+result; f64 exp overflow for large negative finite logit is allowed only as the
+legacy sigmoid limit p=0, not exposed nonfinite weights. Keep exact signed-zero
+bits when the source operations produce them. Final bundle validates shapes,
+schema and all finite fields; existing Mlp loads it, no serving installation.
+
+### Deterministic capacity and error behavior
+
+Limits tighten hard ceilings:100000rows,256hidden,1000epochs,1000000updates,
+100000000feature-hidden-update units (updates*hidden*27),1000000primitive RNGdraws.
+Use checked integer products BEFORE work; no saturating successful counters or
+partial extra epoch. The 800row*40epoch*8hidden legacy scenario fits at6912000units.
+One RNG budget spans initialization plus every shuffle, including rejection draws;
+exhaustion discards the entire result, not a reseed/new stream. Resource summary
+reports actual draws/updates, not predicted counts. No time-dependent arithmetic
+or wall-clock branch in the pure kernel; an allocated supervisor owns real deadlines.
+
+Working space: owned ID vector O(n), weights O(27h), reusable z[27], hpre/hact O(h)
+and bounded version/stat copies. No normalized n*27matrix, per-sample heap churn,
+epoch history or full gradient tape. Use fallible reservation for owned dynamic
+buffers; inherited RNG initialize currently uses infallible bounded allocation,
+so do NOT promise recoverable whole-process OOM. Typed categories: Config/Limit/
+Schema/Label/Statistics/WarmBase/Nonfinite/RngBudget/Allocation; diagnostics omit
+features, raw records, provenance strings and filesystem paths. Any failure leaves
+all caller inputs/base/statistics unchanged and yields no candidate for publishing.
+
+### Meaningful tests and parity classifications
+
+1. Hand-derived exact f32 one-step warm fixture:27zeros except z[0]=1,
+   h1,w1=0,b1=1,w2=0.5,b2=-0.5,lr=0.25,label1. Initial logit0,p0.5;
+   expected w1[0]=0.0625,b1=1.0625,w2=0.625,b2=-0.375; other w1bits unchanged.
+   This catches updated-W2 backprop, sign, feature and bias ordering. A hpre=-1
+   fixture keeps hidden weights/bias/W2 unchanged and changes only b2to0.125.
+   hpre=+0/-0 cases exercise strict derivative; multi-hidden cancellation fixture
+   detects reassociation/FMA. These are analytic/Rust-derived, NOT Go-run goldens.
+2. Independent small scalar reference (test-only, separate update formulation)
+   compares every weight/intermediate after2samples*3epochs and ID order/draw count;
+   include cold/warm, negative/modulus/extreme seeds, changing statistics and
+   nonidentity second-epoch order. Shared math/RNG dependencies are disclosed.
+3. Zero/negative epochs/default config, all-weight warm-copy/Calreset and no alias;
+   empty input; hidden/sample/update/work/draw limits exactedge+1, overflowed
+   products, late invalid label, malformed base, std0/negative, nonfinite features,
+   finite subtraction/product/update overflow, exhausted shuffle transaction.
+   Every failure asserts bit-identical caller/base/stats and no returned candidate.
+4. Reuse immutable existing inference fixtures and existing RNG tests; trained
+   bundle Mlp predictions feed existing evaluate::evaluate, inclusive p>=0.5.
+   Missing human/bot support remains None; abstention rejects evaluation. Do not
+   duplicate serving Forward. Repeat identical numeric inputs for bitwise candidate,
+   final IDs and counters equality; version-only change must not alter weights.
+5. Port legacy separable800train/200holdout,H8,40epochs,LR0.1,seed2 using Rust
+   deterministic synthetic dataset seed1 with EXACTGo test data draw order; report
+   acc>=0.95,humanFPR<=0.05,botTPR>=0.95 as offline learnability regression only.
+   This port has Rust-derived inputs until an actual Go transcript is allocated.
+   No inference-only fixture or learnability score proves SGD cross-language parity.
+6. Later SEPARATEGo1.26.3 oracle allocation: unchanged source plus reviewed bounded
+   Rust harness invokes Go tooling, no generated foreign implementation. Capture
+   exact config/input bits, initial weights, ID orders, selected intermediates and
+   final weights/calibration/prediction bits on the accepted host; abs0/rel0. If
+   unchanged Go exposes only finalbundle, label intermediates Rust-derived rather
+   than imply visibility. No Go execution is authorized by this proposal.
+
+### Actual offline pilot and allocation request
+
+The first coding allocation prepares real kernel plus actual-file unit pilot,
+all NOT_RUN until Root gives a source-bound execution slot. Pilot uses create_new
+owned temp train/holdout JSONL files with disjoint explicit IDs/times/cohorts and
+reviewed synthetic provenance; bounded existing parser -> caller-reviewed training
+rows -> statistics on TRAINONLY -> train -> serialize candidate to create_new file
+-> read EXACTcandidate bytes -> existing Mlp -> held-out evaluation/counts. Check
+bundle identity/finite shape and byte/weight reproducibility in an independent run.
+Negative actual-file pilots: late invalid record, quarantine, byte/row cap, absent
+holdout class and training overflow return no candidate file; never replace an
+existing sentinel artifact. Cleanup only its verified owned files after handles
+settle. This is an actual native filesystem+offline kernel pilot INSIDEtests,
+not a bootstrap CLI/process, temporal/cohort promotion gate or full product e2e.
+No automatic quality-based promotion, and no claiming authenticated sample source.
+
+Proposed later slot: exclusive fresh source-keyed target, jobs1, test-threads1;
+fmt check first, focused SGD tests+file pilot, all Core regression, locked/offline
+all-target/all-feature check and strict Clippy. Root assigns exact durations,
+source/manifest/registry hashes and process budget before any command starts.
+Use one monotonic supervisor and settle only owned child handles/target lease;
+retain first failure, changed-source invalidation and excluded tests. No new
+compiler invocation, GPU or dependency resolution was performed for this proposal.
+
+Acceptance for implementation: Root approves these exact paths/private API and
+explicit deltas (nonmutation, finite/positive-std validation, bounded capacities,
+malformed-warm refusal) before code. Time split/tie policy, per-cohort evaluation,
+AUT, calibration, drift, sinks, correction lifecycle and command/process surfaces
+remain individually tracked future slices; candidate must stay offline until those
+separate admission gates exist. This is concrete Train progress, not whole ML closure.
