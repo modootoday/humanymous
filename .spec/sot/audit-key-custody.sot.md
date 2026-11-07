@@ -310,6 +310,18 @@ Unknown output requires explicit authenticated recovery, never automatic grant
 reissue or effect replay. Existing generation-only rotate_approved remains a
 distinct lower-level primitive and is not destination-bound product authority.
 
+An interrupted prepared rotation is inspected after dropping/reopening custody.
+Authenticate both current and pending envelopes and require exact unchanged
+writer/HMAC/witness identity and vault bytes. An immutable recovery descriptor
+binds the actual source and pending ciphertext digests. Recovery requires a new
+explicitly approved and independently retained operation for that exact target;
+it does not reissue the failed operation's grant. Immediately before promotion,
+recheck both ciphertext digests under the lifetime lock. Changed pending bytes,
+different vault state, stale source or wrong credentials fail without promotion.
+Promote the exact existing pending bytes using the original sync/rename path,
+preserving unknown-outcome poisoning. This is custody-specific recovery, not a
+generic runtime effect replay mechanism.
+
 ## Verification
 
 ### Accepted execution-policy reference

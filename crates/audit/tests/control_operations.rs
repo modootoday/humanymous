@@ -137,6 +137,142 @@ fn material() -> Result<KeyMaterial, humanymous_audit::keys::KeyError> {
 }
 
 #[test]
+fn interrupted_rotation_requires_exact_authenticated_candidate_and_fresh_retained_grant() {
+    let local = Dir::new();
+    let independent = Dir::new();
+    let keys = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let mut retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        authority.public_key(),
+        authority.anchor(),
+        true,
+    )
+    .unwrap();
+    let mut custody = keys.custody();
+    custody
+        .load_or_create(b"old-synthetic-passphrase", material)
+        .unwrap();
+    let original = fs::read(keys.0.join("keys.sealed")).unwrap();
+    let pending = keys.0.join("keys.pending");
+    fs::copy(keys.0.join("keys.sealed"), &pending).unwrap();
+    let sealed =
+        humanymous_audit::keys::seal(&material().unwrap(), b"new-synthetic-passphrase").unwrap();
+    fs::write(&pending, &sealed).unwrap();
+    drop(custody); // Explicit reopen models operator recovery of staged state.
+    let mut custody = keys.custody();
+    assert!(
+        custody
+            .inspect_pending_rotation(b"wrong", b"new-synthetic-passphrase")
+            .is_err()
+    );
+    assert!(
+        custody
+            .inspect_pending_rotation(b"old-synthetic-passphrase", b"wrong")
+            .is_err()
+    );
+    let recovery = custody
+        .inspect_pending_rotation(b"old-synthetic-passphrase", b"new-synthetic-passphrase")
+        .unwrap();
+    let proposal = authority
+        .propose(Action::RotatePassphrase, recovery.target().into(), 10, 100)
+        .unwrap();
+    let signatures = approvals(&proposal);
+    let grant = authority
+        .authorize_retained_action(
+            request(&proposal, &signatures),
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    custody
+        .recover_prepared_rotation(recovery, grant, &scope(), 20)
+        .unwrap();
+    assert_eq!(fs::read(keys.0.join("keys.sealed")).unwrap(), sealed);
+    assert_ne!(sealed, original);
+    assert!(!pending.exists());
+    assert!(
+        authority
+            .authorize_action(request(&proposal, &signatures))
+            .is_err()
+    );
+}
+
+#[test]
+fn interrupted_rotation_rejects_vault_mutation_and_changed_pending_bytes() {
+    let local = Dir::new();
+    let independent = Dir::new();
+    let keys = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let mut retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        authority.public_key(),
+        authority.anchor(),
+        true,
+    )
+    .unwrap();
+    let mut custody = keys.custody();
+    custody
+        .load_or_create(b"old-synthetic-passphrase", material)
+        .unwrap();
+    let original = fs::read(keys.0.join("keys.sealed")).unwrap();
+    let pending = keys.0.join("keys.pending");
+    fs::copy(keys.0.join("keys.sealed"), &pending).unwrap();
+    let vault = Vault::new_scoped(Mode::Hmac, 20, scope()).unwrap();
+    let changed = KeyMaterial::new(
+        [7; 32],
+        vec![8; 32],
+        Some(vault.snapshot().unwrap().to_vec()),
+        None,
+    )
+    .unwrap();
+    fs::write(
+        &pending,
+        humanymous_audit::keys::seal(&changed, b"new-synthetic-passphrase").unwrap(),
+    )
+    .unwrap();
+    assert!(
+        custody
+            .inspect_pending_rotation(b"old-synthetic-passphrase", b"new-synthetic-passphrase")
+            .is_err()
+    );
+    fs::write(
+        &pending,
+        humanymous_audit::keys::seal(&material().unwrap(), b"new-synthetic-passphrase").unwrap(),
+    )
+    .unwrap();
+    let recovery = custody
+        .inspect_pending_rotation(b"old-synthetic-passphrase", b"new-synthetic-passphrase")
+        .unwrap();
+    let proposal = authority
+        .propose(Action::RotatePassphrase, recovery.target().into(), 10, 100)
+        .unwrap();
+    let signatures = approvals(&proposal);
+    let grant = authority
+        .authorize_retained_action(
+            request(&proposal, &signatures),
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    let substituted =
+        humanymous_audit::keys::seal(&material().unwrap(), b"new-synthetic-passphrase").unwrap();
+    fs::write(&pending, &substituted).unwrap();
+    assert!(
+        custody
+            .recover_prepared_rotation(recovery, grant, &scope(), 20)
+            .is_err()
+    );
+    assert_eq!(fs::read(keys.0.join("keys.sealed")).unwrap(), original);
+    assert_eq!(fs::read(&pending).unwrap(), substituted);
+    authority.verify_consumed(&proposal).unwrap();
+}
+
+#[test]
 fn trusted_snapshot_enforces_bound_lock_and_exact_pending_recovery() {
     use humanymous_audit::storage::TrustedSnapshot;
     let directory = Dir::new();

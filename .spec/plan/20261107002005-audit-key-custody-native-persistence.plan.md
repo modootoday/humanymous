@@ -100,6 +100,17 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Current recovery source closes the untyped pending-rotation selection gap with
+PreparedRotationRecovery. Authenticate both envelopes, require exact identity
+and vault preservation, bind exact source/pending ciphertexts, require explicit
+retained rotation authority and recheck before existing native promotion. The
+failed apply's consumed grant is not reissued; this is no generic runtime effect
+retry. Two hosted-only file cases are authored, making eleven new native cases
+after the initial owner slice. No actual native case executed locally. Prior
+seven-pure/static evidence does not qualify this later delta. Root next-slot
+request was updated before any allocation; no Cargo/process is owned.
+Source evidence: [[evidence:root/20261107081215]].
+
 ### Current completion audit against inspected sources
 
 This is an open-requirement audit, not a reduction of the active product goal.

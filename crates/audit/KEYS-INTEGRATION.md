@@ -32,6 +32,16 @@ Old local-only grants never prove external retention.
 
 ## Retained control source checkpoint
 
+Newer interrupted-rotation source adds `PreparedRotationRecovery` and
+`Custody::{inspect_pending_rotation,recover_prepared_rotation}`. Inspection after
+custody reopen authenticates both credentials and requires unchanged full
+writer/HMAC/witness identity and exact vault bytes. The immutable descriptor binds
+both on-disk ciphertexts; recovery consumes an explicit retained rotation grant
+and rechecks exact digests before the existing sync/rename/poison path. It never
+reissues a consumed grant or re-encrypts after approval. Two hosted tests cover
+exact-byte promotion, wrong credentials, vault mutation and changed pending data.
+This source is not compiled/executed yet; prior7pure/static green is historical.
+
 Newer unqualified source adds `storage::{TrustedSnapshot,SnapshotInspection}`
 for runtime operational state: open(path,owner,namespace,max_bytes), read,
 inspect, replace and promote_pending(exact_committed,exact_pending). Shared

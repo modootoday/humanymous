@@ -1,5 +1,5 @@
 //! Destination-bound rotation without retaining plaintext material or passwords.
-use super::{Custody, Durability, crypto, invalid};
+use super::{Custody, Durability, crypto, invalid, same_identity};
 use crate::control::{Action, ControlReceipt, RetainedActionPermit, Scope, target_commitment};
 use sha2::{Digest, Sha256};
 use std::io;
@@ -13,6 +13,19 @@ pub struct PreparedRotation {
     source_digest: String,
     target: String,
     ciphertext: Zeroizing<Vec<u8>>,
+}
+/// Authenticated unchanged-identity pending rotation, bound to exact on-disk
+/// ciphertexts. This is neither an execution grant nor an automatic retry.
+pub struct PreparedRotationRecovery {
+    source_digest: String,
+    candidate_digest: String,
+    target: String,
+}
+impl PreparedRotationRecovery {
+    /// Target for a fresh explicit dual-approved independently retained request.
+    pub fn target(&self) -> &str {
+        &self.target
+    }
 }
 impl PreparedRotation {
     /// Exact normal proposal target commitment signed by both administrators.
@@ -28,6 +41,55 @@ fn target(source: &str, candidate: &[u8]) -> String {
     target_commitment(&descriptor)
 }
 impl Custody {
+    /// Authenticate an interrupted candidate after explicit custody reopen.
+    /// Neither vault mutations nor changed identities are rotation recovery.
+    pub fn inspect_pending_rotation(
+        &self,
+        old_passphrase: &[u8],
+        new_passphrase: &[u8],
+    ) -> io::Result<PreparedRotationRecovery> {
+        self.ready()?;
+        let committed = self.read_envelope("keys.sealed")?;
+        let pending = self.read_envelope("keys.pending")?;
+        let current = crate::keys::open(&committed, old_passphrase).map_err(crypto)?;
+        let candidate = crate::keys::open(&pending, new_passphrase).map_err(crypto)?;
+        same_identity(&current, &candidate)?;
+        if current.vault() != candidate.vault() {
+            return Err(invalid("rotation recovery cannot change vault state"));
+        }
+        let source_digest = hex::encode(Sha256::digest(&committed));
+        let candidate_digest = hex::encode(Sha256::digest(&pending));
+        let target = target(&source_digest, &pending);
+        Ok(PreparedRotationRecovery {
+            source_digest,
+            candidate_digest,
+            target,
+        })
+    }
+    /// Require a fresh retained grant and exact unchanged on-disk ciphertexts,
+    /// then promote the already authenticated candidate without re-encryption.
+    pub fn recover_prepared_rotation(
+        &mut self,
+        recovery: PreparedRotationRecovery,
+        grant: RetainedActionPermit,
+        scope: &Scope,
+        now: u64,
+    ) -> io::Result<(Durability, ControlReceipt)> {
+        self.ready()?;
+        if self.committed_digest()? != recovery.source_digest
+            || hex::encode(Sha256::digest(self.read_envelope("keys.pending")?))
+                != recovery.candidate_digest
+        {
+            return Err(invalid("rotation recovery ciphertext binding mismatch"));
+        }
+        grant.execute(
+            scope,
+            Action::RotatePassphrase,
+            &recovery.target,
+            now,
+            |receipt| Ok((self.finish_pending()?, receipt.clone())),
+        )
+    }
     /// Authenticate and encrypt the complete current snapshot before approval.
     /// Borrowed credentials remain caller-owned; neither is retained here.
     pub fn prepare_rotation(

@@ -2,7 +2,7 @@
 //! before opening; trusted ancestors and same-owner processes remain premises.
 pub(crate) mod permissions;
 mod rotation;
-pub use rotation::PreparedRotation;
+pub use rotation::{PreparedRotation, PreparedRotationRecovery};
 #[cfg(all(test, unix))]
 mod tests;
 use super::{KeyMaterial, LIMIT, open, seal, vault::Vault};
@@ -86,6 +86,9 @@ impl Custody {
         }
     }
     fn read(&self, name: &str, passphrase: &[u8]) -> io::Result<KeyMaterial> {
+        open(&self.read_envelope(name)?, passphrase).map_err(crypto)
+    }
+    fn read_envelope(&self, name: &str) -> io::Result<Vec<u8>> {
         let file = permissions::existing(&self.dir.join(name), false)?;
         permissions::file(&file, &self.owner)?;
         if file.metadata()?.len() > LIMIT as u64 {
@@ -93,7 +96,10 @@ impl Custody {
         }
         let mut bytes = Vec::new();
         file.take(LIMIT as u64 + 1).read_to_end(&mut bytes)?;
-        open(&bytes, passphrase).map_err(crypto)
+        if bytes.len() > LIMIT {
+            return Err(invalid("sealed custody size limit"));
+        }
+        Ok(bytes)
     }
     /// Authenticate the committed identity, or explicitly provision once when
     /// neither committed nor pending state exists. Failure never calls create.
@@ -222,6 +228,9 @@ impl Custody {
             )
             .map_err(crypto)?;
         }
+        self.finish_pending()
+    }
+    fn finish_pending(&mut self) -> io::Result<Durability> {
         self.poisoned = true;
         let result = self.promote();
         if result.is_ok() {
@@ -234,14 +243,9 @@ impl Custody {
     pub fn committed_digest(&self) -> io::Result<String> {
         use sha2::{Digest, Sha256};
         self.ready()?;
-        let file = permissions::existing(&self.dir.join("keys.sealed"), false)?;
-        permissions::file(&file, &self.owner)?;
-        let mut bytes = Vec::new();
-        file.take(LIMIT as u64 + 1).read_to_end(&mut bytes)?;
-        if bytes.len() > LIMIT {
-            return Err(crypto(super::KeyError::SizeLimit));
-        }
-        Ok(hex::encode(Sha256::digest(bytes)))
+        Ok(hex::encode(Sha256::digest(
+            self.read_envelope("keys.sealed")?,
+        )))
     }
     /// Operational rotation consumes two signed approvals bound to the exact
     /// current ciphertext digest before re-encrypting the unchanged identity.
