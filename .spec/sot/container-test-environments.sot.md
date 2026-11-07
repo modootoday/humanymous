@@ -33,6 +33,43 @@ baseline. This component lab does not qualify full product e2e or Meari+CEF.
 
 # Container product-test environments
 
+## Go bounded HTTP actual composition
+
+The --go-product profile consumes adapters/go/pilot-contract.json and the
+Go-owned typed Deployment, scenario evaluator and Receipt qualifier. It uses
+test/lab/go-configuration.json as the complete parent/actor configuration
+template; owner routes and the measured fixed loopback contact-witness tuple
+are the only per-case policy/endpoint changes. The existing private passphrase
+is retained in startup only and replaced by a marker in configuration evidence.
+
+The fixture is untouched upstream Go source, never authored Go implementation.
+Verify the pinned revision, full tracked byte inventory, entrypoint, compiler
+index/platform manifest and actual version before a network-none build. Exclude
+Git metadata and untracked bytes from the compiler context. Hash the exported
+artifact and the independently copied actual container binary. Backend, Gate
+and attacker use different namespaces; Gate alone joins two owned internal
+bridges. The upstream binds loopback18081 behind a fixed bounded relay18082;
+the Gate's independent contact relay and actual ServiceHost bind loopback.
+Independent cryptographic witness stays on separate UID/storage/private pipes.
+
+Every case starts with fresh writer/witness state and one real synthetic native
+collection record, so even parser/kernel negatives have an independently pinned
+audit head. Setup must make zero origin contacts. Attack traffic waits for actual
+running namespace inspection and explicit private release. Actual origin-bypass
+tests target Gate bridgeIP:contact-port and backend bridgeIP18082, not attacker
+loopback. Timeout, missing counter or unobserved namespace is an error. Count
+conservative TCP contacts separately from positive real-handler response proofs.
+Preserve all eight cases, actual reasons and cleanup results; never retry effects
+or manufacture zero counters. Complete successful ledgers alone may invoke the
+owner qualifier against the parent's independently provisioned source/artifact,
+configuration and OS tuple. New source is NOT_RUN until its own hosted receipt.
+
+Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
+0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
+pass. evidence:root/20261107083259 preserves the decoded public log and derived
+projection; original private wargame bytes/causes were not recovered. Readiness
+contract fixes and later Go source do not change that result.
+
 ## First-class Docker Compose integration support
 
 Docker Compose is a supported deployment and product-test integration target.

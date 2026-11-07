@@ -1,16 +1,7 @@
 //! Two-namespace product actors. Private witness frames never enter HTTP/logs.
 use crate::browser_proxy::{self, ProxyConfig, Receipts};
-use humanymous_audit::{
-    checkpoint::{
-        WitnessBootstrap,
-        service::{self, WitnessServiceClient},
-    },
-    log::WitnessDurability,
-};
-use humanymous_runtime::{
-    service::{ServiceHost, ShutdownRequest},
-    startup::ExternalWitness,
-};
+use humanymous_audit::checkpoint::service;
+use humanymous_runtime::service::{ServiceHost, ShutdownRequest};
 use serde_json::json;
 use std::{
     io::{self, BufReader, Read, Write},
@@ -59,55 +50,25 @@ fn hardening() -> Result<serde_json::Value> {
 
 pub fn gate() -> Result<()> {
     let hardening = hardening()?;
-    let mut input = BufReader::new(io::stdin());
+    let input = BufReader::new(io::stdin());
     // One fresh installation per product bundle; credentials are process-private.
-    let mut installation = crate::installation::Installation::new(false)?;
-    let (_custody, material) = crate::witness::material(
-        Path::new("/writer/keys"),
-        b"synthetic-owned-installation",
-        true,
-    )?;
-    installation.seed = *material.signing_seed();
-    installation.hmac.copy_from_slice(material.hmac_key());
-    let public = ed25519_dalek::SigningKey::from_bytes(&installation.seed)
-        .verifying_key()
-        .to_bytes();
-    drop(material);
-    drop(_custody);
-    let fixture = browser_proxy::fixture();
-    let config = &mut installation.config;
-    config["scope"] = fixture["scope"].clone();
-    config["browser"] = json!({"origin":fixture["browser_origin"]});
-    let route = |path: &serde_json::Value, collector: bool| json!({"method":"POST","path":path,"rit_profile":"browser_auth_only","required":{"raw_tls":false,"original_h2":false,"raw_header_order":true,"collector":collector,"rit":true}});
-    config["routes"] = json!([
-        route(&fixture["routes"]["effect"], false),
-        route(&fixture["routes"]["required_collector"], true)
-    ]);
-    config["audit"]["directory"] = json!("/writer/wal");
-    config["audit"]["keys"]["directory"] = json!("/writer/keys");
-    config["audit"]["require_external_witness"] = json!(true);
-    config["audit"]["node_id"] = json!("isolated-node");
-    service::write_frame(
-        &mut io::stdout(),
-        &json!({"role":"writer_identity","writer_public":public}),
-    )?;
-    let intro: serde_json::Value = serde_json::from_slice(
-        &service::read_frame(&mut input)?.ok_or("missing witness readiness")?,
-    )?;
-    let witness: [u8; 32] = serde_json::from_value(intro["witness_public"].clone())?;
-    let client = WitnessServiceClient::from_ready(
-        input,
-        io::stdout(),
-        witness,
-        public,
-        "isolated-node".into(),
-        WitnessBootstrap::CreateNew,
-    )?;
-    let external = ExternalWitness::new(
-        Box::new(client),
-        witness,
-        WitnessDurability::FileAndDirectory,
-    )?;
+    let crate::installation::witnessed::WitnessedInstallation {
+        installation,
+        external,
+        writer_public: public,
+        witness_public: witness,
+    } = crate::installation::witnessed::fresh(input, |installation| {
+        let fixture = browser_proxy::fixture();
+        let config = &mut installation.config;
+        config["scope"] = fixture["scope"].clone();
+        config["browser"] = json!({"origin":fixture["browser_origin"]});
+        let route = |path: &serde_json::Value, collector: bool| json!({"method":"POST","path":path,"rit_profile":"browser_auth_only","required":{"raw_tls":false,"original_h2":false,"raw_header_order":true,"collector":collector,"rit":true}});
+        config["routes"] = json!([
+            route(&fixture["routes"]["effect"], false),
+            route(&fixture["routes"]["required_collector"], true)
+        ]);
+        Ok(())
+    })?;
     let config = serde_json::from_value(installation.config.clone())?;
     let executor = tokio::runtime::Builder::new_current_thread()
         .enable_all()

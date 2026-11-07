@@ -1,0 +1,53 @@
+# Per-case owned projects give every case new writer/witness keys, WAL and head.
+services:
+  go-backend:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/go-lab:${HM_LAB_IMAGE_TAG:?owned image required}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:?immutable source required}
+      dockerfile: deployments/lab/images/go.Dockerfile
+      args:
+        HM_PRODUCT_IMAGE: humanymous/product-lab:${HM_LAB_IMAGE_TAG:?owned image required}
+      additional_contexts:
+        go_fixture: ${HM_GO_FIXTURE_EXPORT:?verified untouched binary required}
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --go-backend]
+    networks: [go-backend]
+    pids_limit: 64
+    mem_limit: 256m
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=16m,mode=1777"]
+    profiles: [go-product]
+  go-gate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-lab:${HM_LAB_IMAGE_TAG:?owned image required}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:?immutable source required}
+      dockerfile: deployments/lab/images/product.Dockerfile
+      target: runtime
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --go-gate]
+    command: ["${HM_GO_BACKEND:-127.0.0.1:0}", "${HM_GO_CASE:-missing}"]
+    stdin_open: true
+    networks: [go-ingress, go-backend]
+    volumes: [writer-key:/writer/keys, writer-wal:/writer/wal]
+    pids_limit: 128
+    mem_limit: 512m
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=64m,mode=1777"]
+    profiles: [go-product]
+  go-client:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-lab:${HM_LAB_IMAGE_TAG:?owned image required}
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --go-client]
+    command: ["${HM_GO_GATE:-127.0.0.1:0}", "${HM_GO_CASE:-missing}"]
+    networks: [go-ingress]
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=16m,mode=1777"]
+    profiles: [go-product]
+  go-bypass:
+    extends: {service: go-client}
+    command: ["${HM_GO_GATE:-127.0.0.1:0}", "origin-bypass", "${HM_GO_BACKEND:-127.0.0.1:0}", "${HM_GO_WITNESS:-127.0.0.1:0}"]
+networks:
+  go-ingress: &owned-network
+    internal: true
+    enable_ipv6: false
+    labels:
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:?expiry required}"
+  go-backend: *owned-network

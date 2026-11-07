@@ -1,5 +1,48 @@
 # Rust product-lab runner contract
 
+The Go bounded HTTP profile has an actual Rust Docker caller:
+`cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --go-product --require-full`.
+Use a fresh bundle, separately from browser/collector/topology-only profiles.
+The caller is authored; its latest Unix compile and Docker execution are NOT_RUN
+until the next source-bound hosted batch. A scoped pass still exits2; execution
+failure exits1. Full product qualification stays false.
+
+The eight-case inventory/routes and untouched upstream/compiler inputs come
+from adapters/go/pilot-contract.json and compiler-input.json. The runner fetches
+the exact upstream revision, verifies every tracked file and entrypoint digest,
+copies only those bytes into a clean compiler context, checks pinned index and
+amd64 child manifest plus actual Go version, and builds with network none.
+It never authors Go source. The exported binary and actual container copy must
+hash equally. Each case gets a fresh owned project, writer/witness keys, WAL and
+external head; Gate alone joins ingress and backend internal bridges. Go binds
+backend loopback18081 behind a fixed byte relay18082. Gate uses actual
+go-adapter Deployment and ServiceHost with independent FileAndDirectory witness.
+
+The attacker starts in ingress, waits for the host to inspect its running
+namespace, then receives an explicit private release. Binary/HEAD probes use
+the existing explicitly synthetic native session/report/RIT helper. Negative
+cases preserve actual HTTP reasons, write half-close or pre-handoff cancellation
+and deadline observation. Bypass probes the actual Gate bridge address at its
+loopback contact-witness port and the separate backend bridge address; self
+loopback refusal and timeouts cannot satisfy this proof. Origin accounting is
+conservative TCP contacts, never inferred application mutations. Each real
+observation goes through the Go owner's evaluator. All eight cases, errors and
+cleanup failures remain in the private ledger. Missing counters remain unknown.
+
+Parent-selected complete sanitized configurations must equal actor configurations.
+The parent binds frozen source, actual images, full fixture/binary/compiler
+closure, engine binary, all per-case configurations and actual OS into the
+independent expected tuple before constructing the measured Receipt. Only eight
+successful measured cases and cleanup can invoke the Go qualifier. This is
+bounded net/http conformance, not human/browser, other Go frameworks, streaming,
+204/304, post-origin rollback or graceful upstream termination qualification.
+
+Source8132117 run42355168729 failed: Docker public receipt retained26 scheduled,
+zero evaluated,19 errors and7 unsupported, with strict internally-consistent
+accounting but scoped/full false. Original private case causes remain unavailable.
+evidence:root/20261107083259 preserves the decoded log and derived public receipt.
+Later fixes and Go source do not overwrite or qualify that historical run.
+
 The accepted browser product profile is separate from collector component tests:
 `cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --browser-product --require-full`.
 Do not combine it with --collector or --topology-only. Its source is authored,

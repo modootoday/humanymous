@@ -1,0 +1,12 @@
+{
+  "listen": "127.0.0.1:0",
+  "origin": "127.0.0.1:18081",
+  "scope": {"installation":"pilot","tenant":"tenant","origin":"origin","revision":"r1","authority":"owned.test"},
+  "routes": [],
+  "audit": {"directory":"/writer/wal","node_id":"isolated-node","keys":{"directory":"/writer/keys","passphrase":"<private>"},"require_external_witness":true,"allow_new":true,"trusted_head":null},
+  "owner": {"kind":"unix","uid":65532},
+  "session_capacity":16,
+  "session_ttl_ms":60000,
+  "timeout_ms":5000,
+  "rate_per_second":1000
+}

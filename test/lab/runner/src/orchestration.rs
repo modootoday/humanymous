@@ -45,6 +45,8 @@ fn safe_diagnostics(cases: &[Value]) -> Value {
     json!({"schema":"humanymous.lab-safe-diagnostics/1","failures":failures,"failure_count":failed.len(),"partial":failed.len()>512})
 }
 mod browser;
+mod go;
+mod go_fixture;
 mod public_receipts;
 mod witness;
 struct Lab {
@@ -55,6 +57,7 @@ struct Lab {
     collector: bool,
     topology_only: bool,
     browser_product: bool,
+    go_product: bool,
     stage: &'static str,
     cases: Vec<Value>,
     components: Value,
@@ -73,7 +76,7 @@ impl Lab {
             .to_string_lossy()
             .into_owned())
     }
-    fn compose(&mut self, args: &[&str], required: bool) -> Result<crate::docker::Output> {
+    fn compose_args(&self, args: &[&str]) -> Result<Vec<String>> {
         let mut command = vec![
             "compose".into(),
             "-p".into(),
@@ -107,7 +110,19 @@ impl Lab {
                 "browser-product".into(),
             ]);
         }
+        if self.go_product {
+            command.extend([
+                "-f".into(),
+                self.config_file("deployments/lab/compose.rust.go.yaml")?,
+                "--profile".into(),
+                "go-product".into(),
+            ]);
+        }
         command.extend(args.iter().map(|s| (*s).to_owned()));
+        Ok(command)
+    }
+    fn compose(&mut self, args: &[&str], required: bool) -> Result<crate::docker::Output> {
+        let command = self.compose_args(args)?;
         self.docker.invoke(&command, &self.environment, required)
     }
     fn case(&mut self, id: &str, passed: bool, detail: Value) -> Result<()> {
@@ -138,24 +153,26 @@ impl Lab {
             &container,
         )?;
         let host = &container["HostConfig"];
-        let mounts_allowed = if service.starts_with("witness-") || service == "browser-gate" {
-            let destinations: &[&str] = if matches!(service, "witness-writer" | "browser-gate") {
-                &["/writer/keys", "/writer/wal"]
-            } else if service == "witness-key-denied" {
-                &["/witness/keys"]
+        let mounts_allowed =
+            if service.starts_with("witness-") || matches!(service, "browser-gate" | "go-gate") {
+                let destinations: &[&str] =
+                    if matches!(service, "witness-writer" | "browser-gate" | "go-gate") {
+                        &["/writer/keys", "/writer/wal"]
+                    } else if service == "witness-key-denied" {
+                        &["/witness/keys"]
+                    } else {
+                        &["/witness/keys", "/witness/head"]
+                    };
+                container["Mounts"].as_array().is_some_and(|mounts| {
+                    mounts.len() == destinations.len()
+                        && mounts.iter().all(|m| {
+                            m["Type"] == "volume"
+                                && destinations.contains(&m["Destination"].as_str().unwrap_or(""))
+                        })
+                })
             } else {
-                &["/witness/keys", "/witness/head"]
+                container["Mounts"] == json!([])
             };
-            container["Mounts"].as_array().is_some_and(|mounts| {
-                mounts.len() == destinations.len()
-                    && mounts.iter().all(|m| {
-                        m["Type"] == "volume"
-                            && destinations.contains(&m["Destination"].as_str().unwrap_or(""))
-                    })
-            })
-        } else {
-            container["Mounts"] == json!([])
-        };
         let expected_user = if service == "witness-transaction" {
             "65533:65533"
         } else {
@@ -166,8 +183,8 @@ impl Lab {
             container["Config"]["User"] == expected_user
                 && host["ReadonlyRootfs"] == true
                 && host["Privileged"] == false
-                && host["PidMode"] != "host"
-                && host["IpcMode"] != "host"
+                && host["PidMode"].as_str()==Some("")
+                && host["IpcMode"].as_str()==Some("private")
                 && host["CapDrop"] == json!(["ALL"])
                 && host["SecurityOpt"]
                     .as_array()
@@ -181,6 +198,9 @@ impl Lab {
         Ok(container)
     }
     fn execute(&mut self) -> Result<()> {
+        if self.go_product {
+            return go::run(self);
+        }
         if self.browser_product {
             return browser::run(self);
         }
@@ -480,6 +500,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut collector = false;
     let mut topology_only = false;
     let mut browser_product = false;
+    let mut go_product = false;
     let mut full = false;
     let mut index = 0;
     while index < args.len() {
@@ -492,6 +513,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             }
             "--collector" => collector = true,
             "--browser-product" => browser_product = true,
+            "--go-product" => go_product = true,
             "--topology-only" => topology_only = true,
             "--require-full" => full = true,
             _ => return Err("unknown runner argument".into()),
@@ -501,6 +523,9 @@ pub fn run(args: &[String]) -> Result<i32> {
     let evidence = evidence.ok_or("--evidence required")?.canonicalize()?;
     if browser_product && (collector || topology_only) {
         return Err("browser product requires a separate fresh bundle/profile".into());
+    }
+    if go_product && (browser_product || collector || topology_only) {
+        return Err("Go product requires a separate fresh bundle/profile".into());
     }
     if !evidence.starts_with(root.join(".spec.local/root/evidence"))
         || !evidence.join("index.evidence.md").is_file()
@@ -537,6 +562,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         collector,
         topology_only,
         browser_product,
+        go_product,
         stage: "initialization",
         cases: Vec::new(),
         components: json!({}),
@@ -561,7 +587,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             .push(json!({"id":"cleanup","status":"failed","error_code":"cleanup_failed","detail":error.to_string()}));
     }
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
-    let mut evidence_types = if browser_product {
+    let mut evidence_types = if browser_product || go_product {
         vec![]
     } else {
         vec!["topology-control"]
@@ -571,6 +597,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         ("wargame", "supervisor-owned-runtime-child-http1"),
         ("independent_witness", "independent-witness-component"),
         ("collector", "collector-component"),
+        ("go_product", "actual-go-gate-bounded-http"),
         (
             "browser_product",
             "same-origin-browser-runtime-isolated-pilot",

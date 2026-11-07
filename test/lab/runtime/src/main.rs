@@ -13,6 +13,8 @@ mod client;
 #[path = "../../dns_wire.rs"]
 mod dns_wire;
 #[cfg(unix)]
+mod go;
+#[cfg(unix)]
 mod installation;
 #[cfg(unix)]
 mod origin;
@@ -30,6 +32,16 @@ mod witness;
 #[cfg(unix)]
 fn main() {
     match std::env::args().nth(1).as_deref() {
+        Some("--go-client-release") => {
+            go::client_release().expect("independent Go client namespace release")
+        }
+        Some("--go-evaluate") => go::evaluate().expect("measured Go case evaluation"),
+        Some("--go-backend") => go::backend().expect("actual Go upstream actor"),
+        Some("--go-backend-stop") => go::backend_stop().expect("owned Go upstream stop"),
+        Some("--go-gate") => go::gate().expect("owned Go Gate actor"),
+        Some("--go-client") => go::client().expect("owned Go client actor"),
+        Some("--go-count") => go::count().expect("owned Go counter snapshot"),
+        Some("--go-qualify") => go::qualify().expect("complete actual Go qualification"),
         Some("--browser-gate") => browser_product::gate().expect("owned browser gate"),
         Some("--browser-driver") => browser_product::browser().expect("owned browser runner"),
         Some("--browser-stop") => {

@@ -151,6 +151,13 @@ fn allowed(path: &str) -> bool {
         .and_then(|e| e.to_str())
         .unwrap_or("");
     (matches!(path, "Cargo.toml" | "Cargo.lock" | "rust-toolchain.toml"))
+        || matches!(
+            path,
+            "adapters/go/pilot-contract.json"
+                | "adapters/go/compiler-input.json"
+                | "adapters/go/upstream-fixtures.json"
+                | "adapters/go/Dockerfile.fixture"
+        )
         || ((path.starts_with("crates/") || path.starts_with("test/lab/"))
             && matches!(extension, "rs" | "toml" | "lock" | "json"))
         || (path.starts_with("deployments/lab/")

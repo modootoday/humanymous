@@ -1,4 +1,5 @@
 //! One actual custody/config/origin owner, reused by all contextual scenarios.
+pub(crate) mod witnessed;
 use crate::{origin::Origin, provisioning};
 use humanymous_audit::{
     keys::{

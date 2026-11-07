@@ -27,6 +27,10 @@
 !test/
 !test/lab/
 !test/lab/dns_wire.rs
+!test/lab/go-configuration.json
+!adapters/
+!adapters/go/
+!adapters/go/pilot-contract.json
 !test/lab/runner/
 !test/lab/runner/**/
 !test/lab/runner/**/*.rs
