@@ -56,3 +56,17 @@ production erasure authority. Verify that the permit matches both subject and
 scope, reverse links disappear, unrelated subjects remain intact and tombstones
 survive restart. Persist the authorized snapshot before acknowledging completion;
 an in-memory `shred` return is not durable erasure or historical-backup removal.
+
+For interrupted erasure, `Custody::recover_erasure_pending` requires the trusted
+installation/node scope as a separate argument and checks that the permit is
+bound to it before recovery reads or promotion. Historical encrypted envelopes
+do not supply that logical scope. Obtain it from authenticated service
+configuration, never the request, the subject's spelling or the pending file.
+
+Prepare two separately scoped, validly signed approvals for the same synthetic
+subject. Verify that a foreign permit or a mismatched configured scope is
+refused with both committed and pending ciphertexts unchanged. Then test the
+exact-scope recovery, retained tombstone and an unaffected second subject.
+The source includes this regression case; it is not evidence that the current
+native recovery ran. Preserve both configuration and artifact identities in
+the execution report rather than borrowing an older hosted result.

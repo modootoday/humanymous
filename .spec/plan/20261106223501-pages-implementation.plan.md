@@ -1502,3 +1502,13 @@ bytes unchanged. Saved fixture digest63991623d692 and explicit static-only scope
 no shared parser/Rust compilation/host execution. These checks cannot substitute
 for pending actual corpus acceptance. Exact813 now has quality128360847587 and
 images-gate128360953683 confirmed live; no Pages/documentation execution observed.
+
+### Interrupted erasure trusted scope follow-through
+
+Inspected current Custody::recover_erasure_pending and complete named foreign-
+scope regression case. Runbook now records explicit trusted installation/node
+argument, permit precheck before recovery reads/promotion, historical envelopes
+without logical scope, and same-subject foreign-scope negatives preserving both
+ciphertexts before exact-scope recovery. New native regression remains unexecuted
+at this reviewed checkpoint; no older hosted result promoted. Partial module
+inspection does not renew a whole-file receipt. No benchmark-prohibited commands.
