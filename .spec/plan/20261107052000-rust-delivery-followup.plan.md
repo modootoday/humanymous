@@ -38,6 +38,17 @@ After root repaired common-lock coherence and the local Cargo slot was idle,
 the same diagnostic source passed27pureunits/strictClippy with locked/jobs1.
 This is a new successful check, not reclassification of the earlier lock error;
 actual sanitized workspace log emission still needs a new hosted execution.
+Same source63f69ae Dockerjob128331815962 ended blocked: owning exit2,errors0,
+source_changedfalse,twoimageIDs; full-product gate correctly rejected component-
+only qualification. Public summary did not preserve scoped owner assertion
+denominator, so do not infer71 from an older lab source. RawprivatejoblogSHA256
+aa926eebc1654eec4ba977696a31c4709d3a283d587d0e7d914e53e89bbd1b7e.
+macOSnativejob128331816073 failed at workspace execution/summary; rawprivateSHA256
+dde517e33390d4c4cfaf8cd52092281288edb78d830762f76b70b6c112d200db.
+Later-source component public summary adds only scoped assertion counts,
+full-product flag and unavailable-count, preserving old fields and privacy.
+Counts absent remainnull, neverfabricated0 or Rusttestdenominator.28pureunits/
+strictClippypass,actualhostedsummarybehaviorstillnot_run.
 
 Productenvironment preparation only: release crates/npm jobs now use matching
 crates/npm environments, registry prerequisite/trust binding and catalog match.

@@ -286,8 +286,29 @@ fn public_summary(report: &Value) -> Value {
     summary["source_manifest_sha256"] = report["source"]["manifest_sha256"].clone();
     summary["canonical_git_tree_sha256"] = report["source"]["canonical_git_tree_sha256"].clone();
     summary["cases"]=json!(report["cases"].as_array().into_iter().flatten().map(|case|json!({"id":case["id"],"status":case["status"],"evidence":"private source-bound owning report"})).collect::<Vec<_>>());
-    summary["components"]=json!(report["components"].as_array().into_iter().flatten().map(|component|json!({"owner":component["owner"],"exit_code":component["exit_code"],"status":component["report"]["status"],"qualification":component["report"]["qualification"],"schema":component["report"]["schema"]})).collect::<Vec<_>>());
+    summary["components"] = json!(
+        report["components"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .map(component_summary)
+            .collect::<Vec<_>>()
+    );
     summary
+}
+fn component_summary(component: &Value) -> Value {
+    let report = &component["report"];
+    let counts = report["cases"].as_array().map(|cases| json!({
+        "total":cases.len(),
+        "passed":cases.iter().filter(|case| case["status"] == "passed").count(),
+        "failed":cases.iter().filter(|case| case["status"] == "failed").count(),
+        "other":cases.iter().filter(|case| case["status"] != "passed" && case["status"] != "failed").count()
+    }));
+    // Assertions are the owner's case denominator, never a Rust test count.
+    json!({"owner":component["owner"],"exit_code":component["exit_code"],
+        "status":report["status"],"qualification":report["qualification"],
+        "schema":report["schema"],"full_product_qualified":report["full_product_qualified"],
+        "assertions":counts,"required_unavailable_count":report["required_unavailable"].as_array().map(Vec::len)})
 }
 #[cfg(test)]
 mod tests {
@@ -316,5 +337,19 @@ mod tests {
         assert!(!summary.to_string().contains("private-canary"));
         assert_eq!(summary["source_sha"], "commit");
         assert_eq!(summary["components"][0]["exit_code"], 2);
+    }
+    #[test]
+    fn owner_assertion_counts_are_explicit_and_unknown_is_not_zero() {
+        let absent = component_summary(&json!({"report":{}}));
+        assert!(absent["assertions"].is_null());
+        let actual = component_summary(
+            &json!({"exit_code":2,"report":{"schema":"humanymous.product-lab/2","cases":[{"status":"passed","detail":"private-canary"},{"status":"failed"},{"status":"blocked"}]}}),
+        );
+        assert_eq!(
+            actual["assertions"],
+            json!({"total":3,"passed":1,"failed":1,"other":1})
+        );
+        assert!(!actual.to_string().contains("private-canary"));
+        assert_eq!(actual["exit_code"], 2);
     }
 }

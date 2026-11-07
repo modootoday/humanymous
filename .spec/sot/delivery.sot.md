@@ -252,6 +252,13 @@ checks remain not_run. No local Docker build or browser execution was performed.
 
 ### Artifact-free diagnostics
 
+Component summary adds scoped assertion total/passed/failed/other and required-
+unavailable count from the owning report, preserving existing schema/status/
+qualification fields and explicit full-product flag. Missing case arrays yield
+null rather than inventedzero. Assertions are not Rust test counts; never print
+case detail, actor identity or raw process streams. This corrects the second
+hosted source's missing scoped denominator without guessing old lab counts.
+
 Artifact-off diagnostics correction: workspace probe emits only the owning
 formatter's sanitized accounting to stdout/GITHUB_STEP_SUMMARY before evaluating
 failure, using the same summary writer as pilot. Never print raw owner reports
