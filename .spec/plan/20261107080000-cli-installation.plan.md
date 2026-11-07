@@ -409,6 +409,14 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Tools pre-freeze exact target/private-context matrix:
+[[plan:root/20261107224511]], with attached13manifest/category bodies,34target
+roots,279tracked source/mode/hash rows,10original resource moves,123reader paths
+and existing actor unsafe26+7lexical-site inventory. Root must canonize proposed
+feature spellings/destination roots/native-planner distribution and private shared
+lab/library linkage before freezing. No public tool API/source copies/ambient
+profile/private-helper workaround is proposed. No moves or compiler execution.
+
 Consolidated Runtime consumer source8e51e558 passed allocated immutable Windows
 validation: [[evidence:root/20261107223851]]. Exact17fmt-first, normal Runtime
 native-security-only tree, separate no-default/all-feature all-target checks,

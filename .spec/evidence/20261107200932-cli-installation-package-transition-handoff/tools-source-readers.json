@@ -1,0 +1,622 @@
+{
+  "schema": "humanymous.cli-tool-source-readers/1",
+  "observed_utc": "2026-11-07T22:48:17.7203520+00:00",
+  "scope": "13currenttoolcontexts, lexical includes/manifest-relative/executable selectors; semantic review and remaining ambient inputs still required",
+  "readers": [
+    {
+      "path": "crates/cli/tests/watchdog_boundary.rs",
+      "line": 60,
+      "text": "        let mut command = Command::new(env!(\"CARGO_BIN_EXE_humanymous-service-fixture\"));"
+    },
+    {
+      "path": "crates/cli/tests/service_process.rs",
+      "line": 41,
+      "text": "        fs::copy(env!(\"CARGO_BIN_EXE_humanymous-service-fixture\"), &source).unwrap();"
+    },
+    {
+      "path": "crates/cli/tests/service_process.rs",
+      "line": 78,
+      "text": "        let mut c = Command::new(env!(\"CARGO_BIN_EXE_humanymous\"));"
+    },
+    {
+      "path": "crates/cli/tests/service_process.rs",
+      "line": 233,
+      "text": "        Command::new(env!(\"CARGO_BIN_EXE_humanymous-service-fixture\"))"
+    },
+    {
+      "path": "crates/cli/tests/runtime_service_process.rs",
+      "line": 102,
+      "text": "        fs::copy(env!(\"CARGO_BIN_EXE_humanymous\"), &source).unwrap();"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration.rs",
+      "line": 14,
+      "text": "    let contract: Value = serde_json::from_str(include_str!(\"../safe-diagnostics.json\"))"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/windows_doctor.rs",
+      "line": 18,
+      "text": "        let mut command = Command::new(env!(\"CARGO_BIN_EXE_humanymous-agent-maintenance\"));"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "line": 36,
+      "text": "        Command::new(env!(\"CARGO_BIN_EXE_humanymous-agent-maintenance\"))"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/product_package.rs",
+      "line": 22,
+      "text": "    let root = Path::new(env!(\"CARGO_MANIFEST_DIR\"))"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/process.rs",
+      "line": 49,
+      "text": "        Command::new(env!(\"CARGO_BIN_EXE_humanymous-agent-maintenance\"))"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/process.rs",
+      "line": 95,
+      "text": "            Command::new(env!(\"CARGO_BIN_EXE_humanymous-agent-maintenance\"))"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/git_coord.rs",
+      "line": 89,
+      "text": "        include_str!(\"../../../scripts/agents/git-coord.ps1\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+      "line": 29,
+      "text": "        Command::new(env!(\"CARGO_BIN_EXE_humanymous-agent-maintenance\"))"
+    },
+    {
+      "path": "scripts/ci/local-parity/src/main.rs",
+      "line": 376,
+      "text": "    let control = PathBuf::from(env!(\"CARGO_MANIFEST_DIR\"))"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/actor.rs",
+      "line": 502,
+      "text": "        let exe = std::env::current_exe()?.canonicalize()?;"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/startup_failure.rs",
+      "line": 80,
+      "text": "            serde_json::from_str(include_str!(\"../../safe-diagnostics.json\")).unwrap();"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/mod.rs",
+      "line": 90,
+      "text": "    let path = std::env::current_exe()?;"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/public_receipts.rs",
+      "line": 11,
+      "text": "    let contract: Value = serde_json::from_str(include_str!(\"../../public-receipts.json\"))?;"
+    },
+    {
+      "path": "crates/native-cli/tests/command.rs",
+      "line": 8,
+      "text": "    let mut command = Command::new(env!(\"CARGO_BIN_EXE_humanymous-native\"));"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "line": 10,
+      "text": "    Ok(serde_json::from_str(include_str!("
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "line": 232,
+      "text": "        let recipe = include_str!(\"../../../../../../deployments/lab/images/product.Dockerfile\");"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "line": 269,
+      "text": "            serde_json::from_str(include_str!(\"../../../safe-diagnostics.json\")).unwrap();"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_public.rs",
+      "line": 101,
+      "text": "    let contract: Value = serde_json::from_str(include_str!(\"../../go-public-receipts.json\"))?;"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_public.rs",
+      "line": 102,
+      "text": "    let owner: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_public.rs",
+      "line": 105,
+      "text": "    let infrastructure: Value = serde_json::from_str(include_str!(\"../../safe-diagnostics.json\"))?;"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_public.rs",
+      "line": 247,
+      "text": "        let owner: serde_json::Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_public.rs",
+      "line": 288,
+      "text": "        let owner: serde_json::Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "line": 4,
+      "text": "    include_bytes!(\"../../../../../../crates/collector/src/browser/transport/runtime_pilot.rs\");"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "line": 219,
+      "text": "            serde_json::from_str(include_str!(\"../../../safe-diagnostics.json\")).unwrap();"
+    },
+    {
+      "path": "crates/attacker/src/network/cases.rs",
+      "line": 233,
+      "text": "        include_str!(\"../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json\")"
+    },
+    {
+      "path": "crates/attacker/src/network/cases.rs",
+      "line": 235,
+      "text": "        include_str!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/windows_doctor/probe.rs",
+      "line": 181,
+      "text": "            &std::env::current_exe().unwrap(),"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site/bootstrap.rs",
+      "line": 59,
+      "text": "            serde_json::from_str(include_str!(\"../../../../safe-diagnostics.json\")).unwrap();"
+    },
+    {
+      "path": "crates/attacker/src/catalog.rs",
+      "line": 22,
+      "text": "    include_str!(\"../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json\");"
+    },
+    {
+      "path": "crates/attacker/src/catalog.rs",
+      "line": 49,
+      "text": "            include_str!("
+    },
+    {
+      "path": "crates/attacker/src/catalog.rs",
+      "line": 57,
+      "text": "            include_str!("
+    },
+    {
+      "path": "crates/attacker/src/catalog.rs",
+      "line": 65,
+      "text": "            include_str!("
+    },
+    {
+      "path": "crates/attacker/src/catalog.rs",
+      "line": 73,
+      "text": "            include_str!("
+    },
+    {
+      "path": "crates/attacker/src/catalog.rs",
+      "line": 81,
+      "text": "            include_str!("
+    },
+    {
+      "path": "crates/defender/src/lab/process.rs",
+      "line": 93,
+      "text": "        let supervisor = std::env::current_exe()"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "line": 19,
+      "text": "    let contract: Value = serde_json::from_str(include_str!(\"../../browser-outcome-contract.json\"))"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "line": 175,
+      "text": "        let fixture: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/desktop.rs",
+      "line": 6,
+      "text": "        include_bytes!(\"../../../../crates/browser/native/desktop/pilot-contract.json\"),"
+    },
+    {
+      "path": "docs/tooling/src/vectors/mod.rs",
+      "line": 134,
+      "text": "        let corpus: Corpus = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "test/lab/runtime/src/browser_proxy.rs",
+      "line": 19,
+      "text": "    serde_json::from_str(include_str!("
+    },
+    {
+      "path": "test/lab/runtime/src/browser_proxy.rs",
+      "line": 242,
+      "text": "        serde_json::from_str(include_str!(\"../../browser-wire-contract.json\"))?;"
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/registry.rs",
+      "line": 73,
+      "text": "        let r = validate(include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/registry.rs",
+      "line": 74,
+      "text": "            env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "test/lab/runner/src/fixture/mount.rs",
+      "line": 11,
+      "text": "        serde_json::from_str(include_str!(\"../../mount-probe-contract.json\"))?;"
+    },
+    {
+      "path": "crates/cli/examples/service_evidence.rs",
+      "line": 117,
+      "text": "    let crate_root = PathBuf::from(env!(\"CARGO_MANIFEST_DIR\"));"
+    },
+    {
+      "path": "test/lab/runner/src/docker.rs",
+      "line": 312,
+      "text": "    let report = json!({\"schema\":\"humanymous.lab-engine-preflight/1\",\"status\":if result.is_ok(){\"observed\"}else{\"failed\"},\"observation\":docker.engine_identity,\"private_transcript\":docker.transcript,\"error\":result.as_ref().err().map(|e|e.to_string()),\"executable_sha256\":crate::snapshot::digest(&std::fs::read(std::env::current_exe()?)?),\"actual_sdk_connection_observed\":false,\"full_product_qualified\":false});"
+    },
+    {
+      "path": "test/lab/runtime/src/go/backend.rs",
+      "line": 15,
+      "text": "        include_bytes!(\"../../../../../adapters/go/pilot-contract.json\"),"
+    },
+    {
+      "path": "test/lab/runtime/src/go/mod.rs",
+      "line": 22,
+      "text": "        include_bytes!(\"../../../go-configuration.json\"),"
+    },
+    {
+      "path": "test/lab/runtime/src/go/mod.rs",
+      "line": 29,
+      "text": "        include_bytes!(\"../../../../../adapters/go/pilot-contract.json\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 142,
+      "text": "        let c = Catalog::parse(include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 143,
+      "text": "            env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 149,
+      "text": "            include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 150,
+      "text": "                env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 153,
+      "text": "            include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 154,
+      "text": "                env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 157,
+      "text": "            include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 158,
+      "text": "                env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "scripts/ci/delivery/src/image_candidates.rs",
+      "line": 150,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/image_candidates.rs",
+      "line": 175,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "line": 12,
+      "text": "    let contract: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "line": 110,
+      "text": "        let contract: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/registry.rs",
+      "line": 431,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/registry.rs",
+      "line": 479,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/registry.rs",
+      "line": 506,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof.rs",
+      "line": 249,
+      "text": "        let profile: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/archive_cache.rs",
+      "line": 166,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+      "line": 104,
+      "text": "        let p: serde_json::Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/nginx.rs",
+      "line": 8,
+      "text": "    serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/nginx.rs",
+      "line": 93,
+      "text": "        let contract: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/go_product.rs",
+      "line": 10,
+      "text": "    serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/go_product.rs",
+      "line": 16,
+      "text": "    serde_json::from_str(include_str!(\"../../../../adapters/go/pilot-contract.json\"))"
+    },
+    {
+      "path": "scripts/ci/delivery/src/go_product.rs",
+      "line": 76,
+      "text": "    let infrastructure: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 276,
+      "text": "        let profile: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1156,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1188,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1202,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1227,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1271,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1299,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1322,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1342,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1443,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1471,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1509,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1566,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1591,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1622,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1635,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1670,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1690,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1704,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "line": 1786,
+      "text": "        let path = Path::new(env!(\"CARGO_MANIFEST_DIR\"))"
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof/admission.rs",
+      "line": 10,
+      "text": "    include_bytes!(\"../../../../../adapters/native/header-proof-profile.json\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/main.rs",
+      "line": 58,
+      "text": "        .current_dir(env!(\"CARGO_MANIFEST_DIR\"))"
+    },
+    {
+      "path": "scripts/ci/delivery/src/mount_probe.rs",
+      "line": 11,
+      "text": "    serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/notices.rs",
+      "line": 66,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/lab_receipts.rs",
+      "line": 46,
+      "text": "    let contract: Value = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/language.rs",
+      "line": 173,
+      "text": "        let records: Vec<Preservation> = serde_json::from_str(include_str!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/language.rs",
+      "line": 179,
+      "text": "            include_str!(\"../../../.agents/sessions/THREADS.md\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/language.rs",
+      "line": 193,
+      "text": "            include_str!(\"../../../.agents/sessions/THREADS.md\")"
+    },
+    {
+      "path": "scripts/ci/delivery/src/notices/archive.rs",
+      "line": 69,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/maintenance.rs",
+      "line": 8,
+      "text": "    serde_json::from_str(include_str!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/local_eval.rs",
+      "line": 372,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/native_archive.rs",
+      "line": 263,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/native_archive.rs",
+      "line": 287,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/native_archive.rs",
+      "line": 301,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/native_archive.rs",
+      "line": 327,
+      "text": "        let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 174,
+      "text": "        let entry = include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/../SKILL.md\"));"
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 178,
+      "text": "                include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 179,
+      "text": "                    env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 186,
+      "text": "                include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 187,
+      "text": "                    env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 194,
+      "text": "                include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 195,
+      "text": "                    env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 202,
+      "text": "                include_str!(concat!("
+    },
+    {
+      "path": "skills/agent-maintenance/src/product.rs",
+      "line": 203,
+      "text": "                    env!(\"CARGO_MANIFEST_DIR\"),"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/node_host.rs",
+      "line": 7,
+      "text": "    serde_json::from_str(include_str!("
+    },
+    {
+      "path": "scripts/ci/delivery/src/package/native/tests.rs",
+      "line": 34,
+      "text": "    let root = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"../../..\");"
+    }
+  ]
+}

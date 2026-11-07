@@ -3,7 +3,7 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T22:17:19Z
+updated: 2026-11-07T22:48:20Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
@@ -11,6 +11,8 @@ files:
   - {path: tools-role-map.json, sha256: 342f08f560b0b401d4cedd185232e75eaf5e5cc2c99701ba34b96b7a4bd4f1ce, bytes: 8719, store: repo}
   - {path: runtime-slice02-inputs.json, sha256: bf3657232be606d662433c31ae0c86acaeb8abed740910fd77d2071dcda35396, bytes: 4715, store: repo}
   - {path: runtime-slice02-formatted.json, sha256: 0583ceb99f97c8d2f2ffa2449220df0ab73cca3371cc44a32cc88bc05ab7a48e, bytes: 4763, store: repo}
+  - {path: tools-freeze-census.json, sha256: 7e7765d28b232f5760235c715fd7dfe29dc2ca93efed12d12d0f702502e23cce, bytes: 111913, store: repo}
+  - {path: tools-source-readers.json, sha256: d6f6e022d7991cad3d4a65da7c87e6ee861c1cca9a2400728ec392db69cc1f12, bytes: 22007, store: repo}
 ---
 
 ## Mission and current ownership
@@ -56,6 +58,17 @@ belong to their historical source/path/feature closures and cannot be inherited
 by renamed packages or a changed dependency graph.
 
 ## API, visibility and dependency hazards
+
+The final pre-freeze target/private-context proposal is
+[[plan:root/20261107224511]]. tools-freeze-census.json records13manifest dependency
+category bodies,34compiled-root candidates (6libs/15bins/12integration/1example),
+279tracked files with Git mode/blob/hash,10resource source/destination pins and
+the existing actor unsafe lexical sites (26+7). tools-source-readers.json retains
+123include/manifest-root/executable selector locations. Root's accepted private
+qualification/resource ownership rules apply; final feature spellings/paths and
+the five retired-lib private shared contexts remain explicit Root decisions.
+No new public tool APIs, helper crates, source copies, moves or compile proof are
+introduced. This census is read-only, pre-freeze and not Cargo metadata authority.
 
 Root-approved lint-isolation amendment d45e600d is now part of this handoff.
 tools-role-map.json records all13absorbed responsibilities: the9workspace roles
