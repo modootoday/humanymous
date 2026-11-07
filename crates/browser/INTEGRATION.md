@@ -6,6 +6,19 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+First actual fef controls GUI pilot failed navigation: CtrlT created a second
+CEF browser (IDs1/2) and CtrlTab returned to Version, but Back to newtab accepted
+generation3 then reported load_error-3 without commit/content. Final screenshot
+showed a blank surface/load-error notice. Both before_close and host_closed were
+reported; exit status, CtrlW versus timed shutdown and descendant teardown remain
+unknown. All237 immutable bundle inputs stayed unchanged. Raw UI/logs remain
+private; see controls-gui-first.json. No full keyboard/IME/AT/sandbox qualification.
+
+The newer source-only OnOpenURLFromTab continuation fix preserves an existing
+live pending exact-route ticket for main-frame CURRENT_TAB navigation. It does
+not recreate history with LoadURL, ignore abort errors, or prove the first failure
+cause. Its regression and new native build/GUI remain unexecuted.
+
 Exact fef69a92 local Windows preflight passed bootstrap+desktop all-target check,
 production DLL build and desktop native-pilot-tests all-target strict Clippy.
 The owned sequential batch completed in about443s under its600s bound. All87

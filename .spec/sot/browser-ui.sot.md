@@ -12,6 +12,21 @@ rel:
 
 # Native browser UI and CEF boundary
 
+UI-34: a typed history/navigation ticket remains authoritative across CEF's
+OnOpenURLFromTab then OnBeforeBrowse callback chain. Only a live pending exact
+target in the main frame with CURRENT_TAB disposition may continue without a new
+ticket. Renderer gestures without such authority retain separate guarded intent
+dispatch; foreign routes/frames/dispositions and stopped/completed/revoked/closed
+work never gain continuation authority. Record bounded open_continued receipts;
+they establish callback admission only, never commit/content or BrowserReady.
+Do not ignore ERR_ABORTED or infer callback generation from route equality alone.
+Same-route stale native callbacks remain an explicit attribution limitation until
+an independently verified engine identity seam resolves them.
+This includes start/end/error callbacks and open_continued: route equality does
+not identify a generation. The source reproducer begins A(r), then B(r), and
+delivers A's route-only start/error; current code attributes them to B. Captured
+task/source-visitor ticket rejection does not discharge this adapter limitation.
+
 ## Rule
 
 Version 0.6.1. The browser-first shell and research contract below supersede the initial management dashboard.

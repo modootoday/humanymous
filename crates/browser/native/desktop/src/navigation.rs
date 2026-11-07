@@ -90,6 +90,11 @@ impl State {
         }
         Some(ticket)
     }
+    fn load_error(&mut self, route: Route, code: i32) {
+        if let Some(ticket) = self.transaction.pending().filter(|t| t.route() == route) {
+            self.finish(ticket, Outcome::LoadError, code, 0);
+        }
+    }
     pub fn finish(&mut self, ticket: Ticket, outcome: Outcome, code: i32, bytes: usize) -> bool {
         if !self.transaction.finish(ticket, outcome) {
             return false;
@@ -222,8 +227,7 @@ wrap_load_handler! {
             let Some(url)=url else { return; };
             let Ok(route)=internal_urls::classify(&url.to_string()) else { return; };
             if let Ok(mut state)=self.state.lock() && !state.revoked && !state.closed
-                && let Some(ticket)=state.navigation.transaction.pending().filter(|t|t.route()==route)
-                { state.navigation.finish(ticket,Outcome::LoadError,error.get_raw(),0); }
+                { state.navigation.load_error(route,error.get_raw()); }
         }
     }
 }
@@ -293,6 +297,24 @@ fn denied(state: &Shared) {
         state.navigation.notice = Some("Only local newtab and permitted diagnostics are available");
     }
 }
+fn continue_open(state: &Shared, route: Route, main: bool, current_tab: bool) -> bool {
+    if !main || !current_tab {
+        return false;
+    }
+    let Ok(mut state) = state.lock() else {
+        return false;
+    };
+    if !state.is_live() || !state.navigation.transaction.permits_browse(route) {
+        return false;
+    }
+    let Some(ticket) = state.navigation.transaction.pending() else {
+        return false;
+    };
+    state
+        .navigation
+        .record(ticket, "open_continued", 0, 0, false);
+    true
+}
 wrap_request_handler! {
     struct Guard { state: Shared, fixture: String, }
     impl RequestHandler {
@@ -323,6 +345,10 @@ wrap_request_handler! {
             if self.state.lock().map_or(true,|s|s.revoked || s.closed) || disposition!=WindowOpenDisposition::CURRENT_TAB { return 1; }
             let Some(target)=target else { return 1; }; let target=target.to_string();
             if let Ok(route)=internal_urls::classify(&target) {
+                // Cross-origin history may pass this callback before OnBeforeBrowse.
+                // Continue the existing host ticket instead of cancelling/reissuing it.
+                if continue_open(&self.state,route,frame.as_ref().is_some_and(|f|f.is_main()==1),
+                    disposition==WindowOpenDisposition::CURRENT_TAB) { return 0; }
                 if gesture==1 && frame.as_ref().is_some_and(|f|f.is_main()==1 && internal_urls::classify(&CefString::from(&f.url()).to_string()).is_ok())
                     && let Some(browser)=browser {
                     let _=queue(browser.clone(),route,self.state.clone(),false);
@@ -359,6 +385,85 @@ wrap_resource_request_handler! {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn same_route_engine_callbacks_do_not_supply_generation_identity() {
+        // Reproducer of an unresolved adapter limitation, not an isolation proof.
+        // Native start/error callbacks expose the route, not the captured ticket.
+        let mut state = State::default();
+        let old = state.begin(Route::NewTab, "creation_requested").unwrap();
+        let newer = state.begin(Route::NewTab, "request_accepted").unwrap();
+        assert_ne!(old, newer);
+        state.commit(old.route());
+        assert_eq!(state.transaction.committed(), Some(newer));
+        state.load_error(old.route(), -3);
+        assert_eq!(state.transaction.outcome(newer), Some(Outcome::LoadError));
+        assert_eq!(state.transaction.outcome(old), None);
+    }
+    #[test]
+    fn open_continuation_keeps_one_host_ticket_and_denies_stopped_or_foreign_work() {
+        let state = Shared::default();
+        let first = state
+            .lock()
+            .unwrap()
+            .navigation
+            .begin(Route::NewTab, "creation_requested")
+            .unwrap();
+        assert!(!continue_open(&state, Route::NewTab, false, true));
+        assert!(!continue_open(&state, Route::NewTab, true, false));
+        assert!(continue_open(&state, Route::NewTab, true, true));
+        assert_eq!(
+            state.lock().unwrap().navigation.transaction.pending(),
+            Some(first)
+        );
+        let version = Route::Internal(InternalPage::Version);
+        let second = state
+            .lock()
+            .unwrap()
+            .navigation
+            .begin(version, "request_accepted")
+            .unwrap();
+        assert!(!continue_open(&state, Route::NewTab, true, true));
+        assert!(continue_open(&state, version, true, true));
+        {
+            let mut state = state.lock().unwrap();
+            assert!(state.navigation.finish(second, Outcome::Stopped, 0, 0));
+        }
+        assert!(!continue_open(&state, version, true, true));
+        let third = state
+            .lock()
+            .unwrap()
+            .navigation
+            .begin(Route::NewTab, "request_accepted")
+            .unwrap();
+        assert!(continue_open(&state, Route::NewTab, true, true));
+        {
+            let mut state = state.lock().unwrap();
+            assert!(state.navigation.transaction.observe_commit(third));
+            assert!(
+                state
+                    .navigation
+                    .finish(third, Outcome::Content { identity: true }, 0, 1)
+            );
+        }
+        assert!(!continue_open(&state, Route::NewTab, true, true));
+        state
+            .lock()
+            .unwrap()
+            .navigation
+            .begin(version, "request_accepted")
+            .unwrap();
+        state.lock().unwrap().revoke();
+        assert!(!continue_open(&state, version, true, true));
+        let closed = Shared::default();
+        closed
+            .lock()
+            .unwrap()
+            .navigation
+            .begin(version, "request_accepted")
+            .unwrap();
+        closed.lock().unwrap().closed = true;
+        assert!(!continue_open(&closed, version, true, true));
+    }
     #[test]
     fn commit_or_error_markup_is_not_rendering_support() {
         assert!(!identity(

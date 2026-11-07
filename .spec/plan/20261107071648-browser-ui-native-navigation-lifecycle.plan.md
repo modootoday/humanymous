@@ -11,6 +11,23 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## First actual controls GUI failure and bounded continuation correction
+
+The single fef GUI run created two distinct CEF children and observed CtrlT/
+CtrlTab, but Back accepted newtab generation3 and terminated load_error-3 without
+commit/content. Preserve its blank final screenshot, callback-trace absence and
+all raw data privately. Both before_close/host_closed do not prove exit0 or full
+descendant cleanup; CtrlW versus timed shutdown remains unknown. No second GUI
+run is allocated. controls-gui-first.json records237 unchanged runtime inputs.
+
+Correct the source-level OnOpenURLFromTab gap only for an existing live pending
+exact route in main frame/CURRENT_TAB, preserving its ticket and resource guards.
+Record bounded open_continued; regress foreign frame/disposition, supersession,
+Stop, completion, revocation and closure. This is a candidate correction, not
+proven first-run causation. Run locked offline scoped library/protocol tests,
+check/strict Clippy/fmt on frozen source before considering new artifacts/GUI.
+Same-route callback attribution and full sandbox/IME/AT/Chrome gates remain open.
+
 ## Actual bounded Windows CEF gate passed
 
 Latest fef69a92 local native preflight passed bootstrap+desktop all-target check,

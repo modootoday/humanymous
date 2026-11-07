@@ -27,9 +27,33 @@ files:
   - {path: controls-cef-candidate.json, sha256: 01b16f5875d136ed4e76e83076b88c6487f95ad0e45dd2ae4c4f14d3fbe96dd6, bytes: 8406, store: repo}
   - {path: controls-cef-meta-key-candidate.json, sha256: 5699e6487d27d1e863756bb606a89255c0b10769ca3e581f539786c239054af1, bytes: 9016, store: repo}
   - {path: controls-native-preflight.json, sha256: a87c8f8f43c7fd733d8cbc1feebea15cf775f0fa3001234c54169578d3eac1dc, bytes: 2617, store: repo}
+  - {path: controls-gui-first.json, sha256: 2d6fb908687f639466a212a1027970e2d42a81b59eacc075328f112d40fa0ccb, bytes: 3431, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
+
+## First actual fef controls pilot: navigation failed
+
+One root-allocated180s Windows interactive pilot used the exact fef DLLs and
+237 immutable runtime inputs, unchanged afterwards. It created distinct CEF
+browser IDs1/2, exposed newtab and Version documents, and accepted CtrlT/CtrlTab.
+Tab0 generation3 accepted Back to newtab but reported load_error-3 without a
+commit/content receipt. Final screenshot showed one New tab shell, blank surface
+and load-error notice. Callback causation is unknown; no callback trace existed.
+Both children supplied before_close and host_closed was true. Host absence was
+observed by17:04:16Z; retained wait exit status and descendant teardown are unknown.
+CtrlW timing cannot independently establish close behavior against timed shutdown.
+GPU exit78 and executable sandbox access5 logs are retained without causal claims.
+Raw accessibility, logs, profile and screenshot trace remain private. Full sandbox,
+IME/AT, Chrome parity, other controls and BrowserReady are not qualified.
+
+Source review found OnOpenURLFromTab cancelled even an existing exact pending
+host ticket. The bounded correction continues live main-frame CURRENT_TAB work,
+without replacing its ticket, and records open_continued. Regression source covers
+foreign frame/disposition, superseded route and stopped/completed/revoked/closed
+work. This is not proven causation or an executed correction; new tests/check/
+Clippy and fresh GUI remain separate gates. No error-3 is ignored or promoted to
+successful content, and same-route callback attribution remains unresolved.
 
 ## Initial checkpoint before Cargo assignment
 

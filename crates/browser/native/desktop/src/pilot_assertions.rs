@@ -100,6 +100,7 @@ fn cancelled_navigation(report: &Value) -> Result<(), &'static str> {
                 event.get("phase").and_then(Value::as_str),
                 Some(
                     "committed"
+                        | "open_continued"
                         | "load_end"
                         | "content_observed"
                         | "revoked"
@@ -129,6 +130,7 @@ fn ordered_receipts(report: &Value) -> Result<(), &'static str> {
             Some(
                 "creation_requested"
                     | "request_accepted"
+                    | "open_continued"
                     | "committed"
                     | "load_end"
                     | "content_observed"

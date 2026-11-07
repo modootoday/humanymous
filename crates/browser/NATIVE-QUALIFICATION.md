@@ -8,6 +8,19 @@ owns the Meari/CEF integration. CI owns the existing provisioning runner.
 
 ## Current evidence boundary
 
+The first root-allocated fef GUI run is now retained in controls-gui-first.json:
+two actual CEF IDs, CtrlT/CtrlTab and Version/newtab accessible content observed;
+Back to newtab failed generation3 with load_error-3 and no commit/content. Final
+visual observation was a blank surface with a load-error notice. Do not promote
+this run to a passing controls gate. Both before_close/host_closed were reported,
+but wait status, CtrlW timing and descendant-tree exit remain unknown.237 runtime
+input hashes were unchanged. IME/AT/full sandbox/Chrome parity remain open.
+
+Source-only follow-up preserves an authorized main-frame CURRENT_TAB ticket at
+OnOpenURLFromTab, adding bounded open_continued receipts. The callback was
+previously always cancelled, but first-run callback causation is unobserved.
+Fresh tests/check/Clippy and a separately allocated GUI run are still required.
+
 Exact fef69a92 subsequently passed local Windows bootstrap+desktop all-target
 check, production DLL build and desktop native-pilot-tests all-target strict
 Clippy. The87-file source/manifest and three fixed SDK input closures were
@@ -85,7 +98,7 @@ The next implementation decision follows actual safe bootstrap observations and
 desktop receipts. Do not guess the bootstrap failure cause, erase old failures,
 weaken exit78/profile predicates or replace absent observations with zero.
 
-## Proposed fef GUI component gate (not_run; not allocated)
+## Original fef GUI component recipe (first run failed; rerun unallocated)
 
 This is a qualification-pilot entry, not a production native-SDK capability
 factory. The normal, non-cfg(test) Rust DLLs export RunConsoleMain and

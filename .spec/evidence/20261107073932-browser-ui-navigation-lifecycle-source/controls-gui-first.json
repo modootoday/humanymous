@@ -1,0 +1,102 @@
+{
+  "source": "fef69a926ef5caa1e7f5e8fa811db242a38624fa",
+  "venue": "local Windows x64 interactive component pilot",
+  "result": "failed_navigation_incomplete_controls",
+  "runs": 1,
+  "started_utc": "2026-11-07T17:01:12.1458118Z",
+  "host_close_seconds": 180,
+  "host_hard_seconds": 195,
+  "outer_seconds": 210,
+  "host_absent_by_utc": "2026-11-07T17:04:16Z",
+  "exit_code": null,
+  "exit_note": "No retained process wait status; report and process absence do not establish exit0",
+  "immutable_bundle_inputs": 237,
+  "immutable_bundle_differences": 0,
+  "tabs": [
+    {
+      "tab_id": 0,
+      "browser_id": 1,
+      "created": true,
+      "before_close": true,
+      "committed_route": "chrome://version/",
+      "receipts_dropped": 0
+    },
+    {
+      "tab_id": 1,
+      "browser_id": 2,
+      "created": true,
+      "before_close": true,
+      "committed_route": "humanymous://newtab/",
+      "receipts_dropped": 0
+    }
+  ],
+  "host_closed": true,
+  "tabs_incomplete": 0,
+  "observed": [
+    "native accessible newtab document",
+    "Version content identity and accessible document",
+    "CtrlT second CEF tab with separate browser ID",
+    "CtrlTab returns to retained Version document",
+    "final screenshot one New tab shell with blank surface and load-error notice"
+  ],
+  "failure": {
+    "tab_id": 0,
+    "generation": 3,
+    "target": "humanymous://newtab/",
+    "sequence": [
+      "request_accepted",
+      "load_error:-3"
+    ],
+    "committed": false,
+    "content_observed": false,
+    "callback_cause": "unknown: first pilot has no open-url callback trace"
+  },
+  "unverified": [
+    "Forward",
+    "Reload",
+    "Stop during pending load",
+    "CtrlShiftTab",
+    "CtrlL",
+    "F5",
+    "CtrlW effect separately from timed shutdown",
+    "inactive-tab close",
+    "final-tab-close independently of deadline",
+    "IME composition/candidate placement/selection",
+    "OS assistive-technology qualification",
+    "Chrome rendering parity",
+    "complete sandbox policy",
+    "descendant-tree teardown",
+    "normal host exit status"
+  ],
+  "sandbox": {
+    "renderer_restricted_token_observed": true,
+    "renderer_canary_read_error": 5,
+    "renderer_canary_create_error": 5,
+    "sandbox_qualified": false,
+    "process_info_status": "unsupported_or_failed",
+    "notes": [
+      "GPU process exit78 around elapsed120s retained privately; cause unknown",
+      "Sandbox executable access error5 around host shutdown retained privately; full role policy not established"
+    ]
+  },
+  "browser_ready": false,
+  "raw_public": false,
+  "private_records": [
+    "gui-launch.json",
+    "gui-bundle-before.json",
+    "gui-bundle-after.json",
+    "gui-observations.json",
+    "gui-fef-controls-01/native-report.json",
+    "gui-fef-controls-01/stdout.log",
+    "gui-fef-controls-01/stderr.log",
+    "Computer Use screenshot tool trace"
+  ],
+  "candidate_correction": {
+    "status": "source_only_not_tested",
+    "site": "Guard::on_open_urlfrom_tab",
+    "change": "continue only an existing live exact-route pending ticket in main frame/current tab; no replacement ticket",
+    "causation": "definite missing continuation path, not proven cause of first pilot error",
+    "regression": "wrong frame/disposition, wrong route after supersession, stopped/completed/revoked/closed authority",
+    "next_gate": "locked offline desktop lib tests, all-target check and strict Clippy; separate fresh GUI allocation"
+  }
+}
