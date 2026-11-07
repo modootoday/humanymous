@@ -366,7 +366,14 @@ Actions must enforce documentation freshness before releases and build/test acro
 Linux, macOS and Windows. Design and implement crates.io Trusted Publishing through
 OIDC, preserving least-privilege job permissions and protected release environments.
 No long-lived crates.io token is a substitute for the requested OIDC release path.
-Documentation must describe verified shipped behavior, with English public prose.
+All authored project documentation and source comments must be written in English.
+This applies to public docs, internal SoTs/plans/change notes, authored evidence
+summaries and private working notes, skills, README files and code doc comments.
+Keep immutable original evidence, third-party quotations and intentional
+multilingual test data intact; these are source data, not authored explanatory
+prose. Preserve literal identifiers, paths, hashes and recorded results during
+translation. Conversation language does not change the project language policy.
+Documentation must describe verified shipped behavior.
 
 ### Completion and integration
 
