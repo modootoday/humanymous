@@ -55,9 +55,9 @@ reduce subsequent allocations; never terminate another owner's processes.
 | Slot | Current allocation | Exclusive target | Boundary |
 |---|---|---|---|
 | A | Actual Unix Python WSGI fixture qualification on immutable 8eb66811 | /home/smile/humanymous-validation-targets/python-native | Private native-extension/virtualenv setup; owned loopback only; actual cases still pending |
-| B | Latest CLI all-targets check, reviewed pure units and Clippy | target/validation-cli | No SCM/account/service mutation or actual service execution |
-| C | Release .NET Rust facade and qualification-harness compilation | target/validation-dotnet-release | Clean standalone 2ffa4335 checkout required; no actual ASP.NET host yet |
-| D | Runtime actual ordinary-user Windows library and native-process fixtures | target/validation-agents | No SCM/account mutation, Docker or GUI; required ignored cases stay explicit |
+| B | Git coordination isolated regression and manual multi-path validation | target/validation-maintenance | UTC conversion defect reproduced and fixed; no shared Git index/HEAD fixture mutation |
+| C | Actual Apache Desktop Docker build and45-scenario coordinator | Isolated clean e691b971 checkout and fresh private bundle | First credential-helper failure retained; corrected scoped Windows child PATH; actual build still pending |
+| D | Runtime actual ordinary-user Unix library and native-process fixtures | Linux-native target/runtime-native | Immutable committed snapshot; no SCM/account mutation, Docker or external network |
 
 These are dispatch allocations, not terminal success claims. Completed prior
 batches: delivery55 pure tests and all-target Clippy passed; first Unix Python
@@ -73,7 +73,29 @@ immutable271b14e1 after preserving the first2ffa4335 Clippy failure and fixing
 four findings in primary source. Full extracted-source closure was unchanged.
 This covers Linux coordinator/host compilation, not httpd ABI, bindgen or45
 actual Docker scenarios. Desktop execution is queued until the .NET release
-build returns so heavy native SDK work remains serialized.
+build returns so heavy native SDK work remains serialized. That release build
+has now returned: facade76.032s and qualification harness --no-run12.616s both
+passed on clean2ffa4335 with261-file zero-drift closure. Actual ASP.NET host,
+SDK publish/JIT/AOT/GC and installed-package qualification remain separate gates.
+The returned heavy slot is now assigned to the Apache actual coordinator.
+
+Windows Runtime subsequently passed all46 declared library cases and the actual
+native-process case with zero failures/ignored/filtered. Its476-file closure
+matched before/after; Unix-only four cases and the Unix operator fixture are not
+covered. CLI check, reviewed seven units and Clippy passed;15 cases were filtered
+by the reviewed selector. Its366-file observed closure was unchanged but included
+document/fixture differences from HEAD, so this is not a clean-candidate receipt.
+Delivery subsequently passed58 pure tests and Clippy, including fail-closed Rust
+image inventory coverage. No actual image scan followed; plain binaries without
+package inventory must report NOT_SCANNED rather than vulnerability-free.
+
+Production CLI observer/witness startup remains incomplete: a typed pipe helper
+does not provide an authenticated bounded one-use bootstrap broker or own child
+lifetime through final audit flush. Authority owns the normative bootstrap
+contract, native-security independently critiques principal/PID/purpose binding,
+and CLI remains fail-closed while the producer seam is missing. The independently
+reviewed Audit retained-backup retirement slice is authorized separately; prior
+44-test evidence does not qualify its future implementation.
 
 Pages Windows frozen private dependency setup failed before rendering: the
 initial long path failed extraction, then a shorter path reached missing OpenSSL
