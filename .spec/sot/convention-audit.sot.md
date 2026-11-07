@@ -85,6 +85,15 @@ license or inherited license. Private package-layout-review.json binds every
 manifest's Git blob. This static observation is not Cargo parsing, dependency
 resolution, every-target/feature compilation or registry/publication evidence.
 
+Scoped responsibility review at3e6da8b8 additionally binds nine source identities
+across Runtime/Authority/native CLI/browser entrypoints and Application's TLS and
+settings modules. Startup roots wire existing owners; request decisions delegate
+to the shared Engine with injected clock input and ordered session/audit effects.
+Identifiable async transport methods do not make the coherent serialized owner
+a catch-all merely by sharing a file. Native CLI separates arguments/manifest/
+storage and labels generated metadata unqualified. This is neither all-module
+SRP review nor an actual startup/shutdown/GUI pilot.
+
 The 314-row legacy responsibility registry still records pending or unit-only
 parity. Deletion, package membership or a successful source scanner cannot promote
 those rows to runtime parity. The integration owner retains program completion.
@@ -152,6 +161,18 @@ owner, shared absolute deadline, bounded cancellation/reaping outcome and actual
 negative process tests require native-owner design and root allocation. No actual
 hang or failed prior receipt is inferred solely from this source finding.
 
+The native owner's subsequent source-only CaptureAttempt direction was reviewed:
+capture_attempt.rs SHA256 ace643e92a5754e355774cfd37e34027df55c72a500a72c7b21dbc3238e68835
+and worker.rs SHA256 6b90a455f382c533d4231811213175e1e7860b8d36402b57c1cd46be34c1f317.
+Public poll/settlement now sample the internal clock after actual observations,
+not a caller-supplied backdated Instant. Child and all started worker handles are
+retained; partial setup and forced stop remain sticky failures. Final joins and
+OS spawn/kill remain potentially blocking, with explicit caller supervision and
+abandonment limitations. Four pure tests were authored but not executed at this
+review. Existing helper callers are not qualified by this new source; actual
+adversarial process tests, retained recovery and profile-specific caller wiring
+remain open. Source-direction acceptance does not close LIFETIME01.
+
 ## Verification and re-audit contract
 
 Finding states are candidate, confirmed, owner-accepted, fixed-source,
@@ -193,8 +214,26 @@ The example measures a fixed corpus in five alternating in-process A/B pairs,
 with disclosed destruction/count/deadline-check overhead. It cannot establish
 per-request tail latency or allocation counts. Its120-second cooperative budget
 starts after preparation and checks once per corpus iteration, not as an OS hard
-deadline. An allocated qualified outer lifecycle controller remains required;
-CA-LIFETIME-01 prevents substituting the existing capture helper as that proof.
+deadline. The initial review distinguished cooperative timing from outer
+lifecycle proof; CA-LIFETIME-01 prevents substituting the existing capture helper
+as a hard-deadline or bounded-cleanup proof.
+Root subsequently accepts an ordinary tool-owned session with observed terminal
+status for this fixed trusted, no-child/no-network/no-external-input function
+benchmark. No new native Job/hard-deadline proof is required for that explicitly
+bounded profile, nor is such proof claimed. Generic subprocess or untrusted
+descendant capture remains a different supervision contract.
+
+Follow-up actual native Windows validation atc4786b6 was independently reread:
+24 library tests and three one-test parity harnesses passed, with zero failed,
+ignored or filtered tests. Request81 and verifier27 fixture vectors are not
+additional test counts. The example's zero-test harness did not run benchmark
+main. Saved source2563, selected registry1041 and config18/environment3/observed
+tools3 manifests were byte-equal. Clippy plugin identity was after-only; no
+before-byte identity, entire shared-registry closure or complete artifact reuse
+key is inferred. Release build, function measurement, performance improvement
+and full product qualification remain unexecuted/unproven at this checkpoint.
+The owner's clarified fixture rows distinguish initial inventory from this later
+execution receipt rather than treating both as one observation.
 
 ### Model migration design review
 

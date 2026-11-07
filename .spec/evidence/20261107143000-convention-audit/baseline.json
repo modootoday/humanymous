@@ -145,5 +145,31 @@
     "private_independent_review_sha256": "a1e05fed6e578df9eaaac7d5415c17d47e0a54e61ce0010c443287e602a6ba15",
     "actual_binary_archive_verified": false,
     "actual_image_verified": false
+  },
+  "followup_architecture": {
+    "source_sha": "3e6da8b8ac0e8a1c22d0dd80afa6e392f92b5eac",
+    "identified_source_files": 9,
+    "private_review_sha256": "a0dbf73a1a21d2aaeb9e44ff8755b92b962711818f91a63f2a1e52cd27e8ec2e",
+    "global_srp_conformance": false
+  },
+  "followup_r1_functional": {
+    "source_sha": "c4786b675f75c4d8b679cf4308e37cdbfadd4cab",
+    "library_tests": 24,
+    "integration_harness_tests": 3,
+    "example_tests": 0,
+    "request_vectors": 81,
+    "verification_vectors": 27,
+    "private_review_sha256": "6667c261c3656f2e169d0be79d45a8b170cd25a53e693314cb62247b05d081fd",
+    "actual_benchmark_main": false,
+    "actual_release_build": false,
+    "clippy_plugin_before_identity": "not observed",
+    "full_product_qualified": false
+  },
+  "followup_capture_source": {
+    "private_review_sha256": "2390f4c42a01d5ff5923e8b00203e0b681d80807f2e3387a25be770f6b60ae1c",
+    "caller_observation_clock_removed": true,
+    "source_direction_accepted": true,
+    "actual_pure_or_process_tests_observed": false,
+    "finding_closed": false
   }
 }

@@ -124,3 +124,17 @@ Actual binary archive/final image gates stay open. Delivery accepted the next
 profile's need to bind individual binary hashes/extracted bytes and distinguish
 current repository snapshot from verified build provenance; no stale incident
 or all-archive safety conclusion is inferred from source alone.
+
+Scoped architecture review binds nine source identities at3e6da8b8; no global SRP
+pass is inferred. R1 raw regression results now independently confirm24lib+three
+one-test parity harnesses, zero example tests, stable source2563/selectedregistry
+1041/config18/env3/observedtools3. Plugin identity remains after-only; benchmark
+main/release/performance/product outcomes remain open. Root explicitly permits
+the trusted fixed no-child function benchmark through an ordinary tool-owned
+session with observed terminal status, without a new native Job qualification.
+This profile decision does not qualify generic process cleanup.
+
+Native CaptureAttempt's corrected public clock sampling and retained ownership
+were source-reviewed at exact private-recorded hashes. The old helper remains
+unqualified for hard cleanup claims; no actual new pure/process test was observed
+here. Actual child/pipe/thread settlement and caller wiring gates stay open.
