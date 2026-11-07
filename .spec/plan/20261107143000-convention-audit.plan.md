@@ -191,3 +191,9 @@ Native secret and existing initializer boundaries were source-reviewed with
 exact leaf hashes and bounded CLI caller review. Known post-creation partial
 directory and anti-ABA limitations remain explicit; no new duplicate finding
 or actual OS/SCM/store qualification is claimed.
+
+Batched X contract review follows accepted layer gates without widening claims.
+Currentdirty Delivery writer/diagnostics remain unqualified; CI success requires
+the composite required-needs policy, not standalone jobs(raw). Labf601e4fa scalar
+projection remains unqualified actor diagnostics with capture lifetime open.
+Exact private review hashes are recorded in the public baseline attachment.

@@ -497,3 +497,42 @@ an existing disclosed limitation, not a new finding or evidence of actual leaked
 state. The new descriptor-at-create bridge does not qualify this existing caller.
 Actual creation/partial-failure/ACL/custody and retained-recovery integration gates
 remain separate. No unknown-path deletion or ACL repair was performed by audit.
+
+### Batched cross-layer contract follow-up
+
+The exact role registry in sot:root/structural-development and bottom-up plan
+root/20261107151000 was read. Audit remains cross-cutting X, with unchanged exact
+path claims and no new implementation/execution grant. Reviews follow accepted
+contract, pure evidence, real provider boundary, consumer integration and product
+qualification within each cluster. A title or diagram is not a capability proof.
+
+Delivery's current uncommitted sparse-writer/closed-diagnostic/owned-file fixture
+slice was reviewed nonblockingly and exact-hashed privately. Source direction
+has no newly identified blocker; this is not frozen-source validation or the
+cause of historicalb09 refusal. Canonical sparse(false), non-followed symlinks,
+regular member/size/hash checks and allowlisted public failure classes must be
+covered by the owner's next actual batch. NOTICE01 artifact/image gates stay OPEN.
+
+Bounded CI/catalog/policy sections were read. The ready job runs always with the
+required needs set, checked by source policy; runtime jobs(raw) independently
+rejects empty or present non-success results but does not itself require every
+key. The composite workflow/policy contract matters; a one-success standalone
+input is not proof of complete validation. Tag-only release, queued concurrency
+and read-only defaults were observed. The public crate archive pilot is an
+explicit later canon exception, not a general remote target-cache permission.
+No remote action identity, quota, environment/OIDC setting or actual run is
+qualified by this source review.
+
+Lab outcome source atf601e4fa was reviewed through its closed scalar schema,
+shared strict2MiB actor parsing, bounded unique inventory/counts and projection
+before missing witness-exchange refusal. Unknown observations remain null;
+source-prefix authentication and full-product flags stay false. Raw private
+actor output is not projected. DNS completion is separate from test result.
+Existing capture/scoped-join lifetime dependencies remain OPEN; these DTOs do
+not prove hard deadlines, cleanup, witness authority or browser/product success.
+No new unit/native/Docker execution was performed or inferred by this review.
+
+Delivery consumerde0eeea4 imports the same Lab-owned browser_outcome.rs validator,
+reconstructs the scalar projection and rejects the whole optional projection on
+invalid nested outcome. This avoids a second schema implementation. Its authored
+consumer negatives and current source compilation remain NOT_RUN in this audit.

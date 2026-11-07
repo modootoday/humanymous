@@ -269,5 +269,17 @@
     "source_scope_only": true,
     "known_partial_directory_failure_documented": true,
     "actual_service_store_or_directory_pilot_qualified": false
+  },
+  "followup_cross_layer_batch": {
+    "private_review_sha256": {
+      "delivery-source-review-002.json": "a29133b97d95ce9f077b2d8a0d86a48f693dbe3cb9c64995b9023f6b21b6e685",
+      "workflow-contract-review-001.json": "2d193a5c8be31694d1018da5076ba9d8c5793f2b1d6b4e79531751ba8f516e69",
+      "lab-outcome-review-001.json": "d24fffbf3a026649b96ae9f8512de426464749fd990677413f66d3319ddb5da5"
+    },
+    "role_registry_read": "sot:root/structural-development",
+    "new_write_or_execution_grant_inferred": false,
+    "delivery_actual_new_run_qualified": false,
+    "ci_remote_settings_qualified": false,
+    "lab_actual_new_units_or_product_qualified": false
   }
 }
