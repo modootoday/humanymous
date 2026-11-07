@@ -322,6 +322,29 @@ Parallel workers would change ownership/ordering and need an accepted architectu
 contract before implementation. A function benchmark cannot qualify throughput,
 network cancellation, audit persistence or complete process-tree cleanup.
 
+## Audit preparation input and explicit pilot profile
+
+Audit's154715 raw manifests contain177 source files/7434998bytes,3181 selected
+registry files/42368010bytes and73 selected tools/607737208bytes. Their combined
+3431files/657540216bytes and maximum single file208167760bytes fit the default
+count/byte caps. Actual prior registry-before hashing took26.8293511seconds and
+tool-before hashing18.911908seconds:45.7412591seconds combined, excluding source,
+config, after hashing and1.3099437seconds materialization. These are recorded
+prior phase durations, not selected-input CLI measurements or a speedup trial.
+Raw files are in the private20261107154715-audit-key-custody-l1-transition-validation-raw
+evidence directory; Audit retains ownership of those artifacts.
+
+Root accepted an explicit120second cooperative observation profile ONLY for the
+later equal-coverage CLI pilot over this same finite selection. All file/root/
+byte caps remain unchanged and one clock spans the entire observation. Default
+profiles remain30seconds. The current CLI must first implement and qualify this
+explicit profile selection; no automatic increase or per-root clock reset is
+allowed. At an exhausted budget return partial rather than a complete digest.
+No pilot workload is authorized until CLI qualification and root's exclusive
+execution allocation; the current local CEF window excludes benchmark admission.
+Preserve prior timings and unknown remaining costs. Do not infer antivirus or
+filesystem causation, comparative speedup or immutable/cache authority.
+
 ## Source-only CPU distribution experiment
 
 Root observed unrestricted32-bit process affinity masks and uneven per-logical-

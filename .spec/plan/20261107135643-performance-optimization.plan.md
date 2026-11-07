@@ -12,6 +12,14 @@ rel:
 
 ## Bottom-up next admission
 
+Audit154715 supplies a real equal-coverage preparation candidate:3431files/
+657540216bytes, existing registry+tool before phases45.7412591seconds. Root accepts
+an explicit120second cooperative profile ONLY for the future same-input CLI pilot,
+with unchanged file/byte caps and one shared clock. Default30seconds remains.
+CLI profile implementation/qualification and an exclusive execution allocation
+are still required; current CEF work excludes a benchmark start. No runtime,
+speedup or causal claim follows from the prior phase durations.
+
 Root requested a source-only CPU distribution design after unrestricted affinity
 and uneven per-core samples. The SoT now separates Cargo jobs1/2, libtest workers,
 compiler parallelism and optional topology-qualified task-local placement. First
