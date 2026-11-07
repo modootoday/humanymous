@@ -40,3 +40,20 @@ fn utf16_and_required_capacity_are_bounded_including_terminator() {
     assert!(query::check_capacity(256, 32769).is_err());
     assert!(query::check_capacity(usize::MAX, usize::MAX).is_err());
 }
+
+#[test]
+fn utf16_code_unit_limit_includes_final_terminator() {
+    let ascii_max = "a".repeat(32767);
+    assert_eq!(
+        create::wide_path(Path::new(&ascii_max)).unwrap().len(),
+        32768
+    );
+    assert!(create::wide_path(Path::new(&"a".repeat(32768))).is_err());
+    let surrogate_max = format!("{}\u{1f642}", "a".repeat(32765));
+    assert_eq!(
+        create::wide_path(Path::new(&surrogate_max)).unwrap().len(),
+        32768
+    );
+    let surrogate_over = format!("{}\u{1f642}", "a".repeat(32766));
+    assert!(create::wide_path(Path::new(&surrogate_over)).is_err());
+}

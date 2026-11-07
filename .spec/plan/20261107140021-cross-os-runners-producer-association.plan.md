@@ -500,3 +500,28 @@ requires 0<len<capacity and NUL at len; required-size growth is capped INCLUDING
 terminator and retried three times maximum. Provider observation and forgeable
 wire identity do not authorize a carrier. Owned path allocation is prepared before
 CreateDirectoryW so its successful return immediately yields a created obligation.
+
+## Allocation-bound correction and privacy regression source v0.5
+
+Root and independent Convention review found a real source gap AFTER the14pure
+receipt on the earlier create hash: path.to_owned preceded validation and
+encode_wide().collect consumed the entire input before checking the32768limit.
+The passing receipt remains exact to its old source and never qualifies that
+unbounded prevalidation allocation claim.
+
+New source uses encode_wide().take(32768).collect, rejects empty/interior-NUL or
+len>=32768, appends one terminator, THEN clones the now bounded input path BEFORE
+CreateDirectoryW. This preserves both bounded additional input copying and the
+allocation-before-successful-create cleanup obligation. Existing caller Path
+allocation is outside the bridge; it is not copied unboundedly a second time.
+An additional pure case covers32767ASCII accepted with32768includingNUL,
+32768ASCII rejected, and surrogate pairs exactly at/over the UTF16code-unit limit.
+No global allocator instrumentation, new unsafe, feature or FFI is introduced.
+
+The wire roundtrip unit test proves no construction privacy property. New Rustdoc
+examples separately provide an external positive import/claim roundtrip without
+calling a native query, plus an external compile_fail example trying to construct
+the private native-observation fields. These need explicit Rustdoc execution and
+diagnostic review; an arbitrary compilation failure must not be mistaken for the
+intended E0451 privacy error. Four pure bridge cases and both doctests on this
+NEW source are authored NOT_RUN. Existing14pure evidence is not silently reused.

@@ -255,3 +255,85 @@ observation clock. Only the private deadline ledger accepts an injected Instant
 for pure state tests. Four pure tests remain authored NOT_RUN; no compiler or
 runtime result follows from this source correction. Partial setup retains
 SetupFailed and cannot claim successful IO when a worker was never started.
+
+## Next actual direct-child parent cases and retained cleanup proposal v0.5
+
+Root requested SOURCE preparation and exact execution proposal only; no actual
+process fixture allocation has been granted. Reuse the ONE existing ignored
+process::tests::subprocess_fixture entry point and its fixed known modes. Do not
+add arbitrary executable/command inputs or count helper invocations as parent
+test passes. Proposed new parent module process::capture_attempt::actual_tests
+is ignored by default; future allocation selects EACH parent exact name with
+--ignored. Existing pure filter should name ::capture_attempt::tests explicitly,
+so no future default filter can accidentally execute subprocess cases.
+
+Proposed exact parent names and observables:
+
+1. retained_normal_stdout_stderr_and_actual_joins: existing both mode, cap4096 per
+   stream, one original run3s/cleanup5s before spawn; actual status0, both known
+   outputs, all three IO worker joins returned, no sticky issue. Direct child
+   only; no descendant containment or arbitrary command claim.
+2. retained_nonreading_child_expires_original_run: existing hang mode (finite5s),
+   4096bytes input, run100ms/cleanup5s selected before spawn; observe original run
+   expiry, request stop on borrowed actual child, retain same owner until actual
+   exit and all started joins. This is a nonreading child + expiry test, NOT
+   proof that stdin write blocked. Failure cannot renew either original threshold.
+3. retained_stdout_cap_is_sticky: existing flood mode, cap128, observed StdoutFailed
+   irrespective of whether actual child exits0 or broken-pipe nonzero; no
+   truncated success. Stop if still running; require actual final joins.
+4. retained_stderr_cap_is_sticky: existing stderr-flood mode, analogous exact
+   StderrFailed proof, independently retain/drain stdout.
+5. retained_stop_request_preserves_observed_exit_zero: existing finite normal mode,
+   first OBSERVE actual status0, then request_stop; method must record ForcedStop
+   and refuse execution_succeeded despite status0. No actual kill is claimed in
+   this case because status was already observed. Case2 separately exercises an
+   actual direct-child kill request and its real platform-specific exit status.
+
+The default CaptureAttempt is an auto-draining capture and cannot demonstrate
+CLI's intentionally unread stdout/stderr backpressure. A shared retained direct
+pipe owner must use the same actual child/status/deadline backing while retaining
+unread pipes in the owner; it must not return a fake CapturedDirectChild claiming
+EOF/IO joins or call legacy ManagedChild cleanup authoritative. Its exact API is
+a separate prerequisite for the CLI parent; no implementation fork is proposed.
+
+### Blocked stdin is an explicit separate prerequisite
+
+Public startup input<=4096 may fit fresh Windows/Linux pipe buffers completely.
+hang/nonreading mode plus that input cannot establish an actual blocked writer.
+Do not label a pending child or an unjoined worker as proof of pipe pressure.
+Options for Root decision: a separately bounded synthetic-input profile allowing
+enough fixed nonsecret bytes plus explicit writer progress observation, or a
+native known-small pipe geometry/cancellable IO capability. Neither is silently
+added to the production startup input policy or existing unsafe exception. A
+cfg(test)-only bypass of public validation would test the private worker, not
+claim the public 4096byte API actually blocked. Until a supported mechanism and
+observable are accepted, actual blocked-stdin proof stays NOT_RUN.
+
+### Failure handling and outer owner
+
+Parent creates original absolute thresholds BEFORE spawn and keeps CaptureAttempt
+in one explicit owner slot. A start failure retaining an owner is recovered with
+into_owner; every failed settle returns it to that SAME slot before another
+branch/assertion. Never unwrap/panic while an unsettled owner is temporarily
+unbound. Assertions are deferred until actual child status and all started joins
+are obtained, even when execution is already failed. No timeout branch discards
+workers or relies on Drop wait. On expiry request stop, poll with real internal
+clock, attempt final joins only when reported ready under the outer supervisor.
+
+All helper modes have finite fixed behavior (hang body5s maximum under responsive
+OS; floods finite8192bytes) and create no children. Tool session is retained until
+terminal, and Root must provide the separately accepted independent outer
+supervision/ceiling before execution. If cleanup deadline expires, keep failure
+sticky and preserve the owner; convergence after expiry is reported late, never
+a clean pass. If outer supervision terminates a stuck parent, actual child/worker
+cleanup remains Unknown; finite helper body is an assumption/residual, not Job
+empty proof. No spawned descendants, inherited-pipe-holder fixture, account, SCM
+or native bridge API is included in this proposed allocation.
+
+Actual worker-join evidence must come from returned JoinHandle::join outcomes
+and private settled result construction, not a channel result/is_finished alone.
+If exact joined-worker counts are exposed for the fixture receipt, record them
+from real Worker joined states; do not add a constant-true getter. Partial worker
+failure requires a separately reviewed deterministic injection seam and cannot
+be inferred from these five parents. All five are proposed NOT_AUTHORED/NOT_RUN
+until their full source and cleanup contract are reviewed for allocation.

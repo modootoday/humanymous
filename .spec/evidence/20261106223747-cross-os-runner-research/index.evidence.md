@@ -5,7 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
-  - {path: binding-capture-bridge-pure-summary.json, sha256: 5836e9c4ae128481ada2e445cc9634d85c6b964fa26b8b412596fb62eb539f96, bytes: 7569, store: repo}
+  - {path: binding-capture-bridge-pure-summary.json, sha256: 08d40be7f3270adbc06521a5c9d0381eec8d9a73a75a1d0cc6d48fdb684f2afa, bytes: 7401, store: repo}
   - {path: actor-context-carrier-summary.json, sha256: b80b4a5d0c772b707322d1ff312cef0b267a0ce9fabf9340c22cc91c1c0dbaf2, bytes: 4066, store: repo}
   - {path: partial-setup-duplex-summary.json, sha256: afd7dd3de43e209600d3e47fcfe983a79bc112d654e7c1d25e967a52ae17812a, bytes: 4288, store: repo}
   - {path: parent-context-joint-summary.json, sha256: 50e986abdcfa8255177a8dbbab107fbf51f01e89c8ebe3316f8a3b82b03ecd10, bytes: 4005, store: repo}

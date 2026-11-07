@@ -28,6 +28,22 @@ pub enum BridgeError {
 
 /// Native observation from the same borrowed open File, never launch authority.
 /// No raw handle/File getter, caller constructor, serde or Debug implementation.
+///
+/// Public imports and forgeable claims are usable without invoking native queries:
+/// ```
+/// use humanymous_windows_object_bridge::{
+///     BridgeError, OpenedObjectObservation, UnverifiedIdentityClaim, inspect_opened,
+/// };
+/// let _query: fn(&std::fs::File) -> Result<OpenedObjectObservation, BridgeError> = inspect_opened;
+/// assert_eq!(UnverifiedIdentityClaim::from_wire([42; 24]).to_wire(), [42; 24]);
+/// ```
+/// External callers cannot construct a native observation from wire values:
+/// ```compile_fail,E0451
+/// use humanymous_windows_object_bridge::OpenedObjectObservation;
+/// let _forged = OpenedObjectObservation {
+///     identity: [0; 24], volume_path: String::new(), directory: false,
+/// };
+/// ```
 pub struct OpenedObjectObservation {
     identity: [u8; 24],
     volume_path: String,

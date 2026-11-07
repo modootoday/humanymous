@@ -6,15 +6,15 @@ pub(super) fn create(
     path: &Path,
     descriptor: &windows_permissions::SecurityDescriptor,
 ) -> Result<CreatedDirectory, BridgeError> {
-    let owned_path = path.to_owned();
     let wide = wide_path(path)?;
+    let owned_path = path.to_owned();
     create_native(&wide, descriptor)?;
     // Creation obligation is returned before any fallible caller validation.
     Ok(CreatedDirectory { path: owned_path })
 }
 
 pub(super) fn wide_path(path: &Path) -> Result<Vec<u16>, BridgeError> {
-    let mut wide: Vec<u16> = path.as_os_str().encode_wide().collect();
+    let mut wide: Vec<u16> = path.as_os_str().encode_wide().take(32768).collect();
     if wide.is_empty() || wide.len() >= 32768 || wide.contains(&0) {
         return Err(BridgeError::InvalidInput);
     }
