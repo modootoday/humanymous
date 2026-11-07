@@ -1625,5 +1625,35 @@
     "audit": "106Git/currentdisk/frozenmanifest0issues,2ancillary+7fixtures verified; pre-relocation only",
     "lab": "edc30181 bounded source diagnostic-only ready/noP0P1; actual parser inventory37 expected not executed; no log-auth or historical403cause claim",
     "goal_complete": false
+  },
+  "followup_lab37_native12_collector_compile_source_bound": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\lab37-actual-review-001.json",
+        "sha256": "e25a8e3afeac785a236a6ce08829cbb28f6807a3025e251ebe5f7b6d4c6855a5",
+        "bytes": 4279
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\lab37-archive-source-join-001.json",
+        "sha256": "5cceaa438855a97d3feeb1525d91b1b764e712c43d9734863ade4fed7c56a710",
+        "bytes": 596
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\native-journal-model-actual-source-review-001.json",
+        "sha256": "62c356845bdbc9f1a5277c24ce5d1f83a02ec0be7a96063702879231a737205c",
+        "bytes": 3197
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\collector-889-compile-source-review-001.json",
+        "sha256": "7f408d2954648c12363f18482cf03d09a2883ee5db7859bbf4cd605ecd758fd8",
+        "bytes": 2399
+      }
+    ],
+    "lab": "edc30181 exact37actual/inventory;22rawverified;3048ZIPmembersGit/manifest/snapshot0issues;10620inputsequal; pure parser only",
+    "native": "49d60cf6 exact12actual/inventory15filtered;35rawverified;3055tarGit/manifest/snapshot0issues;3081source1442registrybeforeafterequal; exactbinarymatch; private model only",
+    "collector": "889eb6f8 25rawverified;3042tarGit/manifest/snapshot0issues;WASM32runtimepilotalltargetcheck/strictClippy0; no tests/mocks/browser",
+    "current_source": "Root Runtime relocation in progress; frozen sources above remain historical immutable checkpoints, no candidate qualification",
+    "goal_complete": false,
+    "spec_observation": "During concurrent Root Runtime relocation: --no-local284documents/4foreignRuntimeindexregistrationerrors/9historicalmoved-governswarnings. Owners notified; not a clean candidate check."
   }
 }

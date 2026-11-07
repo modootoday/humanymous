@@ -2198,3 +2198,39 @@ authorization or historical403 cause is proved. No new P0/P1 was confirmed in
 this source slice. Authored parser inventory37 is expected, not actual execution.
 Private evidence hashes are bound in baseline.json. Audit launched no compiler,
 process, native or product workload; global gates remain OPEN.
+## Source-bound Lab37, private journal12 and Collector compile receipts
+
+Labedc30181 actual37 names equal the full selected inventory, with zero failed,
+ignored or filtered. Twenty-two indexed raw records match hashes/sizes and are
+copied independently. The original retained8,324,315-byte ZIP matches f9ed0806;
+all3048 unique files match the exact Git tree blob identities, before-input
+manifest and current frozen extraction. Total10620 before/after input records
+are semantically equal:3048 archive source plus7572 selected registry files.
+Tool versions/environment are semantically equal despite JSON key order. Fmt,
+check and strict Clippy receipts exit0; elapsed work93859ms/total134859ms.
+Registry/tool binaries were not individually rehashed in this follow-up. The
+archive was refused as a Spec attachment by its4MB limit; original retained ZIP
+was independently read without bypassing that registration limit. No browser or
+Docker execution follows from pure parser qualification.
+
+Native49d60cf6 private cfg(test) symbolic model and all twelve authored cases
+were source-reviewed; no concrete P0/P1 was found in this bounded ordering model.
+Its actual12 names equal inventory, zero failed/ignored,15 filtered. Thirty-five
+raw records match hashes/sizes and are copied. All3055 unique archive files match
+Git blobs, source manifest and frozen extraction. Source/tool/config3081 and
+registry1442 before/after manifests are byte-identical; exact test binary
+hash/1193472bytes matches. Fmt/check/strict Clippy receipts exit0; original
+cleanup is recorded at30.87seconds. Symbolic namespace/history/terminal facts
+remain unverified fixtures, not persisted journal, authenticated recovery, ACK,
+native Root or Ready. Earlier NOT_RUN source records remain historical.
+
+Collector889eb6f8 compile-only evidence has25 raw records verified and copied;
+all3042 tar members match Git/source manifest/frozen snapshot. Before/after
+source3042/registry1836/tools78/config18/environment14 manifests are byte-identical.
+Actual locked/offline WASM32 runtime-pilot all-target check, strict Clippy and fmt
+exit0, elapsed55.81seconds, with owned cleanup recorded. Tests and mock cases
+executed zero; no actual WASM/browser403 cause or product qualification is claimed.
+
+Root is relocating Runtime paths. These immutable pre-move proofs do not qualify
+the moved candidate; no audit source move/compiler/native/product workload ran.
+Exact private hashes are in baseline.json. Full migration/global gates stay OPEN.
