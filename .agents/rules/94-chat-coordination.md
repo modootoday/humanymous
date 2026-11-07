@@ -31,6 +31,26 @@ the stored provider and session against this transaction; preflight/free checks
 are not ownership. `$ErrorActionPreference` alone does not propagate every native
 failure. Never release a claim belonging to another provider or session.
 
+Report a commit only after the actual commit command succeeds and, while the
+transaction is still owned, verify the literal HEAD SHA and intended changed-path
+inclusion in that commit. Prepared, staged, preflight-blocked and mutex-blocked
+work is not committed. Use those pending states explicitly; never invent a SHA
+or announce success before the command returns. Distinguish source, evidence and
+policy checkpoints from actual test results and publication.
+
+For a directly invoked PowerShell script (`& script.ps1`), `$LASTEXITCODE` may
+remain from an earlier native process. Handle script throws and capture `$?`
+immediately; do not use stale native status as script-success proof. For a native
+wrapper such as `pwsh -File`, check its actual process exit code. Neither status
+substitutes for verifying the stored claim provider/session before Git mutation.
+
+An actual runtime pass requires its terminal process handle/exit, exact test
+footer and source closure, not an active process or partial log. Report closure
+file count separately from comparison output: Compare-Object side indicators are
+difference records, not compared-file counts. State the compared paths, hash
+scheme and observed differences; never infer an unchanged closure from a missing
+or incomplete snapshot. Preserve first failures and distinguish local/hosted runs.
+
 Local work includes coding, supported Windows/WSL compilation, pure units, fmt,
 scoped Clippy and allocated ordinary process/IPC/fixture tests. Root may assign
 at most four local pipelines A/B/C/D, each with an explicitly assigned distinct

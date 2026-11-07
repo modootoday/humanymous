@@ -10,6 +10,22 @@ rel:
 
 # Agent maintenance
 
+## Proof before coordination success reporting
+
+Root reported repeated premature commit announcements later retracted when the
+actual mutex/preflight blocked. Rule94 and coordinate-sessions now require a
+successful actual commit command plus literal HEAD and intended changed-path
+verification while the transaction remains owned. Pending work is explicitly
+prepared/staged/blocked, never a placeholder commit. Direct PowerShell script
+throws/immediate `$?` and native wrapper exit codes are distinguished from stale
+`$LASTEXITCODE`; actual claim ownership remains independently required.
+
+Runtime success requires a terminal handle/exit, exact footer and relevant source
+closure. File count is separate from Compare-Object side-indicator difference
+records. Partial/missing snapshots do not establish equality. This source-only
+policy correction adds no workload allocation, Git ownership bypass or new
+runtime pass claim.
+
 ## Cold-stream resource exclusion
 
 Root reported an actual88.2594% commit guard event from concurrent initial WSL

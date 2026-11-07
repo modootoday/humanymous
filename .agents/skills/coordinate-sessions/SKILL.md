@@ -47,6 +47,12 @@ match this transaction before staging or committing. A prior free observation
 or a successful preflight is not ownership. Claim failure stops the transaction;
 never continue to add/commit/release, and never release a foreign claim.
 
+`& script.ps1` is a PowerShell script invocation, not a fresh native process:
+`$LASTEXITCODE` can retain an earlier command's result. Let terminating script
+throws stop the transaction and capture `$?` immediately after a direct invocation.
+When using `pwsh -File`, inspect that native wrapper's exit code instead. Always
+verify the actual claim provider/session independently before writes.
+
 Even if work lanes differ, only one agent may own git mutations:
 
 ```powershell
@@ -77,6 +83,22 @@ if ($LASTEXITCODE -ne 0) { throw 'Git release failed' }
 - If preflight reports `index.lock` or active `git-ops` → wait.
 - No force-push to shared branches; no amend of pushed commits without user OK.
 - Full rules: `GIT-PROTOCOL.md`, `COMMIT-CONVENTION.md`, rules `91` + `92`.
+
+### Reporting proof
+
+- Say **prepared**, **staged** or **blocked by preflight/mutex** until the actual
+  commit command succeeds. Never preannounce a commit or use a placeholder SHA.
+- Before releasing the owned Git transaction, read literal HEAD and verify the
+  intended changed paths in that exact commit. Report that SHA with the result;
+  an intended command, prior HEAD or another owner's commit is not proof.
+- Claim an actual test pass only after the run's handle is terminal with its
+  exit status and exact footer, and the relevant before/after source hashes are
+  available. Keep venue, source checkpoint and missing/ignored/filtered cases explicit.
+- Closure file count and difference-record count are separate quantities.
+  Compare-Object `<=`/`=>` rows indicate differences, not the number of files
+  compared. A missing/partial snapshot cannot prove source closure equality.
+- Keep source-only checkpoints, actual component tests, full qualification and
+  publication distinct. Retain first failures and corrections in the evidence.
 
 ### Session end / provider switch
 
