@@ -700,3 +700,29 @@ owner records findings and unqualified gaps in its existing SoT and evidence
 lane before proposing implementation. GPU jobs require separate resource
 admission; spare CPU capacity does not reserve VRAM or authorize paid runners.
 
+
+## Runtime fixture ownership at the consolidation boundary
+
+The runtime slice moves owned authority, audit, capture and network fixture trees
+into context-qualified tests/fixtures directories of humanymous-runtime. Rewrite
+both relative includes and manifest-relative test paths to these destinations.
+Gateway may reuse the authority fixture inside that same package. Preserve every
+fixture's frozen bytes and provenance; do not regenerate or normalize an oracle.
+
+Two current cross-package inputs require explicit data-only replicas inside the
+runtime package: core's tests/scoring/fixtures/frozen/human-chrome-allow.json for
+authority decision tests, and collector's pilot/fixture.json for gateway browser
+contract tests. Their producer files remain authoritative. Record original source
+commit, path, Git blob, copied-byte digest, destination and applicable license in
+a context-qualified fixture provenance manifest. The atomic slice must verify
+replica equality, and subsequent producer updates require an explicit coordinated
+fixture update with parity review. Do not add public SDK fixture APIs, another
+helper package, build-time network access or outside-package path includes.
+This is a test-data replication exception, not permission to duplicate source.
+
+A clean extracted package must contain all compile-time fixture inputs for its
+selected tests and examples. Verify package inventory and extracted compilation
+independently of normal workspace success. Test targets with duplicate former
+names need unique context-qualified targets and exact CARGO_BIN_EXE updates;
+process tests retain actual executable identity and helper-role restrictions.
+A new package ID must never grant every binary its siblings' native privileges.
