@@ -12,8 +12,8 @@ rel:
 
 ## Exact browser IME fixture preservation
 
-The convention auditor identified two indicators in the normalized path
-.spec/plan/20261107002014-browser-ui.plan.md, lines163/213. Independent reads
+The convention auditor identified two indicators in [[plan:root/20261107002014]],
+lines163/213. Independent reads of the normalized source path matched
 matched SHA2562b45eeed32d1a67bf668df7647bf6bcbd04a2cd1fadf465447cdd67f64afd5cf
 and9b8de9053380ed1f112cd484966873423758f8ac48fa772ab5266cff29a20e1d.
 The Browser owner explicitly confirmed intentional literal Korean IME inputs/
@@ -23,6 +23,10 @@ foreign source rewrite or path-wide language waiver occurred. The existing
 qualified language-check invocation returned both preserved-exact-line, errors[]
 and english_conformance_proven=false (toolf66da9). This bounded classification
 does not establish source-wide authoring conformance or any new browser pass.
+The first scoped Specfold check reported L2 for a literal document-path citation;
+checkpointba041e62 was committed before that result was inspected. The reference
+was corrected to its canonical document ID and the check is rerun before the
+follow-up checkpoint. The original failed check remains tool8a179f, not a pass.
 
 ## CA-GOV-01 detection-freeze pointer correction
 
