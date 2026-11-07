@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/go/upstream-fixtures.json",
+  "sha256": "d541a37ca284fb00294bb8efe96500db2dd4e54aa997d4d47f96a772d8e7ace2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete six selected immutable upstream fixture descriptors and declared coverage gaps. Entrypoint digest is narrower than full checkout/dependency/artifact identity; greeting, JSON state or metadata/cookie examples do not qualify binary replay, pooled lifetimes, independent protected effects or a new Go SDK. All fixtures remain unexecuted.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/apache/upstream-lock.json",
+  "sha256": "39ff39b23e767a79a491c91f8bf8dbcee8e7afb4434826d37b7bdc37a279bf1b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete selected upstream archive/tag/direct-header metadata and null clang/builder/configured-header closure fields. This source metadata is not an independently verified release signature, installed ABI, transitive configured closure or executed native build; public topology states the remaining actual tuple requirement.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/apache/ABI-SAFETY.md",
+  "sha256": "fcee26356ddca88c1b0dbbfab6e89f8c71c3617aeb661059d7ed722441413409",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete approved native boundary contract: safe core versus isolated generated/host ABI operations, exact tuple/header/clang closure requirements, host allocation and synchronous pointer/pool ownership premises, after-fork initialization and actual MPM/reload/cancellation obligations. Public topology now acknowledges module source while preserving unqualified ABI; pins and callback unwind containment do not prove installed host safety.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "adapters/python/pilot-contract.json",
   "sha256": "0c1d0562e4f2b74c99dfda567cc1fc08e395d43917f6d9d787abe2898f692daf",
   "reviewer": "codex/rust-pages",

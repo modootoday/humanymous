@@ -1158,3 +1158,18 @@ No manifest/dependency delta. Rustfmt/diff-check pass; requested a fresh scoped
 Cargo slot/root execution. The earlier26lib+1CLI pass does not qualify these
 changed browser helper bytes. Actual browser remains NOT_RUN; no local runtime
 or Cargo launched here. Source frozen awaiting the narrow verification.
+
+### Node original deadline and Apache/Go metadata boundaries
+
+Re-read Node pending creation/body timer/original bound deadline/dispatch expiry
+source sections. Corrected timeoutMs wording to body/decision lifecycle rather
+than a fresh per-decision operation budget; did not refresh a whole-file receipt
+from partial section reading. Current browser dot-segment code remains frozen
+and unverified pending explicit Cargo slot/root measurement.
+
+Read full Apache ABI safety/upstream metadata and six Go upstream fixture
+inventory entries. Public topology acknowledges opt-in Apache module source
+without assuming an installed/configured ABI, after-fork/pool/MPM/reload or origin
+qualification. Added three exact manual metadata receipts; held stale Apache/
+native pilot blocker records for owning-session correction. Metadata selection
+is not independent external verification or execution. Existing source88/errors0.

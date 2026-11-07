@@ -59,7 +59,7 @@ from untrusted request headers.
 | `installation`, `tenant`, `origin`, `revision` | Nonempty ASCII scope identities, up to 128 bytes each |
 | `endpoint`, `server`, `credential` | Local Unix filesystem socket or Windows named pipe, expected authority peer and privately provisioned credential; credential is 32–256 ASCII letters/digits/underscore/hyphen |
 | `routes` | Nonempty inventory of at most 4096 pathnames; excludes query/fragment/percent/backslash forms and the reserved `/_humanymous` subtree |
-| `timeoutMs` | 1–30000 milliseconds per decision operation; not a requirement for a person to finish an interaction within that interval |
+| `timeoutMs` | 1–30000 milliseconds for the bounded body/decision lifecycle; not a requirement for a person to finish an interaction within that interval |
 | `maxBody` | 0–1048576 bytes of complete request body; zero permits an empty body only |
 
 The current shared configuration also accepts optional
@@ -117,6 +117,13 @@ idempotency or retract an application effect after dispatch. Response streaming
 remains handler-owned; permit release is not proof that a download completed,
 a client received it or a side effect was rolled back. Actual abort/race/timeout
 and accessible recovery outcomes remain execution gates.
+
+The pending request's deadline starts before body collection. Body completion
+does not grant a new request deadline: the authority binding carries the original
+deadline and dispatch compares the returned expiry with it. The configured IPC
+timeout is not permission to invoke the application after that original budget
+has expired. This remains source-level lifecycle behavior pending the actual
+body/IPC/host timing pilots.
 
 ### Node package qualification boundary
 
