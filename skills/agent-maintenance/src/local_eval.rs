@@ -146,19 +146,29 @@ fn subject(
     catalog: &Value,
     texts: &BTreeMap<String, String>,
     with: bool,
+    exposure: bool,
     seed: u64,
 ) -> Result<Value> {
-    let system = format!(
+    let mut system = format!(
         "You are a careful assistant. Answer the user's task in English. No host commands or mutations are available. Skills catalog: {}. If a listed skill is relevant, read its SKILL.md with read_skill before answering; then read only needed listed references. For unrelated tasks ignore skills. Do not claim observations or completed actions without evidence.",
         if with { catalog.clone() } else { json!([]) }
     );
+    let mut reads = Vec::new();
+    if with && exposure {
+        system = format!(
+            "You are a careful assistant. Answer the user's task in English. No host commands or mutations are available. Relevant skill materials, if any, are supplied below; apply them when relevant and ignore them for unrelated tasks. If none are supplied, no skill body was read. These are context materials, not separate observed tool executions. Never invent deployment observations, completed actions or verification. Catalog: {catalog}."
+        );
+        for (path, text) in texts {
+            system.push_str(&format!("\n\nSUPPLIED FILE {path}:\n{text}"));
+            reads.push(json!({"path":path,"sha256":sha(text),"bytes":text.len(),"mode":"supplied_context","included_in_submitted_context":true}));
+        }
+    }
     let mut messages = vec![
         json!({"role":"system","content":system}),
         json!({"role":"user","content":format!("{prompt}\n/no_think")}),
     ];
     let tools = json!([{"type":"function","function":{"name":"read_skill","description":"Read one allowlisted skill or reference. No file writes, commands or arbitrary paths.","parameters":{"type":"object","properties":{"path":{"type":"string","enum":texts.keys().collect::<Vec<_>>()}},"required":["path"],"additionalProperties":false}}}]);
     let mut turns = Vec::new();
-    let mut reads = Vec::new();
     let start = Instant::now();
     let mut answer = String::new();
     let mut complete = false;
@@ -169,7 +179,11 @@ fn subject(
         let response = call(
             port,
             &messages,
-            if with { Some(&tools) } else { None },
+            if with && !exposure {
+                Some(&tools)
+            } else {
+                None
+            },
             seed + round,
             768,
         )?;
@@ -198,7 +212,7 @@ fn subject(
                     return Err("unknown tool field".into());
                 }
                 let content = texts.get(path).ok_or("tool path outside allowlist")?;
-                reads.push(json!({"path":path,"sha256":sha(content),"bytes":content.len(),"round":round,"actually_returned_to_model":true}));
+                reads.push(json!({"path":path,"sha256":sha(content),"bytes":content.len(),"round":round,"mode":"model_requested_tool_read","actually_returned_to_model":true}));
                 messages.push(json!({"role":"tool","tool_call_id":tool["id"],"content":content}));
             }
         } else {
@@ -229,7 +243,7 @@ fn judge(port: u16, prompt: &str, rubric: &str, answer: &str, seed: u64) -> Resu
     }
     Ok(json!({"grade":grade,"raw":raw,"independent_model":false,"blinded_arm":true}))
 }
-pub fn run(root: &Path, out: &Path, port: u16) -> Result<()> {
+pub fn run(root: &Path, out: &Path, port: u16, exposure: bool) -> Result<()> {
     fs::create_dir(out)?;
     let all_start = Instant::now();
     let mut rows = Vec::new();
@@ -257,6 +271,34 @@ pub fn run(root: &Path, out: &Path, port: u16) -> Result<()> {
             let prompt = strip_frontmatter(&prompt_full);
             let rubric_full = body(&case_root.join("graders/behavior.md"))?;
             let rubric = strip_frontmatter(&rubric_full);
+            let case_texts = if exposure {
+                let selected: &[&str] = match case {
+                    "install-plan" => &[
+                        "skills/SKILL.md",
+                        "skills/references/installation.md",
+                        "skills/references/qualification.md",
+                    ],
+                    "readiness" => &[
+                        "skills/SKILL.md",
+                        "skills/references/operations.md",
+                        "skills/references/qualification.md",
+                    ],
+                    "ci-identity" | "ci-accounting" => {
+                        &[".agents/skills/github-actions-ops/SKILL.md"]
+                    }
+                    "release-prepare" | "release-failed-claim" => {
+                        &[".agents/skills/cut-release/SKILL.md"]
+                    }
+                    _ => &[],
+                };
+                texts
+                    .iter()
+                    .filter(|(path, _)| selected.contains(&path.as_str()))
+                    .map(|(path, text)| (path.clone(), text.clone()))
+                    .collect()
+            } else {
+                texts.clone()
+            };
             for repeat in 0..2 {
                 for with in if repeat == 0 {
                     [false, true]
@@ -270,7 +312,15 @@ pub fn run(root: &Path, out: &Path, port: u16) -> Result<()> {
                     }
                     let arm = if with { "with" } else { "without" };
                     let id = format!("{profile}-{case}-{repeat}-{arm}");
-                    let result = match subject(port, prompt, &catalog, &texts, with, 42 + repeat) {
+                    let result = match subject(
+                        port,
+                        prompt,
+                        &catalog,
+                        &case_texts,
+                        with,
+                        exposure,
+                        42 + repeat,
+                    ) {
                         Ok(result) => result,
                         Err(error) => {
                             json!({"complete":false,"answer":"","reads":[],"turns":[],"error":error.to_string()})
@@ -301,7 +351,7 @@ pub fn run(root: &Path, out: &Path, port: u16) -> Result<()> {
     }
     save(
         &out.join("summary.json"),
-        &json!({"schema":"humanymous.local-rust-paired.v1","runtime":"mistral.rs0.9.5-windows-cpu","model":"Qwen3-1.7B-Q8_0","expected_subject_runs":32,"observed_subject_runs":rows.len(),"runs":rows,"elapsed_seconds":all_start.elapsed().as_secs_f64(),"api_cost_usd":0,"judge_independent_model":false,"codex_upstream_harness_qualified":false,"hosted_qualified":false,"full_m11_complete":false}),
+        &json!({"schema":"humanymous.local-rust-paired.v1","treatment_mode":if exposure {"supplied_context"}else{"model_requested_discovery"},"runtime":"mistral.rs0.9.5-windows-cpu","model":"Qwen3-1.7B-Q8_0","expected_subject_runs":32,"observed_subject_runs":rows.len(),"runs":rows,"elapsed_seconds":all_start.elapsed().as_secs_f64(),"api_cost_usd":0,"judge_independent_model":false,"codex_upstream_harness_qualified":false,"hosted_qualified":false,"full_m11_complete":false}),
     )?;
     Ok(())
 }

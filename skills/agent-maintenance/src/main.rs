@@ -1,4 +1,4 @@
-//! Read-only canonical agent checks and bounded, sandboxed Codex evaluations.
+//! Read-only canonical checks and bounded skill evaluation profiles.
 use humanymous_agent_maintenance::{
     evaluation, inventory, language, package, paired, product, routing, selected_inputs, sessions,
 };
@@ -8,7 +8,11 @@ use std::{env, path::Path, process::ExitCode};
 fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
     match args.first().map(String::as_str) {
         Some("local-skill-eval") if args.len() == 4 => {
-            humanymous_agent_maintenance::local_eval::run(Path::new(&args[1]), Path::new(&args[2]), args[3].parse()?)?;
+            humanymous_agent_maintenance::local_eval::run(Path::new(&args[1]), Path::new(&args[2]), args[3].parse()?, false)?;
+            Ok(true)
+        }
+        Some("local-skill-exposure-eval") if args.len() == 4 => {
+            humanymous_agent_maintenance::local_eval::run(Path::new(&args[1]), Path::new(&args[2]), args[3].parse()?, true)?;
             Ok(true)
         }
         Some("evidence-layout-plan") if args.len() == 2 => {

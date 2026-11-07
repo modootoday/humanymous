@@ -45,7 +45,7 @@ Resource profile: Windows CPU,4threads, max_sequences1, context8192, paged atten
 off, prefix cache0 and no GPU allocation. One model process plus one sequential
 driver only. Fresh host admission requires commit<85%/free physical>20GiB; retain
 the host emergency stop commit>=88% or free<16GiB and an8GiB model-process private
-memory cap. Model initialization and any compiler work need coordinated distinct
+memory monitored stop budget, not an OS-enforced hard limit. Model initialization and any compiler work need coordinated distinct
 physical targets/leases; no WSL/Docker/backend change or foreign process kill.
 Only the verified owned process tree may be stopped on its budget/guard.
 
@@ -53,3 +53,22 @@ This is an actual local exposure/behavior experiment, not a claim that this1.7B
 model represents larger coding agents. Final receipts must identify complete and
 partial denominators, discovery/nonactivation, judge limitations, source/model
 hashes, time/usage/resources, retained first failures and returned leases.
+
+## Exploratory supplied-context follow-up
+
+The first discovery-profile product treatments did not request a skill-body read.
+Preserve that actual nonactivation result; it cannot establish applied-skill benefit.
+The user's requested actual before/after comparison therefore also gets a separate
+explicit supplied-context ablation, added after this preliminary observation.
+It is exploratory, not a preregistered confirmatory result.
+
+`local-skill-exposure-eval` repeats all32 subjects with fresh matched baseline
+requests. Positive treatment receives the expected skill entry and needed product
+references selected by the fixture's known target, in system context; baseline
+receives none. Negative cases receive catalog metadata only, no skill bodies.
+This is oracle-routed exposure, not model-selected activation. Context exposure is tagged supplied_context in
+the exact file/hash records and is never relabeled a model-requested tool read or
+automatic activation. No extra tools or host actions become available. Both
+positive and negative cases retain the same tasks and behavior rubrics. Distinct
+output directories, request logs and summaries preserve both experiments rather
+than overwrite a failed discovery result. Judge limitations remain unchanged.
