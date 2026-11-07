@@ -28,16 +28,16 @@ only an explicit current root grant and resource admission authorize a new run.
 | Area | Implemented or observed | Remaining gate and next action |
 | --- | --- | --- |
 | Workspace | Immutable77ca7d9f Windows `cargo build --workspace --all-targets --locked --offline -j1` exited0 in643.964s;2427 source files before/after, zero differences | Later graph/source is not covered; final Windows/Linux/macOS build/test and package gates remain |
-| Shared CEF test graph | Commit072c8e5a atomically adds Windows-only bootstrap test-support/serde_json dev edges and exactly two lock entries; actual offline and locked Windows graph resolution passed | Owner rejection-test refactor and closed observations require fresh compilation and hosted execution |
+| Shared CEF test graph | Commit072c8e5a atomically adds Windows-only bootstrap test-support/serde_json dev edges and exactly two lock entries; actual offline and locked Windows graph resolution passed | Owner9251376f rejection refactor/closed observations remain uncompiled: warm-only run interrupted on cold dependency compilation, not a source failure; fresh hosted compilation required |
 | Capture | Genuine hosted42372114913 at e77b9792 succeeded: five actual fixtures passed, source unchanged and full=false | Serving H2, DNS/origin/witness and full Docker composition remain separate product gates |
-| Audit | Captured319a5992 full140 accepted tests passed; five exact ignored helpers excluded; evidence:root/20261107122437 | New PhaseA4b49e933 scan owner source is unqualified; bounded scoped tests allocated, native producer and operational memory/custody gates remain |
+| Audit | Captured319a5992 full140 accepted tests passed; five exact ignored helpers excluded; evidence:root/20261107122437 | PhaseA4b49e933 passed21 scoped Rust tests plus Go840 in856ba6c1; PhaseB source is being authored. Native producer and operational memory/custody gates remain |
 | CEF | Genuine hosted42372115353 at e77b9792: helper11, strict Clippy, native build and four native protocol tests passed | Bootstrap stage did not yield authoritative execution/count/child-exit evidence; desktop2 NOT_RUN and post-run source closure unknown; fix typed stage/case diagnostics before retry |
 | Mount custody | Baseline b482 had eight mode refusals. Repaired exact c3211e27 hosted42374587466 passed: four ordered observations/eight accepted paths, owner0/receipt valid/source unchanged/cleanup true | This clears the mount prerequisite for one exact c321 Go8 retry; custody/full/release remain false, not a product qualification |
 | Go | Genuine hosted42369171124 at15f63fef attempted eight actors, all failed at writer mount; zero evaluated and assertion counts unknown | Repaired mount prerequisite passed; root granted one exact c3211e27 Go8 retry, genuine hosted42375310198 is in progress. Older failures remain retained |
 | Apache | Exact b4000944 genuine hosted42374566498/job128409407533 passed45 unique scenarios: event15/worker15/prefork15; pilot/container/image/ledger cleanup passed; CLI exit0/reaped/no force/timeout | Exact Linux component tuple qualified only; fullProductSuccess=false. Earlier b5 35/10 and SIGTERM15 remain historical failure evidence; final composition/current graph remain separate |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identities still CHALLENGE/zero origin; positive TLS ALLOW-to-origin unqualified; epoch gate pure tests do not establish production/native Ready |
-| Native/.NET | Parent-context shared4/runner7 and .NET consumer13/check/Clippy passed on captured inputs; generic managed ABI079 actual once passed independently | Context remains UNVERIFIED syntax/budget data; retained Job partial-start and duplex changes await current tests; actual ASP.NET IO, independent expiry, reader convergence and protected native owner remain open |
-| Pages | Exact26960736/docs56b1e029 local pinned Jekyll builds and archive consumers passed both88-page/165-file variants; limited actual browser navigation/keyboard observations recorded | Current docs9e5ea12e/tree c323055e has newer source reviews only, no fresh render/browser; main artifact roundtrip/deployment and AT remain open |
+| Native/.NET | Parent-context shared4/runner7 and .NET consumer13/check/Clippy passed on captured inputs; generic managed ABI079 actual once passed independently | Context remains UNVERIFIED syntax/budget data; retained partial-start/duplex source1b2e8bb2 passed12 pure and1 direct-child fixture; independent Authority expiry passed14 pure in689b95d2. Actual ASP.NET IO, native Job/reader convergence and protected owner remain open |
+| Pages | Exact26960736/docs56b1e029 local pinned Jekyll builds and archive consumers passed both88-page/165-file variants; limited actual browser navigation/keyboard observations recorded | Current docs435f5c99/tree060c82bd and later review receipts have no fresh render/browser; main artifact roundtrip/deployment and AT remain open |
 | Python/Ruby/Node and ABI | Scoped package, contract and selected actual native component receipts exist in owning SoTs | Default/pure tests do not prove required SDK/server/GC/GVL/cross-principal/native ABI matrix; owners retain explicit unqualified cases |
 
 The workspace build and source-closure receipts are attached privately to
@@ -56,12 +56,25 @@ recipe change outside Apache's unchanged recipe and workflow policy inputs;
 it is not an88-input zero-drift claim. Group isolation is a source-supported
 candidate explanation for the historical SIGTERM15, not proof of its old PGID.
 
-Current bounded grants after the terminal workspace build are Audit PhaseA A and
-Native runner/test-support C. Each requires current resource admission, jobs1,
-incremental0, locked/offline dependencies, immutable source and an exclusive
-target. Native C permits pure tests and the existing direct-child duplex fixture
-only; no SCM/account/SDK/Kestrel mutation. CI image and CEF diagnostics remain
-source-only until separately frozen and allocated. No table grants future runs.
+Allocation records are historical receipts, never a live slot ledger or future
+permission. Audit PhaseA, Native partial/duplex, Authority expiry, Runtime native
+HTTP2, collector boundary and CI image-validator batches returned. CI image76
+passed on its declared81 source/3791 registry inputs and8 config candidates;
+actual image build/scan is NOT_RUN. Browser warm-only compile was interrupted
+and returned without executing marker tests. Root then allocated a bounded Lab
+expectation-consumer batch; it grants no actual Docker/browser launch. Every new
+run still requires current admission, jobs1/incremental0, locked/offline inputs
+and an exclusive target. No SCM/account/SDK/Kestrel mutation follows from this table.
+
+Collector efe090e5 adds65537 local refusal and65536 actual Fetch boundary steps
+inside the existing single selected browser test. Native consistency1, WASM
+all-target check, strict Clippy and fmt passed over105 captured source/manifest
+files; registry/compiler/SDK closure was not captured. Actual browser execution
+of the new steps is NOT_RUN. Lab must consume fixture.effect_requests=2 and
+derive exact request/audit/witness counts before the next browser candidate.
+Runtime f8 native TCP controls separately passed2 tests in6fa1c192 against the
+older87a fixture; these are not actual BrowserSession evidence or proof for the
+new fixture. Source-specific outcomes do not transfer across these checkpoints.
 
 ## Final integration milestone order
 
