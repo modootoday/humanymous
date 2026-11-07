@@ -24,10 +24,10 @@
     "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
-  "current_source_executed_tests": 19,
-  "current_source_test_count_semantics": "Immutable2e9934fe pure public-role DATA parser:19selected cases,79filtered; exact98 inventory, not whole98 suite or native/public shipping qualification.",
-  "current_source_tests": "19passed0failed0ignored79filtered; two positional-array negatives have documented test-isolation limitation pending separate source grant.",
-  "current_source_clippy": "Immutable2e9934fe fmtFIRST/check/strictClippy0;3036source/6576registry/69tools/18config/14env unchanged.",
+  "current_source_executed_tests": 1,
+  "current_source_test_count_semantics": "Immutablebe9eec6d exact positional-array isolation refinement:1case,97filtered,98inventory. Original2e99319pass remains historical; no full19 rerun.",
+  "current_source_tests": "Exact1passed0failed0ignored97filtered; valid derived wire root/scope/binding array controls accepted and public parser rejected them.",
+  "current_source_clippy": "Immutablebe9eec6d fmtFIRST/check/strictClippy0;3039source/6576registry/69tools/18config/14env unchanged.",
   "actual_browser_join": "not_run",
   "actual_tls_serving": "six actual ordinary loopback TLS cases passed; allow-to-origin remains unqualified",
   "actual_unix_management_operator": "passed scoped ordinary-user native component, not independent deployment",
@@ -147,6 +147,13 @@
     "summary": "public-role-2e9934fe-validation-summary.json",
     "passed": 19,
     "filtered": 79,
+    "production_activation": false
+  },
+  "public_role_be9eec6d": {
+    "source": "be9eec6d6b8e4b7a50b74cae043172af6f47fc9d",
+    "summary": "public-role-be9eec6d-validation-summary.json",
+    "passed": 1,
+    "filtered": 97,
     "production_activation": false
   }
 }

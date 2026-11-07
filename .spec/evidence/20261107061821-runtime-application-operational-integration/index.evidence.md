@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T21:42:22Z
+updated: 2026-11-07T21:57:55Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -26,9 +26,10 @@ files:
   - {path: runtime-shipping-behavior-inventory.json, sha256: d9871d04674f0d23050daa8560df2c0125daee205c128a985801ab6335a9da79, bytes: 112421, store: repo}
   - {path: public-role-data-source.json, sha256: 1f389b909e12e8218bb9f2debcb1776d03078a6f5d72cff8dd174dbd354ad252, bytes: 5069, store: repo}
   - {path: public-role-2e9934fe-validation-summary.json, sha256: 94e2a27600632244610f697c6e86830191ac0963b8bc075e6f5acefa84354f34, bytes: 10045, store: repo}
-  - {path: status.json, sha256: f98486858359bf7d23ad2f430c6b2bceadeecbee7e99175d028d595a7093b19f, bytes: 6283, store: repo}
-  - {path: source-commitments.json, sha256: cdcaae61377a18241fe5064d6864534f44c32bc03ea9adfc5c8b2946cfb1cd2d, bytes: 14987, store: repo}
   - {path: public-role-positional-refinement-source.json, sha256: b59fe3c131dd517a9529cf88c6f87ae36eee06b1424ebbf7ae8edf5d78a8776a, bytes: 1359, store: repo}
+  - {path: public-role-be9eec6d-validation-summary.json, sha256: 895145251030614c5cc9f35d33cf4e75629ced39b2f2c8489405def8ca004d09, bytes: 7452, store: repo}
+  - {path: status.json, sha256: 1a8e72d60523feecdb1aaf1bcd670f2fa1bbb18117a97ec3003c7a355390f976, bytes: 6498, store: repo}
+  - {path: source-commitments.json, sha256: bfb521eae7cec173dc8b54d0b0a1aef2cff0198032bd5382d8969053ef10c2c2, bytes: 14987, store: repo}
 ---
 
 # Runtime application operational integration

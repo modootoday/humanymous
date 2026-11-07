@@ -301,9 +301,9 @@
   },
   {
     "path": "crates/runtime/src/shipping/tests/envelope.rs",
-    "bytes": 6249,
-    "sha256": "929f0e602f987e6e65cc514097282aff829dd624b311495d18f3a587d3231101",
-    "git_blob": "243d84777f5d49dd50e0f007125471176dca5c0f"
+    "bytes": 7885,
+    "sha256": "6dd87a2f5faeaee2e575487d9a6b37f5a69c7857c1614b27ea9ed3dd3a09c894",
+    "git_blob": "522d4919c6904bde8ca9d3ad013a6b98198d2668"
   },
   {
     "path": "crates/runtime/src/shipping/tests/providers.rs",

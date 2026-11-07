@@ -76,15 +76,21 @@ It now constructs valid full root/scope/binding arrays in each actual wire
 declaration order. Direct derived Envelope/Scope/Binding deserializer acceptance
 controls and the matching valid-map control are asserted alongside public parser
 refusal, to isolate map-only enforcement from unrelated value/type/missing-field
-errors. These new assertions have not yet been compiled or executed.
+errors. On immutablebe9eec6d, allocated Windows fmt FIRST/check/strict Clippy
+passed. Exact98 inventory matched; ONLY this exact case ran and passed with
+0failed/0ignored/97filtered in0.01s. The three derived acceptance controls and
+public map-only refusals were actually exercised. Full19 was not rerun.
 
 Only shipping/tests/envelope.rs changes; the other nine recorded Runtime source/
 inventory paths, production parser, private Configuration and Cargo are unchanged.
 There are no new test names:19 shipping cases and Windows98/Unix102 inventories
 remain. Exact before/after hashes are attached in
 public-role-positional-refinement-source.json. Standalone formatting and diff
-whitespace checks passed; no Cargo check/Clippy/test/retry ran. Freeze the new
-checkpoint and obtain a separate bounded Root validation grant. Original2e993's
+whitespace checks passed. Full3039 archive/snapshot members,6576 registry files,
+69 tools/shims,18 configs and14 environment hashes stayed unchanged. Stopwatch
+elapsed55.69s under390work/450total; target returned/live processes0 before
+bookkeeping, no retries. See public-role-be9eec6d-validation-summary.json.
+Original2e993's
 19-pass receipt and its isolation limitation remain historical and unchanged;
 they do not qualify this refinement or imply a failed parser implementation.
 
