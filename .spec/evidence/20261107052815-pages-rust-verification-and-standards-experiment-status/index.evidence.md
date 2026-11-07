@@ -3,13 +3,14 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T05:57:51Z
+updated: 2026-11-07T06:04:06Z
 rel:
   governs: [docs]
 files:
   - {path: status.json, sha256: 08db59f7c4b992ab7fa8d7a2ee859002c5b31270629f85a38a5cf0864c397d34, bytes: 866, store: repo}
   - {path: freshness-status.json, sha256: 82ebeec598747454d06f4c67ddf286161a688dd65d13da045e66f7f284940e24, bytes: 1600, store: repo}
   - {path: i18n-status.json, sha256: f627ae8f812217a396d97f1cba9ef83952b2e3b92b8788142d5cc3dde46a5ee3, bytes: 831, store: repo}
+  - {path: cli-review-status.json, sha256: ad116a0ae6e7725205d4146bc40681db6e3531d53738347c2b4eb10684265d70, bytes: 1313, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
@@ -35,6 +36,24 @@ lock was synchronized, all 11 tests, strict Clippy, source checks and 24 vectors
 passed again. No dependency or lock changes were made by the Pages owner.
 
 ## How to read it
+
+A subsequent substantive review manually renews18CLI source entries and two
+capability mappings. All18files were read against the command/installation/status
+pages; receipt entries carry file-specific reasoning. Windows15library+1command
+tests and one selected exact read-only/actual-loopback-process case passed. Two
+other process cases were filtered; no native service was registered. Provenance
+metadata was read separately from approval. LF receipt hash and full remaining
+inventory counts are in cli-review-status.json:154byte-identical entries,
+244added and65changed. None of the18CLI paths remains added/changed in that
+capture, but this is not acceptance of all other governed sources.
+
+The actual release checker remains blocked. It currently enumerates generated
+nginx build-cache files as source before reporting remaining substantive gaps;
+CI owner was notified, and caches were not added to authored review records.
+The updated reader review/versioning page clarifies that named checks are not
+proof of execution and rendered-site exclusion is not repository confidentiality.
+Its85-page dual-baseurl build checks pass with input commitment
+`2c2122b9935e47362ed9b840017b8a9697605330cf95a4be8888fe5cd19e2c27`.
 
 The supplemental internationalization corpus passes6accepted/4rejected with no
 mismatch, separately from the unchanged original24cases. Fifteen Rust tests

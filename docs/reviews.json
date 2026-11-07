@@ -2,6 +2,132 @@
   "schema": 1,
   "reviews": [
     {
+      "source": "crates/cli/Cargo.toml",
+      "sha256": "b14ca7a44a37c68e7d3ed61f89d933e95babcbfe2f94535a63e699ad6e482c24",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed package targets and dependencies: humanymous is the provisioning binary; the non-product service fixture requires service-pilot and is excluded by default. Reader command and installation pages distinguish that fixture from a distributed qualified runtime.",
+      "pages": ["docs/reference/cli-config-policy.md", "docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/INTEGRATION.md",
+      "sha256": "cde0cde7c6fbc767147025cf7b44a8e02d339c4e996eadddc1a4ba36bb7a8722",
+      "reviewer": "codex/rust-pages",
+      "notes": "Compared the owner contract with source, signed service options, native backends, explicit activation and unqualified fixture reports. Public installation text retains missing positive native lifecycle, runtime private-input/custody/IPC/drain and release trust-distribution gates.",
+      "pages": ["docs/reference/install-requirements.md", "docs/reference/production-vs-reference.md"]
+    },
+    {
+      "source": "crates/cli/src/lib.rs",
+      "sha256": "d869d9bcb6d3703944ae375ca5c02d690434fac6f07c370e9c913058303ad237",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed exported Plan, release and service modules. The old module comment describes provisioning only; public docs separately name the newer signed service API without treating module availability as full service or product qualification.",
+      "pages": ["docs/reference/cli-config-policy.md"]
+    },
+    {
+      "source": "crates/cli/src/main.rs",
+      "sha256": "120398fd8dff9e99160a1c4383464bcd3a50c9e82df90961f8772e63358bc0b9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed legacy doctor/install/rollback argument checks, required acknowledgement and digest, read-only doctor/dry-run branches and separate service-command dispatch. Public command options retain both interfaces; acknowledgement is not runtime management verification.",
+      "pages": ["docs/reference/cli-config-policy.md", "docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/commands.rs",
+      "sha256": "75c293a3973df1f30dfa1b226452626510263f65b5b15d065f31da8a39cc449c",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed all six service commands, strict duplicate/unknown flags, activate/dry-run exclusion, existing-deployment option restrictions and doctor diagnostic queries. Public table matches source and preserves product_qualified=false; no service mutation example was executed in this review.",
+      "pages": ["docs/reference/cli-config-policy.md"]
+    },
+    {
+      "source": "crates/cli/src/release.rs",
+      "sha256": "31a7e5a29b65d517958c8ddb565c05f3e902ba11da55dd79a4017d86b0389c35",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed exact domain-separated descriptor bytes, strict Ed25519 verification before struct parsing, key/signature widths, target/name/argv/loopback bounds and negative unit cases. Public text separates signature integrity from trust distribution, revocation, release provenance and product safety.",
+      "pages": ["docs/reference/install-requirements.md", "docs/reference/cli-config-policy.md"]
+    },
+    {
+      "source": "crates/cli/src/installation/mod.rs",
+      "sha256": "48e7240424efac2645f8a3ebd8a7b302e8a384d7a4e375e78575fbff7024d3d1",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed private-parent and artifact checks, exact repeat verification, create-new owned files, partial-write cleanup and rollback refusal on changed/extra files. Public provisioning scope remains one artifact/receipt; exclusive operator access and non-atomic crash recovery are not strengthened into a transactional deployment guarantee.",
+      "pages": ["docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/installation/permissions/mod.rs",
+      "sha256": "a1ef82a31d1c8d3b71ac50f5d55baedba1ca8c1202915f778b8a89db2c46e209",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed absolute traversal-free paths, per-component symlink/reparse refusal, Windows fixed-drive precondition and Unix non-root ownership/mode0700. Public requirements do not claim portable proof of physical mount locality or hostile same-owner race resistance.",
+      "pages": ["docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/installation/permissions/windows.rs",
+      "sha256": "50eb903dc102500c00083ec67182c1e29237bc4e1566618dbfec13fec2af8181",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed actual native identity, non-elevated installer policy, reparse checks and shared native-security privacy verification. Public text reports refusal instead of permission repair or elevation; this source review does not requalify the shared native-security implementation independently.",
+      "pages": ["docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/installation/tests.rs",
+      "sha256": "d650455565c62efda21339adfff87fef5a81ce41ba03d5c74de8cf2d31fddc01",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed isolated fixture tests for read-only planning, repeat/rollback, digest/collision/traversal, mutation, injected partial write and Windows ACL/junction refusal. These tests manipulate owned temporary fixtures; public requirements keep actual service and cross-platform deployment acceptance separate.",
+      "pages": ["docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/service/mod.rs",
+      "sha256": "a5c85d5673daae9bae7530dc1ae12a972c0efdf0d312487ff8dcc622f6af70bc",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed inspection, activation checks, generation install/upgrade, retained predecessor rollback, removal and ordinary-failure cleanup/restore paths. Public text retains pending-state/manual-recovery and diagnostic-only readiness limits; no power-loss atomicity or completed Core/Gate lifecycle is claimed.",
+      "pages": ["docs/reference/install-requirements.md", "docs/reference/production-vs-reference.md"]
+    },
+    {
+      "source": "crates/cli/src/service/storage.rs",
+      "sha256": "d9b6d297953619ae836a0cdc976fc5d773dec7c96eb3e11d32df05a89c8ec4c7",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed exact signed generation verification, private deployment state, finite generation budget, high-water sequence, create-new lock and pending records. Public limits preserve exclusive private-root ownership, fail-closed residue handling and a local sequence floor rather than an independent durable anti-rollback service.",
+      "pages": ["docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/service/backend.rs",
+      "sha256": "0e819678da2f00d3eb9109869e112e359377fd4f70fd6609bc31481e85ca5680",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed declarative systemd/launchd configuration, argument escaping without shells, user/runtime manager calls and bounded loopback diagnostic challenge. Reader table states these are implemented backends requiring actual native pilots; successful local diagnostic matching is not management authentication or product health.",
+      "pages": ["docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/service/backend/windows.rs",
+      "sha256": "243ca32336fbd76736fd5935573309e1fa96fcb3351b688aaaddf8776d5675e8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed demand-start own-process SCM registration under a virtual service account, service SID/configuration fingerprint checks, bounded graceful stop and deletion wait. Public qualification requires explicitly delegated disposable-actor authority and does not equate source existence or ordinary refusal tests with a positive lifecycle.",
+      "pages": ["docs/reference/install-requirements.md"]
+    },
+    {
+      "source": "crates/cli/src/service/tests.rs",
+      "sha256": "65cd703f5cb67f361c1557f6a1ae4906cfe54409acf2ebf28fc0dccdaaa301df",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed FakeManager tests for explicit activation, repeat, upgrade/rollback floor, registration/readiness failure restoration, mutation/pending refusal and lock exclusion. Loopback probing is real but OS registration is mocked; public installation status does not treat these as native service qualification.",
+      "pages": ["docs/reference/install-requirements.md", "docs/reference/production-vs-reference.md"]
+    },
+    {
+      "source": "crates/cli/src/bin/service_fixture.rs",
+      "sha256": "79302e405a861691581e779ae070fccd079887d36136f5f0bf606e19d48cc696",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed opt-in fixture arguments, loopback-only challenge listener and Windows SCM status/stop handling. It has no product credentials or Core/Gate integration and is excluded from default targets; public docs describe its readiness as diagnostic only.",
+      "pages": ["docs/reference/install-requirements.md", "docs/reference/production-vs-reference.md"]
+    },
+    {
+      "source": "crates/cli/tests/service_process.rs",
+      "sha256": "ed1c830f9724d1d20696ffbf72628a64a7f14c0e08209945e22048f99d8f8601",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed all process cases and fixture cleanup. This review executed only the exact signed-plan/read-only/actual-loopback-process case: one pass and two filtered cases, native_service_registered=false. SCM refusal and ignored positive disposable-service lifecycle were not executed here; public status retains that distinction.",
+      "pages": ["docs/reference/install-requirements.md", "docs/reference/production-vs-reference.md"]
+    },
+    {
+      "source": "crates/cli/examples/service_evidence.rs",
+      "sha256": "b42f91359365878af8f18ba51b044d84150ccadbb8479483e8fb3ce8764b4ea9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed and executed the read-only provenance example: exact working-source SHA256 and separate observed HEAD blob hashes. It writes no acceptance record, does not prove live source stability during capture, and always retains product_qualified=false; public limits do not turn provenance into qualification.",
+      "pages": ["docs/reference/production-vs-reference.md"]
+    },
+    {
       "source": "adapters/contracts/adapter-0.1-request.schema.json",
       "sha256": "0a8774b7793b454ed715a54b71f5498a2443749441ff23e2cb152579ac6393c9",
       "reviewer": "codex/rust-pages",
@@ -2202,13 +2328,14 @@
     {
       "id": "cli-doctor",
       "sources": [
-        "Cargo.toml"
+        "crates/cli/src/main.rs",
+        "crates/cli/src/service/mod.rs"
       ],
       "pages": [
         "docs/reference/install-requirements.md"
       ],
       "reviewer": "codex/rust-pages",
-      "notes": "No Rust doctor binary is qualified. Reviewed workspace-library boundary; the reader page explicitly requires actual topology diagnostics and leaves the native doctor pilot pending.",
+      "notes": "Reviewed actual provisioning doctor and separate service-doctor. Provisioning validates artifact/private-parent prerequisites without mutation; service-doctor queries owned native registration and loopback diagnostic readiness, always product_qualified=false. Public installation requirements retain runtime topology/peer/custody/drain qualification separately; this is source/prose acceptance, not a full native doctor qualification.",
       "checks": [
         "native/doctor"
       ]
@@ -2216,13 +2343,15 @@
     {
       "id": "cli-install",
       "sources": [
-        "Cargo.toml"
+        "crates/cli/src/installation/mod.rs",
+        "crates/cli/src/commands.rs",
+        "crates/cli/tests/service_process.rs"
       ],
       "pages": [
         "docs/reference/install-requirements.md"
       ],
       "reviewer": "codex/rust-pages",
-      "notes": "No Rust installer is qualified. Reader requirements forbid mutation during dry run and retain repeat/rollback/native acceptance before an installation example can be published.",
+      "notes": "Reviewed provisioning and signed service activation/dry-run separation, changed-file refusal and recovery limits. Executed one exact Windows signed-plan/read-only/actual-process case with unchanged fixture snapshot and native_service_registered=false; two other process cases were filtered. Reader pages do not claim positive native service or complete product installation from that scoped check.",
       "checks": [
         "native/install-dry-run-no-mutation"
       ]

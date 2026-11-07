@@ -1,0 +1,23 @@
+{
+  "scope": "substantive CLI source-to-public-documentation review subset",
+  "source_files_manually_reviewed": 18,
+  "capability_rows_renewed": ["cli-doctor", "cli-install"],
+  "receipt_sha256": "7df9251f4bef793f233d30219c2d18df6991942b0d957ce9fe13351e4eddd947",
+  "source_revision_at_comparison": "89271d530f955ddee3b0a341d72b02f95c64695d",
+  "dirty_worktree_at_comparison": true,
+  "full_inventory_triage": {"added": 244, "changed": 65, "byte_identical": 154, "removed": 0},
+  "cli_sources_still_added_or_changed_in_triage": 0,
+  "windows_library_tests": {"passed": 15, "failed": 0, "ignored": 0},
+  "windows_command_tests": {"passed": 1, "failed": 0, "ignored": 0},
+  "selected_readonly_process_test": {"passed": 1, "failed": 0, "filtered": 2},
+  "actual_loopback_fixture_ready": true,
+  "native_service_registered": false,
+  "positive_native_service_lifecycle": "not_run",
+  "full_documentation_review_gate": "blocked by remaining inventory; generated nginx build-cache enumeration reported to CI owner",
+  "reader_pages": 85,
+  "baseurls_checked": ["", "/humanymous"],
+  "build_input_sha256": "2c2122b9935e47362ed9b840017b8a9697605330cf95a4be8888fe5cd19e2c27",
+  "strict_theme_and_rust_output_checks": "passed",
+  "full_product_qualified": false,
+  "external_submission_or_production_publication": false
+}

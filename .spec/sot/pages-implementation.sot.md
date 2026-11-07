@@ -31,6 +31,10 @@ canonical LF and Git index byte identities and separately reports index-listed
 files missing from the working tree. Missing paths are rechecked for races.
 Triage uses Git-visible governed paths and is not a replacement for the CI
 filesystem inventory or substantive authored review. It cannot renew receipts.
+Authors may manually renew only substantively inspected source subsets with
+exact working-byte hashes, specific reasoning and reader-page mappings. A subset
+does not accept the complete inventory or prove required named checks executed.
+Rendered-site exclusion is not confidentiality for committed review metadata.
 Real-build validation commits exact local input paths and bytes before and
 after Jekyll/theme/output checking. It includes navigation, configuration,
 Sass tokens and binary assets; verifier/tooling, review metadata, installed

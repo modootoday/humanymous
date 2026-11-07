@@ -360,3 +360,32 @@ Final85-page actual apex/subpath strict theme plus Rust output checks passed
 with equal inputSHA256 d7bd2c0cc19db9ce5ef662c7c615b10e3e2aae9923f3216ac2ed2e4f0d58779a.
 The supplemental vector table is visible in the retained in-app preview.
 Original24cases were re-executed unchanged:4accepted/20rejected/errors0.
+
+## Substantive CLI source review renewal
+
+Read all18crates/cli files, including provisioning permissions/cleanup, signed
+release schema/bytes, strict command composition, service generation storage and
+all3backends, mock-manager tests, real process fixture and provenance example.
+Manually authored18exact-byte receipt rows and renewed cli-doctor/cli-install
+surface reasoning against current reader pages. No receipt-generation tool or
+bulk hash refresh was used. Current CLI index and working files are LF.
+
+Executed Windows lib/bins with service-pilot:15library+1command tests passed;
+fixture binary0tests. Selected exact signed-plan/read-only/loopback-process test:
+1passed/2filtered, native_service_registered=false/product_qualified=false.
+No host SCM authority change, actual service registration or ignored positive
+lifecycle was performed. The source provenance example was run read-only; its
+working/HEAD differences are observations, not a stable whole-source acceptance.
+
+Actual docs-review still blocks the whole inventory, now exposing generated
+adapters/nginx/.build-cache files as source entries before substantive missing
+rows. CI owner was notified; do not add caches to authored review records.
+Public review/versioning page now distinguishes named checks from executed
+evidence and rendered exclusion from repository confidentiality. Full source
+review, native lifecycle, accessibility and generic wire acceptance remain open.
+
+Read-only post-renewal triage binds LF receiptSHA
+7df9251f4bef793f233d30219c2d18df6991942b0d957ce9fe13351e4eddd947:
+154identical/244added/65changed/0removed at89271d5dirty; no CLI path remains in
+added/changed lists. Both85-page strict/Rust build checks pass with equal
+inputSHA2c2122b9935e47362ed9b840017b8a9697605330cf95a4be8888fe5cd19e2c27.
