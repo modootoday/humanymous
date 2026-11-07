@@ -808,3 +808,15 @@ Audit may reuse it for counting/replay/signing encoders after the exact candidat
 is verified; this changes no signature format, policy, score or dependency edge.
 
 The two new tests compare all valid Unicode scalar values against the prior serde_json-plus-replacements encoder and inject a partial-write failure. They actually passed within the six-test signals wire selector in the post-Pages allocated batch against source56a2acdb and Auditc26a5b53 plus its explicit usize annotation. Combined signals/Audit all-target check and strict Clippy passed; four selected harnesses passed26 unique tests with125 captured inputs unchanged. Audit checkpoint parity covered180 frozen Go signature vectors. Initial Audit E0689 failure is retained separately. Raw evidence is in .spec.local/root/evidence/20261107115851-audit-key-custody-frame-checkpoint-validation-raw. This does not qualify the full workspace, operational bounded-memory or whole Audit S1/S2/S3 behavior.
+## Bootstrap test ownership dependency integration
+
+The Windows-only bootstrap dev-dependencies now reuse workspace
+humanymous-test-support and serde_json. The lock change adds exactly these two
+existing package edges without package additions or version upgrades. ManagedChild
+owns direct-child wait/reap in rejection tests; closed JSON observations preserve
+unknown outcomes when execution evidence is missing. This graph decision does
+not qualify the pending bootstrap test refactor or a CEF runtime run.
+Actual offline Windows cargo tree resolution and a subsequent locked resolution
+both succeeded. The earlier immutable 77ca7d9f workspace all-target build exited
+zero in 643.964 seconds with 2427 source files unchanged; it predates these edges
+and is not evidence for the new test source or GUI/product e2e.
