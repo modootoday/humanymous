@@ -11,7 +11,7 @@ rel:
 # Scope and census
 
 Root requested read-only preparation for absorbing all four maintained standalone
-tools into CLI qualification contexts. Root decides target/profile names and owns
+tools into CLI qualification contexts. Root owns the accepted design and
 every move, manifest and lock edit. No permanent private helper package is added.
 The accepted final target remains eight maintained packages, including these tools.
 
@@ -38,7 +38,7 @@ All four are Rust1.99.1/edition2024, version0.1.0, Apache-2.0, publish=false and
 declare their own empty workspace. Their independent lockfiles currently belong
 to the five-lock advisory closure together with the main lock.
 
-# Unsafe and authority isolation: decision required before movement
+# Unsafe and authority isolation: accepted design, freeze still required
 
 The native runner's only explicit unsafe allowance roots are src/actor.rs and
 src/actor/scm.rs, both beneath Windows-only actor wiring. They already perform
@@ -50,20 +50,30 @@ controller below that forbid cannot compile. Moving it into Platform/testing
 would violate that context's forbid rule and capability purpose. Broadening the
 workspace lint or exporting raw controller authority is not a migration solution.
 
-Root must choose an explicit qualification-target Rust-crate/lint boundary that
-keeps production CLI library/application roots forbidding unsafe, preserves the
-two existing controller allowances without expansion and excludes the controller
+Root's accepted qualification-target Rust-crate/lint boundary must
+keep production CLI library/application roots forbidding unsafe, preserve the
+two existing controller allowances without expansion and exclude the controller
 from default/public release targets. Any necessary package-local lint exception
 needs an explicit accepted decision and actual negative compile/release tests;
-this handoff does not authorize one. Distinguish a Cargo package from each bin/lib
-Rust crate when evaluating that boundary. Do not use cap-lints or feature-wide
+only the bounded Root decision authorizes the exception. Distinguish a Cargo
+package from each bin/lib Rust crate when evaluating that boundary. Do not use cap-lints or feature-wide
 allow settings as a hidden substitute.
 
-## Concrete target-isolation proposal for Root acceptance
+## Accepted target-isolation contract
+
+Root accepted this design in d45e600d9930c2707885ec28ceef97614d55057a and
+[[sot:root/structural-development]]. The workspace forbid remains unchanged.
+CLI's explicitly local baseline is deny, missing_docs warn and Clippy all warn.
+Production lib/bin and every safe qualification bin root forbid unsafe. Only the
+separate native-runner bin uses deny and the two existing Windows actor allowance
+roots. The four existing executable names, autobins=false, default-off required
+features, exact production release exclusions and target-based role admission
+are accepted controls. Implementation and verification remain pending the Root
+atomic freeze; this acceptance is not proof of compiled isolation.
 
 Keep the four current executable names as explicit internal CLI-package bin
 targets, not packages or new default subcommands. Give each its own required
-qualification feature/profile; names are proposals until Root canonicalizes them.
+qualification feature/profile under the accepted Root design.
 Keep autobins=false and defaults free of qualification features. In particular,
 the native runner stays a separate bin Rust crate, so current_exe self-reexec can
 retain its own exact mode parser rather than entering production CLI dispatch.
@@ -75,7 +85,7 @@ The workspace forbid setting and other packages remain unchanged. Only the
 native qualification bin has a deny root; every safe sibling module inside it
 must itself forbid unsafe, while the existing two Windows actor allowance roots
 remain its only exceptions. No controller module is included in the public
-library or production main. This package-local exception is a proposed accepted
+library or production main. This package-local exception is an accepted
 design delta, not an assertion that current CLI already implements that scheme.
 
 Make native controller dependencies optional/profile-gated and Windows-targeted.
@@ -89,8 +99,8 @@ Required negatives: unsafe in each production/safe crate or safe native sibling
 must fail compilation; no default installed qualification executable; an unknown
 CLI target sharing the package ID cannot obtain a native helper role; forbidden
 feature/binary inventory cannot pass release admission. Actual controller probes
-remain separately authorized, source-bound and Windows-native. Root must approve
-this lint/profile/release exception atomically before any source movement.
+remain separately authorized, source-bound and Windows-native. Root must freeze
+this lint/profile/release implementation atomically before any source movement.
 
 # Fixtures, profiles and dispatch that must move together
 
@@ -171,7 +181,8 @@ claims still require Docker-only owning e2e and their exact source/image receipt
 
 # Critique and readiness
 
-Verdict: needs-work until Root chooses names/profiles and resolves unsafe isolation.
+The design is accepted; implementation remains needs-work until the atomic freeze,
+source wiring and executable/unsafe-negative/release gates are actually verified.
 P0 blockers are lost controller isolation, ambiguous self-reexec/role identity and
 forgetting four maintained packages. P1 risks are incomplete feature coverage,
 changed cwd/source custody, incorrect lock meaning, unreviewed docs and promoting
