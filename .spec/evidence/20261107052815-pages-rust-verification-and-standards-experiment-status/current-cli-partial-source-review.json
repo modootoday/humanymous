@@ -204,15 +204,42 @@
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
       ]
+    },
+    {
+      "source": "crates/cli/examples/service_evidence.rs",
+      "sha256_at_post_read_observation": "1cea916877af8941fa668fe0c17e3407cd8a0aae21597b490fc31f205c9f3076",
+      "lines": 162,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete162-line source inventory example fully read. Offline locked metadata with CLI pilot features and host filter traverses resolved graph, recursively hashes only local package roots plus workspace/lock/toolchain/.cargo; ignores target/git/node_modules, rejects symlinks. Registry source pinned by lock but bytes not captured; compiler verbose string not sysroot/SDK closure. Captures working source once then canonical Git HEAD blobs; no before/after HEAD/index/file guard. Command .output has post-capture size check, no own timeout. This is source provenance report, not immutable full compilation or runtime qualification.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/tests/runtime_service_process.rs",
+      "sha256_at_post_read_observation": "74a988d87f19d31350807ac91c09964872f3d47f8d35cba67e73d6f179ac3c2d",
+      "lines": 471,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete471-line Windows runtime-service-pilot ignored test fully read in contiguous chunks. Signed fixture metadata, real virtual-service SCM PID/running/stopped-state correlation, private full readiness compared using shared standalone_profile, upgrade/rollback/replay-floor and three positive instances; missing OS credential has independently observed nonzero stop/no readiness/no listener and bound cleanup receipt. Aggregate13 booleans emitted only after assertions; shared helpers/parent provisioning not independent organizational custody or remote run attestation. No actual service execution here. Scoped-thread panic recovery and arbitrary process-tree cleanup not proved by source; inherited env labels cannot authenticate hosted provenance.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
     }
   ],
-  "full_read_files": 17,
-  "lines": 3251,
-  "post_read_rehash_drift": [],
+  "full_read_files": 19,
+  "lines": 3884,
+  "post_read_rehash_drift": [
+    "crates/cli/src/runtime_host/control.rs",
+    "crates/cli/src/runtime_host/platform.rs"
+  ],
   "pre_read_snapshot": "not captured; must not claim before/after immutable full-read closure",
   "source_receipts_renewed": false,
   "docs_modified": false,
   "new_execution": "NOT_RUN",
   "full_product_qualified": false,
-  "remaining": "Evidence example and runtime_service_process test remain from current17-gap list; service unit/native process and release/installation existing receipts need final current hash comparison before package acceptance. No current ledger acceptance."
+  "remaining": "All17 earlier triage gap files plus two native backend files fully read. Recheck current whole package inventory and existing unchanged receipt identities, then fully reread any concurrent CLI watchdog fix before source acceptance. No whole-package runtime or current ledger qualification."
 }
