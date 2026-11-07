@@ -8,8 +8,10 @@ use pyo3::{
     types::{PyDict, PyTuple},
 };
 use pyo3_async_runtimes::TaskLocals;
-use std::sync::{Arc, Mutex, Weak};
+use std::sync::{Arc, Mutex};
 use tokio::sync::oneshot;
+#[cfg(all(test, feature = "host-pilot"))]
+mod completion_tests;
 
 struct State {
     cancelled: bool,
@@ -42,6 +44,12 @@ impl Start {
             return Ok(());
         }
         let result = (|| {
+            let done = Py::new(
+                py,
+                Done {
+                    state: self.state.clone(),
+                },
+            )?;
             let admission = {
                 let mut state = self
                     .state
@@ -90,15 +98,7 @@ impl Start {
                 state.task = Some(task.clone().unbind());
                 state.permit = permit;
             }
-            task.call_method1(
-                "add_done_callback",
-                (Py::new(
-                    py,
-                    Done {
-                        state: Arc::downgrade(&self.state),
-                    },
-                )?,),
-            )?;
+            task.call_method1("add_done_callback", (done,))?;
             let cancelled = self
                 .state
                 .lock()
@@ -124,21 +124,44 @@ impl Start {
 }
 #[pyclass]
 struct Done {
-    state: Weak<Mutex<State>>,
+    // The task owns its registered callback, which retains the owner until
+    // terminal observation. Taking State.task below breaks the deliberate cycle.
+    state: Arc<Mutex<State>>,
 }
 #[pymethods]
 impl Done {
     fn __call__(&self, task: &Bound<'_, PyAny>) -> PyResult<()> {
+        let py = task.py();
+        let expected = self
+            .state
+            .lock()
+            .map_err(|_| failure("callback state unavailable"))?
+            .task
+            .as_ref()
+            .map(|owned| owned.clone_ref(py))
+            .ok_or_else(|| failure("completion has no retained task"))?;
+        if !task.is(expected.bind(py)) || !task.call_method0("done")?.extract::<bool>()? {
+            return Err(failure("completion requires the retained terminal task"));
+        }
         let result = task.call_method0("result").map(Bound::unbind);
-        let Some(state) = self.state.upgrade() else {
-            return Ok(());
-        };
-        let mut state = state
+        let mut state = self
+            .state
             .lock()
             .map_err(|_| failure("callback state unavailable"))?;
-        state.task.take();
-        state.permit.take();
-        if let Some(tx) = state.result.take() {
+        if !state
+            .task
+            .as_ref()
+            .is_some_and(|owned| task.is(owned.bind(py)))
+        {
+            return Err(failure("completion owner changed before settlement"));
+        }
+        let retained_task = state.task.take();
+        let permit = state.permit.take();
+        let result_sender = state.result.take();
+        drop(state);
+        drop(retained_task);
+        drop(permit);
+        if let Some(tx) = result_sender {
             let _ = tx.send(result);
         }
         Ok(())

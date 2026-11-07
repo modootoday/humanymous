@@ -1,0 +1,33 @@
+{
+  "scope":"Corrected frozen Node host-pilot check and first strict-Clippy failure",
+  "sourceSha":"4f3283f1a2b1871c1dc9f75b553c5a69d77cf2cf",
+  "archiveSha256":"9cd60d2f6111b31c2fd81592d789a0a6f697dba27fc1938c639f8c94e61d4a79",
+  "archiveBytes":71915520,
+  "environment":"Windows native Rust1.99.1 x86_64-pc-windows-msvc; exact fresh absolute framework-node-4f3283f1 target; locked/offline/jobs1/incremental0; no source overlays",
+  "admission":{"commitPercent":66,"freePhysicalGiB":32.515602111816406,"diskFreeGiB":109.97078704833984},
+  "budget":{"workSeconds":360,"cleanupSeconds":60,"observedWorkSeconds":218.9775254,"observedCleanupSeconds":1.6606045,"renewed":false},
+  "phases":[
+    {"phase":"host-pilot-all-target-check","exitCode":0,"elapsedSeconds":40.9791258},
+    {"phase":"host-pilot-strict-clippy","exitCode":101,"elapsedSeconds":3.8298979,"reason":"Two needless_borrows_for_generic_args at Fetch.apply(&app, ...) in stream.rs:471 and479."},
+    {"phase":"allocated-scoped-fmt","status":"NOT_RUN"}
+  ],
+  "sourceClosure":{"rows":2815,"beforeAndAfterSha256":"0d4d1596add7216fffaa455d79cc42398651cdf9b96159cb2f7eb0a66874684f"},
+  "selectedRegistryClosure":{"rows":5059,"beforeAndAfterSha256":"424a0691f07aec87eef5ac37daf9e137f8c6af3c77cd5502bffd830029257ce4"},
+  "configurationClosure":{"rows":15,"beforeAndAfterSha256":"0204efaef0e414ec4f525f5b3e4e60951b357a46441b9c8791aabf07ac1c6738","includesMissingPathRecords":true},
+  "selectedRustToolClosure":{"rows":4,"beforeAndAfterSha256":"9a3252dfaac2212f5dfb03082853a3122b50fa030331c42f17ab1208531d22b1","scope":"cargo/rustc/clippy-driver/rustfmt only; not full MSVC or SDK provenance"},
+  "closureExitCode":0,
+  "privateLogs":[
+    {"phase":"check","sha256":"5652292797481c120cfdeec592bc944dd3b5f3380b5ef5499ab0ff7d0fc69cd4","bytes":4867},
+    {"phase":"clippy","sha256":"ca7eb83eb7bb0b17fe66bf3e25c192b6ad544899bfa401cbea33006f19554a26","bytes":2498}
+  ],
+  "lease":{"createNew":true,"provider":"codex","session":"rust-python-ruby-native","absoluteSourceAndTargetReadbackMatched":true,"ownerCheckedRemoval":true,"actualAbsenceVerified":true},
+  "ownedCleanup":"Preparation handle58057 and check handle99456 exited0; Clippy invocation terminal101; no live retained command. Exact target returned and lease removed within the original cleanup budget.",
+  "earlierFailureRetained":"summary017 preserves frozen0a1 lifetime check101 and historical13 pure passes. They were not rerun or relabelled on this source.",
+  "correction":"Pass the copied N-API app Object directly to Fetch.apply in both arities; no lint suppression or invocation-order change. Current correction requires another exact-source check allocation.",
+  "unitTestsExecuted":0,
+  "actualHostCasesExecuted":0,
+  "runtimeSdkOrProviderActivated":false,
+  "wslOrDockerUsed":false,
+  "caHandoffClosed":false,
+  "wholeProductQualified":false
+}

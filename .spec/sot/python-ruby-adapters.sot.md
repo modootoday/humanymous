@@ -497,6 +497,36 @@ was removed. The source fix uses the existing safe host-holder return pattern;
 its host-pilot check remains NOT_RUN until a separate exact-source allocation.
 Pure clock success does not establish actual VM callback or host qualification.
 
+Summary018 binds corrected4f to a successful Windows host-pilot all-target check;
+strict Clippy then failed only on two redundant Fetch.apply borrows. The source
+correction passes the same app Object directly, preserving final-consume order.
+Work218.98s/cleanup1.66s stayed within original360+60; unchanged source2815/
+registry5059/config15/Rust-tools4 ledgers, terminal101/closure0 and actual lease
+removal are retained. No unit/host/SDK execution or reuse of historical13 passes.
+
+### Registered ASGI completion owner
+
+Done previously retained only Weak<State>, allowing observer/Cancel release to
+drop the task/permit owner before a still-pending registered task completed.
+The narrow source correction makes registered Done retain Arc<State>, checks
+Python identity against the held task and actual done()==true without a Rust
+lock held, then rechecks ownership and takes task/permit/result under the lock.
+References and results are dropped/sent only after unlocking. This breaks the
+deliberate retention cycle only after matching terminal observation. Done is
+allocated before final decision consumption/application invocation.
+
+Three Rust-only actual CPython Future controls are authored, ignored by default:
+late terminal callback after observer drop, cancellation before its registered
+terminal callback, and wrong/nonterminal callback refusing permit release. Each
+uses real acquired permits and real asyncio Futures, not a minted bound decision;
+they qualify registered completion ownership only if explicitly run and passed.
+They are currently NOT_RUN and not full ASGI/TaskFactory/cancellation-suppression
+or Authority proof. The strong cycle may intentionally persist if task/loop never
+completes: bounded admission exhaustion is fail-closed, not successful cleanup.
+Registration failure still lacks a guaranteed anchor if no callback attached;
+partial creation/factory failure needs a separate retained-failure keeper/profile.
+No current Windows private-parent/peer or interactive host dependency is waived.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

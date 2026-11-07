@@ -24,6 +24,7 @@ files:
   - {path: summary-015.json, sha256: e11d4b23d5349cd02945c43c3b7b28b47df8bf748c99cdf7a40fdd6024eca0bb, bytes: 2057, store: repo}
   - {path: summary-016.json, sha256: b0831e330c8b49cb3c4bc6e59d86f0efe1cf20b3de7cab9cf1947e733637cd96, bytes: 3231, store: repo}
   - {path: summary-017.json, sha256: 1b1d0a7d4369b934f245aa74c18db1879b580070ad5dd7658319845b1c4d01fa, bytes: 2987, store: repo}
+  - {path: summary-018.json, sha256: c868689e44cf8e8704071bde621c7adf8ff3bafde07fed6595c1a41520c5866a, bytes: 2866, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation

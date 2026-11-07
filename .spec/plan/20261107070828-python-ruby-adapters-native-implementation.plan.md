@@ -707,3 +707,26 @@ retry follows from the terminal exact0a1 source window. Next proposed scope is
 corrected host-pilot all-target check/strict Clippy/fmt under a separately bound
 source/target allocation; passed pure inputs remain historical0a1 proof, not a
 false all-target or actual-host result on the correction.
+
+Read the new provider-neutral AGENTS.md and rules on2026-11-08 after the user's
+explicit continuation. Root confirmed Browser/Clang windows terminal and allocated
+exact4f on new absolute framework-node-4f3283f1 with create-new lease and no overlays.
+Actual host-pilot check passed; strict Clippy stopped on two needless app borrows,
+allocated fmt NOT_RUN. Summary018 preserves that firstfailure, exact closures,
+work218.98s/cleanup1.66s and actual owner-checked lease removal. Corrected the two
+calls without changing the original function/receiver or final-consume sequence;
+no silent retry, unit rerun, SDK/runtime/provider/WSL/Docker activation followed.
+
+Independently authored the registered ASGI completion-owner correction and three
+real CPython Future controls. Strong Done custody replaces Weak, with actual
+same-task identity+terminal checks, recheck/take under lock and Py-reference drop/
+result delivery outside the lock. Preallocate Done before final handoff. X's
+source-direction review requires retaining the unknown registration/customfactory/
+ignored-cancel/never-completed-loop paths; no false settlement claim is made.
+These controls require only the existing embedded CPython SDK, not an invented
+Authority/Windows peer fixture. Proposed exact SDK selector after a separate
+source/target allocation: cargo test --locked --offline -p humanymous-python-adapter
+--features host-pilot --lib async_call::completion_tests:: -- --ignored
+--test-threads=1 --nocapture, preceded by scoped check/strict Clippy. Required3,
+executed0. Full ASGI queued invocation and actual Node host controls still require
+their separate genuine native/controller receipts and bounded runtime allocation.

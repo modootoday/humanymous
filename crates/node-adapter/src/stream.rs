@@ -468,7 +468,7 @@ fn start_decision(
                     {
                         return finish(env, pending, 503);
                     }
-                    fetch.apply(&app, FnArgs::from((authorized, environment)))?
+                    fetch.apply(app, FnArgs::from((authorized, environment)))?
                 } else {
                     let fetch: Function<Object, Object> = prop(&app, "fetch")?;
                     if prop::<bool>(&signal, "aborted")?
@@ -476,7 +476,7 @@ fn start_decision(
                     {
                         return finish(env, pending, 503);
                     }
-                    fetch.apply(&app, authorized)?
+                    fetch.apply(app, authorized)?
                 };
                 resolve.call(value)?;
             } else {
