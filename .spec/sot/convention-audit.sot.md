@@ -142,6 +142,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-LIFETIME-01 | P1 contract gap: shared process capture has no retained reader joins or proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Independently confirmed source constraints; owner design/fix and actual adversarial process pilot OPEN; no observed hang claimed |
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | Fixed-source reviewed at 3a0ba182; fresh boundary/doctest/native qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retain ordinary String key fields outside Zeroizing ownership | Authority | Source fix independently reviewed at 2ca6e4fa; scoped compilation/regressions OPEN; no exfiltration/log/provider leak alleged |
+| CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize-checked history capacities can exceed the Vec isize byte layout bound and reach a capacity-overflow panic | Network/root | Confirmed source counterexample; owner notified, layout validation and allocation-free regression OPEN; no large allocation or actual panic run |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -536,3 +537,26 @@ Delivery consumerde0eeea4 imports the same Lab-owned browser_outcome.rs validato
 reconstructs the scalar projection and rejects the whole optional projection on
 invalid nested outcome. This avoids a second schema implementation. Its authored
 consumer negatives and current source compilation remain NOT_RUN in this audit.
+
+### History allocator-layout validation finding
+
+HISTORY-LAYOUT01 is a source-confirmed L1 constructor/observation contract gap.
+Both anomaly and rate validate element-byte multiplication against usize overflow
+but not Vec's isize byte layout ceiling before using infallible with_capacity.
+Choose n=(isize::MAX as usize)/size_of::<T>()+1 for f64 or Duration, configure
+matching maximum window/hit capacity, one key and max_payload_bytes=usize::MAX.
+The byte product and first key admission fit usize, while the allocation layout
+is invalid. For64bit f64, n=1152921504606846976 gives9223372036854775808bytes,
+one beyond isize::MAX. Empty-history measurement and normal time do not refuse
+this configuration before reaching Vec::with_capacity. No actual allocation,
+process crash, remote exploit or OOM was attempted or observed.
+
+Rust1.99.1 official documentation specifies that with_capacity panics beyond
+isize::MAX bytes and Layout validates representable allocation layout. The owner
+was asked to reject invalid element layouts in its existing config validators,
+with constructor-only boundary regressions that allocate no huge buffer. Existing
+usize::MAX multiplication tests miss the lower isize boundary. This does not
+require universal allocator-failure recovery, new production caps or policy
+changes. Source fix, meaningful allocated test receipt and independent re-audit
+remain OPEN. References: [Vec capacity](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.with_capacity),
+[Layout](https://doc.rust-lang.org/std/alloc/struct.Layout.html#method.array).

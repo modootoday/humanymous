@@ -108,7 +108,7 @@
     {
       "id": "CA-BRIDGE-ALLOC-01",
       "owner": "native-windows/root",
-      "state": "confirmed source gap; bounded preallocation fix and fresh validation open",
+      "state": "fixed-source 3a0ba182 independently reviewed; fresh boundary/doctest/native qualification OPEN",
       "source_file": "crates/windows-object-bridge/src/create.rs",
       "observed_sha256": "fb91e1c9c8f60a66cdf3163cc808f1cf533fa8ae175a20573b707fa77838fd85",
       "actual_oom_observed": false
@@ -116,12 +116,20 @@
     {
       "id": "CA-SECRET-01",
       "owner": "authority",
-      "state": "owner-confirmed encoded-key drop ownership debt; root-approved scoped fix and validation open",
+      "state": "fixed-source 2ca6e4fa independently reviewed; scoped compilation and regression execution OPEN",
       "fields": [
         "Audit.hmac_key_hex",
         "Audit.signing_seed_hex"
       ],
       "actual_disclosure_observed": false
+    },
+    {
+      "id": "CA-HISTORY-LAYOUT-01",
+      "owner": "network/root",
+      "priority": "P2",
+      "state": "source-confirmed invalid allocator layout; owner fix and allocation-free regression OPEN",
+      "private_review_sha256": "1d3d6ec6ca1c010043e8864f59089e8c6bf856236bb77b53fe74afc851d62352",
+      "actual_large_allocation_or_panic_observed": false
     }
   ],
   "evidence_references": {

@@ -197,3 +197,8 @@ Currentdirty Delivery writer/diagnostics remain unqualified; CI success requires
 the composite required-needs policy, not standalone jobs(raw). Labf601e4fa scalar
 projection remains unqualified actor diagnostics with capture lifetime open.
 Exact private review hashes are recorded in the public baseline attachment.
+
+New source-confirmed CA-HISTORY-LAYOUT01: anomaly/rate acceptedusize products
+can exceed Vec's isize layout bound before infallible capacity allocation. Sole
+Network owner/root notified; config-layout refusal and allocation-free constructor
+regression required. No huge allocation, compiler or panic workload was run.
