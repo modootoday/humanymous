@@ -8,3 +8,4 @@ pub mod product;
 pub mod routing;
 pub mod selected_inputs;
 pub mod sessions;
+pub mod windows_doctor;

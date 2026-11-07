@@ -74,7 +74,7 @@ fn linked(metadata: &Metadata) -> bool {
 
 /// Check each selected ancestor without walking directory entries.
 /// Concurrent hostile replacement is deliberately not an identity guarantee.
-fn checked_path(path: &Path, file: bool) -> io::Result<Metadata> {
+pub(super) fn checked_path(path: &Path, file: bool) -> io::Result<Metadata> {
     let mut selected = PathBuf::new();
     for component in path.components() {
         selected.push(component.as_os_str());
@@ -167,11 +167,18 @@ pub fn observe(
     selection: &FrozenSelection,
     limits: Limits,
 ) -> Result<PreparationReceipt, SelectionError> {
+    observe_with_clock(selection, limits, &mut SystemClock::default())
+}
+
+pub(super) fn observe_with_clock<C: Clock>(
+    selection: &FrozenSelection,
+    limits: Limits,
+    clock: &mut C,
+) -> Result<PreparationReceipt, SelectionError> {
     limits.validate()?;
     if selection.roots.len() > limits.max_roots || selection.inputs.len() > limits.max_files {
         return Err(SelectionError::CountLimit);
     }
-    let mut clock = SystemClock::default();
     let mut budget = ReadBudget::new(limits)?;
     let mut files = Vec::with_capacity(selection.inputs.len());
     for input in &selection.inputs {
@@ -180,14 +187,14 @@ pub fn observe(
             .iter()
             .find(|r| r.id == input.root)
             .expect("frozen selection validates root membership");
-        files.push(observe_one(root, input, &mut budget, &mut clock));
+        files.push(observe_one(root, input, &mut budget, clock));
     }
     let mut errors: Vec<_> = files
         .iter()
         .filter(|f| !f.content.complete())
         .map(|f| format!("{}/{}: {:?}", f.input.root, f.input.path, f.content.status))
         .collect();
-    if let Err(status) = budget.check(&mut clock) {
+    if let Err(status) = budget.check(clock) {
         errors.push(format!("final_budget: {status:?}"));
     }
     let content_read_complete = errors.is_empty() && files.iter().all(|f| f.content.complete());
@@ -215,6 +222,38 @@ pub fn observe(
 mod boundary_tests {
     use super::*;
     use std::io::Write;
+
+    #[test]
+    fn command_clock_is_not_restarted_for_selected_observation() {
+        struct Expired;
+        impl Clock for Expired {
+            fn elapsed(&mut self) -> std::time::Duration {
+                std::time::Duration::from_secs(30)
+            }
+        }
+        let selection = FrozenSelection::new(
+            vec![Root {
+                id: "r".into(),
+                path: std::env::temp_dir(),
+            }],
+            vec![Input {
+                root: "r".into(),
+                path: "not-read-after-deadline".into(),
+            }],
+            true,
+            &Limits::default(),
+        )
+        .unwrap();
+        let receipt = observe_with_clock(&selection, Limits::default(), &mut Expired).unwrap();
+        assert!(!receipt.content_read_complete);
+        assert_eq!(receipt.actual_read_bytes, 0);
+        assert!(
+            receipt
+                .errors
+                .iter()
+                .any(|error| error.contains("Deadline"))
+        );
+    }
 
     #[test]
     fn changed_open_file_is_not_observed_stable() {

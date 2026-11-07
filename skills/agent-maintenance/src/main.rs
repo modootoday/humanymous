@@ -1,12 +1,24 @@
 //! Read-only canonical agent checks and bounded, sandboxed Codex evaluations.
 use humanymous_agent_maintenance::{
-    evaluation, inventory, language, package, paired, product, routing, sessions,
+    evaluation, inventory, language, package, paired, product, routing, selected_inputs, sessions,
 };
 
 use std::{env, path::Path, process::ExitCode};
 
 fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
     match args.first().map(String::as_str) {
+        Some("windows-doctor") if args.len() == 1 || (args.len() == 2 && args[1] == "--probe") => {
+            println!("{}", serde_json::to_string_pretty(&humanymous_agent_maintenance::windows_doctor::inspect(args.len() == 2))?);
+            Ok(true)
+        }
+        Some("selected-inputs") if args.len() == 2 => {
+            let receipt = selected_inputs::observe_request_file(Path::new(&args[1]))?;
+            let complete = receipt.command_budget_complete
+                && receipt.observation.content_read_complete
+                && receipt.observation.input_selection_complete;
+            println!("{}", serde_json::to_string_pretty(&receipt)?);
+            Ok(complete)
+        }
         Some("language-check") if args.len() == 3 => {
             let source = Path::new(&args[1]);
             let preservation = Path::new(&args[2]);
@@ -97,7 +109,7 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
             &args[4],
         ),
         _ => Err(
-            "usage: agent-maintenance paired-check RESULT_JSON [product|developer] | language-check SOURCE PRESERVATION_JSON | check ROOT | routing ROOT | skill-check ROOT | lane-check ROOT | thread-check ROOT | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
+            "usage: agent-maintenance windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check SOURCE PRESERVATION_JSON | check ROOT | routing ROOT | skill-check ROOT | lane-check ROOT | thread-check ROOT | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
                 .into(),
         ),
     }

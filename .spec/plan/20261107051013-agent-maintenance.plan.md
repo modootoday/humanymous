@@ -721,3 +721,23 @@ Output contract v1 was added after the exploratory pilot. That change initially
 failed Clippy field_reassign_with_default; the failure is retained privately and
 corrected by initializing schema_version in the struct initializer. Recheck the
 final source rather than inheriting the earlier green.
+
+## Bounded consumer source checkpoint
+
+The selected-inputs CLI and Windows doctor are prepared in the existing crate.
+Strict finite JSON, shared original command clock, binary-safe streaming and
+metadata-only output are implemented. Windows doctor separates discovery from
+optional fixed bounded version probes, checks adjacent Python SDK file presence,
+and retains missing link/import and Ruby ABI qualification. Three doctor CLI tests,
+six selected-input CLI tests and request/version/process unit cases are authored.
+The integration contract now lists29 cases across seven targets. This checkpoint
+is source-only: fmt, whitespace, static inventory and scoped Spec checks do not
+substitute for compilation, exact test listing or actual terminal test results.
+
+Next gate is a freshly allocated native Windows lightweight target after the
+Browser exclusive CEF window: request/doctor units, selected_inputs_cli and
+windows_doctor exact actual targets, all-target check and strict Clippy. Preserve
+the earlier Windows1314 selected-link fixture failure; do not relabel the full
+integration suite green. No WSL or automatic profile increase. The accepted future
+Audit154715120s named profile awaits exact frozen selection binding and separate
+qualification; current schema continues to reject overrides.

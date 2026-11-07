@@ -59,3 +59,53 @@ L2 tests separately exercise real binary/CRLF and empty files, incomplete covera
 shared limits, stricter observation counts, missing/directory/link inputs and
 observed open-file mutation. Qualification is scoped to actual terminal results,
 not the authored inventory or this accepted contract alone.
+
+## Candidate real-input acceptance fixture
+
+The existing CLI accepts `selected-inputs REQUEST_JSON`. Version1 request JSON
+requires `schema_version`, finite `roots`, finite `files` and an explicit
+`input_selection_complete` declaration. Unknown/duplicate fields, invalid relative
+paths and oversized requests fail closed. Request capture is bounded to2MiB with
+true EOF and checked before/after metadata. One original command clock continues
+through request capture and every selected file; actual request reads consume the
+same2GiB command budget. Results contain hashes/metadata/status, never file bodies.
+Exit0 means complete content and declared selection within command budgets, not
+provider identity qualification; partial content/coverage emits JSON and exit1.
+Malformed/refused request preparation exits2 with value-sanitized diagnostics.
+Evidence is saved by the caller; this command does not write repository evidence.
+
+Performance reported the existing Audit154715 selected-before manifests as a
+candidate for the next explicitly allocated CLI pilot: 177 source, 3181 registry
+and 73 tool files (3431 total), 657,540,216 bytes, largest file 208,167,760 bytes.
+These counts fit the default count and byte caps. Its separately observed registry
+hash time was 26.8293511 seconds and tool hash time 18.911908 seconds, totaling
+45.7412591 seconds before source hashing. Those earlier measurements are not a
+run of this CLI and do not predict an exact CLI completion time.
+
+If the CLI reaches its shared 30-second cooperative deadline on that selection,
+it must retain partial accounting and report incomplete content. Budgets do not
+reset per root. A full equal-coverage pilot needs an explicitly root-approved,
+larger finite profile implemented and qualified first; the current request schema
+does not accept limit overrides. Never automatically raise defaults to finish a
+fixture. This candidate establishes no antivirus cause or speedup claim. No new
+Windows, WSL or model execution was authorized by receipt of the candidate.
+
+### Accepted future named profile
+
+Root accepted the finite profile `audit154715-equal-coverage-120s` for the later
+Audit154715 equal-coverage CLI pilot only. It permits a 120-second cooperative
+command budget for the same 3431 selected files and 657,540,216 content bytes.
+All existing file, root, aggregate-byte and per-file caps remain unchanged. One
+command clock covers request preparation and every root/file; there is no reset
+per root. Every other selection retains the 30-second default.
+
+This is an accepted scope decision, not permission to run during the current
+CEF-exclusive window. A future implementation must bind this exact profile name
+to the frozen Audit154715 selection identity and retain that identity and effective
+limits in its receipt. Counts and sizes alone cannot establish equal coverage.
+Unknown names, arbitrary numeric timeout overrides and profile/selection mismatch
+must fail closed. Until the frozen selection identity is attached and the named
+profile is implemented and qualified, the existing strict request schema rejects
+profile fields and continues to enforce 30 seconds. No executable 120-second
+override is introduced by this contract checkpoint. The earlier measured
+45.7412591 seconds remain historical phase timings, not CLI proof.

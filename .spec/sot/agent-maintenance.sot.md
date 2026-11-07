@@ -29,6 +29,28 @@ observation is not an immutable security snapshot, cache or execution authority.
 Canonical LF inventory and Delivery provenance remain untouched. No new graph,
 dependency, native-security claim or hard blocking-I/O deadline is introduced.
 
+## Bounded CLI and Windows environment consumers
+
+The bounded consumer `selected-inputs REQUEST_JSON` now has a strict2MiB JSON
+boundary and shares one original clock/actual byte budget across request and
+content reads. Metadata-only output preserves separate selection, content and
+provider qualification. Its six actual CLI cases are authored, not executed at
+this source checkpoint. The seven-target qualification inventory contains29
+integration cases and remains source-only until exact per-target listing agrees.
+
+The Windows-first `windows-doctor [--probe]` consumer discovers explicit tools,
+VS2022 setup and adjacent Python SDK files. Optional fixed bounded version probes
+do not establish SDK linkage or Ruby MSVC/mingw ABI compatibility. Its contract is
+`.agents/evals/windows-doctor-contract.md`; three actual CLI tests and separate
+version/process unit tests are authored. No install, WSL, backend switch or global
+environment mutation is authorized by these commands. Current source preparation
+has no compile/runtime gate; previous primitive evidence is not inherited.
+
+Root accepted the future named `audit154715-equal-coverage-120s` profile only for
+the frozen Audit154715 equal-coverage input. Default30seconds and all byte/file
+caps remain. Profile execution is unavailable until exact selection binding and
+qualification; the strict current request rejects limit/profile overrides.
+
 ## Draft new-lane coexistence v0.3
 
 Root requested a minimal Rust-only coexistence design for convention-audit and

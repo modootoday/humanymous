@@ -4,8 +4,8 @@
   "locked": true,
   "features": [],
   "inventory_status": "source-only; exact-source per-target --list must agree before execution",
-  "scope": "five integration targets only; excludes library units and whole-product qualification",
-  "expected_total": 20,
+  "scope": "seven integration targets only; excludes library units and whole-product qualification",
+  "expected_total": 29,
   "required_summary": {
     "failed": 0,
     "ignored": 0,
@@ -66,6 +66,29 @@
         "selected_file_link_is_refused_without_reading_its_target",
         "tighter_observation_counts_reject_a_looser_frozen_selection",
         "unknown_selection_is_not_promoted_by_successful_content_reads"
+      ]
+    },
+    {
+      "kind": "test",
+      "name": "selected_inputs_cli",
+      "expected_count": 6,
+      "exact_test_names": [
+        "complete_binary_selection_emits_hashes_without_contents_or_authority",
+        "invalid_request_diagnostics_do_not_echo_values",
+        "missing_selected_file_emits_incomplete_metadata_with_exit_one",
+        "oversized_request_is_rejected_before_selection",
+        "request_directory_or_missing_file_is_rejected",
+        "unknown_selection_emits_read_success_but_exit_one"
+      ]
+    },
+    {
+      "kind": "test",
+      "name": "windows_doctor",
+      "expected_count": 3,
+      "exact_test_names": [
+        "discovery_does_not_execute_candidates_or_promote_sdk_presence",
+        "discovery_retains_missing_paths_without_setting_pyo3",
+        "doctor_rejects_arbitrary_probe_arguments"
       ]
     }
   ],
