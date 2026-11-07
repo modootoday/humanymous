@@ -1,0 +1,84 @@
+{
+  "schema": "humanymous.delivery-hosted-rust-image-consumption/1",
+  "run_id": 42407744891,
+  "attempt": 1,
+  "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "job_id": 128522238654,
+  "job_conclusion": "success",
+  "annotations": {
+    "failure": 0,
+    "warning": 0,
+    "notice": 0
+  },
+  "completed_steps": [
+    "candidate source inventory",
+    "source manifest preparation",
+    "local Docker build and load without push",
+    "Trivy v0.70.0 JSON scan",
+    "nonempty binary inventory and exact image scan verifier"
+  ],
+  "source_reported": [
+    {
+      "build_tool_manifest_sha256": "5372afc0b6ac2633eaad3219fa8eab85ee6423e285f94dfbe02152e6ba2868d1",
+      "candidate": {
+        "binary": "humanymous-runtime",
+        "dockerfile": "build/rust/runtime-candidate.Dockerfile",
+        "entrypoint": [
+          "/usr/local/bin/humanymous-runtime"
+        ],
+        "external_witness_binary_injection": false,
+        "full_product_qualified": false,
+        "image_cve_scan_verified": false,
+        "legacy_core_gate_replacement": false,
+        "nonroot_runtime_verified": false,
+        "package": "humanymous-runtime",
+        "qualified_platforms": [],
+        "role": "runtime-private-pipes",
+        "source_build_verified": false
+      },
+      "dockerfile_sha256": "c523788efc6a3b2ff7508909763ea168cee555fcec7ab1ac02085586308816bd",
+      "schema": "humanymous.rust-image-candidate-summary/1",
+      "scope": "source inventory only; actual build, CVE scan, actor and shipping parity are separate evidence",
+      "source_manifest_sha256": "24decdffd6f5273d5af75d1a1337ec54ba734632fc1441d46f0e9a27c2605f56",
+      "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b"
+    },
+    {
+      "cargo_lock_sha256": "940281a7595a7044284aee03a10b9e31306a5ad06c3c19143d98d131c92bfd39",
+      "full_product_qualified": false,
+      "image_id": "sha256:09be1421665100e34724e1c7da7b73a20a3da6568e13acda57c15fe331e92408",
+      "inventory_completeness_verified": false,
+      "inventory_sha256": "e67409d271bc1f1428abd5de303ac116c67fd16f39b5b6c3cd162d146e246fc4",
+      "observed_rust_packages": 91,
+      "rust_binary_inventory_count": 1,
+      "rust_binary_inventory_observed": true,
+      "scan_sha256": "3c184a4cccdb04c04cdd6b9701427c079c192cdd235da40b740096aa0ccfeff8",
+      "scan_status": "clean_observed_inventory",
+      "scanner_step_outcome": "success",
+      "schema": "humanymous.image-scan-summary/1",
+      "shipping_qualified": false,
+      "source_changed": false,
+      "source_manifest_sha256": "24decdffd6f5273d5af75d1a1337ec54ba734632fc1441d46f0e9a27c2605f56",
+      "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+      "vulnerability_count": 0
+    }
+  ],
+  "raw_accounting": {
+    "retained_job_log": "Connector-decoded text, not an original log archive",
+    "retained_metadata": "GitHub API decoded job and annotation JSON",
+    "original_scan_json_recovered": false,
+    "original_binary_inventory_recovered": false,
+    "original_image_inspection_json_recovered": false,
+    "raw_private_contents_included": false
+  },
+  "qualification_limits": [
+    "Source9586 only; later Core/platform graph not covered",
+    "91 observed Rust packages are not proof of complete transitive inventory",
+    "Zero findings in the observed inventory do not qualify unobserved packages or a future database state",
+    "Configured image UID or entrypoint checks do not establish all runtime authority behavior",
+    "No full-product parity, shipping, publication or deployment qualification"
+  ],
+  "overall_run_terminal": false,
+  "full_product_qualified": false,
+  "shipping_qualified": false,
+  "release_ready": false
+}
