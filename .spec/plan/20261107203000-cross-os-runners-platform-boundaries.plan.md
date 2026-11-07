@@ -204,3 +204,24 @@ Bare source rustfmt/whitespace/spec checks only; no Cargo/compiler/runtime lease
 manifest/dependency/unsafe/feature change. Root must allocate scoped tests plus
 runner all-target check/strict Clippy and actual metadata/source join proof.
 Required core source_inputs guard remains unchanged.
+
+## Allocated opaque-ID pure validation
+
+New original monotonic390/450 budget, fresh CreateNew own marker on explicitly
+reallocated target/native-source-guard-v0; jobs1/incremental0/locked/offline.
+Actual tool66287 terminal0 at15.20s, all owned processes terminal and own marker
+removed within original cleanup. Observed source HEAD057befe36a15242a619e286b6ee6aa1f7ae5358c,
+no overlays. All prefix inventories verified2+2+1 before any selected execution.
+Actual package-map2/helper2/catalog1 passed, zero failed/ignored/measured;
+filtered58/58/59 separately. Runner all-target check/strict Clippy/scoped package
+fmt all0. No previous source-guard fmt receipt was rewritten or hidden.
+
+Selected local/root source+manifest/lock/config/tool105 files, selected registry
+2079 files and nine explicit environment keys were identical before/after.
+The selected test binary was c605bbcb6a8c777c, explicitly joined from all three
+Cargo test stderr receipts; another cached executable is NOT qualified.
+platform-package-id-validation-summary.json registers50 private raw attachments.
+Production Packages::load and actual repository metadata/source association were
+NOT_RUN: these are fixture-based role-classification tests, not native/full graph
+proof or a new settlement guarantee for the existing capture implementation.
+No active own resource lease remains; target returned as cache only to Root.
