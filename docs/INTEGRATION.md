@@ -42,6 +42,10 @@ with local artifact bytes before/after; all generated HTML is tested twice.
 Current source is linked through `pub mod browser` and browser_command dispatch
 in main. Root measured locked offline26lib+1CLI passes and all-target Clippy;
 the earlier composite Clippy failure in capture remains recorded separately.
+The subsequent literal dot-segment driver-ID refusal fix passed a fresh locked
+offline library26 run, all-target check and all-target Clippy with unchanged
+before/after source and Cargo manifest/lock hashes. The separate CLI1 result
+belongs to its preceding checkpoint; it was compiled/checked, not rerun here.
 Actual browser execution remains NOT_RUN. Hosted execution must
 capture actual report and caller service cleanup separately.
 

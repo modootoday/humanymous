@@ -1275,3 +1275,18 @@ Re-polled exact813 run42355168729: Docker/Ubuntu failures, live macOS/browser an
 queued Windows unchanged; Pages/documentation still not observed. No duplicate
 pipeline or terminal conclusion. Browser dot-segment WIP remains frozen and the
 prior27pure/all-target Clippy still belongs only to its earlier checkpoint.
+
+### Literal WebDriver dot segments and current public status
+
+Rejected literal dot and dot-dot driver identities before URL joining; extended
+existing regression coverage without changing the library denominator. Allocated
+A/default, jobs1/incremental0: locked offline library26 passed, all-target check
+and Clippy -D warnings passed; slot returned. Five inspected source/manifest/lock
+hashes stayed unchanged, which is not full immutable transitive-source closure.
+CLI1 was not rerun. Attached before/after hashes and selected command excerpts;
+actual browser/render/AT remain NOT_RUN. Retained previous checkpoint evidence.
+
+Public implementation status now distinguishes 38-member inventory, separate
+Go10/maintenance36/Pages26 component counts, two unexecuted CEF process tests,
+and earlier hosted813 source failures from later local integration. No release,
+full-product pass, current render or preview acceptance is claimed.

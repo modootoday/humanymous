@@ -1,0 +1,20 @@
+{
+  "scope": "Pages WebDriver literal dot-segment refusal",
+  "library_tests": {
+    "ignored": 0,
+    "passed": 26,
+    "failed": 0
+  },
+  "all_targets_check": "passed",
+  "all_targets_clippy": "passed with -D warnings",
+  "cli_test": "not rerun; preceding checkpoint only",
+  "execution": "allocated A/default; jobs=1; incremental=0; slot returned",
+  "hash_scope": "Five inspected source/manifest/lock files unchanged before and after; not complete immutable transitive source closure",
+  "actual_browser": "NOT_RUN",
+  "actual_render": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "output_chunks": [
+    "77adf4",
+    "f56ab3"
+  ]
+}

@@ -30,6 +30,19 @@ new runtime is ready. A future release must name exact supported tuples,
 capabilities, artifact digests and completed checks. Until then, use an isolated
 evaluation environment and retain your existing production controls.
 
+The 2026-11-07 integration checkpoint registers 38 Rust workspace members.
+That inventory is not a supported-platform matrix. Local component checks
+include 10 Go-adapter tests, 36 maintenance-tool tests and 26 documentation-tool
+tests; their separate check/lint results do not establish full-product parity
+or an immutable combined dependency graph. Two mandatory CEF desktop process
+tests are wired but have not executed at this checkpoint.
+
+Hosted run `42355168729` targets source `8132117`, which precedes that local
+integration checkpoint. Its policy check passed, while native and Docker
+component failures were observed. It cannot qualify later source changes.
+The current documentation source still needs a fresh rendered-site build,
+actual browser checks and source-review completion before preview acceptance.
+
 The HTTP runtime does not provide original-client TLS or HTTP/2 capture,
 browser recovery, public administration or arbitrary streaming proxy compatibility.
 Routes requiring unavailable capture or a qualified collector stay unready.

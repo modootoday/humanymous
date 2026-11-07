@@ -26,6 +26,7 @@ pub(super) fn local_url(value: &str) -> Result<Url, String> {
 pub(super) fn segment(value: &Value, key: &str) -> Result<String, String> {
     let value = value[key].as_str().ok_or("missing WebDriver identity")?;
     if value.is_empty()
+        || matches!(value, "." | "..")
         || value.len() > 256
         || !value
             .bytes()

@@ -239,7 +239,17 @@ mod tests {
             segment(&json!({"id":"f.ab.d.cd.e.1"}), "id").unwrap(),
             "f.ab.d.cd.e.1"
         );
-        for invalid in ["", "../session", "a/b", "a?x", "a#fragment", "a%2fb", "é"] {
+        for invalid in [
+            "",
+            ".",
+            "..",
+            "../session",
+            "a/b",
+            "a?x",
+            "a#fragment",
+            "a%2fb",
+            "é",
+        ] {
             assert!(segment(&json!({"id":invalid}), "id").is_err());
         }
         assert!(segment(&json!({"id":null}), "id").is_err());
