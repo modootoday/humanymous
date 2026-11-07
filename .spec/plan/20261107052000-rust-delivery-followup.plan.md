@@ -979,3 +979,16 @@ null counts/source_changed. No historical ec4 pass promotion or native-feature
 Clippy/GUI/AT claim. Browser owns source correction; no duplicate/retry was
 performed. The attached cef-d2148b0a-summary.json and immutable capture index
 preserve the failed candidate separately from the earlier successful source.
+
+Actual Pages42389773240 at reviewed29096f78 passed both preflight/build jobs,
+Delivery90/Pages37 zero-ignore units, strict Clippy/policy, bundle audit, both
+baseurl validations, packages and SECOND consumer archive checks. Each output
+contains88 rendered HTML pages/165 public files/errors0. Four public roundtrip
+receipts agree with source-bound package summary hashes; source unchanged and
+artifacts0. Watch32255 ended0. Sealed capture index and public terminal summary
+retain exact Git LF input identity, distinct from old prepared CRLF/raw archive
+bytes. Archive bodies were not recovered locally, serving transfer is null, and
+HTTP/browser/AT/deployment/full-review freshness remain unqualified. This is no
+runtime image CVE evidence. Browser typedDTO306 full-gate diagnostic contract was
+separately reviewed against actual bb763c1f branch, without a push or workload;
+CEF remote remains on hold while Browser runs allocated local fef preflight.

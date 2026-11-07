@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:02:33Z
+updated: 2026-11-07T16:16:22Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -31,6 +31,7 @@ files:
   - {path: wargame-306eedc8-hosted-summary.json, sha256: 3d33c57f6ef9a4ba712f47cee437694a0c99cff9b271688a39c06b7a0a52b978, bytes: 9973, store: repo}
   - {path: wargame-306eedc8-required-boundaries.json, sha256: 6918ae9e80c45db9877dce443dbe260ff9aacad65f92afd0e15fc1d5b4b1fa48, bytes: 6632, store: repo}
   - {path: cef-d2148b0a-summary.json, sha256: 871653c0fb57934505e5ab4cfbe9deeaa7b7e043d86fc2e5c605deb8f448b4ee, bytes: 4008, store: repo}
+  - {path: pages-29096f78-summary.json, sha256: 9ec48b7be63c94f8fd23e71a9708647b640e6c47050bf887020374a58b71ef8f, bytes: 7425, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -483,3 +484,27 @@ Connector and authenticated CLI safe projections matched. Private capture index
 SHA256 is7aaa984d459f2441866f297cdb1fcf9a8760e09053338d7194d408ec944755dd.
 Browser owner received the exact diagnostic and owns correction; no retry was
 performed by Delivery.
+
+## Exact Git Pages build and archive success
+
+pages-29096f78-summary.json records terminal run42389773240 at29096f78: both
+Ubuntu jobs succeeded, artifacts0. Preflight Delivery90/Pages37 tests had zero
+failed/ignored/filtered cases; both strict Clippy checks and policy passed.
+Bundle audit exited0 with no vulnerabilities found within its observed Ruby
+lock/database scope; no runtime-image or full repository CVE claim follows.
+
+Both baseurls rendered88 HTML pages and165 public files, with package plus
+independent archive-check success. Four public roundtrip receipts preserve the
+same per-baseurl archive/inventory/source hashes and counts, independently
+cross-checked here. Source remained unchanged with the expected Git docs tree.
+The actual input hash is eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb.
+This qualifies the reviewed Git LF candidate, not the old Windows prepared raw
+snapshot/archive identity. The archives themselves were not downloaded for a
+local byte rehash. Main-only artifact/serving transfer steps were skipped;
+serving_transfer_roundtrip remains null and browser/AT/deployment/full flags
+false. Source unchanged is not full content-review freshness.
+
+Connector and authenticated CLI public summaries matched. Sealed private capture
+index SHA256 is4c72c412103417bb75833b1c33875a5b41a56e43b25dcd6d0b9302550f530711.
+Watch32255 ended0; no execution handle or target lease remains. No repeat push,
+manual dispatch, deployment or OIDC exchange was performed by Delivery.
