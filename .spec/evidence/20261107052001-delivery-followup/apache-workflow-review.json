@@ -1,0 +1,29 @@
+{
+  "cancel_in_progress": false,
+  "workflow_name": "CI / Apache component",
+  "concurrency_group": "apache-validation-${{ github.ref }}",
+  "schema": "humanymous.workflow-static-review/1",
+  "permissions": {
+    "contents": "read"
+  },
+  "full_product_qualified": false,
+  "workflow": ".github/workflows/apache-validation.yml",
+  "jobs": [
+    "component"
+  ],
+  "artifacts": [],
+  "static_review": "passed",
+  "checks": [
+    "exact event checkout",
+    "pinned actions",
+    "Rust 1.99.1 and Ubuntu 24.04",
+    "one Cargo job and incremental off",
+    "owner units and strict Clippy before actual coordinator",
+    "always owned-ledger cleanup after pilot attempt",
+    "sole owner safe public projection",
+    "no automatic uploads or deployment"
+  ],
+  "owner_checkpoint": "018ad25b7c18e4914cea029b734af67054e18c46",
+  "actual_execution": "not_run",
+  "workflow_sha256": "c7cd7b5b85061bef645eac875bf302f5a7d294c36a2fd1cabf84243ce2f8c3a3"
+}
