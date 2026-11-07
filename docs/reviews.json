@@ -2,6 +2,61 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/merkle/frontier.rs",
+  "sha256": "5ac5436a73c470f0756fedf90839c1f213fa9a6aa4a1d2d50d5f394c961efa32",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete92-line source review: count plus64optional peaks, checked u64 append overflow before mutation, binary-carry merges, low-to-high root fold, SHA256empty root. No record/history retained in this private frontier. Three authored tests compare selected recursive prefix roots through4097, bounded struct size, pre-mutation u64 exhaustion and text-versus-decodedhex leaf distinction. Not a persistent history, trusted anchor, proof store or fresh execution result.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
+  "source": "crates/audit/src/merkle/ranges.rs",
+  "sha256": "f3e7a80f995cded9e1343a0c39d2cea78d92dfa75c7d8ee50d43957d3c54cd56",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete99-line source review: private fixed65descriptor proof plan, checked range arithmetic/capacity, recursively split inclusion and nonempty strict-prefix consistency. visits sorts fixed indices by file offset while returning original proof positions; no history-sized allocation here. None refuses zero/out-of-range/equal consistency generation; verification has separate equal-tree semantics. Not whole verifier memory, native scan or execution qualification.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
+  "source": "crates/audit/src/merkle/ranges/tests.rs",
+  "sha256": "3fcb2b33fa77ae7d3d6029c8e8dfa1c42b86378b43c08f05fbf9d354b42cb850",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete63-line source review: three authored tests check disjoint ordered ranges/exact index coverage across sizes1..129,65descriptor maximum consistency nearu64max/inclusion64bound, invalid input and capacity refusal without mutation. Source-only review; no test execution or actual huge tree/disk/native fixture claim.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
+  "source": "crates/audit/src/checkpoint/signing.rs",
+  "sha256": "9b531c737aba7464c7e39be092dbccd94fd104ba10cac4095c6426a988d43bfa",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete72-line source review: fixed-order five-field GoJSON encoder delegates shared quote_json_go_to; count then fallible exact reserve and bounded replay, checked bytes/overflow and exact count agreement. Full signing-message Vec still allocated; this is not streaming Ed25519 or total caller-memory bound. No NFC or signature fields in message; bounded internal limit and public compatibility maximum distinct. Source-only, no new protocol wire or execution claim.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
+  "source": "crates/audit/src/checkpoint/signing/tests.rs",
+  "sha256": "172908dd57a8f5e05abf9f2e1bc65f33594f61fc129119def134074885857c33",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete100-line source review: three authored tests compare180fixture checkpoints to legacyformat assembled using same shared quoting helper, exact/one-byte-short/zero budget, specialUnicode/control escaping/maxcount, every partial-output BrokenPipe prefix and usize exhaustion. Fixture corpus not independently read here, same-helper comparison not independent wire implementation. No actual test execution/native durability or custody qualification.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
   "source": "crates/audit/src/record/canonical/encoder.rs",
   "sha256": "6c770f22a8cff9cc7a337990d29fff928a3e6fb37daa35e1bf5b4fae35ad0abe",
   "reviewer": "codex/rust-pages",
@@ -5108,16 +5163,16 @@
       ]
     },
     {
-      "source": "crates/audit/src/checkpoint/mod.rs",
-      "sha256": "ad77ab9eabf12dba2f2bb3332c705e0485332cde3c4f687135d3d2876eaec7b9",
-      "reviewer": "codex/rust-pages",
-      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/verify-audit-log.md",
-        "docs/runbooks/erasure-crypto-shred.md"
-      ]
-    },
+  "source": "crates/audit/src/checkpoint/mod.rs",
+  "sha256": "a9d755ba55f59f42266dbccfa68bc0351c166f3c959ddb1346a2734215930192",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete123-line source review: persisted tree head covers node/count/linear and Merkle roots plus previous writer signature despite legacy field name. Fixed-order GoJSON signing has no NFC; signing clears stale witness signature. Writer/witness signatures independently use strictEd25519 and exact64decoded signature bytes; malformed encodings false. Public helpers are compatibility unbounded, private bounded path can return I/O error. Witness signature alone does not prove append-only policy or independent custody. One authored source test is not fresh execution.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
     {
       "source": "crates/audit/src/checkpoint/witness.rs",
       "sha256": "ff0e73139ddcf2d94d37b54d5d23a7207e34912125deccdd05886a0d1b98f602",
@@ -5141,16 +5196,16 @@
       ]
     },
     {
-      "source": "crates/audit/src/merkle/mod.rs",
-      "sha256": "f57eb0e19b0c93e98ad1c1a18f00b49a81868d4d348472579e37d0880fd84ae5",
-      "reviewer": "codex/rust-pages",
-      "notes": "Audit canonicalization, proof and checkpoint source/fixtures remain library migration evidence. Reader instructions intentionally withhold operational Rust CLI and durable-storage/erasure qualification; no full audit subsystem is claimed.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/verify-audit-log.md",
-        "docs/runbooks/erasure-crypto-shred.md"
-      ]
-    },
+  "source": "crates/audit/src/merkle/mod.rs",
+  "sha256": "4b330b6eb2e807f95eab77782358f3c93a828de6dcf49bd9e5d9e32c0c9b21de",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete266-line source review: RFC6962-style 0/1 domain-separated leaf/node hashing consumes caller-provided leaf bytes, not implicit hex decoding. Tree borrows full leaf history and memoizes subtrees; root uses fixed frontier but Tree overall is not constant memory. Checked proof plans preserve canonical path order. Inclusion rejects wrong exact path depth; consistency bounds65nodes, handles equal-size empty proof, refuses empty-old API. Two authored test functions cover unbalanced sizes1..65/tampering/extra nodes/empty singleton. No independent implementation, trusted root or new executed-test claim.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
     {
   "source": "crates/audit/src/record/canonical.rs",
   "sha256": "649465eb6bf3b9c5d37010ffb59f0add91cc240ac5e433455d9565095019136f",
