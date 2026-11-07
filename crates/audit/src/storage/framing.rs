@@ -1,5 +1,7 @@
 use serde::de::DeserializeOwned;
 use std::io::{self, BufRead};
+mod cursor;
+use cursor::FrameCursor;
 
 /// Successfully framed values and the byte offset safe for append recovery.
 pub(super) struct Frames<T> {
@@ -11,52 +13,26 @@ pub(super) struct Frames<T> {
 /// Bounded JSONL decoder. A final incomplete frame is recoverable only when
 /// explicitly allowed; even valid JSON without its newline is uncommitted.
 pub(super) fn decode<T: DeserializeOwned>(
-    mut reader: impl BufRead,
+    reader: impl BufRead,
     max_frame: usize,
     allow_torn_tail: bool,
 ) -> io::Result<Frames<T>> {
-    if max_frame == 0 {
-        return Err(invalid("zero frame limit"));
-    }
+    let mut cursor = FrameCursor::new(reader, max_frame, allow_torn_tail)?;
     let mut result = Frames {
         values: Vec::new(),
         complete_bytes: 0,
         torn_tail: false,
     };
-    let mut line = Vec::new();
-    loop {
-        let available = reader.fill_buf()?;
-        if available.is_empty() {
-            if !line.is_empty() {
-                if !allow_torn_tail {
-                    return Err(invalid("incomplete JSONL frame"));
-                }
-                result.torn_tail = true;
-            }
-            return Ok(result);
-        }
-        let end = available.iter().position(|&b| b == b'\n');
-        let count = end.map_or(available.len(), |n| n + 1);
-        if count > max_frame.saturating_sub(line.len()) {
-            return Err(invalid("JSONL frame exceeds configured limit"));
-        }
-        line.extend_from_slice(&available[..count]);
-        reader.consume(count);
-        if end.is_some() {
-            let content = line.strip_suffix(b"\n").expect("framed newline");
-            let content = content.strip_suffix(b"\r").unwrap_or(content);
-            if !content.is_empty() {
-                result
-                    .values
-                    .push(serde_json::from_slice(content).map_err(invalid)?);
-            }
-            result.complete_bytes = result
-                .complete_bytes
-                .checked_add(line.len() as u64)
-                .ok_or_else(|| invalid("JSONL offset overflow"))?;
-            line.clear();
+    while let Some(content) = cursor.next_frame()? {
+        if !content.is_empty() {
+            result
+                .values
+                .push(serde_json::from_slice(content).map_err(invalid)?);
         }
     }
+    result.complete_bytes = cursor.complete_bytes();
+    result.torn_tail = cursor.torn_tail();
+    Ok(result)
 }
 
 fn invalid(error: impl Into<Box<dyn std::error::Error + Send + Sync>>) -> io::Error {

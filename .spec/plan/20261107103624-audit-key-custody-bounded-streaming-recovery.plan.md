@@ -393,6 +393,14 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Private frame cursor source authored next under restricted S1 permission:
+one borrowed newline frame, checked frame/offset bounds, capped growth requests,
+poison-on-error and explicit complete/torn accounting. Legacy generic decode
+collects from the shared cursor, preserving framing semantics without duplicated
+parsers. Four new pure tests authored; compile/execution NOT_RUN while Pages
+holds the heavy build. Evidence114649. JSON preflight and authenticated EOF are
+not provided by framing; no production recovery or memory qualification follows.
+
 Merkle S1 candidate9c5f4e7c plus test-only Clippy correction actually passed
 allocated A locked all-target check/Clippy, Merkle8 and unchangedGo parity1.
 Go66 cases sizes0..65 assert2145 inclusion/2080 consistency exact ordered paths.

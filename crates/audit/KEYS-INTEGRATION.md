@@ -1,5 +1,16 @@
 # Sealed key compatibility integration
 
+## Next private S1 frame cursor candidate, not executed
+
+Shared borrowed-frame cursor now backs legacy decode. One reusable frame Vec,
+checked frame/offset limits, CRLF/blanks/newline-only commits and poison-on-error;
+four authored pure tests cover fragmented input, oversize, reader failure and
+synthetic overflow. Format/diff only; Cargo/tests NOT_RUN pending allocation.
+Legacy decode still collects values, with JSON preflight/authenticated EOF and
+production S2/S3 incomplete. Evidence114649. No memory/e2e guarantee; no workload
+held while Pages owns heavy build. Merkle qualification below is historical for
+its exact source; new framing does not inherit it.
+
 ## Merkle S1 scoped verification completed
 
 Allocated A batch passed locked all-target check/Clippy and9 Rust tests
