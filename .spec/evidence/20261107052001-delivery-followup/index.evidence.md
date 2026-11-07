@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:53:57Z
+updated: 2026-11-07T16:59:55Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -36,6 +36,7 @@ files:
   - {path: browser-306eedc8-summary.json, sha256: 753b4d66b05aac0726fc0226adad55abc35c598aaecc3e2a6de878a97a93c542, bytes: 5803, store: repo}
   - {path: controlled-capture-owner-consumption.json, sha256: d50f74aa5d4ba1f85d5cfb339feae88446cacfb40793e96f430bbe699a39bc7c, bytes: 2318, store: repo}
   - {path: public-package-namespace-observation.json, sha256: dcfff523dd1cd4c601b244574358be46df87c073d211febfbc2fdae8ad1cdaf9, bytes: 3366, store: repo}
+  - {path: b3-wrapped-cargo-validation.json, sha256: 022d34581c1491f46e4df545861bbe2477fb5f62881fba40eebb1e5e275cb4f5, bytes: 3075, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -586,3 +587,20 @@ false. The actual GitHub environment settings are a separate observation, not
 proof of registry bootstrap. No account, token, setting or package changed.
 Sealed private capture index SHA256 is
 2311cb4743caa16a2028e5a129c6ba8e0608aa198cd398707d75b2dbef15d238.
+
+## B3 wrapped Cargo observation regression validation
+
+b3-wrapped-cargo-validation.json records actual93 passed/0failed/0ignored/0filtered
+on frozen eaa69690 plus exactly three declared owned Rust overlays. Metadata92564
+and commands42230 ended0; check/strict Clippy/policy/fmt/actionlint passed and the
+expected shipping rejection remained1. Source2786, registry105packages3791files,
+config20, tools4, environment and all three working overlays had zero differences.
+The exclusive target marker was independently verified and removed after terminal
+execution, returning the root allocation. Private capture index SHA256 is
+fbbf7ac8171091c2403b2eda39b2d520e767866c8cc7af7ad6d17826c13b3ba6.
+
+checkpoint.json is the immutable INITIAL PREPARATION record: its compiler_started
+false predates this actual execution and is not current terminal state. The
+public terminal record explicitly reports compiler_executed=true. This batch
+qualifies Windows pure/owned-file boundary regressions, not actual GNU wrapper
+execution, one-record runtime observation, later shared source graphs or shipping.

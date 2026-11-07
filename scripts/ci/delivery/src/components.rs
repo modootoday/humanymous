@@ -50,7 +50,11 @@ fn invoke(
     let mut fixed = vec!["--signal=TERM", "--kill-after=15s", budget, program];
     fixed.extend_from_slice(args);
     let log = dir.join(format!("{stage}.log"));
-    let code = command::json_log(root, "timeout", &fixed, &log)?;
+    let code = if program == "cargo" {
+        command::json_log_timeout_cargo(root, args, budget, &log)?
+    } else {
+        command::json_log(root, "timeout", &fixed, &log)?
+    };
     report["commands"][stage] = json!({"exit_code":code,"stdout_sha256":source::file(&log)?,"stderr_sha256":source::file(&log.with_extension("stderr.log"))?});
     require(code == 0, "owned component command failed")
 }

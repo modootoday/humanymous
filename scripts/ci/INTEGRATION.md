@@ -193,8 +193,11 @@ checkpoint; all candidate shipping qualification flags remain false.
 
 Target-only handoff for structural-development.sot.md's ten-package map and the
 user's superseding public identity decision. humanymous-adapter-* identifies
-internal Rust packages. Public Rust, npm, Python, Ruby and native loader usage
-targets humanymous, with Humanymous for .NET conventions. Current public names
+internal Rust packages. Public Rust, npm, Python and Ruby usage targets humanymous.
+The final managed AssemblyName/file and NuGet identity are lowercase humanymous
+(humanymous.dll), with C# namespace Humanymous. The common native FFI stem is
+humanymous-native: humanymous-native.dll on Windows and libhumanymous-native.so
+or .dylib on Unix. Current public names
 below are legacy inventory, not names to retain as the desired public interface.
 Current source and frozen invocations remain until one root-coordinated migration;
 this note changes no package, directory, workflow, ABI or registry permission.
@@ -223,11 +226,19 @@ humanymous_dotnet_adapter_export while the managed namespace is already Humanymo
 
 | Legacy public/build surface observed | Proposed atomic target and owner seam |
 | --- | --- |
-| Node package @humanymous/node, binaryName humanymous-node, native/humanymous-node.*.node | Public npm/import name humanymous and public native basename humanymous. Node owner maps generated loaders, package files, platform manifest, provenance and installation destination with Delivery's npm pack/check/publish consumers. The host-required .node extension is retained. |
+| Node package @humanymous/node, binaryName humanymous-node, native/humanymous-node.*.node | Public npm/import name and host extension module stem humanymous. Node owner maps generated loaders, package files, platform manifest, provenance and installation destination with Delivery's npm pack/check/publish consumers. The host-required .node extension and NAPI registration are retained; a common FFI backend uses humanymous-native. |
 | Python explicit lib.name and pymodule humanymous_python | Public import and extension basename humanymous, with its corresponding CPython initialization symbol. Python owner maps Rust/PyO3 export, package builder, installation metadata and actual host tests together. |
 | Ruby explicit lib.name humanymous_ruby | Public require and extension basename humanymous, with its corresponding Ruby initialization symbol. Ruby owner maps export, gem/install paths and actual host tests together. |
-| .NET LibraryImport humanymous_dotnet_adapter_export | Public product identity Humanymous and mapped native basename humanymous; .NET owner and root map loader, destination and versioned ABI descriptor. No new C# surface is implied by this handoff. |
+| .NET LibraryImport humanymous_dotnet_adapter_export | Managed AssemblyName/file humanymous.dll, public NuGet identity humanymous and C# namespace Humanymous; LibraryImport logical name humanymous-native. .NET owner and root map native destination and versioned ABI descriptor. No new C# surface is implied by this handoff. |
 | Cargo metadata currently used for internal package waves | Root supplies the public Rust humanymous facade and its dependency/publication policy separately from the ten internal adapter package renames. No namespace ownership or ready package is asserted. |
+
+Python/Ruby extension modules retain the required humanymous/PyInit/Init stems;
+these host extensions are distinct from the common native FFI backend. Map owned
+build outputs to the hyphenated FFI filename through the source-bound package
+manifest, not an invalid Rust library identifier or an arbitrary upstream DLL
+rename. The managed/native stems resolve their direct filename collision, while
+target/ABI/role paths, a trusted resolver, single-role/domain leases and unload
+restrictions remain root-owned compatibility gates.
 
 Platform extensions and required host registration symbols are explicit host
 constraints, not permission to keep language suffixes as the public brand.

@@ -62,16 +62,36 @@ pub fn log(root: &Path, program: &str, args: &[&str], destination: &Path) -> Res
     Ok(result.code().unwrap_or(-1))
 }
 pub fn json_log(root: &Path, program: &str, args: &[&str], destination: &Path) -> Result<i32> {
+    let args = crate::metrics::arguments(program, args);
+    let measurement = crate::metrics::Measurement::start(root, program, &args);
+    json_log_arguments(root, program, &args, destination, measurement)
+}
+/// The inner command is explicitly Cargo; never infer commands from wrappers.
+pub fn json_log_timeout_cargo(
+    root: &Path,
+    args: &[&str],
+    budget: &str,
+    destination: &Path,
+) -> Result<i32> {
+    let invocation = crate::metrics::cargo_timeout(args, budget);
+    let measurement = crate::metrics::Measurement::wrapped_cargo(root, &invocation.inner);
+    json_log_arguments(root, "timeout", &invocation.outer, destination, measurement)
+}
+fn json_log_arguments(
+    root: &Path,
+    program: &str,
+    args: &[String],
+    destination: &Path,
+    measurement: crate::metrics::Measurement,
+) -> Result<i32> {
     if let Some(parent) = destination.parent() {
         std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
     let output = std::fs::File::create(destination).map_err(|e| e.to_string())?;
     let error = std::fs::File::create(destination.with_extension("stderr.log"))
         .map_err(|e| e.to_string())?;
-    let args = crate::metrics::arguments(program, args);
-    let measurement = crate::metrics::Measurement::start(root, program, &args);
     let status = Command::new(program)
-        .args(&args)
+        .args(args)
         .current_dir(root)
         .stdin(Stdio::null())
         .stdout(output)

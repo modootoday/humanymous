@@ -1035,3 +1035,37 @@ notice probe waiting the cooperative grant before Docker children is the propose
 consumer seam; root/owner profile acceptance and actual allocated consumer proof
 remain required. Existing native archive and image build/scan gates are separate
 ready work; no allowlist/resource/privilege change follows from this evidence.
+
+B3 wrapped-Cargo observation source is prepared in metrics/command/components:
+closed explicit inner Cargo descriptor, unchanged GNU timeout flags/budget,
+optional inner timings with cargo install excluded, one measurement and explicit
+wrapper process/elapsed scopes. spawn/exit facts refer to the wrapper only.
+CLI and inherited target/build-directory candidates and inherited flag presence
+are hashed separately, preserving empty versus unset; effective directories and
+legacy target hash remain null, reuse flags false. Three pure regression cases
+cover forwarding/stop flags/non-Cargo refusal, directory requests/redaction and
+unset/empty identity. rustfmt and whitespace checks passed; no compiler or actual
+wrapped command has run. Root allocation requested for the existing exclusive
+Delivery target, expected93 tests only a hypothesis. A real GNU wrapper pilot is
+still required before claiming observed coverage; Windows pure checks cannot
+substitute for that venue. No common graph, workflow, controller or source306
+frozen execution input was changed.
+
+B3 subsequent actual allocation TERMINAL: metadata92564/commands42230 ended0,
+93pass/0failed/0ignored/0filtered, check/strictClippy/policy/fmt/actionlint0 and
+expected shipping rejection1. Source2786/registry105packages3791files/config20/
+tools4/environment/three working overlays all0drift. Exact initial checkpoint
+7f5c17a6... is eaa69690 plus only those three overlays; compiler_started=false
+remains historical preparation, while the new public terminal record says true.
+The owned D target marker was verified/removed and execution allocation returned.
+Actual GNU wrapper single-record/timings observation remains a separate missing
+pilot; no Windows pure pass is substituted for it. Public name handoff now uses
+managed humanymous.dll/native FFI humanymous-native and required host extension
+exceptions without any actual namespace/source/ABI rename.
+
+Root next assigns a closed hosted build-only Audit component: exact f9 source,
+13 real selectors and 12 compiler attempts, separate from capture/header/archive,
+observed filesystem prerequisites, original overall deadline/cleanup and source
+closure. No Audit execution, push, repair, Ready or full-product claim has been
+made by Delivery. Read the owner-frozen preparation before implementing its
+closed component; common Cargo/lock/toolchain remain root-owned.

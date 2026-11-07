@@ -1,0 +1,77 @@
+{
+  "schema": "humanymous.wrapped-cargo-helper-validation/1",
+  "checkpoint": {
+    "record_scope": "Immutable initial preparation snapshot; compiler_started=false was historical before the execution below, not current terminal state",
+    "overlay": [
+      {
+        "path": "scripts/ci/delivery/src/metrics.rs",
+        "sha256": "ed694b660d5d350cc5560892f7e2907c2566deb18a198685d0874864a6ab9864"
+      },
+      {
+        "path": "scripts/ci/delivery/src/command.rs",
+        "sha256": "50accf646cef395fd96c7d9aea80beb58c88d484993ed65ac3f15145283c971c"
+      },
+      {
+        "path": "scripts/ci/delivery/src/components.rs",
+        "sha256": "ad0e83821f9b777d60cfd38ff7440246a213d701cde2aa945ecab05c65c55f46"
+      }
+    ],
+    "sha256": "7f5c17a6cae22e8755dbe0677682b67b161dc682030c46e2d4dfa32ce76f1380",
+    "base_commit": "eaa696905161932dfd601e33769392f18b5c490d"
+  },
+  "terminal_execution": {
+    "metadata_exit": 0,
+    "test_counts": {
+      "passed": 93,
+      "ignored": 0,
+      "filtered": 0,
+      "failed": 0
+    },
+    "actual_gnu_wrapper_pilot_executed": false,
+    "target_lease_returned": true,
+    "commands_session": 42230,
+    "commands_exit": 0,
+    "compiler_executed": true,
+    "commands": {
+      "tests": 0,
+      "check": 0,
+      "clippy": 0,
+      "policy": 0,
+      "actionlint": 0,
+      "fmt": 0,
+      "expected_shipping_rejection": 1
+    },
+    "metadata_session": 92564,
+    "venue": "Windows x86_64-pc-windows-msvc"
+  },
+  "closure": {
+    "source_files": 2786,
+    "source_drift": 0,
+    "registry_files": 3791,
+    "registry_drift": 0,
+    "config_files": 20,
+    "config_drift": 0,
+    "tools_files": 4,
+    "tools_drift": 0,
+    "environment_drift": 0,
+    "overlay_working_drift": 0
+  },
+  "registry_packages": 105,
+  "registry_scope": "reachable Windows metadata closure; may overapproximate selected features",
+  "private_capture_index_sha256": "fbbf7ac8171091c2403b2eda39b2d520e767866c8cc7af7ad6d17826c13b3ba6",
+  "covered": [
+    "Explicit inner Cargo descriptor and unchanged GNU timeout stop arguments",
+    "Optional timings before forwarding boundary; cargo install excluded",
+    "Wrapper observation/elapsed scope distinct from direct Cargo child facts",
+    "No added rustc identity subprocess before wrapped timeout",
+    "CLI and inherited target/build directory requests, redaction and unknown effective identity",
+    "Unset versus explicitly empty inherited input candidates"
+  ],
+  "limitations": [
+    "This proves the exact frozen eaa source plus three declared overlays, not every later shared-graph commit.",
+    "Pure Windows regressions do not establish actual GNU timeout execution or one-record runtime observation; that separate allocated pilot remains missing.",
+    "Source checkpoint compiler_started=false is preserved as initial preparation; terminal compiler execution is true in this record.",
+    "No workload/controller permission expansion, WSL, hosted product retry, Docker, namespace mutation, OIDC exchange or publication.",
+    "Reuse and full shipping qualification remain false."
+  ]
+}

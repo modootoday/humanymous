@@ -1046,6 +1046,28 @@ and isolated dependency identities remain explicit unknown dimensions;
 reuse_key_complete and linked_artifact_reuse_qualified remain false. Measurements
 do not justify deleting builds until equivalent actual execution is established.
 
+The fixed GNU timeout component route supplies an explicit inner-Cargo
+descriptor; generic wrapper strings are never parsed to discover commands.
+Optional timings are inserted into that inner Cargo vector before its forwarding
+separator, using the existing build/test/check/clippy/run allowlist, never cargo
+install. TERM, kill-after, budget and failure behavior remain unchanged. Exactly
+one measurement owns the invocation; its observed_process_scope and elapsed_scope
+identify the GNU timeout wrapper, including startup/wait, not pure Cargo child
+time. spawned/success/exit_code describe that observed wrapper, not independent
+Cargo spawn, reader joins, descendants or cleanup. Ordinary direct observations
+remain explicitly direct-command scoped.
+The wrapped route must not start an extra rustc identity subprocess before its
+timeout: reuse an already observed in-process identity or record it as unknown.
+
+Directory observations separately hash the requested CLI target directory and
+inherited CARGO_TARGET_DIR/CARGO_BUILD_BUILD_DIR candidates. Inherited flag
+candidates also retain unset versus explicitly empty states without raw values.
+These are requests, not resolved Cargo configuration: effective target/build
+directories and the legacy target_dir_sha256 field remain null. No hashed
+literal default is presented as an observed directory. Reuse flags remain false.
+Pure boundary regressions and an allocated actual wrapped-Cargo observation pilot
+are distinct gates; source preparation does not claim that pilot has executed.
+
 The sole lab public-receipts contract governs the CI projection. The current
 required owned-deployment wargame ledger has exactly 26 ordered unique indexes.
 CI validates source and raw/manifest digests, exact field allowlists, terminal
