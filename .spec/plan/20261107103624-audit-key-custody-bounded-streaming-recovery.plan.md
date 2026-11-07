@@ -393,6 +393,15 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Merkle S1 candidate9c5f4e7c plus test-only Clippy correction actually passed
+allocated A locked all-target check/Clippy, Merkle8 and unchangedGo parity1.
+Go66 cases sizes0..65 assert2145 inclusion/2080 consistency exact ordered paths.
+First Clippy failure retained.119 observed paths include one foreign document
+drift (test-support/INTEGRATION.md),118 unchanged including Rust/manifests/fixtures;
+actual depfiles/source references exclude that document. No broad zero-drift
+claim. Evidence114310/raw114044. Batch terminal and A returned; no fullsuite or
+memory/production qualification. Remaining S1 and S2/S3 stay incomplete.
+
 The next restricted S1 source window opened after Runtime C and .NET D commands
 were terminal. Private fixed-size append frontier and checked proof-range plans
 are authored, with prefix parity, textual leaf domain, overflow/no-mutation,

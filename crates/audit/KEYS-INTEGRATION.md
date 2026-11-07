@@ -1,5 +1,16 @@
 # Sealed key compatibility integration
 
+## Merkle S1 scoped verification completed
+
+Allocated A batch passed locked all-target check/Clippy and9 Rust tests
+(Merkle8/55filtered, immutableGo parity1/0filtered). ExactGo66 cases sizes0..65
+compare2145 inclusion and2080 consistency paths. First Clippy test-expression
+failure retained and corrected before fresh second batch.119-path snapshot has
+one foreign documentation drift, test-support/INTEGRATION.md; remaining118 paths
+identical and no compiler-input reference to that document found. No broad
+zero-drift claim. Evidence114310/raw114044. No fullsuite/capacity/product claim;
+allocation batch terminal, no workload held. Source frozen for review.
+
 ## Merkle S1 candidate ready for bounded validation
 
 The next accepted private S1 source slice contains a fixed64-peak append

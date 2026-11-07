@@ -1,0 +1,25 @@
+{
+  "candidate": "9c5f4e7c plus frontier.rs Clippy test-only range expression correction",
+  "steps": [
+    "all-targets locked check",
+    "all-targets locked Clippy -D warnings",
+    "lib merkle:: selector",
+    "merkle_parity integration"
+  ],
+  "passed": 9,
+  "failed": 0,
+  "ignoredExecuted": 0,
+  "libFiltered": 55,
+  "parityFiltered": 0,
+  "sourceFiles": 119,
+  "hashDriftCount": 2,
+  "pathInventoryDrift": 0,
+  "goCases": 66,
+  "goSizeRange": "0..=65",
+  "goInclusionPaths": 2145,
+  "goConsistencyPaths": 2080,
+  "firstAttempt": "check passed, Clippy failed manual_range_contains before tests; logs retained",
+  "scope": "pure Merkle only; no full suite/native/product e2e/capacity guarantee",
+  "handles": "session20220 terminal exit0; allocation A batch complete",
+  "driftClassification": "One path/two side indicators: crates/test-support/INTEGRATION.md changed by owning session. Remaining118 observed paths unchanged. No INTEGRATION.md reference in owning Rust sources/manifests/build.rs; Cargo test-support depfiles list Rust modules and Cargo.toml only. Broad119-path zero drift is NOT claimed."
+}

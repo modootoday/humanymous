@@ -64,7 +64,7 @@ mod tests {
         for (index, leaf) in leaves.iter().enumerate() {
             frontier.append(leaf).unwrap();
             assert_eq!(frontier.count(), index as u64 + 1);
-            if index < 257 || index >= 4094 {
+            if !(257..4094).contains(&index) {
                 assert_eq!(frontier.root(), reference.root_at(index + 1).unwrap());
             }
         }
