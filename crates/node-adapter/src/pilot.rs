@@ -2,7 +2,6 @@
 //! their real module loader; no foreign test source is generated or evaluated.
 use crate::{envelope::error, host::*, stream};
 use napi::{Env, Result, bindgen_prelude::*};
-use napi_derive::napi;
 use serde::Deserialize;
 use std::io::Read;
 mod origin;
@@ -15,8 +14,7 @@ struct Pilot {
     effect_file: Option<std::path::PathBuf>,
 }
 
-#[napi(module_exports)]
-fn initialize(_exports: Object<'_>, env: Env) -> Result<()> {
+pub(crate) fn initialize(_exports: Object<'_>, env: Env) -> Result<()> {
     if std::env::var_os("HUMANYMOUS_NODE_HOST_PILOT").is_none() {
         return Ok(());
     }

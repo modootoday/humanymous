@@ -238,3 +238,21 @@ to Rack/Sinatra/Rails dependency-down probes: native4groups/8cases. Separate Rub
 contract prevents default pure results becoming ABI/server qualification.
 All new compile/unit/native/package/runtime gates remain NOT_RUN while root
 benchmark quiet window is active. Earlier summary003 precedes these later bytes.
+
+Read-only watch recovered final source813 Node job128361689495: native build
+including inspection and explicit inspection child cargo-run stages exited0
+(156977ms/1268ms), followed by qualification.json missing. Exact813 delivery
+source contains no host_process execution before that gate; no actual framework/
+authority counts are inferred. API job log retained privately with LF-normalized
+hash; sanitized summary004 attached to existing evidence. Archive packing was
+not reached. This is historical component scope, not latest-source qualification.
+
+Node packaging review found that loader exit alone did not prove fixture absence.
+Added actual hostPilotEnabled plus one native initializer that rejects a fixture
+binary in production-load mode before optional pilot startup. Package inspection
+sets that mode, clears overrides, closes stdin and requires a unique actual
+capability receipt with exact false across four runtime/loader combinations.
+Missing/duplicate/non-boolean/oversized rows fail closed. Two pure regression
+definitions cover receipt ambiguity and feature types. No authored JS, graph or
+scoring mutation. New compile/import/unit gates remain NOT_RUN during quiet.
+Receipt size checks are post-capture, not a streaming memory-bound claim.

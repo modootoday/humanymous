@@ -12,6 +12,30 @@ mod pilot;
 use napi::{Env, bindgen_prelude::*};
 use napi_derive::napi;
 
+#[cfg(not(test))]
+#[napi(module_exports)]
+fn initialize(exports: Object<'_>, env: Env) -> Result<()> {
+    if std::env::var("HUMANYMOUS_NODE_PRODUCTION_LOAD_REQUIRED").as_deref() == Ok("1")
+        && cfg!(feature = "host-pilot")
+    {
+        return Err(envelope::error(
+            "host fixture is present in production native load",
+        ));
+    }
+    if std::env::var("HUMANYMOUS_NATIVE_CAPABILITY_RECEIPT").as_deref() == Ok("1") {
+        println!("{}", capabilities(env)?);
+    }
+    #[cfg(feature = "host-pilot")]
+    {
+        pilot::initialize(exports, env)
+    }
+    #[cfg(not(feature = "host-pilot"))]
+    {
+        let _ = exports;
+        Ok(())
+    }
+}
+
 /// Create root-mounted Express middleware before every body parser and effect.
 #[napi(ts_return_type = "(request: object, response: object, next: () => void) => void")]
 pub fn express(env: Env, options: String) -> Result<Function<'static, (), ()>> {
@@ -48,5 +72,5 @@ pub use template::{HtmlHook, html_hook};
 #[napi]
 pub fn capabilities(env: Env) -> Result<String> {
     let bun = host::prop::<Option<Object>>(&host::global(&env)?, "Bun")?.is_some();
-    Ok(serde_json::json!({"protocol":"humanymous.adapter/0.1","adapter":"humanymous.node","implementation":"rust-node-api","expressObservation":if bun {"fetch-normalized"} else {"node-raw"},"expressRawHeaderOrder":!bun,"expressRawHeaderCasing":!bun,"fetchRawHeaderOrder":false,"rawTls":false,"originalH2":false,"capture":false,"administration":false,"completeBodyLimit":1048576,"pendingLimit":64,"uploadStreaming":false,"websocket":false,"grpc":false,"responseStreaming":"handler-owned-unmodified","html":"explicit-template-only","releaseQualifiedTuples":[]}).to_string())
+    Ok(serde_json::json!({"protocol":"humanymous.adapter/0.1","adapter":"humanymous.node","implementation":"rust-node-api","hostPilotEnabled":cfg!(feature="host-pilot"),"expressObservation":if bun {"fetch-normalized"} else {"node-raw"},"expressRawHeaderOrder":!bun,"expressRawHeaderCasing":!bun,"fetchRawHeaderOrder":false,"rawTls":false,"originalH2":false,"capture":false,"administration":false,"completeBodyLimit":1048576,"pendingLimit":64,"uploadStreaming":false,"websocket":false,"grpc":false,"responseStreaming":"handler-owned-unmodified","html":"explicit-template-only","releaseQualifiedTuples":[]}).to_string())
 }

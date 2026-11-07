@@ -1,0 +1,32 @@
+{
+  "schema": "humanymous.adapter-hosted-stage/1",
+  "sourceSha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "runId": 42355168729,
+  "jobId": 128361689495,
+  "jobName": "validate / node",
+  "jobStatus": "completed",
+  "jobConclusion": "failure",
+  "retainedLogFormat": "GitHub API decoded text normalized to LF",
+  "retainedLogSha256": "c9a00849aa165105854294ede956c3a0df1c338d515682b53755d97638a43f6b",
+  "observedChildStages": [
+    {
+      "commandKind": "cargo-run",
+      "stage": "native build including inspection",
+      "elapsedMs": 156977,
+      "exitCode": 0
+    },
+    {
+      "commandKind": "cargo-run",
+      "stage": "native inspection",
+      "elapsedMs": 1268,
+      "exitCode": 0
+    }
+  ],
+  "blockingGate": "target/node-native/qualification.json missing",
+  "scopeLimit": "Exact source-813 delivery package flow runs generation/inspection before requiring qualification; it does not execute actual host_process tests in this job",
+  "actualFrameworkAuthorityTestResult": "not established by this job",
+  "archivePacking": "not reached after qualification block",
+  "latestAdapterSourceQualified": false,
+  "releaseQualifiedTuples": [],
+  "wholeProductQualified": false
+}

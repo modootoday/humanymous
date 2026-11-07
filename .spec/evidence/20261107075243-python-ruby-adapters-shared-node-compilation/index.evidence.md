@@ -3,13 +3,14 @@ id: evidence:root/20261107075243
 title: Python Ruby adapters shared Node compilation
 status: active
 created: 2026-11-07T07:52:43Z
-updated: 2026-11-07T08:54:46Z
+updated: 2026-11-07T09:18:17Z
 rel:
   governs: [crates/node-adapter]
 files:
   - {path: summary-001.json, sha256: 09ba1cdf3e041fbbf16f6ff1546e49a4261a55a3bae2e8c187fd6f21524f89d9, bytes: 1306, store: repo}
   - {path: summary-002.json, sha256: cf779ccd005511ab728655fcb2f185eec98368ece59cf722a4d59390ce1055cf, bytes: 1839, store: repo}
   - {path: summary-003.json, sha256: b4b9498c9d6693ffa948a1fd10a3fa5ca85d87f6a1b0e21dfa7d3298c0145958, bytes: 3905, store: repo}
+  - {path: summary-004.json, sha256: fa91c3441f1618771c7b8f34404347728e053cdc7b79202901771230e6c8abfc, bytes: 1194, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -69,3 +70,13 @@ transitive crates are named, so no full-graph stability claim. No tests, native
 imports, frameworks or installers ran. Ruby default does not enable Magnus.
 New Python Unix WSGI source was excluded by platform and feature cfg and has no
 compile/runtime evidence from these Windows commands.
+
+## Source813 hosted Node stage result
+
+Summary004 retains final job128361689495 from run42355168729. Native build and
+inspection stages exited0, then the required qualification.json was missing.
+Exact813 package flow did not execute actual host_process tests before that gate;
+native generation/loader inspection is distinct from framework/authority proof.
+The LF-normalized API log remains private with its hash. Archive packing was not
+reached; neither this historical result nor later source-only feature guards
+qualify current packages or runtime tuples.

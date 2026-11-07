@@ -4,7 +4,7 @@ use sha2::{Digest, Sha256};
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::Command,
+    process::{Command, Stdio},
 };
 
 fn run(program: &str, args: &[&str], cwd: &Path) -> Result<(), String> {
@@ -19,6 +19,53 @@ fn run(program: &str, args: &[&str], cwd: &Path) -> Result<(), String> {
         return Err(format!("{program} failed: {status}"));
     }
     Ok(())
+}
+fn production_import(runtime: &str, loader: &str, package: &Path) -> Result<(), String> {
+    let output = Command::new(runtime)
+        .arg(loader)
+        .current_dir(package)
+        .stdin(Stdio::null())
+        .env("HUMANYMOUS_NODE_PRODUCTION_LOAD_REQUIRED", "1")
+        .env("HUMANYMOUS_NATIVE_CAPABILITY_RECEIPT", "1")
+        .env_remove("HUMANYMOUS_NODE_HOST_PILOT")
+        .env_remove("NODE_OPTIONS")
+        .env_remove("BUN_OPTIONS")
+        .env_remove("NAPI_RS_NATIVE_LIBRARY_PATH")
+        .env_remove("NAPI_RS_FORCE_WASI")
+        .output()
+        .map_err(|e| e.to_string())?;
+    if !output.status.success() {
+        return Err(format!(
+            "production native import failed: {runtime}/{loader}: {}",
+            output.status
+        ));
+    }
+    if output.stderr.len() > 1_048_576 {
+        return Err("production native import receipt exceeds limit".into());
+    }
+    let row = production_capability(&output.stdout)?;
+    println!("{row}");
+    Ok(())
+}
+fn production_capability(stdout: &[u8]) -> Result<serde_json::Value, String> {
+    if stdout.len() > 65_536 {
+        return Err("production native capability receipt exceeds limit".into());
+    }
+    let stdout = std::str::from_utf8(stdout).map_err(|_| "non-UTF8 native capability receipt")?;
+    let mut rows = stdout
+        .lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+        .filter(|row| row["adapter"] == "humanymous.node");
+    let row = rows
+        .next()
+        .ok_or("actual native capability receipt missing")?;
+    if rows.next().is_some()
+        || row["implementation"] != "rust-node-api"
+        || row["hostPilotEnabled"] != false
+    {
+        return Err("unique production native receipt without fixture feature required".into());
+    }
+    Ok(row)
 }
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -191,7 +238,7 @@ fn inspect(package: &Path) -> Result<(), String> {
     )?;
     for runtime in ["node", "bun"] {
         for loader in ["native/index.cjs", "native/index.mjs"] {
-            run(runtime, &[loader], package)?;
+            production_import(runtime, loader, package)?;
         }
     }
     let manifest = serde_json::json!({"generator":"@napi-rs/cli","version":"3.10.12","authoredSource":"Rust1.99.1/edition2024","qualification":"component-only","productionFeatures":[],"package_manifest_sha256":hex::encode(Sha256::digest(fs::read(package.join("package.json")).map_err(|e|e.to_string())?)),"files":records});
@@ -202,4 +249,33 @@ fn inspect(package: &Path) -> Result<(), String> {
     .map_err(|e| e.to_string())?;
     println!("{manifest}");
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn native_feature_receipt_requires_exact_false_not_missing_or_truthiness() {
+        let mut value = serde_json::json!({"adapter":"humanymous.node","implementation":"rust-node-api","hostPilotEnabled":false});
+        assert!(production_capability(value.to_string().as_bytes()).is_ok());
+        for invalid in [
+            serde_json::Value::Null,
+            serde_json::json!(true),
+            serde_json::json!("false"),
+            serde_json::json!(0),
+        ] {
+            value["hostPilotEnabled"] = invalid;
+            assert!(production_capability(value.to_string().as_bytes()).is_err());
+        }
+        value.as_object_mut().unwrap().remove("hostPilotEnabled");
+        assert!(production_capability(value.to_string().as_bytes()).is_err());
+    }
+    #[test]
+    fn absent_duplicate_invalid_and_oversized_receipts_cannot_qualify_load() {
+        let value = serde_json::json!({"adapter":"humanymous.node","implementation":"rust-node-api","hostPilotEnabled":false});
+        assert!(production_capability(b"upstream loader returned without a receipt").is_err());
+        assert!(production_capability(format!("{value}\n{value}\n").as_bytes()).is_err());
+        assert!(production_capability(&[255]).is_err());
+        assert!(production_capability(&vec![b'x'; 65_537]).is_err());
+    }
 }

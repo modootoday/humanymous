@@ -1,5 +1,22 @@
 # Rust Node-API adapter integration
 
+Latest packaging source exposes actual hostPilotEnabled and uses one native
+initializer for read-only capability receipts and optional host-pilot startup.
+Production-load assertion rejects host-pilot binaries before fixture code. The
+Rust package inspector loads generated CJS/ESM under Node/Bun with closed stdin,
+fixture/loader overrides cleared, and requires one actual Rust capability receipt
+with exact false. Old binaries that ignore the mode and emit no receipt reject.
+Two pure receipt-validation definitions cover absent/duplicate/invalid/oversized
+and non-boolean states. New initializer/package code is NOT_COMPILED/NOT_RUN;
+earlier compilation receipts do not cover these bytes. Actual child timeout and
+stream memory supervision remain the invoking runner's responsibility; accepted
+receipt sizes are checked after capture, not claimed as streaming bounds.
+
+Hosted source813 job128361689495 completed native build/inspection stages then
+failed at missing qualification.json. It did not run host_process groups before
+that gate; summary004 in evidence:root/20261107075243 preserves the distinction.
+No qualification receipt has been invented from loader success.
+
 Current followup consumes framework-adapter shared config/envelope/entropy and
 process admission. NAPI error/host lifecycle remain here. Common schema adds only
 optional syncInputDeadlineEnforced=false; original Node required fields remain.

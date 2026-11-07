@@ -201,6 +201,16 @@ install, publish or token operation exists.
 
 Both native modules expose capabilities JSON with actual host-pilot/package-tool
 feature bits. Installed production wheel inspection must reject either bit true.
+Node's common packaging boundary likewise exposes actual hostPilotEnabled. A
+single native module initializer handles read-only capability receipts and the
+optional host fixture; production-load mode rejects the host-pilot feature before
+fixture code. Generation/inspection loads both upstream-generated CJS/ESM entry
+points under Node/Bun with closed stdin, fixture/loader override variables cleared,
+and requires exactly one actual receipt with hostPilotEnabled=false. Missing,
+duplicate, non-boolean and oversized receipt values cannot qualify a package.
+Successful loader exit alone does not establish this property. No authored JS
+wrapper is introduced; native feature/import gates remain separate from actual
+framework/authority and full-product qualification.
 Ruby has an explicit read-only native capability receipt environment mode for
 upstream ruby --require, without an authored Ruby script. Empty qualified tuples
 remain explicit; code feature detection is not ABI/runtime qualification.
