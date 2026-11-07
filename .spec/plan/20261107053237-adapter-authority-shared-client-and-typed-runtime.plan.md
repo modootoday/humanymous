@@ -1096,3 +1096,17 @@ DIFFERS (218CR bytes). Reported Root-owned moved-file LF normalization; no fixtu
 copy or edit performed by Authority. Raw equality remains unverified until correction.
 Consumer SHA256 before 5b22d6aae4106d85e445f881a7c3681bde45d38cc5ea59497c3c593a13527859; after 0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b.
 Root manifest dirty preserved. No compiler/tests/Clippy executed.
+
+#### Fixture baseline clarification from Root
+
+Root checked file-map.before.json against all26 moved non-Rust files: raw SHA256
+pre/post differences0. Original worktree already had CRLF; comparing moved raw
+bytes with normalized historical Git LF is not source-drift evidence. The earlier
+request for normalization is withdrawn: preserve frozen rawbytes, no repair needed.
+The earlier cbf3... normalized Git equality and d2cb... raw blob observations remain
+accurate but are distinct baselines; Authority did not save a pre-move raw snapshot
+and does not independently assert Root's26file check. Root reports first locked/
+offline core tests terminal0; no full workspace/native qualification is inferred.
+Authority include correction committed6c6902c9; decisions.rs final SHA256
+0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b.
+No compilation, normalization, manifest or fixture changes by Authority.
