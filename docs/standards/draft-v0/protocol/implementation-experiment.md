@@ -52,6 +52,28 @@ service requests; responses require Connection: close. Callers supply the
 whole-connection deadline; framing alone does not
 install a timer.
 
+## Local service lifetime and admission
+
+The shared listener validates capacity of 1–128, rate of 1–10000 admissions per
+monotonic one-second fixed window and a connection timeout of 1–30000 ms.
+This is one provisioned peer per service instance, not an unbounded per-client
+rate map or a sliding-window guarantee. Overload rejection has a separate 10-ms
+drain/write budget, so an overloaded connection may close without a complete 429.
+
+The service applies the connection deadline to read, handler and write work.
+While the handler runs, the connection also watches for extra input or closure
+and marks its context cancelled. Blocking work can outlive the connection future;
+its context retains the admission permit until that work really ends. Handlers
+must recheck liveness before effects and after durable work. Timeout is not proof
+that a worker stopped or an already committed effect rolled back.
+
+Controlled shutdown stops acceptance, cancels tracked connections and waits for
+their tasks and admission-owning workers within an explicit drain budget. A drain
+timeout is an error, not a graceful-stop acknowledgement. Reusing this transport
+for another local handler does not grant access to administration through the
+decision endpoint; each handler owns its separate credential, scope and route
+authorization. These are source contracts awaiting deployment-specific evidence.
+
 ## JSON model
 
 The parser accepts fixed-schema UTF-8 JSON. It rejects a byte-order mark,

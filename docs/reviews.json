@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/src/transport/service.rs",
+  "sha256": "1e7faf4a2f7d89a642c2f59f5ab7467b07cda381c2cdcfcf74ae0e71f93ba86a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete Limits/LocalResponse/LocalContext/LocalHandler contracts:capacity1..128/rate1..10000/timeout1..30000, strict boundedJSON/status, actual peer, cancellation/shutdown/wallrollback/monotonic checks and shared permit ownership. Generic local handler still owns separate authorization; no actual service execution.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/authority/src/transport/mod.rs",
+  "sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete admission/listener/connection/shutdown and two test definitions: fixed monotonic window,10ms overload budget, whole connection timeout, concurrent input/closure cancellation, blocking decision owner retains permit, tracked abort/drain with worker semaphore wait and explicit error on timeout. No claim of forced blocking-worker termination, sliding-window limit or origin rollback; native modules separate.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
   "source": "crates/authority/src/credentials.rs",
   "sha256": "d7e84bf9ad7b4853bfb12ad92990b222d7de24a0c9428d10cc22447667c3b170",
   "reviewer": "codex/rust-pages",

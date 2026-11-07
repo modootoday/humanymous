@@ -1582,3 +1582,13 @@ responses provide full attempt/effect accounting. Corrected client-earlier-expir
 capability versus current authority emitting requestdeadline. Two manual receipts;
 no scoring/behavior/native execution. Exact813 run still live, only advisories
 128362579030 active at observation; no duplicate dispatch or current-source pass.
+
+### Local IPC admission and worker lifetime semantics
+
+Read complete transport service/context and shared listener modules. Experimental
+reference now states bounded limits/fixed-window (not sliding/perclient map),10ms
+overload drain may yield no complete429, actual wholeconnection deadline and
+extra-input/closure watch, cancelledblocking work retaining admission untilend,
+and explicit abort/drain error rather than graceful acknowledgement. Reusing
+LocalHandler does not add admin dispatch to decision wire. Added two manual
+receipts; no actual native/time/resource test or benchmark-prohibited command.
