@@ -797,3 +797,18 @@ ambiguous framing. Check credential stripping, duplicate Set-Cookie preservation
 authenticated audit recovery and session invalidation after process restart.
 Report unsupported collector/TLS/H2 and independent origin isolation explicitly;
 this bounded pilot does not complete full Core/Gate/browser/AT e2e.
+
+## Shared Go-compatible JSON string sink
+
+The root-owned signals wire encoder adds quote_json_go_to over std::io::Write.
+The existing String API delegates to this same encoder. It preserves JSON control
+escapes, UTF-8, Go HTML escaping and U+2028/U+2029 bytes, emits bounded character
+chunks and propagates sink failure without claiming that partial output is valid.
+Audit may reuse it for counting/replay/signing encoders after the exact candidate
+is verified; this changes no signature format, policy, score or dependency edge.
+
+Two new tests compare all valid Unicode scalar values against the prior
+serde_json-plus-replacements encoder and inject a partial-write failure. They are
+authored but NOT_RUN while the single Pages Docker heavy phase owns local build
+resources. No allocation, end-to-end bounded-memory or downstream qualification
+is inferred from source review or formatting.

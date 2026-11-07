@@ -26,13 +26,42 @@ pub fn unicode_version() -> &'static str {
 /// Quote a UTF-8 string with Go encoding/json's default HTML and line-separator
 /// escaping. This does not claim general JSON number/struct canonicalization.
 pub fn quote_json_go(value: &str) -> String {
-    serde_json::to_string(value)
-        .expect("string serialization cannot fail")
-        .replace('<', "\\u003c")
-        .replace('>', "\\u003e")
-        .replace('&', "\\u0026")
-        .replace('\u{2028}', "\\u2028")
-        .replace('\u{2029}', "\\u2029")
+    let mut output = Vec::new();
+    quote_json_go_to(value, &mut output).expect("vector write cannot fail");
+    String::from_utf8(output).expect("quoted UTF-8 remains UTF-8")
+}
+
+/// Write the same Go-compatible JSON string without allocating an escaped copy.
+/// A sink error is returned immediately; partial output must not be committed.
+pub fn quote_json_go_to(value: &str, output: &mut impl std::io::Write) -> std::io::Result<()> {
+    output.write_all(b"\"")?;
+    for character in value.chars() {
+        let escaped = match character {
+            '"' => Some("\\\""),
+            '\\' => Some("\\\\"),
+            '\u{8}' => Some("\\b"),
+            '\u{c}' => Some("\\f"),
+            '\n' => Some("\\n"),
+            '\r' => Some("\\r"),
+            '\t' => Some("\\t"),
+            '<' => Some("\\u003c"),
+            '>' => Some("\\u003e"),
+            '&' => Some("\\u0026"),
+            '\u{2028}' => Some("\\u2028"),
+            '\u{2029}' => Some("\\u2029"),
+            _ => None,
+        };
+        if let Some(escaped) = escaped {
+            output.write_all(escaped.as_bytes())?;
+        } else if character <= '\u{1f}' {
+            const HEX: &[u8; 16] = b"0123456789abcdef";
+            let code = character as usize;
+            output.write_all(&[b'\\', b'u', b'0', b'0', HEX[code >> 4], HEX[code & 15]])?;
+        } else {
+            output.write_all(character.encode_utf8(&mut [0; 4]).as_bytes())?;
+        }
+    }
+    output.write_all(b"\"")
 }
 
 /// Represent a float32 payload using its shortest round-trip decimal, as Go's
@@ -102,6 +131,43 @@ pub fn quote_go(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn streaming_json_matches_prior_encoder_for_control_and_unicode_ranges() {
+        let text: String = (0..=0x10ffff).filter_map(char::from_u32).collect();
+        let expected = serde_json::to_string(&text)
+            .unwrap()
+            .replace('<', "\\u003c")
+            .replace('>', "\\u003e")
+            .replace('&', "\\u0026")
+            .replace('\u{2028}', "\\u2028")
+            .replace('\u{2029}', "\\u2029");
+        assert_eq!(quote_json_go(&text), expected);
+        let mut bytes = Vec::new();
+        quote_json_go_to(&text, &mut bytes).unwrap();
+        assert_eq!(bytes, expected.as_bytes());
+    }
+
+    #[test]
+    fn streaming_json_propagates_partial_sink_failure() {
+        struct Limited(Vec<u8>);
+        impl std::io::Write for Limited {
+            fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+                let remaining = 4_usize.saturating_sub(self.0.len());
+                if remaining == 0 {
+                    return Err(std::io::Error::other("injected sink failure"));
+                }
+                let count = remaining.min(bytes.len());
+                self.0.extend_from_slice(&bytes[..count]);
+                Ok(count)
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+        let mut sink = Limited(Vec::new());
+        assert!(quote_json_go_to("<secret", &mut sink).is_err());
+        assert_eq!(sink.0, b"\"\\u0");
+    }
     #[test]
     fn unicode_simple_mapping_does_not_expand_or_depend_on_context() {
         assert_eq!(simple_lowercase("İ ΟΣ User-Agent"), "i οσ user-agent");
