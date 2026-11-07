@@ -689,3 +689,11 @@ contract distinctions; pinned six manual source reviews. Archived commands/token
 root conditions remain historical, not executed or newly authored foreign code.
 CI42348518353 queued at63f69ae observed; ancestry excludes51f5d1c nav guard, so
 current88 source/build not qualified by it. No duplicate dispatch or local runtime.
+
+## Archived mock source review closure
+
+Read all remaining legacy njs gate/unit and Python mock pilot bytes without
+editing or executing foreign code. Three manually authored source reviews identify
+private protocol, projected sorted headers/duplicate/encoding refusal and narrow
+fixture effects/SSE evidence. Public native reference prevents old behavior from
+being assigned to current nginx-raw/body or durable replay/witness/recovery scope.

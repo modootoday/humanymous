@@ -104,3 +104,11 @@ are historical test conditions, not current native deployment instructions.
 Archived commands and old Node-only schema assumptions do not describe the
 current Rust nginx profile. Do not infer native peer authentication, audit,
 collector recovery or production qualification from that fixture's old results.
+
+The mock lowercases and sorts its five projected headers, rejects duplicate
+request headers and content-encoded uploads, and uses a private pilot message
+format. Those choices are not the current native nginx-raw profile, ordinary
+duplicate-header preservation or binary/content-encoded body contract. Its
+origin-call counter and early SSE chunk test exercise only that local fixture;
+they do not establish native replay durability, independent audit custody,
+long-stream backpressure or accessible human recovery.

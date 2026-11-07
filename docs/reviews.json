@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/nginx/legacy-njs/gate.js",
+  "sha256": "f4e37b88bf59c4e296d8edd95569f4bf8935d709ab67938c4e6e430b8ae5bc25",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read entire archived njs gate: fixed five-header sorted/lowercased projection, duplicate/encoding refusal, allowlisted target,64KiB body and private nginx-pilot protocol, reply grammar/scope/expiry checks and internal origin redirect. Public nginx reference distinguishes this from current nginx-raw, ordinary duplicates and encoded-body support. No foreign code edited/executed; mock reply validation is not shared Rust authority or durable replay proof.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
+  "source": "adapters/nginx/legacy-njs/test/unit.js",
+  "sha256": "b9e486eac60c75ec7099b34540fd5d611102dd16f2280fef5d91de101223d303",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all archived synchronous project/target/reply source cases including duplicate/escaped keys, malformed expiry and scope/unknown field rejection. Public reference treats the corpus as historical private-protocol tests rather than current generic/native vectors. Source case count does not claim a fresh run or Rust qualification.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
+  "source": "adapters/nginx/legacy-njs/test/pilot.py",
+  "sha256": "5177f35bb3e2d4f8abea95b55bac8bce040e6275d2565650f6b592e0efe5a05b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete archived mock Unix authority, synthetic origin/effects counter, duplicate/replay in-memory set, malformed reply modes, socket-disappearance and framing refusal, body/cookie/repeat-header and early SSE-chunk cases. It explicitly reports rust_integration false; public reference limits effects/SSE evidence to that fixture and excludes durable native replay, witness custody, long backpressure and human recovery. No Python authored or executed.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
   "source": "adapters/node/Dockerfile.pilot",
   "sha256": "84e452cd5f4657afae121fbe9fe0fd1b3ee53333bcf464aa5037606740ae6aa4",
   "reviewer": "codex/rust-pages",
