@@ -58,7 +58,7 @@ candidate explanation for the historical SIGTERM15, not proof of its old PGID.
 
 Allocation records are historical receipts, never a live slot ledger or future
 permission. Audit PhaseA, Native partial/duplex, Authority expiry, Runtime native
-HTTP2, collector boundary and CI image-validator batches returned. CI image76
+HTTP controls, collector boundary and CI image-validator batches returned. CI image76
 passed on its declared81 source/3791 registry inputs and8 config candidates;
 actual image build/scan is NOT_RUN. Browser warm-only compile was interrupted
 and returned without executing marker tests. Root then allocated a bounded Lab
