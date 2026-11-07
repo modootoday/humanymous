@@ -24,12 +24,12 @@
     "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
-  "current_source_executed_tests": 51,
-  "current_source_test_count_semantics": "Unique named cases across native platforms; Windows46+1 and Unix50+1 are separate required gates, not a summed product score",
-  "current_source_tests": "adb8e3ed actual Windows library46+native1 and immutable WSL27675561 library50+native1 passed; no failed/ignored/filtered",
-  "current_source_clippy": "adb8e3ed passed with recorded dependency library snapshots; later dependency edits not qualified",
+  "current_source_executed_tests": 6,
+  "current_source_test_count_semantics": "Current1646c482: six scoped TLS component cases only; 46 library cases filtered. Historical adb8e3ed Windows46+1/Unix50+1 remain exact historical evidence, not current whole-library qualification.",
+  "current_source_tests": "1646c482 with audit f88e76f4: TLS6 passed/0failed/0ignored/46filtered; both identity profiles403CHALLENGE, no origin effects; full library/native process not rerun.",
+  "current_source_clippy": "1646c482 and recorded495-file dependency closure passed all-features/all-targets locked offline warnings-denied Clippy; zero source drift.",
   "actual_browser_join": "not_run",
-  "actual_tls_serving": "not_run",
+  "actual_tls_serving": "six actual ordinary loopback TLS cases passed; allow-to-origin remains unqualified",
   "actual_unix_management_operator": "passed scoped ordinary-user native component, not independent deployment",
   "actual_docker_product": "not_run",
   "human_keyboard_AT": "not_run",
@@ -40,7 +40,7 @@
     "warnings": 0
   },
   "required_collector": "422-unqualified",
-  "raw_tls_h2": "tls-h1-consumer-WIP-not-run; plaintext-rawTLS-and-all-H2-required-routes-422",
+  "raw_tls_h2": "TLS/H1 actual component subset qualified, no ALLOW-to-origin/browser/ServiceHost qualification; plaintext rawTLS and all required H2 remain422",
   "native_0_1_binding": "unchanged",
   "scoring_changed": false,
   "product_qualified": false,
@@ -103,5 +103,12 @@
     "source_closure_unchanged": true,
     "actual_native_process_socket_ipc_browser_tests": "not_run",
     "qualification": "Windows compile and scoped pure only; not current TLS WIP"
+  },
+  "tls_1646c482": {
+    "passed": 6,
+    "summary": "tls-1646c482-validation-summary.json",
+    "allow_to_origin_qualified": false,
+    "filtered": 46,
+    "full_r13_qualified": false
   }
 }

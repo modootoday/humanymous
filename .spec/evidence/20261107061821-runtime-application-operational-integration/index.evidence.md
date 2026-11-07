@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T11:04:06Z
+updated: 2026-11-07T11:20:31Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -13,9 +13,10 @@ files:
   - {path: hosted-42355168729-runtime-summary.json, sha256: 6f131ab8738dd6e2976b47a5afa7403736e349bdbf82d13a1a279ef332c7617a, bytes: 4941, store: repo}
   - {path: local-adb8e3ed-validation-summary.json, sha256: 8a27be5a110d93b50f96846a65d7d14cf7a95657ddb7ec28797c78267408805c, bytes: 4489, store: repo}
   - {path: native-adb8e3ed-validation-summary.json, sha256: 843b633f147dd6a44a6a70609c47a82111ec8f4db7fa3965262fa4f2a24e2ba4, bytes: 11656, store: repo}
-  - {path: status.json, sha256: bdc567f5d002a9b3782e92a99b32b33c566e11bf59a4d63092400d61fa32395f, bytes: 4792, store: repo}
-  - {path: source-commitments.json, sha256: 084b8fdedcaedf3aef86473d9689a79aea2dd1fb2edb71e17c0c23f820a7afc4, bytes: 8815, store: repo}
   - {path: tls-fa2db419-first-execution-summary.json, sha256: 46efc65494842b502e90cbdaeb75741a000b5711c473cc10ab7d838d26806596, bytes: 2306, store: repo}
+  - {path: tls-1646c482-validation-summary.json, sha256: 8518f2114fa185e3862bdae2d102c0a4012823efc44d385bb17aa7848a79325f, bytes: 3532, store: repo}
+  - {path: status.json, sha256: b9c29412f213d1e8a6a7f6d80ec8d66c44f6b7c9d260b101a38b0f94850817b9, bytes: 5279, store: repo}
+  - {path: source-commitments.json, sha256: 0cc78d908741641e5e73a217e48038675d6593d048fc744debb718c8ed9e67f9, bytes: 9484, store: repo}
 ---
 
 # Runtime application operational integration
@@ -23,6 +24,16 @@ files:
 ## What was measured
 
 Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Current1646c482 with audit record source f88e76f4 passed allocated Windows
+all-target compile/Clippy and six actual TLS component cases;46 cases were
+intentionally filtered, so this is not current whole-library qualification.
+Both synthetic Chrome-over-rustls and explicit native Rustls identities returned
+403 CHALLENGE (risk57/53), with no origin effects. Coalesced/partial request
+refusal, cancellation/join and same-owner offered/negotiated ALPN passed.
+495-file source snapshots were identical and no owned runtime process remained.
+TLS ALLOW-to-origin, actual ServiceHost TLS, browser and full R13 remain open.
+The original fa2db419 four-pass/one-failure attempt remains attached unchanged.
+
 Frozen runtime adb8e3ed passed Windows library46 plus native_process1 and immutable
 WSL snapshot27675561 library50 plus native_process1. Exact required inventories
 matched and failed/ignored/filtered counts were0. Both actual native gates kept

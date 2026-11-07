@@ -1,0 +1,105 @@
+{
+  "runtime_source_commit": "1646c4821a5da2208a65d349656a10ec657ebeb5",
+  "audit_record_source_commit": "f88e76f4c90f07e7fde7c87420d1ef21eb39c8b4",
+  "manifest_commit": "af6dc779",
+  "platform": "Windows ordinary owned loopback component",
+  "memory_admission": {
+    "commit_percent": 80,
+    "free_gib": 32.92
+  },
+  "all_features_all_targets_locked_offline_no_run_exit": 0,
+  "no_run_seconds": 14.88,
+  "clippy_deny_warnings_exit": 0,
+  "clippy_seconds": 2.95,
+  "library_listed": 52,
+  "library_inventory_exact": true,
+  "actual_exit": 0,
+  "actual_session": 91479,
+  "executed": 6,
+  "passed": 6,
+  "failed": 0,
+  "ignored": 0,
+  "filtered": 46,
+  "seconds": 10.14,
+  "test_names": [
+    "tests::tls::actual_tls_coalesced_request_is_refused_before_audit_or_origin",
+    "tests::tls::actual_tls_partial_body_is_refused_before_audit_or_origin",
+    "tests::tls::cancelling_actual_tls_handshake_joins_worker_and_closes_owned_socket",
+    "tests::tls::dispatch::chrome_claim_over_actual_rustls_is_audited_and_never_reaches_origin",
+    "tests::tls::dispatch::truthful_native_tls_profile_preserves_policy_and_origin_agreement",
+    "tests::tls::observation::actual_client_hello_and_negotiated_alpn_share_the_request_owner"
+  ],
+  "observed_policy": [
+    {
+      "verdict": "CHALLENGE",
+      "status": 403,
+      "identity": "synthetic Chrome126 over actual rustls",
+      "origin_effect": false,
+      "risk": 57
+    },
+    {
+      "verdict": "CHALLENGE",
+      "status": 403,
+      "identity": "HumanymousRuntimeFixture/0.1 Rustls synthetic native",
+      "origin_effect": false,
+      "risk": 53
+    }
+  ],
+  "native_full_ack": "not part of NativeFull; absence asserted, no fabricated BrowserAuthOnly ACK",
+  "source_files_compared": 495,
+  "source_drift": 0,
+  "owned_runtime_processes_after": 0,
+  "full_library_qualified": false,
+  "tls_allow_to_origin_qualified": false,
+  "full_r13_qualified": false,
+  "actual_browser_qualified": false,
+  "full_product_qualified": false,
+  "prior_failure_preserved": "tls-fa2db419-first-execution-summary.json",
+  "raw_private_artifacts": [
+    {
+      "name": "1646c482-tls-actual-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "1646c482-tls-actual.log",
+      "bytes": 1081,
+      "sha256": "6a743452237cb4141c4532b1e5b1b1d16dac48bae4ed85b308b62f5b2111541a"
+    },
+    {
+      "name": "1646c482-tls-after.json",
+      "bytes": 74733,
+      "sha256": "92fa432bc7c4d711171aa2b4274171694f1aff58ee43f30b54b9a98d8d5f0a2b"
+    },
+    {
+      "name": "1646c482-tls-before.json",
+      "bytes": 74733,
+      "sha256": "92fa432bc7c4d711171aa2b4274171694f1aff58ee43f30b54b9a98d8d5f0a2b"
+    },
+    {
+      "name": "1646c482-tls-clippy-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "1646c482-tls-clippy.log",
+      "bytes": 319,
+      "sha256": "21d2e84bb5bbd5e510abde5d45441d9d1362d3bef3f443f09785529e8eb93e03"
+    },
+    {
+      "name": "1646c482-tls-library-list.log",
+      "bytes": 4712,
+      "sha256": "601b2a5c19d099fd93ea66720124ad8274202336bcb8101e6cab242b95d33f73"
+    },
+    {
+      "name": "1646c482-tls-no-run-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "1646c482-tls-no-run.log",
+      "bytes": 660,
+      "sha256": "eea625451ce4a5f0d1eb96d1ec60bac183b140b63f1026320964463b5bc68f8a"
+    }
+  ]
+}
