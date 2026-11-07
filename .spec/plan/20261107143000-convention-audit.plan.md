@@ -257,3 +257,11 @@ capture parents/four CLI cases remain NOT_RUN; pure Pass predicates do not gate
 on motion/speed, but actual UI/AT remains unqualified. Recovery15174100 actual-
 type/reason-specific and zero-attempted-mutation gates accepted as a contract
 only; actual provider/repair/borrow/clock qualification stays OPEN. No new run.
+
+CA-EVIDENCE01 reproduced4public P2 missing attachment entries; owner source fix
+matched4hashes/lengths and public-only full248docs0errors0warnings, durablecommit
+pending. Scoped selectors alone missed this orphan inventory defect. Separate
+global summary remains137349errors18warnings with rule totals retained, no blanket
+classification or private cleanup. Collector emptychunk candidate unconfirmed
+under explicit eventloop/hostile limitations; Audit20d57380 resource split source
+direction accepted, actual compiler/native/owner qualification not established.

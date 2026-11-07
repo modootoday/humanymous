@@ -386,5 +386,21 @@
     "actual_ui_at_qualified": false,
     "actual_recovery_type_or_native_provider_qualified": false,
     "source_contract_only": true
+  },
+  "followup_collector_native_evidence": {
+    "private_review_sha256": {
+      "collector-resource-source-review-002.json": "d27a91efa1be8cf332fbd4d6e428967f598649e402b7aabe54d36f9fdc970b62",
+      "audit-native-resource-review-001.json": "93d44515e969629f091f20b24a8a433c676706a7b3d5ed0555da06e65e37f314",
+      "model-attachment-remediation-review-001.json": "85f96274d0d4c3d38af131509f5a84100c4a74fd21d276a77574d0f695dc593a",
+      "global-spec-summary-003.json": "09b547edc7617624ae80333df3ff3a5bc03c12bcf5274692611a0a42e29b57cf",
+      "public-spec-current-003.json": "20567ee47acd4be31c071e44f1c2b4db7931b871af3e9060252372fb21761033"
+    },
+    "collector_candidate_confirmed": false,
+    "audit_native_source_direction_accepted": true,
+    "model_source_fix_accepted": true,
+    "model_durable_commit_pending": true,
+    "corrected_public_errors": 0,
+    "global_green": false,
+    "new_runtime_workloads": 0
   }
 }

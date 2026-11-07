@@ -144,6 +144,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
 | CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync e34cee8a and ASGI queued 800b9679 source direction accepted; owner accepted additional task-setup ownership gap. First SDK check failed101 before host tests. Corrected compilation, actual host controls, Node and task settlement remain OPEN |
+| CA-EVIDENCE-01 | P2: four model evidence JSON files omitted from their canonical attachment inventory | Model | Public-only full check reproduced four P2 errors; owner added exact hash/size entries, independently verified and public248-document check passed. Durable owner commit confirmation pending |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -828,3 +829,38 @@ private deterministic clock instrumentation stays separate from production
 deadline authority. Independent review found no new blocker in this narrow
 verification contract. No actual VerifiedScan, native recovery, production grant
 or new compiler/SDK/process workload follows from that acceptance.
+
+### Public evidence inventory and current global gate
+
+CA-EVIDENCE01 was reproduced by the public-only full check: four P2 errors for
+unlisted record-source-slice, record-validation, source-inventory and standardize-
+validation JSON attachments in evidence:root/20261108005200. Index/directory
+selectors had returned zero, demonstrating that those scoped checks did not
+cover the orphan inventory failure. The owner added exact attachment entries;
+independent SHA256/length checks matched all four and a new public-only full check
+passed248 documents with zero errors/warnings. The owner index remains uncommitted
+at this observation; durable closure awaits its exact commit. No model outcome
+or original audited JSON content is changed by this metadata repair.
+
+The separate full summary snapshot failed with137349 errors/18 warnings over417
+documents: I1=4, L2=2, P2=64239, P3=1638, S3=71466 errors and U2=18 warnings.
+These are reported rule totals, not semantic classification of every diagnostic.
+The prior full snapshot had137345 errors/416 documents; concurrent snapshots are
+not a source-stable regression comparison. No private evidence/cache cleanup or
+baseline suppression was attempted, and public-only green is not global green.
+
+Collector resource review found an unconfirmed zero-byte response-chunk progress
+candidate. The byte cap alone does not bound empty iterations; standard default
+stream enqueue and event-loop/task ordering warrant supported-profile tests.
+However the owning collector contract explicitly disclaims wall-clock guarantees
+under event-loop stalls and complete hostile-realm cleanup. Native Fetch behavior
+and actual WASM/browser reproduction remain unproven; no confirmed violation or
+new hard timing requirement is inferred. Standards pointers and inference limits
+are retained privately, with the owning collector/root notified.
+
+Audit20d57380 separates owned native pins/last writer guard from borrowed per-
+operation Control/Limits. Reader Arc contexts retain the original operation;
+handoff refuses outstanding readers and new admission rechecks bounds before
+opened/name validation. The changed paths and new ignored-test assertions were
+independently read without a new source blocker. This is not actual compilation,
+native execution, OpeningOwner/VerifiedScan or production write qualification.
