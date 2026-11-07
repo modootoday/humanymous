@@ -10,6 +10,24 @@ rel:
 
 # Agent maintenance
 
+## Exact23 bottom-up role projection
+
+The accepted [[sot:root/structural-development]], [[plan:root/20261107151000]]
+and [[plan:root/20261107150000]] preserve goals/claims while assigning primary
+L0-L5/X roles. Root completed all app renames. This lane independently re-read
+the live app inventory and projected the SoT's exact23 title/ID/responsibility
+rows into THREADS, replacing generic and obsolete read-only-only descriptions.
+The stable ID set is unchanged. Rule94, LANES and the short AGENTS pointer now
+state the naming and incremental contract/unit/provider/service-host/product
+sequence without a global waterfall or fake capability promotion.
+
+No source claim, temporary loan, catalog mode, Git mutex or runtime qualification
+was changed. Old THREADS literal-Korean-title preservation records were removed
+only because those current rows are now English; their history remains in Git.
+The two exact Browser IME fixture records are retained. Existing goal inspection
+still returns the full original objective/statusblocked; this accepted role work
+does not invent a goal resume or declare the larger goal complete.
+
 ## Performance source handoff returned
 
 On2026-11-08 KST the performance owner reported normal release/reclaim returning

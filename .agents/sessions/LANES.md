@@ -7,6 +7,13 @@ contexts, not a grant to overwrite another active owner's declared paths. Unknow
 or duplicate catalog data fails closed. Legacy labels remain until coordinated
 release/reclaim, never an automatic alias around an occupied context.
 
+Chat roles use the L0-L5/X structure in `.spec/sot/structural-development.sot.md`
+and the exact23-title THREADS projection. These layer roles do not rename lane IDs
+or grant paths. Existing claims and the temporary loans below remain authoritative.
+Advance accepted contract -> pure module -> actual provider -> service/host ->
+product gates within each cluster; consumer contracts can be prepared in parallel
+without claiming unproved provider capability.
+
 ## Rust migration bounded contexts (2026-11-07)
 
 These formal lanes supplement legacy lanes above. Existing owners migrate by normal release/claim; never force another owner or alias overlapping paths. Every owner also claims its own named SoT/plan/evidence. Shared Cargo/lock/toolchain remain root-owned. Machine catalog consolidation is assigned to agent-maintenance; legacy script literals are compatibility data only.

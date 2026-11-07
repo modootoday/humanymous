@@ -29,6 +29,7 @@ before committing, run `spec check`. Rust conventions in that SoT are mandatory.
 | Attack catalog / e2e | `test/AGENTS.md` |
 | Rust client WASM | `crates/collector` + `.spec/sot/client-collector.sot.md`; `web/` is legacy oracle |
 | Spec / design before code | skill `design-sot` → `.spec/sot/`, `.spec/plan/` |
+| Layer roles / bottom-up gates | `.spec/sot/structural-development.sot.md` + `.agents/sessions/THREADS.md`; titles do not grant paths |
 | Deferred / misdocumented claims | `sots/38-truth-debt-remediation.md` if present + `.agents/rules/80-truth-debt.md` |
 | Hard-won multi-session lessons | `.agents/lessons/HARD-WON.md` (Claude memory is **not** visible to other providers) |
 | Full verification | skill `red-blue-validate` (**Docker only**) |

@@ -1,11 +1,19 @@
 # Chat names, goals and execution ownership
 
-Project chat titles use `Humanymous · <area> · <responsibility>`.
-Use one stable bounded-context area and a short responsibility, not an instruction,
-path, transient status, priority or full goal. Keep the project name's spelling.
-Server adapters use a language-neutral responsibility as their coverage expands.
-The exact current titles and ownership live in `.agents/sessions/THREADS.md`.
+Project chat titles use exactly `Humanymous · {L0|L1|L2|L3|L4|L5|X} · {English responsibility}`.
+The primary role and bottom-up gates follow `.spec/sot/structural-development.sot.md`;
+X is cross-cutting tooling, review, measurement or integration, not a runtime layer.
+Keep titles concise and preserve stable IDs. The exact23 titles and concrete roles
+are projected into `.agents/sessions/THREADS.md`. Titles do not grant source paths,
+cancel in-flight work or change the current claim/protocol/resource permissions.
 Only rename chats in this project; preserve unrelated projects and historical runs.
+
+Within each cluster, progress from accepted contract to pure units, actual provider
+boundary, service/host integration and product qualification. Upper owners prepare
+consumer contracts while lower proofs mature; fake/mock capability is never promoted
+to real readiness. Fmt first, prepare only bounded selected targets and return them
+at terminal. Batch nonblocking evidence updates; report actual contract/source-ready
+changes, starts/terminal failures or exact blockers instead of repeated status checks.
 
 When explicitly asked to set a goal, first inspect the actual goal state. Preserve
 an unfinished goal and record accepted scope changes in its plan. Create a goal
