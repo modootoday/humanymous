@@ -1,0 +1,50 @@
+{
+  "schema": "humanymous.lab-browser-failure-source-checks/1",
+  "source": "b4fdbc38f234f0df2777f0c6dce01540cbf26fcf",
+  "venue": "native Windows x86_64-pc-windows-msvc",
+  "toolchain": "Rust 1.99.1 / edition 2024",
+  "private_evidence": "evidence:root/20261107165808",
+  "test": {
+    "exit_code": 0,
+    "passed": 28,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "workers": 1
+  },
+  "all_target_check_exit": 0,
+  "strict_clippy_exit": 0,
+  "package_fmt_exit": 0,
+  "first_failures": [],
+  "closure": {
+    "source_files": 2788,
+    "selected_registry_packages": 71,
+    "selected_registry_files": 3172,
+    "effective_config_candidates": 24,
+    "source_difference_records": 0,
+    "registry_difference_records": 0,
+    "config_difference_records": 0,
+    "full_environment_closed": false,
+    "compiler_sdk_bytes_closed": false
+  },
+  "public_contract": {
+    "error_catalog_sha256": "d28d01d5ed4c243d9e278b740f10aeedf835840e1e4d38ea2bb6cc9d9883f048",
+    "unchanged_outcome_helper_sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
+    "unchanged_outcome_contract_sha256": "42d5826ccdea564174ff4da03a55d3aa6c205dae4d24f659dad44bc0ffed6b5a",
+    "new_codes": [
+      "browser_selected_test_failed",
+      "browser_runner_no_summary_reported",
+      "browser_driver_session_request_failed"
+    ],
+    "source_prefix_authenticated": false
+  },
+  "limits": [
+    "Delivery consumer review/recompile is separate and not claimed here.",
+    "No WSL, Docker, browser or hosted execution performed.",
+    "No actual browser failure cause established by these pure tests.",
+    "Existing witness assertions, scoring, fixture, deadlines and 18-case accounting unchanged.",
+    "No hard subprocess return/cleanup guarantee or full product qualification."
+  ],
+  "full_product_qualified": false,
+  "release_qualified": false
+}

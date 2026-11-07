@@ -12,6 +12,8 @@ rel:
 
 ## Rust-only v2 continuation (2026-11-07 KST)
 
+- [x] Validate immutableb4fdbc38 finite browser classifier on allocated exclusive Windows target: Lab28 passed/0failed/ignored/filtered, all-target check0, strictClippy0 and packagefmt0. Strict pre/post2788source/3172selected-registry files across71packages/24effective config candidates have0semantic differences. First execution has no failure. Public browser-failure-b4fdbc38-checks.json/private evidence:root/20261107165808; full environment/compiler SDK byte closure false. Target returned, no WSL/Docker/browser/hosted execution. Delivery consumer review/recompile and literal actual diagnostic retry remain separate NOT_RUN gates.
+
 - [x] Prepare finite browser failure classifier after actual306/run42390164354: recognize only pinned complete selected-test FAIL, missing-summary report or WebDriver session-request context; reject duplicate/ambiguous/payload input. Require valid original actor, failed process, matched inventory and successful DNS finish. Preserve the shared13-field validator/contract hashes, witness assertion,18-case accounting, deadlines and full refusal. Source only: expected Lab28 tests, compilation/Clippy/consumer review and actual hosted retry are NOT_RUN; no WSL or target allocation is held.
 
 - [x] Active goal established by explicit user instruction: complete Rust Compose product lab, separate browser namespace, actual runtime/witness, egress/recovery/cleanup and hosted evidence. Product-lab lane is dedicated; no completion claim before source/unit/hosted/strict accounting/evidence/owned commits.
