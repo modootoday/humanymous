@@ -11,6 +11,14 @@ rel:
 
 # Overall roadmap and milestones
 
+## How to read this evolving roadmap
+
+The current integration checkpoint below is the authoritative summary of recent
+source-bound outcomes. Dated sections farther below are retained historical
+snapshots, including their allocation tables, counts and then-current CI handles.
+They do not grant current execution slots, supersede newer contracts or prove
+freshness for later source. Actual allocation requires current root coordination
+and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
 The following source-bound results supersede the older Pages transfer status.
@@ -27,6 +35,8 @@ They are component evidence, not final integration qualification.
 | .NET generic ABI | Helper07967eae/24b782d1 ran actual managed caller once: one passed/zero failed/zero ignored/four filtered,0.62s; child exit zero, two PID-bound frames, empty stderr, fixture removed and input unchanged | Single context-document drift retained explicitly; ASP.NET adapter, NativeAOT, C++ and full product remain unqualified |
 
 Pages reference corrections are now26960736/docs tree56b1e029952b5a3b29d4b0d056671bc79110e43b; the older448 hosted build does not validate this newer tree. Source checker reports88 pages/errors zero, while fresh hosted/browser/AT checks remain pending.
+
+Go candidate15f63fefb23777eeee52c57f7dbf0dbeffef8f8b is running as genuine hosted run42369171124, preflight job128393523707. The source was normal-fast-forward pushed to the dedicated validation branch and its remote SHA verified. It has no terminal qualification result yet. Root separately allocated bounded Audit Merkle, Apache lifecycle/diagnostic and test-support symbolic-model checks; none is a product-e2e result.
 
 Root released only bounded Python check/Clippy/two pure tests, Lab diagnostic
 implementation and Audit private S1 implementation. Lab may extend the cold
@@ -84,7 +94,7 @@ process was terminated without an API request. Afterward root measured 81.9%
 commit and 35.41 GiB physical free. Further model initialization is held for
 static KV-memory analysis; four bounded Rust verification slots remain allowed.
 
-## User-authorized concurrency increase: 2026-11-07
+## Historical allocation snapshot: 2026-11-07 concurrency increase
 
 The user explicitly requested higher local concurrency. The current ceiling is
 four independently allocated pipelines (A/B/C/D), superseding earlier two-slot
@@ -217,7 +227,7 @@ source-scoped checkpoints, never a combined full-product pass count.
 | Pages/Draft v0 | Earlier88pages rendered atboth baseurls on63f69ae; current tool26lib+1bin passed beforelatest URL-segment fix | Fresh helper tests/render/browser/freshness and standards wire/interoperability/security/privacy/a11y review |
 | Rules/skills/evaluation | Current34pure, all-targets check/Clippy; read-only inventory14skills/6roles/errors0/mirror drift0 | Fresh provider discovery, hosted storage/package tests and actual paired model evaluation with declared runtime |
 
-Latest full CI remains42348518353/source63f69ae:16jobs,3success/13failure.
+At this historical snapshot the full CI was42348518353/source63f69ae:16jobs,3success/13failure.
 No new integrated hosted result exists for the later worktree. The old six-tuple
 and CEF/component successes do not qualify current complete product behavior.
 336tracked Go files remain; migration is not main-only. npm/crates/pypi/rubygems
