@@ -6,6 +6,7 @@ mod coverage;
 mod failure;
 mod lifecycle;
 pub(crate) mod recovery;
+mod source_inputs;
 pub(crate) use failure::record as record_initial_failure;
 
 pub fn digest(path: &Path) -> io::Result<String> {
@@ -111,15 +112,7 @@ pub fn source(workspace: bool) -> io::Result<Value> {
             sources(Path::new(path), &mut files)?;
         }
     }
-    for entry in std::fs::read_dir("crates")? {
-        let manifest = entry?.path().join("Cargo.toml");
-        if manifest.is_file() {
-            files.insert(
-                manifest.to_string_lossy().replace('\\', "/"),
-                digest(&manifest)?,
-            );
-        }
-    }
+    source_inputs::collect(Path::new("."), &mut files)?;
     let github: BTreeMap<_, _> = [
         "GITHUB_RUN_ID",
         "GITHUB_RUN_ATTEMPT",
