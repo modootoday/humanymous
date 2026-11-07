@@ -1849,3 +1849,14 @@ logs attached privately; sanitized publicattempt JSON terminalupdated/reattached
 D returned, no ownedliveprocess. Four known localssl.h candidatepaths absent;
 this narrowread is not exhaustive hostinventory. Awaitexplicitnextenvironment
 allocation; cannot claim latestsite build/link/browser/accessibility acceptance.
+### Native report projection and public terminology recheck
+
+Read complete94line host_report.rs; full receipt added. Droppednavigation blocks
+internalprobepass, IME attempts remain unqualified/externalvisualneeded, renderer
+restrictedtoken flag requires nonemptyobservations but is not sandboxproof.
+Current publicsource regex for priority/internal IDs/TODO/TBD and obsolete corpus
+anchor returns nomatches. AuthoredMarkdown inventory88 and actual main/footer
+navread; two mistaken navpath reads failed before using observed nav/main.yml
+and nav/footer.yml. No source/render/browser execution equivalence claimed.
+Read pages.yml caller: dispatch exists but invokes fullCI and mainonlyproduction
+deploy, not boundedPagesonly; informedCIowner, no dispatch/publish performed.

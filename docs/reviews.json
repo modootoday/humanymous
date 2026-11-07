@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/host_report.rs",
+  "sha256": "f45c006aefa0a3e9eded435422c239f939627c9a6b54dbd7749fc36d486d9a1a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete94line report projection: one postloop snapshot, droppednavigation receipts block internalprobepass, IME attempts remain explicitly unqualified/externalvisualneeded, nonempty observed renderer tokens require restricted+integrity0 for narrow tokenflag. Data fields/counters are not fullsandbox/AX/native cleanup or executed evidence; raw snapshots/process details remain private.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/native/desktop/src/fixture.rs",
   "sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
   "reviewer": "codex/rust-pages",
