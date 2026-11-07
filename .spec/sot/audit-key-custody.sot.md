@@ -12,6 +12,67 @@ rel:
 
 # Audit key custody
 
+### Retained local backup retirement delta v0.1
+
+Problem: existing BackupInventory::retire consumes local dual approval but does
+not require independent control-anchor retention. Additive retained entrypoints
+must reuse existing signed inventory, private file validation and lifecycle.
+Legacy retire/reconcile/resume APIs remain explicit local-only compatibility;
+they must not be advertised as independently retained production administration.
+No envelope, scoring, shared manifest, remote transport or physical erasure change.
+
+retire_retained accepts a RetainedActionPermit and actual ControlAuthority.
+Before effects require the complete retained acknowledgement to match exact
+inventory scope, authority public key and current anchor through existing
+retention.matches, then verify that anchor with the authority public key. Also
+reauthenticate present native inventory bytes and require its exact current
+anchor; cached state cannot survive loss, corruption or rollback. Verify actual present ledger
+membership, exact inventory scope/RetireBackup/target digest and Active state
+with authenticated encrypted file present. Consume the owned grant for trusted
+time, then reuse Retiring(proposal)->unlink/sync->Retired(operation) unchanged.
+
+reconcile_retained requires an existing exact Retiring proposal, authenticated
+membership of both prior and fresh proposals, and a fresh independently retained
+grant with a different operation ID for the same scope/action/backup digest.
+The prior intent may have expired; the fresh grant must pass trusted current time.
+Retired, Active, wrong prior, wrong authority/anchor, scope/action/target/time,
+missing/corrupt current ledger and poisoned/pending inventory fail closed.
+Missing backup bytes are acceptable only for this authenticated Retiring state.
+Old proposal identity remains in the inventory transition; the returned fresh
+control receipt identifies the reconciliation authorization, not a second file.
+
+Callers serialize issuance and inventory effects, witness audit intent before
+apply, independently persist the returned inventory anchor before completion and
+use existing explicit authenticated pending recovery when required. A failed
+effect leaves grants spent; no automatic grant reconstruction or generic replay.
+Reopening at an unacknowledged newer inventory anchor remains a separate explicit
+legacy recovery boundary, not silently solved by these additive methods.
+Windows reports namespace-unconfirmed persistence honestly. Removal covers one
+named local file only; snapshots, remote copies and physical media are unproven.
+
+Independent native/security critique: needs-work findings are reflected here.
+The witnessed preapply intent and completion correlation must bind exact scope,
+backup digest, BOTH prior retirement operation ID and fresh reconciliation
+operation ID, and before/after inventory anchors. Normal retirement uses the same
+operation ID for both. Callers can inspect proposals/anchors before moving the
+grant and must correlate the returned fresh control receipt with the old proposal.
+A returned local receipt alone is not external pin acknowledgement or global
+erasure completion. Fault before Retiring leaves Active/spent approval; fault
+after Retiring leaves explicit unavailable reconciliation; fault after unlink
+must preserve Retiring/no restore source; final commit before external pin ack
+leaves acknowledgement pending and requires explicit authenticated recovery.
+No automatic retry, healthy default or discard follows any of these failures.
+
+Adversarial review requirements: P1 cross-authority grant transplant is prevented
+by exact retained/current anchor plus signature verification and actual ledger
+membership; P1 repeated retirement/recovery downgrade is prevented by exact
+Active/Retiring gates and different fresh operation ID. SRE requires no reset or
+pending bypass; DPO requires local-only erasure language. Evaluator requires new
+source-bound native tests rather than inheriting evidence95831. Independent
+native/security review found no P0 bypass; its two P1 contract clarifications
+(full acknowledgement identity and unambiguous dual-operation audit correlation)
+are now requirements. Fault-window execution remains a separate verification gate.
+
 Consumed-membership reconciliation must read present native ledger bytes,
 reauthenticate the complete signed body with existing policy/key/capacity rules
 and require its anchor to equal the opened authority's current anchor. Cached

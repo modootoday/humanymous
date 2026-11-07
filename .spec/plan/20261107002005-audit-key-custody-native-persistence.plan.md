@@ -102,6 +102,18 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Root granted retained-backup source slice after the44-pass source checkpoint.
+Design-sot v0.1 is normative in audit-key-custody.sot: additive retained-only
+normal retirement and fresh-approval exact Retiring reconciliation; legacy local
+entrypoints retain explicit compatibility. Independent native/security review
+found no P0 and two P1 clarifications, reflected as full acknowledgement identity
+and dual old/fresh-operation audit correlation plus exact inventory anchors.
+Actual inventory bytes must also authenticate at current anchor before effects.
+Fault windows and external-pin acknowledgement remain explicit unavailable/
+pending states. Implementation and new native tests are next; no workload slot
+or new-source qualification exists. Root rustfmt failure was separately corrected
+in27675561 (two files, formatting only); prior44 proof remains exact-source history.
+
 Latest source c09d6897 qualified on allocated local Windows A: all-targets locked
 check and Clippy pass; reviewed10 pure pass; separately authorized complete
 control_operations21/durable_witness13/key_custody10 native passes, rawignored3
