@@ -794,3 +794,11 @@ manual receipts map classification-only fixed-day boundaries and negative-clock
 handling to inventory, and pure authenticated-caller node liveness/two-cadence
 strict threshold to incident reference. No automatic deletion/WORM/signed transport
 or independent observer inferred. No storage cleanup, heartbeat or runtime run.
+
+## Sealed envelope and custody lifecycle review
+
+Read full keys composition/crypto and custody modules. Two manual source hashes
+map frozen format, ownedzeroize versus allcopy deletion, privateguard/pending
+recovery and exact oldciphertext approved passphrase rotation. Public how-to
+distinguishes signing/witness identity rollover and newsecret/body approval as
+separate unimplemented contracts. No unseal/rotate/erase/repair/process executed.

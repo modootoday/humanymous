@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/keys/custody.rs",
+  "sha256": "3821ad9a29400a954af3e512826bdba69e1040cbe7f756fec7f0da63dbf7a2a2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full lifetime ExclusiveFile custody, private/preprovisioned path checks, no-create-on-existing/pending/error, snapshot identity/tombstone validation, explicit pending/erasure recovery, generation-bound rotate_approved and persisted approved erasure. Public key lifecycle guide distinguishes passphrase from signing/witness identity rotation and old ciphertext target from new secret/body approval; no pending/lock reset, physical backup erasure or Windows namespace durability inferred. No custody mutation or native test executed.",
+  "pages": [
+    "docs/how-to/key-management.md"
+  ]
+},
+{
+  "source": "crates/audit/src/keys/mod.rs",
+  "sha256": "f51306f99c522d203fffdcb54a7278cf4021621a429218fb2a6bba91e363b721",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full KeyMaterial owned secret buffers, frozen scrypt/AES256-GCM sealed compatibility format, canonical Base64/width validation, fresh entropy, normal empty-passphrase refusal and explicit legacy import plus source parity/negative tests. Public key guide separates encryption bytes from durable file/ACL operations, owned zeroization from all-copy erasure and historical format from new KDF/wire/identity policy. No secret unsealed or crypto test executed in this review.",
+  "pages": [
+    "docs/how-to/key-management.md"
+  ]
+},
+{
   "source": "crates/audit/src/lifecycle/mod.rs",
   "sha256": "74640c1a9047a9bd1d169f3b235e312e9c73aeb3317bb2d256e8567e7d27e580",
   "reviewer": "codex/rust-pages",
