@@ -1,6 +1,20 @@
 # Sealed key compatibility integration
 
-## Full audit accounting correction, not yet executed
+## Latest complete audit package Windows qualification
+
+Owned source174e5f21 (including retained backup aa655e7b and WAL helper d7045fee)
+passed all-targets locked check/Clippy and complete all-targets tests on local
+ordinary-user Windows:110 accepted cases, rawignored5 excluded, two zero-test bins
+excluded, zero failed/filtered/measured. All11 outer harnesses have one summary;
+all exact helper identities and required parents reconcile without leaked markers.
+Recursive112-file closure has zero drift. Evidence:root/20261107102348, private
+raw102137. Retained backup/corrupt inventory/rollback/fresh recovery and the
+already-unlinked fixture actually passed. The fixture is not a real crash test.
+This supersedes source-only NOT_RUN statements below only for this exact Windows
+package scope. It is not hosted matrix, strict actor receipt or product e2e;
+production correlation/external pin acknowledgement and remote obligations remain.
+
+## Full audit accounting correction, now Windows-executed
 
 Full-suite prereview found library storage::wal::tests::process_lock_probe was
 unignored and returned without assertions absent parent env. Historical8132117
@@ -10,8 +24,9 @@ reviewed10 pure/44 native cases did not include this helper.
 New source ignores the helper, requires actual parent env, and uses bounded
 private capture/exit0/empty stderr/static post-assert marker for its real parent
 storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart. Future
-audit rawignored inventory is5, excluded from passes. Runner pairing and actual
-validation remain pending. Evidence:root/20261107101321; no new workload slot.
+audit rawignored inventory is5, excluded from passes. Actual full Windows audit
+execution is recorded above; paired strict runner qualification remains separate.
+Source evidence:root/20261107101321; no workload slot remains held.
 
 ## New unqualified retained backup retirement
 

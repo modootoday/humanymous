@@ -1,0 +1,190 @@
+{
+  "schema": "humanymous.audit-full-observations/2",
+  "venue": "ordinary-user Windows local",
+  "auditSourceCommit": "174e5f21364084a3ae0aac18d5d5983672a6d929",
+  "rust": "1.99.1",
+  "jobs": 1,
+  "incremental": 0,
+  "testThreads": 1,
+  "checkExit": 0,
+  "clippyExit": 0,
+  "testExit": 0,
+  "passed": 110,
+  "rawIgnored": 5,
+  "zeroTestHarnesses": 2,
+  "harnessCount": 11,
+  "closureFiles": 112,
+  "sourceDrift": 0,
+  "sourceManifestSha256": "f1d3adb4135affa4598258e1415f2e017d2eafee779732922d972c592def18e5",
+  "rawLogSha256": "7c458f5d630a29d0007fbf987e7ac4bf84b3ced934d5600846b408490c2dece3",
+  "harnesses": [
+    {
+      "target": "humanymous_audit",
+      "discovered": 52,
+      "passed": 51,
+      "failed": 0,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "storage::wal::tests::process_lock_probe"
+      ],
+      "requiredParents": "storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart",
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 16.85
+    },
+    {
+      "target": "audit_control_retainer",
+      "discovered": 0,
+      "passed": 0,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 0.0
+    },
+    {
+      "target": "audit_witness",
+      "discovered": 0,
+      "passed": 0,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 0.0
+    },
+    {
+      "target": "checkpoint_parity",
+      "discovered": 2,
+      "passed": 2,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 3.2
+    },
+    {
+      "target": "control_operations",
+      "discovered": 21,
+      "passed": 21,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 90.05
+    },
+    {
+      "target": "durable_witness",
+      "discovered": 14,
+      "passed": 13,
+      "failed": 0,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "child_witness_probe"
+      ],
+      "requiredParents": "witness_process_lifetime_and_interrupted_recovery",
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 9.67
+    },
+    {
+      "target": "key_backups",
+      "discovered": 11,
+      "passed": 10,
+      "failed": 0,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "child_retire_without_pin_acknowledgement"
+      ],
+      "requiredParents": "crash_reconcile_preserves_consumed_authorization",
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 27.47
+    },
+    {
+      "target": "key_custody",
+      "discovered": 12,
+      "passed": 10,
+      "failed": 0,
+      "rawIgnored": 2,
+      "ignoredNames": [
+        "child_interrupted_writer",
+        "child_lock_probe"
+      ],
+      "requiredParents": [
+        "competing_process_cannot_load_or_create",
+        "process_exit_releases_lock_and_rotation_pending_requires_recovery"
+      ],
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 45.22
+    },
+    {
+      "target": "merkle_parity",
+      "discovered": 1,
+      "passed": 1,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 0.18
+    },
+    {
+      "target": "record_parity",
+      "discovered": 1,
+      "passed": 1,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 0.07
+    },
+    {
+      "target": "verification_parity",
+      "discovered": 1,
+      "passed": 1,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "allRequiredParentsPassed": true,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "footerSeconds": 1.99
+    }
+  ],
+  "qualification": "complete audit package all-targets Cargo observation; not strict native actor, hosted matrix or full product",
+  "derivationNote": "attempt1 plural-only discovery regex failed; attempt2 handles singular; no test rerun"
+}

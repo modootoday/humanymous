@@ -102,6 +102,18 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Full current audit package Windows A complete: source174e5f21, all-targets locked
+check/Clippy pass; all-targets tests110 accepted passes/5 rawignored excluded/
+two zero-test bins/11 single outer summaries, zero fail/filtered/measured. Exact
+helper identities and all real parents reconcile, no markers/nested summaries
+leaked.112-file before/after closure zero drift. All handles terminal/A returned.
+New retained backup/live corruption/rollback/old-expiry/fresh reconciliation and
+post-unlink disk-state fixture actually pass. No real crash/power-loss claim.
+Evidence:root/20261107102348, original raw102137. This closes current ordinary-user
+Windows audit-package execution, not hosted/protected profiles/strict actor/
+product e2e/remote sink or whole goal. Metadata parser attempt1 singular-test
+error preserved separately from passing execution; final parse needs no rerun.
+
 Full-audit source prereview found unignored library process_lock_probe returned
 without parent env. Exact8132117 source confirms historical101 raw passes include
 one no-op; accepted cases100, preserved rawfacts plus accounting correction92505.
@@ -274,7 +286,7 @@ Source evidence: [[evidence:root/20261107081215]].
 
 ### Current completion audit after Windows source qualification
 
-Inspected current source afterc09d6897 and evidence95831. This supersedes the
+Inspected current source after174e5f21 and complete Windows evidence102348. This supersedes the
 historical matrix below only where actual source/evidence proves progress.
 
 | Requirement | Current authoritative evidence | Remaining completion proof |
@@ -287,11 +299,13 @@ historical matrix below only where actual source/evidence proves progress.
 | Settings and permanent kill | TrustedSnapshot native case passes; ServiceHost bind_with_operator and settings source exist; KillStatus typed assessment exists | Exact consumer CAS/WAL/restart evidence; kill admission/mutation remains unwired and destructive_controls=false |
 | Destination-bound rotation | Current candidate substitution/stale source/interrupted recovery cases pass | Operator/product workflow and remaining OS tuples |
 | Erasure | Current retained erasure/fresh exact recovery/foreign-scope refusal and persistent tombstone cases pass | Product/admin connection, backup residual/deployment proof; physical/unknown-copy erasure remains unestablished |
-| Backup retirement | Historical key_backups evidence; source still uses local ControlAuthority consumption/membership | Current backup suite, independently retained capability bridge and product/operator connection |
+| Backup retirement | Current full backup target10 cases pass, including additive retained-only bridge and fresh exact recovery; legacy local-only compatibility remains explicit | Production/operator dispatch, dual-operation audit correlation and independent final pin acknowledgement; actual crash/protected-profile/remaining OS proof |
 | Sink | Current actual verified local sink restart/tamper case passes | Remote delivery/retry/receipt transport and production export connection |
 | Recovery resource bounds and signing identity rotation | Current whole-history WAL/Tree source | Streaming authenticated recovery and writer/witness identity transition remain unimplemented; passphrase rotation is distinct |
-| Final verification | Current all-target check/Clippy, pure10 and native44, rawignored3 excluded;111-file closure zero drift | Full current audit suite, strict actor receipt, remaining OS/protected profiles, Docker product e2e and deployment qualification |
+| Final verification | Complete current Windows audit package110 accepted cases/rawignored5 excluded/two zero bins; all-target check/Clippy;112-file closure zero drift | Strict actor receipt, remaining OS/protected profiles, Docker product e2e and deployment qualification |
 
+Current complete110 is ordinary-user Windows package evidence102348; the44-case
+subset below is historical and not a second110/44 aggregate. A was returned.
 Resource-only operator settings now have a separate source path; observer
 settings remain nonwritable and destructive endpoints remain unavailable. The
 older blanket observer-only conclusion below is historical. Root's measured
