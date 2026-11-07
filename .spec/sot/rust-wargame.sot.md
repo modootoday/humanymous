@@ -161,6 +161,19 @@ browser/Cross-OS work moves to standard hosted execution. No local runtime run
 is resumed. No prior green qualifies this source; unavailable participants and
 full product requirements remain explicit until directly measured.
 
+### Standalone service readiness v0.7
+
+Expected child capability metadata comes from the runtime-owned
+service::standalone_profile(&Configuration), shared with ServiceHost's builder.
+Configuration::readiness() is only the core capability view and is not the full
+service envelope. Retain exact whole-object equality, private owned-child/image/
+namespace binding and all frozen enforcement. Reject extra fields, false witness
+claims and changed scope/listeners. The actual813hosted receipt (evidence083903)
+preserved26cases but measured19errors/0evaluated/7unsupported; the source-proven
+profile mismatch is repaired separately and requires fresh validation. No raw
+private case reasons were recovered, so the individual failure causes are not
+asserted as directly observed. Missing producer/human/AT qualifications stay open.
+
 ### Shared syntax boundary v0.6
 
 Root-approved extraction moves the sole recursive decoded-key visitor to

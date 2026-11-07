@@ -54,7 +54,7 @@ fn digest(path: &Path) -> Result<String, LabError> {
 }
 
 pub(super) fn ready_address(config: &Configuration, value: &Value) -> Result<SocketAddr, LabError> {
-    if value["profile"] != config.readiness() {
+    if value["profile"] != humanymous_runtime::service::standalone_profile(config) {
         return Err(LabError("readiness profile mismatch"));
     }
     let address: SocketAddr = value["listen"]
@@ -232,11 +232,21 @@ mod tests {
     #[test]
     fn readiness_is_exact_scope_not_just_a_loopback_string() {
         let config = super::super::config();
-        let mut value = serde_json::json!({"listen":"127.0.0.1:9000","profile":config.readiness()});
+        let profile = humanymous_runtime::service::standalone_profile(&config);
+        let mut value = serde_json::json!({"listen":"127.0.0.1:9000","profile":profile});
         assert!(ready_address(&config, &value).is_ok());
+        value["profile"] = config.readiness();
+        assert!(ready_address(&config, &value).is_err());
+        value["profile"] = profile.clone();
+        value["profile"]["audit_external_witness"] = serde_json::json!(true);
+        assert!(ready_address(&config, &value).is_err());
+        value["profile"] = profile.clone();
+        value["profile"]["unexpected_capability"] = serde_json::json!(false);
+        assert!(ready_address(&config, &value).is_err());
+        value["profile"] = profile.clone();
         value["profile"]["revision"] = serde_json::json!("foreign");
         assert!(ready_address(&config, &value).is_err());
-        value["profile"] = config.readiness();
+        value["profile"] = profile;
         for address in [
             "0.0.0.0:9000",
             "192.0.2.1:9000",

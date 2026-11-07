@@ -154,7 +154,30 @@ The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
 
-## V0.6 shared syntax decoder (validation pending)
+## V0.7 shared service profile (validation pending)
+
+Defender now expects runtime::service::standalone_profile(&Configuration), the
+runtime owner's exact standalone service envelope, rather than its core-only
+Configuration::readiness(). ServiceHost uses the same owning builder. Full-object
+equality remains mandatory; no subset/unknown-key acceptance is introduced.
+Pure negative fixtures cover core-only profiles, false witness claims, unknown
+fields and altered scope/listeners. No namespace/image/pipe/isolation or scoring
+checks changed. This repair requires fresh allocated pure checks and hosted
+measurement; the813failed ledger is not evidence that this later source works.
+
+## Actual813 hosted failure ledger
+
+Run42355168729/Docker128351926068 executed source8132117 and retained a valid
+strict-byte public receipt despite outer failure. Actual26scheduled cases:
+0evaluated/19errors/7unsupported/0skipped/mismatches; internallyconsistent=true,
+scoped=false/full=false. Evidence083903public/082419private binds source/rawSHA/
+lab-manifestSHA/ordered indices. CI independently hashes the original file; its
+private body was not recovered locally. Earlier19evaluated outcomes do not qualify
+this run. Source inspection found ServiceHost adds readiness fields absent from
+defender's configuration-only expected profile; whole-object equality rejects it.
+Runtime-owner shared-builder repair and fresh hosted measurement remain pending.
+
+## V0.6 shared syntax decoder (locally validated; hosted failure measured)
 
 Under the approved root dependency window, the sole decoded-key visitor and its
 generic negative tests moved to humanymous-test-support::json. Attacker consumes
@@ -172,7 +195,8 @@ New allocated checks now passed28pure tests and scoped all-target Clippy
 are retained. Three hashes drifted during checks: audit cfg(test) additions, an
 unselected audit integration test, and runtime documentation. Consumer/decoder/
 lock bytes were stable, but whole-source stability is false. This does not qualify
-an immutable hosted source. Actual hosted strict-byte receipt remains pending.
+an immutable hosted source. The actual813strict-byte failure receipt was recovered
+and is recorded above; successful owned-runtime execution remains pending.
 
 ## V0.5 step attribution (pure validated; hosted pending)
 
