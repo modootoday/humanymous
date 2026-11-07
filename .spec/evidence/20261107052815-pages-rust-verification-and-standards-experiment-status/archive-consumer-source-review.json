@@ -21,7 +21,7 @@
     {
       "issue": "Outcome summary uploaded before serving transfer and final summary rewrite",
       "requested": "Upload outcomes after terminal transfer finish so downloaded report includes actual transfer outcome",
-      "state": "Reported to CI owner; fix not yet verified"
+      "state": "Observed working source now uploads outcomes last, after source_transfer final summary; execution pending"
     }
   ],
   "not_claimed": [
@@ -30,5 +30,9 @@
     "Browser",
     "Assistive technology",
     "Deployment"
-  ]
+  ],
+  "reviewed_working_hashes": {
+    ".github/workflows/pages-build.yml": "33798511793d6ccf28febbc7f141e56c9c19b6d6277733b3aa1e4f448a562b8d",
+    "scripts/ci/delivery/src/pages.rs": "b7c238fd58b6865f4d70f121775d21c1a3fc2e91336c0d49dd9707083351b0ff"
+  }
 }
