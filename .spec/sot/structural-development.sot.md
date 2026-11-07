@@ -115,8 +115,10 @@ the preserved preparation snapshot, not current implementation status. Workspace
 membership is35 after replacing seven packages with one. Exact scoped evidence
 is [[evidence:root/20261107202053]]:162 tests pass, strict Clippy and collector
 WASM checking pass, and six same-crate forbidden accesses fail as intended with a
-successful control. Consumer integration and final source commit are still in
-progress; none of these results establishes full migration qualification.
+successful control. Core and consumer source integration is committed at
+c67d07c0114bd04793410f82f7182de7bfa6df2c. Affected consumer/workspace and clean
+package qualification remain pending; none of these scoped results establishes
+full migration qualification.
 
 The first slice absorbs signals, behavior, model, scoring, integrity, challenge
 and watermark into crates/sdk/humanymous-core/src/<context>. The initial

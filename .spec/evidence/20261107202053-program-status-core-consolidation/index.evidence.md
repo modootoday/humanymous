@@ -7,7 +7,7 @@ updated: 2026-11-07T20:20:53Z
 rel:
   depends_on: [sot:root/structural-development, sot:root/program-roadmap]
 files:
-  - {path: summary.json, sha256: 87d89c3adde307039d075ac0a16dd0ff683fee3c67c4af1f3f3e02708580041e, bytes: 29093, store: repo}
+  - {path: summary.json, sha256: df8b7e0f45293179190487504f228ccee854a897fe59681d89189e01efd0f989, bytes: 28407, store: repo}
 ---
 
 # Core consolidation observation
@@ -17,6 +17,13 @@ packages now occupy one context-organized core package; workspace membership is
 35, not the final eight. The summary binds the exact143 selected core files used
 for the first locked offline Windows run, not an as-yet uncommitted integration
 candidate's HEAD. Historical evidence retains its original source identity.
+
+The source integration was subsequently committed as
+c67d07c0114bd04793410f82f7182de7bfa6df2c. The summary's observed pre-commit HEAD
+and raw working-tree source hashes remain historical observations, not a claim
+that normalized Git fixture bytes were the exact raw local execution inputs.
+The authored summary attachment now uses LF bytes and its attachment digest
+matches the repository representation; frozen input fixtures were not normalized.
 
 Actual results are145 unit and17 integration passes, zero failed, ignored or
 filtered, including the first12 executed model RNG tests on this moved source.

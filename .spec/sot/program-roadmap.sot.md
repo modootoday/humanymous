@@ -25,8 +25,9 @@ CORE-SLICE-01 implementation now consolidates seven engine contexts under the
 accepted core path; the workspace has35 packages on its way to eight. Actual
 scoped162 tests, strict all-target/all-feature Clippy, collector WASM check and
 six same-crate denied-access compiler probes with a successful control are
-recorded in [[evidence:root/20261107202053]]. Consumers and the atomic integration
-checkpoint remain in progress. Full workspace, extracted-package, Cross-OS and
+recorded in [[evidence:root/20261107202053]]. Core and consumer source integration
+is committed at c67d07c0114bd04793410f82f7182de7bfa6df2c. Full workspace,
+extracted-package, Cross-OS and
 actual native/browser/Docker gates have not been satisfied by these local checks.
 
 The user explicitly confirmed the eight-public-package baseline on 2026-11-08.
