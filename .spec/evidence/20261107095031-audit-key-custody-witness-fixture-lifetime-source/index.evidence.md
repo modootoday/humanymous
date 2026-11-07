@@ -30,6 +30,13 @@ Specfold checks only; actual compile/process execution is NOT_RUN.
 
 ## How to read it
 
+Follow-up source review caught one legacy wrong-password test accessing the raw
+child stderr field after replacing its owner type. That test now uses existing
+bounded capture_with_stderr for its one-shot configuration and still requires
+actual nonzero exit, empty stdout and exact secret-free static stderr. Interactive
+fixtures keep stderr suppressed. This correction precedes new compile evidence;
+the first source checkpoint alone was not compile-qualified.
+
 This is an absolute fixture lifetime, not a per-exchange protocol deadline or
 production transport timeout. It relies on these binaries not spawning pipe-
 holding descendants and on normal OS termination/reaping behavior. This does not

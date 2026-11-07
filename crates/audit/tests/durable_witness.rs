@@ -230,29 +230,25 @@ fn independent_service_uses_private_sealed_identity_and_pinned_restart() {
 #[test]
 fn service_wrong_password_and_oversized_frame_fail_without_secret_echo() {
     use humanymous_audit::checkpoint::service::{MAX_FRAME_BYTES, WitnessServiceResponse};
-    use std::io::{Read, Write};
+    use std::io::Write;
     let temp = Temp::new();
     let (keys, state) = service_fixture(&temp);
     let mut config = service_config(&keys, &state, None);
     config.passphrase = zeroize::Zeroizing::new(b"wrong-secret-synthetic".to_vec());
-    let mut rejected = WitnessProcess::spawn(&config);
-    assert!(
-        humanymous_audit::checkpoint::service::read_frame(&mut rejected.output)
-            .unwrap()
-            .is_none()
-    );
-    assert!(!rejected.child.wait().unwrap().success());
-    let mut stderr = String::new();
-    rejected
-        .child
-        .stderr
-        .take()
-        .unwrap()
-        .read_to_string(&mut stderr)
-        .unwrap();
+    let mut input = Vec::new();
+    humanymous_audit::checkpoint::service::write_frame(&mut input, &config).unwrap();
+    let rejected = humanymous_test_support::process::capture_with_stderr(
+        &mut Command::new(env!("CARGO_BIN_EXE_audit-witness")),
+        &input,
+        std::time::Duration::from_secs(60),
+        64 * 1024,
+    )
+    .unwrap();
+    assert!(!rejected.status.success());
+    assert!(rejected.stdout.is_empty());
+    let stderr = std::str::from_utf8(&rejected.stderr).unwrap();
     assert_eq!(stderr.trim(), "witness service unavailable");
     assert!(!state.join("witness.json").exists());
-    drop(rejected);
     let mut process = WitnessProcess::spawn(&service_config(&keys, &state, None));
     assert!(matches!(
         process.response(),
