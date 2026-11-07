@@ -1,0 +1,156 @@
+{
+  "case_statuses": [
+    {
+      "expectation_matches": null,
+      "index": 0,
+      "status": "unsupported"
+    },
+    {
+      "expectation_matches": null,
+      "index": 1,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 2,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 3,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 4,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 5,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 6,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 7,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 8,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 9,
+      "status": "unsupported"
+    },
+    {
+      "expectation_matches": null,
+      "index": 10,
+      "status": "unsupported"
+    },
+    {
+      "expectation_matches": null,
+      "index": 11,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 12,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 13,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 14,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 15,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 16,
+      "status": "unsupported"
+    },
+    {
+      "expectation_matches": null,
+      "index": 17,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 18,
+      "status": "unsupported"
+    },
+    {
+      "expectation_matches": null,
+      "index": 19,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 20,
+      "status": "unsupported"
+    },
+    {
+      "expectation_matches": null,
+      "index": 21,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 22,
+      "status": "unsupported"
+    },
+    {
+      "expectation_matches": null,
+      "index": 23,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 24,
+      "status": "error"
+    },
+    {
+      "expectation_matches": null,
+      "index": 25,
+      "status": "error"
+    }
+  ],
+  "full_product_qualified": false,
+  "raw_contents_included": false,
+  "raw_sha256": "6af47402f4036613d25e7043a98d1ee4f244b2c000af5cd9a46734fa6f947fcc",
+  "report_schema": "humanymous.wargame-network.v2",
+  "schema": "humanymous.lab-wargame-public/1",
+  "source_manifest_sha256": "eb5eb569b3eec4886592f377f4945fe5478b676fca418ed42ad61705c616a2d4",
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "verifier": {
+    "full_product_qualified": false,
+    "internally_consistent": true,
+    "mode": "owned_process_network",
+    "schema": "humanymous.wargame-verification.v1",
+    "scoped_passed": false,
+    "totals": {
+      "errors": 19,
+      "evaluated": 0,
+      "expectation_mismatches": 0,
+      "scheduled": 26,
+      "skipped": 0,
+      "unsupported": 7
+    }
+  }
+}

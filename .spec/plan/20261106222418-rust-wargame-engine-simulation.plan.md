@@ -21,7 +21,8 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 - [x] V0.6: approved shared decoder consumption; remove duplicate visitor, preserve report budget/errors.
 - [x] V0.6: root lock integration and new allocated28pure/Clippy;13-crate snapshot and3file drift retained in075313/075756.
 - [x] V0.6: shared decoder f44b32b blob matches captured/current source and measured shared2pure checks.
-- [ ] V0.6: immutable hosted strict-byte receipt with safe recovery.
+- [x] V0.6: actual813/run42355168729 receipt recovered; source/rawhash/26indices/totals checked in evidence083903. Result0evaluated/19errors/7unsupported/scopedfalse.
+- [ ] Repair ServiceHost/defender readiness contract mismatch through the runtime-owned builder and rerun immutable hosted execution.
 - [x] Preserve actual candidate a26d1c3/run42354873001 startup_failure with0jobs in evidence081913; no measured case ledger.
 
 - [x] V0.5: bind network step identities/order/roles to catalog; preserve error prefixes.
