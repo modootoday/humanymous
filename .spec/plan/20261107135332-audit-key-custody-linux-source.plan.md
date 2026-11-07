@@ -52,8 +52,18 @@ counted as a healthy native result. It is a qualification case, not a subprocess
 helper, and its ignored default outcome must be recorded separately from the
 five historical helper exclusions. ALL new native tests/code are NOT RUN or
 compiled; no fmt/check/Clippy/capacity/production qualification is claimed.
-Remaining actual fault cases include root replacement, truncate/regrow/append,
-sidecar changes, FD exhaustion, unsupported filesystem and final-epoch failure.
+The same one ignored controlled case now additionally authors15 deterministic
+fault scenarios: same-size file replacement, truncate, sampled regrow, append,
+sidecar removal/addition, cancellation, root replacement, wrong mode, symlink,
+hardlink, FIFO, segment gap, unknown member and final-publication mutation.
+Regrow starts with a deliberately old sampled mtime, so restoring the bytes still
+changes the observed epoch even on coarse timestamp filesystems. It is not an
+ABA oracle. Failed constructor cases restore only owned fixtures and then acquire
+the real WAL lock to check cleanup. Final mutation runs at unchanged barrier4,
+after A-start/A-end/B-start, and must refuse after both complete crypto passes.
+These are subcases of ONE Rust qualification test, not15 passing Rust tests.
+Every case remains UNRUN. Actual FD exhaustion/peak, unsupported filesystem,
+API absence, injected I/O stages and capacity remain additional qualification.
 
 ## Problem and proposed scope
 

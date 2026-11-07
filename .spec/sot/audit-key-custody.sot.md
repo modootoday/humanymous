@@ -19,7 +19,10 @@ unavailable) and explicit descriptor ledger. A private test-compiled Linux Sourc
 backend is now authored with retained guard/pins, positioned readers and secure
 bounded membership revalidation; three unit cases and one explicitly ignored
 controlled-native qualification case are authored, all UNRUN/uncompiled. The
-existing native entrypoint remains Unsupported and no product route is wired.
+single controlled case includes15 deterministic mutation/admission subcases and
+final-after-both-passes refusal; those are not15 separately executed Rust tests.
+FD exhaustion/peak, unsupported filesystem and capacity remain additional gates.
+The existing native entrypoint remains Unsupported and no product route is wired.
 Native qualification and remaining fault/capacity cases remain pending.
 The narrow prospective Unix WAL creation fix now requests0600
 for new lock/segment/checkpoint and rotated segment files; existing permissions
