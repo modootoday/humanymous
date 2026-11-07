@@ -272,3 +272,30 @@ resolved features, actual artifacts and host execution remain separate evidence.
 Root owns the default-features=false dependency edge, common lock and atomic
 commit; no mixed live graph was compiled by Delivery. Earlier frozen receipts
 remain valid only for their exact sources, with no retroactive name changes.
+
+## Role-based package consolidation: Delivery impact input
+
+Root's newer consolidation direction investigates absorbing small Rust crates
+into a few role-based public packages, rather than retaining each small crate
+under a renamed prefix. This section maps current CI seams for that decision;
+it does not choose the final package graph, public features or binary names.
+The earlier ten-adapter naming table is historical design input and must not
+be read as a requirement to preserve ten separate crates.
+
+| Current Delivery contract | Required consolidation treatment |
+| --- | --- |
+| Go/browser preflight and policy exact package selectors | Replace the leaf package command with the accepted owning package/module test selector together with matching policy and real consumer tests. Preserve the public facade default/enabled split and per-occurrence admission guards; an all-features build is not a substitute. |
+| Runtime candidate Dockerfile, image_candidates and docker_source guards | Cargo package identity and emitted binary identity are separate. Update source recipes, known role, entrypoint, labels and source-bound scan inventory atomically if the owning package moves; do not turn a merged module into an invented public server/gate binary. |
+| Native archive compiler-artifact receipt | Bind the new metadata package ID, manifest, selected binary target and release artifact. Module absorption invalidates old build receipts for the new source even if binary basenames remain the same. Keep exact two-member binary expectations until Root explicitly changes the artifact map. |
+| package.rs graph/waves and registry.rs | These derive package names/dependencies from Cargo metadata. Public package selection, private dependency closure, build/dev edges, archive validation and topological publish order must be reviewed against the new graph; no fixed old crate count or rename-only assumption. |
+| Crate notices and image/archive distribution | If adapted Audit code moves into a core module, move or explicitly retain its known notice source and update the sole inventory/callers together. Preserve exact notice bytes and distribution destinations unless separately reviewed. Root LICENSE/NOTICE/THIRD_PARTY_LICENSES.md stay governed source inputs. |
+| Docker context allowlists | A new crate path can require context changes; workspace manifests and selected include_str/include_bytes inputs must remain available. Do not widen contexts to private evidence, compiled target directories or credentials as a shortcut. |
+| Native/FFI/CEF exceptions | Root and each boundary owner decide which separate compilation boundary is required. Shared public basenames do not authorize replacing distinct ABI artifacts or overwriting outputs in one target/staging path. |
+| Workflow catalog, OIDC and registry prerequisites | Technical workflow filenames/job IDs/environments remain trust bindings. Public package consolidation does not provision namespaces/publishers, enable direct publish, change privileges or remove readiness/product/scan gates. |
+
+The current Go source a19 and its actual hosted run remain their own fixed
+checkpoint. Historical selectors, snapshots, raw reports and failures are never
+rewritten as evidence for the consolidated graph. Fresh exact-source native,
+Unix actor, Docker component, archive and image inventory gates follow the final
+accepted graph. Audit f9 source reconstruction is a separate fixed historical
+component and must not silently inherit new shared manifests or dependency code.
