@@ -36,9 +36,26 @@ codex/rust-performance-baseline for `.spec/sot/performance-optimization.sot.md`,
 the exact public files `.spec/evidence/20261107135643-performance-optimization/index.evidence.md`
 and `.spec/evidence/20261107135643-performance-optimization/baseline.json`, plus
 `.spec.local/root/evidence/20261107135643-performance-optimization/**` only.
-This observed claim overrides the usual metadata role for this session; it grants
-no .agents/rules/THREADS, product code, graph or unassigned benchmark path. Use
+Root subsequently handed off exactly three additional files to this same owner:
+`crates/integrity/src/request/canonical.rs`,
+`crates/integrity/src/request/canonical/tests.rs` and
+`crates/integrity/examples/canonical_performance.rs`. The actual claim now lists
+these eight scopes. Root will not write those three source paths until returned.
+This overrides the usual metadata role only for the recorded session; it grants
+no whole-Integrity, .agents/rules/THREADS, graph or other benchmark path. Source
+and formatting preparation do not permit workloads during the Pages heavy window;
+compilation/benchmark execution still requires its own root allocation. Use
 normal exact-owner handover/release; never take over this lane from its owner.
+
+Temporary root-approved audit loan: red-catalog is held by
+codex/rust-convention-audit for `.spec/sot/convention-audit.sot.md`,
+`.spec/plan/20261107143000-convention-audit.plan.md`, the exact public files
+`.spec/evidence/20261107143000-convention-audit/index.evidence.md` and
+`.spec/evidence/20261107143000-convention-audit/baseline.json`, plus
+`.spec.local/root/evidence/20261107143000-convention-audit/**` only.
+The actual claim was re-read after normal owner acquisition. The lane's usual
+red-code responsibility is not granted: no product/red code, rules, Pages, graph
+or Cargo workload permission follows from this document/evidence loan.
 The future convention-audit/performance Rust-only protocol remains draft.
 
 Execution slots are separate from work lanes: root assigns at most four local

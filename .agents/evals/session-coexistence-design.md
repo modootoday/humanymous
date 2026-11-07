@@ -54,9 +54,13 @@ public children require a new root scope review, never prefix-based permission.
 The private fixed subtree is separately admitted by root against existing owners.
 That claim is project-coordination/codex/rust-performance-baseline, acquired by
 the performance owner using the unmodified existing PS compatibility protocol.
-It is not a CatalogV2/Rust mutator result. No .agents metadata, product code or
-benchmark source path is included; later target/code scope requires a separate
-root assignment. The global catalog/mode and legacy25 remain unchanged.
+It is not a CatalogV2/Rust mutator result. A later separate root handoff extended
+that compatibility claim by exactly canonical.rs, its dedicated tests.rs and the
+canonical_performance.rs example paths recorded in LANES. That exception does
+not broaden this proposed spec-only NewLanePolicy or grant other product/graph
+ownership. Root separately approved the audit's red-catalog loan for its five
+exact spec/evidence scopes. The global catalog/mode and legacy25 remain unchanged;
+these actual compatibility loans are not automatic-mutator or workload proof.
 
 ## Literal legacy scope handling
 

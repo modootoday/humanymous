@@ -10,11 +10,29 @@ rel:
 
 # Agent maintenance
 
+## Observed bounded audit loan and performance source handoff
+
+Root authorized a temporary free red-catalog loan solely to convention audit.
+After owner acquisition, the literal claim was re-read as codex/session
+rust-convention-audit with exact SoT, plan20261107143000, public index/baseline
+and fixed private bundle scopes. No red/product/rules/Pages/graph/Cargo rights
+or new Rust mutator follow. This lane did not create or alter that foreign claim.
+
+Root separately handed performance exactly crates/integrity/src/request/canonical.rs,
+its canonical/tests.rs and examples/canonical_performance.rs. The actual
+project-coordination claim now lists those three paths plus the prior five
+spec/evidence scopes under codex/rust-performance-baseline. LANES/THREADS and
+the draft's compatibility observation record these precise exceptions, never
+all-Integrity or a source grant in the future spec-only NewLanePolicy. Root
+will not write these source paths until returned. Only source/format preparation
+is currently permitted during the Pages heavy window; execution needs its own
+allocation. No workloads were run by this metadata update.
+
 ## Exact browser IME fixture preservation
 
 The convention auditor identified two indicators in [[plan:root/20261107002014]],
 lines163/213. Independent reads of the normalized source path matched
-matched SHA2562b45eeed32d1a67bf668df7647bf6bcbd04a2cd1fadf465447cdd67f64afd5cf
+SHA2562b45eeed32d1a67bf668df7647bf6bcbd04a2cd1fadf465447cdd67f64afd5cf
 and9b8de9053380ed1f112cd484966873423758f8ac48fa772ab5266cff29a20e1d.
 The Browser owner explicitly confirmed intentional literal Korean IME inputs/
 readbacks in English evidence prose and requested byte preservation. Only those

@@ -31,12 +31,16 @@ Snapshot: 2026-11-07 KST. Chat active status is distinct from persistent goal st
 Root owns shared Cargo/lock/toolchain, program roadmap and final Git integration. Pages owner alone writes docs/**, including public Draft v0. Other owners submit INTEGRATION.md/spec deltas. Source authoring may parallelize when real paths do not overlap.
 
 Temporary performance coordination: root lent the existing project-coordination
-lane to codex/rust-performance-baseline, observed with the exact five performance
-spec/evidence paths recorded in LANES. The owner actually acquired it through the
+lane to codex/rust-performance-baseline, observed with five exact performance
+spec/evidence scopes plus three narrowly handed-off Integrity source paths,
+all recorded in LANES. The owner actually acquired it through the
 unchanged PS compatibility protocol. This is not a new Rust-only lane grant or
-permission to edit the lane's usual agent metadata. Convention audit remains
-read-only pending separate ownership; future code/benchmarks require root scope
-and execution assignment.
+permission to edit the lane's usual agent metadata or all of Integrity. Source
+preparation is separate from allocated workloads and the Pages heavy window.
+Root also lent red-catalog to codex/rust-convention-audit, independently observed
+with exactly five convention spec/evidence scopes in LANES; no red/product code,
+rules, Pages, graph or Cargo workload rights follow. Both are temporary existing
+compatibility loans, not qualification of the draft Rust-only protocol.
 
 Local validation has at most four root-assigned pipelines A/B/C/D, jobs1/incremental0 and distinct targets, never same-target overlap or implicit permission to start. Admit only at commit<85% and free physical>20GiB. At commit>=88% or free physical<16GiB defer new compilation and automatically reduce subsequent allocations. Native Docker/CEF/SDK heavy builds are exclusive against other cold compilation streams; four slots do not prove concurrent cold capacity. Warm unit/bounded process overlap needs explicit budget admission. Deferred heavy builds wait for all other cold streams to become terminal and admission guards to pass. Preserve caches; no WSL shutdown, global cache drop, Docker pruning or foreign kills for admission. GPU inference remains separately allocated. Resource measurements and manifest windows follow program-roadmap/delivery and rule94.
 
