@@ -1,0 +1,119 @@
+{
+  "schema": "humanymous.runtime-consolidation-source/1",
+  "scope": "Working-tree source relocation and selected Windows validation only",
+  "workspace_members": 29,
+  "standalone_packages": 4,
+  "maintained_packages": 33,
+  "final_target_packages": 8,
+  "original_files": 279,
+  "merged_manifests": 6,
+  "relocated_nonmanifest_files": 273,
+  "current_runtime_files": 280,
+  "binary_roles": 4,
+  "explicit_integration_targets": 17,
+  "windows_library_inventory": 366,
+  "inventory_by_context": {
+    "gateway": 98,
+    "authority": 37,
+    "audit": 104,
+    "capture": 27,
+    "network": 72,
+    "native_security": 28
+  },
+  "check_all_targets_all_features_exit": 0,
+  "strict_clippy_exit": 0,
+  "fmt_exit": 0,
+  "selected_pure_passed": 177,
+  "selected_pure_failed": 0,
+  "selected_pure_ignored": 0,
+  "selected_pure_groups": 8,
+  "pure_runtime_source_differences": 0,
+  "source_input_scope": "280 Runtime worktree files plus recorded executable; not complete transitive compiler/registry/OS custody",
+  "main_lock_external_name_version_set_differences": 0,
+  "context_features": [
+    "gateway",
+    "authority",
+    "audit",
+    "capture",
+    "network",
+    "native-security"
+  ],
+  "default_feature": "gateway",
+  "source_only_pending": [
+    "Coherent consumer validation",
+    "Same-crate sibling minting negatives",
+    "Clean extracted-package compilation",
+    "Cross-OS actual runtime",
+    "Actual native roles and provider custody",
+    "Full366 and all integration gates",
+    "Docker and browser product qualification"
+  ],
+  "main_merged": false,
+  "published": false,
+  "historical_evidence_rewritten": false,
+  "corrections": [
+    "Initial archive argument construction failed before archive creation; corrected explicit --output argument succeeded",
+    "Initial workspace path-text removal damaged one dependency line; corrected before metadata success",
+    "Mapped Cargo.toml write refused; atomic replacement of owned file succeeded",
+    "Test-only AtomicU64 deprecated fetch_update renamed to equivalent try_update before strict Clippy",
+    "Initial pure-result sum projection was null; corrected from eight actual footer counts without rerunning",
+    "Canonical Core test-data replica extracted from committed blob; CRLF producer worktree observation kept separately"
+  ],
+  "raw_attachments": [
+    {
+      "private_file": "before-runtime.tar",
+      "sha256": "5f81e41350c065ccbbc9d0a83f914a109eec4518624e4289dcc6d2b9fcdf0634",
+      "bytes": 26091520
+    },
+    {
+      "private_file": "check.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "check.stderr.log",
+      "sha256": "1d8e8b0d8063fccc46ae8d591e39751c2041bde1c69e3b33504b43763deeae0f",
+      "bytes": 4370
+    },
+    {
+      "private_file": "clippy.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "clippy.stderr.log",
+      "sha256": "6ade1c535d4f6bfef90d0b2ce950301d25ed5d9f18e46810f9128305fd66847d",
+      "bytes": 455
+    },
+    {
+      "private_file": "inventory.stdout.log",
+      "sha256": "f08c4510f3f7e5a52fe6bd0ddb31b2efe7065e1c87cfe39bb60b2653f93eb5bc",
+      "bytes": 36378
+    },
+    {
+      "private_file": "inventory.stderr.log",
+      "sha256": "57f25356f80575b5188ffbcdff5c8267eacd0d7be4dea258cfbbbf6ed66b8017",
+      "bytes": 3275
+    },
+    {
+      "private_file": "pure.source-before.json",
+      "sha256": "c4c32b18dc2bf8bcb1a27c9ea5ecad77a97745d1be56075df0b14cee445d8309",
+      "bytes": 53145
+    },
+    {
+      "private_file": "pure.source-after.json",
+      "sha256": "c4c32b18dc2bf8bcb1a27c9ea5ecad77a97745d1be56075df0b14cee445d8309",
+      "bytes": 53145
+    },
+    {
+      "private_file": "metadata.after.json",
+      "sha256": "1cec92ed1b416dc69e013ba5689310d2092937d6c3998e9d0f471a4b23b09ddf",
+      "bytes": 103338
+    },
+    {
+      "private_file": "pure.summary.json",
+      "sha256": "a89649aff37329187062fd3b548e392fb5ba516c309bf3024312fbf1d08c1c8a",
+      "bytes": 1850
+    }
+  ]
+}

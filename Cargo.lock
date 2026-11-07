@@ -1945,10 +1945,9 @@ dependencies = [
  "getrandom 0.4.3",
  "hex",
  "humanymous-apache-adapter",
- "humanymous-audit",
- "humanymous-authority",
  "humanymous-core",
  "humanymous-framework-adapter",
+ "humanymous-runtime",
  "rustix 1.1.6",
  "serde_json",
  "sha2 0.10.9",
@@ -1968,56 +1967,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "humanymous-audit"
-version = "0.1.0"
-dependencies = [
- "aes-gcm",
- "base64 0.22.1",
- "ed25519-dalek",
- "getrandom 0.4.3",
- "hex",
- "hmac 0.12.1",
- "humanymous-core",
- "humanymous-native-security",
- "humanymous-platform",
- "junction",
- "rustix 1.1.6",
- "scrypt",
- "serde",
- "serde_json",
- "sha2 0.10.9",
- "subtle",
- "time",
- "unicode-normalization",
- "windows-permissions",
- "zeroize",
-]
-
-[[package]]
-name = "humanymous-authority"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "ed25519-dalek",
- "getrandom 0.4.3",
- "hex",
- "humanymous-audit",
- "humanymous-core",
- "humanymous-native-security",
- "humanymous-network",
- "interprocess",
- "rustix 1.1.6",
- "serde",
- "serde_json",
- "sha2 0.10.9",
- "subtle",
- "tokio",
- "widestring",
- "windows-permissions",
- "zeroize",
-]
-
-[[package]]
 name = "humanymous-browser"
 version = "0.1.0"
 dependencies = [
@@ -2029,16 +1978,6 @@ dependencies = [
  "meari-dom",
  "meari-native",
  "url",
-]
-
-[[package]]
-name = "humanymous-capture"
-version = "0.1.0"
-dependencies = [
- "httlib-hpack",
- "humanymous-network",
- "rcgen",
- "rustls",
 ]
 
 [[package]]
@@ -2072,9 +2011,6 @@ version = "0.1.0"
 dependencies = [
  "ed25519-dalek",
  "hex",
- "humanymous-audit",
- "humanymous-authority",
- "humanymous-native-security",
  "humanymous-platform",
  "humanymous-runtime",
  "junction",
@@ -2123,7 +2059,6 @@ name = "humanymous-defender"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
- "humanymous-audit",
  "humanymous-core",
  "humanymous-runtime",
  "serde",
@@ -2138,8 +2073,8 @@ version = "0.1.0"
 dependencies = [
  "flate2",
  "humanymous",
- "humanymous-native-security",
  "humanymous-platform",
+ "humanymous-runtime",
  "serde_json",
  "sha2 0.10.9",
  "tar",
@@ -2153,13 +2088,11 @@ dependencies = [
 name = "humanymous-dotnet-adapter"
 version = "0.1.0"
 dependencies = [
- "humanymous-audit",
- "humanymous-authority",
  "humanymous-core",
  "humanymous-framework-adapter",
  "humanymous-native-abi",
- "humanymous-native-security",
  "humanymous-platform",
+ "humanymous-runtime",
  "serde",
  "serde_json",
  "sha2 0.10.9",
@@ -2182,8 +2115,8 @@ dependencies = [
  "base64 0.22.1",
  "getrandom 0.4.3",
  "hex",
- "humanymous-authority",
  "humanymous-core",
+ "humanymous-runtime",
  "serde",
  "serde_json",
  "sha2 0.10.9",
@@ -2196,8 +2129,8 @@ name = "humanymous-lab-runner"
 version = "0.1.0"
 dependencies = [
  "getrandom 0.4.3",
- "humanymous-audit",
  "humanymous-platform",
+ "humanymous-runtime",
  "serde_json",
  "sha2 0.10.9",
 ]
@@ -2226,41 +2159,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "humanymous-native-security"
-version = "0.1.0"
-dependencies = [
- "humanymous-platform",
- "keyring-core",
- "rustix 1.1.6",
- "windows-native-keyring-store",
- "windows-permissions",
- "winsafe",
- "zeroize",
-]
-
-[[package]]
-name = "humanymous-network"
-version = "0.1.0"
-dependencies = [
- "hex",
- "humanymous-core",
- "humanymous-platform",
- "md-5",
- "serde",
- "serde_json",
- "sha2 0.10.9",
-]
-
-[[package]]
 name = "humanymous-nginx-adapter"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
  "getrandom 0.4.3",
  "hex",
- "humanymous-audit",
- "humanymous-authority",
  "humanymous-core",
+ "humanymous-runtime",
  "ngx",
  "rustix 1.1.6",
  "serde",
@@ -2275,11 +2181,9 @@ name = "humanymous-node-adapter"
 version = "0.1.0"
 dependencies = [
  "hex",
- "humanymous-audit",
- "humanymous-authority",
  "humanymous-core",
  "humanymous-framework-adapter",
- "humanymous-native-security",
+ "humanymous-runtime",
  "napi",
  "napi-build",
  "napi-derive",
@@ -2323,12 +2227,10 @@ name = "humanymous-python-adapter"
 version = "0.1.0"
 dependencies = [
  "hex",
- "humanymous-audit",
- "humanymous-authority",
  "humanymous-core",
  "humanymous-framework-adapter",
- "humanymous-native-security",
  "humanymous-platform",
+ "humanymous-runtime",
  "pyo3",
  "pyo3-async-runtimes",
  "serde_json",
@@ -2340,9 +2242,9 @@ dependencies = [
 name = "humanymous-ruby-adapter"
 version = "0.1.0"
 dependencies = [
- "humanymous-authority",
  "humanymous-core",
  "humanymous-framework-adapter",
+ "humanymous-runtime",
  "magnus",
  "serde",
  "serde_json",
@@ -2353,22 +2255,36 @@ dependencies = [
 name = "humanymous-runtime"
 version = "0.1.0"
 dependencies = [
+ "aes-gcm",
  "base64 0.22.1",
+ "ed25519-dalek",
  "getrandom 0.4.3",
  "hex",
- "humanymous-audit",
- "humanymous-authority",
- "humanymous-capture",
+ "hmac 0.12.1",
+ "httlib-hpack",
  "humanymous-collector",
  "humanymous-core",
- "humanymous-network",
+ "humanymous-platform",
+ "interprocess",
+ "junction",
+ "keyring-core",
+ "md-5",
  "rcgen",
+ "rustix 1.1.6",
  "rustls",
+ "scrypt",
  "serde",
  "serde_json",
  "sha2 0.10.9",
  "socket2",
+ "subtle",
+ "time",
  "tokio",
+ "unicode-normalization",
+ "widestring",
+ "windows-native-keyring-store",
+ "windows-permissions",
+ "winsafe",
  "zeroize",
 ]
 
@@ -2381,7 +2297,6 @@ dependencies = [
  "getrandom 0.4.3",
  "humanymous",
  "humanymous-attacker",
- "humanymous-audit",
  "humanymous-core",
  "humanymous-defender",
  "humanymous-platform",

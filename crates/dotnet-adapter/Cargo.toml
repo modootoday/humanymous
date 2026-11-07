@@ -9,7 +9,7 @@ publish = false
 include = ["src/**", "Cargo.toml", "INTEGRATION.md"]
 
 [dependencies]
-humanymous-authority = { path = "../authority" }
+humanymous-runtime = { workspace = true, features = ["authority"] }
 humanymous-framework-adapter = { path = "../framework-adapter" }
 humanymous-core.workspace = true
 humanymous-native-abi = { path = "../native-abi" }
@@ -18,9 +18,8 @@ serde_json.workspace = true
 tokio.workspace = true
 
 [dev-dependencies]
-humanymous-audit = { path = "../audit" }
+humanymous-runtime = { workspace = true, features = ["audit", "native-security"] }
 humanymous-core.workspace = true
-humanymous-native-security.workspace = true
 humanymous-platform = { workspace = true, features = ["testing"] }
 sha2.workspace = true
 

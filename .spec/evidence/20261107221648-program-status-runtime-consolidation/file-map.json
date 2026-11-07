@@ -1,0 +1,1676 @@
+[
+  {
+    "source": "crates/runtime/Cargo.toml",
+    "context": "gateway",
+    "destination": "MERGE",
+    "sha256": "52127fac053b7aa686c75242cc07864086af07b568fd7bbd063b265df126183f"
+  },
+  {
+    "source": "crates/runtime/INTEGRATION.md",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/INTEGRATION.md",
+    "sha256": "89d56da2df5f31133809ac4ef80ac18e80bddeca719e9bda38405fc2d2ed2893"
+  },
+  {
+    "source": "crates/runtime/browser-http-contract.json",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/qualification/gateway/browser-http-contract.json",
+    "sha256": "d0ff620b7ed65d77858dd14484845413ca1072ffb36838dee0e12c3326a2d7cc"
+  },
+  {
+    "source": "crates/runtime/qualification-contract.json",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json",
+    "sha256": "b47500cba412070d638b1159cec8b7adb215f3458e6cfc64f899c621e8a7738d"
+  },
+  {
+    "source": "crates/runtime/src/application.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+  },
+  {
+    "source": "crates/runtime/src/application/settings.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/settings.rs",
+    "sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61"
+  },
+  {
+    "source": "crates/runtime/src/application/temporal.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/temporal.rs",
+    "sha256": "00233744c82aa75130e180f83a062a53234ff92c64fc0174b38e3395cc02a797"
+  },
+  {
+    "source": "crates/runtime/src/application/temporal/operations.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/temporal/operations.rs",
+    "sha256": "7f059b2f80c458d8919413187276cff9b61b3087de4ac90ebdecddf71787d165"
+  },
+  {
+    "source": "crates/runtime/src/application/temporal/progress.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/temporal/progress.rs",
+    "sha256": "ca2be76059fa1bb3125c3882c040cced76fee83d89737c363f143a27871b4138"
+  },
+  {
+    "source": "crates/runtime/src/application/temporal/tests.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/temporal/tests.rs",
+    "sha256": "ba9b66237c77e77e2919457790b9839e2a0b28754918204c4005eaadfb58db5c"
+  },
+  {
+    "source": "crates/runtime/src/application/temporal/tests/categories.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/temporal/tests/categories.rs",
+    "sha256": "0493838ef6f7fa852a79f6447e8ea24dd810d593088d8ef5ca01294d845a6166"
+  },
+  {
+    "source": "crates/runtime/src/application/temporal/tests/continuity.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/temporal/tests/continuity.rs",
+    "sha256": "38492b2e74240a11a07306c5b5e83ebf5fbdbff209c0c12bc6e38373147a7029"
+  },
+  {
+    "source": "crates/runtime/src/application/tls.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs",
+    "sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6"
+  },
+  {
+    "source": "crates/runtime/src/browser.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/browser.rs",
+    "sha256": "9cc32a76b1aec49c01dbdea13f8266d737effdc68572d3050daad11806076e6d"
+  },
+  {
+    "source": "crates/runtime/src/configuration.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+    "sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e"
+  },
+  {
+    "source": "crates/runtime/src/configuration/audit.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/configuration/audit.rs",
+    "sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f"
+  },
+  {
+    "source": "crates/runtime/src/configuration/operational.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs",
+    "sha256": "aa0a21fda1ed2bb760f34ecda727516e76220a630cff16c5bb116af5d92e7650"
+  },
+  {
+    "source": "crates/runtime/src/control.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/control.rs",
+    "sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc"
+  },
+  {
+    "source": "crates/runtime/src/control/state.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/control/state.rs",
+    "sha256": "f681fdaa2a898a92e5da58eb53a17a7660f4d841596ab8046fde82072944925e"
+  },
+  {
+    "source": "crates/runtime/src/http.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "sha256": "c69c60bdc3c33072d10175b0e315db636e0d985958744ab7e09de57065a69da6"
+  },
+  {
+    "source": "crates/runtime/src/http/origin_response.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/http/origin_response.rs",
+    "sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39"
+  },
+  {
+    "source": "crates/runtime/src/http/stream.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs",
+    "sha256": "02444bb5a9212b3976d3a60eb7dc03eb0802e902a889f252017e41e278dac56b"
+  },
+  {
+    "source": "crates/runtime/src/lib.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/mod.rs",
+    "sha256": "54fb6bb5814f6e5fd1846df0408c93222f573403589d4c921f207c0cd3734928"
+  },
+  {
+    "source": "crates/runtime/src/main.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/main.rs",
+    "sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797"
+  },
+  {
+    "source": "crates/runtime/src/management/mod.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/management/mod.rs",
+    "sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+  },
+  {
+    "source": "crates/runtime/src/management/operator.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/management/operator.rs",
+    "sha256": "f12a6e61bd02ced0706b5995f2124a200dfbe376903b998b4b082fdeb93d7fd0"
+  },
+  {
+    "source": "crates/runtime/src/management/policy.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/management/policy.rs",
+    "sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9"
+  },
+  {
+    "source": "crates/runtime/src/management/tests.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/management/tests.rs",
+    "sha256": "f4ace8af102cd7936cf459620cf0cc230ad3f052cacb7d8b22b05e3bb225a7ea"
+  },
+  {
+    "source": "crates/runtime/src/service.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service.rs",
+    "sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+  },
+  {
+    "source": "crates/runtime/src/service/authorization.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/authorization.rs",
+    "sha256": "e4c0f7e255e00a1cab76fb10271991761207aab77437cb77ab6ab059dff94085"
+  },
+  {
+    "source": "crates/runtime/src/service/authorization/tests.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/authorization/tests.rs",
+    "sha256": "7837748f7fb6573df6efbd6cae300805d3eae7b68b8610f0e76b2b9aa4c8aa3f"
+  },
+  {
+    "source": "crates/runtime/src/service/epoch.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/epoch.rs",
+    "sha256": "c48d012e6ae7fd08f9c2339cf648e18047661b15b8055a94616d34f11c341270"
+  },
+  {
+    "source": "crates/runtime/src/service/epoch/tests.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/epoch/tests.rs",
+    "sha256": "ae15666482403ccbea4861630a1021696d123f8b3ba8fa7cdd6920bc2ed689c9"
+  },
+  {
+    "source": "crates/runtime/src/service/lifecycle.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/lifecycle.rs",
+    "sha256": "978db8db5889e2a8d65064a691fbad53544ce9ea8561c98b0364dfda91fd062c"
+  },
+  {
+    "source": "crates/runtime/src/service/observed.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/observed.rs",
+    "sha256": "70ae58ce40e59fdfe217562c144b380bc6097ce1a63228f1f5d072e7c33d7bda"
+  },
+  {
+    "source": "crates/runtime/src/service/observed/retained.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/observed/retained.rs",
+    "sha256": "33dd4d61fd6a65bfababcdc62db6a34bf9de0de6adf055bb04beefce41f3b985"
+  },
+  {
+    "source": "crates/runtime/src/service/observed/retained/tests.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/observed/retained/tests.rs",
+    "sha256": "0def4c79158292e5c6092ad6e703063d6df3fde3a54dba8bd67eaea03c213224"
+  },
+  {
+    "source": "crates/runtime/src/service/outcome.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/outcome.rs",
+    "sha256": "6418a93d8cdf3fcf199096eb08bd810d2c6dc519df654ba35bc7d5c6273c3569"
+  },
+  {
+    "source": "crates/runtime/src/service/readiness.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
+    "sha256": "588e2973865ad469d46a9bb9faeab13c5f95b2d9cb989e1022977d27ccb40fc5"
+  },
+  {
+    "source": "crates/runtime/src/service/shutdown.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/service/shutdown.rs",
+    "sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb"
+  },
+  {
+    "source": "crates/runtime/src/session.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/session.rs",
+    "sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4"
+  },
+  {
+    "source": "crates/runtime/src/session/admission.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/session/admission.rs",
+    "sha256": "275f5162e56e490dc9889b1091935e3185c4a7f78cc3281bde0af1ba84f0263e"
+  },
+  {
+    "source": "crates/runtime/src/settings.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
+    "sha256": "3e04120155988ae12fb7bcdbfcbd571519e039f2aec15c0c6f879fadf4abe2fa"
+  },
+  {
+    "source": "crates/runtime/src/settings/store.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
+    "sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6"
+  },
+  {
+    "source": "crates/runtime/src/settings/store/journal.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/settings/store/journal.rs",
+    "sha256": "64a1341091cca0e3009e0486f705e54296b45b18bb99612f88cfb568bc38c672"
+  },
+  {
+    "source": "crates/runtime/src/shipping.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping.rs",
+    "sha256": "b4cda834adcf0fa4983521f58b58fab0823aac53cecd8b576320432a8abbfe5c"
+  },
+  {
+    "source": "crates/runtime/src/shipping/binding.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping/binding.rs",
+    "sha256": "05097e0ae6560946af9725cccb32e86a1382d97e5b95a4d7bcb93ea043f64e6e"
+  },
+  {
+    "source": "crates/runtime/src/shipping/scope.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping/scope.rs",
+    "sha256": "7fc02698d5ca5a16a4f636334c4a2cab091da3d5b8c87799e63b99dff5714094"
+  },
+  {
+    "source": "crates/runtime/src/shipping/tests.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping/tests.rs",
+    "sha256": "6b2f5182ab1b4061862d5147e91a0cba8b0ea1e44c35d79aeb1966d1b5d5aa53"
+  },
+  {
+    "source": "crates/runtime/src/shipping/tests/bounds.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping/tests/bounds.rs",
+    "sha256": "6fde5b8a4f91931d028ec1709a27b5e64284d49f029c6564d01b0f978ce2e2d9"
+  },
+  {
+    "source": "crates/runtime/src/shipping/tests/envelope.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping/tests/envelope.rs",
+    "sha256": "6dd87a2f5faeaee2e575487d9a6b37f5a69c7857c1614b27ea9ed3dd3a09c894"
+  },
+  {
+    "source": "crates/runtime/src/shipping/tests/providers.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping/tests/providers.rs",
+    "sha256": "e8c07914816e47b9ce5db8990f1914708c124a196af90570bcb9b3709550c7ef"
+  },
+  {
+    "source": "crates/runtime/src/shipping/wire.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/shipping/wire.rs",
+    "sha256": "928d1d4a9b704f161b5570639c21ee2b56d211d7c8f2dcaed932e3a3af237630"
+  },
+  {
+    "source": "crates/runtime/src/startup.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/startup.rs",
+    "sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+  },
+  {
+    "source": "crates/runtime/src/tests.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests.rs",
+    "sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181"
+  },
+  {
+    "source": "crates/runtime/src/tests/browser.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs",
+    "sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+  },
+  {
+    "source": "crates/runtime/src/tests/browser/contract.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs",
+    "sha256": "f40d22522c6b1ae4bb1d0df184fd5ed294c9984a9ae7b59781e1b130ad849fe2"
+  },
+  {
+    "source": "crates/runtime/src/tests/browser/contract/harness.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract/harness.rs",
+    "sha256": "a29c5c03ad5c1a608fe6727f68a53fe4e81c5624562c6d9c9ee214befecb3079"
+  },
+  {
+    "source": "crates/runtime/src/tests/service.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/service.rs",
+    "sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+  },
+  {
+    "source": "crates/runtime/src/tests/service/settings_operator.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/service/settings_operator.rs",
+    "sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70"
+  },
+  {
+    "source": "crates/runtime/src/tests/settings.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs",
+    "sha256": "2173b20cbb7df576f732ff04b0e222ffc99321b63bdf9a15c159329402cccb60"
+  },
+  {
+    "source": "crates/runtime/src/tests/stream.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/stream.rs",
+    "sha256": "1768559c0ce1f6704efc038ba779436d6329be97b41ba74bb4a174b1d354e346"
+  },
+  {
+    "source": "crates/runtime/src/tests/tls.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/tls.rs",
+    "sha256": "154a9b4a43f21673d5c69f4d6c93fe0e1c338f0ffa3ede0244096519207c3065"
+  },
+  {
+    "source": "crates/runtime/src/tests/tls/dispatch.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/tls/dispatch.rs",
+    "sha256": "42a335960ce0245f3e3374408d1b686be1be98239c074210abf16ff0b3c97b2d"
+  },
+  {
+    "source": "crates/runtime/src/tests/tls/observation.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tests/tls/observation.rs",
+    "sha256": "f1f4639f63df149ae850282e89c6bd731c20f14c05eaddbe6805535791a281ff"
+  },
+  {
+    "source": "crates/runtime/src/tls.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/src/gateway/tls.rs",
+    "sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db"
+  },
+  {
+    "source": "crates/runtime/tests/native_process.rs",
+    "context": "gateway",
+    "destination": "crates/sdk/humanymous-runtime/tests/gateway/native_process.rs",
+    "sha256": "205eb6559c66cc88107192ffaaa33a37e4609f25eb09239d104a69cf8a52bfd4"
+  },
+  {
+    "source": "crates/authority/Cargo.toml",
+    "context": "authority",
+    "destination": "MERGE",
+    "sha256": "66f2c101adbf9aed9598fccbfcc1590b9cf7c51c2463498625846eeea14e204a"
+  },
+  {
+    "source": "crates/authority/Dockerfile.pilot",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/pilots/authority/Dockerfile",
+    "sha256": "8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad"
+  },
+  {
+    "source": "crates/authority/INTEGRATION.md",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/INTEGRATION.md",
+    "sha256": "590ecb2275228b036296c55b6fcf7798e97c5bf3301ea46559970bf57167db89"
+  },
+  {
+    "source": "crates/authority/src/client.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/client.rs",
+    "sha256": "fae9140530b41d8b608fc6dcc24b7d09ab7de3acfed735579c2074042edf222c"
+  },
+  {
+    "source": "crates/authority/src/configuration.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/configuration.rs",
+    "sha256": "c9fe7141ce862968d2a923a64556795e326866bb96d14c6471c3eb7aa3664a05"
+  },
+  {
+    "source": "crates/authority/src/credentials.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/credentials.rs",
+    "sha256": "d7e84bf9ad7b4853bfb12ad92990b222d7de24a0c9428d10cc22447667c3b170"
+  },
+  {
+    "source": "crates/authority/src/decision.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/decision.rs",
+    "sha256": "437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c"
+  },
+  {
+    "source": "crates/authority/src/lib.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/mod.rs",
+    "sha256": "a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db"
+  },
+  {
+    "source": "crates/authority/src/main.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/main.rs",
+    "sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e"
+  },
+  {
+    "source": "crates/authority/src/protocol.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/protocol.rs",
+    "sha256": "745ab89800e26457b469e11e8733874cce816203db3cd725f372f37805aae78c"
+  },
+  {
+    "source": "crates/authority/src/protocol/framing.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/protocol/framing.rs",
+    "sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6"
+  },
+  {
+    "source": "crates/authority/src/startup.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup.rs",
+    "sha256": "102bcce5c8c756debfe8ef6528dddf258e50e24aaeaeb182fd07886e3f15c15c"
+  },
+  {
+    "source": "crates/authority/src/startup/authorization.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/authorization.rs",
+    "sha256": "27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e"
+  },
+  {
+    "source": "crates/authority/src/startup/authorization/binding.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/binding.rs",
+    "sha256": "11c75c147958e0a7dca0ac256ad49850118426752677571eb4c6794c813043a0"
+  },
+  {
+    "source": "crates/authority/src/startup/authorization/codec.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/codec.rs",
+    "sha256": "643a7ab7ce0382db3802da166a62454b682a2d6669378bd434348b756f7ac744"
+  },
+  {
+    "source": "crates/authority/src/startup/authorization/hello.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/hello.rs",
+    "sha256": "afea0f98f52a3b4c6c078353f26a994cee7e31cbb1e3f34e1cc4817be66b3448"
+  },
+  {
+    "source": "crates/authority/src/startup/authorization/tests.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/tests.rs",
+    "sha256": "6ae4f2984eab99efef916104ab05e1562b71aa49e4aa280bd766420e1d653444"
+  },
+  {
+    "source": "crates/authority/src/startup/authorization/tests/fixture.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/tests/fixture.rs",
+    "sha256": "fa6c441f2ef9814e4fce16d1ef5901cf3ba1300a991c370b034006f4d80a8818"
+  },
+  {
+    "source": "crates/authority/src/startup/authorization/verification.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/verification.rs",
+    "sha256": "6d3872e7e8f14a81f40c99d3dbfd4f49e02cdc2b989c4aee4de01e5196f9883b"
+  },
+  {
+    "source": "crates/authority/src/startup/observer.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/observer.rs",
+    "sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806"
+  },
+  {
+    "source": "crates/authority/src/startup/observer/state.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/observer/state.rs",
+    "sha256": "3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21"
+  },
+  {
+    "source": "crates/authority/src/startup/observer/tests.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/startup/observer/tests.rs",
+    "sha256": "c10d765a30a29df908135ef074e7f5a41682b82fc57517fd00a4b9e35593e470"
+  },
+  {
+    "source": "crates/authority/src/transport/mod.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/transport/mod.rs",
+    "sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8"
+  },
+  {
+    "source": "crates/authority/src/transport/permissions.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/transport/permissions.rs",
+    "sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c"
+  },
+  {
+    "source": "crates/authority/src/transport/service.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/transport/service.rs",
+    "sha256": "1e7faf4a2f7d89a642c2f59f5ab7467b07cda381c2cdcfcf74ae0e71f93ba86a"
+  },
+  {
+    "source": "crates/authority/src/transport/unix.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/transport/unix.rs",
+    "sha256": "cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623"
+  },
+  {
+    "source": "crates/authority/src/transport/windows.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/src/authority/transport/windows.rs",
+    "sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86"
+  },
+  {
+    "source": "crates/authority/tests/decisions.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/tests/authority/decisions.rs",
+    "sha256": "0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b"
+  },
+  {
+    "source": "crates/authority/tests/fixtures/authorization-v2-maximum.json",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/authority/authorization-v2-maximum.json",
+    "sha256": "d4aa80ca126c101ee61cd18e78928f9beaa185b2330f1fb8f44dbaefc08e8dbc"
+  },
+  {
+    "source": "crates/authority/tests/fixtures/authorization-v2-minimal.json",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/authority/authorization-v2-minimal.json",
+    "sha256": "c3119b20fdf1b40cc6e99ac9e8efef6b84da8ac5c35bbdeb6588fcb47f720786"
+  },
+  {
+    "source": "crates/authority/tests/local_service.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/tests/authority/local_service.rs",
+    "sha256": "0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442"
+  },
+  {
+    "source": "crates/authority/tests/native_process.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/tests/authority/native_process.rs",
+    "sha256": "fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03"
+  },
+  {
+    "source": "crates/authority/tests/support/mod.rs",
+    "context": "authority",
+    "destination": "crates/sdk/humanymous-runtime/tests/authority/support/mod.rs",
+    "sha256": "34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820"
+  },
+  {
+    "source": "crates/audit/Cargo.toml",
+    "context": "audit",
+    "destination": "MERGE",
+    "sha256": "11c4cbcbd514f01958627c58f2b255424b123bc4f73ff5f0ea55d59563eefa1c"
+  },
+  {
+    "source": "crates/audit/KEYS-INTEGRATION.md",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/KEYS-INTEGRATION.md",
+    "sha256": "a85b9d061e968e9a4f882dfe695ded67768d4f067fe595e1b07ff8090eb9ad82"
+  },
+  {
+    "source": "crates/audit/LICENSE-Go.txt",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt",
+    "sha256": "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738"
+  },
+  {
+    "source": "crates/audit/src/bin/audit-control-retainer.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/bin/audit-control-retainer.rs",
+    "sha256": "b728c1807b7b6360c9c11024df9a5db8de30946c34de784eb35b7d8b174cf77d"
+  },
+  {
+    "source": "crates/audit/src/bin/audit-witness.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/bin/audit-witness.rs",
+    "sha256": "143b7c6fd620704d737cc2d6610ec305a10e35a4ffff0aba792f99dcdc1caa4d"
+  },
+  {
+    "source": "crates/audit/src/checkpoint/durable.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/checkpoint/durable.rs",
+    "sha256": "2ce83f57aea799ceef105f380ab4203cc638cf123133b272c8ee7d57879fadab"
+  },
+  {
+    "source": "crates/audit/src/checkpoint/durable/service.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/checkpoint/durable/service.rs",
+    "sha256": "cfd4eeb07908987a85c04f8894e539bee62a731cf58046b715d81a29e8cd89b3"
+  },
+  {
+    "source": "crates/audit/src/checkpoint/durable/service/client.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/checkpoint/durable/service/client.rs",
+    "sha256": "06eafa0039dbee37234d983455c3f835b8b13dbcd08807003ad86cd220a1be38"
+  },
+  {
+    "source": "crates/audit/src/checkpoint/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/checkpoint/mod.rs",
+    "sha256": "ed75c03c275b144d3aeeea7192b35a23bf30f36b497aeb6ee828fe768524700e"
+  },
+  {
+    "source": "crates/audit/src/checkpoint/signing.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/checkpoint/signing.rs",
+    "sha256": "8634ce7444478e1bb89e39d915db9685d0dfdb646382fd4bf41d92ec74848628"
+  },
+  {
+    "source": "crates/audit/src/checkpoint/signing/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/checkpoint/signing/tests.rs",
+    "sha256": "db86fa502ba86d962e6be0771981db664e16e782cc6bae147bf851912ca6d3c9"
+  },
+  {
+    "source": "crates/audit/src/checkpoint/witness.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/checkpoint/witness.rs",
+    "sha256": "ff0e73139ddcf2d94d37b54d5d23a7207e34912125deccdd05886a0d1b98f602"
+  },
+  {
+    "source": "crates/audit/src/control/ledger.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/control/ledger.rs",
+    "sha256": "2217dfaf9e68d0e4e83e93bde00781cd274d45cd3a32d0375e369a8b0b51437e"
+  },
+  {
+    "source": "crates/audit/src/control/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/control/mod.rs",
+    "sha256": "ddc0edc3da42c0f4e2193d4cee86f1de714c4a594786a986df5848b14fc40a8e"
+  },
+  {
+    "source": "crates/audit/src/control/operations.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/control/operations.rs",
+    "sha256": "56880c1d8525fbbd8540c2fb1a43f490a101e51c935c55495b96765412330f1b"
+  },
+  {
+    "source": "crates/audit/src/control/policy.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/control/policy.rs",
+    "sha256": "574a01a1652b78c0578a3c80d71aea985c3fe9629b3a4a244c68bdc61ab725a5"
+  },
+  {
+    "source": "crates/audit/src/control/retention.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/control/retention.rs",
+    "sha256": "fe555ca9ab526e897b631775f1d895eb7d8a021960775e10cf65b6d640f0969b"
+  },
+  {
+    "source": "crates/audit/src/control/retention_service.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/control/retention_service.rs",
+    "sha256": "9ba1ff93ce143ffef9a2ab5939190629d7ecbab1d4c0c4d1dbac85794eac807d"
+  },
+  {
+    "source": "crates/audit/src/control/state.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/control/state.rs",
+    "sha256": "7a08ee0849d914b73a80ac75f8eba92afacd84e6bb0da2f222cba4ad7a43a2cb"
+  },
+  {
+    "source": "crates/audit/src/keys/backups.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/backups.rs",
+    "sha256": "9ed105a70238b88c0a7d01cf9a98d0e1668dc8800842f83757a3a3da36cb0086"
+  },
+  {
+    "source": "crates/audit/src/keys/backups/retained.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/backups/retained.rs",
+    "sha256": "98347efd011802bda9ffb853e959a48fa541db533d257025899b9f332fd0c9d9"
+  },
+  {
+    "source": "crates/audit/src/keys/custody.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/custody.rs",
+    "sha256": "5f5a5af22be524bc8149f9e95deb0f27768bbe9753521c88ee1773277c91b60a"
+  },
+  {
+    "source": "crates/audit/src/keys/custody/erasure.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/custody/erasure.rs",
+    "sha256": "e554d1d0e8896c93febf8161bd6e85c7457b4af0a2163a660d71de7934f63514"
+  },
+  {
+    "source": "crates/audit/src/keys/custody/permissions.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/custody/permissions.rs",
+    "sha256": "8cc7d719ac2f16e5b0fa431f6e1987bfb1bb681a440ed7af0bfe2bf9c1594777"
+  },
+  {
+    "source": "crates/audit/src/keys/custody/rotation.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/custody/rotation.rs",
+    "sha256": "40dd00e3fb6b8f47699aba701097c3c0ff850d10d265eeb3770d0f3423ae627f"
+  },
+  {
+    "source": "crates/audit/src/keys/custody/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/custody/tests.rs",
+    "sha256": "21fe2804a8896ed0bd8d2d4f2a97380a19c18a151c958f53f69faaf46fa8c68a"
+  },
+  {
+    "source": "crates/audit/src/keys/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/mod.rs",
+    "sha256": "f51306f99c522d203fffdcb54a7278cf4021621a429218fb2a6bba91e363b721"
+  },
+  {
+    "source": "crates/audit/src/keys/vault.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/keys/vault.rs",
+    "sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef"
+  },
+  {
+    "source": "crates/audit/src/lib.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/mod.rs",
+    "sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197"
+  },
+  {
+    "source": "crates/audit/src/lifecycle/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/lifecycle/mod.rs",
+    "sha256": "74640c1a9047a9bd1d169f3b235e312e9c73aeb3317bb2d256e8567e7d27e580"
+  },
+  {
+    "source": "crates/audit/src/lifecycle/registry.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/lifecycle/registry.rs",
+    "sha256": "1c47f95ea69995ab5406710acc46284b8274b8efa0449b27cd5a533b739f3cec"
+  },
+  {
+    "source": "crates/audit/src/lifecycle/retention.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/lifecycle/retention.rs",
+    "sha256": "220268a5a44cf814c6e3a16dc3946a802f6cf0ba012599c714314c1f853d4376"
+  },
+  {
+    "source": "crates/audit/src/log/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
+    "sha256": "7d34318ed61d58fedd23889112d549e4c4c20802da4162581e11f9f9247f70fa"
+  },
+  {
+    "source": "crates/audit/src/log/proofs.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/log/proofs.rs",
+    "sha256": "06626d02195e4be65e21697a50e6aabc44cd8a44258a64d515d2b0cd6d399fa8"
+  },
+  {
+    "source": "crates/audit/src/log/sealed.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/log/sealed.rs",
+    "sha256": "211817ddf672de8821d086e0a0a3c6a4aee16dfd0066a39b4e1d256257336899"
+  },
+  {
+    "source": "crates/audit/src/log/stamp.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs",
+    "sha256": "58df780df2834749bd55961e662774008b7a89d0f2cb1f4753cd00fcc1514fd5"
+  },
+  {
+    "source": "crates/audit/src/merkle/frontier.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/merkle/frontier.rs",
+    "sha256": "5ac5436a73c470f0756fedf90839c1f213fa9a6aa4a1d2d50d5f394c961efa32"
+  },
+  {
+    "source": "crates/audit/src/merkle/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/merkle/mod.rs",
+    "sha256": "4b330b6eb2e807f95eab77782358f3c93a828de6dcf49bd9e5d9e32c0c9b21de"
+  },
+  {
+    "source": "crates/audit/src/merkle/ranges.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/merkle/ranges.rs",
+    "sha256": "f3e7a80f995cded9e1343a0c39d2cea78d92dfa75c7d8ee50d43957d3c54cd56"
+  },
+  {
+    "source": "crates/audit/src/merkle/ranges/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/merkle/ranges/tests.rs",
+    "sha256": "3fcb2b33fa77ae7d3d6029c8e8dfa1c42b86378b43c08f05fbf9d354b42cb850"
+  },
+  {
+    "source": "crates/audit/src/record/canonical.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/record/canonical.rs",
+    "sha256": "649465eb6bf3b9c5d37010ffb59f0add91cc240ac5e433455d9565095019136f"
+  },
+  {
+    "source": "crates/audit/src/record/canonical/encoder.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/record/canonical/encoder.rs",
+    "sha256": "6c770f22a8cff9cc7a337990d29fff928a3e6fb37daa35e1bf5b4fae35ad0abe"
+  },
+  {
+    "source": "crates/audit/src/record/canonical/encoder/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/record/canonical/encoder/tests.rs",
+    "sha256": "d2cf1d1aa84e8e9d2ff8fb26e6e81e50c132248b9119b5b1982d10dd35e00252"
+  },
+  {
+    "source": "crates/audit/src/record/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/record/mod.rs",
+    "sha256": "d3287a2f21ef0628a366c5cae128b0cb53877bca099900a9f3e862449069654c"
+  },
+  {
+    "source": "crates/audit/src/record/normalization.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/record/normalization.rs",
+    "sha256": "7c386e79eaa025b0f160d1bcc3aff923e75b1ecd067762d822683242a1b8630f"
+  },
+  {
+    "source": "crates/audit/src/record/ordering.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/record/ordering.rs",
+    "sha256": "0d11a0bd8be69ce75d4fdaae57dec312112160207c85f214422cdf4474083e2b"
+  },
+  {
+    "source": "crates/audit/src/sink.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/sink.rs",
+    "sha256": "b66c13c42de4dc527dd0fc6c48fd95d9d4d101b0abe1bda96ae61bf05495c137"
+  },
+  {
+    "source": "crates/audit/src/storage/exclusive_file.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/exclusive_file.rs",
+    "sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69"
+  },
+  {
+    "source": "crates/audit/src/storage/framing.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs",
+    "sha256": "0fd543e7651a482a1f9b9af717d272ed97e8a3f4ed985d742ef084f34247c8b4"
+  },
+  {
+    "source": "crates/audit/src/storage/framing/cursor.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/framing/cursor.rs",
+    "sha256": "b8a4929245b696c2f3659d4a84201a988976248d45d2277e0b5132c299ce1f46"
+  },
+  {
+    "source": "crates/audit/src/storage/framing/preflight.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/framing/preflight.rs",
+    "sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0"
+  },
+  {
+    "source": "crates/audit/src/storage/framing/preflight/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/framing/preflight/tests.rs",
+    "sha256": "8fd30354a11a7523e9b240458fb398446dbbdef5f936ed909aa9171638f5b6d2"
+  },
+  {
+    "source": "crates/audit/src/storage/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/mod.rs",
+    "sha256": "a03b885e3af62cee8ac9d226e971cfc9cf60362741dcdfd899c1140c01d0b448"
+  },
+  {
+    "source": "crates/audit/src/storage/permissions.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/permissions.rs",
+    "sha256": "ec1bd4b017f609c4eebb2d431bf47ac9605a15824928bc43b09ddc433ac0a02a"
+  },
+  {
+    "source": "crates/audit/src/storage/private_state.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/private_state.rs",
+    "sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+  },
+  {
+    "source": "crates/audit/src/storage/recovery.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/recovery.rs",
+    "sha256": "d289016225d4e0ca181c32541cddf08f8e659fe33a0861ca346551c23cdcbc7c"
+  },
+  {
+    "source": "crates/audit/src/storage/trusted_snapshot.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/trusted_snapshot.rs",
+    "sha256": "c9ed156687278f9b7962950aeff6cb3ab5873b3a7b3262ce965c03195142cef4"
+  },
+  {
+    "source": "crates/audit/src/storage/wal.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/wal.rs",
+    "sha256": "ac03c3146e8b8a54b68f2cb326889f197745cfcc19455693b0d9223c470475c5"
+  },
+  {
+    "source": "crates/audit/src/storage/witness_recovery.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/witness_recovery.rs",
+    "sha256": "e275c85e048d8f24331e1df56cb67caf79d9b5f63ba414497103d3f2af09c568"
+  },
+  {
+    "source": "crates/audit/src/storage/witness_recovery/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/storage/witness_recovery/tests.rs",
+    "sha256": "70b6d6e7b029a6057d4c880b3afe58851989fe33aa1821d2066aa78cf5a79bec"
+  },
+  {
+    "source": "crates/audit/src/verification/checks.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/checks.rs",
+    "sha256": "1f507beb4b5d0189ca80d0d93409d422c1261993596bb38a624026569337d9a9"
+  },
+  {
+    "source": "crates/audit/src/verification/incremental.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/incremental.rs",
+    "sha256": "e2fbec271e1673106b31df8b8e1c904aab586c2a5df4bce09246eeeb50eee055"
+  },
+  {
+    "source": "crates/audit/src/verification/incremental/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/incremental/tests.rs",
+    "sha256": "27eb814f60eb0fd63f42bd291001d330dbd2d5a32f964b18bae4e532bb1fb705"
+  },
+  {
+    "source": "crates/audit/src/verification/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
+    "sha256": "11ab3c6537407c0ea90a5937d5c6c6a7bd3315fc0aba80efa8394b6375e36c52"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/checkpoints.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/checkpoints.rs",
+    "sha256": "81dcd924b653706c39d5583f44d141e92d73c5f42741f6522828a587f862bb5c"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/frames.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/frames.rs",
+    "sha256": "eb506f8639db9438954e624021eedf5ef791e9b5507b8db8a2be6aed7cb64c92"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/limits.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/limits.rs",
+    "sha256": "41ead10b38ef2c18f25f1bbe2a856fe205c43c2d91656f2d854846ca46a89793"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/metadata.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/metadata.rs",
+    "sha256": "97fad69be4c379881dfcc5e90f021773c359994737e0f8c544f8fafc8da3ea2b"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/mod.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/mod.rs",
+    "sha256": "f3d3a272f65da1e73ff25e27fb9ee2bcf6b1f014bf73af25c28a09824fb1e276"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/recovery_transition.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/recovery_transition.rs",
+    "sha256": "da224d9bdca01676a6646520d538591879bda8a63a069d6ffc95a43eed222ae9"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source.rs",
+    "sha256": "9be67a75ff5af8be7774b96d4081a98e230f28309368712cf0af6e3fa7ab7e2d"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native.rs",
+    "sha256": "df76c0b9af6f5c8aadcb8040f4ca5bb78844aa5acfa436b5b66c6b2855fc44b2"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership.rs",
+    "sha256": "3b7ac651524b10a9671a3da7f28db5d464c723316d8110d25f8dcdfae5c0a556"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/cases.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/cases.json",
+    "sha256": "ed39164917868943c762bb44c05f7bd6e51794225a2d223810d3bd2661dac147"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/control_lifetime.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/control_lifetime.rs",
+    "sha256": "87a79917b92178118955ceff75c1563dce3e4458407c482fab3206abbb0f8630"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/limits_lifetime.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/limits_lifetime.rs",
+    "sha256": "bea936c714d6ba98ff4a92abfdedcb6089854329affb02e425882024d628db08"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/opening_moved.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/opening_moved.rs",
+    "sha256": "1588fa2b50192201ef52a27d60a16260c8c5e2e05dba1f2eb20dfac61051c367"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/positive.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/positive.rs",
+    "sha256": "ceefd5756c8b4e96ca192c14ae6cb9c73f331e1682c626806a533f52d69d0416"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/readonly_append.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/readonly_append.rs",
+    "sha256": "45db03a7a430c7904f449140c6424a7153d7a46570fcacea57b90f89a3d6c2dc"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/readonly_checkpoint.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/readonly_checkpoint.rs",
+    "sha256": "e9a78f50572dfb286cbbce07ae3dc61ee37877c8f5081d0f4b1dccb885b23944"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/readonly_ready.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/readonly_ready.rs",
+    "sha256": "5796df584d8ff90f94540d8e10dacac72a0c1c3b9937cb5b9942e91e68876bd1"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/replacement_bounds.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/replacement_bounds.rs",
+    "sha256": "163278e1715bb55682a87b21894aa2385cd507c3cf3bda10c88615946735e1bf"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/verified_clone.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/verified_clone.rs",
+    "sha256": "5c5d2c20ad6a0cf610897aee1131e095fdcdfc5a3276cd4dee219470ebc533fe"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/verified_deserialize.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/verified_deserialize.rs",
+    "sha256": "595d6ba84ea9aa7549e04c3227ba22c54bef17767846acd219503bf4d037c745"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/probes/verified_moved.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/probes/verified_moved.rs",
+    "sha256": "c0ec6eaaeea2926bd377e7ef6f620babe19e60092091f3bbfdef4a9a897a03b5"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/tests.rs",
+    "sha256": "43d2719e9d91a76c8e388ef21f5cbf956a31a7290ca02974008e5995479a5bcb"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/ownership/tests/authentication.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/ownership/tests/authentication.rs",
+    "sha256": "8b3fd148b1d8aff53edd285590f422de3bb21cf1ad8fb0c3e1a439d7a60d8b11"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/tests.rs",
+    "sha256": "73e0a818fee54798caab91299414b56789190234704e7304726817e8b4651308"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/tests/capacity.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/tests/capacity.rs",
+    "sha256": "a5873c8b86d3c6d0c03784d7672121375e841881179bc9e6e9ff92df52f359db"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/source/native/tests/prerequisite.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/source/native/tests/prerequisite.rs",
+    "sha256": "9f6639ca5be94e4a6a63506a3f5752ab46bc66f094846738dd590d04931b8629"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/tests.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/tests.rs",
+    "sha256": "01a4eead39294d040c4a34ad8beb1f5c283e0a8d1299dbd56eda37909387dbc9"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/tests/crypto.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/tests/crypto.rs",
+    "sha256": "03eb7df7ff1dc46eaae5d8854ba43890d168a8a815feb27c7035a54aa7cfe09b"
+  },
+  {
+    "source": "crates/audit/src/verification/scan/verify.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/src/audit/verification/scan/verify.rs",
+    "sha256": "d9fe696df8c2222cfcb2b64995255c90230e8cccab600eb1cfa4896a7dea27c2"
+  },
+  {
+    "source": "crates/audit/tests/checkpoint_parity.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs",
+    "sha256": "09aac015de6d7e45343095afc63c4745aee2749e15d59322567956373c4be0b9"
+  },
+  {
+    "source": "crates/audit/tests/control_operations.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs",
+    "sha256": "f7dff4b8ad32095dd261d1cdfd4858b0d8825f45bea63b4cb2227c3300ad70fe"
+  },
+  {
+    "source": "crates/audit/tests/durable_witness.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/durable_witness.rs",
+    "sha256": "9bc911bd5f0fb879ace4d369127291db9befbde5d0f47784e175747e91038f42"
+  },
+  {
+    "source": "crates/audit/tests/fixtures/checkpoints.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/audit/checkpoints.json",
+    "sha256": "a28b057c83ed946d407e05fa4c7766ede4700c737617d27d231d46f0180716ef"
+  },
+  {
+    "source": "crates/audit/tests/fixtures/keys.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/audit/keys.json",
+    "sha256": "e21e3326472cbcedd9dcec1764ea52ee9a21cabd79320866eb61c04c8b897e89"
+  },
+  {
+    "source": "crates/audit/tests/fixtures/merkle.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/audit/merkle.json",
+    "sha256": "c0a755b9264539ebad9a1dc999ccaa77c6e088c4c440762293a97cde7560f067"
+  },
+  {
+    "source": "crates/audit/tests/fixtures/native-owner-core-f9b0cda3.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/audit/native-owner-core-f9b0cda3.json",
+    "sha256": "966fef7d3690d6db5eaa43dee50edaf1a72b46e9d9189587558d09ed347e9cc2"
+  },
+  {
+    "source": "crates/audit/tests/fixtures/native-owner-validation.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/audit/native-owner-validation.json",
+    "sha256": "5584018093719d6cc9ab59c532301589c2b38d2c8e7a7af80709ce3682cb391d"
+  },
+  {
+    "source": "crates/audit/tests/fixtures/records.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/audit/records.json",
+    "sha256": "7175918e0ab3121b62f1ab8cbbd8d9b23b8382353a37273d10f2f95629499cdc"
+  },
+  {
+    "source": "crates/audit/tests/fixtures/verification.json",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/audit/verification.json",
+    "sha256": "508f619c652d97be515f12a04f517acedc5b5b3ec959f6d2e6de5fad0a119300"
+  },
+  {
+    "source": "crates/audit/tests/key_backups.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/key_backups.rs",
+    "sha256": "4211c4f234f30b35478292790a095f67597e76040539e030a10c9036d8d28daf"
+  },
+  {
+    "source": "crates/audit/tests/key_custody.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/key_custody.rs",
+    "sha256": "141cf08093cc4be07156ae7f21ec247006900ac7f1dfb9f62e874af0ba6e79d2"
+  },
+  {
+    "source": "crates/audit/tests/merkle_parity.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/merkle_parity.rs",
+    "sha256": "a7e133486fe7de0bd8c4462b8b807bf29f3a0398c56dde2259f01ecb73c95f12"
+  },
+  {
+    "source": "crates/audit/tests/record_parity.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs",
+    "sha256": "d32f989be437fa13592296b9e0239cca1f3ee8da4f44520c98e5cc16e2e85ac1"
+  },
+  {
+    "source": "crates/audit/tests/support/child_lifetime.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/support/child_lifetime.rs",
+    "sha256": "ecf866d43c0ff4f9a1bd1b48d2a315e549d95cbf9570e5f435b0be2385a66c2c"
+  },
+  {
+    "source": "crates/audit/tests/verification_parity.rs",
+    "context": "audit",
+    "destination": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs",
+    "sha256": "92484d492b6fe9050c3e5c12b7fd684c60815a7bccc6b058ec5a7a625d0496ab"
+  },
+  {
+    "source": "crates/capture/Cargo.toml",
+    "context": "capture",
+    "destination": "MERGE",
+    "sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840"
+  },
+  {
+    "source": "crates/capture/INTEGRATION.md",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/INTEGRATION.md",
+    "sha256": "b32793888ccd5b8ac17d23a9bed8fffebcac9a5f1c3ff4c986f9934a8fecb298"
+  },
+  {
+    "source": "crates/capture/src/http2/headers.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/http2/headers.rs",
+    "sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787"
+  },
+  {
+    "source": "crates/capture/src/http2/mod.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/http2/mod.rs",
+    "sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb"
+  },
+  {
+    "source": "crates/capture/src/http2/tests.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/http2/tests.rs",
+    "sha256": "5b2215880e5d1da0a3968a6745d167586c84fbf8b7d358dd34cc3588d19eb5d6"
+  },
+  {
+    "source": "crates/capture/src/lib.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/mod.rs",
+    "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076"
+  },
+  {
+    "source": "crates/capture/src/tls/hello.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/tls/hello.rs",
+    "sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153"
+  },
+  {
+    "source": "crates/capture/src/tls/hello/tests.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/tls/hello/tests.rs",
+    "sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde"
+  },
+  {
+    "source": "crates/capture/src/tls/mod.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/tls/mod.rs",
+    "sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7"
+  },
+  {
+    "source": "crates/capture/src/tls/records.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/tls/records.rs",
+    "sha256": "dbfed8c2668fa9cb732883e675d797ac570d55ffc9865239c58610c99a201b81"
+  },
+  {
+    "source": "crates/capture/src/tls/transport.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/src/capture/tls/transport.rs",
+    "sha256": "a6054eb2b704b7f66a3086da6808f5985eb1748cd62a3b9a4d92e2b60f3357f8"
+  },
+  {
+    "source": "crates/capture/tests/hosted_transport.rs",
+    "context": "capture",
+    "destination": "crates/sdk/humanymous-runtime/tests/capture/hosted_transport.rs",
+    "sha256": "8a549c9985321181693c39dfb7f11077fde1b8615f2334283330a901ee301d4e"
+  },
+  {
+    "source": "crates/network/Cargo.toml",
+    "context": "network",
+    "destination": "MERGE",
+    "sha256": "48ddc854ab53c9dbaacaa29d4a5ec985add93d7645fbe3d7f20dcf4fd4195fa5"
+  },
+  {
+    "source": "crates/network/src/correlation/config.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/correlation/config.rs",
+    "sha256": "0c4964306e4f402490672906bdfad4c6456c4f7f4e6a74c2218e9a8b48d9aae6"
+  },
+  {
+    "source": "crates/network/src/correlation/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/correlation/mod.rs",
+    "sha256": "9860d4f3ef2b53502c03ebd78831f284fa204daf14ca79051cb1cd6e188bbb50"
+  },
+  {
+    "source": "crates/network/src/correlation/registry.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/correlation/registry.rs",
+    "sha256": "2f7ff86065f7e10090b70703d9713160703b02454610f4b23e20cd274326dcea"
+  },
+  {
+    "source": "crates/network/src/correlation/shared.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/correlation/shared.rs",
+    "sha256": "fc7bc53996906fa867c7f0a169eb2774503565eb2116f2627435d9c576b246d9"
+  },
+  {
+    "source": "crates/network/src/correlation/tests.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/correlation/tests.rs",
+    "sha256": "92693b32f37ff9a1418498b5eba8e0da985eff1403a61aacb59bba269a32097a"
+  },
+  {
+    "source": "crates/network/src/correlation/velocity.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/correlation/velocity.rs",
+    "sha256": "83cd8aff7030eb548a01bbe0d191cac6d614f23dfd0d2bc46153ba60718bd786"
+  },
+  {
+    "source": "crates/network/src/history/anomaly/config.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/history/anomaly/config.rs",
+    "sha256": "110c9ac7912759b2cf55ae7eea3f59a4c7ba8214cb6e993e494e4c23e6172552"
+  },
+  {
+    "source": "crates/network/src/history/anomaly/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/history/anomaly/mod.rs",
+    "sha256": "080187b85860f707ff9885c4a0ad2f443b5bb9b81f4327a3e1f96d62094dd5b6"
+  },
+  {
+    "source": "crates/network/src/history/anomaly/tests.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs",
+    "sha256": "7a8008c890982b25cac8789901fa094d6ccc904c89c8e1ff1e93e4c12be9f2c7"
+  },
+  {
+    "source": "crates/network/src/history/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/history/mod.rs",
+    "sha256": "92a16e6232be87ebe41645da606e600a8717c19ef991875dc4db82e80806e197"
+  },
+  {
+    "source": "crates/network/src/history/rate/config.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/history/rate/config.rs",
+    "sha256": "f057982dd32bc389814ddc90bec44664b1d659e3d70be85954e1b045dae294cc"
+  },
+  {
+    "source": "crates/network/src/history/rate/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
+    "sha256": "a1ab797ecf466a8e0eaf14cd2b1c61eaf5ced9a1605a7481296dcd40a7388ee5"
+  },
+  {
+    "source": "crates/network/src/history/rate/tests.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs",
+    "sha256": "d69355dd3bea7ebcc8e8826dd286956e4a703b1ff1b4cf67c4caaeda39de6788"
+  },
+  {
+    "source": "crates/network/src/http/headers.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/http/headers.rs",
+    "sha256": "796a1a224103695a1ed9b8af5590fa38bcca88fdc4ab02b94e3d76ce37c7c62f"
+  },
+  {
+    "source": "crates/network/src/http/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/http/mod.rs",
+    "sha256": "72c33358a014143140ca9c71afb8fc1cae9c2ea0153836bf3505e5144f5c4e4e"
+  },
+  {
+    "source": "crates/network/src/http2/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/http2/mod.rs",
+    "sha256": "f6ddb657dc4d964ad822ced39b69512cb310a2e24e82aef60d714580e90c2781"
+  },
+  {
+    "source": "crates/network/src/http2/monitor.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/http2/monitor.rs",
+    "sha256": "c817c1f1ef0785ab9b4f83313060b5639df3b6b93ab6abf67ea95bf09e409f46"
+  },
+  {
+    "source": "crates/network/src/lib.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/mod.rs",
+    "sha256": "c41921f17de36168339794339bcef3649f72457e7e5e8bc007b1345425479461"
+  },
+  {
+    "source": "crates/network/src/report/assembly.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/report/assembly.rs",
+    "sha256": "aadb6d0cdb205485ee27977d1d2462db5df687242f3a50807a7b5d0d446446bb"
+  },
+  {
+    "source": "crates/network/src/report/claims.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/report/claims.rs",
+    "sha256": "412127506241c83a879931ead15cfe4a069c83c71efba7009772a7dfba978c99"
+  },
+  {
+    "source": "crates/network/src/report/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/report/mod.rs",
+    "sha256": "6505735608b8a39d73ecb9f57a130e9a415b86af7305876450acebd2e50f19b1"
+  },
+  {
+    "source": "crates/network/src/residual/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/residual/mod.rs",
+    "sha256": "d5a17a64a694c9d515b26c8776a61515e4c2b8f50711be37d8198f8d6eb6eec6"
+  },
+  {
+    "source": "crates/network/src/tcp/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/tcp/mod.rs",
+    "sha256": "a0bd1105acb001908c47674f06755a55cf663eb82ad6330040a9a03a2ade901a"
+  },
+  {
+    "source": "crates/network/src/tls/fingerprint.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/tls/fingerprint.rs",
+    "sha256": "6c10ab922e86d7f0504508f84497fdb85fb460220870ee582eb48d300e21a192"
+  },
+  {
+    "source": "crates/network/src/tls/hello.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/tls/hello.rs",
+    "sha256": "d95a2c3400ab6984a9e8f6bb6b533600febba36b8d4b2cb8756aa18f09e7a10e"
+  },
+  {
+    "source": "crates/network/src/tls/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/tls/mod.rs",
+    "sha256": "2e228aa45058301fdba6fa05533884f24fdd7fcfee140487b994d19f9279de02"
+  },
+  {
+    "source": "crates/network/src/traffic/consistency.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/traffic/consistency.rs",
+    "sha256": "7d1940682d97744a2332e6474e130712f9f454495ea4772839f39e823264c791"
+  },
+  {
+    "source": "crates/network/src/traffic/log.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/traffic/log.rs",
+    "sha256": "c7e4cfe45e2667e6c993d68f3d0d83273b28cbbb3726c091ecc76b218bcf0a66"
+  },
+  {
+    "source": "crates/network/src/traffic/mod.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/traffic/mod.rs",
+    "sha256": "11ce467c3dfff1b1ade81f79e4b730d0f25168b60bc854db1355976ac179c7a0"
+  },
+  {
+    "source": "crates/network/src/traffic/record.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/traffic/record.rs",
+    "sha256": "117e11e16838f115178f6cc3604392b4f6cea0c918dd462d65a87fc6d52fd187"
+  },
+  {
+    "source": "crates/network/src/traffic/tests.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs",
+    "sha256": "99079f78bba04b46cb3716d9472c77764dd3ffdcd0a2bf55532611a7a4b95d50"
+  },
+  {
+    "source": "crates/network/tests/fixtures/h2.json",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/network/h2.json",
+    "sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866"
+  },
+  {
+    "source": "crates/network/tests/fixtures/monitor.json",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/network/monitor.json",
+    "sha256": "e0c640671f8ebe0cbf47f0ec893ede98255710f5b9eb95448c33b81d6f9f874f"
+  },
+  {
+    "source": "crates/network/tests/fixtures/reports.json",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/network/reports.json",
+    "sha256": "f4b534f80e214eb4b37f34cacc12aba3c3081aaeb920cf3be242752199fcf06e"
+  },
+  {
+    "source": "crates/network/tests/fixtures/tls.json",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/network/tls.json",
+    "sha256": "048c7fb450ff33db5a91f1b8f6ddc9e480504b3a767971519b94ccc37c6e9540"
+  },
+  {
+    "source": "crates/network/tests/h2_parity.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/network/h2_parity.rs",
+    "sha256": "51600f099b6ff78dfff0d099a9c3574f9373839a2c5f3c558d5932824f8d58cb"
+  },
+  {
+    "source": "crates/network/tests/monitor_parity.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/network/monitor_parity.rs",
+    "sha256": "3e3ce87642eb5c49ff428860e8f5fcbf99dda133b4f50c4b65432971a551a371"
+  },
+  {
+    "source": "crates/network/tests/report_parity.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/network/report_parity.rs",
+    "sha256": "bf044891a96af1c2df94fb91492ed41bfb756666d842de5ed19944aedcb9d4c1"
+  },
+  {
+    "source": "crates/network/tests/tls_parity.rs",
+    "context": "network",
+    "destination": "crates/sdk/humanymous-runtime/tests/network/tls_parity.rs",
+    "sha256": "5c83ac51ceee549b2663c869e5ce555c364e5dda807d7f7f307d5c043a76de05"
+  },
+  {
+    "source": "crates/native-security/Cargo.toml",
+    "context": "native_security",
+    "destination": "MERGE",
+    "sha256": "eb8b9619cd3c57fd5ca7af002b1a88c78713d5ab2ca692cd7d9e94481aea41fb"
+  },
+  {
+    "source": "crates/native-security/INTEGRATION.md",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/INTEGRATION.md",
+    "sha256": "f9575d1c86ede01176710c5b8bd98928b3d09000e005732c93e77cb903bd1dce"
+  },
+  {
+    "source": "crates/native-security/src/lib.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/mod.rs",
+    "sha256": "c6ce48bdcc12e9ff440285ddf0d3bf17b231d1fc24b7872f22bace8e8afdd7d0"
+  },
+  {
+    "source": "crates/native-security/src/process/mod.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/process/mod.rs",
+    "sha256": "04e51540d0b09d6dc7a51cd59b49f39271075d6999cdc6bc6de2595bf55a52aa"
+  },
+  {
+    "source": "crates/native-security/src/process/windows.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/process/windows.rs",
+    "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b"
+  },
+  {
+    "source": "crates/native-security/src/secret/mod.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/secret/mod.rs",
+    "sha256": "eb7ba77665bb51bcb217a34dbf0309bf2c45ef28131c97003c17e7d28541c4c0"
+  },
+  {
+    "source": "crates/native-security/src/secret/pilot.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/secret/pilot.rs",
+    "sha256": "99703482931610e1690671ed4b7e690cb9a9897e0d4bd4cccfb2f28ebc942942"
+  },
+  {
+    "source": "crates/native-security/src/secret/reference.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/secret/reference.rs",
+    "sha256": "772fad2c0d89dbe57745f29fe8863e2d896ab1ea24d7008df50e5ca49856a06e"
+  },
+  {
+    "source": "crates/native-security/src/secret/windows.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/secret/windows.rs",
+    "sha256": "ea9ae767ae62ef1137743dcd131bf877b03c0d078138ee9a7e086e2c9e209273"
+  },
+  {
+    "source": "crates/native-security/src/storage/actor_context.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/actor_context.rs",
+    "sha256": "6312cc4f393f4ec6a84990fcb142bc28eaa830c3125ba2b4f520dc9f9335f207"
+  },
+  {
+    "source": "crates/native-security/src/storage/mod.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/mod.rs",
+    "sha256": "9ee30f1a1dfb291b1d88b5ce20f3d306c2f9e2039a309e0a525f0bd308f97701"
+  },
+  {
+    "source": "crates/native-security/src/storage/private_directory.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/private_directory.rs",
+    "sha256": "a6b2537611366c51a1eeb29b0be33de3add9a236dfed0aedca675a76ce3ef586"
+  },
+  {
+    "source": "crates/native-security/src/storage/service.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/service.rs",
+    "sha256": "e0dd437ed236cf3ac23f89556694c31b7ac7f64dec7be75eea002769b25c1220"
+  },
+  {
+    "source": "crates/native-security/src/storage/user_root_journal_model.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/user_root_journal_model.rs",
+    "sha256": "39418339777591696298402be879996bc491f722ad048a751bb10bc3905c19a0"
+  },
+  {
+    "source": "crates/native-security/src/storage/user_root_journal_model/tests.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/user_root_journal_model/tests.rs",
+    "sha256": "88604b42b1f163cae50453ec05fd7f18ebccfccf259a4481e2cb2644b7232f04"
+  },
+  {
+    "source": "crates/native-security/src/storage/user_root_journal_model/transitions.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/user_root_journal_model/transitions.rs",
+    "sha256": "50e39b05a5dc47d08e2fbc8b6b952df4cf1fb4886347ad30d437ca91a53d72ab"
+  },
+  {
+    "source": "crates/native-security/src/storage/windows.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/storage/windows.rs",
+    "sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f"
+  },
+  {
+    "source": "crates/native-security/src/volume/mod.rs",
+    "context": "native_security",
+    "destination": "crates/sdk/humanymous-runtime/src/native_security/volume/mod.rs",
+    "sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956"
+  }
+]

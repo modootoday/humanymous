@@ -25,12 +25,12 @@ and resource admission; follow the exact live run or process handle.
 | --- | --- | --- |
 | Core | 35 | Source integrated; bounded local tests/type/lint and default extracted-library consumer passed; full packaging/product gates pending |
 | Platform | 34 | Source moved; pure/type/lint, feature/API boundaries and default-library package verification passed; full consumers/runtime gates pending |
-| Runtime | 29 | Six-context map accepted; concrete owner privacy dispositions recorded; implementation not moved |
+| Runtime | 29 | Source relocated into six contexts; Windows all-target/all-feature check and strict Clippy passed; 177 selected pure cases passed from a 366-case library inventory; consumer, privacy, packaging and actual runtime gates pending |
 | Tools | 21 | Owner handoffs prepared; implementation not consolidated |
 | Adapters | 10 | Role/loader/unsafe gates and owner handoffs prepared; implementation not consolidated |
 | Browser | 8 | Separate artifact/loader decisions required; implementation not consolidated |
 
-Current maintained-package census:34 workspace members plus four standalone qualification tools equals38 packages. Initially41 plus four equalled45. Complete totals by stage are Core39, Platform38, Runtime33, Tools21, Adapters10 and Browser8. All four standalone tools are absorbed into CLI qualification with its nine original workspace responsibilities; no permanent private helper exception is introduced.
+Current maintained-package census:29 workspace members plus four standalone qualification tools equals33 packages. Initially41 plus four equalled45. Complete totals by stage are Core39, Platform38, Runtime33, Tools21, Adapters10 and Browser8. All four standalone tools are absorbed into CLI qualification with its nine original workspace responsibilities; no permanent private helper exception is introduced.
 
 These workspace counts describe the accepted consolidation sequence, not package feature
 completion. Facade/collector path relocation and final Cross-OS/product gates

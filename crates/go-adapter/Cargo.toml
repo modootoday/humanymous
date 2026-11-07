@@ -8,7 +8,7 @@ repository.workspace = true
 publish = false
 
 [dependencies]
-humanymous-runtime = { path = "../runtime" }
+humanymous-runtime = { workspace = true, features = ["gateway"] }
 serde.workspace = true
 
 [lints]

@@ -19,7 +19,7 @@ host-pilot = ["native"]
 
 [dependencies]
 humanymous-framework-adapter = { path = "../framework-adapter" }
-humanymous-authority = { path = "../authority" }
+humanymous-runtime = { workspace = true, features = ["authority"] }
 humanymous-core.workspace = true
 magnus = { version = "=0.9.3", features = ["bytes"], optional = true }
 tokio.workspace = true

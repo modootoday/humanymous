@@ -1,0 +1,77 @@
+{
+  "schema": "humanymous.runtime-consolidation-pure/1",
+  "scope": "Working-tree scoped pure tests only; not full366/native/CrossOS/extracted-package/product qualification",
+  "binary_sha256": "9ee59e6cbaec272923fa203fc3b80ccd3cb614fed16e68a52a698235d5d62911",
+  "runtime_source_files": 280,
+  "source_difference_records": 0,
+  "registry_toolchain_closure_attested": false,
+  "elapsed_seconds": 11.5419102,
+  "groups": [
+    {
+      "filter": "network::",
+      "exit": 0,
+      "passed": 72,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 294
+    },
+    {
+      "filter": "gateway::shipping::tests::",
+      "exit": 0,
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 347
+    },
+    {
+      "filter": "native_security::storage::user_root_journal_model::tests::",
+      "exit": 0,
+      "passed": 12,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 354
+    },
+    {
+      "filter": "authority::",
+      "exit": 0,
+      "passed": 37,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 329
+    },
+    {
+      "filter": "audit::record::",
+      "exit": 0,
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 356
+    },
+    {
+      "filter": "audit::merkle::",
+      "exit": 0,
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 358
+    },
+    {
+      "filter": "audit::verification::scan::limits::tests::",
+      "exit": 0,
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 364
+    },
+    {
+      "filter": "capture::http2::",
+      "exit": 0,
+      "passed": 17,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 349
+    }
+  ],
+  "passed_sum": 177,
+  "summary_projection_correction": "Initial OrderedDictionary Measure-Object sum was null; recomputed from eight verified footer counts, without rerunning tests."
+}

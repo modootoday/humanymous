@@ -1,0 +1,518 @@
+use super::{ExclusiveFile, framing, recover_segment};
+use crate::audit::{checkpoint::Checkpoint, record::Record};
+use std::{
+    fs::{self, File, OpenOptions},
+    io::{self, BufReader, Write},
+    path::{Path, PathBuf},
+};
+
+/// Explicit disk and parsing bounds. Frame size includes its newline.
+pub struct WalOptions {
+    /// Rotate before the next append after this many bytes are committed.
+    pub rotate_bytes: u64,
+    /// Maximum serialized record/checkpoint size, including framing.
+    pub max_frame: usize,
+}
+impl Default for WalOptions {
+    fn default() -> Self {
+        Self {
+            rotate_bytes: 16 << 20,
+            max_frame: 4 << 20,
+        }
+    }
+}
+
+/// Single-writer fsync-backed JSONL storage, not a chain authentication service.
+/// The directory must be service-owned with restrictive native permissions.
+/// Cooperative file locking does not protect against a hostile directory owner.
+pub struct Wal {
+    dir: PathBuf,
+    options: WalOptions,
+    _lock: ExclusiveFile,
+    segment: File,
+    index: u64,
+    written: u64,
+    poisoned: bool,
+    recovered_bytes: u64,
+}
+
+impl Wal {
+    /// Authenticate a consistent disk snapshot while retaining the OS writer
+    /// lock. The history is not trusted merely because JSON parsing succeeded.
+    pub fn verified_history(
+        &self,
+        policy: super::RecoveryPolicy<'_>,
+    ) -> io::Result<super::VerifiedHistory> {
+        super::verify_history(self.records()?, self.checkpoints()?, policy).map_err(invalid)
+    }
+    /// Acquire the OS writer lock, validate all frames and repair only a torn
+    /// terminal record. Malformed checkpoints prevent opening. Cryptographic
+    /// verification is still required before restoring trusted chain state.
+    pub fn open(dir: &Path, options: WalOptions) -> io::Result<Self> {
+        if options.rotate_bytes == 0 || options.max_frame == 0 {
+            return Err(invalid("zero WAL bound"));
+        }
+        fs::create_dir_all(dir)?;
+        if !fs::symlink_metadata(dir)?.file_type().is_dir() {
+            return Err(invalid("WAL directory is not a real directory"));
+        }
+        let lock = open_append(&dir.join(".audit-writer.lock"))?;
+        let lock = ExclusiveFile::acquire(lock)?;
+        let segments = segments(dir)?;
+        let mut recovered_bytes = 0;
+        for (position, (_, path)) in segments.iter().enumerate() {
+            recovered_bytes +=
+                recover_segment(path, position + 1 == segments.len(), options.max_frame)?
+                    .truncated_bytes;
+        }
+        read_checkpoints(dir, options.max_frame)?;
+        let index = segments.last().map_or(1, |(index, _)| *index);
+        let segment = open_append(&segment_path(dir, index))?;
+        sync_directory(dir)?;
+        let written = segment.metadata()?.len();
+        Ok(Self {
+            dir: dir.into(),
+            options,
+            _lock: lock,
+            segment,
+            index,
+            written,
+            poisoned: false,
+            recovered_bytes,
+        })
+    }
+
+    /// Bytes discarded from a torn terminal record during this open. Emit an
+    /// operational recovery notice without treating discarded bytes as events.
+    pub fn recovered_bytes(&self) -> u64 {
+        self.recovered_bytes
+    }
+
+    /// Append an already sealed record. Success means write_all and sync_all
+    /// succeeded; callers may release enforcement only after this boundary.
+    /// Any disk failure poisons this instance until a verified restart.
+    pub fn append_record(&mut self, record: &Record) -> io::Result<()> {
+        self.healthy()?;
+        let line = self.encode(record)?;
+        let result = (|| {
+            if self.written >= self.options.rotate_bytes {
+                self.segment.sync_all()?;
+                let next = self
+                    .index
+                    .checked_add(1)
+                    .ok_or_else(|| invalid("segment index overflow"))?;
+                if next > 9_999_999_999 {
+                    return Err(invalid("segment filename index exhausted"));
+                }
+                let path = segment_path(&self.dir, next);
+                let mut options = OpenOptions::new();
+                options.write(true).create_new(true);
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::OpenOptionsExt;
+                    options.mode(0o600);
+                }
+                let segment = options.open(path)?;
+                sync_directory(&self.dir)?;
+                self.segment = segment;
+                self.index = next;
+                self.written = 0;
+            }
+            self.segment.write_all(&line)?;
+            self.segment.sync_all()?;
+            self.written += line.len() as u64;
+            Ok(())
+        })();
+        self.finish(result)
+    }
+
+    /// Persist a signed checkpoint with the same fsync-before-success boundary.
+    pub fn append_checkpoint(&mut self, checkpoint: &Checkpoint) -> io::Result<()> {
+        self.healthy()?;
+        let line = self.encode(checkpoint)?;
+        let result = (|| {
+            let mut file = open_append(&self.dir.join("checkpoints.jsonl"))?;
+            file.write_all(&line)?;
+            file.sync_all()?;
+            sync_directory(&self.dir)
+        })();
+        self.finish(result)
+    }
+
+    /// Read committed records under this writer's exclusive ownership.
+    pub fn records(&self) -> io::Result<Vec<Record>> {
+        self.healthy()?;
+        let mut records = Vec::new();
+        for (_, path) in segments(&self.dir)? {
+            let file = File::open(path)?;
+            records.extend(
+                framing::decode::<Record>(BufReader::new(file), self.options.max_frame, false)?
+                    .values,
+            );
+        }
+        Ok(records)
+    }
+
+    /// Read framed checkpoints; absence is an empty chain, corruption is fatal.
+    pub fn checkpoints(&self) -> io::Result<Vec<Checkpoint>> {
+        self.healthy()?;
+        read_checkpoints(&self.dir, self.options.max_frame)
+    }
+
+    /// Explicit shutdown durability check; Drop cannot report an I/O failure.
+    pub fn flush(&mut self) -> io::Result<()> {
+        self.healthy()?;
+        let result = self.segment.sync_all();
+        self.finish(result)
+    }
+
+    fn healthy(&self) -> io::Result<()> {
+        if self.poisoned {
+            Err(io::Error::other("WAL poisoned by an earlier disk failure"))
+        } else {
+            Ok(())
+        }
+    }
+    fn finish(&mut self, result: io::Result<()>) -> io::Result<()> {
+        if result.is_err() {
+            self.poisoned = true;
+        }
+        result
+    }
+    fn encode(&self, value: &impl serde::Serialize) -> io::Result<Vec<u8>> {
+        let mut bytes = serde_json::to_vec(value).map_err(invalid)?;
+        bytes.push(b'\n');
+        if bytes.len() > self.options.max_frame {
+            return Err(invalid("WAL frame exceeds configured limit"));
+        }
+        Ok(bytes)
+    }
+}
+
+fn invalid(error: impl Into<Box<dyn std::error::Error + Send + Sync>>) -> io::Error {
+    io::Error::new(io::ErrorKind::InvalidData, error)
+}
+fn segment_path(dir: &Path, index: u64) -> PathBuf {
+    dir.join(format!("audit-{index:010}.log"))
+}
+fn open_append(path: &Path) -> io::Result<File> {
+    match fs::symlink_metadata(path) {
+        Ok(meta) if !meta.file_type().is_file() => {
+            return Err(invalid("WAL entry must be a regular file"));
+        }
+        Err(error) if error.kind() != io::ErrorKind::NotFound => return Err(error),
+        _ => {}
+    }
+    let mut options = OpenOptions::new();
+    options.create(true).append(true).read(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        // Creation mode does not alter permissions of existing history.
+        options.mode(0o600);
+    }
+    options.open(path)
+}
+fn segments(dir: &Path) -> io::Result<Vec<(u64, PathBuf)>> {
+    let mut result = Vec::new();
+    for entry in fs::read_dir(dir)? {
+        let entry = entry?;
+        let name = entry.file_name();
+        let Some(name) = name.to_str() else { continue };
+        if name.starts_with("audit-") && name.ends_with(".log") {
+            let number = &name[6..name.len() - 4];
+            if number.len() != 10
+                || !number.bytes().all(|b| b.is_ascii_digit())
+                || !entry.file_type()?.is_file()
+            {
+                return Err(invalid("invalid audit segment entry"));
+            }
+            let index = number.parse::<u64>().map_err(invalid)?;
+            result.push((index, entry.path()));
+        }
+    }
+    result.sort_by_key(|(index, _)| *index);
+    for (position, (index, _)) in result.iter().enumerate() {
+        if *index != position as u64 + 1 {
+            return Err(invalid("audit segment gap"));
+        }
+    }
+    Ok(result)
+}
+fn read_checkpoints(dir: &Path, max_frame: usize) -> io::Result<Vec<Checkpoint>> {
+    let path = dir.join("checkpoints.jsonl");
+    match fs::symlink_metadata(&path) {
+        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => return Err(error),
+        Ok(meta) if !meta.file_type().is_file() => {
+            return Err(invalid("checkpoint sidecar must be a regular file"));
+        }
+        _ => {}
+    }
+    Ok(framing::decode(BufReader::new(File::open(path)?), max_frame, false)?.values)
+}
+fn sync_directory(dir: &Path) -> io::Result<()> {
+    #[cfg(unix)]
+    File::open(dir)?.sync_all()?;
+    #[cfg(not(unix))]
+    let _ = dir; // Windows directory persistence requires native deployment validation.
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static NEXT: AtomicU64 = AtomicU64::new(0);
+    fn directory() -> PathBuf {
+        let path = std::env::temp_dir().join(format!(
+            "humanymous-wal-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        fs::create_dir(&path).unwrap();
+        path
+    }
+    fn options() -> WalOptions {
+        WalOptions {
+            rotate_bytes: 1,
+            max_frame: 4096,
+        }
+    }
+    #[cfg(unix)]
+    #[test]
+    fn new_wal_members_request_private_modes_through_rotation_and_restart() {
+        use std::os::unix::fs::MetadataExt;
+        let dir = directory();
+        let mut wal = Wal::open(&dir, options()).unwrap();
+        for seq in 1..=2 {
+            wal.append_record(&Record {
+                seq,
+                ..Record::default()
+            })
+            .unwrap();
+        }
+        let checkpoint = Checkpoint {
+            tree_size: 2,
+            ..Checkpoint::default()
+        };
+        wal.append_checkpoint(&checkpoint).unwrap();
+        drop(wal);
+        let names = [
+            ".audit-writer.lock",
+            "audit-0000000001.log",
+            "audit-0000000002.log",
+            "checkpoints.jsonl",
+        ];
+        assert_eq!(fs::read_dir(&dir).unwrap().count(), names.len());
+        for name in names {
+            assert_eq!(fs::metadata(dir.join(name)).unwrap().mode() & 0o7777, 0o600);
+        }
+        let reopened = Wal::open(&dir, options()).unwrap();
+        assert_eq!(
+            reopened
+                .records()
+                .unwrap()
+                .iter()
+                .map(|record| record.seq)
+                .collect::<Vec<_>>(),
+            vec![1, 2]
+        );
+        assert_eq!(reopened.checkpoints().unwrap(), vec![checkpoint]);
+        drop(reopened);
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn existing_wal_member_modes_and_identities_are_preserved() {
+        use std::os::unix::fs::{MetadataExt, PermissionsExt};
+        let dir = directory();
+        let names = [
+            ".audit-writer.lock",
+            "audit-0000000001.log",
+            "checkpoints.jsonl",
+        ];
+        let mut identities = Vec::new();
+        for name in names {
+            let path = dir.join(name);
+            fs::write(&path, []).unwrap();
+            // Fixture-only permissions; the WAL must not repair this history.
+            fs::set_permissions(&path, fs::Permissions::from_mode(0o644)).unwrap();
+            let metadata = fs::metadata(path).unwrap();
+            identities.push((metadata.dev(), metadata.ino()));
+        }
+        let mut wal = Wal::open(
+            &dir,
+            WalOptions {
+                rotate_bytes: 4096,
+                max_frame: 4096,
+            },
+        )
+        .unwrap();
+        wal.append_record(&Record {
+            seq: 1,
+            ..Record::default()
+        })
+        .unwrap();
+        wal.append_checkpoint(&Checkpoint {
+            tree_size: 1,
+            ..Checkpoint::default()
+        })
+        .unwrap();
+        assert_eq!(wal.records().unwrap().len(), 1);
+        assert_eq!(wal.checkpoints().unwrap().len(), 1);
+        drop(wal);
+        for (name, identity) in names.into_iter().zip(identities) {
+            let metadata = fs::metadata(dir.join(name)).unwrap();
+            assert_eq!(metadata.mode() & 0o7777, 0o644);
+            assert_eq!((metadata.dev(), metadata.ino()), identity);
+        }
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn guard_drop_releases_wal_without_replacing_inode_or_unlocking_successor() {
+        use std::os::unix::fs::MetadataExt;
+        let dir = directory();
+        let identity = || {
+            let m = fs::metadata(dir.join(".audit-writer.lock")).unwrap();
+            (m.dev(), m.ino())
+        };
+        let first = Wal::open(&dir, options()).unwrap();
+        let duplicate = first._lock.duplicate_description().unwrap();
+        let inode = identity();
+        assert!(matches!(Wal::open(&dir,options()),Err(e) if e.kind()==io::ErrorKind::WouldBlock));
+        drop(first);
+        assert_eq!(identity(), inode);
+        let second = Wal::open(&dir, options()).unwrap();
+        assert!(matches!(Wal::open(&dir,options()),Err(e) if e.kind()==io::ErrorKind::WouldBlock));
+        drop(duplicate);
+        assert!(matches!(Wal::open(&dir,options()),Err(e) if e.kind()==io::ErrorKind::WouldBlock));
+        drop(second);
+        let final_guard = Wal::open(&dir, options()).unwrap();
+        assert_eq!(identity(), inode);
+        assert!(final_guard.records().unwrap().is_empty());
+        drop(final_guard);
+        for entry in fs::read_dir(&dir).unwrap() {
+            fs::remove_file(entry.unwrap().path()).unwrap();
+        }
+        fs::remove_dir(dir).unwrap();
+    }
+    #[test]
+    fn exclusive_writer_rotation_checkpoint_and_restart() {
+        let dir = directory();
+        let mut wal = Wal::open(&dir, options()).unwrap();
+        let child = humanymous_platform::testing::process::capture_with_stderr(
+            std::process::Command::new(std::env::current_exe().unwrap())
+                .args([
+                    "--exact",
+                    "storage::wal::tests::process_lock_probe",
+                    "--ignored",
+                ])
+                .env("HUMANYMOUS_WAL_LOCK_PROBE", &dir),
+            b"",
+            std::time::Duration::from_secs(60),
+            64 * 1024,
+        )
+        .unwrap();
+        assert!(child.status.success());
+        assert!(child.stderr.is_empty());
+        assert!(
+            String::from_utf8_lossy(&child.stdout).contains("1 passed; 0 failed"),
+            "lock probe test did not execute"
+        );
+        assert!(
+            std::str::from_utf8(&child.stdout)
+                .unwrap()
+                .lines()
+                .any(|line| line == "humanymous-wal-lock-refused")
+        );
+        assert_eq!(
+            Wal::open(&dir, options()).err().unwrap().kind(),
+            io::ErrorKind::WouldBlock
+        );
+        for seq in 1..=3 {
+            wal.append_record(&Record {
+                seq,
+                ..Record::default()
+            })
+            .unwrap();
+        }
+        let cp = Checkpoint {
+            tree_size: 3,
+            ..Checkpoint::default()
+        };
+        wal.append_checkpoint(&cp).unwrap();
+        wal.flush().unwrap();
+        assert_eq!(segments(&dir).unwrap().len(), 3);
+        assert_eq!(
+            wal.records()
+                .unwrap()
+                .iter()
+                .map(|r| r.seq)
+                .collect::<Vec<_>>(),
+            vec![1, 2, 3]
+        );
+        drop(wal);
+        let reopened = Wal::open(&dir, options()).unwrap();
+        assert_eq!(reopened.records().unwrap().len(), 3);
+        assert_eq!(reopened.checkpoints().unwrap(), vec![cp]);
+        drop(reopened);
+        for entry in fs::read_dir(&dir).unwrap() {
+            fs::remove_file(entry.unwrap().path()).unwrap();
+        }
+        fs::remove_dir(dir).unwrap();
+    }
+    #[test]
+    #[ignore = "subprocess helper exercised by exclusive_writer_rotation_checkpoint_and_restart"]
+    fn process_lock_probe() {
+        let dir = std::env::var_os("HUMANYMOUS_WAL_LOCK_PROBE")
+            .expect("WAL lock probe requires its actual parent fixture");
+        assert_eq!(
+            Wal::open(Path::new(&dir), options()).err().unwrap().kind(),
+            io::ErrorKind::WouldBlock
+        );
+        let mut stdout = std::io::stdout().lock();
+        stdout
+            .write_all(b"\nhumanymous-wal-lock-refused\n")
+            .unwrap();
+        stdout.flush().unwrap();
+    }
+    #[test]
+    fn rotation_failure_permanently_poisoned_until_restart() {
+        let dir = directory();
+        let mut wal = Wal::open(&dir, options()).unwrap();
+        wal.append_record(&Record::default()).unwrap();
+        let obstacle = segment_path(&dir, 2);
+        fs::write(&obstacle, b"reserved").unwrap();
+        assert!(wal.append_record(&Record::default()).is_err());
+        fs::remove_file(obstacle).unwrap();
+        assert!(wal.append_record(&Record::default()).is_err());
+        assert!(wal.append_checkpoint(&Checkpoint::default()).is_err());
+        assert!(wal.records().is_err());
+        drop(wal);
+        assert_eq!(
+            Wal::open(&dir, options()).unwrap().records().unwrap().len(),
+            1
+        );
+        for entry in fs::read_dir(&dir).unwrap() {
+            fs::remove_file(entry.unwrap().path()).unwrap();
+        }
+        fs::remove_dir(dir).unwrap();
+    }
+    #[test]
+    fn malformed_sidecar_and_segment_gap_fail_closed() {
+        let dir = directory();
+        fs::write(dir.join("checkpoints.jsonl"), b"{}").unwrap();
+        assert!(Wal::open(&dir, options()).is_err());
+        fs::remove_file(dir.join("checkpoints.jsonl")).unwrap();
+        fs::write(segment_path(&dir, 2), b"{}\n").unwrap();
+        assert!(Wal::open(&dir, options()).is_err());
+        for entry in fs::read_dir(&dir).unwrap() {
+            fs::remove_file(entry.unwrap().path()).unwrap();
+        }
+        fs::remove_dir(dir).unwrap();
+    }
+}

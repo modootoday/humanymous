@@ -13,13 +13,13 @@ crate-type = ["cdylib", "rlib"]
 [features]
 default = []
 httpd = [
-  "dep:humanymous-framework-adapter", "dep:humanymous-authority",
+  "dep:humanymous-framework-adapter", "dep:humanymous-runtime",
   "dep:humanymous-core", "dep:tokio", "dep:zeroize", "dep:rustix",
   "dep:bindgen", "dep:sha2", "dep:serde_json",
 ]
 pilot = [
-  "dep:humanymous-framework-adapter", "dep:humanymous-authority",
-  "dep:humanymous-core", "dep:humanymous-audit",
+  "dep:humanymous-framework-adapter", "dep:humanymous-runtime",
+  "dep:humanymous-core", "dep:humanymous-runtime",
   "dep:tokio", "dep:rustix", "dep:serde_json", "dep:sha2", "dep:hex", "dep:getrandom",
 ]
 pilot-probes = ["httpd"]
@@ -27,9 +27,8 @@ pilot-probes = ["httpd"]
 [dependencies]
 humanymous-apache-adapter = { path = ".." }
 humanymous-framework-adapter = { path = "../../framework-adapter", optional = true }
-humanymous-authority = { path = "../../authority", optional = true }
+humanymous-runtime = { workspace = true, features = ["audit", "authority"], optional = true }
 humanymous-core = { workspace = true, optional = true }
-humanymous-audit = { path = "../../audit", optional = true }
 tokio = { workspace = true, optional = true }
 zeroize = { workspace = true, optional = true }
 serde_json = { workspace = true, optional = true }

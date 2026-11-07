@@ -16,7 +16,7 @@ tar = "=0.4.46"
 flate2 = "=1.1.11"
 time = { version = "=0.3.55", features = ["formatting"] }
 humanymous-platform = { workspace = true, features = ["testing"] }
-humanymous-native-security.workspace = true
+humanymous-runtime = { workspace = true, features = ["native-security"] }
 humanymous = { path = "../../../crates/humanymous", default-features = false }
 
 [lints.rust]

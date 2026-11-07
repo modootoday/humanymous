@@ -8,7 +8,7 @@ repository.workspace = true
 publish = false
 
 [dependencies]
-humanymous-authority = { path = "../authority" }
+humanymous-runtime = { workspace = true, features = ["authority"] }
 humanymous-core.workspace = true
 serde.workspace = true
 serde_json.workspace = true

@@ -7,9 +7,8 @@ publish = false
 license.workspace = true
 
 [dependencies]
-humanymous-runtime = { path = "../../../crates/runtime" }
+humanymous-runtime = { workspace = true, features = ["audit", "gateway"] }
 humanymous-core.workspace = true
-humanymous-audit = { path = "../../../crates/audit" }
 serde_json.workspace = true
 base64.workspace = true
 sha2.workspace = true

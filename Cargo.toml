@@ -4,8 +4,8 @@ members = [
   "crates/sdk/humanymous-core",
   "crates/integrations/humanymous-platform",
   # Shared security and service contexts.
-  "crates/audit", "crates/authority",
-  "crates/capture", "crates/collector", "crates/network", "crates/runtime",
+  "crates/sdk/humanymous-runtime",
+  "crates/collector",
   # Native host and framework boundaries.
   "crates/apache-adapter", "crates/apache-adapter/native",
   "crates/dotnet-adapter", "crates/dotnet-adapter/export", "crates/framework-adapter",
@@ -13,7 +13,7 @@ members = [
   "crates/node-adapter", "crates/python-adapter", "crates/ruby-adapter",
   # Desktop and native operating-system integration.
   "crates/browser", "crates/browser/native/bootstrap", "crates/browser/native/desktop",
-  "crates/cli", "crates/native-cli", "crates/native-security",
+  "crates/cli", "crates/native-cli",
   # Qualification, delivery and authoring tools.
   "crates/attacker", "crates/defender", "docs/tooling",
   "scripts/ci/delivery", "skills/agent-maintenance", "test/lab/runner", "test/lab/runtime",
@@ -30,7 +30,7 @@ repository = "https://github.com/modootoday/humanymous"
 [workspace.dependencies]
 humanymous-platform = { path = "crates/integrations/humanymous-platform", version = "0.1.0", default-features = false }
 humanymous-core = { path = "crates/sdk/humanymous-core", version = "0.1.0" }
-humanymous-native-security = { path = "crates/native-security", version = "0.1.0" }
+humanymous-runtime = { path = "crates/sdk/humanymous-runtime", version = "0.1.0", default-features = false }
 hmac = "0.12.1"
 sha2 = "0.10.9"
 md-5 = "0.11.0"

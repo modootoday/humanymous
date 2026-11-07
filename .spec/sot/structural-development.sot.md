@@ -768,3 +768,23 @@ that all-features cannot compile a qualification binary. Exact native-role joins
 include target name, kind, source path, features, profile and executable identity;
 a matching package name/manifest alone must reject sibling executables. Preserve
 negative sibling-role tests through the consolidated package identity change.
+## Runtime context feature and target admission
+
+The consolidated runtime exposes context features gateway, authority, audit,
+capture, network and native-security. Default enables gateway, preserving the
+former runtime application role. Gateway requires authority/audit/capture/network;
+authority requires audit/network/native-security; audit requires native-security;
+capture requires network. A dependency on a former smaller context selects only
+its required context using default-features=false. CLI's always-needed native
+security context must not implicitly activate gateway; runtime-service explicitly
+activates gateway/authority and its existing optional service dependencies.
+This preserves module/role admission, not a claim of minimum transitive compile
+cost: external dependency optionalization requires separate measured review.
+
+All four existing process names are explicit context-owned binary targets with
+required owning-context features. Every integration target is explicit and
+requires its context; capture additionally requires hosted-pilot. Disable auto
+binary/test discovery. Gateway/Audit/Authority use context-prefixed hyphen aliases;
+Capture/Network use the accepted underscore aliases. Native role admission must
+join the exact target, kind, source path, features and executable identity after
+this package merge; the shared package ID alone cannot qualify a role.

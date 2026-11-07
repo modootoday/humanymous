@@ -1,0 +1,24 @@
+[
+  {
+    "source_commit": "49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051",
+    "source": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+    "git_blob": "cbf3e6c6b40d9ecb241238953947c9f669e7f86a",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/authority/human-chrome-allow.json",
+    "sha256": "767bff0359ae529a85905966c4031267922b35ba7d04e35d7d048d2208105e92",
+    "bytes": 5524,
+    "license": "Apache-2.0 repository LICENSE",
+    "scope": "Frozen test data replica, not implementation source",
+    "observed_producer_worktree_sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+    "replica_basis": "Canonical committed blob bytes from git archive; CRLF worktree observation kept separately"
+  },
+  {
+    "source_commit": "49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051",
+    "source": "crates/collector/pilot/fixture.json",
+    "git_blob": "d16085a7e8888aa16395a2306bf2fe3a565b08f8",
+    "destination": "crates/sdk/humanymous-runtime/tests/fixtures/gateway/collector-pilot.json",
+    "sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+    "bytes": 1124,
+    "license": "Apache-2.0 repository LICENSE",
+    "scope": "Frozen test data replica, not implementation source"
+  }
+]

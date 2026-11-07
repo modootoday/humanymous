@@ -10,7 +10,7 @@ publish = false
 
 [dependencies]
 humanymous-platform = { path = "../../../crates/integrations/humanymous-platform", version = "0.1.0", default-features = false, features = ["testing"] }
-humanymous-native-security = { path = "../../../crates/native-security" }
+humanymous-runtime = { path = "../../../crates/sdk/humanymous-runtime", version = "0.1.0", default-features = false, features = ["native-security"] }
 serde_json = "1.0"
 sha2 = "0.10.9"
 getrandom = "0.4.3"
