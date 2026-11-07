@@ -1101,3 +1101,70 @@ native/receipt/cleanup producers remain Unsupported. Each item names its removal
 condition in source; there is no blanket module allow or public export for lint.
 Remove these expectations when the corresponding verified caller/promotion/
 bounded cleanup consumer is wired. They waive no logic, test or interface failure.
+
+### L3 temporal observation consumer contract — preparation only
+
+Structural-development's exact-role registry assigns Runtime the single
+application-scoped temporal owner; Network owns the kernels and capture/provider
+boundaries. Provider checkpoint6c72a47f exposes history::{anomaly,rate},
+correlation::{Registry,Stats,Outcome,Scope,FleetInput} and traffic::{Log,check,
+Association,Coverage}. That CURRENT source was handed off UNTESTED. Earlier MAD
+or socket/capture passes do not qualify these new kernels or Runtime serving.
+This section prepares a consumer contract, not a signal/readiness activation.
+
+One future Application-owned context retains each configured finite kernel and
+an ordered Duration clock anchored to the actual application lifetime. It must
+not create a second global registry, fork a temporal predicate, infer configuration
+defaults, or use wall-clock buckets as interchangeable monotonic ticks. Runtime
+owns exclusive mutable access and observation ordering; Network owns arithmetic,
+window/capacity/GC semantics and the existing signal definitions. Root owns all
+scoring policy and shared graph. A title/layer label grants no provider-path edits.
+
+Consumer provenance remains separate from statistical association. Session keys
+come from authenticated Runtime state, not a client session claim; TLS/H2 fields
+come from the exact retained capture Connection when that plane is required.
+Do not derive trusted JA4/subnet/fleet identity from normalized headers, loopback
+peer text, client reports or traffic address backfill. traffic::Association::
+AddressOnly never authenticates a connection epoch; Coverage::UnqualifiedHistory
+is not provider health. Fresh context/coverage and any required missing-plane
+enforcement still need actual producer qualification.
+
+Missing and incomplete outcomes are preserved explicitly:
+
+- history::Unavailable, including time regression/budget/nonfinite refusal,
+  cannot become zero/normal; latch lost admission coverage. Later success does
+  not reconstruct skipped observations or clear that gap automatically.
+- anomaly warmup/evicted_key describes limited history, not established normal
+  behavior or continuity. Rate IgnoredEmptyKey is not a measured Normal0.
+- rate::Coverage::WindowExpanded stays incomplete through its reported bound;
+  Retained means no known expansion gap only, never healthy complete capture.
+- correlation::Stats::Absent and Scope::MissingKey are missing, not zero counts.
+  LocalOnly/LocalDegraded/CoordinatorReportedUnqualified retain their exact origin;
+  none qualifies required fleet coverage. A trait callback/Reported vector is not
+  an actual atomic coordinator. Reported fleet counts only feed the already
+  weight-zero velocity path and cannot silently replace load-bearing local data.
+- traffic insufficient/unqualified history cannot fill required TLS/H2 coverage,
+  turn an absent signal into OK or reopen a previously incomplete epoch.
+
+Observation admission points must be mapped to the actual legacy serving calls
+before activation, preserving frozen observation semantics. Raw TLS acceptance
+and authenticated application requests are distinct events. Request RIT replay,
+response retry, status polling or audit failure must not accidentally append the
+same application observation twice. No automatic replay/reset of temporal state
+can make a failed request look unobserved or healthy.
+
+The kernels commit individually, not as a cross-module transaction. Runtime must
+track which ordered calls actually committed: if a later module refuses, preserve
+prior facts and a composite coverage gap; neither roll back earlier histories nor
+retry them as a fresh observation. A private progress record is not a public
+healthy capability. Session/observer epoch changes, configuration expansion,
+GC/eviction and explicit resets must retain their distinct coverage effects;
+session invalidation cannot erase shared quotas or manufacture fleet history.
+
+Before code adoption, jointly freeze explicit limits, key/provenance producers,
+legacy observation points, failure/partial-progress projection and reset/GC rules.
+Then qualify pure consumer negatives and actual capture/session/time/audit
+composition within this cluster; required admission remains closed until the
+corresponding provider gates pass. No new required-route flag, enabled default,
+Engine predicate/weight, capability claim or Runtime implementation is added by
+this contract preparation. Full product remains Docker-only and source-bound.
