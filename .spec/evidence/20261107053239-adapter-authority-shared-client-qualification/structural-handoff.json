@@ -1,0 +1,144 @@
+{
+  "schema": "humanymous.authority.structural-handoff/1",
+  "date": "2026-11-08",
+  "source_checkpoint": "a898d91a33d19d80a86d0d75444a1a9175fdcaea",
+  "dirty_authority_paths": [],
+  "active_owned_processes": [],
+  "active_owned_leases": [],
+  "destination": "Root-assigned only; no move made",
+  "files": [
+    {
+      "path": "crates/authority/Cargo.toml",
+      "sha256": "e49d6cf67f2f6442eed2eed01fa6995c6cf1498430794253936674c7380718d1"
+    },
+    {
+      "path": "crates/authority/Dockerfile.pilot",
+      "sha256": "8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad"
+    },
+    {
+      "path": "crates/authority/INTEGRATION.md",
+      "sha256": "590ecb2275228b036296c55b6fcf7798e97c5bf3301ea46559970bf57167db89"
+    },
+    {
+      "path": "crates/authority/src/client.rs",
+      "sha256": "0e7c0d7ede66b79ce018143df79ea9f15a053c14a333ae7328f38e03b72fcd4c"
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "sha256": "e05c5e3e5071355b37c5c2023ffd6eb85f5518e6fd0fda3fb3ffd79025e9aa3e"
+    },
+    {
+      "path": "crates/authority/src/credentials.rs",
+      "sha256": "d7e84bf9ad7b4853bfb12ad92990b222d7de24a0c9428d10cc22447667c3b170"
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "sha256": "5a11711204f4a15b57c8704fa7862baa7e6e4f2ff6fbf5f2b0128c9d7a01ce38"
+    },
+    {
+      "path": "crates/authority/src/lib.rs",
+      "sha256": "a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db"
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e"
+    },
+    {
+      "path": "crates/authority/src/protocol.rs",
+      "sha256": "745ab89800e26457b469e11e8733874cce816203db3cd725f372f37805aae78c"
+    },
+    {
+      "path": "crates/authority/src/protocol/framing.rs",
+      "sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6"
+    },
+    {
+      "path": "crates/authority/src/startup.rs",
+      "sha256": "102bcce5c8c756debfe8ef6528dddf258e50e24aaeaeb182fd07886e3f15c15c"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization.rs",
+      "sha256": "27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/binding.rs",
+      "sha256": "11c75c147958e0a7dca0ac256ad49850118426752677571eb4c6794c813043a0"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/codec.rs",
+      "sha256": "643a7ab7ce0382db3802da166a62454b682a2d6669378bd434348b756f7ac744"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/hello.rs",
+      "sha256": "afea0f98f52a3b4c6c078353f26a994cee7e31cbb1e3f34e1cc4817be66b3448"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/tests.rs",
+      "sha256": "6ae4f2984eab99efef916104ab05e1562b71aa49e4aa280bd766420e1d653444"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/tests/fixture.rs",
+      "sha256": "fa6c441f2ef9814e4fce16d1ef5901cf3ba1300a991c370b034006f4d80a8818"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/verification.rs",
+      "sha256": "6d3872e7e8f14a81f40c99d3dbfd4f49e02cdc2b989c4aee4de01e5196f9883b"
+    },
+    {
+      "path": "crates/authority/src/startup/observer.rs",
+      "sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806"
+    },
+    {
+      "path": "crates/authority/src/startup/observer/state.rs",
+      "sha256": "3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21"
+    },
+    {
+      "path": "crates/authority/src/startup/observer/tests.rs",
+      "sha256": "c10d765a30a29df908135ef074e7f5a41682b82fc57517fd00a4b9e35593e470"
+    },
+    {
+      "path": "crates/authority/src/transport/mod.rs",
+      "sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8"
+    },
+    {
+      "path": "crates/authority/src/transport/permissions.rs",
+      "sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c"
+    },
+    {
+      "path": "crates/authority/src/transport/service.rs",
+      "sha256": "1e7faf4a2f7d89a642c2f59f5ab7467b07cda381c2cdcfcf74ae0e71f93ba86a"
+    },
+    {
+      "path": "crates/authority/src/transport/unix.rs",
+      "sha256": "cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623"
+    },
+    {
+      "path": "crates/authority/src/transport/windows.rs",
+      "sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86"
+    },
+    {
+      "path": "crates/authority/tests/decisions.rs",
+      "sha256": "3a0f2a2894e1fd32532936110b78b6187ff09ff722eec9597b4cbe829ad2b06d"
+    },
+    {
+      "path": "crates/authority/tests/fixtures/authorization-v2-maximum.json",
+      "sha256": "d4aa80ca126c101ee61cd18e78928f9beaa185b2330f1fb8f44dbaefc08e8dbc"
+    },
+    {
+      "path": "crates/authority/tests/fixtures/authorization-v2-minimal.json",
+      "sha256": "c3119b20fdf1b40cc6e99ac9e8efef6b84da8ac5c35bbdeb6588fcb47f720786"
+    },
+    {
+      "path": "crates/authority/tests/local_service.rs",
+      "sha256": "0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442"
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "sha256": "bbd6fdfa9c93e3ab2198fc922f8d81d9466c44e3636d6634b7eed6b56ca8f507"
+    },
+    {
+      "path": "crates/authority/tests/support/mod.rs",
+      "sha256": "34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820"
+    }
+  ],
+  "governing_handoff": ".spec/plan/20261107053237-adapter-authority-shared-client-and-typed-runtime.plan.md"
+}

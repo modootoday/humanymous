@@ -1032,3 +1032,41 @@ All attempts retain separate source/overlay/snapshot/logs, not summed pass count
 No source compile/lint failure occurred in R2; first preparation/timezone failure
 and unknown root-fmt stderr are disclosed. Final source commit must match these
 tested overlay bytes; Root and CLI/audit receive fixture/API handoff afterwards.
+
+## Accepted-baseline v0 structural integration handoff (2026-11-08)
+
+Root reports human acceptance of eight public packages. This handoff authorizes
+no owner-side move, rename, import rewrite, manifest rewrite or ref synchronization.
+Root sequences the exact destination/path integration and freeze. Current Authority
+owned source is clean; canonical codec source a898d91a, evidence4742b8a9 plus
+f6f5a46f attachment digest correction. Full current-path SHA256 inventory is in the
+public structural-handoff.json attachment. No Authority compiler/process or target
+lease is active; authority-kernel-06c3b4c6 lease remains removed. Foreign native
+owner-lease.json is not an Authority lease and must not be modified.
+
+Dependencies requiring Root graph mapping: integrity, audit, scoring, signals,
+network; Windows native-security. Existing ed25519-dalek/base64 edges are approved
+and integrated69ccf7fc; do not introduce extra versions or a compatibility crate.
+No destination is inferred from package names. Public client/configuration/
+credentials/decision/protocol/startup/transport exports have downstream consumers;
+Root must update imports as one explicit slice without widening visibility.
+
+Safety/API invariants: SignatureCheckedAuthorization is validated DATA with an
+immutable expected scope, never NativeProof/Ready. Private uninhabitable NativeProof
+and Unsupported native_preparation must remain so until actual native evidence.
+Preserve zeroizing key ownership, audit custody/recovery and fail-closed credential,
+peer PID/SID, scope/profile, expiry and one-use checks. Do not move unsafe OS/token/
+handle responsibilities across a public boundary or fabricate constructors/signing
+helpers to make refactoring compile. Public fixtures are synthetic regression DATA,
+not issuers or external cryptographic interoperability/native identity proofs.
+
+Required after Root-assigned move: exact locked source/dependency closure, compile
+and pure unit tests, scoped fmt and strict all-target Clippy; all affected importer
+checks and platform cfg gates, followed by separately allocated real OS/process/IPC
+pilots on final sources. Prior37pure tests are source-bound history, not new-path or
+native qualification. Audit/dependency changes entering the selected closure require
+fresh component evidence. Native issuer/P delegation/store, actual retained identity/
+rights/launch custody/oneclaim/W JOIN, framed aggregate startup and Runtime-private
+Ready remain open. Fresh hosted ephemeral principal/profile/SCM refusal and Docker
+product gates remain NOT_RUN. No publish or main merge is authorized. Read AGENTS,
+HARD-WON, adapter-authority SoT, this plan and authorization-kernel-r2.json first.
