@@ -950,3 +950,41 @@ loss-source cancellation/join; and separate failed/unknown drain/flush facts.
 The sealed Runtime readiness seam remains P0: no bool, generic caller callback,
 JSON assertion or test activation may promote a production epoch. S1 is not an
 alternative observer implementation or a completion claim for R09/R15/R16.
+
+**Independent Authority review reflected; shared API still pending.** The S1
+Gate clone currently exposes model activation/revoke/manager-stop methods within
+the private test module. It MUST NOT become the shared production API unchanged.
+The proposed shared core has a unique noncloneable ObserverEpochOwner retaining
+native/W pins and monitor cancellation/join, plus cloneable ObserverEffectGate
+handles restricted to observations and concrete effect admission. Only the owner
+may publish verified phase transitions or first loss. Restricted clones cannot
+revoke as an authority, activate, renew, replace an instance or authorize stop.
+Owner Drop must synchronously latch revocation before releasing pins, with a
+distinct owner-abandoned fact if actual observer death was not observed. Drop
+does not establish monitor join, request drain, audit flush or normal service stop;
+explicit bounded close returns those completed/failed/unknown facts separately.
+
+The model's connect io::Result<()> is deliberately not a production socket-result
+contract. A reviewed concrete adapter must distinguish SubmittedPending (kernel
+accepted initiation, including nonblocking connect-in-progress), Connected,
+WouldBlockNoAcceptance (no initiation accepted), InitiationFailed, and Unknown.
+EINPROGRESS must not be mislabeled as WouldBlockNoAcceptance or completed origin
+work. These are transport facts, never evidence of an application byte, request
+completion or business effect. Work already submitted before loss is cancelled
+without claiming the kernel or remote endpoint rolled it back. No retry may
+reclassify an uncertain prior initiation as absent.
+
+The concrete write adapter must similarly distinguish accepted byte count,
+WouldBlockNoAcceptance, a documented zero-new-byte failure/closure, and Unknown.
+Previously accepted bytes remain accounted separately. An error must not be
+assumed to prove zero possible bytes without the actual kernel API contract;
+unknown or invalid adapter returns cannot grant a fresh retry/effect permit.
+Exact platform wrappers, finite nonblocking syscall behavior and actual socket
+race/cancellation tests must be reviewed before integration. No future, readiness
+boolean or untrusted generic closure can stand in for those concrete operations.
+
+Authority owns this shared core; the Runtime S1 model must move/be replaced when
+accepted, not remain a second independently revocable production gate. Exact
+sealed Runtime readiness evidence, native/W constructors and activation phase
+order remain P0. This review changes the API proposal only: current seven model
+tests remain NOT_RUN and there is no new production wiring or dependency edge.
