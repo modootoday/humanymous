@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/framework-adapter/src/configuration.rs",
+  "sha256": "b63e8cc3c8da380e3733933206e086b52b62f264f682e358df23240f6934eab8",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete shared configuration and source tests: strict duplicate/unknown rejection, scope identity alphabet, local endpoint, private credential, exact route inventory and bounded timeout/body, optional false-default syncInputDeadlineEnforced. Updated Node reference to distinguish required options from the synchronous-host declaration and require renewed execution after the shared-context refactor. Source review does not execute tests or establish deadline enforcement/qualified tuples.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
   "source": "crates/audit/src/log/mod.rs",
   "sha256": "5709ec413d217990f663e50d5802e0661791c1f581cae6f32199ce7aebe2ed9e",
   "reviewer": "codex/rust-pages",

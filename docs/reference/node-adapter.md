@@ -49,7 +49,8 @@ packaging and platform pilots remain required before rollout.
 
 ### Node-API options and explicit template ownership
 
-`optionsJson` requires every field below and rejects unknown fields. Values
+`optionsJson` requires the scope, peer, route and limit fields below and rejects
+unknown or duplicate fields. Values
 identify the independently provisioned authority scope; they are not discovered
 from untrusted request headers.
 
@@ -60,6 +61,14 @@ from untrusted request headers.
 | `routes` | Nonempty inventory of at most 4096 pathnames; excludes query/fragment/percent/backslash forms and the reserved `/_humanymous` subtree |
 | `timeoutMs` | 1–30000 milliseconds per decision operation; not a requirement for a person to finish an interaction within that interval |
 | `maxBody` | 0–1048576 bytes of complete request body; zero permits an empty body only |
+
+The current shared configuration also accepts optional
+`syncInputDeadlineEnforced`, defaulting to `false`. This is a declaration for
+synchronous host integrations; setting it does not install a server-side input
+deadline or qualify Node input timing. The Node bridge now shares configuration,
+envelope projection and process admission with the native framework adapters.
+Earlier Node component results must be rerun against that refactor; sharing the
+implementation does not qualify another framework or platform.
 
 A configured route alone does not authorize a request: the shared parser and
 actual authority still validate the envelope, required observations and scope.
