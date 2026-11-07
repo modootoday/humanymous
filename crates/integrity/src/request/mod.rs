@@ -1,4 +1,5 @@
 //! Frozen rotating integrity token (RIT) byte protocols.
+pub mod browser;
 mod canonical;
 mod rotation;
 mod token;

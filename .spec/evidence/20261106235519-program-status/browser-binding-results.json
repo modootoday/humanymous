@@ -1,0 +1,44 @@
+{
+  "schema": "humanymous.browser-binding/1",
+  "parent": "64852c4a8c7ef8d429adfb5ba5e0b3c9313b8592",
+  "api": "integrity::request::browser::{Binding,canonical,BindingError,PROTOCOL,MAX_SAFE_INTEGER}",
+  "protocol": "humanymous.browser/0.1",
+  "unitPassed": 17,
+  "legacyParityPassed": 3,
+  "failed": 0,
+  "ignored": 0,
+  "clippy": "passed",
+  "wasm32Check": "passed",
+  "syntheticVector": {
+    "independentVerifier": ".NET SHA256 and HMACSHA256 over canonical UTF8 plus uint64 big-endian counter1,bucket9",
+    "token": "4QwQccK0NkhFMsxdltz1xNqEwaV2EeWwk5hoOhPxHOg",
+    "key": "synthetic literal seed",
+    "sha256": "5adf0a6ad00983604cbbe60101f6c0320b7f78850bc759518cf7106fc81396d4"
+  },
+  "serverSessionIntegrated": false,
+  "collectorTransportIntegrated": false,
+  "cookieBearingProfileSupported": false,
+  "fullProductQualified": false,
+  "source": [
+    {
+      "sha256": "2cac6164e323cd21fa26a59ab94450c9e912e8050c71f2999f52cb3806a15a9e",
+      "path": "crates/integrity/src/request/mod.rs"
+    },
+    {
+      "sha256": "f966eabfef25a0d2ca7beecbb3273fbc713eb22dfda1f0566a0dea5fd0b23ab2",
+      "path": "crates/integrity/src/request/browser/mod.rs"
+    },
+    {
+      "sha256": "05538973262b4a8659b50c48bf70484ea0cc8bb7eaa6890b659c6ccce8726787",
+      "path": "crates/integrity/src/request/browser/validation.rs"
+    },
+    {
+      "sha256": "1ac1de1836b06d97d7eed26f39873e7dfd9213d0b794044fb1a93359809479d5",
+      "path": "crates/integrity/src/request/browser/tests.rs"
+    },
+    {
+      "sha256": "8a44c59f88a2888b05ff5c1c38b8d34c3fee0c429ce1aa394dc7c1e1f210dd22",
+      "path": "crates/integrity/src/adapter/mod.rs"
+    }
+  ]
+}

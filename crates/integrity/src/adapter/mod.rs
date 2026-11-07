@@ -219,7 +219,7 @@ fn uuid4(s: &str) -> bool {
 fn token(b: u8) -> bool {
     b.is_ascii_alphanumeric() || b"!#$%&'*+-.^_`|~".contains(&b)
 }
-fn validate_target(s: &str) -> Result<(), &'static str> {
+pub(crate) fn validate_target(s: &str) -> Result<(), &'static str> {
     if !s.starts_with('/')
         || s.starts_with("//")
         || s.len() > 8192

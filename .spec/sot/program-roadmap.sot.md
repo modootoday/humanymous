@@ -220,6 +220,17 @@ Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생
 
 ## 현재 종료를 막는 gate와 다음 착수
 
+### Browser request codec 구현 경계
+
+공유 integrity::request::browser의 Binding/canonical/BindingError/PROTOCOL은
+실제 구현됐다.14field byte-length framing과별도domain,rawbodySHA256,
+canonicalsession/JSsafe숫자/경로/헤더/buffer bound를검증한다.17unit+3legacy
+parity/strictClippy/wasm32check가통과했고고정벡터SHA/HMAC는독립.NET검산과
+일치한다. 이는Fetch실행·bootstrap·freshsession·replay·qualifiedreport나
+제품e2e가아니다. runtime과collector가같은codec를직접소비해야하며canonical은
+applicationcredentials를포함하므로로그/진단/공개증거에노출하지않는다.
+초기cookie-freeprofile과추후route-scopedcookieprepare지원은구분한다.
+
 ### 공통 adapter parser의 provisioned identity 계약
 
 공유 integrity parser는 고정 protocol0.1의 검증을 복제하지 않고

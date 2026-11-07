@@ -16,6 +16,23 @@ rel:
 
 ## Provisioned adapter validation integration
 
+Browser request binding0.1 is a separate domain, not native RIT compatibility
+or collector/capture qualification. Pure shared integrity codec emits literal
+humanymous.browser/0.1 followed by newline, then14 fields each decimal UTF8 byte
+length, colon, exact value, newline: installation,tenant,origin_identity,revision,
+authority,session,method,target,counter,bucket,deadline,content_type,
+application_authorization,lowercase SHA256 of raw body. Counters are1..2^53-1;
+bucket/deadline0..2^53-1. Identity128, authority1024, canonical32byte base64url
+session43, origin-form ASCII target8192, content-type1024, authorization8192,
+body1048576 bytes maximum. Header boundary trims only ASCII space/tab, rejects
+remaining control/nonASCII, preserves internal spaces. Final Request bytes and
+headers must be signed; redirects/retries/streams require separate contracts.
+Runtime owns freshness, one-inflight/replay/epoch/deadline, Origin/FetchMetadata,
+cookie-free opt-in and required producer qualification. Existing token primitive
+signs canonical bytes plus big-endian counter/bucket, explicitly repeated domain
+binding. Initial auth-only profile does not claim cookie-bearing compatibility;
+route-scoped cookie prepare/identity binding remains required follow-up.
+
 Shared integrity exposes parse_for with exact provisioned identity/version and
 read-only observation getters. Legacy parse remains Node-only. Protocol0.1
 schema/body/framing/provenance and null capture/stream restrictions stay fixed;
