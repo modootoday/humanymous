@@ -13,6 +13,12 @@ pub const PROTOCOL: &str = "humanymous.browser/0.1";
 /// Largest exactly representable JavaScript integer.
 pub const MAX_SAFE_INTEGER: u64 = 9_007_199_254_740_991;
 
+/// Check an exact origin-form browser target before URL construction can
+/// normalize it. Encoded query separators are data; ambiguous paths reject.
+pub fn validate_target(target: &str) -> Result<(), BindingError> {
+    validation::target(target)
+}
+
 /// Final browser request representation plus provisioned session scope.
 /// This value intentionally has no Debug implementation: headers can be secret.
 pub struct Binding<'a> {

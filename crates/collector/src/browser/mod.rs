@@ -8,6 +8,7 @@ pub(crate) mod guard;
 mod integrity;
 mod reflection;
 mod resources;
+pub(crate) mod transport;
 use crate::detection::Snapshot;
 use humanymous_signals::report::{UaBrand, UaClientHints};
 use reflection::{call, get, go_string, int, string, truthy};

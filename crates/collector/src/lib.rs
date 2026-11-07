@@ -5,6 +5,8 @@ mod browser;
 pub mod detection;
 pub mod guard;
 pub mod session;
+#[cfg(target_arch = "wasm32")]
+pub use browser::transport::{BrowserResponse, BrowserSession};
 
 /// Read actual browser APIs and return the partial frozen report wire shape.
 /// Any collection failure rejects rather than returning an empty valid report.

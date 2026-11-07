@@ -20,6 +20,24 @@ fn binding() -> Binding<'static> {
 }
 
 #[test]
+fn browser_query_escapes_are_exact_data_without_relaxing_path_validation() {
+    for target in ["/api?", "/api?next=%2Fhome&hash=%23&unicode=%C3%A9"] {
+        assert!(validate_target(target).is_ok());
+        let mut value = binding();
+        value.target = target;
+        assert!(canonical(&value).is_ok());
+    }
+    for target in [
+        "/api%2Fother?q=1",
+        "/api?x=%",
+        "/api?x=%G0",
+        "/a/../b?x=%2F",
+    ] {
+        assert!(validate_target(target).is_err());
+    }
+}
+
+#[test]
 fn fixed_byte_vector_has_exact_field_order_lengths_and_terminal_newline() {
     let value = canonical(&binding()).unwrap();
     let expected = concat!(

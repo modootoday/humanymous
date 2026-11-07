@@ -34,3 +34,60 @@ The initial runtime body limit64KiB is independent of the shared codec1MiB bound
 Bootstrap has exactly10 fields; no hidden budget negotiation. A pre-consumption
 413 has no ACK and invalidates the client epoch. Server/client integration is not
 proven by synthetic ACK unit tests or native/Browsers' pure lifecycle tests.
+
+## Fetch implementation checkpoint under resource hold
+
+The working tree now contains authored-Rust BrowserSession.connect/fetch/close,
+bounded BrowserResponse, shared Abort ownership and a reusable whole-request Timer.
+It constructs browser Request/Headers, signs the final serialized URL (including
+an explicitly empty query), preserves application Authorization, and verifies ACK
+only after the complete bounded response body. Request limit is64KiB; buffered
+response limit is1MiB. Cookie, streaming and full collector provenance remain
+required follow-up profiles, not supported capabilities of this checkpoint.
+
+Existing private logs were re-read during the resource hold:
+
+- fetch-transport-browser-final.log: actual Docker Firefox65passed/0failed/0ignored.
+- fetch-transport-native-tests.log: collector26, integrity21 and3parity tests passed.
+- Positive transport cases use Rust-authored Fetch/Response fixtures exercising
+  browser APIs. The owned-route missing-bootstrap negative performs actual Fetch.
+  These results do not prove a successful real runtime HTTP/bootstrap/ACK join.
+
+Formatting occurred after the browser run. Therefore that run is historical
+implementation evidence, not an exact-byte receipt for the current working tree.
+The three implementation checkboxes above remain open until the source checkpoint
+and exact-artifact verification are complete. No new build or test was started
+during memory triage. Required next steps: preserve logs/source hashes, coordinate
+the runtime bootstrap/profile/ACK seam, then acquire the single heavy validation
+slot for exact-source browser verification and the actual owned product lab.
+
+Resource policy: allow parallel source/spec edits within claimed paths; serialize
+heavy validation across chats. Do not restart completed REA research or kill shared
+MCP/WSL processes. Remote Docker execution may reduce local pressure but cannot
+substitute component tests for the existing product isolation acceptance gates.
+
+Bootstrap cancellation coverage delta: authored a browser test that captures the
+actual constructed Request.signal and checks both dropping a pending connect
+future and waiting for its timeout. Each must abort that signal rather than leave
+bootstrap work running. This new test is not compiled or executed under the
+resource hold; the historical65browser pass count does not include it.
+
+Fixture lifetime correction: its Rust Fetch closure captures the fixture global,
+which in turn holds that closure in its fetch property. Fixture Drop now clears
+that property to break the cross-language reference cycle between browser test
+cases. This is a test-fixture ownership issue; it does not establish the cause of
+desktop-wide REA/MCP memory pressure. Compilation/browser validation is pending.
+
+## Resource-gated verification update
+
+After available physical memory recovered to31GiB (commit51/69GiB) and no active
+cargo/rustc was observed, root used the single heavy slot with CARGO_BUILD_JOBS=1.
+Current WASM tests compiled successfully. The first isolated Firefox container
+exited139 with thread-creation EAGAIN under an explicitly configured PID cap256;
+the original log is retained. Repeating the same WASM/image/network-none/UID65532,
+2GiB-memory/one-CPU setup with PID cap1024 completed66passed/0failed/0ignored.
+The new bootstrap cancellation/timeout test passed. No sandbox-disabling flags
+were added. Both logs and a current-source/WASM SHA256 receipt are registered under
+evidence:root/20261106194410 as fetch-transport-bootstrap-cleanup-* artifacts.
+This qualifies the bounded browser component, not a positive real runtime join or
+full product e2e. Source commit and Git-canonical byte proof remain pending.

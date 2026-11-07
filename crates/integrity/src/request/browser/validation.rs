@@ -12,6 +12,35 @@ pub(super) fn header(value: &str, limit: usize) -> Result<&str, BindingError> {
     Ok(value)
 }
 
+pub(super) fn target(value: &str) -> Result<(), BindingError> {
+    if !value.is_ascii()
+        || value.len() > 8192
+        || value
+            .bytes()
+            .any(|b| b <= 32 || b == 127 || b"#\\".contains(&b))
+    {
+        return Err(BindingError::Request);
+    }
+    let (path, query) = value.split_once('?').unwrap_or((value, ""));
+    crate::adapter::validate_target(path).map_err(|_| BindingError::Request)?;
+    // Query is bound as exact serialized bytes; encoded separators are data,
+    // not path separators. Keep the legacy adapter parser unchanged.
+    let bytes = query.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'%' {
+            let pair = bytes.get(i + 1..i + 3).ok_or(BindingError::Request)?;
+            if !pair.iter().all(u8::is_ascii_hexdigit) {
+                return Err(BindingError::Request);
+            }
+            i += 3;
+        } else {
+            i += 1;
+        }
+    }
+    Ok(())
+}
+
 pub(super) fn validate(b: &Binding<'_>) -> Result<(), BindingError> {
     if [b.installation, b.tenant, b.origin_identity, b.revision]
         .iter()
@@ -41,8 +70,7 @@ pub(super) fn validate(b: &Binding<'_>) -> Result<(), BindingError> {
         return Err(BindingError::Session);
     }
     if !["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"].contains(&b.method)
-        || !b.target.is_ascii()
-        || crate::adapter::validate_target(b.target).is_err()
+        || target(b.target).is_err()
     {
         return Err(BindingError::Request);
     }

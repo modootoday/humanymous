@@ -40,6 +40,17 @@ impl Timer {
         }
         Ok(())
     }
+    /// Reuse one deadline across Fetch headers and every response body chunk.
+    pub(crate) async fn race(&self, promise: &Promise) -> Settlement {
+        let candidates = Array::new();
+        candidates.push(promise);
+        candidates.push(&self.promise);
+        match JsFuture::from(Promise::race(&candidates)).await {
+            Ok(value) if value == self.marker => Settlement::TimedOut,
+            Ok(value) => Settlement::Fulfilled(value),
+            Err(_) => Settlement::Rejected,
+        }
+    }
 }
 impl Drop for Timer {
     fn drop(&mut self) {
@@ -60,16 +71,9 @@ pub(crate) async fn settle(
     millis: u32,
 ) -> Result<Settlement, JsValue> {
     let mut timer = Timer::start(global, millis)?;
-    let candidates = Array::new();
-    candidates.push(promise);
-    candidates.push(&timer.promise);
-    let settled = JsFuture::from(Promise::race(&candidates)).await;
+    let settled = timer.race(promise).await;
     timer.cancel()?;
-    Ok(match settled {
-        Ok(value) if value == timer.marker => Settlement::TimedOut,
-        Ok(value) => Settlement::Fulfilled(value),
-        Err(_) => Settlement::Rejected,
-    })
+    Ok(settled)
 }
 
 #[cfg(test)]

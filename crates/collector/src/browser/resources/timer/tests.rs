@@ -1,4 +1,22 @@
 use super::*;
+
+#[wasm_bindgen_test(async)]
+async fn reused_deadline_stays_expired_for_later_stages() {
+    let global: JsValue = js_sys::global().into();
+    let mut timer = Timer::start(&global, 1).unwrap();
+    assert!(matches!(
+        timer.race(&Promise::resolve(&JsValue::TRUE)).await,
+        Settlement::Fulfilled(_)
+    ));
+    wasm_bindgen_futures::JsFuture::from(timer.promise.clone())
+        .await
+        .unwrap();
+    assert!(matches!(
+        timer.race(&Promise::new(&mut |_, _| {})).await,
+        Settlement::TimedOut
+    ));
+    timer.cancel().unwrap();
+}
 use wasm_bindgen_test::wasm_bindgen_test;
 
 #[wasm_bindgen_test(async)]

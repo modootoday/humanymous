@@ -13,6 +13,20 @@ rel:
 
 # Browser collector migration
 
+## Owned Fetch transport contract
+
+BrowserSession owns actual Request/Headers/AbortController and one whole-request
+timer through complete bounded response consumption. Use same-origin,
+credentialsomit, redirecterror, no-store and no-referrer. Initial requests64KiB,
+responses1MiB buffered, bootstrap8192bytes; streams/cookies remain unsupported.
+Sign final browser method/URL/Content-Type/Authorization and bytes with the shared
+codec. Reject reserved/transport-owned headers and encoded paths. Normalized
+exposed response headers do not establish raw-header provenance. Check ACK only
+after body completion and cleanup. Rust future/owner drop invalidates and aborts;
+JavaScript Promise GC alone is not cancellation. Explicit close during a flight,
+no automatic retry and no key persistence are mandatory. Real runtime/session
+join and qualified fresh collector provenance require separate actual evidence.
+
 ## Browser session transport implementation contract
 
 The browser_auth_only client consumes an exact provisioned Scope, never trusting
