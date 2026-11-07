@@ -1,8 +1,8 @@
 {
   "schema": "humanymous.pages-capture-partial-review/1",
   "fixed_commit": "269607366e4b2e37b47a974595b406b66642caae",
-  "full_read_files": 8,
-  "lines": 1016,
+  "full_read_files": 12,
+  "lines": 2377,
   "reviews": [
     {
       "source": "crates/capture/Cargo.toml",
@@ -83,16 +83,52 @@
       "notes": "131 lines fully read. Span validation per HPACK representation before decoder; bounded128 fields/64KiB accounting, lower-case token names, control/edge-whitespace rejection, pseudo-header order/uniqueness and prohibited connection fields. Requires four pseudo headers and rejects CONNECT. Decoding ordered headers not HTTP2 stream lifecycle, origin integrity or independent parser proof.",
       "current_sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787",
       "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/src/http2/mod.rs",
+      "fixed_sha256": "bfaac7959c30a13483028b683317befb9594dc70c1f2a64140e13d34e2589b6d",
+      "lines": 413,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "413 lines fully read in contiguous chunks. One connection HPACK decoder, exact preface/first SETTINGS, bounded16KiB frames/64KiB block/128 lifetime streams/4096 lifetime frames. Contiguous same-stream continuation; monotonic odd stream IDs, DATA framing/end/reset/trailers state. Initial ordered header snapshot exposed only after complete block; reset removes stream and terminal error clears all. Pure feed is not original-hop provenance. No complete body/digest/replay or flow-control serving API; finish detects partial framing only. Frozen FrameMonitor audit signal reused, not new scoring.",
+      "current_sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb",
+      "current_matches_fixed": false
+    },
+    {
+      "source": "crates/capture/src/http2/tests.rs",
+      "fixed_sha256": "13a2222124e6c9e1f3ba700776d6105a7d12d2b5e52d532f9110c570c7fabfae",
+      "lines": 319,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "319 lines fully read in contiguous chunks. Synthetic fragmentation/duplicate headers, shared HPACK table with separate streams, Huffman example, priority encoded weight, missing/ACK-first settings, wrong continuation, malformed headers/HPACK, bounded4096-seed hostile corpus, trailers, truncated frames, lifetime budgets and frozen rapid-reset signal. No new test execution or independent implementation qualification.",
+      "current_sha256": "5b2215880e5d1da0a3968a6745d167586c84fbf8b7d358dd34cc3588d19eb5d6",
+      "current_matches_fixed": false
+    },
+    {
+      "source": "crates/capture/tests/hosted_transport.rs",
+      "fixed_sha256": "8a549c9985321181693c39dfb7f11077fde1b8615f2334283330a901ee301d4e",
+      "lines": 406,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "406 lines fully read in contiguous chunks. Five ignored hosted-labeled socket groups with synthetic ephemeral certificates and owned loopback peers. H1 includes happy idle plus five tail refusal subcases; H2 continuation correct/wrong stream, invalid TLS, cancellation has four pre/during/post handshake/drop subcases. Threads joined on happy paths; source assertions and environment labels do not prove actual hosted execution, global panic-safe worker containment, durable audit or origin effects. No run performed.",
+      "current_sha256": "8a549c9985321181693c39dfb7f11077fde1b8615f2334283330a901ee301d4e",
+      "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/INTEGRATION.md",
+      "fixed_sha256": "7cdf54dccb963d054fa0cd56221d985e00057f4fef77b08eb781bbcb1a8f5e54",
+      "lines": 223,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "223 lines fully read with bounded rereads after truncation. Chronology retains historical46822eb/22-unit pending-owner and later24-pure5-hosted NOT_RUN delta; older contract table is explicitly historical and must not override newer PendingHandshake API. Runtime owns full H1/H2 request/body/session/RIT, origin/audit and worker joins. Reterminated traffic describes proxy hop; no human or whole-product claim. Later actual hosted results require separate exact receipts.",
+      "current_sha256": "b32793888ccd5b8ac17d23a9bed8fffebcac9a5f1c3ff4c986f9934a8fecb298",
+      "current_matches_fixed": false
     }
   ],
-  "remaining_unread": [
-    "crates/capture/INTEGRATION.md",
-    "crates/capture/src/http2/mod.rs",
-    "crates/capture/src/http2/tests.rs",
-    "crates/capture/tests/hosted_transport.rs"
-  ],
+  "remaining_unread": [],
   "source_receipts_renewed": false,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
-  "full_product_qualified": false
+  "full_product_qualified": false,
+  "scope": "Entire fixed capture package12 files/2377 lines fully read; matching old bytes are not current ledger acceptance"
 }
