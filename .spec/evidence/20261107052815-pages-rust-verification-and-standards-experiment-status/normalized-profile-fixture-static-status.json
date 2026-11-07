@@ -1,0 +1,18 @@
+{
+  "scope": "Static fixture-data consistency only; not Rust compilation or parser acceptance",
+  "fixture_sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3",
+  "cases": 25,
+  "profiles": 5,
+  "cases_per_profile": 5,
+  "expected_accept": 5,
+  "expected_reject": 20,
+  "input_hex_and_sha256": "checked all25",
+  "body_length_base64_sha256": "checked all25",
+  "regression_include_path": "exists",
+  "original_corpora": "git comparison unchanged",
+  "command_output_chunk": "cd760d",
+  "rust_compile": "NOT_RUN",
+  "shared_parser": "NOT_RUN",
+  "host_execution": "NOT_RUN",
+  "generic_draft_conformance": false
+}

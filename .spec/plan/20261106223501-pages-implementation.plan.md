@@ -1492,3 +1492,13 @@ uncompiled/unexecuted and prior26+1 receipts do not qualify it. No dependency or
 root manifest delta. Quiet window prohibits compilation/runtime; request bounded
 verification only after root allocation. Pure source-text JSON/diff/spec inspection
 is the current evidence; full objective remains active.
+
+### New normalized fixture static consistency
+
+Checked all25 fixed-case canonical lowercase input hex, input SHA256, exact body
+Base64/length/SHA256, five cases per each of five profiles, expected5accept20reject,
+unique IDs and regression include path. Git comparison confirms original24/i18n10
+bytes unchanged. Saved fixture digest63991623d692 and explicit static-only scope;
+no shared parser/Rust compilation/host execution. These checks cannot substitute
+for pending actual corpus acceptance. Exact813 now has quality128360847587 and
+images-gate128360953683 confirmed live; no Pages/documentation execution observed.
