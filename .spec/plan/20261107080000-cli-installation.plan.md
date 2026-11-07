@@ -80,6 +80,10 @@ test source. Root reported an older six-pure-test result against older bytes;
 it does not qualify the current seven-test source or new runtime fixture. This
 chat ran no Cargo. Current source checkpoint must not wait for actual OS results
 before making the hosted test source available, and is not a completion claim.
+The coherent checkpoint is now 7f73604251e983addbb1ef97283959cd6045c6e1,
+with attributed owned commit and git-ops released. Source-only evidence summary
+[[evidence:root/20261107081540]] explicitly retains latest gates as NOT_RUN;
+private bundle 20261107081539 retains repeated fmt/scoped-spec raw outputs.
 
 The fixture bootstrap must be separately feature-gated and bounded. Its pinned
 nonsecret inputs bind service name, hosted run identifier, full source identity,

@@ -1,0 +1,24 @@
+{
+  "schema": "humanymous.cli-servicehost-checkpoint.v1",
+  "source_commit": "7f73604251e983addbb1ef97283959cd6045c6e1",
+  "status": "authored-not-runtime-qualified",
+  "format": "passed",
+  "scoped_spec_check": "passed",
+  "latest_pure_tests": {"status": "not_run", "expected": 7},
+  "latest_clippy": "not_run",
+  "actual_runtime_service": {
+    "status": "not_run",
+    "cargo_target": "runtime_service_process",
+    "feature": "runtime-service-pilot",
+    "exact_test": "native_runtime_service_lifecycle_and_missing_credential_fail_closed",
+    "ignored_by_default": true,
+    "required_platform": "actual Windows SCM virtual service principal",
+    "aggregate_schema": "humanymous.runtime-service-pilot/1"
+  },
+  "cross_os_protected_inputs": "unsupported-in-current-shared-provider",
+  "production_observer_provisioning": "open",
+  "required_external_witness_producer": "open",
+  "local_service_or_account_changes": false,
+  "publication": false,
+  "product_qualified": false
+}
