@@ -1921,6 +1921,26 @@ name = "humanymous-apache-adapter"
 version = "0.1.0"
 
 [[package]]
+name = "humanymous-apache-native"
+version = "0.1.0"
+dependencies = [
+ "bindgen 0.73.2",
+ "getrandom 0.4.3",
+ "hex",
+ "humanymous-apache-adapter",
+ "humanymous-audit",
+ "humanymous-authority",
+ "humanymous-framework-adapter",
+ "humanymous-integrity",
+ "humanymous-signals",
+ "rustix 1.1.6",
+ "serde_json",
+ "sha2 0.10.9",
+ "tokio",
+ "zeroize",
+]
+
+[[package]]
 name = "humanymous-attacker"
 version = "0.1.0"
 dependencies = [
@@ -2030,6 +2050,7 @@ version = "0.1.0"
 dependencies = [
  "cef",
  "humanymous-browser",
+ "humanymous-test-support",
  "meari",
  "meari-native",
  "serde",
@@ -2120,10 +2141,26 @@ dependencies = [
 name = "humanymous-dotnet-adapter"
 version = "0.1.0"
 dependencies = [
+ "humanymous-audit",
  "humanymous-authority",
  "humanymous-framework-adapter",
  "humanymous-integrity",
+ "humanymous-native-abi",
+ "humanymous-native-security",
+ "humanymous-signals",
+ "humanymous-test-support",
+ "serde",
  "serde_json",
+ "tokio",
+]
+
+[[package]]
+name = "humanymous-dotnet-adapter-export"
+version = "0.1.0"
+dependencies = [
+ "humanymous-dotnet-adapter",
+ "humanymous-native-abi",
+ "tokio",
 ]
 
 [[package]]
@@ -2331,11 +2368,14 @@ dependencies = [
  "hex",
  "humanymous-audit",
  "humanymous-authority",
+ "humanymous-capture",
+ "humanymous-challenge",
  "humanymous-collector",
  "humanymous-integrity",
  "humanymous-network",
  "humanymous-scoring",
  "humanymous-signals",
+ "rustls",
  "serde",
  "serde_json",
  "sha2 0.10.9",

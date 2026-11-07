@@ -607,6 +607,18 @@ a test-only permit does not constitute an operational approval workflow.
 
 ### Native runtime process Docker pilot
 
+Integration checkpoint (2026-11-07): the next local candidate registers 38
+workspace members, including Apache native and the .NET export facade. Its
+lockfile incorporates the approved runtime capture/challenge/rustls edges,
+desktop test-support edge and .NET dependencies. Offline resolution attempted
+an unrelated lazy_static downgrade; the existing version and checksum were
+preserved. Locked no-dependency metadata succeeds; this is graph inventory,
+not compilation or native qualification. The exact 8132117 hosted candidate
+does not include these changes. Its Ubuntu actor stopped after 15 of 88
+harnesses; Node product pilots remain required, and unknown ignored tests must
+not be relabeled as helpers. Docker wargame evaluation remains failed with
+19 errors, seven unsupported cases and no evaluated cases.
+
 The lab runtime-process profile executes the real humanymous-runtime binary with
 private piped startup/readiness, actual durable audit storage and an owned
 loopback origin inside one network-none non-root container. Its Rust pilot

@@ -5,7 +5,8 @@ members = [
   "crates/capture", "crates/collector", "crates/integrity", "crates/model", "crates/network",
   "crates/runtime", "crates/scoring", "crates/signals",
   # Native host and framework boundaries.
-  "crates/apache-adapter", "crates/dotnet-adapter", "crates/framework-adapter",
+  "crates/apache-adapter", "crates/apache-adapter/native",
+  "crates/dotnet-adapter", "crates/dotnet-adapter/export", "crates/framework-adapter",
   "crates/go-adapter", "crates/native-abi", "crates/native-abi/export", "crates/nginx-adapter",
   "crates/node-adapter", "crates/python-adapter", "crates/ruby-adapter",
   # Desktop and native operating-system integration.

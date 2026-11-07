@@ -15,6 +15,14 @@ rel:
 
 ## Isolated actual-runtime pilot contract
 
+The fixture explicitly declares test_selection.exact_name, selected=1 and
+component_tests_filtered=66. A pure cross-file assertion checks those declarations
+against the owned test name; it passed once with scoped Clippy. The declarations
+are expected accounting, not proof of execution. Root omitted these fields from
+the earlier8132117 candidate even though the lab actor required them; correction
+aae7289 is reserved for the next immutable run. Preserve any actual813 failure
+without claiming the missing selection was reached before the logs show it.
+
 The non-default runtime-pilot feature consumes pilot/fixture.json as the one
 machine-readable scope/path/status contract and pilot/webdriver.json as typed
 WebDriver configuration. Actual browser requests use BrowserSession and an
