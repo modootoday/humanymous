@@ -672,23 +672,34 @@ extern "C" fn handoff(request: *mut request_rec) -> c_int {
         return FAILURE;
     }
     boundary(|| {
-        // SAFETY: handler callback owns this live request's matching context.
-        let saved = unsafe { &mut *context(request)? };
-        let response = saved.response.take().ok_or(())?;
-        saved
-            .pending
-            .check_handoff(response.expires())
-            .map_err(|_| ())?;
-        if response.consume().map_err(|_| ())? != Verdict::Allow {
-            return Err(());
-        }
-        saved.replay.eof().map_err(|_| ())?;
+        let probe = {
+            // SAFETY: handler callback owns this live request's matching context.
+            let saved = unsafe { &mut *context(request)? };
+            let response = saved.response.take().ok_or(())?;
+            saved
+                .pending
+                .check_handoff(response.expires())
+                .map_err(|_| ())?;
+            if response.consume().map_err(|_| ())? != Verdict::Allow {
+                return Err(());
+            }
+            saved.replay.eof().map_err(|_| ())?;
+            #[cfg(feature = "pilot-probes")]
+            let probe = match saved.original.target.as_str() {
+                "/probe-subrequest" => 1,
+                "/probe-redirect" => 2,
+                _ => 0,
+            };
+            #[cfg(not(feature = "pilot-probes"))]
+            let probe = 0;
+            probe
+        };
+        // No Context reference may survive calls that can re-enter host hooks.
         #[cfg(feature = "pilot-probes")]
         {
             // Test-only actual host lifecycle probes; never enabled implicitly
             // by a client header, production configuration or runtime setting.
-            let path = saved.original.target.as_str();
-            if path == "/probe-subrequest" {
+            if probe == 1 {
                 unsafe {
                     apr_table_set(
                         (*request).err_headers_out,
@@ -705,7 +716,7 @@ extern "C" fn handoff(request: *mut request_rec) -> c_int {
                 }
                 return Ok(FAILURE);
             }
-            if path == "/probe-redirect" {
+            if probe == 2 {
                 unsafe {
                     apr_table_set(
                         (*request).err_headers_out,
@@ -717,6 +728,8 @@ extern "C" fn handoff(request: *mut request_rec) -> c_int {
                 return Ok(0);
             }
         }
+        #[cfg(not(feature = "pilot-probes"))]
+        let _ = probe;
         Ok(PASS)
     })
 }

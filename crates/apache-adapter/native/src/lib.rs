@@ -1,4 +1,5 @@
-//! Opt-in Apache native module. Build and execute only in the hosted Linux pilot.
+//! Opt-in Apache native module. Actual Linux execution requires root allocation
+//! under the current measured policy; default checks do not qualify this ABI.
 #![deny(unsafe_code)]
 
 #[cfg(all(feature = "httpd", not(target_os = "linux")))]

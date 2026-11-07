@@ -108,3 +108,38 @@ The manifest remains frozen. Selected native compilation and actual45scenario
 execution remain mandatory. Docs review found a detached-worker early-return
 gap in graceful reload; RequestWorker now joins on every exit with bounded
 connect/read/write. That pilot fix remains unexecuted and has no cleanup proof.
+
+## Execution-policy steering
+
+User now explicitly authorizes actual local Windows/WSL build/test/runtime
+measurement, superseding the prior hosted-only blanket. Root has opened a quiet
+benchmark window: no new Cargo/native/runtime/model/Docker commands may start.
+Apache has no live owned validation command; D was already returned. Source/docs
+continue without shared graph edits. The root measured decision and later slot
+allocation control subsequent local execution; no benchmark result is invented.
+
+## Coordinator and post-benchmark validation
+
+Root ended the quiet window and allocated D for Windows pilot-feature pure
+validation only. The coordinator's ten tests passed with zero failed, ignored
+or filtered tests. Pilot-feature all-target check passed. Warnings-denied
+Clippy initially rejected one collapsible conditional; after the let-chain fix,
+Clippy and all ten tests passed again. Commands used target/validation-native,
+jobs1 and incremental0. No pre-command hashes were captured on this invocation;
+do not claim a before/after source equality receipt. No Linux-only coordinator,
+httpd bridge, native process, network or Docker execution was qualified by it.
+D was returned before requesting a separate Linux compilation allocation.
+
+The coordinator has a strict external 45-case receipt validator and a separate
+cleanup command. Local execution selects the Windows Docker Desktop executable
+and desktop-linux context explicitly, verifies provisioned server identity and
+version, and never falls back to the WSL native engine. Hosted Linux remains a
+distinct execution profile. CI owns workflow wiring and root owns dispatch.
+The Docker image source is an immutable committed Git archive; dirty source is
+rejected. Public summaries project bounded typed diagnostics and independent
+artifact hashes while private logs and binaries stay in the private bundle.
+
+Source review additionally ends every Rust Context borrow before probe host
+calls that can re-enter callbacks, requires collector capability on the
+production-route denial witness, and places Apache runtime files in the owned
+writable directory. Those Linux-only changes await actual compilation/pilot.

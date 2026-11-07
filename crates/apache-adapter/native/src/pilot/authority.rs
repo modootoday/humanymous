@@ -76,7 +76,7 @@ pub async fn start(base: &Path) -> Result<Service, super::Error> {
     getrandom::fill(&mut key)?;
     getrandom::fill(&mut seed)?;
     let routes:Vec<_>=super::ROUTES.iter().map(|path|serde_json::json!({"method":"POST","path":path,
-        "required":{"raw_tls":*path=="/capture","original_h2":false,"raw_header_order":false,"collector":false,"rit":false}})).collect();
+        "required":{"raw_tls":*path=="/capture","original_h2":false,"raw_header_order":false,"collector":*path=="/production","rit":false}})).collect();
     let config: Configuration = serde_json::from_value(serde_json::json!({"adapter":"apache",
         "endpoint":base.join("decision.sock"),"scope":{"installation":"apache","tenant":"t","origin":"o","revision":"r","authority":"example.test"},
         "peer":{"kind":"unix","uid":rustix::process::geteuid().as_raw()},"routes":routes,

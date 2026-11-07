@@ -190,7 +190,7 @@ fn startup(
     std::fs::write(
         &path,
         format!(
-            "ServerRoot /opt/httpd\nServerName example.test\nListen 127.0.0.1:{port}\nLoadModule mpm_{mpm}_module modules/mod_mpm_{mpm}.so\nLoadModule unixd_module modules/mod_unixd.so\nLoadModule authz_core_module modules/mod_authz_core.so\nLoadModule proxy_module modules/mod_proxy.so\nLoadModule proxy_http_module modules/mod_proxy_http.so\nLoadModule humanymous_module modules/libhumanymous_apache_native.so\nUser #{uid}\nGroup #{gid}\nPidFile {base}/httpd.pid\nErrorLog {base}/httpd-error.log\nLogLevel error\nTimeout 2\nKeepAlive Off\nHumanymousConfig {private}\nProxyRequests Off\nProxyAddHeaders Off\nProxyPass / http://127.0.0.1:{origin}/\n<Location />\nRequire all granted\n</Location>\n",
+            "ServerRoot /opt/httpd\nDefaultRuntimeDir {base}\nServerName example.test\nListen 127.0.0.1:{port}\nLoadModule mpm_{mpm}_module modules/mod_mpm_{mpm}.so\nLoadModule unixd_module modules/mod_unixd.so\nLoadModule authz_core_module modules/mod_authz_core.so\nLoadModule proxy_module modules/mod_proxy.so\nLoadModule proxy_http_module modules/mod_proxy_http.so\nLoadModule humanymous_module modules/libhumanymous_apache_native.so\nUser #{uid}\nGroup #{gid}\nPidFile {base}/httpd.pid\nErrorLog {base}/httpd-error.log\nLogLevel error\nTimeout 2\nKeepAlive Off\nHumanymousConfig {private}\nProxyRequests Off\nProxyAddHeaders Off\nProxyPass / http://127.0.0.1:{origin}/\n<Location />\nRequire all granted\n</Location>\n",
             base = base.display(),
             private = private.display()
         ),
@@ -295,6 +295,32 @@ fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
         ensure(
             status == 200 && observed == body && origin.count.load(Ordering::Acquire) == before + 1,
             "binary replay/effect",
+        )?;
+        std::thread::scope(|scope| -> Result<(), Error> {
+            let workers: Vec<_> = (0u8..16)
+                .map(|index| {
+                    scope.spawn(move || {
+                        let bytes = [index, 0, 255, 128];
+                        request(port, "/echo", &bytes, "")
+                            .map(|(status, body, _)| status == 200 && body == bytes)
+                            .map_err(|_| "concurrent request")
+                    })
+                })
+                .collect();
+            for worker in workers {
+                ensure(
+                    worker
+                        .join()
+                        .map_err(|_| "concurrent worker panic")?
+                        .map_err(|_| "concurrent request")?,
+                    "concurrent body isolation",
+                )?;
+            }
+            Ok(())
+        })?;
+        ensure(
+            origin.count.load(Ordering::Acquire) == before + 17,
+            "exact concurrent origin effects",
         )
     });
     case(cases, mpm, "spoofed-provenance", || {
