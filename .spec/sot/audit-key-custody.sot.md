@@ -29,10 +29,12 @@ consumer promotion, new dependency/manifest edit or validation workload is impli
 ### Qualification boundary and remaining product obligations
 
 Qualification is exact-source and scope-specific. The latest source checkpoint
-is unqualified private Phase-B composition,
-[[evidence:root/20261107131217]]. Eight new pipeline tests authored, compilation/
-Clippy/execution NOT_RUN. Native Unsupported/test-only composition, no repair,
-healthy owner, authority or memory qualification. The preceding source
+for private Phase-B composition, correctedfb06, passed isolated check/strict
+Clippy and33 scoped Rust tests in [[evidence:root/20261107133648]].2488 source/
+3300 registry files and20 absent Cargo configuration candidates unchanged.
+All eight new pipeline tests ran; original8dbb visibility failure retained.
+Source: [[evidence:root/20261107131217]]. Native Unsupported/test-only composition;
+no repair, healthy owner, authority or memory qualification. The preceding source
 for private Phase-A scanner source4b49 passed isolated check/strict Clippy and21
 scoped Rust tests, [[evidence:root/20261107125819]], including all seven new Phase-A
 tests.2434 immutable snapshot files and inventory unchanged; primary excluded.
@@ -65,7 +67,8 @@ result as current-source success after these cryptographic/framing changes.
 | Bounded Merkle primitives | Scoped9 tests/check/Clippy at9c5f4e7c plus test-expression correction, [[evidence:root/20261107114310]] | Operational no-history recovery/proofs; legacy Tree still retains borrowed leaves and subtree memo |
 | Frame and predecode limits | Focused framing13 passed, [[evidence:root/20261107120052]]; source [[evidence:root/20261107115240]] | Actual bounded inspector wiring and native fault/capacity evidence; preflight is currently test-compiled only |
 | Checkpoint message/signature allocation | Root wire6/audit checkpoint5/Go parity2 passed, [[evidence:root/20261107120052]] | Finite trusted profile in the complete bounded verifier and full current-source regression |
-| Incremental compatibility diagnostics | Focused7 unit/4 parity tests passed, [[evidence:root/20261107121521]] | Phase-A metadata/exact pin, actual bounded frontier join, EOF/source checks and native inspection |
+| Incremental compatibility diagnostics | Focused7 unit/4 parity tests passed, [[evidence:root/20261107121521]]; composed private checks now qualified below | Actual native source/identity, capacity/fault venue and production consumer integration |
+| Private two-pass composition | Isolated33 scoped tests/check/Clippy at correctedfb06, [[evidence:root/20261107133648]] | Actual native producer/handle policy, capacity/fault measurement, physical/virtual recovery and consumer promotion |
 | Independent witness and retained dual control | Native process/retained custody mechanisms included in historical f88 package scope | Real ServiceHost issuer/admission/effect/pin acknowledgement and isolated product-lab requests/faults |
 | Backup retirement and erasure | Retained local-generation APIs and historical native regressions | Caller witnessed intent/effect correlation, fresh recovery grants, actual crash venue and backup/unknown-copy erasure obligations |
 | Durable sink | Local fsync-backed sink mechanism and historical native scope | Actual remote transport/retry/delivery receipt and failure semantics |

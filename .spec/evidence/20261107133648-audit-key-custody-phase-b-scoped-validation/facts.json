@@ -1,0 +1,90 @@
+{
+  "source": "fb06c4d161850a24d24a2ff735aff761e95eb090",
+  "originalFailedSource": "8dbb98de80a3d0cbebf3011abd7b65602d295d1a",
+  "correction": "inspect and Diagnostic narrowed to scan-private; no behavior/lint suppression",
+  "sourceMode": "immutable git archive, primary changes excluded",
+  "passed": 33,
+  "failed": 0,
+  "ignoredExecuted": 0,
+  "harnesses": [
+    {
+      "name": "scan",
+      "passed": 15,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 82,
+      "outerSummaries": 1
+    },
+    {
+      "name": "framing",
+      "passed": 13,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 84,
+      "outerSummaries": 1
+    },
+    {
+      "name": "verification-parity",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 0,
+      "outerSummaries": 1
+    },
+    {
+      "name": "record-parity",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 0,
+      "outerSummaries": 1
+    },
+    {
+      "name": "checkpoint-parity",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 0,
+      "outerSummaries": 1
+    },
+    {
+      "name": "merkle-parity",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 0,
+      "outerSummaries": 1
+    }
+  ],
+  "sourceFiles": 2488,
+  "sourceHashDriftIndicators": 0,
+  "sourceInventoryDrift": 0,
+  "registryPackages": 77,
+  "registryFiles": 3300,
+  "registryHashDriftIndicators": 0,
+  "registryInventoryDrift": 0,
+  "configCandidates": 20,
+  "configExisting": 0,
+  "configCandidateStateHashDrift": 0,
+  "vectors": {
+    "goVerifier": 840,
+    "canonical": 92,
+    "checkpoint": 180,
+    "merkle": 66
+  },
+  "firstAttempt": "check0 with3 private-interface warnings; strictClippy101; no tests ran; original inputs/logs preserved",
+  "scope": "private two-pass diagnostics/component parity only, no native identity/OSprobe/capacity/fullsuite/completeS1/production",
+  "session": "27344 terminal exit0; A returned",
+  "archiveIdentity": {
+    "source": "fb06c4d161850a24d24a2ff735aff761e95eb090",
+    "archiveSha256": "518feac3408655871486eb9f74c63ac0433ecb579b59a932cddf65a442bf7879",
+    "archiveBytes": 68352000,
+    "archiveDisposition": "Local reproducible input over4MiB attachment limit; hash only"
+  }
+}

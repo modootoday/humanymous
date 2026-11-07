@@ -1,6 +1,18 @@
 # Sealed key compatibility integration
 
-## Private two-pass crypto source awaiting qualification
+## Latest isolated two-pass diagnostic qualification
+
+Correctedfb06 private visibility passed locked/offline all-target check/strict
+Clippy and33 Rust tests:scan15/82filtered, framing13/84filtered, four parity bins
+1+1+2+1/0filtered. Go840/92/180/66 vectors are not extra Rust tests or unique
+cross-batch sums. Original8dbb checkwarnings3/Clippy101/no-tests retained.
+Immutable2488 source files,77 registry packages/3300 files and20 absent Cargo
+config candidates unchanged. Evidence133648/private132346 includes archive
+identity, correction and all small raw manifests/logs; large archives local only.
+Session27344 terminal/A returned. Native Source Unsupported/test-only pipeline;
+no OS probe, memory/full-S1/product or production S2/S3 qualification.
+
+## Historical two-pass source before corrected scoped qualification
 
 Phase B now composes complete metadata/crypto passes over sealed per-segment
 Source, shared transcript framing, fixed frontier and shared checks/Scope rules.

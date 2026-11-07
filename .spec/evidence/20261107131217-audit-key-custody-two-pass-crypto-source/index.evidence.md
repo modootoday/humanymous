@@ -13,6 +13,13 @@ rel:
 
 ## What was measured
 
+Subsequent correctedfb06 immutable execution passed check/strict Clippy and33
+scoped Rust tests, [[evidence:root/20261107133648]]. All eight pipeline tests ran;
+2488 snapshot/3300 registry files and20 absent configuration candidates unchanged.
+The original8dbb visibility failure remains historical, not retroactively green.
+Source-authorship NOT_RUN statements below are superseded only for that focused
+corrected scope; native/memory/complete-S1/production gates remain open.
+
 First allocated immutable8dbb attempt compiled with three private-interface
 warnings, then strict Clippy failed101 before any tests. Source fix narrows
 inspect and Diagnostic to the private scan module, matching the accepted sealed

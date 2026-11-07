@@ -157,6 +157,17 @@ reuses owner/privacy/regular-file checks. Enumerate matching segment names with
 finite counters, validate exact10-digit indices and contiguity, then stream
 expected names1..N; do not collect a Vec of paths or records. Checkpoints use an
 independent bounded cursor. Keep at most one segment and one sidecar cursor open.
+Open native identity/handle-budget gate: a retained metadata identity handle is
+not a cursor. Whole-source cross-pass identity may require one retained handle
+per segment (up to the finite segment policy), plus sidecar/root/provider/lock,
+active readers and temporary equality reopens. The chosen producer must enumerate
+and admit that full peak against an explicit native handle budget, with exhaustion
+as refusal;4096 segments does not itself prove that4096 handles are available.
+If only the current segment's handles remain open, disclose within-pass/path
+comparison only. Never relabel detached cached IDs after close/reuse as retained
+whole-source epoch proof. The native owner's unrelated fixed3-pin carrier is not
+this source-wide producer or its qualification. This is a design gate, not an
+accepted producer/edge, and does not delay isolated Phase-B source verification.
 Check source identity/length before and after every pass and rescan membership
 before accepting the result. Cooperative locking/trusted-directory ownership
 remains a premise: this does not claim protection from a malicious same-owner
@@ -433,6 +444,14 @@ refactoring. Residual same-owner modification and O(history) proof I/O are expli
 Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
+
+Correctedfb06 immutable allocated A batch passed check/strict Clippy and33 Rust
+tests:scan15/82filtered, framing13/84filtered, four parity bins1+1+2+1 with0filters.
+Go840/92/180/66 vectors are separate/overlapping denominators.2488 source snapshot
+files,77registrypackages/3300files and20 absent Cargo config candidates unchanged,
+including ancestor checks. First8dbb visibility warnings/Clippy101/no-tests and
+private-only correction retained. Evidence133648/raw132346, session27344 terminal/
+A returned. No full suite, native producer/probe, memory/whole-S1 or S2/S3 claim.
 
 Private Phase-B source composes complete A/B under one sealed Source/immutable
 policy/control context, shared raw transcript encoder, fixed frontier and shared
