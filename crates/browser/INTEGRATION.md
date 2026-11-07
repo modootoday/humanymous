@@ -2,6 +2,14 @@
 
 ## Actual Windows CEF checkpoint
 
+Subsequent test-only source uses the existing ManagedChild owner for bootstrap
+negative children and emits closed case/profile observations from the shared
+pilot-contract inventory before unchanged assertions. Root integrated the two
+existing workspace dev-edges in072c8e5a. Three synthetic marker tests are authored;
+new helper/marker source compilation and runtime are not_run. CI owns exact marker
+receipt validation and --show-output harness framing. No new production behavior,
+SDK/GUI execution or new qualification follows from these source changes.
+
 Exacte77 run42372115353 passed native build and all four synthetic desktop
 protocol tests (0 failed/ignored,13 filtered), following runner11/Clippy success.
 Bootstrap-rejection then failed without a recoverable child-exit/case receipt;

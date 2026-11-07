@@ -11,6 +11,42 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## Bootstrap child ownership and accepted closed observations
+
+Root accepted a separate test-only cleanup correction: the existing four-case
+bootstrap rejection test delegates to negative_pilot.rs and uses the shared
+humanymous_test_support::process::ManagedChild. Its ten-second deadline, four
+fixed flags, per-child exit78 and before/after synthetic-profile equality remain.
+No custom supervisor, unsafe code or production bootstrap path is introduced.
+This fixes an identified kill-without-wait risk; it is not the established cause
+of either failed hosted run. Source formatting passes; compilation/runtime is
+not_run. Root integrated the existing workspace Windows dev-dependencies
+humanymous-test-support and serde_json plus two lock dependency entries in
+072c8e5a6bc4cfbfdb21f6d3ec5942c84d3fe8f8. No package version changed.
+
+Root accepted a bootstrap_rejection
+block in the existing owned pilot-contract.json, not a parallel verifier. It
+names the original exact test, schema1, expected exit78, deadline10000ms and four
+fixed IDs: no_sandbox, no_sandbox_zero, disable_web_security, disable_gpu_sandbox.
+The prefix is HUMANYMOUS_BOOTSTRAP_OBSERVATION followed by one bounded
+JSON record. Case facts are spawn_ok, wait_completed, deadline_expired, exit_code
+or null, cleanup_attempted, reaped only when wait/stop actually observed status,
+and fixed spawn/wait/cleanup error-kind labels. Missing facts remain null, not
+success. Separate before/after profile inventory records carry only observation
+success, actual changed boolean when available, and fixed error kind; no names.
+
+The source producer emits facts before unchanged assertions. It includes no PID, raw messages, flags,
+paths or child output. CI plans --show-output to preserve exact harness result
+lines. Parent-owned child streams stay private and no child output is forwarded;
+unread pipe backpressure may cause a deadline failure, never passing output proof.
+The marker producer and three pure privacy/null-observation tests are authored,
+not compiled or executed. Their exact selector/names are in the same contract;
+CI owns consumer synchronization. Deadline is null until wait is attempted;
+cleanup_attempted describes explicit stop after wait error, not unobserved Drop
+effects. Missing/duplicate/ignored receipts cannot become inferred executed counts.
+Root's earlier77ca workspace build does not qualify this new source or graph edge.
+Descendant cleanup remains unqualified.
+
 ## Diagnostic CEF execution: native build and protocol passed, bootstrap failed
 
 Run42372115353/job128402202007 executed exact source

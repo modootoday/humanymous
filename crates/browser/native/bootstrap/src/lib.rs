@@ -1,6 +1,8 @@
 //! Minimal Windows M138+ bootstrap client. UI DLLs never load in subprocesses.
 #![deny(unsafe_code)]
 #![cfg(windows)]
+#[cfg(all(test, feature = "native-pilot-tests"))]
+mod negative_pilot;
 #[path = "../../shared/scheme.rs"]
 mod owner_scheme;
 mod renderer_probe;
@@ -93,48 +95,7 @@ mod tests {
     #[test]
     #[cfg(feature = "native-pilot-tests")]
     fn native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation() {
-        use std::{
-            collections::BTreeSet,
-            path::PathBuf,
-            process::Command,
-            time::{Duration, Instant},
-        };
-        let bundle = PathBuf::from(
-            std::env::var_os("HUMANYMOUS_CEF_PILOT_BUNDLE")
-                .expect("private native bundle required"),
-        );
-        let profiles = || -> BTreeSet<_> {
-            std::fs::read_dir(&bundle)
-                .unwrap()
-                .map(|entry| entry.unwrap().file_name())
-                .filter(|name| name.to_string_lossy().starts_with("synthetic-profile-"))
-                .collect()
-        };
-        let before = profiles();
-        for flag in [
-            "--no-sandbox",
-            "--no-sandbox=0",
-            "--disable-web-security",
-            "--disable-gpu-sandbox",
-        ] {
-            let mut child = Command::new(bundle.join("humanymous_cef_bootstrap.exe"))
-                .arg(flag)
-                .spawn()
-                .unwrap();
-            let deadline = Instant::now() + Duration::from_secs(10);
-            let status = loop {
-                if let Some(status) = child.try_wait().unwrap() {
-                    break status;
-                }
-                if Instant::now() >= deadline {
-                    let _ = child.kill();
-                    panic!("security override did not reject promptly");
-                }
-                std::thread::sleep(Duration::from_millis(20));
-            };
-            assert_eq!(status.code(), Some(78), "{flag}");
-        }
-        assert_eq!(profiles(), before, "a rejected override created a profile");
+        super::negative_pilot::run();
     }
 
     #[test]

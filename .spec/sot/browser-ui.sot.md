@@ -654,3 +654,16 @@ the reported PID and identify a restricted/Untrusted renderer before its claimed
 file denials count. This does not attest PID lifetime identity, all processes or
 full sandbox policy. Navigation schema2 is unchanged. Historical periodic token
 snapshots are not retroactively replaced by this new observation contract.
+
+UI-31 (root-accepted test-only bootstrap follow-up): the four fixed security
+override cases retain exit78 and unchanged synthetic-profile predicates. Their
+direct children use the shared ManagedChild owner for wait/stop/Drop cleanup;
+no custom supervisor or production bootstrap logic is introduced. The existing
+pilot-contract.json owns the exact case IDs/flags, typed closed observation
+fields and synthetic observation tests. Case/profile markers precede assertions;
+no PID, path, error message or child output is reflected. Reaped is true only
+after observed direct-child status, otherwise null; missing facts never imply
+success. Diagnostic observations do not replace actual case/harness receipts,
+re-evaluate bootstrap semantics or qualify full sandbox/descendant cleanup.
+New producer and synthetic tests require independent native-feature compilation
+and execution; older source results are not inherited.
