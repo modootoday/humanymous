@@ -100,6 +100,16 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Docs review identified unbounded/inherited-stdio key_custody subprocess parents.
+Its old nested output was covered by an explicit legacy runner exception, but
+not a bounded child lifecycle. Both parents now reuse bounded capture and exact
+leading-newline/flushed markers, exit0/stderr0 plus native lock/pending/identity
+state assertions. The same two raw ignored helpers remain excluded, not passed.
+Runner owner accepted a paired one-outer-summary contract, exact ignored set and
+both passing parents, with nested/unknown/leaked-marker rejection. This future
+source has no format/compiler/native result under the quiet window; old813
+results are not inherited. Evidence: [[evidence:root/20261107091756]].
+
 Root-assigned B validation for a04603e1 passed seven selected pure units,
 all-target cargo check and integration --no-run compile/link. First all-target
 Clippy rejected the retention test-module/item order; the failure and initial

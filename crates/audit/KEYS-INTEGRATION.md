@@ -1,5 +1,20 @@
 # Sealed key compatibility integration
 
+## New unqualified custody helper capture
+
+key_custody's two existing parents now use shared bounded private capture
+(60seconds,64KiB), exit0, empty stderr and exact flushed child markers.
+child_lock_probe emits humanymous-key-lock-refused after actual WouldBlock;
+child_interrupted_writer emits humanymous-key-pending-synced after actual write/
+sync and before deliberate exit. Both marker writes start/end with newline.
+Parents still prove file absence/exclusive release, pending refusal/authorized
+recovery and unchanged writer/HMAC identity, not just marker/exit success.
+Rawignored2 and names are unchanged; exactly one outer summary is required.
+The runner owner is pairing this with an exact inventory/both-parent/single-
+summary parser and negative leakage/nested-summary fixtures. Old813 used a
+different explicit nested-summary exception. Neither side of this new contract
+has compiled, formatted or executed during the benchmark quiet window.
+
 Read the source/qualification sections above the historical checkpoints first.
 Historical counts and deferred-work lists below describe their own manifests;
 they never override later source or qualify the current working tree. Execution

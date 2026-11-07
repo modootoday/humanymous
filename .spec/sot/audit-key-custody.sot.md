@@ -362,7 +362,7 @@ No new execution or workflow dispatch was performed for this policy-reference
 update. Candidate hosted qualification and unresolved runtime/deployment gates
 remain not_run pending root's source closure and execution assignment.
 
-### Native helper accounting contract, version 0.1
+### Native helper accounting contract, version 0.2
 
 Self-executed libtest children never inherit parent stdout/stderr. Parents use
 the existing bounded test-support capture API (60seconds,64KiB), require OS
@@ -376,13 +376,23 @@ libtest summary. Unknown ignored tests or extra summaries still fail accounting.
 |---|---|---|
 | durable_witness | child_witness_probe | witness_process_lifetime_and_interrupted_recovery |
 | key_backups | child_retire_without_pin_acknowledgement | crash_reconcile_preserves_consumed_authorization |
+| key_custody | child_lock_probe; child_interrupted_writer | competing_process_cannot_load_or_create; process_exit_releases_lock_and_rotation_pending_requires_recovery |
 
-Each target has exactly one raw ignored helper, excluded from pass counts only
-when the exact parent actually passes, exit0/filtered0/fail0 hold and discovered
-equals passed+1. Existing key_custody's two separately documented helpers retain
-their existing narrow contract; total raw ignored remains4, never four successes.
-The Windows runner owner accepted these exact names and conditions in16c9e89;
-its pre-correction nested-summary failures remain evidence, not retroactive green.
+The witness and backup targets each have one raw ignored helper; key_custody
+has exactly two, with both named parents required. A single outer summary,
+exit0/filtered0/fail0/measured0 and discovered=passed+rawignored are mandatory.
+Total raw ignored remains4, never four successes. key_custody's captured child
+markers are exact standalone lines humanymous-key-lock-refused and
+humanymous-key-pending-synced, written with leading/trailing newline and flushed
+only after actual exclusion or pending-file sync. Parents require those markers
+inside bounded capture, exit0, empty stderr and original native state/recovery
+assertions. Marker leakage into outer stdout is rejected by the paired runner.
+The old8132117 key_custody nested-summary exception is historical and is not
+retrofitted to this new source. Runner owner accepted the paired single-summary
+contract; both future source sides require fresh qualification.
+The earlier witness/backup single-summary contract was accepted in16c9e89;
+the key_custody update is a later paired source change. Historical pre-correction
+nested-summary failures remain evidence, not retroactive green.
 
 Native tests exercise restart identity, vault/tombstone persistence, rotation,
 parallel-process lock refusal, permission/alias rejection and interrupted pending

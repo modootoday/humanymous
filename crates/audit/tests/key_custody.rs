@@ -156,21 +156,39 @@ fn child_lock_probe() {
         assert!(
             matches!(Custody::acquire(&path, owner(&path)), Err(e) if e.kind() == std::io::ErrorKind::WouldBlock)
         );
+        use std::io::Write;
+        let mut stdout = std::io::stdout().lock();
+        stdout.write_all(b"\nhumanymous-key-lock-refused\n").unwrap();
+        stdout.flush().unwrap();
     }
 }
 #[test]
 fn competing_process_cannot_load_or_create() {
     let temp = Temp::new();
     let guard = temp.acquire();
-    let status = Command::new(std::env::current_exe().unwrap())
-        .args(["--exact", "child_lock_probe", "--ignored"])
-        .env("HUMANYMOUS_KEY_LOCK_PROBE", &temp.0)
-        .status()
-        .unwrap();
-    assert!(status.success());
+    let captured = humanymous_test_support::process::capture_with_stderr(
+        Command::new(std::env::current_exe().unwrap())
+            .args(["--exact", "child_lock_probe", "--ignored"])
+            .env("HUMANYMOUS_KEY_LOCK_PROBE", &temp.0),
+        b"",
+        std::time::Duration::from_secs(60),
+        64 * 1024,
+    )
+    .unwrap();
+    assert!(captured.status.success());
+    assert!(captured.stderr.is_empty());
+    assert!(
+        String::from_utf8(captured.stdout)
+            .unwrap()
+            .lines()
+            .any(|line| line == "humanymous-key-lock-refused")
+    );
     assert!(!temp.0.join("keys.sealed").exists());
     drop(guard);
-    temp.acquire().load_or_create(b"pass", material).unwrap();
+    let (key, created) = temp.acquire().load_or_create(b"pass", material).unwrap();
+    assert!(created.is_some());
+    assert_eq!(key.signing_seed(), &[7; 32]);
+    assert_eq!(key.hmac_key(), &[8; 32]);
 }
 #[test]
 fn wide_directory_permissions_are_refused() {
@@ -285,6 +303,9 @@ fn child_interrupted_writer() {
         use std::io::Write;
         file.write_all(&sealed).unwrap();
         file.sync_all().unwrap();
+        let mut stdout = std::io::stdout().lock();
+        stdout.write_all(b"\nhumanymous-key-pending-synced\n").unwrap();
+        stdout.flush().unwrap();
         // Deliberately bypass destructors, releasing OS locks by process exit.
         std::process::exit(0);
     }
@@ -293,25 +314,34 @@ fn child_interrupted_writer() {
 #[test]
 fn process_exit_releases_lock_and_rotation_pending_requires_recovery() {
     let temp = Temp::new();
-    let status = Command::new(std::env::current_exe().unwrap())
-        .args(["--exact", "child_interrupted_writer", "--ignored"])
-        .env("HUMANYMOUS_KEY_INTERRUPTED_WRITER", &temp.0)
-        .status()
-        .unwrap();
-    assert!(status.success());
+    let captured = humanymous_test_support::process::capture_with_stderr(
+        Command::new(std::env::current_exe().unwrap())
+            .args(["--exact", "child_interrupted_writer", "--ignored"])
+            .env("HUMANYMOUS_KEY_INTERRUPTED_WRITER", &temp.0),
+        b"",
+        std::time::Duration::from_secs(60),
+        64 * 1024,
+    )
+    .unwrap();
+    assert!(captured.status.success());
+    assert!(captured.stderr.is_empty());
+    assert!(
+        String::from_utf8(captured.stdout)
+            .unwrap()
+            .lines()
+            .any(|line| line == "humanymous-key-pending-synced")
+    );
+    assert!(temp.0.join("keys.pending").exists());
     let mut guard = temp.acquire();
     assert!(guard.load_or_create(b"old", no_create).is_err());
     assert!(guard.recover_pending(b"wrong", b"new").is_err());
     guard.recover_pending(b"old", b"new").unwrap();
     assert!(guard.load_or_create(b"old", no_create).is_err());
-    assert_eq!(
-        guard
-            .load_or_create(b"new", no_create)
-            .unwrap()
-            .0
-            .signing_seed(),
-        &[7; 32]
-    );
+    assert!(!temp.0.join("keys.pending").exists());
+    let (key, created) = guard.load_or_create(b"new", no_create).unwrap();
+    assert!(created.is_none());
+    assert_eq!(key.signing_seed(), &[7; 32]);
+    assert_eq!(key.hmac_key(), &[8; 32]);
 }
 
 #[cfg(windows)]
