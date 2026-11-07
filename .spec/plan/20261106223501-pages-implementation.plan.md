@@ -1694,3 +1694,17 @@ runtimebind doesnotprovisionrole; no scoring/destructive control/qualification.
 Draft implementationmap/privacy/change manifest reconciled. Two fullfile manual
 receipts; larger store/service/application excerpts not accepted as wholefiles.
 No compiler/native/runtime/Docker command during benchmarkquietwindow.
+
+### Optional TLS/H1 and remaining containment wording
+
+Read complete runtime tls.rs and service/readiness.rs, plus bind_tls,
+bind_with_operator and standalone bind call sites. Replaced the broad no-TLS
+statement with the optional library/standalone distinction, buffered native H1
+constraints and missing current native qualification. Reconciled the remaining
+observer-only description and containment table. No source-wide manual review
+receipt is inferred from partial service.rs inspection.
+
+Existing Pages source checker reports 88 pages and no errors. Scoped owning
+Specfold documents pass with zero errors/warnings; owned diff whitespace passes.
+Freshness inventory still fails, beginning with audit custody/control and
+authority integration/test files. No compiler/native/Docker execution occurred.

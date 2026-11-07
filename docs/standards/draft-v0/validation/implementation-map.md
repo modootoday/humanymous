@@ -26,13 +26,20 @@ qualify a changed binary.
 | [Decisions and errors (P-06)](../protocol/profile.md#p-06-decisions-and-errors) | Typed service errors are distinct from verdicts; unsupported inputs fail closed | Independent error compatibility and complete negotiated-version behavior |
 | [Before-effect integrity (P-07)](../protocol/profile.md#p-07-complete-body-verification-before-effects) | Complete-body parser validation and bounded runtime audit-before-origin path exist | Full qualified collector-to-origin flow, origin-bypass isolation and actual human controls |
 | [Streaming lifecycle (P-08)](../protocol/profile.md#p-08-streaming-integrity-lifecycle) | Experimental adapter capture/stream fields remain null; arbitrary upload/upgrade integrity is unsupported | A separately specified streaming protocol and cancellation/backpressure/side-effect evidence |
-| [Containment (P-09)](../protocol/profile.md#p-09-decision-containment-and-revalidation) | Decision response has a strict small field set; public namespaces do not authorize administration; runtime source adds a separate native observer status listener | Actual listener/peer/permissions and shutdown pilots, operational writes, independent dual approval and final-route mutation pilots |
+| [Containment (P-09)](../protocol/profile.md#p-09-decision-containment-and-revalidation) | Decision response has a strict small field set; public namespaces do not authorize administration; runtime source separates observer reads from an optional resource-only operator | Actual listener/peer/permissions, shutdown and resource-write pilots, independent dual approval and final-route mutation pilots |
 | [Visible loss (P-10)](../protocol/profile.md#p-10-audit-independence-and-visible-loss) | Bounded buffers, authenticated WAL/log, local export and witness components exist; native verification scope distinguishes omitted HMAC and absent anchors | Generic loss/quality wire model, qualified sink/process-isolation evidence and unsampled full denominators; component proof scope does not establish pre-ingestion completeness |
 
 The [wire experiment](../protocol/implementation-experiment.md) and
 [parser vectors](vectors.md) document concrete existing interfaces separately
 from the unresolved generic profile. Reuse of one shared Rust parser is good
 implementation consistency, but is not independent interpretation evidence.
+
+Runtime library source now provides an optional buffered TLS/H1 ingress through
+`ServiceHost::bind_tls`. The captured request retains its handshaken connection
+owner; the standalone executable still selects plaintext ingress. Browser
+profiles and non-HTTP/1.1 ALPN are refused on this TLS path, and HTTP/2 or collector
+requirements remain unready. This source change does not establish current native
+ingress qualification or original-client visibility across a re-terminating proxy.
 
 At source `8132117`, the [Linux MSRV job](https://github.com/modootoday/humanymous/actions/runs/42355168729/job/128359709010)
 recorded an authority subset of 30

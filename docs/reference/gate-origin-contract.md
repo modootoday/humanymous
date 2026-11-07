@@ -97,8 +97,10 @@ management consumer still needs its own listener, credential, exact routes,
 Origin/CSRF/scope checks and audit/control issuers. The decision binary continues
 to refuse administration routes; generic handler availability is not completed
 runtime management integration. Current runtime source now consumes this seam
-for a separate observer-only status listener; its exact contract and unexecuted
-native lifecycle gates are recorded in the
+for separate observer status/settings reads and an optional independently
+credentialed resource operator. The operator requires witnessed durable settings;
+it does not authorize scoring changes or destructive controls. Its exact contract
+and unexecuted native lifecycle gates are recorded in the
 [operations reference](on-call-quick-reference.md#experimental-native-status-service).
 
 `serve_handler_until` explicitly stops acceptance, cancels tracked connections

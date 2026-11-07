@@ -8,6 +8,13 @@
   "changes": [
     {
       "kind": "implementation-evidence",
+      "paths": ["validation/implementation-map.md"],
+      "summary": "Distinguish optional library TLS/H1 source from plaintext standalone ingress, HTTP/2 and collector readiness, and current native qualification; reconcile the containment table with separate observer and resource-operator roles.",
+      "generic_wire_changed": false,
+      "changed_source_execution_qualified": false
+    },
+    {
+      "kind": "implementation-evidence",
       "paths": ["validation/implementation-map.md", "reviews/security-privacy.md"],
       "summary": "Reconcile observer settings reads and optional separately credentialed resource-operator source, with CAS/journal/session-invalidation and unknown-outcome limits; execution remains unqualified.",
       "generic_wire_changed": false,

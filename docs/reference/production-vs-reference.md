@@ -45,8 +45,15 @@ These separate outcomes cannot qualify later source changes.
 The current documentation source still needs a fresh rendered-site build,
 actual browser checks and source-review completion before preview acceptance.
 
-The HTTP runtime does not provide original-client TLS or HTTP/2 capture,
-browser recovery, public administration or arbitrary streaming proxy compatibility.
-Routes requiring unavailable capture or a qualified collector stay unready.
+The standalone HTTP runtime uses plaintext loopback HTTP/1.1. Library source
+also exposes `ServiceHost::bind_tls` with installation-owned TLS configuration
+and a same-connection captured request owner. This optional TLS/H1 path accepts
+only buffered native routes and HTTP/1.1 ALPN; it rejects browser profiles and
+does not enable HTTP/2 capture. Its source wiring has not been qualified by a
+current native ingress run. A readiness declaration is not deployment evidence,
+and CDN re-termination still hides the original client's TLS handshake.
+Browser recovery, public administration and arbitrary streaming proxy
+compatibility remain unavailable. Routes requiring unavailable capture or a
+qualified collector stay unready.
 See [runtime configuration](cli-config-policy.md), [collector API](browser-collector.md)
 and [native browser boundaries](native-browser.md) for the exact implemented scope.
