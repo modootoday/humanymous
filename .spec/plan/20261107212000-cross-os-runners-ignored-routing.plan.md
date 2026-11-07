@@ -117,3 +117,14 @@ No compiler/test/native workload, new CI watch/dispatch/workflow, ignored annota
 or accounting implementation change. Native8/privateParent remains priority.
 The private journal model's pure12 proof replaces NONE of these19 actual parents.
 Full native coverage correctly remains fail-closed until actual obligations close.
+
+## Separate Windows job disposition
+
+Read-only Delivery job metadata for source1f87 Windows job128533798156 reports
+completed/cancelled: provisioned CEF step cancelled, subsequent native workspace
+actor/accounting steps SKIPPED. This is separate from Ubuntu's seven accounting
+failures. No Windows native-workspace test counts or successful ignored-parent
+execution can be inferred from preceding workspace build success or partial
+component reports. Delivery's full-run monitor remains sole owner; this read
+triggered no new watch/dispatch/retry. New journal fixture job is still only a
+proposal in [[plan:root/20261107220000]], not an available qualified venue.
