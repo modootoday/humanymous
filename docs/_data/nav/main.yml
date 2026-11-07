@@ -28,6 +28,12 @@
     - {title: Draft v0, url: /standards/draft-v0/}
     - {title: Explainer, url: /standards/draft-v0/explainer/}
     - {title: Protocol profile, url: /standards/draft-v0/protocol/profile/}
+    - {title: Experimental wire, url: /standards/draft-v0/protocol/implementation-experiment/}
+    - {title: Implementation map, url: /standards/draft-v0/validation/implementation-map/}
+    - {title: Parser vectors, url: /standards/draft-v0/validation/vectors/}
+    - {title: Profile terminology, url: /standards/draft-v0/protocol/terminology/}
+    - {title: Revision control, url: /standards/draft-v0/process/revision-history/}
+    - {title: Reference maturity, url: /standards/draft-v0/process/references/}
     - {title: Security and privacy, url: /standards/draft-v0/reviews/security-privacy/}
     - {title: Conformance, url: /standards/draft-v0/validation/conformance/}
     - {title: Preparation, url: /standards/draft-v0/process/preparation/}

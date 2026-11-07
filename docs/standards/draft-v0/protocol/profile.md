@@ -18,6 +18,9 @@ claim conformance until the unresolved encoding and validation work is complete.
 
 ## Requirement language
 
+The [candidate terminology](terminology.md) defines the actors, provenance and
+binding meanings used below.
+
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT and MAY are interpreted as
 described in [BCP 14](https://www.rfc-editor.org/rfc/rfc8174.html) only when
 they appear in uppercase. They express candidate requirements of this project

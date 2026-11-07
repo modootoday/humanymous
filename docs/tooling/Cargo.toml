@@ -1,0 +1,23 @@
+[package]
+name = "humanymous-pages"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+pulldown-cmark = "0.13.6"
+scraper = "0.29.0"
+regex = "1.12"
+url = "2.5"
+percent-encoding = "2.3"
+humanymous-integrity = { path = "../../crates/integrity", version = "0.1.0" }
+hex = { workspace = true }
+
+[lints]
+workspace = true

@@ -18,5 +18,5 @@ modootoday:
   twins: false
   logo: /assets/brand/mark.svg
   favicon: /assets/brand/favicon.svg
-exclude: [AGENTS.md, Gemfile, Gemfile.lock, reviews.json, scripts, vendor, .bundle, _site, assets/og, assets/llms, assets/screenshots, images]
+exclude: [AGENTS.md, INTEGRATION.md, Gemfile, Gemfile.lock, reviews.json, scripts, tooling, vendor, .bundle, _site, assets/og, assets/llms, assets/screenshots, images]
 include: [.well-known]

@@ -1,0 +1,16 @@
+{
+  "scope": "authored Pages and experimental adapter parser",
+  "reader_pages": 85,
+  "baseurls_checked": ["", "/humanymous"],
+  "upstream_strict_theme_check": "passed",
+  "rust_output_link_anchor_check": "passed",
+  "rust_unit_tests_before_early_baseurl_change": {"passed": 11, "failed": 0, "ignored": 0},
+  "clippy_before_early_baseurl_change": "passed with warnings denied",
+  "experimental_vectors": {"accepted": 4, "rejected": 20, "errors": 0},
+  "fixture_sha256": "b1fc0069ef858ce36cf9cb6810a5852cfed73559a44fc6f2797f50232b11ed92",
+  "latest_early_baseurl_change_retest": "11 tests and strict Clippy passed after shared lock synchronization; initial failure retained",
+  "current_source_review_receipt": "stale",
+  "new_full_browser_keyboard_assistive_technology_run": "not_run",
+  "draft_v0_conformance": false,
+  "production_publication": "not_performed"
+}

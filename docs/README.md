@@ -16,9 +16,11 @@ Apache-2.0 reference project. A coherent real browser operating at a person's
 pace can remain indistinguishable from legitimate use; no universal human or
 bot identification claim is made.
 
-**This branch is undergoing a Rust migration.** The replacement runtime and
-deployment combinations have not completed release qualification. These pages
-describe boundaries and preparation, rather than an installable Rust product.
+**This branch is undergoing a Rust migration.** A bounded loopback HTTP runtime,
+artifact-provisioning commands, native integration planning and browser-collection
+components are implemented. Full deployment combinations have not completed
+release qualification. Source builds and component pilots are available for an
+owned lab; they do not constitute a production installation.
 See [implementation status](reference/production-vs-reference.md) before using
 an old release or evaluating a new artifact.
 
@@ -32,6 +34,9 @@ an old release or evaluating a new artifact.
 | Contribute implementation evidence | [Developer guide](start-here/developer.md) |
 | Review personal-data handling | [Data-protection guide](start-here/compliance-dpo.md) |
 | Recover from a challenge | [Visitor help](help/why-am-i-seeing-this.md) |
+
+For a safe executable starting point, [inspect a native integration plan](tutorials/quickstart-monitor-mode.md).
+It prints an explicitly unqualified manifest without installing an SDK or service.
 
 ## Research and review
 

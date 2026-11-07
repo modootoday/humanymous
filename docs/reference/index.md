@@ -19,4 +19,7 @@ candidate artifact. The Rust system remains under migration.
 | Data and interface | [Data inventory](data-processing-inventory.md), [language/accessibility](console-localization.md) |
 | Project | [Standards](standards-mapping.md), [review/versioning](versioning-derivation-index.md), [licensing/support](support-licensing.md), [glossary](glossary.md) |
 
+Browser-specific scope: [collector APIs](browser-collector.md) and
+[native laboratory browser](native-browser.md).
+
 Maintainers also use the [public writing guide](../style-guide.md).

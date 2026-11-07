@@ -1,0 +1,99 @@
+---
+layout: doc
+title: Experimental adapter wire and implementation boundary
+description: Concrete adapter protocol behavior, separate from the developing Draft v0 wire profile.
+permalink: /standards/draft-v0/protocol/implementation-experiment/
+draft_status: project-draft
+draft_version: v0
+reviewed: 2026-11-07
+---
+# Experimental adapter wire and implementation boundary
+
+**Diátaxis quadrant:** Reference. **Audience:** adapter implementers and protocol reviewers.
+
+**Status:** informative implementation experiment. The literal protocol
+`humanymous.adapter/0.1` is a bounded application protocol, not the generic
+Draft v0 encoding, a registered identifier or an adopted standard. Parser
+acceptance, actual authenticated service execution and origin effects are
+different evidence. No Draft v0 conformance follows from this page.
+
+## Transport and framing
+
+The local service uses `POST /adapter/v0.1/decision HTTP/1.1` over a configured
+filesystem Unix socket or local Windows named pipe, with one closed connection
+per request. It has no TCP fallback or administration method. Authentication
+checks the real operating-system peer and a separately provisioned scoped
+bearer credential; forwarding headers do not establish locality.
+
+The service header bound is 16384 bytes, JSON envelope bound 1600000 bytes and
+response bound 65536 bytes. Host, Authorization, `Content-Type: application/json`
+and exact Content-Length are required. Repeated service-envelope headers,
+ambiguous framing, upgrade/trailer forms and truncated/trailing frames reject.
+These are service framing rules, not a claim to preserve arbitrary origin bytes.
+
+## JSON model
+
+The parser accepts fixed-schema UTF-8 JSON. It rejects a byte-order mark,
+invalid UTF-8, duplicate keys including escaped duplicates, unknown fields and
+missing fields. Nullable is not optional. Objects are not a canonical signature
+encoding; no new signing algorithm or JSON canonicalization is defined here.
+
+| Group | Implemented fields and bounds |
+| --- | --- |
+| Version/producer | Exact `protocol`; `adapter` with provisioned id/version and installation identity |
+| Identity/scope | `id` is a canonical lowercase UUID version 4; `tenant`, `origin`, `revision` and installation use bounded ASCII identities, up to 128 characters |
+| Deadline | `deadline` is an unsigned safe JSON integer in UTC Unix milliseconds, strictly after the supplied clock and at most 30000 milliseconds ahead |
+| Request | `method` is an uppercase token up to 32 bytes; `target` is origin-form up to 8192 UTF-8 bytes; `authority` is bounded ASCII; ambiguous escapes/dot segments reject |
+| Claimed connection | Required `peer` and `connectionId` are string-or-null; neither establishes original-client or kernel-authenticated provenance |
+| Unsupported planes | `capture` and `stream` are required and explicitly null |
+| Headers | `headers` is an ordered array of name/value pairs, at most 100 entries and 32768 combined UTF-8 bytes; CR/LF/NUL reject |
+| Observation mode | `headerMode` and `capabilities` must agree with the trusted parser profile; original TLS/HTTP2 claims are unavailable |
+| Body | Exact `layer`, `complete`, `length`, `sha256`, `base64`; complete transfer-decoded/content-encoded bytes, up to 1048576 bytes |
+
+The body uses canonical padded standard Base64. The parser decodes it and
+recomputes exact length and lowercase SHA-256; it does not parse JSON or
+reconstruct multipart content. Inner JSON header values may contain non-ASCII
+text, whereas service HTTP framing is constrained separately. This distinction
+does not establish lossless arbitrary origin-header byte fidelity.
+
+## Producer profiles and service readiness
+
+The Node parser supports raw Node headers or Fetch-normalized observations.
+Explicitly selected nginx parser modes exist as shared parser APIs. The reviewed
+authority entry point still uses the Node parser selection; parser availability
+alone does not establish executable nginx authority integration. A request must
+never select its own trusted profile from an unauthenticated field.
+
+The IPC authority rejects routes requiring original TLS, HTTP/2, authenticated
+browser collection or request-integrity planes not provided by that service.
+The separate loopback runtime has session/request-integrity behavior, but that
+does not extend this protocol's capability. See the
+[implementation map](../validation/implementation-map.md).
+
+## Replay, effects and errors
+
+The authority checks scope, revision, exact route and capabilities before its
+serialized nonce reservation. A duplicate nonce rejects, including an identical
+payload. A nonce remains consumed after later failure. Bounded capacity,
+retention, clock rollback and credential epoch/restart handling need their own
+executed evidence. This is not general exactly-once processing across crashes.
+
+An accepted service response follows durable audit append. Append failure
+poisons the authority. A response contains only protocol/id/tenant/origin/
+revision, expiry and verdict, without arbitrary mutations or management data.
+Whether an application invokes the bound handler exactly once requires actual
+adapter/origin observation. Do not retry an ambiguous origin effect.
+
+| Failure family | Current service status |
+| --- | --- |
+| Malformed envelope/framing | 400; body/capability parser diagnostics may map to 422 |
+| Bearer authentication | 401 |
+| Actual peer, credential scope or reserved route | 403 |
+| Revision, route inventory or replay | 409 |
+| Required unavailable capability | 422 |
+| Replay capacity and rate/concurrency limits | 429 where applicable |
+| Scoring, audit, clock or dependency failure | 503 |
+
+Errors are not ALLOW/CHALLENGE/DENY verdicts. Exact implementation status/error
+behavior is version-bound and is not automatically a Draft v0 rule. The
+[synthetic parser vectors](../validation/vectors.md) test a narrower boundary.

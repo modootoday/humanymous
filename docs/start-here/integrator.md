@@ -22,3 +22,10 @@ Node/Bun middleware and nginx integration are migration targets, not current
 support promises. Middleware behind a CDN cannot reconstruct the original
 client TLS handshake. Review [topology boundaries](../reference/supported-topologies.md)
 and the [origin contract](../reference/gate-origin-contract.md).
+
+The current loopback runtime and local adapter decision service are distinct
+profiles. Request-integrity support in the runtime does not make it available
+on the IPC authority's routes. Likewise a parser for a producer does not prove
+that the executable authority selects and authenticates that producer profile.
+Use the [implementation map](../standards/draft-v0/validation/implementation-map.md)
+to distinguish parser, service, browser and origin-effect evidence.

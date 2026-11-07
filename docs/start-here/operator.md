@@ -11,6 +11,12 @@ reviewed: 2026-11-07
 The Rust runtime has not completed deployment qualification. Do not expose a
 migration build to public traffic based on these preparation notes.
 
+An experimental loopback HTTP runtime, sealed audit startup and local artifact
+provisioning CLI now exist. They are bounded components, not an activated full
+Gate service. Read the [configuration profile](../reference/cli-config-policy.md)
+and [origin-credential exception](../reference/gate-origin-contract.md#experimental-loopback-runtime-exception)
+before choosing a fixture application.
+
 Prepare a dedicated lab with an origin that rejects direct bypass, a local
 management channel, scoped service identities and bounded storage. Document
 certificate ownership, audit retention, recovery contacts and rollback authority.

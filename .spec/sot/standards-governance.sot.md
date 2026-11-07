@@ -13,8 +13,36 @@ rel:
 
 ## Rule
 
-Version 0.1.0. Accepted authoring/preparation rules, not external standards
+Version 0.2.0. Accepted authoring/preparation rules, not external standards
 adoption or proof that the proposed technical profile is complete.
+
+### Continuous source reconciliation and experiment boundary
+
+The docs session owns Pages and standards together. Review actual Rust sources,
+public API surfaces and source-bound pilots after producer/authority/collector/
+CLI/browser changes. Keep an explicit change manifest and implementation map;
+never substitute an old chat completion or component green for current acceptance.
+The persistent goal remains active while integration and standardization gates
+are unresolved. No external communication or submission follows from this rule.
+
+The next safe implementability slice is informative: public experimental adapter
+wire documentation, P-01..P-10 implementation traceability and synthetic exact-
+byte parser vectors. They describe humanymous.adapter/0.1 separately from the
+generic proposed Draft v0. Reuse the actual humanymous-integrity parser in the
+Rust Pages tool; do not copy validation, policy or request-integrity algorithms.
+Fixture authoring and read-only validation are separate commands; CI cannot
+regenerate expectations. Store exact bytes (hex), per-case digests, trusted
+profile/clock and fixed expected acceptance, with all failures in the denominator.
+Acceptance is not an ALLOW verdict, peer authentication, audit or origin effect.
+
+Design panel covered blue/evaluator and red/privacy/SRE perspectives. Critique
+reflected: public origin docs now state the runtime Authorization reservation;
+IPC authority and session runtime capability matrices are separate; nginx parser
+support is not executable authority profile selection. Generic wire encoding,
+authentication/signature commitments, duplicate/retry reservation/retention/
+restart epochs, streaming and independent implementations remain blockers.
+Keep real human/screen-reader/Pass recovery not_run until actual evidence.
+Synthetic zero-motor fixtures and automated accessibility scans do not replace it.
 
 ### Public document authority
 

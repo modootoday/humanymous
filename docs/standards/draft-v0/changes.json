@@ -1,0 +1,28 @@
+{
+  "schema": "humanymous.project-draft-changes/1",
+  "draft_version": "v0",
+  "status": "developing-project-draft",
+  "immutable_normative_snapshot": false,
+  "external_submission": false,
+  "generic_wire_selected": false,
+  "changes": [
+    {
+      "kind": "editorial",
+      "paths": ["protocol/profile.md", "reviews/security-privacy.md", "validation/conformance.md"],
+      "summary": "Define and name public requirement identifiers, provide individual validation links and distinguish informative review language.",
+      "normative_semantics_changed": false
+    },
+    {
+      "kind": "implementation-evidence",
+      "paths": ["protocol/implementation-experiment.md", "validation/implementation-map.md", "validation/vectors.md", "validation/fixtures/adapter-parser-v1.json"],
+      "summary": "Describe the existing experimental adapter parser and service boundaries separately from generic Draft v0 conformance.",
+      "generic_wire_changed": false,
+      "independent_interoperability_claimed": false
+    },
+    {
+      "kind": "reference-and-process",
+      "paths": ["protocol/terminology.md", "process/revision-history.md", "process/references.md"],
+      "summary": "Make shared terminology, dependency maturity, change control and submission boundaries explicit."
+    }
+  ]
+}

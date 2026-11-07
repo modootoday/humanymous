@@ -29,6 +29,12 @@ identify all computer-use automation or prevent all abuse.
 | [Security, privacy and accessibility](reviews/security-privacy.md) | Trust boundaries, data handling and human recovery |
 | [Conformance and validation](validation/conformance.md) | Evidence required before an interoperability claim |
 | [Standardization preparation](process/preparation.md) | Venue selection, contribution review and submission gates |
+| [Experimental wire](protocol/implementation-experiment.md) | Concrete existing adapter protocol, separate from the generic proposal |
+| [Implementation map](validation/implementation-map.md) | Candidate requirements versus actual component and deployment evidence |
+| [Synthetic parser vectors](validation/vectors.md) | Exact-byte experimental inputs and their limited acceptance meaning |
+| [Terminology](protocol/terminology.md) | Shared meanings without promoting assertions into verified observations |
+| [Revision control](process/revision-history.md) | Editorial versus wire/behavior changes and future snapshot rules |
+| [Reference maturity](process/references.md) | Existing standards, developing work and procedure boundaries |
 
 The protocol model is incomplete until exact encodings, schema and test vectors
 are reviewed. A conforming implementation cannot yet be claimed. All examples
@@ -40,3 +46,7 @@ Initial v0 introduces provenance, capability gaps, request-bound decisions and
 before-origin integrity requirements. The collection remains a working draft.
 An immutable revision will receive a source revision, dated change record and
 validation report before it is described as a published snapshot.
+
+The current editorial update adds named requirement links, concrete experimental
+wire documentation and source-to-requirement mapping. Experimental parser
+fixtures do not freeze a generic Draft v0 encoding or establish interoperability.

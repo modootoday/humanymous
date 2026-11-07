@@ -216,7 +216,81 @@ directives; all ten requirement anchors and matrix links exist. Private evidence
 `.spec.local/root/evidence/20261106223158-pages-public-terminology-improvements/`.
 No currently deployed-site audit or publication is part of this scope.
 
-Global `spec check --no-local` is currently blocked by the separate wargame
-plan's link to private evidence (and its missing verification warning), outside
-the docs lane. This task's changed documents do not introduce those findings.
-No runtime/source-review hashes were refreshed to conceal parallel code changes.
+## Continuous implementation reconciliation — 2026-11-07 KST
+
+User explicitly renewed this chat for Pages plus standards, with an ongoing
+goal rather than a one-slice completion. Root roadmap v1.2 was read against
+actual runtime/CLI/collector/browser code; initial20members and later root
+workspace integration changes are distinct. Public support is described by
+capability/profile, not a volatile crate count.
+
+Accepted cross-owner contracts:
+
+- Root integrates docs/tooling as humanymous-pages with common workspace
+  metadata/lints/lock. No permanent detached workspace or second committed lock.
+  Explicit package dependencies and command contract are docs/INTEGRATION.md.
+- CI retains scripts/ci/docs-review and replaces its Pages workflow calls with
+  the Rust CLI. No auto source-review refresh; final source/consumer examples
+  remain required. Initial CLI8boundary tests and strictClippy passed; after
+  vectors,10tests pass. Actual Linux Rust wrapper plus Ruby3.3.13 apex79-page
+  run passed before later authored expansions; this is not the final new tree.
+- Producer/authority/root were notified of actual Authorization reservation and
+  Node-only authority parser selection despite nginx parser API support.
+  Public docs separate parser availability, IPC capabilities and the runtime's
+  session/request-integrity path. No producer source was modified by docs.
+- A read-only design panel applied blue/evaluator and red/privacy/SRE lenses.
+  Findings were reflected in standards-governance: experimental adapter wire
+  and24synthetic parser cases are not generic Draft v0 or independent conformance.
+
+Implemented current-scope work: real native dry-run tutorial, command/config
+boundaries, partial runtime capabilities, collector/native-browser references;
+experimental wire/implementation map/vector docs and terminology/change/reference
+pages. Fixture authoring is an explicit create-new Rust command, separate from
+read-only validation. Actual corpus result4accepted/20rejected/errors0; false
+Draft v0 conformance flag. No operational keys or visitor traces are in fixtures.
+
+Current execution/evidence bundle:
+`.spec.local/root/evidence/20261107051213-pages-current-rust-implementation-verification/`.
+The initial wrong-cwd bundle check failed before the correct build environment;
+Windows unit results, Linux tool build, Ruby image digest and actual build logs
+remain separate. New source/built/pilot implementation is Rust only.
+
+Next acceptance sequence and owners:
+
+1. Docs: finish actual dual-baseurl Rust-wrapper builds and component/browser
+   keyboard/layout review of the latest authored source; record exact hashes.
+2. Docs+CI: prove source/built parity, retire old docs/scripts Python/shell files,
+   and confirm CI calls the root-integrated Rust CLI. No new script fallback.
+3. Docs: explicit current-source review inventory, page/capability mapping and
+   LF-working/Git-byte evidence. Parent/producer edits invalidate affected rows.
+4. Docs: continue standards wire decision ledger/vector expansion; exact generic
+   encoding/signature/authentication/replay/restart/streaming remain unresolved.
+5. Producer/CI: full Rust native/browser/Docker examples and actual human/AT/
+   recovery qualification. Docs cannot close those by changing prose.
+6. Root: final same-source acceptance and production Pages deployment; docs build
+   artifact is not deployment and external standard submission is unauthorized.
+
+Do not mark the overall persistent goal complete from a local build or vector
+result. Keep implementation, authored proposal, measured evidence and not_run
+outcomes distinct. New implementation/source/API changes require SoT+plan+
+source-bound evidence updates, public sanitized evidence through spec attach,
+and a precise checkpoint/owner handover. Cross-chat notices are coordination,
+not substitutes for these persistent contracts.
+
+Latest execution: 85 reader pages passed actual apex and subpath builds,
+upstream strict theme checks and Rust DOM/link/anchor checks. Eleven Rust unit
+tests and strict all-target Clippy passed before the subsequent early-baseurl
+validation change. That small change's rerun encountered shared Cargo.lock
+drift; the root owner was notified and the failed locked logs were attached.
+After common-lock synchronization, 11 tests, strict Clippy, source checks and
+24 vectors passed again; separate verified logs retain this successful rerun.
+The old Python/shell validators are removed and CI now calls the Rust CLI.
+The latest collector opt-in hook API and lexical-compatibility limit are public.
+The current apex preview is visible in the in-app browser at localhost:8766;
+homepage/profile rendering was observed. This is not a full new browser/AT run.
+
+Global `spec check --no-local` now passes with zero errors and one unrelated
+binary-secret-scan warning for the browser owner's PNG. No runtime/source-review
+hashes were refreshed to conceal parallel code changes. Current-source review,
+full browser/keyboard qualification and generic standards-wire decisions remain
+open; the persistent goal remains active.

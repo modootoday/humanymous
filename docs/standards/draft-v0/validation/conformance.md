@@ -34,6 +34,10 @@ system or runtime does not qualify every combination.
 Each row links to a named candidate requirement in the proposed profile.
 The `P` identifiers refer to that profile, not test priority or external approval.
 
+The [implementation map](implementation-map.md) records current partial coverage.
+[Synthetic parser vectors](vectors.md) exercise an existing experimental protocol;
+they are not the complete corpus required for the generic Draft v0 profile.
+
 | Requirement | Positive and negative evidence |
 | --- | --- |
 | [Observation provenance (P-01)](../protocol/profile.md#p-01-observation-provenance) | Direct, forwarded, asserted and absent evidence; forged source |
@@ -72,6 +76,7 @@ without a corresponding authorized reproducible experiment.
 | Gate | State |
 | --- | --- |
 | Public v0 problem and requirements model | Authored; review in progress |
+| Experimental adapter parser bytes/vectors | Authored; single shared implementation, separate from Draft v0 wire |
 | Exact schema and canonical wire vectors | Pending |
 | Independent implementations and interoperability | Pending |
 | Protocol-specific browser/native/Docker pilots | Pending |

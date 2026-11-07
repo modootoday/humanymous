@@ -5,7 +5,8 @@ status: active
 created: 2026-11-06T22:35:00Z
 updated: 2026-11-06T22:35:00Z
 verify:
-  - python docs/scripts/check-site.py source
+  - cargo test --locked -p humanymous-pages
+  - cargo run --locked -p humanymous-pages -- source --source docs
 rel:
   governs: [docs/**, scripts/docsgen/**, .gitattributes]
   depends_on: [sot:root/delivery, sot:root/standards-governance, sot:root/automation-evidence]
@@ -31,19 +32,36 @@ production baseurl. Validate a second actual build with /humanymous baseurl.
 The site uses the upstream doc layout and native `_data/nav/main.yml`/footer.
 No custom layout shadow or legacy OG/LLM prose generator remains in the build.
 
-Build via Actions using Ruby 3.3.12 and locked Jekyll 4.4.1 with Pages-compatible
+Build via Actions using Ruby 3.3.13 and locked Jekyll 4.4.1 with Pages-compatible
 plugins, not classic GitHub's github-pages 232 dependency bundle. The pinned
 theme supports this Jekyll path. `jekyll-remote-theme` 0.4.3 constrained RubyZip
 below the fixed release and failed the advisory gate (CVE-2026-85396). Use
 remote-theme 0.6.3 and RubyZip >=3.4,<4; the lock currently selects 3.7.0.
 Never suppress that advisory or loosen frozen installation in CI.
 
-`docs/scripts/validate-pages.sh --destination ABSOLUTE --baseurl VALUE` is the
-CI interface, run from docs. It requires a frozen installed bundle, validates
+The accepted replacement CI interface is
+`cargo run --locked -p humanymous-pages -- validate --source docs --destination ABSOLUTE --baseurl VALUE`,
+run from repository root. The package lives at docs/tooling and shares the root
+Cargo workspace/lock/toolchain. New implementation/tests are Rust1.99.1,
+edition2024; no authored script strings or foreign-language helpers are used.
+It requires a frozen installed Ruby bundle, validates
 source, verifies the v1.5.0 checkout SHA, builds using the configured remote SHA,
 runs that exact theme's checker with --strict, and validates output. Neither
 it nor the source checker writes authored content/review evidence. It does not
 publish. `bundle exec bundle-audit check --update` is a separate mandatory gate.
+The upstream pinned Ruby/Jekyll/theme checker remains an external dependency,
+executed through Command argument arrays. It is not newly authored product code.
+Legacy Python/shell wrappers are retired after actual two-baseurl parity; the CI
+workflow now invokes Rust. Exact owner contract is docs/INTEGRATION.md.
+
+Commands source/built are read-only. validate permits only an explicit absolute
+dedicated output outside/away from source ancestors, rejects symlink output
+escapes, verifies the exact upstream theme tag and invokes real Jekyll/checker.
+Unknown/duplicate CLI arguments and invalid input fail. Output errors are not
+silently converted into a pass; there is no publication command.
+Markdown links are parsed with the maintained CommonMark parser and HTML with
+the maintained DOM parser. The checker accounts for reference links/images,
+percent-encoded anchors, canonical baseurl and named index-suffix files.
 
 The site checker requires all source links to exist within docs, explicit page
 metadata, unique URLs, draft status and no obvious private identifier/key patterns.
@@ -83,6 +101,13 @@ root Cargo.toml/Cargo.lock. It is source review metadata, excluded from the
 public artifact. Changed, added or removed governed source needs renewed review;
 do not automatically refresh it in a release job. The complete inventory and
 exact source mappings are required; a placeholder is a release blocker.
+
+The continuous user goal also owns standards-governance and public standards
+documentation. CI owns freshness-gate implementation, root owns common Cargo/
+lock/toolchain, producer owners own runtime APIs. Pages receives interface
+changes, reads actual current source and explicitly reviews affected prose.
+No gate automatically refreshes reviewer notes/digests. Dirty working-source,
+canonical LF and Git stored bytes must be distinct evidence fields.
 
 Freshness must be portable across supported OS checkouts. A raw digest of CRLF
 Windows text is not equivalent to the LF Git object checked out on Linux.
