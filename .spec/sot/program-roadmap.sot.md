@@ -41,7 +41,23 @@ message groups against current source and exact historical/current execution
 evidence. Generic exit-code annotations require owning failure analysis, not
 silent dismissal. Platform notices, cancellation and immutable prior-source
 warnings remain evidence; deleting old runs or suppressing annotations is not a
-remediation. Current-source fixes and fresh execution proof remain pending.
+remediation. Apache a545ba2a and Python e44ec564 commit verified Node24 checkout
+pins with actionlint success. Delivery's remaining workflow/common-policy patch
+is under verification. Root independently fetched all23 updated action metadata
+references:19 Node24 and4 composite, zero metadata errors or Node20 runtimes;
+this is source metadata evidence, not action execution. Composite transitive
+dependencies need their own review. Upstream git-cliff newline framing and
+explicit Ubuntu24 profiles are included in the remaining source remediation.
+
+The same live e70 run later terminated FAILED, adding one warning and one failure
+annotation: reconciled snapshot total1888 (985 warning,519 failure,384 notice),
+still35 message groups. Preserve the original1886 snapshot and separate terminal
+delta/log attachments rather than rewriting history. Product accounting is
+18 assertions/16 passed/2 failed/9 required unavailable, full_product=false.
+The finite classifier still reports browser_selected_test_failed; no actual
+assertion site or Origin root cause is proven. Lab prepares a changed source-bound
+diagnostic, not an unchanged retry. Current-source fixes, generic failure-bucket
+follow-through and fresh execution proof remain pending.
 
 This table supersedes the corresponding older status below; it does not replace
 the final candidate gates or imply that changing inputs retain previous proof.
