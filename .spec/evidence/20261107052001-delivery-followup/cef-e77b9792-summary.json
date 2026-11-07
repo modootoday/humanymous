@@ -1,0 +1,76 @@
+{
+  "schema": "humanymous.cef-hosted-evidence/1",
+  "run_id": 42372115353,
+  "attempt": 1,
+  "source_sha": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs_total": 1,
+  "artifacts_total": 0,
+  "job": {
+    "id": 128402202007,
+    "helper_units": {
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "helper_clippy": "passed",
+    "native_feature_test_compilation": "passed",
+    "bootstrap_rejection": {
+      "status": "attempted_not_verified",
+      "executed_tests": null
+    },
+    "desktop_processes": {
+      "required": 2,
+      "status": "not_run",
+      "executed": 0
+    },
+    "safe_summary": {
+      "bootstrap_rejection_passed": false,
+      "browser_ready": false,
+      "desktop_passed_tests": null,
+      "full_runtime_qualified": false,
+      "native_build": {
+        "compiler_root_cause_verified": false,
+        "diagnostic_read_truncated": false,
+        "diagnostics": [],
+        "exit_code": 0,
+        "malformed_json_records": 0,
+        "omitted_diagnostics": 0,
+        "oversized_records": 0,
+        "private_log_prefix_bytes": 420312,
+        "private_log_prefix_sha256": "0f38fa48b08cf7b5ed7a5ce7b89e28f572c99ab2285cf6d1f7f3e040c6e1aee6",
+        "private_log_sha256": "0f38fa48b08cf7b5ed7a5ce7b89e28f572c99ab2285cf6d1f7f3e040c6e1aee6",
+        "rendered_messages_included": false,
+        "status": "unknown"
+      },
+      "private_report_sha256": "d8d03084a50e5f0b535db41ebf675388945858f6df0f8e3be53e5d233eaea1e8",
+      "protocol_preflight": {
+        "failed": 0,
+        "filtered": 13,
+        "ignored": 0,
+        "initializes_cef": false,
+        "passed": 4,
+        "required": 4,
+        "starts_processes": false
+      },
+      "raw_contents_included": false,
+      "schema": "humanymous.cef-safe-diagnostics/1",
+      "source_changed": null,
+      "source_manifest_sha256": "8d92d937cde265dfcc6ce3bc9a116b0e9f125bc0cebdd80a1cc316eefcde2133",
+      "source_sha": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+      "stage": "bootstrap-rejection",
+      "status": "failed"
+    }
+  },
+  "capture_index_sha256": "4a577123ae6fc2d093db8b43a517aebc4835e0e99f67113b31af9f2039c231cb",
+  "limitations": [
+    "Native build exit0 and synthetic protocol4 passed, but neither initializes CEF or qualifies GUI/process behavior.",
+    "Bootstrap child exit/log contents are unavailable in this public schema; compilation versus test/runtime cause is unknown.",
+    "Final source check was not reached; source_changed remains null.",
+    "Original private native log/report bodies were not retrieved; emitted hashes are preserved.",
+    "The original 0a1bb36e native-build failure remains separate; new progress does not explain its old cause.",
+    "Normalized REST and decoded connector log wrappers are not HTTP wire bytes."
+  ]
+}

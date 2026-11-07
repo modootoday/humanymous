@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T12:30:47Z
+updated: 2026-11-07T12:42:16Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -16,6 +16,8 @@ files:
   - {path: go-15f63fef-summary.json, sha256: 5b20b0714e544cd1393c36391d1a1615298eee2ffe229a81e80069b436178ee3, bytes: 6172, store: repo}
   - {path: cef-0a1bb36e-summary.json, sha256: 029f2df05edafdb3872cd7a8a721dce96903b41768c2ad649ecd3e1e031bf001, bytes: 1460, store: repo}
   - {path: capture-e77b9792-summary.json, sha256: 643bf62f0de748556f4204c0bdf2d40a24821b4ea0bff7f67d54a2c32bb43388, bytes: 2376, store: repo}
+  - {path: mount-b482d5be-summary.json, sha256: 4d971914b3c827bf50233be2f0b22533fbd66cf69a8d86cbddb622538a9f8fa6, bytes: 5545, store: repo}
+  - {path: cef-e77b9792-summary.json, sha256: 4c975b1d2936d6020d927eee6ac72c05b7cd20d98f90e64005ab1aad4a44051d, bytes: 2858, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -231,3 +233,22 @@ an exact failing operation. Normalized REST data and decoded connector log
 wrappers are retained privately under evidence:root/20261107115500 with index
 SHA256 97a47bf664f0634dcffea2b41d481a5b3e9316e175768a81bef0e4b282c94aa7.
 There were zero artifacts; original private owner report bodies were not fetched.
+
+## Actual capture and diagnostic boundaries
+
+capture-e77b9792-summary.json records five actual hosted transport cases passed,
+unchanged source and two successful jobs with zero artifacts. The private child
+log bodies were not fetched; their emitted hashes remain distinct from the
+normalized REST/decoded connector capture index.
+
+mount-b482d5be-summary.json records complete observation collection, not passing
+custody policy: all eight path results were actor_mount_mode on image and fresh
+volumes, cleanup succeeded and source was unchanged. Numeric mode remains
+unknown publicly; no permission threshold was relaxed.
+
+cef-0a1bb36e-summary.json preserves the earlier unknown native-build failure.
+cef-e77b9792-summary.json separately records native build zero and protocol4
+passed, followed by an unverified bootstrap-stage failure. Bootstrap execution
+count is unknown, desktop2 were not reached and source_changed remains null.
+Neither source establishes GUI/AT/full runtime qualification or acquired private
+compiler/test log bodies. All these dedicated runs had zero artifacts.

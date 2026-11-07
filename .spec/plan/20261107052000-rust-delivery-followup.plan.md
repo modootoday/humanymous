@@ -658,3 +658,33 @@ job-log capture index SHA256 is
 e5b597409c6a5c79611621ee1062f8b85e378ef0e42d63f2971946810d6dff38.
 This proves capture transport only; header/dynamic ABI, browser/AT, image scanning
 and package trust remain separate. Concurrent CEF actual execution remains live.
+
+Root accepted a source-only dedicated CI / Images caller to avoid a full-workflow
+rerun for one candidate scan. image-validation.yml uses existing build/scan steps
+after delivery units, strict Clippy and policy preflight. Policy shares the full
+scan checks and rejects suffix drift, image publication, dropped inventory,
+success-only failure projection and bypassed preflight. No new scanner/parser,
+dependency or status waiver was added. The source/actionlint pass is not an
+actual tool install or image scan; two new policy tests await fresh allocation.
+
+Baseline mount run 42372825588 at b482d5be completed collection with owner exit
+zero, four complete observations and zero infrastructure failures. All eight
+fixed paths reported actor_mount_mode across image-only and fresh-volume writer/
+witness surfaces. Cleanup succeeded and source stayed unchanged; custody/full/
+release remain false. Exact numeric mode and original private facts were not
+retrieved. The attached mount-b482d5be-summary.json preserves the unchanged-recipe
+baseline; private decoded capture index SHA256 is
+f4a7bd2667b1a66352218a302b1fc316908022f394f284a33b7962d5ed1dab98.
+Root approved only the owning lab's nested role-parent COPY repair, retaining
+strict predicates and the same probe before any Go/browser retry. CI recipe
+binding is dynamic and needs no policy or denominator change.
+
+CEF run 42372115353 at e77b9792 failed at bootstrap-rejection after native build
+exit zero and synthetic protocol4 passed (zero failed/ignored, thirteen filtered).
+Helper11 and strict Clippy passed. Bootstrap execution count/child exit and exact
+compile/link/test cause are unknown in that source's public schema; desktop2
+were not reached. Final source check was not reached, so source_changed is null.
+Artifacts were zero. Attached cef-e77b9792-summary.json retains source/report/log
+hashes; original private bodies remain unretrieved. Private decoded capture index
+SHA256 is 4a577123ae6fc2d093db8b43a517aebc4835e0e99f67113b31af9f2039c231cb.
+This later progress does not explain the original 0a1bb36e native-build failure.
