@@ -2153,3 +2153,19 @@ main serving transfer remains null/NOT_RUN, not successful external delivery.
 Attached private82669-byte build CLI log and separate terminal public status;
 initial live status retained. Complete-source manual freshness, local preview,
 actual keyboard/browser and AT remain open. Never poll this terminal run as live.
+
+### Service lifetime and new selected TLS observations
+
+Read fixed ServiceHost364/lifecycle64 completely,428lines; one added/one changed
+source match current raw bytes. Reviewed private input/custody before readiness,
+optional management/settings/TLS composition, joint sibling/controller shutdown
+and final flush; no manager deadline or independent witness proof inferred.
+
+Read owner27a26 TLS summary and complete current151-line dispatch fixture, whose
+hash matches execution-source commitment. Actual selected6pass/0fail/0ignored,
+46filtered; two synthetic identities bothCHALLENGE403/risk57and53/originfalse.
+NativeFull does not fabricate BrowserAuthOnly ACK. This is real TLS/clienthello/
+refusal/cancellation component evidence, not positive TLS ALLOW-to-origin or
+full52library/R13/browser/product. First failure retained by owner. Stored source
+follow-up, no public frozen change or this-chat execution. Requested later doc
+reconciliation acknowledge actual partial observations without widening scope.

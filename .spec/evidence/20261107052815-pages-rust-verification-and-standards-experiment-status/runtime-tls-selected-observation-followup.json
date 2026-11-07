@@ -1,0 +1,32 @@
+{
+  "scope": "Review of owner actual selected TLS observation and current dispatch fixture",
+  "owner_summary": ".spec/evidence/20261107061821-runtime-application-operational-integration/tls-1646c482-validation-summary.json",
+  "owner_summary_sha256": "8518f2114fa185e3862bdae2d102c0a4012823efc44d385bb17aa7848a79325f",
+  "runtime_source": "1646c4821a5da2208a65d349656a10ec657ebeb5",
+  "audit_source": "f88e76f4c90f07e7fde7c87420d1ef21eb39c8b4",
+  "selected": {
+    "ignored": 0,
+    "passed": 6,
+    "filtered": 46,
+    "failed": 0
+  },
+  "actual_policy": [
+    "synthetic Chrome126 over rustls:CHALLENGE403,risk57,origin effect false",
+    "synthetic native rustls identity:CHALLENGE403,risk53,origin effect false"
+  ],
+  "source_review": {
+    "lines": 151,
+    "path": "crates/runtime/src/tests/tls/dispatch.rs",
+    "sha256": "42a335960ce0245f3e3374408d1b686be1be98239c074210abf16ff0b3c97b2d",
+    "notes": "Read complete current fixture. Tests assert policy/status/origin agreement and retain refusal, do not force ALLOW or fabricate NativeFull browser ACK. Synthetic report/in-memory audit and loopback TLS are component scope.",
+    "matches_owner_source_commitment": true
+  },
+  "prior_failure": "Retained separately by owner",
+  "full52_library_qualified": false,
+  "tls_allow_to_origin_qualified": false,
+  "full_r13_qualified": false,
+  "actual_browser_qualified": false,
+  "full_product_qualified": false,
+  "this_chat_execution": "NOT_RUN",
+  "public_edit": "Pending narrow reconciliation; do not say all TLS execution absent or count6as52"
+}

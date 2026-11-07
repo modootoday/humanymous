@@ -1,0 +1,36 @@
+{
+  "scope": "Complete fixed ServiceHost lifetime/source review",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "reviews": [
+    {
+      "source": "crates/runtime/src/service.rs",
+      "lines": 364,
+      "sha256": "f467b7f96267e077fd92a23730972c3e925b8f74c673f18cee0decde10995eef",
+      "current_primary_sha256": "f467b7f96267e077fd92a23730972c3e925b8f74c673f18cee0decde10995eef",
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete364-line ServiceHost/read_configuration API: bounded private inherited input, existing custody before listener bind/readiness, optional witnessed recovery/settings/observer/operator/TLS composition, one-item operator queue, private credential accessors and final drain+flush accounting. Broker/input provenance, external supervisor deadline and witness independence are separate obligations.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/service/lifecycle.rs",
+      "lines": 64,
+      "sha256": "978db8db5889e2a8d65064a691fbad53544ce9ea8561c98b0364dfda91fd062c",
+      "current_primary_sha256": "978db8db5889e2a8d65064a691fbad53544ce9ea8561c98b0364dfda91fd062c",
+      "delta_kind": "changed",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete64-line joint application+management ownership, sibling stop fallback, explicit external controller forwarding, closed-controller error and join of all three futures before custody release. Native tests or manager/descendant cleanup are not inferred from this orchestration source.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    }
+  ],
+  "reviewed_files": 2,
+  "lines": 428,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; exact source review prepared for later reconciliation"
+}
