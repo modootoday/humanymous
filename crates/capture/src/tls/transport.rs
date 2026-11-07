@@ -313,6 +313,13 @@ impl Connection {
         self.h2.as_ref()?.request(stream)
     }
 
+    /// Completed ingress observations from this same live TLS owner. This is
+    /// not a complete HTTP request, body digest or serving-stack receipt.
+    pub fn h2_stream_metadata(&self, stream: u32) -> Option<crate::http2::StreamMetadata> {
+        self.client_hello()?;
+        self.h2.as_ref()?.stream_metadata(stream)
+    }
+
     /// Existing frozen connection frame-monitor observation, if H2 is active.
     /// Remains available after failure for audit, never as an allow capability.
     pub fn h2_abuse(&self) -> Option<&'static str> {

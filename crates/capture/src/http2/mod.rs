@@ -43,10 +43,34 @@ impl Request {
         &self.fingerprint
     }
 }
+/// Observed ingress state, not application acceptance or flow-control validation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InputState {
+    /// The initial header block has not completed.
+    HeadersPending,
+    /// Initial headers completed, without a completed END_STREAM observation.
+    Receiving,
+    /// A complete header section or DATA frame carried END_STREAM.
+    Ended,
+    /// RST_STREAM invalidated this stream's initial request fields.
+    Reset,
+}
+/// Fixed-size observation of one stream; no body or trailer values are retained.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct StreamMetadata {
+    /// State of the captured client input, not an authorization claim.
+    pub input: InputState,
+    /// Completed DATA payload bytes, excluding padding and its length byte.
+    pub data_bytes: u64,
+    /// Decoded trailer field count; None until a trailer block completes.
+    pub trailer_fields: Option<usize>,
+}
 struct Stream {
     request: Option<Request>,
     ended: bool,
     reset: bool,
+    data_bytes: u64,
+    trailer_fields: Option<usize>,
 }
 struct Block {
     stream: u32,
@@ -242,7 +266,11 @@ impl Capture {
                 if state.request.is_none() || state.ended || state.reset {
                     return Err(Error::Malformed);
                 }
-                unpad(&self.payload, flags)?;
+                let bytes = unpad(&self.payload, flags)?;
+                state.data_bytes = state
+                    .data_bytes
+                    .checked_add(bytes.len() as u64)
+                    .ok_or(Error::Budget)?;
                 if flags & 1 != 0 {
                     state.ended = true;
                 }
@@ -292,6 +320,8 @@ impl Capture {
                     request: None,
                     ended: false,
                     reset: false,
+                    data_bytes: 0,
+                    trailer_fields: None,
                 },
             );
             false
@@ -323,7 +353,9 @@ impl Capture {
             .streams
             .get_mut(&block.stream)
             .ok_or(Error::Malformed)?;
-        if !block.trailers {
+        if block.trailers {
+            state.trailer_fields = Some(fields.len());
+        } else {
             let mut fingerprint = self.fingerprint.clone();
             fingerprint.headers_priority = block.priority;
             for (name, _) in &fields {
@@ -361,6 +393,28 @@ impl Capture {
             return None;
         }
         self.streams.get(&stream)?.request.as_ref()
+    }
+    /// Snapshot only completed frames/blocks from this capture epoch. Reset
+    /// metadata remains observable, but a terminal capture error returns None.
+    /// Ended alone does not validate Content-Length, semantics or application use.
+    pub fn stream_metadata(&self, stream: u32) -> Option<StreamMetadata> {
+        if self.failed.is_some() {
+            return None;
+        }
+        let state = self.streams.get(&stream)?;
+        Some(StreamMetadata {
+            input: if state.reset {
+                InputState::Reset
+            } else if state.ended {
+                InputState::Ended
+            } else if state.request.is_some() {
+                InputState::Receiving
+            } else {
+                InputState::HeadersPending
+            },
+            data_bytes: state.data_bytes,
+            trailer_fields: state.trailer_fields,
+        })
     }
     /// Existing frozen frame-monitor output; this context never changes its
     /// predicates or derives an additional score. Consumers use the signal once.

@@ -1,5 +1,103 @@
 use super::*;
 
+#[test]
+fn stream_metadata_counts_unpadded_data_and_keeps_streams_isolated() {
+    let wire = [
+        prefix(),
+        frame(1, 4, 1, &headers()),
+        frame(1, 5, 3, &headers()),
+        frame(0, 8, 1, &[2, b'a', b'b', 0, 0]),
+        frame(0, 1, 1, b"c"),
+    ]
+    .concat();
+    for chunk in 1..=wire.len() {
+        let mut capture = Capture::default();
+        for bytes in wire.chunks(chunk) {
+            capture.feed(bytes).unwrap();
+        }
+        assert_eq!(
+            capture.stream_metadata(1),
+            Some(StreamMetadata {
+                input: InputState::Ended,
+                data_bytes: 3,
+                trailer_fields: None,
+            })
+        );
+        assert_eq!(
+            capture.stream_metadata(3),
+            Some(StreamMetadata {
+                input: InputState::Ended,
+                data_bytes: 0,
+                trailer_fields: None,
+            })
+        );
+        assert_eq!(capture.stream_metadata(5), None);
+    }
+}
+
+#[test]
+fn stream_metadata_waits_for_complete_blocks_and_retains_reset_observation() {
+    let mut capture = Capture::default();
+    capture.feed(&prefix()).unwrap();
+    capture.feed(&frame(1, 0, 1, &headers())).unwrap();
+    assert_eq!(
+        capture.stream_metadata(1).unwrap().input,
+        InputState::HeadersPending
+    );
+    capture.feed(&frame(9, 4, 1, &[])).unwrap();
+    assert_eq!(
+        capture.stream_metadata(1).unwrap().input,
+        InputState::Receiving
+    );
+    // Frame-boundary EOF does not synthesize END_STREAM.
+    capture.finish().unwrap();
+    assert_eq!(
+        capture.stream_metadata(1).unwrap().input,
+        InputState::Receiving
+    );
+    capture.feed(&frame(0, 0, 1, b"body")).unwrap();
+    capture
+        .feed(&frame(1, 1, 1, &literal(b"x-end", b"one")))
+        .unwrap();
+    assert_eq!(capture.stream_metadata(1).unwrap().trailer_fields, None);
+    capture
+        .feed(&frame(9, 4, 1, &literal(b"x-end", b"two")))
+        .unwrap();
+    assert_eq!(
+        capture.stream_metadata(1),
+        Some(StreamMetadata {
+            input: InputState::Ended,
+            data_bytes: 4,
+            trailer_fields: Some(2),
+        })
+    );
+    capture.feed(&frame(3, 0, 1, &[0; 4])).unwrap();
+    assert!(capture.request(1).is_none());
+    assert_eq!(capture.stream_metadata(1).unwrap().input, InputState::Reset);
+    assert_eq!(capture.stream_metadata(1).unwrap().data_bytes, 4);
+    assert!(capture.feed(&frame(0, 0, 1, b"late")).is_err());
+    assert!(capture.stream_metadata(1).is_none());
+}
+
+#[test]
+fn incomplete_data_never_counts_or_completes_and_partial_eof_invalidates() {
+    let mut capture = Capture::default();
+    capture.feed(&prefix()).unwrap();
+    capture.feed(&frame(1, 4, 1, &headers())).unwrap();
+    let data = frame(0, 1, 1, b"abc");
+    capture.feed(&data[..data.len() - 1]).unwrap();
+    assert_eq!(
+        capture.stream_metadata(1),
+        Some(StreamMetadata {
+            input: InputState::Receiving,
+            data_bytes: 0,
+            trailer_fields: None,
+        })
+    );
+    assert_eq!(capture.finish(), Err(Error::Truncated));
+    assert!(capture.stream_metadata(1).is_none());
+}
+
 fn frame(kind: u8, flags: u8, stream: u32, payload: &[u8]) -> Vec<u8> {
     let len = payload.len();
     let mut result = vec![(len >> 16) as u8, (len >> 8) as u8, len as u8, kind, flags];

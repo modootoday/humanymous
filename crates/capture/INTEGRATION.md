@@ -1,5 +1,15 @@
 # Capture integration requests and qualification
 
+Current frontier: PendingHandshake cancellation custody is implemented and
+runtime80b38ee consumes capture137e633c's H1 idle probe. Changed record reads,
+probe cases and the new H2 stream metadata are NOT_RUN (27 pure authored;
+5 hosted fixtures authored). The b03622-unit/feature-Clippy/no-run result below
+is historical. H2 metadata is an observed input snapshot, never a complete body
+or origin capability. Root has been asked to allocate selected validation and a
+genuine hosted five-case run; Docker full-product qualification remains open.
+Later user authorization permits actual local comparisons under Root allocation;
+existing hosted guards must not be bypassed by spoofed environment variables.
+
 Owner: network-capture/rust-network-capture-goal. Design authority:
 sot:root/network-capture. Existing network, integrity, authority and runtime are
 read-only here. Capture is a new transport-lifecycle context, not a fingerprint

@@ -3,7 +3,7 @@ id: sot:root/network-capture
 title: Original TLS and HTTP2 connection capture
 status: active
 created: 2026-11-07T07:25:00Z
-updated: 2026-11-07T08:43:30Z
+updated: 2026-11-07T11:50:00Z
 verify: manual
 rel:
   governs: [crates/capture/**]
@@ -143,3 +143,30 @@ compile-only hosted_transport passed. Evidence:root/20261107084330 records
 60recursive source/context files unchanged and executable identities. Actual5
 hosted cases and runtime/Docker boundaries remain unqualified; no old or
 compile-only success is transferred into those execution claims.
+
+## Current source and qualification frontier
+
+Capture137e633c adds record-boundary reads and the conservative H1 idle probe;
+runtime80b38ee consumes it at pre-decision, post-audit and pre-origin-write
+boundaries. These authored paths supersede the historical absent-consumer note
+above, but have not acquired actual execution qualification.
+
+N05 continuation: each H2 stream exposes fixed-size observed input metadata from
+the same live connection: completed unpadded DATA bytes, completed trailer field
+count and HeadersPending/Receiving/Ended/Reset state. Initial request headers
+remain distinct from END_STREAM. Partial frames/blocks do not advance completed
+observations; frame-boundary EOF does not synthesize completion. Reset removes
+request fields while retaining metadata for observation; terminal connection
+failure removes both. No body/trailer values are retained by this metadata.
+Ended does not validate Content-Length, request semantics, flow control or
+application parsing, and cannot authorize origin effects. Runtime must perform
+its own exact request/body association; an H2 serving owner remains unqualified.
+
+The current source adds three pure metadata fixtures (27 pure authored total),
+not yet executed. The measured b03622-unit checkpoint remains historical. Five
+hosted tests remain authored and unexecuted; Docker full product remains failed
+at the recorded813 checkpoint. Root allocation is required for new execution.
+The user's later local Windows/WSL comparison authorization supersedes earlier
+blanket hosted-only policy; fixture hosted guards remain unchanged and must not
+be spoofed. Local Docker execution must follow Root's explicit Desktop engine
+allocation and the canonical Docker-only product validation workflow.
