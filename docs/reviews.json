@@ -2,6 +2,96 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "build/rust/authority-lab.Dockerfile",
+  "sha256": "b85739a80b67ed9bc8913b2fb0829b3e72b5b030c1dc51bb61599495b2a36729",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full Rust authority build plus pinned Node harness/legacy adapter stage, installer stripping and nonroot pilot entrypoint. Image guide labels historical harness integration, not native Node-API or full browser/product qualification; no build or process result inferred.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/authority-lab.Dockerfile.dockerignore",
+  "sha256": "442882e9eee3832488750b07665c5d46e74af81969d22e774679386f4a3b4435",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read explicit authority workspace, historical Node adapter/harness and member-source allowlist with build/cache/private extension exclusions. Image guide separates source context from final contents and effective runtime isolation; retained foreign harness is not new Rust implementation.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/collector-browser.Dockerfile",
+  "sha256": "5027c10ebc76901711d45ce4d2a6ac91007bfe1a9da19ad3d30d2faaf40f3f93",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read pinned Rust image, apt Firefox, checksum-pinned geckodriver, exact wasm-bindgen tool, collector WASM compilation, historical differential oracle copies, nonroot and browser runner environment. Image guide labels Firefox component tests, not product CEF/human or actual current-source pass; upstream package resolution is not fully immutable from base pin alone.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/collector-browser.Dockerfile.dockerignore",
+  "sha256": "696962c5556588ab02e04ef37ad54c6c753f66662b4d6c8eed57b097d2b1cabb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read explicit workspace/member and three historical browser oracle allowlists, excluding target/node_modules/cache/private key/env and foreign helper artifacts. Image guide identifies test-only oracles and separates filtered context from actual execution and final image review.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/custody-check.Dockerfile",
+  "sha256": "aa092d2716f9883a509c6bc0e2cfd57bc0f0929d3cd4c4c0710791e3a49181e8",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read strict audit/authority Clippy and compiled lib/custody/native-process test binaries, nonroot runtime and audit-only default entrypoint. Image guide explicitly requires actual invocation inventory; building four binaries or default audit entrypoint is not evidence all subprocess/custody tests ran or independent witness custody holds.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/custody-check.Dockerfile.dockerignore",
+  "sha256": "bc4f98929c74c6e0929be38ee53936b74b675658f636a7ff2ad31e0a8bae4ad8",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read workspace/member source context allowlist and generated/cache/private extension exclusions. Image guide separates context filtering, regression image contents and executed custody/process coverage; no raw custody evidence or production image qualification inferred.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/lab-fixtures.Dockerfile",
+  "sha256": "fd198896fc0ea77f5c0ed6f8b6ae257e5ca99ad4726fe24368001d619aff160f",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read pinned historical Python control image, installer removal, clients copy, nonroot and probe default. Image guide labels old fixture controls, not newly authored Rust implementation, browser provenance or whole-product acceptance. No Python/Docker executed.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/lab-fixtures.Dockerfile.dockerignore",
+  "sha256": "d34ba18eca648d37811467529b60a4fcc994ef5a449eb6249ef349a538c03ce5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read deny-by-default context allowing only historical lab client Python sources. Image guide identifies retained fixture scope; a small context does not establish endpoint isolation or qualify a Rust client/product.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/runtime-pilot.Dockerfile",
+  "sha256": "20dbc5705de241a5fc64ebc820573486cef9483343a6b33a57b1c81dcbd52599",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read locked runtime/CLI/pilot builds, strict pilot Clippy, installed exact binaries and nonroot real-process pilot entrypoint. Image guide distinguishes process harness from full product topology/browser/human qualification; no local runtime/build execution performed.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/runtime-pilot.Dockerfile.dockerignore",
+  "sha256": "18a7e5897f6e0104387fee6b37f82b25b4cb231b5801c078d258e2458e487a15",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read runtime/pilot and current workspace member input allowlists, generated/private/foreign helper exclusions and retained optional old lock path. Image guide separates source context from effective runtime and executed coverage; ignored or absent historical path is not a fabricated successful build.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
   "source": "adapters/nginx/legacy-njs/gate.js",
   "sha256": "f4e37b88bf59c4e296d8edd95569f4bf8935d709ab67938c4e6e430b8ae5bc25",
   "reviewer": "codex/rust-pages",

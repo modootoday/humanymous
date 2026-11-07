@@ -697,3 +697,12 @@ editing or executing foreign code. Three manually authored source reviews identi
 private protocol, projected sorted headers/duplicate/encoding refusal and narrow
 fixture effects/SSE evidence. Public native reference prevents old behavior from
 being assigned to current nginx-raw/body or durable replay/witness/recovery scope.
+
+## Component Docker fixture review
+
+Full docs-review refusal next identified ten build/rust Docker source/context
+files. Read all ten and manually authored per-file receipts; image guide maps
+authority legacy harness, custody binary invocation scope, Firefox component,
+runtime pilot and historical Python controls. No fresh build/runtime inferred.
+CI42348518353 policy success with Docker/Linux native live observed; later docs
+changes remain outside that run. No duplicate dispatch or local runtime.
