@@ -896,3 +896,26 @@ The bounded eight-case result proves only its declared component contract, not
 all six Go host families or complete Go framework execution. Do not substitute
 the preceding mount-probe image digest for the runtime image tuple when that
 tuple is absent from the safe public receipt. Preserve this evidence limit.
+
+## Legacy responsibility coverage beyond the package count
+
+A38-package workspace inventory is structural evidence, not full feature coverage.
+The314 baseline Go responsibility rows remain authoritative for migration review;
+336 currently tracked Go files include22 additional generators/demos. Existing
+ported-unit or pending labels cannot become runtime parity through deletion.
+Review routing is recorded in .agents/retirement/legacy-go-owner-routing.json.
+
+Two dedicated review owners now cover previously unresolved root responsibilities:
+watermark chat01a1b63c-3b93-7371-b055-9fc2cec587b8 reviews14 watermark Go files,
+and model-training chat01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c reviews mlserve,
+mltrain, mlcorrect and their training commands against existing Rust inference.
+Their initial scope is unique SoT/plan/evidence authoring after full source review.
+No new crate/dependency/model activation or implementation is authorized until
+root accepts the design. Detection weights/thresholds and runtime verdicts stay
+frozen; offline training is distinct from agent-maintenance's LLM evaluation.
+
+Active Go image builders in release.yml, CodeQL, Makefile and legacy Compose
+consumers must migrate or receive a substantive reviewed retirement disposition.
+No release, tag, OIDC exchange or publication is authorized by this work. Each
+responsibility still needs exact Rust behavior and appropriate actual evidence,
+or an explicitly reviewed disposition that does not silently drop required features.
