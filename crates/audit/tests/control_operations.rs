@@ -136,6 +136,68 @@ fn material() -> Result<KeyMaterial, humanymous_audit::keys::KeyError> {
     KeyMaterial::new([7; 32], vec![8; 32], None, None)
 }
 
+#[test]
+fn trusted_snapshot_enforces_bound_lock_and_exact_pending_recovery() {
+    use humanymous_audit::storage::TrustedSnapshot;
+    let directory = Dir::new();
+    assert!(TrustedSnapshot::open(&directory.0, owner(&directory.0), "runtime-state", 0).is_err());
+    assert!(
+        TrustedSnapshot::open(
+            &directory.0,
+            owner(&directory.0),
+            "runtime-state",
+            (4 << 20) + 1
+        )
+        .is_err()
+    );
+    let mut snapshot =
+        TrustedSnapshot::open(&directory.0, owner(&directory.0), "runtime-state", 1024).unwrap();
+    assert!(snapshot.read().unwrap().is_none());
+    assert!(
+        TrustedSnapshot::open(&directory.0, owner(&directory.0), "runtime-state", 1024).is_err()
+    );
+    snapshot.replace(b"caller-authenticated-committed").unwrap();
+    assert!(snapshot.replace(&vec![0; 1025]).is_err());
+    assert_eq!(
+        snapshot.read().unwrap().as_deref(),
+        Some(b"caller-authenticated-committed".as_slice())
+    );
+    drop(snapshot);
+    let committed = directory.0.join("runtime-state.json");
+    let pending = directory.0.join("runtime-state.pending");
+    fs::copy(&committed, &pending).unwrap();
+    fs::write(&pending, b"caller-authenticated-pending").unwrap();
+    let mut snapshot =
+        TrustedSnapshot::open(&directory.0, owner(&directory.0), "runtime-state", 1024).unwrap();
+    assert!(snapshot.read().is_err());
+    let inspected = snapshot.inspect().unwrap();
+    assert_eq!(
+        inspected.pending.as_deref(),
+        Some(b"caller-authenticated-pending".as_slice())
+    );
+    assert!(
+        snapshot
+            .promote_pending(Some(b"wrong-committed"), b"caller-authenticated-pending")
+            .is_err()
+    );
+    assert!(
+        snapshot
+            .promote_pending(Some(b"caller-authenticated-committed"), b"wrong-pending")
+            .is_err()
+    );
+    snapshot
+        .promote_pending(
+            Some(b"caller-authenticated-committed"),
+            b"caller-authenticated-pending",
+        )
+        .unwrap();
+    assert_eq!(
+        snapshot.read().unwrap().as_deref(),
+        Some(b"caller-authenticated-pending".as_slice())
+    );
+    assert!(!pending.exists());
+}
+
 struct SealedFixture {
     keys: Dir,
     wal: Dir,

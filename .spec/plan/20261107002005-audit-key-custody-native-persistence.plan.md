@@ -100,6 +100,15 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Runtime accepted the audit-owned trusted native snapshot boundary for R07/R10.
+Source exports TrustedSnapshot open/read/inspect/replace/exact promote_pending,
+reusing the lifetime lock, native privacy checks, atomic transaction and explicit
+durability. Shared PrivateState gained an instance byte limit; existing consumers
+keep4MiB. Runtime owns full typed candidate/committed payload and authenticated
+WAL commit/revision/epoch/apply semantics. One additional actual-file test is
+authored; new source compilation/Clippy/native/product execution remain not_run.
+The prior7pure/static check does not qualify this later storage delta.
+
 2026-11-07: source complete and root-owned Cargo dependencies integrated. Actual
 workspace locked audit suite passed on Windows49/Linux47; custody cases10/8,
 with two separately invoked subprocess helper entrypoints excluded from totals.

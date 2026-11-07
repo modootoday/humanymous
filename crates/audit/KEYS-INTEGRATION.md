@@ -32,6 +32,18 @@ Old local-only grants never prove external retention.
 
 ## Retained control source checkpoint
 
+Newer unqualified source adds `storage::{TrustedSnapshot,SnapshotInspection}`
+for runtime operational state: open(path,owner,namespace,max_bytes), read,
+inspect, replace and promote_pending(exact_committed,exact_pending). Shared
+PrivateState now enforces the per-instance1..4MiB bound before allocation and
+write; existing owners retain their4MiB default. Pending always requires explicit
+caller-authenticated selection and equality checks under the lifetime lock.
+No reset/discard API exists. This is native privacy/atomicity only: runtime owns
+typed state, semantic candidate lifecycle, revision/CAS, signed WAL digest and
+audit-before-apply. Native .pending and semantic candidate are distinct states.
+One additional hosted-only bound/lock/recovery test is authored; this newer
+source has not compiled or executed and does not inherit the prior7pure green.
+
 `ControlAuthority::authorize_retained_action` accepts an `ApprovalRequest`, a
 trusted `ControlAnchorRetainer` and explicit `RetentionRequirement`. It requires
 the exact independent current anchor and provisioned scope/public identity,

@@ -269,6 +269,26 @@ organizational independence. Windows namespace persistence uncertainty must be
 reported and cannot satisfy a FileAndDirectory requirement. Hosted file, ACL,
 crash, process and product qualification remain required.
 
+### Trusted native snapshot boundary
+
+Runtime operational state uses an audit-owned TrustedSnapshot native primitive,
+reusing PrivateState privacy checks, lifetime lock and pending replacement. The
+trusted caller provisions absolute directory, owner, namespace and payload byte
+limit (1..4MiB). Reads and writes enforce that instance limit, not just a global
+allocation bound. read refuses pending; inspect exposes committed/pending bytes
+for explicit recovery. replace writes/syncs pending then promotes with native
+durability. promote_pending requires exact caller-authenticated committed and
+pending byte expectations, compared under the lifetime lock. There is no discard,
+reset, inferred freshness or implicit pending promotion.
+
+This is trusted native atomicity, not a signed event, authorization, CAS revision
+policy or audit commit. Runtime owns the full typed candidate/committed payload,
+domain-separated event digest, authenticated WAL lookup, semantic revision checks,
+audit-before-apply and session epoch invalidation. Native pending bytes are a
+separate I/O interruption state from a typed operational candidate. Missing or
+ambiguous authenticated commit state fails closed. Generic storage must not
+invent recovery authorization or reuse frozen record reason/risk for payloads.
+
 ### Prepared rotation binding
 
 Prepare rotation under the existing exclusive custody guard: authenticate the

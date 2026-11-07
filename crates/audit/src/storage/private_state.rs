@@ -13,9 +13,21 @@ pub(crate) struct PrivateState {
     namespace: String,
     _lock: ExclusiveFile,
     poisoned: bool,
+    limit: u64,
 }
 impl PrivateState {
     pub(crate) fn open(dir: &Path, owner: Owner, namespace: &str) -> io::Result<Self> {
+        Self::open_bounded(dir, owner, namespace, LIMIT)
+    }
+    pub(crate) fn open_bounded(
+        dir: &Path,
+        owner: Owner,
+        namespace: &str,
+        limit: u64,
+    ) -> io::Result<Self> {
+        if limit == 0 || limit > LIMIT {
+            return Err(io::Error::other("invalid private state byte limit"));
+        }
         if !dir.is_absolute()
             || namespace.is_empty()
             || namespace.len() > 64
@@ -42,6 +54,7 @@ impl PrivateState {
             namespace: namespace.into(),
             _lock: ExclusiveFile::acquire(file)?,
             poisoned: false,
+            limit,
         })
     }
     fn path(&self, suffix: &str) -> PathBuf {
@@ -63,12 +76,12 @@ impl PrivateState {
             Err(error) => return Err(error),
         };
         permissions::file(&file, &self.owner)?;
-        if file.metadata()?.len() > LIMIT {
+        if file.metadata()?.len() > self.limit {
             return Err(io::Error::other("private state size limit"));
         }
         let mut bytes = Vec::new();
-        file.take(LIMIT + 1).read_to_end(&mut bytes)?;
-        if bytes.len() as u64 > LIMIT {
+        file.take(self.limit + 1).read_to_end(&mut bytes)?;
+        if bytes.len() as u64 > self.limit {
             return Err(io::Error::other("private state size limit"));
         }
         Ok(Some(bytes))
@@ -87,7 +100,7 @@ impl PrivateState {
     }
     pub(crate) fn commit(&mut self, bytes: &[u8]) -> io::Result<Durability> {
         self.healthy()?;
-        if bytes.is_empty() || bytes.len() as u64 > LIMIT {
+        if bytes.is_empty() || bytes.len() as u64 > self.limit {
             return Err(io::Error::other("private state size limit"));
         }
         if self.pending()?.is_some() {

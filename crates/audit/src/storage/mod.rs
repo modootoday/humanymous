@@ -8,6 +8,10 @@ pub(crate) use exclusive_file::ExclusiveFile;
 mod private_state;
 #[cfg(any(unix, windows))]
 pub(crate) use private_state::PrivateState;
+#[cfg(any(unix, windows))]
+mod trusted_snapshot;
+#[cfg(any(unix, windows))]
+pub use trusted_snapshot::{SnapshotInspection, TrustedSnapshot};
 #[cfg(windows)]
 pub mod permissions;
 mod recovery;
