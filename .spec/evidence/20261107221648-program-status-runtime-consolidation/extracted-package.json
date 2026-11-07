@@ -168,5 +168,22 @@
       "sha256": "46893a777b3c549b3e0cab9091895668d09efe5da593038fbf43e41efa54be4a",
       "bytes": 684
     }
-  ]
+  ],
+  "independent_resolution": {
+    "same_as_workspace_lock": false,
+    "external_records": 154,
+    "isolated_lock_sha256": "a9274a933c9b321bc178599bad85bf8a10489009a128c2936d95d61dced931fa",
+    "main_lock_sha256": "5d3e1453ab8c3cdba1d22443effc045740e629153784d0c3b4ac62b7231cbf00",
+    "versions_absent_from_main_lock": [
+      {
+        "name": "syn",
+        "isolated_version": "2.0.119",
+        "main_versions": [
+          "2.0.117",
+          "3.0.9"
+        ]
+      }
+    ],
+    "meaning": "Source-only packaging excluded lockfile; isolated offline resolution is a distinct dependency tuple, not workspace-lock equivalence or a performance comparison."
+  }
 }

@@ -8,7 +8,7 @@ rel:
   depends_on: [sot:root/structural-development, sot:root/program-roadmap, evidence:root/20261107205600]
 files:
   - {path: authority-pilot-fix.json, sha256: 367a6c252055d33043e258558a69a514a80e81a61973b3bb0e016cea3d078c32, bytes: 1845, store: repo}
-  - {path: extracted-package.json, sha256: b54623407e3bf512e4916a81f19a82dafa6d98fa0bd99878f9f794f9966a76a1, bytes: 5756, store: repo}
+  - {path: extracted-package.json, sha256: 93e0caec68b715d0d00a61bba535617873be408f747806aa595631f3a2b75463, bytes: 6424, store: repo}
   - {path: privacy.json, sha256: 2fc4ad88f40c0530b65a0392d0812a9216872549e64d619eb965f56a024c4cc1, bytes: 11791, store: repo}
   - {path: summary.json, sha256: f2996234368eeaa11be993afac5784478f9bf3585c24b0c27fa6dac4a4f174ff, bytes: 4112, store: repo}
   - {path: file-map.json, sha256: 248b98ef304d2e569c17e5eb10571bc25ac2b085eb56b95f169e72c6eb36e1eb, bytes: 73114, store: repo}
