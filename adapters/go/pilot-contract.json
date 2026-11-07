@@ -10,12 +10,14 @@
     "entrypoint": "cmd/go-httpbin/main.go",
     "entrypoint_sha256": "54c5f54bec490a16481bec0ababc841df7aef5fa37e10a4e71f7b74df0cdfd3e",
     "build_package": "./cmd/go-httpbin",
-    "build_args": ["build", "-mod=readonly", "-trimpath", "-o", "/out/go-httpbin", "./cmd/go-httpbin"],
+    "build_args": ["build", "-mod=readonly", "-trimpath", "-buildvcs=false", "-o", "/out/go-httpbin", "./cmd/go-httpbin"],
     "argv": ["--host", "127.0.0.1", "--port", "18081", "--log-level", "OFF", "--max-body-size", "65536"],
     "backend_port": 18081,
     "full_fixture_digest": null,
     "go_toolchain_image_digest": "sha256:87c65a688975c0b1d4585d204874c45ca78354670e3a5f11368c5a492303d696",
     "compiler_input_contract": "adapters/go/compiler-input.json",
+    "hosted_build_recipe": "adapters/go/Dockerfile.fixture",
+    "build_context": "verified untouched external fixture checkout at exact revision; never project root",
     "runtime_image_digest": null
   },
   "composition": {

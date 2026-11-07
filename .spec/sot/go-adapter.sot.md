@@ -103,6 +103,14 @@ so legacy1.25 is insufficient. Metadata selection is not image execution or
 signature qualification. Full fixture/runtime image hashes stay null until the
 hosted owner measures them; this file cannot qualify itself.
 
+adapters/go/Dockerfile.fixture is a hosted-only untouched-upstream build recipe.
+Its build context is the verified external fixture checkout, never this project.
+It uses the selected exact compiler digest, CGO disabled and GOTOOLCHAIN=local,
+and produces a static Linuxamd64 binary in an export stage. Exec-form Go build
+authors no Go wrapper or shell script. The lab owns network-none build invocation,
+artifact hashing, final witness/backend image, separate namespaces and cleanup.
+No local Docker build or runnable image qualification follows from this recipe.
+
 Official contracts: https://pkg.go.dev/net/http ; https://github.com/go-chi/chi ;
 https://gin-gonic.com/en/docs/ ; https://echo.labstack.com/ ;
 https://docs.gofiber.io/next/extra/internal/ ;

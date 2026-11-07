@@ -1,0 +1,13 @@
+# Hosted only. Context: verified untouched go-httpbin checkout8b1bc1433750404fefd2a419cda3720d3088701b.
+# Invoke the build with network disabled after the pinned compiler is prefetched.
+# This exports a binary; product-lab owns the final isolated backend/witness image.
+FROM --platform=linux/amd64 docker.io/library/golang:1.26.10-alpine3.24@sha256:87c65a688975c0b1d4585d204874c45ca78354670e3a5f11368c5a492303d696 AS compiler
+WORKDIR /fixture
+ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOOS=linux GOARCH=amd64
+COPY . .
+RUN ["go", "build", "-mod=readonly", "-trimpath", "-buildvcs=false", "-o", "/out/go-httpbin", "./cmd/go-httpbin"]
+
+FROM scratch AS export
+LABEL org.opencontainers.image.source="https://github.com/mccutchen/go-httpbin"
+LABEL org.opencontainers.image.revision="8b1bc1433750404fefd2a419cda3720d3088701b"
+COPY --from=compiler /out/go-httpbin /go-httpbin

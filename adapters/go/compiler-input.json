@@ -15,7 +15,7 @@
   "metadata_source": "https://hub.docker.com/v2/repositories/library/golang/tags/1.26.10-alpine3.24",
   "metadata_updated_at": "2026-11-06T01:23:01.288042Z",
   "build_environment": {"CGO_ENABLED":"0","GOTOOLCHAIN":"local","GOOS":"linux","GOARCH":"amd64"},
-  "build_arguments": ["build","-mod=readonly","-trimpath","-o","/out/go-httpbin","./cmd/go-httpbin"],
+  "build_arguments": ["build","-mod=readonly","-trimpath","-buildvcs=false","-o","/out/go-httpbin","./cmd/go-httpbin"],
   "verification_required": ["Root admits compiler input to hosted batch", "Verify index and selected platform manifest digest before build", "Record actual go version and binary SHA256", "Hash complete untouched upstream checkout and dependency closure", "Run only on standard free hosted runner", "Retain failure evidence; metadata selection is not execution or image signature attestation"],
   "legacy_go_1_25_reuse": "rejected: below fixture go.mod minimum1.26.0"
 }
