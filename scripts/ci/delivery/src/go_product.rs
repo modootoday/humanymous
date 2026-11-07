@@ -1,7 +1,7 @@
 //! Consume the lab's sole eight-case projection; never reimplement Go semantics.
 use crate::{
     Result, command, evidence,
-    lab_receipts::{digest, fields},
+    lab_receipts::{digest, fields, hosted_context},
     read_json, require, source, write_json,
 };
 use serde_json::{Value, json};
@@ -32,19 +32,6 @@ fn requirement(value: &Value) -> Result<Value> {
         "Go bounded requirement mismatch",
     )?;
     Ok(value.clone())
-}
-fn context() -> Result<Value> {
-    let number = |name: &str| -> Result<u64> {
-        let value = std::env::var(name)
-            .map_err(|e| e.to_string())?
-            .parse::<u64>()
-            .map_err(|e| e.to_string())?;
-        require(value > 0, "Go hosted run number missing")?;
-        Ok(value)
-    };
-    Ok(
-        json!({"kind":"github-hosted-linux","hosted_qualification_admitted":true,"repository":std::env::var("GITHUB_REPOSITORY").map_err(|e|e.to_string())?,"run_id":number("GITHUB_RUN_ID")?,"run_attempt":number("GITHUB_RUN_ATTEMPT")?,"job":std::env::var("GITHUB_JOB").map_err(|e|e.to_string())?,"workflow_sha":std::env::var("GITHUB_WORKFLOW_SHA").map_err(|e|e.to_string())?,"authenticated_provenance":false,"requires_external_job_verification":true}),
-    )
 }
 fn validate(
     value: &Value,
@@ -263,7 +250,7 @@ pub fn run(root: &Path) -> Result<()> {
             before["source_sha"].as_str().ok_or("Go source missing")?,
             &source::file(&dir.join("source-manifest.json"))?,
             &source::file(&raw)?,
-            &context()?,
+            &hosted_context()?,
         )?;
         summary["receipt"] = receipt;
         summary["receipt_valid"] = json!(true);

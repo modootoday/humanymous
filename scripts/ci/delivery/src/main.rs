@@ -11,6 +11,7 @@ mod image_scan;
 mod lab_diagnostics;
 mod lab_receipts;
 mod metrics;
+mod mount_probe;
 mod nginx;
 mod package;
 mod pages;
@@ -83,6 +84,7 @@ fn run() -> Result<()> {
         "image-scan" => image_scan::run(&root, argument(1)?),
         "pages-evidence" => pages::run(&root, argument(1)?),
         "go-product" => go_product::run(&root),
+        "mount-probe" => mount_probe::run(&root),
         "native-artifacts" => package::native_artifacts(&root),
         "node" => package::node(&root).map(|_| ()),
         "readiness" => registry::readiness(&root),

@@ -625,3 +625,24 @@ e159d7496cb8f6159d961be81398b375359943b40427c1d865800f87ccc6ffa9.
 Admission was 79.95 percent committed and 34,276,580 KiB free physical memory;
 jobs one/incremental zero used separate exclusive warm targets. A was returned.
 No CEF SDK, native GUI/process, actual capture5/header or Docker workload ran.
+
+Lab literal 1cba334e passed authoritative Windows20 unfiltered tests/Clippy and
+Unix lab/runtime actor all-target check/Clippy with 2399 source inputs unchanged;
+its evidence-only checkpoint a8145176 does not change the producer. The direct
+CI mount consumer and dedicated caller use its sole closed contract. Shared
+hosted run-context construction moved unchanged from Go into lab_receipts.
+The consumer independently hashes original ledger/manifest/recipe, compares the
+ledger image ID and single image inspection, recomputes public totals and
+requires exact scoped completion plus successful owned cleanup. A complete
+refusal remains diagnostic data with custody/full/release false. Four consumer
+tests and a workflow authorization regression are authored; no Docker probe
+has executed. Local validation requires the newly allocated C and exact freeze.
+
+Allocated C passed delivery74 unfiltered tests, strict all-target Clippy, current
+compiled workflow policy and actionlint with all exits zero. The 88-file consumer,
+sole-contract, recipe, workflow, image and root-input closure stayed unchanged.
+Admission was 81.34 percent committed and 33,495,608 KiB free physical memory;
+jobs one/incremental zero used the exclusive warm delivery target. C was returned.
+Private validation index SHA256 is
+de4ed632dd3d2383822be41b11969508d155b4f239b1911946e62a81e0d749fb.
+This proves consumer/accounting/policy behavior, not actual mount observations.

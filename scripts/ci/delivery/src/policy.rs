@@ -211,14 +211,23 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 && step.get("if").is_none()
         })), "native target must pass only through the quoted environment and closed Rust dispatch")?;
     }
-    if matches!(name, "go-validation.yml" | "browser-product-validation.yml") {
+    if matches!(
+        name,
+        "go-validation.yml" | "browser-product-validation.yml" | "mount-probe-validation.yml"
+    ) {
         let browser = name == "browser-product-validation.yml";
-        let branch = if browser {
+        let mount = name == "mount-probe-validation.yml";
+        let product = if mount { "probe" } else { "product" };
+        let branch = if mount {
+            "codex/mount-probe-validation"
+        } else if browser {
             "codex/browser-product-validation"
         } else {
             "codex/go-validation"
         };
-        let product_command = if browser {
+        let product_command = if mount {
+            "cargo run --locked -p humanymous-delivery -- mount-probe"
+        } else if browser {
             "cargo run --locked -p humanymous-delivery -- pilot browser-product"
         } else {
             "cargo run --locked -p humanymous-delivery -- go-product"
@@ -227,16 +236,16 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             strings(&doc["on"]["push"]["branches"]) == [branch.into()].into()
                 && doc["on"].get("workflow_dispatch").is_some()
                 && jobs.len() == 2
-                && jobs["product"]["needs"] == "preflight"
-                && jobs["product"].get("if").is_none()
-                && jobs["product"].get("continue-on-error").is_none()
+                && jobs[product]["needs"] == "preflight"
+                && jobs[product].get("if").is_none()
+                && jobs[product].get("continue-on-error").is_none()
                 && jobs["preflight"]["runs-on"] == "ubuntu-24.04"
-                && jobs["product"]["runs-on"] == "ubuntu-24.04"
+                && jobs[product]["runs-on"] == "ubuntu-24.04"
                 && jobs["preflight"]["timeout-minutes"] == 25
-                && jobs["product"]["timeout-minutes"] == 60,
+                && jobs[product]["timeout-minutes"] == if mount { 45 } else { 60 },
             "product entrypoint must stay bounded hosted and preflight gated",
         )?;
-        for job in ["preflight", "product"] {
+        for job in ["preflight", product] {
             require(
                 jobs[job]["steps"].as_array().is_some_and(|steps| {
                     steps.iter().any(|step| {
@@ -251,14 +260,21 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         let preflight = jobs["preflight"]["steps"]
             .as_array()
             .ok_or("Go preflight steps absent")?;
-        for command in [
-            "cargo test --locked -p humanymous-go-adapter --lib -j1",
+        let mut commands = vec![
             "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1",
             "cargo test --locked -p humanymous-delivery -j1",
             "cargo check --locked -p humanymous-runtime-pilot --all-targets -j1",
-            "cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings",
+            if mount {
+                "cargo clippy --locked -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
+            } else {
+                "cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
+            },
             "cargo run --locked -p humanymous-delivery -- policy",
-        ] {
+        ];
+        if !mount {
+            commands.push("cargo test --locked -p humanymous-go-adapter --lib -j1");
+        }
+        for command in commands {
             require(
                 preflight.iter().any(|step| {
                     step["run"] == command
@@ -269,7 +285,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             )?;
         }
         require(
-            jobs["product"]["steps"].as_array().is_some_and(|steps| {
+            jobs[product]["steps"].as_array().is_some_and(|steps| {
                 steps
                     .iter()
                     .any(|step| step["run"] == product_command && step.get("if").is_none())
@@ -828,6 +844,7 @@ mod tests {
             "go-validation.yml",
             "browser-product-validation.yml",
             "component-validation.yml",
+            "mount-probe-validation.yml",
             "apache-validation.yml",
             "python-validation.yml",
             "dotnet-validation.yml",
@@ -847,6 +864,31 @@ mod tests {
             "collector-component.yml",
             Some("always() && vars.CI_COMPONENT_ARTIFACTS == 'true'")
         ));
+    }
+    #[test]
+    fn mount_diagnostic_cannot_bypass_preflight_or_mask_failure() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "mount-probe-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("mount-probe-validation.yml", &original).is_ok());
+        for mutation in 0..5 {
+            let mut changed = original.clone();
+            match mutation {
+                0 => changed["jobs"]["probe"]["needs"] = json!([]),
+                1 => {
+                    changed["jobs"]["probe"]["steps"][2]["run"] =
+                        json!("cargo run --locked -p humanymous-delivery -- mount-probe || true")
+                }
+                2 => changed["on"]["push"]["branches"] = json!(["codex/go-validation"]),
+                3 => changed["jobs"]["probe"]["timeout-minutes"] = Value::Null,
+                _ => changed["permissions"]["id-token"] = json!("write"),
+            }
+            assert!(document("mount-probe-validation.yml", &changed).is_err());
+        }
     }
     #[test]
     fn native_caller_rejects_open_inputs_and_success_masking() {

@@ -1184,3 +1184,16 @@ bound does not impose a new bound on temporary on-disk compiler log growth.
 Source drift is null when the existing final source check was not reached.
 Protocol fixtures, bootstrap rejection and actual process cases stay separate,
 and no diagnostic implies browser, GUI, AT or whole-runtime qualification.
+
+The dedicated mount diagnostic consumes only the lab's mount-probe contract and
+existing scoped CLI. CI independently binds this hosted run, source manifest,
+original private ledger, product recipe and observed image inspection. It checks
+closed fields, ordered role/surface/path identities and public count consistency
+without evaluating private UID, mode or custody predicates. Four complete
+observations, including observed refusals, may establish collection completion
+only. Owner exit zero, satisfied scoped requirement, zero infrastructure errors,
+unique successful owned cleanup and unchanged source are mandatory. Custody
+policy, whole product and release qualification remain false in every outcome.
+Missing/invalid observations keep collection incomplete. The original null-image
+receipt remains valid when no image or observation exists. The read-only bounded
+Ubuntu caller has no automatic uploads, remote cache writes or OIDC.

@@ -2,6 +2,25 @@
 use crate::{Result, require};
 use serde_json::{Value, json};
 
+pub(crate) fn hosted_context() -> Result<Value> {
+    let number = |name: &str| -> Result<u64> {
+        let value = std::env::var(name)
+            .map_err(|e| e.to_string())?
+            .parse::<u64>()
+            .map_err(|e| e.to_string())?;
+        require(value > 0, "hosted run number missing")?;
+        Ok(value)
+    };
+    Ok(
+        json!({"kind":"github-hosted-linux","hosted_qualification_admitted":true,
+        "repository":std::env::var("GITHUB_REPOSITORY").map_err(|e|e.to_string())?,
+        "run_id":number("GITHUB_RUN_ID")?,"run_attempt":number("GITHUB_RUN_ATTEMPT")?,
+        "job":std::env::var("GITHUB_JOB").map_err(|e|e.to_string())?,
+        "workflow_sha":std::env::var("GITHUB_WORKFLOW_SHA").map_err(|e|e.to_string())?,
+        "authenticated_provenance":false,"requires_external_job_verification":true}),
+    )
+}
+
 pub(crate) fn fields(value: &Value, names: &Value) -> Result<()> {
     let object = value.as_object().ok_or("receipt object absent")?;
     let names = names.as_array().ok_or("receipt field contract absent")?;
