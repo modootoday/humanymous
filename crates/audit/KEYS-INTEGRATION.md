@@ -1,15 +1,26 @@
 # Sealed key compatibility integration
 
+## Latest actual Windows qualification
+
+At owned source c09d6897, allocated local Windows nonadmin execution passed
+all-targets check/Clippy, reviewed10 pure tests and complete control_operations21,
+durable_witness13 and key_custody10 tests. Total44 native passes; exact ignored3
+excluded, zero failures/filtered/measured, one outer summary each. New retained
+state/erasure, live membership loss/rollback and lifetime timeout regressions,
+plus both bounded custody parents, actually passed. Recursive111-file closure
+has zero drift. Evidence:root/20261107095831. This does not qualify full audit,
+hosted OS matrix, protected profiles or product e2e; source-introduction NOT_RUN
+statements below are historical and superseded only for these exact cases.
+
 Latest source correction: verify_consumed now requires present authenticated
 actual native ledger bytes at the exact current anchor, then checks that body's
 membership. Legacy resume_erasure cannot rely on cached membership after live
-file loss/corruption/rollback. Existing native test extended, not yet executed.
+file loss/corruption/rollback. Extended native regression passed as recorded above.
 Independent freshness still requires the retained-control path.
 Evidence:root/20261107095443.
 
 The current root measured hybrid policy ends the benchmark quiet window.
-Latest audit source below remains NOT_RUN until an explicitly assigned local
-slot completes exact-source checking and native execution. Historical quiet
+Later changes require a new assigned slot and source-specific evidence. Historical quiet
 records are observation-time facts, not a continuing hosted-only restriction.
 Supported ordinary-user Windows/WSL validation is authorized by allocation;
 protected profiles and genuine hosted contracts retain their venue requirements.

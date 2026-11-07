@@ -1,0 +1,68 @@
+{
+  "schema": "humanymous.audit-native-observations/1",
+  "venue": "ordinary-user Windows local",
+  "toolchain": "Rust 1.99.1",
+  "profile": "default dev/test",
+  "jobs": 1,
+  "incremental": 0,
+  "testThreads": 1,
+  "closureFiles": 111,
+  "sourceDrift": 0,
+  "purePassed": 10,
+  "checkExit": 0,
+  "clippyExit": 0,
+  "nativePassed": 44,
+  "rawIgnored": 3,
+  "harnesses": [
+    {
+      "target": "control_operations",
+      "discovered": 21,
+      "passed": 21,
+      "failed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "measured": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "footerSeconds": 90.7,
+      "exit": 0,
+      "logSha256": "5c09701327fabed2f294b967ab297c62af81b25e6e4e99b3d9347a7114c4bb9f"
+    },
+    {
+      "target": "durable_witness",
+      "discovered": 14,
+      "passed": 13,
+      "failed": 0,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "child_witness_probe"
+      ],
+      "measured": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "footerSeconds": 9.75,
+      "exit": 0,
+      "logSha256": "94705c7e3a0f680db96fa39a96a139f5edd93385e8d679cc2c096110f0d4b02d"
+    },
+    {
+      "target": "key_custody",
+      "discovered": 12,
+      "passed": 10,
+      "failed": 0,
+      "rawIgnored": 2,
+      "ignoredNames": [
+        "child_interrupted_writer",
+        "child_lock_probe"
+      ],
+      "measured": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "footerSeconds": 45.62,
+      "exit": 0,
+      "logSha256": "3ad1493befa02b702f3893cc166eb25b48b712317b574f1fe55a7846568895e5"
+    }
+  ],
+  "qualification": "three audit targets only; not hosted/full workspace/product qualification",
+  "auditSourceCommit": "c09d6897b3ee3435792a74ffc9e2dae681a50ce7",
+  "sourceManifestSha256": "fc92f8daa205c6b0c195be4eb200d58c76edfcf98a5a91449688861de844b236"
+}

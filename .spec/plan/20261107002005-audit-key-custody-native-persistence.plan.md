@@ -102,6 +102,16 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Latest source c09d6897 qualified on allocated local Windows A: all-targets locked
+check and Clippy pass; reviewed10 pure pass; separately authorized complete
+control_operations21/durable_witness13/key_custody10 native passes, rawignored3
+excluded. Exact single outer summaries/zero failed/filtered/measured, both custody
+parents and stalled-startup case pass. Recursive111 files zero drift before and
+after, ordinary nonadmin token verified. All handles terminal/A returned. No
+SCM/accounts/network/Docker. Evidence:root/20261107095831, private raw95528.
+This supersedes source-only observations below only for those exact cases;
+backup target/full library/other OS/protected profiles/product e2e remain open.
+
 Live consumed-membership source correction: verify_consumed no longer discards
 optional native read bytes or trusts cached membership after file loss. Actual
 present bytes authenticate and match exact current anchor before membership;
