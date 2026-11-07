@@ -24,10 +24,10 @@
     "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
-  "current_source_executed_tests": 3,
-  "current_source_test_count_semantics": "Latest qualified immutable6c snapshot only: three shared boxed resource retention controls;61 filtered. Previous native HTTP/TLS/epoch scopes remain separate historical facts.",
-  "current_source_tests": "Immutable6c: three resource retention/failure/drop controls passed,0failed/0ignored/61filtered; no production native proof, actual bind/unseal/Offer/Ready or cleanup/JOIN executed.",
-  "current_source_clippy": "Immutable6c: all-target check/strict Clippy/fmt passed;2506snapshot/6576registry/14config/66compiler-targetlib/14selectedbuildenv unchanged.",
+  "current_source_executed_tests": 9,
+  "current_source_test_count_semantics": "Latest qualified404base+seven-file87f86d overlay (Runtime1dc correction): nine temporal L1 consumer units;64filtered. Not whole1dc workspace graph or production/provider-I/O qualification.",
+  "current_source_tests": "Temporal corrected source: nine private consumer bookkeeping tests passed,0failed/0ignored/64filtered incltwo Network-review regressions. Original404 not executed.",
+  "current_source_clippy": "Frozen corrected overlay: fmt FIRST/check/strictClippy passed;2703source/6576registry/14config/66compiler-targetlib/14selectedenv unchanged.",
   "actual_browser_join": "not_run",
   "actual_tls_serving": "six actual ordinary loopback TLS cases passed; allow-to-origin remains unqualified",
   "actual_unix_management_operator": "passed scoped ordinary-user native component, not independent deployment",
@@ -128,5 +128,11 @@
     "filtered": 61,
     "passed": 3,
     "production_cleanup_join_qualified": false
+  },
+  "temporal_corrected": {
+    "production_activation": false,
+    "summary": "temporal-corrected-validation-summary.json",
+    "filtered": 64,
+    "passed": 9
   }
 }

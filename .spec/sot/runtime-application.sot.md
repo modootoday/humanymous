@@ -1201,8 +1201,14 @@ persistent gaps, duplicate suppression, exact expansion equality, pure inspectio
 maintenance/warmup/eviction/scope preservation, interruption/abandonment and clock
 regression. They use controlled lower-call outcomes to test this adapter; they
 do not requalify the provider or execute capture/application effects. This slice
-is UNCOMPILED/NOT_RUN until allocated; actual L3 owner adoption and accepted legacy
-observation points remain required before any production activation.
+passed allocated Windows fmt/check/strict Clippy and nine selected tests with
+0failed/0ignored/64filtered on immutable404 base plus corrected seven-file overlay
+87f86d07ff7df1ecee3842e545a1e020807ebca9fbbe25c7015db98ff6e4ebe9
+(Runtime correction1dc6eb40; not that commit's entire workspace graph).
+All2703 snapshot files,6576 registry files,14 ancestor config candidates,
+66 compiler/target-lib files and14 selected environment hashes stayed unchanged.
+Actual L3 owner adoption and accepted legacy observation points remain required
+before any production activation; this does not execute qualified provider I/O.
 
 Independent Network review found two gaps in original404dc185 before execution:
 configure-only ConfigurationEffect was discarded, and catching a provider panic

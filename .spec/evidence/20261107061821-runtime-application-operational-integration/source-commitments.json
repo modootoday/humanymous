@@ -19,21 +19,57 @@
   },
   {
     "path": "crates/runtime/qualification-contract.json",
-    "bytes": 7129,
-    "sha256": "e86fa979dcab27678cf2bb6b5da471a21d3cef3d730ce546468cf7264e42881e",
-    "git_blob": "a234ce9d459191d5e9c185937030fd7f1d95ddb5"
+    "bytes": 8188,
+    "sha256": "e2177bc2525776c10a58fbf05a15a3242a286b24b6de3139c0cca8d7156ea7d8",
+    "git_blob": "2236dcc4fd3c5db10687ca485ea7170e7d10388b"
   },
   {
     "path": "crates/runtime/src/application.rs",
-    "bytes": 25098,
-    "sha256": "3f48880645334ba59a6ddeae648d63da3ef94ac46983e1b8a6b5061116508554",
-    "git_blob": "0359a4166536f80e1bbc8ae9c2d2cae8c7131a26"
+    "bytes": 25200,
+    "sha256": "be295af77c51a83fb94a5fd453b9df2d99db7a60b97d35c5b02ec3dcdbf9b212",
+    "git_blob": "f23aab30bb19982bfdcdadc562bb2b8688ae38a2"
   },
   {
     "path": "crates/runtime/src/application/settings.rs",
     "bytes": 5494,
     "sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61",
     "git_blob": "19794fe1634699c6f731fcc4da4c2501511f7da8"
+  },
+  {
+    "path": "crates/runtime/src/application/temporal.rs",
+    "bytes": 3026,
+    "sha256": "00233744c82aa75130e180f83a062a53234ff92c64fc0174b38e3395cc02a797",
+    "git_blob": "000bc4da74b93bccabfc69bd10ca0fe982e8d736"
+  },
+  {
+    "path": "crates/runtime/src/application/temporal/operations.rs",
+    "bytes": 4201,
+    "sha256": "7f059b2f80c458d8919413187276cff9b61b3087de4ac90ebdecddf71787d165",
+    "git_blob": "7d6b86ef48c90aa10deedc9c754ccff1d4c46cf7"
+  },
+  {
+    "path": "crates/runtime/src/application/temporal/progress.rs",
+    "bytes": 6012,
+    "sha256": "ca2be76059fa1bb3125c3882c040cced76fee83d89737c363f143a27871b4138",
+    "git_blob": "0e7bb10aca5b9a5198abe07b4eec26968fa367c9"
+  },
+  {
+    "path": "crates/runtime/src/application/temporal/tests.rs",
+    "bytes": 547,
+    "sha256": "ba9b66237c77e77e2919457790b9839e2a0b28754918204c4005eaadfb58db5c",
+    "git_blob": "3e9a81af5d71e112669b8493e7203e52e4831e03"
+  },
+  {
+    "path": "crates/runtime/src/application/temporal/tests/categories.rs",
+    "bytes": 5838,
+    "sha256": "0493838ef6f7fa852a79f6447e8ea24dd810d593088d8ef5ca01294d845a6166",
+    "git_blob": "b933667b51a7bd8cc553644ff871ca67a25b2b63"
+  },
+  {
+    "path": "crates/runtime/src/application/temporal/tests/continuity.rs",
+    "bytes": 4503,
+    "sha256": "38492b2e74240a11a07306c5b5e83ebf5fbdbff209c0c12bc6e38373147a7029",
+    "git_blob": "c78042395169c20df0c7b150e70a053fa199d0fc"
   },
   {
     "path": "crates/runtime/src/application/tls.rs",

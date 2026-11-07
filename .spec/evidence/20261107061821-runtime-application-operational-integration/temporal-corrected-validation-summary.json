@@ -1,0 +1,186 @@
+{
+  "base_commit": "404dc185e929f720fef8addcf273a7cb9993b44b",
+  "base_archive_sha256": "01aeb8807ffd81468471327ee646a3c05565b5768dea7c8e126688646a30cb6d",
+  "runtime_correction_commit": "1dc6eb40546d48c97cc9177f0b826509c5c4a902",
+  "overlay_sha256": "87f86d07ff7df1ecee3842e545a1e020807ebca9fbbe25c7015db98ff6e4ebe9",
+  "whole_correction_commit_graph_qualified": false,
+  "network_provider_checkpoint": "306eedc8",
+  "scope": "Windows private cfg(test) L1 consumer bookkeeping with controlled typed provider outcomes; no production serving or provider-I/O qualification",
+  "memory_admission": {
+    "commit_percent": 82,
+    "free_gib": 31.96
+  },
+  "jobs": 1,
+  "incremental": false,
+  "locked": true,
+  "offline": true,
+  "fmt_first_exit": 0,
+  "check_exit": 0,
+  "check_seconds": 5.25,
+  "clippy_deny_warnings_exit": 0,
+  "clippy_seconds": 4.95,
+  "library_listed": 73,
+  "library_inventory_exact": true,
+  "actual_session": 45146,
+  "actual_exit": 0,
+  "selector": "application::temporal::tests::",
+  "executed": 9,
+  "passed": 9,
+  "failed": 0,
+  "ignored": 0,
+  "measured": 0,
+  "filtered": 64,
+  "seconds": 0.0,
+  "test_names": [
+    "application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
+    "application::temporal::tests::categories::maintenance_and_warmup_commit_but_never_upgrade_scope_or_erase_loss",
+    "application::temporal::tests::categories::missing_key_noops_never_become_committed_normal_observations",
+    "application::temporal::tests::categories::pure_inspections_preserve_absence_and_unqualified_history_without_mutation",
+    "application::temporal::tests::continuity::caught_panic_with_surviving_frame_cannot_finish_pending_as_success",
+    "application::temporal::tests::continuity::duplicate_operation_is_refused_before_lower_callback_runs_again",
+    "application::temporal::tests::continuity::expansion_equality_clears_only_expansion_not_unrelated_latched_loss",
+    "application::temporal::tests::continuity::interrupted_or_abandoned_progress_and_clock_regression_remain_explicit",
+    "application::temporal::tests::continuity::later_refusal_preserves_prior_commit_and_gap_survives_success"
+  ],
+  "original_404_executed": false,
+  "independent_review_fixes": [
+    "configuration-only incomplete gap retained without invented deadline",
+    "caught panic with surviving frame cannot finish Pending as success"
+  ],
+  "first_format_failure": {
+    "retry_exit": 0,
+    "os_error": 1224,
+    "foreign_process_terminated": false,
+    "exit_code": 1
+  },
+  "snapshot_files": 2703,
+  "snapshot_path_content_drift": 0,
+  "registry_packages": 125,
+  "registry_files": 6576,
+  "registry_path_content_drift": 0,
+  "ancestor_config_candidates": 14,
+  "ancestor_config_drift": 0,
+  "compiler_and_targetlib_files": 66,
+  "compiler_and_targetlib_drift": 0,
+  "selected_environment_candidates": 14,
+  "selected_environment_hash_drift": 0,
+  "owned_runtime_processes_after": 0,
+  "actual_provider_io_executed": false,
+  "production_activation": false,
+  "scoring_changed": false,
+  "fleet_readiness_qualified": false,
+  "full_runtime_qualified": false,
+  "full_product_qualified": false,
+  "raw_private_artifacts": [
+    {
+      "name": "temporal-corrected-actual-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "temporal-corrected-actual.log",
+      "bytes": 1426,
+      "sha256": "84cf05b78e477d3e2fb85aa8110bea092edb3400ab08f055b752dc777e7d5d0e"
+    },
+    {
+      "name": "temporal-corrected-after.json",
+      "bytes": 437399,
+      "sha256": "0f6f9d00ab94d6858c3c8ba02c4f73a7aa0edf651e76fd08bc965ad7f6b72a7d"
+    },
+    {
+      "name": "temporal-corrected-before.json",
+      "bytes": 437399,
+      "sha256": "0f6f9d00ab94d6858c3c8ba02c4f73a7aa0edf651e76fd08bc965ad7f6b72a7d"
+    },
+    {
+      "name": "temporal-corrected-build-scope-before.json",
+      "bytes": 3952,
+      "sha256": "92a5b1d072eb91df3825b78ecd5f66fbd5afcbd6962cebe723a10cb13a5ddb76"
+    },
+    {
+      "name": "temporal-corrected-cargo-metadata.json",
+      "bytes": 2424969,
+      "sha256": "38072acb007d54be279f97f6e9805d570bea3f7ee8032c2a8a2f79e55eee3d05"
+    },
+    {
+      "name": "temporal-corrected-check-exit.json",
+      "bytes": 22,
+      "sha256": "615b528c5c005c3fa1f565a5f58bb0f9fb327229716a5ea9a8143c5524daf9b8"
+    },
+    {
+      "name": "temporal-corrected-check.log",
+      "bytes": 2073,
+      "sha256": "809089481ee58f9eb40f702c7b1e5d2845596910bf6f6f03c60612506e61b26e"
+    },
+    {
+      "name": "temporal-corrected-clippy-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "temporal-corrected-clippy.log",
+      "bytes": 2126,
+      "sha256": "31ef8d72ad7e6b53a45331b8e623c05bf2aa2462044c496ace14c934537f9fa3"
+    },
+    {
+      "name": "temporal-corrected-closure.json",
+      "bytes": 3866,
+      "sha256": "daa2151ed110f4dda1ff214e462adb62428675582a26d6b6a4483555f6b8d713"
+    },
+    {
+      "name": "temporal-corrected-fmt-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "temporal-corrected-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "temporal-corrected-format.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "temporal-corrected-list.log",
+      "bytes": 8922,
+      "sha256": "bc0c8c64d4eb0818adde92a4a71d036a35347e5053e647011e9b34511e415367"
+    },
+    {
+      "name": "temporal-corrected-overlay.json",
+      "bytes": 1087,
+      "sha256": "87f86d07ff7df1ecee3842e545a1e020807ebca9fbbe25c7015db98ff6e4ebe9"
+    },
+    {
+      "name": "temporal-corrected-registry-after.json",
+      "bytes": 2075941,
+      "sha256": "631540211a340237c66b4bf6950a52bb3fae5aa5bf604b120350f590fcec7086"
+    },
+    {
+      "name": "temporal-corrected-registry-before.json",
+      "bytes": 2075941,
+      "sha256": "631540211a340237c66b4bf6950a52bb3fae5aa5bf604b120350f590fcec7086"
+    },
+    {
+      "name": "temporal-corrected-source.json",
+      "bytes": 400,
+      "sha256": "160ed23f064b1f18051a3da176f1aedd8ea7aaf56139af7b5a936570456dc817"
+    },
+    {
+      "name": "temporal-corrected-tools-after.json",
+      "bytes": 15876,
+      "sha256": "ab32bf5a1d67d6d48bcac3af714c81f0d4acff6b541035f83e53721b832b5ef0"
+    },
+    {
+      "name": "temporal-corrected-tools-before.json",
+      "bytes": 15876,
+      "sha256": "ab32bf5a1d67d6d48bcac3af714c81f0d4acff6b541035f83e53721b832b5ef0"
+    },
+    {
+      "name": "temporal-404-review-format-failure.json",
+      "bytes": 162,
+      "sha256": "db7106700dac783aab2d196b5dc2d27efbe8922c2aff85dbc8157f40d7fa964c"
+    }
+  ]
+}

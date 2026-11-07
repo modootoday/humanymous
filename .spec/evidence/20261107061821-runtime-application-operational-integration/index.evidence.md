@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T13:45:47Z
+updated: 2026-11-07T15:47:31Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -18,8 +18,9 @@ files:
   - {path: gate-30d85855-validation-summary.json, sha256: f12504258f1c308c2814fbdb41613b0b4cd916a41baf2da57a5abc4274f15db3, bytes: 3231, store: repo}
   - {path: http-f8e04e33-validation-summary.json, sha256: cdbe2f3abc502059dd739ab3c4e07c876bc59cdee4f3118029345f74019d51ff, bytes: 5217, store: repo}
   - {path: retained-6c02bd22-validation-summary.json, sha256: 576d484a1958f462cec38fa87cd2d1d7cd8454c675d755ce8ef99709412a184d, bytes: 4898, store: repo}
-  - {path: status.json, sha256: f93a9828c030bd7164348ab749525836678d86b26241419d583eabb92537a6ee, bytes: 5769, store: repo}
-  - {path: source-commitments.json, sha256: f358edbaa99b5af4bf96914eb163040dcfff26ce9fb13582a3b1be03028bd121, bytes: 11315, store: repo}
+  - {path: temporal-corrected-validation-summary.json, sha256: 1edb7d11e5b146ab2bc62dfdc3f6d672e780951c18f184054189c09a3f9fbce5, bytes: 6887, store: repo}
+  - {path: status.json, sha256: b33ec2bf6cb2b651f94326edb62a3a33174d7527e3a2c17e31c507f60ee82106, bytes: 5929, store: repo}
+  - {path: source-commitments.json, sha256: cf1266bea9962fb2c0c30f5209785030738a2e052a29cd745802ae5583368adb, bytes: 12736, store: repo}
 ---
 
 # Runtime application operational integration
@@ -27,6 +28,16 @@ files:
 ## What was measured
 
 Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Corrected temporal L1 consumer source1dc6eb40 passed fmt FIRST/check/strict Clippy
+and nine selected units (64filtered) on404 base plus exact87f86d07 overlay, not
+the entire1dc workspace graph. Original404 was unexecuted; independent-review
+configure-only and surviving-frame panic bugs were fixed before this run.
+All2703 source files,6576 registry files,14 ancestor config candidates,
+66 compiler/target-lib files and14 selected environment hashes stayed unchanged.
+This private cfg(test) adapter grants no serving/provider/fleet capability.
+The first mapped-file1224 formatting failure and normal successful retry remain
+recorded. See temporal-corrected-validation-summary.json for exact input hashes.
+
 Immutable6c02bd22 passed all-target check/strict Clippy/fmt and three shared boxed
 resource retention/failure/drop controls (61filtered). Full2506 snapshot files,
 6576 registry files,14 ancestor config candidates,66 compiler/target-lib files
