@@ -32,9 +32,19 @@ files:
   - {path: manual-ce24-validation.json, sha256: 99eaf562b2650832c65b64fa434855bd8691dfe9d2a2f23208083c1a2c287c30, bytes: 3267, store: repo}
   - {path: viewport-source-candidate.json, sha256: 68cd63b809798ceb681544a41b1409b60a331d97d1425ed5f97b9c0cecd73030, bytes: 2660, store: repo}
   - {path: gpu-boundary-research.json, sha256: 27221b26387ea3a29f5fcd6955447fcbb115688d883c42c510c356e131f848e4, bytes: 4048, store: repo}
+  - {path: structural-v0-handoff.json, sha256: 896ec6839f95f59535144540624f4813cf703ef5e49af2917cc41712e489a7d3, bytes: 21738, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
+
+## Accepted baseline v0 current-path handoff
+
+structural-v0-handoff.json inventories61 tracked Browser/native-cli paths at
+59f6aa2d with raw SHA256 and canonical Git blobs, zero canonical drift and zero
+owned dirty source files. No owned execution/target lease or path move is active.
+The plan records ABI/unsafe/visibility/include/provisioning/CLI hazards and required
+tests for root's later Browser-last slice. No packages, manifests, imports or refs
+were moved/renamed/synchronized. Historical proofs remain source-specific.
 
 ## UI-39 GPU boundary research without execution changes
 

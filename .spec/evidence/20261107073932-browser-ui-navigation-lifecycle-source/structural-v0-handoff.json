@@ -1,0 +1,474 @@
+{
+  "baseline_v0": "accepted eight-public-package design; root sequences migration, Browser last",
+  "source_observed": "59f6aa2d8b11c5d9049efb05eb3eaf51e970b7cc",
+  "files": [
+    {
+      "path": "crates/browser/Cargo.toml",
+      "working_sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1",
+      "git_blob": "e0978526b59857d94373773c00ad4679f7293ab1",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/GPU-BOUNDARY.md",
+      "working_sha256": "e32aa6507b8f8d3d7bdffc669a082bcb8437314728d121971eefdd4af8b4f2e5",
+      "git_blob": "6a87b9aeff3a8305e1032bbbc7383468499ea76c",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/INTEGRATION.md",
+      "working_sha256": "cd1dcd71a2b3f1f231a73aeaa991188b5501cc6f0dac7eddfb1b9c2bd316d9f2",
+      "git_blob": "758353129983643551509758d707244d2c0df38a",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/NATIVE-QUALIFICATION.md",
+      "working_sha256": "20b7ca449133f2eb7d018348e284a173f32b15c1a97c985a5f83ae82025c48fb",
+      "git_blob": "6b750f1d9fba0d354bbd78c4c9f02e277df31496",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/Cargo.toml",
+      "working_sha256": "5f52293d6ddfc2fcbb9d29c8a7d27bb9a3f1340a42b08a92ffbc4ec74c4f303a",
+      "git_blob": "dcbcf65949778c70a0b4b9e844bb5ec4e5a4f02d",
+      "canonical_matches_base": true,
+      "writer": "root_graph_owner"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/lib.rs",
+      "working_sha256": "41450a30601621cf922a2c2af0339328f8494a5e295b2995a42072c020e813a9",
+      "git_blob": "790d14b8fd67d7d4a4e06deb50224867a752cfe1",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/negative_pilot.rs",
+      "working_sha256": "614230683c879f900ebe2151d447a6ad4d1a612b4f27aac4775a65047f4504e2",
+      "git_blob": "9e3dd248ea13a28fc2b37d0d98bbf686ed54333c",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/renderer_probe.rs",
+      "working_sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0",
+      "git_blob": "4bca5994b7de41f5c7ee21f2e6af9994661bb047",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/Cargo.toml",
+      "working_sha256": "5ef4a7183cfa2a363f58ef073a650372019373f7415ff617f1f605a94a38bd34",
+      "git_blob": "c9bf11fcb7601aadb748aa77a51e41737e3f7489",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/pilot-contract.json",
+      "working_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "git_blob": "4a134d4f7b613c4bd182c95a3062b2677028d1fc",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/browser_controls.rs",
+      "working_sha256": "16af27766824748334d44588c345d8433d496d1e7476320fa877623217f7bef6",
+      "git_blob": "41fbcf55901af9f19fd3452888ef2be1e80deaca",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/child.rs",
+      "working_sha256": "ac95b7177126926800920b610234fd763084c180c2bcc22bef06d3165e2c9d4e",
+      "git_blob": "c13f816d2591089f75d64aa23ee26d05a86e60af",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/fixture.rs",
+      "working_sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
+      "git_blob": "9d5554d499c680c33b4a488beee26c16ec836b35",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/history.rs",
+      "working_sha256": "25753d9ed23f5a05c6863c9aefb1253c2a6c488d58f3b77bb8743317d8e5e8b4",
+      "git_blob": "f11a6582b7398e9ac3dbd17e4b095236c4c4b15b",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host.rs",
+      "working_sha256": "9becbdb150ba3dbf0d8cc28cb10b07e371800d449430f81baf0369d5fc957de5",
+      "git_blob": "2965479e07145e5beafa8748d1c5734dec3c5ce4",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host_deadline.rs",
+      "working_sha256": "e767c77302141dd13d2aa8fc8b5f61360320a5c5ec1b38a51bf193c606b8442f",
+      "git_blob": "f200125cdf0d2b7879c28cbe3a1089b8f4239761",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host_report.rs",
+      "working_sha256": "9fe8d22f358901e2f407e4c94ea02e782b9d33fbf1070a26dc039d34c3b50bf3",
+      "git_blob": "c76def07168462f3d3da626fb18dee1830eaeab3",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/internal_probe.rs",
+      "working_sha256": "5143b3ea4acfb82546955815f1c1499493180e10af5c4a21638b30b953854464",
+      "git_blob": "6a260f04c78c439c4b9842bea7fd4cde334c36d3",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "working_sha256": "581da97524358f09fe4b54fd7c4586eb0f218bab59b7cc96939d2ade202668f9",
+      "git_blob": "bc345d5e6f342fb025b6f23871e1846f15462945",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/local_page.rs",
+      "working_sha256": "79f77f0528db58de405c38eed65bdf78ea790439164533c13a12abe0993fa837",
+      "git_blob": "c5061194076cbb37e239c1fc84f8a88db387eade",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/measured_input.rs",
+      "working_sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+      "git_blob": "52fa98ff6e575f06aa7f3be441ccdb773e9bc782",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/native.rs",
+      "working_sha256": "264e96a925795bdfbb550498b177b36ab2310c6d0521348f65302d7abd9de455",
+      "git_blob": "0f080f0b9486b7c79f0b5de29f77491360d8262d",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/navigation.rs",
+      "working_sha256": "1eee477375fb6545f2361cde57616097764ea7d3d407a7dcb7d8f68871e7aca1",
+      "git_blob": "dac2b026ce41abd09f7615592453d18e7101f5af",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_assertions.rs",
+      "working_sha256": "c7e1a07981a21ce04800ac5bb783af0b0b8d973bb4925e3656039cce469b0e8d",
+      "git_blob": "c97c5311075d4b4dc38f67026157996394479951",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_process.rs",
+      "working_sha256": "6df47121e6f94167932365f8f8587d5529f6ee74df560f3c9d4792c12917986d",
+      "git_blob": "6d36546bd1f3975ad90a4ed8c9662f6ca2f7931a",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/shell_timings.rs",
+      "working_sha256": "cbe36cd433d0aeb5c5cf36c6d91b1d8d7dae5f7a8763f0c91f482a9738fd2aff",
+      "git_blob": "b6f321c5ab02fe167eaeae5c179fe531c3b89821",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/tab_sessions.rs",
+      "working_sha256": "51abb4d4c0af2248c241c80c69462f6446844f43e2ef5be58095693c91f3fbe7",
+      "git_blob": "6c98368875b7c60e14a0ddc0d17d8feb8438e40d",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/tab_windows.rs",
+      "working_sha256": "d401721d23c546601889774de04e2effc517395d3d55fee073ef85d556b43598",
+      "git_blob": "1c3fc04a658d18c0f67e578adab84d4409599c7b",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/window_frame.rs",
+      "working_sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
+      "git_blob": "4101f1e040dfe76adf777b7eb31a558fde5c05ca",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/native/shared/scheme.rs",
+      "working_sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9",
+      "git_blob": "bf7180b94ad2409da1a293f83837140048ae83f9",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/frame_geometry.rs",
+      "working_sha256": "b93347578ecea469c6bb28a37a54eb34cefcd3d4c149fa2fa07e74bd171adc1e",
+      "git_blob": "1fb7f2f922a38e8a032e692792ddcea661817ef7",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/history.rs",
+      "working_sha256": "1a3c7e9fecf5e10a25dae82e4db2b0bb8af4fda1cd761a9bed774c5ebf3ff1fb",
+      "git_blob": "f83dcd1dc6aa3ae379cffe7aec6417a15648d257",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/icons.rs",
+      "working_sha256": "e70e4327f91d0197d0f0b30bf09f72ae2e56ffb061f15655868077ced167047a",
+      "git_blob": "ab09d54e4435b460ace96cc1c5877a4ed5ed1478",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/input.rs",
+      "working_sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c",
+      "git_blob": "f8beef47a8ba1d6dd7a3e6dd17f2f66115607d7f",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/internal_urls.rs",
+      "working_sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
+      "git_blob": "85b25d063920a406958672325580bcd78b420684",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/lib.rs",
+      "working_sha256": "57f5705b241f3e1a470fb2b49f544caeda48a75e38a623b7eec8a76d5d87ce0c",
+      "git_blob": "9fb707bafabc70ac0ef6c10ebe1fe74c3b4fa94c",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/lifecycle.rs",
+      "working_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "git_blob": "3aeb6ee318530cda39041580fb7f5f307bd1d40e",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/main.rs",
+      "working_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "git_blob": "f7336536376576f485f50f9c9986c5712000fcea",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/navigation.rs",
+      "working_sha256": "1e20f58edff8fadb9cd721c3ca763c638fc61620f98ef69efeb14d311bc93440",
+      "git_blob": "83debf604cc48fecd2923aa7d5843e238bdbe513",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/newtab.rs",
+      "working_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+      "git_blob": "1f9522338262671f3b1fc927571278bdc953b6c7",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/policy.rs",
+      "working_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "git_blob": "4c519ff79d478fcf070799e657acb7e90e9e4e2b",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/scene_projection.rs",
+      "working_sha256": "730f4c4a82a7f28c561b13b1632d6505cb0ec931b206093cfedac98b7c23511f",
+      "git_blob": "129b03006f323b270a5c214b551ae28015c5ebb9",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/tabs.rs",
+      "working_sha256": "34d82972ef8c6d725d158ffe6e6b6f25c18d7e451832edf263d975852908bc4a",
+      "git_blob": "dfb7e4853c1fc581532a2230adade80b9d7b984f",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/tabs_ui.rs",
+      "working_sha256": "b789d94427e1749e24de540c1af068ce9a4b39e03f0aeec1d1dd5ff713de735e",
+      "git_blob": "11b6f8bf7dd58a91b881054c845e1ad34091009d",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/tabs_ui_resize_tests.rs",
+      "working_sha256": "f6fd0be6e17a5665151f488a44e51548b22861af68c2a06e1b5edfd066a4f502",
+      "git_blob": "d8673c640a3ff53cafb3b143bc8dcf6461cee9a4",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "working_sha256": "88c71a27771e83f12c045a665c28d33fa87df98926974c4a1b65ef5073204521",
+      "git_blob": "069c2c55acc810661082485c3b0968e6c8eba94d",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/ui_navigation.rs",
+      "working_sha256": "70e2dfc2e877cf80d8c417432698bc142654e104245ab7d5e20c72f3fc377ff9",
+      "git_blob": "489a7474a602fc92a3c5c0faf6b35fd507adec0a",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/viewport.rs",
+      "working_sha256": "2ee93b0bfbe42a02d9f81f83496f814579d719751d193a63f8ce9ffb863a57cc",
+      "git_blob": "18e81df82314f540a20efc99ef9e3849eb962297",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/browser/src/window_chrome.rs",
+      "working_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+      "git_blob": "3381ac8eaf125253e46550974b39f3814bb20f46",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/Cargo.toml",
+      "working_sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "git_blob": "fa1f4ae2cf13ba3070b8113c1b6391cfe065a669",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/INTEGRATION.md",
+      "working_sha256": "f9eb20132fe468e2fffbbe05b7ccc7af152fa97f9e48938d766d52faf1abe099",
+      "git_blob": "c35f3bae8877cbf5ba4ae4b1ad426ad685f76a5e",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/arguments.rs",
+      "working_sha256": "0c8e593d0d027cdf0b26852eeaf8e29eff51d29bc3ccb5a98c5cae4f99432b48",
+      "git_blob": "17d663af21a8b7f32e9b08f61e27f501fbadc75b",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/lib.rs",
+      "working_sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+      "git_blob": "912a9555e0764d74e786e6e28cb1b38ee2585a9d",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/main.rs",
+      "working_sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "git_blob": "c8195af0d8bbb644627acf64cf77f0855b660286",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/manifest.rs",
+      "working_sha256": "92ee2ad9635a2f297e864316d64152d9aa5ab8de198ef98c0e98fe028bca3239",
+      "git_blob": "fae0b096cb39e19c3fa3940e3dc5a1abcfb7a396",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/storage.rs",
+      "working_sha256": "92ba13c460f74860751d5959e7fbe4ad7e163f86856475b9e042f7b668cc4d7b",
+      "git_blob": "5a0a1378f461ac0dc69d45df331de6b7d5b823e7",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/storage/windows.rs",
+      "working_sha256": "21aca8c7b0efc4c81be93c62a686f475f82afb168c0dfae8f1c86fe30ac430d7",
+      "git_blob": "dc653c983a72dc211e8969ab7b931b35d4479a26",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/storage/windows/tests.rs",
+      "working_sha256": "f009da89234090e20336449cecf9a6c5198b212d2e4b42b6b380c1dd70bf6deb",
+      "git_blob": "0b74637f653832d7c5b654a18171853a530d2050",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/test_support.rs",
+      "working_sha256": "af4483477730588c90df5bba8d2cce770eb78a51872f5931246e8d0f080d84b6",
+      "git_blob": "9463c032be9cc47e77780a1bfbd7588541777f0c",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/src/tests.rs",
+      "working_sha256": "3bedb8ba4418c75dff24220642b9bbd86a08aec2fb91c4df3b9ad5ba70f17d92",
+      "git_blob": "b79b7fc82572c603bb43d65f1367dfb2feef9448",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    },
+    {
+      "path": "crates/native-cli/tests/command.rs",
+      "working_sha256": "cbb6d07e578998e71b9a8c343a5400efdbc8bbac7ea2143d5ddbd3414640f508",
+      "git_blob": "23fad2ef7aa848d41fbdf0fdc392586c17d7e5af",
+      "canonical_matches_base": true,
+      "writer": "Browser_until_root_slice_freeze"
+    }
+  ],
+  "dirty_files": [],
+  "canonical_drift_files": 0,
+  "owned_active_execution_handles": [],
+  "owned_compiler_processes": [],
+  "owned_target_leases": [],
+  "process_inventory_observation": "CIM snapshot found no cargo/rustc/Clippy/CMake/Ninja/CEF bootstrap process; not persistent exclusion or descendant proof",
+  "target_inventory_observation": "No owner/lease file observed at target/validation-native; prior Browser build/runtime reservations terminal and returned",
+  "operations_in_flight": [],
+  "structural_moves": false,
+  "manifest_changes": false,
+  "refs_changed": false,
+  "publication_authorized": false,
+  "critical_contracts": [
+    "separate minimal bootstrap and desktop link artifacts/subprocess isolation",
+    "fixed RunConsoleMain/RunBrowserDesktop ABI and borrowed sandbox pointer",
+    "single-thread Meari parent/CEF child lease lifetime and guarded HWND access",
+    "pure browser/native CLI forbid unsafe versus audited native allow scopes",
+    "native-pilot-tests remain explicit, Windows cfg absence not native pass",
+    "public scaffold API stays unqualified manifest generation, no protection capability"
+  ],
+  "root_decisions_required": [
+    "mapping isolated CEF artifacts to accepted public browser package without permanent private helper packages",
+    "CLI command/bin/schema naming and env CARGO_BIN_EXE identity",
+    "platform audited Win32 ownership/API placement before Browser integration",
+    "pin/root graph and include-path/provisioning/SDK bundle cross-owner remap"
+  ],
+  "historical_proofs": [
+    "fef69a92 Windows normal build/check/Clippy scope only; first GUI Back failure retained",
+    "ce24fe52 normal build0 and one human manual exit0/15.53s; severe Meari lag remains open",
+    "f9a7fe92 UI38 source candidate; no test/latency/native pass inherited",
+    "aa22cd0a GPU boundary research only; no backend/pin change"
+  ],
+  "remaining_gates": [
+    "post-map Cargo locked metadata/check/Clippy/tests with public visibility restrictions",
+    "default and native-ui browser/scaffold pure and native-document/AX/focus/source-staleness oracles",
+    "Windows bootstrap and desktop tests plus normal artifact import/export/process-dispatch verification",
+    "fresh source/artifact-bound sandbox/windowed CEF multi-tab/navigation/close/resize/DPI/IME/AT pilot",
+    "same-route native callback attribution remains unresolved",
+    "actual GPU path/exact Meari release and full sandbox/Chrome parity remain unqualified",
+    "Docker-only product e2e after integration; source-bound historical results are not migrated-build proof"
+  ]
+}

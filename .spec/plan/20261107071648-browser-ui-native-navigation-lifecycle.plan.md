@@ -11,6 +11,55 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## Accepted public-family baseline v0: Browser-last handoff
+
+The human confirmed the eight-public-package baseline in structural-development.
+Root alone sequences moves/graph/ref synchronization: engine/core, runtime/platform,
+tools, role-qualified adapters, then Browser. This handoff authorizes no local
+path/package/import rename, new crate, shim, manifest edit, ref switch or publication.
+
+structural-v0-handoff.json binds61 tracked Browser/native-cli paths to observed
+HEAD59f6aa2d8b11c5d9049efb05eb3eaf51e970b7cc with raw SHA256 and canonical Git
+blob identities. All61 match that base; owned source paths have zero dirty files.
+No Browser compiler/process/target lease or path-moving operation is active.
+The observed global process/marker snapshot is not a permanent exclusion lock or
+descendant-cleanup proof. Bootstrap Cargo.toml is included read-only but remains
+root graph ownership; common manifests/toolchain and test-support stay outside
+this Browser writer's scope. Root must issue exact source/destination/hash slice
+instructions before any topology implementation.
+
+Required root decisions before Browser path freeze:
+
+- Preserve separately linked minimal bootstrap and desktop DLL artifacts under
+  the final public-family design. A package consolidation must not load Meari/UI
+  dependencies in CEF subprocess bootstrap, introduce a permanent private helper
+  package, or invent an unreviewed compatibility shim. Current RunConsoleMain and
+  RunBrowserDesktop exports, fixed sibling DLL basename and borrowed sandbox
+  pointer are runtime ABI, not merely Rust import paths.
+- Keep pure Browser/native-cli forbid-unsafe separate from audited native FFI /
+  Win32 scopes currently under deny-unsafe plus local allowances. Consolidating
+  below a forbid root cannot preserve those allowances automatically. Platform
+  placement must preserve UI-thread parent leases, child close order, no target
+  authority and sandbox-required initialization; do not widen pub re-exports.
+- Coordinate native-cli scaffold public symbols/manifest generator identity and
+  humanymous-native binary naming with the tools owner. CARGO_BIN_EXE tests,
+  version metadata and explicit unimplemented adapter claims are observable.
+  Generated manifests never constitute a protection factory or Ready capability.
+- Remap relative shared/scheme.rs and desktop/pilot-contract.json includes,
+  native-cli test_support path, Cargo path dependencies, provisioning DLL filenames
+  and CI selectors atomically across the owning slices. Do not rewrite immutable
+  old source/evidence paths or infer Windows coverage from cfg-empty other targets.
+
+After root's map, require locked graph/visibility/check/Clippy tests; default and
+native-ui document geometry/focus/AX/source-staleness oracles; scaffold storage/
+CLI tests; Windows bootstrap/desktop normal artifact import/export and dispatch
+verification; and fresh source/artifact-bound CEF sandbox/native lifecycle pilots.
+Product e2e remains Docker-only and cannot replace actual OS/IME/AT/GPU evidence.
+fef and ce24 results remain bound to their old trees/artifacts. UI38 f9 is still a
+source-only candidate; UI39 aa22 is research only. Same-route callback attribution,
+full sandbox, Meari latency/GPU, IME/AT and Chrome parity remain open. Publication
+and main integration are not authorized by the baseline approval.
+
 ## UI-39 project GPU research contribution, no execution change
 
 Root assigns Browser's Meari-window/CEF-compositing boundary within project-wide
