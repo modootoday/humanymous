@@ -1,5 +1,9 @@
 # Browser native integration
 
+The source-only [native qualification frontier](NATIVE-QUALIFICATION.md) maps
+remaining lifecycle/keyboard/IME/AX/DPI/sandbox/Chrome evidence to the owning seams.
+It does not allocate execution or promote historical pilots to current support.
+
 ## Actual Windows CEF checkpoint
 
 Subsequent test-only source uses the existing ManagedChild owner for bootstrap
