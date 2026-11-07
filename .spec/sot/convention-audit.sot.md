@@ -1807,3 +1807,31 @@ dependency isolation and the final consumer/lock/CI/package inventory. No compil
 SDK, native or Docker workload was started by this audit. Full migration remains
 OPEN. Separately,134 pinned review-hash references resolved to130 private files
 with zero mismatches; this does not requalify every underlying raw bundle.
+
+## Core attested negative probes and actual component results
+
+The first visibility observation retained no standalone argv receipt. Root
+acknowledged that limitation and repeated the seven tiny metadata probes with
+commands written before launch. Independent review binds33 raw files: actual
+Rust1.99.1/edition2024 argv, probe hashes, version, diagnostics, elapsed/exit and
+selected-input manifests. All154 selected inputs (143 Core files,9 extern rlibs,
+compiler proxy and actual binary) match before/after byte-for-byte and current
+hashes. The public Policy control succeeds; six unrelated same-crate accesses
+fail with exactly one E0603 each and no other error code. Scoring probes fail on
+private parent modules; watermark/integrity probes fail on restricted items.
+This meets the bounded sibling-reachability requirement. It does not isolate each
+scoring helper modifier or prove complete toolchain/loader/proc-macro closure.
+
+Actual Core logs contain162 unique successes:145 unit and17 integration over six
+targets, zero failed/ignored/filtered, including12 model RNG tests. The143-source
+pre-test inventory matches current files. Strict all-target/all-feature Clippy
+finished successfully in Root's actual command. These results qualify bounded
+component observations; they do not retroactively qualify older RNG source or
+establish full tool/input closure. The saved normal/build graph has33 reachable
+nodes with Core as sole local member; saved Windows-default/WASM-all-feature tree
+texts also show no other local member. Core has9 normal dependencies plus1 dev
+helper, correcting the private live review's imprecise10-direct wording.
+
+Frozen atomic map/consumer/CI/lock closure, old/new test identity comparison,
+whole-workspace and clean-package qualification and actual browser/native/full
+Docker product gates remain OPEN. Audit ran no new compiler or product workload.
