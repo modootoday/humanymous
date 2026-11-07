@@ -746,3 +746,39 @@ serialize under the same loss gate; partial Ready permits no origin, resend or
 watchdog reset. Historical Ready receipt cannot restore a revoked epoch. Sent
 correction to root/runtime. No Rust change or new execution;689b95d2 pure14 receipt
 is unchanged and does not prove these not-yet-accepted production APIs.
+
+## Concrete sealed startup Rust ownership slice
+
+Root requested concrete Rust advancement without a fabricated native producer.
+Authored startup::observer in observer.rs/state.rs/tests.rs, exported by startup.rs.
+Public VerifiedObserverPreparation, PreparedObserverSession and failure retain a
+PRIVATE EMPTY NativeProof: uninhabitable even in tests, no Clone/Default/serde or
+public factory. native_preparation returns Unsupported ONLY. Both phase types
+expose restricted effect_gate inspection and consuming cancel(cause), producing
+ObserverStartupFailure retaining the unique Authority guard and stage/delivery.
+No production receipt transition, bounded transport implementation, activation,
+Ready or origin-effect API is invented. Runtime retains its sole generic resource
+owner R with an enum of these opaque Authority guards; Authority has no competing
+resource owner or reverse dependency.
+
+Internal Owner is unique; its Drop synchronously revokes all restricted clones.
+First monotonic cause/instant stays immutable and close deadline uses min(original,
+firstloss+drain). Public snapshots are diagnostics, never native proof or permission
+followed by async effects. Private cfg(test) transitions model NativePrepared ->
+WriterPrepared -> OfferPending -> ReceiptBound -> ReadyEnqueuePending -> Active;
+terminal revocation cannot advance. That internal model NEVER creates NativeProof.
+Seven authored cases cover Unsupported, ordered phases, illegal early ACK/Ready,
+loss at every phase/first cause, retained clones on Drop, bounded close deadline,
+and Ready-versus-loss serialization. Tests/compile/Clippy NOT_RUN; scoped fmt and
+diff checks passed. Sent exact module/API checkpoint to Runtime/root for review
+and requested an explicit warm pure21 allocation; no execution assumed.
+
+Actual native/W constructors, owned monitor cancellation/join, concrete bounded
+transport/receipt producer, atomic kernel effects and Runtime-private Ready remain
+open. Existing expiry14 proof does not cover this newly authored source, and no
+native/hosted/product qualification is claimed by the internal state model.
+
+Root read observer.rs/state.rs and accepted this uninhabited/Unsupported/restricted
+gate/consuming-cancel direction. Freeze checkpoint before explicit A warm pure21,
+all-target check, strict Clippy and fmt allocation. No native/handler/service,
+no new Cargo edge or production/test constructor is authorized.

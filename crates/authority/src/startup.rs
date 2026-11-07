@@ -1,4 +1,6 @@
 //! Open one audit owner before listener creation; no key provisioning or fallback.
+pub mod observer;
+
 use crate::{
     configuration::{Audit, Peer, UnlockSource},
     decision::DurableAudit,
