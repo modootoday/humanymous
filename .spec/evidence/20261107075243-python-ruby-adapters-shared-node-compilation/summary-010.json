@@ -1,0 +1,45 @@
+{
+  "scope": "Actual ordinary-user Unix Waitress Flask/Django component retry",
+  "sourceSha": "7842b6a875f1a77b8e88d2d9f31808d2089cebce",
+  "archiveSha256": "80f2991edce0f8be456cda8b51955cec7e3de6b1e5b14378d2da869cc0f9accd",
+  "sourceManifestRows": 2254,
+  "sourceManifestBeforeBuildAfterBuildAndAfterRunSha256": "e631a688f3c498bbc4cc1fa5f70360d2da36cb87ca24577d1785bece9325326b",
+  "dependencyManifestBeforeAndAfterSha256": "a8480efd2b25d487a6b2676de7bba053200a7f69048e733d15175c1207728dfd",
+  "actorUid": 1000,
+  "environment": "WSL REA-Ubuntu, Rust 1.99.1, Python 3.12.3, reused private venv, jobs1/incremental0, offline locked builds",
+  "buildAdmission": {"commitPercent": 79, "freePhysicalGiB": 33.74},
+  "actualAdmission": {"commitPercent": 82, "freePhysicalGiB": 31.80},
+  "preflightAndBuilds": [
+    {"command": "host-pilot all-targets check", "exitCode": 0, "elapsedSeconds": 2.67},
+    {"command": "host-pilot all-targets Clippy -D warnings", "exitCode": 0, "elapsedSeconds": 2.35},
+    {"command": "extension-module,host-pilot library build", "exitCode": 0, "elapsedSeconds": 5.97},
+    {"command": "production authority build", "exitCode": 0, "elapsedSeconds": 6.33},
+    {"command": "host-pilot wsgi_server no-run build", "exitCode": 0, "elapsedSeconds": 2.24}
+  ],
+  "artifactsSha256": {
+    "nativeFixture": "21f319a8d8228881be70d6f6ec673889053cb828f1db035bc1c2a56fdebd00f8",
+    "productionAuthority": "2aeb40670795212d71eda6c69efea6a452542e36d49f32c8da2f84381ce6aa4e",
+    "wsgiTestExecutable": "cbe9dfcf388a0a0a05ce644bc8782572c57d0f2435a8e2db09501f882102d9f9"
+  },
+  "execution": {
+    "exitCode": 0,
+    "elapsedSeconds": 12.69,
+    "discoveredTests": 8,
+    "passedTests": 8,
+    "failedTests": 0,
+    "ignoredTests": 0,
+    "filteredTests": 0,
+    "completedActualGroups": 6,
+    "passedPureTests": 2,
+    "completedScenarioRows": 14,
+    "completedActualCases": 28,
+    "requiredActualCases": 28,
+    "rawLogSha256": "ef5a96aa9cff7a040c2384674065657aec879d6b78fb85763e73b849bd1e1039"
+  },
+  "ownedCleanup": "Test process exited; task-specific process environment scan returned no matches. Allocation B returned.",
+  "earlierFailureRetained": "summary-009.json retains exit101, two failed tests and 22 completed cases on earlier source8eb66811.",
+  "limitations": ["Component evidence with test-only frozen evidence; production non-ALLOW also tested separately.", "Incomplete upload measures idle closure, not a total upload deadline.", "ASGI actual server, wheel clean install, Node/Bun and native Ruby package/runtime gates remain separate.", "No hosted runner execution or whole-product qualification follows from WSL evidence."],
+  "wholeProductQualified": false,
+  "productionBrowserEvidence": false,
+  "hostedQualification": false
+}

@@ -86,3 +86,16 @@ measurements as well as hosted execution. Root allocation remains required;
 the active benchmark quiet window permits no new build/runtime commands. The
 historical HUMANYMOUS_HOSTED_NATIVE_PILOT opt-in name is unchanged and does not
 attest where a run occurred. Product e2e remains isolated Docker-only.
+
+Summary009 retains the first actual8eb66811 run:6passed/2failed,10rows/22cases,
+exit101. The fake timeout socket lacked required0600 permissions; the empty
+audit fixture incorrectly reopened intentionally empty history. Primary-only
+fix7842b6a8 preserved accepted request-byte proof and compares exact fresh owned
+empty WAL bytes/device/inode/owner/mode instead of relaxing production reopening.
+Summary010 records a new immutable7842b6a8 snapshot, coherent rebuilt module/
+authority/test executable, check/Clippy, and successful actual UID1000 WSL run:
+8passed,0failed/ignored/filtered,6actualgroups+2pure,14rows/28cases,12.69s.
+All2254 source-file hashes and reused dependency-file hashes stayed unchanged.
+Owned cleanup found no task processes; allocation B returned. These later results
+supersede the historical NOT_RUN statements for this WSGI component only; ASGI,
+wheel clean installation and hosted qualification remain separate pending gates.

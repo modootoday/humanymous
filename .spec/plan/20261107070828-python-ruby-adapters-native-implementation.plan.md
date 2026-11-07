@@ -385,3 +385,17 @@ exact files, bytes, device/inode/owner/mode before and after shutdown. It does
 not reopen empty history or change production allow_new=false refusal. Corrected
 source is formatted but not compiled or executed; a new immutable checkpoint
 and explicit renewed allocation remain required.
+
+### Corrected immutable WSGI retry completed
+
+Root reviewed the two fixture corrections and renewed B. Committed source
+7842b6a8 was archived separately and extracted into a new immutable snapshot.
+All-targets check/Clippy and three coherent artifact builds passed with
+jobs1/incremental0, locked offline dependencies and the existing private venv.
+Fresh run admission82%commit/free31.80GiB passed. Actual UID1000 execution
+completed8tests/0failed/0ignored/0filtered in12.69s,6actualgroups+2pure,
+14rows/28actualcases. Summary010 retains source/archive/artifact/log hashes.
+Source2254-file and dependency manifests remained unchanged. Owned cleanup
+returned no task processes; B returned terminal0. Summary009 failure stays
+retained. WSGI component acceptance is now measured locally; ASGI realserver,
+wheel clean installation, hosted CI, Node/Bun and native Ruby gates remain open.

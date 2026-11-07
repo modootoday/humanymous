@@ -16,6 +16,7 @@ files:
   - {path: summary-007.json, sha256: 76fbd74edc155d3415e82d8f71f45335774d878c66a1c9db9ea6e13b73c273d8, bytes: 2629, store: repo}
   - {path: summary-008.json, sha256: b511ed53a3b304ec13377284924e276beb6a569345d5cc2fe299a60698f0bc57, bytes: 3114, store: repo}
   - {path: summary-009.json, sha256: ad1a83dfba2d2f953fdfe398fff5cc2b304a11ca949c3339d75b6d9e98e492b4, bytes: 2327, store: repo}
+  - {path: summary-010.json, sha256: add5762fcb709a466af4976002d41bc46399f798d36539c7c44c3091606b39ec, bytes: 2763, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -150,3 +151,15 @@ bytes and identities without changing production semantics. Corrected source
 has not been executed. Source and dependency manifests were unchanged; artifacts
 passed exact hash checks, task-specific cleanup found no remaining owned process,
 and allocation B was returned. The first failed run remains authoritative history.
+
+## Corrected immutable WSGI retry: all required cases passed
+
+Summary010 records source7842b6a8 extracted from a separately hashed git archive.
+The new module, production authority and test executable were coherently rebuilt
+with locked offline dependencies and passed exact hash checks. All-targets check
+and Clippy passed. Under ordinary UID1000, all8tests passed with no ignored or
+filtered tests:6actual groups plus2pure tests,14scenario rows and28actual cases.
+Source2254-file and reused private dependency manifests stayed unchanged before
+and after execution. The owned-process scan was empty and allocation B returned.
+The earlier failed attempt remains retained. WSL component success establishes
+neither hosted execution, production-browser evidence nor whole-product readiness.
