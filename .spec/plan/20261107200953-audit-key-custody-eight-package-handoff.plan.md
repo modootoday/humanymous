@@ -360,3 +360,24 @@ consumer handling. No such edits, Cargo changes, moves, compilers or CI were
 performed for this final disposition. Current source/tests are clean at8d362f49;
 no owned live handles, target leases or path-moving operations. Root alone decides
 freeze after its selected test and403 diagnostic settle, then rechecks exact hashes.
+
+### Root relocation source freeze and writer release
+
+At Root's explicit Runtime6-to1 preparation request, Audit stops all source/test
+writes at8d362f497c43cef5c5b9e5694011cd5b0300cba9. Attached
+runtime-slice-02-source-freeze.json records106 actual src/test files, full
+inventory equality to tracked paths and per-file byte/SHA256/canonical Git blob
+matches. No source dirt or owned run/target/path-move lease exists. Common
+Cargo.toml remains Root-owned and is excluded from this source freeze.
+
+The earlier109-file package inventory also includes KEYS-INTEGRATION.md and
+LICENSE-Go.txt. Their hashes are included as ancillary preservation obligations:
+Root must carry operational notes and upstream attribution with the Audit
+context/package, not silently omit them during directory consolidation.
+
+After this packet commit Audit releases src/test coverage and retains only its
+own Specfold coordination paths. Root alone may perform the relocation after its
+remaining writer/test/403 gates settle. The exact constructor/field disposition,
+standalone role constraints, immutable fixture/projection boundaries and new
+source-bound validation obligations above remain part of the atomic move.
+Audit requires a new explicit path assignment before writing relocated source.
