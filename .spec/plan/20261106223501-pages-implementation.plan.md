@@ -1821,3 +1821,31 @@ Read actual open/import_legacy and fixture consumers excerpts; no wholefile
 receipt renewal inferred. Public keyhowto distinguishes deterministic fixture
 entropy, legacyempty passphrase, separate Unicodebytecases and operational/security
 qualification. NormalAPI emptysecret refusal remains; fixture bytes unchanged.
+### Authority native process inventory and preserved presentation
+
+Read complete683line native_process in four bounded outputs. Exact receipt
+added; implementationmap distinguishes currentuser/sharedclient constructed
+profiles, sameparent sealedcustody, Windows-only PID/DACL/nonreader and required
+Linux privilegedotheruser ignoredcase/helper. No fresh execution or actual
+languagehost qualification inferred from authored process scenarios.
+
+Rechecked .gitattributes textauto/eollf with binary exclusions. Config pinned
+remote_theme remains ba2b23f0e1639f92ccefbb882f43092bfe5b16b7. Actual config SHA256
+c0734b7901aceadea297d50cdd39788087c4e3ab659120f32187da182a606f8e and tokenfile
+7cf4cba051b9dceea298f24ed46b4c95305c1965b71e4122bc46b6d2330288ff
+match previous reviewed values; no diff in these presentation/policy files.
+### Actual Windows dual-build prerequisite attempts
+
+Root allocated existingbinary sequential Ruby dualvalidate. Both exit1 at frozen
+bundlecheck with42missinggems, beforeclone/render. Selected config/Gemfile/lock/
+tokens/binary hashesstable, no fullclosure proof. Private before/result/apex/subpath
+logs attached. Root renewedD for private frozenbundle setup/download only.
+Ruby3.3.12mingwucrt/Bundler2.5.22. Firstprivate264char path failed http_parser
+extractionENOENT; shorter181char taskprivate path passed that step and compiled
+severalnativeextensions. Finalbundle exit5: openssl4.0.2 missingpkgconfig/ssl.h;
+existingMSYS reportedunknown/unwritablePGPkeyring. No trustbypass/keyringrepair,
+lockchange/globalgeminstall/browser/server/Cargo. Rendersneverstarted. Bothinstall
+logs attached privately; sanitized publicattempt JSON terminalupdated/reattached.
+D returned, no ownedliveprocess. Four known localssl.h candidatepaths absent;
+this narrowread is not exhaustive hostinventory. Awaitexplicitnextenvironment
+allocation; cannot claim latestsite build/link/browser/accessibility acceptance.

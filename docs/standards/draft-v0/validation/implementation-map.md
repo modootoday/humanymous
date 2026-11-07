@@ -53,6 +53,15 @@ complete workspace coverage. The separately authored
 has since passed its Windows parser component execution. That result does not
 qualify later authority changes or close the ignored privileged case.
 
+The native authority test source also distinguishes ordinary current-user child
+IPC from the explicit Linux other-user socket test. That required case and its
+helper are ignored in default runs and need privileged, deployment-owned Docker
+execution; a default green run cannot discharge them. Windows-only PID, pipe
+DACL and nonreading-client cases require actual Windows execution. The normalized
+producer loop uses constructed envelopes and the shared client, not real ASGI,
+WSGI, Rack, httpd or Kestrel server callbacks. Its sealed-startup fixture checks
+same-parent custody locking and key continuity, not independent witness custody.
+
 Apache's safe request/replay component contributes a narrower P-07/P-08 subset:
 exact-length bounded input, original-budget checks and cancellation-aware replay.
 It does not authorize a request, specify streaming integrity or establish that

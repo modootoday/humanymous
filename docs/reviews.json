@@ -2,6 +2,16 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/tests/native_process.rs",
+  "sha256": "bbd6fdfa9c93e3ab2198fc922f8d81d9466c44e3636d6634b7eed6b56ca8f507",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all683lines in four bounded sections: actual child startup/IPC, bounded readiness/response, sharedclient profile5loop, sealed key continuity, concurrent nonce/diskfailure/capacity/epoch, WindowsPID/DACL/nonreader, Linux ignored privileged-otheruser/helper. Constructed envelopes not actual hostcallbacks, sameparent custody not independentwitness, native/Docker/platform counts remain exactrun-specific. No new execution.",
+  "pages": [
+    "docs/standards/draft-v0/validation/implementation-map.md",
+    "docs/reference/gate-origin-contract.md"
+  ]
+},
+{
   "source": "crates/audit/tests/fixtures/keys.json",
   "sha256": "e21e3326472cbcedd9dcec1764ea52ee9a21cabd79320866eb61c04c8b897e89",
   "reviewer": "codex/rust-pages",

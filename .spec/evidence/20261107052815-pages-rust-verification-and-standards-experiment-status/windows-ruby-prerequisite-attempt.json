@@ -1,0 +1,22 @@
+{
+  "lock_mutated": false,
+  "retry": "terminal exit5; short path passed prior http_parser extraction and later failed openssl4.0.2 native build",
+  "bundler": "2.5.22",
+  "initial_stage": "ruby -S bundle check",
+  "site_build": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "first_private_install_exit": 1,
+  "initial_subpath_exit": 1,
+  "gemfile_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+  "ruby": "3.3.12 x64-mingw-ucrt",
+  "path_length_cause": "shorter path avoided observed extraction failure; no global Windows path policy claim",
+  "global_install": false,
+  "initial_apex_exit": 1,
+  "missing_gems": 42,
+  "scope": "Current Windows Ruby validation prerequisites, not rendered-site success",
+  "first_install_failure": "http_parser.rb0.8.1 extraction Errno::ENOENT on long nested fixture path",
+  "openssl_failure": "pkg-config openssl and openssl/ssl.h missing; existing MSYS keyring unknown/unwritable; no security bypass",
+  "first_path_chars": 264,
+  "short_path_chars": 181,
+  "current_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0"
+}
