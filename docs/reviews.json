@@ -2,6 +2,16 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/cli/tests/watchdog_boundary.rs",
+  "sha256": "383cb731949b29cd068b81c4251705bb88c420a2b0187a5dccd2471f3f3697dc",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete128-line source review: feature-gated explicitly ignored direct-child test requires independently allocated native outer supervisor. Four cases share original8s run/12s cleanup deadlines, expected0/74/74/74; reads fixed prefix only, retains both output ends unread, polls/reaps direct child and releases parent ends. Failure retains unresolved owner in RECOVERY; request_stop/prefix/spawn may themselves block. Environment opt-in is routing only; no EOF/worker-join/native-close/tree-cleanup, actual execution or product claim.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
   "source": "crates/watermark/Cargo.toml",
   "sha256": "8973eddacca47b27eacad070d8efbe09b1846c1e01f47d707ef5e94eed3fd8f9",
   "reviewer": "codex/rust-pages",
@@ -283,13 +293,13 @@
 },
 {
   "source": "crates/cli/src/runtime_host/watchdog_fixture.rs",
-  "sha256": "e4c93467f7a256896013e66f8be948e9ca60ef915fe72352ed7b47760c302407",
+  "sha256": "75bb1f7fde5ccff31bc0e51af66b798b3f273e8a586439d54408ff96374d6719",
   "reviewer": "codex/rust-pages",
+  "notes": "Complete86-line source review: production Supervisor final writer path with simulated ExitReport only; positive, 8MiB unread stdout/stderr pressure and 1200ms late completion share600ms stop budget. Fixed flushed writer-entry prefix is observation only, not kernel-blocked I/O proof. No real runtime drain/audit, service manager, native outer owner or product qualification; source review does not execute fixture.",
   "pages": [
-    "docs/reference/supported-topologies.md",
-    "docs/standards/draft-v0/validation/implementation-map.md"
-  ],
-  "notes": "71-line opt-in source fullyread. Four fixed cases positive/blockedstdout/blockedstderr/latecompletion use actual Supervisor and productionwrite_report but simulated alltrue ExitReport; pressure8MiB, original600msstopbudget and latewriter1200ms. Parent must own native process and deliberately unread boundedpipes; function itself does not authenticate/retain OSactor or cleanup. No custody, account, manager or network action and productfalse. Testfixture compile/source is not actual blockedpipe termination, real runtime drain/flush or SCM qualification."
+    "docs/reference/production-vs-reference.md",
+    "docs/reference/cli-config-policy.md"
+  ]
 },
 {
   "source": "crates/authority/src/startup/observer.rs",

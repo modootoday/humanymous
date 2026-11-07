@@ -1,0 +1,30 @@
+{
+  "schema": "humanymous.pages-source-followup/1",
+  "full_read_files": 2,
+  "full_read_lines": 214,
+  "before_after_exact": true,
+  "reviews": [
+    {
+      "source": "crates/cli/src/runtime_host/watchdog_fixture.rs",
+      "sha256": "75bb1f7fde5ccff31bc0e51af66b798b3f273e8a586439d54408ff96374d6719",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete86-line source review: production Supervisor final writer path with simulated ExitReport only; positive, 8MiB unread stdout/stderr pressure and 1200ms late completion share600ms stop budget. Fixed flushed writer-entry prefix is observation only, not kernel-blocked I/O proof. No real runtime drain/audit, service manager, native outer owner or product qualification; source review does not execute fixture.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/tests/watchdog_boundary.rs",
+      "sha256": "383cb731949b29cd068b81c4251705bb88c420a2b0187a5dccd2471f3f3697dc",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete128-line source review: feature-gated explicitly ignored direct-child test requires independently allocated native outer supervisor. Four cases share original8s run/12s cleanup deadlines, expected0/74/74/74; reads fixed prefix only, retains both output ends unread, polls/reaps direct child and releases parent ends. Failure retains unresolved owner in RECOVERY; request_stop/prefix/spawn may themselves block. Environment opt-in is routing only; no EOF/worker-join/native-close/tree-cleanup, actual execution or product claim.",
+      "pages": [
+        "docs/reference/production-vs-reference.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "public_prose_changed": false
+}

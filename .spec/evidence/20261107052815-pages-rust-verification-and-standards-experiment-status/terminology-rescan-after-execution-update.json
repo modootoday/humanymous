@@ -1,0 +1,368 @@
+{
+  "schema": "humanymous.pages-terminology-rescan/1",
+  "selection": "Markdown frontmatter layout doc or home;88 pages matched source-validator total",
+  "pages": [
+    {
+      "path": "docs/README.md",
+      "sha256": "6a0065e5f906dfe6c21f4a52cd4233e1ff9db9b287da09b7aef32daa77fc0287"
+    },
+    {
+      "path": "docs/style-guide.md",
+      "sha256": "b2f4c74b46edd164165ccc09878b7a56003bcb37d740be5ca510f3d96f17eaac"
+    },
+    {
+      "path": "docs/concepts/how-gate-sees-a-request.md",
+      "sha256": "a7e9050c75922935bd0eb6b89db2f3df41724a17b997021b0e3847de7051d175"
+    },
+    {
+      "path": "docs/explanation/control-plane-and-bundle.md",
+      "sha256": "b9a2991cc9a4bcafc239d78becc714e41b78f0f8b9f3a3d7531197c844354392"
+    },
+    {
+      "path": "docs/explanation/detection-engine-internals.md",
+      "sha256": "40f6495392c42954dfd872e6122576889c5d2580094b6331e8974308a45a75ed"
+    },
+    {
+      "path": "docs/explanation/dpia-companion.md",
+      "sha256": "badb407c5772cf5bd2368679b99f938777b54a2409a0c7a0415ec6be60686778"
+    },
+    {
+      "path": "docs/explanation/how-this-was-built.md",
+      "sha256": "dbbb48ace1df7fb287239f51a440693f98a17c63afdd9b95c586e17018fb92ac"
+    },
+    {
+      "path": "docs/explanation/index.md",
+      "sha256": "b78a7dbb015c710ba4f896c7d6fed44357cff1ee138e67f7f4294f5b03be4cab"
+    },
+    {
+      "path": "docs/explanation/observatory-architecture.md",
+      "sha256": "440cb8f19ea6f5f63f5ac9a5a3e6ae121d2a89db04c8f931559d0f94e5983373"
+    },
+    {
+      "path": "docs/explanation/red-catalog-architecture.md",
+      "sha256": "120cc2d998b67343a7a13382e6c6552da93eb7145b8139b2cf8aa962e0e095dc"
+    },
+    {
+      "path": "docs/explanation/self-correcting-behavioral-model.md",
+      "sha256": "4332d62d4ea47042d9652cc183929121c598539aa01a71ea3ebf1497fbabad57"
+    },
+    {
+      "path": "docs/explanation/transparency-report.md",
+      "sha256": "2843bd6bd60ff7d8847c816b1de19bc135c40a07967dfe900386a5f655d4e0a1"
+    },
+    {
+      "path": "docs/explanation/what-gate-is.md",
+      "sha256": "b4a27eea09f1c9695f43b0de5f7178be00baeb5f168e798cb76072ff7bdd62ec"
+    },
+    {
+      "path": "docs/explanation/where-gate-fits.md",
+      "sha256": "d4ca9f187d0a593635449f50a7afae1c45bdc8e92f783cd551a620074d946bbb"
+    },
+    {
+      "path": "docs/explanation/which-piece-am-i-using.md",
+      "sha256": "061200a084a8cb545f6cd102794e820f85395ed79178e1c3f8f25ece266ab58e"
+    },
+    {
+      "path": "docs/explanation/will-this-break-my-app.md",
+      "sha256": "9238bde2feeeac4cb78d49c1c6e7c1c57a53d9049a2b9110c27abc4a7790bc22"
+    },
+    {
+      "path": "docs/help/challenge-accessibility.md",
+      "sha256": "f95852280a84e0617e8e5144afcbd7db208cf42d1fbb0502543af11262227f0f"
+    },
+    {
+      "path": "docs/help/faq.md",
+      "sha256": "2c2d41c7c68045986261edd8ca4e88d1b889db8a8679d64952940fd6910dd497"
+    },
+    {
+      "path": "docs/help/why-am-i-seeing-this.md",
+      "sha256": "aaa21717d1b526f45f2a25de0910d0cb9afdb42e824bf750b341382dd84cc319"
+    },
+    {
+      "path": "docs/how-to/audit-console-tour.md",
+      "sha256": "967a429242dd94b2ff42a5db3417812480fcf79c0b4e0c1c2a8076a537080a16"
+    },
+    {
+      "path": "docs/how-to/configure-attested-routes.md",
+      "sha256": "e2cdd4d506994e0d1e58ccffe99bf72d23be5dcdc64537461e01c76468564df1"
+    },
+    {
+      "path": "docs/how-to/configure-credential-verifiers.md",
+      "sha256": "5dc7c01cbe9fa5c3eb9e98c5d26845860eb4ee4ff5c38a9c4d5dd814e93cfe86"
+    },
+    {
+      "path": "docs/how-to/cut-a-release.md",
+      "sha256": "ada8ddfc8dae13c0885b2d5846e231ffceeedd3ed40f1382a603b2e97c31e324"
+    },
+    {
+      "path": "docs/how-to/deployment-policy-operations.md",
+      "sha256": "7339c18196d8ae907e038a47233c5c561a50dd88b8e4fd1886ee34478b52c824"
+    },
+    {
+      "path": "docs/how-to/detection-observatory.md",
+      "sha256": "8b83ff9d6d18e8139ad6f4115a996e0c0dad365b3c468ce5e6ce4f43f5e89287"
+    },
+    {
+      "path": "docs/how-to/extend-detection.md",
+      "sha256": "f7350376af5fe424a4b55a9c80443a8e70acd22db2c251d150f21038b28f8053"
+    },
+    {
+      "path": "docs/how-to/https-tls-certificates.md",
+      "sha256": "682769cebdab5ce01945469b6546cd62686eeb3dbda7cfc9d1c717ee58572f11"
+    },
+    {
+      "path": "docs/how-to/index.md",
+      "sha256": "122a8be30717727d1867e7640596968c9005a896763e8a13b39682bdb64f7f61"
+    },
+    {
+      "path": "docs/how-to/key-management.md",
+      "sha256": "a6cbe976a832608cd4e10975a5bf097d9d00ea728da8edb763c3ce540cdcc3ae"
+    },
+    {
+      "path": "docs/how-to/observability-siem.md",
+      "sha256": "9df042a696566650a6c50ae03fcc216b2eecea0800bae13163d4c91b4f57a903"
+    },
+    {
+      "path": "docs/how-to/observatory-tour.md",
+      "sha256": "33f171edc268dcf9c1b5a8a079e5d800dbce467d64865c43a141b1501df4cbfd"
+    },
+    {
+      "path": "docs/how-to/operate-behavioral-model.md",
+      "sha256": "f1c9872cc2bd6e0816dd011a8793ba05b6c8d69a2e25f827983421c90a994f2f"
+    },
+    {
+      "path": "docs/how-to/run-detection-engine.md",
+      "sha256": "aec25dbd3d4967fab8e160faf5650140e9fab8d68687f52877441ae888727473"
+    },
+    {
+      "path": "docs/how-to/run-virtual-usb-lab.md",
+      "sha256": "fd57383944d4c6a8904c6619094205e8f99cd560ed4e03d31d9cd9c13f739cef"
+    },
+    {
+      "path": "docs/how-to/self-validation-red-team.md",
+      "sha256": "bf97e19b24956d4e720cfc737e766f47689671ed26c4a78c99c70f72728b6b81"
+    },
+    {
+      "path": "docs/how-to/troubleshooting-faq.md",
+      "sha256": "98594e654f2a5fbc36093a28d094d5dc6202a8f761ef18210096af6797cbc7b4"
+    },
+    {
+      "path": "docs/how-to/upgrade-migration.md",
+      "sha256": "386155ac6a68dc12139214c675932a11a63a274a5981854a0195f4c1ff17b6d5"
+    },
+    {
+      "path": "docs/how-to/verify-audit-log.md",
+      "sha256": "80fdf1b1d7bbc2cfece4465fdaebed9220b7c5315a124180c0b7d22b9bda8b1b"
+    },
+    {
+      "path": "docs/how-to/verify-the-image.md",
+      "sha256": "f16a54abaf8e978a9a57377e692422caef04362d0ddbe5921c90ce144c22cf87"
+    },
+    {
+      "path": "docs/how-to/write-a-red-profile.md",
+      "sha256": "947cbd9aeae0f71c501a9d15c782e07bd5ccc0c72513883fe08c7bf4f60ddff8"
+    },
+    {
+      "path": "docs/reference/browser-collector.md",
+      "sha256": "0d9dda8af4f918f2fc5fb3ce0489c10c4d2298301a9117a55aca7cdad7c334f5"
+    },
+    {
+      "path": "docs/reference/cli-config-policy.md",
+      "sha256": "ca94fe85a65429022fa0c9b5852aefccbec0b766594ff11e3de5395bfaf0b441"
+    },
+    {
+      "path": "docs/reference/console-localization.md",
+      "sha256": "ea0155070c42e28a2dc0ce9ca88be42b07e45480eef7c0b3b3d70d9197db5717"
+    },
+    {
+      "path": "docs/reference/data-processing-inventory.md",
+      "sha256": "29d6b1f99d1e1eb04aefc612fa7baafd5411255ece9243bc556a4e6d1da3d55b"
+    },
+    {
+      "path": "docs/reference/deployment-cost-latency.md",
+      "sha256": "c9e2640d30de303610aa92aa642469e7d96b8baef990909190a8cb7a1d078983"
+    },
+    {
+      "path": "docs/reference/gate-origin-contract.md",
+      "sha256": "9cd97919ac8d2aa079afaee7cfa4d2ad0c3d73601f2faed18618ef3379b85439"
+    },
+    {
+      "path": "docs/reference/glossary.md",
+      "sha256": "7802c315fe271b29ecc39fde280d098e01cb557d281fd3777d4c2313d0d8011f"
+    },
+    {
+      "path": "docs/reference/hard-rules-verdicts.md",
+      "sha256": "fedf5b2afae4615d61bdb422297bef89703e9ee8bc626580b73b2f85f0dac253"
+    },
+    {
+      "path": "docs/reference/index.md",
+      "sha256": "51481c0bcfc86e20b90ff79243dd9646f05c5f9103e01d6b372676da4e0daeb0"
+    },
+    {
+      "path": "docs/reference/install-requirements.md",
+      "sha256": "4c72b862544c8113c64da83b6454e1f516a020b066eeaf5724c5df6ca696d00b"
+    },
+    {
+      "path": "docs/reference/native-browser.md",
+      "sha256": "fd0a4cf25cdabd09955cc8ef0c8a1527c78582ea55d7fae4039bdf49beb5f38e"
+    },
+    {
+      "path": "docs/reference/nginx-adapter.md",
+      "sha256": "5a8483ba5f907ea1773342b5b08a6defa00816b64c2ec6ee976714ce6012185d"
+    },
+    {
+      "path": "docs/reference/node-adapter.md",
+      "sha256": "18e41368426118c4693801a594b09fdda4328ab87b4f9be65d292caa26b87fac"
+    },
+    {
+      "path": "docs/reference/on-call-quick-reference.md",
+      "sha256": "76d32e48dd129038de7ae635a50c3124df4e032a06e2f9982d6841f4941a4e57"
+    },
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "d5af17058071debae905fe4a35818b8fca6f0e193bbcbe684091695e3cd3ab26"
+    },
+    {
+      "path": "docs/reference/rbac-separation-of-duties.md",
+      "sha256": "2e40ee7ee3d0cfc287b2fda615f8841b4927b4145f1f8df95e53a4d6643f7788"
+    },
+    {
+      "path": "docs/reference/red-team-catalog.md",
+      "sha256": "8423900883ecab90e75eacc66364d9abb1ea7fbdebfcf506b5595369a1f5f583"
+    },
+    {
+      "path": "docs/reference/red-team-rules-of-engagement.md",
+      "sha256": "302cc573897e8ecc44c839a43945faf2f198733e430c43a77df459a58f8e68ac"
+    },
+    {
+      "path": "docs/reference/security-audit.md",
+      "sha256": "1190b66097870d4e5c5da00dafc4c447e5e2dd0a6ee82d62a1838c870f6ca9a7"
+    },
+    {
+      "path": "docs/reference/security-disclosure.md",
+      "sha256": "eaa7c508cda30f848357eb71b2dd627d0e7e517fa8ff079be4f5c1a7ecdff350"
+    },
+    {
+      "path": "docs/reference/standards-mapping.md",
+      "sha256": "b1e66a4669fea2ac04f6c6b0a528a3c31dbe65af21202ecae86ee8e9fb139b59"
+    },
+    {
+      "path": "docs/reference/support-licensing.md",
+      "sha256": "2ff6113ab1a3d654cc6a9e2ab551d8612e644cbff9d2ca2bb4e02b8139ac8b8d"
+    },
+    {
+      "path": "docs/reference/supported-topologies.md",
+      "sha256": "0ae53c0b4384bcfe73f862f1dc9a12424a094e2d999a4ba7ff70d61e5f14ca95"
+    },
+    {
+      "path": "docs/reference/versioning-derivation-index.md",
+      "sha256": "282c10f74e32c40be369fd49a9134fb02c8cb3c1b7c640655565ea369104a637"
+    },
+    {
+      "path": "docs/runbooks/erasure-crypto-shred.md",
+      "sha256": "4adcad1d4eed9f9eff5bb28aea5d3bbc5375852303a676770744753d92edb7d3"
+    },
+    {
+      "path": "docs/runbooks/incident-runbooks.md",
+      "sha256": "adc3be0fbdb425655d15df60d83dd5945d8359713ad13cd25782352e9deddf9c"
+    },
+    {
+      "path": "docs/runbooks/index.md",
+      "sha256": "826b926688e0b338572fce226705d56c7488786a49b390b32d322f040d9a4fab"
+    },
+    {
+      "path": "docs/runbooks/kill-switch-and-bans.md",
+      "sha256": "78bcd23a4f3d7a3be810db1e0bcacedd319ccecec0beaecde738aafab8a20b69"
+    },
+    {
+      "path": "docs/standards/index.md",
+      "sha256": "6c7a650967524379f248fa934d5c6b468d285d9805dfafbb2972df9dbca7282d"
+    },
+    {
+      "path": "docs/start-here/compliance-dpo.md",
+      "sha256": "3585998ae1ad95d4e94280fd239d37f64462586ae0c78a87bb634ea6eef417d2"
+    },
+    {
+      "path": "docs/start-here/developer.md",
+      "sha256": "50baf2fff0dd02dabca83776e5dcb30f4f5d8e367407e4750e3553410a101817"
+    },
+    {
+      "path": "docs/start-here/evaluator.md",
+      "sha256": "4ff3606356f35906d74d2547d3b54e74503d10aa2e0c049fc676d3207368b266"
+    },
+    {
+      "path": "docs/start-here/integrator.md",
+      "sha256": "da8511c358cb3712d6c2dcbf6e2e07a9dffdfbf17c0266a6bd03cc5aedaedab8"
+    },
+    {
+      "path": "docs/start-here/operator.md",
+      "sha256": "7e64fa38deaf25c9d7a587d56aa9771a000ce2adee0367ead3f3eb44251b931a"
+    },
+    {
+      "path": "docs/tutorials/quickstart-monitor-mode.md",
+      "sha256": "8d80b2398cf172d4d3af79a76dcf0eace715a3fb3024c6c026f2301e69d4f4e5"
+    },
+    {
+      "path": "docs/standards/draft-v0/explainer.md",
+      "sha256": "a86d4d3a9d78207f519d79a93015de4178558e29df48a208b1a10a739ad566de"
+    },
+    {
+      "path": "docs/standards/draft-v0/index.md",
+      "sha256": "187b1f33d037d14e0ed9ac2d9d43928ddae8d9955b3a4a1e872c730770b87485"
+    },
+    {
+      "path": "docs/standards/draft-v0/process/preparation.md",
+      "sha256": "71063292b4a231afa768adf4cc1774ff766356f755733b31c23854f48669d660"
+    },
+    {
+      "path": "docs/standards/draft-v0/process/references.md",
+      "sha256": "a317f659d8308d98ad959a342787a58293d14d0f6e83ab84193e11575904769d"
+    },
+    {
+      "path": "docs/standards/draft-v0/process/revision-history.md",
+      "sha256": "cd080b1ef7378a159394c992952878c0f451f1a3bffa5a09e0049269b52cfc4a"
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/implementation-experiment.md",
+      "sha256": "2cef9add4e1a167ba3e50f014bc78b96e80d94b004af02ef9eee3b478d02777c"
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/profile.md",
+      "sha256": "0c5cacc1b94ebb6a67c3db119e6986f2374ce4120376307518ed07f522238646"
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/retry-effects.md",
+      "sha256": "d428975059a69050a5331b80d4e266a5f4664705de2ead6817b29f6e74846f8e"
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/terminology.md",
+      "sha256": "d3b6534aa923caf9806b9f35b8fb148665ce9d964050bb1263abcb3ad88e8253"
+    },
+    {
+      "path": "docs/standards/draft-v0/reviews/security-privacy.md",
+      "sha256": "4777a75363f5dc295848e9814f47a935e28a5ad9dbeb9f012ab816c6da19cc7e"
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/conformance.md",
+      "sha256": "6f5d4eb33bc9af381fcaff952a88bcfe68e7a77767361e6468915c7998a5cb9d"
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "54a347324b2a04798738357ded4067d2b891b8fad86fd7b265b6a0f6bb7d65f1"
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/vectors.md",
+      "sha256": "7909cbb37a99ae6d5fe36fdb68d05ff040978f329c3461b28c6deaa076836550"
+    }
+  ],
+  "hits": [],
+  "patterns": [
+    "bare P-0 without following digit",
+    "SoT-number",
+    "TODO",
+    "FIXME"
+  ],
+  "defined_profile_ids_retained": "P-01 through P-10",
+  "before_after_page_bytes_exact": true,
+  "limits": "Lexical rescan only; does not establish complete editorial correctness, rendered links, new build or accessibility."
+}
