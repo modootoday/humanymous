@@ -20,6 +20,14 @@ impl WindowsIdentity {
     pub fn installer_allowed(&self) -> bool {
         super::installer_token_allowed(self.elevated, self.enabled_administrator)
     }
+    /// Observed TokenElevation value, not an environment assertion.
+    pub fn elevated(&self) -> bool {
+        self.elevated
+    }
+    /// Whether Administrators is enabled in the actual process token.
+    pub fn enabled_administrator(&self) -> bool {
+        self.enabled_administrator
+    }
 }
 fn error(e: co::ERROR) -> io::Error {
     io::Error::other(format!("native token query failed: {e}"))

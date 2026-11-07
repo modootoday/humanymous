@@ -36,6 +36,22 @@ fn denied() -> io::Error {
     )
 }
 
+/// Verify owner-only protected pipe DACL on the actual transport handle. The
+/// transport must independently establish named-pipe type and peer PID; this
+/// function does not turn a regular file or arbitrary handle into a pipe.
+pub fn verify_windows_pipe_privacy<H: std::os::windows::io::AsRawHandle>(
+    handle: &H,
+    sid: &str,
+) -> io::Result<()> {
+    let expected: LocalBox<Sid> = sid.parse()?;
+    let descriptor = wrappers::GetSecurityInfo(
+        handle,
+        SeObjectType::SE_FILE_OBJECT,
+        SecurityInformation::Owner | SecurityInformation::Dacl,
+    )?;
+    verify(&descriptor, &expected, WindowsPrivacy::ProtectedDirectory)
+}
+
 /// Inspect the actual opened non-reparse object without shell execution or ACL
 /// repair. Trusted ancestor and same-owner replacement premises still apply.
 pub fn verify_windows_privacy(file: &File, sid: &str, policy: WindowsPrivacy) -> io::Result<()> {
@@ -61,6 +77,15 @@ pub fn verify_windows_privacy(file: &File, sid: &str, policy: WindowsPrivacy) ->
 }
 
 fn verify(sd: &SecurityDescriptor, expected: &Sid, policy: WindowsPrivacy) -> io::Result<()> {
+    verify_grants(sd, expected, policy, None)
+}
+
+pub(super) fn verify_grants(
+    sd: &SecurityDescriptor,
+    expected: &Sid,
+    policy: WindowsPrivacy,
+    service: Option<(&Sid, super::service::ServiceRole)>,
+) -> io::Result<()> {
     if sd.owner() != Some(expected) {
         return Err(denied());
     }
@@ -75,8 +100,20 @@ fn verify(sd: &SecurityDescriptor, expected: &Sid, policy: WindowsPrivacy) -> io
     let mut owner_propagates = false;
     let mut inherited_files = false;
     let mut inherited_dirs = false;
+    let mut service_grants = 0;
     for i in 0..acl.len() {
         let ace = acl.get_ace(i).ok_or_else(denied)?;
+        if let Some((sid, role)) = service
+            && ace.sid() == Some(sid)
+        {
+            if ace.ace_type() != AceType::ACCESS_ALLOWED_ACE_TYPE
+                || !super::service::valid_grant(ace.mask(), ace.flags(), role)
+            {
+                return Err(denied());
+            }
+            service_grants += 1;
+            continue;
+        }
         if ace.ace_type() != AceType::ACCESS_ALLOWED_ACE_TYPE
             || !(ace.sid() == Some(expected)
                 || installation
@@ -97,6 +134,9 @@ fn verify(sd: &SecurityDescriptor, expected: &Sid, policy: WindowsPrivacy) -> io
             inherited_files |= ace.flags().contains(AceFlags::ObjectInherit);
             inherited_dirs |= ace.flags().contains(AceFlags::ContainerInherit);
         }
+    }
+    if service.is_some() && service_grants != 1 {
+        return Err(denied());
     }
     if installation && !owner_full {
         return Err(denied());

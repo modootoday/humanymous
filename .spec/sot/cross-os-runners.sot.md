@@ -258,3 +258,102 @@ explicitly failed. The final native run proves only implemented crates at that
 SHA; later shared-checkout changes need their own execution. Full runtime,
 Docker product e2e and dedicated Windows remote-client/privilege tests remain
 unqualified. This probe does not authorize main merge, publication or deployment.
+
+## Rust native runner continuation
+
+The historical six-tuple harness probe remains component evidence. Replace its
+new orchestration with an independently locked Rust1.99.1/edition2024 native tool
+under scripts/ci/windows-native-runner. Share bounded subprocess/readiness ownership
+through test-support; reuse existing actual runtime/authority integration pilots
+rather than copy their signing, replay or audit algorithms. Record exact Cargo
+executable manifests/digests, actual token/OS, source files and subprocess counts.
+Native startup/refusal/CLI dry-run/state snapshots must be actual processes.
+Missing local administration, service activation and reviewed documentation examples
+remain explicit required failures; no blocked component report qualifies delivery.
+Linux/macOS use the same native command under actual non-root UID; Windows requires
+non-elevated actual process token. No localhost product e2e claim follows.
+
+Windows temporary-account orchestration is hosted-only and must be Rust, without
+new PS/JS/Python or runtime script text. The current safe winsafe closure lacks
+NetUserAdd/CreateProcessWithLogonW. A separate narrowly allowed Win32 FFI module in
+the CI-only runner is justified for those official APIs with owned UTF16 buffers,
+RAII native handles, ephemeral secret zeroization, suspended launch into a kill-on-
+close job, minimal environment, generated-name-only cleanup and exact SID checks.
+No production verifier acquires unsafe or account provisioning. Local nonadmin
+validation never provisions system accounts. Unavailable execution fails closed.
+
+SCM activation uses separate explicit native-security ServiceRole grants: immutable
+executable RX versus state-directory modify/inherit to one exact virtual service
+SID. Shared descriptor parsing remains single-owner; ordinary installer/audit/
+custody profiles must continue rejecting the additional service principal. This
+opt-in activation provisioning never runs from inspection/startup or repairs an
+unsafe existing object. Peer pipe descriptors share owner/protected/ACE checks,
+while authority independently checks actual pipe transport and server PID.
+
+Microsoft sources checked for the FFI boundary:
+https://learn.microsoft.com/en-us/windows/win32/api/lmaccess/nf-lmaccess-netuseradd
+https://learn.microsoft.com/en-us/windows/win32/api/lmaccess/nf-lmaccess-netlocalgroupaddmembers
+https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createprocesswithlogonw
+https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects
+
+## Native runner v0.3 API and ownership agreement
+
+Implemented (Windows local tests) native-security storage APIs:
+`grant_service_access(&Path,&str,ServiceRole)->io::Result<()>`,
+`revoke_service_access(&Path,&str,ServiceRole)->io::Result<()>`,
+`verify_service_access(&File,owner_sid:&str,service_sid:&str,ServiceRole)->io::Result<()>`,
+`resolve_service_sid(&str)->io::Result<String>`, and
+`verify_windows_pipe_privacy<H:AsRawHandle>(&H,&str)->io::Result<()>`.
+ServiceRole is Executable(RX0x1200a9,no inheritance) or
+StateDirectory(Modify0x1301bf,object/container inheritance). Virtual service SIDs
+require S-1-5-80 plus five canonical u32 subauthorities. Resolver accepts only
+humanymous-lab-[a-z0-9-]{1,48}, then performs native NT SERVICE account lookup.
+Grant/revoke inspect and set the same non-reparse object handle. Exact grants are
+idempotent; arbitrary ACL/owner repair is refused. Owner-only remains full access.
+An activation state parent is deliberately not a strict custody directory: the
+service must create its own protected owner-private child state. SCM production
+registration/dispatcher/signed-release transaction remain CLI owner's contract.
+Authority owner accepted shared pipe descriptor verification while retaining
+independent actual named-pipe type/server PID verification. Ordinary file and
+custody checks are not broadened. Current token exposes observed elevated and
+enabled_administrator facts without changing installer_allowed semantics.
+
+Implemented shared test-support API `process::capture_with_stderr(&mut Command,
+&[u8],Duration,usize)->io::Result<Captured>` with Captured(status,stdout,stderr).
+Existing capture suppresses stderr. Each output is bounded independently;
+private stdin budget4096bytes, actual exit/total EOF deadline are mandatory.
+Debug prints lengths/status only. Lab owner accepted this interface to retire
+its duplicate thread/drain/wait implementation. Caller owns descendant job/group;
+the helper owns/kills/reaps only its direct child. No supervisor containment claim.
+
+CI owner accepted the independently locked Rust command contract:
+`humanymous-native-runner native --report ABS --binaries ABS/target/debug|release`
+on actual non-root Unix or non-elevated Windows; Windows-only `standard-user`
+prepares then creates the disposable Users-only actor with native Win32 APIs.
+The binary directory selects matching Cargo debug/release build/test artifacts;
+path/digest mismatch fails. Target packages are runtime,authority,cli,native-security,
+not all workspace. Existing complete workspace probe remains separate legacy
+orchestration until its own migration; this tool never labels four packages as all.
+
+Report schema1 retains native delivery identity fields and adds qualification,
+source.file manifest/github image tuple, actor native facts, manifest product/test
+artifact digests/profile, coverage harness counts/per-test summary hashes/exits,
+cases, missing_required_cases, unsupported, documentation_examples_executed and
+full_runtime_qualified. Actual named runtime/authority integration assertions are
+mandatory; unknown/ignored/filtered/missing/duplicate summaries fail. Native direct
+CLI processes prove doctor/dryrun/no mutation and invalid-config/no readiness.
+Exit1 means error; exit2 means component assertions completed but mandatory full
+cases remain missing; exit0/full qualification is deliberately unavailable.
+Missing local-only-admin/documentation-examples and unsupported positive raw
+TLS/H2/browser/service/remote-machine qualification remain explicit. The reviewed
+example digest is identity only; documentation_examples_executed=false. CI owner
+must not waive these missing IDs or rename this component success as release.
+
+Observed local snapshot: native-security9, test-support8 and tool3 unit tests pass;
+Windows actual product attempt4 executes10/10harnesses,51tests,0ignored and exits2
+blocked. Attempts1/2 compile failure from concurrent incomplete CLI and attempt3
+Windows fixture namespace rejection are retained separately in private evidence
+root/20261107051539. Later profile selection/source changes need new local source
+execution. Hosted account/job and Linux/macOS execution are not observed yet.
+No push/tag/publish/production or local system-account provisioning is authorized
+for this continuation. Root/CI owner owns exact-source remote orchestration.

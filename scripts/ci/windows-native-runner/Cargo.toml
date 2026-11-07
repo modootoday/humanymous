@@ -1,0 +1,24 @@
+[package]
+name = "humanymous-native-runner"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99.1"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+
+[dependencies]
+humanymous-test-support = { path = "../../../crates/test-support" }
+humanymous-native-security = { path = "../../../crates/native-security" }
+serde_json = "1.0"
+sha2 = "0.10.9"
+getrandom = "0.4.3"
+zeroize = "1.9.1"
+
+[target.'cfg(windows)'.dependencies]
+windows-permissions = "=0.2.4"
+windows-sys = { version = "=0.61.2", features = ["Win32_Foundation", "Win32_NetworkManagement_NetManagement", "Win32_Security", "Win32_System_Threading", "Win32_System_JobObjects", "Win32_UI_WindowsAndMessaging"] }
+
+[lints.rust]
+unsafe_code = "deny"

@@ -2,6 +2,8 @@
 //! Runtime crates use this only as a dev-dependency.
 use serde_json::{Number, Value};
 
+pub mod process;
+
 fn numbers_equal(first: &Number, second: &Number) -> bool {
     if let (Some(first), Some(second)) = (first.as_i64(), second.as_i64()) {
         return first == second;
