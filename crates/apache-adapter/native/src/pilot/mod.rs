@@ -4,11 +4,12 @@ mod authority;
 mod diagnostic;
 mod origin;
 use rustix::fd::OwnedFd;
-use rustix::process::{Pid, PidfdFlags, Signal, pidfd_open, pidfd_send_signal};
+use rustix::process::{Pid, PidfdFlags, Signal, getpgid, getpgrp, pidfd_open, pidfd_send_signal};
 use sha2::{Digest, Sha256};
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::os::unix::fs::{OpenOptionsExt, PermissionsExt};
+use std::os::unix::process::CommandExt;
 use std::path::Path;
 use std::process::{Child, Command, Stdio};
 use std::sync::atomic::Ordering;
@@ -54,7 +55,15 @@ fn pin_httpd(mut child: Child) -> Result<(Child, OwnedFd), Error> {
     // ownership keeps even an exited child's PID reserved until pidfd_open.
     let pinned = (|| -> Result<OwnedFd, Error> {
         let pid = Pid::from_raw(i32::try_from(child.id())?).ok_or("invalid owned httpd PID")?;
-        Ok(pidfd_open(pid, PidfdFlags::empty()).map_err(std::io::Error::from)?)
+        let pidfd = pidfd_open(pid, PidfdFlags::empty()).map_err(std::io::Error::from)?;
+        // Prefork shutdown signals its process group. Birth isolation must be
+        // proven in the kernel while exclusive wait ownership reserves PID.
+        let group = getpgid(Some(pid)).map_err(std::io::Error::from)?;
+        ensure(
+            group == pid && group != getpgrp(),
+            "httpd process group ownership",
+        )?;
+        Ok(pidfd)
     })();
     match pinned {
         Ok(pidfd) => Ok((child, pidfd)),
@@ -255,6 +264,7 @@ fn startup(
         "selected MPM observed",
     )?;
     let child = Command::new("/opt/httpd/bin/httpd")
+        .process_group(0)
         .arg("-f")
         .arg(&path)
         .arg("-DFOREGROUND")

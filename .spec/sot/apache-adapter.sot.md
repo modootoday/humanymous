@@ -183,3 +183,12 @@ or incomplete diagnostic fails overall completion but preserves independently
 verified45-case counts. Any actual CLI failure remains visible as such. New
 source is unqualified until scoped pure checks and an exact-source real hosted
 retry complete; earlier33/12 evidence remains failed.
+The next process-isolation candidate uses safe CommandExt.process_group(0) for
+each foreground master and isolated legacy CLI helper. Immediately after pidfd
+capture and before any wait/reap, rustix getpgid(Some(owned_pid)) must equal that
+PID and differ from getpgrp() of the pilot. Failure cleans only the exclusive
+unreaped Child and fails closed. All subsequent explicit signals remain pidfd
+signals; no raw process-group kill or numeric fallback is added. Pinned prefork
+shutdown sends SIGTERM to getpgrp(), consistent with the observed35/10cascade
+and CLI helper signal15. Historical actual PGIDs are unknown. Root approved
+this source change and bounded pure checks; actual hosted retry remains gated.

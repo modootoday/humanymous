@@ -6,7 +6,7 @@ use rustix::process::{Signal, pidfd_send_signal};
 use std::fs::{File, OpenOptions};
 use std::io::Read;
 use std::os::unix::fs::{OpenOptionsExt, PermissionsExt};
-use std::os::unix::process::ExitStatusExt;
+use std::os::unix::process::{CommandExt, ExitStatusExt};
 use std::path::Path;
 use std::process::{Command, ExitStatus};
 use std::sync::atomic::Ordering;
@@ -41,6 +41,7 @@ fn capture(server: &Server, base: &Path) -> Result<Capture, Error> {
         .mode(0o600)
         .open(&stderr_path)?;
     let child = Command::new("/opt/httpd/bin/httpd")
+        .process_group(0)
         .arg("-f")
         .arg(&server.config)
         .args(["-k", "stop"])
