@@ -12,6 +12,14 @@ rel:
 
 ## Bottom-up next admission
 
+Root requested a source-only CPU distribution design after unrestricted affinity
+and uneven per-core samples. The SoT now separates Cargo jobs1/2, libtest workers,
+compiler parallelism and optional topology-qualified task-local placement. First
+measure matched genuine rebuilt work with fixed other controls; fresh replays and
+unequal initial targets do not prove compilation scaling. Six lightweight owners
+is the updated admission ceiling, not jobs2 authorization. The86% commit snapshot
+blocks new compilation. No target, affinity change or benchmark was allocated.
+
 Root has now authorized M11's separate selected-input primitive within existing
 tooling paths/dependencies, accepting5000files/2GiB actual read bytes/512MiB per
 file/64roots/30seconds cooperative. Trusted-repository observation is the initial

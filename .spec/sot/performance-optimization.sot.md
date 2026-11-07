@@ -99,7 +99,9 @@ failures and interrupted, unsupported, ignored, filtered and not-run outcomes.
 ## Execution and cache rules
 
 Each workload requires root's explicit source, slot, target, command and time
-budget. Four jobs1/incremental0 local pipelines are a ceiling. Require host
+budget. Six admitted lightweight owners are the current ceiling under structural-
+development; heavy-workload admission is separate. Existing grants keep jobs1/
+incremental0; jobs2 requires its own experiment allocation. Require host
 commit below85% and physical free memory above20GiB before admission; defer new
 compilation at commit at least88% or free memory below16GiB. Serialize cold
 compilation against heavy native Docker/CEF/SDK work. Keep root's source graph
@@ -319,6 +321,63 @@ Runtime's current single accept loop owns mutable Sessions and durable audit.
 Parallel workers would change ownership/ordering and need an accepted architecture
 contract before implementation. A function benchmark cannot qualify throughput,
 network cancellation, audit persistence or complete process-tree cleanup.
+
+## Source-only CPU distribution experiment
+
+Root observed unrestricted32-bit process affinity masks and uneven per-logical-
+processor utilization on the24-core/32-logical-processor i9-14900K. This is not
+evidence of an affinity restriction, P/E-core numbering, scheduler failure or a
+throughput opportunity. The reported86% commit snapshot fails fresh admission;
+no workload is authorized by this design. Retain scheduler default unless actual
+matched observations justify a task-local alternative.
+
+First compare Cargo jobs1 versus2, with test workers fixed at1 and affinity
+unchanged. Cargo job admission, libtest workers and compiler/codegen parallelism
+are distinct controls; jobs1 is not a one-core guarantee. Freeze the same source,
+lock, target/features/profile, codegen units, incremental0, toolchain, command and
+input inventory. Root assigns two exclusive existing target directories and a
+finite changed-source batch with comparable pre-build artifact state. Do not clean
+caches or invent cold-cache equivalence. Initial builds are state observations;
+unchanged all-fresh replays cannot measure compilation scaling. A genuine owner
+edit with equivalent rebuilt units in both targets is required for that claim.
+
+Predeclare three matched changed-source pairs, alternating arm order, only if
+root supplies that finite source sequence. No post-result repetition or selection.
+Record each pair's source/command, Cargo JSON fresh/rebuilt unit identities,
+compiler timing, total compile wall time, process CPU time when observed, peak
+commit/RSS sampling scope, CPU distribution and competing workload observations.
+Unequal rebuilt units or missing CPU/memory observations limit the conclusion;
+report them rather than merging unmatched rows. Unit/test/lint regressions remain
+mandatory and separate from compilation measurement. Capture process start/exit
+and actual target return; abort further admission on guard failure without foreign
+termination. Jobs2 inside one owner and six concurrent owners are separate limits;
+root must budget their aggregate load rather than applying six-times-two blindly.
+
+Optional affinity/CPU-set comparison follows only if this first experiment leaves
+a measured placement question. Obtain actual group, logical processor, core/SMT,
+cache/NUMA and EfficiencyClass mappings from a qualified native topology provider;
+numeric processor indexes and utilization alone do not establish P/E topology.
+CPU-set IDs are not affinity-mask bit positions. Microsoft documents CPU sets as
+soft affinity and restrictive masks as taking precedence; reserved/parked sets
+and actual effective assignments must be recorded. No new native helper/unsafe
+boundary is authorized here. Without a qualified provider, defer this arm.
+
+Change only an owned experimental process through an already qualified launcher,
+before its measured work; retain and verify original/effective policy and child
+inheritance. Never change Codex, another owner's process, global scheduler policy,
+priority, power plan or firmware. Keep jobs/profile/test workers identical and
+compare default versus one predeclared topology-derived placement. A spreading
+visualization alone is not a performance win: require shorter matched completion
+time without admission, correctness, memory or cleanup regression. Missing or
+failed placement observation remains unknown, never successful CPU distribution.
+
+Official sources reviewed2026-11-08: [Cargo jobs configuration](https://doc.rust-lang.org/cargo/reference/config.html#buildjobs),
+[Cargo test execution](https://doc.rust-lang.org/cargo/commands/cargo-test.html),
+[rustc codegen units](https://doc.rust-lang.org/rustc/codegen-options/index.html#codegen-units),
+[Windows CPU sets](https://learn.microsoft.com/en-us/windows/win32/procthread/cpu-sets),
+[CPU topology fields](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-system_cpu_set_information)
+and [process affinity](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setprocessaffinitymask).
+These document mechanisms, not a measured speedup or the current host topology.
 
 ## Runtime measurement profiles awaiting owner allocation
 
