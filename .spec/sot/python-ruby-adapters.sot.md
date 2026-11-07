@@ -73,12 +73,18 @@ requires server-provided RAW_URI or REQUEST_URI, CONTENT_LENGTH and unconsumed
 wsgi.input; reads exactly bounded entity bytes and replaces input with a native
 host BytesIO for the application. Server-enforced input deadlines are a deployment
 prerequisite: synchronous read cannot safely be interrupted by a Rust timer.
+Require a trusted server disconnect callable, humanymous.client_disconnected or
+waitress.client_disconnected, before input and immediately before app handoff.
+Absence is unknown and rejects, not a fabricated false. Waitress qualification
+must enable channel_request_lookahead so its callable can observe disconnects.
 Never call app/start_response before decision. After ALLOW return the app iterable
 unchanged, preserving close(), write(), duplicate response headers and errors.
 No claim that middleware alone controls an unrelated server upgrade handler.
 
 Rack receives env, copies/sanitizes it, requires REQUEST_URI, CONTENT_LENGTH and
-rack.input. Reject rack.hijack? and upgrade/stream extensions. Native callback
+rack.input. rack.hijack? advertises a capability, not a request action. Disable
+it and remove rack.hijack from the app-visible environment; reject actual upgrade
+and unsupported request streams. Native callback
 reads bounded binary input, replays via upstream StringIO and returns the original
 [status,headers,body] without rewriting streaming/close behavior. Ruby objects
 must remain on the Ruby stack or in VM-managed ivars; no unmarked Value in Rust
@@ -93,6 +99,10 @@ and other request protocols reject. Bound http.request chunks before
 allocation; reject disconnect/incomplete body. Copy scope and replay one complete
 http.request followed by the real receive for disconnect ownership. Await real
 app/send callbacks with task-local context, cancellation drops Rust IPC future.
+Keep one receive future outstanding while awaiting authority, prioritize an
+observed disconnect/unexpected post-body event and poll it before origin handoff.
+After ALLOW, move that same pending receive into replay ownership; never drop an
+already-consumed server event and start another receive as if none arrived.
 No sync Tokio block_on on the Python event loop. App is invoked once only after
 consuming BoundResponse and immediately checking expiry/deadline/cancellation.
 Application response send/backpressure and exception semantics remain unchanged.
@@ -147,12 +157,13 @@ artifact or publisher verification. Compilation never establishes native runtime
 
 ## Explicit hosted smoke source
 
-adapters/python/pilot-contract.json describes2required Rust test groups,5target
-framework tuples (Flask/Django WSGI and Starlette/FastAPI/Django ASGI). They deliberately
+adapters/python/pilot-contract.json describes3required Rust test groups,7target
+cases: Flask/Django WSGI and Starlette/FastAPI/Django ASGI dependency failures,
+plus Starlette/FastAPI trusted-server lifespan startup/shutdown. HTTP cases deliberately
 use an unavailable authority fixture, expect503 and independent native spy count0.
 adapters/ruby/pilot-contract.json describes3required Rack/Sinatra/Rails object
 callbacks with the same dependency-down expectation. These are source-defined
-denominators, not executed counts. All8cases remain NOT_RUN. They do not qualify
+denominators, not executed counts. All10cases remain NOT_RUN. They do not qualify
 production IPC/ALLOW/audit/server/wheel/gem/streaming/cancellation-race behavior.
 Actual acceptance still requires the full earlier verification corpus.
 
@@ -168,6 +179,39 @@ HUMANYMOUS_NATIVE_GEM_PACKAGE_REQUEST and call upstream packaging APIs, allowing
 an unchanged ruby --require native-extension invocation with no custom Ruby
 entrypoint. The feature is absent from production. Actual archive/install remains
 NOT_RUN, and self-generated metadata must never state runtime qualification.
+
+Both native modules expose capabilities JSON with actual host-pilot/package-tool
+feature bits. Installed production wheel inspection must reject either bit true.
+Ruby has an explicit read-only native capability receipt environment mode for
+upstream ruby --require, without an authored Ruby script. Empty qualified tuples
+remain explicit; code feature detection is not ABI/runtime qualification.
+
+## Actual WSGI server factory source
+
+host-pilot-only pilot_wsgi reads a bounded private fixture request whose
+configuration member is the original JSON string, preserving strict-parser
+duplicate detection. It constructs actual Flask or Django URL routes through
+public object APIs, with Rust-native views that echo binary201, set two cookies
+and append independent body-length/SHA256 effect receipts in the owned lab.
+No foreign executable source or code-string factory exists. The production module
+must exclude this feature, enforced by installed capability checks.
+
+The upstream server factory command is a later hosted harness seam, not a runnable
+finished acceptance suite. Waitress3.0.2 is a researched candidate (not provisioned
+or audited here); its pinned source exposes REQUEST_URI and a disconnect callable.
+Adding this dependency remains queued for root/CI approval; requirements are not
+silently changed. Existing component smoke counts do not include unrun HTTP-server
+cases. Real production nonALLOW/audit/noeffect and synthetic-engine ALLOW/body/
+cookies/effect cases remain mandatory separate hosted acceptance.
+adapters/python/server-pilot-contract.json preserves this mandatory gate with
+executableHarnessImplemented=false and executedCases=0. It is not satisfied by
+object smoke or a source-only factory. No server group is silently skipped green.
+
+Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
+https://docs.djangoproject.com/en/6.1/ref/urls/ ;
+https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;
+https://raw.githubusercontent.com/Pylons/waitress/v3.0.2/src/waitress/task.py ;
+https://raw.githubusercontent.com/rack/rack/v3.2.8/SPEC.rdoc .
 
 ## Dedicated context handoffs
 

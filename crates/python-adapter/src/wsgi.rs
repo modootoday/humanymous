@@ -38,6 +38,9 @@ impl Wsgi {
         let _admission = Admission::acquire().map_err(failure)?;
         let pending = Pending::new(&self.config).map_err(failure)?;
         let env = environ.copy()?;
+        if disconnected(&env)? {
+            return reject(py, &start_response, 503);
+        }
         let get = |key: &str| -> PyResult<String> {
             env.get_item(key)?
                 .ok_or_else(|| failure("required WSGI field missing"))?
@@ -142,8 +145,21 @@ impl Wsgi {
             .call1((PyBytes::new(py, &body),))?;
         env.set_item("wsgi.input", replay)?;
         pending.check_handoff(expires).map_err(failure)?;
+        if disconnected(&env)? {
+            return reject(py, &start_response, 503);
+        }
         self.app.call1(py, (env, start_response))
     }
+}
+fn disconnected(env: &Bound<'_, PyDict>) -> PyResult<bool> {
+    let check = env
+        .get_item("humanymous.client_disconnected")?
+        .or(env.get_item("waitress.client_disconnected")?)
+        .ok_or_else(|| failure("trusted server disconnect callback required"))?;
+    if !check.is_callable() {
+        return Err(failure("invalid server disconnect callback"));
+    }
+    check.call0()?.extract()
 }
 fn reject(py: Python<'_>, start: &Py<PyAny>, status: u16) -> PyResult<Py<PyAny>> {
     let text = match status {

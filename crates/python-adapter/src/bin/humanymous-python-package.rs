@@ -233,6 +233,19 @@ fn install_test(wheel: &Path, python: &Path) -> Result<(), String> {
         sys.getattr("path")?
             .call_method1("insert", (0, directory.to_string_lossy().as_ref()))?;
         let module = py.import("humanymous_python")?;
+        let capabilities: String = module.call_method0("capabilities")?.extract()?;
+        let capabilities: serde_json::Value =
+            serde_json::from_str(&capabilities).map_err(|_| {
+                pyo3::exceptions::PyRuntimeError::new_err("invalid installed capability receipt")
+            })?;
+        if capabilities["adapter"] != "humanymous.python"
+            || capabilities["hostPilotEnabled"] != false
+            || capabilities["packageToolEnabled"] != false
+        {
+            return Err(pyo3::exceptions::PyRuntimeError::new_err(
+                "fixture or package tool present in production wheel",
+            ));
+        }
         let file: PathBuf = module.getattr("__file__")?.extract()?;
         let actual = file.canonicalize().map_err(|_| {
             pyo3::exceptions::PyRuntimeError::new_err("installed module path unavailable")

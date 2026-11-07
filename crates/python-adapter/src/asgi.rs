@@ -10,9 +10,11 @@ use pyo3::{
 };
 use pyo3_async_runtimes::TaskLocals;
 use std::sync::{
-    Arc,
+    Arc, Mutex,
     atomic::{AtomicBool, Ordering},
 };
+use std::{future::Future, pin::Pin, task::Poll};
+type ReceiveTail = Pin<Box<dyn Future<Output = PyResult<Py<PyAny>>> + Send>>;
 
 /// ASGI HTTP1 guard with transparent trusted-server lifespan forwarding.
 #[pyclass(module = "humanymous_python")]
@@ -162,10 +164,17 @@ impl Asgi {
                 }
                 pending.remaining().map_err(failure)?;
             }
-            let bound = match pending
-                .decide(&config, &observation, &body, AdapterProfile::PythonAsgi)
-                .await
-            {
+            let tail_receive = Python::attach(|py| receive.clone_ref(py));
+            let tail_locals = locals.clone();
+            let mut tail: ReceiveTail =
+                Box::pin(async move { call(&tail_locals, &tail_receive, ()).await });
+            // Observe disconnect while authority is outstanding. Retain the
+            // same receive future for downstream instead of losing an event.
+            let decision = tokio::select! {biased;
+                _=&mut tail=>return Err(failure("ASGI disconnected or unexpected event after complete body")),
+                decision=pending.decide(&config,&observation,&body,AdapterProfile::PythonAsgi)=>decision,
+            };
+            let bound = match decision {
                 Ok(b) => b,
                 Err(_) => return respond(&locals, &send, 503).await,
             };
@@ -181,6 +190,11 @@ impl Asgi {
                 )
                 .await;
             }
+            let tail_ready =
+                std::future::poll_fn(|cx| Poll::Ready(tail.as_mut().poll(cx).is_ready())).await;
+            if tail_ready {
+                return Err(failure("ASGI disconnected before origin handoff"));
+            }
             let replay = Python::attach(|py| {
                 Py::new(
                     py,
@@ -189,6 +203,7 @@ impl Asgi {
                         sent: AtomicBool::new(false),
                         receive,
                         locals: locals.clone(),
+                        tail: Mutex::new(Some(tail)),
                     },
                 )
             })?;
@@ -204,6 +219,7 @@ struct Replay {
     sent: AtomicBool,
     receive: Py<PyAny>,
     locals: TaskLocals,
+    tail: Mutex<Option<ReceiveTail>>,
 }
 #[pymethods]
 impl Replay {
@@ -212,8 +228,19 @@ impl Replay {
         let body = self.body.clone();
         let receive = self.receive.clone_ref(py);
         let locals = self.locals.clone();
+        let tail = if first {
+            None
+        } else {
+            self.tail
+                .lock()
+                .map_err(|_| failure("ASGI receive state unavailable"))?
+                .take()
+        };
         pyo3_async_runtimes::tokio::future_into_py(py, async move {
             if !first {
+                if let Some(tail) = tail {
+                    return tail.await;
+                }
                 return call(&locals, &receive, ()).await;
             }
             Python::attach(|py| {

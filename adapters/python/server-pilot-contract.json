@@ -1,0 +1,32 @@
+{
+  "schema": "humanymous.framework-server-pilot/1",
+  "adapter": "python-wsgi",
+  "status": "not_run",
+  "gateRequired": true,
+  "factorySourceImplemented": true,
+  "executableHarnessImplemented": false,
+  "wholeProductQualified": false,
+  "releaseQualifiedTuples": [],
+  "buildFeatures": ["extension-module", "host-pilot"],
+  "factory": "humanymous_python:pilot_wsgi",
+  "candidateServer": {
+    "name": "waitress",
+    "version": "3.0.2",
+    "dependencyProvisioned": false,
+    "argv": ["waitress-serve", "--host=127.0.0.1", "--port=OWNED_RESERVED_PORT", "--channel-request-lookahead=1", "--channel-timeout=2", "--cleanup-interval=1", "--call", "humanymous_python:pilot_wsgi"]
+  },
+  "privateStdin": {"configuration": "original strict JSON string", "framework": "flask or django", "effect_file": "absolute owned lab receipt path"},
+  "requiredFrameworks": ["flask", "django"],
+  "requiredGroupsPerFramework": [
+    "production-authority-nonallow-audit-no-origin",
+    "synthetic-engine-allow-binary-body-two-cookies-audit-effect",
+    "authority-down-timeout-no-origin",
+    "aborted-body-or-disconnect-before-handoff-no-origin",
+    "oversize-unknown-reserved-upgrade-no-origin"
+  ],
+  "executedCases": 0,
+  "denominatorStatus": "not_run-harness-required",
+  "sourceBindingRequired": ["source_sha", "cargo_lock_sha256", "wheel_sha256", "native_artifact_sha256", "installed_dependency_closure_sha256", "authority_artifact_sha256", "server_configuration_sha256", "image_digest_when_docker"],
+  "cleanupRequired": ["all-owned-host-and-authority-processes-reaped", "no-listener-left", "no-orphan-async-tasks", "no-private-raw-upload"],
+  "constraints": ["Rust-authored-harness-and-callbacks-only", "actual-runtime-hosted-only", "product-e2e-isolated-Docker-only", "no-publish", "no-synthetic-allow-as-real-browser-proof"]
+}

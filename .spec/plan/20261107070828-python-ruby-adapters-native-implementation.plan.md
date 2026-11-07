@@ -134,3 +134,17 @@ failure to static text without changing authority types or exposing internals.
 B returned immediately on first failure, as instructed. Source fix formatted;
 retry/Clippy/native package binary compilation are NOT_RUN pending reassignment.
 PyO3 build-time interpreter discovery is not actual product/pilot execution.
+
+While awaiting reassignment, added the real Starlette/FastAPI startup/shutdown
+native lifecycle group to validate transparent lifespan forwarding. Python's
+required source denominator becomes3groups/7cases, plus Ruby3cases=10total.
+The two added lifecycle cases deliberately do not assert HTTP origin effects or
+authority decisions. All actual cases and the new test compilation remain NOT_RUN.
+Rustfmt/diff passed; no graph mutation or unassigned Cargo execution.
+Further source work: real WSGI server factory/Flask+Django Rust views; capability
+feature bits and production-wheel fixture exclusion; WSGI mandatory trusted
+disconnect callback; ASGI pending receive retained across decision/handoff; Rack
+capability-versus-action hijack correction. All compilation/retry/runtime results
+for these changes are NOT_RUN. Waitress3.0.2 candidate provisioning is queued for
+integration approval, with no manifest/dependency edit. Firstparty references and
+runtime limits are recorded in the context SoT.

@@ -20,8 +20,9 @@ Compiler, Clippy, pure units, contextvars/cancellation/GIL, fidelity, server rea
 deadline, actual frameworks, clean install, Unix/Windows IPC/ABI and lock audit
 are all NOT_RUN. No previous Node success is attributed to this source.
 
-Hosted smoke contract now expects2groups5cases for actual framework objects
-and dependency-down, with explicit ignored opt-in. No server/ALLOW/audit claim.
+Hosted component contract now expects3groups7cases for actual framework objects
+and dependency-down plus trusted-server lifespan, with explicit ignored opt-in.
+No actual HTTP server/ALLOW/audit claim.
 Candidate direct pins are pilot-requirements.txt; retain hosted closure/audit.
 Rust wheel driver build/inspect prints hash/member/tag receipt with generation
 provenance=false and whole/runtime qualification=false. Clean install/import and
@@ -37,3 +38,10 @@ target coverage; no lifespan runtime result is claimed. Wheel install-test uses
 upstream pip in a fresh target and native API import, with explicit hosted opt-in.
 It has not run; archive/import does not establish generation provenance or full
 framework/protection/ABI qualification.
+New source requires WSGI server disconnect callback and preserves one ASGI
+disconnect receive across the authority decision/handoff. These cancellation
+paths are NOT_RUN. host-pilot pilot_wsgi exposes an upstream --call factory for
+real Flask/Django servers with native binary views/cookies/effect receipts. Private
+input uses a configuration JSON STRING, not a permissive parsed-map re-encoding.
+Waitress3.0.2 provisioning is queued, not added to dependencies. Its candidate
+profile must enable channel_request_lookahead and bounded server input deadlines.

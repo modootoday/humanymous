@@ -6,20 +6,21 @@
   "wholeProductQualified": false,
   "releaseQualifiedTuples": [],
   "defaultBuildQualifiesNative": false,
-  "mandatoryGates": ["shared-framework-pure", "native-feature-compile", "host-pilot-all-required-groups", "installed-wheel-native-import"],
+  "mandatoryGates": ["shared-framework-pure", "native-feature-compile", "host-pilot-all-required-groups", "actual-http-server-authority-audit-effect", "installed-wheel-native-import"],
   "buildFeatures": ["host-pilot"],
   "source": "crates/python-adapter/src/hosted.rs",
   "requiredGroups": [
     {"id": "hosted::wsgi_real_frameworks_dependency_failure_has_no_origin_effect", "cases": 2, "frameworks": ["Flask", "Django"], "expectedStatus": 503, "expectedOriginEffects": 0},
-    {"id": "hosted::asgi_real_frameworks_dependency_failure_has_no_origin_effect", "cases": 3, "frameworks": ["Starlette", "FastAPI", "Django"], "expectedStatus": 503, "expectedOriginEffects": 0}
+    {"id": "hosted::asgi_real_frameworks_dependency_failure_has_no_origin_effect", "cases": 3, "frameworks": ["Starlette", "FastAPI", "Django"], "expectedStatus": 503, "expectedOriginEffects": 0},
+    {"id": "hosted::asgi_real_lifespan_forwards_startup_and_shutdown", "cases": 2, "frameworks": ["Starlette", "FastAPI"], "expectedEvents": ["lifespan.startup.complete", "lifespan.shutdown.complete"]}
   ],
-  "expectedGroups": 2,
-  "expectedCases": 5,
+  "expectedGroups": 3,
+  "expectedCases": 7,
   "expectedIgnored": 0,
   "expectedFiltered": 0,
   "command": ["cargo", "test", "--locked", "-p", "humanymous-python-adapter", "--features", "host-pilot", "--lib", "--", "--include-ignored", "--test-threads=1", "--nocapture"],
   "requiredEnvironment": {"HUMANYMOUS_HOSTED_NATIVE_PILOT": "1"},
   "sourceBindingRequired": ["source_sha", "cargo_lock_sha256", "native_artifact_sha256", "python_version", "os_arch_abi", "installed_dependency_closure_sha256"],
-  "scope": "real-framework-object native-callback dependency-unavailable smoke only",
+  "scope": "real-framework-object native-callback dependency-unavailable and trusted-server-lifespan components",
   "notCovered": ["actual-network-server", "production-authority", "synthetic-allow", "browser", "wheel-clean-install", "response-streaming", "cancellation-races", "windows-peer-acl"]
 }

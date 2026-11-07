@@ -33,3 +33,7 @@ both enable native, while production native enables neither fixture nor packager
 Default0tests/empty host build is not native/product evidence. Shared pure and
 native feature compile/actual host/install groups are all mandatory. Host source
 is src/native.rs; explicit Init_humanymous_ruby symbol is unchanged.
+Rack hijack capability advertisement no longer denies every ordinary HTTP request;
+the app-visible copy disables rack.hijack? and removes rack.hijack. Actual upgrade
+requests still reject. New source is NOT_RUN. Native capabilities report actual
+fixture/package feature bits; read-only receipt mode requires no Ruby source.

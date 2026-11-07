@@ -16,6 +16,16 @@ mod package;
 fn failure(ruby: &Ruby, message: impl std::fmt::Display) -> Error {
     Error::new(ruby.exception_runtime_error(), message.to_string())
 }
+fn capabilities() -> String {
+    serde_json::json!({"adapter":"humanymous.ruby","version":"0.1.0-experimental.1",
+        "implementation":"rust-magnus","profiles":["rack-normalized"],
+        "rawTls":false,"originalH2":false,"rawHeaderOrder":false,"capture":false,
+        "requestStreaming":false,"websocket":false,"administration":false,
+        "hijack":false,
+        "maximumBodyBytes":1048576,"maximumPending":64,
+        "hostPilotEnabled":cfg!(feature="host-pilot"),"packageToolEnabled":cfg!(feature="package-tool"),
+        "releaseQualifiedTuples":[]}).to_string()
+}
 fn wrap(ruby: &Ruby, app: Value, options: String) -> Result<Value, Error> {
     let c = Configuration::parse(&options).map_err(|e| failure(ruby, e))?;
     if !c.sync_input_deadline_enforced {
@@ -39,13 +49,13 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
     let target: String = env.fetch("REQUEST_URI")?;
     let authority: String = env.fetch("HTTP_HOST")?;
     let protocol: String = env.fetch("SERVER_PROTOCOL")?;
-    let hijack: bool = env.lookup("rack.hijack?")?;
-    if hijack
-        || !["HTTP/1.0", "HTTP/1.1"].contains(&protocol.as_str())
-        || !c.permits_target(&target)
-    {
+    if !["HTTP/1.0", "HTTP/1.1"].contains(&protocol.as_str()) || !c.permits_target(&target) {
         return reject(ruby, 503);
     }
+    // Capability presence does not mean this request invoked hijack. Disable
+    // the unsupported extension in the application-visible environment copy.
+    env.aset("rack.hijack?", false)?;
+    env.delete::<_, Value>("rack.hijack")?;
     let length = body_length(&env.fetch::<_, String>("CONTENT_LENGTH")?, c.max_body)
         .map_err(|e| failure(ruby, e))?;
     let mut headers = Vec::new();
@@ -173,6 +183,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     let class = module.define_class("Rack", ruby.class_object())?;
     class.define_method("call", method!(call, 1))?;
     module.define_singleton_method("wrap", function!(wrap, 2))?;
+    module.define_singleton_method("capabilities", function!(capabilities, 0))?;
+    if std::env::var("HUMANYMOUS_NATIVE_CAPABILITY_RECEIPT").as_deref() == Ok("1") {
+        println!("{}", capabilities());
+    }
     #[cfg(feature = "package-tool")]
     module.define_singleton_method("build_native_gem", function!(package::build, 2))?;
     #[cfg(feature = "package-tool")]

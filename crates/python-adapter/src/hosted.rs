@@ -30,6 +30,14 @@ impl Spy {
 struct Start {
     statuses: Arc<Mutex<Vec<String>>>,
 }
+#[pyclass]
+struct Alive;
+#[pymethods]
+impl Alive {
+    fn __call__(&self) -> bool {
+        false
+    }
+}
 #[pymethods]
 impl Start {
     fn __call__(&self, status: String, _headers: Py<PyAny>) -> PyResult<()> {
@@ -108,6 +116,7 @@ fn wsgi_real_frameworks_dependency_failure_has_no_origin_effect() {
                 .getattr("BytesIO")?
                 .call1((PyBytes::new(py, &[0, 255]),))?;
             env.set_item("wsgi.input", input)?;
+            env.set_item("humanymous.client_disconnected",Py::new(py,Alive)?)?;
             let statuses = Arc::new(Mutex::new(Vec::new()));
             let start = Py::new(
                 py,
@@ -226,6 +235,44 @@ struct AsgiInvoke {
     receive: Py<PyAny>,
     send: Py<PyAny>,
     loop_: Py<PyAny>,
+}
+
+#[test]
+#[ignore = "actual CPython/Starlette/FastAPI lifespan native callbacks; hosted only"]
+fn asgi_real_lifespan_forwards_startup_and_shutdown() {
+    enabled();
+    Python::initialize();
+    Python::attach(|py|->PyResult<()> {
+        let native=module(py)?;
+        for (name,class) in [("starlette.applications","Starlette"),("fastapi","FastAPI")] {
+            let app=py.import(name)?.getattr(class)?.call0()?;
+            let guard=native.getattr("Asgi")?.call1((app,config()))?;
+            let scope=PyDict::new(py);scope.set_item("type","lifespan")?;
+            scope.set_item("state",PyDict::new(py))?;
+            let version=PyDict::new(py);version.set_item("version","3.0")?;scope.set_item("asgi",version)?;
+            let asyncio=py.import("asyncio")?;let loop_=asyncio.call_method0("new_event_loop")?;
+            asyncio.call_method1("set_event_loop",(&loop_,))?;
+            let inbound=asyncio.getattr("Queue")?.call0()?;
+            for kind in ["lifespan.startup","lifespan.shutdown"] {
+                let event=PyDict::new(py);event.set_item("type",kind)?;
+                inbound.call_method1("put_nowait",(event,))?;
+            }
+            let outbound=asyncio.getattr("Queue")?.call0()?;
+            let factory=Py::new(py,AsgiInvoke {guard:guard.unbind(),scope:scope.into_any().unbind(),
+                receive:inbound.getattr("get")?.unbind(),send:outbound.getattr("put")?.unbind(),loop_:loop_.clone().unbind()})?;
+            loop_.call_method1("call_soon",(factory,))?;
+            loop_.call_method1("call_later",(5.0,Py::new(py,Stop {loop_:loop_.clone().unbind()})?,py.None()))?;
+            loop_.call_method0("run_forever")?;
+            loop_.getattr("_humanymous_pilot_task")?.call_method0("result")?;
+            let startup=outbound.call_method0("get_nowait")?;let shutdown=outbound.call_method0("get_nowait")?;
+            assert_eq!(startup.get_item("type")?.extract::<String>()?,"lifespan.startup.complete");
+            assert_eq!(shutdown.get_item("type")?.extract::<String>()?,"lifespan.shutdown.complete");
+            assert_eq!(outbound.call_method0("qsize")?.extract::<usize>()?,0);
+            loop_.call_method0("close")?;
+            println!("humanymous-python-hosted framework={name} startup=complete shutdown=complete profile=trusted-server-lifespan");
+        }
+        Ok(())
+    }).unwrap();
 }
 #[pymethods]
 impl AsgiInvoke {
