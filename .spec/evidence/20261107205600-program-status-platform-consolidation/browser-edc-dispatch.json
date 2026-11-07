@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.browser-validation-dispatch/1",
+  "source": "edc30181b3b01be4f59c8d16ea641b343c3b05b3",
+  "branch": "codex/browser-product-validation",
+  "run_id": 42418752735,
+  "attempt": 1,
+  "event": "push",
+  "observed_status": "in_progress",
+  "monitor_owner": "Lab",
+  "update": "fast-forward only",
+  "full_ci_source": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "full_ci_untouched": true,
+  "main_updated": false,
+  "publication": false,
+  "collector_candidate_source_and_common_cargo_equal_to": "889eb6f844e2e8fa6663af6c3b25410127f466b3",
+  "local_lab_actual_tests": 37,
+  "local_lab_receipt": "8d05fecce5b77f8b2ed6839e4e90489828529135",
+  "scope": "Dispatch observation only; no new browser outcome or historical HTTP403 refinement",
+  "private_run_api_sha256": "eeac088524817701d947d35d60e03b1a9ea664d01cf91aad8b36b8195c7d5df7",
+  "private_run_api_bytes": 12792
+}
