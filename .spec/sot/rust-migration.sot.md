@@ -619,6 +619,14 @@ harnesses; Node product pilots remain required, and unknown ignored tests must
 not be relabeled as helpers. Docker wargame evaluation remains failed with
 19 errors, seven unsupported cases and no evaluated cases.
 
+The subsequent isolated Python validation graph window adds only existing
+audit/native-security/signals development dependencies. A selected offline
+Cargo update resolves zero external package changes and preserves all locked
+versions; locked inventory metadata succeeds. The separate Waitress 3.0.2
+fixture is a hash-pinned upstream test dependency, not authored Python product
+implementation or evidence of an executed WSGI integration. Local packaging
+checks and actual hosted HTTP qualification remain separate gates.
+
 The lab runtime-process profile executes the real humanymous-runtime binary with
 private piped startup/readiness, actual durable audit storage and an owned
 loopback origin inside one network-none non-root container. Its Rust pilot

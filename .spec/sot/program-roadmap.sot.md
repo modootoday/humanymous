@@ -11,6 +11,29 @@ rel:
 
 # Overall roadmap and milestones
 
+## User-authorized concurrency increase: 2026-11-07
+
+The user explicitly requested higher local concurrency. The current ceiling is
+four independently allocated pipelines (A/B/C/D), superseding earlier two-slot
+snapshots. At admission, measured physical memory is 63.34 GiB with 33.21 GiB
+free, commit limit 68.34 GiB with 12.75 GiB free (81.3% used), 32 logical CPUs
+at 48% load and 167 GiB free disk. Physical free memory alone is not commit
+headroom. Each Cargo pipeline retains jobs=1 and incremental=0 and an exclusive
+target directory. Admit new work only below 85% commit and above 20 GiB free
+physical memory. At 88% commit or below 16 GiB free, defer new compilation and
+reduce subsequent allocations; never terminate another owner's processes.
+
+| Slot | Current allocation | Exclusive target | Boundary |
+|---|---|---|---|
+| A | Product-lab runner pure checks and Clippy | target | No actual Docker/process/network tests |
+| B | Node/Python/Ruby packaging compilation | target/node-native/build | No actual framework or installer execution |
+| C | Delivery 50 pure checks and scoped Clippy | target/validation-agents | No actual native/socket/GUI pilots |
+| D | Apache safe units and default native-package compilation | target/validation-native | No httpd/bindgen/header features or native execution |
+
+Heavy CEF/native/bindgen builds remain mutually exclusive. Model loading needs
+a separate explicit allocation and is not implicitly enabled by the new ceiling.
+Manifest changes still require a root-owned integration window between builds.
+
 ## Current integration delta: 2026-11-07, after 6500ec23
 
 This delta supersedes the live-state claims in the older briefing below; older

@@ -2336,9 +2336,12 @@ name = "humanymous-python-adapter"
 version = "0.1.0"
 dependencies = [
  "hex",
+ "humanymous-audit",
  "humanymous-authority",
  "humanymous-framework-adapter",
  "humanymous-integrity",
+ "humanymous-native-security",
+ "humanymous-signals",
  "pyo3",
  "pyo3-async-runtimes",
  "serde_json",
