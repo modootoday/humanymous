@@ -179,6 +179,17 @@ NOT_RUN and await root's next slot/hosted candidate; the d9 pure7/Clippy receipt
 retains its earlier exact working-source scope. No manifest changes or local
 service/ACL/port test execution were performed by this source-only extension.
 
+Source review then found a concrete startup gap: ready() cleared the independent
+deadline before the synchronous publisher returned. The authored follow-up keeps
+the deadline while publishing and clears it only after successful return in the
+Running phase. Concurrent stop keeps Draining and its stricter deadline; no state
+mutex is held across publication. The existing pure state test now covers both
+successful publication and stop during publication, retaining seven pure tests.
+New check/Clippy/pure execution remains NOT_RUN since d9/A was returned. Direct
+rustfmt first encountered transient Windows mapped-file error1224; one bounded
+retry and subsequent rustfmt --check/diff check passed. No process was killed,
+no compiler overlap was started and no raw failure was relabeled as a pass.
+
 Root reassigned CLI to the genuinely free sot-plan lane, disjoint from the Windows
 runner's release lane. CLI owns release-descriptor verification, immutable service
 generations, native manager adapters and explicit Rust process/service fixtures.

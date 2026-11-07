@@ -44,6 +44,11 @@ alone cannot preempt those calls. On expiry the owned host exits nonzero and
 must not emit a successful stopped/drained/flushed report. Windows SCM Stop and
 Unix termination map to the same channel. Success requires runtime ExitReport's
 actual stopped/drained/audit_flushed values, not receipt/loopback readiness.
+The startup bound remains armed until synchronous readiness publication returns,
+including native SCM status or nonsecret output flush. Listener bind alone cannot
+disarm it. If stop arrives during publication, publication completion preserves
+the stricter existing deadline instead of clearing or extending it. The watchdog
+never holds its state lock across the potentially blocking publisher call.
 Observer management e6dd38d uses the existing authenticated native transport and
 independent Credential; it is not exposed through browser/application routes.
 

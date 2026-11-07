@@ -192,6 +192,7 @@ async fn run(
     let should_publish = supervisor.ready()?;
     if should_publish {
         publish(&readiness)?;
+        supervisor.published()?;
     }
     let diagnostic_shutdown = shutdown.clone();
     let answer = std::mem::take(&mut plan.ready_response);

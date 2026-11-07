@@ -26,11 +26,22 @@ impl State {
         match self.phase {
             Phase::Starting => {
                 self.phase = Phase::Running;
-                self.deadline = None;
                 Ok(true)
             }
             Phase::Draining => Ok(false),
             _ => Err(invalid("unexpected host readiness transition")),
+        }
+    }
+    fn published(&mut self) -> io::Result<()> {
+        match self.phase {
+            Phase::Running => {
+                self.deadline = None;
+                Ok(())
+            }
+            // Stop can arrive while synchronous readiness publication is in
+            // flight. Completion must never disarm or extend that stop bound.
+            Phase::Draining => Ok(()),
+            _ => Err(invalid("unexpected readiness publication transition")),
         }
     }
     fn stop(&mut self, deadline: Instant) -> bool {
@@ -191,6 +202,15 @@ impl Supervisor {
         self.state.1.notify_all();
         Ok(())
     }
+    pub(super) fn published(&self) -> io::Result<()> {
+        self.state
+            .0
+            .lock()
+            .map_err(|_| invalid("supervisor poisoned"))?
+            .published()?;
+        self.state.1.notify_all();
+        Ok(())
+    }
 }
 impl Drop for Supervisor {
     fn drop(&mut self) {
@@ -242,11 +262,13 @@ mod tests {
     }
     #[test]
     fn pure_readiness_before_stop_cannot_prove_stopped() {
+        let deadline = Instant::now() + Duration::from_secs(1);
         let mut state = State {
             phase: Phase::Starting,
-            deadline: None,
+            deadline: Some(deadline),
         };
         assert!(state.ready().unwrap());
+        assert_eq!(state.deadline, Some(deadline));
         assert!(
             state
                 .stopped(&ExitReport {
@@ -256,5 +278,16 @@ mod tests {
                 })
                 .is_err()
         );
+        state.published().unwrap();
+        assert_eq!(state.deadline, None);
+        let mut interrupted = State {
+            phase: Phase::Starting,
+            deadline: Some(deadline),
+        };
+        assert!(interrupted.ready().unwrap());
+        assert!(interrupted.stop(deadline + Duration::from_secs(4)));
+        interrupted.published().unwrap();
+        assert_eq!(interrupted.phase, Phase::Draining);
+        assert_eq!(interrupted.deadline, Some(deadline));
     }
 }
