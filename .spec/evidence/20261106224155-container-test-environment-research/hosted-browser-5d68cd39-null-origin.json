@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "source_sha": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+  "run": 42425474990,
+  "attempt": 1,
+  "event": "push",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42425474990",
+  "terminal": "failure",
+  "preflight": {
+    "job": 128562725233,
+    "conclusion": "success",
+    "lab_passed": 40,
+    "delivery_passed": 121,
+    "unix_proxy_producer_passed": 3,
+    "unix_proxy_other_tests_filtered": 6,
+    "go_units_passed": 10,
+    "deployment_passed": 1,
+    "facade_default_passed": 2,
+    "facade_go_passed": 2,
+    "facade_external_passed": 2,
+    "unix_actor_check": "passed",
+    "strict_clippy": "passed",
+    "policy": "passed"
+  },
+  "product": {
+    "job": 128563546997,
+    "conclusion": "failure",
+    "isolation": "docker",
+    "assertions": {
+      "failed": 2,
+      "other": 0,
+      "passed": 16,
+      "total": 18
+    },
+    "owner_exit_code": 1,
+    "safe_diagnostics": {
+      "browser_actor": {
+        "dns_finish": "succeeded",
+        "exit_code": 1,
+        "filtered_count": 66,
+        "full_product_qualified": false,
+        "inventory_count": 67,
+        "inventory_matched": true,
+        "parser_summary_matched": false,
+        "process_success": false,
+        "schema": "humanymous.lab-browser-actor-outcome/1",
+        "selected_count": 1,
+        "source_prefix_authenticated": false,
+        "state": "observed",
+        "test_passed": false
+      },
+      "failure_count": 2,
+      "failures": [
+        {
+          "case_id": "browser-actual-witness-exchange",
+          "error_code": "assertion_failed",
+          "status": "failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "browser_bootstrap_origin_browser_proxy_null",
+          "status": "failed"
+        }
+      ],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    },
+    "images": [
+      "sha256:4ea799cbf233dfccd5a61debc5eba3259caaa1fba5838b22e0128c3b143eedac",
+      "sha256:649ad2c5577024b52e83bbbd18062addfa8391fa56d97f1ac03dbf48dff587d2",
+      "sha256:016d868c21a71396bdef7d4c3e5a099630c52c5b9505599727b57271f7b9e8dd"
+    ],
+    "source_changed_during_execution": false,
+    "canonical_git_tree_sha256": "8ababbd9fee7cb1f3c06757b7fe9e363d7b2f395de153f1951f591d1e254605f",
+    "source_manifest_sha256": "7da9d0e93e459695498c2f00e36ea9f8a352973bcc5ed09f7253652744ca7c4b",
+    "source_reported_private_report_sha256": "42857e38beaa2da08cac96c776c7f4a62f778f2103cbd63627f746310e6e3a77",
+    "original_private_ledger_recovered": false,
+    "full_product_qualified": false,
+    "release_ready": false,
+    "required_unavailable_count": 9
+  },
+  "interpretation": [
+    "Gate build progressed far enough to execute the actual isolated browser actor; this source is no longer a build-before-actor result.",
+    "The source-bound finite diagnostic identifies bootstrap Origin rejection with B browser-proxy null-class observation. It does not establish G proxy or Runtime received Origin bytes, or prove a historical source failure cause.",
+    "Actual witness exchange assertion remains failed; no witness/drain ordering or policy change is qualified.",
+    "No actual Go8 Docker rerun belongs to this source. Earlier a19 Go8 success remains source-specific."
+  ],
+  "custody": {
+    "private_evidence": "evidence:root/20261107233022",
+    "raw_files": [
+      {
+        "name": "run-start.json",
+        "bytes": 3689,
+        "sha256": "11d3a25c48e2c4c1a00335626d0b99354d685abfe7dd213902922852dc963259"
+      },
+      {
+        "name": "source-bind.json",
+        "bytes": 240,
+        "sha256": "795938e8cdd641bb1ba3934051a1576f8b6dade9c6b4329869b88a8417233f42"
+      },
+      {
+        "name": "source-delta.json",
+        "bytes": 1996,
+        "sha256": "dffa7b24e9674248084937742dc32aa020e82822a957a2f56fbb742d51dab2a0"
+      },
+      {
+        "name": "run-terminal.json",
+        "bytes": 5343,
+        "sha256": "4ba712ea66193b1c45e802279295fc8e3a3d81c9233df784a16856ccc118a8ef"
+      },
+      {
+        "name": "preflight-job-api.json",
+        "bytes": 4498,
+        "sha256": "f496e540917569b4abf9618e6e8547f5ce5824cbbc8fb2c38bc3e92e5b454e9e"
+      },
+      {
+        "name": "preflight.official-job.log",
+        "bytes": 105317,
+        "sha256": "044361d424eca07074d0e2f579fdea6583d1e587f70a4bc52b47af1cc7240029"
+      },
+      {
+        "name": "preflight-annotations.json",
+        "bytes": 2,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "name": "product-job-api.json",
+        "bytes": 2040,
+        "sha256": "52c46b3feaa2fc4f6f4f9e70d7e51befa798ddfb072a1398fc0c700f9900c76d"
+      },
+      {
+        "name": "product.official-job.log",
+        "bytes": 51081,
+        "sha256": "85ccbc1207ebaadb63d0bb04030e4795905725ac8e70c79b17a6d6f293a3e681"
+      },
+      {
+        "name": "product-source-reported.json",
+        "bytes": 2520,
+        "sha256": "1a38a177bfc615dd68930a6254cd02f287c448e57d2c9a6ff7aaa5006ef12eb1"
+      },
+      {
+        "name": "product-annotations.json",
+        "bytes": 304,
+        "sha256": "5d79ef7b287359b372371dfacec0e0c5eada7c8fee5a555b33328c30b29798cd"
+      },
+      {
+        "name": "artifacts.json",
+        "bytes": 32,
+        "sha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c"
+      },
+      {
+        "name": "official-run-logs.zip",
+        "bytes": 83342,
+        "sha256": "f547534da6b79f577ee4c021557ca8f8623aff542f13b6fcead7000308758551"
+      },
+      {
+        "name": "zip-inventory.json",
+        "bytes": 2759,
+        "sha256": "b1764c996600a331b4b969748223de63d8f19c59ce7276cf5b21ddfae7cd9e5a"
+      },
+      {
+        "name": "repository-visibility.json",
+        "bytes": 40,
+        "sha256": "1e3cd48c29e368a25789ae7c32070b08c87ef73974eaa4f81ba2fdc32ac858d5"
+      },
+      {
+        "name": "connector-product-projection.json",
+        "bytes": 2520,
+        "sha256": "1a38a177bfc615dd68930a6254cd02f287c448e57d2c9a6ff7aaa5006ef12eb1"
+      },
+      {
+        "name": "watch.log",
+        "bytes": 37311,
+        "sha256": "650fbcbeaf8f6800dcbd3afda33a3b56b0122a1d68bb21a36abf56b04faf4008"
+      }
+    ],
+    "connector_api_projection_byte_equal": true,
+    "zip_entries": 30,
+    "product_annotations": 1,
+    "preflight_annotations": 0,
+    "artifacts": 0,
+    "sole_watch_session": 87043,
+    "watch_exit": 1,
+    "active_watch": false
+  },
+  "hosted": {
+    "repository_visibility": "public",
+    "runner_labels": [
+      "ubuntu-24.04"
+    ],
+    "runner_group": "GitHub Actions",
+    "compute_free_eligibility": "Public repository standard GitHub-hosted runner",
+    "billing_reference": "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "limits": "Free compute eligibility only, not an invoice, storage, network or universal cost audit."
+  },
+  "next": "Root review and exact-path ownership grant required before a source fix; no retry or dispatch performed."
+}

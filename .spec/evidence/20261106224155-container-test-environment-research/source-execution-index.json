@@ -176,6 +176,15 @@
       "result": "gate_build_failed_before_browser",
       "facts": "PreflightLab40/Delivery121/GNUproducer3passed6filtered/Go10+1/facade2+2+2/Unixcheck/Clippy/policy pass. Product3assertions2pass1fail browser_gate_build, actor not_observed. No actual wire class; staleAuditpackage caller is source defect, not proven first failed Docker RUN.",
       "evidence": "hosted-browser-1f2b9a93-build-failure.json"
+    },
+    {
+      "source": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+      "run": 42425474990,
+      "job": 128563546997,
+      "profile": "browser_product",
+      "result": "bootstrap_origin_browser_proxy_null",
+      "facts": "Preflight Lab40/Delivery121/GNUproducer3passed6filtered/Go10+1/facade2+2+2/Unixcheck/Clippy/policy passed. Actual Docker actor observed67/1/66matched;18assertions16pass2fail, B-only null Origin diagnostic. No G/Runtime header attestation, full/releasefalse,9requiredunavailable.",
+      "evidence": "hosted-browser-5d68cd39-null-origin.json"
     }
   ],
   "unmeasured": [
