@@ -86,6 +86,11 @@ impl DurableAudit for Log {
         Log::append(self, record).map(|_| ())
     }
 }
+impl DurableAudit for humanymous_audit::log::SealedLog {
+    fn append(&mut self, record: Record) -> std::io::Result<()> {
+        humanymous_audit::log::SealedLog::append(self, record).map(|_| ())
+    }
+}
 /// Exact seven-field wire response, with no arbitrary response mutation hooks.
 #[derive(Debug, Serialize)]
 #[serde(deny_unknown_fields)]

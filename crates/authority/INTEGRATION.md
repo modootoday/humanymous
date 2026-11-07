@@ -210,3 +210,10 @@ humanymous.dotnet/aspnetcore-normalized at0.1.0-experimental.1. Exact readiness
 keys apache_normalized/aspnetcore_normalized are normalized-only. Configuration
 changed after the authority10pure record: new compile/unit/native execution is
 NOT_RUN; original host ABI/MPM/framework qualification belongs to host owners.
+
+Audit-owned log::SealedLog now implements authority::decision::DurableAudit
+directly; append errors propagate before response. Construct through audit
+SealedLogOptions/UnlockCredential/PinnedWitness, retaining sealed ownership
+through connection drain and flush. Runtime owns wrapper migration; authority
+main still uses legacy inline-key configuration. Trait delta compile and hosted
+startup/drain are NOT_RUN pending assigned gates.

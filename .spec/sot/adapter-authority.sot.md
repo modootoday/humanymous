@@ -268,3 +268,13 @@ remain null at this wire profile. Config selection is independent of wire ID or
 mode; mixed identity/mode rejects. Go continues the existing HTTP Gate profile;
 no new Go producer is inferred. Implementation source does not qualify actual
 Apache MPM/hooks or ASP.NET host behavior. New source execution is NOT_RUN.
+
+## Audit-owned sealed lifetime adapter
+
+Audit29ee901 provides log::SealedLog owning custody/WAL/key guards together.
+Authority implements its local DurableAudit trait directly for that shared type,
+delegating append and preserving I/O errors before any decision response. No
+key/lifetime wrapper is copied into authority. Composition callers must open
+SealedLog through audit's existing unlock/witness contract before listening and
+retain ownership through drain/flush. This adapter alone does not migrate the
+authority binary's inline-key startup or qualify external witness independence.

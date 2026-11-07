@@ -230,3 +230,12 @@ Direct rustfmt and owned whitespace checks passed. Cargo is allocated to wargame
 and no command was started. Earlier authority10pure result does not cover this
 changed configuration or new test; revalidation required. No blanket producer
 inference or new Go producer was added.
+
+## Shared SealedLog trait integration
+
+Read actual audit29ee901 exported SealedLog API and append signature. Added
+DurableAudit impl in authority decision.rs; delegates append.map to unit without
+catch/fallback. Runtime can replace its separate wrapper with shared owner.
+No manifest/lock/crypto/OS reader duplication. Direct rustfmt and whitespace
+check passed; Cargo slot not assigned and trait compilation/hosted lifecycle
+remain NOT_RUN. Authority binary inline-key startup remains explicitly unmigrated.
