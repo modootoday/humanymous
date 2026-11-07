@@ -102,6 +102,12 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Live consumed-membership source correction: verify_consumed no longer discards
+optional native read bytes or trusts cached membership after file loss. Actual
+present bytes authenticate and match exact current anchor before membership;
+existing native test adds live-open loss/corruption/rollback/restoration cases.
+No compile/native execution yet. Evidence:root/20261107095443.
+
 The measured root hybrid policy now ends the benchmark quiet window. This lane
 has requested, but has not received, a new validation slot for latest retained
 state/erasure/witness lifetime source. No idle slot is self-allocated. Historical

@@ -1,5 +1,12 @@
 # Sealed key compatibility integration
 
+Latest source correction: verify_consumed now requires present authenticated
+actual native ledger bytes at the exact current anchor, then checks that body's
+membership. Legacy resume_erasure cannot rely on cached membership after live
+file loss/corruption/rollback. Existing native test extended, not yet executed.
+Independent freshness still requires the retained-control path.
+Evidence:root/20261107095443.
+
 The current root measured hybrid policy ends the benchmark quiet window.
 Latest audit source below remains NOT_RUN until an explicitly assigned local
 slot completes exact-source checking and native execution. Historical quiet

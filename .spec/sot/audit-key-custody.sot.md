@@ -12,6 +12,12 @@ rel:
 
 # Audit key custody
 
+Consumed-membership reconciliation must read present native ledger bytes,
+reauthenticate the complete signed body with existing policy/key/capacity rules
+and require its anchor to equal the opened authority's current anchor. Cached
+membership alone cannot survive committed-state loss, corruption or rollback.
+This local check does not substitute for independent anchor retention/freshness.
+
 ## Rule
 
 ### Product-owned sealed startup and witnessed recovery delta

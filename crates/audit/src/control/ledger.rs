@@ -328,8 +328,12 @@ impl ControlAuthority {
     /// Authenticate exact membership in the currently pinned spent ledger.
     /// Used solely to reconcile that same operation after an interrupted effect.
     pub fn verify_consumed(&self, proposal: &Proposal) -> io::Result<()> {
-        self.store.read()?;
-        let spent = self
+        let bytes = self.store.read()?.ok_or_else(invalid)?;
+        let snapshot = authenticate(&bytes, &self.key, &self.policy, self.capacity)?;
+        if snapshot.anchor != self.anchor {
+            return Err(invalid());
+        }
+        let spent = snapshot
             .body
             .spent
             .get(&proposal.operation_id)

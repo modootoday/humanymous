@@ -1435,6 +1435,17 @@ fn durable_consumption_rejects_replay_and_whole_file_rollback() {
         .authority(LedgerBootstrap::Pinned(&latest))
         .unwrap();
     restored.verify_consumed(&proposal).unwrap();
+    let ledger = directory.0.join("control.json");
+    let saved = directory.0.join("control.saved-for-membership-loss");
+    fs::rename(&ledger, &saved).unwrap();
+    assert!(restored.verify_consumed(&proposal).is_err());
+    fs::rename(&saved, &ledger).unwrap();
+    fs::write(&ledger, b"corrupt authenticated ledger probe").unwrap();
+    assert!(restored.verify_consumed(&proposal).is_err());
+    fs::write(&ledger, &original).unwrap();
+    assert!(restored.verify_consumed(&proposal).is_err());
+    fs::write(&ledger, &committed).unwrap();
+    restored.verify_consumed(&proposal).unwrap();
     drop(restored);
     fs::write(directory.0.join("control.json"), &original).unwrap();
     assert!(
