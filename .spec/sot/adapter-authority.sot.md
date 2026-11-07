@@ -915,10 +915,15 @@ constructor or a wire-selected policy. Proposed exact members:
 - service and observer: fixed role1/2, owned_name, canonical_SID, actual_PID,
   actual_creation_FILETIME, role_epoch16, BASE_plan_digest32, artifact_digest32;
 - scope: installation/tenant/origin/revision, each1..128 ASCII alphanumeric or
-  ._:-, plus application_authority1..1024 printable ASCII excluding @/#? and
+  ._:-, plus application_authority1..1024 ASCII bytes33..126 excluding @/#? and
   backslash, EXACT existing Authority scope grammar, no case normalization;
 - attempt: grant_id32, credential_epoch16, startup_cap_ms:u32,
   earliest_issued_ms:u64, latest_not_after_ms:u64.
+
+attempt.startup_cap_ms is THE explicit configured positive startup cap for this
+attempt, not merely a suggested wire value. Both signed caps must equal it.
+There is no hidden max_startup_cap_ms, out-of-struct policy input or implicit
+default; changing this configured cap requires a new expected attempt context.
 
 Validate lengths, namespace/SID/profile inequalities, nonzero IDs/epochs and time
 intervals BEFORE hashing/allocating variable data. No arbitrary extra fields,
@@ -1072,7 +1077,7 @@ All time arithmetic is checked: reject reversed intervals or overflow BEFORE
 subtraction/conversion; require cap <= checked(not_after-issued) and exact
 Prepared/Commit cap equality. Reference now==expiry refuses. No wrapping or
 saturating arithmetic may turn invalid/expired data into accepted authorization.
-The expected maximum cap must itself be explicit/positive, never a default lease.
+The exact expected attempt.startup_cap_ms is explicit/positive, never a default lease.
 Native owner separately conserves the minimum original local monotonic
 startup deadline and signed wall remainder, detects rollback and never renews via
 frame/retry/ACK. Key/delegation/pair/instance changes require fresh explicit native

@@ -931,3 +931,15 @@ sent to root/native/runtime/CLI for delta verification. All actual native/store/
 W/claim/transport/Ready and other-OS provider gates remain OPEN. No Rust codec,
 Cargo edge, private key/provider read or workload. Root must accept final packet
 contract and existing-version graph edges before first pure implementation.
+
+## Final CLI precision delta after native READY verdict
+
+Native delta review accepted09bc9d55 as READY for Root's bounded DATA/signature
+kernel contract acceptance only, with actual native gates still OPEN. CLI found
+no new P0, independently confirmed final2768bytes, and requested two precision
+deltas: application_authority explicitly ASCII33..126 (not space32), and exact
+attempt.startup_cap_ms is THE configured positive bound used by both records,
+not an undocumented extra maximum input. Reflected both without packet/size change.
+Final precision SoT SHA256
+73562d485df4514c9a5bd53032f5cbbd89cdc1b8e459de2595f6f46f3877db63.
+No implementation, edge, vector execution or native/Ready approval follows.
