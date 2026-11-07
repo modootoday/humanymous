@@ -98,6 +98,26 @@ new fixture. Source-specific outcomes do not transfer across these checkpoints.
 
 ## Final integration milestone order
 
+### Shared process-helper review gate
+
+Root source review of `crates/test-support/src/process.rs` found that
+`capture_with_stderr` is not evidence of a hard cleanup deadline or joined
+readers. `stop` invokes blocking `Child::wait`; output-reader JoinHandles are
+discarded; startup writes are synchronous; the subsequent child wait starts a
+fresh relative timeout. These are source observations, not an observed hang.
+Existing component receipts retain their exact observed outcomes, but cannot
+establish these broader properties. In particular, Delivery must not infer
+container or reader cleanup from this helper's timeout, guard drop or comments.
+
+Native Windows owns the shared API review; Delivery owns its Docker caller and
+Convention independently audits the finding. The next design must distinguish
+observed direct-child exit, reader joins, daemon-side container identity and
+unknown descendant cleanup, preserve one original deadline and retain owners on
+failure. Docker create can fail after the daemon created an object: recovery
+must validate the unique owner label, image ID and stopped state before removal;
+an unknown or foreign object must never be removed. No new helper guarantee or
+actual Docker result is accepted until source review and allocated tests prove it.
+
 | Milestone | State | Exit requirement |
 | --- | --- | --- |
 | M1 shared contracts and package structure | In progress | Finish native owner/context/epoch/identity boundaries and source-bound units without weakening security |
