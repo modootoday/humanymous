@@ -50,6 +50,32 @@ transport: downloaded generic archives omitted .well-known/security.txt. The new
 in-job archive consumers prove serialization checks, not actual main transport.
 Free branches keep automatic artifact uploads disabled.
 
+## Next validation ownership and source boundaries
+
+Go run42369171124 passed preflight128393523707 and entered product128393945764;
+its actual eight-case result remains pending. Apache2d66c0df safe12 and pilot11
+pure tests passed, with scoped check/Clippy and unchanged immutable snapshot;
+its next real SDK/45-case run still requires terminal hosted evidence.
+
+Audit4f9152fe records nine scoped Merkle tests, including immutable Go66 size
+vectors with2145 inclusion and2080 consistency paths. One foreign context
+document changed in the119-path snapshot; remaining118 paths were unchanged.
+This is not a new full-suite or operational-memory qualification. Native20cdc325
+records four lifecycle plus two inventory tests against TEN unchanged captured
+inputs; the earlier eleven-input report was incorrect. Subsequent owner API
+corrections require fresh validation and do not inherit that result.
+
+The next browser-product diagnostic reuses the existing delivery pilot and Lab
+--browser-product --require-full contract. CI owns only a dedicated caller and
+policy/catalog wiring. Owner exit1 or2 stays nonzero; no new green component
+contract, blanket exit waiver, raw artifact upload or synthetic provenance is
+accepted. Actual runtime/collector joining remains required.
+
+The local heavy slot is allocated to the pinned Desktop Ruby/Jekyll build phase
+of Pages plan e418ebda, fixed26960736/docs56b1e029. Other cold local compilation
+waits for its terminal cleanup. Server/browser phases are not allocated by that
+build grant. Linux read-only native-tree compilation/probe is queued next; no
+zbus dependency edge or native service backend is approved by its proposal.
 ## Go component and full-product result ownership
 
 The dedicated Go workflow requests bounded Go8 qualification. Lab owns an
