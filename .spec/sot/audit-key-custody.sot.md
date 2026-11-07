@@ -432,3 +432,13 @@ Native tests exercise restart identity, vault/tombstone persistence, rotation,
 parallel-process lock refusal, permission/alias rejection and interrupted pending
 recovery. Actual workspace Cargo integration remains root-owned. Raw execution
 logs remain private and only sanitized facts/hashes enter public Specfold records.
+
+Direct witness service fixtures retain a ChildLifetime around existing private
+ManagedChild duplex pipes. Its independent absolute60-second timer can stop/reap
+the owned child while the test blocks in pipe I/O; no child mutex spans I/O.
+Timeout is an error, never an expected rejection exit. Drop cancels/joins the
+timer and stops/reaps only its owned direct child. Stderr is suppressed. This
+fixture lifetime is distinct from production/per-exchange transport deadlines
+and assumes service binaries do not spawn descendants holding those pipes.
+The real no-startup-config stalled-handshake regression requires read EOF and
+TimedOut, not merely any child exit; it adds no ignored helper entrypoint.

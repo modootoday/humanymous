@@ -1,5 +1,16 @@
 # Sealed key compatibility integration
 
+## New unqualified witness fixture lifetime
+
+Direct WitnessProcess and common typed-client fixtures now retain an owned
+ChildLifetime using existing ManagedChild private duplex spawning. Independent
+absolute60-second timer stops/reaps only that child even during pipe I/O; drop
+cancels/joins the timer and cleans up. TimedOut cannot satisfy expected rejection
+status. Stderr is suppressed. One actual-child stalled-startup regression is
+authored, with no new ignored helper; compile/execution remains NOT_RUN under
+quiet. This is not a production/per-exchange deadline or descendant supervisor.
+Evidence:root/20261107095031.
+
 ## New unqualified retained erasure bridge
 
 Custody::erase_retained and recover_retained_erasure accept only the owned

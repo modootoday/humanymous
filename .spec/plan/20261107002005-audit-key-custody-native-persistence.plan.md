@@ -100,6 +100,12 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Witness fixture timeout source correction follows the docs owner's full review:
+direct synchronous service pipe/read/wait paths now retain an absolute60-second
+owned-child timer with kill/reap/drop cleanup. Expected rejection cannot accept
+timeout. One actual stalled startup regression is authored; no ignored helper
+added. No compile/native execution in quiet. Evidence:root/20261107095031.
+
 Retained erasure bridge source: erase_retained requires exact committed vault
 snapshot and no pending state; recover_retained_erasure authenticates existing
 committed state and requires fresh retained scoped subject approval. Both reuse

@@ -1,5 +1,7 @@
 //! Real local filesystem witness qualification; synthetic keys and checkpoints.
 #![cfg(any(unix, windows))]
+#[path = "support/child_lifetime.rs"]
+mod child_lifetime;
 use ed25519_dalek::SigningKey;
 use humanymous_audit::{
     checkpoint::{Checkpoint, DurableWitness, Witness, WitnessBootstrap},
@@ -118,21 +120,17 @@ fn service_config(
 }
 
 struct WitnessProcess {
-    child: std::process::Child,
+    child: child_lifetime::ChildLifetime,
     input: std::process::ChildStdin,
     output: std::io::BufReader<std::process::ChildStdout>,
 }
 impl WitnessProcess {
     fn spawn(config: &humanymous_audit::checkpoint::service::WitnessServiceConfig) -> Self {
-        use std::process::Stdio;
-        let mut child = Command::new(env!("CARGO_BIN_EXE_audit-witness"))
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
-            .unwrap();
-        let mut input = child.stdin.take().unwrap();
-        let output = std::io::BufReader::new(child.stdout.take().unwrap());
+        let (child, mut input, output) = child_lifetime::ChildLifetime::spawn(&mut Command::new(
+            env!("CARGO_BIN_EXE_audit-witness"),
+        ))
+        .unwrap();
+        let output = std::io::BufReader::new(output);
         humanymous_audit::checkpoint::service::write_frame(&mut input, config).unwrap();
         Self {
             child,
@@ -162,14 +160,6 @@ impl WitnessProcess {
             WitnessServiceResponse::Stopped
         ));
         assert!(self.child.wait().unwrap().success());
-    }
-}
-impl Drop for WitnessProcess {
-    fn drop(&mut self) {
-        if self.child.try_wait().unwrap().is_none() {
-            self.child.kill().unwrap();
-            self.child.wait().unwrap();
-        }
     }
 }
 
@@ -282,21 +272,37 @@ fn service_wrong_password_and_oversized_frame_fail_without_secret_echo() {
 }
 
 #[test]
+fn owned_service_lifetime_reaps_stalled_handshake() {
+    use std::{io::BufReader, time::Duration};
+    let (mut child, _input, output) = child_lifetime::ChildLifetime::spawn_with_timeout(
+        &mut Command::new(env!("CARGO_BIN_EXE_audit-witness")),
+        Duration::from_millis(200),
+    )
+    .unwrap();
+    // Keep stdin open without sending startup configuration. A synchronous
+    // frame read would hang forever without the independent owned-child timer.
+    let frame = humanymous_audit::checkpoint::service::read_frame(&mut BufReader::new(output));
+    assert!(matches!(frame, Ok(None)));
+    assert_eq!(
+        child.wait().unwrap_err().kind(),
+        std::io::ErrorKind::TimedOut
+    );
+}
+
+#[test]
 fn common_typed_client_uses_real_child_and_cached_authenticated_head() {
     use humanymous_audit::checkpoint::{CheckpointWitness, service::WitnessServiceClient};
-    use std::{io::BufReader, process::Stdio};
+    use std::io::BufReader;
     let temp = Temp::new();
     let (keys, state) = service_fixture(&temp);
-    let mut child = Command::new(env!("CARGO_BIN_EXE_audit-witness"))
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .unwrap();
+    let (mut child, input, output) = child_lifetime::ChildLifetime::spawn(&mut Command::new(env!(
+        "CARGO_BIN_EXE_audit-witness"
+    )))
+    .unwrap();
     let expected = SigningKey::from_bytes(&SEED).verifying_key().to_bytes();
     let mut client = WitnessServiceClient::connect(
-        BufReader::new(child.stdout.take().unwrap()),
-        child.stdin.take().unwrap(),
+        BufReader::new(output),
+        input,
         &service_config(&keys, &state, None),
         expected,
     )
