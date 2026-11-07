@@ -1173,5 +1173,30 @@
     "prior29execution": "Retains historical source/closure scope; no repeat or currentwholegraph inference",
     "new_audit_workload_or_structure_ref_action": 0,
     "goal_complete": false
+  },
+  "followup_accepted_core_live_review": {
+    "private_review": "core-consolidation-live-review-001.json",
+    "private_review_sha256": "afd774680dec29fc81ad0baa064c4323d22550f3e5716c31c71ec6e7103ef6e4",
+    "accepted_baseline": "Eight public packages confirmed by human; Root owns atomic relocation",
+    "map_sha256": "3db1499f1205d69fee9c1172e50e5b109a3160355e5b2371569f966d49997824",
+    "map_rows": 142,
+    "live_snapshot_files": 143,
+    "fixture_checks": 24,
+    "fixture_mismatches": 0,
+    "old_integration_sources": 15,
+    "linked_modules": 15,
+    "new_entrypoints": 6,
+    "new_confirmed_blockers": [],
+    "qualification": "Live source review only; frozen map, same-crate sibling negative compiler proof, test inventory, resolved feature/target graph and consumers remain pending",
+    "pinned_hash_audit": {
+      "private_review": "pinned-review-hash-audit-001.json",
+      "sha256": "f0e2b8dfb22167a79b3c063ae5577b605151cfa5a9c648dfa0f7f9cdeedb5ac3",
+      "references": 134,
+      "distinct_files": 130,
+      "mismatch": 0,
+      "scope": "Named and scalar private-review hashes in previous baseline; not every raw bundle or source hash"
+    },
+    "audit_compiler_or_implementation_mutations": 0,
+    "goal_complete": false
   }
 }

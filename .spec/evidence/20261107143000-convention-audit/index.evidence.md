@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 052a02d4d43660ef97312c60dfe3ca45d662e86a6d9664c1d6ce8ab13aa22a14, bytes: 62536, store: repo}
+  - {path: baseline.json, sha256: b7b9cea563ce27f46b948ae519b15f9af88f166265d214af2836b8ddf43c5575, bytes: 63786, store: repo}
 ---
 
 # Convention audit baseline
@@ -806,3 +806,28 @@ Historical29 component tests retain their own source/closure scope and were not
 rerun or promoted to current whole-graph proof. Exact hashes and bounded read
 scope are in the private review bound by baseline.json. No workload, package/path
 change or ref operation occurred; complete migration qualification stays OPEN.
+
+## Accepted Core relocation: independent live review
+
+The human confirmed the eight-public-package baseline. This supersedes the
+confirmation gate recorded in the earlier draft review; Root owns the atomic
+package/path/manifest/ref transition. The audit does not move implementation.
+
+The142-row preparation map is pinned in baseline.json. A live143-file Core
+snapshot has all mapped destinations present. All24 mapped fixture/table hashes
+match their before values. Six integration entrypoints link all15 original direct
+test modules. Inspected scoring/watermark helpers use owning-context visibility;
+no pub(crate) or old package references remain in the inspected Core Rust/TOML
+search. Serde strings, model RNG includes and registry manifest-relative roots
+were updated. The integrity example remains qualification-feature gated.
+No concrete blocker was confirmed in this bounded source inspection.
+
+This is an evolving worktree observation, not frozen-source or compiler proof.
+Require unrelated same-crate sibling negative access tests for scoring helpers,
+watermark Budget/Candidates/scan and integrity validate_target; external-crate
+compile failure cannot detect pub(crate) widening. Require pre/post test identity
+inventories, actual Serde/RNG corpus execution, resolved default/all-feature/WASM
+dependency isolation and the final consumer/lock/CI/package inventory. No compiler,
+SDK, native or Docker workload was started by this audit. Full migration remains
+OPEN. Separately,134 pinned review-hash references resolved to130 private files
+with zero mismatches; this does not requalify every underlying raw bundle.
