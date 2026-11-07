@@ -261,3 +261,22 @@ Root decisions required before code/provider work:
 Until these gates are accepted and actual venue-qualified, Native private parent,
 .NET/Header host foundation and production journal admission remain OPEN. This
 design does not borrow the pure model or role fixtures to manufacture completion.
+
+## Root first-profile decisions and actual bootstrap follow-up
+
+Root accepted decisions4 and6 ONLY at primitive scope: admitted local NTFS
+process-crash/reopen durability and RecoveryOnly/inert cold O restart. Stronger
+power-loss/directory/rollback requirements remain Unsupported. No reconstructed
+Instant, resume/create/delete/new budget on cold recovery. This is not final
+product acceptance and leaves actual installer/genesis/provider work required.
+
+The pre-existing-file admission API above is a recovery/admission step, NOT the
+eventual installation solution. [[plan:root/20261107223000]] proposes a SEPARATE
+Platform descriptor-at-CREATE_NEW FILE and owned-Job/process amendment, after
+pinned safe-upstream investigation. That route can provision O's first private
+journal FILE under a native-admitted creation-safe parent, without first requiring
+the target private directory. Fixed bootstrap slot/selector and retained unknown
+obligation prevent random-new-journal bypass. Root+X must approve exact new native
+scopes/features/lifetimes before code; original six wrappers remain current policy.
+[[plan:root/20261107223500]] specifies exact bounded codec/replay DATA, not a native
+ACK or budget factory. No actual native I/O or Root-owned source change here.
