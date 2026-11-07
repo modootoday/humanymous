@@ -71,6 +71,7 @@ struct Operations {
     last_stderr: Option<PathBuf>,
     pilot_stderr: Vec<u8>,
     pilot_exits: Option<Value>,
+    cli_diagnostic: Option<Value>,
 }
 fn operations(
     bundle: &Path,
@@ -131,6 +132,7 @@ fn operations(
         source_identity: None,
         last_stderr: None,
         pilot_stderr: Vec::new(),
+        cli_diagnostic: None,
         pilot_exits: None,
     })
 }
@@ -665,9 +667,44 @@ fn execute(
     let report = parse(&bytes)?;
     write_new(&operations.bundle.join("apache-pilot-private.json"), &bytes)?;
     let counts = inspect(&report, &expected)?;
+    // A diagnostic failure must not erase independently verified case counts.
+    let diagnostic = (|| {
+        let value = super::cli_diagnostic(&operations.pilot_stderr)?;
+        let mut raw_codes = Vec::new();
+        for (stdout, key, name) in [
+            (true, "stdoutBytes", "apache-cli-stdout.raw"),
+            (false, "stderrBytes", "apache-cli-stderr.raw"),
+        ] {
+            let bytes = super::private_cli_stream(&operations.pilot_stderr, stdout)?;
+            ensure(
+                value[key].as_u64() == Some(bytes.len() as u64),
+                "diagnostic-stream-size",
+            )?;
+            raw_codes.extend_from_slice(&bytes);
+            write_new(&operations.bundle.join(name), &bytes)?;
+        }
+        ensure(
+            value["apacheCodes"] == json!(super::apache_error_codes(&raw_codes)),
+            "diagnostic-code-binding",
+        )?;
+        operations.cli_diagnostic = Some(value.clone());
+        for key in [
+            "nestedProof",
+            "pidFileMatches",
+            "cliStarted",
+            "cliReaped",
+            "masterReaped",
+            "cleanupPassed",
+        ] {
+            ensure(value[key] == true, "isolated-cli-diagnostic-incomplete")?;
+        }
+        Ok(())
+    })();
     // Keep a valid-but-failed pilot as failed, including its exact observed
     // counts. The caller will still perform and verify container/image cleanup.
-    let outcome = if start_exit != 0 {
+    let outcome = if diagnostic.is_err() {
+        diagnostic
+    } else if start_exit != 0 {
         Err("attach-command-failed")
     } else {
         validate(&report, &expected, exit).map(|_| ())
@@ -831,6 +868,7 @@ pub fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
     }
     summary["caseOutcomes"] = Value::Null;
     summary["caseDiagnostics"] = Value::Null;
+    summary["cliDiagnostic"] = operations.cli_diagnostic.clone().unwrap_or(Value::Null);
     summary["processExits"] = json!(operations.pilot_exits);
     if let Ok((expected, report, counts, _)) = &result {
         // inspect() has already constrained every case field, ID and outcome.

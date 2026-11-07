@@ -1,7 +1,10 @@
 //! Hosted component pilot: actual httpd plus shared authority/WAL and an owned
 //! effect witness. Frozen synthetic ALLOW evidence is never product provenance.
 mod authority;
+mod diagnostic;
 mod origin;
+use rustix::fd::OwnedFd;
+use rustix::process::{Pid, PidfdFlags, Signal, pidfd_open, pidfd_send_signal};
 use sha2::{Digest, Sha256};
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
@@ -42,8 +45,27 @@ const CASES: &[&str] = &[
 ];
 struct Server {
     child: Child,
+    pidfd: OwnedFd,
     config: std::path::PathBuf,
     stopped: bool,
+}
+fn pin_httpd(mut child: Child) -> Result<(Child, OwnedFd), Error> {
+    // No wait/reap occurs before this capture. Exclusive std::Child wait
+    // ownership keeps even an exited child's PID reserved until pidfd_open.
+    let pinned = (|| -> Result<OwnedFd, Error> {
+        let pid = Pid::from_raw(i32::try_from(child.id())?).ok_or("invalid owned httpd PID")?;
+        Ok(pidfd_open(pid, PidfdFlags::empty()).map_err(std::io::Error::from)?)
+    })();
+    match pinned {
+        Ok(pidfd) => Ok((child, pidfd)),
+        Err(error) => {
+            // Capture failure never falls back for normal control. This sole
+            // unreaped child still belongs to std::Child; clean it and fail.
+            let _ = child.kill();
+            let _ = child.wait();
+            Err(error)
+        }
+    }
 }
 struct RequestWorker(Option<std::thread::JoinHandle<Result<u16, &'static str>>>);
 impl RequestWorker {
@@ -66,6 +88,15 @@ impl Drop for RequestWorker {
     }
 }
 impl Server {
+    fn signal(&mut self, signal: Signal) -> Result<(), Error> {
+        ensure(!self.stopped, "released httpd owner")?;
+        if self.child.try_wait()?.is_some() {
+            self.stopped = true;
+            return Err("httpd exited before signal".into());
+        }
+        pidfd_send_signal(&self.pidfd, signal).map_err(std::io::Error::from)?;
+        Ok(())
+    }
     fn children(&self) -> Result<Vec<u32>, Error> {
         let pid = self.child.id();
         let text = std::fs::read_to_string(format!("/proc/{pid}/task/{pid}/children"))?;
@@ -76,14 +107,9 @@ impl Server {
     fn reload(&mut self) -> Result<(), Error> {
         let before = self.children()?;
         ensure(!before.is_empty(), "MPM children required")?;
-        let status = Command::new("/opt/httpd/bin/httpd")
-            .arg("-f")
-            .arg(&self.config)
-            .args(["-k", "graceful"])
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()?;
-        ensure(status.success(), "graceful reload command")?;
+        // Pinned Unix Apache AP_SIG_GRACEFUL is SIGUSR1. The kernel handle
+        // names this exact owned instance even if a numeric PID is reused.
+        self.signal(Signal::USR1)?;
         let until = Instant::now() + Duration::from_secs(4);
         while Instant::now() < until {
             let after = self.children()?;
@@ -98,14 +124,7 @@ impl Server {
         if self.stopped {
             return Ok(());
         }
-        let status = Command::new("/opt/httpd/bin/httpd")
-            .arg("-f")
-            .arg(&self.config)
-            .args(["-k", "stop"])
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()?;
-        ensure(status.success(), "httpd stop command")?;
+        self.signal(Signal::TERM)?;
         let until = Instant::now() + Duration::from_secs(3);
         while Instant::now() < until {
             if let Some(status) = self.child.try_wait()? {
@@ -119,10 +138,16 @@ impl Server {
 }
 impl Drop for Server {
     fn drop(&mut self) {
-        if !self.stopped && self.stop().is_err() {
-            let _ = self.child.kill();
-            let _ = self.child.wait();
+        if self.stopped {
+            return;
         }
+        let stopped = self.stop();
+        if stopped.is_ok() || self.stopped {
+            return;
+        }
+        // Forced cleanup is never returned as a successful stop/test result.
+        let _ = pidfd_send_signal(&self.pidfd, Signal::KILL);
+        self.stopped = self.child.wait().is_ok();
     }
 }
 fn ensure(value: bool, label: &'static str) -> Result<(), Error> {
@@ -236,8 +261,10 @@ fn startup(
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn()?;
+    let (child, pidfd) = pin_httpd(child)?;
     let mut server = Server {
         child,
+        pidfd,
         config: path,
         stopped: false,
     };
@@ -266,6 +293,20 @@ fn case(
     }
     cases.push(serde_json::json!({"id":format!("{mpm}/{name}"),"mpm":mpm,"name":name,"result":if result.is_ok(){"passed"}else{"failed"}}));
 }
+fn write_configuration(base: &Path, credential: &str) -> Result<std::path::PathBuf, Error> {
+    let private = base.join("private.json");
+    let config = serde_json::json!({"installation":"apache","tenant":"t","origin":"o","revision":"r","endpoint":base.join("decision.sock"),
+        "credential":credential,"server":{"kind":"unix","uid":rustix::process::geteuid().as_raw()},"routes":ROUTES,
+        "timeoutMs":600,"maxBody":1048576,"syncInputDeadlineEnforced":true});
+    let mut file = std::fs::OpenOptions::new()
+        .create_new(true)
+        .write(true)
+        .mode(0o600)
+        .open(&private)?;
+    file.write_all(&serde_json::to_vec(&config)?)?;
+    file.sync_all()?;
+    Ok(private)
+}
 fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
     let base = std::env::temp_dir().join(format!(
         "h-apache-{}",
@@ -279,18 +320,7 @@ fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
         .build()?;
     let mut service = runtime.block_on(authority::start(&base))?;
     let origin = origin::Origin::start()?;
-    let private = base.join("private.json");
-    let config = serde_json::json!({"installation":"apache","tenant":"t","origin":"o","revision":"r","endpoint":base.join("decision.sock"),
-        "credential":service.credential,"server":{"kind":"unix","uid":rustix::process::geteuid().as_raw()},"routes":ROUTES,
-        "timeoutMs":600,"maxBody":1048576,"syncInputDeadlineEnforced":true});
-    let mut file = std::fs::OpenOptions::new()
-        .create_new(true)
-        .write(true)
-        .mode(0o600)
-        .open(&private)?;
-    file.write_all(&serde_json::to_vec(&config)?)?;
-    file.sync_all()?;
-    drop(file);
+    let private = write_configuration(&base, &service.credential)?;
     let (mut server, port) = startup(&base, mpm, origin.port, &private, false, false)?;
     case(cases, mpm, "binary-body-replay", || {
         let before = origin.count.load(Ordering::Acquire);
@@ -499,6 +529,18 @@ pub fn run() -> Result<(), Error> {
     ensure(version.status.success(), "httpd version observation")?;
     let version = String::from_utf8(version.stdout)?;
     ensure(version.contains("Apache/2.4.70"), "pinned engine version")?;
+    // A separate fresh prefork actor observes the legacy CLI failure/success.
+    // It is not shared with or counted among the required 45 case pairs.
+    let diagnostic_closed = match diagnostic::run() {
+        Ok(closed) => closed,
+        Err(error) => {
+            eprintln!(
+                "APACHE_CLI_DIAGNOSTIC_ERROR {}",
+                crate::coordinator::case_error_label(error.as_ref())
+            );
+            false
+        }
+    };
     let mut cases = Vec::new();
     for mpm in ["event", "worker", "prefork"] {
         if let Err(error) = suite(mpm, &mut cases) {
@@ -525,17 +567,17 @@ pub fn run() -> Result<(), Error> {
         .iter()
         .filter(|case| case["result"] == "not_run")
         .count();
-    let report = serde_json::json!({"schema":"humanymous.apache.pilot/0.1","status":if failed==0&&not_run==0{"passed"}else{"incomplete"},
+    let report = serde_json::json!({"schema":"humanymous.apache.pilot/0.1","status":if failed==0&&not_run==0&&diagnostic_closed{"passed"}else{"incomplete"},
         "qualification":"actual-httpd/shared-authority-WAL; synthetic frozen ALLOW fixture; component only",
         "sourceCommit":source,"sourceManifestSha256":source_manifest,"imageDigest":image,"moduleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_native.so"))?,
         "probeModuleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_probe.so"))?,
         "httpdSha256":hash(Path::new("/opt/httpd/bin/httpd"))?,"abiReceiptSha256":hash(Path::new("/opt/httpd/modules/apache-abi-production.json"))?,
         "lockSha256":hash(Path::new("/opt/httpd/source-Cargo.lock"))?,
         "engineVersionObservation":version,"cases":cases,"requiredScenarioCount":45,"passed":passed,"failed":failed,"not_run":not_run,
-        "fullProductSuccess":false,"cleanupObserved":failed==0&&cases.iter().filter(|case|case["name"]=="cleanup"&&case["result"]=="passed").count()==3});
+        "fullProductSuccess":false,"cleanupObserved":diagnostic_closed&&failed==0&&cases.iter().filter(|case|case["name"]=="cleanup"&&case["result"]=="passed").count()==3});
     println!("{}", serde_json::to_string(&report)?);
     ensure(
-        failed == 0 && not_run == 0,
+        failed == 0 && not_run == 0 && diagnostic_closed,
         "Apache pilot remains incomplete",
     )
 }

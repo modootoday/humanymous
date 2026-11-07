@@ -177,6 +177,115 @@ pub fn parse(bytes: &[u8]) -> Result<Value> {
     }
     Ok(value)
 }
+const APACHE_CODES: &[&str] = &["AH00057", "AH00058", "AH00059", "AH00174"];
+pub fn apache_error_codes(bytes: &[u8]) -> Vec<String> {
+    APACHE_CODES
+        .iter()
+        .filter(|code| {
+            bytes
+                .windows(code.len())
+                .any(|part| part == code.as_bytes())
+        })
+        .map(|code| (*code).to_owned())
+        .collect()
+}
+fn diagnostic_frame<'a>(bytes: &'a [u8], prefix: &str) -> Result<&'a str> {
+    let text = std::str::from_utf8(bytes).map_err(|_| "diagnostic-encoding")?;
+    let mut frames = text.lines().filter_map(|line| line.strip_prefix(prefix));
+    let frame = frames.next().ok_or("diagnostic-missing")?;
+    if frames.next().is_some() {
+        return Err("diagnostic-duplicate");
+    }
+    Ok(frame)
+}
+pub fn private_cli_stream(bytes: &[u8], stdout: bool) -> Result<Vec<u8>> {
+    let frame = diagnostic_frame(
+        bytes,
+        if stdout {
+            "APACHE_PRIVATE_CLI_STDOUT "
+        } else {
+            "APACHE_PRIVATE_CLI_STDERR "
+        },
+    )?;
+    if frame.len() > 131_072 || !frame.len().is_multiple_of(2) || !hex(frame, frame.len()) {
+        return Err("diagnostic-private-bound");
+    }
+    ::hex::decode(frame).map_err(|_| "diagnostic-private-encoding")
+}
+pub fn cli_diagnostic(bytes: &[u8]) -> Result<Value> {
+    let frame = diagnostic_frame(bytes, "APACHE_CLI_DIAGNOSTIC ")?;
+    if frame.len() > 4096 {
+        return Err("diagnostic-bound");
+    }
+    let value = parse(frame.as_bytes())?;
+    let allowed = "schema mpm role nestedProof pidFileMatches cliStarted cliReaped cliExit cliSignal cliTimedOut outputLimited stdoutBytes stderrBytes apacheCodes masterBeforeAlive masterAfterCliAlive masterExit masterSignal masterReaped forcedCleanup cleanupPassed"
+        .split_ascii_whitespace().map(str::to_owned).collect();
+    fields(&value, &allowed)?;
+    if value["schema"] != "humanymous.apache.cli-diagnostic/0.1"
+        || value["mpm"] != "prefork"
+        || value["role"] != "isolated-cli-stop-observation"
+    {
+        return Err("diagnostic-role");
+    }
+    for key in [
+        "nestedProof",
+        "cliStarted",
+        "cliReaped",
+        "cliTimedOut",
+        "outputLimited",
+        "masterBeforeAlive",
+        "masterAfterCliAlive",
+        "masterReaped",
+        "forcedCleanup",
+        "cleanupPassed",
+    ] {
+        if !value[key].is_boolean() {
+            return Err("diagnostic-boolean");
+        }
+    }
+    if !(value["pidFileMatches"].is_null() || value["pidFileMatches"].is_boolean()) {
+        return Err("diagnostic-pid-proof");
+    }
+    for key in ["stdoutBytes", "stderrBytes"] {
+        if !value[key].as_u64().is_some_and(|size| size <= 65_536) {
+            return Err("diagnostic-output-bound");
+        }
+    }
+    for (exit, signal, reaped) in [
+        ("cliExit", "cliSignal", "cliReaped"),
+        ("masterExit", "masterSignal", "masterReaped"),
+    ] {
+        let code = value[exit].as_u64();
+        let sig = value[signal].as_u64();
+        if (!value[exit].is_null() && !code.is_some_and(|c| c <= 255))
+            || (!value[signal].is_null() && !sig.is_some_and(|s| (1..=64).contains(&s)))
+            || (code.is_some() && sig.is_some())
+            || (value[reaped] == true) != (code.is_some() || sig.is_some())
+        {
+            return Err("diagnostic-exit");
+        }
+    }
+    let codes = value["apacheCodes"].as_array().ok_or("diagnostic-codes")?;
+    let mut seen = BTreeSet::new();
+    for code in codes {
+        let code = code.as_str().ok_or("diagnostic-code")?;
+        if !APACHE_CODES.contains(&code) || !seen.insert(code) {
+            return Err("diagnostic-code");
+        }
+    }
+    if value["cliStarted"] != value["cliReaped"]
+        || value["masterBeforeAlive"] != true
+        || (value["cleanupPassed"] == true
+            && (value["forcedCleanup"] != false
+                || value["cliTimedOut"] != false
+                || value["outputLimited"] != false
+                || value["masterReaped"] != true
+                || value["masterExit"] != 0))
+    {
+        return Err("diagnostic-consistency");
+    }
+    Ok(value)
+}
 pub fn diagnostics(bytes: &[u8]) -> Value {
     let mut codes = BTreeSet::new();
     let mut locations = BTreeSet::new();
@@ -369,6 +478,49 @@ pub fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(test)]
 mod tests {
+    fn cli_fixture() -> Value {
+        serde_json::json!({"schema":"humanymous.apache.cli-diagnostic/0.1","mpm":"prefork","role":"isolated-cli-stop-observation","nestedProof":true,"pidFileMatches":true,"cliStarted":true,"cliReaped":true,"cliExit":1,"cliSignal":null,"cliTimedOut":false,"outputLimited":false,"stdoutBytes":0,"stderrBytes":7,"apacheCodes":["AH00058"],"masterBeforeAlive":true,"masterAfterCliAlive":true,"masterExit":0,"masterSignal":null,"masterReaped":true,"forcedCleanup":false,"cleanupPassed":true})
+    }
+    #[test]
+    fn cli_projection_rejects_private_fields_and_contradictory_facts() {
+        let frame = |value: &Value| format!("APACHE_CLI_DIAGNOSTIC {value}\n");
+        let valid = cli_fixture();
+        assert!(cli_diagnostic(frame(&valid).as_bytes()).is_ok());
+        for (key, replacement) in [
+            ("privatePath", serde_json::json!("/secret")),
+            ("role", serde_json::json!("/secret")),
+            ("apacheCodes", serde_json::json!(["secret"])),
+            ("stdoutBytes", serde_json::json!(65537)),
+            ("cliSignal", serde_json::json!(9)),
+            ("masterReaped", serde_json::json!(false)),
+            ("forcedCleanup", serde_json::json!(true)),
+        ] {
+            let mut bad = valid.clone();
+            bad[key] = replacement;
+            assert!(cli_diagnostic(frame(&bad).as_bytes()).is_err(), "{key}");
+        }
+        assert!(cli_diagnostic(frame(&valid).repeat(2).as_bytes()).is_err());
+        assert_eq!(
+            apache_error_codes(b"private AH00058 AH00058 AH12345"),
+            ["AH00058"]
+        );
+    }
+    #[test]
+    fn private_cli_bytes_remain_bounded_and_unambiguous() {
+        assert_eq!(
+            private_cli_stream(b"APACHE_PRIVATE_CLI_STDOUT 00ff\n", true).unwrap(),
+            [0, 255]
+        );
+        for bytes in [
+            "APACHE_PRIVATE_CLI_STDOUT gg\n".to_owned(),
+            "APACHE_PRIVATE_CLI_STDOUT 0\n".to_owned(),
+            "APACHE_PRIVATE_CLI_STDOUT 00\n".repeat(2),
+            format!("APACHE_PRIVATE_CLI_STDOUT {}\n", "00".repeat(65537)),
+        ] {
+            assert!(private_cli_stream(bytes.as_bytes(), true).is_err());
+        }
+        assert!(private_cli_stream(b"APACHE_PRIVATE_CLI_STDERR 00\n", true).is_err());
+    }
     use super::*;
     fn fixture() -> (Value, Expected) {
         let c = contract().unwrap();

@@ -151,3 +151,35 @@ and no origin effect. The earlier combined assertion does not establish a
 production authorization bypass or a particular unrecorded HTTP status.
 [Pinned request lifecycle](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/server/request.c#L2112-L2138),
 [subrequest execution](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/server/request.c#L2348-L2369).
+
+## Owned fixture control and isolated CLI observation
+
+Hosted source2d66c0df run42369797560 observed33passed/12failed/0not_run:
+event15/15, worker15/15, prefork3/15. Safe12/native11 tests and SDK builds/
+Clippy passed. The first prefork CLI stop failed after a successful nested
+assertion; later connection errors are a cascade, not twelve proven causes.
+Historical CLI streams were discarded by Stdio::null and cannot be recovered.
+Evidence:root/20261107120442 retains those failed outcomes.
+
+Root approved existing rustix pidfd process control for owned pilot instances.
+Capture the handle immediately after spawn, before any wait/reap; exclusive
+std::Child wait ownership reserves even an exited child's PID through capture.
+Capture failure cleans the sole unreaped Child and fails, without normal
+numeric-PID fallback. TERM stops; USR1 requests graceful restart, with the same
+actual master-exit0/new-generation/inflight-drain/deadline assertions. A forced
+KILL is failed cleanup. A released owner never signals again. No dependency,
+unsafe boundary, detection score, resource bound or 45-case inventory changes.
+[Pinned Apache graceful signal](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/include/mpm_common.h#L68-L75).
+
+Before those45cases, a separate fresh prefork master/config/private directory
+repeats the nested request and observes the legacy stop CLI, only after its
+PID file matches the exclusively unreaped owned master. Capture bounded private
+stdout/stderr, actual helper exit/signal, master before/after/reap and cleanup
+facts. Never reuse that stopped master for required cases or count a46thcase.
+This is an isolated CLI observation, not general CLI qualification. Only closed
+typed facts and allowlisted Apache codes may enter public output; byte carriers
+stay in the private coordinator stderr and decoded mode0600 files. A malformed
+or incomplete diagnostic fails overall completion but preserves independently
+verified45-case counts. Any actual CLI failure remains visible as such. New
+source is unqualified until scoped pure checks and an exact-source real hosted
+retry complete; earlier33/12 evidence remains failed.
