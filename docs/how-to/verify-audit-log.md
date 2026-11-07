@@ -35,6 +35,14 @@ ownership itself. Parsing recovered frames alone does not authenticate their
 chain. Keep repair, authenticated replay and independent-head verification as
 separate steps and report the number of truncated bytes.
 
+For authenticated replay, `verify_history` requires the configured node, a
+nonempty HMAC key, trusted writer identity and any required witness identity.
+An external trusted head must occur exactly in the verified checkpoint history.
+Empty storage is accepted only under explicit first-install permission and
+without conflicting checkpoints or an external pin. Do not infer first install
+from missing files. Verification protects rollback only through the trusted head;
+it cannot prove that an unanchored tail was never deleted.
+
 A terminal JSON value without its newline is uncommitted even if its JSON is
 valid. Recovery may discard that final incomplete frame; malformed
 newline-terminated frames still fail. The configured frame bound includes the

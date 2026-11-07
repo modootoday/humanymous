@@ -1382,3 +1382,18 @@ or recovery as effect retry. Reviewed updated native pilot contract and complete
 actual hosted header/C/C++/dynamic ABI still not_run. Added two manual receipts.
 No tests/compiler/native execution; exact813 product-browser job now failure,
 Windows still in_progress, no Pages result observed or current-source green.
+
+### Authenticated history and trusted snapshot boundaries
+
+Read full trusted_snapshot, recovery and permissions re-export. Public audit
+how-to records exact externally trusted identity/head and explicit first install,
+with unanchored-deletion limits. Security reference distinguishes snapshot native
+atomicity/byte equality/pending from caller-authenticated scope/semantic CAS/WAL
+and actual apply, explicit1..4MiB bound and poisoned write/reopen. Added three
+manual receipts, no native/test/compiler execution. Existing source88/errors0.
+
+Also read complete prepared-rotation API and unit definition. Security reference
+records source/candidate ciphertext target binding, authenticate-before-approval,
+no post-approval re-encryption, exact unchanged identity/vault on interrupted
+inspection, fresh retained grant and digest recheck on recovery. Added one manual
+receipt; no native rotation/CLI/cross-platform execution inferred.

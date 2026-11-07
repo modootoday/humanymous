@@ -147,6 +147,32 @@ failure can leave staged or committed bytes and is not proof that nothing change
 Inputs must already be minimized/pseudonymized; the sink does not redact raw
 personal data, provide WORM media or remove previously exported copies.
 
+`TrustedSnapshot` is a separate private native atomicity primitive. Its caller
+selects a 1-byte to 4-MiB limit and a trusted namespace; opening creates no
+payload or initial operational state. `inspect` returns committed and pending
+bytes without authenticating either. `promote_pending` compares exact bytes
+already authenticated by the caller, while the caller still owns scope, semantic
+revision/CAS, signed WAL correlation and audit-before-apply. A native pending
+replacement is not the runtime's semantic candidate state. Failed writes poison
+the owner until reopen; there is no automatic reset, discard or effect retry.
+
+## Prepared passphrase rotation
+
+`Custody::prepare_rotation` authenticates the current complete snapshot and
+encrypts its replacement before approval. The proposal target commits to both
+the source ciphertext digest and exact encrypted candidate; it is not a password
+hash. `apply_prepared_rotation` consumes an independently retained grant and
+checks that source and pending-state conditions still match before writing
+those exact bytes. It does not re-encrypt after approval or replace identities.
+
+Interrupted rotation has a separate inspection/recovery path. Inspection checks
+both credentials, unchanged complete key identity and identical vault state.
+Recovery requires a fresh explicit retained grant for that exact ciphertext
+pair and rechecks the on-disk digests before promotion. An inspection descriptor
+is not an execution grant, and a previously consumed grant cannot be reissued.
+These library interfaces do not establish an installed rotation command or
+cross-platform deployment qualification.
+
 ## Event metadata provenance
 
 Record stamping fills a missing event ID from local time and OS entropy, a

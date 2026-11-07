@@ -2,6 +2,45 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/keys/custody/rotation.rs",
+  "sha256": "40dd00e3fb6b8f47699aba701097c3c0ff850d10d265eeb3770d0f3423ae627f",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete prepared rotation, explicit interrupted recovery and target-commitment unit definition: authenticate full identity/vault, bind old and exact candidate ciphertext before approval, retain grant, recheck exact bytes and promote without re-encryption. No execution grant from inspection, no password hash or automatic retry, no native execution performed.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/trusted_snapshot.rs",
+  "sha256": "c9ed156687278f9b7962950aeff6cb3ab5873b3a7b3262ce965c03195142cef4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete bounded snapshot primitive: explicit namespace/owner/max1..4MiB, missing versus initial state, committed/pending inspection, exact caller-authenticated byte comparison, poisoned write/reopen and actual durability. Native equality/atomicity does not establish semantic CAS, signed WAL, authorization or applied effects.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/recovery.rs",
+  "sha256": "d289016225d4e0ca181c32541cddf08f8e659fe33a0861ca346551c23cdcbc7c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete authenticated history policy and unit definition: exact node, nonempty HMAC, trusted writer/witness, monotonic checkpoints, exact external head presence and explicit empty first install. Rollback proof ends at retained head, not deleted unanchored tail; no test executed.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/permissions.rs",
+  "sha256": "ec1bd4b017f609c4eebb2d431bf47ac9605a15824928bc43b09ddc433ac0a02a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete re-export of shared native-security Windows privacy API. This wrapper introduces no independent ACL verifier and supplies no actual Windows execution or service-principal qualification.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md"
+  ]
+},
+{
   "source": "adapters/native/pilot-contract.json",
   "sha256": "d59f07bd888519b018430a20f2f8645d1c8f7399ec6f1fb68e40d62d4beb974e",
   "reviewer": "codex/rust-pages",
