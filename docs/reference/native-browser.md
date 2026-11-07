@@ -64,6 +64,15 @@ than becoming a successful denial. A missing-file error is also distinct from
 access denied; neither result qualifies every renderer, utility process,
 filesystem path or network boundary.
 
+The desktop pilot contract separately requires two feature-enabled process
+cases: positive internal navigation and cancellation before creation. They need
+fresh, separately provisioned bundles; a missing bundle or an omitted feature
+is not a passing zero-test result. The source bounds capture to 90 seconds and
+1 MiB and the private report to 8 MiB. Its process supervisor reaps the direct
+child; this does not attest cleanup of all descendants. Expected navigation and
+renderer-probe counts in the contract are required observations, not executed
+results or assistive-technology coverage.
+
 The process-owning prototype DLL is not the planned embeddable SDK. SDK lifecycle,
 versioned ABI, consumer ownership/unload and framework compatibility remain
 separate responsibilities. The `humanymous-native init` planner can describe a

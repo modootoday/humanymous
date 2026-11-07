@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/pilot_process.rs",
+  "sha256": "6df47121e6f94167932365f8f8587d5529f6ee74df560f3c9d4792c12917986d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete file: Windows-only native dependency/feature composition or exact two-case positive/cancelled contract and process runner. Fresh absolute bundles/report absence,90s1MiB capture,8MiB regular report and strict verifier; direct child reaping not descendant cleanup. Expected7/0 observations and renderer bounds are not measured execution, sandbox or AT qualification.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/pilot-contract.json",
+  "sha256": "74f6ff514c52a1d020027cbe9f93b0609aacba51ee3d23c5b72207e2029d26f5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete file: Windows-only native dependency/feature composition or exact two-case positive/cancelled contract and process runner. Fresh absolute bundles/report absence,90s1MiB capture,8MiB regular report and strict verifier; direct child reaping not descendant cleanup. Expected7/0 observations and renderer bounds are not measured execution, sandbox or AT qualification.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/Cargo.toml",
+  "sha256": "5ef4a7183cfa2a363f58ef073a650372019373f7415ff617f1f605a94a38bd34",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete file: Windows-only native dependency/feature composition or exact two-case positive/cancelled contract and process runner. Fresh absolute bundles/report absence,90s1MiB capture,8MiB regular report and strict verifier; direct child reaping not descendant cleanup. Expected7/0 observations and renderer bounds are not measured execution, sandbox or AT qualification.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/native/bootstrap/src/renderer_probe.rs",
   "sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0",
   "reviewer": "codex/rust-pages",

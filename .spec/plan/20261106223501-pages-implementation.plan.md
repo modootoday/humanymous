@@ -1792,3 +1792,12 @@ batchfile directspawn concerns, with frozenlock, pinnedtheme and beforeafter
 authoredinput checks. Sent concrete sequential Windows Ruby dualbaseurl allocation
 request with dedicated private destinations; no install/lock mutation/browser
 server authorization inferred and no processes started.
+### Required desktop process pilot inventory
+
+Read complete desktop Cargo.toml, pilot-contract.json and pilot_process.rs.
+Three manual receipts added. Public native reference records separate positive/
+cancelled feature-enabled cases, fresh dedicated absolute bundles, reportabsence,
+90s1MiB capture and8MiB report budget. Expected7/0 navigation observations and
+renderer probe bounds are contract expectations, not measured results. Direct
+child reaping doesnotattest descendant cleanup; no current native execution or
+AT coverage inferred. Sourcechecker88errors0, scopedSpecfold0errors0warnings.
