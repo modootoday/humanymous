@@ -27,7 +27,7 @@ They are component evidence, not final integration qualification.
 | Area | Actual evidence | Remaining gate |
 | --- | --- | --- |
 | Pages | Run42367274252 at44876534 succeeded: delivery65 and Pages37 tests; both88-page builds and165-file archive consumers passed; zero branch artifacts | Main upload/download roundtrip, browser/AT and deployment are not executed |
-| Go | Run42367272089 at44876534 failed runtime_build after successful explicit actor check/Clippy; eight scenarios NOT_RUN, cleanup true | Typed Docker build diagnosis and actual eight-scenario retry |
+| Go | Run42369171124 at15f63fef passed preflight/build, then all eight actor attempts failed at actor_writer_mount; zero evaluated, eight unknown assertion counts, cleanup true and source unchanged | Exact mount diagnosis and qualified eight-scenario retry; older438/448 build failures remain separate NOT_RUN records |
 | Apache | Run42367750854 atd65da705 actually ran45:23 passed/22 failed/zero NOT_RUN; event14/15, worker8/15, prefork1/15; container/image cleanup true but pilot cleanup false | Supported-MPM fixes plus independent event subrequest failure; actual45-case and pilot-cleanup qualification |
 | Audit | Exactf88e76f4 full suite115 passed; five ignored excluded; focused nine overlap the full suite | Remaining S1 streaming primitives, independent native custody and later production gates |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identity cases remain CHALLENGE with zero origin; positive TLS ALLOW-to-origin is unqualified |
@@ -36,7 +36,7 @@ They are component evidence, not final integration qualification.
 
 Pages reference corrections are now26960736/docs tree56b1e029952b5a3b29d4b0d056671bc79110e43b; the older448 hosted build does not validate this newer tree. Source checker reports88 pages/errors zero, while fresh hosted/browser/AT checks remain pending.
 
-Go candidate15f63fefb23777eeee52c57f7dbf0dbeffef8f8b is running as genuine hosted run42369171124, preflight job128393523707. The source was normal-fast-forward pushed to the dedicated validation branch and its remote SHA verified. It has no terminal qualification result yet. Root separately allocated bounded Audit Merkle, Apache lifecycle/diagnostic and test-support symbolic-model checks; none is a product-e2e result.
+Go candidate15f63fefb23777eeee52c57f7dbf0dbeffef8f8b ran as genuine hosted run42369171124, preflight job128393523707. The source was normal-fast-forward pushed to the dedicated validation branch and its remote SHA verified. Its terminal result is failure as detailed below. Root separately allocated bounded Audit Merkle, Apache lifecycle/diagnostic and test-support symbolic-model checks; none is a product-e2e result.
 
 Root released only bounded Python check/Clippy/two pure tests, Lab diagnostic
 implementation and Audit private S1 implementation. Lab may extend the cold
@@ -52,8 +52,7 @@ Free branches keep automatic artifact uploads disabled.
 
 ## Next validation ownership and source boundaries
 
-Go run42369171124 passed preflight128393523707 and entered product128393945764;
-its actual eight-case result remains pending. Apache2d66c0df safe12 and pilot11
+Go run42369171124 is terminal failure: preflight128393523707 succeeded and product128393945764 failed. All eight actor attempts failed at actor_writer_mount; zero evaluated, all assertion counts unknown. Cleanup passed and source was unchanged. The stage marker narrows the startup window; it does not identify the exact mount defect. Root retained complete217183-byte decoded logs and safe summary in evidence:root/20261106194410. Apache2d66c0df safe12 and pilot11
 pure tests passed, with scoped check/Clippy and unchanged immutable snapshot;
 its next real SDK/45-case run still requires terminal hosted evidence.
 
