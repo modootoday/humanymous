@@ -1,0 +1,96 @@
+{
+  "schema": "humanymous.platform-runner-consumer-source/1",
+  "status": "Source-only mechanical namespace and exact harness identity mapping; no execution",
+  "files": [
+    {
+      "path": "scripts/ci/windows-native-runner/src/actor/prebuilt.rs",
+      "before_sha256": "bc21396fbfec0c1f04c0bc88c23cb5bd13309935ad6060ded8784610a09e36d9",
+      "after_sha256": "815611fb54a46a308b4e4be2abcae75c26dca4f661dd19c3a7fb17b244230bee",
+      "namespace_replacements": 1,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/summary.rs",
+      "before_sha256": "b3a3d91256414c69d1d440ad3d58c777aad10e68e2ff9c92d7b28c21e2ed7ad8",
+      "after_sha256": "01cffc53fd1879b4adf9229f448b96fcb1d6eeab4fc7dde266a566f0763a5172",
+      "namespace_replacements": 1,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/receipt.rs",
+      "before_sha256": "a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df",
+      "after_sha256": "ce276fc46c5c134ba056b3e87e820731dd8307ee8e2c909d0544bfd5c8aabbc1",
+      "namespace_replacements": 1,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness.rs",
+      "before_sha256": "94807cfbfdf6a3a18521df3b9feaeb6e1399e808822e8d64aaa6e1a09d08beda",
+      "after_sha256": "a0899b7c4b998018b47fa049fe6a5cce73ebf58600a59a1fcfeea530e8a7a550",
+      "namespace_replacements": 1,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/execution.rs",
+      "before_sha256": "d93ce47630630469aecc583fdd5ad1adadd8749fdbd67e7be294f5826d8ffd6d",
+      "after_sha256": "8d3b751093e2397a66859e9e69662dba32713fc2efbc81ae74303601211cd7d4",
+      "namespace_replacements": 1,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/controlled.rs",
+      "before_sha256": "57f6c4f8a99554511e6a9a22148737af34c90c567b51b48bc6e287b7116b4003",
+      "after_sha256": "2f38c7bc2d2b71b104df1f522ff6c70600043503de62a0787e43890d92353410",
+      "namespace_replacements": 3,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/evidence.rs",
+      "before_sha256": "6fc2772414942c9335c4cf066a11de2d12290303a7c760a348b86e62c4899764",
+      "after_sha256": "f9d404442b2e6db2a4d22b043e29dfd383ed8e6885a9b479d6c828c1164ffbed",
+      "namespace_replacements": 0,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/helpers.rs",
+      "before_sha256": "a76cda41c7c1649c71cfbf6351d230a39e831a1d22f4fad9594a9e2701accb27",
+      "after_sha256": "cfbbd75ab19d90ca7c11600f5974931639b13ac486fb3e34f2c2ae08bfac332d",
+      "namespace_replacements": 0,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/evidence/recovery.rs",
+      "before_sha256": "ea8035ae6c03fb08ea5b4daad6bcb4694e9ce60e19618c54fc7b26032ae39223",
+      "after_sha256": "f12c8b9d384df315a5b2e5ec432561dd2dbfeaae8e8ae21166dd5876cd6d24cd",
+      "namespace_replacements": 1,
+      "stage_allowed": true
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/pilot.rs",
+      "before_sha256": "e5603c9c354429caf4e43a69258e2eed1f0825263bb4489790bef5e4f76d9f46",
+      "after_sha256": "33115ec292d80ecc42283c6525db97e98889caf0379fa827b08ab96178a92a8d",
+      "namespace_replacements": 1,
+      "stage_allowed": true
+    }
+  ],
+  "required_core_source_guard_unchanged": true,
+  "manifests_changed": 0,
+  "paths_moved": 0,
+  "actual_runs": 0,
+  "receipt_exact_replacement": {
+    "before_saved_private": ".spec.local/root/evidence/20261108060500-windows-runner-platform-consumer/receipt-before.rs",
+    "old": "humanymous_test_support::json::decode_strict_json",
+    "stage_allowed": true,
+    "count": 1,
+    "new": "humanymous_platform::testing::json::decode_strict_json"
+  },
+  "receipt_baseline_join": {
+    "before_sha256": "a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df",
+    "saved_before_git_blob": "b5f2a57d13331fd5c22dc50e23c267c0a5260eea",
+    "current_head_git_blob": "b5f2a57d13331fd5c22dc50e23c267c0a5260eea",
+    "observed_native_guard_head": "1e8c5af6844915090840df834e262eec51cc9e3c",
+    "observed_native_guard_head_git_blob": "b5f2a57d13331fd5c22dc50e23c267c0a5260eea",
+    "conclusion": "Before-edit bytes equal both current and historical Git blob. Status M alone did not establish foreign content. Root superseding authorization permits committing only mechanical namespace delta.",
+    "historical_raw_receipts_rewritten": false
+  }
+}

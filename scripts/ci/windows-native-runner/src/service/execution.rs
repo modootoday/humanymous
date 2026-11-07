@@ -1,6 +1,6 @@
 use super::{catalog::Case, receipt};
 use crate::{evidence, harness};
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::process::capture_with_stderr;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{fs, io, path::Path, process::Command, time::Duration};

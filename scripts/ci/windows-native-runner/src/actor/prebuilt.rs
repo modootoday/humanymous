@@ -1,5 +1,5 @@
 //! Pure prebuilt contract only. No OS launch, file verification or cleanup proof.
-use humanymous_test_support::{
+use humanymous_platform::testing::{
     json::decode_strict_json,
     parent_context::{
         self, UnverifiedLaunch, UnverifiedMappedBudget, UnverifiedParentContext,

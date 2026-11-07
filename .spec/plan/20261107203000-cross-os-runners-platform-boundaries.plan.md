@@ -128,3 +128,27 @@ Both source contexts are frozen: Native owner released/narrowed native-windows
 lane to exclude those two roots, preserving native-security/runner/spec ownership.
 No writes to frozen old or new sources until Root returns an exact slice.
 The session board handover records this narrow release; no ninety-file rescan.
+
+## Authorized runner consumer source checkpoint
+
+Root authorized exact namespace and fixed helper identity mapping only, while
+retaining sole ownership of all moves/manifests/locks. Ten runner Rust files
+changed: actor/prebuilt, controlled, evidence, evidence/recovery, harness,
+harness/helpers, pilot, service/execution, service/receipt, service/summary.
+platform-runner-consumer-source.json records before/after SHA256 per path.
+Imports now use humanymous_platform::testing; controlled executable prefixes
+and capture/barrier selectors use humanymous_platform- and testing::process;
+harness helper package/target and six exact parent strings use platform names.
+Evidence's collected and own-Git-byte roots use the actual platform src/root.
+No wildcard, authority, behavior, unsafe or required-core-three-key policy change.
+source_inputs.rs remains SHA72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c.
+native-security contains no bridge Rust imports to edit. No compiler/fmt/run.
+
+Receipt custody correction: saved pre-edit receipt bytes SHAa24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df
+hash to Git blob b5f2a57d13331fd5c22dc50e23c267c0a5260eea, equal BOTH current
+HEAD and historical native-guard HEAD1e8c5af6844915090840df834e262eec51cc9e3c.
+The earlier status-M observation did not establish foreign CONTENT; historical
+raw receipts remain unchanged, with this additive correction only. Root's
+superseding authorization permits staging the one mechanical import replacement.
+Actual after SHAce276fc46c5c134ba056b3e87e820731dd8307ee8e2c909d0544bfd5c8aabbc1.
+No restore/stash/index repair was used. Full graph and new source remain untested.

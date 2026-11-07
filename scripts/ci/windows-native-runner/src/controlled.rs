@@ -46,8 +46,8 @@ fn profile(case: &str) -> Option<Profile> {
     };
     if let Some((name, expected)) = fault {
         return Some(Profile {
-            selector: format!("process::controlled_barrier::actual_tests::{name}"),
-            executable_prefix: "humanymous_test_support-",
+            selector: format!("testing::process::controlled_barrier::actual_tests::{name}"),
+            executable_prefix: "humanymous_platform-",
             expected,
         });
     }
@@ -60,8 +60,8 @@ fn profile(case: &str) -> Option<Profile> {
     }
     let (_, name) = CASES.iter().find(|(id, _)| *id == case)?;
     Some(Profile {
-        selector: format!("process::capture_attempt::actual_tests::{name}"),
-        executable_prefix: "humanymous_test_support-",
+        selector: format!("testing::process::capture_attempt::actual_tests::{name}"),
+        executable_prefix: "humanymous_platform-",
         expected: ExpectedOutcome::ParentPass,
     })
 }
@@ -285,7 +285,7 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
             return Ok(());
         }
         let mut file = new_file(&options.work.join("grant.pending"))?;
-        let bytes = humanymous_test_support::process::encode_unverified_controlled_fixture_grant(
+        let bytes = humanymous_platform::testing::process::encode_unverified_controlled_fixture_grant(
             &owner.child,
             &selector,
             &nonce,
@@ -324,10 +324,10 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
     let marker = match expected {
         ExpectedOutcome::ParentPass => None,
         ExpectedOutcome::MissingGrantRefusal => {
-            Some(humanymous_test_support::process::CONTROLLED_MISSING_GRANT_MARKER)
+            Some(humanymous_platform::testing::process::CONTROLLED_MISSING_GRANT_MARKER)
         }
         ExpectedOutcome::LiveDeadlineTermination => {
-            Some(humanymous_test_support::process::CONTROLLED_LIVE_PARENT_MARKER)
+            Some(humanymous_platform::testing::process::CONTROLLED_LIVE_PARENT_MARKER)
         }
     };
     let mut marker_read_error = false;
@@ -425,7 +425,7 @@ mod tests {
     fn fixed_parent_requires_absolute_executable_digest_and_new_work_locator() {
         let valid = [
             "--test-exe",
-            r"C:\fixture\humanymous_test_support-0123456789abcdef.exe",
+            r"C:\fixture\humanymous_platform-0123456789abcdef.exe",
             "--expected-sha256",
             &"a".repeat(64),
             "--case",
@@ -458,7 +458,7 @@ mod tests {
         assert!(profile("cli-watchdog-extra").is_none());
         assert_eq!(
             profile("normal").unwrap().selector,
-            "process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins"
+            "testing::process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins"
         );
     }
     #[test]
@@ -469,7 +469,7 @@ mod tests {
             &cli
         ));
         for name in [
-            "humanymous_test_support-0123456789abcdef.exe",
+            "humanymous_platform-0123456789abcdef.exe",
             "watchdog_boundary-0123.exe",
             "watchdog_boundary-0123456789ABCDEF.exe",
             "watchdog_boundary-0123456789abcdef.exe.extra",
@@ -487,13 +487,13 @@ mod tests {
         let missing = profile("outer-missing-grant").unwrap();
         assert_eq!(
             missing.selector,
-            "process::controlled_barrier::actual_tests::missing_grant_refuses_before_workload"
+            "testing::process::controlled_barrier::actual_tests::missing_grant_refuses_before_workload"
         );
         assert_eq!(missing.expected, ExpectedOutcome::MissingGrantRefusal);
         let live = profile("outer-live-timeout").unwrap();
         assert_eq!(
             live.selector,
-            "process::controlled_barrier::actual_tests::live_parent_waits_for_original_outer_deadline"
+            "testing::process::controlled_barrier::actual_tests::live_parent_waits_for_original_outer_deadline"
         );
         assert_eq!(live.expected, ExpectedOutcome::LiveDeadlineTermination);
         assert_eq!(

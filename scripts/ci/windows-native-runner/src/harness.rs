@@ -1,5 +1,5 @@
 use crate::evidence;
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::process::capture_with_stderr;
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, io, path::Path, process::Command, time::Duration};
 pub(crate) mod build_observation;

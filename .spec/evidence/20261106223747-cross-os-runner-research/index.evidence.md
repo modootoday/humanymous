@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: platform-runner-consumer-source.json, sha256: 116b9f02d63f52ac1bad6f7c45ce7c138cef683fbf4674f74e53c225ac7b3e4d, bytes: 4597, store: repo}
   - {path: platform-two-context-freeze.json, sha256: a628166d90f49ff7c3f7fbd1c9561eae0bc96b7e41c5649bfb4016e6d6bb7115, bytes: 5663, store: repo}
   - {path: native-source-guard-summary.json, sha256: 2b2b012891372ec95a049cbc56bdcc3b9593d60b71ae8441a049d67a5a803a75, bytes: 10702, store: repo}
   - {path: platform-slice-consumers.json, sha256: 649607cd0a7f6672d0cda36bf81a3af9239c6ec66723cddfde7967abde4f1af7, bytes: 14301, store: repo}

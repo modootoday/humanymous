@@ -1,5 +1,5 @@
 use crate::{Options, evidence, fixture::Directory, harness};
-use humanymous_test_support::process::capture;
+use humanymous_platform::testing::process::capture;
 use serde_json::{Value, json};
 use std::{fs, io, path::Path, process::Command, time::Duration};
 

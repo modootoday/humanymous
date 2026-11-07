@@ -73,7 +73,7 @@ pub fn source(workspace: bool) -> io::Result<Value> {
         "crates/authority/tests",
         "crates/cli/src",
         "crates/native-security/src",
-        "crates/test-support/src",
+        "crates/integrations/humanymous-platform/src",
         "crates/audit/src",
         "crates/sdk/humanymous-core/src",
         "crates/network/src",
@@ -130,7 +130,7 @@ pub fn source(workspace: bool) -> io::Result<Value> {
     for (path, worktree) in &files {
         if [
             "crates/native-security/",
-            "crates/test-support/",
+            "crates/integrations/humanymous-platform/",
             "scripts/ci/windows-native-runner/",
         ]
         .iter()

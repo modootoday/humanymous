@@ -1,5 +1,5 @@
 //! Recover only manifest-bound completed rows; interruption can never publish success.
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 use std::{
     io::{self, Read},

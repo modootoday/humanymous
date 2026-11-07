@@ -2,7 +2,7 @@
 //! remain data, never native admission, an original-clock proof or full R1/Ready.
 use super::{catalog, receipt};
 use crate::harness;
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{
