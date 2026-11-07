@@ -1,0 +1,34 @@
+{
+  "schema": "humanymous.capture.hosted-startup/0.1",
+  "observed_at": "2026-11-07T08:19:59Z",
+  "run": {
+    "conclusion": "startup_failure",
+    "createdAt": "2026-11-07T08:17:51Z",
+    "databaseId": 42354873001,
+    "headSha": "a26d1c3f08b365ca93545c6a51343095868edb45",
+    "jobs": [],
+    "status": "completed",
+    "updatedAt": "2026-11-07T08:17:51Z",
+    "url": "https://github.com/modootoday/humanymous/actions/runs/42354873001"
+  },
+  "runner_assigned": false,
+  "jobs_executed": 0,
+  "tests_executed": 0,
+  "capture_commit": "b0363e9",
+  "capture_is_candidate_ancestor": true,
+  "transport_blob": "f97d9398a9da89b8b2bf5a29f715dcaa9a03f921",
+  "transport_blob_matches_owner_commit": true,
+  "diagnostic": {
+    "source": "root-reported workflow validation error",
+    "reason": "nested policy actions:read exceeds caller actions:none permission ceiling",
+    "independently_verified_scope": "run status, exact SHA, empty jobs, commit ancestry and transport blob only"
+  },
+  "capture_pilot_invocation_in_candidate_workflow": false,
+  "capture_pilot_invocation_in_candidate_delivery_pilot": false,
+  "capture_hosted_pilots": {
+    "required": 5,
+    "executed": 0
+  },
+  "docker_capture_product_runs": 0,
+  "push_or_dispatch_performed": false
+}
