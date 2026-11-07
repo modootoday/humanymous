@@ -10,6 +10,24 @@ rel:
 
 # Agent maintenance
 
+## Single maintenance runtime inventory
+
+The delivery owner requested one JSON authority to prevent repeated hardcoded
+count drift. `skills/agent-maintenance/qualification-contract.json` records the
+three integration targets, their 13 exact test names/counts, zero failed,
+ignored, measured and filtered requirements, and explicit source-only/unqualified
+status. Per-target actual discovery and execution must still match the exact
+candidate; no library-unit or whole-product gate is implied. CI consumption is
+owned by delivery and remains pending; no command was executed by authoring JSON.
+
+Lightweight checks: JSON parsed and all 13 names matched the source test
+declarations using a bounded static inspection, not libtest discovery. Initial
+rustfmt write failed with Windows mapped-file error1224 (tool628753); its read-only
+check exposed one formatting difference (tool7ca909). The difference was applied
+directly and rustfmt --check then passed (tool5bead6). Scoped Specfold reported
+zero errors/warnings across236 loaded documents, and whitespace checks passed.
+No compilation, process test or model execution occurred.
+
 ## Docker affinity incident rule
 
 The follow-up root-reported pull failure showed that resolving an absolute Docker

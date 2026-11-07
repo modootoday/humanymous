@@ -35,11 +35,25 @@ Actual filesystem/process tests require the approved hosted source candidate:
 cargo test --locked -p humanymous-agent-maintenance --test process --test session_storage --test product_package
 ```
 
-The current source has five process, four storage and two package tests. They
+The current source has seven process, four storage and two package tests. They
 remain unqualified. Run42355168729 at exact8132117 failed its Linux actor after
 15/88harnesses; none of these targets appears in the executed list. Preserve the
 failed total and missing coverage. A proposed independent scoped hosted step
 must not turn a failed whole-workspace/product job into a passing one.
+
+`skills/agent-maintenance/qualification-contract.json` is the single reviewed
+source-only inventory for these three targets: exact names, counts and zero
+failed/ignored/measured/filtered requirements. Consumers must compare per-target
+discovery on the exact candidate before execution and bind each actual summary
+to that target. Reject duplicate/missing/extra names or targets and internal
+count disagreements. Read this file rather than maintaining another count list.
+Its false qualification fields are intentional; the inventory is not a run receipt.
+
+The two new process cases cover competing claim children and retained legacy
+BOM claim ownership. They are authored but NOT_RUN during the root benchmark
+quiet window. Delivery's exact component accounting must move from the earlier
+11-case inventory to 13 on the same candidate; the delivery owner has been
+notified. Do not relax exact accounting or inherit a prior-source result.
 
 Read-only canonical checks and artifact staging are actual tool executions, not
 pure tests. Respect their assigned execution scope and preserve receipts. The

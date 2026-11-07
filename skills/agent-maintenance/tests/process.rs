@@ -58,6 +58,131 @@ impl Drop for Fixture {
     }
 }
 
+fn session_fixture() -> Fixture {
+    let f = Fixture::new();
+    f.write(
+        ".agents/sessions/lanes.json",
+        r#"{"schema_version":1,"writer_mode":"rust-exclusive","lanes":[{"id":"one","kind":"shared","primary_paths":[]}]}"#,
+    );
+    fs::create_dir_all(f.0.join(".agents/sessions/claims")).unwrap();
+    f.write(
+        ".agents/sessions/ACTIVE.md",
+        "# Board\n\n## Handovers\n\nRetained handover\n",
+    );
+    f
+}
+
+fn request(f: &Fixture, session: &str) -> PathBuf {
+    let name = format!("{session}.json");
+    f.write(
+        &name,
+        &serde_json::json!({
+            "lane":"one", "provider":"codex", "session":session,
+            "goal":"Process ownership fixture", "paths":"owned/**"
+        })
+        .to_string(),
+    );
+    f.0.join(name)
+}
+
+#[test]
+fn competing_claim_processes_leave_exactly_one_owner() {
+    let f = session_fixture();
+    let requests = [request(&f, "first"), request(&f, "second")];
+    let children: Vec<_> = requests
+        .iter()
+        .map(|path| {
+            Command::new(env!("CARGO_BIN_EXE_humanymous-agent-maintenance"))
+                .arg("session-claim")
+                .arg(&f.0)
+                .arg(path)
+                .stdout(std::process::Stdio::piped())
+                .stderr(std::process::Stdio::piped())
+                .spawn()
+                .unwrap()
+        })
+        .collect();
+    // Both children are launched before either is waited; scheduling overlap is not assumed.
+    let results: Vec<_> = children
+        .into_iter()
+        .map(|child| child.wait_with_output().unwrap())
+        .collect();
+    assert_eq!(results.iter().filter(|r| r.status.success()).count(), 1);
+    let winner = results.iter().position(|r| r.status.success()).unwrap();
+    let sessions = f.0.join(".agents/sessions");
+    let claim: serde_json::Value =
+        serde_json::from_slice(&fs::read(sessions.join("claims/one.json")).unwrap()).unwrap();
+    assert_eq!(claim["provider"], "codex");
+    assert_eq!(claim["session"], ["first", "second"][winner]);
+    assert_eq!(fs::read_dir(sessions.join("claims")).unwrap().count(), 1);
+    assert!(!sessions.join(".session-tool.lock").exists());
+    let events = fs::read_to_string(sessions.join("events.jsonl")).unwrap();
+    let actions: Vec<String> = events
+        .lines()
+        .map(|line| {
+            let value: serde_json::Value = serde_json::from_str(line).unwrap();
+            value["action"].as_str().unwrap().to_owned()
+        })
+        .collect();
+    assert_eq!(actions, ["claim-intent", "claimed"]);
+}
+
+#[test]
+fn legacy_bom_claim_keeps_owner_until_exact_owner_releases() {
+    let f = session_fixture();
+    let original = concat!(
+        "\u{feff}",
+        r#"{"lane":"one","provider":"codex","session":"legacy-owner","goal":"Retained legacy claim","paths":"owned/**","since":"2000-01-01T00:00:00Z","status":"active"}"#
+    );
+    f.write(".agents/sessions/claims/one.json", original);
+    let root = f.0.to_str().unwrap();
+    let listed = f.run(&["session-list", root]);
+    assert!(listed.status.success());
+    let claims: serde_json::Value = serde_json::from_slice(&listed.stdout).unwrap();
+    assert_eq!(claims["claims"][0]["session"], "legacy-owner");
+    let next = request(&f, "new-owner");
+    assert!(
+        !f.run(&["session-claim", root, next.to_str().unwrap()])
+            .status
+            .success()
+    );
+    assert!(
+        !f.run(&[
+            "session-release",
+            root,
+            "one",
+            "codex",
+            "new-owner",
+            "Denied"
+        ])
+        .status
+        .success()
+    );
+    let sessions = f.0.join(".agents/sessions");
+    assert_eq!(
+        fs::read(sessions.join("claims/one.json")).unwrap(),
+        original.as_bytes()
+    );
+    assert!(!sessions.join("events.jsonl").exists());
+    assert!(!sessions.join(".session-tool.lock").exists());
+    assert!(
+        f.run(&[
+            "session-release",
+            root,
+            "one",
+            "codex",
+            "legacy-owner",
+            "Owned release",
+        ])
+        .status
+        .success()
+    );
+    assert!(!sessions.join("claims/one.json").exists());
+    let board = fs::read_to_string(sessions.join("ACTIVE.md")).unwrap();
+    assert!(board.contains("Retained handover"));
+    assert!(board.contains("Owned release"));
+}
+
 #[test]
 fn canonical_roles_do_not_require_retired_persona_pointers() {
     let f = Fixture::new();

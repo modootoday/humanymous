@@ -1,0 +1,53 @@
+{
+  "schema": "humanymous.agent-maintenance-qualification/0.1",
+  "package": "humanymous-agent-maintenance",
+  "locked": true,
+  "features": [],
+  "inventory_status": "source-only; exact-source per-target --list must agree before execution",
+  "scope": "three integration targets only; excludes library units and whole-product qualification",
+  "expected_total": 13,
+  "required_summary": {
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0
+  },
+  "targets": [
+    {
+      "kind": "test",
+      "name": "process",
+      "expected_count": 7,
+      "exact_test_names": [
+        "canonical_roles_do_not_require_retired_persona_pointers",
+        "checks_real_tree_and_rejects_wrong_skill_name",
+        "competing_claim_processes_leave_exactly_one_owner",
+        "eval_never_overwrites_existing_output",
+        "legacy_bom_claim_keeps_owner_until_exact_owner_releases",
+        "missing_routing_rule_is_an_error_not_a_negative_match",
+        "normalize_keeps_mirrors_and_preserves_content"
+      ]
+    },
+    {
+      "kind": "test",
+      "name": "session_storage",
+      "expected_count": 4,
+      "exact_test_names": [
+        "coexistence_refuses_mutation_without_creating_lock_or_claim",
+        "invalid_note_leaves_no_mutation_and_overlap_does_not_take_over",
+        "owned_release_preserves_history_and_rejects_foreign_owner",
+        "post_intent_board_failure_retains_claim_and_lock_for_recovery"
+      ]
+    },
+    {
+      "kind": "test",
+      "name": "product_package",
+      "expected_count": 2,
+      "exact_test_names": [
+        "developer_bundle_contains_separate_five_case_suite",
+        "product_bundle_contains_paired_suite_and_refuses_existing_output"
+      ]
+    }
+  ],
+  "runtime_qualified": false,
+  "whole_product_qualified": false
+}
