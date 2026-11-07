@@ -1,0 +1,77 @@
+{
+  "runtime_commit": "adb8e3ed12b762a8a0236f80249515a6504b9973",
+  "checkout_head_at_start": "8eb66811dbb87a12a9d57e4e0c5048758efc1c4e",
+  "platform": "Windows local; Root-allocated C",
+  "target": "target/validation-agents",
+  "cargo_build_jobs": 1,
+  "cargo_incremental": 0,
+  "all_features_all_targets_locked_no_run": {
+    "status": "passed",
+    "seconds": 36.74,
+    "executed_native_tests": 0
+  },
+  "clippy_all_features_all_targets_deny_warnings": {
+    "status": "passed",
+    "seconds": 11.25
+  },
+  "reviewed_pure_selectors": {
+    "invocations": 14,
+    "unique_passed": 31,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_case_occurrences": 613,
+    "full_library_contract_executed": false,
+    "test_names": [
+      "configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
+      "configuration::operational::tests::operational_schema_excludes_frozen_detection_policy_and_secrets",
+      "control::state::tests::spent_intent_without_covered_effect_cannot_become_healthy",
+      "control::tests::node_kill_binding_is_exact_and_survives_policy_revision_changes",
+      "http::origin_response::tests::chunk_ambiguity_truncation_extensions_and_trailers_fail_closed",
+      "http::origin_response::tests::chunked_complete_body_reframes_and_preserves_cookie_fields",
+      "http::origin_response::tests::close_delimited_body_is_bounded_and_reframed_after_eof",
+      "http::origin_response::tests::nominated_hop_fields_are_removed_without_coalescing_ordinary_headers",
+      "http::stream::tests::complete_chunk_stream_reframes_and_strips_forged_gateway_fields",
+      "http::stream::tests::downstream_backpressure_or_abort_does_not_buffer_the_whole_origin",
+      "http::stream::tests::known_oversized_body_is_refused_before_downstream_head",
+      "http::stream::tests::malformed_or_truncated_stream_never_emits_a_success_terminator",
+      "http::tests::origin_response_preserves_cookie_bytes_and_rejects_ambiguity",
+      "http::tests::strict_framing_rejects_smuggling_and_normalization",
+      "management::tests::observer_refuses_browser_authority_ambiguous_headers_and_mutations",
+      "management::tests::observer_requires_native_peer_independent_credential_exact_scope",
+      "management::tests::operator_resource_change_requires_its_own_credential_scope_and_native_envelope",
+      "management::tests::settings_view_is_observer_only_and_cannot_be_used_for_mutation",
+      "service::outcome::tests::failure_accounting_preserves_both_observed_phases_without_secret_errors",
+      "service::readiness::tests::standalone_expected_profile_has_complete_owned_fact_defaults",
+      "service::shutdown::tests::manager_budget_has_strict_slack_and_rejects_overflow",
+      "session::admission::tests::quota_is_bounded_and_reopens_only_at_monotonic_window_boundary",
+      "session::admission::tests::rollback_cannot_restore_an_exhausted_or_poisoned_window",
+      "settings::store::tests::crash_selection_applies_only_the_journal_committed_candidate",
+      "settings::store::tests::unwitnessed_tail_forged_scope_and_skipped_revision_are_refused",
+      "tests::recovery_without_independent_head_never_opens_state_or_calls_witness",
+      "tests::required_external_witness_refuses_writer_only_before_opening_state",
+      "tests::settings::operational_candidate_freezes_exact_parent_scope_and_serialized_bytes",
+      "tests::settings::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
+      "tests::streaming_requires_explicit_native_profile_and_preserves_browser_complete_body_contract",
+      "tls::tests::configuration_refuses_profiles_without_a_tls_h1_consumer"
+    ]
+  },
+  "source_identity": {
+    "before_files": 476,
+    "after_files": 476,
+    "before_manifest_sha256": "f90d06a3545947ddd426cfa0a56aba306a92a459b851ed862ce83e0811ed16f0",
+    "after_manifest_sha256": "19aa0342bce3df966c03f482e3ac6d4ed6352cb39100600611953796ea469134",
+    "runtime_source_unchanged": true,
+    "manifests_lock_toolchain_unchanged": true,
+    "checked_dependency_library_sources_unchanged": true,
+    "whole_workspace_snapshot_unchanged": false,
+    "changed_paths": [
+      "crates/apache-adapter/native/src/coordinator.rs",
+      "crates/audit/tests/durable_witness.rs"
+    ]
+  },
+  "actual_socket_process_ipc_tls_browser": "not_run",
+  "dependency_integration_tests": "not_run",
+  "full_product_qualified": false,
+  "private_evidence": "evidence:root/20261107061820",
+  "later_dependency_source_changes": "not_qualified_by_this_checkpoint"
+}

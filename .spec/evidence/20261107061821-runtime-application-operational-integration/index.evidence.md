@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T09:45:47Z
+updated: 2026-11-07T09:57:56Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -11,28 +11,31 @@ files:
   - {path: hosted-42348518353-runtime-summary.json, sha256: 33619f43f669308c5cc0a03834a6cd48eba5a993f1fbc894aae717af4ec8cfec, bytes: 1128, store: repo}
   - {path: cli-dependency-static-observation.json, sha256: b0b28c5e59e9cd8e4ee51c00f1da123674e679676ce6788b1912589034b2c86e, bytes: 868, store: repo}
   - {path: hosted-42355168729-runtime-summary.json, sha256: 6f131ab8738dd6e2976b47a5afa7403736e349bdbf82d13a1a279ef332c7617a, bytes: 4941, store: repo}
-  - {path: status.json, sha256: 2ca2945b34584b6690b9a570fff5f517eafb441e0668627e6d1264b0ae8600f6, bytes: 3349, store: repo}
   - {path: source-commitments.json, sha256: 4e800db36ca48d2c8a5d4aadefebf0c33a5997026fc42aa2890553c3f6727c50, bytes: 8815, store: repo}
+  - {path: local-adb8e3ed-validation-summary.json, sha256: 8a27be5a110d93b50f96846a65d7d14cf7a95657ddb7ec28797c78267408805c, bytes: 4489, store: repo}
+  - {path: status.json, sha256: f0c2ce57463b4712984517480f47b5c2c52ae68d536fde7ef2e9a43df8fcb4e7, bytes: 4067, store: repo}
 ---
 
 # Runtime application operational integration
 
 ## What was measured
 
-This is the follow-through contract/evidence cover, not a successful execution
-receipt. Contracts R01-R17 are accepted/proposed as individually recorded in
-plan:root/20261107061820 and sot:root/runtime-application v0.3. New runtime
-implementation is unvalidated; actual baseline test count0 due to lock refusal.
+Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Frozen runtime adb8e3ed passed Windows all-features/all-targets locked compilation,
+Clippy and31 reviewed pure tests in a Root-allocated slot. This is a partial gate:
+full-library and actual socket/process/IPC/TLS/browser execution are not covered.
+Before/after snapshots preserve runtime and checked dependency library sources;
+two unrelated/test files changed, so whole workspace identity is not claimed.
 
-R02 server source and two shared-client native fixture tests are now authored.
-Current-source tests/runtime/browser/Docker remain NOT_RUN. An intermediate
-production-only check passed before final edits and has no exact manifest; it is
-not attributed to this checkpoint. Only owned formatting and public-only spec
-syntax checks are current (0errors/1unrelated existing binary warning).
+Historical exact813 MSRV independently passed runtime41 and native_process1;
+its overall run failed. Earlier lock refusal and all failed attempts remain in
+private history. Current and historical scopes are separate; neither establishes
+full product, browser, human/keyboard/AT or independent deployment qualification.
+Owned public spec checks currently report0errors/0warnings.
 
 ## How to read it
 
-Heavy validation is held for user-requested memory triage. Do not infer browser,
+Local execution requires a Root-assigned slot. Do not infer browser,
 human/keyboard/AT, capture, management, service or full product qualification from
 this document's existence or predecessor component results. Raw history belongs
 to private evidence:root/20261107061820; public attachments will contain only

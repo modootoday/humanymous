@@ -24,9 +24,9 @@
     "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
-  "current_source_executed_tests": 0,
-  "current_source_tests": "not_run",
-  "current_source_clippy": "not_run",
+  "current_source_executed_tests": 31,
+  "current_source_tests": "adb8e3ed reviewed pure only; full library and actual socket/process/IPC/TLS/browser not run",
+  "current_source_clippy": "adb8e3ed passed with recorded dependency library snapshots; later dependency edits not qualified",
   "actual_browser_join": "not_run",
   "actual_docker_product": "not_run",
   "human_keyboard_AT": "not_run",
@@ -49,6 +49,19 @@
   "new_pure_stream_profile_fixture_functions": 5,
   "new_hosted_only_stream_and_quota_tcp_fixture_functions": 2,
   "fixture_count_note": "Legacy category counts are historical; qualification-contract.json owns exact current target/case inventories, not executed coverage",
+  "local_adb8e3ed": {
+    "summary": "local-adb8e3ed-validation-summary.json",
+    "windows_all_features_all_targets_locked_no_run": "passed",
+    "windows_all_targets_clippy_deny_warnings": "passed",
+    "reviewed_pure_passed": 31,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_case_occurrences": 613,
+    "full_library_contract_executed": false,
+    "runtime_and_checked_dependency_library_sources_unchanged": true,
+    "whole_workspace_source_snapshot_unchanged": false,
+    "actual_native_process_socket_ipc_tls_browser": "not_run"
+  },
   "historical_hosted_8132117": {
     "run_id": 42355168729,
     "run_conclusion": "failure",
