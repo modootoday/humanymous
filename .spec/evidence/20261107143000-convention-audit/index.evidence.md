@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 126f626508d9a43c79f232db37fc5069ef035e64a68ada381f2d6f0e00a72f5a, bytes: 51539, store: repo}
+  - {path: baseline.json, sha256: 9eaf155ae5ac7a98a8859855924dbeab11a6b1758c984730abe14582d4412092, bytes: 53067, store: repo}
 ---
 
 # Convention audit baseline
@@ -636,3 +636,28 @@ areas, not unchanged semantics across all upstream producers or Runtime inputs.
 Root reports a new exact-source hosted Go run42406688473 in progress; Go owner
 is the sole monitor. Audit starts no duplicate watch/dispatch and infers no Linux,
 Go8 or annotation result. Full migration/native/Ready/product gates remain OPEN.
+
+## Pass integration boundary and binary ACL followup
+
+Pass's four module/test sources match the accepted source-reconstructed contract:
+no motor/speed inputs, centered markers allowed, public derivable answers, exact
+three offsets, nonfuture inclusive20bucket age and explicit legacy64-bit wrapping.
+No new concrete defect is confirmed. Existing27Pass/37total component and16legacy
+responsibility results retain their prior scope and were not rerun. Independent
+seed/challenge vectors, authenticated Runtime issuance/single-use/replay/event
+attestation composition and actual Docker keyboard/assistive/slow-solver outcomes
+remain OPEN. A bounded direct-namespace search found the Runtime Cargo edge but
+no Pass composition call in Runtime/Collector/lab sources; alias/cfg/full callgraph
+coverage is not inferred. Public alignment is never humanity or replay authority.
+
+Private-root0b87d8d8 adds conservative preliminary layout classification. Original
+layout6d8dbb8c matches its stated hash; all three decoded binary descriptor hashes,
+owners and17 ACE records (6/7/4 masks/types/flags/SIDs) independently match. The
+redacted plan table is consistent. The observed full chain stays Unsupported;
+Get-Acl metadata is not held bridge identity, actual ordinary TokenUser association
+or fixed-provider eligibility. Anchor/guard sharing and identity revalidation,
+supervisor planned-locator custody and exact close/remove/absence cleanup policy
+remain implementation gates. No mutation or actual root creation occurred.
+Exact private reviews are in baseline.json. Delivery94d6249f separately publishes
+the already independently consumed focused a19 regression. Complete audit remains
+OPEN; source consistency cannot substitute for native or product execution.

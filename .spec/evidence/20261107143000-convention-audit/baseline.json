@@ -1011,5 +1011,27 @@
     "hosted_go": "42406688473 newly in progress perRoot; Goowner solemonitor, no duplicatewatch/dispatch by audit; LinuxGo8/annotationabsence pending",
     "new_audit_workload": 0,
     "goal_complete": false
+  },
+  "followup_pass_and_private_root_binary_review": {
+    "private_review_sha256": {
+      "pass-a11y-integration-boundary-review-001.json": "667426109b8b02d19ec0b286bc02170a08cd3ab89f7ca55d1b6b962e7c83a0b2",
+      "private-root-layout-followup-002.json": "958d369db13d12cc47b78550c4048a758e09e54484e1256b3620dea7b75d373d"
+    },
+    "pass": "Four source modules/tests against accepted source-reconstructedSoT, no new defect; no motor/speed input, exact3offset/future-age20/legacywrapping/publicsolution boundaries truthful",
+    "pass_open": [
+      "Independent seed/challengegolden vectors",
+      "Runtime authenticatedissuance/singleuse/replay/eventattestation composition",
+      "ActualDocker keyboard/assistive/slowsolver product"
+    ],
+    "pass_consumer_scan": "Bounded Runtime/Collector/lab directnamespace search shows RuntimeCargoedge but no Passcompositioncall; not exhaustivealias/cfgcallgraph",
+    "private_root_plan_commit": "0b87d8d8d519bb2d093a264ac9c342015fcf3d63",
+    "private_root_layout_sha256": "6d8dbb8c6c44db39acc9982b8aa79ce63719ebb212071d99c38b514547e2ab35",
+    "private_root_binary_descriptors": 3,
+    "private_root_aces": 17,
+    "private_root_binary_record_mismatches": 0,
+    "private_root_decision": "ObservedfullchainUnsupported, noactualordinaryTokenUser/heldbridge/provider eligibility; anchoring/share/reopen/supervisorcustody/cleanup choices stillpending",
+    "a19_owner_receipt": "94d6249fce7a75cd0525b349f21b76d015c09071",
+    "new_audit_workload": 0,
+    "goal_complete": false
   }
 }
