@@ -796,3 +796,17 @@ Marker originals/terminal facts retained; marker removed only after terminal and
 owner-ID verification, target returned. Source/binaries remain preserved. Raw
 evidence:root/20261107172013 does not establish archive byte/read-back or independent
 authority qualification, the broader33-case integration suite or full M11.
+
+## Actual local model paired evaluation
+
+The user explicitly renewed autonomous no-paid-API local evaluation on2026-11-08.
+Official Windows mistral.rs0.9.5 release archive and official Qwen3-1.7B-Q8_0 model
+plus matching tokenizer/config are downloaded, pinned and hash-verified. CPU-only
+four-thread/context8192/maxseq1/paged-off/prefix0 is proposed, with conservative
+host/process guards. The existing Rust driver offers finite allowlisted skill
+reads only; there are no model host commands or mutations. Product12/developer20
+subjects use original tasks/rubrics, matched arm seeds and reversed repeat order.
+Same-model judge limitations remain explicit; actual reads are not adherence proof.
+Compilation/model resource allocation and actual32-run completion remain pending
+at this source checkpoint. No inference, paid API or hosted/Codex qualification is
+claimed before terminal raw results. See the distinct local Rust paired profile.

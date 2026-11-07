@@ -3,6 +3,7 @@ pub mod evaluation;
 pub mod evidence_layout;
 pub mod inventory;
 pub mod language;
+pub mod local_eval;
 pub mod package;
 pub mod paired;
 pub mod product;

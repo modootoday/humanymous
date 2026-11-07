@@ -96,6 +96,18 @@ archive inputs matched the source freeze and before/after snapshots. Raw results
 are evidence:root/20261107172013. This remains a metadata-only component result;
 actual archive/read-back/OS/independent authority and full33 integration stay open.
 
+## User-authorized local Rust paired evaluation
+
+The2026-11-08 user instruction requires actual autonomous cost-free local inference,
+not another source-only acknowledgement. `.agents/evals/local-rust-paired-profile.md`
+defines the separate Windows CPU mistral.rs/Qwen3-1.7B profile. It reuses the eight
+authored cases across32 subject runs and actual model-requested allowlisted skill
+reads, with raw responses/usage and a disclosed same-model blinded-rubric judge.
+The existing Rust crate has the finite driver and source tests; no new graph or
+foreign helper is introduced. Resource admission/physical lease remains required
+before compiler/model initialization. This does not relax or counterfeit the
+original Codex/bwrap hosted or full M11 qualification contracts.
+
 ## Draft new-lane coexistence v0.3
 
 Root requested a minimal Rust-only coexistence design for convention-audit and

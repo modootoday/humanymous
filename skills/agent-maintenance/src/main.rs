@@ -7,6 +7,10 @@ use std::{env, path::Path, process::ExitCode};
 
 fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
     match args.first().map(String::as_str) {
+        Some("local-skill-eval") if args.len() == 4 => {
+            humanymous_agent_maintenance::local_eval::run(Path::new(&args[1]), Path::new(&args[2]), args[3].parse()?)?;
+            Ok(true)
+        }
         Some("evidence-layout-plan") if args.len() == 2 => {
             let receipt = humanymous_agent_maintenance::evidence_layout::inspect_request_file(Path::new(&args[1]))?;
             let complete = receipt.command_budget_complete && receipt.plan.structurally_valid;
