@@ -1,0 +1,10 @@
+{
+  "schema": "humanymous.wargame-pure-acceptance.v1",
+  "source_checkpoint": "75d7c82c85230e91745ec7127c6acf9d0d9297cb",
+  "observed_head": "7cda20c5660707b06e905aa6fb289cbab44e9f32",
+  "immutable_full_dependency_graph": false,
+  "pure_tests": { "passed": 26, "failed": 0, "ignored": 0, "attempt": 1 },
+  "scoped_clippy": { "passed": true, "warnings_denied": true, "attempt": 1 },
+  "application_processes_run": 0,
+  "hosted_product_qualified": false
+}

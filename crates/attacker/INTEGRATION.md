@@ -154,7 +154,7 @@ The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
 
-## V0.5 step attribution (validation pending)
+## V0.5 step attribution (pure validated; hosted pending)
 
 The existing network v2 fieldset remains unchanged. Verification now checks each
 step id/role in catalog order: evaluated rows require all steps; failed rows may
@@ -168,6 +168,11 @@ Lab integration must check the actual serialized bytes with
 humanymous_attacker::verification::verify_bytes and preserve this outcome beside
 the actual source/image/report evidence; a Rust unit fixture is not a hosted round.
 The lab owner has been asked to wire this seam in its owned paths.
+
+Root-allocated first-attempt26pure/Clippy passed at observed HEAD7cda20c with
+source75d7c82, locked/j1/testthreads1/incremental0. Other dependencies were dirty;
+no immutable full graph was captured. Evidence073022private/073058public retain
+that limit. Application process0, Cargo slot returned. Hosted still pending.
 
 ## V0.4 strict report acceptance (pure validated; hosted runtime not_run)
 

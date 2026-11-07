@@ -19,7 +19,8 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 ## Steps
 
 - [x] V0.5: bind network step identities/order/roles to catalog; preserve error prefixes.
-- [ ] V0.5: root-allocated scoped pure tests/Clippy, then source-bound hosted acceptance.
+- [x] V0.5: allocated26pure/Clippy passed; evidence073022/073058, dirty dependency scope retained.
+- [ ] V0.5: source-bound hosted acceptance and private raw recovery.
 - [ ] Link actual hosted serialized network bytes to strict verification evidence via lab owner.
 
 - [x] Claim red-catalog/rust-wargame; inspect test taxonomy and sole Rust engine.

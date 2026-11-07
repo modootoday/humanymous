@@ -171,8 +171,10 @@ replay control as an attack, reordering steps or appending steps fails report
 acceptance independently of HTTP status and policy expectations. This strengthens
 evidence attribution without changing frozen detection or the v2 wire fieldset.
 New pure regression fixtures remain failed ledgers, never fabricated successful
-runtime observations. V0.5 validation and fresh source-bound hosted integration
-are pending; v0.4's25pure tests do not qualify the new source.
+runtime observations. V0.5 passed26pure tests and scoped Clippy on first attempt
+under an allocated slot (evidence:root/20261107073058). Observed HEAD7cda20c
+included75d7c82; other dependency edits were dirty and no immutable whole graph
+was captured. Fresh source-bound hosted integration remains pending.
 
 ### Report decoder acceptance v0.4
 
