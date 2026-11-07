@@ -16,6 +16,8 @@ mod owner_scheme;
 mod pilot_assertions;
 #[cfg(all(test, feature = "native-pilot-tests"))]
 mod pilot_process;
+mod tab_sessions;
+mod tab_windows;
 mod window_frame;
 use cef::*;
 

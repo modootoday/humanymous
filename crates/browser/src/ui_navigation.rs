@@ -5,6 +5,8 @@ use meari_native::infrastructure::document::InteractiveDocument;
 /// User request; the native adapter must classify it before CEF task creation.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Intent {
+    /// Window-level tab or address command, guarded by the native host.
+    Tab(crate::tabs::Command),
     /// Traverse the actual engine history to its previous entry.
     Back,
     /// Traverse the actual engine history to its next entry.
@@ -55,13 +57,16 @@ pub fn intents_since(doc: &InteractiveDocument, after: usize) -> (usize, Vec<Int
     let back = path(doc, "nav-back");
     let forward = path(doc, "nav-forward");
     let stop = path(doc, "nav-stop");
+    let tabs = crate::tabs_ui::commands(doc);
     let intents = doc
         .activation_requests
         .iter()
         .skip(after)
         .take(16)
         .filter_map(|request| {
-            if Some(request) == back.as_ref() {
+            if let Some((_, command)) = tabs.iter().find(|(path, _)| path == request) {
+                Some(Intent::Tab(*command))
+            } else if Some(request) == back.as_ref() {
                 Some(Intent::Back)
             } else if Some(request) == forward.as_ref() {
                 Some(Intent::Forward)
@@ -80,7 +85,7 @@ pub fn intents_since(doc: &InteractiveDocument, after: usize) -> (usize, Vec<Int
         .collect();
     (doc.activation_requests.len(), intents)
 }
-fn text(doc: &mut InteractiveDocument, id: &str, value: &str) {
+pub(crate) fn text(doc: &mut InteractiveDocument, id: &str, value: &str) {
     fn source(node: &mut Node, id: &str, value: &str) {
         if let NodeKind::Element {
             attributes,
@@ -124,7 +129,6 @@ pub fn committed(
 ) -> Result<(), String> {
     let address = path(doc, "address").ok_or("native address missing")?;
     doc.set_input_value(&address, route.url())?;
-    text(doc, "page-tab-label", route.title());
     Ok(())
 }
 /// Present a bounded application notice; the caller supplies a fixed safe message.
@@ -185,6 +189,45 @@ pub fn controls(doc: &mut InteractiveDocument, state: crate::history::Controls) 
                 html5ever::QualName::new(None, "".into(), "aria-disabled".into()),
                 if enabled { "false" } else { "true" },
             );
+        }
+    }
+}
+
+/// Mutate one fixed shell attribute in both source and rendered scene.
+pub(crate) fn attribute(doc: &mut InteractiveDocument, id: &str, name: &str, value: Option<&str>) {
+    fn source(node: &mut Node, id: &str, name: &str, value: Option<&str>) {
+        if let NodeKind::Element {
+            attributes,
+            children,
+            ..
+        } = &mut node.kind
+        {
+            if attributes
+                .iter()
+                .any(|a| a.name == "id" && a.value == Value::String(id.into()))
+            {
+                attributes.retain(|a| a.name != name);
+                if let Some(value) = value {
+                    attributes.push(meari::domain::Attribute {
+                        name: name.into(),
+                        value: Value::String(value.into()),
+                    });
+                }
+            } else {
+                for child in children {
+                    source(child, id, name, value);
+                }
+            }
+        }
+    }
+    source(&mut doc.source.root, id, name, value);
+    if let Some(node) = doc.renderer.document.get_element_by_id(id) {
+        let mut mutation = doc.renderer.document.mutate();
+        let name = html5ever::QualName::new(None, "".into(), name.into());
+        if let Some(value) = value {
+            mutation.set_attribute(node, name, value);
+        } else {
+            mutation.clear_attribute(node, name);
         }
     }
 }

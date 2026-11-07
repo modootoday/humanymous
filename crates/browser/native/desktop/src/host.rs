@@ -113,6 +113,7 @@ struct Pilot {
     dock: humanymous_browser::viewport::InspectorDock,
     registrar: NativeChildRegistrar<CefChild>,
     state: Shared,
+    tabs: crate::tab_sessions::Sessions,
     parent: Option<Rc<NativeParentLease>>,
     registered: bool,
     ticks: usize,
@@ -196,7 +197,8 @@ impl Pilot {
             let state = self.state.clone();
             eprintln!("native: registered parent ready; CEF child creation begin");
             let mut parent = None;
-            self.registrar
+            let lease = self
+                .registrar
                 .register(
                     self.registrar.stamp().map_err(io::Error::other)?,
                     |scoped, lease| {
@@ -209,11 +211,37 @@ impl Pilot {
                     io::Error::other(format!("native CEF registration: {:?}", error.problem))
                 })?;
             self.parent = parent;
+            self.tabs.attach_initial(
+                self.state.clone(),
+                self.parent
+                    .clone()
+                    .ok_or_else(|| io::Error::other("initial tab parent absent"))?,
+                lease,
+            );
             eprintln!("native: CEF child creation end");
             self.registered = true;
             self.report.borrow_mut().decorations_removed_readback = true;
             if self.cancel_immediately {
                 self.report.borrow_mut().cancellation_requested = true;
+                self.close_requested = true;
+                self.driver
+                    .wake_handle()
+                    .request_close()
+                    .map_err(io::Error::other)?;
+            }
+        }
+        if self.registered
+            && !self.close_requested
+            && self.registrar.phase().map_err(io::Error::other)? == WindowPhase::Ready
+        {
+            if let Some(active) = self.tabs.step(&self.registrar, &self.document)? {
+                self.state = active.state;
+                self.parent = Some(active.parent);
+                self.controls.bind(self.state.clone());
+                self.last_bounds = None;
+                self.focus_requested = active.address;
+            }
+            if self.tabs.final_tab_closing() {
                 self.close_requested = true;
                 self.driver
                     .wake_handle()
@@ -428,16 +456,20 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
     let prepared = NativeWindowPreparation::new(
         &event_loop,
         document.clone(),
-        LifecycleLimits::new(1, Duration::from_secs(5))?,
+        LifecycleLimits::new(
+            humanymous_browser::tabs::Tabs::CAPACITY,
+            Duration::from_secs(5),
+        )?,
         WindowOptions {
             title: "humanymous | CEF native child qualification | NOT READY".into(),
         },
         None,
     )?;
     let registrar = prepared.registrar();
+    let children = prepared.children();
     let runtime = Rc::new(RefCell::new(NativeHostRuntime::new(
         document.clone(),
-        ChildWindowHost::new(Host, prepared.children()),
+        ChildWindowHost::new(Host, children.clone()),
     )));
     let driver = prepared
         .attach(runtime.clone())
@@ -463,6 +495,9 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
         ..Default::default()
     }));
     let failure = Rc::new(RefCell::new(None));
+    crate::child::prepare_canary()?;
+    let inventory = Rc::new(RefCell::new(vec![state.clone()]));
+    let tabs = crate::tab_sessions::Sessions::new(children, &state, inventory.clone())?;
     event_loop.run_app(Pilot {
         driver,
         controls: crate::browser_controls::Controls::new(document.clone(), state.clone()),
@@ -470,6 +505,7 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
         dock: humanymous_browser::viewport::InspectorDock::Hidden,
         registrar,
         state: state.clone(),
+        tabs,
         parent: None,
         registered: false,
         ticks: 0,
@@ -498,11 +534,15 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
         .parent()
         .ok_or("missing bundle")?
         .join("native-report.json");
+    report.borrow_mut().observe_tabs(&inventory.borrow())?;
     std::fs::write(output, serde_json::to_vec_pretty(&*report.borrow())?)?;
     if let Some(error) = failure.borrow().as_ref() {
         return Err(error.clone().into());
     }
-    if !report.borrow().before_close || !report.borrow().host_closed {
+    if !report.borrow().before_close
+        || !report.borrow().host_closed
+        || report.borrow().tabs_incomplete != 0
+    {
         return Err("native cleanup receipt incomplete".into());
     }
     Ok(CleanExit {

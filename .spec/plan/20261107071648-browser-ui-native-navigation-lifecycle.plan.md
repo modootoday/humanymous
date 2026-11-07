@@ -24,6 +24,13 @@ Source changes do not inherit the older ec4 native pass. Required gates are pure
 entry/document tests, scoped native compilation/Clippy and actual fresh-bundle
 history/Stop observations. All are pending for this expansion until recorded.
 
+The user selected tab add/close/switch and basic shortcuts next (UI-33). Reuse
+Meari's multi-child lifecycle rather than replacing content in one browser. Review
+requirements: monotonic tab IDs, capacity retained through actual cleanup, focus
+and IME reset on switch, inactive-command rejection, late-create close, final-tab
+window close and all-child cleanup receipts. Pure model/shortcuts and scene tests
+must precede actual multi-child pilot; initial single-child tests remain distinct.
+
 Dedicated run42377685195/job128418538461 completed successfully at exact
 ec4f2da09a78ffa3ae7661661fc1d54b921f534b. Actual results are runner14/Clippy,
 native build0, desktop synthetic protocol4/13filtered, bootstrap synthetic

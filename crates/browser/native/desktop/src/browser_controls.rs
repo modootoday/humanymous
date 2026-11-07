@@ -1,14 +1,15 @@
 //! Native address/home/reload intents. Target documents never own these controls.
-use crate::{child::Shared, navigation};
+use crate::child::Shared;
 use humanymous_browser::{
-    internal_urls::{self, Route},
+    internal_urls,
+    tabs::Command,
     ui_navigation::{self, ImeGuard, Intent},
 };
 use meari_native::infrastructure::native_host::NativeDocumentHandle;
 use std::io;
 use winit::{
     event::{ElementState, Ime, WindowEvent},
-    keyboard::{Key, NamedKey},
+    keyboard::{Key, ModifiersState, NamedKey},
 };
 #[path = "internal_probe.rs"]
 mod probe;
@@ -18,12 +19,20 @@ pub struct Controls {
     state: Shared,
     cursor: usize,
     ime: ImeGuard,
+    modifiers: ModifiersState,
     committed: u64,
     notice: Option<&'static str>,
     controls: Option<humanymous_browser::history::Controls>,
     probe: Option<probe::Probe>,
 }
 impl Controls {
+    pub fn bind(&mut self, state: Shared) {
+        self.state = state;
+        self.ime = ImeGuard::default();
+        self.committed = 0;
+        self.notice = None;
+        self.controls = None;
+    }
     pub fn new(document: NativeDocumentHandle, state: Shared) -> Self {
         let probe_enabled = std::env::args().any(|a| a == "--native-internal-probe");
         Self {
@@ -31,6 +40,7 @@ impl Controls {
             state,
             cursor: 0,
             ime: ImeGuard::default(),
+            modifiers: ModifiersState::default(),
             committed: 0,
             notice: None,
             controls: None,
@@ -39,10 +49,35 @@ impl Controls {
     }
     pub fn event(&mut self, event: &WindowEvent) -> io::Result<()> {
         match event {
+            WindowEvent::ModifiersChanged(modifiers) => self.modifiers = modifiers.state(),
             WindowEvent::Ime(Ime::Preedit(text, _)) => self.ime.preedit(!text.is_empty()),
             WindowEvent::Ime(Ime::Commit(_)) => self.ime.commit(),
-            WindowEvent::Ime(Ime::Disabled) | WindowEvent::Focused(false) => self.ime.cancel(),
+            WindowEvent::Ime(Ime::Disabled) | WindowEvent::Focused(false) => {
+                self.ime.cancel();
+                self.modifiers = ModifiersState::default();
+            }
             WindowEvent::KeyboardInput { event, .. } if event.state == ElementState::Pressed => {
+                let vk = match &event.logical_key {
+                    Key::Named(NamedKey::Tab) => 0x09,
+                    Key::Named(NamedKey::F5) => 0x74,
+                    Key::Named(NamedKey::ArrowLeft) => 0x25,
+                    Key::Named(NamedKey::ArrowRight) => 0x27,
+                    Key::Character(text) if text.len() == 1 => {
+                        u32::from(text.as_bytes()[0].to_ascii_uppercase())
+                    }
+                    _ => 0,
+                };
+                if let Some(command) = humanymous_browser::tabs::shortcut(
+                    vk,
+                    self.modifiers.control_key(),
+                    self.modifiers.alt_key(),
+                    self.modifiers.shift_key(),
+                    self.modifiers.super_key(),
+                    event.repeat,
+                ) {
+                    crate::tab_sessions::enqueue_window(&self.state, command)?;
+                    return Ok(());
+                }
                 if event.logical_key == Key::Named(NamedKey::Enter) {
                     let focused = self
                         .document
@@ -66,52 +101,26 @@ impl Controls {
         Ok(())
     }
     fn dispatch(&mut self, intent: Intent) -> io::Result<()> {
-        let (browser, current) = {
-            let state = self
-                .state
-                .lock()
-                .map_err(|_| io::Error::other("state poisoned"))?;
-            if state.revoked || state.closed {
-                return Ok(());
-            }
-            (
-                state.browser.clone(),
-                state.navigation.committed().map(|(_, r)| r),
-            )
+        let command = match intent {
+            Intent::Tab(command) => command,
+            Intent::Back => Command::Back,
+            Intent::Forward => Command::Forward,
+            Intent::Stop => Command::Stop,
+            Intent::Home => Command::Home,
+            Intent::Reload => Command::Reload,
+            Intent::Open(address) => match internal_urls::classify(&address) {
+                Ok(route) => Command::Open(route),
+                Err(_) => {
+                    self.state
+                        .lock()
+                        .map_err(|_| io::Error::other("state poisoned"))?
+                        .navigation
+                        .notice = Some("Only local newtab and permitted diagnostics are available");
+                    return Ok(());
+                }
+            },
         };
-        if matches!(intent, Intent::Back | Intent::Forward | Intent::Stop) {
-            if let Some(browser) = browser {
-                let action = match intent {
-                    Intent::Back => crate::history::Action::Back,
-                    Intent::Forward => crate::history::Action::Forward,
-                    _ => crate::history::Action::Stop,
-                };
-                crate::history::queue(browser, self.state.clone(), action)?;
-            }
-            return Ok(());
-        }
-        let (route, reload) = match intent {
-            Intent::Home => (Ok(Route::NewTab), false),
-            Intent::Open(address) => (internal_urls::classify(&address), false),
-            Intent::Reload => (current.ok_or("No committed local page"), true),
-            Intent::Back | Intent::Forward | Intent::Stop => {
-                unreachable!("history dispatched above")
-            }
-        };
-        match (route, browser) {
-            (Ok(route), Some(browser)) => {
-                navigation::queue(browser, route, self.state.clone(), reload)?;
-            }
-            (Err(_), _) => {
-                self.state
-                    .lock()
-                    .map_err(|_| io::Error::other("state poisoned"))?
-                    .navigation
-                    .notice = Some("Only local newtab and permitted diagnostics are available");
-            }
-            _ => {}
-        }
-        Ok(())
+        crate::tab_sessions::enqueue_window(&self.state, command)
     }
     pub fn poll(&mut self) -> io::Result<()> {
         let (cursor, intents) = self

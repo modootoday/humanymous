@@ -2,14 +2,14 @@
 use meari::domain::{Attribute, Component, Node, NodeKind, Span, Value};
 use meari_native::{domain::Viewport, infrastructure::document::InteractiveDocument};
 
-fn text(value: &str) -> Node {
+pub(crate) fn text(value: &str) -> Node {
     Node {
         kind: NodeKind::Text(Value::String(value.into())),
         span: Span::default(),
     }
 }
 
-fn element(tag: &str, attributes: &[(&str, &str)], children: Vec<Node>) -> Node {
+pub(crate) fn element(tag: &str, attributes: &[(&str, &str)], children: Vec<Node>) -> Node {
     let mut attributes: Vec<_> = attributes
         .iter()
         .map(|(name, value)| Attribute {
@@ -43,7 +43,12 @@ fn element(tag: &str, attributes: &[(&str, &str)], children: Vec<Node>) -> Node 
     }
 }
 
-fn navigation_button(id: &str, label: &str, icon: crate::icons::Icon, enabled: bool) -> Node {
+pub(crate) fn navigation_button(
+    id: &str,
+    label: &str,
+    icon: crate::icons::Icon,
+    enabled: bool,
+) -> Node {
     let mut node = element(
         "button",
         &[
@@ -191,25 +196,8 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
                     &[("className", "tab-strip")],
                     vec![
                         element("span", &[("className", "brand")], vec![text("h")]),
-                        element(
-                            "div",
-                            &[("role", "tablist"), ("aria-label", "Browser tabs")],
-                            vec![element(
-                                "button",
-                                &[
-                                    ("role", "tab"),
-                                    ("aria-selected", "true"),
-                                    ("aria-label", "Current browser tab"),
-                                    ("className", "page-tab"),
-                                ],
-                                vec![element(
-                                    "span",
-                                    &[("id", "page-tab-label")],
-                                    vec![text(if enabled { "New tab" } else { "No target" })],
-                                )],
-                            )],
-                        ),
-                        disabled_button("+", "New tab unavailable in this prototype"),
+                        crate::tabs_ui::strip(enabled),
+                        navigation_button("tab-new", "New tab", crate::icons::Icon::Plus, enabled),
                         element(
                             "span",
                             &[("className", "tab-caption")],

@@ -8,6 +8,10 @@ use std::{
 
 #[derive(Default)]
 pub struct State {
+    pub active: bool,
+    pub tab_id: usize,
+    pub commands: Option<crate::tab_sessions::Queue>,
+    pub surface_error: Option<&'static str>,
     pub browser: Option<Browser>,
     pub navigation: crate::navigation::State,
     pub created: bool,
@@ -174,6 +178,17 @@ wrap_keyboard_handler! {
     impl KeyboardHandler {
         fn on_pre_key_event(&self, _browser: Option<&mut Browser>, event: Option<&KeyEvent>, _os_event: Option<&mut cef::sys::MSG>, _shortcut: Option<&mut i32>) -> i32 {
             if !self.state.lock().is_ok_and(|s|s.is_live()) { return 1; }
+            if let Some(event)=event.filter(|e|e.type_==KeyEventType::RAWKEYDOWN) {
+                use cef::sys::cef_event_flags_t as Flags;
+                let flag=|value:Flags|event.modifiers & value.0 as u32 !=0;
+                if let Some(command)=humanymous_browser::tabs::shortcut(event.windows_key_code as u32,
+                    flag(Flags::EVENTFLAG_CONTROL_DOWN),flag(Flags::EVENTFLAG_ALT_DOWN),flag(Flags::EVENTFLAG_SHIFT_DOWN),
+                    flag(Flags::EVENTFLAG_COMMAND_DOWN),flag(Flags::EVENTFLAG_IS_REPEAT)) {
+                    if crate::tab_sessions::enqueue(&self.state,command).is_err()
+                        && let Ok(mut state)=self.state.lock() {state.surface_error=Some("tab command rejected");}
+                    return 1;
+                }
+            }
             if event.is_some_and(|e| e.windows_key_code == 0x79 && e.type_ == KeyEventType::RAWKEYDOWN)
                 && std::env::args().any(|a| a == "--native-measured-hanja")
                 && std::env::args().any(|a| a == "--native-korean-ime") {
@@ -264,6 +279,11 @@ wrap_life_span_handler! {
                 close = state.revoked;
                 state.late_created_after_cancel = close;
             }
+            if !close && let Some(browser)=&browser {
+                let active=self.state.lock().is_ok_and(|s|s.active);
+                if crate::tab_windows::visible(browser,active).is_err()
+                    && let Ok(mut state)=self.state.lock() {state.surface_error=Some("tab visibility failed");}
+            }
             if close && let Some(host) = browser.and_then(|b| b.host()) { host.close_browser(1); }
         }
         fn on_before_close(&self, _browser: Option<&mut Browser>) {
@@ -297,11 +317,14 @@ impl CefChild {
         let create = || -> io::Result<()> {
             crate::native::prepare_parent(parent)?;
             let (hwnd, bounds, _) = crate::native::parent_geometry(parent)?;
-            let info = WindowInfo {
+            let mut info = WindowInfo {
                 runtime_style: RuntimeStyle::ALLOY,
                 ..Default::default()
             }
             .set_as_child(cef::sys::HWND(hwnd.0.cast()), &bounds);
+            if !state.lock().is_ok_and(|s| s.active) {
+                info.style &= !windows::Win32::UI::WindowsAndMessaging::WS_VISIBLE.0;
+            }
             let fixture = crate::fixture::input_mode();
             let uri = if fixture {
                 crate::fixture::uri().map_err(io::Error::other)?
@@ -321,17 +344,6 @@ impl CefChild {
                 },
                 ..Default::default()
             };
-            // Only our synthetic generated canary is offered to the renderer.
-            use std::io::Write;
-            let executable = std::env::current_exe()?;
-            let bundle = executable
-                .parent()
-                .ok_or_else(|| io::Error::other("bundle absent"))?;
-            let mut canary = std::fs::OpenOptions::new()
-                .write(true)
-                .create_new(true)
-                .open(bundle.join(format!("sandbox-canary-{}.txt", std::process::id())))?;
-            canary.write_all(b"humanymous synthetic sandbox canary\n")?;
             let mut extra = dictionary_value_create()
                 .ok_or_else(|| io::Error::other("CEF dictionary absent"))?;
             extra.set_int(
@@ -373,6 +385,19 @@ impl CefChild {
             }
         }
     }
+}
+
+pub fn prepare_canary() -> io::Result<()> {
+    use std::io::Write;
+    let executable = std::env::current_exe()?;
+    let bundle = executable
+        .parent()
+        .ok_or_else(|| io::Error::other("bundle absent"))?;
+    let mut canary = std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(bundle.join(format!("sandbox-canary-{}.txt", std::process::id())))?;
+    canary.write_all(b"humanymous synthetic sandbox canary\n")
 }
 impl NativeChild for CefChild {
     type Error = io::Error;

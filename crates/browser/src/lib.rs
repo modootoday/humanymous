@@ -28,3 +28,7 @@ pub mod navigation;
 pub mod history;
 /// Pure native address composition and confirmation policy.
 pub mod input;
+/// Pure tab identities, cleanup accounting and browser accelerators.
+pub mod tabs;
+#[cfg(feature = "native-ui")]
+pub mod tabs_ui;

@@ -6,6 +6,32 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Current UI-32 controls source is newer than the ec4 qualification below. It adds
+real CEF Back/Forward entry traversal, loading availability and Stop. The engine
+entry stream must be ordered, complete, bounded and locally allowlisted; the
+current committed route and request/control epoch are rechecked before issuing
+the native history action. Stop invalidates outstanding entry visitors even when
+no document load is pending. Button disabled state is projected to both source
+and rendered native documents. Pure/document/native/actual GUI gates for this
+new slice are pending; the earlier executable preview does not contain it.
+
+UI-33 additionally authors distinct CEF children for tab add/close/switch and
+shared native shortcut commands from Meari and active CEF focus. Tab IDs never
+reuse; closing children retain capacity through before-close and lifecycle poll.
+All-child cleanup counts supplement the initial child's historical receipts.
+This multi-child source has not yet passed native compilation or a GUI pilot.
+
+The actual controls pilot must start with a fresh synthetic profile and owner
+newtab, observe Back/Forward disabled, open Version, return with Back, restore
+Version with Forward, and verify address/tab/content after each commit. Reload
+must retain the current entry. Home must open newtab; a new navigation after Back
+must discard the engine forward branch. Stop must be observed during a pending
+load, with delayed completion rejected and a later navigation still usable.
+An idle Stop click or an instantaneous load that finished before the action is
+not cancellation evidence. Use both pointer and named accessibility actions
+where available, retaining their distinct provenance. This is not full keyboard,
+IME or screen-reader qualification. Record actual child-first close separately.
+
 Exactec4 run42377685195 passed the bounded standard Windows x64 component gate:
 runner14/Clippy, native build, desktop protocol4 (13filtered), bootstrap marker3
 (3filtered), actual bootstrap1 (5filtered) and desktop2. Four refusal children

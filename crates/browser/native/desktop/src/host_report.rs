@@ -2,6 +2,9 @@
 use crate::native;
 #[derive(Default, serde::Serialize)]
 pub(super) struct Report {
+    pub(super) tabs_created: usize,
+    pub(super) tabs_before_close: usize,
+    pub(super) tabs_incomplete: usize,
     pub(super) host_pid: u32,
     pub(super) navigation_schema: u32,
     pub(super) renderer_file_probe_schema: u32,
@@ -45,6 +48,22 @@ pub(super) struct Report {
 }
 
 impl Report {
+    pub(super) fn observe_tabs(&mut self, tabs: &[crate::child::Shared]) -> std::io::Result<()> {
+        for tab in tabs {
+            let tab = tab
+                .lock()
+                .map_err(|_| std::io::Error::other("tab state poisoned"))?;
+            if tab.creation_requested || tab.created {
+                self.tabs_created += 1;
+                if tab.closed {
+                    self.tabs_before_close += 1;
+                } else {
+                    self.tabs_incomplete += 1;
+                }
+            }
+        }
+        Ok(())
+    }
     pub(super) fn observe_navigation(&mut self, state: &crate::navigation::State) {
         if let Some(probe) = &state.probe {
             self.internal_probe_finished = probe.finished();

@@ -660,6 +660,27 @@ file denials count. This does not attest PID lifetime identity, all processes or
 full sandbox policy. Navigation schema2 is unchanged. Historical periodic token
 snapshots are not retroactively replaced by this new observation contract.
 
+UI-33 (user-selected tab and shortcut expansion): each tab owns a distinct real
+CEF Browser, navigation authority and Meari child lease. IDs never reuse within a
+session; at most eight unsettled children and64 lifetime creations are admitted.
+Closing or pending-creation children consume capacity until actual before-close.
+Switching hides/deactivates the former child, projects the selected tab's actual
+address/title/history and resets address IME confirmation state. Stale, hidden or
+closing children cannot issue window-level tab/address commands. Close uses the
+existing lifecycle release barrier; late-created revoked children close, and
+closing the last tab requests coordinated window close. Parent teardown drains
+all registered children; one active child's receipt is insufficient.
+
+Ctrl+T/W/Tab/Shift+Tab/L, Ctrl+R/F5 and Alt+Left/Right share a bounded native intent
+queue from both Meari and CEF focus. Ctrl+Shift+Tab means previous tab. Repeated
+creation/close accelerators do not create an unbounded queue. Escape, Enter,
+Hangul and Hanja remain with the focused input/IME unless separately specified.
+Tab UI provides names, selected/hidden/disabled state and distinct close actions.
+Inactive tab navigation/history is retained by CEF, not replayed with load_url.
+No external navigation, persisted profiles, session restoration or full AT claim
+is added. Pure tab/shortcut tests, native scene actions and actual multi-child
+switch/close/late-create/parent-close observations qualify separate boundaries.
+
 UI-32 (accepted browser-controls expansion): Back and Forward operate on actual
 CEF navigation entries, never an application-invented history. Before dispatch,
 the complete bounded entry snapshot must identify one current entry and an
