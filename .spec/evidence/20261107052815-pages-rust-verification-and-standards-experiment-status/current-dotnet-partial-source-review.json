@@ -209,14 +209,36 @@
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted.rs",
+      "sha256_at_post_read_observation": "8b590c6e65470b068244becda1042bb177de00e8075ddd660ff7581c8cafc861",
+      "lines": 618,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "618 lines fully read in contiguous chunks. Ignored actual Kestrel suite has realsharedauthority/WAL with production ApplicationHttp versus frozen Synthetic reports, exactbinary/cookies/unknownlength, heldIPC+GC overlap, abort-during-authority/resourcecounter, deny/challenge, rewrite/response-started/deadline, bodylimit/abort/truncation/upgrade,204/304/HEAD/chunked response, appIOException, authoritydown/dispose/stop. Contact counts not mutations; deadline delay not independently expiredauthorityresult. covered/not_run contract list retained; counters/assertions not full21case qualification. Actual Host reader uses spawned unjoined thread and blocking send, loose Value frame handling; pure protocol.rs codec is not wired into this IO path. Perframe timeout can repeat64times, synchronousstdin no own deadline; ManagedChild direct-child guard not complete joinedIO/Job/treeproof. No actual test execution here.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/package/projection.rs",
+      "sha256_at_post_read_observation": "08bc47208b464bfa547341afcdb0c8437355fb023cebd087f7246d464b371845",
+      "lines": 323,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "323 lines fully read in contiguous chunks. Pure allowlisted publicprojection of fourJIT/AOT source/packed modes and two production/synthetic profiles each; expectedsource/nativehash,tuple/toolchain,exact covered/notrun partition, boundedcounts/zeroerrors, verdict consistency. Rejects duplicates/unknowncases; excludes injectedsecret/privatefields. Package-install claim comes pairedpackedconsumer, notHTTPdelegate. completefixture still cleanupnull/componentqualifiedfalse/fullfalse. Textual/hash identity claims not independent sourceartifact/actor attestation or rawrun verification. No actualpackage execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
     }
   ],
-  "full_read_files": 19,
-  "lines": 2870,
+  "full_read_files": 21,
+  "lines": 3811,
   "post_read_rehash_drift": [],
   "source_receipts_renewed": false,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "full_product_qualified": false,
-  "remaining": "Full owner chronology, Rust hosted orchestration and package test/projection remain; no runtime/host/package or source receipt acceptance."
+  "remaining": "Full owner chronology and package orchestration test remain; then compare wholepackage/current authoredfiles and existingmatchingreceipts. No actualruntime or sourceacceptance."
 }
