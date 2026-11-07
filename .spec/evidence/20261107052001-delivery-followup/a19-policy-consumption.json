@@ -1,0 +1,36 @@
+{
+  "schema": "humanymous.delivery-a19-policy-consumption/1",
+  "source_sha": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb",
+  "policy_sha256": "7704d0c3882744e0c3cc4feb8946c68f31c8688d5130ce8cec5fb8ee5237c954",
+  "registered_raw_files": [
+    {
+      "path": "go-policy-02-tests.log",
+      "bytes": 468,
+      "sha256": "1e5722393ede4cc3fbf81a8b9fa2d2e673013e2c1c358f76aff31b64ee7461a9"
+    },
+    {
+      "path": "go-policy-02-clippy.log",
+      "bytes": 713,
+      "sha256": "bb84717b8749bd77b002c84e2283638464852b077f96165162739ebf555c5816"
+    },
+    {
+      "path": "go-policy-02-check.log",
+      "bytes": 267,
+      "sha256": "74a235de41d4f71df0a5ea1679c08703212e0602e483972a4ef7ad2286553eca"
+    }
+  ],
+  "targeted_test": "policy::tests::facade_consumer_gates_cannot_omit_or_precede_closed_admission",
+  "passed": 1,
+  "failed": 0,
+  "ignored": 0,
+  "filtered": 109,
+  "root_reported_terminal_session": 20636,
+  "root_reported_terminal_exit": 0,
+  "root_reported_strict_clippy_exit": 0,
+  "root_reported_workflow_policy_exit": 0,
+  "source_hash_before_after": "Root measured final policy bytes; no full transitive source/tool attestation",
+  "independent_consumption": "Three registered payload hashes/sizes and exact raw targeted footer verified; no duplicate execution",
+  "full_110_rerun_claimed": false,
+  "hosted_linux_qualified": false,
+  "full_product_qualified": false
+}
