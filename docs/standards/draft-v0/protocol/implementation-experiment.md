@@ -124,6 +124,16 @@ server identity, body/cancellation ownership, origin isolation and negative-case
 pilots still need source-bound results for each claimed host.
 A request must never select its own trusted profile from an unauthenticated field.
 
+The authority's configured route inventory is narrower than the envelope parser:
+1–4096 distinct method/path pairs, ASCII paths without percent escapes, query,
+fragment, backslash or dot segments, with CONNECT and the reserved namespace
+refused. Lookup compares the method and the target portion before `?` exactly;
+it does not decode or normalize a path to find another route. Queries remain in
+the validated request. A parser-accepted non-ASCII or percent-encoded path cannot
+therefore be treated as a currently configurable authority route. Exact configured
+Host/authority comparison also preserves case and port rather than supplying a
+generic host-normalization rule.
+
 ## Private startup and audit composition
 
 The current executable rejects command-line arguments and interactive stdin or

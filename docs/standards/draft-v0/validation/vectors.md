@@ -96,6 +96,13 @@ confused. This corpus selects no generic Draft v0 Unicode-normalization rule,
 internationalized-host mapping, signature canonicalization or locale behavior.
 Those decisions still need their own wire contract and independent vectors.
 
+The current authority route inventory separately requires ASCII paths without
+percent escapes. Its lookup uses the unnormalized path before the query, so
+the accepted non-Latin and percent-encoded **path** fixtures do not establish
+service route readiness or origin forwarding. A Unicode query on an otherwise
+eligible path is a different case. See the
+[service route boundary](../protocol/implementation-experiment.md#producer-profiles-and-service-readiness).
+
 ## Still unresolved for Draft v0
 
 These fixtures do not select the generic profile's serialization, canonical

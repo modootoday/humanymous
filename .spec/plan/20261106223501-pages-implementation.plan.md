@@ -1613,3 +1613,13 @@ passesNone so requiredexternalwitness refuses; sourceAPI is not deployedbroker.
 Added three manual receipts; no service/native/compiler execution. Exact813 CI
 still live onlyadvisories128362579030 at observation. Audit owner helperfix now
 committed de33864b uncompiled/unexecuted, no older passing count inherited.
+
+### Internationalized parser paths versus routable authority paths
+
+Inspected exact current configuration route validation and authority lookup.
+Experimental wire now records1..4096distinct method/path inventory, ASCII/no%
+path restriction, CONNECT/reserved/dot refusal and exact undecoded path-before-?
+lookup, with exact authority case/port. Vectors page explicitly separates accepted
+Unicode/percentencoded path fixtures from actual service readiness; query is a
+separate boundary. No route/parser/scoring behavior changed, no generic Unicode
+normalization selected. Configuration excerpts do not renew whole-module receipt.
