@@ -284,12 +284,32 @@ impl Application {
     /// session/audit races. Slow clients can cause denial of service; this is an
     /// experimental loopback pilot, not a production throughput claim.
     pub async fn serve(mut self, listener: TcpListener) -> std::io::Result<()> {
+        let (_sender, receiver) = tokio::sync::watch::channel(None);
+        self.serve_until(listener, receiver).await
+    }
+
+    /// Stop accepting on an observed request, then bound the active request drain.
+    pub async fn serve_until(
+        &mut self,
+        listener: TcpListener,
+        mut shutdown: tokio::sync::watch::Receiver<Option<crate::service::ShutdownRequest>>,
+    ) -> std::io::Result<()> {
         if !listener.local_addr()?.ip().is_loopback() {
             return Err(std::io::Error::other("loopback only"));
         }
         let mut admission = Admission::new(self.config.rate_per_second);
         loop {
-            let (mut stream, peer) = listener.accept().await?;
+            if shutdown.borrow().is_some() {
+                return Ok(());
+            }
+            let (mut stream, peer) = tokio::select! {
+                biased;
+                changed = shutdown.changed() => {
+                    changed.map_err(|_| std::io::Error::other("shutdown controller closed"))?;
+                    continue;
+                }
+                accepted = listener.accept() => accepted?,
+            };
             if !peer.ip().is_loopback() {
                 continue;
             }
@@ -303,11 +323,40 @@ impl Application {
                 continue;
             }
             let mut response_started = false;
-            let result = timeout_at(
-                until,
-                self.connection(&mut stream, until, &mut response_started),
-            )
-            .await;
+            let (result, stopping) = {
+                let connection_shutdown = shutdown.clone();
+                let pending = timeout_at(
+                    until,
+                    self.connection(
+                        &mut stream,
+                        until,
+                        &mut response_started,
+                        &connection_shutdown,
+                    ),
+                );
+                tokio::pin!(pending);
+                tokio::select! {
+                    biased;
+                    changed = shutdown.changed() => {
+                        changed.map_err(|_| std::io::Error::other("shutdown controller closed"))?;
+                        let request = *shutdown.borrow();
+                        if let Some(request) = request {
+                            let result = tokio::time::timeout(request.drain_timeout(), &mut pending)
+                                .await.map_err(|_| std::io::Error::other("shutdown drain incomplete"))?;
+                            (result, true)
+                        } else { (pending.await, false) }
+                    }
+                    result = &mut pending => (result, false),
+                }
+            };
+            if stopping {
+                return match result {
+                    Ok(_) => Ok(()),
+                    Err(_) => Err(std::io::Error::other(
+                        "shutdown request deadline incomplete",
+                    )),
+                };
+            }
             if let Ok(Err(error)) = result {
                 if response_started {
                     continue;
@@ -324,6 +373,7 @@ impl Application {
         stream: &mut TcpStream,
         connection_until: Instant,
         response_started: &mut bool,
+        shutdown: &tokio::sync::watch::Receiver<Option<crate::service::ShutdownRequest>>,
     ) -> Result<(), Rejection> {
         let request = http::read(stream).await?;
         connected(stream)?;
@@ -361,6 +411,9 @@ impl Application {
                     .map_err(|_| Rejection::new(503, "response_write"))
             }
             Decision::Origin { deadline } => {
+                if shutdown.borrow().is_some() {
+                    return Err(Rejection::new(503, "service_stopping"));
+                }
                 connected(stream)?;
                 self.check_deadline(deadline, humanymous_authority::now_ms())?;
                 let remaining = deadline
@@ -375,6 +428,9 @@ impl Application {
                         .await
                         .map_err(|_| Rejection::new(503, "origin_connect"))?;
                     // Cancellation/expiry before the first origin byte has no effect.
+                    if shutdown.borrow().is_some() {
+                        return Err(Rejection::new(503, "service_stopping"));
+                    }
                     connected(stream)?;
                     self.check_deadline(deadline, humanymous_authority::now_ms())?;
                     if Instant::now() >= connection_until {

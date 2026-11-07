@@ -36,7 +36,7 @@ dual-control and missing-required fail-closed remain invariant.
 | R12 | External witness library injection + deployment transport | audit/runtime/Compose | Audit client/service verified in component scope; runtime not integrated; independent deployment remains unqualified |
 | R13 | Actual TLS/H1 original capture | runtime + narrowly approved network paths | Not implemented or claimed yet; full observation+successful handshake+connection binding; private synthetic lab |
 | R14 | Complete H2 frame/HPACK/per-stream capture and server | runtime/network;R13+binding | Required follow-up; no H1-to-H2/fullM2 success inference |
-| R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Accepted, not implemented; real lifecycle/failure/lock-release tests, synchronous I/O limits explicit |
+| R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Source implemented, NOT_RUN; real lifecycle/failure/lock-release tests pending, synchronous I/O limits explicit |
 | R16 | Actual CLI/system-service connection | CLI/runtime;R15+boot credential provider | Pending; signed descriptor/artifact/nonce, actual OS lifecycle, no unattended claim before credentials |
 | R17 | Full source-bound product qualification | root/Compose/wargame/delivery/runtime | Pending; Docker full topology + actual effect/audit + ordinary human ALLOW/keyboard/AT; component results separate |
 
@@ -107,3 +107,15 @@ canonical commit. Commit only owned paths with git mutex and attribution.
   human/AT/interactive/device/independent-authority claims remain separate.
   Do not duplicate policy orchestration or remove required gates by path before
   the shared impact classifier exists. R15 source follows this checkpoint.
+
+R15 source checkpoint adds service::{read_configuration,ShutdownRequest,Readiness,
+ExitReport,ServiceHost}. ServiceHost::bind authenticates existing sealed custody
+and binds ingress before readiness; run takes watch::Receiver<Option<ShutdownRequest>>.
+The serialized application stops accepting on observed shutdown, checks the watch
+before origin connect/write, bounds active asynchronous drain, and flushes the
+retained audit before reporting stopped. Closed controllers and incomplete drains
+return errors. No detached workers are introduced. Synchronous private input,
+custody recovery and WAL flush require supervisor deadlines; this source cannot
+promise their preemption. Main reuses this lifecycle with legacy inherited pipes;
+actual SCM/SIGTERM controller, management listener and unattended credentials are
+still R09/R16 work. This implementation and all lifecycle tests are NOT_RUN.

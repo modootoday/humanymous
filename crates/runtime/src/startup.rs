@@ -20,6 +20,12 @@ impl humanymous_authority::decision::DurableAudit for SealedAudit {
         self.log.append(record).map(|_| ())
     }
 }
+impl SealedAudit {
+    /// Flush before reporting a completed service shutdown; custody stays held.
+    pub fn flush(&mut self) -> std::io::Result<()> {
+        self.log.flush()
+    }
+}
 
 /// Open audit with an existing sealed identity; startup never provisions keys.
 pub fn open_audit(config: &mut Configuration) -> Result<SealedAudit, &'static str> {

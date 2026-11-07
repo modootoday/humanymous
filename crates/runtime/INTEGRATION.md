@@ -207,3 +207,15 @@ pilot passes with sealed wrong-password/missing/tampered/concurrent-writer
 refusals, actual origin2/audit4 and restart invalidation. Source/image commitments:
 evidence:root/20261106235519, sealed-runtime-custody-results.json. Earlier source
 snapshots above remain historical; new Cross-OS qualification is required.
+
+R15 source checkpoint adds service::{read_configuration,ShutdownRequest,Readiness,
+ExitReport,ServiceHost}. ServiceHost::bind authenticates existing sealed custody
+and binds ingress before readiness; run takes watch::Receiver<Option<ShutdownRequest>>.
+The serialized application stops accepting on observed shutdown, checks the watch
+before origin connect/write, bounds active asynchronous drain, and flushes the
+retained audit before reporting stopped. Closed controllers and incomplete drains
+return errors. No detached workers are introduced. Synchronous private input,
+custody recovery and WAL flush require supervisor deadlines; this source cannot
+promise their preemption. Main reuses this lifecycle with legacy inherited pipes;
+actual SCM/SIGTERM controller, management listener and unattended credentials are
+still R09/R16 work. This implementation and all lifecycle tests are NOT_RUN.

@@ -1,6 +1,16 @@
 {
-  "scope": "runtime-browser-profile-source-checkpoint",
-  "implemented_source": ["explicit-browser-profile", "cookie-free-same-origin-session", "shared-browser-RIT", "shared-counter-ACK", "server-bound-empty-report-sessionId", "origin-reserved-header-stripping"],
+  "scope": "runtime-browser-and-service-source-checkpoints",
+  "implemented_source": [
+    "explicit-browser-profile",
+    "cookie-free-same-origin-session",
+    "shared-browser-RIT",
+    "shared-counter-ACK",
+    "server-bound-empty-report-sessionId",
+    "origin-reserved-header-stripping",
+    "ServiceHost-private-input-readiness",
+    "observed-stop-origin-checks",
+    "bounded-async-drain-audit-flush"
+  ],
   "authored_native_fixture_test_functions": 2,
   "current_source_executed_tests": 0,
   "current_source_tests": "not_run",
@@ -10,7 +20,10 @@
   "human_keyboard_AT": "not_run",
   "intermediate_production_check": "passed-before-final-edits-not-attributed-to-current-source",
   "formatter": "passed",
-  "public_spec": {"errors": 0, "existing_unrelated_binary_warnings": 1},
+  "public_spec": {
+    "errors": 0,
+    "existing_unrelated_binary_warnings": 1
+  },
   "required_collector": "422-unqualified",
   "raw_tls_h2": "absent-required-routes-422",
   "native_0_1_binding": "unchanged",
