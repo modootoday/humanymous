@@ -107,6 +107,49 @@ separate contracts: humanymous-cli may install the humanymous command.
 
 #### Migration and chat control after confirmation
 
+##### Core slice preparation and atomic boundary
+
+The first slice absorbs signals, behavior, model, scoring, integrity, challenge
+and watermark into crates/sdk/humanymous-core/src/<context>. The initial
+read-only inventory found142 files across those seven package trees; this is
+not a source-closure or test count. No relocation has occurred at this checkpoint.
+Model and watermark owners must return exact dirty-path/hash and live-lease
+handoffs before their trees are frozen. Root owns the remaining shared engine
+integration and requests any newly discovered ownership seam before edits.
+
+The initial tracked-file map is retained privately at
+.spec.local/root/evidence/20261108054000-core-consolidation/file-map.before.json
+(SHA256 3db1499f1205d69fee9c1172e50e5b109a3160355e5b2371569f966d49997824).
+It records133 source/test relocation candidates and seven manifests to merge.
+Two entries need explicit treatment: the integrity canonical-performance example
+must remain an opt-in example target with a context-specific name, and the
+watermark integration note must become historical handoff documentation rather
+than an implementation module. Re-capture the final frozen map after owner
+handoffs; this preparation map alone does not establish source stability.
+
+The core slice must update both ordinary imports and Serde deserialize_with
+path strings. Existing crate:: paths must become context-correct paths rather
+than accidentally binding another context's root modules. Restrict each former
+pub(crate) helper to its owning context where cross-context access is unnecessary;
+preserve pub(super) boundaries. Review scoring rule helpers and watermark frame
+budget/candidate helpers explicitly. No scoring predicate or numerical policy
+change is part of the migration.
+
+Move each frozen test corpus with its owning context. Preserve relative Unicode
+table and fixture includes; redesign the signals registry test's manifest-relative
+lookup against the new package root. Keep integration targets uniquely named by
+context and preserve frozen oracle bytes. Update downstream consumers directly
+to humanymous_core::<context>; do not retain seven compatibility helper packages
+or source-copy shims. The atomic checkpoint includes workspace/lock consumers,
+CI selectors, package/source inventory assumptions and current public docs.
+
+Admission requires source inventories before and after relocation, an explicit
+old-to-new file map, unchanged fixture digests, scoped unit/integration and
+visibility-negative tests, all affected consumer type checks and strict lint,
+and clean extracted-package consumer verification. Record unavailable Cross-OS
+or actual product gates as pending. One local passing target cannot qualify the
+whole relocated workspace or replace native/browser/Docker qualification.
+
 Root owns the common workspace/lock/toolchain, final41-to8 path/module/API matrix
 and atomic commits. Current domain owners retain responsibility for their source
 and tests inside the destination modules; a new package is not a shared writer
