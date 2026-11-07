@@ -323,5 +323,10 @@ not a new execution grant.
 Delivery's4unlisted metadata findings did not reproduce: scoped P2 including private
 documents returned0errors. Full scoped check instead exposed one I1 duplicate ID
 shared with CLI's private document. This evidence now uses evidence:root/20261108005200;
-its own SoT reference is updated. Directory, raw receipts, hashes and creation
+its own SoT reference is updated. Spec derives IDs from bundle paths, so the public
+bundle directory was also moved from20261107140000-model-training-correction to
+20261108005200-model-training-correction. Four adjacent JSON receipt/inventory files
+were checked byte-identical across relocation; raw run paths, hashes and creation
 timestamps remain intact. No CLI document or global private tree was edited.
+The intermediate ID-only commit aeefd20c failed scoped spec (I1/S2/L1) and is
+preserved in history; this relocation corrects that failure without rewriting it.
