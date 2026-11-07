@@ -1,0 +1,69 @@
+{
+  "schema": "humanymous.delivery-audit-source-validation/1",
+  "source_sha": "0d7397296279f7b17f89a96ddd8467b48a1a591e",
+  "venue": "windows-x86_64-pure",
+  "overlays": [],
+  "compiler_executed": true,
+  "tests": {
+    "listed": 95,
+    "passed": 95,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "footer_seconds": 0.16
+  },
+  "commands": {
+    "list": 0,
+    "units": 0,
+    "check": 0,
+    "strict_clippy": 101,
+    "fmt": 0,
+    "policy": 0,
+    "actionlint": 0
+  },
+  "first_failure": {
+    "kind": "deprecated-api",
+    "path": "crates/test-support/src/process/interactive/transport.rs",
+    "line": 84,
+    "api": "AtomicUsize.fetch_update",
+    "suggestion": "try_update",
+    "foreign_source_modified": false,
+    "retried": false
+  },
+  "closure": {
+    "source_files": 2821,
+    "registry_packages": 105,
+    "registry_files": 3791,
+    "config_paths": 20,
+    "tools": 4,
+    "source_drift": 0,
+    "registry_drift": 0,
+    "config_drift": 0,
+    "tools_drift": 0,
+    "environment_drift": 0,
+    "git_archive_files_checked": 2821,
+    "git_byte_mismatches": 0,
+    "archive_sha256": "dbe651ee66daefa76a28c0515a8635b1ada7bb3d669d266d03501f48eb67ab10"
+  },
+  "allocation": {
+    "work_started_utc": "2026-11-07T17:46:49.7257951Z",
+    "original_work_deadline_utc": "2026-11-07T17:52:49.7257951Z",
+    "released_utc": "2026-11-07T17:50:45.6486586Z",
+    "within_original_work_budget": true,
+    "owned_matching_compiler_processes_at_release": 0,
+    "verified_owner_marker_removed": true
+  },
+  "private_index_sha256": "18af40c48d8e108b4ba7920eb8fe8ff8e4080427ecd540823d0dcd19ecb3d9c4",
+  "overall_qualified": false,
+  "audit_linux_gate_executed": false,
+  "audit_semantic_cases_executed": 0,
+  "audit_ui_compiler_attempts_executed": 0,
+  "source_construction_integration_tests_executed": false,
+  "full_product_qualified": false,
+  "limitations": [
+    "Two new pure tests validate baseline/row comparisons; actual source-check HEAD/status/Git-blob integration negatives were not executed.",
+    "Strict Clippy failure remains an actual failure in the frozen dependency graph. Later dependency fixes do not qualify this source retroactively.",
+    "Initial preparation compiler_started=false is historical; actual compilation is recorded here and in private validation.json.",
+    "No Audit native filesystem prerequisite, 13 semantic cases, 12 UI attempts, SCM, Clang, hosted dispatch or publication occurred."
+  ]
+}

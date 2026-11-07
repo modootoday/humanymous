@@ -1,0 +1,54 @@
+{
+  "schema": "humanymous.header-profile-owner-consumption/1",
+  "observed_at_utc": "2026-11-07T17:43:56Z",
+  "owner_evidence_id": "evidence:root/20261107173322",
+  "owner_index_sha256": "8f138b6f1b3bb0fe3a41f8a16cc8e3dcbf3c9baf42136d06ad4208b865f71b80",
+  "independent_payloads_checked": 48,
+  "missing_payloads": 0,
+  "size_or_hash_mismatches": 0,
+  "full_original_c_and_cpp_layout_read": true,
+  "header": {
+    "bytes": 4600,
+    "sha256": "1b96ad497c7c17f4fcd032b08080d783a0bbfa31287e20c9821195776709d10a"
+  },
+  "c": {
+    "bytes": 2443,
+    "lines": 79,
+    "root_records": 10,
+    "max_line_bytes": 82,
+    "sha256": "e3a3fd24fa31257890b787dce3a83c3f14f152377c6ccd46f93844967a190bec"
+  },
+  "cpp": {
+    "bytes": 12430,
+    "lines": 337,
+    "root_records": 34,
+    "max_line_bytes": 133,
+    "sha256": "757dfc4219187e9b568d7cad1ed76de8f597096f4bae358302566d127f4442a3"
+  },
+  "privacy_profile": {
+    "candidate": "exact-byte-debian18-header-layout-v1",
+    "compiler_sha256": "f560497bdaa7590c3111ec89f2df56288f6b5d03b1cba579e9c052ede2e28e19",
+    "version_bytes": 157,
+    "version_sha256": "0593cf88b83c0363eb1abce80230871aa8298fe528869845f31e64edc61ccf56",
+    "target_bytes": 20,
+    "target_sha256": "1c7da408e283702561a445e700b61c0f55a082230a3cfe323208841221274a6a",
+    "declared_image_manifest": "sha256:9388794775d1393c16b6897b4775b6d3e29459319de0bfafec59a20262e1fa68",
+    "observed_target": "x86_64-pc-linux-gnu",
+    "reviewed_output_scope": "Exact public header and public Debian system layouts; includes unions, unnamed records, nested anonymous names and fixed system include paths",
+    "generic_ast_wildcard_admitted": false,
+    "production_profile_implemented": false,
+    "independent_image_attestation": false
+  },
+  "delivery_compiler_executed": false,
+  "owning_hosted_example_executed": false,
+  "original_16_file_hosted_proof_available": false,
+  "full_header_gate_passed": false,
+  "full_product_qualified": false,
+  "limitations": [
+    "This consumption checks the owner's local R3 observation; it does not execute another compiler or verify a hosted Ubuntu compiler tuple.",
+    "The observed 34 C++ root records disprove the initial proposed 32-record cap. Exact-byte privacy admission still requires integration approval and source implementation.",
+    "R3 did not generate the owner scope or source-before/source-after snapshots and cannot be relabelled as an existing 16-file hosted receipt.",
+    "No raw AST, private command metadata, source contents or binary bytes are exported by this projection.",
+    "The owner reports container stop 137 followed by removal and absence. This is distinct from the successful compile exits and is not a graceful zero exit."
+  ]
+}

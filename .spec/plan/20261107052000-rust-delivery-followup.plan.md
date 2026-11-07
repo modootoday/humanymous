@@ -1078,3 +1078,14 @@ projected compile tree. Tests, check and Clippy have NOT been run for this new
 source; no compiler/target allocation is assumed. Workflow assembly, prerequisite
 receipt consumption, original overall clock, semantic selectors and UI execution
 remain unfinished and must not be represented as an executed Audit component.
+
+Subsequent actual allocated pure validation of exact 0d739729 (no overlays):
+95 listed/95 passed, zero failed/ignored/filtered; check/fmt/policy/actionlint
+exit0. Strict Clippy exit101 at frozen test-support interactive/transport.rs:84
+deprecated fetch_update, retained without a foreign fix or retry. Source2821,
+registry105 packages/3791 files, config20, tools4 and environment all unchanged;
+all2821 materialized source files match the immutable Git archive bytes. Actual
+work began17:46:49UTC and lease returned17:50:45UTC within original17:52:49 work
+deadline, own matching compiler processes zero and verified marker removed.
+Overall qualification remains false. Actual Audit Linux prerequisite/semantic13/
+UI12 and source-check HEAD/status integration negatives remain not_run.

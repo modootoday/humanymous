@@ -32,7 +32,11 @@ The closed Audit component uses exact f9b0cda3680c3b6d612cac8ace22e237812ed3cb
 checkout plus only the owning catalog's explicit test seams. It never compiles
 the current common manifests over old Audit code. The immutable owner manifest
 has 193 inputs. Baseline admission requires their exact lengths/SHA256, exact f9
-Git HEAD, no symlink source paths and a clean full checkout delta. After seams,
+Git HEAD, no symlink source paths and a clean Git-visible nonignored checkout
+delta. This status check does not cover ignored inputs, ancestor/user Cargo
+configuration, environment, registry or tool closure. The allocator must create
+a fresh nonalias private secondary checkout and check its root/target ancestors;
+component traversal below that root does not prove ancestor safety. After seams,
 192 baseline inputs remain unchanged, one tests.rs wiring changes and three
 fixed files are added. The candidate catalog and seam originals must match their
 candidate Git bytes; its catalog Git blob is externally bound to avoid self-hash
@@ -44,7 +48,7 @@ at target/audit-read-only-source in baseline or prepared phase. It constructs no
 checkout, writes no fixture, invokes no Cargo and grants no authority. Required
 negative coverage includes later foreign test-support/process.rs and
 process/controlled_barrier.rs drift, missing/extra/duplicate baseline inputs and
-undeclared worktree changes. It must reject raw current/99317 whole-tree reuse;
+undeclared Git-visible worktree changes. It must reject raw current/99317 whole-tree reuse;
 foreign changes are never reverted to make the check pass.
 
 The later component runner remains required: one separate owner prerequisite
