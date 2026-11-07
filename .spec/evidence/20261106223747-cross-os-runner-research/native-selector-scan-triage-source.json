@@ -1,0 +1,46 @@
+{
+  "schema": "humanymous.native-selector-scan-triage-source/1",
+  "state": "Static fixture context confirmed; narrow source rename only; scan rerun and tests NOT_RUN",
+  "annotation": {
+    "source": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+    "detector": "GoCardless",
+    "historical_git_blob": "730920e6a483f2172c1d7b3e45134062e801be8d",
+    "severity": "MEDIUM",
+    "matched_value": "Not copied from masked scanner log; no value included",
+    "path": "scripts/ci/windows-native-runner/src/controlled.rs",
+    "line": 42
+  },
+  "source_analysis": {
+    "fixed_rust_selector_literal": true,
+    "exact_windows_test_declaration_and_grant_use": true,
+    "current_old_selector_references_after": 0,
+    "credential_provider_contacted": false,
+    "interpretation": "Static controlled test selector explains pattern hit; no evidence of credential issuance or secret usage in this closed path",
+    "current_source_reference_files_before": 2
+  },
+  "new_leaf": "parent_remains_running_until_original_outer_deadline",
+  "owned_runner": {
+    "replacements": 2,
+    "after_sha256": "0bf097fc18887e94d63aabab4907f7cd1b7447a5300da3e48735aaaafeca2e4b",
+    "before_sha256": "61ad7eba41026752665ab6050e6dc06396f98b2638ad84bf7b8a5f760ae18733",
+    "path": "scripts/ci/windows-native-runner/src/controlled.rs",
+    "unit_contract": "controlled::tests::fault_profiles_have_fixed_selectors_and_cannot_weaken_ordinary_outcomes"
+  },
+  "root_owned_counterpart": {
+    "after_sha256": "9ac5d788e3173865bd23e6cd64a452f9f63d3c124522a47cda83ee4e5da1470e",
+    "stage_by_native": false,
+    "path": "crates/integrations/humanymous-platform/src/testing/process/controlled_barrier/actual_tests.rs",
+    "edits": "Function and exact grant selector only, Root authored and commits separately"
+  },
+  "unchanged": {
+    "scanner_policy": true,
+    "outcome": "LiveDeadlineTermination",
+    "historical_raw_receipts": true,
+    "process_body": true,
+    "unsafe_scopes": true,
+    "case_id": "outer-live-timeout"
+  },
+  "actual_tests": 0,
+  "scanner_runs": 0,
+  "no_suppression_or_exclusion_added": true
+}

@@ -39,7 +39,7 @@ fn profile(case: &str) -> Option<Profile> {
             ExpectedOutcome::MissingGrantRefusal,
         )),
         "outer-live-timeout" => Some((
-            "live_parent_waits_for_original_outer_deadline",
+            "parent_remains_running_until_original_outer_deadline",
             ExpectedOutcome::LiveDeadlineTermination,
         )),
         _ => None,
@@ -494,7 +494,7 @@ mod tests {
         let live = profile("outer-live-timeout").unwrap();
         assert_eq!(
             live.selector,
-            "testing::process::controlled_barrier::actual_tests::live_parent_waits_for_original_outer_deadline"
+            "testing::process::controlled_barrier::actual_tests::parent_remains_running_until_original_outer_deadline"
         );
         assert_eq!(live.expected, ExpectedOutcome::LiveDeadlineTermination);
         assert_eq!(

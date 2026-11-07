@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: native-selector-scan-triage-source.json, sha256: 5b5bdd18c40b2c18032b1c888ee8e74759f0c0a024751acb22db5e0538315f6a, bytes: 2088, store: repo}
   - {path: native-runtime-role-validation-summary.json, sha256: 6be87a2c7343380c6f5e4c7424af0c91d9ed6fff22bf4b0e74be67f115128102, bytes: 15000, store: repo}
   - {path: runtime-runner-consumer-source.json, sha256: 82451bd7b95c8170f87b3865315d11e8cb46aa64956a623dba686277b69a48ba, bytes: 2493, store: repo}
   - {path: native-journal-model-validation-summary.json, sha256: 7d2d8bec505ba5b86954b8f063df22c28c557e908f65ef475c530e65ef98113f, bytes: 10441, store: repo}
