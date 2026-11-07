@@ -19,6 +19,7 @@ const PATHS: &[(&str, &str)] = &[
     ("HEAD", "/echo"),
     ("GET", "/cookies"),
     ("GET", "/stream"),
+    ("GET", "/stream-cancel"),
     ("GET", "/redirect"),
     ("GET", "/empty"),
     ("GET", "/deny"),
@@ -411,10 +412,38 @@ http {{
         first == b"data: a\n\n" && started.elapsed() < Duration::from_millis(800),
         "SSE buffered to completion",
     )?;
-    cases.push(
-        serde_json::json!({"name":"SSE-first-event","latency_ms":started.elapsed().as_millis()}),
-    );
+    let first_event_latency = started.elapsed().as_millis();
     drop(reader);
+    let disconnected_before = origin.stream_disconnects.load(Ordering::Acquire);
+    let mut cancelled_stream = TcpStream::connect(("127.0.0.1", port))?;
+    cancelled_stream.set_read_timeout(Some(Duration::from_secs(4)))?;
+    cancelled_stream.write_all(
+        b"GET /stream-cancel HTTP/1.1\r\nHost: example.test\r\nConnection: close\r\n\r\n",
+    )?;
+    let mut stream_reader = BufReader::new(cancelled_stream);
+    ensure(
+        origin::head(&mut stream_reader)?.starts_with("HTTP/1.1 200"),
+        "cancel stream status",
+    )?;
+    let mut chunk = String::new();
+    stream_reader.read_line(&mut chunk)?;
+    ensure(chunk.trim() == "9", "cancel stream first chunk")?;
+    let mut event = [0; 9];
+    stream_reader.read_exact(&mut event)?;
+    ensure(event == *b"data: a\n\n", "cancel stream first event")?;
+    stream_reader.get_mut().shutdown(std::net::Shutdown::Both)?;
+    drop(stream_reader);
+    for _ in 0..100 {
+        if origin.stream_disconnects.load(Ordering::Acquire) > disconnected_before {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(20)).await;
+    }
+    ensure(
+        origin.stream_disconnects.load(Ordering::Acquire) == disconnected_before + 1,
+        "downstream cancellation did not close upstream",
+    )?;
+    cases.push(serde_json::json!({"name":"SSE-first-event","latency_ms":first_event_latency,"upstream_disconnects":1}));
     // Slow incomplete body: the plugin's total deadline includes reception.
     let before = origin.count();
     let mut slow = TcpStream::connect(("127.0.0.1", port))?;

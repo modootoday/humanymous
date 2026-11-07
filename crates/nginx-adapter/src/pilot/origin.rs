@@ -18,6 +18,7 @@ pub struct Effect {
 pub struct Origin {
     pub port: u16,
     pub effects: Arc<Mutex<Vec<Effect>>>,
+    pub stream_disconnects: Arc<AtomicUsize>,
 }
 impl Origin {
     pub fn start(audits: Arc<AtomicUsize>) -> io::Result<Self> {
@@ -25,6 +26,8 @@ impl Origin {
         let port = listener.local_addr()?.port();
         let effects = Arc::new(Mutex::new(Vec::new()));
         let captured = effects.clone();
+        let stream_disconnects = Arc::new(AtomicUsize::new(0));
+        let disconnected = stream_disconnects.clone();
         std::thread::spawn(move || {
             for connection in listener.incoming() {
                 let Ok(stream) = connection else {
@@ -32,12 +35,17 @@ impl Origin {
                 };
                 let effects = captured.clone();
                 let audits = audits.clone();
+                let disconnected = disconnected.clone();
                 std::thread::spawn(move || {
-                    let _ = serve(stream, effects, audits);
+                    let _ = serve(stream, effects, audits, disconnected);
                 });
             }
         });
-        Ok(Self { port, effects })
+        Ok(Self {
+            port,
+            effects,
+            stream_disconnects,
+        })
     }
     pub fn count(&self) -> usize {
         self.effects.lock().unwrap().len()
@@ -50,6 +58,7 @@ fn serve(
     mut stream: TcpStream,
     effects: Arc<Mutex<Vec<Effect>>>,
     audits: Arc<AtomicUsize>,
+    disconnected: Arc<AtomicUsize>,
 ) -> io::Result<()> {
     stream.set_read_timeout(Some(Duration::from_secs(5)))?;
     let mut reader = BufReader::new(stream.try_clone()?);
@@ -87,9 +96,30 @@ fn serve(
         body: body.clone(),
         durable_at_effect: audits.load(Ordering::Acquire),
     });
-    if words[1] == "/stream" {
+    if words[1] == "/stream" || words[1] == "/stream-cancel" {
         stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n9\r\ndata: a\n\n\r\n")?;
         stream.flush()?;
+        if words[1] == "/stream-cancel" {
+            // Observe actual upstream EOF/reset after downstream cancellation;
+            // a successful write can merely mean kernel buffering accepted it.
+            stream.set_read_timeout(Some(Duration::from_secs(3)))?;
+            let mut byte = [0];
+            match reader.read(&mut byte) {
+                Ok(0) => {
+                    disconnected.fetch_add(1, Ordering::Release);
+                }
+                Err(error)
+                    if matches!(
+                        error.kind(),
+                        io::ErrorKind::ConnectionReset | io::ErrorKind::ConnectionAborted
+                    ) =>
+                {
+                    disconnected.fetch_add(1, Ordering::Release);
+                }
+                _ => {}
+            }
+            return Ok(());
+        }
         std::thread::sleep(Duration::from_millis(1000));
         stream.write_all(b"9\r\ndata: b\n\n\r\n0\r\n\r\n")?;
         return Ok(());

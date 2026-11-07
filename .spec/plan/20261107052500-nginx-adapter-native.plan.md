@@ -224,3 +224,16 @@ Lane moved from pass to adapter-nginx under root direction. Apache native module
 and MPM lifecycle belong to Apache owner; this owner records common provenance/
 authority vocabulary without duplicating server lifecycle or shared security core.
 Compose belongs to product-lab, workflows to CI, source freeze/dispatch to root.
+
+## Streaming cancellation witness follow-up
+
+Added /stream-cancel to the owned fixture inventory. The client reads the first
+SSE event then shuts down; origin records only actual EOF/reset on its upstream
+socket. The existing SSE group asserts one observed disconnect within2s, keeping
+the required35 scenario denominator unchanged. No buffered-write inference,
+new production capability or sustained-backpressure claim. This extension is
+NOT_RUN. Formatting and diff validation pass; initial Windows mapped-file write
+failure during rustfmt was transient and an immediate retry succeeded.
+Hosted run42348518353 was inspected live but targets63f69ae, so cannot qualify
+d3d5a83 or this follow-up. Root's Cargo allocation and new hosted source remain
+external dependencies. No duplicate workflow or local actual runtime launched.

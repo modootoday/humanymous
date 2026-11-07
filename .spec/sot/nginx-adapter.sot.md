@@ -123,6 +123,10 @@ a new manifest without overwrite. It is not a secure installer or signature.
 abi_load_qualified and signed_release must remain false in metadata; actual
 hosted load/runtime evidence is an independent gate. No credentials or body data
 enter provenance. Current report/package/keepalive extensions are NOT_RUN.
+The SSE scenario must also observe actual upstream EOF/reset after a downstream
+client closes following its first event. Successful buffered writes alone do not
+prove cancellation. This owned-origin witness is bounded to2s observation and
+does not qualify sustained backpressure, load or independent audit witnessing.
 
 ## Current execution and handoff
 
