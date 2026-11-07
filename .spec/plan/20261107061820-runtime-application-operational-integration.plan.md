@@ -269,3 +269,33 @@ was added. Current wiring references every stream helper. Source requires a new
 exact hosted/pure validation result, not attribution of the earlier failure to
 success. Actual abort/backpressure/deadline/drain/malformed socket pilots remain
 required. Global Cargo slots A/B stay root-assigned; no local Cargo started.
+R05 connection nominations: parse bounded comma-separated Connection tokens with
+existing HTTP token grammar, reject empty/invalid nominations and nominations of
+framing/Host/Trailer authority, then strip nominated response fields case-
+insensitively in the shared encoder for buffered and native stream profiles.
+Static hop fields include Connection/Keep-Alive/TE/Proxy-Connection and proxy
+credentials; origin reserved gateway metadata is always stripped. Ordinary
+nonnominated duplicate Set-Cookie and application fields retain original bytes.
+Normative references: RFC9112 message framing and RFC9110 section7.6.1 Connection.
+https://www.rfc-editor.org/rfc/rfc9112.html
+https://www.rfc-editor.org/rfc/rfc9110.html#section-7.6.1
+R07 read-only operational view: expose a typed bounded OperationalSettings snapshot
+(session capacity/TTL, connection deadline, global and session resource rates),
+separate from scoring policy/scope/secrets. Configuration validation reuses this
+one validator; status readiness includes this nonsecret snapshot. Native Observer
+may POST exact /management/v0.1/settings with the same exact scope envelope and
+credential/native-only rules as status. Response is explicitly readonly; no CAS
+write or durability claim until actual private snapshot/audit replay service is
+available. All mutation methods/paths and scoring weight/threshold/rule/band fields
+remain refused. Audit PrivateState is currently crate-private; request its owning
+API instead of copying native permissions, locks, atomic storage or cryptography.
+R05 response nominations source adds case-insensitive Connection-field stripping
+in the shared encoder (buffered+native stream); protected framing/authority
+nominations fail closed. One pure fixture authored NOT_RUN. R07 actual native
+Observer settings route now returns a nonsecret OperationalSettings snapshot,
+with one shared resource validator used at configuration startup. Two pure
+settings-schema/route fixtures and an extension of the hosted Unix IPC fixture
+are authored NOT_RUN. Frozen scoring and secret fields are absent/refused;
+settings_writable remains false. Full CAS apply/durable replay/recovery is still
+required and depends on an audit-owned private snapshot service, not copied OS
+storage. No current-source Cargo/native process/IPC/browser execution occurred.

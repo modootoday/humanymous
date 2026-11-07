@@ -460,3 +460,23 @@ Backpressure is awaited, no unbounded queue/detached producer. Stop/drain cancel
 or bounds active streaming with the same custody lifetime and no new origin after
 observed stop. This is request integrity, not response-body authentication or
 infinite SSE availability. Required collector/TLS/H2 remain independent422.
+R05 connection nominations: parse bounded comma-separated Connection tokens with
+existing HTTP token grammar, reject empty/invalid nominations and nominations of
+framing/Host/Trailer authority, then strip nominated response fields case-
+insensitively in the shared encoder for buffered and native stream profiles.
+Static hop fields include Connection/Keep-Alive/TE/Proxy-Connection and proxy
+credentials; origin reserved gateway metadata is always stripped. Ordinary
+nonnominated duplicate Set-Cookie and application fields retain original bytes.
+Normative references: RFC9112 message framing and RFC9110 section7.6.1 Connection.
+https://www.rfc-editor.org/rfc/rfc9112.html
+https://www.rfc-editor.org/rfc/rfc9110.html#section-7.6.1
+R07 read-only operational view: expose a typed bounded OperationalSettings snapshot
+(session capacity/TTL, connection deadline, global and session resource rates),
+separate from scoring policy/scope/secrets. Configuration validation reuses this
+one validator; status readiness includes this nonsecret snapshot. Native Observer
+may POST exact /management/v0.1/settings with the same exact scope envelope and
+credential/native-only rules as status. Response is explicitly readonly; no CAS
+write or durability claim until actual private snapshot/audit replay service is
+available. All mutation methods/paths and scoring weight/threshold/rule/band fields
+remain refused. Audit PrivateState is currently crate-private; request its owning
+API instead of copying native permissions, locks, atomic storage or cryptography.

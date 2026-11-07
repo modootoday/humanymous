@@ -105,3 +105,21 @@ fn observer_refuses_browser_authority_ambiguous_headers_and_mutations() {
         "management_duplicate_header"
     );
 }
+
+#[test]
+fn settings_view_is_observer_only_and_cannot_be_used_for_mutation() {
+    let handler = handler();
+    let mut request = request(&handler);
+    request.target = "/management/v0.1/settings".into();
+    assert!(handler.authorize(&request, NativePeer::Unix(123)).is_ok());
+    for method in ["PATCH", "PUT", "DELETE"] {
+        request.method = method.into();
+        assert_eq!(
+            handler
+                .authorize(&request, NativePeer::Unix(123))
+                .unwrap_err()
+                .status,
+            403
+        );
+    }
+}

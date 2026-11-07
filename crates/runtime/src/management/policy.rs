@@ -49,7 +49,12 @@ pub(super) fn validate_request(
     request: &LocalRequest,
     scope: &ManagementScope,
 ) -> Result<(), Rejection> {
-    if request.method != "POST" || request.target != "/management/v0.1/status" {
+    if request.method != "POST"
+        || !matches!(
+            request.target.as_str(),
+            "/management/v0.1/status" | "/management/v0.1/settings"
+        )
+    {
         return Err(Rejection::new(403, "management_observer_route"));
     }
     let mut seen = std::collections::HashSet::new();

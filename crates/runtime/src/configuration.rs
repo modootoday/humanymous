@@ -4,7 +4,9 @@ use humanymous_authority::configuration::{Peer, Required, Scope};
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 mod audit;
+mod operational;
 pub use audit::{Audit, SealedKeys};
+pub use operational::OperationalSettings;
 
 /// Private inherited startup document; intentionally not Debug or Serialize.
 #[derive(Deserialize)]
@@ -109,6 +111,16 @@ pub fn target(value: &str) -> bool {
 }
 
 impl Configuration {
+    /// Nonsecret resource configuration, separate from frozen detection policy.
+    pub fn operational(&self) -> OperationalSettings {
+        OperationalSettings {
+            session_capacity: self.session_capacity,
+            session_ttl_ms: self.session_ttl_ms,
+            timeout_ms: self.timeout_ms,
+            rate_per_second: self.rate_per_second,
+            session_rate_per_second: self.session_rate_per_second,
+        }
+    }
     /// Fail closed before binding a listener or opening an origin connection.
     pub fn validate(&self) -> Result<(), Rejection> {
         let bad = Rejection::new(503, "configuration");
@@ -116,11 +128,7 @@ impl Configuration {
             || !self.origin.ip().is_loopback()
             || self.origin.port() == 0
             || self.origin == self.listen
-            || !(1..=4096).contains(&self.session_capacity)
-            || !(1000..=3_600_000).contains(&self.session_ttl_ms)
-            || !(1..=30_000).contains(&self.timeout_ms)
-            || !(1..=10_000).contains(&self.rate_per_second)
-            || !(1..=10_000).contains(&self.session_rate_per_second)
+            || self.operational().validate().is_err()
             || self.routes.is_empty()
             || self.routes.len() > 4096
         {
@@ -190,6 +198,7 @@ impl Configuration {
             })
             .collect();
         serde_json::json!({"profile":"experimental-loopback-http1", "raw_tls":false,
+            "operational":self.operational(),
             "original_h2":false,"raw_header_order":true,"rit":true,
             "client_asserted_report_ingestion":true,"browser_collector":false,
             "browser_session":self.browser.is_some(),"browser_cookie_credentials":false,

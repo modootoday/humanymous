@@ -9,6 +9,7 @@ pub(crate) struct Response {
     headers: Vec<(String, String)>,
     body: Vec<u8>,
     reframe_length: bool,
+    nominated: std::collections::HashSet<String>,
 }
 impl Response {
     pub(super) fn stream_head(
@@ -70,6 +71,7 @@ impl Response {
         let mut length = None;
         let mut chunked = false;
         let mut fields = Vec::new();
+        let mut nominated = std::collections::HashSet::new();
         for line in lines {
             let (name, value) = line.split_once(':').ok_or(bad)?;
             if fields.len() >= 100
@@ -94,11 +96,20 @@ impl Response {
                     chunked = true;
                 }
                 "upgrade" | "trailer" => return Err(bad),
-                "connection"
-                    if !value.trim().eq_ignore_ascii_case("close")
-                        && !value.trim().eq_ignore_ascii_case("keep-alive") =>
-                {
-                    return Err(bad);
+                "connection" => {
+                    for name in value.split(',') {
+                        let name = name.trim_matches([' ', '\t']).to_ascii_lowercase();
+                        if name.is_empty()
+                            || !name.bytes().all(token)
+                            || matches!(
+                                name.as_str(),
+                                "content-length" | "transfer-encoding" | "host" | "trailer"
+                            )
+                        {
+                            return Err(bad);
+                        }
+                        nominated.insert(name);
+                    }
                 }
                 _ => {}
             }
@@ -132,6 +143,7 @@ impl Response {
             headers: fields,
             body,
             reframe_length: !empty && (chunked || length.is_none()),
+            nominated,
         })
     }
 
@@ -142,6 +154,7 @@ impl Response {
         for (name, value) in &self.headers {
             let lower = name.to_ascii_lowercase();
             if lower.starts_with("x-humanymous-")
+                || self.nominated.contains(&lower)
                 || matches!(
                     lower.as_str(),
                     "connection"
@@ -150,6 +163,8 @@ impl Response {
                         | "proxy-authorization"
                         | "transfer-encoding"
                         | "trailer"
+                        | "te"
+                        | "proxy-connection"
                 )
             {
                 continue;
@@ -211,6 +226,23 @@ pub(super) fn chunk_size(size: &[u8]) -> Result<usize, Rejection> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn nominated_hop_fields_are_removed_without_coalescing_ordinary_headers() {
+        let response=Response::parse(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: keep-alive, X-Hop\r\nx-hop: private\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\n\r\nok",false).unwrap();
+        assert_eq!(response.encode(&[]).unwrap(),b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\nConnection: close\r\n\r\nok");
+        for field in [
+            "Content-Length",
+            "Transfer-Encoding",
+            "Host",
+            "Trailer",
+            ",X-Hop",
+            "X-Hop,",
+        ] {
+            let frame =
+                format!("HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: {field}\r\n\r\n");
+            assert!(Response::parse(frame.as_bytes(), false).is_err());
+        }
+    }
     #[test]
     fn chunked_complete_body_reframes_and_preserves_cookie_fields() {
         let response=Response::parse(b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\nConnection: keep-alive\r\n\r\n2\r\nhe\r\n3\r\nllo\r\n0\r\n\r\n",false).unwrap();

@@ -288,3 +288,13 @@ was added. Current wiring references every stream helper. Source requires a new
 exact hosted/pure validation result, not attribution of the earlier failure to
 success. Actual abort/backpressure/deadline/drain/malformed socket pilots remain
 required. Global Cargo slots A/B stay root-assigned; no local Cargo started.
+R05 response nominations source adds case-insensitive Connection-field stripping
+in the shared encoder (buffered+native stream); protected framing/authority
+nominations fail closed. One pure fixture authored NOT_RUN. R07 actual native
+Observer settings route now returns a nonsecret OperationalSettings snapshot,
+with one shared resource validator used at configuration startup. Two pure
+settings-schema/route fixtures and an extension of the hosted Unix IPC fixture
+are authored NOT_RUN. Frozen scoring and secret fields are absent/refused;
+settings_writable remains false. Full CAS apply/durable replay/recovery is still
+required and depends on an audit-owned private snapshot service, not copied OS
+storage. No current-source Cargo/native process/IPC/browser execution occurred.

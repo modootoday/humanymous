@@ -89,6 +89,12 @@ impl LocalHandler for Handler {
         context.check()?;
         self.authorize(&request, context.peer())?;
         context.check()?;
+        if request.target == "/management/v0.1/settings" {
+            return LocalResponse::json(
+                200,
+                &serde_json::json!({"protocol":"humanymous.management/0.1","scope":self.scope,"settings":self.profile.get("operational"),"writable":false}),
+            );
+        }
         LocalResponse::json(
             200,
             &serde_json::json!({

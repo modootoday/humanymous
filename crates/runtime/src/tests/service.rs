@@ -58,9 +58,19 @@ impl Drop for PrivateFixture {
     }
 }
 async fn status(endpoint: &str, authorization: &str, body: &[u8]) -> u16 {
+    management_call(endpoint, authorization, body, "/management/v0.1/status")
+        .await
+        .status
+}
+async fn management_call(
+    endpoint: &str,
+    authorization: &str,
+    body: &[u8],
+    target: &str,
+) -> humanymous_authority::protocol::Response {
     let mut stream = tokio::net::UnixStream::connect(endpoint).await.unwrap();
     let head = format!(
-        "POST /management/v0.1/status HTTP/1.1\r\nHost: humanymous.management.local\r\nContent-Type: application/json\r\nAuthorization: {authorization}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        "POST {target} HTTP/1.1\r\nHost: humanymous.management.local\r\nContent-Type: application/json\r\nAuthorization: {authorization}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
         body.len()
     );
     stream.write_all(head.as_bytes()).await.unwrap();
@@ -68,7 +78,6 @@ async fn status(endpoint: &str, authorization: &str, body: &[u8]) -> u16 {
     humanymous_authority::protocol::read_response(&mut stream)
         .await
         .unwrap()
-        .status
 }
 #[tokio::test]
 async fn unix_service_management_drains_before_custody_release() {
@@ -111,6 +120,11 @@ async fn unix_service_management_drains_before_custody_release() {
     let running = tokio::spawn(host.run(receiver));
     assert_eq!(status(&endpoint, "Bearer wrong", &body).await, 401);
     assert_eq!(status(&endpoint, &secret, &body).await, 200);
+    let settings = management_call(&endpoint, &secret, &body, "/management/v0.1/settings").await;
+    assert_eq!(settings.status, 200);
+    let settings: Value = serde_json::from_slice(&settings.body).unwrap();
+    assert_eq!(settings["writable"], false);
+    assert_eq!(settings["settings"]["session_capacity"], 16);
     let mut wrong: Value = serde_json::from_slice(&body).unwrap();
     wrong["tenant"] = json!("different");
     assert_eq!(
