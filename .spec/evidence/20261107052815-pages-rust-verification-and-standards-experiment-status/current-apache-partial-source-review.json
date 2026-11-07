@@ -222,16 +222,42 @@
         "docs/reference/supported-topologies.md",
         "docs/standards/draft-v0/validation/implementation-map.md"
       ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/mod.rs",
+      "sha256_at_post_read_observation": "cead21b9da12cfd13c56e10fa343a5dde52ecc02952564b4e42fdef1ed4645e0",
+      "bytes": 23632,
+      "lines": 593,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "593-line actual native pilot/controller fully read. 15 named cases times3MPMs plus failed-only infrastructure; requests use synthetic frozen ALLOW and owned loopback origin. Binary case contains16 concurrent subchecks, not16newtop-levelcases. Nested/redirect probes separate module+server, cache graph denied; reload waits authority inflight then pidfd USR1 and new child IDs. Parent/CLI born isolated process_group0, pin pidfd before any wait/reap and verify kernelgroup==pid!=ownergroup. TERM normalstop, KILL fallback never successful; request workers joined on errors. Request/connect/read/write timeouts and response byte cap are not whole-suite wall bounds. Module list/version Command.output calls have no local deadline/stream bound; outer coordinator Docker deadline supplies separate containment. Cancellation case observes no effect after450ms, not every future schedule. Missing cases synthesized not_run and separate CLI cleanup required; emitted actual hashes do not itself qualify later source.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/coordinator/host.rs",
+      "sha256_at_post_read_observation": "be11e1a3b73929b92712b48e2b800555b8adfe25850fe9d1bf2d0ee410baef6f",
+      "bytes": 33924,
+      "lines": 898,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "898-line owned Linux Docker coordinator fully read. Fresh canonical private0700sameUID bundle, create-new0600 outputs, strict owned UUID/name/tag engine+label cleanup with no global prune. Local explicit WSLWindowsclient/context/credentialhelper+daemon ID/version; hosted env labels not cryptographic actor proof. Source scoped clean inventory/raw byte manifest+Git HEAD archive before/afterbuild and expected GITHUB_SHA, not registry/sysroot/installed dependency closure or atomic whole-repo freeze. Command deadlines poll50ms then direct child kill/wait; no OS process tree or BuildKit teardown proof and raw file output not continuously quota-limited. Execution2280s, separatecleanup120s; creates networknone/read-only/capdrop/nonroot1GiB256PID2CPU pilot. Checks actual isolation fields except CPU value not rechecked. Attach and container exits separate, independently copies/hashes5artifacts then validates exact report/CLI rawstreamsizes/codes. Verified failed counts retained; unverified countsnull. Owned container/tag absence observed after cleanup, not descendant process/cached layer erasure or full-product success.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
     }
   ],
-  "full_read_files": 17,
-  "full_read_lines": 2912,
+  "full_read_files": 19,
+  "full_read_lines": 4403,
   "source_review_only": true,
   "receipt_renewal": false,
   "actual_execution": false,
   "limitations": [
     "Post-read identities only; no initial pre-read snapshot or immutable compiler/dependency closure claimed.",
-    "Remaining native host, coordinator and pilot implementation files are not accepted by this partial review.",
+    "All 18 Apache paths missing from the earlier triage plus the safe manifest now have complete authored reads; this does not renew the ledger or prove freshness for other Apache files.",
     "Historical b400 runtime result stays bound to its exact source and tuple, not current bytes."
   ],
   "post_read_recheck_drift": []
