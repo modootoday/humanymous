@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "status": "root_accepted_design_only_implementation_deferred",
+  "proposal_commit": "d49c19bcb67de46d07069c17d574a2361b9229cd",
+  "proposal_sha256": "c037a8fbf05f55352195b85d6c7331cc19824a50aeee655c39726900e9d51803",
+  "accepted_profile_path": "qualification/pins/collector-runtime-pilot-source.json",
+  "accepted_scope": "Private Lab selected record from freeze bytes, explicit snapshot root and Compose context join, bounded 16 KiB reader with hash/UTF-8/line checks and revalidation before panic or B refinement. Missing or drifted source refuses refinement; required actual-source gate fails nonzero.",
+  "limits": "Trusted checkout drift detection only. No native authenticated capability, nofollow, hostile race or compiler-read proof. Explicit actual product source root; no ambient fallback. Package-only synthetic tests separate.",
+  "implementation_hold": "No source implementation until hosted 5d68 run terminal plus Root exact-path grant and Tools freeze. No ownership moves now.",
+  "authorization": "Root coordinator design acceptance received in this chat; human authorizes Root and CI coordination."
+}
