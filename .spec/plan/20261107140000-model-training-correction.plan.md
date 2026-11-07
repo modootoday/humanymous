@@ -586,8 +586,10 @@ all caller inputs/base/statistics unchanged and yields no candidate for publishi
 1. Hand-derived exact f32 one-step warm fixture:27zeros except z[0]=1,
    h1,w1=0,b1=1,w2=0.5,b2=-0.5,lr=0.25,label1. Initial logit0,p0.5;
    expected w1[0]=0.0625,b1=1.0625,w2=0.625,b2=-0.375; other w1bits unchanged.
-   This catches updated-W2 backprop, sign, feature and bias ordering. A hpre=-1
-   fixture keeps hidden weights/bias/W2 unchanged and changes only b2to0.125.
+   This catches updated-W2 backprop, sign, feature and bias ordering. Separate
+   inactive fixture: z[0]=1, all other z=0, w1=0, b1=-1, w2=0.5, b2=0,
+   lr=0.25, label1; hpre=-1 and p=0.5. Only b2 becomes0.125; all hidden
+   weights/bias and W2 remain unchanged. It does NOT inherit b2=-0.5 above.
    hpre=+0/-0 cases exercise strict derivative; multi-hidden cancellation fixture
    detects reassociation/FMA. These are analytic/Rust-derived, NOT Go-run goldens.
 2. Independent small scalar reference (test-only, separate update formulation)
@@ -621,14 +623,23 @@ all caller inputs/base/statistics unchanged and yields no candidate for publishi
 The first coding allocation prepares real kernel plus actual-file unit pilot,
 all NOT_RUN until Root gives a source-bound execution slot. Pilot uses create_new
 owned temp train/holdout JSONL files with disjoint explicit IDs/times/cohorts and
-reviewed synthetic provenance; bounded existing parser -> caller-reviewed training
-rows -> statistics on TRAINONLY -> train -> serialize candidate to create_new file
--> read EXACTcandidate bytes -> existing Mlp -> held-out evaluation/counts. Check
-bundle identity/finite shape and byte/weight reproducibility in an independent run.
+reviewed synthetic provenance. First bounded-parse and prevalidate ALL train and
+holdout records, admission decisions, disjoint IDs, both holdout class supports,
+schema and byte/row/work limits. Then compute statistics on TRAINONLY, train an
+in-memory candidate, load it through existing Mlp and evaluate held-out counts.
+All validation, numeric and evaluation failures happen BEFORE any candidate file
+creation. Only a complete valid offline result may serialize via create_new;
+close it, read EXACTcandidate bytes, reload existing Mlp and verify identical
+predictions/counts, bundle identity/finite shape and reproducibility. Successful
+offline evaluation and learnability thresholds confer NO promotion or activation.
 Negative actual-file pilots: late invalid record, quarantine, byte/row cap, absent
-holdout class and training overflow return no candidate file; never replace an
-existing sentinel artifact. Cleanup only its verified owned files after handles
-settle. This is an actual native filesystem+offline kernel pilot INSIDEtests,
+holdout class and training overflow leave no published candidate. An I/O failure
+after create_new may leave an owned partial file: classify it separately as failed
+unpublished output, retain/report its owned handle/path for safe settlement, and
+never treat it as a complete candidate or claim no bytes were created. A readback
+or roundtrip failure likewise leaves only a failed unpublished owned artifact.
+Never overwrite an existing sentinel artifact. Cleanup only verified owned files
+after handles settle. This is an actual native filesystem+offline kernel pilot INSIDEtests,
 not a bootstrap CLI/process, temporal/cohort promotion gate or full product e2e.
 No automatic quality-based promotion, and no claiming authenticated sample source.
 

@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T23:33:54Z
+updated: 2026-11-07T23:39:27Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -20,7 +20,7 @@ files:
   - {path: rng-first-attempt.json, sha256: 13a5649a6e29cca6c13e122e206bfb39ea0f3b6ddc3f6eb57177cbfe55de3e67, bytes: 1473, store: repo}
   - {path: model-core-handoff.json, sha256: 643d8461ebd89fc49565a4d71c6d2f887c735cc64335b562610a6bfdb6a0ced9, bytes: 11818, store: repo}
   - {path: core-first-rng-validation.json, sha256: 3ae57b917a9c7885fd115d62b12121a06bdfffc5ca24d4aa9fae3d0deecba2a4, bytes: 7781, store: repo}
-  - {path: sgd-next-slice-proposal.json, sha256: 5afd51f50791d62a31bbb2897ed7395556bfaad5669dae348297fc5fdd287797, bytes: 1969, store: repo}
+  - {path: sgd-next-slice-proposal.json, sha256: 341f2ff53fc312ddebecc9cdedd87cb5273dcf194f0af6596263b2511ccb8ee5, bytes: 2372, store: repo}
 ---
 
 # Read-only source inventory
