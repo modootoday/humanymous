@@ -689,6 +689,22 @@ Clearing host buffers is not proof that driver/device copies of secrets are eras
 
 ### Qualification roadmap and policy critique criteria
 
+Browser's UI39 research is frozen at
+aa22cd0abcdaabb35eb27d06b356952a81cf23cf, including GPU-BOUNDARY.md and
+evidence:root/20261107073932. Its corrections match this synthesis: package versus
+workspace MSRV, UI38 viewport-source-cache elision versus native event coalescing,
+independent CEF GPU pressure, trusted-host-only selection and UMA alias accounting.
+This is a reviewed research checkpoint, not an executed GPU backend or latency fix.
+
+The initial one-in-flight control above and Browser's proposed maximum two frames
+are experimental alternatives, not two competing shipped limits. Root must select
+the actual finite owner budget for an admitted backend/profile; measure queue age,
+memory and responsiveness with that limit. Surface latency hints never establish
+an OS display-queue bound. Preserve unknown compositor/display depth and distinguish
+owner completion from actual display. The exact Meari GPU API/pin, compatibility
+tuple, bounded lifetime implementation, hardware pilots and product gates remain
+unqualified. No research consolidation grants execution or changes CPU studies.
+
 1. Finish unchanged CPU studies and UI38 pure/retained-document checks; preserve
    all first failures. Root structural policy defines selection/fallback names.
 2. Qualify exact discovery and backend lifetimes on a separately allocated native

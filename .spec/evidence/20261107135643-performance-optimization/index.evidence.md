@@ -14,6 +14,13 @@ files:
 
 ## Project-wide GPU research status
 
+Browser research checkpoint aa22cd0abcdaabb35eb27d06b356952a81cf23cf was read
+from its exact Git blob for consolidation. Its GPU-BOUNDARY.md and
+[[evidence:root/20261107073932]] supply the Browser-owned presentation matrix and
+unqualified gaps. One versus two proposed in-flight frames remains a future
+root-selected experiment, with OS display queue unknown. No GPU or CPU experiment
+was changed or executed by this consolidation.
+
 The performance SoT records tagged primary-source compatibility candidates,
 ranked workload eligibility, proposed CPU/GPU crossover accounting and explicit
 device/memory/parity/lifecycle prerequisites. Root supplied initial RTX4070Ti /
