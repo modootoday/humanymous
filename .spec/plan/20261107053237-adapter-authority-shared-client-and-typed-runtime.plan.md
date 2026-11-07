@@ -943,3 +943,38 @@ not an undocumented extra maximum input. Reflected both without packet/size chan
 Final precision SoT SHA256
 73562d485df4514c9a5bd53032f5cbbd89cdc1b8e459de2595f6f46f3877db63.
 No implementation, edge, vector execution or native/Ready approval follows.
+
+## Root-accepted L1 authorization Rust source checkpoint
+
+Root directly accepted final73562d48 bounded L1 DATA/codec/signature/binding kernel
+only, with Hello nonce16bytes/32hex versus grant/delegation IDs32bytes explicit.
+Root approved exactly existing workspace ed25519-dalek/base64 direct Authority
+edges; manifest SHAe49d6cf67f2f6442eed2eed01fa6995c6cf1498430794253936674c7380718d1
+was immediately returned and Root integrated common lock in69ccf7fc. Authority did
+not resolve/edit shared lock or add versions. Full native R1 remains unaccepted.
+
+Authored startup::authorization.rs plus codec/binding/verification/hello modules.
+Public parse_bundle returns ParsedAuthorization untrusted DATA; verify_bundle
+uses existing strict Ed25519 and bounded closed ExpectedAuthorizationData against
+explicit reference time, yielding SignatureCheckedAuthorization DATA ONLY. No
+issuer/signing API, NativeProof/Ready conversion or production process factory.
+Expected principal/name/key/instance/scope/BASE-plan/delegation/artifact/time/cap
+checks and complete artifact links follow the accepted matrix. Canonical Hello
+metadata is bounded3072 before serde/decode, includes all3record base64url caps,
+strict reencode/key-order/duplicate/unknown/missing checks and16byte nonzero nonce.
+Hello nonce is parsed data, not cryptographically asserted native freshness.
+Control HMBP0003 framing/aggregate startup owner and real transport remain absent.
+
+Thirteen new unit cases authored (actual denominator pending): positive DATA,
+independent max sizes/Hello2768, every artifact byte/signature mutation, truncation/
+trailing/declared caps, every expected-field mutation, principal/key/PID aliases,
+wrong domains/issuer/cross-grant and noncanonical signatures, checked time/expiry/
+cap, legacy/zero identifiers, strict canonical JSON, Hello repeated bindings/nonce,
+base64url unused bits/padding, deterministic public fixture vector observation.
+Independent test-only byte builder never constructs NativeProof. Public fixture
+hashes must be frozen after bounded Rust observation before FINAL qualification.
+No tests/compile/Clippy executed yet; direct rustfmt/diff checks passed. Root was
+asked for explicit lock-window closure and warm expected35/check/strictClippy/fmt
+allocation; no new workload or provider/SCM/account action inferred from source.
+Persistent goal API still reports historical blocked status despite user-resumed
+work; no unsupported resume operation/new goal or false completion was invented.

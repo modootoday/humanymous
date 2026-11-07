@@ -809,7 +809,10 @@ implementation; there is no runtime/SCM qualification from this draft.
 
 ## Draft public publisher authorization kernel v2
 
-Version2-draft; NOT ACCEPTED, NOT IMPLEMENTED. Root assigned this concrete
+Version2 L1 DATA/codec/signature/binding contract ACCEPTED by Root after final
+73562d48 Native/CLI/Runtime review, with the nonce clarification below. Rust
+implementation is pending; FULL R1/native issuer/store/SCM/claim/W/Ready remain
+NOT ACCEPTED/NOT IMPLEMENTED. Root assigned this concrete
 parallel predecessor before full native/provider admission. It replaces neither
 NativeProof nor actual issuer/store/SCM/W evidence. Earlier /1 Prepared/Commit
 and /0.2 Hello formats are historical PROPOSALS, not fallback choices for v2.
@@ -879,7 +882,8 @@ revision1, subauthority count0..15 and exact length8+4*count, exact bytes. Nativ
 projection must match actual queried primary TokenUser, never configured account
 or pipe owner alone. Reject PID0 and creationFILETIME0; equality against retained
 instances remains mandatory outside this codec. Digests/keys32, epochs16, nonce/
-grant/delegation identifiers32; fresh nonzero CSPRNG identifiers are an issuer
+grant/delegation identifiers32; Hello nonce16bytes encoded as32lowerhex (NOT a
+32byte nonce). Fresh nonzero CSPRNG identifiers are an issuer
 obligation, not entropy proof from observing bytes.
 Pure parsing/binding MUST reject all-zero installation/P/S/O/credential epochs,
 grant/delegation IDs and Hello nonce. Nonzero bytes still do NOT prove CSPRNG
@@ -1128,7 +1132,12 @@ self-issued delegation/record substitution and per-grant claim bypass; SRE retai
 absolute clocks/uncertain Commit/cleanup and original key; DPO treats public SID/
 instance data as pseudonymous/private raw evidence, never anonymous public logs;
 Evaluator keeps signatures, actual native proof and product gates separate.
-Independent native/runtime/CLI adversarial critique and ROOT acceptance are still
-REQUIRED. P0 exact native trust/delegation/provision/clock/rights/W/consumption and
+Independent native/runtime/CLI critique and Root acceptance have completed for
+THIS bounded L1 DATA kernel only. Root additionally clarified Hello nonce16bytes
+versus grant/delegation IDs32bytes; exact Hello fields/2768byte bound are unchanged.
+Root approved ONLY existing workspace dalek/base64 direct edges in Authority;
+Root retains Cargo.lock and execution allocation. This decision supersedes earlier
+kernel-draft acceptance wording, never historical failures/native exclusions.
+P0 exact native trust/delegation/provision/clock/rights/W/consumption and
 Ready producer remain OPEN. P1 existing dalek/base64 graph edges, golden vectors
 and exact namespace compatibility require review before implementation.

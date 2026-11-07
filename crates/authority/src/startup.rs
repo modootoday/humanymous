@@ -1,4 +1,5 @@
 //! Open one audit owner before listener creation; no key provisioning or fallback.
+pub mod authorization;
 pub mod observer;
 
 use crate::{
