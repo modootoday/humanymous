@@ -35,7 +35,10 @@ $GitOpsTtlMinutes = 30
 
 $ValidLanes = @(
   "detection-core", "gate-edge", "pass", "red-catalog", "e2e-infra",
-  "docs", "agents-meta", "sot-plan", "release", "git-ops", "misc"
+  "docs", "agents-meta", "sot-plan", "release", "git-ops", "misc",
+  "authority-ipc", "audit-custody", "native-cli", "native-windows",
+  "browser-ui", "product-lab", "adapter-hosts", "adapter-nginx", "project-coordination",
+  "adapter-apache", "native-abi", "adapter-go", "adapter-dotnet", "network-capture"
 )
 
 function Ensure-Board {

@@ -1,5 +1,29 @@
 # Work lanes (parallelism catalog)
 
+## Rust migration bounded contexts (2026-11-07)
+
+These formal lanes supplement legacy lanes above. Existing owners migrate by normal release/claim; never force another owner or alias overlapping paths. Every owner also claims its own named SoT/plan/evidence. Shared Cargo/lock/toolchain remain root-owned. Machine catalog consolidation is assigned to agent-maintenance; legacy script literals are compatibility data only.
+
+| Lane | Exclusive context |
+|---|---|
+| authority-ipc | crates/authority/** |
+| audit-custody | crates/audit/** |
+| native-cli | crates/cli/** (confirm actual CLI crate before claim) |
+| native-windows | scripts/ci/windows-native-runner/**, crates/test-support/**, crates/native-security/** |
+| browser-ui | crates/browser/** |
+| product-lab | test/lab/** |
+| adapter-hosts | crates/framework-adapter/**, crates/node-adapter/**, crates/python-adapter/**, crates/ruby-adapter/**, adapters/node/**, adapters/python/**, adapters/ruby/** |
+| adapter-nginx | crates/nginx-adapter/**, adapters/nginx/** |
+| project-coordination | root registry/coordination metadata, only after agents-meta owner agrees exact files |
+| adapter-apache | crates/apache-adapter/**, adapters/apache/** |
+| native-abi | crates/native-abi/**, adapters/native/** |
+| adapter-go | crates/go-adapter/**, adapters/go/** |
+| adapter-dotnet | crates/dotnet-adapter/**, adapters/dotnet/** |
+| network-capture | crates/capture/**; existing crates/network/** read-only |
+
+Native-security OS credential provider belongs to native-windows; CLI only selects/validates typed references, runtime consumes shared protected input. No duplicate OS secret reader. Cross-context API changes require explicit owner agreement. Scoring seams stay frozen.
+
+
 A **lane** is a coarse ownership slice. Agents claim one primary lane per session
 (optional secondary read-only). Paths are guidance, not a complete ACL.
 
