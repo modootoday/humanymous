@@ -19,6 +19,9 @@ mod lifecycle;
 mod outcome;
 mod readiness;
 mod shutdown;
+// Private S1 model only: no production activation or observer proof exists yet.
+#[cfg(test)]
+mod epoch;
 pub use outcome::{ExitFailure, ExitReport, ExitStage};
 pub use readiness::standalone_profile;
 pub use shutdown::{ShutdownRequest, StopBudget};

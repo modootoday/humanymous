@@ -906,3 +906,47 @@ This matrix deliberately grants no production support from the current ordinary
 Windows47/WSL51 fixtures. Native-security must supply the exact backend/API and
 supported OS matrix, independently critiqued before channel code. The remaining
 P0 is a concrete producer gap, not permission to write a synthetic grant factory.
+
+### Private observer gate S1 — source model, not production authority
+
+Root authorized a private native-independent gate slice while typed producer
+acceptance remains pending. service::epoch is compiled ONLY under cfg(test).
+Its initially closed Gate binds an epoch and one shared Arc identity; readiness
+and admission derive from one mutex-protected phase. Test-private activation is
+not exported or compiled into the production service. Starting, manager-stopping,
+revoked and poisoned states refuse new work. A first-loss latch records one
+monotonic instant/cause; subsequent loss and manager stop cannot overwrite it or
+extend a derived min(original, first-loss+drain) deadline. Overflow refuses.
+
+Private Work retains its exact gate identity, transport-attempt fact, accepted
+byte count and unknown adapter-result fact. Connect initiation and each bounded
+try-write model run synchronously under the same gate as revocation. WouldBlock
+accepts no bytes and a later attempt must reacquire/recheck. No future/await,
+audit, fsync, native query or join belongs in this critical section. Previously
+accepted partial bytes remain recorded after loss; an invalid adapter count is
+unknown and cannot be reused or classified as zero effects. This test model's
+closures are not public authority callbacks or proof of a real socket boundary.
+
+Seven authored native-independent tests cover closed/foreign/irreversible epochs,
+first-loss/deadline conservation, pre-connect/pre-write refusal, WouldBlock,
+partial/unknown submission and manager-stop distinction, concurrent first-write
+linearization, and poisoned mutex fail-closed behavior. They are NOT_RUN until
+Root allocates validation. No ServiceHost, credential writer, native loss monitor
+or real origin path is wired, and existing ExitReport schemas are unchanged.
+
+Proposed integration ownership follows Authority's reviewed design direction:
+Authority owns the shared neutral epoch core because Runtime already depends on
+Authority. Native-security supplies a private-constructor actual bootstrap epoch;
+Authority's private composition factory also requires independent verified W and
+conserved budgets. One unique owner retains native pins/monitor cancel+join and
+restricted gate clones go to both credential enqueue and Runtime origin adapters.
+Owner Drop revokes synchronously but never certifies monitor join or audit flush.
+Restricted clones cannot activate/rebind, renew or authorize manager stop.
+
+Before moving this model into that shared core, jointly accept exact types and
+private constructor/phase ownership; concrete nonblocking connect/write return
+types; same-gate ready evidence without Authority-to-Runtime dependency; native
+loss-source cancellation/join; and separate failed/unknown drain/flush facts.
+The sealed Runtime readiness seam remains P0: no bool, generic caller callback,
+JSON assertion or test activation may promote a production epoch. S1 is not an
+alternative observer implementation or a completion claim for R09/R15/R16.
