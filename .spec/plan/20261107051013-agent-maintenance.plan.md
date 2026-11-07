@@ -10,6 +10,20 @@ rel:
 
 # Agent maintenance
 
+## Missing-responsibility design chat registration
+
+Root supplied two user-approved chat IDs and literal titles for THREADS:
+watermark01a1b63c-3b93-7371-b055-9fc2cec587b8 and model training/correction
+01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c. Live claims match misc/session
+rust-resource-watermark and sot-plan/session rust-model-training-correction,
+each scoped to its distinct SoT/plan/evidence only. This lane does not create,
+release or broaden their claims. The review queue delegates14 watermark and29
+model rows from root's prior66, leaving23; all314 baseline hashes/statuses remain.
+No crate/graph/code approval, scoring change, model activation, GPU/download or
+inference allocation follows. Model training/correction is separate from this
+lane's skill with/without LLM evaluation. Exact new title-line hashes are added
+to language preservation without changing old literal rows.
+
 ## Legacy Go core consumer inventory
 
 The user reaffirmed legacy Go core retirement while retaining the Rust Go-origin

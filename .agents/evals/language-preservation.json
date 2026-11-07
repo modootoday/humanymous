@@ -112,5 +112,17 @@
     "line_sha256": "c7e7c3e1c47641515043bacee54c6290f6da09ffc49f929cabcd621f04360593",
     "category": "literal-ui-title",
     "reason": "Exact recorded application title and chat identifier; prose in the responsibility column remains English."
+  },
+  {
+    "path": ".agents/sessions/THREADS.md",
+    "line_sha256": "5de6aa2a17a5eb3dbb3c99aa0256375b92db9ec522f5c977d7ee1f4323ac259d",
+    "category": "literal-ui-title",
+    "reason": "Exact recorded application title and chat identifier; prose in the responsibility column remains English."
+  },
+  {
+    "path": ".agents/sessions/THREADS.md",
+    "line_sha256": "fb50882bea95da3dc2368b2a83e16f4ca4ffd762f253787e11098bbb10501baf",
+    "category": "literal-ui-title",
+    "reason": "Exact recorded application title and chat identifier; prose in the responsibility column remains English."
   }
 ]

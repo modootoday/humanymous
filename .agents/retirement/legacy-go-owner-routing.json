@@ -178,7 +178,7 @@
       "baseline_row_pointer": "/files/7",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -186,7 +186,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "cmd/mlcorrect-train/gate_test.go",
@@ -200,7 +203,7 @@
         "TestRunGate_PoisonedCohortBlocksCandidate_FailClosed",
         "TestRunGate_TooFewSamplesIsAPreconditionError"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -208,7 +211,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "cmd/mlcorrect-train/gate.go",
@@ -218,7 +224,7 @@
       "baseline_row_pointer": "/files/9",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -226,7 +232,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "cmd/mlcorrect-train/main.go",
@@ -236,7 +245,7 @@
       "baseline_row_pointer": "/files/10",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -244,7 +253,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "cmd/redteam/attacks.go",
@@ -4904,7 +4916,7 @@
         "TestPromoteAndRollback",
         "TestPromote_RequiresStaged"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -4912,7 +4924,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/bundle.go",
@@ -4922,7 +4937,7 @@
       "baseline_row_pointer": "/files/208",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -4930,7 +4945,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/calibrate_test.go",
@@ -4945,7 +4963,7 @@
         "TestConformal_BotsDoNotMoveThreshold",
         "TestConformal_FloorHolds"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -4953,7 +4971,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/calibrate.go",
@@ -4963,7 +4984,7 @@
       "baseline_row_pointer": "/files/210",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -4971,7 +4992,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/canary_test.go",
@@ -4986,7 +5010,7 @@
         "TestCanaryGuard_TripsOnDriftAndPoisoning",
         "TestController_ArmCanary_RollsBackOnOverFlagging"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -4994,7 +5018,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/canary.go",
@@ -5004,7 +5031,7 @@
       "baseline_row_pointer": "/files/212",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5012,7 +5039,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/controller_test.go",
@@ -5028,7 +5058,7 @@
         "TestController_DriftFiresOnStuddPlusCovariate",
         "TestController_PassSolveAnomalySurfaces"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5036,7 +5066,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/controller.go",
@@ -5046,7 +5079,7 @@
       "baseline_row_pointer": "/files/214",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5054,7 +5087,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/drift_test.go",
@@ -5068,7 +5104,7 @@
         "TestPSI_StableVsShifted",
         "TestDriftMonitor_2of3Gate"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5076,7 +5112,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/drift.go",
@@ -5086,7 +5125,7 @@
       "baseline_row_pointer": "/files/216",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5094,7 +5133,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/features_monitor_test.go",
@@ -5109,7 +5151,7 @@
         "TestFeatureMonitor_ShiftedTrafficHighPSI",
         "TestController_FeatureObserverDrivesCovariateArm"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5117,7 +5159,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/features_monitor.go",
@@ -5127,7 +5172,7 @@
       "baseline_row_pointer": "/files/218",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5135,7 +5180,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/oracle_test.go",
@@ -5149,7 +5197,7 @@
         "TestPassGuard_CapsFraction",
         "TestPassGuard_AnomalyStopsIngestion"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5157,7 +5205,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/oracle.go",
@@ -5167,7 +5218,7 @@
       "baseline_row_pointer": "/files/220",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5175,7 +5226,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/shadow_test.go",
@@ -5189,7 +5243,7 @@
         "TestShadowComparator_AgreementAndAbstain",
         "TestController_ObserveShadow_FeedsSnapshot"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5197,7 +5251,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlcorrect/shadow.go",
@@ -5207,7 +5264,7 @@
       "baseline_row_pointer": "/files/222",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5215,7 +5272,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlserve/mlp_test.go",
@@ -5229,7 +5289,7 @@
         "TestMLP_Validate_Rejects",
         "TestMLP_LoadRoundTrip"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [
         {
           "path": "crates/model/src/inference/mlp.rs",
@@ -5248,7 +5308,10 @@
       "classification": "source mapping already recorded; runtime/retirement proof still required",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlserve/mlp.go",
@@ -5258,7 +5321,7 @@
       "baseline_row_pointer": "/files/224",
       "baseline_status": "ported_unit_parity_not_runtime",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [
         {
           "path": "crates/model/src/inference/bundle.rs",
@@ -5282,7 +5345,10 @@
       "classification": "source mapping already recorded; runtime/retirement proof still required",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlserve/predictor_test.go",
@@ -5298,7 +5364,7 @@
         "TestScore_ShadowObservedNeverServed",
         "TestScore_ShadowStaleSchemaSkipped"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [
         {
           "path": "crates/model/src/inference/runtime.rs",
@@ -5312,7 +5378,10 @@
       "classification": "source mapping already recorded; runtime/retirement proof still required",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mlserve/predictor.go",
@@ -5322,7 +5391,7 @@
       "baseline_row_pointer": "/files/226",
       "baseline_status": "ported_unit_parity_not_runtime",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [
         {
           "path": "crates/model/src/inference/runtime.rs",
@@ -5336,7 +5405,10 @@
       "classification": "source mapping already recorded; runtime/retirement proof still required",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mltrain/record.go",
@@ -5346,7 +5418,7 @@
       "baseline_row_pointer": "/files/227",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5354,7 +5426,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mltrain/sink_test.go",
@@ -5368,7 +5443,7 @@
         "TestTraceSink_NilIsNoop",
         "TestTraceSink_AppendsAcrossReopen"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5376,7 +5451,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mltrain/sink.go",
@@ -5386,7 +5464,7 @@
       "baseline_row_pointer": "/files/229",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5394,7 +5472,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mltrain/train_test.go",
@@ -5410,7 +5491,7 @@
         "TestCohortFPR_IsPerCohort",
         "TestAUT_BoundedAndFull"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5418,7 +5499,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/mltrain/train.go",
@@ -5428,7 +5512,7 @@
       "baseline_row_pointer": "/files/231",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "model-training-correction design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/model"
@@ -5436,7 +5520,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c",
+      "delegation_scope": "read-only inventory/design; no crate/graph/code, activation, GPU, download or inference allocation; separate from skill paired evaluation"
     },
     {
       "baseline_path": "internal/network/audit_emit.go",
@@ -7230,7 +7317,7 @@
       "baseline_row_pointer": "/files/298",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7239,7 +7326,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/codec_lsb.go",
@@ -7249,7 +7339,7 @@
       "baseline_row_pointer": "/files/299",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7258,7 +7348,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/codec_png_multi.go",
@@ -7268,7 +7361,7 @@
       "baseline_row_pointer": "/files/300",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7277,7 +7370,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/codec_png.go",
@@ -7287,7 +7383,7 @@
       "baseline_row_pointer": "/files/301",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7296,7 +7392,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/codec_text.go",
@@ -7306,7 +7405,7 @@
       "baseline_row_pointer": "/files/302",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7315,7 +7414,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/codec.go",
@@ -7325,7 +7427,7 @@
       "baseline_row_pointer": "/files/303",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7334,7 +7436,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/codecwasm.go",
@@ -7344,7 +7449,7 @@
       "baseline_row_pointer": "/files/304",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7353,7 +7458,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/ecc.go",
@@ -7363,7 +7471,7 @@
       "baseline_row_pointer": "/files/305",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7372,7 +7480,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/extract.go",
@@ -7382,7 +7493,7 @@
       "baseline_row_pointer": "/files/306",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7391,7 +7502,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/inject.go",
@@ -7401,7 +7515,7 @@
       "baseline_row_pointer": "/files/307",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7410,7 +7524,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/ledger.go",
@@ -7420,7 +7537,7 @@
       "baseline_row_pointer": "/files/308",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7429,7 +7546,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/lsb_test.go",
@@ -7442,7 +7562,7 @@
         "TestLSB_SurvivesMetadataStrip",
         "TestLSB_DirectRoundTrip"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7451,7 +7571,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/payload.go",
@@ -7461,7 +7584,7 @@
       "baseline_row_pointer": "/files/310",
       "baseline_status": "pending",
       "baseline_test_names": [],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7470,7 +7593,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "internal/watermark/watermark_test.go",
@@ -7487,7 +7613,7 @@
         "TestTrace_IdentifiesSessionAndDetectsForgery",
         "TestFrameUnframe"
       ],
-      "review_owner": "root-integration",
+      "review_owner": "resource-watermark design review",
       "existing_rust_mapping": [],
       "coarse_owner_review_candidates": [
         "crates/challenge",
@@ -7496,7 +7622,10 @@
       "classification": "unresolved: owner must distinguish stale mapping from missing or intentionally retired responsibility",
       "exact_runtime_proof": [],
       "proof_status": "not supplied by baseline row; no pass inferred from source existence",
-      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially"
+      "remaining_gate": "Owner records exact Rust responsibility, actual test/process receipts and source closure, or reviewed retirement disposition in owned INTEGRATION/SoT; root merges reviewed rows serially",
+      "original_review_owner": "root-integration",
+      "delegated_chat_id": "01a1b63c-3b93-7371-b055-9fc2cec587b8",
+      "delegation_scope": "read-only inventory/design; root acceptance before crate/graph/code; no parity/deletion approval"
     },
     {
       "baseline_path": "pkg/origincloak/origincloak_test.go",

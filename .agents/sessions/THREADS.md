@@ -23,6 +23,8 @@ Snapshot: 2026-11-07 KST. Chat active status is distinct from persistent goal st
 | Humanymous · Go · HTTP Gate 호환성 | 01a1b4e3-b4a2-7690-9057-24b06d04b652 | crates/go-adapter/**,adapters/go/**; Rust-owned Go HTTP/Gate compatibility boundary and hosted consumer evidence |
 | Humanymous · .NET · ASP.NET Core 연결 | 01a1b4e3-b687-7822-88c3-20d053f7d8fd | crates/dotnet-adapter/**,adapters/dotnet/**; dedicated source/spec/pilot goal dispatched |
 | Humanymous · 네트워크 · TLS와 HTTP2 캡처 | 01a1b4e3-b852-7d21-90d9-4f00bebb5420 | crates/capture/**; dedicated source/spec/pilot goal dispatched |
+| Humanymous · 워터마크 · Rust 리소스 추적 | 01a1b63c-3b93-7371-b055-9fc2cec587b8 | Read-only review of 14 legacy watermark responsibilities and resource-watermark SoT/plan/evidence; misc lane when free, no crate/graph/code before root design acceptance |
+| Humanymous · 모델 · 학습과 보정 이관 | 01a1b63c-d8c7-76c1-bc35-baf9d6cfe88c | Read-only legacy model training/correction and current Rust model gap review; model-training-correction SoT/plan/evidence on free sot-plan lane; no code/graph, activation, GPU, download or inference before root acceptance and allocation; separate from skill paired evaluation |
 
 Root owns shared Cargo/lock/toolchain, program roadmap and final Git integration. Pages owner alone writes docs/**, including public Draft v0. Other owners submit INTEGRATION.md/spec deltas. Source authoring may parallelize when real paths do not overlap.
 

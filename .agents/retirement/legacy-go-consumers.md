@@ -80,12 +80,19 @@ that baseline's product responsibility rows.
 | detection-core |49| Collector, signals/scoring, integrity and associated contracts |
 | gate-edge with native-cli/authority-ipc |147| Server/Gate, enforcement, host lifecycle and support responsibilities |
 | product-lab with root integration |4| Legacy redteam/tlsparrot responsibilities |
-| root integration |66| Model/challenge/report and cross-context responsibilities |
+| root integration |23| Remaining challenge/report and cross-context responsibilities |
+| resource-watermark design review |14| Legacy watermark inventory/design only; root acceptance before crate/graph/code |
+| model-training-correction design review |29| mlserve/mltrain/mlcorrect and training command review only; no activation or inference allocation |
 | root integration with network-capture |20| Network/TLS/H2 responsibilities and actual capture boundaries |
 
 These are review routes, not new write claims. Each owner writes its own
 INTEGRATION/SoT delta keyed by exact baseline paths. Root alone serially updates
 the central314-row registry after review, preventing concurrent whole-file edits.
+The user-approved watermark and model review chats are registered in THREADS.
+Their observed misc and sot-plan claims cover only their distinct design/spec
+artifacts. Delegating these43 rows does not qualify or authorize their deletion,
+change detection scoring or approve a crate/graph implementation. The model
+training/correction review is separate from developer-skill paired LLM evaluation.
 
 The59 source-mapped rows have existing paths that all still exist, but their
 recorded labels explicitly lack full runtime parity. The255 unmapped pending rows
