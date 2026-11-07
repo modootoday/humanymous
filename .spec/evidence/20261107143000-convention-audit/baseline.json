@@ -1966,5 +1966,27 @@
     "bytes": 4065,
     "state": "Cross-proposal P2 DESIGN CLOSED;33case identities exact;27roots/10integrations;complete input/unit inventories still OPEN",
     "goal_complete": false
+  },
+  "runtime_optional_dependency_review": {
+    "source": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/runtime-optional-actual-review-001.json",
+        "sha256": "e4330dea902c6da07dcdad60ebd43828eceba9b2b3f4780cac7d369bf9edb43e",
+        "bytes": 83606
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/runtime-optional-source-join-001.json",
+        "sha256": "37c7cfd0ce68aa893454fa046a502635eb7be9f70512c05bce4dde061583c0a3",
+        "bytes": 209
+      }
+    ],
+    "normal": "17isolatedchecks;12contextclosures+pilot/default/all;9featurekeys;external tuples equal mainlock; native graph excludes Core/Platform/Tokio/TLS/HPACK",
+    "negative": "6intendedE0432only withpositivecontrols",
+    "regression": "177unique/366inventory;all8exactprefixsubsets;280Runtime Git/current/snapshots0diff",
+    "invocation": "Development flags supported by explicit retrospective Root tool-transcript ledger, not contemporaneous/authenticated OS argv record; limitation preserved",
+    "limits": "Windows bounded dependency/selected-regression evidence; full compiler read closure, Unix/native/Docker/product/performance unqualified",
+    "goal_complete": false,
+    "invocation_public_erratum": "57c3bb12; exact retained retrospective ledger hash/size matches; original attachment unchanged"
   }
 }

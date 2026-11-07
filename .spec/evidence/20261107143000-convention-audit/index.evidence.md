@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 2f48ec7a7c4ff0a6b1ed35e4dd38fe97acd8a7cf687ff9b6f4b60604e60d51d4, bytes: 109192, store: repo}
+  - {path: baseline.json, sha256: 07cdc08d98be124879faddac9b27a827d6a563ee24d5ed1bf11801f20c8cfde4, bytes: 110620, store: repo}
 ---
 
 # Convention audit baseline
@@ -1693,3 +1693,42 @@ old1f2 remains unproven. No retrospective failed-run promotion follows.
 Root runtime optionalization5d68cd39 is queued for independent normal17/negative6/
 development/selected177 evidence review. Owner component success is not yet
 independent qualification. Audit launched no compiler/native/Docker/dispatch.
+
+## Independent Runtime optional-dependency evidence review
+
+Source5d68cd39 changes only the Runtime manifest plus documentation/evidence, no
+Rust implementation. Context implications/defaults and exact nine public feature
+keys are preserved. All17 normal-only consumers have one normal Runtime root
+dependency, expected effective features, completed check logs, no Platform package
+and external name/version/source/checksum tuples matching the original main lock.
+All12 analytical context closures plus explicit pilot/default/all profiles are
+present. Native-only normal metadata excludes Core/Platform/Tokio/rustls/HPACK.
+This establishes bounded Windows dependency isolation, not measured speedup.
+
+All31 publicly indexed raw records matched hashes/sizes and were copied;170
+per-profile manifest/source/command/lock/metadata/tree/log records were retained
+with independent hashes. Six intended API negatives report only E0432 for the
+corresponding cfg-gated module, with matching positive consumer controls. The
+first seeded-lock refusal before native compilation remains retained; successful
+per-profile lock resolution did not change selected external version tuples.
+Main Cargo.lock.before equals exact committed5d68 main lock.
+
+Normal/dev280 Runtime snapshots are byte-equal within each phase and normalized
+path/hash sets match all280 committed/current Runtime files without difference.
+The actual366-name library inventory contains177 unique selected cases: each
+of eight actual groups exactly equals its expected inventory prefix subset,
+zero failures/ignored. The other189 library cases, integration/native suites
+and Unix/Docker/browser execution remain unqualified by this receipt.
+
+Development stderr/summary alone did not prove all-target/all-feature/strict
+flags. On request Root retained an explicitly RETROSPECTIVE transcript-derived
+ledger of11 invocations, including check, -D warnings Clippy, inventory and eight
+filters with original output references/exits. This supports reported flags at
+that provenance level; it is not a contemporaneous argv/start record, OS process
+trace or independently authenticated launch log. Earlier raw hashes were not
+reinterpreted and audit requested no rerun.
+
+Runtime280 is not complete compiler input closure: reachable Core peer, registry
+file bytes, toolchain/sysroot/config/linker/loader and full child environment are
+not fully attested. Matched cold/warm performance and production native claims
+remain OPEN. No audit workload was launched; remaining full migration gates stand.
