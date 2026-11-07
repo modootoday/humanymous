@@ -77,6 +77,45 @@ Require meaningful actual-type borrow/argument compile-fail checks and a negativ
 cancel/expired-original-clock-between-auth-and-finalize test with zero writes;
 privacy-only compile failure is not proof of the lifetime invariant.
 
+#### Actual-type qualification matrix (proposed; not executed)
+
+The current OperationBounds planning model is not VerifiedScan and cannot close
+these gates. Keep the following checks beside the eventual actual private owner
+types, with access sufficient to exercise those types. Do not export custody or
+file handles merely to make an external compile-fail fixture reach them.
+
+| Gate | Required positive control | Required negative evidence |
+|------|---------------------------|----------------------------|
+| Original operation lifetime | Authenticate and consume finalize inside the original Limits/Control scope | Moving VerifiedScan beyond either original borrow fails for that borrow, not unresolved imports, privacy, missing dependencies or unrelated type errors |
+| No replacement context | The actual consuming finalize() call type-checks | finalize(fresh_limits, fresh_control) fails against that same method signature; no alternate method accepts replacement bounds |
+| Single-use owner | One authenticate/finalize chain type-checks | A second use of the consumed OpeningOwner or VerifiedScan fails as a moved-value error; no Clone/serde/constructor bypass is available |
+| Original post-auth cancellation | Unchanged original control completes the admitted transition | Cancel ORIGINAL after authentication, leave a fresh control healthy, then finalize refuses before every mutating native operation |
+| Original post-auth expiry | The same transition before its original deadline succeeds | Advance a deterministic private clock seam past ORIGINAL deadline after authentication; finalize returns TimedOut before mutation, without sleep-based timing assumptions |
+| Preserved-tail authority | Read-only proof/inspection remains available on AmbiguousReadOwner | Normal append/checkpoint/Ready operations cannot be called on that actual type; destructor/flush does not sign the tail |
+
+Compile-fail evidence retains exact source/toolchain, positive-control success,
+negative compiler exit and the relevant diagnostic span/reason. A generic
+nonzero exit alone is insufficient; a compiler diagnostic is not an executed
+durability test. Use the existing locked graph and approved test mechanism;
+adding a new UI-test dependency requires a separate graph decision.
+
+The mutation observer must cover truncate, write/append, create/remove/rename,
+file sync and directory sync, not only successful durable receipts. Capture the
+original bytes, lengths, identities and membership before authentication and
+after refusal, and require zero attempted mutations plus unchanged state. Run
+the cancellation/expiry case for each admitted repair/bootstrap action and an
+unchanged no-repair handoff. Instrumentation-only evidence is L1; repeat on the
+actual supported L2 provider before granting native recovery authority. Clock
+injection must remain private, monotonic and shared by authentication/finalize;
+it cannot become a caller override of the production absolute deadline.
+
+Owner review across architecture, adversarial, operations, data-handling and
+evaluation perspectives: the strongest false green is a privacy-only compile
+failure paired with a receipt counter that misses failed write attempts. The
+positive controls, reason-specific diagnostics and complete mutation observer
+above are required to exclude that false green. This refinement is a draft
+verification contract, not independent approval or an implementation grant.
+
 ### 2. Preserve physical versus external candidate provenance
 
 Ordinary startup requires exact trusted Checkpoint equality in PHYSICAL decoded
