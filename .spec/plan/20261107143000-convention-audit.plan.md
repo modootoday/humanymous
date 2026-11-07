@@ -1706,3 +1706,29 @@ No graph/source/compiler workload was launched by audit. Optional wiring and
 performance benefit remain unimplemented/unmeasured at this review; full Runtime,
 whole-consumer/native/Docker and remaining migration gates stay OPEN. Exact private
 hashes are in baseline.json.
+
+## Independent edc browser diagnostic and Lab forty execution review
+
+Fresh completed GitHub job logs for edc30181 run42418752735/attempt1 were
+byte-equal to retained official logs and original run-ZIP entries. The product
+report was semantically equal to the retained projection: Docker18 assertions,
+16 passed and2 failed; actor inventory67, selected1, filtered66, unsuccessful
+process and unauthenticated source prefix. The finite diagnostic reports
+browser_bootstrap_http_forbidden_origin. Actual Origin value/presence, Fetch
+metadata cause, original private ledger and image-role mapping remain unknown.
+This distinct execution never retroclassifies old1f87 generic403. Preflight
+actual footers10/1/2/2/2/37/116 do not qualify the failed product or current tree.
+
+Lab source1f2b9a93 separately has40 exact inventory/actual names, zero failures,
+ignored or filtered tests. All24 indexed raw files matched hash/size and were
+retained independently;14913 before/after input records are byte-equal. All3107
+ZIP members match the immutable Git tree and source snapshot, with no mismatch.
+Registry11806 records were compared through retained snapshots, not independently
+rehashed as present-day registry bytes. Five command phases exit0. Windows MSVC
+execution does not qualify the three GNU-only producer tests or browser Docker.
+Tool version strings agree; the after snapshot omits environment, so environment
+closure is unproven. Full compiler/config/loader closure remains unproven.
+
+No audit compiler/native/Docker workload was launched. Lab remains sole monitor
+for the newer run42423423776; its outcome is not inferred here. Whole-migration
+qualification and remaining convention findings stay OPEN.

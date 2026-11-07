@@ -1838,5 +1838,28 @@
     "scope": "Native-security-onlyRuntimefeature/noGatewayAPI; unconditionalnormaldeps stillincludeirrelevantTLS/Tokio untiloptionalization. No service/native/product orfullOS/config/loaderreadclaim; old6674HOLD retained",
     "optionalization": "abad5c83 source/plancritique noP0P1 found; conditionalreadyboundeddesign, P2requireexplicitdev-isolatednormalconsumer/APIabsence/featurekeyrows so devunificationcannotmaskoptionalnormaledges",
     "goal_complete": false
+  },
+  "edc_lab40_independent_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/edc-completed-jobs-review-001.json",
+        "sha256": "738684257802b479e0796813c114c6cc9bdb3fd628c80cefc954b5ea4eb47b3a",
+        "bytes": 4861
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/lab40-actual-review-001.json",
+        "sha256": "271a33c0e9b598ee8c94a22df92b07452f591ce514ef2f5c62f855e5747870d8",
+        "bytes": 10804
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/lab40-archive-source-join-001.json",
+        "sha256": "34560e32c6f69d8bc601e479ba0575fcf6e700a6e809f0ea3637120e08c48cc5",
+        "bytes": 242
+      }
+    ],
+    "browser": "DistinctedcOriginfiniteclassification; failed16/18 Docker, no rawheader/ledger/image-role proof; no old1f87retroclassification",
+    "lab40": "40exactinventory/actual;24rawhashsize;14913snapshotsbyteequal;3107ZIP/Git/snapshotexact;WindowsMSVC only, GNU3NOTRUN",
+    "environment": "Versionstringsequal; aftertoolsomitsenv, fullreadclosureunproven",
+    "goal_complete": false
   }
 }
