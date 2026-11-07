@@ -83,7 +83,10 @@ jobs:
       run: cargo build --workspace --all-targets --locked
     - name: Execute maintenance process and storage component tests
       if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
-      run: cargo test --locked -p humanymous-agent-maintenance --test process --test session_storage --test product_package
+      run: cargo run --locked -p humanymous-delivery -- component maintenance
+    - name: Execute independent runtime library and process harnesses
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- component runtime
     - name: Execute five owned TLS and H2 capture cases
       if: ${{ !cancelled() && steps.native_build.outcome == 'success' && runner.os == 'Linux' }}
       run: cargo run --locked -p humanymous-delivery -- component capture

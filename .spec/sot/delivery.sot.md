@@ -939,6 +939,22 @@ support. GNU timeout bounds these literal upstream executable invocations;
 only clean exact-source standard hosted Linux x64 may execute them. Actual
 capture/compiler runs remain required independently of source implementation.
 
+Maintenance's independent command is checked through three complete harness
+summaries with reviewed counts five/two/four, total eleven, zero failures,
+ignored, measured and filtered tests. Exit zero without this denominator is
+incomplete. Its source-bound public receipt contains only counts and log hashes.
+
+Runtime independently discovers and executes its all-features library and
+native_process targets before the generic actor. The owner-reviewed library
+denominator is provisionally 45 on Unix and 42 on Windows, plus one explicitly
+named native process case. Exact-source discovery must match those counts and
+contain unique actual names; a mismatch fails rather than updating the contract
+from an unknown green result. Each execution requires one complete zero-ignore,
+zero-filter summary. Both harnesses are attempted independently even when one
+fails. Missing discovery or failed execution retains unknown passed counts.
+These are Runtime process/library component fixtures, not browser, human,
+collector attestation, production ALLOW or full-product qualification.
+
 Root checkpoint a26d1c3 resolves the common 36-member Cargo graph/lock and the
 standalone scripts/ci/windows-native-runner/Cargo.lock against the shared native
 APIs. The runner lock is under this delivery governing scope but remains an
