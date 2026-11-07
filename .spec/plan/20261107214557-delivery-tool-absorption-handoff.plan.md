@@ -264,4 +264,8 @@ changed cwd/source custody, incorrect lock meaning, unreviewed docs and promotin
 historical benchmark output. The requirements above reflect these findings.
 This is one read-only author review, not an independent panel or migration proof.
 No source, manifest, lock, workflow, profile, target, actor or compiler was changed
-or executed by this handoff. Sole full-CI watch96123 remains independent.
+or executed by this handoff. The independent sole full-CI watch96123 later ended1:
+source1f87 run42415763189 completed with5 success,13 failure and1 cancelled jobs.
+hosted-1f87-terminal.json binds all19 original job members and the sealed private
+archive index. No live hosted watch or local compiler lease remains at that
+checkpoint; this terminal evidence does not freeze or qualify the Tools move.

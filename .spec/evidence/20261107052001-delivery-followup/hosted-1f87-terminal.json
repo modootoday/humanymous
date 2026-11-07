@@ -1,0 +1,787 @@
+{
+  "schema": "humanymous.delivery-hosted-terminal/1",
+  "run_id": 42415763189,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42415763189",
+  "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "branch": "codex/rust",
+  "attempt": 1,
+  "status": "completed",
+  "conclusion": "failure",
+  "updated_at": "2026-11-07T22:58:45Z",
+  "watch_session": 96123,
+  "watch_exit_code": 1,
+  "job_count": 19,
+  "conclusions": {
+    "success": 5,
+    "failure": 13,
+    "cancelled": 1
+  },
+  "annotations": {
+    "failure": 18,
+    "warning": 0,
+    "notice": 1
+  },
+  "jobs": [
+    {
+      "id": 128533383046,
+      "name": "validate / policy",
+      "status": "completed",
+      "conclusion": "success",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T21:25:11Z",
+      "completed_at": "2026-11-07T21:26:52Z",
+      "failed_steps": [],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Save verified public crate archives (optional)"
+      ],
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "18_validate _ policy.txt",
+      "original_log_sha256": "1fbfec0860e154f03fedf8c6e55836485a2680a2e42449b49a5b6fd36041f627",
+      "original_log_bytes": 70442
+    },
+    {
+      "id": 128533798127,
+      "name": "validate / native (macos-15)",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T21:44:26Z",
+      "completed_at": "2026-11-07T22:00:24Z",
+      "failed_steps": [
+        "Execute maintenance process and storage component tests",
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Configure Windows native build tools",
+        "Execute five owned TLS and H2 capture cases",
+        "Verify generated C11 and C++11 header layouts",
+        "Execute provisioned Windows CEF component cases",
+        "Preserve native workspace accounting",
+        "Run cargo build --workspace --bins --release --locked",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot native",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- native-artifacts",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 2,
+        "warning": 0,
+        "notice": 1
+      },
+      "archive_member": "14_validate _ native (macos-15).txt",
+      "original_log_sha256": "d2626cfc90e2e44c559176777f4625f6337e0642f4e6c8d786c55487952b4042",
+      "original_log_bytes": 221886
+    },
+    {
+      "id": 128533798135,
+      "name": "validate / docker",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T21:26:55Z",
+      "completed_at": "2026-11-07T21:40:21Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot docker"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "17_validate _ docker.txt",
+      "original_log_sha256": "be194aa0cd03ff605d12ac6bfe49aa674e9d6d4a02c91abc38db8a759a63af47",
+      "original_log_bytes": 68566
+    },
+    {
+      "id": 128533798155,
+      "name": "validate / native (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T21:26:55Z",
+      "completed_at": "2026-11-07T21:44:23Z",
+      "failed_steps": [
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Configure Windows native build tools",
+        "Execute provisioned Windows CEF component cases",
+        "Preserve native workspace accounting",
+        "Run cargo build --workspace --bins --release --locked",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot native",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- native-artifacts",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "16_validate _ native (ubuntu-24.04).txt",
+      "original_log_sha256": "c74142a116a1389132970553fb60d47b60b69698dc01037263afafaffe5889ab",
+      "original_log_bytes": 235081
+    },
+    {
+      "id": 128533798156,
+      "name": "validate / native (windows-2025)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:00:26Z",
+      "completed_at": "2026-11-07T22:40:40Z",
+      "failed_steps": [
+        "Execute independent runtime library and process harnesses"
+      ],
+      "cancelled_steps": [
+        "Execute provisioned Windows CEF component cases"
+      ],
+      "skipped_steps": [
+        "Execute five owned TLS and H2 capture cases",
+        "Verify generated C11 and C++11 header layouts",
+        "Execute every workspace harness through the native Rust actor",
+        "Preserve native workspace accounting",
+        "Run cargo build --workspace --bins --release --locked",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot native",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- native-artifacts",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 3,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "15_validate _ native (windows-2025).txt",
+      "original_log_sha256": "b1d622be054b649b8607e625efac3f432a3f7fe78d207f10fed9b29be902ba6c",
+      "original_log_bytes": 165835
+    },
+    {
+      "id": 128537039877,
+      "name": "validate / browser",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T21:40:24Z",
+      "completed_at": "2026-11-07T21:59:37Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "13_validate _ browser.txt",
+      "original_log_sha256": "44c6989de018f59e36be128a6fdcb90d544a78d826f9d345756d67deee757983",
+      "original_log_bytes": 60083
+    },
+    {
+      "id": 128541529321,
+      "name": "validate / browser-product",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T21:59:40Z",
+      "completed_at": "2026-11-07T22:19:32Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser-product"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "12_validate _ browser-product.txt",
+      "original_log_sha256": "5016ff05a64a726f554b9d26ca182eb59df643a03bcf1e87d90d9d1a97298f53",
+      "original_log_bytes": 51210
+    },
+    {
+      "id": 128546386470,
+      "name": "validate / nginx",
+      "status": "completed",
+      "conclusion": "success",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:19:34Z",
+      "completed_at": "2026-11-07T22:26:47Z",
+      "failed_steps": [],
+      "cancelled_steps": [],
+      "skipped_steps": [],
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "11_validate _ nginx.txt",
+      "original_log_sha256": "3b17a7a62dfd7eb3b00d0eced9010fa9d6aec78c30021cceede9eb916e10ad8c",
+      "original_log_bytes": 47755
+    },
+    {
+      "id": 128548113387,
+      "name": "validate / rust-images",
+      "status": "completed",
+      "conclusion": "success",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:26:49Z",
+      "completed_at": "2026-11-07T22:34:27Z",
+      "failed_steps": [],
+      "cancelled_steps": [],
+      "skipped_steps": [],
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "10_validate _ rust-images.txt",
+      "original_log_sha256": "0db43d2841141084b8ce472f109ffdf91f0394a2bafd96be56cd44a17f758543",
+      "original_log_bytes": 190458
+    },
+    {
+      "id": 128549922684,
+      "name": "validate / images (core)",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:34:29Z",
+      "completed_at": "2026-11-07T22:35:58Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a",
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "9_validate _ images (core).txt",
+      "original_log_sha256": "609495363fc9298e4becb96feb3afecf3f18c8a47f9dc5c6c850d76125f9aa4c",
+      "original_log_bytes": 63151
+    },
+    {
+      "id": 128549922686,
+      "name": "validate / images (gate)",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:36:00Z",
+      "completed_at": "2026-11-07T22:37:43Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a",
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "8_validate _ images (gate).txt",
+      "original_log_sha256": "dd89005819310ec8d907ca47ad0fa6d49264d6fd012e7195023bb1ba95d9549c",
+      "original_log_bytes": 63154
+    },
+    {
+      "id": 128550692193,
+      "name": "validate / packages",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:37:46Z",
+      "completed_at": "2026-11-07T22:38:54Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- package"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "7_validate _ packages.txt",
+      "original_log_sha256": "770c08e22568c301fb1556708502f17cac8f703a60477b97535081e5f226c153",
+      "original_log_bytes": 48674
+    },
+    {
+      "id": 128550964444,
+      "name": "validate / node",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:38:57Z",
+      "completed_at": "2026-11-07T22:46:12Z",
+      "failed_steps": [
+        "Execute actual Node and Bun host component groups",
+        "Verify native package qualification and archive"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Post Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6",
+        "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38"
+      ],
+      "annotations": {
+        "failure": 2,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "6_validate _ node.txt",
+      "original_log_sha256": "47d6fc598a0aaea5529f63a84836cedb33b0b2761bc6f906742426c02437bf2c",
+      "original_log_bytes": 84466
+    },
+    {
+      "id": 128551377834,
+      "name": "validate / msrv",
+      "status": "completed",
+      "conclusion": "success",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:40:43Z",
+      "completed_at": "2026-11-07T22:50:24Z",
+      "failed_steps": [],
+      "cancelled_steps": [],
+      "skipped_steps": [],
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "5_validate _ msrv.txt",
+      "original_log_sha256": "e47a56548e6b47e3e11acd7274d1ca68e51c5ef7f558b6eb7358fad757d22492",
+      "original_log_bytes": 296151
+    },
+    {
+      "id": 128552668346,
+      "name": "validate / advisories",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:46:15Z",
+      "completed_at": "2026-11-07T22:55:19Z",
+      "failed_steps": [
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "4_validate _ advisories.txt",
+      "original_log_sha256": "3518bf3ab0932c57bdb86ecec05daed18381be82e44c91721f0425e929182856",
+      "original_log_bytes": 167110
+    },
+    {
+      "id": 128553658995,
+      "name": "validate / quality",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:50:27Z",
+      "completed_at": "2026-11-07T22:52:50Z",
+      "failed_steps": [
+        "Run cargo clippy --workspace --all-targets --locked -- -D warnings"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run cargo fmt --manifest-path scripts/ci/docs-review/Cargo.toml -- --check",
+        "Run cargo clippy --manifest-path scripts/ci/docs-review/Cargo.toml --all-targets --locked -- -D warnings",
+        "Run cargo test --manifest-path scripts/ci/docs-review/Cargo.toml --locked",
+        "Run cargo fmt --manifest-path scripts/ci/delivery/Cargo.toml -- --check",
+        "Run cargo clippy --manifest-path scripts/ci/delivery/Cargo.toml --all-targets --locked -- -D warnings"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "3_validate _ quality.txt",
+      "original_log_sha256": "ae98b7fe6b814b98713e2c65a72e680f11a2603f61d70763a99bb45fba13283b",
+      "original_log_bytes": 91339
+    },
+    {
+      "id": 128554213195,
+      "name": "validate / documentation",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:52:53Z",
+      "completed_at": "2026-11-07T22:53:19Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/docs-review/Cargo.toml -- ."
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "2_validate _ documentation.txt",
+      "original_log_sha256": "836084688833eb48b0e2029eec02827bb6cf8fcb167dc625602df6881318b52a",
+      "original_log_bytes": 38473
+    },
+    {
+      "id": 128554322022,
+      "name": "validate / pages / build",
+      "status": "completed",
+      "conclusion": "success",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:53:22Z",
+      "completed_at": "2026-11-07T22:57:19Z",
+      "failed_steps": [],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+        "Run cargo run --locked -p humanymous-pages -- archive-check --source docs --archive \"/home/runner/work/_temp/pages-serving-download/artifact.tar\" --manifest \"/home/runner/work/humanymous/humanymous/target/delivery-pages/apex/manifest.json\" --restored \"/home/runner/work/_temp/pages-serving-consumer-restored\" --baseurl ''",
+        "Verify source after serving transfer",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "1_validate _ pages _ build.txt",
+      "original_log_sha256": "6018f23b49929c7ce753e05c9dac33953e26da4ded8eb0aaf765382f971da757",
+      "original_log_bytes": 87021
+    },
+    {
+      "id": 128555218533,
+      "name": "validate / ready",
+      "status": "completed",
+      "conclusion": "failure",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "attempt": 1,
+      "started_at": "2026-11-07T22:57:22Z",
+      "completed_at": "2026-11-07T22:58:44Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- jobs"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "archive_member": "0_validate _ ready.txt",
+      "original_log_sha256": "cbb1d1cb8c542fd64df2886f3719106615930f00f64b8565b61f3f008c6543e1",
+      "original_log_bytes": 47624
+    }
+  ],
+  "original_archive": {
+    "sha256": "772fdfaf6790c6e8f6cb88085ec0026a9d84a455c6f99fb45756f62fcee07e3c",
+    "bytes": 860200,
+    "members": 167,
+    "uncompressed_bytes": 3786161,
+    "all19_full_job_members_joined": true,
+    "representation": "original GitHub logs archive response body and original member bytes; not HTTP wire or original private redirected child reports"
+  },
+  "standard_hosted_observation": {
+    "repository_visibility": "public",
+    "all19_runner_group": "GitHub Actions",
+    "label_counts": {
+      "ubuntu-24.04": 17,
+      "macos-15": 1,
+      "windows-2025": 1
+    },
+    "workflow_local_job_interval_peak": 2,
+    "end_active_jobs": 0,
+    "artifact_count": 0,
+    "compute_scope": "public standard hosted compute eligibility only",
+    "invoice_storage_or_account_global_concurrency_proven": false
+  },
+  "observations": {
+    "policy": {
+      "job_id": 128533383046,
+      "actual_unit_tests_passed": 116,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "policy_exit_code": 0
+    },
+    "rust_candidate_scan": {
+      "cargo_lock_sha256": "ebf64e8fe8a7470345da03fee5a4be1a8191bde4b78bbc3c1b329ed716114328",
+      "full_product_qualified": false,
+      "image_id": "sha256:7e1d796f7eab15c5866fe9834560a76528ce2dba48c8ee402333cb5ff37b66b3",
+      "inventory_completeness_verified": false,
+      "inventory_sha256": "dbf6ce9299e142b8ae2b61e45d961bc0e2f9fcd28dad2688db1875e07f5e65f9",
+      "observed_rust_packages": 86,
+      "rust_binary_inventory_count": 1,
+      "rust_binary_inventory_observed": true,
+      "scan_sha256": "a7ded6085b23a58f1c8c6e3582e5ccd972a2c21eeb988d11ce99b4ad9303918c",
+      "scan_status": "clean_observed_inventory",
+      "scanner_step_outcome": "success",
+      "schema": "humanymous.image-scan-summary/1",
+      "shipping_qualified": false,
+      "source_changed": false,
+      "source_manifest_sha256": "2ccd969525c2bbee49049dc8011f8942d2a5215765850835f0ec53698d54ae03",
+      "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "vulnerability_count": 0
+    },
+    "node": {
+      "job_id": 128550964444,
+      "status": "failed",
+      "first_failure_stage": "node-host-tests",
+      "host_tests_exit_code": 1,
+      "test_counts": null,
+      "runtime_versions": {
+        "bun": "1.3.14",
+        "node": "v24.22.2"
+      },
+      "image_id": "sha256:6ecbecbf220ca6a05b466d1905a270298665297efc56d5702f1660e5aabd24ee",
+      "image_build_exit": 0,
+      "image_inspect_exit": 0,
+      "cleanup_exit_codes": {
+        "node-absence-0": 0,
+        "node-absence-1": 0,
+        "node-absence-2": 0,
+        "node-cleanup-0": 0,
+        "node-cleanup-1": 0,
+        "node-cleanup-2": 0,
+        "node-ownership-0": 0,
+        "node-ownership-1": 0,
+        "node-ownership-2": 0
+      },
+      "container_cleanup_observed": true,
+      "source_changed": false,
+      "inner_process_cause": "not recovered; private redirected child stdout/stderr absent from original run archive",
+      "private_child_hashes_are_locally_rehashed_originals": false
+    },
+    "msrv": {
+      "job_id": 128551377834,
+      "raw_summary_lines": 97,
+      "raw_passed_sum": 1302,
+      "raw_failed_sum": 0,
+      "raw_ignored_sum": 26,
+      "raw_filtered_sum": 0,
+      "identity_deduplicated": false,
+      "scope": "raw test footer accounting only; not a unique harness/case inventory or native coverage qualification"
+    },
+    "advisories": {
+      "job_id": 128552668346,
+      "cargo_audit": [
+        {
+          "lockfile": "Cargo.lock",
+          "dependency_count": 668,
+          "exit_code": 0,
+          "vulnerability_count": 0,
+          "vulnerabilities_found": false,
+          "source_changed": false
+        },
+        {
+          "lockfile": "scripts/ci/cef-pilot/Cargo.lock",
+          "dependency_count": 23,
+          "exit_code": 0,
+          "vulnerability_count": 0,
+          "vulnerabilities_found": false,
+          "source_changed": false
+        },
+        {
+          "lockfile": "scripts/ci/docs-review/Cargo.lock",
+          "dependency_count": 22,
+          "exit_code": 0,
+          "vulnerability_count": 0,
+          "vulnerabilities_found": false,
+          "source_changed": false
+        },
+        {
+          "lockfile": "scripts/ci/local-parity/Cargo.lock",
+          "dependency_count": 1,
+          "exit_code": 0,
+          "vulnerability_count": 0,
+          "vulnerabilities_found": false,
+          "source_changed": false
+        },
+        {
+          "lockfile": "scripts/ci/windows-native-runner/Cargo.lock",
+          "dependency_count": 43,
+          "exit_code": 0,
+          "vulnerability_count": 0,
+          "vulnerabilities_found": false,
+          "source_changed": false
+        }
+      ],
+      "warning_ids": [
+        "RUSTSEC-2026-0192"
+      ],
+      "filesystem_trivy": {
+        "go_mod_findings": 13,
+        "go_cve_findings": 12,
+        "go_unmaintained_finding": "GO-2026-5932",
+        "go_severity_counts": {
+          "unknown": 1,
+          "medium": 7,
+          "high": 5,
+          "critical": 0
+        },
+        "additional_secret_detector_findings": 1,
+        "secret_finding": {
+          "severity": "MEDIUM",
+          "detector": "gocardless-api-token",
+          "source_file": "scripts/ci/windows-native-runner/src/controlled.rs",
+          "source_line": 42,
+          "context": "outer-live-timeout fixture mode",
+          "matched_value_included": false,
+          "valid_credential_proven": false,
+          "false_positive_proven": false,
+          "next_action": "Native/Root source-context review; no scan ignore or credential test performed"
+        }
+      },
+      "original_scan_json_recovered": false
+    },
+    "quality": {
+      "job_id": 128553658995,
+      "global_fmt_exit": 0,
+      "workspace_strict_clippy_exit": 101,
+      "first_failure": "deprecated Atomic::fetch_update",
+      "source_file": "crates/audit/src/verification/scan/limits.rs",
+      "source_line": 88,
+      "later_standalone_checks": "skipped",
+      "old_result_reclassified_by_later_fix": false
+    },
+    "documentation": {
+      "job_id": 128554213195,
+      "exit_code": 1,
+      "first_failure": "review inventory differs from governed source",
+      "missing_paths_output": "first10 only; not complete missing set",
+      "no_blind_review_hash_refresh": true
+    },
+    "pages": {
+      "job_id": 128554322022,
+      "status": "passed",
+      "validation_scope": "two base URLs; trusted step outcomes only, no mixed log parser",
+      "stages": {
+        "apex": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "archive_apex": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "archive_subpath": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "bundle_audit": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "bundle_install": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "package_apex": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "package_subpath": {
+          "exit_code": 0,
+          "outcome": "success"
+        },
+        "subpath": {
+          "exit_code": 0,
+          "outcome": "success"
+        }
+      },
+      "apex_public_files": 165,
+      "subpath_public_files": 165,
+      "source_unchanged": true,
+      "deployment_performed": false,
+      "browser_qualified": false,
+      "assistive_technology_qualified": false,
+      "full_product_qualified": false,
+      "original_package_archives_recovered": false
+    },
+    "ready": {
+      "job_id": 128555218533,
+      "status": "failure",
+      "scope": "required dependencies did not all succeed; no readiness qualification"
+    }
+  },
+  "linked_partial_observations": [
+    {
+      "file": "hosted-1f87-policy.json",
+      "sha256": "d15b921c40f759eb5b2488de2e50a0bb80eb12a1516225dc1ab092c1083b9af7",
+      "meaning": "finite partial checkpoint; final original archive/job mapping below is authoritative for terminal custody"
+    },
+    {
+      "file": "hosted-1f87-docker.json",
+      "sha256": "574d0e5bfb33dee1bb711d82fadb0705bb8bfc9b16fd39eb838f6f514b5f23f3",
+      "meaning": "finite partial checkpoint; final original archive/job mapping below is authoritative for terminal custody"
+    },
+    {
+      "file": "hosted-1f87-macos-browser.json",
+      "sha256": "1a5fbd70fe171ba54c010083b794e6b59b51c418e6a96f10a8dec997f74db392",
+      "meaning": "finite partial checkpoint; final original archive/job mapping below is authoritative for terminal custody"
+    },
+    {
+      "file": "hosted-1f87-image-nginx-browser-product.json",
+      "sha256": "c0581f0a4c03f72ee7cf986504353ff7aa58776cb506e263ffabe096320b6e6b",
+      "meaning": "finite partial checkpoint; final original archive/job mapping below is authoritative for terminal custody"
+    },
+    {
+      "file": "hosted-1f87-windows-legacy-packages.json",
+      "sha256": "9b922f7d93bf9f4ac42e7dd7821f2d2631e8668623f7d91560d93e373568fb68",
+      "meaning": "finite partial checkpoint; final original archive/job mapping below is authoritative for terminal custody"
+    }
+  ],
+  "private_bundle": ".spec.local/root/evidence/20261107212500-delivery-full-ci-1f87-monitor",
+  "private_index_sha256": "2ce42ff37f2d32240c8f3378e11e4ece78f32f870d951a7753847b8fdfbcaecd",
+  "private_retained_file_count": 156,
+  "private_child_report_originals_recovered": false,
+  "complete_inventory_cve_shipping_qualified": false,
+  "full_product_qualified": false,
+  "deployment_performed": false
+}
