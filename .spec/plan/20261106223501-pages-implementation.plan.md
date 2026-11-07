@@ -594,3 +594,12 @@ component-only provenance and inspect's typecheck/Node/Bun execution plus writes
 No packaging command ran locally. gh run view confirmed CI42347732666 live at
 policy job128329016157 for bfc9f62335ae41906996c6b01b0ae9e7993feeed; later
 documentation commits are outside that run and no Pages/build success inferred.
+
+## Native Node surface check mapping
+
+Replaced obsolete node/test:pilot obligation with verifier-required
+node/native-host-process and mapped it to reviewed Rust lib/stream sources and
+public topology page. Verified surface pages are included in both source rows.
+The name is a required check, not evidence of execution. CI42347732666 policy
+failed and Pages/documentation were skipped; ready was still running at query.
+Failed logs were not yet available while run remained live. No result inferred.

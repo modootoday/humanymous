@@ -2583,15 +2583,16 @@
     {
       "id": "node-adapter",
       "sources": [
-        "adapters/node/capabilities.json"
+        "crates/node-adapter/src/lib.rs",
+        "crates/node-adapter/src/stream.rs"
       ],
       "pages": [
-        "docs/start-here/integrator.md"
+        "docs/reference/supported-topologies.md"
       ],
       "reviewer": "codex/rust-pages",
-      "notes": "Descriptor release-qualified tuples are empty. Reader guide treats Node/Bun as target integrations; mock/local adapter tests cannot certify Rust authority, ACLs or a deployed browser flow.",
+      "notes": "Reviewed Rust Node-API exports and full request lifecycle source against the public topology reference. Empty releaseQualifiedTuples, pre-parser body ownership, normalized evidence, JSON outcomes and post-dispatch effect limits remain explicit. The required native-host-process check is an obligation, not a claimed passing current-source result; authority/origin, platform, packaging and accessible recovery gates remain separate.",
       "checks": [
-        "node/test:pilot"
+        "node/native-host-process"
       ]
     },
     {
