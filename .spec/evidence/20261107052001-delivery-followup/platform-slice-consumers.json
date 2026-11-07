@@ -1,0 +1,65 @@
+{
+  "schema": "humanymous.delivery-platform-consumer-source/1",
+  "state": "authored-uncompiled",
+  "authorization": "Root PLATFORM-SLICE-02 six strict JSON consumer references",
+  "api_from": "humanymous_test_support::json",
+  "api_to": "humanymous_platform::testing::json",
+  "files": [
+    {
+      "path": "scripts/ci/delivery/src/audit_source.rs",
+      "sha256": "c16807da51ed15d351133bc69a4c141b7892cf5158322cf69ddfb4f5d6536d8a",
+      "references_changed": 1,
+      "reverse_namespace_mapping_matches_prior_head": true
+    },
+    {
+      "path": "scripts/ci/delivery/src/service_component.rs",
+      "sha256": "c641cacdd78041158bfabc197bf5bb318802bbad8787123214e6ba2aae1de4dc",
+      "references_changed": 1,
+      "reverse_namespace_mapping_matches_prior_head": true
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/native_archive.rs",
+      "sha256": "e159f4ae258c2756c1d1a1ab970b276ad39f0e9c6cd88d534abf9309016dcf04",
+      "references_changed": 1,
+      "reverse_namespace_mapping_matches_prior_head": true
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof/frontend.rs",
+      "sha256": "46c4cfcb1871b731305845efba0eda07f7dac68c048bf2678fc0a9348cf74aaf",
+      "references_changed": 1,
+      "reverse_namespace_mapping_matches_prior_head": true
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof/admission.rs",
+      "sha256": "a0ba40a16b77f752b3c3f0482436ff9d56281196070ba3f1103f54a32236b00f",
+      "references_changed": 1,
+      "reverse_namespace_mapping_matches_prior_head": true
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof.rs",
+      "sha256": "cf698e721d175aff22b40661c704d57af80818c07021d30adff9c70c51a37128",
+      "references_changed": 1,
+      "reverse_namespace_mapping_matches_prior_head": true
+    }
+  ],
+  "source_only_changes": 6,
+  "manifest_or_lock_edits": false,
+  "path_moves": false,
+  "behavior_or_authority_changes": false,
+  "native_security_references_unchanged": 3,
+  "historical_audit_paths_preserved": [
+    "crates/test-support/src/process.rs",
+    "crates/test-support/src/process/controlled_barrier.rs"
+  ],
+  "historical_audit_baseline_reconstructed": false,
+  "owned_workflow_selector_changes_needed": false,
+  "cef_pilot_loan": "Native ABI owns the three Root-assigned cef-pilot source consumers; excluded from Delivery work claim",
+  "cargo_executed": false,
+  "clippy_executed": false,
+  "fmt_executed": false,
+  "fmt_reason": "Wait for Root coherent manifests before scoped cargo fmt",
+  "previous_114_receipt_applies_to_new_graph": false,
+  "next_gate": "Root atomic Cargo/lock/features and frozen platform move, then allocated exact-source consumer tests/check/strict Clippy/policy/fmt",
+  "full_product_qualified": false,
+  "release_ready": false
+}

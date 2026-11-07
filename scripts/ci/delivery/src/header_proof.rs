@@ -140,7 +140,7 @@ fn decode(text: &str, limits: &Limits, admit: impl Fn(&Bundle) -> Result<()>) ->
             line.len() < limits.line,
             "proof protocol line bound refused",
         )?;
-        let frame = humanymous_test_support::json::decode_strict_json(raw.as_bytes(), limits.line)
+        let frame = humanymous_platform::testing::json::decode_strict_json(raw.as_bytes(), limits.line)
             .map_err(|_| "proof JSON refused")?;
         match frame["type"].as_str() {
             Some("begin") => {

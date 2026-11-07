@@ -47,7 +47,7 @@ fn bounded(path: &Path, cap: usize) -> Result<Vec<u8>> {
     Ok(out)
 }
 fn strict(bytes: &[u8], cap: usize) -> Result<Value> {
-    humanymous_test_support::json::decode_strict_json(bytes, cap)
+    humanymous_platform::testing::json::decode_strict_json(bytes, cap)
         .map_err(|_| "header metadata JSON refused".into())
 }
 fn lines(bytes: &[u8], count: usize) -> Result<Vec<&str>> {

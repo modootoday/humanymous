@@ -28,7 +28,7 @@ pub(super) struct Expected {
     pub inputs: BTreeMap<String, Input>,
 }
 fn strict(bytes: &[u8], cap: usize) -> Result<Value> {
-    humanymous_test_support::json::decode_strict_json(bytes, cap)
+    humanymous_platform::testing::json::decode_strict_json(bytes, cap)
         .map_err(|_| "header admission JSON refused".into())
 }
 fn digest(value: &Value) -> Result<()> {

@@ -34,7 +34,7 @@ fn original(root: &Path, path: &str) -> Result<Vec<u8>> {
 }
 
 fn strict(bytes: &[u8]) -> Result<Value> {
-    humanymous_test_support::json::decode_strict_json(bytes, 512 * 1024)
+    humanymous_platform::testing::json::decode_strict_json(bytes, 512 * 1024)
         .map_err(|_| "Audit source JSON refused".into())
 }
 

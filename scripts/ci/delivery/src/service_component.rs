@@ -101,7 +101,7 @@ fn invoke(root: &Path, dir: &Path, sha: &str, run: &str, case: &str) -> Result<V
     )?;
     require(validated == 0, "owning service evidence validation failed")?;
     let bytes = std::fs::read(&public).map_err(|_| "service summary missing")?;
-    let value = humanymous_test_support::json::decode_strict_json(&bytes, 64 * 1024)
+    let value = humanymous_platform::testing::json::decode_strict_json(&bytes, 64 * 1024)
         .map_err(|_| "service summary JSON refused")?;
     summary(&value, sha, run, case, code)?;
     require(

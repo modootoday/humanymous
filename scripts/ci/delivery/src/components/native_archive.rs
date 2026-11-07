@@ -22,7 +22,7 @@ fn records(bytes: &[u8], root: &Path) -> Result<BTreeMap<String, bool>> {
         .split(|byte| *byte == b'\n')
         .filter(|line| !line.is_empty())
     {
-        let row = humanymous_test_support::json::decode_strict_json(line, 1024 * 1024)
+        let row = humanymous_platform::testing::json::decode_strict_json(line, 1024 * 1024)
             .map_err(|_| "invalid native Cargo JSON receipt")?;
         last_finished = row["reason"] == "build-finished";
         if last_finished {
