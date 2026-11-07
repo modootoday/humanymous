@@ -30,9 +30,14 @@ pub fn dock_geometry(
     if dpi == 0 {
         return Err(io::Error::other("parent DPI unavailable"));
     }
-    let allocation =
-        humanymous_browser::viewport::content_bounds(rect.right, rect.bottom, dpi, dock)
-            .map_err(io::Error::other)?;
+    let allocation = humanymous_browser::viewport::content_bounds_in_window(
+        rect.right,
+        rect.bottom,
+        dpi,
+        dock,
+        unsafe { IsZoomed(hwnd).as_bool() },
+    )
+    .map_err(io::Error::other)?;
     let bounds = Rect {
         x: allocation.x,
         y: allocation.y,

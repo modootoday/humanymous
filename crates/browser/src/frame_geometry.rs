@@ -1,6 +1,6 @@
 //! Pure borderless-window resize geometry shared by native input and page allocation.
 /// App-owned perimeter width in device-independent pixels.
-pub const RESIZE_DIP: f64 = 5.0;
+pub const RESIZE_DIP: f64 = 3.0;
 /// Resize directions. Opposite sides remain fixed when minimum size is reached.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Edge {
@@ -132,6 +132,16 @@ mod tests {
             resize(rect, Edge::West, -50, 0, 96).unwrap(),
             [50, 100, 1100, 900]
         );
+    }
+    #[test]
+    fn thin_resize_band_stops_before_the_page_at_each_dpi() {
+        for dpi in [96, 120, 144, 192] {
+            let edge = (RESIZE_DIP * f64::from(dpi) / 96.0).round();
+            assert_eq!(hit(1280, 800, dpi, edge - 0.5, 400.0), Some(Edge::West));
+            assert_eq!(hit(1280, 800, dpi, edge, 400.0), None);
+            assert_eq!(hit(1280, 800, dpi, 600.0, 800.0 - edge), Some(Edge::South));
+            assert_eq!(hit(1280, 800, dpi, 600.0, 800.0 - edge - 0.5), None);
+        }
     }
     #[test]
     fn dpi_scaled_minimum_keeps_every_dock_drawable() {

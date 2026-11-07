@@ -322,13 +322,17 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
                         ("className", "content-reservation"),
                         ("aria-label", "Native Chromium content surface"),
                     ],
-                    vec![element(
-                        "p",
-                        &[("className", "muted")],
-                        vec![text(
-                            "Native CEF surface is not attached in the standalone controls preview.",
-                        )],
-                    )],
+                    if enabled {
+                        vec![]
+                    } else {
+                        vec![element(
+                            "p",
+                            &[("className", "muted"), ("style", "padding:20px")],
+                            vec![text(
+                                "Native CEF surface is not attached in the standalone controls preview.",
+                            )],
+                        )]
+                    },
                 ),
                 inspector("", "right"),
                 inspector("bottom-", "bottom"),
@@ -402,7 +406,7 @@ body{margin:0;background:#101620;color:#e8edf7;font-family:system-ui;font-size:1
 .resize-sw{left:0;bottom:0;width:__EDGE__px;height:__EDGE__px;cursor:nesw-resize}
 .resize-se{right:0;bottom:0;width:__EDGE__px;height:__EDGE__px;cursor:nwse-resize}
 button:not(:disabled){cursor:pointer} button:disabled{cursor:not-allowed} input{cursor:text}
-.content-reservation{position:absolute;left:0;right:0;top:__TOP__px;bottom:0;background:#ffffff;padding:20px;color:#58687f}
+.content-reservation{position:absolute;left:0;right:0;top:__TOP__px;bottom:0;background:#202b3d;padding:0}
 .inspector{position:absolute;background:#131d2c;border:1px solid #344259;padding:16px;overflow:auto;z-index:2}
 .inspector-right{top:__TOP__px;right:__EDGE__px;bottom:__EDGE__px;width:32vw;max-width:__RIGHT__px}
 .inspector-bottom{left:__EDGE__px;right:__EDGE__px;bottom:__EDGE__px;height:40vh;max-height:__BOTTOM__px}

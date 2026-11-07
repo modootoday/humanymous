@@ -12,6 +12,20 @@ rel:
 
 # Native browser UI and CEF boundary
 
+UI-36: user-reported resize lag/thick white gutters supersede UI-16's5-DIP
+perimeter width with3-DIP normal-window resize strips. Input hit testing, CSS and
+CEF allocation share the same DPI-scaled metric. The exposed strip uses the
+frame background rather than a white page placeholder; it carries no diagnostic
+padding or page text. Maximized windows reserve no resize perimeter. Keep the
+84-DIP header and inspector allocations, positive bounded child geometry and
+minimized-window suspension. Synchronize owned child bounds directly for native
+surface-size/DPI events before parent event rendering, outside the10ms diagnostic
+poll throttle. Reuse the same bounds/readback/report path for periodic recovery.
+This removes a source scheduling delay, not CEF compositor latency or tearing by
+assertion. Thin-edge/corner usability, native repaint smoothness, DPI transitions
+and maximize/restore require fresh actual GUI evidence; never force synchronous
+foreign paint, weaken sandbox or hide failed child readbacks for appearance.
+
 UI-35: browser tab geometry places a separately named close button inside the
 trailing edge of each tab, without nested interactive controls. The close hit
 area is at least28x28 DIP inside a32-DIP tab; the title reserves its area. A

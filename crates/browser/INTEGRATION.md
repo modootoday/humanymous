@@ -6,6 +6,15 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Newer UI-36 resize/gutter source reduces the shared perimeter5to3DIP, uses frame
+background instead of exposed white placeholder padding, removes resize gutters
+when maximized, and synchronizes live owned CEF geometry on surface/DPI events
+before parent handling, outside the10ms diagnostic throttle. The periodic path
+reuses the same validation/readback/report logic. Added thin-hit-band and
+normal/max/dock DPI regressions have not run. Native compile, edge usability,
+maximize/restore, compositor latency and actual visual improvement are unverified;
+the04643-unit result does not cover this later delta.
+
 Separate user-requested UI-35 source changes place close28x28 inside each tab,
 anchor new-tab after the list and shrink crowded tabs before overflow. Narrow
 inactive tabs keep a document icon while hiding close/title; active close remains.

@@ -11,6 +11,18 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## Resize lag and thick white perimeter (UI-36)
+
+Keep this source delta separate from UI-35. Reduce shared resize edge5to3DIP,
+paint exposed perimeter in frame background, remove placeholder padding/text,
+and use zero perimeter when maximized. Keep normal resize hit/corner ownership,
+minima and DPI scaling. Synchronize CEF child bounds on native surface/DPI events
+before parent rendering, without waiting for the10ms service throttle; retain
+bounded native readbacks and existing periodic recovery. Add pure multi-DPI
+normal/max/dock allocation coverage. Actual thin-edge usability and compositor
+latency/visual improvement remain unallocated. Source fixes do not inherit043
+document results or the historical96DPI GUI qualification.
+
 Exact046b5f1b native-ui document tests passed43/43, with zero failed/ignored/
 filtered cases. Desktop library tests stopped on the native-profile cef-dll-sys
 rebuild guard before execution; check/Clippy were unreached. Formatter passed and

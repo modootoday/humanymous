@@ -42,6 +42,16 @@ pub fn content_bounds(
     dpi: u32,
     dock: InspectorDock,
 ) -> Result<ContentBounds, &'static str> {
+    content_bounds_in_window(width, height, dpi, dock, false)
+}
+/// Maximized windows do not need app-owned edge resize strips.
+pub fn content_bounds_in_window(
+    width: i32,
+    height: i32,
+    dpi: u32,
+    dock: InspectorDock,
+    maximized: bool,
+) -> Result<ContentBounds, &'static str> {
     if !(1..=16384).contains(&width) || !(1..=16384).contains(&height) || !(48..=768).contains(&dpi)
     {
         return Err("native viewport dimensions/DPI outside bounds");
@@ -60,7 +70,11 @@ pub fn content_bounds(
     } else {
         0
     };
-    let edge = (crate::frame_geometry::RESIZE_DIP * scale).round() as i32;
+    let edge = if maximized {
+        0
+    } else {
+        (crate::frame_geometry::RESIZE_DIP * scale).round() as i32
+    };
     let bounds = ContentBounds {
         x: edge,
         y: top,
@@ -82,10 +96,10 @@ mod tests {
         assert_eq!(
             bounds,
             ContentBounds {
-                x: 5,
+                x: 3,
                 y: 84,
-                width: 1270,
-                height: 711
+                width: 1274,
+                height: 713
             }
         );
         assert!(f64::from(bounds.height) / 800.0 >= 0.885);
@@ -106,6 +120,28 @@ mod tests {
                 content_bounds(width, height, dpi, InspectorDock::Hidden).unwrap(),
                 full
             );
+        }
+    }
+    #[test]
+    fn maximized_page_removes_only_the_resize_perimeter_at_each_dpi() {
+        for dpi in [96, 120, 144, 192] {
+            for dock in [
+                InspectorDock::Hidden,
+                InspectorDock::Right,
+                InspectorDock::Bottom,
+            ] {
+                let width = 1280 * dpi as i32 / 96;
+                let height = 800 * dpi as i32 / 96;
+                let normal = content_bounds(width, height, dpi, dock).unwrap();
+                let maximized = content_bounds_in_window(width, height, dpi, dock, true).unwrap();
+                let edge =
+                    (crate::frame_geometry::RESIZE_DIP * f64::from(dpi) / 96.0).round() as i32;
+                assert_eq!(normal.x, edge);
+                assert_eq!(maximized.x, 0);
+                assert_eq!(maximized.y, normal.y);
+                assert_eq!(maximized.width, normal.width + 2 * edge);
+                assert_eq!(maximized.height, normal.height + edge);
+            }
         }
     }
     #[test]

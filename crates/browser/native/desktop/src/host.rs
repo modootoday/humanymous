@@ -133,6 +133,53 @@ struct Pilot {
 mod report;
 use report::Report;
 impl Pilot {
+    fn synchronize_page_geometry(&mut self) -> io::Result<()> {
+        if self.close_requested {
+            return Ok(());
+        }
+        if self.registrar.phase().map_err(io::Error::other)? != WindowPhase::Ready {
+            return Ok(());
+        }
+        let Some(parent) = self.parent.clone() else {
+            return Ok(());
+        };
+        let browser = {
+            let state = self
+                .state
+                .lock()
+                .map_err(|_| io::Error::other("state poisoned"))?;
+            if !state.is_live() || !state.active {
+                return Ok(());
+            }
+            state.browser.clone()
+        };
+        let Some(browser) = browser else {
+            return Ok(());
+        };
+        parent
+            .with_parent(|scoped| -> io::Result<()> {
+                if crate::window_frame::observe(scoped)?.minimized {
+                    return Ok(());
+                }
+                let (hwnd, bounds, dpi) = native::dock_geometry(scoped, self.dock)?;
+                native::validate_parent(&browser, hwnd)?;
+                let key = (bounds.x, bounds.y, bounds.width, bounds.height, dpi);
+                if self.last_bounds != Some(key) {
+                    native::resize_child(&browser, &bounds)?;
+                    self.last_bounds = Some(key);
+                    let mut report = self.report.borrow_mut();
+                    report.resize_readbacks += 1;
+                    if report.page_allocations.len() < 128 {
+                        report
+                            .page_allocations
+                            .push(([bounds.x, bounds.y, bounds.width, bounds.height], dpi));
+                    }
+                }
+                Ok(())
+            })
+            .map_err(io::Error::other)??;
+        Ok(())
+    }
     fn tick(&mut self) -> io::Result<()> {
         self.ticks += 1;
         if !self.close_requested
@@ -254,6 +301,7 @@ impl Pilot {
         {
             self.close_requested = true;
         }
+        self.synchronize_page_geometry()?;
         if let Some(parent) = &self.parent {
             let browser = self
                 .state
@@ -278,20 +326,6 @@ impl Pilot {
                         // the child and last valid bounds until restoration.
                         if minimized {
                             return Ok(());
-                        }
-                        let (hwnd, bounds, dpi) = native::dock_geometry(scoped, self.dock)?;
-                        native::validate_parent(&browser, hwnd)?;
-                        let key = (bounds.x, bounds.y, bounds.width, bounds.height, dpi);
-                        if self.last_bounds != Some(key) {
-                            native::resize_child(&browser, &bounds)?;
-                            self.last_bounds = Some(key);
-                            self.report.borrow_mut().resize_readbacks += 1;
-                            if self.report.borrow().page_allocations.len() < 128 {
-                                self.report
-                                    .borrow_mut()
-                                    .page_allocations
-                                    .push(([bounds.x, bounds.y, bounds.width, bounds.height], dpi));
-                            }
                         }
                         Ok(())
                     })
@@ -380,6 +414,16 @@ impl ApplicationHandler for Pilot {
         self.driver.destroy_surfaces(event_loop);
     }
     fn window_event(&mut self, event_loop: &dyn ActiveEventLoop, id: WindowId, event: WindowEvent) {
+        // Geometry is already observable from Win32 when winit delivers this event.
+        // Update the owned child before parent rendering, outside diagnostic polling.
+        if matches!(
+            event,
+            WindowEvent::SurfaceResized(_) | WindowEvent::ScaleFactorChanged { .. }
+        ) && let Err(error) = self.synchronize_page_geometry()
+        {
+            self.fail(event_loop, error);
+            return;
+        }
         if matches!(event, WindowEvent::KeyboardInput { .. }) {
             self.report.borrow_mut().parent_key_events += 1;
         }
