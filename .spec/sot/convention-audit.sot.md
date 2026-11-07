@@ -2708,3 +2708,38 @@ Runtime280 is not complete compiler input closure: reachable Core peer, registry
 file bytes, toolchain/sysroot/config/linker/loader and full child environment are
 not fully attested. Matched cold/warm performance and production native claims
 remain OPEN. No audit workload was launched; remaining full migration gates stand.
+
+## Independent offline SGD preimplementation critique and design fixes
+
+Proposal a8672ff2 and seven actual source anchors were independently read and
+all seven declared hashes match. The Go source performs online sample updates,
+not batch SGD. Ordered forward/backprop uses OLD W2; the stated active analytic
+fixture is correct and distinguishes0.0625 from erroneous0.078125 W1 update.
+Private Core-only API, one bounded RNG stream/current-order epoch shuffles,
+finite/schema/label/positive-std checks, immutable caller data, checked caps,
+malformed-warm refusal and no activation/scoring change are coherent at this
+design scope. No concrete P0/P1 was identified; no implementation was qualified.
+
+Two P2 clarifications were sent to Root before code. The inactive ReLU fixture
+needed an explicit independent initial b2=0 to obtain0.125; it could not inherit
+b2=-0.5. The actual-file pilot needed all data/admission/class/cap/numeric/
+evaluation preflight before candidate creation, and a distinct post-create I/O
+partial-artifact/cleanup obligation rather than promising no file for every
+failure. Owner90d3af44 was re-read as a committed diff and resolves BOTH at
+source-design scope. Original and fixed Git-byte plans plus critique are retained.
+
+Residual requirements remain: copied warm parameters with new statistics/Cal reset
+do not imply unchanged predictions or forgetting protection, even zero epochs.
+RNG shuffle also stages an infallible order.to_vec allocation, so the existing
+whole-process OOM limitation covers that path. The pinned [Go1.26.3 specification](https://raw.githubusercontent.com/golang/go/go1.26.3/doc/go_spec.html#Floating_point_operators)
+permits floating-point fusion across statements without explicit rounding. Hence
+non-FMA Rust/source order alone cannot prove portable bitwise Go parity. The
+later actual oracle must pin toolchain/target/CPU/FMA/build profile, retain any
+mismatch as unqualified and never silently loosen tolerances or rewrite Go.
+These residual amendments are conditions of Root implementation acceptance,
+not an audit claim that every resulting source/test contract already exists.
+
+No compiler, Go, GPU, filesystem pilot, activation or source implementation ran
+by audit. Actual SGD learning/file pilot/Go parity and temporal/cohort/calibration/
+correction lifecycle/product gates remain OPEN. Inference success is not training
+completion. Full migration audit remains active.

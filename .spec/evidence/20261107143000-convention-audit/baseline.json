@@ -1988,5 +1988,26 @@
     "limits": "Windows bounded dependency/selected-regression evidence; full compiler read closure, Unix/native/Docker/product/performance unqualified",
     "goal_complete": false,
     "invocation_public_erratum": "57c3bb12; exact retained retrospective ledger hash/size matches; original attachment unchanged"
+  },
+  "sgd_preimplementation_review": {
+    "sources": [
+      "a8672ff2871184c5c030c5cece7fb377b5d74212",
+      "90d3af4424abfe7a1fe450a11a2c0fda41be7c57"
+    ],
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/sgd-design-critique-001.json",
+        "sha256": "627de8441a1cb232c5a2cde58ddb7143769cb742adfb95ae8f262623be6576a5",
+        "bytes": 4286
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/sgd-design-fix-review-002.json",
+        "sha256": "b3a75d828af3f3ce5810eaae8cc7f4b8ba70abcdd8713e0f8ced4e96a7bf1e0f",
+        "bytes": 1626
+      }
+    ],
+    "state": "Two P2 design ambiguities CLOSED at90d3; noP0P1 identified in bounded private offline scope; implementation/execution NOT qualified",
+    "residuals": "Warm stats/Cal nofunctioncontinuity; shuffle infallible allocation; actual pinnedGoFMA/bitparity unproven",
+    "goal_complete": false
   }
 }
