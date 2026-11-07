@@ -544,3 +544,16 @@ these contexts. Existing five Network visibility restrictions and private Captur
 fields stand; no new exception. Own source is clean, no handles/target leases or
 remaining pre-freeze source edit. Root's selected Runtime test and403diagnostic
 settlement precede its freeze. No source move/common Cargo/compiler action here.
+
+## Source custody released for Root Runtime6-to-1 freeze
+
+At2026-11-07T21:59:13Z this owner rechecked all52handoff1ccf3b1d file hashes:
+zero differences and zero dirty Network/Capture source paths. The verified own
+source claim was released and reclaimed for this owner's Spec paths ONLY; no
+crates/** path remains claimed. The board release records the handoff. No process
+handle, target lease or Git mutex is retained. Root received the completed
+transfer and accepted network_*_parity/capture_hosted_transport target names.
+No further source edit or compiler run is authorized here until Root's actual
+move completes and a new exact path grant is issued. Root still waits for the
+other owner handoffs/Native model checkpoint; this release does not assert that
+the Runtime package move or any new-source qualification has completed.
