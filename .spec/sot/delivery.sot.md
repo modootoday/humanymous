@@ -1517,3 +1517,15 @@ does not turn required full-product failure into success. Browser/native callers
 are not broadened. Automatic artifacts/cache writes, OIDC and publication remain
 absent. Fresh exact-source hosted preflight is mandatory before the actual Docker
 measurement; historic pure tests cannot qualify a newer dependency graph.
+
+### Distribution notice inputs in exact-source snapshots
+
+Governed source snapshots include root LICENSE, NOTICE and THIRD_PARTY_LICENSES.md
+in addition to the existing crate-local notices and build recipes. The runtime
+candidate copies root LICENSE into its final image, so its actual source bytes
+must participate in the before/after hash and dirty-source checks. Root notice
+changes must not be invisible while a source-manifest label remains unchanged.
+This is input binding, not verification of complete dependency licensing or
+proof that an image was built. Header canonical source indexing uses the same
+path vocabulary; fresh observed path counts and manifest hashes change, while
+historical snapshots, indexes and receipts remain immutable.

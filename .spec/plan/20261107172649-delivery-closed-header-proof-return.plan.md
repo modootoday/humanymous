@@ -154,7 +154,8 @@ filesystem is writable for checkout/toolchain; only the token permission is
 contents:read. One trigger push OR one manual dispatch is allowed by integration
 sequencing, never push plus a duplicate manual run.
 
-All new Rust remains UNCOMPILED/NOT_RUN. Existing native-security manifest/lock
+At the initial frontend authoring checkpoint, the new Rust was UNCOMPILED/NOT_RUN.
+The existing native-security manifest/lock
 edge is now committed by root0954deb8; metadata success is not code qualification.
 Expected full Delivery unit count is107 (hypothesis), including the new source,
 admission, transport, timestamp, supplied-metadata and generator-status checks.
@@ -274,3 +275,34 @@ source-count measurement and compiler identity receipt. Owner filename and typed
 argv-template agreement were subsequently received and incorporated above. These
 are mandatory contract requirements;
 no wildcard or weaker execution-only dispatch resolves them.
+
+## Actual frontend checks and remaining receiver hold
+
+Exact frozen 0abe69eb609370c159376c6215e6e7008c0c6fbf subsequently listed and
+passed107 pure tests, with zero failed/ignored/filtered. Check, fmt, policy and
+actionlint exited0. Strict Clippy exited101 on codec.rs chunks_exact_to_as_chunks;
+that first failure was retained. The read-only native private-parent probe
+exited1 with private proof held object privacy refused. No reconstruction
+directory, ACL repair, SCM operation or account change followed. The source plan
+observed1136 paths and352702 serialized original bytes; it did not grant dispatch.
+
+The independent c3d81a7cb152065b6b078d55379f57e95ae213de frozen candidate included
+the codec correction and scope-accurate environment/runtime-checkout wording.
+Its actual107 tests, check, strict Clippy, fmt, policy and actionlint all passed.
+The corrected comparison scope contained2892 source files with zero drift; the
+first comparator's27 extra Git-metadata records and scope correction remain
+preserved. Neither this pass nor the ABI owner's separate29 tests qualifies a
+private receiver parent or proves actual hosted emission/reconstruction.
+
+A follow-up original-byte audit compared every regular Git archive payload with
+its retained materialization: all2882 Header0abe files and2892 Actionsc3 files
+matched. The original private indexes were not modified. See the attached
+frozen-archive-byte-followup.json and actions-c3d81a7c-validation.json in
+evidence:root/20261107052001 for exact hashes and limits.
+
+Current GO-FACADE-01 and distribution-notice closure changes are newer source
+preparations. Their tests, effective feature closure and new snapshot counts
+remain unobserved until the next coherent frozen validation. Historical107
+counts and source manifests must not be promoted to that candidate. Actual
+receiver parent qualification, hosted context, original16 payload admission and
+successful private reconstruction remain outstanding.

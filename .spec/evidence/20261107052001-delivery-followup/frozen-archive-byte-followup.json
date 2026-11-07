@@ -1,0 +1,29 @@
+{
+  "schema": "humanymous.delivery-archive-followup/1",
+  "observed_at": "2026-11-07T19:14:54.3613549+00:00",
+  "comparisons": [
+    {
+      "schema": "humanymous.delivery-original-archive-comparison/1",
+      "source_sha": "0abe69eb609370c159376c6215e6e7008c0c6fbf",
+      "archive_sha256": "31c29eccc07bca2d3062eaee51cc8812da56b07b8357f72f53eed67cb356ff9d",
+      "archive_regular_files": 2882,
+      "mismatches": [],
+      "compiler_executed": false,
+      "original_bundle_modified": false,
+      "scope": "Current retained frozen materialization versus every original Git archive regular-file payload; separate follow-up observation, not new runtime qualification"
+    },
+    {
+      "schema": "humanymous.delivery-original-archive-comparison/1",
+      "source_sha": "c3d81a7cb152065b6b078d55379f57e95ae213de",
+      "archive_sha256": "db28be3c16c00c3f73b60de74720797ec462f85e3e588e8c4169b17558678efe",
+      "archive_regular_files": 2892,
+      "mismatches": [],
+      "compiler_executed": false,
+      "original_bundle_modified": false,
+      "scope": "Every original archive regular payload compared to retained frozen materialization; Git metadata excluded symmetrically"
+    }
+  ],
+  "original_private_indexes_unchanged": true,
+  "compiler_repeated": false,
+  "qualification_scope": "Original-byte materialization equality only; preserves earlier Clippy/private-parent failures and does not qualify shipping/hosted/GPU"
+}
