@@ -7,6 +7,7 @@ updated: 2026-11-07T11:36:42Z
 rel:
   depends_on: [sot:root/native-abi, plan:root/20261107072500]
 files:
+  - {path: pure-header-preparation-29.json, sha256: 8b20bbb824f9697dc5313dc3dfe3a62b679bb2c51e50d19af5c2bc71f4876310, bytes: 2269, store: repo}
   - {path: summary.json, sha256: a55a59d498914d90c7ba788b663def7b105f390f14f37c71419e7273d5673f49, bytes: 2406, store: repo}
   - {path: hosted-startup-failure.json, sha256: aaef59afbb25b88e38aab3539a46c2129f6e84cb4401aff11582fe991980de59, bytes: 928, store: repo}
   - {path: hosted-813-ubuntu.json, sha256: c9e34a3a2368ccf6bd1dbf105ef4c04c5454a7d5c92d126a7189646ae1fcca0b, bytes: 1446, store: repo}
@@ -108,3 +109,9 @@ but failed the actor step:15of89required harnesses,55passed tests,0failed tests,
 executed. The attached Windows projection and private
 bundle20261107090311-native-abi-hosted-windows-attempt-813 preserve its separate
 denominator. Local pure25 and these failed hosted partials are not interchangeable.
+
+## Later pure header preparation validation
+
+The separate29-case receipt records actual local tests/check/strict Clippy and
+explicit tool/dependency provenance limits. Original25-case, failed hosted and
+local artifact/caller receipts are unchanged. Hosted C11/C++11 remains pending.

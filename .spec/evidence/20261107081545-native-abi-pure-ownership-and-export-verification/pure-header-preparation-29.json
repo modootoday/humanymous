@@ -1,0 +1,81 @@
+{
+  "schema": "humanymous.native-abi-pure-header-preparation/1",
+  "privateEvidence": "evidence:root/20261107183956",
+  "platform": "windows-x86_64",
+  "toolVersionObservedAfter": "Rust and Cargo 1.99.1",
+  "tests": {
+    "export": 6,
+    "headerExample": 7,
+    "ignored": 0,
+    "core": 16,
+    "passed": 29,
+    "filtered": 0,
+    "failed": 0
+  },
+  "checkExit": 0,
+  "strictClippyExit": 0,
+  "selectedSourceUnchanged": true,
+  "pipelineSeconds": 10.03,
+  "steps": [
+    {
+      "command": "cargo",
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-native-abi",
+        "-p",
+        "humanymous-native-abi-export",
+        "--all-targets",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit": 0,
+      "stdoutSha256": "f804b072205a8cfbe01ae2b3916ed0c8cdf7af9d40621fae56340cd4d111887d",
+      "stderrSha256": "0c33ce33bfc42b8b55e0c9cad745b95a0f7e05e38b0ed165a0480b623721028a"
+    },
+    {
+      "command": "cargo",
+      "argv": [
+        "check",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-native-abi",
+        "-p",
+        "humanymous-native-abi-export",
+        "--all-targets"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "2772dc86cd26cc88cd5e482c085a2abbf1d4428d72386706c53722ad76510331"
+    },
+    {
+      "command": "cargo",
+      "argv": [
+        "clippy",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-native-abi",
+        "-p",
+        "humanymous-native-abi-export",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "3ceb90c90bd2509a332245f56aa6177b7465c98105ff4676d5c71c1fc028e842"
+    }
+  ],
+  "provenanceLimit": "Registry dependency bytes and resolved compiler binary were not separately frozen before execution; version observation was after execution.",
+  "ownerMainExecuted": false,
+  "nativeCompilerExecuted": false,
+  "deliveryFrontendQualified": false,
+  "hostedHeaderQualified": false,
+  "fullProductQualified": false,
+  "historicalEvidenceRewritten": false
+}

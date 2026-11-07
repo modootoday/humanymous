@@ -251,6 +251,17 @@ separate unexecuted qualification denominator.
 
 ## Verification and residuals
 
+The later root-allocated evidence:root/20261107183956 executed the identity and
+actual-argv preparation units: 29 passed (core16/export6/header example7), zero
+failed, ignored or filtered. Locked offline all-target check and strict Clippy
+also passed. Selected workspace source, lock/toolchain/config and rustup proxy
+snapshots matched before and after; actual registry dependency bytes and the
+resolved compiler binary were not separately frozen. This is component testing,
+not immutable toolchain attestation. The owning main and native compiler did not
+execute. Earlier25-unit results, hosted failures and local R3 observations remain
+separate. Delivery frontend execution, private reconstruction and genuine hosted
+C11/C++11 header qualification remain pending.
+
 The latest local pure receipt is evidence:root/20261107081545: 25 tests passed
 (16 core, 6 export, 3 header diagnostics), with zero failed, ignored, measured or
 filtered. Locked all-target tests and strict all-target Clippy ran on Windows
