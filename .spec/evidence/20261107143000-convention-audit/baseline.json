@@ -192,7 +192,7 @@
       "id": "CA-ROOT-JOURNAL-01",
       "priority": "P1",
       "owner": "Native/root",
-      "state": "OPEN prospective design gate; Root accepts mandatory amendment, implementation not granted",
+      "state": "OPEN design completeness:9c17705f addresses original replay loss; bounded saturation/no-eviction requirement and qualification remain pending",
       "trigger": "Reused nonce/locator may overwrite an earlier Planned/Unknown attempt, allowing later NotCreated to erase prior cleanup custody",
       "required_delta": "Atomic create-new unique attempt or active/Unknown slot refusal; ACK binds anchor selector nonce owner original clock pair; never overwrite/evict Unknown or resolve it from later NotCreated; collision/replay/crash model negatives",
       "private_review_sha256": "376db7075e3d2749fc35d5890feea629b6c087756fcd870ec02401b6b158f7e2"
@@ -1532,5 +1532,35 @@
     "hosted": "9586 Windows/Node fresh decoded logs match saved bytes,19/12 shared step fields,23/3 typed reports. Windows CEF succeeds; later workspace actor reaches40m timeout. Node host-tests exit1; missing downstream receipt is secondary. Original assertions unrecovered; no causal attribution to lifetime/handoff or later opaque-ID issue.",
     "census": "Root corrected census:34 workspace plus4 standalone manifests=38 total current; initial41 workspace plus4=45 total. Four standalone tools route to CLI qualification; target8 unchanged. These are Root-reported counts, not an independent full census.",
     "goal_complete": false
+  },
+  "followup_data_archive_census_and_no_clobber_amendment": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\public-role-actual-raw-review-001.json",
+        "sha256": "dc9d345fcd3be587ad580b55777961884dfa1a2341c1fc34c50440cb65321e17",
+        "bytes": 8542
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\public-role-archive-source-join-001.json",
+        "sha256": "d69167b76e72d6a3172db4096e63057cfffc83ddb089824863b05f4efb2c2662",
+        "bytes": 547
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\current-manifest-census-001.json",
+        "sha256": "a83dd47136f0109d7b097804312b85d9fe5ed795bc9d69b1f3484d55b74b1a82",
+        "bytes": 1392
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\native-no-clobber-amendment-review-001.json",
+        "sha256": "2926044e246532887e669215081d8cc8dbd3ecb6969904834fa2e8b429d9ca03",
+        "bytes": 994
+      }
+    ],
+    "actual_data": "2e9934fe exact19 pass/79filtered;31 raw verified;3036 archive blobs match Git, manifest and frozen snapshot; no promotion to be9 strengthened test source",
+    "census": "Independently current34workspace+4standalone=38package manifests,39 Cargo.toml including virtual root",
+    "native": "Original A/B loss addressed by9c17705f design; capacity-saturation conservation delta remains OPEN, no implementation grant",
+    "spec": "281documents/0errors/0warnings --no-local after Root86e9240e registers branch-sync",
+    "goal_complete": false,
+    "final_spec_validation": "282documents/0errors/0warnings --no-local; concurrent document count increased from prior281"
   }
 }

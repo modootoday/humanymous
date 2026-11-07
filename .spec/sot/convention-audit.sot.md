@@ -2088,3 +2088,37 @@ Root corrects the manifest census to34 workspace plus4 standalone,38 total
 current; initial41 workspace plus4,45 total. All four standalones route to CLI
 qualification and the target remains8 packages. These counts are Root-reported;
 the immutable audit baseline is unchanged. Full migration/global gates stay OPEN.
+## DATA source join, current census and journal amendment re-audit
+
+The old2e9934fe DATA execution is now independently joined to its source:
+31 raw attachments match recorded hashes/sizes; actual19 names equal selected
+inventory and public summary, with79 filtered and zero failed/ignored. Fmt,
+check and strict Clippy phase receipts exit0. The full archive has3036 unique
+regular files whose Git blob identities match the exact source commit; SHA256
+also matches every source-manifest record and current frozen snapshot file.
+Before/after source3036, registry6576, tools69, config18 and environment14
+manifests are byte-identical. External registry/tool files were not individually
+rehashed in this follow-up. The receipt records111.22seconds, lease closed,
+owned marker removed and zero live target processes. This proves the bounded
+DATA test receipt, not all98 library tests, all27 shipping behaviors or product.
+The later be9eec6d strengthened positional controls require their own execution.
+
+Independent current tracked-manifest census confirms34 workspace members plus
+four standalone packages: CEF pilot, docs review, local parity and native runner.
+There are38 package manifests,39 Cargo.toml files including the virtual root.
+Historical initial41+4 remains Root-reported here; the immutable audit baseline
+is unchanged. These standalone packages remain part of full migration scope.
+
+Native9c17705f addresses the concrete A/B Unknown-loss design with immutable
+O-owned tuples, two no-clobber indexes, alias uncertainty refusal, epoch/tombstone
+fencing and conserved clocks. CA-ROOT-JOURNAL-01 remains OPEN: add explicit
+bounded capacity/overflow refusal before native mutation and prohibit eviction
+of Unknown or replay-denial tombstones to admit new work; include saturation
+model negatives. Root and Native were notified. Pure model proposals do not
+qualify durable ACK, broker authentication, ancestor mutation exclusion or native
+eligibility. No implementation/compiler/native workload was launched by audit.
+
+After Root86e9240e registers branch-sync evidence, public spec validation is
+281 documents, zero errors and zero warnings (--no-local). This is not a new
+full-local specification pass. Private hashes are bound in baseline.json;
+full migration, lifetime/handoff and actual product gates remain OPEN.
