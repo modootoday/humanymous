@@ -12,6 +12,26 @@ rel:
 
 ## Scope and order
 
+Corrected hosted run42348518353 attempt1 source
+63f69ae9de703939b7b9091e2f215b12bea265de is ongoing. Policyjob128331427839
+passed27tests, workflowpolicy and publicexactpinentrypoint checks. Rawprivate
+policyjoblogSHA256d501adb7edcc330b69e84d72bb9ee67446a29fb8d0c4326473b120a9733b49cd.
+Docker128331815962 and nativeUbuntu128331816044 started independently; Windows
+and macOS waitmatrix1. No fullrun/runtime qualification inferred from policygreen.
+Earlier42347732666 failure remains separate; no duplicate dispatch or localruntime.
+Ubuntu nativejob128331816044 subsequently failed at owning workspace execution,
+after workspace build passed. Public joblog lacked per-harness diagnosis;
+rawprivatejoblogSHA256c2f583eace605d3b046f53e91c4cf5b783234ae420956ba418c166ce82447d73.
+Do not attribute it to an earlier source's Node ignored tests without evidence.
+Follow-up emits owning sanitized workspace accounting before failure checks,
+using the same public-summary writer as pilot. New pureunit/Clippy attempts
+stopped immediately on common-lock update-required; no rootlock change made.
+Those checks are not_run for the latest source, not inherited27test success.
+After root repaired common-lock coherence and the local Cargo slot was idle,
+the same diagnostic source passed27pureunits/strictClippy with locked/jobs1.
+This is a new successful check, not reclassification of the earlier lock error;
+actual sanitized workspace log emission still needs a new hosted execution.
+
 Productenvironment preparation only: release crates/npm jobs now use matching
 crates/npm environments, registry prerequisite/trust binding and catalog match.
 Root owns actual GitHub environment parity receipt; externalregistry verified

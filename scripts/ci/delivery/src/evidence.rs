@@ -4,6 +4,25 @@ use std::{
     fs,
     path::{Path, PathBuf},
 };
+/// Call only with an owning formatter's public allowlist, never a raw report.
+pub fn emit_public_summary(title: &str, summary: &serde_json::Value) -> Result<()> {
+    use std::io::Write;
+    require(
+        !title.contains(['\n', '\r', '`']),
+        "plain summary title required",
+    )?;
+    let text = serde_json::to_string_pretty(summary).map_err(|e| e.to_string())?;
+    println!("{text}");
+    if let Some(path) = std::env::var_os("GITHUB_STEP_SUMMARY") {
+        let mut output = fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(path)
+            .map_err(|e| e.to_string())?;
+        writeln!(output, "### {title}\n\n```json\n{text}\n```").map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
 pub fn bundle(root: &Path) -> Result<PathBuf> {
     let parent = root.join(".spec.local/root/evidence");
     fs::create_dir_all(&parent).map_err(|e| e.to_string())?;

@@ -237,6 +237,15 @@ new display names and catalog require their own next hosted source result.
 
 ### Product OIDC environment preparation (no deployment)
 
+Artifact-off diagnostics correction: workspace probe emits only the owning
+formatter's sanitized accounting to stdout/GITHUB_STEP_SUMMARY before evaluating
+failure, using the same summary writer as pilot. Never print raw owner reports
+or actor transcripts. This addresses source63f69ae's Ubuntu native failure whose
+public log had no harness detail; the original exact failure remains undiagnosed.
+Common-lock coherence failure initially prevented local checks; after root repair
+27pureunits/strictClippy passed. Actual hosted emission remains not_run for this
+later source and is not inferred from the earlier policy success.
+
 The subsequent explicit user instruction separates registry products:
 release.yml crates job uses environment `crates`; npm job uses `npm`.
 Registry prerequisites and trust validator require the exact repository,

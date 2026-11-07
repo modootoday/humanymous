@@ -259,21 +259,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
     summary["private_report_sha256"] = json!(source::file(&dir.join("delivery-pilot.json"))?);
     write_json(&destination, &summary)?;
     // Public CI gets only the same allowlisted summary, never the private bundle.
-    let public_text = serde_json::to_string_pretty(&summary).map_err(|e| e.to_string())?;
-    println!("{public_text}");
-    if let Some(path) = std::env::var_os("GITHUB_STEP_SUMMARY") {
-        use std::io::Write;
-        let mut output = std::fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(path)
-            .map_err(|e| e.to_string())?;
-        writeln!(
-            output,
-            "### Source-bound {kind} pilot\n\n```json\n{public_text}\n```"
-        )
-        .map_err(|e| e.to_string())?;
-    }
+    evidence::emit_public_summary(&format!("Source-bound {kind} pilot"), &summary)?;
     println!("pilot evidence: {}", destination.display());
     validate(&report, kind, head, &review)
 }

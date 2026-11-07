@@ -83,6 +83,8 @@ pub fn run(root: &Path, os: &str, arch: &str) -> Result<()> {
         )?;
     }
     evidence::register(&directory, "Rust workspace component probe")?;
+    // Owning formatter is the privacy boundary; publish before failure checks.
+    evidence::emit_public_summary("Source-bound workspace probe", &read_json(&output)?)?;
     require(
         code == 0 && summarize == 0,
         "owning workspace execution/summary failed; no component success inferred",
