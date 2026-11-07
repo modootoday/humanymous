@@ -1,5 +1,6 @@
 //! Native TCP with the real shared client state. These are fixture controls,
 //! not ordinary-browser, human, assistive-technology or whole-product evidence.
+mod contract;
 use super::*;
 use crate::configuration::{BrowserPolicy, RitProfile};
 use humanymous_authority::protocol::Response;

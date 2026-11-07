@@ -993,3 +993,36 @@ sealed Runtime readiness evidence, native/W constructors and activation phase
 order remain P0. This review changes the API proposal only: current seven model
 tests have only the scoped source30d85855 model qualification above; there is no
 new production wiring or dependency edge.
+
+### Shared browser HTTP contract controls — authored, not executed
+
+Root accepted two narrow real-TCP Runtime control fixtures reusing the existing
+collector/pilot/fixture.json scope/routes verbatim. Runtime-owned
+browser-http-contract.json publishes their case IDs, exact expected status/ACK/
+consumption/epoch behavior, request bounds and original fixture SHA256. Lab may
+consume this structural contract; the current sole actual BrowserSession pilot
+and its selected/filtered denominator are unchanged. No collector/Lab/shared
+graph source is edited by this Runtime slice.
+
+The first case checks exact ten-field bootstrap with no ACK, before-report403
+CHALLENGE with valid consumed ACK, report200 with valid ACK, and required fresh
+collector422 without ACK/counter and with local shared Session invalidation.
+The second sends an exact65536-byte signed request through frozen policy and
+then a signed65537-byte declaration, expecting parser413 before body/counter/
+decision audit with no ACK and client epoch closed. That oversized native control
+sends HEADERS ONLY; it does not claim actual Fetch can receive413 while a full
+body is being transmitted. Actual browser reset/network failure must not be
+relabeled as observed HTTP413: Lab must independently inspect gateway response,
+audit/effects and client invalidation. Both cases independently require no origin
+connection and join the owned Runtime server after a bounded stop.
+
+The client codec's1MiB complete-response bound is an upper client limit, not a
+negotiated Runtime capacity. Runtime's64KiB request and existing147456-byte
+buffered-origin frame bounds remain unchanged. Bootstrap carries no hidden
+budget negotiation. Missing/invalid ACK, partial response, cancellation, timeout
+or closed epoch never authorizes automatic retry or counter restoration. Native
+controls use the real shared Rust Session and HTTP but synthetic report/audit;
+they do not execute BrowserSession/Fetch or prove browser/human/AT or independent
+witness isolation. Actual ServiceHost response stripping and the existing genuine
+Lab flow remain separate gates. Both new controls are UNCOMPILED/NOT_RUN pending
+Root allocation; TLS ALLOW-to-origin and native service readiness remain open.

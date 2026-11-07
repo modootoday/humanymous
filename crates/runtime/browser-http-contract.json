@@ -1,0 +1,91 @@
+{
+  "schema": "humanymous.runtime-browser-http-contract/1",
+  "fixture_reference": "crates/collector/pilot/fixture.json",
+  "fixture_sha256": "87a45f212f2974078fb618c1a55bc92b4e0bafddbc1035907f0162ba84be76e9",
+  "scope_and_routes": "Only the referenced collector fixture is authoritative; no copied identity",
+  "request_body_max_bytes": 65536,
+  "client_buffered_response_max_bytes": 1048576,
+  "runtime_buffered_origin_frame_max_bytes": 147456,
+  "bootstrap_fields": [
+    "protocol",
+    "session",
+    "key",
+    "counter",
+    "expires",
+    "installation",
+    "tenant",
+    "origin",
+    "revision",
+    "authority"
+  ],
+  "native_controls_are_browser_proof": false,
+  "actual_browser_selected_test_unchanged": true,
+  "cases": [
+    {
+      "id": "bootstrap-consumption-required-capability",
+      "runtime_test": "tests::browser::contract::shared_lab_bootstrap_consumed_ack_and_required_collector_refusal",
+      "steps": [
+        {
+          "exact_bootstrap_fields": 10,
+          "status": 200,
+          "ack": false,
+          "route": "session"
+        },
+        {
+          "ack": true,
+          "status": 403,
+          "verdict": "CHALLENGE",
+          "consumed": true,
+          "route": "effect"
+        },
+        {
+          "consumed": true,
+          "status": 200,
+          "ack": true,
+          "route": "collect"
+        },
+        {
+          "ack": false,
+          "status": 422,
+          "route": "required_collector",
+          "client_epoch": "closed",
+          "automatic_retry": false,
+          "consumed": false
+        }
+      ],
+      "decision_audit_records": 2,
+      "origin_connections": 0
+    },
+    {
+      "id": "request-body-boundary",
+      "runtime_test": "tests::browser::contract::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
+      "steps": [
+        {
+          "status": 200,
+          "ack": false,
+          "route": "session"
+        },
+        {
+          "consumed": true,
+          "status": 403,
+          "ack": true,
+          "request_bytes": 65536,
+          "route": "effect"
+        },
+        {
+          "body_transmitted": false,
+          "client_epoch": "closed",
+          "declared_request_bytes": 65537,
+          "route": "effect",
+          "automatic_retry": false,
+          "status": 413,
+          "ack": false,
+          "consumed": false
+        }
+      ],
+      "decision_audit_records": 1,
+      "origin_connections": 0
+    }
+  ],
+  "qualification": "Source-authored native real-HTTP controls only; actual BrowserSession/Fetch join requires separately selected genuine Lab execution and independent origin/audit/witness/isolation receipts"
+}

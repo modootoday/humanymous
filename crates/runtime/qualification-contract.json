@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 63,
-      "macos": 63,
-      "windows": 59
+      "linux": 65,
+      "macos": 65,
+      "windows": 61
     },
     "common_test_names": [
       "configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
@@ -46,6 +46,8 @@
       "settings::store::tests::unwitnessed_tail_forged_scope_and_skipped_revision_are_refused",
       "tests::audit_is_minimized_and_failure_poison_is_permanent",
       "tests::browser::authenticated_session_quota_consumes_counter_and_preserves_ack_progression",
+      "tests::browser::contract::shared_lab_bootstrap_consumed_ack_and_required_collector_refusal",
+      "tests::browser::contract::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
       "tests::browser::explicit_profile_origin_cookie_and_report_binding_negatives",
       "tests::browser::origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects",
       "tests::browser::real_shared_client_consumption_ack_and_origin_fidelity",
