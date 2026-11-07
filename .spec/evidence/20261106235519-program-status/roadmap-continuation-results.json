@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.roadmap-continuation/1",
+  "observed_at": "2026-11-07T04:33:34.3925012Z",
+  "source_head": "fb5c8a24134e433d1ec5689ad6ccbf72095b6deb",
+  "collector_remote": {
+    "actual_browser_passed": 30,
+    "ignored": 0,
+    "artifact_downloaded": true,
+    "source_sha": "5f909713a553b7490565574f97ae04e26a61181a",
+    "failed": 0,
+    "run": 42338082218,
+    "log_sha256": "919c4b8bd65deb1168c54098b82104e72e87a7e8c2f3353cc325b6d053675ac0"
+  },
+  "native_cli_integration": {
+    "binary": "humanymous-native",
+    "members": 20,
+    "new_dependency_versions": 0,
+    "qualified_runtime": false,
+    "name": "humanymous-native-cli",
+    "write_scope": "Windows only in observed source; other hosts dryrun",
+    "source_ownership": "browser/native CLI chat",
+    "reuse": [
+      "serde",
+      "serde_json",
+      "junction2.1.0"
+    ],
+    "committed_membership": false,
+    "manifest_sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+    "state": "working-tree membership; owner source not yet committed",
+    "locked_all_target_check": "passed"
+  },
+  "limits": {
+    "publication": "not performed",
+    "full_runtime_qualified": false,
+    "new_chats_created": 0,
+    "native_5f": "4passed,2Windows live at observation",
+    "init_feature_acceptance": "pending final owner source/tests/pilot"
+  },
+  "cef_remote": {
+    "run": 42338082212,
+    "scope": "Windows component build/provisioned rejection; not GUI/full sandbox",
+    "source_sha": "5f909713a553b7490565574f97ae04e26a61181a",
+    "status": "success"
+  }
+}

@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:27:00Z
+updated: 2026-11-07T04:33:34Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -11,7 +11,7 @@ rel:
 
 # 전체 로드맵과 마일스톤
 
-버전1.0.0. 2026-11-07 KST 기준13개 프로젝트 채팅의 최신 turn, 기존9개
+버전1.1.0. 2026-11-07 KST 기준13개 프로젝트 채팅의 최신 turn, 기존9개
 인계 기록, 현재 Git/spec/Actions를 대조한 전체 상태·순서·완료 조건의 정본이다.
 실행 체크리스트는 plan:root/20261106235521, 근거는 evidence:root/20261106235519다.
 이번 snapshot은5f90971 제품 통합과7e2d848 native framework 설계를 기준으로 한다.
@@ -43,6 +43,10 @@ scoring freeze,필수 증거 누락 fail-closed,파괴적 제어 dual-control,a1
 motor/speed 비요구,owned lab 방어 전용 실험,T4 ceiling을 유지한다. DRM/CDM 부재,
 UA 유사성,접근성 API 사용만으로 자동화 판정을 추가하지 않는다.
 
+관리 기능은 local-only/인증된 로컬 peer 원칙이다. forwarded header만으로 원격
+요청에 관리 권한을 주지 않는다. adapter의 보안 삽입·라우트 확장은 기존 서비스의
+정상 header·중복Set-Cookie·body·stream/SSE·라우트 충돌과 장애 동작을 검증해야 한다.
+
 ## 검증된 기준점
 
 | 영역 | 실제 근거 | 남는 제한 |
@@ -66,8 +70,18 @@ cb5dce7 Linux custody 실패는 보존했다. 공용 exclusive guard 수정 뒤 
 성공을 과거 실패의 대체 기록으로 쓰지 않는다. collector256-task 실패/max2와
 같은 이미지의512-task export1pass/max0도 별도 보존하며 sandbox를 해제하지 않았다.
 
-5f90971의 실행 중 snapshot: native42338082261,collector42338082218,
-CEF42338082212,full CI42338082293. 실행 중은 성공이 아니며 문서 이후 결과를 갱신한다.
+5f90971 collector42338082218은 실제Firefox30/0failed/0ignored 성공이며 산출물을
+다운로드했다. native42338082261은Linux/macOS4환경 성공·Windows2환경 실행 중이다.
+CEF42338082212도component범위성공이다. full CI42338082293은별도관측하며 실행 중은성공이아니다.
+
+정본화 이후 구체적인 crates/native-cli manifest를 받아 working tree의20번째
+workspace member로등록하고의존성을resolve했다. 새production dependency version은
+없고기존serde/serde_json/junction을재사용한다. locked all-target check가통과했다.
+source owner는기능·단위·파일럿검증을계속진행중이며Cargo귀속은source인계후에한다.
+이는위5f90971의19package기준점과구분한다. registry publish=false,SDK/framework
+runtime지원은여전히미검증이다. 후속통합근거는roadmap-continuation-results.json이다.
+현재source의manifest write는Windows 전용이고다른OS는dryrun 범위다. Cross-OS
+완료로표시하지않으며source변경/owner최종인계후다시대조한다.
 
 ## 모든 병렬 채팅의 결과와 후속 책임
 
