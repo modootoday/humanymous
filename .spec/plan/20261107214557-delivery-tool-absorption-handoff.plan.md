@@ -15,17 +15,25 @@ tools into CLI qualification contexts. Root owns the accepted design and
 every move, manifest and lock edit. No permanent private helper package is added.
 The accepted final target remains eight maintained packages, including these tools.
 
-Current Git census is39 Cargo manifests:34 main-workspace packages, four standalone
-packages and one virtual root. Thus the maintained package total is38, not34.
+At the initial Platform handoff, the Git census was39 Cargo manifests:34 main-workspace packages, four standalone
+packages and one virtual root. That maintained package total was38, not34.
 The original main-workspace41 plus four standalone packages was45 maintained
 packages. Earlier34-member metadata receipts remain valid for their stated main
 workspace scope; they do not become complete maintained-package inventories.
+
+Root subsequently consolidated six Runtime contexts at64f74c7a. The declared
+workspace now has29 members plus the same four standalone packages:33 maintained
+packages and one virtual root. The original standalone-tools-handoff.json is the
+initial source/hash census, not a refreshed post-Runtime source receipt. Its old
+dependency names and source hashes must not be represented as current tool bytes.
+The four-tool absorption remains pending; Root's maintained-package progression
+is45 initial,39 Core,38 Platform,33 Runtime,21 Tools,10 Adapters and8 Browser.
 
 The source/hash list is attached under [[evidence:root/20261107052001]] as
 standalone-tools-handoff.json. Source test-attribute counts below are static
 observations, not actual executed inventories or qualification results.
 
-# Exact current tool contracts
+# Tool contracts at initial handoff
 
 | Tool/package | Sources and entrypoint | Dependencies and unsafe policy | Current qualification surface |
 | --- | --- | --- | --- |
