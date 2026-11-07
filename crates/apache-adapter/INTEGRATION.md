@@ -1,5 +1,22 @@
 # Apache adapter integration frontier
 
+## Accepted eight-package handoff (2026-11-08 KST)
+
+The confirmed baseline in sot:root/structural-development supersedes the separate
+humanymous-adapter-apache/native package targets in the historical naming proposal
+below: Apache safe/native responsibilities join humanymous-adapters. Root alone
+selects destination modules, graph, paths and atomic integration. No move, rename,
+manifest/ref change or compatibility shim has been performed by this handoff.
+The public consumer face remains humanymous; internal host roles stay isolated.
+
+Evidence:root/20261107200931 inventories23 unchanged source/runtime/build inputs
+at8affb45aeb4d31330fda8f2e5135043c6b252c05 with exact Git blob and SHA256/size.
+This INTEGRATION file and the owning SoT are deliberately excluded mutable
+handoff metadata. The inventory is a migration input snapshot, not new runtime
+qualification. See the owning SoT's eight-package handoff for safety/dependency
+hazards, gates, leases and ordered next actions. Historical b40045/45 evidence
+and original raw commands/hashes remain unchanged.
+
 ## Adapter-family naming migration handoff (2026-11-08 KST)
 
 Target convention comes from sot:root/structural-development, not a Cargo syntax

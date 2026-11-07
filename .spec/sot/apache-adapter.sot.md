@@ -13,6 +13,100 @@ rel:
 
 # Apache native adapter
 
+## Eight-package migration handoff (2026-11-08 KST)
+
+### Mission and done
+
+Consume the user-confirmed eight-public-package baseline through root's ordered
+integration, placing Apache responsibilities inside humanymous-adapters while
+preserving the public humanymous face and qualified role boundaries. This handoff
+does not move/rename paths, edit manifests or synchronize refs. Detection is frozen.
+Evidence:root/20261107200931 records23 unchanged inputs at exact source
+8affb45aeb4d31330fda8f2e5135043c6b252c05, each Git blob, SHA256 and byte count.
+Its inventory SHA256 is6b0e800e61461900fd6d876df2d2413eb1967ad424b4cddc908dce45a0614aa6.
+Mutable INTEGRATION/SoT handoff metadata is excluded explicitly.
+
+The historical qualified tuple remains only b4000944/run42374566498: safe12/
+native13, actual Linux x86_64 GNU pinned Apache/APR, production/probe builds and
+Clippy, event/worker/prefork15each=45/0/0, actual cleanup. fullProductSuccessfalse.
+Node24 workflow source fix a545ba2a has actionlint proof, not a new hosted receipt.
+
+### Ownership, progress and blockers
+
+Migration inputs: crates/apache-adapter/**, adapters/apache/** and the individually
+delegated .github/workflows/apache-validation.yml. Root owns common Cargo/lock/
+toolchain and destination path mapping; Delivery owns common workflow policy,
+Pages public docs, lower providers their contracts. Current input dirty list is
+empty. No Apache compiler, Docker/CLI/httpd process, target lease, push authority
+or structural worktree is retained. The handoff writer owns only this SoT,
+INTEGRATION and its new evidence bundle, and returns that claim at terminal.
+Root's exact slice freeze/path handoff and integrated lower-provider checkpoint
+are still required before implementation or requalification. Runtime, Authority,
+Audit, Integrity and framework changes since b400 are not covered by its receipt.
+
+### Visibility, unsafe, API and dependency hazards
+
+- Preserve unsafe-forbid on Apache safe lifecycle/replay as a module-level
+  boundary after merging. Native bindings and host callbacks retain only their
+  reviewed narrow exceptions; do not solve a package-count constraint by broad
+  crate-wide allowances or adding unsafe to core. Exact lint placement is root's
+  reviewed integration decision.
+- One adapters package has one library target. Apache's generated C module table
+  is not another host's C ABI. Isolate native/probe/other host build features,
+  target directories, symbols and staging manifests; reject incompatible role
+  combinations rather than advertise an all-features universal host artifact.
+- Safe Child/Request state, generation, admission, cancellation and private
+  phase/permit fields must not become forgeable by new sibling contexts. Keep
+  request !Send/!Sync and callback ThreadId checks, owned pidfd/process-group
+  observation, pool-owned one-shot Boxes, bounded replay and single consumption
+  of Authority BoundResponse. Tighten private/context visibility where merging
+  expands pub(crate)/pub(super) access; do not expose raw host Context as SDK API.
+- Gate Linux httpd/bindgen/libclang/headers and native Tokio/rustix dependencies
+  by the exact host role. Default/non-Linux/WASM consumers must not acquire an
+  unsupported SDK requirement. No outside-package include/path shortcut is a
+  substitute for consolidating sources and test fixtures inside the package.
+- Framework Admission, authenticated Authority/zeroizing configuration, Audit
+  WAL and Integrity canonical/provenance are shared providers, not Apache-owned
+  replacements. Root remaps their imports/API edges after their cluster gates.
+  Public features and pilot fixtures are never authenticated readiness proofs.
+- The public loader's humanymous basename requires host/ABI/version/target paths
+  and a manifest; production/probe cannot collide. Explicitly map Apache's
+  humanymous_module descriptor entry and generated MODULE_MAGIC layouts,
+  HumanymousConfig and replay filter. Preserve protocol humanymous.adapter/0.1,
+  producer humanymous.apache/version0.1.0-experimental.1 and apache-normalized
+  until their owning versioned contracts explicitly change. Do not conflate
+  internal package topology with public protocol/host ABI compatibility.
+
+### Ordered next actions and required gates
+
+1. Root freezes this exact input set after core/runtime/platform integration,
+   resolves destination/API/feature/symbol/staging maps and cross-owner policy.
+2. At one coherent checkpoint update module imports, manifests/locks, fixtures,
+   feature-gated build.rs, selected package/bin commands, Docker install paths,
+   hash readers, contracts/claims and current docs. Never rewrite old receipts.
+3. Fmt first; scoped safe lifecycle/replay and coordinator units, negative
+   visibility/role-feature checks, check and warnings-denied Clippy. Current
+   pre-migration reference selectors are cargo test --locked -p
+   humanymous-apache-adapter --lib and cargo test --locked -p
+   humanymous-apache-native --features pilot --bin humanymous-apache-pilot;
+   root supplies their consolidated equivalents. Tests were not rerun here.
+4. Check an extracted-package consumer/default and unsupported target profiles;
+   verify no external source escape or accidental native dependency/export.
+5. Under a separately allocated actual Linux hosted boundary run, build pinned
+   production/probe generated ABI, load intended public artifacts, verify symbols,
+   new source/image/header/module identities, all45MPM cases, isolated CLI and
+   pilot/container/image/ledger cleanup. A package move or unit pass is not this
+   gate. Fresh hosted Node24 annotation absence also remains unobserved here.
+6. Root/Delivery/Lab perform applicable integration/product/cross-OS/public gates;
+   no publication/main merge authority or full-product promotion is implied.
+
+Read AGENTS.md, .agents/lessons/HARD-WON.md, structural-development and Rust
+migration SoTs, Apache INTEGRATION/ABI-SAFETY/pilot/coordinator contracts and the
+attached input inventory first. Earlier ABI-SAFETY opening not-run statements
+are historical; actual final qualification is bound by evidence:root/20261107130407.
+Out of scope here: foreign provider edits, shared graph, directory moves, new
+crates/shims, changed scoring/privileges, GPU/GUI, dispatch or branch synchronization.
+
 ## Standalone hosted qualification entrypoint
 
 The root/CI-approved narrow workflow ownership is

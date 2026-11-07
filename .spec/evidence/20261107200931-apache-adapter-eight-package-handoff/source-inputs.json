@@ -1,0 +1,157 @@
+{
+  "schema": "humanymous.apache.structural-handoff/0.1",
+  "sourceCommit": "8affb45aeb4d31330fda8f2e5135043c6b252c05",
+  "targetBaseline": "eight-public-packages-v0",
+  "destinationPackage": "humanymous-adapters",
+  "pathMovesAuthorizedHere": false,
+  "dirtyInputs": [],
+  "liveProcesses": [],
+  "targetLeases": [],
+  "historicalQualifiedSource": "b400094480483d9abb8328234f9de12520b71b65",
+  "historicalWorkflowRun": 42374566498,
+  "currentRuntimeQualified": false,
+  "excludedMetadata": [
+    "crates/apache-adapter/INTEGRATION.md",
+    ".spec/sot/apache-adapter.sot.md"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/apache-validation.yml",
+      "gitBlob": "c9df1721ac5ff8d25736ed1ef3865f228a29c717",
+      "sha256": "5ac266b9f43fe9cc68477839c34f59d6efcc9fe45c3418c6e0b3b305798c7437",
+      "bytes": 2139
+    },
+    {
+      "path": "adapters/apache/ABI-SAFETY.md",
+      "gitBlob": "03992ce8633fbf96785d3fa30547341e57a26781",
+      "sha256": "38f31c71b29ba7ba7e7a8f42779c1f99353a17a24b9bcb32996f141ba46afee5",
+      "bytes": 6503
+    },
+    {
+      "path": "adapters/apache/Dockerfile.native",
+      "gitBlob": "566e6642f378076c8406df6a687b24adeb0cf776",
+      "sha256": "178b2901519a1bf647ea73ae5272cf379a07ee59411a167798971f93f78c04b6",
+      "bytes": 4048
+    },
+    {
+      "path": "adapters/apache/Dockerfile.native.dockerignore",
+      "gitBlob": "3bb0096d4693eb9f8e784c3ef8101da196dba0ef",
+      "sha256": "f109462bbf68fda6bb0facea92828ae8ac3885fbcebe0f28ea9e3de2bca58b18",
+      "bytes": 156
+    },
+    {
+      "path": "adapters/apache/coordinator-contract.json",
+      "gitBlob": "f3f851471791296251d1851fdf6cac16ba148c9a",
+      "sha256": "4f0fba11f6e10fb63f8e2d2d24003ef42ce1b4c88cc4db12cb020b29a984ee59",
+      "bytes": 4677
+    },
+    {
+      "path": "adapters/apache/pilot-contract.json",
+      "gitBlob": "10fc878ddd0f07705539f2ada03efa454641b756",
+      "sha256": "7b178710f158de772173091fd32e14631eb1cbc91646bc1147051d99abb11e9b",
+      "bytes": 5226
+    },
+    {
+      "path": "adapters/apache/upstream-lock.json",
+      "gitBlob": "d6a1cabfabccf871aa8e4d6eccf967bb992727f8",
+      "sha256": "dc4f977fe1cd935a4282e7ffba7a5c47d281c8e531538e3199f0c5d4e1a8ff97",
+      "bytes": 1852
+    },
+    {
+      "path": "crates/apache-adapter/Cargo.toml",
+      "gitBlob": "60c931ba09a010598e1cee08c29c0edda5a49d4a",
+      "sha256": "306897ca71d128a8ed0684286327496ad65e69a833159c6c1462b7c738ede7e5",
+      "bytes": 282
+    },
+    {
+      "path": "crates/apache-adapter/native/Cargo.toml",
+      "gitBlob": "2c94f12b37a0465faaea9970db78f4ce2036ea58",
+      "sha256": "201901bb42b6e3cb73e7b89b1c1ecb43de665bf6448685d31764371c6378210a",
+      "bytes": 1890
+    },
+    {
+      "path": "crates/apache-adapter/native/build.rs",
+      "gitBlob": "232658db056b11761f05e946d3aeb3dc5f7825e3",
+      "sha256": "e2ae3b6c36baa5bc8c5145840a7896c0e42a2cf187f35123378a3e2ae0f23298",
+      "bytes": 7355
+    },
+    {
+      "path": "crates/apache-adapter/native/src/bin/pilot.rs",
+      "gitBlob": "bcd98a7f9210651cace3f0c2dd254d87d98e0e48",
+      "sha256": "e020f7670bcd1f1fd0207ba43809a338ab2d5ba551b1eaf1899314163309204e",
+      "bytes": 824
+    },
+    {
+      "path": "crates/apache-adapter/native/src/coordinator.rs",
+      "gitBlob": "373b468204442788d8c6d5ac72033ac38322e882",
+      "sha256": "3a8572f403a6f2aed1d9de064c5eb5d8c56b18c97d25cf642d4185c0a4f60a95",
+      "bytes": 26613
+    },
+    {
+      "path": "crates/apache-adapter/native/src/coordinator/engine.rs",
+      "gitBlob": "509c26bf7bfaa299ce5f02a40b0aea913d8c81f4",
+      "sha256": "7093accee95b3d3d0df94ea2d49f10d4aadc3922bb737214fe856a9aac899911",
+      "bytes": 4072
+    },
+    {
+      "path": "crates/apache-adapter/native/src/coordinator/host.rs",
+      "gitBlob": "cee21fe9324f2b11b1ce37bdf64dd124e127909f",
+      "sha256": "be11e1a3b73929b92712b48e2b800555b8adfe25850fe9d1bf2d0ee410baef6f",
+      "bytes": 33924
+    },
+    {
+      "path": "crates/apache-adapter/native/src/host.rs",
+      "gitBlob": "da41a0efd874b3df6cc5a144aca9a05fc6ef6eac",
+      "sha256": "59b19ff84c6286fc5e6ca80f608a2cdf4172818fdcaec06f22699d7d1581e6ab",
+      "bytes": 30489
+    },
+    {
+      "path": "crates/apache-adapter/native/src/lib.rs",
+      "gitBlob": "a785464c389d75668ed6a3fdd8acce5fdfc1c387",
+      "sha256": "2d43dfe00f870b8a544ec329f263a857f6d1d5161bf8a449ceae4c335a7a3363",
+      "bytes": 858
+    },
+    {
+      "path": "crates/apache-adapter/native/src/pilot/authority.rs",
+      "gitBlob": "f6318074da4e2953e8481a00f04595d2e9328349",
+      "sha256": "a7c3cacb5ccb75f9d0fa5c479c16c81dde48dd0678f313009a1eb0e9626b56b8",
+      "bytes": 4358
+    },
+    {
+      "path": "crates/apache-adapter/native/src/pilot/diagnostic.rs",
+      "gitBlob": "200d8fda8d805d335122fecf1350062268dc8568",
+      "sha256": "2ad5f9e6985e5f09dd92316b1323c5bb2c350be96b71694a5756eda4bb2a266b",
+      "bytes": 7636
+    },
+    {
+      "path": "crates/apache-adapter/native/src/pilot/mod.rs",
+      "gitBlob": "8d8b2de1f698f426ac1d48aa036321353c8467b1",
+      "sha256": "cead21b9da12cfd13c56e10fa343a5dde52ecc02952564b4e42fdef1ed4645e0",
+      "bytes": 23632
+    },
+    {
+      "path": "crates/apache-adapter/native/src/pilot/origin.rs",
+      "gitBlob": "3bb42e7c3f0bb0c49103e2e96d826114c28316ef",
+      "sha256": "34408581bcbc7f896edf48fe0c6931bf468e4e6439329d8fe33669fb6d672823",
+      "bytes": 3142
+    },
+    {
+      "path": "crates/apache-adapter/src/lib.rs",
+      "gitBlob": "c1eb35956ce5b5c98dc9e93afa031e4691fa1dd1",
+      "sha256": "3f9cf51493ea40b9cf663dfbccb61a944bf25585e2508e059a1e299005e4e24d",
+      "bytes": 205
+    },
+    {
+      "path": "crates/apache-adapter/src/lifecycle.rs",
+      "gitBlob": "37e0bfe09f595b276b95f12c7e4ab77e3722218f",
+      "sha256": "f65ccd8df1937b0699c57359f3601542c3ed0cf54d5fba4c3a712cd76880a795",
+      "bytes": 12434
+    },
+    {
+      "path": "crates/apache-adapter/src/replay.rs",
+      "gitBlob": "ff17f7500c74a308cd3eb96a05bfc18f33fbdc5b",
+      "sha256": "95c76e737a78202b8e093c5261cc0c0030b6b4a8cf828eeafb2a5e6b5c7a9b8c",
+      "bytes": 3967
+    }
+  ]
+}
