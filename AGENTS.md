@@ -32,6 +32,7 @@ before committing, run `spec check`. Rust conventions in that SoT are mandatory.
 | Deferred / misdocumented claims | `sots/38-truth-debt-remediation.md` if present + `.agents/rules/80-truth-debt.md` |
 | Hard-won multi-session lessons | `.agents/lessons/HARD-WON.md` (Claude memory is **not** visible to other providers) |
 | Full verification | skill `red-blue-validate` (**Docker only**) |
+| Local Docker, WSL Docker or act | `.agents/rules/96-docker-engine-affinity.md`; verify the intended engine before execution or image cleanup |
 | Multi-round red/blue wargame (attack→e2e→guard) | skill `red-blue-wargame-round` + rule `61-redblue-wargame` |
 | Pass challenge round only | skill `pass-wargame-round` (SoT-36) |
 | Multi-perspective panel | `.agents/agents/` + `.agents/workflows/design-panel.yaml` |

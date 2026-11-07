@@ -73,6 +73,8 @@ rules:
   - 91-git-contention.md
   - 92-git-commit-attribution.md
   - 93-release-and-ci.md
+  - 94-chat-coordination.md
+  - 96-docker-engine-affinity.md
 
 sessions:
   protocol: .agents/sessions/PROTOCOL.md

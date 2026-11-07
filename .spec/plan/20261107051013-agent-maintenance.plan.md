@@ -10,6 +10,64 @@ rel:
 
 # Agent maintenance
 
+## Docker affinity incident rule
+
+Root explicitly resumed rule-only work after the user requested Docker usage
+canonicalization. Rule96 and the root AGENTS pointer require explicit Windows
+Docker Desktop selection, endpoint/engine-ID preflight, no automatic WSL-daemon
+fallback, explicit SDK/act affinity and distinct hosted provenance. Image prune
+authorization does not extend to containers, volumes or build cache. Root's
+reported Desktop29.9.2 and WSL29.1.3 observations are attributed historical input,
+not new local measurements. The manifest registers rule96 and existing rule94.
+
+Only lightweight format, Specfold and Git checkpoint work is allocated for this
+resumption. No Docker, Cargo build/test or model command is authorized by it.
+Full process/runtime, discovery and paired-evaluation qualification remains open.
+
+## Quiet-window process boundary additions
+
+### Local-provider source feasibility review
+
+The pinned upstream `shared/isolate.mjs` was inspected without executing it.
+`isolate` defaults to `network=true`; its `--unshare-net` branch is used only
+when networking is explicitly disabled. Therefore the source does not establish
+a network-namespace blocker for a same-WSL loopback server. Actual sandbox HTTP
+reachability remains NOT_RUN and must be tested before model evaluation.
+
+Two independent provider-adapter gaps remain. Upstream `makeHome` has no local
+provider input, and its accepted auth modes are proxy/oauth/api-key rather than
+credential-free local inference. In addition, `cliBinds` resolves only the selected
+executable and special-cases Node package trees. A Rust wrapper around a separate
+Codex binary would not automatically bind that child executable read-only into
+the sandbox. Passing a wrapper with `--codex` alone is therefore insufficient;
+do not treat a successful outer wrapper launch as provider readiness.
+
+These findings rule out a transparent command substitution as a complete
+integration. A future Rust provider integration must explicitly bind and hash
+the actual CLI and adapter, use a supported local configuration/auth contract,
+retain bwrap and runtime-lock provenance, and identify itself as an adapted
+runner. Neither upstream source nor global user configuration was modified.
+
+Two additional actual-CLI tests are authored in `tests/process.rs`: competing
+claim children must leave exactly one owner and only the winning journal pair;
+a BOM-prefixed legacy claim with an old timestamp must retain its owner until an
+exact-owner release. Both use isolated temporary directories and never change
+live claims or the production writer mode. Launching both children before waiting
+does not prove that their critical sections overlap in every scheduler run.
+
+These additions are NOT_RUN: the root benchmark quiet window still prohibits new
+Cargo, native runtime and model commands. The expected scoped runtime inventory is
+now seven process, four storage and two package tests (13 total); this authored
+inventory is not a passing result. The prior 36 pure passes remain bound to their
+previous source and do not qualify these additions. Format, compile and runtime
+checks remain pending an explicit execution allocation.
+
+Read-only integration review found delivery's `maintenance_counts` still requires
+the earlier [2,4,5] / 11-case inventory. The delivery owner was notified to update
+its exact accounting and fixtures to [2,4,7] / 13 on the integrated candidate.
+No foreign-lane source was edited. `git diff --check` reported no whitespace
+errors for the new process-test diff; this is not Rust format or test evidence.
+
 ## Full-goal continuation (new active goal after user clear)
 
 - [x] Reclaim agents-meta normally after root071ccef metadata handoff; preserve THREADS/94 ownership changes and confirmed4titles.
@@ -48,6 +106,24 @@ altering product/scoring or extending the earlier bounded REA investigation.
 ## Record
 
 ### Continuation: transaction safety and input validation
+
+During the benchmark quiet window only remote/read-only evidence inspection and
+owned documentation writes continued. Windows813 job128351926153 is terminal
+failure:15/89required harnesses,55passed/zero failed tests/fourrawignored, ending
+at the same unvalidated host_process helper row. Maintenance harnesses remain
+unexecuted. The complete decoded connector log is preserved as a JSON-escaped
+string including CRLF in hosted-813/windows-job-capture.json. Registration of that
+capture and cpu-prelaunch-hold.json is deliberately deferred until the quiet
+window ends; no attachment-check pass is claimed for these new files yet.
+
+New explicit user direction authorizes actual local Windows/WSL build/test/runtime
+comparison with GitHub and supersedes the blanket hosted-only restriction. Root
+opened a benchmark quiet window: no new Cargo/native/runtime/model/Docker command
+until the measured decision/allocation. The CPU candidate had only been extracted
+and its foreground version command completed exit0; model/monitor/API were not
+started. No owned server remains and C was returned. The exact transition is in
+cpu-prelaunch-hold.json. Record authorization now; do not rewrite execution canon
+or infer benchmark results before root measurements. Owned coding/docs may continue.
 
 Root chose a CPU-only next candidate and authorized download/hash verification
 only. The pinned36,346,799byte CPU artifact matched SHA2569b542da90b6541abd599ff275e3246fa6e144885bdcd67d1f0aefdba1729f7b5;
