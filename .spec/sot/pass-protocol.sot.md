@@ -84,3 +84,14 @@ Raw output and summary are attached to evidence:root/20261106194410 under the
 pass-protocol-first-check bundle. No independent Pass Go golden-vector or actual
 issuance/replay/attestation integration result is claimed. Existing proof-of-work
 and attestation modules are untouched; the library export adds no dependency edge.
+
+Root also executed the unchanged three-file Go baseline at981d25cf using the
+existing local Go1.26.3 windows/amd64 compiler, module mode disabled, proxy and
+sum database disabled, local toolchain only, one build worker and a30second test
+timeout. All16 original named tests passed with no source changes. Every copied
+file's raw SHA256 matched its baseline retirement row. This is an unchanged
+historical oracle execution, not new Go implementation or retained Go shipping.
+Its prefixed source inventory, JSON test log and summary are attached to the same
+private root evidence. It strengthens original-responsibility coverage but does
+not produce independent challenge/seed byte vectors or prove the Rust runtime
+issuance/replay/attestation composition. The r332 test-strengthening delta remains.
