@@ -139,7 +139,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-GOV-01 | P2: detection-freeze pointers named only historical Go owners | M11 | Source correction accepted f191ee8c; Rust owners/fields and stable serde IDs named; no policy edits |
 | CA-LF-01 | P2: browser native.rs worktree had 522 CRLF pairs despite LF blob | Browser | CLOSED; owner normalized to exact original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LF-02 | P2: Windows runner receipt.rs worktree had 90 CRLF pairs despite LF blob | Native Windows | CLOSED; worktree equals original LF blob, independently rehashed; no semantic/runtime inference |
-| CA-LIFETIME-01 | P1 contract gap: shared process capture has no retained reader joins or proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Independently confirmed source constraints; owner design/fix and actual adversarial process pilot OPEN; no observed hang claimed |
+| CA-LIFETIME-01 | P1 contract gap: legacy shared process capture lacks retained reader joins and a proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Actual ccd83927 five fixed cooperative Windows parents independently verified for new retained owner; legacy consumers, CLI cases, outer failure controls and broader OS/tree guarantees remain OPEN |
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CLOSED scoped preallocation/UTF16 invariant: 3a0ba182 source plus 3200a5a1 actual boundary/doctest receipts independently checked; broader native provider qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
@@ -940,3 +940,45 @@ I/O in the original connection/decision deadline and rechecks before the first
 origin write. These are restricted protocol profiles, not general HTTP conformance
 or actual network/product qualification. Partial application/http reads are not
 full-module review. No new compiler, process, network, SDK or Docker run occurred.
+
+### Actual Windows receipts and private-owner/ABI re-audit
+
+Audit377e3f21 at frozen8cbc0397 has six exact Windows harness footers, each
+1passed/0failed/0ignored/102filtered, including the facade Unsupported control.
+Independent review verified58 raw attachment hashes/sizes, eight exit0 command
+records, fmt/check/Clippy and selected195 source archive SHA256/length plus actual
+Git blob SHA1. Before/after inventories match195source/3249registry/56tools/
+52config/8environment entries. Tool JSON differs bytewise only in array order;
+the first strict-byte comparison stopped, then complete sorted records matched.
+Unsupported is not Linux native success; no current20d/1728 owner qualification.
+
+Captureccd83927 at5cd2cdc9 has five exact Windows parent footers, each1passed/
+0failed/0ignored/41filtered. Independent review verified48 raw attachments,
+five actual Job-assignment-before-grant/natural-parent-exit0/Job-empty/original
+10s-run/15s-cleanup reports and both copied executable hashes. All109 selected
+source tar bytes match saved SHA256 and canonical Git blobs; saved compiler
+snapshots are byte-identical, with31registry roots/2042files/76tools/24config/
+7environment hashes. Each executed parent asserts three actual worker joins.
+The8MiB input case is synthetic, with returned writer and inner exit1; the
+stop-after-zero case classifies a request after observed exit, not kill-produced0.
+Separate runtime source-drift0 is owner-reported, not an independent comparison
+of separately saved runtime snapshots. Outer timeout/missing-grant/unassigned
+faults, CLI four cases, legacy callers and broader tree/native/service authority
+remain open. CA-LIFETIME01 is not globally closed by these five fixed fixtures.
+
+Actual owner1728b3a2 source retains files/material/custody, borrows original
+Limits/Control and consumes finalize without replacement bounds into read-only
+ownership. Actual compile-contract/native clock controls are authored, NOT_RUN.
+The owner was asked to distinguish allowed empty report=None from successful
+cryptographic diagnostics or reject it for this existing-physical slice; no
+fail-open effect was demonstrated. Snapshot equality is not zero attempted writes.
+
+Independent unified-artifact ABI critique required concrete domain and unload
+choices plus a Node loader projection. Revised target text addresses them:
+initial single-role loader/refusal, registry-local scalar IDs with owner-bound
+host leases and no raw C callee-side instance claim; process-lived initial .NET
+with collectible/reload refusal; pinned upstream-generated CJS/ESM loaders with
+provenance and actual import gates. The final bounded target-contract verdict is
+ready, not implementation, runtime compatibility, registry ownership or release
+qualification. Consumers see one humanymous identity; internal adapter packages
+remain separate. No audit compiler/native/SDK/WSL/UNC/Docker workload was launched.

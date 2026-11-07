@@ -438,5 +438,21 @@
     "new_confirmed_violations": 0,
     "new_actual_runtime_tests": 0,
     "whole_module_or_migration_qualified": false
+  },
+  "followup_windows_execution_and_abi_contract": {
+    "private_review_sha256": {
+      "audit-windows-six-case-review-001.json": "82f0147e3e60949b2094e61b32ea7452362990798a6a0f48dab1c16310246732",
+      "controlled-capture-actual-five-review-001.json": "aeb05e7c17df8ee89bfe36a278c3f83d24499814f1da43e89f2e69f337cd7b54",
+      "unified-artifact-abi-critique-001.json": "ad720f6faa51864aee37c27806c033316db63c5dee1d3691e85dbefe425cbe92",
+      "unified-artifact-abi-critique-followup-002.json": "67ef06bd4e65a6838a2832faa544ca701a21eed5ebec326960d0222a53902178",
+      "audit-actual-owner-source-review-001.json": "6fea7b08468b20ce4eab20b14424b9adfc1cfcdbc86f7161436fabee1c909108"
+    },
+    "audit_frozen_windows_exact_tests": 6,
+    "capture_actual_fixed_parents": 5,
+    "capture_global_lifetime_closed": false,
+    "unified_abi_target_contract_ready": true,
+    "actual_owner_native_qualified": false,
+    "empty_report_contract_clarification_pending": true,
+    "new_audit_runtime_workloads": 0
   }
 }

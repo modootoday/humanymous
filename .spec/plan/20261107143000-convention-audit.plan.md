@@ -285,3 +285,11 @@ reviews now bind11unchanged leaves in canonical evidence. Fixed trusted-tool
 cooperative limits and restricted protocol profiles remain explicit; no new
 defect confirmed in read methods, no full-module/network/native/runtime pass.
 Actual process/host/product gates and complete migration coverage remain open.
+
+Independent actual Windows Audit6 and capture5 receipts accepted only at their
+frozen component scopes:58/48 raw attachments and195/109 selected source bytes
+also match canonical Git blobs. Tool-order discrepancy and runtime-snapshot
+limits retained. LegacyLIFETIME/CLI/outerfault/native/product remain OPEN.
+Actualowner1728 source reviewed with empty-report clarification requested; no
+native/type execution claim. ABI critique2P1+P2 addressed in revisedTARGETcontract,
+finalboundedready verdict sentroot; actual loader/host/rename/release gates open.
