@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: cf3389d12d31dafeeddd1822ac8a2ee518167fd232fcf7807030f7c41018af42, bytes: 73918, store: repo}
+  - {path: baseline.json, sha256: 05b6d5240977ef5f8b1b4fe1ce904b183dd47576d1cdd293aeae9980a602c8c5, bytes: 75330, store: repo}
 ---
 
 # Convention audit baseline
@@ -991,3 +991,28 @@ strict Clippy success. These are type/lint results:0 WASM tests and no actual
 Docker run. New-source browser/collector/product qualification remains OPEN; no
 historical failed run is repaired retroactively. Exact private hashes are bound
 in baseline.json. Audit launched no compiler or product workload.
+
+## Actual Lab36 and Delivery114 regression review
+
+Independent review of the new local receipts verifies19 Lab and22 Delivery raw
+attachments by hash/size, plus their public-to-private seal hashes. Each inventory
+matches exact unique actual success names:Lab36 and Delivery114, both with zero
+failed/ignored/filtered. Check, strict Clippy and fmt exit0. Lab's selected7908
+before/after records are byte-identical:7572 registry and336 workspace entries in
+a92-package superset, including frozen live Root integration rather than d5Git
+alone. Delivery's2114 selected Git-listed source records and registry archives1122,
+effective tools4/config7/environment11 remain byte-identical. Its normal policy
+binary matches the recorded hash; that executable is distinct from the unit harness.
+
+Source review confirms finite bootstrap variants/negative parser cases and strict
+absent-or-literal-false workflow failure settings, with only two exact approved
+cache-step exceptions. No new concrete defect was confirmed. Lab's retained target
+JSON says released and matches its RELEASED timestamp/original390/450 clock; its
+presence is not an active lease. No audit workload was launched.
+
+These are bounded native component observations. They do not execute WASM/browser,
+Docker, hosted workflows or a real Header producer. Lab does not prove complete
+compiler/OS read custody; Delivery measures registry archives, not extracted
+registry source bytes. Neither qualifies full product/release or repairs9586/e70
+failures. Platform source movement and remaining whole migration gates stay OPEN.
+Exact selected source and raw hashes are bound through baseline.json.
