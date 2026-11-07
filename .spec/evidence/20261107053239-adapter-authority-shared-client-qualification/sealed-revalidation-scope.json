@@ -1,0 +1,64 @@
+{
+  "schema": "humanymous.authority.audit-drift-revalidation/1",
+  "authority_source": "40d0bdd",
+  "observation_head": "f82da60e4c11281475c11fdb877f33cfd75b50e5",
+  "prior_result": "sealed-local-results.json; observed13passed, immutable combined graph not qualified",
+  "changes": [
+    {
+      "path": "crates/audit/src/keys/custody.rs",
+      "impact": "direct runtime path: SealedLog::open -> Custody::load_or_create -> read -> read_envelope",
+      "requires": [
+        "fixed-source compile",
+        "wrong unlock refusal",
+        "sealed startup",
+        "custody exclusion and release",
+        "restart preserves key bytes"
+      ]
+    },
+    {
+      "path": "crates/audit/src/keys/custody/rotation.rs",
+      "impact": "compiled audit-library dependency; rotation not called by authority startup",
+      "requires": [
+        "fixed-source compile and Clippy",
+        "audit-owned rotation/recovery gates"
+      ]
+    },
+    {
+      "path": "crates/audit/tests/control_operations.rs",
+      "impact": "audit integration test only; not linked into authority native harness",
+      "requires": [
+        "audit-owned control tests; not authority success denominator"
+      ]
+    }
+  ],
+  "required_authority_gates": [
+    "locked pure library tests on frozen dependency graph",
+    "all-target test compilation and Clippy",
+    "hosted native_process including normalized profiles and sealed_startup_retains_custody_and_reuses_existing_identity",
+    "hosted local_service cancellation/drain tests",
+    "isolated Linux Docker explicit otherUID parent and actual nested helper receipt"
+  ],
+  "not_run": [
+    "current-source hosted authority native tests",
+    "current-source isolated Linux otherUID Docker gate",
+    "actual Windows service-store unlock for authority executable",
+    "independent remote Windows host pipe denial"
+  ],
+  "sources": [
+    {
+      "path": "crates/audit/src/keys/custody.rs",
+      "current_sha256": "76c8189f0f22fbbbf209a4fdf8c7096daeab0c0761dcfc8f8458ca0e21f5216d",
+      "current_git_blob": "84bcd55b028e88b254528631447608e767634741"
+    },
+    {
+      "path": "crates/audit/src/keys/custody/rotation.rs",
+      "current_sha256": "40dd00e3fb6b8f47699aba701097c3c0ff850d10d265eeb3770d0f3423ae627f",
+      "current_git_blob": "b4480ddca8cdf4453a71698bff69eca3a0d2189d"
+    },
+    {
+      "path": "crates/audit/tests/control_operations.rs",
+      "current_sha256": "7c52d91363a5a0a2f8f1ea08da101433ae8a11c294536d858ca4dbf664c9b972",
+      "current_git_blob": "f5968a8c109fb0023caa0f8e795e05550b7d7769"
+    }
+  ]
+}

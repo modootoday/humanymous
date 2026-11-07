@@ -280,3 +280,16 @@ than retroactively assigning results to latest source. Root notified; A returned
 immediately. Native IPC/custody/process tests remain NOT_RUN, latest hosted result
 42348518353/63f69ae failed and does not cover these changes. Public sanitized
 sealed-local-results.json records this distinction.
+
+## Audit drift revalidation boundary
+
+Inspected actual diff against pre-run27d5bbc. custody.rs changes read_envelope
+used by load_or_create/read in SealedLog startup: revalidate frozen-source
+compile plus hosted unlock/wrong-unlock, custody lifetime/release and restart.
+rotation.rs is an audit library compile dependency, but authority startup does
+not execute rotation; dual-control/recovery tests remain audit-owned.
+control_operations.rs is audit-test-only, outside authority test denominator.
+Local13passing observed runs remain evidence, not final frozen-graph qualification.
+Public sealed-revalidation-scope.json records exact current hashes and required
+gates, without assigning execution to source-only requirements. Root is preparing
+a fixed hosted candidate; no duplicate dispatch or local runtime execution.
