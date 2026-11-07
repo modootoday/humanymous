@@ -41,7 +41,7 @@ pub(super) fn classify(output: &str, stderr: &str, name: &str) -> Option<&'stati
         }
     }
     if found == Some("browser_selected_test_failed") {
-        panic_site::classify(output, stderr, name).or(found)
+        panic_site::classify(output, name).or(found)
     } else {
         found
     }
@@ -100,13 +100,17 @@ mod tests {
         let name = "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed";
         let panic = "panicked at crates/collector/src/browser/transport/runtime_pilot.rs:22:10:";
         let failed = format!("test {name} ... FAIL");
-        assert_eq!(
-            classify(&failed, panic, name),
-            Some("browser_panic_bootstrap")
+        let framed = format!(
+            "{failed}\n---- {name} output ----\n    {panic}\nfailures:\n    {name}\nconsole output:\n    {panic}"
         );
+        assert_eq!(classify(&framed, "", name), Some("browser_panic_bootstrap"));
         assert_eq!(classify("", panic, name), None);
         assert_eq!(
-            classify(&failed, &format!("{panic} PRIVATE_BODY"), name),
+            classify(
+                &framed.replace(panic, &format!("{panic} PRIVATE_BODY")),
+                "",
+                name
+            ),
             Some("browser_selected_test_failed")
         );
         assert_eq!(classify(&format!("{failed}\n{failed}"), panic, name), None);

@@ -125,14 +125,47 @@ fn canonical_number(value: &str) -> Option<usize> {
     value.parse().ok()
 }
 
-fn from_source(output: &str, stderr: &str, name: &str, source: &[u8]) -> Option<&'static str> {
+fn failure_block<'a>(output: &'a str, name: &str) -> Option<Vec<&'a str>> {
+    let header = format!("---- {name} output ----");
+    let mut started = false;
+    let mut closed = false;
+    let mut inside = false;
+    let mut replay = false;
+    let mut block = Vec::new();
+    for line in output.lines() {
+        if line == "console output:" {
+            if !closed || replay {
+                return None;
+            }
+            replay = true;
+        } else if line.starts_with("---- ") && line.ends_with(" output ----") {
+            if line != header || started {
+                return None;
+            }
+            started = true;
+            inside = true;
+        } else if inside && line == "failures:" {
+            closed = true;
+            inside = false;
+        } else if inside {
+            block.push(line);
+        } else if !replay && line.trim().starts_with("panicked at ") {
+            return None;
+        }
+    }
+    (started && closed).then_some(block)
+}
+
+fn from_source(output: &str, name: &str, source: &[u8]) -> Option<&'static str> {
     if name != NAME || crate::snapshot::digest(source) != SOURCE_SHA256 {
         return None;
     }
     let text = std::str::from_utf8(source).ok()?;
     let prefix = format!("panicked at {PATH}:");
     let mut found = None;
-    for line in output.lines().chain(stderr.lines()).map(str::trim) {
+    // The pinned headless runner reprints the console channel after the test
+    // summary. Only the selected test's closed failure block is authoritative.
+    for line in failure_block(output, name)?.into_iter().map(str::trim) {
         if !line.starts_with("panicked at ") {
             continue;
         }
@@ -149,14 +182,28 @@ fn from_source(output: &str, stderr: &str, name: &str, source: &[u8]) -> Option<
     found
 }
 
-pub(super) fn classify(output: &str, stderr: &str, name: &str) -> Option<&'static str> {
-    from_source(output, stderr, name, SOURCE)
+pub(super) fn classify(output: &str, name: &str) -> Option<&'static str> {
+    from_source(output, name, SOURCE)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::collections::HashSet;
+
+    fn report(body: &str, console: &str) -> String {
+        let body = body
+            .lines()
+            .map(|line| format!("        {line}\n"))
+            .collect::<String>();
+        let console = console
+            .lines()
+            .map(|line| format!("    {line}\n"))
+            .collect::<String>();
+        format!(
+            "test {NAME} ... FAIL\n\nfailures:\n\n---- {NAME} output ----\n    error output:\n{body}\nfailures:\n\n    {NAME}\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 66 filtered out\n\nconsole output:\n{console}"
+        )
+    }
 
     #[test]
     fn source_hash_sites_and_public_vocabulary_are_one_pinned_contract() {
@@ -173,7 +220,10 @@ mod tests {
             assert!(source.lines().nth(line - 1).unwrap().contains(fragment));
             assert!(codes.iter().any(|value| value.as_str() == Some(*code)));
             let observation = format!("  panicked at {PATH}:{line}:5:");
-            assert_eq!(classify(&observation, "", NAME), Some(*code));
+            assert_eq!(
+                classify(&report(&observation, &observation), NAME),
+                Some(*code)
+            );
         }
     }
 
@@ -182,8 +232,8 @@ mod tests {
         let valid = format!("panicked at {PATH}:22:10:");
         let mut drift = SOURCE.to_vec();
         drift.push(b' ');
-        assert_eq!(from_source(&valid, "", NAME, &drift), None);
-        assert_eq!(classify(&valid, "", "foreign::test"), None);
+        assert_eq!(from_source(&report(&valid, &valid), NAME, &drift), None);
+        assert_eq!(classify(&report(&valid, &valid), "foreign::test"), None);
         for bad in [
             format!("{valid} PRIVATE_BODY"),
             format!("panicked at /private/{PATH}:22:10:"),
@@ -194,10 +244,34 @@ mod tests {
             format!("panicked at {PATH}:22:10:extra:"),
             "panicked at PRIVATE_PATH".into(),
         ] {
-            assert_eq!(classify(&bad, "", NAME), None);
-            assert_eq!(classify(&valid, &bad, NAME), None);
+            assert_eq!(classify(&report(&bad, ""), NAME), None);
+            assert_eq!(
+                classify(&report(&format!("{valid}\n{bad}"), ""), NAME),
+                None
+            );
         }
-        assert_eq!(classify(&valid, &valid, NAME), None);
-        assert_eq!(classify("PRIVATE_BODY", "", NAME), None);
+        assert_eq!(
+            classify(&report(&format!("{valid}\n{valid}"), ""), NAME),
+            None
+        );
+        assert_eq!(classify(&report("PRIVATE_BODY", &valid), NAME), None);
+    }
+
+    #[test]
+    fn only_one_closed_owned_failure_block_can_supply_a_location() {
+        let valid = format!("panicked at {PATH}:22:10:");
+        let complete = report(&valid, &valid);
+        assert_eq!(classify(&complete, NAME), Some("browser_panic_bootstrap"));
+        for invalid in [
+            valid.clone(),
+            format!("---- {NAME} output ----\n{valid}"),
+            format!("---- {NAME} output ---- FORGED\n{valid}\nfailures:"),
+            format!("{complete}\n---- {NAME} output ----\n"),
+            format!("{complete}\n---- foreign::test output ----\n"),
+            complete.replace("console output:\n", &format!("{valid}\nconsole output:\n")),
+            format!("{complete}\nconsole output:\n"),
+        ] {
+            assert_eq!(classify(&invalid, NAME), None);
+        }
     }
 }

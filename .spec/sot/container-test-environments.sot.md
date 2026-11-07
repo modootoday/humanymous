@@ -309,8 +309,18 @@ error code, never the location, panic message, value, stack, path or suffix.
 
 Critique reflected: require the already validated failed actor, matched
 inventory, successful DNS and exactly one selected-test FAIL before refinement.
+Pinned wasm-bindgen-test0.3.80 rt/mod.rs print_results/print_failure places the
+owned failure output between the exact unindented `---- {selected} output ----`
+header and its next unindented `failures:` terminator. Read exactly that one
+closed block. Reject foreign/duplicate/forged/truncated blocks and unframed
+panic locations. wasm-bindgen-cli0.2.130 index-headless.html wraps console into
+both the test recorder and console_output; headless.rs prints a separate
+`console output:` replay on failure. Ignore that separately framed later copy,
+not duplicates inside the selected failure block. The prior flattened scan
+incorrectly refused this valid two-channel protocol. This source defect does
+not establish what original e70 private bytes contained.
 Hash drift, foreign selected name, unknown/malformed panic location, duplicated
-or ambiguous panic reports retain browser_selected_test_failed. Source bytes
+or ambiguous panic locations inside that block retain browser_selected_test_failed. Source bytes
 and enumerated sites must be checked together in pure tests; every emitted
 code must belong to the sole safe diagnostic vocabulary. This is a reported
 panic site, not authenticated execution provenance or an independently proven
