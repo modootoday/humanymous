@@ -1,0 +1,19 @@
+{
+  "schema": "humanymous.wargame-hosted-boundary.v1",
+  "evidence_type": "read-only-public-job-summary",
+  "run_id": 42348518353,
+  "job_id": 128331815962,
+  "source_sha": "63f69ae9de703939b7b9091e2f215b12bea265de",
+  "job_conclusion": "failure",
+  "lab_runner_exit_code": 2,
+  "delivery_exit_code": 1,
+  "qualification": "component-only",
+  "full_product_qualified": false,
+  "outer_errors": 0,
+  "source_changed_during_execution": false,
+  "private_report_sha256": "f571208ca999275eb278bf15089516c4675fddf368189b8d714e1f8f388493e6",
+  "source_manifest_sha256": "a74ad7af92a0aecb7ea152cd0284843edf0723afe8c4ee097a2d5e435707371b",
+  "private_report_recovered": false,
+  "network_case_results_verified": false,
+  "qualifies_later_strict_sources": false
+}
