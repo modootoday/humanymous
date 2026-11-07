@@ -2,6 +2,7 @@
 use crate::{
     application::Application,
     configuration::Configuration,
+    management::{Management, ManagementPolicy},
     startup::{ExternalWitness, SealedAudit},
 };
 use humanymous_authority::decision::DurableAudit;
@@ -13,6 +14,7 @@ use std::{
 };
 use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
+mod lifecycle;
 mod shutdown;
 pub use shutdown::{ShutdownRequest, StopBudget};
 
@@ -69,11 +71,12 @@ pub struct ServiceHost {
     listener: TcpListener,
     audit: Arc<Mutex<SealedAudit>>,
     readiness: Readiness,
+    management: Option<Management>,
 }
 impl ServiceHost {
     /// Authenticate existing credentials before exposing a ready listener.
     pub async fn bind(configuration: Configuration) -> io::Result<Self> {
-        Self::bind_inner(configuration, None).await
+        Self::bind_inner(configuration, None, None).await
     }
 
     /// Consume a pinned external client. No witness failure permits fallback.
@@ -81,12 +84,23 @@ impl ServiceHost {
         configuration: Configuration,
         witness: ExternalWitness,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, Some(witness)).await
+        Self::bind_inner(configuration, Some(witness), None).await
+    }
+
+    /// Bind a separately authorized native management service in the same custody
+    /// lifetime. Provision its new credential privately before starting run.
+    pub async fn bind_with_management(
+        configuration: Configuration,
+        witness: Option<ExternalWitness>,
+        policy: ManagementPolicy,
+    ) -> io::Result<Self> {
+        Self::bind_inner(configuration, witness, Some(policy)).await
     }
 
     async fn bind_inner(
         mut configuration: Configuration,
         witness: Option<ExternalWitness>,
+        management_policy: Option<ManagementPolicy>,
     ) -> io::Result<Self> {
         configuration
             .validate()
@@ -99,17 +113,21 @@ impl ServiceHost {
         .map_err(io::Error::other)?;
         let audit = Arc::new(Mutex::new(sealed));
         let listener = TcpListener::bind(configuration.listen).await?;
+        let mut profile = configuration.readiness();
+        profile["audit_external_witness"] = serde_json::json!(witness_durability.is_some());
+        profile["audit_witness_required_durability"] = serde_json::json!(witness_durability);
+        profile["audit_witness_independence_qualified"] = serde_json::json!(false);
+        profile["administration"] = serde_json::json!(management_policy.is_some());
+        profile["administration_writable"] = serde_json::json!(false);
+        let management = management_policy
+            .map(|policy| Management::bind(policy, &configuration, profile.clone()))
+            .transpose()?;
         let application = Application::new(
             configuration,
             Default::default(),
             Box::new(SharedAudit(audit.clone())),
         )
         .map_err(|_| io::Error::other("application startup"))?;
-        let mut profile = application.readiness();
-        profile["audit_external_witness"] = serde_json::json!(witness_durability.is_some());
-        profile["audit_witness_required_durability"] = serde_json::json!(witness_durability);
-        // A connected/pinned client alone cannot certify deployment independence.
-        profile["audit_witness_independence_qualified"] = serde_json::json!(false);
         let readiness = Readiness {
             listen: listener.local_addr()?,
             profile,
@@ -119,6 +137,7 @@ impl ServiceHost {
             listener,
             audit,
             readiness,
+            management,
         })
     }
     /// No raw credentials or audit material are included.
@@ -126,14 +145,26 @@ impl ServiceHost {
         &self.readiness
     }
 
+    /// Separate management capability for the trusted broker's private channel.
+    /// It is deliberately absent from the serializable readiness document.
+    pub fn management_credential_for_private_provisioning(&self) -> Option<&str> {
+        self.management
+            .as_ref()
+            .map(Management::credential_for_private_provisioning)
+    }
+
     /// A closed controller or incomplete drain is an error, never Stopped.
     pub async fn run(
         mut self,
         shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> io::Result<ExitReport> {
-        self.application
-            .serve_until(self.listener, shutdown)
-            .await?;
+        if let Some(management) = self.management {
+            lifecycle::run(&mut self.application, self.listener, management, shutdown).await?;
+        } else {
+            self.application
+                .serve_until(self.listener, shutdown)
+                .await?;
+        }
         self.audit
             .lock()
             .map_err(|_| io::Error::other("audit poisoned"))?

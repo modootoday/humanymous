@@ -3,6 +3,7 @@ pub mod application;
 pub mod browser;
 pub mod configuration;
 pub mod http;
+pub mod management;
 pub mod service;
 pub mod session;
 pub mod startup;

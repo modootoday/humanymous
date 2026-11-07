@@ -1,0 +1,107 @@
+use super::*;
+fn handler() -> Handler {
+    Handler {
+        credential: Arc::new(Credential::generate().unwrap()),
+        peer: NativePeer::Unix(123),
+        scope: ManagementScope {
+            installation: "installation".into(),
+            tenant: "tenant".into(),
+            origin: "origin".into(),
+            revision: "r1".into(),
+            authority: "owned.test".into(),
+        },
+        profile: serde_json::json!({"product_qualified":false}),
+    }
+}
+fn request(handler: &Handler) -> LocalRequest {
+    LocalRequest {
+        method: "POST".into(),
+        target: "/management/v0.1/status".into(),
+        headers: vec![
+            ("Host".into(), "humanymous.management.local".into()),
+            ("Content-Type".into(), "application/json".into()),
+        ],
+        authorization: format!("Bearer {}", handler.credential.expose_for_provisioning()),
+        body: serde_json::to_vec(&handler.scope).unwrap(),
+    }
+}
+#[test]
+fn observer_requires_native_peer_independent_credential_exact_scope() {
+    let handler = handler();
+    let mut request = request(&handler);
+    assert!(handler.authorize(&request, NativePeer::Unix(123)).is_ok());
+    assert_eq!(
+        handler
+            .authorize(&request, NativePeer::Unix(124))
+            .unwrap_err()
+            .code,
+        "management_peer"
+    );
+    request.authorization = "Bearer session-capability".into();
+    assert_eq!(
+        handler
+            .authorize(&request, NativePeer::Unix(123))
+            .unwrap_err()
+            .status,
+        401
+    );
+    request.authorization = format!("Bearer {}", handler.credential.expose_for_provisioning());
+    let mut value: serde_json::Value = serde_json::from_slice(&request.body).unwrap();
+    value["revision"] = serde_json::json!("stale");
+    request.body = serde_json::to_vec(&value).unwrap();
+    assert_eq!(
+        handler
+            .authorize(&request, NativePeer::Unix(123))
+            .unwrap_err()
+            .code,
+        "management_scope"
+    );
+}
+#[test]
+fn observer_refuses_browser_authority_ambiguous_headers_and_mutations() {
+    let handler = handler();
+    for name in [
+        "Origin",
+        "Cookie",
+        "Referer",
+        "Sec-Fetch-Site",
+        "X-Humanymous-Session",
+        "Proxy-Authorization",
+    ] {
+        let mut request = request(&handler);
+        request.headers.push((name.into(), "fixture".into()));
+        assert_eq!(
+            handler
+                .authorize(&request, NativePeer::Unix(123))
+                .unwrap_err()
+                .code,
+            "management_native_only"
+        );
+    }
+    for target in [
+        "/management/v0.1/kill",
+        "/management/v0.1/status?x=1",
+        "/adapter/v0.1/decision",
+    ] {
+        let mut request = request(&handler);
+        request.target = target.into();
+        assert_eq!(
+            handler
+                .authorize(&request, NativePeer::Unix(123))
+                .unwrap_err()
+                .status,
+            403
+        );
+    }
+    let mut request = request(&handler);
+    request
+        .headers
+        .push(("host".into(), "humanymous.management.local".into()));
+    assert_eq!(
+        handler
+            .authorize(&request, NativePeer::Unix(123))
+            .unwrap_err()
+            .code,
+        "management_duplicate_header"
+    );
+}

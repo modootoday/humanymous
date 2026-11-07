@@ -30,10 +30,10 @@ dual-control and missing-required fail-closed remain invariant.
 | R06 | Explicit bounded response streaming | runtime;R05 | Not implemented; incremental SSE, backpressure, malformed chunks/abort/no retry; browser ACK stream separate |
 | R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Not implemented; scoring writes refused; read-only until durable apply/replay exists |
 | R08 | Bounded session/global abuse admission | runtime | Not implemented;429/capacity/concurrency/clock tests; no client-fingerprint identity authority |
-| R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Shared native transport qualified in its scope; runtime handler not implemented; peer/credential/RBAC/CSRF/scope negatives |
+| R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Shared native transport qualified in its scope; runtime observer handler source implemented NOT_RUN; native IPC/peer/credential/RBAC/CSRF/scope negatives pending |
 | R10 | Signed destructive controls and state effects | audit issuer + runtime | Audit primitives implemented; runtime join pending; exact two-party/one-use/target/expiry/restart/failure tests |
 | R11 | Accessible Pass recovery + shared Engine fusion | runtime; shared challenge/root browser | Not implemented; no motor/speed gates or confirmed-human training; real input/AT separate |
-| R12 | External witness library injection + deployment transport | audit/runtime/Compose | Audit client/service verified in component scope; runtime not integrated; independent deployment remains unqualified |
+| R12 | External witness library injection + deployment transport | audit/runtime/Compose | Audit client/service verified in component scope; runtime typed injection source implemented21b6c4b NOT_RUN; independent deployment remains unqualified |
 | R13 | Actual TLS/H1 original capture | runtime + narrowly approved network paths | Not implemented or claimed yet; full observation+successful handshake+connection binding; private synthetic lab |
 | R14 | Complete H2 frame/HPACK/per-stream capture and server | runtime/network;R13+binding | Required follow-up; no H1-to-H2/fullM2 success inference |
 | R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Source implemented, NOT_RUN; real lifecycle/failure/lock-release tests pending, synchronous I/O limits explicit |
@@ -159,3 +159,35 @@ bounded component API without an OS supervisor-budget qualification claim.
   pending root's global Cargo slot. Added success fields drained/audit_flushed;
   unconsumed429/error writes now cancel on observed stop. Shared runtime APIs stay
   compatible. Current hosted42348518353/63f69ae cannot qualify these later edits.
+R09 first real management slice: a separate filesystem UDS/local named-pipe
+listener uses authority LocalHandler/LocalContext and serve_handler_until; no TCP
+management listener or application-route forwarding. An independently generated
+management credential uses authority Credential's exact constant-time Bearer
+verifier and is provisioned only through an explicit trusted broker accessor,
+never readiness JSON. Expected native UID/PID is rechecked in handler. Read-only
+Observer role can POST only /management/v0.1/status with exact JSON five-field
+installation/tenant/origin/revision/authority scope and management Host
+humanymous.management.local. Reject duplicate headers, body >8192, non JSON,
+Cookie/Origin/Referer/FetchMetadata/proxy headers and session/RIT credentials.
+The bounded response contains scope and sanitized runtime capability snapshot,
+not secrets/client data. No settings mutation, session reset, kill, erasure,
+ban or key rotation exists in this slice; those remain refused pending exact
+real signed permits and durable state effects. Management admission uses fixed
+capacity8/rate20/timeout1000ms; stop uses validated service drain budget. Locality
+is not admin authority. Runtime ingress continues to refuse reserved admin paths.
+Critique reflected: transport peer filtering is not assumed; handler checks the
+actual context peer. A credential is not imported by copying comparisons; shared
+credentials owner supplies zeroized private provisioning next. Concurrent native
+transport handlers read immutable snapshots and perform no detached work. Both
+listener lifetimes must end before final audit flush; failure triggers sibling
+shutdown and cannot release custody early or yield a successful ExitReport.
+R09 source now implements the separate observer management listener and the
+ServiceHost dual-listener join. ManagementPolicy consumes a separately provisioned
+shared authority::Credential (generate or from_private_provisioning); scope,
+role and native peer remain runtime policy, not token grammar claims. The runtime
+never duplicates constant-time comparison or imports arbitrary bearer strings.
+Both listener tasks are joined without detached runtime workers. This source and
+two pure policy fixtures are NOT_RUN pending the allocated Cargo/hosted gates.
+R07/R10 writes, durable state replay, independent credentials producer, actual
+IPC/ACL/cancellation/lock-release pilots remain incomplete. Actual hosted run
+42348518353 at63f69ae does not include these later changes.

@@ -244,3 +244,13 @@ all new source compilation/runtime/witness integration tests are NOT_RUN.
   pending root's global Cargo slot. Added success fields drained/audit_flushed;
   unconsumed429/error writes now cancel on observed stop. Shared runtime APIs stay
   compatible. Current hosted42348518353/63f69ae cannot qualify these later edits.
+R09 source now implements the separate observer management listener and the
+ServiceHost dual-listener join. ManagementPolicy consumes a separately provisioned
+shared authority::Credential (generate or from_private_provisioning); scope,
+role and native peer remain runtime policy, not token grammar claims. The runtime
+never duplicates constant-time comparison or imports arbitrary bearer strings.
+Both listener tasks are joined without detached runtime workers. This source and
+two pure policy fixtures are NOT_RUN pending the allocated Cargo/hosted gates.
+R07/R10 writes, durable state replay, independent credentials producer, actual
+IPC/ACL/cancellation/lock-release pilots remain incomplete. Actual hosted run
+42348518353 at63f69ae does not include these later changes.

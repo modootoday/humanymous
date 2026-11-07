@@ -394,3 +394,25 @@ budget. Critique: equality/overflow budgets are rejected; positive typed fields
 must not imply physical I/O preemption; partial response cancellation closes the
 connection and never retries origin. Existing ShutdownRequest::new remains a
 bounded component API without an OS supervisor-budget qualification claim.
+R09 first real management slice: a separate filesystem UDS/local named-pipe
+listener uses authority LocalHandler/LocalContext and serve_handler_until; no TCP
+management listener or application-route forwarding. An independently generated
+management credential uses authority Credential's exact constant-time Bearer
+verifier and is provisioned only through an explicit trusted broker accessor,
+never readiness JSON. Expected native UID/PID is rechecked in handler. Read-only
+Observer role can POST only /management/v0.1/status with exact JSON five-field
+installation/tenant/origin/revision/authority scope and management Host
+humanymous.management.local. Reject duplicate headers, body >8192, non JSON,
+Cookie/Origin/Referer/FetchMetadata/proxy headers and session/RIT credentials.
+The bounded response contains scope and sanitized runtime capability snapshot,
+not secrets/client data. No settings mutation, session reset, kill, erasure,
+ban or key rotation exists in this slice; those remain refused pending exact
+real signed permits and durable state effects. Management admission uses fixed
+capacity8/rate20/timeout1000ms; stop uses validated service drain budget. Locality
+is not admin authority. Runtime ingress continues to refuse reserved admin paths.
+Critique reflected: transport peer filtering is not assumed; handler checks the
+actual context peer. A credential is not imported by copying comparisons; shared
+credentials owner supplies zeroized private provisioning next. Concurrent native
+transport handlers read immutable snapshots and perform no detached work. Both
+listener lifetimes must end before final audit flush; failure triggers sibling
+shutdown and cannot release custody early or yield a successful ExitReport.
