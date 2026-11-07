@@ -13,6 +13,16 @@ rel:
   depends_on: [sot:root/rust-migration]
 ---
 
+## Collector component validation delta c3389b6
+
+collector-component.yml adds read-only, SHA-pinned Actions validation of actual
+Rust WASM tests in the network-none, non-root Docker Firefox component lab.
+It uploads image metadata and test output by source SHA and publishes no package
+or image. This independent component check does not replace any existing native,
+browser or Docker full-delivery gate. Remote run42327415870 was started; its
+conclusion remains pending at this observation. Full-runtime qualification and
+the final delivery runner requirements remain unchanged.
+
 # Rust delivery and Pages contracts
 
 ## Rule

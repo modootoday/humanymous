@@ -10,6 +10,19 @@ rel:
   depends_on: [sot:root/cross-os-runners, sot:root/adapter-ecosystem, sot:root/automation-evidence]
 ---
 
+## Rust collector component lab delta c3389b6
+
+compose.collector.yaml and collector-browser.Dockerfile execute actual Rust WASM
+component tests in Firefox ESR with pinned wasm-bindgen/geckodriver tooling.
+The lab inherits read-only root, UID65532, cap-drop ALL, no-new-privileges and
+network none, with bounded tmpfs and loopback-only in-container test transport.
+Native6/browser3 pass in the source manifest recorded by
+evidence:root/20261106235519/collector-results.json. The test runner uses Firefox
+because its Chromium/Edge paths append no-sandbox. No disabling flag is authored.
+Firefox reports user namespace creation EPERM; complete browser sandbox policy
+is unqualified. Headless/WebDriver preferences are interventions, not a human
+baseline. This component lab does not qualify full product e2e or Meari+CEF.
+
 # Container product-test environments
 
 Version 0.2.0. Research and scoped Docker implementation checked 2026-11-07 KST.

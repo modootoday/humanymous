@@ -14,6 +14,16 @@ rel:
 
 # Rust migration conventions
 
+## Collector implementation delta c3389b6
+
+The root workspace now includes humanymous-collector, the seventeenth package.
+Its pure17signal L1-L3 evaluator shares canonical constructors/registry and its
+wasm32 browser boundary is authored Rust with pinned generated binding tools.
+Native6 and actual isolated Docker Firefox3 tests pass in the recorded manifest.
+The partial report does not complete L4/environment/guard/advanced/session/RIT
+or full browser/product parity. See sot:root/client-collector and
+evidence:root/20261106235519/collector-results.json. Detection freeze is unchanged.
+
 ## Rule
 
 Port the complete product to a Cargo workspace on `codex/rust`. Preserve observable
