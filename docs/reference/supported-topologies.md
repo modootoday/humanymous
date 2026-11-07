@@ -163,6 +163,13 @@ validity, filter behavior and origin isolation still require the native pilot.
 Its current pilot contract requires 45 named scenario/MPM pairs across event,
 worker and prefork, with separate failed and not-run totals and observed cleanup.
 The contract contains no executed results or qualified artifact identities.
+An additional coordinator and strict receipt validator are authored but remain
+uncompiled and unexecuted at this checkpoint. They require all 45 distinct case
+IDs, recompute outcome totals and compare the expected source, image and artifact
+digests. Successful parsing is not a passing pilot: process exit, all required
+cases and cleanup must also satisfy the contract. Unverified report counts remain
+unknown rather than becoming zero failures. The public projection permits bounded
+compiler codes and source locations; raw diagnostics and artifacts stay private.
 The authored pilot uses the real shared authority and WAL with frozen synthetic
 reports for its ALLOW/DENY/CHALLENGE paths. Its loopback origin counts complete
 received requests before writing an echo response; this is not a business-commit

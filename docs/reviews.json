@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/apache/coordinator-contract.json",
+  "sha256": "40f8b36d75fc11a059a21edc7f4d9ba51c3add5006f6bb40441ac2e57dde3f3b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete authored-uncompiled coordinator contract: fresh private bundle,45required scenarios, expectedsource/image/artifacts, stage/time/diagnostic-only public schema, private originals, independent pilot/container cleanup requirements and null unverified counts. This is acceptance contract, not actual host execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/native/src/coordinator.rs",
+  "sha256": "5c0c6f6142ed6d17799f9e753fc7fc3e79e2a8dc7200b2d294d71c4538243b48",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete strict validator/diagnostic projector and seven test definitions: compact exactJSON, duplicates/unknownfields/caseIDs/counters/source/artifact binding,45required+failure-only infra rows, exit/status/cleanup success, bounded publicRust codes/locations. Linux host module is separate and only partially read; no compilation/execution claim.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "crates/authority/src/configuration.rs",
   "sha256": "42269d396e544e0034e89ce40eb32beda655671bdb44ba49a68f6795d967cac5",
   "reviewer": "codex/rust-pages",
@@ -458,9 +476,9 @@
 },
 {
   "source": "crates/apache-adapter/native/src/bin/pilot.rs",
-  "sha256": "2befd744667d15e4994c9b4ed20ee94e814f50b9bc00f918cd1b574409f067d6",
+  "sha256": "39a89d3db7ff1d1fe4d64bc4a2de8d8742a283ea9b810ab71d815efa6de5fea3",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete pilot entrypoint: Linux run delegates to separate pilot module, other targets/error exit failure. No execution or full delegated-module review claimed.",
+  "notes": "Read complete updated pilot entrypoint: explicit coordinate/coordinate-cleanup routes delegate to coordinator, unsupported arguments reject, Linux direct pilot otherwise. No separate coordinator binary, default-feature or actual hosted/local execution inferred.",
   "pages": [
     "docs/reference/supported-topologies.md"
   ]

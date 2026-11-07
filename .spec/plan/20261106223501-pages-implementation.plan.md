@@ -1652,3 +1652,19 @@ are requiredprivilegedparent andhelper, not successes. Map now records controlle
 sealedstartup/normalizedbinding/genericcancel/drain evidence with exactjoblink,
 retaining actualframework/ABI/independentcustody/fullworkspace gaps. Later25case
 corpus unexecuted. Saved sanitized ownsummary; no new compiler/runtime execution.
+
+### Apache strict coordinator receipt contract
+
+Read full coordinator contract/validator and updated pilot entrypoint. Topology
+reference separates parsing from passing, exact45IDs/recomputedcounts/sourceimage
+artifact binding, failed/unverified counts unknown, cleanup and bounded public
+compiler projection/private originals. Authored-uncompiled/unexecuted retained.
+Two new manual receipts and one exact entrypoint renewal; partial host module
+receives no full-file receipt. No Cargo/native/Docker execution during quiet window.
+
+Root relayed new user execution canon: Windows Docker Desktop desktop-linux is
+local Docker default; WSL-native engine is distinct, no fallback. Benchmark quiet
+window still active and new compile/runtime requires root allocation. No Docker
+command started. Newly explicit lightweight fmt permission used to check pending
+vector module and its children: rustfmt edition2024 check passed, no compilation
+or parser acceptance implied.
