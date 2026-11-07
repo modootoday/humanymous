@@ -69,10 +69,10 @@ fn serve(stream: &mut TcpStream, count: &AtomicUsize) -> Result<(), super::Error
     let mut spoof = false;
     for line in text.split("\r\n").skip(1) {
         if let Some((name, value)) = line.split_once(':') {
-            if name.eq_ignore_ascii_case("content-length") {
-                if length.replace(value.trim().parse::<usize>()?).is_some() {
-                    return Err("origin duplicate framing".into());
-                }
+            if name.eq_ignore_ascii_case("content-length")
+                && length.replace(value.trim().parse::<usize>()?).is_some()
+            {
+                return Err("origin duplicate framing".into());
             }
             spoof |= humanymous_framework_adapter::internal_header(name);
         }

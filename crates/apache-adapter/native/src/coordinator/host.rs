@@ -784,8 +784,9 @@ pub fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
         &serde_json::to_vec(&summary)?,
     )?;
     println!("{}", serde_json::to_string(&summary)?);
-    result.map_err(|reason| Box::<dyn std::error::Error>::from(reason))?;
-    cleanup.map_err(|reason| Box::<dyn std::error::Error>::from(reason))?;
+    let (_, _, _, outcome) = result.map_err(Box::<dyn std::error::Error>::from)?;
+    cleanup.map_err(Box::<dyn std::error::Error>::from)?;
+    outcome.map_err(Box::<dyn std::error::Error>::from)?;
     ensure(passed, "pilot-not-passed")?;
     Ok(())
 }
