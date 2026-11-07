@@ -623,3 +623,24 @@ bytes, uppercase hex and oversize/predecode refusal. Overall NEEDS-WORK remains:
 actual native query/owner proof, loaded-image limits, unattended publisher policy,
 independent W and atomic epoch/secret gate. Sent exact review to root/native owner.
 No new source implementation, feature edge or runtime execution was performed.
+
+## One-shot unattended publisher architecture direction
+
+Root accepted a finite one-shot registered Windows P publisher service, alongside
+persistent S/O: three registered roles, two persistent processes. Original
+installer/controller authorization and stable publisher service principal are
+DISTINCT. Protected original installer/root/SCM-owner record binds exact publisher
+principal/artifact/original public key; the old interactive-P==root-owner premise
+cannot be reused unchanged. No self-issued key trust/reset or production key
+creation. P may start/wait exact S/O TransportPrepared then publish; no dependency
+cycle where S/O waits for P stop while P waits for S/O acceptance. Concrete boot/
+recovery orchestration, fresh instances/grants, conserved deadlines and failure
+cleanup remain required. Service-principal store access over stop/start/reboot
+needs actual genuine hosted probe; no interactive-profile/machine-DPAPI fallback.
+
+Authority reflected this architecture direction only. Native-security owns the
+narrow safe API/query/retained-handle/Prepared-discovery/test-credential probe;
+report dependency/feature gaps before root manifest integration. No local SCM or
+account action, production credential, full issuer/channel implementation or
+additional runtime test was performed. Full implementation still requires accepted
+API, exact golden vectors and actual probe proof; remaining P0s are not waived.

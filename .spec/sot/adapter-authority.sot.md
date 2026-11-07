@@ -314,17 +314,33 @@ handoff, writable settings, erasure, kill or ban capability is added.
 
 ### B01. Concrete process architecture and ownership
 
-Root selected three roles and two persistent MAIN identities: transient authorized
-provisioner P; persistent observer O that IS the bootstrap receiver/broker AND the
+Root selected three runtime roles and two persistent MAIN identities: finite
+authorized publisher P; persistent observer O that IS the bootstrap receiver/broker AND the
 actual management client; independent service host S that SENDS its fresh observer
 credential. Broker!=observer forwarding is Unsupported. ManagementPolicy pins
 actual O, never P's short-lived PID, S or a purported observer field in an envelope.
 
-Root has APPROVED the initial Windows launcher architecture: P configures two exact owned
+Root has APPROVED the initial Windows launcher architecture: the authorized
+installer/controller configures two exact owned
 SCM own-process service roles. SCM launches S using the protected service-host
 entry and O using new Rust `humanymous observer-host --plan PATH --plan-sha256 DIGEST`.
 O has its own observer virtual-service principal, distinct from S. The plan is
 bounded nonsecret protected metadata; its hash does not prove issuer authority.
+For unattended Windows, root additionally accepted a finite one-shot registered
+P publisher service: THREE registered roles, only TWO persistent processes S/O.
+The original installer/controller authorization is distinct from P's stable
+publisher service principal. A protected original installer/root/SCM-owner record
+must bind that exact publisher principal, artifact and ORIGINAL public key; no
+self-issued trust, missing-key reset or production key creation is authorized.
+The previous interactive-P TokenUser==installer/root-owner assumption does not
+apply unchanged to this delegated service publisher.
+P may start/wait the exact S/O TransportPrepared instances, then publish and exit.
+Avoid dependency cycles: S/O must not wait for P service stop while P waits for
+their acceptance. Boot/recovery orchestration must specify fresh instances/grants,
+conserved absolute deadlines and failure cleanup. Actual service-principal key
+availability across service stop/start and reboot needs genuine hosted proof;
+no interactive-profile or machine-DPAPI fallback. This architecture direction
+does not qualify unattended recovery or authorize local SCM/account mutation.
 No observer-host command, second SCM implementation or grant publisher exists by declaration.
 Root approval does not authorize actual local SCM/account mutation or qualify runtime.
 The ordinary fixture instead uses retained supervisor-owned child handles under
@@ -332,7 +348,7 @@ ordinary principals. It is not genuine SCM or cross-principal qualification.
 
 | Actor | Expected native identity/launcher | Ownership and stop authority |
 |---|---|---|
-| P | Authorized transient installer/controller with verified installation scope | Establishes protected trust/role/epoch configuration; never receives management authority or becomes a persistent peer |
+| P | Finite publisher under stable delegated service principal, distinct from original installer/controller | Uses original protected delegation to publish exact role/epoch authorization; never receives management authority or becomes a persistent peer |
 | O | Proposed independent observer SCM role; actual principal, PID, retained native instance and approved artifact | Owns receiver, client credential, authenticated liveness channel and witness supervision through final service flush |
 | S | Independent SCM own-process service; actual principal, PID, retained native instance and protected launch artifact | Owns sealed writer, fresh server credential, pending/active management listener, public ingress and activation/revocation; SCM owns process lifetime |
 | W | Distinct witness producer, supervised by O with retained actual child instance and independently pinned key | Subordinate native child, not a third MAIN role or an alias for O; remains usable until writer flush; no organizational-independence claim |
@@ -377,8 +393,9 @@ signed record is not a bearer credential: both actual native instance/principal
 proofs remain mandatory. A grant cannot supply its own trusted publisher key.
 
 The concrete candidate is WindowsScmSignedGrantV1 in plan:root/20261107103828:
-explicit new-install publisher key in P's actual WinCred account, protected native
-installation/SCM-owner trust root, and a public signed record targeting retained
+explicit originally authorized publisher key in the exact delegated service
+principal's protected native store, protected original installer/SCM-owner trust
+root, and a public signed record targeting retained
 actual S/O instances. Existing read_service_secret is read-only and does NOT
 implement this publisher. Architecture acceptance does not implement or qualify
 the actual issuer, publication, discovery, key persistence or native proof. If
@@ -646,8 +663,10 @@ query/retained handles without SeDebug/admin fallback; actual create-new SCM/roo
 owner binding and existing-key no-reset; typed authenticated P acceptance without
 management authority; process-wide one-claim, rollback and conserved deadlines;
 actual loaded-artifact binding; atomic release/epoch gate; and explicit unattended
-restart/republication. Transient P's private WinCred must not be assumed available
-after logout/restart. No implicit renew, replacement key or universal TTL policy.
+restart/republication. Root accepted the finite one-shot P service direction, not
+actual service-principal WinCred availability or production key provisioning.
+Original interactive installer's private WinCred must not be assumed available
+to that service or after logout/reboot. No implicit renew, replacement key or TTL policy.
 Linux and macOS require separate backends and remain unqualified by this candidate.
 R2 architecture accepted by root: two SCM-owned own-process O/S roles under
 distinct service principals, with W supervised by O. The new observer-host command,
