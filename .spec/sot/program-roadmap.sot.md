@@ -25,9 +25,9 @@ execution venue table is in sot:root/rust-migration; prior hosted-only snapshots
 are historical. Real Cross-OS/final hosted obligations remain unclosed.
 
 The user subsequently authorized actual local Windows/WSL timing and resource
-comparison, superseding the blanket hosted-only rule. Root holds a temporary
-quiet window for comparable measurements against exact 8132117 in an isolated
-checkout. No hosted environment markers are spoofed. Actual SCM/account changes
+comparison, superseding the blanket hosted-only rule. The temporary measurement
+quiet window against exact 8132117 in an isolated checkout has ended after the
+paired experiment above. No hosted environment markers are spoofed. Actual SCM/account changes
 remain outside this benchmark. Local Actions executor research is recorded in
 evidence:root/20261107090552; wrkflw is an evaluation candidate, while the existing
 Rust validation commands remain the preferred shared command authority.
@@ -54,10 +54,16 @@ reduce subsequent allocations; never terminate another owner's processes.
 
 | Slot | Current allocation | Exclusive target | Boundary |
 |---|---|---|---|
-| A | Product-lab runner pure checks and Clippy | target | No actual Docker/process/network tests |
-| B | Node/Python/Ruby packaging compilation | target/node-native/build | No actual framework or installer execution |
-| C | Delivery 50 pure checks and scoped Clippy | target/validation-agents | No actual native/socket/GUI pilots |
-| D | Apache safe units and default native-package compilation | target/validation-native | No httpd/bindgen/header features or native execution |
+| A | Latest Audit all-targets check, Clippy and reviewed pure units | target/validation-audit | Actual retained-state/process regressions require the next allocation |
+| B | First Unix Python WSGI host-pilot compile and Clippy on immutable 8eb66811 snapshot | /home/smile/humanymous-validation-targets/python-native | WSL native Rust only; no Docker, import or server execution |
+| C | Current delivery pure checks and all-target Clippy | target/validation-ci-delivery | No actual native/socket/GUI/SCM/container pilots |
+| D | Frozen private gem setup, then Pages apex and subpath validation | Task-private gem path and separate Pages destinations | First attempts stopped at 42 missing gems before rendering; no browser/server |
+
+These are dispatch allocations, not terminal success claims. Apache's next Linux
+native compilation and .NET's release facade/harness build are queued until a
+slot returns. Apache Windows pilot units passed ten cases but exclude Linux
+httpd host code. The private official .NET SDK readiness check passed but does
+not qualify the actual ASP.NET host or a separate ordinary actor.
 
 Heavy CEF/native/bindgen builds remain mutually exclusive. Model loading needs
 a separate explicit allocation and is not implicitly enabled by the new ceiling.
