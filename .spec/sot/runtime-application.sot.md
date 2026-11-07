@@ -480,3 +480,17 @@ write or durability claim until actual private snapshot/audit replay service is
 available. All mutation methods/paths and scoring weight/threshold/rule/band fields
 remain refused. Audit PrivateState is currently crate-private; request its owning
 API instead of copying native permissions, locks, atomic storage or cryptography.
+R12/R15 shared sealed owner migration: audit29ee901 owns SealedLog custody+WAL+
+witness lifetime and all key loading/recovery logic. Runtime startup retains only
+its compatible public SealedAudit adapter and Configuration/Peer mapping, calls
+SealedLog::open with UnlockCredential::Utf8 and PinnedWitness, and never extracts
+mutable Log/Custody/keys. Existing authority private-directory checks still bind
+the explicit configured Peer UID/SID before secret consumption; shared audit
+checks its own actual custody owner. Required missing witness refuses first.
+ExternalWitness delegates key pinning to PinnedWitness; no copied pin validator.
+Public readiness and witness durability/independence distinctions are unchanged.
+Explicit recovered startup requires a supplied witness plus independently pinned
+head and TailRecovery choice; no implicit history/key provisioning, effect retry
+or tail erasure. Actual recovery coverage/ambiguous tail is reported separately
+and does not qualify full witnessed product state. Audit shared pure6/Clippy
+results are producer scope only; runtime adoption compile/hosted tests are pending.

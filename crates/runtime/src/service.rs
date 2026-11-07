@@ -76,7 +76,7 @@ pub struct ServiceHost {
 impl ServiceHost {
     /// Authenticate existing credentials before exposing a ready listener.
     pub async fn bind(configuration: Configuration) -> io::Result<Self> {
-        Self::bind_inner(configuration, None, None).await
+        Self::bind_inner(configuration, None, None, None).await
     }
 
     /// Consume a pinned external client. No witness failure permits fallback.
@@ -84,7 +84,7 @@ impl ServiceHost {
         configuration: Configuration,
         witness: ExternalWitness,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, Some(witness), None).await
+        Self::bind_inner(configuration, Some(witness), None, None).await
     }
 
     /// Bind a separately authorized native management service in the same custody
@@ -94,29 +94,53 @@ impl ServiceHost {
         witness: Option<ExternalWitness>,
         policy: ManagementPolicy,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, witness, Some(policy)).await
+        Self::bind_inner(configuration, witness, Some(policy), None).await
+    }
+
+    /// Explicit operator recovery with an independently pinned head and witness.
+    /// It never retries a prior request or implies its origin effect completed.
+    pub async fn bind_recovered(
+        configuration: Configuration,
+        witness: ExternalWitness,
+        tail: humanymous_audit::storage::TailRecovery,
+        management: Option<ManagementPolicy>,
+    ) -> io::Result<Self> {
+        Self::bind_inner(configuration, Some(witness), management, Some(tail)).await
     }
 
     async fn bind_inner(
         mut configuration: Configuration,
         witness: Option<ExternalWitness>,
         management_policy: Option<ManagementPolicy>,
+        recovery: Option<humanymous_audit::storage::TailRecovery>,
     ) -> io::Result<Self> {
         configuration
             .validate()
             .map_err(|_| io::Error::other("configuration invalid"))?;
         let witness_durability = witness.as_ref().map(ExternalWitness::durability_name);
-        let sealed = match witness {
-            Some(witness) => crate::startup::open_audit_with_witness(&mut configuration, witness),
-            None => crate::startup::open_audit(&mut configuration),
+        let sealed = match (witness, recovery) {
+            (Some(witness), Some(tail)) => {
+                crate::startup::recover_audit_with_witness(&mut configuration, witness, tail)
+            }
+            (Some(witness), None) => {
+                crate::startup::open_audit_with_witness(&mut configuration, witness)
+            }
+            (None, None) => crate::startup::open_audit(&mut configuration),
+            (None, Some(_)) => return Err(io::Error::other("recovery requires external witness")),
         }
         .map_err(io::Error::other)?;
+        let recovery=sealed.recovery_coverage().map(|coverage|serde_json::json!({
+            "durable_sequence":coverage.durable_sequence,"witnessed_through":coverage.witnessed_through,
+            "ambiguous_tail_len":coverage.ambiguous_tail_len,"fully_witnessed":coverage.fully_witnessed,
+            "authentication":coverage.authentication,
+        }));
         let audit = Arc::new(Mutex::new(sealed));
         let listener = TcpListener::bind(configuration.listen).await?;
         let mut profile = configuration.readiness();
         profile["audit_external_witness"] = serde_json::json!(witness_durability.is_some());
         profile["audit_witness_required_durability"] = serde_json::json!(witness_durability);
         profile["audit_witness_independence_qualified"] = serde_json::json!(false);
+        profile["audit_startup_recovery"] = serde_json::json!(recovery);
         profile["administration"] = serde_json::json!(management_policy.is_some());
         profile["administration_writable"] = serde_json::json!(false);
         let management = management_policy

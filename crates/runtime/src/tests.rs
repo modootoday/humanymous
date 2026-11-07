@@ -60,6 +60,48 @@ fn required_external_witness_refuses_writer_only_before_opening_state() {
     // Missing injection does not consume the private unlock credential.
     assert_eq!(configuration.audit.keys.passphrase.as_str(), "unit-fixture");
 }
+
+#[test]
+fn recovery_without_independent_head_never_opens_state_or_calls_witness() {
+    use humanymous_audit::{
+        checkpoint::{Checkpoint, CheckpointWitness, WitnessReceipt},
+        log::WitnessDurability,
+        merkle::Hash,
+        storage::TailRecovery,
+    };
+    struct RejectOnlyWitness;
+    impl CheckpointWitness for RejectOnlyWitness {
+        fn public_key(&self) -> [u8; 32] {
+            [1; 32]
+        }
+        fn last_size(&self) -> std::io::Result<u64> {
+            panic!("missing-pin recovery must not call witness")
+        }
+        fn validate_local_head(&self, _: &Checkpoint) -> std::io::Result<()> {
+            panic!("missing-pin recovery must not call witness")
+        }
+        fn counter_sign(&mut self, _: &Checkpoint, _: &[Hash]) -> std::io::Result<WitnessReceipt> {
+            panic!("missing-pin recovery must not call witness")
+        }
+    }
+    let mut configuration = config();
+    configuration.audit.allow_new = false;
+    let witness = crate::startup::ExternalWitness::new(
+        Box::new(RejectOnlyWitness),
+        [1; 32],
+        WitnessDurability::FileAndDirectory,
+    )
+    .unwrap();
+    assert!(matches!(
+        crate::startup::recover_audit_with_witness(
+            &mut configuration,
+            witness,
+            TailRecovery::RequireCovered
+        ),
+        Err("explicit recovery binding required")
+    ));
+    assert_eq!(configuration.audit.keys.passphrase.as_str(), "unit-fixture");
+}
 #[derive(Clone, Default)]
 struct Audit {
     records: Arc<Mutex<Vec<Record>>>,

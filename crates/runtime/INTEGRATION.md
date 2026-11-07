@@ -298,3 +298,33 @@ are authored NOT_RUN. Frozen scoring and secret fields are absent/refused;
 settings_writable remains false. Full CAS apply/durable replay/recovery is still
 required and depends on an audit-owned private snapshot service, not copied OS
 storage. No current-source Cargo/native process/IPC/browser execution occurred.
+Shared startup migration now consumes audit29ee901 SealedLog/PinnedWitness and
+removes runtime-owned key loading, HMAC/signing seed composition, WAL creation
+and custody ownership logic. Public compatibility wrappers retain configured
+native Peer binding and missing-witness-first refusal. ServiceHost::bind_recovered
+requires an explicit witness/TailRecovery and independently retained trusted head;
+startup rejects missing head or history-provisioning mode before reading state
+or consuming unlock. Readiness reports bounded startup recovery coverage facts,
+not arbitrary pin/key data or completed effects. One pure missing-pin refusal
+fixture uses a rejection-only witness whose I/O methods panic if invoked; no
+synthetic successful witness is claimed. Runtime adoption compile/hosted tests
+remain NOT_RUN; shared audit pure6/Clippy results remain producer scope.
+
+Git coordination incident record: a failed claim raced audit29ee901 and the old
+PowerShell batch continued to owned runtime1a9c48a because it lacked an immediate
+native exit-code guard. Verified history audit29ee901→runtime1a9c48a→root82df720;
+shared index empty, no index.lock, git-ops free. Audit owner independently confirmed
+its source commit/files preserved and no observed loss. No reset/restore/unstage/
+amend/force action was taken. All subsequent writes must check successful claim
+exit AND actual git-ops session before add/commit, and release only that session.
+Historical hosted evidence recovered2026-11-07: run42348518353 at exact source
+63f69ae9de703939b7b9091e2f215b12bea265de completed FAILURE,16jobs:3success/13failure.
+MSRV job128338631933 explicitly executed runtime15tests with15passed/0failed/
+0ignored/0filtered, including the native shared-client ACK fixture. That source
+predates later management/stream/admission/shared-owner work. These are native
+fixture/component results with client-asserted report and mock audit, not actual
+browser/human or full witnessed product evidence. Latest source remains NOT_RUN.
+Private captured CLI stdout (not original HTTP response bytes) is attached under
+evidence:root/20261107061820; sanitized exact-source summary is attached under
+public evidence:root/20261107061821. Other failed native probe details remain
+unrecovered; no success is inferred. No rerun/dispatch occurred.
