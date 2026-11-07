@@ -2,6 +2,9 @@
 use crate::{Result, require};
 use serde_json::{Value, json};
 
+#[path = "../../../../test/lab/browser_outcome.rs"]
+mod browser_outcome;
+
 pub fn validate(report: &Value) -> Result<Option<Value>> {
     let Some(diagnostic) = report.get("safe_diagnostics") else {
         return Ok(None);
@@ -52,9 +55,17 @@ pub fn validate(report: &Value) -> Result<Option<Value>> {
         )?;
         failures.push(json!({"case_id":id,"status":"failed","error_code":row["error_code"]}));
     }
-    Ok(Some(
-        json!({"schema":diagnostic["schema"],"failures":failures,"failure_count":rows.len(),"partial":false}),
-    ))
+    let mut public = json!({"schema":diagnostic["schema"],"failures":failures,"failure_count":rows.len(),"partial":false});
+    if let Some(outcome) = diagnostic.get("browser_actor") {
+        require(
+            contract["optional_fields"] == json!(["browser_actor"])
+                && contract["browser_actor_contract"] == "browser-outcome-contract.json",
+            "unknown optional lab diagnostic contract",
+        )?;
+        public["browser_actor"] = browser_outcome::public_outcome(outcome)
+            .map_err(|_| "invalid owned browser outcome".to_owned())?;
+    }
+    Ok(Some(public))
 }
 
 pub fn public(report: &Value) -> Value {
@@ -92,6 +103,45 @@ mod tests {
             assert!(validate(&value).is_err());
             assert_eq!(public(&value)["status"], "rejected");
             assert!(!public(&value).to_string().contains("private-canary"));
+        }
+    }
+    #[test]
+    fn optional_browser_outcome_reuses_owner_validation_and_rejects_the_whole_projection() {
+        let contract: Value = serde_json::from_str(include_str!(
+            "../../../../test/lab/runner/browser-outcome-contract.json"
+        ))
+        .unwrap();
+        let mut outcome = json!({});
+        for field in contract["fields"].as_array().unwrap() {
+            outcome[field.as_str().unwrap()] = Value::Null;
+        }
+        outcome["schema"] = contract["outcome_schema"].clone();
+        outcome["state"] = json!("not_observed");
+        outcome["dns_finish"] = json!("unknown");
+        outcome["source_prefix_authenticated"] = json!(false);
+        outcome["full_product_qualified"] = json!(false);
+        let mut value = report();
+        value["safe_diagnostics"]["browser_actor"] = outcome.clone();
+        assert_eq!(public(&value)["browser_actor"], outcome);
+        assert!(public(&value)["browser_actor"]["inventory_count"].is_null());
+        for mutation in 0..3 {
+            let mut changed = value.clone();
+            match mutation {
+                0 => {
+                    changed["safe_diagnostics"]["browser_actor"]["private-path"] =
+                        json!("private-canary")
+                }
+                1 => changed["safe_diagnostics"]["browser_actor"]["inventory_count"] = json!(0),
+                _ => {
+                    changed["safe_diagnostics"]["browser_actor"]["full_product_qualified"] =
+                        json!(true)
+                }
+            }
+            assert!(validate(&changed).is_err());
+            let rejected = public(&changed);
+            assert_eq!(rejected["status"], "rejected");
+            assert!(!rejected.to_string().contains("private-canary"));
+            assert!(rejected.get("failures").is_none());
         }
     }
 }
