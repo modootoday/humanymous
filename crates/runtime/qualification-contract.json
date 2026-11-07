@@ -7,13 +7,15 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 48,
-      "macos": 48,
-      "windows": 44
+      "linux": 50,
+      "macos": 50,
+      "windows": 46
     },
     "common_test_names": [
       "configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
       "configuration::operational::tests::operational_schema_excludes_frozen_detection_policy_and_secrets",
+      "control::state::tests::spent_intent_without_covered_effect_cannot_become_healthy",
+      "control::tests::node_kill_binding_is_exact_and_survives_policy_revision_changes",
       "http::origin_response::tests::chunk_ambiguity_truncation_extensions_and_trailers_fail_closed",
       "http::origin_response::tests::chunked_complete_body_reframes_and_preserves_cookie_fields",
       "http::origin_response::tests::close_delimited_body_is_bounded_and_reframed_after_eof",

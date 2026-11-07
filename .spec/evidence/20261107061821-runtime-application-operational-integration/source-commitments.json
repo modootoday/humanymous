@@ -7,15 +7,15 @@
   },
   {
     "path": "crates/runtime/INTEGRATION.md",
-    "bytes": 31869,
-    "sha256": "5ced0d911694184f6bc4e898c283216d4578d3d76786cdbc76d824c9e3f35e01",
-    "git_blob": "62bb42a1b52bcb32fbda523047699886f481f38e"
+    "bytes": 34504,
+    "sha256": "e58624e93f3dc4f0946f462dd4d7d901872c61f3ea41cc0d1d88af00785785d0",
+    "git_blob": "1dbaf9494fc5d190ad468df3e55a777d002098b2"
   },
   {
     "path": "crates/runtime/qualification-contract.json",
-    "bytes": 5236,
-    "sha256": "7d6d8e4c278508095cdb74182e43f9ac340035c4d23d53a8d99ccd9c76d688af",
-    "git_blob": "bb3177d8be7c47559dcf76a62173372417bc6e7d"
+    "bytes": 5415,
+    "sha256": "9e2858a91bdd11428e1d9e93d1460dc05a2b76883e374afbf178b534a7835093",
+    "git_blob": "d986be62897e65393589632c08fb5ed3ef7a21dc"
   },
   {
     "path": "crates/runtime/src/application.rs",
@@ -60,6 +60,18 @@
     "git_blob": "5e993aea928c076d61327bebfd9ec17eb0f197e1"
   },
   {
+    "path": "crates/runtime/src/control.rs",
+    "bytes": 3656,
+    "sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc",
+    "git_blob": "a3c6f52c1b8118cf09088f40167811aef748f310"
+  },
+  {
+    "path": "crates/runtime/src/control/state.rs",
+    "bytes": 5763,
+    "sha256": "f681fdaa2a898a92e5da58eb53a17a7660f4d841596ab8046fde82072944925e",
+    "git_blob": "1fde8b8d0eda89bf7103f7697d7b1858201c3554"
+  },
+  {
     "path": "crates/runtime/src/http.rs",
     "bytes": 9920,
     "sha256": "cee415ae755a5c4df8cecb0aaaaccbc4b9dc220e7f78cd77fc81afab6fb0680e",
@@ -79,9 +91,9 @@
   },
   {
     "path": "crates/runtime/src/lib.rs",
-    "bytes": 332,
-    "sha256": "4c353bf7d58cfab3e30878bcfaa9dad9fdbea26def327c2ab52b79efca2713fe",
-    "git_blob": "dd2d5ece0444d9afdbca54adb8ea7ed3e1ca777e"
+    "bytes": 349,
+    "sha256": "69ece5ec5219113b8e09c165de475ea8e8248e32293ed1f7866bc36bdf201f02",
+    "git_blob": "cb3d4b764767c8d787c0806e346aef9e6ed61dba"
   },
   {
     "path": "crates/runtime/src/main.rs",
@@ -175,9 +187,9 @@
   },
   {
     "path": "crates/runtime/src/startup.rs",
-    "bytes": 6018,
-    "sha256": "de61590e9fb2026bc3dd29e226a03d361392d17eb33815ad6637167112aefa98",
-    "git_blob": "1895fd617039773bf5dbc96cd591fad119807a45"
+    "bytes": 6204,
+    "sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db",
+    "git_blob": "05a7055a4c38d886c192e88d17840d7629b156cd"
   },
   {
     "path": "crates/runtime/src/tests.rs",

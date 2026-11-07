@@ -536,3 +536,31 @@ and the33rd rejects429 after the committed capacity change; old session rejects4
 Observer response remains writable=false even when operator_available=true. Scope
 still excludes destructive controls. Direct service stop watch and monotonic
 command wall-time checks supplement native LocalContext throughout commit/apply.
+Exact813 historical qualification update: terminal run42355168729 FAILURE, but
+MSRV job128359709010 SUCCESS explicitly executed runtime library41 and native
+process1 with zero failed/ignored/filtered. Library includes actual Unix observer
+management drain/controller-close plus native TCP ACK/stream/quota. This is old
+813 source/default workspace feature graph, not current all-features/TLS/operator
+qualification. Current Rust source remains5ee2e0c NOT_RUN in benchmark quiet.
+Private captured stdout and public sanitized names/counts attached under evidence
+20261107061820/20261107061821; original Ubuntu native prefix remains separate.
+R10 owner contract accepted: fresh exact independently retained control state is
+required at startup/admission. Covered kill=>killed; retained consumed intent with
+no covered effect=>unavailable/pending, no auto replay or healthy fallback. Audit
+owner is adding proof query; runtime has not enabled mutations. Pure KillTarget
+source fixes protocol/install/node/killed canonical data and shared commitment,
+with independent106byte vector and policyrevision/foreignscope tests NOT_RUN.
+Shared Scope::validate requested rather than copying control identity rules.
+This adds one pure name: library49Unix/45Windows (45common+4Unix), native_process1.
+R10 typed assessment WIP consumes actual RetainedControlState (not JSON/bool),
+pinned authority and actualSealedAudit coverage. It rejects other consumed kill
+targets, contradictory/malformed records and all binding failures; preserves
+Pending for spent intent without covered effect. Exact state/binding metadata is
+nonClone/nondeserializable and no grant/effect method. One pure classification
+matrix authored NOT_RUN; now46common+4Unix library50Unix/46Windows/native1.
+ServiceHost issuer/query/admission serialization and mutation remain unwired;
+no permanentkill capability claim. Depends audit owner's new query/Scope helper
+source checkpoint, awaiting commit and post-quiet validation.
+Audit producer query/Scope helper canonical9c47f8e4dfb8dcfe0dee4e3359bb3c5e573050d5
+is committed. Runtime target/assessment consumer checkpoints against that source;
+new producer/consumer compile and actual lifecycle tests remain NOT_RUN in quiet.

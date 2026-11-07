@@ -449,3 +449,37 @@ The witness is a real same-process durable component fixture, not independently
 deployed. Source inventory is now44 common plus4 Unix library cases (48Unix/
 44Windows), plus native_process1. No execution occurred in benchmark quiet window.
 Actual cancellation/crash/failure-matrix and Windows operator pilots remain open.
+Historical exact813 hosted component evidence recovered: run42355168729 ended
+FAILURE; its successful MSRV job128359709010 ran runtime library41 and native
+process1, zero failed/ignored/filtered. Native TCP ACK/stream/quota and Unix
+observer management drain/controller-close passed in that predecessor. Command
+was workspace default-feature all-targets tests on Ubuntu24.04/Rust1.99.1, not an
+independent current all-features runtime gate. Runtime tree at813 is
+f7c85ec9f75c2b56601c15ca6667832be04b331b. It predates current witnessed settings,
+readiness builder, TLS and resource operator. No browser/human/full-product or
+current-source qualification is inferred. Sanitized exact names/counts attached
+in evidence:root/20261107061821; raw CLI capture stays private in20261107061820.
+R10 target data source (NOT_RUN): `control::KillTarget` derives immutable
+installation/node scope and fixed compact JSON protocol/install/node/state:killed
+from trusted configuration, then uses audit's shared target_commitment. It
+creates no authorization or kill state. Policy revision changes keep the target;
+new installation/node requires explicit migration. One independent106byte vector
+and scope/revision fixture authored. No kill, ban or erasure effect is enabled.
+
+Audit owner requires fresh exact externally retained controlledger proof before
+kill admission/restart: covered kill restores disabled; consumed retained kill
+without covered effect is unavailable/pending, not healthy or automatic replay.
+Existing witness exact-head check rejects new/rolled-back local WAL after signer
+advanced, but cached broker snapshots/joint rollback are not independence or a
+lease. Actual permanent kill waits for the shared RetainedControlState guard.
+Source library inventory now45common+4Unix=49Unix/45Windows; native_process1.
+R10 assessment source WIP additionally consumes actual `RetainedControlState`,
+pinned authority and `SealedAudit` to join retained intent with covered effect.
+It rejects other consumed targets (future protocol changes cannot rearm), foreign
+bindings, missing external coverage or effect-without-intent contradiction.
+Private nonClone/nondeserializable KillStatus retains scope/target/pin/anchor/
+audit-extent; data is not a grant or a lease. Actual ServiceHost control issuer,
+startup/admission serialization and retained-permit-only effect remain unwired.
+Pure classification matrix authored NOT_RUN; inventory50Unix/46Windows/native1.
+Required typed control query/Scope API producer is audit9c47f8e4dfb8dcfe0dee4e3359bb3c5e573050d5.
+Producer and this consumer remain source-only until post-quiet allocated validation.

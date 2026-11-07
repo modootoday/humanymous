@@ -624,3 +624,42 @@ within the command. Session epoch observation is repeated before/after apply;
 resource mutation cannot revive a poisoned/rolled-back epoch. Observer settings
 responses remain writable=false and separately indicate operator_available;
 role availability never changes the observer's permission.
+R10 permanent node kill target: fixed UTF-8 compact serde field order
+{protocol,installation,node,state}, protocol=humanymous.runtime-kill/0.1 and
+state=killed, no trailing newline. Installation/node derive from trusted startup
+configuration; shared audit::control::target_commitment owns hashing/framing.
+Policy revision/tenant/origin metadata do not change this node-level target;
+installation/node migration is an explicit separately authorized operation.
+Target data is not authorization, state, a retained grant or effect completion.
+The fixture install/runtime-test payload is106bytes and shared commitment is
+b5e9469977ea5654078b437e756878919f4ca58e5b127e450179b226b8cf2cef.
+
+Permanent kill admission/restart must consume fresh authenticated controlledger
+state bound to exact independent latest retained anchor, issuer public identity,
+control scope/action/target. A covered authenticated kill restores killed;
+retained consumed kill without covered effect is unavailable/pending, never
+healthy and never generic permit replay. Missing/mismatched evidence refuses.
+Expired grants or policy revision changes cannot rearm. Established state uses
+existing identity/allow_new=false and fresh brokered witness handshake/current
+pin: cached witness Ready/Signed snapshots are not a distributed lease and cannot
+resist joint rollback/reprovision/compromised broker. Hold actual kill mutation
+until the audit-owned non-deserializable RetainedControlState guard is wired.
+R10 assessment source seam: KillStatus::assess consumes the audit-owned
+RetainedControlState, trusted pinned authority public identity and actual
+SealedAudit. It rejects foreign scope/action/target/public identity, absent
+external audit coverage, or any other consumed target for KillSwitch in that
+scope; a future target protocol cannot silently forget earlier intent. Reuse
+Scope::validate for control identities; do not duplicate its grammar.
+
+runtime.kill.engaged/v1 effect records bind stamped node, request_id
+kill:<canonical nonzero32byte operation hex>, correlation_id stable target digest,
+verdict KILLED and enforcement_action/mode/fail_mode kill_switch/enforce/fail_closed.
+Only independently covered records establish the effect. No intent/no effect
+classifies Clear, retained intent/covered effect Killed, retained intent with no
+or ambiguous effect Pending. Effect without retained intent or malformed binding
+refuses. KillStatus has private fields/noClone/Deserialize and retains exact
+scope/target/public/control-anchor/audit-extent bindings; it is not a grant or a
+freshness lease. Actual ServiceHost admission/issuer serialization and effect
+consumer are still required; source assessment alone enables no kill endpoint.
+The runtime.kill.* event namespace is reserved for permanent effect history; an
+unknown event/version in this namespace refuses rather than becoming absence.

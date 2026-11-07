@@ -20,7 +20,8 @@
     "native-witnessed-settings-store-and-committed-apply",
     "shared-full-readiness-builder",
     "tls-h1-joined-ingress-consumer-WIP",
-    "native-resource-operator-serialized-CAS-WIP"
+    "native-resource-operator-serialized-CAS-WIP",
+    "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
   "current_source_executed_tests": 0,
@@ -48,6 +49,19 @@
   "new_pure_stream_profile_fixture_functions": 5,
   "new_hosted_only_stream_and_quota_tcp_fixture_functions": 2,
   "fixture_count_note": "Legacy category counts are historical; qualification-contract.json owns exact current target/case inventories, not executed coverage",
+  "historical_hosted_8132117": {
+    "run_id": 42355168729,
+    "run_conclusion": "failure",
+    "msrv_job_id": 128359709010,
+    "msrv_job_conclusion": "success",
+    "runtime_library_passed": 41,
+    "native_process_passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_out": 0,
+    "scope": "Historical Ubuntu actual native components; workspace default feature graph, not current TLS/operator/control assessment or browser/full product qualification",
+    "summary": "hosted-42355168729-runtime-summary.json"
+  },
   "historical_local_709b0e2": {
     "runtime_commit": "709b0e23036011fb3a58d25a3d67c38e28e603a6",
     "checkout_head_at_start": "bfab3fd77d688dcd7d9ba439cbe7162f1b110e96",

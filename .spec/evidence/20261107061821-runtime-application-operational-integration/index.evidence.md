@@ -3,15 +3,16 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T09:23:01Z
+updated: 2026-11-07T09:45:47Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
 files:
   - {path: hosted-42348518353-runtime-summary.json, sha256: 33619f43f669308c5cc0a03834a6cd48eba5a993f1fbc894aae717af4ec8cfec, bytes: 1128, store: repo}
   - {path: cli-dependency-static-observation.json, sha256: b0b28c5e59e9cd8e4ee51c00f1da123674e679676ce6788b1912589034b2c86e, bytes: 868, store: repo}
-  - {path: status.json, sha256: d6e8b7a087ddc19f7bb921b2f52696a9aff92544587fb85ea75e29c37ad167d1, bytes: 2749, store: repo}
-  - {path: source-commitments.json, sha256: 288d4be6259e3be03e0c0833150b68e0f74d2512932f78abd63acc905ea56c35, bytes: 8381, store: repo}
+  - {path: hosted-42355168729-runtime-summary.json, sha256: 6f131ab8738dd6e2976b47a5afa7403736e349bdbf82d13a1a279ef332c7617a, bytes: 4941, store: repo}
+  - {path: status.json, sha256: 2ca2945b34584b6690b9a570fff5f517eafb441e0668627e6d1264b0ae8600f6, bytes: 3349, store: repo}
+  - {path: source-commitments.json, sha256: 4e800db36ca48d2c8a5d4aadefebf0c33a5997026fc42aa2890553c3f6727c50, bytes: 8815, store: repo}
 ---
 
 # Runtime application operational integration
@@ -48,3 +49,9 @@ Private captured CLI stdout (not original HTTP response bytes) is attached under
 evidence:root/20261107061820; sanitized exact-source summary is attached under
 public evidence:root/20261107061821. Other failed native probe details remain
 unrecovered; no success is inferred. No rerun/dispatch occurred.
+Historical813 MSRV job128359709010 actually passed runtime library41 and native
+process1 with0failed/ignored/filtered; runtime main0 excluded. Overall run failed.
+The attached sanitized summary binds exact source/tree, command, names and private
+CLI-capture hash. These default workspace-feature predecessor components do not
+qualify current TLS/operator/control source, actual browser or full product.
+Current source still awaits Root allocation after benchmark quiet window.

@@ -2,6 +2,7 @@
 pub mod application;
 pub mod browser;
 pub mod configuration;
+pub mod control;
 pub mod http;
 pub mod management;
 pub mod service;

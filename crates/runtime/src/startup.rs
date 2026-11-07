@@ -45,6 +45,9 @@ impl humanymous_authority::decision::DurableAudit for SealedAudit {
     }
 }
 impl SealedAudit {
+    pub(crate) fn matches_control_scope(&self, scope: &humanymous_audit::control::Scope) -> bool {
+        self.scope.installation == scope.installation && self.node == scope.node
+    }
     pub(crate) fn witnessed_through(&self) -> std::io::Result<Option<u64>> {
         if !self.external_witness {
             return Ok(None);
