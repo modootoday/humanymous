@@ -377,3 +377,94 @@ container does not establish all GitHub runner, kernel or Cross-OS equivalence.
 Docker backend switching, WSL feature removal, cache deletion and foreign daemon
 termination are not part of this environment setup.
 
+## GPU acceleration policy draft v0
+
+The user requests GPU opportunity analysis and broader compatibility. This section
+defines selection and qualification requirements; it does not claim an implemented
+compute abstraction, admitted dependency, qualified backend or measured speedup.
+Existing CPU experiments retain their original inputs, backend and deadlines.
+
+| Workload | Selection priority | Admission condition |
+| --- | --- | --- |
+| Native UI rendering | Qualified hardware GPU preferred; visible CPU/software fallback | Actual window presentation, input, accessibility, resize and device-loss pilot |
+| Local LLM and offline/batched model work | CPU reference; optional GPU after qualification | Model fit, transfer/queue overhead, matched quality and end-to-end crossover |
+| Small per-request model inference and scoring | CPU default | GPU batching remains experimental until numerical and decision-boundary parity and latency gates pass |
+| Authentication, cryptography, policy, audit and I/O | CPU default | No speculative secret transfer or security offload |
+| Cargo, rustc, linking, documentation and ordinary unit tests | CPU | GPU kernel compilation does not establish acceleration of ordinary Rust compilation |
+
+Presentation, computation and execution venue are separate interfaces. Proposed
+logical interfaces are `PresentationBackend`, `ComputeBackend` and
+`ExecutionVenue`; these names are design vocabulary, not exported API. Capability
+discovery reports hardware versus software adapter, backend, driver/runtime,
+precision, limits and memory observations. It never creates NativeProof, trusted
+identity, human-presence evidence or a changed detection verdict.
+
+Selection policy distinguishes `cpu`, `auto` and `require-gpu`. CPU is mandatory
+as the portable reference. Auto chooses only a qualified workload/backend tuple
+and records the choice and reason. Require-GPU rejects unavailable or unqualified
+hardware rather than silently executing on CPU. Fallback must occur at a known
+safe effect boundary: completion or cancellation is established, ownership and
+in-flight resources are retained until settlement, and side effects are not
+executed twice. Missing security prerequisites still fail closed. Device loss,
+timeouts, cancellation and memory exhaustion require explicit terminal outcomes;
+enqueue success is not execution success. UI frames must not wait indefinitely.
+An expired request deadline does not establish that submitted device work has
+settled. Retain an explicit uncertain owner and its memory/concurrency permits
+until observed completion or qualified teardown. Require-GPU rejects CPU and
+no-op adapters; virtual or unknown adapter backing needs positive qualification.
+Fallback, retry and device recreation retain the same logical job and the
+minimum original wall/monotonic deadline; never restart its budget. Bind
+submission and device epochs and permit at most one result commit. Dropping a
+future or requesting cancellation is not device cancellation. Refuse late output
+without releasing unsettled custody.
+
+Uploads require a closed approved data schema and finite staging, device-memory
+and log budgets. Keys, unseal material, credentials and control state are excluded.
+Host zeroization, buffer destruction and device loss do not prove erasure from
+VRAM or driver-managed copies. Shared CPU authority remains the final parser,
+scorer, policy decision and enforcer. GPU model output is advisory until a
+separately accepted parity contract; tolerance, invalid output, missing output or
+expiry must never alter frozen decisions or become ALLOW. Cover race and failure
+negatives in pure contracts before actual backend pilots.
+
+Candidate portable graphics/compute families include wgpu with DX12, Vulkan,
+Metal and browser WebGPU. OS, architecture, adapter, driver and runtime versions
+are independent qualification dimensions. CUDA and vendor-specific runtimes are
+optional extensions, not the Cross-OS baseline. Browser WebGPU eligibility is
+separate from native backend eligibility. Software adapters and compile-only jobs
+must never be labelled actual GPU execution. See the upstream
+[wgpu backend documentation](https://wgpu.rs/doc/wgpu/struct.Backends.html).
+
+Rust 1.99.1 and the existing authored-language constraints remain binding. No
+nightly toolchain, dependency/pin change, authored shader-language exception,
+driver/SDK installation or new unsafe implementation is admitted by this draft.
+Upstream kernels and shaders must be identified as external components with their
+version and license. Experimental Rust GPU offload has a separate toolchain
+qualification boundary; see the
+[rustc offload guide](https://rustc-dev-guide.rust-lang.org/offload/usage.html).
+
+Qualification proceeds bottom-up: source/version compatibility matrix; pure
+selection, rejection and lifecycle unit contracts; actual per-backend pilot;
+matched end-to-end performance, precision and failure recovery; then optional CI
+and product integration. Compare optimized CPU controls against transfer,
+initialization, queueing and presentation costs, including cold and warm runs.
+Record CPU RAM, discrete VRAM and unified-memory residency separately. Record
+unified-memory capacity once: separate accounting ledgers must not double-count
+the same physical pool. Admission needs fresh joint host/device observations;
+unknown telemetry is not spare capacity. Invalidate crossover qualification when
+driver, model, input shape, precision, residency or concurrency changes. Check the
+exact feature and transitive SDK tuple, not only the package Rust version.
+Record
+exact model/input/source/runtime/device tuples, quality tolerances and scoring
+boundary outcomes. Frozen weights, thresholds, predicates, verdict bands and
+accessibility constraints remain unchanged.
+
+Performance owns crossover synthesis; Browser owns presentation; Model owns
+numerical inference/training contracts; local evaluation owns matched LLM trials;
+Native owns capability/resource lifetime boundaries; Delivery owns CPU-only and
+optional actual-GPU CI classification; independent audit reviews safety and
+evidence. Root owns shared policy, dependency admission and integration. Each
+owner records findings and unqualified gaps in its existing SoT and evidence
+lane before proposing implementation. GPU jobs require separate resource
+admission; spare CPU capacity does not reserve VRAM or authorize paid runners.
+
