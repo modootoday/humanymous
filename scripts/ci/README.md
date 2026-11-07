@@ -6,6 +6,13 @@ commit. Its final gate rejects failure, cancellation and skipped required jobs.
 `frozen-go-oracle.yml` preserves the old lab for manual comparison only; it never
 authorizes a Rust release. Frozen workflow originals are retained beside this file.
 
+Workflow YAML is authored directly under `.github/workflows/` and checked by
+actionlint and the permission/required-job policy. The obsolete Python workflow
+generator is retired: it duplicated configuration and could restore a nonexistent
+WASM package. The browser build targets `humanymous-collector` explicitly for
+`wasm32-unknown-unknown`; this build does not satisfy the mandatory full browser
+pilot, which remains fail-closed until implemented. New executable tooling is Rust.
+
 Local checks (Python 3.11+, Rust 1.99.1, Node 24):
 
 ```text

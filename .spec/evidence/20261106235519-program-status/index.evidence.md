@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T03:35:46Z
+updated: 2026-11-07T03:38:38Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -29,6 +29,7 @@ files:
   - {path: custody-lifetime-results.json, sha256: 7e67429f34e8aa81d44b176167b4cc93baefa445f341043866a7ae674c1b2440, bytes: 4319, store: repo}
   - {path: behavior-native-followup.json, sha256: ef9ab2c65460571b416065231cc61df4a2ce256a7aad7ca87812430e51f624eb, bytes: 1811, store: repo}
   - {path: roadmap-status-20261107.json, sha256: fc012ca076066e78e9a3ad9261f7098bf0c69bc7fd027e80ca0a517b2c06f3f4, bytes: 1412, store: repo}
+  - {path: delivery-wasm-wiring.json, sha256: 9840c40deb202587fa66c1290e2990e9d67cc6c540c209cf6781748ef88cb31b, bytes: 859, store: repo}
 ---
 
 # Program status

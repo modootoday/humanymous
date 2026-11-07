@@ -1,4 +1,4 @@
-# Canon: .spec/sot/delivery.sot.md; reproduce with scripts/ci/render_workflows.py
+# Authored workflow; canon: .spec/sot/delivery.sot.md
 name: Rust validation authority
 'on':
   workflow_call: null
@@ -109,7 +109,7 @@ jobs:
     - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
       with:
         node-version: '24'
-    - run: cargo build --locked --target wasm32-unknown-unknown -p humanymous-wasm --release
+    - run: cargo build --locked --target wasm32-unknown-unknown -p humanymous-collector --release
     - run: python3 scripts/ci/delivery.py pilot browser
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:

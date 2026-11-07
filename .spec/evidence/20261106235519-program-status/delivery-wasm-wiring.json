@@ -1,0 +1,24 @@
+{
+  "schema": "humanymous.delivery-wiring/1",
+  "observed_at": "2026-11-07T03:38:38.2058262Z",
+  "parent_commit": "46e941b49fe0856bd098770a485b479b0ca4d5f9",
+  "changes": [
+    "Build actual humanymous-collector WASM package",
+    "Retire unused Python workflow generator; authored YAML is sole configuration",
+    "Preserve all full delivery gates and permission pins"
+  ],
+  "checks": {
+    "existing_delivery_tests": 9,
+    "git_diff_check": "passed",
+    "permission_required_job_policy": "passed",
+    "collector_release_wasm": "passed",
+    "actionlint": "passed"
+  },
+  "remaining": [
+    "Full native/browser/Docker Rust delivery runners",
+    "Windows standard-user full job wiring",
+    "Pages Ruby action must support patched runtime",
+    "Current-source docs review, registry readiness and product gates"
+  ],
+  "full_runtime_qualified": false
+}

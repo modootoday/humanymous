@@ -1,4 +1,4 @@
-# Canon: .spec/sot/delivery.sot.md; reproduce with scripts/ci/render_workflows.py
+# Authored workflow; canon: .spec/sot/delivery.sot.md
 name: Checked Pages artifact
 'on':
   workflow_call: null

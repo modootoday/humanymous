@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T03:30:26Z
+updated: 2026-11-07T03:42:00Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -25,6 +25,17 @@ source-bound artifacts are recorded with the program evidence. Full-runtime qual
 the final delivery runner requirements remain unchanged.
 
 # Rust delivery and Pages contracts
+
+## Authored workflow and collector target
+
+Workflow YAML is the single authored configuration; retire the unused Python
+workflow generator rather than retaining two sources of workflow behavior.
+Existing permission, pin and required-job checks remain mandatory. New executable
+tooling is Rust; the remaining legacy delivery validators still require migration.
+The browser job builds the actual humanymous-collector package with an explicit
+wasm32-unknown-unknown target. Its subsequent full browser pilot remains required;
+collector component tests or a successful WASM build cannot replace that gate.
+Historical toolchain evidence naming the retired generator describes old source.
 
 ## Native CEF component integration
 
