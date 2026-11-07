@@ -235,7 +235,22 @@ policy command and actionlint pass. No local runtime or hosted qualification is
 implied. First failed run keeps its old display names at immutable bfc9f623;
 new display names and catalog require their own next hosted source result.
 
-### Product OIDC environment preparation (no deployment)
+### Product browser image source (not_run)
+
+Product browser image source delta (later than63f69ae, not_run):
+`build/rust/browser-product.Dockerfile` and its strict context allowlist reuse
+the pinned compiler/geckodriver/WBG tool versions from the collector lab.
+The WASM compiler enables collector runtime-pilot; the independent Alpine stage
+builds the static runtime-pilot Rust driver. Final image copies exactly one
+collector WASM artifact, reviewed webdriver JSON and the driver, runs UID65532
+and enters --browser-driver. Wildcard ambiguity/missing output fails Docker COPY.
+The original collector component image and denominator remain unchanged.
+Owner Compose supplies namespace-isolated --browser-gate and private stdin
+tuple; its browser/HTTP/witness assertions are owned by the lab producer.
+All compilation/image size/14GB headroom/browser/sandbox/runtime connection
+checks remain not_run. No local Docker build or browser execution was performed.
+
+### Artifact-free diagnostics
 
 Artifact-off diagnostics correction: workspace probe emits only the owning
 formatter's sanitized accounting to stdout/GITHUB_STEP_SUMMARY before evaluating
@@ -245,6 +260,8 @@ public log had no harness detail; the original exact failure remains undiagnosed
 Common-lock coherence failure initially prevented local checks; after root repair
 27pureunits/strictClippy passed. Actual hosted emission remains not_run for this
 later source and is not inferred from the earlier policy success.
+
+### Product OIDC environment preparation (no deployment)
 
 The subsequent explicit user instruction separates registry products:
 release.yml crates job uses environment `crates`; npm job uses `npm`.

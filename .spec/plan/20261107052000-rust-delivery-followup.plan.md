@@ -12,6 +12,13 @@ rel:
 
 ## Scope and order
 
+Lab-owner requested product browser image source: separate browser-product
+Dockerfile/context authored under build/rust, jobs1/multi-stage/nonroot65532,
+feature-enabled collector WASM+webdriver JSON+static Rust driver. Existing
+collector component denominator preserved. Source-only/not_run; actual image
+build, capacity, sandbox and product browser exchange await future hosted batch.
+Compose/private tuple/source snapshot integration remains lab owner's scope.
+
 Corrected hosted run42348518353 attempt1 source
 63f69ae9de703939b7b9091e2f215b12bea265de is ongoing. Policyjob128331427839
 passed27tests, workflowpolicy and publicexactpinentrypoint checks. Rawprivate
