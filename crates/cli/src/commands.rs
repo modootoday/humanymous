@@ -6,6 +6,28 @@ use humanymous_cli::{
 use std::{collections::BTreeMap, path::Path};
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+#[cfg(feature = "runtime-service")]
+pub(super) fn runtime_host(arguments: Vec<String>) -> Result<()> {
+    let mut arguments = arguments.into_iter();
+    let (mut plan, mut digest) = (None, None);
+    while let Some(flag) = arguments.next() {
+        match flag.as_str() {
+            "--plan" if plan.is_none() => {
+                plan = Some(arguments.next().ok_or("--plan value required")?)
+            }
+            "--plan-sha256" if digest.is_none() => {
+                digest = Some(arguments.next().ok_or("--plan-sha256 value required")?)
+            }
+            _ => return Err("unknown or duplicate runtime-host option".into()),
+        }
+    }
+    humanymous_cli::runtime_host::execute(
+        Path::new(&plan.ok_or("--plan required")?),
+        &digest.ok_or("--plan-sha256 required")?,
+    )?;
+    Ok(())
+}
+
 fn options(arguments: Vec<String>) -> Result<(BTreeMap<String, String>, bool, bool)> {
     let mut values = BTreeMap::new();
     let (mut activate, mut dry) = (false, false);

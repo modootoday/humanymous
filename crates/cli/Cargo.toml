@@ -10,6 +10,8 @@ autobins = false
 
 [features]
 service-pilot = []
+runtime-service = ["dep:humanymous-runtime", "dep:humanymous-authority", "dep:tokio", "dep:zeroize"]
+runtime-service-pilot = ["runtime-service", "humanymous-native-security/credential-pilot", "dep:humanymous-audit"]
 
 [[bin]]
 name = "humanymous"
@@ -27,6 +29,11 @@ ed25519-dalek.workspace = true
 hex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+humanymous-runtime = { path = "../runtime", optional = true }
+humanymous-authority = { path = "../authority", optional = true }
+humanymous-audit = { path = "../audit", optional = true }
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "net", "sync", "time", "signal"], optional = true }
+zeroize = { workspace = true, optional = true }
 
 [target.'cfg(windows)'.dependencies]
 windows-service = "=0.8.1"

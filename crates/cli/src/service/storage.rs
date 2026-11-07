@@ -66,6 +66,14 @@ impl Generation {
     }
     pub(super) fn verify(&self, root: &Path, key: &[u8; 32]) -> Result<()> {
         let d = self.descriptor(key)?;
+        #[cfg(all(windows, feature = "runtime-service"))]
+        if let Some(sid) = self
+            .identity
+            .as_ref()
+            .and_then(|identity| identity.service_sid.as_deref())
+        {
+            crate::runtime_host::activation::verify(root, &d, sid)?;
+        }
         self.plan(root)?.verify_service(
             self.identity
                 .as_ref()
@@ -131,6 +139,14 @@ impl Generation {
     }
     pub(super) fn remove(&self, root: &Path, key: &[u8; 32]) -> Result<()> {
         self.verify(root, key)?;
+        #[cfg(all(windows, feature = "runtime-service"))]
+        if let Some(sid) = self
+            .identity
+            .as_ref()
+            .and_then(|identity| identity.service_sid.as_deref())
+        {
+            crate::runtime_host::activation::revoke(root, &self.descriptor(key)?, sid)?;
+        }
         #[cfg(windows)]
         if let Some(sid) = self
             .identity

@@ -314,6 +314,15 @@ fn activate_generation(
     g.identity = None;
     g.identity = Some(manager.register(g, root, d)?);
     g.grant(root)?;
+    #[cfg(all(windows, feature = "runtime-service"))]
+    crate::runtime_host::activation::grant(
+        root,
+        d,
+        g.identity
+            .as_ref()
+            .and_then(|identity| identity.service_sid.as_deref())
+            .ok_or_else(|| error("runtime service SID missing"))?,
+    )?;
     manager.verify(g, root, d)?;
     manager.start(d)?;
     backend::wait_ready(manager, d)

@@ -12,6 +12,114 @@ rel:
 
 # Contract
 
+## Active ServiceHost integration tranche
+
+The explicit CLI goal remains active through signed deployment, native services,
+protected unattended input, ServiceHost supervision and current-source hosted
+qualification. CLI owns crates/cli only; the root owns Cargo/lock/toolchain and
+dispatch. The native-cli work lane is an operational CLI ownership label, not
+permission to edit the browser/framework crate crates/native-cli.
+
+The runtime-service feature links the existing runtime ServiceHost and authority
+credential types instead of duplicating request/audit/custody logic. A signed
+runtime host-plan binds service identity, generation nonce, executable digest,
+non-secret configuration digest/path, typed credential selectors, diagnostic
+readiness and stop budgets. Host-plan bytes are SHA256-pinned in signed launch
+arguments. The configuration file must have an empty unseal passphrase; only an
+authorized OS-secret provider fills its existing Zeroizing field in memory.
+There is no plaintext passphrase file, argv/env secret or interactive fallback.
+
+The OS-secret reader is native-security/Windows owner responsibility. The CLI
+owns selector validation and consumes the provider's zeroizing result; runtime
+owns bounded configuration validation and existing sealed-custody consumption.
+Missing/locked/unsupported/unqualified providers are errors, not an empty secret.
+Current service principal must be tested; an installer actor's store is not a
+virtual service account's store. Private inherited input additionally needs real
+pipe type/locality/owner evidence; a file/DACL check alone is insufficient.
+
+Shared runtime StopBudget17ad9e6 validates strict drain+supervisor reserve less
+than actual manager stop time. CLI must consume it and enforce an independent
+native watchdog deadline for synchronous custody/read/flush; an async timeout
+alone cannot preempt those calls. On expiry the owned host exits nonzero and
+must not emit a successful stopped/drained/flushed report. Windows SCM Stop and
+Unix termination map to the same channel. Success requires runtime ExitReport's
+actual stopped/drained/audit_flushed values, not receipt/loopback readiness.
+Observer management e6dd38d uses the existing authenticated native transport and
+independent Credential; it is not exposed through browser/application routes.
+
+This tranche is authored/NOT_RUN until root grants bounded pure-unit Cargo and
+current-source hosted native-process/service validation. Prior fixture checks
+and remote42348518353/63f69ae do not qualify the new source.
+
+Host-plan schema `humanymous.runtime-host.v1` requires service_name, installation,
+generation, executable_sha256, configuration path/configuration_sha256,
+unseal_credential_id, observer (null or typed endpoint/peer/credential_id), numeric
+loopback diagnostic, ready_response, startup_ms, stop and mode. Stop contains
+drain_ms/supervisor_reserve_ms/manager_stop_ms; the current manager contract is
+6000ms on Windows and5000ms on Linux/macOS. Schema/duplicate/unknown fields and
+noncanonical selectors reject. Both SHA256 fields and the outer host-plan digest
+are mandatory. Executable/plan metadata reads also have a5second independent
+preflight deadline before the plan-controlled startup watchdog begins.
+
+Windows additionally requires installer_owner_sid in the digest-pinned launch
+document. The actual virtual service principal reads that bounded nonsecret
+document and verifies its original installer owner plus the exact shared native
+Executable read/execute grant against the same opened non-reparse handle. This
+role is used only for the immutable launch document; it grants no write access.
+Runtime configuration instead requires the current service's strict owner-only
+File policy, including inherited private-file ACLs. Installer-only token checks
+must not be reused as service-input authorization. Trusted ancestor ownership
+and same-principal replacement remain explicit premises.
+
+Returned shared ExitFailure facts are preserved in the bounded failure envelope:
+stage, drained and audit_flushed remain independent. Other failures report unknown
+phase facts, stopped=false and product_qualified=false without serializing their
+arbitrary error payload. Stop channel replacement remains valid after a returned
+runtime drops its receiver, so that closure cannot replace the original typed
+failure or suppress the watchdog wakeup. Windows SCM still reports nonzero exit;
+recoverable Windows failure-envelope transport remains a qualification dependency.
+
+CLI consumes native-security::secret::{ServiceSecretReference::new(service,id),
+read_service_secret} returning Zeroizing bytes. Shared selectors restrict actual
+owned service namespace and credential IDs. Windows requires actual TokenUserSID
+equal the resolved virtual service SID and existing Local-persistence metadata;
+an installer user's store is not a service store. Non-Windows providers currently
+return Unsupported. Native Windows execution must use SCM; foreground mode cannot
+silently launch protected service code outside that dispatcher. No arbitrary
+stdin redirect is admitted as a private pipe based on a DACL check alone.
+
+The CLI calls shared ServiceHost::bind/bind_with_witness and, with an authorized
+PrivateObserverProvisioner, bind_with_management. Observer credentials are freshly
+generated using the shared Credential type and delivered only through that trusted
+sink after the native listener binds. The ordinary command has no such sink and
+explicitly refuses observer configuration rather than reusing a stored process
+epoch or emitting its credential in public readiness. This production observer
+provisioning connection remains open. Required witness absence rejects before
+retrieving any unseal secret. Public readiness and exit envelopes retain exact
+generation/executable digest and product_qualified=false; no secret is serialized.
+
+The hosted runtime-service-pilot feature is separate from production runtime-service
+and may enable only native-security's credential-pilot and existing audit fixture
+APIs. Proposed DisposableServiceContext(service,run_id,full_source_sha) is a
+nonsecret syntactic marker, not cryptographic hosted attestation. CLI pins that
+metadata in signed fixture launch input; root's external run/source/artifact/actor
+evidence remains mandatory. SCM does not inherit a job's environment by assumption.
+The actual service principal creates a random unique test credential, reads it
+through the production reader, initializes only new fixture custody, runs the real
+ServiceHost and cleans its own fixture state/credential after custody drops.
+Production persistent custody is never removed on ordinary stop.
+
+WinCred has no atomic create-only or compare-and-delete primitive in the selected
+safe API. A cooperative mutex cannot exclude arbitrary same-principal writers.
+The pilot therefore requires exclusive disposable service context, a unique random
+ID and explicit existing-entry/metadata/value checks; unknown or changed entries
+reject cleanup, and no general atomic no-overwrite guarantee is claimed. The native
+owner's create-new private-directory factory validates the activation parent and
+initializes only the new child's protected service-owner ACL. Existing children
+are never repaired; parent-owner replacement resistance is not claimed. Strict
+custody/WAL children require their own protected service-owner parents. Cleanup
+runs under that same service principal; takeown or ACL repair cannot fake success.
+
 ## Accepted execution-policy reference
 
 The single execution-policy canon is [[sot:root/program-roadmap]]; workflow
@@ -148,19 +256,14 @@ checks or use LocalSystem. It creates only its own demand-start virtual-account
 service. Exact native identity/configuration is queried through windows-service
 0.8.1; unexpected manager changes block teardown or replacement.
 
-Runtime owner accepted the proposed (not yet CLI-integrated) API:
-`ServiceHost::read_configuration(impl Read)` consumes a bounded Zeroizing private
-frame; async `ServiceHost::bind(Configuration)` owns sealed startup/listeners;
-`readiness()` returns typed `humanymous.runtime.readiness/0.1`; `run(watch receiver
-of Option<ShutdownRequest>)` returns ExitReport. ShutdownRequest declares bounded
-drain_timeout_ms; readiness reports listen/profile/listener_bound/audit_durable/
-product_qualified=false/state/nonsecret policy commitment; ExitReport reports
-stopped/durable/drained/interrupted. CLI will add verified artifact digest and
-generation nonce outside the runtime report. Secret input remains inherited
-pipe or OS-protected credential/authorized local IPC, never argv/env or a new
-plaintext file. SCM Stop/Unix termination must become the runtime shutdown
-channel. Persistent credential bootstrap and graceful runtime drain remain open;
-the current fixture has no product credentials and cannot qualify these gates.
+The current shared API is service::read_configuration(impl Read), async
+ServiceHost::bind(Configuration), readiness() and run_report(watch receiver of
+Option<ShutdownRequest>). ExitReport reports stopped/drained/audit_flushed;
+ExitFailure preserves returned drain/flush facts independently. The active
+integration tranche above consumes these APIs with verified executable/generation
+metadata and native stop supervision. Its source and hosted fixture are authored;
+current-source actual runtime qualification remains open. The historical generic
+service fixture has no product credentials and cannot qualify those gates.
 
 Delivery/Windows owners received the exact opt-in Rust `service_process` pilot
 commands. Normal Windows pilot has two actual process/refusal cases; ignored

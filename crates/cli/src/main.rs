@@ -5,6 +5,16 @@ mod commands;
 fn run() -> Result<(), Box<dyn std::error::Error>> {
     let mut args = std::env::args().skip(1);
     let command = args.next().ok_or("usage: humanymous doctor|install|rollback --artifact PATH --destination PATH --sha256 DIGEST --local-management-verified [--dry-run]")?;
+    if command == "runtime-host" {
+        #[cfg(feature = "runtime-service")]
+        {
+            return commands::runtime_host(args.collect());
+        }
+        #[cfg(not(feature = "runtime-service"))]
+        {
+            return Err("runtime-service feature is required".into());
+        }
+    }
     if command.starts_with("service-") {
         return commands::service(&command, args.collect());
     }

@@ -60,8 +60,40 @@ real manager and six-tuple pilots; missing manager/domain is blocked. Positive
 native-service results have not been observed locally.
 
 Runtime owner accepted the proposed ServiceHost private-input/readiness/shutdown
-API, not yet connected here. Audit owner supplies protected unattended credentials
-and service-owned strict custody children. No config/passphrase is invented in
-argv/env/plaintext files. Fixtures have no product credentials. Full Core/Gate
-startup, authenticated IPC/local management, graceful runtime drain and Docker
-product e2e remain open, alongside release trust/OIDC/provenance/revocation.
+API. The optional runtime-service feature now connects that shared ServiceHost,
+StopBudget, typed run_report result, native stop and an independent watchdog.
+`humanymous runtime-host --plan PATH --plan-sha256 SHA256` admits only the strict
+nonsecret host-plan. Its exact digest belongs in the signed release arguments.
+On Windows the plan also binds installer_owner_sid; the actual virtual service
+principal must verify the original owner and exact delegated read/execute role.
+Its runtime configuration must be current-service owner-only, digest-pinned and
+contain an empty passphrase. NativeSecrets consumes only shared native-security
+service credential reads; no passphrase is accepted through argv/env/plain files.
+
+Root reported initial runtime-service compile success with three warnings; those
+source warnings were fixed before further accounting/input changes. Current
+source has seven pure runtime_host tests and direct rustfmt passed, but current
+Cargo/Clippy and actual lifecycle require source-bound root/hosted results. Do not
+run the entire CLI lib harness as a local pure check: existing service tests touch
+real files, ACLs and ports. The scoped pure filter is `--features runtime-service
+--lib runtime_host::` under an explicit shared Cargo slot.
+
+The separate runtime-service-pilot feature enables only the shared disposable
+credential fixture and optional audit dependency; no production feature enables
+credential writes/deletion. The actual runtime SCM fixture now connects the shared
+create-new protected-directory APIs and remains NOT_RUN. Its ignored hosted test
+is `runtime_service_process::native_runtime_service_lifecycle_and_missing_credential_fail_closed`
+(Cargo target `--test runtime_service_process`, exact test name without module
+prefix). Run with `--features runtime-service-pilot --ignored --exact` only in the
+disposable hosted actor. Controller metadata HUMANYMOUS_SERVICE_PILOT_RUN_ID and
+HUMANYMOUS_SERVICE_PILOT_SOURCE_SHA is copied into pinned nonsecret launch input;
+the service never assumes job environment inheritance. The parent independently
+correlates both actual SCM PIDs/statuses with bounded receipt fields and prints
+exactly one aggregate `humanymous.runtime-service-pilot/1` JSON line. Private raw
+receipts contain service PID; public aggregate has only booleans/source/run/case.
+Linux/macOS protected-secret
+providers currently return Unsupported. Fresh authenticated observer provisioning,
+trusted external-witness production input, recoverable Windows typed failure
+transport, full Core/Gate runtime qualification and Docker product e2e remain open,
+alongside release trust/OIDC/provenance/revocation. Fixture metadata is not hosted
+attestation or a product credential.
