@@ -1,0 +1,282 @@
+{
+  "schema": "humanymous.interactive-source-pure-attempt/1",
+  "source_sha": "f95af960664e4ef89e122270b178dc99207df9d8",
+  "status": "FAILED_STRICT_CLIPPY",
+  "scope": "pure byte/mailbox logic and scoped compile only",
+  "full_product": false,
+  "actual_interactive_child_cases": 0,
+  "producer_identity": "Unsupported",
+  "admission": {
+    "utc": "2026-11-07T17:40:03.0770388Z",
+    "disk_free_bytes": 120767983616,
+    "commit_percent": 66.064595353339,
+    "physical_available_mib": 34515.0
+  },
+  "budget": {
+    "cleanup_until": "2026-11-07T17:47:03.1757398Z",
+    "started_utc": "2026-11-07T17:40:03.1757398Z",
+    "run_until": "2026-11-07T17:46:03.1757398Z"
+  },
+  "commands": {
+    "fmt": {
+      "exit_code": 0,
+      "started_utc": "2026-11-07T17:40:46.4653461Z",
+      "terminal_observed_utc": "2026-11-07T17:40:46.5421536Z"
+    },
+    "interactive-pure": {
+      "exit_code": 0,
+      "started_utc": "2026-11-07T17:40:46.5454665Z",
+      "terminal_observed_utc": "2026-11-07T17:40:57.6036615Z"
+    },
+    "capture-pure": {
+      "exit_code": 0,
+      "started_utc": "2026-11-07T17:40:57.6051649Z",
+      "terminal_observed_utc": "2026-11-07T17:40:58.0361204Z"
+    },
+    "direct-pure": {
+      "exit_code": 0,
+      "started_utc": "2026-11-07T17:40:58.0372671Z",
+      "terminal_observed_utc": "2026-11-07T17:40:58.4532627Z"
+    },
+    "barrier-pure": {
+      "exit_code": 0,
+      "started_utc": "2026-11-07T17:40:58.4542213Z",
+      "terminal_observed_utc": "2026-11-07T17:40:58.8472711Z"
+    },
+    "support-check": {
+      "exit_code": 0,
+      "started_utc": "2026-11-07T17:40:58.8483442Z",
+      "terminal_observed_utc": "2026-11-07T17:41:01.4462874Z"
+    },
+    "support-clippy": {
+      "exit_code": 101,
+      "started_utc": "2026-11-07T17:41:01.447292Z",
+      "terminal_observed_utc": "2026-11-07T17:41:02.0318671Z"
+    }
+  },
+  "pure": {
+    "barrier": {
+      "passed": 2,
+      "filtered": 52
+    },
+    "ignored": 0,
+    "direct_pipe": {
+      "passed": 1,
+      "filtered": 53
+    },
+    "failed": 0,
+    "measured": 0,
+    "interactive": {
+      "passed": 10,
+      "filtered": 44
+    },
+    "capture": {
+      "passed": 4,
+      "filtered": 50
+    }
+  },
+  "first_failure": {
+    "exit_code": 101,
+    "stage": "support-clippy",
+    "retry_performed": false,
+    "native_runner_check_and_clippy": "NOT_STARTED",
+    "reason": "Rust1.99.1 deprecated AtomicUsize::fetch_update; use try_update"
+  },
+  "closure": {
+    "counts": {
+      "flags": 7,
+      "registry_files": 2042.0,
+      "tools": 12,
+      "registry": 31,
+      "tool_files": 76.0,
+      "config": 34,
+      "source": 114
+    },
+    "recursive_tools_immediate_pre_and_post": true,
+    "identical": true
+  },
+  "test_binary": {
+    "bytes": 2129408,
+    "name": "humanymous_test_support-5a5463700a0b8be0.exe",
+    "sha256": "d91eaef136f5f2cac9e19a32fd5667b4e320e7e5c393f745e7e02ab118c2d6cb"
+  },
+  "terminal": {
+    "actual_marker_removed": true,
+    "utc": "2026-11-07T17:41:32.0851809Z",
+    "own_live_handles": 0,
+    "retry_performed": false
+  },
+  "next_source_fix": "fetch_update -> try_update; not compiled or tested at this receipt",
+  "limits": [
+    "Seventeen pure passes do not override strict Clippy failure",
+    "No actual interactive process/thread/partial-start/descendant-held-EOF or blocked IO qualification",
+    "No native producer/SCM/host/Ready or Kestrel/GC/AOT/package promotion"
+  ],
+  "attachments": [
+    {
+      "bytes": 159,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/admission.json",
+      "sha256": "876e532034b6a21052ee5d831027a346c5f6f6160e3184dc32581f2ca173f803"
+    },
+    {
+      "bytes": 240244,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/after.json",
+      "sha256": "31e78a4c53de6cf9dbb27cea172da41a0e814980e2847b66eae2b1f5506e21d1"
+    },
+    {
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/barrier-pure.process.json",
+      "sha256": "8dee1ca09d82e276b8b265e0a85a7f3f07add0536ca174a0fba417c3fe99afa5"
+    },
+    {
+      "bytes": 958,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/barrier-pure.stderr.log",
+      "sha256": "83ee999de3f18ef9bc64c118cf6c526d291433ca8ee649606c44cdf899d941c3"
+    },
+    {
+      "bytes": 318,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/barrier-pure.stdout.log",
+      "sha256": "4f2530ca253d5a5f463771aefe87ac53e4d63ed9fd12c5a7d37173a2dac6952b"
+    },
+    {
+      "bytes": 240244,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/before.json",
+      "sha256": "31e78a4c53de6cf9dbb27cea172da41a0e814980e2847b66eae2b1f5506e21d1"
+    },
+    {
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/capture-pure.process.json",
+      "sha256": "f38e6b759f7ea4a7fd3d44457d96e1db418c80aef659255c262b66ea15f46ca0"
+    },
+    {
+      "bytes": 958,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/capture-pure.stderr.log",
+      "sha256": "cbe078f278f414f03817ba8132dabb4aa70104b49b2a05df7089b2e2c584cb17"
+    },
+    {
+      "bytes": 556,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/capture-pure.stdout.log",
+      "sha256": "1636a5a718cc111e95d1abe2e5d1efe101e4ae529681aa5fe7aa79a272580bf2"
+    },
+    {
+      "bytes": 69,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/closure-comparison.json",
+      "sha256": "a61840ad07515fffd9bc90f0d49f8bc4f72e14699e5db78ea64c04f84fd25e4b"
+    },
+    {
+      "bytes": 1131,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/commands.json",
+      "sha256": "82b9840e88c9985c932000a7df2edadc15004d07fc850a3beffde1e02509d4fb"
+    },
+    {
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/direct-pure.process.json",
+      "sha256": "8378e4f4b32944487235c4dcc47668e0a7be3cec9e608706da9a373f8cfb29a0"
+    },
+    {
+      "bytes": 958,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/direct-pure.stderr.log",
+      "sha256": "ca887de1ef1eb538b40fe19efe9222355152d99cc2794a90c051cf199a472ec5"
+    },
+    {
+      "bytes": 203,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/direct-pure.stdout.log",
+      "sha256": "cde46b4e2da83847814ccb31988a0837bdf158ebf9f2503093a46dc15686749d"
+    },
+    {
+      "bytes": 120,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/first-failure.json",
+      "sha256": "ce151d191136c29e5677016eae47269e05b50ba7179c952368b82511ba0293f0"
+    },
+    {
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/fmt.process.json",
+      "sha256": "34827c81912e60af8c8eef3fb21bd0ae0295da1c67f8e090a015d934178c9b97"
+    },
+    {
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/fmt.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/fmt.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/interactive-pure.process.json",
+      "sha256": "a664b794b4e0874bd630543d150a7e82a1a23bf8c19a4d13b8053cfa47fb3a07"
+    },
+    {
+      "bytes": 1458,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/interactive-pure.stderr.log",
+      "sha256": "70a8707043f27ecb73fdf21e67ae485da5e86974b577130c45d649a49ab331af"
+    },
+    {
+      "bytes": 1066,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/interactive-pure.stdout.log",
+      "sha256": "9e348b4f8297e0044aad69464c9abf04810678f96df987d913ed4dcc34958b3f"
+    },
+    {
+      "bytes": 480,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/lease-end.json",
+      "sha256": "61035b37c88a4832bbea8b266ca1630d9c16c597f3712a9768468c73841e205f"
+    },
+    {
+      "bytes": 404,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/lease-start.json",
+      "sha256": "5c715818f042ac2456a26d197bb660358ef5478e839ff5b3cb118e5c93eb1e06"
+    },
+    {
+      "bytes": 155,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/original-budget.json",
+      "sha256": "c9cdb9ad55cd59d04059c95f5f7e16cd0c840c03d9bde7643304d74174202280"
+    },
+    {
+      "bytes": 71987200,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/source.tar",
+      "sha256": "91c1e3a8cf52c7f112093bc21b8ca453e188d7aed3ad7f3944f4e3cb4838960c"
+    },
+    {
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/support-check.process.json",
+      "sha256": "b944d25b25f4a9f744d562c1adc138db11f10532758219958e13c9d9feaa242e"
+    },
+    {
+      "bytes": 1223,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/support-check.stderr.log",
+      "sha256": "88260fc781b472e8ccf35b582997a11ba7a8f38ace66fdc4f257be38f0afc679"
+    },
+    {
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/support-check.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/support-clippy.process.json",
+      "sha256": "b766c58450a84e3fc9d03d7f49e9ec18baba7114daf925ceebd41a0bbddd2acb"
+    },
+    {
+      "bytes": 912,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/support-clippy.stderr.log",
+      "sha256": "812b1c00ab595c50fe7afd8468658cb94937312786c42405e13c155a235fdf13"
+    },
+    {
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/support-clippy.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 136,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/terminal.json",
+      "sha256": "5fd491cede45d19b41aa00187913b1cc0a5e157e9f69915754f7b622399ddf1b"
+    },
+    {
+      "bytes": 166,
+      "path": ".spec.local/root/evidence/20261107174500-windows-runner-interactive-pure/test-binary-pin.json",
+      "sha256": "fc53a29d78d83c4a50fb5314b2edb1ebda2e21e28ab5457f9c90c7acd66810d7"
+    }
+  ]
+}

@@ -81,7 +81,7 @@ fn write_message(
     pipe.write_all(&bytes)?;
     pipe.flush()?;
     written
-        .fetch_update(Ordering::AcqRel, Ordering::Acquire, |n| n.checked_add(1))
+        .try_update(Ordering::AcqRel, Ordering::Acquire, |n| n.checked_add(1))
         .map_err(|_| io::Error::other("interactive message counter exhausted"))?;
     check()
 }

@@ -914,3 +914,25 @@ EOF after draining retained chunks, actual joins/status and separate native Job
 facts. A partial-start/error receipt can establish cleanup only, never successful
 execution or Ready. Current status remains NOT_COMPILED/NOT_RUN pending Root's
 next slot; Browser owns the current heavyweight window.
+
+## First interactive pure allocation: preserve strict gate failure
+
+Exactf95af960 immutable workspace, new physical target/interactive-d264101b and
+create-new/readback owner lease passed fresh guards. One original360s/420s
+transaction observed interactive10/filter44, capture4/filter50, direct1/filter53
+and barrier2/filter52, all zero failed/ignored/measured, plus fmt/check exit0.
+Strict Clippy exited101: Rust1.99.1 deprecates AtomicUsize::fetch_update and
+explicitly recommends try_update. Stop-first-failure honored: native-runner
+check/Clippy NOT_STARTED, no retry, no actual interactive process/IO worker test.
+Registered interactive-pure-first-failure-summary.json retains33raw hashes,
+source114/registry31packages2042files/config34/recursive76tools/environment7
+identical immediate before/after observations, binary pin and actual lease-marker
+removal/terminal handles0. Seventeen pure passes do not make the allocation green.
+
+Next source changes ONLY that existing atomic method to try_update, retaining
+checked_add/order/result behavior. Bare fmt/spec/diff are the only post-fix checks;
+the corrected source needs a new explicit allocation, with no renewed old budget
+or hidden target reuse. Actual blocked IO/partial workers/descendant EOF and native
+producer/admitted host launch remain open. The next accepted launch owner design
+must hold actual native admission/custody rather than convert Authority DATA or
+an arbitrary Command/PID/hash into a host permission.
