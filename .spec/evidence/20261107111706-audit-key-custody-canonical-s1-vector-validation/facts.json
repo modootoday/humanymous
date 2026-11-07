@@ -1,0 +1,48 @@
+{
+  "closureFiles": 114,
+  "sourceDrift": 0,
+  "changedPaths": [],
+  "canonicalRecords": 92,
+  "unicodeTexts": 13464,
+  "rustTestsPassed": 9,
+  "failed": 0,
+  "ignored": 0,
+  "libSelectorsIntentionallyFiltered": true,
+  "recordParityFiltered": 0,
+  "checkExit": 0,
+  "clippyExit": 0,
+  "source": "f88e76f4c90f07e7fde7c87420d1ef21eb39c8b4",
+  "sourceManifestSha256": "e11c2c56276bdcf2727be5fbc17874e2e828dc13f19b4250f644933202a7a80b",
+  "schema": "humanymous.audit-canonical-s1-observations/1",
+  "venue": "Windows local record-focused batch",
+  "stages": [
+    {
+      "stage": "canonical",
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 51,
+      "seconds": 0.09,
+      "logSha256": "6f2559c322b04a91942a05b7e75433446b2c17c60a7eaf3f50b9631ab28f79f4"
+    },
+    {
+      "stage": "normalization",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 55,
+      "seconds": 0.04,
+      "logSha256": "9cedc4326fc810190aa2334f71ee80249106955379e99b4d14cc5763444dd606"
+    },
+    {
+      "stage": "record-parity",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "seconds": 0.09,
+      "logSha256": "917174496a10b53763acf7cfdd4af69b40fa8fd8f33204ca5946b0e1e6b64130"
+    }
+  ],
+  "qualification": "partial S1 canonical/NFC scope; not full audit or production recovery"
+}

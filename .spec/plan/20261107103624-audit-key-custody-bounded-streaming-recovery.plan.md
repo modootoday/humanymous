@@ -393,6 +393,16 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Partial S1 canonical/NFC sourcef88e76f4 actual allocated Windows verification:
+all-targets check/Clippy plus canonical6/normalization2/record_parity1 pass;
+92 unique canonical vectors and13464 Unicode texts. Renewed A complete audit
+regression115 passes/rawignored5 excluded/two zero bins/11 single summaries,
+all required parents reconcile.114-file closure zero drift before/after both
+batches, no repeated check/Clippy. Evidence111706/112110, private originals111549.
+All handles terminal/A returned. Focused9 overlap115; full S1 capacity/remaining
+primitives and all production S2/S3 remain pending. Audit Rust frozen through
+dependent Runtime C/.NET D qualification until next root code window.
+
 Restricted S1 implementation began with shared canonical/NFC core: same field
 emitter counts/replays bytes, compatibility Vec wrapper and buffered hash sink,
 no full normalized/joined payload buffers. Five pure tests authored including92

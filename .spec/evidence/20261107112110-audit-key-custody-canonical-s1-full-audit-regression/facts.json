@@ -1,0 +1,172 @@
+{
+  "schema": "humanymous.audit-canonical-full-observations/1",
+  "source": "f88e76f4c90f07e7fde7c87420d1ef21eb39c8b4",
+  "venue": "ordinary-user Windows local",
+  "passed": 115,
+  "rawIgnored": 5,
+  "zeroTestHarnesses": 2,
+  "harnesses": [
+    {
+      "target": "humanymous_audit",
+      "discovered": 57,
+      "passed": 56,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "storage::wal::tests::process_lock_probe"
+      ],
+      "requiredParents": "storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart",
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 16.94
+    },
+    {
+      "target": "audit_control_retainer",
+      "discovered": 0,
+      "passed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.0
+    },
+    {
+      "target": "audit_witness",
+      "discovered": 0,
+      "passed": 0,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.0
+    },
+    {
+      "target": "checkpoint_parity",
+      "discovered": 2,
+      "passed": 2,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 3.18
+    },
+    {
+      "target": "control_operations",
+      "discovered": 21,
+      "passed": 21,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 90.22
+    },
+    {
+      "target": "durable_witness",
+      "discovered": 14,
+      "passed": 13,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "child_witness_probe"
+      ],
+      "requiredParents": "witness_process_lifetime_and_interrupted_recovery",
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 9.7
+    },
+    {
+      "target": "key_backups",
+      "discovered": 11,
+      "passed": 10,
+      "rawIgnored": 1,
+      "ignoredNames": [
+        "child_retire_without_pin_acknowledgement"
+      ],
+      "requiredParents": "crash_reconcile_preserves_consumed_authorization",
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 27.68
+    },
+    {
+      "target": "key_custody",
+      "discovered": 12,
+      "passed": 10,
+      "rawIgnored": 2,
+      "ignoredNames": [
+        "child_interrupted_writer",
+        "child_lock_probe"
+      ],
+      "requiredParents": [
+        "competing_process_cannot_load_or_create",
+        "process_exit_releases_lock_and_rotation_pending_requires_recovery"
+      ],
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 45.33
+    },
+    {
+      "target": "merkle_parity",
+      "discovered": 1,
+      "passed": 1,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.18
+    },
+    {
+      "target": "record_parity",
+      "discovered": 1,
+      "passed": 1,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 0.09
+    },
+    {
+      "target": "verification_parity",
+      "discovered": 1,
+      "passed": 1,
+      "rawIgnored": 0,
+      "ignoredNames": [],
+      "requiredParents": null,
+      "failed": 0,
+      "filtered": 0,
+      "measured": 0,
+      "outerSummaries": 1,
+      "seconds": 2.0
+    }
+  ],
+  "closureFiles": 114,
+  "sourceDrift": 0,
+  "rawLogSha256": "a39d56a80ad9fdb81bb8566dca5c086af8dbaba1ff70b3189cfbf6ff175b6c1e",
+  "sourceManifestSha256": "e11c2c56276bdcf2727be5fbc17874e2e828dc13f19b4250f644933202a7a80b",
+  "checkClippyAlreadyPassedSameSource": true,
+  "qualification": "full current audit regression, not full S1 memory proof or S2/S3/product qualification",
+  "overlap": "record-focused nine cases are included, not additional unique passes"
+}

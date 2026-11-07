@@ -102,6 +102,13 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+After restricted S1 canonical/NFC source changef88e76f4, allocated actual Windows
+check/Clippy and focused9 vector/budget/fault tests passed (92 canonical fixtures,
+13464 Unicode texts). Root renewed A for full audit regression:115 passes,
+rawignored5/two zero bins excluded,11 single summaries, all real parents;
+114-file source closure unchanged. Evidence111706/112110, private111549. No new
+memory-bound or S2/S3/product claim. A returned; Rust frozen for dependent checks.
+
 Full current audit package Windows A complete: source174e5f21, all-targets locked
 check/Clippy pass; all-targets tests110 accepted passes/5 rawignored excluded/
 two zero-test bins/11 single outer summaries, zero fail/filtered/measured. Exact

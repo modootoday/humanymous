@@ -37,6 +37,12 @@ scoped Specfold and diff checks only; no compile or test execution yet.
 
 ## How to read it
 
+Later exact sourcef88e76f4 passed allocated all-target check/Clippy and9
+record-focused Rust tests covering92 unique canonical fixtures/13464 Unicode
+texts with114-file zero drift. Evidence:root/20261107111706. This supersedes the
+authored-only NOT_RUN statement above for that precise scope; no complete S1 or
+allocation guarantee follows. Full audit regression is separately tracked.
+
 This is not all of S1: frame preflight, incremental compatibility verifier,
 frontier/ranges, native inspection and checkpoint message encoder remain pending.
 S2/S3 and production recovery/authority mutation are not authorized. No128MiB
