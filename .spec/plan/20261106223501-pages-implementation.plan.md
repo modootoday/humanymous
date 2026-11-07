@@ -2267,3 +2267,31 @@ that is historical triage, not current acceptance or a canonical/index proof.
 Public evidence07052815 retains detailed batch notes, failures and limits.
 Full freshness, new rendered links, complete accessibility/AT and generic wire,
 independent interoperability and external review/submission gates remain open.
+
+### Consolidated source-review handover; render is the next execution priority
+
+Per root's milestone direction, stop per-file source-review transactions and
+consume the prepared127-input actual render/link/browser batch when its resource
+window opens. No heavy Docker allocation is currently granted while other native,
+Network, Authority and Lab batches are admitted. This is an execution dependency,
+not completion or a user-requested pause of the full Pages goal.
+
+The private07051213 bundle now contains render-5341/HANDOVER.md with exact frozen
+source, renderer/verifier commands, pinned container constraints, input checks,
+cleanup/AT gates and residual ownership. It includes the dated remaining inventory
+in milestone-frontier.json:804governed files/724receipts/609exact working matches,
+80added/115changed/0missing or removed, no double-read drift. This inventory is
+triage, not acceptance. Source-review scope through c8da3b9f remains historical
+and hash-bound; later source changes invalidate matching receipts normally.
+
+The next key-custody batch was interrupted before acceptance: custody.rs only
+first180of346lines read; backups.rs721lines not read. No receipt was renewed for
+either. Keep those paths and all other unread/changed paths in the frontier.
+The frozen copies, theme revision and verifier digest were rechecked unchanged;
+current docs differ from that copy only in excluded reviews.json. No renderer,
+browser, ignored native/capacity test or new compiler was started for this pack.
+
+The milestone handover retains the complete existing goal. Release the docs work
+lane with the board handover while awaiting allocation; reclaim it before new
+writes after checking ownership. Root remains scheduling/follow-up owner. No
+live process/target lease or uncommitted docs change is intentionally transferred.

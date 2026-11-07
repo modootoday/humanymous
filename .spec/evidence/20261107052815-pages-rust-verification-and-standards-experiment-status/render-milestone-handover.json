@@ -1,0 +1,26 @@
+{
+  "schema": "humanymous.pages-render-milestone-handover/1",
+  "public_prose_commit": "5341a880212a75b4f03528933a3ce5afaa1a6ee9",
+  "frozen_docs_tree": "6ce198590e38ba40f1f6ecd18036eccee4d92d1d",
+  "frozen_files": 127,
+  "frozen_copy_drift": [],
+  "current_difference_only_excluded_reviews": true,
+  "private_handover": "evidence:root/20261107051213 render-5341/HANDOVER.md and milestone-frontier.json",
+  "source_review_receipts": 724,
+  "dated_governed_inventory": 804,
+  "dated_working_matches": 609,
+  "dated_added": 80,
+  "dated_changed": 115,
+  "missing_or_removed": 0,
+  "inventory_is_review_acceptance": false,
+  "renderer_started": false,
+  "new_heavy_allocation": false,
+  "goal_complete": false,
+  "remaining": [
+    "Full source freshness",
+    "Actual two-baseurl build and rendered links",
+    "Current artifact browser and assistive-technology review",
+    "Open generic wire/interoperability/external review gates"
+  ],
+  "partial_key_review_accepted": false
+}
