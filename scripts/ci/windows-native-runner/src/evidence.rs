@@ -153,6 +153,9 @@ pub fn source(workspace: bool) -> io::Result<Value> {
     )
 }
 pub fn verify_snapshot(snapshot: &Value) -> io::Result<()> {
+    verify_snapshot_at(snapshot, Path::new("."))
+}
+fn verify_snapshot_at(snapshot: &Value, root: &Path) -> io::Result<()> {
     if let Some(os) = snapshot["github"]["RUNNER_OS"].as_str() {
         let expected = match os.to_ascii_lowercase().as_str() {
             "windows" => "windows",
@@ -188,8 +191,9 @@ pub fn verify_snapshot(snapshot: &Value) -> io::Result<()> {
     if files.is_empty() {
         return Err(io::Error::other("empty source manifest"));
     }
+    source_inputs::require_coverage(files)?;
     for (path, expected) in files {
-        if digest(Path::new(path))? != *expected {
+        if digest(&root.join(path))? != *expected {
             return Err(io::Error::other("source changed during native execution"));
         }
     }

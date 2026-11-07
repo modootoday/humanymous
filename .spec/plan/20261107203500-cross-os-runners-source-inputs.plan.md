@@ -24,12 +24,16 @@ as regular files and hashes their bytes. Missing required input refuses the
 snapshot; no extension omission becomes success. Other source, cleanliness,
 Git-byte and evidence controls are unchanged. No manifest/dependency change.
 
-Two Rust tests authored: independently mutate each required input and verify
+Three Rust tests authored: independently mutate each required input and verify
 the recorded digest AND complete map change, and require the actual
-verify_snapshot to reject the old snapshot for each mutation (absolute fixture
-keys, no process cwd change), then accept restored bytes; nested unrelated manifest
+verify_snapshot's implementation to reject the old snapshot for each mutation
+(explicit fixture root, no process cwd change), then accept restored bytes; nested unrelated manifest
 included and build/private fixture manifests excluded; independently remove each
-required input and require inventory refusal. They use existing fixture custody.
+required input and require inventory refusal; independently omit each required
+snapshot entry and require verifier refusal even when disk files still exist.
+Both newly collected and supplied Options.source snapshots require all three
+current keys; there is no permissive historical-snapshot fallback. Existing
+historical receipts remain unchanged and unqualified. Tests use existing fixture custody.
 Tests are NOT_RUN pending Root's compiler/test allocation. Bare rustfmt and
 whitespace checks are source-only; no native actor/runtime/SCM grant is implied.
 Root must requalify source inventory and whole moved consumer graph separately.
@@ -37,5 +41,5 @@ Root must requalify source inventory and whole moved consumer graph separately.
 Recommended bounded selector after allocation:
 cargo test --locked --manifest-path scripts/ci/windows-native-runner/Cargo.toml
 evidence::source_inputs::tests, followed by scoped all-target check/strict Clippy.
-No fixture process launch is needed by these two directory/digest tests.
+No fixture process launch is needed by these three directory/digest tests.
 The platform two-context mapping research remains pending after this correction.

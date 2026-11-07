@@ -1,0 +1,367 @@
+{
+  "schema": "humanymous.platform-slice-consumers/1",
+  "head": "98fa126ac6ffddd5a741691753f12258346dca1f",
+  "method": "Static text references in current Cargo/Rust/Markdown/workflow paths; no Cargo graph execution, historical spec receipts excluded",
+  "files": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "207d090ce0a3f052b5141d637f5bd6e3b89b3f7ae1a08117ee947cb3dbb9da4e"
+    },
+    {
+      "path": "crates/attacker/Cargo.toml",
+      "sha256": "3cdd3dc892bec4f2f38bece8e5449d3c7e6a73b747f388f7f1bde47e8737b2c1"
+    },
+    {
+      "path": "crates/attacker/INTEGRATION.md",
+      "sha256": "44fe0e235592fdf82ac84629fbe68df6433ad946efc183415102f0e47ec99483"
+    },
+    {
+      "path": "crates/attacker/src/report/legacy/mod.rs",
+      "sha256": "76f3c7921834a658254c1a8013cdcb8149868a885784d2faf1bd8d08a11eb40d"
+    },
+    {
+      "path": "crates/attacker/src/verification/json.rs",
+      "sha256": "cec06b36f1b228e8f0077da4c92fcc97a4592ba4c63648f0717003f83267aa5e"
+    },
+    {
+      "path": "crates/audit/Cargo.toml",
+      "sha256": "dcf360b4573dea6a3fdcfca7cb18181a5a80d9fcc02355424f2c5725572c077a"
+    },
+    {
+      "path": "crates/audit/src/storage/wal.rs",
+      "sha256": "04205cea054359747bae2fb9c82832f050bb6f38059b1f596b408a0978b2a656"
+    },
+    {
+      "path": "crates/audit/tests/control_operations.rs",
+      "sha256": "df6d5f7eae9a4c654c97f639340a94b16d95a3953484d65c308c8b5ef8e423d3"
+    },
+    {
+      "path": "crates/audit/tests/durable_witness.rs",
+      "sha256": "59cd9b5c90335f4f00c440df44a0c8ba633c744fe5b8ad5fb7cc34a611ccc1c0"
+    },
+    {
+      "path": "crates/audit/tests/key_backups.rs",
+      "sha256": "857ec63b82a432f273ff38485204eccf32fac06445304e68b0a5a2197dd8587f"
+    },
+    {
+      "path": "crates/audit/tests/key_custody.rs",
+      "sha256": "7a0e458c89b1d277de7d34dc91c5a4ebb06101639da21ee000a78dbf66425b8c"
+    },
+    {
+      "path": "crates/audit/tests/record_parity.rs",
+      "sha256": "cce55f1007da9448ae669f83425f5d1493b9406649c29af7674d1a6cf83f831d"
+    },
+    {
+      "path": "crates/audit/tests/support/child_lifetime.rs",
+      "sha256": "b8ebca68dab9e9ba5f6c8f43494ca64f203d564f53bd77df9b965b2af0d5f881"
+    },
+    {
+      "path": "crates/audit/tests/verification_parity.rs",
+      "sha256": "c5c70aa060cc1e794274ae2c64aa32a8c5bdafd1422b4c7bfebb6a6f07691343"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/Cargo.toml",
+      "sha256": "5f52293d6ddfc2fcbb9d29c8a7d27bb9a3f1340a42b08a92ffbc4ec74c4f303a"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/negative_pilot.rs",
+      "sha256": "614230683c879f900ebe2151d447a6ad4d1a612b4f27aac4775a65047f4504e2"
+    },
+    {
+      "path": "crates/browser/native/desktop/Cargo.toml",
+      "sha256": "5ef4a7183cfa2a363f58ef073a650372019373f7415ff617f1f605a94a38bd34"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_process.rs",
+      "sha256": "6df47121e6f94167932365f8f8587d5529f6ee74df560f3c9d4792c12917986d"
+    },
+    {
+      "path": "crates/cli/Cargo.toml",
+      "sha256": "f2826e42817e4ed6614ba9cd0e763e17a8859d77056452fa196118e09ecb0eda"
+    },
+    {
+      "path": "crates/cli/tests/watchdog_boundary.rs",
+      "sha256": "b6149684beae9fbdb3daaab5b2b4eff9ca89ab52295414859b21b8dbc59efbab"
+    },
+    {
+      "path": "crates/dotnet-adapter/Cargo.toml",
+      "sha256": "0bdfa2fcc18fc50b259e7d48d83fa491e1adfe37625187ff310f69615988b9c0"
+    },
+    {
+      "path": "crates/dotnet-adapter/INTEGRATION.md",
+      "sha256": "830a9064d24bc8d4e1b4503744d3b9ba6bba88b38a45ba59f669532f9fa3d90a"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/generic.rs",
+      "sha256": "4a0f2fd52c2a7132f120ff0f1e0e2c639b401529bced8392e8d3b333086330a2"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/launch.rs",
+      "sha256": "e00c753fa2733568793a5b3a6b2f16451f71fdf2c4e67d4a154944bd2bca8043"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/retained.rs",
+      "sha256": "1dfa7ca7bef8185df0ed89354b08ebebcc5fe11b969c61208d1b4d68739f2cb2"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/package.rs",
+      "sha256": "94df34555ccc08e147fdc825f77755ac061ad77129df22822801bff7343fd1a0"
+    },
+    {
+      "path": "crates/native-security/Cargo.toml",
+      "sha256": "d195018b44ed68b5d2c4000f023cbbd33021941f0285c7cbbc0869b3c6e19485"
+    },
+    {
+      "path": "crates/network/Cargo.toml",
+      "sha256": "895515bf07949a02008a39e03a426134280e42f59420c99c31ba0a7359c3971f"
+    },
+    {
+      "path": "crates/network/tests/report_parity.rs",
+      "sha256": "9d28088b687b038d18a226951889ecb8d83518b56f3934eb02f7ee6db92008d5"
+    },
+    {
+      "path": "crates/network/tests/tls_parity.rs",
+      "sha256": "32572b1c0a023eda9820aea849211598806f294ba1c3df07dce29cc8ef108153"
+    },
+    {
+      "path": "crates/python-adapter/Cargo.toml",
+      "sha256": "8c20a2a2eca78f04fbac91075fd74c5c23df58d8752e92f0ae5cd776daf42d21"
+    },
+    {
+      "path": "crates/python-adapter/tests/component_controller.rs",
+      "sha256": "4ab16775f6cf4081485d8c5251cacd2f4a77c1d2d84eede544254f42bc992f6e"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_files.rs",
+      "sha256": "9743800f6636d5741bd75d86045246c639b35fa4c98b1dd6d4a13efd7d366edd"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_host.rs",
+      "sha256": "b5a70bada4596b6d1625cd280d779f838ff174636026e98f840cf31711606f26"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_receipt.rs",
+      "sha256": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/Cargo.toml",
+      "sha256": "c28056e78ede24a5589c734f6f2c51d917c401933bead865afa8b06ac13e7257"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity/verification_parity.rs",
+      "sha256": "0326426088da998257665d0dc2bf34e55888bb03b01eceb7847f400939dc0ece"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/behavior_parity.rs",
+      "sha256": "2ca9515f2d73c9635e07a5cef989991d62cedcfedadfd94e6ea6b050f88ce0c7"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs",
+      "sha256": "8dae4bb7672cd7f94bfbe09b0dcca9f1077579f3cc002b0ceef9bb27c7109d7b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/derivation_parity.rs",
+      "sha256": "13d2f53bf986e0d8468869a3fe75f944cae83429ce7dadf2dd3bc5d822201d08"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+      "sha256": "16d5a72a686f658ed79b9c483ca31a02724b49a6efe84b4ef206069284ace3e3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals/observation_parity.rs",
+      "sha256": "6cdf3b522197b6d6f24c2f632379a04eff59523a11c97f928fb1c0d8efba4c02"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals/report_parity.rs",
+      "sha256": "fbd42991b2a3e30157f309523dbb274ea6a982022d719813d82c4ca6e6404274"
+    },
+    {
+      "path": "crates/test-support/Cargo.toml",
+      "sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a"
+    },
+    {
+      "path": "crates/test-support/examples/linux_tree_inventory.rs",
+      "sha256": "aa9f32c5a903f245e5fefbace75a8c9aa72ad35b4abc0627ad12eb9019fe4455"
+    },
+    {
+      "path": "crates/windows-object-bridge/Cargo.toml",
+      "sha256": "d98a0d3f5122d460d2351fc73b118de570384193ce228790e96e15f7a6fe7c75"
+    },
+    {
+      "path": "crates/windows-object-bridge/src/lib.rs",
+      "sha256": "48c72fe43a94b539179001aee69960e4f34c4641ab3e9de2b30e279ba1a355df"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/Cargo.toml",
+      "sha256": "68b352a184b1a4e060a2a438964491c4f46a98327be188c0fc8c52bfe6239475"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/desktop.rs",
+      "sha256": "b06a7ac469d88188df3356bb4d452afef3f3b7b12c40e11aadb18d13f56e091f"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/diagnostics.rs",
+      "sha256": "f50794060613c39a307e12cc2896bd466bd724b1b8e7213c94d76b7f71f25da7"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/diagnostics/bootstrap/observations.rs",
+      "sha256": "fe0dda549e83a5cba28b219585d4ce4427aa41bd82ae11f97ed9af603f33bf41"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/provisioning.rs",
+      "sha256": "d882ebead00691bdf1eef17c5cc1dd8999c60faf78e062526be52f525c8c7ae9"
+    },
+    {
+      "path": "scripts/ci/delivery/Cargo.toml",
+      "sha256": "2eda87a39f713ee40cccdf1a29279a4e79a830a9fa47158017b55faf0a8e196a"
+    },
+    {
+      "path": "scripts/ci/delivery/src/audit_source.rs",
+      "sha256": "91460c142bd90c10ea18da46d2e41e247ed9fc235d3067f3fc4f9a6bdfb27f45"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/native_archive.rs",
+      "sha256": "be3ce04c11efb1438f8a81b2e6ce3344150049c706acb27aac6ff32fc115fae3"
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof.rs",
+      "sha256": "20d5eace1fe7994798182f8d26f65e0942df26a75ece9d733e1dc2fa0cf99e75"
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof/admission.rs",
+      "sha256": "d7b21d2e1b7b792ca723d0809afb50d2ed022cfa12201b83f6a6167473883e41"
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof/frontend.rs",
+      "sha256": "cc547b15ec07ad5533bb6348288467f06903d051fefb5d872c02b5d0b8af8a5e"
+    },
+    {
+      "path": "scripts/ci/delivery/src/service_component.rs",
+      "sha256": "35877c50e81f4eaed7b2103a9d6e57185afbc29476be455397f97e5f6376b597"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/Cargo.toml",
+      "sha256": "2dd231fee4d83e01148aa59be9ab6c815a1e2d99896d570e0e2d19e23fea5d53"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/actor/prebuilt.rs",
+      "sha256": "bc21396fbfec0c1f04c0bc88c23cb5bd13309935ad6060ded8784610a09e36d9"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/controlled.rs",
+      "sha256": "57f6c4f8a99554511e6a9a22148737af34c90c567b51b48bc6e287b7116b4003"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/evidence.rs",
+      "sha256": "1a9575257d4ed4fe30773098fce79e3fea1acbc4a366486d6f6f505026ab1484"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/evidence/recovery.rs",
+      "sha256": "ea8035ae6c03fb08ea5b4daad6bcb4694e9ce60e19618c54fc7b26032ae39223"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness.rs",
+      "sha256": "94807cfbfdf6a3a18521df3b9feaeb6e1399e808822e8d64aaa6e1a09d08beda"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/helpers.rs",
+      "sha256": "a76cda41c7c1649c71cfbf6351d230a39e831a1d22f4fad9594a9e2701accb27"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/pilot.rs",
+      "sha256": "e5603c9c354429caf4e43a69258e2eed1f0825263bb4489790bef5e4f76d9f46"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/execution.rs",
+      "sha256": "d93ce47630630469aecc583fdd5ad1adadd8749fdbd67e7be294f5826d8ffd6d"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/receipt.rs",
+      "sha256": "a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df"
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/summary.rs",
+      "sha256": "b3a3d91256414c69d1d440ad3d58c777aad10e68e2ff9c92d7b28c21e2ed7ad8"
+    },
+    {
+      "path": "test/lab/runner/Cargo.toml",
+      "sha256": "1c87569cba75e0585a6018a31fcabd574299a785119cca81b2471e42e32c75c3"
+    },
+    {
+      "path": "test/lab/runner/src/audit.rs",
+      "sha256": "25cd65788a1267af5fc23c4b7a2aafa53a0241ba6766b6fc939232d6aa54e462"
+    },
+    {
+      "path": "test/lab/runner/src/docker.rs",
+      "sha256": "567322d73b66e265af645a6682141513827dcdbdea51c2089adf42dd3d2a78ba"
+    },
+    {
+      "path": "test/lab/runner/src/docker/affinity.rs",
+      "sha256": "cace5dd96a41ee90c87057efda300b061fba1401e0261712e3251ad781831b9d"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration.rs",
+      "sha256": "f2b06f52c1cb505c8cba5f5be34603af33da7b77d48401e9144c6598f2718036"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "sha256": "ddfc939fe41efdaab84bab2c60eb9b06729f92c946cc0f58fe21c85e07303a85"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser.rs",
+      "sha256": "c15b2b1e211102f80df7b38d699735eb481e6e5f723bd0f72c304aed32589cd7"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_fixture.rs",
+      "sha256": "1396673fdace8c72a9957dfef13af30adbf6514cf0e2b99306a116a68f17a2c5"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_public.rs",
+      "sha256": "0eb4aef2b6427a50f0da944a8293365bb32f154d6374d1a7097f282a7202923c"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go.rs",
+      "sha256": "a090465b9b88db843cbb649f93b6c52d72bd3c3dab4db8aba4ae563f1de75562"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/mount_probe.rs",
+      "sha256": "8234e2da1f9d3e31cc6bad0a511e24eaa06f1dc79783331736308625685e3237"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "sha256": "f6ef28ce2cb40da41e537a23454a11e4547b581baac5bde93b57fe4a9ee833d9"
+    },
+    {
+      "path": "test/lab/runtime/Cargo.toml",
+      "sha256": "4d2b68c6426bd8cc9c09c98d98c8b068eb9f079b97ca0392127c56ad2eb99598"
+    },
+    {
+      "path": "test/lab/runtime/src/browser_product.rs",
+      "sha256": "8deab130d6a690367661a13357eda485bfa192778eb210c7ca2da3174fac70a8"
+    },
+    {
+      "path": "test/lab/runtime/src/go/backend.rs",
+      "sha256": "a829e0f8521a6a7e3e3e49cc22990afbda41be7068a5ab36f18ad110286d0ac5"
+    },
+    {
+      "path": "test/lab/runtime/src/go/client.rs",
+      "sha256": "c0b9c74a6ee37176cdf3dc25ec5b75234c495fbd9488683e52b52d9653e81da3"
+    },
+    {
+      "path": "test/lab/runtime/src/go/gate.rs",
+      "sha256": "e9d3df1492055d8bd45bc985aa725bc85fc8a41555033aee3e7a09f0cee2c8a4"
+    },
+    {
+      "path": "test/lab/runtime/src/go/mod.rs",
+      "sha256": "8a86b4f045183a147fae1d8c054e8ef2756db3a868e209a09a6391ac7c10867b"
+    },
+    {
+      "path": "test/lab/runtime/src/go/receipt.rs",
+      "sha256": "8d14ec1e36f85b9d1c0e58caba8c3db86f884d747c7f8a85046f0d7cb6b2fb47"
+    },
+    {
+      "path": "test/lab/runtime/src/installation/witnessed.rs",
+      "sha256": "94bd3ad7354cc1a622892222a9590e7b15696be782b34de594015d59a2fc06a3"
+    }
+  ]
+}

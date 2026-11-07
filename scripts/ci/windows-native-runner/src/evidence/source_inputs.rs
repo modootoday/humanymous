@@ -7,6 +7,20 @@ const REQUIRED_INPUTS: [&str; 3] = [
     "crates/sdk/humanymous-core/src/signals/observation/registry.json",
 ];
 
+pub(super) fn require_coverage(
+    files: &serde_json::Map<String, serde_json::Value>,
+) -> io::Result<()> {
+    if REQUIRED_INPUTS
+        .iter()
+        .any(|path| !files.contains_key(*path))
+    {
+        return Err(io::Error::other(
+            "required current source input missing from snapshot",
+        ));
+    }
+    Ok(())
+}
+
 fn insert(root: &Path, path: &Path, files: &mut BTreeMap<String, String>) -> io::Result<()> {
     let key = path
         .strip_prefix(root)
@@ -81,13 +95,9 @@ mod tests {
         let mut original = BTreeMap::new();
         collect(root, &mut original).unwrap();
         assert_eq!(original.len(), 4);
-        // Absolute fixture keys exercise the real verifier without changing cwd.
-        let absolute: BTreeMap<_, _> = original
-            .iter()
-            .map(|(path, hash)| (root.join(path).to_string_lossy().into_owned(), hash.clone()))
-            .collect();
-        let snapshot = serde_json::json!({"files": absolute});
-        super::super::verify_snapshot(&snapshot).unwrap();
+        // Same verifier with an explicit fixture root; never change process cwd.
+        let snapshot = serde_json::json!({"files": original});
+        super::super::verify_snapshot_at(&snapshot, root).unwrap();
         assert!(
             !original
                 .keys()
@@ -99,9 +109,9 @@ mod tests {
             collect(root, &mut changed).unwrap();
             assert_ne!(original[relative], changed[relative]);
             assert_ne!(original, changed);
-            assert!(super::super::verify_snapshot(&snapshot).is_err());
+            assert!(super::super::verify_snapshot_at(&snapshot, root).is_err());
             fs::write(root.join(relative), b"original").unwrap();
-            super::super::verify_snapshot(&snapshot).unwrap();
+            super::super::verify_snapshot_at(&snapshot, root).unwrap();
         }
     }
 
@@ -113,6 +123,19 @@ mod tests {
             fs::remove_file(directory.path().join(relative)).unwrap();
             assert!(collect(directory.path(), &mut BTreeMap::new()).is_err());
             fs::write(directory.path().join(relative), b"original").unwrap();
+        }
+    }
+
+    #[test]
+    fn each_omitted_required_snapshot_entry_refuses_verification() {
+        let directory = crate::fixture::Directory::new().unwrap();
+        fixture(directory.path());
+        let mut files = BTreeMap::new();
+        collect(directory.path(), &mut files).unwrap();
+        for relative in REQUIRED_INPUTS {
+            let mut snapshot = serde_json::json!({"files": files});
+            snapshot["files"].as_object_mut().unwrap().remove(relative);
+            assert!(super::super::verify_snapshot_at(&snapshot, directory.path()).is_err());
         }
     }
 }
