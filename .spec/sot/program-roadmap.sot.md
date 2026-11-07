@@ -11,6 +11,19 @@ rel:
 
 # Overall roadmap and milestones
 
+## Completed local workflow parity comparison
+
+evidence:root/20261107092034 records the actual paired run: local Windows Desktop
+act0.2.97 and GitHub run42360069900/job128366376073 both pass six suite records,
+same control d610ab4d/workload8132117/image/lock/Rust/cgroup4CPU2GiB/UID0. Initial
+workspace build is100.332s local versus157.570s GitHub; initial collector is
+40.546s versus35.410s, so local is not universally faster. Initial runtime process
+is17.536s versus31.047s. Hardware, cache and metric limitations remain in the
+evidence. The local environment is usable and the quiet window has ended;
+subsequent code still needs its own current-source qualification. The normative
+execution venue table is in sot:root/rust-migration; prior hosted-only snapshots
+are historical. Real Cross-OS/final hosted obligations remain unclosed.
+
 The user subsequently authorized actual local Windows/WSL timing and resource
 comparison, superseding the blanket hosted-only rule. Root holds a temporary
 quiet window for comparable measurements against exact 8132117 in an isolated

@@ -1,0 +1,76 @@
+{
+  "schema": "humanymous.paired-workflow-comparison/1",
+  "control_sha": "d610ab4dfeb2de6173091e13b0b54af5a7d878e3",
+  "workload_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "github_run": 42360069900,
+  "github_job": 128366376073,
+  "github_job_seconds": 294,
+  "local_act_outer_seconds": 211.291,
+  "image": "ghcr.io/catthehacker/ubuntu@sha256:62d572b92f9f32d3427b6d220ad1f9dca9c7b6ffad37d295425037dbff78abaf",
+  "cpu_quota": 4,
+  "memory_bytes": 2147483648,
+  "swap_bytes": 0,
+  "uid": 0,
+  "matching_identity_and_toolchain": true,
+  "full_product_qualified": false,
+  "general_speedup_claimed": false,
+  "cache_state": "initial and within-job repeat; prior suites warm later suites; no fully cold-cache certification",
+  "rss_scope": "GNU time maximum reported child RSS, not aggregate container or host peak",
+  "cgroup_peak_scope": "context was sampled before workloads; not final whole-job peak",
+  "pairs": [
+    {
+      "suite": "collector-lib",
+      "pass": 0,
+      "local_seconds": 40.546,
+      "github_seconds": 35.41,
+      "local_max_rss_mib": 332.7,
+      "github_max_rss_mib": 370.2,
+      "both_passed": true
+    },
+    {
+      "suite": "workspace-all-targets",
+      "pass": 0,
+      "local_seconds": 100.332,
+      "github_seconds": 157.57,
+      "local_max_rss_mib": 485.5,
+      "github_max_rss_mib": 520.4,
+      "both_passed": true
+    },
+    {
+      "suite": "runtime-native-process",
+      "pass": 0,
+      "local_seconds": 17.536,
+      "github_seconds": 31.047,
+      "local_max_rss_mib": 445.9,
+      "github_max_rss_mib": 480.6,
+      "both_passed": true
+    },
+    {
+      "suite": "collector-lib",
+      "pass": 1,
+      "local_seconds": 0.092,
+      "github_seconds": 0.496,
+      "local_max_rss_mib": 77.7,
+      "github_max_rss_mib": 77.7,
+      "both_passed": true
+    },
+    {
+      "suite": "workspace-all-targets",
+      "pass": 1,
+      "local_seconds": 3.572,
+      "github_seconds": 6.022,
+      "local_max_rss_mib": 409.9,
+      "github_max_rss_mib": 453.8,
+      "both_passed": true
+    },
+    {
+      "suite": "runtime-native-process",
+      "pass": 1,
+      "local_seconds": 4.743,
+      "github_seconds": 9.881,
+      "local_max_rss_mib": 267.2,
+      "github_max_rss_mib": 299.9,
+      "both_passed": true
+    }
+  ]
+}

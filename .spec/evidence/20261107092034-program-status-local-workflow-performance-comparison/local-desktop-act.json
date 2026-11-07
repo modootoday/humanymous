@@ -1,0 +1,247 @@
+{
+  "schema": "humanymous.local-parity/1",
+  "control_source_sha": "d610ab4dfeb2de6173091e13b0b54af5a7d878e3",
+  "control_working_byte_hashes": {
+    "main_rs": "c81a1aa4be0ae055f06c40cbcf9b7cde6c3816c07f083d1fbc8be77820591c7b",
+    "manifest": "d663079312863591e965544107a121cbeb83443e961e3d48caf80c2c6ae1f0e3",
+    "lock": "e709acaa85b6cf3204713fb78665215c19587f74c1fc7557345bcf3f87aefa34",
+    "workflow": "47a061de603e942774b1806d7156aa06610179334e9d0cc76d02e93bfed1d55c"
+  },
+  "workload_source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "workload_lock_sha256": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+  "context": {
+    "kind": "local-act-container",
+    "os": "linux",
+    "arch": "x86_64",
+    "image_ref_requested": "ghcr.io/catthehacker/ubuntu@sha256:62d572b92f9f32d3427b6d220ad1f9dca9c7b6ffad37d295425037dbff78abaf",
+    "image_identity_verified_in_process": false,
+    "vm_equivalence_claimed": false,
+    "local_provider": "windows-act-desktop-linux",
+    "local_docker_host": "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "local_engine_id_reported_by_outer_preflight": "retained-in-private-engine-preflight",
+    "local_engine_attested_in_process": false,
+    "nproc": "32",
+    "uid": "0",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "runner_image_version": null,
+    "cpu_max": "400000 100000",
+    "memory_max": "2147483648",
+    "memory_swap_max": "0",
+    "memory_peak_whole_cgroup": "1684107264",
+    "cpu_stat_whole_cgroup": "usage_usec 9903158\nuser_usec 7391398\nsystem_usec 2511760\nnice_usec 0\nnr_periods 182\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0"
+  },
+  "preparation": {
+    "provider": "same explicit apt-get update/install time in both venues",
+    "package_version": "1.9-0.2build1",
+    "stages": [
+      {
+        "stage": "time-package-index",
+        "elapsed_ms": 6519,
+        "exit_code": 0
+      },
+      {
+        "stage": "time-package-install",
+        "elapsed_ms": 2172,
+        "exit_code": 0
+      }
+    ]
+  },
+  "materialization_ms": 1700,
+  "passes_requested": 2,
+  "suite_order": "collector-lib,workspace-all-targets,runtime-native-process; initial then optional same-job repeat",
+  "cold_cache_verified": false,
+  "comparison_performed": false,
+  "full_product_qualified": false,
+  "source_changed": false,
+  "all_requested_suites_passed": true,
+  "records": [
+    {
+      "suite": "collector-lib",
+      "pass": 0,
+      "status": "passed",
+      "elapsed_ms": 40546,
+      "exit_code": 0,
+      "expected_tests": 26,
+      "actual_counts": [
+        26,
+        0,
+        0,
+        0,
+        0
+      ],
+      "count_order": "passed,failed,ignored,measured,filtered",
+      "target_existed_before": false,
+      "cache_reuse_qualified": false,
+      "resource_metrics_complete": true,
+      "resources": {
+        "user_seconds": 17.45,
+        "system_seconds": 3.07,
+        "max_rss_kbytes_reported": 340660,
+        "voluntary_context_switches": 68805,
+        "involuntary_context_switches": 117,
+        "filesystem_inputs": 8,
+        "filesystem_outputs": 952576,
+        "provider": "GNU time -v; max RSS is not simultaneous whole-machine memory"
+      },
+      "stdout_sha256": "ecc6a4edfe14b45cebb3f59db29608448c02ac0a16c15b415575ad258e5439cc",
+      "stderr_sha256": "bb8c34622fb8756789adc7cf90d1ccdd010a17df51e56cc8d005f6ea0cbe34c4",
+      "resource_log_sha256": "a0558a22aa8979e3e07bb048463cb99fc6f48800563983c880b1e9ba7aeafea4",
+      "source_changed": false
+    },
+    {
+      "suite": "workspace-all-targets",
+      "pass": 0,
+      "status": "passed",
+      "elapsed_ms": 100332,
+      "exit_code": 0,
+      "expected_tests": null,
+      "actual_counts": null,
+      "count_order": "passed,failed,ignored,measured,filtered",
+      "target_existed_before": true,
+      "cache_reuse_qualified": false,
+      "resource_metrics_complete": true,
+      "resources": {
+        "user_seconds": 81.37,
+        "system_seconds": 22.21,
+        "max_rss_kbytes_reported": 497160,
+        "voluntary_context_switches": 147613,
+        "involuntary_context_switches": 3232,
+        "filesystem_inputs": 1131664,
+        "filesystem_outputs": 9907952,
+        "provider": "GNU time -v; max RSS is not simultaneous whole-machine memory"
+      },
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7bcc2694609c09f20e063a3a35ee70ef4da3e16e03f34ec71341455c54eab266",
+      "resource_log_sha256": "7ff97406d0f3d35df74173ed7eb2254e7bb077333d170d1e4764361624988037",
+      "source_changed": false
+    },
+    {
+      "suite": "runtime-native-process",
+      "pass": 0,
+      "status": "passed",
+      "elapsed_ms": 17536,
+      "exit_code": 0,
+      "expected_tests": 1,
+      "actual_counts": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "count_order": "passed,failed,ignored,measured,filtered",
+      "target_existed_before": true,
+      "cache_reuse_qualified": false,
+      "resource_metrics_complete": true,
+      "resources": {
+        "user_seconds": 15.43,
+        "system_seconds": 2.06,
+        "max_rss_kbytes_reported": 456628,
+        "voluntary_context_switches": 8093,
+        "involuntary_context_switches": 459,
+        "filesystem_inputs": 210704,
+        "filesystem_outputs": 803208,
+        "provider": "GNU time -v; max RSS is not simultaneous whole-machine memory"
+      },
+      "stdout_sha256": "ca1354e3f2a7e4fa6062d63351e6dd0f71fc09fa1d7564c556965a216d97a4e9",
+      "stderr_sha256": "15f9acf9947226489aacc6f97fbe14a82a4983238a06b19dd7a88234f858b089",
+      "resource_log_sha256": "8f73ab7d51eea0cf6388fe79418d3c69cb0f13da666f65ca88c1f546e8823c84",
+      "source_changed": false
+    },
+    {
+      "suite": "collector-lib",
+      "pass": 1,
+      "status": "passed",
+      "elapsed_ms": 92,
+      "exit_code": 0,
+      "expected_tests": 26,
+      "actual_counts": [
+        26,
+        0,
+        0,
+        0,
+        0
+      ],
+      "count_order": "passed,failed,ignored,measured,filtered",
+      "target_existed_before": true,
+      "cache_reuse_qualified": false,
+      "resource_metrics_complete": true,
+      "resources": {
+        "user_seconds": 0.04,
+        "system_seconds": 0.03,
+        "max_rss_kbytes_reported": 79556,
+        "voluntary_context_switches": 137,
+        "involuntary_context_switches": 0,
+        "filesystem_inputs": 30696,
+        "filesystem_outputs": 16,
+        "provider": "GNU time -v; max RSS is not simultaneous whole-machine memory"
+      },
+      "stdout_sha256": "ecc6a4edfe14b45cebb3f59db29608448c02ac0a16c15b415575ad258e5439cc",
+      "stderr_sha256": "a3adce2f252e7ecb8ec8b8dffc2efb936f2538e7efa6b5c539f2a26e34a7e17b",
+      "resource_log_sha256": "2f76cadbb93446333abb2c8f28b5f77a4081eda4cff5bda68463edc6f8bc54cc",
+      "source_changed": false
+    },
+    {
+      "suite": "workspace-all-targets",
+      "pass": 1,
+      "status": "passed",
+      "elapsed_ms": 3572,
+      "exit_code": 0,
+      "expected_tests": null,
+      "actual_counts": null,
+      "count_order": "passed,failed,ignored,measured,filtered",
+      "target_existed_before": true,
+      "cache_reuse_qualified": false,
+      "resource_metrics_complete": true,
+      "resources": {
+        "user_seconds": 2.96,
+        "system_seconds": 0.82,
+        "max_rss_kbytes_reported": 419772,
+        "voluntary_context_switches": 6445,
+        "involuntary_context_switches": 242,
+        "filesystem_inputs": 12160,
+        "filesystem_outputs": 352088,
+        "provider": "GNU time -v; max RSS is not simultaneous whole-machine memory"
+      },
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "a79f84520d02a159b4f945ac62ac46a2081eb059f66363e8a6fccbb7f4774101",
+      "resource_log_sha256": "a630570de14dacc41189f387fce784c00127744d10b996839b5246a4725001b9",
+      "source_changed": false
+    },
+    {
+      "suite": "runtime-native-process",
+      "pass": 1,
+      "status": "passed",
+      "elapsed_ms": 4743,
+      "exit_code": 0,
+      "expected_tests": 1,
+      "actual_counts": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "count_order": "passed,failed,ignored,measured,filtered",
+      "target_existed_before": true,
+      "cache_reuse_qualified": false,
+      "resource_metrics_complete": true,
+      "resources": {
+        "user_seconds": 4.52,
+        "system_seconds": 0.38,
+        "max_rss_kbytes_reported": 273588,
+        "voluntary_context_switches": 2190,
+        "involuntary_context_switches": 19,
+        "filesystem_inputs": 48112,
+        "filesystem_outputs": 124792,
+        "provider": "GNU time -v; max RSS is not simultaneous whole-machine memory"
+      },
+      "stdout_sha256": "20265a693d991f7abf8b25d2db6b30128fddf180d10ef1b4497d85fbfe33098c",
+      "stderr_sha256": "f5f164d17a03855e8318fc7abf04b3e4be878dd53717908a061000ac6288eb82",
+      "resource_log_sha256": "8ec0442a97207fa15cd9f81dc4a3301b3f1a993eb8587fec27e27a3d51b00afa",
+      "source_changed": false
+    }
+  ],
+  "raw_logs_uploaded": false
+}

@@ -14,6 +14,37 @@ rel:
 
 # Rust migration conventions
 
+## Measured hybrid validation policy
+
+The user's local-execution and same-workflow requests supersede the historical
+blanket hosted-only restriction. Actual evidence:root/20261107092034 compares
+Windows Desktop act and GitHub using workflow control d610ab4d, workload 8132117,
+one pinned Linux image, Rust 1.99.1, jobs1/incremental0, CPU quota4 and memory2GiB
+without additional swap. Both venues pass all six records. Initial local build
+takes100.332s versus157.570s hosted; actual runtime process17.536s versus31.047s;
+initial collector40.546s versus35.410s. Repeats use an already exercised target.
+These are scoped observations, not identical hardware or a general speed claim.
+
+| Validation surface | Default responsibility | Evidence boundary |
+|---|---|---|
+| Native Windows | Fast compiler/unit/ordinary-user process and supported local integration | Required native tools and feature/target builds must pass; no implicit service/account mutations |
+| WSL native Rust | Linux compiler/linker and supported Unix component validation | Keep native Linux source/targets separate; this is not authorization to use its standalone Docker daemon |
+| Windows Desktop act | Selected pre-push suites via the same workflow YAML/container as GitHub | Explicit engine affinity and local provenance; no genuine hosted claim from emulated variables |
+| GitHub standard runners | Unavailable OS/architecture tuples, protected service profiles, true workflow/event/permission behavior, explicitly hosted contracts and final integration | Required failures/unknowns remain explicit; local results do not fabricate those receipts |
+
+Preflight toolchain, CMake/Ninja/native SDKs, Docker credential helpers and exact
+package/features/target/profile before expensive work. Library-unit success does
+not prove executable, build-script, link or non-default feature compatibility.
+Preserve separate caches by OS/architecture/toolchain/lock/features/profile; never
+cache skipped test outcomes as execution. Actual source-specific tests still run.
+Local-edit profile measurements and CI-profile measurements remain distinct.
+
+Use four explicitly allocated local pipelines with exclusive target directories
+and resource admission/backoff. Serialize heavy CEF/native SDK builds. The2GiB
+container is the measured Linux parity profile only, not a universal SDK/model
+budget. The comparison quiet window ended after both runs; ordinary allocated
+work resumes. Docker Desktop affinity and cleanup scope below remain mandatory.
+
 ## Local Docker engine identity and cleanup
 
 The user's 2026-11-07 correction establishes Windows Docker Desktop's
@@ -21,6 +52,10 @@ desktop-linux context as the default local container engine. Invoke the Windows
 docker.exe explicitly with --context desktop-linux. If PATH does not resolve it,
 use the installed C:/Program Files/Docker/Docker/resources/bin/docker.exe; never
 silently substitute a WSL docker executable or a standalone WSL daemon.
+Prepend that bundle directory to the child process PATH so credential helpers
+and CLI plugins resolve as well. An absolute docker.exe can pass info yet fail
+pull when docker-credential-desktop is missing from PATH; this exact failure was
+observed and corrected without changing global PATH or switching engines.
 
 Before build, run or cleanup, inspect the selected context endpoint, server ID,
 server version and OS type. The expected Desktop endpoint is
