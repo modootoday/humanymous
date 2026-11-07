@@ -400,6 +400,14 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Allocated A atc26a5b53 plus depth:usize correction and shared signals56a2 actually
+passed combined all-target check/strict Clippy and26 unique Rust tests:wire6,
+framing13, checkpoint5, Go parity2. Intentional filters6/63/71/0. Frozen92/180
+count/message cases, all-valid-Unicode escaping oracle and actual Go180
+signatures/witness parity ran. First E0689 check failure retained; fresh second
+125-path hash/inventory closure unchanged. Evidence120052/raw115851. Batch
+terminal/A returned, no full audit/native/product/128MiB or whole-S1 claim.
+
 Shared checkpoint count-and-replay source now uses root's signals escaping sink
 56a2acdb, with finite byte-limited message assembly and compatibility Vec wrapper.
 Signature decoding uses fixed64-byte storage. Three tests authored including180

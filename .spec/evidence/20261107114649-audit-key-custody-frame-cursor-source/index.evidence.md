@@ -13,6 +13,11 @@ rel:
 
 ## What was measured
 
+Subsequent scoped execution is recorded in [[evidence:root/20261107120052]]:
+corrected source passed framing13/check/Clippy with125-path zero drift. The
+NOT_RUN statements below describe this source-creation checkpoint only. No
+native/whole-startup or production qualification is implied by the focused run.
+
 Source-only restricted S1 frame cursor, after root accepted next private framing/
 preflight/signing source work. No Cargo workload; Pages holds the heavy Desktop
 Ruby build. Formatting and diff checks only. Compilation/tests NOT_RUN.

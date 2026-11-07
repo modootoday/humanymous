@@ -1,0 +1,24 @@
+{
+  "candidate": "c26a5b534e1561bbd173b126001a50a85fa156c1 plus explicit preflight depth usize annotation",
+  "signalsSource": "56a2acdb",
+  "passed": 26,
+  "signalsWirePassed": 6,
+  "auditFramingPassed": 13,
+  "auditCheckpointUnitPassed": 5,
+  "auditCheckpointParityPassed": 2,
+  "failed": 0,
+  "ignoredExecuted": 0,
+  "filteredByHarness": [
+    6,
+    63,
+    71,
+    0
+  ],
+  "harnesses": 4,
+  "sourceFiles": 125,
+  "sourceHashDriftIndicators": 0,
+  "pathInventoryDrift": 0,
+  "firstAttempt": "check101 E0689 ambiguous depth numeric type; no subsequent commands ran; fixed usize annotation and fresh second full focused batch",
+  "scope": "signals wire and audit framing/checkpoint only, not full audit suite/native/product/whole-S1/capacity proof",
+  "session": "40021 terminal exit0; allocated A batch returned"
+}

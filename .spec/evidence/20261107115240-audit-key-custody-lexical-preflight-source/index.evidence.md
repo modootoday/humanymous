@@ -13,6 +13,12 @@ rel:
 
 ## What was measured
 
+Subsequent focused execution passed after one depth:usize type annotation;
+[[evidence:root/20261107120052]] records framing13/check/Clippy,125-path zero
+drift and the retained initial E0689 failure. All five preflight tests and the
+unknown-number decoder baseline actually ran. NOT_RUN below is historical at
+source creation. Test-only compilation and pending consumer limits still apply.
+
 Source-only lexical resource scanner following root's accepted S1 delta; no
 manifest/dependency feature changes. No Cargo workload while Pages holds the
 heavy build. Five preflight tests and one compatibility decoder regression are

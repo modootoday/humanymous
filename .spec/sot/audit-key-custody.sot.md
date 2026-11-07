@@ -12,18 +12,45 @@ rel:
 
 # Audit key custody
 
-Proposed bounded streaming recovery is design-only in
-[[plan:root/20261107103624]]. It must preserve frozen bytes/trust rules while
+Bounded streaming recovery follows [[plan:root/20261107103624]]. Private S1
+primitives are partially implemented; production S2/S3 remain design-only.
+The target must preserve frozen bytes/trust rules while
 removing history-sized decoder/WAL/Merkle/Log collections from the actual
 production recovery/proof path. It additionally proposes complete verification
 before any torn-tail repair. Resource profile, bounded proof-rescan strategy and
 consumer cursor APIs remain review gates; this pointer authorizes no code or
-new current-source qualification. Current110-case Windows evidence stays frozen.
+new current-source qualification. Earlier110-case Windows evidence stays historical.
 After independent review of43cad32e, root accepted S1 private/read-only primitives
 ONLY, with mandatory count-and-replay canonical framing, separate compatibility
 error/scope accumulation and preserved unsigned-proof semantics. These conditions
 are recorded in the plan before code. No production S2/S3 recovery mutation or
 consumer promotion, new dependency/manifest edit or validation workload is implied.
+
+### Qualification boundary and remaining product obligations
+
+Qualification is exact-source and scope-specific. The latest source checkpoint
+c26a5b53 plus explicit depth:usize correction and shared signals56a2 passed
+scoped check/Clippy and26 focused Rust tests in
+[[evidence:root/20261107120052]]. The125-path closure had zero drift. Full current
+package regression remains NOT_RUN. Do not present a historical full package
+result as current-source success after these cryptographic/framing changes.
+
+| Obligation | Authoritative observed state | Still required |
+|---|---|---|
+| Sealed custody, vault and native durable state | Historical ordinary-user Windows full audit115 passes atf88e76f4, [[evidence:root/20261107112110]] | Fresh current-source regression, supported OS/protected profiles and actual composition qualification |
+| Canonical/NFC bytes | f88 focused vectors92 canonical/13464 Unicode, [[evidence:root/20261107111706]] | Preserve admitted-input bytes as later bounded consumers replace legacy paths |
+| Bounded Merkle primitives | Scoped9 tests/check/Clippy at9c5f4e7c plus test-expression correction, [[evidence:root/20261107114310]] | Operational no-history recovery/proofs; legacy Tree still retains borrowed leaves and subtree memo |
+| Frame and predecode limits | Focused framing13 passed, [[evidence:root/20261107120052]]; source [[evidence:root/20261107115240]] | Actual bounded inspector wiring and native fault/capacity evidence; preflight is currently test-compiled only |
+| Checkpoint message/signature allocation | Root wire6/audit checkpoint5/Go parity2 passed, [[evidence:root/20261107120052]] | Finite trusted profile in the complete bounded verifier and full current-source regression |
+| Independent witness and retained dual control | Native process/retained custody mechanisms included in historical f88 package scope | Real ServiceHost issuer/admission/effect/pin acknowledgement and isolated product-lab requests/faults |
+| Backup retirement and erasure | Retained local-generation APIs and historical native regressions | Caller witnessed intent/effect correlation, fresh recovery grants, actual crash venue and backup/unknown-copy erasure obligations |
+| Durable sink | Local fsync-backed sink mechanism and historical native scope | Actual remote transport/retry/delivery receipt and failure semantics |
+
+Complete authenticated EOF, compatibility error/scope priority, source identity/
+membership rechecks, cancellation, verify-before-repair and consumer startup
+projection remain requirements. S1 primitives cannot release business effects,
+publish a healthy owner or prove128MiB/RSS by themselves. Actual Docker product
+e2e, hosted/protected profiles and strict accounting remain separate gates.
 
 ### Retained local backup retirement delta v0.1
 

@@ -1,6 +1,18 @@
 # Sealed key compatibility integration
 
-## Shared checkpoint sink candidate, not executed
+## Latest focused frame and checkpoint qualification
+
+Sourcec26a5b53 plus depth:usize correction and root signals56a2 passed combined
+all-target locked check/strict Clippy, signals wire6, audit framing13, checkpoint5
+and Go parity2:26 unique Rust tests, zero failed/ignored/measured. Four harnesses
+have intentional filters6/63/71/0. First E0689 failure retained; fresh second
+125-file source/hash/path closure unchanged. Public120052/private115851.
+Root all-valid-Unicode escaping oracle, frozen92/180 count/message cases and
+actual Go180 signature/witness parity ran; fixture counts are not extra tests.
+All handles terminal and A returned. This supersedes NOT_RUN below only for this
+focused scope, not full audit/native/product/128MiB or whole-S1 qualification.
+
+## Historical checkpoint sink source before focused execution
 
 Root signals quote_json_go_to56a2 backs one fixed-order checkpoint emitter.
 Checked count-and-replay allocates one exact message Vec after limit admission;
@@ -10,7 +22,7 @@ messages/exact budget boundaries and sink/overflow failure; existing Go180 actua
 signature parity must qualify this source and root escaping change together.
 Evidence115514; compile/Clippy/tests NOT_RUN. No bounded production or memory claim.
 
-## Private lexical preflight source, not executed
+## Historical lexical preflight source before focused execution
 
 Accepted S1 scanner delta preserves unknown numeric magnitudes (e.g1e400)
 without serde feature changes. Fixed64-container stack and checked counters;
@@ -21,7 +33,7 @@ including92 record/180 checkpoint count-oracle cases. Test-compiled only until
 the read-only bounded consumer wires policy. Evidence115240; no production or
 memory qualification and no build process held.
 
-## Next private S1 frame cursor candidate, not executed
+## Historical frame cursor source before focused execution
 
 Shared borrowed-frame cursor now backs legacy decode. One reusable frame Vec,
 checked frame/offset limits, CRLF/blanks/newline-only commits and poison-on-error;

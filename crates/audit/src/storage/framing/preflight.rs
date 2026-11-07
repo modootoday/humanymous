@@ -59,7 +59,7 @@ pub(super) fn check(bytes: &[u8], limits: Limits) -> Result<Counts, Exhausted> {
         key: true,
         items: 0,
     }; MAX_DEPTH];
-    let mut depth = 0;
+    let mut depth: usize = 0;
     let mut counts = Counts::default();
     let mut at = 0;
     while let Some(&byte) = bytes.get(at) {

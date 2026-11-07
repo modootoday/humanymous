@@ -13,6 +13,12 @@ rel:
 
 ## What was measured
 
+Subsequent scoped execution passed root wire6/audit checkpoint5/Go parity2 and
+all-target check/strict Clippy, [[evidence:root/20261107120052]]. This includes
+all three authored encoder tests and actual frozen Go180 signatures.125-path
+closure unchanged. NOT_RUN below describes the source-creation checkpoint only;
+complete bounded verifier, full audit/native/product and memory claims remain open.
+
 Source-only shared checkpoint signing encoder, using root-owned signals sink
 quote_json_go_to from56a2acdb. No duplicate escaping implementation or dependency
 change. One deterministic encoder counts into a byte-limited sink, reserves the
