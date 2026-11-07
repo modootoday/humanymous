@@ -1,0 +1,25 @@
+{
+  "schema": "humanymous.cli-service-qualification.v1",
+  "cli_source_commit": "83397fd5d7289a326b890aa547a8f9e1a04fe03f",
+  "platform": {"os": "windows", "arch": "x86_64", "rust": "1.99.1", "edition": "2024", "actor": "ordinary non-elevated local user"},
+  "scope": "signed service component and owned process fixtures",
+  "validated_working_input_manifest_sha256": "d68b8c9a25d714009291b52b4c7e6784b34902b8390771d84ab589ea98fcd3f6",
+  "source_inputs": {"total": 27, "lf_only": 27, "canonical_cli_files": 17, "canonical_cli_byte_matches": 17},
+  "tested_working_inputs_pending_owner_commits": [
+    {"path": "Cargo.lock", "bytes": 154694, "sha256": "7ce70665d04fe85add2c6bfd0efd58b5152131781577b59a53dce488e2d5482a"},
+    {"path": "Cargo.toml", "bytes": 1884, "sha256": "022409d334a951e28eeb84c2b53ceafae378d5471581d161e2b81204bf13068b"},
+    {"path": "crates/native-security/src/storage/service.rs", "bytes": 10780, "sha256": "365f949d4f78cdf6e3c922f9fc716006b7e33d912bd79f2b1defa27e4190ce61"},
+    {"path": "crates/native-security/src/storage/windows.rs", "bytes": 9227, "sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f"}
+  ],
+  "counts": {"library_tests_passed": 15, "composition_tests_passed": 1, "actual_process_tests_passed": 2, "failed_final_tests": 0, "positive_native_service_tests_ignored": 1, "zero_test_harnesses_counted": 0},
+  "checks": {"locked_package_tests": "passed", "warnings_denied_clippy": "passed", "package_fmt": "passed", "default_release_build": "passed", "default_release_binaries": ["humanymous"], "default_release_features": [], "cli_scoped_spec": "passed", "global_private_spec": "failed on in-progress graph; not waived"},
+  "actual_cases": [
+    {"id": "signed-plan-and-native-process", "status": "passed", "dry_run_unchanged": true, "actual_process_ready": true, "fixture_artifact_sha256": "0a576f097a2a9974a1acdf1abf18124f9867afa96e5bae057da2c68f01f224a6"},
+    {"id": "ordinary-actor-SCM-refused", "status": "observed-refused", "staging_cleanup_verified": true, "native_service_registered": false},
+    {"id": "native-service-lifecycle", "status": "unexecuted", "ignored_by_default": true}
+  ],
+  "manager_state_machine_unit_backend": "mock; real temporary filesystem and native ACL roles",
+  "native_service_qualified": false,
+  "product_qualified": false,
+  "open_gates": ["disposable ordinary SCM actor and controller permission delegation", "actual Linux systemd user and macOS launchd six-tuple pilots", "runtime ServiceHost private input and graceful drain", "OS-protected unattended credentials and service-owned custody", "independent release trust distribution, provenance and revocation", "partial native teardown, power-loss and stale-transaction recovery", "full Docker product e2e"]
+}

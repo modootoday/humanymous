@@ -77,4 +77,21 @@ Next dependencies and acceptance:
    state is preserved. Automatic crash recovery and full product Docker e2e remain
    open. No whole-program or whole-CLI operational-completion claim is made.
 
+## Handover checkpoint
+
+CLI code/API checkpoint83397fd5d7289a326b890aa547a8f9e1a04fe03f is committed.
+Public acceptance summary: [[evidence:root/20261107053001]]. All17CLI source/Cargo
+inputs matched canonical Git bytes; tested27-input manifest retained the exact
+working hashes of root/common and native-security inputs pending owner commits.
+Raw failures/retries/final source manifests remain in the private CLI bundle.
+
+First read CLI SoT and crates/cli/INTEGRATION.md. Reproduce package tests with
+service-pilot, locked Clippy and fmt; inspect the ignored positive service case
+instead of counting it as passed. Windows runner owner is preparing the
+controller-bootstrap/ordinary-child permission handoff; delivery owns native
+six-tuple dispatch. Runtime ServiceHost/protected credential integration remains
+the next functional dependency. Pending native teardown/recovery must remain
+failclosed. Branch changes/main merge/tags/publication, common Cargo/lock edits,
+browser-native CLI and any scoring changes remain out of this lane's scope.
+
 
