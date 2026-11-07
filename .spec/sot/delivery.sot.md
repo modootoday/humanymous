@@ -26,6 +26,28 @@ the final delivery runner requirements remain unchanged.
 
 ## Rust-only delivery follow-up contract v2
 
+### Standalone hosted service component (source prepared; not executed)
+
+The existing component-validation caller gains the closed service choice and
+codex/service-component-validation branch. Its separate standard Windows2025 job
+calls the existing owner standard-user-service mode, then the owner
+summarize-service CLI. No local SCM/account operation, new service implementation,
+privilege token, artifact/cache upload or production deployment is introduced.
+Normal child exit2 remains blocked/component-only despite two exact service tests
+and the sole owner's 13-fact runtime receipt verification. The injected
+after-grant exit1 is accepted only by the owner's separate no-launch cleanup
+validator; no child/Job facts may be fabricated from null. The Delivery command
+retains actual exit statuses, original reports/logs, expected source/run binding
+and unchanged before/after source snapshots. Owner validation failure or missing
+summary remains failure. Only a rebuilt finite summary enters public logs.
+
+Both component observations may pass while the native/full-product gate remains
+blocked. Existing pilot native and its required cases are unchanged. The legacy
+owner actor renews internal budgets and uses Drop fallback; this caller does not
+qualify retained-interactive/original-clock execution or full R1/Ready. Root must
+review/freeze the owner CLI, consumer and workflow as one committed candidate and
+allocate genuine hosted execution; source preparation is not that measurement.
+
 ### Audit source construction gate (source prepared; execution not yet observed)
 
 The closed Audit component uses exact f9b0cda3680c3b6d612cac8ace22e237812ed3cb

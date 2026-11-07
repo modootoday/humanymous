@@ -1089,3 +1089,14 @@ work began17:46:49UTC and lease returned17:50:45UTC within original17:52:49 work
 deadline, own matching compiler processes zero and verified marker removed.
 Overall qualification remains false. Actual Audit Linux prerequisite/semantic13/
 UI12 and source-check HEAD/status integration negatives remain not_run.
+
+User-priority standalone service caller now authored in service_component.rs and
+the existing component-validation workflow/catalog: closed service branch/choice,
+standard Windows2025 job, existing standard-user-service owner plus new
+summarize-service seam for normal and after-grant. No actual SCM/account action
+was performed locally. Owner revalidates original logs, two exact catalog cases,
+sole 13-fact runtime receipt and cleanup; Delivery retains actual exit/source/run
+binding and rebuilds only a finite public projection. Native/full-product blocked
+semantics remain unchanged. This new source has not been compiled/tested and is
+not qualified by earlier0d pure95 results; owner/consumer/workflow review, frozen
+candidate, allocated unit/static gates and genuine hosted measurement remain.

@@ -21,6 +21,7 @@ mod pilot;
 mod policy;
 mod registry;
 mod remote;
+mod service_component;
 mod source;
 mod supply;
 mod workspace;
@@ -99,6 +100,7 @@ fn run() -> Result<()> {
         "observe-run" => remote::observe(&root, argument(1)?, argument(2)?, Path::new(argument(3)?)),
         "audit-closure" => package::audit_closure(&root),
         "audit-source-check" => { println!("{}", audit_source::check(&root, argument(1)?)?); Ok(()) },
+        "service-component" => service_component::run(&root),
         "archive-cache" => archive_cache::run(&root),
         "register-evidence" => evidence::register(Path::new(argument(1)?), argument(2)?),
         "verify-images" => supply::verify_images(&root),
