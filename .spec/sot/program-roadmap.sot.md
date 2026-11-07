@@ -54,16 +54,35 @@ reduce subsequent allocations; never terminate another owner's processes.
 
 | Slot | Current allocation | Exclusive target | Boundary |
 |---|---|---|---|
-| A | Latest Audit all-targets check, Clippy and reviewed pure units | target/validation-audit | Actual retained-state/process regressions require the next allocation |
-| B | First Unix Python WSGI host-pilot compile and Clippy on immutable 8eb66811 snapshot | /home/smile/humanymous-validation-targets/python-native | WSL native Rust only; no Docker, import or server execution |
-| C | Current delivery pure checks and all-target Clippy | target/validation-ci-delivery | No actual native/socket/GUI/SCM/container pilots |
-| D | Frozen private gem setup, then Pages apex and subpath validation | Task-private gem path and separate Pages destinations | First attempts stopped at 42 missing gems before rendering; no browser/server |
+| A | Actual Unix Python WSGI fixture qualification on immutable 8eb66811 | /home/smile/humanymous-validation-targets/python-native | Private native-extension/virtualenv setup; owned loopback only; actual cases still pending |
+| B | Latest CLI all-targets check, reviewed pure units and Clippy | target/validation-cli | No SCM/account/service mutation or actual service execution |
+| C | Release .NET Rust facade and qualification-harness compilation | target/validation-dotnet-release | Clean standalone 2ffa4335 checkout required; no actual ASP.NET host yet |
+| D | Runtime actual ordinary-user Windows library and native-process fixtures | target/validation-agents | No SCM/account mutation, Docker or GUI; required ignored cases stay explicit |
 
-These are dispatch allocations, not terminal success claims. Apache's next Linux
-native compilation and .NET's release facade/harness build are queued until a
-slot returns. Apache Windows pilot units passed ten cases but exclude Linux
-httpd host code. The private official .NET SDK readiness check passed but does
-not qualify the actual ASP.NET host or a separate ordinary actor.
+These are dispatch allocations, not terminal success claims. Completed prior
+batches: delivery55 pure tests and all-target Clippy passed; first Unix Python
+WSGI check and Clippy passed with all2202 regular-file snapshot hashes unchanged.
+No Python server or scenario execution is implied by that compilation. Audit
+ordinary-user Windows actual targets passed44 tests: control_operations21,
+durable_witness13 and key_custody10. Three raw ignored helpers remain excluded;
+the111-file before/after closure matched. Audit check/Clippy and10 reviewed pure
+units also passed; evidence:root/20261107095831 records its exact scope.
+
+Apache Linux pilot-feature units10, all-target check and Clippy passed on
+immutable271b14e1 after preserving the first2ffa4335 Clippy failure and fixing
+four findings in primary source. Full extracted-source closure was unchanged.
+This covers Linux coordinator/host compilation, not httpd ABI, bindgen or45
+actual Docker scenarios. Desktop execution is queued until the .NET release
+build returns so heavy native SDK work remains serialized.
+
+Pages Windows frozen private dependency setup failed before rendering: the
+initial long path failed extraction, then a shorter path reached missing OpenSSL
+headers/pkg-config and MSYS keyring errors. No lock downgrade or signature bypass
+occurred. WSL preflight found no native Ruby or OpenSSL header; a Windows bundle
+executable inherited through PATH does not qualify Linux tooling. Hosted Linux
+Pages validation remains required. Apache Windows pilot units passed ten cases
+but exclude Linux httpd host code. The private official .NET SDK readiness check
+passed but does not qualify the actual ASP.NET host or a separate ordinary actor.
 
 Heavy CEF/native/bindgen builds remain mutually exclusive. Model loading needs
 a separate explicit allocation and is not implicitly enabled by the new ceiling.
