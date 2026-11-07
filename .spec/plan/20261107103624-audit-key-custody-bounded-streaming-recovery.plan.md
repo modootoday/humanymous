@@ -434,6 +434,15 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Private Phase-B source composes complete A/B under one sealed Source/immutable
+policy/control context, shared raw transcript encoder, fixed frontier and shared
+crypto/priority checks. Exact previous raw hash/signature strings are moved into
+separate frame-admitted buffers; capacities/allocator remain unmeasured. Phase-A
+physical_latest is dropped while pin/transcript/count commitments are retained.
+Final counts/digests/torn/source/membership/deadline must agree before diagnostic
+Report/Work. Eight new pipeline tests authored NOT_RUN, evidence131217. Native
+producer Unsupported, no operational owner/repair/authority/S2/S3 or memory claim.
+
 Exact4b49 immutable archive first-attempt allocated A check/strict Clippy and21
 unique Rust tests pass:scan7/82filtered, framing13/76filtered, Go verifier parity1/
 0filtered with840 rows.2434 full snapshot files/hash/inventory unchanged, primary

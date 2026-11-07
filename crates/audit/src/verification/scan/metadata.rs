@@ -5,7 +5,6 @@ use super::{
     source::Source,
 };
 use crate::{checkpoint::Checkpoint, record::Record, storage::RecoveryPolicy};
-use sha2::Digest;
 use std::io;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -51,23 +50,13 @@ pub(super) fn inspect(
     let mut torn = None;
     for index in 1..=segments {
         control.check()?;
-        records.digest.update(b"audit-record-segment-v1\0");
-        records.digest.update(
-            u64::try_from(index)
-                .map_err(|_| resource("audit segment counter overflow"))?
-                .to_be_bytes(),
-        );
+        records.begin_segment(index)?;
         let mut frames = Frames::new(source.segment(index)?, limits.frame, index == segments)?;
         while let Some(record) = frames.next::<Record>(&mut records, limits, control)? {
             bad_node |= record.node_id != policy.node_id;
         }
         let end = frames.finish()?;
-        records.digest.update(end.complete.to_be_bytes());
-        records.digest.update(
-            u64::try_from(end.torn)
-                .map_err(|_| resource("audit torn byte overflow"))?
-                .to_be_bytes(),
-        );
+        records.end_segment(&end)?;
         if end.torn != 0 {
             torn = Some(Torn {
                 segment: index,
@@ -77,10 +66,9 @@ pub(super) fn inspect(
         }
     }
     let mut checkpoints = Budget::new(limits.checkpoint_bytes, limits.checkpoints);
-    checkpoints.digest.update(b"audit-checkpoint-sidecar-v1\0");
     let sidecar = source.checkpoints()?;
     let has_sidecar = sidecar.is_some();
-    checkpoints.digest.update([u8::from(has_sidecar)]);
+    checkpoints.sidecar(has_sidecar);
     let mut bad_progression = false;
     let mut previous = 0;
     let mut trusted_present = false;
@@ -130,8 +118,8 @@ pub(super) fn inspect(
         checkpoints: checkpoints.values,
         record_bytes: records.bytes,
         checkpoint_bytes: checkpoints.bytes,
-        record_digest: records.digest.finalize().into(),
-        checkpoint_digest: checkpoints.digest.finalize().into(),
+        record_digest: records.signature(),
+        checkpoint_digest: checkpoints.signature(),
         has_sidecar,
         torn,
         physical_latest,

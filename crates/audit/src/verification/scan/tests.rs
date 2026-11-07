@@ -19,6 +19,7 @@ use std::{
     },
     time::Duration,
 };
+mod crypto;
 
 struct Fixture {
     segments: Vec<Vec<u8>>,
@@ -28,24 +29,44 @@ struct Fixture {
     changed_on: Option<usize>,
     change_membership: bool,
     cancel_on_final: Option<Arc<AtomicBool>>,
+    cancel_at: usize,
+    second_pass_segments: Option<Vec<Vec<u8>>>,
+    second_pass_sidecar: Option<Option<Vec<u8>>>,
 }
 impl source::sealed::Sealed for Fixture {}
 impl Source for Fixture {
     type Reader = Cursor<Vec<u8>>;
     fn segment_count(&self) -> io::Result<usize> {
-        Ok(self.segments.len() + usize::from(self.change_membership && self.checks.get() >= 2))
+        let segments = if self.checks.get() >= 3 {
+            self.second_pass_segments.as_ref().unwrap_or(&self.segments)
+        } else {
+            &self.segments
+        };
+        Ok(segments.len() + usize::from(self.change_membership && self.checks.get() >= 2))
     }
     fn segment(&self, index: usize) -> io::Result<Self::Reader> {
         self.opens.set(self.opens.get() + 1);
-        Ok(Cursor::new(self.segments[index - 1].clone()))
+        let segments = if self.checks.get() >= 3 {
+            self.second_pass_segments.as_ref().unwrap_or(&self.segments)
+        } else {
+            &self.segments
+        };
+        Ok(Cursor::new(segments[index - 1].clone()))
     }
     fn checkpoints(&self) -> io::Result<Option<Self::Reader>> {
-        Ok(self.sidecar.clone().map(Cursor::new))
+        let sidecar = if self.checks.get() >= 3 {
+            self.second_pass_sidecar
+                .clone()
+                .unwrap_or_else(|| self.sidecar.clone())
+        } else {
+            self.sidecar.clone()
+        };
+        Ok(sidecar.map(Cursor::new))
     }
     fn unchanged(&self) -> io::Result<()> {
         let next = self.checks.get() + 1;
         self.checks.set(next);
-        if next == 2
+        if next == self.cancel_at
             && let Some(cancel) = &self.cancel_on_final
         {
             cancel.store(true, Ordering::Release);
@@ -65,6 +86,9 @@ fn fixture(segments: Vec<Vec<u8>>, sidecar: Option<Vec<u8>>) -> Fixture {
         changed_on: None,
         change_membership: false,
         cancel_on_final: None,
+        cancel_at: 2,
+        second_pass_segments: None,
+        second_pass_sidecar: None,
     }
 }
 fn limits() -> Limits {

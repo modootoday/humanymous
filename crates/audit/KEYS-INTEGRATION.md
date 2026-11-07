@@ -1,5 +1,16 @@
 # Sealed key compatibility integration
 
+## Private two-pass crypto source awaiting qualification
+
+Phase B now composes complete metadata/crypto passes over sealed per-segment
+Source, shared transcript framing, fixed frontier and shared checks/Scope rules.
+Exact separate previous raw hash/signature strings are moved without truncation;
+Phase-A full latest checkpoint drops before B, preserving pin/transcript/counts.
+Final raw transcript/source/membership/cancel checks precede diagnostic Report/
+Work. Eight pipeline tests authored NOT_RUN. Evidence131217. No Cargo workload;
+native Unsupported/test-only scanner, no mutable owner/repair/authority, measured
+memory or S2/S3. The Phase-A21 proof below remains historical exact4b49 source.
+
 ## Latest isolated Phase-A qualification
 
 Exact4b49 immutable git archive passed first-attempt locked/offline all-target

@@ -1,7 +1,7 @@
 //! RFC 6962 domain-separated Merkle commitments over audit record hashes.
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
-mod frontier;
+pub(crate) mod frontier;
 mod ranges;
 
 /// SHA-256 commitment; fixed width rejects malformed proof nodes at decoding.

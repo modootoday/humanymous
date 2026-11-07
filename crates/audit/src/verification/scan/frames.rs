@@ -35,6 +35,35 @@ impl Budget {
         self.bytes = next;
         Ok(())
     }
+
+    pub fn begin_segment(&mut self, index: usize) -> io::Result<()> {
+        self.digest.update(b"audit-record-segment-v1\0");
+        self.digest.update(
+            u64::try_from(index)
+                .map_err(|_| resource("audit segment counter overflow"))?
+                .to_be_bytes(),
+        );
+        Ok(())
+    }
+
+    pub fn end_segment(&mut self, end: &End) -> io::Result<()> {
+        self.digest.update(end.complete.to_be_bytes());
+        self.digest.update(
+            u64::try_from(end.torn)
+                .map_err(|_| resource("audit torn byte overflow"))?
+                .to_be_bytes(),
+        );
+        Ok(())
+    }
+
+    pub fn sidecar(&mut self, present: bool) {
+        self.digest.update(b"audit-checkpoint-sidecar-v1\0");
+        self.digest.update([u8::from(present)]);
+    }
+
+    pub fn signature(&self) -> [u8; 32] {
+        self.digest.clone().finalize().into()
+    }
 }
 
 pub(super) struct Frames<R> {

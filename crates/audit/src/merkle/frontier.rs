@@ -3,12 +3,12 @@ use super::{Hash, leaf_hash, node_hash};
 use sha2::{Digest, Sha256};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub(super) struct Frontier {
+pub(crate) struct Frontier {
     count: u64,
     peaks: [Option<Hash>; 64],
 }
 #[derive(Debug, PartialEq, Eq)]
-pub(super) struct Full;
+pub(crate) struct Full;
 
 impl Frontier {
     pub fn new() -> Self {
