@@ -462,6 +462,7 @@ libtest summary. Unknown ignored tests or extra summaries still fail accounting.
 
 | Native audit test target | Exact ignored entrypoint | Required real parent |
 |---|---|---|
+| humanymous_audit library | storage::wal::tests::process_lock_probe | storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart |
 | durable_witness | child_witness_probe | witness_process_lifetime_and_interrupted_recovery |
 | key_backups | child_retire_without_pin_acknowledgement | crash_reconcile_preserves_consumed_authorization |
 | key_custody | child_lock_probe; child_interrupted_writer | competing_process_cannot_load_or_create; process_exit_releases_lock_and_rotation_pending_requires_recovery |
@@ -469,7 +470,14 @@ libtest summary. Unknown ignored tests or extra summaries still fail accounting.
 The witness and backup targets each have one raw ignored helper; key_custody
 has exactly two, with both named parents required. A single outer summary,
 exit0/filtered0/fail0/measured0 and discovered=passed+rawignored are mandatory.
-Total raw ignored remains4, never four successes. key_custody's captured child
+The new library helper makes total raw ignored5, never five successes. Its
+parent uses explicit --ignored and bounded private capture60s/64KiB, requires
+exit0/empty stderr plus standalone flushed humanymous-wal-lock-refused only after
+actual lock refusal, then proves WAL rotation/checkpoint/restart separately.
+Missing helper environment fails, never a no-op success. Outer marker leakage
+or extra summaries fail the paired runner contract. Historical8132117 counted
+this unignored no-op as one library pass; exclude it from accepted case counts
+without rewriting raw logs. key_custody's captured child
 markers are exact standalone lines humanymous-key-lock-refused and
 humanymous-key-pending-synced, written with leading/trailing newline and flushed
 only after actual exclusion or pending-file sync. Parents require those markers

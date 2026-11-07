@@ -102,6 +102,15 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Full-audit source prereview found unignored library process_lock_probe returned
+without parent env. Exact8132117 source confirms historical101 raw passes include
+one no-op; accepted cases100, preserved rawfacts plus accounting correction92505.
+Root authorized narrow helper lifetime/accounting fix: explicit ignored helper,
+required real fixture env, bounded private capture/marker and original real-parent
+WAL assertions. Future ignored5 excluded; runner owner pairing exact contract.
+No new compile/native execution while admission memory is above85%; no slot.
+Evidence:root/20261107101321. Retained backup source remains separately unqualified.
+
 Retained backup bridge authored after accepted design/security critique:
 retire_retained and reconcile_retained require full acknowledgement identity,
 actual inventory/control authentication, exact state and fresh distinct recovery

@@ -301,23 +301,30 @@ mod tests {
     fn exclusive_writer_rotation_checkpoint_and_restart() {
         let dir = directory();
         let mut wal = Wal::open(&dir, options()).unwrap();
-        let child = std::process::Command::new(std::env::current_exe().unwrap())
-            .args([
-                "--exact",
-                "storage::wal::tests::process_lock_probe",
-                "--nocapture",
-            ])
-            .env("HUMANYMOUS_WAL_LOCK_PROBE", &dir)
-            .output()
-            .unwrap();
-        assert!(
-            child.status.success(),
-            "{}",
-            String::from_utf8_lossy(&child.stderr)
-        );
+        let child = humanymous_test_support::process::capture_with_stderr(
+            std::process::Command::new(std::env::current_exe().unwrap())
+                .args([
+                    "--exact",
+                    "storage::wal::tests::process_lock_probe",
+                    "--ignored",
+                ])
+                .env("HUMANYMOUS_WAL_LOCK_PROBE", &dir),
+            b"",
+            std::time::Duration::from_secs(60),
+            64 * 1024,
+        )
+        .unwrap();
+        assert!(child.status.success());
+        assert!(child.stderr.is_empty());
         assert!(
             String::from_utf8_lossy(&child.stdout).contains("1 passed; 0 failed"),
             "lock probe test did not execute"
+        );
+        assert!(
+            std::str::from_utf8(&child.stdout)
+                .unwrap()
+                .lines()
+                .any(|line| line == "humanymous-wal-lock-refused")
         );
         assert_eq!(
             Wal::open(&dir, options()).err().unwrap().kind(),
@@ -356,14 +363,19 @@ mod tests {
         fs::remove_dir(dir).unwrap();
     }
     #[test]
+    #[ignore = "subprocess helper exercised by exclusive_writer_rotation_checkpoint_and_restart"]
     fn process_lock_probe() {
-        let Some(dir) = std::env::var_os("HUMANYMOUS_WAL_LOCK_PROBE") else {
-            return;
-        };
+        let dir = std::env::var_os("HUMANYMOUS_WAL_LOCK_PROBE")
+            .expect("WAL lock probe requires its actual parent fixture");
         assert_eq!(
             Wal::open(Path::new(&dir), options()).err().unwrap().kind(),
             io::ErrorKind::WouldBlock
         );
+        let mut stdout = std::io::stdout().lock();
+        stdout
+            .write_all(b"\nhumanymous-wal-lock-refused\n")
+            .unwrap();
+        stdout.flush().unwrap();
     }
     #[test]
     fn rotation_failure_permanently_poisoned_until_restart() {

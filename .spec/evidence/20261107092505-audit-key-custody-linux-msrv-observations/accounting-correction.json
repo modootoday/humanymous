@@ -1,0 +1,16 @@
+{
+  "schema": "humanymous.audit-msrv-accounting-correction/1",
+  "sourceSha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "runId": 42355168729,
+  "jobId": 128359709010,
+  "originalFactsPreserved": "facts.json",
+  "rawReportedPasses": 101,
+  "acceptedCasePasses": 100,
+  "excludedNoopPasses": 1,
+  "excludedNoopTest": "storage::wal::tests::process_lock_probe",
+  "reason": "Ordinary library test returns without assertions when parent fixture environment is absent; exact historical source independently inspected using git show.",
+  "rawIgnoredUnchanged": 4,
+  "parentCase": "storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart",
+  "parentChildAssertionNotCountedSeparately": true,
+  "newSourceFixNotExecuted": true
+}

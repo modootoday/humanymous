@@ -1,5 +1,18 @@
 # Sealed key compatibility integration
 
+## Full audit accounting correction, not yet executed
+
+Full-suite prereview found library storage::wal::tests::process_lock_probe was
+unignored and returned without assertions absent parent env. Historical8132117
+MSRV reports101 raw passes but only100 accepted cases after excluding that no-op;
+evidence92505 preserves original facts and attaches the correction. Current
+reviewed10 pure/44 native cases did not include this helper.
+New source ignores the helper, requires actual parent env, and uses bounded
+private capture/exit0/empty stderr/static post-assert marker for its real parent
+storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart. Future
+audit rawignored inventory is5, excluded from passes. Runner pairing and actual
+validation remain pending. Evidence:root/20261107101321; no new workload slot.
+
 ## New unqualified retained backup retirement
 
 BackupInventory::retire_retained(authority,grant,now) requires complete retained
@@ -67,8 +80,9 @@ benchmark quiet window still applies. Evidence:root/20261107094725.
 
 ## Additional Linux observation at source 8132117
 
-Successful MSRV job128359709010 in aggregate run42355168729 recorded101 audit
-test passes, four raw ignored helpers excluded and two zero-test bins excluded.
+Successful MSRV job128359709010 in aggregate run42355168729 recorded101 raw audit
+passes;100 accepted cases after the no-op correction above. Four raw ignored
+helpers and two zero-test bins are excluded.
 The legacy nested custody helper pass is also excluded. This covers backup and
 custody targets not reached by the failed strict native actor. It is component
 evidence for exact8132117, not current-source/native-actor/product qualification.
