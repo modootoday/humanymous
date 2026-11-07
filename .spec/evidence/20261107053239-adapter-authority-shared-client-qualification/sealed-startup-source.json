@@ -1,0 +1,72 @@
+{
+  "schema": "humanymous.authority.sealed-startup-source/1",
+  "source_commit": "40d0bdd",
+  "source_kind": "committed source; not execution qualification",
+  "rust": "1.99.1",
+  "edition": "2024",
+  "local_compile": "not_run_pending_root_slot",
+  "actual_hosted_ipc": "not_run_pending_source_closure",
+  "previous_hosted_run": "42348518353",
+  "previous_hosted_source": "63f69ae",
+  "previous_hosted_result": "failed; does not qualify this source",
+  "new_pure_tests": [
+    "startup::tests::explicit_sources_reject_mixed_absent_and_unknown_unlock",
+    "startup::tests::missing_witness_does_not_consume_unlock_or_open_state"
+  ],
+  "new_native_test": "sealed_startup_retains_custody_and_reuses_existing_identity",
+  "native_fixture_scope": "one Rust test, two successful startup generations plus wrong-unlock and missing-witness refusals; forced child kill/reap, not graceful shutdown",
+  "inherited_pipe_attestation": false,
+  "os_store_windows": "source_only_not_run",
+  "os_store_nonwindows": "unsupported_no_fallback",
+  "remote_windows_host_denial": "not_run",
+  "sources": [
+    {
+      "path": "crates/authority/src/startup.rs",
+      "sha256": "8084f2ac5dafdc6f389a8debc55b9f7993d46adce47d6f3f8d8bc918d623e35d",
+      "git_blob_sha1": "38466c580d3439681d0e3cf58bcc6c081f14ac20",
+      "working_bytes_equal": true
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e",
+      "git_blob_sha1": "17c8e7808f49df211b7d013c58cffe2f1051a7f0",
+      "working_bytes_equal": true
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "sha256": "42269d396e544e0034e89ce40eb32beda655671bdb44ba49a68f6795d967cac5",
+      "git_blob_sha1": "48ea5a94a21b3ef30f038bdbf13b1200040efbd9",
+      "working_bytes_equal": true
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "sha256": "5a11711204f4a15b57c8704fa7862baa7e6e4f2ff6fbf5f2b0128c9d7a01ce38",
+      "git_blob_sha1": "eb483ba8a79dc75553cabf60ccfbadfafb1e84be",
+      "working_bytes_equal": true
+    },
+    {
+      "path": "crates/authority/src/lib.rs",
+      "sha256": "a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db",
+      "git_blob_sha1": "28a1c235b78d0c6410de67be4948a89b6a4fd432",
+      "working_bytes_equal": true
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "sha256": "bbd6fdfa9c93e3ab2198fc922f8d81d9466c44e3636d6634b7eed6b56ca8f507",
+      "git_blob_sha1": "d98f05d954d23ef18d51d55a5ef6c960b96578b9",
+      "working_bytes_equal": true
+    },
+    {
+      "path": "crates/authority/tests/local_service.rs",
+      "sha256": "0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442",
+      "git_blob_sha1": "8fb596c6778ab60b155337cfee5d1136d6f2fa1c",
+      "working_bytes_equal": true
+    },
+    {
+      "path": "crates/authority/Cargo.toml",
+      "sha256": "9c7a591f43a7db9fbe425e72c2374ef6d7bcceac5bf06217d2b09e8e0f1e5466",
+      "git_blob_sha1": "fc140a2fbfe378e88d48c060e6b4b80afe4b810d",
+      "working_bytes_equal": true
+    }
+  ]
+}
