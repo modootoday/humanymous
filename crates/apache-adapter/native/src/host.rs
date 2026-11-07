@@ -16,6 +16,10 @@ use std::sync::OnceLock;
 const FAILURE: c_int = 503;
 const PASS: c_int = -1;
 const FILTER: &CStr = c"HUMANYMOUS_REPLAY";
+// Preserve the generated enum values while using Rust constant names in patterns.
+const MODE_BYTES: ap_input_mode_t = ap_input_mode_t_AP_MODE_READBYTES;
+const MODE_LINE: ap_input_mode_t = ap_input_mode_t_AP_MODE_GETLINE;
+const MODE_SPECULATIVE: ap_input_mode_t = ap_input_mode_t_AP_MODE_SPECULATIVE;
 struct Settings {
     path: Option<PathBuf>,
 }
@@ -745,9 +749,9 @@ extern "C" fn input(
             return Err(());
         }
         let mode = match mode {
-            ap_input_mode_t_AP_MODE_READBYTES => ReadMode::Bytes,
-            ap_input_mode_t_AP_MODE_GETLINE => ReadMode::Line,
-            ap_input_mode_t_AP_MODE_SPECULATIVE => ReadMode::Speculative,
+            MODE_BYTES => ReadMode::Bytes,
+            MODE_LINE => ReadMode::Line,
+            MODE_SPECULATIVE => ReadMode::Speculative,
             _ => return Err(()),
         };
         // SAFETY: matching request filter owns the live pool context on this thread.

@@ -1,0 +1,67 @@
+{
+  "runId": 42365027138,
+  "jobId": 128381171717,
+  "sourceCommit": "d2a20dd5b9b3793cd7b96f69ef880b55cce73854",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42365027138",
+  "units": [
+    {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    }
+  ],
+  "cleanupStep": "success",
+  "receipt": {
+    "artifactHashes": null,
+    "compilerDiagnostics": {
+      "errorCodes": [],
+      "labels": [],
+      "sourceLocations": [
+        "crates/apache-adapter/native/src/host.rs:748:13",
+        "crates/apache-adapter/native/src/host.rs:749:13",
+        "crates/apache-adapter/native/src/host.rs:750:13"
+      ]
+    },
+    "containerImageCleanupObserved": true,
+    "engine": {
+      "clientPath": "docker",
+      "context": "default",
+      "endpoint": "unix:///var/run/docker.sock",
+      "osType": "linux",
+      "profile": "github-hosted-linux",
+      "serverId": "aeba5083-36f4-4ab3-a6cd-5185eccc7a63",
+      "serverVersion": "28.0.4",
+      "verified": true
+    },
+    "executionContext": "github-hosted",
+    "failure": "owned-docker-command-failed",
+    "fullProductSuccess": false,
+    "imageDigest": null,
+    "lastCommand": {
+      "category": "build",
+      "elapsedMs": 228582,
+      "exit": 1,
+      "kind": "exited"
+    },
+    "observedCounts": null,
+    "pilotCleanupObserved": false,
+    "requiredScenarioCount": 45,
+    "schema": "humanymous.apache.coordinator/0.1",
+    "sourceCommit": "d2a20dd5b9b3793cd7b96f69ef880b55cce73854",
+    "sourceManifestSha256": "d22fcb0760287a4aae32740e5b5d96b20feedbeca62bd35b44782f1ba33ffd9d",
+    "stage": "build",
+    "status": "failed",
+    "timingsMs": {
+      "build": 228582,
+      "git": 500,
+      "inspect-cleanup": 3812
+    }
+  }
+}
