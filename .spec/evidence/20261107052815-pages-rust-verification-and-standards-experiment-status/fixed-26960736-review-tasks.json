@@ -1,0 +1,4351 @@
+{
+  "schema": "humanymous.fixed-source-review-tasks/1",
+  "source_commit": "269607366e4b2e37b47a974595b406b66642caae",
+  "snapshot_clean": true,
+  "fixed_clone": ".spec.local/pgr2696b",
+  "snapshot_sha256": "cd2d7db19f966c4c8ae076ee7309601049135defaef4abbc2ab7e903316f7846",
+  "baseline_delta_sha256": "e1acae19a910e523bf910cbb8c07f3dba53ce4c987b267c008dcd5583c722a16",
+  "source_gap_at_baseline": 304,
+  "remaining_full_read_tasks": 300,
+  "newly_published_exact_receipts": [
+    {
+      "source": "crates/runtime/src/control/state.rs",
+      "delta_kind": "changed",
+      "fixed_sha256": "f681fdaa2a898a92e5da58eb53a17a7660f4d841596ab8046fde82072944925e",
+      "fixed_lines": 151,
+      "prior_authored_pages": [
+        "docs/reference/rbac-separation-of-duties.md",
+        "docs/runbooks/kill-switch-and-bans.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ],
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "page_associations_reviewed": false,
+      "task_state": "already-manually-reviewed-receipt-published"
+    },
+    {
+      "source": "crates/runtime/src/control.rs",
+      "delta_kind": "added",
+      "fixed_sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc",
+      "fixed_lines": 98,
+      "prior_authored_pages": [],
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "page_associations_reviewed": false,
+      "task_state": "already-manually-reviewed-receipt-published"
+    },
+    {
+      "source": "crates/runtime/src/tests/service.rs",
+      "delta_kind": "added",
+      "fixed_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a",
+      "fixed_lines": 297,
+      "prior_authored_pages": [],
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "page_associations_reviewed": false,
+      "task_state": "already-manually-reviewed-receipt-published"
+    },
+    {
+      "source": "crates/runtime/src/tests/settings.rs",
+      "delta_kind": "added",
+      "fixed_sha256": "61010b762a74d6fb3b2611ce48c9c3cb7c3f462de2cb1cec27ebb66b724d4bb3",
+      "fixed_lines": 71,
+      "prior_authored_pages": [],
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "page_associations_reviewed": false,
+      "task_state": "already-manually-reviewed-receipt-published"
+    }
+  ],
+  "removed_requires_disposition": [
+    "crates/node-adapter/src/admission.rs"
+  ],
+  "groups": [
+    {
+      "proposed_owner": "apache-adapter",
+      "files": [
+        {
+          "source": "adapters/apache/ABI-SAFETY.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "3000b1e54e54ffda8591012c67afe51dea4fcc3199deb8bbf7e6f9f65b85c001",
+          "fixed_lines": 36,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/apache/Dockerfile.native",
+          "delta_kind": "changed",
+          "fixed_sha256": "178b2901519a1bf647ea73ae5272cf379a07ee59411a167798971f93f78c04b6",
+          "fixed_lines": 61,
+          "prior_authored_pages": [
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/apache/coordinator-contract.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "888ff87b3ceaccc6fffe014912aba6286106f72e94fc22b8ec6edc016c99709b",
+          "fixed_lines": 28,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/apache/upstream-lock.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "dc4f977fe1cd935a4282e7ffba7a5c47d281c8e531538e3199f0c5d4e1a8ff97",
+          "fixed_lines": 38,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/INTEGRATION.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "c1e4530fe343da910b8e66ef02c7d7bf98b5e577777439b1fe044571317a56e0",
+          "fixed_lines": 47,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/bin/pilot.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "e020f7670bcd1f1fd0207ba43809a338ab2d5ba551b1eaf1899314163309204e",
+          "fixed_lines": 29,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/coordinator.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "9b5050a36f08340a7c6ff5fb39d45b7ca01bf4c9635a48c127531278e586657f",
+          "fixed_lines": 477,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/coordinator/engine.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "7093accee95b3d3d0df94ea2d49f10d4aadc3922bb737214fe856a9aac899911",
+          "fixed_lines": 110,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/coordinator/host.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "c97ac101736a3e18ea366a293f455eb31174aab4887ff99223b3f35b495f1be3",
+          "fixed_lines": 860,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/host.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "94a905125c8393eb562d5268df0766afb240e5dfbf2236216469d8bb4a3061af",
+          "fixed_lines": 798,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "2d43dfe00f870b8a544ec329f263a857f6d1d5161bf8a449ceae4c335a7a3363",
+          "fixed_lines": 23,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/pilot/authority.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "a7c3cacb5ccb75f9d0fa5c479c16c81dde48dd0678f313009a1eb0e9626b56b8",
+          "fixed_lines": 116,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/pilot/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "9571f3a2ecdeb8547108545623aca8869af62aef4165acae5f08a64f5d97c715",
+          "fixed_lines": 541,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/apache-adapter/native/src/pilot/origin.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "34408581bcbc7f896edf48fe0c6931bf468e4e6439329d8fe33669fb6d672823",
+          "fixed_lines": 95,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "attacker",
+      "files": [
+        {
+          "source": "crates/attacker/Cargo.toml",
+          "delta_kind": "changed",
+          "fixed_sha256": "9d73631194e2f66ec136fce68ed3227107029667b7883ca8ba5136242cf8e55d",
+          "fixed_lines": 18,
+          "prior_authored_pages": [
+            "docs/reference/red-team-catalog.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/attacker/INTEGRATION.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "fcf32ce7f8cce2afa1074e0213eacd1bdb3b5dd3f64fbb8ad18876abcab63b94",
+          "fixed_lines": 262,
+          "prior_authored_pages": [
+            "docs/reference/red-team-catalog.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/attacker/src/network/cases.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "869eafd56ce78f26e70bb78145af838f7235deb951fe2939c7ada499e2559254",
+          "fixed_lines": 487,
+          "prior_authored_pages": [
+            "docs/reference/red-team-catalog.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/attacker/src/network/report.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "58ce7414f1a8d68a554abf71e1de53b23671fc2ad9369582f7c3a52079f3d141",
+          "fixed_lines": 266,
+          "prior_authored_pages": [
+            "docs/reference/red-team-catalog.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/attacker/src/verification.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "6b8050fe96ad31df539e8a75d7b68cfd15f1743c34e88911615ac72be43b9675",
+          "fixed_lines": 297,
+          "prior_authored_pages": [
+            "docs/reference/red-team-catalog.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/attacker/src/verification/json.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "cec06b36f1b228e8f0077da4c92fcc97a4592ba4c63648f0717003f83267aa5e",
+          "fixed_lines": 30,
+          "prior_authored_pages": [
+            "docs/reference/red-team-catalog.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "audit",
+      "files": [
+        {
+          "source": "crates/audit/Cargo.toml",
+          "delta_kind": "changed",
+          "fixed_sha256": "9aeb75a4d4ba3d68725b23285ff3c499286f2a213dba52b800c425d3ebf01694",
+          "fixed_lines": 43,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/verify-audit-log.md",
+            "docs/runbooks/erasure-crypto-shred.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/checkpoint/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "edc7c2ba132ab09031482a035f7d83732ac153e0dd599950babcbbec9f2fe041",
+          "fixed_lines": 109,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/verify-audit-log.md",
+            "docs/runbooks/erasure-crypto-shred.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/control/ledger.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "2217dfaf9e68d0e4e83e93bde00781cd274d45cd3a32d0375e369a8b0b51437e",
+          "fixed_lines": 465,
+          "prior_authored_pages": [
+            "docs/reference/rbac-separation-of-duties.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/control/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "ddc0edc3da42c0f4e2193d4cee86f1de714c4a594786a986df5848b14fc40a8e",
+          "fixed_lines": 17,
+          "prior_authored_pages": [
+            "docs/reference/rbac-separation-of-duties.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/control/operations.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "56880c1d8525fbbd8540c2fb1a43f490a101e51c935c55495b96765412330f1b",
+          "fixed_lines": 117,
+          "prior_authored_pages": [
+            "docs/reference/rbac-separation-of-duties.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/control/policy.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "574a01a1652b78c0578a3c80d71aea985c3fe9629b3a4a244c68bdc61ab725a5",
+          "fixed_lines": 566,
+          "prior_authored_pages": [
+            "docs/reference/rbac-separation-of-duties.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/keys/backups.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "9ed105a70238b88c0a7d01cf9a98d0e1668dc8800842f83757a3a3da36cb0086",
+          "fixed_lines": 721,
+          "prior_authored_pages": [
+            "docs/reference/security-audit.md",
+            "docs/runbooks/erasure-crypto-shred.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/keys/custody.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "5f5a5af22be524bc8149f9e95deb0f27768bbe9753521c88ee1773277c91b60a",
+          "fixed_lines": 346,
+          "prior_authored_pages": [
+            "docs/how-to/key-management.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/keys/vault.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef",
+          "fixed_lines": 480,
+          "prior_authored_pages": [
+            "docs/reference/data-processing-inventory.md",
+            "docs/runbooks/erasure-crypto-shred.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197",
+          "fixed_lines": 15,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/verify-audit-log.md",
+            "docs/runbooks/erasure-crypto-shred.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/log/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "7d34318ed61d58fedd23889112d549e4c4c20802da4162581e11f9f9247f70fa",
+          "fixed_lines": 641,
+          "prior_authored_pages": [
+            "docs/reference/security-audit.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/record/canonical.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "695c0b02992d4e1d3d068ccf29bb6e1d6a0bd48132c2c9dea79a22ac5eac086b",
+          "fixed_lines": 96,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/verify-audit-log.md",
+            "docs/runbooks/erasure-crypto-shred.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/record/normalization.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "7c386e79eaa025b0f160d1bcc3aff923e75b1ecd067762d822683242a1b8630f",
+          "fixed_lines": 98,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/verify-audit-log.md",
+            "docs/runbooks/erasure-crypto-shred.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/storage/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "447c90a0cbcef9c5060a839ccb5421b789d4327d84c782ba8df4aa502cb723e2",
+          "fixed_lines": 121,
+          "prior_authored_pages": [
+            "docs/how-to/verify-audit-log.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/storage/private_state.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21",
+          "fixed_lines": 149,
+          "prior_authored_pages": [
+            "docs/reference/security-audit.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/storage/wal.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "e23e50e8e5803c19b69b9dd9a50f35aa8567062b149f585ed876bd0782211eed",
+          "fixed_lines": 415,
+          "prior_authored_pages": [
+            "docs/how-to/verify-audit-log.md",
+            "docs/reference/security-audit.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/tests/durable_witness.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "59cd9b5c90335f4f00c440df44a0c8ba633c744fe5b8ad5fb7cc34a611ccc1c0",
+          "fixed_lines": 768,
+          "prior_authored_pages": [
+            "docs/reference/security-audit.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/tests/key_backups.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "857ec63b82a432f273ff38485204eccf32fac06445304e68b0a5a2197dd8587f",
+          "fixed_lines": 749,
+          "prior_authored_pages": [
+            "docs/runbooks/erasure-crypto-shred.md",
+            "docs/how-to/key-management.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/tests/key_custody.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "7a0e458c89b1d277de7d34dc91c5a4ebb06101639da21ee000a78dbf66425b8c",
+          "fixed_lines": 434,
+          "prior_authored_pages": [
+            "docs/how-to/verify-audit-log.md",
+            "docs/reference/security-audit.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/KEYS-INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "af39307c9669f0430cb13e9ba6e524a4342f3d69ce105dbfd3dc51cb46948764",
+          "fixed_lines": 601,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/record/canonical/encoder.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "6c770f22a8cff9cc7a337990d29fff928a3e6fb37daa35e1bf5b4fae35ad0abe",
+          "fixed_lines": 229,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/src/record/canonical/encoder/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d2cf1d1aa84e8e9d2ff8fb26e6e81e50c132248b9119b5b1982d10dd35e00252",
+          "fixed_lines": 155,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/audit/tests/control_operations.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "df6d5f7eae9a4c654c97f639340a94b16d95a3953484d65c308c8b5ef8e423d3",
+          "fixed_lines": 1827,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/on-call-quick-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "authority",
+      "files": [
+        {
+          "source": "crates/authority/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "48aaf09c88a2b99423a835ff14eef223b0d9e670e607a7f9ed49d83e28f54da7",
+          "fixed_lines": 264,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "browser",
+      "files": [
+        {
+          "source": "crates/browser/native/desktop/pilot-contract.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "34b2b0f5380deaee0248ec5f39fdc4bdaa07e0f3a4ea42d1c5880bcb10ea5d2c",
+          "fixed_lines": 37,
+          "prior_authored_pages": [
+            "docs/reference/native-browser.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/native-browser.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/browser/native/desktop/src/native.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "c37be54a5c5e71a00257f1b9a52475edbbeda95217bec69bdfebffd36612c3f3",
+          "fixed_lines": 522,
+          "prior_authored_pages": [
+            "docs/reference/native-browser.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/native-browser.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/browser/native/desktop/src/pilot_assertions.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "c43457e75c46ef5d972c4e0bade7ebce17f2a41bd5af6abfd110b4734dac1bfd",
+          "fixed_lines": 382,
+          "prior_authored_pages": [
+            "docs/reference/native-browser.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/native-browser.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/browser/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "bbb90ae90e47f46c344581e67fdbdd8029bc844f5c325d427a66be8e66def044",
+          "fixed_lines": 411,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/native-browser.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/browser/src/ui.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f54f32164faca9940f9d584e599ab69f885f511c83d8fa59b28fc77a58a22ea0",
+          "fixed_lines": 575,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/native-browser.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "capture",
+      "files": [
+        {
+          "source": "crates/capture/src/tls/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7",
+          "fixed_lines": 6,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/reference/data-processing-inventory.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/src/tls/transport.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "435c75011b37f920b816a742bf004b1d9f8e2196ac480321a48895ddc9741f66",
+          "fixed_lines": 391,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/reference/data-processing-inventory.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840",
+          "fixed_lines": 24,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "7cdf54dccb963d054fa0cd56221d985e00057f4fef77b08eb781bbcb1a8f5e54",
+          "fixed_lines": 223,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/src/http2/headers.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787",
+          "fixed_lines": 131,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/src/http2/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "bfaac7959c30a13483028b683317befb9594dc70c1f2a64140e13d34e2589b6d",
+          "fixed_lines": 413,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/src/http2/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "13a2222124e6c9e1f3ba700776d6105a7d12d2b5e52d532f9110c570c7fabfae",
+          "fixed_lines": 319,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/src/tls/hello.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153",
+          "fixed_lines": 227,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/src/tls/hello/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde",
+          "fixed_lines": 151,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/src/tls/records.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "dbfed8c2668fa9cb732883e675d797ac570d55ffc9865239c58610c99a201b81",
+          "fixed_lines": 79,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/capture/tests/hosted_transport.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "8a549c9985321181693c39dfb7f11077fde1b8615f2334283330a901ee301d4e",
+          "fixed_lines": 406,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/supported-topologies.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "cli",
+      "files": [
+        {
+          "source": "crates/cli/Cargo.toml",
+          "delta_kind": "changed",
+          "fixed_sha256": "e5bc2a643427f8b87653898535a466ee945701848e941f908b93f1a2c7800e7a",
+          "fixed_lines": 46,
+          "prior_authored_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/reference/install-requirements.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/INTEGRATION.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "30f574a9311570115a16d04c8c965cc4cd6c5d827cdabfc7506e1429d109991b",
+          "fixed_lines": 125,
+          "prior_authored_pages": [
+            "docs/reference/install-requirements.md",
+            "docs/reference/production-vs-reference.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/examples/service_evidence.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "1cea916877af8941fa668fe0c17e3407cd8a0aae21597b490fc31f205c9f3076",
+          "fixed_lines": 162,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/commands.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "abac4c2db93b854c0c935de9d55eb22775494f4eff3d5e459f0e13a6f1a294f6",
+          "fixed_lines": 147,
+          "prior_authored_pages": [
+            "docs/reference/cli-config-policy.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+          "fixed_lines": 7,
+          "prior_authored_pages": [
+            "docs/reference/cli-config-policy.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/main.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+          "fixed_lines": 70,
+          "prior_authored_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/reference/install-requirements.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/service/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "7edd0fad1c4f3651212b60d7c851e05853edde0471da0c21d7f963cd336ab010",
+          "fixed_lines": 366,
+          "prior_authored_pages": [
+            "docs/reference/install-requirements.md",
+            "docs/reference/production-vs-reference.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/service/storage.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "ebea0785d60f51ca347608d313a214f3b841bbd90ff76015f9cbe5a250a10c2e",
+          "fixed_lines": 320,
+          "prior_authored_pages": [
+            "docs/reference/install-requirements.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/activation.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "94c4286cf2c7313ccfb49b5cf2698e74d89d3e5c0c9e615430d5b9706559f138",
+          "fixed_lines": 140,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/control.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "60f187fecdf54d5da5a042cb96339868a62c8b1c4fb71966d6bb93783d17d984",
+          "fixed_lines": 293,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/failure.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "3e31ebbbd7c215bcde5c4f495a7471636558d8ef669ae62e0e4887a78699ad6c",
+          "fixed_lines": 73,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/input.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "43d999aa48f120227efae575b532222de2a582248eeb024ae9bffce88f9ae8e7",
+          "fixed_lines": 263,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "723cda4d4280ddb7669b9e76999bf7bfe4c40a20ebffcdc0d7b83e4a9853cf9f",
+          "fixed_lines": 240,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/pilot.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "efd2a584e9d32d1ebb802ff9ece04c3fcabf914cbffcb11f5b5e05e36ca90d12",
+          "fixed_lines": 278,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/plan.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "b5672a15a5c0ff9582f45a0d514297001a76a251002f98b40fb80611557cb1b5",
+          "fixed_lines": 221,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/src/runtime_host/platform.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "1db0f81b1e34ae1d8be35f73662ca343fcf120d47a104c9b824c3382e0f9e2e7",
+          "fixed_lines": 210,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/cli/tests/runtime_service_process.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "74a988d87f19d31350807ac91c09964872f3d47f8d35cba67e73d6f179ac3c2d",
+          "fixed_lines": 471,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/cli-config-policy.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "collector",
+      "files": [
+        {
+          "source": "crates/collector/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "29ecee302df403a6118b3495a322d505e9bbacfc2f73151bd0a2d4b0a04ccab1",
+          "fixed_lines": 34,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "8eb4138907d6b4bf0a5402c3d433aeee701685a9dd4a9dfbeca09b9608dbb71e",
+          "fixed_lines": 81,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/pilot/fixture.json",
+          "delta_kind": "added",
+          "fixed_sha256": "87a45f212f2974078fb618c1a55bc92b4e0bafddbc1035907f0162ba84be76e9",
+          "fixed_lines": 34,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/pilot/webdriver.json",
+          "delta_kind": "added",
+          "fixed_sha256": "5d00b6c3e3a936a28b2def6668894616d9b8c20cc11edbe2e7abc5025997ebf7",
+          "fixed_lines": 12,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/behavior/cadence.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "7cb14b5e27fe202cb36df637c99cb55418ff42898b44a4e6610c55549c95ac82",
+          "fixed_lines": 29,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/behavior/keyboard.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "8458e89a25b6f2c44ca28b4a3fd1f5e123076947c5d852653c1ebd1f9d0f79e7",
+          "fixed_lines": 42,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/behavior/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d4b1b3636dc280248762e96c7082d297b7640972184134ba61d6838f8a38b058",
+          "fixed_lines": 206,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/behavior/oracle_tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "90606313dfcb9b84984455907ef1e73ea23511e05548c6ffb972df49577f971d",
+          "fixed_lines": 143,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/behavior/pointer.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "8c4610d77106354314a9f2fee98bdfdbf7cc02ea9222905839b6d9250e475788",
+          "fixed_lines": 67,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/behavior/statistics.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "a4f06c0949685a5f802e454273e02426dd9bfc32528902a128504b6bb5e0fbad",
+          "fixed_lines": 18,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/behavior/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "1bfe035bca056a73107c4b549538309a2d16a44dbbae2d2a7fc43447e50e25af",
+          "fixed_lines": 143,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/advanced/capabilities.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "52cd663185cc892351a22d76be4dccc50ad3ae556a599b29d09c0cbca5e5802b",
+          "fixed_lines": 87,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/advanced/media.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "1a2244d7a32695541828d0604a2e55505813f6ba44f9f9b3874e622690921722",
+          "fixed_lines": 74,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/advanced/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "3567367f0ed899e7767fdc071a2eea07c58e50b15e85d0dacb7e90191433ecf3",
+          "fixed_lines": 84,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/advanced/profile.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "1f4479d1f424af71cfdc8c7212241da48344bf2a4281226bc0ec81907046de9d",
+          "fixed_lines": 69,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/advanced/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "75a5b507e2e0ea4ab0fb2a0ffa384686a70200d73c9b4890877041d75cafe54f",
+          "fixed_lines": 421,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/behavior.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "70c4d058af681f507c9b23d34cdaeeb35f6671dd7c9f23ebfb2908dc49ac2f49",
+          "fixed_lines": 302,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/behavior/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "1fb1c1ecaae3c617be81deb7d04b05f7678cba48ccecde57e7299c32ac939440",
+          "fixed_lines": 281,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/cdp.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "c6fa32bc79ac5e06d7bb3f9fb1da67e07700f8836e13df6e00d6dbb4037f72a4",
+          "fixed_lines": 130,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/cdp/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "dd9edc09fb75734625aaaa8ae41596c6a791b993ad108992f7436d1ca2fd6d47",
+          "fixed_lines": 91,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/environment/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d7d5040f43486e0ed1de274a1b2d15e6d3126ec7d8534af96e3975575a829a09",
+          "fixed_lines": 121,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/environment/resources.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2d10aa171a58dfbc49d43202185dd05c33f90b0bc06a1c75295c8ff7b52e8e56",
+          "fixed_lines": 15,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/environment/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "4ff01e154b9aca46b14208c07fca8a510b0591795bb6e2c1e4cb90e67df142ed",
+          "fixed_lines": 172,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/fingerprint.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "5a9b4e08892e67e364c2d0626bb2e7e4f09bdd9566cd200578bc96cc09575d36",
+          "fixed_lines": 48,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/guard/forwarding.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "63c5bd20be88545b968af3aa82a39bc262f19c38b639910b7cae9da3e81fef05",
+          "fixed_lines": 248,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/guard/forwarding/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "827570c0d3dbc37ff9e3fb5d7e29886a4f1b0a661e65af1fe34bf084e87a3316",
+          "fixed_lines": 272,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/guard/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d6a24159c678a56576d0f264b2f3bf5dbbfb93801b66c500fafbf7d0e9bb951b",
+          "fixed_lines": 153,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/guard/observer.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "3c4d05600899f91bfdead62f8b8084dd099bd33f66dcc84df3dcf794c1485a37",
+          "fixed_lines": 337,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/guard/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "3e460e3c7d5b64f187965a9854c4f6553965190e2cc3b7694e6b0f1d034e0f7b",
+          "fixed_lines": 184,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/integrity.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "b311dde0396222340759de1eda95b2198c11f3d0f29c430e1e99d17d3d1ee3b3",
+          "fixed_lines": 126,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "adb5749db4805837122f1e9f50b911e8df5e0b99d9ebcb28ec82b6d3bbf9602e",
+          "fixed_lines": 179,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/reflection.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "04ae46a0e04c62d34ce28ec4ee0f1bad792bfcc3fe2a0fd0f0f7e2b7493055b2",
+          "fixed_lines": 119,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/resources/abort.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d3799055afa27083fd5175b2791b7ea546938d28cf7fb1248203141cafe735a9",
+          "fixed_lines": 15,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/resources/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2fd7d30f5b1f184fc6d23ff8e5d4590222d3749efc771fcc47f415782f9eeaa3",
+          "fixed_lines": 5,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/resources/timer.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "fc73b418832018a86daf09ad9e7d2f2237b5098c235ad3d127ac9e95b51acd6c",
+          "fixed_lines": 80,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/resources/timer/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2a3aa9e3b026cff1061a564b35ca2618a6122eb5fa0fc7be9c069b651ce67a22",
+          "fixed_lines": 56,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/transport/io.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "49dce7b0ff34b7f7a48979ef621fcafa3bd09d747a99d85e6f15eb65a4191a23",
+          "fixed_lines": 157,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/transport/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d3c80e89546597312f55dd06cdc4bf2d3a4128af820b4028d64b01585958dc17",
+          "fixed_lines": 280,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/transport/request.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "10933ea435173105f83dde0de7ffe64a3c9a699a11752f5756df2510f02ce859",
+          "fixed_lines": 151,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d7e0d11dd2dab3cf78d94989441cfbecbc863f5bc2d522455aa7313b9e72bb5f",
+          "fixed_lines": 89,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/browser/transport/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "4dd8d17177e05c45c70734d3ede0d4e4bd04dce64876d68d054ef4304bea26b6",
+          "fixed_lines": 352,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/detection/fingerprint.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "688e6851e14bf570c229360721aa5956882f8f4ef0964d544e1c6b7ec6fe468e",
+          "fixed_lines": 51,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/detection/integrity.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "22dede93a5b7ca07ce7250b4f09cf202e2a4cbf0ed510396a5acca47e844482d",
+          "fixed_lines": 27,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/detection/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "58f4dc31b0d0f52fe5c6491ae4dfd916609793267a57825fc9b2f82e403519c3",
+          "fixed_lines": 52,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/detection/snapshot.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e8c3262b6f0a96b0ff0eb3786b9e26d142ba4c535b9089dc81d586511f598c0c",
+          "fixed_lines": 56,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/detection/static_client.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d567f867f24ffa067622dd72db7d5e35daff9ef0101b82a55bdd9729e96b324a",
+          "fixed_lines": 122,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/detection/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "4f4e62064ca22f5a6390fdff8db9b1241a353efd7dc04f488e75cfd48ec880d2",
+          "fixed_lines": 215,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/guard/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "026be3a2a58e9d10c60882cd1b6c15210df3a9cc3570b15104c4ff352bd24bce",
+          "fixed_lines": 126,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/guard/native.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "cb8ceb08c61cf2fcce4a123b0188e78dc7a92ae1a3fc484ae959c42a4d8b4301",
+          "fixed_lines": 50,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/guard/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "7d683a1c51c4893f3efb08aa37e23de76d5936c2ca7122e1065bbf993dcab7c0",
+          "fixed_lines": 88,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "3e7b3da1ac8a6a2338ccfd44eb6d9aa7d025d97abaa229d1c5271806539d7890",
+          "fixed_lines": 106,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/session/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f055fe565fdb76c22588e7d4ea62b56d7ff2259fb3154df1d4593f0b18b04dc7",
+          "fixed_lines": 307,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/session/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "1e436f5f1031997bd367626e126b73f6d37a78a0ea253e7962569b00e4bb838d",
+          "fixed_lines": 239,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/src/session/wire.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2d512b6df4c04de32fce0391838e68a1829793b5ab89216b457ba2251ad5c18c",
+          "fixed_lines": 35,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/collector/tests/runtime_pilot_contract.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "fd5e8883698c035b0fb7151b0441df848f2068b4dd50ca8039066e7a8bc12524",
+          "fixed_lines": 74,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/browser-collector.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "contracts-adapter",
+      "files": [
+        {
+          "source": "adapters/contracts/README.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "cda6eed84b96ad3b15c75cb952cc0d0ee1246b79bd05cf58cf218ad5889b4215",
+          "fixed_lines": 19,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/integrator.md",
+            "docs/explanation/will-this-break-my-app.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "defender",
+      "files": [
+        {
+          "source": "crates/defender/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "828862fea623f02cf2214c252ea4b2464ba173ac46b102bc9d8f37b817fbfd2e",
+          "fixed_lines": 23,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/defender/src/lab/client.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d1ba40474484d61b3d08a27a6d5d2792b6abbcd467018d23f95ecb29267a0461",
+          "fixed_lines": 370,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/defender/src/lab/isolation.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "101fc8ae6da720064e7f24f1917f0b3c9e02079a947caa6424d1de3483b4add0",
+          "fixed_lines": 119,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/defender/src/lab/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "8dea57d8886e286a90122b99b07960f243a987ef20683d3fdc8852bf0ac9754f",
+          "fixed_lines": 39,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/defender/src/lab/process.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "655d4ded97982ac785246945218e91b40a39863699c9461ad3e89cd1e681d3c2",
+          "fixed_lines": 260,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/defender/src/lab/snapshot.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e942db3fe3cae28e9f05e694b827be13630795fd2e05e89a29ec9be16bfba208",
+          "fixed_lines": 115,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/defender/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "ed40a2aacd98cbe70412924d97eb01bfda6a3f2367d35b62635d0bc1a5f25ff4",
+          "fixed_lines": 51,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "delivery",
+      "files": [
+        {
+          "source": "build/rust/browser-product.Dockerfile.dockerignore",
+          "delta_kind": "changed",
+          "fixed_sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
+          "fixed_lines": 42,
+          "prior_authored_pages": [
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "build/rust/runtime-candidate.Dockerfile",
+          "delta_kind": "changed",
+          "fixed_sha256": "3b3a6d3e248c358a796187194992f78679a277b753fa0dc9f6a9f41151eccd3a",
+          "fixed_lines": 21,
+          "prior_authored_pages": [
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "dotnet-adapter",
+      "files": [
+        {
+          "source": "adapters/dotnet/Directory.Build.props",
+          "delta_kind": "changed",
+          "fixed_sha256": "0f485e7e623c978f0478eb95aa7eecdb288b393fde77e79c453628640fe9c113",
+          "fixed_lines": 10,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/README.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "64ab2c7a658c603e44a3371a3f0dae21efd96d7e7fecfa7a2506801c3d354a8a",
+          "fixed_lines": 37,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/capabilities.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "427b3906935cb0f1a59e1eb5adad8d4034702674bd02be25d9df573a1fd485f2",
+          "fixed_lines": 37,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/pilot-contract.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "39ddca993fd68e28e5fee491e6bc604de6396d480b56d70e17567a3216af6b46",
+          "fixed_lines": 57,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+          "delta_kind": "changed",
+          "fixed_sha256": "88d4433c7f70cca0befa5f7cee28b2631eaf9c41f43439e3aa68d23952a486d5",
+          "fixed_lines": 18,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/pilot/Program.cs",
+          "delta_kind": "changed",
+          "fixed_sha256": "5201fd500d688e19bd7af17d707c42b9bdc3177e792425a01894b0991a489b78",
+          "fixed_lines": 194,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
+          "delta_kind": "changed",
+          "fixed_sha256": "9ed8f873a0251a9e92a6a008a990a98d794789b054d3340220f61470097c0994",
+          "fixed_lines": 34,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
+          "delta_kind": "changed",
+          "fixed_sha256": "e4f3382af6786ec04cafc2af712b78c330433bd06d0b3a1cd17fc212b1268522",
+          "fixed_lines": 94,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs",
+          "delta_kind": "changed",
+          "fixed_sha256": "c60f549045db118e914e2048dedcb8e1e09455067c7d7bd223daa1cf09953490",
+          "fixed_lines": 216,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "40b5a8ad94eb50621817cb4a261fbd72b3ea7dccd012d70a3120243ed01125ef",
+          "fixed_lines": 27,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "2f51a2c5cebdcd145a924ef78fa49787e6767b96d5f7ab79eb0fc4912216bfa3",
+          "fixed_lines": 454,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/export/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "ed3e0e51be373556712ec28062eb3ca64ae66f0ac89dcd54b1505467c23b26df",
+          "fixed_lines": 23,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/export/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "0fdcac276e59e4f89914e185f16624e468d563325b7c197654c983b45050a6f8",
+          "fixed_lines": 122,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/src/bridge.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "254790bc7c3c8980f584987ec537ea138c5741ee88a17af059ce0d440df3d1e6",
+          "fixed_lines": 580,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f365a4f7239e33f0167702b0c6418840a11eca4c2dc2e3cdd9b7d95f835cd3b2",
+          "fixed_lines": 454,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/hosted.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "7ab693ec6a455017b51d4571821aff3137533d4af7ea00086b4772d5e756359f",
+          "fixed_lines": 545,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/hosted/generic.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "4a0f2fd52c2a7132f120ff0f1e0e2c639b401529bced8392e8d3b333086330a2",
+          "fixed_lines": 295,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/managed_scope.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "58ece557467f3135e10ae820eee38dcbbd1c32a166aa8376ed6ec4e1a171e187",
+          "fixed_lines": 86,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/package.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "94df34555ccc08e147fdc825f77755ac061ad77129df22822801bff7343fd1a0",
+          "fixed_lines": 485,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/package/projection.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "08bc47208b464bfa547341afcdb0c8437355fb023cebd087f7246d464b371845",
+          "fixed_lines": 323,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/support/artifacts.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "7e17e12b1e9c7866e04ee5ffdcab1ef6070a3fa601e41a93ff72ab9924f125fd",
+          "fixed_lines": 55,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/support/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "69909ca2872d52b5d821c7087f9c8481294f1af3a9152b17da92d72b7515b7b0",
+          "fixed_lines": 62,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "framework-adapter",
+      "files": [
+        {
+          "source": "crates/framework-adapter/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c",
+          "fixed_lines": 23,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/framework-adapter/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "2ebae95059f9379e6422eb7ff93ccad32d274eee6b79d6227e6564c0f6e336e0",
+          "fixed_lines": 23,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/framework-adapter/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e71a1ecbcbd7501a5ecba6df279692e2e1900934bae82c5db2654554e69ff8e0",
+          "fixed_lines": 86,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/framework-adapter/src/request.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "75fcc4aa930becdabd48d323a816756e1a87f18670b3900fa7d6ff6cd6476be3",
+          "fixed_lines": 243,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/framework-adapter/tests/support/authority.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "cb850848febd45e968a1e033781201690d80382f993b448d101810501c133d6b",
+          "fixed_lines": 49,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "go-adapter",
+      "files": [
+        {
+          "source": "adapters/go/pilot-contract.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "0127d059dd98cefbddf6545894e3c3cf3117a3dd45f42a6973950b8496419dcc",
+          "fixed_lines": 67,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/go-adapter/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "7f7d9a95f8e9576a0b98e3068f771e2f632f2dfca88bd72b36f7cfcf787939e7",
+          "fixed_lines": 15,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/go-adapter/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "46536a3e6ff51d5a7e9be8ab612cc7539bc3c1c0562023ee08c38139135c7b2c",
+          "fixed_lines": 154,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/go-adapter/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "61d8d5bb1b6ce5830d341a35133113ba885206124c57cefae1707931ed390b82",
+          "fixed_lines": 64,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/go-adapter/src/probe.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "efef4c891f432df88bdae1fb711039fd2c44f9e4ca9922ec22ffd861b6c5c771",
+          "fixed_lines": 136,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/go-adapter/src/qualification.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "4fc4bc1bef26d25f3953b9bbe567bef8be6c44b9e7ca2a034f87acb59fe7e42f",
+          "fixed_lines": 295,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/go-adapter/src/scenario.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "0ab7e7e900aeda979ec4e3c3867a3ce54d38861cd7e2209df3a52c449850895d",
+          "fixed_lines": 174,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/go-adapter/src/scenario/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "69c5674d7859a01a53ef0a853b8794bb07a3c531204f2454767ed804e3064128",
+          "fixed_lines": 110,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "integrity",
+      "files": [
+        {
+          "source": "crates/integrity/Cargo.toml",
+          "delta_kind": "changed",
+          "fixed_sha256": "2f6608489207d5a75bf615e4c30f851b436aedeea5a33acf73425a20b63e3e24",
+          "fixed_lines": 25,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/configure-attested-routes.md",
+            "docs/reference/gate-origin-contract.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "9b197bf8b6716d0388f9b9625d65616b177deaba446cc877f22f592a4a141bbf",
+          "fixed_lines": 4,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/configure-attested-routes.md",
+            "docs/reference/gate-origin-contract.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/request/mod.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "2cac6164e323cd21fa26a59ab94450c9e912e8050c71f2999f52cb3806a15a9e",
+          "fixed_lines": 11,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/how-to/configure-attested-routes.md",
+            "docs/reference/gate-origin-contract.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/adapter/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "8a44c59f88a2888b05ff5c1c38b8d34c3fee0c429ce1aa394dc7c1e1f210dd22",
+          "fixed_lines": 331,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/adapter/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "45aa2d41047656f14f540c1437bbc05990ee3b0f90c50ecb5f429168dc2a59ef",
+          "fixed_lines": 276,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/adapter/wire.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e8687e4be4dad979741fd582faeb0d097bda4572fbaf236763753ff836243db9",
+          "fixed_lines": 81,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/request/browser/ack.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "20526674e2a0e3f0267c5baa23837a9d378bbfa9db16a4ded1946151b1730b7a",
+          "fixed_lines": 59,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/request/browser/ack/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "cb39f96c7dfeabccbe9ee5e3113728f1260c58b32ebe23e190b68c46d2c68616",
+          "fixed_lines": 61,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/request/browser/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "19b57d4a33ac26075b9f546f3b8d0fa114fd5b8564be34f6d9543227401780a3",
+          "fixed_lines": 123,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/request/browser/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "7b15a71305ba23a29ba9c06673a80b57ae56d4389785d1cd151c88804b899362",
+          "fixed_lines": 164,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/integrity/src/request/browser/validation.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d47708d611a44bf4bfd419d66fe2e3831f897a29b6b7f02f2b32b3977c7ba55b",
+          "fixed_lines": 91,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "native-abi",
+      "files": [
+        {
+          "source": "crates/native-abi/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "5a5670505881cc8443125646db7da0297b201d66f56733ce5394c72a97ee9288",
+          "fixed_lines": 14,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "cadfb28bfc2e13e8eba3892de1ae28ae7a6975622026e067bdf02b26d8b1a996",
+          "fixed_lines": 79,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/export/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "f46ec9c16454615f4e29e4ee0f04634ce74e889f0dc9d7ae710d135958b327dc",
+          "fixed_lines": 21,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/export/examples/header_conformance.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "a0f438b3dfa48e6e4c21a66a12b0c2f6c3992e610d895205ca8c01af9a2b46a1",
+          "fixed_lines": 304,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/export/examples/local_msvc.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "68d6c105edee241d0ea86afdfbffed4ec8f8ad41cd3a1598f9a314e8dd8d833f",
+          "fixed_lines": 121,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/export/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "13c6180cab314fbfbff1791fae4496990f6c208f3fed6d5f7385ea734c966080",
+          "fixed_lines": 268,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/src/boundary.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "333d994cfd9d2398529b50bc866c642fa73ea0f5e02508f15ef6032f58660919",
+          "fixed_lines": 105,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/src/command.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "527859d9e5f85ed5f3e3bf7df989047c49e2cc4484c4fe361f21a05bdbfc1efb",
+          "fixed_lines": 263,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "17df48a73db67b636d943ee04eeadfa3171d4a9a3eda03ddca9a79fddb044c6d",
+          "fixed_lines": 15,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/src/registry.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "447926b6fdc1f83e57b25a422c515b107def22f468749657ea03cb638c5ceac7",
+          "fixed_lines": 191,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/src/registry/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2cf744c7f98ab036392bd1aed31322730e1b65ab3a19636312f4f34e78394bfd",
+          "fixed_lines": 187,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-abi/src/wire.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "74d5e37c452aa3fd18367bcfda893c9eb0859aa60d210c944e19b2043deb76e5",
+          "fixed_lines": 138,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "native-cli",
+      "files": [
+        {
+          "source": "crates/native-cli/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+          "fixed_lines": 11,
+          "prior_authored_pages": [
+            "docs/tutorials/quickstart-monitor-mode.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-cli/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "f9eb20132fe468e2fffbbe05b7ccc7af152fa97f9e48938d766d52faf1abe099",
+          "fixed_lines": 23,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "native-security",
+      "files": [
+        {
+          "source": "crates/native-security/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "4b1dff517ecc7127d4526f3a1474dd51d102ae181b5e80aefa692981fd91ce15",
+          "fixed_lines": 26,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "e03799409971561211556eee6b52b779a71210ee61ad02b754d5e92024c075c3",
+          "fixed_lines": 93,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "c6ce48bdcc12e9ff440285ddf0d3bf17b231d1fc24b7872f22bace8e8afdd7d0",
+          "fixed_lines": 6,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/process/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "04e51540d0b09d6dc7a51cd59b49f39271075d6999cdc6bc6de2595bf55a52aa",
+          "fixed_lines": 60,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/process/windows.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+          "fixed_lines": 88,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/secret/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "eb7ba77665bb51bcb217a34dbf0309bf2c45ef28131c97003c17e7d28541c4c0",
+          "fixed_lines": 68,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/secret/pilot.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "99703482931610e1690671ed4b7e690cb9a9897e0d4bd4cccfb2f28ebc942942",
+          "fixed_lines": 183,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/secret/reference.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "772fad2c0d89dbe57745f29fe8863e2d896ab1ea24d7008df50e5ca49856a06e",
+          "fixed_lines": 85,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/secret/windows.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "ea9ae767ae62ef1137743dcd131bf877b03c0d078138ee9a7e086e2c9e209273",
+          "fixed_lines": 73,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/storage/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "3ba55562611e5d1537e052a67576ecab6d543ca418750786caf6885100b2b736",
+          "fixed_lines": 21,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/storage/private_directory.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "a6b2537611366c51a1eeb29b0be33de3add9a236dfed0aedca675a76ce3ef586",
+          "fixed_lines": 153,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/storage/service.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e0dd437ed236cf3ac23f89556694c31b7ac7f64dec7be75eea002769b25c1220",
+          "fixed_lines": 293,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/storage/windows.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f",
+          "fixed_lines": 266,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/native-security/src/volume/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+          "fixed_lines": 48,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "nginx-adapter",
+      "files": [
+        {
+          "source": "adapters/nginx/Dockerfile.native",
+          "delta_kind": "changed",
+          "fixed_sha256": "43601ec07795d039ba2e49bc95ac8db9798233a47d3995d01240014a61c8cd99",
+          "fixed_lines": 47,
+          "prior_authored_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/nginx/Dockerfile.native.dockerignore",
+          "delta_kind": "changed",
+          "fixed_sha256": "3ef3d62c8273e286062254bbbbf6f857de3c1fea8b730a3b07b28f8be7318a1a",
+          "fixed_lines": 15,
+          "prior_authored_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/nginx/INTEGRATION.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "11e1949b7b41ad49a90f97250b6862e7a1b578b5983c5ae6480f3cdf1a29690d",
+          "fixed_lines": 35,
+          "prior_authored_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/nginx/README.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "63a349204895367e2817b83d75b6b6b61b9655635ac032f118727f8d138c93d5",
+          "fixed_lines": 79,
+          "prior_authored_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/nginx/compose.yaml",
+          "delta_kind": "changed",
+          "fixed_sha256": "27485d7795f9ad4c2be8dcab53f34a02a462f72974c70dffaf9dce137f767900",
+          "fixed_lines": 19,
+          "prior_authored_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/how-to/verify-the-image.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/Cargo.toml",
+          "delta_kind": "changed",
+          "fixed_sha256": "ba9f8353715a0132022ea0f2a0013f7d4d592920a2f3cb96425fd2abfd1e4cfc",
+          "fixed_lines": 53,
+          "prior_authored_pages": [
+            "docs/reference/nginx-adapter.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "2a2a11e4d441114b3441b7062bf0cf2d41d9b0b5d52609b125e3fe494d20f469",
+          "fixed_lines": 11,
+          "prior_authored_pages": [
+            "docs/reference/nginx-adapter.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "f50a9476b023bda06e4b2e74466f90877e9e75ed4336608ba1326ad8712b7dd0",
+          "fixed_lines": 57,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/src/bin/package.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "5b4c2ebdd8f2a04c7540525b9e57431c5f2be110e34d746e86b7df590b56fb7e",
+          "fixed_lines": 59,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/src/package.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "140dc60c0606a578742ce100c1acd634dbedfb8668bcc10cb0ab6719bebc1301",
+          "fixed_lines": 212,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/src/pilot/authority.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "a3e3d9e9463c17b469be772192a6bbda5abafb83485381a9a8cede68df016bca",
+          "fixed_lines": 140,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/src/pilot/mod.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d570abcf18502f376dfc1ccc7e89dfbbc9a7420d5661bf4a54be48d28b703c37",
+          "fixed_lines": 808,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/src/pilot/origin.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e01ddcf5ad2e14e9eb3c05d4b308c87f5edb76013326a4a5bf987775a8661790",
+          "fixed_lines": 260,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/nginx-adapter/src/report.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+          "fixed_lines": 101,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/nginx-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "node-adapter",
+      "files": [
+        {
+          "source": "adapters/node/.gitignore",
+          "delta_kind": "changed",
+          "fixed_sha256": "f0ce22fbe64e18e3231d9b1e0e8d40a6d031f3e3a4dcd041773132608f94c93c",
+          "fixed_lines": 3,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/integrator.md",
+            "docs/explanation/will-this-break-my-app.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/node/Dockerfile.pilot",
+          "delta_kind": "changed",
+          "fixed_sha256": "8c0e4de9f7b39249199ce68945c0c1a2c978257411072ec20aa515aae1aaef58",
+          "fixed_lines": 29,
+          "prior_authored_pages": [
+            "docs/reference/node-adapter.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/node/README.md",
+          "delta_kind": "changed",
+          "fixed_sha256": "03ca875d121b76061e80afe6fc7e9e20ada33ea844998f3849d826843e51e7fc",
+          "fixed_lines": 61,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/integrator.md",
+            "docs/explanation/will-this-break-my-app.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/node/capabilities.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "e30b2a2ea43644b7e0c1c6d89a8c75ee5f8263d996e7f3cebacd87f457e6815c",
+          "fixed_lines": 29,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/integrator.md",
+            "docs/explanation/will-this-break-my-app.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/node/host-pilot-contract.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
+          "fixed_lines": 22,
+          "prior_authored_pages": [
+            "docs/reference/node-adapter.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/node/package-lock.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "7d6740944840e34947cea72ea84231c70c47a6cbf8b2a10050970513a5a674cf",
+          "fixed_lines": 3293,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/integrator.md",
+            "docs/explanation/will-this-break-my-app.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/node/package.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "d584969e4879562c7a48b59e1091e0e54bb66dcf906b2976907d45dbf865a77d",
+          "fixed_lines": 64,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/integrator.md",
+            "docs/explanation/will-this-break-my-app.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/src/envelope.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "40eabadcc6621602529b466b63a1e781e9a005d0970114444ccb07b6ae0c8d8d",
+          "fixed_lines": 92,
+          "prior_authored_pages": [
+            "docs/reference/node-adapter.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "6042f74648c07fb81e7bde4b687208424dc9b8f363af80a70b068beaacd0e9f7",
+          "fixed_lines": 76,
+          "prior_authored_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/start-here/integrator.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/src/stream.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "b8556c076025e977d6b66b1714e5992b39fcb5091b004e14d6dd542be4a5e504",
+          "fixed_lines": 509,
+          "prior_authored_pages": [
+            "docs/reference/node-adapter.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "b1f3221b38e28cb225a8c928786392b113fce5bcdcbc58ebe60ef3c71abff846",
+          "fixed_lines": 45,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "c4572ce66064fe091f5a4839d2d37ae1befd7176288fdeebda5b1b0cafac0846",
+          "fixed_lines": 107,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/build.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "1f57ae6df404deec338aa9e64c9e4d42beba866ef8f9615470b89acef10d05c9",
+          "fixed_lines": 4,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/src/bin/humanymous-node-package.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "8d8848e22153d9658dcea820dec2c3862e268400d3ebbdde6e851c952301b001",
+          "fixed_lines": 295,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/src/bin/humanymous-node-package/install.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "cc21f5e0713607e81c5912c166b7ccb7acac2d9621caa0a91b07a2b33c51115b",
+          "fixed_lines": 80,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/src/pilot.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "d50ab261e0a83ea7e8b6d9b3623a0eea75f789c7210bdf0464a5dc6194885e04",
+          "fixed_lines": 103,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/src/pilot/origin.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e1b0e73e4c1d4d4ac953d13fe03929dcef0110712c0e502497dceaa00489c319",
+          "fixed_lines": 273,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/tests/host_process.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "e620113ac93c3d9d81cc4812655ddc8654fc7fda620dd0cc8cdfbb9bf3bd9275",
+          "fixed_lines": 552,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/tests/support/http.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "0cd896b0ec01729259da3f316be282bbaccf466bce89115c51a7bc74d35f765f",
+          "fixed_lines": 134,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/node-adapter/tools/source_receipt.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "c6f6ca2c19f3aff8a6638937bc8e015f361e3264790e4a6fb35ee6d16be16d58",
+          "fixed_lines": 42,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/node-adapter.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "python-adapter",
+      "files": [
+        {
+          "source": "adapters/python/pilot-contract.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "17765659c6b9960bfa7fb551843b7a2c6db4bf1e6ef3d0520bb886b8d4854c72",
+          "fixed_lines": 31,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/python/server-pilot-contract.json",
+          "delta_kind": "changed",
+          "fixed_sha256": "7cf2def1030dfc13f58604a9fea65b791d1f45cdee1cb00e656507121810f138",
+          "fixed_lines": 58,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/python/waitress-requirement.txt",
+          "delta_kind": "changed",
+          "fixed_sha256": "172356c34e37fb2695252aa29c7f22c9fcf895d425bffbb72844c567c517a237",
+          "fixed_lines": 4,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/python/asgi-server-pilot-contract.json",
+          "delta_kind": "added",
+          "fixed_sha256": "f989f7ba7b44bc4d51e147ef054bb83e5ae6e80a32f6f85daf34ae1af1b20e75",
+          "fixed_lines": 30,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "adapters/python/uvicorn-requirement.txt",
+          "delta_kind": "added",
+          "fixed_sha256": "83de60f2e4dada27dc82eef238e455e400a919c9a9ed967f8bab26d9551bc24b",
+          "fixed_lines": 6,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "9162e99c6636204fe6b7febaf1a96cdf3dbf1aa0cecc7fd5efdbeef41d1aac71",
+          "fixed_lines": 44,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "aa5cdc2b03f24878937d99292c54a0dcbd0fdaf6154ae8223d3bee9bbe4d4285",
+          "fixed_lines": 137,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/asgi.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "fa719805a40c6106cc85a916ac17feb0e1690e9df976679f5b78cec27f702cc1",
+          "fixed_lines": 276,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/async_call.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2720d361e1c083fa5ff1f95e45fdd3f61b40679ecc1963acbcdca4e564e65b30",
+          "fixed_lines": 181,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/bin/humanymous-python-package.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "0b6a8d92343bde8550f20870f6c2d6f924ba13f1a00a1d929596e0c1157533c5",
+          "fixed_lines": 274,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/hosted.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2a1a1df10f6f2596a41e486e6fa8811c8bf5e51fb9dfd3b7795b8f395b15f77e",
+          "fixed_lines": 313,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/lib.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f86d5db9f2ea71347d916e60822d8da5ba281f1e1c6f42ad0998cd34944cfded",
+          "fixed_lines": 46,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/pilot.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "5f67c286ee834b9ddf8b33e951fd137e9ec4cc892689d4332800925320db0777",
+          "fixed_lines": 165,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/pilot_asgi.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "4e8fa39fc083e5df8c690f3a2fea2dcdd044cb548ba3a51b8ec03cff25ff436d",
+          "fixed_lines": 135,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/src/wsgi.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "ab0e363d4c4e833ca92cbce8b5eb8f3afca65f65bfcf87a2d67c0a2dc40c8ac4",
+          "fixed_lines": 184,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/asgi_server.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "47b73211c233d08d3c31fbf6d8303ed03000ae38ab2b11e8fa14bc80c017cdf7",
+          "fixed_lines": 54,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/component_controller.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "4ab16775f6cf4081485d8c5251cacd2f4a77c1d2d84eede544254f42bc992f6e",
+          "fixed_lines": 387,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/component_files.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "9743800f6636d5741bd75d86045246c639b35fa4c98b1dd6d4a13efd7d366edd",
+          "fixed_lines": 116,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/component_lifecycle.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "5839d24ac3246523878c28f9e4174142c77ad53fa979ea42d366e00c4c41f5ad",
+          "fixed_lines": 4,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/component_process.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2aa1be700f39bfbf0ca2b35abc4f298b98686ad30e3249c2bf0b4b0c0ecef9d7",
+          "fixed_lines": 31,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/framework_server_cases.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "ea9d542c228cabf614487fd1d5650994efc850802bb15b5d6031b5accdc9b93d",
+          "fixed_lines": 419,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/wsgi_authority.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f0e85bdedb469f2e40a919bb51b27923a3c721597e8a2f49cfb680e25c49a3ab",
+          "fixed_lines": 162,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/wsgi_host.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "05ed1d66e8f33cec1e18fdefd3c3b2db5f4948235a75f26747edb39acf11db68",
+          "fixed_lines": 203,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/wsgi_receipt.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45",
+          "fixed_lines": 162,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/support/wsgi_receipt_actual.json",
+          "delta_kind": "added",
+          "fixed_sha256": "35a6cf047068deaf0c33db08181662e85ddc15f1142f6fb17cd27994132d21e1",
+          "fixed_lines": 129,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/python-adapter/tests/wsgi_server.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "edda82821667c0ddfc5a8ee52754d614a5c6b8ee297847ce6d5e917df4bbcbd3",
+          "fixed_lines": 53,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "ruby-adapter",
+      "files": [
+        {
+          "source": "crates/ruby-adapter/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "ed0e443b2d517797b0d2d68dc4850d5d9c987caedc12dc49db64dad73e85f4da",
+          "fixed_lines": 6,
+          "prior_authored_pages": [
+            "docs/reference/supported-topologies.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/ruby-adapter/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "526fb402cc9d808236255db23155fd31fc5c28ef15589cb5d8cf324a15547eb9",
+          "fixed_lines": 77,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/ruby-adapter/src/bin/humanymous-ruby-package.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "2ad3ceabff49d9fe58afee78b5f873ebe9a46bacc26f5ef9e237e9c943cb9051",
+          "fixed_lines": 241,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/ruby-adapter/src/hosted.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "8b9be5b125f84633febebf30383ec8732a41697dc9f8eab1ff4bd922c9d38758",
+          "fixed_lines": 124,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/ruby-adapter/src/native.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "b1df462ebe237c08518c42592f11fea1e091fdbfdd63e5a1263701a81b04a1d4",
+          "fixed_lines": 211,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/ruby-adapter/src/package.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "207aab9ce9ed3f4de058b272f42ede78836cb07b4783b9c1542dac7dca8d4b77",
+          "fixed_lines": 138,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/ruby-adapter/src/worker.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "6a72de650b258e29ca797b9d16a7c72f40ae6d093a1209eb04e850e6cecf0c05",
+          "fixed_lines": 68,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "runtime",
+      "files": [
+        {
+          "source": "crates/runtime/Cargo.toml",
+          "delta_kind": "added",
+          "fixed_sha256": "c51afb41efd90a1402608d57da6a01942e2d35845a7ca6819c22ee4b364a23ed",
+          "fixed_lines": 35,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "89d56da2df5f31133809ac4ef80ac18e80bddeca719e9bda38405fc2d2ed2893",
+          "fixed_lines": 520,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/qualification-contract.json",
+          "delta_kind": "added",
+          "fixed_sha256": "df32f1501e3bb67b0d0922fe1c75e437e540eb573c5ae9f91d7045adf9a6e748",
+          "fixed_lines": 91,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/src/main.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797",
+          "fixed_lines": 41,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/src/tests.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f87ade07f63180b9887aea321dfde249656c036dc0d66d1c445c5cfb8221f5b2",
+          "fixed_lines": 642,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/src/tests/browser.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "12a6ea363b3ea983176b007db46171fa34eab1224484953ea0b5cf9826143c11",
+          "fixed_lines": 449,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/src/tests/tls.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "154a9b4a43f21673d5c69f4d6c93fe0e1c338f0ffa3ede0244096519207c3065",
+          "fixed_lines": 145,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/src/tests/tls/observation.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "f1f4639f63df149ae850282e89c6bd731c20f14c05eaddbe6805535791a281ff",
+          "fixed_lines": 36,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/runtime/tests/native_process.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac",
+          "fixed_lines": 291,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/gate-origin-contract.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "test-support",
+      "files": [
+        {
+          "source": "crates/test-support/Cargo.toml",
+          "delta_kind": "changed",
+          "fixed_sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a",
+          "fixed_lines": 15,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/developer.md",
+            "docs/reference/install-requirements.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/test-support/src/lib.rs",
+          "delta_kind": "changed",
+          "fixed_sha256": "d4b8db892b57b5079d8acbcf37b0705d1f281428b066a479baf67c85d03190f1",
+          "fixed_lines": 101,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/developer.md",
+            "docs/reference/install-requirements.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/test-support/INTEGRATION.md",
+          "delta_kind": "added",
+          "fixed_sha256": "58a46bce98e82b2a4e1849fa054c9a9ac2330ccfcf18357fd943db8c51cceded",
+          "fixed_lines": 46,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/test-support/src/docker.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "97c9f53b2e89ac5a6966c0f9383e82eefae2ffcace841ae1a7977a128621d9e8",
+          "fixed_lines": 281,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/test-support/src/json.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "16e47a333700e2b084e81f7012c1d5d523695a59b1454d21f5db8157beaa9656",
+          "fixed_lines": 143,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "crates/test-support/src/process.rs",
+          "delta_kind": "added",
+          "fixed_sha256": "5a000856ac6d6e02fecc5a5162ea307d8513aa95890d8740a0b6088c14530937",
+          "fixed_lines": 355,
+          "prior_authored_pages": [],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    },
+    {
+      "proposed_owner": "workspace-root",
+      "files": [
+        {
+          "source": "Cargo.lock",
+          "delta_kind": "changed",
+          "fixed_sha256": "339aa10ba586aa534fccfb0a4b1ebfe9aec0730be0e8304acbb167d2c02e2443",
+          "fixed_lines": 7046,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/developer.md",
+            "docs/reference/install-requirements.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        },
+        {
+          "source": "Cargo.toml",
+          "delta_kind": "changed",
+          "fixed_sha256": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac",
+          "fixed_lines": 64,
+          "prior_authored_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/start-here/developer.md",
+            "docs/reference/install-requirements.md"
+          ],
+          "proposed_pages": [
+            "docs/reference/production-vs-reference.md",
+            "docs/standards/draft-v0/validation/implementation-map.md"
+          ],
+          "page_associations_reviewed": false,
+          "task_state": "full-read-required"
+        }
+      ]
+    }
+  ],
+  "receipt_publication": "Only the docs owner writes docs/reviews.json after full report review and current hash comparison. Task creation, matching hashes and implementation ownership are not review acceptance or independent interoperability evidence.",
+  "current_tree_qualified": false,
+  "required_report_for_each_task": [
+    "Full-file read and exact reviewed hash",
+    "Actual public API, support and failure boundaries",
+    "Page-by-page correction or explicit no-change rationale",
+    "Execution evidence source and platform; distinguish source-only observations",
+    "Recheck working bytes before any receipt publication"
+  ]
+}

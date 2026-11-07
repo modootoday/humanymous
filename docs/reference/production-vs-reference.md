@@ -22,7 +22,7 @@ release is claimed.
 | Laboratory browser | Windows Meari/CEF prototype has actual native rendering and window controls; full browser readiness, external navigation and SDK qualification remain separate |
 | Node/Bun and nginx adapters | Rust Node-API and Linux nginx implementations exist with bounded historical pilots; changed-source platform, packaging and deployment qualification remain separate |
 | Cross-platform packages | Source-bound native component runs exist; they do not qualify every service, browser or framework on those operating systems |
-| Documentation | Historical pinned-theme builds exist; the changed current source still needs its own build/link/access review and is separate from production deployment |
+| Documentation | Fixed-source pinned-theme builds, rendered-link checks, archive round trips and representative browser observations exist; complete source review and accessibility qualification remain separate |
 | Standards Draft v0 | Independent developing proposal; no external submission or adoption |
 
 Historical Go behavior is a migration comparison baseline, not evidence that the
@@ -30,27 +30,39 @@ new runtime is ready. A future release must name exact supported tuples,
 capabilities, artifact digests and completed checks. Until then, use an isolated
 evaluation environment and retain your existing production controls.
 
-The 2026-11-07 integration checkpoint registers 38 Rust workspace members.
-That inventory is not a supported-platform matrix. Local component checks
-include 10 Go-adapter tests, 36 maintenance-tool tests and 26 documentation-tool
-tests; their separate check/lint results do not establish full-product parity
-or an immutable combined dependency graph. Two mandatory CEF desktop process
-tests are wired but have not executed at this checkpoint.
+Workspace inventories and component test counts belong to their exact source
+checkpoints. Neither a workspace member count nor a passing component suite is
+a supported-platform matrix or proof of full-product parity. Native browser
+process tests and framework deployment pilots need their own execution evidence;
+a documentation preview does not exercise them.
 
 Hosted [run `42355168729`](https://github.com/modootoday/humanymous/actions/runs/42355168729)
 targets source `8132117`, which precedes that local integration checkpoint.
 It completed with failure: five of 19 jobs succeeded, including both-baseurl
 Pages builds; source-review inventory and native/product gates still failed.
 These separate outcomes cannot qualify later source changes.
-The current documentation source still needs a fresh rendered-site build,
-actual browser checks and source-review completion before preview acceptance.
+
+At documentation source `269607366e4b2e37b47a974595b406b66642caae`, both the
+site root and `/humanymous` builds produced 88 pages and 165 public files.
+Rendered checks and two separate archive restorations passed for each build.
+The restored files were then served on literal loopback addresses and inspected
+in the in-app browser: representative desktop and 390-pixel mobile layouts,
+navigation menus and keyboard skip-to-content behavior were observed.
+The security-disclosure file matched its archived bytes over HTTP.
+These observations apply to that source, not later edits. They are not a full
+browser-page corpus, assistive-technology review, WCAG conformance result or
+production deployment. Complete source-review reconciliation remains pending.
 
 The standalone HTTP runtime uses plaintext loopback HTTP/1.1. Library source
 also exposes `ServiceHost::bind_tls` with installation-owned TLS configuration
 and a same-connection captured request owner. This optional TLS/H1 path accepts
 only buffered native routes and HTTP/1.1 ALPN; it rejects browser profiles and
-does not enable HTTP/2 capture. Its source wiring has not been qualified by a
-current native ingress run. A readiness declaration is not deployment evidence,
+does not enable HTTP/2 capture. Six selected Windows TLS cases at runtime source
+`1646c4821a5da2208a65d349656a10ec657ebeb5` passed, with 46 other library cases
+filtered out. Both recorded identity cases returned CHALLENGE/403 and did not
+invoke the origin. This establishes neither TLS ALLOW-to-origin behavior nor
+complete ingress, browser or product qualification.
+A readiness declaration is not deployment evidence,
 and CDN re-termination still hides the original client's TLS handshake.
 Browser recovery, public administration and arbitrary streaming proxy
 compatibility remain unavailable. Routes requiring unavailable capture or a

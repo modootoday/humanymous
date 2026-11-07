@@ -6,6 +6,17 @@
   "external_submission": false,
   "generic_wire_selected": false,
   "changes": [
+{
+      "kind": "implementation-evidence",
+      "paths": [
+            "../../reference/production-vs-reference.md"
+      ],
+      "summary": "Record exact-source two-baseurl Pages build, archive restoration and representative browser observations, and distinguish six selected TLS refusal/policy cases from ALLOW-to-origin or full ingress qualification. Historical test counts no longer describe current coverage.",
+      "generic_wire_changed": false,
+      "full_browser_corpus_qualified": false,
+      "assistive_technology_qualified": false,
+      "full_product_qualified": false
+},
     {
       "kind": "implementation-evidence",
       "paths": ["../../reference/gate-origin-contract.md", "../../reference/cli-config-policy.md"],
