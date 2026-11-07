@@ -95,10 +95,8 @@ impl Asgi {
             {
                 return Err(failure("unsupported ASGI stream"));
             }
-            if name.eq_ignore_ascii_case("host") {
-                if authority.replace(value.clone()).is_some() {
-                    return Err(failure("duplicate host"));
-                }
+            if name.eq_ignore_ascii_case("host") && authority.replace(value.clone()).is_some() {
+                return Err(failure("duplicate host"));
             }
             safe.append((
                 PyBytes::new(py, name.as_bytes()),

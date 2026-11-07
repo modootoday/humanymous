@@ -148,3 +148,17 @@ capability-versus-action hijack correction. All compilation/retry/runtime result
 for these changes are NOT_RUN. Waitress3.0.2 candidate provisioning is queued for
 integration approval, with no manifest/dependency edit. Firstparty references and
 runtime limits are recorded in the context SoT.
+
+Python B retry check002 passed1.97s for native all-targets host-pilot. Clippy001
+failed two collapsible-if diagnostics; two expression-only source fixes produced
+Clippy002 pass0.79s. No warning suppression, manifest mutation or actual host/import
+execution. Slot returned immediately; exact hashes/scope in evidence:root/20261107075243
+summary002. Python package-tool binary was not compiled by this feature set.
+
+New Ruby standard-layout Rust packaging binary orchestrates unchanged RubyGems
+build/install/require with bounded output, owned child timeout/reaping and explicit
+hosted opt-in. Dedicated package native extension creates archive metadata/SHA256
+through upstream RubyGems/Digest APIs; clean production require rejects fixture
+feature flags. Source only, no Cargo graph change. Its compilation/actual packaging
+remain NOT_RUN; next requested B queue separates Python package-tool and Ruby
+default Rust-driver checks from Ruby native ABI/build prerequisites.

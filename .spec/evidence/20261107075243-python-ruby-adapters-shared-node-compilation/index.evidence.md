@@ -3,11 +3,12 @@ id: evidence:root/20261107075243
 title: Python Ruby adapters shared Node compilation
 status: active
 created: 2026-11-07T07:52:43Z
-updated: 2026-11-07T07:53:54Z
+updated: 2026-11-07T08:28:03Z
 rel:
   governs: [crates/node-adapter]
 files:
   - {path: summary-001.json, sha256: 09ba1cdf3e041fbbf16f6ff1546e49a4261a55a3bae2e8c187fd6f21524f89d9, bytes: 1306, store: repo}
+  - {path: summary-002.json, sha256: cf779ccd005511ab728655fcb2f185eec98368ece59cf722a4d59390ce1055cf, bytes: 1839, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -40,3 +41,19 @@ actual runtime/framework/IPC/ABI/browser or whole-product qualification follows.
 The retained older Windows52/Linux36 Node runtime receipts do not validate this
 new shared-context source. All Python/Ruby native/package/runtime gates are
 separately tracked; no default-empty-crate result counts as native success.
+
+## Python native compilation follow-through
+
+Root separately assigned the same isolated B target for Python all-targets
+host-pilot. Check002 passed1.97s against source ba0c291. Clippy001 failed on two
+collapsible-if diagnostics, then those two owned source expressions were changed
+to equivalent let-chain/conjunctive forms and Clippy002 passed0.79s with-Dwarnings.
+No lint was suppressed. This final Clippy invocation also type-checked the fixed
+source. The initial E0277 check001 remains a retained failure, not overwritten.
+
+Summary002 binds the final two changed source hashes and all three raw command
+log hashes. HEAD observed after the commands5016be6a4a5702b77a7f586c2e948c645f75c883
+is observation metadata, not a claimed immutable whole-tree execution snapshot.
+No test/import/product/host process ran. In particular the required-feature
+Python package-tool binary was excluded from this host-pilot build and remains
+unverified. Ruby native and its new package driver are separate unfinished gates.

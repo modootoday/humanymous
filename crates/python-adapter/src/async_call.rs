@@ -55,16 +55,15 @@ impl Start {
             state.task = Some(task.unbind());
             Ok(())
         })();
-        if let Err(e) = result {
-            if let Some(tx) = self
+        if let Err(e) = result
+            && let Some(tx) = self
                 .state
                 .lock()
                 .map_err(|_| failure("callback state unavailable"))?
                 .result
                 .take()
-            {
-                let _ = tx.send(Err(e));
-            }
+        {
+            let _ = tx.send(Err(e));
         }
         Ok(())
     }

@@ -150,8 +150,9 @@ redirect, exception, iterable close and SSE backpressure. No motor/speed gates,
 new scoring or third-party probing. T4 ceiling remains unchanged.
 
 Current Node shared-source check/Clippy passed (evidence:root/20261107075243).
-Python native first check failed E0277 on opaque Rejection conversion; own source
-fix awaits retry. Ruby native/compiler and all actual package/runtime/whole-product
+Python native first check failed E0277 on opaque Rejection conversion; retry
+check passed and Clippy passed after two unsuppressed style fixes. This excludes
+the package-tool binary and all actual execution. Ruby native/compiler and actual package/runtime/whole-product
 gates remain NOT_RUN; qualified tuples=[]; no current closure audit, registry
 artifact or publisher verification. Compilation never establishes native runtime.
 
@@ -179,6 +180,12 @@ HUMANYMOUS_NATIVE_GEM_PACKAGE_REQUEST and call upstream packaging APIs, allowing
 an unchanged ruby --require native-extension invocation with no custom Ruby
 entrypoint. The feature is absent from production. Actual archive/install remains
 NOT_RUN, and self-generated metadata must never state runtime qualification.
+The Rust gem driver invokes this entrypoint and unchanged RubyGems local install,
+owns/reaps only its children, caps output1MiB per stream and applies120s deadline.
+Upstream Ruby Digest computes archive SHA256. Clean require uses fresh GEM_HOME/
+GEM_PATH and both fixture feature bits false. This standard Rust tooling alone
+does not establish Ruby ABI, actual Rack or generation provenance. No remote
+install, publish or token operation exists.
 
 Both native modules expose capabilities JSON with actual host-pilot/package-tool
 feature bits. Installed production wheel inspection must reject either bit true.

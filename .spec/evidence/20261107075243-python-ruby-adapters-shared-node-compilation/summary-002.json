@@ -1,0 +1,24 @@
+{
+  "schema": "humanymous.adapter-compilation/1",
+  "scope": "Python native host-pilot all-targets compile and lint only",
+  "ownedSourceBase": "ba0c291",
+  "headObservedAfterCommands": "5016be6a4a5702b77a7f586c2e948c645f75c883",
+  "concurrentDependencySourceMutationIndependentlyMonitored": false,
+  "finalStyleFixSourceSha256": {
+    "crates/python-adapter/src/asgi.rs": "fa719805a40c6106cc85a916ac17feb0e1690e9df976679f5b78cec27f702cc1",
+    "crates/python-adapter/src/async_call.rs": "2720d361e1c083fa5ff1f95e45fdd3f61b40679ecc1963acbcdca4e564e65b30"
+  },
+  "cargoLockSha256AfterCommands": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+  "environment": {"CARGO_TARGET_DIR": "target/node-native/build", "CARGO_BUILD_JOBS": "1", "CARGO_INCREMENTAL": "0"},
+  "commands": [
+    {"argv": ["cargo", "check", "--locked", "-p", "humanymous-python-adapter", "--all-targets", "--features", "host-pilot"], "exitCode": 0, "durationSeconds": 1.97, "rawLogSha256": "6c794611e671145968ea0af74be6cfeebfe08df91fa8717dacff4261156d9b80"},
+    {"argv": ["cargo", "clippy", "--locked", "-p", "humanymous-python-adapter", "--all-targets", "--features", "host-pilot", "--", "-D", "warnings"], "exitCode": 101, "diagnostics": 2, "reason": "collapsible_if", "rawLogSha256": "ee961a8a16ffca9319a3b46e5f5793ddf9b33fd21c9db32b66bdbf20ea28c97d"},
+    {"argv": ["cargo", "clippy", "--locked", "-p", "humanymous-python-adapter", "--all-targets", "--features", "host-pilot", "--", "-D", "warnings"], "exitCode": 0, "durationSeconds": 0.79, "rawLogSha256": "7cf727e1ac032b40555e9c2d7137b7397e7627f0d9204114b5a38d3dfa7d4839"}
+  ],
+  "unitExecutionStatus": "not_run",
+  "actualRuntimeStatus": "not_run",
+  "packageToolBinaryStatus": "not_run",
+  "packageInstallStatus": "not_run",
+  "releaseQualifiedTuples": [],
+  "wholeProductQualified": false
+}

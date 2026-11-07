@@ -37,3 +37,12 @@ Rack hijack capability advertisement no longer denies every ordinary HTTP reques
 the app-visible copy disables rack.hijack? and removes rack.hijack. Actual upgrade
 requests still reject. New source is NOT_RUN. Native capabilities report actual
 fixture/package feature bits; read-only receipt mode requires no Ruby source.
+
+Rust standard-layout binary humanymous-ruby-package provides build RUBY
+PACKAGER_EXTENSION STAGE METADATA and install-test RUBY GEM. It calls unchanged
+Ruby/RubyGems with closed stdin, bounded1MiB streams,120s deadline and kill/wait
+ownership. Build selects six declarative metadata members and retains upstream
+RubyGems/Digest archive SHA256 receipt. Install uses --local/--ignore-dependencies
+in a fresh GEM_HOME/GEM_PATH then requires production and rejects fixture bits.
+No publish command or authored Ruby script exists. The default Rust driver does
+not enable Magnus; its compilation cannot qualify Ruby ABI. All execution NOT_RUN.

@@ -29,6 +29,19 @@ pub fn from_private_request(ruby: &Ruby) -> Result<(), Error> {
         serde_json::from_slice(&data).map_err(|_| error("invalid native gem package request"))?;
     let artifact = build(ruby, request.staging, request.metadata.to_string())?;
     println!("humanymous-native-gem-artifact={artifact}");
+    ruby.require("digest")?;
+    let digest: RModule = ruby.class_object().const_get("Digest")?;
+    let sha256: RClass = digest.const_get("SHA256")?;
+    let digest: Value = sha256.funcall("file", (artifact.clone(),))?;
+    let hash: String = digest.funcall("hexdigest", ())?;
+    let gem: RModule = ruby.class_object().const_get("Gem")?;
+    let generator_version: String = gem.const_get("VERSION")?;
+    println!(
+        "{}",
+        serde_json::json!({"schema":"humanymous.native-gem-build/1","artifact":artifact,
+        "sha256":hash,"generator":"RubyGems::Package","generatorVersion":generator_version,
+        "status":"archive-built-only","wholeProductQualified":false,"actualFrameworkQualified":false})
+    );
     Ok(())
 }
 
