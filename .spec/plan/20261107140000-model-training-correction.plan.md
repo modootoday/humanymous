@@ -40,6 +40,12 @@ RNG/holdout/lifecycle choices. Next allocation needs scoped fmt first, model uni
 check/strict Clippy on an immutable source; no slot has been retained or requested
 by source authorship itself. The prior parser14-pass receipt remains exact-source.
 
+Owner6 later qualified e7d8f9a3 with17library+1fixture passed, including4new
+standardization tests; fmt/check/strict Clippy passed. No target remains reserved.
+This supersedes NOT_RUN for Standardize only, not Train/RNG/evaluation or whole
+legacy rows230/231. Next lowest kernel candidates remain evaluation primitives
+with explicitly separate gate policy, or RNG after sequence compatibility decision.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.

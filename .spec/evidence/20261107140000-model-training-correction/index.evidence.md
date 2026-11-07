@@ -286,3 +286,25 @@ Only rustfmt and scoped spec checks were run. No Cargo, model initialization,
 training loop, dependency change, production activation or target reservation.
 Existing parser13unit+1fixture qualification at a0ebc9ae remains separate and is
 not transferred to this new source. The broader29-row migration remains open.
+
+### Actual owner6 standardization qualification
+
+Root admitted immutable e7d8f9a3b640d6af88558dce24945654a0e8c502 in existing
+exclusive target/validation-authority, native Windows Rust1.99.1 jobs1/inc0,
+locked/offline. Fmt FIRST, model --lib tests, inference_parity fixture, all-target
+check and strict Clippy all exited0. Actual terminal counts:17library passed
+(4standardization,8parser including the actual file pilot,5existing inference),
+plus1existing inference fixture;0failed/ignored/filtered. These actual4kernel
+results supersede NOT_RUN only for this frozen candidate. No Go execution or
+training-loop equivalence is inferred from analytic regression cases.
+
+Raw run: `C:/workspaces/humanymous/.spec.local/root/evidence/20261107154500-model-training-correction-standardize/`.
+`results.json` has all five terminal command receipts; `lib-tests.stdout.txt` and
+`fixture.stdout.txt` contain exact footers, stderr files retain actual executables.
+`environment.json`, `selected-packages.json`, `config-paths.json`, closure manifests
+and per-step admission files bind the selected scope. `summary.json` and public
+standardize-validation.json retain comparison/count facts. All processes became
+terminal and owner6 target was returned before read-only evidence work.
+No new target lease, GPU/heavy weights, process training, production activation,
+threshold change or product e2e occurred. Full baseline rows230/231 remain open:
+Standardize is only one function of the training/evaluation responsibility.
