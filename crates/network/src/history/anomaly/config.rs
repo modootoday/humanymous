@@ -1,4 +1,5 @@
 use super::Unavailable;
+use std::alloc::Layout;
 
 /// Explicit caller-owned resource limits. No production defaults are inferred.
 #[derive(Debug, Clone, Copy)]
@@ -20,9 +21,7 @@ impl Limits {
         if [max_keys, max_window, max_key_bytes, max_payload_bytes].contains(&0) {
             return Err(Unavailable::InvalidConfiguration);
         }
-        max_window
-            .checked_mul(size_of::<f64>())
-            .ok_or(Unavailable::InvalidConfiguration)?;
+        Layout::array::<f64>(max_window).map_err(|_| Unavailable::InvalidConfiguration)?;
         Ok(Self {
             max_keys,
             max_window,
@@ -52,9 +51,9 @@ impl Config {
         mad_floor: f64,
         limits: Limits,
     ) -> Result<Self, Unavailable> {
-        let sample_bytes = window
-            .checked_mul(size_of::<f64>())
-            .ok_or(Unavailable::InvalidConfiguration)?;
+        let sample_bytes = Layout::array::<f64>(window)
+            .map_err(|_| Unavailable::InvalidConfiguration)?
+            .size();
         if window == 0
             || window > limits.max_window
             || warmup == 0

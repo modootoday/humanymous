@@ -244,3 +244,14 @@ fn tightening_defers_key_trim_and_expansion_overflow_preserves_config() {
     assert_eq!(rate.clock.last, Some(ticks(4)));
     assert_eq!(rate.config.window, ticks(2));
 }
+
+#[test]
+fn constructor_rejects_vec_layout_overflow_without_allocating_hits() {
+    let maximum = (isize::MAX as usize) / size_of::<Duration>();
+    let too_large = maximum + 1;
+    assert!(too_large.checked_mul(size_of::<Duration>()).is_some());
+    assert!(Limits::new(1, too_large, 1, ticks(1), usize::MAX, 1).is_err());
+    let limits = Limits::new(1, maximum, 1, ticks(1), usize::MAX, 1).unwrap();
+    assert!(Config::new(ticks(1), 1, 2, limits).is_ok());
+    // Constructors only: never construct a Limiter or allocate timestamp storage.
+}

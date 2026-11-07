@@ -11,9 +11,9 @@ rel:
 
 # Temporal network producer proposal
 
-Version0.3.0. Root accepted pure temporal producer placement. Original37936ee0
+Version0.3.1. Root accepted pure temporal producer placement. Original37936ee0
 MAD12selected passed separately; the combined MAD/rate/correlation/traffic source
-has56authored temporal fixtures, NOT_RUN. Runtime integration, real atomic
+has58authored temporal fixtures, NOT_RUN. Runtime integration, real atomic
 coordinator, verified epoch backfill and current-source qualification remain open.
 Root requested eight additional retirement rows beyond the20network rows and
 subsequently assigned the two anomaly prerequisite rows to this owner.
@@ -425,3 +425,18 @@ Neither the fanout API nor new history observations are connected to serving.
 No dependencies, scoring/threshold/registry changes, runtime wiring, actual
 coordinator or Docker execution were authored or launched in this continuation.
 Source formatting/diff/spec checks are the only checks run for the new candidate.
+
+## CA-HISTORY-LAYOUT-01 constructor correction
+
+Independent source review identified a resource configuration gap: multiplication
+that fits usize can exceed Vec's isizeMAX allocation-layout limit. For both f64
+samples and Duration hits, count=floor(isizeMAX/element_size)+1 passed the former
+checked multiplication while Vec::with_capacity would reject its layout.
+No huge allocation or OOM experiment was performed. Both Limits and Config now
+validate std::alloc::Layout::array and return InvalidConfiguration before state
+construction. Two allocation-free constructor boundary fixtures cover the largest
+valid count and first invalid count; neither constructs a detector/limiter or
+allocates sample storage. Current temporal fixtures58plus existing14means72
+authored total, NOT_RUN for this corrected candidate. Earlier source6c72a47f and
+original37936ee0 proof remain distinct. This is layout validation, not ordinary
+allocator OOM recovery or a heap/RSS guarantee. No policy/default/dependency change.

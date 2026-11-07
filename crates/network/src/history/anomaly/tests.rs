@@ -216,3 +216,15 @@ fn invalid_configuration_has_no_implicit_defaults() {
     }
     assert!(Config::new(2, 6.0, 3, 0.0, limits).is_ok());
 }
+
+#[test]
+fn constructor_rejects_vec_layout_overflow_without_allocating_samples() {
+    let maximum = (isize::MAX as usize) / size_of::<f64>();
+    let too_large = maximum + 1;
+    assert!(too_large.checked_mul(size_of::<f64>()).is_some());
+    assert!(Limits::new(1, too_large, 1, usize::MAX).is_err());
+    let limits = Limits::new(1, maximum, 1, usize::MAX).unwrap();
+    assert!(Config::new(maximum, 6.0, 1, 0.0, limits).is_ok());
+    assert!(Config::new(too_large, 6.0, 1, 0.0, limits).is_err());
+    // Constructors only: never construct a Detector or allocate a sample vector.
+}

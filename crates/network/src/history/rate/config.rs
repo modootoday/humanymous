@@ -1,5 +1,5 @@
 use super::Unavailable;
-use std::time::Duration;
+use std::{alloc::Layout, time::Duration};
 
 /// Immutable caller-supplied resource bounds, with no production defaults.
 #[derive(Debug, Clone, Copy)]
@@ -32,9 +32,7 @@ impl Limits {
         .contains(&0)
             || max_window.is_zero()
             || gc_scan_budget > 4096
-            || max_hits_per_key
-                .checked_mul(size_of::<Duration>())
-                .is_none()
+            || Layout::array::<Duration>(max_hits_per_key).is_err()
         {
             return Err(Unavailable::InvalidConfiguration);
         }
@@ -70,10 +68,9 @@ impl Config {
         let ttl = window
             .checked_mul(6)
             .ok_or(Unavailable::InvalidConfiguration)?;
-        let sample_bytes = limits
-            .max_hits_per_key
-            .checked_mul(size_of::<Duration>())
-            .ok_or(Unavailable::InvalidConfiguration)?;
+        let sample_bytes = Layout::array::<Duration>(limits.max_hits_per_key)
+            .map_err(|_| Unavailable::InvalidConfiguration)?
+            .size();
         if window.is_zero()
             || window > limits.max_window
             || soft == 0
