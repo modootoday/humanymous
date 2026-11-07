@@ -44,7 +44,7 @@ outside the exact assigned consumer is performed here.
 
 # Exact owned source handoff
 
-| Path | Current SHA256 | State |
+| Path | SHA256 at the initial handoff | State at that checkpoint |
 | --- | --- | --- |
 | crates/defender/src/lib.rs | 78f5f341c4a3cf1990ba4f70692100232285c960552eb13101860c47d789cafb | Root-delegated consumer import; no further writer edits |
 | crates/defender/src/lab/client.rs | 3abae8a330ef86ca8b548172d0970483a767faa1ecfc81694dfbaa03a5d5f198 | Root-side rustfmt observed after initial99c1d6 handoff |
@@ -56,25 +56,25 @@ Root committed the first two delegated paths in atomic Core source checkpoint
 c67d07c0114bd04793410f82f7182de7bfa6df2c, including its final rustfmt.
 They need no second source commit. Core162, strict Clippy and collector WASM
 checks do not qualify the defender consumer or the full workspace.
-Header code/spec paths are a separate source-only checkpoint; they must not be
-misreported as tested by c858/a19 or by the immutable9586 run. Root must rehash
-before staging because other coordinated authors may advance common state.
+Header code/spec paths began as a separate source-only checkpoint. Later local
+113/114/116 receipts bind their own sources; they do not rewrite c858/a19 or the
+immutable9586 run. The table preserves initial hashes rather than claiming they
+identify every current post-platform file. Rehash before future staging.
 
 # Active work and leases
 
-Delivery remains sole monitor of existing full CI run42407744891,
-source9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b, attempt1. Its persistent
-gh-watch tool session is32133. Evidence preparation is private directory
-.spec.local/root/evidence/20261107195555-delivery-full-ci-9586-monitor.
-No local compiler or target lease is owned by Delivery. Do not terminate foreign
-Cargo processes or restart the hosted run on an observation timeout.
+Delivery completed the sole watch of full CI run42407744891 at
+source9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b, attempt1:19 terminal jobs,
+5 success,13 failure and1 Windows job-timeout cancellation. Session32133 closed
+with exit1 and the API independently confirmed terminal failure. The original
+ZIP, all19 original job members, metadata and annotations are indexed privately
+under .spec.local/root/evidence/20261107195555-delivery-full-ci-9586-monitor.
+No hosted watch, local compiler or target lease is currently owned by Delivery.
 
-The e2e-infra board claim remains owned by codex/rust-delivery-followup, expanded
-with the disjoint Root-approved defender/src and defender/tests loan. This is
-an integration handoff, not a provider/session end: the live watch and remaining
-Delivery paths still require that claim. Release only the borrowed source
-scope when Root confirms atomic integration; release the full lane when work is
-actually handed over, not while its watcher is active.
+The e2e-infra board claim remains owned by codex/rust-delivery-followup for the
+remaining Delivery work. The integrated defender loan was released. cef-pilot
+is explicitly excluded for the Root-authorized Native ABI source loan until
+Root confirms its return. This is an integration handoff, not a session end.
 
 # Remaining current-source gates
 
@@ -90,7 +90,7 @@ Actual9586 Ubuntu owner generation/conformance passed; closed compiler-profile
 observation failed. The later native workspace failure is separate:1170 passed,
 zero failed tests, one accounting error,112 executed harnesses and incomplete
 coverage. These old-source outcomes are not rewritten by the current fix.
-The overall run remains monitored through terminal and all required statuses.
+The overall run is now terminal; its failed aggregate remains authoritative.
 
 # Next actions
 
@@ -99,8 +99,11 @@ The overall run remains monitored through terminal and all required statuses.
 2. Header source checkpoint d540269a and its allocated jobs1/incremental0
    local unit/check/strict-Clippy window are complete, without overlays or
    retry. No additional compiler lease is held.
-3. Keep the original hosted watch and capture terminal jobs, annotations,
-   source-specific failures and raw-evidence availability limits.
+3. Terminal9586 collection is complete. A separately allocated current platform
+   graph at057befe36a15242a619e286b6ee6aa1f7ae5358c passed116 local tests and
+   check/strict-Clippy/fmt/policy, with2117 source files and1122 registry archives
+   unchanged. This is not an actual native release archive or hosted product run.
+   Root sequences any next push-triggered validation from the ref impact receipt.
 4. Route any adapter/native owner path changes through Root. Audit f9 source
    reconstruction remains fixed historical Git bytes and declared seams;
    never substitute current consolidated package sources.

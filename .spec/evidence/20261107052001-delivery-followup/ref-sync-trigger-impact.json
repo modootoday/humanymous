@@ -1,0 +1,92 @@
+{
+  "schema": "humanymous.delivery-ref-sync-trigger-assessment/1",
+  "state": "read-only-no-ref-update",
+  "scope": "Current checked-out workflow push filters and observed origin/codex validation tracking refs; Root must recheck live refs before writing",
+  "refs": [
+    {
+      "ref": "codex/apache-validation",
+      "workflow": "apache-validation.yml",
+      "potential_executed_jobs": 1,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/browser-product-validation",
+      "workflow": "browser-product-validation.yml",
+      "potential_executed_jobs": 2,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/cef-validation",
+      "workflow": null,
+      "potential_executed_jobs": 0,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/go-validation",
+      "workflow": "go-validation.yml",
+      "potential_executed_jobs": 2,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/local-parity-benchmark",
+      "workflow": "local-parity.yml",
+      "potential_executed_jobs": 1,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/mount-probe-validation",
+      "workflow": "mount-probe-validation.yml",
+      "potential_executed_jobs": 2,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/native-artifact-validation",
+      "workflow": "component-validation.yml",
+      "potential_executed_jobs": 2,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/native-component-validation",
+      "workflow": "component-validation.yml",
+      "potential_executed_jobs": 2,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/pages-validation",
+      "workflow": "pages-validation.yml",
+      "potential_executed_jobs": 2,
+      "counts_require_successful_preflight": true
+    },
+    {
+      "ref": "codex/wargame-validation",
+      "workflow": "wargame-validation.yml",
+      "potential_executed_jobs": 2,
+      "counts_require_successful_preflight": true
+    }
+  ],
+  "matching_validation_push_events": 9,
+  "additional_rust_push_event": {
+    "ref": "codex/rust",
+    "workflow": "ci.yml",
+    "workflow_local_width": 2,
+    "cancel_in_progress": true,
+    "cancellation_scope": "Same rust-ci ref group only; old9586 already terminal"
+  },
+  "validation_cancel_in_progress": false,
+  "native_profiles_use_distinct_ref_groups": true,
+  "local_parity": {
+    "concurrency_group": "local-parity-benchmark",
+    "workload_source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+    "passes": 2,
+    "not_current_workload_qualification": true
+  },
+  "open_validation_head_prs": 0,
+  "open_pr_scope": "Only the six observed Dependabot heads were open at query",
+  "bulk_sync_potential_initial_independent_jobs": 10,
+  "global_two_lane_bound": false,
+  "main_or_tag_update_authorized": false,
+  "no_production_pages_or_release_push_trigger_without_main_or_tag": true,
+  "decision": "Root must count push-triggered runs as hosted allocations; no CI-disable, optionalization, skip marker or ref-write workaround proposed",
+  "push_executed": false,
+  "workflow_changed": false
+}

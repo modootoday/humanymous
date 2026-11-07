@@ -1,0 +1,437 @@
+{
+  "jobs": [
+    {
+      "original_log_bytes": 69673,
+      "cancelled_steps": [],
+      "name": "validate / policy",
+      "id": 128509001665,
+      "archive_member": "18_validate _ policy.txt",
+      "failed_steps": [],
+      "original_log_sha256": "5b4a5947186f7456992a23013496013d1e4723074700bdbb83416a3ca10c1043",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 0,
+        "warning": 0
+      },
+      "conclusion": "success"
+    },
+    {
+      "original_log_bytes": 68574,
+      "cancelled_steps": [],
+      "name": "validate / docker",
+      "id": 128509489187,
+      "archive_member": "17_validate _ docker.txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot docker"
+      ],
+      "original_log_sha256": "94e4d020cec28d6524deb988f165354a56746bf66602c034944b72ee20d6cff4",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 243406,
+      "cancelled_steps": [],
+      "name": "validate / native (ubuntu-24.04)",
+      "id": 128509489237,
+      "archive_member": "16_validate _ native (ubuntu-24.04).txt",
+      "failed_steps": [
+        "Verify generated C11 and C++11 header layouts",
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "original_log_sha256": "f04362a14f40b0a74e6eab3cf7e9611818199aa0909139ff7f4822a57ce36134",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 2,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 230092,
+      "cancelled_steps": [],
+      "name": "validate / native (macos-15)",
+      "id": 128509489271,
+      "archive_member": "15_validate _ native (macos-15).txt",
+      "failed_steps": [
+        "Execute maintenance process and storage component tests",
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "original_log_sha256": "75eff141f07868f34914558abdbd047872ee9d6426908127429f6af44e561420",
+      "status": "completed",
+      "annotations": {
+        "notice": 1,
+        "failure": 2,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 174645,
+      "cancelled_steps": [
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "name": "validate / native (windows-2025)",
+      "id": 128509489275,
+      "archive_member": "14_validate _ native (windows-2025).txt",
+      "failed_steps": [
+        "Execute independent runtime library and process harnesses"
+      ],
+      "original_log_sha256": "77ec7da5ac7173e3562d5fac4d0b652d639af0782ff2410681c6d78a662efcc1",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 3,
+        "warning": 0
+      },
+      "conclusion": "cancelled"
+    },
+    {
+      "original_log_bytes": 60200,
+      "cancelled_steps": [],
+      "name": "validate / browser",
+      "id": 128512402634,
+      "archive_member": "13_validate _ browser.txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser"
+      ],
+      "original_log_sha256": "95b0e7d8ec98d1a8688cbb5e2503e19d0545df67a808c561944dec8e45eb2c73",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 51178,
+      "cancelled_steps": [],
+      "name": "validate / browser-product",
+      "id": 128516030159,
+      "archive_member": "12_validate _ browser-product.txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser-product"
+      ],
+      "original_log_sha256": "fa488e686ed942e785fa4ef80df1aca6c598dd5e2848b5b9ad31b44a9ffd29e3",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 47743,
+      "cancelled_steps": [],
+      "name": "validate / nginx",
+      "id": 128520713483,
+      "archive_member": "11_validate _ nginx.txt",
+      "failed_steps": [],
+      "original_log_sha256": "045b80d295de21a3f05d02d21ef979e1124b305d1543effcff851b9a10afc5b8",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 0,
+        "warning": 0
+      },
+      "conclusion": "success"
+    },
+    {
+      "original_log_bytes": 190574,
+      "cancelled_steps": [],
+      "name": "validate / rust-images",
+      "id": 128522238654,
+      "archive_member": "10_validate _ rust-images.txt",
+      "failed_steps": [],
+      "original_log_sha256": "dbd1a86759608a7f365e7a9cd55a01e1b01687df774a78e939a7f3ff40434baa",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 0,
+        "warning": 0
+      },
+      "conclusion": "success"
+    },
+    {
+      "original_log_bytes": 63168,
+      "cancelled_steps": [],
+      "name": "validate / images (gate)",
+      "id": 128524097799,
+      "archive_member": "9_validate _ images (gate).txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "original_log_sha256": "d5b1128ad2f90cca4e9cc013c2f170e3f7603e7bbe444ed62ce67e0001988bb3",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 63137,
+      "cancelled_steps": [],
+      "name": "validate / images (core)",
+      "id": 128524097837,
+      "archive_member": "8_validate _ images (core).txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "original_log_sha256": "1d847e64572e1b3fa47519a9e6f04365c88a3918bce73cc365fd8bbd239c4088",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 48656,
+      "cancelled_steps": [],
+      "name": "validate / packages",
+      "id": 128524800034,
+      "archive_member": "7_validate _ packages.txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- package"
+      ],
+      "original_log_sha256": "310166413809812e909cf39ca7088517d9cd27c33e972713c43e4968c7d9fcdb",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 85539,
+      "cancelled_steps": [],
+      "name": "validate / node",
+      "id": 128525143067,
+      "archive_member": "6_validate _ node.txt",
+      "failed_steps": [
+        "Execute actual Node and Bun host component groups",
+        "Verify native package qualification and archive"
+      ],
+      "original_log_sha256": "e01435601c1ba8acccdbb9d3e62854f875d8e488677fea6951afed014ab8016c",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 2,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 300021,
+      "cancelled_steps": [],
+      "name": "validate / msrv",
+      "id": 128526648735,
+      "archive_member": "5_validate _ msrv.txt",
+      "failed_steps": [],
+      "original_log_sha256": "7b6913a9d64a37a4e8298a4e9e9a1d2be77080ef54cae5c78f2357f09617887f",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 0,
+        "warning": 0
+      },
+      "conclusion": "success"
+    },
+    {
+      "original_log_bytes": 166486,
+      "cancelled_steps": [],
+      "name": "validate / advisories",
+      "id": 128526939998,
+      "archive_member": "4_validate _ advisories.txt",
+      "failed_steps": [
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "original_log_sha256": "0954425d5c90466ad8abd71c95199a8ed404207dadf2ffae6f6c20953cc06676",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 136164,
+      "cancelled_steps": [],
+      "name": "validate / quality",
+      "id": 128529100537,
+      "archive_member": "3_validate _ quality.txt",
+      "failed_steps": [
+        "Run cargo fmt --all -- --check"
+      ],
+      "original_log_sha256": "f7180b9ddc6d6814f4bf54b24da4f6335bf6fa87f43f3d7249d7c82eb1f4123b",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 38474,
+      "cancelled_steps": [],
+      "name": "validate / documentation",
+      "id": 128529174583,
+      "archive_member": "2_validate _ documentation.txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/docs-review/Cargo.toml -- ."
+      ],
+      "original_log_sha256": "bd08d65c8b49c3260d824b3fa989ae6f06391d4ead7899474774a6c27c75f7c6",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    },
+    {
+      "original_log_bytes": 87136,
+      "cancelled_steps": [],
+      "name": "validate / pages / build",
+      "id": 128529289452,
+      "archive_member": "1_validate _ pages _ build.txt",
+      "failed_steps": [],
+      "original_log_sha256": "fd3baad284ae79b888601966be91442058abda4f071b87b9bd8b840c796aff47",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 0,
+        "warning": 0
+      },
+      "conclusion": "success"
+    },
+    {
+      "original_log_bytes": 47610,
+      "cancelled_steps": [],
+      "name": "validate / ready",
+      "id": 128529956480,
+      "archive_member": "0_validate _ ready.txt",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- jobs"
+      ],
+      "original_log_sha256": "05bb52f62bfc0d265f80db9be0e33da90d18bbba45e2a54571302807f2daec35",
+      "status": "completed",
+      "annotations": {
+        "notice": 0,
+        "failure": 1,
+        "warning": 0
+      },
+      "conclusion": "failure"
+    }
+  ],
+  "attempt": 1,
+  "run_id": 42407744891,
+  "conclusion": "failure",
+  "release_ready": false,
+  "full_product_qualified": false,
+  "schema": "humanymous.delivery-terminal-run-projection/1",
+  "raw_private_child_reports_recovered": false,
+  "overlap": {
+    "global_bound_verified": false,
+    "active_at_end": 0,
+    "maximum_active": 2,
+    "billing_verified": false,
+    "workflow_local_only": true
+  },
+  "original_archive": {
+    "joined_original_job_logs": 19,
+    "entries": 175,
+    "bytes": 908945,
+    "sha256": "99cdb2bad4cd831bfd372c0c97604127a384b1808e80d6e4c1d54f6ede0d9496",
+    "uncompressed_bytes": 3986695
+  },
+  "annotations": {
+    "notice": 1,
+    "failure": 19,
+    "warning": 0
+  },
+  "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "status": "completed",
+  "counts": {
+    "success": 5,
+    "failure": 13,
+    "jobs": 19,
+    "unknown": 0,
+    "cancelled": 1
+  },
+  "private_evidence_index_sha256": "a903f34656fae2e4e8899e6c6cab2b1ef1bef26e6852d74e48cec1010ad3bbf2",
+  "watch_exit_code": 1,
+  "watch_completed": true,
+  "artifacts_available_at_terminal": 0,
+  "scope_limits": [
+    "Original GitHub log archive and exact job member bytes recovered; not HTTP wire data",
+    "Redirected private child reports and original scan JSON remain unrecovered",
+    "All results belong only to source9586 attempt1; later source fixes do not rewrite these outcomes",
+    "The complete observed workflow overlap is two; no account-wide concurrency or invoice claim"
+  ],
+  "final_diagnostics": {
+    "msrv": {
+      "job_success": true,
+      "observed_test_summary_lines": 114,
+      "summed_passed_fields": 1288,
+      "summed_failed_fields": 0,
+      "summed_ignored_fields": 26,
+      "distinct_test_or_harness_identity_verified": false,
+      "scope": "Log-line aggregation only; do not present the sum as a unique executed test count"
+    },
+    "advisories": {
+      "rust_lockfiles_checked": 5,
+      "rust_lockfile_vulnerability_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "root_warning_ids": [
+        "RUSTSEC-2026-0192"
+      ],
+      "filesystem_finding_target": "go.mod",
+      "filesystem_finding_count": 13,
+      "filesystem_scanner_exit": 1,
+      "raw_scan_json_recovered": false
+    },
+    "quality": {
+      "first_failed_command": "cargo fmt --all -- --check",
+      "old_source_files": [
+        "crates/model/src/training/rng/initialize.rs",
+        "crates/model/src/training/rng/normal.rs",
+        "crates/model/src/training/rng/source.rs",
+        "crates/model/src/training/rng/tables.rs",
+        "crates/model/src/training/rng/tests.rs"
+      ],
+      "later_clippy_success_inferred": false
+    },
+    "documentation": {
+      "first_failure": "review inventory differs from governed source",
+      "inventory_blindly_refreshed": false
+    },
+    "pages": {
+      "build_success": true,
+      "deployment_executed": false
+    },
+    "aggregate": {
+      "release_authorized": false,
+      "failure": "failed/skipped/cancelled validation never authorizes release"
+    }
+  }
+}

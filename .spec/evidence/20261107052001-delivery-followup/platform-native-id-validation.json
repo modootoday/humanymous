@@ -1,0 +1,53 @@
+{
+  "schema": "humanymous.delivery-platform-native-id-validation/1",
+  "source_sha": "057befe36a15242a619e286b6ee6aa1f7ae5358c",
+  "native_archive_source_sha256": "10c12f3bbd47c372e32f23db245802ebb920500765eec1180dd0991dcffc8cf5",
+  "graph": "Root frozen 34-member platform graph",
+  "inventory": 116,
+  "tests": {
+    "passed": 116,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "phase_exit_codes": {
+    "inventory": 0,
+    "tests": 0,
+    "all_targets_check": 0,
+    "strict_clippy_all_targets": 0,
+    "fmt": 0,
+    "policy": 0
+  },
+  "budget": {
+    "jobs": 1,
+    "incremental": false,
+    "offline": true,
+    "locked": true,
+    "stop_first_failure": true,
+    "elapsed_seconds": 19.7103854,
+    "work_seconds": 390,
+    "cleanup_seconds": 450,
+    "retries": 0
+  },
+  "closure": {
+    "source_files_before": 2117,
+    "source_files_after": 2117,
+    "source_differences": 0,
+    "registry_archives_before": 1122,
+    "registry_archives_after": 1122,
+    "registry_archive_differences": 0,
+    "effective_tools_differences": 0,
+    "config_differences": 0,
+    "selected_environment_differences": 0,
+    "extracted_registry_sources_measured": false,
+    "full_transitive_read_closure_proven": false
+  },
+  "binary_sha256": "6a127ef357cb8381a76fd88d4e18a2df2af59d084498a2806ef1654ac7682616",
+  "private_evidence_index_sha256": "afb45c2de39151d889fa36e0a857bc5f49462c25451cb7195243288177314f39",
+  "scope": "Current local Delivery pure unit/compile/lint/format/policy only",
+  "metadata_fixture_tests_distinct_from_actual_repo_probe": true,
+  "actual_native_release_archive_executed": false,
+  "hosted_requalification": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}
