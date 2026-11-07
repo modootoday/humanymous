@@ -12,6 +12,20 @@ rel:
 
 ## Bottom-up next admission
 
+The subsequent explicit Root allocation completed the10-command Runtime manifest
+A/B comparison on2026-11-08 KST, controller session95887 terminal exit0. All10
+checks succeeded within107.729seconds; both3128-file source sets retained zero
+postflight differences, normal Runtime feature native-security only, identical
+lock/compiler/profile/config environment and jobs1/incremental0. Opposite-order
+cold-artifact wall reductions were45.39% and46.46%, with117 versus62 rebuilt
+artifact events. Six unchanged replays rebuilt zero artifacts. The SoT and public
+evidence baseline retain every row, raw-summary hash and scope limitations,
+including un-attested registry/linker bytes and no cold OS-cache claim. No live
+Cargo/rustc remained; all four exact targets and A/B roots are returned intact.
+This closes only this allocated check experiment, not the persistent performance
+goal, native/product validation, B3/B4, runtime or GPU work. Further execution
+requires its own finite allocation.
+
 Root implemented Runtime optionalization in5d68cd39. Review confirms the retained
 before manifest and unchanged main lock hashes, current implementation identity
 and bounded receipts17normal profiles/6negative/177selected pure of366. Isolated

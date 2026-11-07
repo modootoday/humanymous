@@ -7,10 +7,26 @@ updated: 2026-11-07T15:10:19Z
 rel:
   depends_on: [sot:root/performance-optimization, plan:root/20261107135643]
 files:
-  - {path: baseline.json, sha256: 12d83bf00456c2d89ff35abfdf028801933eab89490423eb4377481ea082f399, bytes: 13965, store: repo}
+  - {path: baseline.json, sha256: fb738888452e24e7919842801a0e3dd956ff581904071220a3541b5724112b89, bytes: 21658, store: repo}
 ---
 
 # Build and canonical-function performance evidence
+
+## Runtime optionalization CLI check (measured)
+
+Root's finite allocation ran10 serial native Windows checks against sibling
+archives of5d68cd39, differing only in the Runtime manifest. Both3128-file input
+sets have zero postflight differences and the same locked dependency file.
+The two opposite-order cold-artifact pairs reduced observed process wall time
+by45.39% and46.46%; this is not cold OS/registry-cache or general build evidence.
+Six unchanged replays rebuilt zero artifacts. Public baseline.json contains each
+denominator, timing and limits. Raw contemporaneous command/PID/terminal records,
+Cargo JSON, copied HTML timings, admission and source manifests remain in private
+runtime-ab-20261108; summary.json SHA256
+6c034870a88263d0db4c6bf824fbf6f8220175d7ac71e29efe600216a42409c1.
+No registered private store attachment is asserted. All10 checks exited0; the
+107.729second batch ended without Cargo/rustc processes. Targets are returned
+without deletion. No runtime, native-call, linked-build or product claim follows.
 
 ## Project-wide GPU research status
 

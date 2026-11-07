@@ -1031,6 +1031,70 @@ workspace/native/product qualification for materialized benchmark roots. Preserv
 no-new-dependency/version/pin, Platform testing dev-only and all12 context closures.
 No benchmark execution or target allocation follows from this design.
 
+## Runtime optionalization allocated CLI check result
+
+Root accepted the preceding design and supplied two materialized archives of
+5d68cd39f1d44b30d0df2804675d83cd28025d7e plus four exclusive empty targets.
+The actual10-command sequence completed on2026-11-08 KST: cold A1/B1/B2/A2,
+then unchanged A2/B2/B2/A2/A2/B2. All commands exited0 with build-finished success.
+No extra compilation, resolution, linking trial or workload correction occurred.
+
+Each arm's3128 repository files were hashed before and after execution. The only
+cross-arm difference is the approved Runtime manifest9c3353fdf4ead93eb7213a34c4cbf0b679b2b2de714066243b39c38f793fc556
+versus c2c174b6e4a71b72637ca62958b4378ab68b22ef179886a682406c8bafb9bbd7;
+both postflight comparisons have zero differences. Lock SHA256 remains
+5d3e1453ab8c3cdba1d22443effc045740e629153784d0c3b4ac62b7231cbf00.
+Locked offline normal-feature trees confirm native-security only for Runtime.
+Both roots report identical Rust/Cargo1.99.1 identities; executable hashes and
+effective relevant environment are retained. No inherited Cargo config was found
+from these sibling roots through drive root or the default Cargo home.
+The command uses jobs1, incremental0 and existing dev unoptimized/debuginfo2,
+with normal CLI binary only, exactly as declared above.
+
+| Actual sequence | Process wall seconds | Cargo footer seconds | Artifact events fresh / rebuilt | Build-script events |
+|---|---:|---:|---:|---:|
+| Cold A1 |32.4586032|32.37|0 /117|12|
+| Cold B1 |17.7272136|17.65|0 /62|9|
+| Cold B2 |17.7003842|17.62|0 /62|9|
+| Cold A2 |33.0573195|32.99|0 /117|12|
+| Replay A2 |0.3113172|0.23|117 /0|12|
+| Replay B2 |0.2610730|0.17|62 /0|9|
+| Replay B2 |0.2823841|0.19|62 /0|9|
+| Replay A2 |0.2954551|0.22|117 /0|12|
+| Replay A2 |0.3030198|0.22|117 /0|12|
+| Replay B2 |0.2625772|0.17|62 /0|9|
+
+Observed opposite-order cold-artifact wall reductions are45.39% and46.46%, with
+55 fewer compiler-artifact events in B. Events are compilation units, not unique
+packages. Six unchanged replays rebuild nothing: their subsecond differences
+measure startup/freshness work, not edit/rebuild scaling. Replayed
+build-script-executed messages do not establish that a build script ran again.
+Two cold pairs do not establish a general speedup distribution, and empty
+artifact targets do not establish cold OS, source, registry or filesystem caches.
+The older31.03second all-target receipt is excluded from this comparison.
+
+The controller recorded admission before every command, actual executable/argv,
+working directory, target, start/PID and terminal exit contemporaneously. Total
+batch time was107.7287421seconds within the600+60allocation, with no deadline
+or admission refusal. Pre-source hashing took28.7947548seconds and post-source
+hashing2.9703531seconds separately; these phases are outside command timings.
+Per-command wall includes process launch/wait and coarse observer overhead; Cargo
+footer timing is separate. Light log/spec inspection during the run is not a
+controlled machine-idle proof. Process samples cover visible cargo/rustc/link
+names and do not prove complete owned-child CPU accounting or peak RSS. Full
+registry/git source bytes and MSVC linker/SDK bytes were not attested; unchanged
+locked versions/checksums and Rust/Cargo binaries are narrower input evidence.
+
+Raw records and copied per-command Cargo HTML timings remain under the owned
+private evidence directory runtime-ab-20261108. Public
+[[evidence:root/20261107135643]] baseline.json binds the summary and limitations;
+raw summary SHA256 is6c034870a88263d0db4c6bf824fbf6f8220175d7ac71e29efe600216a42409c1.
+Terminal controller session95887 and batch receipt report no remaining Cargo or
+rustc processes. The four exact runtime-ab-{a1,b1,b2,a2}-v0 targets and materialized
+roots are returned without deletion or source amendment. This component check
+does not qualify native execution, runtime throughput, linked builds, workspace
+regression, GPU, or Docker product e2e. No renewed execution lease is implied.
+
 ## Runtime measurement profiles awaiting owner allocation
 
 These are proposed contracts, not executable tests or new deployment claims.

@@ -36,7 +36,10 @@
     "rustc_sha256": "ba03e3ba03a73d9fef19ab3659140f94b43615ec1d587fe9befc9aed3bd5aa72",
     "host": "x86_64-pc-windows-msvc",
     "llvm": "23.1.1",
-    "version_query_exit_codes": [0, 0],
+    "version_query_exit_codes": [
+      0,
+      0
+    ],
     "external_linker_sdk_identity": "not_observed",
     "compilation_performed": true
   },
@@ -61,7 +64,13 @@
     "existing_target": "target/authority-followup-release",
     "binary_bytes": 623104,
     "binary_sha256": "cce5b7da9dbbebe5d85a97184036688955e86ae0b68dc8bb46f6ff112a795365",
-    "profile": {"opt_level": "3", "debuginfo": 0, "debug_assertions": false, "overflow_checks": false, "test": false},
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": false,
+      "test": false
+    },
     "profile_settings_changed": false,
     "jobs": 1,
     "incremental": 0,
@@ -107,11 +116,36 @@
     "canonical_outputs_sha256": "015ce43ed61c74c043392a87741f8c2b3807d0f7cec65b112f1909a5d1fea1a8",
     "raw_json_sha256": "b1eb3af9bd5f9a5a361ac420c3ba3545e56c4c036e0ba6d62a53f424c4376110",
     "pair_observations": [
-      {"pair": 0, "baseline_ns": 20321700, "candidate_ns": 17134800, "relative_reduction_percent": 15.68225099278111},
-      {"pair": 1, "baseline_ns": 19302100, "candidate_ns": 16648400, "relative_reduction_percent": 13.748245009610349},
-      {"pair": 2, "baseline_ns": 19502800, "candidate_ns": 15928000, "relative_reduction_percent": 18.329675738868268},
-      {"pair": 3, "baseline_ns": 18910000, "candidate_ns": 15978500, "relative_reduction_percent": 15.502379693283974},
-      {"pair": 4, "baseline_ns": 19035700, "candidate_ns": 15477300, "relative_reduction_percent": 18.693297330804747}
+      {
+        "pair": 0,
+        "baseline_ns": 20321700,
+        "candidate_ns": 17134800,
+        "relative_reduction_percent": 15.68225099278111
+      },
+      {
+        "pair": 1,
+        "baseline_ns": 19302100,
+        "candidate_ns": 16648400,
+        "relative_reduction_percent": 13.748245009610349
+      },
+      {
+        "pair": 2,
+        "baseline_ns": 19502800,
+        "candidate_ns": 15928000,
+        "relative_reduction_percent": 18.329675738868268
+      },
+      {
+        "pair": 3,
+        "baseline_ns": 18910000,
+        "candidate_ns": 15978500,
+        "relative_reduction_percent": 15.502379693283974
+      },
+      {
+        "pair": 4,
+        "baseline_ns": 19035700,
+        "candidate_ns": 15477300,
+        "relative_reduction_percent": 18.693297330804747
+      }
     ],
     "paired_reduction_percent_median": 15.68225099278111,
     "paired_reduction_percent_minimum": 13.748245009610349,
@@ -160,18 +194,40 @@
     "strict_clippy_exit_code": 0,
     "fmt_exit_code": 0,
     "test_harnesses": [
-      {"kind": "library", "passed": 24},
-      {"kind": "request_parity", "passed": 1, "fixture_vectors": 81},
-      {"kind": "resource_parity", "passed": 1},
-      {"kind": "verification_parity", "passed": 1, "fixture_vectors": 27},
-      {"kind": "example_test_harness", "passed": 0, "benchmark_main_executed": false}
+      {
+        "kind": "library",
+        "passed": 24
+      },
+      {
+        "kind": "request_parity",
+        "passed": 1,
+        "fixture_vectors": 81
+      },
+      {
+        "kind": "resource_parity",
+        "passed": 1
+      },
+      {
+        "kind": "verification_parity",
+        "passed": 1,
+        "fixture_vectors": 27
+      },
+      {
+        "kind": "example_test_harness",
+        "passed": 0,
+        "benchmark_main_executed": false
+      }
     ],
     "total_passed_tests": 27,
     "failed": 0,
     "ignored": 0,
     "measured": 0,
     "filtered": 0,
-    "cargo_rounded_footer_seconds": {"tests": 6.06, "check": 3.12, "clippy": 1.56},
+    "cargo_rounded_footer_seconds": {
+      "tests": 6.06,
+      "check": 3.12,
+      "clippy": 1.56
+    },
     "source_files_before": 2563,
     "source_files_after": 2563,
     "source_difference_records": 0,
@@ -243,10 +299,50 @@
     "tests_executed": false,
     "freshness_scope": "compiler-artifact JSON events, not proof of global compiler-cache hits",
     "records": [
-      {"run": 0, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 5.55, "tool_outer_seconds": 5.8342537, "artifact_events": 23, "fresh": 15, "rebuilt": 8, "unknown": 0},
-      {"run": 1, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 0.18, "tool_outer_seconds": 1.4016945, "artifact_events": 23, "fresh": 23, "rebuilt": 0, "unknown": 0},
-      {"run": 2, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 0.16, "tool_outer_seconds": 1.6569098, "artifact_events": 23, "fresh": 23, "rebuilt": 0, "unknown": 0},
-      {"run": 3, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 0.18, "tool_outer_seconds": 1.6974302, "artifact_events": 23, "fresh": 23, "rebuilt": 0, "unknown": 0}
+      {
+        "run": 0,
+        "exit_code": 0,
+        "build_finished_success": true,
+        "cargo_footer_seconds": 5.55,
+        "tool_outer_seconds": 5.8342537,
+        "artifact_events": 23,
+        "fresh": 15,
+        "rebuilt": 8,
+        "unknown": 0
+      },
+      {
+        "run": 1,
+        "exit_code": 0,
+        "build_finished_success": true,
+        "cargo_footer_seconds": 0.18,
+        "tool_outer_seconds": 1.4016945,
+        "artifact_events": 23,
+        "fresh": 23,
+        "rebuilt": 0,
+        "unknown": 0
+      },
+      {
+        "run": 2,
+        "exit_code": 0,
+        "build_finished_success": true,
+        "cargo_footer_seconds": 0.16,
+        "tool_outer_seconds": 1.6569098,
+        "artifact_events": 23,
+        "fresh": 23,
+        "rebuilt": 0,
+        "unknown": 0
+      },
+      {
+        "run": 3,
+        "exit_code": 0,
+        "build_finished_success": true,
+        "cargo_footer_seconds": 0.18,
+        "tool_outer_seconds": 1.6974302,
+        "artifact_events": 23,
+        "fresh": 23,
+        "rebuilt": 0,
+        "unknown": 0
+      }
     ],
     "closure": {
       "source_files_before": 2539,
@@ -263,9 +359,25 @@
       "complete_artifact_reuse_key_proven": false
     },
     "admission": {
-      "commit_percent_before_each": [82.67762007152865, 82.12717397486595, 82.09249846534954, 82.79800714108157],
-      "free_physical_gib_before_each": [30.626296997070312, 30.81564712524414, 30.836509704589844, 30.389968872070312],
-      "windows_compiler_process_count_before_each_and_after": [0, 0, 0, 0, 0],
+      "commit_percent_before_each": [
+        82.67762007152865,
+        82.12717397486595,
+        82.09249846534954,
+        82.79800714108157
+      ],
+      "free_physical_gib_before_each": [
+        30.626296997070312,
+        30.81564712524414,
+        30.836509704589844,
+        30.389968872070312
+      ],
+      "windows_compiler_process_count_before_each_and_after": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
       "wsl_compiler_processes": "not_observed",
       "host_cpu_background_load": "not_fully_measured"
     },
@@ -279,5 +391,188 @@
     "independent-process reproducibility and representative runtime profiles remain outside the one fixed-corpus run",
     "separate actual product runtime and security qualification",
     "remaining build and runtime research experiments"
-  ]
+  ],
+  "runtime_optionalization_cli_check": {
+    "source": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+    "status": "10 terminal exit0 checks; finite allocation returned",
+    "venue": "Windows x86_64-pc-windows-msvc Rust/Cargo 1.99.1, jobs1, incremental0, existing dev profile",
+    "command": "cargo check --locked --offline -p humanymous-cli --bin humanymous --no-default-features --jobs 1 --message-format=json --timings",
+    "source_files_per_arm": 3128,
+    "source_postflight_differences_per_arm": 0,
+    "expected_arm_difference": "Runtime Cargo.toml only",
+    "manifest_A_sha256": "9c3353fdf4ead93eb7213a34c4cbf0b679b2b2de714066243b39c38f793fc556",
+    "manifest_B_sha256": "c2c174b6e4a71b72637ca62958b4378ab68b22ef179886a682406c8bafb9bbd7",
+    "lock_sha256": "5d3e1453ab8c3cdba1d22443effc045740e629153784d0c3b4ac62b7231cbf00",
+    "normal_runtime_features": [
+      "native-security"
+    ],
+    "cold_artifact_paired_wall_reduction_percent": [
+      45.38516186056953,
+      46.45547652464683
+    ],
+    "batch_seconds": 107.7287421,
+    "preparation_source_hash_seconds": 28.7947548,
+    "postflight_source_hash_seconds": 2.9703531,
+    "results": [
+      {
+        "id": "01-A-cold",
+        "wall_seconds": 32.4586032,
+        "exit": 0,
+        "artifact_events": 117,
+        "fresh": 0,
+        "rebuilt": 117,
+        "build_script_events": 12,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 32.37s",
+        "timing_sha256": "5e7f51b2875112ca0f88234f27253dbd628c8529ebe09f2f362a5c3697e4d549"
+      },
+      {
+        "id": "02-B-cold",
+        "wall_seconds": 17.7272136,
+        "exit": 0,
+        "artifact_events": 62,
+        "fresh": 0,
+        "rebuilt": 62,
+        "build_script_events": 9,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.65s",
+        "timing_sha256": "831bc712e33eb09a4de7951dc4e45bdd880e89edfcdb367e83d3343f7a2fcd98"
+      },
+      {
+        "id": "03-B-cold",
+        "wall_seconds": 17.7003842,
+        "exit": 0,
+        "artifact_events": 62,
+        "fresh": 0,
+        "rebuilt": 62,
+        "build_script_events": 9,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.62s",
+        "timing_sha256": "04c71418a86724a508b3cbf61331858475fe19de6dbd8defaee9cd89b5f84d77"
+      },
+      {
+        "id": "04-A-cold",
+        "wall_seconds": 33.0573195,
+        "exit": 0,
+        "artifact_events": 117,
+        "fresh": 0,
+        "rebuilt": 117,
+        "build_script_events": 12,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 32.99s",
+        "timing_sha256": "ad525b2902e1822ecce5d2653729d8d52a7e1c20c995df918b823fc49032af9a"
+      },
+      {
+        "id": "05-A-warm",
+        "wall_seconds": 0.3113172,
+        "exit": 0,
+        "artifact_events": 117,
+        "fresh": 117,
+        "rebuilt": 0,
+        "build_script_events": 12,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s",
+        "timing_sha256": "b9ff2098a233ebc89fbc869b084951582c7cf80cb8c5972f8a10376dc1ca4def"
+      },
+      {
+        "id": "06-B-warm",
+        "wall_seconds": 0.261073,
+        "exit": 0,
+        "artifact_events": 62,
+        "fresh": 62,
+        "rebuilt": 0,
+        "build_script_events": 9,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s",
+        "timing_sha256": "7e2b0e29376ccb83d7e35c68ef380ba1514ad78630acf696f44477868d107861"
+      },
+      {
+        "id": "07-B-warm",
+        "wall_seconds": 0.2823841,
+        "exit": 0,
+        "artifact_events": 62,
+        "fresh": 62,
+        "rebuilt": 0,
+        "build_script_events": 9,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s",
+        "timing_sha256": "403d7be4fa0396e16ff26131f9fd81aea804897abe319127cfdfb49e126b27b1"
+      },
+      {
+        "id": "08-A-warm",
+        "wall_seconds": 0.2954551,
+        "exit": 0,
+        "artifact_events": 117,
+        "fresh": 117,
+        "rebuilt": 0,
+        "build_script_events": 12,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s",
+        "timing_sha256": "c495e9f986518beb050749a2046c68b65217b17e392397aa40860da6d2bca6d4"
+      },
+      {
+        "id": "09-A-warm",
+        "wall_seconds": 0.3030198,
+        "exit": 0,
+        "artifact_events": 117,
+        "fresh": 117,
+        "rebuilt": 0,
+        "build_script_events": 12,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s",
+        "timing_sha256": "5c57312fd6da59e898fe999aeb8ff0949381f1550a8d12a518ff5f0c79ebe5b7"
+      },
+      {
+        "id": "10-B-warm",
+        "wall_seconds": 0.2625772,
+        "exit": 0,
+        "artifact_events": 62,
+        "fresh": 62,
+        "rebuilt": 0,
+        "build_script_events": 9,
+        "success": true,
+        "runtime_features": [
+          "native-security"
+        ],
+        "cargo_footer": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s",
+        "timing_sha256": "c49df2de1e314e9582c8e01ca70d8ea947a1870747f1355944961594bd364e82"
+      }
+    ],
+    "private_directory": "runtime-ab-20261108",
+    "raw_summary_sha256": "6c034870a88263d0db4c6bf824fbf6f8220175d7ac71e29efe600216a42409c1",
+    "limits": [
+      "Two cold-artifact pairs, not cold OS/registry cache or statistical generalization",
+      "All six unchanged replays rebuild zero artifacts; build-script-executed events do not prove rerun",
+      "No full registry/git source or MSVC linker/SDK byte attestation; locked external versions/checksums and rustc/cargo binaries bound",
+      "Whole-system cargo/rustc/link samples are not complete owned-child CPU or peak RSS accounting",
+      "No actual native execution, runtime throughput, linked build, product e2e or full workspace qualification"
+    ]
+  }
 }
