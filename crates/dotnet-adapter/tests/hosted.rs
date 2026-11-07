@@ -50,10 +50,16 @@ impl Evidence for Synthetic {
         }
         let text = match request.request_target().1.split('?').next().unwrap_or("") {
             "/deny" => {
-                include_str!("../../scoring/tests/fixtures/frozen/bot-webdriver-cdp-hr9.json")
+                include_str!(
+                    "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json"
+                )
             }
-            "/challenge" => include_str!("../../scoring/tests/fixtures/frozen/go-http-client.json"),
-            _ => include_str!("../../scoring/tests/fixtures/frozen/human-chrome-allow.json"),
+            "/challenge" => include_str!(
+                "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json"
+            ),
+            _ => include_str!(
+                "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json"
+            ),
         };
         let golden: Value = serde_json::from_str(text).unwrap();
         Ok(serde_json::from_value(golden["report"].clone()).unwrap())

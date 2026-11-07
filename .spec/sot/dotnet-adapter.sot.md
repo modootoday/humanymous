@@ -14,6 +14,16 @@ rel:
 
 ## CORE-SLICE-01 consumer source handoff
 
+Fixture follow-up: the three hosted.rs include_str paths now use the actual
+../../sdk/humanymous-core/tests/scoring/fixtures/frozen destination. Source SHA256
+is fac6460b9a30a97e0e6df12495ef9721eaf7d99b69b6a357ab994eff334a8a47.
+Raw moved-file bytes initially FAILED comparison against9670fa01's original Git
+blobs for bot-webdriver-cdp-hr9/go-http-client/human-chrome-allow: each contains
+CRLF and a different raw Git blob hash. Root received the exact original/moved
+hashes; fixtures remain root-owned and untouched by this consumer. Do not claim
+byte-preserving migration until root restores/verifies the canonical bytes.
+This is an import-path-only source correction; no compilation was started.
+
 Root assigned only mechanical Rust context paths: src/lib.rs now imports
 humanymous_core::integrity::adapter::AdapterProfile; tests/hosted.rs uses
 humanymous_core::integrity::adapter::ValidatedRequest and
