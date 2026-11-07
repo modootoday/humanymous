@@ -527,3 +527,30 @@ informative experiment review with explicit negative execution cases, same-origi
 script boundary, cookie/app-Authorization separation, abort versus origin effects,
 ACK scope and browser-copy erasure limits. Updated public change manifest without
 claiming generic wire selection or changed-source execution. No heavy run.
+
+## Confirmed local/hosted boundary for Pages
+
+Project policy is owned by [program-roadmap](../sot/program-roadmap.sot.md), with
+execution contracts in [delivery](../sot/delivery.sot.md); this plan does not
+reimplement scheduling policy. Pages source editing and existing lightweight
+source checks remain local. Exact-source Jekyll builds for both baseurls,
+built links/anchors/canonical checks and browser smoke belong to hosted execution.
+Do not start a new local browser/build/Docker run under the current resource hold.
+
+Retain exact workflow run/SHA/attempt, input commitments and actual outcomes;
+prior 85-page green results do not qualify the changed 86-page tree. Automated
+smoke is distinct from actual human/assistive-technology tasks. Those tasks need
+direct evidence from a suitable environment. The free branch profile's disabled
+artifact upload means no downloadable current preview should be promised solely
+from CI success. Record missing private raw evidence explicitly and collect only
+permitted sanitized summaries/logs/hashes; never publish private raw evidence.
+The requested in-app preview remains pending a validated current artifact and
+an authorized resource/environment allocation. No required gate is removed.
+
+## Concurrent freshness capture refusal
+
+Executed existing compiled humanymous-pages review-delta --root . (no Cargo or
+new compilation). It exited 1: HEAD or source inventory changed during snapshot;
+retry explicitly. No receipt was refreshed and no review acceptance inferred.
+The next full delta must follow a source-closure checkpoint; repeated captures
+while owners mutate HEAD/inventory would not prove the requested freshness.
