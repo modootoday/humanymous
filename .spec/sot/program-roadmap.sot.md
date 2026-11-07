@@ -11,6 +11,38 @@ rel:
 
 # Overall roadmap and milestones
 
+## Current integration delta: 2026-11-07, after 6500ec23
+
+This delta supersedes the live-state claims in the older briefing below; older
+source-specific results remain historical evidence. There are 38 registered
+workspace members, including Apache native and the .NET export facade. Shared
+graph commit 6500ec23 is local and is not the source of the live hosted run.
+No package publication, release tag, OIDC token exchange or main merge occurred.
+
+| Milestone | Current evidence | Next required action and owner |
+|---|---|---|
+| Coherent graph | 38-member metadata and scoped spec check pass; lock incorporates approved edges without unrelated version downgrade | Compile latest native packages and freeze all required source; integration and package owners |
+| Local component closure | Go latest 10 pure tests and all-targets Clippy pass; maintenance latest 36 pure tests/check/Clippy pass | Register exact-source evidence; Capture pure/feature compilation is next allocated B task |
+| Hosted policy | Run 42355168729, source 8132117: policy succeeds | Preserve narrow permissions and mandatory component gates; CI owner |
+| Hosted native execution | Ubuntu builds all targets; actor executes 15 of 88 harnesses, 51 tests pass, then coverage validation fails | Provision mandatory Node/Bun pilots; collect later contained harness results while retaining final failure; host and OS-runner owners |
+| Docker product lab | Actual 35 checks: 33 pass and two fail; wargame evaluates zero of 26 scheduled cases, with 19 errors and seven unsupported | Fix readiness contract mismatch and recover actual evaluation; runtime, wargame and lab owners |
+| CEF component | Two explicitly provisioned desktop process tests wired under native-pilot-tests; no actual execution yet | Existing hosted runner provisions separate fresh positive/cancelled bundles and executes both; CI/browser owners |
+| Cross-OS and browser | Same run remains live: macOS/browser running, Windows queued at observation | Observe the same run, retain immutable source identity, do not duplicate dispatch |
+| Final product | Qualified collector/capture/Pass joins, actual adapter matrices, human/AT controls and complete runtime recovery remain incomplete | Complete required paths and obtain current-source actual receipts; all owning chats |
+| Final integration | 336 tracked Go files still require replacement proof; Pages/freshness and main-only state unverified | Remove obsolete product code only after parity gates, finish public docs, merge/verify main and retire migration branches |
+
+The Ubuntu failure includes three ignored Node/Bun product groups, which are not
+subprocess helpers. No ignored-test waiver or denominator reduction may make
+that gate pass. Future continuation is permitted only after a completed,
+contained child with EOF; source/identity failures and uncontained spawn,
+capture or timeout failures stop immediately. Execution completeness is distinct
+from successful coverage. All later rows and the aggregate failure must survive.
+
+The deterministic runtime/defender readiness source mismatch is a diagnosed
+contract defect, not a recovered private explanation for every Docker error.
+Runtime must expose one authoritative readiness builder for the defender to
+reuse without dropping witness, durability or fail-closed capability checks.
+
 ## Integrated briefing: 2026-11-07 08:08 UTC
 
 This snapshot covers all19 project chats (integration plus18 dedicated owners).
