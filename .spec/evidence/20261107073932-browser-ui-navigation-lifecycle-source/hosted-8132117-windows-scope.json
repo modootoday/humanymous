@@ -1,0 +1,26 @@
+{
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "job_id": 128351926153,
+  "job_name": "validate / native (windows-2025)",
+  "job_conclusion": "failure",
+  "all_target_workspace_build": "passed",
+  "workspace_includes_browser_bootstrap_and_desktop": true,
+  "actor_summary": {
+    "executed_harnesses": 15,
+    "passed_tests": 55,
+    "failed_tests": 0,
+    "unknown_count_harnesses": 0,
+    "host_process_ignored": 3,
+    "host_process_validated": false,
+    "durable_witness_ignored": 1,
+    "durable_witness_validated": true
+  },
+  "browser_harness_result_observed": false,
+  "cef_native_process_execution": "not established by this partial run",
+  "latest_browser_contract_and_driver": "outside this source SHA",
+  "raw_log_retained_in_this_bundle": false,
+  "observation_source": "GitHub completed job logs API and exact-source workflow/workspace definitions",
+  "full_runtime_qualified": false,
+  "next_action": "Retain compile success and actor failure separately; next immutable candidate must invoke explicit CEF cases independently of unrelated workspace harness failures"
+}
