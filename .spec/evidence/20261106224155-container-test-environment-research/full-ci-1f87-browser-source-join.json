@@ -1,0 +1,123 @@
+{
+  "schema": "humanymous.lab-full-ci-1f87-source-join/1",
+  "source": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "run": 42415763189,
+  "attempt": 1,
+  "conclusion": "failure",
+  "canonical_commit": "0f9ca501b91dcd6e88e18b17f242172133ca2b54",
+  "canonical_path": ".spec/evidence/20261107052001-delivery-followup/hosted-1f87-terminal.json",
+  "canonical_sha256": "f110aa97456550990cb184a86522e493d089616c8d504a46c03e986bdbd1279e",
+  "sealed_private_index_sha256": "2ce42ff37f2d32240c8f3378e11e4ece78f32f870d951a7753847b8fdfbcaecd",
+  "official_archive": {
+    "sha256": "772fdfaf6790c6e8f6cb88085ec0026a9d84a455c6f99fb45756f62fcee07e3c",
+    "bytes": 860200,
+    "members": 167,
+    "uncompressed_bytes": 3786161,
+    "all19_full_job_members_joined": true,
+    "representation": "original GitHub logs archive response body and original member bytes; not HTTP wire or original private redirected child reports"
+  },
+  "jobs": [
+    {
+      "job": 128537039877,
+      "kind": "browser",
+      "original_member": "13_validate _ browser.txt",
+      "original_log_sha256": "44c6989de018f59e36be128a6fdcb90d544a78d826f9d345756d67deee757983",
+      "assertions": {
+        "failed": 2,
+        "other": 0,
+        "passed": 75,
+        "total": 77
+      },
+      "safe_diagnostics": {
+        "failure_count": 2,
+        "failures": [
+          {
+            "case_id": "collector-component",
+            "error_code": "assertion_failed",
+            "status": "failed"
+          },
+          {
+            "case_id": "execution",
+            "error_code": "collector_process",
+            "status": "failed"
+          }
+        ],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "owner_exit": 1,
+      "private_report_sha256_source_reported": "3f033e056d626d1e0b6ffd2bd0e1e842311f5bffd8eb2705d592bb90f708462a",
+      "source_changed": false,
+      "images_roles_unmapped": [
+        "sha256:eedbe4e709daebc8c40fc1709e6c91959821f827c2a448ff1ed5db56a9637a68",
+        "sha256:24ac7f06118e302884b409aa4b5c975fc21baaf8a8feb6cfdadb63bc845259ef"
+      ],
+      "source_manifest_sha256": "2ccd969525c2bbee49049dc8011f8942d2a5215765850835f0ec53698d54ae03",
+      "isolation": "docker"
+    },
+    {
+      "job": 128541529321,
+      "kind": "browser-product",
+      "original_member": "12_validate _ browser-product.txt",
+      "original_log_sha256": "5016ff05a64a726f554b9d26ca182eb59df643a03bcf1e87d90d9d1a97298f53",
+      "assertions": {
+        "failed": 2,
+        "other": 0,
+        "passed": 16,
+        "total": 18
+      },
+      "safe_diagnostics": {
+        "browser_actor": {
+          "dns_finish": "succeeded",
+          "exit_code": 1,
+          "filtered_count": 66,
+          "full_product_qualified": false,
+          "inventory_count": 67,
+          "inventory_matched": true,
+          "parser_summary_matched": false,
+          "process_success": false,
+          "schema": "humanymous.lab-browser-actor-outcome/1",
+          "selected_count": 1,
+          "source_prefix_authenticated": false,
+          "state": "observed",
+          "test_passed": false
+        },
+        "failure_count": 2,
+        "failures": [
+          {
+            "case_id": "browser-actual-witness-exchange",
+            "error_code": "assertion_failed",
+            "status": "failed"
+          },
+          {
+            "case_id": "execution",
+            "error_code": "browser_bootstrap_http_forbidden",
+            "status": "failed"
+          }
+        ],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "owner_exit": 1,
+      "private_report_sha256_source_reported": "ab18a97e99edb3b03814ece0ef16cbcee7d33572bf2315dec826cbdda7b5ad51",
+      "source_changed": false,
+      "images_roles_unmapped": [
+        "sha256:585d154660c0dc47ba2c89502a371542c1569e836d9eadc59474d111604b94bc",
+        "sha256:391260ee75d00632c87cc9f7e3a61932e6d242bf0520ba59b75823071dea90e9",
+        "sha256:8b6b283c15582a399c37493d644f74ae96e49e51f206067a304b3470e6fa93ef"
+      ],
+      "source_manifest_sha256": "2ccd969525c2bbee49049dc8011f8942d2a5215765850835f0ec53698d54ae03",
+      "isolation": "docker"
+    }
+  ],
+  "original_private_child_reports_recovered": false,
+  "new_network_capture": false,
+  "sealed_bundle_modified": false,
+  "full_product_qualified": false,
+  "limitations": [
+    "Distinct full-CI run; never blend with dedicated1f87 run42415763028.",
+    "Generic HTTP403 on this source, not lateredc Origin-specific classification.",
+    "Original official archive/member bytes are distinct from unrecovered private actor/ledger bytes.",
+    "Only the two relevant Lab jobs are joined here; complete19job result stays with Delivery."
+  ]
+}

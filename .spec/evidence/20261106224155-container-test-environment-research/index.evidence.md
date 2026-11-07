@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T23:00:58Z
+updated: 2026-11-07T23:10:20Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -50,11 +50,13 @@ files:
   - {path: runtime-slice-02-lab-consumers.json, sha256: b73a07c927f5394fdd4cf5bc016a8d1536fdff6505171e6f951af5dd6d8069c0, bytes: 4058, store: repo}
   - {path: runtime-custody-compose-source-join.json, sha256: c065be3d1b98704505736dbb39718d2001d16ed255e1e3d342c313bc8311c5a5, bytes: 1248, store: repo}
   - {path: hosted-browser-edc30181-origin-rejection.json, sha256: 47233547894fc8b6aacc83e0237f8dc3b9d147234f48a075e5496c6ccc703362, bytes: 3982, store: repo}
-  - {path: source-execution-index.json, sha256: 014f982c57862bb58dba712fb8cb161265a1691b1988751a608904001688e67e, bytes: 8328, store: repo}
   - {path: browser-origin-wire-proposal.json, sha256: 2175d95f77b1196526421cdcd01cdddc7ea0fdbba535b36bde49815918cd1ffc, bytes: 4228, store: repo}
   - {path: browser-wire-36373e79-first-fmt-failure.json, sha256: 691b599ac838e1d38795ed7824b075354f31dfa1b3e9b90a0e1ba014d8992bea, bytes: 1838, store: repo}
   - {path: browser-wire-ad1bb8b8-first-clippy-failure.json, sha256: 381cdfa005f638015df185706451c9818e3d5bd5f1025a1e85f1837127a220d9, bytes: 1511, store: repo}
   - {path: browser-wire-1f2b9a93-checks.json, sha256: e197064b67465af27acd96dcaf504b251cdbc7443883e803d9f1ddd6ed6b95e0, bytes: 1775, store: repo}
+  - {path: hosted-gnu-producer-1f2b9a93-checks.json, sha256: 6810613b22402a9b7eaf4c94712a343b26fedf8d53768c0a3ab970f9e719f313, bytes: 1795, store: repo}
+  - {path: source-execution-index.json, sha256: b8018eff128560d77efd1147b263caa724ee725f6bebb891680e0aaf9f2f86f4, bytes: 9122, store: repo}
+  - {path: full-ci-1f87-browser-source-join.json, sha256: 62cba5352695af5a372d969e6ce9d0b2cd3df9f3ce5598d5dbfed9b220985a37, bytes: 4723, store: repo}
 ---
 
 # Container test environment research

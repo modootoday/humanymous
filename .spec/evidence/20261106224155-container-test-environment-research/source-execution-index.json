@@ -149,6 +149,24 @@
       "result": "bootstrap_http403_origin",
       "facts": "PreflightLab37/Delivery116/Go10+1/facade2+2+2/Unixcheck/Clippy/policy pass. Product18/16pass2fail, finite browser_bootstrap_http_forbidden_origin;DNSsucceeded67/1/66matched. Missing/null/other Origin unknown, Fetchmetadata branch notproven;fullfalse.",
       "evidence": "hosted-browser-edc30181-origin-rejection.json"
+    },
+    {
+      "source": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "run": 42415763189,
+      "job": 128537039877,
+      "profile": "full_ci_browser",
+      "result": "failure",
+      "facts": "77assertions75pass2fail;collector-component and collector_process. Exact inner collector failure unknown.",
+      "evidence": "full-ci-1f87-browser-source-join.json"
+    },
+    {
+      "source": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "run": 42415763189,
+      "job": 128541529321,
+      "profile": "full_ci_browser-product",
+      "result": "failure",
+      "facts": "18assertions16pass2fail;genericbootstrapHTTP403;DNSsucceeded67/1/66matched. Sealed originalmember verified; no laterOriginclassification transferred.",
+      "evidence": "full-ci-1f87-browser-source-join.json"
     }
   ],
   "unmeasured": [

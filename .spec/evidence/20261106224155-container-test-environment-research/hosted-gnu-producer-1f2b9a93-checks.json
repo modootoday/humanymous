@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.lab-gnu-producer-hosted-checks/1",
+  "source": "1f2b9a93d68deb310ffd53f927977a75d807e007",
+  "run": 42423423776,
+  "attempt": 1,
+  "job": 128556526237,
+  "conclusion": "success",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42423423776",
+  "venue": "GitHub Actions ubuntu-24.04",
+  "command": "cargo test --locked -p humanymous-runtime-pilot --bin humanymous-runtime-pilot browser_proxy::tests:: -- --nocapture",
+  "selected_test_names": [
+    "browser_proxy::tests::wire_observations_count_only_fixed_classes_and_treat_empty_referer_as_present",
+    "browser_proxy::tests::origin_classes_initialize_zeroes_and_never_retain_foreign_values",
+    "browser_proxy::tests::owned_authority_and_api_dispatch_cannot_be_retargeted"
+  ],
+  "passed": 3,
+  "failed": 0,
+  "ignored": 0,
+  "filtered_other_tests": 6,
+  "scope": "Actual GNU browser-proxy producer pure units, not entire runtime-pilot suite",
+  "lab_unit_tests": 40,
+  "delivery_unit_tests": 121,
+  "go_leaf_tests": 10,
+  "go_deployment_tests": 1,
+  "facade_suites": [
+    2,
+    2,
+    2
+  ],
+  "unix_actor_check": true,
+  "selected_strict_clippy": true,
+  "workflow_policy": true,
+  "original_job_log_sha256": "50a04d1db5af37ae5645935bb0eb2ea6dc8ed93c74f4063c525fa9074f45a29a",
+  "annotations": 0,
+  "private_evidence": "evidence:root/20261107230459",
+  "product_job": 128557090823,
+  "product_status_at_capture": "in_progress",
+  "actual_browser_wire_class": "UNKNOWN",
+  "full_product_qualified": false,
+  "limitations": [
+    "Does not qualify the6 filtered runtime-pilot tests.",
+    "Windows Lab40 and GNU producer3 are distinct scopes, never summed into full-product success.",
+    "Actual B browser-proxy class requires terminal product receipt; not Gate/Runtime header attestation."
+  ]
+}
