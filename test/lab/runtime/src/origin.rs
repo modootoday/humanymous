@@ -27,6 +27,9 @@ impl Origin {
             while !done.load(Ordering::SeqCst) {
                 match listener.accept() {
                     Ok((mut stream, _)) => {
+                        // Count origin contact before validation, including a
+                        // wrongly forwarded payload or a premature connection.
+                        observed.fetch_add(1, Ordering::SeqCst);
                         stream
                             .set_read_timeout(Some(Duration::from_secs(5)))
                             .unwrap();
@@ -56,7 +59,6 @@ impl Origin {
                             }
                             assert!(bytes.len() < 70_000);
                         }
-                        observed.fetch_add(1, Ordering::SeqCst);
                         stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\nConnection: close\r\n\r\nok").unwrap();
                     }
                     Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {

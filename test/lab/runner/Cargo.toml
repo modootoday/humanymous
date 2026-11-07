@@ -10,6 +10,8 @@ publish = false
 serde_json.workspace = true
 sha2.workspace = true
 getrandom.workspace = true
+humanymous-test-support.workspace = true
+humanymous-audit = {path="../../../crates/audit"}
 
 [lints]
 workspace = true

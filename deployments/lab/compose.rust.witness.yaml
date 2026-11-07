@@ -1,0 +1,28 @@
+# Trusted-supervisor private stdio only, separate kernel UID and named storage.
+services:
+  witness-transaction:
+    extends: {file: compose.rust.yaml, service: runtime-pilot}
+    user: "65533:65533"
+    stdin_open: true
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --witness-transaction]
+    volumes: [witness-key:/witness/keys, witness-head:/witness/head]
+    profiles: [witness]
+  witness-writer:
+    extends: {file: compose.rust.yaml, service: runtime-pilot}
+    stdin_open: true
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --witness-writer]
+    volumes: [writer-key:/writer/keys, writer-wal:/writer/wal]
+    profiles: [witness]
+  witness-key-denied:
+    extends: {file: compose.rust.yaml, service: runtime-pilot}
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --witness-key-denied]
+    volumes: [witness-key:/witness/keys:ro]
+    profiles: [witness]
+volumes:
+  witness-key: &owned-volume
+    labels:
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:?expiry required}"
+  witness-head: *owned-volume
+  writer-key: *owned-volume
+  writer-wal: *owned-volume

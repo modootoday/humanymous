@@ -3,7 +3,7 @@ id: plan:root/20261106224156
 title: Canonical container test environment rollout
 status: active
 created: 2026-11-06T22:41:56Z
-updated: 2026-11-06T23:10:00Z
+updated: 2026-11-07T06:22:12Z
 rel:
   depends_on: [sot:root/container-test-environments]
 ---
@@ -12,14 +12,30 @@ rel:
 
 ## Rust-only v2 continuation (2026-11-07 KST)
 
+- [x] Design-only remote split: delivery owns GitHub-hosted Ubuntu Compose reuse; container SoT owns Containers cost/isolation/Rust-control-plane gaps.
+- [x] Checkpoint current Rust lab implementation with root workspace inheritance and child-lock deletion; image Cargo jobs bounded to1. Latest source execution not_run; source60627 results apply only to that prior snapshot.
+- [ ] Remote exact-source run, cancelled-run cleanup, provider security/witness equivalence and Rust-only lifecycle proof: not_run; local heavy execution held by root memory coordination.
+- [ ] Pending cross-owner policy agreement: local pure unit/fast checks; hosted actual runtime/Docker/browser/CrossOS with explicit interactive/human/AT/SCM/CEF exceptions. Lab proposes heavy image jobs1 and at most2 lightweight jobs initially, immutable build reuse and sequential disk reclamation; final DAG belongs to delivery canon. No required gate or source is removed by this proposal.
+
 - [x] Root-integrated humanymous-lab-runner, inherited existing dependencies only.
 - [x] Rust Docker transport/snapshots, fixtures, direct-IP probes and owned TTL cleanup.
 - [x] Rust local provider preflight; missing opt-in/budget/expiry/Gate/credentials refuses with exit2.
 - [x] Unit4 and Clippy; actual Docker topology-only25 assertions, exit2, runtime explicitly not_run.
-- [ ] Fresh complete default runtime source pilot after concurrent audit source checkpoint.
+- [x] Source54017 actual bounded runtime33 orchestration assertions, origin2/audit4 and19/7wargame; full-required exit2.
+- [x] Consume26d9925 shared process capture; retire local duplicated pipe/thread lifetime.
+- [x] Root registers runtime-pilot; retire standalone lock, cfg unsupported native targets explicitly.
+- [x] Share one Installation factory and connect1ee2c92 OwnedLab/VerifiedSnapshot APIs.
+- [x] Inventory pre-existing dirty deletions and reject copy-time source changes; unit boundary coverage.
+- [x] Execute27-member musl/scratch runtime and19/7wargame source54017; latest actor/source deltas need final rerun.
 - [ ] Fresh collector component profile and image advisory closure for v2 source.
 - [ ] Sequential lane handoff to wargame; consume OwnedLab/VerifiedSnapshot without signer duplication.
 - [ ] Actual independent witness binary/key/head-state integration after custody owner supplies contract.
+- [x] Auditd001ee6 provides actual service/commonclient/externalLog seam; accepted exact API in SoT.
+- [x] Implement separate UID/volume witness transaction profile and shared client; main-binary sidecar transport remains unsupported.
+- [x] Fresh60627 component run71assertions including witness separation/recreation/older-head/refusal/no effect; full-required exit2.
+- [x] Preserve55200/55537/60036 failures and explicit missing first-attempt source graph; source54017 untouched.
+- [x] Prevent existing run/audit evidence overwrite in code; retain whole26case denominator on actual setup failure.
+- [ ] Handoff to wargame final boundary corrections, then fresh final Docker+collector+audit source closure.
 - [ ] Product browser/bootstrap/session, independent origin/audit effects and human/AT qualification.
 
 First runtime source snapshot failed at an audit service module declaration whose

@@ -1,4 +1,5 @@
 //! Owned Docker product-lab coordinator and in-container topology controls.
+mod audit;
 mod docker;
 mod fixture;
 mod orchestration;
@@ -12,6 +13,7 @@ fn main() {
         Some("fixture") => fixture::run(&args[1..]).map(|()| 0),
         Some("provider-preflight") => provider::run(&args[1..]),
         Some("cleanup") => orchestration::cleanup_expired().map(|()| 0),
+        Some("audit") => audit::run(&args[1..]),
         _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector] [--require-full] | fixture ROLE | cleanup | provider-preflight MANIFEST".into()),
     };
     match result {

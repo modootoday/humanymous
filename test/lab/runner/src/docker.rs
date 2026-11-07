@@ -1,10 +1,10 @@
 //! Bounded subprocess transport; never invokes a shell or arbitrary script.
+use humanymous_test_support::process::{ManagedChild, capture_with_stderr};
 use serde_json::{Value, json};
 use std::{
-    io::Read,
     path::{Path, PathBuf},
-    process::{Command, Stdio},
-    time::{Duration, Instant},
+    process::Command,
+    time::Duration,
 };
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -36,6 +36,9 @@ impl Docker {
         environment: &[(String, String)],
         required: bool,
     ) -> Result<Output> {
+        self.invoke_input(args, environment, required, b"")
+    }
+    pub fn command(&self, args: &[String], environment: &[(String, String)]) -> Result<Command> {
         let mut command = Command::new(&self.executable);
         command
             .args(args)
@@ -52,27 +55,25 @@ impl Docker {
             ));
             command.env("PATH", std::env::join_paths(paths)?);
         }
-        let mut child = command
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .stdin(Stdio::null())
-            .spawn()?;
-        let stdout = drain(child.stdout.take().ok_or("stdout unavailable")?);
-        let stderr = drain(child.stderr.take().ok_or("stderr unavailable")?);
-        let deadline = Instant::now() + Duration::from_secs(600);
-        let status = loop {
-            if let Some(status) = child.try_wait()? {
-                break status;
-            }
-            if Instant::now() >= deadline {
-                child.kill()?;
-                let _ = child.wait();
-                return Err("Docker command deadline exceeded".into());
-            }
-            std::thread::sleep(Duration::from_millis(50));
-        };
-        let stdout = stdout.join().map_err(|_| "stdout reader failed")??;
-        let stderr = stderr.join().map_err(|_| "stderr reader failed")??;
+        Ok(command)
+    }
+    pub fn invoke_input(
+        &mut self,
+        args: &[String],
+        environment: &[(String, String)],
+        required: bool,
+        input: &[u8],
+    ) -> Result<Output> {
+        let mut command = self.command(args, environment)?;
+        let captured = capture_with_stderr(
+            &mut command,
+            input,
+            Duration::from_secs(if input.is_empty() { 600 } else { 30 }),
+            4 * 1024 * 1024,
+        )?;
+        let status = captured.status;
+        let stdout = String::from_utf8(captured.stdout)?;
+        let stderr = String::from_utf8_lossy(&captured.stderr);
         self.transcript
             .push(json!({"argv":args,"exit":status.code(),"stdout":stdout,"stderr":stderr}));
         if required && !status.success() {
@@ -88,6 +89,18 @@ impl Docker {
             stdout,
         })
     }
+    pub fn duplex(
+        &mut self,
+        args: &[String],
+    ) -> Result<(
+        ManagedChild,
+        std::process::ChildStdin,
+        std::process::ChildStdout,
+    )> {
+        self.transcript
+            .push(json!({"argv":args,"transport":"private-duplex","input_recorded":false}));
+        Ok(ManagedChild::spawn_duplex(&mut self.command(args, &[])?)?)
+    }
     pub fn call(&mut self, args: &[&str]) -> Result<String> {
         Ok(self
             .invoke(
@@ -97,21 +110,4 @@ impl Docker {
             )?
             .stdout)
     }
-}
-fn drain(input: impl Read + Send + 'static) -> std::thread::JoinHandle<std::io::Result<String>> {
-    std::thread::spawn(move || {
-        let mut retained = Vec::new();
-        let mut input = input;
-        let mut buffer = [0; 8192];
-        loop {
-            let count = input.read(&mut buffer)?;
-            if count == 0 {
-                break;
-            }
-            if retained.len() + count <= 4 * 1024 * 1024 {
-                retained.extend_from_slice(&buffer[..count]);
-            }
-        }
-        Ok(String::from_utf8_lossy(&retained).into_owned())
-    })
 }

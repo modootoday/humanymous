@@ -49,6 +49,9 @@ services:
     mem_limit: 512m
     cpus: 2
     tmpfs: !override ["/tmp:rw,noexec,nosuid,size=64m,mode=1777"]
+  wargame-pilot:
+    extends: {service: runtime-pilot}
+    command: [--wargame]
 networks:
   ingress: &internal
     internal: true

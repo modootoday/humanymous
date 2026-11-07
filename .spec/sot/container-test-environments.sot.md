@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T04:10:34Z
+updated: 2026-11-07T06:22:12Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -33,6 +33,83 @@ baseline. This component lab does not qualify full product e2e or Meari+CEF.
 
 # Container product-test environments
 
+## Remote execution design delta (2026-11-07, not_run)
+
+Purpose: relieve local validation memory pressure while preserving source-bound
+Rust product evidence. This is a design-only delta: no workflow dispatch, image
+publication, account mutation, paid resource or remote pilot was performed.
+Delivery owns the GitHub-hosted Ubuntu execution/source-artifact contract in
+delivery.sot.md; this document owns provider compatibility and isolation gaps.
+GitHub-hosted Ubuntu running the existing Compose lab is the primary product
+e2e candidate. Cloudflare Containers is a supplementary actual Cloudflare-path
+API compatibility candidate. Neither candidate is qualified by this design.
+
+Official Containers material checked on 2026-11-07:
+
+- [Pricing](https://developers.cloudflare.com/containers/platform/pricing/):
+  Workers Paid starts at USD5/month; monthly included compute is25GiB-hours
+  memory,375vCPU-minutes and200GB-hours disk. Additional rates are
+  USD0.0000025/GiB-second,0.000020/active-vCPU-second and0.00000007/GB-second.
+  Provisioned memory/disk and active CPU are billed in10ms intervals. Workers,
+  Durable Objects and logging have separate charges. Egress is region-dependent:
+  NA/EU USD0.025/GB after1TB, Korea/Oceania/Taiwan USD0.05/GB after500GB,
+  elsewhere USD0.04/GB after500GB. Included amounts are account-wide monthly
+  allowances, not a per-run budget or a hard spending ceiling.
+- [Limits](https://developers.cloudflare.com/containers/platform/limits/):
+  predefined sizes range from lite(1/16vCPU,256MiB,2GB) to
+  standard-4(4vCPU,12GiB,20GB); custom sizes require at least1vCPU and3GiB/vCPU,
+  with defaults capped at4vCPU/12GiB/20GB. Account defaults include1500vCPU,
+  6TiB memory and30TB disk concurrently. These are capacity limits, not budget
+  protection. Current collector512-task settings have not been qualified there.
+- [FAQ](https://developers.cloudflare.com/containers/faq/): disk is ephemeral
+  by default and sleep starts a fresh image filesystem; durable_object snapshots
+  are immutable point-in-time state. Docker-in-Docker needs root, does not
+  support rootless Docker or iptables manipulation, and uses inner host
+  networking; durable_object scheduling additionally needs IP forwarding off.
+  Consequently its documented DinD example cannot substitute for our three
+  isolated Compose bridges or demonstrate independent durable witness state.
+- [Outbound traffic](https://developers.cloudflare.com/containers/configuration/outbound-traffic/):
+  public internet access defaults on. With enableInternet=false, permitted
+  outbound HTTP(S) uses ports80/443 and explicitly allowed hosts/handlers;
+  non-HTTP traffic is denied. DNS follows outbound policy and can resolve
+  placeholder addresses, so successful resolution alone does not prove egress.
+  deniedHosts with internet enabled does not block other-port traffic. HTTPS
+  interception requires an ephemeral CA and changes the measured TLS path.
+
+The rate-only compute upper estimate before allowances for one15-minute
+standard-1 instance at continuously active0.5vCPU is
+900*(4*0.0000025+0.5*0.000020+8*0.00000007)=USD0.018504.
+This is arithmetic, not a quote: add all instances, startup/retries, regional
+egress, Worker/DO/log/storage charges and any plan subscription. Account usage
+and taxes are unknown. No free run or total-cost bound is claimed.
+
+| Boundary | Compose reuse requirement | Containers compatibility gate |
+|---|---|---|
+| Execution | Same Rust runner, immutable source inventory, built lock and image/config digests; inspect actual remote daemon | Rust image support does not establish Rust-only lifecycle/binding support; direct container API, Rust Worker/DO bindings, private framing and cf CLI lifecycle remain untested |
+| UID/sandbox | Re-measure UID65532/65533, capabilities, no-new-privileges, EROFS, namespace/browser sandbox and task limits | Provider VM isolation alone proves none of these application boundaries; inspect actual behavior without sandbox-disabling flags |
+| Network | Retain internal bridges, separate roles, no published admin/origin, no default route or metadata/daemon access | No Compose/DinD equivalence; exact private role routing, bypass denial, DNS, non-HTTP and IPv6 tests required |
+| Witness | Separate populated key/head volumes, public supervisor pin, denied writer key access, restart and outage with zero effects | Snapshot/object storage is not FileAndDirectory fsync or independent latest-head durability; rollback, identity persistence and physical failure remain unqualified |
+| L1/L2 | Label direct runtime observation separately from any provider edge | Cloudflare termination/re-TLS changes provenance; HTTP success cannot qualify original-client TLS/H2 or fill required missing planes |
+| Evidence | Remote run/job ID and exact source/image/lock tied to raw assertions, independent effects and cleanup receipts | Provider API success is a separate evidence type; never add its cases to Compose/product denominators |
+
+Before any future provider run: explicit account/owned-domain opt-in, maximum
+instances and runtime, cost ceiling, exact allowlist, no public management,
+private credential input, independent expiry janitor and verified cleanup are
+required. Expiry labels and sleep are not a janitor or hard budget. Do not
+provision until the Rust-only control-plane contract is demonstrated without
+new authored JavaScript/Python/shell implementations. Use cf CLI unless a
+Wrangler project configuration applies. No CLI account inspection occurred.
+
+Adversarial design review (single author, five persona lenses): block provider
+equivalence claims on unmeasured networking/sandbox/state boundaries(P0);
+block required-plane satisfaction from re-terminated traffic(P0); require
+source/artifact binding and cleanup on failed/cancelled runs(P1); keep budget,
+Rust bindings and human/AT evidence explicitly unavailable(P1). These findings
+are requirements above. Verdict: needs-work for execution; acceptable as a
+design-only candidate split. All remote execution and compatibility gates are
+not_run. Local source60627 remains its own71-assertion component receipt;
+later source edits and this design have no new execution result.
+
 ## Native writer-lifetime regression profile
 
 compose.custody.yaml builds Rust audit/authority tests and warnings-denied Linux
@@ -57,7 +134,7 @@ datasets and real synthetic dispatch/cleanup/reentrancy. This is not a human/AT
 baseline or product e2e. Production WASM excludes these cfg(test) imports; retain
 the final foreign-source cleanup gate and all network-none/non-root restrictions.
 
-Version 0.2.0. Research and scoped Docker implementation checked 2026-11-07 KST.
+Version 0.3.0. Rust-only coordinator and contextual component implementation checked 2026-11-07 KST.
 Accepted design, not a claim of implemented Rust full-lab or Cloudflare deployment.
 
 ## Decision
@@ -295,6 +372,101 @@ tunnel or account mutation. Cloudflare DinD/ephemeral WAL is not equivalent to
 canonical internal bridges/independently anchored durable state.
 
 ### Rust-only continuation and provider preparation (2026-11-07 KST)
+
+#### Accepted inter-owner contracts and current state
+
+`humanymous.product-lab/2` (implemented; source-specific execution pending after
+each delta) has project, evidence_types, cases[{id,status,detail}], components,
+required_unavailable, full_product_qualified, release_ready and ttl fields.
+`status` is passed/failed for executed orchestration assertions; component
+not_run/unsupported must stay explicit. Exit1 is execution/assertion/I/O failure,
+exit2 is consistent scoped success with required full gates missing, exit0 is
+scoped success only. Neither exit0 nor exit2 certifies the whole product.
+
+Accepted with CI owner: default run requires actual runtime; --collector adds
+Firefox component tests; --topology-only explicitly records runtime not_run.
+Inputs are an existing private Specfold bundle, no target URL. Host coordinates
+Docker only. Before copying, tracked dirty deletions are inventoried as deleted;
+source disappearance/reappearance/content or inventory change during copying is
+a refused race, never a missing-file stub. New root-workspace Rust tooling roots
+are allowlisted without private/caches/foreign executable files. Common Cargo
+and toolchain remain root-owned. Runner and runtime-pilot are root members;
+the old runtime-pilot standalone lock is retired.
+
+Accepted with Windows/native owner and implemented consumption: the runner uses
+test-support::process::capture_with_stderr from26d9925, bounded stdout/stderr and
+actual status, kill/reap deadline. Private outputs never become public error
+dumps. Source/image requests are argument vectors, without an authored shell.
+
+Accepted with wargame owner1ee2c92 and implemented lab context:
+attacker::network::OwnedLab {spawn,snapshot}; defender::lab::OwnedRuntime spawns
+only the fixed sibling runtime and checks private readiness/live child/same
+loopback-only namespace. VerifiedSnapshot::read accepts only an authenticated
+shared Log and observed origin count. Installation has one custody/config/origin
+owner for original process and new wargame profiles. The26case ledger preserves
+19 actual program definitions and7 unsupported producer/participant cases;
+actual network success awaits the source-bound Docker run. Public checkpoint
+and binary/source hashes are not remote signed target attestation.
+
+Accepted with audit ownerd001ee6: WitnessServiceConfig/Request/Response bounded
+private stdio frames; WitnessServiceClient::connect/from_ready implements the
+shared CheckpointWitness trait and verifies pinned key/head/receipts. Lab owns
+transport provenance, deadlines, separate writer/witness UID and key/head
+volumes; audit owns crypto/proofs/state/codec. Implemented execution uses repeated
+short-lived witness containers with durable named volumes and an independently
+retained supervisor pin, private passphrase delivery only to witness, and no
+writer witness-key mount. Whole-profile qualification is source-specific and
+pending the complete failure matrix; early setup/transport failures are retained.
+Runtime owner has accepted a future trusted library dependency injection seam;
+main binary authenticated sidecar transport and full Gate remain unavailable.
+
+The lab-only wrapper bootstrap1 is one private newline JSON frame
+`{create_identity:bool,config:WitnessServiceConfig}`. The wrapper refuses
+identity replacement, generates witness seed/HMAC with OS entropy inside
+UID65533, opens only `/witness/keys` and `/witness/head`, and emits a verification
+public identity before handing all requests to the unchanged audited service.
+The writer's separate bootstrap is `{create_identity,passphrase,trusted_head}`;
+its fresh seed/HMAC stay inside UID65532 sealed custody. Shared
+WitnessServiceClient::from_ready and Log::open_with_external_witness enforce the
+signature/head/durability contract before an actual counted owned-origin call.
+No scoring is performed by this witness ordering fixture and its synthetic
+audit ALLOW is not an engine/human result. Runtime/wargame engine results remain
+a separate component.
+
+Broker transport consumes e30e0e9 ManagedChild::spawn_duplex; private stdin is
+kept open until typed Stopped acknowledgement. Framing uses audit's128KiB
+read_frame/write_frame, per-frame15/30s deadlines and at most8 writer commands.
+The supervisor owns direct child reaping and project cleanup. Public identity,
+State/CounterSign/Shutdown and signed receipts are the only exposed frames;
+secret bootstrap inputs never enter transcript/args/env/images. Empty-volume
+initial directory ownership/mode is explicit in image COPY metadata and is
+verified through actual native custody and different-UID EACCES tests.
+
+`humanymous.independent-witness-lab/1` reports status, per-writer results
+(status/origin_effects/audit_sequence/checkpoint), transaction count, pinned
+checkpoint/public identity and actual UID/volume separation. It explicitly
+marks runtime_binary_integrated, power_loss_qualified and persistent external
+supervisor pin as false. After the actual witness transaction acknowledges
+shutdown and exits, an injected broker control-plane outage returns typed
+Unavailable rather than a signature; an actual Log record may already be
+durable but the origin callback must remain unexecuted. This is controlled fault
+injection, not a claimed production provider outage or EOF observation.
+
+Accepted evidence lifecycle delta: each run requires a fresh Specfold bundle;
+pre-existing source-manifest/lab-report causes refusal before any overwrite.
+Pre-existing audit-report is also refused. The mistaken55200 first witness
+attempt lost its original dirty source graph during a retry-path error; its
+failure report/transcript/image descriptor are preserved under55537 failure-*.
+55200's retry source,60036's later transport-timeout failure, and54017's complete
+33assertion/19evaluated/7unsupported success stay distinct. Never infer the lost
+graph from a later manifest. Later success is not replacement of these failures.
+
+Rust audit command consumes only recorded immutable image IDs and the exact
+built lock bytes/hash. Scanner DB/time/export/config digests and Cargo warnings
+are separate outputs. Secret matches are sanitized before any artifact is
+persisted. Scratch/musl controls/runtime avoid unrelated OS/installer packages;
+this does not qualify the collector image or eliminate the separate dependency
+and native-engine supply-chain gates. Fresh scans remain required.
 
 The canonical v2 coordinator is `humanymous-lab-runner`, a normal root workspace
 member at test/lab/runner. It owns bounded Docker subprocesses, immutable source

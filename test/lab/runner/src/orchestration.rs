@@ -10,6 +10,7 @@ use std::{
 };
 
 const OWNER: &str = "rust-product-lab";
+mod witness;
 struct Lab {
     docker: Docker,
     project: String,
@@ -31,6 +32,14 @@ impl Lab {
             "--profile".into(),
             "controls".into(),
         ];
+        if !self.topology_only {
+            command.extend([
+                "-f".into(),
+                "deployments/lab/compose.rust.witness.yaml".into(),
+                "--profile".into(),
+                "witness".into(),
+            ]);
+        }
         if self.collector {
             command.extend([
                 "-f".into(),
@@ -70,9 +79,32 @@ impl Lab {
             &container,
         )?;
         let host = &container["HostConfig"];
+        let mounts_allowed = if service.starts_with("witness-") {
+            let destinations: &[&str] = if service == "witness-writer" {
+                &["/writer/keys", "/writer/wal"]
+            } else if service == "witness-key-denied" {
+                &["/witness/keys"]
+            } else {
+                &["/witness/keys", "/witness/head"]
+            };
+            container["Mounts"].as_array().is_some_and(|mounts| {
+                mounts.len() == destinations.len()
+                    && mounts.iter().all(|m| {
+                        m["Type"] == "volume"
+                            && destinations.contains(&m["Destination"].as_str().unwrap_or(""))
+                    })
+            })
+        } else {
+            container["Mounts"] == json!([])
+        };
+        let expected_user = if service == "witness-transaction" {
+            "65533:65533"
+        } else {
+            "65532:65532"
+        };
         self.case(
             &format!("hardened-{service}"),
-            container["Config"]["User"] == "65532:65532"
+            container["Config"]["User"] == expected_user
                 && host["ReadonlyRootfs"] == true
                 && host["Privileged"] == false
                 && host["CapDrop"] == json!(["ALL"])
@@ -82,7 +114,7 @@ impl Lab {
                 && host["PortBindings"]
                     .as_object()
                     .is_some_and(|p| p.is_empty())
-                && container["Mounts"] == json!([]),
+                && mounts_allowed,
             json!("actual nonroot/read-only/cap-drop/no ports/no host mounts"),
         )?;
         Ok(container)
@@ -240,6 +272,27 @@ impl Lab {
                 runtime["Image"].as_str().ok_or("image missing")?,
             ])?)?;
             snapshot::write(&self.evidence, "runtime-image.json", &image[0])?;
+            self.compose(&["create", "wargame-pilot"], true)?;
+            let wargame = self.inspect("wargame-pilot")?;
+            self.case(
+                "wargame-network-none",
+                wargame["HostConfig"]["NetworkMode"] == "none",
+                json!("supervisor-owned child only; no remote target arguments"),
+            )?;
+            let result = self.docker.invoke(
+                &[
+                    "start".into(),
+                    "-a".into(),
+                    wargame["Id"].as_str().ok_or("wargame ID absent")?.into(),
+                ],
+                &[],
+                false,
+            )?;
+            let report: Value = serde_json::from_str(result.stdout.trim())?;
+            snapshot::write(&self.evidence, "wargame-report.json", &report)?;
+            self.components["wargame"] = report.clone();
+            self.case("actual-owned-wargame",result.success && report["scoped_passed"]==true,json!("19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained"))?;
+            witness::run(self)?;
         } else {
             self.components["runtime"] =
                 json!({"status":"not_run","reason":"explicit topology-only phase"});
@@ -275,9 +328,9 @@ impl Lab {
                 &[],
                 false,
             )?;
-            let has_tests =
-                result.stdout.contains("test result: ok.") && !result.stdout.contains("0 passed");
-            self.components["collector"] = json!({"status":if result.success && has_tests{"passed"}else{"failed"},"evidence_type":"collector-component","ordinary_human":false,"sandbox_qualified":false});
+            let passed_count = successful_test_count(&result.stdout);
+            let has_tests = passed_count.is_some();
+            self.components["collector"] = json!({"status":if result.success && has_tests{"passed"}else{"failed"},"evidence_type":"collector-component","passed_count":passed_count,"ordinary_human":false,"sandbox_qualified":false});
             self.case(
                 "collector-component",
                 result.success && has_tests,
@@ -306,9 +359,15 @@ impl Lab {
         let networks = self
             .docker
             .call(&["network", "ls", "-q", "--filter", &filter])?;
+        let volumes = self
+            .docker
+            .call(&["volume", "ls", "-q", "--filter", &filter])?;
         self.case(
             "cleanup-owned-project",
-            down.success && containers.trim().is_empty() && networks.trim().is_empty(),
+            down.success
+                && containers.trim().is_empty()
+                && networks.trim().is_empty()
+                && volumes.trim().is_empty(),
             json!(self.project),
         )
     }
@@ -341,6 +400,9 @@ pub fn run(args: &[String]) -> Result<i32> {
     {
         return Err("existing private Specfold bundle required".into());
     }
+    if evidence.join("lab-report.json").exists() || evidence.join("source-manifest.json").exists() {
+        return Err("refused: evidence bundle already contains a run; create a fresh Specfold bundle to preserve failures and source identity".into());
+    }
     let mut random = [0; 8];
     getrandom::fill(&mut random)?;
     let project = format!(
@@ -370,6 +432,16 @@ pub fn run(args: &[String]) -> Result<i32> {
         components: json!({}),
     };
     if let Err(error) = lab.execute() {
+        let filter = format!("label=com.docker.compose.project={}", lab.project);
+        if let Ok(ids) = lab.docker.call(&["ps", "-aq", "--filter", &filter]) {
+            for id in ids.lines() {
+                let _ = lab.docker.invoke(
+                    &["logs".into(), "--tail".into(), "64".into(), id.into()],
+                    &[],
+                    false,
+                );
+            }
+        }
         lab.cases
             .push(json!({"id":"execution","status":"failed","detail":error.to_string()}));
     }
@@ -378,7 +450,19 @@ pub fn run(args: &[String]) -> Result<i32> {
             .push(json!({"id":"cleanup","status":"failed","detail":error.to_string()}));
     }
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
-    let report = json!({"schema":"humanymous.product-lab/2","project":lab.project,"evidence_types":["topology-control","runtime-process"],"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","independent witness latest-head","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    let mut evidence_types = vec!["topology-control"];
+    for (component, kind) in [
+        ("runtime", "runtime-process"),
+        ("wargame", "supervisor-owned-runtime-child-http1"),
+        ("independent_witness", "independent-witness-component"),
+        ("collector", "collector-component"),
+    ] {
+        if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
+        {
+            evidence_types.push(kind);
+        }
+    }
+    let report = json!({"schema":"humanymous.product-lab/2","project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(
         &lab.evidence,
@@ -396,6 +480,20 @@ pub fn run(args: &[String]) -> Result<i32> {
     } else {
         0
     })
+}
+fn successful_test_count(output: &str) -> Option<u64> {
+    output
+        .lines()
+        .filter_map(|line| {
+            line.split_once("test result: ok. ")?
+                .1
+                .split_once(" passed;")?
+                .0
+                .trim()
+                .parse::<u64>()
+                .ok()
+        })
+        .find(|count| *count > 0)
 }
 pub fn owned_expired(labels: &Value, now: u64) -> bool {
     let project = labels["com.docker.compose.project"].as_str().unwrap_or("");
@@ -477,6 +575,23 @@ pub fn cleanup_expired() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn component_denominator_does_not_confuse_ten_or_forty_with_zero() {
+        for count in [1, 10, 40] {
+            assert_eq!(
+                successful_test_count(&format!("test result: ok. {count} passed; 0 failed;")),
+                Some(count)
+            );
+        }
+        assert_eq!(
+            successful_test_count("test result: ok. 0 passed; 0 failed;"),
+            None
+        );
+        assert_eq!(
+            successful_test_count("test result: FAILED. 1 passed; 1 failed;"),
+            None
+        );
+    }
     #[test]
     fn janitor_rejects_foreign_future_and_unbounded_project() {
         let labels = json!({"org.humanymous.owner":OWNER,"com.docker.compose.project":"hm-rust-lab-0123456789abcdef","org.humanymous.expires":"100"});

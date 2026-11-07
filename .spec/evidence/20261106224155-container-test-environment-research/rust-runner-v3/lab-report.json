@@ -1,0 +1,1518 @@
+{
+  "cases": [
+    {
+      "detail": "c7cd0c4ac6b0cf33e062db9ce73a1c52a03916003d666fb697bd9cbebdfa0d46",
+      "id": "no-published-ports",
+      "status": "passed"
+    },
+    {
+      "detail": "60024313faaba2d9ae994f8eb93ff45be88533fb2acdbacdd6d331a88440ef5d",
+      "id": "owned-container-origin",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-origin",
+      "status": "passed"
+    },
+    {
+      "detail": "ad290f3495d7afdf482a997e31d6e71a2ddd5fc2f21ea1b8d9a5e90cb34a30dc",
+      "id": "owned-container-outside-canary",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-outside-canary",
+      "status": "passed"
+    },
+    {
+      "detail": "9e880b3d2dd07d5e0ef1cf011b543a785de1bf35c93595bb33de65957224535d",
+      "id": "owned-container-attacker",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-attacker",
+      "status": "passed"
+    },
+    {
+      "detail": "owned backend client reached same live fixture",
+      "id": "origin-positive-control",
+      "status": "passed"
+    },
+    {
+      "detail": "three internal IPv4 bridges; IPv6 unqualified",
+      "id": "internal-networks",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.19.0.2",
+        "port": 8080
+      },
+      "id": "no-origin-bypass-direct-ip",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.18.0.2",
+        "port": 8080
+      },
+      "id": "no-outside-bridge-direct-ip",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.20.0.1",
+        "port": 2375
+      },
+      "id": "no-host-docker-api",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "172.20.0.1",
+        "port": 2376
+      },
+      "id": "no-host-docker-tls",
+      "status": "passed"
+    },
+    {
+      "detail": {
+        "address": "169.254.169.254",
+        "port": 80
+      },
+      "id": "no-metadata-http",
+      "status": "passed"
+    },
+    {
+      "detail": "paired direct-IP denial",
+      "id": "no-private-dns-origin",
+      "status": "passed"
+    },
+    {
+      "detail": "paired direct-IP denial",
+      "id": "no-private-dns-outside-canary",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "nonroot-client",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "capabilities-empty",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "no-new-privileges",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "no-container-api-mount",
+      "status": "passed"
+    },
+    {
+      "detail": "observed inside isolated client",
+      "id": "no-default-ipv4-route",
+      "status": "passed"
+    },
+    {
+      "detail": "requires EROFS, not generic permission failure",
+      "id": "read-only-rootfs",
+      "status": "passed"
+    },
+    {
+      "detail": "only inspected owned addresses; no public probe",
+      "id": "topology-probe-exit",
+      "status": "passed"
+    },
+    {
+      "detail": "positive control fails after origin stop",
+      "id": "fixture-dependency-loss",
+      "status": "passed"
+    },
+    {
+      "detail": "7dc87b3ee1ceab7796de0b4676ecea8c4324c5bdaf7112e2ffad316f3d4c7d32",
+      "id": "owned-container-runtime-pilot",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-runtime-pilot",
+      "status": "passed"
+    },
+    {
+      "detail": "runtime/client/origin share owned loopback; not L5 isolation",
+      "id": "runtime-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "actual Rust binary + verified WAL + counted owned origin; synthetic client report",
+      "id": "actual-runtime-process",
+      "status": "passed"
+    },
+    {
+      "detail": "c96b0ed3d737b0be6f375b870c2c32c4e2169f837e77710ba6249ea65524c7af",
+      "id": "owned-container-wargame-pilot",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-wargame-pilot",
+      "status": "passed"
+    },
+    {
+      "detail": "supervisor-owned child only; no remote target arguments",
+      "id": "wargame-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained",
+      "id": "actual-owned-wargame",
+      "status": "passed"
+    },
+    {
+      "detail": "f6a4bbe2c04a0e7b828c175c968d39778408929fa66bfea68a1fbb5217ede8a0",
+      "id": "owned-container-witness-writer",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-writer",
+      "status": "passed"
+    },
+    {
+      "detail": "writer sees only its custody/WAL mounts",
+      "id": "writer-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "de329ed7b7f4fd8d4747dcbb7ac1cc8c5258b63cffba0eaddfbe62e71b585128",
+      "id": "owned-container-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "private inherited pipes; no public listener",
+      "id": "witness-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "aaee0d36754ac93ff1469704018abe1183b3c94baefb55f7921d59867493b136",
+      "id": "owned-container-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "private inherited pipes; no public listener",
+      "id": "witness-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "shared Log waits for separately persisted signed receipt",
+      "id": "witness-before-origin-effect",
+      "status": "passed"
+    },
+    {
+      "detail": "4896b13bf74678380c71131c7ecc28bd9423cd0262198ef6ca713cfd865aedf4",
+      "id": "owned-container-witness-writer",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-writer",
+      "status": "passed"
+    },
+    {
+      "detail": "writer sees only its custody/WAL mounts",
+      "id": "writer-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "5b1aad4884d08d6882ea0b520d1889763b8daab98c3236985a5d89470a1665c3",
+      "id": "owned-container-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "private inherited pipes; no public listener",
+      "id": "witness-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "c8dd90db43eb3c082490905392cd49154c8b34fc81db6e568cc967feed607a73",
+      "id": "owned-container-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "private inherited pipes; no public listener",
+      "id": "witness-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "shared Log waits for separately persisted signed receipt",
+      "id": "witness-before-origin-effect",
+      "status": "passed"
+    },
+    {
+      "detail": "actual fresh writer/service containers reuse only their separate named volumes and external pin",
+      "id": "witness-container-recreation",
+      "status": "passed"
+    },
+    {
+      "detail": "different UIDs; writer has neither witness key nor witness head volume",
+      "id": "independent-witness-key-state-mounts",
+      "status": "passed"
+    },
+    {
+      "detail": "2c62b52b90fcc4293b707b89208f673d87064f4d8bcf0d8ccda95db9954cbc56",
+      "id": "owned-container-witness-key-denied",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-key-denied",
+      "status": "passed"
+    },
+    {
+      "detail": "wrong-UID access is tested against actual populated key volume",
+      "id": "witness-key-negative-readonly-mount",
+      "status": "passed"
+    },
+    {
+      "detail": "actual kernel EACCES, not merely missing path",
+      "id": "different-uid-witness-key-denied",
+      "status": "passed"
+    },
+    {
+      "detail": "b7dc478dd4f0c3607aab6f99ca5623081a608e8210227097a1f3ceb59e0f371a",
+      "id": "owned-container-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "private inherited pipes; no public listener",
+      "id": "witness-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "old authentic checkpoint cannot roll back latest independent head",
+      "id": "witness-old-signed-head-refused",
+      "status": "passed"
+    },
+    {
+      "detail": "1432b7a8fbd211de53cab142c57bb5fce981cac1dcf79fc4a267a8b6f221edc2",
+      "id": "owned-container-witness-writer",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-writer",
+      "status": "passed"
+    },
+    {
+      "detail": "writer sees only its custody/WAL mounts",
+      "id": "writer-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "1f3555f25ac39f92b2f2e2217b5eebd3d915dbefbc69b8ba6f899129d5f747e8",
+      "id": "owned-container-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "actual nonroot/read-only/cap-drop/no ports/no host mounts",
+      "id": "hardened-witness-transaction",
+      "status": "passed"
+    },
+    {
+      "detail": "private inherited pipes; no public listener",
+      "id": "witness-network-none",
+      "status": "passed"
+    },
+    {
+      "detail": "actual witness process/container stopped; broker refuses restart",
+      "id": "witness-absent-after-readiness",
+      "status": "passed"
+    },
+    {
+      "detail": "required witness absent after readiness; injected broker unavailability; record may be durable, no retry",
+      "id": "witness-lost-before-effect",
+      "status": "passed"
+    },
+    {
+      "detail": "hm-rust-lab-1d5b267bac0f916b",
+      "id": "cleanup-owned-project",
+      "status": "passed"
+    }
+  ],
+  "components": {
+    "independent_witness": {
+      "actual_separate_key_head_volumes": true,
+      "actual_separate_uids": true,
+      "external_pin_supervisor_persistent": false,
+      "pinned_checkpoint": {
+        "merkle_root": "e462d341ad55a6e0fcfa7bbc2666e969534164792ba3292a42663be11411a152",
+        "node_id": "isolated-node",
+        "prev_checkpoint_hash": "0337fe720fe11283039d73b716465523b6abc13a4b46ddc9fdc9a5807654dbffb2b674103610fc3ca6f7d5627d482ccf29f455296f5a78d733f92389adb8ac02",
+        "root": "b1377c66ab8828b8cae6de30f5449dcfcc93c481b042320e4a13886dd46269a5",
+        "sig": "ff63caa85ec1dc5245fc8c02052717f1f7118d14ba389a3eb3abf6283840d8035c929aaa50b417349923e351129fec8515356462ced3ed198ba870d3a6411606",
+        "tree_size": 2,
+        "witness_sig": "a1efbec77d644e0608c556639d1a8a4e26eddd503bd23566375453f3b0895d95144320830da8ba20d331a1660ff34bfcb0dbccdef7a6cfd04418dc2013b94e05"
+      },
+      "power_loss_qualified": false,
+      "results": [
+        {
+          "audit_sequence": 1,
+          "checkpoint": {
+            "merkle_root": "4f38708a5afe9e8b0194ae71ed6610ae935b1e356f8537dcabc4a7c803602e85",
+            "node_id": "isolated-node",
+            "prev_checkpoint_hash": "",
+            "root": "152b423a8945292a0e4a042505170b37867a90db1eb38346050bbd614a9f875a",
+            "sig": "0337fe720fe11283039d73b716465523b6abc13a4b46ddc9fdc9a5807654dbffb2b674103610fc3ca6f7d5627d482ccf29f455296f5a78d733f92389adb8ac02",
+            "tree_size": 1,
+            "witness_sig": "1b9ac89fb7ab0b903f9d8cfae49b1b583ad05b5b3bf4a84a2ce6d920938be955c3a1ee7feac44b5300351c68224e17f447f9ae887b601b9dd20eb93411cd580f"
+          },
+          "origin_effects": 1,
+          "role": "writer_result",
+          "status": "passed"
+        },
+        {
+          "audit_sequence": 2,
+          "checkpoint": {
+            "merkle_root": "e462d341ad55a6e0fcfa7bbc2666e969534164792ba3292a42663be11411a152",
+            "node_id": "isolated-node",
+            "prev_checkpoint_hash": "0337fe720fe11283039d73b716465523b6abc13a4b46ddc9fdc9a5807654dbffb2b674103610fc3ca6f7d5627d482ccf29f455296f5a78d733f92389adb8ac02",
+            "root": "b1377c66ab8828b8cae6de30f5449dcfcc93c481b042320e4a13886dd46269a5",
+            "sig": "ff63caa85ec1dc5245fc8c02052717f1f7118d14ba389a3eb3abf6283840d8035c929aaa50b417349923e351129fec8515356462ced3ed198ba870d3a6411606",
+            "tree_size": 2,
+            "witness_sig": "a1efbec77d644e0608c556639d1a8a4e26eddd503bd23566375453f3b0895d95144320830da8ba20d331a1660ff34bfcb0dbccdef7a6cfd04418dc2013b94e05"
+          },
+          "origin_effects": 1,
+          "role": "writer_result",
+          "status": "passed"
+        },
+        {
+          "audit_sequence": 3,
+          "checkpoint": null,
+          "origin_effects": 0,
+          "role": "writer_result",
+          "status": "closed"
+        }
+      ],
+      "runtime_binary_integrated": false,
+      "schema": "humanymous.independent-witness-lab/1",
+      "status": "passed",
+      "transactions": 6,
+      "witness_public": [
+        7,
+        81,
+        227,
+        252,
+        193,
+        233,
+        193,
+        27,
+        247,
+        60,
+        197,
+        193,
+        90,
+        55,
+        163,
+        166,
+        16,
+        106,
+        87,
+        99,
+        184,
+        6,
+        171,
+        104,
+        80,
+        178,
+        137,
+        214,
+        136,
+        174,
+        129,
+        158
+      ]
+    },
+    "runtime": {
+      "audit_records": 4,
+      "browser_or_human_executed": false,
+      "checks": [
+        "private startup",
+        "sealed custody wrong password",
+        "missing custody no replacement",
+        "lifetime custody exclusion",
+        "tampered custody no replacement",
+        "collect",
+        "valid origin",
+        "duplicate cookies",
+        "credentials stripped",
+        "replay",
+        "body mutation",
+        "counter not consumed on bad signature",
+        "missing session",
+        "unsupported TLS",
+        "reserved admin",
+        "ambiguous framing",
+        "missing report",
+        "authenticated audit recovery",
+        "minimized audit",
+        "restart invalidates session"
+      ],
+      "cli_binary_checks": [
+        "doctor",
+        "dry-run no writes",
+        "install",
+        "repeat",
+        "rollback",
+        "digest refusal",
+        "mutation refuses rollback"
+      ],
+      "cli_binary_executed": true,
+      "cli_security_platform": "linux",
+      "full_runtime_qualified": false,
+      "not_qualified": [
+        "browser collector",
+        "TLS/H2 capture",
+        "Pass recovery",
+        "assistive technology",
+        "independent origin isolation",
+        "independent witness"
+      ],
+      "origin_effects": 2,
+      "schema": "humanymous.runtime-process-pilot/1",
+      "scope": "real binary/session/RIT/durable audit/owned loopback origin",
+      "status": "passed"
+    },
+    "wargame": {
+      "assistive_technology_executed": false,
+      "audited_policy_verdicts": {
+        "ALLOW": 2,
+        "CHALLENGE": 3,
+        "DENY": 1
+      },
+      "by_class": {
+        "accessibility": {
+          "errors": 0,
+          "evaluated": 0,
+          "expectation_mismatches": 0,
+          "scheduled": 2,
+          "skipped": 0,
+          "unsupported": 2
+        },
+        "attack": {
+          "errors": 0,
+          "evaluated": 14,
+          "expectation_mismatches": 0,
+          "scheduled": 14,
+          "skipped": 0,
+          "unsupported": 0
+        },
+        "capability_control": {
+          "errors": 0,
+          "evaluated": 3,
+          "expectation_mismatches": 0,
+          "scheduled": 3,
+          "skipped": 0,
+          "unsupported": 0
+        },
+        "ceiling": {
+          "errors": 0,
+          "evaluated": 0,
+          "expectation_mismatches": 0,
+          "scheduled": 1,
+          "skipped": 0,
+          "unsupported": 1
+        },
+        "human": {
+          "errors": 0,
+          "evaluated": 0,
+          "expectation_mismatches": 0,
+          "scheduled": 1,
+          "skipped": 0,
+          "unsupported": 1
+        },
+        "runtime": {
+          "errors": 0,
+          "evaluated": 0,
+          "expectation_mismatches": 0,
+          "scheduled": 3,
+          "skipped": 0,
+          "unsupported": 3
+        },
+        "synthetic_accessibility": {
+          "errors": 0,
+          "evaluated": 1,
+          "expectation_mismatches": 0,
+          "scheduled": 1,
+          "skipped": 0,
+          "unsupported": 0
+        },
+        "synthetic_control": {
+          "errors": 0,
+          "evaluated": 1,
+          "expectation_mismatches": 0,
+          "scheduled": 1,
+          "skipped": 0,
+          "unsupported": 0
+        }
+      },
+      "evidence_type": "supervisor-owned-runtime-child-http1",
+      "full_product_qualified": false,
+      "human_executed": false,
+      "rows": [
+        {
+          "class": "accessibility",
+          "effects": null,
+          "expectation_matches": null,
+          "id": "accessible-pass-human",
+          "processes": [],
+          "reason": "Actual accessible Pass recovery/participant producer is not available in this runtime profile",
+          "status": "unsupported",
+          "steps": [],
+          "tier": "runtime"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "bdaca9feb91871d08ee002c2051a6a3a73b18d19e10973b82817e7736ae5e5a1",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 1,
+                "verdict": "COLLECTED"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "rit-missing-token",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "synthetic_accessibility",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "285d68cd03e734cabbc53b7bf8e34b1989c26b2a9a4debd674ebb82525fdb348",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 2,
+                "verdict": "COLLECTED"
+              },
+              {
+                "event_type": "runtime.decision",
+                "record_hash": "2efa5369365a1ffda7718da6f9f7c9f8e97d5c2daabb320ec41d7ca95c1f3fd0",
+                "risk_score": 4,
+                "rules": [
+                  "HR-12"
+                ],
+                "seq": 3,
+                "verdict": "CHALLENGE"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "synthetic-long-window-challenge",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": "CHALLENGE",
+              "role": "synthetic_control"
+            }
+          ],
+          "tier": "control"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.decision",
+                "record_hash": "cadfd1539310c30b5b805a70548a28f2cdbac16c9139a41406972ddf25a0f728",
+                "risk_score": 0,
+                "rules": [
+                  "HR-10"
+                ],
+                "seq": 4,
+                "verdict": "CHALLENGE"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "forged-pass-server-signal",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 400,
+              "id": "collect-asserted-fixture",
+              "response_verdict": null,
+              "role": "attack"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": "CHALLENGE",
+              "role": "attack"
+            }
+          ],
+          "tier": "T2"
+        },
+        {
+          "class": "capability_control",
+          "effects": {
+            "audit": [],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "required-tls-refusal",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 422,
+              "id": "untrusted-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "runtime"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "missing-session",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 401,
+              "id": "untrusted-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "a8edd7e48906364bd6931aa32939ff891da49b68189dc0c2470850ebc60cc6b6",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 5,
+                "verdict": "COLLECTED"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "rit-body-mutation",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "a7ec6817dd9e66a6ca121d9a4e77b7f9f23513c22ed35e1b647b9775242bf900",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 6,
+                "verdict": "COLLECTED"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "rit-query-target-mutation",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "synthetic_control",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "788f0b0d63062dd01a2226769667ae7d8fd152a07a94fe839ecb5003bac16c4d",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 7,
+                "verdict": "COLLECTED"
+              },
+              {
+                "event_type": "runtime.decision",
+                "record_hash": "dd001ffedd13c47391fb76cfbb585f75008521688e4d61b476bf43d58fed9b2a",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 8,
+                "verdict": "ALLOW"
+              }
+            ],
+            "origin_effects": 1
+          },
+          "expectation_matches": true,
+          "id": "synthetic-zero-motor-allow",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "synthetic_control"
+            }
+          ],
+          "tier": "control"
+        },
+        {
+          "class": "runtime",
+          "effects": null,
+          "expectation_matches": null,
+          "id": "audit-outage-network-injection",
+          "processes": [],
+          "reason": "No safe isolated live audit fault producer is wired into this supervisor contract",
+          "status": "unsupported",
+          "steps": [],
+          "tier": "runtime"
+        },
+        {
+          "class": "accessibility",
+          "effects": null,
+          "expectation_matches": null,
+          "id": "assistive-technology-human",
+          "processes": [],
+          "reason": "Requires actual AT user interaction and recovery evidence; synthetic events are not participants",
+          "status": "unsupported",
+          "steps": [],
+          "tier": "runtime"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "duplicate-content-length",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 400,
+              "id": "ambiguous-framing",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "forwarded-local-admin-forgery",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "untrusted-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "374aec8e26122ea48b6e8edc34c9141b3acde0543e2f8d174d831d611a7b934d",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 9,
+                "verdict": "COLLECTED"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "rit-header-order-mutation",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "restart-stale-session",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            },
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 401,
+              "id": "stale-epoch-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "capability_control",
+          "effects": {
+            "audit": [],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "required-h2-refusal",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 422,
+              "id": "untrusted-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "runtime"
+        },
+        {
+          "class": "human",
+          "effects": null,
+          "expectation_matches": null,
+          "id": "ordinary-browser-human",
+          "processes": [],
+          "reason": "Requires actual ordinary browser, qualified collector and human participation",
+          "status": "unsupported",
+          "steps": [],
+          "tier": "runtime"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "c80bfec35e8e030e537738580253f14a5d47cf34eb926abc40b8770b8f7cd7c7",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 10,
+                "verdict": "COLLECTED"
+              },
+              {
+                "event_type": "runtime.decision",
+                "record_hash": "292a0972f5ac4ca70d68c20b8942620dad4c33edcf9eabe5cd6cb970d928dab8",
+                "risk_score": 50,
+                "rules": [
+                  "HR-1"
+                ],
+                "seq": 11,
+                "verdict": "DENY"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "synthetic-selenium-deny",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": "DENY",
+              "role": "attack"
+            }
+          ],
+          "tier": "T1"
+        },
+        {
+          "class": "runtime",
+          "effects": null,
+          "expectation_matches": null,
+          "id": "full-gate-original-tls-h2",
+          "processes": [],
+          "reason": "Loopback HTTP1 child is not a qualified full Gate with original TLS/H2 capture",
+          "status": "unsupported",
+          "steps": [],
+          "tier": "runtime"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "433d60536e888dd329694cebe38d4ea7683977daf82329d0b1201ac0f553a42d",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 12,
+                "verdict": "COLLECTED"
+              },
+              {
+                "event_type": "runtime.decision",
+                "record_hash": "6367c97501212d57b1c0a215a2ad6761ed539ec60ad622a36dd9c1ec145b6a36",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 13,
+                "verdict": "ALLOW"
+              }
+            ],
+            "origin_effects": 1
+          },
+          "expectation_matches": true,
+          "id": "rit-replay-after-control",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "synthetic_control"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "replayed-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "runtime",
+          "effects": null,
+          "expectation_matches": null,
+          "id": "signed-remote-installation",
+          "processes": [],
+          "reason": "No pinned-key fresh-nonce remote installation attestation endpoint exists",
+          "status": "unsupported",
+          "steps": [],
+          "tier": "runtime"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.decision",
+                "record_hash": "17b9517b54e08ee86f236749440052a2f76dfaf38fed9b3ee36e869d82eb0704",
+                "risk_score": 0,
+                "rules": [
+                  "HR-10"
+                ],
+                "seq": 14,
+                "verdict": "CHALLENGE"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "missing-client-report",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": "CHALLENGE",
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "ceiling",
+          "effects": null,
+          "expectation_matches": null,
+          "id": "coherent-T4-browser",
+          "processes": [],
+          "reason": "Real coherent browser/human T4 is an intentional detection ceiling, not a synthetic detection success",
+          "status": "unsupported",
+          "steps": [],
+          "tier": "T4"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "acd0f203c716a8ecf2afb8f1279ff1e85a54f6177ba9148b7d44b17383b8fe7a",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 15,
+                "verdict": "COLLECTED"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "method-route-mutation",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 409,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        },
+        {
+          "class": "capability_control",
+          "effects": {
+            "audit": [],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "required-collector-refusal",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 422,
+              "id": "untrusted-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "runtime"
+        },
+        {
+          "class": "attack",
+          "effects": {
+            "audit": [
+              {
+                "event_type": "runtime.collect",
+                "record_hash": "fd4407f455869c8fecb8542281699f2da52ecacd8b7fda2b715550e57113ed10",
+                "risk_score": 0,
+                "rules": [],
+                "seq": 16,
+                "verdict": "COLLECTED"
+              }
+            ],
+            "origin_effects": 0
+          },
+          "expectation_matches": true,
+          "id": "rit-expired-deadline",
+          "processes": [
+            {
+              "binding": "supervisor-owned-child/private-pipe/same-loopback-only-namespace",
+              "installation": "pilot",
+              "revision": "r1",
+              "runtime_sha256": "a6d1b3df74e63f502960a6b96584746d00a33b32f14861a3c9e6cb40d64ff6ef",
+              "supervisor_sha256": "db82fa5135c8b16c18d020d6e884cab4aa27195ea0e203ab59c505e6b9c1f1f1"
+            }
+          ],
+          "reason": null,
+          "status": "evaluated",
+          "steps": [
+            {
+              "error": null,
+              "http_status": 200,
+              "id": "collect-asserted-fixture",
+              "response_verdict": "COLLECTED",
+              "role": "setup"
+            },
+            {
+              "error": null,
+              "http_status": 403,
+              "id": "protected-request",
+              "response_verdict": null,
+              "role": "attack"
+            }
+          ],
+          "tier": "T0"
+        }
+      ],
+      "schema": "humanymous.wargame-network.v2",
+      "scoped_passed": true,
+      "seed": 42,
+      "t4_ceiling": "Coherent real browser/human behavior remains an intentional detection ceiling; synthetic ALLOW is not a human or live T4 measurement",
+      "totals": {
+        "errors": 0,
+        "evaluated": 19,
+        "expectation_mismatches": 0,
+        "scheduled": 26,
+        "skipped": 0,
+        "unsupported": 7
+      }
+    }
+  },
+  "evidence_types": [
+    "topology-control",
+    "runtime-process"
+  ],
+  "full_product_qualified": false,
+  "project": "hm-rust-lab-1d5b267bac0f916b",
+  "release_ready": false,
+  "required_unavailable": [
+    "full Gate TLS/H2/capture",
+    "session-bound real browser collector",
+    "Pass recovery",
+    "human/keyboard/assistive controls",
+    "independent witness latest-head",
+    "cross-namespace origin/audit effect product binding",
+    "signed remote target attestation",
+    "native OS qualification",
+    "provider deployment"
+  ],
+  "schema": "humanymous.product-lab/2",
+  "ttl": {
+    "expires_unix": 1794033408,
+    "external_janitor_scheduled": false
+  }
+}
