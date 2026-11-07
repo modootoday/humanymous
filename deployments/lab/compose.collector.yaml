@@ -1,0 +1,13 @@
+services:
+  collector-browser:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/collector-browser:local
+    build:
+      context: ../..
+      dockerfile: build/rust/collector-browser.Dockerfile
+    network_mode: none
+    pids_limit: 256
+    mem_limit: 2g
+    cpus: 2
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=512m,mode=1777", "/dev/shm:rw,noexec,nosuid,nodev,size=256m"]
+    profiles: [collector]

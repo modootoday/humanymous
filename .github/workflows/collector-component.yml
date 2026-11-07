@@ -1,0 +1,49 @@
+name: Rust collector browser component
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/rust, main]
+    paths:
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'build/rust/collector-browser.Dockerfile*'
+      - 'deployments/lab/compose.collector.yaml'
+      - 'deployments/lab/topology/sandbox.yaml'
+      - '.github/workflows/collector-component.yml'
+  pull_request:
+    paths:
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'build/rust/collector-browser.Dockerfile*'
+      - 'deployments/lab/compose.collector.yaml'
+      - 'deployments/lab/topology/sandbox.yaml'
+      - '.github/workflows/collector-component.yml'
+permissions:
+  contents: read
+jobs:
+  firefox-component:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Validate isolated component topology
+        run: docker compose -f deployments/lab/compose.collector.yaml --profile collector config --quiet
+      - name: Build pinned Rust and browser tools
+        run: docker compose -f deployments/lab/compose.collector.yaml --profile collector build
+      - name: Execute actual browser WASM tests
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p target/collector-evidence
+          docker image inspect humanymous/collector-browser:local > target/collector-evidence/image.json
+          docker compose -f deployments/lab/compose.collector.yaml --profile collector run --rm --no-deps collector-browser 2>&1 | tee target/collector-evidence/browser-tests.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: collector-component-${{ github.sha }}
+          path: target/collector-evidence/
+          if-no-files-found: warn

@@ -55,7 +55,7 @@ Cross-Lang은 대상 서비스와 상호운용하는 계약이며 새 JS/njs 제
 | 실제 runtime 프로세스 | network-none,UID65532,read-only,cap-drop ALL;origin2/audit4,재시작·replay·변조·sealed custody 부정 시험 | typed fixture이며 실제 browser/human/AT 또는 full Gate가 아님 |
 | CLI provisioning | 실제 binary doctor/dry-run/install/repeat/rollback,digest·변조·mode0500parent 거절 | 서비스 활성화·서명 package 설치·제품 readiness는 미완료 |
 | CEF Windows 파일럿 | 43044be: 실제 Meari child 부착·resize/focus·정상/late-cancel 종료,UIA Unicode 값;core9/native4,보안 완화4종 거절 | 별도 source-linked native workspace;BrowserReady=false,전체 sandbox·IME·AX 미자격화 |
-| Rust collector | L1-L3 17signal 순수 evaluator,실제 WASM API 경계;native6 및 WASM compile/Clippy 관찰 | 미커밋;Docker browser image build 완료만 확인,실제 browser test 미확인;transport/L4/guard 등 미완료 |
+| Rust collector | L1-L3 17signal 순수 evaluator,실제 WASM API 경계;native6·Docker 실제 Firefox3·workspace/WASM Clippy 통과 | source manifest 귀속;transport/L4/guard 등 미완료,제품 전체 자격화 아님 |
 | 공급망 | 최근 Cargo audit 알려진 취약점0 | ttf-parser0.25.1 RUSTSEC-2026-0192 유지보수 경고1;최종 closure 재스캔 필요 |
 
 native6tuple 원본 report6개를 내려받아 SHA/status/범위를 대조했다. 정제 요약은
@@ -143,7 +143,7 @@ cf CLI를 사용한다. 실제 provider 환경 생성은 이 문서 정리에서
 | 순서 | 구체적 후속 결과 | 병렬 가능 범위 | 통과 증거 |
 |---|---|---|---|
 | W0 | 기존 결과·현재 상태 정합화 | 이번 정본 갱신 | c0636tuple 산출물,43044be browser 근거,dirty collector 구분 |
-| W1-A / F11 | collector L1-L3 실제 browser 검증→L4/env/guard/advanced와 generated bootstrap | crates/collector 소유자 | source-bound unit/browser 결과·오류/iframe cleanup;필수 runtime 경로는 미완료 시422 유지 |
+| W1-A / F11 | collector L1-L3 실제 browser 검증 완료→L4/env/guard/advanced와 generated bootstrap | crates/collector 소유자 | native6/browser3·실제 오류 전파/iframe cleanup 통과;필수 runtime 경로는 미완료 시422 유지 |
 | W1-B / F10 | CEF native workspace 통합·sandbox/input/AX 자격화 | browser 경로 단일 writer;공통Cargo root | pinned artifacts,실제 OS 권한 거부·IME/AT·lifecycle·native tuples |
 | W1-C / F01-F02 | raw capture·session binding·witness/rotation | network와 audit 별도 owner;공유 scoring seam 직렬 | 실제 raw provenance·재시작/동시성/tamper·독립 witness |
 | W2 / F03-F05 | collector/RIT application,adapter Rust-only·stream,서비스 설치 | 계약 고정 후 adapter/CLI 경로 분리 | 실제 authority/origin/audit 효과,서비스 readiness·rollback·peer 거절 |
@@ -181,3 +181,9 @@ CEF 프로필21개는 비공개 생성 cache로 남아 있다. 자동 승인 검
 삭제를 `blocked by policy`로 거절했고 우회하지 않았다. 프로세스/창 종료와
 디스크 삭제는 별개다. 공개하지 않으며 삭제 완료라고 표시하지 않는다.
 공개/scoped spec 검증과 기존 private 전체-tree 오류 역시 구분해 보고한다.
+
+후속 collector 근거는 evidence:root/20261106235519/collector-results.json이다.
+read-only/network-none/UID65532 Docker에서 actual browser3개가 통과했고 별도
+collector-component workflow를 추가했다. remote 실행은 아직 별도 확인 대상이다.
+Firefox가 user namespace 생성 EPERM을 보고했으므로 전체 sandbox를 증명하지
+않는다. 제한을 완화하거나 Chromium runner의 no-sandbox 경로를 사용하지 않았다.

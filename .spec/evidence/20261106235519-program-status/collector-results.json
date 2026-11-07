@@ -1,0 +1,264 @@
+{
+  "schema": "humanymous.collector-slice/1",
+  "observed_at": "2026-11-07T02:03:49.8699453Z",
+  "source_attribution": "dirty snapshot manifest; not whole-product qualification",
+  "parent_commit": "2b061bb4f456cc6903e8bae0d586569931d107b1",
+  "rust": "1.99.1",
+  "native_unit_passed": 6,
+  "actual_browser_passed": 3,
+  "actual_browser_failed": 0,
+  "actual_browser_ignored": 0,
+  "workspace_all_targets": "passed",
+  "native_clippy": "passed -D warnings",
+  "wasm_clippy": "passed -D warnings",
+  "format": "passed",
+  "image_id": "sha256:70e8c4c20f1d99643981fb9c874ece3a362c1f28201bcdc711350d45b57750fe",
+  "firefox": "153.6.0esr",
+  "geckodriver": "0.37.1",
+  "wasm_bindgen_cli": "0.2.130",
+  "sandbox": {
+    "user": "65532:65532",
+    "network": "none",
+    "read_only": true,
+    "cap_drop": "ALL",
+    "no_new_privileges": true,
+    "sandbox_disabling_flags_authored": false,
+    "user_namespace": "EPERM reported by Firefox version command",
+    "complete_browser_sandbox_attestation": false
+  },
+  "production_js_sys_unsafe_eval_feature": false,
+  "full_runtime_qualified": false,
+  "browser_ready": false,
+  "unported": [
+    "L4",
+    "environment",
+    "guard",
+    "advanced",
+    "active CDP producers",
+    "generated bootstrap/distribution",
+    "session-bound collector/RIT transport/recovery",
+    "Pass",
+    "human/AT controls",
+    "full product e2e"
+  ],
+  "source": [
+    {
+      "path": ".github/workflows/collector-component.yml",
+      "sha256": "4be84a5584ccdefffa57903b7ff7bdff6d6687fad075489d51b9e04c2d94a6df"
+    },
+    {
+      "path": "build/rust/collector-browser.Dockerfile",
+      "sha256": "fb1c61e6ab0246f61876a92f2c41380ea2fd8a12259137a9fd2a98ed6ba6337e"
+    },
+    {
+      "path": "build/rust/collector-browser.Dockerfile.dockerignore",
+      "sha256": "f529463bdf455ee0b2d76e74150829281fbd3b28586143161ae1171e88ba0097"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "e32ae9b88639b5970a149bd069e25fa31e5cfd505d8e7f712a8be5c982c1bf0d"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "09b4b5fda741ac0ce46084b697424d2fb23b425b963099a686ccd1f43ac8f8a0"
+    },
+    {
+      "path": "crates/collector/Cargo.toml",
+      "sha256": "565540d2b3ebae0ee3c780d5668b4388bca8b489db126ba41c49fb9db30d9de4"
+    },
+    {
+      "path": "crates/collector/INTEGRATION.md",
+      "sha256": "d4fb148c70724ad7e733bcb82375e02ab38306dd4fd7446bcbea1dcc72aab51d"
+    },
+    {
+      "path": "crates/collector/src/browser/fingerprint.rs",
+      "sha256": "37b1c7a8877245bd1aec65c53427c302f09f1a8d6820f5e8cbbe3f34f151a268"
+    },
+    {
+      "path": "crates/collector/src/browser/integrity.rs",
+      "sha256": "b311dde0396222340759de1eda95b2198c11f3d0f29c430e1e99d17d3d1ee3b3"
+    },
+    {
+      "path": "crates/collector/src/browser/mod.rs",
+      "sha256": "cb44c6bb82374f37d7f6ea6c0c3177652ee16e0528b7de503e940bf0cdfdbbe3"
+    },
+    {
+      "path": "crates/collector/src/browser/reflection.rs",
+      "sha256": "3df1a58f3ae51acdddd62ca7ef93f6f27d31ef0b1d6f4a1819979e976ea6787e"
+    },
+    {
+      "path": "crates/collector/src/detection/fingerprint.rs",
+      "sha256": "688e6851e14bf570c229360721aa5956882f8f4ef0964d544e1c6b7ec6fe468e"
+    },
+    {
+      "path": "crates/collector/src/detection/integrity.rs",
+      "sha256": "22dede93a5b7ca07ce7250b4f09cf202e2a4cbf0ed510396a5acca47e844482d"
+    },
+    {
+      "path": "crates/collector/src/detection/mod.rs",
+      "sha256": "58f4dc31b0d0f52fe5c6491ae4dfd916609793267a57825fc9b2f82e403519c3"
+    },
+    {
+      "path": "crates/collector/src/detection/snapshot.rs",
+      "sha256": "e8c3262b6f0a96b0ff0eb3786b9e26d142ba4c535b9089dc81d586511f598c0c"
+    },
+    {
+      "path": "crates/collector/src/detection/static_client.rs",
+      "sha256": "d567f867f24ffa067622dd72db7d5e35daff9ef0101b82a55bdd9729e96b324a"
+    },
+    {
+      "path": "crates/collector/src/detection/tests.rs",
+      "sha256": "4f4e62064ca22f5a6390fdff8db9b1241a353efd7dc04f488e75cfd48ec880d2"
+    },
+    {
+      "path": "crates/collector/src/lib.rs",
+      "sha256": "2fcdf73a21b6e033ae30c41b97afcdfc382c0fbdad3383301dba7803e43ee7d9"
+    },
+    {
+      "path": "crates/signals/Cargo.toml",
+      "sha256": "9cfd61796e5b60b8aadf2f70545816390436ff0ffbcf7e247a8a086b433ea97e"
+    },
+    {
+      "path": "crates/signals/src/lib.rs",
+      "sha256": "439c8078d4e7eda349d62babfc51e6e3af31925c6fe76d5c3d27226b8a43c2c1"
+    },
+    {
+      "path": "crates/signals/src/observation/mod.rs",
+      "sha256": "89d4b01e8bf265133e577ea5d1e8b6e72c3c3054b4a9fc30aeec5f76da92d7ef"
+    },
+    {
+      "path": "crates/signals/src/observation/registry.json",
+      "sha256": "daa6d3f397c1f0b80e84e38e0bc08ad800eac1d35dbc72ddb9532c5fae14312e"
+    },
+    {
+      "path": "crates/signals/src/observation/registry.rs",
+      "sha256": "a3ded1435bb3c1e0ba4cf5a3ed6bade87b890a6deb0d3eef13d2fd731516f631"
+    },
+    {
+      "path": "crates/signals/src/observation/signal.rs",
+      "sha256": "ba42b74765c5fa9a66d8bc5589e20cdb580676a82f6995c9793441931cc34184"
+    },
+    {
+      "path": "crates/signals/src/observation/verdict.rs",
+      "sha256": "c7f57dbda88e71a59c6ba2dac3615f8148a3ec6cd012fb18ca496ca433fc4d9f"
+    },
+    {
+      "path": "crates/signals/src/observation/vocabulary.rs",
+      "sha256": "14bfe697108b680a1911fbf058e9276432de6671bf6445661c25587ae101de1b"
+    },
+    {
+      "path": "crates/signals/src/report/aggregation.rs",
+      "sha256": "824192b7c149d5809eb05a28ab0eeea6caaf808ce79512a24f015f4c11ce916c"
+    },
+    {
+      "path": "crates/signals/src/report/behavior.rs",
+      "sha256": "1fe90181c6d158038336358e203fd05f663e63d926e69b5d1cdefe4ae0ca6bb6"
+    },
+    {
+      "path": "crates/signals/src/report/client.rs",
+      "sha256": "9139618e60152294c21705584fed6b1973b2dbf46130e1fec81cbbadb8b660f6"
+    },
+    {
+      "path": "crates/signals/src/report/mod.rs",
+      "sha256": "907c1acbc341c52cb4169e0d43997648d0389e5aa94b8a6b735644e8fcc9515d"
+    },
+    {
+      "path": "crates/signals/src/report/network.rs",
+      "sha256": "3d126f8d7c09847051998d7d1bd267dcc47f09b214b61d2ff61b7665199eb362"
+    },
+    {
+      "path": "crates/signals/src/report/scoring.rs",
+      "sha256": "518497ccc0abd1b64589d81418241263a6a1b133b4ee59723cd5a9320b0aa402"
+    },
+    {
+      "path": "crates/signals/src/report/session.rs",
+      "sha256": "9c84a402f71690b646e3b2c64e23aee5e1a217bad38622440cb3b2d81455abe5"
+    },
+    {
+      "path": "crates/signals/src/report/timestamp.rs",
+      "sha256": "552dd3ba2af72d0ec762235da00b2bcec3543d1e4cce690a347f67606c08a72b"
+    },
+    {
+      "path": "crates/signals/src/wire/decode.rs",
+      "sha256": "af3d540fdf0fbf10f7f165a73a93ec0e56def8478e4c13a57caf88bd97891341"
+    },
+    {
+      "path": "crates/signals/src/wire/mod.rs",
+      "sha256": "5f6cf18336c6e6af907feb41e0ebb00ed6609a1d820e6286e8fd0b0a6bd080ea"
+    },
+    {
+      "path": "crates/signals/src/wire/unicode.json",
+      "sha256": "b1415483c6e97b437c7211e7e86d5c1772f9664e8a7ac32e0ca62c14484d2e17"
+    },
+    {
+      "path": "crates/signals/tests/fixtures/observations.json",
+      "sha256": "02fe6436254a243448e095855337e5ab5238771a96cd8314ed8061ae816a6e44"
+    },
+    {
+      "path": "crates/signals/tests/fixtures/reports.json",
+      "sha256": "84c7f771d7f70ff4473a5ced3c46a8074c58deb0fa89ec4f89688c2c8c247f13"
+    },
+    {
+      "path": "crates/signals/tests/observation_parity.rs",
+      "sha256": "fc35eafbd8a627e8be25161bf742d81e6b3dd8e18028ec800694e9dc58f44a4b"
+    },
+    {
+      "path": "crates/signals/tests/registry_integrity.rs",
+      "sha256": "e3d9956397991c270946754fd234181510c4b1e250597b5b4d7ff1c9de5cbf67"
+    },
+    {
+      "path": "crates/signals/tests/report_parity.rs",
+      "sha256": "4e4db0ff36539a095c2aeffcfe12d1bbbb7024bb22776ed24e7be0f74d4c9d35"
+    },
+    {
+      "path": "deployments/lab/compose.collector.yaml",
+      "sha256": "5e273955fdc276b6c295e4f43d40e7876d33bc60237c5ff4fb28c6c6a707dec5"
+    },
+    {
+      "path": "deployments/lab/topology/sandbox.yaml",
+      "sha256": "d0076dd836633981d94528e88c1a1d091ad97fee5ef7dee57103b3338bb593b1"
+    }
+  ],
+  "cargo_audit": {
+    "warnings": {
+      "unmaintained": [
+        {
+          "kind": "unmaintained",
+          "package": {
+            "name": "ttf-parser",
+            "version": "0.25.1",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "checksum": "d2df906b07856748fa3f6e0ad0cbaa047052d4a7dd609e231c4f72cee8c36f31",
+            "replace": null
+          },
+          "advisory": {
+            "id": "RUSTSEC-2026-0192",
+            "package": "ttf-parser",
+            "title": "`ttf-parser` is unmaintained",
+            "description": "The author of `ttf-parser` has stated that the crate is unmaintained and will not receive further fixes (see the referenced issue).\n\n## Alternative(s)\n\n- [`skrifa`](https://crates.io/crates/skrifa), an actively maintained TrueType and OpenType font parsing crate, part of the Google Fonts \"oxidize\" (`fontations`) project.",
+            "date": "2026-06-28",
+            "aliases": [],
+            "related": [],
+            "collection": "crates",
+            "categories": [],
+            "keywords": [],
+            "cvss": null,
+            "informational": "unmaintained",
+            "references": [],
+            "source": null,
+            "url": "https://github.com/harfbuzz/ttf-parser/issues/217",
+            "withdrawn": null,
+            "license": "CC0-1.0",
+            "expect-deleted": false
+          },
+          "affected": null,
+          "versions": {
+            "patched": [],
+            "unaffected": []
+          }
+        }
+      ]
+    },
+    "known_vulnerabilities": 0
+  }
+}
