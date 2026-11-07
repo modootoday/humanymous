@@ -14,6 +14,18 @@ rel:
 
 # Rust migration conventions
 
+## Bounded Fetch transport checkpoint
+
+Commit667e98f adds the Rust BrowserSession Fetch owner, final Request URL/header/body
+binding, complete bounded response ACK verification, one deadline, and explicit
+abort/Drop cleanup. Native50 and isolated Docker Firefox66 passed, including
+bootstrap cancellation/timeout; scoped WASM Clippy and formatting passed.
+The earlier PIDcap256 run failed with thread-creation EAGAIN and is retained;
+PIDcap1024 completed with the same artifact and isolation. These are component
+results only. Positive real-runtime bootstrap/ACK, fresh collector provenance,
+cookie/stream profiles and full product acceptance remain required. Detailed
+contract and lineage: sot:root/client-collector and plan:root/20261107055000.
+
 ## Client session and consumption ACK
 
 The actual Rust collector Session state parses exact provisioned bootstrap,

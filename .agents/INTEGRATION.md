@@ -10,12 +10,23 @@ public git-binding.json distinguishes canonical Git identity from dirty snapshot
 
 ## Exact root Cargo delta
 
+Root integration in progress: the working root workspace now includes this
+member and scripts/ci/delivery (27members total, including the Node/nginx adapters
+and product-lab crates). This crate's standalone
+workspace table and lock were retired; the original lock is preserved as a
+private Specfold attachment before removal. Actual shared-root --locked tests
+passed7unit+4process and strict Clippy. This is a working-tree integration
+checkpoint; final common-manifest commit, exact-source CI and upstream named
+plugin eval remain separate unfinished gates. Delivery's16unit tests also passed
+in that common lock, without claiming whole-workspace/product qualification.
+
 Add `skills/agent-maintenance` to root workspace members and remove only its
 standalone `[workspace]` table. Keep package publish=false, edition2024 and
 rust-version1.99.1. Root resolves Cargo.lock; dependencies are serde1.0,
 serde_json1.0, regex1.12 semver (resolved1.13.1 in local lock), sha2 0.10.9.
-The standalone lock is intentionally committed until integration; root should
-retire it after workspace locked tests pass. No common Cargo files were edited here.
+The original standalone lock is preserved privately and its tracked copy is
+pending removal in the root integration commit after the shared-root locked tests.
+The root owner, rather than this component owner, edits the common Cargo files.
 
 ## Run and source boundaries
 
