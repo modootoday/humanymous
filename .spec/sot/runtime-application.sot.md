@@ -1136,8 +1136,9 @@ Missing and incomplete outcomes are preserved explicitly:
   not reconstruct skipped observations or clear that gap automatically.
 - anomaly warmup/evicted_key describes limited history, not established normal
   behavior or continuity. Rate IgnoredEmptyKey is not a measured Normal0.
-- rate::Coverage::WindowExpanded stays incomplete through its reported bound;
-  Retained means no known expansion gap only, never healthy complete capture.
+- rate::Coverage::WindowExpanded applies while now<complete_after. At equality
+  the kernel returns Retained for that expansion gap only; unrelated latched
+  admission gaps remain. Retained never means healthy complete capture.
 - correlation::Stats::Absent and Scope::MissingKey are missing, not zero counts.
   LocalOnly/LocalDegraded/CoordinatorReportedUnqualified retain their exact origin;
   none qualifies required fleet coverage. A trait callback/Reported vector is not
@@ -1154,7 +1155,12 @@ same application observation twice. No automatic replay/reset of temporal state
 can make a failed request look unobserved or healthy.
 
 The kernels commit individually, not as a cross-module transaction. Runtime must
-track which ordered calls actually committed: if a later module refuses, preserve
+track operation AND outcome category, not assume Ok means an append. Rate
+IgnoredEmptyKey and correlation Scope::MissingKey do not commit clock/history;
+traffic::check and rate::level are pure inspections. Correlation Registry already
+feeds one internal generic MAD population: Runtime must not feed the same
+correlation sample into an additional MAD detector. For calls that actually
+committed, if a later module refuses, preserve
 prior facts and a composite coverage gap; neither roll back earlier histories nor
 retry them as a fresh observation. A private progress record is not a public
 healthy capability. Session/observer epoch changes, configuration expansion,
