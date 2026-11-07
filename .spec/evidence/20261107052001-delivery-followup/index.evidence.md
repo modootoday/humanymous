@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T15:39:21Z
+updated: 2026-11-07T15:59:39Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -28,6 +28,8 @@ files:
   - {path: native-b09e98cf-summary.json, sha256: 91a0f60a662ab9c1fbf7412134b9079a9f53fc35af5316fa5ffb3344ebf02f40, bytes: 2575, store: repo}
   - {path: coherent-helper-90-validation.json, sha256: fbca7da38d124df2ec1007765d36177af2c8f93979b426ae710a11b49f70b063, bytes: 2706, store: repo}
   - {path: wargame-306eedc8-targeted-preflight.json, sha256: fd4bb0d70ec7331eb60ccf7e515bc31b3f736ac8ce692dd60c4aa92915bd411e, bytes: 1804, store: repo}
+  - {path: wargame-306eedc8-hosted-summary.json, sha256: 3d33c57f6ef9a4ba712f47cee437694a0c99cff9b271688a39c06b7a0a52b978, bytes: 9973, store: repo}
+  - {path: wargame-306eedc8-required-boundaries.json, sha256: 6918ae9e80c45db9877dce443dbe260ff9aacad65f92afd0e15fc1d5b4b1fa48, bytes: 6632, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -432,3 +434,36 @@ zero differences. Private index SHA256 is
 This resolves the selected local dependency compile preflight after the Network
 import/docs correction; GNU-specific paths and actual26 Docker measurement remain
 unexecuted. No push/dispatch or release-readiness promotion follows from this proof.
+
+## Actual strict 26-case Wargame measurement
+
+wargame-306eedc8-hosted-summary.json preserves terminal run42387564172 at exact
+306eedc8: Ubuntu preflight succeeded and product failed, with zero artifacts.
+Preflight executed attacker17/defender8/Lab26/Delivery90 tests without failures,
+ignored or filtered cases, then runtime check/strict Clippy/policy passed. The
+Unix owned-file fixture actually observed sparse allocation before canonical
+regular-member archive verification; this is not a production binary archive.
+
+The product returned a valid scoped strict26 receipt:19 evaluated and matching,
+7 unsupported, zero errors/skips/mismatches. Ordered unique indices0..25 and all
+six totals were independently recomputed. Lab72 assertions passed, but exit2 and
+9 required unavailable boundaries kept full qualification false. Delivery remains
+blocked/component-only with ten required cases blocked, source unchanged and
+release_ready false. Two observed Docker image identities do not prove CVE or
+notice extraction. Original raw SHA256 is
+0edae80d11a0ad3d9c4d7baf027ddb1a85f35ea0ad787ad22031461ad4736930;
+Lab and Delivery source manifests remain distinct. The original private report
+body was not recovered and was not independently rehashed here.
+
+Decoded connector and authenticated CLI public summaries matched. Immutable
+private capture index SHA256 is
+c5653a39b428d4d85cbe8a8d77110d1feb84ad02113d4b06915d1e7f51400454.
+No repeat dispatch/push, publication or OIDC exchange occurred.
+
+wargame-306eedc8-required-boundaries.json maps the observed unsupported indices
+to deterministic source-derived IDs and preserves the nine literal unavailable
+labels with exact-source lower-module/SoT pointers. Wargame independently derived
+the same seven index/ID pairs. Public receipt IDs were not observed: no original
+raw report body was recovered. The nine labels have no stable case IDs in306.
+Pointers guide root coordination, not qualification or deployment authorization;
+T4 remains the intentional ceiling and scoring remains frozen.

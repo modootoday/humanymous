@@ -953,3 +953,20 @@ performed no push or dispatch. GNU cfg paths and actual strict26 Docker receipt,
 corrected native binary archive, image build/notice extraction/CVE scan and full
 shipping qualification remain missing. Public targeted-preflight evidence retains
 these venue boundaries and the immutable private index hash.
+
+Actual hosted Wargame42387564172 on306eedc8 is terminal failure, preserving the
+required full gate. Its successful Ubuntu preflight qualifies the Unix sparse
+owned-file fixture and attacker17/defender8/Lab26/Delivery90/check/strictClippy/
+policy. The actual Docker product produced the valid strict26 scoped receipt:
+19 evaluated/matching,7 unsupported,0 errors/skips/mismatches, all indices and six
+totals independently recomputed. Lab72 assertions passed;9 unavailable required
+boundaries and exit2 keep full qualification false. Delivery source stayed
+unchanged, overall blocked/component-only, artifacts0. Original private raw bytes
+remain unavailable for an independent rehash; owning verifier hash attestation
+is retained. Public terminal summary and immutable private capture index preserve
+this distinction. No retry is required to establish the scoped26 measurement;
+full product, corrected production native archive and image scan/extraction gates
+remain unmet. Existing CEF d214 run42388354925 is separately live; no old ec4
+qualification transfers to it. Pages29096 candidate review preserves five explicit
+CRLF/LF differences and excluded review metadata rather than claiming raw127-byte
+identity; root owns its single existing build-only branch transaction.

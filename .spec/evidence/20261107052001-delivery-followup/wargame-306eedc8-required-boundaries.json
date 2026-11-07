@@ -1,0 +1,201 @@
+{
+  "schema": "humanymous.wargame-required-boundary-map/1",
+  "source_commit": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+  "run_id": 42387564172,
+  "scope": "Source-derived implementation coordination, separate from the observed public status receipt",
+  "unsupported_source_schedule": [
+    {
+      "index": 0,
+      "id": "accessible-pass-human"
+    },
+    {
+      "index": 9,
+      "id": "audit-outage-network-injection"
+    },
+    {
+      "index": 10,
+      "id": "assistive-technology-human"
+    },
+    {
+      "index": 16,
+      "id": "ordinary-browser-human"
+    },
+    {
+      "index": 18,
+      "id": "full-gate-original-tls-h2"
+    },
+    {
+      "index": 20,
+      "id": "signed-remote-installation"
+    },
+    {
+      "index": 22,
+      "id": "coherent-T4-browser"
+    }
+  ],
+  "schedule_source": [
+    "crates/attacker/src/network/cases.rs::catalog",
+    "crates/attacker/src/catalog.rs::shuffle",
+    "test/lab/runtime/src/wargame.rs::run (seed 42)"
+  ],
+  "raw_case_ids_independently_observed": false,
+  "required_unavailable_source": [
+    "test/lab/runner/src/orchestration.rs",
+    "test/lab/runner/src/orchestration/requirement.rs"
+  ],
+  "required_unavailable": [
+    {
+      "ordinal": 0,
+      "label": "full Gate TLS/H2/capture",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Runtime",
+        "Network/Capture",
+        "Lab"
+      ],
+      "pointers": [
+        "crates/runtime/src/tls.rs",
+        "crates/runtime/src/http.rs",
+        "crates/network/src/tls/mod.rs",
+        "crates/network/src/http2/mod.rs",
+        ".spec/sot/network-capture.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 1,
+      "label": "session-bound real browser collector",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Collector",
+        "Browser",
+        "Lab"
+      ],
+      "pointers": [
+        "crates/collector/src/session/mod.rs",
+        "test/lab/runner/src/orchestration/browser.rs",
+        "test/lab/runner/src/orchestration/browser_actor.rs",
+        ".spec/sot/client-collector.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 2,
+      "label": "Pass recovery",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Challenge/Pass",
+        "Runtime",
+        "Lab"
+      ],
+      "pointers": [
+        "crates/challenge/src/pass/mod.rs",
+        "crates/challenge/src/pass/verification.rs",
+        ".spec/sot/pass-protocol.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 3,
+      "label": "human/keyboard/assistive controls",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Browser",
+        "Lab"
+      ],
+      "pointers": [
+        "crates/browser/NATIVE-QUALIFICATION.md",
+        ".spec/sot/browser-ui.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 4,
+      "label": "runtime binary authenticated witness transport",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Runtime",
+        "Authority",
+        "Lab"
+      ],
+      "pointers": [
+        "test/lab/runner/src/orchestration/witness.rs",
+        "crates/authority/src/protocol.rs",
+        "crates/authority/src/decision.rs",
+        ".spec/sot/runtime-application.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 5,
+      "label": "cross-namespace origin/audit effect product binding",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Audit",
+        "Runtime",
+        "Lab"
+      ],
+      "pointers": [
+        "crates/defender/src/lab/snapshot.rs",
+        "test/lab/runtime/src/wargame.rs",
+        "deployments/lab/compose.rust.witness.yaml",
+        ".spec/sot/audit-key-custody.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 6,
+      "label": "signed remote target attestation",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Root/Authority",
+        "Lab"
+      ],
+      "pointers": [
+        "crates/attacker/src/network/cases.rs",
+        ".spec/sot/adapter-authority.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 7,
+      "label": "native OS qualification",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Native Security",
+        "Browser",
+        "CI"
+      ],
+      "pointers": [
+        "crates/test-support/src/process/capture_attempt.rs",
+        "crates/browser/NATIVE-QUALIFICATION.md",
+        ".spec/sot/native-security.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    },
+    {
+      "ordinal": 8,
+      "label": "provider deployment",
+      "stable_case_id": null,
+      "coordination_owners": [
+        "Root",
+        "Lab",
+        "CI"
+      ],
+      "pointers": [
+        "deployments/lab/providers/preflight.example.json",
+        "deployments/lab/INTEGRATION.md",
+        ".spec/sot/container-test-environments.sot.md"
+      ],
+      "status": "Unavailable in the exact generic 306 hosted profile; later owner source and qualification must be assessed separately"
+    }
+  ],
+  "limitations": [
+    "The nine source entries are descriptive labels, not stable case IDs; ordinals preserve their literal source order.",
+    "Pointers identify owning seams for root coordination, not permission or proof that any current owner implementation is absent.",
+    "Coherent T4 browser is the intentional detection ceiling, not a target for new scoring rules.",
+    "Human and assistive capability observations require genuine suitable participants/environment; synthetic events cannot satisfy them.",
+    "Provider deployment is a missing gate only; this mapping authorizes no deployment or registry publication.",
+    "No changed scoring, retries, execution or qualification promotion."
+  ]
+}
