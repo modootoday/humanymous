@@ -1,6 +1,8 @@
 //! Minimal Windows M138+ bootstrap client. UI DLLs never load in subprocesses.
 #![deny(unsafe_code)]
 #![cfg(windows)]
+#[path = "../../shared/scheme.rs"]
+mod owner_scheme;
 mod renderer_probe;
 /// Upstream bootstrapc.exe owns argc/argv and the sandbox pointer for this call.
 ///

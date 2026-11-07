@@ -109,6 +109,7 @@ impl NativeWindowHost for Host {
 struct Pilot {
     driver: NativeWindowDriver,
     document: NativeDocumentHandle,
+    controls: crate::browser_controls::Controls,
     dock: humanymous_browser::viewport::InspectorDock,
     registrar: NativeChildRegistrar<CefChild>,
     state: Shared,
@@ -133,6 +134,14 @@ use report::Report;
 impl Pilot {
     fn tick(&mut self) -> io::Result<()> {
         self.ticks += 1;
+        if !self.close_requested
+            && self
+                .state
+                .lock()
+                .is_ok_and(|s| s.created && !s.revoked && !s.closed)
+        {
+            self.controls.poll()?;
+        }
         if let Ok(dock) = self
             .document
             .try_with(humanymous_browser::ui::inspector_dock)
@@ -348,6 +357,11 @@ impl ApplicationHandler for Pilot {
         }
         let frame_event = event.clone();
         self.driver.window_event(event_loop, id, event);
+        if !self.close_requested
+            && let Err(error) = self.controls.event(&frame_event)
+        {
+            self.fail(event_loop, error);
+        }
         if let Some(parent) = &self.parent
             && !self.close_requested
             && let Ok(Err(error)) = parent.with_parent(|scoped| {
@@ -438,6 +452,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let failure = Rc::new(RefCell::new(None));
     event_loop.run_app(Pilot {
         driver,
+        controls: crate::browser_controls::Controls::new(document.clone(), state.clone()),
         document,
         dock: humanymous_browser::viewport::InspectorDock::Hidden,
         registrar,
@@ -460,6 +475,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     {
         let mut report = report.borrow_mut();
         if let Ok(state) = state.lock() {
+            report.navigation_receipts = state.navigation.receipts.clone();
             report.cef_key_events = state.key_events;
             report.cef_editable_key_events = state.editable_key_events;
             report.cef_focus_events = state.focus_events;

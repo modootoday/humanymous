@@ -3,7 +3,7 @@ id: sot:root/chromium-lab-browser
 title: Rust Chromium laboratory browser and observation adapters
 status: active
 created: 2026-11-06T23:34:52Z
-updated: 2026-11-07T04:17:05Z
+updated: 2026-11-07T05:36:25Z
 verify: manual
 rel:
   depends_on: [sot:root/adapter-ecosystem, sot:root/adapter-service-contract, sot:root/adapter-authority, sot:root/automation-evidence, sot:root/accessibility-agent-tools, sot:root/mobile-agent-tools, sot:root/crate-architecture, sot:root/cross-os-runners]
@@ -11,7 +11,7 @@ rel:
 
 # Rust Chromium laboratory browser
 
-Document version 0.3.0. The research/UI expansion below is authoritative. Initial research checked 2026-11-07 KST; three read-only agents
+Document version 0.4.0. The research/UI expansion below is authoritative. Initial research checked 2026-11-07 KST; three read-only agents
 examined embedding, observation/adapters and security/distribution. The initial research performed no builds or browser executions; later bounded Windows native evidence is separate. This document adds no
 scoring rule, runtime implementation, probing permission or production coverage.
 
@@ -239,8 +239,8 @@ contract and tests while retaining the one shared enforcement authority.
 | Milestone | Deliverable/gate | Current status |
 | --- | --- | --- |
 | B0 | Research, Rust-only constraints, trust/observation contracts | Research complete; detailed wire schema pending |
-| B1 | Rust supervisor + pinned external-engine diagnostic pilot | Not implemented; not embedded completion |
-| B2 | Meari Rust native UI + sandboxed CEF shell, tabs/navigation/permissions | Not implemented; interactive surface/toolchain and six native tuple qualification pending |
+| B1 | Rust supervisor + pinned external-engine diagnostic pilot | Pinned actual embedded CEF bootstrap pilot exists; independent supervisor/observer wire completion pending |
+| B2 | Meari Rust native UI + sandboxed CEF shell, tabs/navigation/permissions | Windows x64 bounded actual child/UI/newtab/internal-page pilot implemented; full sandbox/external navigation/history/multi-tab and other native tuples pending |
 | B3 | Actual collector/session/ingress adapters and receipt join | Not implemented; existing missing-plane gates retained |
 | B4 | Owned automation/AT controls, streaming/failure matrix | Not run |
 | B5 | Signed clean-machine packages, update/CVE/SBOM, authored Pages docs | Not implemented/not run |
@@ -533,7 +533,31 @@ flags), but availability varies with exact build/style/configuration. Read-only
 engine diagnostics require an exact-path allowlist, private-data display/export
 rules and measured per-tuple support; settings/flags/debugging/crash URLs remain
 separately denied unless explicitly admitted by policy. Never grant arbitrary
-chrome:// access or weaken sandbox from scheme recognition. Current fixture pilot
-admits none; internal URL loading is not_run. Primary references:
+chrome:// access or weaken sandbox from scheme recognition. The historical fixture pilot
+admitted none; current applied support is RSRCH-20 below. Primary references:
 https://github.com/chromiumembedded/cef/issues/3892 and
 https://github.com/chromiumembedded/cef/blob/master/docs/tutorial.md.
+
+
+RSRCH-19: User-authorized newtab/internal diagnostics implementation follows
+UI-17..22 in sot:root/browser-ui and plan:root/20261107050329. Distinguish upstream
+registered URL, measured rendering support, product admission and state-changing
+or destructive policy refusal. Pinned CEF156 sources show browser-initiated
+quit/restart can act before OnBeforeBrowse; strict host preflight is mandatory.
+chrome-urls exposes debug-page preference mutation and remains policy-denied.
+Current matrix must be established by actual safe-page probes; no arbitrary
+chrome:// compatibility or full sandbox qualification follows from engine branding.
+
+
+RSRCH-20: Accepted/implemented/native-observed Windows x64 ALLOY matrix is
+humanymous newtab plus chrome version/gpu/credits/license/sandbox, per UI-17..24
+and evidence:root/20261107053625. Unknown and state-changing/destructive chrome
+URLs stay denied. Bounded local diagnostics are available while external HTTP(S)
+navigation and BrowserReady remain false. SDK/CLI/framework extension creates no
+permission to browse or bypass a missing sandbox premise. These pages do not
+expand website-visible detection signals or change scoring. Full network sandbox
+is a known gap: WebUI reported Network Service Not Sandboxed; independent native
+attestation remains outstanding. Actual browser lifecycle/OS-focus/resize/cleanup
+receipts do not complete B0-B5. Observer wire/session joins, cross-OS/AT/IME/DPI,
+Chrome comparison and signed distribution are tracked by the owning browser plan
+and INTEGRATION rather than inferred from partial green.

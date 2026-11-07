@@ -43,6 +43,26 @@ fn element(tag: &str, attributes: &[(&str, &str)], children: Vec<Node>) -> Node 
     }
 }
 
+fn navigation_button(id: &str, label: &str, icon: crate::icons::Icon, enabled: bool) -> Node {
+    let mut node = element(
+        "button",
+        &[
+            ("id", id),
+            ("aria-label", label),
+            ("title", label),
+            ("className", "nav-button"),
+        ],
+        vec![crate::icons::node(icon)],
+    );
+    if !enabled && let NodeKind::Element { attributes, .. } = &mut node.kind {
+        attributes.push(Attribute {
+            name: "disabled".into(),
+            value: Value::Bool(true),
+        });
+    }
+    node
+}
+
 /// Browser-first native shell. Actual page pixels are owned by the CEF child.
 pub fn component() -> Component {
     component_with_window_controls(false)
@@ -179,10 +199,14 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
                                 &[
                                     ("role", "tab"),
                                     ("aria-selected", "true"),
-                                    ("aria-label", "Local fixture tab"),
+                                    ("aria-label", "Current browser tab"),
                                     ("className", "page-tab"),
                                 ],
-                                vec![text("Local fixture")],
+                                vec![element(
+                                    "span",
+                                    &[("id", "page-tab-label")],
+                                    vec![text(if enabled { "New tab" } else { "No target" })],
+                                )],
                             )],
                         ),
                         disabled_button("+", "New tab unavailable in this prototype"),
@@ -200,21 +224,56 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
                     vec![
                         disabled_button("←", "Back unavailable"),
                         disabled_button("→", "Forward unavailable"),
-                        disabled_button("Reload", "Reload unavailable"),
+                        navigation_button(
+                            "nav-home",
+                            "New tab page",
+                            crate::icons::Icon::Home,
+                            enabled,
+                        ),
+                        navigation_button(
+                            "nav-reload",
+                            "Reload local page",
+                            crate::icons::Icon::Reload,
+                            enabled,
+                        ),
                         element(
                             "Input",
                             &[
                                 ("id", "address"),
-                                ("defaultValue", "about:blank"),
-                                ("aria-label", "Address — editing only; navigation locked"),
+                                (
+                                    "defaultValue",
+                                    if enabled {
+                                        crate::internal_urls::NEW_TAB_URL
+                                    } else {
+                                        "about:blank"
+                                    },
+                                ),
+                                (
+                                    "aria-label",
+                                    if enabled {
+                                        "Address — local pages only"
+                                    } else {
+                                        "Address — editing only; navigation locked"
+                                    },
+                                ),
                                 ("className", "address"),
                             ],
                             vec![],
                         ),
+                        navigation_button(
+                            "nav-go",
+                            "Open address",
+                            crate::icons::Icon::Forward,
+                            enabled,
+                        ),
                         element(
                             "span",
-                            &[("role", "status"), ("className", "mode-badge")],
-                            vec![text("LOCAL · LOCKED")],
+                            &[
+                                ("role", "status"),
+                                ("id", "navigation-status"),
+                                ("className", "mode-badge"),
+                            ],
+                            vec![text(if enabled { "LOCAL ONLY" } else { "NOT READY" })],
                         ),
                         element(
                             "TabsList",
@@ -312,7 +371,7 @@ body{margin:0;background:#101620;color:#e8edf7;font-family:system-ui;font-size:1
 .nav-button{width:30px;height:30px;padding:0;border:0;border-radius:5px;background:transparent;color:#8592a8;font-size:18px}
 .nav-button.reload{width:30px}
 .address{flex:1;min-width:120px;height:34px;padding:5px 12px;border:1px solid #43536e;border-radius:18px;background:#101925;color:#edf3ff}
-.mode-badge{font-size:10px;color:#9fbbc7;white-space:nowrap;padding:0 6px}
+.mode-badge{max-width:210px;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:#9fbbc7;white-space:nowrap;padding:0 6px}
 .dock-controls{display:flex;gap:2px;height:32px;padding:2px;background:#101925;border-radius:6px}
 .dock-controls button{height:28px;padding:3px 8px;border:0;border-radius:4px;background:#202f45;color:#d8e7fb;font-size:12px}
 .resize-hit{position:absolute;z-index:20}

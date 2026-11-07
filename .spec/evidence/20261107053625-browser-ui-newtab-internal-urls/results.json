@@ -1,0 +1,556 @@
+{
+  "schema": "humanymous.browser.newtab-qualification.v1",
+  "scope": "bounded Windows native pilot; BrowserReady=false; external browsing denied",
+  "tuple": {
+    "os": "Windows 11 build 26200.9711",
+    "arch": "x86_64-pc-windows-msvc",
+    "rust": "1.99.1",
+    "edition": 2024,
+    "cef": "156.0.15+gcf671c0",
+    "chromium": "156.0.8078.80",
+    "cef_rs_rev": "224a785c7b41758b51821cbb7395ea57ba493a63",
+    "meari_rev": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+    "runtime_style": "ALLOY",
+    "cef_api": 15600
+  },
+  "final_native_pilot": {
+    "exit_code": 0,
+    "before_close": true,
+    "host_closed": true,
+    "renderer_restricted_token_observed": true,
+    "renderer_file_probe_outcomes": [
+      {
+        "read_os_error": 5,
+        "create_os_error": 5
+      }
+    ],
+    "receipts": [
+      {
+        "generation": 1,
+        "route": "humanymous://newtab/",
+        "phase": "creation_requested",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 1,
+        "route": "humanymous://newtab/",
+        "phase": "committed",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 1,
+        "route": "humanymous://newtab/",
+        "phase": "load_end",
+        "code": 200,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 1,
+        "route": "humanymous://newtab/",
+        "phase": "content_observed",
+        "code": 0,
+        "bytes": 4409,
+        "identity": true
+      },
+      {
+        "generation": 2,
+        "route": "chrome://version/",
+        "phase": "request_accepted",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 2,
+        "route": "chrome://version/",
+        "phase": "committed",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 2,
+        "route": "chrome://version/",
+        "phase": "load_end",
+        "code": 200,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 2,
+        "route": "chrome://version/",
+        "phase": "content_observed",
+        "code": 0,
+        "bytes": 9340,
+        "identity": true
+      },
+      {
+        "generation": 3,
+        "route": "chrome://gpu/",
+        "phase": "request_accepted",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 3,
+        "route": "chrome://gpu/",
+        "phase": "committed",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 3,
+        "route": "chrome://gpu/",
+        "phase": "load_end",
+        "code": 200,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 3,
+        "route": "chrome://gpu/",
+        "phase": "content_observed",
+        "code": 0,
+        "bytes": 632,
+        "identity": true
+      },
+      {
+        "generation": 4,
+        "route": "chrome://credits/",
+        "phase": "request_accepted",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 4,
+        "route": "chrome://credits/",
+        "phase": "committed",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 4,
+        "route": "chrome://credits/",
+        "phase": "load_end",
+        "code": 200,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 4,
+        "route": "chrome://credits/",
+        "phase": "content_observed",
+        "code": 0,
+        "bytes": 5225290,
+        "identity": true
+      },
+      {
+        "generation": 5,
+        "route": "chrome://license/",
+        "phase": "request_accepted",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 5,
+        "route": "chrome://license/",
+        "phase": "committed",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 5,
+        "route": "chrome://license/",
+        "phase": "load_end",
+        "code": 200,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 5,
+        "route": "chrome://license/",
+        "phase": "content_observed",
+        "code": 0,
+        "bytes": 1754,
+        "identity": true
+      },
+      {
+        "generation": 6,
+        "route": "chrome://sandbox/",
+        "phase": "request_accepted",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 6,
+        "route": "chrome://sandbox/",
+        "phase": "committed",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 6,
+        "route": "chrome://sandbox/",
+        "phase": "load_end",
+        "code": 200,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 6,
+        "route": "chrome://sandbox/",
+        "phase": "content_observed",
+        "code": 0,
+        "bytes": 8405,
+        "identity": true
+      },
+      {
+        "generation": 7,
+        "route": "humanymous://newtab/",
+        "phase": "request_accepted",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 7,
+        "route": "humanymous://newtab/",
+        "phase": "committed",
+        "code": 0,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 7,
+        "route": "humanymous://newtab/",
+        "phase": "load_end",
+        "code": 200,
+        "bytes": 0,
+        "identity": false
+      },
+      {
+        "generation": 7,
+        "route": "humanymous://newtab/",
+        "phase": "content_observed",
+        "code": 0,
+        "bytes": 4409,
+        "identity": true
+      }
+    ]
+  },
+  "admitted_routes": [
+    "humanymous://newtab/",
+    "chrome://version/",
+    "chrome://gpu/",
+    "chrome://credits/",
+    "chrome://license/",
+    "chrome://sandbox/"
+  ],
+  "policy_denied_examples": [
+    "chrome://newtab/",
+    "chrome://chrome-urls/",
+    "chrome://settings/",
+    "chrome://flags/",
+    "chrome://inspect/",
+    "chrome://crash/",
+    "chrome://hang/",
+    "chrome://quit/",
+    "chrome://restart/",
+    "unknown chrome hosts",
+    "external HTTP(S)"
+  ],
+  "tests": {
+    "core": {
+      "passed": 24,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native": {
+      "passed": 13,
+      "failed": 0,
+      "ignored": 0
+    },
+    "security_override_feature_test": {
+      "passed": 1,
+      "failed": 0,
+      "filtered": 2,
+      "negative_flags": 4,
+      "profiles_created": 0
+    },
+    "clippy_core": "pass -D warnings",
+    "clippy_native": "pass -D warnings",
+    "targeted_fmt": "pass"
+  },
+  "native_gui": {
+    "source_snapshot": "source-at-focus-run.json",
+    "desktop_dll_sha256": "640e2cfcd261d8bc0655bd5d088dab90c90af60fa276f7e50275e081b2d190fb",
+    "checks": [
+      {
+        "action": "native-address-keyboard-enter",
+        "license": true,
+        "licenseContent": true,
+        "committedAddress": true
+      },
+      {
+        "action": "home-after-keyboard",
+        "newtab": true,
+        "address": true
+      },
+      {
+        "action": "newtab-native-resize",
+        "width": 988,
+        "newtab": true
+      }
+    ],
+    "predecessor_checks": [
+      {
+        "action": "newtab-version-link",
+        "versionDocument": false,
+        "address": false,
+        "versionFields": true
+      },
+      {
+        "action": "version-after-settle",
+        "versionFields": true,
+        "address": true
+      },
+      {
+        "action": "home-return",
+        "newtab": true,
+        "address": true
+      },
+      {
+        "action": "gpu-visible",
+        "document": true,
+        "graphicsStatus": true,
+        "address": true
+      },
+      {
+        "action": "newtab-form-enter",
+        "sandbox": true,
+        "sandboxStatus": true,
+        "address": true
+      }
+    ],
+    "pre_focus_fix_checks": [
+      {
+        "action": "final-newtab-render",
+        "newtab": true,
+        "charsetClean": true
+      },
+      {
+        "action": "credits-visible",
+        "credits": true,
+        "thirdParty": true,
+        "address": true
+      }
+    ],
+    "resize_readbacks": 2,
+    "parent_key_events": 16,
+    "before_close": true,
+    "host_closed": true,
+    "known_tool_limit": "Native shell AX elements have no cached click bounds; coordinate clicks used. Page AX contents observed. OS screen-reader qualification not established."
+  },
+  "preserved_failures": [
+    {
+      "run": "initial 4MiB source budget",
+      "route": "chrome://credits/",
+      "phase": "source_budget_exceeded",
+      "bytes": 5225290
+    },
+    {
+      "run": "before OS-focus fix",
+      "failure": "Native address focus ring changed but Ctrl+A/text reached CEF page; fixed with scoped parent SetFocus/readback and native replay."
+    },
+    {
+      "run": "initial newtab revision",
+      "failure": "UTF-8 punctuation was corrupted by a development text rewrite; fixed source and explicit charset metadata; final AX/visual characters clean."
+    },
+    {
+      "run": "build iterations",
+      "failure": "Missing Visual Studio/CMake environment, trait method spelling/type errors, unnecessary cast Clippy finding, concurrent root-lock resolution and invalid external-workspace test selections. Logs/transcript distinctions retained privately."
+    }
+  ],
+  "remaining": [
+    "Full sandbox qualification false; sandbox WebUI reported Network Service Not Sandboxed and RendererAppContainer disabled. Not independent OS policy attestation.",
+    "Transient GPU child exit78 observed; GPU diagnostics subsequently populated hardware acceleration status. GPU/job/utility/network/signing qualification incomplete.",
+    "Version document showed a broken Chromium logo in an earlier native observation; full builtin assets/Chrome parity not qualified.",
+    "Host font fallback used; canonical Noto runtime fonts not present.",
+    "Native shell AX click bounds, OS screen readers, new-layout Korean composition/candidate placement/selection, high DPI/multi-monitor and all native tuples remain unqualified.",
+    "External navigation/history/multi-tab, observers/server join, clean-machine signing/update/distribution and product Docker e2e remain incomplete.",
+    "Final post-GUI source only adds explicit download refusal. Final artifact native safe-page probe/cleanup passes; its export-denial callback is not interactively exercised."
+  ],
+  "final_artifacts": {
+    "humanymous_cef_bootstrap.exe": "f3992741bc06d43cafc568aefcc80b2c740121d9adf0eda19a314e1a72699ded",
+    "humanymous_cef_bootstrap.dll": "a343b874af239d3cc4b25430c0d3decdbb50b0f3771ae35b13b13b83ad1e2177",
+    "humanymous_cef_desktop.dll": "56f53189b02eb738256bb460bed49c6dc7ccabd812fae0487345ec182de650fd",
+    "libcef.dll": "07168eacd81bc09ab9ab895d39bc1a80913b09c844f0b5a4730f5f89a71133f5"
+  },
+  "final_source": {
+    "schema": "humanymous.browser.validated-source.v1",
+    "base_git_head": "83397fd5d7289a326b890aa547a8f9e1a04fe03f",
+    "files": {
+      "crates/browser/Cargo.toml": {
+        "working_sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1",
+        "canonical_lf_sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1"
+      },
+      "crates/browser/src/frame_geometry.rs": {
+        "working_sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247",
+        "canonical_lf_sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247"
+      },
+      "crates/browser/src/icons.rs": {
+        "working_sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5",
+        "canonical_lf_sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5"
+      },
+      "crates/browser/src/internal_urls.rs": {
+        "working_sha256": "017b5f67f73e7716891307379807a3bf759e3594700b92c160e36e845402bf8d",
+        "canonical_lf_sha256": "017b5f67f73e7716891307379807a3bf759e3594700b92c160e36e845402bf8d"
+      },
+      "crates/browser/src/lib.rs": {
+        "working_sha256": "4099a2f1b0a2131d5625d866856fb2b488a83fe6d831b849df197dd185bed839",
+        "canonical_lf_sha256": "4099a2f1b0a2131d5625d866856fb2b488a83fe6d831b849df197dd185bed839"
+      },
+      "crates/browser/src/lifecycle.rs": {
+        "working_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+        "canonical_lf_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344"
+      },
+      "crates/browser/src/main.rs": {
+        "working_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+        "canonical_lf_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8"
+      },
+      "crates/browser/src/newtab.rs": {
+        "working_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+        "canonical_lf_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2"
+      },
+      "crates/browser/src/policy.rs": {
+        "working_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+        "canonical_lf_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626"
+      },
+      "crates/browser/src/ui.rs": {
+        "working_sha256": "f54f32164faca9940f9d584e599ab69f885f511c83d8fa59b28fc77a58a22ea0",
+        "canonical_lf_sha256": "f54f32164faca9940f9d584e599ab69f885f511c83d8fa59b28fc77a58a22ea0"
+      },
+      "crates/browser/src/ui_navigation.rs": {
+        "working_sha256": "6c8d5d259a740e42d29f27b7ccd23cb77438a4c559171157b558bd1c8d71b31f",
+        "canonical_lf_sha256": "6c8d5d259a740e42d29f27b7ccd23cb77438a4c559171157b558bd1c8d71b31f"
+      },
+      "crates/browser/src/viewport.rs": {
+        "working_sha256": "c5a772451a389b9bde10ad0378f4cecb316ee756e0044d05f7f8c45d733c0db4",
+        "canonical_lf_sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329"
+      },
+      "crates/browser/src/window_chrome.rs": {
+        "working_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+        "canonical_lf_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c"
+      },
+      "crates/browser/native/bootstrap/Cargo.toml": {
+        "working_sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+        "canonical_lf_sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574"
+      },
+      "crates/browser/native/desktop/Cargo.toml": {
+        "working_sha256": "3084e4311d574666594918cbe8b9ea38efd23f3ea4c0e73ca67b9347b56580d2",
+        "canonical_lf_sha256": "3084e4311d574666594918cbe8b9ea38efd23f3ea4c0e73ca67b9347b56580d2"
+      },
+      "crates/browser/native/shared/scheme.rs": {
+        "working_sha256": "9ebe5d5d1976d69ae95553941470851bf818792f0779418a7407762cca0e6759",
+        "canonical_lf_sha256": "9ebe5d5d1976d69ae95553941470851bf818792f0779418a7407762cca0e6759"
+      },
+      "crates/browser/native/bootstrap/src/lib.rs": {
+        "working_sha256": "bf664f50f20875c849a9f90c2ae466e508be85e6de0d24f8ec5d36d29ad1ca74",
+        "canonical_lf_sha256": "bf664f50f20875c849a9f90c2ae466e508be85e6de0d24f8ec5d36d29ad1ca74"
+      },
+      "crates/browser/native/bootstrap/src/renderer_probe.rs": {
+        "working_sha256": "4caba694ac7a756a43ed7ec2aa214ed87e564f0b1df449263241cacdbc8a69ef",
+        "canonical_lf_sha256": "4caba694ac7a756a43ed7ec2aa214ed87e564f0b1df449263241cacdbc8a69ef"
+      },
+      "crates/browser/native/desktop/src/browser_controls.rs": {
+        "working_sha256": "0c2df70ecbaf4451b1eb4813322deca8d2275924114576fa00b4c5707e36b482",
+        "canonical_lf_sha256": "0c2df70ecbaf4451b1eb4813322deca8d2275924114576fa00b4c5707e36b482"
+      },
+      "crates/browser/native/desktop/src/child.rs": {
+        "working_sha256": "fbeb7d5dd83984942015b424cd98ab78bbebb119b8408cfe40a735da0c034327",
+        "canonical_lf_sha256": "fbeb7d5dd83984942015b424cd98ab78bbebb119b8408cfe40a735da0c034327"
+      },
+      "crates/browser/native/desktop/src/fixture.rs": {
+        "working_sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
+        "canonical_lf_sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030"
+      },
+      "crates/browser/native/desktop/src/host.rs": {
+        "working_sha256": "a21a77d52b4a056fa1de48b6326049844832ba2ed6ff055f06282fe7b45e253e",
+        "canonical_lf_sha256": "a21a77d52b4a056fa1de48b6326049844832ba2ed6ff055f06282fe7b45e253e"
+      },
+      "crates/browser/native/desktop/src/host_report.rs": {
+        "working_sha256": "2ea723b0cac26cafe0ab74b8c2ba5d277d701e2e3767f17614ba59686e1f9c90",
+        "canonical_lf_sha256": "2ea723b0cac26cafe0ab74b8c2ba5d277d701e2e3767f17614ba59686e1f9c90"
+      },
+      "crates/browser/native/desktop/src/internal_probe.rs": {
+        "working_sha256": "0eb5bab9a77292482e0a66a067cbbdcb7171f0fc6bbfb36b18b765b1a5568582",
+        "canonical_lf_sha256": "0eb5bab9a77292482e0a66a067cbbdcb7171f0fc6bbfb36b18b765b1a5568582"
+      },
+      "crates/browser/native/desktop/src/lib.rs": {
+        "working_sha256": "bdc7666fb58615bf5ac92272f0fe8cc8a87de888e00172a496f7762125e9e494",
+        "canonical_lf_sha256": "bdc7666fb58615bf5ac92272f0fe8cc8a87de888e00172a496f7762125e9e494"
+      },
+      "crates/browser/native/desktop/src/local_page.rs": {
+        "working_sha256": "533cbe654c5a2988f531f31214d4a1ba383addede21c416516c41fca10a7fbe4",
+        "canonical_lf_sha256": "533cbe654c5a2988f531f31214d4a1ba383addede21c416516c41fca10a7fbe4"
+      },
+      "crates/browser/native/desktop/src/measured_input.rs": {
+        "working_sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+        "canonical_lf_sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb"
+      },
+      "crates/browser/native/desktop/src/native.rs": {
+        "working_sha256": "d724d7995d2030ae6edda9f9f76dc0857ccb949d49891f5f2748cce4632e514d",
+        "canonical_lf_sha256": "735787f42e631d0c79d1ecbc685ba7badf5533003d0dee109fb8aeebcfb62f2b"
+      },
+      "crates/browser/native/desktop/src/navigation.rs": {
+        "working_sha256": "95b5793d3960dcc8c16883a2f86de0fe0d9c45aea72c594c6444b3715aa86236",
+        "canonical_lf_sha256": "95b5793d3960dcc8c16883a2f86de0fe0d9c45aea72c594c6444b3715aa86236"
+      },
+      "crates/browser/native/desktop/src/window_frame.rs": {
+        "working_sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
+        "canonical_lf_sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb"
+      }
+    }
+  },
+  "private_receipt_sha256": {
+    "report-matrix.json": "57e7507a43b11cc49b1f0264b4640d87130c53245879a7ac8a14ff705e407b60",
+    "report-interactive.json": "cc0208ca67f347a8f9ff8b5a0bc7ddc8604080e359088d596cc0b22f8ad679a4",
+    "report-before-focus-fix.json": "095a7669963f5bbe5e38e91ae11a28d373ce884787e79b061e2a3fb0f8a46b94",
+    "report-focus-final.json": "4a83d63ccbee2c0fb8e525be0c4dd0808a931d9b86ecc00083334760ccb1154a",
+    "report-post-download-final.json": "ad83655e359c949ab1c183d787df23f7fdfa7be3e4f7e81ebeeda731a1539d1a",
+    "source-at-final-run.json": "a7e46810dc2b9c6371d7cd49f792dddbfff124737cae8bf030d69563e9947df6",
+    "source-at-focus-run.json": "d2cf51348fbb0e4e4e97cc73f88ed9eb371bad579fee3f326cad99bc7c48a0e0",
+    "source-at-post-download-run.json": "5a312dc4865e184f6699dfaa23827182c10bf6d056f06b1e27a458a41b0b8eb7"
+  },
+  "environment_receipt_sha256": "ea801b2c090b43bc5be676227d0d6bc78520f93abfa6a97c5bee21bfd27edbcb",
+  "environment_receipt": {
+    "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "os_version": "10.0.26200",
+    "machine": "AMD64",
+    "private_workspace_sha256": {
+      "workspace/Cargo.toml": "d5b78bb2c3c5bcb694eacb713c5ce35830f481a1f355f5f88c9c8456b5eb8ccd",
+      "workspace/Cargo.lock": "3747a90b6473ac87800ebefa4583d5e14a94456aabc95f35107145c8a1b873fb",
+      "workspace/bootstrap/Cargo.toml": "74f2f502d55ede3dbfb195a9a5dd670da53c037c568316e7fa5de8c6f1237359",
+      "workspace/desktop/Cargo.toml": "01a4559c82cf5f5241077a2b04c42382a94cbc640ca07fa17f627c8617f94047"
+    },
+    "cef_header_sha256": {
+      "cef_version.h": "804c65218ddadb4d7ff1a5ff325ddea81808253873637b2cb6716d10e35143d8",
+      "cef_api_versions.h": "f93e073ec7047697ec420c54954e912d56b5f0f2c57de15b13f6fa4b950eb0a8",
+      "cef_scheme.h": "271d25227e738f2733b322be8b2c0e30cdbb8fc4438b48b5e1908a9d59a68368",
+      "cef_download_handler.h": "a894426592a11280478d9b9820cc719ffe9ef6bae70c7ccdadba0a06456424ec"
+    }
+  }
+}

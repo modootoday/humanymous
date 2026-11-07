@@ -82,7 +82,9 @@ pub fn pointer_event(
     event: &winit::event::WindowEvent,
     drag: &mut Option<Drag>,
 ) -> io::Result<()> {
-    use windows::Win32::UI::Input::KeyboardAndMouse::{GetCapture, ReleaseCapture, SetCapture};
+    use windows::Win32::UI::Input::KeyboardAndMouse::{
+        GetCapture, GetFocus, ReleaseCapture, SetCapture, SetFocus,
+    };
     use winit::event::{ButtonSource, ElementState, MouseButton, WindowEvent};
     let hwnd = hwnd(parent)?;
     // SAFETY: scoped live host on its UI thread. Capture only starts in blank
@@ -96,6 +98,12 @@ pub fn pointer_event(
                 position,
                 ..
             } => {
+                // A parent chrome press must transfer OS keyboard focus too.
+                // Meari DOM focus alone leaves the separate CEF child receiving keys.
+                let _ = SetFocus(Some(hwnd));
+                if GetFocus() != hwnd {
+                    return Err(io::Error::other("owned parent keyboard focus rejected"));
+                }
                 let mut client = RECT::default();
                 GetClientRect(hwnd, &mut client).map_err(io::Error::other)?;
                 let dpi = windows::Win32::UI::HiDpi::GetDpiForWindow(hwnd) as f64 / 96.0;

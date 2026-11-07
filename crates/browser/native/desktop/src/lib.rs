@@ -1,17 +1,23 @@
 //! Experimental sandbox-required CEF child, owned by a real Meari window.
 #![deny(unsafe_code)]
 #![cfg(windows)]
+mod browser_controls;
 mod child;
 mod fixture;
 mod host;
+mod local_page;
 mod measured_input;
 mod native;
+mod navigation;
+#[path = "../../shared/scheme.rs"]
+mod owner_scheme;
 mod window_frame;
 use cef::*;
 
 wrap_app! {
     struct PilotApp;
     impl App {
+        fn on_register_custom_schemes(&self, registrar: Option<&mut SchemeRegistrar>) { owner_scheme::register(registrar); }
         fn on_before_command_line_processing(&self, _process_type: Option<&CefString>, command_line: Option<&mut CommandLine>) {
             if let Some(line) = command_line {
                 for switch in ["disable-extensions", "disable-background-networking", "disable-component-update", "no-first-run"] {
@@ -74,6 +80,7 @@ fn run(sandbox_info: *mut u8) -> Result<(), Box<dyn std::error::Error>> {
     {
         return Err("sandbox-required CEF initialization failed".into());
     }
+    local_page::register()?;
     let outcome = host::run();
     // No shutdown while a browser remains live: host::run only succeeds after
     // actual on_before_close, and errors are fail-stop for this experimental DLL.

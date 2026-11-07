@@ -1,14 +1,14 @@
 # Browser native integration
 
-Owner: misc / rust-browser-research-ui. The Meari management UI is integrated.
+Owner: misc / rust-browser-newtab. The Meari management UI is integrated.
 Two actual Windows CEF native prototype packages are implemented below; shared
 workspace membership/lock integration is root-owned and now present in the shared checkout.
 BrowserReady=false; external target browsing is disabled.
 
 ## Current canonical UI and SDK scope
 
-Canonical browser/UI requirements are `.spec/sot/browser-ui.sot.md` version0.4
-and `.spec/sot/chromium-lab-browser.sot.md` version0.3. Native embedding SDK/DLL
+Canonical browser/UI requirements are `.spec/sot/browser-ui.sot.md` version0.5
+and `.spec/sot/chromium-lab-browser.sot.md` version0.4. Native embedding SDK/DLL
 scope is accepted in `.spec/sot/native-embedding.sot.md` and
 `.spec/plan/20261107041001-native-embedding-and-browser-ui-window-chrome.plan.md`.
 Four SDK crates are planned, not created or qualified. The current process-owning
@@ -19,8 +19,9 @@ window, Rust-authored SVG icons and named minimize/maximize/close buttons. A sha
 5-DIP app-owned perimeter enables eight-direction bounded resize and corresponding
 cursors; CEF content occupies the rest with right/bottom collapsible inspector.
 The page remains actual CEF, never a shell imitation. Unsupported navigation,
-history and new tabs remain disabled; inspector observer/server values remain
-unknown/not_connected. Internal chrome:// navigation is also not yet admitted.
+history and additional tabs remain disabled; inspector observer/server values remain
+unknown/not_connected. Local newtab and five measured chrome:// diagnostics are now
+admitted under the exact route policy below. External navigation remains disabled.
 
 Evidence `.spec/evidence/20261107034226-browser-ui-research-design-and-compact-chromium-shell/`
 records native96-DPI E/S/SE/SW resize and6 CEF size readbacks, observed OS horizontal/
@@ -39,6 +40,64 @@ replay was performed for this redesign. BrowserReady remains false, Rust-only an
 mandatory CEF sandbox unchanged. No profile deletion was retried; generated
 synthetic profiles remain private. The older sections below are historical
 qualification steps, not newer-layout or SDK completion claims.
+
+## Current newtab/internal URL checkpoint
+
+Implemented: default actual CEF owner document humanymous://newtab/, Rust Meari IR
+and upstream html5ever serialization, script-free CSP, real GET form and links.
+Both bootstrap and browser register one shared owner scheme; immutable exact root
+only, no filesystem URL mapping, native bridge or CORS/FETCH/CSP bypass. Exact
+preflight before CEF LoadURL admits chrome version/gpu/credits/license/sandbox;
+all other chrome URLs including chrome-urls, settings, flags, inspect, newtab,
+crash/hang/quit/restart remain denied and were not executed. Assets may load only
+as scoped internal-page subresources. Builtin upstream WebUI JS is enabled;
+application JS is not authored/injected. File dialogs/downloads/popups/permissions
+and external navigation/resources remain denied. External BrowserReady=false.
+
+Actual native matrix, page AX and version/GPU/credits/license/sandbox content are
+measured in evidence:root/20261107053625. Source registration is distinct from
+product admission, content observation and full compatibility. Native address
+OS-focus was fixed after keys initially reached CEF despite Meari's focus ring.
+Scoped parent SetFocus/readback now precedes native keyboard editing; Ctrl+A,
+text, Enter, reload, home,1116-to988 resize and close were observed. Newtab form
+Enter opened sandbox; page links opened actual engine documents. Core24/native13,
+negative feature1/4flags, Clippy/fmt pass. The final post-GUI download refusal delta
+is separately source-bound and its12-second native matrix exits0; export-denial
+callbacks remain unexercised interactively. First failures are preserved, including
+credits4MiB budget exhaustion before bounded8MiB replay. Private receipts/source/
+artifacts live under20261107050329-browser-ui-newtab-native; no profiles copied
+from older evidence, no deletion retried. Runtime CEF is read through a junction;
+old target/bundle/evidence were not intentionally mutated.
+
+Root accepted browser Cargo optional html5ever0.40.1 and the existing exact pinned
+meari-dom direct dependency; root resolved shared lock serially. Browser owner
+has not edited shared Cargo.toml/lock or created SDK workspace members. Public
+results record working and canonical LF source hashes, GUI versus final DLL hash,
+actual denominators and private receipt hashes. No diagnostic source/device data
+or foreign-overlay screenshot is published.
+
+## Browser B0-B5 remaining frontier
+
+1. Full sandbox gate remains false. Renderer restricted-token and canary access
+   denial do not attest GPU/network/utility/job/mitigations. Sandbox WebUI actually
+   reported Network Service Not Sandboxed and RendererAppContainer disabled;
+   investigate with native-security/root before external navigation. Initial GPU
+   exit78 occurred, followed by populated hardware diagnostics. No weakening flag.
+2. Native shell AX click bounds are missing in Computer Use; coordinates were
+   needed. OS screen readers, new-layout Korean IME/candidate placement/selection,
+   high-DPI/multi-monitor/Snap/keyboard resize and all native tuples remain open.
+   Version logo asset was broken in a predecessor view; canonical Noto fonts were
+   absent. Full Chrome engine/assets/parity must use an actual pinned Chrome
+   baseline and private-safe receipts, not branding or a successful HTML load.
+3. B0 observation schema/contracts, B1 supervisor/crash/cleanup protocol and B2
+   external browsing/history/multi-tab remain partial. B3 real collector/session/
+   ingress receipt join and B4 owned automation/AT/failure-stream matrices are not
+   complete. No scoring change or third-party active probing is authorized.
+4. B5 signed standard-user clean-machine packages/update/CVE/SBOM and cross-OS
+   runners require root/delivery integration. Four SDK crates, DLL ABI, framework
+   adapters and Rust scaffold CLI follow the separate accepted native-embedding
+   plan. Existing process-owning RunBrowserDesktop must not be reused as an
+   in-process SDK ABI. No same-name create package or unsolicited workspace member.
 
 ## Exact root delta
 

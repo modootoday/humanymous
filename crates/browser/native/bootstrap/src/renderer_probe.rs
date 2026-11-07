@@ -4,6 +4,7 @@ use cef::*;
 wrap_app! {
     struct ProbeApp;
     impl App {
+        fn on_register_custom_schemes(&self, registrar: Option<&mut SchemeRegistrar>) { crate::owner_scheme::register(registrar); }
         fn render_process_handler(&self) -> Option<RenderProcessHandler> { Some(ProbeRenderer::new()) }
     }
 }

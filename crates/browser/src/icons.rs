@@ -10,6 +10,8 @@ pub enum Icon {
     Forward,
     /// Reload current page.
     Reload,
+    /// Return to the local landing page.
+    Home,
     /// Add a tab.
     Plus,
     /// Minimize the window.
@@ -42,6 +44,7 @@ pub fn node(icon: Icon) -> Node {
         Icon::Back => "M19 12H5M11 6l-6 6 6 6",
         Icon::Forward => "M5 12h14M13 6l6 6-6 6",
         Icon::Reload => "M19 8a8 8 0 1 0 1 7M19 3v5h-5",
+        Icon::Home => "M3 11 12 3l9 8M5 10v11h5v-7h4v7h5V10",
         Icon::Plus => "M12 5v14M5 12h14",
         Icon::Minimize => "M5 12h14",
         Icon::Maximize => "M5 5h14v14H5Z",

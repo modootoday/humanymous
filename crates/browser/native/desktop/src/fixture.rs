@@ -24,6 +24,14 @@ fn text(value: &str) -> Node {
     }
 }
 
+pub fn input_mode() -> bool {
+    std::env::args().any(|a| {
+        matches!(
+            a.as_str(),
+            "--native-input-fixture" | "--native-korean-ime" | "--native-measured-hanja"
+        )
+    })
+}
 pub fn markup() -> Result<String, String> {
     let component = Component {
         hook_order: vec![],

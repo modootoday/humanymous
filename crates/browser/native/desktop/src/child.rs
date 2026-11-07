@@ -9,6 +9,7 @@ use std::{
 #[derive(Default)]
 pub struct State {
     pub browser: Option<Browser>,
+    pub navigation: crate::navigation::State,
     pub created: bool,
     pub creation_requested: bool,
     pub closed: bool,
@@ -118,12 +119,28 @@ wrap_client! {
             }
             1
         }
+        fn load_handler(&self) -> Option<LoadHandler> { Some(crate::navigation::handler(self.state.clone())) }
         fn keyboard_handler(&self) -> Option<KeyboardHandler> { Some(InputEvidence::new(self.state.clone())) }
         fn focus_handler(&self) -> Option<FocusHandler> { Some(FocusEvidence::new(self.state.clone())) }
         fn life_span_handler(&self) -> Option<LifeSpanHandler> { Some(PilotLife::new(self.state.clone())) }
-        fn request_handler(&self) -> Option<RequestHandler> { Some(DenyNavigation::new(self.uri.clone())) }
+        fn request_handler(&self) -> Option<RequestHandler> { Some(crate::navigation::request_handler(self.state.clone(), self.uri.clone())) }
         fn permission_handler(&self) -> Option<PermissionHandler> { Some(DenyPermissions::new()) }
         fn dialog_handler(&self) -> Option<DialogHandler> { Some(DenyFiles::new()) }
+        fn download_handler(&self) -> Option<DownloadHandler> { Some(DenyDownloads::new()) }
+    }
+}
+// Explicit denial also covers builtin WebUI export actions and both CEF styles.
+wrap_download_handler! {
+    struct DenyDownloads;
+    impl DownloadHandler {
+        fn can_download(&self, _browser: Option<&mut Browser>, _url: Option<&CefString>, _method: Option<&CefString>) -> i32 { 0 }
+        fn on_before_download(&self, _browser: Option<&mut Browser>, _item: Option<&mut DownloadItem>, _name: Option<&CefString>, _callback: Option<&mut BeforeDownloadCallback>) -> i32 {
+            // CEF: handled=true with callback released without continuation cancels.
+            1
+        }
+        fn on_download_updated(&self, _browser: Option<&mut Browser>, _item: Option<&mut DownloadItem>, callback: Option<&mut DownloadItemCallback>) {
+            if let Some(callback)=callback { callback.cancel(); }
+        }
     }
 }
 wrap_keyboard_handler! {
@@ -239,32 +256,6 @@ wrap_life_span_handler! {
             _extra_info: Option<&mut Option<DictionaryValue>>, _no_javascript_access: Option<&mut i32>) -> i32 { 1 }
     }
 }
-wrap_request_handler! {
-    struct DenyNavigation { uri: String, }
-    impl RequestHandler {
-        fn on_before_browse(&self, _browser: Option<&mut Browser>, _frame: Option<&mut Frame>,
-            request: Option<&mut Request>, _user_gesture: i32, _is_redirect: i32) -> i32 {
-            i32::from(request.is_none_or(|r| {
-                let uri = CefString::from(&r.url()).to_string(); uri != "about:blank" && uri != self.uri
-            }))
-        }
-        fn resource_request_handler(&self, _browser: Option<&mut Browser>, _frame: Option<&mut Frame>,
-            request: Option<&mut Request>, is_navigation: i32, _is_download: i32,
-            _request_initiator: Option<&CefString>, disable: Option<&mut i32>) -> Option<ResourceRequestHandler> {
-            if is_navigation == 1 && request.is_some_and(|r| CefString::from(&r.url()).to_string() == self.uri) { return None; }
-            if let Some(disable) = disable { *disable = 1; }
-            Some(DenyResources::new())
-        }
-    }
-}
-wrap_resource_request_handler! {
-    struct DenyResources;
-    impl ResourceRequestHandler {
-        fn on_before_resource_load(&self, _browser: Option<&mut Browser>, _frame: Option<&mut Frame>,
-            _request: Option<&mut Request>, _callback: Option<&mut Callback>) -> ReturnValue { ReturnValue::CANCEL }
-    }
-}
-
 pub struct CefChild {
     pub state: Shared,
     pub parent: LocalRc<NativeParentLease>,
@@ -283,10 +274,23 @@ impl CefChild {
                 ..Default::default()
             }
             .set_as_child(cef::sys::HWND(hwnd.0.cast()), &bounds);
-            let uri = crate::fixture::uri().map_err(io::Error::other)?;
-            let mut client = PilotClient::new(state.clone(), uri.clone());
+            let fixture = crate::fixture::input_mode();
+            let uri = if fixture {
+                crate::fixture::uri().map_err(io::Error::other)?
+            } else {
+                crate::navigation::initialize(&state)?;
+                humanymous_browser::internal_urls::NEW_TAB_URL.to_owned()
+            };
+            let mut client = PilotClient::new(
+                state.clone(),
+                if fixture { uri.clone() } else { String::new() },
+            );
             let settings = BrowserSettings {
-                javascript: cef::State::DISABLED,
+                javascript: if fixture {
+                    cef::State::DISABLED
+                } else {
+                    cef::State::ENABLED
+                },
                 ..Default::default()
             };
             // Only our synthetic generated canary is offered to the renderer.

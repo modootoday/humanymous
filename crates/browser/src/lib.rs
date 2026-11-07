@@ -13,3 +13,10 @@ pub mod icons;
 pub mod window_chrome;
 
 pub mod frame_geometry;
+
+pub mod internal_urls;
+#[cfg(feature = "native-ui")]
+pub mod newtab;
+
+#[cfg(feature = "native-ui")]
+pub mod ui_navigation;

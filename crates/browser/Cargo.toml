@@ -12,9 +12,11 @@ workspace = true
 
 [features]
 default = []
-native-ui = ["dep:meari", "dep:meari-native"]
+native-ui = ["dep:meari", "dep:meari-native", "dep:html5ever", "dep:meari-dom"]
 
 [dependencies]
+meari-dom = { git = "https://github.com/modootoday/meari.git", rev = "1482b746ebc0d867f25d17d01c48c12df888ca6c", default-features = false, optional = true }
+html5ever = { version = "=0.40.1", optional = true }
 url = "=2.5.7"
 meari = { git = "https://github.com/modootoday/meari.git", rev = "1482b746ebc0d867f25d17d01c48c12df888ca6c", optional = true }
 meari-native = { git = "https://github.com/modootoday/meari.git", rev = "1482b746ebc0d867f25d17d01c48c12df888ca6c", default-features = false, features = ["window"], optional = true }
@@ -23,7 +25,6 @@ meari-native = { git = "https://github.com/modootoday/meari.git", rev = "1482b74
 accesskit = "=0.25.1"
 blitz-traits = "=0.3.0-beta.4"
 keyboard-types = "=0.8.3"
-meari-dom = { git = "https://github.com/modootoday/meari.git", rev = "1482b746ebc0d867f25d17d01c48c12df888ca6c", default-features = false }
 
 [[bin]]
 name = "humanymous-browser"

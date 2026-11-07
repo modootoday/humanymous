@@ -3,6 +3,7 @@ use crate::native;
 #[derive(Default, serde::Serialize)]
 pub(super) struct Report {
     pub(super) host_pid: u32,
+    pub(super) navigation_receipts: Vec<crate::navigation::Receipt>,
     pub(super) decorations_removed_readback: bool,
     pub(super) window_observations: Vec<crate::window_frame::Observation>,
     pub(super) window_commands: Vec<String>,
