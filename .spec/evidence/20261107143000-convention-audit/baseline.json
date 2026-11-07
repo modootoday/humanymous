@@ -373,5 +373,18 @@
     "new_confirmed_violations": 0,
     "source_only": true,
     "native_host_or_migration_qualified": false
+  },
+  "followup_capture_pass_recovery_contract": {
+    "private_review_sha256": {
+      "controlled-capture-source-review-002.json": "c1456fdb1397c755d3a4b625fcfad93121c1f0d7645b82d56efad8fccd7374ae",
+      "challenge-boundary-source-review-002.json": "c7ffcbd233a3a89c8c84fc4015bbc4b04f41e65bb578ff225d19eb9a781c4831",
+      "capture-delta-and-s2-gates-review-001.json": "6ce5b62750aa49157615b110ce9831bed198017a7f3cd4d9023b627c99105f4e"
+    },
+    "changed_capture_leaves_reread": 2,
+    "actual_capture_parent_tests": 0,
+    "actual_cli_watchdog_cases": 0,
+    "actual_ui_at_qualified": false,
+    "actual_recovery_type_or_native_provider_qualified": false,
+    "source_contract_only": true
   }
 }

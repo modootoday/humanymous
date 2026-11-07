@@ -250,3 +250,10 @@ No new violation confirmed; suspected stale-ledger retry rejected after tracing
 PrivateState terminal poison. .NET admission-to-handoff is its explicit contract,
 not full-response ownership. Native/host/destructive/product gates remain open;
 private review hashes retained in baseline, no execution or global pass inferred.
+
+Batched controlled-capture/Pass/recovery gate reviews retain three private hashes.
+Two changed controller/actor leaves were explicitly reread at ea024229. Five
+capture parents/four CLI cases remain NOT_RUN; pure Pass predicates do not gate
+on motion/speed, but actual UI/AT remains unqualified. Recovery15174100 actual-
+type/reason-specific and zero-attempted-mutation gates accepted as a contract
+only; actual provider/repair/borrow/clock qualification stays OPEN. No new run.

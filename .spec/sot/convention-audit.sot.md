@@ -794,3 +794,37 @@ These are bounded semantic source observations, not actual FFI/GC/Kestrel,
 destructive native provider, erasure/backup, service, a11y or complete migration
 qualification. Selected ledger/policy portions do not imply every file was fully
 reviewed. No compiler/SDK/WSL/UNC/Docker workload was launched by this audit.
+
+### Controlled-process, Pass and recovery qualification follow-up
+
+The five authored retained-capture parents use a bounded cooperative barrier
+before starting their fixed child. The Windows controller assigns the actual
+held Child to a kill-on-close Job before publishing an exact PID/selector/nonce
+grant. Original run/cleanup thresholds precede spawn; unresolved owners are
+retained before fallible report I/O. Child exit, worker joins, pipe EOF/release
+and Job emptiness remain distinct facts. This is fixed trusted-fixture scope,
+not race-free arbitrary launch or a hard syscall cancellation guarantee.
+
+Rehashing detected two changed leaves after the initial source review. The
+committed ea024229 controller/actor delta was reread rather than silently
+promoting the prior hashes. Its success predicate additionally rejects failed
+cleanup termination and records the actual controller PID/current-process token.
+Actual five capture parents and four CLI watchdog cases remain NOT_RUN here;
+CA-LIFETIME01 and production tree/OS cleanup qualification remain OPEN.
+
+Pure Pass generation/verification and separate work-policy source were read.
+Pass uses three offsets, nonfuture inclusive twenty-bucket freshness and modular
+alignment, without motion richness or solve-speed predicates. Its public solution
+is explicitly neither secret, human attestation nor single-use enforcement.
+Deterministic legacy generation and frozen work thresholds were not changed.
+This bounded source observation does not qualify actual keyboard/AT UI behavior.
+
+Recovery plan15174100 adds actual private-type positive controls and diagnostic-
+specific borrow/move/method negatives, excluding privacy/import/dependency false
+greens. Original cancellation/expiry must refuse every attempted mutation,
+including failed operations and file/directory sync, with unchanged native state.
+Each repair/bootstrap/no-repair action and actual L2 provider remains required;
+private deterministic clock instrumentation stays separate from production
+deadline authority. Independent review found no new blocker in this narrow
+verification contract. No actual VerifiedScan, native recovery, production grant
+or new compiler/SDK/process workload follows from that acceptance.
