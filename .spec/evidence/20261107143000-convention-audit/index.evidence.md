@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 9bd73838144c1528545560746cdd20fbf7aa4fdc65a81ed80f35e72e6f231f08, bytes: 61413, store: repo}
+  - {path: baseline.json, sha256: 052a02d4d43660ef97312c60dfe3ca45d662e86a6d9664c1d6ce8ab13aa22a14, bytes: 62536, store: repo}
 ---
 
 # Convention audit baseline
@@ -789,3 +789,20 @@ on its bin alone does not make dependencies optional. Root received both precise
 acceptance examples. No new current defect is claimed, no path/package/ref/compiler
 operation occurred, and user confirmation remains required. Exact private hashes
 are in baseline.json. Complete migration qualification remains OPEN.
+
+## Watermark carrier source coverage
+
+Additional review covers six production frame/codec/MIME/base32/text/opaque
+files and selected negative tests. These production bytes match2eb2069a. Prior
+ledger/payload review was located and not counted as new coverage. No new concrete
+defect is confirmed: validated input/encoding-output/candidate caps, shared work
+budget, ambiguity refusal for distinct valid carriers, no unknown-MIME trailer
+fallback and explicit CRC-not-authentication boundary are present. Low-level text
+transforms do not claim grammar validation or authorized issuance; PNG/WASM MIME
+families do not claim implemented codecs. Source grammar/real resource semantics,
+independent carrier/resource corpora, PNG/standards WASM and actual HTTP/operator
+credential-before-body/audit/retention/dual-control integration remain OPEN.
+Historical29 component tests retain their own source/closure scope and were not
+rerun or promoted to current whole-graph proof. Exact hashes and bounded read
+scope are in the private review bound by baseline.json. No workload, package/path
+change or ref operation occurred; complete migration qualification stays OPEN.

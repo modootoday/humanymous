@@ -1158,5 +1158,20 @@
     "current_confirmed_defects": [],
     "structural_path_package_ref_or_compiler_mutations": 0,
     "goal_complete": false
+  },
+  "followup_watermark_carrier_source": {
+    "private_review": "watermark-carrier-boundary-review-001.json",
+    "private_review_sha256": "4d7068ae3a4ae11b15fcdaa810c68fe58997b6089bba24769f8b153ebc68fa6d",
+    "source": "2eb2069a7851324b90311d54ffe663d8eb9f75cf",
+    "production_files": 6,
+    "source_changed_from_component_checkpoint": false,
+    "prior_ledger_payload_review_not_recounted": true,
+    "read_scope": "Frame/codec/MIME/base32/text/opaque production bodies and selectednegative tests, not wholetestcorpus",
+    "new_confirmed_defects": [],
+    "source_contract": "Bounded input/encodingoutput/candidates, sharedcandidatebudget, distinctcarriersambiguous, CRCnotauth, explicitopaque/unknownMIMErefusal, grammar/issuance ownership separate",
+    "remaining": "Realresourcegrammar/semantics, independentcarrierresourcecorpora, PNG/standardsWASM, actualresource/HTTP/operatorauth/audit/retention/dualcontrol gates",
+    "prior29execution": "Retains historical source/closure scope; no repeat or currentwholegraph inference",
+    "new_audit_workload_or_structure_ref_action": 0,
+    "goal_complete": false
   }
 }
