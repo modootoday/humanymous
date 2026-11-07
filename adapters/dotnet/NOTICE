@@ -1,0 +1,14 @@
+Humanymous Native experimental ASP.NET Core adapter
+Copyright 2026 The humanymous Authors
+
+Project-authored components are licensed under Apache-2.0; the license text is
+included as LICENSE. This native candidate consumes the Rust authority and
+contains no Go runtime, Go application or copied managed security engine.
+
+The source tree's audit compatibility implementation preserves upstream Go
+copyright and BSD conditions. That notice is included as licenses/LICENSE-Go.txt.
+This does not assert that the Go engine or standard library is embedded.
+
+The complete resolved native dependency license inventory and final notices
+remain a release qualification requirement. This experimental candidate is not
+an attestation of a completed dependency, vulnerability or publication audit.

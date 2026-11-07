@@ -1,4 +1,5 @@
-//! Explicit real Kestrel/IPC/GC pilot; never executed by the default unit suite.
+//! Explicit allocated real Kestrel/IPC/GC pilot; not in the default unit suite.
+mod support;
 use humanymous_authority::{
     configuration::Configuration,
     decision::{ApplicationHttp, Authority, DurableAudit, Evidence},
@@ -217,23 +218,31 @@ fn chunked_entity(wire: &[u8]) -> Vec<u8> {
 }
 
 #[test]
-#[ignore = "actual free standard hosted Kestrel/JIT or NativeAOT, real IPC and GC only"]
+#[ignore = "actual explicitly allocated Kestrel/JIT or NativeAOT, IPC and GC"]
 fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
-    assert_eq!(std::env::var("GITHUB_ACTIONS").as_deref(), Ok("true"));
-    assert_eq!(
-        std::env::var("RUNNER_ENVIRONMENT").as_deref(),
-        Ok("github-hosted")
-    );
+    let execution_environment = support::execution_environment();
     let root = PathBuf::from(
         std::env::var_os("HUMANYMOUS_DOTNET_AUDIT_DIR")
             .expect("supervisor-provisioned private fixture directory"),
     );
     for synthetic in [false, true] {
         let mut host = Host::start();
-        let directory = root
-            .join(if synthetic { "synthetic" } else { "production" })
-            .canonicalize()
-            .unwrap();
+        let profile = if synthetic { "synthetic" } else { "production" };
+        #[cfg(windows)]
+        let directory =
+            humanymous_native_security::storage::create_user_private_directory(&root, profile)
+                .expect("ordinary actor and verified private parent required");
+        #[cfg(unix)]
+        let directory = {
+            use std::os::unix::fs::DirBuilderExt;
+            let path = root.join(profile);
+            std::fs::DirBuilder::new()
+                .mode(0o700)
+                .create(&path)
+                .expect("new private audit child required");
+            path
+        };
+        let directory = directory.canonicalize().unwrap();
         assert!(
             std::fs::read_dir(&directory).unwrap().next().is_none(),
             "new audit fixture must be empty"
@@ -325,6 +334,14 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
         let service = runtime.spawn(listener.serve(authority, 8, 1000, 2000));
         host.send(json!({"generic_probe":std::env::var_os("HUMANYMOUS_DOTNET_GENERIC_PROBE").is_some(),"configuration":{"installation":"i","tenant":"t","origin":"o","revision":"r","endpoint":endpoint,"credential":credential,"server":server,"routes":paths,"timeoutMs":2000,"maxBody":1024}}));
         let ready = host.frame("ready");
+        if let Ok(expected) = std::env::var("HUMANYMOUS_DOTNET_EXPECT_AOT") {
+            assert!(expected == "true" || expected == "false");
+            assert_eq!(
+                ready["dynamic_code"],
+                expected == "false",
+                "actual runtime must match selected JIT/AOT profile"
+            );
+        }
         let address = ready["address"].as_str().unwrap();
         let port = address.rsplit(':').next().unwrap().parse().unwrap();
         let binary = [0, 255, 128, 13, 10, 42];
@@ -520,7 +537,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             .collect();
         println!(
             "{}",
-            json!({"schema":"humanymous.dotnet-host-observation/1","profile":if synthetic{"real-engine-audit-synthetic-evidence"}else{"production-application-http"},"runtime":ready["runtime"],"dynamic_code":ready["dynamic_code"],"passed":passed,"failed":0,"ignored":0,"covered_contract_cases":covered,"not_run_contract_cases":not_run,"origin_contacts":final_counts["contacts"],"origin_mutations":final_counts["mutations"],"gc_collections":final_counts["collections"],"remaining_native_resources_before_dispose":last_live_resources,"verdict_counts":*counts.lock().unwrap(),"full_product":false,"package_install":false})
+            json!({"schema":"humanymous.dotnet-host-observation/1","execution_environment":execution_environment,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"profile":if synthetic{"real-engine-audit-synthetic-evidence"}else{"production-application-http"},"runtime":ready["runtime"],"dynamic_code":ready["dynamic_code"],"passed":passed,"failed":0,"ignored":0,"covered_contract_cases":covered,"not_run_contract_cases":not_run,"origin_contacts":final_counts["contacts"],"origin_mutations":final_counts["mutations"],"gc_collections":final_counts["collections"],"remaining_native_resources_before_dispose":last_live_resources,"verdict_counts":*counts.lock().unwrap(),"full_product":false,"package_install":false})
         );
     }
 }

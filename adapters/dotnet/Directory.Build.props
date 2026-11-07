@@ -1,7 +1,9 @@
 <Project>
   <PropertyGroup>
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../../target/dotnet/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
-    <BaseOutputPath>$(MSBuildThisFileDirectory)../../target/dotnet/bin/$(MSBuildProjectName)/</BaseOutputPath>
+    <HumanymousBuildRoot Condition="'$(HumanymousBuildRoot)' == ''">$(MSBuildThisFileDirectory)../../target/dotnet</HumanymousBuildRoot>
+    <BaseIntermediateOutputPath>$(HumanymousBuildRoot)/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(HumanymousBuildRoot)/bin/$(MSBuildProjectName)/</BaseOutputPath>
+    <NuGetLockFilePath>$(BaseIntermediateOutputPath)packages.lock.json</NuGetLockFilePath>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <Deterministic>true</Deterministic>
   </PropertyGroup>

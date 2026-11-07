@@ -9,13 +9,26 @@ all-target check/Clippy;252recursive selected input hashes did not drift. Slot
 returned, raw evidence084546/public084728. No managed SDK/scope execution/host
 pilot is implied. No further graph changes without root's next window.
 
-Next hosted gate needs SDK10.0.403 from adapters/dotnet working directory, native
-facade artifact, JIT/NativeAOT published apphost, private ordinary-user audit
-production/synthetic directories, and the exact ignored Rust host selector.
+Next allocated actual gate needs SDK10.0.403 from adapters/dotnet working directory, native
+facade artifact, JIT/NativeAOT published apphost, a fresh private ordinary-user
+audit PARENT, and the exact ignored Rust host selector. The driver creates NEW
+production/synthetic children; do not precreate them. Each source/packed JIT/AOT
+invocation needs a distinct private parent. The post058fixture delta consumes
+the shared initializer and remains compile-pending until its next check.
 Windows initializer API is supplied by native-windows; never accept arbitrary
 TEMP/admin ownership. Root remains sole dispatch/push and CI owner owns workflow.
 Final clean NuGet install, remaining contract cases and Docker product evidence
 remain required. No published package or release-qualified tuple exists.
+
+Packed consumer restore must use NuGet.Packed.Config with
+HUMANYMOUS_NUGET_FEED pointing to the just-built local feed and NUGET_PACKAGES
+pointing to a NEW empty per-run package directory. The exact candidate ID maps
+only to that feed; SDK Microsoft/System/runtime packages map only upstream.
+Do not allow a same-ID public package or existing global cache to stand in for
+the measured local nupkg. Use UsePackedAdapter=true and compare package/native
+hashes after restore/install. Pack metadata includes owned candidate NOTICE,
+README, project LICENSE and the source-tree audit compatibility notice; full
+resolved dependency/license/vulnerability qualification is still required.
 
 The human approved exactly three managed binding/middleware/pilot sources and
 reactivated this goal. Root confirmed the exception. The prior blocked handover
@@ -24,16 +37,33 @@ paths and the automated inventory gate are in sot:root/dotnet-adapter.
 
 Native ABI owner approved/provided validate_context, buffer_bytes and public
 Version::validate. The safe bridge uses these through one Boundary/Registry.
-Its namespace100..108 owns .NET request composition only. Generic handle/error/
+Its namespace100..109 owns .NET request composition and bounded diagnostics only. Generic handle/error/
 buffer/version ownership is unchanged. Replay copies precede the final native
 expiry/host/route check; no lock spans IPC and no managed address is retained.
 
-Requested root graph delta (not yet applied): core native-abi path dependency,
+Applied root-approved graph delta: core native-abi path dependency,
 serde/serde_json/tokio workspace dependencies; hosted test dev-dependencies audit,
 signals, native-security and test-support; separate export workspace member with
 core/native-abi/tokio dependencies, cdylib+rlib and deny unsafe except the single
 unmangled pointer-free attribute. No new external version is needed. Local dotnet
-is unavailable; actual managed build/GC/Kestrel/NativeAOT/package work is hosted.
+was unavailable at the earlier checkpoint. Actual managed build/GC/Kestrel/
+NativeAOT/package work may use root-allocated local Windows/WSL or a standard
+hosted job under the updated root policy. Benchmark quiet remains active.
+
+The new ignored sdk_package_and_real_host_matrix test accepts these absolute
+supervisor inputs: HUMANYMOUS_DOTNET_SOURCE_ROOT (clean committed checkout),
+HUMANYMOUS_DOTNET_FIXTURE_PARENT (existing verified private ordinary-user parent),
+HUMANYMOUS_DOTNET_NATIVE_LIBRARY (release DLL/SO),
+HUMANYMOUS_DOTNET_HOST_HARNESS (prebuilt hosted.rs test executable) and
+HUMANYMOUS_DOTNET_NATIVE_PROVENANCE (strict JSON). The JSON fields are source_sha,
+cargo_lock_sha256, native_sha256, harness_sha256, rustc, target, native_profile
+(release) and optional generic_sha256. An optional
+HUMANYMOUS_DOTNET_GENERIC_LIBRARY must match that separate hash. Every supplied
+artifact must be built from the recorded source; checks do not create provenance.
+Local execution additionally uses HUMANYMOUS_DOTNET_LOCAL_ALLOCATION=
+root-approved-local after root actually allocates execution. This marker is not
+permission. No recursive Cargo, GitHub spoofing or workflow dispatch occurs.
+The orchestrator is format-checked source only, not yet type-checked/executed.
 
 The three managed source candidates and XML project/package metadata are authored
 but NOT_RUN. A candidate NuGet pack requires an explicit existing native artifact

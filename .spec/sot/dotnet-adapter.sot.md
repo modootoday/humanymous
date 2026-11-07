@@ -12,6 +12,29 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Execution authorization update (2026-11-07)
+
+The human authorized actual local Windows/WSL timing/resource comparisons,
+superseding the earlier hosted-only blanket. Root's benchmark quiet window
+currently forbids new Cargo/native/runtime/model/Docker commands; no local SDK
+or host run has started here. Future actual tests require explicit root allocation
+or a standard hosted job and record execution_environment plus OS/arch. The local
+allocation environment marker prevents accidental runs; it is not an approval
+or security token and cannot itself replace root scheduling/user authorization.
+Earlier immutable hosted-only records remain historical. The root roadmap is
+the execution-policy authority; this adapter does not allocate itself a slot.
+
+The ignored Rust package orchestrator accepts prebuilt native/harness artifacts
+and strict source/lock/toolchain/target/hash provenance, checks committed clean
+source and SDK10.0.403, then packs and publishes source/clean-consumer JIT/AOT
+fixtures. It never recursively invokes Cargo, never manually injects the native
+asset into the packed consumer, and compares installed bytes/hash to the supplied
+artifact. It copies only the approved pilot source/project/props unchanged.
+All SDK outputs and NuGet lockfiles are directed into the actor-owned private
+build root. It uses existing OS hash tools, no new hash implementation, dependency
+or C# source. Per-stage real exit/timing logs and separate host profiles are
+required. Source is currently NOT_COMPILED/NOT_RUN, including these new tests.
+
 ## Approved managed binding continuation (2026-11-07)
 
 The human explicitly approved the minimum C# binding, middleware and actual-host
@@ -70,6 +93,30 @@ Candidate source exists; all new bridge/export/managed compilation, actual host,
 GC, package, NativeAOT and product results remain NOT_RUN until recorded.
 Native Registry limits16contexts/64buffers/8MiB initialized bytes apply in addition
 to shared framework admission64 and body1MiB; no concurrency eviction is used.
+
+## Packed host and private fixture inputs
+
+The hosted fixture receives an existing verified private parent. Windows creates
+new production/synthetic children through native-security's ordinary-user
+initializer; service-SID factories are unchanged. Unix creates new0700children.
+Existing children reject; each source/packed JIT/AOT invocation needs a distinct
+parent. No ambient TEMP/admin trust or inspection-time ACL repair is introduced.
+
+Candidate pack requires an existing explicit native artifact and accepts only
+win-x64/linux-x64. It includes project LICENSE, owned candidate NOTICE/README
+and the source-tree audit compatibility notice, without claiming the historical
+Go engine dependency inventory applies to this Rust DLL. Complete resolved
+license and vulnerability checks remain qualification gates.
+
+Clean packed consumption must use NuGet.Packed.Config, an explicit local feed
+through HUMANYMOUS_NUGET_FEED and a new empty NUGET_PACKAGES directory. Only the
+exact candidate ID maps to the local feed; SDK package prefixes map upstream.
+Existing global packages bypass source lookup/mapping, so a reused package cache
+cannot prove installation of the measured nupkg. Record package and installed
+native hashes, SDK/runtime/RID and source lineage. No publish/token operation is
+authorized. These configuration and fixture changes after058a014 are NOT_RUN
+until their next compile/hosted check; earlier13pure component results are not
+transferred to new managed/package behavior.
 
 Version0.1 is a safe Rust request core, not installed ASP.NET middleware.
 PInvoke, NativeAOT, actual Kestrel, GC stress and package qualification are not_run.
@@ -171,6 +218,8 @@ denominators are retained. No local process/Docker substitute is authorized.
 - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/request-response?view=aspnetcore-10.0
 - https://devblogs.microsoft.com/dotnet/re-reading-asp-net-core-request-bodies-with-enablebuffering/
 - https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json
+- https://learn.microsoft.com/en-us/nuget/consume-packages/package-source-mapping
+- https://learn.microsoft.com/en-us/nuget/reference/nuget-config-file
 
 SDK pin researched2026-11-07: official channel metadata reports SDK10.0.403 and
 runtime10.0.14. global.json disables roll-forward/prerelease. This is version

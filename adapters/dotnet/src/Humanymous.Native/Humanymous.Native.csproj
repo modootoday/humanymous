@@ -12,17 +12,23 @@
     <Authors>Humanymous contributors</Authors>
     <Description>Experimental ASP.NET Core integration consuming the shared Rust authority.</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/modootoday/humanymous</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup>
   <ItemGroup>
     <Compile Include="NativeBinding.cs" />
     <Compile Include="HumanymousMiddleware.cs" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../../../../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../../NOTICE" Pack="true" PackagePath="/" />
+    <None Include="../../../../crates/audit/LICENSE-Go.txt" Pack="true" PackagePath="licenses/" />
   </ItemGroup>
   <ItemGroup Condition="'$(NativeArtifact)' != ''">
     <None Include="$(NativeArtifact)" Pack="true" PackagePath="runtimes/$(NativeRid)/native/" />
   </ItemGroup>
   <Target Name="RequireNativeArtifact" BeforeTargets="GenerateNuspec">
     <Error Condition="'$(NativeArtifact)' == '' Or !Exists('$(NativeArtifact)') Or '$(NativeRid)' == ''" Text="A source-bound native artifact and exact RID are required for a candidate package." />
+    <Error Condition="'$(NativeRid)' != 'win-x64' And '$(NativeRid)' != 'linux-x64'" Text="Only the explicit Windows/Linux x64 candidate RIDs are accepted." />
   </Target>
 </Project>

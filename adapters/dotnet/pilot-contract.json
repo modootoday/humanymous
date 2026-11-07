@@ -5,8 +5,10 @@
   "reason": "Three managed sources and pointer-free facade are authored; root graph registration, compilation and hosted execution are pending",
   "implementationOwner": "crates/dotnet-adapter",
   "abiOwner": "crates/native-abi",
-  "runner": "free-standard-github-hosted-only",
-  "localActualExecutionAllowed": false,
+  "runner": "explicit-root-allocation-or-free-standard-github-hosted",
+  "localActualExecutionAllowed": true,
+  "localExecutionRequiresRootAllocation": true,
+  "benchmarkQuietWindow": "no-new-cargo-native-runtime-model-docker-commands",
   "publicationAllowed": false,
   "requiredTuples": [
     {"os": "windows", "arch": "x86_64", "runtime": "jit"},
