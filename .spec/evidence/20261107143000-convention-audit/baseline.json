@@ -225,6 +225,16 @@
       "required_delta": "Correct package/features/target contract or explicit retirement; preserve authority library and allthreeintegrationroles, no globalprefixfilter that silently dropsintegration cases",
       "actual_docker_execution": false,
       "private_review_sha256": "0ae999ea59d0b5ee8f565760af78b20a3e6acc2d564f619a32f50b879f663256"
+    },
+    {
+      "id": "CA-RUNTIME-LAB-01",
+      "priority": "P2",
+      "owner": "Root / Lab",
+      "state": "OPEN source invocation defect; dirty replacement prepared, committed fix and actual Docker regression not yet independently qualified",
+      "trigger": "Immutable1f2 deployments/lab/images/product.Dockerfile selects removed humanymous-audit package for audit-witness after Runtime consolidation",
+      "required_delta": "Select exact owning Runtime audit feature/bin, preserve source-bound original failure and qualify corrected Docker image; do not infer first failing RUN from public summary",
+      "actual_docker_regression": false,
+      "private_review_sha256": "9d7d428875d58be4c3336d4d3cf1543f02cd30d0b75b83d2146378356b1d39a8"
     }
   ],
   "evidence_references": {
@@ -1937,6 +1947,15 @@
     "bytes": 2922,
     "state": "P2 pre-freeze cross-proposal reconciliation OPEN:12/29 versus10/27 pending Root real-filesystem-case ownership decision",
     "verified": "33oldkeys exact0.1;33newidentitiesunique;8sourcehashsize/functions match;23integration+10realfilesystem cases conditional",
+    "goal_complete": false
+  },
+  "browser_1f2_terminal_build_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/1f2-completed-build-review-001.json",
+    "sha256": "9d7d428875d58be4c3336d4d3cf1543f02cd30d0b75b83d2146378356b1d39a8",
+    "bytes": 4696,
+    "actual": "Fresh57360Blog+originalZIP exact; source1f2/projectionexact; Gatebuildfailed2of3pass;actornotobserved",
+    "causal_limit": "ObsoleteAuditpackageselectorconfirmed, exactfirstDockerRUNunknown; currentdirtypatchnotcommitted/regressionproof",
+    "tools": "CLI2c947acknowledges;Rootchooses10integration/27compiled;ownedmap/profile/inventoryreconciliationstillOPEN",
     "goal_complete": false
   }
 }

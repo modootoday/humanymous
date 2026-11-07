@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: fc8aafcc5502d978e9f71b43d76a609aa345e2d5bfc118c9a9dc4c4767576550, bytes: 107221, store: repo}
+  - {path: baseline.json, sha256: 7747f4eeda6cf3dad7de7d444a4ca9ffc82c23a7e888a4ee8854128dae938a56, bytes: 108634, store: repo}
 ---
 
 # Convention audit baseline
@@ -1627,3 +1627,34 @@ No source/Cargo/path/profile move or workload was performed. Expanded resource/
 Collector source ownership, safe-root/actor isolation, feature/release/native-role
 controls and entire migration qualification remain OPEN. Exact source and private
 review hashes are in baseline.json.
+
+## Independent terminal1f2 build failure and remaining source corrections
+
+Completed browser product job128557090823/run42423423776/attempt1 was fetched
+independently. Its57360-byte log hashes4594263eb0bb5956f64094d78dc198207f28730f48903f7a22fe84fa4a9a9bfa
+and equals retained official bytes plus original whole-run ZIP entry. The source
+checkout is1f2b9a93 and the typed projection matches semantically. ZIP807fda48
+contains the same previously verified102412-byte preflight log as well. Product
+failed at browser_gate_build:2 of3 assertions passed,9 required unavailable, no
+images and browser actor NOT_OBSERVED. No Origin/wire/DNS/cleanup or private-ledger
+claim follows. Prior GNU3/Lab40 successes remain separate component evidence.
+
+New P2 CA-RUNTIME-LAB-01: immutable1f2 product.Dockerfile still selects removed
+package humanymous-audit for audit-witness. Its root workspace instead owns
+humanymous-runtime and the exact audit-witness target requires audit. The current
+dirty owner patch uses runtime --no-default-features --features audit --bin
+audit-witness, statically matching that target. The patch is not yet an accepted
+committed correction or actual Docker regression in this review. Exact inner
+Docker RUN failure is unavailable; the stale caller is a deterministic source
+defect, not a proven first measured cause. Owner/Root were notified; audit ran no
+retry/build/dispatch.
+
+Tools P2 was acknowledged in CLI2c947942: both12/29 and10/27 topologies are now
+explicitly conditional. Root subsequently chose the23 integration plus10 real
+owned-filesystem cases, implying10 total integration roots/27 compiled roots.
+That coordination decision is not a completed freeze. Reconciled owned machine
+map/profile/source placement and actual inventories still require independent
+review; the earlier finding remains OPEN pending those artifacts.
+
+No compiler/native/Docker workload was launched by audit. All remaining whole
+migration, native identity/lifetime, distribution and product gates stay OPEN.
