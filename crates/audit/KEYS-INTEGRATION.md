@@ -1,5 +1,24 @@
 # Sealed key compatibility integration
 
+## New unqualified retained intent state
+
+`ControlAuthority::retained_action_state(retainer,action,target)` reauthenticates
+actual native ledger bytes and exact independent retainer scope/public identity/
+latest anchor before producing `RetainedControlState`. Private fields and no
+public constructor/Clone/Deserialize/effect method prevent a request bool from
+standing in for this observed state. Getters bind scope, authority_public, anchor,
+action, target, consumed proposal and other_consumed_targets. Expiry does not
+erase a consumed intent; kill consumers reject unknown other targets as explicit
+migration work, even when their new exact target has no match. Missing actual
+ledger/pending/stale anchor fails, never an unauthenticated absent result.
+
+Runtime must serialize issuance/query/startup admission; this view is not a
+distributed lease or portable membership proof. Covered kill restores disabled
+state, while retained consumed kill without covered audit remains unavailable
+pending explicit reconciliation. `Scope::validate()` exposes the shared existing
+identity validation without copying rules. Source and native regression are
+authored/formatted only, not compiled/executed during benchmark quiet window.
+
 ## New unqualified custody helper capture
 
 key_custody's two existing parents now use shared bounded private capture

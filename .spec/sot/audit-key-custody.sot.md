@@ -247,6 +247,27 @@ do not replace Docker product e2e or independent witness/admin qualification.
 
 ### Independent control-anchor retention contract
 
+Consumed, externally retained kill intent is distinct from a witnessed runtime
+effect. A crash after grant issuance but before the kill audit commit must not
+restore a healthy default. Startup authenticates its actual control ledger and
+checks exact current independent retained scope/public identity/anchor before
+obtaining a typed action/target-bound state view, including authenticated absence.
+The view is read-only, not deserializable, not an execution grant and not a
+distributed freshness lease. A consumed proposal remains an intent after expiry.
+The view also exposes distinct other consumed targets for the queried action.
+A kill consumer rejects those as an explicit migration issue even when its new
+canonical target has no exact match; protocol changes must not rearm old intent.
+Missing ledger/pending/native state, mismatched anchor or unavailable retainer
+refuses a view; no raw bool/None default stands in for authenticated absence.
+
+Runtime serializes startup admission with issuance. Covered kill audit restores
+disabled state; retained kill intent without covered commit leaves service
+fail-closed/unavailable pending explicit reconciliation. It never automatically
+replays a generic operation or reissues a consumed grant. Established startup
+uses existing keys/history and a fresh pinned broker/witness handshake; client
+cached-head equality cannot defeat joint store/pin rollback or deliberate
+reprovisioning. Logical scope changes require explicit migration, not rearming.
+
 The retained-action boundary consumes the local signed approval ledger first,
 then requests an exact previous-to-next anchor transition from an independently
 owned retention service. Only its durable exact acknowledgement issues a

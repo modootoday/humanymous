@@ -20,6 +20,13 @@ pub struct Scope {
     /// Provisioned node identity within that installation.
     pub node: String,
 }
+impl Scope {
+    /// Validate the existing canonical installation/node identity constraints.
+    /// This checks framing only, not authorization or a provisioned scope match.
+    pub fn validate(&self) -> Result<(), ControlError> {
+        valid_scope(self)
+    }
+}
 
 /// Destructive or custody-changing operation requiring two independent keys.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -291,7 +298,7 @@ fn push_field(output: &mut Vec<u8>, bytes: &[u8]) {
     output.extend_from_slice(&(bytes.len() as u64).to_be_bytes());
     output.extend_from_slice(bytes);
 }
-fn canonical_hex<const N: usize>(encoded: &str) -> Result<[u8; N], ControlError> {
+pub(super) fn canonical_hex<const N: usize>(encoded: &str) -> Result<[u8; N], ControlError> {
     if encoded.len() != N * 2
         || encoded
             .bytes()

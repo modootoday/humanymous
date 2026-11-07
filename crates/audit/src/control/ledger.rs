@@ -1,4 +1,7 @@
-use super::{Action, Administrators, Approval, Proposal, target_commitment};
+use super::{
+    Action, Administrators, Approval, ControlAnchorRetainer, Proposal, RetainedControlState,
+    target_commitment,
+};
 use crate::{
     keys::{
         custody::{Durability, Owner},
@@ -137,6 +140,57 @@ impl LedgerAnchor {
     }
 }
 impl ControlAuthority {
+    /// Reauthenticate actual native state and match its exact independent latest
+    /// anchor before exposing presence or absence of a consumed action/target.
+    /// Missing/pending/rolled-back state is an error, never an absent intent.
+    /// This read-only view does not acknowledge an effect, reissue a grant or
+    /// expire an already consumed intent. Startup/issuance serialization belongs
+    /// to the trusted producer; the returned snapshot is not a freshness lease.
+    pub fn retained_action_state(
+        &self,
+        retainer: &mut dyn ControlAnchorRetainer,
+        action: Action,
+        target: &str,
+    ) -> io::Result<RetainedControlState> {
+        super::policy::canonical_hex::<32>(target).map_err(|_| invalid())?;
+        let bytes = self.store.read()?.ok_or_else(invalid)?;
+        let snapshot = authenticate(&bytes, &self.key, &self.policy, self.capacity)?;
+        let public = self.public_key();
+        if snapshot.anchor != self.anchor
+            || retainer.scope() != self.policy.scope()
+            || retainer.authority_public() != public
+            || retainer.current()? != snapshot.anchor
+        {
+            return Err(invalid());
+        }
+        if snapshot.body.spent.values().any(|spent| {
+            spent.proposal.action == action && &spent.proposal.scope != self.policy.scope()
+        }) {
+            return Err(invalid());
+        }
+        let consumed = snapshot
+            .body
+            .spent
+            .values()
+            .find(|spent| spent.proposal.action == action && spent.proposal.target == target)
+            .map(|spent| spent.proposal.clone());
+        let other_targets: std::collections::BTreeSet<_> = snapshot
+            .body
+            .spent
+            .values()
+            .filter(|spent| spent.proposal.action == action && spent.proposal.target != target)
+            .map(|spent| spent.proposal.target.clone())
+            .collect();
+        Ok(RetainedControlState::checked(
+            self.policy.scope().clone(),
+            public,
+            snapshot.anchor,
+            action,
+            target.to_owned(),
+            consumed,
+            other_targets.into_iter().collect(),
+        ))
+    }
     /// Open a preprovisioned private directory and authenticate all spent state.
     /// Fresh creation is explicit; pinned state must match exactly on restart.
     pub fn open(

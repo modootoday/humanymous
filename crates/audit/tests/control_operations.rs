@@ -137,6 +137,111 @@ fn material() -> Result<KeyMaterial, humanymous_audit::keys::KeyError> {
 }
 
 #[test]
+fn retained_state_authenticates_absence_and_preserves_unapplied_expired_kill_intent() {
+    let directory = Dir::new();
+    let independent = Dir::new();
+    let mut authority = directory.authority(LedgerBootstrap::New).unwrap();
+    let mut retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        authority.public_key(),
+        authority.anchor(),
+        true,
+    )
+    .unwrap();
+    let target = target_commitment(b"canonical-one-way-kill-target");
+    let initial = authority
+        .retained_action_state(&mut retainer, Action::KillSwitch, &target)
+        .unwrap();
+    assert!(initial.consumed().is_none());
+    assert!(initial.other_consumed_targets().is_empty());
+    assert_eq!(initial.scope(), &scope());
+    assert_eq!(initial.action(), Action::KillSwitch);
+    assert_eq!(initial.target(), target);
+    assert_eq!(initial.authority_public(), authority.public_key());
+    assert_eq!(initial.anchor(), authority.anchor());
+    let proposal = authority
+        .propose(Action::KillSwitch, target.clone(), 10, 100)
+        .unwrap();
+    let signatures = approvals(&proposal);
+    let grant = authority
+        .authorize_retained_action(
+            request(&proposal, &signatures),
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    drop(grant); // Intent retained; no runtime effect or audit commit was applied.
+    let later = authority
+        .propose(
+            Action::KillSwitch,
+            target_commitment(b"different-target-protocol"),
+            200,
+            250,
+        )
+        .unwrap();
+    let signatures = approvals(&later);
+    let grant = authority
+        .authorize_retained_action(
+            ApprovalRequest {
+                proposal: &later,
+                approvals: &signatures,
+                now: 210,
+            },
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    drop(grant);
+    let latest = authority.anchor().clone();
+    drop(authority);
+    let authority = directory
+        .authority(LedgerBootstrap::Pinned(&latest))
+        .unwrap();
+    let observed = authority
+        .retained_action_state(&mut retainer, Action::KillSwitch, &target)
+        .unwrap();
+    assert_eq!(observed.consumed(), Some(&proposal));
+    assert_eq!(observed.anchor(), &latest);
+    assert!(observed.consumed().unwrap().expires_at < 210);
+    assert_eq!(
+        observed.other_consumed_targets(),
+        std::slice::from_ref(&later.target)
+    );
+    let changed_protocol = authority
+        .retained_action_state(
+            &mut retainer,
+            Action::KillSwitch,
+            &target_commitment(b"third-target-protocol"),
+        )
+        .unwrap();
+    assert!(changed_protocol.consumed().is_none());
+    assert_eq!(changed_protocol.other_consumed_targets().len(), 2);
+    assert!(
+        authority
+            .retained_action_state(&mut retainer, Action::KillSwitch, "invalid-target")
+            .is_err()
+    );
+    let committed = directory.0.join("control.json");
+    let saved = directory.0.join("control.saved-for-loss-probe");
+    fs::rename(&committed, &saved).unwrap();
+    assert!(
+        authority
+            .retained_action_state(&mut retainer, Action::KillSwitch, &target)
+            .is_err()
+    );
+    fs::rename(&saved, &committed).unwrap();
+    assert_eq!(
+        authority
+            .retained_action_state(&mut retainer, Action::KillSwitch, &target)
+            .unwrap()
+            .consumed(),
+        Some(&proposal)
+    );
+}
+
+#[test]
 fn pending_erasure_rejects_same_subject_permit_from_foreign_scope() {
     let directory = Dir::new();
     let foreign_directory = Dir::new();
@@ -791,6 +896,11 @@ fn external_retention_failure_spends_nonce_without_issuing_effect_grant() {
     );
     assert_eq!(authority.anchor().revision, 1);
     authority.verify_consumed(&proposal).unwrap();
+    assert!(
+        authority
+            .retained_action_state(&mut unavailable, Action::KillSwitch, &proposal.target)
+            .is_err()
+    );
     assert!(
         authority
             .authorize_action(request(&proposal, &signatures))

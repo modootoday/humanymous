@@ -100,6 +100,17 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+R10 producer coordination prioritized a typed retained-intent query before the
+planned retained erasure bridge. Source now reauthenticates actual control
+ledger bytes and exact independent current anchor before providing a private
+action/target-bound RetainedControlState, including authenticated absence and
+other consumed targets. Runtime accepted fail-closed pending-intent semantics,
+no automatic replay/reissue, serialized startup/issuance and no implicit target-
+protocol migration reset. Scope::validate delegates the existing identity rule.
+Native tests for intent/expiry/restart/ledger loss and stale external anchor are
+authored; compile/execution remain not_run. Formatting/document checks only under
+quiet window. Evidence: [[evidence:root/20261107093804]].
+
 Docs review identified unbounded/inherited-stdio key_custody subprocess parents.
 Its old nested output was covered by an explicit legacy runner exception, but
 not a bounded child lifecycle. Both parents now reuse bounded capture and exact
