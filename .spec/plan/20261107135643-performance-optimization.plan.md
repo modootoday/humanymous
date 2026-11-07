@@ -5,10 +5,28 @@ status: active
 created: 2026-11-07T13:56:43Z
 updated: 2026-11-07T15:10:19Z
 rel:
-  depends_on: [sot:root/performance-optimization]
+  depends_on: [sot:root/performance-optimization, plan:root/20261107151000, plan:root/20261107150000]
 ---
 
 # Performance research and source-bound optimization execution
+
+## Bottom-up next admission
+
+The structural role registry assigns this chat X performance measurement and
+bounded preparation/cache research. Existing five document/evidence scopes remain
+the only write grant. Prioritize the common bounded-preparation handoff over an
+unaccepted production micro-optimization. Tooling implementation requires exact
+owner paths; execution requires an actual root allocation. Preserve the Browser
+source-only window until that allocation changes.
+
+Audit owner received the source-only8192-byte hashing-buffer candidate for
+contract triage. The observed encoder tests cover92 frozen records, exact/short
+byte budgets, zero item budget and count/replay disagreement. These are inspected
+acceptance inputs, not newly executed passes. No candidate implementation,
+benchmark, allocation counter or durable-I/O measurement exists. Official Rust
+BufWriter documentation confirms batching and explicit-flush behavior; a failed
+tagged source retrieval is not implementation verification. Owner acceptance and
+an exact source handoff precede any patch.
 
 ## Full objective
 

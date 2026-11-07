@@ -5,7 +5,7 @@ status: draft
 created: 2026-11-07T13:56:43Z
 updated: 2026-11-07T15:10:19Z
 rel:
-  depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
+  depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery, sot:root/structural-development]
   governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
 ---
 
@@ -30,6 +30,36 @@ three exact Integrity source paths governed above, with no wider crate grant.
 Detection weights, thresholds, predicates and verdict bands remain frozen. Keep
 fail-closed decisions, audit durability, cryptographic/canonical bytes, dual
 control and motor/speed-independent accessibility. Preserve the T4 ceiling.
+
+## Bottom-up qualification and experiment admission
+
+Follow structural-development and plan:root/20261107151000. X performance work
+measures the layer actually exercised. B1 is native compiler/build observation;
+R1 is an L1 canonical-function comparison. Neither qualifies L2 durable I/O,
+L3 authenticated services, L4 supported hosts or L5 Docker product behavior.
+Performance receipts compose upward only with the owning boundary's actual
+functional and lifecycle evidence. Preserve failures and unsupported cases.
+
+The next common preparation implementation is a tooling-owner handoff, not a
+new source grant here. Its L0 contract must identify selected inputs, finite
+file/byte/root/time budgets, partial-result states, content-hash freshness and
+unknown tool/SDK closure. L1 tests must cover exact limits, overflow, changed
+content and incomplete capture. L2 qualification requires real files, read
+failures, link/reparse policy and observed termination on supported hosts.
+Measure preparation separately from compilation and validation. Any faster
+preparation result must retain the same declared input coverage; compare
+coverage changes explicitly rather than reporting them as implementation speedup.
+
+An Audit L1 candidate is under owner triage: record_hash_bounded currently wraps
+its SHA256 sink in an8192-byte BufWriter. NFC emission writes individual UTF-8
+characters, so buffering cannot be removed on allocation intuition alone. A
+fixed-buffer alternative would trade heap allocation for stack use and code
+complexity. Before implementation, the owner must accept exact canonical bytes,
+count/replay and byte/item errors, sorting/NFC, explicit final flush and previous
+hash text as unchanged contracts. Compare all92 frozen records and boundary
+inputs; keep fixture construction outside timing and report corpus byte weights.
+No measured allocation reduction or speedup exists. This proposal grants no
+Audit source ownership and does not qualify WAL, recovery or service throughput.
 
 ## Measurement vocabulary and identity
 
