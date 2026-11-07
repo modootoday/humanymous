@@ -1021,3 +1021,41 @@ labels cannot mint Ready or a trusted execution profile. Source6312cc4f/export
 44abcf67 passes native check/strict Clippy, nonce/SDDL pure1 and runner check only.
 Actual publisher/reader/Job/profile/HostIO remain unexecuted. Initial E0308 is
 preserved; actor-context-carrier-summary.json binds raw/source/closure evidence.
+
+## Shared binding and retained capture source checkpoint
+
+The shared parent_context codec owns the closed nine-field
+humanymous.parent-context-binding/1 schema: schema, run_nonce, actor_sid,
+source_sha, context_sha256, verified_manifest_sha256, provenance_sha256,
+original_budget and preflight_environment, in that declaration order. Exact SID
+and four original budget fields must equal the decoded parent context; the
+github-hosted enum value is metadata only. Invocation source_sha is distinct
+from managed/native/harness compiled lineages. Binding uses compact typed JSON
+plus LF; provenance commitment uses typed compact declaration-order JSON without
+LF, never arbitrary map ordering. All decoded claims remain unverified; codec
+success cannot bypass native producer identity or enable Command/Ready.
+
+Root requested a coherent source-only checkpoint before allocating validation.
+Binding tests3 and new CaptureAttempt pure tests4 are authored NOT_RUN. Existing
+parent-context evidence does not qualify these changed bytes. CaptureAttempt
+retains the actual direct Child and every started IO JoinHandle, returns the
+same owner on partial/unsettled failures, and preserves sticky errors and original
+absolute run/cleanup thresholds. Public poll()/settle_joined() sample real time
+internally after observations/joins; no caller observation-time argument exists.
+
+Poll performs no blocking wait/join/write/kill. Start/kill/final joins can block
+in the OS and require independent caller/host supervision. Only actual joined
+workers permit the private settled result; direct child status, pipe EOF and
+descendant settlement remain distinct. No timeout detaches workers or renews a
+budget; abandonment is Unknown and Drop is not cleanup proof. Existing legacy
+ManagedChild/capture behavior remains present and is not newly qualified by this
+additive API. Full retained contract and outstanding actual negative fixtures are
+specified in [[plan:root/20261107140500]].
+
+The separate isolated bridge source/graph checkpoint is Root commit
+9d0c0db985c4b345931abb4f03d548b9157577ef, with the explicit unsafe exception in
+rust-migration. [[plan:root/20261107140021]] records accepted parent assertion and
+W/T/R design plus the exact bridge contract. Its three pure tests, native calls,
+caller custody wiring and actual Windows tests are still NOT_RUN. Producer
+identity stays Unsupported until the complete native caller and evidence qualify;
+no account/Job/SCM/apphost execution follows from either source checkpoint.

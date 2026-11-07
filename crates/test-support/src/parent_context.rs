@@ -54,7 +54,7 @@ pub struct UnverifiedProvenance {
     pub harness: NativeLineage,
 }
 /// Parent-claimed original clock envelope, never authoritative native evidence.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct UnverifiedBudget {
     /// Original UTC milliseconds at parent budget creation.
@@ -317,6 +317,11 @@ pub fn encode(context: &UnverifiedParentContext) -> Result<Vec<u8>, WireError> {
     }
     Ok(bytes)
 }
+
+mod binding;
+pub use binding::{
+    PreflightEnvironment, UnverifiedBinding, decode_binding, encode_binding, encode_provenance,
+};
 
 #[cfg(test)]
 mod tests;

@@ -6,6 +6,29 @@ use std::{
     time::{Duration, Instant},
 };
 
+mod capture_attempt;
+pub use capture_attempt::{
+    CaptureAttempt, CaptureDeadlines, CaptureIssue, CaptureLimits, CaptureProgress,
+    CaptureStartFailure, CapturedDirectChild, RetainedCaptureFailure,
+};
+
+fn piped_child(command: &mut Command, stderr: bool) -> io::Result<Child> {
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        command.creation_flags(0x08000000);
+    }
+    command
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(if stderr {
+            Stdio::piped()
+        } else {
+            Stdio::null()
+        })
+        .spawn()
+}
+
 /// Owns and reaps a native child even after a readiness/validation error.
 pub struct ManagedChild(Child);
 
@@ -51,23 +74,7 @@ impl ManagedChild {
         Ok(child)
     }
     fn piped(command: &mut Command, stderr: bool) -> io::Result<Self> {
-        #[cfg(windows)]
-        {
-            use std::os::windows::process::CommandExt;
-            // Noninteractive pilot processes must not open visible consoles.
-            command.creation_flags(0x08000000);
-        }
-        Ok(Self(
-            command
-                .stdin(Stdio::piped())
-                .stdout(Stdio::piped())
-                .stderr(if stderr {
-                    Stdio::piped()
-                } else {
-                    Stdio::null()
-                })
-                .spawn()?,
-        ))
+        Ok(Self(piped_child(command, stderr)?))
     }
     /// Keep private stdin/stdout open for a typed interactive protocol. Caller
     /// owns framing, per-frame byte/deadline limits and closing these pipes;
