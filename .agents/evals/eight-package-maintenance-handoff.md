@@ -10,6 +10,24 @@ branch, worktree or ref was moved/renamed/switched here. Detection remains froze
 The current agents-meta/codex/rust-agents-m11 claim stays in place until root's
 specific slice handoff; this is not a provider switch or work-lane release.
 
+### Tools-family completeness update
+
+Root's2026-11-08 follow-up census reports39 tracked Cargo manifests:34 workspace
+packages plus4 standalone packages,38 packages total (the root workspace-only
+manifest is not another package). The initial historical scope was41 workspace
+plus4 standalone,45 total. These are different source checkpoints; do not rewrite
+historical counts, receipts or the150-file handoff inventory to the new number.
+
+The final eight-public-package baseline is unchanged. Tools responsibility must
+absorb the original nine workspace tool responsibilities and all four standalones:
+scripts/ci/cef-pilot, scripts/ci/windows-native-runner, scripts/ci/docs-review and
+scripts/ci/local-parity. Those thirteen original responsibilities do not become
+permanent private helper-package exceptions. Root/Delivery coordinate their exact
+source/path/dependency and qualification handoffs. This maintenance-owner document
+grants no write access to their source, manifests or claims; current role scope
+does not authorize moves or an additional private crate. No implementation starts
+before root's Tools freeze.
+
 ## Exact source and dirty state
 
 The registered point-in-time inventory is

@@ -264,3 +264,16 @@ implementation/venue/resource decision, original model/tokenizer/template/arms,
 reported actual placement/dtype, bounded lifecycle and a reliable quality grader.
 No global selection policy, dependency/pin, shader/native helper or unsafe code
 was added. GPU speed cannot repair the observed subject/judge quality failures.
+
+## Current Tools-family coordination scope
+
+Root's2026-11-08 completeness update includes four standalone qualification tools
+(CEF pilot, windows-native-runner, docs-review, local-parity) alongside the original
+nine workspace tool responsibilities for absorption into humanymous-cli. The final
+eight-package public family has no permanent private-helper exception. Root's
+current census is34 workspace+4 standalone=38 packages from39 tracked manifests;
+initial41+4=45 is historical and remains recorded as such. This is coordination
+scope, not an expanded source claim or permission to edit those foreign manifests.
+The exact handoff remains `.agents/evals/eight-package-maintenance-handoff.md`;
+root/Delivery own Tools freeze and cross-owner integration. No path/package/ref
+move or implementation was performed for this update.
