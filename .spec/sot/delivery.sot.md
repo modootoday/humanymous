@@ -136,6 +136,22 @@ source closure is `gh workflow run ci.yml --ref codex/rust`; an authorized branc
 push already triggers ci, so do not dispatch a duplicate. Root must record the
 resulting exact run ID/SHA/attempt and preserve all failed/not_run outcomes.
 
+Consultation correction supersedes the fully serial draft above: after policy,
+two heavy lanes execute independently. LaneA native→msrv→quality→documentation→
+pages; laneB docker→browser→images→packages→node→advisories. Each matrix has
+max-parallel1. Lane continuation jobs directly need policy and their predecessor,
+with the only permitted scheduling condition
+`${{ !cancelled() && needs.policy.result == 'success' }}`. This gathers independent
+results after a preceding failure without running unvalidated policy or ignoring
+failures. Rust workflow policy accepts only that exact condition with a direct
+policy dependency; no continue-on-error or conditional pilot steps are allowed.
+Ready keeps its exact complete needs set and fails on every failure/skip/cancel.
+Do not use one shared concurrency group for every job: pending replacement could
+discard required work. Same-ref CI workflow cancellation remains in ci.yml.
+This bounds heavy validation to two hosted jobs, separate from the local resource
+gate. Interactive human/AT/SCM/CEF and physical durability claims still require
+their own actual authority, not a hosted-runner label. No required gate removed.
+
 Accepted for implementation by the explicit parallel-completion request on
 2026-11-07 KST. New authored implementation/tests use Rust1.99.1/edition2024.
 The existing upstream action/Jekyll/theme/generated glue and frozen legacy

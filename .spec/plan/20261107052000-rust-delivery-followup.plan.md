@@ -31,6 +31,12 @@ Local fast checks must separate pure unit logic from runtime-spawning tests;
 hosted standard VMs do not prove real interactive AT/SCM/CEF capability by label.
 No existing source or required check is deleted for this consultation.
 
+Follow-up consultation direction now implemented as two hosted lanes behind
+policy, with exact failure-independent scheduling predicate and strict ready
+aggregation; see delivery SoT correction. bdff906 is the local serial draft,
+not the final source to push alone. Source closure now includes Nodeedf83b7 and
+lab9a41235; latest producer execution stillnot_run, root common lock pending.
+
 Resource triage update2026-11-07: heavy new execution is held; project-wide one
 slot awaits root allocation. P0 runtime+collector implementation, P1 adapter
 source checkpoints, P2 remote CI/Compose design, P3 sequential full reruns.

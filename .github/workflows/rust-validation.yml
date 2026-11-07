@@ -11,7 +11,8 @@ env:
   CARGO_BUILD_JOBS: '1'
   CARGO_INCREMENTAL: '0'
 # No cache writes: artifact/cache billing has not been verified for this account.
-# Dependency failure leaves later checks not_run; ready still rejects every skip.
+# Two heavy lanes after policy. Failed checks remain failed while their lane
+# continues collecting independent results; cancellation stops both lanes.
 jobs:
   policy:
     runs-on: ubuntu-24.04
@@ -33,7 +34,8 @@ jobs:
 
         "$(go env GOPATH)/bin/actionlint" -shellcheck=""'
   native:
-    needs: browser
+    needs: policy
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     steps:
@@ -84,7 +86,8 @@ jobs:
         - macos-15
         - windows-2025
   msrv:
-    needs: native
+    needs: [policy, native]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -100,7 +103,8 @@ jobs:
     - run: cargo test --manifest-path scripts/ci/docs-review/Cargo.toml --locked
     - run: cargo test --manifest-path scripts/ci/delivery/Cargo.toml --locked
   quality:
-    needs: msrv
+    needs: [policy, msrv]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -121,7 +125,8 @@ jobs:
     - run: cargo fmt --manifest-path scripts/ci/delivery/Cargo.toml -- --check
     - run: cargo clippy --manifest-path scripts/ci/delivery/Cargo.toml --all-targets --locked -- -D warnings
   browser:
-    needs: docker
+    needs: [policy, docker]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
@@ -167,7 +172,8 @@ jobs:
         if-no-files-found: error
       if: always() && startsWith(github.ref, 'refs/tags/v')
   images:
-    needs: quality
+    needs: [policy, browser]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
@@ -201,7 +207,8 @@ jobs:
         - core
         - gate
   packages:
-    needs: images
+    needs: [policy, images]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
@@ -223,7 +230,8 @@ jobs:
           target/delivery-crates/validated-archives.json
         if-no-files-found: error
   node:
-    needs: packages
+    needs: [policy, packages]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -252,7 +260,8 @@ jobs:
           adapters/node/native/provenance.json
         if-no-files-found: error
   advisories:
-    needs: node
+    needs: [policy, node]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -281,7 +290,8 @@ jobs:
         if-no-files-found: error
       if: always() && startsWith(github.ref, 'refs/tags/v')
   documentation:
-    needs: advisories
+    needs: [policy, quality]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -294,7 +304,8 @@ jobs:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/docs-review/Cargo.toml -- .
   pages:
-    needs: documentation
+    needs: [policy, documentation]
+    if: ${{ !cancelled() && needs.policy.result == 'success' }}
     uses: ./.github/workflows/pages-build.yml
   ready:
     runs-on: ubuntu-24.04

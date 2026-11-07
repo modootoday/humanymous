@@ -172,7 +172,10 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         for id in REQUIRED {
             let job = &jobs[*id];
             require(
-                job.get("if").is_none() && job.get("continue-on-error").is_none(),
+                (job.get("if").is_none()
+                    || (job["if"] == "${{ !cancelled() && needs.policy.result == 'success' }}"
+                        && strings(&job["needs"]).contains("policy")))
+                    && job.get("continue-on-error").is_none(),
                 format!("required job may not be conditional/tolerated: {id}"),
             )?;
         }
@@ -394,7 +397,7 @@ mod tests {
             .join("../../../.github/workflows/rust-validation.yml");
         let original = yaml(&std::fs::read_to_string(path).unwrap()).unwrap();
         assert!(document("rust-validation.yml", &original).is_ok());
-        for mutation in 0..4 {
+        for mutation in 0..6 {
             let mut changed = original.clone();
             match mutation {
                 0 => changed["jobs"]["ready"]["needs"]
@@ -403,7 +406,9 @@ mod tests {
                     .retain(|value| value != "docker"),
                 1 => changed["jobs"]["docker"]["if"] = json!("false"),
                 2 => changed["jobs"]["docker"]["steps"] = json!([]),
-                _ => changed["jobs"]["docker"]["steps"][0]["continue-on-error"] = json!(true),
+                3 => changed["jobs"]["docker"]["steps"][0]["continue-on-error"] = json!(true),
+                4 => changed["jobs"]["native"]["if"] = json!("${{ !cancelled() }}"),
+                _ => changed["jobs"]["native"]["needs"] = json!(["browser"]),
             }
             assert!(document("rust-validation.yml", &changed).is_err());
         }
