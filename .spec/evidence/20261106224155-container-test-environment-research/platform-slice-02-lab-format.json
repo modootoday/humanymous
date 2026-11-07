@@ -1,0 +1,20 @@
+{
+  "schema": "humanymous.lab-platform-format-correction/1",
+  "first_failure": "Root global fmt check identified long namespace wrapping at orchestration.rs line437 and runtime go/client.rs line114",
+  "command": "cargo fmt -p humanymous-lab-runner -p humanymous-runtime-pilot",
+  "exit": 0,
+  "files": [
+    {
+      "path": "test/lab/runner/src/orchestration.rs",
+      "before_sha256": "896eaf779e5333041df462dff7b1a58b8428fb611db4224ba876d9e95b18feca",
+      "after_sha256": "ade6085349ca53954f3650da75c3559288edb4751bcfc1a800e4a638c4af6fef"
+    },
+    {
+      "path": "test/lab/runtime/src/go/client.rs",
+      "before_sha256": "18e027368abdd02035eba5ab41c0f0d9ba1c5987403af48a27959f3ae6fc9124",
+      "after_sha256": "f8ce02b72eadf0909eda583d032c93329bebc7ac9252705ac36a43d2539171d9"
+    }
+  ],
+  "scope": "Formatting only; no behavior/manifests/graph/source relocation",
+  "compiler_tests_clippy": "NOT RUN; old36/114 results do not qualify new graph"
+}

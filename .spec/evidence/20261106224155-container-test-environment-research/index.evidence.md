@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T20:46:03Z
+updated: 2026-11-07T20:55:20Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -44,6 +44,7 @@ files:
   - {path: bootstrap-subfailure-parser-contract.json, sha256: aec4f836ab57b087e722b5febc357d1045674b24864f08d9b881a1cbfe42b146, bytes: 2456, store: repo}
   - {path: bootstrap-subfailure-parser-checks.json, sha256: bd9e5902a807296ab54c31abff1b3d6608eea54df2e994efb2ee167d71ea9a9f, bytes: 1390, store: repo}
   - {path: platform-slice-02-lab-consumers.json, sha256: 8d7acac525e32bb505566f9d9d917eeb6a4ec8d786672d02f24cc61a436f1062, bytes: 5202, store: repo}
+  - {path: platform-slice-02-lab-format.json, sha256: 4f425997bc37e3489304c1b469244ca4787c7dccd003e6489421b78973fb3644, bytes: 961, store: repo}
 ---
 
 # Container test environment research
