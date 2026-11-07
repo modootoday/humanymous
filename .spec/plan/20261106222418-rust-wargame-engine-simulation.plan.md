@@ -13,6 +13,101 @@ rel:
 
 ## Goal
 
+### Tools freeze contract: shared qualification lab support (source audit only)
+
+Root's requested destination is CLI src/qualification/lab_support/{attacker,
+defender}. This is an input contract, not a move or graph implementation.
+Read-only source checkpoint27f6070207e6b77dda3834e34fb416ac0c746e21 pins all21Rust
+files below. Both source trees were clean at inspection. Current active ownership
+is the exact attacker-file loan and defender/src/** loan recorded in pass;
+unclaimed attacker files below are inventory inputs, not additional write grants.
+Root owns physical relocation, package/target/features and source-link selectors.
+
+| Role | Current physical source inputs, relative to src/ |
+| --- | --- |
+| attacker shared logic | lib.rs; catalog.rs; report.rs; verification.rs; verification/json.rs; network/mod.rs; network/cases.rs; network/report.rs; report/legacy/mod.rs; report/legacy/aggregate.rs; report/legacy/html.rs; report/legacy/tests.rs |
+| attacker CLI roles | main.rs; bin/humanymous-wargame-verify.rs; bin/humanymous-report.rs |
+| defender shared logic | lib.rs; lab/mod.rs; lab/client.rs; lab/isolation.rs; lab/process.rs; lab/snapshot.rs |
+
+Same physical module source may be linked into explicitly assigned role targets;
+do not copy its implementation, retain public SDK helper packages or expose the
+owned-process capability as a product SDK. Attacker's cross-root references to
+humanymous_defender and three CLI references to humanymous_attacker must be
+resolved by the root-selected module/target contract. They must not create an
+old-package alias or duplicate decoder/scoring implementation. Actual Lab runtime
+test/lab/runtime/src/wargame.rs consumes network::OwnedLab/run, verification and
+defender lab types; only Root coordinates that consumer with the Lab owner.
+
+#### Data readers and path bases
+
+- Neither attacker nor defender source currently contains CARGO_MANIFEST_DIR,
+  current_dir, env! or option_env!. Moving/linking under CLI changes any future
+  manifest-derived base to CLI, not the old package or repository root; no such
+  fallback should be invented. Existing include_str resolves relative to its
+  physical Rust file. Recalculate paths once for the actual relocation, checking
+  all eight references/six unique fixture bytes, not runtime CWD.
+- catalog.rs embeds six frozen scoring JSONs; network/cases.rs embeds two of the
+  same six. The owner is Core scoring, actual location is
+  crates/sdk/humanymous-core/tests/scoring/fixtures/frozen. The preceding raw/Git
+  table pins them independently; keep exact pre-move worktree bytes and canonical
+  Git identity distinct. No authored fixture replacement or private payload copy.
+- Legacy load reads an explicit input Path bounded to8MiB+1; paths/caption are
+  bounded4096bytes,50krows/top128 and rendered16MiB. CLI defaults
+  test/e2e/results.json and docs/report.html are CWD-relative historical options,
+  not embedded data or permission to write repo docs during a pilot. Explicit
+  isolated fixture/output paths are required for actual qualification.
+- Legacy write_atomic uses create_new own sibling temporary,32collisions,
+  write/sync/rename, and cleans only its created temporary; denied replacement
+  retains the existing output. Temp tests use PID-scoped OS temp directories and
+  create_dir ownership checks. Preserve those native tests and their ignore flags.
+- Verify CLI reads an explicit report path with4MiB+1 cap, emits verification only
+  after the sole platform::testing::json strict decoder, and returns2 for scoped/
+  full rejection. Its parser must never accept a target URL. Replay CLI accepts
+  only optional u64 seed and cannot acquire network mode through arguments.
+- Defender process.rs hashes regular installed runtime/supervisor files with a
+  256MiB bound and locates fixed sibling humanymous-runtime from current_exe's
+  canonical parent, not CWD/Cargo manifest. It clears child environment, sends
+  bounded private configuration bytes and checks complete runtime-owned readiness.
+  Root's Runtime/CLI binary placement must satisfy this actual executable contract
+  or explicitly version it; a linked module must not silently change the target.
+- Linux isolation reads /proc/self/net/dev, route, ipv6_route and own/child network
+  namespace links; process.rs reads /proc/PID/exe for image identity. Only loopback,
+  no external route and the same namespace are admitted. Other OSes reject this
+  network mode. Network client reads only the retained owned child's socket with
+  bounded framing/deadlines, not arbitrary supplied addresses.
+- VerifiedSnapshot reads an owner-provided authenticated Log, projects redacted
+  effects and rejects prefix rollback. The actual installation's WAL, witness
+  key/state and counted origin are Lab-owned inputs; they cannot be manufactured
+  by pure tests or selected through a new public helper API.
+
+#### Role test inventory and actual-boundary mapping
+
+These are statically inspected inventories, NOT new executed counts. Preserve
+module-qualified identities and target/cfg differences when linking shared source.
+
+| Existing role | Inventory | Actual-provider obligation |
+| --- | --- | --- |
+| attacker library replay/catalog/report | 1seed reproduction+1catalog+3report tests | Pure actual frozen Engine replay only, not socket/product success |
+| attacker network library | 1case-plan+4accounting/transport/verifier tests | Unavailable/synthetic failed ledger fixtures remain pure; actual19programs+7unsupported require the separate Lab supervisor |
+| attacker verification library | 6semantic/duplicate/schema/trace tests+1safe JSON diagnostic | Preserve strict exact-byte verifier budgets, both schemas and independent total recount |
+| legacy report library | 8pure parity/privacy/bounds/escaping tests;1ignored portable publication/collision;1ignored Windows sharing denial | Real owned files, replacement retention and cleanup remain native gates; Windows case is cfg(windows), not a Linux zero-test success |
+| replay CLI main.rs | 1argument rejection test | Actual CLI/process/output pilot remains separate |
+| verify CLI | 1argument/mode rejection test | Actual bounded original-file read/exit/stdout pilot remains separate |
+| report CLI | 1argument/default test | Previously compiled, not executed in report L1 receipt; actual generation/file publication remains open |
+| defender library | 2Engine+2client+2isolation+1readiness+1snapshot tests;extra non-Linux isolation rejection test | 8onLinux/9onnonLinux static cfg inventory; pure unit pass does not call OwnedRuntime::spawn or prove actual OS process isolation |
+| Lab runtime wargame role | actual Installation+fixedseed42+sole raw-byte verification, plus setup-failure unit | Docker network-none supervisor, provisioned custody, authenticated WAL, counted origin, sibling runtime, real child cleanup and image receipt |
+
+The21source files must not accidentally have their unit inventories discovered in
+every role target and then summed as distinct coverage. Root chooses explicit
+role target inclusion and preserves per-role test identity/ignored/cfg accounting.
+Do not erase a required inventory to reduce duplicate execution; record shared
+implementation with distinct role admission where appropriate. This source audit
+ran no compiler, formatter, CLI, process, Docker or other workload. Historical306
+is the scoped actual19/7 proof; none of it qualifies the prospective Tools layout.
+No moves/source/Cargo edits or new public SDK helpers were made. No live handles
+or target leases exist; exact Root destination/linking freeze remains the next
+integration dependency, while native report qualification remains an open gate.
+
 ### RUNTIME-SLICE-02 assigned defender consumers (source only)
 
 No defender/src writer existed in the actual claims inventory. Root's explicit
