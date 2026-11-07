@@ -1063,5 +1063,36 @@
     "remaining": "CA-NOTICE-01 actualbinaryarchive/finalimage verification and consolidatedgraph selectors/receiptpaths/packageIDs/notices/sourcewindow, no inheritedproof",
     "new_audit_workload": 0,
     "goal_complete": false
+  },
+  "followup_a19_hosted_go_facade_external": {
+    "private_review": "go-a19-hosted-external-review-001.json",
+    "private_review_sha256": "f784433068701a50d1f5e0bebde6d4246ef2bfb46aeb574265de08025f12aaf7",
+    "owner_commit": "17d6c08ef35652fc2b9b3a082d4488b146b0830e",
+    "source": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb",
+    "run": 42406688473,
+    "attempt": 1,
+    "external_run": "Fresh connectedGitHub GET push/completed/success exactsource/path; freshrunjobs exactly2success",
+    "preflight_job": 128505794191,
+    "product_job": 128506646728,
+    "private_indexed_raw_files": 8,
+    "raw_mismatches": 0,
+    "fresh_saved_log_string_equal": true,
+    "decoded_log_characters": [
+      104676,
+      50829
+    ],
+    "each_log_leading_UFEFF": true,
+    "fresh_saved_public_typed_summary_semantic_equal": true,
+    "preflight": "Leaf10/deployment1/facadeDefault2/enabled2/consumer2/Lab34/Delivery110 each0failedignoredfiltered, Unixactor andstrictgatespassed",
+    "product": "8cases/40checks with4,5,6,6,5,5,5,4 assertions;0failed/notrun/unknown,owner0,receiptvalid,cleanupobserved,sourceunchanged",
+    "exact_run_annotations": [
+      0,
+      0
+    ],
+    "annotation_observation": "Unsupportedconnectorendpoint then paginatedreadonlyghapi0/0 exit0; historical35groups/generic327 unchanged",
+    "private_ledger_sha256": "fb609b3e6720b13b6e9050216d5a72b474c4a4b552e18cea28d13d6af9de8d9e",
+    "scope": "BoundedLinuxDocker nethttp/publicfacade only, not private tuple reconstruction/originalZIPbytes/fulltransitiveclosure/futureconsolidatedgraph/fullproduct/release",
+    "new_audit_watch_dispatch_retry_or_workload": 0,
+    "goal_complete": false
   }
 }

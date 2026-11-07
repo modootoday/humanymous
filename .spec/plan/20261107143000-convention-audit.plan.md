@@ -941,3 +941,28 @@ must update exact package IDs/selectors/receipt paths/notices/source inventories
 together and cannot inherit old receipts. This is bounded section review, not
 complete six-file/test conformance or new artifact/image execution. Exact review
 hashes are bound in baseline.json; the full migration audit remains OPEN.
+
+## External hosted Go facade qualification at a19
+
+Owner17d6c08e seals exact a19e3802 run42406688473 attempt1. Independent fresh
+GitHub run GET confirms push/completed/success and the exact source/workflow;
+run-jobs and step APIs confirm both preflight128505794191/product128506646728
+completed successfully. All8 indexed raw files match. Newly fetched connector
+logs are exactly equal to saved decoded UTF8 strings, including leading UFEFF:
+104676/50829 characters. These are not original GitHub ZIP-byte attestations.
+
+Actual preflight footers are leaf10/deployment1/facadeDefault2/enabled2/consumer2/
+Lab34/Delivery110, each zero failed/ignored/filtered; repeated facade tests are
+not summed as distinct tests. Unix actor compile and strict gates passed. The
+one fresh product typed summary matches saved/public projections:8cases/40checks,
+assertions4/5/6/6/5/5/5/4,zero failed/not-run/unknown,owner0,receipt valid,cleanup
+observed and source unchanged. This qualifies the bounded Linux Docker net/http
+Go integration/public facade at a19 only; future consolidated graphs inherit none.
+
+Two exact-run annotation collections are independently0/0 through paginated
+read-only gh API after unsupported connector endpoints. Historical35groups and
+327generic failure annotations remain unchanged, not globally resolved. Original
+private ledger and individual image/fixture/configuration/engine tuple values
+remain unrecovered; its fb609b3e hash is public-bound. Whole product/release gates
+stay false. No audit dispatch/retry/duplicate watch or runtime work occurred.
+Exact private review hash is in baseline.json. Complete migration audit stays OPEN.
