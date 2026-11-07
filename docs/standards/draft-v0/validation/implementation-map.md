@@ -48,9 +48,10 @@ and its helper. Named results cover response binding, normalized producer
 selection, controlled-parent sealed startup, native capacity and generic
 cancellation/drain. This is authority component evidence, not actual Python,
 Ruby, Apache or ASP.NET Core server/ABI qualification, independent custody or
-complete workspace coverage. Later source changes and the separately authored
-[25-case normalized corpus](vectors.md#normalized-host-profile-corpus-awaiting-execution)
-need fresh execution; the ignored required case remains outstanding.
+complete workspace coverage. The separately authored
+[25-case normalized corpus](vectors.md#normalized-host-profile-corpus-execution)
+has since passed its Windows parser component execution. That result does not
+qualify later authority changes or close the ignored privileged case.
 
 Apache's safe request/replay component contributes a narrower P-07/P-08 subset:
 exact-length bounded input, original-budget checks and cancellation-aware replay.

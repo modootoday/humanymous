@@ -112,6 +112,17 @@ and state alive while such workers remain and finish its required audit flush
 before reporting graceful shutdown. These transport components do not establish
 complete product lifecycle qualification.
 
+The generic local-handler fixture uses a synthetic `GET /management/status`
+consumer, distinct from the runtime's actual POST management routes. It checks
+an accepted same-process peer, a different credential, a wrong route and Origin
+refusal. That fixture does not itself establish cross-account peer rejection or
+the runtime operator's scope, CAS and witness policy. Separate blocking-worker
+cases check that cancellation preserves admission until the worker ends, and
+that explicit stop waits before acknowledging drain. Their effect counter is
+synthetic; it is not a durable application commit witness. Attribute execution
+results to the exact source and operating system rather than treating generic
+transport coverage as management-product qualification.
+
 Keep method, target/query semantics, duplicate header meaning and exact body
 representation intact. Complete-body integrity finishes before any origin
 effect. Bound buffering and timeouts; do not retry non-idempotent requests after

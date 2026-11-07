@@ -2,6 +2,26 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/tests/support/mod.rs",
+  "sha256": "34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete common fixture helpers: current-user Unix socket or same-process Windows pipe/SID, private temp ACL, synthetic inline audit keys and Node raw envelope/body abc. Fixture provisioning is not independent credential custody, cross-account rejection or authentic browser evidence.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/authority/tests/local_service.rs",
+  "sha256": "0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all256 lines in bounded sections: synthetic same-process GET management handler credential/route/Origin cases; no foreign-peer rejection in this fixture. Blocking context cancellation retains admission and zero synthetic effects; explicit stop waits for release. No runtime operator, durable business effect or current cross-OS qualification inferred.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/apache-adapter/native/src/coordinator/engine.rs",
   "sha256": "58defd8afcabafc8cd902bb8d6cf875efdfaa7fb063f55b3f43e4c0233d56053",
   "reviewer": "codex/rust-pages",

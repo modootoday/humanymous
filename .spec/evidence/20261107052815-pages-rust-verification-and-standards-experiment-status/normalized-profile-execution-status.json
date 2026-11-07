@@ -1,0 +1,67 @@
+{
+  "scope": "Windows allocated D Pages component verification; not rendered site or native host qualification",
+  "date": "2026-11-07",
+  "target": "target/validation-native",
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "locked": true,
+  "lib": {
+    "build_seconds": 61,
+    "failed": 0,
+    "ignored": 0,
+    "output_chunk": "4160c5",
+    "test_seconds": 0.68,
+    "passed": 27
+  },
+  "all_targets_check": {
+    "seconds": 19.7,
+    "status": "PASS"
+  },
+  "clippy": {
+    "warnings": "deny",
+    "status": "PASS",
+    "seconds": 1.58
+  },
+  "completion_chunk": "e5ba10",
+  "corpora": [
+    {
+      "file": "adapter-parser-v1.json",
+      "accepted": 4,
+      "rejected": 20,
+      "sha256": "b1fc0069ef858ce36cf9cb6810a5852cfed73559a44fc6f2797f50232b11ed92"
+    },
+    {
+      "file": "adapter-parser-i18n-v1.json",
+      "accepted": 6,
+      "rejected": 4,
+      "sha256": "3a86d0d8c1d1308308a7192aac00a239b19121a4d76cd91e5d85dc948b4a345c"
+    },
+    {
+      "file": "adapter-normalized-profiles-v1.json",
+      "accepted": 5,
+      "rejected": 20,
+      "sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3"
+    }
+  ],
+  "corpus_errors": [],
+  "corpus_output_chunk": "5cac2f",
+  "expectations_regenerated": false,
+  "draft_v0_conformance": false,
+  "selected_input_stability": {
+    "files": [
+      "Cargo.toml",
+      "Cargo.lock",
+      "docs/tooling/Cargo.toml",
+      "docs/tooling/src/vectors/mod.rs",
+      "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json"
+    ],
+    "result": "unchanged before/after lib/check/clippy",
+    "full_dependency_closure": false
+  },
+  "raw_transcript": "not retained as standalone file; named tool output chunks are evidence references",
+  "site_build": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "native_hosts": "NOT_RUN"
+}

@@ -1732,3 +1732,17 @@ excerpts. Replaced obsolete no-engine-recording statement with explicit Desktop
 context/npipe/pinned ID/version/Linux versus hosted Unix profile, retaining
 unexecuted status and containment/cleanup limits. Added engine module receipt;
 partial changed host excerpts do not renew its whole-file receipt.
+### Allocated D current parser verification completed
+
+Root explicitly allocated target/validation-native jobs1/inc0 for Pages library,
+all-target check/Clippy and existing fixed corpora only. Actual27lib passed0failed
+0ignored; alltargets check and Clippy-Dwarnings passed. Readonly vectors returned
+24cases4/20,10cases6/4,25cases5/20 with noerrors and Draftconformancefalse.
+Selected5input before/after hashes stable, not full dependency closure proof.
+No expectation regeneration, browser/server/Docker or nativehost execution.
+D returned to root; separate dual-baseurl/browser allocation requested. Attached
+sanitized execution status with exact command output chunk references; no claim
+that a standalone raw full transcript was retained. Updated pending docs, corpus
+anchor and integration state. Generic local-handler/support complete source
+reviews added separately, distinguishing same-process fixture from runtime
+operator/cross-account/effect qualification.

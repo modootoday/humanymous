@@ -41,7 +41,7 @@ passing this unchanged corpus establishes cross-host compatibility. Expanding
 the corpus requires separately reviewed exact bytes and expected results, not
 renaming an existing passing profile or regenerating its acceptance record.
 
-## Normalized host profile corpus awaiting execution
+## Normalized host profile corpus execution
 
 A separate [normalized-profile corpus](fixtures/adapter-normalized-profiles-v1.json)
 contains 25 authored cases for Python ASGI/WSGI, Ruby Rack, Apache and ASP.NET
@@ -50,12 +50,16 @@ the wrong observation mode, the wrong producer identity, fabricated raw header
 order and an unsupported claimed peer. Inputs have fixed exact bytes and digests;
 the expected total is five acceptances and 20 rejections.
 
-The runner source now selects those trusted profiles explicitly through the
-shared parser. This extension and its regression test have not yet been compiled
-or executed. The expected counts are not measured results. After validating a
-current build, run the read-only `vectors --fixtures` command with this separate
-file; do not replace or regenerate either earlier corpus. This adds no independent
-implementation, native-host qualification or generic Draft v0 wire semantics.
+The runner selects those trusted profiles explicitly through the shared parser.
+The 2026-11-07 Windows component run compiled the extension, passed all 27 library
+tests and passed all-target check and Clippy with warnings denied. The read-only
+`vectors --fixtures` execution measured five acceptances and 20 rejections with
+no errors for fixture SHA-256
+`63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3`.
+The unchanged earlier corpora also matched all 24 and 10 expectations. No
+expectations were regenerated. These results add no independent implementation,
+native-host qualification or generic Draft v0 wire semantics; the runner reports
+`draft_v0_conformance: false`.
 
 | Cases | Boundary |
 | --- | --- |

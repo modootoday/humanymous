@@ -25,11 +25,13 @@ These vectors do not establish Draft v0 conformance or independent interoperabil
 
 ## CI replacement contract
 
-Pending quiet-window follow-through: vector profile selection now also names
+Completed allocated component follow-through: vector profile selection also names
 Python ASGI/WSGI, Ruby Rack, Apache and ASP.NET Core. A separate fixed25-case
-corpus and one regression test are authored. This delta has not been compiled,
-linted or executed; earlier26lib+1CLI receipts do not qualify it. The original24
-and separate10-case internationalization corpora are unchanged. No dependency
+corpus and one regression test are authored. The Windows D allocation passed
+27 library tests, all-target check and Clippy with warnings denied. Read-only
+CLI execution matched24,10,25 cases respectively, including5 accepted/20 rejected
+for the new corpus. The original24 and separate10-case corpora are unchanged.
+No browser/server or native-host qualification was performed. No dependency
 or common manifest/lock delta is required.
 
 Approved integration window added direct dependency `ureq = "=3.5.1"`, already

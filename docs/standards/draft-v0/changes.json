@@ -7,6 +7,14 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "experimental-validation-result",
+      "paths": ["validation/vectors.md", "validation/implementation-map.md"],
+      "summary": "Windows component execution passes27 library tests and all-target check/Clippy; fixed24/10/25 parser corpora match expectations, with5 accepts and20 rejections in the new normalized corpus. This supersedes its earlier pending-execution status without changing fixture bytes.",
+      "generic_wire_changed": false,
+      "draft_conformance_qualified": false,
+      "native_host_qualification": false
+    },
+    {
       "kind": "implementation-evidence",
       "paths": ["reviews/security-privacy.md"],
       "summary": "Separate retained consumed intent from kill effect coverage and record startup serialization, ambiguous-state and unknown-target negative evidence requirements; new source does not qualify admission enforcement.",
