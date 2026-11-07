@@ -2,6 +2,27 @@
 use super::*;
 
 #[test]
+fn caught_panic_with_surviving_frame_cannot_finish_pending_as_success() {
+    let mut tracker = Tracker::new();
+    let mut frame = tracker.begin(tick(1)).unwrap();
+    assert!(
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _ = frame.traffic_tls(|| panic!("injected pending call"));
+        }))
+        .is_err()
+    );
+    assert!(matches!(frame.finish(), Err(Error::Interrupted)));
+    let view = tracker.view(tick(1));
+    assert!(view.abandoned);
+    assert_eq!(
+        view.losses[Domain::Traffic.index()].unwrap().reason,
+        Gap::Interrupted
+    );
+    tracker.begin(tick(2)).unwrap().finish().unwrap();
+    assert_eq!(tracker.view(tick(2)).losses, view.losses);
+}
+
+#[test]
 fn later_refusal_preserves_prior_commit_and_gap_survives_success() {
     let calls = Cell::new(0);
     let mut tracker = Tracker::new();
@@ -16,7 +37,7 @@ fn later_refusal_preserves_prior_commit_and_gap_survives_success() {
         frame.correlation(false, || Err(Unavailable::Budget)),
         Err(Error::Provider(Unavailable::Budget))
     ));
-    let receipt = frame.finish();
+    let receipt = frame.finish().unwrap();
     assert_eq!(
         receipt.records[Operation::RateObserve.index()]
             .unwrap()
@@ -34,7 +55,7 @@ fn later_refusal_preserves_prior_commit_and_gap_survives_success() {
     frame
         .correlation(false, || Ok(correlation(correlation::Scope::LocalOnly)))
         .unwrap();
-    frame.finish();
+    frame.finish().unwrap();
     assert_eq!(calls.get(), 2);
     assert_eq!(
         tracker.view(tick(2)).losses[Domain::Correlation.index()],
@@ -61,7 +82,7 @@ fn duplicate_operation_is_refused_before_lower_callback_runs_again() {
         Err(Error::Duplicate(Operation::RateObserve))
     ));
     assert_eq!(calls.get(), 1);
-    frame.finish();
+    frame.finish().unwrap();
 }
 
 #[test]
@@ -79,7 +100,7 @@ fn expansion_equality_clears_only_expansion_not_unrelated_latched_loss() {
         })
         .unwrap();
     assert!(frame.anomaly(|| Err(Unavailable::Budget)).is_err());
-    frame.finish();
+    frame.finish().unwrap();
     assert_eq!(tracker.view(tick(9)).expansion_until, Some(tick(10)));
     let at_boundary = tracker.view(tick(10));
     assert_eq!(at_boundary.expansion_until, None);
@@ -117,6 +138,6 @@ fn interrupted_or_abandoned_progress_and_clock_regression_remain_explicit() {
         tracker.begin(tick(1)),
         Err(Error::ClockRegression)
     ));
-    tracker.begin(tick(3)).unwrap().finish();
+    tracker.begin(tick(3)).unwrap().finish().unwrap();
     assert!(tracker.view(tick(3)).clock_fault);
 }

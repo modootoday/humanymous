@@ -85,6 +85,7 @@ enum Detail {
     MissingIdentity,
     Anomaly { warmed_up: bool, evicted: bool },
     Rate(rate::Coverage),
+    RateConfiguration(rate::ConfigurationEffect),
     Correlation(correlation::Scope),
     Association(traffic::Association),
     History(traffic::Coverage),
@@ -116,4 +117,5 @@ enum Error {
     Duplicate(Operation),
     ClockRegression,
     Provider(Unavailable),
+    Interrupted,
 }

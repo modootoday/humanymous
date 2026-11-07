@@ -4,6 +4,7 @@ pub(super) struct Tracker {
     last_tracking_tick: Option<Duration>,
     losses: [Option<Loss>; 4],
     expansion_until: Option<Duration>,
+    configuration_incomplete: bool,
     abandoned: bool,
     clock_fault: bool,
 }
@@ -20,6 +21,7 @@ pub(super) struct Receipt {
 pub(super) struct View {
     pub(super) losses: [Option<Loss>; 4],
     pub(super) expansion_until: Option<Duration>,
+    pub(super) configuration_incomplete: bool,
     pub(super) abandoned: bool,
     pub(super) clock_fault: bool,
 }
@@ -29,6 +31,7 @@ impl Tracker {
             last_tracking_tick: None,
             losses: [None; 4],
             expansion_until: None,
+            configuration_incomplete: false,
             abandoned: false,
             clock_fault: false,
         }
@@ -51,6 +54,7 @@ impl Tracker {
         View {
             losses: self.losses,
             expansion_until: self.expansion_until.filter(|until| now < *until),
+            configuration_incomplete: self.configuration_incomplete,
             abandoned: self.abandoned,
             clock_fault: self.clock_fault,
         }
@@ -95,11 +99,22 @@ impl Frame<'_> {
                             .latch(operation.domain(), self.now, Gap::Evicted)
                     }
                     Detail::Rate(rate::Coverage::WindowExpanded { complete_after }) => {
+                        self.tracker.configuration_incomplete = false;
                         self.tracker.expansion_until = Some(
                             self.tracker
                                 .expansion_until
                                 .map_or(complete_after, |old| old.max(complete_after)),
                         );
+                    }
+                    Detail::Rate(rate::Coverage::Retained) => {
+                        self.tracker.configuration_incomplete = false;
+                    }
+                    Detail::RateConfiguration(effect)
+                        if effect.window_expanded || effect.history_incomplete =>
+                    {
+                        // This result has no provider deadline. Do not infer
+                        // one from the independent bookkeeping clock.
+                        self.tracker.configuration_incomplete = true;
                     }
                     _ => {}
                 }
@@ -117,11 +132,23 @@ impl Frame<'_> {
             }
         }
     }
-    pub(super) fn finish(mut self) -> Receipt {
-        self.finished = true;
-        Receipt {
-            records: self.records,
+    pub(super) fn finish(mut self) -> Result<Receipt, Error> {
+        let mut interrupted = false;
+        for record in self.records.iter().flatten() {
+            if record.effect == Effect::Pending {
+                self.tracker
+                    .latch(record.operation.domain(), self.now, Gap::Interrupted);
+                self.tracker.abandoned = true;
+                interrupted = true;
+            }
         }
+        self.finished = true;
+        if interrupted {
+            return Err(Error::Interrupted);
+        }
+        Ok(Receipt {
+            records: self.records,
+        })
     }
 }
 impl Drop for Frame<'_> {

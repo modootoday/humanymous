@@ -1196,10 +1196,22 @@ history/fleet scope stay distinct. Maintenance Ok commits even for removed0 or
 unchanged policy, while queries and missing-key outcomes never imply history
 mutation. No correlation sample is fed into a second MAD detector.
 
-Seven authored consumer tests cover no-op categories, partial commit/refusal and
+Nine authored consumer tests cover no-op categories, partial commit/refusal and
 persistent gaps, duplicate suppression, exact expansion equality, pure inspection,
 maintenance/warmup/eviction/scope preservation, interruption/abandonment and clock
 regression. They use controlled lower-call outcomes to test this adapter; they
 do not requalify the provider or execute capture/application effects. This slice
 is UNCOMPILED/NOT_RUN until allocated; actual L3 owner adoption and accepted legacy
 observation points remain required before any production activation.
+
+Independent Network review found two gaps in original404dc185 before execution:
+configure-only ConfigurationEffect was discarded, and catching a provider panic
+while keeping the Frame alive could finish Pending work without a loss latch.
+The corrected source retains both configuration flags and an explicit incomplete
+configuration gap with no invented deadline. Only a later counted provider
+observation supplies its state/deadline; no-op or unchanged configure cannot
+clear that gap. finish now refuses Pending work and seals Interrupted/abandoned
+facts even if the Frame survived unwinding. Two regressions cover those exact
+paths. Original404 was not executed or qualified. A first corrected-source fmt
+attempt failed Windows mapped-file1224; its receipt is retained, a normal retry
+passed, and no foreign reader/process was terminated.

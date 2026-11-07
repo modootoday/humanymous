@@ -7,14 +7,16 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 75,
-      "macos": 75,
-      "windows": 71
+      "linux": 77,
+      "macos": 77,
+      "windows": 73
     },
     "common_test_names": [
+      "application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
       "application::temporal::tests::categories::maintenance_and_warmup_commit_but_never_upgrade_scope_or_erase_loss",
       "application::temporal::tests::categories::missing_key_noops_never_become_committed_normal_observations",
       "application::temporal::tests::categories::pure_inspections_preserve_absence_and_unqualified_history_without_mutation",
+      "application::temporal::tests::continuity::caught_panic_with_surviving_frame_cannot_finish_pending_as_success",
       "application::temporal::tests::continuity::duplicate_operation_is_refused_before_lower_callback_runs_again",
       "application::temporal::tests::continuity::expansion_equality_clears_only_expansion_not_unrelated_latched_loss",
       "application::temporal::tests::continuity::interrupted_or_abandoned_progress_and_clock_regression_remain_explicit",

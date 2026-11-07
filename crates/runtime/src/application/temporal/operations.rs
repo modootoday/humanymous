@@ -121,8 +121,8 @@ impl Frame<'_> {
         &mut self,
         call: impl FnOnce() -> Result<rate::ConfigurationEffect, Unavailable>,
     ) -> Result<rate::ConfigurationEffect, Error> {
-        self.apply(Operation::RateConfigure, call, |_| {
-            (Effect::Committed, Detail::Maintenance)
+        self.apply(Operation::RateConfigure, call, |value| {
+            (Effect::Committed, Detail::RateConfiguration(*value))
         })
     }
 }

@@ -2,6 +2,48 @@
 use super::*;
 
 #[test]
+fn configure_only_preserves_unknown_gap_until_provider_observation() {
+    let mut tracker = Tracker::new();
+    let mut frame = tracker.begin(tick(1)).unwrap();
+    let effect = rate::ConfigurationEffect {
+        window_expanded: true,
+        history_incomplete: true,
+    };
+    frame.rate_configure(|| Ok(effect)).unwrap();
+    let receipt = frame.finish().unwrap();
+    assert_eq!(
+        receipt.records[Operation::RateConfigure.index()]
+            .unwrap()
+            .detail,
+        Detail::RateConfiguration(effect)
+    );
+    assert!(tracker.view(tick(1)).configuration_incomplete);
+    assert_eq!(tracker.view(tick(1)).expansion_until, None);
+    let mut frame = tracker.begin(tick(2)).unwrap();
+    frame
+        .rate(|| Ok(rate::Observation::IgnoredEmptyKey))
+        .unwrap();
+    frame.finish().unwrap();
+    assert!(tracker.view(tick(2)).configuration_incomplete);
+    let missing = tracker.view(tick(2)).losses[Domain::Rate.index()];
+    let mut frame = tracker.begin(tick(3)).unwrap();
+    frame
+        .rate(|| {
+            Ok(counted(
+                1,
+                rate::Coverage::WindowExpanded {
+                    complete_after: tick(10),
+                },
+            ))
+        })
+        .unwrap();
+    frame.finish().unwrap();
+    assert!(!tracker.view(tick(3)).configuration_incomplete);
+    assert_eq!(tracker.view(tick(3)).expansion_until, Some(tick(10)));
+    assert_eq!(tracker.view(tick(3)).losses[Domain::Rate.index()], missing);
+}
+
+#[test]
 fn missing_key_noops_never_become_committed_normal_observations() {
     let mut tracker = Tracker::new();
     let mut frame = tracker.begin(tick(1)).unwrap();
@@ -14,7 +56,7 @@ fn missing_key_noops_never_become_committed_normal_observations() {
     frame
         .correlation(true, || Ok(correlation(correlation::Scope::MissingKey)))
         .unwrap();
-    let receipt = frame.finish();
+    let receipt = frame.finish().unwrap();
     assert!(
         receipt
             .records
@@ -27,7 +69,7 @@ fn missing_key_noops_never_become_committed_normal_observations() {
     frame
         .rate(|| Ok(counted(1, rate::Coverage::Retained)))
         .unwrap();
-    frame.finish();
+    frame.finish().unwrap();
     assert_eq!(tracker.view(tick(2)).losses, before);
 }
 
@@ -46,7 +88,7 @@ fn pure_inspections_preserve_absence_and_unqualified_history_without_mutation() 
             })
         })
         .unwrap();
-    let receipt = frame.finish();
+    let receipt = frame.finish().unwrap();
     assert!(
         receipt
             .records
@@ -116,7 +158,7 @@ fn maintenance_and_warmup_commit_but_never_upgrade_scope_or_erase_loss() {
             })
         })
         .unwrap();
-    let receipt = frame.finish();
+    let receipt = frame.finish().unwrap();
     assert!(
         receipt
             .records
