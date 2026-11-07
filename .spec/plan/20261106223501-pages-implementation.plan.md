@@ -1770,3 +1770,13 @@ and explicit1test/4flags pass, zeroignored, GUI/IME/ATnotrun. Read registration
 source record: later native registration delta compile/positive/refusalnotrun.
 Documented both scopes without either discarding actual historical execution or
 transferring it to changed native consumers. No CEF/browser/server launched.
+### Native durable witness fixture full review
+
+Read all766lines in four bounded outputs and added fullfile receipt. Real local
+files and child process are distinct from independent operator/key/head storage;
+service pipe read/wait lacks perexchange deadline while separate subprocess
+helper is bounded60s64KiB. Source stagedpending exit0 bypassesDrop, not arbitrary
+crash/powerloss. Public witness reference and Draftsecurity checklist now retain
+those exact evidence boundaries. Reported unbounded servicefixture exchanges to
+auditowner, no foreignsource edits or actualaudit/native execution. Pages source
+checker88errors0; scoped Specfold0errors0warnings and owneddiff clean.

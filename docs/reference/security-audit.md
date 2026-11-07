@@ -98,6 +98,18 @@ release. Separate process execution, OS-account/key/head isolation, inaccessible
 mounts and independent retained anchors need deployment evidence; shared-host
 parent or privileged compromise is not excluded by this protocol.
 
+The authored native witness fixtures use actual local files and child processes,
+with synthetic keys, configuration and retained pins supplied by the same test
+parent. They cover signed-head extension, restart against a pin, rollback,
+malformed state and selected permission/replacement failures. They do not prove
+independent account administration or inaccessible storage. The service fixture
+also uses blocking pipe reads and waits without a per-exchange deadline; its
+separate bounded subprocess helper does not give those exchanges a deadline.
+The deployment supervisor must still enforce and measure timeouts and reaping.
+An interrupted-state helper stages a pending copy and exits normally without
+destructors; that is distinct from power loss or exhaustive crash injection.
+Current execution evidence must identify which of these cases actually ran.
+
 ## Control-anchor retention boundary
 
 `NativeAnchorRetainer` stores the original authority-signed control anchor under

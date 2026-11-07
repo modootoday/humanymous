@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/keys/custody/erasure.rs",
+  "sha256": "e554d1d0e8896c93febf8161bd6e85c7457b4af0a2163a660d71de7934f63514",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete80line retained erasure bridge: ready/no-pending/exact committed-vault prechecks, scoped subject grant execute/shred/persist; fresh retained grant recovery authenticates committed generation before existing scoped pending recovery. Caller witness-before-effect/serialization/stop-serving obligations, consumed-grant and partial memory/disk outcome, sealed generation not backups. No executed native qualification.",
+  "pages": [
+    "docs/runbooks/erasure-crypto-shred.md"
+  ]
+},
+{
+  "source": "crates/audit/tests/durable_witness.rs",
+  "sha256": "2c065583d9d8aeb46d48db2d38fe1e22b962b5afdf74a7571e995614efb8fd17",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all766 lines in four nontruncated sections: real local files/service children with same-parent synthetic keys/pins, extension/restart/rollback/malformed receipt poison, staged pending normal exit, selected Unix/Windows privacy/sharing faults. Service fixture read_frame/wait is blocking without exchange deadline; separate helper60s64KiB does not bound it. No independent-account storage, exhaustive crash/powerloss or current-run qualification inferred.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/browser/native/bootstrap/src/lib.rs",
   "sha256": "bf664f50f20875c849a9f90c2ae466e508be85e6de0d24f8ec5d36d29ad1ca74",
   "reviewer": "codex/rust-pages",

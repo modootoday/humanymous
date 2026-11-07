@@ -81,3 +81,21 @@ exact-scope recovery, retained tombstone and an unaffected second subject.
 The source includes this regression case; it is not evidence that the current
 native recovery ran. Preserve both configuration and artifact identities in
 the execution report rather than borrowing an older hosted result.
+
+## Separately retained erasure grant source
+
+Working custody source adds `erase_retained` and `recover_retained_erasure`.
+The first checks that the in-memory vault snapshot matches the committed sealed
+generation and that no pending transaction exists before consuming the scoped
+subject grant. Its caller must witness audit intent first, serialize vault access
+and stop serving on an error after in-memory shredding. A successful persistence
+result covers that sealed generation, not backup retirement or unknown copies.
+
+The retained recovery entry point requires a fresh independently retained grant
+for the exact subject and scope; it does not reconstruct or replay the old
+consumed capability. It authenticates the committed generation before running
+the existing pending-erasure recovery, so a missing committed file cannot become
+new provisioning. Record failures before and after grant execution separately:
+the caller already holds a consumed grant, and a failed call does not restore
+approval or prove that memory and disk are unchanged. These new entry points
+still need source-bound native interruption and recovery execution.

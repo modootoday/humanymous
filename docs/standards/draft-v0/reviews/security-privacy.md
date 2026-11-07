@@ -65,6 +65,16 @@ act as a freshness lease. These source paths have not established an installed
 kill endpoint or qualified admission enforcement. See the
 [source-only assessment](../../../runbooks/kill-switch-and-bans.md#source-only-kill-state-assessment).
 
+For audit witnesses, distinguish a separate child process from independently
+administered keys, storage and latest-head delivery. A test parent that provisions
+all of them does not establish that isolation. Retain stalled startup/reply,
+blocked pipe, process-exit/reaping and interrupted-persistence outcomes with
+explicit time budgets; a bounded helper in one test does not bound every service
+exchange. Staged pending files followed by normal exit also do not substitute
+for arbitrary crash or power-loss evidence. The
+[witness reference](../../../reference/security-audit.md#durable-witness-and-private-client-contract)
+records the narrower current fixture scope.
+
 Sources: [Windows pipe security](https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights),
 [Unix sockets](https://www.man7.org/linux/man-pages/man7/unix.7.html),
 [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/).
