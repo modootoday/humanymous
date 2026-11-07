@@ -1,5 +1,6 @@
 //! Shared cross-language contract assertions for migration and integration tests.
-//! Runtime crates use this only as a dev-dependency.
+//! Production runtime consumers use separate platform features; tools opt in explicitly.
+#![forbid(unsafe_code)]
 use serde_json::{Number, Value};
 pub mod docker;
 pub mod json;

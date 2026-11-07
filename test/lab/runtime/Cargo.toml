@@ -20,7 +20,7 @@ ed25519-dalek.workspace = true
 serde.workspace = true
 zeroize.workspace = true
 tokio.workspace = true
-humanymous-test-support.workspace = true
+humanymous-platform = { workspace = true, features = ["testing"] }
 humanymous = {path="../../../crates/humanymous", default-features=false, features=["adapter-go"]}
 
 [lints.rust]

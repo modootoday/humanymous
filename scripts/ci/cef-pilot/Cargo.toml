@@ -9,7 +9,7 @@ publish = false
 [workspace]
 
 [dependencies]
-humanymous-test-support = { path = "../../../crates/test-support" }
+humanymous-platform = { path = "../../../crates/integrations/humanymous-platform", version = "0.1.0", default-features = false, features = ["testing"] }
 serde_json = "1.0"
 sha2 = "0.10.9"
 

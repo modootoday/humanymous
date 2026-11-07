@@ -1,6 +1,6 @@
 //! Full-constructor JSON parity with frozen independent Go observations.
 use humanymous_core::signals::observation::Signal;
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 
 #[test]
 fn all_definitions_and_constructor_boundaries_match_go() {

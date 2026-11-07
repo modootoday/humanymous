@@ -1,6 +1,6 @@
 //! Every report field is covered by independent zero, populated and null Go fixtures.
 use humanymous_core::signals::report::SessionReport;
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 use serde_json::Value;
 

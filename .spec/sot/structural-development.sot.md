@@ -170,6 +170,12 @@ and never relocate an active compiler/CEF/Docker/preview input tree.
 
 ##### Platform slice accepted implementation map
 
+Execution checkpoint: the two contexts have moved to the destination below and
+the graph resolves34 members. [[evidence:root/20261107205600]] records41 pure
+testing cases,162 core revalidation cases, explicit feature/API/compiler-negative
+checks and successful default-library package verification. Source integration
+is not yet the full consumer, Cross-OS or native/product qualification gate.
+
 The next lower-layer slice absorbs test-support and windows-object-bridge into
 crates/integrations/humanymous-platform. Its two contextual API modules are
 testing and windows_object, without root-level forwarding exports. Default

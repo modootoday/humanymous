@@ -16,7 +16,7 @@ humanymous-core.workspace = true
 serde_json.workspace = true
 
 [dev-dependencies]
-humanymous-test-support.workspace = true
+humanymous-platform = { workspace = true, features = ["testing"] }
 
 [lints]
 workspace = true

@@ -1,0 +1,443 @@
+{
+  "schema": "humanymous.platform-consolidation/1",
+  "status": "SCOPED_PLATFORM_PASS_CONSUMER_QUALIFICATION_PENDING",
+  "recorded_utc": "2026-11-08T06:00:41.4162017+09:00",
+  "observed_head": "d4cc9dff80986a0a3dfab03759564505d5a46ec3",
+  "platform_source_uncommitted_at_observation": true,
+  "workspace_members_before": 35,
+  "workspace_members_after": 34,
+  "target_members": 8,
+  "old_tracked_source_files": 28,
+  "relocated_non_manifest_files": 26,
+  "new_package_files": 30,
+  "features": {
+    "default": [],
+    "testing": "independent explicit opt-in",
+    "unsafe": "package deny; testing forbid; exactly six existing function-local bridge allows",
+    "windows_object": "independent explicit Windows-only module"
+  },
+  "testing_unit_inventory": 55,
+  "testing_pure_passed": 41,
+  "testing_filtered": 14,
+  "testing_ignored": 0,
+  "testing_failed": 0,
+  "filtered_scope": "seven controlled capture/barrier, six legacy process parents, one subprocess fixture",
+  "core_revalidation_passed": 162,
+  "pure_selected_inputs": 179,
+  "pure_input_differences": 0,
+  "all_target_all_feature_check_exit": 0,
+  "strict_platform_and_core_clippy_exit": 0,
+  "windows_doctests": {
+    "native_calls_executed": 0,
+    "positive": 1,
+    "compile_fail": 1
+  },
+  "same_crate_probes": {
+    "input_differences": 0,
+    "worker_reachability": "E0603 at private parent module; not isolated modifier sensitivity",
+    "observation_forgery": "E0451",
+    "positive_control_exit": 0,
+    "selected_inputs": 36
+  },
+  "feature_api_cases": 9,
+  "feature_api_expected_results": 9,
+  "wasm_scope": "cross-compilation only; no Windows/native runtime proof",
+  "normal_cargo_package": {
+    "exit": 0,
+    "registry_namespace_verified": false,
+    "default_library_verified": true,
+    "archive_sha256": "164bf1a4320f1baa83b1e0fac08d439728d9510569e7472ac5f00ace62d85166",
+    "publication_performed": false,
+    "archive_files": 33
+  },
+  "orchestration_corrections": [
+    "Initial joint tree single-string splat refused before dependency traversal; corrected explicit argument command retained",
+    "Initial visibility extern collection selected character C; failed selected-input snapshot before compiler; corrected array receipt retained",
+    "Initial namespace formatting failures preserved; owner formatting-only fixes and final checks retained"
+  ],
+  "qualification": {
+    "cross_os_runtime": false,
+    "actual_browser": false,
+    "docker_product": false,
+    "all_consumers": false,
+    "main_integration": false,
+    "actual_native": false,
+    "full_workspace_tests": false
+  },
+  "source_hashes": [
+    {
+      "path": "crates/integrations/humanymous-platform/Cargo.toml",
+      "sha256": "0b1be94a33d9e86cf3e9f694654bc3a5de735d4dd6ad4834f6542a5b49202887",
+      "bytes": 1028
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/LICENSE",
+      "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+      "bytes": 11555
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/README.md",
+      "sha256": "906100521f02c323e51f1a067319f0d041b7cbcbd4bce7815a679eeade1d6f2f",
+      "bytes": 926
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/docs/history/test-support-integration.md",
+      "sha256": "637c71d2a0ba619d762ec2e94359086c2e9b1af797c7a7898911033ad8f9a88d",
+      "bytes": 6377
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/examples/linux_tree_inventory.rs",
+      "sha256": "fcb3130a4b99013a18d6a99ef6d49576ace288e73400b7f4fea93c629c4f59fb",
+      "bytes": 1930
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/lib.rs",
+      "sha256": "a09ceaebdda226a7e843862594d5ab332f58a4a92a4196a9c2fdfb8a0c7d7318",
+      "bytes": 383
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/docker.rs",
+      "sha256": "97c9f53b2e89ac5a6966c0f9383e82eefae2ffcace841ae1a7977a128621d9e8",
+      "bytes": 10780
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/json.rs",
+      "sha256": "16e47a333700e2b084e81f7012c1d5d523695a59b1454d21f5db8157beaa9656",
+      "bytes": 5597
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/linux_tree_probe.rs",
+      "sha256": "5db8db4b6fbf1285582b6ba4e77fe40574d440dd189b962fc8c7c43ac95a0bf7",
+      "bytes": 5723
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/mod.rs",
+      "sha256": "e2ef60557179155311f953e52e1372b6d94987849a479583887e628e59651b74",
+      "bytes": 3804
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/parent_context.rs",
+      "sha256": "4532258e40c0a14bed340463d9e21f0555d265e6b5f646e73fa0e30c4509ab41",
+      "bytes": 11703
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process.rs",
+      "sha256": "a42d47334da21967d8bf2a425f5fd58f86025ca624a470619fbb764957ab918b",
+      "bytes": 15605
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/tree_lifecycle.rs",
+      "sha256": "58fb0b44bfd6810c40f929c5c1fcc9ac93e01d48d5912c80c738727e771831e7",
+      "bytes": 7417
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/parent_context/binding.rs",
+      "sha256": "033ec4f03c4bdd67db2fe6f4ed8add0fa4172cce982a0191f4a1fdbe30588c8b",
+      "bytes": 9383
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/parent_context/tests.rs",
+      "sha256": "fa436a2a5c77d1bbbc4a363e2d1cdb4146dadd680fef0766c359e15cd6dc6608",
+      "bytes": 5504
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/capture_attempt.rs",
+      "sha256": "db2b5d86ac68ce9814ca645d9ed495fac902385e43ce8f83f8394cba9d3aafea",
+      "bytes": 16221
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/controlled_barrier.rs",
+      "sha256": "72d8525d4376d89b4141c094f12feaf5fd77c88b5091ec094368ecb78b7509ef",
+      "bytes": 6477
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/direct_pipe.rs",
+      "sha256": "dfd04e7f6f0751577b4a16e69c54fa88f82e1e83649ebbda38c0f4aed15a86af",
+      "bytes": 7936
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/interactive.rs",
+      "sha256": "806900043bdc3d36d50a61410737713fda2d9c32540803aac93848d10e6fe346",
+      "bytes": 16614
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/owned_child.rs",
+      "sha256": "a8f4e2ea596be1d76d09f51ca0b80498e53c3039eed1739f05e6fc636ccd2745",
+      "bytes": 4324
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/capture_attempt/actual_tests.rs",
+      "sha256": "55749e5b82e43d2b18313b63449c4d6d5985045862fc4a2b4f2ad121d639294f",
+      "bytes": 6887
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/capture_attempt/tests.rs",
+      "sha256": "106894686d7c2eaf6a4ce0cd31f31fea8f7fd48cdf38764118b109ebae69e79d",
+      "bytes": 3422
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/capture_attempt/worker.rs",
+      "sha256": "3779051325885b93599b7905bcae7608305401dc24b742a49a3e3b2369fe88f9",
+      "bytes": 2166
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/controlled_barrier/actual_tests.rs",
+      "sha256": "56c14c637f0b0eda9f749f4d0bc017e615b8f30e3d178999e682c32c0d230811",
+      "bytes": 1407
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/interactive/tests.rs",
+      "sha256": "37192561b274db6df02586e626089d7e06219673674ddaa69b17e17cbec36d7b",
+      "bytes": 7176
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/interactive/transport.rs",
+      "sha256": "999d9de37c4e198f5ad72fffa6f237021d2e9ef7f572e329a0976c5246f97c08",
+      "bytes": 2887
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/windows_object/create.rs",
+      "sha256": "c323434eacc915e561aed5d48307bf2e8a3c02adf66cb7ba9a39c9185b90bbec",
+      "bytes": 2080
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/windows_object/mod.rs",
+      "sha256": "102016dc8c1a4a08cdd57b5fb2e55db09f3daaeda31eb4a85d184994c26c260e",
+      "bytes": 4748
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/windows_object/query.rs",
+      "sha256": "e7921656c28da7f9671aed55390dddc7fffc0279e5eaeceed71e31f6317d6c53",
+      "bytes": 6994
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/windows_object/tests.rs",
+      "sha256": "cb5c5008b0e0e83dd47d20d2ea150d8b61ec5d8aae13d1e5f000e75c7d59daa7",
+      "bytes": 2092
+    }
+  ],
+  "artifacts": [
+    {
+      "private_relative_path": "api/results.json",
+      "sha256": "0a1a29e093de325644c10fc53a5bae1ef96275702528e1feaa386e4ade735f75",
+      "bytes": 1167
+    },
+    {
+      "private_relative_path": "cef-pilot.fmt.final.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "check.stderr",
+      "sha256": "cb59ba2f15b7d04b35a4888d6ff311cb8f83258f8fba1e80656e85cdc7ef79fe",
+      "bytes": 687
+    },
+    {
+      "private_relative_path": "check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "clippy.stderr",
+      "sha256": "0fe1eef8520405a2d881e1815325a6c88a0d0eb23d4e3dc74dfeda9039cbad0b",
+      "bytes": 909
+    },
+    {
+      "private_relative_path": "clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "control.command.json",
+      "sha256": "51997d7dcb95d0bc4aba4121f5c83cd5cce4d7d09a3784124e07c7fd75049c73",
+      "bytes": 1412
+    },
+    {
+      "private_relative_path": "control.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "core-test.stderr",
+      "sha256": "b83b148677acae44fcff93e9757e916f0dc6704d2ef1cba148098937fafaf0fe",
+      "bytes": 1736
+    },
+    {
+      "private_relative_path": "core-test.stdout",
+      "sha256": "a29d0abaf04d14cec1386abde10414dea0c1137018c489ba0073a00bfc852280",
+      "bytes": 16174
+    },
+    {
+      "private_relative_path": "default-check.stderr",
+      "sha256": "a06a87284c337cf3302d85a5d5647cd231b3e7605b1873d55cef5b94be2c3782",
+      "bytes": 181
+    },
+    {
+      "private_relative_path": "file-map.before.json",
+      "sha256": "735ab97deeadd14e1d34a6d3f5e127474c2abe91ec4d534f40d0b54e65761d27",
+      "bytes": 8188
+    },
+    {
+      "private_relative_path": "humanymous-platform-0.1.0.crate",
+      "sha256": "164bf1a4320f1baa83b1e0fac08d439728d9510569e7472ac5f00ace62d85166",
+      "bytes": 51592
+    },
+    {
+      "private_relative_path": "inputs.after-pure.json",
+      "sha256": "8b6959cd24252288acb374afe188df17a9b0f7b97afc5bb0d2799b275fbd545a",
+      "bytes": 30358
+    },
+    {
+      "private_relative_path": "inputs.before-pure.json",
+      "sha256": "8b6959cd24252288acb374afe188df17a9b0f7b97afc5bb0d2799b275fbd545a",
+      "bytes": 30358
+    },
+    {
+      "private_relative_path": "inventory.stdout",
+      "sha256": "b09af7ac128bb4a0a5237002796b1bb7adf4dcb6a61f406976c43c5fd1cee5da",
+      "bytes": 5165
+    },
+    {
+      "private_relative_path": "observation.command.json",
+      "sha256": "a5d0a3b911d526269af57c2cee8fcf0b6cc487242307cb4b819fe402c2da529f",
+      "bytes": 1420
+    },
+    {
+      "private_relative_path": "observation.stderr",
+      "sha256": "8e49dc88885798eaadd094c6a0161a9023edb2133170b7384591706493d51bfa",
+      "bytes": 672
+    },
+    {
+      "private_relative_path": "package.stderr",
+      "sha256": "406682f7564b0bda98e817e8c6c3f318b81dbf1e4187077ba861731a58d8c198",
+      "bytes": 478
+    },
+    {
+      "private_relative_path": "pure-results.json",
+      "sha256": "8a3e6ca363b00111cfba4ea3452f91be2807ef668853be9d86ea2a333fa6e1da",
+      "bytes": 100
+    },
+    {
+      "private_relative_path": "pure.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "pure.stdout",
+      "sha256": "1d55b24257b340cf30ad00dbb4146098afdc3a05e6bf9c23b8732d382c8017d1",
+      "bytes": 4318
+    },
+    {
+      "private_relative_path": "test-artifact.jsonl",
+      "sha256": "40ab07164b88460dd12824e0cf10437542e48809a72d45393079c5c3e71612fe",
+      "bytes": 18202
+    },
+    {
+      "private_relative_path": "tree.default.windows.txt",
+      "sha256": "551fe6cea60ac3a19dbb53f907880be5b212cb052b08573189fe9b0f96329257",
+      "bytes": 94
+    },
+    {
+      "private_relative_path": "tree.joint.corrected.windows.txt",
+      "sha256": "bbd3507e2455b3793b7fcb4376ae9570879d00d4065a1bda4c166d6648d3e610",
+      "bytes": 865
+    },
+    {
+      "private_relative_path": "tree.joint.windows.stderr",
+      "sha256": "0642238dddd0846729142da4a3f4a5cc35ed19cb17663b86237023fdd968a21f",
+      "bytes": 112
+    },
+    {
+      "private_relative_path": "tree.testing.windows.txt",
+      "sha256": "d0e38795c15c0afc32263f682c16daeb6e2934c8e50bf53424a25d3c73f4ea2a",
+      "bytes": 694
+    },
+    {
+      "private_relative_path": "tree.windows-object.wasm.txt",
+      "sha256": "551fe6cea60ac3a19dbb53f907880be5b212cb052b08573189fe9b0f96329257",
+      "bytes": 94
+    },
+    {
+      "private_relative_path": "tree.windows-object.windows.txt",
+      "sha256": "4b6b8d595e754336f77dfc5f5d99190b0f8c9ba8c3dd656c4b8b97520e631af1",
+      "bytes": 257
+    },
+    {
+      "private_relative_path": "visibility-first-attempt.json",
+      "sha256": "84f0860e4f8261754c346abf353995cdaf63234e5cc54b9d722e7037ab529389",
+      "bytes": 200
+    },
+    {
+      "private_relative_path": "visibility-results.json",
+      "sha256": "a4dd067b8c5fd281a2c0c8c0f45c01debba92360c6e9eb5149a930873ebdf957",
+      "bytes": 328
+    },
+    {
+      "private_relative_path": "visibility.inputs.after.json",
+      "sha256": "eb0220743b386e187809bace7a5dfa8fd1603901f08d70d87aa596c8623f67ba",
+      "bytes": 7646
+    },
+    {
+      "private_relative_path": "visibility.inputs.before.json",
+      "sha256": "eb0220743b386e187809bace7a5dfa8fd1603901f08d70d87aa596c8623f67ba",
+      "bytes": 7646
+    },
+    {
+      "private_relative_path": "wasm-windows-feature.stderr",
+      "sha256": "4c040b82206b37fd2bc1408c99b48b6f1a6c6a7b475f310219fd08d10659f82a",
+      "bytes": 181
+    },
+    {
+      "private_relative_path": "windows-doc.stderr",
+      "sha256": "bb392c3433b73d219a937d8adbf4122daae40f407b367014f32439ff9b4a7474",
+      "bytes": 383
+    },
+    {
+      "private_relative_path": "windows-doc.stdout",
+      "sha256": "5e9545e351cf449021b9a6403368a17f93ddde8470cc63dfd92bebde929baa8f",
+      "bytes": 565
+    },
+    {
+      "private_relative_path": "windows-native-runner.fmt.corrected.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "windows-native-runner.fmt.corrected.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "windows-native-runner.fmt.final.stdout",
+      "sha256": "e9111d36c5267b2b2eea1dc863c1c517436df603a972b96bbc2034701366cb1a",
+      "bytes": 693
+    },
+    {
+      "private_relative_path": "windows-unit.stderr",
+      "sha256": "2292a2deb54634ee6dd3c1fd1eaee2aade9c88bc6aff3b454a06a3c958a2d60b",
+      "bytes": 304
+    },
+    {
+      "private_relative_path": "windows-unit.stdout",
+      "sha256": "7e53c715874fd0f468cc4f2a888213841a54b74ecb479269184ad32761d6c489",
+      "bytes": 468
+    },
+    {
+      "private_relative_path": "worker.command.json",
+      "sha256": "cd91cd34ae118ed2859628ac199ad33ffa8a10f64c75fcea959e2878d0f24bb6",
+      "bytes": 1410
+    },
+    {
+      "private_relative_path": "worker.stderr",
+      "sha256": "d7e913871497bd2da8aac43309f1c8867c79b8111cbd8b4dd1eb5976da8574bc",
+      "bytes": 974
+    },
+    {
+      "private_relative_path": "workspace-fmt.final.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "windows_object_units_passed": 4,
+  "windows_object_unit_scope": "Windows-only pure parsing/encoding/wire cases; no native query executed"
+}

@@ -60,13 +60,13 @@ dependencies = [
 name = "humanymous-cef-pilot"
 version = "0.1.0"
 dependencies = [
- "humanymous-test-support",
+ "humanymous-platform",
  "serde_json",
  "sha2",
 ]
 
 [[package]]
-name = "humanymous-test-support"
+name = "humanymous-platform"
 version = "0.1.0"
 dependencies = [
  "serde",

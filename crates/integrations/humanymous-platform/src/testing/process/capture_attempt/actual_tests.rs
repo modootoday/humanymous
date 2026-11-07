@@ -62,7 +62,7 @@ fn assert_joined(result: &CapturedDirectChild) {
 #[ignore = "actual subprocess parent; requires explicit allocation and outer supervision"]
 fn retained_normal_stdout_stderr_and_actual_joins() {
     super::super::await_controlled_fixture_grant(
-        "process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins",
+        "testing::process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins",
     )
     .expect("controlled outer assignment grant required");
     let result = settle(normal("both", 4096));
@@ -76,7 +76,7 @@ fn retained_normal_stdout_stderr_and_actual_joins() {
 #[test]
 #[ignore = "synthetic pending-input subprocess parent; requires allocation and outer supervision"]
 fn retained_synthetic_pending_stdin_expires_original_run() {
-    super::super::await_controlled_fixture_grant("process::capture_attempt::actual_tests::retained_synthetic_pending_stdin_expires_original_run").expect("controlled outer assignment grant required");
+    super::super::await_controlled_fixture_grant("testing::process::capture_attempt::actual_tests::retained_synthetic_pending_stdin_expires_original_run").expect("controlled outer assignment grant required");
     let limits = CaptureLimits::new(4096, 4096).unwrap();
     let deadlines = budget(Duration::from_secs(1));
     let mut owner = started(CaptureAttempt::start_synthetic(
@@ -113,7 +113,7 @@ fn retained_synthetic_pending_stdin_expires_original_run() {
 #[ignore = "actual stdout cap subprocess parent; requires allocation and outer supervision"]
 fn retained_stdout_cap_is_sticky() {
     super::super::await_controlled_fixture_grant(
-        "process::capture_attempt::actual_tests::retained_stdout_cap_is_sticky",
+        "testing::process::capture_attempt::actual_tests::retained_stdout_cap_is_sticky",
     )
     .expect("controlled outer assignment grant required");
     let result = settle(normal("flood", 1024));
@@ -126,7 +126,7 @@ fn retained_stdout_cap_is_sticky() {
 #[ignore = "actual stderr cap subprocess parent; requires allocation and outer supervision"]
 fn retained_stderr_cap_is_sticky() {
     super::super::await_controlled_fixture_grant(
-        "process::capture_attempt::actual_tests::retained_stderr_cap_is_sticky",
+        "testing::process::capture_attempt::actual_tests::retained_stderr_cap_is_sticky",
     )
     .expect("controlled outer assignment grant required");
     let result = settle(normal("stderr-flood", 1024));
@@ -138,7 +138,7 @@ fn retained_stderr_cap_is_sticky() {
 #[test]
 #[ignore = "actual stop-classification subprocess parent; requires allocation and outer supervision"]
 fn retained_stop_request_preserves_observed_exit_zero() {
-    super::super::await_controlled_fixture_grant("process::capture_attempt::actual_tests::retained_stop_request_preserves_observed_exit_zero").expect("controlled outer assignment grant required");
+    super::super::await_controlled_fixture_grant("testing::process::capture_attempt::actual_tests::retained_stop_request_preserves_observed_exit_zero").expect("controlled outer assignment grant required");
     let mut owner = normal("both", 4096);
     loop {
         let progress = owner.poll();

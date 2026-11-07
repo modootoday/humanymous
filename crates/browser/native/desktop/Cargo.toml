@@ -27,4 +27,4 @@ serde_json = "1"
 meari = { git = "https://github.com/modootoday/meari.git", rev = "1482b746ebc0d867f25d17d01c48c12df888ca6c" }
 
 [target.'cfg(windows)'.dev-dependencies]
-humanymous-test-support = { path = "../../../test-support" }
+humanymous-platform = { workspace = true, features = ["testing"] }

@@ -1,7 +1,7 @@
 //! Shared parent-context syntax, fixed environment and conserved budget mapping.
 //! Decoding NEVER authenticates a parent, artifact, token, path, Job, Ready state
 //! or deadline. Native consumers must retain the original parent watchdog/owner.
-use crate::json::decode_strict_json;
+use crate::testing::json::decode_strict_json;
 use serde::{Deserialize, Serialize};
 use std::{
     fmt,

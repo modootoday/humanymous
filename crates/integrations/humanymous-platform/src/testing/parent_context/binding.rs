@@ -2,7 +2,7 @@
 use super::{
     UnverifiedBudget, UnverifiedParentContext, UnverifiedProvenance, WireError, bounded, hex,
 };
-use crate::json::decode_strict_json;
+use crate::testing::json::decode_strict_json;
 use serde::{Deserialize, Serialize};
 
 const LIMIT: usize = 16 * 1024;

@@ -101,7 +101,7 @@ version = "0.1.0"
 dependencies = [
  "getrandom",
  "humanymous-native-security",
- "humanymous-test-support",
+ "humanymous-platform",
  "serde_json",
  "sha2",
  "windows-permissions",
@@ -113,7 +113,7 @@ dependencies = [
 name = "humanymous-native-security"
 version = "0.1.0"
 dependencies = [
- "humanymous-windows-object-bridge",
+ "humanymous-platform",
  "keyring-core",
  "rustix",
  "windows-native-keyring-store",
@@ -123,17 +123,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "humanymous-test-support"
+name = "humanymous-platform"
 version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "humanymous-windows-object-bridge"
-version = "0.1.0"
-dependencies = [
  "windows-permissions",
  "windows-sys",
 ]

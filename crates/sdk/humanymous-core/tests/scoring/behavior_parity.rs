@@ -3,7 +3,7 @@ use humanymous_core::behavior::features::schema_hash;
 use humanymous_core::model::inference::{Prediction, Predictor, Runtime};
 use humanymous_core::scoring::derivation::behavior_signals;
 use humanymous_core::signals::{observation::Signal, report::BehaviorSummary};
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 use std::sync::Arc;
 

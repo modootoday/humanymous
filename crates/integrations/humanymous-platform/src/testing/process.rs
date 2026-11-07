@@ -322,7 +322,7 @@ mod tests {
         command
             .args([
                 "--exact",
-                "process::tests::subprocess_fixture",
+                "testing::process::tests::subprocess_fixture",
                 "--ignored",
                 "--nocapture",
             ])

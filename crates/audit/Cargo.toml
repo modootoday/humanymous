@@ -19,7 +19,7 @@ subtle.workspace = true
 ed25519-dalek.workspace = true
 
 [dev-dependencies]
-humanymous-test-support.workspace = true
+humanymous-platform = { workspace = true, features = ["testing"] }
 
 [target.'cfg(any(unix, windows))'.dependencies]
 getrandom.workspace = true

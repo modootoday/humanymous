@@ -24,7 +24,7 @@ and resource admission; follow the exact live run or process handle.
 | Structural stage | Workspace count after stage | Current state |
 | --- | --- | --- |
 | Core | 35 | Source integrated; bounded local tests/type/lint and default extracted-library consumer passed; full packaging/product gates pending |
-| Platform | 34 | Feature/API/unsafe map accepted; two source contexts frozen; movement awaits current allocated validators returning inputs |
+| Platform | 34 | Source moved; pure/type/lint, feature/API boundaries and default-library package verification passed; full consumers/runtime gates pending |
 | Runtime | 29 | Six-context map accepted; concrete owner privacy dispositions recorded; implementation not moved |
 | Tools | 21 | Owner handoffs prepared; implementation not consolidated |
 | Adapters | 10 | Role/loader/unsafe gates and owner handoffs prepared; implementation not consolidated |
@@ -33,6 +33,24 @@ and resource admission; follow the exact live run or process handle.
 These counts describe the accepted consolidation sequence, not package feature
 completion. Facade/collector path relocation and final Cross-OS/product gates
 remain required independently of reaching eight members.
+
+Platform source-bound evidence is [[evidence:root/20261107205600]]:41 pure cases
+with14 explicitly filtered parent/fixture cases,162 core cases, four separate
+pure Windows bridge cases, two bridge
+documentation checks, same-crate privacy probes and nine isolated feature/API
+checks. Normal Cargo package verification passed for the default library. These
+are distinct scopes; do not sum them into a full native/product result.
+
+The existing9586 hosted workflow still exposes major migration debt. Its legacy
+Core/Gate image jobs refuse the remaining Go shipping input before Docker build
+or scanning; a successful separate Rust candidate image is not their replacement.
+Shipping-role source assessment requires behavior-preserving Runtime public
+ingress/admin/TLS-H2, browser assets and CLI container custody/lifecycle work.
+Windows timed out after40 minutes; a pre-timeout CEF safe summary does not prove
+terminal cleanup or complete job success. Package readiness failed because no
+packages were publishable; Node failed at its owned host-test command, with no
+original assertion recovered. Preserve these failures and source limits while
+the sole existing workflow monitor follows remaining jobs.
 
 The native source-input regression tests now executed3/3 successfully with
 runner check and strict Clippy passing. The overall orchestration retained its

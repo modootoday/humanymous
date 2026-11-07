@@ -1,7 +1,7 @@
 //! Probe-derived predicates and signal payloads compared with the frozen Go engine.
 use humanymous_core::scoring::derivation::{advanced_signals, environment_signals, guard_signals};
 use humanymous_core::signals::{observation::Signal, report::ClientReport};
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 
 #[derive(Deserialize)]

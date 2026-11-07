@@ -1,5 +1,5 @@
 //! Fixed read-only inventory; a successful invocation never qualifies a backend.
-use humanymous_test_support::linux_tree_probe::{Availability, UnsupportedReason, inspect};
+use humanymous_platform::testing::linux_tree_probe::{Availability, UnsupportedReason, inspect};
 use serde_json::json;
 
 fn availability(value: Availability) -> &'static str {

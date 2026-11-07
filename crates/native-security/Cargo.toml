@@ -14,7 +14,7 @@ credential-pilot = []
 zeroize.workspace = true
 
 [target.'cfg(windows)'.dependencies]
-humanymous-windows-object-bridge.workspace = true
+humanymous-platform = { workspace = true, features = ["windows-object"] }
 windows-permissions = "=0.2.4"
 winsafe = { version = "=0.0.29", features = ["kernel", "advapi"] }
 keyring-core = { version = "=1.0.1", default-features = false }

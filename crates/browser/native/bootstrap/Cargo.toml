@@ -20,5 +20,5 @@ cef = { git = "https://github.com/tauri-apps/cef-rs.git", rev = "224a785c7b41758
 libloading = "=0.9.0"
 
 [target.'cfg(windows)'.dev-dependencies]
-humanymous-test-support = { workspace = true }
+humanymous-platform = { workspace = true, features = ["testing"] }
 serde_json = { workspace = true }

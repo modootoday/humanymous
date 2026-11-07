@@ -1,0 +1,35 @@
+[package]
+name = "humanymous-platform"
+description = "Isolated Humanymous platform bindings and explicit qualification helpers"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[features]
+default = []
+testing = ["dep:serde", "dep:serde_json"]
+windows-object = ["dep:windows-sys", "dep:windows-permissions"]
+
+[dependencies]
+serde = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "=0.61.2", optional = true, features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_Security"] }
+windows-permissions = { version = "=0.2.4", optional = true }
+
+[[example]]
+name = "linux_tree_inventory"
+path = "examples/linux_tree_inventory.rs"
+required-features = ["testing"]
+
+# Preserve the existing six function-local Windows bridge exceptions.
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"

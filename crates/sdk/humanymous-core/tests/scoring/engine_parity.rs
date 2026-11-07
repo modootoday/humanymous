@@ -1,7 +1,7 @@
 //! Full engine and additive explanation against the frozen Go oracle.
 use humanymous_core::scoring::engine::Engine;
 use humanymous_core::signals::report::SessionReport;
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 use serde_json::Value;
 use std::collections::BTreeMap;

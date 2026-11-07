@@ -21,7 +21,7 @@ tokio.workspace = true
 humanymous-audit = { path = "../audit" }
 humanymous-core.workspace = true
 humanymous-native-security.workspace = true
-humanymous-test-support.workspace = true
+humanymous-platform = { workspace = true, features = ["testing"] }
 sha2.workspace = true
 
 [lints]

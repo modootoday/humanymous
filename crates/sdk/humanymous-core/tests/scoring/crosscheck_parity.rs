@@ -1,7 +1,7 @@
 //! Coarse claims, execution evidence and every platform family against Go L6 output.
 use humanymous_core::scoring::consistency::cross_checks;
 use humanymous_core::signals::report::{CrossCheck, SessionReport};
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 
 #[derive(Deserialize)]

@@ -1,6 +1,6 @@
 //! RIT failure precedence and JSON signal parity against the Go oracle.
 use humanymous_core::integrity::request::{VerifyParams, verify};
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 
 #[derive(Deserialize)]

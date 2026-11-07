@@ -9,7 +9,7 @@ publish = false
 
 [dependencies]
 humanymous-defender = { path = "../defender" }
-humanymous-test-support = { path = "../test-support" }
+humanymous-platform = { workspace = true, features = ["testing"] }
 humanymous-core.workspace = true
 serde.workspace = true
 serde_json.workspace = true
