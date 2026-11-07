@@ -17,22 +17,26 @@ refinements: preserved ambiguous history is read-only/no Ready/normal append or
 checkpoint; original operation Control/Limits survives VerifiedScan finalization;
 control-only explicit bootstrap can resume after fresh validation/sync; rotation
 admission precedes writes. Root accepted only the lowest private L1 planning slice.
-Its pure transition kernel and five invariant tests are now authored UNRUN/
-uncompiled; no NativeFiles/VerifiedScan/operational owner is produced. Production
+Exact8cbc pure transition kernel passed GNU fmt/check/strict Clippy and FIVE
+selected invariant tests in [[evidence:root/20261107155745]], each1pass/114filtered.
+Accepted component177 source inputs,3181 registry files/67 packages,73 selected
+Rust tool files and44 absent config candidates unchanged. Session36565 terminal0,
+A/WSL use returned. No NativeFiles/VerifiedScan/operational owner is produced. Production
 authority, repair/clock/type-native proof and all prior gates remain incomplete.
 
 Next accepted S1 slice is a private test-compiled inspect_native composition
 facade using one owning NativeSource and SAME policy/Limits/Control plus typed
 resource-only NativeBudget. It is now authored with one new platform-neutral
-preflight/unsupported test and controlled happy-path wiring, but NOT RUN or
-compiler-qualified. Previous3d325 proof below is exact historical qualification.
+preflight/unsupported test and controlled happy-path wiring, GNU-compiled at8cbc
+but NOT executed in that five-kernel gate. Previous3d325 proof below is exact
+historical native qualification.
 Unavailable open_native factory remains Unsupported; no production route or
 ownership/authority token emerges. Capacity/full S1 and S2 production recovery
 design/consumer/proof/repair gates remain required after this facade slice.
 Accepted capacity fixture SOURCE now adds four explicitly ignored Linux cases:
 large sparse history, large Unicode/arrays, raw-link resource refusal and4096
 retained pins/reader FD sharing. A bounded existing-primitive writer avoids Log's
-history collections. All four are UNRUN/uncompiled; no RSS/FD peak or128MiB
+history collections. All four are GNU-compiled at8cbc but UNRUN; no RSS/FD peak or128MiB
 guarantee is established. Their exclusions are separate from historical helpers.
 
 Linux retained-source admission follows [[plan:root/20261107135332]]. Root

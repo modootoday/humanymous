@@ -47,16 +47,18 @@ refusal, and unchanged unavailable factory. Existing controlled Linux case now
 passes its signed two-pass happy path through this facade; raw module-private
 constructor remains for reader/lock/fault tests. Existing three native units,
 two Unix mode tests and15 subcases within one ignored controlled test preserved.
-New facade source is UNQUALIFIED; old3d325/six-case proof is historical exact source.
-Owned rustfmt returned0; no compiler/Clippy/test workload for this new slice yet.
+Facade behavioral source is UNQUALIFIED; old3d325/six-case proof remains historical.
+Subsequent8cbc GNU fmt/check/strict Clippy compiled this facade/capacity source,
+but executed ONLY five recovery-kernel invariants in
+[[evidence:root/20261107155745]]. No native/facade/capacity execution is implied.
 Next proposed allocation: check/strict Clippy plus SEVEN selected Rust tests
 (prior six and new facade unit), explicit --ignored controlled case, and separate
 unsupported-platform coverage. No workload is implied by source acceptance.
 
 Capacity fixture SOURCE preparation is accepted separately; actual FD/RSS runs
 need another allocation and cannot prove universal128MiB from finite cases.
-Four Linux-only explicitly ignored capacity tests are now authored, UNRUN and
-uncompiled, under native/tests/capacity.rs. Their writer reuses ONE Record,
+Four Linux-only explicitly ignored capacity tests are authored and GNU-compiled
+at8cbc but UNRUN, under native/tests/capacity.rs. Their writer reuses ONE Record,
 existing Wal/canonical hash/HMAC/Checkpoint signing and fixed Frontier, retaining
 only latest checkpoint/scalar links; it does not use Log/history collections.
 Profiles:16384 records with16KiB raw rule body and sparse1024 cadence, on-disk

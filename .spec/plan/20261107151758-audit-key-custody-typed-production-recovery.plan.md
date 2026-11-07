@@ -17,8 +17,10 @@ Design v0.2, DRAFT/needs-work. Prepare the production recovery contract after
 private S1 facade qualification; this is not S2 implementation or authority
 approval. L2 owns real storage/FD/recovery inputs; Runtime/Authority/CLI/Lab own
 their consumer paths. Existing claims/full goal survive the structural role change.
-Latest actual source proof remains3d325/six tests in evidence144415; facade8025
-and capacity50df are source checkpoints, not inherited qualification.
+Latest actual native source proof remains3d325/six tests in evidence144415.
+Subsequent8cbc GNU gate qualifies only five pure L1 transition tests, fmt/check/
+strict Clippy, evidence155745. Facade/capacity compile there but are not executed;
+no native/repair/capacity qualification is inherited from the five-kernel gate.
 
 Replace history-sized production startup/proof materialization with one guarded,
 typed, bounded owner. Authenticate all complete input before torn-record repair
@@ -340,7 +342,7 @@ do not grant writes to Runtime/Authority/native-security/CLI/Lab paths.
 
 ## Record
 
-### Private L1 transition source checkpoint (UNRUN)
+### Private L1 transition scoped qualification
 
 The test-compiled scan/recovery_transition.rs now implements pure tail
 classification, preserved-tail rejection of every normal append/checkpoint/Ready
@@ -354,8 +356,12 @@ Unsupported. No S2 production source or consumer mutation is enabled.
 Five authored invariant tests cover preserved-tail immutability across all
 normal intents, zero/u64MAX/ahead-anchor boundaries, MAXsegments before a new
 index, explicit allow-new/control-only/bootstrap negatives and original cancelled
-Control refusing even with a fresh replacement/reset. Tests are NOT RUN or
-compiled; owned rustfmt and Specfold only. Actual VerifiedScan type compile-fail,
+Control refusing even with a fresh replacement/reset. Exact8cbc passed all FIVE
+in individually selected GNU1.99.1 harnesses, plus fmt/check/strict Clippy in
+[[evidence:root/20261107155745]].177 selected source inputs,3181 registry files,
+73 selected Rust tools and44 absent config candidates unchanged; terminal36565,
+A returned. No native/capacity/facade behavior was executed in this gate.
+Actual VerifiedScan type compile-fail,
 post-auth expiry/no-write and actual bootstrap/repair/durability gates remain
 distinct requirements. Earlier3d325 proof qualifies none of this new kernel.
 

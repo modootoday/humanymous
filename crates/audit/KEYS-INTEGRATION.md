@@ -1,11 +1,14 @@
 # Sealed key compatibility integration
 
-## Pending private recovery transition kernel
+## Latest private recovery transition kernel qualification
 
 S2 contract v0.2 (plan151758) incorporates independent readonly-ambiguity,
 original-operation-bounds, bootstrap-restart and pre-write segment-limit review.
 Root accepted private L1 source only. Kernel now classifies these local plans/
-preconditions, with five authored invariant tests, all UNRUN/uncompiled. No native
+preconditions. Exact8cbc passed GNUfmt/check/strictClippy and five exact invariant
+tests(each1pass/0fail/0ignored/114filtered), evidence155745/private154715.177
+source inputs/67registry3181files/73selectedRusttools/44absentconfig candidates
+unchanged; terminal36565/Areturned. No native
 owner/authentication/durable write/Ready token exists; operational factory stays
 Unsupported. Type-level VerifiedScan/expiry/repair/provider/consumer gates remain.
 
@@ -16,7 +19,7 @@ typed resource-only NativeBudget. Source now composes sole native constructor
 and existing complete two-pass inspect without exposing guard/File/identity or
 healthy owner. Original Admission math moved to one validator. One new all-platform
 preflight/Unsupported case and controlled native happy-path facade wiring are
-authored UNRUN/uncompiled; owned rustfmt0. Existing unavailable open_native still
+GNU-compiled at8cbc but behavioral tests UNRUN in that five-kernel gate. Existing unavailable open_native still
 Unsupported on all OSes. Historical3d325 proof below does not qualify new facade.
 Next gate proposed seven exact tests plus check/strict Clippy/unsupported-platform
 coverage when allocated; no workload/production/S2 authority implied.
