@@ -1570,3 +1570,15 @@ or portable signed decision claim. Service statuses are distinct from shared
 client non200-to503 authority_status and per-host mappings. Updated existing
 change-manifest summary and added three manual receipts; no tests/IPC executed.
 No scoring/generic wire or root manifest changes; quiet window preserved.
+
+### Process credential and nonce/audit outcome boundaries
+
+Read complete authority credentials/decision modules. Experimental wire now names
+64lowerhex process credential and exactBearer grammar (constructor representation
+is not entropy/role proof), process-local nonce deadline+skew retention and fresh
+epoch/clock rollback behavior. Failure after reservation may have no decision
+record; durable record may precede final timeout refusal. Neither records nor
+responses provide full attempt/effect accounting. Corrected client-earlier-expiry
+capability versus current authority emitting requestdeadline. Two manual receipts;
+no scoring/behavior/native execution. Exact813 run still live, only advisories
+128362579030 active at observation; no duplicate dispatch or current-source pass.

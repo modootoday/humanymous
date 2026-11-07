@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/src/credentials.rs",
+  "sha256": "d7e84bf9ad7b4853bfb12ad92990b222d7de24a0c9428d10cc22447667c3b170",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete process credential and two test definitions:32OS-random bytes rendered64lowerhex, exact case-sensitive Bearer prefix/constant-time fixed-token compare, private constructor checks representation only, zeroizing/noDebug/noSerialize. This is local grammar, not authentication policy/entropy proof from supplied bytes; no tests run.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/authority/src/decision.rs",
+  "sha256": "5a11711204f4a15b57c8704fa7862baa7e6e4f2ff6fbf5f2b0128c9d7a01ce38",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete authority/evidence/response implementation: provisioned native peer and scope, route/capability checks before process-local nonce reservation, expiry+skew retention, shared frozen engine, durable audit before response and final deadline recheck. Post-reservation failures consume nonce; audit and response are not attempt/effect ledger. Rollback poisons; no code/scoring changed or execution performed.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
   "source": "crates/authority/src/client.rs",
   "sha256": "703fbc7e4bafbc0aa7e21b8ef5cf320070548cf51e19e2fcc53f779235a4622e",
   "reviewer": "codex/rust-pages",

@@ -25,6 +25,13 @@ per request. It has no TCP fallback or administration method. Authentication
 checks the real operating-system peer and a separately provisioned scoped
 bearer credential; forwarding headers do not establish locality.
 
+The current authority creates a fresh process-epoch credential from 32 OS-random
+bytes, encoded as 64 lowercase hexadecimal characters. Its presentation is the
+exact case-sensitive `Bearer ` prefix followed by those bytes. The private
+provisioning constructor checks that representation; it does not establish a
+caller's entropy, authorization or supervisor identity. This local implementation
+grammar is not a generic Draft v0 authentication or discovery scheme.
+
 The service header bound is 16384 bytes including the terminating delimiter,
 with at most 100 service headers. The JSON envelope bound is 1600000 bytes and
 response bound 65536 bytes. Host, Authorization, `Content-Type: application/json`
@@ -108,18 +115,29 @@ serialized nonce reservation. A duplicate nonce rejects, including an identical
 payload. A nonce remains consumed after later failure. Bounded capacity,
 retention, clock rollback and credential epoch/restart handling need their own
 executed evidence. This is not general exactly-once processing across crashes.
+The current nonce map is process-local and retains each reservation through its
+deadline plus configured clock skew; expired entries are removed during later
+eligible decisions. It is not a durable logical-operation ledger. Clock rollback
+poisons the authority, and restart requires a fresh credential epoch rather than
+reusing old credentials with an empty replay map.
 
 An accepted service response follows durable audit append. Append failure
 poisons the authority. A response contains only protocol/id/tenant/origin/
 revision, expiry and verdict, without arbitrary mutations or management data.
 Whether an application invokes the bound handler exactly once requires actual
 adapter/origin observation. Do not retry an ambiguous origin effect.
+A failure after nonce reservation can consume that nonce without producing a
+decision audit record. Conversely, a record can persist before the final deadline
+check refuses the response. Decision records therefore do not supply a complete
+attempt denominator, and a missing successful response does not prove no audit
+state changed.
 
 The shared client independently validates the outgoing envelope against its
 provisioned profile and pending id/tenant/origin/revision/deadline. It authenticates
 the native server and accepts only HTTP 200 with the exact response binding,
 known verdict and an expiry after receipt but no later than the request deadline.
-The authority may shorten that expiry. Unknown, missing or duplicate reply fields
+The client accepts an earlier expiry; the current authority emits the request
+deadline. Unknown, missing or duplicate reply fields
 reject rather than creating a usable decision.
 
 The returned `BoundResponse` has single-owner consumption and checks wall-clock
