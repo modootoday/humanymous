@@ -100,7 +100,7 @@ fn parse_headers(bytes: &[u8]) -> Result<(Request, usize), Rejection> {
     let length = if request.header("content-length").is_none()
         && matches!(request.method.as_str(), "GET" | "HEAD")
         && request.header("x-humanymous-protocol")
-            == Some(humanymous_integrity::request::browser::PROTOCOL)
+            == Some(humanymous_core::integrity::request::browser::PROTOCOL)
     {
         0
     } else {

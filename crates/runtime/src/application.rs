@@ -8,12 +8,12 @@ use crate::{
 };
 use humanymous_audit::record::Record;
 use humanymous_authority::{decision::DurableAudit, transport::Admission};
+use humanymous_core::scoring::engine::Engine;
+use humanymous_core::signals::report::SessionReport;
 use humanymous_network::{
     http::HeaderInfo,
     report::{Observation, build},
 };
-use humanymous_scoring::engine::Engine;
-use humanymous_signals::report::SessionReport;
 use sha2::{Digest, Sha256};
 use std::time::Duration;
 use tokio::{
@@ -117,9 +117,9 @@ impl Application {
                 || req.header("content-type") != Some("application/json")
                 || req.header("authorization").is_some()
                 || req.header("x-humanymous-session").is_some()
-                || req
-                    .header("x-humanymous-protocol")
-                    .is_some_and(|value| value != humanymous_integrity::request::browser::PROTOCOL)
+                || req.header("x-humanymous-protocol").is_some_and(|value| {
+                    value != humanymous_core::integrity::request::browser::PROTOCOL
+                })
                 || !serde_json::from_slice::<serde_json::Value>(&req.body)
                     .ok()
                     .and_then(|value| value.as_object().map(serde_json::Map::is_empty))

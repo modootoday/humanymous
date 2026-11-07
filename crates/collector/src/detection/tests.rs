@@ -1,5 +1,5 @@
 use super::*;
-use humanymous_signals::observation::{Source, Verdict, lookup};
+use humanymous_core::signals::observation::{Source, Verdict, lookup};
 use serde_json::json;
 
 fn baseline() -> Snapshot {

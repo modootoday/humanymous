@@ -1,8 +1,8 @@
 use super::{LabError, OwnedRuntime, Request, now_ms};
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
-use humanymous_integrity::request::{compute_token, seed};
+use humanymous_core::integrity::request::{compute_token, seed};
+use humanymous_core::signals::report::ClientReport;
 use humanymous_runtime::{configuration::Configuration, session::canonical};
-use humanymous_signals::report::ClientReport;
 use serde::Deserialize;
 use std::{
     io::{Read, Write},
@@ -322,16 +322,18 @@ mod tests {
         let mut req = request(&config, "/effect", b"effect".to_vec());
         sign(&config, &mut req, &session, 1, 1000, 5000).unwrap();
         let verify = |req: &Request| {
-            humanymous_integrity::request::verify(humanymous_integrity::request::VerifyParams {
-                session_key: &[7; 32],
-                last_n: 0,
-                presented_n: 1,
-                presented_tb: 0,
-                current_tb: 0,
-                token: req.header("x-humanymous-token").unwrap(),
-                canonical: &canonical(&config, req, &session.session, 5000),
-                first_req: false,
-            })
+            humanymous_core::integrity::request::verify(
+                humanymous_core::integrity::request::VerifyParams {
+                    session_key: &[7; 32],
+                    last_n: 0,
+                    presented_n: 1,
+                    presented_tb: 0,
+                    current_tb: 0,
+                    token: req.header("x-humanymous-token").unwrap(),
+                    canonical: &canonical(&config, req, &session.session, 5000),
+                    first_req: false,
+                },
+            )
             .id
         };
         assert_eq!(verify(&req), "l5.rit.ok");

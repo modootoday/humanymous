@@ -3,7 +3,7 @@ mod fingerprint;
 mod integrity;
 mod snapshot;
 mod static_client;
-use humanymous_signals::{
+use humanymous_core::signals::{
     observation::{Signal, Source, Verdict},
     report::ClientReport,
 };

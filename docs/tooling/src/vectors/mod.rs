@@ -1,7 +1,7 @@
 //! Exact-byte synthetic experiments reuse the shared parser, never a copied policy.
 mod author;
 mod i18n;
-use humanymous_integrity::adapter::{AdapterProfile, parse_with_profile};
+use humanymous_core::integrity::adapter::{AdapterProfile, parse_with_profile};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeSet, fs, io::Write, path::Path};

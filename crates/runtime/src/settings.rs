@@ -4,7 +4,7 @@ use crate::{
     configuration::{Configuration, OperationalSettings},
     management::ManagementScope,
 };
-use humanymous_integrity::request::browser::MAX_SAFE_INTEGER;
+use humanymous_core::integrity::request::browser::MAX_SAFE_INTEGER;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 

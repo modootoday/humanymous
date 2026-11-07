@@ -16,7 +16,7 @@ host-pilot = []
 
 [dependencies]
 humanymous-framework-adapter = { path = "../framework-adapter" }
-humanymous-integrity = { path = "../integrity" }
+humanymous-core.workspace = true
 humanymous-authority = { path = "../authority" }
 napi = { version = "=3.16.1", default-features = false, features = ["napi8", "dyn-symbols", "tokio_rt"] }
 napi-derive = "=3.7.0"
@@ -32,7 +32,7 @@ napi-build = "=2.6.0"
 [dev-dependencies]
 humanymous-native-security = { path = "../native-security" }
 humanymous-audit = { path = "../audit" }
-humanymous-signals = { path = "../signals" }
+humanymous-core.workspace = true
 
 [target.'cfg(windows)'.dev-dependencies]
 windows-permissions = "=0.2.4"

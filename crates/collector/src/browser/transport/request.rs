@@ -27,7 +27,7 @@ pub(super) fn build(
     abort: &Abort,
 ) -> Result<JsValue, JsValue> {
     if method.len() > 32
-        || humanymous_integrity::request::browser::validate_target(target).is_err()
+        || humanymous_core::integrity::request::browser::validate_target(target).is_err()
         || target.len() > 8192
         || !target.is_ascii()
         || target.bytes().any(|b| b <= 32 || b == 127)
@@ -146,7 +146,7 @@ pub(super) fn final_target(
     let target = serialized
         .strip_prefix(origin)
         .ok_or_else(|| error("request origin prefix mismatch"))?;
-    humanymous_integrity::request::browser::validate_target(target)
+    humanymous_core::integrity::request::browser::validate_target(target)
         .map_err(|_| error("invalid final target"))?;
     Ok(target.to_string())
 }

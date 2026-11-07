@@ -88,7 +88,8 @@ impl Handler {
             return Err(Rejection::new(403, "management_scope"));
         }
         change.settings.validate()?;
-        if change.expected_revision > humanymous_integrity::request::browser::MAX_SAFE_INTEGER {
+        if change.expected_revision > humanymous_core::integrity::request::browser::MAX_SAFE_INTEGER
+        {
             return Err(Rejection::new(409, "settings_parent_revision"));
         }
         Ok(change)

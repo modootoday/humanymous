@@ -12,7 +12,7 @@ sha2.workspace = true
 md-5.workspace = true
 hex.workspace = true
 serde.workspace = true
-humanymous-signals.workspace = true
+humanymous-core.workspace = true
 serde_json.workspace = true
 
 [dev-dependencies]

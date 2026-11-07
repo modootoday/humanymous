@@ -8,7 +8,7 @@ use super::{
     reflection::{call, get, int, truthy},
     resources::{Settlement, settle},
 };
-use humanymous_signals::report::Advanced;
+use humanymous_core::signals::report::Advanced;
 use js_sys::Promise;
 use wasm_bindgen::{JsCast, JsValue};
 

@@ -1,7 +1,7 @@
 //! Real child process, authenticated WAL restart and loopback HTTP fixture pilot.
 //! This is not a Docker/browser qualification suite.
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
-use humanymous_integrity::request::{compute_token, seed};
+use humanymous_core::integrity::request::{compute_token, seed};
 use humanymous_runtime::{configuration::Configuration, http::Request, session::canonical};
 use serde_json::{Value, json};
 use std::{

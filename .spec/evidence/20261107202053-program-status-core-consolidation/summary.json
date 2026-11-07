@@ -1,0 +1,686 @@
+{
+  "schema": "humanymous.core-consolidation/1",
+  "status": "SCOPED_VALIDATION_PASS_INTEGRATION_PENDING",
+  "recorded_utc": "2026-11-07T20:21:28.6694743+00:00",
+  "observed_head": "7a405bbf2b6acd484d7cd8876c871acf9005e435",
+  "source_identity": "143 exact file hashes, not HEAD: core slice currently uncommitted",
+  "workspace_members_before": 41,
+  "workspace_members_after": 35,
+  "target_workspace_members": 8,
+  "original_files": 142,
+  "moved_non_manifest_files": 135,
+  "compared_non_rust_files": 26,
+  "moved_non_rust_differences": 0,
+  "source_files_compared": 143,
+  "source_differences": 0,
+  "unit_tests": 145,
+  "integration_tests": 17,
+  "total_tests": 162,
+  "failed": 0,
+  "ignored": 0,
+  "filtered": 0,
+  "model_rng_tests_executed": 12,
+  "core_test_exit": 0,
+  "strict_all_target_all_feature_clippy_exit": 0,
+  "collector_wasm_check_exit": 0,
+  "compiler_probes": {
+    "scoring_scope": "private parent-module access denied; not modifier sensitivity alone",
+    "denied_exit": 1,
+    "positive_control_exit": 0,
+    "required_diagnostic": "E0603",
+    "input_differences": 0,
+    "denied_cases": 6,
+    "selected_inputs": 154
+  },
+  "qualification": {
+    "publication": false,
+    "extracted_package": false,
+    "cross_os": false,
+    "actual_browser": false,
+    "docker_product": false,
+    "actual_native": false,
+    "main_integration": false,
+    "full_workspace": false
+  },
+  "input_hashes": [
+    {
+      "path": "crates/sdk/humanymous-core/Cargo.toml",
+      "sha256": "c28056e78ede24a5589c734f6f2c51d917c401933bead865afa8b06ac13e7257"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/docs/history/watermark-integration.md",
+      "sha256": "4a6864958ba7cbd8da7ee372cb76da59e3630893e36e4abbc1d00f9e9d044235"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/examples/integrity_canonical_performance.rs",
+      "sha256": "50b8d51220a9ae71862af0dc57d61a97c64a8a29ec086826712f790d6d5c29ae"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/lib.rs",
+      "sha256": "e234b7aac64e287b2bde79faaa01c99e05e546f42cb4723ce53fe7c787bf1513"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/behavior/mod.rs",
+      "sha256": "41d5579b01eb6cd36ca5918bdc75b562698272fa04a9e35f8f58c715267d98aa"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/behavior/features/extraction.rs",
+      "sha256": "afb9fcc3470ad8b410850d29d67a1422283ffd4958d7d434659c75d7f0f4445f"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/behavior/features/mod.rs",
+      "sha256": "b8b14880eb5590c0b5329b5cdcb961926eba9db36d9fb02d51699230470daa84"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/behavior/features/schema.rs",
+      "sha256": "29adeca7af946df76539609d60e7364a613cd7cdca9d17131cf5c18bd68f484a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/mod.rs",
+      "sha256": "8d2b3b804dce291011c31e6ba90e1b9cf810b72d9ad8fcdb825979775bdc7420"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/attestation/mod.rs",
+      "sha256": "afc4d50903dc503298547b42f0fd9e15c82acbffaaa21c35809ec3ba1522d1dc"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/pass/generation.rs",
+      "sha256": "5824d1552f44cc2a5765da49df33b455bb25e183b287f2157f31671c645083d1"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/pass/mod.rs",
+      "sha256": "1cc898be41fa3dd5a410a13685152baac79319a77ef75b26e016511ab19607f3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/pass/tests.rs",
+      "sha256": "ccbb340cc955a7f354c2f18c88b3676b5e495e6319fbaeb83da681e454af3b00"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/pass/verification.rs",
+      "sha256": "973e99210305bc5ea1a5f94e5ebedba6c24cc6c955b56eb0e0da853815ef3c90"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs",
+      "sha256": "c40782a3481ed548d5e5cf32f6ba5121fe26418936a606796cb3b86d383e2f83"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/proof_of_work/mod.rs",
+      "sha256": "326c7ceb965c57564313ad99edcc0b6d2c7e558cd2e4fb525e7f9ff0fa3a65b4"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/challenge/proof_of_work/target.rs",
+      "sha256": "62a5ff5abe629d0b9d1a9f67ac6873e3d6efa3a3c03789bb5417e30cf78e597e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/mod.rs",
+      "sha256": "9b197bf8b6716d0388f9b9625d65616b177deaba446cc877f22f592a4a141bbf"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/adapter/mod.rs",
+      "sha256": "fe442bb650c0443e24a0eb010094bbc04cac2eec8b509066fe3d03fdbf888d92"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/adapter/profile.rs",
+      "sha256": "9b61f1163147dd3372556fa3f2fcbfbbc2811636f613230b243e07f8acb3becd"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/adapter/tests.rs",
+      "sha256": "45aa2d41047656f14f540c1437bbc05990ee3b0f90c50ecb5f429168dc2a59ef"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/adapter/wire.rs",
+      "sha256": "e8687e4be4dad979741fd582faeb0d097bda4572fbaf236763753ff836243db9"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/canonical.rs",
+      "sha256": "1a0d48730a780bbc0ce4d9f0148cde2bd53d8bbc8551cee71081ee1081528342"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/mod.rs",
+      "sha256": "2cac6164e323cd21fa26a59ab94450c9e912e8050c71f2999f52cb3806a15a9e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/rotation.rs",
+      "sha256": "369eaed99785b14d2d7b4bf4e328de67ef4f60f7be9970b02476699516f0d0b8"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/token.rs",
+      "sha256": "e7962488aac1bed6d7452c8b56327480fff486816094001a7d30fa93be452e9b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/verification.rs",
+      "sha256": "30298105b0fabf13070d7ae3395e8bc9a9aff48c0df4b4778e1cf89d6c5a7094"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/browser/ack.rs",
+      "sha256": "20526674e2a0e3f0267c5baa23837a9d378bbfa9db16a4ded1946151b1730b7a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/browser/mod.rs",
+      "sha256": "19b57d4a33ac26075b9f546f3b8d0fa114fd5b8564be34f6d9543227401780a3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/browser/tests.rs",
+      "sha256": "7b15a71305ba23a29ba9c06673a80b57ae56d4389785d1cd151c88804b899362"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/browser/validation.rs",
+      "sha256": "56794589e64977e3baf2490935dc2c8ab93f76b0233809d91655592470256653"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/browser/ack/tests.rs",
+      "sha256": "cb39f96c7dfeabccbe9ee5e3113728f1260c58b32ebe23e190b68c46d2c68616"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/request/canonical/tests.rs",
+      "sha256": "7eb501535dba2e33fa15464cbf6d27c44244f27e3e49282e59b50736a5ea9d3c"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/integrity/resource/mod.rs",
+      "sha256": "ccad57be6d531b02962655189289f86a87875ea48d594f47ddf40471c66e6033"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/mod.rs",
+      "sha256": "f576837b5348af278e0b8ba59f022cbf439ec123b7dab0fb43a25bfa160b567b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/bundle.rs",
+      "sha256": "d6a8d0c295b12df5a8537074d2023116941ad16df5a5ef830775fe6ced32983a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/mlp.rs",
+      "sha256": "17631d082ea1ba0f575a68de3031244deb2484542e9b1b843ff3d09c7c4de6e2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/mod.rs",
+      "sha256": "ab3db88975c14310c655d480079332e11c92467215756bfb90a638fda67cb13e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/runtime.rs",
+      "sha256": "3490db46846fac78219a98f8e5e8620cbb32840c350fe94da1ab1ef4390b3235"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
+      "sha256": "941c940d46676687d4ea770b0a0c55f3aea18324dc8f12ef26a6f2bdf027783c"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/mod.rs",
+      "sha256": "0f98f8588ac55ea29e3485bf7dc5f737da393efcb38378ce583909d19f53c1f3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/record.rs",
+      "sha256": "0f4f56f3354823aced29baeb679a821edc9f54e931aa00e0849c3b1312565d57"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/standardize.rs",
+      "sha256": "2c709638f1b67538672e400ebbd7b854f775b961784e7d2eb12b73c7e3c32305"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/initialize.rs",
+      "sha256": "45bae023a845737e36567fadc6d30ab0e7232e67e52211163acd57dfe2e613e3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/INTEGRATION.md",
+      "sha256": "21c4e0cf869c47577141b6115433c823ca669f988f9509fb9b922bfd24268c80"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/LICENSE",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/mod.rs",
+      "sha256": "ba8ce1867b988ca6d80402a4309ee1e9679d09711964942eb28b6ba9dd99f59c"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/normal.rs",
+      "sha256": "3f3037ba9ea1fdcea8a636bb687d151de34864609b42a3a91f3df200cd3eccb9"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/shuffle.rs",
+      "sha256": "5a1efcebb6deafce15ef673335db7c85f735fa5e5815f05d3f6cca00482a3c97"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/source.rs",
+      "sha256": "2d0102d192cde42f8b4223c4b76d7b58b9df3e3fa91b33ae5daa3980aed4bb98"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/tables.rs",
+      "sha256": "45967a8e11aaf2d8ff041b5704b98faf6f75637792c8af709a05b434678b04d7"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/tests.rs",
+      "sha256": "f16bf7c10217f2202446828abdeb07e429aee67ece5aab9c22d39aa7ace13fa2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/mod.rs",
+      "sha256": "7a4be6c9a27087e9f5500316bc015b3cd7cdbf48740320f8be8d7d221e22ae66"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/policy.rs",
+      "sha256": "4c414bec267fe120957c5a04729aad5cc6eeccc83f5634aa885a3ea03b110930"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/combination/mod.rs",
+      "sha256": "ab004e4475d10b65e78d5eff8d4ddd9e4a45a9fef950c56db4df6b294ed0adc2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs",
+      "sha256": "da81177d9fae9db293d040c1c7bf4459ef97b85988f4f102a2628ab7b1fabfd5"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/consistency/mod.rs",
+      "sha256": "0f5e045437cd64bfcc5abbb640638a34f626ae89ae4af453895aeb750b7a5f60"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/consistency/user_agent.rs",
+      "sha256": "095cb6a65a1c51f5bf8b6253857b2112185c315b8cf2dcd1455530a66c0a3b9a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/derivation/advanced.rs",
+      "sha256": "a2460d9d6386602dbe3be409db8ab7275424c66594759b171a1e5c839e8d618a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/derivation/behavior.rs",
+      "sha256": "32995d8868b7b29d5958d09bdc3326e1e7c3589113c042a9512ce87965bfacb5"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/derivation/environment.rs",
+      "sha256": "eed4a4561af861a5a79b5723ab0b6b6aa83de8dc9331f25759cd4f6ffc066d48"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/derivation/guard.rs",
+      "sha256": "71430b91c8d1ed43df9610bc7c22cc1d5f77a8b7fbb4982a9d3857e3863884ec"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/derivation/mod.rs",
+      "sha256": "37f9c2e98ec8ccee9297da96a5610765726bf10792ca663340f994730f524b61"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/engine/mod.rs",
+      "sha256": "de21d2cedeca03416380b6ce38c46805ab6c0513467e4f1580a747b23adf5949"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs",
+      "sha256": "89505dc9cc274a07181affb7683a4904d7143c7e26fa6c6875ce8f86e69c2629"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/scoring/trace/mod.rs",
+      "sha256": "7e6d02c6b6589b34ca29f86dc0a18aa23480093b7d7ec78be59ad96da8605c12"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/mod.rs",
+      "sha256": "439c8078d4e7eda349d62babfc51e6e3af31925c6fe76d5c3d27226b8a43c2c1"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/observation/mod.rs",
+      "sha256": "89d4b01e8bf265133e577ea5d1e8b6e72c3c3054b4a9fc30aeec5f76da92d7ef"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/observation/registry.json",
+      "sha256": "daa6d3f397c1f0b80e84e38e0bc08ad800eac1d35dbc72ddb9532c5fae14312e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/observation/registry.rs",
+      "sha256": "a3ded1435bb3c1e0ba4cf5a3ed6bade87b890a6deb0d3eef13d2fd731516f631"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/observation/signal.rs",
+      "sha256": "bfd53ac705f8b40a53d3bd3d46293d8dd7ba24fef14349f836db13f64feaf8f2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/observation/verdict.rs",
+      "sha256": "c7f57dbda88e71a59c6ba2dac3615f8148a3ec6cd012fb18ca496ca433fc4d9f"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/observation/vocabulary.rs",
+      "sha256": "14bfe697108b680a1911fbf058e9276432de6671bf6445661c25587ae101de1b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/aggregation.rs",
+      "sha256": "799731b663de651c5521edbe3e465a4ea24f0649390b47b4266c10a133b8c6f1"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/behavior.rs",
+      "sha256": "4bca3c93335908cfc8648967f0406438b7c65350f6a02174544cb3f9bf23ae3a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/client.rs",
+      "sha256": "9c454dea9681b89003c44e2a320d2ac20bec0d5b1d2c846f094cc2ee015de292"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/mod.rs",
+      "sha256": "907c1acbc341c52cb4169e0d43997648d0389e5aa94b8a6b735644e8fcc9515d"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/network.rs",
+      "sha256": "0e6b4845d318b591fab83faf2bd665446271aa8ccf9ee3999228cf854125b6ff"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/scoring.rs",
+      "sha256": "7790f37f285845f89342992a8cce1706960ad59ad57afc127ef6916176105a02"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/session.rs",
+      "sha256": "2a340c63e1c674f2e5c04ea0bc8df50c6b4a6d88cb6ad18df02bb189e9b69533"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/report/timestamp.rs",
+      "sha256": "552dd3ba2af72d0ec762235da00b2bcec3543d1e4cce690a347f67606c08a72b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/wire/decode.rs",
+      "sha256": "af3d540fdf0fbf10f7f165a73a93ec0e56def8478e4c13a57caf88bd97891341"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/wire/mod.rs",
+      "sha256": "cdfc6ec3d955e9a0a7730c2a7d4cba2f2472a63590249ccf99d4e93544fe6c5a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/signals/wire/unicode.json",
+      "sha256": "b1415483c6e97b437c7211e7e86d5c1772f9664e8a7ac32e0ca62c14484d2e17"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec.rs",
+      "sha256": "a818fdc1ebd2abd69f424f2e440433dabf96d6d0fc72a8fa0bcf256a6ed95da4"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/error.rs",
+      "sha256": "89e7282543ab5ce239f192a747ed34421e0187d2c2a6466cf6f318688a3a59bd"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/frame.rs",
+      "sha256": "d7069f0b3341f47a8395952372c6b6fb98a8129d75c37f33644cace37f6b865a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger.rs",
+      "sha256": "b1c2cfa277df3115a963fcd333c7f918c560562c2cb2317e43c2f07e5b971b56"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/mod.rs",
+      "sha256": "56e17457fab81afb3e3125d3e41839a70e47ddbe6c9918df1b35d63118adb73e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/payload.rs",
+      "sha256": "94ecfefc57e9821c9a7240bf493d515ef3c90e0316e6a2af1db0b161e53b5fad"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/base32.rs",
+      "sha256": "e38228ff1b56abba28e6d3131d118f9f67bd0b0bec9b36d77f76dedfafe40dcf"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/binary.rs",
+      "sha256": "1fa41827a7ded9e80e011c1585f6912eb22edc39d2db90db84394021ed98499d"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/mime.rs",
+      "sha256": "42560253ff31980bb0cdf39a19308f91c73cfb69a2b2cd7c4d9b83aa90aa6457"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/text.rs",
+      "sha256": "1fe851a45776138bb46fa7a6cf0b30285de82cfc9875a1ab77178e323294caf1"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs",
+      "sha256": "c4214e87281c8a3b3ab6c95c7e901ac96e13357585a5cf6c04a064afd4ec6612"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/frame/tests.rs",
+      "sha256": "92a24c4d4e4d8112f5ed1a0ba6cc78a112277dc4fcb602f866e02cf6fad89c0b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger/reservation.rs",
+      "sha256": "50aea0cc98d41e2b19ece6f8dfd05413ace8b9b079cc1c2eff1de1730b435683"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger/state.rs",
+      "sha256": "6ff5ad56c31fd7504e723d541b8541dd92220c580d3197640378ed0ebe2af95f"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs",
+      "sha256": "048726f52c4ff465b4b30f3ebbdffc557bcc56c1182d0efa863a702bb5a4153b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/payload/tests.rs",
+      "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/behavior.rs",
+      "sha256": "97141a203ba4ad4d2a0adf06c4d03eb0c20c823ddffc0b0fd058acf88fd57b81"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/challenge.rs",
+      "sha256": "adcc045b1b675159328e9ea8d4d2841bba998310f01f5f6621942828a3ef4010"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity.rs",
+      "sha256": "e9db49da2dcfa88701e3bd64695a0af7e40cf87c2c4708f9c70ff2774864fd0f"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model.rs",
+      "sha256": "4652a6520351834e34d86f394eabae22bda4ed7848cf4c7ee62f96890bf0b6b2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring.rs",
+      "sha256": "f3b2544dd47453f342d3f03e1ee32242f73cc734a996c0c656ba0a838f07f1b5"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals.rs",
+      "sha256": "a20a72ba0a84476cc875eab46eefca1db708a0a4689d8203b72ec8af861c6979"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/behavior/feature_parity.rs",
+      "sha256": "ca92ff3eb4df62cad34c8718f803d8a6ce35afb6b2dd1d398d386b949bf4ddbb"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/behavior/fixtures/features.json",
+      "sha256": "e4757db0f9b8a9249868de17e72685061f4e86a2a9e2b2809a233c49eb02a491"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/challenge/attestation_parity.rs",
+      "sha256": "30078fe838d99b253b6c2208b33a2f4536205936bf040201f5c27ade23d4b135"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/challenge/proof_of_work_parity.rs",
+      "sha256": "66b7f999bfeea59e811e3f74847e58e7e63ae5fd03b81958d641848034bf26ae"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/challenge/fixtures/attestation.json",
+      "sha256": "bb0f1ea2979aa2537931bc97843d2e68c778443921f88a237dbe4e251fee22c4"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/challenge/fixtures/proof_of_work.json",
+      "sha256": "26941932d627f79f4f9c2b2165c8d9fe54aef78ccbb297bf3a1ba37c86cb61b3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity/request_parity.rs",
+      "sha256": "387398e59c8f950146ff3438bb2458031acf12396bb2efe2ccf613f571ed4e88"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
+      "sha256": "5a5ce95c93f5b34858d586935454b77672e04b4ae754841756206cd49b8beb97"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity/verification_parity.rs",
+      "sha256": "0326426088da998257665d0dc2bf34e55888bb03b01eceb7847f400939dc0ece"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity/fixtures/request.json",
+      "sha256": "6ee2be626741c3168b03a9da9948545c5d831aa0d6a8a805368112f630cbde58"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity/fixtures/resource.json",
+      "sha256": "6d6d27e642bcf4ce1ac45b3dbe57f9787170f50526a532285486100463c0e7df"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/integrity/fixtures/verification.json",
+      "sha256": "d623988f446c2d11fce701c9b070f06771f8a10ba3cc264dec794906928908ff"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/inference_parity.rs",
+      "sha256": "c547223abb1ed215fe8bc58be5fca695bab1fab96dc4afa03e56966a116d0910"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/go1263-normal-seed0.json",
+      "sha256": "1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/go1263-normal-source.txt",
+      "sha256": "d8f4450a14b03bd0ec939eb4b127e199d9d78ba3d07c4ad0a65ac493dfa1c62a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/go1263-rng-source.txt",
+      "sha256": "e301d938fe5dbe4ef5ff52f31de68d2547c3ab50da5c95bb21c49ea983a817ab"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/inference.json",
+      "sha256": "5b6764eac0aadcba60ed619126b7174b012e40be6deb8f32bfc7995ba354a9fe"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/behavior_parity.rs",
+      "sha256": "2ca9515f2d73c9635e07a5cef989991d62cedcfedadfd94e6ea6b050f88ce0c7"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs",
+      "sha256": "8dae4bb7672cd7f94bfbe09b0dcca9f1077579f3cc002b0ceef9bb27c7109d7b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/derivation_parity.rs",
+      "sha256": "13d2f53bf986e0d8468869a3fe75f944cae83429ce7dadf2dd3bc5d822201d08"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+      "sha256": "16d5a72a686f658ed79b9c483ca31a02724b49a6efe84b4ef206069284ace3e3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/trust_upgrades.rs",
+      "sha256": "cf04a3c9350662ead9dcb8cc3092d77e052ba1edd976701476ddad387f1e4595"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/behavior.json",
+      "sha256": "c30b64c72d5ba5f279ec8e09109d05d6d247283fbbbaa1df1957e6ef39f15509"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/crosschecks.json",
+      "sha256": "605c8968e636537dc9f3ed397f6990a4dedddf43496bde5d3dcd2ceda91b73c3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/derivation.json",
+      "sha256": "a2df6bdb401cd49f5e63ade51cbfb82140856bf8dbf19c059fa13684f9bbdd97"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/engine.json",
+      "sha256": "27e5d6e8e96e0e312a98da52e0077b2681ab980c217997dc47ffb6beb7ef13bf"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+      "sha256": "04eb9bd2a02d70ea1dd7796c8128ef03b2cc10f41bcafb97d91c61873ef264b2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+      "sha256": "5fd5941b45ee6a43a113a91c132f5928a93bdaedc5f1fb447e13e3eca11a0725"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+      "sha256": "3a8474c8e3de9dd33d56a470ec79a20743b184699401c6311720f2af38be2236"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals/observation_parity.rs",
+      "sha256": "6cdf3b522197b6d6f24c2f632379a04eff59523a11c97f928fb1c0d8efba4c02"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs",
+      "sha256": "535dad56eb01cd6adc0aa2ef8bbd778a4ed1b55d4443095bd1f0ebb20e8853bf"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals/report_parity.rs",
+      "sha256": "fbd42991b2a3e30157f309523dbb274ea6a982022d719813d82c4ca6e6404274"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals/fixtures/observations.json",
+      "sha256": "02fe6436254a243448e095855337e5ab5238771a96cd8314ed8061ae816a6e44"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/signals/fixtures/reports.json",
+      "sha256": "84c7f771d7f70ff4473a5ced3c46a8074c58deb0fa89ec4f89688c2c8c247f13"
+    }
+  ],
+  "retained_artifacts": [
+    {
+      "private_relative_path": "file-map.before.json",
+      "sha256": "3db1499f1205d69fee9c1172e50e5b109a3160355e5b2371569f966d49997824",
+      "bytes": 43767
+    },
+    {
+      "private_relative_path": "core.before-test.json",
+      "sha256": "b68d1f980c27a76c81188cb04f3cf082a2ffb20f59a564e5531268eb5ce0045d",
+      "bytes": 24104
+    },
+    {
+      "private_relative_path": "core-test.stdout",
+      "sha256": "7c6fa2626e3b1475865e9a8d5664578ec477133d8a44277397483d21ba586808",
+      "bytes": 16174
+    },
+    {
+      "private_relative_path": "core-test.stderr",
+      "sha256": "b92088db1fe4c073f4820119ee6df2211804e9b9b9c4d4186a0c7d2adaafb0de",
+      "bytes": 1934
+    },
+    {
+      "private_relative_path": "core-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "core-clippy.stderr",
+      "sha256": "525d3e28975817f756643301c8a11458c5d9aed142cc0385a8daee71303dc651",
+      "bytes": 975
+    },
+    {
+      "private_relative_path": "collector-wasm.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "collector-wasm.stderr",
+      "sha256": "f333a42bbe37c88fb22f690f8f1474ca67ef08916fe957810e56f67b4565d0a6",
+      "bytes": 1610
+    },
+    {
+      "private_relative_path": "tree.default.windows.txt",
+      "sha256": "dea03cee012f37e2d20df30b9e2c06ba31d867ca15a1efd7c2bada98d713e892",
+      "bytes": 1617
+    },
+    {
+      "private_relative_path": "tree.allfeatures.wasm.txt",
+      "sha256": "9f27b024483f469c82d872f8a284f39b20808593ead1092eb2f3f86417b5b2d8",
+      "bytes": 1581
+    },
+    {
+      "private_relative_path": "visibility-attested/inputs.before.json",
+      "sha256": "76bc836dc9f5d9e8617fed72bc35274e2fe7bbd8601f38e0edf28cb0c7844daf",
+      "bytes": 31197
+    },
+    {
+      "private_relative_path": "visibility-attested/inputs.after.json",
+      "sha256": "76bc836dc9f5d9e8617fed72bc35274e2fe7bbd8601f38e0edf28cb0c7844daf",
+      "bytes": 31197
+    },
+    {
+      "private_relative_path": "visibility-attested/results.json",
+      "sha256": "64ddb6de1d385ae6875cb832f8322d0dfc7ecbbebe30027f7e9d009ff358d086",
+      "bytes": 751
+    }
+  ]
+}

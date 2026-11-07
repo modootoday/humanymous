@@ -4,7 +4,7 @@ mod resources;
 mod tests;
 use super::reflection::{call, get, int, string, truthy};
 use super::resources::{Settlement, Timer, settle};
-use humanymous_signals::report::Environment;
+use humanymous_core::signals::report::Environment;
 use js_sys::{Array, Object, Promise, Reflect};
 use resources::{Abort, Bait};
 use wasm_bindgen::{JsCast, JsValue};

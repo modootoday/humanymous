@@ -3,7 +3,7 @@
 mod tests;
 mod wire;
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
-use humanymous_integrity::request::{
+use humanymous_core::integrity::request::{
     browser::{self, Binding, MAX_SAFE_INTEGER},
     compute_token, seed,
 };

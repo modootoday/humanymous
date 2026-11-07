@@ -1,0 +1,35 @@
+[package]
+name = "humanymous-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[features]
+default = []
+# Explicit qualification targets; this grants no runtime authority.
+qualification = []
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+time.workspace = true
+sha2.workspace = true
+hex.workspace = true
+hmac.workspace = true
+base64.workspace = true
+subtle.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+humanymous-test-support.workspace = true
+
+[[example]]
+name = "integrity_canonical_performance"
+path = "examples/integrity_canonical_performance.rs"
+required-features = ["qualification"]
+
+[lints]
+workspace = true

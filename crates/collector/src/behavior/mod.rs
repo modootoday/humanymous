@@ -3,7 +3,7 @@ mod cadence;
 mod keyboard;
 mod pointer;
 mod statistics;
-use humanymous_signals::report::{BehaviorSummary, EventFeatures};
+use humanymous_core::signals::report::{BehaviorSummary, EventFeatures};
 
 /// Frozen first-sample/timeline cap, not a rolling window.
 pub const MAX_SAMPLES: usize = 600;

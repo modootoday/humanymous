@@ -2,7 +2,7 @@ use super::{
     PointerSample,
     statistics::{mean, variance},
 };
-use humanymous_signals::report::MouseFeatures;
+use humanymous_core::signals::report::MouseFeatures;
 
 pub(super) fn reduce(samples: &[PointerSample]) -> MouseFeatures {
     let mut out = MouseFeatures {

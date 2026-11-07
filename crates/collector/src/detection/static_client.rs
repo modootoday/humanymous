@@ -1,5 +1,5 @@
 use super::{Snapshot, add};
-use humanymous_signals::observation::{Signal, Verdict};
+use humanymous_core::signals::observation::{Signal, Verdict};
 use serde_json::json;
 
 pub(super) fn collect(s: &Snapshot, out: &mut Vec<Signal>) {

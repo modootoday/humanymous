@@ -109,6 +109,15 @@ separate contracts: humanymous-cli may install the humanymous command.
 
 ##### Core slice preparation and atomic boundary
 
+Execution checkpoint: the seven context source trees have now moved into the
+accepted core destination. The initial phrase "no relocation" below describes
+the preserved preparation snapshot, not current implementation status. Workspace
+membership is35 after replacing seven packages with one. Exact scoped evidence
+is [[evidence:root/20261107202053]]:162 tests pass, strict Clippy and collector
+WASM checking pass, and six same-crate forbidden accesses fail as intended with a
+successful control. Consumer integration and final source commit are still in
+progress; none of these results establishes full migration qualification.
+
 The first slice absorbs signals, behavior, model, scoring, integrity, challenge
 and watermark into crates/sdk/humanymous-core/src/<context>. The initial
 read-only inventory found142 files across those seven package trees; this is

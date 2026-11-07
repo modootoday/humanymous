@@ -1,10 +1,10 @@
 use super::{Snapshot, add};
-use humanymous_signals::observation::{Signal, Verdict};
+use humanymous_core::signals::observation::{Signal, Verdict};
 use serde_json::json;
 
 pub(super) fn collect(s: &Snapshot, out: &mut Vec<Signal>) {
     if !s.webgl_renderer.is_empty() {
-        let low = humanymous_signals::wire::simple_lowercase(&format!(
+        let low = humanymous_core::signals::wire::simple_lowercase(&format!(
             "{} {}",
             s.webgl_renderer, s.webgl_vendor
         ));

@@ -48,7 +48,7 @@ fn untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision() {
         OperationalSnapshot::from_json(&serde_json::to_vec(&changed).unwrap(), &config).is_err()
     );
     let mut changed = original;
-    changed["revision"] = json!(humanymous_integrity::request::browser::MAX_SAFE_INTEGER);
+    changed["revision"] = json!(humanymous_core::integrity::request::browser::MAX_SAFE_INTEGER);
     let canonical: OperationalSnapshot = serde_json::from_value(changed).unwrap();
     let exhausted = OperationalSnapshot::from_json(&canonical.bytes().unwrap(), &config).unwrap();
     assert_eq!(

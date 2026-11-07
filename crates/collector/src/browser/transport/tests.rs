@@ -1,5 +1,5 @@
 use super::*;
-use humanymous_integrity::request::{
+use humanymous_core::integrity::request::{
     browser::{Binding, acknowledgement, canonical},
     seed, verify_token,
 };

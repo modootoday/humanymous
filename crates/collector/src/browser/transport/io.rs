@@ -30,7 +30,7 @@ pub(super) fn now(global: &JsValue) -> Result<u64, JsValue> {
         .filter(|n| {
             n.is_finite()
                 && *n >= 0.0
-                && *n <= humanymous_integrity::request::browser::MAX_SAFE_INTEGER as f64
+                && *n <= humanymous_core::integrity::request::browser::MAX_SAFE_INTEGER as f64
                 && n.fract() == 0.0
         })
         .map(|n| n as u64)

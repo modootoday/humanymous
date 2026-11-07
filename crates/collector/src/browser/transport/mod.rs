@@ -10,7 +10,7 @@ use super::{
     resources::{Abort, Timer},
 };
 use crate::session::{Request, Scope, Session};
-use humanymous_integrity::request::browser::PROTOCOL;
+use humanymous_core::integrity::request::browser::PROTOCOL;
 use js_sys::{Array, Function, Promise};
 use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::{JsCast, JsValue, prelude::wasm_bindgen};

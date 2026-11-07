@@ -7,7 +7,7 @@ use humanymous_authority::protocol::Response;
 use humanymous_collector::session::{
     Request as ClientRequest, Scope as ClientScope, Session as ClientSession,
 };
-use humanymous_integrity::request::browser::PROTOCOL;
+use humanymous_core::integrity::request::browser::PROTOCOL;
 
 fn configured(origin: std::net::SocketAddr) -> Configuration {
     let mut config = configuration(origin);

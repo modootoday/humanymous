@@ -14,7 +14,7 @@ use crate::{
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 use humanymous_audit::record::Record;
 use humanymous_authority::decision::DurableAudit;
-use humanymous_integrity::request::{compute_token, seed};
+use humanymous_core::integrity::request::{compute_token, seed};
 use serde_json::{Value, json};
 use std::sync::{
     Arc, Mutex,

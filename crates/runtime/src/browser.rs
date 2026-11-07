@@ -4,7 +4,7 @@ use crate::{
     configuration::{Configuration, RitProfile},
     http::Request,
 };
-use humanymous_integrity::request::browser::{self, PROTOCOL};
+use humanymous_core::integrity::request::browser::{self, PROTOCOL};
 use serde::Serialize;
 use zeroize::Zeroizing;
 

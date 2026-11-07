@@ -1,10 +1,10 @@
 //! Lab observation replay through the sole detection authority; no HTTP enforcement.
 pub mod lab;
-use humanymous_scoring::{
+use humanymous_core::scoring::{
     engine::{Engine, ScoringError},
     trace::ScoreTrace,
 };
-use humanymous_signals::report::{ScoreResult, SessionReport};
+use humanymous_core::signals::report::{ScoreResult, SessionReport};
 use serde::Serialize;
 
 /// Real engine result with the engine's explanation and derived report.
@@ -40,7 +40,7 @@ mod tests {
     }
     #[test]
     fn invalid_arithmetic_is_an_error_without_verdict() {
-        use humanymous_signals::observation::Signal;
+        use humanymous_core::signals::observation::Signal;
         let mut report = SessionReport::default();
         report.client.signals = Some(vec![Signal {
             score: f64::NAN,

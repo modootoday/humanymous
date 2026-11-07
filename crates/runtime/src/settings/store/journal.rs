@@ -42,7 +42,7 @@ pub(super) fn read(
             .ok_or_else(invalid)?;
         let parsed: u64 = revision.parse().map_err(|_| invalid())?;
         if parsed.to_string() != revision
-            || parsed > humanymous_integrity::request::browser::MAX_SAFE_INTEGER
+            || parsed > humanymous_core::integrity::request::browser::MAX_SAFE_INTEGER
             || record.correlation_id.len() != 64
             || !record
                 .correlation_id

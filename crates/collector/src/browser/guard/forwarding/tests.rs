@@ -25,7 +25,7 @@ fn state() -> (Rc<RefCell<Epoch>>, Rc<Cell<bool>>) {
         Rc::new(Cell::new(false)),
     )
 }
-fn report(epoch: &Rc<RefCell<Epoch>>) -> humanymous_signals::report::Guard {
+fn report(epoch: &Rc<RefCell<Epoch>>) -> humanymous_core::signals::report::Guard {
     epoch
         .borrow()
         .snapshot(crate::guard::PrototypeCounts::new(0, 0).unwrap())

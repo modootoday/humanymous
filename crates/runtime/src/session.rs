@@ -5,8 +5,8 @@ use crate::{
     http::Request,
 };
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
-use humanymous_integrity::request::{self, CanonicalInput, VerifyParams};
-use humanymous_signals::report::ClientReport;
+use humanymous_core::integrity::request::{self, CanonicalInput, VerifyParams};
+use humanymous_core::signals::report::ClientReport;
 use serde::Serialize;
 use std::collections::HashMap;
 use zeroize::Zeroizing;
@@ -18,7 +18,7 @@ pub struct Authorization {
     /// Volatile capability identifying the already authenticated session.
     pub session: String,
     /// Server-side shared RIT verification result, never client-supplied.
-    pub rit: humanymous_signals::observation::Signal,
+    pub rit: humanymous_core::signals::observation::Signal,
     /// Exact signed deadline.
     pub deadline: u64,
     /// Already consumed rotating counter.
@@ -330,7 +330,7 @@ impl Sessions {
         // are asserted by a client. No network/server signals cross this seam.
         let mut seen = std::collections::HashSet::new();
         for signal in report.signals.iter_mut().flatten() {
-            use humanymous_signals::observation::{Layer, Signal, Source, Verdict, lookup};
+            use humanymous_core::signals::observation::{Layer, Signal, Source, Verdict, lookup};
             let definition = lookup(&signal.id).ok_or(Rejection::new(400, "client_signal"))?;
             if !matches!(
                 definition.layer,

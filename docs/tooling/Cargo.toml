@@ -16,7 +16,7 @@ scraper = "0.29.0"
 regex = "1.12"
 url = "2.5"
 percent-encoding = "2.3"
-humanymous-integrity = { path = "../../crates/integrity", version = "0.1.0" }
+humanymous-core.workspace = true
 hex = { workspace = true }
 ureq = "=3.5.1"
 

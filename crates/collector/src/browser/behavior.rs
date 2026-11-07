@@ -1,7 +1,7 @@
 //! Passive event registration and callback lifetime, separate from pure reduction.
 use super::reflection::{apply, get, truthy};
 use crate::behavior::{KeySample, MAX_SAMPLES, PointerSample, Recorder};
-use humanymous_signals::report::BehaviorSummary;
+use humanymous_core::signals::report::BehaviorSummary;
 use js_sys::Function;
 use std::{
     cell::{Cell, RefCell},

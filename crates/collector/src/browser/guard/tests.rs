@@ -74,7 +74,7 @@ fn malformed_guard_enumeration_and_native_text_fail_capture() {
 #[wasm_bindgen_test]
 fn actual_collector_snapshot_carries_only_partial_guard_measurement() {
     let mut collector = crate::BrowserCollector::new().unwrap();
-    let report: humanymous_signals::report::ClientReport =
+    let report: humanymous_core::signals::report::ClientReport =
         serde_json::from_str(&collector.snapshot_json().unwrap()).unwrap();
     assert!(!report.guard.reported);
     assert_eq!(

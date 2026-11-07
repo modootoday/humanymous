@@ -20,7 +20,7 @@ host-pilot = ["native"]
 [dependencies]
 humanymous-framework-adapter = { path = "../framework-adapter" }
 humanymous-authority = { path = "../authority" }
-humanymous-integrity = { path = "../integrity" }
+humanymous-core.workspace = true
 magnus = { version = "=0.9.3", features = ["bytes"], optional = true }
 tokio.workspace = true
 serde.workspace = true

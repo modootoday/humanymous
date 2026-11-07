@@ -8,10 +8,8 @@ repository.workspace = true
 publish = false
 
 [dependencies]
-humanymous-integrity = { path = "../integrity" }
+humanymous-core.workspace = true
 humanymous-audit = { path = "../audit" }
-humanymous-scoring = { path = "../scoring" }
-humanymous-signals.workspace = true
 humanymous-network = { path = "../network" }
 serde.workspace = true
 serde_json.workspace = true

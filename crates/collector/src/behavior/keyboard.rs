@@ -2,7 +2,7 @@ use super::{
     KeySample,
     statistics::{mean, variance},
 };
-use humanymous_signals::report::KeyFeatures;
+use humanymous_core::signals::report::KeyFeatures;
 use std::collections::HashMap;
 
 pub(super) fn reduce(downs: &[KeySample], ups: &[KeySample], pastes: i64) -> KeyFeatures {

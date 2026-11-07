@@ -3,7 +3,7 @@ mod forwarding;
 mod observer;
 use super::reflection::{call, get};
 use crate::guard::{Epoch, NativeBaseline, PrototypeCounts, native_source_marker};
-use humanymous_signals::report::Guard;
+use humanymous_core::signals::report::Guard;
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,

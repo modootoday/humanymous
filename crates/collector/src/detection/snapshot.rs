@@ -1,4 +1,4 @@
-use humanymous_signals::report::UaClientHints;
+use humanymous_core::signals::report::UaClientHints;
 
 /// Presence/truthiness and native rendering of the webdriver getter.
 #[derive(Default, Clone, Copy)]

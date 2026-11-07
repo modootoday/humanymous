@@ -1,10 +1,10 @@
 [workspace]
 members = [
   "crates/humanymous",
+  "crates/sdk/humanymous-core",
   # Shared security and service contexts.
-  "crates/audit", "crates/authority", "crates/behavior", "crates/challenge",
-  "crates/capture", "crates/collector", "crates/integrity", "crates/model", "crates/network",
-  "crates/runtime", "crates/scoring", "crates/signals", "crates/watermark",
+  "crates/audit", "crates/authority",
+  "crates/capture", "crates/collector", "crates/network", "crates/runtime",
   # Native host and framework boundaries.
   "crates/apache-adapter", "crates/apache-adapter/native",
   "crates/dotnet-adapter", "crates/dotnet-adapter/export", "crates/framework-adapter",
@@ -27,9 +27,7 @@ license = "Apache-2.0"
 repository = "https://github.com/modootoday/humanymous"
 
 [workspace.dependencies]
-humanymous-signals = { path = "crates/signals", version = "0.1.0" }
-humanymous-behavior = { path = "crates/behavior", version = "0.1.0" }
-humanymous-model = { path = "crates/model", version = "0.1.0" }
+humanymous-core = { path = "crates/sdk/humanymous-core", version = "0.1.0" }
 humanymous-test-support = { path = "crates/test-support", version = "0.1.0" }
 humanymous-native-security = { path = "crates/native-security", version = "0.1.0" }
 humanymous-windows-object-bridge = { path = "crates/windows-object-bridge", version = "0.1.0" }

@@ -11,11 +11,8 @@ publish = false
 humanymous-authority = { path = "../authority" }
 humanymous-audit = { path = "../audit" }
 humanymous-capture = { path = "../capture" }
-humanymous-challenge = { path = "../challenge" }
-humanymous-integrity = { path = "../integrity" }
+humanymous-core.workspace = true
 humanymous-network = { path = "../network" }
-humanymous-scoring = { path = "../scoring" }
-humanymous-signals.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true

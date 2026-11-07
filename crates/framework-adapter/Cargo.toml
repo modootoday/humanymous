@@ -9,7 +9,7 @@ publish = false
 
 [dependencies]
 humanymous-authority = { path = "../authority" }
-humanymous-integrity = { path = "../integrity" }
+humanymous-core.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 base64.workspace = true
