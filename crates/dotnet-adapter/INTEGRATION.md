@@ -93,6 +93,19 @@ child exit and cleanup proof must agree before a passing component projection.
 Remaining required contract cases stay NOT_RUN and prevent full qualification;
 exit2/incomplete must never be normalized to workflow success.
 
+Pure projection is now authored in tests/package/projection.rs and used by the
+existing matrix, but NOT_COMPILED/NOT_RUN. It validates source/native identities,
+the four unique modes/two profiles, case partitions, count/verdict consistency,
+runtime shape and bounded hash commitments, then emits only allowlisted fields.
+It never creates cleanup facts: component_qualified=false and cleanup=null even
+for a complete host fixture. The matrix writes public-projection.json privately
+and logs that projection instead of the raw receipt; required missing host cases
+cause a nonzero test exit after preserving observations. OBSERVATION_PATH/handoff/
+self-cleanup and hosted bootstrap remain unimplemented pending shared review.
+The native wrapper must combine a complete fixture with its OWN observed cleanup
+before creating a passing actor component outcome; an inner unit footer alone
+never supplies that proof. Four new pure projection tests remain NOT_RUN.
+
 Ordinary-private cleanup clarification from the native owner: the child runner
 must create and protect its own new private root before invoking this controller;
 the current admin-plus-actor TEMP inheritance is not a qualifying parent. The

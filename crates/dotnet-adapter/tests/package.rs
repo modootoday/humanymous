@@ -1,4 +1,6 @@
 //! Allocated actual SDK/package orchestration; no Cargo recursion or new C# source.
+#[path = "package/projection.rs"]
+mod projection;
 mod support;
 use humanymous_test_support::process::capture_with_stderr;
 use serde::Deserialize;
@@ -433,13 +435,29 @@ fn sdk_package_and_real_host_matrix() {
         dirty.is_empty(),
         "SDK/package execution must preserve the committed source checkout"
     );
-    let receipt = json!({"schema":"humanymous.dotnet-package-observation/1","execution_environment":execution_environment,"source_sha":provenance.source_sha,"rid":rid,"sdk":"10.0.403","package_sha256":package_sha,"runs":receipts,"full_product":false,"all_contract_cases_qualified":false,"publication":false});
+    let controller_sha256 = digest(
+        &std::env::current_exe().unwrap(),
+        &logs,
+        "controller-sha256",
+    );
+    let receipt = json!({"schema":"humanymous.dotnet-package-observation/1","execution_environment":execution_environment,"source_sha":provenance.source_sha,"cargo_lock_sha256":provenance.cargo_lock_sha256,"harness_sha256":provenance.harness_sha256,"controller_sha256":controller_sha256,"rustc":provenance.rustc,"target":provenance.target,"native_profile":provenance.native_profile,"rid":rid,"sdk":"10.0.403","package_sha256":package_sha,"runs":receipts,"full_product":false,"all_contract_cases_qualified":false,"publication":false});
     std::fs::write(
         scratch.join("package-observation.json"),
         serde_json::to_vec_pretty(&receipt).unwrap(),
     )
     .unwrap();
-    println!("{receipt}");
+    let public = projection::project(&receipt, &provenance.source_sha, &provenance.native_sha256)
+        .expect("strict bounded host observation projection");
+    std::fs::write(
+        scratch.join("public-projection.json"),
+        serde_json::to_vec_pretty(&public).unwrap(),
+    )
+    .unwrap();
+    println!("{public}");
+    assert_eq!(
+        public["host_contract_complete"], true,
+        "required .NET host cases remain NOT_RUN; fixture completion is not qualification"
+    );
 }
 
 #[test]

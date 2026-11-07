@@ -70,6 +70,18 @@ therefore also needs an owning shared supervisor. Process-group setup alone and
 post-reap numeric PID killing do not establish safe lifetime or cleanup proof.
 This limitation remains explicit until the shared owner supplies qualification.
 
+The package controller's new pure allowlist projection is authored under
+tests/package/projection.rs, not yet compiled/executed. It checks exact source/
+native/hash identities, unique four modes and two profiles, known case partitions,
+zero failed/ignored/leaked request counts, verdict consistency and bounded runtime
+version facts. It excludes paths, credentials, raw diagnostics and arbitrary
+fields, and never invents cleanup: component_qualified=false/cleanup=null. Missing
+required host cases remain explicit and make the matrix test fail after retaining
+its receipt/projection. Actor cleanup, handoff/failure publication and hosted
+bootstrap remain distinct unimplemented shared-boundary work; no actual component
+workflow is claimed. The new four projection tests and controller hash additions
+are NOT_RUN until the required allocated hosted source preflight.
+
 ## Source-bound release compilation (2026-11-07T10:07Z)
 
 Separately allocated C compiled the release Rust export DLL and hosted Rust test
