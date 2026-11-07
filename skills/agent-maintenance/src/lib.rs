@@ -1,5 +1,6 @@
 //! Development-tool contracts. Pure validators are separate from filesystem/runtime adapters.
 pub mod evaluation;
+pub mod evidence_layout;
 pub mod inventory;
 pub mod language;
 pub mod package;

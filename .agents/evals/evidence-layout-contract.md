@@ -97,3 +97,61 @@ loss become mandatory refusal conditions above. P2 residuals include external
 retention policy, OS metadata fidelity and concurrent hostile replacement; these
 must remain explicit in any later executable design. The reported large private
 Spec failure count is a root-supplied observation, not a new measured census here.
+
+## Accepted metadata-only planner source slice
+
+Root accepted the v0.1 contract for a planner in the existing maintenance crate.
+`evidence-layout-plan REQUEST_JSON` now has a source implementation, not executed
+qualification. Its strict version1 request uses exactly `schema_version`,
+`candidate_id`, `repository_root`, `materialization_path`, `retained_root`,
+`scratch_path`, `owner`, `source`, `consumers`, `archive`, `coverage`, `members`,
+`readback`, `retention` and `proposed_action`. Nested DTOs deny unknown fields.
+The Rust request model and finite fixture in the maintenance crate define the
+exact field types. The only action is `retire_materialization`; it is a proposal,
+never a mutator instruction. Supplied state/timeout/arbitrary action fields fail.
+
+The shared selected-input request capture provides a2MiB true-EOF JSON boundary,
+known-link/metadata refusal and one original cooperative30-second clock through
+planning. Diagnostics omit submitted values. Only the request file is opened;
+there is no candidate/archive/receipt lookup, directory traversal, archive
+execution, extraction, move, deletion, process kill or lease release. Recorded
+observation time excludes output serialization/stdout and is not a hard deadline.
+
+Count caps are5000 members and64 each of handles, archive parts, lease and
+dependency receipts. Each declared regular file/archive part is at most512MiB;
+combined declared source-plus-archive bytes are at most2GiB, using checked sums.
+These are metadata declarations, not measured actual content bytes. A source file
+may be empty; a submitted archive part must be nonempty. Parts are ordered from0,
+unique under the retained root, with exact declared total and whole identity.
+One part must match the declared whole hash. Supported format labels are tar_zstd
+and zip; no decoder is invoked. The member manifest fingerprint is domain-tagged,
+length-framed SHA256 of sorted supplied path/kind/byte/hash/link/mode metadata.
+Matching a submitted read-back fingerprint proves only self-consistent assertions.
+
+Paths must be absolute and lexically nonescaping; Windows device/UNC prefixes are
+refused. Retained archives must be under a declared repository `.spec.local` child.
+Scratch must be outside that canonical tree and not overlap protected roots.
+Archive retention must not fall under the proposed retirement subtree. Selected
+members use slash-relative nonescaping paths, reject case-folded duplicates,
+non-directory ancestors and unsupported link escapes. Lexical checks establish no
+resolved filesystem identity, hostile-race protection or native alias guarantee.
+
+Exit0 means a structurally consistent proposal was emitted. All actual verification
+and retirement/execution authority fields stay false, even if submitted receipts,
+terminal status and complete-coverage assertions agree. Such a plan stays
+`proposed`; it never advances to owner-confirmed, terminal-consumers-confirmed,
+archive-verified, retirement-authorized or retired. Semantic failures emit
+`refused` plus static codes and exit1; malformed/oversized/refused request capture
+exits2 with sanitized diagnostics. Output contains metadata/counts/fingerprints,
+not submitted file contents or executable actions.
+
+Authored gates are9 pure units and4 actual CLI cases. No Cargo/runtime slot has
+been used for this slice. Proposed next allocation is the existing Windows
+validation-maintenance target with fresh commit/free-memory admission,
+jobs1/incremental0/offline/locked: complete library (expected73, exact listing
+required), evidence_layout_cli4 plus selected_inputs_cli6/windows_doctor3
+regressions, all-target check/strict Clippy and scoped fmt. Existing prior29-case
+integration coverage is not implied by the expanded33-case source inventory.
+Named120s profile binding, actual archive bytes/safe read-back, OS identity,
+independent owner/terminal facts, hosted/provider evaluation and M11 completion
+remain separate open gates. No cleanup authority is requested by this source.

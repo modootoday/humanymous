@@ -766,3 +766,22 @@ compile-time THREADS and language-preservation inputs and was unchanged. Target
 returned terminal again. Raw first failure is retained. A separate authored-public
 CRLF attachment mismatch was caught after e511d294 and corrected index-only at
 bda10042; raw original bytes were preserved and canonical LF payload verified.
+
+## Metadata-only evidence-layout planner source
+
+Root accepted the existing bounded contract for implementation. The existing crate
+now has a strict finite request model, supplied-assertion state/path/coverage
+accounting and metadata-only `evidence-layout-plan` CLI. Shared2MiB request capture
+and the original cooperative30-second clock are reused. Valid proposals cannot
+advance beyond proposed; actual owner/terminal/filesystem/archive/read-back facts
+and retirement/execution authority stay false. Static errors refuse unsafe or
+incomplete assertions without submitted-value diagnostics. No source/archive
+lookup, global census, mutator or cleanup exists.
+
+Nine pure tests and four actual CLI tests are authored. All remain NOT_RUN, as do
+compile/Clippy gates for this source slice. The expanded integration inventory has
+eight targets/33 cases; prior29 remains separately incomplete. Proposed fresh
+Windows allocation uses only the existing target, complete library exact listing
+(expected73), plannerCLI4 and shared-capture regressions9, check/Clippy/fmt. Actual
+archive bytes/safe read-back, OS identity, independent owner/terminal verification,
+named120profile binding, provider evaluation and full M11 remain open.

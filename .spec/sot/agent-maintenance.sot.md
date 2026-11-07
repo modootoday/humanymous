@@ -78,6 +78,15 @@ read-back are mandatory before any separately authorized retirement. Canonical
 public attachment metadata must match committed Git bytes. No broad census,
 baseline relaxation, foreign active-source move or cleanup is implemented here.
 
+The next accepted source slice implements only `evidence-layout-plan REQUEST_JSON`:
+finite strict DTOs, one shared request-capture clock and metadata state/path/coverage
+accounting. Valid assertions remain proposed with all actual verification and
+retirement/execution authority false. Nine pure units and four actual CLI cases are
+authored, not executed. The source qualification inventory expands to33 cases in
+eight integration targets; previous29-case coverage is not inherited. Proposed
+Windows allocation and remaining archive/read-back/OS/owner gates are explicit in
+the evidence-layout contract. No mutator or independent proof provider is included.
+
 ## Draft new-lane coexistence v0.3
 
 Root requested a minimal Rust-only coexistence design for convention-audit and

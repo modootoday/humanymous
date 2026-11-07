@@ -3,6 +3,7 @@ mod files;
 mod model;
 mod reader;
 mod request;
+pub(crate) use request::capture_request_file;
 
 pub use files::observe;
 pub use files::{FileObservation, PreparationReceipt, Stability};

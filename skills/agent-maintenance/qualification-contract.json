@@ -4,8 +4,8 @@
   "locked": true,
   "features": [],
   "inventory_status": "source-only; exact-source per-target --list must agree before execution",
-  "scope": "seven integration targets only; excludes library units and whole-product qualification",
-  "expected_total": 29,
+  "scope": "eight integration targets only; excludes library units and whole-product qualification",
+  "expected_total": 33,
   "required_summary": {
     "failed": 0,
     "ignored": 0,
@@ -89,6 +89,17 @@
         "discovery_does_not_execute_candidates_or_promote_sdk_presence",
         "discovery_retains_missing_paths_without_setting_pyo3",
         "doctor_rejects_arbitrary_probe_arguments"
+      ]
+    },
+    {
+      "kind": "test",
+      "name": "evidence_layout_cli",
+      "expected_count": 4,
+      "exact_test_names": [
+        "active_handle_emits_refused_metadata_with_exit_one",
+        "complete_claims_emit_proposal_without_touching_candidate_or_verifying_archives",
+        "oversized_or_missing_request_does_not_start_a_plan",
+        "unknown_json_fields_are_sanitized_and_exit_two"
       ]
     }
   ],

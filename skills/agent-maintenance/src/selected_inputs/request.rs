@@ -103,8 +103,10 @@ fn remaining_limits(bytes: u64, elapsed: Duration) -> Result<Limits, RequestErro
     })
 }
 
-pub fn observe_request_file(path: &Path) -> Result<CliReceipt, RequestError> {
-    let mut clock = SystemClock::default();
+pub(crate) fn capture_request_file(
+    path: &Path,
+    clock: &mut SystemClock,
+) -> Result<(Vec<u8>, ContentRead), RequestError> {
     if path
         .to_str()
         .is_none_or(|s| s.len() > 4096 || s.chars().any(char::is_control))
@@ -147,7 +149,7 @@ pub fn observe_request_file(path: &Path) -> Result<CliReceipt, RequestError> {
         ..Limits::default()
     })
     .map_err(RequestError::Selection)?;
-    let request_read = request_budget.read(&mut captured, &mut clock);
+    let request_read = request_budget.read(&mut captured, clock);
     if !request_read.complete() {
         return Err(RequestError::IncompleteRead(request_read.status));
     }
@@ -166,7 +168,13 @@ pub fn observe_request_file(path: &Path) -> Result<CliReceipt, RequestError> {
     {
         return Err(RequestError::Changed);
     }
-    let selection = decode_request(&captured.bytes)?;
+    Ok((captured.bytes, request_read))
+}
+
+pub fn observe_request_file(path: &Path) -> Result<CliReceipt, RequestError> {
+    let mut clock = SystemClock::default();
+    let (bytes, request_read) = capture_request_file(path, &mut clock)?;
+    let selection = decode_request(&bytes)?;
     let limits = remaining_limits(request_read.actual_read_bytes, clock.elapsed())?;
     let observation = files::observe_with_clock(&selection, limits, &mut clock)
         .map_err(RequestError::Selection)?;

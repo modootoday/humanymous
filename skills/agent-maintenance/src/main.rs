@@ -7,6 +7,12 @@ use std::{env, path::Path, process::ExitCode};
 
 fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
     match args.first().map(String::as_str) {
+        Some("evidence-layout-plan") if args.len() == 2 => {
+            let receipt = humanymous_agent_maintenance::evidence_layout::inspect_request_file(Path::new(&args[1]))?;
+            let complete = receipt.command_budget_complete && receipt.plan.structurally_valid;
+            println!("{}", serde_json::to_string_pretty(&receipt)?);
+            Ok(complete)
+        }
         Some("windows-doctor") if args.len() == 1 || (args.len() == 2 && args[1] == "--probe") => {
             println!("{}", serde_json::to_string_pretty(&humanymous_agent_maintenance::windows_doctor::inspect(args.len() == 2))?);
             Ok(true)
@@ -109,7 +115,7 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
             &args[4],
         ),
         _ => Err(
-            "usage: agent-maintenance windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check SOURCE PRESERVATION_JSON | check ROOT | routing ROOT | skill-check ROOT | lane-check ROOT | thread-check ROOT | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
+            "usage: agent-maintenance evidence-layout-plan REQUEST_JSON | windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check SOURCE PRESERVATION_JSON | check ROOT | routing ROOT | skill-check ROOT | thread-check ROOT | lane-check ROOT | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
                 .into(),
         ),
     }
