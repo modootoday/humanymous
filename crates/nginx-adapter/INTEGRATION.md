@@ -37,3 +37,14 @@ assertions are authored; native build/Clippy/runtime NOT_RUN under resource hold
 The35-group result belongs to16c18f3 status/no-origin behavior. Future Docker
 compilation defaults CARGO_BUILD_JOBS=1. Root must allocate the one heavy slot or
 remote runner before execution; no cloud is provisioned by this checkpoint.
+
+Current unqualified extension: pilot-contract.json fixes35 required scenario IDs,
+report0.2 and source-bound Compose env/argv. CI and product-lab consume that
+contract separately from product readiness. A package feature builds the Rust
+provenance writer without native symbol linkage; Docker preserves native .so
+before building pilot/package. Manifest0.1 binds actual module/engine/lock and
+engine configure/source/SDK/toolchain tuple. It remains unsigned and unqualified
+until independent actual hosted load receipt. Pilot compares exact manifest
+inputs before success output. JSON keepalive repetitions and these new pure
+tests/report/package builds are NOT_RUN; source16c18f3 receipts do not cover them.
+The owner holds adapter-nginx; Apache and Compose lifecycle remain other owners.

@@ -30,12 +30,18 @@ RUN --mount=type=cache,id=nginx-native-target,target=/src/target install -D /src
 RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo clippy --locked -p humanymous-nginx-adapter --features pilot --bin humanymous-nginx-pilot -- -D warnings
 RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo build --locked --release -p humanymous-authority --bin humanymous-authority
 RUN --mount=type=cache,id=nginx-native-target,target=/src/target install -D /src/target/release/humanymous-authority /out/humanymous-authority
+RUN install -D /src/Cargo.lock /out/Cargo.lock
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo build --locked --release -p humanymous-nginx-adapter --features package --bin humanymous-nginx-package
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo clippy --locked -p humanymous-nginx-adapter --features package --bin humanymous-nginx-package -- -D warnings
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target /src/target/release/humanymous-nginx-package /out/libhumanymous_nginx_adapter.so /opt/nginx/sbin/nginx /out/Cargo.lock /out/package-manifest.json
 
 FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS lab
 COPY --from=build /opt/nginx /opt/nginx
 COPY --from=build /out/libhumanymous_nginx_adapter.so /opt/nginx/modules/libhumanymous_nginx_adapter.so
 COPY --from=build /out/humanymous-nginx-pilot /opt/pilot
 COPY --from=build /out/humanymous-authority /opt/authority
+COPY --from=build /out/Cargo.lock /opt/nginx/source-Cargo.lock
+COPY --from=build /out/package-manifest.json /opt/nginx/modules/package-manifest.json
 USER 65532:65532
 ENV HUMANYMOUS_NGINX_OWNED_DOCKER=1
 ENTRYPOINT ["/opt/pilot"]

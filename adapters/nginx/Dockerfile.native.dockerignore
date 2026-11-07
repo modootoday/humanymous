@@ -10,5 +10,6 @@
 !test/lab/runtime/**
 !adapters/nginx/Dockerfile.native
 !adapters/nginx/Dockerfile.native.dockerignore
+!adapters/nginx/pilot-contract.json
 **/target/**
 **/.build-cache/**

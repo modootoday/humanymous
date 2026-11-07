@@ -160,7 +160,11 @@ pub fn request(
     )?;
     stream.write_all(body)?;
     let mut reader = BufReader::new(stream);
-    let head = head(&mut reader)?;
+    read_response(&mut reader, method)
+}
+
+pub fn read_response<R: BufRead>(reader: &mut R, method: &str) -> io::Result<Response> {
+    let head = head(reader)?;
     let status = head
         .split_whitespace()
         .nth(1)
@@ -185,6 +189,11 @@ pub fn request(
                 reader.read_line(&mut line)?;
                 let n = usize::from_str_radix(line.trim(), 16).map_err(io::Error::other)?;
                 if n == 0 {
+                    let mut end = [0; 2];
+                    reader.read_exact(&mut end)?;
+                    if end != *b"\r\n" {
+                        return Err(io::Error::other("unsupported response trailers"));
+                    }
                     break;
                 }
                 if body.len() + n > 2_000_000 {

@@ -22,3 +22,9 @@ sustained load/long-stream backpressure and full product qualification.
 Legacy mock protocol/source/request remains in legacy-njs for provenance only.
 Never rename it to Node to obtain authorization. No Cargo/npm/shared contract
 files are modified by this adapter owner.
+
+The current report/package/JSON keepalive extension is source-only, NOT_RUN.
+Use pilot-contract.json as the typed CI/lab command and scenario inventory;
+source/manifest/image variables are required. Package manifest metadata never
+counts as a signed release or native load qualification. The saved native .so,
+actual engine and lock must match before the component emits success.

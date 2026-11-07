@@ -68,6 +68,10 @@ fn start_production(startup: &serde_json::Value) -> Result<(Process, serde_json:
 }
 
 pub fn run() -> Result<(), Error> {
+    humanymous_nginx_adapter::report::source_identity(
+        option_env!("HUMANYMOUS_SOURCE_REV").unwrap_or(""),
+        option_env!("HUMANYMOUS_SOURCE_MANIFEST").unwrap_or(""),
+    )?;
     ensure(
         std::env::var("HUMANYMOUS_NGINX_OWNED_DOCKER").as_deref() == Ok("1"),
         "explicit owned Docker marker required",
@@ -244,6 +248,29 @@ http {{
             ensure(
                 json["error"] == "challenge_unavailable",
                 "challenge JSON body",
+            )?;
+            // Each keepalive request needs a fresh context/nonce/audit, not a
+            // cached result or a response whose pool timer was never finalized.
+            let decisions = service.durable.load(Ordering::Acquire);
+            let persistent = TcpStream::connect(("127.0.0.1", port))?;
+            persistent.set_read_timeout(Some(Duration::from_secs(4)))?;
+            let mut reader = BufReader::new(persistent);
+            for _ in 0..4 {
+                reader.get_mut().write_all(b"GET /challenge HTTP/1.1\r\nHost: example.test\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n")?;
+                let reply = origin::read_response(&mut reader, "GET")?;
+                let json: serde_json::Value = serde_json::from_slice(&reply.body)?;
+                ensure(
+                    reply.status == 409 && json["error"] == "challenge_unavailable",
+                    "persistent challenge reply",
+                )?;
+            }
+            ensure(
+                service.durable.load(Ordering::Acquire) == decisions + 4,
+                "persistent request reused decision",
+            )?;
+            ensure(
+                origin.count() == before,
+                "persistent challenge reached origin",
             )?;
         }
         if ![
@@ -710,13 +737,40 @@ http {{
     let version = Command::new("/opt/nginx/sbin/nginx").arg("-V").output()?;
     use sha2::Digest;
     let artifact = std::fs::read("/opt/nginx/modules/libhumanymous_nginx_adapter.so")?;
+    let engine = std::fs::read("/opt/nginx/sbin/nginx")?;
+    let lock = std::fs::read("/opt/nginx/source-Cargo.lock")?;
+    let package_bytes = std::fs::read("/opt/nginx/modules/package-manifest.json")?;
+    let package = humanymous_nginx_adapter::package::Manifest::parse(&package_bytes)?;
+    let module_identity = humanymous_nginx_adapter::package::artifact(
+        std::path::Path::new("/opt/nginx/modules/libhumanymous_nginx_adapter.so"),
+        64 * 1024 * 1024,
+    )?;
+    let engine_identity = humanymous_nginx_adapter::package::artifact(
+        std::path::Path::new("/opt/nginx/sbin/nginx"),
+        64 * 1024 * 1024,
+    )?;
+    package.matches(
+        &module_identity,
+        &engine_identity,
+        &hex::encode(sha2::Sha256::digest(&lock)),
+    )?;
+    ensure(
+        package.source_revision == option_env!("HUMANYMOUS_SOURCE_REV").unwrap_or("")
+            && package.source_manifest == option_env!("HUMANYMOUS_SOURCE_MANIFEST").unwrap_or("")
+            && package.engine_build.as_bytes() == version.stderr,
+        "package build binding",
+    )?;
+    let groups = humanymous_nginx_adapter::report::completed_groups(&mut cases)?;
     println!(
         "{}",
-        serde_json::json!({"qualification":"component nginx+actual authority library; trusted synthetic ALLOW fixture",
+        serde_json::json!({"schema":humanymous_nginx_adapter::report::SCHEMA,"status":"passed",
+        "qualification":"component nginx+actual authority library; trusted synthetic ALLOW fixture",
         "source_revision":option_env!("HUMANYMOUS_SOURCE_REV"),"source_manifest":option_env!("HUMANYMOUS_SOURCE_MANIFEST"),
         "nginx":String::from_utf8_lossy(&version.stderr),"module_sha256":hex::encode(sha2::Sha256::digest(artifact)),
+        "engine_sha256":hex::encode(sha2::Sha256::digest(engine)),"cargo_lock_sha256":hex::encode(sha2::Sha256::digest(lock)),
+        "package_manifest_sha256":hex::encode(sha2::Sha256::digest(package_bytes)),"signed_release":false,
         "uid":rustix::process::geteuid().as_raw(),"production_profile_status":production_status,
-        "cases":cases,"passed":cases.len(),"failed":0,"ignored":0,"full_product_qualified":false,
+        "cases":cases,"group_count":groups,"passed":groups,"failed":0,"ignored":0,"not_run":0,"full_product_qualified":false,
         "unsupported":["original TLS/H2/H3","streaming upload/upgrade/gRPC","collector/browser recovery/human/AT","non-Linux ABI"],
         "remaining":["independent witness","cross-user runtime matrix","load/backpressure and independent rollback-anchor qualification"]})
     );

@@ -184,3 +184,43 @@ observes results; this owner launches no duplicate workflow or local native run.
 The common impact classifier is not implemented, so no required gate is skipped
 by nginx path advice. Free branch profile has no cache writes/artifact uploads;
 JSON/native and canonical-authority runtime stay NOT_RUN until real results.
+
+## Active goal continuation
+
+The user explicitly requested a goal. No unfinished goal existed; create_goal
+created an active objective to finish the real native plugin request/response/
+CHALLENGE/cancel/timer/service/packaging, with owned implementation, hosted
+qualification, strict accounting, Specfold receipts and attributed commits.
+The stable chat title is Humanymous · 어댑터 · nginx. No completion status is
+inferred from earlier checkpoints. No owned process/container was live at start.
+
+Next concrete slices: verify/fix5ef JSON finalization through the actual hosted
+.so/authority pilot; make the package's ABI inputs/file hashes explicit; add
+response-stream cancellation/backpressure and repeated challenge cleanup cases.
+CI owner owns workflow wiring, lab owner owns required component accounting;
+both have been asked to invoke the existing native-pilot seam. Root owns source
+closure/push/dispatch. No duplicate remote or local runtime execution.
+
+The package manifest is bounded provenance, not proof of ABI compatibility or a
+signature. It must preserve the separate native/pilot feature graphs and record
+exact Rust/target/nginx/configure/SDK/source/module/engine identities, with an
+actual hosted load receipt as a distinct gate. No credentials, body or admin
+configuration may enter the package. Packaging is local artifact construction
+inside hosted verification, not deployment/publish authorization.
+
+## Required component and unsigned package checkpoint
+
+Added pilot-contract.json, report0.2 exact35 unique IDs and fail-closed source
+binding. CI/lab owners consume the typed fixture rather than guess invocation.
+Added pure contract/provenance tests and a separate Rust package writer; Docker
+saves native .so before other feature graphs and creates the unsigned manifest.
+Pilot compares module/engine/lock bytes and exact source/engine build identity.
+Challenge group now includes four JSON responses on one keepalive connection,
+fresh authority audit records and zero origin effects. All extensions are NOT_RUN
+pending allocated unit slot and hosted actual execution. rustfmt/diff checks only
+have run. No local process/IPC/Docker validation, publish or dispatch performed.
+
+Lane moved from pass to adapter-nginx under root direction. Apache native module
+and MPM lifecycle belong to Apache owner; this owner records common provenance/
+authority vocabulary without duplicating server lifecycle or shared security core.
+Compose belongs to product-lab, workflows to CI, source freeze/dispatch to root.

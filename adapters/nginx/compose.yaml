@@ -1,10 +1,13 @@
 services:
   native-pilot:
-    image: humanymous-nginx-native:local
+    image: ${HUMANYMOUS_NGINX_IMAGE:?source-bound local image tag required}
     build:
       context: ../..
       dockerfile: adapters/nginx/Dockerfile.native
       target: lab
+      args:
+        HUMANYMOUS_SOURCE_REV: ${HUMANYMOUS_SOURCE_REV:?exact checkout SHA required}
+        HUMANYMOUS_SOURCE_MANIFEST: ${HUMANYMOUS_SOURCE_MANIFEST:?frozen source manifest SHA256 required}
     network_mode: none
     user: "65532:65532"
     read_only: true

@@ -26,14 +26,19 @@ public origin path, `proxy_next_upstream off`, `proxy_cache off`,
 The Rust Docker fixture writes an exact isolated configuration for these gates.
 Operator-controlled nginx configuration remains a trusted integration boundary.
 
-The root27-member locked snapshot passes7unit tests, native/pilot strict Clippy
-and35actual Compose groups. Reproduce the component qualification with:
+Historical source16c18f3's root27-member locked snapshot passed7unit tests,
+native/pilot strict Clippy and35actual Compose groups. The subsequent JSON timer,
+strict report and packaging changes remain unqualified until the hosted run.
+The CI owner supplies HUMANYMOUS_SOURCE_REV (checkout commit),
+HUMANYMOUS_SOURCE_MANIFEST (frozen source-manifest SHA256), and
+HUMANYMOUS_NGINX_IMAGE (source-bound local image tag). Missing values fail closed.
+The required component's fixed command interface is pilot-contract.json:
 
 ```
 cargo test --locked -p humanymous-nginx-adapter --lib
 docker compose -p humanymous-nginx-native -f adapters/nginx/compose.yaml build
 docker compose -p humanymous-nginx-native -f adapters/nginx/compose.yaml run --rm native-pilot
-docker compose -p humanymous-nginx-native -f adapters/nginx/compose.yaml down
+docker compose -p humanymous-nginx-native -f adapters/nginx/compose.yaml down --remove-orphans
 ```
 
 The Docker runner is Rust, runs non-root/network-none/read-only, and contacts
@@ -41,6 +46,19 @@ only its own origin and Unix authority. Positive ALLOW tests use test-only froze
 synthetic evidence through the actual authority/library and real audit WAL;
 production ApplicationHttp results are separate. Neither is full browser/human/
 AT/product qualification. Shared peer/replay/audit checks are not cloned.
+
+Run these process/IPC/ABI checks on the standard hosted runner under the shared
+delivery policy. A successful report requires all35 unique scenario IDs, exact
+source/lock identities, exit0 and no failed/ignored/not-run groups. Counts denote
+scenario groups, not Rust harness tests. Challenge now includes JSON and four
+requests on one keepalive connection; that extension is still NOT_RUN.
+
+The image carries package-manifest.json with bounded module/engine hashes,
+Cargo.lock SHA256 and exact toolchain/target/nginx/configure/SDK/source inputs.
+The Rust writer uses a separate package feature graph after saving the native
+module. The pilot compares actual bytes and engine build identity. This is
+unsigned build provenance; abi_load_qualified and signed_release remain false.
+The actual hosted module-load receipt is separate from package metadata.
 
 `legacy-njs/` preserves the prior b1e10ae handwritten njs/Python mock pilot without
 new foreign-source edits. Its old24unit/28Docker result is historical, cannot

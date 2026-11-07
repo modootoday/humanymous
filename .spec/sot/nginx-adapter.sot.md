@@ -95,6 +95,35 @@ deadline prevents trickle extension; no cross-thread nginx pointer; native ABI
 and fixture vs production evidence remain separate. Unsupported streaming upload,
 H2/H3/TLS capture, browser recovery, AT and non-Linux module tuples remain open.
 
+## Native server module and hosted component boundary
+
+nginx worker/request pools and Apache connection/request pools and MPM workers
+have different ownership rules. This owner implements only nginx lifecycle;
+Apache owns its corresponding native boundary. Share integrity profile parsing,
+authority decision binding and capability vocabulary, not native pointers or
+worker lifecycle machinery. No server-owned pointer crosses a worker thread.
+Connection identifiers and normalized server headers cannot establish original
+TLS/H2 provenance. Raw application HTTP projection and normalized projection
+must remain explicit; missing required capture signals fail closed in authority.
+
+Product-lab owns Docker Compose integration; CI owns workflow invocation and
+strict aggregation. adapters/nginx/pilot-contract.json defines the fixed owned
+Compose interface and exact35 scenario IDs for report humanymous.nginx.pilot/0.2.
+Only exit0 plus exactly one source-bound complete success report qualifies this
+component. Unknown/missing/duplicate groups, nonzero failed/ignored/not_run,
+unbound revision/manifest/lock or changed image identity cannot count as passed.
+Full product qualification remains false. No duplicate host/lab implementation.
+
+The package schema humanymous.nginx.package/0.1 binds exact module and engine
+bytes/lengths, actual engine -V configure identity, Cargo.lock, pinned Rust1.99.1,
+x86_64-unknown-linux-gnu, nginx1.30.6 and SDK revision plus frozen source closure.
+The writer uses a separate package feature build after the native .so is saved.
+It accepts bounded regular files in trusted hosted build directories and creates
+a new manifest without overwrite. It is not a secure installer or signature.
+abi_load_qualified and signed_release must remain false in metadata; actual
+hosted load/runtime evidence is an independent gate. No credentials or body data
+enter provenance. Current report/package/keepalive extensions are NOT_RUN.
+
 ## Current execution and handoff
 
 Node actually acquired pass first despite planned nginx-first ordering. nginx

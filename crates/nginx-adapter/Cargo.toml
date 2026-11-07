@@ -15,6 +15,7 @@ default = []
 native = ["dep:ngx"]
 export-modules = ["native"]
 pilot = ["dep:humanymous-audit", "dep:humanymous-signals"]
+package = []
 
 [dependencies]
 humanymous-integrity = { path = "../integrity" }
@@ -38,6 +39,11 @@ rustix = { version = "1.1", features = ["fs", "process"] }
 name = "humanymous-nginx-pilot"
 path = "src/bin/pilot.rs"
 required-features = ["pilot"]
+
+[[bin]]
+name = "humanymous-nginx-package"
+path = "src/bin/package.rs"
+required-features = ["package"]
 
 [lints.rust]
 unsafe_code = "deny"
