@@ -245,6 +245,15 @@ unit inventories, while regrouping tests changes harness identity. Require exact
 discovery and all semantic/process obligations under the reviewed new profile,
 without silently filtering unknown cases or transferring old test counts.
 
+tools-callers-profiles.json complements the resource map with all13 manifests'
+dependency/feature declarations,15 existing binary source candidates,379 lexical
+package/crate/manifest caller references, source-root and self-executable anchors,
+and the exact two current unsafe allow locations. Attacker has both report and
+wargame-verify binaries in addition to its main actor:13 responsibilities does not
+mean13 executables. These are source candidates/references, not observed Cargo
+targets or semantic unsafe-operation review. Root must bind the final explicit
+binary/feature/test matrix, production transitive graph and release inventory.
+
 # Critique and readiness
 
 The design is accepted; implementation remains needs-work until the atomic freeze,
