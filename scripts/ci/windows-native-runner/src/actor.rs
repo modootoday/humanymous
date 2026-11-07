@@ -46,100 +46,159 @@ impl Drop for Handle {
         }
     }
 }
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum AccountState {
+    Uncreated,
+    Present,
+    Deleted,
+}
 struct Account {
     name: Vec<u16>,
-    deleted: bool,
+    state: AccountState,
+    delete_on_drop: bool,
 }
 impl Account {
     fn delete(&mut self) -> io::Result<()> {
-        if !self.deleted {
+        if self.state == AccountState::Present {
             let result = unsafe { NetUserDel(null(), self.name.as_ptr()) };
             if result != 0 {
                 return Err(error("account deletion", result));
             }
-            self.deleted = true;
+            self.state = AccountState::Deleted;
         }
         Ok(())
     }
 }
 impl Drop for Account {
     fn drop(&mut self) {
-        let _ = self.delete();
+        if self.delete_on_drop {
+            let _ = self.delete();
+        }
     }
 }
-fn account(name: &str, password: &[u16]) -> io::Result<Account> {
-    let mut name = wide(name);
-    let mut info: USER_INFO_1 = unsafe { zeroed() };
-    info.usri1_name = name.as_mut_ptr();
-    info.usri1_password = password.as_ptr().cast_mut();
-    info.usri1_priv = USER_PRIV_USER;
-    info.usri1_flags = UF_SCRIPT | UF_NORMAL_ACCOUNT | UF_PASSWD_CANT_CHANGE;
-    let result = unsafe { NetUserAdd(null(), 1, (&info as *const USER_INFO_1).cast(), null_mut()) };
-    if result != 0 {
-        return Err(error("account creation", result));
-    }
-    let account = Account {
-        name,
-        deleted: false,
-    };
-    let users: windows_permissions::LocalBox<windows_permissions::Sid> = "S-1-5-32-545".parse()?;
-    let (group, _) = windows_permissions::wrappers::LookupAccountSid(&users)?;
-    let group = wide(group);
-    let member = LOCALGROUP_MEMBERS_INFO_3 {
-        lgrmi3_domainandname: account.name.as_ptr().cast_mut(),
-    };
-    let status = unsafe {
-        NetLocalGroupAddMembers(
-            null(),
-            group.as_ptr(),
-            3,
-            (&member as *const LOCALGROUP_MEMBERS_INFO_3).cast(),
-            1,
-        )
-    };
-    if status != 0 && status != 1378 {
-        return Err(error("Users membership", status));
-    }
-    let mut buffer = null_mut();
-    let mut count = 0;
-    let mut total = 0;
-    let result = unsafe {
-        NetUserGetLocalGroups(
-            null(),
-            account.name.as_ptr(),
-            0,
-            LG_INCLUDE_INDIRECT,
-            &mut buffer,
-            MAX_PREFERRED_LENGTH,
-            &mut count,
-            &mut total,
-        )
-    };
-    if result != 0 {
-        return Err(error("local group enumeration", result));
-    }
-    // OS-returned array has count entries and is freed only after all borrows.
-    let valid = if count == 1 && !buffer.is_null() {
-        let entry = unsafe { &*buffer.cast::<LOCALGROUP_USERS_INFO_0>() };
-        let mut len = 0;
-        while len < 256 && unsafe { *entry.lgrui0_name.add(len) } != 0 {
-            len += 1;
+/// Unique account/password owner prepared before the first native mutation.
+/// No Debug/Serialize and no mutable resource getter. New retained callers must
+/// keep OwnedFailure; legacy adapter below deliberately preserves old teardown.
+struct OwnedActor {
+    account: Account,
+    password: Zeroizing<Vec<u16>>,
+}
+struct OwnedFailure {
+    owner: OwnedActor,
+    error: io::Error,
+}
+impl OwnedActor {
+    // Private policy is selected by the native adapter, never an input DTO fact.
+    fn prepare(name: &str, password: Zeroizing<Vec<u16>>, delete_on_drop: bool) -> Self {
+        Self {
+            account: Account {
+                name: wide(name),
+                state: AccountState::Uncreated,
+                delete_on_drop,
+            },
+            password,
         }
-        len < 256
-            && unsafe { std::slice::from_raw_parts(entry.lgrui0_name, len) }
-                == &group[..group.len() - 1]
-    } else {
-        false
-    };
-    unsafe {
-        NetApiBufferFree(buffer.cast());
     }
-    if !valid {
-        return Err(io::Error::other(
-            "account local groups must be exactly Users",
-        ));
+    fn provision(mut self) -> Result<Self, OwnedFailure> {
+        if let Err(error) = self.provision_account() {
+            return Err(OwnedFailure { owner: self, error });
+        }
+        Ok(self)
     }
-    Ok(account)
+    fn delete_legacy_account(&mut self) -> io::Result<()> {
+        if !self.account.delete_on_drop {
+            return Err(io::Error::other(
+                "retained account requires native cleanup proofs",
+            ));
+        }
+        self.account.delete()
+    }
+    fn provision_account(&mut self) -> io::Result<()> {
+        let account = &mut self.account;
+        let password = &self.password;
+        let mut info: USER_INFO_1 = unsafe { zeroed() };
+        info.usri1_name = account.name.as_mut_ptr();
+        info.usri1_password = password.as_ptr().cast_mut();
+        info.usri1_priv = USER_PRIV_USER;
+        info.usri1_flags = UF_SCRIPT | UF_NORMAL_ACCOUNT | UF_PASSWD_CANT_CHANGE;
+        let result =
+            unsafe { NetUserAdd(null(), 1, (&info as *const USER_INFO_1).cast(), null_mut()) };
+        if result != 0 {
+            return Err(error("account creation", result));
+        }
+        account.state = AccountState::Present;
+        let users: windows_permissions::LocalBox<windows_permissions::Sid> =
+            "S-1-5-32-545".parse()?;
+        let (group, _) = windows_permissions::wrappers::LookupAccountSid(&users)?;
+        let group = wide(group);
+        let member = LOCALGROUP_MEMBERS_INFO_3 {
+            lgrmi3_domainandname: account.name.as_ptr().cast_mut(),
+        };
+        let status = unsafe {
+            NetLocalGroupAddMembers(
+                null(),
+                group.as_ptr(),
+                3,
+                (&member as *const LOCALGROUP_MEMBERS_INFO_3).cast(),
+                1,
+            )
+        };
+        if status != 0 && status != 1378 {
+            return Err(error("Users membership", status));
+        }
+        let mut buffer = null_mut();
+        let mut count = 0;
+        let mut total = 0;
+        let result = unsafe {
+            NetUserGetLocalGroups(
+                null(),
+                account.name.as_ptr(),
+                0,
+                LG_INCLUDE_INDIRECT,
+                &mut buffer,
+                MAX_PREFERRED_LENGTH,
+                &mut count,
+                &mut total,
+            )
+        };
+        if result != 0 {
+            return Err(error("local group enumeration", result));
+        }
+        // OS-returned array has count entries and is freed only after all borrows.
+        let valid = if count == 1 && !buffer.is_null() {
+            let entry = unsafe { &*buffer.cast::<LOCALGROUP_USERS_INFO_0>() };
+            let mut len = 0;
+            while len < 256 && unsafe { *entry.lgrui0_name.add(len) } != 0 {
+                len += 1;
+            }
+            len < 256
+                && unsafe { std::slice::from_raw_parts(entry.lgrui0_name, len) }
+                    == &group[..group.len() - 1]
+        } else {
+            false
+        };
+        unsafe {
+            NetApiBufferFree(buffer.cast());
+        }
+        if !valid {
+            return Err(io::Error::other(
+                "account local groups must be exactly Users",
+            ));
+        }
+        Ok(())
+    }
+}
+fn account(name: &str, password: Zeroizing<Vec<u16>>) -> io::Result<OwnedActor> {
+    // Legacy mode intentionally keeps its existing delete-on-Drop behavior.
+    // A prebuilt adapter must select retention before provisioning and must not
+    // use this lossy legacy conversion for post-mutation failures.
+    OwnedActor::prepare(name, password, true)
+        .provision()
+        .map_err(|failure| {
+            let OwnedFailure { owner, error } = failure;
+            drop(owner);
+            error
+        })
 }
 fn acl(path: &Path, sid: &str, owner: &str) -> io::Result<()> {
     use windows_permissions::{
@@ -333,7 +392,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         }
     }
     let password = Zeroizing::new(wide(secret.as_str()));
-    let mut account = account(&name, &password)?;
+    let mut account = account(&name, password)?;
     let (sid, _, _) =
         windows_permissions::wrappers::LookupAccountName(Option::<&OsStr>::None, &name)?;
     let sid = sid.to_string();
@@ -422,7 +481,13 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
             Err(io::Error::other("injected failure after SCM grant"))
         } else {
             child_launch_attempted = true;
-            launch(&account, &password, &arguments, &environment, &workspace)
+            launch(
+                &account.account,
+                &account.password,
+                &arguments,
+                &environment,
+                &workspace,
+            )
         };
         job_empty_observed = launched.as_ref().ok().map(|(_, active)| *active == 0);
         let recovery = (|| -> io::Result<()> {
@@ -477,7 +542,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         Ok(code)
     })();
     // Closing the job above killed descendants before account deletion/cleanup.
-    let deletion = account.delete();
+    let deletion = account.delete_legacy_account();
     let cleanup = if scratch.parent() == Some(base.as_path())
         && scratch.file_name() == Some(OsStr::new(&name))
     {

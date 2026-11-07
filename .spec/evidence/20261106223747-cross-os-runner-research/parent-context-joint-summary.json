@@ -1,0 +1,109 @@
+{
+  "schema": "humanymous.parent-context-joint-validation/1",
+  "status": "passed-narrow-component",
+  "base_sha": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697",
+  "owned_overlays_sha256": {
+    "crates/test-support/src/lib.rs": "c452fc623e9ab67d11745d6b3866c49283957796347f7173cf27365d4b795bac",
+    "crates/test-support/src/parent_context.rs": "4629133c9666faaf73bad2cc8accfeb150f07fca690025a63314be0a7236d6aa",
+    "crates/test-support/src/parent_context/tests.rs": "fa436a2a5c77d1bbbc4a363e2d1cdb4146dadd680fef0766c359e15cd6dc6608",
+    "scripts/ci/windows-native-runner/src/main.rs": "26149b4f77a03ab75539902d63929e560b1830dc49ad4be3d5e07b503887825a",
+    "scripts/ci/windows-native-runner/src/actor.rs": "1bc82e2be6bee7a5b322dd63b6d47beb7d0a9e6e4d681aee452e3e0ecf97bd1a",
+    "scripts/ci/windows-native-runner/src/actor/prebuilt.rs": "bc21396fbfec0c1f04c0bc88c23cb5bd13309935ad6060ded8784610a09e36d9",
+    "scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03"
+  },
+  "source_files": 2417,
+  "registry_packages": 32,
+  "registry_files": 2079,
+  "source_registry_config_flag_drift": 0,
+  "venue": "native Windows immutable base plus seven owned overlays",
+  "admission": {
+    "free_gib": 31.3,
+    "commit_percent": 81
+  },
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "tests": [
+    {
+      "selector": "humanymous-test-support parent_context::tests",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 23
+    },
+    {
+      "selector": "native-runner prebuilt::tests",
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 30
+    }
+  ],
+  "all_target_check": {
+    "shared": "passed",
+    "runner": "passed"
+  },
+  "strict_clippy": {
+    "shared": "passed with -D warnings",
+    "runner": "passed with -D warnings"
+  },
+  "native_account_or_job_execution": false,
+  "os_launch_wired": false,
+  "native_cleanup_qualified": false,
+  "source_scope": "full immutable snapshot file path/bytes plus resolved target-specific registry source files and observed Cargo configs/compiler flag fingerprints",
+  "complete_cache_key_proven": false,
+  "actual_compiler_version_not_retrieved": true,
+  "raw": {
+    "after.json": {
+      "sha256": "c28ba3dbe5bec382c710ee178965c0767add14e7ffcb4cd97afacca72b872faf",
+      "bytes": 516603
+    },
+    "before.json": {
+      "sha256": "c28ba3dbe5bec382c710ee178965c0767add14e7ffcb4cd97afacca72b872faf",
+      "bytes": 516603
+    },
+    "overlays.json": {
+      "sha256": "b79284bb7b30ff6d858a813c6adf24ce5213c92d4d350976e767fbce634ee1ea",
+      "bytes": 842
+    },
+    "results.json": {
+      "sha256": "ae0f323f7fd35e8caf9968779b68be15860ac1040dad28c38dadf1fdaa0686b8",
+      "bytes": 331
+    },
+    "root-tree.log": {
+      "sha256": "a5ac20bfca9cf38a35fec02f6c84dd0d5466063b414552d0455893d7039e0cc8",
+      "bytes": 487
+    },
+    "runner-check.log": {
+      "sha256": "3cc96f2abb1e18bf3a2e62c40ca37e7739d0a8b37e6d6850c9cac4a913c6caea",
+      "bytes": 617
+    },
+    "runner-clippy.log": {
+      "sha256": "e28a27dc66d425623300185714706ba163583a7d3a352bd0af68b2efc7099208",
+      "bytes": 261
+    },
+    "runner-tests.log": {
+      "sha256": "1e713b2d91c3a7fe904907fc8e8db9b44ebdbd52107c48256e155404eeca2650",
+      "bytes": 1520
+    },
+    "runner-tree.log": {
+      "sha256": "fbb823e6a03a44c95e4dd1b547e1f32945642b475a7e5fbc2b2fdebc0ef3ed97",
+      "bytes": 1473
+    },
+    "shared-check.log": {
+      "sha256": "d9913a94d48ea165745caaa0e7390f4c9341c164d001ab66b03e22924703496f",
+      "bytes": 247
+    },
+    "shared-clippy.log": {
+      "sha256": "4f6395916b7c300ccdfb84adcf92cf48b3c65614649b349ef1c3c32cce6e78cb",
+      "bytes": 247
+    },
+    "shared-tests.log": {
+      "sha256": "d55da67b260da010adba7e7000f6ad7e174d410b3ae9f729687402708af03db7",
+      "bytes": 878
+    }
+  },
+  "private_directory": ".spec.local/root/evidence/20261107123200-windows-runner-parent-context-joint"
+}

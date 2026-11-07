@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: parent-context-joint-summary.json, sha256: 50e986abdcfa8255177a8dbbab107fbf51f01e89c8ebe3316f8a3b82b03ecd10, bytes: 4005, store: repo}
   - {path: dotnet-prebuilt-pure-summary.json, sha256: 5e92ee2cfc0a849a70f1ffe9c8b90cf3b042973484f21db1de92516cda15cc33, bytes: 2965, store: repo}
   - {path: linux-tree-bd62cc3c-summary.json, sha256: e2aec195de03cc7950eb9742acdadb20e060b628565d5c00dbfbb956c050a3b2, bytes: 4218, store: repo}
   - {path: owned-tree-pure-summary.json, sha256: ee7c880877daabfa6e3b33073ff17d91f6b64928ce06076bec9cc9454686c143, bytes: 1876, store: repo}
@@ -81,3 +82,14 @@ account, Job, profile, staging or Kestrel operation ran. Original cleanup-only
 budget boundaries180000/180001/239999/240000ms are covered; actual native parent
 watchdog/ownership remain mandatory. Wire mapping is not full transit/rollback
 proof. See dotnet-prebuilt-pure-summary.json for exact hashes, raw and scope.
+
+## Shared parent context plus retained account source validation
+
+Immutableb482d5be +seven owned overlays passes shared4 and runner7 pure tests,
+all-target check and strict Clippy for BOTH packages. Complete snapshot2417files,
+32registry packages/2079files, Cargo configuration and compiler flag fingerprints
+had zero before/after drift. Shared codec4629133c/fa436a2a is handed to .NET without
+changes. OwnedActor account-failure refactor compiles; no native account, Job,
+profile, staging, reader or Kestrel operation ran. Actual retained Job owner and
+new NoProfile/native proofs remain separate gates. Registered summary preserves
+exact overlays/raw hashes and incomplete cache/compiler-observation limits.

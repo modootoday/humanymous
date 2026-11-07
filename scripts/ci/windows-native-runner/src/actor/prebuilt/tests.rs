@@ -105,9 +105,12 @@ fn launch_context_has_fixed_arguments_and_no_ambient_environment() {
             "--test-threads=1"
         ]
     );
-    assert_eq!(launch.actor_sid, "S-1-5-21-1-2-3-1001");
-    assert_eq!(launch.provenance.harness["receipt_sha256"], "3".repeat(64));
-    assert!(launch.audit_root.ends_with("/audit"));
+    assert_eq!(launch.launch.actor_sid, "S-1-5-21-1-2-3-1001");
+    assert_eq!(
+        launch.launch.provenance.harness.receipt_sha256,
+        "3".repeat(64)
+    );
+    assert!(launch.launch.audit_root.ends_with("/audit"));
     let env = launch.environment();
     assert_eq!(env.len(), 11);
     assert!(
@@ -128,44 +131,23 @@ fn launch_context_has_fixed_arguments_and_no_ambient_environment() {
     }
 }
 #[test]
-fn original_budget_maps_once_without_per_profile_renewal_or_rollback() {
+fn shared_parent_context_is_unverified_and_one_mapping_is_retained() {
     let now = std::time::Instant::now();
     let good = context();
-    let budget = Budget::map(&good["budget"], 1200, now).unwrap();
-    assert_eq!(
-        budget.run_until.unwrap().duration_since(now).as_millis(),
-        179800
-    );
-    assert_eq!(budget.cleanup_until.duration_since(now).as_millis(), 239800);
-    let later = now + std::time::Duration::from_millis(800);
-    assert_eq!(
-        budget.run_until.unwrap().duration_since(later).as_millis(),
-        179000
-    );
-    for wall in [0, 1000, 181000, 241000, u64::MAX] {
-        assert!(Budget::map(&good["budget"], wall, now).is_err());
+    let launch = LaunchContext::parse(&serde_json::to_vec(&good).unwrap(), 1200, now).unwrap();
+    let original = launch.budget.run_deadline();
+    assert!(original.is_some());
+    assert!(launch.budget.cleanup_deadline() > original.unwrap());
+    assert_eq!(launch.budget.run_deadline(), original);
+    assert_eq!(launch.launch.provenance.managed.source_sha, "a".repeat(40));
+    assert_eq!(launch.launch.provenance.native.source_sha, "d".repeat(40));
+    let mut cleanup = good;
+    cleanup["schema"] = json!("humanymous.dotnet-prebuilt-cleanup/1");
+    for key in ["apphost", "app_root", "runtime_root", "audit_root"] {
+        cleanup.as_object_mut().unwrap().remove(key);
     }
-    let mut bad = good["budget"].clone();
-    bad["cleanup_expires_utc_ms"] = json!(241001);
-    assert!(Budget::map(&bad, 1200, now).is_err());
-    for elapsed in [180000_u64, 180001, 239999] {
-        let mut reserve = good["budget"].clone();
-        reserve["parent_elapsed_ms_at_dispatch"] = json!(elapsed);
-        let context = CleanupOnlyContext::map(&reserve, 1000 + elapsed, now).unwrap();
-        assert!(context.budget.run_until.is_none());
-        assert_eq!(
-            context.budget.cleanup_until.duration_since(now).as_millis(),
-            u128::from(240000 - elapsed)
-        );
-        assert!(Budget::map(&reserve, 1000 + elapsed, now).is_err());
-    }
-    let mut expired = good["budget"].clone();
-    expired["parent_elapsed_ms_at_dispatch"] = json!(240000);
-    assert!(CleanupOnlyContext::map(&expired, 241000, now).is_err());
-    let launch = parsed_launch(&good).unwrap();
-    assert!(launch.budget.cleanup_until > launch.budget.run_until.unwrap());
-    assert_eq!(launch.provenance.managed["source_sha"], "a".repeat(40));
-    assert_eq!(launch.provenance.native["source_sha"], "d".repeat(40));
+    assert!(parent_context::decode(&serde_json::to_vec(&cleanup).unwrap()).is_ok());
+    assert!(LaunchContext::parse(&serde_json::to_vec(&cleanup).unwrap(), 1200, now).is_err());
 }
 #[test]
 fn joint_input_has_named_lineage_fixed_roles_and_distinct_original_manifest() {
@@ -206,7 +188,7 @@ fn joint_input_has_named_lineage_fixed_roles_and_distinct_original_manifest() {
     assert_eq!(decoded.runtime.total_bytes, 336);
     assert_ne!(decoded.app_root, decoded.runtime_root);
     assert_eq!(decoded.runtime_manifest.bytes, runtime_bytes.len() as u64);
-    assert_eq!(decoded.provenance.harness["source_sha"], "1".repeat(40));
+    assert_eq!(decoded.provenance.harness.source_sha, "1".repeat(40));
     assert_ne!(runtime_digest, OBSERVATION_SHA256);
     for key in ["command", "environment", "run_seconds"] {
         let mut bad = good.clone();

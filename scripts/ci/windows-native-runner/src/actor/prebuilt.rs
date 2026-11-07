@@ -1,5 +1,11 @@
 //! Pure prebuilt contract only. No OS launch, file verification or cleanup proof.
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_test_support::{
+    json::decode_strict_json,
+    parent_context::{
+        self, UnverifiedLaunch, UnverifiedMappedBudget, UnverifiedParentContext,
+        UnverifiedProvenance,
+    },
+};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeSet, io};
@@ -287,7 +293,7 @@ fn parse_input(bytes: &[u8], pins: &InputPins<'_>) -> io::Result<ParsedInput> {
     {
         return Err(invalid());
     }
-    let provenance = Provenance::parse(&value["provenance"])?;
+    let provenance = parse_provenance(&value["provenance"])?;
     if !hex(pins.provenance, 64)
         || format!(
             "{:x}",
@@ -308,167 +314,43 @@ fn parse_input(bytes: &[u8], pins: &InputPins<'_>) -> io::Result<ParsedInput> {
     })
 }
 
-/// Named source lineages; metadata does not prove original build custody.
-struct Provenance {
-    managed: Value,
-    native: Value,
-    harness: Value,
+type Provenance = UnverifiedProvenance;
+fn parse_provenance(value: &Value) -> io::Result<Provenance> {
+    let result: Provenance = serde_json::from_value(value.clone()).map_err(|_| invalid())?;
+    result.validate_syntax().map_err(|_| invalid())?;
+    Ok(result)
 }
-impl Provenance {
-    fn parse(value: &Value) -> io::Result<Self> {
-        keys(value, &["managed", "native", "harness"])?;
-        for role in ["managed", "native", "harness"] {
-            let row = &value[role];
-            let fields = if role == "managed" {
-                ["source_sha", "required_source_sha", "receipt_sha256"]
-            } else {
-                ["source_sha", "cargo_lock_sha256", "receipt_sha256"]
-            };
-            keys(row, &fields)?;
-            for name in fields {
-                if !hex(
-                    text(&row[name])?,
-                    if name.ends_with("source_sha") { 40 } else { 64 },
-                ) {
-                    return Err(invalid());
-                }
-            }
-        }
-        Ok(Self {
-            managed: value["managed"].clone(),
-            native: value["native"].clone(),
-            harness: value["harness"].clone(),
-        })
-    }
-}
-
-/// One parent-created budget mapping; consumers borrow it, never renew it.
-struct Budget {
-    run_until: Option<std::time::Instant>,
-    cleanup_until: std::time::Instant,
-}
-/// Distinct trusted-parent context has no apphost, harness or workload launch API.
-struct CleanupOnlyContext {
-    budget: Budget,
-}
-impl CleanupOnlyContext {
-    fn map(value: &Value, wall_ms: u64, received: std::time::Instant) -> io::Result<Self> {
-        Ok(Self {
-            budget: Budget::map_phase(value, wall_ms, received, true)?,
-        })
-    }
-}
-impl Budget {
-    fn map(value: &Value, wall_ms: u64, received: std::time::Instant) -> io::Result<Self> {
-        Self::map_phase(value, wall_ms, received, false)
-    }
-    fn map_phase(
-        value: &Value,
-        wall_ms: u64,
-        received: std::time::Instant,
-        cleanup_only: bool,
-    ) -> io::Result<Self> {
-        keys(
-            value,
-            &[
-                "issued_utc_ms",
-                "run_expires_utc_ms",
-                "cleanup_expires_utc_ms",
-                "parent_elapsed_ms_at_dispatch",
-            ],
-        )?;
-        let number = |key| value[key].as_u64().ok_or_else(invalid);
-        let issued = number("issued_utc_ms")?;
-        let run = number("run_expires_utc_ms")?;
-        let cleanup = number("cleanup_expires_utc_ms")?;
-        let elapsed = number("parent_elapsed_ms_at_dispatch")?;
-        if run.checked_sub(issued) != Some(180000)
-            || cleanup.checked_sub(run) != Some(60000)
-            || elapsed >= 240000
-            || (!cleanup_only && elapsed >= 180000)
-            || wall_ms
-                .checked_sub(issued)
-                .is_none_or(|wall_elapsed| wall_elapsed < elapsed)
-        {
-            return Err(invalid());
-        }
-        let cleanup_remaining = cleanup
-            .checked_sub(wall_ms)
-            .ok_or_else(invalid)?
-            .min(240000 - elapsed);
-        if cleanup_remaining == 0 {
-            return Err(invalid());
-        }
-        let run_until = if cleanup_only {
-            None
-        } else {
-            let remaining = run
-                .checked_sub(wall_ms)
-                .ok_or_else(invalid)?
-                .min(180000 - elapsed);
-            if remaining == 0 {
-                return Err(invalid());
-            }
-            Some(
-                received
-                    .checked_add(std::time::Duration::from_millis(remaining))
-                    .ok_or_else(invalid)?,
-            )
-        };
-        Ok(Self {
-            run_until,
-            cleanup_until: received
-                .checked_add(std::time::Duration::from_millis(cleanup_remaining))
-                .ok_or_else(invalid)?,
-        })
-    }
-}
-
-/// Syntax-only parent-generated context. It is not the caller input DTO and
-/// cannot establish protected roots/token/handles. No native adapter uses it.
+/// Syntax-only runner path policy over the shared UNVERIFIED wire. No native
+/// artifact/token/Job authority or Ready capability is created here.
 struct LaunchContext {
-    apphost: String,
-    app_root: String,
-    system_root: String,
-    runtime_root: String,
-    private_work: String,
-    audit_root: String,
-    handoff_root: String,
-    actor_sid: String,
-    provenance: Provenance,
-    budget: Budget,
+    launch: UnverifiedLaunch,
+    budget: UnverifiedMappedBudget,
 }
 impl LaunchContext {
     fn parse(bytes: &[u8], wall_ms: u64, received: std::time::Instant) -> io::Result<Self> {
-        let value = decode_strict_json(bytes, INPUT_LIMIT).map_err(|_| invalid())?;
-        keys(
-            &value,
-            &[
-                "schema",
-                "apphost",
-                "app_root",
-                "system_root",
-                "runtime_root",
-                "private_work",
-                "audit_root",
-                "handoff_root",
-                "actor_sid",
-                "provenance",
-                "budget",
-            ],
-        )?;
-        if value["schema"] != "humanymous.dotnet-prebuilt-launch/1" {
+        let wire = parent_context::decode(bytes).map_err(|_| invalid())?;
+        let budget = wire.map_budget(wall_ms, received).map_err(|_| invalid())?;
+        let UnverifiedParentContext::Workload(launch) = wire else {
+            return Err(invalid());
+        };
+        if [
+            &launch.apphost,
+            &launch.app_root,
+            &launch.system_root,
+            &launch.runtime_root,
+            &launch.private_work,
+            &launch.audit_root,
+            &launch.handoff_root,
+        ]
+        .into_iter()
+        .any(|value| !absolute(value))
+        {
             return Err(invalid());
         }
-        let field = |key| -> io::Result<String> {
-            let result = text(&value[key])?;
-            if !absolute(result) {
-                return Err(invalid());
-            }
-            Ok(result.into())
-        };
-        let actor_sid = text(&value["actor_sid"])?;
-        let parts: Vec<_> = actor_sid.split('-').collect();
+        if launch.apphost != format!("{}/Humanymous.HostPilot.exe", launch.app_root) {
+            return Err(invalid());
+        }
+        let parts: Vec<_> = launch.actor_sid.split('-').collect();
         if parts.len() < 4
             || parts.len() > 18
             || parts[..2] != ["S", "1"]
@@ -482,27 +364,12 @@ impl LaunchContext {
         {
             return Err(invalid());
         }
-        let result = Self {
-            apphost: field("apphost")?,
-            app_root: field("app_root")?,
-            system_root: field("system_root")?,
-            runtime_root: field("runtime_root")?,
-            private_work: field("private_work")?,
-            audit_root: field("audit_root")?,
-            handoff_root: field("handoff_root")?,
-            actor_sid: actor_sid.into(),
-            provenance: Provenance::parse(&value["provenance"])?,
-            budget: Budget::map(&value["budget"], wall_ms, received)?,
-        };
-        if result.apphost != format!("{}/Humanymous.HostPilot.exe", result.app_root) {
-            return Err(invalid());
-        }
         let roots = [
-            &result.app_root,
-            &result.system_root,
-            &result.runtime_root,
-            &result.private_work,
-            &result.handoff_root,
+            &launch.app_root,
+            &launch.system_root,
+            &launch.runtime_root,
+            &launch.private_work,
+            &launch.handoff_root,
         ];
         for (index, first) in roots.iter().enumerate() {
             for second in roots.iter().skip(index + 1) {
@@ -516,28 +383,16 @@ impl LaunchContext {
                 }
             }
         }
-        if !result
+        if !launch
             .audit_root
-            .starts_with(&(result.private_work.clone() + "/"))
+            .starts_with(&(launch.private_work.clone() + "/"))
         {
             return Err(invalid());
         }
-        Ok(result)
+        Ok(Self { launch, budget })
     }
     fn environment(&self) -> Vec<(&'static str, String)> {
-        vec![
-            ("SystemRoot", self.system_root.clone()),
-            ("WINDIR", self.system_root.clone()),
-            ("PATH", format!("{}/System32", self.system_root)),
-            ("DOTNET_ROOT", self.runtime_root.clone()),
-            ("DOTNET_ROOT_X64", self.runtime_root.clone()),
-            ("DOTNET_MULTILEVEL_LOOKUP", "0".into()),
-            ("DOTNET_EnableDiagnostics", "0".into()),
-            ("DOTNET_ROLL_FORWARD", "LatestPatch".into()),
-            ("TEMP", format!("{}/temp", self.private_work)),
-            ("TMP", format!("{}/temp", self.private_work)),
-            ("USERPROFILE", format!("{}/profile", self.private_work)),
-        ]
+        self.launch.fixed_environment()
     }
     fn harness_arguments(&self) -> [&'static str; 5] {
         [

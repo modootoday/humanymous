@@ -251,3 +251,89 @@ Run context rejects expired run. Fixed env adds DOTNET_EnableDiagnostics=0.
 Original parent's actual monotonic watchdog stays authoritative: UTC+dispatch
 elapsed alone cannot prove every transit/rollback. Native adapter must retain
 that same watchdog/owner; parse calls cannot become renewal or attestation.
+
+## Retained native owner implementation slice and next Job API review
+
+First production refactor (not yet compiled/OS-qualified): OwnedActor owns the
+existing Account and Zeroizing password. It is prepared with an uncreated Account
+BEFORE NetUserAdd. Successful creation marks the existing account state before
+any fallible membership checks. provision(self) returns OwnedFailure containing
+the SAME owner on every error. Retained policy suppresses automatic account
+deletion; legacy adapter deliberately drops its returned owner using old policy,
+preserving existing profiles/receipts. No new Win32 call, flag, feature or unsafe
+handle owner is added. Password never appears in Debug/error/argv/environment.
+New profile cannot use the lossy legacy conversion or choose its own policy.
+
+This is the account half only. Proposed next native API, BEFORE wiring/OS run:
+
+```rust
+struct OwnedProcessAttempt; // existing unique child/thread/Job Handle guards
+struct OwnedProcessFailure { owner: OwnedProcessAttempt, error: io::Error }
+enum StartFailure { NotStarted(io::Error), Retained(OwnedProcessFailure) }
+
+start_fixed_runner(...) -> Result<OwnedProcessAttempt, StartFailure>;
+OwnedProcessAttempt::wait_run(&mut self, original_deadline) -> Result<ChildExit>;
+OwnedProcessAttempt::contain(&mut self, original_cleanup_deadline) -> Result<JobEmptyProof>;
+```
+
+Store actual child/thread handles immediately after successful CreateProcess,
+BEFORE Job creation/configuration/assignment/resume can fail. Post-start errors
+retain them and the optional exact Job guard; no resource-free error. Contain
+uses existing TerminateJobObject/WaitForSingleObject/QueryInformationJobObject
+only, retains handles on every failed/unknown observation, and separates actual
+child wait from Job active0. Legacy launch adapter preserves20minute/5second
+behavior and old failure scope; it does not gain stronger cleanup facts.
+
+A new prebuilt attempt will compose OwnedActor plus OwnedProcessAttempt under
+one owner, retain account on unknown main/cleanup Job state, invoke ONLY typed
+same-user cleanup after main Job-empty, and permit account deletion only after
+private/profile outcomes. Drop may close exact Job and leave account/state as
+Unknown; parent death cannot promise synchronous successful cleanup. No numeric
+PID/foreign process constructor, arbitrary command, new unsafe owner or new Win32
+API is proposed. Exact refactor critical diff and original deadline integration
+need Root review; NoProfile logonflags0 and ProfileList/directory API remain
+separately reviewed prerequisites, not implementation acceptance from pure tests.
+
+## Shared unverified parent wire owner v0.3 (fresh validation pending)
+
+Root selected test-support::parent_context as the single wire/fixed-environment/
+budget codec (existing serde/serde_json only). Public API:
+- decode(bytes<=64KiB) -> UnverifiedParentContext::{Workload, CleanupOnly};
+- encode(&context) -> deterministic compact serde JSON+LF;
+- typed UnverifiedLaunch/UnverifiedCleanup, named UnverifiedProvenance;
+- context.fixed_environment() -> closed literal keys plus unverified path text;
+- context.map_budget(wall_utc_ms, receiptInstant) -> UnverifiedMappedBudget,
+  borrowed getters run_deadline(Option)/cleanup_deadline, no Clone/Deserialize.
+
+Workload wire schema remains humanymous.dotnet-prebuilt-launch/1 with original
+accepted fields. Cleanup schema humanymous.dotnet-prebuilt-cleanup/1 contains
+ONLY system_root/private_work/handoff_root/actor_sid/provenance/budget; it has no
+apphost/harness/workload data. Unknown/duplicate fields and malformed metadata
+reject. Golden cleanup JSON plus workload roundtrip and original cleanup budget
+boundaries are tested ONCE in shared code. No private raw payload enters errors.
+
+Shared types are UNVERIFIED syntax and cannot mint native authority, proof of
+parent, VerifiedArtifact, protected root, actor identity, Ready or authenticated
+original deadline. Runner retains manifest hashing, native filesystem/Job/account,
+actual TokenUser, fixed apphost binding/disjoint-root policy and trusted construction.
+.NET must not treat successful decode as launch admission. Actual original parent
+monotonic watchdog, one trusted receipt/owner and bounded reader contract remain
+prerequisites. No new Cargo edge is needed; .NET already depends on test-support.
+
+Runner now consumes this shared codec; its duplicate clock/environment/provenance
+codec was removed. Seven old pure cases at12ab3335 stay historical; new runner7
+and shared4 are authored, format-checked and NOT_RUN pending allocation. First
+production OwnedActor/OwnedFailure account refactor is also format-only, with old
+profile behavior intentionally preserved. No new Win32 calls/flags or OS launch.
+
+### Fresh shared/account source qualification
+
+Immutableb482d5be +seven overlays passed shared4/0failed/0ignored/23filtered and
+runner7/0failed/0ignored/30filtered. BOTH all-target check/strict Clippy passed.
+Snapshot2417files and32registry source packages/2079files plus observed Cargo
+config/compiler fingerprints had zero drift. Actual compiler version was not
+retrieved and no complete cache-key provenance is asserted. This supersedes the
+NOT_RUN marker above only for these exact new source hashes, registered in
+parent-context-joint-summary.json. Account state is explicitly Uncreated/Present/
+Deleted. Retained-policy owners cannot call the legacy account-delete adapter.
+No actual account, Job, profile, Kestrel or retained Job API execution occurred.

@@ -64,3 +64,15 @@ Linux backend, actual prerequisite result or genuine-host claim is established.
 Both new selectors passed with all-target check and warnings-denied Clippy; ten
 source/manifest/lock/toolchain files had zero drift. Exact evidence is registered
 in the cross-OS runner owned-tree-pure-summary.json.
+
+## Shared unverified parent context
+
+parent_context owns decode/encode, typed workload/cleanup wire, named source
+lineages, fixed environment and one local mapping of original180s+60s claims.
+All decoded and mapped types are UNVERIFIED: no parent/artifact/token/Job/Ready
+or original-clock authority is created. Runner retains native/path/hash admission;
+.NET consumes this same wire rather than another codec. Shared4 plus runner7
+passed on immutableb482+owned overlays with BOTH check/strict Clippy; actual OS
+execution is unqualified. Exact source hashes are registered in cross-OS runner
+parent-context-joint-summary.json. Do not mutate these shared bytes during the
+.NET consumer's separately allocated source-bound compile.

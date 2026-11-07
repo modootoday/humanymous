@@ -4,6 +4,7 @@ use serde_json::{Number, Value};
 pub mod docker;
 pub mod json;
 pub mod linux_tree_probe;
+pub mod parent_context;
 pub mod tree_lifecycle;
 
 #[cfg(not(target_arch = "wasm32"))]
