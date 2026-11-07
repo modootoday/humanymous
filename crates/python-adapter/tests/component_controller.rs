@@ -12,7 +12,7 @@ mod component_files;
 use component_files::{
     directory_manifest, directory_manifest_excluding_venv, harness_path, source_manifest,
 };
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::process::capture_with_stderr;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{

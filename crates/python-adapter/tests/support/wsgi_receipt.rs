@@ -1,5 +1,5 @@
 //! Strict accounting for the sole actual WSGI harness, independent of exit code.
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::Value;
 use std::collections::BTreeSet;
 

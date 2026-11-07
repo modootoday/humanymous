@@ -784,3 +784,20 @@ https://httpd.apache.org/docs/2.4/mpm.html ; https://httpd.apache.org/docs/2.4/m
 - https://rustsec.org/advisories/RUSTSEC-2026-0176.html: PyO3 iterator overflow
   patched>=0.29.0; candidate0.30.1 is outside this advisory's affected range.
   This is not a current full-closure security audit or a no-vulnerabilities claim.
+#### PLATFORM-SLICE-02: authorized test consumer references
+
+Root authorized four mechanical Python Rust test-source replacements from
+humanymous_test_support to humanymous_platform::testing. The exact paths and
+before/after hashes are recorded in platform-consumer-handoff-002.json in the
+shared compilation evidence bundle. Three process consumers and one strict JSON
+receipt parser retain their existing suffixes and behavior. No matching references
+exist in the owned Node, Ruby or framework Rust sources; no windows-object bridge
+references were found. The Rust parser source named wsgi_receipt.rs is distinct
+from immutable historical execution receipts, which remain untouched.
+
+Root alone owns platform file moves, manifests, lockfile and feature/dependency
+categories. No alias, shim, authority change, unsafe change or host activation was
+introduced. This checkpoint is source-only. Compiler, unit tests, Clippy, CI and
+Cargo formatting await Root's coherent allocation; no runtime completion or cleanup
+qualification follows from these substitutions. No owned execution handle or
+target lease is active. The four consumer files freeze after handoff.

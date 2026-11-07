@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.platform-consumer-handoff/1",
+  "slice": "PLATFORM-SLICE-02",
+  "owner": "codex/rust-python-ruby-native",
+  "status": "source-only-awaiting-root-coherence",
+  "fileCount": 4,
+  "files": [
+    {
+      "path": "crates/python-adapter/tests/component_controller.rs",
+      "beforeGitBlobSha1": "42e5f6d20c28d3b1c490141969298001c294d2bf",
+      "beforeWorktreeSha256": "4ab16775f6cf4081485d8c5251cacd2f4a77c1d2d84eede544254f42bc992f6e",
+      "afterWorktreeSha256": "ce7ffb6cc96b76f1b3d80b2e1e3719a029336a61e0615fd7fe58eda9695573a6",
+      "afterBytes": 14178
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_files.rs",
+      "beforeGitBlobSha1": "bbf47e93c14ce9fb9e10810d4fa7cb91b6adfb5d",
+      "beforeWorktreeSha256": "9743800f6636d5741bd75d86045246c639b35fa4c98b1dd6d4a13efd7d366edd",
+      "afterWorktreeSha256": "f9eafed042d88a1a3abf5c9705fad9eb4cb1f624408d987efbf94ecb75fac246",
+      "afterBytes": 4371
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_receipt.rs",
+      "beforeGitBlobSha1": "0522f75336a9d02da00c0519ace05086aae606a0",
+      "beforeWorktreeSha256": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45",
+      "afterWorktreeSha256": "98119c4acdaedc6b3a8a122f9ac262f1593d283db27e66980e67a187eb499a7a",
+      "afterBytes": 6957
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_host.rs",
+      "beforeGitBlobSha1": "ed9449a74c95272b4fdda55faf43bd7a518f773d",
+      "beforeWorktreeSha256": "b5a70bada4596b6d1625cd280d779f838ff174636026e98f840cf31711606f26",
+      "afterWorktreeSha256": "bd9191c887570111be639546a7a5b21e1b5f42661dd2604688c802950b811a51",
+      "afterBytes": 6075
+    }
+  ],
+  "otherOwnedRustConsumersHaveNoMatches": true,
+  "windowsObjectReferences": 0,
+  "manifestsEdited": false,
+  "pathsMoved": false,
+  "behaviorAuthorityOrUnsafeChanged": false,
+  "compilerTestsClippyOrRuntimeExecuted": false,
+  "activeOwnedHandles": [],
+  "activeOwnedTargetLeases": []
+}

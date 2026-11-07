@@ -38,7 +38,7 @@ pub(super) fn host(
     if asgi {
         super::component_lifecycle::require_safe_lifecycle()
             .expect("ASGI server lifecycle is not accepted");
-        let version = humanymous_test_support::process::capture_with_stderr(
+        let version = humanymous_platform::testing::process::capture_with_stderr(
             Command::new(executable("HUMANYMOUS_UVICORN")).arg("--version"),
             b"",
             Duration::from_secs(5),
