@@ -23,6 +23,12 @@ use windows_sys::Win32::{
 };
 use zeroize::Zeroizing;
 mod scm;
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum Workload {
+    Native,
+    Workspace,
+    Service,
+}
 
 fn wide(text: impl AsRef<OsStr>) -> Vec<u16> {
     text.as_ref().encode_wide().chain(Some(0)).collect()
@@ -284,7 +290,9 @@ fn launch(
     drop(job);
     managed
 }
-pub fn run(options: &Options, service: bool) -> io::Result<i32> {
+pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
+    let service = workload == Workload::Service;
+    let workspace = workload == Workload::Workspace;
     if !service && options.actor_case != "normal" {
         return Err(io::Error::other(
             "SCM negative case requires service actor mode",
@@ -299,8 +307,16 @@ pub fn run(options: &Options, service: bool) -> io::Result<i32> {
             "hosted provisioning administrator required",
         ));
     }
-    let source = evidence::source()?;
-    let manifest = harness::prepare(&options.report, &options.binaries)?;
+    let source = evidence::source(workspace)?;
+    let manifest = harness::prepare(
+        &options.report,
+        &options.binaries,
+        if workspace {
+            harness::Scope::Workspace
+        } else {
+            harness::Scope::Native
+        },
+    )?;
     evidence::verify_snapshot(&source)?;
     let mut nonce = [0u8; 16];
     getrandom::fill(&mut nonce).map_err(io::Error::other)?;
@@ -378,10 +394,10 @@ pub fn run(options: &Options, service: bool) -> io::Result<i32> {
             ]);
         }
         let arguments = vec![
-            if service {
-                "service".into()
-            } else {
-                "native".into()
+            match workload {
+                Workload::Native => "native".into(),
+                Workload::Workspace => "workspace".into(),
+                Workload::Service => "service".into(),
             },
             "--report".into(),
             report.clone().into_os_string(),
@@ -465,7 +481,16 @@ pub fn run(options: &Options, service: bool) -> io::Result<i32> {
     if let Err(error) = cleanup {
         failures.push(format!("scratch cleanup: {error}"));
     }
-    let mut report:serde_json::Value=fs::read(&options.report).ok().and_then(|bytes|serde_json::from_slice(&bytes).ok()).unwrap_or_else(||json!({"schema":1,"kind":"native","status":"failed","qualification":"component-only","source_sha":source["source_sha"],"source":source,"full_runtime_qualified":false,"errors":0,"skips":0,"cases":[]}));
+    let mut report:serde_json::Value=fs::read(&options.report).ok().and_then(|bytes|serde_json::from_slice(&bytes).ok()).unwrap_or_else(|| {
+        let mut failed = json!({"schema":1,"kind":"native","status":"failed","qualification":"component-only","source_sha":source["source_sha"],"source":source,"full_runtime_qualified":false,"errors":0,"skips":0,"cases":[]});
+        if workload == Workload::Workspace {
+            failed["schema"] = "humanymous.workspace-probe/1".into();
+            failed["kind"] = "workspace".into();
+            failed["scope"] = "workspace-default-features".into();
+            failed["qualification"] = "implemented-workspace-component".into();
+        }
+        failed
+    });
     report["standard_user_lifecycle"] = json!({"sid":sid,"account_deleted":account_deleted,"scratch_deleted":scratch_deleted,"child_exit_code":code,"provisioning":"native-Win32","job_kill_on_close":true,"job_empty_observed":job_empty_observed,"scm_delegation_requested":service,"actor_case":options.actor_case});
     if let Some(proof) = scm_proof {
         report["scm_delegation"] = proof;

@@ -87,14 +87,14 @@ pub fn run(options: &Options) -> io::Result<i32> {
     crate::fixture::actor_environment(options.expected_sid.as_deref())?;
     let source = match &options.source {
         Some(path) => serde_json::from_slice(&fs::read(path)?)?,
-        None => evidence::source()?,
+        None => evidence::source(false)?,
     };
     evidence::verify_snapshot(&source)?;
     let mut report = json!({"schema":1,"kind":"native","status":"blocked","qualification":"component-only","source_sha":source["source_sha"],"source":source,"documentation_review_sha256":evidence::digest(Path::new("docs/reviews.json"))?,"documentation_examples_executed":false,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"actor":identity,"errors":0,"skips":0,"cases":[],"missing_required_cases":["local-only-admin","documentation-examples"],"unsupported":["raw-tls-h2-positive-capture","real-browser-collector","OS-service-activation","remote-machine-peer-denial"],"full_runtime_qualified":false});
     let result = (|| -> io::Result<()> {
         let manifests = match &options.manifest {
             Some(path) => serde_json::from_slice(&fs::read(path)?)?,
-            None => harness::prepare(&options.report, &options.binaries)?,
+            None => harness::prepare(&options.report, &options.binaries, harness::Scope::Native)?,
         };
         for name in ["humanymous", "humanymous-runtime", "humanymous-authority"] {
             let path = binary(&options.binaries, name).canonicalize()?;
@@ -115,6 +115,7 @@ pub fn run(options: &Options) -> io::Result<i32> {
             &manifests["harnesses"],
             &options.report,
             &mut report["coverage"],
+            harness::Scope::Native,
         )?;
         report["skips"] = json!(
             report["coverage"]["harnesses"]

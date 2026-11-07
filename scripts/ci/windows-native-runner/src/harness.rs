@@ -9,7 +9,12 @@ const PACKAGES: [&str; 4] = [
     "humanymous-cli",
     "humanymous-native-security",
 ];
-pub fn prepare(evidence_base: &Path, binaries: &Path) -> io::Result<Value> {
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum Scope {
+    Native,
+    Workspace,
+}
+pub fn prepare(evidence_base: &Path, binaries: &Path, scope: Scope) -> io::Result<Value> {
     let release = binaries.file_name() == Some(std::ffi::OsStr::new("release"));
     let mut build = Command::new("cargo");
     build.args(["build", "--locked", "--bins", "--message-format=json"]);
@@ -24,18 +29,28 @@ pub fn prepare(evidence_base: &Path, binaries: &Path) -> io::Result<Value> {
     ] {
         build.args(["-p", package]);
     }
-    let products =
-        capture_with_stderr(&mut build, b"", Duration::from_secs(600), 16 * 1024 * 1024)?;
-    std::fs::write(
-        evidence_base.with_extension("build-stderr.log"),
-        &products.stderr,
-    )?;
-    std::fs::write(
-        evidence_base.with_extension("build-messages.jsonl"),
-        &products.stdout,
-    )?;
-    if !products.status.success() {
-        return Err(io::Error::other("native product compilation failed"));
+    let products = if scope == Scope::Native {
+        Some(capture_with_stderr(
+            &mut build,
+            b"",
+            Duration::from_secs(600),
+            16 * 1024 * 1024,
+        )?)
+    } else {
+        None
+    };
+    if let Some(products) = &products {
+        std::fs::write(
+            evidence_base.with_extension("build-stderr.log"),
+            &products.stderr,
+        )?;
+        std::fs::write(
+            evidence_base.with_extension("build-messages.jsonl"),
+            &products.stdout,
+        )?;
+        if !products.status.success() {
+            return Err(io::Error::other("native product compilation failed"));
+        }
     }
     let mut command = Command::new("cargo");
     command.args([
@@ -45,12 +60,18 @@ pub fn prepare(evidence_base: &Path, binaries: &Path) -> io::Result<Value> {
         "--no-run",
         "--message-format=json",
     ]);
-    command.args(["--features", "humanymous-cli/service-pilot"]);
+    if scope == Scope::Native {
+        command.args(["--features", "humanymous-cli/service-pilot"]);
+    }
     if release {
         command.arg("--release");
     }
-    for package in PACKAGES {
-        command.args(["-p", package]);
+    if scope == Scope::Workspace {
+        command.arg("--workspace");
+    } else {
+        for package in PACKAGES {
+            command.args(["-p", package]);
+        }
     }
     let output = capture_with_stderr(
         &mut command,
@@ -69,16 +90,19 @@ pub fn prepare(evidence_base: &Path, binaries: &Path) -> io::Result<Value> {
     if !output.status.success() {
         return Err(io::Error::other("native pilot compilation failed"));
     }
-    let products = artifacts(
-        std::str::from_utf8(&products.stdout).map_err(io::Error::other)?,
-        false,
-    )?;
+    let products = match products {
+        Some(products) => artifacts(
+            std::str::from_utf8(&products.stdout).map_err(io::Error::other)?,
+            false,
+        )?,
+        None => json!([]),
+    };
     let harnesses = artifacts(
         std::str::from_utf8(&output.stdout).map_err(io::Error::other)?,
         true,
     )?;
     Ok(
-        json!({"products":products,"harnesses":harnesses,"profile":if release{"release"}else{"debug"}}),
+        json!({"products":products,"harnesses":harnesses,"profile":if release{"release"}else{"debug"},"scope":if scope==Scope::Workspace{"workspace-default-features"}else{"native-service-feature"}}),
     )
 }
 fn artifacts(messages: &str, test: bool) -> io::Result<Value> {
@@ -98,12 +122,20 @@ fn artifacts(messages: &str, test: bool) -> io::Result<Value> {
     }
     Ok(Value::Array(entries.into_values().collect()))
 }
-pub fn execute(manifest: &Value, evidence_base: &Path, progress: &mut Value) -> io::Result<()> {
+pub fn execute(
+    manifest: &Value,
+    evidence_base: &Path,
+    progress: &mut Value,
+    scope: Scope,
+) -> io::Result<()> {
     let entries = manifest
         .as_array()
         .ok_or_else(|| io::Error::other("test manifest array required"))?;
     let mut rows = Vec::new();
     *progress = json!({"required_harnesses":entries.len(),"executed_harnesses":0,"harnesses":[],"complete":false,"scope":"four-package-native-process-component"});
+    if scope == Scope::Workspace {
+        progress["scope"] = "workspace-default-features".into();
+    }
     let mut runtime = false;
     let mut authority = false;
     for (index, entry) in entries.iter().enumerate() {
@@ -153,7 +185,13 @@ pub fn execute(manifest: &Value, evidence_base: &Path, progress: &mut Value) -> 
         )?;
         let output = String::from_utf8(execution.stdout).map_err(io::Error::other)?;
         let package = entry["package_id"].as_str().unwrap_or_default();
-        let service = entry["target"] == "service_process" && package.contains("humanymous-cli");
+        let service = scope == Scope::Native
+            && entry["target"] == "service_process"
+            && package.contains("humanymous-cli");
+        let custody = scope == Scope::Workspace
+            && entry["target"] == "key_custody"
+            && entry["kind"] == json!(["test"])
+            && package.contains("#humanymous-audit@");
         let required_service = "native_service_install_upgrade_rollback_and_remove";
         let pending = usize::from(service);
         if service
@@ -165,9 +203,26 @@ pub fn execute(manifest: &Value, evidence_base: &Path, progress: &mut Value) -> 
                 "required privileged service inventory changed",
             ));
         }
-        let counts = totals(&output).ok();
-        let accounting = account_pending(&output, count, execution.status.success(), pending);
+        let counts = if custody {
+            summaries(&output).ok().and_then(|s| s.last().copied())
+        } else {
+            totals(&output).ok()
+        };
+        let accounting = if custody {
+            custody_account(&output, count, execution.status.success())
+        } else {
+            account_pending(&output, count, execution.status.success(), pending)
+        };
         rows.push(json!({"index":index,"executable_sha256":entry["sha256"],"package_id":entry["package_id"],"target":entry["target"],"discovered":count,"passed":counts.map(|c|c[0]),"failed":counts.map(|c|c[1]),"ignored":counts.map(|c|c[2]),"required_not_run":if service{json!([required_service])}else{json!([])},"filtered":counts.map(|c|c[4]),"validated":accounting.is_ok(),"exit_code":execution.status.code(),"stdout_sha256":format!("{:x}",sha2::Sha256::digest(output.as_bytes()))}));
+        if custody {
+            let row = rows.last_mut().unwrap();
+            row["ignored_subprocess_helpers"] = json!(if accounting.is_ok() { 2 } else { 0 });
+            row["subprocess_helpers"] = json!(["child_lock_probe", "child_interrupted_writer"]);
+            row["required_parent_tests"] = json!([
+                "competing_process_cannot_load_or_create",
+                "process_exit_releases_lock_and_rotation_pending_requires_recovery"
+            ]);
+        }
         progress["executed_harnesses"] = json!(rows.len());
         progress["harnesses"] = json!(rows);
         let passed = accounting.map_err(|error|io::Error::other(format!("harness {index} target={} exit={:?} discovered={count}: {error}; inspect report-stem.harness-{index}-run-stdout.log",entry["target"],execution.status.code())))?;
@@ -195,7 +250,7 @@ pub fn execute(manifest: &Value, evidence_base: &Path, progress: &mut Value) -> 
             authority |= package.contains("humanymous-authority") && passed > 0;
         }
     }
-    if !runtime || !authority {
+    if scope == Scope::Native && (!runtime || !authority) {
         return Err(io::Error::other(
             "actual runtime/authority native process harness required",
         ));
@@ -221,14 +276,20 @@ fn account_pending(
     Ok(passed)
 }
 pub(super) fn totals(log: &str) -> io::Result<[usize; 5]> {
-    let summaries: Vec<_> = log
-        .lines()
-        .filter(|l| l.starts_with("test result: "))
-        .collect();
+    let summaries = summaries(log)?;
     if summaries.len() != 1 {
         return Err(io::Error::other("native test exit/summary failed"));
     }
-    let fields: Vec<_> = summaries[0].split_whitespace().collect();
+    Ok(summaries[0])
+}
+fn summaries(log: &str) -> io::Result<Vec<[usize; 5]>> {
+    log.lines()
+        .filter(|l| l.starts_with("test result: "))
+        .map(parse_summary)
+        .collect()
+}
+fn parse_summary(line: &str) -> io::Result<[usize; 5]> {
+    let fields: Vec<_> = line.split_whitespace().collect();
     if fields.len() < 15 || !matches!(fields[2], "ok." | "FAILED.") {
         return Err(io::Error::other("native test summary invalid"));
     }
@@ -245,6 +306,43 @@ pub(super) fn totals(log: &str) -> io::Result<[usize; 5]> {
     };
     Ok([passed, failed, ignored, measured, filtered])
 }
+fn custody_account(log: &str, discovered: usize, success: bool) -> io::Result<usize> {
+    use std::collections::BTreeSet;
+    let expected = BTreeSet::from(["child_lock_probe", "child_interrupted_writer"]);
+    let ignored: Vec<_> = log
+        .lines()
+        .filter_map(|line| {
+            line.strip_prefix("test ")
+                .and_then(|s| s.split_once(" ... ignored").map(|(name, _)| name))
+        })
+        .collect();
+    if !success
+        || discovered < 2
+        || ignored.len() != 2
+        || ignored.iter().copied().collect::<BTreeSet<_>>() != expected
+    {
+        return Err(io::Error::other("custody helper inventory differs"));
+    }
+    for parent in [
+        "competing_process_cannot_load_or_create",
+        "process_exit_releases_lock_and_rotation_pending_requires_recovery",
+        "child_lock_probe",
+    ] {
+        if !log
+            .lines()
+            .any(|line| line == format!("test {parent} ... ok"))
+        {
+            return Err(io::Error::other(
+                "custody actual subprocess/parent proof absent",
+            ));
+        }
+    }
+    let counts = summaries(log)?;
+    if counts != vec![[1, 0, 0, 0, discovered - 1], [discovered - 2, 0, 2, 0, 0]] {
+        return Err(io::Error::other("custody nested/final summary differs"));
+    }
+    Ok(discovered - 2)
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -256,5 +354,25 @@ mod tests {
         assert!(account_pending(good, 1, false, 0).is_err());
         assert!(account_pending(&good.replace("0 ignored", "1 ignored"), 1, true, 0).is_err());
         assert!(account_pending(&format!("{good}\n{good}"), 1, true, 0).is_err());
+    }
+    #[test]
+    fn custody_helpers_require_exact_parents_nested_proof_and_zero_unknown_skips() {
+        let nested = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.1s";
+        let final_summary = "test result: ok. 2 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.1s";
+        let good = format!(
+            "test child_lock_probe ... ok\n{nested}\ntest competing_process_cannot_load_or_create ... ok\ntest process_exit_releases_lock_and_rotation_pending_requires_recovery ... ok\ntest child_lock_probe ... ignored\ntest child_interrupted_writer ... ignored\n{final_summary}"
+        );
+        assert_eq!(custody_account(&good, 4, true).unwrap(), 2);
+        for bad in [
+            good.replace("test child_lock_probe ... ok\n", ""),
+            good.replace("test competing_process_cannot_load_or_create ... ok\n", ""),
+            good.replace("3 filtered out", "2 filtered out"),
+            format!("{good}\ntest other ... ignored"),
+            format!("{good}\n{final_summary}"),
+        ] {
+            assert!(custody_account(&bad, 4, true).is_err());
+        }
+        assert!(custody_account(&good, 4, false).is_err());
+        assert!(account_pending(&good, 4, true, 0).is_err());
     }
 }

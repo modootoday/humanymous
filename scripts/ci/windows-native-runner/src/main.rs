@@ -6,6 +6,7 @@ mod fixture;
 mod harness;
 mod pilot;
 mod service;
+mod workspace;
 use std::{io, path::PathBuf};
 
 pub struct Options {
@@ -73,9 +74,12 @@ fn run() -> io::Result<i32> {
             Ok(0)
         }
         #[cfg(windows)]
-        "standard-user" => actor::run(&options, false),
+        "standard-user" => actor::run(&options, actor::Workload::Native),
         #[cfg(windows)]
-        "standard-user-service" => actor::run(&options, true),
+        "standard-user-service" => actor::run(&options, actor::Workload::Service),
+        #[cfg(windows)]
+        "standard-user-workspace" => actor::run(&options, actor::Workload::Workspace),
+        "workspace" => workspace::run(&options),
         _ => Err(io::Error::other("unsupported native runner mode")),
     }
 }

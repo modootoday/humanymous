@@ -111,3 +111,21 @@ owner diagnosed reactor cleanup in the fixture and supplied a source repair;
 exact-source rerun is required after common lock resolution, not inferred from
 the prior62-pass snapshot. The runner now retains compiled manifests and partial
 coverage(counts,failed/validated flags,complete=false) even on early failure.
+
+## Whole-workspace component migration (separate qualification)
+
+Use `workspace --report ABS --binaries ABS_ROOT/target/debug|release` on native
+ordinary/nonroot actor; Windows elevated hosted parent uses `standard-user-workspace`.
+Same account/process/job implementation, Scope switches the single prepare/
+manifest/accounting implementation to default Cargo --workspace --all-targets.
+No extra service-pilot feature. Every discovered executable is hashed and run.
+
+Schema `humanymous.workspace-probe/1`, kindworkspace, qualificationimplemented-
+workspace-component, full_runtime_qualifiedfalse. Only this separate complete
+unit/component scope may exit0/statuspassed; it cannot satisfy native schema1.
+Generic ignored/filtered/failed/missing work fails. Preserve known audit key_custody
+2rawignored helpers only with exact package/target/kind, exact ignored inventory,
+required parent successes, actual nested lock proof and both strict summaries.
+Native4package service-feature still returnsblocked2 with1required service test
+not_run. Parent source snapshot spans all crate source/manifests and the expected
+runner architecture must equal the compiled executable architecture.

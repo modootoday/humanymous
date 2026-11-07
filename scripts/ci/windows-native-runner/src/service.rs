@@ -15,14 +15,14 @@ pub fn run(options: &Options) -> io::Result<i32> {
     crate::fixture::actor_environment(options.expected_sid.as_deref())?;
     let source = match &options.source {
         Some(path) => serde_json::from_slice(&fs::read(path)?)?,
-        None => evidence::source()?,
+        None => evidence::source(false)?,
     };
     evidence::verify_snapshot(&source)?;
     let mut report = json!({"schema":1,"kind":"native","qualification":"component-only","status":"blocked","source_sha":source["source_sha"],"source":source,"actor":actor,"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"documentation_review_sha256":evidence::digest(Path::new("docs/reviews.json"))?,"documentation_examples_executed":false,"full_runtime_qualified":false,"errors":0,"skips":0,"cases":[],"missing_required_cases":["startup","configuration-invalid","doctor","install-dry-run-no-mutation","local-only-admin","restart-replay","storage-failure-closed","documentation-examples"]});
     let result = (|| -> io::Result<()> {
         let manifest = match &options.manifest {
             Some(path) => serde_json::from_slice(&fs::read(path)?)?,
-            None => harness::prepare(&options.report, &options.binaries)?,
+            None => harness::prepare(&options.report, &options.binaries, harness::Scope::Native)?,
         };
         let entry = manifest["harnesses"]
             .as_array()

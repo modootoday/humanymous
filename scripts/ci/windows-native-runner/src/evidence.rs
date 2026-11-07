@@ -31,7 +31,7 @@ fn sources(path: &Path, files: &mut BTreeMap<String, String>) -> io::Result<()> 
     }
     Ok(())
 }
-pub fn source() -> io::Result<Value> {
+pub fn source(workspace: bool) -> io::Result<Value> {
     let head = Command::new("git").args(["rev-parse", "HEAD"]).output()?;
     let dirty = Command::new("git")
         .args(["status", "--porcelain"])
@@ -51,10 +51,15 @@ pub fn source() -> io::Result<Value> {
         ));
     }
     let mut files = BTreeMap::new();
-    for path in ["Cargo.toml", "Cargo.lock", "docs/reviews.json"] {
+    for path in [
+        "Cargo.toml",
+        "Cargo.lock",
+        "rust-toolchain.toml",
+        "docs/reviews.json",
+    ] {
         files.insert(path.to_owned(), digest(Path::new(path))?);
     }
-    for path in [
+    let directories = &[
         "crates/runtime/src",
         "crates/runtime/tests",
         "crates/authority/src",
@@ -70,8 +75,39 @@ pub fn source() -> io::Result<Value> {
         "crates/behavior/src",
         "crates/model/src",
         "scripts/ci/windows-native-runner",
-    ] {
-        sources(Path::new(path), &mut files)?;
+    ];
+    if workspace {
+        let metadata = Command::new("cargo")
+            .args(["metadata", "--locked", "--no-deps", "--format-version", "1"])
+            .output()?;
+        if !metadata.status.success() {
+            return Err(io::Error::other("workspace source inventory unavailable"));
+        }
+        let metadata: Value = serde_json::from_slice(&metadata.stdout)?;
+        let members = metadata["workspace_members"]
+            .as_array()
+            .ok_or_else(|| io::Error::other("workspace members absent"))?;
+        let packages = metadata["packages"]
+            .as_array()
+            .ok_or_else(|| io::Error::other("workspace packages absent"))?;
+        let root = std::env::current_dir()?;
+        for package in packages.iter().filter(|p| members.contains(&p["id"])) {
+            let manifest = Path::new(
+                package["manifest_path"]
+                    .as_str()
+                    .ok_or_else(|| io::Error::other("workspace manifest absent"))?,
+            );
+            let directory = manifest
+                .parent()
+                .and_then(|p| p.strip_prefix(&root).ok())
+                .ok_or_else(|| io::Error::other("workspace member outside checkout"))?;
+            sources(directory, &mut files)?;
+        }
+        sources(Path::new("scripts/ci/windows-native-runner"), &mut files)?;
+    } else {
+        for path in directories {
+            sources(Path::new(path), &mut files)?;
+        }
     }
     for entry in std::fs::read_dir("crates")? {
         let manifest = entry?.path().join("Cargo.toml");
@@ -122,6 +158,35 @@ pub fn source() -> io::Result<Value> {
     )
 }
 pub fn verify_snapshot(snapshot: &Value) -> io::Result<()> {
+    if let Some(os) = snapshot["github"]["RUNNER_OS"].as_str() {
+        let expected = match os.to_ascii_lowercase().as_str() {
+            "windows" => "windows",
+            "linux" => "linux",
+            "macos" => "macos",
+            _ => return Err(io::Error::other("unsupported observed native OS")),
+        };
+        if expected != std::env::consts::OS {
+            return Err(io::Error::other(
+                "native executable OS differs from required runner tuple",
+            ));
+        }
+    }
+    if let Some(arch) = snapshot["github"]["RUNNER_ARCH"].as_str() {
+        let expected = match arch.to_ascii_uppercase().as_str() {
+            "X64" => "x86_64",
+            "ARM64" => "aarch64",
+            _ => {
+                return Err(io::Error::other(
+                    "unsupported observed native runner architecture",
+                ));
+            }
+        };
+        if expected != std::env::consts::ARCH {
+            return Err(io::Error::other(
+                "native executable architecture differs from required runner tuple",
+            ));
+        }
+    }
     let files = snapshot["files"]
         .as_object()
         .ok_or_else(|| io::Error::other("source file manifest missing"))?;
@@ -168,13 +233,13 @@ pub(super) fn host_allowed(actions: Option<&str>, environment: Option<&str>) -> 
 /// Publish only typed counts/commitments, excluding actual SID, paths and traces.
 pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     let report: Value = serde_json::from_slice(&fs::read(input)?)?;
-    if report["schema"] != 1
-        || report["kind"] != "native"
-        || report["full_runtime_qualified"] != false
-    {
+    let workspace =
+        report["schema"] == "humanymous.workspace-probe/1" && report["kind"] == "workspace";
+    let native = report["schema"] == 1 && report["kind"] == "native";
+    if (!workspace && !native) || report["full_runtime_qualified"] != false {
         return Err(io::Error::other("scoped native input report required"));
     }
-    let rows=report["coverage"]["harnesses"].as_array().map(|rows|rows.iter().map(|row|json!({"target":row["target"],"executable_sha256":row["executable_sha256"],"discovered":row["discovered"],"passed":row["passed"],"failed":row["failed"],"validated":row["validated"],"ignored":row["ignored"],"required_not_run":row["required_not_run"],"filtered":row["filtered"],"exit_code":row["exit_code"],"stdout_sha256":row["stdout_sha256"]})).collect::<Vec<_>>()).unwrap_or_default();
+    let rows=report["coverage"]["harnesses"].as_array().map(|rows|rows.iter().map(|row|json!({"target":row["target"],"executable_sha256":row["executable_sha256"],"discovered":row["discovered"],"passed":row["passed"],"failed":row["failed"],"validated":row["validated"],"ignored":row["ignored"],"ignored_subprocess_helpers":row["ignored_subprocess_helpers"],"subprocess_helpers":row["subprocess_helpers"],"required_parent_tests":row["required_parent_tests"],"required_not_run":row["required_not_run"],"filtered":row["filtered"],"exit_code":row["exit_code"],"stdout_sha256":row["stdout_sha256"]})).collect::<Vec<_>>()).unwrap_or_default();
     let passed = rows
         .iter()
         .filter_map(|r| r["passed"].as_u64())
@@ -194,6 +259,43 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     summary["required_harnesses"] = report["coverage"]["required_harnesses"].clone();
     summary["executed_harnesses"] = report["coverage"]["executed_harnesses"].clone();
     summary["coverage_complete"] = report["coverage"]["complete"].clone();
+    if workspace {
+        if report["status"] == "passed"
+            && (report["errors"] != 0
+                || report["skips"] != 0
+                || report["coverage"]["complete"] != true
+                || report["coverage"]["required_harnesses"]
+                    != report["coverage"]["executed_harnesses"]
+                || passed == 0)
+        {
+            return Err(io::Error::other(
+                "incomplete workspace cannot publish passed summary",
+            ));
+        }
+        if report["status"] == "passed" {
+            let raw = report["coverage"]["harnesses"]
+                .as_array()
+                .ok_or_else(|| io::Error::other("workspace rows absent"))?;
+            if failed != 0
+                || report["ignored_subprocess_helpers"].as_u64() != Some(ignored)
+                || report["coverage"]["required_harnesses"].as_u64() != Some(raw.len() as u64)
+                || raw.iter().any(|r| r["validated"] != true)
+            {
+                return Err(io::Error::other(
+                    "unvalidated workspace counts cannot publish passed summary",
+                ));
+            }
+        }
+        summary["schema"] = "humanymous.workspace-probe-summary/1".into();
+        summary["scope"] = "workspace-default-features".into();
+        summary["qualification"] = "implemented-workspace-component".into();
+        summary["ignored_subprocess_helpers"] = report["ignored_subprocess_helpers"].clone();
+    }
+    summary["runner_provenance"] = report["source"]["github"].clone();
+    summary["source_manifest_sha256"] = json!(format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(&report["source"]["files"])?)
+    ));
     write(output, &summary)
 }
 
@@ -218,5 +320,23 @@ mod tests {
         assert_eq!(value["passed_tests"], 2);
         assert_eq!(value["raw_ignored_tests"], 1);
         assert_eq!(value["status"], "blocked");
+        let mut workspace: Value = serde_json::from_slice(&fs::read(&raw).unwrap()).unwrap();
+        workspace["schema"] = "humanymous.workspace-probe/1".into();
+        workspace["kind"] = "workspace".into();
+        workspace["status"] = "passed".into();
+        workspace["skips"] = 0.into();
+        write(&raw, &workspace).unwrap();
+        assert!(summary(&raw, &public).is_err());
+        workspace["coverage"]["complete"] = true.into();
+        workspace["coverage"]["required_harnesses"] = 1.into();
+        workspace["coverage"]["executed_harnesses"] = 1.into();
+        workspace["ignored_subprocess_helpers"] = 0.into();
+        workspace["coverage"]["harnesses"][0]["ignored"] = 0.into();
+        workspace["coverage"]["harnesses"][0]["validated"] = true.into();
+        write(&raw, &workspace).unwrap();
+        summary(&raw, &public).unwrap();
+        let published: Value = serde_json::from_slice(&fs::read(&public).unwrap()).unwrap();
+        assert_eq!(published["schema"], "humanymous.workspace-probe-summary/1");
+        assert_eq!(published["full_runtime_qualified"], false);
     }
 }

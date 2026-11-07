@@ -3,7 +3,7 @@ id: sot:root/cross-os-runners
 title: Cross OS runner qualification and infrastructure research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-06T23:09:29Z
+updated: 2026-11-07T05:56:42Z
 verify: manual
 rel:
   depends_on: [sot:root/delivery, sot:root/adapter-ecosystem]
@@ -11,7 +11,7 @@ rel:
 
 # Cross OS runner qualification
 
-Document version: 0.2.0. Research checked 2026-11-07 KST. Accepted execution
+Document version: 0.4.0. Research checked 2026-11-07 KST. Accepted execution
 design; remote results must be attached separately. This does not certify the
 unfinished Rust runtime or change detection scoring.
 
@@ -451,3 +451,56 @@ cfg(not(target_arch="wasm32")); pure JSON contract assertions remain WASM-usable
 Root observed drop_non_drop from unsupported wasm ChildStdin. Restricting the OS
 module fixes the boundary instead of relaxing any lint. Scoped wasm32 all-target
 Clippy and native9tests passed; root owns full integrity/collector rerun.
+
+## Workspace actor migration contract v0.4
+
+CI owner requested/accepted one shared Rust actor/prepare/accounting implementation
+for default-feature whole-workspace tests, separate from native product pilots.
+Implemented CLI: `workspace --report ABS --binaries ABS_ROOT/target/debug|release`
+on actual ordinary Windows/nonroot Unix, and Windows hosted elevated parent
+`standard-user-workspace` with identical arguments. It executes locked Cargo
+--workspace --all-targets discovery with no extra CLI service-pilot feature, hashes
+and executes every discovered test executable, distinguishes zero-test harnesses
+and counts exact passed/failed/ignored/filtered. Parent uses the same Users-only
+account/minimal environment/suspended job/cleanup code as native and service modes.
+There is no second actor, compiler manifest parser or summary parser.
+
+Workspace report schema is `humanymous.workspace-probe/1`,kind=workspace,
+scope=workspace-default-features,qualification=implemented-workspace-component,
+full_runtime_qualified=false. Complete required unit/component execution may
+return0/statuspassed; error/unknown/ordinary ignored/filtered work returns1/failed.
+This separate schema can never satisfy schema1 native product delivery. Native
+four-package service-feature profile remains exit2/blocked with required service
+not_run. Native/server/browser/Docker qualification is not implied by workspace0.
+The source snapshot obtains actual workspace member directories from locked Cargo
+metadata, covers their Rust/manifests/lock inputs plus this isolated runner and
+root toolchain/manifest/lock, and checks expected runner
+architecture against the actual compiled native executable architecture.
+
+Only audit package#humanymous-audit@,targetkey_custody,kind[test] may classify the
+existing two named ignored subprocess entrypoints. Exact rawignored names are
+child_lock_probe/child_interrupted_writer. Parent cases competing_process_cannot_
+load_or_create and process_exit_releases_lock_and_rotation_pending_requires_recovery
+must each actually pass; child_lock_probe actual nested pass must appear. Exactly
+two summaries are required: nested1passed/0failed/0ignored/0measured/discovered-1
+filtered; finaldiscovered-2passed/0failed/2ignored/0measured/0filtered. Preserve raw
+ignored_subprocess_helpers=2 and required parent names. Missing/duplicate/extra
+ignored/summary/parent proof fails, never a broad ignore allowance. Extra required
+service tests do not inherit this classification. Unit negative cases cover these
+boundaries. Actual workspace/hosted6tuple execution remains required before retiring
+the old Python/PS orchestration; local execution is currently being measured.
+
+Source-bound local observations: f3c8ea2072783141f38e96f95864acc2bb1a963f
+plus recorded dirty inputs completed release native14/14 harnesses,66passed,
+0errors,1required service ignored/skips1,exit2/blocked. It does not qualify SCM.
+Workspace initial compile failed for missing CMake PATH. Existing Rust cef-pilot
+toolchain discovery supplied a process-local PATH without disabling sandboxing;
+retry discovered73 harnesses and executed10, then failed exact unknown ignored
+child_witness_probe in audit durable_witness. Its nested summary is preserved.
+Audit owner is preparing captured subprocess output/assertions for durable_witness
+and key_backups. Neither new ignored helper is currently accepted. Raw reports
+and all list/run/build logs remain private; sanitized failure/component summaries
+are registered in evidence:root/20261106223747. Passed workspace summaries require
+complete coverage, every row validated, zero failed/errors/skips, required count
+equal executed rows and raw ignored equal explicitly classified helper counts.
+Public rows retain helper/required-parent names; account identities are excluded.
