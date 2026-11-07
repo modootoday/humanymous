@@ -1,0 +1,33 @@
+language = "C"
+cpp_compat = true
+include_guard = "HUMANYMOUS_NATIVE_ABI_V1_H"
+include_version = true
+line_endings = "LF"
+documentation = true
+documentation_style = "c"
+style = "both"
+sort_by = "Name"
+
+[parse]
+parse_deps = true
+include = ["humanymous-native-abi"]
+
+[export]
+include = ["Command", "Response", "Reply", "Version", "Status"]
+exclude = ["MAX_CONTEXTS", "MAX_BUFFERS", "MAX_BUFFER_BYTES", "MAX_TOTAL_BYTES"]
+
+[export.rename]
+Command = "HumanymousNativeCommandV1"
+Response = "HumanymousNativeResponseV1"
+Reply = "HumanymousNativeReplyV1"
+Version = "HumanymousNativeVersionV1"
+Status = "HumanymousNativeStatusV1"
+
+[struct]
+derive_constructor = false
+derive_eq = false
+derive_neq = false
+
+[const]
+allow_static_const = true
+allow_constexpr = false
