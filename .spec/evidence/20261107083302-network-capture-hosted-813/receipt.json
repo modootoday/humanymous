@@ -1,0 +1,107 @@
+{
+  "schema": "humanymous.capture.hosted-813/0.1",
+  "observed_at": "2026-11-07T08:33:02Z",
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "run_terminal": false,
+  "linux_job": {
+    "id": 128351926093,
+    "conclusion": "failure",
+    "target": "x86_64-unknown-linux-gnu",
+    "toolchain": "1.99.1",
+    "build_capture_observed": true,
+    "capture_harness_in_executed_report": false,
+    "required_harnesses": 88,
+    "executed_harnesses": 15,
+    "passed_tests": 51,
+    "failed_tests": 0,
+    "raw_ignored_tests": 4,
+    "errors": 1,
+    "zero_test_harnesses": 2,
+    "last_emitted_harness": {
+      "discovered": 5,
+      "executable_sha256": "519b2727f593b66b719ea0bfea7f71525d33ad54f295ec27c2407610e5a75101",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 3,
+      "ignored_subprocess_helpers": null,
+      "passed": 2,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "dd3e72f66742553a36d85ca72a18f5efb0645f5721a2a2cbdc7c91257e40b954",
+      "subprocess_helpers": null,
+      "target": "host_process",
+      "validated": false
+    },
+    "source_manifest_sha256": "0c97880f1e7ace25b2c107d91266bb61cacdc7c27a89cf991decaaa5f474d39d",
+    "validated_worktree_dirty": false,
+    "runner_provenance": {
+      "GITHUB_RUN_ATTEMPT": "1",
+      "GITHUB_RUN_ID": "42355168729",
+      "GITHUB_SHA": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+      "GITHUB_WORKFLOW_SHA": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+      "ImageOS": "ubuntu24",
+      "ImageVersion": "20261101.360.1",
+      "RUNNER_ARCH": "X64",
+      "RUNNER_OS": "Linux"
+    }
+  },
+  "docker_job": {
+    "id": 128351926068,
+    "conclusion": "failure",
+    "images": [
+      "sha256:6e090be2e6c18b17eac7ad3ac0a25ac7b627779ef1940c21fa7b572d045b9a9f"
+    ],
+    "source_manifest_sha256": "20b56673e627209beb263f100071793effb8122cfe5467ae9bb9b6a6ee00770f",
+    "source_changed_during_execution": false,
+    "full_product_qualified": false,
+    "qualification": "component-only",
+    "errors": 1,
+    "required_unavailable_count": 9,
+    "safe_diagnostics": {
+      "failure_count": 2,
+      "failures": [
+        {
+          "case_id": "actual-owned-wargame",
+          "error_code": "assertion_failed",
+          "status": "failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "wargame_process",
+          "status": "failed"
+        }
+      ],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    }
+  },
+  "capture_qualification": {
+    "default_source_compile": "observed",
+    "pure_22_execution": "no emitted capture harness receipt",
+    "hosted_feature_compile": "not_observed",
+    "hosted_actual_required": 5,
+    "hosted_actual_executed": 0,
+    "runtime_capture_body_join": "unimplemented",
+    "docker_product": "not_qualified"
+  },
+  "raw_logs": [
+    {
+      "file": "docker.log",
+      "bytes": 73147,
+      "sha256": "fd5f012161b46556c9165515f971dfc0deb84e5929a52150dd086cc75b0124ec"
+    },
+    {
+      "file": "linux-native.log",
+      "bytes": 122775,
+      "sha256": "1ba0d5fcd209487333e6085d63d9edcf93f8ae034bad0cb1ba8a1f21dcc46a1d"
+    }
+  ],
+  "log_processing": {
+    "raw_files_unchanged": true,
+    "derived_json": "stripped timestamp/ANSI prefixes; excluded one interleaved stderr diagnostic from JSON only",
+    "excluded_stderr": "delivery blocked: component/blocked pilot cannot qualify full product"
+  },
+  "push_or_dispatch_performed": false
+}
