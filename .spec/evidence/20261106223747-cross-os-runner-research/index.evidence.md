@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: native-dotnet-pure-first-failure-summary.json, sha256: 65310956cc9627accc16906b7ed624b85afbb0a41af1263d4f04653849528dae, bytes: 19620, store: repo}
   - {path: interactive-pure-first-failure-summary.json, sha256: fa396b7ccb1a2a9fa7f32e9e9c80b5fae7061b5791ef80f80d71c294e57c3eff, bytes: 10935, store: repo}
   - {path: controlled-outer-faults-summary.json, sha256: f7a8edef4ed52fa5ca0dee16ccc0aa5e070c9c6a63f19514f256414ea466354c, bytes: 31140, store: repo}
   - {path: cli-controller-profile-summary.json, sha256: 0d3aacd5d063b9e40ef1f725497a5c60d978158c19bc0a730bfa8669040060ac, bytes: 3950, store: repo}

@@ -994,3 +994,38 @@ potentially interleaved --nocapture `test NAME ...`/standalone `ok` text. This
 limit is also emitted explicitly in the public summary. The Delivery owner must
 retain the actual command/binary/invocation/source provenance. Matching printed
 names or this data summary alone cannot manufacture an actual run or native proof.
+
+## Combined corrected Native/.NET pure allocation: second failure retained
+
+Root allocated exactd460a7eb plus ONLY the .NET owner's frozen protocol.rs overlay
+6699630ed5346affbbc79d42393ba14e469e959502e601c5f11e150815ba3483/14839bytes.
+Owner and copied readbacks matched. New absolute target/native-net-d460a7eb had
+CreateNew/readback lease and stricter initial admission30220MiB/71.93percent.
+One original480s work/540s total started18:03:20.7643882Z. No renewal.
+
+Observed separate footers: interactive10/filter44, capture4/filter50, direct1/
+filter53, barrier2/filter52, service-summary7/filter47 and .NET protocol11/filter13;
+all35 pass, zero failed/ignored/measured. Support check/strictClippy and runner
+check exit0. STOP FIRST FAILURE runner strictClippy101 at summary.rs149 cmp_owned
+for comparing JSON run-ID string with expected.run.to_string(). .NET all-target
+check/Clippy NOT_STARTED. No actual interactive/service/SDK/host cases.
+
+Input inventory was unnecessarily widened to all622 workspace registry packages
+(32055files) and767 source inputs, instead of selected dependencies. Preserve that
+preparation scope/cost error; future scripts must be authored BEFORE the clock,
+then actual preparation IO stays inside the original budget and hashes ONLY
+locked offline Windows normal/build/dev selected support/.NET/runner dependency
+trees. Recursive76tools/config34/environment7 remain required. Immediate before/
+after are identical, metadata finished18:08:56.535Z inside original work horizon.
+An earlier metadata-active flag inferred an unreaped tool session rather than
+observing a live OS process; a separate correction preserves that distinction.
+Execution/metadata terminal, actual target marker removed, handles0, no retry.
+Registered native-dotnet-pure-first-failure-summary.json retains60raw hashes and
+separate test-binary pins. Earlier f95 Clippy failure remains failed history.
+
+Next source fix parses only canonical positive ASCII-decimal JSON STRING run IDs
+without an owned comparison allocation. Do NOT take Clippy's numeric comparison
+hint literally, which would change the wire type. An eighth summary pure case
+rejects numeric JSON, plus sign, leading zero, zero, whitespace and overflow.
+Only bare fmt/spec/diff ran after this fix. New explicit allocation is required;
+35 pure passes do not retroactively make the failed combined batch green.

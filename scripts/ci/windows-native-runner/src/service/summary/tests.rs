@@ -175,3 +175,19 @@ fn failed_footer_with_success_counts_and_matching_hash_is_refused() {
     assert!(harness::totals(std::str::from_utf8(&logs[0].stdout).unwrap()).is_ok());
     assert!(verify(&report, &expected("normal"), Some(&logs)).is_err());
 }
+#[test]
+fn run_binding_requires_canonical_positive_decimal_string() {
+    for value in [
+        json!(7),
+        json!("+7"),
+        json!("07"),
+        json!("0"),
+        json!(" 7"),
+        json!("18446744073709551616"),
+    ] {
+        let (mut report, logs) = fixture("normal");
+        report["source"]["github"]["GITHUB_RUN_ID"] = value;
+        assert!(verify(&report, &expected("normal"), Some(&logs)).is_err());
+    }
+    assert_eq!(run_id(&json!("7")), Some(7));
+}

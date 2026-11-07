@@ -1,0 +1,476 @@
+{
+  "schema": "humanymous.native-dotnet-combined-pure-attempt/1",
+  "base_sha": "d460a7ebbf9ba4777347049ec4cc514ecaa3d82b",
+  "overlay": {
+    "owner_source": "C:/workspaces/humanymous/.spec.local/root/evidence/20261108021500-dotnet-adapter-chunk-preparation/protocol.rs",
+    "base_sha256": "b229f2a0737d28615b69e545f0f0b54ba56ea0ac1dc7ac1835ba6c06222a34d3",
+    "destination": "crates/dotnet-adapter/tests/hosted/protocol.rs",
+    "overlay_sha256": "6699630ed5346affbbc79d42393ba14e469e959502e601c5f11e150815ba3483",
+    "owner_readback_confirmed": true,
+    "utc": "2026-11-07T18:03:42.9331244Z",
+    "bytes": 14839
+  },
+  "status": "FAILED_RUNNER_STRICT_CLIPPY",
+  "scope": "pure supplied-byte/mailbox/protocol/summary logic only",
+  "full_product": false,
+  "native_producer": "Unsupported",
+  "actual_interactive_child_or_host_or_scm_cases": 0,
+  "admission": {
+    "disk_free_bytes": 116629204992,
+    "commit_percent": 71.9301891913475,
+    "physical_available_mib": 30220.0,
+    "utc": "2026-11-07T18:03:20.6600505Z"
+  },
+  "original_budget": {
+    "cleanup_until": "2026-11-07T18:12:20.7643882Z",
+    "run_until": "2026-11-07T18:11:20.7643882Z",
+    "started_utc": "2026-11-07T18:03:20.7643882Z"
+  },
+  "commands": {
+    "fmt": {
+      "receipt": "fmt.process.json",
+      "exit_code": 0
+    },
+    "interactive-pure": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:07:27.8697897Z",
+      "started_utc": "2026-11-07T18:07:16.0428887Z"
+    },
+    "capture-pure": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:07:29.2201474Z",
+      "started_utc": "2026-11-07T18:07:28.8812448Z"
+    },
+    "direct-pure": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:07:30.5437466Z",
+      "started_utc": "2026-11-07T18:07:30.240685Z"
+    },
+    "barrier-pure": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:07:31.8666475Z",
+      "started_utc": "2026-11-07T18:07:31.5614946Z"
+    },
+    "service-summary-pure": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:07:45.4067278Z",
+      "started_utc": "2026-11-07T18:07:32.8849419Z"
+    },
+    "dotnet-protocol-pure": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:08:35.1232694Z",
+      "started_utc": "2026-11-07T18:07:46.4157327Z"
+    },
+    "support-check": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:08:39.0154907Z",
+      "started_utc": "2026-11-07T18:08:36.1335701Z"
+    },
+    "support-clippy": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:08:41.2138103Z",
+      "started_utc": "2026-11-07T18:08:40.0394941Z"
+    },
+    "controller-check": {
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:08:47.8769169Z",
+      "started_utc": "2026-11-07T18:08:42.2232835Z"
+    },
+    "controller-clippy": {
+      "exit_code": 101,
+      "terminal_observed_utc": "2026-11-07T18:08:49.4953271Z",
+      "started_utc": "2026-11-07T18:08:48.8930515Z"
+    }
+  },
+  "pure": {
+    "dotnet_protocol": {
+      "passed": 11,
+      "filtered": 13
+    },
+    "service_summary": {
+      "passed": 7,
+      "filtered": 47
+    },
+    "capture": {
+      "passed": 4,
+      "filtered": 50
+    },
+    "direct_pipe": {
+      "passed": 1,
+      "filtered": 53
+    },
+    "interactive": {
+      "passed": 10,
+      "filtered": 44
+    },
+    "failed": 0,
+    "total_passed": 35,
+    "ignored": 0,
+    "controlled_barrier": {
+      "passed": 2,
+      "filtered": 52
+    },
+    "measured": 0
+  },
+  "first_failure": {
+    "retry_performed": false,
+    "reason": "clippy::cmp_owned at service/summary.rs149 expected.run.to_string",
+    "stage": "controller-clippy",
+    "dotnet_alltarget_check": "NOT_STARTED",
+    "dotnet_strict_clippy": "NOT_STARTED",
+    "exit_code": 101
+  },
+  "closure": {
+    "preparation_scope_error": "Unnecessarily scanned all622 workspace-lock registry packages, not selected target dependency graph. Scope/cost preserved; future targeted normal/build/dev Windows tree only.",
+    "observation_correction": "metadata active flag was unreaped session inference, not actual native process observation; separate raw correction preserved",
+    "comparison": {
+      "utc": "2026-11-07T18:08:56.5359803Z",
+      "identical": true
+    },
+    "counts": {
+      "source": 767,
+      "registry_entries": 622,
+      "registry_present": 622,
+      "registry_missing": 0,
+      "registry_files": 32055.0,
+      "config": 34,
+      "tools_files": 76.0,
+      "flags": 7
+    }
+  },
+  "binary_pins": [
+    {
+      "bytes": 8284672,
+      "sha256": "978b2f83bd4d97bfaa89526fc4543c0ddd2bcff0b6325ccfb76bb944958f61a9",
+      "name": "hosted-96742160f640f469.exe"
+    },
+    {
+      "bytes": 2772480,
+      "sha256": "99cdccd8f7b5c809d775174dd5e85178c78c92b0d4ba1b3b6cedac4c5d8d3a1d",
+      "name": "humanymous_native_runner-ba71ad8280f9c5cd.exe"
+    },
+    {
+      "bytes": 2128384,
+      "sha256": "72523957c673198df2aae70e4aeba064dab8af9c06b10f33ca05550d8c443bd6",
+      "name": "humanymous_test_support-5a5463700a0b8be0.exe"
+    }
+  ],
+  "terminal": {
+    "lease_marker_absent": true,
+    "exit_code": 1,
+    "metadata_session_terminal": true,
+    "utc": "2026-11-07T18:10:57.8697269Z",
+    "retry_performed": false,
+    "own_handles": 0,
+    "session_id": 46486
+  },
+  "next_source_fix": "Canonical positive decimal string parser avoids allocation and preserves JSON string type; eighth service pure negative authored NOT_RUN",
+  "limits": [
+    "35purepasses do not override RunnerstrictClippy failure",
+    "Dotnet protocol11 applies ONLY exact frozen6699630e overlay, no retained Host WIP",
+    "Earlier f95 strictClippy101 is separate failed immutable history",
+    "No actual thread/pipe/Job/SCM/admittedHost/SDK/network/Ready qualification"
+  ],
+  "attachments": [
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/admission.json",
+      "bytes": 160,
+      "sha256": "de1e8a64b79dae7bc94e4cc8f7acbae298ef42acae2c469fe02b3ef734b3c248"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/after.json",
+      "bytes": 3535028,
+      "sha256": "b3352f77fbb3016e1de8abcb23c0ad52967ed900ce766ef61f35a31c4c5ae2b3"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/barrier-pure.admission.json",
+      "bytes": 161,
+      "sha256": "88c6ae9076a654cf0d5f507916d0e3e5f258c463319d112a7cc0eea413fda812"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/barrier-pure.process.json",
+      "bytes": 125,
+      "sha256": "1186ec005a99ff69ea431ded40dce3bd50074566f54acbbb81080b4255595e0c"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/barrier-pure.stderr.log",
+      "bytes": 217,
+      "sha256": "5209bdf63ea7577169962f290d34a9012cd88b2869d8f9c6207bef4a78cf534d"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/barrier-pure.stdout.log",
+      "bytes": 318,
+      "sha256": "4f2530ca253d5a5f463771aefe87ac53e4d63ed9fd12c5a7d37173a2dac6952b"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/base-source.tar",
+      "bytes": 72345600,
+      "sha256": "77ae9019a7a2e213bb4809da61e2629a2e6eac393f63f2b5d2e8d2c494774e51"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/before.json",
+      "bytes": 3535028,
+      "sha256": "b3352f77fbb3016e1de8abcb23c0ad52967ed900ce766ef61f35a31c4c5ae2b3"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/capture-pure.admission.json",
+      "bytes": 161,
+      "sha256": "8313e2946c5d338a31bb85d666ceee16330aa9db51bd9e1ab7a11a3710100420"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/capture-pure.process.json",
+      "bytes": 125,
+      "sha256": "951400f3e7f58124d3cb6ca9ef9f3ee67f0cbde4a7165ce4480cfa16493132fb"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/capture-pure.stderr.log",
+      "bytes": 217,
+      "sha256": "86834d40f84c32fd663459715bc1f36a741055409b0e5fade8fc56f5e286eee0"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/capture-pure.stdout.log",
+      "bytes": 556,
+      "sha256": "1636a5a718cc111e95d1abe2e5d1efe101e4ae529681aa5fe7aa79a272580bf2"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/closure-comparison.json",
+      "bytes": 69,
+      "sha256": "4a09e9dbac3b4886173b921c675f43a5925b7f88673e2e81578c22500a80940e"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/closure-counts.json",
+      "bytes": 191,
+      "sha256": "9351f87dca32205b777b07900aad3c57947e8a297016b7015c14290de59e7b2a"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/commands.json",
+      "bytes": 1722,
+      "sha256": "194660d1d2811ee5ec8660cc6c648c2afdb254563c1dba0f7a35f0401954d782"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-check.admission.json",
+      "bytes": 161,
+      "sha256": "da013f96db3c299e4f711113ef08c7779dfe3543279bbde280fa3054152b1109"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-check.process.json",
+      "bytes": 124,
+      "sha256": "42ef4c97e8fb3c0bcf5ce2cfe7510cea3f512fb825babaa06a9f1a66839cc06c"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-check.stderr.log",
+      "bytes": 1422,
+      "sha256": "0960637196246385a15cd82e7d37ddaf3238cad5b3916707e7e40d516e1e667e"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-check.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-clippy.admission.json",
+      "bytes": 161,
+      "sha256": "25ca992519317e285d97c051e21f7577825a4817b1f25da62a930642670d4a25"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-clippy.process.json",
+      "bytes": 125,
+      "sha256": "7d71141f2061f8dbd6caa871374a6d0e366fade0e90cd09b90b853285094ee78"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-clippy.stderr.log",
+      "bytes": 832,
+      "sha256": "95df05bed3f5883ccd6deca3cc5ff4dc7d2293028f6d9dbf09046752d30a60ae"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/controller-clippy.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/direct-pure.admission.json",
+      "bytes": 160,
+      "sha256": "517aebf4aa53744b455ca7c628a34987e3f5379952b2ed69d48edc9988d0e279"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/direct-pure.process.json",
+      "bytes": 125,
+      "sha256": "17e9984d9da31bbdd6f92572c8c747b893da2bdd6ea87ecec959e069556b7241"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/direct-pure.stderr.log",
+      "bytes": 217,
+      "sha256": "5209bdf63ea7577169962f290d34a9012cd88b2869d8f9c6207bef4a78cf534d"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/direct-pure.stdout.log",
+      "bytes": 203,
+      "sha256": "e04bed74ca1dfbce8b6760ffba588f0e8c8dde8553b80956fd06272d3e7861aa"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/dotnet-protocol-pure.admission.json",
+      "bytes": 161,
+      "sha256": "53e48bc0bd521d4741fda33922bbb0b938f0ab86769315c71e84a96f2dcd01cf"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/dotnet-protocol-pure.process.json",
+      "bytes": 125,
+      "sha256": "6ccc1760eb4481868f6cbc167a051b8e3adf0f092681950d30eadbd0508913d6"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/dotnet-protocol-pure.stderr.log",
+      "bytes": 4641,
+      "sha256": "0a8e388921e13a8e11c6e34299142c95424b4595b44974fe4991c2af76af69e3"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/dotnet-protocol-pure.stdout.log",
+      "bytes": 1014,
+      "sha256": "0994d20e43e0fd11a59cd7784800d8f19b4338124c8b0e359a10a9a82b3020a7"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/execution-terminal.json",
+      "bytes": 265,
+      "sha256": "9ba9b2f08d44bec3fb18978f4ac8724c12f4735a352c542ba793310d9ac00acb"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/first-failure.json",
+      "bytes": 122,
+      "sha256": "2f94adc75df4aba1d72f71b489549d953d4dc220401b819c9bb1714044b56a4f"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/fmt.process.json",
+      "bytes": 101,
+      "sha256": "1c2d0a90bb9ca0d207d0976067b5d45d1971fabb02c509172d33c352da79deac"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/fmt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/fmt.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/interactive-pure.admission.json",
+      "bytes": 161,
+      "sha256": "429a59b2674f92a90f23cc3d72053f26ac5d5a78e29023143c82775eed917836"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/interactive-pure.process.json",
+      "bytes": 125,
+      "sha256": "3ba60c659e1de019bbb2899cc3180503ceef14a4501c777b85889afa68c370dc"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/interactive-pure.stderr.log",
+      "bytes": 716,
+      "sha256": "79df864d96a82ac7bdae76079d760be69bad6e2de303323a366b2f28004c7604"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/interactive-pure.stdout.log",
+      "bytes": 1066,
+      "sha256": "9e348b4f8297e0044aad69464c9abf04810678f96df987d913ed4dcc34958b3f"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/lease-end.json",
+      "bytes": 566,
+      "sha256": "5d54589594ef0d721922ed141a7e1b44d9b0a7a9541d0dd222c2c810fe29379d"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/lease-start.json",
+      "bytes": 489,
+      "sha256": "464e2a76b502faf3173ed68241c14b862cbdaae54327e8290a0183f7db21b906"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/metadata-observation-correction.json",
+      "bytes": 473,
+      "sha256": "3985c114dc813a28b2aae8c69181d1f4016643535d5c1356c09ff7c8bd9b0108"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/original-budget.json",
+      "bytes": 155,
+      "sha256": "c9a71f54e5bd41bd4b2edca514f030383530aeea573e2781357ecb25034ff84a"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/overlay.json",
+      "bytes": 479,
+      "sha256": "14294033c80a578ca61c8f6ec377bf23371ed344873c961cb3b090bffedca313"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/protocol-overlay.rs",
+      "bytes": 14839,
+      "sha256": "6699630ed5346affbbc79d42393ba14e469e959502e601c5f11e150815ba3483"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/service-summary-pure.admission.json",
+      "bytes": 160,
+      "sha256": "f6141a10d92be4e08487d340292f22ecbd8e9c6615bedfb789393d00259f88d4"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/service-summary-pure.process.json",
+      "bytes": 124,
+      "sha256": "5983fc85d22e57208b99efca9e3e52cfc8817378cc5ccc85c22a9e55b285fe26"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/service-summary-pure.stderr.log",
+      "bytes": 1604,
+      "sha256": "a02975234ef87fc79b1964b52182f0cfe429ee44cf5783d937a6d1e7ae94f54e"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/service-summary-pure.stdout.log",
+      "bytes": 797,
+      "sha256": "38f89af43f20794658db3cafeb4b2414166680a64a6364c805e12a590c54f627"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-check.admission.json",
+      "bytes": 160,
+      "sha256": "45bb1e9c4043ea96ddf06edadde854486c8794bc153ed64f515a88e66ed8cd5d"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-check.process.json",
+      "bytes": 125,
+      "sha256": "384ccaae6fa2610fa15c979987b8e23292c01aba0f88a4e326224d992fe7a1b5"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-check.stderr.log",
+      "bytes": 415,
+      "sha256": "e91019abe81019504a1317f7d659e469e51e656075d4f4b77e4b07ad0992b530"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-check.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-clippy.admission.json",
+      "bytes": 161,
+      "sha256": "3b525f2caaca53f5dba534ba3827e3d2a330917d8b2ac2ada238b8e56cb5169e"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-clippy.process.json",
+      "bytes": 125,
+      "sha256": "7d1d3a023f47e3cfa258602e4460674851b04ce54609ce5419a01d001c841a23"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-clippy.stderr.log",
+      "bytes": 242,
+      "sha256": "e4b39bdb94d62ee877a987ff7c1ea1e156313c30417905c96dd94746b0cfca28"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/support-clippy.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/terminal.json",
+      "bytes": 210,
+      "sha256": "22530b44773b1df73e04ae741eaa192d32d2669d3967dd7cac13c1f581724bd3"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107180000-windows-runner-native-net-pure/test-binary-pins.json",
+      "bytes": 520,
+      "sha256": "57d63c00c3c23f7a37ad81d6537a53ff48d5877765f6935b0a7010e93f719ffc"
+    }
+  ]
+}

@@ -39,6 +39,13 @@ fn hex(value: &str, len: usize) -> bool {
 fn digest(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
+fn run_id(value: &Value) -> Option<u64> {
+    let text = value.as_str()?;
+    if text.is_empty() || text.starts_with('0') || !text.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    text.parse().ok()
+}
 fn bounded(path: &Path, cap: usize) -> io::Result<Vec<u8>> {
     let metadata = fs::symlink_metadata(path)?;
     if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > cap as u64 {
@@ -146,7 +153,7 @@ fn verify(report: &Value, expected: &Expected, logs: Option<&[Logs]>) -> io::Res
         || report["source_sha"] != expected.sha
         || source["source_sha"] != expected.sha
         || source["dirty"] != false
-        || source["github"]["GITHUB_RUN_ID"] != expected.run.to_string()
+        || run_id(&source["github"]["GITHUB_RUN_ID"]) != Some(expected.run)
         || source["github"]["GITHUB_SHA"] != expected.sha
         || !source["files"].as_object().is_some_and(|files| {
             !files.is_empty()
