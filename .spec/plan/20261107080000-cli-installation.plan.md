@@ -84,6 +84,13 @@ The coherent checkpoint is now 7f73604251e983addbb1ef97283959cd6045c6e1,
 with attributed owned commit and git-ops released. Source-only evidence summary
 [[evidence:root/20261107081540]] explicitly retains latest gates as NOT_RUN;
 private bundle 20261107081539 retains repeated fmt/scoped-spec raw outputs.
+Root then pushed exact candidate a26d1c3f08b365ca93545c6a51343095868edb45,
+including CLI7f73604. New run42354873001 terminated startup_failure with zero
+jobs/tests because nested actions:read exceeded caller actions:none. CI owns the
+minimal permission correction and root alone owns push/new dispatch. This source
+does not include later working changes by assumption; no CLI runtime test result
+or old-green promotion follows from the failed startup. Actual runtime-service
+runner hook also remains a separate native-owner source dependency.
 
 The fixture bootstrap must be separately feature-gated and bounded. Its pinned
 nonsecret inputs bind service name, hosted run identifier, full source identity,

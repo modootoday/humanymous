@@ -6,6 +6,19 @@
   "scoped_spec_check": "passed",
   "latest_pure_tests": {"status": "not_run", "expected": 7},
   "latest_clippy": "not_run",
+  "hosted_attempts": [
+    {
+      "source_commit": "a26d1c3f08b365ca93545c6a51343095868edb45",
+      "run_id": 42354873001,
+      "status": "startup_failure",
+      "jobs": 0,
+      "tests": 0,
+      "failure_stage": "reusable-workflow-permission-validation",
+      "cause": "nested actions:read exceeds caller actions:none ceiling",
+      "observation": "authoritative-root-report; raw recovery owned by root/CI",
+      "qualifies_cli_runtime": false
+    }
+  ],
   "actual_runtime_service": {
     "status": "not_run",
     "cargo_target": "runtime_service_process",
