@@ -25,7 +25,7 @@ and resource admission; follow the exact live run or process handle.
 | --- | --- | --- |
 | Core | 35 | Source integrated; bounded local tests/type/lint and default extracted-library consumer passed; full packaging/product gates pending |
 | Platform | 34 | Source moved; pure/type/lint, feature/API boundaries and default-library package verification passed; full consumers/runtime gates pending |
-| Runtime | 29 | Source relocated into six contexts; Windows all-target/all-feature check and strict Clippy passed; 177 selected pure cases passed from a 366-case library inventory; consumer, privacy, packaging and actual runtime gates pending |
+| Runtime | 29 | Source relocated into six contexts; Windows all-target/all-feature check and strict Clippy passed; 177 selected pure cases passed from a 366-case library inventory; named sibling-access probes and extracted compilation also passed; coherent consumers, full packaging and actual runtime gates pending |
 | Tools | 21 | Owner handoffs prepared; implementation not consolidated |
 | Adapters | 10 | Role/loader/unsafe gates and owner handoffs prepared; implementation not consolidated |
 | Browser | 8 | Separate artifact/loader decisions required; implementation not consolidated |
@@ -36,6 +36,16 @@ These workspace counts describe the accepted consolidation sequence, not package
 completion. Facade/collector path relocation and final Cross-OS/product gates
 remain required independently of reaching eight members.
 
+Runtime follow-up in [[evidence:root/20261107221648]] records one positive and ten
+expected same-crate access refusals on actual module sources. Four source-only
+crate archives then compiled as an isolated Runtime/test-target/consumer graph:
+522 extracted files stayed unchanged, strict Clippy passed and a pure default
+consumer ran successfully. This does not establish normal Cargo package
+verification, registry publication, full366 execution or native/product readiness.
+Delivery source1061819a separately passed121 pure tests after the earlier64
+compiler failure was preserved and corrected; Native64 passed six role-fixture
+cases without invoking its production metadata loader. Keep these distinct runs
+and custody scopes rather than summing them into one whole-product result.
 Platform source-bound evidence is [[evidence:root/20261107205600]]:41 pure cases
 with14 explicitly filtered parent/fixture cases,162 core cases, four separate
 pure Windows bridge cases, two bridge
