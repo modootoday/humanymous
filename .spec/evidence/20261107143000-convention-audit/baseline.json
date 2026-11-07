@@ -125,5 +125,25 @@
     "full_shared_warnings": 14,
     "full_errors_fully_classified": false,
     "private_raw_preserved": true
+  },
+  "followup_package_source": {
+    "source_sha": "5a64daaf278672605363041ca0fcf5eabc73c1f8",
+    "packages": 43,
+    "humanymous_prefix_all": true,
+    "standard_lib_or_main_all": true,
+    "publish_false_all": true,
+    "license_declared_all": true,
+    "private_inventory_sha256": "efc92506b94ba27aa9db9d4f224dc8c6b6e664222cbc6b807acb1fbc14072f1f",
+    "actual_cargo_or_publication_qualification": false
+  },
+  "followup_notice_verifier": {
+    "source_sha": "cba962643fd9e5c78e7994e8d44a2449da2880be",
+    "raw_tests_passed": 81,
+    "raw_tests_failed": 0,
+    "raw_tests_ignored": 0,
+    "raw_tests_filtered": 0,
+    "private_independent_review_sha256": "a1e05fed6e578df9eaaac7d5415c17d47e0a54e61ce0010c443287e602a6ba15",
+    "actual_binary_archive_verified": false,
+    "actual_image_verified": false
   }
 }

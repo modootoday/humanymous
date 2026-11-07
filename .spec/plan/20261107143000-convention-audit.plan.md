@@ -108,3 +108,19 @@ only the first page of full findings was emitted by the tool. This is not a full
 classification of those errors and never a global Specfold pass. Foreign paths
 were not modified or broadly suppressed. Final owned files are checked again
 after their evidence metadata is refreshed.
+
+## Follow-up independent evidence
+
+At immutable5a64daaf,43 package manifests all have humanymous-* names, tracked
+standard lib/main entry points, publish=false and license declarations. Private
+per-package Git blob records preserve the exact source basis. This does not
+replace Cargo/feature/target or publication qualification.
+
+Atcba96264, independently read81-test footer and finished-archive verifier source;
+known notice/first gzip footer negatives are covered. Source2582/config20/env9
+are byte-equal before/after; registry3791/tools4 have zero semantic differences
+but different serialized ordering. The three tested/current overlays match.
+Actual binary archive/final image gates stay open. Delivery accepted the next
+profile's need to bind individual binary hashes/extracted bytes and distinguish
+current repository snapshot from verified build provenance; no stale incident
+or all-archive safety conclusion is inferred from source alone.

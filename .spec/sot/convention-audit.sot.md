@@ -78,6 +78,13 @@ See [[evidence:root/20261107143000]] and [[plan:root/20261107143000]].
 | Security/freeze/a11y | Shared Engine consumers, failure poisoning, private destructive permits and collector stop paths reviewed | Remaining trust/lifetime/negative boundaries and actual venue receipts; no full security/a11y certification |
 | License/public packaging | Known Go notice recipe corrected; stale universal public claims corrected | Actual binary archive and final image content checks; complete dependency notices and package surface qualification |
 
+Follow-up immutable source5a64daaf278672605363041ca0fcf5eabc73c1f8 has43 package
+manifests under the reviewed source roots. Each names a humanymous-* package,
+has a tracked standard src/lib.rs or src/main.rs, declares publish=false and a
+license or inherited license. Private package-layout-review.json binds every
+manifest's Git blob. This static observation is not Cargo parsing, dependency
+resolution, every-target/feature compilation or registry/publication evidence.
+
 The 314-row legacy responsibility registry still records pending or unit-only
 parity. Deletion, package membership or a successful source scanner cannot promote
 those rows to runtime parity. The integration owner retains program completion.
@@ -112,6 +119,20 @@ The shipping command's rejection of retired Go input is an expected negative,
 not a waiver. Neither current graph changes nor actual artifact contents were
 qualified. Public receipt: distribution-notice-validation.json under
 [[evidence:root/20261107052001]].
+
+Follow-up cba96264 adds finished compressed-archive notice inspection and an
+actual81-test receipt, independently read in raw logs. The known notice must
+occur once as a bounded regular entry, and the first gzip footer is consumed to
+check CRC/length. Missing/duplicate/changed/nonregular/oversize/truncation/CRC
+negative tests are substantive. This is first tar/gzip stream validation for an
+owned archive, not general extraction safety or all concatenated/trailing data.
+Saved source2582/config20/environment9 entries were byte-equal; registry3791 and
+tools4 were semantically equal despite serialized ordering. Three frozen/current
+overlay hashes matched. Actual binary archive/final image gates remain OPEN.
+The next actual archive profile must distinguish current repository identity
+from individual binary build provenance and bind extracted binary bytes/hashes.
+CI builds immediately beforehand; no stale-artifact incident is alleged from the
+direct command's possible reuse of preexisting target/release files.
 
 The original LF blob hashes are c37be54a5c5e71a00257f1b9a52475edbbeda95217bec69bdfebffd36612c3f3
 for browser native.rs and a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df
