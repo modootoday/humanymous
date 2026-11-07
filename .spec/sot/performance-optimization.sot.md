@@ -192,7 +192,7 @@ combining UTF-8, case collisions and raw body bytes. Decode fixtures/build maps
 outside timed batches; consume outputs through black_box. Removal of explicit
 temporary constructions is source evidence, not an observed allocation count.
 Do not introduce unsafe global allocator instrumentation to manufacture counts.
-Root's later narrow handoff permits this owner to change only canonical.rs,
+Root's temporary narrow handoff permitted this owner to change only canonical.rs,
 canonical/tests.rs and examples/canonical_performance.rs. The example uses the
 fixed81 independent request fixtures plus6 synthetic cases, prevalidates exact
 canonical/token bytes, then warms both implementations16 corpus iterations and
@@ -201,6 +201,11 @@ is outside timing. A120second deadline covers warmup and paired work, with a
 check per corpus iteration; fixed bounded fixtures constrain each iteration.
 Output includes per-batch time, operation/byte counts and fixture/output digests,
 never raw header or key data. This source contract is not executed evidence.
+After measured receipt fc74b9be and independent raw review5ae869a6, these three
+source paths were returned to root. The actual claim now contains only the five
+exact performance spec/plan/public evidence/private bundle scopes. Any further
+implementation requires a new explicit owner handoff; governing this contract
+does not imply current source-write authority.
 Independent read-only review of c4786b67 found no semantic blocker in the three
 delegated paths. Its acceptance is source-only. The120second check is explicitly
 a cooperative timed-work budget after preparation, not a hard whole-process

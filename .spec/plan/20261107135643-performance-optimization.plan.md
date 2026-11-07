@@ -184,3 +184,9 @@ and seek owner review of the bounded manifest proposal. Future experiments need
 their own exact allocation. R2 actual Runtime/Authority/Audit/collector profiles,
 security/product gates and the remaining build optimization areas stay open;
 this measured R1 slice does not close the persistent goal.
+Receipt fc74b9be was committed and independently rechecked by the convention
+owner in5ae869a6, including raw timing recalculation, equal per-row byte/operation
+counts, current binary hash and saved closure equality. No measurement rerun.
+The three delegated Integrity paths were then returned to root through normal
+owned lane release/reclaim. The actual claim was reread as the original five
+exact documentation/evidence scopes only; root and agent-maintenance were notified.
