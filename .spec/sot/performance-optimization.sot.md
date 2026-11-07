@@ -803,6 +803,144 @@ Primary source ledger reviewed2026-11-08:
   requests nightly2026-08-15; [documented NVPTX workflow](https://doc.rust-lang.org/rustc/platform-support/nvptx64-nvidia-cuda.html)
   also uses nightly components. Neither is approved for this stable workspace.
 
+## Runtime64 optional normal-dependency proposal
+
+Root requested this source/graph review after consolidating six Runtime contexts.
+It authorizes no Cargo/source edit, resolution, compiler or workload. Inspected
+Runtime Cargo.toml/lib.rs, CLI manifest, workspace inheritance and actual imports/
+parent cfg gates. No package-name/version/pin/new-dependency change is proposed.
+Observation HEAD was95e4af0edda50474c1770dd364a86a0020188d4f;
+Runtime manifest SHA2569c3353fdf4ead93eb7213a34c4cbf0b679b2b2de714066243b39c38f793fc556,
+CLI manifest SHA256d89248233341f580b50f2a8f82b1673548fc439f13f685c2fe7a707f1f90aca8
+and Cargo.lock SHA2565d3e1453ab8c3cdba1d22443effc045740e629153784d0c3b4ac62b7231cbf00.
+These are source observations, not a frozen execution grant. Root may need a
+workspace-edge lock refresh after accepted optional wiring; it must preserve every
+existing external version/source/checksum and retain the first locked failure.
+
+Historical CLI8e51e55881c5e3d6389ab2bb853d6236748805ca normal-tree raw output in
+private223854 shows Runtime/native-security only, Gateway absent, yet HPACK,
+platform/windows-object, Tokio, md-5 and rustls remain normal dependencies.
+The check-normal footer is31.03seconds; it was an all-targets check, with dev
+dependencies and existing target history. This establishes observed cost/graph,
+not an isolated benchmark, cold-cache baseline or predicted savings.
+
+### Context and target dependency matrix
+
+The table describes direct source use, not a union of grep words. In particular,
+std::time does not imply the external time crate; test modules are not normal
+imports. Existing core dependencies can still pull shared crates transitively.
+
+| Context feature | Direct portable normal dependencies | Additional target-gated normal source use |
+|---|---|---|
+| gateway | humanymous-core, serde, serde_json, sha2, hex, base64, getrandom, zeroize, socket2, rustls, tokio | Native operations retain their existing platform cfg and context prerequisites; gateway service fields refer to rustls even when no TLS listener is configured. |
+| authority | humanymous-core, serde, serde_json, sha2, hex, base64, subtle, ed25519-dalek, getrandom, zeroize, tokio | Unix transport uses rustix/process; Windows transport uses interprocess/tokio plus widestring. Native-security/audit/network stay required. |
+| audit | humanymous-core, serde, serde_json, sha2, hex, subtle, ed25519-dalek, unicode-normalization, hmac | Unix/Windows keys/control/log/sink/durable code adds base64, getrandom, zeroize, time, aes-gcm and scrypt; Unix custody/storage uses rustix process/fs. Windows privacy delegates to native-security. |
+| capture | rustls, httlib-hpack | network stays required. TLS ServerConfig/ServerConnection and the HPACK Decoder field make both normal, not pilot-only. Time references are std. |
+| network | humanymous-core, serde, serde_json, sha2, md-5, hex | No direct Tokio, rustls or HPACK import is needed by this parser/report context. md-5 remains frozen fingerprint compatibility, not authentication. |
+| native-security | zeroize | Unix identity uses rustix/process. Windows process/volume uses winsafe; storage uses windows-permissions; protected secrets use keyring-core/windows-native-keyring-store. No direct core/network/Tokio/TLS/HPACK dependency. |
+
+Source anchors: gateway/application.rs socket2 and sha2, service.rs TLS field,
+session.rs entropy/base64; authority/credentials.rs and transport/{unix,windows};
+audit/record/{canonical,normalization}, checkpoint, log/stamp.rs, keys/custody;
+capture/tls/transport.rs and http2 Decoder; network/tls/fingerprint.rs and reports;
+native_security/process,storage,secret. Audit verification/scan and its native
+backend are test-compiled through their parent verification cfg; do not infer
+normal Linux scanner capability from a leaf file. Private/test/Unsupported
+boundaries must remain unchanged.
+
+Runtime's current Windows normal humanymous-platform/windows-object edge has no
+normal Rust reference in the inspected contexts. The observed platform reference
+is Audit storage/wal.rs inside cfg(test), using platform::testing. Propose removal
+of that unused normal edge only after root confirms the frozen import inventory;
+retain the platform testing dev-dependency and its existing Windows fixture dev
+dependencies. Do not enable testing as a normal feature to make checks green.
+
+### Minimum safe wiring for root review
+
+Keep module cfgs, the Gateway default and every context implication unchanged.
+Change each context-owned normal dependency to optional, retaining its current
+version/workspace inheritance, native target table and dependency feature list.
+Activate it through explicit dep: entries below. Keep target-specific dependencies
+in their current Unix/Windows/any-native tables; do not gate dependencies through
+target cfg(feature), which Cargo does not use for this purpose. Do not narrow
+Tokio/rustls/rustix/interprocess subfeatures in this first proposal.
+
+Proposed additions to the existing feature arrays (source-owning direct use is
+explicit even if another context also activates the same dependency):
+
+| Existing feature and unchanged implication | Dependency activation entries |
+|---|---|
+| gateway -> authority,audit,capture,network | dep:humanymous-core,dep:serde,dep:serde_json,dep:sha2,dep:hex,dep:base64,dep:getrandom,dep:zeroize,dep:socket2,dep:rustls,dep:tokio |
+| authority -> audit,network,native-security | dep:humanymous-core,dep:serde,dep:serde_json,dep:sha2,dep:hex,dep:base64,dep:subtle,dep:ed25519-dalek,dep:getrandom,dep:zeroize,dep:tokio,dep:rustix,dep:interprocess,dep:widestring |
+| audit -> native-security | dep:humanymous-core,dep:serde,dep:serde_json,dep:sha2,dep:hex,dep:subtle,dep:ed25519-dalek,dep:unicode-normalization,dep:hmac,dep:base64,dep:getrandom,dep:zeroize,dep:time,dep:aes-gcm,dep:scrypt,dep:rustix |
+| capture -> network | dep:rustls,dep:httlib-hpack |
+| network -> none | dep:humanymous-core,dep:serde,dep:serde_json,dep:sha2,dep:md-5,dep:hex |
+| native-security -> none | dep:zeroize,dep:rustix,dep:winsafe,dep:windows-permissions,dep:keyring-core,dep:windows-native-keyring-store |
+
+This intentionally does not split audit into new public microfeatures or duplicate
+dependencies under aliases to optimize unsupported targets. Target predicates
+still restrict activation; it does not promise cross-target compilation. Use
+dep: syntax to avoid exposing dependency-named public capabilities accidentally.
+Keep hosted-pilot -> capture+dep:rcgen and credential-pilot -> native-security
+unchanged. Keep rcgen as a dev dependency for existing Gateway TLS unit tests.
+No change to required-features on existing binaries/integration targets, no new
+default feature, and no public reexports or readiness/authority change.
+
+The six-context implication DAG has exactly12 distinct closed sets, excluding
+pilot modifiers. All remain legal and behaviorally unchanged:
+empty; native-security; audit+native-security; network;
+network+native-security; audit+network+native-security; capture+network;
+capture+network+native-security; audit+capture+network+native-security;
+authority+audit+network+native-security;
+authority+audit+capture+network+native-security; and Gateway's full six contexts.
+This is an analytical closure count, not twelve executed checks. Preserve any
+historical12 capability/profile protocol payloads independently; no capability
+manifest or unsupported result is removed by dependency narrowing.
+
+Workspace Runtime inheritance already sets default-features=false; CLI requests
+only native-security normally. Its runtime-service / runtime-service-pilot still
+activate the Gateway/Authority/Audit/credential chain and optional CLI Tokio/
+zeroize. Core's own transitive dependencies and CLI's direct crypto/serde edges
+must remain visible; this does not claim to remove every shared crypto crate.
+--all-targets tests or a multi-package workspace can unify dev/other-consumer
+features and still compile more dependencies. Normal, build and dev trees are
+different observations, not contradictory results.
+
+### Required graph, correctness and measurement evidence
+
+Before any patch root freezes exact Runtime/CLI/workspace manifests, source and
+Cargo.lock. After accepted wiring, compare normal and feature trees on Windows
+and a separately admitted Unix venue for each of the12 closed sets plus both
+pilots, default Gateway and CLI service profiles. A native-security-only normal
+tree should have no Runtime-owned TLS/HPACK/network/Tokio/authority/audit/core
+edge, while preserving its true Unix/Windows security dependencies. Feature
+unification from another consumer must be named rather than hidden. Compare the
+existing Gateway default dependency/feature closure against the prior version;
+no scoring/canonical/crypto behavior or12 capability claim may change.
+
+Run scoped fmt, locked/offline checks and strict Clippy in each relevant source-
+specific profile, existing regression/privacy-negative contracts and actual native
+pilots only when separately allocated. Empty and single-context checks catch
+feature leakage; default/all-features alone cannot prove optional correctness.
+Dev fixture compilation must retain platform::testing without promoting it into
+normal Runtime. Preserve unsupported targets and any first missing dependency.
+
+After root accepts source and allocates targets, compare matched before/after
+CLI normal build/check work with exact command, source except the manifest delta,
+lock versions, target/features/profile/toolchain and finite selected inputs.
+Use root-provided isolated empty targets for a genuinely cold comparison or
+explicitly label first existing-target state; never clean another owner's cache.
+Warm each arm independently then record three predeclared alternating replay
+pairs, separating fresh/no-op from actual rebuild work. Observe Cargo artifact
+identities/timings, total prep and compiler time, memory and external load; retain
+all failures and target cleanup. The existing31.03s check is context only and
+must not be divided by a later warm check to invent an optimization percentage.
+No compiler, Cargo tree/resolution, Docker or WSL command was run for this review.
+
+Primary mechanism: [Cargo optional dependencies and feature unification](https://doc.rust-lang.org/cargo/reference/features.html).
+Actual source imports and the saved8e51 normal tree determine this proposal;
+the proposal remains unimplemented and performance benefit unmeasured.
+
 ## Runtime measurement profiles awaiting owner allocation
 
 These are proposed contracts, not executable tests or new deployment claims.

@@ -12,6 +12,14 @@ rel:
 
 ## Bottom-up next admission
 
+Root assigned a Runtime64 normal-dependency review, not implementation. The SoT
+now records six-context/per-target source use, explicit optional dep: activations,
+unchanged Gateway default/implication chain and12 analytical context closures,
+pilot/dev fixture preservation and controlled later measurements. Saved CLI8e51
+native-security normal tree contains irrelevant Runtime TLS/HPACK/Tokio/md5;
+its31.03s all-targets check remains an unmatched historical observation. Root owns
+all graph/source/lock changes. This review ran no Cargo/compiler/Docker/WSL work.
+
 The user expanded GPU research project-wide. Keep prior build/cache/runtime goals
 and unchanged CPU studies. The SoT now ranks Meari presentation, isolated LLM and
 offline batch work, separates small production MLP and ordered/security/I/O paths,
