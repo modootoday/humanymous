@@ -1,0 +1,30 @@
+{
+  "scope": "Actual fixed-source comparison after manual receipt correction",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "docs_tree": "56b1e029952b5a3b29d4b0d056671bc79110e43b",
+  "clone": {
+    "retry": "Full40-character literal revision in fresh short private destination succeeded clean",
+    "primary_branch_switched": false,
+    "retry_chunk": "80f88d",
+    "initial": "Abbreviated --revision was not advertised/resolved by clone; failed before checkout",
+    "initial_chunk": "b1944b"
+  },
+  "delta": {
+    "byte_identical": 378,
+    "added": 209,
+    "exit": 0,
+    "raw_sha256": "e1acae19a910e523bf910cbb8c07f3dba53ce4c987b267c008dcd5583c722a16",
+    "current_governed_files": 682,
+    "removed": 1,
+    "output_chunk": "8eeba3",
+    "dirty": false,
+    "changed": 95,
+    "changed_or_added": 304
+  },
+  "manual_receipts_published": 34,
+  "comparison_note": "Other owners also changed/added source between fixed candidates; aggregate gap is not reduced solely by subtracting34 from the prior snapshot",
+  "review_accepted": false,
+  "complete_freshness_qualified": false,
+  "new_build_browser_at": "NOT_RUN",
+  "prior_448_build": "Qualifies earlier docs treec434ddf5 only"
+}

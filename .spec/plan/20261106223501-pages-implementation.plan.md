@@ -2183,3 +2183,14 @@ hash; unchanged schema/operator not renewed and no blanket digest refresh.
 Source checker88/errors0; theme/config/tokens unchanged. Changed docs invalidate
 using prior42367274252 as their render proof. Refreeze new checkpoint/tree and
 require fresh build/browser/freshness validation; whole goal remains incomplete.
+
+### Actual new fixed candidate review comparison
+
+Checkpoint269607366e4b2e37b47a974595b406b66642caae/docstree56b1e029 refrozen.
+Initial abbreviated clone revision failed; fresh full40SHA retry succeeded clean
+under Git mutex with no primary branch switch. Existing read-only delta exited0:
+378byte-identical,95changed,209added,1removed,682current files.304changed/new
+remain plus removed disposition. Other source changes/additions between fixed
+candidates mean counts cannot be derived merely by subtracting34manual reviews.
+Raw14298-byte result attached privately, exact source/count/limit status publicly.
+No complete freshness acceptance, new rendered build/browser/AT or goal completion.
