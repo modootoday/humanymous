@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-07T02:59:58Z
+updated: 2026-11-07T03:48:54Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -12,6 +12,37 @@ rel:
 ---
 
 # Browser collector migration
+
+## First-party environment probe extension
+
+Port web/js/env.js to an explicit asynchronous Rust environment_json API.
+Reuse the shared Environment wire type and frozen scorer; no new detection rule.
+Preserve privacy metadata truthiness, four bait classes, offscreen10px geometry,
+60ms observation delay, offsetHeight/display predicate,400ms first-party fetch
+abort and false collectorBlocked default. Fetch failures remain weak privacy
+observations, never proof of a blocker or automation. HTTP error status alone
+is not a fetch failure. Missing/broken DOM setup and malformed values fail the
+probe rather than reporting probed=true with synthetic clean observations.
+
+Critique reflected: the original best-effort DOM catch and leaked timeout on
+fetch rejection are not a safe ownership model. Rust owns the bait and timers,
+removes/cancels them on success or error and rejects cleanup failures. Use only
+generated bindings and checked reflection, never executable strings. Fetch only
+the fixed same-origin honeypot path with redirects refused and credentials
+omitted; no arbitrary URL parameter, permissions or third-party tracker request.
+This explicit API does not silently attach network activity to detect_json or
+snapshot_json. Those reports remain partial until session transport integrates
+the measured environment. Guard/advanced/bootstrap/Pass remain separate gates.
+
+Required actual browser tests: DOM cleanup on success/failure, visible/hidden
+bait, rejected fetch and HTTP error semantics, privacy getter truthiness,
+same-origin request options and aborted slow fetch/timer cleanup. Synthetic
+fixtures are not human/AT evidence or full product e2e. Optional API absence
+uses original defaults; throwing required privacy getters reject collection.
+Bound doNotTrack to256UTF16 units before copying it into Rust. Timers express
+configured browser delays, not a wall-clock guarantee under event-loop stalls.
+If browser cleanup APIs throw, return failure and attempt best-effort Drop cleanup;
+no complete cleanup or trustworthy observation is claimed against a hostile realm.
 
 ## Passive behavior extension
 

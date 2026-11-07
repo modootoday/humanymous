@@ -1,0 +1,30 @@
+{
+  "schema": "humanymous.pages-remote/1",
+  "observed_at": "2026-11-07T03:50:34.7479473Z",
+  "source_sha": "52c2c0da8e6d4f2d308b61deb7d994b5a323e200",
+  "run_id": 42335155099,
+  "pages_job": 128290403952,
+  "pages_status": "success",
+  "ruby": "3.3.13",
+  "checks": [
+    "bundle-audit no vulnerabilities found",
+    "authored theme validation and apex/subpath builds",
+    "checked-pages source-bound artifact downloaded"
+  ],
+  "artifact": {
+    "id": 13558827362,
+    "tar_sha256": "227521023568cee8889219b039281df59e371b347a942ab9c4935cc18e3af7d2"
+  },
+  "browser_job": {
+    "status": "failure",
+    "reason": "unimplemented required Rust browser runner: scripts/migration/pilot-browser.sh",
+    "wasm_release": "passed",
+    "id": 128290403919
+  },
+  "quality_status": "success",
+  "limits": {
+    "production_pages_deployed": false,
+    "full_ci_green": false,
+    "current_dirty_collector_excluded": true
+  }
+}

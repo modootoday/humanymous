@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T03:30:26Z
+updated: 2026-11-07T03:51:16Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -13,6 +13,11 @@ rel:
 ---
 
 # Rust migration conventions
+
+The collector adds an explicit Rust asynchronous first-party environment probe
+with shared Environment wire type, owned DOM/timers/abort and bounded privacy
+metadata. Its standalone measured API does not qualify snapshot/session transport.
+Evidence: evidence:root/20261106235519/environment-collector-results.json.
 
 ## Collector implementation delta c3389b6
 

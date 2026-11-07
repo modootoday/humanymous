@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T03:36:00Z
+updated: 2026-11-07T03:48:54Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui]
@@ -245,6 +245,14 @@ clipboard 내용은 읽거나 내보내지 않으며 first600 cap·반복키 음
 
 ## 전체 delivery CI 실패의 후속 수리
 
+후속 환경 수집은 explicit environment_json Rust API로 구현했다. native13 및
+actual Docker Firefox17(새 환경4case)이 통과했다. 실제 exported API와 owned
+loopback origin 요청,가시/숨김 bait,fetch 거절/HTTP 오류/timeout·정리,
+privacy getter 오류·256UTF16 예산을 검증했다. snapshot/session으로 자동
+통합하지 않았으며 guard/advanced·배포·RIT·human/AT는 남는다. 정제 근거는
+environment-collector-results.json이다. Pages 원격 성공·산출물과 여전히
+미구현인 browser 파일럿 실패는 pages-remote-results.json에 별도 기록한다.
+
 ac560ff의 전체 run42329288896는 failure이며 component green으로 대체하지 않는다.
 정제 분류는 cef-remote-results.json,원시 로그는 private evidence에 등록했다.
 
@@ -252,9 +260,9 @@ ac560ff의 전체 run42329288896는 failure이며 component green으로 대체�
 |---|---|---|
 | P1 / local 수정 | Unix custody 재획득 WouldBlock | duplicate-description 실패 재현→custody/WAL 공용 guard명시unlock 회귀 통과;exact remote 재검증 |
 | P1 / local 수정 | Unix authority native_process Clippy err_expect | Rust 수정·Linux all-target Clippy·실제 UID65534거절 및 helper 실행분모 검증 통과;원격 확인 |
-| P1 | browser job의 없는 humanymous-wasm 패키지 | 실제 collector/명시 WASM target 계약과 배포 runner 연결 |
-| P1 | 전체 Windows job이 관리자 token으로 CLI tests 실행 | 기존 엄격한 비관리자 검증을 공유하고 actor 조건 완화 금지 |
-| P1 | Pages Ruby3.3.12를 pinned action이 지원하지 않음 | 공식 지원 버전 확인·pin·실제 Pages build |
+| P1 / 빌드 수리 검증 | browser job의 없는 humanymous-wasm 패키지 | 52c2c0d 실제collector WASM release 통과;전체 browser runner 미구현 실패 보존 |
+| P1 / wiring 수정 | 전체 Windows job이 관리자 token으로 CLI tests 실행 | 52c2c0d 기존 엄격한 비관리자 검증 공유;해당 job 원격 실행 결과 확인 필요 |
+| P1 / build 검증 | Pages Ruby3.3.12를 pinned action이 지원하지 않음 | 52c2c0d Ruby3.3.13 actual apex/subpath build·artifact 통과;production deploy/최신 docs review 별도 |
 | 제품 gate | full runner3개·docs freshness·publish=false·Go shipping/CVE | 미구현 제품 경로/정리/검토를 실제 완료;gate 삭제·skip·ignore 금지 |
 
 writer lifetime 후속 근거는 evidence:root/20261106235519/custody-lifetime-results.json.
