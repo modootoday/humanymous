@@ -57,6 +57,13 @@ actual persistence strength, ambiguous-tail count and prior torn-byte count.
 Verification-only recovery has no new persistence receipt. These outcomes do
 not authorize replaying application effects or resetting an external anchor.
 
+For a recovery comparison, retain separate results for an already covered
+history, a missing local copy of the external head, a complete ambiguous tail,
+a stale or conflicting pin, bad HMAC and the wrong witness. The source includes
+pure planning fixtures for these distinctions. Reading or passing those fixtures
+does not execute filesystem repair, interrupted sync, process restart or an
+independent witness deployment; measure those boundaries separately.
+
 A terminal JSON value without its newline is uncommitted even if its JSON is
 valid. Recovery may discard that final incomplete frame; malformed
 newline-terminated frames still fail. The configured frame bound includes the

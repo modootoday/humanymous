@@ -1421,3 +1421,18 @@ states16MiB rotation threshold is not segment maximum/total disk quota,4MiB
 newline-inclusive frame bound and whole-memory history reads. Two manual receipts;
 no native/test/compiler execution. Exact813 Windows/nginx confirmed live, no Pages
 job yet. Test-file excerpts were not accepted as a whole-file review receipt.
+
+### Full-delta stability attempt and recovery fixture review
+
+Initial read-only review-delta completed but its console output was truncated.
+A subsequent attempt to retain complete JSON failed closed because governed
+crates/python-adapter/tests/support/wsgi_authority.rs changed during snapshot;
+no stable report was written and no full freshness/candidate claim follows.
+Do not automatically retry across active writers or bulk-refresh receipts.
+
+Read remaining complete witness-recovery test source and added one manual
+receipt. How-to names covered/missing-head/ambiguous-tail/stale-pin/HMAC/witness
+comparisons and separates pure fixture definitions from native repair/process
+execution. Requested audit owner label superseded lower KEYS-INTEGRATION current
+headings and prepared-rotation claims; withheld that whole-file metadata receipt.
+No new Cargo/process/network execution; goal remains active.

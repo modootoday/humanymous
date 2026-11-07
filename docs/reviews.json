@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/storage/witness_recovery/tests.rs",
+  "sha256": "70b6d6e7b029a6057d4c880b3afe58851989fe33aa1821d2066aa78cf5a79bec",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete synthetic signed fixture and four pure planning test definitions: covered versus missing checkpoint, complete ambiguous tail, stale/forked pin, bad HMAC/witness/records, absent independent pin, same writer/witness and provisioning refusal. Definitions inspected only, no execution or filesystem/process repair qualification.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md"
+  ]
+},
+{
   "source": "crates/audit/src/storage/witness_recovery.rs",
   "sha256": "e275c85e048d8f24331e1df56cb67caf79d9b5f63ba414497103d3f2af09c568",
   "reviewer": "codex/rust-pages",
