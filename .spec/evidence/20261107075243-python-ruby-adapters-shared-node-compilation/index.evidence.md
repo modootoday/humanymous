@@ -3,7 +3,7 @@ id: evidence:root/20261107075243
 title: Python Ruby adapters shared Node compilation
 status: active
 created: 2026-11-07T07:52:43Z
-updated: 2026-11-07T09:18:17Z
+updated: 2026-11-07T09:44:09Z
 rel:
   governs: [crates/node-adapter]
 files:
@@ -11,6 +11,7 @@ files:
   - {path: summary-002.json, sha256: cf779ccd005511ab728655fcb2f185eec98368ece59cf722a4d59390ce1055cf, bytes: 1839, store: repo}
   - {path: summary-003.json, sha256: b4b9498c9d6693ffa948a1fd10a3fa5ca85d87f6a1b0e21dfa7d3298c0145958, bytes: 3905, store: repo}
   - {path: summary-004.json, sha256: fa91c3441f1618771c7b8f34404347728e053cdc7b79202901771230e6c8abfc, bytes: 1194, store: repo}
+  - {path: summary-005.json, sha256: 781917464064e470b1b1b88e6c1c7a8e3fc5a7505d4e9fa0a01a19bb15c257e5, bytes: 2887, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -80,3 +81,14 @@ native generation/loader inspection is distinct from framework/authority proof.
 The LF-normalized API log remains private with its hash. Archive packing was not
 reached; neither this historical result nor later source-only feature guards
 qualify current packages or runtime tuples.
+
+## Default Ruby pure tests and retained lint failure
+
+Summary005 records a new assigned B batch: Ruby library2 and package-driver2
+pure tests passed with zero failures/ignores/filters. All-targets Clippy failed
+one items_after_test_module diagnostic. The batch stopped before Node commands
+and B was returned. Conservative recursive closure tracking covered13packages/
+251files and observed one changed test-support Docker source path; no full-graph
+stability is claimed. Owned Rust stayed frozen. Moving the unchanged Drop impl
+before tests is a later order-only fix whose retry remains NOT_RUN. Neither the
+pure tests nor the default feature compile Ruby native callbacks, ABI or packages.

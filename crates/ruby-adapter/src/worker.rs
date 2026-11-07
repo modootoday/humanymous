@@ -15,6 +15,16 @@ impl DecisionWorker {
     }
 }
 
+impl Drop for DecisionWorker {
+    fn drop(&mut self) {
+        // Closing the sender wakes the receiver even when its value was false.
+        self.cancel.take();
+        if let Some(thread) = self.thread.take() {
+            let _ = thread.join();
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -54,14 +64,5 @@ mod tests {
         });
         drop(DecisionWorker::new(cancel, thread));
         assert!(completed.load(Ordering::Acquire));
-    }
-}
-impl Drop for DecisionWorker {
-    fn drop(&mut self) {
-        // Closing the sender wakes the receiver even when its value was false.
-        self.cancel.take();
-        if let Some(thread) = self.thread.take() {
-            let _ = thread.join();
-        }
     }
 }

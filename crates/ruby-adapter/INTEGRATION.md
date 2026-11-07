@@ -59,7 +59,13 @@ summary003. No tests, Ruby native build/import or package execution ran.
 That earlier snapshot does not compile the later worker/liveness changes.
 Two worker cancellation/join/panic pure definitions and two package-driver pure
 definitions now require a separate four-case default test gate. These pure tests
-do not establish native Ruby ABI or callback behavior. All new tests are NOT_RUN.
+do not establish native Ruby ABI or callback behavior. Root then allocated the
+four pure cases: all passed, zero failed/ignored/filtered. All-targets Clippy
+failed one items_after_test_module diagnostic because Drop followed the tests.
+The unchanged Drop impl was moved before tests without suppression. This order
+fix awaits retry. A conservatively tracked test-support Docker file changed
+during the batch, so full-closure stability is not claimed. Exact source/log
+hashes are in evidence:root/20261107075243 summary005; native probes remain NOT_RUN.
 
 Local Windows/WSL actual execution is now user-authorized under root allocation;
 the active benchmark quiet window still permits no new build/runtime command.

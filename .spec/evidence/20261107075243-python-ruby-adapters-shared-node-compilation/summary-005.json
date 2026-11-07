@@ -1,0 +1,95 @@
+{
+  "schema": "humanymous.adapter-compilation/1",
+  "scope": "root-allocated Windows default Ruby pure Rust tests and Clippy, native feature disabled",
+  "sourceHeadObservedBefore": "2679089e31f8d503f27009936e4ccc81ea67e38f",
+  "sourceHeadObservedAfter": "2899a89c92690bcfabf6afc3aca8c69561b4f394",
+  "environment": {
+    "CARGO_TARGET_DIR": "target/node-native/build",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0"
+  },
+  "sourceMonitoring": {
+    "afterManifestSha256": "e44e5421de9a174b220c9bf953c41e9bf8bb30ff7aa3844e026cc8832439516b",
+    "beforeManifestSha256": "8c77d3e4d5c0708c6273e4c7ebf3741ec6c493bef939e4ed70c87b3fb29a4369",
+    "ownedRustSourceChangedDuringCommands": false,
+    "conservativeScope": "recursive local dependency declarations including nested dev/build/target/optional paths",
+    "enumeratedFiles": 251,
+    "fullClosureStable": false,
+    "changedFiles": [
+      "crates/test-support/src/docker.rs"
+    ],
+    "packages": [
+      "humanymous-audit",
+      "humanymous-authority",
+      "humanymous-behavior",
+      "humanymous-framework-adapter",
+      "humanymous-integrity",
+      "humanymous-model",
+      "humanymous-native-security",
+      "humanymous-network",
+      "humanymous-node-adapter",
+      "humanymous-ruby-adapter",
+      "humanymous-scoring",
+      "humanymous-signals",
+      "humanymous-test-support"
+    ]
+  },
+  "commands": [
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "humanymous-ruby-adapter",
+        "--lib",
+        "--bins",
+        "--",
+        "--test-threads=1"
+      ],
+      "exitCode": 0,
+      "cargoReportedBuildSeconds": 6.24,
+      "harnesses": [
+        {
+          "ignored": 0,
+          "passed": 2,
+          "failed": 0,
+          "filtered": 0,
+          "target": "lib"
+        },
+        {
+          "ignored": 0,
+          "passed": 2,
+          "failed": 0,
+          "filtered": 0,
+          "target": "humanymous-ruby-package"
+        }
+      ],
+      "rawLogSha256": "006b880e32c0387e198ba113ecb43df0b37355199e4501aa3d67d9becd31ebf5"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-ruby-adapter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 101,
+      "diagnostics": 1,
+      "reason": "items_after_test_module",
+      "rawLogSha256": "9e1bccf65b6ec0dbe53716791e3cf03254f29a4642ddee806376ea54fcf7b343"
+    }
+  ],
+  "workerSha256DuringTest": "394d0f90a7b08e5848577385011a7083076fd3b20b3e64d2f7efea6b82a1bad9",
+  "orderOnlyFixSha256": "6a72de650b258e29ca797b9d16a7c72f40ae6d093a1209eb04e850e6cecf0c05",
+  "postFixRetryStatus": "not_run",
+  "nodeDefaultAndHostPilotCommands": "not_run-after-first-failure",
+  "rubyNativeAbi": "not_run",
+  "actualRubyFrameworkOrInstall": "not_run",
+  "wholeProductQualified": false
+}

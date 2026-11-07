@@ -303,3 +303,18 @@ https://raw.githubusercontent.com/puma/puma/v8.0.2/lib/puma/client_env.rb ;
 https://raw.githubusercontent.com/puma/puma/v8.0.2/lib/puma/client.rb ;
 https://raw.githubusercontent.com/puma/puma/v8.0.2/lib/puma/server.rb ;
 https://rubygems.org/api/v2/rubygems/puma/versions/8.0.2.json?platform=ruby .
+
+Root explicitly ended quiet and allocated B for Ruby default four pure cases/
+Clippy, then Node default/host-pilot checks. Source stayed frozen during the batch.
+Ruby lib2 plus package-driver2 all passed, zero failed/ignored/filtered; Cargo
+reported build6.24s. Clippy failed one items_after_test_module diagnostic because
+the Drop impl followed mod tests. Batch stopped immediately; Node commands were
+NOT_RUN and B returned, with no process/session left.
+Conservative recursive local path closure includes13packages/251files, covering
+scoring/behavior/model/network/test-support as well as direct adapter dependencies.
+Before/after changed ONE path, crates/test-support/src/docker.rs. An initial
+premature changed0 coordination statement was corrected immediately; public
+summary005 records changed1 and fullClosureStable=false. Owned Rust did not change
+during commands. Native Ruby, real frameworks/install and Unix WSGI are NOT_RUN.
+After returning B, moved the unchanged Drop impl before the tests (order only,
+no suppression); scoped format/diff pass. Fixed source retry awaits allocation.
