@@ -38,6 +38,7 @@ RUN HUMANYMOUS_APACHE_ABI_RECEIPT=/out/apache-abi-production.json cargo build --
 RUN cargo clippy --locked -p humanymous-apache-native --features httpd --lib -- -D warnings
 RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_native.so
 RUN install -D /out/apache-abi-production.json /opt/httpd/modules/apache-abi-production.json
+RUN install -D /src/Cargo.lock /opt/httpd/source-Cargo.lock
 RUN cargo build --locked --release -p humanymous-apache-native --features httpd,pilot-probes --lib
 RUN cargo clippy --locked -p humanymous-apache-native --features httpd,pilot-probes --lib -- -D warnings
 RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_probe.so

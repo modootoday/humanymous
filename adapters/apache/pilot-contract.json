@@ -1,17 +1,176 @@
 {
-  "schema": "humanymous.apache.pilot/0.1",
+  "schema": "humanymous.apache.pilot-contract/0.1",
+  "report_schema": "humanymous.apache.pilot/0.1",
   "implemented": false,
+  "sourceImplemented": true,
   "status": "not_run",
   "fullProductSuccess": false,
-  "execution": "free-github-hosted-docker-only",
+  "qualification": "Unqualified source candidate; actual hosted results required. Frozen ALLOW evidence is component-only.",
+  "buildCandidate": {
+    "available": true,
+    "dockerfile": "adapters/apache/Dockerfile.native",
+    "target": "pilot",
+    "entrypoint": "/opt/apache-pilot",
+    "source_commit_build_arg": "HUMANYMOUS_SOURCE_REV",
+    "source_manifest_build_arg": "HUMANYMOUS_SOURCE_MANIFEST_SHA256",
+    "runtime_image_identity_env": "HUMANYMOUS_APACHE_IMAGE",
+    "user": "65532:65532",
+    "network": "none",
+    "read_only": true,
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "tmpfs": "/tmp:rw,noexec,nosuid,size=268435456",
+    "pids_limit": 256,
+    "memory_bytes": 1073741824
+  },
   "sourceCommit": null,
   "lockSha256": null,
   "moduleSha256": null,
   "imageDigest": null,
-  "requiredIdentity": ["httpdVersion", "aprVersion", "mpm", "architecture", "libc", "rustVersion"],
-  "requiredGroups": ["event", "worker", "prefork", "binary-body-replay", "authority-outage", "deadline-expiry", "request-cancellation", "graceful-reload", "subrequest-rejection", "internal-redirect-rejection", "cache-bypass-denial", "spoofed-provenance", "origin-witness-denial"],
   "cleanupRequired": true,
   "cleanupObserved": false,
+  "requiredScenarioCount": 45,
+  "required_case_ids": [
+    "event/binary-body-replay",
+    "event/spoofed-provenance",
+    "event/subrequest-rejection",
+    "event/internal-redirect-rejection",
+    "event/cache-bypass-denial",
+    "event/deny",
+    "event/challenge",
+    "event/required-capture",
+    "event/unknown-route",
+    "event/request-cancellation",
+    "event/graceful-reload",
+    "event/deadline-expiry",
+    "event/origin-witness-denial",
+    "event/authority-outage",
+    "event/cleanup",
+    "worker/binary-body-replay",
+    "worker/spoofed-provenance",
+    "worker/subrequest-rejection",
+    "worker/internal-redirect-rejection",
+    "worker/cache-bypass-denial",
+    "worker/deny",
+    "worker/challenge",
+    "worker/required-capture",
+    "worker/unknown-route",
+    "worker/request-cancellation",
+    "worker/graceful-reload",
+    "worker/deadline-expiry",
+    "worker/origin-witness-denial",
+    "worker/authority-outage",
+    "worker/cleanup",
+    "prefork/binary-body-replay",
+    "prefork/spoofed-provenance",
+    "prefork/subrequest-rejection",
+    "prefork/internal-redirect-rejection",
+    "prefork/cache-bypass-denial",
+    "prefork/deny",
+    "prefork/challenge",
+    "prefork/required-capture",
+    "prefork/unknown-route",
+    "prefork/request-cancellation",
+    "prefork/graceful-reload",
+    "prefork/deadline-expiry",
+    "prefork/origin-witness-denial",
+    "prefork/authority-outage",
+    "prefork/cleanup"
+  ],
+  "case_fields": [
+    "id",
+    "mpm",
+    "name",
+    "result"
+  ],
+  "case_result_values": [
+    "passed",
+    "failed",
+    "not_run"
+  ],
+  "allowed_supplementary_case_ids": [
+    "event/infrastructure",
+    "worker/infrastructure",
+    "prefork/infrastructure"
+  ],
+  "report_fields": [
+    "schema",
+    "status",
+    "qualification",
+    "sourceCommit",
+    "sourceManifestSha256",
+    "imageDigest",
+    "moduleSha256",
+    "probeModuleSha256",
+    "httpdSha256",
+    "abiReceiptSha256",
+    "lockSha256",
+    "engineVersionObservation",
+    "cases",
+    "requiredScenarioCount",
+    "passed",
+    "failed",
+    "not_run",
+    "fullProductSuccess",
+    "cleanupObserved"
+  ],
+  "artifact_bindings": {
+    "sourceCommit": {
+      "format": "lowercase-hex-40",
+      "expected": "exact candidate checkout SHA embedded at build"
+    },
+    "sourceManifestSha256": {
+      "format": "lowercase-hex-64",
+      "expected": "external source inventory including lock and shared owners, embedded at build"
+    },
+    "imageDigest": {
+      "format": "sha256:lowercase-hex-64",
+      "expected": "actual docker inspect image ID independently verified by coordinator"
+    },
+    "moduleSha256": {
+      "format": "lowercase-hex-64",
+      "path": "/opt/httpd/modules/libhumanymous_apache_native.so"
+    },
+    "probeModuleSha256": {
+      "format": "lowercase-hex-64",
+      "path": "/opt/httpd/modules/libhumanymous_apache_probe.so"
+    },
+    "httpdSha256": {
+      "format": "lowercase-hex-64",
+      "path": "/opt/httpd/bin/httpd"
+    },
+    "abiReceiptSha256": {
+      "format": "lowercase-hex-64",
+      "path": "/opt/httpd/modules/apache-abi-production.json"
+    },
+    "lockSha256": {
+      "format": "lowercase-hex-64",
+      "path": "/opt/httpd/source-Cargo.lock"
+    }
+  },
+  "acceptance": {
+    "unique_case_ids": true,
+    "require_all_45_cases": true,
+    "require_each_result": "passed",
+    "recompute_all_totals": true,
+    "allow_missing_report": false,
+    "require_process_exit": 0,
+    "require_status": "passed",
+    "require_failed": 0,
+    "require_not_run": 0,
+    "require_cleanup_observed": true,
+    "full_product_success": false,
+    "require_success_case_count": 45,
+    "permitted_supplementary_result": "failed"
+  },
   "results": [],
-  "limitations": ["native-ABI-approval-pending", "module-not-implemented", "shared-profile-pending", "hosted-pilot-not-run"]
+  "limitations": [
+    "native-build-not-run",
+    "hosted-pilot-not-run",
+    "synthetic-evidence-not-product-provenance"
+  ]
 }

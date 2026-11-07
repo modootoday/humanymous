@@ -456,6 +456,7 @@ pub fn run() -> Result<(), Error> {
         "sourceCommit":source,"sourceManifestSha256":source_manifest,"imageDigest":image,"moduleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_native.so"))?,
         "probeModuleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_probe.so"))?,
         "httpdSha256":hash(Path::new("/opt/httpd/bin/httpd"))?,"abiReceiptSha256":hash(Path::new("/opt/httpd/modules/apache-abi-production.json"))?,
+        "lockSha256":hash(Path::new("/opt/httpd/source-Cargo.lock"))?,
         "engineVersionObservation":version,"cases":cases,"requiredScenarioCount":45,"passed":passed,"failed":failed,"not_run":not_run,
         "fullProductSuccess":false,"cleanupObserved":failed==0&&cases.iter().filter(|case|case["name"]=="cleanup"&&case["result"]=="passed").count()==3});
     println!("{}", serde_json::to_string(&report)?);
