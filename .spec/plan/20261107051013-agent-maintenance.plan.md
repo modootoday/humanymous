@@ -845,3 +845,15 @@ relative include/root, shared Cargo and Delivery consumers. Historical proofs do
 not transfer to relocated source; full76 library and actual boundary/closure gates
 must be requalified under root's final mapping. Current claim is retained until
 the exact slice transfer, not released as though the full M11 goal were complete.
+
+The final M11 Tools input classification records39 package files,14 test-only
+include_str sites,12 manifest-dir sites and5 binary-env sites. The registered
+maintenance-tools-input-census.json preserves exact paths/lines/hashes. Root's
+original-asset ownership decision is retained: immutable operational contracts
+move once into CLI qualification with readers, Header remains a compiled pin,
+and mutable DeveloperRegistry/skill/rule/recipe canon remains external. Synthetic
+owned unit fixtures and bounded explicit repo/source verification replace mutable
+repository embeds. Private maintenance binary/module/root and role-feature mapping
+is proposed for Root review only; no production library export, extra package,
+manifest/source edit or move occurred. Whole13-tool closure still needs the other
+twelve owner maps and Root/Delivery's complete asset/role/lint union before freeze.
