@@ -9,6 +9,12 @@ pub enum AdapterProfile {
     Node,
     /// nginx parsed HTTP headers; no connection, TLS or original H2 claim.
     Nginx,
+    /// ASGI normalized server observations; never original TLS/H2/header capture.
+    PythonAsgi,
+    /// WSGI normalized server observations; never original TLS/H2/header capture.
+    PythonWsgi,
+    /// Rack normalized server observations; never original TLS/H2/header capture.
+    RubyRack,
 }
 
 impl AdapterProfile {
@@ -18,6 +24,8 @@ impl AdapterProfile {
             id: match self {
                 Self::Node => "humanymous.node",
                 Self::Nginx => "humanymous.nginx",
+                Self::PythonAsgi | Self::PythonWsgi => "humanymous.python",
+                Self::RubyRack => "humanymous.ruby",
             },
             version: "0.1.0-experimental.1",
         }
@@ -27,6 +35,9 @@ impl AdapterProfile {
         match (self, mode) {
             (Self::Node, "node-raw") | (Self::Nginx, "nginx-raw") => Ok(true),
             (Self::Node, "fetch-normalized") | (Self::Nginx, "nginx-normalized") => Ok(false),
+            (Self::PythonAsgi, "asgi-normalized")
+            | (Self::PythonWsgi, "wsgi-normalized")
+            | (Self::RubyRack, "rack-normalized") => Ok(false),
             _ => Err("invalid header provenance"),
         }
     }

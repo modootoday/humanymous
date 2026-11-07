@@ -13,6 +13,32 @@ rel:
 
 ## 2026-11-07 역할 재분리와 완료 gate 타임라인
 
+### Workspace/언어 profile 통합 checkpoint
+
+공통 workspace는 framework-adapter/python-adapter/ruby-adapter를 명시 등록해
+30members로 통합했다. 기존 lock을 보존하면서 Cargo가 신규17개 dependency
+package와 path graph를 해석했고 authority zeroize edge 및 Node 공유 framework
+소비를 반영했다. offline 첫 검증은 pyo3 cache 부재로 실행 전 실패했으며 online
+해석 뒤 framework cargo check가 통과했다. 신규 package의 CVE/host ABI 검증은
+아직 미완료이며 lock 등록을 공급망 검증 완료로 해석하지 않는다.
+
+integrity의 PythonAsgi/PythonWsgi/RubyRack profile은 설치 identity와 exact
+normalized header mode를 결합하고 peer/connection/capture/stream 및 raw 신호
+위조를 거절한다. 기존 Node/nginx와 scoring은 변경하지 않았다. 현재 source의
+locked --lib 순수 검사는 authority10/framework6/integrity22 모두 통과(38passed,
+0failed/ignored/filtered), 세 crate --lib Clippy -D warnings 통과다. 반복 --lib
+CLI 사용 첫 시도는 인자 오류로 테스트0이었으며 수정 명령만 위 분모에 해당한다.
+rustfmt check가 테스트 배치 차이를 찾아 formatter 적용 후 재확인했다.
+Python/Ruby extension build, 실제 IPC/framework/native ABI, 제품 e2e는 not_run이다.
+기존 Pages lock mismatch는 이 통합 전 관측이며 다음 locked 실행으로 별도 확인한다.
+
+후속 Pages 재시도도 lock mismatch로 테스트0이었다. 병렬 CLI manifest의 tokio
+signal feature가 signal-hook-registry1.4.8 해석을 추가 요구했으며 root가 offline
+해석 후 locked offline --lib 재검증을 직접 수행해 Pages22passed/0failed/ignored/
+filtered와 lib Clippy -D warnings 통과를 확인했다. 실제 Pages render/browser는
+여전히 not_run이다. 공유lock 변경이 각 owner manifest와 동시에 움직일 수 있으므로
+root 해석 window 동안 dependency manifest는 동결하고 source 작업만 병렬화한다.
+
 이 절은 이전 시점의 13채팅/후속 미배정 표현을 갱신한다. 기존13 전용 채팅에
 Apache/C ABI/Go/.NET/raw capture 전용5개를 추가해 root 포함19채팅이다.
 이는 생성/배정 수이며 모든 goal 수락·빌드·제품 완료 수가 아니다.

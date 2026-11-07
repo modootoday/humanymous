@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/attacker", "crates/audit", "crates/authority", "crates/behavior", "crates/browser", "crates/browser/native/bootstrap", "crates/browser/native/desktop", "crates/challenge", "crates/cli", "crates/collector", "crates/defender", "crates/integrity", "crates/model", "crates/native-cli", "crates/native-security", "crates/network", "crates/nginx-adapter", "crates/node-adapter", "crates/runtime", "crates/scoring", "crates/signals", "crates/test-support", "docs/tooling", "scripts/ci/delivery", "skills/agent-maintenance", "test/lab/runner", "test/lab/runtime"]
+members = ["crates/attacker", "crates/audit", "crates/authority", "crates/behavior", "crates/browser", "crates/browser/native/bootstrap", "crates/browser/native/desktop", "crates/challenge", "crates/cli", "crates/collector", "crates/defender", "crates/framework-adapter", "crates/integrity", "crates/model", "crates/native-cli", "crates/native-security", "crates/network", "crates/nginx-adapter", "crates/node-adapter", "crates/python-adapter", "crates/ruby-adapter", "crates/runtime", "crates/scoring", "crates/signals", "crates/test-support", "docs/tooling", "scripts/ci/delivery", "skills/agent-maintenance", "test/lab/runner", "test/lab/runtime"]
 resolver = "3"
 
 [workspace.package]
@@ -31,6 +31,7 @@ aes-gcm = { version = "0.11.1", default-features = false, features = ["aes", "al
 scrypt = { version = "0.12.0", default-features = false }
 zeroize = { version = "1.9.1", features = ["serde"] }
 time = { version = "0.3.55", features = ["formatting", "parsing", "serde-well-known"] }
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "net", "io-util", "time", "sync", "macros"] }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

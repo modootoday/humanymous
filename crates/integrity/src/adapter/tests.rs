@@ -8,6 +8,69 @@ fn accepts(v: &Value) -> bool {
 }
 
 #[test]
+fn language_profiles_reject_cross_mode_identity_and_invented_capture() {
+    let profiles = [
+        (
+            AdapterProfile::PythonAsgi,
+            "humanymous.python",
+            "asgi-normalized",
+        ),
+        (
+            AdapterProfile::PythonWsgi,
+            "humanymous.python",
+            "wsgi-normalized",
+        ),
+        (
+            AdapterProfile::RubyRack,
+            "humanymous.ruby",
+            "rack-normalized",
+        ),
+    ];
+    for (profile, id, mode) in profiles {
+        let mut value = request();
+        value["adapter"]["id"] = json!(id);
+        value["headerMode"] = json!(mode);
+        value["peer"] = Value::Null;
+        value["connectionId"] = Value::Null;
+        value["capabilities"]["rawHeaderOrder"] = json!(false);
+        let check = |value: &Value, selected| {
+            parse_with_profile(&serde_json::to_vec(value).unwrap(), 1000, selected)
+        };
+        let parsed = check(&value, profile).unwrap();
+        assert_eq!(parsed.body(), b"abc");
+        assert_eq!(parsed.header_mode(), mode);
+        assert_eq!(parsed.adapter_identity(), (id, "0.1.0-experimental.1"));
+        for selected in [
+            AdapterProfile::Node,
+            AdapterProfile::Nginx,
+            AdapterProfile::PythonAsgi,
+            AdapterProfile::PythonWsgi,
+            AdapterProfile::RubyRack,
+        ] {
+            assert_eq!(check(&value, selected).is_ok(), selected == profile);
+        }
+        for capability in ["rawTls", "originalH2", "rawHeaderOrder"] {
+            let mut invalid = value.clone();
+            invalid["capabilities"][capability] = json!(true);
+            assert!(check(&invalid, profile).is_err(), "{mode}: {capability}");
+        }
+        for (field, replacement) in [
+            ("peer", json!("127.0.0.1")),
+            (
+                "connectionId",
+                json!("01234567-89ab-4cde-8fab-0123456789ab"),
+            ),
+            ("capture", json!({})),
+            ("stream", json!({})),
+        ] {
+            let mut invalid = value.clone();
+            invalid[field] = replacement;
+            assert!(check(&invalid, profile).is_err(), "{mode}: {field}");
+        }
+    }
+}
+
+#[test]
 fn nginx_profile_binds_identity_modes_and_forbids_invented_capture() {
     let mut v = request();
     v["adapter"]["id"] = json!("humanymous.nginx");
