@@ -1326,3 +1326,14 @@ claims need relevant source/dependency closure, while subset-hash component
 results retain explicit limits. Preparation binds rendered documents and reports
 to the same candidate. Updated existing editorial change-manifest row; no generic
 wire selection, new product execution contract or external submission.
+
+### Complete Apache native bridge and pilot contract review
+
+Read all host.rs sections and full current pilot contract. Public topology now
+records dedicated plain HTTP1/no vhost chain/SSL/cache, exact body framing and
+unsupported transfer modes, child-private config, original socket budget,
+normalized capture losses,403 for both DENY/CHALLENGE and503 boundary failures,
+final mutation/one-use ALLOW and actual unsafe-host premises still unqualified.
+Pilot requires45 scenario/MPM pairs, cleanup and exact artifacts but contains no
+executed results. Added two manual receipts; no native/build/network run. Current
+contract is no longer the stale earlier module-unimplemented declaration.

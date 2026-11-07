@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/apache-adapter/native/src/host.rs",
+  "sha256": "4513fc4a8a91dd9d9b7a4516147d7a20674e6502f730961433eb6f7e0fd93abe",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete synchronous host bridge: private child configuration, dedicated plain HTTP1/no TLS or cache modules, finite Content-Length with coding/upgrade/trailer/Expect refusal, original socket budget, normalized observations, cleanup/replay, final mutation checks and once-consumed bound ALLOW. DENY/CHALLENGE both403, boundary failures503. This is documentation review, not unsafe ABI proof, actual host execution or recovery qualification.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/apache/pilot-contract.json",
+  "sha256": "f303f519581e039c8b650de959b499a2f4a11c57681f6658daeb0097ff8db5ef",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete current source-authored/not_run pilot contract,45 scenario/MPM pairs, fixed result fields/totals and mandatory cleanup/exit/source/image/module/ABI bindings. Empty results and null identities do not qualify execution; buildCandidate constraints are declarations until independently observed.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "crates/apache-adapter/native/src/lib.rs",
   "sha256": "08a7a963a30bc8efb198b2a8dcf0e65dd0b151908c4ed58761f6ae20c0f931d4",
   "reviewer": "codex/rust-pages",

@@ -139,6 +139,21 @@ bounded byte, line and speculative reads; replay itself grants no authorization.
 These source-level properties do not prove that httpd invokes cleanup, enforces
 socket deadlines or consumes the bound authority response before origin effects.
 
+The authored native bridge is narrower still: a dedicated plain HTTP/1 listener,
+without a virtual-host chain, `mod_ssl` or `mod_cache`. It requires a single
+Content-Length and refuses transfer coding, Upgrade, trailers and Expect.
+Configuration must be child-owned private input and declare enforced synchronous
+input deadlines; the source also sets the socket timeout from the remaining
+original budget. Normalized observations provide no peer/connection capture.
+The source maps both DENY and CHALLENGE to HTTP 403, and boundary failures to
+503; this does not implement accessible challenge recovery or select Draft v0
+status codes. Final checks compare method, target, authority, headers and URI
+before consuming the bound ALLOW once. Actual callback ordering, host-pointer
+validity, filter behavior and origin isolation still require the native pilot.
+Its current pilot contract requires 45 named scenario/MPM pairs across event,
+worker and prefork, with separate failed and not-run totals and observed cleanup.
+The contract contains no executed results or qualified artifact identities.
+
 The Go candidate's synthetic trusted-session cases cannot attest browser or
 human activity. Origin contact counts and observed application mutations are
 different denominators: a successful transport contact alone does not prove a
