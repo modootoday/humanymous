@@ -3,7 +3,9 @@
 #![cfg(all(feature = "runtime-service-pilot", feature = "service-pilot"))]
 
 use humanymous_cli::runtime_host::watchdog_fixture::WRITER_ENTRY;
-use humanymous_test_support::process::{CaptureDeadlines, CaptureIssue, RetainedDirectPipeAttempt};
+use humanymous_test_support::process::{
+    CaptureDeadlines, CaptureIssue, RetainedDirectPipeAttempt, await_controlled_fixture_grant,
+};
 use std::{
     process::Command,
     sync::Mutex,
@@ -39,15 +41,15 @@ fn fail_owned(mut owner: RetainedDirectPipeAttempt, cleanup: Instant, reason: &'
 #[test]
 #[ignore = "requires allocated independent native outer supervisor; prefix/spawn/stop may block"]
 fn final_delivery_watchdog_with_retained_unread_pipes() {
-    // Routing opt-in only: this string does NOT prove native supervision or
-    // genuine hosted identity. The external run/source/controller evidence does.
-    assert_eq!(
-        std::env::var("HUMANYMOUS_OWNED_WATCHDOG_BOUNDARY").as_deref(),
-        Ok("1")
-    );
+    // Waiting for cooperative assignment must not renew the original parent
+    // run/cleanup thresholds. Metadata is not Job authentication or native proof.
     let original = Instant::now();
     let run = original + Duration::from_secs(8);
     let cleanup = original + Duration::from_secs(12);
+    await_controlled_fixture_grant("final_delivery_watchdog_with_retained_unread_pipes")
+        .unwrap_or_else(|_| {
+            panic!("cooperative assignment grant absent; no fixture child started")
+        });
     for (case, expected_exit) in [
         ("positive", 0),
         ("blocked-stdout", 74),

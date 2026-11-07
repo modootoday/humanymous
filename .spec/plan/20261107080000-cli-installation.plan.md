@@ -52,7 +52,12 @@ RECOVERY preserves ownership only while the parent test process remains alive;
 its exit is not child termination or cleanup proof. The external controller must
 retain independent recovery authority, and an unresolved owner remains Unknown.
 Root approved the exact existing-workspace test-support devdependency in the CLI
-manifest, now wired without version/external/feature changes. Shared API provider
+manifest, now wired without version/external/feature changes. The parent now
+calls the shared await_controlled_fixture_grant with its exact fixed selector
+before any child spawn. Its original8/12second budget starts BEFORE this barrier,
+so grant waiting cannot renew the test's deadlines. The grant is cooperative
+metadata, not Job authentication or a production native proof. Actual controller
+CLI selector extension and first five provider gates remain required. Shared API provider
 qualification and allocated consumer compile/execution remain pending. The
 ignored test is actual authored source, not executed evidence. This
 source is authored/NOT_RUN; fmt/diff checks alone do not qualify subprocess behavior.
