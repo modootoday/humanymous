@@ -347,6 +347,13 @@ WSGI evidence cannot qualify these changed bytes. A reviewed shared lifetime
 contract and allocated immutable compile/runtime receipts remain required.
 Primary source: https://raw.githubusercontent.com/django/django/6.1.3/django/core/handlers/asgi.py .
 
+Later summary012 supersedes only the typecheck-NOT_RUN state on exact5655b965:
+host-pilot all-targets check passed3.01s for the ASGI factory/shared suites and
+controller definitions. Clippy failed one receipt-parser byte-slice idiom;
+pure tests did not run. No linking or runtime/package/lifecycle qualification
+follows. The equivalent primary idiom fix has no suppression and needs its own
+immutable retry. Source2313-file closure stayed unchanged; B returned terminal101.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

@@ -18,6 +18,7 @@ files:
   - {path: summary-009.json, sha256: ad1a83dfba2d2f953fdfe398fff5cc2b304a11ca949c3339d75b6d9e98e492b4, bytes: 2327, store: repo}
   - {path: summary-010.json, sha256: add5762fcb709a466af4976002d41bc46399f798d36539c7c44c3091606b39ec, bytes: 2763, store: repo}
   - {path: summary-011.json, sha256: 6d7e8054f717f621803acd8ec7628e4332692cdc9830813a9c4ba94008717477, bytes: 1963, store: repo}
+  - {path: summary-012.json, sha256: b56d67b4cd5ca9c7a78d8d524bd033ef8bc739e9c9e97e92d15b640bc44734be, bytes: 1888, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -176,3 +177,14 @@ pilot ran. All2302source-file hashes stayed unchanged. B returned terminal101.
 The primary-only missing-import correction requires its own new checkpoint and
 retry; no passing result is inferred from formatting. Historical WSGI28 success
 remains tied to7842b6a8; shared lifecycle refusal remains NOT_ACCEPTED.
+
+## Refactor type check passed; strict receipt Clippy failed
+
+Summary012 records the renewed ordinary-user immutable5655b965 batch. All-targets
+host-pilot check passed3.01s, covering the new ASGI factory and shared WSGI/ASGI/
+controller definitions. Clippy then failed one sliced_string_as_bytes diagnostic
+in the receipt parser; the batch stopped101 and neither receipt pure test ran.
+Source2313-file closure stayed unchanged. No linking, framework/native import,
+server, controller, package install or actual pilot occurred. B returned terminal101.
+The primary-only equivalent byte-slice correction has no suppression and needs
+its own new immutable retry. This is type-check evidence, not runtime qualification.

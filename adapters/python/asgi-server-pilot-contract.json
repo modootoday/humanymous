@@ -15,7 +15,7 @@
   "plannedDistinctActualRows": 21,
   "casesPerFramework": {"productionNonAllow":1,"syntheticAllowAndInvalid":5,"dependencyDownAndRoutes":3,"incompleteBody":2,"disconnectAndMatchedConnectedControl":2,"authorityResponseTimeout":1},
   "executedCases": 0,
-  "compilation": "NOT_RUN",
+  "compilation": "host-pilot-all-targets-check-PASS-5655b965; Clippy-FAIL-receipt-parser; no-link-or-runtime",
   "actualExecution": "NOT_RUN",
   "runtimeEntryGuard": "component_lifecycle::require_safe_lifecycle unconditionally refuses before fixtures or processes",
   "unsupportedUpgradeExpectedStatus": 500,

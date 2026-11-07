@@ -1,0 +1,29 @@
+{
+  "scope":"Allocated immutable Unix check/Clippy/receipt-pure-only retry",
+  "sourceSha":"5655b965a4b1269d434dd4e3322bf6d7c365f1af",
+  "archiveSha256":"5f5c40a828eb68785dd1ec374cfe41de844f1a1b5a5db716a3741dfde23d70a7",
+  "archiveBytes":66611200,
+  "sourceManifestRows":2313,
+  "sourceManifestBeforeAndAfterSha256":"600a5a0f98486e38b09b2308407e3a91f58f89ebf21c749657041614f90cd93f",
+  "closureExitCode":0,
+  "actorUid":1000,
+  "environment":"REA-Ubuntu WSL native; existing python-native target; locked offline dependencies; jobs1/incremental0; no package installation",
+  "admission":{"commitPercent":80,"freePhysicalGiB":33.05},
+  "commands":[
+    {"id":"host-pilot-all-targets-check","status":"PASS","exitCode":0,"elapsedSeconds":3.01},
+    {"id":"host-pilot-all-targets-clippy","status":"FAIL","exitCode":101,"reason":"sliced_string_as_bytes in wsgi_receipt.rs line38; no suppression used"},
+    {"id":"receipt-pure-tests","status":"NOT_RUN","exitCode":null,"requiredTests":2,"executionCounts":null}
+  ],
+  "batchExitCode":101,
+  "privateWindowsTeeLogSha256":"66bf5d038071aa66b54e28d553e46f37b2b95a44ef4426a33d58b72a771cb962",
+  "privateCliOrchestrationSha256":"623a4d3080428db9117f6e078ca52c6b3ed462a568c5186a8888b20725a6c3e9",
+  "followup":"Primary-only equivalent byte-slice idiom fix; new immutable source retry remains required. Original snapshot untouched.",
+  "ownedCleanup":"Batch stopped after Clippy; B returned terminal101; no active workload or later command.",
+  "frameworkOrNativeModuleImported":false,
+  "controllerExecuted":false,
+  "serverExecuted":false,
+  "sharedLifecycle":"NOT_ACCEPTED refusal unchanged",
+  "wholeProductQualified":false,
+  "productionBrowserEvidence":false,
+  "scopeLimit":"The new native ASGI factory and WSGI/ASGI/controller definitions typechecked only. No linking, pure-test execution or framework/runtime/package qualification follows."
+}

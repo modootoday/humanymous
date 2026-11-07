@@ -498,3 +498,20 @@ was edited; corrected source is formatted but not compiled. Summary011 preserves
 the first failure and private output hashes. New immutable checkpoint and renewed
 allocation are required. Shared lifecycle remains NOT_ACCEPTED; no historical
 WSGI28 or planned ASGI42 result is inferred for the changed source.
+
+### Refactor check passed; receipt Clippy requires an idiom correction
+
+Root renewed B for immutable5655b965, with no controller/runtime/setup scope.
+Fresh admission80%commit/free33.05GiB passed. All-targets host-pilot check passed
+3.01s, including native ASGI factory and both shared-case suites/controller source.
+Clippy failed one sliced_string_as_bytes diagnostic in receipt parser line38;
+the two receipt pure tests were NOT_RUN. Source2313-file before/after hashes were
+identical. B returned terminal101; no workload remains. Summary012 preserves
+both the pass and failure. Primary correction slices the byte view directly,
+without changing parsing behavior or suppressing warnings; retry still required.
+
+Separately reviewed shared lifecycle draft b22c5b4b for the owner: implementation
+verdict BLOCK pending actual Unknown/error ownership, verified-artifact-to-exec
+binding, descendant zombie/reap facts, concrete migration/launcher-denial profile
+and abnormal startup transitions. No shared API/source/dependency was changed
+and current NOT_ACCEPTED guard remains. This review is not backend qualification.

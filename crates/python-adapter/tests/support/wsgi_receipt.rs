@@ -35,7 +35,7 @@ pub(super) fn validate(raw: &str) -> Result<(), String> {
     let mut rows = BTreeSet::new();
     let mut cases = 0;
     for line in raw.lines().filter(|line| line.contains('{')) {
-        let row = decode_strict_json(line[line.find('{').unwrap()..].as_bytes(), 8192)
+        let row = decode_strict_json(&line.as_bytes()[line.find('{').unwrap()..], 8192)
             .map_err(|_| "invalid WSGI scenario receipt")?;
         let framework = row["framework"].as_str().ok_or("missing framework")?;
         if !["flask", "django"].contains(&framework) || row["wholeProductQualified"] != false {

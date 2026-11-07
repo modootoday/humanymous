@@ -127,3 +127,11 @@ pass does not qualify this refactor. Candidate Uvicorn/h11/Click wheel hashes
 are pinned without installing anything; ASGI server/closure/lifecycle execution
 still requires review and root allocation. Django6.1.3's HTTP-only ASGI handler
 uses server lifespan off; only Starlette/FastAPI enable server lifespan.
+
+Summary012 supersedes the typecheck-NOT_RUN state for exact5655b965: immutable
+Unix host-pilot all-targets check passed3.01s, including these new definitions.
+Clippy then failed one sliced_string_as_bytes diagnostic in the receipt parser;
+the two pure tests never started. Primary idiom correction has no suppression
+and requires a new immutable retry. Source2313-file closure stayed unchanged;
+B returned terminal101. No linking, native/framework import, server, controller
+or package execution occurred, and the lifecycle refusal stays NOT_ACCEPTED.
