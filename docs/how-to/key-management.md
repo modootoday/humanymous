@@ -46,3 +46,13 @@ legacy import path exists only for migration and is not normal provisioning.
 Do not discard a persistent lock inode or pending state to force a successful
 startup. Unix directory sync and Windows namespace-unconfirmed outcomes remain
 different durability claims. See the [audit boundaries](../reference/security-audit.md).
+
+For path/permission evidence, record the actual opened-handle checks. The custody
+helper rejects dot/parent path aliases and symlink/reparse components. Unix
+checks current effective UID, exact `0700` directory/`0600` regular-file modes
+and a single file link, using no-follow/nonblocking opens. Windows delegates
+the configured owner SID and inheritable-directory/file privacy checks to the
+shared native permission layer. These checks do not repair grants or establish
+protection from privileged/same-owner replacement, hostile ancestor mounts,
+remote-filesystem locking or every Windows hardlink alias. Preserve those
+supervisor and filesystem premises in the deployment record.

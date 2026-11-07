@@ -49,3 +49,10 @@ remote replicas, exported copies or unknown archives. Orphan discovery is also
 limited to recognized local content-addressed files. Record residual copies and
 independent retention/custody decisions explicitly; do not mark global erasure
 complete from one local unlink or a valid inventory signature.
+
+For a vault pilot, provision the expected installation/node and pseudonym mode
+independently before restore. Unscoped compatibility constructors do not grant
+production erasure authority. Verify that the permit matches both subject and
+scope, reverse links disappear, unrelated subjects remain intact and tombstones
+survive restart. Persist the authorized snapshot before acknowledging completion;
+an in-memory `shred` return is not durable erasure or historical-backup removal.

@@ -2,6 +2,25 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/keys/custody/permissions.rs",
+  "sha256": "f2145493843450c54637e98b461008b611063138b28a2ad2857d77e8a441f969",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete component walk/alias rejection, no-follow/nonblocking/exclusive-create opens, actual handle type/owner checks, Unix exact0700/0600 and single-link constraints, Windows shared SID/privacy delegation. Public key guide records exact source checks and distinct supervisor/same-owner/privileged/remote-filesystem/Windows-hardlink premises; does not approve upstream FFI or claim an executed platform matrix.",
+  "pages": [
+    "docs/how-to/key-management.md"
+  ]
+},
+{
+  "source": "crates/audit/src/keys/vault.rs",
+  "sha256": "686dd8c1776124192aa1d545aeb30c7b74a1511c428f088950386275967242f4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete scoped/unscoped construction and strict snapshot restore, per-subject entropy and provisioned pseudonym mode, reverse-index ownership, mutex-covered exact-scope/subject shred, stable non-remint tombstones, secret snapshot and monotonic custody-update validation plus source tests. Public data inventory/runbook distinguish keyed linkage from anonymity, external scope/mode restoration, capacity-retained tombstones and in-memory erasure from durable snapshot/backups/KMS. No lookup, shred or storage run.",
+  "pages": [
+    "docs/reference/data-processing-inventory.md",
+    "docs/runbooks/erasure-crypto-shred.md"
+  ]
+},
+{
   "source": "crates/audit/src/keys/custody.rs",
   "sha256": "3821ad9a29400a954af3e512826bdba69e1040cbe7f756fec7f0da63dbf7a2a2",
   "reviewer": "codex/rust-pages",

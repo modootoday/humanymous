@@ -37,3 +37,18 @@ COLD does not create WORM storage. Negative ages remain HOT; report clock skew
 separately rather than treating future records as eligible for deletion. Actual
 retirement needs checkpoint-preserving storage transitions, authorized handling
 and evidence of residual copies. See the [erasure pilot](../runbooks/erasure-crypto-shred.md).
+
+## Subject linkage and secret snapshots
+
+The reference vault uses random per-subject keys for its provisioned HMAC or
+scrypt pseudonym mode. Its snapshot contains secret keys and reverse-link data;
+seal and restrict that snapshot rather than treating it as a public validation
+artifact. Historical snapshots do not encode the complete trusted scope/mode
+policy, so restore them only with the independently provisioned settings.
+
+Scoped erasure removes the subject key and reverse links and retains a stable
+non-remint tombstone. That marker can remain linkable; neither it nor a keyed
+pseudonym is an anonymity certificate. Tombstones consume bounded capacity and
+are not evicted to create fresh subject identities. Runtime authentication and
+audit of reverse lookup, durable snapshot persistence, backup retirement and
+KMS separation remain distinct from this in-process object.

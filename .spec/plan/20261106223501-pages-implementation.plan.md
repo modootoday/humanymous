@@ -802,3 +802,11 @@ map frozen format, ownedzeroize versus allcopy deletion, privateguard/pending
 recovery and exact oldciphertext approved passphrase rotation. Public how-to
 distinguishes signing/witness identity rollover and newsecret/body approval as
 separate unimplemented contracts. No unseal/rotate/erase/repair/process executed.
+
+## Custody permission and scoped vault review
+
+Read complete permission/vault modules and source tests. Two manual source
+receipts map exact opened-handle privacy checks and their supervisor premises,
+secret snapshots/external scope+mode, keyed linkage/stable tombstones and exact
+subject+scope erasure to public key/data/runbook pages. No anonymity, all-copy
+erasure, FFI proof or platform execution inferred; no keys/deletion action ran.
