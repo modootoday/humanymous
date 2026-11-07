@@ -64,3 +64,49 @@ Public docs delta for Pages owner: this is original-hop capture only when the
 deployment actually terminates the original client; reterminated proxy traffic
 describes the proxy hop. Unit parsing and a successful TLS pilot do not qualify
 request integrity, collector execution, T4/human identity or full product.
+
+## Resume handover (2026-11-07)
+
+Mission remains full original TLS/H2 producer, owning runtime binding,
+fail-closed required-plane handling, pure units, actual owned hosted traffic and
+Docker product qualification; source-only support does not complete it.
+
+Owned checkpoints: ab4e8ee (producer source),3e836ea (HPACK span safety,
+cancellation and exact historical source receipt),bccecba (TLS extension and
+hostile-compression fixtures, future-idle WU refusal). Current authored counts:
+21pure units,5hosted component tests; all compile/unit/Clippy/actual runs0.
+Direct owned rustfmt passed. Scoped public spec passed0errors/0warnings; last
+staged check had0errors/2missing-change-record warnings. No policy/scoring or
+other owner's source changed. Follow AGENTS.md and shared lessons on resume.
+
+The same external blocker was observed in the initial goal turn and both
+continuations: root has not added capture to Cargo.toml/Cargo.lock, and has not
+allocated its explicit validation pipeline or hosted dispatch. This owner may
+not bypass those rules. No running capture process/job exists to wait on.
+No local socket, Docker, browser, paid infrastructure or publication was used.
+
+Next authorized owner actions:
+
+1. Root reviews pinned dependency closure and adds workspace membership/lock in
+   its integration window. No dependency/feature/manifest change by this owner
+   until root approves that window. Existing manifest is already committed.
+2. Root assigns A or B target explicitly. Run scoped locked lib units, owned fmt
+   and Clippy with that exact target/profile/jobs/incremental policy. Compile
+   hosted-pilot without running socket tests locally. Preserve every failure.
+3. Root/delivery dispatches the five ignored actual hosted component tests using
+   the command above. Record exact source, OS/arch, runner,5case denominators and
+   actual failure/recovery evidence; ignored tests alone are not successes.
+4. Runtime owner accepts the same-Connection/stream join and supervised worker
+   contract, corrects the old runtime SoT's network/src/capture path proposal to
+   the root-authorized crates/capture context, and keeps plain ingress422.
+   Runtime must own request/body binding and late liveness checks; no capture
+   upload, forwarded identity bit or independent bool receipt is a substitute.
+5. Product-lab validates actual topology, denied-origin effects and missing,
+   malformed, reset, expired, cancelled and reterminated-plane cases in Docker.
+   Public docs belong to Pages; submit deltas rather than editing docs here.
+
+Read .spec/sot/network-capture.sot.md and
+.spec/plan/20261107072531-network-capture.plan.md. Historical attachment under
+.spec/evidence/20261107073810-network-capture identifies the3e836ea source,
+not a successful run or the later21unit source. Reclaim network-capture normally
+before resuming writes; never force another owner or change shared Cargo/lock.
