@@ -1,0 +1,167 @@
+{
+  "date": "2026-11-07",
+  "tuple": "x86_64-pc-windows-msvc",
+  "rust": "1.99.1",
+  "sourceAttribution": "dirty source SHA256 manifest and exact native artifacts; no whole-workspace qualification",
+  "meariRevision": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+  "cefRsRevision": "224a785c7b41758b51821cbb7395ea57ba493a63",
+  "cefCrate": "156.3.0+156.0.15",
+  "cefFeatures": [
+    "sandbox"
+  ],
+  "sharedWorkspaceNativeMembership": "root integration requested; source-linked detached workspace actually tested",
+  "tests": {
+    "nativeLibraryPassed": 4,
+    "corePassed": 9,
+    "rejectedNativeOverrideCases": 4,
+    "clippy": "passed -D warnings",
+    "provisionedNativeIgnoredInDefaultRun": 1,
+    "format": "passed",
+    "nativeDllLink": "passed",
+    "provisionedNativeExplicitPassed": 1,
+    "nativeLibraryFailed": 0
+  },
+  "normal": {
+    "cefCreated": true,
+    "actualParentMatched": true,
+    "initialGeometryReadbacks": 1,
+    "focusWithinNativeChild": true,
+    "beforeClose": true,
+    "hostClosed": true,
+    "rendererCount": 2,
+    "rendererRestrictedUntrusted": true,
+    "cefSystemInfo": "unsupported_or_failed",
+    "someUtilityTokensUnrestricted": true
+  },
+  "cancellation": {
+    "requested": true,
+    "lateCreationAfterCancel": true,
+    "cefCreated": true,
+    "beforeClose": true,
+    "hostClosed": true,
+    "parentValidation": "not performed for revoked creation; not counted as attached"
+  },
+  "uia": {
+    "exactFinalBinaryValueReadback": "observed on named CEF text field through native UIA",
+    "unicodeValueAction": "observed",
+    "finalBeforeClose": true,
+    "finalHostClosed": true,
+    "keyboardTextDelivery": "unqualified: attempted injection had no confirmed value change",
+    "interactiveResize": "earlier dirty report-9 observed2 readbacks; final interactive attempt tool geometry unavailable",
+    "osImeCompositionCandidatePlacement": "not_run",
+    "screenReader": "not_run",
+    "fullAccessibility": "unqualified",
+    "crossMonitorDpi": "not_run",
+    "finalKeyPilot": "native child and normal cleanup reproduced; no additional keyboard or IME value evidence collected before timeout"
+  },
+  "security": {
+    "sandboxQualified": false,
+    "targetNavigationEnabled": false,
+    "rendererFilesystemDenial": "unverified",
+    "utilitySandboxPolicy": "unqualified",
+    "authenticode": "NotSigned for upstream bootstrap/libcef",
+    "networkIsolation": "not OS-qualified; external target requests denied and background features disabled",
+    "nativePermissionPromptMatrix": "not_run"
+  },
+  "cleanup": {
+    "pilotWindowsRemaining": 0,
+    "retainedSyntheticProfileCount": 21,
+    "profileDeletion": "automatic approval review rejected bulk recursive deletion: blocked by policy; no alternative attempt"
+  },
+  "dockerProductE2e": "not_run",
+  "source": [
+    {
+      "path": "crates/browser/Cargo.toml",
+      "sha256": "ac0de68ab5e2f5777a7bcc10930a91be7a1ab57daf42c1465ca1321647f0df2b",
+      "bytes": 956
+    },
+    {
+      "path": "crates/browser/native/bootstrap/Cargo.toml",
+      "sha256": "b7b2c3f8a4d1cba3afae3069a5b4edfdf8fbedb12b02915212d9961de5086e7a",
+      "bytes": 427
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/lib.rs",
+      "sha256": "04bc7559b273defc1ad8fdca6482f707d2d2b3398e788385f90d33eb976c0061",
+      "bytes": 5354
+    },
+    {
+      "path": "crates/browser/native/desktop/Cargo.toml",
+      "sha256": "5368b8ff292e081c41f39f43532814a16bfa7ed3fccedd53189774eae38b5865",
+      "bytes": 1184
+    },
+    {
+      "path": "crates/browser/native/desktop/src/child.rs",
+      "sha256": "d5da13b2d6410721b8c4d6aad7bf771cf974629855cc072e910f59bed7511124",
+      "bytes": 11850
+    },
+    {
+      "path": "crates/browser/native/desktop/src/fixture.rs",
+      "sha256": "49fe3a8f878c37fca671674d6291f463ac1d466a904163658d6718fb4ccdfda2",
+      "bytes": 4547
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host.rs",
+      "sha256": "c83204c56d11b0ecaaa611108dbc86793666c295503a47c17f1e89a31f067866",
+      "bytes": 14064
+    },
+    {
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "sha256": "b2951bb56904e8e9669814c9adff74bcb91d8e6b410d3eaa1e2237b9433cd772",
+      "bytes": 3015
+    },
+    {
+      "path": "crates/browser/native/desktop/src/native.rs",
+      "sha256": "bad7b8acafc4b22d50eb2b6ade74c3e215bee2497fff4a1b9cbbb34573e8a12e",
+      "bytes": 13886
+    },
+    {
+      "path": "crates/browser/src/lib.rs",
+      "sha256": "b84e63353e3aaf2aaa2d9d998fe863b99ad68f4dca3a61598edc80fbe075774c",
+      "bytes": 182
+    },
+    {
+      "path": "crates/browser/src/lifecycle.rs",
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "bytes": 6140
+    },
+    {
+      "path": "crates/browser/src/main.rs",
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "bytes": 931
+    },
+    {
+      "path": "crates/browser/src/policy.rs",
+      "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "bytes": 4042
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "sha256": "81e320a7dd3375b323368a6affec43d4432405b59c05090d5c8634d5acf4f13b",
+      "bytes": 12088
+    }
+  ],
+  "nativeArtifacts": [
+    {
+      "name": "humanymous_cef_bootstrap.exe",
+      "sha256": "f3992741bc06d43cafc568aefcc80b2c740121d9adf0eda19a314e1a72699ded",
+      "bytes": 4316160
+    },
+    {
+      "name": "humanymous_cef_bootstrap.dll",
+      "sha256": "b58e5370510c7d99045331b94df943f887a11624768bab415598bfc348646240",
+      "bytes": 223744
+    },
+    {
+      "name": "humanymous_cef_desktop.dll",
+      "sha256": "47410a7df0484cf13a7634dfecccf388845a98dd7ea7862e55523ebf37e99557",
+      "bytes": 57655296
+    },
+    {
+      "name": "libcef.dll",
+      "sha256": "07168eacd81bc09ab9ab895d39bc1a80913b09c844f0b5a4730f5f89a71133f5",
+      "bytes": 294315008
+    }
+  ],
+  "privateDependencyLockSha256": "164a13ace1777789d3feadfcefc495b068cd25ae6c78bd7b724486b19593734d"
+}

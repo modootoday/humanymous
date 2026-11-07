@@ -175,11 +175,14 @@ pub fn component() -> Component {
     }
 }
 
+/// Shared native control styles, including readable text/input contrast.
+pub const MANAGEMENT_STYLES: &str = "body{background:#101826;color:#edf3ff;font-family:system-ui;font-size:16px} .shell{padding:28px;max-width:1000px} h1{font-size:26px} input{padding:10px;border:1px solid #7890aa;border-radius:6px;background:#18263a;color:#edf3ff} button{padding:12px;background:#203652;color:#edf3ff} [hidden]{display:none!important}";
+
 /// Build the actual native document, with no parser or foreign application source.
 pub fn document(width: u32, height: u32) -> Result<InteractiveDocument, String> {
     InteractiveDocument::new(
         component(),
-        "body{background:#101826;color:#edf3ff;font-family:system-ui;font-size:16px} .shell{padding:28px;max-width:1000px} h1{font-size:26px} input{padding:10px;border:1px solid #7890aa;border-radius:6px;background:#18263a;color:#edf3ff} button{padding:12px;background:#203652;color:#edf3ff} [hidden]{display:none!important}",
+        MANAGEMENT_STYLES,
         Viewport {
             width,
             height,

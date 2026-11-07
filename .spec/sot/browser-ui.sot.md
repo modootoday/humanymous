@@ -3,7 +3,7 @@ id: sot:root/browser-ui
 title: Native browser UI and CEF boundary
 status: active
 created: 2026-11-07T00:20:14Z
-updated: 2026-11-07T00:32:14Z
+updated: 2026-11-07T01:40:32Z
 verify: [manual]
 rel:
   governs: [crates/browser/**]
@@ -14,12 +14,13 @@ rel:
 
 ## Rule
 
-Version 0.1.0. Implement the user-accepted Meari management-window slice first.
+Version 0.2.0. Implement the user-accepted Meari management-window slice first.
 Authored application and tests are Rust; construct typed Meari IR directly, without
 TSX, HTML application source, JavaScript or embedded script strings. Pin Meari
 1482b746ebc0d867f25d17d01c48c12df888ca6c (0.2.0, MIT OR Apache-2.0), Rust 1.99.1.
 CEF is required for target content, but an absent native adapter is NotReady.
-The management window contains no page frame, preview or simulated browser.
+The initial management-only window contains no simulated browser. The Windows
+native qualification extension below embeds the actual CEF-owned child.
 
 UI-01: A real Meari window presents named address input, synthetic profile and
 tabs, diagnostics, scenario and audit status. Keyboard and AccessKit actions use
@@ -57,8 +58,10 @@ namespace qualification remain required before target browsing can be enabled.
 
 ## Consumer-owned windowed CEF contract
 
-This is the next native adapter contract, not an implemented/qualified adapter.
-The current guard deliberately has no Attached transition or cleanup-ACK setter.
+This is the native adapter contract. The original portable guard deliberately
+has no Attached transition or cleanup-ACK setter; it cannot attest CEF readiness.
+The separate Windows desktop adapter below implements native ownership and still
+does not grant production readiness from a successful creation request.
 
 | Operation | Required boundary and receipt |
 | --- | --- |
@@ -73,10 +76,87 @@ The current guard deliberately has no Attached transition or cleanup-ACK setter.
 
 The local Windows x64 source closure check at the pinned cef-rs revision passed
 with sandbox enabled. It resolved CEF156.0.15/Chromium156.0.8078.80. No authored
-CEF client DLL, interactive child attach, actual sandbox receipt or cross-OS
-prototype is delivered by this management-UI slice. No unsafe exception is added.
+CEF client DLL or child attachment was delivered by the initial ead2dc6
+management-only slice. The subsequent Windows prototype below adds those paths
+inside a separately scoped native FFI boundary; cross-OS support remains unrun.
 
 ## Verification
+
+### Windows native continuation, 2026-11-07
+
+The user explicitly requested actual bootstrap/child implementation. Two desktop
+boundary DLLs under crates/browser/native isolate OS/CEF FFI from the existing
+forbid-unsafe core. A minimal bootstrap client DLL forwards the upstream-owned
+sandbox pointer to CefExecuteProcess before any UI/native-host loading; only the
+browser process subsequently loads the fixed sibling Meari desktop DLL. This
+avoids importing the Meari GUI dependency closure into sandboxed subprocesses.
+Upstream bootstrapc.exe is renamed to the matching client DLL stem. No authored
+C/C++/JS/TS bootstrap is permitted. No subprocess_path or no_sandbox override.
+
+Unsafe is denied by default in these boundary crates, with local reviewed
+allowances only for exported ABI entrypoints, fixed-path DLL loading/call and
+Win32 geometry/token/handle operations. Exported functions catch panics and never
+unwind across C. Native parent handles are borrowed inside registrar/lease
+callbacks, never cached as parent authority. CEF state owns its child Browser;
+on_before_close is the cleanup receipt. Child creation permits about:blank or one
+exact static data URI emitted by Meari's Rust markup builder from typed Rust IR.
+This is untrusted synthetic test content, not an HTML application shell. No
+authored HTML/JS/TS source or script string implements the UI or fixture behavior.
+JavaScript is disabled for this bounded fixture; form editing is native Chromium.
+All other resource requests, popups, file dialogs and permissions are denied.
+Extensions/component updates/background networking are disabled for the pilot;
+OS-enforced network egress isolation is not established by those switches.
+Production
+navigation remains disabled regardless of startup/attach success.
+
+Windows CEF owns its supported multi-threaded UI loop; Meari owns the main winit
+loop. The thread-safe asynchronous CEF creation API copies WindowInfo during the
+scoped parent visit. The native-child transaction retains NativeParentLease and
+the Meari lifecycle retains the parent until actual CEF cleanup. No application
+raw parent handle is cached. Late creation after revocation immediately closes
+on CEF's UI thread and never becomes a ready target. Native calls recheck the
+lease; parent WS_CLIPCHILDREN prevents overlapping paint feedback. Resize only
+changes the owned child when bounds/DPI actually change. Focus and close use
+bounded CEF UI tasks. DoClose returns custom handling and queues destruction of
+the internal CEF child on its own creating thread; Meari parent release follows
+on_before_close, avoiding the default top-level-close dependency cycle.
+
+The close deadline is independently woken, cancellable and joined on every
+return/unwind before DLL unloading. An incomplete cleanup deadline or panic is
+fail-stop with nonzero process status, never a cleanup receipt. The fixed sibling
+desktop DLL is loaded with DLL_LOAD_DIR/DEFAULT_DIRS search, excluding CWD search.
+
+Native process inspection opens only the pilot's descendant IDs and rechecks the
+exact private executable image before querying tokens or bounded command-line
+data. WDK ProcessCommandLineInformation is version-dependent: failure is recorded,
+never an inferred role. Retain only process type, not command lines/profile paths.
+Validate UNICODE_STRING allocation bounds/alignment before dereferencing. Join
+renderer roles with actual restricted-token and integrity-RID observations. These
+properties are limited sandbox evidence, not a proof of complete sandbox policy,
+file-access denial, every utility sandbox or escape resistance. Required normal
+browsing remains unready on missing proof. Authenticode NotSigned is a real
+distribution gate; local measured hashes do not constitute publisher signatures.
+
+Native acceptance: actual upstream bootstrap -> Rust DLL -> Meari prepared
+window -> registered CEF windowed child with observed OS parent, native renderer
+process/token inspection, resize bounds/DPI, focus and normal child-first close.
+Missing sandbox proof fails qualification; no arbitrary target is enabled.
+IME/AX must be reported separately: an AX value action on the generated field is
+not OS IME composition/candidate placement, keyboard delivery or screen-reader
+qualification. The observed keyboard injection without value readback remains
+unqualified. Failure, timeout, missing callback and
+unsupported OS remain explicit. All raw native evidence stays private.
+
+The bootstrap contract follows the
+[official CEF sandbox setup](https://chromiumembedded.github.io/cef/sandbox_setup)
+and the pinned distribution's cef_sandbox_win.h/cef_life_span_handler.h. The
+current console ABI has four arguments, including an opaque version-info pointer.
+DoClose/OnBeforeClose ownership is checked against that actual header. Native
+file-access denial and full utility-process sandbox policy are not claimed.
+Synthetic profiles generated by the pilots remain private runtime cache. An
+automatic approval review rejected their bulk recursive deletion with only
+`blocked by policy` as its stated reason. No alternative deletion was attempted.
+Do not publish or inspect these generated profiles as ordinary evidence content.
 
 Run meaningful lifecycle/policy unit tests, actual Meari document keyboard,
 AccessKit/input/resize tests, then launch the native window with synthetic data.

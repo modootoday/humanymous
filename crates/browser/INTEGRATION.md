@@ -1,64 +1,126 @@
-# Browser integration request
+# Browser native integration
 
-Owner: misc / rust-browser-ui-next. Status: management UI/guard source implemented
-and workspace-integrated; 9 locked tests plus Clippy/format pass. Actual Windows
-x64 Meari UI observed. CEF target browsing/adapter remains NOT READY.
+Owner: misc / rust-browser-cef-native. The Meari management UI is integrated.
+Two actual Windows CEF native prototype packages are implemented below; shared
+workspace membership/lock integration remains root-owned and requested.
+BrowserReady=false; external target browsing is disabled.
 
-Root delta: add `crates/browser` to workspace.members. Keep publish=false.
-The crate uses workspace package metadata/lints. Desktop deps are optional behind
-`native-ui`: `meari` and `meari-native` from
-https://github.com/modootoday/meari.git revision
-1482b746ebc0d867f25d17d01c48c12df888ca6c; meari-native features=["window"],
-default-features=false. `url = "=2.5.7"` is the policy parser dependency.
-No shared Cargo files are edited by this lane. CEF dependency is not yet added:
-artifact/features/MSRV/bootstrap qualification is pending, no implicit download.
-Dev dependencies: accesskit=0.25.1, blitz-traits=0.3.0-beta.4,
-keyboard-types=0.8.3 (all exact pins; match Meari closure).
-Dev dependency `meari-dom` uses the same Meari git revision and
-default-features=false; its library name is `blitz_dom`.
+## Exact root delta
 
-Progress: detached harness directly referencing the actual crate sources and
-the exact checked-out Meari source passed 8 tests. Native window creation and
-scenario-panel switching were observed on Windows x64; host fonts were used
-because the pinned Noto cache is absent. UIA exposes named address/tabs but
-static text propagation/bounds need qualification. Initial CEF check failed for
-missing PATH CMake, retry failed for long native object paths. Using the installed
-VS CMake/Ninja and a temporary private-path SUBST mapping, real upstream
-`cargo check -p cef --no-default-features --features sandbox` passed with1.99.1.
-That proves neither native executable linking nor actual sandbox/attach readiness.
-CEF native distribution resolved to
-`cef_binary_156.0.15+gcf671c0+chromium-156.0.8078.80_windows64_minimal.tar.bz2`,
-upstream archive SHA1 b690e035689ee20ba9d2500ac8953815bc7ed46a.
-Full artifact signing/provenance and SHA256 inventory remain required.
+Add `crates/browser/native/bootstrap` and `crates/browser/native/desktop` to
+workspace.members and resolve Cargo.lock. Keep both publish=false. The core
+humanymous-browser remains unsafe_code=forbid. Native packages explicitly deny
+unsafe by default with local reviewed FFI allowances; do not weaken core lints.
+They use explicit edition2024, MSRV1.99.1, Apache-2.0, version0.1.0 metadata.
+All dependencies are under target.'cfg(windows)'.dependencies. Empty non-Windows
+crate compilation is not Linux/macOS native implementation or qualification.
 
-Final native pilot: integrated workspace executable, synthetic input only. Named
-UIA address, headings/status and tabs; native address focus/typing, Tab+Right panel
-navigation, scenario switch, and asynchronous Alt+F4 close were observed. Explicit
-aria labels repaired static-text names. Indexed UIA click bounds remain a tool/AT
-qualification residual. Injected IME preedit/commit unit case passes; actual OS
-IME candidate placement, screen reader and native DPI remain unrun.
+- Both: cef git https://github.com/tauri-apps/cef-rs.git,
+  rev224a785c7b41758b51821cbb7395ea57ba493a63,
+  default-features=false, features=["sandbox"]. No dox or no-sandbox.
+- Bootstrap: libloading="=0.9.0"; cdylib humanymous_cef_bootstrap.dll.
+- Desktop: humanymous-browser path="../..", features=["native-ui"];
+  meari and meari-native git https://github.com/modootoday/meari.git,
+  rev1482b746ebc0d867f25d17d01c48c12df888ca6c;
+  meari-native default-features=false, features=["window"];
+  winit="=0.31.0-beta.3"; serde(version1, derive), serde_json(version1).
+- Desktop windows="=0.62.2", features Wdk_System_Threading,
+  Win32_Foundation, Win32_UI_WindowsAndMessaging,
+  Win32_UI_Input_KeyboardAndMouse, Win32_UI_HiDpi,
+  Win32_System_Threading, Win32_System_Diagnostics_ToolHelp,
+  Win32_Security, Win32_Security_Authorization, Win32_System_Com,
+  Win32_System_ProcessStatus. cdylib+rlib humanymous_cef_desktop.dll.
 
-Root continuation: use `.spec/plan/20261107002014-browser-ui.plan.md` and
-`.spec/sot/browser-ui.sot.md` for exact CEF lifecycle/input/AX/bootstrap contract.
-Keep B2 partial/notready. The native dependency closure check is not CEF runtime
-or sandbox proof. Docker/backend integration request: after real attach, drive
-owned fixture through collector/session and join server audit/origin receipts;
-today no target requests or server integration can be honestly tested here.
+No shared Cargo files were edited by this lane. Before root integration, a
+private detached workspace references the actual native lib.rs paths and actual
+core crate; no implementation algorithms are copied into the harness.
 
-Binary: humanymous-browser, requires native-ui. Build/run after root integration:
-`cargo run -p humanymous-browser --features native-ui --bin humanymous-browser`.
-Optional `--pilot-seconds 10` closes the synthetic management window automatically.
-`cargo test -p humanymous-browser --features native-ui` exercises real Meari IR.
+## Bootstrap and parent ownership
 
-Prerequisites: Rust1.99.1, Windows MSVC C++ linker/SDK (upstream dependencies),
-working native GUI session/fonts. Linux requires display and fontconfig/native
-renderer libraries; macOS needs Apple SDK. Exact resolved native closure remains
-to be measured. No C/C++ application glue is authored. Upstream crates may contain
-native code; their notices/artifact provenance need the final dependency audit.
+Use the exact upstream CEF windows64 minimal distribution:
+cef_binary_156.0.15+gcf671c0+chromium-156.0.8078.80_windows64_minimal.tar.bz2;
+upstream archive SHA1 b690e035689ee20ba9d2500ac8953815bc7ed46a. Keep runtime
+DLLs/resources/locales beside the client. Rename upstream bootstrapc.exe to
+humanymous_cef_bootstrap.exe and copy the two Rust DLLs beside it. Copy upstream
+cef-app.exe.manifest as humanymous_cef_bootstrap.exe.manifest. No C/C++ glue.
+Both bootstrapc.exe/libcef.dll were observed Authenticode NotSigned: this private
+pilot does not establish signed distribution, native CVE clearance or provenance
+beyond upstream hash checking and recorded local SHA256.
 
-CEF path: Windows supported upstream bootstrap plus client DLL sandbox; macOS
-signed helper initialization before framework load; Linux namespace/seccomp proof.
-Never substitute no-sandbox. Consumer adapter lifecycle/input/AX contract will
-remain separate from actual CEF qualification. No video reservation or external
-window docking is permitted. Root must keep B2 partial/not-ready until native
-attach, sandbox, IME/AX and owned backend integration pass.
+RunConsoleMain follows the current four-argument ABI. It rejects weakening flags,
+forwards the executable-owned sandbox pointer to CefExecuteProcess, and only in
+the browser process loads the fixed sibling Meari desktop DLL. DLL_LOAD_DIR and
+DEFAULT_DIRS exclude the working directory from desktop dependency search.
+Desktop initializes CEF no_sandbox=0 with its Windows multi-threaded UI loop.
+Meari owns winit. CEF creation is asynchronous through the scoped parent callback;
+the consumer retains NativeParentLease and Meari retains the parent while pending
+creation/cleanup. A late creation after cancellation immediately closes.
+
+DoClose queues destruction of only the internal CEF child on CEF's UI thread.
+Meari parent cleanup waits for on_before_close. A cancellable joined deadline
+thread avoids outliving the desktop DLL. Timeouts/panics fail-stop nonzero rather
+than returning a fabricated native cleanup ACK. OS resize checks only the owned
+child; parent WS_CLIPCHILDREN prevents overlapping repaint feedback. No video
+reservation, mock frame, external browser docking or authored script is used.
+
+## Build and execution
+
+Requires Windows x64 GUI session, Rust1.99.1, MSVC14.44/Windows SDK,
+installed Visual Studio CMake/Ninja on PATH, and the pinned CEF runtime. Long
+Windows object paths require a short private target/CEF path (the pilot used a
+temporary SUBST alias). Do not disable sandbox/security to repair build problems.
+After root integration:
+
+`cargo build --locked -p humanymous-cef-bootstrap -p humanymous-cef-desktop`
+
+Place outputs in the private bundle described above, then run
+`humanymous_cef_bootstrap.exe --native-pilot-seconds=25` (5..180 allowed).
+`--native-cancel-before-created` exercises actual cancellation during creation.
+A fresh synthetic profile is created; an existing profile directory is rejected.
+Reports are private native-report.json beside the executable. No personal profile
+or cookies are supplied. The exact static input fixture is generated from Rust
+Meari IR by its upstream markup builder; it is target test data, not the app shell.
+JavaScript is disabled, other navigation/resources/popups/files/permissions denied.
+Extensions/component updates/background networking are disabled. These flags do
+not prove OS-enforced egress isolation or an ordinary browser baseline.
+
+## Validation and remaining gates
+
+Private source-linked harness: four library tests, warnings-denied Clippy, actual
+DLL linking; one explicitly invoked native test rejects four weakening flags
+before UI/profile creation. Actual Windows parent relationship, CEF child,
+resize readback, focus-within-child, on_before_close and Meari cleanup observed.
+Cancellation observed a genuine late creation followed by child-first cleanup.
+Native OS roles/tokens identify renderer processes with restricted tokens and
+Untrusted integrity RID0. This is limited sandbox evidence; complete sandbox
+policy, utility-process isolation and renderer file denial remain unqualified.
+CEF SystemInfo.getProcessInfo returned unsupported_or_failed; OS inspection is
+reported separately and retains only bounded role/token metadata for rechecked
+owned executable descendants, never full command lines.
+
+Native UIA exposed the CEF document, named text input and Unicode value action.
+Maximization propagated an additional resize readback. Keyboard text injection
+had no confirmed value readback; UIA focus/cached bounds have residual issues.
+Actual IME composition/candidate placement, screen-reader operation, cross-monitor
+DPI, renderer crash/restart, all six native tuples and full AX qualification are
+not_run/unqualified. Native permission callbacks are implemented but their real
+prompt/file-denial matrix is not exercised by the script-free text fixture.
+BrowserReady remains false. No server verdict or automation detection performance
+is measured. Docker/backend integration must wait for actual qualified target
+input/navigation and join the existing collector/session/server audit/origin lab.
+
+Canon: .spec/sot/browser-ui.sot.md and
+.spec/plan/20261107002014-browser-ui.plan.md. Native evidence is registered in
+.spec/evidence/20261107012426-browser-ui-cef-native; raw sources/builds/outputs are
+private in evidence:root/20261107004558. The initial ead2dc6 management-only slice
+and its nine core tests remain historical evidence, not full browser completion.
+
+Cleanup residual: automatic approval review blocked bulk recursive deletion of
+previous synthetic-profile directories (reason only `blocked by policy`). No
+alternative deletion was attempted. They remain private generated runtime cache;
+do not publish/inspect their contents. Native child/window/process close succeeds
+separately and must not be conflated with disk-profile deletion.
+
+Repository-wide spec check remains blocked by pre-existing private documents outside
+this lane (1509 errors, 1 warning at the recorded full run). Scoped browser public
+and private evidence checks pass; this is not a whole-repository spec pass.

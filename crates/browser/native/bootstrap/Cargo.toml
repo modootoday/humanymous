@@ -1,0 +1,17 @@
+[package]
+name = "humanymous-cef-bootstrap"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99.1"
+license = "Apache-2.0"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[lints.rust]
+unsafe_code = "deny"
+
+[target.'cfg(windows)'.dependencies]
+cef = { git = "https://github.com/tauri-apps/cef-rs.git", rev = "224a785c7b41758b51821cbb7395ea57ba493a63", default-features = false, features = ["sandbox"] }
+libloading = "=0.9.0"
