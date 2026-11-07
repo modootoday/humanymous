@@ -50,6 +50,17 @@ limited to recognized local content-addressed files. Record residual copies and
 independent retention/custody decisions explicitly; do not mark global erasure
 complete from one local unlink or a valid inventory signature.
 
+The authored backup recovery fixture named `crash_reconcile` is narrower than
+arbitrary crash testing: its child finishes retirement, writes the control pin,
+flushes a success marker and exits normally, while the parent deliberately keeps
+the older backup-inventory pin. It exercises explicit reconciliation of that
+pin mismatch. It does not inject process death between every write, simulate
+power loss or demonstrate independently operated anchor custody. The Windows
+pending-retirement fixture separately holds an inventory handle to force a
+replacement failure before explicit recovery. These are test-source scenarios;
+current source-bound execution results and broader interruption coverage must
+be recorded separately.
+
 For a vault pilot, provision the expected installation/node and pseudonym mode
 independently before restore. Unscoped compatibility constructors do not grant
 production erasure authority. Verify that the permit matches both subject and

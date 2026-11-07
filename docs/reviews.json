@@ -2,6 +2,25 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/apache-adapter/native/src/coordinator/engine.rs",
+  "sha256": "58defd8afcabafc8cd902bb8d6cf875efdfaa7fb063f55b3f43e4c0233d56053",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete pure engine verifier: bounded context/endpoint/server ID/version, Linux OS, explicit Windows Desktop context/npipe/client and pinned ID/version versus separate hosted Unix endpoint profile. Source negative tests distinguish WSL-native; no executed engine identity, daemon attestation or containment proof.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/audit/tests/key_backups.rs",
+  "sha256": "c49d1eae8c4716137eec977019b4eed002618ece70819f9ec426e508002b4535",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all524 lines in nontruncated sections: synthetic local archive/approval fixtures, active hash restore, wrong credentials/action/quorum, tombstones/reappearance, Unix aliases/modes, Windows reparse and replacement failure, orphan adoption and exact pin rollback. crash_reconcile child retires then flushes marker/exits0, not injected crash/power loss or independent anchor operator; bounded capture60s64KiB. Source review is not current execution.",
+  "pages": [
+    "docs/runbooks/erasure-crypto-shred.md",
+    "docs/how-to/key-management.md"
+  ]
+},
+{
   "source": "crates/audit/src/control/state.rs",
   "sha256": "7a08ee0849d914b73a80ac75f8eba92afacd84e6bb0da2f222cba4ad7a43a2cb",
   "reviewer": "codex/rust-pages",

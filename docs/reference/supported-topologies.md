@@ -172,9 +172,13 @@ unknown rather than becoming zero failures. The public projection permits bounde
 compiler codes and source locations; raw diagnostics and artifacts stay private.
 Its cleanup checks concern the owned container and image tag, not all shared
 image contents, build caches, volumes or external effects. The current host
-source also invokes the Docker CLI without independently recording the selected
-daemon's identity. An execution-context label alone does not identify an engine;
-local execution needs explicit engine selection and verified provenance before
+source now separates hosted Linux from Windows Desktop engine profiles. The
+Windows path selects the explicit Desktop client and `desktop-linux` context,
+checks its named-pipe endpoint plus the provisioned server ID/version and Linux
+OS type, and records engine identity. Hosted Linux requires a Unix endpoint.
+These authored checks still need actual execution evidence; a context label or
+successful identity comparison alone does not establish containment or cleanup.
+Local execution needs verified engine provenance before
 its results can be compared with a hosted runner.
 The authored pilot uses the real shared authority and WAL with frozen synthetic
 reports for its ALLOW/DENY/CHALLENGE paths. Its loopback origin counts complete

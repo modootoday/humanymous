@@ -1719,3 +1719,16 @@ negative requirements for unknown targets, rollback, concurrent issuance and
 uncovered tails. Compilation/native qualification remains pending. Requested an
 explicit Pages validation allocation after observing root's completed parity
 comparison; no allocation inferred and no compiler/runtime/Docker started.
+### Backup test scope and explicit Apache engine profile
+
+Read all524 backup test lines in bounded sections; receipt records synthetic
+scope and orderly child retirement/marker/exit0 instead of arbitrary crash or
+powerloss. Runbook distinguishes pin mismatch reconciliation and Windows held
+handle replacement failure from broader qualification. Initial combined output
+was truncated; no keys.json receipt was inferred from that output.
+
+Read complete Apache engine verifier and changed host selection/preflight
+excerpts. Replaced obsolete no-engine-recording statement with explicit Desktop
+context/npipe/pinned ID/version/Linux versus hosted Unix profile, retaining
+unexecuted status and containment/cleanup limits. Added engine module receipt;
+partial changed host excerpts do not renew its whole-file receipt.
