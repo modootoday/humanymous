@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.mount-probe-pure-evidence/1",
+  "source_sha": "1cba334e45ec8779b12f68aaaa0af70fb1a02bed",
+  "source_manifest_sha256": "f90e5a68875b8a13effce15b4264452cd4df70aa6ebdaf894799121e6c82b4a4",
+  "source_archive_sha256": "73207f858f619caa21e5adb955e2e5d9092d328e27e67e136d2f2ce6d26e9a15",
+  "source_files": 2399,
+  "source_drift": 0,
+  "windows_unit_passed": 20,
+  "windows_unit_failed": 0,
+  "windows_unit_ignored": 0,
+  "windows_unit_filtered": 0,
+  "windows_unit_exit": 0,
+  "windows_all_target_clippy_exit": 0,
+  "unix_packages": [
+    "humanymous-lab-runner",
+    "humanymous-runtime-pilot"
+  ],
+  "unix_all_target_check_exit": 0,
+  "unix_all_target_clippy_exit": 0,
+  "rust_version": "1.99.1",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "docker_executed": false,
+  "full_product_qualified": false
+}

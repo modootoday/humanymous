@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T11:57:55Z
+updated: 2026-11-07T12:23:14Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -16,6 +16,7 @@ files:
   - {path: hosted-go-44876534-failure.json, sha256: 267bdc0896bfb0d8ad2cce633d5dc1e51bc69903853da94b0f18ec0a3f4c6e88, bytes: 5368, store: repo}
   - {path: docker-build-diagnostic-pure-checks.json, sha256: 6eb5c2fc6af4f05bd6b118dc637cfacdab5465f6d7e7a5b261a2c1d75c120406, bytes: 1333, store: repo}
   - {path: hosted-go-15f63fef-failure.json, sha256: 34335e8e6e2b77c972a96befc5eda8af5ac701c3165e97eab8a5982d5d783328, bytes: 5712, store: repo}
+  - {path: mount-probe-1cba334e-pure-checks.json, sha256: e5146b2b567055df1c795d539cf84475e062191ec58b275aa6568d491c8076cf, bytes: 852, store: repo}
 ---
 
 # Container test environment research
