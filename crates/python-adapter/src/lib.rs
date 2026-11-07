@@ -11,6 +11,8 @@ mod pilot;
 mod pilot_asgi;
 #[cfg(feature = "native")]
 mod wsgi;
+#[cfg(all(test, feature = "host-pilot", unix))]
+mod wsgi_handoff_tests;
 #[cfg(feature = "native")]
 use pyo3::{exceptions::PyRuntimeError, prelude::*};
 #[cfg(feature = "native")]

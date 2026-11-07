@@ -1,5 +1,7 @@
 //! Schedule Python callbacks on their owning event loop and cancel on Rust Drop.
 use crate::failure;
+use humanymous_authority::client::{BoundResponse, Verdict};
+use humanymous_framework_adapter::{Admission, Pending};
 use pyo3::{
     BoundObject,
     prelude::*,
@@ -11,8 +13,16 @@ use tokio::sync::oneshot;
 
 struct State {
     cancelled: bool,
+    started: bool,
+    admission: Option<OriginAdmission>,
+    permit: Option<Admission>,
     task: Option<Py<PyAny>>,
     result: Option<oneshot::Sender<PyResult<Py<PyAny>>>>,
+}
+struct OriginAdmission {
+    pending: Pending,
+    bound: BoundResponse,
+    permit: Admission,
 }
 #[pyclass]
 struct Start {
@@ -32,6 +42,35 @@ impl Start {
             return Ok(());
         }
         let result = (|| {
+            let admission = {
+                let mut state = self
+                    .state
+                    .lock()
+                    .map_err(|_| failure("callback state unavailable"))?;
+                if state.cancelled || state.started {
+                    return Ok(());
+                }
+                state.started = true;
+                state.admission.take()
+            };
+            if let Some(ref admission) = admission {
+                admission
+                    .pending
+                    .check_handoff(admission.bound.expires())
+                    .map_err(failure)?;
+            }
+            // This owning-loop callback is the invocation boundary. Retain the
+            // opaque result across scheduling; no host callback follows consume
+            // before the application call. Cancellation after this boundary
+            // cancels the task, rather than pretending invocation never began.
+            let permit = if let Some(admission) = admission {
+                if admission.bound.consume().map_err(failure)? != Verdict::Allow {
+                    return Err(failure("origin requires bound ALLOW"));
+                }
+                Some(admission.permit)
+            } else {
+                None
+            };
             let awaitable = self.callback.bind(py).call1(self.args.bind(py))?;
             let task = py
                 .import("asyncio")?
@@ -53,6 +92,7 @@ impl Start {
                 task.call_method0("cancel")?;
             }
             state.task = Some(task.unbind());
+            state.permit = permit;
             Ok(())
         })();
         if let Err(e) = result
@@ -83,6 +123,7 @@ impl Done {
             .lock()
             .map_err(|_| failure("callback state unavailable"))?;
         state.task.take();
+        state.permit.take();
         if let Some(tx) = state.result.take() {
             let _ = tx.send(result);
         }
@@ -142,9 +183,46 @@ pub async fn call<A>(locals: &TaskLocals, callback: &Py<PyAny>, args: A) -> PyRe
 where
     A: Send + for<'py> IntoPyObject<'py, Target = PyTuple>,
 {
+    schedule(locals, callback, args, None).await
+}
+pub async fn call_origin<A>(
+    locals: &TaskLocals,
+    callback: &Py<PyAny>,
+    args: A,
+    pending: Pending,
+    bound: BoundResponse,
+    permit: Admission,
+) -> PyResult<Py<PyAny>>
+where
+    A: Send + for<'py> IntoPyObject<'py, Target = PyTuple>,
+{
+    schedule(
+        locals,
+        callback,
+        args,
+        Some(OriginAdmission {
+            pending,
+            bound,
+            permit,
+        }),
+    )
+    .await
+}
+async fn schedule<A>(
+    locals: &TaskLocals,
+    callback: &Py<PyAny>,
+    args: A,
+    admission: Option<OriginAdmission>,
+) -> PyResult<Py<PyAny>>
+where
+    A: Send + for<'py> IntoPyObject<'py, Target = PyTuple>,
+{
     let (tx, rx) = oneshot::channel();
     let state = Arc::new(Mutex::new(State {
         cancelled: false,
+        started: false,
+        admission,
+        permit: None,
         task: None,
         result: Some(tx),
     }));

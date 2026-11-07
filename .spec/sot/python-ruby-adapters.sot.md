@@ -411,11 +411,25 @@ verdict is branch selection only. Check the original Pending and consume only
 immediately before the trusted application invocation, without another await,
 queue or callback. The WSGI/Rack source correction implements this ordering;
 its SDK check and actual late-connected/no-origin plus timely-connected control
-remain NOT_RUN. ASGI's queued callback and Node's private wall-only Pending /
-early copied status remain open source deviations, not qualified shared behavior.
+remain NOT_RUN. ASGI's source correction moves the real result and original
+Pending into the owning-loop callback and consumes immediately before app
+invocation after cancellation/one-shot inspection. It retains the permit through
+task completion; queued expiry/cancel and timely controls remain NOT_RUN.
+Node's private wall-only Pending / early copied status remains an open source
+deviation. No current source-only path is qualified shared behavior.
 The genuine ALLOW must precede the delayed connected callback in the regression;
 an earlier dependency timeout is insufficient. No native epoch atomicity,
 actual controller admission or broader host qualification follows from this fix.
+
+The new host-pilot Unix lib tests exercise the actual embedded CPython WSGI
+callable with the existing real component Authority/audit and frozen synthetic
+evidence. They explicitly observe both trusted callbacks and one audited ALLOW;
+only the final callback delays2100ms against the original2000ms request budget.
+Late connected must refuse with zero origin calls, while timely connected must
+invoke exactly once and preserve binary bytes. This is not Waitress/server input
+or production evidence, and execution remains NOT_RUN. The existing private
+directory/configuration fixture is extracted once for SDK and server reuse;
+no child controller, transport/peer clone or new native provider is introduced.
 
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;

@@ -599,3 +599,25 @@ connected control are mandatory; SDK/typecheck/Clippy and actual regressions on
 the corrected source remain NOT_RUN pending the existing execution allocation.
 No process/controller, dependency install, native SDK, hosted or privileged
 workload was started. The full adapter/package goal remains incomplete.
+
+Next source slice moves ASGI's original Pending/actual BoundResponse into the
+existing owning-loop Start callback, after cancellation and one-shot invocation
+inspection, with no await/host callback between final consumption and app call.
+The permit remains with the scheduled task through completion. The boundary is
+app invocation, not every later async side effect or an atomic native epoch gate.
+Queued expiry/cancel/timely controls remain mandatory and NOT_RUN; Node's
+private wall-only budget/copied-status deviation remains open.
+
+Authored two actual SDK WSGI lib controls using existing real Authority/audit
+and frozen evidence, reusing one extracted private directory/configuration
+fixture without any server child. Assert exact initial/final callback counts,
+one audited ALLOW, late-connected2100ms/original2000ms/no-origin negative and
+timely-connected/binary-replay/exactly-one-origin positive. Both are ignored
+by default and must execute explicitly under the bounded allocated SDK gate.
+Existing REA-Ubuntu CPython3.12.3 and Rust1.99.1/PyO3 0.30.1 are inventoried;
+no interpreter execution, installation or Rust compile has occurred. Rack has
+no verified compatible SDK target: WSL Ruby absent, Windows Ruby files identify
+x64-mingw-ucrt while the inventoried Rust toolchain is MSVC. Rack actual remains
+unavailable until an existing compatible venue is established without installing
+or changing the graph. Root receives the exact checkpoint and one bounded
+Python-only command proposal; no all-host qualification follows.

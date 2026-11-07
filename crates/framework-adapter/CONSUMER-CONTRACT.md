@@ -82,12 +82,15 @@ original shared monotonic budget and retain the actual result until final VM
 admission. A timer is not proof that a delayed callback ran before expiry, and
 wall-clock rollback must not extend the original request budget.
 
-ASGI currently consumes before its tail poll, replay construction and queued
-application helper. Its final admission belongs inside the owning-loop callback
-that actually invokes the application, after queue delay and cancellation
-inspection. Moving consumption immediately before scheduling that callback
-would leave the same gap. Neither ASGI nor Node is closed by the synchronous
-WSGI/Rack source correction.
+The ASGI source correction retains the result through its tail poll, replay
+construction and queued application helper. The owning-loop callback claims
+the single invocation after checking cancellation, then checks original Pending
+and consumes immediately before calling the application with prepared arguments.
+The permit follows that task through completion. This boundary is application
+invocation, not a promise that an async application's later effects occur before
+expiry or a native atomic cancellation/epoch gate. Queued expiry/cancel and
+timely invocation controls remain actual-SDK gates. Node's deviation remains
+open; neither path is qualified by the synchronous WSGI/Rack source correction.
 
 The WSGI/Rack source correction retains the result through replay preparation
 and the last trusted disconnect callback, then checks the original budget and
