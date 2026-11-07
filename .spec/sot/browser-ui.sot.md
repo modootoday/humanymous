@@ -202,5 +202,12 @@ native conversion mode, and F9 to request real IME conversion/candidate opening.
 No synthesized Hanja event, committed-string injection or custom candidate UI is
 used. Record API acceptance separately from actual candidate display and geometry.
 The latest second deletion attempt after explicit user approval was again rejected
-by automatic approval review;31 generated profiles remain private and no bypass
+by automatic approval review;32 generated profiles remain private and no bypass
 was attempted. evidence:root/20261107021004 records the current measured scope.
+
+OSK follow-up on unchanged a924603 source: the built-in Korean on-screen keyboard
+exposed a Hanja key. Its click had no confirmed key-delivery/candidate receipt.
+Candidate qualification remains open. The owned CEF pilot exited0. OSK UI-close
+had no confirmed effect; stopping only its introduced PID/start-time matched
+process returned access denied. No elevation/security bypass was attempted; the
+introduced OSK window remains for manual close.32 generated profiles now remain.

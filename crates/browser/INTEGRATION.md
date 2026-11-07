@@ -174,12 +174,27 @@ UI/profile creation. It passed locally on the final bundle. Missing provisioning
 missing feature execution or a skipped job is NOT_RUN and blocks component
 acceptance. Root owns scripts/ci/cef-pilot and its dedicated Windows component CI;
 that gate proves build/negative startup only, not GUI/IME/AX/full sandbox support.
-The final source commit/hash still needs root's exact-source integrated gate.
+Root's exact-source local integration gate passed and was committed/pushed in ac560ff.
 
 ### Cleanup update
 
 The user explicitly approved deleting generated private profiles. A second
 PowerShell deletion command containing path validation was nevertheless rejected by automatic
 approval review with only blocked by policy. It did not execute; no alternative
-mechanism was attempted.31 generated profiles remain private. All own native test
+mechanism was attempted.32 generated profiles remain private. All CEF test
 processes have closed; disk cleanup remains separate from successful child cleanup.
+
+OSK follow-up on unchanged a924603 source: the built-in Korean on-screen keyboard
+exposed a Hanja key. Its click had no confirmed key-delivery/candidate receipt.
+Candidate qualification remains open. The owned CEF pilot exited0. OSK UI-close
+had no confirmed effect; stopping only its introduced PID/start-time matched
+process returned access denied. No elevation/security bypass was attempted; the
+introduced OSK window remains for manual close.32 generated profiles now remain.
+
+Shared integration is committed/pushed in ac560ff with browser source a924603.
+Root evidence .spec/evidence/20261106235519-program-status/cef-root-integration-results.json
+records DLL build, native7/0ignored, Clippy and explicit1case/4flags pass. Its native
+source SHA256 map was compared with this evidence and matches. Root artifact
+hashes differ from the source-linked GUI bundle and have separate scope. The new
+remote exact-integration CI is pending; neither that component gate nor native
+Linux stubs establish full browser/IME/AX/sandbox or six-tuple runtime support.

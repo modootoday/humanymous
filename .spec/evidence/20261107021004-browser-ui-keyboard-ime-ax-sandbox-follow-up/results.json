@@ -4,7 +4,7 @@
   "rust": "1.99.1",
   "meariRevision": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
   "cefRevision": "224a785c7b41758b51821cbb7395ea57ba493a63",
-  "workspaceIntegration": "native2 members present in root-owned shared checkout; root exact-source component gate pending commit",
+  "workspaceIntegration": "integrated and pushed as ac560ff including a924603; root native7 zero-ignore/Clippy/DLL/explicit rejection gate pass with matching native source hashes; new remote integration CI pending",
   "tests": {
     "nativeLibraryPassed": 7,
     "nativeLibraryFailed": 0,
@@ -54,7 +54,8 @@
     "candidateApi": "conversion_request=true; open_request=false; visible_window_unqualified",
     "candidatePlacement": "attempted but no visible window/form; unqualified",
     "escapeCancellation": "not_run",
-    "otherImes": "not_run"
+    "otherImes": "not_run",
+    "oskHanjaAttempt": "built-in OSK Hanja key observed and clicked; no key-delivery receipt or candidate window; unqualified"
   },
   "accessibility": {
     "cefRoleNameValue": "observed",
@@ -90,8 +91,10 @@
     "secondAutomaticReview": "rejected: blocked by policy",
     "deletionExecuted": false,
     "alternativeDeletionAttempt": false,
-    "retainedGeneratedProfiles": 31,
-    "ownProcessesRemaining": 0
+    "retainedGeneratedProfiles": 32,
+    "ownProcessesRemaining": 0,
+    "introducedOskRemaining": true,
+    "oskCleanup": "UI close action had no confirmed effect; exact introduced PID/start-time stop request returned access denied; no elevation/bypass"
   },
   "source": [
     {
@@ -192,5 +195,6 @@
       "bytes": 294315008
     }
   ],
-  "privateDependencyLockSha256": "164a13ace1777789d3feadfcefc495b068cd25ae6c78bd7b724486b19593734d"
+  "privateDependencyLockSha256": "164a13ace1777789d3feadfcefc495b068cd25ae6c78bd7b724486b19593734d",
+  "rootIntegrationEvidence": ".spec/evidence/20261106235519-program-status/cef-root-integration-results.json"
 }

@@ -3,11 +3,11 @@ id: evidence:root/20261107021004
 title: Browser UI keyboard IME AX sandbox follow-up
 status: active
 created: 2026-11-07T02:10:04Z
-updated: 2026-11-07T02:21:03Z
+updated: 2026-11-07T02:28:03Z
 rel:
   depends_on: [sot:root/browser-ui]
 files:
-  - {path: results.json, sha256: a70f8a0b144cb25866513c733d7a7ab9b0157a3e2afd3e5432e907124880cf8d, bytes: 6559, store: repo}
+  - {path: results.json, sha256: d6349b4ef0bae0611c2423ad194ef3f424fc52c92df99b5d68cfaa35e053999e, bytes: 7069, store: repo}
 ---
 
 # Browser UI keyboard IME AX sandbox follow-up
@@ -18,7 +18,7 @@ Actual source-linked DLLs/bundle, Rust1.99.1, pinned CEF156 and Meari0.2.0.
 Seven native units passed with zero ignored, separate explicit feature test passed
 one case/four security overrides, Clippy/fmt/DLL build passed. Core nine existing
 browser tests apply to unchanged core source. Root owns the shared membership/lock
-and separate component CI integration; final commit reconciliation is separate.
+and separate component CI integration; root commit ac560ff integrates this source; new remote CI is pending.
 
 Native Tab/physical Latin typing passed. With opt-in focused Korean context setup,
 r -> ㄱ -> k -> 가 -> BackSpace -> ㄱ -> k -> 가 -> Return was observed on actual CEF
@@ -57,7 +57,22 @@ this is independent of claims about every GUI failure mode.
 
 The user explicitly approved generated-profile deletion. Automatic approval review
 again rejected the recursive deletion command containing path validation with blocked by policy.
-Nothing was deleted; no alternative mechanism was attempted.31 generated private
-profiles remain, all own native processes closed. Profiles and raw artifacts stay
+Nothing was deleted; no alternative mechanism was attempted.32 generated private
+profiles remain, all CEF test processes closed. Profiles and raw artifacts stay
 private; only synthetic text/metadata aggregates are public. Legacy global private
 spec errors remain separate from the browser-scoped checks.
+
+OSK follow-up on unchanged a924603 source: the built-in Korean on-screen keyboard
+exposed a Hanja key. Its click had no confirmed key-delivery/candidate receipt.
+Candidate qualification remains open. The owned CEF pilot exited0. OSK UI-close
+had no confirmed effect; stopping only its introduced PID/start-time matched
+process returned access denied. No elevation/security bypass was attempted; the
+introduced OSK window remains for manual close.32 generated profiles now remain.
+
+Shared integration is committed/pushed in ac560ff with browser source a924603.
+Root evidence .spec/evidence/20261106235519-program-status/cef-root-integration-results.json
+records DLL build, native7/0ignored, Clippy and explicit1case/4flags pass. Its native
+source SHA256 map was compared with this evidence and matches. Root artifact
+hashes differ from the source-linked GUI bundle and have separate scope. The new
+remote exact-integration CI is pending; neither that component gate nor native
+Linux stubs establish full browser/IME/AX/sandbox or six-tuple runtime support.
