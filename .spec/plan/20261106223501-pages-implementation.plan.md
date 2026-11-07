@@ -1746,3 +1746,17 @@ that a standalone raw full transcript was retained. Updated pending docs, corpus
 anchor and integration state. Generic local-handler/support complete source
 reviews added separately, distinguishing same-process fixture from runtime
 operator/cross-account/effect qualification.
+### Pure authority decision evidence boundary
+
+Read complete296-line decisions.rs in bounded sections. Added exact receipt and
+wire-experiment clarification: frozen synthetic ALLOW plus in-memory sink tests
+control ordering/poison/replay/clock/cancellation, not filesystem durability,
+native cancellation or actual effect completion. Existing sourcechecker88errors0,
+scoped Specfold0errors0warnings. Freshness remains incomplete: audit integration,
+control/durablewitness/keysfixture, authority integration/nativeprocess, and
+browser source appear in current missing inventory.
+
+Read actual pages-build workflow and current CLI: dualbaseurl staticvalidate is
+wired, browser stage is absent. Windows PATH supplies Ruby33 and bundle.bat but
+no chromedriver/msedgedriver found. These are discovery observations, not an
+executed build or browser availability conclusion; no new server/driver started.

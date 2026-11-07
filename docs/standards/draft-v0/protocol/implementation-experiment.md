@@ -187,6 +187,13 @@ check refuses the response. Decision records therefore do not supply a complete
 attempt denominator, and a missing successful response does not prove no audit
 state changed.
 
+The pure decision fixture checks these orderings with an in-memory audit sink
+and a frozen synthetic ALLOW report. Its injected append failure, clock advance,
+clock rollback and cancellation cases test authority control flow; they do not
+establish filesystem durability, native cancellation or original-client evidence.
+Even its successful append counter is not an application effect witness. Keep
+these results distinct from actual sealed-WAL and adapter/origin process runs.
+
 The shared client independently validates the outgoing envelope against its
 provisioned profile and pending id/tenant/origin/revision/deadline. It authenticates
 the native server and accepts only HTTP 200 with the exact response binding,

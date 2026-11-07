@@ -2,6 +2,16 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/tests/decisions.rs",
+  "sha256": "3a0f2a2894e1fd32532936110b78b6187ff09ff722eec9597b4cbe829ad2b06d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all296 lines: frozen synthetic ALLOW and in-memory audit sink, exact seven-field response, no credential/body leaks, caller-supplied peer negative, scope/routes/no-admin, epoch restart/replay, missing planes, body/deadline/capacity, append poison, postappend expiry, clock rollback and precancel nonce. Pure ordering evidence, not filesystem durability, native peer/cancellation or application effect witness.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/authority/tests/support/mod.rs",
   "sha256": "34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820",
   "reviewer": "codex/rust-pages",
