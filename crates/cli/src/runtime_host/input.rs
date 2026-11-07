@@ -232,6 +232,16 @@ pub(super) fn configuration(
     source: &impl SecretSource,
     witness: Option<&ExternalWitness>,
 ) -> io::Result<Configuration> {
+    let bytes = bounded(&plan.configuration, 65_536)?;
+    prepare_configuration(bytes.as_slice(), plan, source, witness.is_some())
+}
+
+fn prepare_configuration(
+    bytes: &[u8],
+    plan: &HostPlan,
+    source: &impl SecretSource,
+    has_witness: bool,
+) -> io::Result<Configuration> {
     let mut configuration = nonsecret_configuration(bytes, plan)?;
     if configuration.audit.require_external_witness && !has_witness {
         return Err(invalid("required independent witness provider unavailable"));
@@ -245,16 +255,6 @@ fn nonsecret_configuration(bytes: &[u8], plan: &HostPlan) -> io::Result<Configur
     if bytes.len() > 65_536 {
         return Err(invalid("non-secret configuration budget"));
     }
-    let bytes = bounded(&plan.configuration, 65_536)?;
-    prepare_configuration(bytes.as_slice(), plan, source, witness.is_some())
-}
-
-fn prepare_configuration(
-    bytes: &[u8],
-    plan: &HostPlan,
-    source: &impl SecretSource,
-    has_witness: bool,
-) -> io::Result<Configuration> {
     if digest(bytes) != plan.configuration_sha256 {
         return Err(invalid("non-secret runtime configuration digest mismatch"));
     }
@@ -300,6 +300,34 @@ mod tests {
     }
     fn configuration_value() -> serde_json::Value {
         serde_json::json!({"listen":"127.0.0.1:19001","origin":"127.0.0.1:19002","scope":{"installation":"unit","tenant":"tenant","origin":"origin","revision":"revision","authority":"unit.local"},"routes":[{"method":"GET","path":"/protected","required":{"raw_tls":false,"original_h2":false,"raw_header_order":false,"collector":false,"rit":true}}],"audit":{"directory":"audit","node_id":"node","keys":{"directory":"keys","passphrase":""},"allow_new":false,"trusted_head":null,"require_external_witness":false},"owner":{"kind":"unix","uid":1000},"session_capacity":8,"session_ttl_ms":1000,"timeout_ms":1000,"rate_per_second":8,"browser":null})
+    }
+    #[test]
+    fn pure_nonsecret_parser_never_reopens_the_configuration_path() {
+        let bytes = serde_json::to_vec(&configuration_value()).unwrap();
+        let mut plan = plan();
+        // Any attempted filesystem reopen would fail; this is still only a
+        // supplied-byte parser test, not filesystem/native permission evidence.
+        plan.configuration = std::path::PathBuf::from("\0must-not-be-opened");
+        plan.configuration_sha256 = digest(&bytes);
+        assert!(
+            nonsecret_configuration(&bytes, &plan)
+                .unwrap()
+                .audit
+                .keys
+                .passphrase
+                .is_empty()
+        );
+        let source = Source {
+            calls: Cell::new(0),
+            value: b"synthetic-unseal".to_vec(),
+        };
+        let mut changed = bytes.clone();
+        changed.push(b' ');
+        assert!(prepare_configuration(&changed, &plan, &source, false).is_err());
+        assert_eq!(source.calls.get(), 0);
+        let parsed = prepare_configuration(&bytes, &plan, &source, false).unwrap();
+        assert_eq!(source.calls.get(), 1);
+        assert_eq!(parsed.audit.keys.passphrase.as_str(), "synthetic-unseal");
     }
     #[test]
     fn pure_host_projection_binds_exact_documents_and_all_scope_fields() {

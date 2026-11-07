@@ -41,6 +41,15 @@ Kernel/provider qualification and actual ServiceHost retention still precede
 production startup; the current Unsupported producer was not bypassed. Consumer
 source is authored/NOT_RUN pending explicit bounded validation allocation.
 
+Independent X source review found a compile-blocking/purity refactor splice in
+a026bfc6 before any consumer gate ran: wrapper/parser bodies were misplaced and
+referenced nonexistent local names. The correction restores configuration's sole
+bounded filesystem read, pure supplied-byte parsing, then witness-before-secret
+preparation. A deterministic NUL-path regression checks no configuration reopen
+and zero secret reads on mismatched bytes. The original candidate remains
+unverified; corrected-source check/pure11/Clippy and the real shared golden
+consumer remain pending. Format/diff checks are not a compile pass.
+
 ### Authored watchdog subprocess boundary fixture
 
 Follow-up after immutable792a2fab/acc77d2c: the opt-in existing service-fixture
