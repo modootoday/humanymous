@@ -19,6 +19,34 @@ snapshots, including their allocation tables, counts and then-current CI handles
 They do not grant current execution slots, supersede newer contracts or prove
 freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
+### Runtime isolation and Tools pre-move reconciliation
+
+Runtime source5d68cd39 isolated context-owned normal dependencies without changing
+its nine public feature keys or main lock. Seventeen isolated normal consumer
+profiles and six disabled-context compiler refusals passed. A separate Windows
+all-target/all-feature check and strict Clippy passed, followed by177 unique
+selected pure cases from366 library cases. Independent audit af91c444 verifies
+the retained profile graphs, exact external version/source/checksum tuples and
+case sets. Development argv associations have explicitly retrospective Root
+transcript provenance; no contemporaneous per-phase start record or complete
+peer/registry/toolchain read closure is claimed. See the unchanged historical
+receipts and appended provenance qualification in evidence:root/20261107221648.
+
+| Next integration gate | Proven current state | Remaining requirement |
+| --- | --- | --- |
+| Tools maintenance identity | CLI7b5edfad and Delivery99ec7b80 agree on33 original cases; X d00ba197 closes the design mismatch | Actual mapped execution after movement; preserve23 integrations and10 real filesystem/provider bin cases |
+| Tools compiled roots | Accepted27 roots:1 library,15 bins,10 integration targets,1 example | Full source/role/feature/input freeze and actual metadata/discovery |
+| Legacy library units | Source-derived187 candidates across six retained/retiring library contexts | cfg-aware discovery, exact source-to-role mapping and original main/bin inventories;187 is not an executed denominator |
+| Tools external inputs | Ten original operational resources plus accepted pinned CEF DATA exception and explicit mutable-reader design | Complete13-context union and actual Collector source binding; no source implementation copy |
+| Runtime build performance | Matched5d68 A/B roots differ only by retained old Runtime manifest; identical lock and four empty dedicated targets prepared | Finite serial measurement and functional review; no measured speedup yet |
+| Browser product regression | Run42425474990/source5d68 preflight passed; product job128563546997 last observed active | Terminal actual Docker/browser results and exact source-bound receipt |
+
+Lab c3c2a6e6 fixes the deleted audit package selector for the existing audit-witness
+binary. This is a source invocation repair; the previous1f2 first failing inner
+Docker RUN remains unknown. Do not transfer previous Origin403 observations to
+a new actor that has not been observed. No production merge, package publication,
+release tag or OIDC token exchange follows from these component/design results.
+
 ## Current integration checkpoint
 
 | Structural stage | Workspace count after stage | Current state |
