@@ -108,7 +108,7 @@ deny policy has exactly six private scoped allowances for the specified query
 and directory-create wrappers. Public APIs expose neither raw handles nor a
 constructor/deserializer for native observations; forgeable wire claims remain
 separately typed. Query buffers are generated initialized POD with checked sizes,
-UTF16 retries/capacity/terminator checks are bounded, and calls borrow the same
+Query UTF16 retries/capacity/terminator checks are bounded, and calls borrow the same
 live File. Directory creation allocates its owned path before the native call
 and returns a cleanup obligation before later fallible caller validation.
 
@@ -140,6 +140,8 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-LF-01 | P2: browser native.rs worktree had 522 CRLF pairs despite LF blob | Browser | CLOSED; owner normalized to exact original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LF-02 | P2: Windows runner receipt.rs worktree had 90 CRLF pairs despite LF blob | Native Windows | CLOSED; worktree equals original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LIFETIME-01 | P1 contract gap: shared process capture has no retained reader joins or proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Independently confirmed source constraints; owner design/fix and actual adversarial process pilot OPEN; no observed hang claimed |
+| CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CONFIRMED at create.rs fb91e1c9; separate owner fix and fresh qualification OPEN; no actual OOM alleged |
+| CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retain ordinary String key fields outside Zeroizing ownership | Authority | Source fix independently reviewed at 2ca6e4fa; scoped compilation/regressions OPEN; no exfiltration/log/provider leak alleged |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -147,6 +149,13 @@ Git blob ebd407862b5de391d8c88a3abc3fd32a04d52d50. Owner handle11077 terminated0
 The auditor read actual saved manifests: source2522, registry20266 and config11
 entries, equal before/after hashes and literal batch.exit0. These are distinct
 counts, not counts inferred from difference records. No SDK/host/controller ran.
+
+API01's remaining public-evidence durability obligation is now CLOSED at
+b0785cf7c214eefc07af6936b328a80d8b1b497c. Independent reread found the committed
+summary014 still hashes to f7b69201c3c03dcf4d91a923efc29164ca6052cf948d5492ede27aa59f73d7e2
+and the current framework leaf remains the tested e0a01238 hash. The owner index
+explicitly supersedes the immutable attachment's earlier pending-review wording;
+no audited bytes or old execution source were rewritten.
 
 Delivery's frozen input is 08823f90 plus seven declared overlays, committed as
 d6e8e43c. The auditor compared every overlay's actual Git blob to the tested
@@ -202,6 +211,39 @@ abandonment limitations. Four pure tests were authored but not executed at this
 review. Existing helper callers are not qualified by this new source; actual
 adversarial process tests, retained recovery and profile-specific caller wiring
 remain open. Source-direction acceptance does not close LIFETIME01.
+
+BRIDGE-ALLOC01 supersedes any broad reading of the earlier six-wrapper source
+acceptance as proof of bounded creation allocations. The inspected create.rs
+clones path.to_owned and performs encode_wide().collect before rejecting32768
+units, so oversized input causes full-input copies first. Root and the native
+owner require a separate fix after the current frozen receipt: bound iteration
+before collection, validate UTF16 units including surrogate boundaries, then clone
+the validated Path before the native call. Preserve the pre-FFI owned obligation;
+do not move fallible allocation after successful creation. No actual OOM or
+remote exploit is inferred. Earlier query and descriptor source checks remain
+their own narrower observations, not whole-bridge resource qualification.
+
+SECRET01 concerns Authority's inline component configuration fields, not the
+protected OS secret provider or sealed passphrase contract. Source validation,
+witness rejection and private-directory errors can return before ordinary String
+hex fields are taken into Zeroizing. The owner confirmed no intentional exemption:
+eventual ordinary drop does not zeroize those encoded buffers. The scoped remedy
+is zeroizing ownership from deserialization and direct wrapper transfer, while
+preserving JSON, preflight ordering and intentional retention until prerequisites
+pass. Successful startup already consumes values. No actual disclosure, unsafe
+memory test or universal allocator/OS zeroization guarantee is claimed. Independent review of 2ca6e4fa confirms Zeroizing<String> fields and direct wrapper transfer, plus a typed retention/same-allocation regression. The authored test has not been independently observed running; compilation, unit tests and Clippy remain OPEN.
+
+### Pass protocol scoped review
+
+The five measured Pass protocol source leaves match the independently read
+implementation. Generation/verification accept no motor-richness or solve-speed
+inputs, expose derivable alignment for accessibility and explicitly disclaim
+authentication, replay prevention and human attestation. Bucket freshness is an
+instance-validity condition, not a behavioral speed classifier. Actual raw logs
+show35 library plus two integration-harness tests,37total, including27Pass-named
+cases. These counts are distinct. Selected718-file before/after lists matched;
+configuration/tool/SDK closure was not captured. Separately, original unchanged Go baseline tests have a raw16-test pass receipt on Go1.26.3 windows/amd64; all three saved source hashes match their manifest. This executes historical tests, not independently generated Go/Rust golden comparison. That comparison,
+runtime issuance/single-use/event proof and actual accessible UI remain unproven.
 
 ## Verification and re-audit contract
 

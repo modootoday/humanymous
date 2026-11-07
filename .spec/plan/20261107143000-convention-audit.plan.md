@@ -147,3 +147,19 @@ cached descriptor source bytes, not full supply-chain/native qualification.
 External compile-fail coverage was proposed because the existing wire roundtrip
 test does not exercise that negative API property. No bridge source edits or
 Windows compiler/API/process workload was performed by audit.
+
+API01 owner finalized public evidence atb0785cf7; independent committed summary
+hash, current tested source leaf and superseding index disposition were checked.
+The earlier pending durability obligation is closed without rerunning tests or
+rewriting immutable raw results.
+
+Two additional confirmed findings remain owned elsewhere: BRIDGE-ALLOC01 requires
+pre-cap UTF16 collection and Path-copy ordering correction in the directory bridge;
+SECRET01 requires zeroizing ownership of encoded Authority keys even when startup
+returns before consumption. No OOM/disclosure was observed. Their owners coordinate
+separate source fixes and root allocations; audit does not duplicate code changes.
+
+Independent Pass source/raw review confirms37Rust tests (35lib+twoharnesses,
+27Pass-named), selected718-file equality and no motor/solve-speed input to the
+reviewed primitive. Original Go baseline16 tests also passed in a separately read raw receipt; independent Go/Rust golden comparison and full timing/config/tool/SDK closure,
+runtime replay/issuance/attestation and actual accessible UI are not inferred.

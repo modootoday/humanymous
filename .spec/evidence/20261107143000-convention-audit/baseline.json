@@ -41,14 +41,15 @@
     {
       "id": "CA-API-01",
       "owner": "adapter-hosts",
-      "state": "independent invariant and regression closure accepted; owner evidence checkpoint tracked separately",
+      "state": "closed invariant, actual regression and committed public evidence",
       "source": "ac7dc4a97d4154308dbdce1dd05541df6b477d4c",
       "fixed_file_sha256": "e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3",
       "units_passed": 6,
       "positive_compile_cases": 1,
       "negative_compile_cases": 1,
       "batch_exit": 0,
-      "sdk_or_product_qualified": false
+      "sdk_or_product_qualified": false,
+      "evidence_commit": "b0785cf7c214eefc07af6936b328a80d8b1b497c"
     },
     {
       "id": "CA-NOTICE-01",
@@ -103,6 +104,24 @@
       "observed_sha256": "6b1edaf2f60f300fd5025009ee44c580f438e8aa73c406e67ce751dcaeb164cb",
       "actual_hang_observed": false,
       "no_new_workload": true
+    },
+    {
+      "id": "CA-BRIDGE-ALLOC-01",
+      "owner": "native-windows/root",
+      "state": "confirmed source gap; bounded preallocation fix and fresh validation open",
+      "source_file": "crates/windows-object-bridge/src/create.rs",
+      "observed_sha256": "fb91e1c9c8f60a66cdf3163cc808f1cf533fa8ae175a20573b707fa77838fd85",
+      "actual_oom_observed": false
+    },
+    {
+      "id": "CA-SECRET-01",
+      "owner": "authority",
+      "state": "owner-confirmed encoded-key drop ownership debt; root-approved scoped fix and validation open",
+      "fields": [
+        "Audit.hmac_key_hex",
+        "Audit.signing_seed_hex"
+      ],
+      "actual_disclosure_observed": false
     }
   ],
   "evidence_references": {
@@ -183,5 +202,26 @@
     "actual_windows_api_qualified": false,
     "complete_supplychain_qualified": false,
     "external_compile_fail_candidate": "proposed to owner; current roundtrip unit does not test external construction failure"
+  },
+  "followup_pass_protocol": {
+    "private_review_sha256": "f5f5d4dc1a851d4774f2ad2b7b3c5c79cec37c343a55efd6c2c24d5b4692d77c",
+    "actual_native_library_tests": 35,
+    "actual_native_integration_harness_tests": 2,
+    "pass_named_native_tests": 27,
+    "total_native_tests": 37,
+    "selected_source_entries": 718,
+    "selected_difference_records": 0,
+    "config_tools_sdk_closure_captured": false,
+    "runtime_issuance_replay_attestation_qualified": false,
+    "actual_ui_accessibility_qualified": false,
+    "independent_go_rust_golden_comparison_qualified": false,
+    "original_go_baseline_tests_passed": 16,
+    "original_go_raw_log_sha256": "4111e10e4b5df49a6a0c5bd2963862a9406be335d781edd36b1d38acb4f4fe37"
+  },
+  "followup_secret_source": {
+    "source_commit": "2ca6e4fa",
+    "zeroizing_fields_and_direct_transfer_reviewed": true,
+    "authored_regression_execution_observed": false,
+    "finding_closed": false
   }
 }
