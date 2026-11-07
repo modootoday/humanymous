@@ -153,3 +153,14 @@ selected-httpd dependency compilation. Both observed owned cleanup, including
 separate ledger cleanup. All45scenarios remain NOT_RUN. Source now checks the
 Windows child's credential-helper resolution before Docker build; that change
 requires new validation. C was returned and no slot is self-allocated.
+
+Root delegated only .github/workflows/apache-validation.yml after CI explicitly
+excluded it from its lane; Apache extended its lane with that literal file.
+The standalone job uses the sole Rust coordinator after safe/native pure tests,
+Linux pilot-feature check and warnings-denied Clippy. Hosted Rust initialization
+creates its private bundle, requires a non-root actor and binds archive source
+to actual GITHUB_SHA. Always cleanup and strict45accounting remain unchanged.
+Only safe receipt logs are retained publicly; no automatic artifact upload is
+added. CI retains catalog/policy ownership, root retains push/dispatch. Local
+compilation and workload remain deferred under the memory guard. The new source
+and workflow are not yet hosted-qualified.

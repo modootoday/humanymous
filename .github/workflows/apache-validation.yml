@@ -1,0 +1,47 @@
+# Component qualification only; no publication, deployment or private uploads.
+name: CI / Apache component
+'on':
+  push:
+    branches: [codex/apache-validation]
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: apache-validation-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CARGO_BUILD_JOBS: '1'
+  CARGO_INCREMENTAL: '0'
+  DOCKER_BUILD_RECORD_UPLOAD: 'false'
+jobs:
+  component:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+        components: clippy
+    - name: Validate safe lifecycle and replay units
+      run: cargo test --locked -p humanymous-apache-adapter --lib
+    - name: Validate strict receipt and engine units
+      run: cargo test --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot
+    - name: Check Linux pilot targets
+      run: cargo check --locked -p humanymous-apache-native --features pilot --all-targets
+    - name: Deny safe crate Clippy warnings
+      run: cargo clippy --locked -p humanymous-apache-adapter --all-targets -- -D warnings
+    - name: Deny native pilot Clippy warnings
+      run: cargo clippy --locked -p humanymous-apache-native --features pilot --all-targets -- -D warnings
+    - name: Build actual ABI and execute all 45 MPM scenarios
+      id: pilot
+      timeout-minutes: 42
+      run: cargo run --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot -- coordinate --bundle "$RUNNER_TEMP/apache-native"
+    - name: Verify owned ledger cleanup
+      if: ${{ always() && steps.pilot.outcome != 'skipped' && steps.pilot.outcome != '' }}
+      timeout-minutes: 3
+      run: cargo run --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot -- coordinate-cleanup --bundle "$RUNNER_TEMP/apache-native"

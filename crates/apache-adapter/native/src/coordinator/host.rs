@@ -8,7 +8,7 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
-use std::os::unix::fs::{MetadataExt, OpenOptionsExt, PermissionsExt};
+use std::os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt, PermissionsExt};
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
@@ -501,6 +501,15 @@ fn execute(
     )?;
     *stage = "source";
     let (source, manifest) = snapshot(operations, "apache-source-manifest.json")?;
+    if matches!(
+        operations.engine_expected.profile,
+        engine::Profile::HostedLinux
+    ) {
+        ensure(
+            std::env::var("GITHUB_SHA").as_deref() == Ok(source.as_str()),
+            "hosted-source-sha-mismatch",
+        )?;
+    }
     *stage = "build";
     operations.docker(
         &argv(&[
@@ -715,6 +724,26 @@ pub fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
         && std::env::var("RUNNER_ENVIRONMENT").as_deref() == Ok("github-hosted");
     ensure(hosted || local, "explicit-owned-execution-context-required")?;
     let bundle = PathBuf::from(&args[2]);
+    if hosted {
+        ensure(
+            rustix::process::geteuid().as_raw() != 0,
+            "hosted-ordinary-actor-required",
+        )?;
+        let temporary =
+            PathBuf::from(std::env::var_os("RUNNER_TEMP").ok_or("hosted-temp-required")?);
+        ensure(
+            temporary.is_absolute()
+                && temporary.canonicalize().map_err(|_| "hosted-temp-path")? == temporary
+                && bundle == temporary.join("apache-native"),
+            "hosted-private-bundle-scope",
+        )?;
+        if args[0] == "coordinate" {
+            std::fs::DirBuilder::new()
+                .mode(0o700)
+                .create(&bundle)
+                .map_err(|_| "fresh-hosted-private-bundle-required")?;
+        }
+    }
     ensure(
         bundle.is_absolute() && bundle.canonicalize().map_err(|_| "private-bundle-path")? == bundle,
         "private-bundle-canonical",

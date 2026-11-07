@@ -6,11 +6,30 @@ verify: manual
 created: 2026-11-07T07:26:00Z
 updated: 2026-11-07T07:26:00Z
 rel:
-  governs: [crates/apache-adapter/**, adapters/apache/**]
+  governs: [crates/apache-adapter/**, adapters/apache/**, .github/workflows/apache-validation.yml]
   depends_on: [sot:root/rust-migration, sot:root/adapter-service-contract]
 ---
 
 # Apache native adapter
+
+## Standalone hosted qualification entrypoint
+
+The root/CI-approved narrow workflow ownership is
+.github/workflows/apache-validation.yml, named CI / Apache component. It runs
+only on codex/apache-validation pushes or manual dispatch, on standard Ubuntu
+24.04 with read-only contents permission and pinned checkout/toolchain actions.
+Root alone pushes the reviewed exact commit. No publication, deployment, OIDC,
+private evidence upload or automatic artifact upload occurs. Bounded safe
+coordinator receipts remain in the actual job logs.
+
+Safe lifecycle units and pilot receipt/engine units, Linux pilot all-target
+check and warnings-denied Clippy precede the sole coordinator. The coordinator
+creates a fresh0700bundle at the actual canonical RUNNER_TEMP/apache-native
+for a genuine hosted non-root actor, binds Git archive HEAD to GITHUB_SHA and
+runs the existing Docker ABI/MPM fixture. Its separate owned-ledger cleanup
+runs even after a failed started pilot step. Missing cases, failed process
+exits, source/artifact drift and cleanup failure remain failures. An incomplete
+or unrun component never establishes a qualified Apache tuple.
 
 Version0.1 experimental target; no Apache tuple is currently qualified.
 Authored implementation/tests are Rust1.99.1 edition2024. Native ABI unsafe is
