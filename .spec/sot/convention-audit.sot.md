@@ -144,7 +144,8 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
 | CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync e34cee8a and ASGI queued 800b9679 source direction accepted; owner accepted additional task-setup ownership gap. First SDK check failed101 before host tests. Corrected compilation, actual host controls, Node and task settlement remain OPEN |
-| CA-EVIDENCE-01 | P2: four model evidence JSON files omitted from their canonical attachment inventory | Model | Public-only full check reproduced four P2 errors; owner added exact hash/size entries, independently verified and public248-document check passed. Durable owner commit confirmation pending |
+| CA-EVIDENCE-01 | P2: four model evidence JSON files omitted from their canonical attachment inventory | Model | CLOSED scoped inventory at faae5ced; index-only correction preserves JSON payloads, independently verified actual Git archive attachments and public248-document check0 |
+| CA-EVIDENCE-02 | P2: nine public attachment index hash/size entries differ from actual Git payload bytes | Pages/M11 | Immutable e511d294 archive audit checked494 inline rows: nine mismatches. M11 one resolved and independently verified at bda10042; Pages eight remain OPEN |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -864,3 +865,24 @@ handoff refuses outstanding readers and new admission rechecks bounds before
 opened/name validation. The changed paths and new ignored-test assertions were
 independently read without a new source blocker. This is not actual compilation,
 native execution, OpeningOwner/VerifiedScan or production write qualification.
+
+### Canonical Git attachment audit and owner corrections
+
+An independent streamed Git archive at e511d294 examined632 public evidence
+members and138 indexes without filesystem extraction.494 inline repo attachment
+rows in115 indexes were compared to actual member SHA256/length. Nine mismatch
+rows were confirmed: eight in the Pages experiment-status bundle and one M11
+Windows consumer summary. Noninline/remote forms and payload semantics were not
+qualified by this bounded byte audit. The first archive invocation failed before
+comparisons; a corrected explicit workspace child directory and drained stdout
+completed with Git exit0. Its first failure remains recorded, not a passing run.
+
+Owners received exact expected/actual hashes and sizes. M11 bda10042 corrected
+the index to unchanged canonical LF payload bytes, preserving its original CRLF
+working projection privately. Model faae5ced independently fixed the four missing
+attachment entries with an index-only commit. A fresh actual Git archive at
+bda10042 matched all seven inline attachment rows across these two bundles;
+public-only Spec248 documents passed0errors/0warnings. CA-EVIDENCE01 is closed
+only for the model inventory; CA-EVIDENCE02 remains open for eight Pages rows.
+Neither metadata correction reclassifies raw logs, execution outcomes or product
+qualification. Runtime/host regression gates remain separate and incomplete.

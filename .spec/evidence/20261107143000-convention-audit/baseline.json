@@ -402,5 +402,19 @@
     "corrected_public_errors": 0,
     "global_green": false,
     "new_runtime_workloads": 0
+  },
+  "followup_git_attachment_integrity": {
+    "private_review_sha256": {
+      "public-git-attachment-audit-001.json": "da3892c6150d6e01c152f2835ee9eb9195f244454c0567a60703691f520144c1",
+      "model-m11-canonical-closure-review-001.json": "adb1a78505bc0637150516826f423bc02e51249f31c7bb8c44ce2f65b473db16"
+    },
+    "initial_inline_rows_checked": 494,
+    "initial_mismatches": 9,
+    "model_inventory_closed": true,
+    "m11_single_mismatch_closed": true,
+    "pages_mismatches_open": 8,
+    "closure_actual_git_rows_checked": 7,
+    "public_spec_errors": 0,
+    "global_green": false
   }
 }

@@ -265,3 +265,10 @@ global summary remains137349errors18warnings with rule totals retained, no blank
 classification or private cleanup. Collector emptychunk candidate unconfirmed
 under explicit eventloop/hostile limitations; Audit20d57380 resource split source
 direction accepted, actual compiler/native/owner qualification not established.
+
+New CA-EVIDENCE02: actual Git archive e511d294 checked494 inline attachment rows
+and found9 byte/hash-size mismatches (Pages8/M11 1); exact rows sent owners.
+M11 bda10042 correction and model faae5ced inventory fix independently verified
+against7actual Git attachment rows, publicSpec248docs0errors0warnings. Close
+CA-EVIDENCE01 scoped inventory; retainPages8OPEN, first archive helper failure,
+format coverage limits and unchanged execution qualification. No new runtime run.
