@@ -494,6 +494,29 @@ carries the bounded PUBLIC signed targeted authorization plus exact native-bound
 metadata; it has NO secret slot. Offer alone carries a fixed64lowerhex observer
 credential. Exact canonical signed-record encoding remains subject to native-owner
 review; these proposed identifiers are not independently qualified wire formats.
+The COMPLETE signed public authorization, including every claim, signature and
+its encoding overhead, MUST fit INSIDE Hello's3072byte metadata cap. There is no
+separate grant slot, unbounded file attachment or continuation bypass. Validate
+declared lengths before allocation and before releasing any observer credential.
+
+| Phase | Metadata cap | Secret slot bytes |
+|---|---|---|
+| Hello (including complete signed authorization) | 3072 | 0 |
+| Challenge | 3072 | 0 |
+| Offer | 3072 | Exactly64 ASCII lowercase hexadecimal bytes |
+| CredentialReceived | 3072 | 0 |
+| ServiceReady | 3072 | 0 |
+| Liveness/stop/flush control | 3072 maximum; exact schema still pending | 0 |
+
+Each complete frame is exactly12bytes of fixed header plus the declared metadata
+and the phase-specific slot; the4096byte frame ceiling also applies. Reject any
+nonzero secret slot outside Offer, wrong Offer slot length/alphabet, unknown phase
+or trailing bytes. Buffered trailing bytes are not accepted as an implicit next
+valid frame; the expected protocol transition must admit each subsequent frame.
+Before implementation native-security must freeze the EXACT signed bytes: domain
+separator and length, canonical field encoding/order and numeric rules, signature
+and key-fingerprint encoding, and strict duplicate rejection. A domain string
+alone is not a canonical signature format or an implementation-ready contract.
 No response echoes the credential or hashes a potentially weak supplied secret. Fresh
 observer credentials are generated internally with the shared CSPRNG primitive.
 Owned buffers zeroize on ALL exits; no physical-memory/kernel/allocator guarantee.

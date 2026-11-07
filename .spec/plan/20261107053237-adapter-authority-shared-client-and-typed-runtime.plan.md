@@ -571,3 +571,18 @@ Native-security owns reviewed safe primitive/API/feature gap reporting; no local
 SCM/account mutation, channel implementation, manifest edge or new execution was
 started by this authority checkpoint. Existing Windows IPC13 receipt remains
 local component proof and does not qualify this new production architecture.
+
+## CLI wire-bound review reflected
+
+CLI reviewed exact6171afd6 and had no objection to proposed /0.2/HMBP0002/domain
+names and hard legacy/mixed refusal, without approving R1/channel implementation.
+Reflected its required delta: FULL signed authorization including signature and
+encoding overhead fits inside Hello3072byte metadata, no extra/unbounded grant
+attachment; phase table permits exactly64lowerhex secret bytes ONLY in Offer,
+all other phases zero. Fixed header12bytes and phase slot determine exact length,
+subject also to frame4096/startup32768 limits. Reject lengths before allocation or
+secret release, unknown phase and trailing bytes; subsequent frames require an
+admitted state transition. Native owner still must freeze exact domain separator/
+length, canonical field order/encoding/numeric rules, signature/fingerprint bytes
+and duplicate rejection. Domain naming is not signed-byte contract completion.
+No implementation or new execution in this source-only review correction.
