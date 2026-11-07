@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/lib.rs",
+  "sha256": "509685802513f69c7e1b9113ac22cc5774642db1a3e3e29386c17590a2e731bf",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete108line Windows desktop ABI root: explicit unsafeentrysandboxpointer/mainthread premise, new synthetic profile create_dir no reuse, sandboxrequired init, registration failure shutdown, host cleanup completion before CEFshutdown; incompletecleanup process exit78 and panic101. Feature-gated nativeprocess module is absent by default. Source not current childcleanup/CSP/OSsandbox/AT qualification; backgroundswitches not complete network isolation.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/src/local_page.rs",
+  "sha256": "79f77f0528db58de405c38eed65bdf78ea790439164533c13a12abe0993fa837",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete ownerdocument resource: process-local registration gate, exact GET newtab URL, immutable generatedbytes/no filesystemproxy, restrictive CSP/no-store/referrer/nosniff, bounded synchronous copy/cancel/EOF and source tests. Header/source presence not current CEF CSP/network/AT qualification; unsafe copy relies on CEF allocation ABI.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/src/internal_probe.rs",
+  "sha256": "5143b3ea4acfb82546955815f1c1499493180e10af5c4a21638b30b953854464",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete95line probe timer/ordered ledger: currentticket match,5s observed timeout, abort on missing transaction/browser/revoke, preserve terminal taskreject and collect independent laterroute results. Source sequence is not executed navigation/content/cleanup proof.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/native/desktop/src/host_report.rs",
   "sha256": "f45c006aefa0a3e9eded435422c239f939627c9a6b54dbd7749fc36d486d9a1a",
   "reviewer": "codex/rust-pages",

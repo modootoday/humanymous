@@ -1860,3 +1860,20 @@ navread; two mistaken navpath reads failed before using observed nav/main.yml
 and nav/footer.yml. No source/render/browser execution equivalence claimed.
 Read pages.yml caller: dispatch exists but invokes fullCI and mainonlyproduction
 deploy, not boundedPagesonly; informedCIowner, no dispatch/publish performed.
+### Ordered internal probe and owner resource review
+
+Read complete95line internal_probe and complete local_page including copychunk
+regression. Added two exact manual receipts. Probe ticket/timeouts/rejections
+remain separate from executed navigation/content observations; ownerresource
+exactGET/noFSproxy/CSP/generatedbytes aligns publicdescription. CEF ABI copy and
+headersource do not prove effective CSP/network/AT behavior. No publicwording
+change required from these sourcefiles; freshness inventory review advances.
+### Windows desktop composition root and hosted output contract
+
+Read complete108line native desktop lib.rs; added exactreceipt: sandboxpointer,
+freshsyntheticprofile, registrationfailure shutdown, normalhostcleanup-beforeCEF
+shutdown vs incompletecleanup exit78, featuregated processmodule. No newnative
+qualification inferred. CIowner now preparing rootauthorized buildonly dispatch
+caller; supplied exact validate outputs and warning that stdout mixes Rubylogs
+with finalReportJSON. Public HTML mayupload only after matching validationpass;
+rawdiagnostics private. No hosted run handle yet and no dispatch performed here.

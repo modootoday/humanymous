@@ -126,7 +126,7 @@ the documentation artifact, not product protocol or recovery conformance.
 | --- | --- |
 | Public v0 problem and requirements model | Authored; review in progress |
 | Retry/effect lifecycle semantics | Proposed; concrete wire, durable implementation and crash-cut evidence pending |
-| Experimental adapter parser bytes/vectors | Authored; single shared implementation, separate from Draft v0 wire |
+| Experimental adapter parser bytes/vectors | Three fixed corpora, 59 cases matched in Windows component execution; single shared implementation, separate from Draft v0 wire |
 | Exact schema and canonical wire vectors | Pending |
 | Independent implementations and interoperability | Pending |
 | Protocol-specific browser/native/Docker pilots | Pending |
