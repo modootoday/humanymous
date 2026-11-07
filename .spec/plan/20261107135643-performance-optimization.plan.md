@@ -12,6 +12,22 @@ rel:
 
 ## Bottom-up next admission
 
+Root has now authorized M11's separate selected-input primitive within existing
+tooling paths/dependencies, accepting5000files/2GiB actual read bytes/512MiB per
+file/64roots/30seconds cooperative. Trusted-repository observation is the initial
+scope; no immutable security snapshot or execution/cache authority. Content-read,
+selection and provider qualification remain separate. Probe bytes count toward
+the aggregate cap. L1 reader/state tests precede actual-file boundary cases.
+Implementation and test evidence are pending; this chat remains document-only.
+
+B4 is explicitly unallocated while root prioritizes this primitive and Browser
+verification. A future comparison of dev/inc0, local-edit/inc0 and local-edit/inc1
+must pin and verify codegen-units before attributing a difference to incremental:
+Cargo defaults differ between incremental and non-incremental builds. Root may
+approve invocation-only profile overrides, with actual compiler settings captured;
+no manifest edit is authorized here. Initial existing-target observations,
+unchanged replays and genuine owner code-edit experiments remain distinct.
+
 The structural role registry assigns this chat X performance measurement and
 bounded preparation/cache research. Existing five document/evidence scopes remain
 the only write grant. Prioritize the common bounded-preparation handoff over an
@@ -162,9 +178,10 @@ starts before its terminal result and a new exact allocation.
 
 ## Root-requested verification overhead proposal
 
-The SoT now proposes per-batch defaults of5000 selected files/2GiB total/512MiB
-per file/64 roots/30seconds cooperative observation. Root acceptance and a
-tool-owner path grant are required before implementation. Select actual command
+The initial SoT proposal used per-batch defaults of5000 selected files/2GiB
+total/512MiB per file/64 roots/30seconds cooperative observation. Root subsequently
+accepted these defaults and authorized M11 implementation in its existing owned
+paths, as recorded in Bottom-up next admission. Select actual command
 sources/resolved dependencies/config/compiler target libraries, excluding unrelated
 toolchain documentation and global caches. Keep unknown actual linker/SDK inputs
 explicit rather than inventing complete tool closure.

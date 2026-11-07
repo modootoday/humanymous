@@ -124,17 +124,33 @@ source-specific checks because a transport cache reports a hit.
 ### Proposed bounded verification preflight
 
 Root requested this proposal after broad registry/toolchain censuses delayed
-small unit batches. These limits need root acceptance; they do not supersede
-program-roadmap admission, owner allocation or mandatory tests. No reusable
-implementation or new execution permission follows from this specification.
+small unit batches. Root subsequently authorized M11 to implement the separate
+selected-input primitive in existing owned Rust tooling/dependencies and accepted
+the defaults below. This does not supersede program-roadmap execution admission,
+owner allocation or mandatory tests. No implementation or execution pass follows
+from that authorization.
 
-The proposed default budget per admitted pure-Rust batch is5000 selected files,
-2GiB aggregate file bytes,512MiB maximum individual file size,64 explicitly
+The accepted default budget per admitted pure-Rust batch is5000 selected files,
+2GiB aggregate actual read bytes,512MiB maximum individual file size,64 explicitly
 selected roots and30seconds of cooperative observation. Check counts/lengths
 before hashing each file and time between files. A blocked filesystem/hash call
 can exceed that threshold; do not advertise a hard OS return guarantee. Root may
 assign a larger explicit finite profile when necessary, or move the batch to a
 qualified venue. No unbounded traversal or automatic budget increase.
+
+The first implementation is trusted-repository observation, not an immutable
+security snapshot or execution/cache authorization. Keep content-read completion,
+input-selection completion and provider-identity qualification separate. Unknown
+identity cannot become qualified completeness. Generic reader/budget/state tests
+precede actual-file cases; hostile filesystem race guarantees require a qualified
+native provider rather than metadata comparisons. Existing canonical-LF inventory
+and Delivery Git/worktree provenance schemas remain unchanged.
+
+Count all actual read bytes, including oversize probes. A limited reader reaching
+its cap may present synthetic EOF; it cannot alone establish a full-file digest.
+Reserve probe capacity within the aggregate ceiling or report completion unknown
+when no probe fits. Preserve partial failures and never publish a truncated hash
+as a complete-file commitment. Blocking read calls still have no hard deadline.
 
 Select inputs by the exact command profile:
 
