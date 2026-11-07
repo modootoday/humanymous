@@ -12,6 +12,33 @@ rel:
 
 # Native browser UI and CEF boundary
 
+UI-38 (root-authorized source slice): retained tab projection compares only the
+tab model (identity/title/selection/membership), never viewport width. The same
+owning projection adapter performs checked NativeDocumentHandle source updates
+only when that model changes and acknowledges its cache after a successful commit.
+Viewport/DPI changes continue through Meari commit_host_environment and CSS layout,
+preserving host revision invalidation; they must not manufacture source rebuilds.
+CSS owns tab shrink/min/max geometry and count-scoped media thresholds for narrow
+inactive-close/title visibility. Active close remains visible. No direct DOM-only
+mutation substitutes for source/action metadata. The actual pinned API oracle
+must cross thresholds on one retained document, test CSS-hidden close actions,
+preserve dirty input/focus/node identity, reject stale host updates, and demonstrate
+prepared source replacements remain current across viewport-only work. Real model
+changes still invalidate captured source/host work. Coalescing is the existing
+one-current host environment/layout; no new resize event FIFO is introduced.
+These new source tests require execution before accepting the candidate's native
+behavior; an unsupported CSS/AX/source-generation seam returns to upstream design.
+Timing records additionally obey512KiB encoded-output cap and512-record capacity;
+unavailable upstream raster/present/display stages remain explicitly unknown.
+Review correction: present controls must not retain inline display:flex overriding
+the responsive stylesheet. A focused inactive close stays visible while narrow;
+it may hide after focus moves, with its icon suppressed to avoid overlap. Verify
+this transition with actual native document/AX actions rather than CSS text alone.
+Current timings begin after view construction and CEF geometry synchronization;
+last submitted scene generation may refer to a previous frame. They do not
+correlate OS event receipt/current extent to a new submission and cannot establish
+receive-to-submit percentiles, full-stage attribution or the reported lag's cause.
+
 UI-37: the current pinned Meari WINDOW driver is CPU-rasterized, independently
 of CEF content: VelloCpuWindowRenderer aliases a softbuffer window renderer with
 VelloCpuImageRenderer. Its path fills the full target, rasterizes to RGBA,

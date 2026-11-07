@@ -8,6 +8,13 @@ owns the Meari/CEF integration. CI owns the existing provisioning runner.
 
 ## Current evidence boundary
 
+UI-38 is a newer unexecuted source candidate: model-only retained tab projection,
+responsive CSS for viewport-only geometry, checked owner/definition cache and
+opt-in bounded numeric handler timings. New document/action/source-staleness and
+timing-ring tests have not run. The ce24 normal build and human manual receipts
+remain exact historical baseline; human150-200ms-plus Meari lag is still open.
+Root owns next frozen unit/check/native/manual allocations and Meari release pin.
+
 UI candidate046b5f1b passed43 native-ui document tests, including crowded-tab
 geometry and existing action checks. Desktop test-profile compilation required
 cef-dll-sys rebuilding and the allocated guard stopped it before test execution;

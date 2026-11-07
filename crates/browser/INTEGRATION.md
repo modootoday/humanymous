@@ -6,6 +6,17 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Newer UI-38 source candidate removes viewport-width-triggered tab source rebuilds
+together with responsive CSS layout. A checked Projection cache invalidates on
+model or source-owner/definition changes and acknowledges successful commits only.
+Authored pinned-document oracles cover repeated host width/DPI changes, prepared
+source currency/staleness, dirty focus/node identity, tab geometry and CSS-hidden
+AX close actions. These tests are unexecuted; do not inherit ce24 build/manual or
+046 document success. If the pinned CSS/AX contract fails, request upstream layout
+transactions instead of bypassing metadata. Opt-in bounded numeric shell timings
+cover tab projection and combined Meari resize/redraw handlers; internal raster,
+present-call and OS display timestamps stay unknown. No GPU backend/pin change.
+
 Latest frozen ce24fe52 normal bootstrap/desktop build passed0 using explicit
 verified cached CEF_PATH, jobs1/inc0/lockedoffline. First33.11s crate-name guard
 stop is retained; successful retry finished116.12s from the same lease epoch.

@@ -30,9 +30,28 @@ files:
   - {path: controls-gui-first.json, sha256: 2d6fb908687f639466a212a1027970e2d42a81b59eacc075328f112d40fa0ccb, bytes: 3431, store: repo}
   - {path: controls-046-validation.json, sha256: fa9d4fb19faa3e338947e0f4db5efd7993e798743b54cb75fbc516fd016d5475, bytes: 2249, store: repo}
   - {path: manual-ce24-validation.json, sha256: 99eaf562b2650832c65b64fa434855bd8691dfe9d2a2f23208083c1a2c287c30, bytes: 3267, store: repo}
+  - {path: viewport-source-candidate.json, sha256: 68cd63b809798ceb681544a41b1409b60a331d97d1425ed5f97b9c0cecd73030, bytes: 2660, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
+
+## UI-38 viewport-only source candidate: tests not executed
+
+Nine Rust source files are bound in viewport-source-candidate.json. Retained
+tab updates compare model and checked source identity, while viewport geometry
+uses intrinsic CSS and count-scoped media rules. New native document oracle
+source covers prepared replacement currency/staleness, stale host revision,
+dirty address/focus/node retention, geometry and CSS-hidden native AX actions.
+Independent source review found an inline display override; it was removed before
+execution. Focused inactive close remains visible until focus moves, and its
+oracle settles focus styling at unchanged geometry rather than manufacturing a
+resize. No test or native/GPU/latency result is inferred from these assertions.
+
+Opt-in numeric timing source has512 records/512KiB encoded cap and explicit
+loss/saturation. It observes combined handlers and tab projection only; views
+construction/CEF synchronization are outside it, and last submitted generation
+may be an older frame. Raster/present/display remain null. Formatter, scoped
+Specfold and whitespace pass only. No Cargo, new GUI, graph, pin or cache edit.
 
 ## Latest normal build and human shell-lag feedback
 

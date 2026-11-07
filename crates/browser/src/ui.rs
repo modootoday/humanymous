@@ -367,16 +367,14 @@ body{margin:0;background:#101620;color:#e8edf7;font-family:system-ui;font-size:1
 *{box-sizing:border-box} button,input{font:inherit} [hidden]{display:none!important}
 .browser-shell{display:block;gap:0;width:100vw;height:100vh;position:relative;overflow:hidden}
 .tab-strip{height:__TABS__px;display:flex;align-items:center;gap:6px;padding:0 8px;background:#0d121b}
-.brand{font-size:20px;font-weight:700;color:#6cddca;width:20px;text-align:center}
+.brand{font-size:20px;font-weight:700;color:#6cddca;width:20px;flex-shrink:0;text-align:center}
 .tab-workspace{display:flex;align-items:center;gap:6px;flex:0 1 auto;min-width:0}
 .tab-list{display:flex;align-items:center;gap:2px;overflow:auto;flex:0 1 auto;min-width:0}
-.tab-slot{position:relative;align-items:center;flex:0 0 232px;width:232px;height:32px}
+.tab-slot{display:flex;position:relative;align-items:center;flex:0 1 232px;width:232px;min-width:32px;max-width:232px;height:32px}
+.tab-slot.selected{min-width:52px}
 .page-tab{display:flex;align-items:center;gap:8px;height:32px;width:100%;min-width:0;text-align:left;padding:0 38px 0 12px;border:0;border-radius:9px 9px 0 0;background:#202b3d;color:#f1f5fd;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .page-tab span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .tab-icon{width:16px;min-width:16px;height:16px}.tab-icon svg{width:16px;height:16px}
-.page-tab.compact{justify-content:center;padding:0}
-.page-tab.compact span:not(.tab-icon){display:none}
-.page-tab.compact[aria-selected="true"] .tab-icon{display:none}
 .page-tab[aria-selected="false"]{background:#111b29;color:#9daec6}
 .page-tab[aria-selected="false"]:hover{background:#263246;color:#f1f5fd}
 .tab-caption{flex:1;min-width:0;color:#8d9ab0;font-size:12px;text-align:right;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
@@ -420,6 +418,7 @@ button:not(:disabled){cursor:pointer} button:disabled{cursor:not-allowed} input{
             .replace("__RIGHT__", &RIGHT_MAX_DIP.to_string())
             .replace("__BOTTOM__", &BOTTOM_MAX_DIP.to_string())
             .replace("__EDGE__", &crate::frame_geometry::RESIZE_DIP.to_string())
+            + &crate::tabs_ui::responsive_styles()
     })
 }
 /// Build the actual native document, with no parser or foreign application source.

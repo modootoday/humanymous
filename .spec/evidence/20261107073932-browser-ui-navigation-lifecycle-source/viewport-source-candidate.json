@@ -1,0 +1,71 @@
+{
+  "base": "8fec667d5f667ae7d1bbba9cd0484d08b573bcdb",
+  "scope": "UI38 viewport-only responsive candidate and bounded numeric timing",
+  "status": "source_only_not_executed",
+  "source_files": [
+    {
+      "path": "crates/browser/src/tabs_ui.rs",
+      "sha256": "b789d94427e1749e24de540c1af068ce9a4b39e03f0aeec1d1dd5ff713de735e"
+    },
+    {
+      "path": "crates/browser/src/tabs_ui_resize_tests.rs",
+      "sha256": "f6fd0be6e17a5665151f488a44e51548b22861af68c2a06e1b5edfd066a4f502"
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "sha256": "88c71a27771e83f12c045a665c28d33fa87df98926974c4a1b65ef5073204521"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "sha256": "581da97524358f09fe4b54fd7c4586eb0f218bab59b7cc96939d2ade202668f9"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/tab_sessions.rs",
+      "sha256": "51abb4d4c0af2248c241c80c69462f6446844f43e2ef5be58095693c91f3fbe7"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/shell_timings.rs",
+      "sha256": "cbe36cd433d0aeb5c5cf36c6d91b1d8d7dae5f7a8763f0c91f482a9738fd2aff"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host.rs",
+      "sha256": "9becbdb150ba3dbf0d8cc28cb10b07e371800d449430f81baf0369d5fc957de5"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host_report.rs",
+      "sha256": "9fe8d22f358901e2f407e4c94ea02e782b9d33fbf1070a26dc039d34c3b50bf3"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host_deadline.rs",
+      "sha256": "e767c77302141dd13d2aa8fc8b5f61360320a5c5ec1b38a51bf193c606b8442f"
+    }
+  ],
+  "checks": {
+    "changed_rustfmt_exit": 0,
+    "scoped_spec_exit": 0,
+    "whitespace_exit": 0
+  },
+  "cargo": "not_run",
+  "native_tests": "not_run",
+  "gui": "not_run",
+  "passed": null,
+  "failed": null,
+  "independent_review": {
+    "finding": "visible inline display overrides responsive close hiding",
+    "correction": "Remove present inline display; preserve focused inactive close; source oracle checks focus-loss style/AX at unchanged geometry",
+    "evidence": "source review only, not executed failure"
+  },
+  "timing_limits": [
+    "opt-in512record/512KiB numeric ring",
+    "driver handler and tab projection duration only",
+    "views construction/CEFsync not included",
+    "last submitted frame may be previous",
+    "raster/present-call/OS display unknown",
+    "no eventreceive/currentextent correlation or latencypercentile claim"
+  ],
+  "meari_pin": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+  "graph_change": false,
+  "upstream_cache_edit": false,
+  "browser_ready": false,
+  "latency_defect": "open_human_estimated_150_200ms_plus"
+}

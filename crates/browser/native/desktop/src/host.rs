@@ -21,72 +21,9 @@ use winit::{
 };
 
 struct Host;
-struct CloseDeadline {
-    cancel: std::sync::mpsc::Sender<()>,
-    worker: Option<std::thread::JoinHandle<()>>,
-    cancel_watchdog: std::sync::mpsc::Sender<()>,
-    watchdog: Option<std::thread::JoinHandle<()>>,
-}
-impl CloseDeadline {
-    fn start(wake: NativeWindowWake, seconds: u64) -> Self {
-        Self::start_with(
-            move || {
-                let _ = wake.request_close();
-            },
-            Duration::from_secs(seconds),
-            Duration::from_secs(seconds + 15),
-            || {
-                eprintln!("native: incomplete cleanup at independent hard deadline");
-                std::process::exit(78);
-            },
-        )
-    }
-    fn start_with(
-        close: impl FnOnce() + Send + 'static,
-        close_after: Duration,
-        hard_after: Duration,
-        fail_stop: impl FnOnce() + Send + 'static,
-    ) -> Self {
-        use std::sync::mpsc::{RecvTimeoutError, channel};
-        let (cancel, receiver) = channel();
-        let (cancel_watchdog, watchdog_receiver) = channel();
-        let watchdog = std::thread::spawn(move || {
-            if matches!(
-                watchdog_receiver.recv_timeout(hard_after),
-                Err(RecvTimeoutError::Timeout)
-            ) {
-                fail_stop();
-            }
-        });
-        let worker = std::thread::spawn(move || {
-            if matches!(
-                receiver.recv_timeout(close_after),
-                Err(RecvTimeoutError::Timeout)
-            ) {
-                eprintln!("native: independent native close deadline");
-                close();
-            }
-        });
-        Self {
-            cancel,
-            worker: Some(worker),
-            cancel_watchdog,
-            watchdog: Some(watchdog),
-        }
-    }
-}
-impl Drop for CloseDeadline {
-    fn drop(&mut self) {
-        let _ = self.cancel.send(());
-        if let Some(worker) = self.worker.take() {
-            let _ = worker.join();
-        }
-        let _ = self.cancel_watchdog.send(());
-        if let Some(watchdog) = self.watchdog.take() {
-            let _ = watchdog.join();
-        }
-    }
-}
+#[path = "host_deadline.rs"]
+mod deadline;
+use deadline::CloseDeadline;
 impl NativeWindowHost for Host {
     type Error = io::Error;
     type CloseCheckpoint = ();
@@ -114,6 +51,7 @@ struct Pilot {
     registrar: NativeChildRegistrar<CefChild>,
     state: Shared,
     tabs: crate::tab_sessions::Sessions,
+    timings: crate::shell_timings::Shared,
     parent: Option<Rc<NativeParentLease>>,
     registered: bool,
     ticks: usize,
@@ -428,7 +366,26 @@ impl ApplicationHandler for Pilot {
             self.report.borrow_mut().parent_key_events += 1;
         }
         let frame_event = event.clone();
+        let stage = match &event {
+            WindowEvent::SurfaceResized(_) | WindowEvent::ScaleFactorChanged { .. } => {
+                Some(crate::shell_timings::Stage::MeariResizeHandler)
+            }
+            WindowEvent::RedrawRequested => Some(crate::shell_timings::Stage::MeariRedrawHandler),
+            _ => None,
+        };
+        let started = stage.and_then(|_| self.timings.borrow().start());
         self.driver.window_event(event_loop, id, event);
+        if let Some(stage) = stage
+            && started.is_some()
+        {
+            let frame = self
+                .driver
+                .last_submission()
+                .map(|s| s.ticket.scene_generation);
+            self.timings
+                .borrow_mut()
+                .finish(stage, started, None, frame, None);
+        }
         if !self.close_requested
             && let Err(error) = self.controls.event(&frame_event)
         {
@@ -541,7 +498,11 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
     let failure = Rc::new(RefCell::new(None));
     crate::child::prepare_canary()?;
     let inventory = Rc::new(RefCell::new(vec![state.clone()]));
-    let tabs = crate::tab_sessions::Sessions::new(children, &state, inventory.clone())?;
+    let timings = crate::shell_timings::Trace::shared(
+        std::env::args().any(|a| a == "--native-shell-timings"),
+    );
+    let tabs =
+        crate::tab_sessions::Sessions::new(children, &state, inventory.clone(), timings.clone())?;
     event_loop.run_app(Pilot {
         driver,
         controls: crate::browser_controls::Controls::new(document.clone(), state.clone()),
@@ -550,6 +511,7 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
         registrar,
         state: state.clone(),
         tabs,
+        timings: timings.clone(),
         parent: None,
         registered: false,
         ticks: 0,
@@ -579,6 +541,7 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
         .ok_or("missing bundle")?
         .join("native-report.json");
     report.borrow_mut().observe_tabs(&inventory.borrow())?;
+    report.borrow_mut().shell_timings = timings.borrow().snapshot()?;
     std::fs::write(output, serde_json::to_vec_pretty(&*report.borrow())?)?;
     if let Some(error) = failure.borrow().as_ref() {
         return Err(error.clone().into());
@@ -595,46 +558,4 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
             .internal_probe_requested
             .then_some(report.borrow().internal_probe_passed),
     })
-}
-
-#[cfg(test)]
-mod deadline_tests {
-    use super::*;
-    #[test]
-    fn hard_deadline_survives_a_blocked_close_wake() {
-        let (release, blocked) = std::sync::mpsc::channel::<()>();
-        let (fired, receipt) = std::sync::mpsc::channel();
-        let deadline = CloseDeadline::start_with(
-            move || {
-                let _ = blocked.recv();
-            },
-            Duration::from_millis(5),
-            Duration::from_millis(20),
-            move || {
-                fired.send(()).unwrap();
-            },
-        );
-        receipt
-            .recv_timeout(Duration::from_secs(2))
-            .expect("blocked close suppressed hard deadline");
-        release.send(()).unwrap();
-        drop(deadline);
-    }
-    #[test]
-    fn completed_lifecycle_cancels_and_joins_both_workers() {
-        let (fired, receipt) = std::sync::mpsc::channel();
-        let deadline = CloseDeadline::start_with(
-            || panic!("completed lifecycle must not request close"),
-            Duration::from_secs(60),
-            Duration::from_secs(75),
-            move || {
-                let _ = fired.send(());
-            },
-        );
-        drop(deadline);
-        assert!(matches!(
-            receipt.try_recv(),
-            Err(std::sync::mpsc::TryRecvError::Disconnected)
-        ));
-    }
 }

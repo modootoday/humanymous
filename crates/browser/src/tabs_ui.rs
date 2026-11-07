@@ -5,7 +5,10 @@ use crate::{
     ui_navigation,
 };
 use meari::domain::{Node, NodeKind, Value};
-use meari_native::infrastructure::document::InteractiveDocument;
+use meari_native::infrastructure::{
+    document::InteractiveDocument,
+    native_host::{HostStamp, NativeDocumentHandle},
+};
 
 /// Source-bound display projection of one actual native tab.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -17,29 +20,62 @@ pub struct View {
     /// True only for the active child.
     pub selected: bool,
 }
-fn widths(viewport: u32, views: &[View]) -> Vec<u32> {
-    if views.is_empty() {
-        return Vec::new();
+/// Acknowledged model projection; viewport geometry belongs to retained CSS layout.
+#[derive(Default)]
+pub struct Projection {
+    views: Vec<View>,
+    commits: u64,
+    source: Option<HostStamp>,
+}
+impl Projection {
+    /// Commit actual model changes through the checked source owner only once.
+    pub fn update(
+        &mut self,
+        document: &NativeDocumentHandle,
+        views: &[View],
+    ) -> Result<bool, String> {
+        let stamp = document.stamp().map_err(|e| e.to_string())?;
+        let same_source = self.source.as_ref().is_some_and(|old| {
+            old.host_id == stamp.host_id
+                && old.owner == stamp.owner
+                && old.definition_revision == stamp.definition_revision
+        });
+        if self.views == views && same_source {
+            return Ok(false);
+        }
+        let next = self
+            .commits
+            .checked_add(1)
+            .ok_or("tab projection counter exhausted")?;
+        document
+            .try_reproject(&stamp, |doc| project(doc, views))
+            .map_err(|e| e.to_string())?;
+        let committed = document.stamp().map_err(|e| e.to_string())?;
+        self.views = views.to_vec();
+        self.commits = next;
+        self.source = Some(committed);
+        Ok(true)
     }
-    // Reserve brand, new-tab, gaps and fixed caption controls before shrinking tabs.
-    let available = viewport
-        .saturating_sub(228)
-        .saturating_sub(2 * (views.len() as u32 - 1));
-    let equal = (available / views.len() as u32).min(232);
-    if equal >= 52 {
-        return vec![equal; views.len()];
+    /// Successful model-source commits; viewport-only layout is not counted.
+    pub fn commits(&self) -> u64 {
+        self.commits
     }
-    let inactive = available.saturating_sub(52) / (views.len().saturating_sub(1).max(1) as u32);
-    views
-        .iter()
-        .map(|v| {
-            if v.selected {
-                52
-            } else {
-                inactive.clamp(32, 52)
-            }
-        })
-        .collect()
+}
+
+#[cfg(test)]
+#[path = "tabs_ui_resize_tests.rs"]
+mod resize_tests;
+pub(crate) fn responsive_styles() -> String {
+    use std::fmt::Write;
+    let mut css = String::new();
+    for count in 1..=Tabs::CAPACITY {
+        let reserve = 228 + 2 * (count - 1);
+        let close = reserve + 96 * count - 1;
+        let title = reserve + 84 * count - 1;
+        write!(css, "@media(max-width:{close}px){{.tabs-count-{count} .tab-slot:not(.selected) .tab-close:not(:focus){{display:none}}}}").expect("String formatting");
+        write!(css, "@media(max-width:{title}px){{.tabs-count-{count} .page-tab{{justify-content:center;padding:0}}.tabs-count-{count} .tab-title{{display:none}}.tabs-count-{count} .selected .tab-icon,.tabs-count-{count} .tab-slot:focus-within .tab-icon{{display:none}}}}").expect("String formatting");
+    }
+    css
 }
 /// Stable slots avoid rebuilding the shell or losing native input state on switch.
 pub fn strip(enabled: bool) -> Node {
@@ -53,7 +89,14 @@ pub fn strip(enabled: bool) -> Node {
                 "div",
                 &[
                     ("id", &container),
-                    ("className", "tab-slot"),
+                    (
+                        "className",
+                        if id == 0 {
+                            "tab-slot selected"
+                        } else {
+                            "tab-slot"
+                        },
+                    ),
                     (
                         "style",
                         if id == 0 {
@@ -81,7 +124,7 @@ pub fn strip(enabled: bool) -> Node {
                             ),
                             element(
                                 "span",
-                                &[("id", &label)],
+                                &[("id", &label), ("className", "tab-title")],
                                 vec![text(if enabled { "New tab" } else { "No target" })],
                             ),
                         ],
@@ -109,8 +152,9 @@ pub fn strip(enabled: bool) -> Node {
         "div",
         &[
             ("role", "tablist"),
+            ("id", "browser-tabs"),
             ("aria-label", "Browser tabs"),
-            ("className", "tab-list"),
+            ("className", "tab-list tabs-count-1"),
         ],
         children,
     )
@@ -138,42 +182,56 @@ pub fn commands(doc: &InteractiveDocument) -> Vec<(String, Command)> {
 }
 /// Apply selected/name/hidden state without inventing a browser page or history.
 pub fn project(doc: &mut InteractiveDocument, views: &[View]) -> Result<(), String> {
-    let widths = widths(doc.viewport.width, views);
+    if views.len() > Tabs::CAPACITY
+        || views.iter().any(|v| v.id >= Tabs::CREATIONS)
+        || views.iter().filter(|v| v.selected).count() != usize::from(!views.is_empty())
+        || views
+            .iter()
+            .enumerate()
+            .any(|(i, v)| views[..i].iter().any(|old| old.id == v.id))
+    {
+        return Err("invalid bounded tab projection".into());
+    }
+    ui_navigation::attribute(
+        doc,
+        "browser-tabs",
+        "className",
+        Some(&format!("tab-list tabs-count-{}", views.len())),
+    );
     for id in 0..Tabs::CREATIONS {
         let view = views.iter().find(|view| view.id == id);
-        let width = views
-            .iter()
-            .position(|v| v.id == id)
-            .map(|index| widths[index]);
-        let style = width.map(|width| format!("display:flex;width:{width}px;flex:0 0 {width}px"));
+        ui_navigation::attribute(
+            doc,
+            &format!("tab-slot-{id}"),
+            "className",
+            Some(if view.is_some_and(|v| v.selected) {
+                "tab-slot selected"
+            } else {
+                "tab-slot"
+            }),
+        );
         ui_navigation::attribute(
             doc,
             &format!("tab-slot-{id}"),
             "style",
-            Some(style.as_deref().unwrap_or("display:none")),
+            if view.is_some() {
+                None
+            } else {
+                Some("display:none")
+            },
         );
         let select = format!("tab-select-{id}");
-        let show_close = view.is_some_and(|v| v.selected) || width.is_some_and(|w| w >= 96);
         ui_navigation::attribute(
             doc,
             &format!("tab-close-{id}"),
             "style",
-            Some(if show_close {
-                "display:flex"
+            if view.is_some() {
+                None
             } else {
-                "display:none"
-            }),
+                Some("display:none")
+            },
         );
-        ui_navigation::attribute(
-            doc,
-            &select,
-            "className",
-            Some(if width.is_some_and(|w| w < 84) {
-                "page-tab compact"
-            } else {
-                "page-tab"
-            }),
-        );
+        ui_navigation::attribute(doc, &select, "className", Some("page-tab"));
         ui_navigation::attribute(
             doc,
             &select,

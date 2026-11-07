@@ -2,6 +2,7 @@
 use crate::native;
 #[derive(Default, serde::Serialize)]
 pub(super) struct Report {
+    pub(super) shell_timings: Option<crate::shell_timings::Snapshot>,
     pub(super) tabs: Vec<TabReceipt>,
     pub(super) tabs_created: usize,
     pub(super) tabs_before_close: usize,

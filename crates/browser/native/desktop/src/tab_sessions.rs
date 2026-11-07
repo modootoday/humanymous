@@ -2,7 +2,7 @@
 use crate::child::{CefChild, Shared, State};
 use humanymous_browser::{
     tabs::{Command, Tabs},
-    tabs_ui::View,
+    tabs_ui::{Projection, View},
 };
 use meari_native::{
     application::window_lifecycle::*,
@@ -34,8 +34,8 @@ pub struct Sessions {
     queue: Queue,
     children: Rc<WindowLifecycle<CefChild>>,
     inventory: Inventory,
-    projected: Vec<View>,
-    projected_width: u32,
+    projection: Projection,
+    timings: crate::shell_timings::Shared,
     active: Option<usize>,
 }
 pub fn enqueue(state: &Shared, command: Command) -> io::Result<()> {
@@ -81,6 +81,7 @@ impl Sessions {
         children: Rc<WindowLifecycle<CefChild>>,
         initial: &Shared,
         inventory: Inventory,
+        timings: crate::shell_timings::Shared,
     ) -> io::Result<Self> {
         let queue = Queue::default();
         {
@@ -96,8 +97,8 @@ impl Sessions {
             queue,
             children,
             inventory,
-            projected: Vec::new(),
-            projected_width: 0,
+            projection: Projection::default(),
+            timings,
             active: Some(0),
         })
     }
@@ -344,20 +345,16 @@ impl Sessions {
                 })
             })
             .collect::<io::Result<Vec<_>>>()?;
-        let width = document
-            .try_with(|doc| doc.viewport.width)
-            .map_err(io::Error::other)?;
-        if views != self.projected || width != self.projected_width {
-            let stamp = document.stamp().map_err(io::Error::other)?;
-            document
-                .try_reproject(&stamp, |doc| {
-                    humanymous_browser::tabs_ui::project(doc, &views).map_err(io::Error::other)?;
-                    Ok::<_, io::Error>(())
-                })
-                .map_err(io::Error::other)?;
-            self.projected = views;
-            self.projected_width = width;
-        }
+        let started = self.timings.borrow().start();
+        let projected = self.projection.update(document, &views);
+        self.timings.borrow_mut().finish(
+            crate::shell_timings::Stage::TabProjection,
+            started,
+            Some(self.projection.commits()),
+            None,
+            Some(projected.is_ok()),
+        );
+        projected.map_err(io::Error::other)?;
         if self.active != self.model.active() {
             self.active = self.model.active();
             return Ok(self.active.map(|id| Active {

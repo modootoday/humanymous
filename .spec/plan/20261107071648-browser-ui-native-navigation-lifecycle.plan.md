@@ -11,6 +11,40 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## UI-38 pinned source candidate, not executed
+
+Root authorizes a bounded Browser-only source slice while Meari prepares its own
+release. Keep the1482 pin and shared graph unchanged. Retained Projection owns
+checked host/source identity and acknowledges only successful model commits;
+viewport changes use existing host environment/CSS layout, not source replacement.
+Intrinsic tab min/max/shrink and count-specific media thresholds preserve narrow
+title/close behavior. Existing width-only rebuild is removed only together with
+that layout path, not as an isolated guard deletion.
+
+New native document oracle source holds a prepared replacement across repeated
+width/DPI host commits, expects no model-source commit, preserves address node,
+dirty value/focus and new-tab geometry, rejects stale host updates, and checks
+CSS-hidden AX close rejection plus real tab/title/membership invalidation. The
+prepared replacement must become stale after a true model change. Unsupported
+CSS/AX or source-generation behavior blocks acceptance and requires upstream API
+work; authored assertions are not execution evidence.
+Independent source review found inline display:flex would override responsive
+inactive-close hiding. Remove visible inline overrides and keep normal visibility
+in CSS. Preserve a focused inactive close through narrowing, then hide it when
+focus moves; add a separate focus/AX oracle. This was a source finding/correction,
+not an executed failure. New instrumentation excludes view construction and CEF
+sync, has no extent/event-receive correlation, and last submission may be older;
+it cannot report p95 receive-to-submit or complete causal stage attribution.
+
+Opt-in --native-shell-timings records only numeric monotonic start/duration,
+source-commit counter, finite stage enum and last submitted scene generation.
+Meari resize/redraw handler duration is combined dispatch work, not a separate
+raster/present measurement or OS display acknowledgement; those remain null.
+Ring capacity512 and encoded512KiB cap retain explicit dropped/saturated state.
+Default-disabled instrumentation emits no timing records. Deadline owner/tests
+move unchanged into host_deadline.rs to keep the host composition below600 lines.
+No new Cargo/native/GUI execution, dependency fetch, pin or graph change is granted.
+
 ## Priority shell responsiveness follow-up (UI-37; design only)
 
 The ce24 normal build passed and human manual pilot exited0 after15.53s, with
