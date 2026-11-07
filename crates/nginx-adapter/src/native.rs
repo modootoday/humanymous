@@ -2,8 +2,10 @@
 //! Pool cleanup owns timer deletion and future cancellation; tasks own no nginx
 //! memory. ngx bindings and runtime must be built from the same pinned ABI.
 use crate::request::{self, Configuration, Ingress};
-use humanymous_authority::client::{self, BoundResponse, ClientOptions, ExpectedBinding, Verdict};
 use humanymous_core::integrity::adapter::AdapterProfile;
+use humanymous_runtime::authority::client::{
+    self, BoundResponse, ClientOptions, ExpectedBinding, Verdict,
+};
 use ngx::core::Status;
 use ngx::ffi::*;
 use ngx::http::{self, HttpModule, HttpModuleLocationConf, HttpRequestHandler, MergeConfigError};
@@ -140,7 +142,7 @@ struct Context {
 }
 impl Context {
     fn new(r: *mut ngx_http_request_t, timeout: u64) -> Result<Self, ()> {
-        let deadline = humanymous_authority::now_ms()
+        let deadline = humanymous_runtime::authority::now_ms()
             .map_err(|_| ())?
             .checked_add(timeout)
             .ok_or(())?;
@@ -328,7 +330,7 @@ fn handle(r: &mut http::Request) -> Status {
         Ok(v) => v,
         Err(_) => return reject(r, 503),
     };
-    let now = humanymous_authority::now_ms().unwrap_or(u64::MAX);
+    let now = humanymous_runtime::authority::now_ms().unwrap_or(u64::MAX);
     let envelope = match input.envelope(&config, &id, context.deadline, now) {
         Ok(v) => v,
         Err(_) => return reject(r, 400),
@@ -632,7 +634,7 @@ unsafe extern "C" fn poll(event: *mut ngx_event_t) {
             }
             return;
         }
-        let now = humanymous_authority::now_ms().unwrap_or(u64::MAX);
+        let now = humanymous_runtime::authority::now_ms().unwrap_or(u64::MAX);
         let mut resume = false;
         {
             let mut state = ctx.state.borrow_mut();

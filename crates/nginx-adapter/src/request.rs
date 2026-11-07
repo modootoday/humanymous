@@ -2,8 +2,8 @@
 #![forbid(unsafe_code)]
 
 use base64::{Engine, engine::general_purpose::STANDARD};
-use humanymous_authority::configuration::Peer;
 use humanymous_core::integrity::adapter::{AdapterProfile, parse_with_profile};
+use humanymous_runtime::authority::configuration::Peer;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::HashSet;
@@ -249,7 +249,7 @@ pub fn read_private_configuration(path: &std::path::Path) -> Result<Configuratio
         return Err("configuration path");
     }
     let parent = path.parent().ok_or("configuration parent")?;
-    humanymous_authority::transport::private_directory(parent, &Peer::Unix { uid })
+    humanymous_runtime::authority::transport::private_directory(parent, &Peer::Unix { uid })
         .map_err(|_| "configuration parent privacy")?;
     let fd = rustix::fs::open(
         path,

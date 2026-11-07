@@ -1,9 +1,9 @@
 //! Rust-only driver for actual nginx and shared authority on owned loopback/UDS.
 mod authority;
 mod origin;
-use humanymous_authority::client::{self, ClientOptions, ExpectedBinding};
 use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_nginx_adapter::request::{Configuration, Ingress, nonce};
+use humanymous_runtime::authority::client::{self, ClientOptions, ExpectedBinding};
 use std::io::{BufReader, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::os::unix::fs::PermissionsExt;
@@ -513,12 +513,12 @@ http {{
         body: Vec::new(),
     };
     let id = nonce()?;
-    let deadline = humanymous_authority::now_ms().map_err(|_| "clock")? + 1000;
+    let deadline = humanymous_runtime::authority::now_ms().map_err(|_| "clock")? + 1000;
     let envelope = ingress.envelope(
         &config,
         &id,
         deadline,
-        humanymous_authority::now_ms().map_err(|_| "clock")?,
+        humanymous_runtime::authority::now_ms().map_err(|_| "clock")?,
     )?;
     let options = ClientOptions {
         endpoint: &config.endpoint,
@@ -547,7 +547,7 @@ http {{
     )?;
     ensure(origin.count() == before, "direct IPC invoked origin")?;
     cases.push(serde_json::json!({"name":"actual-authority-replay","second_rejected":true,"origin_delta":0}));
-    let other = humanymous_authority::configuration::Peer::Unix {
+    let other = humanymous_runtime::authority::configuration::Peer::Unix {
         uid: rustix::process::geteuid().as_raw() + 1,
     };
     let wrong = ClientOptions {
@@ -627,7 +627,7 @@ http {{
         "production executable fabricated ALLOW or reload failed",
     )?;
     cases.push(serde_json::json!({"name":"actual-production-executable-private-pipes-and-nginx-reload","statuses":observed,"origin_delta":0,"human_qualified":false,"audit_directory":"fresh separate fixture directory"}));
-    let deadline = humanymous_authority::now_ms().map_err(|_| "clock")? + 1000;
+    let deadline = humanymous_runtime::authority::now_ms().map_err(|_| "clock")? + 1000;
     let id = nonce()?;
     let input = Ingress {
         method: "GET".into(),
@@ -640,7 +640,7 @@ http {{
         &config,
         &id,
         deadline,
-        humanymous_authority::now_ms().map_err(|_| "clock")?,
+        humanymous_runtime::authority::now_ms().map_err(|_| "clock")?,
     )?;
     let endpoint = next["endpoint"].as_str().ok_or("production endpoint")?;
     let stale = ClientOptions {
@@ -682,7 +682,7 @@ http {{
         "stale socket ownership",
     )?;
     std::fs::remove_file(socket)?;
-    use humanymous_audit::{
+    use humanymous_runtime::audit::{
         log::{Config, Log},
         storage::{Wal, WalOptions},
     };

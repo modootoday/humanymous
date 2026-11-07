@@ -1,17 +1,17 @@
 //! Actual shared authority/library + real WAL; synthetic evidence is test-only.
-use humanymous_audit::{
+use humanymous_core::integrity::adapter::ValidatedRequest;
+use humanymous_core::signals::report::SessionReport;
+use humanymous_runtime::audit::{
     log::{Config, Log},
     record::Record,
     storage::{Wal, WalOptions},
 };
-use humanymous_authority::{
+use humanymous_runtime::authority::{
     Rejection,
     configuration::Configuration,
     decision::{ApplicationHttp, Authority, DurableAudit, Evidence},
     transport::Listener,
 };
-use humanymous_core::integrity::adapter::ValidatedRequest;
-use humanymous_core::signals::report::SessionReport;
 use std::path::Path;
 use std::sync::{
     Arc,

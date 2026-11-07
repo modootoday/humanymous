@@ -1,0 +1,53 @@
+{
+  "schema": "humanymous.nginx.runtime-slice02-consumer/1",
+  "observed_head": "96ea375da0df8a1cfb8e2f36239d3e04b11fb475",
+  "files": [
+    {
+      "path": "crates/nginx-adapter/src/request.rs",
+      "before_sha256": "b4f102e12c027d6404ec71fbc112260d8661529bb028141eef61fb354fcb3f0b",
+      "after_sha256": "3894ca2d5293d1b67e275b6a1e53c158bb261da21e3064a8b6d73e62c4d94d33",
+      "bytes": 15503
+    },
+    {
+      "path": "crates/nginx-adapter/src/native.rs",
+      "before_sha256": "a5324b30e23337158e349e78a6c84f4015423a95232985bc5c9da1716c2602ed",
+      "after_sha256": "a1fa51d494f0c7d98daf9fbc9c0e16a3ed38edb45015c796042d457484c93fb6",
+      "bytes": 24961
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "before_sha256": "243070bb47ce5540993a9458db0ebb51193760a57b382ba6220e9f638ef39636",
+      "after_sha256": "a22c37194e769861037715f28b41134373ddbf0d4d8f2fa9ad7bbc28a4868caa",
+      "bytes": 32504
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/authority.rs",
+      "before_sha256": "5dc04f3369813968347782d6f717f666daa5e0c97bd7d53a1a4b112de2e4d765",
+      "after_sha256": "030e56f7113783c6d1cd96d291d0cd8117c2d6847a80553c25bd585e1290cfdc",
+      "bytes": 5183
+    }
+  ],
+  "existing_runtime_prefix_replacements": 0,
+  "legacy_authority_audit_replacements": 15,
+  "remaining_legacy_context_references": 0,
+  "double_gateway_authority_or_audit_references": 0,
+  "operation_order": [
+    "Existing runtime prefix first (zero matches)",
+    "Legacy context references second",
+    "rustfmt"
+  ],
+  "fmt": "passed",
+  "diff_check": "passed",
+  "compiler": "NOT_RUN: root coherence/allocation required",
+  "clippy": "NOT_RUN: root coherence/allocation required",
+  "CI_runtime": "NOT_RUN",
+  "foreign_dirty_file_preserved": "crates/nginx-adapter/Cargo.toml is root-owned and was already modified before this source task",
+  "manifest_lock_feature_or_shared_runtime_edits": false,
+  "aliases_or_compatibility_shims": false,
+  "behavior_scoring_visibility_changes": false,
+  "paths_moved": false,
+  "live_handles": [],
+  "target_leases": [],
+  "source_ready": true,
+  "qualified": false
+}
