@@ -68,6 +68,26 @@ Windows98/Unix102 remain authored inventories, not full-suite execution; actual
 native/public ingress/W/Ready/shipping and the remaining27 behaviors stay open.
 Earlier leaf/core/platform proofs do not qualify the new integrated product.
 
+### Positional-array isolation refinement — authored, not executed
+
+After the original2e993 run and receipt e8f71220, Root separately authorized a
+TEST-ONLY refinement of the existing scalar_types_and_positional_objects case.
+It now constructs valid full root/scope/binding arrays in each actual wire
+declaration order. Direct derived Envelope/Scope/Binding deserializer acceptance
+controls and the matching valid-map control are asserted alongside public parser
+refusal, to isolate map-only enforcement from unrelated value/type/missing-field
+errors. These new assertions have not yet been compiled or executed.
+
+Only shipping/tests/envelope.rs changes; the other nine recorded Runtime source/
+inventory paths, production parser, private Configuration and Cargo are unchanged.
+There are no new test names:19 shipping cases and Windows98/Unix102 inventories
+remain. Exact before/after hashes are attached in
+public-role-positional-refinement-source.json. Standalone formatting and diff
+whitespace checks passed; no Cargo check/Clippy/test/retry ran. Freeze the new
+checkpoint and obtain a separate bounded Root validation grant. Original2e993's
+19-pass receipt and its isolation limitation remain historical and unchanged;
+they do not qualify this refinement or imply a failed parser implementation.
+
 Read plan:root/20261107205157 and Delivery's shipping-role-source-map.json first.
 The attached runtime-shipping-behavior-inventory.json in
 evidence:root/20261107061821 binds186 observed source/deployment inputs,62 route/

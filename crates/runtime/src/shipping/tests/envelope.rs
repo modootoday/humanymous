@@ -90,6 +90,7 @@ fn every_required_root_scope_and_binding_field_is_required() {
 
 #[test]
 fn scalar_types_and_positional_objects_cannot_bypass_closed_schema() {
+    use super::super::wire;
     let original = document();
     for pointer in [
         "/schema",
@@ -115,19 +116,63 @@ fn scalar_types_and_positional_objects_cannot_bypass_closed_schema() {
             *v.pointer_mut(pointer).unwrap() = bad;
             invalid(&encoded(&v));
         }
-        let mut v = original.clone();
-        let positional: Vec<_> = v
-            .pointer(pointer)
-            .unwrap()
-            .as_object()
-            .unwrap()
-            .values()
-            .cloned()
-            .collect();
-        *v.pointer_mut(pointer).unwrap() = json!(positional);
-        invalid(&encoded(&v));
     }
-    invalid(br#"["humanymous.public-role/1","core_demo",{}, {}, []]"#);
+
+    // Every value is valid and in the actual derived wire declaration order.
+    // Direct derived controls isolate rejection by the map-only wrappers from
+    // unrelated missing fields, scalar types, generation or scope bounds.
+    let map = parse(&original).unwrap();
+    let scope = &original["scope"];
+    let scope_array = json!([
+        scope["installation"],
+        scope["tenant"],
+        scope["origin"],
+        scope["revision"],
+        scope["application_authority"]
+    ]);
+    let derived_scope: wire::Scope = serde_json::from_value(scope_array.clone()).unwrap();
+    assert_eq!(derived_scope.installation, map.scope().installation());
+    assert_eq!(
+        derived_scope.application_authority,
+        map.scope().application_authority()
+    );
+    let mut v = original.clone();
+    v["scope"] = scope_array;
+    invalid(&encoded(&v));
+
+    let binding = &original["binding"];
+    let binding_array = json!([
+        binding["installation_epoch"],
+        binding["generation"],
+        binding["base_plan_sha256"],
+        binding["executable_sha256"]
+    ]);
+    let derived_binding: wire::Binding = serde_json::from_value(binding_array.clone()).unwrap();
+    assert_eq!(derived_binding.generation, map.binding().generation());
+    assert_eq!(
+        derived_binding.installation_epoch,
+        binding["installation_epoch"].as_str().unwrap()
+    );
+    let mut v = original.clone();
+    v["binding"] = binding_array;
+    invalid(&encoded(&v));
+
+    let root_array = json!([
+        original["schema"],
+        original["role"],
+        original["scope"],
+        original["binding"],
+        original["required_providers"]
+    ]);
+    let derived_root: wire::Envelope = serde_json::from_value(root_array.clone()).unwrap();
+    assert_eq!(derived_root.schema, "humanymous.public-role/1");
+    assert_eq!(derived_root.role, "core_demo");
+    assert_eq!(
+        derived_root.required_providers.0.len(),
+        map.required_providers().len()
+    );
+    invalid(&encoded(&root_array));
+
     let mut v = original;
     v["role"] = json!({"core_demo":null});
     invalid(&encoded(&v));
