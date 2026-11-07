@@ -191,3 +191,30 @@ two pure policy fixtures are NOT_RUN pending the allocated Cargo/hosted gates.
 R07/R10 writes, durable state replay, independent credentials producer, actual
 IPC/ACL/cancellation/lock-release pilots remain incomplete. Actual hosted run
 42348518353 at63f69ae does not include these later changes.
+R05 bounded complete-response framing extension: isolate origin response parsing
+from request framing. Decode complete chunked entities with checked hex lengths,
+checked decoded64KiB budget and explicit128KiB wire budget; reject TE+CL,
+non-chunked/duplicate TE, malformed/truncated chunks and trailing data. Chunk
+extensions and nonempty trailers remain explicitly unsupported and fail closed,
+not silently dropped. Preserve duplicate ordinary headers/Set-Cookie and raw OWS;
+strip hop/reserved gateway fields and reframe decoded entities with exact CL.
+Bounded close-delimited complete bodies may be reframed after EOF; keep-alive
+origin headers are allowed only with valid complete framing, never forward
+Connection nominations. HEAD/204/304 remain bodyless;204 forbids CL/TE.
+This complete-buffer implementation does not claim R06 incremental streaming,
+full trailer support, original TLS/H2 provenance or browser body authentication.
+Native/browser request codecs and frozen engine are unchanged. Pure malformed
+framing and boundary fixtures precede hosted origin/abort/effect validation.
+R05 source complete-buffer framing now decodes bounded simple chunked bodies and
+reframes close-delimited EOF bodies, retains duplicate cookies, strips origin ACK
+forgeries and rebuilds decoded CL. Chunk extensions/nonempty trailers/upgrade
+remain explicit unsupported refusals; streaming and informational responses are
+not qualified. Three new pure malformed/boundary fixtures authored NOT_RUN.
+Hosted-only Unix service fixtures2 now exercise real shared IPC status with
+credential/scope negatives, custody exclusion until stop, both listener cleanup,
+explicit drained/flushed outcome and controller-close failure. They use actual
+sealed/WAL implementations with synthetic fixture keys, no external witness;
+this is not independent witness/product/human evidence. Never execute these via
+a local broad cargo-test command. No current-source tests have executed.
+Public spec check briefly reports duplicate external plan id20261107072500 in
+native-abi/network-capture; root notified, owner files left untouched.

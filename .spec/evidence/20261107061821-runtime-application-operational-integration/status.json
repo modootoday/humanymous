@@ -1,5 +1,5 @@
 {
-  "scope": "runtime-browser-and-service-source-checkpoints",
+  "scope": "runtime-operational-followthrough-source-checkpoints",
   "implemented_source": [
     "explicit-browser-profile",
     "cookie-free-same-origin-session",
@@ -9,7 +9,12 @@
     "origin-reserved-header-stripping",
     "ServiceHost-private-input-readiness",
     "observed-stop-origin-checks",
-    "bounded-async-drain-audit-flush"
+    "bounded-async-drain-audit-flush",
+    "pinned-external-witness-injection",
+    "strict-managed-stop-budget",
+    "separate-observer-native-management",
+    "joined-listener-drain-before-flush",
+    "bounded-complete-response-chunk-decoding"
   ],
   "authored_native_fixture_test_functions": 2,
   "current_source_executed_tests": 0,
@@ -31,5 +36,7 @@
   "product_qualified": false,
   "remaining": "plan:root/20261107061820-R01-R17",
   "validation_policy": "program-roadmap-and-delivery-single-canon",
-  "private_history": "evidence:root/20261107061820"
+  "private_history": "evidence:root/20261107061820",
+  "new_pure_budget_management_framing_fixture_functions": 6,
+  "new_hosted_only_unix_lifecycle_fixture_functions": 2
 }

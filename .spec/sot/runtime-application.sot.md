@@ -416,3 +416,17 @@ credentials owner supplies zeroized private provisioning next. Concurrent native
 transport handlers read immutable snapshots and perform no detached work. Both
 listener lifetimes must end before final audit flush; failure triggers sibling
 shutdown and cannot release custody early or yield a successful ExitReport.
+R05 bounded complete-response framing extension: isolate origin response parsing
+from request framing. Decode complete chunked entities with checked hex lengths,
+checked decoded64KiB budget and explicit128KiB wire budget; reject TE+CL,
+non-chunked/duplicate TE, malformed/truncated chunks and trailing data. Chunk
+extensions and nonempty trailers remain explicitly unsupported and fail closed,
+not silently dropped. Preserve duplicate ordinary headers/Set-Cookie and raw OWS;
+strip hop/reserved gateway fields and reframe decoded entities with exact CL.
+Bounded close-delimited complete bodies may be reframed after EOF; keep-alive
+origin headers are allowed only with valid complete framing, never forward
+Connection nominations. HEAD/204/304 remain bodyless;204 forbids CL/TE.
+This complete-buffer implementation does not claim R06 incremental streaming,
+full trailer support, original TLS/H2 provenance or browser body authentication.
+Native/browser request codecs and frozen engine are unchanged. Pure malformed
+framing and boundary fixtures precede hosted origin/abort/effect validation.

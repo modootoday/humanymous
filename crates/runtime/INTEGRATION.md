@@ -254,3 +254,16 @@ two pure policy fixtures are NOT_RUN pending the allocated Cargo/hosted gates.
 R07/R10 writes, durable state replay, independent credentials producer, actual
 IPC/ACL/cancellation/lock-release pilots remain incomplete. Actual hosted run
 42348518353 at63f69ae does not include these later changes.
+R05 source complete-buffer framing now decodes bounded simple chunked bodies and
+reframes close-delimited EOF bodies, retains duplicate cookies, strips origin ACK
+forgeries and rebuilds decoded CL. Chunk extensions/nonempty trailers/upgrade
+remain explicit unsupported refusals; streaming and informational responses are
+not qualified. Three new pure malformed/boundary fixtures authored NOT_RUN.
+Hosted-only Unix service fixtures2 now exercise real shared IPC status with
+credential/scope negatives, custody exclusion until stop, both listener cleanup,
+explicit drained/flushed outcome and controller-close failure. They use actual
+sealed/WAL implementations with synthetic fixture keys, no external witness;
+this is not independent witness/product/human evidence. Never execute these via
+a local broad cargo-test command. No current-source tests have executed.
+Public spec check briefly reports duplicate external plan id20261107072500 in
+native-abi/network-capture; root notified, owner files left untouched.

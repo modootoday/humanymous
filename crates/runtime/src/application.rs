@@ -450,7 +450,7 @@ impl Application {
                         .map_err(|_| Rejection::new(503, "origin_write"))?;
                     let mut response = Vec::new();
                     upstream
-                        .take((http::MAX_BODY + 16_385) as u64)
+                        .take((http::MAX_ORIGIN_FRAME + 1) as u64)
                         .read_to_end(&mut response)
                         .await
                         .map_err(|_| Rejection::new(503, "origin_read"))?;

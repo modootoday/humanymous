@@ -1,5 +1,7 @@
 //! Bounded fixture controls and real TCP ingress/origin counters, not browser e2e.
 mod browser;
+#[cfg(unix)]
+mod service;
 use crate::{
     application::{Application, Decision},
     configuration::Configuration,

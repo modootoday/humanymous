@@ -5,6 +5,8 @@ use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 /// Maximum request entity size for this complete-body profile.
 pub const MAX_BODY: usize = 65_536;
 const MAX_HEADER: usize = 16_384;
+/// Complete origin frame cap, including chunk framing overhead and response head.
+pub(crate) const MAX_ORIGIN_FRAME: usize = MAX_BODY * 2 + MAX_HEADER;
 /// A frame observed directly on the accepted socket; credentials are not Debug.
 pub struct Request {
     /// Exact method.
@@ -238,115 +240,13 @@ pub fn origin_request(request: &Request, authority: &str) -> Vec<u8> {
 }
 
 /// Validate a bounded opaque origin response without coalescing Set-Cookie.
-/// Close-delimited and transfer-coded responses are outside this pilot profile.
+/// Chunk extensions and nonempty trailers remain outside this complete-body profile.
 pub fn response(bytes: &[u8], head: bool) -> Result<(), Rejection> {
     Response::parse(bytes, head).map(|_| ())
 }
 
-/// Validated bounded origin frame. No Debug leaks application header/entity data.
-pub(crate) struct Response {
-    pub(crate) status: u16,
-    status_line: String,
-    headers: Vec<(String, String)>,
-    body: Vec<u8>,
-}
-impl Response {
-    pub(crate) fn parse(bytes: &[u8], head: bool) -> Result<Self, Rejection> {
-        let bad = Rejection::new(503, "origin_framing");
-        let end = bytes.windows(4).position(|b| b == b"\r\n\r\n").ok_or(bad)?;
-        if end + 4 > MAX_HEADER || bytes.len() > MAX_BODY + MAX_HEADER {
-            return Err(bad);
-        }
-        let text = std::str::from_utf8(&bytes[..end]).map_err(|_| bad)?;
-        let mut lines = text.split("\r\n");
-        let status = lines.next().ok_or(bad)?;
-        let parts: Vec<_> = status.splitn(3, ' ').collect();
-        if parts.len() != 3
-            || parts[0] != "HTTP/1.1"
-            || parts[1].len() != 3
-            || !parts[1].bytes().all(|b| b.is_ascii_digit())
-            || status.bytes().any(|b| !(32..127).contains(&b))
-        {
-            return Err(bad);
-        }
-        let code: u16 = parts[1].parse().map_err(|_| bad)?;
-        if !(200..=599).contains(&code) {
-            return Err(bad);
-        }
-        let mut length = None;
-        let mut fields = Vec::new();
-        for line in lines {
-            let (name, value) = line.split_once(':').ok_or(bad)?;
-            if fields.len() >= 100
-                || name.is_empty()
-                || !name.bytes().all(token)
-                || value.bytes().any(|b| b < 32 && b != b'\t' || b >= 127)
-            {
-                return Err(bad);
-            }
-            fields.push((name.to_owned(), value.to_owned()));
-            match name.to_ascii_lowercase().as_str() {
-                "content-length" => {
-                    if length.is_some() {
-                        return Err(bad);
-                    }
-                    length = Some(decimal(value.trim()).map_err(|_| bad)?);
-                }
-                "transfer-encoding" | "upgrade" | "trailer" => return Err(bad),
-                "connection" if !value.trim().eq_ignore_ascii_case("close") => return Err(bad),
-                _ => {}
-            }
-        }
-        let empty = head || code == 204 || code == 304;
-        if code == 204 && length.is_some() {
-            return Err(bad);
-        }
-        let length = if empty {
-            length.unwrap_or(0)
-        } else {
-            length.ok_or(bad)?
-        };
-        if (head || code == 204 || code == 304) && bytes.len() != end + 4 {
-            return Err(bad);
-        }
-        if !head && code != 204 && code != 304 && bytes.len() - (end + 4) != length as usize {
-            return Err(bad);
-        }
-        Ok(Self {
-            status: code,
-            status_line: status.to_owned(),
-            headers: fields,
-            body: bytes[end + 4..].to_vec(),
-        })
-    }
-
-    /// Reframe one already-validated entity, preserving duplicate end-to-end fields
-    /// while preventing an origin from forging gateway counter acknowledgements.
-    pub(crate) fn encode(&self, extra: &[(String, String)]) -> Result<Vec<u8>, Rejection> {
-        let mut result = format!("{}\r\n", self.status_line);
-        for (name, value) in &self.headers {
-            let lower = name.to_ascii_lowercase();
-            if lower.starts_with("x-humanymous-")
-                || matches!(
-                    lower.as_str(),
-                    "connection" | "keep-alive" | "proxy-authenticate" | "proxy-authorization"
-                )
-            {
-                continue;
-            }
-            result.push_str(name);
-            result.push(':');
-            result.push_str(value);
-            result.push_str("\r\n");
-        }
-        result.push_str("Connection: close\r\n");
-        append_extra(&mut result, extra).map_err(|_| Rejection::new(503, "response_metadata"))?;
-        result.push_str("\r\n");
-        let mut bytes = result.into_bytes();
-        bytes.extend_from_slice(&self.body);
-        Ok(bytes)
-    }
-}
+mod origin_response;
+pub(crate) use origin_response::Response;
 
 #[cfg(test)]
 mod tests {
