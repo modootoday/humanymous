@@ -62,7 +62,9 @@ No complete record is truncated, adopted as fresh history or automatically retri
 
 Proposed qualification profile (not yet accepted defaults): frame4MiB including
 newline; decoded string budget4MiB/frame;4096 items/array;65536 JSON values/frame;
-depth64; accounted working buffers128MiB;4096 segments;10million records and
+depth64; trusted node ID256bytes; canonical record output16MiB; checkpoint signing
+message16KiB; normalization pending scalars64; accounted working buffers128MiB;
+4096 segments;10million records and
 10million checkpoints;64GiB aggregate record bytes;4GiB checkpoint bytes;
 no derived proof cache in v0.1; monotonic deadline300seconds. All values finite,
 validated with checked arithmetic; zero/overflow/impossible profiles refuse.
@@ -72,13 +74,41 @@ input cannot select its own limits. No unbounded fallback or skipped outcome.
 Frame length alone does not bound owned serde allocation: many empty/default
 objects can amplify Vec element storage. Before owned Record/Checkpoint decode,
 a bounded serde visitor preflights depth, decoded strings, element counts and
-total JSON values without building Value trees. It then uses EXISTING decoders
-and canonical functions. Account parser scratch, decoded fields/Vec capacities,
-normalization, canonical temporary arrays and hash buffers. A conservative
-source-derived bound and instrumented worst-case allocation test must prove the
-profile before acceptance;128MiB is not a measured RSS promise. If existing
-canonical scratch cannot meet it, a shared sink-based canonical encoder must
-replace allocation in BOTH paths with unchanged fixture bytes, not a copied hash.
+total JSON values without building Value trees. It then uses EXISTING Record/
+Checkpoint decoders; fixed schema arrays and fields receive their preflight
+budgets BEFORE owned decoding. Resource refusal is distinct from a wire/report
+pass, and never truncates a value to fit. Account parser scratch, decoded fields/
+Vec capacities, normalization, signing messages and hash buffers.
+
+Use a shared sink-based canonical encoder in BOTH compatibility and streaming
+paths, not a copied hash algorithm. Vec-returning compatibility wrappers collect
+that same encoder; bounded hashing emits directly to the existing digest through
+a byte-limited sink and never builds the complete canonical Vec, parts Vec or
+joined array strings. Keep original raw rule/verdict versus normalized scalar/
+signal-ID behavior, ordering helper and fixed confidence formatting. Normalize
+through a shared Go stream-safe Unicode15 iterator with bounded pending state;
+no unbounded safe-string-then-collect chain remains in the bounded path. Golden
+Unicode/canonical vectors must prove byte identity before using it for authority.
+
+Checkpoint signing bytes use the same frozen JSON ordering/escaping with a
+bounded message buffer checked while encoding, before crypto allocation. The
+16KiB cap and256-byte trusted node bound refuse outside-profile inputs rather
+than changing signatures or diagnostic priority for admitted inputs. Existing
+public-key/signature validation remains strict, with fixed-size hex decode where
+possible; no unchecked arbitrary signature-sized allocation is accepted.
+
+The allocation ledger must include two bounded input frames/cursors, decoder
+scratch, both owned record/checkpoint strings, conservatively grown array
+capacities, bounded sort references, normalization state, checkpoint message,
+frontier/path descriptors and custody/witness context retained during scanning.
+Record currently has only triggered_rules Vec<String> and top_signals Vec<Signal>;
+4096-element limits bound their per-element overhead independently of string bytes.
+No JSON Value tree, Vec<all records/checkpoints/leaves/paths>, canonical output
+Vec, signature-sized input buffer or per-record retained projection is allowed.
+A source-derived capacity calculation plus instrumented worst-case allocation
+test must prove the profile before acceptance;128MiB is not a measured process
+RSS promise. Trusted external witness implementations must declare bounded
+buffers too; a trait object alone does not establish a whole-process bound.
 
 Cancellation is checked before/after bounded frames, directory entries, crypto
 work and repair steps. It stops future work and grants nothing. Synchronous OS
@@ -216,8 +246,9 @@ or automatic continuation. Do not promise power-loss atomicity on Windows.
 
 ### 8. Concrete implementation sequence, still design-only
 
-S1 proposes private FrameCursor/JSON budget preflight, shared incremental record/
-checkpoint validation and Merkle frontier/range primitives. Native read-only
+S1 proposes private FrameCursor/JSON budget preflight, shared byte-limited canonical
+encoder/normalizer, incremental record/checkpoint validation and Merkle frontier/
+range primitives. Native read-only
 WalInspection streams source handles under the existing lock. It emits only a
 bounded diagnostic summary; no append-capable owner, business-effect callback
 or publicly reusable trusted-state token exists. Pure vectors/differential
@@ -241,6 +272,33 @@ No Vec-returning compatibility call may remain inside a claimed bounded path.
 Operator/admin paths and actual Docker product faults complete the same target;
 they are not inferred from S1/S2 component results. API details and resource policy
 are accepted jointly with those owners before S2/S3 implementation.
+
+Runtime owner reviewed the design and supplied concrete S3 requirements, without
+accepting an API or changing source. Replace startup witnessed_through's
+checkpoints().last Vec with a bounded latest authenticated head/coverage accessor.
+SettingsStore journal restoration folds only bounded latest revision/digest/
+parent state while preserving exact node/tenant/policy and contiguous revision
+checks; a later bad settings event or ambiguous tail still refuses. KillStatus
+folds scalar effect state but scans THROUGH EOF and rejects unknown runtime.kill.*
+events. It never publishes early Clear/Killed merely after finding one record.
+
+Cursor/projection completion must bind the SAME retained context/source epoch,
+not just equal path/node/head text. Use module-private checked context identity
+and generation, no caller-selected boolean or deserializable completion receipt.
+Hold the source borrow/lock through projection finish and validate identity,
+generation and full-source completion before restore/finalize/Ready. Source
+mutation invalidates unfinished/stale projections; a projection from another
+context cannot be transplanted. Cancellation, late corruption, unverified tail
+or repair uncertainty yields no Config/apply/Ready. Preserve Pending and
+unwitnessed-intent semantics; these observations never reconstruct a grant.
+
+The proposed300-second scan profile composes with the caller's existing absolute
+deadline: runtime's30-second observer/startup allowance uses the MINIMUM, never
+a reset/extension. Every pass, repair and proof rescan shares that deadline and
+cancellation state. Async caller integration must avoid blocking its stop/watchdog
+control path; OS-read interruption still needs the owned external supervisor.
+Bounded projections and O(history) rescan costs are not throughput or independent
+deployment evidence. Full consumer acceptance remains a separate design gate.
 
 Self-critique: P1 allocation amplification is addressed by predecode limits plus
 required measured/conservative bounds, not trusted to frame length alone. P1
