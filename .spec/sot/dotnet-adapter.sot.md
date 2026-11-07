@@ -12,6 +12,23 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## CORE-SLICE-01 consumer source handoff
+
+Root assigned only mechanical Rust context paths: src/lib.rs now imports
+humanymous_core::integrity::adapter::AdapterProfile; tests/hosted.rs uses
+humanymous_core::integrity::adapter::ValidatedRequest and
+humanymous_core::signals::report::SessionReport. No other seven-context legacy
+identifier remains under this adapter's Rust sources/tests. Rustfmt adjusts only
+import order and signature wrapping. No behavior/scoring/visibility, manifest,
+lock, directory or reference synchronization change is included.
+
+Exact SHA256: crates/dotnet-adapter/src/lib.rs
+cd9a1d4cb26b516776f32b78307cfdaf797ce05bf897b70a8c98b386b6789776;
+crates/dotnet-adapter/tests/hosted.rs
+24e08467e22b39a5130c5cea507b88d4c88e08634dfdb12acdf9fd2a53c0517f.
+Fmt/diff checks only; compilation/Clippy/CI are NOT_RUN until root declares the
+shared graph coherent. Historical source-specific proofs remain unchanged.
+
 ## Current observed qualification boundary
 
 Evidence:root/20261107113926 records source07967eae helper compilation, eight

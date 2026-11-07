@@ -36,9 +36,10 @@ struct Synthetic {
 impl Evidence for Synthetic {
     fn report(
         &mut self,
-        request: &humanymous_integrity::adapter::ValidatedRequest,
+        request: &humanymous_core::integrity::adapter::ValidatedRequest,
         _: bool,
-    ) -> Result<humanymous_signals::report::SessionReport, humanymous_authority::Rejection> {
+    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_authority::Rejection>
+    {
         if matches!(request.request_target().1, "/gc-await" | "/abort-await") {
             self.gc_entered
                 .try_send(())
