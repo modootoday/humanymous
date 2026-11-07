@@ -1,0 +1,104 @@
+{
+  "scope": "Manual complete-file source review against fixed candidate",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "reviews": [
+    {
+      "source": "crates/browser/src/lifecycle.rs",
+      "lines": 194,
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "current_primary_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure future-adapter lifecycle: bounded geometry, monotonic generation, irreversible cancellation/close, stale callback refusal, cleanup pending without native receipt; browser_ready always false.",
+      "pages": [
+        "docs/reference/native-browser.md"
+      ]
+    },
+    {
+      "source": "crates/browser/src/navigation.rs",
+      "lines": 268,
+      "sha256": "47b70de3dc0891e28d5f401f1019e3c89cc1d122fc2412af1e096781b0aec24d",
+      "current_primary_sha256": "47b70de3dc0891e28d5f401f1019e3c89cc1d122fc2412af1e096781b0aec24d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure typed route tickets, max64 navigation requests, separate acceptance/commit/terminal outcomes, irreversible revoke; ordered seven-step probe ledger requires all positive identities. Caller-supplied observations are not OS attestation.",
+      "pages": [
+        "docs/reference/native-browser.md"
+      ]
+    },
+    {
+      "source": "crates/browser/src/viewport.rs",
+      "lines": 122,
+      "sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329",
+      "current_primary_sha256": "c5a772451a389b9bde10ad0378f4cecb316ee756e0044d05f7f8c45d733c0db4",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure bounded client-size/DPI allocation, reserved header and optional inspector/resize margins; positive content validation and source tests at several DPI values do not prove native rendering.",
+      "pages": [
+        "docs/reference/native-browser.md"
+      ]
+    },
+    {
+      "source": "crates/browser/src/ui_navigation.rs",
+      "lines": 165,
+      "sha256": "6739cebff564c09b0af60b60eed99bfb3ed44bbaf95cf0cffd9a63f1c5ba5ff3",
+      "current_primary_sha256": "6739cebff564c09b0af60b60eed99bfb3ed44bbaf95cf0cffd9a63f1c5ba5ff3",
+      "reviewer": "codex/rust-pages",
+      "notes": "App-owned address/home/reload paths, focus check, bounded16-event intent projection and committed-route address/title update. Synthetic AccessKit document test is not real keyboard or AT execution.",
+      "pages": [
+        "docs/reference/native-browser.md"
+      ]
+    },
+    {
+      "source": "crates/browser/src/window_chrome.rs",
+      "lines": 223,
+      "sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+      "current_primary_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+      "reviewer": "codex/rust-pages",
+      "notes": "Named labelled local controls, disabled preview state, app-owned resize regions, bounded16-event command projection; synthetic AccessKit and Enter tests do not qualify native window cleanup or OS accessibility.",
+      "pages": [
+        "docs/reference/native-browser.md"
+      ]
+    },
+    {
+      "source": "crates/browser/src/newtab.rs",
+      "lines": 300,
+      "sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+      "current_primary_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Script-free typed local landing IR, explicit diagnostic actions/form, html5ever serialization and64KiB output limit. No remote assets/history in this template; source assertions do not prove CEF routing or complete runtime privacy.",
+      "pages": [
+        "docs/reference/native-browser.md"
+      ]
+    },
+    {
+      "source": "crates/browser/src/main.rs",
+      "lines": 24,
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "current_primary_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "reviewer": "codex/rust-pages",
+      "notes": "Management-preview entrypoint, optional1..600 second lifetime, synthetic CEF NOT READY window title; does not launch a target browser.",
+      "pages": [
+        "docs/reference/native-browser.md"
+      ]
+    }
+  ],
+  "reviewed_files": 7,
+  "execution": "NOT_RUN",
+  "browser_qualified": false,
+  "assistive_technology_qualified": false,
+  "public_ledger": "Pending later candidate reconciliation; current public docs remain frozen",
+  "original_raw_delta": "Unchanged; this batch does not rewrite historical97/226/1 inventory counts",
+  "viewport_working_byte_difference": {
+    "primary": "CRLF,122 carriage returns",
+    "git": "i/lf w/crlf attr text=auto eol=lf",
+    "normalized_sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329",
+    "semantic_diff": "git diff0036 empty; normalized bytes match fixed source",
+    "raw_byte_receipt_accepted": false,
+    "action": "Reported to browser owner; no foreign file normalization"
+  },
+  "viewport_resolution": {
+    "owner": "Browser owner normalized exactly122 CRLF pairs after its allocated run ended",
+    "verified_primary_sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329",
+    "git": "i/lf w/lf; no semantic diff",
+    "original_raw_difference_preserved": true,
+    "new_execution": "NOT_RUN"
+  }
+}

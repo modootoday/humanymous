@@ -2060,3 +2060,15 @@ Raw14951-byte delta attached privately with exact hash; public count/limit summa
 attached separately. This is an actionable inventory, not accepted reviews or
 complete freshness.323 changed/new sources and removed admission source require
 manual disposition. No bulk renewal, new build, browser or AT result inferred.
+
+### Fixed browser manual review batch
+
+Read complete lifecycle194/navigation268/viewport122/ui_navigation165/
+window_chrome223/newtab300/main24 from clean0036 candidate. Cross-checked native
+browser reference: pure generations/commits/probe counts, bounded allocations,
+local-only controls, labelled synthetic AccessKit operations and script-free
+owner document do not prove actual CEF/keyboard/IME/AT. Recorded individual exact
+hashes/notes for later ledger reconciliation, without frozen docs mutation.
+Six primary source hashes match; viewport differs only by122 CRLF bytes and
+normalizes to the candidate hash. Reported owner-only LF correction; did not
+mutate foreign path or treat normalized equality as exact review acceptance.
