@@ -14,6 +14,7 @@ public sealed class HumanymousMiddleware(RequestDelegate next, HumanymousHost ho
     {
         var original = context.Request.Body;
         MemoryStream? replay = null;
+        bool authorized = false;
         try
         {
             if (context.Response.HasStarted || context.Request.Method == "CONNECT" || IsUpgrade(context)
@@ -52,13 +53,20 @@ public sealed class HumanymousMiddleware(RequestDelegate next, HumanymousHost ho
                 request.Handoff(Observe(context), deadline.IsCancellationRequested, context.Response.HasStarted, IsUpgrade(context));
             }
             context.Request.Body = replay;
-            await next(context);
+            authorized = true;
         }
         catch (Exception error) when (error is NativeFailureException or OperationCanceledException or IOException or ObjectDisposedException)
         {
             if (context.Response.HasStarted || context.RequestAborted.IsCancellationRequested) context.Abort();
             else context.Response.StatusCode = 503;
         }
+        finally
+        {
+            if (!authorized) { context.Request.Body = original; replay?.Dispose(); }
+        }
+        if (!authorized) return;
+        // Application exceptions retain the host application's normal handling.
+        try { await next(context); }
         finally { context.Request.Body = original; replay?.Dispose(); }
     }
     private static bool IsUpgrade(HttpContext context) =>

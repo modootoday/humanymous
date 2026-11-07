@@ -33,17 +33,54 @@ fn exact_three_managed_sources_and_no_hidden_build_tree() {
     .map(PathBuf::from)
     .collect();
     assert_eq!(actual, expected);
+    for source in &actual {
+        let text = std::fs::read_to_string(root.join(source)).unwrap();
+        for unapproved in [
+            "NativeLibrary.Load",
+            "NativeLibrary.Free",
+            "unsafe {",
+            "unsafe{",
+        ] {
+            assert!(
+                !text.contains(unapproved),
+                "unapproved loader/unsafe implementation: {}",
+                source.display()
+            );
+        }
+    }
     for project in [
         "src/Humanymous.Native/Humanymous.Native.csproj",
         "pilot/Humanymous.HostPilot.csproj",
         "Directory.Build.props",
     ] {
         let text = std::fs::read_to_string(root.join(project)).unwrap();
-        for forbidden in ["<Compile ", "<UsingTask", "<Exec ", "<WriteCodeFragment"] {
+        for forbidden in ["<UsingTask", "<Exec ", "<WriteCodeFragment"] {
             assert!(
                 !text.contains(forbidden),
                 "extra source/executable generation is not approved: {project}"
             );
+        }
+        if project.ends_with(".csproj") {
+            assert!(text.contains("<EnableDefaultCompileItems>false</EnableDefaultCompileItems>"));
+            let actual: Vec<_> = text
+                .split("<Compile ")
+                .skip(1)
+                .map(|tail| tail.split("/>").next().unwrap().trim())
+                .collect();
+            let expected = if project.starts_with("src/") {
+                vec![
+                    "Include=\"NativeBinding.cs\"",
+                    "Include=\"HumanymousMiddleware.cs\"",
+                ]
+            } else {
+                vec!["Include=\"Program.cs\""]
+            };
+            assert_eq!(
+                actual, expected,
+                "only explicit approved compile inputs are allowed"
+            );
+        } else {
+            assert!(!text.contains("<Compile "));
         }
     }
 }

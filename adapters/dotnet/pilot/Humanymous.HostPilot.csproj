@@ -2,11 +2,13 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IsAotCompatible>true</IsAotCompatible>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <ItemGroup><Compile Include="Program.cs" /></ItemGroup>
   <ItemGroup Condition="'$(UsePackedAdapter)' != 'true'">
     <ProjectReference Include="../src/Humanymous.Native/Humanymous.Native.csproj" />
   </ItemGroup>

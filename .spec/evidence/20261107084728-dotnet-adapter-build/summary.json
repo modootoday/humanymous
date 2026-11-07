@@ -1,0 +1,142 @@
+{
+  "schema": "humanymous.dotnet-rust-validation/1",
+  "started_at_utc": "2026-11-07T08:45:46Z",
+  "runner": "local-windows",
+  "rustc": "1.99.1 (58cf8f9c3 2026-10-13)",
+  "build_jobs": 1,
+  "incremental": 0,
+  "target": "shared-default",
+  "commands": [
+    {
+      "command": "cargo test --locked -p humanymous-dotnet-adapter --lib -- --test-threads=1",
+      "ignored": 0,
+      "exit_code": 0,
+      "filtered": 0,
+      "measured": 0,
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked -p humanymous-dotnet-adapter-export --lib -- --test-threads=1",
+      "ignored": 0,
+      "exit_code": 0,
+      "filtered": 0,
+      "measured": 0,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "exit_code": 0,
+      "command": "cargo check --locked -p humanymous-dotnet-adapter -p humanymous-dotnet-adapter-export --all-targets"
+    },
+    {
+      "exit_code": 0,
+      "command": "cargo clippy --locked -p humanymous-dotnet-adapter -p humanymous-dotnet-adapter-export --all-targets -- -D warnings"
+    }
+  ],
+  "closure": {
+    "before_count": 252,
+    "before_manifest_sha256": "a94d7d8be7691a5fbc5376bb9cc0afb6fd9cc4bf89464b0127fd288e0a94cafb",
+    "after_count": 252,
+    "drift_count": 0,
+    "after_manifest_sha256": "a94d7d8be7691a5fbc5376bb9cc0afb6fd9cc4bf89464b0127fd288e0a94cafb"
+  },
+  "owned_sources": [
+    {
+      "path": "adapters/dotnet/capabilities.json",
+      "sha256": "78c458157f8cce068f055996a1089f0f4ec43e28cf7be42e532bf1013498e90b"
+    },
+    {
+      "path": "adapters/dotnet/Directory.Build.props",
+      "sha256": "b9fdbb6cb0e46fd6abb8f0fda4967821f128c85a2bc10ef59bbd6bc2384eeaa7"
+    },
+    {
+      "path": "adapters/dotnet/global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d"
+    },
+    {
+      "path": "adapters/dotnet/pilot-contract.json",
+      "sha256": "adb9185307169d533c3d35928832ae09bae9c6412f47af7454fb1f261266beb1"
+    },
+    {
+      "path": "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+      "sha256": "88d4433c7f70cca0befa5f7cee28b2631eaf9c41f43439e3aa68d23952a486d5"
+    },
+    {
+      "path": "adapters/dotnet/pilot/Program.cs",
+      "sha256": "3b0cbe6480fbf0e24c46b4ddf85b9f9aafeecd105dff87a10c5cc514e942628b"
+    },
+    {
+      "path": "adapters/dotnet/README.md",
+      "sha256": "ce0ad4dbf11649e4464dfecded49157846a3d3d19582308a80cc588f9a44fa93"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
+      "sha256": "0eb362f1fc45cc849e7ebfe5320b6f356c27096b746bca368f33f7cab7456567"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
+      "sha256": "e4f3382af6786ec04cafc2af712b78c330433bd06d0b3a1cd17fc212b1268522"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs",
+      "sha256": "c60f549045db118e914e2048dedcb8e1e09455067c7d7bd223daa1cf09953490"
+    },
+    {
+      "path": "crates/dotnet-adapter/Cargo.toml",
+      "sha256": "40b5a8ad94eb50621817cb4a261fbd72b3ea7dccd012d70a3120243ed01125ef"
+    },
+    {
+      "path": "crates/dotnet-adapter/export/Cargo.toml",
+      "sha256": "ed3e0e51be373556712ec28062eb3ca64ae66f0ac89dcd54b1505467c23b26df"
+    },
+    {
+      "path": "crates/dotnet-adapter/export/src/lib.rs",
+      "sha256": "0fdcac276e59e4f89914e185f16624e468d563325b7c197654c983b45050a6f8"
+    },
+    {
+      "path": "crates/dotnet-adapter/INTEGRATION.md",
+      "sha256": "a6c5e2f4261f6e8f8715411f4e95a7223e611f5e9c274f0a196e2c8c9bb0aff0"
+    },
+    {
+      "path": "crates/dotnet-adapter/src/bridge.rs",
+      "sha256": "254790bc7c3c8980f584987ec537ea138c5741ee88a17af059ce0d440df3d1e6"
+    },
+    {
+      "path": "crates/dotnet-adapter/src/lib.rs",
+      "sha256": "f365a4f7239e33f0167702b0c6418840a11eca4c2dc2e3cdd9b7d95f835cd3b2"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted.rs",
+      "sha256": "a857401c5cc2135162f4e4a0eba020a012967382ef356a38760f9656317459bc"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/managed_scope.rs",
+      "sha256": "58ece557467f3135e10ae820eee38dcbbd1c32a166aa8376ed6ec4e1a171e187"
+    }
+  ],
+  "common_inputs": [
+    {
+      "path": "Cargo.lock",
+      "sha256": "9b96ab7ac2bc6a3f474c3f2b586c05d087e6cbaecc0f50e7b28eda2b392c58d3"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    }
+  ],
+  "managed_scope_execution": "not_run",
+  "managed_sdk_build": "not_run",
+  "actual_kestrel": "not_run",
+  "actual_ipc": "not_run",
+  "actual_gc": "not_run",
+  "nativeaot": "not_run",
+  "package_install": "not_run",
+  "docker_product": "not_run",
+  "release_qualified_tuples": [],
+  "full_product": false
+}

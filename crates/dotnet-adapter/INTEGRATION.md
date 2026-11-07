@@ -2,6 +2,21 @@
 
 ## Current approved continuation
 
+Root6500ec23 closed the approved graph window with38workspace members and the
+shared lock, including this export crate. The owned manifests now match that
+approved graph. Explicit local A validation passed core12/export1pure and both
+all-target check/Clippy;252recursive selected input hashes did not drift. Slot
+returned, raw evidence084546/public084728. No managed SDK/scope execution/host
+pilot is implied. No further graph changes without root's next window.
+
+Next hosted gate needs SDK10.0.403 from adapters/dotnet working directory, native
+facade artifact, JIT/NativeAOT published apphost, private ordinary-user audit
+production/synthetic directories, and the exact ignored Rust host selector.
+Windows initializer API is supplied by native-windows; never accept arbitrary
+TEMP/admin ownership. Root remains sole dispatch/push and CI owner owns workflow.
+Final clean NuGet install, remaining contract cases and Docker product evidence
+remain required. No published package or release-qualified tuple exists.
+
 The human approved exactly three managed binding/middleware/pilot sources and
 reactivated this goal. Root confirmed the exception. The prior blocked handover
 below is historical; it is not a current permission requirement. Exact source

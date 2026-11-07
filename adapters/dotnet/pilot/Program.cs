@@ -72,6 +72,7 @@ internal static class Program
             long changed = mutation ? Interlocked.Increment(ref mutations) : Interlocked.Read(ref mutations);
             Emit(json => { json.WriteString("kind", "application-contact"); json.WriteNumber("contacts", contact);
                 json.WriteNumber("mutations", changed); json.WriteNumber("body_length", body.Length); });
+            if (context.Request.Path == "/app-error") throw new IOException("pilot application failure");
             context.Response.Headers.Append("Set-Cookie", "a=1; Path=/");
             context.Response.Headers.Append("Set-Cookie", "b=2; Path=/");
             context.Response.Headers["X-Pilot-Forwarded"] = context.Request.Headers.ContainsKey("X-Forwarded-For") ? "present" : "absent";
@@ -158,6 +159,7 @@ internal static partial class GenericAbi
     }
     internal static void Probe()
     {
+        Native.ValidateAbi();
         var context = Ok(Native.New(1)).Value;
         try
         {

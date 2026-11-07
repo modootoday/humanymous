@@ -33,9 +33,16 @@ Windows/Linux. .NET LibraryImport uses Cdecl and fixed integer fields, no arrays
 delegates, pointers or managed references. SafeHandle owns opaque context IDs;
 DangerousAddRef leases span every synchronous call and the entire scheduled
 Task.Run decision, including scheduling delay. No reverse callback is used.
+The native Tokio runtime is process-lived. The binding rejects collectible
+AssemblyLoadContext before opening native resources and never calls a manual
+native loader/free API. Explicit DLL unloading/reloading is unsupported and
+unqualified; zero request/flight/buffer metrics do not prove runtime worker
+termination or unload safety. The generic native-ABI library has no workers and
+its separate roundtrip result cannot establish this facade's unload safety.
 
-Custom operations100..108 configure, begin, append, EOF, decide, cancel, final
-handoff, classify trust headers via the shared function, and copy replay. Generic
+Custom operations100..109 configure, begin, append, EOF, decide, cancel, final
+handoff, classify trust headers via the shared function, copy replay and measure
+bounded active-request/decision-flight/initialized-buffer diagnostics. Generic
 operations1..7 reuse the registry. Generic CLOSE also cancels/drops owned children
 and their buffers. PANIC/POISONED/Mutex poison revokes all bridge resources and
 never resets the boundary. Context IDs are never reused. Library instances have

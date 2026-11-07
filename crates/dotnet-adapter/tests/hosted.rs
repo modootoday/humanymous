@@ -94,13 +94,22 @@ impl Host {
         self.frame("counters")
     }
 }
-struct Synthetic;
+struct Synthetic {
+    gc_entered: mpsc::SyncSender<()>,
+    gc_release: mpsc::Receiver<()>,
+}
 impl Evidence for Synthetic {
     fn report(
         &mut self,
         request: &humanymous_integrity::adapter::ValidatedRequest,
         _: bool,
     ) -> Result<humanymous_signals::report::SessionReport, humanymous_authority::Rejection> {
+        if request.request_target().1 == "/gc-await" {
+            self.gc_entered.send(()).expect("pilot GC gate observer");
+            self.gc_release
+                .recv_timeout(Duration::from_millis(1500))
+                .expect("bounded pilot GC gate");
+        }
         let text = match request.request_target().1.split('?').next().unwrap_or("") {
             "/deny" => {
                 include_str!("../../scoring/tests/fixtures/frozen/bot-webdriver-cdp-hr9.json")
@@ -266,6 +275,8 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             "/stream",
             "/deny",
             "/challenge",
+            "/app-error",
+            "/gc-await",
         ];
         let mut routes = Vec::new();
         for path in paths {
@@ -281,8 +292,13 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
         let log = humanymous_authority::startup::open_audit(&mut config.audit, &config.peer, None)
             .unwrap();
         let counts = Arc::new(Mutex::new(std::collections::BTreeMap::new()));
+        let (gc_entered_tx, gc_entered_rx) = mpsc::sync_channel(1);
+        let (gc_release_tx, gc_release_rx) = mpsc::sync_channel(1);
         let evidence: Box<dyn Evidence> = if synthetic {
-            Box::new(Synthetic)
+            Box::new(Synthetic {
+                gc_entered: gc_entered_tx,
+                gc_release: gc_release_rx,
+            })
         } else {
             Box::new(ApplicationHttp)
         };
@@ -347,9 +363,40 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             }
             host.send(json!({"operation":"gc-stop"}));
             assert!(host.counters()["collections"].as_u64().unwrap() > 0);
-            covered.insert("gc-pressure");
             covered.insert("unknown-length-eof");
             assert_eq!(host.counters()["native_resources"], 0);
+            let pending =
+                std::thread::spawn(move || request(port, "POST", "/gc-await", &binary, false));
+            gc_entered_rx
+                .recv_timeout(Duration::from_secs(1))
+                .expect("actual native IPC entered authority");
+            let baseline = host.counters()["collections"].as_u64().unwrap();
+            host.send(json!({"operation":"gc-start"}));
+            let until = std::time::Instant::now() + Duration::from_secs(1);
+            loop {
+                let observed = host.counters();
+                assert_eq!(
+                    (observed["native_resources"].as_u64().unwrap() >> 32) & 0xffff,
+                    1,
+                    "native decision must still hold its lease during GC"
+                );
+                if observed["collections"].as_u64().unwrap() > baseline {
+                    break;
+                }
+                assert!(
+                    std::time::Instant::now() < until,
+                    "managed GC did not overlap the held native call"
+                );
+                std::thread::sleep(Duration::from_millis(5));
+            }
+            gc_release_tx.send(()).unwrap();
+            let reply = pending.join().unwrap();
+            assert!(reply.starts_with(b"HTTP/1.1 200"));
+            assert_eq!(body(&reply), binary);
+            host.send(json!({"operation":"gc-stop"}));
+            assert_eq!(host.counters()["native_resources"], 0);
+            covered.insert("gc-pressure");
+            passed += 1;
             for (path, status) in [("/deny", 403), ("/challenge", 503)] {
                 let before = host.counters()["contacts"].as_u64().unwrap();
                 let reply = request(port, "POST", path, b"", false);
@@ -435,6 +482,9 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             assert_eq!(chunked_entity(&stream), vec![1u8, 2]);
             passed += 1;
             covered.insert("response-semantics");
+            let application_error = request(port, "POST", "/app-error", b"", false);
+            assert!(application_error.starts_with(b"HTTP/1.1 500"));
+            passed += 1;
             last_live_resources = host.counters()["native_resources"].clone();
             assert_eq!(last_live_resources, 0);
             host.send(json!({"operation":"dispose-host"}));
@@ -457,6 +507,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             service.abort();
             let _ = service.await;
         });
+        drop(runtime);
         let contract: Value =
             serde_json::from_str(include_str!("../../../adapters/dotnet/pilot-contract.json"))
                 .unwrap();

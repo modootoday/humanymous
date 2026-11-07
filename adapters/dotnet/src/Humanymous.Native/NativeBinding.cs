@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
 
@@ -30,11 +31,15 @@ internal static partial class Native
 
     internal static Command New(uint operation, ulong context = 0, ulong buffer = 0, ulong length = 0) =>
         new() { Major = 1, Size = 16, Operation = operation, Context = context, Buffer = buffer, Length = length };
-    internal static Response Call(Command command)
+    internal static void ValidateAbi()
     {
         if ((!OperatingSystem.IsWindows() && !OperatingSystem.IsLinux()) || RuntimeInformation.ProcessArchitecture != Architecture.X64
             || !BitConverter.IsLittleEndian || IntPtr.Size != 8 || Marshal.SizeOf<Command>() != 88 || Marshal.SizeOf<Response>() != 48)
             throw new PlatformNotSupportedException("Unqualified native ABI layout");
+    }
+    internal static Response Call(Command command)
+    {
+        ValidateAbi();
         var response = Invoke(command);
         if (response.Reserved != 0 || response.Status != 0) throw new NativeFailureException();
         return response;
@@ -96,6 +101,9 @@ public sealed class HumanymousHost : IDisposable
     public int TimeoutMilliseconds { get; }
     public HumanymousHost(string supervisorConfiguration)
     {
+        // The Rust runtime is process-lived; collectible unload/reload is unqualified.
+        if (AssemblyLoadContext.GetLoadContext(typeof(HumanymousHost).Assembly)?.IsCollectible != false)
+            throw new PlatformNotSupportedException("Collectible native adapter loading is unsupported");
         context = new ContextHandle(Native.Call(Native.New(1)).Value);
         try
         {

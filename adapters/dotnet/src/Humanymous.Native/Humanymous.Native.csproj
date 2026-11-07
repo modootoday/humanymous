@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsAotCompatible>true</IsAotCompatible>
@@ -14,6 +15,10 @@
     <RepositoryUrl>https://github.com/modootoday/humanymous</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="NativeBinding.cs" />
+    <Compile Include="HumanymousMiddleware.cs" />
+  </ItemGroup>
   <ItemGroup Condition="'$(NativeArtifact)' != ''">
     <None Include="$(NativeArtifact)" Pack="true" PackagePath="runtimes/$(NativeRid)/native/" />
   </ItemGroup>

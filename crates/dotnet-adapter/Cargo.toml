@@ -12,9 +12,16 @@ include = ["src/**", "Cargo.toml", "INTEGRATION.md"]
 humanymous-authority = { path = "../authority" }
 humanymous-framework-adapter = { path = "../framework-adapter" }
 humanymous-integrity = { path = "../integrity" }
+humanymous-native-abi = { path = "../native-abi" }
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
 
 [dev-dependencies]
-serde_json.workspace = true
+humanymous-audit = { path = "../audit" }
+humanymous-signals.workspace = true
+humanymous-native-security.workspace = true
+humanymous-test-support.workspace = true
 
 [lints]
 workspace = true
