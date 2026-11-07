@@ -207,3 +207,8 @@ Layout sourcefix e1ed50ce independently accepted; actual72 tests remain NOT_RUN.
 New CA-HANDOFF01 source finding sent soleowner/root with late-connected/no-origin
 regression and final bound-consumption contract. S2 independent draft critique
 retains explicit ambiguous-tail/deadline/bootstrap/write-ledger design gaps.
+
+CA-BRIDGE-ALLOC01 scoped invariant closed after independent3200a5a1 raw/source
+re-audit (9pure+2doctest/check/Clippy/fmt). Actualnative/process/product gates
+remain separate and OPEN. Authoritykey validation's firstdependencycompile
+failure d3e03749 is preserved with0tests; correctedgraph needs fresh execution.

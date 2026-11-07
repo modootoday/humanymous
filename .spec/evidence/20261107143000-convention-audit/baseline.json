@@ -108,7 +108,7 @@
     {
       "id": "CA-BRIDGE-ALLOC-01",
       "owner": "native-windows/root",
-      "state": "fixed-source 3a0ba182 independently reviewed; fresh boundary/doctest/native qualification OPEN",
+      "state": "closed scoped prevalidation allocation and UTF16 invariant; 3a0ba182 source/3200a5a1 actual pure-doctest re-audit; whole native provider gates OPEN",
       "source_file": "crates/windows-object-bridge/src/create.rs",
       "observed_sha256": "fb91e1c9c8f60a66cdf3163cc808f1cf533fa8ae175a20573b707fa77838fd85",
       "actual_oom_observed": false
@@ -116,7 +116,7 @@
     {
       "id": "CA-SECRET-01",
       "owner": "authority",
-      "state": "fixed-source 2ca6e4fa independently reviewed; scoped compilation and regression execution OPEN",
+      "state": "fixed-source 2ca6e4fa; first current-graph validation dependency compile failure before tests; fresh scoped qualification OPEN",
       "fields": [
         "Audit.hmac_key_hex",
         "Audit.signing_seed_hex"
@@ -302,5 +302,14 @@
     "private_review_sha256": "767b4e04dfb0058f32a32bd3b80f04897a1d86691901a3f90e6e38ddd1e1e161",
     "verdict": "needs-work",
     "implementation_or_production_grant": false
+  },
+  "followup_common_owner_and_keys": {
+    "private_review_sha256": "6d91e891bddfd5b7a3fc337a006fd5a437e687a27227666150ba349ea6c51bd0",
+    "actual_pure_passed": 9,
+    "actual_doctests_passed": 2,
+    "bridge_allocation_invariant_closed": true,
+    "whole_native_provider_qualified": false,
+    "authority_key_actual_tests_executed": 0,
+    "authority_key_first_command_exit": 101
   }
 }

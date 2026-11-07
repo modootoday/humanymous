@@ -140,8 +140,8 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-LF-01 | P2: browser native.rs worktree had 522 CRLF pairs despite LF blob | Browser | CLOSED; owner normalized to exact original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LF-02 | P2: Windows runner receipt.rs worktree had 90 CRLF pairs despite LF blob | Native Windows | CLOSED; worktree equals original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LIFETIME-01 | P1 contract gap: shared process capture has no retained reader joins or proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Independently confirmed source constraints; owner design/fix and actual adversarial process pilot OPEN; no observed hang claimed |
-| CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | Fixed-source reviewed at 3a0ba182; fresh boundary/doctest/native qualification OPEN; no actual OOM alleged |
-| CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retain ordinary String key fields outside Zeroizing ownership | Authority | Source fix independently reviewed at 2ca6e4fa; scoped compilation/regressions OPEN; no exfiltration/log/provider leak alleged |
+| CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CLOSED scoped preallocation/UTF16 invariant: 3a0ba182 source plus 3200a5a1 actual boundary/doctest receipts independently checked; broader native provider qualification OPEN; no actual OOM alleged |
+| CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retain ordinary String key fields outside Zeroizing ownership | Authority | Source fix reviewed at 2ca6e4fa; first current-graph test command failed in Network before tests, fresh scoped qualification OPEN; no exfiltration/log/provider leak alleged |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize-checked history capacities can exceed the Vec isize byte layout bound and reach a capacity-overflow panic | Network/root | Source fix e1ed50ce independently reviewed; actual constructor regressions/checks OPEN; no large allocation or actual panic run |
 | CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack run a potentially slow liveness callback after their last deadline check and early bound-response consumption | Framework adapters/root | Source-confirmed; retain bound result through host preparation and revalidate after callback; owner fix and late-connected/no-origin regression OPEN; no SDK exploit run |
 
@@ -596,3 +596,32 @@ write-phase/rotation descriptor admission. These are unresolved draft contracts,
 not allegations of existing production S2 code. Whole-owner/per-operation,
 virtual-versus-physical and raw-signature-text directions were accepted narrowly.
 The owner and root received concrete cases; no implementation grant is inferred.
+
+### Scoped bridge closure and preserved encoded-key failure
+
+Common-owner receipt3200a5a1 binds actual corrected source at173008f0. All13 raw
+attachment hashes matched; saved before/after manifests are byte-identical and
+all three current/frozen bridge source leaves match the saved source map. Scoped
+source68entries include the two owning packages plus declared manifests/lock/
+toolchain; selected registry15packages, config18 and environment7 entries are
+not an entire archived workspace/SDK/cache-key proof. Raw logs show4capture pure,
+1prefix pure,4bridge pure and2external doctests passed, with fmt-first/check/
+strict Clippy exit0. The negative doctest passed; no separately captured E0451
+compiler diagnostic is claimed. Historical disk-free versus unavailable saved
+RAM admission clarification is preserved, not retroactively reconstructed.
+
+CA-BRIDGE-ALLOC01 is now CLOSED for its exact prevalidation allocation and UTF16
+boundary invariant. The actual boundary tests cover ASCII and surrogate units;
+source preserves bounded iteration before Path clone and clone before native
+creation. This closure does not qualify a Windows API call, ACL-at-create,
+provider/producer identity, five ignored actual process parents, CLI watchdog74,
+EOF/IO joins, tree cleanup or full native product behavior. LIFETIME01 stays OPEN.
+
+Authority encoded-key receiptd3e03749 retains actual library exit101 before any
+test, with Network E0432 unresolved canonical signal imports. Five referenced raw
+hashes and the compile log were independently checked; expected22tests, check
+and Clippy did not run. The4631-input after-failure file is a changed-input/count
+summary, not a complete second saved byte manifest. No success/source-closure
+qualification is inferred. Network's0429731c import correction is source only;
+CA-SECRET01 still needs a fresh exact-source test/check/Clippy receipt. The
+failure does not demonstrate that the Authority ownership correction is wrong.
