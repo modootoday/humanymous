@@ -992,3 +992,43 @@ seeds/credentials or native capability. Stable public fixture hashes/file must
 be frozen from allocated Rust observation before final qualification/CLI import.
 No production signing API or v1 credential_id/store-selector shim added. No Cargo
 command/compile executed; direct rustfmt/diff passed, awaiting Root allocation.
+
+## Public authorization execution R1/R2 and final tested overlay
+
+R1 created exact06c archive0f1ddbb3... and actual target lease. Before Cargo, a
+ConvertFrom-Json auto-DateTime then string reparse lost UTC and falsely rejected
+the deadline. Raw UTC start18:04:30/terminal18:06:46 shows135.787s, BEFORE360/420;
+wrong derived elapsed32536/deadline booleans retained alongside corrected JSON.
+No Cargo/tests occurred. Extraneous wrong root src/lib.rs fmt call is also
+recorded; its stderr was NOT retained, never reconstructed as original evidence.
+Scoped fmt passed. Actual lease removed, no target process. This is preparation
+orchestration failure, NOT a Rust code or test failure or actual timeout claim.
+
+Root explicitly granted NEW R2, same source/verified immutable archive/workspace,
+new create-new lease nonce, original600s work+60cleanup, numeric monotonic deadlines.
+No hidden R1 reset. Admission74percent/free29.08GiB; selected tree96packages,
+4729input hashes plus17environment hashes; no all-workspace/cache census. Initial
+36/36 actual tests, check/strictClippy/fmt passed with0drift. Allowed repair1 declared
+owned error-doc precision/remainder test/min+max public vector observation overlay:
+1selected pass/36filtered, no ignored, separate logs and0drift. Allowed repair2 froze
+FULL public min/max artifact/signature/commitment fixtures and literal hash checks;
+FINAL37passed0failed/ignored/filtered, all-target check0/strictClippy0/fmt0. Before/
+after4731selected inputs+17env unchanged; working-tree overlay hashes equal tested
+bytes. Final binary hash96aa0537c2b3c76245dda4c31817c9fcbf350b7d80417f58f456e1c2db269e90.
+Terminal480.969s within original600/660; lease actually removed,0owned processes.
+
+Fixed JSON fixtures minimal c3119b20... and maximum d4aa80ca... are public synthetic
+DATA only. No signing seed/key-store/read/native capability is exported. Golden
+regression bytes derive from an independent Rust test encoder and shared crypto,
+not an external independent interoperability oracle. Test covers full saved packet/
+signature bytes, commitment hashes, expected fixture DATA, strict signatures and
+all permitted base64 length remainders/unused-bit mutations. Error docs correctly
+scope dalek strict R/S+weak-point verification; no independent canonical-A/RFC/NIST
+normalization assertion. Existing NativeProof remains EMPTY/native_preparation
+Unsupported. Frame/aggregate transport, native issuer/delegation/store/rights/
+instance/claim/W/JOIN/Ready, hosted/profile and product gates remain OPEN/NOT_RUN.
+
+All attempts retain separate source/overlay/snapshot/logs, not summed pass counts.
+No source compile/lint failure occurred in R2; first preparation/timezone failure
+and unknown root-fmt stderr are disclosed. Final source commit must match these
+tested overlay bytes; Root and CLI/audit receive fixture/API handoff afterwards.

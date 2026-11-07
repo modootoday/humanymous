@@ -18,7 +18,8 @@ pub enum AuthorizationError {
     Context,
     /// Signed claims do not match the explicit expected DATA.
     Binding,
-    /// Invalid/weak/noncanonical Ed25519 key or signature.
+    /// Invalid key, weak point, or invalid/noncanonical Ed25519 R/S signature.
+    /// No independent canonical-A normalization claim is made.
     Signature,
     /// Invalid time ordering, reference expiry or configured cap.
     Lifetime,

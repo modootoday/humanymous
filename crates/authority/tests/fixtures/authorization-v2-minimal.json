@@ -1,0 +1,62 @@
+{
+  "commit": "SE1CR0MwMDIAyQAC9zYBXdR8q1v6iFozylivmMPnQPEj0tOEHL1aO8zg1UIJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT3zlggBWLqbkVsywMGhNTo5vy5mA0Z2ViMsGcDMQ4zZwXa3xVEA7UJztb7Xt-WQVHJYyPd7fSA92H3QW-AOwfIHBwcHBwcHBwcHBwcHBwcHCAgICAgICAgICAgICAgICAoKCgoKCgoKCgoKCgoKCgoAAAAAAAAD6QAAAAAAABOIAAAD6AEAAwYNCFKBZqdEJ_mV3RcRzp0OAe_Z9cCWu-lp-oR3BjV56LuQ7tKofmy1JiNW-VC2lfnt7lt6HxtbugpGuPLCVw8",
+  "delegation": "SE1CR0QwMDIBHgACAwMDAwMDAwMDAwMDAwMDAzFSEbcOCQOXwm4yjoXUp5sw1m8UDmuXKnIKoO91xuTrP_tyidDF0-mJZCbTZRktrBjYa3GYLy33COCRgPB1zfaIxtAWRfxfHEFt7zguzpg3oqrY06FpzRepo1eiikJEkggBAAAAAAAAcBBodW1hbnltb3VzLWxhYi1wgTl3Dqh9F19Wo1Rmw0x-zMuNipG07jeiXfYPW4_Js5QFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBVSUYRC_ZO9EqJRAhX-RHUtrunpIgbhVJQivEBWfK-jKBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAB9AAAAAAAACcQAQBAztKzbMMHXwn3OvNYx_6PCMtdA5VqJC7DXVDTnUphoCpzPiWnXEvNNaRWxHFa4Mhvk0g7magi4eByADOhxIkO",
+  "expected": {
+    "attempt": {
+      "credential_epoch": "0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+      "earliest_issued_ms": 1000,
+      "grant_id": "0909090909090909090909090909090909090909090909090909090909090909",
+      "latest_not_after_ms": 5000,
+      "startup_cap_ms": 1000
+    },
+    "installer": {
+      "delegation_commitment": "f736015dd47cab5bfa885a33ca58af98c3e740f123d2d3841cbd5a3bcce0d542",
+      "delegation_id": "0404040404040404040404040404040404040404040404040404040404040404",
+      "installation_epoch": "03030303030303030303030303030303",
+      "not_after_ms": 10000,
+      "not_before_ms": 500,
+      "public_key": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+      "sid": "0100000000000069"
+    },
+    "observer": {
+      "artifact": "0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+      "base_plan": "0909090909090909090909090909090909090909090909090909090909090909",
+      "creation": 111,
+      "epoch": "08080808080808080808080808080808",
+      "name": "humanymous-lab-o",
+      "pid": 111,
+      "role": 2,
+      "sid": "010000000000006f"
+    },
+    "publisher": {
+      "artifact": "0505050505050505050505050505050505050505050505050505050505050505",
+      "creation": 100,
+      "epoch": "06060606060606060606060606060606",
+      "name": "humanymous-lab-p",
+      "pid": 10,
+      "public_key": "8139770ea87d175f56a35466c34c7ecccb8d8a91b4ee37a25df60f5b8fc9b394",
+      "sid": "0100000000000070"
+    },
+    "scope": {
+      "application_authority": "example.test",
+      "installation": "i",
+      "origin": "o",
+      "revision": "r",
+      "tenant": "t"
+    },
+    "service": {
+      "artifact": "0909090909090909090909090909090909090909090909090909090909090909",
+      "base_plan": "0808080808080808080808080808080808080808080808080808080808080808",
+      "creation": 115,
+      "epoch": "07070707070707070707070707070707",
+      "name": "humanymous-lab-s",
+      "pid": 115,
+      "role": 1,
+      "sid": "0100000000000073"
+    }
+  },
+  "fixture_only": true,
+  "now_ms": 2000,
+  "prepared": "SE1CR1AwMDIB8AAC9zYBXdR8q1v6iFozylivmMPnQPEj0tOEHL1aO8zg1UIxUhG3DgkDl8JuMo6F1KebMNZvFA5rlypyCqDvdcbk6xLxKHbjqYYLuyT5I_fKOeRNRQw-Q4qRHBTuM7PQEpAawXa3xVEA7UJztb7Xt-WQVHJYyPd7fSA92H3QW-AOwfIJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCWa5dGF3HFt34Tcal9JhVzBY4PDj7ZgpTMUj1kb3l9rHAAAACgAAAAAAAABkBgYGBgYGBgYGBgYGBgYGBgcHBwcHBwcHBwcHBwcHBwcICAgICAgICAgICAgICAgICgoKCgoKCgoKCgoKCgoKChBodW1hbnltb3VzLWxhYi1zEGh1bWFueW1vdXMtbGFiLW8IAQAAAAAAAHMIAQAAAAAAAG8AAABzAAAAAAAAAHMAAABvAAAAAAAAAG8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgAAAAAAAAPoAAAAAAAAE4gAAAPoAQB6T2Cf6gCkTlBuWEWdgaiuak6WfCFJoXl80Ua51BvsPqw8SKo2lSlJvUx5yQrQ7wgVWA-58oGToZ4J62Ugo_wK",
+  "schema": "humanymous.authorization-test-vector/2"
+}

@@ -811,7 +811,7 @@ implementation; there is no runtime/SCM qualification from this draft.
 
 Version2 L1 DATA/codec/signature/binding contract ACCEPTED by Root after final
 73562d48 Native/CLI/Runtime review, with the nonce clarification below. Rust
-implementation is pending; FULL R1/native issuer/store/SCM/claim/W/Ready remain
+implementation now has the bounded L1 checkpoint below; FULL R1/native issuer/store/SCM/claim/W/Ready remain
 NOT ACCEPTED/NOT IMPLEMENTED. Root assigned this concrete
 parallel predecessor before full native/provider admission. It replaces neither
 NativeProof nor actual issuer/store/SCM/W evidence. Earlier /1 Prepared/Commit
@@ -869,8 +869,12 @@ normalization, implicit default, trailing bytes or alternate field ordering.
 Record artifact = exact magic8 + body_length:u16 + body + Ed25519 signature64.
 Signature message = exact ASCII per-kind domain + ONE NUL + body_length:u32BE
 + exact body. Strict Ed25519 verification uses the expected original I key for
-Delegation, and the exact I-authorized P key for Prepared/Commit. Reject weak or
-noncanonical keys/signatures. No caller verifier callback or record-selected
+Delegation, and the exact I-authorized P key for Prepared/Commit. Reject invalid
+keys, weak points and invalid/noncanonical R/S signatures with verify_strict.
+Pinned dalek3 from_bytes uses ZIP-215 point parsing; no independent canonical-A
+normalization or full RFC8032/NIST point-validation claim is made by this kernel.
+Exact original native key provenance/serialization remains a separate requirement.
+No caller verifier callback or record-selected
 algorithm. All unknown versions/purpose/flags/record kinds refuse before promotion.
 
 Canonical names: u8 byte length16..63, EXACT native-security owned grammar:
@@ -1141,3 +1145,44 @@ kernel-draft acceptance wording, never historical failures/native exclusions.
 P0 exact native trust/delegation/provision/clock/rights/W/consumption and
 Ready producer remain OPEN. P1 existing dalek/base64 graph edges, golden vectors
 and exact namespace compatibility require review before implementation.
+
+### Implemented L1 checkpoint and exact remaining gates
+
+Root graph69ccf7fc integrated the two existing-version direct edges. Kernel source
+06c3b4c6 plus explicitly recorded R2 repair2 owned overlay implements
+startup::authorization::{parse_bundle, verify_bundle, parse_hello, verify_hello}.
+Public aggregate ParsedAuthorization holds untrusted parsed records;
+SignatureCheckedAuthorization contains checked DATA and an immutable configured
+scope snapshot. Public getters cannot construct NativeProof/Ready or authorize
+management, origin, storage, witness or native one-claim effects. Signing exists
+ONLY in private deterministic test fixtures; no production signing/issuer API.
+
+Actual local Windows R2 initial exact source36passed, selected vector observation
+1passed/36filtered, then FINAL37passed0failed/ignored/filtered with fixed min/max
+FULL artifact/signature/commitment regression files and all permitted base64
+remainders. All-target check/strict Clippy/scoped fmt passed. These counts are
+separate attempts, NOT an additive74-test qualification. Final4731 selected
+source/registry/config/tool hashes and17selected environment hashes rechecked
+unchanged; post files are DERIVED hash-comparison summaries, not second complete
+saved manifests. Same original600s work/660s cleanup clock, terminal480.969s;
+actual lease removed and zero owned target processes. No actual native IPC/store/
+SCM/account/host/browser process was run by these unit gates.
+
+Public test vectors under crates/authority/tests/fixtures/authorization-v2-*.json
+contain synthetic PUBLIC packets/expected DATA, no seeds or credentials. Their
+fixed byte/signature assertions are regression vectors from a separate Rust test
+encoder, NOT an independent cryptographic interoperability oracle, native issuer
+or real identity/freshness evidence. Earlier R1 preparation failed a FALSE UTC
+reparse guard BEFORE Cargo: actual135.787s, not a real timeout/late cleanup. Original
+wrong derived summary and raw lease were retained with a labeled correction.
+No fabricated compile/test failure or lost stderr recovery is claimed.
+
+OPEN: original protected installer/P delegation and key/store/native policy;
+actual cross-SID retained primary-token/process identities and launch-file custody;
+authenticated P/S/O acceptance, OS-backed one-claim/restart/republication; independent
+W transport/lifetime and monitor cancellation/JOIN; bounded HMBP0003 control-frame/
+aggregate deadline transport; actual credential receipt/release and same-gate
+Runtime-private Ready/origin effects; protected unattended provider/reboot and
+Linux/macOS backends; actual hosted ephemeral profiles and Docker product gates.
+Pinned-key serialization/independent canonical-A validation is not inferred from
+strict R/S signature checks. None of these gates is closed by the37pure result.

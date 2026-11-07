@@ -378,20 +378,93 @@ fn base64url_unused_bits_padding_and_alternate_alphabets_refuse() {
 }
 
 #[test]
-fn public_fixture_domain_vectors_have_stable_artifact_bytes() {
-    let mut e = fixture::expected(false);
-    let records = fixture::records(&mut e);
-    for (index, record) in records.iter().enumerate() {
-        // Public deterministic fixtures only. Freeze these independently built
-        // byte/signature vectors before the final source-bound qualification.
-        println!(
-            "authorization-public-fixture-{index}:{}",
-            hex::encode(fixture::digest("golden-fixture", record))
-        );
+fn variable_record_lengths_cover_all_permitted_base64_remainders() {
+    const ALPHABET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    let mut seen = [[false; 3]; 3];
+    for p_extra in 0..3 {
+        for s_extra in 0..3 {
+            let mut e = fixture::expected(false);
+            e.publisher.name.push_str(&"p".repeat(p_extra));
+            e.service.name.push_str(&"s".repeat(s_extra));
+            let records = fixture::records(&mut e);
+            let wire = hello::fixture_hello(&records, &e);
+            verify_hello(parse_hello(&wire).unwrap(), &e, 2000).unwrap();
+            let text = String::from_utf8(wire).unwrap();
+            for (index, record) in records.iter().enumerate() {
+                let remainder = record.len() % 3;
+                seen[index][remainder] = true;
+                let unused = match remainder {
+                    0 => continue, // Every bit is data; the positive case above must pass.
+                    1 => 4,
+                    2 => 2,
+                    _ => unreachable!(),
+                };
+                let encoded = URL_SAFE_NO_PAD.encode(record);
+                let mut changed = encoded.as_bytes().to_vec();
+                let last = changed.len() - 1;
+                let position = ALPHABET.iter().position(|b| *b == changed[last]).unwrap();
+                for low in 1..(1 << unused) {
+                    changed[last] = ALPHABET[position | low];
+                    assert!(
+                        parse_hello(
+                            text.replace(&encoded, std::str::from_utf8(&changed).unwrap())
+                                .as_bytes()
+                        )
+                        .is_err()
+                    );
+                }
+            }
+        }
     }
-    println!(
-        "authorization-public-fixture-json:{}",
-        fixture::public_vector(&e, &records)
-    );
-    check(&records, &e, 2000).unwrap();
+    assert_eq!(seen[0], [true; 3]);
+    assert_eq!(seen[1], [true; 3]);
+    // Commit's exact201byte body plus74byte envelope is always275 (remainder2).
+    assert_eq!(seen[2], [false, false, true]);
+}
+
+#[test]
+fn public_fixture_domain_vectors_have_stable_artifact_bytes() {
+    let profiles = [
+        (
+            false,
+            include_str!("../../../tests/fixtures/authorization-v2-minimal.json"),
+            [
+                "5362954b2b6cdf6efcf647aa13880a5757a7a885aa14e2bcff52cb70b81c2e40",
+                "a6b3068d420acc71b465c41e9741a22965b648fc12e76dfb12bcdbf6539810a5",
+                "d7e4966334b7cef1355f0370c3bee2a3159898650b6bdee74d9c6ed7d787ecbc",
+            ],
+        ),
+        (
+            true,
+            include_str!("../../../tests/fixtures/authorization-v2-maximum.json"),
+            [
+                "77852fe1a8b9b0bac4129483314cda682ef70689b1414df416bd05b9d455c456",
+                "b6e6a1f06cda49da379d11b82861d2b8699a06fbf891eb5b0bf403825a900f6c",
+                "9ef2eab3d021c9e9d2f7d717eb9157d626018f3f8b3ad845eeaf7d0a29028161",
+            ],
+        ),
+    ];
+    for (max, saved, hashes) in profiles {
+        let mut e = fixture::expected(max);
+        let records = fixture::records(&mut e);
+        let vector: serde_json::Value = serde_json::from_str(saved).unwrap();
+        assert_eq!(fixture::public_vector(&e, &records), vector);
+        for (index, record) in records.iter().enumerate() {
+            assert_eq!(
+                hex::encode(fixture::digest("golden-fixture", record)),
+                hashes[index]
+            );
+            let field = ["delegation", "prepared", "commit"][index];
+            assert_eq!(
+                *record,
+                URL_SAFE_NO_PAD
+                    .decode(vector[field].as_str().unwrap())
+                    .unwrap()
+            );
+        }
+        // These are fixed regression bytes/signatures/commitments captured from
+        // an independently written test encoder, NOT an external crypto oracle
+        // or native issuer/provenance/freshness evidence.
+        check(&records, &e, 2000).unwrap();
+    }
 }
