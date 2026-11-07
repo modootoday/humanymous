@@ -1600,3 +1600,28 @@ JSON. These distinctions remain explicit in each attachment. Zero-job workflow
 startup failure still requires retained metadata and an empty artifact inventory,
 with no execution log. No receipt here authenticates HTTP wire bytes, signs local
 files or qualifies the product; old raw receipts remain unchanged.
+
+### Consolidated Runtime consumer roles
+
+Current Runtime references select explicit SDK Runtime contexts. Native release
+receipts still admit only the CLI executable and Gateway runtime executable:
+the latter joins the SDK Runtime manifest, src/gateway/main.rs, exact binary
+target and gateway required feature. Another binary in the same package is not
+the same role. Current license readers use the moved Audit notice; historical
+receipts retain their original paths.
+
+Gateway component qualification consumes owner schema0.2 from the repository at
+runtime, never a cross-package compile include. Discover the complete all-feature
+library inventory first. Require every reviewed gateway:: name exactly and derive
+the exact outside-context filtered count from only the other five declared Runtime
+contexts. Unknown prefixes, missing/extra selected cases, ignored selected cases
+or a mismatched execution summary fail. The integration target is explicitly
+gateway-native-process with zero filtering. This is Gateway context qualification;
+complete Runtime and unfiltered workspace qualification remain separately required.
+
+Audit historical source checking separates current physical fixture paths from
+immutable f9 logical projection paths, catalog identities,193 inputs and seam
+hashes. Current rewritten source is not substituted into that historical closure.
+Unit schema tests use synthetic owned inputs; actual baseline byte admission
+remains a closed repository-only file/Git check. Missing original historical
+seams refuse preparation rather than refreshing the expected hashes.

@@ -290,8 +290,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             .ok_or("native preflight absent")?;
         for command in [
             "cargo test --locked -p humanymous-delivery -j1",
-            "cargo check --locked -p humanymous-capture -p humanymous-native-abi-export --all-targets -j1",
-            "cargo clippy --locked -p humanymous-delivery -p humanymous-capture -p humanymous-native-abi-export --all-targets -j1 -- -D warnings",
+            "cargo check --locked -p humanymous-runtime -p humanymous-native-abi-export --features humanymous-runtime/capture --all-targets -j1",
+            "cargo clippy --locked -p humanymous-delivery -p humanymous-runtime -p humanymous-native-abi-export --features humanymous-runtime/capture --all-targets -j1 -- -D warnings",
             "cargo run --locked -p humanymous-delivery -- policy",
         ] {
             require(

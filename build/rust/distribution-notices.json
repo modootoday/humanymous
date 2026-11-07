@@ -3,7 +3,7 @@
   "scope": "Known adapted Go audit sort notice only; not complete dependency license qualification",
   "notices": [
     {
-      "source": "crates/audit/LICENSE-Go.txt",
+      "source": "crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt",
       "sha256": "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738",
       "native_archive_path": "licenses/Go.txt",
       "runtime_image_path": "/usr/share/licenses/humanymous/Go.txt"

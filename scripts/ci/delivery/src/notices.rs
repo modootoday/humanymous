@@ -7,7 +7,7 @@ mod archive;
 pub mod members;
 pub use archive::verify as verify_archive;
 
-const SOURCE: &str = "crates/audit/LICENSE-Go.txt";
+const SOURCE: &str = "crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt";
 const HASH: &str = "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738";
 const ARCHIVE: &str = "licenses/Go.txt";
 const IMAGE: &str = "/usr/share/licenses/humanymous/Go.txt";

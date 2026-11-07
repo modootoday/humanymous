@@ -1,7 +1,7 @@
 param(
     [string[]]$SourceFiles = @('cmd/server/h2monitor.go'),
     [string]$Harness = 'scripts/migration/monitor/main.go.txt',
-    [string]$OutputPath = 'crates/network/tests/fixtures/monitor.json'
+    [string]$OutputPath = 'crates/sdk/humanymous-runtime/tests/fixtures/network/monitor.json'
 )
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path

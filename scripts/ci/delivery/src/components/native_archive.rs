@@ -3,6 +3,18 @@ use crate::{Result, require, source, write_json};
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, io::Read, path::Path};
 
+fn role_paths(root: &Path, package: &str) -> (std::path::PathBuf, std::path::PathBuf) {
+    let (directory, entry) = if package == "runtime" {
+        ("crates/sdk/humanymous-runtime", "src/gateway/main.rs")
+    } else {
+        ("crates/cli", "src/main.rs")
+    };
+    (
+        root.join(directory).join("Cargo.toml"),
+        root.join(directory).join(entry),
+    )
+}
+
 fn records(bytes: &[u8], metadata: &Value, root: &Path) -> Result<BTreeMap<String, bool>> {
     let manifest: toml::Value = toml::from_str(
         &std::fs::read_to_string(root.join("Cargo.toml")).map_err(|e| e.to_string())?,
@@ -50,8 +62,7 @@ fn records(bytes: &[u8], metadata: &Value, root: &Path) -> Result<BTreeMap<Strin
                 _ => return Err("unexpected native executable in Cargo receipt".into()),
             };
             let expected = root.join("target/release").join(name);
-            let manifest = root.join("crates").join(package).join("Cargo.toml");
-            let entry = root.join("crates").join(package).join("src/main.rs");
+            let (manifest, entry) = role_paths(root, package);
             let id = row["package_id"]
                 .as_str()
                 .filter(|id| !id.is_empty())
@@ -84,6 +95,7 @@ fn records(bytes: &[u8], metadata: &Value, root: &Path) -> Result<BTreeMap<Strin
                     && target["crate_types"] == json!(["bin"])
                     && target["edition"] == "2024"
                     && target["src_path"] == json!(entry)
+                    && (package != "runtime" || target["required-features"] == json!(["gateway"]))
                     && row["target"]["kind"] == json!(["bin"])
                     && row["target"]["crate_types"] == json!(["bin"])
                     && row["target"]["edition"] == "2024"
@@ -161,6 +173,8 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value, before: &Value) -
             "humanymous-cli",
             "-p",
             "humanymous-runtime",
+            "--features",
+            "humanymous-runtime/gateway",
             "--bin",
             "humanymous",
             "--bin",
@@ -218,11 +232,15 @@ mod tests {
         let mut rows = Vec::new();
         let mut packages = Vec::new();
         for (name, package) in [("humanymous", "cli"), ("humanymous-runtime", "runtime")] {
-            rows.push(json!({"reason":"compiler-artifact","package_id":format!("path+file:///fixture#humanymous-{package}@0.1.0"),"manifest_path":root.join("crates").join(package).join("Cargo.toml"),
-                "target":{"name":name,"kind":["bin"],"crate_types":["bin"],"edition":"2024","src_path":root.join("crates").join(package).join("src/main.rs")},
+            rows.push(json!({"reason":"compiler-artifact","package_id":format!("path+file:///fixture#humanymous-{package}@0.1.0"),"manifest_path":role_paths(root, package).0,
+                "target":{"name":name,"kind":["bin"],"crate_types":["bin"],"edition":"2024","src_path":role_paths(root, package).1},
                 "executable":root.join("target/release").join(name),"profile":{"opt_level":"3","debug_assertions":false,"test":false},"fresh":false}));
             let artifact = rows.last().unwrap();
-            packages.push(json!({"id":artifact["package_id"],"name":format!("humanymous-{package}"),"version":"0.1.0","source":null,"manifest_path":artifact["manifest_path"],"targets":[artifact["target"]]}));
+            let mut target = artifact["target"].clone();
+            if package == "runtime" {
+                target["required-features"] = json!(["gateway"]);
+            }
+            packages.push(json!({"id":artifact["package_id"],"name":format!("humanymous-{package}"),"version":"0.1.0","source":null,"manifest_path":artifact["manifest_path"],"targets":[target]}));
         }
         rows.push(json!({"reason":"build-finished","success":true}));
         let members: Vec<_> = packages
@@ -276,6 +294,32 @@ mod tests {
             metadata["packages"][0]["id"] = json!(prefix);
             metadata["workspace_members"][0] = json!(prefix);
             assert_eq!(records(&encode(&rows), &metadata, &root).unwrap().len(), 2);
+        }
+    }
+    #[test]
+    fn consolidated_runtime_package_cannot_grant_another_binary_role() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let (rows, metadata) = fixture(&root);
+        for mutation in 0..3 {
+            let mut changed = rows.clone();
+            let mut metadata = metadata.clone();
+            match mutation {
+                0 => {
+                    changed[1]["target"]["name"] = json!("humanymous-authority");
+                    metadata["packages"][1]["targets"][0]["name"] = json!("humanymous-authority");
+                }
+                1 => {
+                    let authority =
+                        json!(root.join("crates/sdk/humanymous-runtime/src/authority/main.rs"));
+                    changed[1]["target"]["src_path"] = authority.clone();
+                    metadata["packages"][1]["targets"][0]["src_path"] = authority;
+                }
+                _ => {
+                    metadata["packages"][1]["targets"][0]["required-features"] =
+                        json!(["authority"])
+                }
+            }
+            assert!(records(&encode(&changed), &metadata, &root).is_err());
         }
     }
     #[test]

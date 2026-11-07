@@ -75,7 +75,7 @@ fn canonical_writer_preserves_owned_file_and_hardlink_bytes_as_regular_members()
     archive.into_inner().unwrap().finish().unwrap();
     let mut expected = crate::notices::members::Members::new();
     let license = root.join("LICENSE");
-    let notice = root.join("crates/audit/LICENSE-Go.txt");
+    let notice = root.join("crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt");
     for (path, name) in [
         (&input, "humanymous"),
         (&link, "humanymous-runtime"),

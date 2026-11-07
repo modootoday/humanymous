@@ -2,7 +2,7 @@
 FROM rust:1.99.1-alpine@sha256:44819b27be4c97b0e4d7203bd2e02c4820f97700211b6a37fb4c246a2de59383 AS compiler
 WORKDIR /src
 COPY . .
-RUN cargo build --release --locked -p humanymous-authority
+RUN cargo build --release --locked -p humanymous-runtime --no-default-features --features authority --bin humanymous-authority
 
 FROM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS node-dependencies
 WORKDIR /opt/adapter

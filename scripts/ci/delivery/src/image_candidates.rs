@@ -81,7 +81,7 @@ fn builder(dockerfile: &str, tool: &Value) -> Result<()> {
     )?;
     require(
         dockerfile.contains(
-                "cargo auditable build --release --locked -p humanymous-runtime --bin humanymous-runtime",
+                "cargo auditable build --release --locked -p humanymous-runtime --no-default-features --features gateway --bin humanymous-runtime",
             )
             && dockerfile.contains("cargo install --locked --version 0.7.7 --root /opt/cargo-auditable cargo-auditable")
             && dockerfile.contains("RUN PATH=\"/opt/cargo-auditable/bin:${PATH}\" cargo auditable build")
@@ -99,7 +99,8 @@ pub fn check(root: &Path) -> Result<()> {
     let dockerfile = std::fs::read_to_string(root.join("build/rust/runtime-candidate.Dockerfile"))
         .map_err(|e| e.to_string())?;
     require(
-        root.join("crates/runtime/src/main.rs").is_file(),
+        root.join("crates/sdk/humanymous-runtime/src/gateway/main.rs")
+            .is_file(),
         "runtime source absent",
     )?;
     builder(&dockerfile, &tool)?;

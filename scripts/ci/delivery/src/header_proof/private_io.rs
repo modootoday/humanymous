@@ -47,7 +47,7 @@ pub(super) fn check_parent(path: &Path) -> Result<()> {
 fn verify(file: &File, is_directory: bool) -> Result<()> {
     #[cfg(windows)]
     {
-        use humanymous_native_security::{
+        use humanymous_runtime::native_security::{
             process,
             storage::{self, WindowsPrivacy},
         };
@@ -80,7 +80,7 @@ fn verify(file: &File, is_directory: bool) -> Result<()> {
             .metadata()
             .map_err(|_| "private proof metadata absent")?;
         require(
-            metadata.uid() == humanymous_native_security::process::current_uid()
+            metadata.uid() == humanymous_runtime::native_security::process::current_uid()
                 && metadata.permissions().mode() & 0o7777
                     == if is_directory { 0o700 } else { 0o600 }
                 && if is_directory {
@@ -105,8 +105,9 @@ fn child(parent: &Path, name: &str) -> Result<PathBuf> {
         "private proof child name refused",
     )?;
     #[cfg(windows)]
-    let path = humanymous_native_security::storage::create_user_private_directory(parent, name)
-        .map_err(|_| "private proof fresh child creation refused")?;
+    let path =
+        humanymous_runtime::native_security::storage::create_user_private_directory(parent, name)
+            .map_err(|_| "private proof fresh child creation refused")?;
     #[cfg(unix)]
     let path = {
         use std::os::unix::fs::DirBuilderExt;

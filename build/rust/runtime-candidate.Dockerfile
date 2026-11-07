@@ -4,7 +4,7 @@ ENV CARGO_BUILD_JOBS=1 CARGO_INCREMENTAL=0
 WORKDIR /source
 RUN cargo install --locked --version 0.7.7 --root /opt/cargo-auditable cargo-auditable
 COPY . .
-RUN PATH="/opt/cargo-auditable/bin:${PATH}" cargo auditable build --release --locked -p humanymous-runtime --bin humanymous-runtime
+RUN PATH="/opt/cargo-auditable/bin:${PATH}" cargo auditable build --release --locked -p humanymous-runtime --no-default-features --features gateway --bin humanymous-runtime
 
 FROM scratch AS runtime-candidate
 ARG HUMANYMOUS_SOURCE_REV
@@ -16,7 +16,7 @@ LABEL org.opencontainers.image.source="https://github.com/modootoday/humanymous"
       org.humanymous.role="runtime-private-pipes"
 COPY --from=compiler /source/target/release/humanymous-runtime /usr/local/bin/humanymous-runtime
 COPY --from=compiler /source/LICENSE /usr/share/licenses/humanymous/LICENSE
-COPY --from=compiler /source/crates/audit/LICENSE-Go.txt /usr/share/licenses/humanymous/Go.txt
+COPY --from=compiler /source/crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt /usr/share/licenses/humanymous/Go.txt
 # State/custody and private configuration pipes are supplied by the owning host.
 # The binary has no public config argv, secret environment or default listener.
 USER 65532:65532

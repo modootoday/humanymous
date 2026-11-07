@@ -39,10 +39,10 @@ jobs:
       run: cargo test --locked -p humanymous-delivery -j1
     - name: Compile both owned native targets
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
-      run: cargo check --locked -p humanymous-capture -p humanymous-native-abi-export --all-targets -j1
+      run: cargo check --locked -p humanymous-runtime -p humanymous-native-abi-export --features humanymous-runtime/capture --all-targets -j1
     - name: Lint the selected native boundary
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
-      run: cargo clippy --locked -p humanymous-delivery -p humanymous-capture -p humanymous-native-abi-export --all-targets -j1 -- -D warnings
+      run: cargo clippy --locked -p humanymous-delivery -p humanymous-runtime -p humanymous-native-abi-export --features humanymous-runtime/capture --all-targets -j1 -- -D warnings
     - name: Verify workflow policy
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- policy

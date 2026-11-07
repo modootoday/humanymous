@@ -17,7 +17,7 @@ func exportAuditVerification() {
 		Checkpoint    audit.Checkpoint `json:"checkpoint"`
 		Records       []audit.Record   `json:"records"`
 	}
-	raw, err := os.ReadFile("crates/audit/tests/fixtures/checkpoints.json")
+	raw, err := os.ReadFile("crates/sdk/humanymous-runtime/tests/fixtures/audit/checkpoints.json")
 	if err != nil {
 		panic(err)
 	}

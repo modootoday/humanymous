@@ -1,0 +1,262 @@
+{
+  "schema": "humanymous.delivery-hosted-partial/1",
+  "run_id": 42415763189,
+  "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "attempt": 1,
+  "run_terminal": false,
+  "scope": "two terminal jobs only; other jobs remain in progress",
+  "jobs": [
+    {
+      "job_id": 128533798127,
+      "name": "validate / native (macos-15)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-07T21:44:26Z",
+      "completed_at": "2026-11-07T22:00:24Z",
+      "failed_steps": [
+        "Execute maintenance process and storage component tests",
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "annotations": {
+        "failure": 2,
+        "warning": 0,
+        "notice": 1
+      },
+      "retained_files": [
+        {
+          "file": "native-macos-job-metadata.api-decoded.json",
+          "sha256": "0a7e38667d67f7eaf9cfca312540ee6365080de76e563c964eb9596e23573854",
+          "bytes": 4615,
+          "representation": "API output decoded and UTF-8 text serialized by PowerShell; not original archive bytes"
+        },
+        {
+          "file": "native-macos-job.allowed-api-decoded.log",
+          "sha256": "157a2a1b8d1de80d23468f6407f86b8814bca3645bbd04243d28e9a4dd247a0c",
+          "bytes": 223104,
+          "representation": "API output decoded and UTF-8 text serialized by PowerShell; not original archive bytes"
+        },
+        {
+          "file": "native-macos-annotations.api-decoded.json",
+          "sha256": "eeca6ad567abb5a30ebec5fd2bc15102e6dc168033e39b5c9e0b48bbb7f10364",
+          "bytes": 966,
+          "representation": "API output decoded and UTF-8 text serialized by PowerShell; not original archive bytes"
+        }
+      ]
+    },
+    {
+      "job_id": 128537039877,
+      "name": "validate / browser",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-07T21:40:24Z",
+      "completed_at": "2026-11-07T21:59:37Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "browser-job-metadata.api-decoded.json",
+          "sha256": "f50fcfcc45612156f962d15a0927b53d817ffc836b16f0807d1f3f23952bf145",
+          "bytes": 2915,
+          "representation": "API output decoded and UTF-8 text serialized by PowerShell; not original archive bytes"
+        },
+        {
+          "file": "browser-job.allowed-api-decoded.log",
+          "sha256": "441ebf4523983e0ddeecc3b28169f9ef4c48a6dfeecafc28cc9a5044ae106363",
+          "bytes": 60758,
+          "representation": "API output decoded and UTF-8 text serialized by PowerShell; not original archive bytes"
+        },
+        {
+          "file": "browser-annotations.api-decoded.json",
+          "sha256": "32249b91b3e14660da8979b284b804a0f3378d0295c80b5412e2acc91af54065",
+          "bytes": 306,
+          "representation": "API output decoded and UTF-8 text serialized by PowerShell; not original archive bytes"
+        }
+      ]
+    }
+  ],
+  "macos": {
+    "maintenance": {
+      "status": "failed",
+      "stage": "maintenance-evidence_layout_cli",
+      "test_counts": {
+        "evidence_layout_cli": {
+          "discovered": 4,
+          "expected": 4,
+          "passed": null,
+          "validated": false
+        },
+        "git_coord": {
+          "discovered": 1,
+          "expected": 1,
+          "passed": 1,
+          "validated": true
+        },
+        "process": {
+          "discovered": 7,
+          "expected": 7,
+          "passed": 7,
+          "validated": true
+        },
+        "product_package": {
+          "discovered": 2,
+          "expected": 2,
+          "passed": 2,
+          "validated": true
+        },
+        "selected_inputs": {
+          "discovered": 6,
+          "expected": 6,
+          "passed": null,
+          "validated": false
+        },
+        "selected_inputs_cli": {
+          "discovered": 6,
+          "expected": 6,
+          "passed": null,
+          "validated": false
+        },
+        "session_storage": {
+          "discovered": 4,
+          "expected": 4,
+          "passed": 4,
+          "validated": true
+        },
+        "windows_doctor": {
+          "discovered": 3,
+          "expected": 3,
+          "passed": 3,
+          "validated": true
+        }
+      },
+      "commands_failed": [
+        "maintenance-evidence_layout_cli",
+        "maintenance-selected_inputs",
+        "maintenance-selected_inputs_cli"
+      ]
+    },
+    "runtime": {
+      "lib_passed": 83,
+      "process_passed": 1
+    },
+    "workspace": {
+      "required_harnesses": 95,
+      "executed_harnesses": 95,
+      "passed_tests": 1162,
+      "failed_tests": 14,
+      "errors": 1,
+      "counts_complete": true,
+      "execution_complete": true,
+      "coverage_complete": false,
+      "full_runtime_qualified": false
+    },
+    "failed_workspace_targets": [
+      {
+        "index": 12,
+        "target": "evidence_layout_cli",
+        "passed": 2,
+        "failed": 2,
+        "ignored": 0,
+        "exit_code": 101,
+        "validated": false
+      },
+      {
+        "index": 21,
+        "target": "humanymous_agent_maintenance",
+        "passed": 75,
+        "failed": 1,
+        "ignored": 0,
+        "exit_code": 101,
+        "validated": false
+      },
+      {
+        "index": 38,
+        "target": "humanymous-delivery",
+        "passed": 115,
+        "failed": 1,
+        "ignored": 0,
+        "exit_code": 101,
+        "validated": false
+      },
+      {
+        "index": 53,
+        "target": "humanymous_pages",
+        "passed": 36,
+        "failed": 1,
+        "ignored": 0,
+        "exit_code": 101,
+        "validated": false
+      },
+      {
+        "index": 81,
+        "target": "selected_inputs",
+        "passed": 3,
+        "failed": 3,
+        "ignored": 0,
+        "exit_code": 101,
+        "validated": false
+      },
+      {
+        "index": 82,
+        "target": "selected_inputs_cli",
+        "passed": 1,
+        "failed": 5,
+        "ignored": 0,
+        "exit_code": 101,
+        "validated": false
+      },
+      {
+        "index": 89,
+        "target": "windows_doctor",
+        "passed": 2,
+        "failed": 1,
+        "ignored": 0,
+        "exit_code": 101,
+        "validated": false
+      }
+    ],
+    "raw_ignored_sum": 18,
+    "inner_failed_test_names": "not recovered; private harness stdout not present in decoded job log"
+  },
+  "browser": {
+    "assertions": {
+      "failed": 2,
+      "other": 0,
+      "passed": 75,
+      "total": 77
+    },
+    "exit_code": 1,
+    "safe_diagnostics": {
+      "failure_count": 2,
+      "failures": [
+        {
+          "case_id": "collector-component",
+          "error_code": "assertion_failed",
+          "status": "failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "collector_process",
+          "status": "failed"
+        }
+      ],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    },
+    "required_unavailable_count": 9,
+    "source_changed": false,
+    "images_role_unmapped": [
+      "sha256:eedbe4e709daebc8c40fc1709e6c91959821f827c2a448ff1ed5db56a9637a68",
+      "sha256:24ac7f06118e302884b409aa4b5c975fc21baaf8a8feb6cfdadb63bc845259ef"
+    ],
+    "private_owner_report": "not recovered; reported digest is not locally rehashed original"
+  },
+  "retrieval_note": "Initial macOS gh api output refused terminal escape sequences, exit1; partial text preserved separately. Subsequent allow-escape-sequences retrieval succeeded; no workflow rerun.",
+  "full_product_qualified": false,
+  "shipping_qualified": false
+}

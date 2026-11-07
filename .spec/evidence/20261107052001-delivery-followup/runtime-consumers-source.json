@@ -1,0 +1,106 @@
+{
+  "schema": "humanymous.delivery-runtime-consumers-source/1",
+  "state": "authored-uncompiled",
+  "authorization": "Root RUNTIME-SLICE-02 consumer source grant and Gateway0.2 explicit context profile",
+  "files": [
+    {
+      "path": "scripts/ci/delivery/src/audit_source.rs",
+      "sha256": "4bdb50fc7120537cec74ea2f48f2e8fe4afcd346f0d11ababd7509995f7dd66f"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components.rs",
+      "sha256": "5020d601192c8ee415ec56cb33a00d92a8ae98eb4912467cb89fef0f992dbb0f"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/native_archive.rs",
+      "sha256": "6288ddeb676ce304582c59f4cafb82906f46bb1c0cab6a6d44fa832f53725b60"
+    },
+    {
+      "path": "scripts/ci/delivery/src/components/runtime.rs",
+      "sha256": "6c5925e15ca3640d12ad7341111f4c197bc823422e71063276c93e720eb7ef72"
+    },
+    {
+      "path": "scripts/ci/delivery/src/header_proof/private_io.rs",
+      "sha256": "d03421d5113fb621b50bd2feed18faca81776e4b0b300c0a3912318e81c0e489"
+    },
+    {
+      "path": "scripts/ci/delivery/src/image_candidates.rs",
+      "sha256": "11884db7da23998fc3b26f996a8cd18f66c961e19ba6e5551e211bea2688dd23"
+    },
+    {
+      "path": "scripts/ci/delivery/src/notices.rs",
+      "sha256": "0ae70259f9f73c89360a6316765829f244468b40954fd0321f59db9d5ab36b4c"
+    },
+    {
+      "path": "scripts/ci/delivery/src/package/native.rs",
+      "sha256": "618e042a9e3d8fdec2e5a426ba0761637301d38cbfb67b9d66a86dbf974d5748"
+    },
+    {
+      "path": "scripts/ci/delivery/src/package/native/tests.rs",
+      "sha256": "ed311601f09cf18c7826c1bec5020892e3272d0465db9da959ccad7411a83699"
+    },
+    {
+      "path": "scripts/ci/delivery/src/policy.rs",
+      "sha256": "8a982b9c160b6ff24bf13e4f84b95954517d23ef2884d3b2abe18bbdc6b678d7"
+    },
+    {
+      "path": ".github/workflows/component-validation.yml",
+      "sha256": "8ec65b744de822f82e0effea989cb9565bb6b4d9995ee1eca99ace92f7e6a290"
+    },
+    {
+      "path": "build/rust/authority-lab.Dockerfile",
+      "sha256": "d51e39354daf9b7aee6df52b79738e8e4e304a63972b3e6b9ce51654f36d717e"
+    },
+    {
+      "path": "build/rust/custody-check.Dockerfile",
+      "sha256": "b9f257b34222086b1d4261c7187b40247a6714d7f3d08135be199806e44c12c5"
+    },
+    {
+      "path": "build/rust/runtime-candidate.Dockerfile",
+      "sha256": "9c53cd36945d10920570ee9b672b00cc31d68322674d81b10857a72431e79231"
+    },
+    {
+      "path": "build/rust/distribution-notices.json",
+      "sha256": "1461501150a20469df8307470e76225f3117144af80b1d59823fb3163148b752"
+    },
+    {
+      "path": "scripts/migration/export-source-oracle.ps1",
+      "sha256": "a54bd9c7cf90e5fdd57f859170a0640ceb1d13371fc58434371ef9e7b61c406d"
+    },
+    {
+      "path": "scripts/migration/oracle/audit_verification.go",
+      "sha256": "1e4afb81827c8109e747e4f86bd9d34188d7d1daac1e36e6bb0fd82db7ac9168"
+    }
+  ],
+  "changes": [
+    "3 native-security imports select Runtime native_security context",
+    "Capture package/target explicitly selects Runtime hosted-pilot and capture_hosted_transport",
+    "Gateway contract repo-only runtime read and0.2 exact complete-discovery/selected-context accounting",
+    "Native release exact SDK Runtime manifest/gateway entry/target/required-feature join and foreign-role negatives",
+    "Current notice readers select moved Audit license",
+    "Audit current physical fixture identities separated from immutable historical logical paths",
+    "Cross-package compile includes removed for Gateway contract and historical Audit fixture; synthetic unit schema inputs only",
+    "Root expanded grant: current component workflow and exact policy command selectors",
+    "Candidate build explicitly gateway; Authority build explicitly authority bin; notice inventory/source paths moved",
+    "Custody library body retained once with two original context-scoped lab entrypoints; prefixed integration targets",
+    "Existing source-oracle helper fixture/output paths moved; no Go/oracle execution or historical artifact change"
+  ],
+  "historical_paths_preserved": [
+    "f9 Audit193-input logical paths and seam hashes",
+    "LocalParity8132117 workload selectors",
+    "old hosted receipts"
+  ],
+  "pending": [
+    "Root Cargo/lock integration and bounded compiler allocation",
+    "Actual Docker owner/e2e validation remains required separately",
+    "Historical prepared Audit seams unavailable at old current-tree path refuse rather than promote moved source"
+  ],
+  "compiler_executed": false,
+  "tests_executed": false,
+  "full_runtime_qualified": false,
+  "full_product_qualified": false,
+  "new_regressions_authored": [
+    "gateway_filter_requires_complete_inventory_and_exact_selected_names",
+    "consolidated_runtime_package_cannot_grant_another_binary_role"
+  ]
+}

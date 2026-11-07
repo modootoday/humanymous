@@ -54,7 +54,10 @@ fn native_archive(root: &Path, build: Option<&Value>) -> Result<Value> {
     }
     for (input, name) in [
         ("LICENSE", "LICENSE"),
-        ("crates/audit/LICENSE-Go.txt", "licenses/Go.txt"),
+        (
+            "crates/sdk/humanymous-runtime/src/audit/LICENSE-Go.txt",
+            "licenses/Go.txt",
+        ),
     ] {
         let path = root.join(input);
         members.insert(

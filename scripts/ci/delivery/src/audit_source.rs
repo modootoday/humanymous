@@ -6,6 +6,10 @@ use std::{collections::BTreeMap, path::Path};
 const BASE: &str = "f9b0cda3680c3b6d612cac8ace22e237812ed3cb";
 const MANIFEST: &str = "crates/audit/tests/fixtures/native-owner-core-f9b0cda3.json";
 const CATALOG: &str = "crates/audit/tests/fixtures/native-owner-validation.json";
+const CURRENT_MANIFEST: &str =
+    "crates/sdk/humanymous-runtime/tests/fixtures/audit/native-owner-core-f9b0cda3.json";
+const CURRENT_CATALOG: &str =
+    "crates/sdk/humanymous-runtime/tests/fixtures/audit/native-owner-validation.json";
 const WIRING: &str = "crates/audit/src/verification/scan/source/native/tests.rs";
 const GATE: &str = "crates/audit/src/verification/scan/source/native/tests/prerequisite.rs";
 const MANIFEST_SHA: &str = "966fef7d3690d6db5eaa43dee50edaf1a72b46e9d9189587558d09ed347e9cc2";
@@ -118,14 +122,14 @@ pub fn check(root: &Path, phase: &str) -> Result<Value> {
         source::head(&checkout)? == BASE,
         "Audit checkout is not exact f9 baseline",
     )?;
-    let manifest_bytes = original(root, MANIFEST)?;
+    let manifest_bytes = original(root, CURRENT_MANIFEST)?;
     require(
         source::sha(&manifest_bytes) == MANIFEST_SHA,
         "Audit immutable baseline manifest changed",
     )?;
-    let manifest_blob = committed(root, MANIFEST, &manifest_bytes)?;
-    let catalog_bytes = original(root, CATALOG)?;
-    let catalog_blob = committed(root, CATALOG, &catalog_bytes)?;
+    let manifest_blob = committed(root, CURRENT_MANIFEST, &manifest_bytes)?;
+    let catalog_bytes = original(root, CURRENT_CATALOG)?;
+    let catalog_blob = committed(root, CURRENT_CATALOG, &catalog_bytes)?;
     let catalog = strict(&catalog_bytes)?;
     require(
         catalog["schema"] == 1
@@ -211,6 +215,8 @@ pub fn check(root: &Path, phase: &str) -> Result<Value> {
         "baseline_inputs":193,"baseline_unchanged":if prepared {192} else {193},
         "declared_modified":if prepared {1} else {0},"declared_added":if prepared {3} else {0},
         "owner_catalog_git_blob":catalog_blob,"baseline_manifest_git_blob":manifest_blob,
+        "current_manifest_path":CURRENT_MANIFEST,"current_catalog_path":CURRENT_CATALOG,
+        "historical_manifest_path":MANIFEST,"historical_catalog_path":CATALOG,
         "projected_inputs":actual.len(),"projected_manifest_sha256":source::sha(&serde_json::to_vec(&actual).map_err(|e|e.to_string())?),
         "unmodified_f9_execution":false,"compiler_executed":false,"full_product_qualified":false}),
     )
@@ -245,11 +251,13 @@ mod tests {
 
     #[test]
     fn owner_baseline_denominator_and_wiring_are_closed() {
-        let bytes = include_bytes!(
-            "../../../../crates/audit/tests/fixtures/native-owner-core-f9b0cda3.json"
-        );
-        assert_eq!(source::sha(bytes), MANIFEST_SHA);
-        let manifest = strict(bytes).unwrap();
+        // Synthetic schema inputs, not a replica of the immutable owner corpus.
+        // The repository-only check above verifies the actual retained manifest.
+        let mut manifest = json!((0..192).map(|index| json!({"path":format!("synthetic/input-{index}.rs"),"bytes":3,"sha256":source::sha(b"old")})).collect::<Vec<_>>());
+        manifest
+            .as_array_mut()
+            .unwrap()
+            .push(json!({"path":WIRING,"bytes":3,"sha256":WIRING_BASE}));
         assert_eq!(rows(&manifest).unwrap().len(), 193);
         let mut duplicate = manifest.clone();
         duplicate[1] = duplicate[0].clone();
