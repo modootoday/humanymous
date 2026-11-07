@@ -295,6 +295,30 @@ timeout or non-execution. Source-prefix authentication remains false. Preserve
 18-case accounting and the witness failure. Pure positive/injection tests and
 consumer recompile review precede any separately granted actual retry.
 
+Actual b4fdbc38/run42394466559 (Delivery evidence committed dcfe454d)
+reports browser_selected_test_failed, successful DNS finish and unchanged
+18/16/2 accounting. The next diagnostic refines only that fixed category using
+the exact selected test and its compiled source bytes. Pin SHA256
+c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064
+for crates/collector/src/browser/transport/runtime_pilot.rs. The pinned
+wasm-bindgen-test0.3.80 panic hook preserves PanicInfo display in private
+console output. Recognize only a complete trimmed `panicked at` location line
+with that exact relative source path, an enumerated assertion/call-site line
+and a canonical positive column within that source line. Emit a fixed reviewed
+error code, never the location, panic message, value, stack, path or suffix.
+
+Critique reflected: require the already validated failed actor, matched
+inventory, successful DNS and exactly one selected-test FAIL before refinement.
+Hash drift, foreign selected name, unknown/malformed panic location, duplicated
+or ambiguous panic reports retain browser_selected_test_failed. Source bytes
+and enumerated sites must be checked together in pure tests; every emitted
+code must belong to the sole safe diagnostic vocabulary. This is a reported
+panic site, not authenticated execution provenance or an independently proven
+underlying cause. The13-field DTO, witness assertion, origin-zero expectation,
+fixture, scoring, time budgets and full refusal remain unchanged. Record
+source-qualified unit/check/Clippy/fmt and Delivery consumer proof before one
+separately coordinated Docker-hosted diagnostic candidate; no unchanged retry.
+
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
 pass. evidence:root/20261107083259 preserves the decoded public log and derived

@@ -4,6 +4,7 @@
 //! wasm-bindgen-cli0.2.130 wasm_bindgen_test_runner/headless.rs.
 const DRIVER_CONTEXT: &str = "webdriver POST /session request failed";
 const NO_SUMMARY: &str = "Failed to detect test as having been run. It might have timed out.";
+mod panic_site;
 
 fn anyhow_context(line: &str) -> &str {
     let line = line.strip_prefix("Error: ").unwrap_or(line);
@@ -39,7 +40,11 @@ pub(super) fn classify(output: &str, stderr: &str, name: &str) -> Option<&'stati
             found = Some(candidate);
         }
     }
-    found
+    if found == Some("browser_selected_test_failed") {
+        panic_site::classify(output, stderr, name).or(found)
+    } else {
+        found
+    }
 }
 
 #[cfg(test)]
@@ -88,5 +93,22 @@ mod tests {
         );
         assert_eq!(classify(NO_SUMMARY, DRIVER_CONTEXT, "owned::join"), None);
         assert_eq!(classify("", "", "owned::join"), None);
+    }
+
+    #[test]
+    fn panic_site_refines_only_one_owned_selected_test_failure() {
+        let name = "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed";
+        let panic = "panicked at crates/collector/src/browser/transport/runtime_pilot.rs:22:10:";
+        let failed = format!("test {name} ... FAIL");
+        assert_eq!(
+            classify(&failed, panic, name),
+            Some("browser_panic_bootstrap")
+        );
+        assert_eq!(classify("", panic, name), None);
+        assert_eq!(
+            classify(&failed, &format!("{panic} PRIVATE_BODY"), name),
+            Some("browser_selected_test_failed")
+        );
+        assert_eq!(classify(&format!("{failed}\n{failed}"), panic, name), None);
     }
 }
