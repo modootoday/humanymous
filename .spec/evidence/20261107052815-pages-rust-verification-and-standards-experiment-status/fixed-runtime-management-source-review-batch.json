@@ -1,0 +1,72 @@
+{
+  "scope": "Complete fixed management authorization source review",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "reviewed_files": 4,
+  "lines": 550,
+  "reviews": [
+    {
+      "source": "crates/runtime/src/management/mod.rs",
+      "lines": 154,
+      "sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb",
+      "current_primary_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb",
+      "matches_prior_owner_source": true,
+      "delta_kind": "changed",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete154-line distinct native listener and observer handler, independent credential provisioning, configured OS peer, strict exact routes, read-only status/settings and optional operator routing. Fixed admission capacity8/rate20/timeout1000ms and bounded drain are not independent peer/deployment proof.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/management/policy.rs",
+      "lines": 99,
+      "sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9",
+      "current_primary_sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9",
+      "matches_prior_owner_source": true,
+      "delta_kind": "changed",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete99-line trusted native endpoint/scope model, exact POST routes, strict five-field scope equality, unique headers, browser/proxy/gateway header refusal, fixed host/content type and8192-byte body bound. Locality/header policy alone does not establish caller authentication or SSRF resistance.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/management/operator.rs",
+      "lines": 96,
+      "sha256": "4c34921a740e3ac71fa1760cd0b732350e8f215cf8867bf65c5a9698e884d6ef",
+      "current_primary_sha256": "4c34921a740e3ac71fa1760cd0b732350e8f215cf8867bf65c5a9698e884d6ef",
+      "matches_prior_owner_source": true,
+      "delta_kind": "byte-identical",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete96-line independent operator credential distinct from observer, exact peer/scope/resource schema and safe revision; bounded try_send queue plus context-owned remaining timeout returns outcome unknown. Wait/response does not undo committed settings or authorize retry; no scoring/destructive-control permission.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/management/tests.rs",
+      "lines": 201,
+      "sha256": "f4ace8af102cd7936cf459620cf0cc230ad3f052cacb7d8b22b05e3bb225a7ea",
+      "current_primary_sha256": "f4ace8af102cd7936cf459620cf0cc230ad3f052cacb7d8b22b05e3bb225a7ea",
+      "matches_prior_owner_source": true,
+      "delta_kind": "changed",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete201-line constructed policy cases for peer/credential/scope confusion, browser headers, duplicate Host, mutation/read separation, operator reuse and scoring-field refusal. NativePeer test values are constructed; these pure cases do not prove actual cross-user OS permissions or installed service behavior.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    }
+  ],
+  "execution": "NOT_RUN",
+  "public_wording": "Observer/resource operator separation and unknown mutation outcomes agree with reviewed code; retain cross-principal/deployment gates",
+  "public_ledger": "Frozen candidate unchanged; later exact source reconciliation required",
+  "delta_disposition": {
+    "changed_sources_reviewed": 3,
+    "existing_byte_identical_operator_rechecked": 1,
+    "raw_delta_unchanged": true
+  }
+}

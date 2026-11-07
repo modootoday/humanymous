@@ -1,0 +1,40 @@
+{
+  "scope": "Actual live Pages run with completed hosted preflight",
+  "run": 42367274252,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42367274252",
+  "source": "448765343b14e6e138dede756fecc4178a3820e4",
+  "branch": "codex/pages-validation",
+  "event": "push",
+  "docs_tree": "c434ddf5a968f5e7d25c445eb0ca86c207c152e4",
+  "matches_refrozen_docs_candidate": true,
+  "preflight": {
+    "workflow_authorization_lf": "pass",
+    "status": "completed",
+    "strict_clippy": "success",
+    "job": 128387880307,
+    "conclusion": "success",
+    "captured_cli_log_sha256": "08677f38d6e03c36cd2146ae1fc4a7773b71c2e286a5a946fa99fa3a5963b6d0",
+    "delivery": {
+      "ignored": 0,
+      "passed": 65,
+      "failed": 0
+    },
+    "pages": {
+      "ignored": 0,
+      "passed": 37,
+      "failed": 0,
+      "seconds": 2.69
+    }
+  },
+  "build": {
+    "last_observed_step": "bundle install --jobs 1",
+    "job": 128388470734,
+    "status": "in_progress"
+  },
+  "archive_roundtrip": "NOT_YET_OBSERVED",
+  "browser_qualified": false,
+  "assistive_technology_qualified": false,
+  "source_review_freshness_qualified": false,
+  "deployment_performed": false,
+  "status_is_intermediate": true
+}

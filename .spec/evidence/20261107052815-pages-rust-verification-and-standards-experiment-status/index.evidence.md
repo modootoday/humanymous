@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T11:15:33Z
+updated: 2026-11-07T11:21:34Z
 rel:
   governs: [docs]
 files:
@@ -52,6 +52,9 @@ files:
   - {path: fixed-runtime-binding-stream-source-review-batch.json, sha256: e6f0ee6c58a348d4adc528e54bd3113977e2c5bac33802e5c7bd7955547fc9c1, bytes: 4335, store: repo}
   - {path: fixed-runtime-config-http-source-review-batch.json, sha256: 75b3a50e4be5918944c6d0a1d4f4088042ac1904b6ced8e8705a38532fb8296d, bytes: 4295, store: repo}
   - {path: fixed-runtime-composition-source-review-batch.json, sha256: daac6ed9de43ce68f4c4dfc4820864d6fc6db003ebaaaf8167a84b5d270914c6, bytes: 5904, store: repo}
+  - {path: hosted-44876534-initial-preflight-status.json, sha256: 9fc2b56e79d3d120b8d189ccdba5eb1e4baaf871b44e8140b83bc85f7aa01d17, bytes: 1199, store: repo}
+  - {path: fixed-runtime-management-source-review-batch.json, sha256: e873e74c05a46e62f2d7ce32011ef19237083cf0476ce1a4c8eecadd9d796826, bytes: 4036, store: repo}
+  - {path: hosted-44876534-final-pages-status.json, sha256: aba56d2adc6bde6d452c3dac10e4761499335153aff16bd46f57fb7b5586ad83, bytes: 2212, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status

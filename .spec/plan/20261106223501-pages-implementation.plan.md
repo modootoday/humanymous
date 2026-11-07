@@ -2124,3 +2124,32 @@ and joined blocking TLS cancellation; these do not prove independent deployment
 or hard manager deadline enforcement. Frozen public docs unchanged. No Cargo,
 native TLS, browser or AT execution inferred; source batch attached for later
 manual-ledger reconciliation.
+
+### Actual44876534 hosted preflight and management source batch
+
+Confirmed live Pages42367274252 at44876534 with same refrozen docs treec434ddf5.
+Completed actual preflight128387880307:delivery65/Pages37 pass, failed/ignored0,
+strictClippy and workflow/LF policy success. Captured/attached78946-byte private
+CLI log and public intermediate status. Build128388470734 remains live, progressed
+from source_prepare through bundle install/audit to apex validate. No full build/
+archive/serving-download/browser/AT or complete source-freshness pass yet.
+
+Read management154/policy99/operator96/policy tests201 completely,550lines.
+Three changed inventory sources reviewed; existing operator was rechecked, not
+counted as a fourth new gap. Raw source hashes match primary. Public read-only/
+resource-write separation and unknown outcome wording agree. Constructed UID
+policy tests are not actual cross-user native permission/deployment evidence.
+Frozen docs unchanged; individual notes stored for later reconciliation.
+
+### Actual44876534 complete Pages archive result
+
+Same run42367274252 terminalSUCCESS, both jobs success. Actual build logs show
+both base URLs88pages/88rendered/errors0 and common source-input836e77d2.
+Package and second archive-check each pass165public files, exact archive and
+inventory/manifest hashes preserved in final status. Both rendered checks include
+static links/structure, not browser/AT. Source unchanged/docs+Rust clean, same
+refrozen docs treec434ddf5. Actual artifacts API0 confirms branch upload policy;
+main serving transfer remains null/NOT_RUN, not successful external delivery.
+Attached private82669-byte build CLI log and separate terminal public status;
+initial live status retained. Complete-source manual freshness, local preview,
+actual keyboard/browser and AT remain open. Never poll this terminal run as live.
