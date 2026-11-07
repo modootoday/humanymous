@@ -113,3 +113,18 @@ Priority source-custody regression fix is authored in
 supplied snapshot missing-key refusal. Three regressions NOT_RUN; global
 CA-NATIVE-SOURCE-01 stays OPEN until Root-allocated proof. No new compiler/runtime
 lease, unsafe/dependencies, structural moves or historical receipt rewrite here.
+
+## Root freeze handoff
+
+Root accepted the exact map: default[], independent testing/windows-object,
+optional Windows deps only on Windows, root deny/testing forbid/exact six local
+allows, no flattened exports/old dependency aliases. This is NOT an independent
+move grant to the Native owner. Root owns the35-to34 package integration.
+platform-two-context-freeze.json records ALL28 tracked files of test-support and
+windows-object-bridge at its exact HEAD, SHA256+length, dirty0/untracked0.
+Native guard session43027 is actual terminal1 (three regressions/check/Clippy pass,
+first final dependency fmt failure retained); no active owned leases/marker.
+Both source contexts are frozen: Native owner released/narrowed native-windows
+lane to exclude those two roots, preserving native-security/runner/spec ownership.
+No writes to frozen old or new sources until Root returns an exact slice.
+The session board handover records this narrow release; no ninety-file rescan.

@@ -1,0 +1,271 @@
+{
+  "schema": "humanymous.native-source-guard-summary/1",
+  "state": "THREE_REGRESSIONS_CHECK_CLIPPY_PASSED_FMT_FAILED",
+  "qualification": "Observed source tuple with uncommitted foreign input; not pure f059 Git candidate or full-runtime qualification",
+  "source_head": "1e8c5af6844915090840df834e262eec51cc9e3c",
+  "source_fix_checkpoint": "f05906da9e25a6fdd6b6304006c2a14bb74f600d",
+  "foreign_receipt_sha256": "a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df",
+  "tool_session": 43027,
+  "actual_tool_terminal_exit": 1,
+  "target": "target/native-source-guard-v0",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "work_seconds": 390,
+  "cleanup_seconds": 450,
+  "execution_elapsed_seconds": 34.9620528,
+  "actual_tests": {
+    "filtered": 55,
+    "measured": 0,
+    "ignored": 0,
+    "passed": 3,
+    "failed": 0,
+    "selected": 3
+  },
+  "phases": [
+    {
+      "name": "tree",
+      "exit": 0,
+      "elapsed_seconds": 4.0274833
+    },
+    {
+      "name": "inventory",
+      "exit": 0,
+      "elapsed_seconds": 23.2709162
+    },
+    {
+      "name": "tests",
+      "exit": 0,
+      "elapsed_seconds": 23.8525854
+    },
+    {
+      "name": "check",
+      "exit": 0,
+      "elapsed_seconds": 31.2791739
+    },
+    {
+      "name": "clippy",
+      "exit": 0,
+      "elapsed_seconds": 32.8502034
+    },
+    {
+      "name": "fmt",
+      "exit": 1,
+      "elapsed_seconds": 34.6907647
+    }
+  ],
+  "first_failure": {
+    "phase": "fmt",
+    "reruns": 0,
+    "exit": 1,
+    "observed_paths": [
+      "crates/authority/src/configuration.rs",
+      "crates/network/src/correlation/tests.rs"
+    ],
+    "scope": "cargo fmt --all traversed dependency workspace"
+  },
+  "source_closure": {
+    "byte_equal": true,
+    "foreign_receipt_unchanged": true,
+    "scope": "Tracked runner/native-security/test-support/bridge roots, root Cargo/toolchain and observed local config/tool binaries; not all repository files",
+    "files": 81
+  },
+  "registry_closure": {
+    "byte_equal": true,
+    "selected_files": 2079,
+    "method": "Locked offline target normal/build/dev dependency tree intersected with existing registry source directories"
+  },
+  "binary": {
+    "sha256": "62372f35fbd0a6e1d1890e5ee1974bab4421ed9630b7b8c30768bbd04246a997",
+    "bytes": 2827264
+  },
+  "cleanup": {
+    "original_cleanup_budget_preserved": true,
+    "final_marker_removed": true,
+    "all_owned_terminal": true,
+    "elapsed_seconds": 59.357592,
+    "original_metadata_lease_removed": false,
+    "fixture_temp_cleanup": "Existing fixture Drop exercised; per-directory deletion/absence not independently instrumented",
+    "correction": "Original DateTime/string comparison refused deletion; separate exact marker check with DateKind String and all recorded PIDs absent removed only own marker; no clock renewal"
+  },
+  "limitations": [
+    "No product/native provider/token/account/SCM/Job/GUI pilot",
+    "No whole consumer graph or default feature qualification",
+    "No historical receipt retroqualification",
+    "First fmt failure retained; not full gate green",
+    "Source snapshot is current observed tuple, not immutable Git-only candidate"
+  ],
+  "raw_attachments": [
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/check-end.json",
+      "sha256": "5b5d4af8de774e8b5d7641ef441a71f2a87a2d66c3d8bfdab36c68bdd3dc24c6",
+      "bytes": 80
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/check-start.json",
+      "sha256": "7a54d4573b5faee9935d225b62a6c982daece5938fa9945f68b8f9a701c250e6",
+      "bytes": 210
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/check.stderr",
+      "sha256": "9fb8ba6e9249b16ceafd6483bf4593f85acf01971ce4a279530f8bf85fe2c731",
+      "bytes": 1279
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/cleanup-addendum.json",
+      "sha256": "bdf7d4ca1d5dca08e98ab686aaafd3efb91e0113b587bc2a218350c569d10057",
+      "bytes": 650
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/clippy-end.json",
+      "sha256": "bd8bd9d71a1878067da4bc4ba14880affe86ee0edeaa3b1445352249714e9986",
+      "bytes": 81
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/clippy-start.json",
+      "sha256": "9b9c2db360d0eff9e27c96a09a368a4ac11561eba3601bdbb7e1843ea6ac152f",
+      "bytes": 251
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/clippy.stderr",
+      "sha256": "6c65c906367914e7c29d6fb14cda75fff6d373636d0e541330a0ecd9341573b3",
+      "bytes": 177
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/first-failure.txt",
+      "sha256": "d1318843333a25c33ae3b43fb1749b45a5420bbf1b07d43bf0e3f32638933ed5",
+      "bytes": 217
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/fmt-end.json",
+      "sha256": "6f9b941b3fe325bb4f8830c5ebff0e94bd2eedae97cdc347dff98edaa2f946d6",
+      "bytes": 78
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/fmt-start.json",
+      "sha256": "7d65bd3b2ea4f0fd2f7334d307b00eb14daa68239f4f05cec0517933e89738f8",
+      "bytes": 193
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/fmt.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/fmt.stdout",
+      "sha256": "f250ef3f70bc9eb2e55161887545cb860230e33679cc8e34e7f51a0170442701",
+      "bytes": 935
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/inventory-end.json",
+      "sha256": "e43e359403668b29ab071349444a354a38771df71c22ac6c8385ab372b66c1b2",
+      "bytes": 84
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/inventory-start.json",
+      "sha256": "afcaa2388d41a768c62c2070e949f702ddbf4b0bdc076561b6e442352b77949a",
+      "bytes": 254
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/inventory.stderr",
+      "sha256": "f0978ffc13e974226b2ea4a5fdb4ef57218ecd442b70c69787b90845cf1b4135",
+      "bytes": 1594
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/inventory.stdout",
+      "sha256": "d5d22464f96b6cb3cda2a611937c8eadd9afff483d55e750f5fdd1754341b5f5",
+      "bytes": 308
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/metadata.json",
+      "sha256": "632817e38b75f3d9b84929b598cc31754f6a1d44aba72dde4d46839973f71a4c",
+      "bytes": 2168
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/registry-after.json",
+      "sha256": "cec8e285db4faac651a09474698ff4ee00aa4f998bff98b6f7355ffcf82ea3a2",
+      "bytes": 400373
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/registry-before.json",
+      "sha256": "cec8e285db4faac651a09474698ff4ee00aa4f998bff98b6f7355ffcf82ea3a2",
+      "bytes": 400373
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/selected-tests.json",
+      "sha256": "25ab87b74f6367324d4addb36bfd42755a01bb1fc3d3c33b3be5b187fc5573b8",
+      "bytes": 306
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/source-after.json",
+      "sha256": "f0c79a9b702bbd75cc1979289f5078f5f4e520934d051e3fdf92417fb3dac019",
+      "bytes": 9811
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/source-before.json",
+      "sha256": "f0c79a9b702bbd75cc1979289f5078f5f4e520934d051e3fdf92417fb3dac019",
+      "bytes": 9811
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/source-tuple.json",
+      "sha256": "2966b8a9661b2ebf4c1d60fcd5afa37812525c065f5925d8dcb6a9bf19342add",
+      "bytes": 261
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tests-end.json",
+      "sha256": "14e28de19dd4d4ddb0cd848326128a713171b3ccaf715d3b9539ccc4462b803c",
+      "bytes": 80
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tests-start.json",
+      "sha256": "50ab6a30be6fb427e1f47194e2cfeb1756ceb3613440bb0e042b2e0611ba74ad",
+      "bytes": 265
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tests.stderr",
+      "sha256": "8f7d3d955cfbd054eaa3329d03116752e866d67f5bab13463d8c47c372ce5081",
+      "bytes": 197
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tests.stdout",
+      "sha256": "513b574e902106aafcafcca2956af09fc9cb554101c2bbd2500c2c382ef6a402",
+      "bytes": 417
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tree-end.json",
+      "sha256": "a304ddf52359ed9728973349c96305da777e117ad9b92cb37ad5dd7a08b71e3d",
+      "bytes": 78
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tree-start.json",
+      "sha256": "c80681a45d4d7515fa07095dfe710200ccaad96f76eb075de2ed883e5184a4c5",
+      "bytes": 335
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tree.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0/tree.stdout",
+      "sha256": "844000814904ac17f29812811edcc56d5e2d829c8122451f85401a7ae66af0fe",
+      "bytes": 1322
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108055000-windows-runner-source-guard-v0-clock.json",
+      "sha256": "a17e431a15790a3c71c1f013f6767eec140b53573717981fece98d4b2636788e",
+      "bytes": 179
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "schema": "humanymous.platform-two-context-freeze/1",
+  "source_head": "1210716f4615f7fcb02968b9515ba036eb8e2946",
+  "roots": [
+    "crates/test-support",
+    "crates/windows-object-bridge"
+  ],
+  "files": [
+    {
+      "path": "crates/test-support/Cargo.toml",
+      "sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a",
+      "bytes": 285
+    },
+    {
+      "path": "crates/test-support/INTEGRATION.md",
+      "sha256": "637c71d2a0ba619d762ec2e94359086c2e9b1af797c7a7898911033ad8f9a88d",
+      "bytes": 6377
+    },
+    {
+      "path": "crates/test-support/examples/linux_tree_inventory.rs",
+      "sha256": "aa9f32c5a903f245e5fefbace75a8c9aa72ad35b4abc0627ad12eb9019fe4455",
+      "bytes": 1925
+    },
+    {
+      "path": "crates/test-support/src/docker.rs",
+      "sha256": "97c9f53b2e89ac5a6966c0f9383e82eefae2ffcace841ae1a7977a128621d9e8",
+      "bytes": 10780
+    },
+    {
+      "path": "crates/test-support/src/json.rs",
+      "sha256": "16e47a333700e2b084e81f7012c1d5d523695a59b1454d21f5db8157beaa9656",
+      "bytes": 5597
+    },
+    {
+      "path": "crates/test-support/src/lib.rs",
+      "sha256": "c452fc623e9ab67d11745d6b3866c49283957796347f7173cf27365d4b795bac",
+      "bytes": 3744
+    },
+    {
+      "path": "crates/test-support/src/linux_tree_probe.rs",
+      "sha256": "5db8db4b6fbf1285582b6ba4e77fe40574d440dd189b962fc8c7c43ac95a0bf7",
+      "bytes": 5723
+    },
+    {
+      "path": "crates/test-support/src/parent_context.rs",
+      "sha256": "a0d5349ad653ea9aded7ccfc50f8cbe61251f67c0acfd6900ab1ba53068da326",
+      "bytes": 11694
+    },
+    {
+      "path": "crates/test-support/src/parent_context/binding.rs",
+      "sha256": "131ac75dcc25e3cd92d54b8d2b67e2df2e96fbd1a7409dd732ccdebb59716c62",
+      "bytes": 9374
+    },
+    {
+      "path": "crates/test-support/src/parent_context/tests.rs",
+      "sha256": "fa436a2a5c77d1bbbc4a363e2d1cdb4146dadd680fef0766c359e15cd6dc6608",
+      "bytes": 5504
+    },
+    {
+      "path": "crates/test-support/src/process.rs",
+      "sha256": "39c22fa5e26f2545267b862fc83f98227d436530560f00f71e1c0fb3e6a5859f",
+      "bytes": 15596
+    },
+    {
+      "path": "crates/test-support/src/process/capture_attempt.rs",
+      "sha256": "db2b5d86ac68ce9814ca645d9ed495fac902385e43ce8f83f8394cba9d3aafea",
+      "bytes": 16221
+    },
+    {
+      "path": "crates/test-support/src/process/capture_attempt/actual_tests.rs",
+      "sha256": "b6481e7bb7bd32aea84892896fa7f07ac4a43157f67ed9b6ad35c98ca1d1daa0",
+      "bytes": 6842
+    },
+    {
+      "path": "crates/test-support/src/process/capture_attempt/tests.rs",
+      "sha256": "106894686d7c2eaf6a4ce0cd31f31fea8f7fd48cdf38764118b109ebae69e79d",
+      "bytes": 3422
+    },
+    {
+      "path": "crates/test-support/src/process/capture_attempt/worker.rs",
+      "sha256": "d4553df2d1e35b2e461b35b16df4564a4c22155cb0becc07dabf9ed741a96e57",
+      "bytes": 2085
+    },
+    {
+      "path": "crates/test-support/src/process/controlled_barrier.rs",
+      "sha256": "72d8525d4376d89b4141c094f12feaf5fd77c88b5091ec094368ecb78b7509ef",
+      "bytes": 6477
+    },
+    {
+      "path": "crates/test-support/src/process/controlled_barrier/actual_tests.rs",
+      "sha256": "4d36c086bcf5a6023a9e8b5a9e99e33b37e9c04282705c2ca4ea159fb2f46d72",
+      "bytes": 1389
+    },
+    {
+      "path": "crates/test-support/src/process/direct_pipe.rs",
+      "sha256": "dfd04e7f6f0751577b4a16e69c54fa88f82e1e83649ebbda38c0f4aed15a86af",
+      "bytes": 7936
+    },
+    {
+      "path": "crates/test-support/src/process/interactive.rs",
+      "sha256": "806900043bdc3d36d50a61410737713fda2d9c32540803aac93848d10e6fe346",
+      "bytes": 16614
+    },
+    {
+      "path": "crates/test-support/src/process/interactive/tests.rs",
+      "sha256": "37192561b274db6df02586e626089d7e06219673674ddaa69b17e17cbec36d7b",
+      "bytes": 7176
+    },
+    {
+      "path": "crates/test-support/src/process/interactive/transport.rs",
+      "sha256": "999d9de37c4e198f5ad72fffa6f237021d2e9ef7f572e329a0976c5246f97c08",
+      "bytes": 2887
+    },
+    {
+      "path": "crates/test-support/src/process/owned_child.rs",
+      "sha256": "a8f4e2ea596be1d76d09f51ca0b80498e53c3039eed1739f05e6fc636ccd2745",
+      "bytes": 4324
+    },
+    {
+      "path": "crates/test-support/src/tree_lifecycle.rs",
+      "sha256": "58fb0b44bfd6810c40f929c5c1fcc9ac93e01d48d5912c80c738727e771831e7",
+      "bytes": 7417
+    },
+    {
+      "path": "crates/windows-object-bridge/Cargo.toml",
+      "sha256": "d98a0d3f5122d460d2351fc73b118de570384193ce228790e96e15f7a6fe7c75",
+      "bytes": 550
+    },
+    {
+      "path": "crates/windows-object-bridge/src/create.rs",
+      "sha256": "c323434eacc915e561aed5d48307bf2e8a3c02adf66cb7ba9a39c9185b90bbec",
+      "bytes": 2080
+    },
+    {
+      "path": "crates/windows-object-bridge/src/lib.rs",
+      "sha256": "48c72fe43a94b539179001aee69960e4f34c4641ab3e9de2b30e279ba1a355df",
+      "bytes": 4742
+    },
+    {
+      "path": "crates/windows-object-bridge/src/query.rs",
+      "sha256": "e7921656c28da7f9671aed55390dddc7fffc0279e5eaeceed71e31f6317d6c53",
+      "bytes": 6994
+    },
+    {
+      "path": "crates/windows-object-bridge/src/tests.rs",
+      "sha256": "cb5c5008b0e0e83dd47d20d2ea150d8b61ec5d8aae13d1e5f000e75c7d59daa7",
+      "bytes": 2092
+    }
+  ],
+  "dirty_files": 0,
+  "untracked_files": 0,
+  "active_owned_leases": 0,
+  "native_guard_tool_session": 43027,
+  "native_guard_tool_terminal": 1,
+  "native_guard_own_marker_absent": true,
+  "status": "Frozen for Root integration; no writes by Native owner until returned",
+  "scope": "All tracked implementation, manifest, documentation and example files in two contexts; not a moved-source test receipt"
+}

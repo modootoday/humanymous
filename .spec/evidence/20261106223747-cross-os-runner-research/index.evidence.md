@@ -5,6 +5,8 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: platform-two-context-freeze.json, sha256: a628166d90f49ff7c3f7fbd1c9561eae0bc96b7e41c5649bfb4016e6d6bb7115, bytes: 5663, store: repo}
+  - {path: native-source-guard-summary.json, sha256: 2b2b012891372ec95a049cbc56bdcc3b9593d60b71ae8441a049d67a5a803a75, bytes: 10702, store: repo}
   - {path: platform-slice-consumers.json, sha256: 649607cd0a7f6672d0cda36bf81a3af9239c6ec66723cddfde7967abde4f1af7, bytes: 14301, store: repo}
   - {path: native-structural-handoff-source.json, sha256: 5597dbd5fb29c86c4f89898780158a1c70a721e4e772374ecb0fcc0e7333a9e2, bytes: 13714, store: repo}
   - {path: dotnet-minimal-style-verification-summary.json, sha256: 6ce52c028f355fb39b27cdcdb16a0cbaa44b80daaf260af48c9ec2c5ca2db396, bytes: 12154, store: repo}

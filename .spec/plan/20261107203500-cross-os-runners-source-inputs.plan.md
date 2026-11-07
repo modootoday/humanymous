@@ -43,3 +43,27 @@ cargo test --locked --manifest-path scripts/ci/windows-native-runner/Cargo.toml
 evidence::source_inputs::tests, followed by scoped all-target check/strict Clippy.
 No fixture process launch is needed by these three directory/digest tests.
 The platform two-context mapping research remains pending after this correction.
+
+## Allocated actual checkpoint (first failure preserved)
+
+Root allocated new target/native-source-guard-v0, jobs1/incremental0, locked
+offline, one monotonic390s work/450s cleanup pair. Actual tool session43027
+terminated exit1 after34.96s. Inventory exactly3, actual3 passed/0 failed/
+0 ignored/0 measured/55 filtered; runner all-target check and strict Clippy0.
+Final fmt --all exited1 on dependency workspace authority/configuration.rs and
+network/correlation/tests.rs formatting. No rerun or source edit during execution.
+
+Observed HEAD1e8c5af6844915090840df834e262eec51cc9e3c plus uncommitted foreign
+receipt input (SHAa24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df),
+NOT a pure f059 Git candidate. Selected source/config/tool81 files and registry
+2079 files were byte-identical before/after. Public native-source-guard-summary
+registers34 raw attachments and actual test executable hash; scope is limited.
+
+Original metadata retained lease_removed=false because typed DateTime/string
+comparison refused cleanup. Separate cleanup addendum matched exact original
+clock/provider/session/target via DateKind String, confirmed recorded PIDs absent,
+then removed only the own marker at59.36s within ORIGINAL450. No renewed pair.
+All owned processes terminal, no current lease; target is cache only. Existing
+fixture Drop ran but per-directory absence was not independently instrumented.
+No provider/account/token/SCM/Job/GUI/product qualification. Source guard's narrow
+closure awaits independent audit; first fmt failure remains separate and open.
