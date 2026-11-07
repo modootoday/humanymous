@@ -828,7 +828,38 @@ deadline is no later than the minimum shared handshake and actual native startup
 manager bound; retries cannot restart it. An expected one-shot EOF is not a
 substitute for that watchdog or for a continuing authenticated lifetime source.
 
-**R1 native backend acceptance review (pending, no implementation approval).**
+**R1 native backend acceptance review (selected architecture accepted; backend pending).**
+Root accepted two decisions after reviewing the exact native-security draft
+plan:root/20261107103828 at SHA256
+6b97bda59859527a7e9735f93bca34b68ab215514afba5ddc64faf99bf2b8778.
+First, signed PUBLIC authorization targeted to the actual S/O instances replaces
+the draft bootstrap shared-secret Hello. Authority must assign an explicit new
+protocol version/domain; there is no fallback to the old secret Hello. Signature
+possession alone proves neither role nor process identity. Both retained native
+instance proofs remain mandatory. The service-generated observer credential
+remains secret and may cross only the subsequently verified channel.
+
+Second, TransportPrepared is a distinct native lifecycle phase. SCM_RUNNING
+means native process/discovery readiness only. Application readiness, ingress,
+unseal and writer activation remain false. The independent absolute startup
+watchdog and native Stop handler must already be armed. Existing Running/public
+Ready publication cannot be reused as application readiness in this phase;
+doctor, status and installation consumers must preserve the distinction.
+
+These decisions authorize specification and native-primitive probe preparation,
+not full R1/channel implementation or qualification. Remaining P0 requirements
+include actual cross-SID primary TokenUser/retained-handle query rights without
+SeDebug/admin fallback; create-new SCM/root ownership and existing publisher-key
+no-reset binding; typed P acceptance acknowledgements without management power;
+process-wide one-claim consumption; clock rollback and conserved deadlines;
+actual loaded-artifact binding; atomic secret release/epoch revocation; and an
+explicit unattended restart/republication policy for transient P. P's private
+WinCred availability after logout/restart must not be assumed. No 24-hour default
+lease or implicit renewal is accepted. Linux/macOS remain required open backends.
+Native-security owns the proposed safe query/discovery/cross-role ACL probe API
+and must report feature/unsafe/API gaps before implementation. This decision
+authorizes no local SCM/account mutation or new Runtime source/dependency edge.
+
 Runtime requires the native-security-owned publisher to create protected role
 trust and fresh pair-bound grant material for the actual retained S/O instances.
 A read-only keyring lookup, caller-supplied Read/Write or a callback returning a
@@ -845,8 +876,8 @@ Primary-source critique adds the following requirements before accepting R1:
 - SCM's QueryServiceStatusEx PID can be invalid in START_PENDING/STOP_PENDING and
   is invalid when stopped. Define usable pre-secret instance discovery without
   waiting for RuntimeReady that itself depends on the authenticated pair. Any
-  distinction between native-host running and public RuntimeReady needs explicit
-  Root/CLI acceptance and must not be inferred as application readiness.
+  accepted TransportPrepared distinction above must not be inferred as
+  application readiness; actual native discovery still needs qualification.
   [Microsoft QueryServiceStatusEx](https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-queryservicestatusex).
 - Cross-principal retained process handles need an explicit supported rights
   profile for query/token/liveness. Do not assume another service's default
@@ -867,7 +898,7 @@ Primary-source critique adds the following requirements before accepting R1:
 
 | Profile | Current R1 disposition | Required producer work |
 |---|---|---|
-| Windows distinct-principal S/O SCM roles | Architecture accepted; new protected publisher/instance/access backend not accepted or qualified | Actual issuer/publication, noncircular discovery, retained handles/TokenUser and explicit cross-SID endpoint/process rights |
+| Windows distinct-principal S/O SCM roles | Signed-public-grant and TransportPrepared architecture accepted; concrete backend not implemented or qualified | Actual issuer/publication and unattended restart, retained handles/TokenUser, explicit cross-SID endpoint/process rights and atomic release/revocation |
 | Linux/WSL production roles | Existing ordinary native component results do not qualify R1 | Native-security must define actual protected unattended publisher, service discovery/process pins and cross-principal transport; no UID-only substitute |
 | macOS production roles | No R1 acceptance or qualification inferred | Native-security-owned protected producer and actual domain/instance/transport profile; unavailable capabilities remain Unsupported |
 
