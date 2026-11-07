@@ -14,6 +14,17 @@ rel:
 
 # Rust migration conventions
 
+## Shared language integration checkpoint 5b9b85c
+
+The thirty-member workspace includes framework/Python/Ruby. Provisioned Python
+ASGI/WSGI and Ruby Rack profiles reuse the integrity parser, bind exact identity
+and normalized mode, and reject fabricated raw/peer/capture fields without scoring
+changes. Root measured locked authority10/framework6/integrity22 pure passes and
+lib Clippy; Pages22 locked pure tests and lib Clippy passed after resolving the
+concurrent tokio signal-feature lock delta. Native extensions/host ABI/product
+qualification remain unverified. Program-roadmap and private evidence record
+commands, working hashes, initial failures and raw-console-not-recovered limits.
+
 ## Actual-runtime browser pilot follow-through
 
 Collector's non-default runtime-pilot test consumes one fixture.json scope/route
