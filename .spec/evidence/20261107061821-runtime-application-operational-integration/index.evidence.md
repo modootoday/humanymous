@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T21:57:55Z
+updated: 2026-11-07T22:10:15Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -28,8 +28,11 @@ files:
   - {path: public-role-2e9934fe-validation-summary.json, sha256: 94e2a27600632244610f697c6e86830191ac0963b8bc075e6f5acefa84354f34, bytes: 10045, store: repo}
   - {path: public-role-positional-refinement-source.json, sha256: b59fe3c131dd517a9529cf88c6f87ae36eee06b1424ebbf7ae8edf5d78a8776a, bytes: 1359, store: repo}
   - {path: public-role-be9eec6d-validation-summary.json, sha256: 895145251030614c5cc9f35d33cf4e75629ced39b2f2c8489405def8ca004d09, bytes: 7452, store: repo}
-  - {path: status.json, sha256: 1a8e72d60523feecdb1aaf1bcd670f2fa1bbb18117a97ec3003c7a355390f976, bytes: 6498, store: repo}
   - {path: source-commitments.json, sha256: bfb521eae7cec173dc8b54d0b0a1aef2cff0198032bd5382d8969053ef10c2c2, bytes: 14987, store: repo}
+  - {path: collector-889eb6f8-compile-summary.json, sha256: 1cfc4e216367d6c78c492c56a353921e658b7175689bf849fc225bec03fad2a1, bytes: 5902, store: repo}
+  - {path: bootstrap-1f87-source-diagnosis.json, sha256: d3e28870defe36c1991c1c3c2ce6567d0724096e5484da4687ca28c249fed8d3, bytes: 2187, store: repo}
+  - {path: runtime-six-context-freeze.json, sha256: 7e91388d0ba255f1e43c64e3fedd3b95c1fd59eb03e5187bdad15c102a2f0bed, bytes: 85901, store: repo}
+  - {path: status.json, sha256: 039a1e869f8b318d998f6225cefb498e7f4de7259b9ded21b3e9a13b89f56f11, bytes: 6774, store: repo}
 ---
 
 # Runtime application operational integration

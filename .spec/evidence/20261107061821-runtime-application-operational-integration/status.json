@@ -155,5 +155,13 @@
     "passed": 1,
     "filtered": 97,
     "production_activation": false
+  },
+  "collector_889eb6f8_compile": {
+    "source": "889eb6f844e2e8fa6663af6c3b25410127f466b3",
+    "summary": "collector-889eb6f8-compile-summary.json",
+    "check_exit": 0,
+    "strict_clippy_exit": 0,
+    "test_execution": false,
+    "bootstrap_403_cause_observed": false
   }
 }

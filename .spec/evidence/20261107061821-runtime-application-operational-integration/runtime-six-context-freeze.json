@@ -1,0 +1,2131 @@
+{
+  "schema": "humanymous.runtime-six-context-freeze/1",
+  "source_commit": "49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051",
+  "fixture_policy_commit": "662cf7a25bfc12851ce7625c044364946532c823",
+  "source_files": 279,
+  "source_paths": [
+    {
+      "path": "crates/audit/Cargo.toml",
+      "git_blob": "c05c84ce34da264be9b7f29c4db6ea5edb4c1490",
+      "context": "audit",
+      "worktree_sha256": "11c4cbcbd514f01958627c58f2b255424b123bc4f73ff5f0ea55d59563eefa1c",
+      "worktree_bytes": 1062
+    },
+    {
+      "path": "crates/audit/KEYS-INTEGRATION.md",
+      "git_blob": "7896ad7afa8763868dc9fb47b3600dcdc5b696ac",
+      "context": "audit",
+      "worktree_sha256": "a85b9d061e968e9a4f882dfe695ded67768d4f067fe595e1b07ff8090eb9ad82",
+      "worktree_bytes": 51823
+    },
+    {
+      "path": "crates/audit/LICENSE-Go.txt",
+      "git_blob": "cd00921f74d665a1bc759b0d6da2765e38a1b807",
+      "context": "audit",
+      "worktree_sha256": "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738",
+      "worktree_bytes": 1505
+    },
+    {
+      "path": "crates/audit/src/bin/audit-control-retainer.rs",
+      "git_blob": "92c96a91b7a73531b3cbe264ae0dbfa971a9f1dd",
+      "context": "audit",
+      "worktree_sha256": "b728c1807b7b6360c9c11024df9a5db8de30946c34de784eb35b7d8b174cf77d",
+      "worktree_bytes": 455
+    },
+    {
+      "path": "crates/audit/src/bin/audit-witness.rs",
+      "git_blob": "6d4f70755028c4eaa0ed8564b75d1b4ffe2b48b2",
+      "context": "audit",
+      "worktree_sha256": "143b7c6fd620704d737cc2d6610ec305a10e35a4ffff0aba792f99dcdc1caa4d",
+      "worktree_bytes": 436
+    },
+    {
+      "path": "crates/audit/src/checkpoint/durable.rs",
+      "git_blob": "a85706e7e94ec08d828ef1faea192270d66ad7ff",
+      "context": "audit",
+      "worktree_sha256": "2ce83f57aea799ceef105f380ab4203cc638cf123133b272c8ee7d57879fadab",
+      "worktree_bytes": 10408
+    },
+    {
+      "path": "crates/audit/src/checkpoint/durable/service.rs",
+      "git_blob": "8c351e60923e19755bfa48162f0f813850a4e0d2",
+      "context": "audit",
+      "worktree_sha256": "cfd4eeb07908987a85c04f8894e539bee62a731cf58046b715d81a29e8cd89b3",
+      "worktree_bytes": 12059
+    },
+    {
+      "path": "crates/audit/src/checkpoint/durable/service/client.rs",
+      "git_blob": "957e1e37479240a566561d88b150e96d9d6bd496",
+      "context": "audit",
+      "worktree_sha256": "06eafa0039dbee37234d983455c3f835b8b13dbcd08807003ad86cd220a1be38",
+      "worktree_bytes": 8300
+    },
+    {
+      "path": "crates/audit/src/checkpoint/mod.rs",
+      "git_blob": "58fc485b7d86b5da880d6291524285da2fd762f3",
+      "context": "audit",
+      "worktree_sha256": "ed75c03c275b144d3aeeea7192b35a23bf30f36b497aeb6ee828fe768524700e",
+      "worktree_bytes": 4642
+    },
+    {
+      "path": "crates/audit/src/checkpoint/signing.rs",
+      "git_blob": "1eec15ac72ca374426c29f6a42efc3f8af9ccfb3",
+      "context": "audit",
+      "worktree_sha256": "8634ce7444478e1bb89e39d915db9685d0dfdb646382fd4bf41d92ec74848628",
+      "worktree_bytes": 2133
+    },
+    {
+      "path": "crates/audit/src/checkpoint/signing/tests.rs",
+      "git_blob": "fb183c385574bcbdc46266e411600d32ef687121",
+      "context": "audit",
+      "worktree_sha256": "db86fa502ba86d962e6be0771981db664e16e782cc6bae147bf851912ca6d3c9",
+      "worktree_bytes": 3019
+    },
+    {
+      "path": "crates/audit/src/checkpoint/witness.rs",
+      "git_blob": "d41cd5f835e7009991110f8a4a3b72ba69d3d209",
+      "context": "audit",
+      "worktree_sha256": "ff0e73139ddcf2d94d37b54d5d23a7207e34912125deccdd05886a0d1b98f602",
+      "worktree_bytes": 9295
+    },
+    {
+      "path": "crates/audit/src/control/ledger.rs",
+      "git_blob": "809c337ac82e0960e2efd061f1a2bac10466bf8b",
+      "context": "audit",
+      "worktree_sha256": "2217dfaf9e68d0e4e83e93bde00781cd274d45cd3a32d0375e369a8b0b51437e",
+      "worktree_bytes": 16509
+    },
+    {
+      "path": "crates/audit/src/control/mod.rs",
+      "git_blob": "0b19b4c9ef9e81e1886b775dce21421e840340f5",
+      "context": "audit",
+      "worktree_sha256": "ddc0edc3da42c0f4e2193d4cee86f1de714c4a594786a986df5848b14fc40a8e",
+      "worktree_bytes": 614
+    },
+    {
+      "path": "crates/audit/src/control/operations.rs",
+      "git_blob": "8a5f04b46f0a5bdee45eecd9c44dac7fc3cc0987",
+      "context": "audit",
+      "worktree_sha256": "56880c1d8525fbbd8540c2fb1a43f490a101e51c935c55495b96765412330f1b",
+      "worktree_bytes": 4530
+    },
+    {
+      "path": "crates/audit/src/control/policy.rs",
+      "git_blob": "c044327e37055436fa63e217afc3d042fec8d608",
+      "context": "audit",
+      "worktree_sha256": "574a01a1652b78c0578a3c80d71aea985c3fe9629b3a4a244c68bdc61ab725a5",
+      "worktree_bytes": 20945
+    },
+    {
+      "path": "crates/audit/src/control/retention.rs",
+      "git_blob": "10e57c3b1a7583a724cb38c23e94a75cc0626753",
+      "context": "audit",
+      "worktree_sha256": "fe555ca9ab526e897b631775f1d895eb7d8a021960775e10cf65b6d640f0969b",
+      "worktree_bytes": 11547
+    },
+    {
+      "path": "crates/audit/src/control/retention_service.rs",
+      "git_blob": "f3ac9489ae229a18f25da8b324ae34500bd43b6c",
+      "context": "audit",
+      "worktree_sha256": "9ba1ff93ce143ffef9a2ab5939190629d7ecbab1d4c0c4d1dbac85794eac807d",
+      "worktree_bytes": 14364
+    },
+    {
+      "path": "crates/audit/src/control/state.rs",
+      "git_blob": "097ca28c5b28c2acd6fb1a8a89ff2c8261fd358e",
+      "context": "audit",
+      "worktree_sha256": "7a08ee0849d914b73a80ac75f8eba92afacd84e6bb0da2f222cba4ad7a43a2cb",
+      "worktree_bytes": 2473
+    },
+    {
+      "path": "crates/audit/src/keys/backups.rs",
+      "git_blob": "24c291ba1578c8746ef28d72ab2118c3e3e3e318",
+      "context": "audit",
+      "worktree_sha256": "9ed105a70238b88c0a7d01cf9a98d0e1668dc8800842f83757a3a3da36cb0086",
+      "worktree_bytes": 26838
+    },
+    {
+      "path": "crates/audit/src/keys/backups/retained.rs",
+      "git_blob": "b7400b246a85270a08fc60e6652a4f90462c3201",
+      "context": "audit",
+      "worktree_sha256": "98347efd011802bda9ffb853e959a48fa541db533d257025899b9f332fd0c9d9",
+      "worktree_bytes": 3653
+    },
+    {
+      "path": "crates/audit/src/keys/custody.rs",
+      "git_blob": "ae44bf3867f4595aa1c57d7edadef81935f71d53",
+      "context": "audit",
+      "worktree_sha256": "5f5a5af22be524bc8149f9e95deb0f27768bbe9753521c88ee1773277c91b60a",
+      "worktree_bytes": 14059
+    },
+    {
+      "path": "crates/audit/src/keys/custody/erasure.rs",
+      "git_blob": "1f1a0e9792ee3d63fcc12c3ec0dd62e6845c73e4",
+      "context": "audit",
+      "worktree_sha256": "e554d1d0e8896c93febf8161bd6e85c7457b4af0a2163a660d71de7934f63514",
+      "worktree_bytes": 3231
+    },
+    {
+      "path": "crates/audit/src/keys/custody/permissions.rs",
+      "git_blob": "75e89b7cecec82f191f5d4f011f690ca175deeb5",
+      "context": "audit",
+      "worktree_sha256": "8cc7d719ac2f16e5b0fa431f6e1987bfb1bb681a440ed7af0bfe2bf9c1594777",
+      "worktree_bytes": 4182
+    },
+    {
+      "path": "crates/audit/src/keys/custody/rotation.rs",
+      "git_blob": "b4480ddca8cdf4453a71698bff69eca3a0d2189d",
+      "context": "audit",
+      "worktree_sha256": "40dd00e3fb6b8f47699aba701097c3c0ff850d10d265eeb3770d0f3423ae627f",
+      "worktree_bytes": 6186
+    },
+    {
+      "path": "crates/audit/src/keys/custody/tests.rs",
+      "git_blob": "7aa8db55b407da14c10420d7acfd10e07912fab2",
+      "context": "audit",
+      "worktree_sha256": "21fe2804a8896ed0bd8d2d4f2a97380a19c18a151c958f53f69faaf46fa8c68a",
+      "worktree_bytes": 1916
+    },
+    {
+      "path": "crates/audit/src/keys/mod.rs",
+      "git_blob": "28506c36df84876a7861d14516f89b67e1f0809d",
+      "context": "audit",
+      "worktree_sha256": "f51306f99c522d203fffdcb54a7278cf4021621a429218fb2a6bba91e363b721",
+      "worktree_bytes": 11572
+    },
+    {
+      "path": "crates/audit/src/keys/vault.rs",
+      "git_blob": "a293a7e64da5e28651445c1f018903a23b449cee",
+      "context": "audit",
+      "worktree_sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef",
+      "worktree_bytes": 19273
+    },
+    {
+      "path": "crates/audit/src/lib.rs",
+      "git_blob": "c7fadc271d2b72ea584a3524eb7296af6ed0e4a5",
+      "context": "audit",
+      "worktree_sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197",
+      "worktree_bytes": 356
+    },
+    {
+      "path": "crates/audit/src/lifecycle/mod.rs",
+      "git_blob": "f4d0509eeb2008c5441208f522e005006bbb0788",
+      "context": "audit",
+      "worktree_sha256": "74640c1a9047a9bd1d169f3b235e312e9c73aeb3317bb2d256e8567e7d27e580",
+      "worktree_bytes": 285
+    },
+    {
+      "path": "crates/audit/src/lifecycle/registry.rs",
+      "git_blob": "8c610c5769db2e50384326ac206451843184bb91",
+      "context": "audit",
+      "worktree_sha256": "1c47f95ea69995ab5406710acc46284b8274b8efa0449b27cd5a533b739f3cec",
+      "worktree_bytes": 5816
+    },
+    {
+      "path": "crates/audit/src/lifecycle/retention.rs",
+      "git_blob": "a8384427d3655ac9b1f21610dabf71c633398026",
+      "context": "audit",
+      "worktree_sha256": "220268a5a44cf814c6e3a16dc3946a802f6cf0ba012599c714314c1f853d4376",
+      "worktree_bytes": 3158
+    },
+    {
+      "path": "crates/audit/src/log/mod.rs",
+      "git_blob": "2aa9ab704a943b0cb1cc0e0a3ccff4b4e6426fea",
+      "context": "audit",
+      "worktree_sha256": "7d34318ed61d58fedd23889112d549e4c4c20802da4162581e11f9f9247f70fa",
+      "worktree_bytes": 22807
+    },
+    {
+      "path": "crates/audit/src/log/proofs.rs",
+      "git_blob": "8c64570e24fb3ce4af8ca0871a3f3d41f5521d8e",
+      "context": "audit",
+      "worktree_sha256": "06626d02195e4be65e21697a50e6aabc44cd8a44258a64d515d2b0cd6d399fa8",
+      "worktree_bytes": 4790
+    },
+    {
+      "path": "crates/audit/src/log/sealed.rs",
+      "git_blob": "1c7c2f3f3f2e90aa0a76b082f66d47a90ff57ebd",
+      "context": "audit",
+      "worktree_sha256": "211817ddf672de8821d086e0a0a3c6a4aee16dfd0066a39b4e1d256257336899",
+      "worktree_bytes": 15376
+    },
+    {
+      "path": "crates/audit/src/log/stamp.rs",
+      "git_blob": "b4e83b7bbe5ddd3078d095c34e75ec795a1a44e6",
+      "context": "audit",
+      "worktree_sha256": "58df780df2834749bd55961e662774008b7a89d0f2cb1f4753cd00fcc1514fd5",
+      "worktree_bytes": 1205
+    },
+    {
+      "path": "crates/audit/src/merkle/frontier.rs",
+      "git_blob": "e9b71d506421127f545a827641d0b260cff64b72",
+      "context": "audit",
+      "worktree_sha256": "5ac5436a73c470f0756fedf90839c1f213fa9a6aa4a1d2d50d5f394c961efa32",
+      "worktree_bytes": 2977
+    },
+    {
+      "path": "crates/audit/src/merkle/mod.rs",
+      "git_blob": "71144f61acf88c09333b40904ed711c191667fbe",
+      "context": "audit",
+      "worktree_sha256": "4b330b6eb2e807f95eab77782358f3c93a828de6dcf49bd9e5d9e32c0c9b21de",
+      "worktree_bytes": 8865
+    },
+    {
+      "path": "crates/audit/src/merkle/ranges.rs",
+      "git_blob": "53d9d15cb6778cc6a8deac6b1b9fbf6a0abd3ad6",
+      "context": "audit",
+      "worktree_sha256": "f3e7a80f995cded9e1343a0c39d2cea78d92dfa75c7d8ee50d43957d3c54cd56",
+      "worktree_bytes": 2968
+    },
+    {
+      "path": "crates/audit/src/merkle/ranges/tests.rs",
+      "git_blob": "02bb1bb68053d3366e2c33781b01a678275f6894",
+      "context": "audit",
+      "worktree_sha256": "3fcb2b33fa77ae7d3d6029c8e8dfa1c42b86378b43c08f05fbf9d354b42cb850",
+      "worktree_bytes": 2050
+    },
+    {
+      "path": "crates/audit/src/record/canonical.rs",
+      "git_blob": "b96108c27bf8de0eed435d850cc734024784a998",
+      "context": "audit",
+      "worktree_sha256": "649465eb6bf3b9c5d37010ffb59f0add91cc240ac5e433455d9565095019136f",
+      "worktree_bytes": 3715
+    },
+    {
+      "path": "crates/audit/src/record/canonical/encoder.rs",
+      "git_blob": "c5c39eb9697eed0cb21fc6adcbc3114d5f074c2e",
+      "context": "audit",
+      "worktree_sha256": "6c770f22a8cff9cc7a337990d29fff928a3e6fb37daa35e1bf5b4fae35ad0abe",
+      "worktree_bytes": 7113
+    },
+    {
+      "path": "crates/audit/src/record/canonical/encoder/tests.rs",
+      "git_blob": "5cce6c90f3e5567b0626b908c3b16f696017507e",
+      "context": "audit",
+      "worktree_sha256": "d2cf1d1aa84e8e9d2ff8fb26e6e81e50c132248b9119b5b1982d10dd35e00252",
+      "worktree_bytes": 4105
+    },
+    {
+      "path": "crates/audit/src/record/mod.rs",
+      "git_blob": "407414e18b18cb9845ed720c36aa2bff7a9b3a0a",
+      "context": "audit",
+      "worktree_sha256": "d3287a2f21ef0628a366c5cae128b0cb53877bca099900a9f3e862449069654c",
+      "worktree_bytes": 7457
+    },
+    {
+      "path": "crates/audit/src/record/normalization.rs",
+      "git_blob": "c495c154fd4518ede72c82963b9d91f67cde2f0b",
+      "context": "audit",
+      "worktree_sha256": "7c386e79eaa025b0f160d1bcc3aff923e75b1ecd067762d822683242a1b8630f",
+      "worktree_bytes": 3073
+    },
+    {
+      "path": "crates/audit/src/record/ordering.rs",
+      "git_blob": "4d6b48522178bb007ce03ad3d37cb0d4d8f28119",
+      "context": "audit",
+      "worktree_sha256": "0d11a0bd8be69ce75d4fdaae57dec312112160207c85f214422cdf4474083e2b",
+      "worktree_bytes": 8531
+    },
+    {
+      "path": "crates/audit/src/sink.rs",
+      "git_blob": "d23b781d6aeadbdf30de32bc03c14a654a1830a8",
+      "context": "audit",
+      "worktree_sha256": "b66c13c42de4dc527dd0fc6c48fd95d9d4d101b0abe1bda96ae61bf05495c137",
+      "worktree_bytes": 6544
+    },
+    {
+      "path": "crates/audit/src/storage/exclusive_file.rs",
+      "git_blob": "7a3295db776399455f5bdb16960da51073a2ae88",
+      "context": "audit",
+      "worktree_sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69",
+      "worktree_bytes": 1032
+    },
+    {
+      "path": "crates/audit/src/storage/framing.rs",
+      "git_blob": "b21b8668a620b380680f3802619e0436066e29e0",
+      "context": "audit",
+      "worktree_sha256": "0fd543e7651a482a1f9b9af717d272ed97e8a3f4ed985d742ef084f34247c8b4",
+      "worktree_bytes": 4059
+    },
+    {
+      "path": "crates/audit/src/storage/framing/cursor.rs",
+      "git_blob": "6539ef3d484afe5c9f9b5b85d2a16b4eaabc683f",
+      "context": "audit",
+      "worktree_sha256": "b8a4929245b696c2f3659d4a84201a988976248d45d2277e0b5132c299ce1f46",
+      "worktree_bytes": 6510
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight.rs",
+      "git_blob": "40067b562b899f65cf73d40668c6c9b2c0b78ad6",
+      "context": "audit",
+      "worktree_sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0",
+      "worktree_bytes": 5747
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight/tests.rs",
+      "git_blob": "92a988c92457e7d298aa8fa04de17405bc0255dd",
+      "context": "audit",
+      "worktree_sha256": "8fd30354a11a7523e9b240458fb398446dbbdef5f936ed909aa9171638f5b6d2",
+      "worktree_bytes": 4252
+    },
+    {
+      "path": "crates/audit/src/storage/mod.rs",
+      "git_blob": "652c0b21228b27e7df767e84ebffb647b7bdb20a",
+      "context": "audit",
+      "worktree_sha256": "a03b885e3af62cee8ac9d226e971cfc9cf60362741dcdfd899c1140c01d0b448",
+      "worktree_bytes": 4072
+    },
+    {
+      "path": "crates/audit/src/storage/permissions.rs",
+      "git_blob": "aba85d090b2abf2d1ce51bca0e3029a2d5b90fd4",
+      "context": "audit",
+      "worktree_sha256": "ec1bd4b017f609c4eebb2d431bf47ac9605a15824928bc43b09ddc433ac0a02a",
+      "worktree_bytes": 151
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "git_blob": "2ec558e8a57c0f15ade40dcdb50d2fbe61d618c0",
+      "context": "audit",
+      "worktree_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21",
+      "worktree_bytes": 5120
+    },
+    {
+      "path": "crates/audit/src/storage/recovery.rs",
+      "git_blob": "538fa3300d20ab0c40d7f480b2a650e7a618a49e",
+      "context": "audit",
+      "worktree_sha256": "d289016225d4e0ca181c32541cddf08f8e659fe33a0861ca346551c23cdcbc7c",
+      "worktree_bytes": 6924
+    },
+    {
+      "path": "crates/audit/src/storage/trusted_snapshot.rs",
+      "git_blob": "8ed20bc4690a2843ded87ed8f0c834a5fdf21bee",
+      "context": "audit",
+      "worktree_sha256": "c9ed156687278f9b7962950aeff6cb3ab5873b3a7b3262ce965c03195142cef4",
+      "worktree_bytes": 3038
+    },
+    {
+      "path": "crates/audit/src/storage/wal.rs",
+      "git_blob": "23f58615b737285efe9ac3e2d867ffa40b708026",
+      "context": "audit",
+      "worktree_sha256": "ac03c3146e8b8a54b68f2cb326889f197745cfcc19455693b0d9223c470475c5",
+      "worktree_bytes": 18787
+    },
+    {
+      "path": "crates/audit/src/storage/witness_recovery.rs",
+      "git_blob": "b65354bbbc9ee5970e1db1d779a177085aae5d2a",
+      "context": "audit",
+      "worktree_sha256": "e275c85e048d8f24331e1df56cb67caf79d9b5f63ba414497103d3f2af09c568",
+      "worktree_bytes": 7497
+    },
+    {
+      "path": "crates/audit/src/storage/witness_recovery/tests.rs",
+      "git_blob": "2ef34be933082d8f2f1ec839dbde154adaf331fc",
+      "context": "audit",
+      "worktree_sha256": "70b6d6e7b029a6057d4c880b3afe58851989fe33aa1821d2066aa78cf5a79bec",
+      "worktree_bytes": 7786
+    },
+    {
+      "path": "crates/audit/src/verification/checks.rs",
+      "git_blob": "187350baad5832eac46264596f852bfa762a97a8",
+      "context": "audit",
+      "worktree_sha256": "1f507beb4b5d0189ca80d0d93409d422c1261993596bb38a624026569337d9a9",
+      "worktree_bytes": 3259
+    },
+    {
+      "path": "crates/audit/src/verification/incremental.rs",
+      "git_blob": "8a8bf493ea33a4164aa5b68b7f136fc9e81f4848",
+      "context": "audit",
+      "worktree_sha256": "e2fbec271e1673106b31df8b8e1c904aab586c2a5df4bce09246eeeb50eee055",
+      "worktree_bytes": 4437
+    },
+    {
+      "path": "crates/audit/src/verification/incremental/tests.rs",
+      "git_blob": "4642708b57b79a8c7e0fd1550cf3dbbc4f3909d0",
+      "context": "audit",
+      "worktree_sha256": "27eb814f60eb0fd63f42bd291001d330dbd2d5a32f964b18bae4e532bb1fb705",
+      "worktree_bytes": 9118
+    },
+    {
+      "path": "crates/audit/src/verification/mod.rs",
+      "git_blob": "3050cadff5a10120b34f6384dc3530206940a7cc",
+      "context": "audit",
+      "worktree_sha256": "11ab3c6537407c0ea90a5937d5c6c6a7bd3315fc0aba80efa8394b6375e36c52",
+      "worktree_bytes": 7683
+    },
+    {
+      "path": "crates/audit/src/verification/scan/checkpoints.rs",
+      "git_blob": "45e5aa7b794f7a31189cd528d3a9860a9c5ca69d",
+      "context": "audit",
+      "worktree_sha256": "81dcd924b653706c39d5583f44d141e92d73c5f42741f6522828a587f862bb5c",
+      "worktree_bytes": 3609
+    },
+    {
+      "path": "crates/audit/src/verification/scan/frames.rs",
+      "git_blob": "1c545b135769710417eb352ca676200234230478",
+      "context": "audit",
+      "worktree_sha256": "eb506f8639db9438954e624021eedf5ef791e9b5507b8db8a2be6aed7cb64c92",
+      "worktree_bytes": 4237
+    },
+    {
+      "path": "crates/audit/src/verification/scan/limits.rs",
+      "git_blob": "2489a40fcc4efa778aad9aa4c7df5f62e854d8da",
+      "context": "audit",
+      "worktree_sha256": "41ead10b38ef2c18f25f1bbe2a856fe205c43c2d91656f2d854846ca46a89793",
+      "worktree_bytes": 5952
+    },
+    {
+      "path": "crates/audit/src/verification/scan/metadata.rs",
+      "git_blob": "20d446b51bedeb2fbcd4ad58d88e143e0cce1e2b",
+      "context": "audit",
+      "worktree_sha256": "97fad69be4c379881dfcc5e90f021773c359994737e0f8c544f8fafc8da3ea2b",
+      "worktree_bytes": 4461
+    },
+    {
+      "path": "crates/audit/src/verification/scan/mod.rs",
+      "git_blob": "ab4d3eb847b0c6831ce85c0707cdb14625fba8d7",
+      "context": "audit",
+      "worktree_sha256": "f3d3a272f65da1e73ff25e27fb9ee2bcf6b1f014bf73af25c28a09824fb1e276",
+      "worktree_bytes": 1869
+    },
+    {
+      "path": "crates/audit/src/verification/scan/recovery_transition.rs",
+      "git_blob": "b819b6eba132c38af080fd94882d208795d6b1d5",
+      "context": "audit",
+      "worktree_sha256": "da224d9bdca01676a6646520d538591879bda8a63a069d6ffc95a43eed222ae9",
+      "worktree_bytes": 9680
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source.rs",
+      "git_blob": "29ce2c5312e3a7a6c4862a00047f2427f5b0c47a",
+      "context": "audit",
+      "worktree_sha256": "9be67a75ff5af8be7774b96d4081a98e230f28309368712cf0af6e3fa7ab7e2d",
+      "worktree_bytes": 1664
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native.rs",
+      "git_blob": "3455ebe2a179d0347c88ceb349a6e0bcb6534b5e",
+      "context": "audit",
+      "worktree_sha256": "df76c0b9af6f5c8aadcb8040f4ca5bb78844aa5acfa436b5b66c6b2855fc44b2",
+      "worktree_bytes": 20898
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership.rs",
+      "git_blob": "5110cfe76a96b655bfe3dc3290982837b8aa7133",
+      "context": "audit",
+      "worktree_sha256": "3b7ac651524b10a9671a3da7f28db5d464c723316d8110d25f8dcdfae5c0a556",
+      "worktree_bytes": 4411
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/cases.json",
+      "git_blob": "09bd7952c84622e8b9660c172e99b361641dc2f7",
+      "context": "audit",
+      "worktree_sha256": "ed39164917868943c762bb44c05f7bd6e51794225a2d223810d3bd2661dac147",
+      "worktree_bytes": 1389
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/control_lifetime.rs",
+      "git_blob": "2c57283a08f040b2ce31680a6d89d10b9ab0b252",
+      "context": "audit",
+      "worktree_sha256": "87a79917b92178118955ceff75c1563dce3e4458407c482fab3206abbb0f8630",
+      "worktree_bytes": 323
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/limits_lifetime.rs",
+      "git_blob": "7490b2f882c0d7baf62a4f6680e48a74359865c2",
+      "context": "audit",
+      "worktree_sha256": "bea936c714d6ba98ff4a92abfdedcb6089854329affb02e425882024d628db08",
+      "worktree_bytes": 265
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/opening_moved.rs",
+      "git_blob": "a4bb2a382e9dbd2e169ae607dbc0162ed58ba171",
+      "context": "audit",
+      "worktree_sha256": "1588fa2b50192201ef52a27d60a16260c8c5e2e05dba1f2eb20dfac61051c367",
+      "worktree_bytes": 216
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/positive.rs",
+      "git_blob": "c7378afcdfbce2cf4e94115ba3dbb557ca1dc747",
+      "context": "audit",
+      "worktree_sha256": "ceefd5756c8b4e96ca192c14ae6cb9c73f331e1682c626806a533f52d69d0416",
+      "worktree_bytes": 266
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/readonly_append.rs",
+      "git_blob": "7ae3891f34695b897f80f151d345294b99c06dd1",
+      "context": "audit",
+      "worktree_sha256": "45db03a7a430c7904f449140c6424a7153d7a46570fcacea57b90f89a3d6c2dc",
+      "worktree_bytes": 125
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/readonly_checkpoint.rs",
+      "git_blob": "476a26bfb4660eb489da50068a8179a418414225",
+      "context": "audit",
+      "worktree_sha256": "e9a78f50572dfb286cbbce07ae3dc61ee37877c8f5081d0f4b1dccb885b23944",
+      "worktree_bytes": 101
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/readonly_ready.rs",
+      "git_blob": "a5b58d362706949f806b294f802d06338028ab42",
+      "context": "audit",
+      "worktree_sha256": "5796df584d8ff90f94540d8e10dacac72a0c1c3b9937cb5b9942e91e68876bd1",
+      "worktree_bytes": 91
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/replacement_bounds.rs",
+      "git_blob": "3a54b6f1e283ba32cad31490ffe9582450ea0d3a",
+      "context": "audit",
+      "worktree_sha256": "163278e1715bb55682a87b21894aa2385cd507c3cf3bda10c88615946735e1bf",
+      "worktree_bytes": 169
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/verified_clone.rs",
+      "git_blob": "c18264653452e3e2c4c9f93ccb393545dd5e7d01",
+      "context": "audit",
+      "worktree_sha256": "5c5d2c20ad6a0cf610897aee1131e095fdcdfc5a3276cd4dee219470ebc533fe",
+      "worktree_bytes": 102
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/verified_deserialize.rs",
+      "git_blob": "88bb10bd3467b3bc82215ced6423fb41eb13478b",
+      "context": "audit",
+      "worktree_sha256": "595d6ba84ea9aa7549e04c3227ba22c54bef17767846acd219503bf4d037c745",
+      "worktree_bytes": 185
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/probes/verified_moved.rs",
+      "git_blob": "5b6bf057675c89a27202b1c37b4ad96a77801e27",
+      "context": "audit",
+      "worktree_sha256": "c0ec6eaaeea2926bd377e7ef6f620babe19e60092091f3bbfdef4a9a897a03b5",
+      "worktree_bytes": 156
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/tests.rs",
+      "git_blob": "1b6ed179167cc36cb533c81eb457be9d955bd918",
+      "context": "audit",
+      "worktree_sha256": "43d2719e9d91a76c8e388ef21f5cbf956a31a7290ca02974008e5995479a5bcb",
+      "worktree_bytes": 4373
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/ownership/tests/authentication.rs",
+      "git_blob": "1b7c20ebb910c8cd1fe509a38f61679e81408c77",
+      "context": "audit",
+      "worktree_sha256": "8b3fd148b1d8aff53edd285590f422de3bb21cf1ad8fb0c3e1a439d7a60d8b11",
+      "worktree_bytes": 7673
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/tests.rs",
+      "git_blob": "2ae7ef482b521f593711f206e3f75213e3de8e54",
+      "context": "audit",
+      "worktree_sha256": "73e0a818fee54798caab91299414b56789190234704e7304726817e8b4651308",
+      "worktree_bytes": 16100
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/tests/capacity.rs",
+      "git_blob": "f27ed1cc0c1f9b83334c11de2bab9f23cc3c4876",
+      "context": "audit",
+      "worktree_sha256": "a5873c8b86d3c6d0c03784d7672121375e841881179bc9e6e9ff92df52f359db",
+      "worktree_bytes": 12250
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/tests/prerequisite.rs",
+      "git_blob": "434b57b11d24d7e77fa2167fce2e47b650327195",
+      "context": "audit",
+      "worktree_sha256": "9f6639ca5be94e4a6a63506a3f5752ab46bc66f094846738dd590d04931b8629",
+      "worktree_bytes": 10056
+    },
+    {
+      "path": "crates/audit/src/verification/scan/tests.rs",
+      "git_blob": "8cea3d3ae978b9943e38f83b656014b46323bde8",
+      "context": "audit",
+      "worktree_sha256": "01a4eead39294d040c4a34ad8beb1f5c283e0a8d1299dbd56eda37909387dbc9",
+      "worktree_bytes": 13185
+    },
+    {
+      "path": "crates/audit/src/verification/scan/tests/crypto.rs",
+      "git_blob": "184eae5f7f82313e0696172695e0dbf135d4ea93",
+      "context": "audit",
+      "worktree_sha256": "03eb7df7ff1dc46eaae5d8854ba43890d168a8a815feb27c7035a54aa7cfe09b",
+      "worktree_bytes": 12695
+    },
+    {
+      "path": "crates/audit/src/verification/scan/verify.rs",
+      "git_blob": "c225cc7a25dd687df537e69c9be4720c8ef687e5",
+      "context": "audit",
+      "worktree_sha256": "d9fe696df8c2222cfcb2b64995255c90230e8cccab600eb1cfa4896a7dea27c2",
+      "worktree_bytes": 5277
+    },
+    {
+      "path": "crates/audit/tests/checkpoint_parity.rs",
+      "git_blob": "ada0a19a7956fcbb4f2dda5ae34f086441689e56",
+      "context": "audit",
+      "worktree_sha256": "09aac015de6d7e45343095afc63c4745aee2749e15d59322567956373c4be0b9",
+      "worktree_bytes": 3965
+    },
+    {
+      "path": "crates/audit/tests/control_operations.rs",
+      "git_blob": "4d8e5cbd86d62acda5f6b7b6e20e51350f4880a5",
+      "context": "audit",
+      "worktree_sha256": "f7dff4b8ad32095dd261d1cdfd4858b0d8825f45bea63b4cb2227c3300ad70fe",
+      "worktree_bytes": 59121
+    },
+    {
+      "path": "crates/audit/tests/durable_witness.rs",
+      "git_blob": "182949a3319a5fe7f7d71440d5987c408722ef98",
+      "context": "audit",
+      "worktree_sha256": "9bc911bd5f0fb879ace4d369127291db9befbde5d0f47784e175747e91038f42",
+      "worktree_bytes": 26699
+    },
+    {
+      "path": "crates/audit/tests/fixtures/checkpoints.json",
+      "git_blob": "a35a35456b9a5ad372e996a71b32642cd63afb2e",
+      "context": "audit",
+      "worktree_sha256": "a28b057c83ed946d407e05fa4c7766ede4700c737617d27d231d46f0180716ef",
+      "worktree_bytes": 461483
+    },
+    {
+      "path": "crates/audit/tests/fixtures/keys.json",
+      "git_blob": "a19918884e4bd81b752b514409bd7ed723c8119d",
+      "context": "audit",
+      "worktree_sha256": "e21e3326472cbcedd9dcec1764ea52ee9a21cabd79320866eb61c04c8b897e89",
+      "worktree_bytes": 27325
+    },
+    {
+      "path": "crates/audit/tests/fixtures/merkle.json",
+      "git_blob": "6170d9366121d095f2c81bf00030762494f70708",
+      "context": "audit",
+      "worktree_sha256": "c0a755b9264539ebad9a1dc999ccaa77c6e088c4c440762293a97cde7560f067",
+      "worktree_bytes": 1859928
+    },
+    {
+      "path": "crates/audit/tests/fixtures/native-owner-core-f9b0cda3.json",
+      "git_blob": "f28722d0ae05d7eb03e8f49a73f6915e59413560",
+      "context": "audit",
+      "worktree_sha256": "966fef7d3690d6db5eaa43dee50edaf1a72b46e9d9189587558d09ed347e9cc2",
+      "worktree_bytes": 31893
+    },
+    {
+      "path": "crates/audit/tests/fixtures/native-owner-validation.json",
+      "git_blob": "e080d776f9963737c7d8b981fe3ec9f40d7dd679",
+      "context": "audit",
+      "worktree_sha256": "5584018093719d6cc9ab59c532301589c2b38d2c8e7a7af80709ce3682cb391d",
+      "worktree_bytes": 6844
+    },
+    {
+      "path": "crates/audit/tests/fixtures/records.json",
+      "git_blob": "57bbdc993e21c9a16b47739da7c69488a93a377a",
+      "context": "audit",
+      "worktree_sha256": "7175918e0ab3121b62f1ab8cbbd8d9b23b8382353a37273d10f2f95629499cdc",
+      "worktree_bytes": 1864396
+    },
+    {
+      "path": "crates/audit/tests/fixtures/verification.json",
+      "git_blob": "9128ecd962c7d54d3d993b22c028df0f7269c4e3",
+      "context": "audit",
+      "worktree_sha256": "508f619c652d97be515f12a04f517acedc5b5b3ec959f6d2e6de5fad0a119300",
+      "worktree_bytes": 1937597
+    },
+    {
+      "path": "crates/audit/tests/key_backups.rs",
+      "git_blob": "f3230725d5b20c87cad881c92ee797de6f232297",
+      "context": "audit",
+      "worktree_sha256": "4211c4f234f30b35478292790a095f67597e76040539e030a10c9036d8d28daf",
+      "worktree_bytes": 25891
+    },
+    {
+      "path": "crates/audit/tests/key_custody.rs",
+      "git_blob": "33f99b781ab7809ace43e51c467c6a174408fecf",
+      "context": "audit",
+      "worktree_sha256": "141cf08093cc4be07156ae7f21ec247006900ac7f1dfb9f62e874af0ba6e79d2",
+      "worktree_bytes": 15926
+    },
+    {
+      "path": "crates/audit/tests/merkle_parity.rs",
+      "git_blob": "314e2271ba01245ff0fe42097ba9702b9a56fafd",
+      "context": "audit",
+      "worktree_sha256": "a7e133486fe7de0bd8c4462b8b807bf29f3a0398c56dde2259f01ecb73c95f12",
+      "worktree_bytes": 1929
+    },
+    {
+      "path": "crates/audit/tests/record_parity.rs",
+      "git_blob": "61130b1fcd16c9f5539ddc3ed1e003b4259d216f",
+      "context": "audit",
+      "worktree_sha256": "d32f989be437fa13592296b9e0239cca1f3ee8da4f44520c98e5cc16e2e85ac1",
+      "worktree_bytes": 1108
+    },
+    {
+      "path": "crates/audit/tests/support/child_lifetime.rs",
+      "git_blob": "76041852eb5fabd5b727024481af598be86cd3c4",
+      "context": "audit",
+      "worktree_sha256": "ecf866d43c0ff4f9a1bd1b48d2a315e549d95cbf9570e5f435b0be2385a66c2c",
+      "worktree_bytes": 3159
+    },
+    {
+      "path": "crates/audit/tests/verification_parity.rs",
+      "git_blob": "a7524da7ae871f9078e3a67a38e86f519d7ee5a3",
+      "context": "audit",
+      "worktree_sha256": "92484d492b6fe9050c3e5c12b7fd684c60815a7bccc6b058ec5a7a625d0496ab",
+      "worktree_bytes": 1348
+    },
+    {
+      "path": "crates/authority/Cargo.toml",
+      "git_blob": "724eca5ea4f20753c3fdb24ad00b7e7f1886ef34",
+      "context": "authority",
+      "worktree_sha256": "66f2c101adbf9aed9598fccbfcc1590b9cf7c51c2463498625846eeea14e204a",
+      "worktree_bytes": 1012
+    },
+    {
+      "path": "crates/authority/Dockerfile.pilot",
+      "git_blob": "7e371cc56650d4ce1705ff702e7fc4e5b235c1ab",
+      "context": "authority",
+      "worktree_sha256": "8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad",
+      "worktree_bytes": 657
+    },
+    {
+      "path": "crates/authority/INTEGRATION.md",
+      "git_blob": "00047efd84f65e1712897db0bbd92413e3ab0792",
+      "context": "authority",
+      "worktree_sha256": "590ecb2275228b036296c55b6fcf7798e97c5bf3301ea46559970bf57167db89",
+      "worktree_bytes": 19701
+    },
+    {
+      "path": "crates/authority/src/client.rs",
+      "git_blob": "8d5c24332328ea73ec962ed1c7d52fa70652dba2",
+      "context": "authority",
+      "worktree_sha256": "fae9140530b41d8b608fc6dcc24b7d09ab7de3acfed735579c2074042edf222c",
+      "worktree_bytes": 11731
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "git_blob": "63f76d9c373eb3c0e6a4703692a99a4b04c331c6",
+      "context": "authority",
+      "worktree_sha256": "c9fe7141ce862968d2a923a64556795e326866bb96d14c6471c3eb7aa3664a05",
+      "worktree_bytes": 18099
+    },
+    {
+      "path": "crates/authority/src/credentials.rs",
+      "git_blob": "16c7f6c5123e19097cac1493d25d9233a52065cd",
+      "context": "authority",
+      "worktree_sha256": "d7e84bf9ad7b4853bfb12ad92990b222d7de24a0c9428d10cc22447667c3b170",
+      "worktree_bytes": 3829
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "git_blob": "dfa6145dea78a27d21b60859ed77c3c612ca584e",
+      "context": "authority",
+      "worktree_sha256": "437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c",
+      "worktree_bytes": 11252
+    },
+    {
+      "path": "crates/authority/src/lib.rs",
+      "git_blob": "28a1c235b78d0c6410de67be4948a89b6a4fd432",
+      "context": "authority",
+      "worktree_sha256": "a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db",
+      "worktree_bytes": 1047
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "git_blob": "17c8e7808f49df211b7d013c58cffe2f1051a7f0",
+      "context": "authority",
+      "worktree_sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e",
+      "worktree_bytes": 3166
+    },
+    {
+      "path": "crates/authority/src/protocol.rs",
+      "git_blob": "b63903b7a0fc790e44d76130d00235b78dbd3123",
+      "context": "authority",
+      "worktree_sha256": "745ab89800e26457b469e11e8733874cce816203db3cd725f372f37805aae78c",
+      "worktree_bytes": 7372
+    },
+    {
+      "path": "crates/authority/src/protocol/framing.rs",
+      "git_blob": "39734942e5475b07111d46c7255d9b5a4785aadf",
+      "context": "authority",
+      "worktree_sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6",
+      "worktree_bytes": 4556
+    },
+    {
+      "path": "crates/authority/src/startup.rs",
+      "git_blob": "36c6d8f7204570d53e0c82ca5be229b9bfcebd3c",
+      "context": "authority",
+      "worktree_sha256": "102bcce5c8c756debfe8ef6528dddf258e50e24aaeaeb182fd07886e3f15c15c",
+      "worktree_bytes": 8815
+    },
+    {
+      "path": "crates/authority/src/startup/authorization.rs",
+      "git_blob": "0512a912f5a564424a68974c01981ab4a69719c9",
+      "context": "authority",
+      "worktree_sha256": "27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e",
+      "worktree_bytes": 7868
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/binding.rs",
+      "git_blob": "cd4467d0864b3faac8f849858853345998ae5de1",
+      "context": "authority",
+      "worktree_sha256": "11c75c147958e0a7dca0ac256ad49850118426752677571eb4c6794c813043a0",
+      "worktree_bytes": 5148
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/codec.rs",
+      "git_blob": "1dabf9a4c8212162452a677d696dfac53e4b9f09",
+      "context": "authority",
+      "worktree_sha256": "643a7ab7ce0382db3802da166a62454b682a2d6669378bd434348b756f7ac744",
+      "worktree_bytes": 7284
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/hello.rs",
+      "git_blob": "9010e59cfb110f397abdd5a4604705932fb04f4e",
+      "context": "authority",
+      "worktree_sha256": "afea0f98f52a3b4c6c078353f26a994cee7e31cbb1e3f34e1cc4817be66b3448",
+      "worktree_bytes": 6126
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/tests.rs",
+      "git_blob": "6af2c3b9044f4b2e00d9e2a4e6feb59427d8178a",
+      "context": "authority",
+      "worktree_sha256": "6ae4f2984eab99efef916104ab05e1562b71aa49e4aa280bd766420e1d653444",
+      "worktree_bytes": 18165
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/tests/fixture.rs",
+      "git_blob": "477dac7da3cee2cf2d112040f9f146e04a567c04",
+      "context": "authority",
+      "worktree_sha256": "fa6c441f2ef9814e4fce16d1ef5901cf3ba1300a991c370b034006f4d80a8818",
+      "worktree_bytes": 9897
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/verification.rs",
+      "git_blob": "2f6f659e2728ed4f8b9d4169f3d9ac9226f83e5a",
+      "context": "authority",
+      "worktree_sha256": "6d3872e7e8f14a81f40c99d3dbfd4f49e02cdc2b989c4aee4de01e5196f9883b",
+      "worktree_bytes": 4037
+    },
+    {
+      "path": "crates/authority/src/startup/observer.rs",
+      "git_blob": "a47db822ea54db79fbb9d070166287e1adfd1c9b",
+      "context": "authority",
+      "worktree_sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806",
+      "worktree_bytes": 3587
+    },
+    {
+      "path": "crates/authority/src/startup/observer/state.rs",
+      "git_blob": "96611f2d3132f95a09ce253af3c7943f0865a76f",
+      "context": "authority",
+      "worktree_sha256": "3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21",
+      "worktree_bytes": 4891
+    },
+    {
+      "path": "crates/authority/src/startup/observer/tests.rs",
+      "git_blob": "3c7ebfb723c8cfc0e62183c170ec6309118e86ab",
+      "context": "authority",
+      "worktree_sha256": "c10d765a30a29df908135ef074e7f5a41682b82fc57517fd00a4b9e35593e470",
+      "worktree_bytes": 3718
+    },
+    {
+      "path": "crates/authority/src/transport/mod.rs",
+      "git_blob": "e98a4a01c8685059878a392538cf7fd2cfc29fb4",
+      "context": "authority",
+      "worktree_sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8",
+      "worktree_bytes": 10942
+    },
+    {
+      "path": "crates/authority/src/transport/permissions.rs",
+      "git_blob": "e646652f96143c589032370f8fb8155094964c3c",
+      "context": "authority",
+      "worktree_sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c",
+      "worktree_bytes": 2645
+    },
+    {
+      "path": "crates/authority/src/transport/service.rs",
+      "git_blob": "f64a19b3ec29716c5ac5b21082009baa56971427",
+      "context": "authority",
+      "worktree_sha256": "1e7faf4a2f7d89a642c2f59f5ab7467b07cda381c2cdcfcf74ae0e71f93ba86a",
+      "worktree_bytes": 4333
+    },
+    {
+      "path": "crates/authority/src/transport/unix.rs",
+      "git_blob": "97c669a20b38601ce835a849ac7c8b2ba6173245",
+      "context": "authority",
+      "worktree_sha256": "cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623",
+      "worktree_bytes": 3407
+    },
+    {
+      "path": "crates/authority/src/transport/windows.rs",
+      "git_blob": "5f29076883d1779e288b995c854c700470d6ace6",
+      "context": "authority",
+      "worktree_sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86",
+      "worktree_bytes": 4734
+    },
+    {
+      "path": "crates/authority/tests/decisions.rs",
+      "git_blob": "c3db5dd24e2fb334f35124dda38b9e5fc94fdcd4",
+      "context": "authority",
+      "worktree_sha256": "0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b",
+      "worktree_bytes": 10016
+    },
+    {
+      "path": "crates/authority/tests/fixtures/authorization-v2-maximum.json",
+      "git_blob": "a6eda5f4a40e56d26b28dfca5e4e6ca2c5d198e0",
+      "context": "authority",
+      "worktree_sha256": "d4aa80ca126c101ee61cd18e78928f9beaa185b2330f1fb8f44dbaefc08e8dbc",
+      "worktree_bytes": 4819
+    },
+    {
+      "path": "crates/authority/tests/fixtures/authorization-v2-minimal.json",
+      "git_blob": "3191cf5b86361fcd05e49ced8c9db15bca815130",
+      "context": "authority",
+      "worktree_sha256": "c3119b20fdf1b40cc6e99ac9e8efef6b84da8ac5c35bbdeb6588fcb47f720786",
+      "worktree_bytes": 3769
+    },
+    {
+      "path": "crates/authority/tests/local_service.rs",
+      "git_blob": "8fb596c6778ab60b155337cfee5d1136d6f2fa1c",
+      "context": "authority",
+      "worktree_sha256": "0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442",
+      "worktree_bytes": 8534
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "git_blob": "8ef73bd26d10db4a1c9f0949d0e226f39cc8a3d9",
+      "context": "authority",
+      "worktree_sha256": "fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03",
+      "worktree_bytes": 24205
+    },
+    {
+      "path": "crates/authority/tests/support/mod.rs",
+      "git_blob": "66bc374d53bbb4bfa4ed2bf93160d75924d8c1da",
+      "context": "authority",
+      "worktree_sha256": "34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820",
+      "worktree_bytes": 5015
+    },
+    {
+      "path": "crates/capture/Cargo.toml",
+      "git_blob": "af2f066ea4da13e27fb5dac0b9111cfe9af6f153",
+      "context": "capture",
+      "worktree_sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840",
+      "worktree_bytes": 635
+    },
+    {
+      "path": "crates/capture/INTEGRATION.md",
+      "git_blob": "c74e7c557bb75157dcf62caa402a8f2edfd56fe3",
+      "context": "capture",
+      "worktree_sha256": "b32793888ccd5b8ac17d23a9bed8fffebcac9a5f1c3ff4c986f9934a8fecb298",
+      "worktree_bytes": 20165
+    },
+    {
+      "path": "crates/capture/src/http2/headers.rs",
+      "git_blob": "b9713c7973256f2c2363b51682b9667b7da90710",
+      "context": "capture",
+      "worktree_sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787",
+      "worktree_bytes": 5002
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "git_blob": "93ca096cb7f2835d5d290c7265a6d027d7a1f0f4",
+      "context": "capture",
+      "worktree_sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb",
+      "worktree_bytes": 16951
+    },
+    {
+      "path": "crates/capture/src/http2/tests.rs",
+      "git_blob": "85a24c6df96560f910d7da8ab81f496fba9e5f80",
+      "context": "capture",
+      "worktree_sha256": "5b2215880e5d1da0a3968a6745d167586c84fbf8b7d358dd34cc3588d19eb5d6",
+      "worktree_bytes": 13954
+    },
+    {
+      "path": "crates/capture/src/lib.rs",
+      "git_blob": "59e9129fb4fe18902d7f561a91c04918df75ec86",
+      "context": "capture",
+      "worktree_sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076",
+      "worktree_bytes": 322
+    },
+    {
+      "path": "crates/capture/src/tls/hello.rs",
+      "git_blob": "e6779e4d6343737c1a9597ddb10650ee92fd477e",
+      "context": "capture",
+      "worktree_sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153",
+      "worktree_bytes": 7833
+    },
+    {
+      "path": "crates/capture/src/tls/hello/tests.rs",
+      "git_blob": "9f9dd9ea461ba1db32199425003d9a3e52544d42",
+      "context": "capture",
+      "worktree_sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde",
+      "worktree_bytes": 5144
+    },
+    {
+      "path": "crates/capture/src/tls/mod.rs",
+      "git_blob": "32cdba6f74aa5d563db13f6c88a7b76a17169f24",
+      "context": "capture",
+      "worktree_sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7",
+      "worktree_bytes": 236
+    },
+    {
+      "path": "crates/capture/src/tls/records.rs",
+      "git_blob": "fa72c3ccac4653d654ac9418721d8f76d3fc505b",
+      "context": "capture",
+      "worktree_sha256": "dbfed8c2668fa9cb732883e675d797ac570d55ffc9865239c58610c99a201b81",
+      "worktree_bytes": 2491
+    },
+    {
+      "path": "crates/capture/src/tls/transport.rs",
+      "git_blob": "5cb0f4f6981b87251acaf2812d542b7186508ff3",
+      "context": "capture",
+      "worktree_sha256": "a6054eb2b704b7f66a3086da6808f5985eb1748cd62a3b9a4d92e2b60f3357f8",
+      "worktree_bytes": 14564
+    },
+    {
+      "path": "crates/capture/tests/hosted_transport.rs",
+      "git_blob": "12efbabbe43bc1836b54098a6c684caca0d67970",
+      "context": "capture",
+      "worktree_sha256": "8a549c9985321181693c39dfb7f11077fde1b8615f2334283330a901ee301d4e",
+      "worktree_bytes": 15251
+    },
+    {
+      "path": "crates/native-security/Cargo.toml",
+      "git_blob": "a34dabe2a646f18302df9085b89bad9160a8bf73",
+      "context": "native_security",
+      "worktree_sha256": "eb8b9619cd3c57fd5ca7af002b1a88c78713d5ab2ca692cd7d9e94481aea41fb",
+      "worktree_bytes": 738
+    },
+    {
+      "path": "crates/native-security/INTEGRATION.md",
+      "git_blob": "a266f2d4314da69ee2558dd12fa246449e75fc49",
+      "context": "native_security",
+      "worktree_sha256": "f9575d1c86ede01176710c5b8bd98928b3d09000e005732c93e77cb903bd1dce",
+      "worktree_bytes": 6355
+    },
+    {
+      "path": "crates/native-security/src/lib.rs",
+      "git_blob": "dcf6dda648e1bfa5f9310729174656510b070616",
+      "context": "native_security",
+      "worktree_sha256": "c6ce48bdcc12e9ff440285ddf0d3bf17b231d1fc24b7872f22bace8e8afdd7d0",
+      "worktree_bytes": 163
+    },
+    {
+      "path": "crates/native-security/src/process/mod.rs",
+      "git_blob": "1cfbb06bee817653c3453d85e2f7745661299316",
+      "context": "native_security",
+      "worktree_sha256": "04e51540d0b09d6dc7a51cd59b49f39271075d6999cdc6bc6de2595bf55a52aa",
+      "worktree_bytes": 1923
+    },
+    {
+      "path": "crates/native-security/src/process/windows.rs",
+      "git_blob": "982564046b93b4786389f9b8c54edbd852227b80",
+      "context": "native_security",
+      "worktree_sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+      "worktree_bytes": 3263
+    },
+    {
+      "path": "crates/native-security/src/secret/mod.rs",
+      "git_blob": "5d1e80b7b6b047ecc4a823ce6044a1aa8c7c06ac",
+      "context": "native_security",
+      "worktree_sha256": "eb7ba77665bb51bcb217a34dbf0309bf2c45ef28131c97003c17e7d28541c4c0",
+      "worktree_bytes": 2087
+    },
+    {
+      "path": "crates/native-security/src/secret/pilot.rs",
+      "git_blob": "2f1ded4182cf25264130c9f9831f2f7b0f1c21b2",
+      "context": "native_security",
+      "worktree_sha256": "99703482931610e1690671ed4b7e690cb9a9897e0d4bd4cccfb2f28ebc942942",
+      "worktree_bytes": 6958
+    },
+    {
+      "path": "crates/native-security/src/secret/reference.rs",
+      "git_blob": "301fbd4e7264d35e162d90c3288753f66c767812",
+      "context": "native_security",
+      "worktree_sha256": "772fad2c0d89dbe57745f29fe8863e2d896ab1ea24d7008df50e5ca49856a06e",
+      "worktree_bytes": 2775
+    },
+    {
+      "path": "crates/native-security/src/secret/windows.rs",
+      "git_blob": "60439d461175927a4737326a262c87b7dd993fa5",
+      "context": "native_security",
+      "worktree_sha256": "ea9ae767ae62ef1137743dcd131bf877b03c0d078138ee9a7e086e2c9e209273",
+      "worktree_bytes": 2981
+    },
+    {
+      "path": "crates/native-security/src/storage/actor_context.rs",
+      "git_blob": "f50f7d091a1a63dcc18e5ce5a2373319523321f9",
+      "context": "native_security",
+      "worktree_sha256": "6312cc4f393f4ec6a84990fcb142bc28eaa830c3125ba2b4f520dc9f9335f207",
+      "worktree_bytes": 15754
+    },
+    {
+      "path": "crates/native-security/src/storage/mod.rs",
+      "git_blob": "394927a1b8116027c67de3d1a1b187ee5f2244e5",
+      "context": "native_security",
+      "worktree_sha256": "9ee30f1a1dfb291b1d88b5ce20f3d306c2f9e2039a309e0a525f0bd308f97701",
+      "worktree_bytes": 858
+    },
+    {
+      "path": "crates/native-security/src/storage/private_directory.rs",
+      "git_blob": "52e9807d14d1f1db1ec0ee5d74c663a670325dfd",
+      "context": "native_security",
+      "worktree_sha256": "a6b2537611366c51a1eeb29b0be33de3add9a236dfed0aedca675a76ce3ef586",
+      "worktree_bytes": 5336
+    },
+    {
+      "path": "crates/native-security/src/storage/service.rs",
+      "git_blob": "79cc0e5bffa114bd0b2974fa8d32fa36d8434ccd",
+      "context": "native_security",
+      "worktree_sha256": "e0dd437ed236cf3ac23f89556694c31b7ac7f64dec7be75eea002769b25c1220",
+      "worktree_bytes": 10684
+    },
+    {
+      "path": "crates/native-security/src/storage/user_root_journal_model.rs",
+      "git_blob": "5667a74c98cc3a939078d8a96f9c220b2e674115",
+      "context": "native_security",
+      "worktree_sha256": "39418339777591696298402be879996bc491f722ad048a751bb10bc3905c19a0",
+      "worktree_bytes": 5792
+    },
+    {
+      "path": "crates/native-security/src/storage/user_root_journal_model/tests.rs",
+      "git_blob": "bf4c8a0bfefc4078cc10533d59bc1bc43bf4e01b",
+      "context": "native_security",
+      "worktree_sha256": "88604b42b1f163cae50453ec05fd7f18ebccfccf259a4481e2cb2644b7232f04",
+      "worktree_bytes": 13311
+    },
+    {
+      "path": "crates/native-security/src/storage/user_root_journal_model/transitions.rs",
+      "git_blob": "09ed2e4b446f91b8dbb941dc20d9f7c3aee9524b",
+      "context": "native_security",
+      "worktree_sha256": "50e39b05a5dc47d08e2fbc8b6b952df4cf1fb4886347ad30d437ca91a53d72ab",
+      "worktree_bytes": 8507
+    },
+    {
+      "path": "crates/native-security/src/storage/windows.rs",
+      "git_blob": "ac920cbd8ff135c4a256843de3f5d04781e2c9fb",
+      "context": "native_security",
+      "worktree_sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f",
+      "worktree_bytes": 9227
+    },
+    {
+      "path": "crates/native-security/src/volume/mod.rs",
+      "git_blob": "2a73a7dd805aeb2f8306622540c5b94f52d5beea",
+      "context": "native_security",
+      "worktree_sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+      "worktree_bytes": 1402
+    },
+    {
+      "path": "crates/network/Cargo.toml",
+      "git_blob": "fc3ca3042e59c3781c668f6b21c6a2d5bf35ffea",
+      "context": "network",
+      "worktree_sha256": "48ddc854ab53c9dbaacaa29d4a5ec985add93d7645fbe3d7f20dcf4fd4195fa5",
+      "worktree_bytes": 465
+    },
+    {
+      "path": "crates/network/src/correlation/config.rs",
+      "git_blob": "bace65a24645a7ab630e6e6e69a1c369c715a86f",
+      "context": "network",
+      "worktree_sha256": "0c4964306e4f402490672906bdfad4c6456c4f7f4e6a74c2218e9a8b48d9aae6",
+      "worktree_bytes": 1960
+    },
+    {
+      "path": "crates/network/src/correlation/mod.rs",
+      "git_blob": "26e6f52b75d90012c0f08e9144229fe22daf3cb8",
+      "context": "network",
+      "worktree_sha256": "9860d4f3ef2b53502c03ebd78831f284fa204daf14ca79051cb1cd6e188bbb50",
+      "worktree_bytes": 388
+    },
+    {
+      "path": "crates/network/src/correlation/registry.rs",
+      "git_blob": "0189b6082cefc8641de562f1f6c7dca3f268002b",
+      "context": "network",
+      "worktree_sha256": "2f7ff86065f7e10090b70703d9713160703b02454610f4b23e20cd274326dcea",
+      "worktree_bytes": 12912
+    },
+    {
+      "path": "crates/network/src/correlation/shared.rs",
+      "git_blob": "fbb5f674b0695e12914c339390255220a21e4c1b",
+      "context": "network",
+      "worktree_sha256": "fc7bc53996906fa867c7f0a169eb2774503565eb2116f2627435d9c576b246d9",
+      "worktree_bytes": 3213
+    },
+    {
+      "path": "crates/network/src/correlation/tests.rs",
+      "git_blob": "ea01fb968156632e0d03b973999b47ced7a1c720",
+      "context": "network",
+      "worktree_sha256": "92693b32f37ff9a1418498b5eba8e0da985eff1403a61aacb59bba269a32097a",
+      "worktree_bytes": 10343
+    },
+    {
+      "path": "crates/network/src/correlation/velocity.rs",
+      "git_blob": "ecc8ae5c6a9811ccaaaf19ca7165727332728b21",
+      "context": "network",
+      "worktree_sha256": "83cd8aff7030eb548a01bbe0d191cac6d614f23dfd0d2bc46153ba60718bd786",
+      "worktree_bytes": 774
+    },
+    {
+      "path": "crates/network/src/history/anomaly/config.rs",
+      "git_blob": "2160f9c718198123dda9811d5a92fa09e300237e",
+      "context": "network",
+      "worktree_sha256": "110c9ac7912759b2cf55ae7eea3f59a4c7ba8214cb6e993e494e4c23e6172552",
+      "worktree_bytes": 2349
+    },
+    {
+      "path": "crates/network/src/history/anomaly/mod.rs",
+      "git_blob": "f88c50867cf2e6b7be36366676f61c2108daee4a",
+      "context": "network",
+      "worktree_sha256": "080187b85860f707ff9885c4a0ad2f443b5bb9b81f4327a3e1f96d62094dd5b6",
+      "worktree_bytes": 6574
+    },
+    {
+      "path": "crates/network/src/history/anomaly/tests.rs",
+      "git_blob": "654e840acf51fbe4c562bfc69c95b0d3f178d322",
+      "context": "network",
+      "worktree_sha256": "7a8008c890982b25cac8789901fa094d6ccc904c89c8e1ff1e93e4c12be9f2c7",
+      "worktree_bytes": 7906
+    },
+    {
+      "path": "crates/network/src/history/mod.rs",
+      "git_blob": "57e3976ba923f48b5c21534b62c0f96688fc8d1c",
+      "context": "network",
+      "worktree_sha256": "92a16e6232be87ebe41645da606e600a8717c19ef991875dc4db82e80806e197",
+      "worktree_bytes": 1194
+    },
+    {
+      "path": "crates/network/src/history/rate/config.rs",
+      "git_blob": "153f7788246fb370bc4f35c2c13f4b52d0f8d0e3",
+      "context": "network",
+      "worktree_sha256": "f057982dd32bc389814ddc90bec44664b1d659e3d70be85954e1b045dae294cc",
+      "worktree_bytes": 2659
+    },
+    {
+      "path": "crates/network/src/history/rate/mod.rs",
+      "git_blob": "1d7f85a23c87c9abe4e0c1a992d125a7ffbac1e4",
+      "context": "network",
+      "worktree_sha256": "a1ab797ecf466a8e0eaf14cd2b1c61eaf5ced9a1605a7481296dcd40a7388ee5",
+      "worktree_bytes": 8358
+    },
+    {
+      "path": "crates/network/src/history/rate/tests.rs",
+      "git_blob": "2cedf271806f75cecb2c691432e93e60ec80d356",
+      "context": "network",
+      "worktree_sha256": "d69355dd3bea7ebcc8e8826dd286956e4a703b1ff1b4cf67c4caaeda39de6788",
+      "worktree_bytes": 8781
+    },
+    {
+      "path": "crates/network/src/http/headers.rs",
+      "git_blob": "2b1ed42c5cf6fea09e4e429e896c08aadff2a6ea",
+      "context": "network",
+      "worktree_sha256": "796a1a224103695a1ed9b8af5590fa38bcca88fdc4ab02b94e3d76ce37c7c62f",
+      "worktree_bytes": 6767
+    },
+    {
+      "path": "crates/network/src/http/mod.rs",
+      "git_blob": "1fed17b8cd436f5927a0f32fb16ebb864e346263",
+      "context": "network",
+      "worktree_sha256": "72c33358a014143140ca9c71afb8fc1cae9c2ea0153836bf3505e5144f5c4e4e",
+      "worktree_bytes": 118
+    },
+    {
+      "path": "crates/network/src/http2/mod.rs",
+      "git_blob": "53173347366f29bfcf947d528782e3ebd5160db2",
+      "context": "network",
+      "worktree_sha256": "f6ddb657dc4d964ad822ced39b69512cb310a2e24e82aef60d714580e90c2781",
+      "worktree_bytes": 4384
+    },
+    {
+      "path": "crates/network/src/http2/monitor.rs",
+      "git_blob": "8a14b3262bfeae448060ae65a304ad06edd8316b",
+      "context": "network",
+      "worktree_sha256": "c817c1f1ef0785ab9b4f83313060b5639df3b6b93ab6abf67ea95bf09e409f46",
+      "worktree_bytes": 5999
+    },
+    {
+      "path": "crates/network/src/lib.rs",
+      "git_blob": "eea07120d7b53ee82e407cc23680f73672cea851",
+      "context": "network",
+      "worktree_sha256": "c41921f17de36168339794339bcef3649f72457e7e5e8bc007b1345425479461",
+      "worktree_bytes": 223
+    },
+    {
+      "path": "crates/network/src/report/assembly.rs",
+      "git_blob": "6451dd6d8318579dd8229de827ecfe4181a008f2",
+      "context": "network",
+      "worktree_sha256": "aadb6d0cdb205485ee27977d1d2462db5df687242f3a50807a7b5d0d446446bb",
+      "worktree_bytes": 11260
+    },
+    {
+      "path": "crates/network/src/report/claims.rs",
+      "git_blob": "5bd7975e267e25543f368544accf74b76b1a9e67",
+      "context": "network",
+      "worktree_sha256": "412127506241c83a879931ead15cfe4a069c83c71efba7009772a7dfba978c99",
+      "worktree_bytes": 2301
+    },
+    {
+      "path": "crates/network/src/report/mod.rs",
+      "git_blob": "34eff7d93db2c71416093699da9bacbe257b9f9b",
+      "context": "network",
+      "worktree_sha256": "6505735608b8a39d73ecb9f57a130e9a415b86af7305876450acebd2e50f19b1",
+      "worktree_bytes": 1086
+    },
+    {
+      "path": "crates/network/src/residual/mod.rs",
+      "git_blob": "a2f5b14bb5469aaea296498df0cac3192af641cb",
+      "context": "network",
+      "worktree_sha256": "d5a17a64a694c9d515b26c8776a61515e4c2b8f50711be37d8198f8d6eb6eec6",
+      "worktree_bytes": 3786
+    },
+    {
+      "path": "crates/network/src/tcp/mod.rs",
+      "git_blob": "4daf0170a77d692cde6e28800a67e8290f3a60d9",
+      "context": "network",
+      "worktree_sha256": "a0bd1105acb001908c47674f06755a55cf663eb82ad6330040a9a03a2ade901a",
+      "worktree_bytes": 4108
+    },
+    {
+      "path": "crates/network/src/tls/fingerprint.rs",
+      "git_blob": "ba1e04b234864223c6d58cf1c08ddb2f94e27739",
+      "context": "network",
+      "worktree_sha256": "6c10ab922e86d7f0504508f84497fdb85fb460220870ee582eb48d300e21a192",
+      "worktree_bytes": 6891
+    },
+    {
+      "path": "crates/network/src/tls/hello.rs",
+      "git_blob": "53987fff40889259e296ea067c14022a082c8f46",
+      "context": "network",
+      "worktree_sha256": "d95a2c3400ab6984a9e8f6bb6b533600febba36b8d4b2cb8756aa18f09e7a10e",
+      "worktree_bytes": 5937
+    },
+    {
+      "path": "crates/network/src/tls/mod.rs",
+      "git_blob": "af7d09120df9ddddbe5b5f94ba9a30bb7c84e9b1",
+      "context": "network",
+      "worktree_sha256": "2e228aa45058301fdba6fa05533884f24fdd7fcfee140487b994d19f9279de02",
+      "worktree_bytes": 367
+    },
+    {
+      "path": "crates/network/src/traffic/consistency.rs",
+      "git_blob": "c87a3e86e2eed364c32d834e1c00bd2ca6247e34",
+      "context": "network",
+      "worktree_sha256": "7d1940682d97744a2332e6474e130712f9f454495ea4772839f39e823264c791",
+      "worktree_bytes": 3901
+    },
+    {
+      "path": "crates/network/src/traffic/log.rs",
+      "git_blob": "d058b895c19c15082990a410e5fba442b4e2d80f",
+      "context": "network",
+      "worktree_sha256": "c7e4cfe45e2667e6c993d68f3d0d83273b28cbbb3726c091ecc76b218bcf0a66",
+      "worktree_bytes": 5801
+    },
+    {
+      "path": "crates/network/src/traffic/mod.rs",
+      "git_blob": "4e784c69ac97c968125b596f738d48088c665bb2",
+      "context": "network",
+      "worktree_sha256": "11ce467c3dfff1b1ade81f79e4b730d0f25168b60bc854db1355976ac179c7a0",
+      "worktree_bytes": 1432
+    },
+    {
+      "path": "crates/network/src/traffic/record.rs",
+      "git_blob": "a4b946a9f4ec0975051ef9180cafa11708c58145",
+      "context": "network",
+      "worktree_sha256": "117e11e16838f115178f6cc3604392b4f6cea0c918dd462d65a87fc6d52fd187",
+      "worktree_bytes": 3463
+    },
+    {
+      "path": "crates/network/src/traffic/tests.rs",
+      "git_blob": "ba8fa843033757095608fcc70fb121f8d7942cf9",
+      "context": "network",
+      "worktree_sha256": "99079f78bba04b46cb3716d9472c77764dd3ffdcd0a2bf55532611a7a4b95d50",
+      "worktree_bytes": 5274
+    },
+    {
+      "path": "crates/network/tests/fixtures/h2.json",
+      "git_blob": "9c35c55d7443484346bd90e80837f3a825db9aa2",
+      "context": "network",
+      "worktree_sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866",
+      "worktree_bytes": 44216
+    },
+    {
+      "path": "crates/network/tests/fixtures/monitor.json",
+      "git_blob": "994718d5570aafe30a7004cde9459195a710cca3",
+      "context": "network",
+      "worktree_sha256": "e0c640671f8ebe0cbf47f0ec893ede98255710f5b9eb95448c33b81d6f9f874f",
+      "worktree_bytes": 12534269
+    },
+    {
+      "path": "crates/network/tests/fixtures/reports.json",
+      "git_blob": "9e81abe60c5188f21f7839c66600a0c6b875aa4d",
+      "context": "network",
+      "worktree_sha256": "f4b534f80e214eb4b37f34cacc12aba3c3081aaeb920cf3be242752199fcf06e",
+      "worktree_bytes": 4720797
+    },
+    {
+      "path": "crates/network/tests/fixtures/tls.json",
+      "git_blob": "c5a550746d921ddcf01f73ecb6628674f9d8281e",
+      "context": "network",
+      "worktree_sha256": "048c7fb450ff33db5a91f1b8f6ddc9e480504b3a767971519b94ccc37c6e9540",
+      "worktree_bytes": 556152
+    },
+    {
+      "path": "crates/network/tests/h2_parity.rs",
+      "git_blob": "4929d5e3876696e1c1d81ea088c4886b0867b8d0",
+      "context": "network",
+      "worktree_sha256": "51600f099b6ff78dfff0d099a9c3574f9373839a2c5f3c558d5932824f8d58cb",
+      "worktree_bytes": 650
+    },
+    {
+      "path": "crates/network/tests/monitor_parity.rs",
+      "git_blob": "c260eeddeb173e77a61d984477c0026e00e2ebb7",
+      "context": "network",
+      "worktree_sha256": "3e3ce87642eb5c49ff428860e8f5fcbf99dda133b4f50c4b65432971a551a371",
+      "worktree_bytes": 908
+    },
+    {
+      "path": "crates/network/tests/report_parity.rs",
+      "git_blob": "a6a41a9bbb9321d2a37ca278473081215e0f8598",
+      "context": "network",
+      "worktree_sha256": "bf044891a96af1c2df94fb91492ed41bfb756666d842de5ed19944aedcb9d4c1",
+      "worktree_bytes": 1451
+    },
+    {
+      "path": "crates/network/tests/tls_parity.rs",
+      "git_blob": "95840355771cc8d2433cf716ffc456ff9838456e",
+      "context": "network",
+      "worktree_sha256": "5c83ac51ceee549b2663c869e5ce555c364e5dda807d7f7f307d5c043a76de05",
+      "worktree_bytes": 1752
+    },
+    {
+      "path": "crates/runtime/Cargo.toml",
+      "git_blob": "eb2d2c10cfe72ff8a77fa882b780389d5f23e8e6",
+      "context": "gateway",
+      "worktree_sha256": "52127fac053b7aa686c75242cc07864086af07b568fd7bbd063b265df126183f",
+      "worktree_bytes": 993
+    },
+    {
+      "path": "crates/runtime/INTEGRATION.md",
+      "git_blob": "b8b9dc38446ffc0ee3b5fb8cdddf47b6489968dc",
+      "context": "gateway",
+      "worktree_sha256": "89d56da2df5f31133809ac4ef80ac18e80bddeca719e9bda38405fc2d2ed2893",
+      "worktree_bytes": 36740
+    },
+    {
+      "path": "crates/runtime/browser-http-contract.json",
+      "git_blob": "27e64ce072d51ec04a44f2650798dd00b36281c6",
+      "context": "gateway",
+      "worktree_sha256": "d0ff620b7ed65d77858dd14484845413ca1072ffb36838dee0e12c3326a2d7cc",
+      "worktree_bytes": 2655
+    },
+    {
+      "path": "crates/runtime/qualification-contract.json",
+      "git_blob": "88c2a3a1d9eb558852d4a258ed92de668fb646ab",
+      "context": "gateway",
+      "worktree_sha256": "b47500cba412070d638b1159cec8b7adb215f3458e6cfc64f899c621e8a7738d",
+      "worktree_bytes": 10630
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "git_blob": "e91555972b26e68f7182918c5559e08192009aa0",
+      "context": "gateway",
+      "worktree_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf",
+      "worktree_bytes": 25216
+    },
+    {
+      "path": "crates/runtime/src/application/settings.rs",
+      "git_blob": "19794fe1634699c6f731fcc4da4c2501511f7da8",
+      "context": "gateway",
+      "worktree_sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61",
+      "worktree_bytes": 5494
+    },
+    {
+      "path": "crates/runtime/src/application/temporal.rs",
+      "git_blob": "000bc4da74b93bccabfc69bd10ca0fe982e8d736",
+      "context": "gateway",
+      "worktree_sha256": "00233744c82aa75130e180f83a062a53234ff92c64fc0174b38e3395cc02a797",
+      "worktree_bytes": 3026
+    },
+    {
+      "path": "crates/runtime/src/application/temporal/operations.rs",
+      "git_blob": "7d6b86ef48c90aa10deedc9c754ccff1d4c46cf7",
+      "context": "gateway",
+      "worktree_sha256": "7f059b2f80c458d8919413187276cff9b61b3087de4ac90ebdecddf71787d165",
+      "worktree_bytes": 4201
+    },
+    {
+      "path": "crates/runtime/src/application/temporal/progress.rs",
+      "git_blob": "0e7bb10aca5b9a5198abe07b4eec26968fa367c9",
+      "context": "gateway",
+      "worktree_sha256": "ca2be76059fa1bb3125c3882c040cced76fee83d89737c363f143a27871b4138",
+      "worktree_bytes": 6012
+    },
+    {
+      "path": "crates/runtime/src/application/temporal/tests.rs",
+      "git_blob": "3e9a81af5d71e112669b8493e7203e52e4831e03",
+      "context": "gateway",
+      "worktree_sha256": "ba9b66237c77e77e2919457790b9839e2a0b28754918204c4005eaadfb58db5c",
+      "worktree_bytes": 547
+    },
+    {
+      "path": "crates/runtime/src/application/temporal/tests/categories.rs",
+      "git_blob": "b933667b51a7bd8cc553644ff871ca67a25b2b63",
+      "context": "gateway",
+      "worktree_sha256": "0493838ef6f7fa852a79f6447e8ea24dd810d593088d8ef5ca01294d845a6166",
+      "worktree_bytes": 5838
+    },
+    {
+      "path": "crates/runtime/src/application/temporal/tests/continuity.rs",
+      "git_blob": "c78042395169c20df0c7b150e70a053fa199d0fc",
+      "context": "gateway",
+      "worktree_sha256": "38492b2e74240a11a07306c5b5e83ebf5fbdbff209c0c12bc6e38373147a7029",
+      "worktree_bytes": 4503
+    },
+    {
+      "path": "crates/runtime/src/application/tls.rs",
+      "git_blob": "94808d6387c397105a5ebd60b215729fc5fc3556",
+      "context": "gateway",
+      "worktree_sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6",
+      "worktree_bytes": 7989
+    },
+    {
+      "path": "crates/runtime/src/browser.rs",
+      "git_blob": "862feecc531436b5186b10e0e8baffad42d01a98",
+      "context": "gateway",
+      "worktree_sha256": "9cc32a76b1aec49c01dbdea13f8266d737effdc68572d3050daad11806076e6d",
+      "worktree_bytes": 4269
+    },
+    {
+      "path": "crates/runtime/src/configuration.rs",
+      "git_blob": "1f111eb7ba6de9b321a3fdb1483fd6527d463aa0",
+      "context": "gateway",
+      "worktree_sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e",
+      "worktree_bytes": 7857
+    },
+    {
+      "path": "crates/runtime/src/configuration/audit.rs",
+      "git_blob": "e8629587e9420d73e09acb7a57d9bc974f7fd50f",
+      "context": "gateway",
+      "worktree_sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f",
+      "worktree_bytes": 1826
+    },
+    {
+      "path": "crates/runtime/src/configuration/operational.rs",
+      "git_blob": "5e993aea928c076d61327bebfd9ec17eb0f197e1",
+      "context": "gateway",
+      "worktree_sha256": "aa0a21fda1ed2bb760f34ecda727516e76220a630cff16c5bb116af5d92e7650",
+      "worktree_bytes": 2147
+    },
+    {
+      "path": "crates/runtime/src/control.rs",
+      "git_blob": "a3c6f52c1b8118cf09088f40167811aef748f310",
+      "context": "gateway",
+      "worktree_sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc",
+      "worktree_bytes": 3656
+    },
+    {
+      "path": "crates/runtime/src/control/state.rs",
+      "git_blob": "1fde8b8d0eda89bf7103f7697d7b1858201c3554",
+      "context": "gateway",
+      "worktree_sha256": "f681fdaa2a898a92e5da58eb53a17a7660f4d841596ab8046fde82072944925e",
+      "worktree_bytes": 5763
+    },
+    {
+      "path": "crates/runtime/src/http.rs",
+      "git_blob": "b156b85c4e02a4cf98b67bbf07bb63e678dab0be",
+      "context": "gateway",
+      "worktree_sha256": "c69c60bdc3c33072d10175b0e315db636e0d985958744ab7e09de57065a69da6",
+      "worktree_bytes": 9926
+    },
+    {
+      "path": "crates/runtime/src/http/origin_response.rs",
+      "git_blob": "2dcb53efdda1dd4ced35dd31d5a8c13d3359dc81",
+      "context": "gateway",
+      "worktree_sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39",
+      "worktree_bytes": 11184
+    },
+    {
+      "path": "crates/runtime/src/http/stream.rs",
+      "git_blob": "ca8555cc085ab89d9af082b53d9ef6d8b3557ae0",
+      "context": "gateway",
+      "worktree_sha256": "02444bb5a9212b3976d3a60eb7dc03eb0802e902a889f252017e41e278dac56b",
+      "worktree_bytes": 11417
+    },
+    {
+      "path": "crates/runtime/src/lib.rs",
+      "git_blob": "00af7c63305ea83b7e1587bef454acb1be140097",
+      "context": "gateway",
+      "worktree_sha256": "54fb6bb5814f6e5fd1846df0408c93222f573403589d4c921f207c0cd3734928",
+      "worktree_bytes": 367
+    },
+    {
+      "path": "crates/runtime/src/main.rs",
+      "git_blob": "5c666019319e3ad890f8f0b2df7171c171414c26",
+      "context": "gateway",
+      "worktree_sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797",
+      "worktree_bytes": 1606
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "git_blob": "4d9e086c7e8bb8c879385706c72644ef2b8d0e2f",
+      "context": "gateway",
+      "worktree_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb",
+      "worktree_bytes": 5394
+    },
+    {
+      "path": "crates/runtime/src/management/operator.rs",
+      "git_blob": "ff07f9e36551ba796494d34ca23604a6699767f5",
+      "context": "gateway",
+      "worktree_sha256": "f12a6e61bd02ced0706b5995f2124a200dfbe376903b998b4b082fdeb93d7fd0",
+      "worktree_bytes": 3588
+    },
+    {
+      "path": "crates/runtime/src/management/policy.rs",
+      "git_blob": "5e5610710fbcab3f85ee4c96838d38839bf3920c",
+      "context": "gateway",
+      "worktree_sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9",
+      "worktree_bytes": 3494
+    },
+    {
+      "path": "crates/runtime/src/management/tests.rs",
+      "git_blob": "3c58e6ff0766a486000a37c1e6c0bafcd85bfd07",
+      "context": "gateway",
+      "worktree_sha256": "f4ace8af102cd7936cf459620cf0cc230ad3f052cacb7d8b22b05e3bb225a7ea",
+      "worktree_bytes": 6284
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "git_blob": "b4861eec4875a76caed9233030b7e38ee00c6721",
+      "context": "gateway",
+      "worktree_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13",
+      "worktree_bytes": 13755
+    },
+    {
+      "path": "crates/runtime/src/service/authorization.rs",
+      "git_blob": "e23f35e54dbd67a71c3ee57452dd1c334a380775",
+      "context": "gateway",
+      "worktree_sha256": "e4c0f7e255e00a1cab76fb10271991761207aab77437cb77ab6ab059dff94085",
+      "worktree_bytes": 2926
+    },
+    {
+      "path": "crates/runtime/src/service/authorization/tests.rs",
+      "git_blob": "2256e91ed8abf9eb8f32158da9274591101418d7",
+      "context": "gateway",
+      "worktree_sha256": "7837748f7fb6573df6efbd6cae300805d3eae7b68b8610f0e76b2b9aa4c8aa3f",
+      "worktree_bytes": 6492
+    },
+    {
+      "path": "crates/runtime/src/service/epoch.rs",
+      "git_blob": "aeb9974d2b99fb433890362a1e30e896dda41d2d",
+      "context": "gateway",
+      "worktree_sha256": "c48d012e6ae7fd08f9c2339cf648e18047661b15b8055a94616d34f11c341270",
+      "worktree_bytes": 4973
+    },
+    {
+      "path": "crates/runtime/src/service/epoch/tests.rs",
+      "git_blob": "22c7a17909b22b29623832c792daee7e22b30af2",
+      "context": "gateway",
+      "worktree_sha256": "ae15666482403ccbea4861630a1021696d123f8b3ba8fa7cdd6920bc2ed689c9",
+      "worktree_bytes": 5612
+    },
+    {
+      "path": "crates/runtime/src/service/lifecycle.rs",
+      "git_blob": "ee3c4f0cc4a703694acb0519865df71d93473b1e",
+      "context": "gateway",
+      "worktree_sha256": "978db8db5889e2a8d65064a691fbad53544ce9ea8561c98b0364dfda91fd062c",
+      "worktree_bytes": 2259
+    },
+    {
+      "path": "crates/runtime/src/service/observed.rs",
+      "git_blob": "611ebbb9c315d723af402d6f0d877d5d9c13195c",
+      "context": "gateway",
+      "worktree_sha256": "70ae58ce40e59fdfe217562c144b380bc6097ce1a63228f1f5d072e7c33d7bda",
+      "worktree_bytes": 2786
+    },
+    {
+      "path": "crates/runtime/src/service/observed/retained.rs",
+      "git_blob": "c4c14d52093cb406c2d3296cb15b9b6a985d0a2d",
+      "context": "gateway",
+      "worktree_sha256": "33dd4d61fd6a65bfababcdc62db6a34bf9de0de6adf055bb04beefce41f3b985",
+      "worktree_bytes": 1508
+    },
+    {
+      "path": "crates/runtime/src/service/observed/retained/tests.rs",
+      "git_blob": "a36e5a8dc6df755fb4c47f4cead71f4f4a0ff83e",
+      "context": "gateway",
+      "worktree_sha256": "0def4c79158292e5c6092ad6e703063d6df3fde3a54dba8bd67eaea03c213224",
+      "worktree_bytes": 2312
+    },
+    {
+      "path": "crates/runtime/src/service/outcome.rs",
+      "git_blob": "5d1ea3cb2cdf2eff5157d5892949a895c62b3be9",
+      "context": "gateway",
+      "worktree_sha256": "6418a93d8cdf3fcf199096eb08bd810d2c6dc519df654ba35bc7d5c6273c3569",
+      "worktree_bytes": 3279
+    },
+    {
+      "path": "crates/runtime/src/service/readiness.rs",
+      "git_blob": "2700713c48f65fb98ed8d9eb76bd96b644e438db",
+      "context": "gateway",
+      "worktree_sha256": "588e2973865ad469d46a9bb9faeab13c5f95b2d9cb989e1022977d27ccb40fc5",
+      "worktree_bytes": 3297
+    },
+    {
+      "path": "crates/runtime/src/service/shutdown.rs",
+      "git_blob": "9287cc229c1e61cab580eb5f359c530066468aa7",
+      "context": "gateway",
+      "worktree_sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb",
+      "worktree_bytes": 3054
+    },
+    {
+      "path": "crates/runtime/src/session.rs",
+      "git_blob": "71f3b0d37891bfa22d56e41150b3f5e52e916800",
+      "context": "gateway",
+      "worktree_sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4",
+      "worktree_bytes": 14413
+    },
+    {
+      "path": "crates/runtime/src/session/admission.rs",
+      "git_blob": "66255bfa47d45e4962821acdf477794519d2e595",
+      "context": "gateway",
+      "worktree_sha256": "275f5162e56e490dc9889b1091935e3185c4a7f78cc3281bde0af1ba84f0263e",
+      "worktree_bytes": 1850
+    },
+    {
+      "path": "crates/runtime/src/settings.rs",
+      "git_blob": "64efb8f941d7807cb16eb6d8dc9f7b4c77e59d46",
+      "context": "gateway",
+      "worktree_sha256": "3e04120155988ae12fb7bcdbfcbd571519e039f2aec15c0c6f879fadf4abe2fa",
+      "worktree_bytes": 5545
+    },
+    {
+      "path": "crates/runtime/src/settings/store.rs",
+      "git_blob": "a36049a166d543314c980e5dcbaa821e8989d92f",
+      "context": "gateway",
+      "worktree_sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6",
+      "worktree_bytes": 13659
+    },
+    {
+      "path": "crates/runtime/src/settings/store/journal.rs",
+      "git_blob": "ce17cf64073b3a06b5d3513c3aedec23898e61fc",
+      "context": "gateway",
+      "worktree_sha256": "64a1341091cca0e3009e0486f705e54296b45b18bb99612f88cfb568bc38c672",
+      "worktree_bytes": 3445
+    },
+    {
+      "path": "crates/runtime/src/shipping.rs",
+      "git_blob": "7d74470a490a799e81ad2c9443064ef42bfdf9e8",
+      "context": "gateway",
+      "worktree_sha256": "b4cda834adcf0fa4983521f58b58fab0823aac53cecd8b576320432a8abbfe5c",
+      "worktree_bytes": 3518
+    },
+    {
+      "path": "crates/runtime/src/shipping/binding.rs",
+      "git_blob": "d95c9d9ff3ee89852a35f4c82bdeafc48a72f7a6",
+      "context": "gateway",
+      "worktree_sha256": "05097e0ae6560946af9725cccb32e86a1382d97e5b95a4d7bcb93ea043f64e6e",
+      "worktree_bytes": 1789
+    },
+    {
+      "path": "crates/runtime/src/shipping/scope.rs",
+      "git_blob": "706bb56010ed61bf9469ed4d6243e7c3b957cce8",
+      "context": "gateway",
+      "worktree_sha256": "7fc02698d5ca5a16a4f636334c4a2cab091da3d5b8c87799e63b99dff5714094",
+      "worktree_bytes": 1920
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests.rs",
+      "git_blob": "246e20636ffa14b92b619a9a1700a6bb1d1af263",
+      "context": "gateway",
+      "worktree_sha256": "6b2f5182ab1b4061862d5147e91a0cba8b0ea1e44c35d79aeb1966d1b5d5aa53",
+      "worktree_bytes": 1251
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests/bounds.rs",
+      "git_blob": "361a3fd803551dcade69c6ef9490e3e8021a3397",
+      "context": "gateway",
+      "worktree_sha256": "6fde5b8a4f91931d028ec1709a27b5e64284d49f029c6564d01b0f978ce2e2d9",
+      "worktree_bytes": 3440
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests/envelope.rs",
+      "git_blob": "522d4919c6904bde8ca9d3ad013a6b98198d2668",
+      "context": "gateway",
+      "worktree_sha256": "6dd87a2f5faeaee2e575487d9a6b37f5a69c7857c1614b27ea9ed3dd3a09c894",
+      "worktree_bytes": 7885
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests/providers.rs",
+      "git_blob": "b87361d5195c6a9ea9f18e05c4b37d1d69ce893f",
+      "context": "gateway",
+      "worktree_sha256": "e8c07914816e47b9ce5db8990f1914708c124a196af90570bcb9b3709550c7ef",
+      "worktree_bytes": 3420
+    },
+    {
+      "path": "crates/runtime/src/shipping/wire.rs",
+      "git_blob": "e0af4fcaff33a705963ae923efe67a20ec401df1",
+      "context": "gateway",
+      "worktree_sha256": "928d1d4a9b704f161b5570639c21ee2b56d211d7c8f2dcaed932e3a3af237630",
+      "worktree_bytes": 4096
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "git_blob": "05a7055a4c38d886c192e88d17840d7629b156cd",
+      "context": "gateway",
+      "worktree_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db",
+      "worktree_bytes": 6204
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "git_blob": "e50e3eb15809bb84754acf6f200ad57afd1f01aa",
+      "context": "gateway",
+      "worktree_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181",
+      "worktree_bytes": 23875
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "git_blob": "620bf41835be87c790fb05cb03eb0624dd056a9f",
+      "context": "gateway",
+      "worktree_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c",
+      "worktree_bytes": 16281
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract.rs",
+      "git_blob": "43ef25813e5248ea01d9a66a1ffc45a3ee65c4dc",
+      "context": "gateway",
+      "worktree_sha256": "f40d22522c6b1ae4bb1d0df184fd5ed294c9984a9ae7b59781e1b130ad849fe2",
+      "worktree_bytes": 3686
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract/harness.rs",
+      "git_blob": "0d6bcf91a3d5bf560640cbf5794aac85d2e3b1e8",
+      "context": "gateway",
+      "worktree_sha256": "a29c5c03ad5c1a608fe6727f68a53fe4e81c5624562c6d9c9ee214befecb3079",
+      "worktree_bytes": 7790
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "git_blob": "5a77999c22eec73ad94a22caa60b229f752f0db8",
+      "context": "gateway",
+      "worktree_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a",
+      "worktree_bytes": 11146
+    },
+    {
+      "path": "crates/runtime/src/tests/service/settings_operator.rs",
+      "git_blob": "f3a8d70500edba60083fd49280d2076cce1c49a5",
+      "context": "gateway",
+      "worktree_sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70",
+      "worktree_bytes": 6694
+    },
+    {
+      "path": "crates/runtime/src/tests/settings.rs",
+      "git_blob": "7b867d75d5018fa908f09cec6ffce20d913e876d",
+      "context": "gateway",
+      "worktree_sha256": "2173b20cbb7df576f732ff04b0e222ffc99321b63bdf9a15c159329402cccb60",
+      "worktree_bytes": 3159
+    },
+    {
+      "path": "crates/runtime/src/tests/stream.rs",
+      "git_blob": "ed742bccefb5718d47f3f6e8c207ab10725f3079",
+      "context": "gateway",
+      "worktree_sha256": "1768559c0ce1f6704efc038ba779436d6329be97b41ba74bb4a174b1d354e346",
+      "worktree_bytes": 2902
+    },
+    {
+      "path": "crates/runtime/src/tests/tls.rs",
+      "git_blob": "b647e00310275ff696353203dd75085d0ff95084",
+      "context": "gateway",
+      "worktree_sha256": "154a9b4a43f21673d5c69f4d6c93fe0e1c338f0ffa3ede0244096519207c3065",
+      "worktree_bytes": 5299
+    },
+    {
+      "path": "crates/runtime/src/tests/tls/dispatch.rs",
+      "git_blob": "55a285ec950d3a22137f0ee1cb81f8f27993355d",
+      "context": "gateway",
+      "worktree_sha256": "42a335960ce0245f3e3374408d1b686be1be98239c074210abf16ff0b3c97b2d",
+      "worktree_bytes": 5692
+    },
+    {
+      "path": "crates/runtime/src/tests/tls/observation.rs",
+      "git_blob": "d499286bf1d1abc70ae13e0e1e06d8af7bd181f4",
+      "context": "gateway",
+      "worktree_sha256": "f1f4639f63df149ae850282e89c6bd731c20f14c05eaddbe6805535791a281ff",
+      "worktree_bytes": 1449
+    },
+    {
+      "path": "crates/runtime/src/tls.rs",
+      "git_blob": "d972b23d12f6b6e33918824fd1cc408e8d4b4c81",
+      "context": "gateway",
+      "worktree_sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db",
+      "worktree_bytes": 6623
+    },
+    {
+      "path": "crates/runtime/tests/native_process.rs",
+      "git_blob": "5fe84b010c4796c548e390777a0168e0935d103f",
+      "context": "gateway",
+      "worktree_sha256": "205eb6559c66cc88107192ffaaa33a37e4609f25eb09239d104a69cf8a52bfd4",
+      "worktree_bytes": 11801
+    }
+  ],
+  "contexts": [
+    "gateway",
+    "authority",
+    "audit",
+    "capture",
+    "network",
+    "native_security"
+  ],
+  "pub_crate_dispositions": {
+    "gateway": 43,
+    "authority": 7,
+    "audit": 42,
+    "capture": 0,
+    "network": 5,
+    "native_security": 1
+  },
+  "visibility": "All98 ->pub(in crate::<owner>) or narrower, no sibling capability mint; same-crate privacy negatives plus legitimate positives required",
+  "replicas": [
+    {
+      "original_commit": "49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051",
+      "original_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "original_git_blob": "cbf3e6c6b40d9ecb241238953947c9f669e7f86a",
+      "original_sha256": "767bff0359ae529a85905966c4031267922b35ba7d04e35d7d048d2208105e92",
+      "destination": "tests/fixtures/authority/core-human-chrome-allow.json",
+      "license": "Apache-2.0 repository LICENSE",
+      "replica_created": false,
+      "actual_copied_sha256": null,
+      "requires_atomic_equality": true,
+      "observed_worktree_sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+      "worktree_differs_from_canonical_blob": true,
+      "canonical_source": "Chosen original Git blob bytes, not filtered-equivalent worktree; copy without oracle regeneration/normalization"
+    },
+    {
+      "original_commit": "49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051",
+      "original_path": "crates/collector/pilot/fixture.json",
+      "original_git_blob": "d16085a7e8888aa16395a2306bf2fe3a565b08f8",
+      "original_sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+      "destination": "tests/fixtures/gateway/collector-pilot.json",
+      "license": "Apache-2.0 repository LICENSE",
+      "replica_created": false,
+      "actual_copied_sha256": null,
+      "requires_atomic_equality": true,
+      "observed_worktree_sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+      "worktree_differs_from_canonical_blob": false,
+      "canonical_source": "Chosen original Git blob bytes, not filtered-equivalent worktree; copy without oracle regeneration/normalization"
+    }
+  ],
+  "integration_targets": [
+    {
+      "old_package": "runtime",
+      "old_target": "native_process",
+      "new_target": "gateway-native-process",
+      "new_path": "tests/gateway/native_process.rs"
+    },
+    {
+      "old_package": "authority",
+      "old_target": "decisions",
+      "new_target": "authority-decisions",
+      "new_path": "tests/authority/decisions.rs"
+    },
+    {
+      "old_package": "authority",
+      "old_target": "local_service",
+      "new_target": "authority-local-service",
+      "new_path": "tests/authority/local_service.rs"
+    },
+    {
+      "old_package": "authority",
+      "old_target": "native_process",
+      "new_target": "authority-native-process",
+      "new_path": "tests/authority/native_process.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "checkpoint_parity",
+      "new_target": "audit-checkpoint-parity",
+      "new_path": "tests/audit/checkpoint_parity.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "control_operations",
+      "new_target": "audit-control-operations",
+      "new_path": "tests/audit/control_operations.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "durable_witness",
+      "new_target": "audit-durable-witness",
+      "new_path": "tests/audit/durable_witness.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "key_backups",
+      "new_target": "audit-key-backups",
+      "new_path": "tests/audit/key_backups.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "key_custody",
+      "new_target": "audit-key-custody",
+      "new_path": "tests/audit/key_custody.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "merkle_parity",
+      "new_target": "audit-merkle-parity",
+      "new_path": "tests/audit/merkle_parity.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "record_parity",
+      "new_target": "audit-record-parity",
+      "new_path": "tests/audit/record_parity.rs"
+    },
+    {
+      "old_package": "audit",
+      "old_target": "verification_parity",
+      "new_target": "audit-verification-parity",
+      "new_path": "tests/audit/verification_parity.rs"
+    },
+    {
+      "old_package": "capture",
+      "old_target": "hosted_transport",
+      "new_target": "capture_hosted_transport",
+      "new_path": "tests/capture/hosted_transport.rs"
+    },
+    {
+      "old_package": "network",
+      "old_target": "h2_parity",
+      "new_target": "network_h2_parity",
+      "new_path": "tests/network/h2_parity.rs"
+    },
+    {
+      "old_package": "network",
+      "old_target": "monitor_parity",
+      "new_target": "network_monitor_parity",
+      "new_path": "tests/network/monitor_parity.rs"
+    },
+    {
+      "old_package": "network",
+      "old_target": "report_parity",
+      "new_target": "network_report_parity",
+      "new_path": "tests/network/report_parity.rs"
+    },
+    {
+      "old_package": "network",
+      "old_target": "tls_parity",
+      "new_target": "network_tls_parity",
+      "new_path": "tests/network/tls_parity.rs"
+    }
+  ],
+  "binary_names": [
+    "humanymous-runtime",
+    "humanymous-authority",
+    "audit-witness",
+    "audit-control-retainer"
+  ],
+  "binary_identity": "Four already unique role-qualified names retained with exact CARGO_BIN_EXE names; packageID never confers sibling authority",
+  "remaining_source_edits": "NONE by this owner; Root moves/maps/declares all six contexts, fixtures, aliases and visibility",
+  "source_claim_released": true,
+  "dirty_source_paths": [],
+  "live_compilers": [],
+  "live_target_leases": [],
+  "source_hash_semantics": "Git-clean under filters at capture; worktree_sha256 is RAW observed worktree bytes, git_blob is canonical committed object identity. Their byte equality is NOT assumed. Root must source fixture bytes from chosen committed blob/archive and verify canonical digest.",
+  "binary_paths": {
+    "humanymous-runtime": "src/gateway/main.rs",
+    "humanymous-authority": "src/authority/main.rs",
+    "audit-witness": "src/audit/bin/audit-witness.rs",
+    "audit-control-retainer": "src/audit/bin/audit-control-retainer.rs"
+  }
+}

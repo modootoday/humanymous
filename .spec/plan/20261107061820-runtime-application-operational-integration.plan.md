@@ -20,6 +20,103 @@ dual-control and missing-required fail-closed remain invariant.
 
 ## Steps
 
+### Final six-context freeze handoff after selected validation
+
+Root's fixture policy662cf7a and Native checkpoint49d60cf6 are incorporated in
+runtime-six-context-freeze.json under evidence:root/20261107061821. At capture,
+all279 tracked files in the six source packages were Git-clean against exact commit
+49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051. The artifact records every old path,
+Git blob, byte count and RAW worktree SHA256, the accepted gateway/authority/audit/capture/
+network/native_security contexts,17 explicit unique integration-test aliases and
+the four already unique binary roles. Root owns actual moves, imports, manifest
+declarations and API consumer changes; this owner has no source edits remaining.
+
+Git-clean means clean under Git filters, not raw worktree/blob byte equality.
+Core's human-chrome fixture was CRLF in the observed worktree while its committed
+blob was LF. Canonical original blob cbf3e6c6b40d9ecb241238953947c9f669e7f86a
+has SHA256767bff0359ae529a85905966c4031267922b35ba7d04e35d7d048d2208105e92,
+verified from immutable889 archive against the same49d blob. Its observed raw
+worktree hash is recorded separately. Root must copy the chosen original committed
+fixture bytes, with actual copied-byte equality, without regenerating/normalizing
+an oracle. This owner changed neither producer nor fixture bytes.
+
+Use context-qualified src trees and tests/<context> roots. Root accepted hyphenated
+Gateway/Authority/Audit test aliases, underscore Network aliases and
+capture_hosted_transport; the artifact lists all17. Keep binary roles
+humanymous-runtime (Gateway private process), humanymous-authority (private IPC),
+audit-witness and audit-control-retainer with their corresponding exact
+CARGO_BIN_EXE references, using context-owned main/bin source paths. Any deliberate rename requires coordinated selectors,
+install paths, native allowlists and artifact/BASE identity bindings. A shared
+package ID never grants a binary a sibling's native privileges. Disable accidental
+Cargo target discovery or declare exact targets so duplicate native_process
+integration names cannot silently erase a test. Capture's hosted_transport keeps
+its explicit hosted-pilot feature; credential-pilot remains native-only unless
+Root explicitly changes names. Default serving/role capabilities do not widen.
+
+Move complete owned Authority/Audit/Network fixtures, unchanged, to
+tests/fixtures/<context>; Gateway's authorization test reads Authority DATA in
+that same package. Capture currently has no fixture tree. Two DATA-only replicas
+are explicitly permitted: Core human-chrome-allow.json to Authority's fixture
+context, and Collector pilot/fixture.json to Gateway's fixture context. Provenance
+records the exact49d original commit/path/blob/SHA256/license and destination;
+actual copied-byte hash is NULL until Root performs and verifies the copy. No
+copy is claimed by this handoff. Producer remains authoritative, with explicit
+coordinated updates and equality checks. No outside-package includes, public
+fixture API, source replication or helper crate. Rewrite every relative and
+Audit CARGO_MANIFEST_DIR corpus anchor; clean extracted package tests/examples
+must compile with only its packaged fixture inputs.
+
+The98 crate-visibility lines retain accepted owner restrictions: Gateway43,
+Authority7, Audit42, Capture0, Network5, Native1. Convert every pub(crate) type,
+field, constructor, method and reexport to its original context or narrower.
+Audit approval/erasure minting and storage custody require real same-crate
+sibling denial probes plus legitimate positive controls. Empty NativeProof,
+Authority state owner, private Gateway retained resources/Ready and cfg(test)
+temporal/epoch/native models must not become production factories. Public API
+crossrefs point to the single owning nominal type; no forwarding compatibility
+package or blanket crate-wide field visibility. Core/platform direction and
+approved unsafe boundary remain unchanged.
+
+Runtime source claim is RELEASED; the remaining lane is spec/evidence-only.
+The be9 exact-case proof is canonical8c8fc504, with original2e19 proof unchanged.
+Collector889 compile-only run2653 completed with fmt/check/strict Clippy0 and
+all3042 source/1836 registry/78 tools/18 config/14 environment inputs unchanged;
+no WASM/mock/browser execution. Both exclusive targets and all owned compiler
+handles were returned before bookkeeping. These proofs do not qualify a moved
+six-context graph, actual native role, W/Ready or public shipping behavior.
+
+### Source-only bootstrap403 diagnosis — no Runtime trace API
+
+Source1f87d310492b2bf23f62395c97b90e766af5f84a has fixed Collector runtime-pilot
+SHA256c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064:
+POST /_humanymous/browser/session with empty JSON object. Lab retained run
+42415763028/attempt1/job128534175499, DNS succeeded, actor inventory67/selected1/
+filtered66, exit1, assertions18/pass16/fail2 and generic bootstrap forbidden.
+No Origin/Referer presence or Sec-Fetch classes were exported. Declared source
+profile is not observed wire, and403 alone establishes neither validator branch.
+
+Exact order: authority mismatch can return403 before bootstrap. Missing browser
+policy or any Cookie header returns422. Origin equal to configured policy passes;
+absent Origin passes only GET/HEAD, so missing POST Origin or any other mismatch
+returns browser_origin403. Only after Origin acceptance, Sec-Fetch-Site/Mode/Dest
+must be exactly same-origin/same-origin/empty; any missing/mismatched value returns
+the aggregate browser_fetch_metadata403. Referer is NOT a Runtime gate. Malformed
+bootstrap returns400, and no scoring or counter ACK is consumed here.
+
+Application connection's direct decide_request error branch already emits compact
+JSON containing the static error.code at line469 of that source; outer line425
+is a separate fallback. Thus no new Runtime trace/API or header logging is needed.
+Partial/cancelled delivery remains unknown. Root's Collector889 source performs
+bounded exact classification of just the two static error bodies under256 bytes
+and the original timer; unknown/extra/foreign/oversize/read errors stay generic.
+This is a finite diagnostic class, not wire-header/native/server authenticity.
+Existing proxy counters conflate absent/mismatched Origin as origin_other, record
+Referer presence only, and have no Sec-Fetch branch classes; none were present in
+the retained failure outcome. See bootstrap-1f87-source-diagnosis.json and
+collector-889eb6f8-compile-summary.json. The old failure cause stays unresolved
+until a separately authorized actual browser run; no policy/scoring relaxation,
+production Runtime change or new browser execution was performed by this owner.
+
 ### RUNTIME-SLICE-02 context design v0 — module map accepted
 
 **Brief.** Consolidate six accepted responsibilities into one public Runtime
