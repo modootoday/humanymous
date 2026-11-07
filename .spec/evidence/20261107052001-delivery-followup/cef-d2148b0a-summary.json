@@ -1,0 +1,113 @@
+{
+  "schema": "humanymous.cef-hosted-evidence/1",
+  "run_id": 42388354925,
+  "attempt": 1,
+  "source_sha": "d2148b0a35baa0a2793826a4917d8bd0720ccf4e",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs_total": 1,
+  "job_id": 128450452895,
+  "artifacts_total": 0,
+  "helper_tests": {
+    "passed": 14,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "helper_strict_clippy": "passed",
+  "safe_diagnostics": {
+    "bootstrap_protocol_preflight": null,
+    "bootstrap_rejection_passed": false,
+    "browser_ready": false,
+    "desktop_passed_tests": null,
+    "full_runtime_qualified": false,
+    "native_build": {
+      "compiler_root_cause_verified": false,
+      "diagnostic_read_truncated": false,
+      "diagnostics": [
+        {
+          "error_code": "E0599",
+          "level": "error",
+          "lint": null,
+          "locations": [
+            {
+              "file": "crates/browser/native/desktop/src/browser_controls.rs",
+              "line": 76
+            }
+          ]
+        }
+      ],
+      "exit_code": 101,
+      "malformed_json_records": 0,
+      "omitted_diagnostics": 0,
+      "oversized_records": 0,
+      "private_log_prefix_bytes": 421818,
+      "private_log_prefix_sha256": "bf43d57336ddd2623c868124cf7c02aee4389225196c4631466181018dedb91b",
+      "private_log_sha256": "bf43d57336ddd2623c868124cf7c02aee4389225196c4631466181018dedb91b",
+      "rendered_messages_included": false,
+      "status": "observed",
+      "status_observed": true
+    },
+    "private_report_sha256": "453c463a90ba2ef57e256faf0ac580f344f5a99027e745e0826b0b18f9795460",
+    "protocol_preflight": null,
+    "raw_contents_included": false,
+    "schema": "humanymous.cef-safe-diagnostics/1",
+    "source_changed": null,
+    "source_manifest_sha256": "2d6f4f840ec9c86abbf8797d0ec6ef1693b26a0025e2445b80d303174f739b22",
+    "source_sha": "d2148b0a35baa0a2793826a4917d8bd0720ccf4e",
+    "stage": "native-build",
+    "stage_commands": {
+      "native-build": {
+        "compiler_root_cause_verified": false,
+        "diagnostic_read_truncated": false,
+        "diagnostics": [
+          {
+            "error_code": "E0599",
+            "level": "error",
+            "lint": null,
+            "locations": [
+              {
+                "file": "crates/browser/native/desktop/src/browser_controls.rs",
+                "line": 76
+              }
+            ]
+          }
+        ],
+        "exit_code": 101,
+        "malformed_json_records": 0,
+        "omitted_diagnostics": 0,
+        "oversized_records": 0,
+        "private_log_prefix_bytes": 421818,
+        "private_log_prefix_sha256": "bf43d57336ddd2623c868124cf7c02aee4389225196c4631466181018dedb91b",
+        "private_log_sha256": "bf43d57336ddd2623c868124cf7c02aee4389225196c4631466181018dedb91b",
+        "rendered_messages_included": false,
+        "status": "observed",
+        "status_observed": true
+      }
+    },
+    "status": "failed"
+  },
+  "scope": {
+    "protocol_preflight": "unreached",
+    "bootstrap_rejection": "unreached",
+    "desktop_process_pilots": "unreached",
+    "native_feature_clippy": "not_run",
+    "gui_ime_accessibility": "not_run",
+    "full_runtime_qualified": false,
+    "source_post_execution_comparison": "unreached; source_changed remains null"
+  },
+  "capture": {
+    "connector_cli_public_projection_match": true,
+    "job_decoded_log_sha256": "e5514b9683eb377fcda46652d138749799a0d2564f0350cd66f2005c43631684",
+    "private_index_sha256": "7aaa984d459f2441866f297cdb1fcf9a8760e09053338d7194d408ec944755dd",
+    "private_compiler_body_retrieved": false,
+    "private_report_body_retrieved": false,
+    "compiler_root_cause_verified": false
+  },
+  "limitations": [
+    "E0599 and a source location are observed; the exact compiler message and cause remain unknown publicly.",
+    "Historical ec4 successful bootstrap1/desktop2 counts do not qualify this source.",
+    "Helper Clippy does not cover desktop native-feature Clippy.",
+    "No retry, deployment, publication or OIDC exchange."
+  ]
+}

@@ -970,3 +970,12 @@ remain unmet. Existing CEF d214 run42388354925 is separately live; no old ec4
 qualification transfers to it. Pages29096 candidate review preserves five explicit
 CRLF/LF differences and excluded review metadata rather than claiming raw127-byte
 identity; root owns its single existing build-only branch transaction.
+
+Existing CEF run42388354925 at complete d214 candidate is terminal failure:
+helper14 and helper Clippy passed; native Cargo101/E0599 at browser_controls.rs76.
+Safe diagnostic location/hash are observed, exact message/root cause unknown.
+Protocol/bootstrap/desktop pilots and source-postcheck were unreached, retaining
+null counts/source_changed. No historical ec4 pass promotion or native-feature
+Clippy/GUI/AT claim. Browser owns source correction; no duplicate/retry was
+performed. The attached cef-d2148b0a-summary.json and immutable capture index
+preserve the failed candidate separately from the earlier successful source.

@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T15:59:39Z
+updated: 2026-11-07T16:02:33Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -30,6 +30,7 @@ files:
   - {path: wargame-306eedc8-targeted-preflight.json, sha256: fd4bb0d70ec7331eb60ccf7e515bc31b3f736ac8ce692dd60c4aa92915bd411e, bytes: 1804, store: repo}
   - {path: wargame-306eedc8-hosted-summary.json, sha256: 3d33c57f6ef9a4ba712f47cee437694a0c99cff9b271688a39c06b7a0a52b978, bytes: 9973, store: repo}
   - {path: wargame-306eedc8-required-boundaries.json, sha256: 6918ae9e80c45db9877dce443dbe260ff9aacad65f92afd0e15fc1d5b4b1fa48, bytes: 6632, store: repo}
+  - {path: cef-d2148b0a-summary.json, sha256: 871653c0fb57934505e5ab4cfbe9deeaa7b7e043d86fc2e5c605deb8f448b4ee, bytes: 4008, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -467,3 +468,18 @@ the same seven index/ID pairs. Public receipt IDs were not observed: no original
 raw report body was recovered. The nine labels have no stable case IDs in306.
 Pointers guide root coordination, not qualification or deployment authorization;
 T4 remains the intentional ceiling and scoring remains frozen.
+
+## Current CEF candidate actual native-build failure
+
+cef-d2148b0a-summary.json retains terminal run42388354925 at exactd214: one
+Windows2025 job failed, artifacts0. Helper14/0failed/ignored/filtered and helper
+Clippy passed. Native Cargo exited101 with safe E0599 at browser_controls.rs76;
+compiler rendered text and original private log body were not recovered, so the
+exact cause remains unverified. Protocol/bootstrap/desktop execution was
+unreached; counts remain null and old ec4 successes do not transfer. The source
+postcheck was unreached, so source_changed remains null rather than false.
+Native-feature Clippy, GUI/IME/AT, hard cleanup and full BrowserReady remain open.
+Connector and authenticated CLI safe projections matched. Private capture index
+SHA256 is7aaa984d459f2441866f297cdb1fcf9a8760e09053338d7194d408ec944755dd.
+Browser owner received the exact diagnostic and owns correction; no retry was
+performed by Delivery.
