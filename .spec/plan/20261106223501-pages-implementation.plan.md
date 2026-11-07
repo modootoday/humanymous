@@ -956,3 +956,69 @@ reject extensions/trailers/ambiguity/interim/upgrades, reserve gateway fields.
 Added exact reviewed-source receipt only for that complete module. Generalized
 client parser profile wording and linked observer source contract. Source88/0;
 new runtime fixture execution is not inferred from Pages22 pure tests.
+
+### Authored hosted WebDriver pilot boundary (not yet linked or executed)
+
+Applying implement-sot-slice: existing W3C WebDriver structured actions/element/
+CSS/geometry endpoints, no authored JS or execute-script string. New browser.rs
+source prepares literal-loopback-only driver/site URLs; proxy/redirect refusal;
+20s transport and1MiB driver response bounds; two requested/observed window sizes;
+all rendered HTML denominator; real Tab then Enter skip-link/target active focus;
+actual browser identity; explicit session deletion; source-input stability.
+Before and after browser use, every served artifact (bounded8MiB/file) must match
+current checked output byte-for-byte with deterministic path/hash commitment.
+This prevents an older static server from being treated as the current build.
+The pilot never launches a driver/server; external hosted caller owns those.
+
+ureq3.5.1 exists in common lock but new direct package edge requires root-approved
+manifest integration window. Requested delta documented in docs/INTEGRATION.md;
+no common lock/manifest edit, no local browser/process/network execution. New
+browser source is deliberately not yet linked from lib/main until that edge is
+integrated. Two pure URL/command-identity fixtures authored, NOT_RUN; previous22
+pure pass applies only to223122f checker source. No current pilot pass claimed.
+CSS/geometry checks are bounded observations, not contrast/clipping/screen-reader/
+zoom/recovery/WCAG or natural-person evidence. More browser cases remain required.
+
+Follow-up pilot source review: three pure fixtures now authored (local URLs,
+command identity path isolation, finite visible CSS values), all NOT_RUN until
+module/dependency integration. Per-case reports retain actual window, URL, title,
+CSS, geometry and focused-target measurements, including partial observations
+before failure. Exact window size acceptance is checked. All-file served digest
+checks run before/after; no borrowed historical build/browser evidence. Rustfmt
+and owned diff-check pass. No dependency manifest change or browser was started.
+
+### Audit frame commit boundary reconciliation
+
+Read complete storage/framing.rs and storage/mod.rs including their source tests.
+Continuity guide now explicitly states valid JSON without newline is uncommitted,
+only a final incomplete bounded frame may be repaired, and newline-terminated
+corruption or oversize remains failure. Added two exact manual source receipts,
+not a whole freshness approval or runtime test. Existing source88/errors0.
+
+Browser pilot refactored into report/composition and bounded WebDriver boundary
+modules. Total900s budget refuses further measurements while still attempting
+session deletion; per-request20s retained. Three authored pure fixtures remain
+unlinked/unexecuted pending approved direct dependency integration. Runtime0.
+
+Browser follow-up source now includes explicit component scope/status/full-a11y
+false, strict complete case accounting, a fourth pure report-closure fixture,
+and browser_command.rs exact CLI parsing/JSON report/failed exit handling with
+one binary-side argument fixture. All five newly authored fixtures NOT_RUN;
+modules/CLI remain unlinked pending approved ureq package edge. Existing22-unit
+pass must not include them. Browser SoT records actual contract and limits.
+
+### Hosted historical88 actual two-baseurl build observed
+
+Run42348518353 at exact63f69ae9de703939b7b9091e2f215b12bea265de is terminal failure.
+Pages job128340160348 succeeded07:30:24Z: frozen Ruby bundle/audit, exact pinned
+theme ba2b23..., upstream md-components check OK88 and Rust validation errors0
+for both apex and /humanymous. Both input commitments are e276db6d082b201dfa01037bf397be0d6c5a7b8576415f2890812a286b0a7f47.
+This is later-observed historical88 execution, not current223122f+ acceptance;
+current docs/checker differ across22 files. That checker did not report complete
+generated-HTML denominator or new static a11y. Pages artifact upload skipped.
+No current browser/AT/preview or complete source freshness follows from it.
+
+Documentation job128340062976 failed before examples07:28:12Z: review inventory
+missing governed files (first10 shown, total unknown). Do not convert this into
+Pages build failure or waive freshness. Saved both job logs privately (ANSI
+stripped), attached to own private bundle, public sanitized status separate.

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-07T07:43:29.8424030Z",
+  "run_id": 42348518353,
+  "source_sha": "63f69ae9de703939b7b9091e2f215b12bea265de",
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42348518353",
+  "overall": "failure",
+  "pages_job": {
+    "id": 128340160348,
+    "status": "success",
+    "completed_utc": "2026-11-07T07:30:24Z",
+    "theme_sha": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+    "bundle_audit": "No vulnerabilities found",
+    "apex": {
+      "authored_pages": 88,
+      "errors": 0
+    },
+    "subpath": {
+      "baseurl": "/humanymous",
+      "authored_pages": 88,
+      "errors": 0
+    },
+    "upstream_theme_checker": "OK88 both baseurls",
+    "build_input_sha256": "e276db6d082b201dfa01037bf397be0d6c5a7b8576415f2890812a286b0a7f47",
+    "rendered_html_denominator": "not recorded by that checker version",
+    "pages_artifact_upload": "skipped",
+    "browser_keyboard": "NOT_RUN",
+    "assistive_technology": "NOT_RUN"
+  },
+  "freshness_job": {
+    "id": 128340062976,
+    "status": "failure",
+    "exit_code": 1,
+    "cause": "review inventory differs from governed source",
+    "missing_paths": "first10 reported; total not measured",
+    "completed_utc": "2026-11-07T07:28:12Z"
+  },
+  "scope_limit": "Historical exact source only. Current docs and checker changed after this source; not current acceptance.",
+  "raw_evidence": "private evidence:root/20261107051213 hosted-63f69ae-{pages,freshness}.log (ANSI stripped)"
+}

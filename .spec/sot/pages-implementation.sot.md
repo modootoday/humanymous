@@ -43,6 +43,27 @@ existing `tabindex=-1` target inside main, without explicit hidden/aria-hidden
 ancestors. These are HTML structure checks only, not computed style, actual
 focus movement, keyboard reachability, screen-reader output or WCAG conformance.
 A later browser pilot must record its own cases and actual outcomes separately.
+
+### Hosted keyboard component pilot
+
+The Rust browser command consumes caller-owned literal-loopback WebDriver and
+static-site services. No authored script execution or browser/server startup is
+hidden inside pure tests. Check every rendered HTML at two measured window
+sizes, record actual Tab-to-skip and Enter-to-target focus, title, CSS and element
+geometry, and retain partial measurements on failure. Require current output
+validation and byte-for-byte served-artifact agreement before and after the run.
+Track authored-input stability separately from the output artifact commitment.
+Proxy/redirect refusal, bounded replies, per-request and total run budgets are
+tool resource controls, not a person's interaction deadline.
+
+Reports identify actual browser/version and expected/performed/passed/failed
+case counts; missing cases, changed input/output or failed session deletion
+cannot pass. The scope is `pages-keyboard-component` and full accessibility
+qualification remains false. Assistive technology remains NOT_RUN until separate
+actual measurements exist. CSS/geometry alone cannot certify clipping, contrast,
+zoom, screen-reader output, recovery or WCAG conformance. Current integration
+and execution status belongs in the plan, not a placeholder passing report.
+
 ### Theme and build authority
 
 Source-review triage uses `humanymous-pages review-delta --root .`, a read-only
