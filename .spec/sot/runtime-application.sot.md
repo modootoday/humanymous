@@ -1108,8 +1108,10 @@ Structural-development's exact-role registry assigns Runtime the single
 application-scoped temporal owner; Network owns the kernels and capture/provider
 boundaries. Provider checkpoint6c72a47f exposes history::{anomaly,rate},
 correlation::{Registry,Stats,Outcome,Scope,FleetInput} and traffic::{Log,check,
-Association,Coverage}. That CURRENT source was handed off UNTESTED. Earlier MAD
-or socket/capture passes do not qualify these new kernels or Runtime serving.
+Association,Coverage}. Corrected layout contracte1ed50ce is preserved by provider
+source306eedc8, whose72 library cases/check/strict Clippy/fmt passed in the owning
+Network scope. That L1 evidence does not qualify Runtime consumption, same-epoch
+capture or serving; earlier MAD/socket scopes do not substitute for this source.
 This section prepares a consumer contract, not a signal/readiness activation.
 
 One future Application-owned context retains each configured finite kernel and
@@ -1174,3 +1176,30 @@ composition within this cluster; required admission remains closed until the
 corresponding provider gates pass. No new required-route flag, enabled default,
 Engine predicate/weight, capability claim or Runtime implementation is added by
 this contract preparation. Full product remains Docker-only and source-bound.
+
+**Private L1 consumer slice, source only.** Root authorized the fixed-size
+application::temporal adapter against corrected Network contracts. It is compiled
+ONLY under cfg(test), with no Application field/serving hook, default policy,
+readiness or signal producer. A Tracker retains at most four first coverage-loss
+facts, one expansion bound, bookkeeping clock fault/abandonment facts; each Frame
+has19 fixed operation slots. These are diagnostics, not native epochs or healthy
+capabilities. Bookkeeping tick ordering is explicitly distinct from a kernel's
+committed clock/history.
+
+Private typed wrappers classify exact Network result categories: committed,
+no-op, inspection, refusal, or interrupted pending call. Duplicate operation
+admission is checked BEFORE invoking the lower closure. Later failure preserves
+earlier commits; later success/reset/GC cannot erase unrelated latched losses.
+Expansion is incomplete only while now<complete_after; equality clears that
+expansion projection only. Missing-key, absent stats and unqualified association/
+history/fleet scope stay distinct. Maintenance Ok commits even for removed0 or
+unchanged policy, while queries and missing-key outcomes never imply history
+mutation. No correlation sample is fed into a second MAD detector.
+
+Seven authored consumer tests cover no-op categories, partial commit/refusal and
+persistent gaps, duplicate suppression, exact expansion equality, pure inspection,
+maintenance/warmup/eviction/scope preservation, interruption/abandonment and clock
+regression. They use controlled lower-call outcomes to test this adapter; they
+do not requalify the provider or execute capture/application effects. This slice
+is UNCOMPILED/NOT_RUN until allocated; actual L3 owner adoption and accepted legacy
+observation points remain required before any production activation.

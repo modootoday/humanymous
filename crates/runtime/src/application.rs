@@ -23,6 +23,9 @@ use tokio::{
 };
 mod settings;
 mod tls;
+// L1 consumer adapter only; no serving observation point is accepted yet.
+#[cfg(test)]
+mod temporal;
 
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
 pub enum Decision {
