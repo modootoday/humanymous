@@ -148,13 +148,13 @@ redundant casts; fixed without lint suppression. A malformed-wire test exposed
 the Rust fixture client's read-to-EOF reset behavior; reading exact response
 Content-Length fixed the client, without changing the plugin to hide failure.
 
-## Local/hosted allocation discussion
+## Execution boundary under the confirmed common policy
 
 User direction: local coding and bounded unit checks; actual runtime/Docker/
 browser/Cross-OS on eligible free standard hosted runners. Common policy and
-the final DAG stay in [[sot:root/delivery]] / [[sot:root/program-roadmap]]. This
-section records nginx's recommendation; it creates no workflow or execution
-permission, removes no gate, and asserts no verified free quota or entitlement.
+the confirmed DAG stay in [[sot:root/delivery]] / [[sot:root/program-roadmap]].
+Those documents alone own quotas, scheduling and collection policy. nginx adds
+only the scope boundaries below, not a second implementation or manual dispatch.
 
 Local default-feature unit/fmt/narrow Clippy do not qualify Linux .so ABI,
 pool/timer lifetime, peer/WAL, body/header fidelity, SSE or CHALLENGE JSON.
@@ -163,26 +163,26 @@ Source5ef5dd3 JSON/runtime remains NOT_RUN until scheduled. Other-UID privileged
 helpers, true remote peer, interactive human/AT, non-Linux nginx and independent
 witness/power-loss claims remain separate; no hosted green substitutes for them.
 
-Recommend an early cheap gate then at most2independent heavy hosted lanes,
-not a mandatory Node->nginx->runtime serial chain. Root confirms the cap/DAG.
 Shared authority/integrity/audit/scoring/network, Cargo/lock/toolchain, producer
-contracts and nginx ABI/Docker inputs affect nginx; Node-only lifecycle need
-not. Semantic contract edits must not be skipped as ordinary docs. Required
-affected missing/unsupported results fail aggregation rather than disappearing.
+contracts and nginx ABI/Docker inputs affect nginx. This mapping is advisory
+until the common impact classifier exists; no required gate is removed by path
+filters. Semantic contract changes are not ordinary docs. The confirmed2lane
+cap is within its workflow, not a global manual-workflow mutex; do not create a
+second nginx dispatch while root observes the common source-closed execution.
 
 Native and standalone pilot have different feature/link graphs: --all-features
 is not a valid deduplication strategy. Preserve .so before pilot build. Artifact
 reuse requires matching libc/target/Rust/features/nginx configure signature.
-Prefer shared pinned engine/builder layers and dependency caches; forcing
-transport of the small authority executable may cost more than its cached build.
+Reuse within-job pinned engine/builder layers and permitted read-only caches;
+the free branch profile disables cache writes and artifact uploads. Do not
+mistake ephemeral BuildKit target mounts for permission to export a shared cache.
 
-Measure against the supplied14GiB fresh-VM disk constraint. Exclude generated
-target/cache inputs, avoid whole-image/workspace/target artifacts, and retain
-only needed checksummed raw evidence plus small public summaries. A later
-.spec.local download does not make a public Actions upload private. Sensitive
-raw must have an approved private sink or must not upload. Eligibility, quota,
-artifact access/retention and storage policy need root/CI confirmation. No paid
-resource, source deletion, gate removal or new investigation/run is authorized.
+For the supplied14GiB fresh-VM budget, exclude generated target/cache inputs and
+whole-image/workspace/target uploads. Authority readiness credentials, bodies,
+cookies and private IPC traces never belong in public logs/artifacts. Recover
+sanitized summary/log/hash as the common policy allows; explicitly record any
+necessary private raw not recovered. A later .spec.local download is not privacy
+for a public upload. No local native/runtime run resumes from this policy note.
 
 ## Historical njs pilot rule (superseded for new implementation)
 

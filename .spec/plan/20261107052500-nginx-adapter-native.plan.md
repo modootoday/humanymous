@@ -172,3 +172,15 @@ uploads are not made private by later local retrieval. Shared core/contracts
 affect nginx, Node-only lifecycle can be independent, semantic SoT edits cannot
 be blindly skipped. Independent witness/AT/remote-peer exceptions stay explicit.
 No test/research/cloud run, source deletion or gate removal was performed.
+
+## Confirmed common-policy disposition
+
+Root received all13owners and confirmed the common delivery/program-roadmap
+policy. nginx's prior consultation is historical rationale; current execution
+uses those single canons. Local bounded pure unit/fmt/narrow Clippy only; actual
+module/process/IPC/Docker qualification is hosted. No source5ef runtime evidence
+exists yet. Root alone freezes source, dispatches the first hosted run and
+observes results; this owner launches no duplicate workflow or local native run.
+The common impact classifier is not implemented, so no required gate is skipped
+by nginx path advice. Free branch profile has no cache writes/artifact uploads;
+JSON/native and canonical-authority runtime stay NOT_RUN until real results.
