@@ -1,0 +1,43 @@
+{
+  "schema": "humanymous.delivery-hosted-policy-consumption/1",
+  "run_id": 42415763189,
+  "attempt": 1,
+  "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "actual_run_name": "CI / Validate",
+  "workflow_path": ".github/workflows/ci.yml",
+  "job_id": 128533383046,
+  "job_conclusion": "success",
+  "selected_package": "humanymous-delivery",
+  "tests": {
+    "passed": 116,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "workflow_authorization_policy_exit": 0,
+  "annotations": {
+    "failure": 0,
+    "warning": 0,
+    "notice": 0
+  },
+  "optional_public_archive_cache": {
+    "save_allowed": false,
+    "state": "no-cache-fallback",
+    "verified_archive_count": null,
+    "cache_hit_verified": false,
+    "cache_write_verified": false,
+    "compiled_artifact_reuse_verified": false,
+    "reason": "Context, quota, inputs or public checksums were not all verified; no individual cause exported"
+  },
+  "evidence_scope": {
+    "retained": "Completed job API metadata, annotations and connector-decoded log in the separate in-progress1f87 private bundle",
+    "original_log_archive_recovered": false,
+    "raw_private_child_reports_recovered": false,
+    "full_compiler_read_closure_attested": false
+  },
+  "whole_workspace_qualified": false,
+  "actual_native_archive_executed": false,
+  "overall_run_terminal": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}
