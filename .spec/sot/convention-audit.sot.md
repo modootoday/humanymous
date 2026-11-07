@@ -1908,3 +1908,36 @@ no move or compiler happened in this audit. Actual process/native grants and the
 existing legacy lifetime finding remain separate and OPEN. Exact selected hashes
 are in baseline.json's private review. This is preparation, not Platform or full
 migration qualification; native source-custody P2 also awaits actual regression proof.
+
+## Native source-custody P2: independently verified scoped closure
+
+Owner receipt a248ee5c binds34 raw attachments, all independently matching hash
+and size. Actual inventory and success names match the three required regression
+controls: each mutation changes inventory and the old snapshot is refused, each
+missing disk input fails collection, and each omitted supplied-snapshot key fails
+verification. Actual Windows results are3 passed,0 failed/ignored,55 filtered;
+all-target check and strict Clippy exit0. Test binary hash/size match. Selected81
+source/config/tool and2079 registry files are byte-identical before/after and
+match current hashes. This selected scope is not complete toolchain/loader custody.
+The executed tuple is1e8c5af plus the recorded foreign receipt overlay, not puref059.
+CA-NATIVE-SOURCE-01 is CLOSED in this bounded source-custody scope.
+
+The overall tool session43027 ended1 at the FIRST final fmt failure in Authority
+configuration and Network correlation tests. No rerun occurred; no full gate pass
+is claimed. Original metadata lease_removed=false remains preserved. A separate
+cleanup addendum matches the original390/450 clock and records own marker removal
+at59.36s after exact ownership/PID checks, without renewed budgets. Current target
+has no top-level lease marker; per-fixture absence was not instrumented. Existing
+process lifetime/handoff, Cross-OS/fullrunner/native/provider/SCM/Job/GUI/browser/
+Docker/full-workspace gates remain OPEN. Audit launched no workload.
+
+## Runtime critical-context preparation
+
+Selected nine-file source/owner-plan review confirms that current Audit-only
+ErasurePermit issuance and Authorization fields must not broaden to merged Runtime
+siblings. The owner plan explicitly requires same-crate sibling negatives and
+legitimate signed-path positive controls. NativeProof remains an empty enum,
+private Owner is behind the private state module and native_preparation returns
+Unsupported; diagnostic phase DATA cannot construct that capability. No additional
+current defect was confirmed in this bounded review. No Runtime move, visibility
+change or native/Ready qualification is implied. Exact hashes are in baseline.json.
