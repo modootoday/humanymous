@@ -3,11 +3,12 @@ id: evidence:root/20261107201200
 title: Audit key custody eight package path hash handoff
 status: active
 created: 2026-11-07T20:12:00Z
-updated: 2026-11-07T20:17:39Z
+updated: 2026-11-07T20:47:44Z
 files:
   - {path: paths.json, sha256: 7cf4bf356bd686bf9e95be02f65c3820d631c1646a9657097943a52e9af9350e, bytes: 29853, store: repo}
   - {path: handoff.json, sha256: 0f34eb7f23e604b07f08e125cc9caf462a184330d1f60d6e471eef586906b544, bytes: 975, store: repo}
   - {path: core-slice-01.json, sha256: 5547877df4916f6503f5b6a1b8a939a8fb6a0805facabfab5a9267e950315b67, bytes: 2588, store: repo}
+  - {path: platform-slice-02.json, sha256: b735ccd6c208a65a423a40723356262721c13bb940df861c2639b9b0fe54c688, bytes: 3686, store: repo}
 ---
 
 # Audit key custody eight package path hash handoff
@@ -38,3 +39,10 @@ replacement reproduces the original bytes. It supersedes only those four source
 rows for current handoff; original paths.json/handoff.json remain the immutable
 pre-core snapshot. Source-only/fmt-check result, no compiler/Clippy/tests until
 Root's coherent-workspace release. No manifests, paths or behavioral code changed.
+
+PLATFORM-SLICE-02 adds platform-slice-02.json: eight source/test files and ten
+ordinary test-support reference replacements, each inverse-verified by SHA256.
+No Windows object bridge matches. All fixture JSON/source commitments remain
+unchanged; graph/category/feature edits belong to Root. No compiler/test/Clippy/
+fmt/CI execution took place during the transitional graph. This additive delta
+does not qualify current or historical native behavior.

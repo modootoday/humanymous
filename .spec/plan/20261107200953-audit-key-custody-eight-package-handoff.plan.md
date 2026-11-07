@@ -281,3 +281,30 @@ names/targets before selection and require nonzero exact discovery. Native child
 cases need real hosted OS/process tests; helper ignores/zero-test binaries and
 the separate prerequisite fixture gate do not count as semantic passes. Retain
 the original13-case/12-compiler-attempt obligations and every broader gate above.
+
+### PLATFORM-SLICE-02 authorized consumer delta
+
+Root authorized only ordinary Rust source/test references for this slice. The
+Audit work lane was extended by its same owner to src and test Rust files,
+excluding fixture JSON, manifests and structural moves. Eight files contain ten
+references, all changed from humanymous_test_support::<suffix> to
+humanymous_platform::testing::<suffix>. No Windows object bridge reference was
+found, so that mapping required no artificial edit.
+
+Exact paths and before/after hashes are attached as platform-slice-02.json in
+[[evidence:root/20261107201200]]. Reversing the one qualified-prefix replacement
+per occurrence reproduces every original file SHA256. This covers storage/wal.rs
+unit code and integration tests control_operations, durable_witness, key_backups,
+key_custody, record_parity, verification_parity and support/child_lifetime.
+No behavior/authority/unsafe/visibility edit, feature/dependency-category change
+by Audit, old-package alias, forwarding shim, manifest/lock edit or path/ref move
+was introduced. Root retains all graph and frozen platform-source ownership.
+
+The entire tracked fixture directory remains unchanged, including the immutable
+f9 baseline193 and source-commitment/catalog JSON. Existing evidence and previous
+hash snapshots were not rewritten; the eight new after-hashes are an additive
+consumer delta, not a claim that old f9 executed against the current tree.
+Diff checks and residual old-reference search passed. No compiler, unit test,
+Clippy, fmt or CI ran; even scoped Cargo fmt waits for Root to declare manifests
+coherent. No process/target lease is held. Revalidate actual helper APIs, target
+roles and dev-only testing features once Root releases the coherent candidate.

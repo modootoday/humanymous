@@ -237,7 +237,7 @@ fn service_wrong_password_and_oversized_frame_fail_without_secret_echo() {
     config.passphrase = zeroize::Zeroizing::new(b"wrong-secret-synthetic".to_vec());
     let mut input = Vec::new();
     humanymous_audit::checkpoint::service::write_frame(&mut input, &config).unwrap();
-    let rejected = humanymous_test_support::process::capture_with_stderr(
+    let rejected = humanymous_platform::testing::process::capture_with_stderr(
         &mut Command::new(env!("CARGO_BIN_EXE_audit-witness")),
         &input,
         std::time::Duration::from_secs(60),
@@ -624,7 +624,7 @@ fn witness_process_lifetime_and_interrupted_recovery() {
     let temp = Temp::new();
     let witness = temp.open(WitnessBootstrap::CreateNew).unwrap();
     let child = |mode| {
-        humanymous_test_support::process::capture_with_stderr(
+        humanymous_platform::testing::process::capture_with_stderr(
             Command::new(std::env::current_exe().unwrap())
                 .args(["--exact", "child_witness_probe", "--ignored"])
                 .env("HUMANYMOUS_WITNESS_PROBE", &temp.0)

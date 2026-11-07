@@ -1,5 +1,5 @@
 //! Absolute lifetime for owned service fixtures, including blocked pipe writes.
-use humanymous_test_support::process::ManagedChild;
+use humanymous_platform::testing::process::ManagedChild;
 use std::{
     io,
     process::{ChildStdin, ChildStdout, Command, ExitStatus},

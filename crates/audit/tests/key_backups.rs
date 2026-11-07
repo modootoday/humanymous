@@ -653,7 +653,7 @@ fn crash_reconcile_preserves_consumed_authorization() {
         &serde_json::to_vec(&pin).unwrap(),
     );
     drop(store);
-    let child = humanymous_test_support::process::capture_with_stderr(
+    let child = humanymous_platform::testing::process::capture_with_stderr(
         Command::new(std::env::current_exe().unwrap())
             .args([
                 "--exact",

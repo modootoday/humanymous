@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "slice": "PLATFORM-SLICE-02",
+  "files": 8,
+  "occurrences": 10,
+  "replacement": "humanymous_test_support::<suffix> -> humanymous_platform::testing::<suffix>",
+  "windows_object_bridge_matches": 0,
+  "changes": [
+    {
+      "path": "crates/audit/src/storage/wal.rs",
+      "before_bytes": 18782,
+      "before_sha256": "04205cea054359747bae2fb9c82832f050bb6f38059b1f596b408a0978b2a656",
+      "after_bytes": 18787,
+      "after_sha256": "ac03c3146e8b8a54b68f2cb326889f197745cfcc19455693b0d9223c470475c5",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/tests/verification_parity.rs",
+      "before_bytes": 1343,
+      "before_sha256": "c5c70aa060cc1e794274ae2c64aa32a8c5bdafd1422b4c7bfebb6a6f07691343",
+      "after_bytes": 1348,
+      "after_sha256": "92484d492b6fe9050c3e5c12b7fd684c60815a7bccc6b058ec5a7a625d0496ab",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/tests/key_backups.rs",
+      "before_bytes": 25886,
+      "before_sha256": "857ec63b82a432f273ff38485204eccf32fac06445304e68b0a5a2197dd8587f",
+      "after_bytes": 25891,
+      "after_sha256": "4211c4f234f30b35478292790a095f67597e76040539e030a10c9036d8d28daf",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/tests/support/child_lifetime.rs",
+      "before_bytes": 3154,
+      "before_sha256": "b8ebca68dab9e9ba5f6c8f43494ca64f203d564f53bd77df9b965b2af0d5f881",
+      "after_bytes": 3159,
+      "after_sha256": "ecf866d43c0ff4f9a1bd1b48d2a315e549d95cbf9570e5f435b0be2385a66c2c",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/tests/durable_witness.rs",
+      "before_bytes": 26689,
+      "before_sha256": "59cd9b5c90335f4f00c440df44a0c8ba633c744fe5b8ad5fb7cc34a611ccc1c0",
+      "after_bytes": 26699,
+      "after_sha256": "9bc911bd5f0fb879ace4d369127291db9befbde5d0f47784e175747e91038f42",
+      "occurrences": 2,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/tests/record_parity.rs",
+      "before_bytes": 1103,
+      "before_sha256": "cce55f1007da9448ae669f83425f5d1493b9406649c29af7674d1a6cf83f831d",
+      "after_bytes": 1108,
+      "after_sha256": "d32f989be437fa13592296b9e0239cca1f3ee8da4f44520c98e5cc16e2e85ac1",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/tests/control_operations.rs",
+      "before_bytes": 59116,
+      "before_sha256": "df6d5f7eae9a4c654c97f639340a94b16d95a3953484d65c308c8b5ef8e423d3",
+      "after_bytes": 59121,
+      "after_sha256": "f7dff4b8ad32095dd261d1cdfd4858b0d8825f45bea63b4cb2227c3300ad70fe",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/tests/key_custody.rs",
+      "before_bytes": 15916,
+      "before_sha256": "7a0e458c89b1d277de7d34dc91c5a4ebb06101639da21ee000a78dbf66425b8c",
+      "after_bytes": 15926,
+      "after_sha256": "141cf08093cc4be07156ae7f21ec247006900ac7f1dfb9f62e874af0ba6e79d2",
+      "occurrences": 2,
+      "reverse_replacement_matches_before": true
+    }
+  ],
+  "fixture_json_changed": false,
+  "manifests_lock_dependency_categories_features_changed": false,
+  "behavior_authority_unsafe_changes": false,
+  "path_moves_or_refs_changed": false,
+  "compiler_tests_clippy_fmt_ci": "NOT RUN: Root coherent workspace allocation required",
+  "prior_handoff": "Original114inputs plus CORE-SLICE-01 four hashes remain historical; these eight source/test entries are the next explicit delta"
+}

@@ -1265,7 +1265,7 @@ fn retention_service_real_child_persists_restarts_and_rejects_stale_pin() {
             RetentionServiceClient, RetentionServiceConfig, RetentionServiceRequest,
         },
     };
-    use humanymous_test_support::process::capture_with_stderr;
+    use humanymous_platform::testing::process::capture_with_stderr;
     use std::{io::Cursor, process::Command, time::Duration};
     let local = Dir::new();
     let independent = Dir::new();

@@ -168,7 +168,7 @@ fn child_lock_probe() {
 fn competing_process_cannot_load_or_create() {
     let temp = Temp::new();
     let guard = temp.acquire();
-    let captured = humanymous_test_support::process::capture_with_stderr(
+    let captured = humanymous_platform::testing::process::capture_with_stderr(
         Command::new(std::env::current_exe().unwrap())
             .args(["--exact", "child_lock_probe", "--ignored"])
             .env("HUMANYMOUS_KEY_LOCK_PROBE", &temp.0),
@@ -318,7 +318,7 @@ fn child_interrupted_writer() {
 #[test]
 fn process_exit_releases_lock_and_rotation_pending_requires_recovery() {
     let temp = Temp::new();
-    let captured = humanymous_test_support::process::capture_with_stderr(
+    let captured = humanymous_platform::testing::process::capture_with_stderr(
         Command::new(std::env::current_exe().unwrap())
             .args(["--exact", "child_interrupted_writer", "--ignored"])
             .env("HUMANYMOUS_KEY_INTERRUPTED_WRITER", &temp.0),

@@ -1,6 +1,6 @@
 //! Historical record wire shape and canonical hash against actual frozen source.
 use humanymous_audit::record::{Record, canonical_bytes, record_hash};
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 use serde_json::Value;
 

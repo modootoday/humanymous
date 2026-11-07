@@ -404,7 +404,7 @@ mod tests {
     fn exclusive_writer_rotation_checkpoint_and_restart() {
         let dir = directory();
         let mut wal = Wal::open(&dir, options()).unwrap();
-        let child = humanymous_test_support::process::capture_with_stderr(
+        let child = humanymous_platform::testing::process::capture_with_stderr(
             std::process::Command::new(std::env::current_exe().unwrap())
                 .args([
                     "--exact",
