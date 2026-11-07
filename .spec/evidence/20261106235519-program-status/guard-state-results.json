@@ -1,0 +1,184 @@
+{
+  "schema": "humanymous.guard-state/1",
+  "observed_at": "2026-11-07T04:19:20.5215750Z",
+  "parent_commit": "12339e1d30f9184113f7e20a0e32b6cbb806cb76",
+  "source": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "2e240baea769c9092e84d1d50cea8602b5053b5cce8be2c47f5cf4e53e44aa55"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "2c2f443dac7bf740fa6af88cb58673e58c1153c442ad8945c65644c5288e2e28"
+    },
+    {
+      "path": "crates/collector/Cargo.toml",
+      "sha256": "27e141c4eecdd8db7aeb0a9458b04d1a721162b232dea3b04a8b60cddd87d146"
+    },
+    {
+      "path": "build/rust/collector-browser.Dockerfile",
+      "sha256": "aa3bd6c51aa7d471ae301cfbf66d40c188c3b005a6fcd0529960d24f6bf26b6a"
+    },
+    {
+      "path": "deployments/lab/compose.collector.yaml",
+      "sha256": "62da80a9513d9e055d7434fc35cd6b18aaf972ab14c2d9afb2aad4a64223d650"
+    },
+    {
+      "path": "crates/collector/src/lib.rs",
+      "sha256": "17a0bef777409b4742ac32175a16ed38d68467f2b640a99ce57e2eb155eb0bb5"
+    },
+    {
+      "path": "crates/collector/src/guard/tests.rs",
+      "sha256": "7d683a1c51c4893f3efb08aa37e23de76d5936c2ca7122e1065bbf993dcab7c0"
+    },
+    {
+      "path": "crates/collector/src/guard/mod.rs",
+      "sha256": "eb3bd8b1850ceba7578e0f146af017a845f5f9c606d140620f2990fba9960fd5"
+    },
+    {
+      "path": "crates/collector/src/detection/tests.rs",
+      "sha256": "4f4e62064ca22f5a6390fdff8db9b1241a353efd7dc04f488e75cfd48ec880d2"
+    },
+    {
+      "path": "crates/collector/src/detection/static_client.rs",
+      "sha256": "d567f867f24ffa067622dd72db7d5e35daff9ef0101b82a55bdd9729e96b324a"
+    },
+    {
+      "path": "crates/collector/src/detection/snapshot.rs",
+      "sha256": "e8c3262b6f0a96b0ff0eb3786b9e26d142ba4c535b9089dc81d586511f598c0c"
+    },
+    {
+      "path": "crates/collector/src/detection/mod.rs",
+      "sha256": "58f4dc31b0d0f52fe5c6491ae4dfd916609793267a57825fc9b2f82e403519c3"
+    },
+    {
+      "path": "crates/collector/src/detection/integrity.rs",
+      "sha256": "22dede93a5b7ca07ce7250b4f09cf202e2a4cbf0ed510396a5acca47e844482d"
+    },
+    {
+      "path": "crates/collector/src/detection/fingerprint.rs",
+      "sha256": "688e6851e14bf570c229360721aa5956882f8f4ef0964d544e1c6b7ec6fe468e"
+    },
+    {
+      "path": "crates/collector/src/browser/resources/timer.rs",
+      "sha256": "999784e0cc5e025825fe92f780fe4434da9c7585ea4db3a2f3cbe7f2ddb4b63a"
+    },
+    {
+      "path": "crates/collector/src/browser/resources/timer/tests.rs",
+      "sha256": "667ba2b5fc4625ac4677cfcc6554556a84dc5ef75f7f3959bd066666a0fee9a8"
+    },
+    {
+      "path": "crates/collector/src/browser/resources/mod.rs",
+      "sha256": "201fe2eea9a7ff80d2670aebd1681d6ff24a5d2e55ba20865f081cdc4d27c43c"
+    },
+    {
+      "path": "crates/collector/src/browser/reflection.rs",
+      "sha256": "04ae46a0e04c62d34ce28ec4ee0f1bad792bfcc3fe2a0fd0f0f7e2b7493055b2"
+    },
+    {
+      "path": "crates/collector/src/browser/mod.rs",
+      "sha256": "4b89eed75cd556625e407a4c7127b9e38b542a6c1f7dc21c5c42a722f490b0ac"
+    },
+    {
+      "path": "crates/collector/src/browser/integrity.rs",
+      "sha256": "b311dde0396222340759de1eda95b2198c11f3d0f29c430e1e99d17d3d1ee3b3"
+    },
+    {
+      "path": "crates/collector/src/browser/fingerprint.rs",
+      "sha256": "5a9b4e08892e67e364c2d0626bb2e7e4f09bdd9566cd200578bc96cc09575d36"
+    },
+    {
+      "path": "crates/collector/src/browser/environment/tests.rs",
+      "sha256": "4ff01e154b9aca46b14208c07fca8a510b0591795bb6e2c1e4cb90e67df142ed"
+    },
+    {
+      "path": "crates/collector/src/browser/environment/resources.rs",
+      "sha256": "490b3a29051c074ccce1ec6e6fb186e9e6836a2af9b4edfdea1784367d3d4e39"
+    },
+    {
+      "path": "crates/collector/src/browser/environment/mod.rs",
+      "sha256": "d7d5040f43486e0ed1de274a1b2d15e6d3126ec7d8534af96e3975575a829a09"
+    },
+    {
+      "path": "crates/collector/src/browser/behavior.rs",
+      "sha256": "70c4d058af681f507c9b23d34cdaeeb35f6671dd7c9f23ebfb2908dc49ac2f49"
+    },
+    {
+      "path": "crates/collector/src/browser/behavior/tests.rs",
+      "sha256": "1fb1c1ecaae3c617be81deb7d04b05f7678cba48ccecde57e7299c32ac939440"
+    },
+    {
+      "path": "crates/collector/src/browser/advanced/tests.rs",
+      "sha256": "75a5b507e2e0ea4ab0fb2a0ffa384686a70200d73c9b4890877041d75cafe54f"
+    },
+    {
+      "path": "crates/collector/src/browser/advanced/profile.rs",
+      "sha256": "1f4479d1f424af71cfdc8c7212241da48344bf2a4281226bc0ec81907046de9d"
+    },
+    {
+      "path": "crates/collector/src/browser/advanced/mod.rs",
+      "sha256": "3567367f0ed899e7767fdc071a2eea07c58e50b15e85d0dacb7e90191433ecf3"
+    },
+    {
+      "path": "crates/collector/src/browser/advanced/media.rs",
+      "sha256": "1a2244d7a32695541828d0604a2e55505813f6ba44f9f9b3874e622690921722"
+    },
+    {
+      "path": "crates/collector/src/browser/advanced/capabilities.rs",
+      "sha256": "52cd663185cc892351a22d76be4dccc50ad3ae556a599b29d09c0cbca5e5802b"
+    },
+    {
+      "path": "crates/collector/src/behavior/tests.rs",
+      "sha256": "1bfe035bca056a73107c4b549538309a2d16a44dbbae2d2a7fc43447e50e25af"
+    },
+    {
+      "path": "crates/collector/src/behavior/statistics.rs",
+      "sha256": "a4f06c0949685a5f802e454273e02426dd9bfc32528902a128504b6bb5e0fbad"
+    },
+    {
+      "path": "crates/collector/src/behavior/pointer.rs",
+      "sha256": "8c4610d77106354314a9f2fee98bdfdbf7cc02ea9222905839b6d9250e475788"
+    },
+    {
+      "path": "crates/collector/src/behavior/oracle_tests.rs",
+      "sha256": "90606313dfcb9b84984455907ef1e73ea23511e05548c6ffb972df49577f971d"
+    },
+    {
+      "path": "crates/collector/src/behavior/mod.rs",
+      "sha256": "d4b1b3636dc280248762e96c7082d297b7640972184134ba61d6838f8a38b058"
+    },
+    {
+      "path": "crates/collector/src/behavior/keyboard.rs",
+      "sha256": "8458e89a25b6f2c44ca28b4a3fd1f5e123076947c5d852653c1ebd1f9d0f79e7"
+    },
+    {
+      "path": "crates/collector/src/behavior/cadence.rs",
+      "sha256": "7cb14b5e27fe202cb36df637c99cb55418ff42898b44a4e6610c55549c95ac82"
+    }
+  ],
+  "results": {
+    "image_id": "sha256:1f34ff3e1945f2d56525920f2345400a4bb0008167f224d144485956476e46a2",
+    "native_passed": 17,
+    "native_and_wasm_clippy": "passed",
+    "native_predicate_masks": 32,
+    "wasm_release": "passed",
+    "unchanged_browser_regression_passed": 30,
+    "guard_native_cases": 4
+  },
+  "coverage": [
+    "Pure typed event counters, no script/code/URLs/arguments",
+    "Missing hook coverage keeps reported false",
+    "Exact integer limit poisons on overflow",
+    "Read-time prototype comparison and nonsticky restoration",
+    "Frozen stop and fresh epoch separation"
+  ],
+  "limits": {
+    "full_runtime_qualified": false,
+    "direct_eval": "global wrapper changes intrinsic identity/lexical behavior; browser contract pending",
+    "guard_browser_qualified": false,
+    "foreign_browser": "parallel files copied in image but not compiled by collector/signals target",
+    "human_or_at_executed": false,
+    "browser_guard_hooks_installed": false,
+    "native_baseline": "caller-supplied; not runtime attestation"
+  }
+}

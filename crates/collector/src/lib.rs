@@ -3,6 +3,7 @@ pub mod behavior;
 #[cfg(target_arch = "wasm32")]
 mod browser;
 pub mod detection;
+pub mod guard;
 
 /// Read actual browser APIs and return the partial frozen report wire shape.
 /// Any collection failure rejects rather than returning an empty valid report.

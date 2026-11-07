@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-07T04:10:34Z
+updated: 2026-11-07T04:20:51Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -12,6 +12,39 @@ rel:
 ---
 
 # Browser collector migration
+
+## Guard coverage and compatibility
+
+Port injector.js as owned runtime instrumentation, not a fabricated guard report.
+Separate pure epoch/counters from WASM hooks, mutation observer and native/prototype
+capture. Reuse shared Guard. Baseline own-property counts are bounded16384;
+eval/function/script counters are nonnegative exact JS integers (max2^53-1).
+Overflow poisons the epoch and rejects reports. Stop freezes the final snapshot;
+inactive callbacks cannot add counts. A new epoch has new counters/baseline.
+Never receive/store/log dynamic source strings, script text, URLs or arguments
+in the pure state: it accepts event kinds only. Native checks preserve original
+fetch/XHR/JSON native conjunction and console interpretation; prototype pollution
+compares counts at read time and clears again if counts return to baseline.
+
+reported=true requires measured native/prototype baseline plus installed eval,
+Function and script-observer coverage. Missing hooks must remain reported=false;
+pure caller-supplied state is not an authenticated runtime or client attestation.
+Hook cleanup must restore only references still owned by this epoch, disconnect
+observer and retain any still-referenced Rust callback safely; no global blind restore.
+
+Compatibility finding: injector.js's comment that replacing global eval affects
+only indirect eval is incorrect. Direct-eval evaluation requires identity with
+the realm intrinsic eval; a wrapper/Proxy changes that identity and lexical
+behavior. Do not automatically deploy global replacements under an unchanged
+behavior claim. Browser instrumentation must specify this compatibility delta,
+preserve forwarding return/throw/this and Function construction behavior, and
+prove owned-realm lifecycle/application tests before collector bootstrap activation.
+Forwarding caller-owned opaque arguments is distinct from authoring/executing a
+JS source string in Rust. No new eval/Function source strings, scoring rule or
+unsupported complete-CDP-detection claim is authorized by this design.
+
+Checked2026-11-07: [direct-eval identity rule](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-function-calls-runtime-semantics-evaluation),
+[Proxy internal call/construct rules](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-proxy-object-internal-methods-and-internal-slots).
 
 ## Advanced probe asynchronous ownership prerequisite
 

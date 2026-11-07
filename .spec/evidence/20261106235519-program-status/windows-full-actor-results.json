@@ -1,0 +1,18 @@
+{
+  "schema": "humanymous.windows-delivery-actor/1",
+  "source_sha": "f6d289318236f71f4434e30949543f7ac2ff2952",
+  "run": 42335890776,
+  "artifact": 13559473155,
+  "harness_status": "passed",
+  "required_harnesses": 51,
+  "executed_harnesses": 51,
+  "passed_tests": 214,
+  "raw_ignored_helpers": 2,
+  "workspace_write_denied": true,
+  "account_deleted": true,
+  "scratch_deleted": true,
+  "release_binary_build": "passed",
+  "native_job": "failed: missing required scripts/migration/pilot-native.ps1",
+  "full_ci": "failure",
+  "full_runtime_qualified": false
+}

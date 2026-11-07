@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T04:10:34Z
+updated: 2026-11-07T04:20:51Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -13,6 +13,19 @@ rel:
 ---
 
 # Rust migration conventions
+
+Browser1a7de24 adds a borderless Rust SVG/Meari shell and native resize/cursor
+handling, plus accepted opt-in native SDK design. Final core18/native11 and
+explicit rejection case1/flags4 are source-scoped; native96DPI gestures/readbacks
+belong to the separate prior GUI source manifest. Later max-edge/DPI/capture fixes
+are unit/build-only. Planned native SDK crates are not workspace packages yet;
+root remains19. No sandbox, navigation, Chrome parity, SDK ABI or full AT claim.
+
+The guard migration starts with a pure bounded epoch/state API and four native
+tests. It accepts event kinds/baseline counts only, refuses precision overflow,
+requires hook coverage and freezes on stop. It installs no runtime hooks and does
+not qualify browser guard.reported or session transport. The injector direct-eval
+compatibility finding and browser acceptance gates are in sot:root/client-collector.
 
 The collector adds an explicit Rust asynchronous first-party environment probe
 with shared Environment wire type, owned DOM/timers/abort and bounded privacy

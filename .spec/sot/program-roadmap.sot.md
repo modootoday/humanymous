@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:10:34Z
+updated: 2026-11-07T04:20:51Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui]
@@ -51,12 +51,12 @@ Cross-Lang은 대상 서비스와 상호운용하는 계약이며 새 JS/njs 제
 | 공통 Rust | MSRV/toolchain1.99.1, edition2024,root19 packages;ac560ff CEF 통합 remote 검증 완료 | native component와 전체 delivery·GUI 자격화를 구분;후속 behavior source는 별도 검증 |
 | 순수 엔진 이전 | 기존 inventory314행 중 ported54/partial5/pending255, 원본 함수804개 | 과거 단위 이전 inventory이며 최신 전체 재집계·runtime parity 증거가 아님;verified_runtime_parity0 |
 | native CI | ac560ff, run42329288807, Linux/macOS/Windows x64·ARM64 모두 성공 | implemented-crate-native-tests;full_runtime_qualified=false;새 behavior delta 제외 |
-| native 최신 시도 | cb5dce7/run42332170496는5tuple 성공·Linux x64 custody 재획득 실패 | failure 보존;controlled duplicate 회귀로 수정한 새 source는 원격 재검증 필요 |
-| Windows 분모 | 각51/51 required harness,204passed,workspace 쓰기 거부 | raw ignored2/helper2를 보존;일반 skip 성공 처리 금지 |
+| native 최근 완료 | 46e941b/run42334814627은6tuple 모두 성공;report6 다운로드·대조 | cb5dce7 실패 보존;후속 collector source에 소급하지 않음;full_runtime_qualified=false |
+| Windows 분모 | 46e941b 각51/51 required harness,214passed,workspace 쓰기 거부 | raw ignored2/helper2를 보존;일반 skip 성공 처리 금지 |
 | 실제 runtime 프로세스 | network-none,UID65532,read-only,cap-drop ALL;origin2/audit4,재시작·replay·변조·sealed custody 부정 시험 | typed fixture이며 실제 browser/human/AT 또는 full Gate가 아님 |
 | CLI provisioning | 실제 binary doctor/dry-run/install/repeat/rollback,digest·변조·mode0500parent 거절 | 서비스 활성화·서명 package 설치·제품 readiness는 미완료 |
 | CEF Windows 파일럿 | 43044be: 실제 Meari child 부착·resize/focus·정상/late-cancel 종료,UIA Unicode 값;core9/native4,보안 완화4종 거절 | 별도 source-linked native workspace;BrowserReady=false,전체 sandbox·IME·AX 미자격화 |
-| Rust collector | L1-L3 17signal 및 passive behavior epoch 구현;native13·Docker 실제 Firefox13·WASM release/Clippy 통과 | source manifest 귀속;환경/guard/advanced·distribution·transport 미완료,제품 전체 자격화 아님 |
+| Rust collector | L1-L3·passive behavior 및 별도 env/advanced API;actual Firefox30·WASM/Clippy 통과 | source manifest 귀속;guard 계수 상태만 구현,hook/배포/session transport 미완료;제품 전체 자격화 아님 |
 | 공급망 | 최근 Cargo audit 알려진 취약점0 | ttf-parser0.25.1 RUSTSEC-2026-0192 유지보수 경고1;최종 closure 재스캔 필요 |
 
 native6tuple 원본 report6개를 내려받아 SHA/status/범위를 대조했다. 최신 정제
@@ -77,7 +77,7 @@ CEF 초기 근거는 evidence:root/20261107012426이며 브라우저 프로세�
 | M2 | network·raw capture | 부분 구현 | 실제 TLS ClientHello·ordered headers·HPACK/H2 SETTINGS/priority 관찰,connection/session binding | M1 |
 | M3 | audit·keys·state | 부분 구현 | sealed custody/atomic ACL 기반 위 rotation·독립 durable witness·dual-control erasure·운영 sinks | M1 |
 | M4 | Core/Gate·local authority | 제한된 runtime 구현 | raw capture·collector/RIT 전체 연결,proxy/settings/abuse/admin·dual control;필수 경로 실제 동작 | M1-M3 |
-| M5 | Rust browser/WASM data plane | L1-L3·passive behavior 부분 구현 | env/guard/advanced·loader→session/RIT transport·recovery·Pass;ordinary browser/AT | M2-M4 |
+| M5 | Rust browser/WASM data plane | L1-L3·behavior·env/advanced API 부분 구현 | guard hooks·fingerprint-ID/ICE·loader→session/RIT·recovery·Pass;추가 API matrix/ordinary browser/AT | M2-M4 |
 | M6 | 서버 adapter 생태계 | 부분 구현 / 확장 연구 완료 | Node/nginx Rust-only binding·실제 authority,typed provenance·body/stream·proxy 신뢰 계약;서비스별 실행 matrix | M4-M5 |
 | M7 | CLI·설치·서비스 | provisioning 구현 | 서명 artifact 검증→native 서비스 활성/readiness→재설치·rollback·remote peer 부정 파일럿 | M4 |
 | M8 | 제품랩·공격/방어 | 제한된 Docker 검증 | live Gate/browser/Pass,egress 격리,origin/audit 실제 효과,공격/정상·human/AT 분모의 제품 e2e | M4-M6 |
@@ -91,6 +91,7 @@ CEF 초기 근거는 evidence:root/20261107012426이며 브라우저 프로세�
 | B3 | 진단·server receipt 연결 | 미구현 | qualified target navigation/input,collector/session/capture/audit를 typed 관찰로 연결 | B2,M4-M5 |
 | B4 | browser/mobile/AI/AT 비교 | 미실행 | ordinary Chrome 및 실제 인간/AT 대조군,관찰 개입 표시,origin/audit 효과와 오탐 측정 | B3,M8 |
 | B5 | 도구 패키지·업데이트·문서 | 미구현 | 서명·native CVE/SBOM·업데이트/rollback,Pages 사용자 문서·native distribution | B2-B4,M10-M11 |
+| B6 | opt-in native SDK/DLL | 설계 정본화·미구현 | 별도4crate·versioned ABI·명시 init/stop·호스트 비종료·콜백/unload·Rust 실제 consumer 및 AT 검증 | B0;계약 설계 독립 가능 |
 
 B 트랙은 제품을 검증하는 별도 도구다. B2 파일럿 성공을 M5 collector나 전체
 제품 parity 성공으로 합산하지 않는다. 일반 Chrome과 Chromium의 UA 유사성,
@@ -106,6 +107,14 @@ server-joined 증거를 구분하고 CDP/Computer Use 관찰 개입과 on/off �
 기록한다. 비연동 수동 관측은 제품 보호 효과나 서버 검증 판정이 아니며
 공격 실험은 계속 owned lab에 한정한다. 해당 chromium-lab-browser SoT 단독
 writer는 UI 채팅에 양도했고 공통 Cargo/roadmap/automation 정본은 root가 유지한다.
+
+browser1a7de24는 borderless SVG shell·native resize/cursor를 추가했다. 최종
+core18/native11 및 명시거부1case/4flags 통과와,별도 GUI source의96DPI E/S/
+SE/SW·CEF6readback·custom close 근거를 구분한다. 마지막 max-edge/DPI/capture
+수정은 unit/build-only다. native-embedding 정본의SDK4crate는 계획이며 root19에
+합산하지 않는다. SDK는 opt-in observation 우선·호스트 프로세스 비종료·versioned
+ABI·owned window·안전한 unload를 요구한다. 일반 DLL 주입·새 enforcement 정책
+허가는 아니다. full sandbox/navigation/Chrome parity/highDPI/AT는 미자격화다.
 
 ## 채팅 결과와 후속 작업
 
@@ -266,10 +275,10 @@ ac560ff의 전체 run42329288896는 failure이며 component green으로 대체�
 
 | 우선 | 관측된 실패 | 후속 완료 조건 |
 |---|---|---|
-| P1 / local 수정 | Unix custody 재획득 WouldBlock | duplicate-description 실패 재현→custody/WAL 공용 guard명시unlock 회귀 통과;exact remote 재검증 |
-| P1 / local 수정 | Unix authority native_process Clippy err_expect | Rust 수정·Linux all-target Clippy·실제 UID65534거절 및 helper 실행분모 검증 통과;원격 확인 |
+| P1 / scoped 원격 통과 | Unix custody 재획득 WouldBlock | controlled 회귀·공용 guard 수정 후46e941b native6tuple 통과;full runtime 별도 |
+| P1 / scoped 원격 통과 | Unix authority native_process Clippy err_expect | Rust 수정·Linux Clippy·실제 UID65534/helper proof 통과 및46e941b native6tuple 성공 |
 | P1 / 빌드 수리 검증 | browser job의 없는 humanymous-wasm 패키지 | 52c2c0d 실제collector WASM release 통과;전체 browser runner 미구현 실패 보존 |
-| P1 / wiring 수정 | 전체 Windows job이 관리자 token으로 CLI tests 실행 | 52c2c0d 기존 엄격한 비관리자 검증 공유;해당 job 원격 실행 결과 확인 필요 |
+| P1 / harness·build 검증 | 전체 Windows job이 관리자 token으로 CLI tests 실행 | f6d2893 full job51/51harness·214passed·비관리자·쓰기거절·release build 확인;필수 native runner 부재로 job 실패 |
 | P1 / build 검증 | Pages Ruby3.3.12를 pinned action이 지원하지 않음 | 52c2c0d Ruby3.3.13 actual apex/subpath build·artifact 통과;production deploy/최신 docs review 별도 |
 | 제품 gate | full runner3개·docs freshness·publish=false·Go shipping/CVE | 미구현 제품 경로/정리/검토를 실제 완료;gate 삭제·skip·ignore 금지 |
 

@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T04:10:34Z
+updated: 2026-11-07T04:20:51Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -63,6 +63,13 @@ and release pilots still follow these checks and remain mandatory; the scoped
 probe report never becomes a full native-delivery qualification. Reusing the
 existing legacy probe adds no new Python/PowerShell implementation; replacing
 its orchestration with Rust remains a tracked migration responsibility.
+
+The f6d2893 full Windows native job uploaded an actual source-bound standard-user
+report:51required/executed harnesses,214passed,raw2ignored custody helpers,
+workspace write denied and temporary account/scratch cleanup confirmed. The job
+then completed the release binary build and failed at the absent required native
+pilot runner. These artifacts establish actor/harness/build repair only, not full
+native pilot or whole CI success. Preserve run42335890776 failure and its logs.
 
 The later cb5dce7 native run42332170496 failed Linux x64 on custody reacquisition
 while its other5tuples and browser component passed. Preserve that failure; a

@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:11:54Z
+updated: 2026-11-07T04:19:21Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -37,6 +37,8 @@ files:
   - {path: async-probe-results.json, sha256: 9120fcd2fca8f927772713dec72c9c2eca86e0e98696202aa25962510cb06ce2, bytes: 5715, store: repo}
   - {path: advanced-collector-results.json, sha256: ca502084cee41af326d0ba0fa2d31c3bb2ceae01a06b0234fe8afa7aeda82802, bytes: 7932, store: repo}
   - {path: custody-native-remote-results.json, sha256: 7de42cca21c81a5ea9af5a9ad031391948e06a25f9d57c99efe76a42f6134250, bytes: 2876, store: repo}
+  - {path: guard-state-results.json, sha256: 7de222f10289010580bc20da88c8da42e70706d30ffa08e7a1f12b338f12abb9, bytes: 7092, store: repo}
+  - {path: windows-full-actor-results.json, sha256: 4eb374ad4b59fa439f36764ccc77ac57b89cb828ca0a148a09a77319b9535b9e, bytes: 562, store: repo}
 ---
 
 # Program status
