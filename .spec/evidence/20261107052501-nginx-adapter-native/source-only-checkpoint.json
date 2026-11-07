@@ -1,0 +1,48 @@
+{
+  "schema": "humanymous.nginx.source-only-checkpoint/0.1",
+  "priority": "P1 source-only; root allocates the single heavy slot",
+  "validated_basis_commit": "16c18f35a92586fda1fb25fbab8c8c96e67a27a0",
+  "validated_basis_scope": "7unit/nativeClippy/35status-and-origin groups; JSON body not verified",
+  "shared_authority_commit": "e346834359e6a9cb122ed134a0d58d6b9f7082a0",
+  "change": "constant JSON CHALLENGE response, deferred pool-owned timer finalization, Rust JSON assertions; future Docker Cargo jobs default1",
+  "files": [
+    {
+      "path": "crates/nginx-adapter/src/native.rs",
+      "sha256": "c65131ac337558b87566eb9211d7c36ef823b728f337c4f59de83a705404393d",
+      "lf_only": true,
+      "bytes": 24912
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "sha256": "7c2e3ecf2167a0e465cbc65ff8a65d714439761812e1bc5ec1770a3077cf6c4f",
+      "lf_only": true,
+      "bytes": 28130
+    },
+    {
+      "path": "adapters/nginx/Dockerfile.native",
+      "sha256": "f4d2b28dc72ad4f1bc38b23ca8487f9c22dc567a1d725092212bae3a28ba1981",
+      "lf_only": true,
+      "bytes": 3793
+    }
+  ],
+  "validation": {
+    "rustfmt": "performed, syntax formatting only",
+    "native_clippy": "NOT_RUN",
+    "full_product": "NOT_RUN",
+    "compose_json_and_cleanup": "NOT_RUN",
+    "native_build": "NOT_RUN",
+    "authority_canonical_runtime": "NOT_RUN",
+    "pilot_clippy": "NOT_RUN"
+  },
+  "last_completed_image": "sha256:944039db8f0799c0b40e52c46d8f53fc3a3e067cb2790cd80a16dce593466a5c",
+  "last_image_scope": "pre-JSON canonical authority image, built not runtime-tested",
+  "owned_live_processes": 0,
+  "new_cloud_resources": 0,
+  "canonical_source": "commit containing this receipt; source hashes above are authoritative",
+  "remaining": [
+    "root heavy-slot or remote-runner assignment",
+    "native ABI/lifetime and JSON response verification",
+    "canonical authority actual runtime replay/cancel/error checks",
+    "independent witness/cross-user/sustained backpressure/full browser-human-AT"
+  ]
+}

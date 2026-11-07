@@ -67,6 +67,14 @@ timers receive results on the nginx thread. Pool cleanup cancels the task and
 removes its timer. Recheck expiry and unchanged request bytes before ALLOW;
 no retry/cache. Unknown/reserved routes reject before origin. DENY403,
 CHALLENGE409(no recovery), transport/malformed/mismatch/expiry503 no-store.
+CHALLENGE must carry application/json and a fixed challenge_unavailable error,
+with no authority-provided redirect or script. This body-format requirement was
+not verified by16c18f3's status-only case. Its source-only follow-up is awaiting
+native compile/runtime qualification under root's resource scheduling.
+The source-only follow-up uses ngx_http_send_response with a constant zero-script
+complex value, then one-shot pool-owned timer finalization after the SDK wrapper
+returns. No cell borrow may cross finalization; origin phases must not resume.
+Native ABI/lifetime and JSON tests are NOT_RUN until root allocates a heavy slot.
 These are module/IPC errors; nginx parser rejects malformed wire framing before
 module invocation and retains its native400 response/error headers.
 

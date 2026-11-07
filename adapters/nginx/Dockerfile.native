@@ -12,6 +12,8 @@ RUN make install
 WORKDIR /src
 RUN rustup component add clippy --toolchain 1.99.1
 ENV RUSTUP_TOOLCHAIN=1.99.1
+ARG CARGO_BUILD_JOBS=1
+ENV CARGO_BUILD_JOBS=$CARGO_BUILD_JOBS
 COPY . /src
 ENV NGINX_SOURCE_DIR=/opt/nginx-1.30.6
 ENV NGINX_BUILD_DIR=/opt/nginx-1.30.6/objs

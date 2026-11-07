@@ -111,3 +111,51 @@ qualification; one32-request batch is not a general service-capacity claim.
 
 Next: attach sanitized results and LF/Git-byte proof, attributed owned commit,
 notify Node/root and release pass. Reacquire before any later nginx changes.
+
+Native source/SoT/plan/receipts committed as16c18f3. Public evidence now attaches
+native-results.json and git-byte-proof.json through Specfold; canonical owned
+blobs match validated working bytes and contain noCR. Historical legacy source
+blobs are unchanged. Private full-scope spec check passed0errors/0warnings;
+follow-up receipt commit and normal lane release finish this checkpoint, not
+the remaining whole-program qualification requirements above.
+
+## Resource reprioritization and unverified follow-up
+
+The user requested memory investigation and forbade new heavy cargo/rustc/build/
+browser/Docker/spec-global work pending root scheduling. All previous native
+runs are finished; the last authority-canonical build session57181 completed
+successfully before observation, image config944039db8f0799c0b40e52c46d8f53fc3a3e067cb2790cd80a16dce593466a5c.
+It uses canonical authoritye346834 sources (the earlier snapshot differed only
+in transport/mod.rs and transport/service.rs). No runtime pilot has executed on
+that image, and no new heavy execution starts during the resource hold.
+
+Final contract comparison identified that canonical16c18f3 returns409 through
+nginx's normal HTML error page, while the shared adapter contract requires JSON
+for CHALLENGE. Its35-group success verifies status/no-origin, not JSON format.
+At the initial resource hold, dirty native.rs added a constant JSON response using nginx's official
+send_response API and defers finalization through the pool-owned timer; the
+Rust pilot now asserts Content-Type and JSON error. This follow-up is authored
+but UNCOMPILED/UNEXECUTED and must not be folded into16c18f3's success. Root must
+schedule native Clippy/build+actual35-group rerun before validation/release
+qualification. The later P1 instruction permits source-only checkpoints with
+all unexecuted gates explicitly NOT_RUN.
+No scoring/Pass/Go/shared contracts were changed. No owner process/container is
+required to remain alive; no arbitrary process/daemon termination was performed.
+
+## P1 source checkpoint and queued verification
+
+Root prioritizes P0 runtime/collector source, P1 Node/nginx source checkpoints,
+then P2 remote validation design. No new local cargo/rustc/build/browser/Docker
+or broad private spec scan starts. No paid cloud/deployment is created. Only
+source formatting and narrow public-document/byte checks run in this checkpoint.
+
+JSON uses nginx send_response with a constant zero-script complex value, then
+one-shot timer finalization after the SDK wrapper returns. Rust pilot assertions
+cover Content-Type and parsed error. ABI/lifetime correctness remains NOT_RUN;
+previous status-only35 is not this follow-up's denominator. Docker compilation
+defaults CARGO_BUILD_JOBS=1 for a future scheduled slot; no image was rebuilt.
+
+Queued, all NOT_RUN: locked native build/strict Clippy; Rust pilot Clippy;
+Compose35 with JSON and cancellation/cleanup; canonical authoritye346834 runtime;
+new source/image/artifact receipts. Root allocates the one heavy slot or remote
+runner before execution. Source freeze precedes Windows/full product reruns.

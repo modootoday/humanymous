@@ -1,0 +1,224 @@
+{
+  "schema": "humanymous.nginx.git-byte-proof/0.1",
+  "canonical_owned_source_commit": "16c18f35a92586fda1fb25fbab8c8c96e67a27a0",
+  "validated_working_manifest": "5adf936ac02fde3b86352a803aefb4c4ad4a8dac5adf20d3d99150d99a485eac",
+  "scope": "owned source only; shared dependencies are the frozen root Cargo/lock snapshot in native-results.json",
+  "files": [
+    {
+      "git_blob": "e96f4acceca967ce75f5eb7b16efe9d522f5e9ef",
+      "sha256": "ac05eafa1f5123fe3004ba3ab82719f32cb450e21f8da0f53dabf47b69a7bebe",
+      "bytes": 1094,
+      "working_equals_canonical": true,
+      "path": ".spec/evidence/20261107052501-nginx-adapter-native/index.evidence.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "292fa455959130fd1345876fee8e1e075d084bde",
+      "sha256": "17aceea2fa59f73972f9fe6d6d431fa47bbd83dead978caa17197cdb063b570e",
+      "bytes": 9567,
+      "working_equals_canonical": true,
+      "path": ".spec/evidence/20261107052501-nginx-adapter-native/native-results.json",
+      "lf_only": true
+    },
+    {
+      "git_blob": "0ca60bde53738ca8a29c73c73bc9d8e2acfb85ed",
+      "sha256": "1b29a78f0b98c05b26289a3a11c6d058e4ca9e916ba5cdeb0c286bb17b16032f",
+      "bytes": 1504,
+      "working_equals_canonical": true,
+      "path": ".spec/plan/20261107004000-nginx-adapter.plan.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "5fee103eadeaee925edbf8a1c7ec80ce57c56bcd",
+      "sha256": "1cc656d66f885de539b5c849893e297027074953ee7dcfba47538c5efff0b15e",
+      "bytes": 6647,
+      "working_equals_canonical": true,
+      "path": ".spec/plan/20261107052500-nginx-adapter-native.plan.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "03cb84d40101dd744ef89d4fa075a64115ff6486",
+      "sha256": "d3da031e3846c1949979cb980882de2d5604c9e86c1f9241ca5b33099dfd9cdb",
+      "bytes": 13172,
+      "working_equals_canonical": true,
+      "path": ".spec/sot/nginx-adapter.sot.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "abd4b23a6d00d06601af563a1e42ccac651a71ec",
+      "sha256": "0bb5e908544e65360b69a4baebee1768a83b9f2499b1537246c80c3213554ff4",
+      "bytes": 14,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/.gitignore",
+      "lf_only": true
+    },
+    {
+      "git_blob": "18019d420c0c8f89b32ab6e110bb636928c2f399",
+      "sha256": "358899012400d9a700ed94bc70a0324ca808bafcd2238c39b71714585403e1cc",
+      "bytes": 3731,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/Dockerfile.native",
+      "lf_only": true
+    },
+    {
+      "git_blob": "1e6c2aae68676e2cf766c8c4264d5440d0e91953",
+      "sha256": "4a109d1ca1629ed40f3cce38e3554caa99df5bb08e3ab5f02afb81b26cc53051",
+      "bytes": 283,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/Dockerfile.native.dockerignore",
+      "lf_only": true
+    },
+    {
+      "git_blob": "2b74384346777ba802ea32dafee6fd1872cf5fd3",
+      "sha256": "be236990154088b51816b2dc37f08dcd1cbe05a3f4a525d967958076e3fbd0d0",
+      "bytes": 1518,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/INTEGRATION.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "51394fb0d9393c1d2e30cb1f79b0e2c4c7038db3",
+      "sha256": "2097578eb630eb695e8310f60beafcfdae23e84b0c864e89c7d3ab260cec958a",
+      "bytes": 3423,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/README.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "5863abf2e7cc7e73944f3dbc020ddea8c2cec13b",
+      "sha256": "1d8fa6a07c535688832a7eb0ca051c8a4c5d7c080dcff739ceca77d688e5f509",
+      "bytes": 380,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/compose.yaml",
+      "lf_only": true
+    },
+    {
+      "git_blob": "3aca677c13b578914d17f09031d232c0f5c6f28f",
+      "sha256": "96ed31cadb14247645d043fc52a7edc29433243137a749769894455eba521c90",
+      "bytes": 1158,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/legacy-njs/INTEGRATION.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "6d2f70b14ee236dfbc8d0ff8ec6e34b5e83a1c77",
+      "sha256": "1d8b57d2aa1f99334aa1522bbf386f6823caa52161edb38952ace4750bfbc330",
+      "bytes": 2078,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/legacy-njs/README.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "53d503301568b4c5167f9b50006ae300ad1faaac",
+      "sha256": "188063a6dd6a1fc09ba081b31b4162e97d049808aae177e9f6dfc796f9faaa65",
+      "bytes": 570,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/legacy-njs/compose.yaml",
+      "lf_only": true
+    },
+    {
+      "git_blob": "12bfc9ea2fc7d7da156ee0358ce2c5002dc84e7d",
+      "sha256": "f4e37b88bf59c4e296d8edd95569f4bf8935d709ab67938c4e6e430b8ae5bc25",
+      "bytes": 4359,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/legacy-njs/gate.js",
+      "lf_only": true
+    },
+    {
+      "git_blob": "46692bd1bcecda579ce02c2811d8b9d6df9583fb",
+      "sha256": "e809de0ccb7699edb0a1a45b208f80021ea229d654faf7e85420ec9692083557",
+      "bytes": 1767,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/legacy-njs/nginx.conf",
+      "lf_only": true
+    },
+    {
+      "git_blob": "4e8afef26988578578e2a2ee2d9acf7e55ade7b8",
+      "sha256": "5177f35bb3e2d4f8abea95b55bac8bce040e6275d2565650f6b592e0efe5a05b",
+      "bytes": 8268,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/legacy-njs/test/pilot.py",
+      "lf_only": true
+    },
+    {
+      "git_blob": "3abebd2dc6bb01d8c51ddd2cbd94e7f6d0f5d487",
+      "sha256": "b9e486eac60c75ec7099b34540fd5d611102dd16f2280fef5d91de101223d303",
+      "bytes": 1612,
+      "working_equals_canonical": true,
+      "path": "adapters/nginx/legacy-njs/test/unit.js",
+      "lf_only": true
+    },
+    {
+      "git_blob": "69bae168c2b73cd3f9bc1a0aeba7bb569f089ce4",
+      "sha256": "bb7ac8adeae10d3938dd29d9bce1250c0030385e8b51be140499771c1e7b127c",
+      "bytes": 1277,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/Cargo.toml",
+      "lf_only": true
+    },
+    {
+      "git_blob": "0287296fa84ebdec0f49f288ee4a4ae376e99d0f",
+      "sha256": "c3978d6b8b4c904bd5e8555bc42737f4cf564590caa69760662ddc4cd710f288",
+      "bytes": 2071,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/INTEGRATION.md",
+      "lf_only": true
+    },
+    {
+      "git_blob": "41022cbb6fc615aef976da5080cfa8343070b259",
+      "sha256": "caca3a0bf53b71d3f9759f762d36b134d5db2109c2d0be747406ffa15ab3255a",
+      "bytes": 496,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/src/bin/pilot.rs",
+      "lf_only": true
+    },
+    {
+      "git_blob": "3f64bbcd357f3ec80c72411dff7ce9eb914c16c3",
+      "sha256": "b037239dfc33dd41c3e9a79ecf85b0453d6554c9e0ed922c236952c4ee20c5f3",
+      "bytes": 392,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/src/lib.rs",
+      "lf_only": true
+    },
+    {
+      "git_blob": "00850cacc686826f41b5da71cf6ff53cea1c3cc6",
+      "sha256": "806555195966407a836462d16e4c8fb20bed1d1d14a0c931960ae9fd0a10184c",
+      "bytes": 23020,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/src/native.rs",
+      "lf_only": true
+    },
+    {
+      "git_blob": "6343103aa2c99f1b7fe864ea874f55c086fda687",
+      "sha256": "a3e3d9e9463c17b469be772192a6bbda5abafb83485381a9a8cede68df016bca",
+      "bytes": 4995,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/src/pilot/authority.rs",
+      "lf_only": true
+    },
+    {
+      "git_blob": "451f3759e3a10c5d9e0c5d09d791aeab88231255",
+      "sha256": "5f1e813d0ca255dcc1c7b279b00ae6886fbe394b6ffe538a35542bf848f6892f",
+      "bytes": 27622,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "lf_only": true
+    },
+    {
+      "git_blob": "73419bd18c36098262340d61757eacdea8e572ef",
+      "sha256": "ffe29ec3417e5e03a75f2d6a1cea42e528f7959b405bfe88b6aa613eecc6c4ce",
+      "bytes": 7081,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/src/pilot/origin.rs",
+      "lf_only": true
+    },
+    {
+      "git_blob": "42569d68351f1a677ba9905d79dfd99bf180377b",
+      "sha256": "07d868d19d08377f147ea64db4360f07ae545140046a2591582764fc595bfaac",
+      "bytes": 15479,
+      "working_equals_canonical": true,
+      "path": "crates/nginx-adapter/src/request.rs",
+      "lf_only": true
+    }
+  ]
+}

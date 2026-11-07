@@ -31,3 +31,9 @@ authority process409, credential/reload and same-WAL authenticated restart pass.
 No full product/human/AT claim. See native plan and sanitized
 evidence:root/20261107052501 for source hashes, retries and remaining witness/
 cross-user/sustained-load/backpressure qualification.
+
+P1 source-only follow-up: CHALLENGE409 JSON/timer finalization and Rust JSON
+assertions are authored; native build/Clippy/runtime NOT_RUN under resource hold.
+The35-group result belongs to16c18f3 status/no-origin behavior. Future Docker
+compilation defaults CARGO_BUILD_JOBS=1. Root must allocate the one heavy slot or
+remote runner before execution; no cloud is provisioned by this checkpoint.

@@ -232,6 +232,20 @@ http {{
             .map_err(|error| format!("case {name}: {error}"))?;
         ensure(result.status == status, "negative status")?;
         ensure(origin.count() == before, "negative origin effect")?;
+        if name == "challenge" {
+            ensure(
+                result
+                    .values("content-type")
+                    .iter()
+                    .any(|value| value.starts_with("application/json")),
+                "challenge JSON content type",
+            )?;
+            let json: serde_json::Value = serde_json::from_slice(&result.body)?;
+            ensure(
+                json["error"] == "challenge_unavailable",
+                "challenge JSON body",
+            )?;
+        }
         if ![
             "duplicate-content-length",
             "transfer-encoding-plus-length",

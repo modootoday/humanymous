@@ -127,6 +127,7 @@ struct State {
     task: Option<tokio::task::JoinHandle<()>>,
     snapshot: Option<Ingress>,
     verdict: Option<Result<BoundResponse, ()>>,
+    finalize_response: Option<isize>,
 }
 struct Context {
     // SAFETY: only nginx callbacks read/mutate this event on one thread.
@@ -158,6 +159,7 @@ impl Context {
                 task: None,
                 snapshot: None,
                 verdict: None,
+                finalize_response: None,
             }),
             started: Instant::now(),
             budget: Duration::from_millis(timeout),
@@ -310,7 +312,7 @@ fn handle(r: &mut http::Request) -> Status {
             return match verdict {
                 Ok(Verdict::Allow) => Status::NGX_DECLINED,
                 Ok(Verdict::Deny) => reject(r, 403),
-                Ok(Verdict::Challenge) => reject(r, 409),
+                Ok(Verdict::Challenge) => challenge(r),
                 Err(()) => reject(r, 503),
             };
         }
@@ -377,6 +379,38 @@ fn handle(r: &mut http::Request) -> Status {
     state.task = Some(task);
     state.started = true;
     Status::NGX_AGAIN
+}
+
+fn challenge(r: &mut http::Request) -> Status {
+    let Some(ctx) = r.get_module_ctx::<Context>(Module::module()) else {
+        return reject(r, 503);
+    };
+    let context = ctx as *const Context;
+    if r.add_header_out("Cache-Control", "no-store").is_none() {
+        return reject(r, 503);
+    }
+    let raw: *mut ngx_http_request_t = r.into();
+    // SAFETY: constant strings outlive the request. The zero-initialized nginx
+    // complex value has no scripts; send_response copies its static value into
+    // pool-owned output buffers and never invokes an application handler.
+    let rc = unsafe {
+        let mut content_type = ngx_string!("application/json");
+        let mut value: ngx_http_complex_value_t = std::mem::zeroed();
+        value.value = ngx_string!("{\"error\":\"challenge_unavailable\"}\n");
+        ngx_http_send_response(raw, 409, &raw mut content_type, &raw mut value)
+    };
+    // SAFETY: nginx's response API does not finalize the request here. Defer
+    // finalization until after the SDK phase wrapper returns, so its borrowed
+    // Request never outlives pool memory. The existing pool cleanup owns timer.
+    unsafe {
+        let ctx = &*context;
+        ctx.state.borrow_mut().finalize_response = Some(rc);
+        if (*ctx.event.get()).timer_set() != 0 {
+            ngx_del_timer(ctx.event.get());
+        }
+        ngx_add_timer(ctx.event.get(), 1);
+    }
+    Status::NGX_DONE
 }
 
 fn head_allowed(r: &mut http::Request, config: &Configuration) -> Result<(), ()> {
@@ -589,6 +623,15 @@ unsafe extern "C" fn poll(event: *mut ngx_event_t) {
         // SAFETY: only armed after pool allocation; cleanup removes the timer.
         let ctx = unsafe { &*(*event).data.cast::<Context>() };
         let raw = ctx.request;
+        let response = ctx.state.borrow_mut().finalize_response.take();
+        if let Some(rc) = response {
+            // SAFETY: no cell borrow or later context access crosses this call;
+            // nginx may release the pool and its timer object during finalization.
+            unsafe {
+                ngx_http_finalize_request(raw, rc);
+            }
+            return;
+        }
         let now = humanymous_authority::now_ms().unwrap_or(u64::MAX);
         let mut resume = false;
         {
