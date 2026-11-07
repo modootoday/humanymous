@@ -10,6 +10,21 @@ rel:
 
 # Agent maintenance
 
+## Performance source handoff returned
+
+On2026-11-08 KST the performance owner reported normal release/reclaim returning
+all three Integrity source files to root. Independent literal claim inspection
+confirmed project-coordination/codex/rust-performance-baseline with only the five
+original exact SoT/plan/public index/baseline/private evidence scopes. LANES and
+THREADS now project that current scope and preserve the ended source handoff as
+history. No indefinite Integrity or benchmark source grant remains.
+
+The performance receipt commitfc74b9be7da887984930ec0ab03ce5552c90e90d and independent
+audit receipt5ae869a617def5317dbdaee09d25439a2e220988 were read as actual Git commits.
+This metadata update does not rerun or broaden their measured evidence. The owner
+reported B/target returned and continues source-only cache research during the
+Browser heavy window. No foreign claim/source was edited and no workload run here.
+
 ## Observed temporary legacy report loan
 
 After the reporting owner supplied an actual acquisition receipt, the live pass

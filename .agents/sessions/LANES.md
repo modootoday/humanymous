@@ -36,15 +36,17 @@ codex/rust-performance-baseline for `.spec/sot/performance-optimization.sot.md`,
 the exact public files `.spec/evidence/20261107135643-performance-optimization/index.evidence.md`
 and `.spec/evidence/20261107135643-performance-optimization/baseline.json`, plus
 `.spec.local/root/evidence/20261107135643-performance-optimization/**` only.
-Root subsequently handed off exactly three additional files to this same owner:
+Root previously handed off exactly three additional files to this same owner:
 `crates/integrity/src/request/canonical.rs`,
 `crates/integrity/src/request/canonical/tests.rs` and
-`crates/integrity/examples/canonical_performance.rs`. The actual claim now lists
-these eight scopes. Root will not write those three source paths until returned.
-This overrides the usual metadata role only for the recorded session; it grants
-no whole-Integrity, .agents/rules/THREADS, graph or other benchmark path. Source
-and formatting preparation do not permit workloads during the Pages heavy window;
-compilation/benchmark execution still requires its own root allocation. Use
+`crates/integrity/examples/canonical_performance.rs`. That source handoff ended
+after the measured R1 receipt; the owner's normal release/reclaim was followed by
+an independent read of its actual five-scope document/evidence claim on2026-11-08.
+Those three source paths are returned to root and are no longer granted here.
+The continuing loan overrides the usual metadata role only for the recorded
+session; it grants no source, whole-Integrity, .agents/rules/THREADS, graph or
+benchmark path. Source-only build-cache research does not permit workloads during
+the root's Browser heavy window; execution requires a separate root allocation. Use
 normal exact-owner handover/release; never take over this lane from its owner.
 
 Temporary root-approved audit loan: red-catalog is held by

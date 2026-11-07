@@ -1,6 +1,6 @@
 # Project chat ownership registry
 
-Snapshot: 2026-11-07 KST. Chat active status is distinct from persistent goal status. Each owner must inspect get_goal; unfinished goals are preserved. New goals below are dispatched, not presumed accepted or completed.
+Snapshot: 2026-11-08 KST. Chat active status is distinct from persistent goal status. Each owner must inspect get_goal; unfinished goals are preserved. New goals below are dispatched, not presumed accepted or completed.
 
 | Chat | ID | Responsibility |
 |---|---|---|
@@ -31,12 +31,14 @@ Snapshot: 2026-11-07 KST. Chat active status is distinct from persistent goal st
 Root owns shared Cargo/lock/toolchain, program roadmap and final Git integration. Pages owner alone writes docs/**, including public Draft v0. Other owners submit INTEGRATION.md/spec deltas. Source authoring may parallelize when real paths do not overlap.
 
 Temporary performance coordination: root lent the existing project-coordination
-lane to codex/rust-performance-baseline, observed with five exact performance
-spec/evidence scopes plus three narrowly handed-off Integrity source paths,
-all recorded in LANES. The owner actually acquired it through the
+lane to codex/rust-performance-baseline, currently observed with only five exact
+performance spec/evidence scopes recorded in LANES. The three Integrity source
+paths previously handed off were returned to root after R1; no continuing source
+grant remains. The owner actually reacquired the document-only scope through the
 unchanged PS compatibility protocol. This is not a new Rust-only lane grant or
-permission to edit the lane's usual agent metadata or all of Integrity. Source
-preparation is separate from allocated workloads and the Pages heavy window.
+permission to edit the lane's usual agent metadata or Integrity. Continuing
+build-cache research is source-only during the Browser heavy window; workloads
+need a separate allocation.
 Root also lent red-catalog to codex/rust-convention-audit, independently observed
 with exactly five convention spec/evidence scopes in LANES; no red/product code,
 rules, Pages, graph or Cargo workload rights follow. Both are temporary existing
