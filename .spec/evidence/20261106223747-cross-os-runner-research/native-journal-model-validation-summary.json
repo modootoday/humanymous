@@ -1,0 +1,267 @@
+{
+  "schema": "humanymous.native-journal-model-validation/1",
+  "state": "TWELVE_PURE_MODEL_TESTS_FMT_CHECK_CLIPPY_PASSED",
+  "source_sha": "49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051",
+  "source_archive_sha256": "f8daceb50872f565442491818a84b896d9a779226986d90853130d9f7e2d7849",
+  "overlays": 0,
+  "tool_session": 15440,
+  "actual_terminal_exit": 0,
+  "target": "target/native-root-journal-model-v0",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "work_seconds": 390,
+  "cleanup_seconds": 450,
+  "elapsed_seconds": 30.8719326,
+  "actual_tests": {
+    "inventory": 12,
+    "passed": 12,
+    "failed": 0,
+    "ignored": 0,
+    "prefix": "storage::user_root_journal_model::tests::",
+    "measured": 0,
+    "filtered": 15
+  },
+  "phases": [
+    {
+      "name": "fmt",
+      "exit": 0,
+      "elapsed_seconds": 14.9129285
+    },
+    {
+      "name": "tree",
+      "exit": 0,
+      "elapsed_seconds": 15.7364277
+    },
+    {
+      "name": "check",
+      "exit": 0,
+      "elapsed_seconds": 21.3035576
+    },
+    {
+      "name": "clippy",
+      "exit": 0,
+      "elapsed_seconds": 22.6122103
+    },
+    {
+      "name": "inventory",
+      "exit": 0,
+      "elapsed_seconds": 29.3281162
+    },
+    {
+      "name": "tests",
+      "exit": 0,
+      "elapsed_seconds": 30.0944882
+    }
+  ],
+  "source_closure": {
+    "scope": "Full extracted immutable archive, archive tar, resolved toolchain bin subtree, tool shims and present user Cargo configuration; archive local configuration included",
+    "byte_equal": true,
+    "selected_files": 3081
+  },
+  "registry_closure": {
+    "method": "Locked offline Windows normal/build/dev native-security tree and registry source intersection",
+    "byte_equal": true,
+    "selected_files": 1442
+  },
+  "environment_closure": {
+    "selected_keys": 9,
+    "equal": true
+  },
+  "binary": {
+    "name": "humanymous_native_security-45b570ac392fe5e4.exe",
+    "sha256": "da05fee32dd9d187e42d893ed6c7fb1fdd14ddc43db3c5e49ad24da2c20d90e4",
+    "bytes": 1193472,
+    "selection": "Exact Cargo test execution stderr"
+  },
+  "cleanup": {
+    "lease_removed": true,
+    "within_original_cleanup": true,
+    "all_owned_terminal": true
+  },
+  "limitations": [
+    "Private cfg(test) symbolic model only; not production journal, durable ACK, native root or Ready",
+    "No native storage/token/account/SCM/provider/process/GUI fixture executed",
+    "Old immutable source49d only; future Runtime destination requires separate source qualification",
+    "No persisted journal or crash recovery authentication/durability qualification",
+    "No source edits, overlays, fixes or retries during run"
+  ],
+  "raw_attachments": [
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/check-end.json",
+      "sha256": "522ec9cb0d19cebab0f9ef35cb77410a5b80cf3bd005b26212ddea35c5c10128",
+      "bytes": 80
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/check-start.json",
+      "sha256": "e6b4c4cdf1c9ccaba9fd71b7b9392cf994e845f9166d022b13c829ed38d0773a",
+      "bytes": 200
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/check.stderr",
+      "sha256": "1f11d3d41c97c22461f2c4dc6ab27a060b3c91bce8b24aa9fdbcf75e6d5d2a89",
+      "bytes": 853
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/clippy-end.json",
+      "sha256": "0192b07ad85af26517ca48b9e768453480e76b54ac7fefd6791f9f5787411885",
+      "bytes": 81
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/clippy-start.json",
+      "sha256": "4c51e386621ed59bb319490bc123bb8544fbeb18bb297569fcbc9704a577140c",
+      "bytes": 241
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/clippy.stderr",
+      "sha256": "022b6c37e310e5bdca7d95b3dfdda3c8dbbfe4e7419b2d990a6bac29171da5ad",
+      "bytes": 436
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/environment-after.json",
+      "sha256": "128827411f246e872d4162b84d09e731c747ad676fdf68b49450f303ef31308a",
+      "bytes": 2684
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/environment-before.json",
+      "sha256": "128827411f246e872d4162b84d09e731c747ad676fdf68b49450f303ef31308a",
+      "bytes": 2684
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/fmt-end.json",
+      "sha256": "467e65151e38d654316e0511757de3220759eb81f4da5a6034848690bd3e6982",
+      "bytes": 78
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/fmt-start.json",
+      "sha256": "fc68b8f7512726c434afc7a672136624e49e8af83f3ab8b8d81201c2a5e8bd59",
+      "bytes": 215
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/fmt.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/fmt.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/inventory-end.json",
+      "sha256": "6f5b7466a040094382d2f4337ae9252c1203e8b60faf97e75a9e905871ab14f9",
+      "bytes": 84
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/inventory-start.json",
+      "sha256": "cde554ac1b5a49c0372e826207b9d98e42cd980ca6927e776837b3bc00ed9f7d",
+      "bytes": 254
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/inventory.stderr",
+      "sha256": "1559a73e4a242a2c66f80929eeb3bd0ab9caa228f2a28090d4d90edbc5925ebc",
+      "bytes": 1010
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/inventory.stdout",
+      "sha256": "4dd225daf1383255ce7b09bfde920efeff85a27982b01514a93cef90dc7c2343",
+      "bytes": 1380
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/metadata.json",
+      "sha256": "588564bb0362c2f454df4207add5708dd455d2a97140aa602df28e460b194cb7",
+      "bytes": 2123
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/registry-after.json",
+      "sha256": "840965e5c34ca1cd3892d386a8aa1b68afc7c05fc6d880f72e468fd9432624f4",
+      "bytes": 282465
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/registry-before.json",
+      "sha256": "840965e5c34ca1cd3892d386a8aa1b68afc7c05fc6d880f72e468fd9432624f4",
+      "bytes": 282465
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/selected-tests.json",
+      "sha256": "d20279bc9d2d537a329ffa1d453b94d27a3416ed0141207bf33ef4a5c6657d12",
+      "bytes": 1431
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/source-after.json",
+      "sha256": "5197764ee68cfe680600ccbced2dd1290ecd717a72ad39e9c6dd617a2c1a2279",
+      "bytes": 750108
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/source-before.json",
+      "sha256": "5197764ee68cfe680600ccbced2dd1290ecd717a72ad39e9c6dd617a2c1a2279",
+      "bytes": 750108
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/source-tuple.json",
+      "sha256": "8f2d07582767b9c457b897a62add3322d070f6faee9eb6d6c654c1a346364494",
+      "bytes": 259
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/source.tar",
+      "sha256": "f8daceb50872f565442491818a84b896d9a779226986d90853130d9f7e2d7849",
+      "bytes": 74629120
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tests-end.json",
+      "sha256": "781efb2c3a47d68ac05841d3d4f5f740f501d767a0f5fd63f126d27fec1d0312",
+      "bytes": 80
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tests-start.json",
+      "sha256": "384d901a0214f159f2a11532dce79d7e83ee7b14d1d121a99e21aaa3f5b2e708",
+      "bytes": 263
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tests.stderr",
+      "sha256": "a6fcd7d9b1ec83bf0e547b6698d391790fe10a8e0b8c64352daa70656dc91819",
+      "bytes": 229
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tests.stdout",
+      "sha256": "5db07bf4188ad87d90ac89f6aa977b466bddc294deff4535733e279afeb52b63",
+      "bytes": 1544
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tree-end.json",
+      "sha256": "d518f4537d4fd798ea77d51f9e65e4274d8f11d8587dcd8a9914eb1e4665cd19",
+      "bytes": 79
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tree-start.json",
+      "sha256": "07f0f354eb62e598c621e60478e20370f5416f52154ebc7ffb655d35eae0e1f7",
+      "bytes": 326
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tree.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0/tree.stdout",
+      "sha256": "c6087b694089c84cd637c9f2b906f126335ce2eb44396e69b142afb26a8096f7",
+      "bytes": 684
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108063000-windows-runner-journal-model-v0-clock.json",
+      "sha256": "125357dee2cf09274c2a8810541bf47869d9e6c2646a03d7618944ee7e3e0a69",
+      "bytes": 185
+    }
+  ]
+}

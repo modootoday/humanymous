@@ -1,0 +1,177 @@
+{
+  "schema": "humanymous.native-ignored-routing-source/1",
+  "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "provenance": "Source-reported remote projection only; original raw child reports/logs not recovered",
+  "projection": {
+    "path": ".spec.local/root/evidence/20261107212500-delivery-full-ci-1f87-monitor/native-ubuntu-source-reported.json",
+    "bytes": 89847,
+    "sha256": "cd8f16ea4b958d9519ee0d7ead230b0f47b8d7c89d185dfdf176616a431c1837"
+  },
+  "failed_harnesses": [
+    {
+      "index": 16,
+      "target": "host_process",
+      "discovered": 5,
+      "passed": 2,
+      "failed": 0,
+      "ignored": 3,
+      "helpers": null,
+      "required_not_run": [],
+      "validated": false
+    },
+    {
+      "index": 17,
+      "target": "hosted",
+      "discovered": 24,
+      "passed": 22,
+      "failed": 0,
+      "ignored": 2,
+      "helpers": null,
+      "required_not_run": [],
+      "validated": false
+    },
+    {
+      "index": 26,
+      "target": "humanymous_attacker",
+      "discovered": 26,
+      "passed": 25,
+      "failed": 0,
+      "ignored": 1,
+      "helpers": null,
+      "required_not_run": [],
+      "validated": false
+    },
+    {
+      "index": 27,
+      "target": "humanymous_audit",
+      "discovered": 117,
+      "passed": 110,
+      "failed": 0,
+      "ignored": 7,
+      "helpers": 0,
+      "required_not_run": [],
+      "validated": false
+    },
+    {
+      "index": 54,
+      "target": "humanymous_platform",
+      "discovered": 53,
+      "passed": 47,
+      "failed": 0,
+      "ignored": 6,
+      "helpers": 0,
+      "required_not_run": [],
+      "validated": false
+    },
+    {
+      "index": 72,
+      "target": "native_process",
+      "discovered": 9,
+      "passed": 7,
+      "failed": 0,
+      "ignored": 2,
+      "helpers": 0,
+      "required_not_run": [
+        "unix_other_user_is_denied_by_actual_socket_acl"
+      ],
+      "validated": false
+    },
+    {
+      "index": 73,
+      "target": "package",
+      "discovered": 8,
+      "passed": 7,
+      "failed": 0,
+      "ignored": 1,
+      "helpers": null,
+      "required_not_run": [],
+      "validated": false
+    }
+  ],
+  "other_reported_validated_helpers": [
+    {
+      "index": 11,
+      "target": "durable_witness",
+      "ignored": 1,
+      "helpers": 1,
+      "validated": true
+    },
+    {
+      "index": 64,
+      "target": "key_backups",
+      "ignored": 1,
+      "helpers": 1,
+      "validated": true
+    },
+    {
+      "index": 65,
+      "target": "key_custody",
+      "ignored": 2,
+      "helpers": 2,
+      "validated": true
+    }
+  ],
+  "source_inferred_disposition": {
+    "required_parents_or_pilots": 19,
+    "whole_ignored_total": 26,
+    "conditional_helpers_not_independently_qualified": 3,
+    "other_reported_validated_helper_ignored": 4,
+    "failed_harness_ignored_total": 22
+  },
+  "historical_source_blobs": [
+    {
+      "path": "crates/node-adapter/tests/host_process.rs",
+      "git_blob": "1764740ed32432549cb61f4086c78f701700cf92"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted.rs",
+      "git_blob": "a1bb1e54097a45a14339bd1fb1e6de3bbd40607c"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/generic.rs",
+      "git_blob": "96cc8b4d8469de676815c1c6751730ed45dfc272"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/package.rs",
+      "git_blob": "1eec5a05e64cbee46cdbae5a0ef7b05f121402c7"
+    },
+    {
+      "path": "crates/attacker/src/report/legacy/tests.rs",
+      "git_blob": "2968c8f0816f92c11ca3da38054098cd6c3ef2c8"
+    },
+    {
+      "path": "crates/audit/src/storage/wal.rs",
+      "git_blob": "23f58615b737285efe9ac3e2d867ffa40b708026"
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/tests.rs",
+      "git_blob": "2ae7ef482b521f593711f206e3f75213e3de8e54"
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/tests/prerequisite.rs",
+      "git_blob": "434b57b11d24d7e77fa2167fce2e47b650327195"
+    },
+    {
+      "path": "crates/audit/src/verification/scan/source/native/tests/capacity.rs",
+      "git_blob": "f27ed1cc0c1f9b83334c11de2bab9f23cc3c4876"
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process.rs",
+      "git_blob": "1688b9612ae741c8bfc3f510f24b765c3a7156f4"
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/capture_attempt/actual_tests.rs",
+      "git_blob": "569d0e4546faa73d91d2235998efeb7d46ca8ab5"
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/testing/process/controlled_barrier/actual_tests.rs",
+      "git_blob": "db3525bf93e504d18a161e1b7c14f54144533821"
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "git_blob": "8ef73bd26d10db4a1c9f0949d0e226f39cc8a3d9"
+    }
+  ],
+  "new_execution_or_dispatch": 0,
+  "accounting_policy_changes": 0
+}

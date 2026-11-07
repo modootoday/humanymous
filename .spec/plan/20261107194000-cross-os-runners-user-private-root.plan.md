@@ -608,3 +608,19 @@ only for model, zero active compiler/target/process/runtime leases. Native owner
 freezes native-security source after this checkpoint and retains runner/spec
 scope; no independent path move or manifest write. Future destination and test
 selector prefix belong to Root integration; old-source hashes remain historical.
+
+## Immutable model execution checkpoint
+
+Root allocated exact49d60cf69e7a67a7a71cc4ec468d14ad3ce9b051 archive, NO overlays,
+new target/native-root-journal-model-v0, one original390s work/450s cleanup pair,
+jobs1/incremental0/locked/offline. Tool15440 actual terminal0 at30.87s. Fmt FIRST0,
+all-target check0/strict Clippy0; inventory EXACT12 then all12 model tests passed,
+0 failed/ignored/measured,15 other tests filtered. No actual native fixture test.
+Full archive/source/tool/config3081 files, selected registry1442 files and nine
+environment keys were byte-identical before/after. All owned processes terminal,
+own marker removed within original horizon; target returned cache only.
+native-journal-model-validation-summary.json binds35 raw attachments, tar SHA
+f8daceb50872f565442491818a84b896d9a779226986d90853130d9f7e2d7849 and exact
+executed native-security test binary hash. This is OLD immutable test-only model
+proof, NOT moved Runtime proof, production durable journal/ACK/root/Ready,
+filesystem/provider/identity admission, crash recovery or native cleanup proof.

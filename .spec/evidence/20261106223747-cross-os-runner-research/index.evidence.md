@@ -5,6 +5,8 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: native-journal-model-validation-summary.json, sha256: 7d2d8bec505ba5b86954b8f063df22c28c557e908f65ef475c530e65ef98113f, bytes: 10441, store: repo}
+  - {path: native-ignored-routing-source.json, sha256: 4e7d6356d5b9f4384ac852915c08bfa5fd5fb9513292be3d4c34aceaa2baf5f7, bytes: 4832, store: repo}
   - {path: native-journal-model-source.json, sha256: 9ba6b7b8363a7f2c82215049dc2af9f7621b8395e9574af221176e0eb538b23e, bytes: 3818, store: repo}
   - {path: platform-package-id-validation-summary.json, sha256: ac923cacd4e6b09b6c1fc9ebc3a82400b8f9d9f196864ff18018cfe2892a3692, bytes: 14708, store: repo}
   - {path: platform-package-id-source.json, sha256: c817f11bcb70c69da52aaecf8c97ecab2af21a0909d1178dcd84f1af4f615e00, bytes: 1793, store: repo}
