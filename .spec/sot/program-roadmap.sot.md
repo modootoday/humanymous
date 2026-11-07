@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T00:24:00Z
+updated: 2026-11-07T00:58:36Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion]
@@ -269,3 +269,22 @@ runtime unit/TCP13+native process1과 Docker 실제 프로세스 파일럿이 �
 인정하고 일반 ignore/unknown helper는 계속 거절한다. 회귀5개가 통과했다.
 재분석은 새 CI 성공이 아니다. 기존 실패와 raw ignored2는 보존하며 새 commit의
 실제 원격 실행이 필요하다. 근거: native-helper-accounting-results.json.
+
+
+## Native Windows 권한 경로 후속 통합
+
+Authority의 production/test inline PowerShell ACL 경로를 제거했다. audit 저장소의
+공용 handle 기반 SID/DACL 검사로 custody와 공유하며 protected-directory와
+inheritable-directory/file 정책을 구분한다. Windows x64 audit library36,
+authority15,runtime14 및 custody parent10(별도 ignored helper2) 검증이 통과했다.
+Clippy-Dwarnings와 audit WASM check,실제 sealed runtime Docker 파일럿도 통과했다.
+근거는 evidence:root/20261106235519/native-storage-privacy-results.json이다.
+CLI의 inline PowerShell 경로는 남아 있고 새 commit의 native6tuple은 별도 필요하다.
+이 결과는 전체 Rust-only 완료나 full runtime 자격화가 아니다.
+
+
+Sealed startup 통합 a8a3b66의 원격 run42320683394는 native6tuple 모두 success다.
+다운로드한 여섯 report의 SHA/status/full_runtime_qualified=false를 검증했고,
+Windows는 raw ignored2와 helper2를 보존했다. 정확한 근거는
+sealed-runtime-six-native-results.json이다. 이번 native ACL 후속 patch에는
+소급하지 않으며 새 SHA 실행이 필요하다.

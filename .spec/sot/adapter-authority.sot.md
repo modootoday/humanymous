@@ -102,6 +102,24 @@ while honestly preserving the missing original-client observations.
 ## Verification
 
 Cargo unit/integration/native child-process tests cover schema/auth/scope,
-replay/restart/body/capture/route/deadline/admission/audit failure. MSRV 1.88 and
+replay/restart/body/capture/route/deadline/admission/audit failure. MSRV 1.99.1 and
 advisory scan cover new dependencies. Docker product lab and remote native tuples
 remain distinct evidence. See implementation plan and crates/authority/INTEGRATION.md.
+
+### Native Windows storage privacy
+
+Replace the embedded PowerShell ACL probe with one shared safe Windows security
+descriptor implementation in audit storage, also consumed by sealed custody.
+Read the descriptor from the opened non-reparse file handle, compare the actual
+owner SID and every ACE, reject null/empty DACLs and unsupported/foreign ACEs.
+Authority directories require a protected DACL; custody directories retain their
+explicit owner-only file/directory inheritance requirement. A file policy is
+distinct from either directory policy. Do not mutate ACLs during verification.
+The small protected-flag decoder consumes native DACL-only SDDL, never arbitrary
+user permission text: Microsoft documents P as SE_DACL_PROTECTED at
+https://learn.microsoft.com/en-us/windows/win32/secauthz/security-descriptor-string-format.
+No inline PowerShell or new repository unsafe block is permitted. Unix ancestor
+checks and trusted-supervisor path-race premises remain unchanged. Stricter
+rejection of empty/unsupported ACE forms must be tested and documented; this is
+not a new detection rule. Current approved toolchain/MSRV is1.99.1; prior1.88 execution records remain
+historical context.

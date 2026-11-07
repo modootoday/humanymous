@@ -86,11 +86,13 @@ to public IPs to fit existing adapter lab topology. Docker executable is absent
 from this chat's PowerShell PATH; no Docker success is claimed here. Root may use
 its qualified Docker environment. Full browser/control outcomes remain not_run.
 
-Inherited dependency debt: runtime reuses authority::transport::private_directory;
-its current Windows ACL verifier executes existing PowerShell source. No new
-script is authored in this lane. A native shared ACL replacement is still needed
-for the final all-Rust delivery (audit custody has separate native checks; this
-lane does not copy or misuse keystore locking as audit directory validation).
+Native storage privacy follow-through: authority::transport::private_directory
+now delegates Windows owner/DACL verification to audit::storage::permissions.
+It queries the actual opened non-reparse handle and requires protected owner-only
+DACLs, without PowerShell. Custody consumes the same native descriptor verifier
+with its distinct inheritance requirement. No ACL repair occurs during startup.
+Windows CLI still has separate inline script debt; this change does not claim
+all authored product sources are Rust-only yet.
 
 ## Prepared control matrix
 

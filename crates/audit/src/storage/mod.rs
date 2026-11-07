@@ -1,5 +1,7 @@
 //! Local durable storage. Parsing alone never authenticates an audit chain.
 mod framing;
+#[cfg(windows)]
+pub mod permissions;
 mod recovery;
 pub use recovery::{RecoveryPolicy, VerifiedHistory, verify_history};
 #[cfg(any(unix, windows))]

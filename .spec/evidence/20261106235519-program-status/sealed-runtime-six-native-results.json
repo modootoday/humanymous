@@ -1,0 +1,134 @@
+{
+  "schema": "humanymous.native-integration-summary/1",
+  "run_id": 42320683394,
+  "source_sha": "a8a3b664ebd94a42193c3d11b816b9f4d6b45388",
+  "run_conclusion": "success",
+  "full_runtime_qualified": false,
+  "later_native_acl_patch_excluded": true,
+  "reports": [
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "arm64"
+      },
+      "observed": {
+        "os": "linux",
+        "arch": "arm64",
+        "release": "7.0.0-1017-azure",
+        "version": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 19:06:39 UTC 2026",
+        "machine": "aarch64"
+      },
+      "source_sha": "a8a3b664ebd94a42193c3d11b816b9f4d6b45388",
+      "status": "passed",
+      "cargo_lock_sha256": "f738abd0db170edcb3dafc577b42f23a2cdc05bdd8b22c545fe165b607418390",
+      "full_runtime_qualified": false,
+      "report_sha256": "6ce7888d8a8f7350721f4583a48dabdd133b043db69e70e40a21a6fbaeb66e32"
+    },
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "x64"
+      },
+      "observed": {
+        "os": "linux",
+        "arch": "x64",
+        "release": "7.0.0-1017-azure",
+        "version": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "machine": "x86_64"
+      },
+      "source_sha": "a8a3b664ebd94a42193c3d11b816b9f4d6b45388",
+      "status": "passed",
+      "cargo_lock_sha256": "f738abd0db170edcb3dafc577b42f23a2cdc05bdd8b22c545fe165b607418390",
+      "full_runtime_qualified": false,
+      "report_sha256": "2bdb7ac2c06bbd06e1d79e1951755389b9dc1be6e053ccb273c6a0e0c0178c5b"
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "arm64"
+      },
+      "observed": {
+        "os": "macos",
+        "arch": "arm64",
+        "release": "24.6.0",
+        "version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:44:11 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_VMAPPLE",
+        "machine": "arm64"
+      },
+      "source_sha": "a8a3b664ebd94a42193c3d11b816b9f4d6b45388",
+      "status": "passed",
+      "cargo_lock_sha256": "f738abd0db170edcb3dafc577b42f23a2cdc05bdd8b22c545fe165b607418390",
+      "full_runtime_qualified": false,
+      "report_sha256": "7a723f9ea2f2ac68c9d974691daf40974592a07b6ba7d66a2cc6431a9c52078b"
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "x64"
+      },
+      "observed": {
+        "os": "macos",
+        "arch": "x64",
+        "release": "24.6.0",
+        "version": "Darwin Kernel Version 24.6.0: Tue Jul 21 20:50:07 PDT 2026; root:xnu-11417.140.69.711.44~1/RELEASE_X86_64",
+        "machine": "x86_64"
+      },
+      "source_sha": "a8a3b664ebd94a42193c3d11b816b9f4d6b45388",
+      "status": "passed",
+      "cargo_lock_sha256": "f738abd0db170edcb3dafc577b42f23a2cdc05bdd8b22c545fe165b607418390",
+      "full_runtime_qualified": false,
+      "report_sha256": "91c24105cb25b770e730b60399214951638b89b74b893a23b8dfe1dca712f5cb"
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "arm64"
+      },
+      "observed": {
+        "os": "windows",
+        "arch": "arm64",
+        "release": "11",
+        "version": "10.0.26200",
+        "machine": "ARM64"
+      },
+      "source_sha": "a8a3b664ebd94a42193c3d11b816b9f4d6b45388",
+      "status": "passed",
+      "cargo_lock_sha256": "f738abd0db170edcb3dafc577b42f23a2cdc05bdd8b22c545fe165b607418390",
+      "full_runtime_qualified": false,
+      "report_sha256": "00913861e32fc7cb69167921cdb0442290e81edf6cb19ba0f03a887ac898da8e",
+      "coverage": {
+        "required_harnesses": 46,
+        "executed_harnesses": 46,
+        "passed_tests": 181,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "x64"
+      },
+      "observed": {
+        "os": "windows",
+        "arch": "x64",
+        "release": "2025Server",
+        "version": "10.0.26100",
+        "machine": "AMD64"
+      },
+      "source_sha": "a8a3b664ebd94a42193c3d11b816b9f4d6b45388",
+      "status": "passed",
+      "cargo_lock_sha256": "f738abd0db170edcb3dafc577b42f23a2cdc05bdd8b22c545fe165b607418390",
+      "full_runtime_qualified": false,
+      "report_sha256": "eb86db2b8775cba341428aa6fd4634d985c5c3a3d82a1f6b966bf1c6b4128c85",
+      "coverage": {
+        "required_harnesses": 46,
+        "executed_harnesses": 46,
+        "passed_tests": 181,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    }
+  ]
+}

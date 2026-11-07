@@ -24,15 +24,7 @@ impl Directory {
         }
         #[cfg(windows)]
         {
-            let script = r#"$ErrorActionPreference='Stop'; $s=[System.Security.Principal.WindowsIdentity]::GetCurrent().User; $a=New-Object System.Security.AccessControl.DirectorySecurity; $a.SetOwner($s); $a.SetAccessRuleProtection($true,$false); $r=New-Object System.Security.AccessControl.FileSystemAccessRule($s,'FullControl','ContainerInherit,ObjectInherit','None','Allow'); $a.AddAccessRule($r); [System.IO.Directory]::SetAccessControl($env:HUMANYMOUS_TEST_PATH,$a)"#;
-            assert!(
-                std::process::Command::new("powershell.exe")
-                    .args(["-NoProfile", "-NonInteractive", "-Command", script])
-                    .env("HUMANYMOUS_TEST_PATH", &path)
-                    .status()
-                    .unwrap()
-                    .success()
-            );
+            set_private_acl(&path, "");
         }
         Self(path.canonicalize().unwrap())
     }
@@ -44,18 +36,45 @@ impl Drop for Directory {
 }
 #[cfg(windows)]
 pub fn sid() -> String {
-    let result = std::process::Command::new("powershell.exe")
-        .args([
-            "-NoProfile",
-            "-NonInteractive",
-            "-Command",
-            "[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value",
-        ])
+    let result = std::process::Command::new("whoami.exe")
+        .args(["/user", "/fo", "csv", "/nh"])
         .output()
         .unwrap();
     assert!(result.status.success());
-    String::from_utf8(result.stdout).unwrap().trim().into()
+    let output = String::from_utf8(result.stdout).unwrap();
+    let sid = output
+        .trim()
+        .trim_matches('"')
+        .rsplit(",\"")
+        .next()
+        .unwrap()
+        .to_owned();
+    assert!(humanymous_authority::configuration::valid_sid(&sid));
+    sid
 }
+#[cfg(windows)]
+pub fn set_private_acl(path: &std::path::Path, extra_ace: &str) {
+    use windows_permissions::{
+        LocalBox, SecurityDescriptor, Sid,
+        constants::{SeObjectType, SecurityInformation},
+        wrappers,
+    };
+    let owner: LocalBox<Sid> = sid().parse().unwrap();
+    let sd: LocalBox<SecurityDescriptor> = format!("D:P(A;OICI;FA;;;{}){extra_ace}", sid())
+        .parse()
+        .unwrap();
+    wrappers::SetNamedSecurityInfo(
+        path.as_os_str(),
+        SeObjectType::SE_FILE_OBJECT,
+        SecurityInformation::Owner | SecurityInformation::Dacl | SecurityInformation::ProtectedDacl,
+        Some(&owner),
+        None,
+        sd.dacl(),
+        None,
+    )
+    .unwrap();
+}
+
 pub fn peer() -> NativePeer {
     #[cfg(unix)]
     {

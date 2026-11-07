@@ -30,3 +30,6 @@ workspace = true
 [target.'cfg(windows)'.dependencies]
 widestring = "1.2.1"
 interprocess = { version = "=2.4.7", features = ["tokio"] }
+
+[target.'cfg(windows)'.dev-dependencies]
+windows-permissions = "=0.2.4"

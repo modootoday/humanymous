@@ -38,37 +38,22 @@ pub fn private_directory(path: &Path, peer: &Peer) -> io::Result<()> {
     }
     #[cfg(windows)]
     {
-        use std::os::windows::fs::MetadataExt;
+        use std::os::windows::fs::{MetadataExt, OpenOptionsExt};
         let Peer::Windows { sid, .. } = peer else {
             return Err(io::Error::other("Windows principal required"));
         };
         if !crate::configuration::valid_sid(sid) || metadata.file_attributes() & 0x400 != 0 {
             return Err(io::Error::other("private non-reparse directory required"));
         }
-        // PowerShell ships with supported Windows installations. Avoid custom
-        // FFI/unsafe ACL code. Paths/SIDs are data in environment variables,
-        // never interpolated into script text; any probe failure closes startup.
-        // This verifies the actual ACL rather than trusting a provisioning flag.
-        let script = r#"$ErrorActionPreference='Stop'; $p=$env:HUMANYMOUS_ACL_PATH; $s=$env:HUMANYMOUS_ACL_SID; $a=[System.IO.Directory]::GetAccessControl($p); if($a.GetOwner([System.Security.Principal.SecurityIdentifier]).Value -ne $s){exit 11}; foreach($e in $a.Access){if($e.AccessControlType -eq 'Allow' -and $e.IdentityReference.Translate([System.Security.Principal.SecurityIdentifier]).Value -ne $s){exit 12}}; if(-not $a.AreAccessRulesProtected){exit 13}; exit 0"#;
-        let status = std::process::Command::new("powershell.exe")
-            .args([
-                "-NoLogo",
-                "-NoProfile",
-                "-NonInteractive",
-                "-Command",
-                script,
-            ])
-            .env("HUMANYMOUS_ACL_PATH", path)
-            .env("HUMANYMOUS_ACL_SID", sid)
-            .stdin(std::process::Stdio::null())
-            .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::null())
-            .status()?;
-        if !status.success() {
-            return Err(io::Error::other(
-                "private directory ACL verification failed",
-            ));
-        }
+        let file = std::fs::OpenOptions::new()
+            .read(true)
+            .custom_flags(0x02200000)
+            .open(path)?; // BACKUP_SEMANTICS | OPEN_REPARSE_POINT
+        humanymous_audit::storage::permissions::windows_owner_only(
+            &file,
+            sid,
+            humanymous_audit::storage::permissions::WindowsPrivacy::ProtectedDirectory,
+        )?;
     }
     #[cfg(not(any(unix, windows)))]
     {

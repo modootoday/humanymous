@@ -247,15 +247,7 @@ fn private_directory_and_endpoint_configuration_fail_closed() {
     }
     #[cfg(windows)]
     {
-        let script = r#"$p=$env:HUMANYMOUS_TEST_PATH;$a=[System.IO.Directory]::GetAccessControl($p);$s=New-Object System.Security.Principal.SecurityIdentifier('S-1-1-0');$r=New-Object System.Security.AccessControl.FileSystemAccessRule($s,'Read','Allow');$a.AddAccessRule($r);[System.IO.Directory]::SetAccessControl($p,$a)"#;
-        assert!(
-            Command::new("powershell.exe")
-                .args(["-NoProfile", "-NonInteractive", "-Command", script])
-                .env("HUMANYMOUS_TEST_PATH", &d2.0)
-                .status()
-                .unwrap()
-                .success()
-        );
+        set_private_acl(&d2.0, "(A;;FR;;;WD)");
     }
     assert!(humanymous_authority::transport::private_directory(&d2.0, &c.peer).is_err());
     assert_eq!(protocol::MAX_BODY, 1_600_000);

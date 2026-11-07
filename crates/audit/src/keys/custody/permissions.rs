@@ -108,48 +108,17 @@ fn check(file: &File, owner: &Owner, directory: bool) -> io::Result<()> {
     }
     #[cfg(windows)]
     {
-        use windows_permissions::{
-            LocalBox, Sid,
-            constants::{AccessRights, AceFlags, AceType, SeObjectType, SecurityInformation},
-            wrappers,
-        };
+        use crate::storage::permissions::{WindowsPrivacy, windows_owner_only};
         let Owner::WindowsSid(sid) = owner;
-        let expected: LocalBox<Sid> = sid.parse()?;
-        let sd = wrappers::GetSecurityInfo(
+        windows_owner_only(
             file,
-            SeObjectType::SE_FILE_OBJECT,
-            SecurityInformation::Owner | SecurityInformation::Dacl,
+            sid,
+            if directory {
+                WindowsPrivacy::InheritableDirectory
+            } else {
+                WindowsPrivacy::File
+            },
         )?;
-        let denied = || {
-            io::Error::new(
-                io::ErrorKind::PermissionDenied,
-                "custody requires owner-only Windows DACL",
-            )
-        };
-        if sd.owner() != Some(&*expected) {
-            return Err(denied());
-        }
-        let acl = sd.dacl().ok_or_else(denied)?;
-        if acl.len() == 0 {
-            return Err(denied());
-        }
-        let mut inherited_files = false;
-        let mut inherited_dirs = false;
-        for i in 0..acl.len() {
-            let ace = acl.get_ace(i).ok_or_else(denied)?;
-            if ace.ace_type() != AceType::ACCESS_ALLOWED_ACE_TYPE || ace.sid() != Some(&*expected) {
-                return Err(denied());
-            }
-            if ace.mask().contains(AccessRights::FileAllAccess)
-                && !ace.flags().contains(AceFlags::InheritOnly)
-            {
-                inherited_files |= ace.flags().contains(AceFlags::ObjectInherit);
-                inherited_dirs |= ace.flags().contains(AceFlags::ContainerInherit);
-            }
-        }
-        if directory && !(inherited_files && inherited_dirs) {
-            return Err(denied());
-        }
     }
     Ok(())
 }

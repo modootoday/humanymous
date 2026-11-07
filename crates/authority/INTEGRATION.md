@@ -74,3 +74,16 @@ must control process creation, SID/configuration and secret pipe inheritance.
 Same-principal hostile processes, PID/handle reuse and independent remote-host
 testing remain explicit deployment concerns. Audit parent ancestry is trusted
 installation state; hostile administrator replacement is outside this profile.
+
+
+## Native Windows privacy follow-through
+
+Storage directory verification no longer launches PowerShell. It opens the
+non-reparse directory handle, reuses audit storage's shared safe SID/ACE verifier,
+and requires owner-only protected DACLs. Custody uses the same implementation
+with a distinct child-inheritance policy. Unknown ACE types, null/empty DACLs and
+foreign owners/grants fail closed. No repository unsafe block or production
+ACL mutation was added. Native fixtures now provision descriptors through the
+safe Windows dependency; whoami.exe is used only to obtain the test token SID.
+Existing Unix ancestor checks remain. Exact new SHA remote qualification is
+required; older passing native reports do not cover these changes.
