@@ -157,6 +157,7 @@ impl Fixture {
         assert!(file.metadata().unwrap().len() <= 8192);
         let mut bytes = Vec::new();
         file.take(8193).read_to_end(&mut bytes).unwrap();
+        assert!(bytes.len() <= 8192, "private receipt grew past its budget");
         serde_json::from_slice(&bytes).unwrap()
     }
     fn bind_receipt(&self, receipt: &Value, pid: u32) {
@@ -309,6 +310,26 @@ impl Fixture {
         let receipt = self.read_receipt(pid);
         self.bind_receipt(&receipt, pid);
         assert_eq!(receipt["readiness"], true);
+        let private = Path::new(self.metadata["configuration"].as_str().unwrap())
+            .parent()
+            .unwrap();
+        let sid = humanymous_native_security::storage::resolve_service_sid(&self.name).unwrap();
+        // Independently reconstruct the signed fixture's expected nonsecret input;
+        // actual readiness must match the shared complete schema, not a subset.
+        let expected=serde_json::to_vec(&json!({
+            "listen":self.runtime,"origin":self.metadata["pilot"]["origin"],
+            "scope":{"installation":self.metadata["installation"],"tenant":"pilot","origin":"owned-loopback","revision":"pilot-v1","authority":"pilot.local"},
+            "routes":[{"method":"GET","path":"/protected","required":{"raw_tls":false,"original_h2":false,"raw_header_order":false,"collector":false,"rit":true}}],
+            "audit":{"directory":private.join("audit"),"node_id":"pilot-node","keys":{"directory":private.join("keys"),"passphrase":""},"allow_new":true,"trusted_head":null,"require_external_witness":false},
+            "owner":{"kind":"windows","sid":sid,"pid":pid},"session_capacity":8,"session_ttl_ms":1000,"timeout_ms":1000,"rate_per_second":8,"browser":null
+        })).unwrap();
+        let configuration =
+            humanymous_runtime::service::read_configuration(expected.as_slice()).unwrap();
+        let profile = humanymous_runtime::service::standalone_profile(&configuration);
+        assert_eq!(
+            receipt["readiness_manifest"],
+            json!({"schema":"humanymous.runtime-host.readiness.v1","service":self.name,"generation":self.metadata["generation"],"executable_sha256":self.metadata["executable_sha256"],"runtime":{"listen":self.runtime,"profile":profile},"product_qualified":false})
+        );
         for field in ["stopped", "drained", "audit_flushed"] {
             assert_eq!(receipt["exit"][field], true);
         }
@@ -438,12 +459,13 @@ fn native_runtime_service_lifecycle_and_missing_credential_fail_closed() {
     let receipt = negative.read_receipt(negative_pid);
     negative.bind_receipt(&receipt, negative_pid);
     assert_eq!(receipt["readiness"], false);
+    assert!(receipt["readiness_manifest"].is_null());
     assert_eq!(receipt["missing_credential_fail_closed"], true);
     assert!(receipt["exit"].is_null());
     assert!(TcpStream::connect(negative.runtime).is_err());
     negative.cleanup();
     println!(
         "\n{}",
-        json!({"schema":"humanymous.runtime-service-pilot/1","case":"native-runtime-service-lifecycle-and-missing-credential","source_sha":source_sha,"run_id":run,"missing_credential_fail_closed":true,"service_principal_verified":true,"readiness_verified":true,"graceful_stop_verified":true,"host_exit_stopped":true,"credential_cleanup_verified":true,"state_cleanup_verified":true,"receipt_binding_verified":true,"scm_registration_removed":true,"runtime_upgrade_verified":true,"runtime_rollback_verified":true,"replay_floor_verified":true,"product_qualified":false})
+        json!({"schema":"humanymous.runtime-service-pilot/1","case":"native-runtime-service-lifecycle-and-missing-credential","source_sha":source_sha,"run_id":run,"missing_credential_fail_closed":true,"service_principal_verified":true,"readiness_verified":true,"full_readiness_manifest_verified":true,"graceful_stop_verified":true,"host_exit_stopped":true,"credential_cleanup_verified":true,"state_cleanup_verified":true,"receipt_binding_verified":true,"scm_registration_removed":true,"runtime_upgrade_verified":true,"runtime_rollback_verified":true,"replay_floor_verified":true,"product_qualified":false})
     );
 }

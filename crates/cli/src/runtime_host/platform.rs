@@ -163,6 +163,8 @@ mod windows {
             .take()
             .map(|metadata| super::super::pilot::Session::new(metadata, &plan));
         let ready = std::cell::Cell::new(false);
+        #[cfg(feature = "runtime-service-pilot")]
+        let readiness_manifest = std::cell::RefCell::new(None);
         let result = (|| {
             #[cfg(feature = "runtime-service-pilot")]
             if let Some(pilot) = &mut pilot {
@@ -175,17 +177,25 @@ mod windows {
                 None,
                 &supervisor,
                 shutdown,
-                |_| {
-                    ready.set(true);
+                |manifest| {
+                    #[cfg(feature = "runtime-service-pilot")]
+                    readiness_manifest.replace(Some(
+                        serde_json::to_value(manifest)
+                            .map_err(|_| invalid("private fixture readiness encoding"))?,
+                    ));
+                    #[cfg(not(feature = "runtime-service-pilot"))]
+                    let _ = manifest;
                     handle
                         .set_service_status(status(ServiceState::Running, 0, Duration::ZERO))
-                        .map_err(io::Error::other)
+                        .map_err(io::Error::other)?;
+                    ready.set(true);
+                    Ok(())
                 },
             ))
         })();
         #[cfg(feature = "runtime-service-pilot")]
         let result = match &mut pilot {
-            Some(pilot) => pilot.finish(result, ready.get()),
+            Some(pilot) => pilot.finish(result, ready.get(), readiness_manifest.into_inner()),
             None => result,
         };
         if let Ok(report) = &result {

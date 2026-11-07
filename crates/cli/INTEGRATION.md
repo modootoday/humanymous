@@ -93,6 +93,13 @@ exactly one aggregate `humanymous.runtime-service-pilot/1` JSON line. Private ra
 receipts contain service PID; public aggregate has only booleans/source/run/case.
 The next authored lifecycle expansion covers actual runtime upgrade/rollback and
 requires runtime_upgrade_verified/runtime_rollback_verified/replay_floor_verified.
+The readiness follow-up additionally requires full_readiness_manifest_verified:
+the private service receipt retains actual HostReadiness, while the parent checks
+the complete runtime profile via shared service::standalone_profile against its
+signed fixture inputs and independent native/process/listener facts. A public
+ready string or expected profile alone cannot satisfy this gate. Negative missing
+credential startup must have no readiness manifest. This newest source still
+requires its own compile/hosted gate; preceding source successes remain separate.
 Its receipt filename is the signed receipt base plus `-PID`, create-new per
 observed process. This newer source is not qualified by the preceding d9 local
 pure/Clippy result or the immutable8132117 hosted run. Compile/actual gates remain

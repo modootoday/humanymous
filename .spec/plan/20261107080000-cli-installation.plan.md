@@ -197,6 +197,53 @@ present. Preserve the observations as provisional working closure in
 Cargo inventory and three captured runtime hashes stayed stable; no full graph,
 clean candidate or hosted8132117 claim follows. A was returned; no rerun loop.
 
+Further readiness evidence review found that SCM publication discarded the actual
+HostReadiness payload. The authored follow-up retains the full nonsecret envelope
+inside the private final receipt. Each positive process's parent compares that
+entire value, including runtime listen and complete profile from the shared
+service::standalone_profile(expected signed fixture configuration), alongside
+independent PID/SCM/listener/no-origin-effect proof. The negative case requires a
+null manifest. New aggregate full_readiness_manifest_verified becomes required
+for the matching full runtime case. The shared profile factory is currently
+runtime-owner readiness source; its canonical API checkpoint was requested.
+No copied capability subset, new dependency manifest, local runtime execution or
+shared source edit is used. Direct fmt/diff passed; new compile/actual gates are
+NOT_RUN and cannot inherit the preceding provisional source result.
+
+The readiness source API is canonical runtime709b0e23036011fb3a58d25a3d67c38e28e603a6.
+Root allocated B at target/node-native/build for the newest source and recursive
+source capture. The Rust provenance example was extended to traverse the locked
+metadata dependency graph and local package trees, with explicit feature superset,
+native target filter, common Cargo/toolchain inputs and build-output exclusions.
+Canonical Git comparisons pin one recorded HEAD. Initial offline metadata failed
+because non-host signal-hook-registry was not cached; that attempt is preserved.
+The native-target filtered source capture completed with exit0 as owned process
+73080, then root's new benchmark quiet window arrived. No newest pure7/all-target
+check/Clippy was started, no actual runtime was executed, and B was immediately
+returned. Private bundle label20261107085000 records an execution beginning at
+2026-11-07T09:01:01Z; its label is not an asserted wall-clock start time.
+
+The user now authorizes actual local Windows/WSL validation measurements against
+GitHub. Root is designing the replacement execution policy from measured results;
+earlier hosted-only blanket notes are historical. During the quiet window this
+chat starts no new validation processes and has no owned live Cargo/runtime/GPU/
+server/Docker handle. The original no-local-service/account-mutation constraint
+is retained; local runtime authorization does not silently revoke that prohibition.
+No common manifests/lock/toolchain are edited. New source and documentation remain
+owned WIP pending source checks/attributed checkpoint after the quiet window.
+Root subsequently explicitly permitted lightweight fmt, scoped Specfold and owned
+Git during quiet. These operations can checkpoint the current source without
+starting new Cargo/runtime validation. Local Docker identity now follows the
+canonical rust-migration Desktop section, not an implicit WSL fallback; CLI did
+not run Docker here. A small diagnostic correction removes the legacy unsupported-
+option message's false statement that service registration is unavailable and
+avoids echoing arbitrary unknown arguments. No new runtime validation followed.
+Current authored scope and interrupted B accounting are summarized in
+[[evidence:root/20261107085001]]; raw source captures/failures/quiet notes are
+attached privately as20261107085000. Lightweight fmt and scoped Specfold passed
+under the explicit quiet-window exception. These do not substitute for the
+newest pending Cargo or actual OS service gates.
+
 Root reassigned CLI to the genuinely free sot-plan lane, disjoint from the Windows
 runner's release lane. CLI owns release-descriptor verification, immutable service
 generations, native manager adapters and explicit Rust process/service fixtures.

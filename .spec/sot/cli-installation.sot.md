@@ -125,6 +125,14 @@ stop status and separate credential/state cleanup. PID reuse or missing receipt
 fails qualification rather than overwriting a previous instance's record. The
 rollback replay floor must remain at the highest accepted sequence, and a refused
 replay must leave the running PID unchanged. No production custody is deleted.
+The private final receipt also retains the actual complete nonsecret HostReadiness
+envelope. For every positive instance the parent compares the entire runtime
+listen/profile value with shared service::standalone_profile applied to its
+independently reconstructed signed fixture input. Subset capability checks or a
+ready boolean cannot replace that comparison. Independent native PID/status,
+loopback listener and no-origin-effect checks remain necessary: an expected
+profile is not runtime attestation by itself. Missing-secret startup retains a
+null readiness manifest, not a fabricated expected one.
 
 WinCred has no atomic create-only or compare-and-delete primitive in the selected
 safe API. A cooperative mutex cannot exclude arbitrary same-principal writers.
@@ -139,13 +147,31 @@ runs under that same service principal; takeown or ACL repair cannot fake succes
 
 ## Accepted execution-policy reference
 
+The user subsequently authorized actual local Windows/WSL build, test and runtime
+measurements against GitHub timings/resources. This supersedes the earlier
+hosted-only blanket below; root owns the measured replacement policy. During
+root's benchmark quiet window no new Cargo/native/runtime/model/Docker validation
+commands may start. Existing owned commands finish and their slots are returned;
+no foreign process is terminated. Coding/documentation may continue in owned paths.
+The CLI goal's specific prohibition on changing local user services/accounts still
+applies unless explicitly revoked. Owned standalone runtime measurements do not
+authorize SCM installation or account mutation by inference. Product e2e remains
+Docker-only, and no idle pipeline may be self-allocated.
+Local container execution follows the Docker engine identity section of
+[[sot:root/rust-migration]]: Windows Docker Desktop is the default, with explicit
+desktop-linux selection and observed engine identity. No implicit WSL-daemon
+substitution is allowed. This does not change real hosted Linux engine identity.
+Root subsequently allowed lightweight fmt, scoped Specfold checks and owned Git
+transactions during the quiet window; Cargo/runtime validation still requires
+the allocated benchmark or validation slot.
+
 The single execution-policy canon is [[sot:root/program-roadmap]]; workflow
 implementation and evidence rules are [[sot:root/delivery]]. CLI does not define
 a separate scheduler, quota, artifact-retention or impact-classification policy.
-Local CLI work is source editing, fmt, bounded scoped Clippy and genuinely pure
+Under the earlier policy, local CLI work was source editing, fmt, bounded scoped Clippy and genuinely pure
 signature/schema/parser/state-decision unit checks under the common Cargo limit.
 Actual filesystem permission/ACL, process/port/IPC, service-manager and native OS
-tests run on the appropriate public standard hosted runner, with capability and
+tests previously required the appropriate public standard hosted runner, with capability and
 ordinary-actor prerequisites proved rather than inferred from its label.
 
 Existing service state-machine tests use a FakeManager plus real loopback Probe,

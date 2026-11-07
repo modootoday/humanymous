@@ -208,6 +208,7 @@ impl Session {
         &mut self,
         result: io::Result<HostExit>,
         ready: bool,
+        readiness_manifest: Option<serde_json::Value>,
     ) -> io::Result<HostExit> {
         // Runtime and its custody/WAL guards have returned and dropped before this call.
         let credential_cleanup = match self.credential.take() {
@@ -255,7 +256,7 @@ impl Session {
             .as_ref()
             .err()
             .map(|error| super::describe_failure(error, &self.generation, &self.executable));
-        let receipt = serde_json::json!({"schema":"humanymous.runtime-service-pilot.receipt.v1","run_id":self.metadata.run_id,"source_sha":self.metadata.source_sha,"nonce":self.metadata.nonce,"service":self.service,"generation":self.generation,"executable_sha256":self.executable,"service_pid":std::process::id(),"prepared":self.prepared,"readiness":ready,"missing_credential_fail_closed":missing,"exit":result.as_ref().ok(),"failure":failure,"credential_cleanup":credential_cleanup,"private_state_cleanup":private_cleanup,"error_code":if expected&&credential_cleanup&&private_cleanup{"none"}else{"fixture-phase-failed"},"product_qualified":false});
+        let receipt = serde_json::json!({"schema":"humanymous.runtime-service-pilot.receipt.v1","run_id":self.metadata.run_id,"source_sha":self.metadata.source_sha,"nonce":self.metadata.nonce,"service":self.service,"generation":self.generation,"executable_sha256":self.executable,"service_pid":std::process::id(),"prepared":self.prepared,"readiness":ready,"readiness_manifest":readiness_manifest,"missing_credential_fail_closed":missing,"exit":result.as_ref().ok(),"failure":failure,"credential_cleanup":credential_cleanup,"private_state_cleanup":private_cleanup,"error_code":if expected&&credential_cleanup&&private_cleanup{"none"}else{"fixture-phase-failed"},"product_qualified":false});
         let _parent = self.parent()?;
         let bytes =
             serde_json::to_vec(&receipt).map_err(|_| invalid("fixture receipt encoding"))?;

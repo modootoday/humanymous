@@ -25,12 +25,18 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let (mut verified, mut dry) = (false, false);
     while let Some(flag) = args.next() {
         match flag.as_str() {
-            "--artifact" if artifact.is_none() => artifact = Some(args.next().ok_or("artifact value required")?),
-            "--destination" if destination.is_none() => destination = Some(args.next().ok_or("destination value required")?),
-            "--sha256" if digest.is_none() => digest = Some(args.next().ok_or("digest value required")?),
+            "--artifact" if artifact.is_none() => {
+                artifact = Some(args.next().ok_or("artifact value required")?)
+            }
+            "--destination" if destination.is_none() => {
+                destination = Some(args.next().ok_or("destination value required")?)
+            }
+            "--sha256" if digest.is_none() => {
+                digest = Some(args.next().ok_or("digest value required")?)
+            }
             "--local-management-verified" if !verified => verified = true,
             "--dry-run" if !dry => dry = true,
-            _ => return Err(format!("unsupported or duplicate option: {flag}; elevation and service registration are unavailable").into()),
+            _ => return Err("unsupported or duplicate provisioning option".into()),
         }
     }
     println!(
