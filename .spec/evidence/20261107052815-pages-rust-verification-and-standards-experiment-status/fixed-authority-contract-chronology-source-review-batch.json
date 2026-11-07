@@ -1,0 +1,38 @@
+{
+  "scope": "Complete fixed authority and corpus owner-document review; no new component execution",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/authority/INTEGRATION.md",
+      "lines": 264,
+      "sha256": "48aaf09c88a2b99423a835ff14eef223b0d9e670e607a7f9ed49d83e28f54da7",
+      "current_primary_sha256": "48aaf09c88a2b99423a835ff14eef223b0d9e670e607a7f9ed49d83e28f54da7",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete264-line owner contract/chronology: provisioned producer profiles and exact binding; BoundResponse consumption still requires host cancellation/expiry before original handler. Native peer identity precedes bearer disclosure; LocalHandler is not management authority, cancellation/drop is not drain acknowledgment. Sealed startup and later Linux named30/ignored2 supersede earlier inline/unrun text for exact checkpoints only. Required privileged parent/helper and cross-OS/OS-store/witness/remote qualification remain separate. Chronology is not a fresh executable receipt.",
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/standards/draft-v0/protocol/implementation-experiment.md"
+      ]
+    },
+    {
+      "source": "adapters/contracts/README.md",
+      "lines": 19,
+      "sha256": "cda6eed84b96ad3b15c75cb952cc0d0ee1246b79bd05cf58cf218ad5889b4215",
+      "current_primary_sha256": "cda6eed84b96ad3b15c75cb952cc0d0ee1246b79bd05cf58cf218ad5889b4215",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete19-line internal adapter0.1 corpus boundary: JSON Schema checks structure, while shared semantic parsing enforces duplicate/UTF8/byte/body/framing/capability/peer/replay/binding rules under provisioned producer identity. Old Node structural corpus and mock fixtures do not qualify nginx mode, authenticated evidence or public Draft v0 conformance.",
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/standards/draft-v0/protocol/implementation-experiment.md"
+      ]
+    }
+  ],
+  "reviewed_files": 2,
+  "lines": 283,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; exact source review prepared for later reconciliation"
+}

@@ -1,0 +1,81 @@
+{
+  "scope": "Complete fixed Runtime fixture source review; no new fixture execution",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/runtime/src/tests.rs",
+      "lines": 642,
+      "sha256": "f87ade07f63180b9887aea321dfde249656c036dc0d66d1c445c5cfb8221f5b2",
+      "current_primary_sha256": "f87ade07f63180b9887aea321dfde249656c036dc0d66d1c445c5cfb8221f5b2",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete642-line fixture root: mock in-memory Audit, zero-motor synthetic client report, configuration and session bounds, exact method/target/body/scope/header/deadline commitments, replay/cross-session refusal, missing planes, minimized audit/poison and post-append deadlines. Real TCP origin counters and independent-thread abort during blocking audit do not supply durable or browser evidence.",
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/tests/browser.rs",
+      "lines": 449,
+      "sha256": "12a6ea363b3ea983176b007db46171fa34eab1224484953ea0b5cf9826143c11",
+      "current_primary_sha256": "12a6ea363b3ea983176b007db46171fa34eab1224484953ea0b5cf9826143c11",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete449-line real shared Session/native TCP fixtures: status-bound consumed ACK, original application Authorization, separate duplicate cookies, forged origin ACK stripping, bootstrap shape, replay/cookie/origin/report negatives, authenticated quota debit and continued ACK progression. Malformed origin response records one actual fixture effect and503ACK; it does not claim rollback or zero effects. No Fetch/browser/AT or independent durable audit is exercised.",
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/tests/tls.rs",
+      "lines": 145,
+      "sha256": "154a9b4a43f21673d5c69f4d6c93fe0e1c338f0ffa3ede0244096519207c3065",
+      "current_primary_sha256": "154a9b4a43f21673d5c69f4d6c93fe0e1c338f0ffa3ede0244096519207c3065",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete145-line owned rustls/rcgen socket harness: actual negotiated HTTP/1.1, bounded IO, partial/coalesced request refusal before new audit/origin and dropped-handshake future synchronously joins/closes worker socket. Synthetic report and in-memory audit remain component premises; no complete ingress race matrix follows.",
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/tests/tls/observation.rs",
+      "lines": 36,
+      "sha256": "f1f4639f63df149ae850282e89c6bd731c20f14c05eaddbe6805535791a281ff",
+      "current_primary_sha256": "f1f4639f63df149ae850282e89c6bd731c20f14c05eaddbe6805535791a281ff",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete36-line actual TLS connection observation case: offered ALPN order h2/http1.1 and negotiated http1.1 belong to one captured request owner; response200 is the fixture capture reply, not an authorized protected origin effect or HTTP2 serving qualification.",
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/tests/native_process.rs",
+      "lines": 291,
+      "sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac",
+      "current_primary_sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete291-line native executable fixture: private temporary owner permissions, explicit inherited pipes/readiness timeout, real shared canonical/token primitives, synthetic client report and known sealed key fixture. Asserts CHALLENGE before report, single counted origin dispatch, replay refusal, authenticated restart with old-session invalidation, wrong-passphrase startup refusal and minimized WAL. Process RAII kill/wait is not graceful service shutdown or Docker/browser qualification.",
+      "proposed_pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "reviewed_files": 5,
+  "lines": 1563,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; exact source reviews prepared for later reconciliation",
+  "followup_finding": "docs/reference/browser-collector.md still calls BrowserSession follow-through uncommitted. Confirm current collector source and source-bound execution before updating its wider transport qualification wording."
+}
