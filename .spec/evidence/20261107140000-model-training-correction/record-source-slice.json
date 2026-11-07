@@ -1,0 +1,20 @@
+{
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "revision": "required-field-source-checkpoint",
+  "tests_authored": 7,
+  "tests_executed": 0,
+  "files": [
+    {
+      "path": "crates/model/src/lib.rs",
+      "sha256": "f576837b5348af278e0b8ba59f022cbf439ec123b7dab0fb43a25bfa160b567b"
+    },
+    {
+      "path": "crates/model/src/training/mod.rs",
+      "sha256": "32a876584e6fafefaba8384fa5364ec86290308b37d0ebf3fe3da80d84007f1a"
+    },
+    {
+      "path": "crates/model/src/training/record.rs",
+      "sha256": "0f3165452fcaf6719c95bad94b8c7c7036fe48d448af6f1f9b25de255c4deaf4"
+    }
+  ]
+}

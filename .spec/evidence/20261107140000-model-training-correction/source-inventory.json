@@ -1,0 +1,367 @@
+{
+  "schema": "humanymous.model-training-correction-inventory/1",
+  "status": "source inspection only; NOT_RUN",
+  "baseline": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "routing_sha256": "7bc4c27c7ab45960f1aca633a2660ba609d2e3ebc299e3ba65519afd94d57a04",
+  "rows": [
+    {
+      "path": "cmd/ml-train/main.go",
+      "baseline_sha256": "de595b07923ecf0253a365960edb040c6308f58822d00d97a808b32089029f4c",
+      "current_sha256": "de595b07923ecf0253a365960edb040c6308f58822d00d97a808b32089029f4c",
+      "baseline_row_pointer": "/files/7",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "cmd/mlcorrect-train/gate_test.go",
+      "baseline_sha256": "2b8bb225fc965320887b48acfdc92539886ec2cc0d78a24f8cffd48442d1e1f3",
+      "current_sha256": "2b8bb225fc965320887b48acfdc92539886ec2cc0d78a24f8cffd48442d1e1f3",
+      "baseline_row_pointer": "/files/8",
+      "legacy_tests": [
+        "TestRunGate_CleanDataEmitsCandidate",
+        "TestRunGate_PoisonedCohortBlocksCandidate_FailClosed",
+        "TestRunGate_TooFewSamplesIsAPreconditionError"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "cmd/mlcorrect-train/gate.go",
+      "baseline_sha256": "c25c2a7fffe71fe2097265ea5410d98e6c827394df66d170472d04d1c20e9cf2",
+      "current_sha256": "c25c2a7fffe71fe2097265ea5410d98e6c827394df66d170472d04d1c20e9cf2",
+      "baseline_row_pointer": "/files/9",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "cmd/mlcorrect-train/main.go",
+      "baseline_sha256": "dc5c9c842edc2a9f3951a3d124951cbbeae04ae8c2b3eb084c31e3cdc3d5f65b",
+      "current_sha256": "dc5c9c842edc2a9f3951a3d124951cbbeae04ae8c2b3eb084c31e3cdc3d5f65b",
+      "baseline_row_pointer": "/files/10",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/bundle_test.go",
+      "baseline_sha256": "982d3c16edafadddd69cbe5b500db90ce3738ef3692ec2b33ac1784cb98a1265",
+      "current_sha256": "982d3c16edafadddd69cbe5b500db90ce3738ef3692ec2b33ac1784cb98a1265",
+      "baseline_row_pointer": "/files/207",
+      "legacy_tests": [
+        "TestStage_AcceptsValidBundle",
+        "TestStage_RejectsStaleSchema",
+        "TestStage_DigestMismatch",
+        "TestStage_SignatureRequiredWhenKeyConfigured",
+        "TestPromoteAndRollback",
+        "TestPromote_RequiresStaged"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/bundle.go",
+      "baseline_sha256": "79fb962102860cf905c2eed92bdca4d0ca948d670e53c4035e217655c4f690ea",
+      "current_sha256": "79fb962102860cf905c2eed92bdca4d0ca948d670e53c4035e217655c4f690ea",
+      "baseline_row_pointer": "/files/208",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/calibrate_test.go",
+      "baseline_sha256": "ae0d9105a66012905551e7e5f204e83cd2e8b54c3d3679bb63b027462d49009d",
+      "current_sha256": "ae0d9105a66012905551e7e5f204e83cd2e8b54c3d3679bb63b027462d49009d",
+      "baseline_row_pointer": "/files/209",
+      "legacy_tests": [
+        "TestConformal_HoldsBudget",
+        "TestConformal_RaisesWhenHumansOverFlagged",
+        "TestConformal_BotsDoNotMoveThreshold",
+        "TestConformal_FloorHolds"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/calibrate.go",
+      "baseline_sha256": "875d0dc16ecfdfd685e2294eec48620cdb8b74d50a7c19e27bae0a886e192c43",
+      "current_sha256": "875d0dc16ecfdfd685e2294eec48620cdb8b74d50a7c19e27bae0a886e192c43",
+      "baseline_row_pointer": "/files/210",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/canary_test.go",
+      "baseline_sha256": "ced045a4ffd19425fe8f758627c734a3cd0305c60fa2caa6bebea02e11c81a7d",
+      "current_sha256": "ced045a4ffd19425fe8f758627c734a3cd0305c60fa2caa6bebea02e11c81a7d",
+      "baseline_row_pointer": "/files/211",
+      "legacy_tests": [
+        "TestCanaryGuard_TripsOnHumanFPBreach",
+        "TestCanaryGuard_GraduatesBreachFree",
+        "TestCanaryGuard_TripsOnDriftAndPoisoning",
+        "TestController_ArmCanary_RollsBackOnOverFlagging"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/canary.go",
+      "baseline_sha256": "88f229041984ec971e8469d873e3071eb4e55afcdb5dd6a03e2d4ea55ab048b7",
+      "current_sha256": "88f229041984ec971e8469d873e3071eb4e55afcdb5dd6a03e2d4ea55ab048b7",
+      "baseline_row_pointer": "/files/212",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/controller_test.go",
+      "baseline_sha256": "5265c2163b7a8d2e6673538d57eecdb80c43cc090cd1a267caee7798320920f9",
+      "current_sha256": "5265c2163b7a8d2e6673538d57eecdb80c43cc090cd1a267caee7798320920f9",
+      "baseline_row_pointer": "/files/213",
+      "legacy_tests": [
+        "TestController_FireThresholdStartsAtTheta0",
+        "TestController_CalibrationRaisesThresholdOnOverFlaggedHumans",
+        "TestController_AmbiguousDoesNotCalibrate",
+        "TestController_DriftFiresOnStuddPlusCovariate",
+        "TestController_PassSolveAnomalySurfaces"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/controller.go",
+      "baseline_sha256": "b21258bc9b3773067b53ef55861b61df80fe7a53c534f844f4afab84e6e0d6a6",
+      "current_sha256": "b21258bc9b3773067b53ef55861b61df80fe7a53c534f844f4afab84e6e0d6a6",
+      "baseline_row_pointer": "/files/214",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/drift_test.go",
+      "baseline_sha256": "1f6c08d011246f52de554da2227db8610463f8afb1081d8163966de62d2e7e27",
+      "current_sha256": "1f6c08d011246f52de554da2227db8610463f8afb1081d8163966de62d2e7e27",
+      "baseline_row_pointer": "/files/215",
+      "legacy_tests": [
+        "TestPageHinkley_DetectsRise",
+        "TestPSI_StableVsShifted",
+        "TestDriftMonitor_2of3Gate"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/drift.go",
+      "baseline_sha256": "8274153f955dabd2ce662f19b0a5f5d0f372cecb89297f93ee606c13ab188ed6",
+      "current_sha256": "8274153f955dabd2ce662f19b0a5f5d0f372cecb89297f93ee606c13ab188ed6",
+      "baseline_row_pointer": "/files/216",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/features_monitor_test.go",
+      "baseline_sha256": "e8d145629ce455dc6ba903a353f3ba49d3ec47bd6f2966ac65d9e338725369b7",
+      "current_sha256": "e8d145629ce455dc6ba903a353f3ba49d3ec47bd6f2966ac65d9e338725369b7",
+      "baseline_row_pointer": "/files/217",
+      "legacy_tests": [
+        "TestFeatureMonitor_FreezesReferenceThenEvaluates",
+        "TestFeatureMonitor_StableTrafficBelowShiftThreshold",
+        "TestFeatureMonitor_ShiftedTrafficHighPSI",
+        "TestController_FeatureObserverDrivesCovariateArm"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/features_monitor.go",
+      "baseline_sha256": "9d6899da931894c1b6a3b27300e04ea3be44903aaf34d8be14aaa18b2af37513",
+      "current_sha256": "9d6899da931894c1b6a3b27300e04ea3be44903aaf34d8be14aaa18b2af37513",
+      "baseline_row_pointer": "/files/218",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/oracle_test.go",
+      "baseline_sha256": "8610155284f3c5a274460dbe4c870f243f8dae787c6d73593b4dc6e02e2d3624",
+      "current_sha256": "8610155284f3c5a274460dbe4c870f243f8dae787c6d73593b4dc6e02e2d3624",
+      "baseline_row_pointer": "/files/219",
+      "legacy_tests": [
+        "TestConfirm_LabelMapping",
+        "TestPassGuard_CapsFraction",
+        "TestPassGuard_AnomalyStopsIngestion"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/oracle.go",
+      "baseline_sha256": "0e498cebe52f740d292ac777c132283947f5b111d5b796e6bd1e4cf0bbb93a5e",
+      "current_sha256": "0e498cebe52f740d292ac777c132283947f5b111d5b796e6bd1e4cf0bbb93a5e",
+      "baseline_row_pointer": "/files/220",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/shadow_test.go",
+      "baseline_sha256": "3a3c07eec96d976c35c7aa26749bd72702649df984f6cc6dd28955302a14d7d7",
+      "current_sha256": "3a3c07eec96d976c35c7aa26749bd72702649df984f6cc6dd28955302a14d7d7",
+      "baseline_row_pointer": "/files/221",
+      "legacy_tests": [
+        "TestShadowComparator_TracksDivergence",
+        "TestShadowComparator_AgreementAndAbstain",
+        "TestController_ObserveShadow_FeedsSnapshot"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlcorrect/shadow.go",
+      "baseline_sha256": "c8581453322a0cdc14665d6ef67161fbfe13e8dc88eac032990c6f6b6c3d433f",
+      "current_sha256": "c8581453322a0cdc14665d6ef67161fbfe13e8dc88eac032990c6f6b6c3d433f",
+      "baseline_row_pointer": "/files/222",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlserve/mlp_test.go",
+      "baseline_sha256": "1793b7fc3a7178806e8ea94a2a0f4db950d269f7f9c4c7fa6f363816b58ae104",
+      "current_sha256": "1793b7fc3a7178806e8ea94a2a0f4db950d269f7f9c4c7fa6f363816b58ae104",
+      "baseline_row_pointer": "/files/223",
+      "legacy_tests": [
+        "TestMLP_ForwardMath",
+        "TestMLP_Validate_Rejects",
+        "TestMLP_LoadRoundTrip"
+      ],
+      "classification": "existing Rust inference source; execution linkage pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlserve/mlp.go",
+      "baseline_sha256": "0d3f922fbaf962587390bce8bb472b45a981a87e2c12f5d084134e45ea48eb2f",
+      "current_sha256": "0d3f922fbaf962587390bce8bb472b45a981a87e2c12f5d084134e45ea48eb2f",
+      "baseline_row_pointer": "/files/224",
+      "legacy_tests": [],
+      "classification": "existing Rust inference source; execution linkage pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlserve/predictor_test.go",
+      "baseline_sha256": "de9e9cae4703d8bf39d26a635d016f2152d165e2185786be5ebabc1671e4aa78",
+      "current_sha256": "de9e9cae4703d8bf39d26a635d016f2152d165e2185786be5ebabc1671e4aa78",
+      "baseline_row_pointer": "/files/225",
+      "legacy_tests": [
+        "TestDefault_Abstains",
+        "TestScore_MatchingSchema",
+        "TestScore_StaleSchemaAbstains",
+        "TestScore_ShadowObservedNeverServed",
+        "TestScore_ShadowStaleSchemaSkipped"
+      ],
+      "classification": "existing Rust inference source; execution linkage pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mlserve/predictor.go",
+      "baseline_sha256": "ddc920c4cc4dd9ce51bb22c9d6114bcd1be476772461b66b573137b0fa4f6406",
+      "current_sha256": "ddc920c4cc4dd9ce51bb22c9d6114bcd1be476772461b66b573137b0fa4f6406",
+      "baseline_row_pointer": "/files/226",
+      "legacy_tests": [],
+      "classification": "existing Rust inference source; execution linkage pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mltrain/record.go",
+      "baseline_sha256": "b10f323c1e8c78da1bb4c71e4e10ae14a757b7c480a103a6ec52fe18e0a22f3c",
+      "current_sha256": "b10f323c1e8c78da1bb4c71e4e10ae14a757b7c480a103a6ec52fe18e0a22f3c",
+      "baseline_row_pointer": "/files/227",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mltrain/sink_test.go",
+      "baseline_sha256": "36ce2796866965a0304a4be7201cd0c358e0d58e013731e4be2c18ff6e028767",
+      "current_sha256": "36ce2796866965a0304a4be7201cd0c358e0d58e013731e4be2c18ff6e028767",
+      "baseline_row_pointer": "/files/228",
+      "legacy_tests": [
+        "TestTraceSink_AppendRoundTrip",
+        "TestTraceSink_NilIsNoop",
+        "TestTraceSink_AppendsAcrossReopen"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mltrain/sink.go",
+      "baseline_sha256": "9c30dc065297e19c155160b306f14dd3367447ad82a6bad990349cc9c94839af",
+      "current_sha256": "9c30dc065297e19c155160b306f14dd3367447ad82a6bad990349cc9c94839af",
+      "baseline_row_pointer": "/files/229",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mltrain/train_test.go",
+      "baseline_sha256": "50bcbdc205134fb3d8a3fc22e026c33b860237c7719ff07b1c1b076533615601",
+      "current_sha256": "50bcbdc205134fb3d8a3fc22e026c33b860237c7719ff07b1c1b076533615601",
+      "baseline_row_pointer": "/files/230",
+      "legacy_tests": [
+        "TestTrainAndEvaluate_Separable",
+        "TestWarmStart_UsesBaseAndKeepsShape",
+        "TestTesseractSplit_TrainPastTestFuture",
+        "TestCohortFPR_IsPerCohort",
+        "TestAUT_BoundedAndFull"
+      ],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    },
+    {
+      "path": "internal/mltrain/train.go",
+      "baseline_sha256": "55ecd6e3d270c6a83584390efd82b6e16dfeb920a1e46f8a952b2825b99b8846",
+      "current_sha256": "55ecd6e3d270c6a83584390efd82b6e16dfeb920a1e46f8a952b2825b99b8846",
+      "baseline_row_pointer": "/files/231",
+      "legacy_tests": [],
+      "classification": "migration implementation and qualification pending",
+      "actual_runtime_proof": []
+    }
+  ],
+  "rust_sources": [
+    {
+      "path": "crates/model/Cargo.toml",
+      "sha256": "b9cb23e03aff36f9b178496757d071f64aa7d3c40b4eeec561177ad4163b0fbd"
+    },
+    {
+      "path": "crates/model/src/lib.rs",
+      "sha256": "60eda1da4d69c8f854b1bb9a7b705c6029e745216934976fc3a8fc9ad661c15f"
+    },
+    {
+      "path": "crates/model/src/inference/bundle.rs",
+      "sha256": "0c263b5f509ab5e6ef8165f46106247429d546150078cac5500481de7e88c9af"
+    },
+    {
+      "path": "crates/model/src/inference/mlp.rs",
+      "sha256": "85f980297bdeecf7a74a858fc883d36c3b400cb76cbbcb2b21524a83bf92c254"
+    },
+    {
+      "path": "crates/model/src/inference/mod.rs",
+      "sha256": "ab3db88975c14310c655d480079332e11c92467215756bfb90a638fda67cb13e"
+    },
+    {
+      "path": "crates/model/src/inference/runtime.rs",
+      "sha256": "c0a1f08bb6d9a04e2f32eba8e5da100279d475499a5a44cc99272a7a3fbc7382"
+    },
+    {
+      "path": "crates/model/tests/inference_parity.rs",
+      "sha256": "a412c4b53f824e4ef9bd140c253a44ada288198f6984656acaa11b13fb8e2aa0"
+    },
+    {
+      "path": "crates/model/tests/fixtures/inference.json",
+      "sha256": "5b6764eac0aadcba60ed619126b7174b012e40be6deb8f32bfc7995ba354a9fe"
+    }
+  ]
+}
