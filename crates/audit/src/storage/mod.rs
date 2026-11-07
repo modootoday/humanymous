@@ -4,6 +4,10 @@ mod exclusive_file;
 mod framing;
 #[cfg(any(unix, windows))]
 pub(crate) use exclusive_file::ExclusiveFile;
+#[cfg(any(unix, windows))]
+mod private_state;
+#[cfg(any(unix, windows))]
+pub(crate) use private_state::PrivateState;
 #[cfg(windows)]
 pub mod permissions;
 mod recovery;

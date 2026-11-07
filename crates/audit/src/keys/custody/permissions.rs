@@ -5,7 +5,7 @@ use std::{
     path::{Component, Path},
 };
 
-pub(super) fn directory(path: &Path, owner: &Owner) -> io::Result<()> {
+pub(crate) fn directory(path: &Path, owner: &Owner) -> io::Result<()> {
     let mut component_path = std::path::PathBuf::new();
     for component in path.components() {
         if matches!(component, Component::ParentDir | Component::CurDir) {
@@ -32,7 +32,7 @@ pub(super) fn directory(path: &Path, owner: &Owner) -> io::Result<()> {
     let file = options.open(path)?;
     check(&file, owner, true)
 }
-pub(super) fn create(path: &Path) -> io::Result<File> {
+pub(crate) fn create(path: &Path) -> io::Result<File> {
     let mut options = OpenOptions::new();
     options.read(true).write(true).create_new(true);
     native_options(&mut options);
@@ -43,7 +43,7 @@ pub(super) fn create(path: &Path) -> io::Result<File> {
     }
     options.open(path)
 }
-pub(super) fn existing(path: &Path, write: bool) -> io::Result<File> {
+pub(crate) fn existing(path: &Path, write: bool) -> io::Result<File> {
     let metadata = fs::symlink_metadata(path)?;
     no_alias(&metadata)?;
     if !metadata.is_file() {
@@ -82,7 +82,7 @@ fn no_alias(metadata: &fs::Metadata) -> io::Result<()> {
     }
     Ok(())
 }
-pub(super) fn file(file: &File, owner: &Owner) -> io::Result<()> {
+pub(crate) fn file(file: &File, owner: &Owner) -> io::Result<()> {
     check(file, owner, false)
 }
 fn check(file: &File, owner: &Owner, directory: bool) -> io::Result<()> {

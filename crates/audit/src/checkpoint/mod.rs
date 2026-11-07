@@ -4,6 +4,10 @@ use humanymous_signals::wire::{decode::null_default, quote_json_go};
 use serde::{Deserialize, Serialize};
 mod witness;
 pub use witness::{Witness, WitnessError};
+#[cfg(any(unix, windows))]
+mod durable;
+#[cfg(any(unix, windows))]
+pub use durable::{CheckpointWitness, DurableWitness, WitnessBootstrap, WitnessReceipt, service};
 
 /// Persisted signed tree head. Writer and independent witness sign the same
 /// frozen bytes; neither signature is itself included in those bytes.

@@ -1,5 +1,6 @@
 //! Historical sealed-key compatibility, subject linkage and exclusive native
 //! sealed custody. Operational dual-control remains a separate boundary.
+pub mod backups;
 pub mod custody;
 pub mod vault;
 use aes_gcm::{

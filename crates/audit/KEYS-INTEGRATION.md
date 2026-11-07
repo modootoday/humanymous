@@ -1,6 +1,133 @@
 # Sealed key compatibility integration
 
-## Native custody integration (2026-11-07)
+## Current operational checkpoint and serial handoff (2026-11-07)
+
+Owner rust-audit-operations. New audit dependencies: none. No shared Cargo,
+lock, toolchain or membership delta. Cargo auto-discovers the new native binary
+`audit-witness` at src/bin/audit-witness.rs; its nonnative stub has no service
+capability. Root's ExclusiveFile/custody/WAL lifetime-lock repair is preserved.
+
+Current public contracts:
+
+- `control::{Scope, Action, Proposal, Approval, Administrators}` strictly bind
+  installation/node/action/target/operation/time to two distinct pinned Ed25519
+  identities AND keys. Policy fingerprint includes all pinned keys and TTL.
+  `ControlAuthority::{open,propose,consume,anchor,verify_consumed}` owns a private
+  signed bounded spent ledger. `LedgerBootstrap::Pinned` requires exact latest
+  independent anchor; ordinary replay/capacity exhaustion/clock rollback fail.
+  `issue_erasure` issues an exact scope/subject permit after persistence;
+  `resume_erasure` is explicit exact-consumed-operation recovery, requires valid
+  signatures/window again, and never authorizes a new subject. No public permit
+  constructor/deserializer or production boolean bypass exists.
+- `ApprovalRequest` carries the exact immutable proposal/signatures and trusted
+  observer time. `authorize_action` returns a noncloneable/nondeserializable
+  `ActionPermit`; `execute(self,scope,action,target,now,callback)` consumes it and
+  validates exact binding/expiry before invoking one runtime effect. Callback
+  completion and durable runtime state remain the consuming service's duty.
+- `Vault::{new_scoped,load_scoped}` require trusted installation/node config for
+  production erasure; historical unscoped constructors retain pseudonym parity
+  but cannot consume production erasure permits. `shred` and custody persistence
+  reject different subjects/scopes and unauthorized additional tombstones.
+  `Custody::{erase_approved,recover_erasure_pending}` persist exact authorized
+  tombstones. `rotate_approved` consumes signed approval for the exact current
+  ciphertext digest, authenticates the old passphrase and preserves identity.
+  This authorizes rotation of that generation to a secret selected by the
+  authenticated trusted local caller; approvers do NOT sign the new secret or
+  prepared ciphertext. Do not expose it as fully destination/body-bound admin
+  rotation. A stronger prepared-candidate approval flow remains follow-up work.
+- `checkpoint::{CheckpointWitness,DurableWitness,WitnessBootstrap,WitnessReceipt}`
+  persists before returning signatures, rejects same writer/witness key and
+  requires independently retained minimum+consistency proof on existing restart.
+  `Log::open_with_external_witness(...,Box<dyn CheckpointWitness>,WitnessDurability)`
+  validates returned complete commitment/signature/durability before appending
+  success. Runtime needs no witness seed. `Log::{flush,checkpoints,records}`
+  provide graceful final-checkpoint+flush and authenticated export/replay views.
+  Existing in-process config API remains legacy; it does not prove independence.
+- `checkpoint::service` provides `WitnessServiceConfig`,
+  `WitnessServiceBootstrap`, `WitnessServiceRequest`, `WitnessServiceResponse`,
+  bounded `read_frame/write_frame` and `serve`. Supervisor starts `audit-witness`
+  with private piped stdin/stdout, sends one <=128KiB newline JSON config frame
+  containing separately provisioned sealed-key directory, independent head
+  directory, owner SID on Windows, zeroized private unlock bytes, writer public
+  key/node and explicit bootstrap/external pin. Later State/CounterSign/Shutdown
+  requests contain no seed/passphrase. There is no network listener, argv/env
+  secret, default key creation or dynamic public client admission. Ready/Signed
+  replies explicitly report FileAndDirectory versus namespace-unconfirmed strength.
+- Shared `WitnessServiceClient<R:BufRead+Send,W:Write+Send>` implements
+  CheckpointWitness. `connect(input,output,&WitnessServiceConfig,expectedPublic)`
+  sends private config; `from_ready(input,output,expectedWitnessPublic,
+  expectedWriterPublic,node,WitnessBootstrap)` consumes a brokered Ready without
+  exposing credentials to runtime. All wire I/O occurs in mutable counter_sign;
+  last_size/validate_local_head use only the authenticated local cache. Exact
+  replies, pinned signatures/scope/roots and existing consistency verification
+  are mandatory; malformed/refused/transport responses poison the client.
+  Caller owns native deadlines, peer identity/provenance and child reaping.
+- `keys::backups::BackupInventory` owns immutable authenticated encrypted files,
+  signed externally pinned inventory, exact content digests, orphan adoption,
+  two-admin `retire`, authenticated `reconcile_retirement/resume_retirement` and
+  pending recovery. Retiring/Retired transitions retain the consumed operation;
+  reappearing retired copies, aliases, bad hashes and stale pins fail closed.
+  Retirement only unlinks the named local file and syncs; snapshots/SSD/media/
+  unknown or remote copies are not erased by this API.
+- `sink::{DurableSink,SinkPolicy,SinkBootstrap,SinkReceipt}` verifies the full
+  exported history with existing RecoveryPolicy/verify_history, requires final
+  checkpoint coverage and preserves the prior signed anchor. Private bounded
+  local file persistence and authenticated pending recovery are real. No remote
+  sink delivery/WORM guarantee is claimed; inputs must already be pseudonymized.
+
+Source checkpoint validation: the first Windows audit all-target suite78 and
+Linux local-container75 passed before the final shared client. The latest
+all-target results and exact current source manifest are in the evidence below;
+do not apply those earlier counts to later source. Witness now includes shared
+client real child/forged-reply tests12/11; backup native8/7; signed policy5;
+operational custody/control/sink7/5 includes Windows interrupted-tombstone proof.
+Final full current working-source suites: Windows81/Linux77, both Clippy,
+WASM library check and formatting pass. facts-v2.json records final attempt3;
+earlier results/failure records are retained separately. Scoped audit Specfold
+is clean; full repository has unrelated generated/private-artifact findings.
+Four ignored subprocess helper entrypoints and the zero-test binary harness are
+excluded from totals; parent tests execute helpers explicitly. Raw source-bound
+logs and public facts are in evidence:root/20261107051648. Full component native
+success is not whole-product Docker e2e or M3 completion.
+
+Remaining requirements after root-requested safe checkpoint handoff:
+
+1. Authority shared client/transport, then runtime admin/service integration
+   using these typed contracts; independently durable anchor delivery before
+   acknowledging operational effects. An approval receipt is NOT action completion.
+2. Actual separate OS-account/container/HSM and inaccessible witness key/head
+   mounts; service process separation is tested but same-host privileged/parent
+   compromise and independent anchor rollback remain deployment trust boundaries.
+3. Trusted clock across restart: successful consumption persists last time and
+   in-process observations poison on regression; rejected times are not separately
+   durably advanced. Do not substitute caller-supplied timestamps.
+4. Exact prepared-new-ciphertext approval if body/destination-bound rotation is
+   required, remote sink implementations, full streaming authenticated WAL/Tree
+   recovery, physical/unknown-copy erasure and storage/power-loss qualification.
+5. Independent latest control/backup/witness pins, initial pending-state incident
+   handling, final same-source six-tuple/product Docker/human/AT qualification.
+6. Proposed shared audit-owned Custody+Log lifetime/startup context by moving the
+   existing runtime SealedAudit implementation. Authority must not create a
+   second crypto/startup implementation while this ownership transfer is pending.
+   Writer/witness signing-identity key rotation remains distinct from the
+   implemented passphrase-envelope rotation and is not implemented here.
+
+Verify with `cargo test -p humanymous-audit --all-targets --locked`,
+`cargo clippy -p humanymous-audit --all-targets --locked -- -D warnings`,
+`cargo check -p humanymous-audit --lib --target wasm32-unknown-unknown --locked`
+and `cargo fmt --manifest-path crates/audit/Cargo.toml -- --check`.
+First read AGENTS.md, .agents/lessons/HARD-WON.md, this file, the owning SoT/plan
+and evidence:root/20261107051648. root owns shared Cargo/roadmap/CI; authority
+takes the released gate-edge for common IPC/client work, then runtime consumes
+these typed contracts. Audit residual chat context is this Codex chat; no other
+provider memory is required. Scoring, verdicts, motor/speed policy are unchanged.
+
+Windows namespace power-loss durability remains unconfirmed. Consumers requiring
+FileAndDirectory must fail closed on weaker receipts. No sandbox reduction was
+used. Public source facts/hashes describe this dirty audit snapshot; shared
+workspace dependency/integration changes remain root-owned.
+
+## Historical native custody integration (2026-11-07)
 
 Owner: rust-key-custody-next. Root has applied these target dependencies to audit:
 

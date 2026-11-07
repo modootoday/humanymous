@@ -1,5 +1,5 @@
 //! Per-subject linkage keys. Persistence must be sealed; erasure requires a
-//! future dual-control permit issuer, not an unrestricted public delete method.
+//! durable signed dual-control issuer, not an unrestricted public delete method.
 use super::{KeyError, LIMIT};
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Deserializer, Serialize};
@@ -19,11 +19,28 @@ pub enum Mode {
     /// Historical scrypt N=4096/r=8/p=1 over subject key with value as salt.
     Scrypt,
 }
-/// Erasure capability with no production constructor yet. A future verified
-/// dual-control service must issue it; the current module exposes no unilateral
-/// production erasure path. Tests construct one only to validate key destruction.
+/// Scope/subject-bound capability issued after durable signed dual control.
+/// No public constructor or deserializer can mint this authority.
 pub struct ErasurePermit {
-    _private: (),
+    target: String,
+    scope: crate::control::Scope,
+    operation: String,
+}
+impl ErasurePermit {
+    pub(crate) fn issued(subject: &str, operation: &str, scope: &crate::control::Scope) -> Self {
+        Self {
+            target: crate::control::target_commitment(subject.as_bytes()),
+            scope: scope.clone(),
+            operation: operation.into(),
+        }
+    }
+    /// Durable approved operation ID, for correlation without subject disclosure.
+    pub fn operation_id(&self) -> &str {
+        &self.operation
+    }
+    fn matches(&self, subject: &str) -> bool {
+        self.target == crate::control::target_commitment(subject.as_bytes())
+    }
 }
 
 struct State {
@@ -38,6 +55,7 @@ pub struct Vault {
     state: Mutex<State>,
     mode: Mode,
     capacity: usize,
+    scope: Option<crate::control::Scope>,
 }
 impl Vault {
     /// Create an explicitly empty vault with bounded subject/index capacity.
@@ -53,7 +71,39 @@ impl Vault {
             }),
             mode,
             capacity,
+            scope: None,
         })
+    }
+    /// Provision a scope-bound vault eligible for independently approved erasure.
+    /// Scope is trusted external configuration, like the frozen stretch mode.
+    pub fn new_scoped(
+        mode: Mode,
+        capacity: usize,
+        scope: crate::control::Scope,
+    ) -> Result<Self, KeyError> {
+        if scope.installation.is_empty() || scope.node.is_empty() {
+            return Err(KeyError::InvalidMaterial);
+        }
+        let mut vault = Self::new(mode, capacity)?;
+        vault.scope = Some(scope);
+        Ok(vault)
+    }
+    /// Restore the historical snapshot using explicitly provisioned tenant scope.
+    pub fn load_scoped(
+        blob: &[u8],
+        mode: Mode,
+        capacity: usize,
+        scope: crate::control::Scope,
+    ) -> Result<Self, KeyError> {
+        if scope.installation.is_empty() || scope.node.is_empty() {
+            return Err(KeyError::InvalidMaterial);
+        }
+        let mut vault = Self::load(blob, mode, capacity)?;
+        vault.scope = Some(scope);
+        Ok(vault)
+    }
+    pub(crate) fn authorizes(&self, permit: &ErasurePermit) -> bool {
+        self.scope.as_ref() == Some(&permit.scope)
     }
     /// Strictly restore a secret snapshot. Empty means an explicitly new vault;
     /// corrupt data, invalid keys or resurrected tombstones never become fresh.
@@ -174,10 +224,10 @@ impl Vault {
             .cloned())
     }
     /// Remove the owned key and reverse links and retain a non-remint tombstone.
-    /// No production caller can obtain ErasurePermit until dual control lands.
+    /// Production permits bind a durably approved exact subject and scope.
     /// Persist the resulting snapshot before acknowledging runtime erasure.
-    pub fn shred(&self, subject: &str, _permit: &ErasurePermit) -> Result<bool, KeyError> {
-        if subject.is_empty() {
+    pub fn shred(&self, subject: &str, permit: &ErasurePermit) -> Result<bool, KeyError> {
+        if subject.is_empty() || !self.authorizes(permit) || !permit.matches(subject) {
             return Err(KeyError::InvalidMaterial);
         }
         let mut state = self.state.lock().map_err(|_| KeyError::InvalidMaterial)?;
@@ -259,17 +309,20 @@ fn null_tombstones<'de, D: Deserializer<'de>>(d: D) -> Result<BTreeSet<String>, 
 pub(super) fn validate_update(
     old: Option<&[u8]>,
     new: &[u8],
-    erasure: bool,
+    erasure: Option<&ErasurePermit>,
 ) -> Result<(), KeyError> {
     let old = Vault::load(old.unwrap_or_default(), Mode::Hmac, usize::MAX)?;
     let new = Vault::load(new, Mode::Hmac, usize::MAX)?;
     let old = old.state.lock().map_err(|_| KeyError::InvalidMaterial)?;
     let new = new.state.lock().map_err(|_| KeyError::InvalidMaterial)?;
     if !old.shredded.is_subset(&new.shredded)
-        || (!erasure && old.shredded != new.shredded)
+        || new
+            .shredded
+            .difference(&old.shredded)
+            .any(|subject| !erasure.is_some_and(|permit| permit.matches(subject)))
         || old.keys.iter().any(|(id, key)| match new.keys.get(id) {
             Some(next) => key.as_ref() != next.as_ref(),
-            None => !erasure || !new.shredded.contains(id),
+            None => !erasure.is_some_and(|permit| permit.matches(id)) || !new.shredded.contains(id),
         })
     {
         return Err(KeyError::InvalidMaterial);
@@ -280,6 +333,18 @@ pub(super) fn validate_update(
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn scope() -> crate::control::Scope {
+        crate::control::Scope {
+            installation: "test".into(),
+            node: "test".into(),
+        }
+    }
+    fn permit(subject: &str) -> ErasurePermit {
+        ErasurePermit::issued(subject, "test-operation", &scope())
+    }
+    fn test_vault(mode: Mode, capacity: usize) -> Result<Vault, KeyError> {
+        Vault::new_scoped(mode, capacity, scope())
+    }
     #[test]
     fn plain_and_stretched_pseudonyms_match_frozen_source() {
         let fixture: serde_json::Value =
@@ -313,15 +378,11 @@ mod tests {
             )
             .is_ok()
         );
-        let vault = Vault::new(Mode::Scrypt, 10).unwrap();
+        let vault = test_vault(Mode::Scrypt, 10).unwrap();
         let before = vault.pseudonymize("subject-A", "1.2.3.4").unwrap();
         vault.link("h", "subject-A").unwrap();
         assert_eq!(vault.resolve("h").unwrap(), Some("subject-A".into()));
-        assert!(
-            vault
-                .shred("subject-A", &ErasurePermit { _private: () })
-                .unwrap()
-        );
+        assert!(vault.shred("subject-A", &permit("subject-A")).unwrap());
         assert!(vault.resolve("h").unwrap().is_none());
         assert!(vault.link("new-h", "subject-A").is_err());
         let restored = Vault::load(&vault.snapshot().unwrap(), Mode::Scrypt, 10).unwrap();
@@ -351,7 +412,7 @@ mod tests {
 
     #[test]
     fn snapshot_conflicts_and_capacity_cannot_resurrect_linkage() {
-        let vault = Vault::new(Mode::Hmac, 2).unwrap();
+        let vault = test_vault(Mode::Hmac, 2).unwrap();
         vault.pseudonymize("a", "value").unwrap();
         vault.pseudonymize("b", "value").unwrap();
         vault.link("handle", "a").unwrap();
@@ -378,7 +439,7 @@ mod tests {
             ),
             Err(KeyError::Malformed)
         ));
-        vault.shred("a", &ErasurePermit { _private: () }).unwrap();
+        vault.shred("a", &permit("a")).unwrap();
         assert!(matches!(
             vault.pseudonymize("c", "value"),
             Err(KeyError::SizeLimit)
@@ -392,18 +453,23 @@ mod tests {
     }
     #[test]
     fn custody_updates_require_erasure_authority_and_monotonic_tombstones() {
-        let vault = Vault::new(Mode::Hmac, 10).unwrap();
+        let vault = test_vault(Mode::Hmac, 10).unwrap();
         vault.pseudonymize("subject", "value").unwrap();
         let before = vault.snapshot().unwrap();
-        vault
-            .shred("subject", &ErasurePermit { _private: () })
-            .unwrap();
+        vault.shred("subject", &permit("subject")).unwrap();
         let after = vault.snapshot().unwrap();
-        assert!(validate_update(Some(&before), &after, false).is_err());
-        assert!(validate_update(Some(&before), &after, true).is_ok());
-        assert!(validate_update(Some(&after), &before, true).is_err());
+        assert!(validate_update(Some(&before), &after, None).is_err());
+        assert!(validate_update(Some(&before), &after, Some(&permit("subject"))).is_ok());
+        assert!(validate_update(Some(&after), &before, Some(&permit("subject"))).is_err());
         let replacement = Vault::new(Mode::Hmac, 10).unwrap();
         replacement.pseudonymize("subject", "value").unwrap();
-        assert!(validate_update(Some(&before), &replacement.snapshot().unwrap(), true).is_err());
+        assert!(
+            validate_update(
+                Some(&before),
+                &replacement.snapshot().unwrap(),
+                Some(&permit("subject"))
+            )
+            .is_err()
+        );
     }
 }

@@ -1,0 +1,326 @@
+{
+  "edition": "2024",
+  "residuals": [
+    "external signed pin custody and trustworthy clock",
+    "separate deployed account/HSM and inaccessible witness mounts",
+    "prepared-candidate-bound rotation not implemented",
+    "shared audit startup owner and streaming recovery proposed",
+    "runtime/authority integration and product Docker e2e pending",
+    "local backup unlink is not physical/remote-copy erasure",
+    "Windows namespace power-loss durability unconfirmed"
+  ],
+  "sourceBinding": "validated working source unchanged through final runs; canonical Git blob equality checked at handoff",
+  "windows": {
+    "rawIgnoredSubprocessHelpers": 4,
+    "passed": 81,
+    "clippy": "passed",
+    "failed": 0,
+    "operations": 7,
+    "zeroTestBinaryHarness": 1,
+    "backups": 8,
+    "witness": 12
+  },
+  "toolchain": "1.99.1",
+  "linux": {
+    "failed": 0,
+    "rawIgnoredSubprocessHelpers": 4,
+    "zeroTestBinaryHarness": 1,
+    "clippy": "passed",
+    "image": "sha256:e6f2cff35d0f309acf8433b4f05878ed77092602c5065cc81801177da0bb3a9c",
+    "passed": 77,
+    "witness": 11,
+    "operations": 5,
+    "backups": 7
+  },
+  "consumerContracts": "audit-owned co-signer/client and typed dual-control; authority then runtime integration pending",
+  "sourceFiles": [
+    {
+      "sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197",
+      "bytes": 356,
+      "path": "crates/audit/src/lib.rs"
+    },
+    {
+      "sha256": "b66c13c42de4dc527dd0fc6c48fd95d9d4d101b0abe1bda96ae61bf05495c137",
+      "bytes": 6544,
+      "path": "crates/audit/src/sink.rs"
+    },
+    {
+      "sha256": "143b7c6fd620704d737cc2d6610ec305a10e35a4ffff0aba792f99dcdc1caa4d",
+      "bytes": 436,
+      "path": "crates/audit/src/bin/audit-witness.rs"
+    },
+    {
+      "sha256": "2ce83f57aea799ceef105f380ab4203cc638cf123133b272c8ee7d57879fadab",
+      "bytes": 10408,
+      "path": "crates/audit/src/checkpoint/durable.rs"
+    },
+    {
+      "sha256": "edc7c2ba132ab09031482a035f7d83732ac153e0dd599950babcbbec9f2fe041",
+      "bytes": 4424,
+      "path": "crates/audit/src/checkpoint/mod.rs"
+    },
+    {
+      "sha256": "ff0e73139ddcf2d94d37b54d5d23a7207e34912125deccdd05886a0d1b98f602",
+      "bytes": 9295,
+      "path": "crates/audit/src/checkpoint/witness.rs"
+    },
+    {
+      "sha256": "cfd4eeb07908987a85c04f8894e539bee62a731cf58046b715d81a29e8cd89b3",
+      "bytes": 12059,
+      "path": "crates/audit/src/checkpoint/durable/service.rs"
+    },
+    {
+      "sha256": "06eafa0039dbee37234d983455c3f835b8b13dbcd08807003ad86cd220a1be38",
+      "bytes": 8300,
+      "path": "crates/audit/src/checkpoint/durable/service/client.rs"
+    },
+    {
+      "sha256": "571785ab74696adc44d10b45813e8fd97f173247fd4dd09b36985c278659d2e5",
+      "bytes": 14034,
+      "path": "crates/audit/src/control/ledger.rs"
+    },
+    {
+      "sha256": "54b6f53e1363971a5fbec6e953e56e0db8cd5a71a5104b701c3cdc1dd3297562",
+      "bytes": 384,
+      "path": "crates/audit/src/control/mod.rs"
+    },
+    {
+      "sha256": "ccd0ae75ed25f835efa9b921c364f7ef5fdf7832d9e1c1a37a4e2c474672067b",
+      "bytes": 2317,
+      "path": "crates/audit/src/control/operations.rs"
+    },
+    {
+      "sha256": "c4e3048fba8b7bd9f0888af14309916f2f05727669079c309e719f38a505eb94",
+      "bytes": 20657,
+      "path": "crates/audit/src/control/policy.rs"
+    },
+    {
+      "sha256": "2be069378e0bdae9dc0260e6bcdacdc2c399185dbf807a800da46fb2fbbbfd86",
+      "bytes": 26824,
+      "path": "crates/audit/src/keys/backups.rs"
+    },
+    {
+      "sha256": "3821ad9a29400a954af3e512826bdba69e1040cbe7f756fec7f0da63dbf7a2a2",
+      "bytes": 13455,
+      "path": "crates/audit/src/keys/custody.rs"
+    },
+    {
+      "sha256": "f51306f99c522d203fffdcb54a7278cf4021621a429218fb2a6bba91e363b721",
+      "bytes": 11572,
+      "path": "crates/audit/src/keys/mod.rs"
+    },
+    {
+      "sha256": "686dd8c1776124192aa1d545aeb30c7b74a1511c428f088950386275967242f4",
+      "bytes": 19116,
+      "path": "crates/audit/src/keys/vault.rs"
+    },
+    {
+      "sha256": "f2145493843450c54637e98b461008b611063138b28a2ad2857d77e8a441f969",
+      "bytes": 4011,
+      "path": "crates/audit/src/keys/custody/permissions.rs"
+    },
+    {
+      "sha256": "21fe2804a8896ed0bd8d2d4f2a97380a19c18a151c958f53f69faaf46fa8c68a",
+      "bytes": 1916,
+      "path": "crates/audit/src/keys/custody/tests.rs"
+    },
+    {
+      "sha256": "74640c1a9047a9bd1d169f3b235e312e9c73aeb3317bb2d256e8567e7d27e580",
+      "bytes": 285,
+      "path": "crates/audit/src/lifecycle/mod.rs"
+    },
+    {
+      "sha256": "1c47f95ea69995ab5406710acc46284b8274b8efa0449b27cd5a533b739f3cec",
+      "bytes": 5816,
+      "path": "crates/audit/src/lifecycle/registry.rs"
+    },
+    {
+      "sha256": "220268a5a44cf814c6e3a16dc3946a802f6cf0ba012599c714314c1f853d4376",
+      "bytes": 3158,
+      "path": "crates/audit/src/lifecycle/retention.rs"
+    },
+    {
+      "sha256": "5709ec413d217990f663e50d5802e0661791c1f581cae6f32199ce7aebe2ed9e",
+      "bytes": 22676,
+      "path": "crates/audit/src/log/mod.rs"
+    },
+    {
+      "sha256": "06626d02195e4be65e21697a50e6aabc44cd8a44258a64d515d2b0cd6d399fa8",
+      "bytes": 4790,
+      "path": "crates/audit/src/log/proofs.rs"
+    },
+    {
+      "sha256": "58df780df2834749bd55961e662774008b7a89d0f2cb1f4753cd00fcc1514fd5",
+      "bytes": 1205,
+      "path": "crates/audit/src/log/stamp.rs"
+    },
+    {
+      "sha256": "f57eb0e19b0c93e98ad1c1a18f00b49a81868d4d348472579e37d0880fd84ae5",
+      "bytes": 8744,
+      "path": "crates/audit/src/merkle/mod.rs"
+    },
+    {
+      "sha256": "ba836c5984a774a793fafbc48fa6787b590721fad296cde21fd7c98574253e7f",
+      "bytes": 5948,
+      "path": "crates/audit/src/record/canonical.rs"
+    },
+    {
+      "sha256": "d3b78870106e12d1bb872dcd347c889ca02fdcff8666e4a8342fddf5b37d891e",
+      "bytes": 7404,
+      "path": "crates/audit/src/record/mod.rs"
+    },
+    {
+      "sha256": "f461a07efa734842a1c26f08e4152b9478ca1dcd9e64306b57fc61a6122f25cf",
+      "bytes": 2353,
+      "path": "crates/audit/src/record/normalization.rs"
+    },
+    {
+      "sha256": "0d11a0bd8be69ce75d4fdaae57dec312112160207c85f214422cdf4474083e2b",
+      "bytes": 8531,
+      "path": "crates/audit/src/record/ordering.rs"
+    },
+    {
+      "sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69",
+      "bytes": 1032,
+      "path": "crates/audit/src/storage/exclusive_file.rs"
+    },
+    {
+      "sha256": "362d8fc7a1ba1007584cb98e6d05a16af355463375482da616dcb2dead5caf2c",
+      "bytes": 3743,
+      "path": "crates/audit/src/storage/framing.rs"
+    },
+    {
+      "sha256": "897c683f3030931b184c1f84aa23fa2bfd6c08c8fe424bf96d63e2094114db4f",
+      "bytes": 3683,
+      "path": "crates/audit/src/storage/mod.rs"
+    },
+    {
+      "sha256": "ec1bd4b017f609c4eebb2d431bf47ac9605a15824928bc43b09ddc433ac0a02a",
+      "bytes": 151,
+      "path": "crates/audit/src/storage/permissions.rs"
+    },
+    {
+      "sha256": "dff83a4a68cabbda890624a3fbb4d31ba5b4e12546a3ef2b4329fc385ccf650b",
+      "bytes": 4726,
+      "path": "crates/audit/src/storage/private_state.rs"
+    },
+    {
+      "sha256": "d289016225d4e0ca181c32541cddf08f8e659fe33a0861ca346551c23cdcbc7c",
+      "bytes": 6924,
+      "path": "crates/audit/src/storage/recovery.rs"
+    },
+    {
+      "sha256": "a5477e4deaba6ce856a96c0bbd8f039ce373411561b86585c070d1e55e1f4598",
+      "bytes": 14694,
+      "path": "crates/audit/src/storage/wal.rs"
+    },
+    {
+      "sha256": "df240507c4fa8109c71975829217a388389ac2a20b110c3773f8e649b664718e",
+      "bytes": 8987,
+      "path": "crates/audit/src/verification/mod.rs"
+    },
+    {
+      "sha256": "09aac015de6d7e45343095afc63c4745aee2749e15d59322567956373c4be0b9",
+      "bytes": 3965,
+      "path": "crates/audit/tests/checkpoint_parity.rs"
+    },
+    {
+      "sha256": "ab9d6244c267bd4675a1f356670863bf18a1d7b8b21e65210797b7376cf2b6eb",
+      "bytes": 17033,
+      "path": "crates/audit/tests/control_operations.rs"
+    },
+    {
+      "sha256": "9bbcb9e8224253b781530638286cccd2182950304a426ac4e69684ec3390a7ea",
+      "bytes": 25231,
+      "path": "crates/audit/tests/durable_witness.rs"
+    },
+    {
+      "sha256": "ecb3e1d3ca0b62b65e26bf140f57cd96659ad05cf04bcc05bd27b97f2f753144",
+      "bytes": 16268,
+      "path": "crates/audit/tests/key_backups.rs"
+    },
+    {
+      "sha256": "9429cc93175f3c6e3da92027a1c588f940f45d12f6a1eca9b41526ce7a816e9f",
+      "bytes": 14544,
+      "path": "crates/audit/tests/key_custody.rs"
+    },
+    {
+      "sha256": "a7e133486fe7de0bd8c4462b8b807bf29f3a0398c56dde2259f01ecb73c95f12",
+      "bytes": 1929,
+      "path": "crates/audit/tests/merkle_parity.rs"
+    },
+    {
+      "sha256": "cce55f1007da9448ae669f83425f5d1493b9406649c29af7674d1a6cf83f831d",
+      "bytes": 1103,
+      "path": "crates/audit/tests/record_parity.rs"
+    },
+    {
+      "sha256": "c5c70aa060cc1e794274ae2c64aa32a8c5bdafd1422b4c7bfebb6a6f07691343",
+      "bytes": 1343,
+      "path": "crates/audit/tests/verification_parity.rs"
+    },
+    {
+      "sha256": "a28b057c83ed946d407e05fa4c7766ede4700c737617d27d231d46f0180716ef",
+      "bytes": 461483,
+      "path": "crates/audit/tests/fixtures/checkpoints.json"
+    },
+    {
+      "sha256": "e21e3326472cbcedd9dcec1764ea52ee9a21cabd79320866eb61c04c8b897e89",
+      "bytes": 27325,
+      "path": "crates/audit/tests/fixtures/keys.json"
+    },
+    {
+      "sha256": "c0a755b9264539ebad9a1dc999ccaa77c6e088c4c440762293a97cde7560f067",
+      "bytes": 1859928,
+      "path": "crates/audit/tests/fixtures/merkle.json"
+    },
+    {
+      "sha256": "7175918e0ab3121b62f1ab8cbbd8d9b23b8382353a37273d10f2f95629499cdc",
+      "bytes": 1864396,
+      "path": "crates/audit/tests/fixtures/records.json"
+    },
+    {
+      "sha256": "508f619c652d97be515f12a04f517acedc5b5b3ec959f6d2e6de5fad0a119300",
+      "bytes": 1937597,
+      "path": "crates/audit/tests/fixtures/verification.json"
+    }
+  ],
+  "scope": "bounded native audit operations; whole_product_qualified=false",
+  "cargoDelta": "none; root owns shared resolution",
+  "outputs": [
+    {
+      "sha256": "d75c99ad5b4b18a32c193c105213fb2ae56ed3f58378bb96b8f7396fe3ee9227",
+      "bytes": 10292,
+      "name": "windows-final-tests-attempt3.log"
+    },
+    {
+      "sha256": "2df98a147e9b4d51d1d05aaa8185330e8a9edc9493a6cf978a9e116b0428dfef",
+      "bytes": 9342,
+      "name": "linux-final-tests-attempt3.log"
+    },
+    {
+      "sha256": "8c622dd1dc2511af515a12d142e6c2dc85dae0623024541f899cc1bbd070646b",
+      "bytes": 243,
+      "name": "windows-final-clippy-attempt3.log"
+    },
+    {
+      "sha256": "998e80909f90a0dbabd54195bfa5617ee12aaa66418728085d80a13ee5e8cc6f",
+      "bytes": 205,
+      "name": "linux-final-clippy-attempt3.log"
+    },
+    {
+      "sha256": "eefe004b57865b5c94fcde00c58a06ba2248f39c43c429d786051a7f28e3b559",
+      "bytes": 204,
+      "name": "wasm-final-check.log"
+    },
+    {
+      "sha256": "81f3d5603aa5a2932721ba3dcdb808e689ee9f93edaec48ece0220ca559ebdcd",
+      "bytes": 213,
+      "name": "linux-final-lock-rejection.log"
+    }
+  ],
+  "wasmLibrary": "check passed; native services unavailable on WASM",
+  "sourceManifestSHA256": "834424b45a87c590d0c2f475b365c208e2e97a4444e0e91eccd43b4a3eede306",
+  "evidenceRevision": 2,
+  "priorSourceEvidence": "facts.json and source-before-final-attempt2.json retained; v2 follows stale-legacy-rustdoc correction with no runtime-logic delta"
+}

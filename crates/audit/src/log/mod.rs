@@ -1,6 +1,7 @@
 //! Durable per-node sealing. The WAL is the authority; projections are not.
 mod proofs;
 mod stamp;
+use crate::{checkpoint::CheckpointWitness, keys::custody::Durability};
 use crate::{
     checkpoint::{Checkpoint, Witness},
     merkle::Tree,
@@ -10,6 +11,15 @@ use crate::{
 use ed25519_dalek::SigningKey;
 pub use proofs::{CheckpointInclusion, InclusionProof};
 use std::io;
+
+/// Required persistence strength for a separately supervised witness receipt.
+#[derive(Clone, Copy)]
+pub enum WitnessDurability {
+    /// File and namespace sync required; unconfirmed platforms fail closed.
+    FileAndDirectory,
+    /// Explicit component policy accepting file sync with namespace uncertainty.
+    FileSynced,
+}
 
 /// Stable provisioned identities. No malformed or absent key silently creates
 /// an ephemeral replacement identity on restart.
@@ -39,6 +49,8 @@ pub struct Log {
     leaves: Vec<Vec<u8>>,
     checkpoints: Vec<Checkpoint>,
     poisoned: bool,
+    external_witness: Option<Box<dyn CheckpointWitness>>,
+    witness_durability: WitnessDurability,
 }
 impl Log {
     /// Restore an authenticated chain or explicitly initialize an empty one.
@@ -49,12 +61,57 @@ impl Log {
         trusted_head: Option<&Checkpoint>,
         allow_new: bool,
     ) -> io::Result<Self> {
+        Self::open_inner(
+            wal,
+            config,
+            trusted_head,
+            allow_new,
+            None,
+            WitnessDurability::FileAndDirectory,
+        )
+    }
+    /// Open using an independently provisioned co-signer client. Runtime holds
+    /// only its public identity; transport/service failure cannot release writes.
+    pub fn open_with_external_witness(
+        wal: Wal,
+        config: Config,
+        trusted_head: Option<&Checkpoint>,
+        allow_new: bool,
+        witness: Box<dyn CheckpointWitness>,
+        durability: WitnessDurability,
+    ) -> io::Result<Self> {
+        if config.witness.is_some() {
+            return Err(io::Error::other("multiple witness authorities configured"));
+        }
+        Self::open_inner(
+            wal,
+            config,
+            trusted_head,
+            allow_new,
+            Some(witness),
+            durability,
+        )
+    }
+    fn open_inner(
+        wal: Wal,
+        config: Config,
+        trusted_head: Option<&Checkpoint>,
+        allow_new: bool,
+        external_witness: Option<Box<dyn CheckpointWitness>>,
+        witness_durability: WitnessDurability,
+    ) -> io::Result<Self> {
         if config.checkpoint_every == 0 {
             return Err(io::Error::other("zero checkpoint cadence"));
         }
         let signer = SigningKey::from_bytes(&config.signing_seed);
         let public = signer.verifying_key().to_bytes();
-        let witness_public = config.witness.as_ref().map(Witness::public_key);
+        let witness_public = external_witness
+            .as_ref()
+            .map(|w| w.public_key())
+            .or_else(|| config.witness.as_ref().map(Witness::public_key));
+        if witness_public == Some(public) {
+            return Err(io::Error::other("witness key must differ from writer"));
+        }
         let history = wal.verified_history(RecoveryPolicy {
             node_id: &config.node_id,
             hmac_key: &config.hmac_key,
@@ -80,6 +137,15 @@ impl Log {
                 ));
             }
         }
+        if let Some(witness) = &external_witness {
+            if let Some(last) = checkpoints.last() {
+                witness.validate_local_head(last)?;
+            } else if witness.last_size()? != 0 {
+                return Err(io::Error::other(
+                    "independent head absent from local storage",
+                ));
+            }
+        }
         Ok(Self {
             config,
             signer,
@@ -89,6 +155,8 @@ impl Log {
             leaves,
             checkpoints,
             poisoned: false,
+            external_witness,
+            witness_durability,
         })
     }
 
@@ -123,7 +191,8 @@ impl Log {
         // Recovery with a required witness refuses zero anchor coverage. Seal
         // the first record immediately, so a crash before the periodic cadence
         // does not strand an otherwise durable newly initialized history.
-        if (self.config.witness.is_some() && self.checkpoints.is_empty())
+        if ((self.config.witness.is_some() || self.external_witness.is_some())
+            && self.checkpoints.is_empty())
             || self.sequence - last >= self.config.checkpoint_every
         {
             self.checkpoint()?;
@@ -178,6 +247,38 @@ impl Log {
                 }
             }
         }
+        if let Some(witness) = &mut self.external_witness {
+            let result = (|| {
+                let last = witness.last_size()?;
+                let proof = if last > 0 && last < self.sequence {
+                    Tree::new(&self.leaves)
+                        .consistency_proof(usize::try_from(last).map_err(io::Error::other)?)
+                        .ok_or_else(|| io::Error::other("witness proof unavailable"))?
+                } else {
+                    Vec::new()
+                };
+                let receipt = witness.counter_sign(&cp, &proof)?;
+                let mut expected = cp.clone();
+                expected.witness_sig = receipt.checkpoint.witness_sig.clone();
+                if receipt.checkpoint != expected
+                    || !receipt.checkpoint.verify_witness(&witness.public_key())
+                    || (matches!(self.witness_durability, WitnessDurability::FileAndDirectory)
+                        && receipt.durability != Durability::FileAndDirectory)
+                {
+                    return Err(io::Error::other(
+                        "independent witness receipt or durability invalid",
+                    ));
+                }
+                Ok(receipt.checkpoint.witness_sig)
+            })();
+            match result {
+                Ok(signature) => cp.witness_sig = signature,
+                Err(error) => {
+                    self.poisoned = true;
+                    return Err(error);
+                }
+            }
+        }
         if let Err(error) = self.wal.append_checkpoint(&cp) {
             self.poisoned = true;
             return Err(error);
@@ -201,6 +302,22 @@ impl Log {
     pub fn records(&self) -> io::Result<Vec<Record>> {
         self.healthy()?;
         self.wal.records()
+    }
+    /// Authenticated startup/writer checkpoint view for independently verified sinks.
+    pub fn checkpoints(&self) -> io::Result<Vec<Checkpoint>> {
+        self.healthy()?;
+        self.wal.checkpoints()
+    }
+    /// Seal the last head and flush the WAL before acknowledging graceful stop.
+    /// A failed flush poisons this owner until authenticated recovery.
+    pub fn flush(&mut self) -> io::Result<()> {
+        self.healthy()?;
+        self.checkpoint()?;
+        if let Err(error) = self.wal.flush() {
+            self.poisoned = true;
+            return Err(error);
+        }
+        Ok(())
     }
     /// Latest locally authenticated sequence.
     pub fn sequence(&self) -> u64 {

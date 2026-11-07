@@ -1,6 +1,6 @@
 //! Exclusive local sealed custody. Provision the service directory privately
 //! before opening; trusted ancestors and same-owner processes remain premises.
-mod permissions;
+pub(crate) mod permissions;
 #[cfg(all(test, unix))]
 mod tests;
 use super::{KeyMaterial, LIMIT, open, seal, vault::Vault};
@@ -14,6 +14,7 @@ use std::{
 };
 
 /// Configured native owner. Supplied by the trusted service supervisor.
+#[derive(Clone)]
 pub enum Owner {
     /// Current effective UID on Unix; no alternate user is accepted.
     #[cfg(unix)]
@@ -145,23 +146,26 @@ impl Custody {
     /// Runtime must serialize vault mutation and persistence before acknowledging
     /// new pseudonyms; a snapshot captures one point in time under the vault lock.
     pub fn persist_vault(&mut self, vault: &Vault, passphrase: &[u8]) -> io::Result<Durability> {
-        self.persist_snapshot(vault, passphrase, false)
+        self.persist_snapshot(vault, passphrase, None)
     }
-    /// Persist permitted erasure. There is deliberately no production permit
-    /// issuer; future dual-control integration must retain this capability check.
+    /// Persist permitted erasure using the durable issuer's exact subject/scope
+    /// capability. Ordinary snapshot persistence cannot bypass this check.
     pub fn persist_erasure(
         &mut self,
         vault: &Vault,
         passphrase: &[u8],
-        _permit: &super::vault::ErasurePermit,
+        permit: &super::vault::ErasurePermit,
     ) -> io::Result<Durability> {
-        self.persist_snapshot(vault, passphrase, true)
+        if !vault.authorizes(permit) {
+            return Err(crypto(super::KeyError::InvalidMaterial));
+        }
+        self.persist_snapshot(vault, passphrase, Some(permit))
     }
     fn persist_snapshot(
         &mut self,
         vault: &Vault,
         passphrase: &[u8],
-        erasure: bool,
+        erasure: Option<&super::vault::ErasurePermit>,
     ) -> io::Result<Durability> {
         self.ready()?;
         let current = self.read("keys.sealed", passphrase)?;
@@ -184,17 +188,35 @@ impl Custody {
         committed_passphrase: &[u8],
         pending_passphrase: &[u8],
     ) -> io::Result<Durability> {
+        self.recover_inner(committed_passphrase, pending_passphrase, None)
+    }
+    /// Complete an interrupted erasure transaction only for its exact issued
+    /// subject capability. A different tombstone cannot be smuggled in recovery.
+    pub fn recover_erasure_pending(
+        &mut self,
+        committed_passphrase: &[u8],
+        pending_passphrase: &[u8],
+        permit: &super::vault::ErasurePermit,
+    ) -> io::Result<Durability> {
+        self.recover_inner(committed_passphrase, pending_passphrase, Some(permit))
+    }
+    fn recover_inner(
+        &mut self,
+        committed_passphrase: &[u8],
+        pending_passphrase: &[u8],
+        permit: Option<&super::vault::ErasurePermit>,
+    ) -> io::Result<Durability> {
         self.ready()?;
         let pending = self.read("keys.pending", pending_passphrase)?;
         if self.exists("keys.sealed")? {
             let current = self.read("keys.sealed", committed_passphrase)?;
             same_identity(&current, &pending)?;
-            // Recovery cannot manufacture erasure authorization. A transaction
-            // containing new tombstones requires a future permit-aware recovery.
+            // Generic recovery cannot manufacture erasure authorization. New
+            // tombstones require the exact issuer permit in the typed variant.
             super::vault::validate_update(
                 current.vault(),
                 pending.vault().unwrap_or_default(),
-                false,
+                permit,
             )
             .map_err(crypto)?;
         }
@@ -204,6 +226,60 @@ impl Custody {
             self.poisoned = false;
         }
         result
+    }
+    /// Exact currently committed encrypted generation identity for a signed
+    /// rotation proposal. Never logs or returns the plaintext key material.
+    pub fn committed_digest(&self) -> io::Result<String> {
+        use sha2::{Digest, Sha256};
+        self.ready()?;
+        let file = permissions::existing(&self.dir.join("keys.sealed"), false)?;
+        permissions::file(&file, &self.owner)?;
+        let mut bytes = Vec::new();
+        file.take(LIMIT as u64 + 1).read_to_end(&mut bytes)?;
+        if bytes.len() > LIMIT {
+            return Err(crypto(super::KeyError::SizeLimit));
+        }
+        Ok(hex::encode(Sha256::digest(bytes)))
+    }
+    /// Operational rotation consumes two signed approvals bound to the exact
+    /// current ciphertext digest before re-encrypting the unchanged identity.
+    pub fn rotate_approved(
+        &mut self,
+        authority: &mut crate::control::ControlAuthority,
+        request: crate::control::ApprovalRequest<'_>,
+        old_passphrase: &[u8],
+        new_passphrase: &[u8],
+    ) -> io::Result<(Durability, crate::control::ControlReceipt)> {
+        use crate::control::{Action, target_commitment};
+        let material = self.read("keys.sealed", old_passphrase)?;
+        super::check_passphrase(new_passphrase, false).map_err(crypto)?;
+        if request.proposal.action != Action::RotatePassphrase
+            || request.proposal.target != target_commitment(self.committed_digest()?.as_bytes())
+        {
+            return Err(io::Error::other("rotation generation binding mismatch"));
+        }
+        let receipt = authority.consume(request.proposal, request.approvals, request.now)?;
+        let durability = self.replace(&material, old_passphrase, new_passphrase)?;
+        Ok((durability, receipt))
+    }
+    /// Consume two signed approvals, remove only their exact scoped subject,
+    /// and persist the encrypted tombstone before returning completion.
+    /// Backup retirement is deliberately separate and never inferred here.
+    pub fn erase_approved(
+        &mut self,
+        vault: &Vault,
+        passphrase: &[u8],
+        authority: &mut crate::control::ControlAuthority,
+        request: crate::control::ApprovalRequest<'_>,
+        subject: &str,
+    ) -> io::Result<(Durability, crate::control::ControlReceipt)> {
+        self.ready()?;
+        self.read("keys.sealed", passphrase)?;
+        let (permit, receipt) =
+            authority.issue_erasure(request.proposal, request.approvals, request.now, subject)?;
+        vault.shred(subject, &permit).map_err(crypto)?;
+        let durability = self.persist_erasure(vault, passphrase, &permit)?;
+        Ok((durability, receipt))
     }
     fn commit(&mut self, material: &KeyMaterial, passphrase: &[u8]) -> io::Result<Durability> {
         let sealed = seal(material, passphrase).map_err(crypto)?;
