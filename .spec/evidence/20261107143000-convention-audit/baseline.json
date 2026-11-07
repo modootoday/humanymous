@@ -1929,5 +1929,14 @@
     "source_join": "3117tar/Git/before/currentextracted0issues;3143sourceclosureincludes26nonSource;5594registry+9envsnapshotsbyteequal",
     "scope": "Runnerfmt/checkClippy +Platformalltargetallfeaturecheck only; noPlatformfmtClippy/nativefixture/Trivy/full61/productclaim",
     "goal_complete": false
+  },
+  "tools_identity_contract_review": {
+    "source": "d9d072cb8211d7263c19eff7d5d9cff2ef535fb7",
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-identity-contract-review-001.json",
+    "sha256": "b5dbf22b134f6735587e89dd2c5e74b874c9cff99069b0a28410c185953a027f",
+    "bytes": 2922,
+    "state": "P2 pre-freeze cross-proposal reconciliation OPEN:12/29 versus10/27 pending Root real-filesystem-case ownership decision",
+    "verified": "33oldkeys exact0.1;33newidentitiesunique;8sourcehashsize/functions match;23integration+10realfilesystem cases conditional",
+    "goal_complete": false
   }
 }

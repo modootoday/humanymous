@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: e8b57423e2d1338bdeb414eb499563088a7c528292daa9da176a3c16368d311d, bytes: 106602, store: repo}
+  - {path: baseline.json, sha256: fc8aafcc5502d978e9f71b43d76a609aa345e2d5bfc118c9a9dc4c4767576550, bytes: 107221, store: repo}
 ---
 
 # Convention audit baseline
@@ -1597,3 +1597,33 @@ bytes were not comprehensively rehashed by audit. No new workload was launched.
 This is a source-bound pure selector regression/compile result only. Earlier
 Native authority/lifetime/archive loading findings and whole migration gates
 remain OPEN. Exact private review and archive-join hashes are in baseline.json.
+
+## Tools test identity pre-freeze reconciliation finding
+
+At d9d072cb the four reviewed plan/map inputs were preserved privately and
+matched to exact Git blobs. CLI plan20261107224511 and tools-linkage-map retain
+maintenance-session-storage and maintenance-selected-inputs as integration roots,
+with12 integrations/29 compiled roots. Delivery maintenance-identity-proposal
+moves their10 real owned-filesystem cases into the owning maintenance binary.
+If accepted this yields6 maintenance integrations,10 total integrations and27
+compiled roots (one lib,15 bins,10 integration roots,one example).
+
+P2 pre-freeze reconciliation is OPEN: Root must explicitly decide the filesystem
+case relocation and reconcile CLI prose/machine map, final target counts and
+versioned profile together. Neither empty retained integration targets nor
+duplicate cases may preserve obsolete counts. Both inputs are unimplemented
+proposals, so this is not a shipped execution defect. Root, CLI and Delivery
+were notified; Delivery acknowledged that its relocation still requires Root
+approval and cannot be relabeled pure/no-I/O.
+
+Independent identity check confirms all33 old (target,test) pairs exactly equal
+profile0.1;33 proposed identities are unique, all8 source hashes/sizes and declared
+function lines match. Proposed split23 integration cases plus10 owning-bin cases
+preserves real filesystem/provider/symlink/claim/journal/lock obligations. The
+complete new bin inventory including preexisting library units still must be
+frozen and actually executed;33 mapped cases are not its total unit inventory.
+
+No source/Cargo/path/profile move or workload was performed. Expanded resource/
+Collector source ownership, safe-root/actor isolation, feature/release/native-role
+controls and entire migration qualification remain OPEN. Exact source and private
+review hashes are in baseline.json.
