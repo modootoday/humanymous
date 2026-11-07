@@ -14,6 +14,15 @@ rel:
 
 # Rust migration conventions
 
+## Provisioned adapter validation integration
+
+Shared integrity exposes parse_for with exact provisioned identity/version and
+read-only observation getters. Legacy parse remains Node-only. Protocol0.1
+schema/body/framing/provenance and null capture/stream restrictions stay fixed;
+new nginx header modes remain pending. Local integrity12unit+3legacy parity,
+authority3unit and strict Clippy passed. The source-bound receipt is
+adapter-provisioned-results.json in evidence:root/20261106235519.
+
 Guard baseline capture now feeds partial measured fields into BrowserCollector
 snapshots, sharing the pure Epoch rather than duplicating counters/lifecycle.
 Native19 and actual isolated Firefox34 pass; native-toString text is transient
