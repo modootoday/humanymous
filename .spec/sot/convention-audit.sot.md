@@ -2527,3 +2527,20 @@ raw worktree/Git equality, and its baseline envelope reproduces from Git. These
 checks establish metadata-byte reproducibility only; embedded native/product
 qualification remains at its separately recorded scope. Journal transition
 refinement and entire migration/product/consumer verification stay OPEN.
+
+## Journal replay grammar P2 source-design closure
+
+Owner fix5bdbd0c9 was independently re-read as a committed diff and current raw
+file was matched to its exact Git blob8c78d4f75fa78483b4fcf7d4a977d0f61d4d009d.
+The global pending-transaction and per-attempt tables are exhaustive; all unlisted
+orders quarantine while preserving prior claims. Immediate exact commit rules,
+Unknown local idempotence without another append, duplicate physical Unknown
+refusal, and journal-I/O poison versus target-I/O uncertainty are explicit. All
+requested invalid-order cases are included in planned table-driven tests8..10.
+
+The requested P2 replay-grammar design refinement is CLOSED at source scope.
+Codec source and its12 actual tests remain NOT_RUN; no native identity, ACK,
+budget, cleanup or Ready can be manufactured from replay DATA. The separate
+Platform amendment, actual installer/genesis/provider/native8 and full product
+qualification remain OPEN. Earlier critique and initial source hashes remain
+retained rather than being overwritten by the fix.

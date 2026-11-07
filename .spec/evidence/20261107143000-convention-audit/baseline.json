@@ -1902,5 +1902,13 @@
     "index": "Manifestrowisoriginalnormalizedindex exception;finalindexseparatelyverified; initialcomparisonandclassificationbothretained",
     "selected": "Runtime7CLI1Lab52=60Gitattachments0mismatch; own4e4d77ad9rawGit/worktreeequalandbaselineenvelopereproduces",
     "goal_complete": false
+  },
+  "journal_grammar_source_closure": {
+    "source": "5bdbd0c99071820b88bb4de43fdf472a37758d12",
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/journal-grammar-source-closure-002.json",
+    "sha256": "184c779d60e5cf9585ee5f4ace8fbfd18158ee860ed873da86058035cc7cf207",
+    "bytes": 1452,
+    "state": "P2source-designrefinementCLOSED;codeand12testsNOT_RUN;nativeandproductOPEN",
+    "goal_complete": false
   }
 }
