@@ -2,7 +2,7 @@
 #[path = "package/projection.rs"]
 mod projection;
 mod support;
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::process::capture_with_stderr;
 use serde::Deserialize;
 use serde_json::{Value, json};
 use std::{

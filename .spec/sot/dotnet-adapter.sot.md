@@ -12,6 +12,21 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## PLATFORM-SLICE-02 test consumer source handoff
+
+Root assigned four mechanical test imports from humanymous_test_support to
+humanymous_platform::testing: tests/package.rs and hosted/generic.rs consume
+process::capture_with_stderr; hosted/launch.rs consumes parent_context;
+hosted/retained.rs consumes process ownership APIs. No windows-object-bridge
+identifier matched these tests, so no artificial replacement was made.
+No old test-support/object-bridge identifier remains in the assigned Rust tests.
+Exact source paths/SHA256/bytes are recorded in private20261108053000 handoff.
+The existing verified codex/rust-dotnet-goal claim already covers all four tests
+and this SoT; its active record was preserved without forcing a replacement.
+No manifests, file moves, C#, ABI, behavior, authority, visibility or unsafe policy
+changed. Only diff checks ran; fmt/compiler/unit/Clippy/CI await root's coherent
+graph allocation. Earlier immutable receipts retain their original identities.
+
 ## CORE-SLICE-01 consumer source handoff
 
 Fixture follow-up: the three hosted.rs include_str paths now use the actual

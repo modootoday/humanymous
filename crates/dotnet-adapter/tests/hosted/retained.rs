@@ -1,6 +1,6 @@
 //! L4 consumer of the sole shared interactive owner. No spawn or admission API.
 use super::protocol::{Control, Frame, Ingress};
-use humanymous_test_support::process::{
+use humanymous_platform::testing::process::{
     EnqueueResult, InteractiveAttempt, InteractiveProgress, SettledInteractiveChild, Stream,
 };
 use serde_json::Value;

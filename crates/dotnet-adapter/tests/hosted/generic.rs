@@ -1,5 +1,5 @@
 //! Separate generic ABI-only caller using the shared bounded child owner.
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::process::capture_with_stderr;
 use serde::Deserialize;
 use std::{
     collections::BTreeSet,

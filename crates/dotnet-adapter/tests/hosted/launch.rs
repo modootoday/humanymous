@@ -1,5 +1,5 @@
 //! Pure consumer of the shared UNVERIFIED parent wire. No Command or OS IO.
-use humanymous_test_support::parent_context::{
+use humanymous_platform::testing::parent_context::{
     self, UnverifiedLaunch, UnverifiedMappedBudget, UnverifiedParentContext, WireError,
 };
 use sha2::{Digest, Sha256};
