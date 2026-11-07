@@ -303,6 +303,24 @@ the separately reviewed shared owned-lifetime contract from test-support/native
 security owners; no duplicate ad hoc containment may replace that contract.
 Receipt/provenance pure verification remains a separate possible work item.
 
+The next ASGI server slice uses a host-pilot-only Rust factory through an upstream
+server's factory interface. It reuses the same bounded private factory request,
+strict original configuration string and minimized effect writer as WSGI.
+Starlette/FastAPI mount a native ASGI binary echo origin through their public
+mount API; this exercises framework ASGI routing/middleware, not FastAPI parameter
+validation or dependency injection. Django uses its standard ASGI application
+with the shared native Django view. The outer production Asgi adapter remains
+the only policy/authority boundary. Native async origin callbacks reuse the
+owning-loop scheduler, with bounded buffered input and binary201/two-cookie
+responses. No Python source/eval/template is authored. A candidate server must
+be pinned and its actual HTTP, lifespan, partial-body and disconnect behavior
+verified separately under the reviewed lifecycle contract. Keep-alive timeout
+is not a total request-body deadline. No source-only factory qualifies any of
+these runtime requirements; framework-mount scope stays explicit in receipts.
+Primary references: https://uvicorn.dev/settings/ ;
+https://uvicorn.dev/server-behavior/ ;
+https://fastapi.tiangolo.com/advanced/sub-applications/ .
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

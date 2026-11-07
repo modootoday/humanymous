@@ -99,3 +99,19 @@ All2254 source-file hashes and reused dependency-file hashes stayed unchanged.
 Owned cleanup found no task processes; allocation B returned. These later results
 supersede the historical NOT_RUN statements for this WSGI component only; ASGI,
 wheel clean installation and hosted qualification remain separate pending gates.
+
+The host-pilot-only pilot_asgi factory is authored in Rust, not compiled or run.
+It reuses bounded private factory input, minimized effect writer, owning-loop
+async scheduler and the existing production Asgi guard. Starlette/FastAPI mount
+a native binary echo ASGI origin via public APIs; this scope covers ASGI routing/
+middleware, not FastAPI parameter validation or dependency injection. Django
+uses its standard ASGI application and the shared native Django view. The factory
+refactor also changes WSGI fixture source; summary010 remains bound to historical
+7842b6a8 and does not qualify the new bytes. Actual ASGI server/version, HTTP/
+disconnect/deadline/lifespan cases and shared lifecycle verification remain open.
+
+The dedicated workflow's runner.temp target expression now appears only in step
+env maps, after actionlint rejected the original workflow-level context. Direct
+actionlint passes after correction. The controller still refuses execution as
+NOT_ACCEPTED until the shared atomic owned-lifetime API is reviewed. Neither
+actionlint nor source formatting is compilation or runtime evidence.

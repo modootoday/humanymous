@@ -423,3 +423,20 @@ before setup/runtime; cleanup observations remain NOT_ACCEPTED. Reuse the
 shared test-support/native-security owner's reviewed lifetime API before any
 controller execution. Static receipt/provenance pure work can remain separate.
 The existing immutable WSGI28-case success is unchanged. No new workload runs.
+
+### Independent ASGI factory source and workflow syntax correction
+
+While shared lifecycle work remains unresolved, authored host-pilot-only
+pilot_asgi with Rust-native binary echo/cookies/effect behavior. It reuses the
+same private input reader and effect writer, native Django view and owning-loop
+callback scheduler. Starlette/FastAPI explicitly cover mounted ASGI routing and
+middleware, not parameter/DI validation. No server/package installation or
+actual execution occurred. Common fixture refactoring changes WSGI source;
+the historical7842b6a8 proof does not qualify it. Factory compilation and actual
+ASGI server/lifecycle/HTTP gates remain NOT_RUN.
+
+CI owner's static actionlint found runner.temp invalid in workflow-level env.
+Moved the exclusive target expression into each of three run-step env maps.
+Direct actionlint returned0 with no diagnostics. No controller ran and the
+NOT_ACCEPTED guard is unchanged. Formatting passed; source checkpoint and an
+explicit allocated Unix compile/parser-only verification remain next steps.

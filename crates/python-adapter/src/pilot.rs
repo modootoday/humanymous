@@ -10,7 +10,7 @@ use std::{
     path::PathBuf,
 };
 
-fn effect(path: &PathBuf, body: &[u8]) -> PyResult<()> {
+pub(super) fn effect(path: &PathBuf, body: &[u8]) -> PyResult<()> {
     let mut file = std::fs::OpenOptions::new()
         .create(true)
         .append(true)
@@ -65,9 +65,12 @@ impl DjangoView {
     }
 }
 
-/// Upstream WSGI server --call factory, configured through bounded private stdin.
-#[pyfunction]
-pub fn pilot_wsgi(py: Python<'_>) -> PyResult<Py<PyAny>> {
+pub(super) struct Request {
+    pub options: String,
+    pub effect_file: PathBuf,
+    pub framework: String,
+}
+pub(super) fn request() -> PyResult<Request> {
     if std::env::var("HUMANYMOUS_HOSTED_NATIVE_PILOT").as_deref() != Ok("1") {
         return Err(failure(
             "explicit hosted native factory provisioning required",
@@ -96,8 +99,51 @@ pub fn pilot_wsgi(py: Python<'_>) -> PyResult<Py<PyAny>> {
     if !effect_file.is_absolute() {
         return Err(failure("absolute owned effect path required"));
     }
-    let app = match request["framework"].as_str() {
-        Some("flask") => {
+    Ok(Request {
+        options: options.into(),
+        effect_file,
+        framework: request["framework"]
+            .as_str()
+            .ok_or_else(|| failure("framework required"))?
+            .into(),
+    })
+}
+
+pub(super) fn django<'py>(
+    py: Python<'py>,
+    effect_file: PathBuf,
+    asgi: bool,
+) -> PyResult<Bound<'py, PyAny>> {
+    let urls = PyModule::new(py, "humanymous_owned_pilot_urls")?;
+    let route = py
+        .import("django.urls")?
+        .call_method1("path", ("api", Py::new(py, DjangoView { effect_file })?))?;
+    urls.add("urlpatterns", PyList::new(py, [route])?)?;
+    let settings = py.import("django.conf")?.getattr("settings")?;
+    if settings.getattr("configured")?.extract::<bool>()? {
+        return Err(failure("fresh Django pilot process required"));
+    }
+    let kwargs = PyDict::new(py);
+    kwargs.set_item("SECRET_KEY", "nonsecret-owned-native-fixture")?;
+    kwargs.set_item("ALLOWED_HOSTS", vec!["example.test"])?;
+    kwargs.set_item("ROOT_URLCONF", urls)?;
+    settings.call_method("configure", (), Some(&kwargs))?;
+    if asgi {
+        py.import("django.core.asgi")?
+            .call_method0("get_asgi_application")
+    } else {
+        py.import("django.core.wsgi")?
+            .call_method0("get_wsgi_application")
+    }
+}
+
+/// Upstream WSGI server --call factory, configured through bounded private stdin.
+#[pyfunction]
+pub fn pilot_wsgi(py: Python<'_>) -> PyResult<Py<PyAny>> {
+    let request = request()?;
+    let effect_file = request.effect_file;
+    let app = match request.framework.as_str() {
+        "flask" => {
             let app = py
                 .import("flask")?
                 .getattr("Flask")?
@@ -109,28 +155,11 @@ pub fn pilot_wsgi(py: Python<'_>) -> PyResult<Py<PyAny>> {
             app.call_method("add_url_rule", ("/api",), Some(&kwargs))?;
             app
         }
-        Some("django") => {
-            let urls = PyModule::new(py, "humanymous_owned_pilot_urls")?;
-            let route = py
-                .import("django.urls")?
-                .call_method1("path", ("api", Py::new(py, DjangoView { effect_file })?))?;
-            urls.add("urlpatterns", PyList::new(py, [route])?)?;
-            let settings = py.import("django.conf")?.getattr("settings")?;
-            if settings.getattr("configured")?.extract::<bool>()? {
-                return Err(failure("fresh Django pilot process required"));
-            }
-            let kwargs = PyDict::new(py);
-            kwargs.set_item("SECRET_KEY", "nonsecret-owned-native-fixture")?;
-            kwargs.set_item("ALLOWED_HOSTS", vec!["example.test"])?;
-            kwargs.set_item("ROOT_URLCONF", urls)?;
-            settings.call_method("configure", (), Some(&kwargs))?;
-            py.import("django.core.wsgi")?
-                .call_method0("get_wsgi_application")?
-        }
+        "django" => django(py, effect_file, false)?,
         _ => return Err(failure("unsupported WSGI pilot framework")),
     };
     py.import("humanymous_python")?
         .getattr("Wsgi")?
-        .call1((app, options))
+        .call1((app, request.options))
         .map(Bound::unbind)
 }

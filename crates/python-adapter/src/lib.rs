@@ -7,6 +7,8 @@ mod async_call;
 mod hosted;
 #[cfg(feature = "host-pilot")]
 mod pilot;
+#[cfg(feature = "host-pilot")]
+mod pilot_asgi;
 #[cfg(feature = "native")]
 mod wsgi;
 #[cfg(feature = "native")]
@@ -25,6 +27,8 @@ fn humanymous_python(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(capabilities, module)?)?;
     #[cfg(feature = "host-pilot")]
     module.add_function(wrap_pyfunction!(pilot::pilot_wsgi, module)?)?;
+    #[cfg(feature = "host-pilot")]
+    module.add_function(wrap_pyfunction!(pilot_asgi::pilot_asgi, module)?)?;
     Ok(())
 }
 

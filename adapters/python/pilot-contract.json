@@ -9,6 +9,11 @@
   "mandatoryGates": ["shared-framework-pure", "native-feature-compile", "host-pilot-all-required-groups", "actual-http-server-authority-audit-effect", "installed-wheel-native-import"],
   "buildFeatures": ["host-pilot"],
   "source": "crates/python-adapter/src/hosted.rs",
+  "asgiServerFactorySource": "crates/python-adapter/src/pilot_asgi.rs",
+  "asgiServerFactory": "humanymous_python:pilot_asgi",
+  "asgiServerFactoryStatus": "authored-not-compiled-or-executed",
+  "asgiServerFactoryScope": "Starlette/FastAPI public ASGI mount routing/middleware; Django standard ASGI application with native view; not FastAPI parameter validation or dependency injection",
+  "asgiServerLifecycleStatus": "requires-reviewed-shared-owned-lifetime-contract",
   "requiredGroups": [
     {"id": "hosted::wsgi_real_frameworks_dependency_failure_has_no_origin_effect", "cases": 2, "frameworks": ["Flask", "Django"], "expectedStatus": 503, "expectedOriginEffects": 0},
     {"id": "hosted::asgi_real_frameworks_dependency_failure_has_no_origin_effect", "cases": 3, "frameworks": ["Starlette", "FastAPI", "Django"], "expectedStatus": 503, "expectedOriginEffects": 0},

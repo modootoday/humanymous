@@ -13,7 +13,6 @@ concurrency:
 env:
   CARGO_BUILD_JOBS: '1'
   CARGO_INCREMENTAL: '0'
-  CARGO_TARGET_DIR: ${{ runner.temp }}/python-component-target
   PYO3_PYTHON: /usr/bin/python3
   PYTHONDONTWRITEBYTECODE: '1'
   DOCKER_BUILD_RECORD_UPLOAD: 'false'
@@ -32,12 +31,18 @@ jobs:
         toolchain: 1.99.1
         components: clippy
     - name: Reject incomplete component receipts
+      env:
+        CARGO_TARGET_DIR: ${{ runner.temp }}/python-component-target
       run: cargo test --locked -p humanymous-python-adapter --features host-pilot --test component_controller
     - name: Run owned Rust controller and all 28 WSGI cases
       id: pilot
       timeout-minutes: 45
+      env:
+        CARGO_TARGET_DIR: ${{ runner.temp }}/python-component-target
       run: cargo test --locked -p humanymous-python-adapter --features host-pilot --test component_controller -- --exact coordinate --ignored --nocapture --test-threads=1
     - name: Clean recorded owned task group
       if: ${{ always() && steps.pilot.outcome != 'skipped' && steps.pilot.outcome != '' }}
       timeout-minutes: 3
+      env:
+        CARGO_TARGET_DIR: ${{ runner.temp }}/python-component-target
       run: cargo test --locked -p humanymous-python-adapter --features host-pilot --test component_controller -- --exact coordinate_cleanup --ignored --nocapture --test-threads=1
