@@ -34,6 +34,7 @@ mod generator {
             "HUMANYMOUS_APU_INCLUDE",
             "HUMANYMOUS_CLANG_LIBRARY",
             "LIBCLANG_PATH",
+            "HUMANYMOUS_APACHE_ABI_RECEIPT",
         ] {
             println!("cargo:rerun-if-env-changed={name}");
         }
@@ -150,5 +151,17 @@ mod generator {
             serde_json::to_vec_pretty(&receipt).expect("ABI receipt JSON"),
         )
         .expect("write ABI receipt");
+        if let Some(path) = std::env::var_os("HUMANYMOUS_APACHE_ABI_RECEIPT") {
+            let path = PathBuf::from(path);
+            assert!(
+                path.is_absolute(),
+                "absolute owned ABI receipt output required"
+            );
+            std::fs::write(
+                path,
+                serde_json::to_vec_pretty(&receipt).expect("ABI receipt JSON"),
+            )
+            .expect("export ABI receipt");
+        }
     }
 }

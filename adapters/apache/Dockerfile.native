@@ -17,6 +17,10 @@ RUN make -j2
 RUN make install
 WORKDIR /src
 COPY . /src
+ARG HUMANYMOUS_SOURCE_REV
+ARG HUMANYMOUS_SOURCE_MANIFEST_SHA256
+ENV HUMANYMOUS_SOURCE_REV=$HUMANYMOUS_SOURCE_REV
+ENV HUMANYMOUS_SOURCE_MANIFEST_SHA256=$HUMANYMOUS_SOURCE_MANIFEST_SHA256
 ENV CARGO_BUILD_JOBS=1
 ENV CARGO_INCREMENTAL=0
 ENV RUSTUP_TOOLCHAIN=1.99.1
@@ -29,9 +33,11 @@ RUN rustup component add clippy --toolchain 1.99.1
 RUN cargo test --locked -p humanymous-apache-adapter --lib
 RUN cargo clippy --locked -p humanymous-apache-adapter --all-targets -- -D warnings
 # Native package registration is owned by root and is a prerequisite for these.
-RUN cargo build --locked --release -p humanymous-apache-native --features httpd --lib
+RUN mkdir /out
+RUN HUMANYMOUS_APACHE_ABI_RECEIPT=/out/apache-abi-production.json cargo build --locked --release -p humanymous-apache-native --features httpd --lib
 RUN cargo clippy --locked -p humanymous-apache-native --features httpd --lib -- -D warnings
 RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_native.so
+RUN install -D /out/apache-abi-production.json /opt/httpd/modules/apache-abi-production.json
 RUN cargo build --locked --release -p humanymous-apache-native --features httpd,pilot-probes --lib
 RUN cargo clippy --locked -p humanymous-apache-native --features httpd,pilot-probes --lib -- -D warnings
 RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_probe.so

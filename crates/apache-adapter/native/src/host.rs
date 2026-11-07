@@ -514,7 +514,14 @@ extern "C" fn guard(request: *mut request_rec) -> c_int {
         if unsafe { ap_setup_client_block(request, REQUEST_CHUNKED_ERROR as _) } != 0 {
             return Err(());
         }
-        if unsafe { ap_should_client_block(request) } != 0 {
+        // Preserve the host input cursor for the original content handler.
+        // Expect/transfer coding were rejected above; do not invoke the
+        // one-shot ap_should_client_block on behalf of that handler.
+        let (remaining, read_length) = unsafe { ((*request).remaining, (*request).read_length) };
+        if remaining != i64::try_from(length).map_err(|_| ())? || read_length != 0 {
+            return Err(());
+        }
+        if length != 0 {
             let mut buffer = [0u8; 8192];
             loop {
                 input_timeout.limit(&pending)?;
@@ -551,8 +558,7 @@ extern "C" fn guard(request: *mut request_rec) -> c_int {
         pending.check_handoff(response.expires()).map_err(|_| ())?;
         match response.verdict() {
             Verdict::Allow => {}
-            Verdict::Deny => return Ok(403),
-            Verdict::Challenge => return Ok(403),
+            Verdict::Deny | Verdict::Challenge => return Ok(403),
         }
         owned.remaining().map_err(|_| ())?;
         // Strip spoofed authority headers from the application view too.
@@ -585,6 +591,11 @@ extern "C" fn guard(request: *mut request_rec) -> c_int {
                 Some(apr_pool_cleanup_null),
             );
             *vector.cast::<*mut c_void>().add(index()?) = value.cast();
+            // Only the bounded replay filter may now supply this complete body.
+            // Restore the exact pre-read cursor; lower native input is never
+            // consulted by our supported filter modes.
+            (*request).remaining = remaining;
+            (*request).read_length = read_length;
             if ap_add_input_filter(FILTER.as_ptr(), value.cast(), request, connection).is_null() {
                 return Err(());
             }

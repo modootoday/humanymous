@@ -89,3 +89,11 @@ Ordinary and test-probe modules have distinct filenames/hashes;39cases target
 the ordinary module and6nested-request cases use explicit test-only probe builds.
 Unreached cases remain not_run rather than reducing the denominator. Native
 registration remains queued to root's next lock-integration window.
+
+Root opened that graph window and approved the owned native manifest, now authored
+and frozen. Default features are empty; generated bindings and host bridge both
+require explicit httpd. Optional pilot does not invoke bindgen. Root alone adds
+the workspace member and updates lock; no native Cargo invocation occurred here.
+Build source now exports its generated ABI receipt, and the pilot's source SHA
+and source-manifest SHA are embedded at compile time. Actual inspected image ID
+is supplied by the trusted hosted runner and must match its external receipt.

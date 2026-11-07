@@ -17,6 +17,12 @@ pub struct Service {
     pub credential: String,
     task: tokio::task::JoinHandle<std::io::Result<()>>,
 }
+impl Service {
+    pub async fn stop(&mut self) {
+        self.task.abort();
+        let _ = (&mut self.task).await;
+    }
+}
 impl Drop for Service {
     fn drop(&mut self) {
         self.task.abort();

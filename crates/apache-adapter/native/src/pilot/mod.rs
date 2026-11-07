@@ -111,13 +111,13 @@ fn ensure(value: bool, label: &'static str) -> Result<(), Error> {
 fn hash(path: &Path) -> Result<String, Error> {
     Ok(format!("{:x}", Sha256::digest(std::fs::read(path)?)))
 }
-fn source_value(name: &str, size: usize) -> Result<String, Error> {
-    let value = std::env::var(name)?;
+fn source_value(value: Option<&str>, size: usize) -> Result<String, Error> {
+    let value = value.ok_or("source identity must be embedded at build time")?;
     ensure(
         value.len() == size && value.bytes().all(|b| b.is_ascii_hexdigit()),
         "source identity required",
     )?;
-    Ok(value)
+    Ok(value.to_owned())
 }
 fn request(
     port: u16,
@@ -250,7 +250,7 @@ fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
         .worker_threads(2)
         .enable_all()
         .build()?;
-    let service = runtime.block_on(authority::start(&base))?;
+    let mut service = runtime.block_on(authority::start(&base))?;
     let origin = origin::Origin::start()?;
     let private = base.join("private.json");
     let config = serde_json::json!({"installation":"apache","tenant":"t","origin":"o","revision":"r","endpoint":base.join("decision.sock"),
@@ -282,7 +282,10 @@ fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
             "X-Humanymous-Allow: forged\r\nX-Forwarded-For: forged\r\n",
         )?;
         ensure(
-            status == 200 && headers.contains("X-Pilot-Spoof-Present: 0"),
+            status == 200
+                && headers
+                    .to_ascii_lowercase()
+                    .contains("x-pilot-spoof-present: 0"),
             "spoof stripping",
         )
     });
@@ -374,6 +377,7 @@ fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
             "production missing capability",
         )
     });
+    runtime.block_on(service.stop());
     drop(service);
     case(cases, mpm, "authority-outage", || {
         let before = origin.count.load(Ordering::Acquire);
@@ -410,12 +414,23 @@ pub fn run() -> Result<(), Error> {
         rustix::process::geteuid().as_raw() != 0,
         "non-root pilot required",
     )?;
-    let source = source_value("HUMANYMOUS_SOURCE_REV", 40)?;
-    let source_manifest = source_value("HUMANYMOUS_SOURCE_MANIFEST_SHA256", 64)?;
+    let source = source_value(option_env!("HUMANYMOUS_SOURCE_REV"), 40)?;
+    let source_manifest = source_value(option_env!("HUMANYMOUS_SOURCE_MANIFEST_SHA256"), 64)?;
+    let image = std::env::var("HUMANYMOUS_APACHE_IMAGE")?;
+    ensure(
+        image
+            .strip_prefix("sha256:")
+            .is_some_and(|value| value.len() == 64 && value.bytes().all(|b| b.is_ascii_hexdigit())),
+        "actual inspected image digest required",
+    )?;
+    let version = Command::new("/opt/httpd/bin/httpd").arg("-V").output()?;
+    ensure(version.status.success(), "httpd version observation")?;
+    let version = String::from_utf8(version.stdout)?;
+    ensure(version.contains("Apache/2.4.70"), "pinned engine version")?;
     let mut cases = Vec::new();
     for mpm in ["event", "worker", "prefork"] {
         if suite(mpm, &mut cases).is_err() {
-            cases.push(serde_json::json!({"id":format!("{mpm}/startup"),"mpm":mpm,"name":"startup","result":"failed"}));
+            cases.push(serde_json::json!({"id":format!("{mpm}/infrastructure"),"mpm":mpm,"name":"suite-infrastructure","result":"failed"}));
         }
         for name in CASES {
             let id = format!("{mpm}/{name}");
@@ -438,10 +453,11 @@ pub fn run() -> Result<(), Error> {
         .count();
     let report = serde_json::json!({"schema":"humanymous.apache.pilot/0.1","status":if failed==0&&not_run==0{"passed"}else{"incomplete"},
         "qualification":"actual-httpd/shared-authority-WAL; synthetic frozen ALLOW fixture; component only",
-        "sourceCommit":source,"sourceManifestSha256":source_manifest,"moduleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_native.so"))?,
+        "sourceCommit":source,"sourceManifestSha256":source_manifest,"imageDigest":image,"moduleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_native.so"))?,
         "probeModuleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_probe.so"))?,
-        "httpdSha256":hash(Path::new("/opt/httpd/bin/httpd"))?,"cases":cases,"passed":passed,"failed":failed,"not_run":not_run,
-        "fullProductSuccess":false,"cleanupObserved":cases.iter().filter(|case|case["name"]=="cleanup"&&case["result"]=="passed").count()==3});
+        "httpdSha256":hash(Path::new("/opt/httpd/bin/httpd"))?,"abiReceiptSha256":hash(Path::new("/opt/httpd/modules/apache-abi-production.json"))?,
+        "engineVersionObservation":version,"cases":cases,"requiredScenarioCount":45,"passed":passed,"failed":failed,"not_run":not_run,
+        "fullProductSuccess":false,"cleanupObserved":failed==0&&cases.iter().filter(|case|case["name"]=="cleanup"&&case["result"]=="passed").count()==3});
     println!("{}", serde_json::to_string(&report)?);
     ensure(
         failed == 0 && not_run == 0,

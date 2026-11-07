@@ -1,0 +1,59 @@
+[package]
+name = "humanymous-apache-native"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+httpd = [
+  "dep:humanymous-framework-adapter", "dep:humanymous-authority",
+  "dep:humanymous-integrity", "dep:tokio", "dep:zeroize", "dep:rustix",
+  "dep:bindgen", "dep:sha2", "dep:serde_json",
+]
+pilot = [
+  "dep:humanymous-framework-adapter", "dep:humanymous-authority",
+  "dep:humanymous-integrity", "dep:humanymous-audit", "dep:humanymous-signals",
+  "dep:tokio", "dep:rustix", "dep:serde_json", "dep:sha2", "dep:hex", "dep:getrandom",
+]
+pilot-probes = ["httpd"]
+
+[dependencies]
+humanymous-apache-adapter = { path = ".." }
+humanymous-framework-adapter = { path = "../../framework-adapter", optional = true }
+humanymous-authority = { path = "../../authority", optional = true }
+humanymous-integrity = { path = "../../integrity", optional = true }
+humanymous-audit = { path = "../../audit", optional = true }
+humanymous-signals = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
+zeroize = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+sha2 = { workspace = true, optional = true }
+hex = { workspace = true, optional = true }
+getrandom = { workspace = true, optional = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+rustix = { version = "1.1", features = ["fs", "process"], optional = true }
+
+[build-dependencies]
+bindgen = { version = "=0.73.2", optional = true }
+sha2 = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+
+[[bin]]
+name = "humanymous-apache-pilot"
+path = "src/bin/pilot.rs"
+required-features = ["pilot"]
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"
