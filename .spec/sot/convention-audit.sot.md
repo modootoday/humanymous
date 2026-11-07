@@ -1460,3 +1460,26 @@ confirmed P0/P1; actual effective Cargo graph, artifact and consumer gates remai
 OPEN. Historical Go8 receipts are not inherited. Private exact review hashes are
 in baseline.json. CLI actual regression, CA-HANDOFF, CA-LIFETIME, native/Ready,
 full Docker product proof and the complete migration audit remain OPEN.
+
+## Exact-source Delivery proof and CLI closure gap
+
+Delivery c3d81a7c actual107pure tests/zero failed,ignored,filtered and check/
+strictClippy/fmt/policy0 are independently corroborated by40 indexed attachments.
+Saved source.tar equals literal Git archive bytes; all2892 regular members join
+before-manifest paths/hashes. After2919rows add exactly27 .git metadata leaves,
+with zero changed original rows. Registry5128/tools4/config20 paired hashes and
+later retained leaves are unchanged; environment bytes match. The first comparator
+failure remains preserved. This is scoped component proof, not hosted actions,
+historical annotation cause resolution or private Header-parent qualification.
+
+CLI d395 receipt for f20 has24 matching attachments, Git-identical ZIP parts,
+actual11passed/0failed/ignored/15filtered and fmtFIRST/check/strictClippy0. However,
+the6674 before/after rows contain only three root workspace files, five compiler
+binaries and registry trees. All16 selected local package sources/manifests are
+missing. Equal snapshots therefore do NOT prove the extracted executed source
+was immutable. CA-CLI-INPUT-01 actual exact-source closure stays HOLD. Owner/root
+were notified; existing separate immediate evidence may resolve it, otherwise a
+future root-admitted run needs reachable local-source closure. Later source rehash
+cannot be relabeled immediate-before/after. No rerun or new lease was allocated.
+Private review001's premature closure inference is preserved and superseded by002.
+The public baseline binds exact reviews; complete migration qualification is OPEN.
