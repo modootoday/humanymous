@@ -1989,3 +1989,8 @@ refused missing security disclosure with exit 1 before archive/manifest/restore
 creation. No historical artifact repair. Selected post-execution input hashes
 recorded, not a full immutable closure. D returned; complete build/archive and
 browser/AT still pending. First 35/1 failure remains independently attached.
+
+Evidence attachment correction: ConvertTo-Json contained CRLF internally; Git's
+LF normalization changed committed bytes. Normalized both authored archive status
+JSONs explicitly to LF and reattached their exact canonical bytes. Raw execution
+logs and historical result counts remain unchanged. Scoped spec check passed.

@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T10:41:46Z
+updated: 2026-11-07T10:42:25Z
 rel:
   governs: [docs]
 files:
@@ -38,8 +38,8 @@ files:
   - {path: hosted-8624b57-preflight-status.json, sha256: ab3c136640178821da20034e686f65ef81e55eba86f5c8721612358625c92f9d, bytes: 859, store: repo}
   - {path: hosted-8624b57-pages-final-status.json, sha256: 1b3bedc3dc8d9f06d84cb64cb1301e0a02b648835333888b7bde4b8e907fa1c5, bytes: 2026, store: repo}
   - {path: hosted-8624b57-artifact-roundtrip-status.json, sha256: e4ea4c4be0512a4fcf4b6cba4bbde9a23a8a2869f830f396ddb63cb946f8550d, bytes: 1446, store: repo}
-  - {path: archive-first-execution-status.json, sha256: d8da34f366f8db81525aa4822df0c1efa319f8df92616093ca55cdf28494496a, bytes: 747, store: repo}
-  - {path: archive-component-execution-status.json, sha256: 777ced8858b025d841baef69d71e37e71dac5857ea15fda22a8525edc404fba8, bytes: 2261, store: repo}
+  - {path: archive-first-execution-status.json, sha256: 66a382579ec2c01dce7b8497bc66b5d1a51ebbf863dc44209a9638c7c51b7da0, bytes: 732, store: repo}
+  - {path: archive-component-execution-status.json, sha256: 61da811e777ab8a743dd4c13f7197a64debc3939161d7c4be8e2067515f52e3b, bytes: 2201, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
