@@ -1,0 +1,66 @@
+{
+  "schema": "humanymous.pages-standards-consistency-review/1",
+  "observed_at_utc": "2026-11-07T13:16:04.300679+00:00",
+  "review_scope": "Seven fully read local draft pages; semantic consistency plus exact heading/link checks. Does not validate external standards or venue policies.",
+  "pages": [
+    {
+      "path": "docs/standards/draft-v0/index.md",
+      "sha256": "187b1f33d037d14e0ed9ac2d9d43928ddae8d9955b3a4a1e872c730770b87485",
+      "full_read": true
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/profile.md",
+      "sha256": "0c5cacc1b94ebb6a67c3db119e6986f2374ce4120376307518ed07f522238646",
+      "full_read": true
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/conformance.md",
+      "sha256": "6f5d4eb33bc9af381fcaff952a88bcfe68e7a77767361e6468915c7998a5cb9d",
+      "full_read": true
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/vectors.md",
+      "sha256": "7909cbb37a99ae6d5fe36fdb68d05ff040978f329c3461b28c6deaa076836550",
+      "full_read": true
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/retry-effects.md",
+      "sha256": "d428975059a69050a5331b80d4e266a5f4664705de2ead6817b29f6e74846f8e",
+      "full_read": true
+    },
+    {
+      "path": "docs/standards/draft-v0/process/preparation.md",
+      "sha256": "71063292b4a231afa768adf4cc1774ff766356f755733b31c23854f48669d660",
+      "full_read": true
+    },
+    {
+      "path": "docs/standards/draft-v0/process/revision-history.md",
+      "sha256": "cd080b1ef7378a159394c992952878c0f451f1a3bffa5a09e0049269b52cfc4a",
+      "full_read": true
+    }
+  ],
+  "checks": {
+    "ten_unique_profile_requirements": true,
+    "ten_matching_conformance_links": true,
+    "generic_wire_remains_unselected": true,
+    "parser_vectors_distinct_from_generic_conformance": true,
+    "retry_lifecycle_explicitly_unimplemented": true,
+    "publication_distinct_from_external_submission": true
+  },
+  "semantic_findings": [
+    "P-01 through P-10 explicitly denote profile requirements rather than priorities or external authority.",
+    "Conformance matrix covers all10 requirement identifiers; exact anchors checked at source only.",
+    "Durable retry/effect lifecycle remains a proposal; duplicate-nonce implementation is explicitly distinct.",
+    "Current parser corpus execution is scoped to one implementation and historical component evidence, not generic wire or independent interoperability.",
+    "Preparation and revision gates retain fixed-source, actual evidence, external review and authorized submission obligations."
+  ],
+  "docs_modified": false,
+  "new_render_or_browser": "NOT_RUN",
+  "external_reference_verification": "NOT_RUN",
+  "full_standards_package_complete": false,
+  "remaining": [
+    "Other draft pages, fixture semantics and current implementation-map freshness require separate coverage.",
+    "Rendered link/accessibility checks and latest fixed-source build remain pending.",
+    "Generic wire choices, independent implementations and horizontal external reviews remain open."
+  ]
+}
