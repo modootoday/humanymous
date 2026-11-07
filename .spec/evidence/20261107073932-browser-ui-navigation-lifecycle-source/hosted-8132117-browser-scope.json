@@ -1,0 +1,27 @@
+{
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "job_id": 128351926093,
+  "job_name": "validate / native (ubuntu-24.04)",
+  "job_conclusion": "failure",
+  "observation": "Completed job log queried through the GitHub job logs API while the parent run remained live",
+  "actor_summary": {
+    "executed_harnesses": 15,
+    "passed_tests": 51,
+    "failed_tests": 0,
+    "unknown_count_harnesses": 0,
+    "host_process_validated": false,
+    "host_process_ignored": 3,
+    "durable_witness_ignored": 1
+  },
+  "browser_scope": {
+    "compilation_line_observed": true,
+    "browser_harness_result_observed": false,
+    "browser_unit_qualification": "not established by this partial execution",
+    "cef_native_qualification": "not_run by this Ubuntu job",
+    "latest_browser_commits_40cfacc_and_f5e44ce": "outside this source SHA"
+  },
+  "raw_log_retained_in_this_bundle": false,
+  "full_runtime_qualified": false,
+  "next_action": "Owning runner must resolve required ignored cases; retain this failure and await the same live run rather than duplicate dispatch"
+}
