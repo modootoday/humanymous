@@ -7,7 +7,7 @@ updated: 2026-11-07T20:56:00Z
 rel:
   depends_on: [sot:root/structural-development, sot:root/program-roadmap, plan:root/20261107203000]
 files:
-  - {path: browser-edc-dispatch.json, sha256: 8cca1b083e0ce89aa0fbd77fe32b44eab7e2a8f42682600df83844a83608ce20, bytes: 908, store: repo}
+  - {path: browser-edc-dispatch.json, sha256: 18603c7b2ac3f1b7288b1ea144b4a28b18360ac042ce5267dc309e9caa0818c3, bytes: 888, store: repo}
   - {path: branch-sync.json, sha256: 441924321e7a62a5bf363e7b894ff49fd9ec889f9f84cb8f6a3943100e3f964c, bytes: 1353, store: repo}
   - {path: summary.json, sha256: 540583b7eb7f34e91b75c17cc6d89afa1601f4fa60dad6495c97ed235c6bd34d, bytes: 16541, store: repo}
 ---
