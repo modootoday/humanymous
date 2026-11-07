@@ -445,3 +445,18 @@ live epochs remain intact and expired entries are pruned. Serialized ingress
 bounds concurrency1; no new throughput or identity flood-resistance claim.
 Pure quota/boundary/rollback tests and shared-client429counter tests are required;
 actual global/concurrent/socket origin-effect tests remain hosted-only.
+R06 explicit native bounded-stream profile: route.response_profile defaults to
+buffered; native_stream opts in to incremental entity forwarding with1MiB total
+entity cap,8KiB copy buffer and existing exact signed request/connection deadline.
+BrowserAuthOnly+native_stream configuration is refused: browser full-body/ACK
+contract is unchanged. Shared response-head validation/header stripping is reused.
+Content-length streams preserve exact length; chunked/EOF origins are decoded and
+re-encoded as downstream chunked, emitting final zero chunk only after successful
+completion, so premature close is detectable. Malformed size/CRLF/truncation,
+extensions/nonempty trailers, excessive bytes and unsupported upgrades fail closed;
+after the response starts, close without appending503 or retrying origin. Known
+length over cap is refused before downstream head. HEAD/204/304 stay bodyless.
+Backpressure is awaited, no unbounded queue/detached producer. Stop/drain cancels
+or bounds active streaming with the same custody lifetime and no new origin after
+observed stop. This is request integrity, not response-body authentication or
+infinite SSE availability. Required collector/TLS/H2 remain independent422.

@@ -433,6 +433,12 @@ impl Application {
                     .ok_or(Rejection::new(503, "deadline"))?;
                 let until = connection_until.min(Instant::now() + Duration::from_millis(remaining));
                 let origin = self.config.origin;
+                let streaming = self.config.routes.iter().any(|route| {
+                    route.method == request.method
+                        && route.path == request.target.split('?').next().unwrap_or("")
+                        && route.response_profile
+                            == crate::configuration::ResponseProfile::NativeStream
+                });
                 let bytes = http::origin_request(&request, &self.config.scope.authority);
                 let response = timeout_at(until, async {
                     let mut upstream = TcpStream::connect(origin)
@@ -451,16 +457,29 @@ impl Application {
                         .write_all(&bytes)
                         .await
                         .map_err(|_| Rejection::new(503, "origin_write"))?;
+                    if streaming {
+                        http::stream::forward(
+                            &mut upstream,
+                            stream,
+                            request.method == "HEAD",
+                            response_started,
+                        )
+                        .await?;
+                        return Ok(None);
+                    }
                     let mut response = Vec::new();
                     upstream
                         .take((http::MAX_ORIGIN_FRAME + 1) as u64)
                         .read_to_end(&mut response)
                         .await
                         .map_err(|_| Rejection::new(503, "origin_read"))?;
-                    http::Response::parse(&response, request.method == "HEAD")
+                    http::Response::parse(&response, request.method == "HEAD").map(Some)
                 })
                 .await
                 .map_err(|_| Rejection::new(503, "origin_timeout"))??;
+                let Some(response) = response else {
+                    return Ok(());
+                };
                 let extra = ack
                     .as_ref()
                     .map(|ack| ack.headers(response.status))

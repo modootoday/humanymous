@@ -27,7 +27,7 @@ dual-control and missing-required fail-closed remain invariant.
 | R03 | Fresh collection provenance/coverage | root collector + runtime join | Contract pending; required.collector422; actual epoch/version/coverage vs server time/counter separation |
 | R04 | Actual browser Fetch/one-flight/ACK/body/abort lifecycle | root collector + runtime server | Pure client validated by root; actual join pending; actual browser and human/keyboard/AT separate |
 | R05 | Shared response-head/framing and fidelity | runtime | Partial source for ACK strip/reframe, HEAD/204/304 and partial-write close; latest validation NOT_RUN; full framing/stream work remains |
-| R06 | Explicit bounded response streaming | runtime;R05 | Not implemented; incremental SSE, backpressure, malformed chunks/abort/no retry; browser ACK stream separate |
+| R06 | Explicit bounded response streaming | runtime;R05 | Source native bounded stream wired; pure/hosted incremental fixtures NOT_RUN, actual backpressure/abort/drain negatives pending; browser ACK stream separate |
 | R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Not implemented; scoring writes refused; read-only until durable apply/replay exists |
 | R08 | Bounded session/global abuse admission | runtime | Source global/session/capacity/serialized concurrency implemented; pure and hosted429fixtures NOT_RUN; no client-fingerprint identity authority |
 | R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Shared native transport qualified in its scope; runtime observer handler source implemented NOT_RUN; native IPC/peer/credential/RBAC/CSRF/scope negatives pending |
@@ -240,3 +240,32 @@ invalid-proof non-debit, actual429 ACK progression, replay refusal and no origin
 accept. This fixture is resource timing/protocol evidence, not human speed/motor
 classification. Source compilation and all fixtures remain NOT_RUN; no local
 native process or Cargo execution. Required missing collector/TLS/H2 still422.
+R06 explicit native bounded-stream profile: route.response_profile defaults to
+buffered; native_stream opts in to incremental entity forwarding with1MiB total
+entity cap,8KiB copy buffer and existing exact signed request/connection deadline.
+BrowserAuthOnly+native_stream configuration is refused: browser full-body/ACK
+contract is unchanged. Shared response-head validation/header stripping is reused.
+Content-length streams preserve exact length; chunked/EOF origins are decoded and
+re-encoded as downstream chunked, emitting final zero chunk only after successful
+completion, so premature close is detectable. Malformed size/CRLF/truncation,
+extensions/nonempty trailers, excessive bytes and unsupported upgrades fail closed;
+after the response starts, close without appending503 or retrying origin. Known
+length over cap is refused before downstream head. HEAD/204/304 stay bodyless.
+Backpressure is awaited, no unbounded queue/detached producer. Stop/drain cancels
+or bounds active streaming with the same custody lifetime and no new origin after
+observed stop. This is request integrity, not response-body authentication or
+infinite SSE availability. Required collector/TLS/H2 remain independent422.
+R06 source now wires route.response_profile=native_stream through the actual
+connection origin branch after audited ALLOW, client liveness and exact deadline
+checks. Browser routes cannot select it. The stream reuses response-head and
+chunk-size validators,8KiB buffers and1MiB entity cap; no detached producers or
+retry. Three in-memory async decoder fixtures plus one pure config-profile
+fixture are authored. A hosted-only TCP fixture gates origin completion on proof
+that the client already received its first SSE event; synthetic client report
+and mock audit ordering are explicitly fixture controls, not durable/product
+qualification. All new source compile/Clippy/tests remain NOT_RUN. Root's earlier
+shared Clippy observed9deadcode errors while this wiring was WIP; no suppression
+was added. Current wiring references every stream helper. Source requires a new
+exact hosted/pure validation result, not attribution of the earlier failure to
+success. Actual abort/backpressure/deadline/drain/malformed socket pilots remain
+required. Global Cargo slots A/B stay root-assigned; no local Cargo started.

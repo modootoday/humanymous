@@ -49,6 +49,17 @@ pub enum RitProfile {
     BrowserAuthOnly,
 }
 
+/// Explicit entity delivery semantics; browser integrity uses complete bodies.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ResponseProfile {
+    /// Complete bounded entity validated before writing its downstream head.
+    #[default]
+    Buffered,
+    /// Native-only incremental entity with a fixed one MiB and request deadline cap.
+    NativeStream,
+}
+
 /// Exact same-origin boundary for the initial cookie-free browser contract.
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -74,6 +85,9 @@ pub struct Route {
     /// Explicit profile opt-in; old route documents remain native-only.
     #[serde(default)]
     pub rit_profile: RitProfile,
+    /// Explicit opt-in; no automatic streaming inference from content type.
+    #[serde(default)]
+    pub response_profile: ResponseProfile,
 }
 
 /// Only bounded complete HTTP request methods have an implementation.
@@ -151,6 +165,8 @@ impl Configuration {
                 || humanymous_authority::configuration::reserved(&route.path)
                 || !route.required.rit
                 || (route.rit_profile == RitProfile::BrowserAuthOnly && self.browser.is_none())
+                || (route.rit_profile == RitProfile::BrowserAuthOnly
+                    && route.response_profile == ResponseProfile::NativeStream)
                 || !seen.insert((&route.method, &route.path))
             {
                 return Err(bad);
@@ -168,7 +184,8 @@ impl Configuration {
                 serde_json::json!({
                     "method":r.method,"path":r.path,
                     "ready":!r.required.raw_tls && !r.required.original_h2 && !r.required.collector,
-                    "rit_profile":r.rit_profile
+                    "rit_profile":r.rit_profile,
+                    "response_profile":r.response_profile
                 })
             })
             .collect();

@@ -274,3 +274,17 @@ invalid-proof non-debit, actual429 ACK progression, replay refusal and no origin
 accept. This fixture is resource timing/protocol evidence, not human speed/motor
 classification. Source compilation and all fixtures remain NOT_RUN; no local
 native process or Cargo execution. Required missing collector/TLS/H2 still422.
+R06 source now wires route.response_profile=native_stream through the actual
+connection origin branch after audited ALLOW, client liveness and exact deadline
+checks. Browser routes cannot select it. The stream reuses response-head and
+chunk-size validators,8KiB buffers and1MiB entity cap; no detached producers or
+retry. Three in-memory async decoder fixtures plus one pure config-profile
+fixture are authored. A hosted-only TCP fixture gates origin completion on proof
+that the client already received its first SSE event; synthetic client report
+and mock audit ordering are explicitly fixture controls, not durable/product
+qualification. All new source compile/Clippy/tests remain NOT_RUN. Root's earlier
+shared Clippy observed9deadcode errors while this wiring was WIP; no suppression
+was added. Current wiring references every stream helper. Source requires a new
+exact hosted/pure validation result, not attribution of the earlier failure to
+success. Actual abort/backpressure/deadline/drain/malformed socket pilots remain
+required. Global Cargo slots A/B stay root-assigned; no local Cargo started.

@@ -2,6 +2,7 @@
 mod browser;
 #[cfg(unix)]
 mod service;
+mod stream;
 use crate::{
     application::{Application, Decision},
     configuration::Configuration,
@@ -32,6 +33,21 @@ fn configuration(origin: std::net::SocketAddr) -> Configuration {
 }
 fn config() -> Configuration {
     configuration("127.0.0.1:32123".parse().unwrap())
+}
+#[test]
+fn streaming_requires_explicit_native_profile_and_preserves_browser_complete_body_contract() {
+    use crate::configuration::{BrowserPolicy, ResponseProfile, RitProfile};
+    let mut config = config();
+    assert_eq!(config.routes[0].response_profile, ResponseProfile::Buffered);
+    config.routes[0].response_profile = ResponseProfile::NativeStream;
+    assert!(config.validate().is_ok());
+    config.browser = Some(BrowserPolicy {
+        origin: "http://owned.test".into(),
+    });
+    config.routes[0].rit_profile = RitProfile::BrowserAuthOnly;
+    assert!(config.validate().is_err());
+    config.routes[0].response_profile = ResponseProfile::Buffered;
+    assert!(config.validate().is_ok());
 }
 #[test]
 fn required_external_witness_refuses_writer_only_before_opening_state() {

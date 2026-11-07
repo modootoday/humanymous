@@ -246,6 +246,7 @@ pub fn response(bytes: &[u8], head: bool) -> Result<(), Rejection> {
 }
 
 mod origin_response;
+pub(crate) mod stream;
 pub(crate) use origin_response::Response;
 
 #[cfg(test)]

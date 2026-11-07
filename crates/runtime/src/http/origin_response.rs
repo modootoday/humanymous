@@ -11,6 +11,40 @@ pub(crate) struct Response {
     reframe_length: bool,
 }
 impl Response {
+    pub(super) fn stream_head(
+        bytes: &[u8],
+        head: bool,
+    ) -> Result<(Vec<u8>, super::stream::Framing), Rejection> {
+        use super::stream::{Framing, MAX_STREAM_BODY};
+        let parsed = Self::parse(bytes, true)?;
+        let framing = if head || parsed.status == 204 || parsed.status == 304 {
+            Framing::Empty
+        } else if parsed
+            .headers
+            .iter()
+            .any(|(name, _)| name.eq_ignore_ascii_case("transfer-encoding"))
+        {
+            Framing::Chunked
+        } else if let Some((_, value)) = parsed
+            .headers
+            .iter()
+            .find(|(name, _)| name.eq_ignore_ascii_case("content-length"))
+        {
+            let length = decimal(value.trim())?;
+            if length > MAX_STREAM_BODY as u64 {
+                return Err(Rejection::new(503, "origin_stream_budget"));
+            }
+            Framing::Length(length)
+        } else {
+            Framing::Eof
+        };
+        let mut encoded = parsed.encode(&[])?;
+        if matches!(framing, Framing::Chunked | Framing::Eof) {
+            let end = encoded.len() - 2;
+            encoded.splice(end..end, b"Transfer-Encoding: chunked\r\n".iter().copied());
+        }
+        Ok((encoded, framing))
+    }
     pub(crate) fn parse(bytes: &[u8], head: bool) -> Result<Self, Rejection> {
         let bad = Rejection::new(503, "origin_framing");
         let end = bytes.windows(4).position(|b| b == b"\r\n\r\n").ok_or(bad)?;
@@ -145,12 +179,7 @@ fn decode_chunks(mut wire: &[u8]) -> Result<Vec<u8>, Rejection> {
             .windows(2)
             .position(|bytes| bytes == b"\r\n")
             .ok_or(bad)?;
-        let size = &wire[..end];
-        if size.is_empty() || size.len() > 16 || !size.iter().all(u8::is_ascii_hexdigit) {
-            return Err(bad);
-        }
-        let size = usize::from_str_radix(std::str::from_utf8(size).map_err(|_| bad)?, 16)
-            .map_err(|_| bad)?;
+        let size = chunk_size(&wire[..end])?;
         wire = &wire[end + 2..];
         if size == 0 {
             return if wire == b"\r\n" { Ok(body) } else { Err(bad) };
@@ -169,6 +198,14 @@ fn decode_chunks(mut wire: &[u8]) -> Result<Vec<u8>, Rejection> {
         wire = &wire[frame..];
     }
     Err(bad)
+}
+
+pub(super) fn chunk_size(size: &[u8]) -> Result<usize, Rejection> {
+    let bad = Rejection::new(503, "origin_chunk_framing");
+    if size.is_empty() || size.len() > 16 || !size.iter().all(u8::is_ascii_hexdigit) {
+        return Err(bad);
+    }
+    usize::from_str_radix(std::str::from_utf8(size).map_err(|_| bad)?, 16).map_err(|_| bad)
 }
 
 #[cfg(test)]
