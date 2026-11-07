@@ -3,6 +3,20 @@
   "navigation_schema": 2,
   "renderer_file_probe_schema": 2,
   "required_test_count": 2,
+  "protocol_preflight": {
+    "selector": "pilot_assertions::tests::",
+    "required_test_count": 4,
+    "classification": "synthetic_report_protocol",
+    "initializes_cef": false,
+    "starts_processes": false,
+    "requires_native_feature_build": true,
+    "test_names": [
+      "pilot_assertions::tests::protocol_fixture_accepts_complete_shape_without_exporting_private_fields",
+      "pilot_assertions::tests::protocol_rejects_stale_missing_truncated_and_unjoined_success_claims",
+      "pilot_assertions::tests::canceled_protocol_fixture_requires_real_cleanup_and_explicit_cancellation",
+      "pilot_assertions::tests::cancellation_rejects_retained_probes_missing_schema_and_stale_transactions"
+    ]
+  },
   "cases": {
     "positive": {
       "test_name": "pilot_process::provisioned_positive_internal_routes_and_cleanup",

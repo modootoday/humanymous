@@ -635,6 +635,14 @@ the producer's observed/pass flags. Initial CEF callbacks may race the close
 request; their runtime behavior remains unqualified and must not be masked by
 synthetic zero counts. Protocol regressions are authored, not executed.
 
+The same owned contract lists protocol_preflight: its exact selector and four
+synthetic report test names, separate from the two actual process case names.
+These tests do not initialize CEF or start processes; compiling their Windows
+desktop test binary still requires the native feature/dependency build. The
+runner must verify all four exact names and executed count without ignored cases
+before separately reporting bootstrap rejection and actual desktop process cases.
+Passing protocol fixtures is not CEF execution or native runtime qualification.
+
 UI-30 (accepted source follow-up; native compile/runtime not_run): renderer file
 probe schema2 records an independent owned-process OS token observation when each
 bounded canary message is received. The browser discovers its own descendants and
