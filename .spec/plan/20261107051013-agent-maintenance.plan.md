@@ -10,6 +10,20 @@ rel:
 
 # Agent maintenance
 
+## Exact browser IME fixture preservation
+
+The convention auditor identified two indicators in the normalized path
+.spec/plan/20261107002014-browser-ui.plan.md, lines163/213. Independent reads
+matched SHA2562b45eeed32d1a67bf668df7647bf6bcbd04a2cd1fadf465447cdd67f64afd5cf
+and9b8de9053380ed1f112cd484966873423758f8ac48fa772ab5266cff29a20e1d.
+The Browser owner explicitly confirmed intentional literal Korean IME inputs/
+readbacks in English evidence prose and requested byte preservation. Only those
+two exact normalized-path/hash multilingual-fixture records were added; no
+foreign source rewrite or path-wide language waiver occurred. The existing
+qualified language-check invocation returned both preserved-exact-line, errors[]
+and english_conformance_proven=false (toolf66da9). This bounded classification
+does not establish source-wide authoring conformance or any new browser pass.
+
 ## CA-GOV-01 detection-freeze pointer correction
 
 The read-only convention auditor identified historical-only Go path references

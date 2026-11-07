@@ -136,5 +136,17 @@
     "line_sha256": "6f60ae2c3f55c9484e942c0bd5aacf450b756aa62ad8880535b675ee880d3ce9",
     "category": "literal-ui-title",
     "reason": "Exact recorded application title and chat identifier; prose in the responsibility column remains English."
+  },
+  {
+    "path": ".spec/plan/20261107002014-browser-ui.plan.md",
+    "line_sha256": "2b45eeed32d1a67bf668df7647bf6bcbd04a2cd1fadf465447cdd67f64afd5cf",
+    "category": "multilingual-fixture",
+    "reason": "Browser owner confirmed this English evidence prose contains literal Korean IME input/readback fixture values; preserve the exact recorded bytes."
+  },
+  {
+    "path": ".spec/plan/20261107002014-browser-ui.plan.md",
+    "line_sha256": "9b8de9053380ed1f112cd484966873423758f8ac48fa772ab5266cff29a20e1d",
+    "category": "multilingual-fixture",
+    "reason": "Browser owner confirmed this English evidence prose contains literal Korean IME input/readback fixture values; preserve the exact recorded bytes."
   }
 ]
