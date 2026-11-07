@@ -102,6 +102,15 @@ template; owner routes and the measured fixed loopback contact-witness tuple
 are the only per-case policy/endpoint changes. The existing private passphrase
 is retained in startup only and replaced by a marker in configuration evidence.
 
+The dedicated bounded invocation uses --go-product --require-go-component.
+Its typed requirement is humanymous.lab-requirement/1, kind go-component.
+Exit zero requires the validated eight-case hosted public receipt, no failed
+lab assertions and successful final owned cleanup. The requirement and receipt
+always retain full_product_qualified=false. This follows roadmap decision
+8f8f5e07 and supersedes an always-red standalone full-product invocation.
+--require-full remains a separate mutually exclusive full-product requirement;
+bounded Go success cannot satisfy it. Other profiles refuse the Go requirement.
+
 The fixture is untouched upstream Go source, never authored Go implementation.
 Verify the pinned revision, full tracked byte inventory, entrypoint, compiler
 index/platform manifest and actual version before a network-none build. Exclude

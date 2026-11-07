@@ -49,6 +49,7 @@ mod go;
 mod go_fixture;
 mod go_public;
 mod public_receipts;
+mod requirement;
 mod startup_failure;
 mod witness;
 struct Lab {
@@ -60,6 +61,7 @@ struct Lab {
     topology_only: bool,
     browser_product: bool,
     go_product: bool,
+    go_component_verified: bool,
     stage: &'static str,
     cases: Vec<Value>,
     components: Value,
@@ -505,6 +507,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut browser_product = false;
     let mut go_product = false;
     let mut full = false;
+    let mut require_go_component = false;
     let mut index = 0;
     while index < args.len() {
         match args[index].as_str() {
@@ -519,6 +522,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--go-product" => go_product = true,
             "--topology-only" => topology_only = true,
             "--require-full" => full = true,
+            "--require-go-component" => require_go_component = true,
             _ => return Err("unknown runner argument".into()),
         }
         index += 1;
@@ -530,6 +534,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     if go_product && (browser_product || collector || topology_only) {
         return Err("Go product requires a separate fresh bundle/profile".into());
     }
+    let requirement = requirement::Requirement::select(full, require_go_component, go_product)?;
     if !evidence.starts_with(root.join(".spec.local/root/evidence"))
         || !evidence.join("index.evidence.md").is_file()
     {
@@ -569,6 +574,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         topology_only,
         browser_product,
         go_product,
+        go_component_verified: false,
         stage: "initialization",
         cases: Vec::new(),
         components: json!({}),
@@ -588,16 +594,20 @@ pub fn run(args: &[String]) -> Result<i32> {
         lab.cases
             .push(json!({"id":"execution","status":"failed","error_code":lab.stage,"detail":error.to_string()}));
     }
-    if let Err(error) = lab.cleanup() {
-        lab.cases
-            .push(json!({"id":"cleanup","status":"failed","error_code":"cleanup_failed","detail":error.to_string()}));
-    }
+    let cleanup_verified = match lab.cleanup() {
+        Ok(()) => true,
+        Err(error) => {
+            lab.cases.push(json!({"id":"cleanup","status":"failed","error_code":"cleanup_failed","detail":error.to_string()}));
+            false
+        }
+    };
     snapshot::write(
         &lab.evidence,
         "docker-engine-affinity.json",
         &json!({"schema":"humanymous.lab-engine-evidence/1","observation":lab.docker.engine_identity,"actual_sdk_connection_observed":false}),
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
+    let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
     let mut evidence_types = if browser_product || go_product {
         vec![]
     } else {
@@ -620,7 +630,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         }
     }
     let diagnostics = safe_diagnostics(&lab.cases);
-    let report = json!({"schema":"humanymous.product-lab/2","safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    let report = json!({"schema":"humanymous.product-lab/2","requirement":requirement.report(&assessment),"safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(
         &lab.evidence,
@@ -631,13 +641,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         "{}",
         json!({"report":lab.evidence.join("lab-report.json"),"passed":report["cases"].as_array().ok_or("cases missing")?.iter().filter(|c|c["status"]=="passed").count(),"failed":failed,"release_ready":false})
     );
-    Ok(if failed {
-        1
-    } else if full {
-        2
-    } else {
-        0
-    })
+    Ok(assessment.exit_code)
 }
 fn successful_test_count(output: &str) -> Option<u64> {
     output

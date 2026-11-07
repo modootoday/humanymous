@@ -602,6 +602,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     match projection {
         Ok(value) => {
             snapshot::write(&lab.evidence, "go-public-receipt.json", &value)?;
+            lab.go_component_verified = value["qualified_component"] == true;
             lab.public_receipts["go"] = value;
         }
         Err(error) => {
@@ -661,6 +662,7 @@ fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> 
             topology_only: false,
             browser_product: false,
             go_product: true,
+            go_component_verified: false,
             stage: "go_case",
             cases: vec![],
             components: json!({}),

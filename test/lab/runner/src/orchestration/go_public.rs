@@ -242,6 +242,47 @@ pub(super) fn project(
 #[cfg(test)]
 mod tests {
     #[test]
+    fn admits_exact_eight_hosted_rows_and_refuses_partial_qualification() {
+        use serde_json::json;
+        let owner: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../../adapters/go/pilot-contract.json"
+        ))
+        .unwrap();
+        let cases: Vec<_> = owner["cases"].as_array().unwrap().iter().map(|case| json!({"case":case["id"],"evaluation":{"schema":"humanymous.go-case-evaluation/1","status":"passed","outcome":{"case":case["id"],"assertions":3,"failures":0,"actual_host":true}},"full_product_qualified":false})).collect();
+        let mut report = json!({"schema":"humanymous.go-product-ledger/1","scheduled":8,"status":"passed","cases":cases,"qualification":{"schema":"humanymous.go-lab-qualification/1","qualified_component":true,"scheduled":8,"full_product_qualified":false},"full_product_qualified":false});
+        let context = super::context_from(true, false, |name| {
+            Some(match name {
+                "GITHUB_WORKFLOW_SHA" => "a".repeat(40),
+                "GITHUB_REPOSITORY" => "owner/repository".into(),
+                "GITHUB_JOB" => "go-component".into(),
+                _ => "1".into(),
+            })
+        })
+        .unwrap();
+        let source = json!({"head":"a".repeat(40)});
+        let manifest = "b".repeat(64);
+        let raw = serde_json::to_vec(&report).unwrap();
+        let public = super::project(&report, &raw, &source, &manifest, &context).unwrap();
+        assert_eq!(public["qualified_component"], true);
+        assert_eq!(public["totals"]["evaluated"], 8);
+        assert_eq!(public["totals"]["known_assertions"], 24);
+        assert_eq!(public["full_product_qualified"], false);
+        report["cases"][7]["status"] = json!("not_run");
+        report["cases"][7]["evaluation"] = serde_json::Value::Null;
+        let partial = serde_json::to_vec(&report).unwrap();
+        assert!(super::project(&report, &partial, &source, &manifest, &context).is_err());
+        assert!(
+            super::project(
+                &serde_json::from_slice(&raw).unwrap(),
+                &raw,
+                &source,
+                &manifest,
+                &super::context_from(false, true, |_| None).unwrap()
+            )
+            .is_err()
+        );
+    }
+    #[test]
     fn keeps_eight_denominator_drops_private_data_and_rejects_false_green() {
         use serde_json::json;
         let owner: serde_json::Value = serde_json::from_str(include_str!(
