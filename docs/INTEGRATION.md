@@ -81,8 +81,11 @@ index blob bytes, marks documentation_review_accepted=false and refuses source,
 HEAD/index/inventory changes during capture. This is author-review input, not
 an automatic review acceptance or a CI refresh command.
 
-Experimental parser profiles do not establish authority executable support.
-The reviewed authority still selects the Node parser and rejects required RIT/
-collector/raw TLS/H2; the separate loopback runtime implements session/RIT and
-reserves/strips Authorization. Owner change requests were sent to root and are
-persisted in pages/standards SoTs. Recheck these edges after producer changes.
+Experimental parser profiles do not establish deployment qualification. Current
+source lets authority configuration independently select Node or nginx (Node is
+the default); required RIT/collector/raw TLS/H2 remain unavailable in that IPC
+service. The separate loopback runtime has native and explicit browser RIT
+profiles. Native reserves/strips Authorization; working BrowserAuthOnly preserves
+application Authorization and inserts status-bound consumed-counter ACKs. These
+changed browser paths still need actual execution, not inherited historical
+component results. Public references distinguish source wiring from qualification.

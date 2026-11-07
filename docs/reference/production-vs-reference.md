@@ -20,9 +20,9 @@ release is claimed.
 | Native integration CLI | `humanymous-native init` emits an unqualified framework plan; explicit manifest writing currently requires Windows |
 | Browser collector | Rust/WASM browser reads, passive behavior and separate environment/advanced APIs exist; authenticated runtime integration and recovery remain incomplete |
 | Laboratory browser | Windows Meari/CEF prototype has actual native rendering and window controls; full browser readiness, external navigation and SDK qualification remain separate |
-| Node/Bun and nginx adapters | Experimental contracts and bounded pilots exist; Rust replacements and exact deployment qualification are tracked separately |
+| Node/Bun and nginx adapters | Rust Node-API and Linux nginx implementations exist with bounded historical pilots; changed-source platform, packaging and deployment qualification remain separate |
 | Cross-platform packages | Source-bound native component runs exist; they do not qualify every service, browser or framework on those operating systems |
-| Documentation | Authored source with pinned-theme builds; a checked Pages artifact is separate from production deployment |
+| Documentation | Historical pinned-theme builds exist; the changed current source still needs its own build/link/access review and is separate from production deployment |
 | Standards Draft v0 | Independent developing proposal; no external submission or adoption |
 
 Historical Go behavior is a migration comparison baseline, not evidence that the

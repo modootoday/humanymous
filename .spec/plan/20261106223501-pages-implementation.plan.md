@@ -611,3 +611,14 @@ native CHALLENGE/timer excerpts. Replaced obsolete module-absent surface with
 existing Linux experimental module; documented actual-vs-synthetic/historical
 results and pending JSON/timer qualification. One narrowly scoped lib source
 receipt does not approve native ABI or whole module. Docker gate retained.
+
+## Terminal hosted run and stale integration notes
+
+CI42347732666 completed failure. Exact bfc9f6 policy job tests and workflow
+authorization/LF passed, then action-pins failed on aquasecurity IP-allowlist
+HTTP403 at06:37:18Z. ready failed; Pages/documentation and other lanes skipped.
+This is external access failure, not proven pin mismatch or Pages build failure.
+No rerun/dispatch or cross-owner code edit. Reported root. Corrected obsolete
+Node-only/unconditional-Authorization integration notes against current authority
+configuration and runtime source. Public release table now distinguishes existing
+Rust adapters and historical Pages builds from current-source qualification.
