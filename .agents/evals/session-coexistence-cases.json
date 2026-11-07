@@ -1,5 +1,5 @@
 {
-  "schema": "humanymous.session-coexistence-acceptance/0.2",
+  "schema": "humanymous.session-coexistence-acceptance/0.3",
   "status": "draft vectors; no executable regression run",
   "operational_mutator_ready": false,
   "cases": [
@@ -24,6 +24,7 @@
     {"id":"composite-root-plan","input":".spec/plan/20261107-performance-optimization-program-roadmap.plan.md matches old performance and root scopes","expected":"deny overlap; do not infer separation from different keywords"},
     {"id":"composite-evidence","input":".spec/evidence/20261107-convention-audit-performance-optimization/index.evidence.md matches both old keyword globs","expected":"deny overlap; require exact nonoverlapping bundle roots"},
     {"id":"root-evidence-overlap","input":".spec/evidence/20261107-performance-optimization-program-status/index.evidence.md matches old performance and root scopes","expected":"deny overlap; preserve root ownership"},
-    {"id":"nested-exact-evidence","input":"one grant has exact bundle/** and another has exact bundle/nested/**","expected":"deny ancestor overlap despite exact basename selection"}
+    {"id":"nested-exact-evidence","input":"one grant has exact bundle/** and another has exact bundle/nested/**","expected":"deny ancestor overlap despite exact basename selection"},
+    {"id":"public-child-not-granted","input":"temporary public grant contains only index.evidence.md and baseline.json; request adds another child under the same bundle","expected":"deny implicit descendant permission; require separate root scope review"}
   ]
 }

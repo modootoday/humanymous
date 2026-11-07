@@ -1,4 +1,4 @@
-# New-lane coexistence design v0.2
+# New-lane coexistence design v0.3
 
 Status: draft for root review; no mutator or operational catalog change.
 
@@ -23,12 +23,13 @@ lane's kind or silently ignore projection drift. The existing schema1 binary doe
 not implement this contract and cannot be advertised as claim-ready for it.
 
 Proposed NewLanePolicy is a closed enum with exactly ConventionAudit and
-Performance. Each maps to a root-reviewed ExactRoots value: its exact named SoT,
-exact plan filename, exact public bundle root and exact private bundle root.
+Performance. Each maps to a root-reviewed ExactGrant value: its exact named SoT,
+exact plan filename, an explicit set of public evidence files and an exact private
+bundle root. Public descendants are not implicitly granted.
 Reject prefixes, case aliases, parent/root escapes, added code paths and broader
 wildcards. No wildcard is allowed within any selected filename or bundle root;
-only a terminal /** for contents of an exact evidence directory is permitted.
-The four scopes must also be disjoint from each other and every admitted owner
+only a terminal /** for an explicitly admitted exact private evidence directory
+is permitted. Every granted scope must be disjoint from every admitted owner
 scope under the unchanged overlap solver; names alone do not prove separation.
 The five-field Request remains lane/provider/session/goal/paths; the
 requested set must equal the policy's bounded set, not merely intersect it.
@@ -43,9 +44,14 @@ root-reviewed; no example wildcard grants ownership. The separately accepted
 temporary legacy Performance loan has these observed exact scopes:
 - .spec/sot/performance-optimization.sot.md
 - .spec/plan/20261107135643-performance-optimization.plan.md
-- .spec/evidence/20261107135643-performance-optimization/**
+- .spec/evidence/20261107135643-performance-optimization/index.evidence.md
+- .spec/evidence/20261107135643-performance-optimization/baseline.json
 - .spec.local/root/evidence/20261107135643-performance-optimization/**
 
+The initial exact public subtree loan was subsequently narrowed by root to the
+two explicit files above; the owner's actual updated claim was re-read. Additional
+public children require a new root scope review, never prefix-based permission.
+The private fixed subtree is separately admitted by root against existing owners.
 That claim is project-coordination/codex/rust-performance-baseline, acquired by
 the performance owner using the unmodified existing PS compatibility protocol.
 It is not a CatalogV2/Rust mutator result. No .agents metadata, product code or

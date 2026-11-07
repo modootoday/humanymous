@@ -31,7 +31,7 @@ Snapshot: 2026-11-07 KST. Chat active status is distinct from persistent goal st
 Root owns shared Cargo/lock/toolchain, program roadmap and final Git integration. Pages owner alone writes docs/**, including public Draft v0. Other owners submit INTEGRATION.md/spec deltas. Source authoring may parallelize when real paths do not overlap.
 
 Temporary performance coordination: root lent the existing project-coordination
-lane to codex/rust-performance-baseline, observed with the exact four performance
+lane to codex/rust-performance-baseline, observed with the exact five performance
 spec/evidence paths recorded in LANES. The owner actually acquired it through the
 unchanged PS compatibility protocol. This is not a new Rust-only lane grant or
 permission to edit the lane's usual agent metadata. Convention audit remains

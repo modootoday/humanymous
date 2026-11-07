@@ -33,7 +33,8 @@ Native-security OS credential provider belongs to native-windows; CLI only selec
 Temporary root-approved compatibility loan: project-coordination is held by
 codex/rust-performance-baseline for `.spec/sot/performance-optimization.sot.md`,
 `.spec/plan/20261107135643-performance-optimization.plan.md`,
-`.spec/evidence/20261107135643-performance-optimization/**` and the matching
+the exact public files `.spec/evidence/20261107135643-performance-optimization/index.evidence.md`
+and `.spec/evidence/20261107135643-performance-optimization/baseline.json`, plus
 `.spec.local/root/evidence/20261107135643-performance-optimization/**` only.
 This observed claim overrides the usual metadata role for this session; it grants
 no .agents/rules/THREADS, product code, graph or unassigned benchmark path. Use

@@ -12,6 +12,14 @@ rel:
 
 ## Convention and performance chat registration
 
+Root further narrowed the performance public subtree to exact index.evidence.md
+and baseline.json, retaining the fixed private evidence subtree. The owner's
+updated actual claim was re-read as codex/rust-performance-baseline with the
+five exact admitted scopes; no foreign claim edit was performed here. Draftv0.3
+uses an exact public-file set and separately reviewed private root rather than
+implicit public child permission. A23rd acceptance vector denies extra public
+children. These remain source-only contract vectors, not executed regressions.
+
 Root temporarily lent the free existing project-coordination lane solely to
 performance via unmodified PS protocol. Subsequent literal claim inspection found
 codex/rust-performance-baseline with exact named SoT, plan20261107135643 and matching
