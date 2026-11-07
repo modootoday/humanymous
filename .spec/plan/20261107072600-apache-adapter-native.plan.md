@@ -192,6 +192,16 @@ All new changes await actual hosted checks and root-reviewed retry.
 
 ## Owned fixture control and isolated CLI observation
 
+Root's bounded pure Linux slot on immutable823281cb ran safe12/native13 tests
+with zero failures/ignored/filtered and native pilot all-target check passed.
+Warnings-denied native Clippy stopped101at diagnostic.rs11 unused Stdio import;
+the minimal followup removes that import without suppression. Full extracted
+source inventory before/after was identical (8f7fd1c55ac3ded225e416d2e2d98c31b34413bb279fd12dff9069271e298709).
+Archive591d3b90f44fce4e3eab0292ee3405ec1b1f512add6547903cf6d9da63ae9018.
+Private logs: .spec.local/root/evidence/20261107123000-apache-adapter-pidfd-pure.
+No SDK/runtime/Docker execution occurred; allocation returned. Followup needs
+fresh root allocation and actual checks before any hosted push.
+
 Hosted source2d66c0df run42369797560 observed33passed/12failed/0not_run:
 event15/15, worker15/15, prefork3/15. Safe12/native11 tests and SDK builds/
 Clippy passed. The first prefork CLI stop failed after a successful nested
