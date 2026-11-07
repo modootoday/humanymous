@@ -1,0 +1,92 @@
+{
+  "schema": "humanymous.resource-watermark-initial-source/1",
+  "scope": "source-only payload/carrier and bounded volatile ledger/reservation",
+  "authority": "root design acceptance and explicit source-only first-slice grant",
+  "original_sot08": "NOT_FOUND; root accepts reconstructed canon anchored to14 baseline files; no original-read claim",
+  "manifest_frozen_for_root": true,
+  "manifest_sha256": "8973eddacca47b27eacad070d8efbe09b1846c1e01f47d707ef5e94eed3fd8f9",
+  "source": [
+    {
+      "path": "crates/watermark/Cargo.toml",
+      "sha256": "8973eddacca47b27eacad070d8efbe09b1846c1e01f47d707ef5e94eed3fd8f9",
+      "bytes": 324
+    },
+    {
+      "path": "crates/watermark/INTEGRATION.md",
+      "sha256": "6545fb07907defd37f7067be76680cedeabb987e8b43d8dc48993537653b28f3",
+      "bytes": 4463
+    },
+    {
+      "path": "crates/watermark/src/error.rs",
+      "sha256": "754d5b78b1de83e5e2660a97e4f4bfcc01b15c76f5945f222fb1b0dcdfa54004",
+      "bytes": 2078
+    },
+    {
+      "path": "crates/watermark/src/ledger.rs",
+      "sha256": "4acf4a486f4a87dfef7169908e289cac1c2c44c3dad3bbee9864a8b5a9898362",
+      "bytes": 6542
+    },
+    {
+      "path": "crates/watermark/src/ledger/reservation.rs",
+      "sha256": "82c3ced22094bfecb9abda7eff994984d569c2ce9511102339e4c12b3b5d3ed4",
+      "bytes": 2911
+    },
+    {
+      "path": "crates/watermark/src/ledger/state.rs",
+      "sha256": "e361e06324aeaaae3e4a0e4f856666d2bf758d39ad59292081398b610498726b",
+      "bytes": 1384
+    },
+    {
+      "path": "crates/watermark/src/ledger/tests.rs",
+      "sha256": "048726f52c4ff465b4b30f3ebbdffc557bcc56c1182d0efa863a702bb5a4153b",
+      "bytes": 8502
+    },
+    {
+      "path": "crates/watermark/src/lib.rs",
+      "sha256": "0de7305043cac735ccc01b01fab7b91c244df88921184d3e6ac345165e324985",
+      "bytes": 305
+    },
+    {
+      "path": "crates/watermark/src/payload.rs",
+      "sha256": "082ee65ab93908236f3a6db13a495cfc4649e5797e43a6f699b55e2ace20eb73",
+      "bytes": 4863
+    },
+    {
+      "path": "crates/watermark/src/payload/tests.rs",
+      "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76",
+      "bytes": 4696
+    }
+  ],
+  "authored_tests": 16,
+  "tests_executed": 0,
+  "cargo": "NOT_RUN",
+  "compiler": "NOT_RUN",
+  "pilot": "NOT_RUN",
+  "docker": "NOT_RUN",
+  "rustfmt": "direct source formatting exited0; not Cargo, compilation or runtime qualification",
+  "fixture_candidates": [
+    {
+      "path": "web/img/sample.png",
+      "sha256": "9c18ecf06fdfe259f9a20c9bedcec821004edf0a067fd738e40b265b2ad443b0",
+      "bytes": 224
+    },
+    {
+      "path": "web/index.html",
+      "sha256": "060f2aa4f001894b2b1bae5aa59fe357bb7c47733ca35cfbedcc2bcfc06d8d50",
+      "bytes": 439
+    },
+    {
+      "path": "web/honeypot/analytics.js",
+      "sha256": "49febe1334a4041424d385d91144936071f30ba1f197831c8b3a1c7f032341d9",
+      "bytes": 171
+    },
+    {
+      "path": "test/externalinput/fixture.css",
+      "sha256": "44b8b372edef6f26351b3f2d55616314b83d41a4df63853e09516ae97ada6eee",
+      "bytes": 4310
+    }
+  ],
+  "tracked_wasm_count": 0,
+  "png_header": "96x96 RGB8 advertised;224bytes; no decoder executed",
+  "remaining": "Root graph integration/allocation; V2-V5; remaining codec and trace responsibilities"
+}

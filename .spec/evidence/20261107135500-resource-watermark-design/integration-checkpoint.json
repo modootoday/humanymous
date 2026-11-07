@@ -1,0 +1,19 @@
+{
+  "schema": "humanymous.watermark-integration-checkpoint/1",
+  "source_commit": "9b064dbd8942d4fad7f1623da97b6b64c0177a7f",
+  "changed_files": 13,
+  "package_files": 10,
+  "package_hash_drift": 0,
+  "package_diff_against_commit": "empty; git diff --exit-code returned0",
+  "package_eol": "all10 index LF and worktree LF",
+  "dependency_change": "new workspace member and local package only; existing hmac0.12.1/sha20.10.9/subtle2.6.1/zeroize1.9.1 edges",
+  "source_receipt": "initial-source.json",
+  "authoritative_root_decision": ".spec/sot/rust-migration.sot.md Resource watermark initial context registration",
+  "root_graph_resolution": "root-reported offline and locked workspace tree39members; not independently rerun",
+  "owner_cargo": "NOT_RUN",
+  "authored_tests": 16,
+  "executed_tests": 0,
+  "v1": "baseline preserved; source-only checkpoint",
+  "v2_v5": "incomplete; no execution allocation received",
+  "full_goal": "not achieved"
+}

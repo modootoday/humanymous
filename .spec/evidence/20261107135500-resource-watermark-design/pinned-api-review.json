@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.watermark-pinned-api-review/1",
+  "scope": "read-only pinned official docs HTTP review, no dependency adoption or execution",
+  "pages": [
+    {
+      "crate": "png",
+      "version": "0.18.1",
+      "url": "https://docs.rs/png/0.18.1/png/struct.Decoder.html",
+      "http_status": 200,
+      "title": "Decoder in png - Rust",
+      "decoded_html_utf8_sha256": "9ec6475faadb1e29cb7b9e6d0db05b859bc16f50ce9b2995273f82c3581ee130",
+      "advertises_requested_version": true,
+      "role_marker_found": true
+    },
+    {
+      "crate": "crc32fast",
+      "version": "1.5.4",
+      "url": "https://docs.rs/crc32fast/1.5.4/crc32fast/",
+      "http_status": 200,
+      "title": "crc32fast - Rust",
+      "decoded_html_utf8_sha256": "5772641e348da5184068315fd8d1c6b24a0e65374b657c92c59cb2696f19f5f1",
+      "advertises_requested_version": true,
+      "role_marker_found": true
+    },
+    {
+      "crate": "data-encoding",
+      "version": "2.11.1",
+      "url": "https://docs.rs/data-encoding/2.11.1/data_encoding/constant.BASE32.html",
+      "http_status": 200,
+      "title": "BASE32 in data_encoding - Rust",
+      "decoded_html_utf8_sha256": "caa876eff9ce861e42f903fcd657a3fad4289c510353b0d190c62fe691e7744e",
+      "advertises_requested_version": true,
+      "role_marker_found": true
+    },
+    {
+      "crate": "wasmparser",
+      "version": "0.263.0",
+      "url": "https://docs.rs/wasmparser/0.263.0/wasmparser/struct.Validator.html",
+      "http_status": 200,
+      "title": "Validator in wasmparser - Rust",
+      "decoded_html_utf8_sha256": "915f03eab0e9cc1aacc542269286c95908b50ae2c749d6d54177d11dc233dda7",
+      "advertises_requested_version": true,
+      "role_marker_found": true
+    }
+  ],
+  "compiler": "NOT_RUN",
+  "tests": "NOT_RUN",
+  "graph_integration": "root-owned, not present at observation"
+}

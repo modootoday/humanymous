@@ -1,0 +1,185 @@
+{
+  "schema": "humanymous.resource-watermark-source-review/1",
+  "baseline": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "baseline_registry": ".spec/evidence/20261106194112-go-migration-source-inventory/go-inventory.json",
+  "baseline_registry_sha256": "0a6f459192af626b85daf9fe1cbaeeab7d1221d7043c290907eb5d585a1483f2",
+  "actual_registry_sha256": "0a6f459192af626b85daf9fe1cbaeeab7d1221d7043c290907eb5d585a1483f2",
+  "investigation_start_head": "6a3678eaa45c1f49f362ce7f92ea79c98f0b65a8",
+  "file_count": 14,
+  "implementation_files": 12,
+  "test_files": 2,
+  "named_tests": 8,
+  "original_sot_08": "not located; provenance unresolved",
+  "rows": [
+    {
+      "path": "internal/watermark/codec_binary.go",
+      "baseline_row_pointer": "/files/298",
+      "baseline_sha256": "9c09a8a6477a42382de7bfb294d56300e94537e32724b7b4fca1ece3a831611d",
+      "current_sha256": "9c09a8a6477a42382de7bfb294d56300e94537e32724b7b4fca1ece3a831611d",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/codec_lsb.go",
+      "baseline_row_pointer": "/files/299",
+      "baseline_sha256": "cb8029b97101f9d5edc8729433b4458fdbd83ba6270646fb8e34def8373d11e3",
+      "current_sha256": "cb8029b97101f9d5edc8729433b4458fdbd83ba6270646fb8e34def8373d11e3",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/codec_png_multi.go",
+      "baseline_row_pointer": "/files/300",
+      "baseline_sha256": "80784a3ce3fcfeacc813179fce8a15d533de88c9f76ae84bac5151498fa02047",
+      "current_sha256": "80784a3ce3fcfeacc813179fce8a15d533de88c9f76ae84bac5151498fa02047",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/codec_png.go",
+      "baseline_row_pointer": "/files/301",
+      "baseline_sha256": "0dd3e4f756c8bbf4d8dfa567924304b0daa95fd744e3deabf14281b0be61bf4e",
+      "current_sha256": "0dd3e4f756c8bbf4d8dfa567924304b0daa95fd744e3deabf14281b0be61bf4e",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/codec_text.go",
+      "baseline_row_pointer": "/files/302",
+      "baseline_sha256": "492e03ebc2b329498c652bbac99edc2827d08305faccd186cf261097a8944e96",
+      "current_sha256": "492e03ebc2b329498c652bbac99edc2827d08305faccd186cf261097a8944e96",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/codec.go",
+      "baseline_row_pointer": "/files/303",
+      "baseline_sha256": "364088c28645a8995fca5770d6390009ad554b4cace12f54a088ee59da71b63b",
+      "current_sha256": "364088c28645a8995fca5770d6390009ad554b4cace12f54a088ee59da71b63b",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/codecwasm.go",
+      "baseline_row_pointer": "/files/304",
+      "baseline_sha256": "10b0856d488734b753573bc886c84f76aad4f6e245d9213075ab63b208e226d1",
+      "current_sha256": "10b0856d488734b753573bc886c84f76aad4f6e245d9213075ab63b208e226d1",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/ecc.go",
+      "baseline_row_pointer": "/files/305",
+      "baseline_sha256": "194d4a965ea22700b05f62bf12b750495390a60ef08603fc84f65a166edf3a50",
+      "current_sha256": "194d4a965ea22700b05f62bf12b750495390a60ef08603fc84f65a166edf3a50",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/extract.go",
+      "baseline_row_pointer": "/files/306",
+      "baseline_sha256": "3677bf29eab2366bf81f72c7f0caad4d34f740834a567022d68a4fed541ce88f",
+      "current_sha256": "3677bf29eab2366bf81f72c7f0caad4d34f740834a567022d68a4fed541ce88f",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/inject.go",
+      "baseline_row_pointer": "/files/307",
+      "baseline_sha256": "c96fa3c65ee8e6ac56154ed78859c3433cee16d51d4750c12ca43a763a699e2c",
+      "current_sha256": "c96fa3c65ee8e6ac56154ed78859c3433cee16d51d4750c12ca43a763a699e2c",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/ledger.go",
+      "baseline_row_pointer": "/files/308",
+      "baseline_sha256": "fdf14b277198e4323fa0d3d488f19d6fda6851821804ccc4d0be2ab23d32f9f6",
+      "current_sha256": "fdf14b277198e4323fa0d3d488f19d6fda6851821804ccc4d0be2ab23d32f9f6",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/lsb_test.go",
+      "baseline_row_pointer": "/files/309",
+      "baseline_sha256": "cb1f5a185db0dc9bcc64ebf85d9e86fa00d0bf78011e99440b3c01d93e1a057f",
+      "current_sha256": "cb1f5a185db0dc9bcc64ebf85d9e86fa00d0bf78011e99440b3c01d93e1a057f",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": [
+        "TestLSB_SurvivesMetadataStrip",
+        "TestLSB_DirectRoundTrip"
+      ]
+    },
+    {
+      "path": "internal/watermark/payload.go",
+      "baseline_row_pointer": "/files/310",
+      "baseline_sha256": "8ae90bae1c1560637fbbbd8cfb3773ce47b511e9bbc0245b1f302f8e1357fffc",
+      "current_sha256": "8ae90bae1c1560637fbbbd8cfb3773ce47b511e9bbc0245b1f302f8e1357fffc",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": []
+    },
+    {
+      "path": "internal/watermark/watermark_test.go",
+      "baseline_row_pointer": "/files/311",
+      "baseline_sha256": "560da81c0a925775f7b22be7de59bab5d604ee1a7caca346975bb4fa85d90e15",
+      "current_sha256": "560da81c0a925775f7b22be7de59bab5d604ee1a7caca346975bb4fa85d90e15",
+      "matches_baseline": true,
+      "baseline_status": "pending",
+      "proof_status": "source-read-only; no Rust mapping or execution proof",
+      "baseline_test_names": [
+        "TestRoundTrip_AllFamilies",
+        "TestSemantic_JSONStaysValid",
+        "TestSemantic_PNGChunksIntact",
+        "TestSemantic_WASMStillHasMagic",
+        "TestTrace_IdentifiesSessionAndDetectsForgery",
+        "TestFrameUnframe"
+      ]
+    }
+  ],
+  "consumers": [
+    {
+      "path": "cmd/server/resource_handlers.go",
+      "sha256": "3fec7408c0b623263c3730332b6e2510599a1d3c2f3311e491b342bb9cc5eae0"
+    },
+    {
+      "path": "cmd/server/helpers.go",
+      "sha256": "35651d0b0c0cc50edd74ec37915c14c5ca1d98dc4988e3e51d1ceb772bd6ff8a"
+    },
+    {
+      "path": "cmd/server/server.go",
+      "sha256": "e89b067fab0b83aa483fe9e82e1a1feaea68eaf1a433e7bb39f5ebcb7f576034"
+    },
+    {
+      "path": "test/redteam/watermark_strip.mjs",
+      "sha256": "32c3e08f12e3fa9d1a1797f895cce5f9438769fb2486f264022353d310f5e8d9"
+    }
+  ],
+  "rust_mapping": "not found by bounded source search",
+  "execution": "NOT_RUN; root acceptance and allocation required"
+}
