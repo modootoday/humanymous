@@ -290,3 +290,17 @@ be reminted. Derivation and key destruction serialize on one state lock. KDF
 failure never falls back to a cheaper algorithm. Exposing erasure requires a
 verified dual-control permit and durable persistence of the resulting snapshot;
 a test-only permit does not constitute an operational approval workflow.
+
+### Native runtime process Docker pilot
+
+The lab runtime-process profile executes the real humanymous-runtime binary with
+private piped startup/readiness, actual durable audit storage and an owned
+loopback origin inside one network-none non-root container. Its Rust pilot
+reuses runtime canonicalization and integrity signing, never copies a detector.
+Positive fixtures are client assertions, not human/browser qualification.
+Measure origin effects for valid requests and zero extra effects for replay,
+body mutation, missing session/report, reserved routes, unsupported capture and
+ambiguous framing. Check credential stripping, duplicate Set-Cookie preservation,
+authenticated audit recovery and session invalidation after process restart.
+Report unsupported collector/TLS/H2 and independent origin isolation explicitly;
+this bounded pilot does not complete full Core/Gate/browser/AT e2e.

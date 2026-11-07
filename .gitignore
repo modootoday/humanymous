@@ -74,6 +74,7 @@ Thumbs.db
 
 # Rust workspace and private Specfold working evidence.
 /target/
+/test/lab/runtime/target/
 /.spec.local/
 /.specfold/
 

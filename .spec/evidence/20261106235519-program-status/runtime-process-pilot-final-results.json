@@ -1,0 +1,80 @@
+{
+  "audit_records": 4,
+  "browser_or_human_executed": false,
+  "checks": [
+    "private startup",
+    "collect",
+    "valid origin",
+    "duplicate cookies",
+    "credentials stripped",
+    "replay",
+    "body mutation",
+    "counter not consumed on bad signature",
+    "missing session",
+    "unsupported TLS",
+    "reserved admin",
+    "ambiguous framing",
+    "missing report",
+    "authenticated audit recovery",
+    "minimized audit",
+    "restart invalidates session"
+  ],
+  "full_runtime_qualified": false,
+  "not_qualified": [
+    "browser collector",
+    "TLS/H2 capture",
+    "Pass recovery",
+    "assistive technology",
+    "independent origin isolation",
+    "independent witness"
+  ],
+  "origin_effects": 2,
+  "schema": "humanymous.runtime-process-pilot/1",
+  "scope": "real binary/session/RIT/durable audit/owned loopback origin",
+  "status": "passed",
+  "observed_at": "2026-11-07T00:39:32.681830+00:00",
+  "base_commit": "ead2dc6e335144156ef5f16d89dbc5be18ddc9ec",
+  "worktree_dirty": true,
+  "image_id": "sha256:013a2e24f0218265490c8684d08bd86580a534bb7b661b1d02b2a73c028d521a",
+  "source_manifest_sha256": "45b1a5dcd9183779d43962275e8ef8715ecef04025e50b98927baf0594faa165",
+  "pilot_clippy": "passed with -D warnings in image build",
+  "compose_file": "deployments/lab/compose.runtime.yaml",
+  "isolation": {
+    "network_mode": "none",
+    "user": "65532:65532",
+    "cap_drop": [
+      "ALL"
+    ],
+    "read_only": true,
+    "no_new_privileges": true
+  },
+  "additional_checks": {
+    "workspace_all_targets_locked": "passed",
+    "clippy_workspace_warnings_denied": "passed",
+    "fmt_all_check": "passed",
+    "eight_pure_libraries_wasm_check": "passed"
+  },
+  "log_hashes": {
+    "parallel-workspace-recheck.log": "8cea7bd844fca373c81f4d0ab907c21c32f33234270f4b51e1851247d26175ae",
+    "parallel-clippy-final.log": "2c2848b942ef412ccbf793c14b8be8c08b4270a707166806819cdc285bc45b71",
+    "parallel-fmt-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "parallel-wasm-check.log": "fe60ddf693d49def92ca1f17c19937e06808e5c98effb0ef26eee50ea0a3e4dd"
+  },
+  "host_source_hashes": {
+    "Cargo.toml": "baa1f2f9ce0f39939f9ae24a4ebcdc9651dfa3a62ed0b6cc50a204ce02ea1cce",
+    "Cargo.lock": "f738abd0db170edcb3dafc577b42f23a2cdc05bdd8b22c545fe165b607418390",
+    "crates/audit/Cargo.toml": "b0fea591015879638f54f253532fb9864c980bfd41367fa13adaef846f8fddc5",
+    "crates/runtime/src/application.rs": "69238710617f531f920872ef0e31abc81074167620d6b325dd49f3927d4f6084",
+    "crates/runtime/src/configuration.rs": "f0a6b6881502464f770484ec29d0dfe18a54750dc73c98aeaeced06864b832b0",
+    "crates/runtime/src/http.rs": "77a8d635bd1757ef127567c4a752400d5f3b0e5138aee9373309912b7f148891",
+    "crates/runtime/src/lib.rs": "cdcff402a22a9731f97425d9dd9f9d6aea01c822db35255efaff0125b704950e",
+    "crates/runtime/src/main.rs": "4fb92328ab51700b09b795047042589ef893b75ee16150af657cd1f9e4074553",
+    "crates/runtime/src/session.rs": "f73a0d14fe20b7bc0791936a037a8354e65148359fa77053d1546c15f4b7d0c8",
+    "crates/runtime/src/tests.rs": "acbeb04d0130b14669eb31aa0dd2707ba59b43fac60c8e218ab7d6a410d4036f",
+    "crates/runtime/tests/native_process.rs": "798bf2e84df9a1c0497ad00b3d18572fbda235bf94763b9d33a2ff37cc14fe4c",
+    "crates/audit/src/keys/custody.rs": "218d7a67d2e9898cd548d589068b48bdf5490717e477584d40e4890b98f9a9e0",
+    "crates/audit/src/keys/mod.rs": "830d1154eb89f3d9d3d6a972b7e38fe7992cd88f2ca3ec1d66deb110a3107cf6",
+    "crates/audit/src/keys/vault.rs": "b10eea3032e36fde5d9fb41acfed73402482109589297ffdd052f2d710bc4351",
+    "crates/audit/src/keys/custody/permissions.rs": "cda0428942563a5de7b20a3a05e7b242a2831da702e3c8a306ff8a5805b33502"
+  }
+}

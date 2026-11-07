@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T00:29:41Z
+updated: 2026-11-07T00:39:32Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -11,6 +11,8 @@ files:
   - {path: native-run.json, sha256: 4ba74caa96226dc6a12563b96701190e2f2b70ed59001808b1fbf3452fdd53ca, bytes: 211, store: repo}
   - {path: rust1991-six-native-results.json, sha256: 0a720e9d2ca0d5f30c487022fcf86390c40b3e28886c36954b2d69e7f5665b18, bytes: 35156, store: repo}
   - {path: parallel-integration-observation.json, sha256: 4d1b0270ed3f1c02d6c251225c4da75096c94bc1edf1f8054ec7ee0f282e3d57, bytes: 5128, store: repo}
+  - {path: runtime-process-pilot-results.json, sha256: a33cdda0808ebddb82506d0515d4e1c4ee01e03bbc68623d9fda59b48f245357, bytes: 1419, store: repo}
+  - {path: runtime-process-pilot-final-results.json, sha256: 8860924266dec81cc11165c0c99624473b96ae4086514ed6bfb21a818525c6a6, bytes: 3696, store: repo}
 ---
 
 # Program status

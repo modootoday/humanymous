@@ -56,7 +56,7 @@ Cargo 통합이 추가됐다. 각 채팅이 남긴 당시의 'root 통합 필요
 
 ## 현재 구현 근거의 범위
 
-- 13개 Cargo packages, edition2024, 사용자 승인 core MSRV/toolchain1.99.1,
+- 기존13개 Cargo packages에 runtime/browser2개를 통합 중이며, edition2024, 사용자 승인 core MSRV/toolchain1.99.1,
   shared unsafe forbid. 이전1.88 실행 기록은 당시의 이력으로 보존한다.
 - migration inventory314행: unit-parity ported54 / partial5 / pending255,
   verified_runtime_parity0. 원본 테스트 함수804개. 파일 수는 전체 완료율이 아니다.
@@ -149,13 +149,13 @@ flowchart TD
 | F10 | Meari interactive surface·CEF sandbox/MSRV 설계와 B pilot | 제품parity와 별도;browser UI 채팅 진행,REA 초기 분석 완료 |
 
 이미 완료된9개 채팅과 REA 초기 분석 결과를 바탕으로 다음 구현 채팅을 새로 생성했다.
-아래 세 채팅 모두 실제 active/inProgress 상태와 초기 파일 작성을 확인했다.
+아래 세 채팅의 초기 active/inProgress 상태를 확인했고 후속 구현 커밋을 대조했다.
 
 | 병렬 채팅 | Chat ID | 소유 범위 | 현재 상태 |
 |---|---|---|---|
-| Rust 런타임 · Core/Gate 세션과 collector | 01a1b35f-cf83-74f2-aad1-34b3aee60cda | crates/runtime, runtime-application spec | 진행: 세션·요청 무결성 application slice |
-| Rust 키 저장 · sealed custody와 vault 영속성 | 01a1b35f-d1a1-7553-a0ed-65d09b9042a7 | audit keys, audit-key-custody spec | 진행: 단일 writer·손상 시 fail-closed 영속성 |
-| Meari + CEF · Rust 검증 브라우저 UI | 01a1b35f-d3e9-7042-91a4-10c910a15515 | crates/browser, browser-ui spec | 진행: Rust 네이티브 UI와 CEF lifecycle 계약 |
+| Rust 런타임 · Core/Gate 세션과 collector | 01a1b35f-cf83-74f2-aad1-34b3aee60cda | crates/runtime, runtime-application spec | 9ce3190: bounded session/RIT/ingress 구현;collector 미구현 |
+| Rust 키 저장 · sealed custody와 vault 영속성 | 01a1b35f-d1a1-7553-a0ed-65d09b9042a7 | audit keys, audit-key-custody spec | 5a77605 완료: bounded custody;Windows49/Linux47 검증 |
+| Meari + CEF · Rust 검증 브라우저 UI | 01a1b35f-d3e9-7042-91a4-10c910a15515 | crates/browser, browser-ui spec | ead2dc6 완료: 관리UI·unit9;실제CEF 부착 미완료 |
 
 공통 Cargo/lock/toolchain/CI는 root 단일 writer가 통합한다. 모든 authored code는
 Rust이며 기준 toolchain은 1.99.1이다. CEF는 목표 내장 엔진이고 Meari는 UI 필수
@@ -171,7 +171,7 @@ pilot/e2e 검증 이후에만 인정한다.
 
 | 순서 | 묶음 / 담당 | 지금 할 일 | 다음 단계로 넘어가는 증거 |
 |---|---|---|---|
-| W0 | root 공통 기반 | 승인된 Rust1.99.1 적용·원격 native probe | a0b6dfc의 six tuple 결과;후속 source에 소급 금지 |
+| W0 | root 공통 기반 | 완료: 승인된 Rust1.99.1 적용·원격 native probe | a0b6dfc의 six tuple 모두 성공;후속 source에 소급 금지 |
 | W1-A | runtime 채팅 / F01 | 세션·ingress·collector/RIT application 계약과 실제 slice | 실제 source unit·부정 입력·replay·필수 신호 누락 거절;raw capture 미지원은 명시 |
 | W1-B | custody 채팅 / F02 | ACL·잠금·atomic 저장·회전·인증 복구 | tamper/wrong password/동시 writer/복구 unit·native 파일 검증;독립 witness는 별도 잔여 |
 | W1-C | browser 채팅 / F10 | Meari native controls와 CEF 수명·입력 경계 | 실제 UI 실행·접근성·sandbox·CEF 부착 증거;UI mock을 렌더링 성공으로 계산 금지 |
@@ -202,6 +202,18 @@ evidence:root/20261106235519의 rust1991-six-native-results.json이다.
 GitHub Actions run https://github.com/modootoday/humanymous/actions/runs/42317508643.
 
 ## 잔여 차단 항목 상세
+
+후속 실제 프로세스 Docker 파일럿이 network-none·UID65532·cap-drop ALL·read-only
+환경에서 통과했다. real runtime binary와 owned loopback origin을 사용하여
+정상효과2건,실패/replay/변조의 추가효과0건,감사4records 인증복구,재시작
+세션 무효화를 확인했다. typed client report fixture는 실제 브라우저/human이
+아니다. 근거는 evidence:root/20261106235519의 runtime-process-pilot-final-results.json,
+private source manifest 및 image ID이며 full_runtime_qualified=false다.
+초기 runtime3실패는 frozen scoring을 바꾸지 않고 fixture header 순서를 수정하여
+11개 통과로 전환됐다. 후속 취소 회귀 수정 후 전체workspace/all-target 테스트,
+warnings-denied Clippy·fmt·8개 순수library WASM 검사도 통과했다. 최종 image의
+pilot 자체 Clippy와 재실행까지 통과했다. 검증 후 기록된 source hash drift는0이다.
+이 결과 역시 기록된 dirty source/image에 귀속하며 최종 전체제품 자격화는 아니다.
 
 새 runtime/browser workspace 통합은 진행 중이다. browser native-ui Windows
 check와 unit8개, custody parent6passed/2ignored helper 시험을 관찰했다.

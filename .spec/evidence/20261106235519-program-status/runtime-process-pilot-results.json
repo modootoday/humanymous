@@ -1,0 +1,50 @@
+{
+  "audit_records": 4,
+  "browser_or_human_executed": false,
+  "checks": [
+    "private startup",
+    "collect",
+    "valid origin",
+    "duplicate cookies",
+    "credentials stripped",
+    "replay",
+    "body mutation",
+    "counter not consumed on bad signature",
+    "missing session",
+    "unsupported TLS",
+    "reserved admin",
+    "ambiguous framing",
+    "missing report",
+    "authenticated audit recovery",
+    "minimized audit",
+    "restart invalidates session"
+  ],
+  "full_runtime_qualified": false,
+  "not_qualified": [
+    "browser collector",
+    "TLS/H2 capture",
+    "Pass recovery",
+    "assistive technology",
+    "independent origin isolation",
+    "independent witness"
+  ],
+  "origin_effects": 2,
+  "schema": "humanymous.runtime-process-pilot/1",
+  "scope": "real binary/session/RIT/durable audit/owned loopback origin",
+  "status": "passed",
+  "observed_at": "2026-11-07T00:34:34.612368+00:00",
+  "base_commit": "bb2ec94f32dde0d7428a18d91c288caf53109dde",
+  "worktree_dirty": true,
+  "image_id": "sha256:470d8c96199f91649a3bcb03465fc19cd3ff7ef0569be7b39a1b8b29bc73005b",
+  "source_manifest_sha256": "54f51e41c15fa8d2ff954652dcf835ec35a24ab0569cb8d88285028295f62d3f",
+  "compose_file": "deployments/lab/compose.runtime.yaml",
+  "isolation": {
+    "network_mode": "none",
+    "user": "65532:65532",
+    "cap_drop": [
+      "ALL"
+    ],
+    "read_only": true,
+    "no_new_privileges": true
+  }
+}

@@ -1,0 +1,19 @@
+[package]
+name = "humanymous-runtime-pilot"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99.1"
+publish = false
+license = "Apache-2.0"
+
+[workspace]
+
+[dependencies]
+humanymous-runtime = { path = "../../../crates/runtime" }
+humanymous-integrity = { path = "../../../crates/integrity" }
+humanymous-audit = { path = "../../../crates/audit" }
+serde_json = "1.0"
+base64 = "0.22.1"
+
+[lints.rust]
+unsafe_code = "forbid"

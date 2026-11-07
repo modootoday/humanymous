@@ -1,0 +1,13 @@
+services:
+  runtime-pilot:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/runtime-pilot:local
+    build:
+      context: ../..
+      dockerfile: build/rust/runtime-pilot.Dockerfile
+    network_mode: none
+    pids_limit: 128
+    mem_limit: 384m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    profiles: [runtime]
