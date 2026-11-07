@@ -271,6 +271,15 @@ organizational independence. Windows namespace persistence uncertainty must be
 reported and cannot satisfy a FileAndDirectory requirement. Hosted file, ACL,
 crash, process and product qualification remain required.
 
+### Scoped erasure recovery
+
+Pending erasure recovery additionally requires the caller's trusted provisioned
+installation/node Scope. Compare it with the immutable ErasurePermit scope
+before reading or promoting pending state; checking only subject commitment is
+insufficient because historical sealed snapshots do not encode logical scope.
+The trusted service binds this argument to its configuration, never request JSON.
+This is explicit recovery authority, not a persisted-payload authentication claim.
+
 ### Trusted native snapshot boundary
 
 Runtime operational state uses an audit-owned TrustedSnapshot native primitive,

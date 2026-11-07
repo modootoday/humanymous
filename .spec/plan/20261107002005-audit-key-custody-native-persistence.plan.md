@@ -100,6 +100,17 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+New static security finding after8132117: recover_erasure_pending had no trusted
+Scope input, and validate_update checked only subject commitment. Normal vault
+mutation checked scope, but this lower-level pending recovery could accept a
+same-subject permit from another installation if miswired. Source now requires
+the configured scope before recovery I/O and reuses the permit predicate in
+Vault::authorizes. One normal hosted regression uses valid signatures from both
+scopes and verifies unchanged files on refusal plus correct final tombstone.
+This is a code-inspection finding, not a claimed reproduced hosted exploit.
+New compilation/execution remain not_run, and8132117 results remain historical.
+Evidence: [[evidence:root/20261107084148]]. No push or new dispatch was performed.
+
 ### Exact Ubuntu hosted subset, not whole-product completion
 
 Actual source8132117e7bf1445939d7dee9066fcf45ccf0915b contains audit20b57d2

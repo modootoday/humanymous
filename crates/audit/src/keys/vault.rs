@@ -38,6 +38,9 @@ impl ErasurePermit {
     pub fn operation_id(&self) -> &str {
         &self.operation
     }
+    pub(crate) fn bound_to(&self, scope: &crate::control::Scope) -> bool {
+        &self.scope == scope
+    }
     fn matches(&self, subject: &str) -> bool {
         self.target == crate::control::target_commitment(subject.as_bytes())
     }
@@ -103,7 +106,9 @@ impl Vault {
         Ok(vault)
     }
     pub(crate) fn authorizes(&self, permit: &ErasurePermit) -> bool {
-        self.scope.as_ref() == Some(&permit.scope)
+        self.scope
+            .as_ref()
+            .is_some_and(|scope| permit.bound_to(scope))
     }
     /// Strictly restore a secret snapshot. Empty means an explicitly new vault;
     /// corrupt data, invalid keys or resurrected tombstones never become fresh.

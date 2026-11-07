@@ -200,12 +200,17 @@ impl Custody {
     }
     /// Complete an interrupted erasure transaction only for its exact issued
     /// subject capability. A different tombstone cannot be smuggled in recovery.
+    /// Scope comes from trusted service configuration, never a request payload.
     pub fn recover_erasure_pending(
         &mut self,
         committed_passphrase: &[u8],
         pending_passphrase: &[u8],
         permit: &super::vault::ErasurePermit,
+        scope: &crate::control::Scope,
     ) -> io::Result<Durability> {
+        if !permit.bound_to(scope) {
+            return Err(invalid("erasure recovery scope mismatch"));
+        }
         self.recover_inner(committed_passphrase, pending_passphrase, Some(permit))
     }
     fn recover_inner(

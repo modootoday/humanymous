@@ -137,6 +137,122 @@ fn material() -> Result<KeyMaterial, humanymous_audit::keys::KeyError> {
 }
 
 #[test]
+fn pending_erasure_rejects_same_subject_permit_from_foreign_scope() {
+    let directory = Dir::new();
+    let foreign_directory = Dir::new();
+    let mut authority = directory.authority(LedgerBootstrap::New).unwrap();
+    let foreign_scope = Scope {
+        installation: "foreign-installation".into(),
+        node: "node".into(),
+    };
+    let foreign_policy = Administrators::new(
+        foreign_scope.clone(),
+        BTreeMap::from([
+            (
+                "one".into(),
+                SigningKey::from_bytes(&[11; 32]).verifying_key().to_bytes(),
+            ),
+            (
+                "two".into(),
+                SigningKey::from_bytes(&[12; 32]).verifying_key().to_bytes(),
+            ),
+        ]),
+        100,
+    )
+    .unwrap();
+    let mut foreign_authority = ControlAuthority::open(
+        &foreign_directory.0,
+        owner(&foreign_directory.0),
+        &[14; 32],
+        foreign_policy,
+        20,
+        LedgerBootstrap::New,
+    )
+    .unwrap();
+    let mut custody = directory.custody();
+    custody.load_or_create(b"pass", material).unwrap();
+    let vault = Vault::new_scoped(Mode::Hmac, 20, scope()).unwrap();
+    vault.pseudonymize("subject-a", "synthetic").unwrap();
+    vault.pseudonymize("subject-b", "synthetic").unwrap();
+    custody.persist_vault(&vault, b"pass").unwrap();
+    let proposal = authority
+        .propose(
+            Action::EraseSubject,
+            target_commitment(b"subject-a"),
+            10,
+            100,
+        )
+        .unwrap();
+    let (permit, _) = authority
+        .issue_erasure(&proposal, &approvals(&proposal), 20, "subject-a")
+        .unwrap();
+    let foreign_proposal = foreign_authority
+        .propose(
+            Action::EraseSubject,
+            target_commitment(b"subject-a"),
+            10,
+            100,
+        )
+        .unwrap();
+    let (foreign_permit, _) = foreign_authority
+        .issue_erasure(
+            &foreign_proposal,
+            &approvals(&foreign_proposal),
+            20,
+            "subject-a",
+        )
+        .unwrap();
+    vault.shred("subject-a", &permit).unwrap();
+    let candidate = KeyMaterial::new(
+        [7; 32],
+        vec![8; 32],
+        Some(vault.snapshot().unwrap().to_vec()),
+        None,
+    )
+    .unwrap();
+    let sealed = humanymous_audit::keys::seal(&candidate, b"pass").unwrap();
+    let original = fs::read(directory.0.join("keys.sealed")).unwrap();
+    let pending = directory.0.join("keys.pending");
+    fs::copy(directory.0.join("keys.sealed"), &pending).unwrap();
+    fs::write(&pending, &sealed).unwrap();
+    drop(custody);
+    let mut custody = directory.custody();
+    assert!(
+        custody
+            .recover_erasure_pending(b"pass", b"pass", &foreign_permit, &scope())
+            .is_err()
+    );
+    assert!(
+        custody
+            .recover_erasure_pending(b"pass", b"pass", &permit, &foreign_scope)
+            .is_err()
+    );
+    assert_eq!(fs::read(directory.0.join("keys.sealed")).unwrap(), original);
+    assert_eq!(fs::read(&pending).unwrap(), sealed);
+    custody
+        .recover_erasure_pending(b"pass", b"pass", &permit, &scope())
+        .unwrap();
+    assert!(!pending.exists());
+    let key = custody
+        .load_or_create(b"pass", || panic!("never regenerate erased linkage"))
+        .unwrap()
+        .0;
+    let restored = Vault::load_scoped(key.vault().unwrap(), Mode::Hmac, 20, scope()).unwrap();
+    assert!(
+        restored
+            .pseudonymize("subject-a", "value")
+            .unwrap()
+            .starts_with("shredded:")
+    );
+    assert!(
+        !restored
+            .pseudonymize("subject-b", "value")
+            .unwrap()
+            .starts_with("shredded:")
+    );
+}
+
+#[test]
 fn interrupted_rotation_requires_exact_authenticated_candidate_and_fresh_retained_grant() {
     let local = Dir::new();
     let independent = Dir::new();
@@ -1347,11 +1463,11 @@ fn interrupted_tombstone_requires_its_exact_subject_permit() {
         .unwrap();
     assert!(
         custody
-            .recover_erasure_pending(b"pass", b"pass", &permit_b)
+            .recover_erasure_pending(b"pass", b"pass", &permit_b, &scope())
             .is_err()
     );
     custody
-        .recover_erasure_pending(b"pass", b"pass", &permit_a)
+        .recover_erasure_pending(b"pass", b"pass", &permit_a, &scope())
         .unwrap();
     let key = custody
         .load_or_create(b"pass", || panic!("never remint"))

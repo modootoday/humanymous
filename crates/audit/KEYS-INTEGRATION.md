@@ -1,5 +1,19 @@
 # Sealed key compatibility integration
 
+## New unqualified erasure recovery scope correction
+
+After the fixed8132117 candidate, source inspection found pending erasure recovery
+checked the permit's subject but had no trusted installation/node scope input.
+`Custody::recover_erasure_pending(old,pending,permit,scope)` now requires that
+configured scope and rejects a differently scoped permit before recovery I/O.
+The same crate-private predicate is reused by ordinary Vault authorization.
+Historical envelopes do not encode logical scope; service configuration must
+provide it, never request JSON. Own Windows recovery callers were updated.
+One new normal hosted-only test uses two genuinely signed authorities/scopes for
+the same subject, verifies rejection preserves committed/pending bytes, then
+checks exact-scope tombstone recovery. It has not compiled or executed yet.
+The preceding8132117 native successes do not qualify this later correction.
+
 ## Latest actual hosted subset, source 8132117
 
 Fixed candidate8132117 includes audit20b57d2 unchanged. Ubuntu's full locked
