@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 288a437e3b1e270e2cd763f82d93b23dc4008531f1fa8eea1ee269693a533eae, bytes: 25033, store: repo}
+  - {path: baseline.json, sha256: b2777056065437c47b4ea270b2ca22c6b1f3de26c023b60026fbd16ac2970bf3, bytes: 26102, store: repo}
 ---
 
 # Convention audit baseline
@@ -119,3 +119,40 @@ regressions at frozen scope, without inheriting current whole-graph compilation,
 native factory, transport, flush/drain/JOIN or product qualification. No rerun
 was executed. Prior private source review is preserved; correction review SHA256
 3cfe146e399b666e3fdb1be93b7c3a783c2d53a8f39ce07a9044fb4bcdc4dd48.
+
+## Node handoff source correction and bounded resource follow-up
+
+Node0a1d3123 addresses the identified CA-HANDOFF source shape. Shared Pending
+retains the original wall/monotonic body/decision budget from entry; immutable
+body/observations cross the worker, while opaque BoundResponse survives the VM
+queue, replay/Request construction, fetch getter, function/argument and liveness
+preparation. Final original-budget check and one consume immediately precede
+next.call/Fetch.apply. Three budget tests and the1100ms getter under1000ms budget
+probe are authored, not independently executed here. CA-HANDOFF remains OPEN:
+actual late-origin0/503 and timely-origin1 controls, queued/fault/host lifecycle
+and ASGI cancellation/settlement qualification remain missing.
+
+Watermark frame/text/base32/opaque production review binds four leaves. Checked
+expanded size precedes output growth; shared64 candidate budget bounds recovery,
+distinct valid carriers are Ambiguous, CRC is corruption detection not identity.
+Text syntax/source grammar, actual resources and ledger-before-exposure remain
+runtime duties; PNG/WASM remain unsupported. No complete MIME or actual codec
+execution qualification is inferred from these scoped semantic reads.
+
+At immutable577e1940, public Spec253 docs had0errors/0warnings. Independent Git
+archive exit0 streamed651 evidence files and141 indexes:510 inline repo rows
+matched SHA256/byte lengths, with0mismatches. Noninline/remote metadata and actual
+semantic/runtime sufficiency are outside this integrity proof. No EVIDENCE02
+regression was found in covered rows, not a universal evidence pass.
+
+Interactive v1.6 contract critique required terminal state outside payload queues
+and finite queued/in-flight accounting. Owner response addresses both: fixed
+terminal state, independent nonblocking close/cancel, FIFO startup/control,
+4096byte chunks/16slots plus one in-flight chunk per output stream, cumulative
+256KiB caps and132096 input-byte ceiling. This is design acceptance only, not
+implementation, worker settlement or actual .NET/native host proof. First outer
+fault transaction remains held pending target-collision diagnosis, actualcases0;
+observed component gates must not become qualified fault execution. Rule94 owner
+was asked to distinguish confirmed same-target allocation/lock wait from unproven
+simultaneous writes/corruption. No foreign process/lease action or new audit
+workload follows. Private source-bound review hashes are in baseline.json.

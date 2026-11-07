@@ -528,5 +528,24 @@
     "current_source_leaves_equal": 5,
     "latest_graph_or_native_qualified": false,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_node_watermark_integrity_interactive": {
+    "private_review_sha256": {
+      "node-original-handoff-source-review-001.json": "3faf7147b98aa68fbc7bf754069504ffa090dc21d16d1d9daeaf29a48abbf4a6",
+      "watermark-carrier-source-review-001.json": "0fdf1c8c7519c4b2e98baa9962af2e8c1a1c12c009055ebf877dadc6f4371d36",
+      "public-git-attachment-reaudit-002.json": "d5a3322093d5f5974e8e2d7247998ceb1463982088ff80899ad479c08eef1cf9",
+      "interactive-contract-review-001.json": "66356c2c94fb1670a77f846c01bd6e92a733146f6408528a22b23ea549aeb509"
+    },
+    "node_source_correction": "0a1d31231455c51d97ac126167ee310201ca462b",
+    "CA_HANDOFF_closed": false,
+    "public_git_reattest_source": "577e1940c7568b140bb640e2a50aef0730a349cb",
+    "public_spec_docs": 253,
+    "inline_git_attachment_rows": 510,
+    "attachment_mismatches": 0,
+    "interactive_contract_gaps_addressed": true,
+    "interactive_implementation_qualified": false,
+    "actual_outer_fault_cases": 0,
+    "target_collision_diagnosis_pending": true,
+    "new_audit_runtime_workloads": 0
   }
 }
