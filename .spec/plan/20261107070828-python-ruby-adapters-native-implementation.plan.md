@@ -196,3 +196,29 @@ reserved actual HTTP groups: three ignored groups/ten planned cases, plus two
 reused HTTP framing pure definitions. Source was excluded by local Windows and
 package-tool cfg, so NOT_COMPILED/NOT_RUN. Remaining timeout, abort, disconnect
 and live-authority invalid cases keep complete server-pilot harness=false.
+
+WSGI source follow-through now authors six actual groups/28 cases across two
+frameworks, plus two pure framing groups. Added live-authority invalid four-case
+matrix, partial abort/input deadline, accepted IPC response timeout, and gated
+ALLOW disconnect with matched connected control. Exact ALLOW audit verdict and
+unchanged/absent effects prevent a missing decision from masquerading as the
+disconnect result. Evidence entry is bounded before the adapter deadline.
+Host process/config/HTTP lifecycle and authority runtime/gate ownership were
+split into cohesive support modules. Authority listener cancellation is joined;
+stalled IPC worker explicitly joins and has unwind cleanup. Unix compile/runtime
+remain NOT_RUN; the source-complete contract deliberately retains executable
+harness=false until native compilation. No earlier Windows green covers it.
+
+CI owner requested Docker build policy and single-source accounting. Node pilot
+Dockerfile now sets jobs1/incremental0 before every Cargo RUN. New host-pilot
+contract requires five Rust groups (three actual/two pure), twelve unique tuple/
+authority rows and sixty actual cases: production4, synthetic ALLOW28, synthetic
+authority-negative16, unavailable12. It produces no qualification.json and no
+production browser/full-product claim. Image build/execution remains NOT_RUN.
+
+New explicit user direction supersedes hosted-only blanket: local Windows/WSL
+actual timings/resources may be compared with GitHub. Root declared a benchmark
+quiet window; no new Cargo/native/runtime/model/Docker execution was started.
+Our B was already returned, session93294 terminal0, no owned runtime/CPU/GPU
+server/process. Coding/docs continue; actual execution awaits root allocation
+after measurements. Root common manifests/lock/toolchain remain untouched here.

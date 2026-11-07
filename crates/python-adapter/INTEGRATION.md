@@ -50,15 +50,22 @@ real Flask/Django servers with native binary views/cookies/effect receipts. Priv
 input uses a configuration JSON STRING, not a permissive parsed-map re-encoding.
 The approved graph window added existing native-security/audit/signals dev path
 dependencies; root resolved the lock with zero new external packages. Separate
-waitress-requirement.txt pins the official3.0.2 wheel SHA256 for hosted-only
+waitress-requirement.txt pins the official3.0.2 wheel SHA256 for allocated pilot
 installation. No package has been installed or executed. Its candidate
 profile must enable channel_request_lookahead and bounded server input deadlines.
 
-New Unix-only tests/wsgi_server.rs contains three ignored actual HTTP groups,
-ten planned cases across Flask/Django: production authority non-ALLOW with exact
-audit count/no effect, real-engine synthetic ALLOW with binary/two-cookie/effect
-hash/audit checks, and dependency-down/unknown/reserved rejection. It reuses the
-shared test-only Evidence/audit fixture. This Unix source was excluded by local
-Windows/package-tool cfg and remains NOT_COMPILED/NOT_RUN. Timeout, body-abort,
-pre-handoff disconnect and live-authority oversized/upgrade cases still need
-implementation; server-pilot-contract keeps complete harness=false.
+Unix-only tests/wsgi_server.rs now contains six mandatory ignored actual HTTP
+groups/28 planned cases across Flask/Django, plus two pure HTTP framing groups.
+It covers production non-ALLOW/audit/no effect; synthetic ALLOW binary/cookies/
+effect hash/audit; live-authority unknown/reserved/oversize/upgrade; dependency
+down; partial-body abort/input deadline; accepted IPC response timeout; and gated
+ALLOW disconnect with a matched connected control. Host lifecycle and authority
+orchestration live in separate support modules; Evidence/audit reuse is shared.
+All new Unix source remains NOT_COMPILED/NOT_RUN. Eight Rust groups must pass
+without ignores/filters; source completeness is not executable qualification.
+
+User subsequently authorized actual local Windows/WSL execution for comparative
+measurements as well as hosted execution. Root allocation remains required;
+the active benchmark quiet window permits no new build/runtime commands. The
+historical HUMANYMOUS_HOSTED_NATIVE_PILOT opt-in name is unchanged and does not
+attest where a run occurred. Product e2e remains isolated Docker-only.

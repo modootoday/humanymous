@@ -128,9 +128,13 @@ No success from a label, cross-compilation or symbol listing alone.
 ## Verification and critique reflected
 
 Common local/hosted policy canon: sot:root/program-roadmap and sot:root/delivery.
-Local pure units cover config/route/body/provenance/admission only. Actual host
-callbacks/framework processes, native package install and crossOS IPC/ACL execute
-on hosted, product acceptance Docker-only. No new local runtime pilots.
+User's later explicit direction authorizes actual local Windows/WSL build/test/
+runtime measurements as well as hosted runs to compare execution policy. Root
+allocates execution; no new Cargo/native/runtime/model/Docker command starts
+during the benchmark quiet window. Historical hosted-only restrictions remain
+historical evidence context, not a current prohibition. Product acceptance
+remains isolated Docker-only. Each receipt states its actual execution surface;
+the historical HOSTED opt-in variable does not establish hosted provenance.
 
 P0 findings incorporated: do not disguise CGI maps as Node raw evidence; a blocking
 host read requires a server deadline; do not invoke application on expired result;
@@ -203,16 +207,24 @@ and append independent body-length/SHA256 effect receipts in the owned lab.
 No foreign executable source or code-string factory exists. The production module
 must exclude this feature, enforced by installed capability checks.
 
-The upstream server factory command is a later hosted harness seam, not a runnable
-finished acceptance suite. Waitress3.0.2 is a researched candidate (not provisioned
-or audited here); its pinned source exposes REQUEST_URI and a disconnect callable.
-Adding this dependency remains queued for root/CI approval; requirements are not
-silently changed. Existing component smoke counts do not include unrun HTTP-server
-cases. Real production nonALLOW/audit/noeffect and synthetic-engine ALLOW/body/
-cookies/effect cases remain mandatory separate hosted acceptance.
+Root approved and integrated three existing Rust dev path dependencies and the
+separate Waitress3.0.2 official wheel-hash recipe. No new external Rust package
+version was added; installation and installed-closure audit remain NOT_RUN.
+Pinned upstream source exposes REQUEST_URI and a disconnect callable.
+Unix-only wsgi_server authors six mandatory actual groups/28 planned cases and
+two pure framing groups. Separate host/authority support owns process/listener
+cleanup and reuses shared test-only evidence/audit construction. Gated-disconnect
+cases include a matched connected control, an early evidence timing assertion
+and exact ALLOW audit records; no-effect alone is insufficient. Accepted IPC
+timeout proves a request reached the stalled peer, not merely an absent socket.
+Live-authority invalid requests must preserve the original effect/audit counts.
+Incomplete input must close within the separately configured server deadline.
+Existing object smoke counts do not include these unrun HTTP-server cases.
 adapters/python/server-pilot-contract.json preserves this mandatory gate with
-executableHarnessImplemented=false and executedCases=0. It is not satisfied by
-object smoke or a source-only factory. No server group is silently skipped green.
+harnessSourceImplemented=true but executableHarnessImplemented=false pending the first
+Unix compile, and executedCases=0. Eight groups must execute with zero ignored/
+filtered cases. No source/object-smoke result qualifies actual runtime or Windows
+ABI/IPC; no server group is silently skipped green.
 
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
