@@ -1,11 +1,11 @@
 use serde::de::DeserializeOwned;
 use std::io::{self, BufRead};
-mod cursor;
+pub(crate) mod cursor;
 use cursor::FrameCursor;
 // Private S1 primitive awaiting the read-only bounded inspection consumer.
 // Keep it outside production decoding until that profile is explicitly wired.
 #[cfg(test)]
-mod preflight;
+pub(crate) mod preflight;
 
 /// Successfully framed values and the byte offset safe for append recovery.
 pub(super) struct Frames<T> {
@@ -27,7 +27,13 @@ pub(super) fn decode<T: DeserializeOwned>(
         complete_bytes: 0,
         torn_tail: false,
     };
-    while let Some(content) = cursor.next_frame()? {
+    while let Some(content) = cursor.next_frame().map_err(|error| {
+        if error.kind() == io::ErrorKind::FileTooLarge {
+            invalid(error)
+        } else {
+            error
+        }
+    })? {
         if !content.is_empty() {
             result
                 .values
@@ -83,6 +89,10 @@ mod tests {
     fn bounds_include_newline_and_apply_to_unterminated_frames() {
         assert!(read(b"{}\n", 3, false).is_ok());
         assert!(read(b"{}\n", 2, true).is_err());
+        assert_eq!(
+            read(b"{}\n", 2, true).err().unwrap().kind(),
+            io::ErrorKind::InvalidData
+        );
         assert!(read(b"1234", 3, true).is_err());
         assert!(read(b"", 0, true).is_err());
         let clean = read(b"", 3, false).unwrap();

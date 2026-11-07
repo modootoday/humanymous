@@ -7,6 +7,8 @@ mod checks;
 // read-only scanner owns complete EOF, resource and source-identity checks.
 #[cfg(test)]
 mod incremental;
+#[cfg(test)]
+mod scan;
 
 /// Stable mismatch classes returned by the historical offline verifier.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]

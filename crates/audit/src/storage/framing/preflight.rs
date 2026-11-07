@@ -3,7 +3,7 @@
 const MAX_DEPTH: usize = 64;
 
 #[derive(Clone, Copy)]
-pub(super) struct Limits {
+pub(crate) struct Limits {
     pub strings: usize,
     pub array_items: usize,
     pub values: usize,
@@ -11,7 +11,7 @@ pub(super) struct Limits {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub(super) enum Exhausted {
+pub(crate) enum Exhausted {
     InvalidLimits,
     Strings,
     ArrayItems,
@@ -20,7 +20,7 @@ pub(super) enum Exhausted {
 }
 
 #[derive(Debug, Default, PartialEq, Eq)]
-pub(super) struct Counts {
+pub(crate) struct Counts {
     pub strings: usize,
     pub values: usize,
     pub depth: usize,
@@ -45,7 +45,7 @@ fn add(value: &mut usize, count: usize, limit: usize, error: Exhausted) -> Resul
 
 /// Count resources before owned decoding. Success says only that the lexical
 /// budgets fit. The existing semantic decoder must still accept the same bytes.
-pub(super) fn check(bytes: &[u8], limits: Limits) -> Result<Counts, Exhausted> {
+pub(crate) fn check(bytes: &[u8], limits: Limits) -> Result<Counts, Exhausted> {
     if limits.strings == 0
         || limits.array_items == 0
         || limits.values == 0

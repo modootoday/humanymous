@@ -29,6 +29,11 @@ consumer promotion, new dependency/manifest edit or validation workload is impli
 ### Qualification boundary and remaining product obligations
 
 Qualification is exact-source and scope-specific. The latest source checkpoint
+is an unqualified private Phase-A scanner prototype,
+[[evidence:root/20261107123751]]. Seven pure tests authored, compiler/Clippy/
+execution NOT_RUN. Metadata does not authenticate records/checkpoints. Native
+source production remains Unsupported; no CLI/runtime or healthy owner is wired.
+The preceding qualified source
 for incremental diagnostic checking,14f3fbdd, passed scoped check/strict Clippy
 and11 focused Rust tests in [[evidence:root/20261107121521]], with128-path zero
 drift. Shared checks, bounded hash/signature entrypoints and test-only compatibility/

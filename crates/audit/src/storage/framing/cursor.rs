@@ -2,7 +2,7 @@
 use super::invalid;
 use std::io::{self, BufRead};
 
-pub(super) struct FrameCursor<R> {
+pub(crate) struct FrameCursor<R> {
     reader: R,
     line: Vec<u8>,
     max_frame: usize,
@@ -41,6 +41,19 @@ impl<R: BufRead> FrameCursor<R> {
     /// Empty committed lines are returned as empty slices. Only LF and one
     /// preceding CR are removed. A caller must decode/authenticate every frame.
     pub fn next_frame(&mut self) -> io::Result<Option<&[u8]>> {
+        self.next_raw_frame().map(|frame| frame.map(content))
+    }
+
+    #[cfg(test)]
+    pub fn raw_tail(&self) -> &[u8] {
+        if self.finished && self.torn_tail {
+            &self.line
+        } else {
+            &[]
+        }
+    }
+
+    pub fn next_raw_frame(&mut self) -> io::Result<Option<&[u8]>> {
         if self.failed {
             return Err(invalid("JSONL cursor already failed"));
         }
@@ -71,7 +84,7 @@ impl<R: BufRead> FrameCursor<R> {
                 .len()
                 .checked_add(count)
                 .filter(|length| *length <= self.max_frame)
-                .ok_or_else(|| invalid("JSONL frame exceeds configured limit"))?;
+                .ok_or_else(|| resource("JSONL frame exceeds configured limit"))?;
             if length > self.line.capacity() {
                 let capacity = self
                     .line
@@ -90,15 +103,23 @@ impl<R: BufRead> FrameCursor<R> {
                 self.complete_bytes = self
                     .complete_bytes
                     .checked_add(
-                        u64::try_from(length).map_err(|_| invalid("JSONL offset overflow"))?,
+                        u64::try_from(length).map_err(|_| resource("JSONL offset overflow"))?,
                     )
-                    .ok_or_else(|| invalid("JSONL offset overflow"))?;
+                    .ok_or_else(|| resource("JSONL offset overflow"))?;
                 self.failed = false;
-                let content = self.line.strip_suffix(b"\n").expect("framed newline");
-                return Ok(Some(content.strip_suffix(b"\r").unwrap_or(content)));
+                return Ok(Some(&self.line));
             }
         }
     }
+}
+
+pub(crate) fn content(raw: &[u8]) -> &[u8] {
+    let content = raw.strip_suffix(b"\n").expect("framed newline");
+    content.strip_suffix(b"\r").unwrap_or(content)
+}
+
+fn resource(message: &'static str) -> io::Error {
+    io::Error::new(io::ErrorKind::FileTooLarge, message)
 }
 
 #[cfg(test)]

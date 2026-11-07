@@ -1,5 +1,15 @@
 # Sealed key compatibility integration
 
+## Private Phase-A scanner source, not executed
+
+Sealed per-segment/sidecar Source and bounded raw Frames now compose metadata
+checks with exact physical pin, transcript digests, resource guards and final
+source/deadline refusal. Native open explicitly Unsupported; test Source is an
+in-memory oracle. Seven pure tests authored NOT_RUN. No HMAC/signature/Merkle or
+healthy diagnostic success is emitted by Phase A. Evidence123751. Phase B and
+actual native identity/memory/fault venue remain unwired. No workload held;
+captured140 below is historical exact319a and does not qualify these new edits.
+
 ## Captured full audit regression140, later dependency activation excluded
 
 Root C full package all-target locked tests at319a5992 (Rust14f3) passed140;

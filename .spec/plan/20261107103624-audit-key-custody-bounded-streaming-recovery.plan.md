@@ -417,6 +417,15 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Private Phase-A core now uses sealed per-segment Source, separate sidecar reader,
+shared raw framing/preflight before owned decode, finite byte/value/profile
+guards and absolute cancellation/deadline polls through final source checks.
+It records exact raw transcript digests/offsets and checks node/progression/exact
+physical pin/new-install metadata only. Native Source producer remains explicitly
+Unsupported. Seven pure tests authored NOT_RUN; in-memory Source is a fixture
+oracle, not native/memory proof. Evidence123751. Phase B crypto/frontier/transcript
+join, actual identity producer and native capacity/fault venue remain pending.
+
 Captured319a5992 (Rust14f3) full audit package at allocated C actually passed140,
 failed/filter/measured0;5 exact ignored helpers and2 zero binaries excluded,
 11 single summaries and all named parents reconcile. Raw121350/full-*, public
