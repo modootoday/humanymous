@@ -497,3 +497,22 @@ settle the external hosted fixture's public capture path/test target without
 exposing owner constructors. Exact72pure/5actual test anchors and remaining
 epoch/fleet/Runtime/Docker gates are recorded. No source/import/manifest/move or
 compiler action occurred; the existing source claim stays until Root's freeze.
+
+## Selected formatter repair after CORE-SLICE-01
+
+Root reported the Nativeguard batch's final global fmt failure at correlation/
+tests.rs::oracle_velocity_remains_weight_zero. Selected cargo fmt -p
+humanymous-network -- --check reproduced exit1: the longer core-qualified lookup
+needed one line wrap. cargo fmt -p humanymous-network changed ONLY
+crates/network/src/correlation/tests.rs; selected fmt check then exited0.
+Diff inspection and whitespace-normalized content comparison confirm no token,
+string, behavior or visibility change. No other package/global formatter or
+manifest was modified. No unit/compiler/Clippy rerun was performed or inferred.
+
+Exact source SHA256 before:
+b958f9195c6c23fc415e91f406a617e8e8a104c021d007371995e953b64b0298
+After:
+92693b32f37ff9a1418498b5eba8e0da985eff1403a61aacb59bba269a32097a
+
+This formatting-only checkpoint preserves earlier source-specific test receipts
+as historical evidence; it does not create a new provider or product result.
