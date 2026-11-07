@@ -14,6 +14,43 @@ rel:
 
 # Rust migration conventions
 
+## Local Docker engine identity and cleanup
+
+The user's 2026-11-07 correction establishes Windows Docker Desktop's
+desktop-linux context as the default local container engine. Invoke the Windows
+docker.exe explicitly with --context desktop-linux. If PATH does not resolve it,
+use the installed C:/Program Files/Docker/Docker/resources/bin/docker.exe; never
+silently substitute a WSL docker executable or a standalone WSL daemon.
+
+Before build, run or cleanup, inspect the selected context endpoint, server ID,
+server version and OS type. The expected Desktop endpoint is
+npipe:////./pipe/dockerDesktopLinuxEngine and container OS is Linux. Retain the
+observed server ID in private execution evidence. IDs are observed bindings,
+not universal hardcoded constants: an unexpected change requires resolving the
+engine identity before mutating resources. A WSL client is equivalent only if
+its server ID is verified to match the selected Desktop engine and its use is
+explicitly allocated. WSL-native Rust compilation is a separate valid profile.
+
+Docker-SDK clients such as act must receive an explicit Desktop DOCKER_HOST;
+Docker CLI context selection alone does not establish their engine affinity.
+Record local-act provenance and do not accept emulated GitHub environment
+variables as genuine hosted evidence. Real hosted Linux jobs use their own
+runner engine and must retain their distinct execution context.
+
+The investigation found different servers: Windows Desktop 29.9.2 and standalone
+WSL Docker 29.1.3. Earlier WSL act/image preparation therefore belongs to that
+separate engine and is not a Desktop benchmark. User-authorized image prune
+removed only images not referenced by any running or stopped container: Desktop
+49 to one image, reported 20.55 GB reclaimed; WSL seven to one image, reported
+1.704 GB reclaimed. Both containers remained. Volumes and build caches were not
+pruned. These are Docker-reported logical reclaim figures, not proof of Windows
+VHD compaction or identical host filesystem free-space growth.
+
+Future cleanup must name its scope. Image cleanup uses image prune --all only
+when authorized; system prune, volume prune, builder prune and container removal
+are separate operations. Never broaden an image-cleanup request to those scopes.
+The cross-tool operational rule is .agents/rules/96-docker-engine-affinity.md.
+
 ## Thirty-six-member hosted-candidate integration
 
 Candidate a26d1c3 was pushed and produced run42354873001, which terminated at
