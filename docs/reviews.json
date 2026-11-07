@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/storage/mod.rs",
+  "sha256": "f964d7e238744d998d31f4a06c93347db4330aee75b250c4402f1b6de127d542",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete storage composition/recover_segment and bounded JSONL decoder with source fixtures. Complete newline is commit boundary even for valid JSON; final torn frame alone is eligible for explicit repair, framed corruption/oversize still fail. Repair truncates and syncs regular file, does not acquire exclusive trusted directory ownership or authenticate history. Public continuity guide records byte preservation and exact repaired count. Source read only; no new storage/runtime test executed.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/framing.rs",
+  "sha256": "362d8fc7a1ba1007584cb98e6d05a16af355463375482da616dcb2dead5caf2c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete storage composition/recover_segment and bounded JSONL decoder with source fixtures. Complete newline is commit boundary even for valid JSON; final torn frame alone is eligible for explicit repair, framed corruption/oversize still fail. Repair truncates and syncs regular file, does not acquire exclusive trusted directory ownership or authenticate history. Public continuity guide records byte preservation and exact repaired count. Source read only; no new storage/runtime test executed.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md"
+  ]
+},
+{
   "source": "crates/runtime/src/http/origin_response.rs",
   "sha256": "2443d67c8d86bfb61f5aa8a1467fd6b8c94cb7c27599406d86024c5120f2c950",
   "reviewer": "codex/rust-pages",

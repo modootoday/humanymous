@@ -35,6 +35,12 @@ ownership itself. Parsing recovered frames alone does not authenticate their
 chain. Keep repair, authenticated replay and independent-head verification as
 separate steps and report the number of truncated bytes.
 
+A terminal JSON value without its newline is uncommitted even if its JSON is
+valid. Recovery may discard that final incomplete frame; malformed
+newline-terminated frames still fail. The configured frame bound includes the
+newline and also applies to unterminated data, so enabling tail repair does not
+permit an oversized or corrupt frame. Preserve the original bytes before repair.
+
 For reproducible frozen component comparisons, from the repository root run:
 
 ```console
