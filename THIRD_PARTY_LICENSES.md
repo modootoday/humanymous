@@ -18,6 +18,16 @@ The historical module source links below remain provenance references. Their
 license texts can be inspected at the linked source or in the original Go module
 cache; Go runtime or wasm_exec.js inclusion is not implied for Rust candidates.
 
+## Rust model RNG compatibility source — BSD-3-Clause
+
+The model RNG algorithms and tables translate Go 1.26.3 math/rand into Rust.
+Copyright 2009 The Go Authors. All rights reserved. The complete notice is
+retained in [the RNG license](crates/sdk/humanymous-core/src/model/training/rng/LICENSE).
+Frozen upstream source snippets in the core model test fixtures retain the same
+license. The source identities are recorded in the model RNG provenance evidence.
+This attribution covers those translated sources and snippets; it does not prove
+complete dependency or notice contents for a particular distributed artifact.
+
 ## Historical Go standard library & WASM loader — BSD-3-Clause
 
 > Copyright (c) 2009 The Go Authors. All rights reserved.

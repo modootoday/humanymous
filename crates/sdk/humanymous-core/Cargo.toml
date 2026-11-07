@@ -1,5 +1,6 @@
 [package]
 name = "humanymous-core"
+description = "Humanymous security contracts and pure automation-resistance engines"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

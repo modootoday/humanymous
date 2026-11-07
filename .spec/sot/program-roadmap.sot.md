@@ -30,6 +30,16 @@ is committed at c67d07c0114bd04793410f82f7182de7bfa6df2c. Full workspace,
 extracted-package, Cross-OS and
 actual native/browser/Docker gates have not been satisfied by these local checks.
 
+The core consumer follow-up adds98 actual library-unit passes (network72 and
+collector26) and a successful isolated default-library consumer of a150-file
+source-only archive. Normal locked offline package verification failed because
+the versioned transitional test-support development dependency is absent from the
+registry index. The source-only archive omitted its lockfile and skipped Cargo's
+verification step; its separate successful consumer run does not erase that
+failure or establish registry readiness. Aggregate/package RNG attribution and
+full license/provenance inclusion are now prepared; full artifact notice review
+and all packaging/role gates remain separate requirements.
+
 The user explicitly confirmed the eight-public-package baseline on 2026-11-08.
 The design gate is satisfied. Root coordinates exact source/hash handoffs before
 each package/path slice, integrates and verifies the slice, then synchronizes

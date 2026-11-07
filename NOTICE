@@ -15,6 +15,17 @@ CONDITIONS OF ANY KIND, either express or implied.
 Authors. The Apache License does not grant permission to use them; see TRADEMARK.md.
 
 --------------------------------------------------------------------------------
+Current Rust model RNG compatibility source:
+
+  The Go 1.26.3 math/rand algorithms and tables are translated into Rust under
+  crates/sdk/humanymous-core/src/model/training/rng/.
+  Copyright 2009 The Go Authors. All rights reserved. BSD-3-Clause.
+  The complete upstream notice is retained in that directory's LICENSE.
+  Frozen Go source snippets under the core model test fixtures retain the same
+  notice. This attribution does not imply execution of a Go runtime or complete
+  notice verification for a particular binary, archive or container.
+
+--------------------------------------------------------------------------------
 Historical Go engine and Gate dependency inventory (provenance only; this list
 does not describe the contents of current Rust candidate artifacts):
 

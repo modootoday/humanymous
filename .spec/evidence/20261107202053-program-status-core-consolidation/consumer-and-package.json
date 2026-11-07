@@ -1,0 +1,150 @@
+{
+  "schema": "humanymous.core-consumer-package/1",
+  "recorded_utc": "2026-11-07T20:29:32.3338510+00:00",
+  "status": "BOUNDED_CONSUMER_PASS_FULL_PACKAGE_VERIFICATION_PENDING",
+  "observed_head": "03b3e0bbf71f6e8ec6617e47211b19fb5f862526",
+  "package_authored_metadata_notice_additions_uncommitted": true,
+  "consumer_units": {
+    "input_differences": 0,
+    "collector": 26,
+    "failed": 0,
+    "filtered": 0,
+    "network": 72,
+    "exit": 0,
+    "ignored": 0,
+    "total": 98,
+    "elapsed_ms": 6707,
+    "selected_input_files": 264
+  },
+  "full_cargo_package": {
+    "failure": "Versioned dev dependency humanymous-test-support absent from offline crates.io index",
+    "test_support_source_archive_generated": true,
+    "core_package_verification": false,
+    "exit": 101
+  },
+  "source_only_package": {
+    "exit": 0,
+    "archive_members": 150,
+    "extracted_differences": 0,
+    "archive_sha256": "29b68a3b8dd088aed30fd370bafd69c6b633740d53f76c22ff9b86d75b7dd6b9",
+    "exclude_lockfile": true,
+    "archive_bytes": 414752,
+    "no_verify": true,
+    "extracted_files": 150
+  },
+  "extracted_consumer": {
+    "locked_offline": true,
+    "all_seven_context_imports": true,
+    "registry_readiness": false,
+    "exit": 0,
+    "full_package_tests": false,
+    "default_library_only": true,
+    "isolated_workspace": true,
+    "dependency": "Extracted normalized core source archive"
+  },
+  "notices": {
+    "full_license_source": "src/model/training/rng/LICENSE",
+    "project_license": "Apache-2.0",
+    "source_ids": "src/model/training/rng/rng-upstream-provenance.json",
+    "full_dependency_notice_inventory": false,
+    "model_rng_and_frozen_go_sources": "Go Authors BSD notice",
+    "fixture_license_source": "tests/model/fixtures/LICENSE"
+  },
+  "artifacts": [
+    {
+      "private_relative_path": "consumer-pure/inputs.before.json",
+      "sha256": "5c8b390fd101bbee3086462be8abbf0133944dc885fa526f4857ff808d5845a9",
+      "bytes": 42278
+    },
+    {
+      "private_relative_path": "consumer-pure/inputs.after.json",
+      "sha256": "5c8b390fd101bbee3086462be8abbf0133944dc885fa526f4857ff808d5845a9",
+      "bytes": 42278
+    },
+    {
+      "private_relative_path": "consumer-pure/test.stdout",
+      "sha256": "50eb3444239db197ce7cc47999e4b2bad5979c3bd9cf3af691da628fa5c1622d",
+      "bytes": 8949
+    },
+    {
+      "private_relative_path": "consumer-pure/test.stderr",
+      "sha256": "de19beceb77a66a6ad4954c0cdc516066bb526b548b18c9c2df0a66740a7b208",
+      "bytes": 981
+    },
+    {
+      "private_relative_path": "consumer-pure/result.json",
+      "sha256": "ffeebe11b7aebfe5e3114632fa8925f3ad278f6402b56b9738325dc41a49ff78",
+      "bytes": 97
+    },
+    {
+      "private_relative_path": "package/package.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "package/package.stderr",
+      "sha256": "9648273653d095093d015cbbbece4a2f8c756fbbd05b4bbdf9b3a9937c73345e",
+      "bytes": 824
+    },
+    {
+      "private_relative_path": "package/source-only.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "package/source-only.stderr",
+      "sha256": "cd745c5c033a8f38fbef454de4a05decf43767ffc3c99ffe84b1c21b8dc5a1a8",
+      "bytes": 146
+    },
+    {
+      "private_relative_path": "package/archive-members.txt",
+      "sha256": "1a3de753bee2081c17ec5db579b75b76db63414ec0579904c68c8a2cbe21388f",
+      "bytes": 8244
+    },
+    {
+      "private_relative_path": "package/extracted.before.json",
+      "sha256": "89a41e74c0e0eaaa42c9fe39d713c4d7a4075abd9a3143fa4b8e0b516dae9f38",
+      "bytes": 41810
+    },
+    {
+      "private_relative_path": "package/extracted.after.json",
+      "sha256": "89a41e74c0e0eaaa42c9fe39d713c4d7a4075abd9a3143fa4b8e0b516dae9f38",
+      "bytes": 41810
+    },
+    {
+      "private_relative_path": "package/consumer/Cargo.toml",
+      "sha256": "eaa346b458dbc6016dd353088a55d45f68a0bc9721b3954680bf98724cc9698e",
+      "bytes": 230
+    },
+    {
+      "private_relative_path": "package/consumer/Cargo.lock",
+      "sha256": "4157b956d2643a05955d38604ed80ae4923c78989708206dd81a2e31e7a48ece",
+      "bytes": 7408
+    },
+    {
+      "private_relative_path": "package/consumer/src/main.rs",
+      "sha256": "b06ec976c378557195f03c58601f5de09b17083dda2acd62a2c8b5dd89ae3784",
+      "bytes": 587
+    },
+    {
+      "private_relative_path": "package/consumer.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "package/consumer.stderr",
+      "sha256": "74189f2d7fa8cf2f1feb8b2a6010ed2ea6b26ef1e4c5df9790f9ad9c38d2f967",
+      "bytes": 461
+    },
+    {
+      "private_relative_path": "package/consumer-result.json",
+      "sha256": "80e2e68d04300d3408cf0001cd3b79da61385bb4f1c5b399e1f2e6eb0966ccf5",
+      "bytes": 328
+    },
+    {
+      "private_relative_path": "package/humanymous-core-0.1.0.source-only.crate",
+      "sha256": "29b68a3b8dd088aed30fd370bafd69c6b633740d53f76c22ff9b86d75b7dd6b9",
+      "bytes": 414752
+    }
+  ]
+}

@@ -8,6 +8,7 @@ rel:
   depends_on: [sot:root/structural-development, sot:root/program-roadmap]
 files:
   - {path: summary.json, sha256: df8b7e0f45293179190487504f228ccee854a897fe59681d89189e01efd0f989, bytes: 28407, store: repo}
+  - {path: consumer-and-package.json, sha256: c41b7bcb59bbb2466db7979c1d7286c8df89cd3dba8d2a9f5dd824ccf08dbf27, bytes: 5179, store: repo}
 ---
 
 # Core consolidation observation
@@ -45,3 +46,22 @@ the later repeat adds explicit command/tool/input binding without rewriting them
 Full consumer/workspace validation, clean extracted-package checks, Cross-OS,
 actual native/browser/Docker product execution, branch synchronization and final
 main integration remain pending. No package publication or release is authorized.
+
+## Consumer and source-archive follow-up
+
+Network72 and collector26 library units passed on the integrated graph, with
+264 selected local inputs unchanged. This selected inventory is not a complete
+registry, toolchain or runtime custody proof. The normal locked offline Cargo
+package attempt failed101 because its versioned development dependency on the
+transitional test-support package is unavailable in the crates.io index. Merely
+selecting both workspace packages did not establish a staged registry.
+
+A separate source-only archive was then created with verification explicitly
+disabled and its lockfile excluded. Its150 files include project and Go Authors
+licenses, notices and upstream source provenance. A new isolated consumer built
+and ran against the extracted normalized package with locked offline resolution;
+all seven public context imports worked and150 extracted file hashes stayed
+unchanged. This proves the default library consumer can use that source archive.
+It does not turn the failed normal package verification into success, qualify
+packaged development tests or establish public registry availability. The raw
+archive and failed attempt are retained alongside the successful bounded result.

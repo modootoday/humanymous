@@ -1,0 +1,10 @@
+humanymous-core
+Copyright 2026 The humanymous Authors
+
+Project source is licensed under Apache License 2.0; see LICENSE.
+
+The model RNG implementation in src/model/training/rng translates Go 1.26.3
+math/rand algorithms and tables. Copyright 2009 The Go Authors. All rights
+reserved. The complete BSD-3-Clause notice is retained in that directory's
+LICENSE and beside the frozen Go source test fixtures. These sources do not
+imply that the Go runtime is linked or that a Go oracle was executed.
