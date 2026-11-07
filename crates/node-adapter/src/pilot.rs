@@ -165,7 +165,11 @@ fn install_fetch_probe(
             }
             writeln!(file, "fetch-lookup-returned")
                 .map_err(|_| error("handoff receipt write failed"))?;
-            original.get_value(ctx.env)
+            // Use the existing host-owned holder pattern for a callback return;
+            // do not return a value tied to the temporary CallContext borrow.
+            let mut holder = object(ctx.env)?;
+            holder.set_named_property("callback", original.get_value(ctx.env)?)?;
+            holder.get_named_property("callback")
         })?;
     let mut descriptor = object(env)?;
     descriptor.set_named_property("get", getter)?;

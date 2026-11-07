@@ -694,3 +694,16 @@ uncertain setup or suppressed cancellation; no cancellation/status/refcount-only
 claim closes it. The private-parent/interactive lower-provider dependencies stay
 explicit, and all historical Windows compile/link/runtime receipts retain their
 original source. No bulk package/public-name migration is part of this slice.
+
+Allocated exact0a1 source window reached terminal101: shared9 plus Node4 pure
+units all passed (new3budget controls included,0fail/ignored/filtered), then the
+host-pilot check rejected the probe's temporary CallContext-borrowed Object
+return. Strict Clippy/allocated fmt did not run. Summary017 retains the first
+failure and exact input ledgers. The create-new owner/source/absolute-target lease
+was verified and removed after120.73s execution/0.936s cleanup within original
+360+60 budgets; no renewal or overlay. Corrected only the Rust probe return via
+the established host-holder pattern, without unsafe or new glue. No corrected
+retry follows from the terminal exact0a1 source window. Next proposed scope is
+corrected host-pilot all-target check/strict Clippy/fmt under a separately bound
+source/target allocation; passed pure inputs remain historical0a1 proof, not a
+false all-target or actual-host result on the correction.

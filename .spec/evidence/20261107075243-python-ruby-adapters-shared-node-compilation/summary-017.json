@@ -1,0 +1,31 @@
+{
+  "scope":"Allocated frozen Node/shared-framework pure units and host-pilot check first failure",
+  "sourceSha":"0a1d31231455c51d97ac126167ee310201ca462b",
+  "archiveSha256":"88beb50939ea4807502f346fd4be19705153cc5a9f1fd57ee3d19942b4ff4e34",
+  "archiveBytes":71741440,
+  "environment":"Windows native Rust1.99.1 x86_64-pc-windows-msvc; new exclusive absolute framework-node-0a1d3123 target; locked/offline/jobs1/incremental0; no overlays",
+  "admission":{"commitPercent":63,"freePhysicalGiB":35.41679000854492},
+  "originalBudget":{"executionSeconds":360,"retainedCleanupSeconds":60,"executionObservedSeconds":120.7298288,"cleanupObservedSeconds":0.9357228,"renewed":false},
+  "phases":[
+    {"phase":"framework-lib","exitCode":0,"elapsedSeconds":47.2109074,"passed":9,"failed":0,"ignored":0,"filtered":0,"newOriginalBudgetControls":3},
+    {"phase":"node-default-lib","exitCode":0,"elapsedSeconds":33.546228,"passed":4,"failed":0,"ignored":0,"filtered":0},
+    {"phase":"node-host-pilot-all-target-check","exitCode":101,"elapsedSeconds":20.941404,"reason":"New Rust Hono probe returns a CallContext-borrowed Object with a different required callback return lifetime in pilot.rs:168."},
+    {"phase":"node-host-pilot-strict-clippy","status":"NOT_RUN"},
+    {"phase":"allocated-scoped-fmt","status":"NOT_RUN"}
+  ],
+  "unitBinarySha256":{"framework":"aee0b5b6b51825c6f10179ae6c03a6444533d0d206df4796a4d151a37e93a904","node":"228c089f097ec16f763e62cf4c6cf3c7e17d39f680aa7be4ec47af5d8b841179"},
+  "sourceClosure":{"rows":2804,"beforeAndAfterSha256":"36b28676ffa1741dffa756d7af7dd3a23195d36743d49b3d55ac03a2996c5b51"},
+  "selectedRegistryClosure":{"rows":5059,"beforeAndAfterSha256":"424a0691f07aec87eef5ac37daf9e137f8c6af3c77cd5502bffd830029257ce4"},
+  "configurationClosure":{"rows":1,"beforeAndAfterSha256":"86a7417fbe2747635c4635e6a92b7720a39834e0c6aa8058b7ce0ec702e1bdb4"},
+  "missingConfigurationClosure":{"rows":14,"beforeAndAfterSha256":"8c88be59f202ec11a3fd15f7dd0c913cfacbedd6d1f9dbf979800fcc5ea4e4a7"},
+  "selectedToolClosure":{"rows":8,"beforeAndAfterSha256":"500b1222c41d1591c9e81e551634e341101277e2b3029c11562ee24a7fc54d1f"},
+  "closureExitCode":0,
+  "privateRawLogSha256":"9ee14e11ca32b92eb81ff2577186c34aadec636e75dee99c3dd0a5f9730565b9",
+  "privateRawLogBytes":14407,
+  "lease":{"provider":"codex","session":"rust-python-ruby-native","createNew":true,"sourceAndTargetReadbackMatched":true,"actualRemovalVerified":true,"markerPreservedPrivately":true},
+  "ownedCleanup":"PTY23602 terminal101; exact target returned; target-lease.json absent after owner-checked removal. No runtime/server/SDK activation/provider/WSL/Docker/installation launched.",
+  "correction":"Return the probe function through the existing safe host-holder pattern rather than leaking the temporary CallContext borrow. Corrected source requires a distinct allocation; no overlay/retry/lease renewal occurred.",
+  "actualHostCasesExecuted":0,
+  "caHandoffClosed":false,
+  "wholeProductQualified":false
+}

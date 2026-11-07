@@ -487,6 +487,16 @@ settlement or retained uncertain ownership, not infer it from cancel/Err/status.
 Windows WSGI still needs the qualified native private-parent/peer fixture; no
 fabricated SID/DACL, arbitrary TEMP fallback or WSL restart fills that dependency.
 
+Summary017 records actual frozen0a1 Windows units: all9 shared framework units
+(including the3 original-clock controls) and4 default Node units passed with
+zero failures/ignored/filtered. The subsequent host-pilot check failed on the
+new Hono getter return lifetime, so strict Clippy and allocated fmt did not run.
+Source2804/selected registry5059/config1/missing-config14/tools8 remained stable;
+execution120.73s/cleanup0.936s ended101/closure0 and the exact owned target lease
+was removed. The source fix uses the existing safe host-holder return pattern;
+its host-pilot check remains NOT_RUN until a separate exact-source allocation.
+Pure clock success does not establish actual VM callback or host qualification.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;
