@@ -6,7 +6,7 @@ use humanymous_framework_adapter::{
 use humanymous_integrity::adapter::AdapterProfile;
 use pyo3::{
     prelude::*,
-    types::{PyBytes, PyDict, PyList},
+    types::{PyBytes, PyDict, PyList, PyTuple},
 };
 use std::sync::Arc;
 
@@ -128,11 +128,11 @@ impl Wsgi {
             Err(_) => return reject(py, &start_response, 503),
         };
         let expires = bound.expires();
-        let verdict = match bound.consume() {
-            Ok(v) => v,
-            Err(_) => return reject(py, &start_response, 503),
-        };
-        if verdict != Verdict::Allow {
+        if bound.verdict() != Verdict::Allow {
+            let verdict = match bound.consume() {
+                Ok(v) => v,
+                Err(_) => return reject(py, &start_response, 503),
+            };
             return reject(
                 py,
                 &start_response,
@@ -144,11 +144,16 @@ impl Wsgi {
             .getattr("BytesIO")?
             .call1((PyBytes::new(py, &body),))?;
         env.set_item("wsgi.input", replay)?;
-        pending.check_handoff(expires).map_err(failure)?;
+        let args = PyTuple::new(py, [env.as_any(), start_response.bind(py)])?;
         if disconnected(&env)? {
             return reject(py, &start_response, 503);
         }
-        self.app.call1(py, (env, start_response))
+        // Host callbacks and argument preparation precede the final admission.
+        pending.check_handoff(expires).map_err(failure)?;
+        if bound.consume().map_err(failure)? != Verdict::Allow {
+            return reject(py, &start_response, 503);
+        }
+        self.app.bind(py).call(&args, None).map(Bound::unbind)
     }
 }
 fn disconnected(env: &Bound<'_, PyDict>) -> PyResult<bool> {

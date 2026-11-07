@@ -558,3 +558,44 @@ accepted CA-API-01 closure for the safe Rust invariant/regression. No remote
 HTTP or adapter-native/full-product claim follows. Root performance quiet
 window started after C returned; no further compilation or expanded regression
 is started. Evidence checkpoint follows required checks outside that window.
+
+### L4 role and one shared consumer contract draft
+
+Read the accepted structural-development SoT, exact23-role registry, bottom-up
+plan20261107151000 and throughput plan20261107150000. The existing adapter-hosts
+paths and full goal remain unchanged; the title grants no additional source.
+M11 owns the still-stale THREADS/LANES projection, so no registry edit is made.
+Common Apache/ASP.NET Core producer profiles remain root/owning-host contracts;
+their consumer source is not edited.
+
+Prepared framework-adapter/CONSUMER-CONTRACT.md v0.1 for independent critique:
+one existing request lifecycle, provider/consumer boundaries, language ABI/
+server/GC/GVL obligations, explicit secret-copy residuals and genuine L0-L5
+promotion gates. No API/behavior/capability/policy/runtime gate is introduced.
+Reconciled framework INTEGRATION's stale registration/NOT_RUN/hosted-only wording
+with exact historical shared-L1 evidence and current execution policy. No Cargo,
+native process, SDK, package, hosted or privileged workload is started. Next:
+independent contract critique, frozen qualified lower API handoff, then bounded
+source/pure/actual integration for the affected cluster under existing decisions.
+
+Provider reviews of v0.1 SHAe123bdbf arrived without source/execution changes.
+Native owner found no secret-copy/ownership over-promotion but confirmed the
+new capture/direct-pipe API7a1e8dee is source-only/unqualified; dev parent-context
+codec evidence is not a framework runtime prerequisite or native identity proof.
+Authority owner required explicit separation of result consumption, server nonce
+replay, L4 at-most-once invocation and non-atomic queued/GVL handoff. v0.2 folds
+those requirements and current UID/SID/PID scope into the common contract.
+No actual controller admission or new API is enabled. Independent convention
+critique identified CA-HANDOFF-01; no repeated workload/audit is scheduled.
+
+CA-HANDOFF-01 accepted source correction: retain WSGI/Rack BoundResponse through
+replay/arguments and the final trusted connected callback; check original
+Pending and consume at the actual application call. Python prepares its tuple
+and Ruby interns the call ID before the gate. Authority confirms no API change
+is required. Contract v0.3 records Node's private wall-only Pending and copied
+status, plus ASGI's early consumption before queued admission, as remaining
+deviations. Actual ALLOW-before-delayed-connected negative/no-origin and timely
+connected control are mandatory; SDK/typecheck/Clippy and actual regressions on
+the corrected source remain NOT_RUN pending the existing execution allocation.
+No process/controller, dependency install, native SDK, hosted or privileged
+workload was started. The full adapter/package goal remains incomplete.

@@ -157,11 +157,11 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
         Err(_) => return reject(ruby, 503),
     };
     let expires = bound.expires();
-    let verdict = match bound.consume() {
-        Ok(v) => v,
-        Err(_) => return reject(ruby, 503),
-    };
-    if verdict != Verdict::Allow {
+    if bound.verdict() != Verdict::Allow {
+        let verdict = match bound.consume() {
+            Ok(v) => v,
+            Err(_) => return reject(ruby, 503),
+        };
         return reject(ruby, if verdict == Verdict::Deny { 403 } else { 409 });
     }
     ruby.require("stringio")?;
@@ -170,13 +170,18 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
     let replay: Value = io.new_instance((binary,))?;
     env.aset("rack.input", replay)?;
     let app: Value = wrapper.ivar_get("@app")?;
-    pending
-        .check_handoff(expires)
-        .map_err(|e| failure(ruby, e))?;
+    let call = ruby.intern("call");
     if liveness::disconnected(ruby, env)? {
         return reject(ruby, 503);
     }
-    app.funcall("call", (env,))
+    // No Ruby callback or method-name interning follows the final admission.
+    pending
+        .check_handoff(expires)
+        .map_err(|e| failure(ruby, e))?;
+    if bound.consume().map_err(|e| failure(ruby, e))? != Verdict::Allow {
+        return reject(ruby, 503);
+    }
+    app.funcall(call, (env,))
 }
 fn reject(ruby: &Ruby, status: u16) -> Result<Value, Error> {
     let headers = ruby.hash_new();

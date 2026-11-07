@@ -7,7 +7,7 @@ created: 2026-11-07T07:08:28Z
 updated: 2026-11-07T07:36:39Z
 rel:
   governs: [crates/framework-adapter/**, crates/python-adapter/**, crates/ruby-adapter/**, adapters/python/**, adapters/ruby/**]
-  depends_on: [sot:root/adapter-service-contract, sot:root/server-adapter-expansion, sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
+  depends_on: [sot:root/adapter-service-contract, sot:root/server-adapter-expansion, sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery, sot:root/structural-development]
 ---
 
 # Rust native Python and Ruby framework adapters
@@ -378,6 +378,44 @@ check and strict Clippy all passed. Source/registry/config ledgers were stable;
 the independent auditor reread the actual saved manifests/output and accepted
 this narrow source invariant/regression closure. Capacity64, scoring and policy
 remain unchanged. Native SDK/HTTP/lifecycle/product qualification is separate.
+
+The L4 role consumes one common contract documented in
+crates/framework-adapter/CONSUMER-CONTRACT.md version0.3, draft for independent
+review. It consolidates the accepted existing request/admission/deadline/
+Authority semantics, lower-provider ownership, per-language ABI/server/GC/GVL
+obligations and separate L0-L5 promotion evidence. It grants no new native API,
+readiness flag, privilege, source ownership or execution. Symbolic owner models,
+path inventories, direct-child capture, full-tree cleanup and production secret
+ingress stay distinct. Public configuration cannot mint a qualified provider.
+Actual production/host qualification requires the applicable genuine lower
+contract and source-bound tuple; upper consumers can prepare contract/negative
+tests while those providers mature. The original complete Node/Bun/Python/Ruby/
+package/hosted objective is preserved, not reduced to pure units or historical
+WSGI component success. No foreign owner paths are changed by this draft.
+
+Authority review clarifies that BoundResponse consumption is result ownership,
+not nonce replay or a type-level at-most-once host invocation. L4 owns one
+decision attempt/handoff per request and cannot retry/recreate tickets.
+Pending's synchronous handoff check is not atomic epoch admission across an
+await/queue/GVL boundary. Current UID-only Unix and SID/DACL/server-PID Windows
+verification does not establish cross-principal R1 attestation. Actual delayed
+handoff/expiry/cancellation evidence and each required lower capability remain
+separate gates. Native review confirms a dev codec/source-ready process API is
+not a production proof or an automatically required framework edge. Only the
+pilot's explicitly accepted capability/profile and genuine receipt may unblock
+its actual controller; the existing NOT_ACCEPTED refusal is unchanged.
+
+CA-HANDOFF-01 requires retaining the actual BoundResponse through all host
+preparation, trusted liveness callbacks and VM/owning-loop delays. Inspecting
+verdict is branch selection only. Check the original Pending and consume only
+immediately before the trusted application invocation, without another await,
+queue or callback. The WSGI/Rack source correction implements this ordering;
+its SDK check and actual late-connected/no-origin plus timely-connected control
+remain NOT_RUN. ASGI's queued callback and Node's private wall-only Pending /
+early copied status remain open source deviations, not qualified shared behavior.
+The genuine ALLOW must precede the delayed connected callback in the regression;
+an earlier dependency timeout is insufficient. No native epoch atomicity,
+actual controller admission or broader host qualification follows from this fix.
 
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
