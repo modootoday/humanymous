@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:46:34Z
+updated: 2026-11-07T04:56:14Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -215,6 +215,11 @@ candidate에 반영하고 최종gate 뒤 새미검증merge commit을 만들지 �
 Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생성을 수행하지 않는다.
 
 ## 현재 종료를 막는 gate와 다음 착수
+
+후속 guard baseline은실제prototype/native관측을BrowserCollector에연결했다.
+local native19/actualFirefox34과WASM/Clippy통과이며reported=false를유지한다.
+이는startup pristine증명이나hooks완료가아니다. MutationObserver·forwarding·
+CDP·bootstrap/session은여전히다음필수작업이다.
 
 1. 전체 rawcapture/qualified collector/Pass/proxy/admin 경로가 없다.
 2. 독립witness·dual-control운영·signed service activation이 남았다.

@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T04:39:37Z
+updated: 2026-11-07T04:56:14Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -13,6 +13,13 @@ rel:
 ---
 
 # Rust migration conventions
+
+Guard baseline capture now feeds partial measured fields into BrowserCollector
+snapshots, sharing the pure Epoch rather than duplicating counters/lifecycle.
+Native19 and actual isolated Firefox34 pass; native-toString text is transient
+and bounded before copying. No eval replacement/Function hook/MutationObserver
+is installed, so reported=false and frozen scoring consumes no new guard signals.
+Guard stop is attempted alongside passive cleanup and freezes only on success.
 
 Native CLI862883c is integrated as workspace member20: package
 humanymous-native-cli, binary humanymous-native, init subcommand. Reuse existing

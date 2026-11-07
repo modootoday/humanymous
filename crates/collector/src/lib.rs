@@ -37,6 +37,7 @@ pub async fn advanced_json() -> Result<String, wasm_bindgen::JsValue> {
 #[wasm_bindgen::prelude::wasm_bindgen]
 pub struct BrowserCollector {
     collection: browser::behavior::Collection,
+    guard: browser::guard::Baseline,
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -45,8 +46,10 @@ impl BrowserCollector {
     /// Register passive listeners in the current browser document.
     #[wasm_bindgen::prelude::wasm_bindgen(constructor)]
     pub fn new() -> Result<BrowserCollector, wasm_bindgen::JsValue> {
+        let guard = browser::guard::Baseline::capture()?;
         Ok(Self {
             collection: browser::behavior::Collection::start()?,
+            guard,
         })
     }
     /// Return reduced behavior only; no input text, key identities or raw samples.
@@ -59,11 +62,14 @@ impl BrowserCollector {
         let mut report =
             detection::detect(&browser::capture()?).map_err(wasm_bindgen::JsValue::from_str)?;
         report.behavior = self.collection.summary()?;
+        report.guard = self.guard.snapshot()?;
         serde_json::to_string(&report)
             .map_err(|_| wasm_bindgen::JsValue::from_str("report serialization failed"))
     }
     /// Freeze the summary, clear raw pairing/buffers and detach all owned callbacks.
     pub fn stop(&mut self) -> Result<(), wasm_bindgen::JsValue> {
-        self.collection.stop()
+        let behavior = self.collection.stop();
+        let guard = self.guard.stop();
+        behavior.and(guard)
     }
 }

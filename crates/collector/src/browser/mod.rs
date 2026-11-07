@@ -3,6 +3,7 @@ pub(crate) mod advanced;
 pub(crate) mod behavior;
 pub(crate) mod environment;
 mod fingerprint;
+pub(crate) mod guard;
 mod integrity;
 mod reflection;
 mod resources;

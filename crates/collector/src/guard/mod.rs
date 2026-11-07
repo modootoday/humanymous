@@ -1,5 +1,7 @@
 //! Bounded guard epochs. Browser owners must supply real baseline and hook coverage.
 use humanymous_signals::report::Guard;
+mod native;
+pub use native::native_source_marker;
 
 /// Measured own-property counts, not a claim about the contents of prototypes.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

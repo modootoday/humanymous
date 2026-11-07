@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-07T04:20:51Z
+updated: 2026-11-07T04:56:14Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -14,6 +14,24 @@ rel:
 # Browser collector migration
 
 ## Guard coverage and compatibility
+
+BrowserCollector now acquires real Object/Array own-property counts and captured
+Function.prototype.toString checks for fetch/XHR/JSON/console before passive
+listener registration. Native source text is bounded32768UTF16 units before
+copying, inspected transiently and discarded; no source text/arguments are exported.
+Use the exact legacy braced-native marker with ECMAScript whitespace, not Rust's
+broader Unicode whitespace. Throwing/budget-invalid required observations reject
+capture. Failed native toString invocation is a negative check as in the legacy
+guard; console absence/failure means consoleDisabled=true.
+
+snapshot_json includes these partial guard observations; reported stays false
+because eval/Function/MutationObserver hooks are not installed by this slice.
+stop attempts both passive-listener cleanup and guard freeze, reporting failures;
+once guard freeze succeeds, later global mutations cannot rewrite that guard.
+The free detect_json remains stateless. Capture is not proof of pristine startup,
+untampered realm, full guard coverage or authenticated session qualification.
+The whitespace set follows [ECMAScript whitespace and line terminators](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-white-space),
+checked2026-11-07; U+FEFF is included and U+0085/U+180E/U+200B are excluded.
 
 Port injector.js as owned runtime instrumentation, not a fabricated guard report.
 Separate pure epoch/counters from WASM hooks, mutation observer and native/prototype
