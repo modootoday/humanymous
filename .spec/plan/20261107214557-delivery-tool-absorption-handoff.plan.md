@@ -254,6 +254,43 @@ mean13 executables. These are source candidates/references, not observed Cargo
 targets or semantic unsafe-operation review. Root must bind the final explicit
 binary/feature/test matrix, production transitive graph and release inventory.
 
+## Maintenance0.2 identity proposal in Root review queue
+
+maintenance-identity-proposal.json maps all33 original (target,test-name) pairs
+one-to-one to proposed exact new owners/selectors. It uses the accepted
+qualification-maintenance feature, humanymous-agent-maintenance executable and
+eventual crates/apps/humanymous-cli package root. Earlier absolute crates/cli
+resource destinations predated that final layout; accepted package-relative
+qualification resources stay unchanged. No profile or source is implemented.
+
+| Old target | Cases | Proposed new owner |
+| --- | --- | --- |
+| process |7| maintenance-process integration; existing real executable |
+| selected_inputs_cli |6| maintenance-selected-inputs-cli integration; existing real executable |
+| windows_doctor |3| maintenance-windows-doctor integration; existing real executable |
+| evidence_layout_cli |4| maintenance-evidence-layout-cli integration; existing real executable |
+| git_coord |1| maintenance-git-coord integration; actual isolated Git/PowerShell plus bounded repository source input |
+| product_package |2| maintenance-product-package integration; use existing stage-eval executable route, retain complete staged-byte/hash/refusal assertions |
+| selected_inputs |6| owning private binary test module; actual owned filesystem/provider boundaries, not no-I/O pure tests |
+| session_storage |4| owning private binary test module; actual claims/journal/lock/recovery fixtures, not no-I/O pure tests |
+
+The proposal retains23 integration cases and10 owning-bin cases, exactly33 and
+no helper/ignore waiver. Root must explicitly accept moving the10 owned-filesystem
+cases under its private-algorithm ownership decision; they must not be relabeled
+pure or replaced by synthetic data. The tighter-selection case exercises direct
+API limits that the existing selected-input CLI request cannot express, so blindly
+turning every case into an existing CLI call would lose behavior. Product cases
+can use the already implemented stage-eval route without a new fixture API.
+
+Freeze and run the complete owning binary unit inventory, including all old
+library units, once; do not infer its total from these10 mapped cases or filter
+unknown units. Preserve real CARGO_BIN_EXE bindings for retained CLI integrations,
+the external Git/PowerShell boundary and explicit repository/source admission.
+Remove old manifest-ancestry assumptions and cross-package script includes without
+copying mutable source into a published package. Missing providers, symlink
+privileges, source, tools or cleanup remain required failures. Final Root/M11/CLI
+matrix review and actual discovery/execution precede any Tools freeze or move.
+
 # Critique and readiness
 
 The design is accepted; implementation remains needs-work until the atomic freeze,
