@@ -182,6 +182,23 @@ owning semantic layout checks or establish a hosted compiler tuple by itself.
 Local R1/R2 failures, R3 Docker grammar observation and future hosted execution
 remain separate source-bound records. No dynamic ABI scope is added here.
 
+ABI-16: The owning hosted example resolves each compiler invocation once while
+preserving the clang++ driver basename. It canonicalizes the executable and
+uses fixed /usr/bin/sha256sum before and after its actual metadata/layout calls;
+nonzero, stderr, malformed lowercase digest/path, changed canonical path or
+changed digest refuses success. Trusted immutable compiler storage remains a
+premise: these observations are not atomic process-image or hostile-host
+attestation. Only after both languages pass does it create a new sibling
+header-compiler.identity.txt outside the closed thirteen-file directory. Its
+seven LF-terminated lines are schema=humanymous.header-compiler-identity/1,
+c.path, c.sha256.before, c.sha256.after, cpp.path, cpp.sha256.before and
+cpp.sha256.after, with exact ASCII canonical paths and lowercase64 digests.
+Delivery validates these facts in its typed context, independently hashes the
+actual executables and rejects mismatched profile facts. This sibling is not a
+seventeenth original payload. Existing scope/success marker and thirteen names
+remain unchanged. Missing stock hash utility is a failed prerequisite, not a
+fallback to compiler labels or an inferred hash.
+
 ## C++ contract
 
 ABI-14: The separately authorized local Windows x64 profile uses the explicit

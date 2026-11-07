@@ -6,7 +6,7 @@ use humanymous_native_abi::{Command as NativeCommand, Reply, Response, Version};
 use std::{
     collections::BTreeMap,
     io::Write,
-    path::Path,
+    path::{Path, PathBuf},
     process::{Command, ExitCode},
 };
 
@@ -154,6 +154,96 @@ fn save(directory: &Path, name: &str, bytes: &[u8]) -> Result<(), &'static str> 
         .map_err(|_| "cannot write compiler evidence")
 }
 
+fn public_tool_path(path: &Path) -> Result<&str, &'static str> {
+    let text = path.to_str().ok_or("compiler path is not UTF-8")?;
+    if text.len() > 1024
+        || !text.starts_with('/')
+        || text.split('/').any(|part| part == "." || part == "..")
+        || !text
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || b"/_.+-".contains(&byte))
+    {
+        return Err("compiler path is outside the bounded metadata profile");
+    }
+    Ok(text)
+}
+
+fn parse_digest(bytes: &[u8], path: &Path) -> Result<String, &'static str> {
+    let text = std::str::from_utf8(bytes).map_err(|_| "compiler digest is not UTF-8")?;
+    let (digest, suffix) = text.split_at_checked(64).ok_or("compiler digest absent")?;
+    if !digest
+        .bytes()
+        .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+        || suffix != format!("  {}\n", public_tool_path(path)?)
+    {
+        return Err("compiler digest response refused");
+    }
+    Ok(digest.to_owned())
+}
+
+fn binary_digest(path: &Path) -> Result<String, &'static str> {
+    public_tool_path(path)?;
+    let result = Command::new("/usr/bin/sha256sum")
+        .arg("--")
+        .arg(path)
+        .output()
+        .map_err(|_| "stock compiler digest helper unavailable")?;
+    if !result.status.success() || !result.stderr.is_empty() || result.stdout.len() > 2048 {
+        return Err("stock compiler digest helper failed");
+    }
+    parse_digest(&result.stdout, path)
+}
+
+struct Compiler {
+    invocation: PathBuf,
+    resolved: PathBuf,
+    before: String,
+}
+impl Compiler {
+    fn resolve(name: &str) -> Result<Self, &'static str> {
+        let search = std::env::var_os("PATH").ok_or("compiler PATH unavailable")?;
+        for directory in std::env::split_paths(&search) {
+            if !directory.is_absolute() {
+                return Err("relative compiler search directory refused");
+            }
+            let invocation = directory.join(name);
+            if !invocation.is_file() {
+                continue;
+            }
+            public_tool_path(&invocation)?;
+            let resolved = invocation
+                .canonicalize()
+                .map_err(|_| "compiler canonical path unavailable")?;
+            let before = binary_digest(&resolved)?;
+            return Ok(Self {
+                invocation,
+                resolved,
+                before,
+            });
+        }
+        Err("compiler executable unavailable")
+    }
+
+    fn identity(&self, label: &str) -> Result<String, &'static str> {
+        let current = self
+            .invocation
+            .canonicalize()
+            .map_err(|_| "compiler path disappeared")?;
+        if current != self.resolved {
+            return Err("compiler resolved path changed");
+        }
+        let after = binary_digest(&current)?;
+        if after != self.before {
+            return Err("compiler binary digest changed");
+        }
+        Ok(format!(
+            "{label}.path={}\n{label}.sha256.before={}\n{label}.sha256.after={after}\n",
+            public_tool_path(&self.resolved)?,
+            self.before,
+        ))
+    }
+}
+
 fn run() -> Result<(), &'static str> {
     // Environment checks prevent accidental local execution; they are not an
     // attestation against a malicious host that can forge its own environment.
@@ -181,14 +271,19 @@ fn run() -> Result<(), &'static str> {
     }
     let output = Path::new(&args[1]);
     std::fs::create_dir(output).map_err(|_| "fresh evidence directory required")?;
+    let mut identities = String::from("schema=humanymous.header-compiler-identity/1\n");
     // Root CI owns source/header/tool hashes and timeout. These are trusted
     // compiler invocations on an owned generated header, not arbitrary probes.
     for (tool, language, standard, label) in [
         ("clang", "c", "c11", "c"),
         ("clang++", "c++", "c++11", "cpp"),
     ] {
+        // Preserve the invocation basename for the clang++ driver while hashing
+        // the resolved executable. Trusted immutable tool storage is a premise;
+        // sampled hashes are not atomic process-image or hostile-host attestation.
+        let compiler = Compiler::resolve(tool)?;
         for (argument, suffix) in [("--version", "version"), ("-dumpmachine", "target")] {
-            let result = Command::new(tool)
+            let result = Command::new(&compiler.invocation)
                 .arg(argument)
                 .output()
                 .map_err(|_| "compiler metadata unavailable")?;
@@ -202,7 +297,7 @@ fn run() -> Result<(), &'static str> {
                 return Err("compiler metadata failed");
             }
         }
-        let result = Command::new(tool)
+        let result = Command::new(&compiler.invocation)
             .args([
                 "-x",
                 language,
@@ -225,7 +320,19 @@ fn run() -> Result<(), &'static str> {
             &String::from_utf8(result.stderr).map_err(|_| "compiler diagnostics are not UTF-8")?,
         );
         verify(&text)?;
+        identities.push_str(&compiler.identity(label)?);
     }
+    // Keep the closed thirteen-file compiler directory unchanged. The separate
+    // sibling is typed metadata for Delivery's context, not a seventeenth payload.
+    let identity_path = output.with_extension("identity.txt");
+    let mut identity = std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(identity_path)
+        .map_err(|_| "fresh sibling compiler identity file required")?;
+    identity
+        .write_all(identities.as_bytes())
+        .map_err(|_| "cannot write compiler identity metadata")?;
     save(output,"scope.txt",b"C11 and C++11 header syntax and record layouts match Rust. Actual dynamic loading, RAII, exceptions, allocator host glue and product e2e: not_run.\n")?;
     Ok(())
 }
@@ -248,6 +355,42 @@ fn main() -> ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn compiler_identity_digest_requires_exact_path_lowercase_hex_and_one_line() {
+        let path = Path::new("/usr/lib/llvm-18/bin/clang");
+        let digest = "a".repeat(64);
+        let good = format!("{digest}  /usr/lib/llvm-18/bin/clang\n");
+        assert_eq!(parse_digest(good.as_bytes(), path).unwrap(), digest);
+        for invalid in [
+            good.trim_end_matches('\n').to_owned(),
+            good.replace('a', "A"),
+            good.replace("/usr/lib/llvm-18/bin/clang", "/usr/bin/other"),
+            format!("{good}{good}"),
+            format!("\\{good}"),
+            good.replace("  /", " /"),
+        ] {
+            assert!(parse_digest(invalid.as_bytes(), path).is_err());
+        }
+        assert!(parse_digest(&[255; 100], path).is_err());
+    }
+
+    #[test]
+    fn compiler_metadata_paths_refuse_controls_relative_and_noncanonical_components() {
+        assert!(public_tool_path(Path::new("/usr/lib/llvm-18/bin/clang")).is_ok());
+        for path in [
+            "clang",
+            "/usr/bin/a b",
+            "/usr/bin/a\n",
+            "/usr/bin/a\t",
+            "/usr/../bin/clang",
+            "/usr/./bin/clang",
+            "/usr/bin/\u{1b}clang",
+            "/usr/bin/é",
+        ] {
+            assert!(public_tool_path(Path::new(path)).is_err());
+        }
+    }
+
     // Synthetic compiler diagnostics only; this is not executable C/C++ source.
     fn fixture(cpp: bool) -> String {
         let mut output = String::new();
