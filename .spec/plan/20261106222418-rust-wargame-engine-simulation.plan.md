@@ -3,7 +3,7 @@ id: plan:root/20261106222418
 title: Rust wargame engine simulation
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-07T06:19:27Z
+updated: 2026-11-07T06:59:31Z
 rel:
   governs: [crates/attacker]
   depends_on: [sot:root/rust-wargame]
@@ -55,11 +55,45 @@ image and Docker invocation. Runtime owns Pass/browser recovery and remote
 attestation. Human/AT results require actual participants. Root owns Cargo/lock/
 toolchain and global qualification. No component green closes seven unsupported
 rows. Accepted status: checkpoint Windows unit19passed and source-bound Docker
-network19/7 passed. Current v0.3 source is not yet compiled. Common manifest freeze is respected after root's
+network19/7 passed. V0.3 was uncompiled at47499a5; current v0.4 pure validation is
+recorded above and hosted requalification remains pending. Common manifest freeze is respected after root's
 direct-edge refresh. Initial --locked refusal, missing Deserialize compile error,
 and unused-import/collapsible-if Clippy failures were observed and corrected.
 
 ## Current memory-priority handover and source delta
+
+### Strict report follow-up after47499a5 — current source
+
+Pages review identified v1 duplicate loss during Value decoding and v2 permissive
+unknown fields. Root authorized correction within attacker/defender scope. V0.4
+adds a report-specific recursive Serde visitor that rejects decoded duplicate
+keys before constructing Value, plus unknown-field rejection on all7owned network
+DTOs. V1 still compares the entire current replay; number/ordering/whitespace
+semantic compatibility is intentional, not a canonical-byte/JCS claim. Source
+hash authenticity, full WAL signatures, actual network and real participants
+are not established by internal-consistency JSON verification alone.
+
+- [x] Confirm source issue and preserve the distinction from actual63f69.
+- [x] Implement strict decoded-key uniqueness and fixed DTO fieldsets.
+- [x] Author4pure tests for root/nested/escaped/dynamic duplicates, unknown fields
+  at all owned DTO levels and valid failed-ledger acceptance without runtime mocks.
+- [x] Format owned source and perform diff whitespace checks.
+- [x] Root allocated Cargo1slot; actual25pure passed on first attempt,0failed/
+ 0ignored with locked/-j1/test-threads1/incremental0; scoped Clippy passed.
+- [ ] Record actual results and a separate owned checkpoint; do not attach old
+  green or hosted execution to this later source.
+
+No dependency, scoring, shared runtime wire, local runtime/Docker or dispatch
+changes. Existing first-run and source-only v0.3 records below are historical,
+not proof that the current strict decoder has compiled. Root received the exact
+25pure-test inventory. Actual25passed=14attacker lib+2CLI+9defender lib; zero-test
+doctest harnesses are separate. No socket/process scenario or runtime/Docker/
+browser/SCM test executed. Working-source base6733128bebf393a8873db7298681381fbb7a4c14
+plus owned patch/new parser copy and dirty status are in private bundle
+`.spec.local/root/evidence/20261107070124-rust-wargame-strict-report-pure-validation/`.
+This is scoped working-tree validation, not immutable full dependency-graph or
+hosted proof. Public summary is [[evidence:root/20261107070333]]. Cargo slot was
+returned immediately after unit/Clippy; runtime remains next hosted batch.
 
 ### Hosted validation policy — accepted, single common canon
 
@@ -77,7 +111,8 @@ standard hosted execution. Human/AT/IME/hardware and independent-organization
 witness proof require direct evidence, never a runner label. All7unavailable
 rows and full-product=false remain.
 
-Current v0.3 is uncompiled; its two authored tests have not run. Root integrates
+V0.3 was uncompiled at its checkpoint; the later v0.4 pure run is recorded above.
+Root integrates
 source closure before rust-branch push and first hosted observation. Prior green
 remains source-specific. No duplicate dispatch, private raw public upload, paid
 provisioning or source/gate deletion is authorized here. Missing required raw

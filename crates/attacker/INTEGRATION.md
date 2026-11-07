@@ -1,4 +1,4 @@
-# Wargame integration contract v0.3
+# Wargame integration contract v0.4
 
 2026-11-07: attacker/defender are actual root workspace members. This supersedes
 the old membership request. Packages remain publish=false, excluded from normal
@@ -15,7 +15,8 @@ existing runtime/integrity/audit/scoring. No reverse testlab dependency or forke
 verdict/RIT implementation exists. Agreement is accepted; library implementation
 and Windows unit checks exist. Source1ee2c92's Docker context integration passed
 19evaluated/7unsupported with no errors/mismatches. The current source-only v0.3
-follow-up below is not yet compiled or requalified.
+follow-up was not compiled at47499a5; v0.4's later pure validation is below and
+hosted runtime requalification remains pending.
 
 Defender added runtime/integrity/audit path dependencies and serde_json, base64,
 zeroize, sha2 from the existing closure. Root refreshed the lock. No additional
@@ -101,9 +102,9 @@ does not execute it.
 Final source rejects absent/malformed IPv4 route headers, returns typed startup
 reader resource errors rather than panicking, and retains simultaneous execution
 and audit-snapshot errors. Replay/tampering and missing-route tests are authored,
-not yet executed. Local formatting completed after the accepted policy change;
-Cargo tests/Clippy, hosted Docker/collector/audit and Git byte closure remain
-pending. Only source and
+were unrun at47499a5. Local formatting completed after the accepted policy change;
+later v0.4 pure tests/Clippy passed, while hosted Docker/collector/audit and final
+Git byte closure remain pending. Only source and
 canon writes occurred after reclaiming red-catalog; peer paths are untouched.
 
 ## Accepted measurement follow-through
@@ -141,8 +142,8 @@ Execution policy is authoritative only in `.spec/sot/program-roadmap.sot.md` and
 `.spec/sot/delivery.sot.md`. Local work is coding/fmt and resource-bounded pure
 fastchecks; actual child/port/IPC/permissions/browser/Docker/Cross-OS gates are
 hosted. This owner does not dispatch duplicate jobs, waive missing private raw
-recovery or infer real human/AT from a runner label. V0.3 remains uncompiled and
-unqualified until fresh source-bound results exist.
+recovery or infer real human/AT from a runner label. V0.3 was an uncompiled
+checkpoint; v0.4 is pure validated and still lacks fresh hosted runtime proof.
 
 Candidate boundary: root excludes this v0.3 draft from its first hosted candidate
 containing runtime67c1818. This source will be a later owned not_run checkpoint
@@ -152,3 +153,44 @@ local runtime or Docker execution is authorized by the checkpoint.
 The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
+
+## V0.4 strict report acceptance (pure validated; hosted runtime not_run)
+
+Review found that47499a5's initial v1 Value decoding discarded duplicate keys and
+v2 typed decoding accepted unknown fields. Both are intentionally tightened:
+the report-specific Serde visitor first rejects duplicate decoded object keys
+at every depth, including escaped spellings and dynamic-map entries. No last-key
+selection precedes schema/replay verification. NetworkReport, NetworkRow, Step,
+NetworkTotals, ProcessReceipt, SnapshotDelta and AuditEvent reject unknown fields.
+V1 compares the entire current-replay fieldset and thus rejects unknown/missing
+fields without modifying the production signal/report DTOs. New schema extensions
+require explicit version evolution; silent extension acceptance is not promised.
+
+This is strict structure and semantic replay, NOT canonical JSON bytes/JCS:
+whitespace, key order, equivalent string escapes and mathematical JSON number
+spellings remain compatible. Seed still requires an unsigned integer. Exact
+integer comparison is retained where possible. Finite float equality is used
+only for the intentionally compatible numeric representation comparison.
+
+V1 proves agreement with the current pure engine/catalog replay, not with a
+historical engine. V2 proves internal catalog/accounting/observed-field
+consistency. It does not independently authenticate a claimed binary/image hash,
+verify the full WAL cryptographic chain from this minimized projection, or prove
+that network/participant execution occurred. Those claims require the separately
+retained source/image and authenticated-generation evidence. internally_consistent
+must not be rewritten as authenticity or product qualification.
+
+Four added pure tests cover duplicate root/nested/escaped/dynamic keys, unknown
+fields at every owned DTO level, and valid failure-ledger decoding. The latter is
+unit-only, with scoped_passed=false, never a mock successful runtime. No scoring,
+runtime wire, Cargo dependency or local runtime/Docker execution changes. This
+source follows47499a5 and the reported actual63f69 source; no old run qualifies it.
+
+Root-allocated local Cargo1slot measured25pure tests passed/0failed/0ignored on
+Windows x86_64 Rust1.99.1, with --locked -j1/test-threads1/CARGO_INCREMENTAL0.
+Scoped Clippy --all-targets/-Dwarnings passed. The fixture constructs only failed
+observation ledgers, never runtime success or participants. Exact base
+6733128bebf393a8873db7298681381fbb7a4c14 plus working patch/new parser snapshot are
+retained privately. This does not qualify the whole dirty dependency graph or
+hosted runtime. Raw evidence07070124/public summary07070333 retain separation
+from earlier source results. No dependency or runtime execution was added.

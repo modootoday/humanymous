@@ -14,6 +14,7 @@ use std::{
 
 /// Source-bound process observations, not a remotely signed target attestation.
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 pub struct ProcessReceipt {
     /// Exact installed runtime executable bytes.
     pub runtime_sha256: String,

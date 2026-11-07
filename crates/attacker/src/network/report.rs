@@ -6,6 +6,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 /// One actual request observation; no raw request/capability body is serialized.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Step {
     /// Scenario-local identity.
     pub id: String,
@@ -21,6 +22,7 @@ pub struct Step {
 
 /// One scheduled runtime case with actual origin/audit effects.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct NetworkRow {
     /// Stable versioned catalog identity.
     pub id: String,
@@ -44,6 +46,7 @@ pub struct NetworkRow {
 
 /// Complete scheduled denominator and explicit failure categories.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 pub struct NetworkTotals {
     /// All scheduled cases.
     pub scheduled: usize,
@@ -75,6 +78,7 @@ impl NetworkTotals {
 
 /// Network entropy and audit hashes are measured, not made deterministic by seed.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct NetworkReport {
     /// Versioned machine-readable contract.
     pub schema: String,

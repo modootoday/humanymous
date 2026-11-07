@@ -3,9 +3,9 @@ id: sot:root/rust-wargame
 title: Rust wargame
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-07T06:19:27Z
+updated: 2026-11-07T06:59:31Z
 verify:
-  - cargo test --locked -p humanymous-attacker -p humanymous-defender
+  - cargo test --locked -j1 -p humanymous-attacker -p humanymous-defender -- --test-threads=1
 rel:
   governs: [crates/attacker, crates/defender, test/rust-wargame]
   depends_on: [sot:root/rust-migration]
@@ -134,7 +134,7 @@ in a temporary isolated workspace until the root owner integrates membership.
 Run the lab-only Docker engine pilot with no network and retain raw JSON privately.
 Full runtime e2e remains subject to the existing Docker-only authority.
 
-The v0.3 exact exported APIs, JSON fields, exit codes, accepted Compose/runtime
+The v0.4 exact exported APIs, JSON fields, exit codes, accepted Compose/runtime
 ownership agreement and implementation/validation state are preserved in
 crates/attacker/INTEGRATION.md. Network schema is humanymous.wargame-network.v2;
 v1 simulation remains compatible except Cargo invocation now specifies --bin.
@@ -153,12 +153,33 @@ Isolation evidence requires the complete IPv4 route header as well as no routes;
 empty or malformed evidence is not no-egress proof. Startup reader allocation
 failure is a typed error that drops/reaps the already-owned child. Concurrent
 execution and audit-snapshot failures are both preserved in the error reason.
-These source-only additions are uncompiled/unqualified. Execution policy is
+These additions passed25pure tests and scoped Clippy with the v0.4 decoder;
+fresh hosted runtime qualification remains pending. Execution policy is
 defined only by [[sot:root/program-roadmap]] and [[sot:root/delivery]]: local
 classified pure fastchecks are resource-bounded; actual child/network/Docker/
 browser/Cross-OS work moves to standard hosted execution. No local runtime run
 is resumed. No prior green qualifies this source; unavailable participants and
 full product requirements remain explicit until directly measured.
+
+### Report decoder acceptance v0.4
+
+Before Value construction or schema selection, reject duplicate decoded object
+keys at every depth. Escaped aliases are the same key; dynamic dictionary keys
+are not exempt. V2 owned report DTOs deny unknown fields; V1's complete replay
+fieldset comparison rejects unknown/missing fields without altering production
+signal DTOs.47499a5 did not enforce these two properties; its typed v2 decode
+only caught duplicate known struct fields, while v1 lost duplicates. This
+explicitly tightens report acceptance and leaves detection/RIT unchanged.
+
+Do not call the result canonical bytes/JCS: whitespace, property ordering,
+equivalent string escapes and compatible mathematical JSON numeric spellings
+remain accepted. Seed requires an unsigned integer. V1 is current-engine replay
+agreement; V2 is internal consistency with the expected catalog and minimized
+observations. The verifier cannot authenticate arbitrary supplied hashes or
+verify a full WAL signature chain from its projection, nor prove actual runtime,
+human/AT or historical-source execution. External source/image/generation
+evidence remains required. Unknown-schema, duplicate-key, unknown-field and
+replay failures use safe static errors. No production policy or signal changes.
 
 Official [Rust1.99.1 TcpStream](https://doc.rust-lang.org/std/net/struct.TcpStream.html)
 documents bounded connect/read/write calls. Per-call timeouts alone do not bound

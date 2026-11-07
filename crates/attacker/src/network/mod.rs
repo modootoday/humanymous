@@ -26,9 +26,9 @@ pub fn run(lab: &mut impl OwnedLab, seed: u64) -> NetworkReport {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
-    struct Unavailable;
+    pub(crate) struct Unavailable;
     impl OwnedLab for Unavailable {
         fn spawn(&mut self) -> Result<OwnedRuntime, LabError> {
             Err(LabError("test-only unavailable child"))

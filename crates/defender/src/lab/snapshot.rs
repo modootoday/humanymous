@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// Minimized projection of an authenticated audit record, never raw requests.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 pub struct AuditEvent {
     /// Actual durable sequence.
     pub seq: u64,
@@ -36,6 +37,7 @@ pub struct VerifiedSnapshot {
 }
 /// Actual before/after effects; no synthetic verdict fields.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct SnapshotDelta {
     /// Independently observed origin dispatches during the case.
     pub origin_effects: u64,

@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.strict-report-acceptance.v1",
+  "contract": "v0.4 strict structure with semantic numeric replay",
+  "scope": "Windows x86_64 Rust1.99.1 pure unit working-source validation",
+  "base_head": "6733128bebf393a8873db7298681381fbb7a4c14",
+  "source_is_dirty": true,
+  "immutable_full_dependency_graph_qualified": false,
+  "test_attempts": 1,
+  "tests": {"attacker_library":14,"cli_parsers":2,"defender_library":9,"passed":25,"failed":0,"ignored":0,"zero_test_doctest_harnesses":2},
+  "limits": {"cargo_jobs":1,"test_threads":1,"incremental":false,"locked":true},
+  "scoped_clippy_warnings_denied": true,
+  "duplicate_decoded_keys_rejected_at_all_depths": true,
+  "owned_v2_unknown_fields_rejected": true,
+  "canonical_json_bytes_proven": false,
+  "arbitrary_source_hash_authenticity_proven": false,
+  "full_WAL_signature_chain_proven_by_report_verifier": false,
+  "runtime_executed": false,
+  "human_or_AT_executed": false,
+  "hosted_runtime_qualified": false,
+  "full_product_qualified": false,
+  "earlier_run_results_reused": false
+}

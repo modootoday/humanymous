@@ -1,4 +1,5 @@
 //! Rust report checking: replay the pure engine or check owned-network evidence.
+mod json;
 use crate::network::NetworkReport;
 use humanymous_defender::lab::LabError;
 use serde::Serialize;
@@ -52,12 +53,14 @@ fn equivalent(left: &Value, right: &Value) -> bool {
 }
 
 /// Validate bounded report bytes. V1 runs the existing engine again; v2 checks
-/// measured evidence without manufacturing a network run. Unknown schemas fail.
+/// measured evidence without manufacturing a network run. Duplicate decoded
+/// object keys and unknown fields fail; whitespace/key order and equivalent
+/// JSON numeric spellings are not a canonical-byte or signature proof.
 pub fn verify_bytes(bytes: &[u8]) -> Result<Verification, LabError> {
     if bytes.len() > 4_194_304 {
         return Err(LabError("report size budget"));
     }
-    let value: Value = serde_json::from_slice(bytes).map_err(|_| LabError("report JSON"))?;
+    let value = json::decode(bytes)?;
     let (mode, scoped_passed, full_product_qualified, totals) = match value["schema"].as_str() {
         Some("humanymous.wargame.v1") => {
             let seed = value["seed"].as_u64().ok_or(LabError("simulation seed"))?;
@@ -104,6 +107,111 @@ pub fn verify_bytes(bytes: &[u8]) -> Result<Verification, LabError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn network_failure_fixture() -> Value {
+        // A unit-only failed observation ledger, never a mock runtime success.
+        let mut report = serde_json::to_value(crate::network::run(
+            &mut crate::network::tests::Unavailable,
+            42,
+        ))
+        .unwrap();
+        let row = report["rows"]
+            .as_array_mut()
+            .unwrap()
+            .iter_mut()
+            .find(|row| row["status"] == "error")
+            .unwrap();
+        row["steps"] = serde_json::json!([{
+            "id":"unit-transport-error", "role":"attack", "http_status":null,
+            "response_verdict":null, "error":"unit-only transport failure"
+        }]);
+        row["processes"] = serde_json::json!([{
+            "runtime_sha256":"1".repeat(64), "supervisor_sha256":"2".repeat(64),
+            "installation":"unit-synthetic", "revision":"r1",
+            "binding":"supervisor-owned-child/private-pipe/same-loopback-only-namespace"
+        }]);
+        row["effects"] = serde_json::json!({
+            "origin_effects":0, "audit":[{
+                "seq":1, "event_type":"runtime.collect", "verdict":"COLLECTED",
+                "risk_score":0, "rules":[], "record_hash":"3".repeat(64)
+            }]
+        });
+        let verification = verify_bytes(&serde_json::to_vec(&report).unwrap()).unwrap();
+        assert!(!verification.scoped_passed);
+        assert!(!verification.full_product_qualified);
+        report
+    }
+
+    #[test]
+    fn simulation_rejects_duplicate_keys_before_semantic_replay() {
+        let value = serde_json::to_value(crate::run(42)).unwrap();
+        let raw = serde_json::to_string(&value).unwrap();
+        for prefix in [r#""seed":0,"#, r#""\u0073chema":"humanymous.wargame.v1","#] {
+            let duplicate = format!("{{{prefix}{}", &raw[1..]);
+            assert!(verify_bytes(duplicate.as_bytes()).is_err());
+        }
+        let scheduled = format!("\"scheduled\":{}", value["totals"]["scheduled"]);
+        let nested = raw.replacen(&scheduled, &format!("\"scheduled\":999,{scheduled}"), 1);
+        assert_ne!(nested, raw);
+        assert!(verify_bytes(nested.as_bytes()).is_err());
+    }
+
+    #[test]
+    fn both_modes_reject_unknown_fields_at_every_report_structure() {
+        let base = network_failure_fixture();
+        let error_row = base["rows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|row| row["status"] == "error")
+            .unwrap();
+        for pointer in [
+            String::new(),
+            "/totals".into(),
+            "/by_class/attack".into(),
+            format!("/rows/{error_row}"),
+            format!("/rows/{error_row}/steps/0"),
+            format!("/rows/{error_row}/processes/0"),
+            format!("/rows/{error_row}/effects"),
+            format!("/rows/{error_row}/effects/audit/0"),
+        ] {
+            let mut changed = base.clone();
+            changed
+                .pointer_mut(&pointer)
+                .unwrap()
+                .as_object_mut()
+                .unwrap()
+                .insert("unknown_extension".into(), Value::Bool(true));
+            assert!(
+                verify_bytes(&serde_json::to_vec(&changed).unwrap()).is_err(),
+                "{pointer}"
+            );
+        }
+        let mut simulation = serde_json::to_value(crate::run(42)).unwrap();
+        simulation["unknown_extension"] = Value::Bool(true);
+        assert!(verify_bytes(&serde_json::to_vec(&simulation).unwrap()).is_err());
+        let mut simulation = serde_json::to_value(crate::run(42)).unwrap();
+        simulation["rows"][0]["unknown_extension"] = Value::Bool(true);
+        assert!(verify_bytes(&serde_json::to_vec(&simulation).unwrap()).is_err());
+    }
+
+    #[test]
+    fn network_rejects_duplicate_fields_and_dynamic_map_keys() {
+        let base = network_failure_fixture();
+        let raw = serde_json::to_string(&base).unwrap();
+        let duplicate = format!(
+            "{{\"schema\":\"humanymous.wargame-network.v2\",{}",
+            &raw[1..]
+        );
+        assert!(verify_bytes(duplicate.as_bytes()).is_err());
+        let entry = format!("\"attack\":{}", base["by_class"]["attack"]);
+        let duplicate = raw.replacen(&entry, &format!("{entry},{entry}"), 1);
+        assert_ne!(duplicate, raw);
+        assert!(verify_bytes(duplicate.as_bytes()).is_err());
+        let duplicate = raw.replacen("\"seq\":1", "\"seq\":0,\"seq\":1", 1);
+        assert_ne!(duplicate, raw);
+        assert!(verify_bytes(duplicate.as_bytes()).is_err());
+    }
     #[test]
     fn simulation_replays_real_engine_and_preserves_integer_float_json_semantics() {
         let mut report = serde_json::to_value(crate::run(u64::MAX)).unwrap();
