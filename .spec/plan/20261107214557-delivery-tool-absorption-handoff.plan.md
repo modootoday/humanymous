@@ -298,6 +298,44 @@ proposal must not survive as empty targets or duplicate test bodies. This is
 accepted identity design, not source/path/Cargo movement or an actual test pass.
 Node diagnostic source changes remain deferred until the Tools identity freeze.
 
+## Root-accepted input ownership; exact closure freeze pending
+
+tools-input-decision-proposals.json resolves the CLI queue's25 named literal
+inputs plus10 manifest-concat reading sites into35 decision rows over34 distinct
+paths. These counts are different dimensions, not35 independent files or a full
+compiler closure. Every row records original owner/path/read syntax, distinct Git
+and working-byte pins, observed direct readers and operational path references,
+and a concrete owning destination or bounded reader proposal.
+
+The accepted rows comprise6 original operational-resource moves (including the
+four already accepted external adapter resources),8 immutable DATA producer
+replicas,15 bounded explicit repository readers, one Collector implementation pin
+and5 original shared Lab source moves. Data replica rows retain canonical Core,
+Collector or CEF producer ownership and require provenance/equality. Root accepted
+the CEF DATA replica at qualification/browser/cef/pilot-contract.json, preserving
+the canonical producer contract and its self-contained compilation.
+Collector Rust source is never replicated: use a reviewed owned digest and actual
+same-source binding, with no self-reported or ambient fallback. Shared Lab Rust
+files move once into the canonical CLI private lab_support tree and are linked
+from their minimal owning binaries, never copied or exported from production.
+
+Lab wire/configuration originals are proposed under qualification/lab. Public
+Docs'25-case normalized-profile corpus and deployment Docker recipes stay with
+their existing owners and use explicit bounded repository/source verification.
+Mutable agent registries, scripts and product skill references also stay put.
+Replacing compile includes with small schema fixtures must not erase the original
+real-repository assertion: preserve those obligations through separately mapped
+required live checks and existing CLI routes where their assertions match. This
+includes library cases outside the Maintenance0.1 integration-only33 set.
+
+Root accepted all35 ownership/disposition rows after that CEF path correction.
+Exact source/caller/feature/test closure and live verifier obligations still need
+final freeze; Collector actual-source binding remains a separate Lab mechanism
+review without full-source embedding or copying. Known10 resource bytes,
+Header R3 pins, old evidence and producer oracles remain unchanged. No source,
+resource, Cargo, profile content, compiler or GitHub operation is performed by
+this ownership design; dynamic/expanded/runtime input closure remains unproven.
+
 # Critique and readiness
 
 The design is accepted; implementation remains needs-work until the atomic freeze,

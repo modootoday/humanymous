@@ -1,0 +1,3292 @@
+{
+  "schema": "humanymous.delivery-tools-input-decision-proposals/1",
+  "state": "Root-accepted-ownership-design-not-frozen-or-implemented",
+  "source_head": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+  "queue_basis": {
+    "CLI_map": ".spec/evidence/20261107200932-cli-installation-package-transition-handoff/tools-linkage-map.json",
+    "CLI_map_sha256": "7b8621f9f11059e62a28a5e42e9a53d5cb9875561ef975b475a0c185e9ac2c4a",
+    "named_literal_input_rows": 25,
+    "resolved_manifest_concat_site_rows": 10,
+    "meaning": "35 decision-queue rows, NOT35unique paths or a complete compiler/input closure",
+    "distinct_paths": 34
+  },
+  "accepted_package_root": "crates/apps/humanymous-cli",
+  "current_original_pin_meaning": "Git and retained working byte views are distinct; these are proposal observations, not immutable trust grants for future mutable sources",
+  "caller_census_scope": "all observed literal include/path readers plus full repository path or skills-relative references in tracked/nonignored UTF-8 files up to2MB, historical evidence excluded; dynamic expressions still require Root owner review",
+  "rows": [
+    {
+      "queue_id": "L01",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": ".agents/evals/language-preservation.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "16d7bef3da7dc32ed3471f95a0f75c6d8f938537",
+        "canonical_git_sha256": "4b4314e94f1862b10bdb7e59e47966e5eb5032a821dc402a11e5f58517fab406",
+        "canonical_git_bytes": 719,
+        "retained_working_sha256": "4b4314e94f1862b10bdb7e59e47966e5eb5032a821dc402a11e5f58517fab406",
+        "retained_working_bytes": 719,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 173,
+          "syntax": "include_str!",
+          "target": ".agents/evals/language-preservation.json",
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 174,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "L02",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": ".agents/sessions/THREADS.md",
+      "current_read_types": [
+        "include_str!",
+        "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "62f8b94c2461abc4f6de768daff62b6a63fa0c9b",
+        "canonical_git_sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+        "canonical_git_bytes": 9584,
+        "retained_working_sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+        "retained_working_bytes": 9584,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 179,
+          "syntax": "include_str!",
+          "target": ".agents/sessions/THREADS.md",
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37"
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 193,
+          "syntax": "include_str!",
+          "target": ".agents/sessions/THREADS.md",
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37"
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/registry.rs",
+          "line": 73,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": ".agents/sessions/THREADS.md",
+          "source_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/rules/94-chat-coordination.md",
+          "line": 7,
+          "source_sha256": "188157527a6a2e47b0d77331f948cf00810531a03763465997f4d5314473cb7b",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 178,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 179,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 193,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 195,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/registry.rs",
+          "line": 64,
+          "source_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/registry.rs",
+          "line": 75,
+          "source_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "L03",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "adapters/go/pilot-contract.json",
+      "current_read_types": [
+        "include_bytes!",
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "9a0ba8fbe5d526843cd023417c75428d078180bc",
+        "canonical_git_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+        "canonical_git_bytes": 7379,
+        "retained_working_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+        "retained_working_bytes": 7379,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "scripts/ci/delivery/src/go_product.rs",
+          "line": 16,
+          "syntax": "include_str!",
+          "target": "adapters/go/pilot-contract.json",
+          "source_sha256": "5acb965950785f6691ab389b4c066ca0d011486a947af8acc9253704d2322c32"
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 102,
+          "syntax": "include_str!",
+          "target": "adapters/go/pilot-contract.json",
+          "source_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35"
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 247,
+          "syntax": "include_str!",
+          "target": "adapters/go/pilot-contract.json",
+          "source_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35"
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 288,
+          "syntax": "include_str!",
+          "target": "adapters/go/pilot-contract.json",
+          "source_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35"
+        },
+        {
+          "source": "test/lab/runtime/src/go/backend.rs",
+          "line": 15,
+          "syntax": "include_bytes!",
+          "target": "adapters/go/pilot-contract.json",
+          "source_sha256": "a6d4aae4b45e10d88d69b50d331c05f2bcb54b189ccf32c0816c0d0a3bfd35bc"
+        },
+        {
+          "source": "test/lab/runtime/src/go/mod.rs",
+          "line": 29,
+          "syntax": "include_bytes!",
+          "target": "adapters/go/pilot-contract.json",
+          "source_sha256": "0cc2fe4c19e8477d0a503d8df976b2b4c1dbb0b502a306d3a617a921ea280082"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "build/rust/browser-product.Dockerfile.dockerignore",
+          "line": 31,
+          "source_sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "crates/go-adapter/INTEGRATION.md",
+          "line": 215,
+          "source_sha256": "cab20a775e41581d3003937254346017311e1c58f6460d7104e2c3283dc12f9c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/INTEGRATION.md",
+          "line": 94,
+          "source_sha256": "86dc9500c3cca6821b89e8a7bd0a1f9b9bcc0fb43362e524b15ed9dbbbbeeb82",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/images/product.Dockerfile.dockerignore",
+          "line": 33,
+          "source_sha256": "4748966a0f02dc4de7807af0a956c18b266a95da1a53113aa67a46c2631bfc39",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "docs/reviews.json",
+          "line": 3869,
+          "source_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/go_product.rs",
+          "line": 16,
+          "source_sha256": "5acb965950785f6691ab389b4c066ca0d011486a947af8acc9253704d2322c32",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/go-public-receipts.json",
+          "line": 20,
+          "source_sha256": "1662a9bf2aac5eb32b5b6ade8ff740e1aa8708a5c4dca40f59f57218613fd005",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go.rs",
+          "line": 551,
+          "source_sha256": "d625835f9b78a8c836fd073016b6bee836fcea60e1bc7bc5b741ac2e39d59459",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go_fixture.rs",
+          "line": 36,
+          "source_sha256": "8b7d94877245b524c81c9164e47ab20d0187b63b94d94cb361d33605328f2560",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 103,
+          "source_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 248,
+          "source_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 289,
+          "source_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/snapshot.rs",
+          "line": 156,
+          "source_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runtime/src/go/backend.rs",
+          "line": 15,
+          "source_sha256": "a6d4aae4b45e10d88d69b50d331c05f2bcb54b189ccf32c0816c0d0a3bfd35bc",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runtime/src/go/mod.rs",
+          "line": 29,
+          "source_sha256": "0cc2fe4c19e8477d0a503d8df976b2b4c1dbb0b502a306d3a617a921ea280082",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-operational-resource",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/adapters/go/pilot-contract.json",
+        "owner": "CLI private qualification resource",
+        "conditions": [
+          "move original once; update every reader/source pin/caller atomically",
+          "Header exact R3 bytes/digest/proof remain unchanged; candidate path/count approval still required"
+        ]
+      },
+      "original_owner": {
+        "kind": "adapter-qualification-contract",
+        "name": "go owner before accepted CLI resource move"
+      }
+    },
+    {
+      "queue_id": "L04",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "adapters/native/header-proof-profile.json",
+      "current_read_types": [
+        "include_bytes!",
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "14804aae3e7e0db4b5f0fb465caa5506423cd912",
+        "canonical_git_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+        "canonical_git_bytes": 3954,
+        "retained_working_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+        "retained_working_bytes": 3954,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "scripts/ci/delivery/src/header_proof.rs",
+          "line": 249,
+          "syntax": "include_str!",
+          "target": "adapters/native/header-proof-profile.json",
+          "source_sha256": "80f2dc0f5c48f62e26f0204daed6480b4e270ff6fb576207fb53a29633bcd206"
+        },
+        {
+          "source": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+          "line": 104,
+          "syntax": "include_str!",
+          "target": "adapters/native/header-proof-profile.json",
+          "source_sha256": "ea44e5ff8e36096f47130bd2e7496f4d32550cbac27242bff9aa6db5252580b0"
+        },
+        {
+          "source": "scripts/ci/delivery/src/header_proof/admission.rs",
+          "line": 10,
+          "syntax": "include_bytes!",
+          "target": "adapters/native/header-proof-profile.json",
+          "source_sha256": "a0ba40a16b77f752b3c3f0482436ff9d56281196070ba3f1103f54a32236b00f"
+        },
+        {
+          "source": "scripts/ci/delivery/src/policy.rs",
+          "line": 276,
+          "syntax": "include_str!",
+          "target": "adapters/native/header-proof-profile.json",
+          "source_sha256": "8a982b9c160b6ff24bf13e4f84b95954517d23ef2884d3b2abe18bbdc6b678d7"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "scripts/ci/delivery/src/header_proof.rs",
+          "line": 250,
+          "source_sha256": "80f2dc0f5c48f62e26f0204daed6480b4e270ff6fb576207fb53a29633bcd206",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+          "line": 105,
+          "source_sha256": "ea44e5ff8e36096f47130bd2e7496f4d32550cbac27242bff9aa6db5252580b0",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/header_proof/admission.rs",
+          "line": 10,
+          "source_sha256": "a0ba40a16b77f752b3c3f0482436ff9d56281196070ba3f1103f54a32236b00f",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/policy.rs",
+          "line": 277,
+          "source_sha256": "8a982b9c160b6ff24bf13e4f84b95954517d23ef2884d3b2abe18bbdc6b678d7",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-operational-resource",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/adapters/native/header-proof-profile.json",
+        "owner": "CLI private qualification resource",
+        "conditions": [
+          "move original once; update every reader/source pin/caller atomically",
+          "Header exact R3 bytes/digest/proof remain unchanged; candidate path/count approval still required"
+        ]
+      },
+      "original_owner": {
+        "kind": "adapter-qualification-contract",
+        "name": "native owner before accepted CLI resource move"
+      }
+    },
+    {
+      "queue_id": "L05",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "adapters/nginx/pilot-contract.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "9fece6de6bdeca2fb9832606fa6f19afce7d3752",
+        "canonical_git_sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+        "canonical_git_bytes": 4030,
+        "retained_working_sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+        "retained_working_bytes": 4030,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/nginx-adapter/src/report.rs",
+          "line": 20,
+          "syntax": "include_str!",
+          "target": "adapters/nginx/pilot-contract.json",
+          "source_sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1"
+        },
+        {
+          "source": "crates/nginx-adapter/src/report.rs",
+          "line": 65,
+          "syntax": "include_str!",
+          "target": "adapters/nginx/pilot-contract.json",
+          "source_sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1"
+        },
+        {
+          "source": "scripts/ci/delivery/src/nginx.rs",
+          "line": 8,
+          "syntax": "include_str!",
+          "target": "adapters/nginx/pilot-contract.json",
+          "source_sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536"
+        },
+        {
+          "source": "scripts/ci/delivery/src/nginx.rs",
+          "line": 93,
+          "syntax": "include_str!",
+          "target": "adapters/nginx/pilot-contract.json",
+          "source_sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "adapters/nginx/Dockerfile.native.dockerignore",
+          "line": 13,
+          "source_sha256": "3ef3d62c8273e286062254bbbbf6f857de3c1fea8b730a3b07b28f8be7318a1a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "crates/nginx-adapter/src/report.rs",
+          "line": 20,
+          "source_sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "crates/nginx-adapter/src/report.rs",
+          "line": 65,
+          "source_sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "docs/reviews.json",
+          "line": 3817,
+          "source_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/nginx.rs",
+          "line": 9,
+          "source_sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/nginx.rs",
+          "line": 94,
+          "source_sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-operational-resource",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/adapters/nginx/pilot-contract.json",
+        "owner": "CLI private qualification resource",
+        "conditions": [
+          "move original once; update every reader/source pin/caller atomically",
+          "Header exact R3 bytes/digest/proof remain unchanged; candidate path/count approval still required"
+        ]
+      },
+      "original_owner": {
+        "kind": "adapter-qualification-contract",
+        "name": "nginx owner before accepted CLI resource move"
+      }
+    },
+    {
+      "queue_id": "L06",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "adapters/node/host-pilot-contract.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "d8bd11cf7601a65654b293eef478ad5e45a9bfad",
+        "canonical_git_sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
+        "canonical_git_bytes": 1970,
+        "retained_working_sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
+        "retained_working_bytes": 1970,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "scripts/ci/delivery/src/components/node_host.rs",
+          "line": 7,
+          "syntax": "include_str!",
+          "target": "adapters/node/host-pilot-contract.json",
+          "source_sha256": "ad8d364417189360927425067f4e07d2e27dfd47528ed0638557ad35aa21f167"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "docs/reviews.json",
+          "line": 3286,
+          "source_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/components/node_host.rs",
+          "line": 8,
+          "source_sha256": "ad8d364417189360927425067f4e07d2e27dfd47528ed0638557ad35aa21f167",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-operational-resource",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/adapters/node/host-pilot-contract.json",
+        "owner": "CLI private qualification resource",
+        "conditions": [
+          "move original once; update every reader/source pin/caller atomically",
+          "Header exact R3 bytes/digest/proof remain unchanged; candidate path/count approval still required"
+        ]
+      },
+      "original_owner": {
+        "kind": "adapter-qualification-contract",
+        "name": "node owner before accepted CLI resource move"
+      }
+    },
+    {
+      "queue_id": "L07",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/browser/native/desktop/pilot-contract.json",
+      "current_read_types": [
+        "include_bytes!",
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "4a134d4f7b613c4bd182c95a3062b2677028d1fc",
+        "canonical_git_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+        "canonical_git_bytes": 3098,
+        "retained_working_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+        "retained_working_bytes": 3098,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/browser/native/bootstrap/src/negative_pilot.rs",
+          "line": 61,
+          "syntax": "include_str!",
+          "target": "crates/browser/native/desktop/pilot-contract.json",
+          "source_sha256": "833e68f4f9025530df377f4fc3468a1ee00b86e25dbc8c57b12da0b7a9680448"
+        },
+        {
+          "source": "crates/browser/native/desktop/src/pilot_assertions.rs",
+          "line": 201,
+          "syntax": "include_str!",
+          "target": "crates/browser/native/desktop/pilot-contract.json",
+          "source_sha256": "c7e1a07981a21ce04800ac5bb783af0b0b8d973bb4925e3656039cce469b0e8d"
+        },
+        {
+          "source": "scripts/ci/cef-pilot/src/desktop.rs",
+          "line": 6,
+          "syntax": "include_bytes!",
+          "target": "crates/browser/native/desktop/pilot-contract.json",
+          "source_sha256": "c00e9b3896c7b78805d51aa6e30293c7747d514c4915b70856df2843da410fd7"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "docs/reviews.json",
+          "line": 2910,
+          "source_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/cef-pilot/src/desktop.rs",
+          "line": 6,
+          "source_sha256": "c00e9b3896c7b78805d51aa6e30293c7747d514c4915b70856df2843da410fd7",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/cef-pilot/src/provisioning.rs",
+          "line": 94,
+          "source_sha256": "98a7184508c8b56bd4b91c39fb2f1888d4596f53141c43e438095e9f815aa352",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/browser/cef/pilot-contract.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include",
+          "Root explicitly accepted this DATA replica ownership/destination; source movement remains unauthorized"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-cef-desktop",
+        "manifest": "crates/browser/native/desktop/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L08",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/collector/pilot/fixture.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "d16085a7e8888aa16395a2306bf2fe3a565b08f8",
+        "canonical_git_sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+        "canonical_git_bytes": 1124,
+        "retained_working_sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+        "retained_working_bytes": 1124,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
+          "line": 11,
+          "syntax": "include_str!",
+          "target": "crates/collector/pilot/fixture.json",
+          "source_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064"
+        },
+        {
+          "source": "crates/collector/tests/runtime_pilot_contract.rs",
+          "line": 10,
+          "syntax": "include_str!",
+          "target": "crates/collector/pilot/fixture.json",
+          "source_sha256": "1a5e618ddd79b7d3a8516ef45220234ce9988e1519eb95c5f5d5eaddb272eaa6"
+        },
+        {
+          "source": "test/lab/browser_expectations.rs",
+          "line": 55,
+          "syntax": "include_str!",
+          "target": "crates/collector/pilot/fixture.json",
+          "source_sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439"
+        },
+        {
+          "source": "test/lab/browser_wire.rs",
+          "line": 184,
+          "syntax": "include_str!",
+          "target": "crates/collector/pilot/fixture.json",
+          "source_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d"
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/browser_actor.rs",
+          "line": 175,
+          "syntax": "include_str!",
+          "target": "crates/collector/pilot/fixture.json",
+          "source_sha256": "12c1aac20092b59dda4eece8a2f3e4f2a137820ca7b805c56157fe02518642b6"
+        },
+        {
+          "source": "test/lab/runtime/src/browser_proxy.rs",
+          "line": 19,
+          "syntax": "include_str!",
+          "target": "crates/collector/pilot/fixture.json",
+          "source_sha256": "4b0d3acb859878463d56ab66a287ffc67d960143bdc5bc71172d49742ed9e1a1"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "crates/sdk/humanymous-runtime/qualification/gateway/browser-http-contract.json",
+          "line": 3,
+          "source_sha256": "d0ff620b7ed65d77858dd14484845413ca1072ffb36838dee0e12c3326a2d7cc",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "crates/sdk/humanymous-runtime/tests/fixtures/provenance.json",
+          "line": 16,
+          "source_sha256": "b23172a572bb66c6fbc099ffd8d02ff683e48b68f6b1d8e71a594c543bdfec34",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/INTEGRATION.md",
+          "line": 165,
+          "source_sha256": "86dc9500c3cca6821b89e8a7bd0a1f9b9bcc0fb43362e524b15ed9dbbbbeeb82",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "docs/reviews.json",
+          "line": 1615,
+          "source_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/browser_expectations.rs",
+          "line": 55,
+          "source_sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/browser_wire.rs",
+          "line": 184,
+          "source_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/browser.rs",
+          "line": 74,
+          "source_sha256": "cf53de6f2a19f9dfecb97832f9a3c3a03ea3c9166865b6a323159dc41c55e5f4",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/browser_actor.rs",
+          "line": 176,
+          "source_sha256": "12c1aac20092b59dda4eece8a2f3e4f2a137820ca7b805c56157fe02518642b6",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runtime/src/browser_proxy.rs",
+          "line": 20,
+          "source_sha256": "4b0d3acb859878463d56ab66a287ffc67d960143bdc5bc71172d49742ed9e1a1",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/fixtures/collector/pilot.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-collector",
+        "manifest": "crates/collector/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L09",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/collector/src/browser/transport/runtime_pilot.rs",
+      "current_read_types": [
+        "include_bytes!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "0cb5adc5bed3a20c9099b43bd7e181339855e07b",
+        "canonical_git_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+        "canonical_git_bytes": 4658,
+        "retained_working_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+        "retained_working_bytes": 4658,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+          "line": 4,
+          "syntax": "include_bytes!",
+          "target": "crates/collector/src/browser/transport/runtime_pilot.rs",
+          "source_sha256": "18861670874c8b463c776b873b147c41bdea6199ea8658c7c423b91b9f7dd3f3"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "docs/reviews.json",
+          "line": 1951,
+          "source_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/browser_actor.rs",
+          "line": 236,
+          "source_sha256": "12c1aac20092b59dda4eece8a2f3e4f2a137820ca7b805c56157fe02518642b6",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/browser_failure.rs",
+          "line": 101,
+          "source_sha256": "b0f33c32fd049870ded024b8b30d0bf93830911e3e5da91598eb0e2ae3c2efc7",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+          "line": 4,
+          "source_sha256": "18861670874c8b463c776b873b147c41bdea6199ea8658c7c423b91b9f7dd3f3",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+          "line": 6,
+          "source_sha256": "18861670874c8b463c776b873b147c41bdea6199ea8658c7c423b91b9f7dd3f3",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "reviewed-owned-source-pin-plus-bounded-source-binding",
+        "status": "Root accepted reviewed source-pin direction; actual-source binding is a separate Lab review, no full-source embedding or copy",
+        "destination": "qualification/pins/collector-runtime-pilot-source.json",
+        "owner": "Collector owns Rust implementation; private CLI Lab owns data-only reviewed digest/line-code map",
+        "conditions": [
+          "remove whole-source compile embedding without copying source or snippets into a fixture",
+          "retain reviewed digest plus original source/test identity and finite diagnostic site identifiers",
+          "actual source binding must be explicit and same-run/source/image; missing/mismatch refuses classification/qualification",
+          "no ambient file or self-reported hash fallback, no auto-refresh of pin",
+          "root reviewed line-code mapping updates required for source changes; never infer execution from source text"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-collector",
+        "manifest": "crates/collector/Cargo.toml"
+      },
+      "existing_reviewed_digest": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+      "reviewed_pin_matches_current_working_source": true,
+      "pin_owner_source": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs"
+    },
+    {
+      "queue_id": "L10",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "a12da1052ecc9a5bf82968ccf28700ce872e05b0",
+        "canonical_git_sha256": "a0c735e3852725d6eb3e07f32805785a372dd057cb01a5e517c4da37b0b207f0",
+        "canonical_git_bytes": 5007,
+        "retained_working_sha256": "04eb9bd2a02d70ea1dd7796c8128ef03b2cc10f41bcafb97d91c61873ef264b2",
+        "retained_working_bytes": 5209,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/attacker/src/catalog.rs",
+          "line": 81,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+          "source_sha256": "f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/hosted.rs",
+          "line": 53,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+          "source_sha256": "1c7c53dabd669e967341d491c6752cc5a3be4e7ff391846f1e6e155b8595cf59"
+        },
+        {
+          "source": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+          "line": 51,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+          "source_sha256": "24f4be252255abf343b926ccb2c4d37bb7dc78308b9a861fe2d12d06add1dd48"
+        }
+      ],
+      "literal_operational_callers": [],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/fixtures/core/scoring/bot-webdriver-cdp-hr9.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-core",
+        "manifest": "crates/sdk/humanymous-core/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L11",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "f20c1f1d1866d75d1f7257871e447ffd8d9ba45d",
+        "canonical_git_sha256": "f5a63afa9af0cb18dc507bf8783da1bdfbe776647b0ebd8d656c7a5afa8234c3",
+        "canonical_git_bytes": 3409,
+        "retained_working_sha256": "5fd5941b45ee6a43a113a91c132f5928a93bdaedc5f1fb447e13e3eca11a0725",
+        "retained_working_bytes": 3549,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/attacker/src/catalog.rs",
+          "line": 49,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+          "source_sha256": "f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/hosted.rs",
+          "line": 57,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+          "source_sha256": "1c7c53dabd669e967341d491c6752cc5a3be4e7ff391846f1e6e155b8595cf59"
+        },
+        {
+          "source": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+          "line": 52,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+          "source_sha256": "24f4be252255abf343b926ccb2c4d37bb7dc78308b9a861fe2d12d06add1dd48"
+        }
+      ],
+      "literal_operational_callers": [],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/fixtures/core/scoring/go-http-client.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-core",
+        "manifest": "crates/sdk/humanymous-core/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L12",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "cbf3e6c6b40d9ecb241238953947c9f669e7f86a",
+        "canonical_git_sha256": "767bff0359ae529a85905966c4031267922b35ba7d04e35d7d048d2208105e92",
+        "canonical_git_bytes": 5524,
+        "retained_working_sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+        "retained_working_bytes": 5742,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/apache-adapter/native/src/pilot/authority.rs",
+          "line": 65,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "source_sha256": "4120251ca27ce1ca6e91f21ad9dc453dc7345179dfcf645d2bb24ad603f14543"
+        },
+        {
+          "source": "crates/attacker/src/catalog.rs",
+          "line": 22,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "source_sha256": "f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7"
+        },
+        {
+          "source": "crates/attacker/src/network/cases.rs",
+          "line": 235,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "source_sha256": "52ded3c3a94ba24caff7a5c81ab893516a4b063b45bea90eddccf186f7f04a8d"
+        },
+        {
+          "source": "crates/dotnet-adapter/tests/hosted.rs",
+          "line": 60,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "source_sha256": "1c7c53dabd669e967341d491c6752cc5a3be4e7ff391846f1e6e155b8595cf59"
+        },
+        {
+          "source": "crates/framework-adapter/tests/support/authority.rs",
+          "line": 28,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "source_sha256": "e1a2bf6525c1787c3be892d573f32b62e0441eb5a5509771d3f177f19c2c389c"
+        },
+        {
+          "source": "crates/nginx-adapter/src/pilot/authority.rs",
+          "line": 73,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "source_sha256": "030e56f7113783c6d1cd96d291d0cd8117c2d6847a80553c25bd585e1290cfdc"
+        },
+        {
+          "source": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+          "line": 53,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "source_sha256": "24f4be252255abf343b926ccb2c4d37bb7dc78308b9a861fe2d12d06add1dd48"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "crates/sdk/humanymous-runtime/tests/fixtures/provenance.json",
+          "line": 4,
+          "source_sha256": "b23172a572bb66c6fbc099ffd8d02ff683e48b68f6b1d8e71a594c543bdfec34",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/fixtures/core/scoring/human-chrome-allow.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-core",
+        "manifest": "crates/sdk/humanymous-core/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L13",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "94cc781a766606605e4853f75961ccc705c57cf2",
+        "canonical_git_sha256": "24171cf678624ea0d4887e9e0b6efa09003dc8ae1f0bfaf17f90cb2bd92b7cfc",
+        "canonical_git_bytes": 2946,
+        "retained_working_sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2",
+        "retained_working_bytes": 3066,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/apache-adapter/native/src/pilot/authority.rs",
+          "line": 61,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+          "source_sha256": "4120251ca27ce1ca6e91f21ad9dc453dc7345179dfcf645d2bb24ad603f14543"
+        },
+        {
+          "source": "crates/attacker/src/catalog.rs",
+          "line": 57,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+          "source_sha256": "f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7"
+        },
+        {
+          "source": "crates/nginx-adapter/src/pilot/authority.rs",
+          "line": 69,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+          "source_sha256": "030e56f7113783c6d1cd96d291d0cd8117c2d6847a80553c25bd585e1290cfdc"
+        },
+        {
+          "source": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+          "line": 54,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+          "source_sha256": "24f4be252255abf343b926ccb2c4d37bb7dc78308b9a861fe2d12d06add1dd48"
+        }
+      ],
+      "literal_operational_callers": [],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/fixtures/core/scoring/no-client-hr10.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-core",
+        "manifest": "crates/sdk/humanymous-core/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L14",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "2c72dbd4c2555f2b403ad97d93cee6f13acb7de5",
+        "canonical_git_sha256": "89cca577764e3dc9f65b17f7c68a3a55f9d26d280ed9464ebcd32f52d540ec75",
+        "canonical_git_bytes": 5565,
+        "retained_working_sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
+        "retained_working_bytes": 5789,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/apache-adapter/native/src/pilot/authority.rs",
+          "line": 57,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+          "source_sha256": "4120251ca27ce1ca6e91f21ad9dc453dc7345179dfcf645d2bb24ad603f14543"
+        },
+        {
+          "source": "crates/attacker/src/catalog.rs",
+          "line": 73,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+          "source_sha256": "f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7"
+        },
+        {
+          "source": "crates/attacker/src/network/cases.rs",
+          "line": 233,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+          "source_sha256": "52ded3c3a94ba24caff7a5c81ab893516a4b063b45bea90eddccf186f7f04a8d"
+        },
+        {
+          "source": "crates/nginx-adapter/src/pilot/authority.rs",
+          "line": 65,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+          "source_sha256": "030e56f7113783c6d1cd96d291d0cd8117c2d6847a80553c25bd585e1290cfdc"
+        },
+        {
+          "source": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+          "line": 55,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+          "source_sha256": "24f4be252255abf343b926ccb2c4d37bb7dc78308b9a861fe2d12d06add1dd48"
+        }
+      ],
+      "literal_operational_callers": [],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/fixtures/core/scoring/selenium-hr1.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-core",
+        "manifest": "crates/sdk/humanymous-core/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L15",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "a26284cb2a7c4b4e76b19e51368f501b7751d078",
+        "canonical_git_sha256": "b68f591571ff76b6a3f029966585e43530d34c7de8087889f67784e0751f376b",
+        "canonical_git_bytes": 5158,
+        "retained_working_sha256": "3a8474c8e3de9dd33d56a470ec79a20743b184699401c6311720f2af38be2236",
+        "retained_working_bytes": 5367,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "crates/attacker/src/catalog.rs",
+          "line": 65,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+          "source_sha256": "f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7"
+        },
+        {
+          "source": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+          "line": 56,
+          "syntax": "include_str!",
+          "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+          "source_sha256": "24f4be252255abf343b926ccb2c4d37bb7dc78308b9a861fe2d12d06add1dd48"
+        }
+      ],
+      "literal_operational_callers": [],
+      "proposal": {
+        "kind": "immutable-DATA-producer-replica",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/fixtures/core/scoring/ua-tls-h2-hr2.json",
+        "owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+        "license_basis": "Producer manifests and repository LICENSE declare Apache-2.0; retain all embedded provenance/notices; not legal clearance",
+        "conditions": [
+          "freeze producer commit/path/Git blob/canonical and actual byte digests; copy no implementation",
+          "one replica per dataset reused across all same-package readers",
+          "verify exact producer/replica equality before qualification and on every coordinated producer update",
+          "no SDK fixture API, ambient source fallback, regenerated oracle or automatic hash refresh",
+          "CEF original must remain self-contained for its producer verification; do not introduce reverse outside-package include"
+        ]
+      },
+      "original_owner": {
+        "kind": "producer-package",
+        "name": "humanymous-core",
+        "manifest": "crates/sdk/humanymous-core/Cargo.toml"
+      },
+      "license_pin": {
+        "path": "LICENSE",
+        "sha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe",
+        "meaning": "repository/producer declared license basis; preserve any dataset-specific provenance/notice obligations"
+      }
+    },
+    {
+      "queue_id": "L16",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "deployments/lab/images/product.Dockerfile",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "c68395025c8f985ea0f2ba718dbe12e30e1ee96f",
+        "canonical_git_sha256": "cc31b25fe0dfe3d05a0d1a289118b6f375a32ce85bc4b37c26d40605edc54615",
+        "canonical_git_bytes": 1722,
+        "retained_working_sha256": "cc31b25fe0dfe3d05a0d1a289118b6f375a32ce85bc4b37c26d40605edc54615",
+        "retained_working_bytes": 1722,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+          "line": 232,
+          "syntax": "include_str!",
+          "target": "deployments/lab/images/product.Dockerfile",
+          "source_sha256": "c1ab8645b3655f9a16d15b6fb97cc0f5a97de7f5f7bc9e7c1307dc34566a4a42"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "deployments/lab/compose.rust.browser.yaml",
+          "line": 8,
+          "source_sha256": "1aa9435a94e1eee0f6bbcfd4d59efc6218737cb59e0f7a38bdb7e79e22275a66",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/compose.rust.go.yaml",
+          "line": 25,
+          "source_sha256": "09951008ed156e7645f4898365c99e40926e4cf9811df86e13459ce7292ccf3c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/compose.rust.mount.yaml",
+          "line": 8,
+          "source_sha256": "9081e34e3f7c98021548d60eb74e49e9644a241592dbae98eacc347122656eff",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/compose.rust.yaml",
+          "line": 4,
+          "source_sha256": "9a15bcf540d89e9db27f68e3585ccf5cf6ab333a186f5bdb894f7589e1e0eb8c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/ci/delivery/src/mount_probe.rs",
+          "line": 251,
+          "source_sha256": "68efcad46ef10cb3bdaf200ae8ccd649bef96f37577714f623e18557b073a7e8",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/mount_probe.rs",
+          "line": 14,
+          "source_sha256": "e485c01e2095e9f36f254dbc037bfc354c36a13891efffb02298401ad23bbe45",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+          "line": 232,
+          "source_sha256": "c1ab8645b3655f9a16d15b6fb97cc0f5a97de7f5f7bc9e7c1307dc34566a4a42",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/snapshot.rs",
+          "line": 232,
+          "source_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "Lab deployment recipe stays canonical in deployments",
+        "conditions": [
+          "remove cross-package compile inclusion; real source recipe invariants remain a required live repository check",
+          "small synthetic parser cases cannot replace actual target/ancestor/COPY-parent checks",
+          "bind exact selected recipe/source/image/build identity before Docker; no recipe copied into published tool",
+          "no shell shim, no inferred actual Docker execution from static recipe check"
+        ]
+      },
+      "original_owner": {
+        "kind": "deployment-recipe",
+        "name": "Lab deployment owner"
+      }
+    },
+    {
+      "queue_id": "L17",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "03637069ffa6b2b436922f4f197f00dcfa501cb6",
+        "canonical_git_sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3",
+        "canonical_git_bytes": 45943,
+        "retained_working_sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3",
+        "retained_working_bytes": 45943,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "docs/tooling/src/vectors/mod.rs",
+          "line": 134,
+          "syntax": "include_str!",
+          "target": "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
+          "source_sha256": "0c280759d66fedc8bd36b623af3d9240e615354f5d6105c2a96bf995c396e009"
+        }
+      ],
+      "literal_operational_callers": [],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "public Docs standards retains canonical downloadable corpus",
+        "existing_operational_route": "humanymous-pages vectors --fixtures EXPLICIT_SOURCE_PATH",
+        "conditions": [
+          "remove compile-time external include; small owned schema units do not replace the actual25-case corpus check",
+          "retain explicit source/Git/hash binding and required actual corpus verification:25cases/5accept/20reject/draft-conformance false",
+          "preserve public docs paths/download references; no corpus relocation or replica assumed",
+          "missing/changed/oversized source fails required live verification, no caller-CWD fallback"
+        ]
+      },
+      "original_owner": {
+        "kind": "public-documentation",
+        "name": "Docs standards corpus; Pages tool is a consumer"
+      }
+    },
+    {
+      "queue_id": "L18",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "scripts/agents/git-coord.ps1",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "d918a0ab6ab35013363d627664ed94d5b71e90fe",
+        "canonical_git_sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+        "canonical_git_bytes": 8781,
+        "retained_working_sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+        "retained_working_bytes": 8781,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/tests/git_coord.rs",
+          "line": 89,
+          "syntax": "include_str!",
+          "target": "scripts/agents/git-coord.ps1",
+          "source_sha256": "a024ad0db93492ecba551108d39f17fea2c0ee54f5cb5d91caf19aebf3b77d75"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/evals/eight-package-maintenance-handoff.md",
+          "line": 49,
+          "source_sha256": "07a4d1e9e3ef235b4161b664176fa73f25d727f9778dc76b005133f645328648",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/evals/eight-package-maintenance-handoff.md",
+          "line": 110,
+          "source_sha256": "07a4d1e9e3ef235b4161b664176fa73f25d727f9778dc76b005133f645328648",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/rules/91-git-contention.md",
+          "line": 34,
+          "source_sha256": "42cd1b99635d5b45d0dca906e31c4ac07f9f482ddf1f7c85e3225e0e26eac7a8",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/rules/92-git-commit-attribution.md",
+          "line": 19,
+          "source_sha256": "2673c61e4ae6a7d132e6d98765912e79b535810e704eefcb966077e3045edb6c",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 59,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 61,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 69,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 73,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/cut-release/SKILL.md",
+          "line": 59,
+          "source_sha256": "51f0ebcf43850429d99b8837f5d1ddc6135df287d6ab196dfdc2f8dfe17670b6",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/git-coord.ps1",
+          "line": 7,
+          "source_sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/git-coord.ps1",
+          "line": 8,
+          "source_sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/git-coord.ps1",
+          "line": 9,
+          "source_sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/git-coord.ps1",
+          "line": 10,
+          "source_sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/tests/git_coord.rs",
+          "line": 88,
+          "source_sha256": "a024ad0db93492ecba551108d39f17fea2c0ee54f5cb5d91caf19aebf3b77d75",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/tests/git_coord.rs",
+          "line": 89,
+          "source_sha256": "a024ad0db93492ecba551108d39f17fea2c0ee54f5cb5d91caf19aebf3b77d75",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/tests/git_coord.rs",
+          "line": 102,
+          "source_sha256": "a024ad0db93492ecba551108d39f17fea2c0ee54f5cb5d91caf19aebf3b77d75",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "L19",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "test/lab/browser_expectations.rs",
+      "current_read_types": [
+        "#[path]"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "1b2594cbf1db0bdac811f782e4fade6351d5e91c",
+        "canonical_git_sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439",
+        "canonical_git_bytes": 4513,
+        "retained_working_sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439",
+        "retained_working_bytes": 4513,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/runner/src/main.rs",
+          "line": 3,
+          "syntax": "#[path]",
+          "target": "test/lab/browser_expectations.rs",
+          "source_sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45"
+        },
+        {
+          "source": "test/lab/runtime/src/main.rs",
+          "line": 5,
+          "syntax": "#[path]",
+          "target": "test/lab/browser_expectations.rs",
+          "source_sha256": "d486f77d5712bff4ada046711cb7d50fab412e4d3346df766397651392cc16a0"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "test/lab/runner/src/snapshot.rs",
+          "line": 223,
+          "source_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-shared-Rust-source",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "src/qualification/lab_support/browser_expectations.rs",
+        "owner": "one canonical private CLI Lab support source tree",
+        "conditions": [
+          "move original source, never copy implementation",
+          "all observed private bin consumers link the same in-package physical source; no production library API",
+          "review crate namespace rewiring/minimal dependencies/lints and preserve every existing test",
+          "rewrite the helper own resource reads to the approved owned JSON locations"
+        ]
+      },
+      "original_owner": {
+        "kind": "private-shared-source",
+        "name": "Lab owner; currently outside former Cargo roots"
+      }
+    },
+    {
+      "queue_id": "L20",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "test/lab/browser_outcome.rs",
+      "current_read_types": [
+        "#[path]"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "43a74490bca62e3506ad024f45c3c73aa9ecb4bd",
+        "canonical_git_sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
+        "canonical_git_bytes": 7663,
+        "retained_working_sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
+        "retained_working_bytes": 7663,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "scripts/ci/delivery/src/lab_diagnostics.rs",
+          "line": 5,
+          "syntax": "#[path]",
+          "target": "test/lab/browser_outcome.rs",
+          "source_sha256": "bd7135af0585b821b92971477affb21be1d8eb45b36d16b1a21e8c219c8a5f15"
+        },
+        {
+          "source": "test/lab/runner/src/main.rs",
+          "line": 5,
+          "syntax": "#[path]",
+          "target": "test/lab/browser_outcome.rs",
+          "source_sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "scripts/ci/delivery/src/lab_diagnostics.rs",
+          "line": 5,
+          "source_sha256": "bd7135af0585b821b92971477affb21be1d8eb45b36d16b1a21e8c219c8a5f15",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/snapshot.rs",
+          "line": 224,
+          "source_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-shared-Rust-source",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "src/qualification/lab_support/browser_outcome.rs",
+        "owner": "one canonical private CLI Lab support source tree",
+        "conditions": [
+          "move original source, never copy implementation",
+          "all observed private bin consumers link the same in-package physical source; no production library API",
+          "review crate namespace rewiring/minimal dependencies/lints and preserve every existing test",
+          "rewrite the helper own resource reads to the approved owned JSON locations"
+        ]
+      },
+      "original_owner": {
+        "kind": "private-shared-source",
+        "name": "Lab owner; currently outside former Cargo roots"
+      }
+    },
+    {
+      "queue_id": "L21",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "test/lab/browser_wire.rs",
+      "current_read_types": [
+        "#[path]"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "0386b568903c295b3a8c242b443dde963e7541d9",
+        "canonical_git_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d",
+        "canonical_git_bytes": 8662,
+        "retained_working_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d",
+        "retained_working_bytes": 8662,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/runner/src/main.rs",
+          "line": 7,
+          "syntax": "#[path]",
+          "target": "test/lab/browser_wire.rs",
+          "source_sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "test/lab/runner/src/snapshot.rs",
+          "line": 225,
+          "source_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-shared-Rust-source",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "src/qualification/lab_support/browser_wire.rs",
+        "owner": "one canonical private CLI Lab support source tree",
+        "conditions": [
+          "move original source, never copy implementation",
+          "all observed private bin consumers link the same in-package physical source; no production library API",
+          "review crate namespace rewiring/minimal dependencies/lints and preserve every existing test",
+          "rewrite the helper own resource reads to the approved owned JSON locations"
+        ]
+      },
+      "original_owner": {
+        "kind": "private-shared-source",
+        "name": "Lab owner; currently outside former Cargo roots"
+      }
+    },
+    {
+      "queue_id": "L22",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "test/lab/browser-wire-contract.json",
+      "current_read_types": [
+        "include_str!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "3bc4646d064108f9eed6a0ad9e0c9e6721586b51",
+        "canonical_git_sha256": "42eb19cdbd7ba1cd2b419467ceb6c0d2c2c25da6a9a0140093797a496a56a151",
+        "canonical_git_bytes": 251,
+        "retained_working_sha256": "42eb19cdbd7ba1cd2b419467ceb6c0d2c2c25da6a9a0140093797a496a56a151",
+        "retained_working_bytes": 251,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/browser_wire.rs",
+          "line": 15,
+          "syntax": "include_str!",
+          "target": "test/lab/browser-wire-contract.json",
+          "source_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d"
+        },
+        {
+          "source": "test/lab/browser_wire.rs",
+          "line": 60,
+          "syntax": "include_str!",
+          "target": "test/lab/browser-wire-contract.json",
+          "source_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d"
+        },
+        {
+          "source": "test/lab/runtime/src/browser_proxy.rs",
+          "line": 242,
+          "syntax": "include_str!",
+          "target": "test/lab/browser-wire-contract.json",
+          "source_sha256": "4b0d3acb859878463d56ab66a287ffc67d960143bdc5bc71172d49742ed9e1a1"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "test/lab/runner/src/snapshot.rs",
+          "line": 226,
+          "source_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-operational-resource",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/lab/browser-wire-contract.json",
+        "owner": "CLI private Lab qualification resource",
+        "conditions": [
+          "move original bytes once, same-package compile reads for all private consumers",
+          "update runtime config_file callers, snapshot input paths and shared Lab helpers atomically",
+          "preserve existing safe field vocabulary, zero counters, topology/effect/custody meaning; no qualification transfer"
+        ]
+      },
+      "original_owner": {
+        "kind": "private-operational-contract",
+        "name": "Lab owner"
+      }
+    },
+    {
+      "queue_id": "L23",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "test/lab/dns_wire.rs",
+      "current_read_types": [
+        "#[path]"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "4b1efe002d46bac00f7378f233c8b2dd6744c923",
+        "canonical_git_sha256": "0717cf28f759cf26b9b37183faa23148f7eb2d222977edfd21bef291cec403b1",
+        "canonical_git_bytes": 3114,
+        "retained_working_sha256": "0717cf28f759cf26b9b37183faa23148f7eb2d222977edfd21bef291cec403b1",
+        "retained_working_bytes": 3114,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/runner/src/fixture.rs",
+          "line": 4,
+          "syntax": "#[path]",
+          "target": "test/lab/dns_wire.rs",
+          "source_sha256": "af81c4c0ed1a63cead57001ead64db409592c223aa872f7c1a6448395f13c9da"
+        },
+        {
+          "source": "test/lab/runtime/src/main.rs",
+          "line": 16,
+          "syntax": "#[path]",
+          "target": "test/lab/dns_wire.rs",
+          "source_sha256": "d486f77d5712bff4ada046711cb7d50fab412e4d3346df766397651392cc16a0"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "build/rust/browser-product.Dockerfile.dockerignore",
+          "line": 21,
+          "source_sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/images/product.Dockerfile.dockerignore",
+          "line": 29,
+          "source_sha256": "4748966a0f02dc4de7807af0a956c18b266a95da1a53113aa67a46c2631bfc39",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-shared-Rust-source",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "src/qualification/lab_support/dns_wire.rs",
+        "owner": "one canonical private CLI Lab support source tree",
+        "conditions": [
+          "move original source, never copy implementation",
+          "all observed private bin consumers link the same in-package physical source; no production library API",
+          "review crate namespace rewiring/minimal dependencies/lints and preserve every existing test",
+          "rewrite the helper own resource reads to the approved owned JSON locations"
+        ]
+      },
+      "original_owner": {
+        "kind": "private-shared-source",
+        "name": "Lab owner; currently outside former Cargo roots"
+      }
+    },
+    {
+      "queue_id": "L24",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "test/lab/go-configuration.json",
+      "current_read_types": [
+        "include_bytes!"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "178b9b1eb0568bbda73a6c4298890085d2265254",
+        "canonical_git_sha256": "bc85c6380b1369fd43ea5ce75f1ea591e53d6315b32f1e5946711cbb5a026ff8",
+        "canonical_git_bytes": 525,
+        "retained_working_sha256": "bc85c6380b1369fd43ea5ce75f1ea591e53d6315b32f1e5946711cbb5a026ff8",
+        "retained_working_bytes": 525,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/runtime/src/go/mod.rs",
+          "line": 22,
+          "syntax": "include_bytes!",
+          "target": "test/lab/go-configuration.json",
+          "source_sha256": "0cc2fe4c19e8477d0a503d8df976b2b4c1dbb0b502a306d3a617a921ea280082"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "build/rust/browser-product.Dockerfile.dockerignore",
+          "line": 20,
+          "source_sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "deployments/lab/images/product.Dockerfile.dockerignore",
+          "line": 30,
+          "source_sha256": "4748966a0f02dc4de7807af0a956c18b266a95da1a53113aa67a46c2631bfc39",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "test/lab/runner/src/orchestration/go.rs",
+          "line": 320,
+          "source_sha256": "d625835f9b78a8c836fd073016b6bee836fcea60e1bc7bc5b741ac2e39d59459",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-operational-resource",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "qualification/lab/go-configuration.json",
+        "owner": "CLI private Lab qualification resource",
+        "conditions": [
+          "move original bytes once, same-package compile reads for all private consumers",
+          "update runtime config_file callers, snapshot input paths and shared Lab helpers atomically",
+          "preserve existing safe field vocabulary, zero counters, topology/effect/custody meaning; no qualification transfer"
+        ]
+      },
+      "original_owner": {
+        "kind": "private-operational-contract",
+        "name": "Lab owner"
+      }
+    },
+    {
+      "queue_id": "L25",
+      "queue_kind": "named-literal-input-from-CLI-queue",
+      "original_path": "test/lab/mount_policy.rs",
+      "current_read_types": [
+        "#[path]"
+      ],
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "48796e77126e62c568cac0b79a1c84b357236acd",
+        "canonical_git_sha256": "0038b94c599bc4f19b382c9e19fcefdfbd8b2b4d6191317083a5e8ddc63fc3eb",
+        "canonical_git_bytes": 4821,
+        "retained_working_sha256": "0038b94c599bc4f19b382c9e19fcefdfbd8b2b4d6191317083a5e8ddc63fc3eb",
+        "retained_working_bytes": 4821,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "test/lab/runner/src/main.rs",
+          "line": 11,
+          "syntax": "#[path]",
+          "target": "test/lab/mount_policy.rs",
+          "source_sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45"
+        },
+        {
+          "source": "test/lab/runtime/src/main.rs",
+          "line": 23,
+          "syntax": "#[path]",
+          "target": "test/lab/mount_policy.rs",
+          "source_sha256": "d486f77d5712bff4ada046711cb7d50fab412e4d3346df766397651392cc16a0"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "test/lab/runner/src/snapshot.rs",
+          "line": 222,
+          "source_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "move-original-shared-Rust-source",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": "src/qualification/lab_support/mount_policy.rs",
+        "owner": "one canonical private CLI Lab support source tree",
+        "conditions": [
+          "move original source, never copy implementation",
+          "all observed private bin consumers link the same in-package physical source; no production library API",
+          "review crate namespace rewiring/minimal dependencies/lints and preserve every existing test",
+          "rewrite the helper own resource reads to the approved owned JSON locations"
+        ]
+      },
+      "original_owner": {
+        "kind": "private-shared-source",
+        "name": "Lab owner; currently outside former Cargo roots"
+      }
+    },
+    {
+      "queue_id": "C01",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": "skills/SKILL.md",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/product.rs",
+        "line": 174,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "51ab71a8af9bf580a59e5ad551d142d5b70cdffa",
+        "canonical_git_sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+        "canonical_git_bytes": 2628,
+        "retained_working_sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+        "retained_working_bytes": 2628,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 174,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": "skills/SKILL.md",
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/INTEGRATION.md",
+          "line": 11,
+          "source_sha256": "a7ba05ba486ab3eba40c3b6f081427ab826415af07bd17f70c25558050a121cb",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/evals/eight-package-maintenance-handoff.md",
+          "line": 77,
+          "source_sha256": "07a4d1e9e3ef235b4161b664176fa73f25d727f9778dc76b005133f645328648",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/rules/50-provider-matrix.md",
+          "line": 5,
+          "source_sha256": "a55e4f97002da1c81264b2e6cb22fc4f6e30ec4bbcd6a9615d37e0e9fb03673d",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/rules/50-provider-matrix.md",
+          "line": 14,
+          "source_sha256": "a55e4f97002da1c81264b2e6cb22fc4f6e30ec4bbcd6a9615d37e0e9fb03673d",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 120,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 277,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 282,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 379,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C02",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": "skills/references/installation.md",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/product.rs",
+        "line": 178,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "a38c842de21447e1692b56361881864049fccf3c",
+        "canonical_git_sha256": "d61688100b9c0db630306ab0f9a27fd490b8ac1780131f88352fb13379e68c6d",
+        "canonical_git_bytes": 2658,
+        "retained_working_sha256": "d61688100b9c0db630306ab0f9a27fd490b8ac1780131f88352fb13379e68c6d",
+        "retained_working_bytes": 2658,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 178,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": "skills/references/installation.md",
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "skills/SKILL.md",
+          "line": 21,
+          "source_sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 121,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 278,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 177,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 180,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C03",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": "skills/references/operations.md",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/product.rs",
+        "line": 186,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "51a3e5bf4312274d8e8c1887848bf03195086f8b",
+        "canonical_git_sha256": "015642b84019e645684372330547d24b487eef9882b372cf8eee5054b5ef100c",
+        "canonical_git_bytes": 2205,
+        "retained_working_sha256": "015642b84019e645684372330547d24b487eef9882b372cf8eee5054b5ef100c",
+        "retained_working_bytes": 2205,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 186,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": "skills/references/operations.md",
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "skills/SKILL.md",
+          "line": 22,
+          "source_sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 122,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 283,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 185,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 188,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C04",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": "skills/references/adapters.md",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/product.rs",
+        "line": 194,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "51a96e67235a5a0940c9dff50e1d0001e43b7638",
+        "canonical_git_sha256": "6e2cc2ad417c8d441df6a8ccac9f891c464b89554b7dfc2e21629d3572ee366d",
+        "canonical_git_bytes": 2746,
+        "retained_working_sha256": "6e2cc2ad417c8d441df6a8ccac9f891c464b89554b7dfc2e21629d3572ee366d",
+        "retained_working_bytes": 2746,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 194,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": "skills/references/adapters.md",
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "skills/SKILL.md",
+          "line": 23,
+          "source_sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 123,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 193,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 196,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C05",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": "skills/references/qualification.md",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/product.rs",
+        "line": 202,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "40e8ec43a96fbbc88285896183dd4a3a27bd5418",
+        "canonical_git_sha256": "85ba9bf8901016fc4bb970de693e15d71825ceb1a961e44ee5964b0e5f5e7eff",
+        "canonical_git_bytes": 1677,
+        "retained_working_sha256": "85ba9bf8901016fc4bb970de693e15d71825ceb1a961e44ee5964b0e5f5e7eff",
+        "retained_working_bytes": 1677,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 202,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": "skills/references/qualification.md",
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": "skills/SKILL.md",
+          "line": 24,
+          "source_sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 124,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 279,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/local_eval.rs",
+          "line": 284,
+          "source_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+          "reference_forms": [
+            "full repository path",
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 201,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/product.rs",
+          "line": 204,
+          "source_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+          "reference_forms": [
+            "owned skills-relative reference"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C06",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": ".agents/sessions/lanes.json",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+        "line": 142,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "2cd97637153aaf170abf8869eaea17bfeb22dcc6",
+        "canonical_git_sha256": "78c8790146ffc26fd69bf35684b826a78cc88a064f3e070f2b15a72a852261d7",
+        "canonical_git_bytes": 2743,
+        "retained_working_sha256": "78c8790146ffc26fd69bf35684b826a78cc88a064f3e070f2b15a72a852261d7",
+        "retained_working_bytes": 2743,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 142,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": ".agents/sessions/lanes.json",
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/INTEGRATION.md",
+          "line": 13,
+          "source_sha256": "a7ba05ba486ab3eba40c3b6f081427ab826415af07bd17f70c25558050a121cb",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 127,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 144,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/tests/process.rs",
+          "line": 64,
+          "source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/tests/session_storage.rs",
+          "line": 25,
+          "source_sha256": "1343a083c917c52661aabf490fbeecc64082c52ac5341591f0445c008a9ce147",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C07",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": ".agents/sessions/LANES.md",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+        "line": 149,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "9f52a89ab182e804d2e230096052d62056ea94c1",
+        "canonical_git_sha256": "b9f7d292a34c3cb0c1aedc9567fd64197cd9b13544b4dd5ed442aaf9b00c9b50",
+        "canonical_git_bytes": 9662,
+        "retained_working_sha256": "b9f7d292a34c3cb0c1aedc9567fd64197cd9b13544b4dd5ed442aaf9b00c9b50",
+        "retained_working_bytes": 9662,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 149,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": ".agents/sessions/LANES.md",
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/manifest.yaml",
+          "line": 83,
+          "source_sha256": "a6ed0cbf52551195d6bc6bb9fbb4ccb87c3a62c189e50b15a432c0245fca45c8",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/rules/90-session-overlap.md",
+          "line": 6,
+          "source_sha256": "ecf67ce7d8da0b954c6c2c3cdd6176010389a6a2f550050e92694a9432ed0d55",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/rules/94-chat-coordination.md",
+          "line": 39,
+          "source_sha256": "188157527a6a2e47b0d77331f948cf00810531a03763465997f4d5314473cb7b",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 23,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 148,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 131,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 151,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C08",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": "scripts/agents/session-board.ps1",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+        "line": 153,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "65e3a4420777abdafdce6a01d50d50f929cdcf29",
+        "canonical_git_sha256": "17985f89f2ebc9c839fdec4fdb75f21891706a33b7dd33b762ab9da295ab4e88",
+        "canonical_git_bytes": 7568,
+        "retained_working_sha256": "093e01174eb444249f9c1ea05f992e66fade9cc8693fd75225a278071c501304",
+        "retained_working_bytes": 7817,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 153,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": "scripts/agents/session-board.ps1",
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 20,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 27,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 129,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 140,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": ".agents/skills/cut-release/SKILL.md",
+          "line": 49,
+          "source_sha256": "51f0ebcf43850429d99b8837f5d1ddc6135df287d6ab196dfdc2f8dfe17670b6",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/session-board.ps1",
+          "line": 7,
+          "source_sha256": "093e01174eb444249f9c1ea05f992e66fade9cc8693fd75225a278071c501304",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/session-board.ps1",
+          "line": 8,
+          "source_sha256": "093e01174eb444249f9c1ea05f992e66fade9cc8693fd75225a278071c501304",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/session-board.ps1",
+          "line": 9,
+          "source_sha256": "093e01174eb444249f9c1ea05f992e66fade9cc8693fd75225a278071c501304",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/survey-provider-history.ps1",
+          "line": 99,
+          "source_sha256": "9990e9b373ad2b95ae0dd192a69ac358c4ae96dfdcaeb85dd2c67ed01a691121",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/survey-provider-history.ps1",
+          "line": 112,
+          "source_sha256": "9990e9b373ad2b95ae0dd192a69ac358c4ae96dfdcaeb85dd2c67ed01a691121",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 132,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 155,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C09",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": "scripts/agents/session-board.sh",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+        "line": 157,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "2a7cd2864cc17572165e02936588ade43739cf35",
+        "canonical_git_sha256": "be6f6d23b5b49955f22aa74a5ca53bcdaab85f47caefd3ae7418f8bfb852b2c1",
+        "canonical_git_bytes": 3638,
+        "retained_working_sha256": "6abeff6d9fe14364aec3025e24d89de948848d5066a7ca2fc199830e88b7e058",
+        "retained_working_bytes": 3761,
+        "working_equals_git": false,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 157,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": "scripts/agents/session-board.sh",
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/skills/coordinate-sessions/SKILL.md",
+          "line": 21,
+          "source_sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "scripts/agents/git-coord.sh",
+          "line": 7,
+          "source_sha256": "3be75614deb26c32847662cd954c9951c4db505e294a16a30b1a205ab041e039",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 133,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+          "line": 159,
+          "source_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    },
+    {
+      "queue_id": "C10",
+      "queue_kind": "manifest-concat-site-resolved",
+      "original_path": ".agents/sessions/THREADS.md",
+      "original_reader": {
+        "source": "skills/agent-maintenance/src/sessions/registry.rs",
+        "line": 73,
+        "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+        "source_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7"
+      },
+      "pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "62f8b94c2461abc4f6de768daff62b6a63fa0c9b",
+        "canonical_git_sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+        "canonical_git_bytes": 9584,
+        "retained_working_sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+        "retained_working_bytes": 9584,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "observed_direct_reader_sites": [
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 179,
+          "syntax": "include_str!",
+          "target": ".agents/sessions/THREADS.md",
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37"
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 193,
+          "syntax": "include_str!",
+          "target": ".agents/sessions/THREADS.md",
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37"
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/registry.rs",
+          "line": 73,
+          "syntax": "include_str!(concat!(env!(CARGO_MANIFEST_DIR),suffix))",
+          "target": ".agents/sessions/THREADS.md",
+          "source_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7"
+        }
+      ],
+      "literal_operational_callers": [
+        {
+          "source": ".agents/rules/94-chat-coordination.md",
+          "line": 7,
+          "source_sha256": "188157527a6a2e47b0d77331f948cf00810531a03763465997f4d5314473cb7b",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 178,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 179,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 193,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/language.rs",
+          "line": 195,
+          "source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/registry.rs",
+          "line": 64,
+          "source_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7",
+          "reference_forms": [
+            "full repository path"
+          ]
+        },
+        {
+          "source": "skills/agent-maintenance/src/sessions/registry.rs",
+          "line": 75,
+          "source_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7",
+          "reference_forms": [
+            "full repository path"
+          ]
+        }
+      ],
+      "proposal": {
+        "kind": "bounded-explicit-repository-source-reader",
+        "status": "Root accepted ownership/disposition/destination design; exact source/caller/feature/test closure still pending freeze",
+        "destination": null,
+        "owner": "original maintained agent/skill/script owner",
+        "conditions": [
+          "keep canonical mutable data/source at original path; do not embed/copy into application package",
+          "use small owned schema fixtures only for parser unit behavior",
+          "preserve original real-repository assertion as a separately mapped required source-bound check; do not substitute synthetic units and keep old claim",
+          "existing thread-check/lane-check/language-check/skill-check routes may supply live verification only where assertions match",
+          "explicit bounded repository/source input, no CARGO_MANIFEST_DIR ancestry or current-dir fallback",
+          "actual runtime reads retain separate Git and working-byte digests, before/after stability and fail on missing/foreign/oversized input",
+          "git-coord regression may copy exact maintained source into its existing owned execution fixture only, never author or ship a new foreign implementation"
+        ]
+      },
+      "original_owner": {
+        "kind": "maintained-repository-resource",
+        "name": "agent metadata/scripts/product skill owner; Maintenance is verifier"
+      }
+    }
+  ],
+  "shared_Lab_original_source_rows": [
+    "L19",
+    "L20",
+    "L21",
+    "L23",
+    "L25"
+  ],
+  "Collector_implementation_pin_rows": [
+    "L09"
+  ],
+  "remaining_freeze_requirements": [
+    "Root accepted all ownership categories and destinations after L07 correction; reconcile exact live verifier/case obligations and source/caller/feature/test closure before movement",
+    "preserve all actual repository assertions currently in unit tests; parser synthetic fixtures are additional scope, not a replacement claim",
+    "reconcile current input paths/source pins with all15private/production bin roots and exact role/features",
+    "all same-package selected compile/test data self-contained; mutable repository verification explicitly source bound",
+    "separate static source verification from actual Docker/native/browser/provider execution",
+    "no implementation replicas, public fixture API, self-reported pin or ambient fallback",
+    "no schema/profile content change, source/Cargo/resource move or compiler/GHA operation authorized by this file"
+  ],
+  "moves_copies_or_profile_changes_performed": false,
+  "compiler_or_qualification_executed": false,
+  "source_tail_recheck": {
+    "queue_rows_checked": 35,
+    "changed_original_working_files": 0,
+    "meaning": "proposal snapshot only; not a compiler/runtime closure"
+  },
+  "root_acceptance": {
+    "table_categories_and_destinations": "accepted for all35 queue rows after L07 correction",
+    "L07_destination": "qualification/browser/cef/pilot-contract.json",
+    "L09_actual_source_binding": "separate reviewed Lab mechanism required; no implementation embedding/copy",
+    "exact_source_caller_feature_test_closure": "pending final freeze",
+    "source_resource_cargo_move_grant": false
+  }
+}
