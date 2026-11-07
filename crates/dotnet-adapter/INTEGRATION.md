@@ -2,6 +2,105 @@
 
 ## Current approved continuation
 
+### Hosted ordinary actor handoff contract (prepared, not compiled)
+
+Root assigned dotnet-validation.yml after CI explicitly excluded that literal
+file. This workflow covers only .NET on standard Windows/Linux x64 runners;
+Python/Apache remain separate owners. Its stable jobs are preflight, windows-x64
+and linux-x64, with independent outcomes and concurrency
+dotnet-validation-${{ github.ref }}. Push is limited to codex/dotnet-validation
+plus manual dispatch. Contents read only; no OIDC, deployment, publication,
+automatic artifact upload or remote cache save. Only bounded allowlisted public
+facts/hashes may reach logs; private report bundles remain runner-local.
+
+The sole SDK/package controller remains the existing package integration-test
+binary, built from crates/dotnet-adapter/tests/package.rs. Its actual ordinary
+child invocation is fixed, not caller-supplied executable text:
+
+```text
+<package test executable> --ignored --nocapture --exact sdk_package_and_real_host_matrix --test-threads=1
+```
+
+The controller packs the candidate, creates a clean consumer, restores/publishes
+source/packed JIT and AOT, invokes the separately built hosted.rs executable for
+each mode and verifies installed native bytes. It does not build Cargo, create
+accounts, impersonate tokens, install SDKs, grant SCM rights or publish packages.
+SDK installation and release Rust builds occur as separate hosted prerequisites.
+
+Proposed native-Windows-owned hook: standard-user-dotnet, reusing the existing
+ephemeral Users account, token verification, suspended-child/job-kill-on-close,
+protected private parent and cleanup path. No adapter-local account/unsafe code.
+Its input manifest schema humanymous.dotnet-actor-input/1 contains source_root,
+source_sha and hashed absolute paths for controller, host_harness, native_library
+and native_provenance. The provenance file uses the strict existing schema above.
+The manifest also identifies sdk_root, git_executable and read-only native
+toolchain paths/environment. The wrapper verifies source/artifact identity before
+launch; an arbitrary executable/argument launcher is not requested. Fixed child
+test arguments above are part of the hook, not manifest-supplied shell strings.
+
+Required child inputs are HUMANYMOUS_DOTNET_SOURCE_ROOT,
+HUMANYMOUS_DOTNET_NATIVE_LIBRARY, HUMANYMOUS_DOTNET_HOST_HARNESS,
+HUMANYMOUS_DOTNET_NATIVE_PROVENANCE and HUMANYMOUS_DOTNET_FIXTURE_PARENT. The
+wrapper supplies a new protected owner-only inheritable parent owned by the
+actual ordinary child. Scratch under it contains private CLI home, fresh NuGet
+caches, build outputs, audit parents and logs. Never grant the actor source or
+prebuilt artifact write access. No credentials/runner tokens are copied.
+
+The SDK/toolchain environment allowlist needs SystemRoot/WINDIR/SystemDrive,
+COMSPEC, TEMP/TMP, private USERPROFILE/DOTNET_CLI_HOME/NUGET_PACKAGES, DOTNET_ROOT,
+the explicit telemetry/certificate/no-global-tools settings documented below,
+and a constructed PATH for System32, verified SDK, Git and native compiler/linker.
+NativeAOT may require existing ProgramFiles/ProgramFiles(x86), VSINSTALLDIR,
+VCINSTALLDIR, VCToolsInstallDir, WindowsSdkDir, WindowsSDKVersion,
+WindowsSDKLibVersion, INCLUDE/LIB/LIBPATH; validate bounded existing local paths,
+not ambient arbitrary executable strings. Git needs process-local safe.directory
+for the one verified read-only checkout owned by the provisioning user; no user/
+system Git configuration write. Genuine hosted facts may be forwarded only
+after the wrapper verifies its disposable hosted venue and exact GITHUB_SHA;
+local profile never forges those facts.
+
+Controller subprocess budgets remain SDK restore600s/publish1200s and one
+host harness180s, with bounded private stdout/stderr. Proposed outer Windows job
+deadline is30minutes, below a60minute workflow job; timeout is a real failure,
+and job-empty/account-deleted/scratch-deleted proof is mandatory. The owner must
+confirm the bounded launch API rather than silently using an incompatible limit.
+
+The existing private success report is dotnet-package-run/package-observation.json
+with schema humanymous.dotnet-package-observation/1. A prepared additive
+HUMANYMOUS_DOTNET_OBSERVATION_PATH will hold a bounded typed controller outcome
+on success or failure so the native wrapper can recover it before cleanup.
+The safe public projection schema humanymous.dotnet-component-summary/1 permits
+only source/tool/artifact/package hashes, OS/arch/mode, exact counts, required
+case IDs, fixed stage names and cleanup booleans. Paths, SIDs, raw diagnostics,
+headers, credentials and arbitrary error messages are excluded. This outcome
+extension/hosted bootstrap is not yet authored or compiled. The wrapper's actual
+child exit and cleanup proof must agree before a passing component projection.
+Remaining required contract cases stay NOT_RUN and prevent full qualification;
+exit2/incomplete must never be normalized to workflow success.
+
+Ordinary-private cleanup clarification from the native owner: the child runner
+must create and protect its own new private root before invoking this controller;
+the current admin-plus-actor TEMP inheritance is not a qualifying parent. The
+administrator must never repair/take ownership of that private root to read or
+remove it. A separate restricted admin-plus-one-actor handoff directory is the
+only publication channel before exit. Proposed extra inputs are
+HUMANYMOUS_DOTNET_HANDOFF_DIR and HUMANYMOUS_DOTNET_OBSERVATION_PATH beneath it.
+The controller will copy only whitelisted regular non-reparse result files and
+the last failed stage's bounded stdout/stderr, with a relative-name/length/SHA256
+manifest. Proposed limits are32files,256KiB per raw stream,8MiB total and64KiB
+per typed outcome; partial copied logs explicitly retain original length/hash
+and truncation facts. Feeds, caches, SDK directories, credentials and whole
+private trees are never copied. Raw handoff stays private on the runner.
+
+The controller must attempt self-cleanup of its own validated private work root
+after publication and report its real outcome. If a timeout/crash prevents this,
+the native owner proposes a bounded same-generated-user cleanup child after the
+main job is empty, before account deletion; it reuses the same account/token/job
+boundary and validates the exact owned nonce path. Admin ACL repair is refused.
+Child-self-cleanup or this cleanup-child proof must precede account/scratch
+deletion success. This cross-owner cleanup contract is still under review;
+the workflow cannot claim actual Windows readiness until accepted and compiled.
+
 Release C returned: standalone clean source2ffa4335df49c111685a764a81f8e4b414685cd4
 built the Rust facade DLL in76.032s and hosted Rust test executable in12.616s.
 Both actual exits0,261recursive inputs unchanged and source clean afterward.

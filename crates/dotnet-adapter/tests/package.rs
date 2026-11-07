@@ -29,6 +29,15 @@ fn required(name: &str) -> PathBuf {
     .canonicalize()
     .unwrap()
 }
+fn source_git(source: &Path) -> Command {
+    let mut command = Command::new("git");
+    command
+        .arg("-c")
+        .arg(format!("safe.directory={}", source.display()))
+        .current_dir(source)
+        .env("GIT_OPTIONAL_LOCKS", "0");
+    command
+}
 fn run(command: &mut Command, logs: &Path, stage: &str, timeout: Duration) -> Vec<u8> {
     let started = std::time::Instant::now();
     let result = match capture_with_stderr(command, b"", timeout, 4_194_304) {
@@ -113,6 +122,13 @@ impl Sdk<'_> {
             .env("DOTNET_CLI_TELEMETRY_OPTOUT", "1")
             .env("DOTNET_NOLOGO", "1")
             .env("DOTNET_SKIP_FIRST_TIME_EXPERIENCE", "1")
+            .env("DOTNET_GENERATE_ASPNET_CERTIFICATE", "false")
+            .env("DOTNET_ADD_GLOBAL_TOOLS_TO_PATH", "false")
+            .env("DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE", "true")
+            .env("DOTNET_CLI_UI_LANGUAGE", "en-US")
+            .env("TEMP", self.scratch.join("tmp"))
+            .env("TMP", self.scratch.join("tmp"))
+            .env("TMPDIR", self.scratch.join("tmp"))
             .env("NUGET_PACKAGES", packages)
             .env("HUMANYMOUS_NUGET_FEED", self.feed);
         command
@@ -206,6 +222,7 @@ fn sdk_package_and_real_host_matrix() {
     let harness = required("HUMANYMOUS_DOTNET_HOST_HARNESS");
     assert_eq!(native.file_name(), Some(OsStr::new(native_name)));
     let scratch = private_child(&parent, "dotnet-package-run");
+    private_child(&scratch, "tmp");
     let logs = private_child(&scratch, "logs");
     let feed = private_child(&scratch, "feed");
     let package_cache = private_child(&scratch, "pack-cache");
@@ -215,9 +232,7 @@ fn sdk_package_and_real_host_matrix() {
     )
     .unwrap();
     let head = run(
-        Command::new("git")
-            .current_dir(&source)
-            .args(["rev-parse", "HEAD"]),
+        source_git(&source).args(["rev-parse", "HEAD"]),
         &logs,
         "source-head",
         Duration::from_secs(30),
@@ -227,11 +242,7 @@ fn sdk_package_and_real_host_matrix() {
         provenance.source_sha
     );
     let dirty = run(
-        Command::new("git").current_dir(&source).args([
-            "status",
-            "--porcelain",
-            "--untracked-files=normal",
-        ]),
+        source_git(&source).args(["status", "--porcelain", "--untracked-files=normal"]),
         &logs,
         "source-clean",
         Duration::from_secs(30),
@@ -413,11 +424,7 @@ fn sdk_package_and_real_host_matrix() {
         provenance.native_sha256
     );
     let dirty = run(
-        Command::new("git").current_dir(&source).args([
-            "status",
-            "--porcelain",
-            "--untracked-files=normal",
-        ]),
+        source_git(&source).args(["status", "--porcelain", "--untracked-files=normal"]),
         &logs,
         "source-clean-after",
         Duration::from_secs(30),
@@ -433,4 +440,47 @@ fn sdk_package_and_real_host_matrix() {
     )
     .unwrap();
     println!("{receipt}");
+}
+
+#[test]
+fn ordinary_actor_git_and_sdk_commands_do_not_require_global_mutation() {
+    let source = Path::new("owned source");
+    let git = source_git(source);
+    let arguments: Vec<_> = git.get_args().collect();
+    assert_eq!(
+        arguments,
+        [OsStr::new("-c"), OsStr::new("safe.directory=owned source")]
+    );
+    assert_eq!(git.get_current_dir(), Some(source));
+    assert!(
+        git.get_envs()
+            .any(|(key, value)| key == "GIT_OPTIONAL_LOCKS" && value == Some(OsStr::new("0")))
+    );
+    let scratch = Path::new("private scratch");
+    let sdk = Sdk {
+        root: source,
+        scratch,
+        logs: scratch,
+        feed: scratch,
+    };
+    let command = sdk.command(scratch);
+    for (name, expected) in [
+        ("DOTNET_GENERATE_ASPNET_CERTIFICATE", "false"),
+        ("DOTNET_ADD_GLOBAL_TOOLS_TO_PATH", "false"),
+        ("DOTNET_CLI_TELEMETRY_OPTOUT", "1"),
+    ] {
+        assert!(
+            command
+                .get_envs()
+                .any(|(key, value)| key == name && value == Some(OsStr::new(expected)))
+        );
+    }
+    let temporary = scratch.join("tmp");
+    for name in ["TEMP", "TMP", "TMPDIR"] {
+        assert!(
+            command
+                .get_envs()
+                .any(|(key, value)| key == name && value == Some(temporary.as_os_str()))
+        );
+    }
 }

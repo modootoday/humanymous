@@ -12,6 +12,52 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Narrow hosted component continuation (2026-11-07)
+
+Root and CI explicitly excluded dotnet-validation.yml from e2e-infra and assigned
+that literal file to this lane. It covers only this component, with preflight,
+windows-x64 and linux-x64 independent jobs, exact github.sha, standard runners,
+Rust1.99.1, SDK10.0.403 and full verified action pins. CI owns shared catalog and
+policy registration. Dedicated branch codex/dotnet-validation plus dispatch,
+contents read only, no OIDC/publication/deployment, no automatic artifact uploads
+or remote cache save. Root alone reviews/pushes the literal checkpoint.
+
+The existing Rust package controller remains the sole SDK/package orchestrator;
+no account/token/Job/SCM implementation is copied here. Windows requires the
+native owner's reviewed ordinary workload hook and private-root/handoff/cleanup
+proof; absent proof fails closed. Linux uses the actual non-root standard actor.
+The execution classifier now refuses any ACT marker and Unix UID0; its new pure
+guard test is authored/format-checked only, not compiled or executed yet. Earlier
+release artifacts remain bound to2ffa4335 and cannot qualify this new source.
+
+Before actual SDK fixtures, hosted source must pass native all-target checks,
+Clippy and scoped pure/scope/controller tests. Artifact JSON, exact source/lock/
+compiler/native/controller/harness hashes and verified immutable clean checkout
+are mandatory. Any remaining required host case, failed stage or cleanup failure
+prevents full qualification; ignored tests and exit2 are never blanket success.
+Only typed bounded allowlisted facts/hashes may be logged publicly. Private raw
+logs/outcomes stay runner-local with bounded handoff before ordinary-owned cleanup.
+The cross-owner manifest/environment/timeouts and cleanup proposal is recorded in
+crates/dotnet-adapter/INTEGRATION.md and remains under review before hook code.
+
+Official actions/setup-dotnet v5 resolved on2026-11-07 to full commit
+26b0ec14cb23fa6904739307f278c14f94c95bf1. Its action.yml uses Node24 with
+dist/setup/index.js and dist/cache-save/index.js; both entrypoints are actual
+blobs in that commit. Its cache input defaults false and cache-save source gates
+remote saving on that explicit input. The candidate workflow must set cache:false,
+SDK10.0.403 and architecture:x64. Official immutable sources:
+https://github.com/actions/setup-dotnet/blob/26b0ec14cb23fa6904739307f278c14f94c95bf1/action.yml
+and https://github.com/actions/setup-dotnet/blob/26b0ec14cb23fa6904739307f278c14f94c95bf1/src/cache-save.ts .
+
+The package command builder now suppresses certificate generation/global tools,
+uses a private SDK TEMP/TMP/TMPDIR child and process-local Git safe.directory with
+GIT_OPTIONAL_LOCKS=0. Pure command/venue guard tests are authored and format-checked
+only. No local compiler or runtime starts while root's memory guard is held.
+Shared capture_with_stderr owns only a direct child; Unix SDK descendant cleanup
+therefore also needs an owning shared supervisor. Process-group setup alone and
+post-reap numeric PID killing do not establish safe lifetime or cleanup proof.
+This limitation remains explicit until the shared owner supplies qualification.
+
 ## Source-bound release compilation (2026-11-07T10:07Z)
 
 Separately allocated C compiled the release Rust export DLL and hosted Rust test
