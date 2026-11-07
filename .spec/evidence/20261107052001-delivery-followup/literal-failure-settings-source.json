@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.delivery-source-checkpoint/1",
+  "state": "authored-uncompiled",
+  "requirement": "Literal fail-closed workflow failure settings",
+  "authorization": "Root assigned generic job/step absent-or-literal-false checks with only the two existing exact optional cache exceptions",
+  "source_file": "scripts/ci/delivery/src/policy.rs",
+  "source_sha256": "8d785c98cc98707d15815080c68d27fec5b46937d60013d724bad74659c26e36",
+  "change": {
+    "generic_job": "absent or literal boolean false only",
+    "generic_step": "absent or literal boolean false, or unchanged exact approved optional cache step",
+    "refused_values": [
+      "true",
+      "expressions including false expressions",
+      "strings",
+      "numbers",
+      "null",
+      "arrays",
+      "objects"
+    ],
+    "cache_exceptions": 2,
+    "workflow_files_changed": false,
+    "scoring_changed": false,
+    "profile_changed": false
+  },
+  "authored_tests": {
+    "new_tests": 1,
+    "expected_total": 114,
+    "total_verified": false,
+    "coverage": [
+      "dedicated preflight job tolerance",
+      "ordinary required preflight step tolerance",
+      "literal false accepted",
+      "expression, string, numeric, null and compound settings refused",
+      "both existing literal-true cache exceptions retained, nonliteral substitutions refused"
+    ]
+  },
+  "format_checked": true,
+  "cargo_executed": false,
+  "clippy_executed": false,
+  "previous_113_receipt_applies_to_this_change": false,
+  "next_validation": "Await Root bounded exact-source allocation; do not capture a closure during its concurrent collector edits",
+  "hosted_run_requalified": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}

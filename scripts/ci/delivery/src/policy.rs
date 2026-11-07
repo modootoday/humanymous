@@ -612,6 +612,13 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         caller_permissions(jobs.get("validate").unwrap_or(&Value::Null))?;
     }
     for (id, job) in jobs {
+        require(
+            matches!(
+                job.get("continue-on-error"),
+                None | Some(Value::Bool(false))
+            ),
+            "validation job failure may not be tolerated",
+        )?;
         registry_env(&job["env"])?;
         let permissions = &job["permissions"];
         for (permission, allowed) in [
@@ -634,8 +641,10 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         for step in job["steps"].as_array().into_iter().flatten() {
             registry_env(&step["env"])?;
             require(
-                step["continue-on-error"] != true
-                    || crate::archive_cache::policy::approved_step(name, id, step),
+                matches!(
+                    step.get("continue-on-error"),
+                    None | Some(Value::Bool(false))
+                ) || crate::archive_cache::policy::approved_step(name, id, step),
                 "validation step failure may not be tolerated",
             )?;
             if let Some(action) = step["uses"].as_str() {
@@ -1493,6 +1502,63 @@ mod tests {
                 }] = json!(if mutation == 0 { "false" } else { "table" });
             }
             assert!(document("rust-validation.yml", &changed).is_err());
+        }
+    }
+    #[test]
+    fn workflow_failures_require_literal_fail_closed_settings() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let docs = workflows(&root).unwrap();
+        let image = &docs
+            .iter()
+            .find(|(file, _)| file == "image-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("image-validation.yml", image).is_ok());
+        let mut literal_false = image.clone();
+        literal_false["jobs"]["preflight"]["continue-on-error"] = json!(false);
+        literal_false["jobs"]["preflight"]["steps"][2]["continue-on-error"] = json!(false);
+        assert!(document("image-validation.yml", &literal_false).is_ok());
+        for setting in [
+            json!(true),
+            json!("${{ true }}"),
+            json!("${{ false }}"),
+            json!("true"),
+            json!("false"),
+            json!(0),
+            json!(1),
+            Value::Null,
+            json!([]),
+            json!({}),
+        ] {
+            let mut job = image.clone();
+            job["jobs"]["preflight"]["continue-on-error"] = setting.clone();
+            assert!(document("image-validation.yml", &job).is_err());
+            let mut step = image.clone();
+            step["jobs"]["preflight"]["steps"][2]["continue-on-error"] = setting.clone();
+            assert!(document("image-validation.yml", &step).is_err());
+        }
+        let cached = &docs
+            .iter()
+            .find(|(file, _)| file == "rust-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("rust-validation.yml", cached).is_ok());
+        let steps = cached["jobs"]["policy"]["steps"].as_array().unwrap();
+        let exceptions: Vec<_> = steps
+            .iter()
+            .enumerate()
+            .filter(|(_, step)| {
+                crate::archive_cache::policy::approved_step("rust-validation.yml", "policy", step)
+            })
+            .map(|(index, _)| index)
+            .collect();
+        assert_eq!(exceptions.len(), 2);
+        for index in exceptions {
+            for setting in [json!("${{ true }}"), json!(1), Value::Null] {
+                let mut changed = cached.clone();
+                changed["jobs"]["policy"]["steps"][index]["continue-on-error"] = setting;
+                assert!(document("rust-validation.yml", &changed).is_err());
+            }
         }
     }
     #[test]

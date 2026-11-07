@@ -1553,3 +1553,14 @@ under an actually verified private parent. Existing reusable ready dependencies
 do not supply that receipt; the migration/shipping hold remains until Root
 accepts and measures the distinct retention-readiness integration. No raw receipt
 or immutable profile is rewritten to reclassify an old failed run.
+
+### Literal fail-closed workflow failure settings
+
+Every governed job and ordinary step permits continue-on-error only when absent
+or the literal boolean false. Expressions, strings, numbers, null and other
+types are refused even when they appear to evaluate to false; static validation
+does not authenticate their runtime evaluation. This includes dedicated caller
+preflight jobs. The only step exceptions remain the two existing exact approved
+public crate archive cache operations with literal boolean true. Their action,
+job, path, key and conditional guards stay unchanged; no job-level exception or
+new failure-tolerant validation scope is introduced.
