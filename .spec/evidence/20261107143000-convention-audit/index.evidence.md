@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 46de6397224f11e807ea13786f5e9f0a8e220acc0159257837ef08126069cd72, bytes: 96340, store: repo}
+  - {path: baseline.json, sha256: 9c5b9141deda106b502fdef8f38bdac63ba4421aaffd1c55139d8aab6ac5703a, bytes: 98275, store: repo}
 ---
 
 # Convention audit baseline
@@ -1367,3 +1367,31 @@ lexical/semantic proof. Sixty-seven residual derived diffs (1941lines) are queue
 for manual review. No complete detection-behavior preservation claim or merge
 approval is made. Exact private hashes are in baseline.json. Audit launched no
 compiler/native/product workload; full migration remains OPEN.
+## Runtime64 mapped Rust manual review and Authority pilot regression
+
+All67 residual derived diffs (1941lines) and six additional whitespace-only
+files were manually read. The250 mapped Rust files partition as177 exactly equal
+after explicit context namespace/scope rewrites (including83 raw-identical),67
+residual manual reviews and six formatting-only reviews. Import ordering,
+external-bin/test crate qualification, verified fixture paths and Rust formatting
+account for the residuals. Authorization fields become policy-private; permit
+binding and Vault authorization become keys-only, matching the accepted privacy
+disposition. The sole operation-name change is test-only ManualClock fetch_update
+to try_update; the actual compiler diagnostic identifies the rename for consistency,
+and verification::scan remains ancestor cfg(test). No new production predicate,
+scoring, dual-control or a11y behavior delta was confirmed in this mapped Rust
+review. Whitespace normalization alone is not offered as semantic proof.
+
+CA-RUNTIME-PILOT-01 is a confirmed P2 source regression outside Rust: moved
+pilots/authority/Dockerfile lines11/13 retain cargo test -p humanymous-authority,
+but the new metadata has no such package. Authority is now a Runtime context and
+binary. Thus unchanged Dockerfile bytes no longer form a valid pilot command.
+Root was notified to repair the package/feature/target contract or explicitly
+retire the pilot. Preserve the Authority library and all three integration-role
+obligations; applying authority:: globally would silently filter unprefixed
+integration cases. Audit did not execute Docker or launch a replacement workload.
+
+This completes the bounded mapped-Rust difference read, not whole Runtime
+execution, normal/extracted package verification, all-consumer/native/CrossOS or
+product qualification. The pilot disposition and all remaining global gates stay
+OPEN. Exact private review hashes are in baseline.json.

@@ -215,6 +215,16 @@
       "trigger": "Runtime LICENSE CRLF202pairs and Native INTEGRATION mixed1pair while committed blobsLF, breaking worktreeLF convention and raw Git identity",
       "fix": "BothcurrentiLF/wLF verified; Rootprivacyaddendum bindsrawbefore/after; no Rust behavior change or compiler rerun demanded",
       "private_review_sha256": "ee2bfc9974a5e5b997de49c060cee892c306b5d3ed42163c69bc6bd90bdec216"
+    },
+    {
+      "id": "CA-RUNTIME-PILOT-01",
+      "priority": "P2",
+      "owner": "Root",
+      "state": "OPEN source pilot invocation regression after Runtime64 consolidation",
+      "trigger": "pilots/authority/Dockerfile RUN/CMD use removed humanymous-authority package; newmetadata has authority as Runtime context/bin only",
+      "required_delta": "Correct package/features/target contract or explicit retirement; preserve authority library and allthreeintegrationroles, no globalprefixfilter that silently dropsintegration cases",
+      "actual_docker_execution": false,
+      "private_review_sha256": "0ae999ea59d0b5ee8f565760af78b20a3e6acc2d564f619a32f50b879f663256"
     }
   ],
   "evidence_references": {
@@ -1754,6 +1764,25 @@
     "roles": "Static4bin17integrationroles/6contextfeaturesreviewed; actualfeaturecombinations/extracted/native/librarywhole366 remainopen",
     "semantic": "250Rust83rawsame;183namespace/scope/whitespaceTRIAGEequalNOTproof;67residualdiffs1941linesmanualreviewpending",
     "census": "29workspace+4standalone=33maintained,8target",
+    "goal_complete": false
+  },
+  "followup_runtime64_rust_manual_and_authority_pilot": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-rust-residual-manual-review-001.json",
+        "sha256": "d43aabee25f360df3d9078b34e79ba99d08bdb6f2e19267f9031a28392f76505",
+        "bytes": 26281
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-authority-pilot-review-001.json",
+        "sha256": "0ae999ea59d0b5ee8f565760af78b20a3e6acc2d564f619a32f50b879f663256",
+        "bytes": 864
+      }
+    ],
+    "manual": "All67residualdiffs1941lines and6whitespace-onlyfiles read;250mappedRust177namespace/scope-exact(includes83rawsame)+67manual+6format-only",
+    "verdict": "No new production predicate/scoring/dualcontrol/a11y behavior delta confirmed in mappedRust review; no blanket semantic proof from whitespace triage",
+    "new_finding": "CA-RUNTIME-PILOT-01 P2 OPEN: movedAuthorityDockerfile still cargo test -p humanymous-authority, no suchpackage innewmetadata",
+    "remaining": "Rootpilotfix/disposition and preserved library+3integrationobligations; extracted/consumer/feature/native/full366/CrossOS/Docker gates separate",
     "goal_complete": false
   }
 }
