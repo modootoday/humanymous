@@ -12,6 +12,14 @@ rel:
 
 # Audit key custody
 
+Proposed bounded streaming recovery is design-only in
+[[plan:root/20261107103624]]. It must preserve frozen bytes/trust rules while
+removing history-sized decoder/WAL/Merkle/Log collections from the actual
+production recovery/proof path. It additionally proposes complete verification
+before any torn-tail repair. Resource profile, bounded proof-rescan strategy and
+consumer cursor APIs remain review gates; this pointer authorizes no code or
+new current-source qualification. Current110-case Windows evidence stays frozen.
+
 ### Retained local backup retirement delta v0.1
 
 Problem: existing BackupInventory::retire consumes local dual approval but does
