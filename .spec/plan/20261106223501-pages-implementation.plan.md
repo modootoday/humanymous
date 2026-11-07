@@ -335,3 +335,28 @@ One intervening capture failed OS error2 with no report; explicit retry succeede
 Input exclusions are scoped to root-relative metadata/cache paths, so a nested
 published asset named reviews.json is still committed. The expanded regression
 test, all14tests and strictClippy passed after that correction.
+
+## Internationalization corpus and current collector follow-through
+
+Added separate10-case adapter-parser corpus through explicit create-new Rust
+authoring, retaining the original24-case fixture and its digest unchanged.
+Binary body00ff80 and composed/decomposed Unicode bodies retain exact bytes;
+visually similar wrong-digest, decoded invalidUTF8/NUL/dot segment reject.
+Current result6accepted/4rejected/errors0, fixtureSHA256
+3a86d0d8c1d1308308a7192aac00a239b19121a4d76cd91e5d85dc948b4a345c.
+Fifteen Rust package tests and strictClippy pass; no dependency delta.
+Public prose separates JSON-envelope acceptance from downstream HTTP fidelity
+and generic normalization/signature decisions. These remain experimental shared
+parser cases, not independent interoperability or generic conformance.
+
+Read current fabed20 collector Session/Scope/Request and complete/invalidate API,
+shared ACK contract, and explicit console probe. Public collector API now names
+probe_cdp_json and its active console/grouping/incomplete-attempt semantics.
+Session is documented as pure state, without actual Fetch/bodyreader/Abort/
+server-wire join. Caller obligations and counter-progress-only ACK meaning
+remain explicit; no automatic runtime readiness or human/AT claim follows.
+
+Final85-page actual apex/subpath strict theme plus Rust output checks passed
+with equal inputSHA256 d7bd2c0cc19db9ce5ef662c7c615b10e3e2aae9923f3216ac2ed2e4f0d58779a.
+The supplemental vector table is visible in the retained in-app preview.
+Original24cases were re-executed unchanged:4accepted/20rejected/errors0.

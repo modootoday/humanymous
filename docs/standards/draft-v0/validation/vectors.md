@@ -46,6 +46,31 @@ Validation never regenerates expectations. The separate fixture-authoring comman
 refuses overwrite and is not called by the build or CI validator. A proposed
 fixture change needs review of input bytes, expected behavior and source change.
 
+## Separate internationalization and binary-byte corpus
+
+The [internationalization corpus](fixtures/adapter-parser-i18n-v1.json) adds ten
+synthetic cases without changing the original 24-case corpus. The current shared
+parser accepts six and rejects four; these are parser results only.
+
+```console
+cargo run --locked -p humanymous-pages -- vectors --fixtures docs/standards/draft-v0/validation/fixtures/adapter-parser-i18n-v1.json
+```
+
+| Input | Authored expected parser behavior |
+| --- | --- |
+| Binary body `00 ff 80` | Accept its exact length and digest without treating the body as UTF-8 |
+| Composed `é` (`c3 a9`) and decomposed `e` plus combining acute (`65 cc 81`) bodies | Accept each with its own exact-byte digest; do not normalize one to the other |
+| Decomposed body with the composed body's digest | Reject despite similar rendered text |
+| Non-Latin target and Korean/Arabic JSON header value | Accept at the envelope-parser boundary; this does not qualify downstream HTTP header/target fidelity |
+| Percent-encoded UTF-8 target | Accept while retaining the original target representation |
+| Invalid decoded UTF-8, encoded NUL and encoded dot segment in a target | Reject |
+
+Each input commitment is over the fixture's exact decoded JSON bytes. Body
+commitments are separately over decoded body bytes. The two layers must not be
+confused. This corpus selects no generic Draft v0 Unicode-normalization rule,
+internationalized-host mapping, signature canonicalization or locale behavior.
+Those decisions still need their own wire contract and independent vectors.
+
 ## Still unresolved for Draft v0
 
 These fixtures do not select the generic profile's serialization, canonical

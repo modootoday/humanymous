@@ -1,0 +1,18 @@
+{
+  "scope": "supplemental experimental shared adapter parser byte cases",
+  "fixture_sha256": "3a86d0d8c1d1308308a7192aac00a239b19121a4d76cd91e5d85dc948b4a345c",
+  "accepted": 6,
+  "rejected": 4,
+  "errors": 0,
+  "original_24_case_fixture_sha256_unchanged": "b1fc0069ef858ce36cf9cb6810a5852cfed73559a44fc6f2797f50232b11ed92",
+  "rust_package_tests": {"passed": 15, "failed": 0, "ignored": 0},
+  "strict_clippy": "passed",
+  "reader_pages": 85,
+  "baseurls_checked": ["", "/humanymous"],
+  "build_input_sha256": "d7bd2c0cc19db9ce5ef662c7c615b10e3e2aae9923f3216ac2ed2e4f0d58779a",
+  "upstream_strict_theme_and_rust_output_checks": "passed for both baseurls",
+  "generic_unicode_normalization_selected": false,
+  "downstream_http_fidelity_qualified": false,
+  "independent_interoperability": false,
+  "draft_v0_conformance": false
+}

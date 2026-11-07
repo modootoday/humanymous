@@ -3,12 +3,13 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T05:53:04Z
+updated: 2026-11-07T05:57:51Z
 rel:
   governs: [docs]
 files:
   - {path: status.json, sha256: 08db59f7c4b992ab7fa8d7a2ee859002c5b31270629f85a38a5cf0864c397d34, bytes: 866, store: repo}
   - {path: freshness-status.json, sha256: 82ebeec598747454d06f4c67ddf286161a688dd65d13da045e66f7f284940e24, bytes: 1600, store: repo}
+  - {path: i18n-status.json, sha256: f627ae8f812217a396d97f1cba9ef83952b2e3b92b8788142d5cc3dde46a5ee3, bytes: 831, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
@@ -34,6 +35,16 @@ lock was synchronized, all 11 tests, strict Clippy, source checks and 24 vectors
 passed again. No dependency or lock changes were made by the Pages owner.
 
 ## How to read it
+
+The supplemental internationalization corpus passes6accepted/4rejected with no
+mismatch, separately from the unchanged original24cases. Fifteen Rust tests
+and strictClippy passed. The final source also documents the actual collector's
+explicit console probe and pure one-flight Session/ACK state, without claiming
+Fetch/bodyreader/abort/server-wire integration. Actual85-page apex/subpath
+builds passed strict theme and Rust output checks with equal input SHA256
+`d7bd2c0cc19db9ce5ef662c7c615b10e3e2aae9923f3216ac2ed2e4f0d58779a`.
+The vectors page's supplemental section and exact byte table were observed in
+the in-app browser. This rendering observation does not add a full AT result.
 
 Subsequent local-input freshness builds passed for the same 85 pages and both
 baseurls, reporting the same exact input commitment

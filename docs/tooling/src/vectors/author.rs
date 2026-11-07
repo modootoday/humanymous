@@ -2,7 +2,7 @@ use super::{Case, Corpus};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
-fn positive() -> Value {
+pub(super) fn positive() -> Value {
     json!({"protocol":"humanymous.adapter/0.1","id":"01234567-89ab-4cde-8fab-0123456789ab",
         "adapter":{"id":"humanymous.node","version":"0.1.0-experimental.1","installation":"example-installation"},
         "tenant":"example-tenant","origin":"example-origin","revision":"example-revision",
@@ -13,7 +13,7 @@ fn positive() -> Value {
             "sha256":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","base64":"YWJj"},
         "capabilities":{"rawTls":false,"originalH2":false,"rawHeaderOrder":true,"completeBody":true}})
 }
-fn case(id: &str, profile: &str, bytes: Vec<u8>, accept: bool) -> Case {
+pub(super) fn case(id: &str, profile: &str, bytes: Vec<u8>, accept: bool) -> Case {
     Case {
         id: id.into(),
         profile: profile.into(),

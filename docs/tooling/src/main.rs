@@ -29,7 +29,10 @@ fn run() -> Result<(), String> {
         );
         return Ok(());
     }
-    if matches!(mode.as_str(), "vectors" | "vectors-export") {
+    if matches!(
+        mode.as_str(),
+        "vectors" | "vectors-export" | "vectors-i18n-export"
+    ) {
         let flag = if mode == "vectors" {
             "--fixtures"
         } else {
@@ -44,6 +47,9 @@ fn run() -> Result<(), String> {
         }
         if mode == "vectors-export" {
             return humanymous_pages::vectors::export(&path);
+        }
+        if mode == "vectors-i18n-export" {
+            return humanymous_pages::vectors::export_i18n(&path);
         }
         let result = humanymous_pages::vectors::check(&path)?;
         println!(

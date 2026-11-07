@@ -149,6 +149,15 @@ maturity and implementability gates prevent project research being overstated.
 
 ## Verification
 
+The supplemental adapter-parser internationalization corpus keeps the original
+24-case fixture unchanged. It authors10cases: binary body00ff80; composed and
+decomposed distinct exact-byte body commitments; visually similar digest mismatch;
+Unicode JSON header/target; percent UTF8; invalid decoded UTF8/NUL/dot-segment
+rejections. Current shared-parser outcome6accepted/4rejected is not independent
+interoperability, generic normalization selection or downstream transport fidelity.
+Fixture generation is explicit create-new Rust authoring; CI/build never refresh
+inputs or expectations. Public vectors explain both JSON input and body byte layers.
+
 Horizontal self-review records observable keyboard/focus, actual screen-reader,
 sparse/slow-user, motion/zoom, recovery-loop and machine-client outcomes with
 source/tuple and explicit passed/failed/blocked/not_run states. These are

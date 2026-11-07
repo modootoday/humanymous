@@ -39,6 +39,12 @@ Dependency audit and protected production deployment remain separate gates.
 
 ## Current boundaries
 
+`vectors-i18n-export --output NEWFILE` explicitly authors a separate ten-case
+synthetic corpus and refuses overwrite. The normal read-only `vectors --fixtures`
+command validates it with the actual shared parser. The original24-case fixture
+is unchanged. This covers parser byte boundaries, not generic wire or HTTP
+transport qualification; no dependency or common-manifest delta is required.
+
 `cargo run --locked -p humanymous-pages -- review-delta --root .` compares
 the existing authored receipt with a stable source snapshot and reports added,
 removed and exact-working-byte changes. It never writes receipts or accepts a

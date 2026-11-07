@@ -22,6 +22,7 @@ No observation establishes universal natural-person presence.
 | `behavior_json()` | Reduced behavior features; no input text, key identities or ordered raw samples |
 | `snapshot_json()` | Combine browser observations, measured behavior and partial guard state |
 | `enable_guard_hooks()` | Explicitly opt in to managed `eval`/`Function` forwarding hooks for this collector epoch |
+| `probe_cdp_json()` | Explicit once-per-epoch synthetic console-preview observations, with separate attempted/unsupported/failed states |
 | `stop()` | Freeze the summary, clear transient pairing/buffers and detach owned callbacks; failures remain visible |
 
 Guard baseline includes bounded native/prototype observations and an owned
@@ -38,6 +39,13 @@ callbacks while installed, and restore only references they still own when
 stopped. Measured opt-in hook coverage is distinct from the default partial
 baseline; neither mode attests code integrity or human presence.
 
+`probe_cdp_json()` performs active synthetic console operations only when called;
+default construction does not run it. Its `console.groupEnd` call can change
+developer-console grouping. Repeated calls return the cached attempt, and a
+stopped collector rejects a new probe. An incomplete requested observation
+rejects `snapshot_json()` rather than becoming a negative detection flag.
+The result does not identify every CDP client or attest automation or human use.
+
 The passive implementation does not read input text, clipboard values or
 `Event.key`. Physical key codes are used transiently for epoch-local pairing and
 are not exported as key names or traces. Clearing owned buffers is not proof of
@@ -45,10 +53,20 @@ cryptographic erasure from the browser or operating system.
 
 ## Reproduce a component check
 
-Request-signing byte codecs and canonicalization are being integrated separately.
-A pure signing vector or WASM build does not establish authenticated bootstrap,
-session transport or a recovered browser request. Do not infer those from the
-collector exports listed above.
+The Rust `session::Session` API implements a separate volatile client state
+machine. `from_json` checks a bounded strict bootstrap against independently
+provisioned scope. `begin` reuses shared request canonicalization and allows
+only one pending request. `complete` advances its counter only after a valid
+consumption acknowledgement bound to the pending request and observed status;
+bad acknowledgement, expiry or clock rollback closes the epoch.
+
+This state machine does not perform Fetch, read a response body, own an Abort
+signal or join the actual server wire. Its caller must invalidate on ambiguous
+network/body/timeout/abort/drop outcomes and call `complete` only after bounded
+body completion. The state API cannot independently observe those transport
+events. An acknowledgement proves counter progress, not ALLOW, response-body
+integrity or qualified collector provenance. Cookie-free transport, runtime
+integration and accessible recovery remain separate work.
 
 ```console
 cargo test --locked -p humanymous-collector

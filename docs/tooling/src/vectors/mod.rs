@@ -1,5 +1,6 @@
 //! Exact-byte synthetic experiments reuse the shared parser, never a copied policy.
 mod author;
+mod i18n;
 use humanymous_integrity::adapter::{AdapterProfile, parse_with_profile};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -99,7 +100,16 @@ fn evaluate(corpus: Corpus, fixture_sha256: String) -> Result<VectorReport, Stri
 
 /// Explicit synthetic-fixture authoring command. Refuses overwrite; never run by CI.
 pub fn export(path: &Path) -> Result<(), String> {
-    let mut bytes = serde_json::to_vec_pretty(&author::corpus()).map_err(|e| e.to_string())?;
+    export_corpus(path, &author::corpus())
+}
+
+/// Author the separate synthetic internationalization corpus; refuses overwrite.
+pub fn export_i18n(path: &Path) -> Result<(), String> {
+    export_corpus(path, &i18n::corpus())
+}
+
+fn export_corpus(path: &Path, corpus: &Corpus) -> Result<(), String> {
+    let mut bytes = serde_json::to_vec_pretty(corpus).map_err(|e| e.to_string())?;
     bytes.push(b'\n');
     let mut file = fs::OpenOptions::new()
         .create_new(true)
@@ -114,6 +124,15 @@ pub fn export(path: &Path) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn binary_and_unicode_corpus_preserves_distinct_commitment_bytes() {
+        let corpus = i18n::corpus();
+        assert_eq!(corpus.cases.len(), 10);
+        let report = evaluate(corpus, "test".into()).unwrap();
+        assert!(report.errors.is_empty(), "{:?}", report.errors);
+        assert_eq!((report.accepted, report.rejected), (6, 4));
+        assert!(!report.draft_v0_conformance);
+    }
     #[test]
     fn expectations_are_fixed_and_duplicate_key_bytes_are_not_round_tripped() {
         let corpus = author::corpus();

@@ -7,6 +7,13 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "experimental-validation",
+      "paths": ["validation/vectors.md", "validation/fixtures/adapter-parser-i18n-v1.json"],
+      "summary": "Add a separate exact-byte internationalization and binary-body corpus; retain the original fixture unchanged.",
+      "generic_wire_changed": false,
+      "independent_interoperability_claimed": false
+    },
+    {
       "kind": "editorial",
       "paths": ["protocol/profile.md", "reviews/security-privacy.md", "validation/conformance.md"],
       "summary": "Define and name public requirement identifiers, provide individual validation links and distinguish informative review language.",

@@ -20,6 +20,7 @@ is distinct from an Internet-Draft submission revision such as `-00`.
 | Initial authored draft | Problem, actors, provenance and candidate requirements | Incomplete generic model, not a complete wire profile |
 | Public terminology clarification | Named P-01 through P-10 headings, defined profile identifiers, individual validation links and informative review scope | Editorial clarity; no detection-policy or candidate requirement semantics changed |
 | Current implementation reconciliation | Experimental adapter wire, implementation map, exact-byte parser corpus and current runtime/collector/CLI boundaries | Documents concrete implementation separately; does not select a generic Draft v0 encoding |
+| Internationalization byte cases | Separate ten-case corpus for binary bodies, distinct Unicode body commitments and target/header boundaries | Original 24-case fixture unchanged; no generic normalization or transport-fidelity claim |
 
 The machine-readable [change manifest](../changes.json) lists the affected public
 surfaces and change classes. Source-bound build/review reports record actual
