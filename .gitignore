@@ -7,16 +7,16 @@
 /sots/
 /plan/
 
-# Multi-provider agent adapters are generated from .agents/ via
-# scripts/agents/sync-adapters — commit the canon; regenerate vendor mirrors.
-# Uncomment the next block if you prefer not to commit generated trees:
-# /.claude/skills/
-# /.claude/rules/
-# /.claude/agents/
-# /.grok/skills/
-# /.grok/rules/
-# /.gemini/skills/
-# /.codex/skills/
+# Agent authoring is canonical in .agents/ and AGENTS.md. Retired generated
+# provider trees and entrypoint stubs must not re-enter the tracked surface.
+# Existing tracked settings remain visible until their separate retirement.
+/.claude/
+/.codex/
+/.grok/
+/.gemini/
+/.agent-rules/
+/CLAUDE.md
+/GEMINI.md
 
 # Claude Code personal overrides (never commit)
 .claude/settings.local.json
