@@ -1,0 +1,20 @@
+[package]
+name = "humanymous-windows-object-bridge"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "=0.61.2", features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_Security"] }
+windows-permissions = "=0.2.4"
+
+# Accepted six-wrapper exception; shared workspace forbid remains unchanged.
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"

@@ -11,7 +11,7 @@ members = [
   "crates/node-adapter", "crates/python-adapter", "crates/ruby-adapter",
   # Desktop and native operating-system integration.
   "crates/browser", "crates/browser/native/bootstrap", "crates/browser/native/desktop",
-  "crates/cli", "crates/native-cli", "crates/native-security",
+  "crates/cli", "crates/native-cli", "crates/native-security", "crates/windows-object-bridge",
   # Qualification, delivery and authoring tools.
   "crates/attacker", "crates/defender", "crates/test-support", "docs/tooling",
   "scripts/ci/delivery", "skills/agent-maintenance", "test/lab/runner", "test/lab/runtime",
@@ -31,6 +31,7 @@ humanymous-behavior = { path = "crates/behavior", version = "0.1.0" }
 humanymous-model = { path = "crates/model", version = "0.1.0" }
 humanymous-test-support = { path = "crates/test-support", version = "0.1.0" }
 humanymous-native-security = { path = "crates/native-security", version = "0.1.0" }
+humanymous-windows-object-bridge = { path = "crates/windows-object-bridge", version = "0.1.0" }
 hmac = "0.12.1"
 sha2 = "0.10.9"
 md-5 = "0.11.0"

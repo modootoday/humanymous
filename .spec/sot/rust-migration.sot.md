@@ -509,6 +509,15 @@ account/Job and consumer tests remain separately allocated gates. The production
 producer-identity path stays Unsupported until its complete caller contract and
 actual source-bound evidence qualify it. Detection policy and verdicts stay frozen.
 
+The initial bridge source handoff is now registered as the40th root workspace
+package with a Windows-only native-security dependency. Its only direct external
+dependencies are existing pinned windows-sys0.61.2 and windows-permissions0.2.4;
+no external package version changed. Offline depth-one graph resolution and
+locked/offline workspace metadata passed. This registration is source-only:
+the three bridge unit tests, Windows compilation/strict Clippy and actual native
+object/ACL creation tests have not run on this candidate. Empty non-Windows
+compilation would not qualify Windows behavior.
+
 Native custody and WAL now share one crate-private storage::ExclusiveFile owner
 using standard File locking and explicit unlock-on-Drop. There is no production
 clone/unlock handle API. fs4 is removed from the root and runtime-pilot locks;

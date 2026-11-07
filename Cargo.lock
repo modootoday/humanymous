@@ -2256,6 +2256,7 @@ dependencies = [
 name = "humanymous-native-security"
 version = "0.1.0"
 dependencies = [
+ "humanymous-windows-object-bridge",
  "keyring-core",
  "rustix 1.1.6",
  "windows-native-keyring-store",
@@ -2453,6 +2454,14 @@ dependencies = [
  "sha2 0.10.9",
  "subtle",
  "zeroize",
+]
+
+[[package]]
+name = "humanymous-windows-object-bridge"
+version = "0.1.0"
+dependencies = [
+ "windows-permissions",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
