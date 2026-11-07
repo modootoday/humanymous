@@ -3,7 +3,7 @@ id: evidence:root/20261107081545
 title: Native ABI pure ownership and export verification
 status: active
 created: 2026-11-07T08:15:45Z
-updated: 2026-11-07T10:55:34Z
+updated: 2026-11-07T11:36:42Z
 rel:
   depends_on: [sot:root/native-abi, plan:root/20261107072500]
 files:
@@ -13,6 +13,7 @@ files:
   - {path: hosted-813-windows.json, sha256: 616e7f6320c351bbcc924c6e0b29f90b1b50b5f7d93db5a1472c094d474dc4e7, bytes: 1392, store: repo}
   - {path: local-windows-artifacts.json, sha256: b982d034b1988ff12c3d7b782d855a0e24eb1919f6b59f56bbc5b32aff9941be, bytes: 951, store: repo}
   - {path: managed-jit-attempt-2.json, sha256: 99473078db1c0cb9fd6fed49e1c6f58e3bfef3e9aa2d28f7d9df872075fa8755, bytes: 822, store: repo}
+  - {path: local-managed-generic-caller.json, sha256: 860974d3a2ad2334406125a87ab6e5ba9d017b0b730ff7c91934e4fe87797cf9, bytes: 1140, store: repo}
 ---
 
 # Native ABI pure ownership and export verification
@@ -61,6 +62,21 @@ stayed hash-unchanged. The attached managed-jit-attempt-2.json binds assembly an
 generic DLL hashes; private raw logs retain both attempts. This is framework-
 dependent JIT build evidence only. Actual generic calls, NativeAOT and package
 qualification remain not_run pending the shared bounded Rust launcher.
+
+## Actual local managed generic ABI caller
+
+The attached local-managed-generic-caller.json records the later root-approved
+single execution of the immutable .NET-owned shared Rust launcher. Actual C#
+framework-dependent JIT called the generic native DLL: harness exit0,
+1passed/0failed/0ignored/0measured/4filtered in0.62seconds. The managed child
+exited0 with130stdoutbytes, empty stderr and exactly two validated frames; its
+actual PID matched the starting frame. The owned caller fixture was removed and
+independently absent. Strict input and all seven input artifacts stayed hash-
+unchanged after execution. Raw process identity stays private. The root separately
+read the raw footer, process and receipt and accepted this narrow result.
+No Kestrel, authority or SCM action occurred. This is generic ABI caller evidence;
+full .NET adapter, AOT/package, C/C++ caller/RAII/exception, hosted C++11 layout,
+cross-OS, general SDK process-tree containment and product e2e remain separate.
 
 ## Separate hosted startup failure
 

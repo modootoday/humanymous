@@ -223,6 +223,12 @@ x64/export inspection and example strict Clippy. This adds artifact evidence,
 not dynamic-call or layout-equivalence proof. The first framework-dependent JIT
 managed restore passed, but pilot build failed with two SYSLIB1051 aggregate
 marshalling diagnostics. No managed probe ran; failed evidence remains separate.
+After the .NET-owned same-file correction, the second JIT build passed. A later
+single root-approved generic-only caller run passed with actual PID-bound frames,
+process exit0, empty stderr and removed fixture. Seven artifact after-hashes and
+the strict input hash matched. Evidence:root/20261107081545 keeps this actual
+managed caller result separate from header syntax, historical failures and units.
+It does not qualify full .NET, AOT, C/C++, hosted layout or general process trees.
 
 Primary references checked2026-11-07: Rust FFI safety
 https://doc.rust-lang.org/nomicon/ffi.html ; panic limits

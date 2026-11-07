@@ -6,7 +6,7 @@
   "toolchain": "1.99.1",
   "edition": "2024",
   "implementedBoundary": "safe-rust-core-and-pointer-free-export",
-  "qualification": "local-pure-component-only",
+  "qualification": "local-component-header-and-managed-generic-caller",
   "execution": "not_run",
   "executionScope": "hosted-header-compiler-and-dynamic-abi-pilot",
   "runner": "standard-free-github-hosted-only",
@@ -34,7 +34,7 @@
   ],
   "pendingCases": [
     "upstream-generated-c-header-provenance",
-    "actual-generic-native-dynamic-abi-consumer",
+    "genuine-hosted-generic-native-dynamic-abi-consumer",
     "actual-c-and-cpp-compiler-layout",
     "cpp-exception-raii-allocator-lifetime",
     "supported-os-architecture-matrix",
@@ -46,9 +46,27 @@
     "hosted-generic-native-abi-consumer-execution"
   ],
   "hostGlueScope": {
-    "managedGenericProbe": "approved-in-existing-dotnet-pilot-file-not_run",
+    "managedGenericProbe": "local-windows-x64-fdd-jit-passed",
     "authoredCppGlue": "not_approved-not_implemented",
     "cppRaiiExceptionQualification": "not_run"
+  },
+  "localArtifactAndCallerVerification": {
+    "evidence": "evidence:root/20261107081545",
+    "header": "cbindgen-0.29.4-generated-msvc-c11-cpp14-compiled",
+    "dllInspection": "passive-x64-export-observed",
+    "caller": "approved-csharp-framework-dependent-jit",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 4,
+    "actualPidBound": true,
+    "nativeProcessExit": 0,
+    "frames": 2,
+    "fixtureRemoved": true,
+    "strictCpp11": "not_run",
+    "layoutEquivalence": "not_run",
+    "cppCaller": "not_run",
+    "dotnetAdapterQualified": false
   },
   "securityDecision": false,
   "productSuccess": false
