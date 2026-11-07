@@ -629,6 +629,73 @@ watchdog. An unreturned worker remains Unknown/74, never Stopped.
 
 ### B06. Wiring, verification matrix and review blockers
 
+#### Proposed shared irreversible epoch ownership (not an accepted API)
+
+Authority owns the neutral observer epoch/gate core. Runtime already depends on
+Authority; Authority MUST NOT depend on Runtime. Native-security owns the opaque
+VerifiedBootstrapEpoch and retained actual process/token/manager evidence. An
+Authority-private bootstrap composition constructor consumes that proof, separate
+verified W capability/lifetime and trusted deadlines exactly once. There is no
+public live/new/from-ID/from-bool/test-provider constructor. Missing native/W
+proof cannot produce a production epoch; pure fixture gates never mint that type.
+
+Proposed ownership split:
+
+```rust
+// Names/signatures require independent native/runtime review before code.
+struct ObserverEpochOwner; // Unique; owns pins, witness and monitor cancellation/join.
+struct ObserverEffectGate; // Restricted clone; SAME shared epoch, never a new owner.
+struct ObserverRevoked; // First cause and monotonic deadline; not a stop authorization.
+struct ObserverEpochCloseFacts; // Monitor join, worker drain, flush and native exits separate.
+
+ObserverEpochOwner::effect_gate(&self) -> ObserverEffectGate;
+ObserverEpochOwner::revoked(&self) -> Future<ObserverRevoked>;
+ObserverEpochOwner::close(self, absolute_deadline: Instant)
+    -> Future<ObserverEpochCloseFacts>;
+```
+
+Only the unique owner/native monitor can accept bootstrap phase transitions or
+publish first loss. Its restricted gate clones cannot reactivate, extend expiry,
+change scope, authorize stop or create another epoch. Owner Drop synchronously
+revokes before releasing pins; it is NOT proof of async monitor/worker join. The
+monitor is owned, cancellation-aware and explicitly joined within the conserved
+stop deadline. Never detach it or report Stopped when it has not returned.
+
+The same shared gate is retained by Authority credential-release operations and
+Runtime application-Ready/origin adapters. Internal phases distinguish verified
+publication+W/preparation, permitted secret Offer, actual observer receipt, and
+Active. Origin admission is forbidden before Active. Readiness and volatile
+contexts carry this same epoch; first loss irreversibly invalidates all of them
+at one linearization point, without iterating or resetting persistent controls.
+ShutdownRequest/watch channels can notify cleanup but cannot construct this proof.
+
+Effect acceptance is a synchronous bounded nonblocking operation serialized with
+revocation, not a separately returned permission followed by async I/O. Concrete
+Runtime adapters must place the actual nonblocking socket connect/write acceptance
+inside that critical section. Authority places actual secret-byte enqueue there.
+WouldBlock accepts no bytes: release gate, wait outside, reacquire and recheck.
+No gate lock spans await, token query, fsync, audit, blocking connect or join.
+A future-returning/generic asynchronous callback is not this API. If a synchronous
+adapter callback is used, it is trusted reviewed effect code, NOT an identity or
+readiness proof; its exact bounded return type and call sites require review.
+Previously accepted/partial kernel effects remain ambiguous after revocation;
+cancel/revoke their credential, never claim that bytes cannot arrive later.
+
+Runtime privately constructs its actual listener/readiness evidence; native proof,
+durable audit and observer receipt are independently required. Authority cannot
+import a Runtime proof type or accept activate(true). The exact sealed activation
+adapter/evidence boundary remains P0 for joint review; these ownership rules do
+not fabricate an implemented constructor. Expensive checks/audit happen outside
+the gate, followed by final epoch/deadline/native-liveness validity at bounded
+activation acceptance. A revoked epoch cannot be activated after an await.
+
+Required races: first loss versus secret enqueue, origin connect/write and Ready;
+WouldBlock/reacquire; cancellation during monitor wait; expired witness/peer pins;
+owner Drop with gate clones retained; blocked/unreturned worker; partial write
+before revocation; duplicate phase/old epoch; no mutation authority from status.
+Every admitted effect is ordered before loss or refused after it. No test-only
+factory or isolated shutdown-watch test qualifies the production native epoch.
+
 Authority owns protocol/framing/state/leases and shared transport extensions.
 Native-security owns verified role/grant issuance, both process-instance proofs,
 manager discovery and exact cross-principal access. CLI owns new observer-host/

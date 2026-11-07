@@ -663,3 +663,22 @@ LaunchTicket/cursor and changed role_plan_digest binding are separate unresolved
 format/replay/atomic-publication proposals; Hello agreement does not approve them.
 Safe feature/dependency integration, cross-instance TEST credential handoff and
 actual native probe gates remain. No source implementation or new execution.
+
+## Shared observer epoch ownership proposal requested by Runtime
+
+Runtime found no production verified epoch/revocation source and correctly refused
+to treat ShutdownRequest/watch or check-then-async-write as proof. Authority B06 now
+proposes owning the neutral gate core (Runtime already depends on Authority; no
+reverse dependency), consuming native opaque verified epoch and separate W once.
+Unique owner retains pins/monitor cancellation+join; restricted clones share the
+SAME gate for secret release, Ready and origin effects. Drop synchronously revokes
+but async drain/flush/join remain separate unknown facts. Bounded nonblocking
+actual acceptance serializes with first loss; WouldBlock waits outside and rechecks.
+No lock over await/token query/fsync, no public live/from-ID/activate(bool) factory.
+
+Exact production native constructor, sealed Runtime readiness-evidence adapter
+and concrete synchronous effect return types remain P0 joint review, not code.
+Proposal SHA2566ebd5cbcbb65befade9da1bdfe92bbbda3f7fab0576482d36cbd3a7372292645
+was sent to root/native/runtime for independent review. Required race/Drop/partial
+write/blocked-worker negative gates are listed. No channel/gate implementation,
+feature edge or runtime execution has been performed in this checkpoint.
