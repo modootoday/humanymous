@@ -90,14 +90,7 @@ pub(crate) fn check(root: &Path, site: &Path, baseurl: &str) -> Result<Report, S
             errors.push(format!("debug source map in public output: {relative}"));
         }
         if path.extension().and_then(|s| s.to_str()) == Some("html") {
-            let url = if path.file_name().and_then(|s| s.to_str()) == Some("index.html") {
-                format!(
-                    "/{}",
-                    relative.strip_suffix("index.html").expect("index suffix")
-                )
-            } else {
-                format!("/{relative}")
-            };
+            let url = files::rendered_url(&relative);
             documents.insert(url, parse(&files::read(&path)?));
         }
     }

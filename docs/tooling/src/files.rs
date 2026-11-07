@@ -49,6 +49,18 @@ pub(crate) fn relative(root: &Path, path: &Path) -> String {
         .replace('\\', "/")
 }
 
+/// Directory index semantics shared by output validation and browser navigation.
+pub(crate) fn rendered_url(relative: &str) -> String {
+    let route = if relative.rsplit('/').next() == Some("index.html") {
+        relative
+            .strip_suffix("index.html")
+            .expect("exact index suffix")
+    } else {
+        relative
+    };
+    format!("/{route}")
+}
+
 pub(crate) fn contained(root: &Path, path: &Path) -> bool {
     path.canonicalize().is_ok_and(|p| p.starts_with(root))
 }

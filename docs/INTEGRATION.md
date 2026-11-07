@@ -20,6 +20,31 @@ These vectors do not establish Draft v0 conformance or independent interoperabil
 
 ## CI replacement contract
 
+Approved integration window added direct dependency `ureq = "=3.5.1"`, already
+present in the shared lock for delivery. Root coordinates the new package edge.
+The Rust-only hosted browser pilot will use W3C WebDriver structured HTTP
+commands, with no authored JavaScript or execute-script payloads. It requires
+an independently started local upstream driver and a current static site server;
+neither is launched by pure library tests. Browser/session deletion failures
+must fail the report. Keyboard skip focus and measured CSS/geometry checks do
+not establish screen-reader, contrast, zoom or full WCAG qualification.
+
+Prepared command contract after that dependency/module integration:
+
+```text
+humanymous-pages browser --source docs --site ABSOLUTE --baseurl /humanymous --webdriver http://127.0.0.1:4444/ --base http://127.0.0.1:8080/humanymous/
+```
+
+For apex, baseurl is empty and base ends in `/`; for repository mode they are
+`/humanymous` and `http://127.0.0.1:8080/humanymous/`. The caller must serve the
+exact checked output and keep its driver private. Every served file is compared
+with local artifact bytes before/after; all generated HTML is tested twice.
+Current source is linked through `pub mod browser` and browser_command dispatch
+in main. Root measured locked offline26lib+1CLI passes and all-target Clippy;
+the earlier composite Clippy failure in capture remains recorded separately.
+Actual browser execution remains NOT_RUN. Hosted execution must
+capture actual report and caller service cleanup separately.
+
 From repository root after integration:
 
 ```text
@@ -68,12 +93,15 @@ Root remains the owner of common Cargo/lock/toolchain and the overall roadmap.
 
 ## Current measured checkpoint (not final acceptance)
 
-Root integrated this package and its shared-integrity/hex dependency delta.
-Windows --locked unit11/failed0/ignored0 and strict Clippy pass. The authored
+Root integrated the shared-integrity/hex/ureq edges. Windows locked offline
+library26 plus CLI1 pure tests passed with zero failed/ignored/filtered, along
+with all-target Clippy. These checks do not launch WebDriver or a browser. The authored
 synthetic corpus has24cases:4parser-accepted/20rejected/errors0, explicitly no
 Draft v0 conformance. The first real Rust/Linux+Ruby3.3.13 apex build passed79
-pages; later85-page apex also passed. Current subpath/browser/freshness checks
-and source-bound snapshots are tracked in the Pages plan/evidence, not inferred.
+pages; later85-page apex also passed. Historical hosted63f69ae built88 at both
+baseurls with no validation errors; its freshness gate failed and current docs/
+checker have changed since. Current rendering/browser/freshness gates and exact
+source snapshots are tracked separately in the Pages plan/evidence.
 
 Snapshot command: `cargo run --locked -p humanymous-pages -- snapshot --root .`.
 It exports hashes only, separating exact working, canonical LF and actual Git
@@ -82,8 +110,9 @@ HEAD/index/inventory changes during capture. This is author-review input, not
 an automatic review acceptance or a CI refresh command.
 
 Experimental parser profiles do not establish deployment qualification. Current
-source lets authority configuration independently select Node or nginx (Node is
-the default); required RIT/collector/raw TLS/H2 remain unavailable in that IPC
+source independently provisions Node, nginx, Python ASGI/WSGI, Ruby Rack, Apache
+or ASP.NET Core (Node remains default); these are parser profiles, not qualified
+host integrations. Required RIT/collector/raw TLS/H2 remain unavailable in that IPC
 service. The separate loopback runtime has native and explicit browser RIT
 profiles. Native reserves/strips Authorization; working BrowserAuthOnly preserves
 application Authorization and inserts status-bound consumed-counter ACKs. These

@@ -1,5 +1,6 @@
 //! Read-only validation of authored Markdown and rendered Pages artifacts.
 mod accessibility;
+pub mod browser;
 mod build;
 mod files;
 mod inputs;

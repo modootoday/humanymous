@@ -58,13 +58,27 @@ does not establish lossless arbitrary origin-header byte fidelity.
 
 ## Producer profiles and service readiness
 
-The Node parser supports raw Node headers or Fetch-normalized observations.
-The current authority configuration selects `adapter: "node"` or
-`adapter: "nginx"` independently from request contents; omission defaults to
-Node. The authority passes that provisioned selection to the shared parser.
-This replaces the earlier Node-only service selection in the working source.
-It does not by itself qualify an nginx deployment: actual native IPC, server
-identity, origin isolation and negative-case pilots need source-bound results.
+The current authority configuration selects the producer profile independently
+from request contents; omission defaults to Node. It passes that provisioned
+selection to the shared parser. Every identity below requires exact version
+`0.1.0-experimental.1`.
+
+| Provisioned `adapter` | Required producer identity | Accepted observation modes |
+| --- | --- | --- |
+| `node` | `humanymous.node` | `node-raw`, `fetch-normalized` |
+| `nginx` | `humanymous.nginx` | `nginx-raw`, `nginx-normalized` |
+| `python-asgi` | `humanymous.python` | `asgi-normalized` |
+| `python-wsgi` | `humanymous.python` | `wsgi-normalized` |
+| `ruby-rack` | `humanymous.ruby` | `rack-normalized` |
+| `apache` | `humanymous.apache` | `apache-normalized` |
+| `aspnetcore` | `humanymous.dotnet` | `aspnetcore-normalized` |
+
+These are parser and provisioning contracts, not installed framework middleware,
+package availability or release-qualified host tuples. In particular, a native
+Rust request core does not establish Apache module or ASP.NET Core integration.
+The mode names do not authenticate original network capture. Actual native IPC,
+server identity, body/cancellation ownership, origin isolation and negative-case
+pilots still need source-bound results for each claimed host.
 A request must never select its own trusted profile from an unauthenticated field.
 
 The IPC authority rejects routes requiring original TLS, HTTP/2, authenticated

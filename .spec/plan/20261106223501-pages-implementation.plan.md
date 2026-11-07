@@ -1058,3 +1058,28 @@ All new code still pending compilation; no Cargo or browser launched.
 Root requested a short git queue reservation for the English convention commit.
 No git transaction held here; new git claims deferred until explicit release.
 Own source work continues and no foreign index or lock is changed.
+
+Output validation and browser navigation now share files::rendered_url rather
+than separately interpreting index.html. The existing named-index-suffix and
+explicit-index anchor regression tests exercise this shared boundary on the
+next allocated test run. Current output/source helper bytes changed after the
+historical22 pass; all new graph compilation remains pending. Manifest frozen.
+
+### Root current browser integration verification completed
+
+Direct root output read and preserved: exec-bbe936ed... locked offline Pages26
+lib tests pass0failed/ignored/measured/filtered. Composite all-target Clippy first
+failed in capture4lints and therefore did not run CLI; retained exact failure.
+Root follow-up exec-6feecab1-98a8-4728-b114-1b764df02d40 passed Pages all-target
+Clippy -D warnings plus CLI1test0failed/ignored/measured/filtered. Read actual
+output, saved private raw, public source8hashes rechecked unchanged. jobs1/
+incremental0, no duplicate Pages execution. Actual browser/current rendering/AT
+remain NOT_RUN. Updated INTEGRATION to current measured scope.
+
+Read full integrity adapter/profile.rs and exact current authority selector;
+public wire experiment now lists all seven provisioned profiles, exact producer
+identity/version and modes. Added manual profile source receipt, not a complete
+freshness approval. Existing source binary reports88/errors0. Full CI review
+inventory still fails (latest missing first10 now Apache/.NET/Go/native files).
+No installed middleware, framework package or independently qualified tuple is
+inferred from this parser table. Rendered content changed after historical88run.

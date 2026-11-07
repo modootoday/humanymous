@@ -1,11 +1,15 @@
 //! Composition root for the Rust-only Pages verifier and pinned upstream builder.
 use std::path::PathBuf;
+mod browser_command;
 
 fn run() -> Result<(), String> {
     let mut arguments = std::env::args().skip(1);
     let mode = arguments
         .next()
-        .ok_or("expected source, built or validate")?;
+        .ok_or("expected source, built, validate or browser")?;
+    if mode == "browser" {
+        return browser_command::run(arguments);
+    }
     if matches!(mode.as_str(), "snapshot" | "review-delta") {
         if arguments.next().as_deref() != Some("--root") {
             return Err(format!("{mode} requires --root"));

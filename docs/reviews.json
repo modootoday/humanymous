@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/integrity/src/adapter/profile.rs",
+  "sha256": "9b61f1163147dd3372556fa3f2fcbfbbc2811636f613230b243e07f8acb3becd",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete provisioned producer profile module: exact seven profile identities, shared experimental version, allowed raw/normalized mode pairs and rejection of cross-profile mode selection. Reconciled public wire experiment with separate current authority selector source. Parser/provisioning declarations are not installed middleware, package availability, original network capture or qualified host tuple evidence. No framework/browser execution inferred.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
   "source": "crates/audit/src/storage/mod.rs",
   "sha256": "f964d7e238744d998d31f4a06c93347db4330aee75b250c4402f1b6de127d542",
   "reviewer": "codex/rust-pages",

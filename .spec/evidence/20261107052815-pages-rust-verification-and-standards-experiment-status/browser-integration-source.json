@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "captured_utc": "2026-11-07T07:50:24.931148Z",
+  "sources": [
+    {
+      "path": "docs/tooling/Cargo.toml",
+      "sha256": "d75698e1402d16fdeb8b8ba79a7fd113fc5be041efcbb0717172370bf70e6853",
+      "last_write_utc": "2026-11-07T07:44:10.9395191Z"
+    },
+    {
+      "path": "docs/tooling/src/lib.rs",
+      "sha256": "8787c8a8519c1259f93f31e7b40758ecef08df5d7f1ab01a25cfa80d7655609f",
+      "last_write_utc": "2026-11-07T07:44:11.6538521Z"
+    },
+    {
+      "path": "docs/tooling/src/main.rs",
+      "sha256": "00fab4c681f0f0927b9778285e8fed664cd2f3c913269151cc67cf60d6bd6214",
+      "last_write_utc": "2026-11-07T07:44:43.952385Z"
+    },
+    {
+      "path": "docs/tooling/src/files.rs",
+      "sha256": "c0dd01b6b22a6e5cb7e182d899f849db234235c1aeb836fee7457907251e2891",
+      "last_write_utc": "2026-11-07T07:48:32.9054428Z"
+    },
+    {
+      "path": "docs/tooling/src/output.rs",
+      "sha256": "380525c50493e0167be5c959d7b9e7f97dd3b9410b639a861912b4117cffe517",
+      "last_write_utc": "2026-11-07T07:48:32.1407886Z"
+    },
+    {
+      "path": "docs/tooling/src/browser.rs",
+      "sha256": "d23388982a746fa7debf7d046ba4c6ec874476a760fd759de0a77d7a743f716f",
+      "last_write_utc": "2026-11-07T07:48:32.9045299Z"
+    },
+    {
+      "path": "docs/tooling/src/browser/webdriver.rs",
+      "sha256": "34b07e6b07501484a39783f2c64464b836321b2a89ca86a2a26cfb2fc1d49870",
+      "last_write_utc": "2026-11-07T07:38:16.7412914Z"
+    },
+    {
+      "path": "docs/tooling/src/browser_command.rs",
+      "sha256": "15a4c68a241ca37fc647be4d557afeed61131620f40bee5e3c0dccfca3abd325",
+      "last_write_utc": "2026-11-07T07:47:40.900503Z"
+    }
+  ],
+  "execution_scope": "Root actual locked offline lib26 plus CLI1 passed; Pages all-target Clippy passed. Actual hosted browser not run.",
+  "final_verification": {
+    "executor": "root integration",
+    "lib_command_handle": "exec-bbe936ed-5cd4-46b3-a1c7-810077c0edfd",
+    "lib_passed": 26,
+    "cli_command_handle": "exec-6feecab1-98a8-4728-b114-1b764df02d40",
+    "cli_passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered_out": 0,
+    "clippy": "all-targets -D warnings passed",
+    "initial_composite_clippy": "failed in external capture crate4 lints; CLI not run then",
+    "source_hashes_rechecked_unchanged": true,
+    "cargo_build_jobs": 1,
+    "cargo_incremental": 0,
+    "actual_browser": "NOT_RUN",
+    "current_jekyll_render": "NOT_RUN",
+    "assistive_technology": "NOT_RUN",
+    "private_raw_bundle": "evidence:root/20261107051213"
+  }
+}
