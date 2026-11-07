@@ -60,7 +60,20 @@ metadata, not Job authentication or a production native proof. Actual controller
 CLI selector extension and first five provider gates remain required. Shared API provider
 qualification and allocated consumer compile/execution remain pending. The
 ignored test is actual authored source, not executed evidence. This
-source is authored/NOT_RUN; fmt/diff checks alone do not qualify subprocess behavior.
+initial source was authored/NOT_RUN; fmt/diff checks alone did not qualify
+subprocess behavior. The later controlled Windows result below is separate proof.
+
+### Actual controlled Windows watchdog consumer
+
+One root-authorized actual parent at immutablec57cf0c6 passed its exact1/0/0/0
+harness denominator and four distinct subcases: positive0, stdout-pressure74,
+stderr-pressure74 and delayed-completion74. Controller24004321 used the same
+owned Job boundary after Native's five-case receiptccd83927. Both actual parent
+and baked fixture binary hashes stayed unchanged. [[evidence:root/20261107164800]]
+retains actual original deadlines, admission, raw source/artifacts and observed
+Job cleanup. No kernel-blocked certainty, production runtime completion, SCM,
+account/privilege operation or native producer qualification is inferred. All
+leases and owned handles ended; complete installation/bootstrap gates remain open.
 
 ### Active goal continuation
 

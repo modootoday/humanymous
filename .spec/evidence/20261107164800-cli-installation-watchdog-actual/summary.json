@@ -1,0 +1,98 @@
+{
+  "schema": "humanymous.cli-watchdog-actual-validation/1",
+  "status": "passed-fixed-cooperative-windows-component",
+  "source_sha": "c57cf0c6a63d9a99f0596e14e5328b8bf6a97c0b",
+  "cli_consumer_commit": "fb6f26edb83bdd483f142334305ebd52643e8892",
+  "controller_source_sha": "2400432116a0ddd5b9d29ced92ab46954c2f24d2",
+  "provider_receipt": "ccd8392743421e437b3806c74ac4f0f1d86d611e",
+  "venue": "actual local Windows x86_64-pc-windows-msvc",
+  "parent_tests": {
+    "passed": 1,
+    "ignored": 0,
+    "measured": 0,
+    "failed": 0,
+    "filtered": 0
+  },
+  "subcase_count": 4,
+  "subcases": [
+    {
+      "actual_exit": 0,
+      "case": "positive",
+      "kernel_blocked_write_proven": false,
+      "parent_pipe_ends_released": 3,
+      "product_qualified": false,
+      "runtime_completion_simulated": true,
+      "schema": "humanymous.watchdog-boundary-observation.v1",
+      "tree_cleanup_proven": false,
+      "writer_entry_observed": true
+    },
+    {
+      "actual_exit": 74,
+      "case": "blocked-stdout",
+      "kernel_blocked_write_proven": false,
+      "parent_pipe_ends_released": 3,
+      "product_qualified": false,
+      "runtime_completion_simulated": true,
+      "schema": "humanymous.watchdog-boundary-observation.v1",
+      "tree_cleanup_proven": false,
+      "writer_entry_observed": true
+    },
+    {
+      "actual_exit": 74,
+      "case": "blocked-stderr",
+      "kernel_blocked_write_proven": false,
+      "parent_pipe_ends_released": 3,
+      "product_qualified": false,
+      "runtime_completion_simulated": true,
+      "schema": "humanymous.watchdog-boundary-observation.v1",
+      "tree_cleanup_proven": false,
+      "writer_entry_observed": true
+    },
+    {
+      "actual_exit": 74,
+      "case": "late-completion",
+      "kernel_blocked_write_proven": false,
+      "parent_pipe_ends_released": 3,
+      "product_qualified": false,
+      "runtime_completion_simulated": true,
+      "schema": "humanymous.watchdog-boundary-observation.v1",
+      "tree_cleanup_proven": false,
+      "writer_entry_observed": true
+    }
+  ],
+  "actual_parent_exit": 0,
+  "elapsed_ms": 2018,
+  "job_assigned_before_grant": true,
+  "natural_parent_exit_observed": true,
+  "actual_job_empty_observed": true,
+  "cleanup_within_original_deadline": true,
+  "outer_cleanup_unknown": false,
+  "cleanup_termination_failed": false,
+  "parent_budgets_ms": {
+    "run": 8000,
+    "cleanup": 12000,
+    "includes_barrier": true
+  },
+  "outer_budgets_ms": {
+    "cleanup": 15000,
+    "run": 10000
+  },
+  "artifact_hashes": {
+    "parent": "a22fb7d528ab1b21a6977bf51cd0e1fd811326906ab630f4ab64a9c0e8eea8aa",
+    "fixture": "f13ea8cda9eec7d188478095399f1dec47a520ab9136a7b9e619d09fcab17d1e",
+    "controller": "3ff6cb8e35454571a682e4a2d224d62e4bd3a4852dbc398d81d07ff2c7d474c0"
+  },
+  "parent_fixture_hashes_unchanged": true,
+  "admission": {
+    "disk_free_bytes": 126832685056,
+    "free_physical_gib": 35.55445861816406,
+    "commit_percent": 63.803940211377096,
+    "utc": "2026-11-07T16:45:17.8498075Z"
+  },
+  "scm_account_privilege_operations": false,
+  "native_producer_qualified": false,
+  "kernel_blocked_write_proven": false,
+  "full_service_lifecycle_qualified": false,
+  "product_qualified": false,
+  "exact_parent_harness_verified": true
+}

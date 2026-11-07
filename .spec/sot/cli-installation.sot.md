@@ -59,9 +59,15 @@ changes require their own source-bound gates. Validation and completion each
 check the original monotonic deadline under the state lock; completion at or
 after expiry rejects without committing Stopped, even if the watchdog thread has
 not yet run. The hard-expiry branch performs no stderr/log write before exit74.
-Deterministic pure tests inject expiry before and during delivery; actual blocked
-stdout/stderr process-boundary qualification remains pending and is not implied
-by scoped compile/pure/Clippy results.
+Deterministic pure tests inject expiry before and during delivery. A separately
+authorized actual Windows fixed cooperative parent now observed four subprocess
+outcomes0/74/74/74 with retained unread pressure and delayed completion, actual
+outer Job assignment before grant, natural parent exit and observed empty Job
+within original cleanup bounds. [[evidence:root/20261107164800]] binds both parent
+and fixture artifacts. Writer-entry markers are not proof of kernel-blocked I/O;
+runtime completion flags are synthetic in this fixture. Universal syscall/cleanup
+guarantees, actual ServiceHost audit/drain and SCM lifecycle are not qualified by
+this component. Earlier scoped compile/pure/Clippy alone never implied it.
 Observer management e6dd38d uses the existing authenticated native transport and
 independent Credential; it is not exposed through browser/application routes.
 
