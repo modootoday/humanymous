@@ -1,0 +1,226 @@
+{
+  "schema": "humanymous.delivery-hosted-partial/1",
+  "run_id": 42415763189,
+  "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "attempt": 1,
+  "run_terminal": false,
+  "scope": "three terminal jobs only; other required jobs remain in progress or queued",
+  "jobs": [
+    {
+      "job_id": 128541529321,
+      "name": "validate / browser-product",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-07T21:59:40Z",
+      "completed_at": "2026-11-07T22:19:32Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser-product"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "browser-product-job-metadata.api-decoded.json",
+          "sha256": "4f86d71f9749e3f3b7d85eaa1f2ebbed508447246f3ac8b128210c76a2bbf751",
+          "bytes": 2075,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        },
+        {
+          "file": "browser-product-job.allowed-api-decoded.log",
+          "sha256": "8cf252ce1f537bdfe25f27914a16ef805a397f257fd69a9a941c6a189e81f4f1",
+          "bytes": 51788,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        },
+        {
+          "file": "browser-product-annotations.api-decoded.json",
+          "sha256": "a84c122ea9998cd5713ff4dc57ae855dd0fe42b9fdd99d518d9175f6a2582104",
+          "bytes": 306,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        }
+      ],
+      "official_binding": {
+        "run_id": 42415763189,
+        "head_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+        "run_attempt": 1
+      }
+    },
+    {
+      "job_id": 128546386470,
+      "name": "validate / nginx",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-07T22:19:34Z",
+      "completed_at": "2026-11-07T22:26:47Z",
+      "failed_steps": [],
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "nginx-job-metadata.api-decoded.json",
+          "sha256": "f49486cef741aabbc9c3e104ecca06ca41f26927bfd15a135aebf88736be6611",
+          "bytes": 2049,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        },
+        {
+          "file": "nginx-job.allowed-api-decoded.log",
+          "sha256": "8aa687b75f6813d48a1333be3b8db80756b147f2822f8cc7e5bf2ddef9fbec4b",
+          "bytes": 48329,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        },
+        {
+          "file": "nginx-annotations.api-decoded.json",
+          "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+          "bytes": 4,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        }
+      ],
+      "official_binding": {
+        "run_id": 42415763189,
+        "head_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+        "run_attempt": 1
+      }
+    },
+    {
+      "job_id": 128548113387,
+      "name": "validate / rust-images",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-07T22:26:49Z",
+      "completed_at": "2026-11-07T22:34:27Z",
+      "failed_steps": [],
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "rust-images-job-metadata.api-decoded.json",
+          "sha256": "2fdfe8f16693f032a64013bef06b4b94b79de1510422217aa719bfda8a3401af",
+          "bytes": 3754,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        },
+        {
+          "file": "rust-images-job.allowed-api-decoded.log",
+          "sha256": "1493d9add8ef6109b4c814c0264bea9a7f55e1d8a1b7c4901f806dc9c86d0ea1",
+          "bytes": 192907,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        },
+        {
+          "file": "rust-images-annotations.api-decoded.json",
+          "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+          "bytes": 4,
+          "representation": "gh API output decoded and PowerShell UTF-8 serialized; not original run ZIP bytes"
+        }
+      ],
+      "official_binding": {
+        "run_id": 42415763189,
+        "head_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+        "run_attempt": 1
+      }
+    }
+  ],
+  "browser_product": {
+    "assertions": {
+      "failed": 2,
+      "other": 0,
+      "passed": 16,
+      "total": 18
+    },
+    "exit_code": 1,
+    "safe_diagnostics": {
+      "browser_actor": {
+        "dns_finish": "succeeded",
+        "exit_code": 1,
+        "filtered_count": 66,
+        "full_product_qualified": false,
+        "inventory_count": 67,
+        "inventory_matched": true,
+        "parser_summary_matched": false,
+        "process_success": false,
+        "schema": "humanymous.lab-browser-actor-outcome/1",
+        "selected_count": 1,
+        "source_prefix_authenticated": false,
+        "state": "observed",
+        "test_passed": false
+      },
+      "failure_count": 2,
+      "failures": [
+        {
+          "case_id": "browser-actual-witness-exchange",
+          "error_code": "assertion_failed",
+          "status": "failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "browser_bootstrap_http_forbidden",
+          "status": "failed"
+        }
+      ],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    },
+    "required_unavailable_count": 9,
+    "source_changed": false,
+    "inner_cause": "HTTP403 observed; Origin versus Fetch metadata is not identified at this source",
+    "private_owner_report_original_recovered": false
+  },
+  "nginx": {
+    "cargo_lock_sha256": "ebf64e8fe8a7470345da03fee5a4be1a8191bde4b78bbc3c1b329ed716114328",
+    "cleanup_exit_code": 0,
+    "failure_stage": null,
+    "full_product_qualified": false,
+    "image_id": "sha256:52b66d52559a24c0336b733d02b8f809caef77fb184169cbf8d5e8a0334faf0e",
+    "report": {
+      "cargo_lock_sha256": "ebf64e8fe8a7470345da03fee5a4be1a8191bde4b78bbc3c1b329ed716114328",
+      "denominator": "scenario groups in one Rust pilot process, not Rust test-harness tests; HEAD-and-204 includes two HTTP behaviors; concurrent-service group accounts 32 requests",
+      "engine_sha256": "cb091c80cc10a6f63e8f6941af76f34a630641670617d147a28bc6fc6ec01ce7",
+      "failed": 0,
+      "full_product_qualified": false,
+      "ignored": 0,
+      "module_sha256": "9d35b8009a4a8eba324cc6b5f4b3147654716e5f00a55ddf82ac89180537c7de",
+      "not_run": 0,
+      "passed": 35,
+      "scenario_groups": 35,
+      "schema": "humanymous.nginx.component-summary/1",
+      "source_manifest": "2ccd969525c2bbee49049dc8011f8942d2a5215765850835f0ec53698d54ae03",
+      "source_revision": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+      "status": "passed"
+    },
+    "required_scenario_groups": 35,
+    "schema": "humanymous.nginx.execution-summary/1",
+    "source_changed_during_execution": false,
+    "source_manifest": "2ccd969525c2bbee49049dc8011f8942d2a5215765850835f0ec53698d54ae03",
+    "source_revision": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+    "status": "passed"
+  },
+  "rust_candidate_scan": {
+    "cargo_lock_sha256": "ebf64e8fe8a7470345da03fee5a4be1a8191bde4b78bbc3c1b329ed716114328",
+    "full_product_qualified": false,
+    "image_id": "sha256:7e1d796f7eab15c5866fe9834560a76528ce2dba48c8ee402333cb5ff37b66b3",
+    "inventory_completeness_verified": false,
+    "inventory_sha256": "dbf6ce9299e142b8ae2b61e45d961bc0e2f9fcd28dad2688db1875e07f5e65f9",
+    "observed_rust_packages": 86,
+    "rust_binary_inventory_count": 1,
+    "rust_binary_inventory_observed": true,
+    "scan_sha256": "a7ded6085b23a58f1c8c6e3582e5ccd972a2c21eeb988d11ce99b4ad9303918c",
+    "scan_status": "clean_observed_inventory",
+    "scanner_step_outcome": "success",
+    "schema": "humanymous.image-scan-summary/1",
+    "shipping_qualified": false,
+    "source_changed": false,
+    "source_manifest_sha256": "2ccd969525c2bbee49049dc8011f8942d2a5215765850835f0ec53698d54ae03",
+    "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+    "vulnerability_count": 0
+  },
+  "raw_scan_and_inventory_originals_recovered": false,
+  "reported_raw_hashes_are_locally_rehashed_originals": false,
+  "full_product_qualified": false,
+  "shipping_qualified": false
+}
