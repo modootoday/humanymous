@@ -565,6 +565,36 @@ API feature support nor an allocation budget. Do not infer usable memory from
 Win32 AdapterRAM or marketing capacity. No GPU context, benchmark or install was
 performed by this performance owner.
 
+The later M11 runtime research checkpoint
+e4b822fd479b857e994cb0b2b77e2708a56b1a06 was read from its exact Git blobs:
+local-rust-gpu-compatibility.md and local-rust-paired-results.md. Its public
+[[evidence:root/20261107073348]] GPU summary has SHA256
+33d3e6bd45db05b93aad5902fcd158aae84f445736963b92ad89bc0cfbdfc636.
+Private184338 NVML records report CC8.9/NVML-KMD610.88 and a12282MiB total,
+10836MiB free,1159MiB used snapshot. CUDA UMD13.3 is driver capability, not an
+installed SDK, context/model execution, allocation reservation or process budget.
+These observations were read, not rerun, by this owner.
+
+M11 resolved mistral.rs0.9.5 to upstream commit
+465191d0b0a7e2432d327b0de06204ab3f94d3a2. Its official Windows CPU asset is the
+actual studied executable; Windows CUDA is a source-build candidate. A Linux
+CUDA13.0/sm89 artifact and macOS ARM64 Metal artifact are different OS/runtime
+tuples, not alternatives executable under the existing Windows CPU grant. The
+tagged runtime establishes no Vulkan backend. New supported venue/build/context
+and finite host/device admission are prerequisites; WSL remains unallocated.
+
+The unchanged CPU study supplies semantic/task evidence, not a clean GPU timing
+baseline:64 attempts produced60 final answers and4 incomplete outputs across
+two32-attempt studies, with132 local calls/144084 observed tokens. Both studies
+completed30/32, with different incomplete cases. The local behavior judge missed
+clear violations; no aggregate quality improvement is established. Matched task
+inputs or byte-identical baseline answers do not prove statistical independence
+or cross-backend determinism. Preserve exposure modes, failures, model/tokenizer/
+template and the fixed output/context limits in any later fresh CPU/GPU study.
+All original model processes/listener/target were reported settled by M11; that
+does not reserve GPU resources. CPU correctness/exposure, inference throughput,
+complete task latency and answer quality remain separate acceptance dimensions.
+
 ### Ranked candidates and CPU controls
 
 | Priority | Workload and interface boundary | Eligibility, control and missing evidence |

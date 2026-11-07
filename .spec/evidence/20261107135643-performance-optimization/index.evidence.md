@@ -14,6 +14,16 @@ files:
 
 ## Project-wide GPU research status
 
+M11 runtime checkpoint e4b822fd479b857e994cb0b2b77e2708a56b1a06 was consolidated
+from its exact research/result documents and public
+[[evidence:root/20261107073348]] summary, GPU summary SHA256
+33d3e6bd45db05b93aad5902fcd158aae84f445736963b92ad89bc0cfbdfc636.
+Read-only NVML identifies hardware and a memory snapshot only. Windows CPU,
+Windows CUDA source-build candidate, Linux CUDA/sm89 and Metal are separate
+tuples. The64-attempt CPU study has60 final/4 incomplete outcomes and an unreliable
+local judge; it is not reliable quality-benefit or matched GPU-performance proof.
+This owner did not rerun inventory, model work or GPU qualification.
+
 Browser research checkpoint aa22cd0abcdaabb35eb27d06b356952a81cf23cf was read
 from its exact Git blob for consolidation. Its GPU-BOUNDARY.md and
 [[evidence:root/20261107073932]] supply the Browser-owned presentation matrix and
