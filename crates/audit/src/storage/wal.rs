@@ -105,7 +105,14 @@ impl Wal {
                     return Err(invalid("segment filename index exhausted"));
                 }
                 let path = segment_path(&self.dir, next);
-                let segment = OpenOptions::new().write(true).create_new(true).open(path)?;
+                let mut options = OpenOptions::new();
+                options.write(true).create_new(true);
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::OpenOptionsExt;
+                    options.mode(0o600);
+                }
+                let segment = options.open(path)?;
                 sync_directory(&self.dir)?;
                 self.segment = segment;
                 self.index = next;
@@ -196,11 +203,15 @@ fn open_append(path: &Path) -> io::Result<File> {
         Err(error) if error.kind() != io::ErrorKind::NotFound => return Err(error),
         _ => {}
     }
-    OpenOptions::new()
-        .create(true)
-        .append(true)
-        .read(true)
-        .open(path)
+    let mut options = OpenOptions::new();
+    options.create(true).append(true).read(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        // Creation mode does not alter permissions of existing history.
+        options.mode(0o600);
+    }
+    options.open(path)
 }
 fn segments(dir: &Path) -> io::Result<Vec<(u64, PathBuf)>> {
     let mut result = Vec::new();
@@ -268,6 +279,98 @@ mod tests {
             max_frame: 4096,
         }
     }
+    #[cfg(unix)]
+    #[test]
+    fn new_wal_members_request_private_modes_through_rotation_and_restart() {
+        use std::os::unix::fs::MetadataExt;
+        let dir = directory();
+        let mut wal = Wal::open(&dir, options()).unwrap();
+        for seq in 1..=2 {
+            wal.append_record(&Record {
+                seq,
+                ..Record::default()
+            })
+            .unwrap();
+        }
+        let checkpoint = Checkpoint {
+            tree_size: 2,
+            ..Checkpoint::default()
+        };
+        wal.append_checkpoint(&checkpoint).unwrap();
+        drop(wal);
+        let names = [
+            ".audit-writer.lock",
+            "audit-0000000001.log",
+            "audit-0000000002.log",
+            "checkpoints.jsonl",
+        ];
+        assert_eq!(fs::read_dir(&dir).unwrap().count(), names.len());
+        for name in names {
+            assert_eq!(fs::metadata(dir.join(name)).unwrap().mode() & 0o7777, 0o600);
+        }
+        let reopened = Wal::open(&dir, options()).unwrap();
+        assert_eq!(
+            reopened
+                .records()
+                .unwrap()
+                .iter()
+                .map(|record| record.seq)
+                .collect::<Vec<_>>(),
+            vec![1, 2]
+        );
+        assert_eq!(reopened.checkpoints().unwrap(), vec![checkpoint]);
+        drop(reopened);
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn existing_wal_member_modes_and_identities_are_preserved() {
+        use std::os::unix::fs::{MetadataExt, PermissionsExt};
+        let dir = directory();
+        let names = [
+            ".audit-writer.lock",
+            "audit-0000000001.log",
+            "checkpoints.jsonl",
+        ];
+        let mut identities = Vec::new();
+        for name in names {
+            let path = dir.join(name);
+            fs::write(&path, []).unwrap();
+            // Fixture-only permissions; the WAL must not repair this history.
+            fs::set_permissions(&path, fs::Permissions::from_mode(0o644)).unwrap();
+            let metadata = fs::metadata(path).unwrap();
+            identities.push((metadata.dev(), metadata.ino()));
+        }
+        let mut wal = Wal::open(
+            &dir,
+            WalOptions {
+                rotate_bytes: 4096,
+                max_frame: 4096,
+            },
+        )
+        .unwrap();
+        wal.append_record(&Record {
+            seq: 1,
+            ..Record::default()
+        })
+        .unwrap();
+        wal.append_checkpoint(&Checkpoint {
+            tree_size: 1,
+            ..Checkpoint::default()
+        })
+        .unwrap();
+        assert_eq!(wal.records().unwrap().len(), 1);
+        assert_eq!(wal.checkpoints().unwrap().len(), 1);
+        drop(wal);
+        for (name, identity) in names.into_iter().zip(identities) {
+            let metadata = fs::metadata(dir.join(name)).unwrap();
+            assert_eq!(metadata.mode() & 0o7777, 0o644);
+            assert_eq!((metadata.dev(), metadata.ino()), identity);
+        }
+        fs::remove_dir_all(dir).unwrap();
+    }
+
     #[cfg(unix)]
     #[test]
     fn guard_drop_releases_wal_without_replacing_inode_or_unlocking_successor() {

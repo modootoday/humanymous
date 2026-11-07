@@ -11,8 +11,10 @@ rel:
 
 # Audit key custody Linux retained source admission
 
-Version0.2, proposed for Root acceptance. This document authorizes no producer,
-dependency change, validation workload or production route. Phase-B qualification
+Version0.3. Root accepted the narrow prospective Unix WAL creation fix and the
+Linux diagnostic premises below; validation requires a new explicit A grant.
+Native producer implementation follows a separate concrete source-slice freeze.
+No dependency change or production route is authorized. Phase-B qualification
 remains exactly [[evidence:root/20261107133648]]. Current native Source remains
 Unsupported and scanner composition remains test-only.
 
@@ -79,9 +81,10 @@ No detached blocking helper thread is introduced.
    helper; do not copy its policy or substitute path-only privacy inspection.
 3. dev/inode are scoped to retained objects and namespace lifetime. Do not use
    private Fsid layout, transmute, Debug hashes or a caller provider label.
-   This proposal does not claim distinct mount UUID. If Root requires distinct
-   mount identity, same-descriptor statx EMPTY_PATH/MNT_ID with required returned
-   mask becomes a prerequisite; absence must refuse that stronger profile.
+   Root requires same-descriptor statx EMPTY_PATH/MNT_ID with required returned
+   mask. Bind/compare mount IDs on held root and payload objects; absence refuses
+   with Unsupported, with no fstype+dev fallback. This is namespace/lifetime
+   mount binding, not a persistent mount UUID or physical-media attestation.
 4. Require pre-existing `.audit-writer.lock`; open read-only, validate, acquire
    ExclusiveFile nonblocking. Never create/unlink/repair it or its directory.
    Actual local Linux qualification must establish read-only exclusive locking
@@ -153,9 +156,20 @@ separate from native file identity.
 
 ## Verification gates and requested decision
 
-Root must accept the premises, dedicated-directory naming policy, root binding,
-finite descriptor ledger, existing-file permission policy and private
-diagnostic-only slice before code. Then:
+Root accepted quiescent cooperative writer/trusted namespace, dedicated WAL
+directory separate from keys, reader-retained guard/root/pins, same-FD mount ID
+and N+P+6 scanner peak plus separately accounted process FDs. Enforce the bound
+before opens. Existing non0600 histories are refused by the future native
+inspector without chmod; any offline owner-reviewed migration is separate and
+must preserve original history. No hostile-sameUID/snapshot/ABA/interruptible-FS
+claim is authorized. Native source must freeze as a separate concrete slice.
+
+Prospective creation source now requests0600 through std Unix OpenOptionsExt in
+both open_append (initial lock/segment/sidecar) and rotation create_new. Two Unix
+Rust tests are authored for actual created modes/rotation/restart and preservation
+of existing0644 file modes/dev/inode while appending. Tests are NOT RUN; no fmt,
+check, Clippy or native qualification is inherited from the prior33-case proof.
+No global umask mutation, chmod of actual history, dependency or graph edit.
 
 - Pure Rust tests cover checked offsets, limits, poison, lifetime/last-reader
   lock retention and unchanged compatibility Report/Work semantics.
@@ -175,7 +189,9 @@ diagnostic-only slice before code. Then:
 
 ## Critique reflected
 
-Verdict: needs-work pending Root premise and proposed FD-ledger acceptance.
+Verdict: needs-work for native qualification and full S1; Root accepted the
+specified premises and prospective creation slice, not measured memory/product
+completion. New creation source remains unqualified until allocated execution.
 No independent review or native qualification is claimed by this local review.
 
 P0: A Reader outliving Source could release the cooperative lock too early.

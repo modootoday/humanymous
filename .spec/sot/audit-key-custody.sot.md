@@ -12,6 +12,17 @@ rel:
 
 # Audit key custody
 
+Linux retained-source admission follows [[plan:root/20261107135332]]. Root
+accepted the diagnostic-only quiescent cooperative-writer/trusted-namespace
+premise, dedicated WAL directory, same-held-FD statx mount ID (Unsupported if
+unavailable) and explicit descriptor ledger. Native implementation/qualification
+remains pending. The narrow prospective Unix WAL creation fix now requests0600
+for new lock/segment/checkpoint and rotated segment files; existing permissions
+are preserved. Two actual-file Unix regression tests are authored but NOT RUN.
+Future native inspection refuses non0600 history without repair. New source does
+not inherit prior Phase-B or full-package qualification; execution awaits a new
+Root A grant. No production scanner/repair/healthy owner or measured memory claim.
+
 Bounded streaming recovery follows [[plan:root/20261107103624]]. Private S1
 primitives are partially implemented; production S2/S3 remain design-only.
 The target must preserve frozen bytes/trust rules while
