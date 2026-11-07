@@ -1,0 +1,325 @@
+{
+  "schema": "humanymous.delivery-annotation-accounting/1",
+  "inventory_annotations": 1886,
+  "later_e70_annotations": 2,
+  "historical_records_unchanged": true,
+  "all_annotations_closed": false,
+  "generic_failures": "327 baseline annotations across326 unique checks and45 workflow/check/exit buckets require exact owning evidence; age is not resolution",
+  "groups": [
+    {
+      "inventory_group": 0,
+      "count": 561,
+      "level": "warning",
+      "sample_check": 89725673758,
+      "message_sha256": "57fc8b23de9f996b69e5cb1ac5c57accd6b5cb09591a4a100d26608267ab1a6f",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 1,
+      "count": 340,
+      "level": "notice",
+      "sample_check": 105565833622,
+      "message_sha256": "f8ad47234b9fbce6ba7a513bccbccc02847158f52c59aa0bbea1b988541847ed",
+      "state": "current-source-stabilized-runtime-pending",
+      "action": "Pin all eleven current floating Linux labels to Ubuntu24; no annotation suppression."
+    },
+    {
+      "inventory_group": 2,
+      "count": 280,
+      "level": "failure",
+      "sample_check": 89550517092,
+      "message_sha256": "527143cc87679147f28a858bb7dc32dbecfb35a8f562730840c8466011016918",
+      "state": "unresolved-owner-evidence-required",
+      "action": "Preserve exact source/run/check failure; root owns per-check cause and current proof reconciliation."
+    },
+    {
+      "inventory_group": 3,
+      "count": 198,
+      "level": "warning",
+      "sample_check": 89893031312,
+      "message_sha256": "c6b605ab45729ec408e45be8a5a9fe84ce6948af5bfb14bb5ffb08451964047c",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 4,
+      "count": 100,
+      "level": "warning",
+      "sample_check": 89559617160,
+      "message_sha256": "d5149c8f3412ff0693515bd369d8a744bdf927a01fd6c56ea21fb76cbe42f2c7",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 5,
+      "count": 78,
+      "level": "failure",
+      "sample_check": 89550129629,
+      "message_sha256": "926b4a6658153de966015fd063f3d2344bc79bb95e53ed52d27fe61e17c1a1f3",
+      "state": "producer-risk-fixed-historical-cause-unproven",
+      "action": "Verified upstream awk1 final-LF fix, preserve v2.13.1, release file body. Static EOF delimiter residual; old raw-context failure not attributed."
+    },
+    {
+      "inventory_group": 6,
+      "count": 53,
+      "level": "warning",
+      "sample_check": 89550259363,
+      "message_sha256": "a21ac281401c4eb2c72560f9db5505a466d9389ff2a8a94b9aabdebe5af4b054",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 7,
+      "count": 47,
+      "level": "failure",
+      "sample_check": 128197455669,
+      "message_sha256": "0bac2efbbee64bf6d50ed89b9c6d834372ade2dd83fff3eac94dc85e1c047649",
+      "state": "unresolved-owner-evidence-required",
+      "action": "Preserve exact source/run/check failure; root owns per-check cause and current proof reconciliation."
+    },
+    {
+      "inventory_group": 8,
+      "count": 44,
+      "level": "notice",
+      "sample_check": 128197455717,
+      "message_sha256": "40b261232d8f7f67fe1cb1f116234e07fe08b62a1a0c920569c080aee8b64244",
+      "state": "provider-or-supersession-observation",
+      "action": "Preserve capacity/cancelled status and required unknown work; release cancellation remains false."
+    },
+    {
+      "inventory_group": 9,
+      "count": 33,
+      "level": "failure",
+      "sample_check": 89569630372,
+      "message_sha256": "71f739a80227fe65631c8cc4f6f0ca8327b4a3bfbd2bbc3bf0f13da06c056766",
+      "state": "provider-or-supersession-observation",
+      "action": "Preserve capacity/cancelled status and required unknown work; release cancellation remains false."
+    },
+    {
+      "inventory_group": 10,
+      "count": 25,
+      "level": "failure",
+      "sample_check": 128197455836,
+      "message_sha256": "b74690657f1b9bd174e023c41e1fae3b2d2ff279e1b85b38f952617f997c35aa",
+      "state": "provider-or-supersession-observation",
+      "action": "Preserve capacity/cancelled status and required unknown work; release cancellation remains false."
+    },
+    {
+      "inventory_group": 11,
+      "count": 18,
+      "level": "warning",
+      "sample_check": 128197456011,
+      "message_sha256": "b804889cd7c52ba9bebb8c46cb334a9e2530bac2f3ea834e230905d01d9a3dbe",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 12,
+      "count": 18,
+      "level": "failure",
+      "sample_check": 128197456011,
+      "message_sha256": "18676833a4b0238e40f4cbf8e2e5ab4a40e21066f3c9d998a756c7cfd88b1c61",
+      "state": "owner-source-remediated-runtime-pending",
+      "action": "Pages owner current Ruby3.3.13/setup pin; old unsupported3.3.12 not requalified."
+    },
+    {
+      "inventory_group": 13,
+      "count": 11,
+      "level": "failure",
+      "sample_check": 89550270859,
+      "message_sha256": "5e7b9f08c28d0c426656191bbac85b531176fd525ea2906c1e3547bae558f51a",
+      "state": "producer-risk-fixed-historical-cause-unproven",
+      "action": "Verified upstream awk1 final-LF fix, preserve v2.13.1, release file body. Static EOF delimiter residual; old raw-context failure not attributed."
+    },
+    {
+      "inventory_group": 14,
+      "count": 9,
+      "level": "failure",
+      "sample_check": 89569630372,
+      "message_sha256": "3558fba3cfd9074603a034baaeb12102b7abbf9677cf84d86d8c0e2c5f10fed7",
+      "state": "provider-or-supersession-observation",
+      "action": "Preserve capacity/cancelled status and required unknown work; release cancellation remains false."
+    },
+    {
+      "inventory_group": 15,
+      "count": 8,
+      "level": "warning",
+      "sample_check": 89550129580,
+      "message_sha256": "05e281b47f005f5b40f083e28c6f70b0bcd591b38ef73ea0388383d8ace55acd",
+      "state": "already-current-node24-codeql4",
+      "action": "Current full pin already CodeQL4; no unnecessary update and no historical deletion."
+    },
+    {
+      "inventory_group": 16,
+      "count": 8,
+      "level": "warning",
+      "sample_check": 89550129629,
+      "message_sha256": "ea7ddb8752329dcdb6248c1817f331b846b473627a18c80927d247500ead40b6",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 17,
+      "count": 8,
+      "level": "warning",
+      "sample_check": 89588785882,
+      "message_sha256": "96a205cb0923c4cf02058beb32296c66c5e0dcef5d029257fe29976ee387ca0f",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 18,
+      "count": 7,
+      "level": "warning",
+      "sample_check": 89550129580,
+      "message_sha256": "b914f56e7e53f83c62bd82bdc8cb1e7056dcef20966ac07d984323ff12beecd5",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 19,
+      "count": 6,
+      "level": "failure",
+      "sample_check": 128202422477,
+      "message_sha256": "0441bbc09d1831a0b70fa2927a8a2322451bb3a1811dc4bfad20df8ae8a47617",
+      "state": "retention-failure-preserved",
+      "action": "Mandatory missing artifacts remain errors. Optional collector retention and retired deployment paths require distinct owner accounting; no downgrade or manufactured files."
+    },
+    {
+      "inventory_group": 20,
+      "count": 5,
+      "level": "failure",
+      "sample_check": 89550505593,
+      "message_sha256": "425ba49126efa3b8bc1d7244c24326810b72259d78d29dd9ecebdae121aed150",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Current official full Trivy commit resolves; old invalid version refs absent. Image/advisory execution remains unqualified."
+    },
+    {
+      "inventory_group": 21,
+      "count": 4,
+      "level": "warning",
+      "sample_check": 89953256754,
+      "message_sha256": "4f5ca06f2f7cf70e4264a7be703fabbc7c99aeb8985362b2964d1b5ff35af976",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 22,
+      "count": 4,
+      "level": "warning",
+      "sample_check": 89589098057,
+      "message_sha256": "dbdf120f403d4b0c6651fec999dd43a2b62c3797a180878a75566e66ae4ba043",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 23,
+      "count": 4,
+      "level": "warning",
+      "sample_check": 89570770678,
+      "message_sha256": "a31eb0c2283ccae4e129fc51765ff7c8d21e433d4194ef7813ac12337bf59158",
+      "state": "retention-failure-preserved",
+      "action": "Mandatory missing artifacts remain errors. Optional collector retention and retired deployment paths require distinct owner accounting; no downgrade or manufactured files."
+    },
+    {
+      "inventory_group": 24,
+      "count": 3,
+      "level": "warning",
+      "sample_check": 89893031312,
+      "message_sha256": "9172a542e5b57405e82e094e846d96539e1f03d39b742134989b0fb34a9f3c5c",
+      "state": "retention-failure-preserved",
+      "action": "Mandatory missing artifacts remain errors. Optional collector retention and retired deployment paths require distinct owner accounting; no downgrade or manufactured files."
+    },
+    {
+      "inventory_group": 25,
+      "count": 2,
+      "level": "warning",
+      "sample_check": 89953598369,
+      "message_sha256": "52438c94e55d1722b52c88e76a09a2459d451ff8157662232605140eba61eec0",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 26,
+      "count": 2,
+      "level": "warning",
+      "sample_check": 89953530578,
+      "message_sha256": "3904cb860c4aa0600ea5738c29badfe6ce143773cb346d33e81f4035e3f369d3",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 27,
+      "count": 2,
+      "level": "warning",
+      "sample_check": 89550517092,
+      "message_sha256": "9a4dc139bda97a8da7492abbb2f5b2a140fb18d8831efe05fc1a5aaa53267920",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 28,
+      "count": 2,
+      "level": "failure",
+      "sample_check": 89551249434,
+      "message_sha256": "23386139992b90e50732d5a5fc95710a793a8fa297c7a3f492bf5adc2fa5955a",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Current official full Trivy commit resolves; old invalid version refs absent. Image/advisory execution remains unqualified."
+    },
+    {
+      "inventory_group": 29,
+      "count": 1,
+      "level": "warning",
+      "sample_check": 89550258829,
+      "message_sha256": "15c035eee8f0c6c047a07316192fbc1e2e924eb20fbef746a1d72fa3add04ea0",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 30,
+      "count": 1,
+      "level": "failure",
+      "sample_check": 89596892420,
+      "message_sha256": "2591935aeca094ee21a1995f512e7709aaad49439920b1709d910cf437d3d150",
+      "state": "unresolved-owner-evidence-required",
+      "action": "Preserve exact source/run/check failure; root owns per-check cause and current proof reconciliation."
+    },
+    {
+      "inventory_group": 31,
+      "count": 1,
+      "level": "warning",
+      "sample_check": 91133612355,
+      "message_sha256": "c9fba5e447a0adc1b3ad1af27fcca294e8cb2abf73779d1c6229f7fe5d4d30c2",
+      "state": "current-source-remediated-runtime-pending",
+      "action": "Pinned current direct Node24 actions and verified Trivy nested metadata. Historical annotation remains unchanged."
+    },
+    {
+      "inventory_group": 32,
+      "count": 1,
+      "level": "failure",
+      "sample_check": 89702275206,
+      "message_sha256": "5220bf4f304bf95611411bc5ac63b15751aa9ddad466c63cde4db5c20d272805",
+      "state": "provider-or-supersession-observation",
+      "action": "Preserve capacity/cancelled status and required unknown work; release cancellation remains false."
+    },
+    {
+      "inventory_group": 33,
+      "count": 1,
+      "level": "failure",
+      "sample_check": 128290403895,
+      "message_sha256": "7da52731b1fe130304380c86fda3a19f8b9622cbf22d0059b3d0ed350f679f87",
+      "state": "retention-failure-preserved",
+      "action": "Mandatory missing artifacts remain errors. Optional collector retention and retired deployment paths require distinct owner accounting; no downgrade or manufactured files."
+    },
+    {
+      "inventory_group": 34,
+      "count": 1,
+      "level": "failure",
+      "sample_check": 96742282516,
+      "message_sha256": "4d7f431aeae2602a61f2c96b0da45491ffb19a0c28a22657a8f57f26892f8398",
+      "state": "unresolved-owner-evidence-required",
+      "action": "Preserve exact source/run/check failure; root owns per-check cause and current proof reconciliation."
+    }
+  ]
+}
