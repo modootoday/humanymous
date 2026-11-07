@@ -1,0 +1,31 @@
+{
+  "scope": "Complete source review of Windows browser inspection boundary, not execution",
+  "source": "crates/browser/native/desktop/src/native.rs",
+  "lines": 522,
+  "sha256": "0d99528f596cff0e99c447c68627995873e55c83ce98b3de233a199faa212862",
+  "read_chunks": [
+    "71fff0",
+    "6d2001",
+    "abaca1",
+    "1faac1"
+  ],
+  "observations": [
+    "Scoped Win32 parent geometry/DPI, bounded content rectangle and resize readback",
+    "UI-thread-only CEF child destruction, parent not destroyed",
+    "Input snapshot reads layout IDs, focus, IME open/conversion/composition byte count and candidate metadata; no composition text buffer",
+    "Opt-in Korean IME selects an already installed layout and acts on owned focused UI child",
+    "Candidate convert/open request explicitly does not establish visible candidate placement",
+    "Toolhelp snapshot chooses same executable descendants, checks current image before querying token",
+    "Token report records integrity/restricted/AppContainer and bounded role/error",
+    "Command line queried transiently from selected process; only restricted --type role retained",
+    "Bounded aligned UNICODE_STRING allocation checks and pure parsing source tests"
+  ],
+  "limits": [
+    "Snapshot ancestry/image matching is a point-in-time inventory, not a descendant lifetime/cleanup proof",
+    "No actual Win32/CEF compilation or native execution in this chat",
+    "No actual IME candidate visibility, screen reader or human input qualification",
+    "No complete sandbox proof from token diagnostics"
+  ],
+  "documentation": "docs/reference/native-browser.md already separates diagnostic source from native keyboard/IME/AT qualification",
+  "public_review_receipt": "Not renewed during candidate freeze"
+}

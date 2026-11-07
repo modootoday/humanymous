@@ -2016,3 +2016,13 @@ archive-check success guard, and outcomes were uploaded before final transfer
 summary rewrite. First guard is now observed changed to archive success (package
 is its prerequisite); terminal outcome-upload ordering remains unverified.
 No CI compile or actual complete-site archive execution inferred from source.
+
+### Complete Win32 browser inspection source review
+
+Read all522lines of desktop native.rs in four bounded outputs and recorded exact
+source hash. Geometry/DPI/resize and child ownership, IME metadata-only snapshot,
+existing-layout opt-in setup, explicitly unqualified candidate requests, selected
+descendant token/image inspection and bounded role-only retention are separated
+from real execution. Ancestry snapshot is not lifetime/cleanup proof. Existing
+native-browser wording remains conservative. No compile/native/IME/AT result
+inferred; no frozen public ledger update. Source-only evidence attached.
