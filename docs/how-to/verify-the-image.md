@@ -18,6 +18,16 @@ management isolation and shutdown in the owned lab. Signature verification
 establishes artifact identity under a trust policy, not functional correctness.
 See [release status](../reference/production-vs-reference.md).
 
+A separate Rust runtime image recipe declares a scratch final stage with copies
+of the runtime executable and license. Its startup expects supervisor-owned private
+configuration pipes and state/custody; the recipe declares no default listener
+or public configuration argument. The candidate catalog still records empty
+qualified platforms and unverified source-build, non-root runtime and CVE-scan
+gates. It is not a replacement for the existing shipping core/gate images.
+Its non-root USER and source-revision label do not prove mount/peer isolation,
+external witness availability or that the labelled source produced the binary.
+Preserve the actual build/run identity and executed startup/shutdown evidence.
+
 The experimental nginx component image is explicitly a laboratory artifact. Its
 final stage includes the nginx engine/module, the pilot runner and an authority
 executable, and starts the pilot. Do not mistake it for a minimal production

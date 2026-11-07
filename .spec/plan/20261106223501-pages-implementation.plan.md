@@ -1260,3 +1260,18 @@ queued. Overall still not terminal. No specific test count/cause, Pages result
 or current WIP qualification inferred. Stored sanitized partial-failure snapshot
 separate from initial live state and prior startup_failure, notified root. No
 new push/dispatch or cancellation; pending dot-segment source fix remains frozen.
+
+### Runtime private-pipe image candidate catalog
+
+Read full image-candidates.json, runtime-candidate Dockerfile/context rules and
+entrypoint startup boundary. Image guide now acknowledges the scratch recipe
+without inventing a built image: source-build/non-root/CVE/platform/witness/
+legacy-replacement gates remain unverified in its catalog. Binary/license copy,
+USER and revision labels do not establish provenance, state/peer/mount isolation,
+external witness or actual private-pipe startup/shutdown. Added three exact
+manual receipts; no compiler/image/process/network execution. Source88/errors0.
+
+Re-polled exact813 run42355168729: Docker/Ubuntu failures, live macOS/browser and
+queued Windows unchanged; Pages/documentation still not observed. No duplicate
+pipeline or terminal conclusion. Browser dot-segment WIP remains frozen and the
+prior27pure/all-target Clippy still belongs only to its earlier checkpoint.

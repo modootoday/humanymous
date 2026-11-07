@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "build/rust/runtime-candidate.Dockerfile.dockerignore",
+  "sha256": "abcdf9a1ae79709db96c234e276ec0aac8cd9a9f2ff6c3e17a649559f7b96888",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete default-deny runtime build context with Cargo/license/crate/tooling/maintenance/lab/CI inclusions and cache/script/private-key/environment exclusions. Context policy is not observed sent context or final image evidence; Pages tooling inclusion does not provide a rendered docs site.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/runtime-candidate.Dockerfile",
+  "sha256": "f24e4e0662eee7233e0d2030c8148c8bc94b463830d94fbdbc78305ef8729ed7",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete pinned Rust compiler and scratch runtime recipe, exact executable/license copies, revision/qualification/role labels and non-root entrypoint. Private configuration/state/custody belong to caller; recipe/label/user do not establish actual binary provenance, peer/mount isolation, witness availability or startup/shutdown/CVE qualification. No build/run performed.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/image-candidates.json",
+  "sha256": "24f708b481e511a27fe52b590f3f43dd32f23f3879723c6d2446da3743edab43",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full Rust runtime candidate catalog: private-pipe role, exact recipe/binary/entrypoint, empty qualified platforms and false source-build/non-root/CVE/witness/replacement gates. Public image guide distinguishes candidate existence from shipping core/gate replacement and actual artifact/runtime evidence.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
   "source": "adapters/python/server-pilot-contract.json",
   "sha256": "e3ee1cce2d536912e7fce6f98a22efb131d58de93c77eb20db1ba86835bf05f2",
   "reviewer": "codex/rust-pages",
