@@ -5,9 +5,9 @@ use crate::{
     credentials::Credential,
 };
 use humanymous_audit::{log::Log, record::Record};
-use humanymous_integrity::adapter::{self, ValidatedRequest};
-use humanymous_scoring::engine::Engine;
-use humanymous_signals::report::SessionReport;
+use humanymous_core::integrity::adapter::{self, ValidatedRequest};
+use humanymous_core::scoring::engine::Engine;
+use humanymous_core::signals::report::SessionReport;
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;

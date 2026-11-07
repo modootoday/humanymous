@@ -1070,3 +1070,18 @@ rights/launch custody/oneclaim/W JOIN, framed aggregate startup and Runtime-priv
 Ready remain open. Fresh hosted ephemeral principal/profile/SCM refusal and Docker
 product gates remain NOT_RUN. No publish or main merge is authorized. Read AGENTS,
 HARD-WON, adapter-authority SoT, this plan and authorization-kernel-r2.json first.
+
+## CORE-SLICE-01 consumer imports (2026-11-08)
+
+Root assigned only src/tests mechanical imports. Replaced integrity/scoring/signals
+crate references with humanymous_core context paths; no behavior or visibility
+change, Cargo/lock/relocation remain Root-owned. Source was clean before edits.
+No compiler, tests, Clippy or CI executed: workspace-coherent approval pending.
+Historical37pure kernel evidence is not requalification of these changed consumers.
+Exact changed source SHA256 inventory:
+
+- crates/authority/src/client.rs : before 0e7c0d7ede66b79ce018143df79ea9f15a053c14a333ae7328f38e03b72fcd4c ; after fae9140530b41d8b608fc6dcc24b7d09ab7de3acfed735579c2074042edf222c
+- crates/authority/src/configuration.rs : before e05c5e3e5071355b37c5c2023ffd6eb85f5518e6fd0fda3fb3ffd79025e9aa3e ; after 42f675ac4b4063de4866160140adaae06105ba2156b8bd2f5444c0ac7d27b146
+- crates/authority/src/decision.rs : before 5a11711204f4a15b57c8704fa7862baa7e6e4f2ff6fbf5f2b0128c9d7a01ce38 ; after 437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c
+- crates/authority/tests/decisions.rs : before 3a0f2a2894e1fd32532936110b78b6187ff09ff722eec9597b4cbe829ad2b06d ; after 5b22d6aae4106d85e445f881a7c3681bde45d38cc5ea59497c3c593a13527859
+- crates/authority/tests/native_process.rs : before bbd6fdfa9c93e3ab2198fc922f8d81d9466c44e3636d6634b7eed6b56ca8f507 ; after fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03

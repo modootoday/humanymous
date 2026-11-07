@@ -1,6 +1,6 @@
 //! Provisioned scope, complete route inventory and explicit capability loss.
 use crate::Rejection;
-use humanymous_integrity::adapter::AdapterProfile;
+use humanymous_core::integrity::adapter::AdapterProfile;
 use serde::Deserialize;
 use std::path::PathBuf;
 
@@ -320,11 +320,11 @@ mod tests {
             });
             let valid = serde_json::to_vec(&request).unwrap();
             assert!(
-                humanymous_integrity::adapter::parse_with_profile(&valid, 1000, selected).is_ok()
+                humanymous_core::integrity::adapter::parse_with_profile(&valid, 1000, selected).is_ok()
             );
             request["adapter"]["id"] = "humanymous.node".into();
             assert!(
-                humanymous_integrity::adapter::parse_with_profile(
+                humanymous_core::integrity::adapter::parse_with_profile(
                     &serde_json::to_vec(&request).unwrap(),
                     1000,
                     selected
@@ -334,7 +334,7 @@ mod tests {
             request["adapter"]["id"] = id.into();
             request["headerMode"] = "asgi-normalized".into();
             assert!(
-                humanymous_integrity::adapter::parse_with_profile(
+                humanymous_core::integrity::adapter::parse_with_profile(
                     &serde_json::to_vec(&request).unwrap(),
                     1000,
                     selected

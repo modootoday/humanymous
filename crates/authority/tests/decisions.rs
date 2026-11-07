@@ -6,8 +6,8 @@ use humanymous_authority::{
     configuration::Required,
     decision::{ApplicationHttp, Authority, DurableAudit, Evidence},
 };
-use humanymous_integrity::adapter::ValidatedRequest;
-use humanymous_signals::report::SessionReport;
+use humanymous_core::integrity::adapter::ValidatedRequest;
+use humanymous_core::signals::report::SessionReport;
 use std::sync::{Arc, Mutex};
 use support::*;
 

@@ -1,6 +1,6 @@
 //! Shared local decision client. It grants no origin or management authority.
 use crate::{Rejection, configuration::Peer, protocol};
-use humanymous_integrity::adapter::{AdapterProfile, parse_with_profile};
+use humanymous_core::integrity::adapter::{AdapterProfile, parse_with_profile};
 use serde::Deserialize;
 use std::time::{Duration, Instant};
 use tokio::io::AsyncWriteExt;

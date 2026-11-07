@@ -162,7 +162,7 @@ async fn client_call(
     p: &Process,
     server: &humanymous_authority::configuration::Peer,
     v: &Value,
-    profile: humanymous_integrity::adapter::AdapterProfile,
+    profile: humanymous_core::integrity::adapter::AdapterProfile,
 ) -> Result<humanymous_authority::client::BoundResponse, humanymous_authority::Rejection> {
     use humanymous_authority::client::{ClientOptions, ExpectedBinding, decide};
     let options = ClientOptions {
@@ -184,7 +184,7 @@ async fn client_call(
 #[tokio::test]
 async fn shared_client_checks_real_server_and_profile_bound_credentials() {
     use humanymous_authority::client::Verdict;
-    use humanymous_integrity::adapter::AdapterProfile;
+    use humanymous_core::integrity::adapter::AdapterProfile;
     let d = Directory::new();
     let c = config_value(&d);
     let p = Process::start(&c);
@@ -243,7 +243,7 @@ async fn shared_client_checks_real_server_and_profile_bound_credentials() {
 
 #[tokio::test]
 async fn normalized_producers_are_bound_by_native_authority_credentials() {
-    use humanymous_integrity::adapter::AdapterProfile;
+    use humanymous_core::integrity::adapter::AdapterProfile;
     for (name, profile, mode, wrong_mode) in [
         (
             "python-asgi",
@@ -564,7 +564,7 @@ async fn untrusted_pipe_dacl_is_rejected_before_credential_disclosure() {
         credential: &token,
         server: &server,
         timeout_ms: 1000,
-        adapter: humanymous_integrity::adapter::AdapterProfile::Node,
+        adapter: humanymous_core::integrity::adapter::AdapterProfile::Node,
     };
     let expected = ExpectedBinding {
         id: v["id"].as_str().unwrap(),
