@@ -113,6 +113,7 @@ dependencies = [
 name = "humanymous-native-security"
 version = "0.1.0"
 dependencies = [
+ "humanymous-windows-object-bridge",
  "keyring-core",
  "rustix",
  "windows-native-keyring-store",
@@ -127,6 +128,14 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "humanymous-windows-object-bridge"
+version = "0.1.0"
+dependencies = [
+ "windows-permissions",
+ "windows-sys",
 ]
 
 [[package]]

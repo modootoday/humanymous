@@ -482,3 +482,49 @@ E0451 diagnostic output, so no stronger diagnostic-code claim is made. Captured
 128.657GiB admission free space is DISK, not RAM; original physical availability
 was not persisted and later observations do not backfill it. All L2 actual gates
 and CLI consumer0/74 remain pending their explicit execution decisions.
+
+## User-authorized actual-five controller and cooperative barrier v1.0
+
+The user authorized stronger actual Windows testing on this terminal. Root
+accepted a narrowly scoped independent Rust controller for exactly FIVE existing
+capture-parent selectors. No new Win32 API, unsafe exception, manifest, account,
+SCM or privilege action is required. Source reuses actor.rs create/configure/
+assign/terminate/query Job operations through safe ControlledFixtureJob borrowing
+the REAL std Child handle. std Child remains sole process-handle owner; no caller
+PID or borrowed-handle ownership cast is admitted.
+
+The runner controlled-capture mode admits fixed case IDs normal, pending-input,
+stdout-cap, stderr-cap and stop-after-zero, the declared shared-test executable
+name with expected SHA256, internally fixed selectors and absolute fresh work.
+Private stdout/stderr logs are create-new regular files, not controller IO threads.
+The nested lock adds ONLY the accepted bridge0.1 package/native-security edge;
+registry versions/checksums and manifests remain unchanged. Root reviewed the
+exact diff; locked offline metadata passes, with no compiler/execution claim.
+
+Each actual test body FIRST waits at a five-second cooperative no-grant barrier,
+BEFORE fixture-child spawn or its capture budget. Bounded closed local JSON
+matches nonce, exact selector and current actual parent PID. Controller assigns
+the real held parent to its own kill-on-close Job and observes nonempty assignment
+BEFORE atomically publishing the grant. This is trusted-fixture synchronization,
+NOT producer authentication or arbitrary/untrusted-launch authority. Preassignment
+runtime startup and blocked local filesystem/kernel calls remain limitations.
+
+Outer original run10s/cleanup15s precede process creation, include assignment/grant,
+and are never renewed. Held Child::try_wait observes actual status; expiry is
+checked AFTER observation. Cleanup terminates only the owned assigned Job and
+separately observes parent exit, Job ActiveProcesses0 and the original deadline.
+Unassigned failure uses only the actual held cooperative parent, never a PID;
+empty unused Job is not descendant containment. Termination error stays failed.
+
+Report natural exit/code, grant/assignment, run expiry, termination request/error,
+actual parent exit/Job-empty and cleanup deadline separately. Known late cleanup
+is not timely success. Unknown cleanup retains owner on its controller thread
+BEFORE report IO; no unsafe Send or detach. Controller exit/Job closure requests
+kill-on-close but cannot manufacture convergence. All five actual cases and two
+controller pure tests remain NOT_RUN in this source checkpoint.
+
+Root's separate CEF cold-build window holds new native compilation until explicit
+terminal release. Existing user authorization for these five ordinary cases
+persists afterward, with fresh commit<85percent, available-memory/disk guards and
+exclusive target admission. No WSL/UNC, foreign kill, native bridge query/create,
+account/SCM/privilege or producer activation is included.

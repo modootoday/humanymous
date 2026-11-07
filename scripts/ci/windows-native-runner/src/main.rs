@@ -1,6 +1,8 @@
 //! Source-bound native process qualification; missing full requirements stay blocked.
 #[cfg(windows)]
 mod actor;
+#[cfg(windows)]
+mod controlled;
 mod evidence;
 mod fixture;
 mod harness;
@@ -62,6 +64,10 @@ fn run() -> io::Result<i32> {
     let mode = args
         .next()
         .ok_or_else(|| io::Error::other("native|standard-user|service|summarize required"))?;
+    #[cfg(windows)]
+    if mode == "controlled-capture" {
+        return controlled::run(args);
+    }
     let options = options(&mut args, mode != "summarize")?;
     let result = match mode.as_str() {
         "native" => pilot::run(&options),

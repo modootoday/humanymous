@@ -1,4 +1,6 @@
-//! Hosted-only ephemeral account boundary. No password in argv/env/log/files.
+//! Quarantined hosted account and local controlled-fixture Job boundaries.
+//! Local controlled fixtures use the actual current user, with no account/SCM or
+//! privilege operation. Hosted actor credentials never enter argv/env/log/files.
 //! SAFETY: the FFI is limited to Win32 account/process/job calls. Every pointer
 //! references an owned live UTF16/struct buffer for the synchronous call; handles
 //! have one RAII owner, and the suspended child enters a kill-on-close job before
@@ -44,6 +46,80 @@ impl Drop for Handle {
                 CloseHandle(self.0);
             }
         }
+    }
+}
+
+fn create_job() -> io::Result<Handle> {
+    let job = Handle(unsafe { CreateJobObjectW(null(), null()) });
+    if job.0.is_null() {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(job)
+}
+fn configure_kill_job(job: &Handle) -> io::Result<()> {
+    let mut limits: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = unsafe { zeroed() };
+    limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+    if unsafe {
+        SetInformationJobObject(
+            job.0,
+            JobObjectExtendedLimitInformation,
+            (&limits as *const JOBOBJECT_EXTENDED_LIMIT_INFORMATION).cast(),
+            size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
+        )
+    } == 0
+    {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(())
+}
+fn assign_job(job: &Handle, child: HANDLE) -> io::Result<()> {
+    if unsafe { AssignProcessToJobObject(job.0, child) } == 0 {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(())
+}
+fn terminate_job(job: &Handle) -> io::Result<()> {
+    if unsafe { TerminateJobObject(job.0, 1) } == 0 {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(())
+}
+fn active_job(job: &Handle) -> io::Result<u32> {
+    let mut accounting: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION = unsafe { zeroed() };
+    if unsafe {
+        QueryInformationJobObject(
+            job.0,
+            JobObjectBasicAccountingInformation,
+            (&mut accounting as *mut JOBOBJECT_BASIC_ACCOUNTING_INFORMATION).cast(),
+            size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32,
+            null_mut(),
+        )
+    } == 0
+    {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(accounting.ActiveProcesses)
+}
+
+/// Current-user cooperative fixture Job. No account or privilege changes.
+/// Safe methods borrow the REAL owned std Child; no PID or raw-handle constructor.
+pub(crate) struct ControlledFixtureJob(Handle);
+impl ControlledFixtureJob {
+    pub(crate) fn create() -> io::Result<Self> {
+        let job = create_job()?;
+        configure_kill_job(&job)?;
+        Ok(Self(job))
+    }
+    pub(crate) fn assign(&self, child: &std::process::Child) -> io::Result<()> {
+        use std::os::windows::io::AsRawHandle;
+        // Borrow only; std Child remains the sole owner of this process handle.
+        assign_job(&self.0, child.as_raw_handle())
+    }
+    pub(crate) fn terminate(&self) -> io::Result<()> {
+        terminate_job(&self.0)
+    }
+    pub(crate) fn active(&self) -> io::Result<u32> {
+        active_job(&self.0)
     }
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -283,7 +359,7 @@ impl OwnedProcessAttempt {
         if self.phase != ProcessPhase::Created || self.job.is_some() {
             return Err(io::Error::other("owned job already configured"));
         }
-        self.job = Some(Handle(unsafe { CreateJobObjectW(null(), null()) }));
+        self.job = Some(create_job()?);
         let job = self
             .job
             .as_ref()
@@ -292,23 +368,9 @@ impl OwnedProcessAttempt {
             return Err(io::Error::last_os_error());
         }
         self.phase = ProcessPhase::JobCreated;
-        let mut limits: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = unsafe { zeroed() };
-        limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-        if unsafe {
-            SetInformationJobObject(
-                job.0,
-                JobObjectExtendedLimitInformation,
-                (&limits as *const JOBOBJECT_EXTENDED_LIMIT_INFORMATION).cast(),
-                size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
-            )
-        } == 0
-        {
-            return Err(io::Error::last_os_error());
-        }
+        configure_kill_job(job)?;
         self.phase = ProcessPhase::Configured;
-        if unsafe { AssignProcessToJobObject(job.0, self.child.0) } == 0 {
-            return Err(io::Error::last_os_error());
-        }
+        assign_job(job, self.child.0)?;
         self.phase = ProcessPhase::Assigned;
         if unsafe { ResumeThread(self.thread.0) } == u32::MAX {
             return Err(io::Error::last_os_error());
@@ -380,37 +442,26 @@ impl OwnedProcessAttempt {
         let job = self
             .job
             .as_ref()
-            .ok_or_else(|| io::Error::other("owned job absent"))?
-            .0;
-        if job.is_null() {
+            .ok_or_else(|| io::Error::other("owned job absent"))?;
+        if job.0.is_null() {
             return Err(io::Error::other("owned job absent"));
         }
         self.force_requested = true;
-        if unsafe { TerminateJobObject(job, 1) } == 0 {
-            return Err(io::Error::last_os_error());
-        }
+        terminate_job(job)?;
         let exit = self.wait_run(until)?;
         loop {
             if std::time::Instant::now() >= until {
                 return Err(io::Error::other("owned job cleanup deadline"));
             }
-            let mut accounting: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION = unsafe { zeroed() };
-            if unsafe {
-                QueryInformationJobObject(
-                    job,
-                    JobObjectBasicAccountingInformation,
-                    (&mut accounting as *mut JOBOBJECT_BASIC_ACCOUNTING_INFORMATION).cast(),
-                    size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32,
-                    null_mut(),
-                )
-            } == 0
-            {
-                return Err(io::Error::last_os_error());
-            }
+            let active = active_job(
+                self.job
+                    .as_ref()
+                    .ok_or_else(|| io::Error::other("owned job absent"))?,
+            )?;
             if std::time::Instant::now() >= until {
                 return Err(io::Error::other("owned job cleanup deadline"));
             }
-            if accounting.ActiveProcesses == 0 {
+            if active == 0 {
                 return Ok(ConvergenceProof {
                     _owner: self,
                     exit,

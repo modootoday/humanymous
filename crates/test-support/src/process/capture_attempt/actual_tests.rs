@@ -3,6 +3,62 @@
 use super::*;
 use std::{sync::atomic::Ordering, time::Duration};
 
+#[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct OuterGrant {
+    schema: String,
+    nonce: String,
+    selector: String,
+    pid: u32,
+}
+
+// Cooperative safety barrier for THESE exact trusted test bodies only. It does
+// not authenticate arbitrary executables or make preassignment race-free. Local
+// filesystem syscalls still rely on the declared responsive-kernel assumption.
+fn outer_barrier(case: &str) {
+    let path =
+        std::env::var_os("HUMANYMOUS_CAPTURE_OUTER_GRANT").expect("outer grant path required");
+    let path = std::path::PathBuf::from(path);
+    let nonce = std::env::var("HUMANYMOUS_CAPTURE_OUTER_NONCE").expect("outer nonce required");
+    assert!(path.is_absolute());
+    assert!(
+        nonce.len() == 32
+            && nonce
+                .bytes()
+                .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    );
+    let expected = format!("process::capture_attempt::actual_tests::{case}");
+    let until = Instant::now() + Duration::from_secs(5);
+    while Instant::now() < until {
+        match std::fs::symlink_metadata(&path) {
+            Ok(metadata) => {
+                assert!(
+                    metadata.is_file()
+                        && !metadata.file_type().is_symlink()
+                        && metadata.len() <= 4096
+                );
+                let mut bytes = Vec::new();
+                std::fs::File::open(&path)
+                    .unwrap()
+                    .take(4097)
+                    .read_to_end(&mut bytes)
+                    .unwrap();
+                assert!(bytes.len() <= 4096);
+                let grant: OuterGrant = serde_json::from_slice(&bytes).expect("closed outer grant");
+                assert_eq!(grant.schema, "humanymous.controlled-capture-grant/1");
+                assert_eq!(grant.nonce, nonce);
+                assert_eq!(grant.selector, expected);
+                assert_eq!(grant.pid, std::process::id());
+                return;
+            }
+            Err(error) if error.kind() == io::ErrorKind::NotFound => (),
+            Err(_) => panic!("outer grant unavailable"),
+        }
+        thread::sleep(Duration::from_millis(5));
+    }
+    panic!("bounded outer assignment grant absent; no fixture child started");
+}
+
 fn budget(run: Duration) -> CaptureDeadlines {
     let original = Instant::now();
     CaptureDeadlines::from_original(original + run, original + Duration::from_secs(7)).unwrap()
@@ -61,6 +117,7 @@ fn assert_joined(result: &CapturedDirectChild) {
 #[test]
 #[ignore = "actual subprocess parent; requires explicit allocation and outer supervision"]
 fn retained_normal_stdout_stderr_and_actual_joins() {
+    outer_barrier("retained_normal_stdout_stderr_and_actual_joins");
     let result = settle(normal("both", 4096));
     assert_joined(&result);
     assert!(result.execution_succeeded());
@@ -72,6 +129,7 @@ fn retained_normal_stdout_stderr_and_actual_joins() {
 #[test]
 #[ignore = "synthetic pending-input subprocess parent; requires allocation and outer supervision"]
 fn retained_synthetic_pending_stdin_expires_original_run() {
+    outer_barrier("retained_synthetic_pending_stdin_expires_original_run");
     let limits = CaptureLimits::new(4096, 4096).unwrap();
     let deadlines = budget(Duration::from_secs(1));
     let mut owner = started(CaptureAttempt::start_synthetic(
@@ -107,6 +165,7 @@ fn retained_synthetic_pending_stdin_expires_original_run() {
 #[test]
 #[ignore = "actual stdout cap subprocess parent; requires allocation and outer supervision"]
 fn retained_stdout_cap_is_sticky() {
+    outer_barrier("retained_stdout_cap_is_sticky");
     let result = settle(normal("flood", 1024));
     assert_joined(&result);
     assert!(result.issues().contains(&CaptureIssue::StdoutFailed));
@@ -116,6 +175,7 @@ fn retained_stdout_cap_is_sticky() {
 #[test]
 #[ignore = "actual stderr cap subprocess parent; requires allocation and outer supervision"]
 fn retained_stderr_cap_is_sticky() {
+    outer_barrier("retained_stderr_cap_is_sticky");
     let result = settle(normal("stderr-flood", 1024));
     assert_joined(&result);
     assert!(result.issues().contains(&CaptureIssue::StderrFailed));
@@ -125,6 +185,7 @@ fn retained_stderr_cap_is_sticky() {
 #[test]
 #[ignore = "actual stop-classification subprocess parent; requires allocation and outer supervision"]
 fn retained_stop_request_preserves_observed_exit_zero() {
+    outer_barrier("retained_stop_request_preserves_observed_exit_zero");
     let mut owner = normal("both", 4096);
     loop {
         let progress = owner.poll();
