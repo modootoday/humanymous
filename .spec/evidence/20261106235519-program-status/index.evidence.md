@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T01:31:39Z
+updated: 2026-11-07T01:59:36Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -19,6 +19,8 @@ files:
   - {path: native-storage-privacy-results.json, sha256: ce6443eb7b79ba8864dd15617fe8453c61faef354755d246a7f5eb7685ed485c, bytes: 3547, store: repo}
   - {path: native-privacy-six-tuple-results.json, sha256: 6197075b330c3e4ef3f7f567d063d562dcd78028741d739fcfe6283a5275a714, bytes: 3137, store: repo}
   - {path: native-cli-security-results.json, sha256: 96f4b010b85a8c041794067db135816d048ee686cbb7079c96c6a6451fdb8078, bytes: 6112, store: repo}
+  - {path: native-cli-six-tuple-results.json, sha256: 15f455a897ac25f870b20b26e8f0969683f5c94e0f595e06418a44f51f987f37, bytes: 3247, store: repo}
+  - {path: roadmap-reconciliation-20261107.json, sha256: a74f0f7afaaa7f131ea6103ccec6af2691244102e3f6e2f414fcb6be2752c563, bytes: 1689, store: repo}
 ---
 
 # Program status

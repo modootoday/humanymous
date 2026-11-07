@@ -1,0 +1,96 @@
+{
+  "schema": "humanymous.native-cli-summary/1",
+  "run_id": 42324939140,
+  "source_sha": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+  "conclusion": "success",
+  "full_runtime_qualified": false,
+  "later_browser_native_and_dirty_collector_excluded": true,
+  "reports": [
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "arm64"
+      },
+      "source_sha": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "d29906eeb7d17e09b5aa47b7ae0d9ba8cc25df9f750d7b95df8f70ebaed2e69e",
+      "report_sha256": "d95412401b281e9cecda723c9342c353d19ecaaadee77b80b02595a038f4af36",
+      "test_exit_code": 0
+    },
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "x64"
+      },
+      "source_sha": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "d29906eeb7d17e09b5aa47b7ae0d9ba8cc25df9f750d7b95df8f70ebaed2e69e",
+      "report_sha256": "84dab4823cc54371948500ee2d92b96f518b840032b055bc8616b24398b4ae7f",
+      "test_exit_code": 0
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "arm64"
+      },
+      "source_sha": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "d29906eeb7d17e09b5aa47b7ae0d9ba8cc25df9f750d7b95df8f70ebaed2e69e",
+      "report_sha256": "a4822268019397fb1b8d5c4b48531b78b1a4e3a8bfcb0cde0d1ebe79156b070a",
+      "test_exit_code": 0
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "x64"
+      },
+      "source_sha": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "d29906eeb7d17e09b5aa47b7ae0d9ba8cc25df9f750d7b95df8f70ebaed2e69e",
+      "report_sha256": "ed54a992fd5c20fb3b42a7695b15a930607c2fbe354ceb3d0ac2cddffaaba8ba",
+      "test_exit_code": 0
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "arm64"
+      },
+      "source_sha": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "d29906eeb7d17e09b5aa47b7ae0d9ba8cc25df9f750d7b95df8f70ebaed2e69e",
+      "report_sha256": "5bb0ebb0240fdd8f72addf97fa8552b63a233608361ca9fb8ad10c3ca93b0b90",
+      "coverage": {
+        "required_harnesses": 47,
+        "executed_harnesses": 47,
+        "passed_tests": 187,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "x64"
+      },
+      "source_sha": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "d29906eeb7d17e09b5aa47b7ae0d9ba8cc25df9f750d7b95df8f70ebaed2e69e",
+      "report_sha256": "e17c566c9f7799f864e17aff0d7e9c9bae3373d3e08176da828b0c221f11afbc",
+      "coverage": {
+        "required_harnesses": 47,
+        "executed_harnesses": 47,
+        "passed_tests": 187,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    }
+  ]
+}

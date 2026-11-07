@@ -1,0 +1,40 @@
+{
+  "schema": "humanymous.roadmap-reconciliation/1",
+  "observed_at": "2026-11-07T01:59:35.8025827Z",
+  "head": "43044be9359151b40378a6d82841d7585d5f221b",
+  "branch": "codex/rust",
+  "roadmap_version": "0.3.0",
+  "goal_complete": false,
+  "full_runtime_qualified": false,
+  "native_run": 42324939140,
+  "native_source": "c063ccd4a28cb0fb97a626ffeef5462cd9c24129",
+  "native_reports_verified": 6,
+  "browser_commit": "43044be",
+  "browser_evidence": "evidence:root/20261107012426",
+  "browser_ready": false,
+  "browser_native_root_membership": "pending",
+  "collector": "uncommitted partial L1-L3; native6/WASM compile/Clippy observed; Docker image build completed; browser execution unconfirmed",
+  "chats": [
+    {
+      "app_status": "idle",
+      "title": "Rust 런타임 · Core/Gate 세션과 collector",
+      "id": "01a1b35f-cf83-74f2-aad1-34b3aee60cda"
+    },
+    {
+      "app_status": "idle",
+      "title": "Rust 키 저장 · sealed custody와 vault 영속성",
+      "id": "01a1b35f-d1a1-7553-a0ed-65d09b9042a7"
+    },
+    {
+      "app_status": "resumed after initial snapshot per browser chat user request",
+      "title": "Meari + CEF · Rust 검증 브라우저 UI",
+      "last_turn": "completed",
+      "id": "01a1b35f-d3e9-7042-91a4-10c910a15515"
+    }
+  ],
+  "new_chats_dispatched": false,
+  "main_cutover": "gated",
+  "standards_docs": "docs under GitHub Pages; publication/deployment distinguished from authorship",
+  "cleanup": "21 private generated CEF profiles retained; prior automatic approval rejection blocked by policy; no deletion attempted",
+  "browser_followup": "IME/AX/sandbox continuation; native2-package root Cargo integration explicitly requested"
+}
