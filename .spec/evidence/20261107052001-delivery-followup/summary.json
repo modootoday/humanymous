@@ -1,0 +1,164 @@
+{
+  "conclusion": "failure",
+  "full_product_qualified": false,
+  "jobs": [
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "id": 128305205901,
+      "name": "validate / policy",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305205901"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python3 scripts/ci/delivery.py image-sources"
+      ],
+      "id": 128305205995,
+      "name": "validate / images (core)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305205995"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo clippy --workspace --all-targets --locked -- -D warnings"
+      ],
+      "id": 128305206000,
+      "name": "validate / quality",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206000"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python scripts/ci/delivery.py pilot native"
+      ],
+      "id": 128305206023,
+      "name": "validate / native (macos-latest)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206023"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "id": 128305206030,
+      "name": "validate / pages / build",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206030"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python3 scripts/ci/delivery.py pilot docker"
+      ],
+      "id": 128305206033,
+      "name": "validate / docker",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206033"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "id": 128305206040,
+      "name": "validate / node",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206040"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "id": 128305206044,
+      "name": "validate / msrv",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206044"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/docs-review/Cargo.toml -- ."
+      ],
+      "id": 128305206049,
+      "name": "validate / documentation",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206049"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python3 scripts/ci/delivery.py package"
+      ],
+      "id": 128305206055,
+      "name": "validate / packages",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206055"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python3 scripts/ci/delivery.py pilot browser"
+      ],
+      "id": 128305206084,
+      "name": "validate / browser",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206084"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python scripts/ci/delivery.py pilot native"
+      ],
+      "id": 128305206104,
+      "name": "validate / native (windows-latest)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206104"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "id": 128305206111,
+      "name": "validate / advisories",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206111"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python scripts/ci/delivery.py pilot native"
+      ],
+      "id": 128305206125,
+      "name": "validate / native (ubuntu-latest)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206125"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python3 scripts/ci/delivery.py image-sources"
+      ],
+      "id": 128305206142,
+      "name": "validate / images (gate)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128305206142"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run python3 scripts/ci/delivery.py jobs"
+      ],
+      "id": 128310505928,
+      "name": "validate / ready",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42339951733/job/128310505928"
+    }
+  ],
+  "run_id": "42339951733",
+  "schema": "humanymous.actions-observation/1",
+  "source_bound": true,
+  "source_sha": "f32042af9136560b41c1765f565c2e04fe373a22",
+  "status": "completed",
+  "terminal": true
+}

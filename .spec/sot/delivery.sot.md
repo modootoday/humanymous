@@ -3,13 +3,13 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T04:46:34Z
+updated: 2026-11-07T05:20:00Z
 verify:
-  - python scripts/ci/delivery.py policy
-  - python -m unittest discover -s scripts/ci -p "test_*.py"
+  - cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy
+  - cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml
   - cargo test --locked --manifest-path scripts/ci/docs-review/Cargo.toml
 rel:
-  governs: [docs/**, .github/workflows/**, scripts/ci/**]
+  governs: [docs/**, .github/workflows/**, scripts/ci/**, scripts/migration/**, build/rust/**]
   depends_on: [sot:root/rust-migration]
 ---
 
@@ -23,6 +23,144 @@ browser or Docker full-delivery gate. Remote run42327415870 was started; its
 conclusion subsequently succeeded with3actual browser tests; the downloaded
 source-bound artifacts are recorded with the program evidence. Full-runtime qualification and
 the final delivery runner requirements remain unchanged.
+
+## Rust-only delivery follow-up contract v2
+
+Accepted for implementation by the explicit parallel-completion request on
+2026-11-07 KST. New authored implementation/tests use Rust1.99.1/edition2024.
+The existing upstream action/Jekyll/theme/generated glue and frozen legacy
+oracles are separate provenance; they do not authorize new authored script
+implementations or passing script source through Rust subprocess arguments.
+
+The contextual package `scripts/ci/delivery`/humanymous-delivery owns workflow
+policy, source commitments, package graph/surfaces, registry preflight, evidence
+registration, same-run observation and integration of owning pilot runners.
+Its root membership/common Cargo lock delta is owned by root. A temporary local
+workspace/lock is pre-integration evidence only, not a second committed authority.
+Legacy delivery.py/check_action_pins.py/test_delivery.py are replaced after Rust
+boundary/parity checks; Windows actor migration belongs to the Windows owner.
+
+### Data and execution contracts
+
+Actions observation schema `humanymous.actions-observation/2` binds the exact
+run ID, source SHA and positive attempt number. Each attempt has its own
+`attempt-N` directory. Check the terminal marker before changing terminal
+metadata; fetch logs with the explicit attempt. Artifact capture uses exact
+artifact IDs and requires matching run/source and creation within the attempt's
+UTC start/end window. Incomplete inventory pagination is an error. Preserve
+older observation/1 evidence without rewriting it as a later attempt's result.
+
+Source snapshot schema `humanymous.delivery-source/1`: source_sha, dirty,
+manifest_sha256, files[{path,sha256,bytes}] or explicit deleted state. Hash actual
+working bytes without newline normalization, reject symlinks/path traversal,
+and compare before/after execution. A clean HEAD alone is not a byte commitment.
+Authored Rust/workflow files must be LF; compare Git stored bytes separately at
+checkpoint rather than substituting a clean-filtered blob for executed bytes.
+
+Pilot aggregate schema1 has kind native/browser/docker, source_sha, source,
+documentation_review_sha256, status passed/blocked/failed, qualification
+full-product/component-only, errors/skips integers, cases[{id,status,evidence,
+detail}], components[], source_changed_during_execution, isolation, runtime,
+images and private_evidence. Mandatory case IDs remain those in Rust
+pilot::required and scripts/ci/INTEGRATION.md. An error, unknown exit, missing
+report/case/evidence, changed source, stale doc hash or component-only result
+fails full acceptance. Image-backed full evidence needs immutable sha256 IDs.
+Blocked is neither a test skip nor a product success. Exit1 rejects full gate;
+owning scoped runner exit2 is retained as blocked, never rewritten to zero.
+Partial reports retain the owning skip counter; an absent counter is null,
+never manufactured zero. Full acceptance still requires integer zero.
+
+Accepted owner interfaces (implementation/actual qualification remains separate):
+
+- Windows/native owner: Rust scripts/ci/windows-native-runner, `native --report
+  ABS --binaries ABS` on Windows/Linux/macOS. Windows standard-user lifecycle and
+  all-harness actor mode are separate. Actual OS token/UID and subprocess
+  artifact hashes/counts belong to that owner; elevated actor is rejected.
+  Hosted Windows pilot selects the owner's guarded standard-user mode; local
+  validation never provisions an account. The four-package native mode is not
+  an all-workspace actor replacement. A shared-owner workspace/probe extension
+  is requested; until delivered, the old all-harness Python/PS probe is explicit
+  legacy debt and no full Rust-only CI completion is claimed.
+  The owner subsequently implemented workspace/standard-user-workspace with
+  schema humanymous.workspace-probe/1, default-feature all-target discovery,
+  exact native tuple and strict two known subprocess helpers. The delivery
+  consumer now calls it through `probe OS ARCH` and uses the owner's privacy
+  formatter; generic Python/PS probe calls are removed from both workflows.
+  Producer summary compatibility and exact-source native/hosted execution are
+  pending. Existing prototype files remain read-only until their parity evidence.
+- Compose owner: Rust test/lab/runner, `run --evidence EXISTING_PRIVATE_BUNDLE
+  --require-full [--collector]`. lab-report.json schema humanymous.product-lab/2,
+  immutable source-manifest.json and resolved topology/image/inspect/transcript
+  files. Bounded runtime origin/audit and Firefox component results do not
+  qualify full Gate, TLS/H2, Pass, human/keyboard/AT, witness or provider cases.
+- Pages owner: humanymous-pages `validate --source docs --destination ABS
+  --baseurl VALUE`, apex plus /humanymous. Ruby/Jekyll/theme checker remain
+  pinned upstream programs; no authored shell/Python validator is required.
+- Runtime owner: actual binary humanymous-runtime, private inherited stdin JSON
+  and sealed custody. humanymous-server/humanymous-gate are not delivered aliases.
+- Node owner: humanymous-node-package build/inspect generates only upstream
+  loaders/types through pinned @napi-rs/cli. Legacy JS test success cannot qualify
+  native npm publication; actual Node/Bun/authority Docker receipts plus native
+  artifact/source/provenance commitments are required. Exact final receipt
+  schema remains an integration dependency, not an invented passing fixture.
+
+### Registry and supply-chain boundary
+
+Publication stays tag-only, protected-environment and job-scoped OIDC. All
+publish=false manifests stay unchanged. Exact tag/source/version/main ancestry,
+complete original responsibility inventory, CI-visible parity evidence, clean
+shipping surface and fresh docs remain mandatory. Trust metadata must bind
+repository/workflow/environment plus an existing canonical evidence path and
+its SHA256. npm direct publish permission must be explicit. External ownership,
+initial registration and controlled live OIDC remain unverified; no token fallback.
+
+Validated Cargo archive schema humanymous.crate-archives/1 binds source SHA,
+working manifest, Cargo lock, reviewed-doc digest and each name/version/filename/
+archive SHA256. Release downloads that same-run artifact. An existing version
+may resume only after exact registry crate/version/checksum matches the validated
+archive bytes; 404 means not published, other network/auth/status errors fail.
+Before a new upload normal Cargo package verification reproduces the archive and
+must match its prior digest. No --no-verify, forced overwrite or blind skip is
+introduced. Live account/partial-publication testing is still unverified.
+
+Node receipt schema humanymous.node-native-qualification/1 at
+target/node-native/qualification.json was accepted with the Node owner. It binds
+source/package version/manifest/provenance, real Node/Bun host counts and actual
+authority artifact, production-application-http verdict denominators and origin
+effects, source-bound authority Docker image IDs and exact advertised qualified
+tuples. Synthetic-evidence ALLOW cannot qualify production browser evidence.
+Validated Node archive proof humanymous.node-archive/1 binds its receipt and tgz
+SHA; publish downloads and verifies that archive instead of rebuilding it.
+Current native receipts/qualified tuples are absent; no placeholder was authored.
+
+Image-publication schema humanymous.image-publication/1 requires downloaded
+current-run defender digests, version/latest identity equality, linux/amd64 and
+linux/arm64, exact source labels/Git provenance, nonempty per-platform SPDX and
+cosign verification for this repository's exact release.yml tag identity plus
+GitHub OIDC issuer. Git context is pinned to the exact commit. Image signatures,
+SBOM and provenance are retained; registry publication tests remain unperformed.
+
+Target CI pilot artifacts are sanitized summaries: no raw actor SID, credential,
+cookie/body or inspect/trace payload is copied from private owning reports.
+Their private report SHA binds the full execution evidence retained in .spec.local.
+
+Cargo audit reports preserve database revision/time, lockfile digest, findings
+and maintenance warnings for the complete maintained lock closure. Image scans,
+Ruby and npm remain distinct. Root Trivy findings in frozen Go are retained as
+baseline provenance, not a Go maintenance backlog or a clean Rust closure claim.
+No ignored advisory, missing scan, stale success or skipped required e2e waives
+final publication. Rust Docker workspace context must include all maintained
+member manifests/sources while excluding private evidence, credentials, caches
+and compiled targets; private lab images never become public attacker releases.
+
+### Same-handle observation
+
+Run42339951733 at f32042af9136560b41c1765f565c2e04fe373a22 completed failure.
+humanymous.actions-observation/1 preserves run_id/source_sha/terminal/status/
+conclusion and every job's outcome. Terminal logs/artifacts are from that exact
+handle. Four of16jobs passed (policy,Pages,Node,MSRV); native3 reached actual
+build/tests/release build and then rejected absent runner. Other gate failures
+are preserved. Later source/component success cannot replace this record.
 
 # Rust delivery and Pages contracts
 

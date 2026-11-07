@@ -1,0 +1,20 @@
+[package]
+name = "humanymous-delivery"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99.1"
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+serde_json = "1.0"
+sha2 = "0.10.9"
+yaml-rust2 = "=0.13.0"
+toml = "=1.2.1"
+ureq = "=3.5.1"
+tar = "=0.4.46"
+flate2 = "=1.1.11"
+time = { version = "=0.3.55", features = ["formatting"] }
+
+[lints.rust]
+unsafe_code = "forbid"

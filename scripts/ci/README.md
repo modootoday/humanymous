@@ -1,102 +1,86 @@
 # Rust delivery validation
 
-`rust-validation.yml` is the single unprivileged validation authority. CI and
-tag release call it without a ref input: each checkout uses the caller's exact
-commit. Its final gate rejects failure, cancellation and skipped required jobs.
-`frozen-go-oracle.yml` preserves the old lab for manual comparison only; it never
-authorizes a Rust release. Frozen workflow originals are retained beside this file.
+The reusable rust-validation.yml is the unprivileged PR/main/tag authority.
+Release reruns it on the exact tag source. Every required job must succeed;
+skipped, cancelled, component-only and blocked outcomes cannot authorize shipping.
+The frozen Go oracle and inert original workflows remain historical comparison
+surfaces until reviewed final cutover. They are not Rust release authority.
 
-Workflow YAML is authored directly under `.github/workflows/` and checked by
-actionlint and the permission/required-job policy. The obsolete Python workflow
-generator is retired: it duplicated configuration and could restore a nonexistent
-WASM package. The browser build targets `humanymous-collector` explicitly for
-`wasm32-unknown-unknown`; this build does not satisfy the mandatory full browser
-pilot, which remains fail-closed until implemented. New executable tooling is Rust.
+New authored delivery implementation/tests are Rust1.99.1/edition2024 under
+`scripts/ci/delivery`, registered in root's shared Cargo workspace/lock. The old
+delivery.py, check_action_pins.py and test_delivery.py are retired. Upstream
+action/Jekyll/theme tools and generated glue remain pinned external dependencies.
 
-Local checks (Python 3.11+, Rust 1.99.1, Node 24):
+From the repository root:
 
 ```text
-python -m unittest discover -s scripts/ci -p "test_*.py"
-python scripts/ci/delivery.py policy
-python scripts/ci/delivery.py readiness
+cargo test --locked -p humanymous-delivery
+cargo clippy --locked -p humanymous-delivery --all-targets -- -D warnings
+cargo run --locked -p humanymous-delivery -- policy
+cargo run --locked -p humanymous-delivery -- action-pins
+cargo run --locked -p humanymous-delivery -- audit-closure
 cargo run --locked --manifest-path scripts/ci/docs-review/Cargo.toml -- .
+cargo run --locked -p humanymous-delivery -- readiness
 ```
 
-Readiness currently fails intentionally. This is a shipping blocker, not a skip.
-Never change a required job to optional merely to get a green migration branch.
+Readiness remains blocked by incomplete runtime/source parity, Go shipping
+images, private/unpublishable manifests, native qualification receipts and
+unverified external registry trust. Do not remove those gates to make CI green.
 
-## Implementation interfaces
+## Integration and evidence
 
-Runtime owners must deliver the following executables. Validation invokes them
-as argument arrays, never shell fragments. A runner must execute real assertions,
-return nonzero on missing prerequisites/errors/skips, and emit the JSON report
-specified below. File presence or an exit-zero wrapper does not prove parity.
+`INTEGRATION.md` and the delivery SoT record exact accepted owner APIs. Native
+execution belongs to the Rust native-runner owner; Docker topology and actual
+container clients belong to test/lab/runner; Pages source/build checking belongs
+to humanymous-pages. This CI tool aggregates those contracts without cloning
+their implementation. Rust browser library/component success is not a real
+human/AT/Pass recovery result.
 
-* `scripts/migration/pilot-native.ps1`: `-Report <absolute path>` on all three OSes.
-* `scripts/migration/pilot-browser.sh`: `--report <absolute path>`, Linux only.
-* `scripts/migration/e2e-rust-docker.sh`: `--report <absolute path>`, Linux only.
-  This must own isolated Docker topology, not delegate to a host loopback runner.
+`pilot native|browser|docker` creates a fresh private Specfold bundle and runs
+the owning tool with literal arguments. It records HEAD, working-byte SHA256,
+canonical Git object identities, actual process exit, doc-review digest, cases
+and images. A changed source, missing report/case, unknown failure, component-only
+result or blocked owner exit rejects the full gate. Target/delivery-evidence
+receives a sanitized summary; raw actor identity/paths/traces remain private.
 
-Reports have schema 1, `source_sha` equal to `git rev-parse HEAD`, `kind`
-(`native`, `browser`, `docker`), `status: passed`, nonempty `cases`, and zero
-`errors` and `skips`. `documentation_review_sha256` is the SHA-256 of the
-current authored `docs/reviews.json`; each runner must actually execute that
-surface's reviewed examples in its `documentation-examples` case. Each case has
-unique `id` and `status: passed`. Required
-case IDs are in `delivery.py`. Docker also declares `isolation: docker`,
-`runtime: rust`, and nonempty `images` containing only sha256 image identities.
-The report is evidence from that execution, not preauthored acceptance evidence.
-CI removes its destination before launching, rejects absent reports, and checks
-all fields. Honest report production remains part of the runtime runner review.
+`observe-run ID EXACT_SHA PRIVATE_OUTPUT` records only that run/source, waits for
+no unrelated result, and downloads its own terminal logs/artifacts. Later source
+success never replaces an earlier failure. `register-evidence BUNDLE TITLE`
+registers exact raw attachment hashes, not public reader prose.
 
-Node owner: package lives at `adapters/node`, has a lockfile, and exposes `test`
-and `typecheck`, `test:pilot`, `test:bun`, `check:package` scripts. CI runs these,
-npm ci, test, audit and `npm pack --json`;
-package contents must omit tests/private evidence/attacker source. Release
-version must exactly equal the Rust workspace version and strict tag.
+## Documentation
 
-Pages owner: `docs/Gemfile.lock`, `docs/Gemfile`, and
-`docs/scripts/validate-pages.sh` implement locked install plus pinned-theme
-source/built-site checks for both empty and `/humanymous` baseurl. The script
-receives `--destination <absolute path> --baseurl <value>` and builds/checks
-there, without generating authored prose. Delivery calls it twice, scans the
-bundle for advisories, and uploads only the checked apex `_site` artifact.
-Public deployment additionally requires complete Rust validation.
+The Rust docs-review command is read-only. docs/reviews.json schema1 covers the
+exact crates/adapters/web/build/root Cargo source inventory with reviewed SHA256,
+substantive notes, reader pages and fixed command/API/capability surfaces.
+Changed source requires renewed authored review, not merely a Markdown edit.
+Authored Rust must contain LF bytes. The Node surface now references
+node/native-host-process, not a legacy JavaScript test script.
 
-## Read-only documentation review interface
+Pages uses `cargo run --locked -p humanymous-pages -- validate --source docs
+--destination ABS --baseurl VALUE` for apex and /humanymous. Its checked artifact
+is deployed only after the complete same-source Rust authority passes.
 
-`docs/reviews.json` schema 1 contains `reviews`, one record for **every** file
-under `crates/`, `adapters/`, `web/`, `build/`, and root Cargo.toml/Cargo.lock.
-Excluded directories are only `.git`, `node_modules`, `target`, `.bundle` and
-`vendor`. Each record has `source`, lowercase SHA-256 `sha256`, nonempty
-`reviewer`, meaningful `notes`, and nonempty `pages` naming existing authored
-Markdown files under docs. Page paths cannot escape the repository. Reviews
-must explain what the governed source means for the reader, including unchanged
-prose decisions. Source coverage cannot be reduced by a list in the review file.
-The manifest also requires `surfaces` records for every fixed command/API/config/
-capability ID in `docs-review/src/main.rs::SURFACES`. Each has `id`, `sources`,
-`pages`, `reviewer`, `notes`, and `checks`; sources and pages must join to reviewed
-records, and checks must include that surface's required same-commit pilot case.
-This prevents a set of source digests without capability/example coverage from
-passing. New public capabilities require extending this reviewed fixed inventory.
-The Rust verifier checks exact inventory, digests, page existence and front
-matter. It never generates or repairs evidence/prose. Executable examples are
-separately required by native/browser/Docker/Node/Pages jobs at the same SHA.
+## Publishing boundary
 
-Registry ownership/bootstrap and protected environment/trust bindings are
-external prerequisites. `registry-prerequisites.json` deliberately records them
-unverified. A maintainer must review each binding and evidence before changing
-it. There are no secret-token fallbacks. crates publication is dependency-first,
-reauthenticates per crate, and rejects existing versions rather than guessing
-whether an interrupted publish produced identical archives. Partial publication
-requires explicit artifact identity review before any resume procedure exists.
+Publication subcommands are implemented gates, not permission to publish.
+Registry prerequisites remain explicitly unverified. External proof must bind
+repository, release.yml, protected release environment and canonical evidence
+digest. No long-lived registry token fallback is allowed. crates dependency
+waves include versioned normal/build/dev paths and reauthenticate per wave.
+Existing immutable versions are skipped only if registry name/version/checksum
+matches this run's validated archive and source/lock/doc identities. A mismatch
+or registry/auth/network failure stops; it never becomes an already-published
+success. Normal Cargo archive verification and a repack digest check remain.
 
-Full migration readiness also reads the canonical Go source inventory at
-`.spec/evidence/20261106194112-go-migration-source-inventory/go-inventory.json`.
-Every row needs `parity_status: verified_runtime_parity`, real `rust_paths`, and
-nonempty `parity_evidence` naming CI-visible `.spec/evidence/` files. An actually
-retired responsibility uses `retired_with_review` plus substantive `disposition`
-and parity evidence. Unit-only/pending rows never authorize shipping. The final
-tracked tree must contain no Go source/manifests, including migration-only Go
-generators; frozen oracle retention during development is deliberately distinct
-from readiness for final cutover. The inventory is read-only from this lane.
+Native npm publication requires the agreed actual Node/Bun/authority receipt,
+generated native provenance, advertised qualified tuples and validated archive
+SHA. Publish consumes the same-run validated archive, not a fresh unvalidated
+rebuild. Legacy JS conformance or synthetic-evidence ALLOW is insufficient.
+
+Defender image publication retains max provenance/SPDX and keyless signing.
+The Rust verifier checks each current-run digest, both Linux architectures,
+exact Git source, nonempty per-platform SBOM and exact release-workflow OIDC
+signature. It also verifies version/latest tags still resolve to that digest.
+This code has fixture/negative coverage; live release verification and account
+bootstrap are not claimed. Attacker images are never public release targets.

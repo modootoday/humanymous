@@ -1,0 +1,101 @@
+---
+id: plan:root/20261107052000
+title: Rust-only delivery completion and exact-source pilot integration
+status: active
+created: 2026-11-07T05:20:00Z
+updated: 2026-11-07T05:20:00Z
+rel:
+  depends_on: [sot:root/delivery, sot:root/program-roadmap]
+---
+
+# Rust-only delivery completion and exact-source pilot integration
+
+## Scope and order
+
+The user reauthorized completion across existing project chats. This lane owns
+workflows, non-Windows delivery CI tools, migration tooling, build/rust contexts,
+delivery canon and its own evidence. Root alone owns common Cargo/lock/toolchain;
+Windows/native, Compose, runtime, Node, Pages and other product owners retain
+their responsibilities. Do not duplicate their runners, rewrite other lane's
+sources or call a component-only checkpoint whole-product completion.
+
+1. Record exact terminal outcome for full CI42339951733/f32042a.
+2. Replace authored Python delivery implementations/tests with contextual Rust.
+3. Root-register tool; integrate owner native, Docker/browser and Pages APIs.
+4. Verify real source-bound components and keep unavailable product cases blocked.
+5. Complete package/docs/trust/supply-chain gates, preserve external prerequisites.
+6. Validate LF/Git bytes, tests/Clippy/actionlint/spec; commit own paths only.
+7. Continue actual remaining dependencies or leave exact blocked handover; no publish.
+
+## Execution checklist
+
+- [x] Read program-roadmap v1.2, current sources, ownership and integration docs; claim e2e-infra.
+- [x] Observe same run to completed/failure, collect exact run metadata/log/artifacts; retain terminal log digest.
+- [x] Implement Rust command/source/policy/package/registry/pilot/remote/evidence modules; initial14unit tests pass. Own preliminary89dependency lock audit has no known findings; final common-lock scan is separate.
+- [x] Communicate native all-OS/actor, Compose immutable source/private bundle, Pages native build, runtime binary names and Node generated-glue/receipt boundaries; persist accepted/proposed state in delivery SoT and scripts/ci/INTEGRATION.md.
+- [x] Replace generic delivery Python calls in CI/release with Rust; Pages invokes proposed owner Rust contract. Actual owner qualification remains pending.
+- [x] Root registered tool/common589-package lock; removed temporary workspace/child lock after preserving exact private original and SHA256. Locked16tests/Clippy/policy passed on the common lock, not just the preliminary isolated closure.
+- [x] Removed the temporary independent workspace declaration and requested root member/common-lock registration. Preliminary16tests/Clippy/pins passed; common-lock qualification remains pending.
+- [ ] Finish Rust parity/negative tests; migrate legacy authored delivery.py/check_action_pins.py/test_delivery.py after actual Rust interface validation.
+- [x] Retired all three generic authored Python delivery files after Rust policy/pin/negative checks.19tests/Clippy passed before checksum-resume addition; final20-test recheck waits for the latest owner manifest/root-lock synchronization.
+- [x] Added same-run Cargo archive proof/checksum-verified immutable resume, Node validated tgz/receipt binding and strict two-platform image/source/SPDX/OIDC checks. Live publication remains unverified and unauthorized.
+- [ ] Owner native runner build/process/standard-user lifecycle qualification; wire actual Windows actor mode only after delivery, preserve known ignored helper accounting.
+- [ ] Owner lab runner default actual runtime plus collector Docker execution using private Specfold bundle; retain component counts/image/source commitments and full missing IDs. Do not substitute topology-only pass.
+- [ ] Replace narrow Docker context with allowlisted workspace member closure; real image build after root23member expansion and follow-up members. Ensure legacy advanced.js oracle is available only to test collector image.
+- [x] Updated four Rust build contexts for current27-member roots (crates, docs/tooling, CI tool, skills/agent-maintenance, test/lab runner/runtime); excluded targets/caches/private/credential files and fixed advanced.js test oracle omission. Runtime pilot now uses the shared root target path. Actual refreshed image build remains pending owner readiness.
+- [ ] Pages owner real two-baseurl Rust builds, reviewed exact source/doc digests. Freshness is read-only and never auto-refreshed by CI.
+- [ ] Native Node generation/inspect and Node/Bun/real authority receipts, including target-qualified artifact digests and package/provenance evidence; no legacy-only npm release readiness.
+- [ ] Complete maintained Cargo locks + Ruby/npm/image scans, preserve database time and warnings, maintain CVE residuals and immutable SBOM/provenance. Frozen Go findings are not patched by this lane.
+- [ ] Add sanitized public source-bound summary through Specfold attachments; retain private raw all outcomes/failed attempts and per-command environment/counts.
+- [ ] Root final runtime/Gate/Pass/human/AT/witness/source inventory and source cleanup gate; external registry bootstrap/trust/OIDC exercise. These remain blockers, not YAML completion.
+
+## Current evidence and changes
+
+Private bundle .spec.local/root/evidence/20261107052000-delivery-followup contains
+terminal CI42339951733/f32042af9136560b41c1765f565c2e04fe373a22. Exactly16jobs,
+4success/12failure. Windows actor report is implemented-crate scope and false
+full_runtime_qualified; no other run's green was imported. Rust replacement
+initial compile caught unavailable Result::is_err_or and Clippy collapse/new
+time API warnings; changes are being corrected without suppressing checks.
+Source is dirty during concurrent work; final manifests/command logs must bind
+the actual validated bytes and later canonical Git bytes separately.
+
+The first accepted Compose runner source encountered actual concurrent audit
+missing-module compile failure and retained it; its subsequent checkpoint is a
+different source. The default runner must execute actual runtime; topology-only
+is not substituted. Runtime currently has no complete new full-product pilot.
+
+Actual delivery attempts retained independently:052430 browser failed before
+execution on common-lock update requirement;053622 browser compiled lab runner
+then failed snapshot metadata lookup (deleted tracked child lock, fixed by owner);
+053706 native compiled release artifacts then owning native harness rejected
+its summary. New owner diagnostics later identify authority local_service exit101
+on a different source; that does not rewrite this older opaque failure. Raw
+before/after manifests, exits, logs and reports are attached privately. Uploaded
+pilot summaries now omit raw actor identity/trace payloads. Common Cargo updates
+and owner process/profile fixes gate the next actual retries.
+
+## Acceptance and handoff
+
+Latest local verification: delivery22 tests and strict Clippy pass; docs-review8
+tests and strict Clippy pass. Generated `.build-cache` files are excluded from
+filesystem inventory, but Git-tracked authored files cannot hide there. Pages
+owner confirms the remaining missing reviews concern authored nginx sources.
+Actions observation/2 now separates attempts before terminal writes and binds
+artifact IDs to source and attempt time window; its negative source/window test
+passes. Live observation/2 retrieval of42339951733 attempt1 succeeded into a
+separate private directory, retaining its failure conclusion, exact original
+log hash and three source/window-matching artifact ZIPs. The subsequent addition
+of archive hashes to terminal markers passes its targeted test and strict Clippy.
+
+Windows source checkpoints7c9321a and91f93c5 add the workspace producer and
+workspace public summary. Actual all-workspace qualification still fails on
+new audit child-helper contract pending its owner; do not mark the migrated CI
+entrypoint verified by the separate four-package native component results.
+
+Use the exact commands in scripts/ci/INTEGRATION.md and owner INTEGRATION files.
+Native actor/process success, Docker bounded fixture, collector browser success,
+full product qualification and real OIDC publication are separate outcomes.
+This plan stays active until its owned work and necessary actual verification
+are finished; external/product dependencies remain named, never set green by
+missing-runner placeholders. No main merge, tag, push or publish is authorized.

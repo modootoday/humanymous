@@ -6,6 +6,8 @@ on:
     paths:
       - .github/workflows/cross-os-probe.yml
       - scripts/ci/runner-probe/**
+      - scripts/ci/delivery/**
+      - scripts/ci/windows-native-runner/**
       - scripts/ci/cef-pilot/**
       - crates/**
       - Cargo.toml
@@ -38,16 +40,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: 1.99.1
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
-        with:
-          python-version: '3.12'
-      - name: Validate probe coverage accounting
-        run: python -m unittest discover -s scripts/ci/runner-probe -p "test_*.py"
       - name: Configure native Windows CEF build tools
         if: runner.os == 'Windows'
         run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- --configure-toolchain
       - name: Observe native tuple and execute implemented workspace tests
-        run: python scripts/ci/runner-probe/probe.py --os ${{ matrix.os }} --arch ${{ matrix.arch }} --report target/runner-probe/report.json
+        run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os }} ${{ matrix.arch }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

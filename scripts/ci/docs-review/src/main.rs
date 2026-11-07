@@ -34,7 +34,7 @@ const SURFACES: &[(&str, &str)] = &[
     ("audit", "docker/audit-restart"),
     ("browser-wasm", "browser/collector-parity"),
     ("accessible-recovery", "browser/challenge-assistive"),
-    ("node-adapter", "node/test:pilot"),
+    ("node-adapter", "node/native-host-process"),
     ("nginx-adapter", "docker/deployment"),
     ("capability-boundaries", "docker/raw-tls-h2"),
 ];
@@ -66,8 +66,15 @@ fn inventory(root: &Path, path: &Path, files: &mut BTreeSet<String>) -> Result<(
     if path.is_dir() {
         for entry in fs::read_dir(path).map_err(|e| e.to_string())? {
             let entry = entry.map_err(|e| e.to_string())?;
-            if [".git", "node_modules", "target", ".bundle", "vendor"]
-                .contains(&entry.file_name().to_string_lossy().as_ref())
+            if [
+                ".git",
+                "node_modules",
+                "target",
+                ".bundle",
+                "vendor",
+                ".build-cache",
+            ]
+            .contains(&entry.file_name().to_string_lossy().as_ref())
             {
                 continue;
             }
@@ -105,6 +112,43 @@ fn verify(root: &Path) -> Result<usize, String> {
     ] {
         inventory(&root, &root.join(source), &mut expected)?;
     }
+    // Generated caches are not authored review evidence. A tracked file may
+    // never hide under that exclusion, however: the Git source inventory wins.
+    if root.join(".git").exists() {
+        let tracked = std::process::Command::new("git")
+            .args([
+                "ls-files",
+                "-z",
+                "--",
+                "crates",
+                "adapters",
+                "web",
+                "build",
+                "Cargo.toml",
+                "Cargo.lock",
+            ])
+            .current_dir(&root)
+            .output()
+            .map_err(|e| e.to_string())?;
+        if !tracked.status.success() {
+            return Err("Git source inventory unavailable".into());
+        }
+        for path in String::from_utf8(tracked.stdout)
+            .map_err(|e| e.to_string())?
+            .split('\0')
+            .filter(|path| !path.is_empty())
+        {
+            if Path::new(path)
+                .components()
+                .any(|part| !matches!(part, std::path::Component::Normal(_)))
+            {
+                return Err("unsafe tracked review path".into());
+            }
+            if root.join(path).is_file() {
+                expected.insert(path.replace('\\', "/"));
+            }
+        }
+    }
     let mut reviews = BTreeMap::new();
     for review in manifest.reviews {
         if reviews.insert(review.source.clone(), review).is_some() {
@@ -122,10 +166,11 @@ fn verify(root: &Path) -> Result<usize, String> {
         ));
     }
     for (source, review) in &reviews {
-        let digest = format!(
-            "{:x}",
-            Sha256::digest(fs::read(root.join(source)).map_err(|e| e.to_string())?)
-        );
+        let source_bytes = fs::read(root.join(source)).map_err(|e| e.to_string())?;
+        if source.ends_with(".rs") && source_bytes.contains(&b'\r') {
+            return Err(format!("authored Rust source is not LF: {source}"));
+        }
+        let digest = format!("{:x}", Sha256::digest(source_bytes));
         if digest != review.sha256 {
             return Err(format!("stale source review: {source}"));
         }
@@ -230,6 +275,12 @@ mod tests {
     struct Fixture(PathBuf);
     impl Drop for Fixture {
         fn drop(&mut self) {
+            assert!(
+                self.0
+                    .canonicalize()
+                    .unwrap()
+                    .starts_with(std::env::temp_dir().canonicalize().unwrap())
+            );
             let _ = fs::remove_dir_all(&self.0);
         }
     }
@@ -323,5 +374,30 @@ mod tests {
         manifest["surfaces"][0]["checks"] = serde_json::json!(["unrelated"]);
         fs::write(path, serde_json::to_vec(&manifest).unwrap()).unwrap();
         assert!(verify(&f.0).unwrap_err().contains("incomplete capability"));
+    }
+    #[test]
+    fn generated_cache_is_excluded_but_tracked_source_cannot_hide_in_it() {
+        let f = fixture();
+        let directory = f.0.join("adapters/.build-cache");
+        fs::create_dir(&directory).unwrap();
+        fs::write(directory.join("generated.rs"), "generated build output\n").unwrap();
+        assert!(verify(&f.0).is_ok());
+        assert!(
+            std::process::Command::new("git")
+                .args(["init", "--quiet"])
+                .current_dir(&f.0)
+                .status()
+                .unwrap()
+                .success()
+        );
+        assert!(
+            std::process::Command::new("git")
+                .args(["add", "-f", "adapters/.build-cache/generated.rs"])
+                .current_dir(&f.0)
+                .status()
+                .unwrap()
+                .success()
+        );
+        assert!(verify(&f.0).unwrap_err().contains("inventory differs"));
     }
 }
