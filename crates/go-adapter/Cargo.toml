@@ -1,0 +1,15 @@
+[package]
+name = "humanymous-go-adapter"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+humanymous-runtime = { path = "../runtime" }
+serde.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,14 @@
+{
+  "schema": "humanymous.go-upstream-fixtures/1",
+  "status": "NOT_RUN",
+  "qualification": "none",
+  "fixtures": [
+    {"host":"net-http","repository":"mccutchen/go-httpbin","revision":"8b1bc1433750404fefd2a419cda3720d3088701b","entrypoint":"cmd/go-httpbin/main.go","entrypoint_sha256":"54c5f54bec490a16481bec0ababc841df7aef5fa37e10a4e71f7b74df0cdfd3e","build_package":"./cmd/go-httpbin","coverage":"candidate binary HTTP echo; independent effect witness still required"},
+    {"host":"chi","repository":"go-chi/chi","revision":"9f8adb1aabaa8a91180a821111d3f8e668d1c0bf","entrypoint":"_examples/hello-world/main.go","entrypoint_sha256":"e8104f868c9a673d864c489347970200808acc0652035a0376694bf5b7b07c86","build_package":"./_examples/hello-world","coverage":"GET greeting only; not binary-body or response-semantics qualification"},
+    {"host":"gin","repository":"gin-gonic/examples","revision":"115c869356cd02a84f34f5913bedc75fbee87efa","entrypoint":"basic/main.go","entrypoint_sha256":"b9964e46075b019ce267aa0cfd2bf1b874559aa5eb26c09341e7664549ae7d7b","build_package":"./basic","coverage":"ping and JSON state example; not arbitrary binary echo"},
+    {"host":"echo","repository":"labstack/echox","revision":"93e62caf9ea4e8fa2538c620a7fc027f73d3d51b","entrypoint":"cookbook/hello-world/server.go","entrypoint_sha256":"b17655bee4306a5962b2152fa74ef412de38c41004366b5dc7c389e8cd85948f","build_package":"./cookbook/hello-world","coverage":"GET greeting only; not binary-body qualification"},
+    {"host":"fiber","repository":"gofiber/recipes","revision":"387b41e0f1bfe9c1a0443c688d9b4b0ecbf196cd","entrypoint":"hello-world/main.go","entrypoint_sha256":"24815d0472cf0af55df8f56588bc41ac869e14094df3590ce79c97a135b354f8","build_package":".","build_directory":"hello-world","coverage":"Fiber v3 GET greeting only; no pooled lifetime qualification"},
+    {"host":"fast-http","repository":"valyala/fasthttp","revision":"000816e598d0b5bc2ebd5e7325b6a9c5c1c413ab","entrypoint":"examples/helloworldserver/helloworldserver.go","entrypoint_sha256":"f0a0f2087213c7c01e3c532944e6e59b51fe39b8d99296eecbb74f23f708d0e5","build_package":"./examples/helloworldserver","coverage":"request metadata and cookie response; no complete binary body echo"}
+  ],
+  "constraints": ["Build untouched upstream only on free hosted runner", "Verify full checkout and dependency closure in addition to entrypoint digest", "Do not treat entrypoint hash as full fixture artifact hash", "Do not generate foreign glue or mutate upstream Go files", "No fixture has independent protected effects accounting yet"]
+}
