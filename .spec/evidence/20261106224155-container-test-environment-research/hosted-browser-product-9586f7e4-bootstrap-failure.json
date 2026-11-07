@@ -1,0 +1,74 @@
+{
+  "schema": "humanymous.lab-hosted-browser-panic-join/1",
+  "source": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "run": 42407744891,
+  "job": 128516030159,
+  "profile": "browser_product",
+  "assertions": {
+    "failed": 2,
+    "other": 0,
+    "passed": 16,
+    "total": 18
+  },
+  "safe_diagnostics": {
+    "browser_actor": {
+      "dns_finish": "succeeded",
+      "exit_code": 1,
+      "filtered_count": 66,
+      "full_product_qualified": false,
+      "inventory_count": 67,
+      "inventory_matched": true,
+      "parser_summary_matched": false,
+      "process_success": false,
+      "schema": "humanymous.lab-browser-actor-outcome/1",
+      "selected_count": 1,
+      "source_prefix_authenticated": false,
+      "state": "observed",
+      "test_passed": false
+    },
+    "failure_count": 2,
+    "failures": [
+      {
+        "case_id": "browser-actual-witness-exchange",
+        "error_code": "assertion_failed",
+        "status": "failed"
+      },
+      {
+        "case_id": "execution",
+        "error_code": "browser_panic_bootstrap",
+        "status": "failed"
+      }
+    ],
+    "partial": false,
+    "schema": "humanymous.lab-safe-diagnostics/1"
+  },
+  "owner_exit": 1,
+  "required_unavailable": 9,
+  "source_changed": false,
+  "isolation": "docker",
+  "panic_site": {
+    "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
+    "operation": "BrowserSession::connect_with(global, scope, 5000).await.expect(actual runtime bootstrap)",
+    "line": 22,
+    "meaning": "Bootstrap returned Err; nested operation/error/status unknown.",
+    "sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064"
+  },
+  "original_private_report_recovered": false,
+  "reported_private_report_sha256": "ece2ddc8d981e0c3f1d8a154451f5f4448b96940b052575e189d6a83abb1b06e",
+  "decoded_projection_sha256": "c35efcc9ec45c5f7b1960c1a921174a841413f6da6c9d105a54557b73d991ceb",
+  "private_evidence": "evidence:root/20261107195555",
+  "images_roles_unmapped": [
+    "sha256:a35ebfd6a5e8a2fbdfe7fa6fdb72699e5cf974c30aa9fe472ff4f96bb709d703",
+    "sha256:e59ea3fd0a3ac05fbaea33c2a0f78e22845b991d156284dbcf3db1921385d03b",
+    "sha256:67f14a6ec1ef2c5928cd80ef7a74088ab80d18f3e60ebbe223914dd8e6d21940"
+  ],
+  "full_product_qualified": false,
+  "release_ready": false,
+  "limitations": [
+    "Actual finite panic classifier result on corrected9586; does not establish original e70 cause.",
+    "No original actor stream or private ledger recovered; hashes source-reported only.",
+    "Bootstrap encompasses origin/API construction, request/fetch/timer/status/body/JSON/session validation; code does not prove which substep failed.",
+    "No retries, local execution, scoring changes or unproven source correction."
+  ],
+  "next": "Collector owner must bound the bootstrap subfailure on a new source-specific candidate; retain strict Origin, fail-closed and isolation."
+}

@@ -122,6 +122,15 @@
       "result": "failed",
       "facts": "77assertions75pass2fail; collector-component assertion_failed and execution collector_process;9unavailable;catalog26/19evaluated/7unsupported/0errors/mismatch scopedtrue. Browser-product separate/pending; original assertion unknown.",
       "evidence": "hosted-browser-component-9586f7e4-failure-join.json"
+    },
+    {
+      "source": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+      "run": 42407744891,
+      "job": 128516030159,
+      "profile": "browser_product",
+      "result": "failed_bootstrap_panic",
+      "facts": "18assertions16pass2fail. Finite browser_panic_bootstrap identifies fixed c61 runtime_pilot.rs line22;DNSsucceeded67/1/66matched,process exit1. Inner bootstrap failure and original e70 cause unknown;fullfalse.",
+      "evidence": "hosted-browser-product-9586f7e4-bootstrap-failure.json"
     }
   ],
   "unmeasured": [
