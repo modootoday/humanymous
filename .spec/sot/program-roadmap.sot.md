@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T00:02:00Z
+updated: 2026-11-07T00:24:00Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion]
@@ -11,7 +11,7 @@ rel:
 
 # 통합 로드맵과 마일스톤
 
-문서 버전 0.1.0. 2026-11-07 KST 기준으로 사용자 생성 프로젝트 채팅 9개의
+문서 버전 0.2.0. 2026-11-07 KST 기준으로 사용자 생성 프로젝트 채팅 9개의
 최신 완료 turn, 실제 커밋·파일·검증 기록을 대조했다. 새 내장 브라우저 분석
 채팅도 제한된 정적 분석을512a73f에 완료했다. 이 문서가 현재 상태·우선순위의 정본이며 기존
 실행 plan의 과거 기록은 이력이다. 채팅 완료, 구현 존재, 파일럿 성공, 제품
@@ -91,9 +91,9 @@ Cargo 통합이 추가됐다. 각 채팅이 남긴 당시의 'root 통합 필요
 | M10 | Cross-OS·CI/OIDC·Pages | native6tuple 및 wiring 구현 | 최종SHA runtime6tuple,실제runner3개,registry,갱신 docs·실제배포;M4-M8 |
 | M11 | Rust-only·CVE·agents/skills·배포표면 | 부분/미완료 | foreign source disposition,최종 ecosystem/image scans,.agents정본,모든skills실제eval |
 | M12 | Go/폐기물 제거·공유main | 의도적 보류 | 모든 필수 이전gate→최신main통합→exact final tree 전체검증→main만 유지 |
-| B0 | Rust Chromium 검증 도구 설계 | 연구 완료 | Meari UI 확정,CEF engine 후보,관찰 계약과 도구 MSRV 경계 상세화 |
+| B0 | Rust Chromium 검증 도구 설계 | 연구 완료 | Meari UI·CEF engine 확정,관찰 계약과 native lifecycle 상세화 |
 | B1 | Rust 외부엔진 supervisor 파일럿 | 미구현 | pinned engine/profile,private control·관찰 fidelity;embedded 완성으로 보고 금지 |
-| B2 | Meari+CEF 실제 내장 브라우저 | 미구현 | interactive child surface/input/IME/AX,실제 sandbox·six native tuples |
+| B2 | Meari+CEF 실제 내장 브라우저 | UI slice 진행 / CEF 통합 미검증 | interactive child surface/input/IME/AX,실제 sandbox·six native tuples |
 | B3 | 브라우저 진단·server receipt 연결 | 미구현 | collector/capture와 typed lab observations 분리;M4-M5와 B1-B2 |
 | B4 | browser/mobile/AI/AT 비교 실험 | 미실행 | 일반 Chrome 대조군,관찰개입 표시,실제 origin/audit 결과 |
 | B5 | 도구 패키지·업데이트·문서 | 미구현 | native CVE/SBOM/서명/업데이트와 authored Pages 문서;B2-B4 |
@@ -146,13 +146,60 @@ flowchart TD
 | F07 | 현재 전체 source 기준 authored docs 재검토 | code interface 고정 후 freshness capture;소유 docs lane 단일 writer |
 | F08 | registry trust/metadata/public package closure | 실제publish 없이 사전준비 가능;publish=false를 임의해제하지 않음 |
 | F09 | .agents 및 user skills 전수 재작성/평가와 foreign-source disposition | runtime 소스와 경로 분리;평가 결과 not_run을 성공으로 표기 금지 |
-| F10 | Meari interactive surface·CEF sandbox/MSRV 설계와 B pilot | 제품parity와 별도;현재 실행 REA 채팅은 읽기전용조사 |
+| F10 | Meari interactive surface·CEF sandbox/MSRV 설계와 B pilot | 제품parity와 별도;browser UI 채팅 진행,REA 초기 분석 완료 |
 
-이미 완료된9개 채팅에 자동으로 새 구현을 맡긴 상태는 아니다. 새로 생성한
-REA 채팅1개는 실제 진행과 초기 분석 완료를 확인했다. 후속 작업은 새 claim/명확한 인터페이스로
-배분하며 같은 경로·Git index 동시쓰기와 고장난 통합을 피한다.
+이미 완료된9개 채팅과 REA 초기 분석 결과를 바탕으로 다음 구현 채팅을 새로 생성했다.
+아래 세 채팅 모두 실제 active/inProgress 상태와 초기 파일 작성을 확인했다.
+
+| 병렬 채팅 | Chat ID | 소유 범위 | 현재 상태 |
+|---|---|---|---|
+| Rust 런타임 · Core/Gate 세션과 collector | 01a1b35f-cf83-74f2-aad1-34b3aee60cda | crates/runtime, runtime-application spec | 진행: 세션·요청 무결성 application slice |
+| Rust 키 저장 · sealed custody와 vault 영속성 | 01a1b35f-d1a1-7553-a0ed-65d09b9042a7 | audit keys, audit-key-custody spec | 진행: 단일 writer·손상 시 fail-closed 영속성 |
+| Meari + CEF · Rust 검증 브라우저 UI | 01a1b35f-d3e9-7042-91a4-10c910a15515 | crates/browser, browser-ui spec | 진행: Rust 네이티브 UI와 CEF lifecycle 계약 |
+
+공통 Cargo/lock/toolchain/CI는 root 단일 writer가 통합한다. 모든 authored code는
+Rust이며 기준 toolchain은 1.99.1이다. CEF는 목표 내장 엔진이고 Meari는 UI 필수
+선택이다. 초기 UI 창 구현은 CEF 부착·sandbox·실제 페이지 렌더링의 완료를 뜻하지 않는다.
+DRM 지원 여부는 media capability 실험에 한정하며 자동화 판정이나 새 hard rule로
+사용하지 않는다. 키 저장 slice 역시 실제 dual control 없는 erasure 권한을 발급하지 않는다.
+각 채팅은 독립 unit 검증을 수행하고, 제품 통합 완료는 공통 workspace 및 Docker
+pilot/e2e 검증 이후에만 인정한다.
 
 ## 남은 검증·배포 차단 사유
+
+## 실행 파동과 통과 기준
+
+| 순서 | 묶음 / 담당 | 지금 할 일 | 다음 단계로 넘어가는 증거 |
+|---|---|---|---|
+| W0 | root 공통 기반 | 승인된 Rust1.99.1 적용·원격 native probe | a0b6dfc의 six tuple 결과;후속 source에 소급 금지 |
+| W1-A | runtime 채팅 / F01 | 세션·ingress·collector/RIT application 계약과 실제 slice | 실제 source unit·부정 입력·replay·필수 신호 누락 거절;raw capture 미지원은 명시 |
+| W1-B | custody 채팅 / F02 | ACL·잠금·atomic 저장·회전·인증 복구 | tamper/wrong password/동시 writer/복구 unit·native 파일 검증;독립 witness는 별도 잔여 |
+| W1-C | browser 채팅 / F10 | Meari native controls와 CEF 수명·입력 경계 | 실제 UI 실행·접근성·sandbox·CEF 부착 증거;UI mock을 렌더링 성공으로 계산 금지 |
+| W2 | root 통합 + 다음 adapter/CLI slice / F03-F05 | 공통 Cargo 통합,provenance/body/stream 계약,서비스 활성화 | workspace 회귀와 실제 authority/origin 효과,서비스 readiness·반복·rollback |
+| W3 | lab/runner / F06 | full native/browser/Docker runners와 human/AT 대조군 | Docker 제품 e2e·공격/정상 분모·six tuple·실제 AT 결과 |
+| W4 | docs/delivery / F07-F09 | 현재 source docs 재검토,Pages,package 신뢰,CVE/SBOM,skills 평가 | 동일 source SHA 증거·freshness·실제 배포 검증;외부 publish는 별도 사용자 요청 |
+| W5 | 최종 정리 / M12 | Go/폐기물 제거,최신 main 통합,브랜치 정리 | 정확한 최종 tree 전체 필수 gate 통과 후 공유 main만 유지 |
+
+W1 세 작업은 서로 다른 소스 경로에서 병렬 진행한다. W2의 공통 Cargo/lock/CI
+수정과 모든 Git index/HEAD 변경은 직렬화한다. W1 완료 전 W2의 계약 설계는
+가능하지만,없는 runtime을 mock 성공으로 대체하여 W3 완료를 선언할 수 없다.
+B3-B5 브라우저 진단·비교 실험·배포는 B2 및 제품 collector 계약 이후 진행한다.
+국제 표준 draft v0·연구와 provider 실험 설계는 독립적으로 보강할 수 있으나,
+실제 Cloudflare/AWS/모바일 실행 및 표준기관 제출·승인을 연구 완료로 간주하지 않는다.
+
+### 이번 갱신의 검증 snapshot
+
+Rust1.99.1 local 검증은 evidence의 정확한 source snapshot에 귀속한다:
+workspace151개,fmt·warnings-denied Clippy,8개 순수 library WASM compile,
+CI 도구9개,docs-review7개. authority Docker 기본14passed/2ignored에 더해
+별도 other-UID parent1개를 명시 실행했다. 이것은 full product e2e가 아니다.
+원격 run42317508643(source a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178)의
+이번 조회에서는 Linux x64/ARM64,macOS ARM64,Windows x64/ARM64 성공,
+macOS x64 실행 중이다. 전체 run 성공과 새 병렬 source 검증은 아직 주장하지 않는다.
+근거: .spec/evidence/20261107000721-rust-toolchain-upgrade/local-results.json,
+GitHub Actions run https://github.com/modootoday/humanymous/actions/runs/42317508643.
+
+## 잔여 차단 항목 상세
 
 현재 다음 full-delivery entrypoint가 없다: scripts/migration/pilot-native.ps1,
 pilot-browser.sh, e2e-rust-docker.sh. cross-os-probe와 제한된 lab runner는 이
