@@ -13,9 +13,9 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 1
-    - uses: ruby/setup-ruby@9d13dd6ce2979b207024f719160a99112fb38eea
+    - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199
       with:
-        ruby-version: 3.3.12
+        ruby-version: 3.3.13
         working-directory: docs
         bundler-cache: true
     - run: 'test -s Gemfile.lock

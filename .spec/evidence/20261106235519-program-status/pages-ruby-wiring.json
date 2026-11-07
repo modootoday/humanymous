@@ -1,0 +1,25 @@
+{
+  "schema": "humanymous.pages-ruby-wiring/1",
+  "observed_at": "2026-11-07T03:40:08.2284312Z",
+  "old_action": "9d13dd6ce2979b207024f719160a99112fb38eea",
+  "old_requested_ruby": "3.3.12",
+  "old_inventory_latest_3_3": "3.3.10",
+  "new_action": "b3aaceaef7e0ee231b499e7b5f49c03fc1d32199",
+  "new_ruby": "3.3.13",
+  "sources": [
+    "https://raw.githubusercontent.com/ruby/setup-ruby/b3aaceaef7e0ee231b499e7b5f49c03fc1d32199/ruby-builder-versions.json",
+    "https://raw.githubusercontent.com/ruby/setup-ruby/b3aaceaef7e0ee231b499e7b5f49c03fc1d32199/action.yml",
+    "https://www.ruby-lang.org/en/downloads/"
+  ],
+  "local_checks": {
+    "actionlint": "passed",
+    "spec": "71 documents,0errors,0warnings",
+    "existing_delivery_tests": 9,
+    "permission_policy": "passed"
+  },
+  "limits": {
+    "actual_pages_build": "pending exact-source remote",
+    "deployment": "not performed",
+    "ruby_security_maintenance": "official3.3patch; no blanket vulnerability-free claim"
+  }
+}

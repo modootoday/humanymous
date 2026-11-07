@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T03:42:00Z
+updated: 2026-11-07T03:47:00Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -36,6 +36,19 @@ The browser job builds the actual humanymous-collector package with an explicit
 wasm32-unknown-unknown target. Its subsequent full browser pilot remains required;
 collector component tests or a successful WASM build cannot replace that gate.
 Historical toolchain evidence naming the retired generator describes old source.
+
+Pages pins ruby/setup-ruby b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 and Ruby
+3.3.13. The old action's builder inventory stops at 3.3.10 and cannot provision
+the previously requested 3.3.12. The new immutable inventory includes 3.3.13,
+the current Ruby3.3 security-maintenance patch listed by the official download
+page when checked on 2026-11-07. Preserve frozen Gemfile.lock, Bundler2.5.22,
+advisory checks, theme checks and apex/subpath builds. This compatibility update
+does not establish a successful Pages build, deployment or vulnerability-free
+Ruby runtime; exact-source Actions execution remains required.
+
+Sources: [pinned builder inventory](https://raw.githubusercontent.com/ruby/setup-ruby/b3aaceaef7e0ee231b499e7b5f49c03fc1d32199/ruby-builder-versions.json),
+[action entrypoint](https://raw.githubusercontent.com/ruby/setup-ruby/b3aaceaef7e0ee231b499e7b5f49c03fc1d32199/action.yml),
+[Ruby supported downloads](https://www.ruby-lang.org/en/downloads/).
 
 ## Native CEF component integration
 
