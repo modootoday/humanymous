@@ -232,6 +232,14 @@ ValidatedRequest의 identity/header mode/connection ID getter는 관측값이며
 peer 인증·scope/replay·audit 권한을 대신하지 않는다. 잘못된 설정 identity,
 version mismatch 및 non-null capture/stream을 부정 검증한다.
 
+후속 알려진 profile은 parse_with_profile과 AdapterProfile::{Node,Nginx}로
+명시한다. Nginx는 nginx-raw/nginx-normalized만 허용하며 connectionId는 항상
+null이다. normalized는 peer도null, rawHeaderOrder=false다. raw는 파싱된 HTTP
+헤더 순서 관측일 뿐 TLS/H2/capture나 원본 client 인증을 증명하지 않는다.
+기존 parse/parse_for의 관측 vocabulary는 유지한다. 새 profile 검증의 local
+integrity13unit+3legacy parity와 strictClippy가 통과했으나 native nginx plugin과
+authority의 credential/profile 결합은 담당 채팅의 후속 구현이다.
+
 후속 guard baseline은실제prototype/native관측을BrowserCollector에연결했다.
 local native19/actualFirefox34과WASM/Clippy통과이며reported=false를유지한다.
 이는startup pristine증명이나hooks완료가아니다. MutationObserver·forwarding·

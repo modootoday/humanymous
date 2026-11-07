@@ -1,8 +1,10 @@
 //! Private adapter protocol validation. Parsing grants no decision authority.
+mod profile;
 #[cfg(test)]
 mod tests;
 mod wire;
 use base64::{Engine, engine::general_purpose::STANDARD};
+pub use profile::AdapterProfile;
 use sha2::{Digest, Sha256};
 use wire::Request;
 
@@ -96,6 +98,26 @@ pub fn parse_for(
     now_ms: u64,
     expected: ExpectedAdapter<'_>,
 ) -> Result<ValidatedRequest, &'static str> {
+    parse_expected(bytes, now_ms, expected, AdapterProfile::Node)
+}
+
+/// Validate an explicitly provisioned known producer profile. The authority
+/// must bind this profile to its authenticated credential, not to envelope data.
+/// nginx's raw mode describes parsed HTTP header order, never TLS/H2 capture.
+pub fn parse_with_profile(
+    bytes: &[u8],
+    now_ms: u64,
+    profile: AdapterProfile,
+) -> Result<ValidatedRequest, &'static str> {
+    parse_expected(bytes, now_ms, profile.expected(), profile)
+}
+
+fn parse_expected(
+    bytes: &[u8],
+    now_ms: u64,
+    expected: ExpectedAdapter<'_>,
+    profile: AdapterProfile,
+) -> Result<ValidatedRequest, &'static str> {
     if !identity(expected.id) || !identity(expected.version) {
         return Err("invalid provisioned adapter identity");
     }
@@ -147,16 +169,13 @@ pub fn parse_for(
     }) {
         return Err("invalid application peer observation");
     }
-    let raw = match r.header_mode.as_str() {
-        "node-raw" => true,
-        "fetch-normalized" => false,
-        _ => return Err("invalid header provenance"),
-    };
+    let raw = profile.header_order(&r.header_mode)?;
     if r.capabilities.raw_tls
         || r.capabilities.original_h2
         || !r.capabilities.complete_body
         || r.capabilities.raw_header_order != raw
         || (!raw && (r.connection_id.0.is_some() || r.peer.0.is_some()))
+        || (profile == AdapterProfile::Nginx && r.connection_id.0.is_some())
     {
         return Err("unsupported or contradictory capture capabilities");
     }

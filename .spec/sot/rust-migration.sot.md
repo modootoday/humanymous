@@ -19,7 +19,13 @@ rel:
 Shared integrity exposes parse_for with exact provisioned identity/version and
 read-only observation getters. Legacy parse remains Node-only. Protocol0.1
 schema/body/framing/provenance and null capture/stream restrictions stay fixed;
-new nginx header modes remain pending. Local integrity12unit+3legacy parity,
+nginx-specific observations require explicit provisioned AdapterProfile::Nginx:
+identity humanymous.nginx/0.1.0-experimental.1, nginx-raw or nginx-normalized,
+always null connection ID/capture/stream. Normalized mode also requires null
+peer and rawHeaderOrder=false. Raw mode means parsed ordered HTTP headers only,
+not raw TLS/H2 or independently authenticated original client provenance.
+Generic parse_for preserves its prior Node observation vocabulary; callers
+must use parse_with_profile for the new known profile. Local integrity12unit+3legacy parity,
 authority3unit and strict Clippy passed. The source-bound receipt is
 adapter-provisioned-results.json in evidence:root/20261106235519.
 

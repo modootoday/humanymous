@@ -1,0 +1,38 @@
+{
+  "schema": "humanymous.nginx-profile/1",
+  "parent": "2d695146ac64979089fca29cad790f579e8d337a",
+  "tests": {
+    "ignored": 0,
+    "failed": 0,
+    "legacyParity": 3,
+    "unit": 13
+  },
+  "clippy": "passed",
+  "api": "parse_with_profile(bytes, now_ms, AdapterProfile::Nginx)",
+  "identity": "humanymous.nginx/0.1.0-experimental.1",
+  "headerModes": [
+    "nginx-raw",
+    "nginx-normalized"
+  ],
+  "connectionId": "null",
+  "capture": "null",
+  "stream": "null",
+  "rawTls": false,
+  "originalH2": false,
+  "nativePluginQualified": false,
+  "credentialProfileIntegration": "pending",
+  "source": [
+    {
+      "sha256": "e5e254af36edd844d187f1271795bb8f345243bc7cbc350675cf6216689e0065",
+      "path": "crates/integrity/src/adapter/mod.rs"
+    },
+    {
+      "sha256": "237882a3a758c576e1281c548c3c435d6678bb8b8851c8b46db5ca8583acbfa9",
+      "path": "crates/integrity/src/adapter/profile.rs"
+    },
+    {
+      "sha256": "34876029b3d963f0383fbfc824a7aefc5b7448a265e9c6dcf8b2f64a99f3da03",
+      "path": "crates/integrity/src/adapter/tests.rs"
+    }
+  ]
+}

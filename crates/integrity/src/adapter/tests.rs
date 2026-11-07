@@ -8,6 +8,48 @@ fn accepts(v: &Value) -> bool {
 }
 
 #[test]
+fn nginx_profile_binds_identity_modes_and_forbids_invented_capture() {
+    let mut v = request();
+    v["adapter"]["id"] = json!("humanymous.nginx");
+    v["connectionId"] = json!(null);
+    v["headerMode"] = json!("nginx-raw");
+    let check = |value: &Value, profile| {
+        parse_with_profile(&serde_json::to_vec(value).unwrap(), 1000, profile)
+    };
+    let parsed = check(&v, AdapterProfile::Nginx).unwrap();
+    assert_eq!(parsed.headers()[2], ["X-Tag", "first"]);
+    assert_eq!(parsed.headers()[3], ["x-tag", "second"]);
+    assert_eq!(parsed.connection_id(), None);
+    assert!(check(&v, AdapterProfile::Node).is_err());
+    for (field, replacement) in [
+        (
+            "connectionId",
+            json!("01234567-89ab-4cde-8fab-0123456789ab"),
+        ),
+        ("headerMode", json!("node-raw")),
+        ("capture", json!({})),
+        ("stream", json!({})),
+        ("protocol", json!("humanymous.adapter/0.2")),
+    ] {
+        let mut invalid = v.clone();
+        invalid[field] = replacement;
+        assert!(check(&invalid, AdapterProfile::Nginx).is_err(), "{field}");
+    }
+    for field in ["rawTls", "originalH2"] {
+        let mut invalid = v.clone();
+        invalid["capabilities"][field] = json!(true);
+        assert!(check(&invalid, AdapterProfile::Nginx).is_err());
+    }
+    v["headerMode"] = json!("nginx-normalized");
+    v["capabilities"]["rawHeaderOrder"] = json!(false);
+    assert!(check(&v, AdapterProfile::Nginx).is_err());
+    v["peer"] = json!(null);
+    assert!(check(&v, AdapterProfile::Nginx).is_ok());
+    v["capabilities"]["rawHeaderOrder"] = json!(true);
+    assert!(check(&v, AdapterProfile::Nginx).is_err());
+}
+
+#[test]
 fn provisioned_identity_is_exact_and_legacy_parser_stays_node_only() {
     let mut value = request();
     value["adapter"]["id"] = json!("humanymous.nginx");
