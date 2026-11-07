@@ -822,3 +822,35 @@ expansion or prove actual scheduler overlap, cross-workflow limits, billing,
 failure execution semantics or hosted success. Review001 comparison-precedence
 error is preserved; corrected002 explicitly compared joined strings with zero
 mismatch. Exact private hashes are in baseline.json; complete audit remains OPEN.
+
+## Atomic Go source binding and private-root acceptance decisions
+
+CA-FACADE-GUARD-01 source correction is durable a19e3802: every facade occurrence
+requires its matching admission-success condition/order; admission command and ID
+are unique. Weak-duplicate and collision negatives are authored. Actual corrected
+regression/check/strictClippy gates remain OPEN; earlier110 tests do not cover it.
+
+Independent c858 local Go-facade re-audit matches15 indexed raw files, byte-equal
+before/after3004 records,87 actual non-target inputs and2917 old nested target
+outputs. All89 separately bound Git blobs match direct archive comparison:
+87selected inputs plus two workflow leaves, no mismatch. Actual leaf10/deployment1,
+facade default2/disabled-consumer0, enabled2/consumer2 and Delivery110 footers have
+zero failed/ignored/filtered. Facade distinct tests4 and executions6 are separate.
+Default normal dependency tree contains humanymous only. This is selected Windows
+working-byte evidence, not full transitive/tool read closure, Unix actor compile,
+real Go host/product qualification or a new private Docker tuple. Historical Go8
+is separate, and the later duplicate-policy correction inherits none of110.
+
+Private-root5a94910e bounded proposal follows the existing at-create descriptor
+bridge without a new unsafe/native API. No additional confirmed P0/P1 was found
+beyond its explicitly unresolved acceptance gates. Before implementation, Root
+must freeze exact per-level owner/ACE/mask/flags rules, ancestry anchor/guard share
+and identity checks plus eligible read-only layout evidence, and exact close/
+remove/absence cleanup states retaining the original obligation/clocks on Unknown.
+Locator-only creation does not establish atomic created-object identity; no blind
+CreatedUnopened deletion or same-SID/privileged-OS resistance is inferred. Existing
+ACL repair, recursive cleanup and authority/NativeProof remain outside this slice.
+Actual ordinary-actor creation/readback/cleanup and all negatives remain0/unrun.
+Primary semantics were checked against Microsoft CreateDirectoryW, file-security
+rights and RemoveDirectoryW references retained in the private review. Exact hashes
+are bound in baseline.json. Complete migration/native/Ready/product gates stay OPEN.

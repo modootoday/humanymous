@@ -162,7 +162,7 @@
       "id": "CA-FACADE-GUARD-01",
       "priority": "P2",
       "owner": "Delivery/root",
-      "state": "CONFIRMED policy duplicate-occurrence guard gap; current workflows correct. Worktree source fix accepted, durable commit and actual scoped regression/gates OPEN",
+      "state": "Source correction accepted at durable a19e3802: every matching facade occurrence guarded and admission command/ID unique; duplicate negative regressions authored. Actual scoped regression/check/Clippy gates OPEN; current workflows originally correct",
       "trigger": "Append known facade build after correct original with only toolchain-success condition; existential witness accepted original",
       "observed_hosted_bypass": false,
       "release_or_green_job_bypass_claim": false,
@@ -962,6 +962,32 @@
     "proof": "Two disjoint chains cover all16 nodes; native/docker incomparable; native/images maxparallel1",
     "limits": "Top-level declared DAG only, not reusableworkflow expansion/actual scheduling/crossworkflow concurrency/billing/success",
     "first_checker_error": "Review001 joined-string comparison precedence incorrectly yielded16mismatches; corrected002 named strings0mismatch, original retained",
+    "new_audit_workload": 0,
+    "goal_complete": false
+  },
+  "followup_go_atomic_and_private_root_decisions": {
+    "private_review_sha256": {
+      "go-facade-c858-local-review-001.json": "aa109e74858f3c332e1c75ccc25a3ecb982ccb9dacad5e42d0d2fcf77d6949e0",
+      "user-private-root-plan-review-001.json": "0a8e81bbaac9e37e78443c2a2cd428adae8e40507f70aa7db58a194f86a71c90",
+      "facade-admission-durable-followup-003.json": "b160cea46c888b87e789b3ae6b8f15fccd0ea12500e0c6e1109fd07e7c3fb086"
+    },
+    "facade_guard_fix_commit": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb",
+    "go_source": "c858b1dc40d60c2d22f10411531a8b72b70aea63",
+    "go_owner_receipt": "f1aacc1306d300b981d530db33d7f5b86ad156c7",
+    "go_rawfiles": 15,
+    "go_raw_mismatches": 0,
+    "go_selected_nontarget_inputs": 87,
+    "go_separate_workflow_inputs": 2,
+    "go_git_blobs_matched": 89,
+    "go_nested_old_target_outputs": 2917,
+    "go_snapshot_records": 3004,
+    "go_before_after_byte_equal": true,
+    "go_actual_footers": "Leaf10+deployment1/default2+disabledconsumer0/enabled2+consumer2/Delivery110; all0failedignoredfiltered",
+    "go_scope": "Selected Windows workinginput and Git binding, not fulltransitive/toolclosure/Unixactor/actualhost/product; newa19policy does not inherit110",
+    "private_root_proposal": "5a94910e",
+    "private_root_decision": "NEEDS WORK before implementation: exact per-level ACE/mask/flags, ancestryanchor/share/read-only eligibility evidence, cleanupclose/remove/absence retainedUnknown algorithm",
+    "private_root_new_P0_P1": [],
+    "private_root_actual": 0,
     "new_audit_workload": 0,
     "goal_complete": false
   }
