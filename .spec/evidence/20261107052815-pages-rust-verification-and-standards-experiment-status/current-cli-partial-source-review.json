@@ -1,0 +1,110 @@
+{
+  "schema": "humanymous.pages-cli-partial-source-review/1",
+  "reviews": [
+    {
+      "source": "crates/cli/Cargo.toml",
+      "sha256_at_post_read_observation": "e5bc2a643427f8b87653898535a466ee945701848e941f908b93f1a2c7800e7a",
+      "lines": 46,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete46-line manifest. Default CLI separate from service-pilot fixture; runtime-service optional shared runtime/authority/Tokio/zeroize and runtime-service-pilot adds disposable credential/audit edges. Features do not prove native execution or deployment support.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/lib.rs",
+      "sha256_at_post_read_observation": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+      "lines": 7,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete7-line root. Plan/release/service always exported, runtime_host feature gated; native-cli browser tooling remains separate.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/main.rs",
+      "sha256_at_post_read_observation": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "lines": 70,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete70-line dispatcher. Legacy doctor/install/rollback require explicit artifact/destination/digest/locality acknowledgement; service-prefixed commands separate. runtime-host refuses without feature. Doctor/dry branch read-only by intended Plan interface, actual Plan implementation not newly read in this batch.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/commands.rs",
+      "sha256_at_post_read_observation": "abac4c2db93b854c0c935de9d55eb22775494f4eff3d5e459f0e13a6f1a294f6",
+      "lines": 147,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/INTEGRATION.md",
+      "sha256_at_post_read_observation": "30f574a9311570115a16d04c8c965cc4cd6c5d827cdabfc7506e1429d109991b",
+      "lines": 125,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete125-line chronology/source frontier. Signed lab lifecycle and optional ServiceHost path distinguish source/selected pure compilation from positive native service/SCM pilots. Same-owner private receipts/readiness,13 booleans and actor metadata not independent hosted attestation. Linux/macOS protected-secret providers Unsupported. No new raw execution result independently rechecked here.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/plan.rs",
+      "sha256_at_post_read_observation": "b5672a15a5c0ff9582f45a0d514297001a76a251002f98b40fb80611557cb1b5",
+      "lines": 221,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete221-line pure HostPlan/ObserverPlan/StopPlan validation. Exact schema/lab namespace/hashes/absolute config/loopback/start budget/OS manager stopbound. Reuses runtime StopBudget. Credential selectors nonsecret and observer selector separate; Windows SID string precheck not actual identity/ACL proof. No native calls or secret retrieval.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/activation.rs",
+      "sha256_at_post_read_observation": "94c4286cf2c7313ccfb49b5cf2698e74d89d3e5c0c9e615430d5b9706559f138",
+      "lines": 140,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete140-line Windows activation grant. Signed runtime-host argv exact5 tokens and digest-pinned direct-child launch doc,32KiB bound, descriptor/installowner/readiness binding and delegated access-role checks. Uses shared native-security grants/revokes, no permission repair on unexpected state. Path metadata/open/ACL observations are not independently qualified race-free install or actual SCM lifecycle.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/failure.rs",
+      "sha256_at_post_read_observation": "3e31ebbbd7c215bcde5c4f495a7471636558d8ef669ae62e0e4887a78699ad6c",
+      "lines": 73,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete73-line bounded typed failure projection. Only downcast shared ExitFailure yields stage/drain/flush facts; arbitrary errors preserve None and raw message excluded. stopped/product_qualified always false on error; source test verifies partial flush versus unknown. No successful stop or native execution follows.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    }
+  ],
+  "full_read_files": 8,
+  "lines": 829,
+  "post_read_rehash_drift": 0,
+  "pre_read_snapshot": "not captured; must not claim before/after immutable full-read closure",
+  "source_receipts_renewed": false,
+  "docs_modified": false,
+  "new_execution": "NOT_RUN",
+  "full_product_qualified": false,
+  "remaining": "Complete service/storage/native backend and runtime input/control/platform/pilot plus actual process source before accepting CLI public behavior or current ledger. Rehash at publication."
+}
