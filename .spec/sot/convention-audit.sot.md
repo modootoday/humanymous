@@ -1202,3 +1202,36 @@ actual event-order/reentrancy/latency/visual/AT proof or navigation isolation.
 Rule94ce24fe52 now matches confirmed same-target allocation/lock wait while
 concurrent byte writes/corruption remain unproven. Source-bound private review
 hashes are in baseline.json. No audit compiler/native workload was executed.
+
+## Frozen Node failure, .NET pure evidence and interactive implementation review
+
+Node receipt4f3283f1/summary017 preserves exact0a1d3123 framework9 and Node4
+actual pure passes, zero failed/ignored/filtered. Three original-budget cases
+are included in nine, not added again. Raw log SHA2569ee14e11.../14407bytes and
+two preserved test executables match; five before/after ledgers are byte-equal.
+All2804 archive regular members match exact0a1 Git blobs without extraction,
+missing, duplicate or content mismatch. First host-pilot check fails101 at
+pilot.rs168 on temporary CallContext Object lifetime. Allocated Clippy/fmt and
+actual VM cases were NOT_RUN. The subsequent safe holder correction requires
+separate compilation; earlier pure passes cannot establish its host validity.
+CA-HANDOFF remains OPEN for actual late/normal invocation and lifecycle gates.
+
+.NET receipt50369722 has28 matching private attachments, six terminal0 command
+records and exact launch8/protocol8/managedscope1 actual pure passes. Each hosted
+filter excludes13; these filtered sets are not unique extra cases. Full11521
+before/after ledger is byte-equal: source2798/registry8707/config12/tools4. Original
+archive2798 regular files match base62f47765 Git blobs; execution ledger differs
+at exactly four declared overlays with matching hashes/lengths. Source-index is
+historical preparation. Repeated flags-after is not independent environment
+measurement. No Kestrel/GC/native host/AOT/package installation was executed.
+
+Interactive d264101b bounded source review found no P0/P1 blocker: same child/
+Worker owners, fixed independent terminal channel, bounded payload/cumulative
+caps, startup/control FIFO, sender-drop close and atomic cancellation, no raw
+chunk drain in poll, separate EOF/completion/join, and unread chunks retained
+in settlement. Ten authored pure tests are not execution evidence here. Asked
+owner to clarify prior-failure docs: implementation latches input failure;
+output/child issues remain sticky and consumer cancellation is separate. Actual
+partial thread start, blocked I/O, descendant EOF and final join/host proof are
+still pending. Source-bound private review hashes are in baseline.json; no audit
+compiler/runtime workload was executed, and global CA-LIFETIME remains OPEN.

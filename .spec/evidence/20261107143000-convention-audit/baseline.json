@@ -565,5 +565,25 @@
     "browser_UI36_actual_native_qualified": false,
     "rule94_incident_reconciliation_accepted": true,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_node_failure_dotnet_pure_interactive_source": {
+    "private_review_sha256": {
+      "node-budget-pure-and-first-failure-review-001.json": "27ec8e5bf6ac4985b926e5801983befd2667cbf6bbf2d2fff66247d554a60528",
+      "node-dotnet-complete-archive-review-001.json": "7cdff9dcebc0e0ea4e29f10a0b3240fad4dceab0cb3c68acc7d91e25e66790b4",
+      "interactive-implementation-source-review-001.json": "3c45f1c2d8e36e8beb1bad8761efbbcd50e76b955c0c211447c67171c97d117d"
+    },
+    "node_actual_framework_tests": 9,
+    "node_actual_default_tests": 4,
+    "node_first_host_pilot_check_exit": 101,
+    "node_archive_git_members": 2804,
+    "dotnet_actual_pure_tests": 17,
+    "dotnet_base_archive_git_members": 2798,
+    "dotnet_declared_overlays": 4,
+    "dotnet_ledger_rows": 11521,
+    "interactive_source_reviewed": true,
+    "interactive_actual_tests_observed": 0,
+    "CA_HANDOFF_closed": false,
+    "global_lifetime_closed": false,
+    "new_audit_runtime_workloads": 0
   }
 }
