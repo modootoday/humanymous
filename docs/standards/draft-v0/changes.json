@@ -7,6 +7,15 @@
   "generic_wire_selected": false,
   "changes": [
 {
+  "kind": "implementation-evidence",
+  "paths": [
+    "../../reference/supported-topologies.md"
+  ],
+  "summary": "Record exact b4000944 hosted Apache component qualification: 45 distinct cases passed across event, worker and prefork, with observed pilot and container/image cleanup. Preserve the earlier b5c15f0d 35/10 failure; no later-source, Windows or full-product qualification.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false
+},
+{
       "kind": "implementation-evidence",
       "paths": [
             "../../reference/supported-topologies.md"

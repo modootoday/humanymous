@@ -118,7 +118,7 @@ These developing source boundaries do not add release-qualified host tuples.
 | Python WSGI/ASGI | Rust-native `humanymous_python.Wsgi(app, options_json)` and `Asgi(app, options_json)` are candidate interfaces. No wheel or runtime tuple is qualified. WSGI needs the actual server's raw target and input deadline; ASGI needs its declared HTTP/1/raw-path boundary. Candidate package Python-version metadata does not establish CPython ABI, free-threaded, subinterpreter or framework support |
 | Ruby Rack | Rust extension source exposes `Humanymous.wrap(app, options_json)`. Registration at the outer application boundary needs actual raw target, content length, authority and a server-enforced input deadline. The intended precompiled gem targets one exact Ruby minor ABI; platform tags do not establish installed gem, Rack/Sinatra/Rails, GC/GVL or ABI compatibility. No runtime tuple is qualified |
 | ASP.NET Core | Safe Rust request-lifecycle and managed shim source now exist with a normalized producer profile. Actual middleware/PInvoke execution, NativeAOT, GC/abort ownership and NuGet installation remain unqualified; the generic native ABI is not itself that managed binding |
-| Apache | Safe lifecycle/replay and opt-in native module source exist. The exact httpd/APR/MPM/compiler/header tuple, pool cleanup, after-fork initialization, reload, cancellation and origin isolation still need native qualification. Source archives and selected header hashes do not prove the installed ABI |
+| Apache | Safe lifecycle/replay and opt-in native module source exist. One exact Linux tuple passed the 45-case native pilot described below. Other versions, platforms and module graphs remain unqualified. Source archives and selected header hashes alone do not prove the installed ABI |
 | Common C/C++ boundary | Source exports the pointer-free by-value `humanymous_native_abi_v1` buffer/lifecycle command boundary over one safe owner. This is not an installed application security SDK. Header generation configuration and Rust units do not prove actual C/C++ layout, dynamic loading, unload, exception or allocator compatibility |
 
 The ASP.NET Core packed-candidate restore configuration maps its experimental
@@ -158,20 +158,26 @@ original budget. Normalized observations provide no peer/connection capture.
 The source maps both DENY and CHALLENGE to HTTP 403, and boundary failures to
 503; this does not implement accessible challenge recovery or select Draft v0
 status codes. Final checks compare method, target, authority, headers and URI
-before consuming the bound ALLOW once. Actual callback ordering, host-pointer
-validity, filter behavior and origin isolation still require the native pilot.
+before consuming the bound ALLOW once. Callback ordering, host-pointer validity, filter behavior and origin isolation
+need evidence from the exact native host tuple; source review alone is insufficient.
 Its current pilot contract requires 45 named scenario/MPM pairs across event,
 worker and prefork, with separate failed and not-run totals and observed cleanup.
 The contract contains no executed results or qualified artifact identities.
-The coordinator and receipt validator have experimental execution evidence.
-At source `b5c15f0d`, [hosted run 42373232097](https://github.com/modootoday/humanymous/actions/runs/42373232097)
-recorded 45 distinct scenario/MPM rows: 35 passed and 10 failed, with none not run.
-Event and worker each passed 15; prefork passed five and failed ten. The report
-remained failed and pilot cleanup was not established, although separate
-container/image cleanup was observed. These partial historical results do not
-qualify later source changes, all 45 cases, independent custody or the complete
-product. The later retry is a separate source checkpoint whose outcome is not
-established by these observations.
+The coordinator and receipt validator have source-bound execution evidence.
+At source `b4000944`, [hosted run 42374566498](https://github.com/modootoday/humanymous/actions/runs/42374566498)
+passed all 45 distinct scenario/MPM pairs: event, worker and prefork each passed
+15, with zero failed or not run. Pilot and container/image cleanup were observed;
+both attach and container processes exited successfully. The pinned Apache
+2.4.70/APR 1.7.6/APR-util 1.6.6 Linux tuple built both production and opt-in probe
+modules using generated bindings. This qualifies that component tuple's plain
+HTTP/1 explicit-Content-Length boundary, shared authority/WAL and owned origin
+witness. It does not qualify later source changes, arbitrary module graphs,
+SSL/HTTP/2, Windows Desktop or the complete product.
+
+The earlier source `b5c15f0d`, [run 42373232097](https://github.com/modootoday/humanymous/actions/runs/42373232097),
+remains failed historical evidence: 35 passed and ten failed, all in prefork;
+pilot cleanup was not established despite separate container/image cleanup.
+The later successful run does not rewrite those earlier observations.
 
 The coordinator and validator require all 45 distinct case
 IDs, recompute outcome totals and compare the expected source, image and artifact
@@ -194,9 +200,10 @@ reports for its ALLOW/DENY/CHALLENGE paths. Its loopback origin counts complete
 received requests before writing an echo response; this is not a business-commit
 witness or production browser provenance. The reload source now retains an
 owned request-worker guard that joins on early return as well as explicit
-completion, with bounded connect/read/write operations. Actual failure-path
-qualification and complete process containment remain open; the pilot's name
-and cleanup flag do not establish them.
+completion, with bounded connect/read/write operations. The successful hosted tuple includes owned process-group checks before wait/reap
+and pidfd-based normal signals. Its isolated prefork CLI observation exited and
+reaped successfully without timeout, truncated output or forced cleanup. These
+observations do not establish general CLI or arbitrary process-tree containment.
 
 The Go candidate's synthetic trusted-session cases cannot attest browser or
 human activity. Origin contact counts and observed application mutations are

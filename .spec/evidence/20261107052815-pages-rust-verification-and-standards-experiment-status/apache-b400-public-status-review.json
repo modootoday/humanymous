@@ -1,0 +1,25 @@
+{
+  "schema": "humanymous.pages-apache-status-review/1",
+  "evidence_path": ".spec/evidence/20261107130407-apache-adapter-hosted-45-case-qualification/result.json",
+  "evidence_sha256": "6eb83efd1583485c4285f33735ac90779a6552f7ffa4525ff7e281eae09bedaf",
+  "source_commit": "b400094480483d9abb8328234f9de12520b71b65",
+  "workflow_run": 42374566498,
+  "case_rows": 45,
+  "unique_case_ids": 45,
+  "recomputed_outcomes": {
+    "passed": 45,
+    "failed": 0,
+    "not_run": 0
+  },
+  "per_mpm": {
+    "event": 15,
+    "worker": 15,
+    "prefork": 15
+  },
+  "pilot_cleanup_observed": true,
+  "container_image_cleanup_observed": true,
+  "full_product_qualified": false,
+  "source_review_receipts_renewed": false,
+  "new_build_or_browser_execution": "NOT_RUN",
+  "previous_failure_preserved": true
+}
