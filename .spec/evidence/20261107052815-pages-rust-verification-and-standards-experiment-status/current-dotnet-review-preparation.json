@@ -2,7 +2,7 @@
   "schema": "humanymous.pages-review-preparation/1",
   "observed_at_utc": "2026-11-07T13:47:44.493324+00:00",
   "candidate_count": 23,
-  "new_full_read_lines": 4848,
+  "new_full_read_lines": 5023,
   "package_and_adapter_inventory": 27,
   "existing_matching_receipts": [
     {
@@ -177,9 +177,9 @@
     },
     {
       "source": "crates/dotnet-adapter/tests/hosted/launch.rs",
-      "sha256": "a6399d2626597cad22f449afb5668b9e80b262561ca268b90fecf76af0782de7",
+      "sha256": "e00c753fa2733568793a5b3a6b2f16451f71fdf2c4e67d4a154944bd2bca8043",
       "reviewer": "codex/rust-pages",
-      "notes": "176-line pure shared UNVERIFIED parent-context consumer fully read. Workload-only decode and one conserved mapped run/cleanup budget with stage ceilings; cleanup-only cannot become workload. Paths/environment/lineage/SID/clock remain syntax/claims, not native file/token/Job/parent launch or cleanup authority. Fixtures test clock arithmetic and sharedcodec only, no OS IO.",
+      "notes": "351-line pure shared parent-context consumer fully reread after binding follow-through. Shared decoder bounds untrusted context/binding; recomputes exact context bytes and shared typed provenance encoding digest, compares locator/context/provenance plus supplied actorSID/runNonce. Source/manifest/budget syntax delegated to shared unverified decoder; supplied claims and byte commitments do not authenticate parent, actor, OS token/Job, build provenance, installed artifacts or cleanup. Workload-only constructor conserves one mapped original run/cleanup budget across profiles, no new clock mapping/launch or HostIO. Tests are source-reviewed only, not rerun by Pages.",
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
@@ -240,9 +240,16 @@
     }
   ],
   "final_rehash_drift": 0,
-  "source_receipts_renewed": false,
-  "docs_modified": false,
+  "source_receipts_renewed": true,
+  "docs_modified": true,
   "new_execution": "NOT_RUN",
   "full_product_qualified": false,
-  "remaining": "Rehash at narrow ledger window; do not infer actual managedhost/package/actorcleanup qualification or wholecompiledsourceclosure."
+  "remaining": "Only these23 source reviews accepted after exact rehash. Whole-workspace freshness, compiled dependency closure and managed/native/package/OS-actor execution remain separate.",
+  "binding_consumer_reread": {
+    "source": "crates/dotnet-adapter/tests/hosted/launch.rs",
+    "prior_sha256": "a6399d2626597cad22f449afb5668b9e80b262561ca268b90fecf76af0782de7",
+    "current_sha256": "e00c753fa2733568793a5b3a6b2f16451f71fdf2c4e67d4a154944bd2bca8043",
+    "lines": 351,
+    "new_execution": false
+  }
 }

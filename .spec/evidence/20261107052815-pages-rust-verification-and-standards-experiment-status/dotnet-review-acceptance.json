@@ -1,0 +1,243 @@
+{
+  "schema": "humanymous.pages-dotnet-review-acceptance/1",
+  "accepted_source_reviews": [
+    {
+      "source": "crates/dotnet-adapter/Cargo.toml",
+      "sha256": "6a74fbb79703da649c25ff19cc494f2387e6e6f7161eb0f1813bfc05107a0aa9",
+      "reviewer": "codex/rust-pages",
+      "notes": "28-line safe Rust request-core manifest, shared framework/authority/integrity/nativeABI, no new foreign ownership implementation. Declaration not ABI or managed host execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/export/Cargo.toml",
+      "sha256": "ed3e0e51be373556712ec28062eb3ca64ae66f0ac89dcd54b1505467c23b26df",
+      "reviewer": "codex/rust-pages",
+      "notes": "23-line separate cdylib/rlib facade, safe core/nativeABI and Tokio reused; unsafe denied except approved export attribute in source. Compile target not installed runtime proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/export/src/lib.rs",
+      "sha256": "0fdcac276e59e4f89914e185f16624e468d563325b7c197654c983b45050a6f8",
+      "reviewer": "codex/rust-pages",
+      "notes": "122-line by-value command facade fully read. Global bridge mutex and process-lived one-worker runtime; prepare releases lock during authority future then completes under rechecked revocation. Panic/poison permanently revoke, panic payload forgotten to avoid secondary destructor unwind. No foreign pointers/callbacks; process-lived runtime does not establish native unload/reload or worker-drain compatibility.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/Directory.Build.props",
+      "sha256": "0f485e7e623c978f0478eb95aa7eecdb288b393fde77e79c453628640fe9c113",
+      "reviewer": "codex/rust-pages",
+      "notes": "10-line deterministic/lockfile/build-root declarations; generated lock under target directory. Deterministic setting not measured reproducibility or dependency closure.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
+      "sha256": "9ed8f873a0251a9e92a6a008a990a98d794789b054d3340220f61470097c0994",
+      "reviewer": "codex/rust-pages",
+      "notes": "34-line net10 nullable/AOT-compatible candidate, exact two explicit sources, native package file and Windows/Linux x64 RID required. Existence/RID check does not verify native hash, provenance, dependency notices or NativeAOT compatibility.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+      "sha256": "88d4433c7f70cca0befa5f7cee28b2631eaf9c41f43439e3aa68d23952a486d5",
+      "reviewer": "codex/rust-pages",
+      "notes": "18-line Kestrel pilot, explicit Program source, project reference versus selected candidate PackageReference. Package choice not actual restore/install execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/README.md",
+      "sha256": "7c4307e66deb084c5d203b27aa61de8f508a5a88ba1d0c6678217e7879f3e331",
+      "reviewer": "codex/rust-pages",
+      "notes": "52-line chronology read with bounded reread. Earlier Windows FDD/JIT build and separate generic ABI caller are distinct from Kestrel, GC/await, package and NativeAOT qualification. Later helper/parser/source-inventory checks do not establish joined workers/actor cleanup. Collectible unload unsupported. Historical NOT_RUN text not current full host qualification.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/capabilities.json",
+      "sha256": "da2e574d5af8ccf989d2b1fb83e4ca3693bb3cf47d9bfd548ec88f789e25c533",
+      "reviewer": "codex/rust-pages",
+      "notes": "40-line capability declaration keeps installedMiddleware/nativeExports false, release tuples empty and explicit host gates. genericAbiOnlyObserved is historical declaration, not independent actual .NET host result verified in this review.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/pilot-contract.json",
+      "sha256": "dd125f633ef4eb8b0f58d58bfe64efcd599f5331265faf0be0e6ac73fc7d9a50",
+      "reviewer": "codex/rust-pages",
+      "notes": "57-line four required OS/JIT/AOT tuples,21 namedhostcases plus complete lineage/outcome/lease obligations, runnablefalse. Required cases not execution counts. Contacts not mutations, synthetic decisions not authenticated productionALLOW, Docker gate separate.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs",
+      "sha256": "c60f549045db118e914e2048dedcb8e1e09455067c7d7bd223daa1cf09953490",
+      "reviewer": "codex/rust-pages",
+      "notes": "216 lines fully read in two contiguous chunks. Fixed88/48-byte x64 little-endian ABI, safe search path and collectible-load refusal; opaque handles with DangerousAddRef lease acquired before Task.Run and held through native authority call. Data copied32-byte chunks and bounded1MiB replay; cancel does not prove actual native task joined. SafeHandle ReleaseHandle returnsfalse on exception; source cannot establish actual GC/PInvoke/dispose race safety, installed package or worker termination.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/src/lib.rs",
+      "sha256": "f365a4f7239e33f0167702b0c6418840a11eca4c2dc2e3cdd9b7d95f835cd3b2",
+      "reviewer": "codex/rust-pages",
+      "notes": "454 lines fully read in contiguous chunks. Owned copied body, shared admission/original Pending deadline, actualEOF seal with declared-length equality. Sealed slice not authorization. One decision attempt only; dropped/failed future cancels request and no retry. Final authority consume then exact method/target/authority/sanitized ordered headers/currenthostflags and deadline before mutex-linearized handoff. Cancellation after winning handoff belongs to application. Pure tests use synthetic config/verdict and race barriers, not actual PInvoke/Kestrel. No new execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/src/bridge.rs",
+      "sha256": "254790bc7c3c8980f584987ec537ea138c5741ee88a17af059ce0d440df3d1e6",
+      "reviewer": "codex/rust-pages",
+      "notes": "580 lines fully read in contiguous chunks. Shared nativeABI registry owns handles/buffers, perinstallation config and perrequest active state. Bounded32-byte append and64KiB strict metadata; route vector checked across decide/handoff. Ticket takes request once and runs authority outside globalmutex; cancellation loop5ms plus schedulerdelay drops actual IPC future. Completion binds Arc bridge identity before context lookup, preventing foreign bridge same-numeric-handle completion. Close cancels children; Flight counts retained work, not independent OS-worker termination proof. Replay copy issued once only afterALLOW and before final handoff; metrics not body integrity or unload safety. Source tests cover ownership/revocation/crossbridge/version/metadata, not actual managed runtime.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/pilot/Program.cs",
+      "sha256": "5201fd500d688e19bd7af17d707c42b9bdc3177e792425a01894b0991a489b78",
+      "reviewer": "codex/rust-pages",
+      "notes": "194-line test host fully read in contiguous chunks. Redirected stdio/noargs, startup/control JSON, optional generic ABI probe separate from Kestrel. Loopback Kestrel limitsbody2MiB, disables minrate; actual bounded middleware/auth required separately. Contacts increment before request-body read, mutations only selectedroute; generic probe not middleware qualification. GC/control tasks waited before stopped; synchronous Emit/stdin ReadLine and post-read length check do not themselves bound memory, output or total wait. Host cannot attest runner provenance; parent must own timeout/containment. No actual process execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/managed_scope.rs",
+      "sha256": "58ece557467f3135e10ae820eee38dcbbd1c32a166aa8376ed6ec4e1a171e187",
+      "reviewer": "codex/rust-pages",
+      "notes": "86-line exact three authored C# paths and explicit compile-input/source-generation restriction test fully read. Textual forbidden-string checks are narrow source policy, not complete MSBuild transitive input or runtime safety proof; no test run in this review.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/support/mod.rs",
+      "sha256": "69909ca2872d52b5d821c7087f9c8481294f1af3a9152b17da92d72b7515b7b0",
+      "reviewer": "codex/rust-pages",
+      "notes": "62-line execution label classifier and pure tests fully read. Rejects ACT and unallocated/selfhosted labels, Unixrequiresnonroot; accepted environmentstrings remain caller-provided classification, not independently authenticated GitHub runner, parent or actor proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/support/artifacts.rs",
+      "sha256": "7e17e12b1e9c7866e04ee5ffdcab1ef6070a3fa601e41a93ff72ab9924f125fd",
+      "reviewer": "codex/rust-pages",
+      "notes": "55-line stock certutil/sha256sum command builder and parser fully read.64KiB output parser requires one64hex firsttoken and normalizescase. No command deadline/execution/actualfileidentity enforced here; caller owns supervision and exact path/digest binding.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted/launch.rs",
+      "sha256": "e00c753fa2733568793a5b3a6b2f16451f71fdf2c4e67d4a154944bd2bca8043",
+      "reviewer": "codex/rust-pages",
+      "notes": "351-line pure shared parent-context consumer fully reread after binding follow-through. Shared decoder bounds untrusted context/binding; recomputes exact context bytes and shared typed provenance encoding digest, compares locator/context/provenance plus supplied actorSID/runNonce. Source/manifest/budget syntax delegated to shared unverified decoder; supplied claims and byte commitments do not authenticate parent, actor, OS token/Job, build provenance, installed artifacts or cleanup. Workload-only constructor conserves one mapped original run/cleanup budget across profiles, no new clock mapping/launch or HostIO. Tests are source-reviewed only, not rerun by Pages.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted/protocol.rs",
+      "sha256": "b229f2a0737d28615b69e545f0f0b54ba56ea0ac1dc7ac1835ba6c06222a34d3",
+      "reviewer": "codex/rust-pages",
+      "notes": "368 lines fully read in contiguous chunks. Pure typed control/output frame codec and bounded nonblocking64slot queues;4096-byte frames/256KiB total output, required explicit nullable native_resources. Starting/ready actualexpectedPID then contact/counters/stopped/EOF order; malformed/overflow/disconnect terminal. Stopcontrol terminal. Ready address/runtime strings and contactcounter semantics not independently validated here; stopped/EOF protocol not OSexit/workerjoin/cleanup proof. Eight source tests no new execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted/generic.rs",
+      "sha256": "4a0f2fd52c2a7132f120ff0f1e0e2c639b401529bced8392e8d3b333086330a2",
+      "reviewer": "codex/rust-pages",
+      "notes": "295 lines fully read in contiguous chunks. Separate ignored generic ABI-only actualprocess case: absolute regular/reparse-refused bounded inputs, exactartifact names/supportset andstockdigest checks, freshcopiedstage rehashed under shared60sadmission then30s directchildcapture withclearenv. Exacttwoframes bound to observedPID, zeroexit/emptystderr andownedstageremoval required; outputexplicitly Kestrelfalse/adapterfalse/AOTfalse/C++false/fullfalse. Metadata sourceSHAs still claims; selectedhashes not fullSDK/runtime/registryclosure. Childhelper guarantees inherited from sharedprocessowner, not independently proven treecontainment. No actualprocess launched here.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted.rs",
+      "sha256": "8b590c6e65470b068244becda1042bb177de00e8075ddd660ff7581c8cafc861",
+      "reviewer": "codex/rust-pages",
+      "notes": "618 lines fully read in contiguous chunks. Ignored actual Kestrel suite has realsharedauthority/WAL with production ApplicationHttp versus frozen Synthetic reports, exactbinary/cookies/unknownlength, heldIPC+GC overlap, abort-during-authority/resourcecounter, deny/challenge, rewrite/response-started/deadline, bodylimit/abort/truncation/upgrade,204/304/HEAD/chunked response, appIOException, authoritydown/dispose/stop. Contact counts not mutations; deadline delay not independently expiredauthorityresult. covered/not_run contract list retained; counters/assertions not full21case qualification. Actual Host reader uses spawned unjoined thread and blocking send, loose Value frame handling; pure protocol.rs codec is not wired into this IO path. Perframe timeout can repeat64times, synchronousstdin no own deadline; ManagedChild direct-child guard not complete joinedIO/Job/treeproof. No actual test execution here.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/package/projection.rs",
+      "sha256": "08bc47208b464bfa547341afcdb0c8437355fb023cebd087f7246d464b371845",
+      "reviewer": "codex/rust-pages",
+      "notes": "323 lines fully read in contiguous chunks. Pure allowlisted publicprojection of fourJIT/AOT source/packed modes and two production/synthetic profiles each; expectedsource/nativehash,tuple/toolchain,exact covered/notrun partition, boundedcounts/zeroerrors, verdict consistency. Rejects duplicates/unknowncases; excludes injectedsecret/privatefields. Package-install claim comes pairedpackedconsumer, notHTTPdelegate. completefixture still cleanupnull/componentqualifiedfalse/fullfalse. Textual/hash identity claims not independent sourceartifact/actor attestation or rawrun verification. No actualpackage execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/package.rs",
+      "sha256": "94df34555ccc08e147fdc825f77755ac061ad77129df22822801bff7343fd1a0",
+      "reviewer": "codex/rust-pages",
+      "notes": "485-line ignored SDK/package orchestration fully read in contiguous chunks. Root-selected canonicalpaths/native/harness/provenance, initialcleanHEAD/lock/digests and exactSDK10.0.403. Pack into privatefeed; separate clean caches/builds for fourJIT/AOT source/packed modes; packedconsumer lacks sourceproject and restorednative bytes mustmatch withoutmanualinjection. Stage logs/status retained, directchildcapture deadlines not descendantcleanupqualification. Sourceclean rechecked but no complete registry/sysroot/compilerinput or before/afterHEAD immutableclosure. Restoration may generate lockfile; declarations not reproduciblebuild proof. Exactlytwo authorityprofiles each and missingcontractcases retained; publicsummary then host_contract_complete assertion, cleanupnull/componentfalse/fullfalse/publicationfalse. Earlyfailedstages stop latercases; no actualSDK/package/host execution here.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/INTEGRATION.md",
+      "sha256": "14d435eaac51305d8a8f665808deeea6d9d73af75ee65ed473b3ec6a0cd48a8c",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete552-line chronology fully read across four contiguous chunks. Current accepted pure sharedparentconsumer sourceb482+sixoverlays/6847rows and prior protocolscope0a1bb+twooverlays are compilation/pure only. Genericactualcaller atd143f4f1 and managedattempt2 build retain separate lineages; not Kestrel/GC/AOT/packedqualification. CurrentHost IO requires shared retainednativeJob/ordinaryactor/absolute180s+cleanup and joinedreaders before launch. Historical blockedforeignapproval/localexecutionrestrictions explicitly superseded by later human/rootauthorization, not newpermissionrequests. Artifact/codehash sameness does not reconstruct missing buildtimeinputs; no raw execution independently rerun in Pages.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    }
+  ],
+  "retained_existing_matching_receipts": [
+    {
+      "source": "adapters/dotnet/global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d",
+      "reviewer": "codex/rust-pages",
+      "basis": "Existing substantive review receipt, exactcurrentbytesmatch; no newfullreadclaim"
+    },
+    {
+      "source": "adapters/dotnet/NOTICE",
+      "sha256": "76b799f9bff2551472db88f54d5c3177c1fcdbf4d9daa75d2564f67707f7e24d",
+      "reviewer": "codex/rust-pages",
+      "basis": "Existing substantive review receipt, exactcurrentbytesmatch; no newfullreadclaim"
+    },
+    {
+      "source": "adapters/dotnet/NuGet.Packed.Config",
+      "sha256": "f4087cc1b2c83e1f75de07e0b75ce692f59e139165d829fdf5903c683a6b89ca",
+      "reviewer": "codex/rust-pages",
+      "basis": "Existing substantive review receipt, exactcurrentbytesmatch; no newfullreadclaim"
+    },
+    {
+      "source": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
+      "sha256": "e4f3382af6786ec04cafc2af712b78c330433bd06d0b3a1cd17fc212b1268522",
+      "reviewer": "codex/rust-pages",
+      "basis": "Existing substantive review receipt, exactcurrentbytesmatch; no newfullreadclaim"
+    }
+  ],
+  "new_full_read_lines": 5023,
+  "final_rehash_drift": 0,
+  "actual_execution": false,
+  "full_product_qualified": false,
+  "scope": "Substantive source review only, including complete reread of changed launch binding consumer. No managed host, NativeAOT, clean NuGet package, native actor or OS cleanup qualification implied."
+}
