@@ -1,0 +1,18 @@
+{
+  "schema": "humanymous.browser-bootstrap-source-hypothesis/1",
+  "status": "hypothesis_not_actual_failure_cause",
+  "diagnostic_candidate": "e70edeeb984cbcff65ab63132f47caa2a125bf38",
+  "observed_run": 42394466559,
+  "observed_error": "browser_selected_test_failed",
+  "primary_source": "https://fetch.spec.whatwg.org/#origin-header",
+  "standard_rule": "For a non-CORS request whose method is neither GET nor HEAD, no-referrer policy makes the serialized Origin null.",
+  "collector_source": "crates/collector/src/browser/transport/request.rs",
+  "collector_sha256": "10933ea435173105f83dde0de7ffe64a3c9a699a11752f5756df2510f02ce859",
+  "collector_observation": "Request build sets mode same-origin and referrerPolicy no-referrer for POST bootstrap and signed requests.",
+  "runtime_source": "crates/runtime/src/browser.rs",
+  "runtime_sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe",
+  "runtime_observation": "Browser metadata validation requires the exact configured origin for POST; null is rejected.",
+  "inference": "Bootstrap rejection is plausible, but no private panic site, HTTP status, Origin header or exact failure cause has yet been observed for run42394466559.",
+  "possible_owner_fix": "If confirmed, preserve same-origin mode and exact-Origin check, use explicit empty referrer to suppress Referer with a compatible policy, and qualify actual browser behavior. No source change is made by this research record.",
+  "full_product_qualified": false
+}

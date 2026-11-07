@@ -1,0 +1,63 @@
+{
+  "schema": "humanymous.lab-panic-site-source-checks/1",
+  "source": "e70edeeb984cbcff65ab63132f47caa2a125bf38",
+  "private_evidence": "evidence:root/20261107174448",
+  "venue": "native Windows x86_64-pc-windows-msvc",
+  "toolchain": "Rust 1.99.1 / edition 2024",
+  "archive_sha256": "90dd8f6b3e0698cf84d5fcabe54f526d7af7e0292ad536fa629118291e1fdb84",
+  "overlay_count": 0,
+  "list_exit": 0,
+  "listed": 31,
+  "test": {
+    "workers": 1,
+    "passed": 31,
+    "exit": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "failed": 0
+  },
+  "all_targets_check_exit": 0,
+  "strict_clippy_exit": 0,
+  "scoped_fmt_exit": 0,
+  "first_failures": [],
+  "source_closure": {
+    "files": 2824,
+    "difference_records": 0
+  },
+  "registry_closure": {
+    "files": 3172,
+    "packages": 71,
+    "difference_records": 0
+  },
+  "effective_config_closure": {
+    "difference_records": 0,
+    "candidates": 20
+  },
+  "allocation": {
+    "create_new_lease": true,
+    "cleanup_budget_seconds": 60,
+    "live_owned_handles": 0,
+    "jobs": 1,
+    "incremental": 0,
+    "work_budget_seconds": 360,
+    "released": true,
+    "initial_commit_percent": 72,
+    "new_physical_target": true,
+    "initial_available_mib": 30023,
+    "elapsed_through_lease_return_seconds": 140.1047403,
+    "new_temp_workspace": true
+  },
+  "pinned_collector_source_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+  "safe_error_catalog_sha256": "d0871b4a6a1cab740b993888bf3a5e0bb1e6ea545177e6d3765e43f6f77b88f8",
+  "fixed_panic_codes": 33,
+  "unchanged_outcome_helper_sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
+  "unchanged_outcome_contract_sha256": "42d5826ccdea564174ff4da03a55d3aa6c205dae4d24f659dad44bc0ffed6b5a",
+  "delivery_consumer": "source review accepted; fresh compile proof separate and not claimed",
+  "wsl_docker_browser_executed": false,
+  "full_environment_closed": false,
+  "compiler_sdk_bytes_closed": false,
+  "source_prefix_authenticated": false,
+  "actual_failure_assertion_verified": false,
+  "full_product_qualified": false,
+  "release_qualified": false
+}
