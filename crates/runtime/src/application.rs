@@ -21,6 +21,7 @@ use tokio::{
     net::{TcpListener, TcpStream},
     time::{Instant, timeout_at},
 };
+mod settings;
 mod tls;
 
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
@@ -40,6 +41,7 @@ pub struct Application {
     sessions: Sessions,
     engine: Engine,
     audit: Box<dyn DurableAudit>,
+    managed_settings: Option<settings::ManagedSettings>,
 }
 impl Application {
     /// Compose existing services without changing policy or deriving new tells.
@@ -54,6 +56,7 @@ impl Application {
             sessions: Sessions::new(),
             engine,
             audit,
+            managed_settings: None,
         })
     }
 
@@ -334,6 +337,7 @@ impl Application {
             return Err(std::io::Error::other("loopback only"));
         }
         let mut admission = Admission::new(self.config.rate_per_second);
+        let mut commands = self.take_settings_commands();
         let mut admission_rate = self.config.rate_per_second;
         loop {
             if shutdown.borrow().is_some() {
@@ -343,6 +347,10 @@ impl Application {
                 biased;
                 changed = shutdown.changed() => {
                     changed.map_err(|_| std::io::Error::other("shutdown controller closed"))?;
+                    continue;
+                }
+                command = settings::next_command(&mut commands) => {
+                    self.apply_settings_command(command, &shutdown)?;
                     continue;
                 }
                 accepted = listener.accept() => accepted?,

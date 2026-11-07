@@ -10,7 +10,8 @@ fn handler() -> Handler {
             revision: "r1".into(),
             authority: "owned.test".into(),
         },
-        profile: serde_json::json!({"product_qualified":false}),
+        profile: Arc::new(RwLock::new(serde_json::json!({"product_qualified":false}))),
+        operator: None,
     }
 }
 fn request(handler: &Handler) -> LocalRequest {
@@ -122,4 +123,79 @@ fn settings_view_is_observer_only_and_cannot_be_used_for_mutation() {
             403
         );
     }
+}
+
+#[test]
+fn operator_resource_change_requires_its_own_credential_scope_and_native_envelope() {
+    let handler = handler();
+    let operator = Credential::generate().unwrap();
+    let duplicate = OperatorPolicy {
+        credential: Credential::from_private_provisioning(zeroize::Zeroizing::new(
+            handler.credential.expose_for_provisioning().to_owned(),
+        ))
+        .unwrap(),
+    };
+    assert!(duplicate.validate_observer(&handler.credential).is_err());
+    let mut change = request(&handler);
+    change.target = "/management/v0.1/settings/commit".into();
+    let mut body = serde_json::json!({
+        "scope":handler.scope,"expected_revision":0,
+        "settings":crate::tests::config().operational()
+    });
+    change.body = serde_json::to_vec(&body).unwrap();
+    assert_eq!(
+        handler
+            .authorize_change(&change, NativePeer::Unix(123), &operator)
+            .err()
+            .unwrap()
+            .status,
+        401
+    );
+    change.authorization = format!("Bearer {}", operator.expose_for_provisioning());
+    assert!(
+        handler
+            .authorize_change(&change, NativePeer::Unix(123), &operator)
+            .is_ok()
+    );
+    assert_eq!(
+        handler
+            .authorize_change(&change, NativePeer::Unix(124), &operator)
+            .err()
+            .unwrap()
+            .status,
+        403
+    );
+    change
+        .headers
+        .push(("Origin".into(), "http://owned.test".into()));
+    assert_eq!(
+        handler
+            .authorize_change(&change, NativePeer::Unix(123), &operator)
+            .err()
+            .unwrap()
+            .status,
+        403
+    );
+    change.headers.pop();
+    body["scope"]["tenant"] = serde_json::json!("foreign");
+    change.body = serde_json::to_vec(&body).unwrap();
+    assert_eq!(
+        handler
+            .authorize_change(&change, NativePeer::Unix(123), &operator)
+            .err()
+            .unwrap()
+            .status,
+        403
+    );
+    body["scope"]["tenant"] = serde_json::json!(handler.scope.tenant);
+    body["settings"]["threshold"] = serde_json::json!(0);
+    change.body = serde_json::to_vec(&body).unwrap();
+    assert_eq!(
+        handler
+            .authorize_change(&change, NativePeer::Unix(123), &operator)
+            .err()
+            .unwrap()
+            .status,
+        400
+    );
 }

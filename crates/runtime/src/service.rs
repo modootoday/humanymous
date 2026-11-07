@@ -66,13 +66,12 @@ pub struct ServiceHost {
     audit: Arc<Mutex<SealedAudit>>,
     readiness: Readiness,
     management: Option<Management>,
-    settings: Option<SettingsStore>,
     tls: Option<Arc<rustls::ServerConfig>>,
 }
 impl ServiceHost {
     /// Authenticate existing credentials before exposing a ready listener.
     pub async fn bind(configuration: Configuration) -> io::Result<Self> {
-        Self::bind_inner(configuration, None, None, None, None, None).await
+        Self::bind_inner(configuration, None, None, None, None, None, None).await
     }
 
     /// Consume a pinned external client. No witness failure permits fallback.
@@ -80,7 +79,7 @@ impl ServiceHost {
         configuration: Configuration,
         witness: ExternalWitness,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, Some(witness), None, None, None, None).await
+        Self::bind_inner(configuration, Some(witness), None, None, None, None, None).await
     }
 
     /// Bind a separately authorized native management service in the same custody
@@ -90,7 +89,7 @@ impl ServiceHost {
         witness: Option<ExternalWitness>,
         policy: ManagementPolicy,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, witness, Some(policy), None, None, None).await
+        Self::bind_inner(configuration, witness, Some(policy), None, None, None, None).await
     }
 
     /// Explicit operator recovery with an independently pinned head and witness.
@@ -106,6 +105,7 @@ impl ServiceHost {
             Some(witness),
             management,
             Some(tail),
+            None,
             None,
             None,
         )
@@ -127,6 +127,7 @@ impl ServiceHost {
             None,
             Some(settings),
             None,
+            None,
         )
         .await
     }
@@ -146,6 +147,7 @@ impl ServiceHost {
             management,
             Some(tail),
             Some(settings),
+            None,
             None,
         )
         .await
@@ -168,6 +170,30 @@ impl ServiceHost {
             recovery,
             settings,
             Some(tls),
+            None,
+        )
+        .await
+    }
+
+    /// Enable resource-only writes using an independently provisioned operator.
+    /// Destructive controls and detection policy remain unavailable here.
+    pub async fn bind_with_operator(
+        configuration: Configuration,
+        witness: ExternalWitness,
+        management: ManagementPolicy,
+        operator: crate::management::OperatorPolicy,
+        settings: SettingsPolicy,
+        recovery: Option<humanymous_audit::storage::TailRecovery>,
+        tls: Option<Arc<rustls::ServerConfig>>,
+    ) -> io::Result<Self> {
+        Self::bind_inner(
+            configuration,
+            Some(witness),
+            Some(management),
+            recovery,
+            Some(settings),
+            tls,
+            Some(operator),
         )
         .await
     }
@@ -179,12 +205,23 @@ impl ServiceHost {
         recovery: Option<humanymous_audit::storage::TailRecovery>,
         settings_policy: Option<SettingsPolicy>,
         tls: Option<Arc<rustls::ServerConfig>>,
+        operator: Option<crate::management::OperatorPolicy>,
     ) -> io::Result<Self> {
         configuration
             .validate()
             .map_err(|_| io::Error::other("configuration invalid"))?;
         if let Some(tls) = &tls {
             crate::tls::validate_configuration(&configuration, tls)?;
+        }
+        if operator.is_some()
+            && (management_policy.is_none() || settings_policy.is_none() || witness.is_none())
+        {
+            return Err(io::Error::other(
+                "operator requires management and witnessed durable settings",
+            ));
+        }
+        if let (Some(operator), Some(policy)) = (&operator, &management_policy) {
+            operator.validate_observer(&policy.credential)?;
         }
         let witness_durability = witness.as_ref().map(ExternalWitness::durability_name);
         let mut sealed = match (witness, recovery) {
@@ -226,15 +263,28 @@ impl ServiceHost {
         if tls.is_some() {
             readiness::tls_h1(&mut profile, &configuration);
         }
+        profile["administration_writable"] = serde_json::json!(operator.is_some());
+        let profile_shared = Arc::new(std::sync::RwLock::new(profile.clone()));
+        let (operator, commands) = if let Some(operator) = operator {
+            let (sender, receiver) = tokio::sync::mpsc::channel(1);
+            (Some((operator, sender)), Some(receiver))
+        } else {
+            (None, None)
+        };
         let management = management_policy
-            .map(|policy| Management::bind(policy, &configuration, profile.clone()))
+            .map(|policy| {
+                Management::bind(policy, &configuration, profile_shared.clone(), operator)
+            })
             .transpose()?;
-        let application = Application::new(
+        let mut application = Application::new(
             configuration,
             Default::default(),
             Box::new(SharedAudit(audit.clone())),
         )
         .map_err(|_| io::Error::other("application startup"))?;
+        if let Some(settings) = settings {
+            application.install_settings(settings, audit.clone(), profile_shared, commands);
+        }
         if let Some(tls) = &tls {
             application.validate_tls_h1(tls)?;
         }
@@ -248,7 +298,6 @@ impl ServiceHost {
             audit,
             readiness,
             management,
-            settings,
             tls,
         })
     }
@@ -258,9 +307,7 @@ impl ServiceHost {
     }
     /// Authenticated persisted operational revision, absent when not configured.
     pub fn operational_revision(&self) -> Option<u64> {
-        self.settings
-            .as_ref()
-            .map(|store| store.snapshot().revision())
+        self.application.operational_revision()
     }
 
     /// Separate management capability for the trusted broker's private channel.
@@ -269,6 +316,12 @@ impl ServiceHost {
         self.management
             .as_ref()
             .map(Management::credential_for_private_provisioning)
+    }
+    /// Independent resource operator capability for the trusted private broker.
+    pub fn operator_credential_for_private_provisioning(&self) -> Option<&str> {
+        self.management
+            .as_ref()
+            .and_then(Management::operator_credential_for_private_provisioning)
     }
 
     /// A closed controller or incomplete drain is an error, never Stopped.

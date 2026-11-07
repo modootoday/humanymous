@@ -7,27 +7,33 @@
   },
   {
     "path": "crates/runtime/INTEGRATION.md",
-    "bytes": 30197,
-    "sha256": "3389b87b5374977bd03799bf9e373321b1e3d1ef5bf2eda369307d85a9a90699",
-    "git_blob": "7d48b46a91f17b31fca54a8ed92f4c9a29d6333f"
+    "bytes": 31869,
+    "sha256": "5ced0d911694184f6bc4e898c283216d4578d3d76786cdbc76d824c9e3f35e01",
+    "git_blob": "62bb42a1b52bcb32fbda523047699886f481f38e"
   },
   {
     "path": "crates/runtime/qualification-contract.json",
-    "bytes": 5020,
-    "sha256": "394266b51e84b0a03f5e83331112333757466f3e1563494c33d10a5f7178231f",
-    "git_blob": "c9ffeae4505888cb1ec00d598b45ba440b40e1ae"
+    "bytes": 5236,
+    "sha256": "7d6d8e4c278508095cdb74182e43f9ac340035c4d23d53a8d99ccd9c76d688af",
+    "git_blob": "bb3177d8be7c47559dcf76a62173372417bc6e7d"
   },
   {
     "path": "crates/runtime/src/application.rs",
-    "bytes": 24746,
-    "sha256": "5fa67831b0fb976d61529cabfa5517f2b12fce5ab10c8417aa1573677f9c58fc",
-    "git_blob": "4b41775332fa0a0b76aa8846f9f2ffb636da7c5c"
+    "bytes": 25098,
+    "sha256": "3f48880645334ba59a6ddeae648d63da3ef94ac46983e1b8a6b5061116508554",
+    "git_blob": "0359a4166536f80e1bbc8ae9c2d2cae8c7131a26"
+  },
+  {
+    "path": "crates/runtime/src/application/settings.rs",
+    "bytes": 5494,
+    "sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61",
+    "git_blob": "19794fe1634699c6f731fcc4da4c2501511f7da8"
   },
   {
     "path": "crates/runtime/src/application/tls.rs",
-    "bytes": 7744,
-    "sha256": "5e81eb147989e3e2293186ad1e02b05f88f63b317fc53f6a68cfbe9fb31ef226",
-    "git_blob": "6246048610267d8029f68a500620cbe07d001a6a"
+    "bytes": 7989,
+    "sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6",
+    "git_blob": "94808d6387c397105a5ebd60b215729fc5fc3556"
   },
   {
     "path": "crates/runtime/src/browser.rs",
@@ -73,9 +79,9 @@
   },
   {
     "path": "crates/runtime/src/lib.rs",
-    "bytes": 323,
-    "sha256": "a814d9d1c5a225a63cf010c66d6755ea2cc0b992b814c22d9089f2d971653622",
-    "git_blob": "ab36c23c46601fec2bd2c237ad7a3d825d767f29"
+    "bytes": 332,
+    "sha256": "4c353bf7d58cfab3e30878bcfaa9dad9fdbea26def327c2ab52b79efca2713fe",
+    "git_blob": "dd2d5ece0444d9afdbca54adb8ea7ed3e1ca777e"
   },
   {
     "path": "crates/runtime/src/main.rs",
@@ -85,27 +91,33 @@
   },
   {
     "path": "crates/runtime/src/management/mod.rs",
-    "bytes": 4048,
-    "sha256": "47d9cc39390ba796dc1260a0e7628f28ae306085f8c8e791a35a98ba73f6dcb2",
-    "git_blob": "0898490759355edcce4d7bef57c4a09a4ce8fded"
+    "bytes": 5394,
+    "sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb",
+    "git_blob": "4d9e086c7e8bb8c879385706c72644ef2b8d0e2f"
+  },
+  {
+    "path": "crates/runtime/src/management/operator.rs",
+    "bytes": 3574,
+    "sha256": "4c34921a740e3ac71fa1760cd0b732350e8f215cf8867bf65c5a9698e884d6ef",
+    "git_blob": "fa88e8ffc86f44c72d5de705770777e1e66aafcb"
   },
   {
     "path": "crates/runtime/src/management/policy.rs",
-    "bytes": 3367,
-    "sha256": "7c64990689ecfbf64f5c670f275940e14c9543f2e0ffaac2fb5381ff44864b4e",
-    "git_blob": "ad87d687d857bd091be2c275dfde5c79c4c69f00"
+    "bytes": 3494,
+    "sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9",
+    "git_blob": "5e5610710fbcab3f85ee4c96838d38839bf3920c"
   },
   {
     "path": "crates/runtime/src/management/tests.rs",
-    "bytes": 3890,
-    "sha256": "42d39a5e4a1e8ec9e5d8c7fdb137846a316221658bab92be9465cdf2b27487ac",
-    "git_blob": "1aecb65663786f28a7cdf4200521430bfcda3df5"
+    "bytes": 6284,
+    "sha256": "f4ace8af102cd7936cf459620cf0cc230ad3f052cacb7d8b22b05e3bb225a7ea",
+    "git_blob": "3c58e6ff0766a486000a37c1e6c0bafcd85bfd07"
   },
   {
     "path": "crates/runtime/src/service.rs",
-    "bytes": 11400,
-    "sha256": "431f33257fe5a4583c84f5cfd9b1455da1a57417f7e8bc4c6e29df9d4f098003",
-    "git_blob": "e391843d634d886c57308f390ea78ae014f4fef1"
+    "bytes": 13549,
+    "sha256": "f467b7f96267e077fd92a23730972c3e925b8f74c673f18cee0decde10995eef",
+    "git_blob": "df8adb89cd3d1aba823de6612afbdd7b03dc7c69"
   },
   {
     "path": "crates/runtime/src/service/lifecycle.rs",
@@ -181,9 +193,15 @@
   },
   {
     "path": "crates/runtime/src/tests/service.rs",
-    "bytes": 11126,
-    "sha256": "248a93f1186a3aefcd7aacd71f11256001e261a91f36ca2171c58ad25ee4be4b",
-    "git_blob": "e99154f3bbfce5e2b9b860ba6bc5c44c4a2ba2e5"
+    "bytes": 11146,
+    "sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a",
+    "git_blob": "5a77999c22eec73ad94a22caa60b229f752f0db8"
+  },
+  {
+    "path": "crates/runtime/src/tests/service/settings_operator.rs",
+    "bytes": 6694,
+    "sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70",
+    "git_blob": "f3a8d70500edba60083fd49280d2076cce1c49a5"
   },
   {
     "path": "crates/runtime/src/tests/settings.rs",

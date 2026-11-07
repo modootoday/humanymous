@@ -426,3 +426,26 @@ exact names/counts with exact-source --list and independently attempt both
 harnesses; ignored/filtered/missing cases fail. This is source-authored inventory,
 not executed coverage or full product/human/TLS qualification. CI consumes this
 single data source so owner test additions cannot silently drift hardcoded totals.
+Resource operator source WIP (NOT_RUN): `ServiceHost::bind_with_operator` requires
+separate observer/operator Credentials and actual externally witnessed durable
+settings. Same-credential or missing-premise profiles refuse before custody.
+Native POST `/management/v0.1/settings/commit` accepts only exact scope, expected
+revision and bounded OperationalSettings; existing header/CSRF/native-peer checks
+apply. Defaults remain read-only. No scoring or destructive control route exists.
+
+A queue of capacity1 carries the actual LocalContext into the serialized app
+accept loop. Commands run between requests, recheck native deadline/cancellation
+and the service stop watch throughout durable commit and before applying, then
+invalidate sessions/update resources and current management profile. CAS failures
+are non-mutating. Ambiguity poisons and terminates serving; no retry or successful
+receipt. Receiver scope drops queued contexts before management drain joins;
+Application holds store custody through final host audit flush. Both plain/TLS
+loops use this owner. Operator role cannot use observer reads.
+
+New pure role/scope/header/no-scoring negative and Unix actual IPC/witness/CAS/
+capacity/invalidation/restart cases are authored only. The actual case verifies
+capacity32 admits32 fresh sessions then rejects the next, not only JSON metadata.
+The witness is a real same-process durable component fixture, not independently
+deployed. Source inventory is now44 common plus4 Unix library cases (48Unix/
+44Windows), plus native_process1. No execution occurred in benchmark quiet window.
+Actual cancellation/crash/failure-matrix and Windows operator pilots remain open.

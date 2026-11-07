@@ -1,4 +1,4 @@
-//! Experimental loopback application/session owner. No browser or TLS claims.
+//! Loopback application/session owner; component support is not product qualification.
 pub mod application;
 pub mod browser;
 pub mod configuration;

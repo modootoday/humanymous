@@ -19,7 +19,8 @@
     "explicit-native-bounded-streaming",
     "native-witnessed-settings-store-and-committed-apply",
     "shared-full-readiness-builder",
-    "tls-h1-joined-ingress-consumer-WIP"
+    "tls-h1-joined-ingress-consumer-WIP",
+    "native-resource-operator-serialized-CAS-WIP"
   ],
   "authored_native_fixture_test_functions": 2,
   "current_source_executed_tests": 0,
@@ -32,7 +33,7 @@
   "formatter": "passed",
   "public_spec": {
     "errors": 0,
-    "existing_unrelated_binary_warnings": 1
+    "warnings": 0
   },
   "required_collector": "422-unqualified",
   "raw_tls_h2": "tls-h1-consumer-WIP-not-run; plaintext-rawTLS-and-all-H2-required-routes-422",
@@ -46,6 +47,7 @@
   "new_hosted_only_unix_lifecycle_fixture_functions": 2,
   "new_pure_stream_profile_fixture_functions": 5,
   "new_hosted_only_stream_and_quota_tcp_fixture_functions": 2,
+  "fixture_count_note": "Legacy category counts are historical; qualification-contract.json owns exact current target/case inventories, not executed coverage",
   "historical_local_709b0e2": {
     "runtime_commit": "709b0e23036011fb3a58d25a3d67c38e28e603a6",
     "checkout_head_at_start": "bfab3fd77d688dcd7d9ba439cbe7162f1b110e96",

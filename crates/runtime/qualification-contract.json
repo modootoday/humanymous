@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 46,
-      "macos": 46,
-      "windows": 43
+      "linux": 48,
+      "macos": 48,
+      "windows": 44
     },
     "common_test_names": [
       "configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
@@ -26,6 +26,7 @@
       "http::tests::strict_framing_rejects_smuggling_and_normalization",
       "management::tests::observer_refuses_browser_authority_ambiguous_headers_and_mutations",
       "management::tests::observer_requires_native_peer_independent_credential_exact_scope",
+      "management::tests::operator_resource_change_requires_its_own_credential_scope_and_native_envelope",
       "management::tests::settings_view_is_observer_only_and_cannot_be_used_for_mutation",
       "service::outcome::tests::failure_accounting_preserves_both_observed_phases_without_secret_errors",
       "service::readiness::tests::standalone_expected_profile_has_complete_owned_fact_defaults",
@@ -58,6 +59,7 @@
     ],
     "unix_extra_test_names": [
       "tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",
+      "tests::service::settings_operator::native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
       "tests::service::unix_closed_shutdown_controller_cannot_report_stopped",
       "tests::service::unix_service_management_drains_before_custody_release"
     ]

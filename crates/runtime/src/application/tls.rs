@@ -23,6 +23,7 @@ impl Application {
             return Err(io::Error::other("loopback only"));
         }
         let mut admission = Admission::new(self.config.rate_per_second);
+        let mut commands = self.take_settings_commands();
         let mut admission_rate = self.config.rate_per_second;
         loop {
             if shutdown.borrow().is_some() {
@@ -32,6 +33,10 @@ impl Application {
                 biased;
                 changed = shutdown.changed() => {
                     changed.map_err(|_| io::Error::other("shutdown controller closed"))?;
+                    continue;
+                }
+                command = settings::next_command(&mut commands) => {
+                    self.apply_settings_command(command, &shutdown)?;
                     continue;
                 }
                 accepted = listener.accept() => accepted?,

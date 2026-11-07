@@ -22,21 +22,21 @@ dual-control and missing-required fail-closed remain invariant.
 
 | ID | Requirement / accepted contract | Owner / prerequisite | Current status and acceptance |
 | --- | --- | --- | --- |
-| R01 | Shared14-field browser codec + counter ACK | root integrity;53abb0b/fabed20 | Root source-validated; runtime reuse pending; fixed byte/HMAC vectors, no copy |
+| R01 | Shared14-field browser codec + counter ACK | root integrity;53abb0b/fabed20 | Runtime consumes shared APIs and compiled at709b0e2; actual current-source browser/ACK join pending; no copied codec |
 | R02 | Explicit cookie-free browser session/collect/protected profile | runtime;R01 and normal lane claim | Source implemented, latest source tests NOT_RUN; actual shared-client nativeTCP fixtures authored, hosted execution pending |
 | R03 | Fresh collection provenance/coverage | root collector + runtime join | Contract pending; required.collector422; actual epoch/version/coverage vs server time/counter separation |
 | R04 | Actual browser Fetch/one-flight/ACK/body/abort lifecycle | root collector + runtime server | Pure client validated by root; actual join pending; actual browser and human/keyboard/AT separate |
-| R05 | Shared response-head/framing and fidelity | runtime | Partial source for ACK strip/reframe, HEAD/204/304 and partial-write close; latest validation NOT_RUN; full framing/stream work remains |
-| R06 | Explicit bounded response streaming | runtime;R05 | Source native bounded stream wired; pure/hosted incremental fixtures NOT_RUN, actual backpressure/abort/drain negatives pending; browser ACK stream separate |
-| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Native TrustedSnapshot/journal/committed apply and restore source implemented; pure settings4 pass at709b0e2; hosted durable restore NOT_RUN; operator writes still refused |
-| R08 | Bounded session/global abuse admission | runtime | Source global/session/capacity/serialized concurrency implemented; pure and hosted429fixtures NOT_RUN; no client-fingerprint identity authority |
-| R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Shared native transport qualified in its scope; runtime observer handler source implemented NOT_RUN; native IPC/peer/credential/RBAC/CSRF/scope negatives pending |
+| R05 | Shared response-head/framing and fidelity | runtime | Buffered/stream head parsing and bounded chunk/EOF source wired; HTTP10 pure passed709b0e2; actual fidelity/failure matrix pending |
+| R06 | Explicit bounded response streaming | runtime;R05 | Native stream wired; in-memory stream4 plus profile pure passed709b0e2; actual backpressure/abort/drain pending; browser ACK stream separate |
+| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Native TrustedSnapshot/journal/apply/restore and resource operator queue source wired; settings4 pure pass at709b0e2; new operator source/actual IPC and crash matrix NOT_RUN; default hosts read-only |
+| R08 | Bounded session/global abuse admission | runtime | Source global/session/capacity/serialized concurrency implemented; quota2 pure passed709b0e2; actual429/capacity fixtures pending; no client-fingerprint identity authority |
+| R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Observer3 pure passed709b0e2; operator source wired WIP; actual IPC/peer/credential/RBAC/CSRF/scope and shutdown negatives pending |
 | R10 | Signed destructive controls and state effects | audit issuer + runtime | Audit primitives implemented; runtime join pending; exact two-party/one-use/target/expiry/restart/failure tests |
 | R11 | Accessible Pass recovery + shared Engine fusion | runtime; shared challenge/root browser | Not implemented; no motor/speed gates or confirmed-human training; real input/AT separate |
 | R12 | External witness library injection + deployment transport | audit/runtime/Compose | Audit client/service verified in component scope; runtime typed injection source implemented21b6c4b NOT_RUN; independent deployment remains unqualified |
-| R13 | Actual TLS/H1 original capture | runtime + narrowly approved network paths | Joined PendingHandshake/complete-request owner source WIP NOT_RUN; serving/engine/post-audit liveness and hosted pilot pending; no rawTLS readiness claim |
+| R13 | Actual TLS/H1 original capture | runtime + narrowly approved network paths | Joined PendingHandshake/Application/ServiceHost source80b38ee consumes capture137e633c; native buffered capability only, new source/actual TLS pilot NOT_RUN; no product qualification |
 | R14 | Complete H2 frame/HPACK/per-stream capture and server | runtime/network;R13+binding | Required follow-up; no H1-to-H2/fullM2 success inference |
-| R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Source implemented, NOT_RUN; real lifecycle/failure/lock-release tests pending, synchronous I/O limits explicit |
+| R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Readiness/budget/outcome pure passed709b0e2; new source and actual lifecycle/failure/lock-release pending; synchronous I/O limits explicit |
 | R16 | Actual CLI/system-service connection | CLI/runtime;R15+boot credential provider | Pending; signed descriptor/artifact/nonce, actual OS lifecycle, no unattended claim before credentials |
 | R17 | Full source-bound product qualification | root/Compose/wargame/delivery/runtime | Pending; Docker full topology + actual effect/audit + ordinary human ALLOW/keyboard/AT; component results separate |
 
@@ -518,3 +518,21 @@ provisional until exact-source --list agrees; no adaptive expected denominator.
 Capture check_h1_idle source checkpoint is committed by its owner. Runtime
 consumer will checkpoint source NOT_RUN during Root benchmark quiet window;
 actual TLS fixture still needs approved dev-dependency graph window.
+R07 management operator source WIP: distinct observer/operator credentials,
+pre-custody role collision/missing-witness checks, native exactscope resource-only
+commit envelope and bounded queue1. Both plain/TLS accept loops serialize commands
+between requests. Actual LocalContext remains attached through stage/witness/
+finalize/apply and is rechecked; failed ambiguous mutations poison/stop serving.
+Receiver scope drops queued contexts before management drain; store remains held
+through final audit flush. Shared observer profile reports committed resource
+values/revision. Default hosts stay read-only and R10 destructive controls absent.
+One pure role/native-envelope/no-scoring negative fixture and one actual Unix
+IPC/witness/CAS/session invalidation/restart fixture authored NOT_RUN. Updated
+source inventory common44+Unix-extra4=>Unix48/Win44 plus native_process1. No Cargo,
+actual native execution, common manifest/lock/toolchain changes during quiet.
+
+Operator fixture additionally exercises actual capacity:32 fresh sessions succeed
+and the33rd rejects429 after the committed capacity change; old session rejects401.
+Observer response remains writable=false even when operator_available=true. Scope
+still excludes destructive controls. Direct service stop watch and monotonic
+command wall-time checks supplement native LocalContext throughout commit/apply.

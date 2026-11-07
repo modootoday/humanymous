@@ -57,6 +57,15 @@ pub(super) fn validate_request(
     {
         return Err(Rejection::new(403, "management_observer_route"));
     }
+    validate_headers(request)?;
+    let presented: ManagementScope = serde_json::from_slice(&request.body)
+        .map_err(|_| Rejection::new(400, "management_scope"))?;
+    if presented != *scope {
+        return Err(Rejection::new(403, "management_scope"));
+    }
+    Ok(())
+}
+pub(super) fn validate_headers(request: &LocalRequest) -> Result<(), Rejection> {
     let mut seen = std::collections::HashSet::new();
     let mut host = None;
     let mut content_type = None;
@@ -85,11 +94,6 @@ pub(super) fn validate_request(
     }
     if request.body.len() > 8192 {
         return Err(Rejection::new(413, "management_body_size"));
-    }
-    let presented: ManagementScope = serde_json::from_slice(&request.body)
-        .map_err(|_| Rejection::new(400, "management_scope"))?;
-    if presented != *scope {
-        return Err(Rejection::new(403, "management_scope"));
     }
     Ok(())
 }

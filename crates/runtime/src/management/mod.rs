@@ -1,4 +1,5 @@
 //! Separate native management authority; application and browser routes never enter.
+mod operator;
 mod policy;
 use crate::{Rejection, configuration::Configuration, service::ShutdownRequest};
 use humanymous_authority::{
@@ -6,9 +7,15 @@ use humanymous_authority::{
     decision::NativePeer,
     transport::{Limits, Listener, LocalContext, LocalHandler, LocalRequest, LocalResponse},
 };
+pub use operator::OperatorPolicy;
+pub(crate) use operator::SettingsCommand;
 pub use policy::{ManagementPolicy, ManagementScope};
-use std::{io, sync::Arc};
-use tokio::sync::watch;
+use std::{
+    io,
+    sync::{Arc, RwLock},
+};
+use tokio::sync::{mpsc, watch};
+pub(crate) type SharedProfile = Arc<RwLock<serde_json::Value>>;
 
 /// A bound management listener plus its independent process-lifetime credential.
 pub struct Management {
@@ -20,15 +27,26 @@ struct Handler {
     credential: Arc<Credential>,
     peer: NativePeer,
     scope: ManagementScope,
-    profile: serde_json::Value,
+    profile: SharedProfile,
+    operator: Option<operator::Operator>,
 }
 impl Management {
     pub(crate) fn bind(
         policy: ManagementPolicy,
         configuration: &Configuration,
-        profile: serde_json::Value,
+        profile: SharedProfile,
+        operator: Option<(OperatorPolicy, mpsc::Sender<SettingsCommand>)>,
     ) -> io::Result<Self> {
         let credential = Arc::new(policy.credential);
+        let operator = operator
+            .map(|(policy, commands)| -> io::Result<operator::Operator> {
+                policy.validate_observer(&credential)?;
+                Ok(operator::Operator {
+                    credential: Arc::new(policy.credential),
+                    commands,
+                })
+            })
+            .transpose()?;
         let peer = match &policy.peer {
             humanymous_authority::configuration::Peer::Unix { uid } => NativePeer::Unix(*uid),
             humanymous_authority::configuration::Peer::Windows { pid, .. } => {
@@ -43,6 +61,7 @@ impl Management {
                 peer,
                 scope: ManagementScope::from_scope(&configuration.scope),
                 profile,
+                operator,
             },
             drain_ms: policy.stop_budget.request().drain_timeout().as_millis() as u64,
         })
@@ -51,6 +70,12 @@ impl Management {
     /// Trusted supervisor provisioning only; never put this value in public logs.
     pub fn credential_for_private_provisioning(&self) -> &str {
         self.handler.credential.expose_for_provisioning()
+    }
+    pub(crate) fn operator_credential_for_private_provisioning(&self) -> Option<&str> {
+        self.handler
+            .operator
+            .as_ref()
+            .map(|operator| operator.credential.expose_for_provisioning())
     }
 
     pub(crate) async fn run(
@@ -87,20 +112,28 @@ impl LocalHandler for Handler {
         context: LocalContext,
     ) -> Result<LocalResponse, Rejection> {
         context.check()?;
+        if request.target == "/management/v0.1/settings/commit" {
+            return self.change_settings(request, context).await;
+        }
         self.authorize(&request, context.peer())?;
         context.check()?;
+        let profile = self
+            .profile
+            .read()
+            .map_err(|_| Rejection::new(503, "management_profile_unavailable"))?
+            .clone();
         if request.target == "/management/v0.1/settings" {
             return LocalResponse::json(
                 200,
-                &serde_json::json!({"protocol":"humanymous.management/0.1","scope":self.scope,"settings":self.profile.get("operational"),"writable":false}),
+                &serde_json::json!({"protocol":"humanymous.management/0.1","scope":self.scope,"settings":profile.get("operational"),"revision":profile.get("operational_revision"),"writable":false,"operator_available":self.operator.is_some()}),
             );
         }
         LocalResponse::json(
             200,
             &serde_json::json!({
                 "protocol":"humanymous.management/0.1", "scope":self.scope,
-                "role":"observer", "profile":self.profile,
-                "settings_writable":false, "destructive_controls":false,
+                "role":"observer", "profile":profile,
+                "settings_writable":false, "operator_available":self.operator.is_some(), "destructive_controls":false,
             }),
         )
     }

@@ -590,3 +590,37 @@ exact-source --list inventory against it, attempt both targets even if one fails
 and retain zero ignored/filtered requirements. Source-authored inventory is not
 execution evidence and mismatches fail rather than adapting expected coverage.
 This inventory does not grant full product/browser/human/TLS qualification.
+R07 native resource operator profile: ServiceHost::bind_with_operator requires
+existing ManagementPolicy, a distinct OperatorPolicy credential, durable
+SettingsPolicy and pinned external witness before opening custody. Both roles
+use the same configured actual native peer, but independent constant-time checked
+credentials; neither session nor observer capability can write. Identical role
+credentials refuse before state opens. POST /management/v0.1/settings/commit
+accepts only {scope,expected_revision,settings}, exact five-field scope and the
+existing bounded native-only header envelope. Unknown fields/scoring values,
+foreign scope, unsafe revision and wrong method/target refuse.
+
+A bounded one-command queue carries the actual LocalContext to the serialized
+Application, between complete application requests. Recheck context/epoch before
+preparing CAS, throughout stage/audit/witness/finalize and immediately before
+apply. Store commit receipt alone permits resource application; invalidate old
+sessions, apply fields and update the management profile before returning the
+nonsecret snapshot. CAS/precondition rejection does not stage a mutation.
+Ambiguous post-preparation persistence/application failure poisons the serving
+epoch and terminates its listener, with final audit flush attempted. No automatic
+retry or successful receipt after expired/cancelled context. A dropped response
+can leave a durably applied change; the parent revision remains consumed.
+
+The accept-loop scope owns the command receiver, so shutdown drops queued native
+contexts before management drain joins. Application retains SettingsStore custody
+through the final host flush. Observer views use the shared current profile;
+operator credential cannot read observer routes. Ordinary host constructors stay
+read-only. This profile never authorizes scoring, kill, erasure, rotation or bans;
+those destructive effects still require retained dual-control permits. Actual
+IPC/witness/CAS/restart/cancellation/crash qualification remains required.
+The command rechecks the service stop watch as well as LocalContext at every
+persistence/application boundary and enforces nondecreasing trusted wall time
+within the command. Session epoch observation is repeated before/after apply;
+resource mutation cannot revive a poisoned/rolled-back epoch. Observer settings
+responses remain writable=false and separately indicate operator_available;
+role availability never changes the observer's permission.

@@ -1,4 +1,5 @@
-//! Hosted-only actual Unix IPC/listener/custody boundaries, not pure local units.
+//! Actual Unix IPC/listener/custody boundaries; execution requires allocation.
+mod settings_operator;
 use super::*;
 use crate::{
     management::{ManagementPolicy, ManagementScope},
