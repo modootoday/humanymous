@@ -1,0 +1,204 @@
+{
+  "schema": "humanymous.cli-structural-handoff/1",
+  "observed_utc": "2026-11-07T20:09:48.4033348+00:00",
+  "head": "8affb45aeb4d31330fda8f2e5135043c6b252c05",
+  "source_qualification": "cf64468ce0d2d9ff22fc615b8ec5250d1ea3065d pins f20db16e; historical source-specific scope only",
+  "owned_dirty_paths": [],
+  "active_compiler_process_handles": [],
+  "active_target_leases": [],
+  "path_moves_in_flight": [],
+  "files": [
+    {
+      "path": ".spec/plan/20261107080000-cli-installation.plan.md",
+      "sha256": "59cfebd6206db917e4ce45875929bd96f34988621677c1907444ebca021958ce",
+      "git_blob": "738adf2136947bbc1ac95a407b11bbc07792d753",
+      "worktree_matches_git": true
+    },
+    {
+      "path": ".spec/plan/20261107102000-cli-installation-observer-lifecycle.plan.md",
+      "sha256": "189cdbb2266db6adcf92598fff145e1154da1de316166f785e86582d718bba4d",
+      "git_blob": "eb5411ef6b8610d897a2b5de7fd6d19471f71328",
+      "worktree_matches_git": true
+    },
+    {
+      "path": ".spec/sot/cli-installation.sot.md",
+      "sha256": "93a3213fd4bfcc694771488f0dd7331486b7f6c522e37f4b9a1ec4c3515beec9",
+      "git_blob": "deb5ae23a74021ca0c8e130a6fd12472c94e268c",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/Cargo.toml",
+      "sha256": "f2826e42817e4ed6614ba9cd0e763e17a8859d77056452fa196118e09ecb0eda",
+      "git_blob": "19b74b172753c939ed5111708dee45be4c245b48",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/INTEGRATION.md",
+      "sha256": "30f574a9311570115a16d04c8c965cc4cd6c5d827cdabfc7506e1429d109991b",
+      "git_blob": "fd97bc277b1035fd2e00f7229b35de846035baa0",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/examples/service_evidence.rs",
+      "sha256": "1cea916877af8941fa668fe0c17e3407cd8a0aae21597b490fc31f205c9f3076",
+      "git_blob": "2ffc93b1a6dda1ffe7d63f40192cf5f9f71ca344",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/bin/service_fixture.rs",
+      "sha256": "be90a01df7aca4e229916d11f53f593cadd8994ed60ef467cdb51bc80e3749f9",
+      "git_blob": "fda1a9274002c3b5530c151b7d6c1e50e0d7af2e",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/commands.rs",
+      "sha256": "abac4c2db93b854c0c935de9d55eb22775494f4eff3d5e459f0e13a6f1a294f6",
+      "git_blob": "8f81ee4933dfc873c812a86372bc84760cb73aeb",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/installation/mod.rs",
+      "sha256": "48e7240424efac2645f8a3ebd8a7b302e8a384d7a4e375e78575fbff7024d3d1",
+      "git_blob": "337256f7c2fcb62b96919d7b515bc4572b3e3726",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/installation/permissions/mod.rs",
+      "sha256": "a1ef82a31d1c8d3b71ac50f5d55baedba1ca8c1202915f778b8a89db2c46e209",
+      "git_blob": "12b9cc4d0a9522146b8cfaf933db3679f7311fc1",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/installation/permissions/windows.rs",
+      "sha256": "50eb903dc102500c00083ec67182c1e29237bc4e1566618dbfec13fec2af8181",
+      "git_blob": "27bd9b4497095f4b81a5af214f7745041f27f0f5",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/installation/tests.rs",
+      "sha256": "d650455565c62efda21339adfff87fef5a81ce41ba03d5c74de8cf2d31fddc01",
+      "git_blob": "b84d73206d5c8bd223baedcda5ab0d26d9db3014",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/lib.rs",
+      "sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+      "git_blob": "28076078f2894cb58cb556cc78161866e1f59f06",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/main.rs",
+      "sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "git_blob": "a00c5999fb4e62e90328bd9864af7d191ea2fcd5",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/release.rs",
+      "sha256": "31a7e5a29b65d517958c8ddb565c05f3e902ba11da55dd79a4017d86b0389c35",
+      "git_blob": "fb49d19954cafb63b97287fd49fe02cf1dfd3ba7",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/activation.rs",
+      "sha256": "94c4286cf2c7313ccfb49b5cf2698e74d89d3e5c0c9e615430d5b9706559f138",
+      "git_blob": "07d72c61e4925e58f364c812d1f3c4b126f6ce98",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/control.rs",
+      "sha256": "c9cf54c2ad318eb1f5852bbad6640146fbe73368011ed284e27afae6c68ed160",
+      "git_blob": "bb4b14202f6daf76bd85227a4598b271b5605643",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/failure.rs",
+      "sha256": "3e31ebbbd7c215bcde5c4f495a7471636558d8ef669ae62e0e4887a78699ad6c",
+      "git_blob": "d8bcfd59a426df46c8e63cfc4abdc23044fed4da",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/input.rs",
+      "sha256": "241b01120bffc81c9418a3e02d275d929155d611ffca801352421b1d83e44df7",
+      "git_blob": "49dddb2a48ecb4e53a5bf5588ae552811b5a6b7a",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/mod.rs",
+      "sha256": "9a047932d789a3a0403f476a117bc658ac49648a02c7c6630ec7a264fcabc4df",
+      "git_blob": "832ac674a2b2f34ecb94c2e993fd32977782e6cf",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/pilot.rs",
+      "sha256": "efd2a584e9d32d1ebb802ff9ece04c3fcabf914cbffcb11f5b5e05e36ca90d12",
+      "git_blob": "74f046f7f001e13d065ef40cc0ca27ea6be720a3",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/plan.rs",
+      "sha256": "b5672a15a5c0ff9582f45a0d514297001a76a251002f98b40fb80611557cb1b5",
+      "git_blob": "827cd4a2c89c35dc98207c2aaeb9a760a6cc97b2",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/platform.rs",
+      "sha256": "fb611870c133341cd0beaffe8101ae9b3af9f97ecefce88027e271b6f577d25c",
+      "git_blob": "1f7066a5d723d1d03cb628921784bb099ee95df0",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/runtime_host/watchdog_fixture.rs",
+      "sha256": "75bb1f7fde5ccff31bc0e51af66b798b3f273e8a586439d54408ff96374d6719",
+      "git_blob": "494c90d333811df4a917c49fef3188ba5a1a0474",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/service/backend.rs",
+      "sha256": "0e819678da2f00d3eb9109869e112e359377fd4f70fd6609bc31481e85ca5680",
+      "git_blob": "df66fc38efaa89e3aa9e97bcea20a21b51e5ab12",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/service/backend/windows.rs",
+      "sha256": "243ca32336fbd76736fd5935573309e1fa96fcb3351b688aaaddf8776d5675e8",
+      "git_blob": "4c820a0af3780f800ac313322d8296b29a349d71",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/service/mod.rs",
+      "sha256": "7edd0fad1c4f3651212b60d7c851e05853edde0471da0c21d7f963cd336ab010",
+      "git_blob": "b6c2c6360fcc77838d89b0e2831d78aaa546e70b",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/service/storage.rs",
+      "sha256": "ebea0785d60f51ca347608d313a214f3b841bbd90ff76015f9cbe5a250a10c2e",
+      "git_blob": "734a78934c959342cec316da804f9bf53639d8f4",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/src/service/tests.rs",
+      "sha256": "65cd703f5cb67f361c1557f6a1ae4906cfe54409acf2ebf28fc0dccdaaa301df",
+      "git_blob": "8a2197b39bfd90a24421100f981de828ad74a894",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/tests/runtime_service_process.rs",
+      "sha256": "74a988d87f19d31350807ac91c09964872f3d47f8d35cba67e73d6f179ac3c2d",
+      "git_blob": "fc53051688bdb540c90d9c136e2f0f0ad416b086",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/tests/service_process.rs",
+      "sha256": "ed1c830f9724d1d20696ffbf72628a64a7f14c0e08209945e22048f99d8f8601",
+      "git_blob": "926aa08a75e7684c373a9be881b55f4496a59644",
+      "worktree_matches_git": true
+    },
+    {
+      "path": "crates/cli/tests/watchdog_boundary.rs",
+      "sha256": "b6149684beae9fbdb3daaab5b2b4eff9ca89ab52295414859b21b8dbc59efbab",
+      "git_blob": "68c45a399e8837c120409f3dc5991eab9ebf1c8f",
+      "worktree_matches_git": true
+    }
+  ]
+}

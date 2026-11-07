@@ -409,6 +409,14 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Accepted eight-public-package transition handoff:
+[[evidence:root/20261107200932]] pins32current owned files, no dirty source/live
+handles/target leases/path moves, existing API/feature/authority hazards and
+required requalification. Root alone sequences the CLI freeze/path/common graph
+handoff after earlier layers; no autonomous directory/package/import changes.
+Historical proofs stay source-bound. Local service/account mutations remain
+prohibited. The native-cli lane remains active until Root's explicit transfer.
+
 Root subsequently allocated a distinct corrected-source run, recorded in
 [[evidence:root/20261107192208]]. New immutablef20workspace, explicit cache reuse
 and new lease: fmt/check/pure11/strictClippy all0; exact11passed/15filtered.
