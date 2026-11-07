@@ -203,11 +203,15 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             doc["on"]
                 .as_object()
                 .is_some_and(|triggers| triggers.len() == 2)
-                && doc["on"]["push"]["branches"] == json!(["codex/native-component-validation"])
+                && doc["on"]["push"]["branches"]
+                    == json!([
+                        "codex/native-component-validation",
+                        "codex/native-artifact-validation"
+                    ])
                 && input["type"] == "choice"
                 && input["default"] == "capture"
                 && input["required"] == true
-                && input["options"] == json!(["capture", "header"])
+                && input["options"] == json!(["capture", "header", "archive"])
                 && jobs.len() == 2
                 && jobs["component"]["needs"] == "preflight"
                 && jobs["component"].get("if").is_none()
@@ -215,7 +219,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 && jobs["preflight"]["timeout-minutes"] == 25
                 && jobs["component"]["timeout-minutes"] == 35
                 && jobs["component"]["env"]["HUMANYMOUS_NATIVE_COMPONENT"]
-                    == "${{ inputs.component || 'capture' }}",
+                    == "${{ inputs.component || (github.ref == 'refs/heads/codex/native-artifact-validation' && 'archive') || 'capture' }}",
             "native caller must retain closed targets and bounded preflight",
         )?;
         for job in ["preflight", "component"] {
@@ -1081,7 +1085,7 @@ mod tests {
             .unwrap()
             .1;
         assert!(document("component-validation.yml", &original).is_ok());
-        for mutation in 0..5 {
+        for mutation in 0..6 {
             let mut changed = original.clone();
             match mutation {
                 0 => {
@@ -1098,7 +1102,11 @@ mod tests {
                     )
                 }
                 3 => changed["jobs"]["component"]["needs"] = json!([]),
-                _ => changed["jobs"]["component"]["continue-on-error"] = json!(true),
+                4 => changed["jobs"]["component"]["continue-on-error"] = json!(true),
+                _ => {
+                    changed["jobs"]["component"]["env"]["HUMANYMOUS_NATIVE_COMPONENT"] =
+                        json!("${{ inputs.component || 'capture' }}")
+                }
             }
             assert!(document("component-validation.yml", &changed).is_err());
         }

@@ -6,6 +6,8 @@ use std::{
     fs,
     path::{Path, PathBuf},
 };
+mod native;
+pub use native::{native_artifacts, native_artifacts_bound};
 
 pub fn metadata(root: &Path) -> Result<Value> {
     serde_json::from_str(&command::text(
@@ -204,42 +206,6 @@ pub fn validated_crate(root: &Path, name: &str, version: &str) -> Result<(PathBu
 }
 pub fn image_sources(root: &Path) -> Result<()> {
     crate::image_candidates::shipping(root)
-}
-pub fn native_artifacts(root: &Path) -> Result<()> {
-    // Actual names are canonical in runtime/CLI INTEGRATION. These are bounded
-    // components, never invented server/gate aliases or release qualification.
-    let names = ["humanymous", "humanymous-runtime"];
-    let directory = root.join("target/delivery-artifacts");
-    fs::create_dir_all(&directory).map_err(|e| e.to_string())?;
-    let head = source::head(root)?;
-    let name = format!(
-        "humanymous-components-{}-{}-{head}.tar.gz",
-        std::env::consts::OS,
-        std::env::consts::ARCH
-    );
-    let file = fs::File::create(directory.join(&name)).map_err(|e| e.to_string())?;
-    let encoder = flate2::write::GzEncoder::new(file, flate2::Compression::default());
-    let mut archive = tar::Builder::new(encoder);
-    for binary in names {
-        let filename = format!("{binary}{}", std::env::consts::EXE_SUFFIX);
-        archive
-            .append_path_with_name(root.join("target/release").join(&filename), filename)
-            .map_err(|e| e.to_string())?;
-    }
-    archive
-        .append_path_with_name(root.join("LICENSE"), "LICENSE")
-        .map_err(|e| e.to_string())?;
-    let notices = crate::notices::append(root, &mut archive)?;
-    archive
-        .into_inner()
-        .map_err(|e| e.to_string())?
-        .finish()
-        .map_err(|e| e.to_string())?;
-    let notice_verification = crate::notices::verify_archive(&directory.join(&name))?;
-    write_json(
-        &directory.join(format!("{name}.manifest.json")),
-        &json!({"schema":"humanymous.native-components/1","source":source::snapshot(root)?,"archive_sha256":source::file(&directory.join(&name))?,"known_distribution_notices":notices,"known_notice_verification":notice_verification,"full_product_qualified":false,"release_ready":false}),
-    )
 }
 pub fn node(root: &Path) -> Result<PathBuf> {
     let folder = root.join("adapters/node");

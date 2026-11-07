@@ -2,7 +2,7 @@
 name: CI / Native components
 'on':
   push:
-    branches: [codex/native-component-validation]
+    branches: [codex/native-component-validation, codex/native-artifact-validation]
   workflow_dispatch:
     inputs:
       component:
@@ -10,7 +10,7 @@ name: CI / Native components
         type: choice
         required: true
         default: capture
-        options: [capture, header]
+        options: [capture, header, archive]
 permissions:
   contents: read
 concurrency:
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
-      HUMANYMOUS_NATIVE_COMPONENT: ${{ inputs.component || 'capture' }}
+      HUMANYMOUS_NATIVE_COMPONENT: ${{ inputs.component || (github.ref == 'refs/heads/codex/native-artifact-validation' && 'archive') || 'capture' }}
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       with:

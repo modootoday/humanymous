@@ -3,6 +3,7 @@ use crate::{Result, command, evidence, require, source, write_json};
 use serde_json::{Value, json};
 use std::path::Path;
 mod maintenance;
+mod native_archive;
 mod node_host;
 mod runtime;
 
@@ -234,7 +235,8 @@ fn native_target(kind: &str) -> Result<&'static str> {
     match kind {
         "capture" => Ok("capture"),
         "header" => Ok("header"),
-        _ => Err("native component target must be capture or header".into()),
+        "archive" => Ok("archive"),
+        _ => Err("native component target must be capture, header or archive".into()),
     }
 }
 pub fn native(root: &Path, kind: &str) -> Result<()> {
@@ -244,7 +246,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
     require(
         matches!(
             kind,
-            "capture" | "header" | "maintenance" | "runtime" | "node-host"
+            "capture" | "header" | "archive" | "maintenance" | "runtime" | "node-host"
         ),
         "unknown hosted component",
     )?;
@@ -270,6 +272,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
         "maintenance" => maintenance::run(root, &dir, &mut report),
         "runtime" => runtime::run(root, &dir, &mut report),
         "node-host" => node_host::run(root, &dir, &mut report),
+        "archive" => native_archive::run(root, &dir, &mut report, &before),
         _ => header(root, &dir, &mut report),
     };
     let after = source::snapshot(root)?;
@@ -290,9 +293,10 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
 mod tests {
     use super::*;
     #[test]
-    fn native_caller_accepts_only_the_two_owned_targets() {
+    fn native_caller_accepts_only_the_owned_targets() {
         assert_eq!(native_target("capture").unwrap(), "capture");
         assert_eq!(native_target("header").unwrap(), "header");
+        assert_eq!(native_target("archive").unwrap(), "archive");
         for value in [
             "",
             "node-host",

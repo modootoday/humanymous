@@ -1296,3 +1296,23 @@ cleanup-deadline or joined-reader proof: stop uses blocking wait and reader
 handles are not retained. No extraction implementation may infer reap/join or
 successful cleanup from Drop or a deadline label. Actual process wiring awaits
 an accepted supervision contract and the root-owned dependency lock handshake.
+
+The existing native component caller adds the closed archive choice and a
+dedicated codex/native-artifact-validation push branch. That branch selects
+archive, while the existing native-component branch retains capture by default.
+The two hosted jobs, existing preflight checks, read-only permissions and lack
+of automatic uploads/cache writes remain. Archive builds only the two explicit
+CLI/runtime release targets with Cargo JSON; no product binary is executed.
+The existing GNU timeout supplies an outer command ceiling, not descendant or
+reader cleanup qualification.
+
+The archive component requires exactly two matching compiler-artifact receipts,
+known package/version/manifest/source/executable paths, release profile and a
+single final successful build-finished message. Compiler logs remain private;
+source/checkpoint and individual binary hashes/sizes bind the receipt before
+packaging. Packaging checks those bytes again, verifies every archive member
+against its observed hash/size and rechecks source/binary stability. A standalone
+native-artifacts invocation without the owning build receipt explicitly records
+binary_build_source_receipt_verified=false; current HEAD alone is insufficient
+proof of a preexisting binary's build source. Even a bound archive is not full
+runtime, image, dependency-license or release qualification.

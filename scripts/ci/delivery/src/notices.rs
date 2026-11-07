@@ -4,6 +4,7 @@ use serde_json::{Value, json};
 use std::{io::Write, path::Path};
 
 mod archive;
+pub mod members;
 pub use archive::verify as verify_archive;
 
 const SOURCE: &str = "crates/audit/LICENSE-Go.txt";

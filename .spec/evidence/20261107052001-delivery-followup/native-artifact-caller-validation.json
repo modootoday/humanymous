@@ -1,0 +1,78 @@
+{
+  "schema": "humanymous.native-artifact-caller-validation/1",
+  "checkpoint_base": "9d0c0db985c4b345931abb4f03d548b9157577ef",
+  "archive_sha256": "d9cb2a6aeb9e1974ad888c684ab5025e261c1c23af8234acbd09ab34a98e2097",
+  "declared_overlays": 9,
+  "caller_sha256": "374c62604cdad0f9dc7c2d235214c92b37b7cf39560cf386d25052603f060b29",
+  "first_failure": {
+    "passed": 82,
+    "failed": 1,
+    "ignored": 0,
+    "filtered": 0,
+    "stage": "new Cargo receipt parser unit",
+    "cause": "toml::Value FromStr was used for a TOML document",
+    "downstream": "not_run",
+    "metadata_session": 85342,
+    "metadata_exit": 0,
+    "commands_chunk": "77833c",
+    "commands_exit": 1,
+    "private_index_sha256": "651b87d705b696f400b37a68225ce82cfa939bc68fe7ac193e70f19367ae62d0",
+    "closure_differences": 0
+  },
+  "correction": {
+    "scope": "Only switch to toml::from_str document API",
+    "parser_sha256": "5e147a490503beca3a16fd9bfb7166784604b7d8c7362342e40a9da5975abf34",
+    "checkpoint_sha256": "6ad2ee8fa9b100e78f2209d35eb46800c18627306eb72ab737019d2524c8b5ea"
+  },
+  "final": {
+    "passed": 83,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "metadata": 0,
+    "check": 0,
+    "strict_clippy": 0,
+    "policy": 0,
+    "actionlint": 0,
+    "fmt": 0,
+    "expected_shipping_rejection": 1,
+    "metadata_session": 59737,
+    "metadata_exit": 0,
+    "commands_session": 50522,
+    "commands_exit": 0,
+    "private_index_sha256": "f74f9b26e1ef238cc7b60251bc64fd9a4b2926ecd989b4f1574d7ca095ba789b"
+  },
+  "closure": {
+    "source_files": 2625,
+    "registry_packages": 105,
+    "registry_files": 3791,
+    "config_paths": 20,
+    "tool_binaries": 4,
+    "source_differences": 0,
+    "registry_differences": 0,
+    "config_differences": 0,
+    "tool_semantic_differences": 0,
+    "environment_differences": 0,
+    "working_overlay_differences": 0,
+    "registry_scope": "Reachable Windows metadata closure may overapproximate selected features"
+  },
+  "admission": {
+    "committed_percent": 81,
+    "free_physical_gib": 30.542648315429688
+  },
+  "scope": {
+    "pure_receipt_and_archive_member_tests": true,
+    "actual_release_binaries_built": false,
+    "actual_native_binary_archive": false,
+    "actual_image": false,
+    "product_binaries_executed": false,
+    "full_product_qualified": false,
+    "release_ready": false
+  },
+  "limitations": [
+    "Native artifact source preparation only; actual hosted build and produced binary archive remain not run.",
+    "Hashes bind a trusted source-stable build window; they are not hostile atomic file attestation or authenticated external provenance.",
+    "First tar/gzip stream of owned output only; no general extraction or concatenated/trailing stream safety claim.",
+    "GNU timeout is an outer command ceiling, not descendant or reader cleanup qualification."
+  ]
+}

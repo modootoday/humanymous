@@ -835,3 +835,46 @@ Only notice fixture gzip/tar bytes were exercised; actual native binary archive,
 image, process supervision and full-runtime qualification remain NOT_RUN. The
 verifier checks the known notice in the first tar/gzip stream and consumes its
 footer, not arbitrary trailing/concatenated archive integrity or safe extraction.
+
+Root selected the existing native component caller for the actual archive pilot,
+superseding the earlier image-preflight proposal. The image caller is restored
+unchanged; no two competing routes are implemented. The component workflow adds
+only a closed archive option, dedicated native-artifact branch and fixed default
+selection, keeping capture/header, preflight25/component35 and all old gates.
+The catalog technical identity/jobs/artifacts/concurrency remain unchanged.
+
+The archive controller builds explicit humanymous and humanymous-runtime bins
+with release/locked/Cargo JSON, requires exact typed artifact and final-success
+receipts, captures source stability and individual binary hashes/sizes, then
+packages through the same native archive implementation. The completed archive's
+members must match the observed bytes. Unbound direct packaging explicitly lacks
+a verified build-source receipt. CLI service fixture requires service-pilot and
+would already be skipped by default --bins; explicit --bin selection defines the
+two-target inventory rather than correcting an observed third build.
+
+Two new pure regressions cover Cargo receipt identity/profile/completion and
+archive member substitution/duplication/omission (expected83 total, NOT_RUN).
+Static actionlint passed. A transient Windows mapped-file error on formatting
+policy.rs was retried after it cleared; final formatting succeeded. No foreign
+process was stopped. Source candidate/typed helper diff needs root review and a
+new frozen warm-helper allocation before any hosted branch transaction. Actual
+release builds, native binary archive and image extraction/scan remain NOT_RUN.
+
+The first allocated D83 run stopped at82passed/1failed/0ignored/filtered: the
+new receipt parser used toml::Value FromStr for a document. No downstream check,
+Clippy or policy command ran after this failure. Full frozen source2625/registry
+3791/config20/tool4/env and liveoverlay9 remained unchanged. Private failure
+index SHA256 is651b87d705b696f400b37a68225ce82cfa939bc68fe7ac193e70f19367ae62d0.
+
+Only the parser API changed to toml::from_str. Root renewed D for the new frozen
+9d0c0db9 archive plus nine overlays, checkpoint6ad2ee8f. Actual83 then passed
+with zero failed/ignored/filtered; check/strict Clippy/policy/actionlint/fmt all
+zero and shipping rejection1 expected. Sessions59737(metadata) and50522(commands)
+ended0. Full source2625/registry105packages3791files/config20/tool4/environment
+and all nine live overlays had zero semantic differences. Admission81percent/
+30.543GiB free; locked/offline jobs1/incremental0 used exclusive delivery target,
+then D returned. Private final index SHA256 is
+f74f9b26e1ef238cc7b60251bc64fd9a4b2926ecd989b4f1574d7ca095ba789b.
+No actual release binaries, native binary archive, Docker or product process ran.
+Caller/helper source is ready for a literal committed-candidate review; no
+branch push or hosted dispatch has been performed for this archive profile.

@@ -60,7 +60,7 @@ Dedicated callers isolate one boundary without changing the full release gate:
 
 | Workflow | Owning invocation and scope |
 |---|---|
-| `component-validation.yml` | `native-component capture` runs the exact five hosted transport cases. Manual `header` uses the existing cbindgen and C11/C++11 layout verifier; dynamic ABI remains separate. |
+| `component-validation.yml` | `capture` runs five hosted transport cases; `header` checks cbindgen/C11/C++11 layouts. The dedicated native-artifact branch selects `archive`: build two release binaries, bind Cargo JSON/source/hash receipts, package and inspect actual archive contents without executing the binaries. |
 | `go-validation.yml` | `go-product` consumes the exact eight-case bounded Go requirement. |
 | `browser-product-validation.yml` | `pilot browser-product` retains the full requirement and its nonzero failure/blocked exit. |
 | `mount-probe-validation.yml` | `mount-probe` collects four fixed custody mount observations. Complete refusals are diagnostic data, never custody or product qualification. |

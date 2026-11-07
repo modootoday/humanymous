@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T14:22:28Z
+updated: 2026-11-07T14:41:52Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -24,6 +24,7 @@ files:
   - {path: distribution-notice-validation.json, sha256: 6e4d2694ff2b144e9ca18d1b326f9335aa300adf314d35a2cfc5800a298b391a, bytes: 2223, store: repo}
   - {path: browser-49394e38-summary.json, sha256: 87348a9cbf4bf927e78a81c6ed6ad894e31e6e4ad745e7a90d5bb506f35f53af, bytes: 4770, store: repo}
   - {path: native-notice-verifier-validation.json, sha256: 87e637e4bbbe6b88d2e766026ad72b23d5f34b4ae5cc958d6a4564a108aae233, bytes: 2097, store: repo}
+  - {path: native-artifact-caller-validation.json, sha256: 52ccd28684bac0cd13146d08311c6ae4687816a04a96885527dc222b06f63045, bytes: 2830, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -363,3 +364,22 @@ Its scope is the known notice in the first tar/gzip stream of owned output;
 general extraction or trailing/concatenated stream integrity is not claimed.
 Actual CLI/runtime binary archive, final-image extraction/scan and process helper
 cleanup qualification remain NOT_RUN. D returned; no Docker/SDK/binary execution.
+
+## Native artifact caller source validation
+
+native-artifact-caller-validation.json preserves the first D83 parser failure
+(82passed/1failed, downstream NOT_RUN), its unchanged closure and separate
+corrected actual83/0failed/ignored/filtered result. Only toml::from_str replaced
+Value FromStr for document parsing. Both checkpoints use immutable9d0c0db9 plus
+nine declared overlays; final source2625/registry105packages3791files/config20/
+tool4/environment/liveoverlay9 all had zero semantic differences. Check, strict
+Clippy, policy, actionlint and fmt passed; expected shipping rejection1 remained.
+Metadata59737 and commands50522 ended0, then D returned. Final private index is
+f74f9b26e1ef238cc7b60251bc64fd9a4b2926ecd989b4f1574d7ca095ba789b;
+first failure index is
+651b87d705b696f400b37a68225ce82cfa939bc68fe7ac193e70f19367ae62d0.
+
+This is caller/receipt/member-verifier source validation, not an actual native
+binary archive or image run. Source-stable before/after hashes are not hostile
+atomic file attestation. First-stream archive scope and outer-timeout-only
+process limitations remain explicit; full-product/release qualification is false.
