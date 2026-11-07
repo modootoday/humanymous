@@ -116,7 +116,7 @@
     {
       "id": "CA-SECRET-01",
       "owner": "authority",
-      "state": "fixed-source 2ca6e4fa; first current-graph validation dependency compile failure before tests; fresh scoped qualification OPEN",
+      "state": "closed scoped encoded-field ownership; 2ca6e4fa source/actual22/check-Clippy-fmt/durable14ad4378 independently re-audited",
       "fields": [
         "Audit.hmac_key_hex",
         "Audit.signing_seed_hex"
@@ -127,7 +127,7 @@
       "id": "CA-HISTORY-LAYOUT-01",
       "owner": "network/root",
       "priority": "P2",
-      "state": "fixed-source e1ed50ce independently reviewed; actual allocation-free regressions and scoped checks OPEN",
+      "state": "closed scoped constructor layout; source correction and actual72/check-Clippy-fmt/durable306eedc8 independently re-audited",
       "private_review_sha256": "1d3d6ec6ca1c010043e8864f59089e8c6bf856236bb77b53fe74afc851d62352",
       "actual_large_allocation_or_panic_observed": false
     },
@@ -311,5 +311,13 @@
     "whole_native_provider_qualified": false,
     "authority_key_actual_tests_executed": 0,
     "authority_key_first_command_exit": 101
+  },
+  "followup_key_layout_closures": {
+    "key_private_review_sha256": "9c37c602000fb553ea7bb99c83cbdc5cbfaa11f087a50c8f9cb0465ff372f342",
+    "layout_private_review_sha256": "30b88d93bbbac5ce0feabce37bdeb6c3c4f3d3d376d6c0657d1e893d8f93347e",
+    "s2_revised_contract_review_sha256": "0e0645889c1cbcc2ee7e4684cc98dfd657d578b768e295b5d32882cd30b43f5a",
+    "key_scoped_closed": true,
+    "layout_scoped_closed": true,
+    "native_or_product_qualified": false
   }
 }

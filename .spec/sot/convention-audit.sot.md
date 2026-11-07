@@ -141,8 +141,8 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-LF-02 | P2: Windows runner receipt.rs worktree had 90 CRLF pairs despite LF blob | Native Windows | CLOSED; worktree equals original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LIFETIME-01 | P1 contract gap: shared process capture has no retained reader joins or proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Independently confirmed source constraints; owner design/fix and actual adversarial process pilot OPEN; no observed hang claimed |
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CLOSED scoped preallocation/UTF16 invariant: 3a0ba182 source plus 3200a5a1 actual boundary/doctest receipts independently checked; broader native provider qualification OPEN; no actual OOM alleged |
-| CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retain ordinary String key fields outside Zeroizing ownership | Authority | Source fix reviewed at 2ca6e4fa; first current-graph test command failed in Network before tests, fresh scoped qualification OPEN; no exfiltration/log/provider leak alleged |
-| CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize-checked history capacities can exceed the Vec isize byte layout bound and reach a capacity-overflow panic | Network/root | Source fix e1ed50ce independently reviewed; actual constructor regressions/checks OPEN; no large allocation or actual panic run |
+| CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
+| CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
 | CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack run a potentially slow liveness callback after their last deadline check and early bound-response consumption | Framework adapters/root | Source-confirmed; retain bound result through host preparation and revalidate after callback; owner fix and late-connected/no-origin regression OPEN; no SDK exploit run |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
@@ -625,3 +625,34 @@ summary, not a complete second saved byte manifest. No success/source-closure
 qualification is inferred. Network's0429731c import correction is source only;
 CA-SECRET01 still needs a fresh exact-source test/check/Clippy receipt. The
 failure does not demonstrate that the Authority ownership correction is wrong.
+
+### Encoded-key and temporal-layout closure; revised S2 contract
+
+CA-SECRET01 is CLOSED for encoded-field ownership and preserved preflight.
+Public retry receipt is durable at14ad4378, SHA256
+bc879112fcbb7a2f91c65b5a0dda4c219da2fdc06e71b9afdce6878333e0baa6.
+Eight raw attachment hashes matched; the actual named ownership regression and
+22units passed with0failed/ignored/filtered, and check/strict Clippy/fmt exited0.
+Current two owning source leaves equal their saved before-map entries. The full
+4632-entry before map and derived changed[] after-summary remain distinct; no
+byte-identical second saved manifest, whole-workspace cleanliness, universal
+RAM/copy erasure or native service/store readiness is asserted. First101 remains.
+This supersedes the earlier pending execution/durability status for this scope.
+
+CA-HISTORY-LAYOUT01 is CLOSED for constructor layout validation. Durable306eedc8
+binds actual72units with0failed/ignored/filtered, including both exact allocator-
+layout boundary tests, plus fmt/check/strict Clippy0. All23 raw hashes matched.
+Current/frozen/saved four layout source/test leaves agree. Actual saved before/
+after files are byte-identical for source2685, registry2316, tools50 and config18
+entries. Initial namespace compile refusal and second-attempt missing-doc Clippy
+failure are preserved separately. This supersedes old NOT_RUN status only for
+the corrected L1 candidate, not capture epochs, fleet, Runtime or Docker product.
+
+Revised S2 working draft addresses the three independent transition critiques as
+written: preserved ambiguity returns only a read-only owner; VerifiedScan borrows
+original Control/Limits through no-replacement finalize; control-only bootstrap
+can resume only with fresh same-object/lock/provider/sync checks. MAXsegments
+admission now precedes required rotation/record/checkpoint writes. These revised
+L0 contracts are narrowly acceptable for root's selected private L1 model.
+Actual-type borrow/transition negatives and native durability/resource/repair/
+consumer gates remain OPEN; no production grant or S2 qualification is inferred.

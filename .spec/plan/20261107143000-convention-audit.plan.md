@@ -212,3 +212,9 @@ CA-BRIDGE-ALLOC01 scoped invariant closed after independent3200a5a1 raw/source
 re-audit (9pure+2doctest/check/Clippy/fmt). Actualnative/process/product gates
 remain separate and OPEN. Authoritykey validation's firstdependencycompile
 failure d3e03749 is preserved with0tests; correctedgraph needs fresh execution.
+
+SECRET01 andHISTORY-LAYOUT01 scoped invariants now closed after durableowner
+receipts and independent raw/source re-audit (22 and72 actualunits respectively).
+First failures and closure-snapshot limits retained. Revised S2 L0 concerns
+addressed aswritten; only privateL1model direction accepted, native/production
+gates remain OPEN. HANDOFF01 sourcefix and actualhost regressions still pending.
