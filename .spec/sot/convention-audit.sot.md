@@ -2634,3 +2634,38 @@ review; the earlier finding remains OPEN pending those artifacts.
 
 No compiler/native/Docker workload was launched by audit. All remaining whole
 migration, native identity/lifetime, distribution and product gates stay OPEN.
+
+## Tools identity and Lab invocation source-fix re-audit
+
+CLI7b5edfad and Delivery99ec7b80 reconcile the33 maintenance cases. Retained
+prose/machine inputs match exact committed Git blobs. All33 old keys still equal
+profile0.1, all33 new identities are unique and per-case old/new target/source/
+selector/feature/scope/required/ignore/filter/helper fields agree across maps.
+All8 original source hashes/sizes match. Exactly27 compiled rows remain:1lib,
+15bins,10integration tests and1example. The two old integration rows are explicitly
+non-root owning-bin modules;23 integration plus10 real filesystem/provider cases
+are preserved without empty targets, duplicate cases or pure reclassification.
+The cross-proposal P2 identity mismatch is CLOSED at DESIGN scope.
+
+This does not prove the complete legacy library unit inventory: no source deletion
+is authorized and plans preserve all units, but complete per-role discovery/
+unique source-case maps are not yet available. Neither33 nor the relocated10
+is the maintenance bin total. Whole Tools input freeze remains OPEN:25 literal
+external inputs and10 concat expressions need a complete final reader disposition;
+the ten-original resource ownership decision is already accepted, so25 is a
+census count rather than25 newly unresolved ownership decisions. Remaining
+Collector implementation digest/source binding, shared Lab source/data, Core6/
+Collector/CEF producer pins, mutable agents/scripts/skills readers, docs fixtures/
+Docker recipe, dynamic roots/self-exec/CARGO_BIN_EXE and consolidated lock meaning
+still need complete source-bound decisions. Feature/unsafe/role/release controls
+and actual relocated archive/package/native/product qualification remain required.
+
+Lab fixc3c2a6e6 preserves audit-witness while selecting the Runtime audit feature.
+Its exact committed Dockerfile matches the independently checked owning target.
+CA-RUNTIME-LAB-01 is CLOSED for removed-package SOURCE INVOCATION only; actual
+corrected-image Docker regression remains OPEN. The first failing inner RUN in
+old1f2 remains unproven. No retrospective failed-run promotion follows.
+
+Root runtime optionalization5d68cd39 is queued for independent normal17/negative6/
+development/selected177 evidence review. Owner component success is not yet
+independent qualification. Audit launched no compiler/native/Docker/dispatch.

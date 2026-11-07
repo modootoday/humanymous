@@ -230,11 +230,13 @@
       "id": "CA-RUNTIME-LAB-01",
       "priority": "P2",
       "owner": "Root / Lab",
-      "state": "OPEN source invocation defect; dirty replacement prepared, committed fix and actual Docker regression not yet independently qualified",
+      "state": "CLOSED scoped source invocation mismatch at c3c2a6e6; actual corrected Docker image regression remains OPEN",
       "trigger": "Immutable1f2 deployments/lab/images/product.Dockerfile selects removed humanymous-audit package for audit-witness after Runtime consolidation",
       "required_delta": "Select exact owning Runtime audit feature/bin, preserve source-bound original failure and qualify corrected Docker image; do not infer first failing RUN from public summary",
       "actual_docker_regression": false,
-      "private_review_sha256": "9d7d428875d58be4c3336d4d3cf1543f02cd30d0b75b83d2146378356b1d39a8"
+      "private_review_sha256": "9d7d428875d58be4c3336d4d3cf1543f02cd30d0b75b83d2146378356b1d39a8",
+      "source_fix": "c3c2a6e67891b6a1ea816f712267c73fb06b4190",
+      "source_fix_review_sha256": "96f3451de30b39bf14f89a365d36c35bcce0e8700081ce41d70fd62a53a76200"
     }
   ],
   "evidence_references": {
@@ -1956,6 +1958,13 @@
     "actual": "Fresh57360Blog+originalZIP exact; source1f2/projectionexact; Gatebuildfailed2of3pass;actornotobserved",
     "causal_limit": "ObsoleteAuditpackageselectorconfirmed, exactfirstDockerRUNunknown; currentdirtypatchnotcommitted/regressionproof",
     "tools": "CLI2c947acknowledges;Rootchooses10integration/27compiled;ownedmap/profile/inventoryreconciliationstillOPEN",
+    "goal_complete": false
+  },
+  "tools_identity_source_closure": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-reconciliation-review-002.json",
+    "sha256": "96f3451de30b39bf14f89a365d36c35bcce0e8700081ce41d70fd62a53a76200",
+    "bytes": 4065,
+    "state": "Cross-proposal P2 DESIGN CLOSED;33case identities exact;27roots/10integrations;complete input/unit inventories still OPEN",
     "goal_complete": false
   }
 }
