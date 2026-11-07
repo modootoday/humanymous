@@ -16,6 +16,22 @@ rel:
 
 # Rust agent canon and qualified skill evaluation
 
+## Draft new-lane coexistence v0.1
+
+Root requested a minimal Rust-only coexistence design for convention-audit and
+performance without a global writer-mode flip or foreign script extensions.
+The draft contract and regression vectors are `.agents/evals/session-coexistence-design.md`
+and `.agents/evals/session-coexistence-cases.json`. Neither changes operational
+catalog membership nor authorizes a mutator. Current literal annotated scopes
+remain Unknown/fail-closed. Canonical union and explicit legacy-projection subset
+must be distinguished in a reviewed future schema, not by hiding drift.
+
+Source inspection shows old writers do not share the Rust lock/conflict protocol;
+therefore an automatic safe claim cannot be established by a fresh snapshot alone.
+Root must accept a barrier plus ongoing precise scope arbitration and exact-hash
+owner-reviewed envelopes, or keep the new chats read-only. No new claim-ready
+statement is permitted before actual accepted protocol and isolated regressions.
+
 ## Compatibility coordinator timestamp repair
 
 The root-authorized existing Git coordinator repair preserves both native argv

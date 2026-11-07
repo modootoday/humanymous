@@ -12,6 +12,14 @@ rel:
 
 ## Convention and performance chat registration
 
+Root chose design before mutation: no mode flip, no foreign allowlist additions.
+Draft v0.1 in the owned eval directory specifies closed two-lane policy, explicit
+canonical/legacy projection split, Unknown legacy scope denial and root-mediated
+barrier/arbitration fallback. Seventeen acceptance vectors are authored but not
+executed regressions. Inline design-panel and adversarial review found the P0
+legacy-writer race and P1 board/overclaim risks; they are explicit requirements.
+The current catalog/binary remain unchanged and no new lane claim is ready.
+
 Root supplied the user-approved convention/structure audit chat
 01a1b645-0bdc-7a53-b759-57c1eb998336 and build/runtime performance chat
 01a1b645-0e76-75b0-b509-fd8e7719fc51. Their exact titles and initially read-only

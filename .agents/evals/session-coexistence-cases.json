@@ -1,0 +1,24 @@
+{
+  "schema": "humanymous.session-coexistence-acceptance/0.1",
+  "status": "draft vectors; no executable regression run",
+  "operational_mutator_ready": false,
+  "cases": [
+    {"id":"canonical-union-subset","input":"canonical27/explicit legacy25/Markdown27/PS25/bash25","expected":"valid proposed projection only; not ownership"},
+    {"id":"projection-extra","input":"legacy subset contains performance","expected":"reject unsupported legacy membership"},
+    {"id":"literal-except","input":".github/workflows/** EXCEPT .github/workflows/apache-validation.yml","expected":"Unknown; block every automatic grant; preserve literal hash"},
+    {"id":"semicolon-annotations","input":"scripts/ci/** EXCEPT windows-*;.spec/plan/*delivery*.plan.md","expected":"Unknown; no heuristic partial scope acceptance"},
+    {"id":"parsed-disjoint","input":"legacy crates/runtime/** versus exact performance scopes","expected":"scope test disjoint; still require root barrier and full snapshot"},
+    {"id":"parsed-overlap","input":"legacy .spec/** versus exact performance scopes","expected":"deny overlap"},
+    {"id":"policy-escape","input":"performance request also contains crates/runtime/**","expected":"deny scope outside exact closed policy"},
+    {"id":"occupied-lane","input":"new lane file already exists with any owner","expected":"deny; create_new never overwrite"},
+    {"id":"claim-race","input":"two children create same new-lane file","expected":"at most one create; no false grant for loser"},
+    {"id":"foreign-release","input":"release session differs from stored grant session","expected":"deny without mutation"},
+    {"id":"changed-envelope","input":"reviewed raw legacy hash differs at admission","expected":"Unknown; deny"},
+    {"id":"changed-snapshot","input":"legacy claim changes after initial root snapshot","expected":"deny acknowledgment; retain explicit recovery obligation"},
+    {"id":"legacy-concurrent-writer","input":"old writer does not acknowledge claim-change barrier","expected":"no safe arbitration; remain read-only"},
+    {"id":"unsafe-storage","input":"claim/catalog link or oversized/unknown entry","expected":"deny without ignoring entry"},
+    {"id":"preserve-legacy","input":"successful accepted root-mediated new grant/release","expected":"legacy claim bytes/catalog writer mode/ACTIVE bytes unchanged"},
+    {"id":"invalid-timestamp","input":"invalid or unparseable claim instant","expected":"deny; never stale takeover"},
+    {"id":"lock-after-intent","input":"durable intent succeeds then claim/receipt write fails","expected":"retain fail-closed recovery; no success report"}
+  ]
+}
