@@ -1,5 +1,14 @@
 # Capture integration requests and qualification
 
+Actual hosted checkpoint: all5required capture cases passed at e77b9792 in
+run42372114913 (preflight128402198072/component128402635135 success), with
+zero failed/ignored/filtered and source_changed=false. Evidence:root/20261107122900
+binds exact names, runner/toolchain and hashes. Capture code matches edf700bc;
+signals wire differs, so preserve full e77 closure separately from27pure edf.
+This supersedes historical actual5/H1-component NOT_RUN notes below. Runtime
+serving/audit-origin effects, H2 product readiness and Docker remain unqualified;
+the public component receipt explicitly retains full_product_qualified=false.
+
 Latest measured checkpoint: immutable edf700bc passed27pure lib units with zero
 failed/ignored/filtered, hosted-feature all-targets Clippy and compile-only
 hosted_transport on Root-allocated local Windows B. Evidence:root/20261107120400

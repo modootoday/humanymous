@@ -3,7 +3,7 @@ id: sot:root/network-capture
 title: Original TLS and HTTP2 connection capture
 status: active
 created: 2026-11-07T07:25:00Z
-updated: 2026-11-07T12:04:00Z
+updated: 2026-11-07T12:29:00Z
 verify: manual
 rel:
   governs: [crates/capture/**]
@@ -178,3 +178,13 @@ were unchanged before/after, including the full internal recursive closure and
 root build context. Registry trees were not separately snapshotted. This
 supersedes the current27 NOT_RUN note for pure/compile gates only; actual5hosted,
 H1 socket probe behavior, runtime serving and Docker full product remain open.
+
+Evidence:root/20261107122900 now qualifies all5actual hosted capture fixtures at
+e77b9792b5c31db25e008c0b4a6f42ae7ac969da, run42372114913. Both preflight and
+component jobs succeeded;5passed0failed/ignored/filtered, command exit0,
+source_changed=false. Capture code matches edf700bc, but signals wire source
+changed, so the full hosted closure is e77, not the historical edf snapshot.
+This supersedes actual5/H1-component NOT_RUN notes above. Joined worker and
+pending-drop socket checks passed within those component cases; no runtime
+durable-audit/origin-effect or global orphan census is inferred. Runtime serving,
+complete product H2 and Docker remain open; full_product_qualified=false.

@@ -1,0 +1,103 @@
+{
+  "schema": "humanymous.capture.genuine-hosted-five/0.1",
+  "observed_utc": "2026-11-07T12:27:12.8313210Z",
+  "run_id": 42372114913,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42372114913",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "source_sha": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+  "jobs": [
+    {
+      "databaseId": 128402198072,
+      "name": "preflight",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-07T12:21:31Z",
+      "completedAt": "2026-11-07T12:23:24Z"
+    },
+    {
+      "databaseId": 128402635135,
+      "name": "component",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-07T12:23:27Z",
+      "completedAt": "2026-11-07T12:25:16Z"
+    }
+  ],
+  "component": {
+    "cargo_lock_sha256": "339aa10ba586aa534fccfb0a4b1ebfe9aec0730be0e8304acbb167d2c02e2443",
+    "commands": {
+      "capture-tests": {
+        "exit_code": 0,
+        "stderr_sha256": "67fefb8db5feeb2cb6ef83450b2c41c85f20d6b6d0b6a208afc405ed2854d2db",
+        "stdout_sha256": "1c9b6672597c81e92bda026c8bfe5cf13d71413609601a87782768e461c679d1"
+      }
+    },
+    "component": "capture",
+    "full_product_qualified": false,
+    "runner_arch": "x86_64",
+    "runner_image": "20261101.360.1",
+    "runner_os": "linux",
+    "schema": "humanymous.hosted-component/1",
+    "source_changed": false,
+    "source_manifest_sha256": "43bfd4fc8c72650bb56c0c2d2e1b224a3066dd80d035b8252d39731d4adbf2d3",
+    "source_sha": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+    "stage": "capture-tests",
+    "status": "passed",
+    "test_counts": {
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 5,
+      "required": 5
+    },
+    "toolchain_sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+  },
+  "command": "timeout --signal=TERM --kill-after=15s 180s cargo test --locked -p humanymous-capture --features hosted-pilot --test hosted_transport -- --ignored --test-threads=1",
+  "toolchain": "rustc 1.99.1 (58cf8f9c3 2026-10-13); x86_64-unknown-linux-gnu",
+  "required_case_names": [
+    "actual_tls_h1_never_claims_h2",
+    "actual_h2_continuation_and_stream_binding",
+    "actual_h2_wrong_stream_invalidates_all_capture",
+    "actual_invalid_tls_never_creates_an_owner",
+    "actual_supervisor_cancellation_revokes_the_connection_epoch"
+  ],
+  "count_basis": "Delivery capture_counts validated exact one successful occurrence of all five names and one five-pass summary. Private test stdout is hashed in the public component receipt, not uploaded.",
+  "source_comparison_to_edf": {
+    "capture_rust_tests_manifest_unchanged": true,
+    "internal_delta": [
+      "crates/signals/src/wire/mod.rs"
+    ],
+    "meaning": "Hosted execution binds full e77 source, not the historical edf dependency closure."
+  },
+  "cleanup_scope": "All fixture worker handles are joined on successful test paths; pending-drop test asserts peer EOF with a surviving supervisor handle. Component process exit0 and job completion observed. No separate global process-tree/orphan census, runtime service or container cleanup attestation.",
+  "private_evidence": ".spec.local/root/evidence/20261107122300-network-capture-hosted-e77",
+  "private_receipt_files": [
+    {
+      "name": "terminal-run.json",
+      "sha256": "e13b00e9eaf3c86fd05ce094db2b269c21c901f588edd2c07411a445253d34cd",
+      "bytes": 3391
+    },
+    {
+      "name": "component.log",
+      "sha256": "b114f9c0a03a947364ab1d163a17f51a6d85f4b335e59e8c4846fc629ada6358",
+      "bytes": 43194
+    },
+    {
+      "name": "preflight.log",
+      "sha256": "7bb1ed7641092c4b5aa1053938cc71207f93f0e6175f4ced5e922b85257b9fcf",
+      "bytes": 60193
+    },
+    {
+      "name": "source-closure-git-objects.txt",
+      "sha256": "e4257f379825b40fcdbdbca1bf3957986ee7eeea1d73d4d84acfd68aff79105e",
+      "bytes": 5358
+    },
+    {
+      "name": "edf-to-e77-closure-delta.txt",
+      "sha256": "6940bfd470fd48e014cf97a62dd642c44c03a54118629f16aa58cf44426d6d6a",
+      "bytes": 31
+    }
+  ],
+  "scope_limit": "TLS/H1/H2 capture component only. No runtime serving, H2 product readiness, original-hop deployment or Docker full-product qualification."
+}
