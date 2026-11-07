@@ -1,5 +1,12 @@
 # Sealed key compatibility integration
 
+Read the source/qualification sections above the historical checkpoints first.
+Historical counts and deferred-work lists below describe their own manifests;
+they never override later source or qualify the current working tree. Execution
+placement follows only the root roadmap/delivery canon. The user has authorized
+an actual Windows/WSL timing comparison, with a root-controlled benchmark quiet
+window; no new validation command is started without its assigned window/slot.
+
 ## Pending erasure recovery scope correction
 
 After the fixed8132117 candidate, source inspection found pending erasure recovery
@@ -20,6 +27,13 @@ The new native regression has not executed. Evidence:root/20261107084937.
 The preceding8132117 native successes do not qualify this later correction.
 
 ## Latest actual hosted subset, source 8132117
+
+Windows-2025/x86_64 later recorded control_operations18passed/ignored0 and
+durable_witness12passed/rawignored1 with validated rows and successful all-target
+build. It stopped at the same host_process accounting failure after15of89harnesses.
+Evidence:root/20261107090447 preserves exact counts/hashes. All three platforms
+therefore have these source-bound partial native observations; full audit,
+cross-OS and product qualification remain incomplete. Later source is separate.
 
 The same fixed source also produced macos-15/aarch64 control_operations16passed
 and durable_witness11passed/rawignored1 with validated rows. Its workspace actor
@@ -59,13 +73,15 @@ append/persistence versus verification-only and previous torn-byte accounting.
 All exact options, fields and error stages are canonical in the owning SoT's
 implemented source API0.2 table; do not infer execution from these exports.
 
-Root-assigned A/shared-target validation:4pure recovery+2pure preflight units
+Earlier A/shared-target validation:4pure recovery+2pure preflight units
 passed with jobs1/incremental0/testthreads1; scoped lib Clippy passed. First
 compileE0596 fixture failure (0tests) is preserved separately. Actual filesystem/
-IPC/process/secret backend/lifetime/recovery pilots are hosted not_run, not local
-unit successes. Source evidence:root/20261107073654. Slot returned; goal active.
-Runtime must adopt while preserving public startup wrappers; authority owns its
-local DurableAudit trait impl for SealedLog. Product-lab consumes typed coverage
+IPC/process/secret backend/lifetime/recovery executed0 in that isolated check;
+later8132117 native subsets are recorded above, with complete product qualification
+still open. Source evidence:root/20261107073654. That slot was returned.
+Runtime and authority have source adoption while preserving public startup
+wrappers; authority owns its local DurableAudit trait impl for SealedLog.
+Product-lab consumes typed coverage
 and explicit recovery rather than reconstructing verifier/proof algorithms.
 Old local-only grants never prove external retention.
 
@@ -121,13 +137,16 @@ responses poison the client. No network endpoint or filesystem reset exists.
 The persistence field preserves Windows namespace uncertainty and cannot satisfy
 `RetentionRequirement::FileAndDirectory` there.
 
-Seven deterministic policy/client/target tests and eight hosted-only native tests
-are authored. Root-assigned A/shared checks passed all7pure units, scoped library
+At the initial retained-control checkpoint, seven deterministic policy/client/
+target tests and eight native cases were authored. Later snapshot/recovery/scope
+cases are tracked by their own source manifests, not that initial count.
+Root-assigned A/shared checks passed all7pure units, scoped library
 Clippy, retainer-binary compilation and integration-target compile/link-only.
-Before/after source and Cargo/lock/toolchain hashes match. Actual native execution,
-independent process/owner/volume evidence, runtime kill-switch adoption and Docker
-product qualification remain not_run. Evidence:root/20261107080220 records the
-exact overlay and results. No new dependency or shared Cargo delta.
+Before/after source and Cargo/lock/toolchain hashes matched for those isolated
+checks, which executed0native tests. Later exact8132117 native subsets are above.
+Independent process/owner/volume qualification, runtime kill-switch adoption and
+whole-product validation remain open. Evidence:root/20261107080220 records that
+earlier overlay and results. No dependency or shared Cargo delta was added there.
 
 `keys::custody::PreparedRotation` holds only a private encrypted candidate and
 source/target commitments, with no public constructor, serializer, clone or Debug.
@@ -152,9 +171,9 @@ is not a live interactive deadline test or proof of a different OS owner/volume.
 This test later executed within the exact Ubuntu target above;
 fa327b7's source manifest remains historical.
 
-## Test-output correction for strict workspace accounting
+## Historical helper-output correction (evidence61214)
 
-Production API/behavior is unchanged. New durable_witness/key_backups parents
+For that correction, production API/behavior was unchanged. The durable_witness/key_backups parents
 now use existing test-support capture_with_stderr with60second/64KiB bounds;
 child transcripts never inherit outer stdout/stderr. Parents require exit0,
 empty stderr, a flushed static child completion marker and their original actual
@@ -167,20 +186,24 @@ crash_reconcile_preserves_consumed_authorization to pass. Each has raw ignored1,
 filtered0/fail0 and discovered=passed+1. Existing key_custody2 remain separate;
 raw4 overall are never passed tests. Windows runner16c9e89 implements the narrow
 accounting contract; its pre-correction failures remain unchanged evidence.
-Current correction validation: Windows witness12/backup8 and Linux11/7 pass,
+Validation at that correction: Windows witness12/backup8 and Linux11/7 passed,
 each stdout has exactly one summary and no leaked child completion marker.
 Targeted Clippy/formatting pass. Evidence:root/20261107061214 records source-bound
-contract/hashes; the runner owner must rerun actual workspace against the new
-canonical correction commit before changing the previous failed probe status.
+contract/hashes. At that handoff, a current-source workspace rerun was required;
+the later8132117 subset observations are above. Earlier failed probes are retained.
 
-## Current operational checkpoint and serial handoff (2026-11-07)
+## Historical operational checkpoint (evidence51648; superseded)
+
+This section preserves the earlier component/handoff record. Its contracts,
+counts and open-work list are historical; the current source and qualification
+sections above and the owning plan's completion audit supersede its status.
 
 Owner rust-audit-operations. New audit dependencies: none. No shared Cargo,
 lock, toolchain or membership delta. Cargo auto-discovers the new native binary
 `audit-witness` at src/bin/audit-witness.rs; its nonnative stub has no service
 capability. Root's ExclusiveFile/custody/WAL lifetime-lock repair is preserved.
 
-Current public contracts:
+Public contracts at that checkpoint:
 
 - `control::{Scope, Action, Proposal, Approval, Administrators}` strictly bind
   installation/node/action/target/operation/time to two distinct pinned Ed25519
@@ -201,13 +224,17 @@ Current public contracts:
   production erasure; historical unscoped constructors retain pseudonym parity
   but cannot consume production erasure permits. `shred` and custody persistence
   reject different subjects/scopes and unauthorized additional tombstones.
-  `Custody::{erase_approved,recover_erasure_pending}` persist exact authorized
-  tombstones. `rotate_approved` consumes signed approval for the exact current
+  `Custody::erase_approved` persisted authorized tombstones. Pending recovery was
+  documented as exact-subject authority; later inspection found the missing
+  trusted-scope comparison, corrected by the explicit Scope argument above.
+  `rotate_approved` consumes signed approval for the exact current
   ciphertext digest, authenticates the old passphrase and preserves identity.
   This authorizes rotation of that generation to a secret selected by the
   authenticated trusted local caller; approvers do NOT sign the new secret or
   prepared ciphertext. Do not expose it as fully destination/body-bound admin
-  rotation. A stronger prepared-candidate approval flow remains follow-up work.
+  rotation. Prepared candidate approval was follow-up at this historical point;
+  it is implemented by PreparedRotation/PreparedRotationRecovery above. Actual
+  product qualification still depends on the recorded current-source gates.
 - `checkpoint::{CheckpointWitness,DurableWitness,WitnessBootstrap,WitnessReceipt}`
   persists before returning signatures, rejects same writer/witness key and
   requires independently retained minimum+consistency proof on existing restart.
@@ -248,22 +275,23 @@ Current public contracts:
   local file persistence and authenticated pending recovery are real. No remote
   sink delivery/WORM guarantee is claimed; inputs must already be pseudonymized.
 
-Source checkpoint validation: the first Windows audit all-target suite78 and
+Historical source validation: the first Windows audit all-target suite78 and
 Linux local-container75 passed before the final shared client. The latest
-all-target results and exact current source manifest are in the evidence below;
-do not apply those earlier counts to later source. Witness now includes shared
+all-target results and exact source manifest for that point are in evidence51648;
+do not apply those earlier counts to later source. Witness then included shared
 client real child/forged-reply tests12/11; backup native8/7; signed policy5;
 operational custody/control/sink7/5 includes Windows interrupted-tombstone proof.
-Final full current working-source suites: Windows81/Linux77, both Clippy,
+Historical complete component suites for evidence51648: Windows81/Linux77, both Clippy,
 WASM library check and formatting pass. facts-v2.json records final attempt3;
 earlier results/failure records are retained separately. Scoped audit Specfold
-is clean; full repository has unrelated generated/private-artifact findings.
+was clean at that checkpoint; repository-wide observations were separate.
 Four ignored subprocess helper entrypoints and the zero-test binary harness are
 excluded from totals; parent tests execute helpers explicitly. Raw source-bound
 logs and public facts are in evidence:root/20261107051648. Full component native
-success is not whole-product Docker e2e or M3 completion.
+success is not whole-product Docker e2e or M3 completion. These old suite counts
+do not apply to20b57d2,8132117,a04603e1 or c34c3e91.
 
-Remaining requirements after root-requested safe checkpoint handoff:
+Open requirements recorded at that historical handoff (status superseded above):
 
 1. Authority shared client/transport, then runtime admin/service integration
    using these typed contracts; independently durable anchor delivery before
@@ -274,8 +302,8 @@ Remaining requirements after root-requested safe checkpoint handoff:
 3. Trusted clock across restart: successful consumption persists last time and
    in-process observations poison on regression; rejected times are not separately
    durably advanced. Do not substitute caller-supplied timestamps.
-4. Exact prepared-new-ciphertext approval if body/destination-bound rotation is
-   required, remote sink implementations, full streaming authenticated WAL/Tree
+4. Exact prepared-new-ciphertext approval was outstanding then and is now source
+   implemented above. Remote sink implementations, full streaming authenticated WAL/Tree
    recovery, physical/unknown-copy erasure and storage/power-loss qualification.
 5. Independent latest control/backup/witness pins, initial pending-state incident
    handling, final same-source six-tuple/product Docker/human/AT qualification.
@@ -286,19 +314,21 @@ Remaining requirements after root-requested safe checkpoint handoff:
    Writer/witness signing-identity key rotation remains distinct from the
    implemented passphrase-envelope rotation and is not implemented here.
 
-Verify with `cargo test -p humanymous-audit --all-targets --locked`,
+Commands recorded at that handoff; current execution placement follows the root
+canon and benchmark window: `cargo test -p humanymous-audit --all-targets --locked`,
 `cargo clippy -p humanymous-audit --all-targets --locked -- -D warnings`,
 `cargo check -p humanymous-audit --lib --target wasm32-unknown-unknown --locked`
 and `cargo fmt --manifest-path crates/audit/Cargo.toml -- --check`.
 First read AGENTS.md, .agents/lessons/HARD-WON.md, this file, the owning SoT/plan
-and evidence:root/20261107051648. root owns shared Cargo/roadmap/CI; authority
-takes the released gate-edge for common IPC/client work, then runtime consumes
-these typed contracts. Audit residual chat context is this Codex chat; no other
+and evidence:root/20261107051648. Root owns shared Cargo/roadmap/CI. Authority was
+the next consumer at that handoff; both authority and runtime now consume the
+shared owner, with actual qualification tracked above. Audit residual chat
+context is this Codex chat; no other
 provider memory is required. Scoring, verdicts, motor/speed policy are unchanged.
 
 Windows namespace power-loss durability remains unconfirmed. Consumers requiring
 FileAndDirectory must fail closed on weaker receipts. No sandbox reduction was
-used. Public source facts/hashes describe this dirty audit snapshot; shared
+used. Historical public facts/hashes describe that dirty audit snapshot; shared
 workspace dependency/integration changes remain root-owned.
 
 ## Historical native custody integration (2026-11-07)
@@ -397,7 +427,8 @@ The vault also matches all 54 frozen HMAC/scrypt vectors, preserves
 snapshot tombstones and removes reverse links on shred. Its erasure capability
 has no production issuer until verified dual control is implemented.
 
-Remaining required work: runtime/service startup wiring, independent witness
+Remaining at that historical checkpoint (superseded by current sections above):
+runtime/service startup wiring, independent witness
 custody/anti-rollback storage, actual dual-control issuer/admin and permitted
 erasure recovery, deployment provisioning, backup residual handling and Docker
 whole-product e2e. A co-located witness seed does not establish independence.

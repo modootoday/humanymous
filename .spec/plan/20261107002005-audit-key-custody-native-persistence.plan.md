@@ -130,14 +130,29 @@ Evidence: [[evidence:root/20261107084148]]. No push or new dispatch was performe
 
 ### Exact hosted OS subsets, not whole-product completion
 
+The same8132117 source completed Windows job128351926153: control_operations18
+passed/ignored0 and durable_witness12passed/rawignored1, both validated and exit0.
+It stopped at host_process unknownignored3 after15of89harnesses, not full suite
+coverage. Separate source/count/hash facts and missing-private-original limits
+are in [[evidence:root/20261107090447]]. The later scope correction remains
+native-unexecuted despite its local pure/static pass.
+
+The user now explicitly authorizes actual local Windows/WSL build/test/runtime
+timing comparisons, superseding the earlier blanket hosted-only placement. A
+root-controlled benchmark quiet window currently forbids new validation starts;
+only coding/docs continue. Scheduling and the measured policy decision remain
+canonical only in the root roadmap/delivery. Audit has no Cargo/application/
+container process; its existing read-only hosted-run observer remains separate.
+
 The same fixed8132117 candidate later completed macOS/aarch64 job128351926084.
 Its exact actor summary also reports control_operations16pass and
 durable_witness11pass/rawignored1, all corresponding rows validated; it stopped
 at the same host_process unknownignored3 with15of88coverage. These are separate
 OS observations, not54 unique tests. Source/count/raw-hash facts and missing
 private-original limitations are in [[evidence:root/20261107084427]]. Neither
-platform result qualifies the later a04603e1 scope correction. Windows remains
-in progress at this observation; no full cross-OS or product result is inferred.
+platform result qualifies the later a04603e1 scope correction. Windows was still
+in progress at the earlier macOS observation; its later subset is recorded above.
+No full cross-OS or product result is inferred.
 
 Actual source8132117e7bf1445939d7dee9066fcf45ccf0915b contains audit20b57d2
 unchanged. Run42355168729 native Ubuntujob128351926093 built all locked workspace

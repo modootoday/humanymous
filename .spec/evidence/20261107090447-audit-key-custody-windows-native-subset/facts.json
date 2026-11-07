@@ -1,0 +1,114 @@
+{
+  "schema": "humanymous.audit-hosted-native-subset/1",
+  "sourceSha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "auditSourceCheckpoint": "20b57d2",
+  "laterUnqualifiedByThisRun": [
+    "a04603e1",
+    "c34c3e91"
+  ],
+  "runId": 42355168729,
+  "jobId": 128351926153,
+  "os": "windows-2025",
+  "arch": "x86_64",
+  "candidateWorktreeDirty": false,
+  "workspaceStatus": "failed",
+  "workspaceCoverageComplete": false,
+  "workspaceExecutedHarnesses": 15,
+  "workspaceRequiredHarnesses": 89,
+  "workspaceFailedTests": 0,
+  "workspaceErrors": 1,
+  "auditHarnesses": [
+    {
+      "discovered": 0,
+      "executable_sha256": "f5bd2254a5f5a0f8bb649eb2ef04857dc284148c126b2bef9da0ca2eda7892c9",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "audit-control-retainer",
+      "validated": true
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "62b3813e40e5c00e43a0f121cc77c91247b753ae8aab8cc3e7766d0ee68191f0",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "audit-witness",
+      "validated": true
+    },
+    {
+      "discovered": 18,
+      "executable_sha256": "a1846f68adbf901ac2b3ace6f049547f3763bee642cce3ed0f52af1626eecb2d",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 18,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "40b4e3c0ff910be8fa42307912f54a90913844e02dc23a0c2ebe4a499d3be7d0",
+      "subprocess_helpers": null,
+      "target": "control_operations",
+      "validated": true
+    },
+    {
+      "discovered": 13,
+      "executable_sha256": "af6bfe21bdd22d466722db98f718b5d4f52c590ad7828becec798718217dd52b",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 1,
+      "ignored_subprocess_helpers": 1,
+      "passed": 12,
+      "required_not_run": [],
+      "required_parent_tests": [
+        "witness_process_lifetime_and_interrupted_recovery"
+      ],
+      "stdout_sha256": "b0b29d281a937b0f8ed50a35c9351978d9961436ab4084b69d27f79a5c2d5df8",
+      "subprocess_helpers": [
+        "child_witness_probe"
+      ],
+      "target": "durable_witness",
+      "validated": true
+    }
+  ],
+  "blockingHarness": [
+    {
+      "discovered": 5,
+      "executable_sha256": "4cf073b35d664ca4600d28ffe66814c5e403085b997a1e42d9778e0261c6e19b",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 3,
+      "ignored_subprocess_helpers": null,
+      "passed": 2,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "dd3e72f66742553a36d85ca72a18f5efb0645f5721a2a2cbdc7c91257e40b954",
+      "subprocess_helpers": null,
+      "target": "host_process",
+      "validated": false
+    }
+  ],
+  "auditFullSuiteQualified": false,
+  "crossOsFullSuiteQualified": false,
+  "productQualified": false,
+  "privateHarnessOriginalsRecovered": false,
+  "rawJobLogSha256": "23a92e18a39d7e5d19fe03b27600ebb38e199ac474de277947778ae7fa5776b5",
+  "derivedSummarySha256": "e1ce2643d19e5156a953d7aec9b13e3778e1c78c69b76907f74b99d7eb81b90a"
+}
