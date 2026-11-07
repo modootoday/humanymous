@@ -930,8 +930,12 @@ closures are not public authority callbacks or proof of a real socket boundary.
 Seven authored native-independent tests cover closed/foreign/irreversible epochs,
 first-loss/deadline conservation, pre-connect/pre-write refusal, WouldBlock,
 partial/unknown submission and manager-stop distinction, concurrent first-write
-linearization, and poisoned mutex fail-closed behavior. They are NOT_RUN until
-Root allocates validation. No ServiceHost, credential writer, native loss monitor
+linearization, and poisoned mutex fail-closed behavior. On immutable snapshot
+30d8585544e021d91a281754717d82fd752ae297 (Runtime source9ad15bce), allocated
+Windows all-target check and strict Clippy passed; these exact seven model tests
+passed with0failed/0ignored/52filtered. Recursive508-file content/path inventory
+was unchanged. This does not qualify actual observer/socket boundaries.
+No ServiceHost, credential writer, native loss monitor
 or real origin path is wired, and existing ExitReport schemas are unchanged.
 
 Proposed integration ownership follows Authority's reviewed design direction:
@@ -987,4 +991,5 @@ Authority owns this shared core; the Runtime S1 model must move/be replaced when
 accepted, not remain a second independently revocable production gate. Exact
 sealed Runtime readiness evidence, native/W constructors and activation phase
 order remain P0. This review changes the API proposal only: current seven model
-tests remain NOT_RUN and there is no new production wiring or dependency edge.
+tests have only the scoped source30d85855 model qualification above; there is no
+new production wiring or dependency edge.

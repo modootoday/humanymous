@@ -1,0 +1,92 @@
+{
+  "snapshot_commit": "30d8585544e021d91a281754717d82fd752ae297",
+  "runtime_checkpoint": "9ad15bce",
+  "archive_sha256": "1822d5ca74d73f9d1fa190aa217300fba1e28f2f65fb910bfaf4529a1fe9732b",
+  "platform": "Windows ordinary native-independent cfg(test) model",
+  "memory_admission": {
+    "free_gib": 32.06,
+    "commit_percent": 80
+  },
+  "target": "target/validation-agents",
+  "jobs": 1,
+  "incremental": false,
+  "all_features_all_targets_locked_offline_check_exit": 0,
+  "check_seconds": 4.74,
+  "clippy_deny_warnings_exit": 0,
+  "clippy_seconds": 4.55,
+  "library_listed": 59,
+  "library_inventory_exact": true,
+  "selector": "service::epoch::tests::",
+  "actual_session": 41967,
+  "actual_exit": 0,
+  "executed": 7,
+  "passed": 7,
+  "failed": 0,
+  "ignored": 0,
+  "measured": 0,
+  "filtered": 52,
+  "seconds": 0.0,
+  "test_names": [
+    "service::epoch::tests::concurrent_first_writes_linearize_before_first_loss_or_are_refused",
+    "service::epoch::tests::first_loss_closes_readiness_and_admission_without_extending_its_clock",
+    "service::epoch::tests::poisoned_gate_never_recovers_admission",
+    "service::epoch::tests::prior_partial_submission_is_retained_and_manager_stop_is_not_observer_loss",
+    "service::epoch::tests::revoked_work_cannot_initiate_connect_or_accept_first_bytes",
+    "service::epoch::tests::starting_and_foreign_instances_cannot_admit_or_revive",
+    "service::epoch::tests::would_block_has_no_bytes_and_reacquisition_rechecks_revocation"
+  ],
+  "source_files_compared": 508,
+  "source_path_inventory_and_content_drift": 0,
+  "owned_runtime_processes_after": 0,
+  "production_observer_qualified": false,
+  "actual_socket_boundary_qualified": false,
+  "full_library_qualified": false,
+  "full_product_qualified": false,
+  "raw_private_artifacts": [
+    {
+      "name": "gate-30d85855-actual-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "gate-30d85855-actual.log",
+      "bytes": 1010,
+      "sha256": "0067ed014acf0b294b3b670116270612a4927e7d29c0c8223c556019a3f87158"
+    },
+    {
+      "name": "gate-30d85855-after.json",
+      "bytes": 76758,
+      "sha256": "3ab4f64223090948974ff9aab785cf8bc368d77c8e91d929c0d38d183b3ceb66"
+    },
+    {
+      "name": "gate-30d85855-before.json",
+      "bytes": 76758,
+      "sha256": "3ab4f64223090948974ff9aab785cf8bc368d77c8e91d929c0d38d183b3ceb66"
+    },
+    {
+      "name": "gate-30d85855-check-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "gate-30d85855-check.log",
+      "bytes": 2023,
+      "sha256": "76ef9f84af30f97560b96db2df721f04e4e915a2e4cbe2eb81a09f8fbfc59091"
+    },
+    {
+      "name": "gate-30d85855-clippy-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "gate-30d85855-clippy.log",
+      "bytes": 2023,
+      "sha256": "aafc08bacb5d6d9edba8b3f8b75cfc2747671ea262e6d3195e8e19d64caafd01"
+    },
+    {
+      "name": "gate-30d85855-list.log",
+      "bytes": 7325,
+      "sha256": "b99e777cdf1dd94a3f369fd27ed731909323aa3dc9e1e629c2ad6de9951c8ad8"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T11:20:31Z
+updated: 2026-11-07T12:06:10Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -15,8 +15,9 @@ files:
   - {path: native-adb8e3ed-validation-summary.json, sha256: 843b633f147dd6a44a6a70609c47a82111ec8f4db7fa3965262fa4f2a24e2ba4, bytes: 11656, store: repo}
   - {path: tls-fa2db419-first-execution-summary.json, sha256: 46efc65494842b502e90cbdaeb75741a000b5711c473cc10ab7d838d26806596, bytes: 2306, store: repo}
   - {path: tls-1646c482-validation-summary.json, sha256: 8518f2114fa185e3862bdae2d102c0a4012823efc44d385bb17aa7848a79325f, bytes: 3532, store: repo}
-  - {path: status.json, sha256: b9c29412f213d1e8a6a7f6d80ec8d66c44f6b7c9d260b101a38b0f94850817b9, bytes: 5279, store: repo}
-  - {path: source-commitments.json, sha256: 0cc78d908741641e5e73a217e48038675d6593d048fc744debb718c8ed9e67f9, bytes: 9484, store: repo}
+  - {path: gate-30d85855-validation-summary.json, sha256: f12504258f1c308c2814fbdb41613b0b4cd916a41baf2da57a5abc4274f15db3, bytes: 3231, store: repo}
+  - {path: status.json, sha256: df936ad91c5692f82cad391fbab702b71324ed91d531c326f0b3106116ebf86f, bytes: 5412, store: repo}
+  - {path: source-commitments.json, sha256: 0543a681b4421a5c7957333dd7adb313196aa30afac5bb332061fe251708de5f, bytes: 9930, store: repo}
 ---
 
 # Runtime application operational integration
@@ -24,6 +25,12 @@ files:
 ## What was measured
 
 Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Immutable30d85855 with Runtime9ad15bce passed all-target check/strict Clippy and
+seven private cfg(test) epoch-gate cases;52 cases were filtered. All508 recursive
+source paths/hashes stayed identical. This qualifies the native-independent
+model only, not a production observer authority, actual socket boundary or full
+Runtime suite. See gate-30d85855-validation-summary.json for exact case/raw hashes.
+
 Current1646c482 with audit record source f88e76f4 passed allocated Windows
 all-target compile/Clippy and six actual TLS component cases;46 cases were
 intentionally filtered, so this is not current whole-library qualification.

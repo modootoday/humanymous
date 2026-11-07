@@ -24,10 +24,10 @@
     "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
-  "current_source_executed_tests": 6,
-  "current_source_test_count_semantics": "Current1646c482: six scoped TLS component cases only; 46 library cases filtered. Historical adb8e3ed Windows46+1/Unix50+1 remain exact historical evidence, not current whole-library qualification.",
-  "current_source_tests": "1646c482 with audit f88e76f4: TLS6 passed/0failed/0ignored/46filtered; both identity profiles403CHALLENGE, no origin effects; full library/native process not rerun.",
-  "current_source_clippy": "1646c482 and recorded495-file dependency closure passed all-features/all-targets locked offline warnings-denied Clippy; zero source drift.",
+  "current_source_executed_tests": 7,
+  "current_source_test_count_semantics": "Snapshot30d85855 with Runtime9ad: seven private cfg(test) gate model cases only;52 library cases filtered. Earlier TLS1646/adbnative scopes remain separate historical evidence.",
+  "current_source_tests": "Immutable30d85855: private gate7 passed/0failed/0ignored/52filtered; no actualTLS/nativeServiceHost/SCM/bootstrap or fullRuntime suite executed.",
+  "current_source_clippy": "Snapshot30d85855 Runtime9ad: all-features/all-targets locked offline check and warnings-denied Clippy passed;508-file path/content closure unchanged.",
   "actual_browser_join": "not_run",
   "actual_tls_serving": "six actual ordinary loopback TLS cases passed; allow-to-origin remains unqualified",
   "actual_unix_management_operator": "passed scoped ordinary-user native component, not independent deployment",
@@ -110,5 +110,11 @@
     "allow_to_origin_qualified": false,
     "filtered": 46,
     "full_r13_qualified": false
+  },
+  "gate_30d85855": {
+    "production_observer_qualified": false,
+    "filtered": 52,
+    "summary": "gate-30d85855-validation-summary.json",
+    "passed": 7
   }
 }
