@@ -28,6 +28,16 @@ grants no write access to their source, manifests or claims; current role scope
 does not authorize moves or an additional private crate. No implementation starts
 before root's Tools freeze.
 
+The later Runtime6-to1 checkpoint64f74c7ac64a8f5380172504bf73a8d03b961afc
+changes the current root-reported census to29 workspace+4 standalone=33 packages.
+Its tracked current paths are crates/sdk/humanymous-runtime/src/{gateway,authority,audit,capture,
+network,native_security}; root retains the new Runtime and common Cargo ownership
+pending its remaining gates. This does not grant agents-meta those paths. Earlier
+38/45 counts and the150-file handoff snapshot stay bound to their original source.
+Tools remains the next13-toCLI slice under root's exact lint/role/feature matrix;
+no move is authorized by this projection. Root's177 selected pure passes and366
+Windows library inventory are scoped observations, not full Runtime qualification.
+
 ## Exact source and dirty state
 
 The registered point-in-time inventory is

@@ -271,9 +271,16 @@ Root's2026-11-08 completeness update includes four standalone qualification tool
 (CEF pilot, windows-native-runner, docs-review, local-parity) alongside the original
 nine workspace tool responsibilities for absorption into humanymous-cli. The final
 eight-package public family has no permanent private-helper exception. Root's
-current census is34 workspace+4 standalone=38 packages from39 tracked manifests;
+then-current census was34 workspace+4 standalone=38 packages from39 tracked manifests;
 initial41+4=45 is historical and remains recorded as such. This is coordination
 scope, not an expanded source claim or permission to edit those foreign manifests.
 The exact handoff remains `.agents/evals/eight-package-maintenance-handoff.md`;
 root/Delivery own Tools freeze and cross-owner integration. No path/package/ref
 move or implementation was performed for this update.
+
+After Runtime6-to1 source64f74c7ac64a8f5380172504bf73a8d03b961afc, the current
+root-reported count is29 workspace+4 standalone=33 packages. New Runtime modules
+under crates/sdk/humanymous-runtime remain root-owned, together with common Cargo and pending
+privacy/consumer/native gates. No agents-meta source claim expands to those paths.
+The eight-package destination and pending13-responsibility Tools slice are unchanged;
+no Tools move has begun. Earlier counts/proofs remain historical source records.
