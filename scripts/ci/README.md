@@ -5,6 +5,10 @@ Workflow UI names use CI /, Docs /, Release / and Legacy / categories. The singl
 [workflow catalog](workflows.json) fixes technical file/job, concurrency and
 artifact identities; Rust policy rejects unknown workflows or naming drift.
 Filenames/job keys are stable API contracts, distinct from UI labels.
+RubyGems/PyPI entries are preparation-only planned publishers, not publishing
+jobs. Package names and external publisher proof are pending; all readiness,
+trust and direct-publish flags remain false. GitHub environment creation alone
+does not configure a registry publisher or authorize an upload/token test.
 Release reruns it on the exact tag source. Every required job must succeed;
 skipped, cancelled, component-only and blocked outcomes cannot authorize shipping.
 The frozen Go oracle and inert original workflows remain historical comparison

@@ -12,6 +12,14 @@ rel:
 
 ## Scope and order
 
+RubyGems/PyPI extension: official pending-publisher paths verified read-only;
+null package names and unconfigured/unready/unverified/disallowed flags retained.
+Add exact product environment bindings and separate catalogplannedpublisher
+contracts, no actual publish jobs/newtokenpermissions. Typed guards reject
+premature readiness/configuration/job creation.29pureunits/Clippy/staticpolicy/
+actionlintpass. Root actualGitHub environment provisioning separate, no external
+registry mutation/upload/tokenexchange. Adapterowner metadata/package pending.
+
 Lab-owner requested product browser image source: separate browser-product
 Dockerfile/context authored under build/rust, jobs1/multi-stage/nonroot65532,
 feature-enabled collector WASM+webdriver JSON+static Rust driver. Existing

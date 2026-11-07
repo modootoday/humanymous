@@ -270,6 +270,34 @@ later source and is not inferred from the earlier policy success.
 
 ### Product OIDC environment preparation (no deployment)
 
+RubyGems/PyPI preparation extension, explicitly requested after crates/npm:
+registry-prerequisites adds rubygems/pypi with exact same-repository release.yml
+identity and product environment. Package names remainnull pending adapter owner
+metadata; package_ready/publisher_configured/verified/direct_publish_allowed all
+remainfalse. Catalog planned_publishers is distinct from actual job environments:
+both statepreparation-only/job_presentfalse. Rust policy checks exact bindings and
+rejects premature readiness/publisher assertions or a registry publish job.
+No new job, action, id-token permission, long-lived secret or token request added.
+Readiness includes all4registries, so pending products remain shipping blockers.
+
+Official procedure checked2026-11-07: [RubyGems trusted publishing](https://guides.rubygems.org/trusted-publishing/)
+supports existing-gem owner registration and account pending publisher for a new
+gem, using owner/repository/workflow and selected environment. A successful first
+push converts pending to normal; it was not performed. Same-repository workflow
+identity is retained, no cross-repository reusable publisher assumption.
+[PyPI existing publisher](https://docs.pypi.org/trusted-publishers/adding-a-publisher/)
+binds owner/repository/workflow filename and environment; our contract requires
+the pypi environment although the service makes it optional.
+[PyPI pending publisher](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/)
+can create a project on first authorized upload but does not reserve its name.
+External account ownership, final package names, built native distributions,
+publisher registration/evidence and token exchange all remain unverified/not_run.
+GitHub environment preparation by root is not external registry registration.
+
+New preparation contract29pureunits, strictClippy, staticpolicy/actionlint pass;
+no actual package or token publication test. Adapter/package source is owned by
+the adapter team, not implemented through extra authored Ruby/Python CI scripts.
+
 The subsequent explicit user instruction separates registry products:
 release.yml crates job uses environment `crates`; npm job uses `npm`.
 Registry prerequisites and trust validator require the exact repository,

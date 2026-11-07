@@ -280,9 +280,16 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
 }
 pub fn check(root: &Path) -> Result<()> {
     let docs = workflows(root)?;
-    catalog(
-        &crate::read_json(&root.join("scripts/ci/workflows.json"))?,
-        &docs,
+    let inventory = crate::read_json(&root.join("scripts/ci/workflows.json"))?;
+    catalog(&inventory, &docs)?;
+    crate::registry::validate_preparations(
+        &crate::read_json(&root.join("scripts/ci/registry-prerequisites.json"))?,
+        &inventory["planned_publishers"],
+        &docs
+            .iter()
+            .find(|(file, _)| file == "release.yml")
+            .ok_or("release workflow missing")?
+            .1,
     )?;
     for (name, doc) in &docs {
         document(name, doc)?;

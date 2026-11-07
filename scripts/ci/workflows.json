@@ -1,5 +1,9 @@
 {
   "schema": "humanymous.workflow-catalog/1",
+  "planned_publishers": {
+    "rubygems": {"workflow":"release.yml","environment":"rubygems","state":"preparation-only","job_present":false},
+    "pypi": {"workflow":"release.yml","environment":"pypi","state":"preparation-only","job_present":false}
+  },
   "workflows": [
     {"file":"ci.yml","name":"CI / Validate","jobs":["validate"],"concurrency":{"group":"rust-ci-${{ github.ref }}","cancel-in-progress":true},"artifacts":[]},
     {"file":"rust-validation.yml","name":"CI / Rust","jobs":["policy","native","msrv","quality","browser","docker","images","packages","node","advisories","documentation","pages","ready"],"concurrency":null,"artifacts":["native-workspace-${{ matrix.os }}-${{ github.sha }}","native-binaries-${{ matrix.os }}-${{ github.sha }}","native-${{ matrix.os }}-${{ github.sha }}","browser-linux-${{ github.sha }}","docker-linux-${{ github.sha }}","validated-crates-${{ github.sha }}","node-native-${{ github.sha }}","advisories-${{ github.sha }}"]},

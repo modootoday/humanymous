@@ -97,6 +97,8 @@ fn trust_binding(registry: &str, record: &Value) -> Result<()> {
     let environment = match registry {
         "crates_io" => "crates",
         "npm" => "npm",
+        "rubygems" => "rubygems",
+        "pypi" => "pypi",
         _ => return Err("unknown registry trust binding".into()),
     };
     require(
@@ -123,10 +125,48 @@ fn trust(root: &Path, registry: &str, record: &Value) -> Result<()> {
         record["evidence_sha256"] == source::file(&root.join(evidence))?,
         "external trust proof digest stale",
     )?;
-    if registry == "npm" {
+    if matches!(registry, "npm" | "rubygems" | "pypi") {
         require(
             record["direct_publish_allowed"] == true,
-            "npm trust must explicitly permit direct publish",
+            "registry trust must explicitly permit direct publish",
+        )?;
+    }
+    Ok(())
+}
+pub fn validate_preparations(records: &Value, planned: &Value, release: &Value) -> Result<()> {
+    require(
+        records["schema"] == 1,
+        "registry prerequisite schema mismatch",
+    )?;
+    let entries = planned
+        .as_object()
+        .ok_or("planned publisher catalog missing")?;
+    require(entries.len() == 2, "unexpected planned publisher inventory")?;
+    for registry in ["rubygems", "pypi"] {
+        let record = &records[registry];
+        trust_binding(registry, record)?;
+        require(
+            record["verified"] == false
+                && record["direct_publish_allowed"] == false
+                && record["package_ready"] == false
+                && record["publisher_configured"] == false
+                && record["publisher_mode"] == "pending"
+                && record["package_name"].is_null(),
+            "preparation cannot claim a package, publisher or publication readiness",
+        )?;
+        let entry = &planned[registry];
+        require(
+            entry["workflow"] == record["workflow"]
+                && entry["environment"] == record["environment"]
+                && entry["state"] == "preparation-only"
+                && entry["job_present"] == false,
+            "planned publisher binding drift",
+        )?;
+        require(
+            release["jobs"]
+                .as_object()
+                .is_some_and(|jobs| !jobs.contains_key(registry)),
+            "preparation-only registry must not have a publishing job",
         )?;
     }
     Ok(())
@@ -159,7 +199,7 @@ pub fn readiness(root: &Path) -> Result<()> {
         prerequisite["schema"] == 1,
         "registry prerequisite schema mismatch",
     )?;
-    for registry in ["crates_io", "npm"] {
+    for registry in ["crates_io", "npm", "rubygems", "pypi"] {
         if let Err(error) = trust(root, registry, &prerequisite[registry]) {
             failures.push(error);
         }
@@ -387,7 +427,12 @@ mod tests {
     }
     #[test]
     fn registry_products_require_distinct_exact_environments() {
-        for (registry, environment) in [("crates_io", "crates"), ("npm", "npm")] {
+        for (registry, environment) in [
+            ("crates_io", "crates"),
+            ("npm", "npm"),
+            ("rubygems", "rubygems"),
+            ("pypi", "pypi"),
+        ] {
             let record = serde_json::json!({"workflow":"release.yml","repository":"modootoday/humanymous","environment":environment});
             assert!(trust_binding(registry, &record).is_ok());
             for wrong in ["release", "other", ""] {
@@ -395,6 +440,33 @@ mod tests {
                 changed["environment"] = serde_json::json!(wrong);
                 assert!(trust_binding(registry, &changed).is_err());
             }
+        }
+    }
+    #[test]
+    fn new_publishers_are_typed_preparation_without_jobs_or_readiness() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let records = read_json(&root.join("scripts/ci/registry-prerequisites.json")).unwrap();
+        let catalog = read_json(&root.join("scripts/ci/workflows.json")).unwrap();
+        let planned = &catalog["planned_publishers"];
+        let release = serde_json::json!({"jobs":{}});
+        assert!(validate_preparations(&records, planned, &release).is_ok());
+        for registry in ["rubygems", "pypi"] {
+            for field in [
+                "verified",
+                "package_ready",
+                "publisher_configured",
+                "direct_publish_allowed",
+            ] {
+                let mut changed = records.clone();
+                changed[registry][field] = serde_json::json!(true);
+                assert!(validate_preparations(&changed, planned, &release).is_err());
+            }
+            let mut wrong_environment = records.clone();
+            wrong_environment[registry]["environment"] = serde_json::json!("release");
+            assert!(validate_preparations(&wrong_environment, planned, &release).is_err());
+            let mut actual_job = release.clone();
+            actual_job["jobs"][registry] = serde_json::json!({"permissions":{"id-token":"write"}});
+            assert!(validate_preparations(&records, planned, &actual_job).is_err());
         }
     }
     #[test]

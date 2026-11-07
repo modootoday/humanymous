@@ -1,5 +1,7 @@
 {
   "schema": 1,
   "crates_io": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "crates"},
-  "npm": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "npm", "direct_publish_allowed": false}
+  "npm": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "npm", "direct_publish_allowed": false},
+  "rubygems": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "rubygems", "direct_publish_allowed": false, "package_name": null, "package_ready": false, "publisher_mode": "pending", "publisher_configured": false},
+  "pypi": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "pypi", "direct_publish_allowed": false, "package_name": null, "package_ready": false, "publisher_mode": "pending", "publisher_configured": false}
 }
