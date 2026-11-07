@@ -16,6 +16,7 @@ use std::{
 use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
 mod lifecycle;
+mod observed;
 mod outcome;
 mod readiness;
 mod shutdown;

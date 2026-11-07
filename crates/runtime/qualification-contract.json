@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 65,
-      "macos": 65,
-      "windows": 61
+      "linux": 68,
+      "macos": 68,
+      "windows": 64
     },
     "common_test_names": [
       "configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
@@ -37,6 +37,9 @@
       "service::epoch::tests::revoked_work_cannot_initiate_connect_or_accept_first_bytes",
       "service::epoch::tests::starting_and_foreign_instances_cannot_admit_or_revive",
       "service::epoch::tests::would_block_has_no_bytes_and_reacquisition_rechecks_revocation",
+      "service::observed::retained::tests::abandoned_owner_revokes_guard_before_releasing_resources",
+      "service::observed::retained::tests::failure_retains_same_resource_allocation_until_owner_release",
+      "service::observed::retained::tests::repeated_failure_transition_cannot_release_or_replace_resources",
       "service::outcome::tests::failure_accounting_preserves_both_observed_phases_without_secret_errors",
       "service::readiness::tests::standalone_expected_profile_has_complete_owned_fact_defaults",
       "service::shutdown::tests::manager_budget_has_strict_slack_and_rejects_overflow",

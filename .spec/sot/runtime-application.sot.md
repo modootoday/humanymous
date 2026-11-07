@@ -1065,3 +1065,36 @@ origin admission closed; partial Ready grants no origin/retry/deadline reset.
 Loss after a completed enqueue makes that receipt historical, never a reusable
 live lease. Exact consuming types, native producer and concrete transport
 contracts remain jointly reviewed P0s; this section implements no channel/API.
+
+**First sealed source slice.** Runtime now imports Authority checkpointfecdb4d1's
+actual startup::observer opaque phase guards. Authority's production preparation,
+session and failure each contain a private empty NativeProof; even tests cannot
+construct one. native_preparation returns Unsupported. Runtime's PRIVATE
+ServiceHost::prepare_observed consumes only VerifiedObserverPreparation, boxes
+the exact Configuration owner before validation, and returns a private
+ObservedStartupOwner. It does not call existing bind, unseal, writer opening,
+native verification, Offer or Ready. No public constructor, trait, parent flag
+or DTO can substitute for the missing proof.
+
+One private Retained<R, AuthorityGuard> holds guard before boxed resources in
+declaration order. Cancellation consumes the actual Authority phase into its
+retained ObserverStartupFailure without extracting/replacing Runtime resources.
+The same RetainedFailure<R, AuthorityGuard> remains the cleanup owner. Guard Drop
+synchronously cancels/revokes before resource field destruction; this is not
+monitor join, accepted-work drain or required audit flush. The later bounded
+cleanup/transport/receipt/Ready APIs remain unavailable and no successful cleanup
+result is invented. Receipt-bound guard storage is authored but no promoter exists.
+
+Three native-independent tests exercise the actual generic boxed retention/fail
+path with private test guards: allocation identity through failure, retained
+resources through repeated failure, and guard-drop-before-resource-release order.
+They never mint Authority's uninhabited production proof. They are UNCOMPILED/
+NOT_RUN pending allocation. Native verified activation and actual resource I/O
+are not qualified by these tests.
+
+Exactly scoped dead-code expectations cover the unreachable private preparation
+entry, receipt-bound variant and production failure-inspection method while
+native/receipt/cleanup producers remain Unsupported. Each item names its removal
+condition in source; there is no blanket module allow or public export for lint.
+Remove these expectations when the corresponding verified caller/promotion/
+bounded cleanup consumer is wired. They waive no logic, test or interface failure.
