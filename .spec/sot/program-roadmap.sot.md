@@ -11,6 +11,14 @@ rel:
 
 # Overall roadmap and milestones
 
+The user subsequently authorized actual local Windows/WSL timing and resource
+comparison, superseding the blanket hosted-only rule. Root holds a temporary
+quiet window for comparable measurements against exact 8132117 in an isolated
+checkout. No hosted environment markers are spoofed. Actual SCM/account changes
+remain outside this benchmark. Local Actions executor research is recorded in
+evidence:root/20261107090552; wrkflw is an evaluation candidate, while the existing
+Rust validation commands remain the preferred shared command authority.
+
 The 38-package owner and remaining-gate inventory is recorded in
 evidence:root/20261107085448. It inventories the dirty working graph, not an
 immutable verified candidate; component passes do not close a package or the
@@ -58,7 +66,8 @@ No package publication, release tag, OIDC token exchange or main merge occurred.
 | Hosted native execution | Ubuntu builds all targets; actor executes 15 of 88 harnesses, 51 tests pass, then coverage validation fails | Provision mandatory Node/Bun pilots; collect later contained harness results while retaining final failure; host and OS-runner owners |
 | Docker product lab | Actual 35 checks: 33 pass and two fail; wargame evaluates zero of 26 scheduled cases, with 19 errors and seven unsupported | Fix readiness contract mismatch and recover actual evaluation; runtime, wargame and lab owners |
 | CEF component | Two explicitly provisioned desktop process tests wired under native-pilot-tests; no actual execution yet | Existing hosted runner provisions separate fresh positive/cancelled bundles and executes both; CI/browser owners |
-| Cross-OS and browser | macOS native also fails after 15 of 88 harnesses, with 51 tests passing and the same host_process coverage stop; browser job fails with wargame diagnostics; Windows and browser-product are running at observation | Observe the same run, retain immutable source identity, do not duplicate dispatch |
+| Cross-OS and browser | Linux/macOS stop at 15/88 with 51 passing tests; Windows builds then stops at 15/89 with 55 passing tests, all at host_process coverage; browser-product fails browser_gate_start | Inspect subsequent independent MSRV/image jobs without treating this step failure as global nonexecution |
+| nginx actual component | Exact 8132117 job 128358355202 succeeds: all 35 scenario groups pass, ignored=0; module SHA-256 a911735564a23f646e2d7242d6a68f3b37a5622f860221b9ec19e92ab8f74845 | Preserve source/artifact proof; full_product_qualified remains false and does not cover later shared changes |
 | Final product | Qualified collector/capture/Pass joins, actual adapter matrices, human/AT controls and complete runtime recovery remain incomplete | Complete required paths and obtain current-source actual receipts; all owning chats |
 | Final integration | 336 tracked Go files still require replacement proof; Pages/freshness and main-only state unverified | Remove obsolete product code only after parity gates, finish public docs, merge/verify main and retire migration branches |
 
