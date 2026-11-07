@@ -1,7 +1,7 @@
 //! Two-namespace product actors. Private witness frames never enter HTTP/logs.
 use crate::browser_proxy::{self, ProxyConfig, Receipts};
-use humanymous_audit::checkpoint::service;
-use humanymous_runtime::service::{ServiceHost, ShutdownRequest};
+use humanymous_runtime::audit::checkpoint::service;
+use humanymous_runtime::gateway::service::{ServiceHost, ShutdownRequest};
 use serde_json::json;
 use std::{
     io::{self, BufReader, Read, Write},
@@ -106,11 +106,11 @@ pub fn gate() -> Result<()> {
         shutdown.send(Some(ShutdownRequest::new(5000)?)).map_err(|_|io::Error::other("runtime controller closed"))?;
         proxy.await??;
         let exit=tokio::time::timeout(Duration::from_secs(10),runtime).await???;
-        let wal=humanymous_audit::storage::Wal::open(Path::new("/writer/wal"),Default::default())?;
+        let wal=humanymous_runtime::audit::storage::Wal::open(Path::new("/writer/wal"),Default::default())?;
         let mut pin=Vec::new();std::fs::File::open("/tmp/browser-pilot-stop")?.take(16385).read_to_end(&mut pin)?;
         if pin.len()>16384{return Err("external pin control bound".into());}
-        let external:humanymous_audit::checkpoint::Checkpoint=serde_json::from_slice(&pin)?;
-        let plan=humanymous_audit::storage::plan_witness_recovery(wal.records()?,wal.checkpoints()?,humanymous_audit::storage::RecoveryPolicy{node_id:"isolated-node",hmac_key:&installation.hmac,writer_public:&public,witness_public:Some(&witness),trusted_head:Some(&external),allow_new:false},humanymous_audit::storage::TailRecovery::RequireCovered).map_err(io::Error::other)?;
+        let external:humanymous_runtime::audit::checkpoint::Checkpoint=serde_json::from_slice(&pin)?;
+        let plan=humanymous_runtime::audit::storage::plan_witness_recovery(wal.records()?,wal.checkpoints()?,humanymous_runtime::audit::storage::RecoveryPolicy{node_id:"isolated-node",hmac_key:&installation.hmac,writer_public:&public,witness_public:Some(&witness),trusted_head:Some(&external),allow_new:false},humanymous_runtime::audit::storage::TailRecovery::RequireCovered).map_err(io::Error::other)?;
         if plan.needs_checkpoint_append(){return Err("normal browser shutdown unexpectedly requires checkpoint repair".into());}
         let history=plan.history();
         let records:Vec<_>=history.records().iter().map(|record|json!({"seq":record.seq,"event_type":record.event_type,"verdict":record.verdict})).collect();
@@ -127,7 +127,7 @@ pub fn stop() -> Result<()> {
     if input.len() > 16384 {
         return Err("external pin control bound".into());
     }
-    let head: humanymous_audit::checkpoint::Checkpoint = serde_json::from_str(&input)?;
+    let head: humanymous_runtime::audit::checkpoint::Checkpoint = serde_json::from_str(&input)?;
     let pending = "/tmp/browser-pilot-stop.pending";
     let mut file = std::fs::OpenOptions::new()
         .write(true)

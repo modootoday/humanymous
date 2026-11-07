@@ -217,7 +217,7 @@ mod tests {
         }
         for path in [
             "Cargo.lock",
-            "crates/runtime/src/main.rs",
+            "crates/sdk/humanymous-runtime/src/gateway/main.rs",
             "test/lab/runner/Cargo.toml",
             "test/lab/mount_policy.rs",
             "test/lab/browser_expectations.rs",

@@ -1,11 +1,11 @@
 //! Fresh per-case Gate with private independent witness and origin contact relay.
 use super::{Result, relay};
 use crate::installation::witnessed::{self, WitnessedInstallation};
-use humanymous_audit::{
+use humanymous_runtime::audit::{
     checkpoint::service,
     storage::{RecoveryPolicy, TailRecovery, Wal, plan_witness_recovery},
 };
-use humanymous_runtime::service::{ServiceHost, ShutdownRequest};
+use humanymous_runtime::gateway::service::{ServiceHost, ShutdownRequest};
 use serde_json::json;
 use std::{
     io::{self, BufReader, Read},

@@ -1,13 +1,13 @@
 //! One private witness/key installation factory for contextual product actors.
 use super::Installation;
-use humanymous_audit::{
+use humanymous_runtime::audit::{
     checkpoint::{
         WitnessBootstrap,
         service::{self, WitnessServiceClient},
     },
     log::WitnessDurability,
 };
-use humanymous_runtime::startup::ExternalWitness;
+use humanymous_runtime::gateway::startup::ExternalWitness;
 use serde_json::json;
 use std::{
     io::{self, BufReader},

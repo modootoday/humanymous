@@ -1,6 +1,6 @@
 //! Independent-container audit witness roles. Private framing belongs to audit.
 use ed25519_dalek::SigningKey;
-use humanymous_audit::{
+use humanymous_runtime::audit::{
     checkpoint::{
         Checkpoint, WitnessBootstrap,
         service::{self, WitnessServiceClient, WitnessServiceConfig},

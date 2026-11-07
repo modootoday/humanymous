@@ -1,0 +1,83 @@
+{
+  "schema": "humanymous.lab-runtime-consolidation-consumers/1",
+  "authority": "Root RUNTIME-SLICE-02 exact claimed Rust consumers",
+  "sequence": "Old runtime prefix to gateway FIRST, then old context prefixes to runtime context; no cascading gateway aliases",
+  "files": [
+    {
+      "path": "test/lab/runtime/src/browser_proxy.rs",
+      "before_sha256": "7005cd72d0f5a043227985e3882daed8171b3d52f365783031aa1d8e7abf17e9",
+      "after_sha256": "f2dd8315be3ea71c930b3eacf2c51190904de622a610d9a5ea62469b0fc418c1"
+    },
+    {
+      "path": "test/lab/runtime/src/client.rs",
+      "before_sha256": "34c6252b87be3008a7b727cf415e8d9ab2b33e4ccd911658c1fba2d75d0dcbda",
+      "after_sha256": "9859d56ceee0b246c2c0988964661caaa333511ae1a7ba5d2f81cd8397549b4d"
+    },
+    {
+      "path": "test/lab/runtime/src/browser_product.rs",
+      "before_sha256": "21f595d313639d0611842f76ec6bf9a6124eda5c18cd4bf9b2f334574f58f861",
+      "after_sha256": "7b5428e8f661e4f70213dd8b99198be0a952e38520901c8889c10c7ed1b9481c"
+    },
+    {
+      "path": "test/lab/runtime/src/installation/witnessed.rs",
+      "before_sha256": "e497defa4ffc65d38148a3a52dd0ed0b3d949e7ba6b41e2fad00c1ff242f9ae9",
+      "after_sha256": "ad84d299f2a5b631137597bc2b0253140d4f2936366a20fc1a3c7751b933053e"
+    },
+    {
+      "path": "test/lab/runtime/src/installation.rs",
+      "before_sha256": "d83a84e8b1ac0ebf0f1925b16f8998f1067fee9b880697fb2a8cb3c17300244c",
+      "after_sha256": "4f1a65ef526446a1e757d03cc2064dd94065ff824b7e2d65409c5b6a8de71803"
+    },
+    {
+      "path": "test/lab/runtime/src/go/gate.rs",
+      "before_sha256": "570823f3b22732c2af5ef81e7fb451cdecb539b06d8099a7bae715e6be231ca1",
+      "after_sha256": "c7a96423038ae64593a275a2ac9d32faea560f8eedd7315b38c532a0f08a87d5"
+    },
+    {
+      "path": "test/lab/runtime/src/witness.rs",
+      "before_sha256": "602e66517dcc3e5a711e9f35eb668cfe2aa1a3a44c22b4e188e69c7acd0c2bff",
+      "after_sha256": "46fc58b51d62e9c95b984b72d0f47cfb8fae05b26e982c9a71f91e57edd781c8"
+    },
+    {
+      "path": "test/lab/runtime/src/scenario.rs",
+      "before_sha256": "d9b03412d50483213ee8bee9d3a2a7adce93a0d45825c9871422d55d52297776",
+      "after_sha256": "bb42fc9016779a83ebf53c88aa773292dcf1a102d5b759074a7720ab877834e7"
+    },
+    {
+      "path": "test/lab/runtime/src/go/response.rs",
+      "before_sha256": "85da296dbc395810df959b9e53b58e93b62370f387dedf238a42640219475228",
+      "after_sha256": "3634b18670945ecad59947771cfd085f99ca15c834548707c7b26fc781fff30b"
+    },
+    {
+      "path": "test/lab/runner/src/snapshot.rs",
+      "before_sha256": "ad1e8bfed988433fb4ba8069c57e4d10e37296e8dc23ed55fc841d2251dc7b06",
+      "after_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/witness.rs",
+      "before_sha256": "1a05a6461ebfe4993fcd1c7aaaf21082c03f9c395e7c62f7314afa105e9a8c7b",
+      "after_sha256": "701d3eb0ab2df102270ee10e9e864e95fce8077bf58521e93ef2ee77f7285e89"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go.rs",
+      "before_sha256": "378dd2934342b882dffafaa4427458c32eba9a8ca8ca7035aae59fa7fca878e6",
+      "after_sha256": "e066089199ff637052768838f65cc0c1156ab9043d9aab6c2b4e1c55f15e19b3"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser.rs",
+      "before_sha256": "1fd30c3f8973af61105e55e79a0f15628a4118f0673b8165f2da01ceecf78e9b",
+      "after_sha256": "1307707dc16b267aad61afe06c23f5ca3503a4d5425ba6fafa8701494540115a"
+    }
+  ],
+  "changed_files": 13,
+  "source_path_test": "crates/sdk/humanymous-runtime/src/gateway/main.rs",
+  "manifest_changes": false,
+  "behavior_changes": false,
+  "unsafe_authority_scoring_changes": false,
+  "source_only": true,
+  "compiler_tests_clippy_fmt": "NOT RUN pending Root coherent allocation",
+  "bootstrap_parser_changed": false,
+  "pilot_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+  "dto_fields": 13,
+  "immutable_watch": "42418752735/edc30181/89901 continues independently; no source edits in immutable hosted run"
+}

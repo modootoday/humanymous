@@ -1,10 +1,10 @@
 //! Docker-only owned loopback process pilot. No real-browser qualification.
 use crate::{client::*, installation::Installation, process};
-use humanymous_audit::{
+use humanymous_runtime::audit::{
     log::{Config, Log},
     storage::{Wal, WalOptions},
 };
-use humanymous_runtime::configuration::Configuration;
+use humanymous_runtime::gateway::configuration::Configuration;
 use serde_json::{Value, json};
 use std::{fs, os::unix::fs::PermissionsExt};
 
@@ -28,9 +28,9 @@ pub fn run() {
     let typed: Configuration = serde_json::from_value(config.clone()).unwrap();
     let (runtime, address) = process::Runtime::start(&config);
     assert!(
-        humanymous_audit::keys::custody::Custody::acquire(
+        humanymous_runtime::audit::keys::custody::Custody::acquire(
             &key_directory,
-            humanymous_audit::keys::custody::Owner::CurrentUser
+            humanymous_runtime::audit::keys::custody::Owner::CurrentUser
         )
         .is_err(),
         "runtime lost lifetime custody"

@@ -6,7 +6,7 @@ pub struct Response<'a> {
     pub entity: &'a [u8],
 }
 pub fn observe(bytes: &[u8], head: bool) -> io::Result<Response<'_>> {
-    humanymous_runtime::http::response(bytes, head)
+    humanymous_runtime::gateway::http::response(bytes, head)
         .map_err(|_| io::Error::other("shared response framing rejected"))?;
     let end = bytes
         .windows(4)

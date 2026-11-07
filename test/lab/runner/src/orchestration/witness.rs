@@ -2,7 +2,7 @@
 //! Audit owns framing, signatures, proofs, persistent head and client semantics.
 use super::Lab;
 use crate::{docker::Result, snapshot};
-use humanymous_audit::checkpoint::service::{read_frame, write_frame};
+use humanymous_runtime::audit::checkpoint::service::{read_frame, write_frame};
 use serde_json::{Value, json};
 use std::{
     io::{BufReader, Write},

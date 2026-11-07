@@ -1,5 +1,5 @@
 //! Owned HTTP pilot forwarding. No TLS/raw browser-header provenance claim.
-use humanymous_runtime::http;
+use humanymous_runtime::gateway::http;
 use serde::Deserialize;
 use std::{
     collections::BTreeMap,
