@@ -17,7 +17,8 @@ rel:
 - [x] Run locked workspace/all-target151 tests, warnings-denied Clippy, fmt and eight-library portable WASM.
 - [x] Run docs-tool7 tests, CI-policy9 tests and actionlint.
 - [x] Run isolated authority Docker pilot14 default cases plus explicit other-UID parent/helper qualification.
-- [ ] Record actual outcomes and same-SHA native remote follow-through.
+- [x] Record actual outcomes and same-SHA native remote follow-through: run42317508643, six successful tuples at a0b6dfc; evidence:root/20261106235519 rust1991-six-native-results.json.
 
 This changes toolchain policy, not scoring, wire formats or runtime capabilities.
-Meari/CEF full closure remains unbuilt; old six-tuple results remain SHA-bound.
+Meari native-ui was subsequently checked on Windows; CEF full closure remains
+unqualified. Every six-tuple result remains SHA-bound and excludes later source.

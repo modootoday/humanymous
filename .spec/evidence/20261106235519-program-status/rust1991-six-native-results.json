@@ -1,0 +1,999 @@
+{
+  "schema": "humanymous.native-upgrade-summary/1",
+  "run_id": 42317508643,
+  "source_sha": "a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178",
+  "scope": "implemented-crate-native-tests",
+  "full_runtime_qualified": false,
+  "reports": [
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "arm64"
+      },
+      "observed": {
+        "os": "linux",
+        "arch": "arm64",
+        "release": "7.0.0-1017-azure",
+        "version": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 19:06:39 UTC 2026",
+        "machine": "aarch64"
+      },
+      "source_sha": "a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "cargo_lock_sha256": "86133fa895d5127adc48604c2a1e2721fc9e31ec39017a6d8f4b267980561c99",
+      "report_sha256": "9fa2bb350e0ed45f398020ad18930a983853e4f5d48be8f2360c6b05c7b979af"
+    },
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "x64"
+      },
+      "observed": {
+        "os": "linux",
+        "arch": "x64",
+        "release": "7.0.0-1017-azure",
+        "version": "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+        "machine": "x86_64"
+      },
+      "source_sha": "a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "cargo_lock_sha256": "86133fa895d5127adc48604c2a1e2721fc9e31ec39017a6d8f4b267980561c99",
+      "report_sha256": "1ad2787077d207ca8956e0c2e79ee6e90492dd3be47d549a1b3489c8e959f7ab"
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "arm64"
+      },
+      "observed": {
+        "os": "macos",
+        "arch": "arm64",
+        "release": "24.6.0",
+        "version": "Darwin Kernel Version 24.6.0: Sun Oct 11 23:44:11 PDT 2026; root:xnu-11417.140.69.713.47~2/RELEASE_ARM64_VMAPPLE",
+        "machine": "arm64"
+      },
+      "source_sha": "a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "cargo_lock_sha256": "86133fa895d5127adc48604c2a1e2721fc9e31ec39017a6d8f4b267980561c99",
+      "report_sha256": "2eec74d699bb03f5b9eff67e9db04c115a66f3a265ec6c2b7e2d803d5e076190"
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "x64"
+      },
+      "observed": {
+        "os": "macos",
+        "arch": "x64",
+        "release": "24.6.0",
+        "version": "Darwin Kernel Version 24.6.0: Tue Jul 21 20:50:07 PDT 2026; root:xnu-11417.140.69.711.44~1/RELEASE_X86_64",
+        "machine": "x86_64"
+      },
+      "source_sha": "a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "cargo_lock_sha256": "86133fa895d5127adc48604c2a1e2721fc9e31ec39017a6d8f4b267980561c99",
+      "report_sha256": "727b03729577d38cca9a027bffc93c4cd836a5f399f32e4fe5bfe658ce4f1678"
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "arm64"
+      },
+      "observed": {
+        "os": "windows",
+        "arch": "arm64",
+        "release": "11",
+        "version": "10.0.26200",
+        "machine": "ARM64"
+      },
+      "source_sha": "a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-pc-windows-msvc\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "cargo_lock_sha256": "86133fa895d5127adc48604c2a1e2721fc9e31ec39017a6d8f4b267980561c99",
+      "report_sha256": "0a03ce2e16987b6bbe1d33e25410299882ccfe7bdc87ebdc7b1a8e245629d703",
+      "windows_standard_user": {
+        "token": {
+          "sid": "S-1-5-21-2059143792-918228121-4054068362-1001",
+          "administrator_group": false,
+          "groups": [
+            "S-1-5-21-2059143792-918228121-4054068362-513",
+            "S-1-1-0",
+            "S-1-5-32-545",
+            "S-1-5-4",
+            "S-1-2-1",
+            "S-1-5-11",
+            "S-1-5-15",
+            "S-1-5-113",
+            "S-1-2-0",
+            "S-1-5-64-10"
+          ],
+          "elevated": false
+        },
+        "harnesses": [
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous-681fe3cd313c1644.exe",
+            "run_exit": 0,
+            "discovered": 0,
+            "passed": 0,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": true
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\attestation_parity-e6faf3e4c2a5e9f6.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\proof_of_work_parity-f40cf02b94f661bd.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\checkpoint_parity-ef3ac23fd55e6ee5.exe",
+            "run_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_attacker-7601eb1f37e96172.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\record_parity-8488161308f7f858.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\verification_parity-94d3a4edf0689c10.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_attacker-c9d1d4fe545fe764.exe",
+            "run_exit": 0,
+            "discovered": 5,
+            "passed": 5,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\merkle_parity-5865b2be29e142e9.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\monitor_parity-8a87b7dab590c697.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\h2_parity-e121a769dd0f17c0.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\tls_parity-fd16e47201ca686b.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_authority-2bb89533c7794b65.exe",
+            "run_exit": 0,
+            "discovered": 0,
+            "passed": 0,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": true
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\report_parity-ba82c92ede2eafe4.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_authority-a690117760b75f40.exe",
+            "run_exit": 0,
+            "discovered": 3,
+            "passed": 3,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\native_process-3169599ee9e5f83a.exe",
+            "run_exit": 0,
+            "discovered": 5,
+            "passed": 5,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\verification_parity-123f72bd92b94924.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\resource_parity-44d4cd71a8d9487a.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\request_parity-392f07e783df535d.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\behavior_parity-a37e2ec84d7ce47d.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\decisions-2eb8f8ba9e5b5736.exe",
+            "run_exit": 0,
+            "discovered": 7,
+            "passed": 7,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_defender-ee3f5ccc0a7330e5.exe",
+            "run_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\derivation_parity-f637ff31da0ede76.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\crosscheck_parity-e8fcb2811bf31bcd.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_scoring-2c962bd3d1ea1be6.exe",
+            "run_exit": 0,
+            "discovered": 10,
+            "passed": 10,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\inference_parity-69d14907ee412e47.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\registry_integrity-a649191ce37ce320.exe",
+            "run_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_behavior-cdd3cec6ef223fd6.exe",
+            "run_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\trust_upgrades-3ba34bb06fd0ac15.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_integrity-1f264d0b91a9596c.exe",
+            "run_exit": 0,
+            "discovered": 11,
+            "passed": 11,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_network-8f2b3c45571fa380.exe",
+            "run_exit": 0,
+            "discovered": 14,
+            "passed": 14,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\engine_parity-850d1f2376772fa6.exe",
+            "run_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\observation_parity-637dc759d65d5338.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\feature_parity-d560fa68ec34c9c7.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_model-4316139478cc5385.exe",
+            "run_exit": 0,
+            "discovered": 5,
+            "passed": 5,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_challenge-a43eaac748a7899c.exe",
+            "run_exit": 0,
+            "discovered": 8,
+            "passed": 8,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\report_parity-74f343a7349964db.exe",
+            "run_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_test_support-0bb0f2f6b16c1de8.exe",
+            "run_exit": 0,
+            "discovered": 3,
+            "passed": 3,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_cli-178cbc202f0a523f.exe",
+            "run_exit": 0,
+            "discovered": 6,
+            "passed": 6,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_audit-0947a270a9b708a9.exe",
+            "run_exit": 0,
+            "discovered": 33,
+            "passed": 33,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "list_exit": 0,
+            "executable": "C:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_signals-95d0c22ba775e91c.exe",
+            "run_exit": 0,
+            "discovered": 10,
+            "passed": 10,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          }
+        ],
+        "status": "executed",
+        "workspace_write_denied": true,
+        "required_harnesses": 41,
+        "executed_harnesses": 41,
+        "zero_test_harnesses": 2,
+        "passed_tests": 151,
+        "ignored_tests": 0
+      }
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "x64"
+      },
+      "observed": {
+        "os": "windows",
+        "arch": "x64",
+        "release": "2025Server",
+        "version": "10.0.26100",
+        "machine": "AMD64"
+      },
+      "source_sha": "a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-pc-windows-msvc\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "cargo_lock_sha256": "86133fa895d5127adc48604c2a1e2721fc9e31ec39017a6d8f4b267980561c99",
+      "report_sha256": "997eac674372de584c64cc0ee8bcfd57fdbc3d9731e20b93af10c924548e6e2f",
+      "windows_standard_user": {
+        "status": "executed",
+        "workspace_write_denied": true,
+        "token": {
+          "administrator_group": false,
+          "groups": [
+            "S-1-5-21-3289802278-1561746829-1498425070-513",
+            "S-1-1-0",
+            "S-1-5-32-545",
+            "S-1-5-4",
+            "S-1-2-1",
+            "S-1-5-11",
+            "S-1-5-15",
+            "S-1-5-113",
+            "S-1-2-0",
+            "S-1-5-64-10"
+          ],
+          "sid": "S-1-5-21-3289802278-1561746829-1498425070-1003",
+          "elevated": false
+        },
+        "harnesses": [
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous-602acd509659f669.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 0,
+            "passed": 0,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": true
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\attestation_parity-51870f2f786783a9.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\proof_of_work_parity-35fc25a84e118c13.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_attacker-140b81501bff7c0c.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\record_parity-ea2dd713070145f8.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_attacker-24de5456310e3ff0.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 5,
+            "passed": 5,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\verification_parity-6e26fdcf41948693.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\merkle_parity-b1c4834b5b1bf3d2.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\checkpoint_parity-36fba08518b0d12d.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\request_parity-4ee63a5de1a9bcb7.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_authority-2298e719b6a6e64f.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 0,
+            "passed": 0,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": true
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_authority-4455736ea7afaf21.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 3,
+            "passed": 3,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\native_process-9ff99d8043b105b5.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 5,
+            "passed": 5,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\verification_parity-a7ce18358d9c3c1b.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\resource_parity-25e43f81282ed501.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\behavior_parity-689341204caeb415.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\decisions-6a018f11fe46c193.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 7,
+            "passed": 7,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_audit-a16370b1fc5c2f6d.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 33,
+            "passed": 33,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\derivation_parity-00a0c8f1ec76c976.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_defender-818c5fc59c2b0a5d.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\trust_upgrades-deb37ad9d5987aa3.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\h2_parity-5008e4f822bf1119.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\monitor_parity-5bc2a2442ffcdc3a.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\tls_parity-2f21a0d10dde8dae.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\crosscheck_parity-c72448ecec34200c.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\report_parity-d6eb8729674f7e8b.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\inference_parity-37ec2810b88aa50d.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\registry_integrity-618176a636b4cdd3.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\engine_parity-47cf1c030ae7ed5c.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_scoring-2b5dbd21526e6d0d.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 10,
+            "passed": 10,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\observation_parity-8184016fb99f1863.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_behavior-0f6ba994eac9eeec.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 2,
+            "passed": 2,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\feature_parity-3dc2b6eaf74e90d0.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_network-8905d7e3a3f3457a.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 14,
+            "passed": 14,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_model-e2eef6c5b13a1c49.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 5,
+            "passed": 5,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_integrity-f634a8a3c611030f.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 11,
+            "passed": 11,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_challenge-e4511cde74b61c05.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 8,
+            "passed": 8,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_test_support-aeb2a5aca067a063.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 3,
+            "passed": 3,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_cli-fe29769d5d5c1ca9.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 6,
+            "passed": 6,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\humanymous_signals-d603664aea59380a.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 10,
+            "passed": 10,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          },
+          {
+            "executable": "D:\\a\\humanymous\\humanymous\\target\\debug\\deps\\report_parity-cc81a086b3a49318.exe",
+            "run_exit": 0,
+            "list_exit": 0,
+            "discovered": 1,
+            "passed": 1,
+            "ignored": 0,
+            "filtered": 0,
+            "zero_test_harness": false
+          }
+        ],
+        "required_harnesses": 41,
+        "executed_harnesses": 41,
+        "zero_test_harnesses": 2,
+        "passed_tests": 151,
+        "ignored_tests": 0
+      }
+    }
+  ]
+}

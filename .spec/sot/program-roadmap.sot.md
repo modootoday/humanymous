@@ -194,12 +194,22 @@ workspace151개,fmt·warnings-denied Clippy,8개 순수 library WASM compile,
 CI 도구9개,docs-review7개. authority Docker 기본14passed/2ignored에 더해
 별도 other-UID parent1개를 명시 실행했다. 이것은 full product e2e가 아니다.
 원격 run42317508643(source a0b6dfc230a61d8c3fb0ddc7e34e0827be63b178)의
-이번 조회에서는 Linux x64/ARM64,macOS ARM64,Windows x64/ARM64 성공,
-macOS x64 실행 중이다. 전체 run 성공과 새 병렬 source 검증은 아직 주장하지 않는다.
+후속 조회와 내려받은 여섯 report.json 대조에서 Linux/macOS/Windows x64·ARM64
+모두 성공,source SHA 일치·test_exit_code0·full_runtime_qualified=false를 확인했다.
+새 병렬 source 검증에 소급하지 않는다. 정본 요약은
+evidence:root/20261106235519의 rust1991-six-native-results.json이다.
 근거: .spec/evidence/20261107000721-rust-toolchain-upgrade/local-results.json,
 GitHub Actions run https://github.com/modootoday/humanymous/actions/runs/42317508643.
 
 ## 잔여 차단 항목 상세
+
+새 runtime/browser workspace 통합은 진행 중이다. browser native-ui Windows
+check와 unit8개, custody parent6passed/2ignored helper 시험을 관찰했다.
+진행 중 dirty source에 대한 관찰로서 최종 커밋 자격화는 아니다.
+새 dependency closure의 cargo audit 결과는 취약점0개와 별도로
+RUSTSEC-2026-0192(ttf-parser0.25.1 유지보수 중단) 경고1개다.
+경로는 humanymous-browser→meari-native→ttf-parser이다. 최종 경고0 상태로
+보고하지 않으며 pinned Meari의 font parser 교체/업스트림 반영을 검토한다.
 
 현재 다음 full-delivery entrypoint가 없다: scripts/migration/pilot-native.ps1,
 pilot-browser.sh, e2e-rust-docker.sh. cross-os-probe와 제한된 lab runner는 이
