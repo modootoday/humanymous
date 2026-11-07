@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T12:42:16Z
+updated: 2026-11-07T13:42:09Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -18,6 +18,8 @@ files:
   - {path: capture-e77b9792-summary.json, sha256: 643bf62f0de748556f4204c0bdf2d40a24821b4ea0bff7f67d54a2c32bb43388, bytes: 2376, store: repo}
   - {path: mount-b482d5be-summary.json, sha256: 4d971914b3c827bf50233be2f0b22533fbd66cf69a8d86cbddb622538a9f8fa6, bytes: 5545, store: repo}
   - {path: cef-e77b9792-summary.json, sha256: 4c975b1d2936d6020d927eee6ac72c05b7cd20d98f90e64005ab1aad4a44051d, bytes: 2858, store: repo}
+  - {path: mount-c3211e27-summary.json, sha256: ac09e1f630bbed4bae72079c55cfe20fcfd5d8c67c02acd5a6362a34038644a2, bytes: 5296, store: repo}
+  - {path: go-c3211e27-summary.json, sha256: c858af3a68fcb2ac12acf04151fd1c32a193c90ec4fd59f3c8652d0075336b16, bytes: 5490, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -252,3 +254,22 @@ passed, followed by an unverified bootstrap-stage failure. Bootstrap execution
 count is unknown, desktop2 were not reached and source_changed remains null.
 Neither source establishes GUI/AT/full runtime qualification or acquired private
 compiler/test log bodies. All these dedicated runs had zero artifacts.
+
+## Repaired mount and actual Go component
+
+mount-c3211e27-summary.json records run 42374587466 at exact c3211e27: four
+ordered role/surface observations accepted all eight paths under the unchanged
+masked-0700 predicate. Custody, full-product and release qualification remain
+false. Numeric modes and original private bodies were not acquired. The private
+normalized REST/decoded-log capture index SHA256 is
+bebc6c439d89ba10398125c46e3e6950d706008ffacbecc04aa5bf0beb435c4e.
+
+go-c3211e27-summary.json separately records run 42375310198 at the same source:
+all eight bounded HTTP component cases passed, with 40 known assertions and no
+unknown or unevaluated cases. Full-product and release qualification remain
+false. Both runs had two successful jobs, zero artifacts, successful cleanup
+and unchanged source. Go10/lab20/delivery74 preflight passed; the mount preflight
+passed lab20/delivery74. The Go private capture index SHA256 is
+26a9861791f5fa7117adc3db0941ba573a9706909806b235d47f378d64caa887.
+These captures are normalized REST and decoded connector wrappers, not HTTP
+wire bytes or the original private owner ledgers.
