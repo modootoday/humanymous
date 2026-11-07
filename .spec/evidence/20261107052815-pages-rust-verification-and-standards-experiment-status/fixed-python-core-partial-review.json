@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.pages-source-review-batch/1",
   "fixed_commit": "269607366e4b2e37b47a974595b406b66642caae",
-  "scope": "Python partial batch: six fully read files only; not all26 Python task files",
+  "scope": "Python partial batch: thirteen fully read files only; not all26 Python task files; observations have per-file chronology",
   "files": [
     {
       "path": "crates/python-adapter/INTEGRATION.md",
@@ -56,10 +56,73 @@
       "notes": "Maturin1.16.0 version string and locked release command; inspect bounds archive bytes100MiB/member count128/individual claimed size and requires one native extension plus compatible tag. Filename tags and hashes do not attest generation provenance. Inspection uses embedded interpreter; install-test invokes external pip then imports through embedded interpreter after major/minor string comparison. External command status/output have no local timeout; output capture and descendant containment are not bounded here. No package/install/import execution performed.",
       "current_sha256_at_observation": "0b6a8d92343bde8550f20870f6c2d6f924ba13f1a00a1d929596e0c1157533c5",
       "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/component_controller.rs",
+      "fixed_sha256": "4ab16775f6cf4081485d8c5251cacd2f4a77c1d2d84eede544254f42bc992f6e",
+      "fixed_lines": 387,
+      "full_read": true,
+      "notes": "Full387 lines read in two contiguous chunks. coordinate refuses lifecycle before Controller construction. Unreachable candidate flow restricts ordinary hosted actor/private bundle/runner-temp target; records private command streams, copies module/authority/harness, validates discovery and exact actual rows before before/after manifests. Existing source code is not an executed success or accepted process containment contract.",
+      "current_sha256_at_observation": "4ab16775f6cf4081485d8c5251cacd2f4a77c1d2d84eede544254f42bc992f6e",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_lifecycle.rs",
+      "fixed_sha256": "5839d24ac3246523878c28f9e4174142c77ad53fa979ea42d366e00c4c41f5ad",
+      "fixed_lines": 4,
+      "full_read": true,
+      "notes": "Unconditional NOT_ACCEPTED error; no reviewed atomic owned-lifetime backend accepted at this fixed source.",
+      "current_sha256_at_observation": "5839d24ac3246523878c28f9e4174142c77ad53fa979ea42d366e00c4c41f5ad",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_process.rs",
+      "fixed_sha256": "2aa1be700f39bfbf0ca2b35abc4f298b98686ad30e3249c2bf0b4b0c0ecef9d7",
+      "fixed_lines": 31,
+      "full_read": true,
+      "notes": "Actual execution unconditionally refuses. Cleanup scans readable proc environments for exact marker but returns NOT_ACCEPTED even when absent; skipped unreadable entries and non-atomic observations do not authorize signalling or prove empty process ownership.",
+      "current_sha256_at_observation": "2aa1be700f39bfbf0ca2b35abc4f298b98686ad30e3249c2bf0b4b0c0ecef9d7",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/asgi_server.rs",
+      "fixed_sha256": "47b73211c233d08d3c31fbf6d8303ed03000ae38ab2b11e8fa14bc80c017cdf7",
+      "fixed_lines": 54,
+      "full_read": true,
+      "notes": "Six ignored actual groups across Starlette/FastAPI/Django. Suite construction refuses lifecycle before framework/host execution. Unix host-pilot cfg and included framing sources are not actual42-case results.",
+      "current_sha256_at_observation": "47b73211c233d08d3c31fbf6d8303ed03000ae38ab2b11e8fa14bc80c017cdf7",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/wsgi_server.rs",
+      "fixed_sha256": "edda82821667c0ddfc5a8ee52754d614a5c6b8ee297847ce6d5e917df4bbcbd3",
+      "fixed_lines": 53,
+      "full_read": true,
+      "notes": "Six ignored actual Flask/Django groups delegate shared cases. Includes shared lifecycle module but suite itself does not invoke refusal; host implementation must be read before claiming every direct WSGI path refuses. Historical execution not transferred to this source.",
+      "current_sha256_at_observation": "edda82821667c0ddfc5a8ee52754d614a5c6b8ee297847ce6d5e917df4bbcbd3",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_files.rs",
+      "fixed_sha256": "9743800f6636d5741bd75d86045246c639b35fa4c98b1dd6d4a13efd7d366edd",
+      "fixed_lines": 116,
+      "full_read": true,
+      "notes": "Tracks Git-index file contents only; ignores untracked paths in clean check and does not capture full compiler/registry/environment closure. Dependency manifest records symlink target text and file referent digest, directory links as marker only. Artifact manifest covers exactly three copied files. Cargo output selector requires one named harness executable, not artifact provenance attestation.",
+      "current_sha256_at_observation": "9743800f6636d5741bd75d86045246c639b35fa4c98b1dd6d4a13efd7d366edd",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_receipt.rs",
+      "fixed_sha256": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45",
+      "fixed_lines": 162,
+      "full_read": true,
+      "notes": "Strict duplicate-key JSON plus bounded8192-byte rows, allowed framework/group/fields, unique framework/group/control tuples, exact totals14rows/28cases and one8-pass footer. Discovery checks exact eight names. Does not independently authenticate producer truth, process status or source artifact lineage; controller has separate exit/manifest obligations. Included fixture test assertions are source-only here.",
+      "current_sha256_at_observation": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45",
+      "current_bytes_match_fixed": true
     }
   ],
-  "full_read_files": 6,
-  "full_read_lines": 1110,
+  "full_read_files": 13,
+  "full_read_lines": 1917,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "source_review_receipts_renewed": false,
