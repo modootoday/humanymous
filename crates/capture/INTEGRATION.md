@@ -69,6 +69,37 @@ deployment actually terminates the original client; reterminated proxy traffic
 describes the proxy hop. Unit parsing and a successful TLS pilot do not qualify
 request integrity, collector execution, T4/human identity or full product.
 
+## Runtime contract for checkpoint46822eb
+
+This is the committed component API contract, not acceptance of a completed
+runtime integration. Default-feature21pure units and all-targets Clippy passed.
+Optional hosted-feature compile, actual5socket cases, Send-bound integration,
+runtime lifecycle and Docker product tests remain separate unexecuted gates.
+Retain required.raw_tls/original_h2=422 on the existing plain listener and all
+adapter0.1 inputs until the actual ingress composition qualifies each plane.
+
+| Boundary | Current component behavior | Runtime obligation or remaining seam |
+|---|---|---|
+| Socket custody | Connection::accept consumes one actual std::net::TcpStream; no public constructor from a parsed hello or receipt | Bind an accepted ingress socket to one worker/epoch; no independently opened or replayed connection may supply its evidence |
+| Principal/topology | Successful rustls handshake on that socket; no OS peer-principal, user identity or original-hop attestation API | Own listener/configuration/peer policy and lab topology. A TLS-terminating proxy produces proxy-hop evidence; forwarded fields never upgrade it |
+| TLS completeness | Exact bounded first ClientHello reassembly plus completed rustls handshake; no early data or HelloRetryRequest qualification | Use client_hello only from that same live owner. No fallback to tolerant parser success or offered-ALPN claims |
+| Raw retention/digests | Raw handshake bytes exist transiently in the bounded assembler and are dropped after parsing; parsed fingerprint fields remain. No raw transcript export, digest receipt, zeroization guarantee or persisted capture | Do not treat JA3/JA4 or source hashes as authenticated transcript digests. Define any future retained digest separately with purpose/retention and request binding |
+| Epoch identifier | No serialized or stable connection identifier is minted | Runtime allocates its own unguessable/local non-reused epoch handle and owns the mapping to the consumed socket. Client envelope IDs never select it |
+| Stream identifier | h2_request(u32) accepts the actual HTTP/2 stream ID and returns the complete initial header block only from the negotiated-h2 owner | Preserve actual parser stream association, compare exact method/scheme/authority/target and header sequence, bind RIT/body/session to that same request, never choose an arbitrary successful stream |
+| H2 headers | Original connection preface, first SETTINGS, WU/priority observations and complete contiguous HEADERS/CONTINUATION/HPACK. One decoding context includes trailers; reset/errors invalidate availability | Own HTTP serving, semantic/framing validation and final request inventory. Decoder limits assume the default4096table/16KiB frame profile; unsupported settings/profile changes must fail closed |
+| H2 body/lifetime | DATA framing and END_STREAM/reset are observed internally; no complete-body flag, bytes, length/digest or body replay API is exported | Runtime's actual H2 serving parser must own DATA/body/trailers/cancellation and prove completion/bounds. A captured header block does not authorize an incomplete or different body |
+| Abuse | h2_abuse exposes the unchanged network FrameMonitor signal even after capture failure, for audit | Consume the frozen signal once through the existing policy path; this value is never an allow capability and does not create a new score |
+| Lifetime | One absolute budget>0and<=30seconds starts inside accept and covers handshake plus later I/O. Socket read/write timeouts are recomputed from remaining time; EOF/error/deadline removes evidence | Bound queue/admission time separately; recheck owner liveness/cancellation/deadline immediately before audited origin effects. Borrowed data is a snapshot, not a reusable authorization |
+| Post-handshake cancellation | cancellation() is available only after accept returns. Its atomic revocation precedes shutdown(Both); owner Drop also shuts down the socket | Retain the supervisor handle, cancel on shutdown/request expiry and join the worker. Cancellation handle drop alone does not revoke. Do not detach or just time out the joining future |
+| Handshake cancellation gap | No pre-handshake cancellation handle exists in46822eb | This is an unresolved integration seam. Before production use, add a capture-owned pending-handshake owner whose revocation handle exists before any blocking TLS I/O and survives into the same connection epoch, with close-on-error/drop semantics. Runtime must not hide this gap behind an async timeout |
+| Reaping/Send | Capture spawns no thread/process and owns no join handle. Connection/Cancellation are intended to move to a supervised worker, not expose raw sockets | Runtime owns spawn/join/reaping and bounded shutdown. Assert Send at the actual consumer boundary and compile/execute it on supported tuples; pure parser success does not qualify worker behavior |
+
+The pending-handshake seam above is a required next capture API slice, not an
+already implemented API. Coordinate it before runtime consumes the component;
+do not duplicate TLS framing, HPACK, crypto, raw-header canonicalization, audit
+or scoring in runtime. Root alone approves a runtime dependency/lock window.
+No source or manifest changed as part of documenting this contract.
+
 ## Historical resume handover (before root local validation)
 
 Mission remains full original TLS/H2 producer, owning runtime binding,

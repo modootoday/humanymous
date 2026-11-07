@@ -1,0 +1,33 @@
+    Checking humanymous-signals v0.1.0 (<workspace>/crates/signals)
+    Checking rustls v0.23.46
+    Checking humanymous-network v0.1.0 (<workspace>/crates/network)
+    Checking humanymous-capture v0.1.0 (<workspace>/crates/capture)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.32s
+   Compiling humanymous-capture v0.1.0 (<workspace>/crates/capture)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running unittests src/lib.rs (target/debug/deps/humanymous_capture-e63e8fc1bee21e2f.exe)
+
+running 21 tests
+test http2::tests::bounded_hostile_compression_corpus_never_publishes_partial_requests ... ok
+test http2::tests::dynamic_table_update_at_start_and_trailers_preserve_decoder_sync ... ok
+test http2::tests::every_split_retains_settings_duplicates_and_complete_header_order ... ok
+test http2::tests::fixed_frame_header_block_and_decoded_header_budgets_refuse ... ok
+test http2::tests::frozen_monitor_is_reused_without_forking_its_thresholds ... ok
+test http2::tests::header_malformations_and_midblock_table_update_refuse ... ok
+test http2::tests::hpack_state_is_connection_scoped_and_snapshots_are_stream_scoped ... ok
+test http2::tests::incomplete_header_block_never_exposes_a_request_and_wrong_continuation_is_terminal ... ok
+test http2::tests::malformed_framing_and_every_truncated_prefix_refuse ... ok
+test http2::tests::priority_uses_frozen_encoded_weight_and_separate_headers_tuple ... ok
+test http2::tests::rfc7541_huffman_and_dynamic_authority_are_decoded_without_reordering ... ok
+test http2::tests::settings_and_preface_cannot_be_skipped_or_replaced_by_ack ... ok
+test http2::tests::stream_and_connection_frame_budgets_are_lifetime_limits ... ok
+test http2::tests::truncated_hpack_integer_and_literal_spans_refuse_without_dependency_panic ... ok
+test tls::hello::tests::complete_extension_vectors_retain_wire_order_and_opaque_alpn ... ok
+test tls::hello::tests::duplicate_extensions_odd_vectors_and_empty_alpn_names_refuse ... ok
+test tls::hello::tests::every_chunk_and_record_split_preserves_the_same_hello ... ok
+test tls::hello::tests::every_truncated_wire_prefix_refuses_instead_of_using_tolerant_parser ... ok
+test tls::hello::tests::excessive_fragment_records_fail_with_constant_count_budget ... ok
+test tls::hello::tests::malformed_and_over_budget_inputs_are_terminal ... ok
+test tls::hello::tests::nested_truncation_and_odd_cipher_list_are_not_complete ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
