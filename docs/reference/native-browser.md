@@ -32,6 +32,11 @@ navigation generations. These source checks are separate from actual keyboard
 delivery, candidate-window placement, screen-reader announcements and proof that
 a requested CEF page completed loading.
 
+The optional input/IME pilot uses a separate generated data document with one
+named synthetic input. Its markup is bounded to 16 KiB, and its source test
+refuses scripts, subresource links and inline keyboard/click handlers. This
+fixture does not qualify arbitrary browsing, IME candidates or screen readers.
+
 Sandboxing remains required. Do not add security-disabling flags to make a
 prototype or test pass. Native source, CEF distribution, OS/architecture and
 packaged artifact identity all matter. Specific desktop/DPI observations must
@@ -80,6 +85,16 @@ is not a passing zero-test result. The source bounds capture to 90 seconds and
 child; this does not attest cleanup of all descendants. Expected navigation and
 renderer-probe counts in the contract are required observations, not executed
 results or assistive-technology coverage.
+
+The child owner treats a successful asynchronous creation request separately
+from the later created callback. Cancellation revokes navigation; a child created
+after cancellation is immediately asked to close. Cleanup remains pending until
+the close callback clears browser/observer state and signals completion. Requesting
+close or posting a UI task is not itself completed cleanup. Source handlers also
+refuse popups, media permissions, file dialogs and downloads; effective coverage
+of native engine paths still requires execution. Renderer canary messages are
+bounded and joined to independently discovered owned process tokens rather than
+authorizing inspection of an arbitrary renderer-supplied PID.
 
 The process-owning prototype DLL is not the planned embeddable SDK. SDK lifecycle,
 versioned ABI, consumer ownership/unload and framework compatibility remain

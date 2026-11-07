@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/fixture.rs",
+  "sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete138line generated synthetic input/data URI and management label projection: explicitpilotflags,namedinput,16KiB/scriptbound and source negative subresource/inlinehandler tests. Staticmarkup not actualIME/AT/keydelivery or arbitrary browsing/collection.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/src/child.rs",
+  "sha256": "ece97bd6eb4b92d83774b0bd29cb25db86e23873477f02f8387c59e661988ca4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all421lines in two complete sections: async creation/requested-vs-created, latecancel close, lifetime parent/revoke/pending closecallback, source popup/permissions/dialog/download refusal, bounded processroles64/64KiB and rendererprobes32/PID dedup joined only ownedtokens. IME/input counters and accessibility enable are not observed AT/keydelivery/sandbox or complete cleanup qualification.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/authority/tests/native_process.rs",
   "sha256": "bbd6fdfa9c93e3ab2198fc922f8d81d9466c44e3636d6634b7eed6b56ca8f507",
   "reviewer": "codex/rust-pages",
