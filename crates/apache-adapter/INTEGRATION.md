@@ -7,14 +7,21 @@ requirement. This inventory does not execute a rename. Root must migrate graph,
 source, lock, workflows, artifacts and current documentation together. The two
 Apache packages are publish=false; this is not a crates.io publication request.
 
+The user's later clarification supersedes preserving implementation-specific
+public loader/import names: the public consumer identity is humanymous (Rust
+facade, npm, Python import, Ruby require and native product loader; Humanymous
+for .NET conventions). humanymous-adapter-* names are internal Rust packages.
+The implementation-specific names below are LEGACY inventory, not a proposed
+permanent public interface. No namespace ownership or publication is asserted.
+
 | Surface | Current identity | Coordinated migration impact |
 | --- | --- | --- |
 | Safe package/default library | humanymous-apache-adapter / humanymous_apache_adapter | Target package humanymous-adapter-apache; without a library-name override the Rust identifier becomes humanymous_adapter_apache. Native Cargo dependency key and host.rs import must agree. |
 | Native package/default library | humanymous-apache-native / humanymous_apache_native | Target package humanymous-adapter-apache-native. Its cdylib/rlib has no explicit [lib].name, so the default Rust identifier and Linux build artifact become humanymous_adapter_apache_native and libhumanymous_adapter_apache_native.so. |
 | Shared framework dependency | humanymous-framework-adapter / humanymous_framework_adapter | Target humanymous-adapter-framework / humanymous_adapter_framework. Native optional dependency keys, dep: feature entries and imports in host, coordinator and pilot modules must migrate atomically with the provider. |
-| Explicit pilot binary | humanymous-apache-pilot | [[bin]].name is explicit and does not follow a package rename. Preserve it unless root approves a separate mapping; --bin commands, Docker install source and executable paths must remain consistent. |
-| Apache runtime module paths | /opt/httpd/modules/libhumanymous_apache_native.so and libhumanymous_apache_probe.so | These are host-facing contracts, not inferred package names. Root must explicitly choose preserving them via a library-name override or mapping the newly named build artifact into these stable installed names, or approve a full runtime-path migration. No choice is implemented here. |
-| Apache exported ABI/config | humanymous_module, LoadModule humanymous_module, HumanymousConfig | Keep the exported no_mangle module symbol and directive compatible. Cargo taxonomy alone does not authorize changing Apache loader/config names. |
+| Explicit internal pilot binary | humanymous-apache-pilot | [[bin]].name is explicit and does not follow a package rename. It is a validation tool, not the public consumer facade; its own mapping must keep --bin commands, Docker install source and executable paths consistent. |
+| LEGACY Apache runtime module paths | /opt/httpd/modules/libhumanymous_apache_native.so and libhumanymous_apache_probe.so | Propose one public humanymous loader basename with the platform extension under an Apache/ABI/target-specific directory. Root's ABI canon must choose the exact basename and layout; old implementation-specific filenames are not the permanent public API. Probe artifacts belong in a separate non-public test directory/manifest. |
+| Apache host entry/config | humanymous_module, LoadModule humanymous_module, HumanymousConfig | Propose retaining humanymous_module as the explicitly resolved Apache module-descriptor entry symbol, a host-entry suffix exception rather than a second product brand. HumanymousConfig already uses the unified brand. Root must accept this compatibility map; the module descriptor uses generated Apache ABI layouts, not a generic native-product C ABI. |
 | Profile/provenance registry | AdapterProfile::Apache; apache; humanymous.apache/0.1.0-experimental.1; apache-normalized | Shared service/provenance identities do not derive from Cargo names. Preserve unless their owning accepted contracts explicitly migrate. Apache has no Python/Ruby import-module alias to rename. |
 
 Current command/recipe consumers are .github/workflows/apache-validation.yml,
@@ -26,6 +33,29 @@ artifact paths must match the chosen installed-name compatibility map. The local
 nonce-scoped humanymous-apache-pilot image tag is not a registry publication or
 an automatically inferred package name. ABI/header receipts and module hashes
 must be regenerated and checked against the actual selected artifacts.
+
+Proposed atomic public-face move: the public Rust facade exposes Apache capability
+without requiring consumers to import internal adapter crates; the installed
+Apache loader becomes humanymous plus the platform extension, while runtime/OS/
+architecture/ABI selection lives in paths and a verified manifest. Exact basename
+prefixes/extensions, facade export and host entry-symbol exceptions are decisions
+for root's ABI canon. Do not combine the Apache module implementation with a
+different native product ABI merely because they share the humanymous brand.
+Two incompatible DLLs/shared objects must never overwrite one destination:
+separate host/ABI/version/target directories and manifest identities are required;
+production/probe must also remain isolated. No global alias or loader fallback
+is implied. Meaningful versioned humanymous_*_v1 function names may remain where
+the separately owned native ABI contract requires them; Apache's module table
+does not become that ABI through a filename change.
+
+One coordinated checkpoint must update the facade, package/dependency/import
+graph, source and locks, installed module layout, LoadModule configuration,
+artifact hash readers, image/workflow recipes, current contracts/docs and claims.
+Compatibility tests must load the intended public file and verify its manifest,
+entry symbol, generated host ABI, ownership/error/unwind/thread/lifetime rules,
+three-MPM operation and cleanup before promotion. A renamed filename alone proves
+none of these properties. No public namespace registration or publication occurs
+as part of this handoff.
 
 Root owns Cargo.toml/Cargo.lock and any crate path/claim remap; CI owns catalog/
 policy changes, and Pages owns public docs. No directory relocation follows from
