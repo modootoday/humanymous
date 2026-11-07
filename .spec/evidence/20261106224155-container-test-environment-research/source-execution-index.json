@@ -113,6 +113,15 @@
       "run": 42406688473,
       "facts": "New public-facade consumer actual Docker8/8pass40knownassertions0unknown/failure/notrun; cleanuptrue/sourceunchanged/annotations0. PreflightLab34/Delivery110+Unixactor/Clippy. CanonicalGoowner17d6c08e; full/releasefalse and rawtuple unrecovered.",
       "source": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb"
+    },
+    {
+      "source": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+      "run": 42407744891,
+      "job": 128512402634,
+      "profile": "browser_component",
+      "result": "failed",
+      "facts": "77assertions75pass2fail; collector-component assertion_failed and execution collector_process;9unavailable;catalog26/19evaluated/7unsupported/0errors/mismatch scopedtrue. Browser-product separate/pending; original assertion unknown.",
+      "evidence": "hosted-browser-component-9586f7e4-failure-join.json"
     }
   ],
   "unmeasured": [

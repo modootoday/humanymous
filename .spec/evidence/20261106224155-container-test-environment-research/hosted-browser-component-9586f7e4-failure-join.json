@@ -1,0 +1,69 @@
+{
+  "schema": "humanymous.lab-hosted-component-failure-join/1",
+  "source": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "run": 42407744891,
+  "job": 128512402634,
+  "profile": "browser_component",
+  "isolation": "docker",
+  "source_changed": false,
+  "assertions": {
+    "failed": 2,
+    "other": 0,
+    "passed": 75,
+    "total": 77
+  },
+  "owner_exit": 1,
+  "required_unavailable": 9,
+  "safe_diagnostics": {
+    "failure_count": 2,
+    "failures": [
+      {
+        "case_id": "collector-component",
+        "error_code": "assertion_failed",
+        "status": "failed"
+      },
+      {
+        "case_id": "execution",
+        "error_code": "collector_process",
+        "status": "failed"
+      }
+    ],
+    "partial": false,
+    "schema": "humanymous.lab-safe-diagnostics/1"
+  },
+  "wargame": {
+    "full_product_qualified": false,
+    "internally_consistent": true,
+    "mode": "owned_process_network",
+    "schema": "humanymous.wargame-verification.v1",
+    "scoped_passed": true,
+    "totals": {
+      "errors": 0,
+      "evaluated": 19,
+      "expectation_mismatches": 0,
+      "scheduled": 26,
+      "skipped": 0,
+      "unsupported": 7
+    }
+  },
+  "reported_private_report_sha256": "692a9694a9503da9bf4685dbc53b6fb9104ab2c4dca6653f47814a0a06fa0e56",
+  "reported_wargame_raw_sha256": "4017f8f6ede832f30728b2e21f555ac378a56ee428905acb338eddaae702745a",
+  "original_private_report_recovered": false,
+  "original_private_report_locally_rehashed": false,
+  "source_manifest_sha256": "24decdffd6f5273d5af75d1a1337ec54ba734632fc1441d46f0e9a27c2605f56",
+  "images_roles_unmapped": [
+    "sha256:38fc1e0fd89aa6979662977cf0df1d9541c77d039a353f35f20729803782b7d6",
+    "sha256:871026f30741bde2bec76d7d74bb7d911a3cc8fdd3ac6fb36fc0ca20611d0d86"
+  ],
+  "full_product_qualified": false,
+  "release_ready": false,
+  "canonical_private_evidence": "evidence:root/20261107195555",
+  "decoded_projection_sha256": "e9190758a6730836437bce89d5d4cdc81f12667e42e749b0a8194b8504848578",
+  "decoded_log_sha256": "87a940c6da530758deb9e26255c7a50d1bc0c4f1abf66e385074435cc225983a",
+  "limits": [
+    "Distinct browser component job; browser-product job still pending at callback.",
+    "collector_process does not identify underlying collector assertion or original e70 panic.",
+    "No duplicate hosted watch or new execution performed.",
+    "Reported ledger hashes are not independently rehashed originals."
+  ]
+}
