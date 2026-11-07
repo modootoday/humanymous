@@ -91,6 +91,12 @@ the service never assumes job environment inheritance. The parent independently
 correlates both actual SCM PIDs/statuses with bounded receipt fields and prints
 exactly one aggregate `humanymous.runtime-service-pilot/1` JSON line. Private raw
 receipts contain service PID; public aggregate has only booleans/source/run/case.
+The next authored lifecycle expansion covers actual runtime upgrade/rollback and
+requires runtime_upgrade_verified/runtime_rollback_verified/replay_floor_verified.
+Its receipt filename is the signed receipt base plus `-PID`, create-new per
+observed process. This newer source is not qualified by the preceding d9 local
+pure/Clippy result or the immutable8132117 hosted run. Compile/actual gates remain
+pending for the expansion; runner must require the matching source/receipt fields.
 Linux/macOS protected-secret
 providers currently return Unsupported. Fresh authenticated observer provisioning,
 trusted external-witness production input, recoverable Windows typed failure

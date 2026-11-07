@@ -262,10 +262,11 @@ impl Session {
         if bytes.len() > 8192 {
             return Err(invalid("fixture receipt budget"));
         }
-        let mut file = fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(self.metadata.parent.join(&self.metadata.receipt))?;
+        let mut file = fs::OpenOptions::new().write(true).create_new(true).open(
+            self.metadata
+                .parent
+                .join(format!("{}-{}", self.metadata.receipt, std::process::id())),
+        )?;
         file.write_all(&bytes)?;
         file.sync_all()?;
         if !expected || !credential_cleanup || !private_cleanup {

@@ -160,6 +160,25 @@ the independently observed process instance while preserving bounded names and
 the delegated-parent trust premise. Every instance's cleanup must be separately
 verified. Production persistent custody must remain unaffected by fixture cleanup.
 
+The next slice is now authored after validated checkpoint d9ad5c740cc546f32a29a1b9a46a43cf11c6a591:
+the same actual runtime test performs sequence1 install, sequence2 upgrade,
+known-predecessor rollback to1 with highest2, unchanged-PID replay refusal, then
+explicit stop/removal. Each of three positive process instances has independently
+observed SCM running/zero-exit stop and a separately correlated create-new receipt;
+the negative missing-secret instance retains independent nonzero stopped proof.
+Receipts use the signed base component plus actual PID, allowing a known signed
+generation to run again without overwriting the first receipt. Monitors create
+and drop native SCM handles in their own thread with a startup barrier; no unsafe
+Send implementation or leaked old handle blocks re-registration.
+
+Each positive listener also rejects a request missing integrity while the parent
+verifies that no connection reached its reserved owned origin listener. The
+aggregate adds runtime_upgrade_verified/runtime_rollback_verified/replay_floor_verified.
+Direct fmt/diff checks passed. New compile/Clippy and actual execution remain
+NOT_RUN and await root's next slot/hosted candidate; the d9 pure7/Clippy receipt
+retains its earlier exact working-source scope. No manifest changes or local
+service/ACL/port test execution were performed by this source-only extension.
+
 Root reassigned CLI to the genuinely free sot-plan lane, disjoint from the Windows
 runner's release lane. CLI owns release-descriptor verification, immutable service
 generations, native manager adapters and explicit Rust process/service fixtures.

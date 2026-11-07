@@ -86,6 +86,7 @@ struct Fixture {
     receipt: PathBuf,
     metadata: Value,
     runtime: SocketAddr,
+    origin: TcpListener,
 }
 impl Fixture {
     fn new(run: u64, source_sha: &str, missing: bool) -> Self {
@@ -102,7 +103,9 @@ impl Fixture {
         let hash = digest(&source);
         let runtime = address();
         let diagnostic = address();
-        let origin = address();
+        let origin_listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        origin_listener.set_nonblocking(true).unwrap();
+        let origin = origin_listener.local_addr().unwrap();
         assert_ne!(runtime, diagnostic);
         assert_ne!(runtime, origin);
         assert_ne!(diagnostic, origin);
@@ -139,14 +142,18 @@ impl Fixture {
             receipt,
             metadata,
             runtime,
+            origin: origin_listener,
         }
     }
     fn plan(&self) -> ServicePlan {
         ServicePlan::inspect(&self.root, &self.source, self.release.clone(), self.key).unwrap()
     }
-    fn read_receipt(&self) -> Value {
-        let file = fs::File::open(&self.receipt)
-            .expect("missing receipt is unknown/failure, never success");
+    fn read_receipt(&self, pid: u32) -> Value {
+        let path = self.receipt.with_file_name(format!(
+            "{}-{pid}",
+            self.receipt.file_name().unwrap().to_str().unwrap()
+        ));
+        let file = fs::File::open(path).expect("missing receipt is unknown/failure, never success");
         assert!(file.metadata().unwrap().len() <= 8192);
         let mut bytes = Vec::new();
         file.take(8193).read_to_end(&mut bytes).unwrap();
@@ -175,8 +182,137 @@ impl Fixture {
         assert_eq!(receipt["error_code"], "none");
         assert_eq!(receipt["product_qualified"], false);
         assert!(
-            matches!(fs::symlink_metadata(self.root.join("state").join("private")),Err(error) if error.kind()==std::io::ErrorKind::NotFound)
+            matches!(fs::symlink_metadata(Path::new(self.metadata["configuration"].as_str().unwrap()).parent().unwrap()),Err(error) if error.kind()==std::io::ErrorKind::NotFound)
         );
+    }
+    fn next(&self) -> Self {
+        let mut metadata = self.metadata.clone();
+        let correlation = nonce();
+        let runtime = address();
+        let diagnostic = address();
+        let origin = TcpListener::bind("127.0.0.1:0").unwrap();
+        origin.set_nonblocking(true).unwrap();
+        let origin_address = origin.local_addr().unwrap();
+        assert_ne!(runtime, diagnostic);
+        assert_ne!(runtime, origin_address);
+        assert_ne!(diagnostic, origin_address);
+        metadata["generation"] = json!(correlation);
+        metadata["diagnostic"] = json!(diagnostic);
+        metadata["ready_response"] = json!("runtime-pilot-ready-v2");
+        metadata["configuration"] = json!(
+            self.root
+                .join("state")
+                .join("private-two")
+                .join("configuration")
+        );
+        metadata["pilot"]["nonce"] = json!(correlation);
+        metadata["pilot"]["child"] = json!("private-two");
+        metadata["pilot"]["receipt"] = json!("receipt-two");
+        metadata["pilot"]["listen"] = json!(runtime);
+        metadata["pilot"]["origin"] = json!(origin_address);
+        let path = self.root.join("launch-two");
+        fs::write(&path, serde_json::to_vec(&metadata).unwrap()).unwrap();
+        let mut descriptor = self.release.verify(&self.key).unwrap();
+        descriptor.sequence = 2;
+        descriptor.version = "runtime-pilot-v2".into();
+        descriptor.readiness = diagnostic;
+        descriptor.ready_response = "runtime-pilot-ready-v2".into();
+        descriptor.arguments[2] = path.to_str().unwrap().into();
+        descriptor.arguments[4] = digest(&path);
+        let (release, key) = signed(&descriptor);
+        assert_eq!(key, self.key);
+        Self {
+            root: self.root.clone(),
+            name: self.name.clone(),
+            source: self.source.clone(),
+            release,
+            key,
+            receipt: self.root.join("state").join("receipt-two"),
+            metadata,
+            runtime,
+            origin,
+        }
+    }
+    fn running(&self, sequence: u64, highest: u64) -> u32 {
+        let report = service::doctor(&self.root, self.key).unwrap();
+        assert!(report.registered && report.running && report.diagnostic_ready);
+        assert_eq!(report.sequence, sequence);
+        assert_eq!(report.highest_sequence, highest);
+        let service = manager()
+            .open_service(&self.name, ServiceAccess::QUERY_STATUS)
+            .unwrap();
+        let status = service.query_status().unwrap();
+        assert_eq!(status.current_state, ServiceState::Running);
+        let pid = status.process_id.expect("actual SCM PID required");
+        assert!(pid > 0);
+        pid
+    }
+    fn reject_missing_integrity(&self) {
+        let mut runtime = TcpStream::connect(self.runtime).unwrap();
+        runtime
+            .set_read_timeout(Some(Duration::from_secs(2)))
+            .unwrap();
+        runtime
+            .write_all(b"GET /protected HTTP/1.1\r\nHost: pilot.local\r\nConnection: close\r\n\r\n")
+            .unwrap();
+        let mut response = Vec::new();
+        runtime.take(8192).read_to_end(&mut response).unwrap();
+        assert!(!response.is_empty());
+        assert!(!response.starts_with(b"HTTP/1.1 200"));
+        assert!(
+            matches!(self.origin.accept(),Err(error)if error.kind()==std::io::ErrorKind::WouldBlock),
+            "missing integrity opened the owned origin"
+        );
+    }
+    fn stopped_during<T>(&self, pid: u32, operation: impl FnOnce() -> T) -> T {
+        let name = self.name.clone();
+        let (ready_sender, ready_receiver) = std::sync::mpsc::sync_channel(1);
+        std::thread::scope(|scope| {
+            let monitor = scope.spawn(move || {
+                let service = manager()
+                    .open_service(&name, ServiceAccess::QUERY_STATUS)
+                    .unwrap();
+                assert_eq!(service.query_status().unwrap().process_id, Some(pid));
+                ready_sender.send(()).unwrap();
+                let until = Instant::now() + Duration::from_secs(15);
+                let mut stop_deadline = None;
+                loop {
+                    let status = service.query_status().unwrap();
+                    if status.current_state == ServiceState::Stopped {
+                        assert_eq!(
+                            status.exit_code,
+                            windows_service::service::ServiceExitCode::Win32(0)
+                        );
+                        break;
+                    }
+                    if status.current_state == ServiceState::StopPending && stop_deadline.is_none()
+                    {
+                        stop_deadline = Some(Instant::now() + Duration::from_secs(6));
+                    }
+                    assert!(
+                        stop_deadline.is_none_or(|deadline| Instant::now() < deadline),
+                        "native stop budget exceeded"
+                    );
+                    assert!(Instant::now() < until, "retired process stop unproven");
+                    std::thread::sleep(Duration::from_millis(2));
+                }
+                // Release the old instance so SCM deletion can complete before re-registration.
+                drop(service);
+            });
+            ready_receiver.recv_timeout(Duration::from_secs(2)).unwrap();
+            let result = operation();
+            monitor.join().unwrap();
+            result
+        })
+    }
+    fn successful_receipt(&self, pid: u32) {
+        let receipt = self.read_receipt(pid);
+        self.bind_receipt(&receipt, pid);
+        assert_eq!(receipt["readiness"], true);
+        for field in ["stopped", "drained", "audit_flushed"] {
+            assert_eq!(receipt["exit"][field], true);
+        }
+        assert!(TcpStream::connect(self.runtime).is_err());
     }
     fn absent(&self) {
         let until = Instant::now() + Duration::from_secs(5);
@@ -222,52 +358,41 @@ fn native_runtime_service_lifecycle_and_missing_credential_fail_closed() {
     assert!(current_identity().unwrap().installer_allowed());
     let positive = Fixture::new(run, &source_sha, false);
     assert!(positive.plan().install(true).unwrap());
-    let report = service::doctor(&positive.root, positive.key).unwrap();
-    assert!(report.registered && report.running && report.diagnostic_ready);
-    let native = manager()
-        .open_service(
-            &positive.name,
-            ServiceAccess::QUERY_STATUS | ServiceAccess::STOP,
-        )
-        .unwrap();
-    let status = native.query_status().unwrap();
-    assert_eq!(status.current_state, ServiceState::Running);
-    let pid = status.process_id.expect("actual SCM PID required");
-    assert!(pid > 0);
-    let mut runtime = TcpStream::connect(positive.runtime).unwrap();
-    runtime
-        .set_read_timeout(Some(Duration::from_secs(2)))
-        .unwrap();
-    runtime
-        .write_all(b"GET /protected HTTP/1.1\r\nHost: pilot.local\r\nConnection: close\r\n\r\n")
-        .unwrap();
-    let mut response = Vec::new();
-    runtime.take(8192).read_to_end(&mut response).unwrap();
-    assert!(!response.is_empty());
-    assert!(!response.starts_with(b"HTTP/1.1 200"));
-    native.stop().unwrap();
-    let until = Instant::now() + Duration::from_secs(6);
-    loop {
-        let status = native.query_status().unwrap();
-        if status.current_state == ServiceState::Stopped {
-            assert_eq!(
-                status.exit_code,
-                windows_service::service::ServiceExitCode::Win32(0)
-            );
-            break;
-        }
-        assert!(Instant::now() < until, "actual graceful stop deadline");
-        std::thread::sleep(Duration::from_millis(25));
-    }
-    let receipt = positive.read_receipt();
-    positive.bind_receipt(&receipt, pid);
-    assert_eq!(receipt["readiness"], true);
-    for field in ["stopped", "drained", "audit_flushed"] {
-        assert_eq!(receipt["exit"][field], true);
-    }
-    assert!(TcpStream::connect(positive.runtime).is_err());
-    drop(native);
+    let first_pid = positive.running(1, 1);
+    positive.reject_missing_integrity();
+    let second = positive.next();
+    positive.stopped_during(first_pid, || second.plan().upgrade(true).unwrap());
+    positive.successful_receipt(first_pid);
+    let second_pid = second.running(2, 2);
+    assert_ne!(first_pid, second_pid);
+    second.reject_missing_integrity();
+    second.stopped_during(second_pid, || {
+        service::rollback(&second.root, second.key, true).unwrap()
+    });
+    second.successful_receipt(second_pid);
+    let rollback_pid = positive.running(1, 2);
+    assert_ne!(first_pid, rollback_pid);
+    assert_ne!(second_pid, rollback_pid);
+    positive.reject_missing_integrity();
+    assert!(
+        second.plan().upgrade(true).is_err(),
+        "rollback must preserve replay floor"
+    );
+    assert_eq!(
+        positive.running(1, 2),
+        rollback_pid,
+        "replay refusal changed the running process"
+    );
+    positive.stopped_during(rollback_pid, || {
+        manager()
+            .open_service(&positive.name, ServiceAccess::STOP)
+            .unwrap()
+            .stop()
+            .unwrap();
+    });
+    positive.successful_receipt(rollback_pid);
     service::remove(&positive.root, positive.key, true).unwrap();
+    second.absent();
     positive.cleanup();
 
     let negative = Fixture::new(run, &source_sha, true);
@@ -309,11 +434,9 @@ fn native_runtime_service_lifecycle_and_missing_credential_fail_closed() {
         "nonzero native stopped state must be independently observed"
     );
     negative.absent();
-    let receipt = negative.read_receipt();
-    negative.bind_receipt(
-        &receipt,
-        negative_pid.expect("actual negative SCM PID required"),
-    );
+    let negative_pid = negative_pid.expect("actual negative SCM PID required");
+    let receipt = negative.read_receipt(negative_pid);
+    negative.bind_receipt(&receipt, negative_pid);
     assert_eq!(receipt["readiness"], false);
     assert_eq!(receipt["missing_credential_fail_closed"], true);
     assert!(receipt["exit"].is_null());
@@ -321,6 +444,6 @@ fn native_runtime_service_lifecycle_and_missing_credential_fail_closed() {
     negative.cleanup();
     println!(
         "\n{}",
-        json!({"schema":"humanymous.runtime-service-pilot/1","case":"native-runtime-service-lifecycle-and-missing-credential","source_sha":source_sha,"run_id":run,"missing_credential_fail_closed":true,"service_principal_verified":true,"readiness_verified":true,"graceful_stop_verified":true,"host_exit_stopped":true,"credential_cleanup_verified":true,"state_cleanup_verified":true,"receipt_binding_verified":true,"scm_registration_removed":true,"product_qualified":false})
+        json!({"schema":"humanymous.runtime-service-pilot/1","case":"native-runtime-service-lifecycle-and-missing-credential","source_sha":source_sha,"run_id":run,"missing_credential_fail_closed":true,"service_principal_verified":true,"readiness_verified":true,"graceful_stop_verified":true,"host_exit_stopped":true,"credential_cleanup_verified":true,"state_cleanup_verified":true,"receipt_binding_verified":true,"scm_registration_removed":true,"runtime_upgrade_verified":true,"runtime_rollback_verified":true,"replay_floor_verified":true,"product_qualified":false})
     );
 }

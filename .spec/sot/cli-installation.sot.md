@@ -109,6 +109,18 @@ through the production reader, initializes only new fixture custody, runs the re
 ServiceHost and cleans its own fixture state/credential after custody drops.
 Production persistent custody is never removed on ordinary stop.
 
+An actual runtime lifecycle qualification must cover install, upgrade, known
+predecessor rollback and removal through ServicePlan with real ServiceHost and
+protected input; generic diagnostic-fixture transitions are separate evidence.
+Retained signed generations may run again, so a disposable pilot receipt uses
+the signed bounded base component followed by the independently observed actual
+process PID. Every write remains create-new. Parent receipt binding includes the
+signed nonce/source/run/generation/executable and exact observed PID, plus native
+stop status and separate credential/state cleanup. PID reuse or missing receipt
+fails qualification rather than overwriting a previous instance's record. The
+rollback replay floor must remain at the highest accepted sequence, and a refused
+replay must leave the running PID unchanged. No production custody is deleted.
+
 WinCred has no atomic create-only or compare-and-delete primitive in the selected
 safe API. A cooperative mutex cannot exclude arbitrary same-principal writers.
 The pilot therefore requires exclusive disposable service context, a unique random
