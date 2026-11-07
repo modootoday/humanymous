@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T19:11:45Z
+updated: 2026-11-07T19:18:14Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -17,6 +17,7 @@ files:
   - {path: rng-source-checkpoint.json, sha256: 96387eb06ecb372439d9370bec517fe981b0576df624f5107defc5f4eac95e41, bytes: 3079, store: repo}
   - {path: gpu-research.json, sha256: 9b04d66b27bced22d9c32f7b218cca431aae9f82971070735323956ff7442af1, bytes: 5186, store: repo}
   - {path: rng-validation-profile.json, sha256: 9ef43265eb2dda0d957c52ba5a0d8abbc4fbe78fdc402d395ee9e4fd82686ec9, bytes: 8074, store: repo}
+  - {path: rng-first-attempt.json, sha256: 13a5649a6e29cca6c13e122e206bfb39ea0f3b6ddc3f6eb57177cbfe55de3e67, bytes: 1473, store: repo}
 ---
 
 # Read-only source inventory
@@ -457,3 +458,32 @@ admission, exclusions, selected closure and first-failure behavior are explicit.
 This is READY_FOR_ALLOCATION, not an execution receipt:0tests/formatter/compiler/
 oracle runs,0live handles and no target lease. Prior correctness proofs stay bound
 to their original sources; full training/calibration/lifecycle remains incomplete.
+
+## First granted RNG12 attempt: harness failure before any Cargo child
+
+Root granted profile0bd901e2 with immutable72888805/no overlays,390swork+60scleanup
+from the persisted preparation clock. A fresh target was acquired with actual
+CreateNew/readback marker. Archive and all13owned file hashes verified. Before
+metadata/closure/fmt/test launch, the guard falsely reported expired work time:
+ConvertFrom-Json materialized a UTC timestamp, then DateTime.Parse of its implicit
+string lost UTC kind and applied the local+09offset again. This was an orchestration
+failure, not a compiler/RNG compatibility result. No hidden retry occurred.
+
+Clock literal19:15:24.5965004Z to cleanup observation19:16:54.7654934Z is actually
+90.168993seconds, within BOTH deadlines. The original erroneous32490.7654934s and
+hard-deadline-exceeded flag are preserved in raw deadline-failure.json; separate
+corrected-time-analysis.json records the32400sconversion error. Do not rewrite
+the first failure or infer a real deadline overrun from the erroneous calculation.
+
+Target contained only its matching owner marker, copied/read back before release;
+marker and empty directory were removed, no cache cleanup or foreign termination.
+Target is returned and no child handles exist. RNG tests executed0; metadata,
+fmt, check and Clippy NOT_RUN. Only archive/13file proof exists; selected registry,
+config, tool and environment closure was NOT_CAPTURED. Public rng-first-attempt.json
+registers the failure, corrected clock arithmetic and exclusions. Raw directory:
+`C:/workspaces/humanymous/.spec.local/root/evidence/20261108044500-model-training-correction-rng12/`.
+
+Any renewed attempt requires an explicit allocation and reviewed corrected
+orchestration: parse original ISO8601 strings once as DateTimeOffset, retain the
+offset-bearing type across persistence, and use prebuilt bounded supervision for
+the whole preparation/work interval. No RNG source was changed to mask this failure.

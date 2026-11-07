@@ -230,6 +230,16 @@ at terminal before evidence-only work; no broad sysroot/cache census or repeat o
 prior tests merely to refresh status. Source-table/output expectations and
 Rust-derived mixed state/epoch comparisons retain their distinct evidence classes.
 
+First allocated attempt did not reach fmt or a Cargo child: timezone-kind loss in
+the persisted deadline guard caused a false expiration. Cleanup actually completed
+in90.168993s, inside390/450s, with the original wrong calculation retained alongside
+corrected DateTimeOffset analysis.12RNG tests remain NOT_RUN; selected closure is
+incomplete. Target/marker settled and no retries/source edits occurred. Before a
+renewed grant, correct orchestration to parse original UTC strings once as
+DateTimeOffset and keep typed offset-bearing deadlines; do not convert materialized
+DateTime objects through locale strings or hide preparation gaps. Profile0bd901e2
+is historical, not an active lease or successful qualification.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.

@@ -1,0 +1,22 @@
+{
+  "status": "HARNESS_TIME_CONVERSION_FAILURE_NOT_RNG_FAILURE",
+  "started_utc_literal": "2026-11-07T19:15:24.5965004Z",
+  "work_deadline_utc_literal": "2026-11-07T19:21:54.5965004Z",
+  "hard_deadline_utc_literal": "2026-11-07T19:22:54.5965004Z",
+  "cleanup_observed_utc_literal": "2026-11-07T19:16:54.7654934Z",
+  "actual_elapsed_seconds": 90.168993,
+  "cleanup_before_work_deadline": true,
+  "cleanup_before_hard_deadline": true,
+  "original_bad_elapsed_seconds": 32490.7654934,
+  "offset_error_seconds": 32400,
+  "root_cause": "ConvertFrom-Json materialized UTC timestamp, then DateTime.Parse(object-to-localized-string).ToUniversalTime lost the UTC kind and applied +09 locale a second time",
+  "guard_effect": "False work-deadline expiry; no metadata/fmt/compiler/test child started",
+  "preserved_original": "clock.json, preparation-status.json, deadline-failure.json and marker-readback-before-release.json unchanged",
+  "corrected_future_recipe": "Parse original ISO8601 strings as DateTimeOffset once; keep offset-bearing typed values; supervise full preparation+work from a prebuilt orchestration, not split model/tool gaps",
+  "retry": "NOT_PERFORMED; explicit renewed allocation required",
+  "source_commit": "728888051b7dacfa3e3181cf71da4fff2f526bd4",
+  "rng_tests_executed": 0,
+  "target_returned": true,
+  "target_exists": false,
+  "closure_status": "Only archive and13owned source hashes verified; selected registry/config/tool/env closure NOT_CAPTURED"
+}
