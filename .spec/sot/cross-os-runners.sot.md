@@ -851,3 +851,18 @@ not renamed as the Desktop named pipe. No IDs/versions are hardcoded as universa
 facts, and equality is not authenticated provenance. Wrappers retain I/O and private
 raw evidence. Lab accepted the typed contract. Four new pure tests are authored,
 not executed; formatting/diff checks only, no Docker/compilation/provider execution.
+
+
+Root resumed the goal and assigned C (target/validation-agents, jobs1/incremental0)
+for pure validation only. Runner28pass/0failed/0ignored/1filtered and shared Docker
+comparison5pass/0failed/0ignored/12filtered passed. The excluded runner test performs
+actual filesystem/ACL work. Initial public API missing-documentation warnings were
+fixed; a Clippy manual_unwrap_or failure was corrected using closed-code filtering
+followed by unwrap_or, preserving private-string exclusion. Runner28 was rerun.
+Final runner and shared support all-target Clippy with warnings denied passed;
+the earlier explicit runner check passed before that syntax correction. Forty-three
+source/manifest/lock/toolchain files had zero final-before/after drift. C returned,
+no active process handles remain. No actual Docker, account, subprocess fixture,
+ACL, SCM or interruption execution occurred in this slot. This supersedes the
+pending pure/check status only, not missing actual qualification. CLI complete
+readiness source2679089e remains a separate unexecuted actual service candidate.

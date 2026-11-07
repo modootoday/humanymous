@@ -41,15 +41,18 @@ pub(super) fn failures(raw: &Value) -> Value {
             .into_iter()
             .flatten()
             .map(|failure| {
-                let code = match failure["code"].as_str() {
-                    Some(
-                        code @ ("coverage-accounting"
-                        | "required-native-assertion"
-                        | "required-native-harness"
-                        | "final-report-absent"),
-                    ) => code,
-                    _ => "unknown-failure",
-                };
+                let code = failure["code"]
+                    .as_str()
+                    .filter(|code| {
+                        matches!(
+                            *code,
+                            "coverage-accounting"
+                                | "required-native-assertion"
+                                | "required-native-harness"
+                                | "final-report-absent"
+                        )
+                    })
+                    .unwrap_or("unknown-failure");
                 json!({"index":failure["index"].as_u64(),"code":code})
             })
             .collect::<Vec<_>>()

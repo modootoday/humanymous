@@ -1,0 +1,55 @@
+{
+  "schema": "humanymous.windows-runner-pure-validation/1",
+  "status": "passed",
+  "scope": "strict-accounting-custody-projection-and-shared-docker-comparison",
+  "full_runtime_qualified": false,
+  "source_commit": null,
+  "source_files": 43,
+  "final_source_drift": 0,
+  "source_manifest_sha256": "8944f7515b122468df7aa47051678aa53114adef75ff538f6840cdb8eee9c191",
+  "runner_pure": {
+    "passed": 28,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 1,
+    "excluded": "public_summary_excludes_identity_credentials_and_raw_traces"
+  },
+  "shared_docker_pure": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 12
+  },
+  "commands": {
+    "runner_selector": "cargo test --locked --manifest-path scripts/ci/windows-native-runner/Cargo.toml -- --skip public_summary_excludes_identity_credentials_and_raw_traces",
+    "docker_selector": "cargo test --locked -p humanymous-test-support docker::tests::",
+    "runner_check": "passed before the whitelist syntax correction; final all-target Clippy recompiles the corrected source",
+    "runner_all_target_clippy": "passed with -D warnings after correction",
+    "shared_all_target_clippy": "passed with -D warnings"
+  },
+  "jobs": 1,
+  "incremental": false,
+  "target_directory": "target/validation-agents",
+  "admission": {
+    "free_physical_gib": 32.32,
+    "commit_percent": 81.78
+  },
+  "initial_findings": [
+    "20 missing public API documentation warnings corrected",
+    "manual_unwrap_or Clippy error corrected while preserving closed failure-code filtering"
+  ],
+  "actual_docker_process_acl_scm_accounts": "not_run",
+  "paired_audit_checkpoint": "de33864b",
+  "cli_full_readiness_checkpoint": "2679089e31f8d503f27009936e4ccc81ea67e38f",
+  "raw_logs": {
+    "shared-docker-pure.log": "ae169b58944c91c110ec4c1e8f8f74b88b4a96257a7b1dd4e0b79299eb2d636e",
+    "runner-pure.log": "45bfac39c30e07717f82e55d98b162cf65358d1f7f2641427e3a0c5878bae48d",
+    "final-docker-pure.log": "0f6404c8cfea6f91acca491003fcb18fe72258678d0a6bbc7d89815ba6f4b860",
+    "final-runner-pure.log": "b4e2a0ac06a65a6f4889c0c92e6e5c043da2aed3a7612f089816b08835419db0",
+    "runner-check.log": "2d217381d3d1d6f1579702a4e6fd2a8c8bd442574a9dc49b1aac00854ff04dcc",
+    "runner-clippy.log": "140d4079d10b104977106c5fb5616b7149079291bcb2ffef8264c635295967cc",
+    "corrected-runner-pure.log": "0d4720d94ba3d06246514d48c1063f604c03ed5dfed6ea7c99e7ed9a82d07e1b",
+    "corrected-runner-clippy.log": "5fa80c597cee75e22eb703aceb370260b98864ab1a0be3878a2a2bd3f2a238f0",
+    "shared-clippy.log": "1a1f6175bc4a60d38b5885c8197f0b68b64de79bf5fb62c78b935024ede20f3d"
+  }
+}

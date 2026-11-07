@@ -6,33 +6,51 @@
 use serde_json::{Value, json};
 use std::fmt;
 
+/// Explicit Windows Desktop CLI context.
 pub const DESKTOP_CONTEXT: &str = "desktop-linux";
+/// Canonical Desktop Linux engine named-pipe endpoint.
 pub const DESKTOP_ENDPOINT: &str = "npipe:////./pipe/dockerDesktopLinuxEngine";
 
 /// Private execution metadata. Intentionally does not implement Debug/Serialize.
 #[derive(Clone, Copy)]
 pub struct ServerIdentity<'a> {
+    /// Actual observed server ID, retained only in private execution evidence.
     pub server_id: &'a str,
+    /// Actual observed server version, compared exactly with the baseline.
     pub server_version: &'a str,
+    /// Container engine OS type; Desktop binding requires `linux`.
     pub os_type: &'a str,
 }
 
 #[derive(Clone, Copy)]
+/// Context, endpoint and server queried through the selected Desktop CLI.
 pub struct DesktopObservation<'a> {
+    /// Context explicitly passed to the Windows CLI.
     pub context: &'a str,
+    /// Endpoint returned by inspecting that context.
     pub endpoint: &'a str,
+    /// Server actually queried through that context.
     pub server: ServerIdentity<'a>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Static failure vocabulary that never echoes private identifiers.
 pub enum AffinityError {
+    /// A required observation is empty, oversized or contains invalid bytes.
     MissingOrInvalidMetadata,
+    /// The Desktop CLI context was not explicitly selected.
     WrongContext,
+    /// The selected context does not name the expected Desktop pipe.
     WrongDesktopEndpoint,
+    /// The queried engine does not report Linux containers.
     NonLinuxServer,
+    /// The observed engine differs from the selected baseline.
     UnexpectedEngine,
+    /// The observed version changed and needs explicit resolution.
     UnexpectedVersion,
+    /// An allocated connection host was absent or invalid.
     MissingExplicitSdkHost,
+    /// The configured connection host differs from its explicit allocation.
     UnexpectedSdkHost,
 }
 
@@ -58,6 +76,7 @@ pub struct AffinityProof {
     sdk: bool,
 }
 impl AffinityProof {
+    /// Project public comparison facts without publishing private observations.
     pub fn summary(&self) -> Value {
         json!({"schema":"humanymous.docker-engine-affinity/1", "qualification":"observed-engine-binding", "engine_identity_matches":true, "server_version_matches":true, "linux_container_os":true, "explicit_endpoint_matches":true, "sdk_connection":self.sdk, "authenticated_provenance":false})
     }
@@ -98,6 +117,7 @@ fn same_server(
     Ok(())
 }
 
+/// Compare two actual Desktop observations against the canonical local profile.
 pub fn verify_desktop(
     expected: &DesktopObservation<'_>,
     actual: &DesktopObservation<'_>,
