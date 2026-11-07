@@ -855,3 +855,18 @@ and d3e03749. This closes CA-SECRET-01's scoped pure/check/lint validation gate;
 no all-copy/RAM erasure claim. Native/store/IPC/SCM/account/producer activation and
 new-source hosted/product verification remain NOT_RUN. Target returned terminal,
 no owned validation process. Root notified before evidence commit for CI handoff.
+
+## CA-HANDOFF L3/L4 source-only final-consume contract
+
+Root assigned same-role source refinement after22terminal, no repeat workload.
+Shared with Framework owner: existing BoundResponse API is sufficient for final
+consumption; hold its actual non-Clone result across all awaits/host queues/GIL/GVL
+and consume at actual trusted app invocation, no later await. verdict inspection
+or an early copied status200 is not a live grant; Pending::decide is repeatable
+and consumer must not re-decide/re-encode/recreate a bypass. check_handoff is only
+local budget, never atomic native-epoch proof. Reviewed actual ASGI early consume
+before tail poll/replay/call, Ruby before allocation/liveness and Node worker
+status conversion; sent precise call sites to sole L4 writer, no foreign edits.
+Required late-connect/queued expiry and cancellation tests must observe NO origin
+invocation. Native same-gate effect authority remains missing, not filled by this
+protocol0.1 contract. Owning SoT refined; no Rust behavior change/new API/workload.

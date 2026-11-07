@@ -313,6 +313,28 @@ The standalone binary has no witness broker transport, so requiring a witness
 there currently refuses before listening. Inline legacy keys remain explicitly
 inline-component-nonproduction. This is not production sealed qualification.
 
+## L3/L4 final-consume contract (existing protocol0.1)
+
+BoundResponse is a non-Clone single-owner RESPONSE, not server nonce state or an
+atomic native origin permit. verdict()/expires() are inspection only. Consumers
+must retain the actual BoundResponse through body preparation, awaits, event-loop
+dispatch and GIL/GVL entry, then consume it at the trusted actual host application
+invocation boundary. There must be no further await/queue before that invocation.
+An ALLOW copied into an integer, bool or enum before a later wait is not a live
+handoff grant. DENY/CHALLENGE can be consumed and returned without origin.
+Pending::decide(&self) is currently repeatable; L4 must not re-decide, generate a
+fresh nonce or recreate a result to bypass expiry/cancellation or obtain a second
+origin handoff. Server replay state remains independently authoritative.
+
+check_handoff(expires) only checks local clocks/budget. It cannot replace final
+opaque-result consumption after the last host wait, or certify host liveness and
+native epoch atomicity. Actual host qualification requires late-connect/queued-
+callback expiry and cancellation controls proving origin was NOT invoked. New
+kernel/native-epoch effects still require the separately qualified same epoch
+gate; protocol0.1 components do not mint that missing production capability.
+The existing Authority API suffices for this final-consume correction; no public
+origin/Ready factory, callback identity proof or new wire format is authorized.
+
 ## Draft bootstrap v0.2 — authenticated one-use observer provisioning
 
 Version0.2.0-draft. Channel implementation status: DRAFT, NOT IMPLEMENTED.
