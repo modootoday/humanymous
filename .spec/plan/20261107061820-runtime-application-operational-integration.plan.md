@@ -20,19 +20,25 @@ dual-control and missing-required fail-closed remain invariant.
 
 ## Steps
 
-### RUNTIME-SLICE-02 context design v0 — pending Root freeze
+### RUNTIME-SLICE-02 context design v0 — module map accepted
 
 **Brief.** Consolidate six accepted responsibilities into one public Runtime
 package while preserving existing authority domains. This is read-only design
 against current source, not permission to move/import/edit other owners' files.
 Root sequences atomic graph/path integration and obtains Audit/Authority/Network/
 Native reviews. No detection, wire, lifecycle, custody or public policy change.
+Root accepted the exact six-context module map below and the requirement to
+restrict all98 matched crate-visibility lines to their original owning context.
+This accepts design preparation only: no source move/import edit, constructor
+implementation, compiler run, worktree or boundary qualification is authorized.
+Root sequences the lower platform cluster first. Owner dispositions and actual
+same-crate sibling mint-denial proof remain prerequisites for Runtime migration.
 The attached runtime-slice-02-context-inventory.json lists EVERY matched
 pub(crate) declaration/field line in the six src trees, cross-context crate-name
 references, manifest/root hashes and fixture/target anchors. It is a source-bound
 inventory, not a compile or complete semantic-access proof.
 
-#### Proposed exact module map
+#### Accepted exact module map
 
 Use crates/sdk/humanymous-runtime/src/lib.rs as the deliberate six-context root:
 gateway, authority, audit, capture, network and native_security. Prefer gateway
@@ -41,8 +47,8 @@ crates/runtime/src/lib.rs, and its existing application.rs, service.rs, startup.
 configuration.rs, session.rs, http.rs, settings.rs, management/, browser.rs and
 tls.rs stay children. Thus gateway::application::Application and
 gateway::service::ServiceHost remain coherent names without a new application/
-application nesting or crate-name/runtime repetition. This exact name is a
-proposal for Root freeze, not a unilateral topology adoption.
+application nesting or crate-name/runtime repetition. Root accepted this exact
+gateway context name; its implementation/path freeze is still separately owned.
 
 Each other old src/lib.rs becomes src/<context>/mod.rs and its existing subtree
 remains below that context. Native-security's identifier is native_security.
@@ -156,8 +162,9 @@ signing encoder or copied collector contract is authorized for path repair.
 
 #### Adversarial review and acceptance gates
 
-Applying the blue/red/SRE/privacy/evaluator lenses yields NEEDS-WORK before
-implementation freeze. P0 approval/erasure minting through widened crate scope is
+Applying the blue/red/SRE/privacy/evaluator lenses yields NEEDS-WORK for actual
+implementation freeze, despite acceptance of the module map and visibility rule.
+P0 approval/erasure minting through widened crate scope is
 resolved only by explicit contextual visibility plus owner review and negative
 compile-access checks. P1 root/type/target collisions and feature/fixture drift
 need a frozen per-path map and exact inventory, not compiler-driven pub widening.
@@ -172,6 +179,55 @@ inventories precede pure execution. Include external sibling compile-fail cases
 for erasure/approval minting and NativeProof/Ready construction; actual OS custody,
 process/IPC/TLS/W and Docker-only product tests remain separately allocated.
 No new compiler/native/provider/pilot action was performed for this design.
+
+#### Owner disposition questions — routed through Root
+
+Audit: confirm each of42 matched visibility lines remains audit-context-only,
+including ErasurePermit::issued, Authorization's three writable fields,
+PrivateState/ExclusiveFile/custody helpers and cfg(test) duplicate-description.
+Identify any genuine cross-context need; default exception is NONE. Specify
+actual SAME-CRATE sibling negative probes for forged approval/erasure construction
+and positive controls showing the legitimate signed dual-control path still
+works. External integration tests and rustdoc compile-fail examples run as other
+crates, so they would already reject pub(crate) and cannot prove sibling denial.
+Require expected privacy diagnostics against otherwise coherent source; an
+unrelated compiler error cannot count as denial. Confirm custody/retained-head
+APIs preserve original owner/deadline/coverage semantics and never expose keys.
+
+Authority: confirm each of7 matched visibility lines remains authority-only
+(framing Head/read and transport Stream/connect/reexports). Confirm private
+NativeProof remains uninhabited, observer state::Owner and all private phase
+fields cannot be created/accessed by gateway/audit/network/native_security siblings
+even under all-features/test builds. Provide legitimate DATA verification and
+gate inspection positive controls without a preparation/Ready factory. Confirm
+the canonical Rejection and public nominal API path mapping, binary/transport
+target contracts and exact signed-fixture locations; no gateway->Authority
+RuntimeReadyReceipt import or hidden activation callback is permitted.
+
+Network: confirm all5 visibility lines (OrderedTime type/new/check/commit and
+is_grease) remain network-only, including indirect reach through public parent
+modules. Confirm capture->network and gateway->network use existing public typed
+producer outcomes without direct temporal clock mutation or completeness
+promotion. Freeze public history/correlation/traffic/report type paths, score-
+before-append/no-op/GC/configure semantics and four parity fixture roots. Identify
+any needed test adapter as a retained test-only diagnostic, never a production
+healthy/fleet/capture producer or scoring change.
+
+Native/platform: confirm the native_security service-name helper remains
+native_security-only and all process/token/store/handle fields retain actual
+private-owner custody. Runtime depends on approved platform primitives; platform
+must not depend on Runtime/Authority/Audit or expose a general proof constructor.
+Confirm Windows bridge's exact approved unsafe wrapper scope and deny policy,
+Unix rustix/Windows keyring-permission cfgs and nondefault credential pilot/test
+support capabilities. Specify process/credential/retained-handle positive and
+sibling-negative controls without local service/account changes. No all-features
+testing capability may mint NativeProof, successful W/ACK/Ready or accepted
+production process identity from DATA.
+
+Gateway remains this owner's43 visibility lines. They will default to
+pub(in crate::gateway) or narrower, with private service retained owners/Ready
+and cfg(test) temporal/epoch models preserved. Root receives dispositions and
+freezes exact source/visibility/test-target changes before any implementation.
 
 ### CORE-SLICE-01 Runtime consumer edit
 

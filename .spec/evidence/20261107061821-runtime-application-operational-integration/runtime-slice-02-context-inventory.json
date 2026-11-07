@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.runtime-context-design-inventory/1",
   "slice": "RUNTIME-SLICE-02",
-  "status": "read-only source design; exact context names and owner visibility dispositions require Root freeze",
+  "status": "Root accepted six-context module map and owner-context visibility requirement; implementation/path freeze and owner sibling-denial proof pending",
   "source_head": "d0812755604e83e3e17dceb7984fb4ba20d6a982",
   "proposed_contexts": [
     "gateway",
@@ -1636,5 +1636,16 @@
       "audit",
       "native_security"
     ]
-  }
+  },
+  "module_map_accepted_by_root": true,
+  "visibility_rule_accepted_by_root": true,
+  "owner_visibility_line_counts": {
+    "gateway": 43,
+    "authority": 7,
+    "audit": 42,
+    "capture": 0,
+    "network": 5,
+    "native_security": 1
+  },
+  "same_crate_negative_proof_requirement": "External crate/rustdoc compile-fail alone cannot prove pub(crate) sibling denial. Require actual same-crate sibling probes with expected privacy diagnostics and legitimate positive controls on coherent frozen source."
 }
