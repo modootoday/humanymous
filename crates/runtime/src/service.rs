@@ -15,6 +15,7 @@ use std::{
 };
 use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
+mod authorization;
 mod lifecycle;
 mod observed;
 mod outcome;
@@ -23,6 +24,7 @@ mod shutdown;
 // Private S1 model only: no production activation or observer proof exists yet.
 #[cfg(test)]
 mod epoch;
+pub use authorization::{AuthorizationData, AuthorizationDataError};
 pub use outcome::{ExitFailure, ExitReport, ExitStage};
 pub use readiness::standalone_profile;
 pub use shutdown::{ShutdownRequest, StopBudget};

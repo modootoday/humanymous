@@ -7,11 +7,17 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 77,
-      "macos": 77,
-      "windows": 73
+      "linux": 83,
+      "macos": 83,
+      "windows": 79
     },
     "common_test_names": [
+      "service::authorization::tests::checked_fixture_retains_same_configuration_and_public_data",
+      "service::authorization::tests::every_scope_component_and_authority_case_or_port_mismatch_refuses",
+      "service::authorization::tests::observer_data_profile_refuses_writer_only_configuration",
+      "service::authorization::tests::pre_admission_secret_is_rejected_without_unseal",
+      "service::authorization::tests::successful_data_binding_cannot_open_native_preparation",
+      "service::authorization::tests::valid_signatures_cannot_bypass_invalid_runtime_route_configuration",
       "application::temporal::tests::categories::configure_only_preserves_unknown_gap_until_provider_observation",
       "application::temporal::tests::categories::maintenance_and_warmup_commit_but_never_upgrade_scope_or_erase_loss",
       "application::temporal::tests::categories::missing_key_noops_never_become_committed_normal_observations",

@@ -1034,6 +1034,38 @@ uses collector fixture SHA256
 later Root collector/fixture changes are outside this qualified snapshot.
 TLS ALLOW-to-origin and native service readiness remain open.
 
+### Signature-checked authorization DATA consumer
+
+Root authorized this bottom-up DATA integration after Authority's shared v2
+kernel checkpoint a898d91a33d19d80a86d0d75444a1a9175fdcaea. Public
+service::AuthorizationData::bind consumes the same Configuration and
+SignatureCheckedAuthorization, validates Runtime resources/routes and compares
+all five configured scope fields byte-for-byte with the immutable checked scope.
+Authority case and explicit port remain exact. This observer DATA profile
+requires an empty unseal passphrase and explicit require_external_witness=true;
+neither signatures nor matching DATA permit writer-only fallback or secret input
+before actual native admission. Read-only views and consuming into_parts preserve
+the same pair without cloning. No arbitrary expected-scope argument, copied
+signature/commitment codec or CLI BASE-plan parser is introduced.
+
+This is preflight DATA only. It does not check actual retained native identities,
+provision issuer/store access, reserve process-wide claims, authenticate W,
+read a secret, open custody, bind a listener or construct preparation/Ready.
+Existing standalone ServiceHost constructors are unchanged. The separate private
+prepare_observed still requires Authority's opaque native preparation and cannot
+be called with this DATA. Any later native composer must independently establish
+native provenance and conserved lifetime before unseal; extracting into_parts
+confers no new authority and does not refresh the signed expiry.
+
+Six authored pure consumer tests use Authority's published minimal signed JSON
+fixture through parse_bundle/verify_bundle. They cover exact ownership retention,
+each scope mismatch including authority case/port, invalid Runtime routes,
+premature secret input, missing required-W configuration, and continued native
+Unsupported after successful DATA binding. These are unexecuted until an allocated
+immutable-source check/strict-Clippy/test run; Authority's37 pure passes are not
+Runtime consumer or native/product proof. Authored inventory becomes Windows79
+and Unix83 library tests; native-process inventory is unchanged.
+
 ### Observed Ready composition proposal — architecture direction only
 
 Root accepted Runtime-owned final Ready composition, not production types or
