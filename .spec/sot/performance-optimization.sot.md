@@ -3,7 +3,7 @@ id: sot:root/performance-optimization
 title: Reproducible build and runtime performance optimization
 status: draft
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:28:30Z
+updated: 2026-11-07T14:32:38Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
   governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
@@ -127,8 +127,12 @@ never raw header or key data. This source contract is not executed evidence.
 Independent read-only review of c4786b67 found no semantic blocker in the three
 delegated paths. Its acceptance is source-only. The120second check is explicitly
 a cooperative timed-work budget after preparation, not a hard whole-process
-deadline. A separately qualified outer lifecycle controller and root allocation
-are required before actual benchmark execution. Five hot in-process pairs are
+deadline. Root subsequently clarified that this fixed trusted function example,
+with no child spawning, network or external input, may use an ordinary tool-owned
+execution session and actual observed terminal status. No new native supervisor
+or hard OS wall-clock/cleanup guarantee is required or claimed for this narrow
+function measurement. Exact root allocation remains required. Real product/native
+process-tree lifecycle gates remain unchanged. Five hot in-process pairs are
 not independent process repetitions or cold runs. Keep these distinctions in
 any result schema interpretation and conclusion.
 

@@ -3,11 +3,11 @@ id: evidence:root/20261107135643
 title: Performance readiness and four source-bound library builds
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:28:30Z
+updated: 2026-11-07T14:32:38Z
 rel:
   depends_on: [sot:root/performance-optimization, plan:root/20261107135643]
 files:
-  - {path: baseline.json, sha256: 054fa64f7b8c376ced905e6cfa8567f0a03c111842a12970f9f4630bdd8676a4, bytes: 7527, store: repo}
+  - {path: baseline.json, sha256: 1675ecf2977e228bc9db346c28f0ef97e60d566f05783740e548866b0fc85b72, bytes: 7777, store: repo}
 ---
 
 # Performance readiness and four source-bound library builds
@@ -53,8 +53,9 @@ arithmetic establishes the bound. These corrections do not alter Cargo results.
 
 Native Cargo/rustc version commands both exited0. The record identifies the
 Windows MSVC toolchain and LLVM23.1.1; external linker/native SDK identity remains
-unknown. Existing canonical/token fixture counts come from test source, not a
-new test run. The prior public comparison's four files match their index hashes;
+unknown. Initial canonical/token fixture inventory counts came from source;
+subsequent actual native execution is recorded separately below and in
+r1_verification. The prior public comparison's four files match their index hashes;
 this integrity check does not repeat or broaden that historical execution.
 
 The performance owner acquired the existing project-coordination lane through
@@ -93,6 +94,12 @@ measurement caveats remain: hot in-process pairs are not independent process
 repetitions, and the internal120second threshold is cooperative after preparation.
 Release compilation, actual function A/B execution and product-runtime validation
 remain not run. No optimization speedup or allocation count is claimed.
+Root later accepted ordinary tool-session supervision and observed terminal
+status for the fixed trusted function example, without child spawning, network
+or external input. This does not establish a hard OS wall-clock or product
+cleanup guarantee. Exact release and direct-binary execution allocations remain
+required. Fixture inventory fields now explicitly distinguish initial inspection
+from the subsequent native parity execution receipt.
 
 The controlling SoT retains build and runtime scope, exact-byte regression
 requirements, security invariants, resource admission and Docker product gates.

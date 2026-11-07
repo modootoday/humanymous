@@ -3,7 +3,7 @@ id: plan:root/20261107135643
 title: Performance research and source-bound optimization execution
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:28:30Z
+updated: 2026-11-07T14:32:38Z
 rel:
   depends_on: [sot:root/performance-optimization]
 ---
@@ -116,7 +116,11 @@ Integrity all-target tests, check and strict Clippy plus scoped fmt. Release
 compilation and benchmark execution are excluded from that allocation. The
 extracted source manifest contains2563 files; full hashes are retained privately.
 Independent source review accepted the transform and measurement limits, without
-running tests. Its required outer benchmark lifecycle bound remains unresolved.
+running tests. Root later resolved the fixed function benchmark supervisor scope:
+ordinary tool-owned session plus actual observed terminal exit is sufficient for
+the trusted no-child/no-network/no-external-input example. Preserve cooperative
+budget wording; no hard OS wall-clock or product cleanup guarantee follows. Exact
+release build and one direct-binary execution allocations remain pending.
 
 An initial full user Cargo registry content census was started for before-state
 capture and remained live across bounded handle polls. This scope is broader

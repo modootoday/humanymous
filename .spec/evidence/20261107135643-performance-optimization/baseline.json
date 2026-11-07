@@ -77,13 +77,17 @@
       "path": "crates/integrity/tests/fixtures/request.json",
       "sha256": "6ee2be626741c3168b03a9da9948545c5d831aa0d6a8a805368112f630cbde58",
       "cases_declared_in_current_test_source": 81,
-      "tests_executed_here": false
+      "tests_executed_during_initial_inspection": false,
+      "subsequent_native_parity_harness_executed": true,
+      "execution_receipt": "r1_verification"
     },
     {
       "path": "crates/integrity/tests/fixtures/verification.json",
       "sha256": "d623988f446c2d11fce701c9b070f06771f8a10ba3cc264dec794906928908ff",
       "cases_declared_in_current_test_source": 27,
-      "tests_executed_here": false
+      "tests_executed_during_initial_inspection": false,
+      "subsequent_native_parity_harness_executed": true,
+      "execution_receipt": "r1_verification"
     }
   ],
   "prior_comparison_hash_verification": {
@@ -150,7 +154,7 @@
   },
   "pending": [
     "root accepts full measurement contract",
-    "R1 function benchmark release build and outer lifecycle controller qualification",
+    "R1 root-allocated release build and one tool-session supervised function benchmark",
     "matched before/after function measurements",
     "separate actual product runtime and security qualification",
     "remaining build and runtime research experiments"
