@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T13:11:20Z
+updated: 2026-11-07T13:45:47Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -17,8 +17,9 @@ files:
   - {path: tls-1646c482-validation-summary.json, sha256: 8518f2114fa185e3862bdae2d102c0a4012823efc44d385bb17aa7848a79325f, bytes: 3532, store: repo}
   - {path: gate-30d85855-validation-summary.json, sha256: f12504258f1c308c2814fbdb41613b0b4cd916a41baf2da57a5abc4274f15db3, bytes: 3231, store: repo}
   - {path: http-f8e04e33-validation-summary.json, sha256: cdbe2f3abc502059dd739ab3c4e07c876bc59cdee4f3118029345f74019d51ff, bytes: 5217, store: repo}
-  - {path: status.json, sha256: 3a93bc79f614e3025c598bcb7d077ddf2a1bb121308b9a9d07ea7174dc2ed86a, bytes: 5569, store: repo}
-  - {path: source-commitments.json, sha256: 74509d48045568535e41099f5ea1edbab1b5221f81e206d2d063b8dca8e65c79, bytes: 10622, store: repo}
+  - {path: retained-6c02bd22-validation-summary.json, sha256: 576d484a1958f462cec38fa87cd2d1d7cd8454c675d755ce8ef99709412a184d, bytes: 4898, store: repo}
+  - {path: status.json, sha256: f93a9828c030bd7164348ab749525836678d86b26241419d583eabb92537a6ee, bytes: 5769, store: repo}
+  - {path: source-commitments.json, sha256: f358edbaa99b5af4bf96914eb163040dcfff26ce9fb13582a3b1be03028bd121, bytes: 11315, store: repo}
 ---
 
 # Runtime application operational integration
@@ -26,6 +27,13 @@ files:
 ## What was measured
 
 Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Immutable6c02bd22 passed all-target check/strict Clippy/fmt and three shared boxed
+resource retention/failure/drop controls (61filtered). Full2506 snapshot files,
+6576 registry files,14 ancestor config candidates,66 compiler/target-lib files
+and14 selected build-environment hashes stayed unchanged. The native production
+preparation remains uninhabited/Unsupported; no actual bind/unseal/Offer/Ready or
+production cleanup/JOIN ran. See retained-6c02bd22-validation-summary.json.
+
 Immutablef8e04e33 passed all-target check/strict Clippy/fmt and two actual native
 TCP/shared-Session controls (59filtered), using original collector fixture87a45f.
 The exact10-field bootstrap,403/200 consumption ACK,422 no-ACK epoch closure,
@@ -40,7 +48,7 @@ source paths/hashes stayed identical. This qualifies the native-independent
 model only, not a production observer authority, actual socket boundary or full
 Runtime suite. See gate-30d85855-validation-summary.json for exact case/raw hashes.
 
-Current1646c482 with audit record source f88e76f4 passed allocated Windows
+Historical1646c482 with audit record source f88e76f4 passed allocated Windows
 all-target compile/Clippy and six actual TLS component cases;46 cases were
 intentionally filtered, so this is not current whole-library qualification.
 Both synthetic Chrome-over-rustls and explicit native Rustls identities returned

@@ -1088,9 +1088,12 @@ result is invented. Receipt-bound guard storage is authored but no promoter exis
 Three native-independent tests exercise the actual generic boxed retention/fail
 path with private test guards: allocation identity through failure, retained
 resources through repeated failure, and guard-drop-before-resource-release order.
-They never mint Authority's uninhabited production proof. They are UNCOMPILED/
-NOT_RUN pending allocation. Native verified activation and actual resource I/O
-are not qualified by these tests.
+They never mint Authority's uninhabited production proof. Allocated immutable
+6c02bd222e2982aaeeeffa47eec6ec00797bd8a9 passed all-target check, strict Clippy,
+fmt and these exact three tests (0failed/0ignored/61filtered). All2506 snapshot
+files,6576 registry files,14 ancestor config candidates,66 compiler/target-lib
+files and14 selected build-environment hashes stayed unchanged. Native verified
+activation, actual resource I/O and production cleanup/JOIN are not qualified.
 
 Exactly scoped dead-code expectations cover the unreachable private preparation
 entry, receipt-bound variant and production failure-inspection method while

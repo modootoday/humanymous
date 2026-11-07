@@ -1,0 +1,145 @@
+{
+  "snapshot_commit": "6c02bd222e2982aaeeeffa47eec6ec00797bd8a9",
+  "authority_api_checkpoint": "fecdb4d1",
+  "archive_sha256": "3a5bd65c3652dde84adf4a507e105a7a2960e86d6ae5c8d268851de84e39a094",
+  "scope": "Windows native-independent shared boxed resource retention/failure/drop code; production opaque proof is uninhabited",
+  "memory_admission": {
+    "commit_percent": 83,
+    "free_gib": 29.56
+  },
+  "jobs": 1,
+  "incremental": false,
+  "locked": true,
+  "offline": true,
+  "check_exit": 0,
+  "check_seconds": 7.19,
+  "clippy_deny_warnings_exit": 0,
+  "clippy_seconds": 6.13,
+  "fmt_exit": 0,
+  "library_listed": 64,
+  "library_inventory_exact": true,
+  "actual_session": 39315,
+  "actual_exit": 0,
+  "selector": "service::observed::retained::tests::",
+  "executed": 3,
+  "passed": 3,
+  "failed": 0,
+  "ignored": 0,
+  "measured": 0,
+  "filtered": 61,
+  "seconds": 0.0,
+  "test_names": [
+    "service::observed::retained::tests::abandoned_owner_revokes_guard_before_releasing_resources",
+    "service::observed::retained::tests::failure_retains_same_resource_allocation_until_owner_release",
+    "service::observed::retained::tests::repeated_failure_transition_cannot_release_or_replace_resources"
+  ],
+  "snapshot_files": 2506,
+  "snapshot_path_content_drift": 0,
+  "registry_packages": 125,
+  "registry_files": 6576,
+  "registry_path_content_drift": 0,
+  "ancestor_config_candidates": 14,
+  "ancestor_config_drift": 0,
+  "compiler_and_targetlib_files": 66,
+  "compiler_and_targetlib_drift": 0,
+  "selected_build_environment_candidates": 14,
+  "selected_build_environment_hash_drift": 0,
+  "owned_runtime_processes_after": 0,
+  "actual_bind_unseal_writer_offer_ready_executed": false,
+  "production_native_proof_constructed": false,
+  "production_cleanup_join_qualified": false,
+  "full_runtime_qualified": false,
+  "full_product_qualified": false,
+  "raw_private_artifacts": [
+    {
+      "name": "retained-6c02bd22-actual-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "retained-6c02bd22-actual.log",
+      "bytes": 660,
+      "sha256": "567b4476f5359aa6ebfb87fa466807dfc2a409f576b84da01b7ab82bf9bbc349"
+    },
+    {
+      "name": "retained-6c02bd22-after.json",
+      "bytes": 401636,
+      "sha256": "2fadf43a0dc891e9b12e02964901840847aa60e59cebcca26c8740a4691f9780"
+    },
+    {
+      "name": "retained-6c02bd22-before.json",
+      "bytes": 401636,
+      "sha256": "2fadf43a0dc891e9b12e02964901840847aa60e59cebcca26c8740a4691f9780"
+    },
+    {
+      "name": "retained-6c02bd22-build-scope-before.json",
+      "bytes": 4093,
+      "sha256": "ff3bd69d32924598a3d392f1fc23cebd011d79d08410f94008789d502626cd82"
+    },
+    {
+      "name": "retained-6c02bd22-cargo-metadata.json",
+      "bytes": 2421996,
+      "sha256": "03c709b0d7c6abd00a54f4ebaa04928d59a8e394714da8ee906459420625ded1"
+    },
+    {
+      "name": "retained-6c02bd22-check-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "retained-6c02bd22-check.log",
+      "bytes": 2023,
+      "sha256": "0a565a84b8697fb4c6e1e10a66a5c2555806eaf281369b7d11f46f3bfda5db8e"
+    },
+    {
+      "name": "retained-6c02bd22-clippy-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "retained-6c02bd22-clippy.log",
+      "bytes": 2023,
+      "sha256": "7ae39c18bbb208c0bde80a26fa34324d4d0d3422d6aeef077aede6712481a9a5"
+    },
+    {
+      "name": "retained-6c02bd22-closure.json",
+      "bytes": 3884,
+      "sha256": "32fa554f4f003a051cd4a26fc73a6c130e70f0ffa06420d8ed354cc38346638d"
+    },
+    {
+      "name": "retained-6c02bd22-fmt-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "retained-6c02bd22-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "retained-6c02bd22-list.log",
+      "bytes": 7831,
+      "sha256": "b3a09150cee0b1630ce17b0e38b18bf241b742c34dfa898b3239ac2416531ed3"
+    },
+    {
+      "name": "retained-6c02bd22-registry-after.json",
+      "bytes": 2075941,
+      "sha256": "631540211a340237c66b4bf6950a52bb3fae5aa5bf604b120350f590fcec7086"
+    },
+    {
+      "name": "retained-6c02bd22-registry-before.json",
+      "bytes": 2075941,
+      "sha256": "631540211a340237c66b4bf6950a52bb3fae5aa5bf604b120350f590fcec7086"
+    },
+    {
+      "name": "retained-6c02bd22-tools-after.json",
+      "bytes": 15876,
+      "sha256": "ab32bf5a1d67d6d48bcac3af714c81f0d4acff6b541035f83e53721b832b5ef0"
+    },
+    {
+      "name": "retained-6c02bd22-tools-before.json",
+      "bytes": 15876,
+      "sha256": "ab32bf5a1d67d6d48bcac3af714c81f0d4acff6b541035f83e53721b832b5ef0"
+    }
+  ]
+}

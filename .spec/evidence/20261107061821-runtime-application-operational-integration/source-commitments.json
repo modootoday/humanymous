@@ -19,9 +19,9 @@
   },
   {
     "path": "crates/runtime/qualification-contract.json",
-    "bytes": 6812,
-    "sha256": "a65e59548ebffdc0b9cffc03bda5960ba45d9bc4c714bc0bb2bb63898c201a06",
-    "git_blob": "41428ecc8db99a248a8a947746af9e709b8ea6fa"
+    "bytes": 7129,
+    "sha256": "e86fa979dcab27678cf2bb6b5da471a21d3cef3d730ce546468cf7264e42881e",
+    "git_blob": "a234ce9d459191d5e9c185937030fd7f1d95ddb5"
   },
   {
     "path": "crates/runtime/src/application.rs",
@@ -133,9 +133,9 @@
   },
   {
     "path": "crates/runtime/src/service.rs",
-    "bytes": 13654,
-    "sha256": "2d3aa48603c5a56e63b91aa494d5f15d33d9399b5661084214f2bfee21400e40",
-    "git_blob": "f3389fedfddf534f7f00d27f4e0ceeadf4386dbb"
+    "bytes": 13668,
+    "sha256": "d7b11c21e7054922ea27ea3d9146855d6a415f11e453ad30baf6cd2d711f5db5",
+    "git_blob": "f516ca30801d1ae24fcd25021ce1bb6923423392"
   },
   {
     "path": "crates/runtime/src/service/epoch.rs",
@@ -154,6 +154,24 @@
     "bytes": 2259,
     "sha256": "978db8db5889e2a8d65064a691fbad53544ce9ea8561c98b0364dfda91fd062c",
     "git_blob": "ee3c4f0cc4a703694acb0519865df71d93473b1e"
+  },
+  {
+    "path": "crates/runtime/src/service/observed.rs",
+    "bytes": 2786,
+    "sha256": "70ae58ce40e59fdfe217562c144b380bc6097ce1a63228f1f5d072e7c33d7bda",
+    "git_blob": "611ebbb9c315d723af402d6f0d877d5d9c13195c"
+  },
+  {
+    "path": "crates/runtime/src/service/observed/retained.rs",
+    "bytes": 1508,
+    "sha256": "33dd4d61fd6a65bfababcdc62db6a34bf9de0de6adf055bb04beefce41f3b985",
+    "git_blob": "c4c14d52093cb406c2d3296cb15b9b6a985d0a2d"
+  },
+  {
+    "path": "crates/runtime/src/service/observed/retained/tests.rs",
+    "bytes": 2312,
+    "sha256": "0def4c79158292e5c6092ad6e703063d6df3fde3a54dba8bd67eaea03c213224",
+    "git_blob": "a36e5a8dc6df755fb4c47f4cead71f4f4a0ff83e"
   },
   {
     "path": "crates/runtime/src/service/outcome.rs",
