@@ -850,3 +850,14 @@ All10 frozen package files match the owner handoff hashes. Actual offline tree
 and subsequent locked workspace tree resolved39 members;16 authored tests are
 NOT_RUN. Codec dependencies, resource semantics, native/HTTP/browser/Docker V2-V5
 remain separate required gates. Legacy Go removal is not authorized by registration.
+
+## Distribution notice claim scope correction
+
+Root public THIRD_PARTY_LICENSES.md and NOTICE preserve the historical Go module
+inventory and project copyright/license text, while explicitly distinguishing
+current Rust candidates. Remove unverified assertions that every Rust archive or
+image contains those root documents or that a summary table alone satisfies all
+third-party notices. The copied Go Audit sort notice remains LICENSE-Go.txt; its
+exact source-bound archive/image inclusion is a separate delivery correction.
+Known-notice inventory is partial and no complete Rust distribution compliance
+or actual image/archive verification is asserted by this prose-only correction.

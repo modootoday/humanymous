@@ -15,8 +15,8 @@ CONDITIONS OF ANY KIND, either express or implied.
 Authors. The Apache License does not grant permission to use them; see TRADEMARK.md.
 
 --------------------------------------------------------------------------------
-Third-party software included in the distributed engine and Gate binaries (full
-per-module notices in THIRD_PARTY_LICENSES.md):
+Historical Go engine and Gate dependency inventory (provenance only; this list
+does not describe the contents of current Rust candidate artifacts):
 
   github.com/refraction-networking/utls   BSD-3-Clause
   github.com/andybalholm/brotli           MIT
@@ -27,14 +27,14 @@ per-module notices in THIRD_PARTY_LICENSES.md):
   golang.org/x/text                       BSD-3-Clause
   The Go standard library & wasm_exec.js  BSD-3-Clause (Copyright 2009 The Go Authors)
 
-Each module's full license text is in that module's own LICENSE file (available
-in the Go module cache and in the module's source repository). All are permissive
-licenses that allow redistribution with attribution and are compatible with the
-Apache License 2.0 under which humanymous is distributed.
+Each historical module's full license text remains in its source repository or
+original Go module cache. Current Rust distributions need exact artifact-specific
+dependency and notice verification. The Go-adapted Audit sort retains its complete
+notice in crates/audit/LICENSE-Go.txt; known-notice packaging is not a complete
+Rust dependency inventory. See THIRD_PARTY_LICENSES.md for the scope distinction.
 
 --------------------------------------------------------------------------------
-The defensive red-team test harness under test/ (NOT part of the distributed
-engine or Gate container images) additionally uses:
+Historical defensive test-harness dependency (not a Rust artifact manifest):
 
   playwright-core                         Apache-2.0
 

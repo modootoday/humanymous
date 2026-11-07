@@ -1,24 +1,32 @@
 # Third-party licenses
 
-humanymous is distributed under the [Apache License 2.0](LICENSE). The distributed
-binaries and container images statically link the Go modules below, and the web assets
-include Go's `wasm_exec.js` loader. Each is a permissive licence compatible with the
-Apache License 2.0; their copyright and permission notices are reproduced here as
-required, and this file ships alongside `LICENSE` and `NOTICE` in every release binary
-and image.
+humanymous's project license is [Apache License 2.0](LICENSE). Third-party code
+retains its own notices. This document preserves the historical Go distribution
+inventory; it is not a manifest of dependencies in current Rust candidate binaries,
+containers or browser bundles.
 
-For the full verbatim licence text of any module, see its source repository (linked)
-or the copy in your Go module cache (`go env GOMODCACHE`).
+Current Rust candidates require artifact-specific dependency and notice review,
+including native and upstream generated components. Audit contains a Go-adapted
+sorting implementation whose complete notice is retained in
+[crates/audit/LICENSE-Go.txt](crates/audit/LICENSE-Go.txt). The known-notice
+packaging work does not establish a complete Rust dependency notice inventory or
+verified contents of every archive/image. Check exact source-bound distribution
+receipts before making an artifact claim. This document's presence alone does
+not establish that every required notice was included.
 
-## Go standard library & WASM loader — BSD-3-Clause
+The historical module source links below remain provenance references. Their
+license texts can be inspected at the linked source or in the original Go module
+cache; Go runtime or wasm_exec.js inclusion is not implied for Rust candidates.
+
+## Historical Go standard library & WASM loader — BSD-3-Clause
 
 > Copyright (c) 2009 The Go Authors. All rights reserved.
 
-Applies to the statically-linked Go runtime/standard library and to
-`web/js/wasm_exec.js` (redistributed verbatim). Source: <https://go.googlesource.com/go>
+The historical Go distribution used the runtime/standard library and
+`web/js/wasm_exec.js` loader. Source: <https://go.googlesource.com/go>
 · Licence: <https://go.googlesource.com/go/+/refs/heads/master/LICENSE>
 
-## Distributed Go modules
+## Historical Go distribution modules
 
 | Module | Licence | Copyright | Source |
 |--------|---------|-----------|--------|
@@ -30,12 +38,11 @@ Applies to the statically-linked Go runtime/standard library and to
 | `github.com/andybalholm/brotli` | MIT | Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors. | <https://github.com/andybalholm/brotli> |
 | `github.com/klauspost/compress` | BSD-3-Clause (+ Apache-2.0 / BSD-2 for vendored parts) | Copyright (c) 2012 The Go Authors / Copyright (c) 2019 Klaus Post | <https://github.com/klauspost/compress> |
 
-The MIT and BSD licences require that the copyright and permission notice be reproduced
-in redistributions; that requirement is satisfied by shipping this file with the
-binaries and images.
+This table preserves module identities and license labels; it does not replace
+their complete license texts or prove the contents of a particular distribution.
 
-## Test-only (NOT part of the distributed engine or Gate)
+## Historical test-only inventory
 
 | Package | Licence | Notes |
 |---------|---------|-------|
-| `playwright-core` (npm) | Apache-2.0 | Drives the red-team catalog in `test/redteam/` only; excluded from images via `.dockerignore`. |
+| `playwright-core` (npm) | Apache-2.0 | Used by the historical catalog in `test/redteam/`; current Rust artifact contents require their own inventory. |
