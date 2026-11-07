@@ -1,0 +1,75 @@
+{
+  "schema": "humanymous.lab-source-execution-index/1",
+  "aggregation": "Distinct immutable executions; never sum rows into one qualification denominator.",
+  "rows": [
+    {
+      "source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+      "run": 42355168729,
+      "profile": "generic_and_browser",
+      "result": "failed",
+      "facts": "Generic 26 scheduled/0 evaluated/19 errors/7 unsupported. Browser product8assertions/7pass/1fail at browser_gate_start before writer identity.",
+      "evidence": "hosted-8132117-failures.json"
+    },
+    {
+      "source": "438a3feea0ea2f5e305aa6e3816dc7b60a069bd6",
+      "run": 42365025258,
+      "profile": "go8",
+      "result": "failed",
+      "facts": "Runtime build failure;8not_run/0evaluated. Same-source Unix strict Clippy blocker reproduced separately; original private Docker exact failing substep unavailable.",
+      "evidence": "hosted-go-438a3fee-failure.json"
+    },
+    {
+      "source": "448765343b14e6e138dede756fecc4178a3820e4",
+      "run": 42367272089,
+      "profile": "go8",
+      "result": "failed",
+      "facts": "Runtime build failure;8not_run/0evaluated. Elapsed time alone does not establish timeout.",
+      "evidence": "hosted-go-44876534-failure.json"
+    },
+    {
+      "source": "15f63fefb23777eeee52c57f7dbf0dbeffef8f8b",
+      "run": 42369171124,
+      "profile": "go8",
+      "result": "failed",
+      "facts": "All8actor attempts failed actor_writer_mount;0evaluated/8unknown assertion counts.",
+      "evidence": "hosted-go-15f63fef-failure.json"
+    },
+    {
+      "source": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697",
+      "run": 42372825588,
+      "profile": "mount_probe",
+      "result": "diagnostic_collection_complete",
+      "facts": "4observations/8paths all actor_mount_mode refusals. Numeric modes remain private/unknown publicly.",
+      "evidence": "mount-probe-b482d5be-baseline.json"
+    },
+    {
+      "source": "c3211e27ba941f3f11809e420d07d61ececad623",
+      "run": 42374587466,
+      "profile": "mount_probe",
+      "result": "diagnostic_collection_complete",
+      "facts": "Same4observations/8paths all predicates accept;0refusal/0unobserved. No custody/full qualification.",
+      "evidence": "mount-probe-c3211e27-repair.json"
+    },
+    {
+      "source": "c3211e27ba941f3f11809e420d07d61ececad623",
+      "run": 42375310198,
+      "profile": "go8",
+      "result": "bounded_component_pass",
+      "facts": "8evaluated/8pass/40known assertions;cleanup true/source unchanged. Full tuple not recovered locally;no full/release qualification.",
+      "evidence": "hosted-go-c3211e27-success.json"
+    },
+    {
+      "source": "49394e382f7a710c41907d6ec873b4a84638a149",
+      "run": 42378961845,
+      "profile": "browser_product",
+      "result": "failed_after_startup",
+      "facts": "Preflight10Go/22Lab/76delivery pass; product18assertions16pass2fail: witness-exchange and browser_actor. Exact early actor root cause unknown; full/release false.",
+      "evidence": "hosted-browser-49394e38-failure.json"
+    }
+  ],
+  "unmeasured": [
+    "Generic813 readiness-contract remediation needs its own later generic Docker/wargame run; Go8 does not execute that26-case catalog.",
+    "a6d875aa browser entered-stage diagnostics have separate source/compiler proof; actual execution not yet performed.",
+    "No row establishes full product or release qualification."
+  ]
+}

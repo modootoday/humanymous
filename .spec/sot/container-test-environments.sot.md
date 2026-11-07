@@ -208,6 +208,16 @@ the existing witness assertion, failure exit and full-product refusal. The
 delivery consumer embeds this vocabulary, so its regression proof must be
 renewed for changed contract bytes without borrowing an earlier test count.
 
+Captured stderr also contains child-tool output. A complete known marker is
+not an authenticated statement of which process emitted it; preserve this
+source-prefix trust limit. The existing scoped capture worker autojoins on
+early return, and the shared subprocess helper may retain blocking wait or
+reader lifetime obligations. The130/135-second application timers alone do
+not prove bounded return, cancellation, drain or cleanup. A diagnostic run may
+use the genuine hosted outer job ceiling with those limits explicit; migrate
+process ownership through the native/shared owner's retained-owner API rather
+than implementing another local process primitive or relaxing failure gates.
+
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
 pass. evidence:root/20261107083259 preserves the decoded public log and derived

@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T14:11:13Z
+updated: 2026-11-07T14:25:23Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -23,6 +23,8 @@ files:
   - {path: hosted-go-c3211e27-success.json, sha256: 2b8bfca081233a3e7f5cf33b8f43223a1b6a7cf37df07aec0c75d5882a32baa5, bytes: 5500, store: repo}
   - {path: browser-expectations-49394e38-checks.json, sha256: dd5254d2abbd9d24e452e356012e58cdb5c9a4a86cb99d9a227b0791ae88fe78, bytes: 2101, store: repo}
   - {path: hosted-browser-49394e38-failure.json, sha256: 29b801a801695f99f868a8794efa987245add55a20c2a21c3ff8495fef2bb8c3, bytes: 4714, store: repo}
+  - {path: browser-actor-a6d875aa-checks.json, sha256: 260653207fe9c6ec618b006426687d74bc26ad86ba75f68fb33717143bf38684, bytes: 1670, store: repo}
+  - {path: source-execution-index.json, sha256: 431b096605b9226c10a42b2031a4cc297d7c62e42a4b306e00211e84905c616d, bytes: 3378, store: repo}
 ---
 
 # Container test environment research
