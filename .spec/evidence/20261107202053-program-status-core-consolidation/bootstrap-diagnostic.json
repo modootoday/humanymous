@@ -1,0 +1,72 @@
+{
+  "schema": "humanymous.bootstrap-diagnostic-source/1",
+  "status": "SOURCE_AND_WASM_TYPE_LINT_ONLY",
+  "observed_head": "d5c46903b2122b82143e4974c660a2f3f6c14c1b",
+  "collector_source_uncommitted_at_observation": true,
+  "private_error_variants": 19,
+  "field_free_error": true,
+  "raw_foreign_error_retained": false,
+  "public_connect_error": "browser transport failed",
+  "pilot_source_changed": false,
+  "pilot_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+  "declared_existing_inventory": 67,
+  "actual_inventory_executed": false,
+  "wasm_all_target_runtime_pilot_check_exit": 0,
+  "wasm_strict_all_target_runtime_pilot_clippy_exit": 0,
+  "selected_local_inputs": 207,
+  "input_differences": 0,
+  "wasm_tests_executed": 0,
+  "actual_docker_executed": false,
+  "original_9586_inner_failure": "unrecovered; no retroactive cause inference",
+  "source_hashes": [
+    {
+      "path": "crates/collector/src/browser/transport/bootstrap.rs",
+      "sha256": "606127fccb454239e928e9f68b9188fba566cdcc8035dd53358e6012e2c96ff6"
+    },
+    {
+      "path": "crates/collector/src/browser/transport/mod.rs",
+      "sha256": "9417af80f5461643d024cb17f3603b953690c0914ec00cd0d80cccefd2e7ba3b"
+    },
+    {
+      "path": "crates/collector/src/browser/transport/tests.rs",
+      "sha256": "f9f1a3efe71a52faf35fb0b8492e32c1c5704f86cf7582306ee3da82d0dbcf62"
+    }
+  ],
+  "artifacts": [
+    {
+      "private_relative_path": "bootstrap-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "bootstrap-check.stderr",
+      "sha256": "76a20af40eb0dec19384150f66f2080c99ff44b49d81beaa8653707237c506d9",
+      "bytes": 599
+    },
+    {
+      "private_relative_path": "bootstrap-diagnostic/inputs.before.json",
+      "sha256": "47560e9c27eca6883006a9412cc045468083656f1570a25c3a722326d4c0f7b2",
+      "bytes": 33796
+    },
+    {
+      "private_relative_path": "bootstrap-diagnostic/inputs.after.json",
+      "sha256": "47560e9c27eca6883006a9412cc045468083656f1570a25c3a722326d4c0f7b2",
+      "bytes": 33796
+    },
+    {
+      "private_relative_path": "bootstrap-diagnostic/clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_relative_path": "bootstrap-diagnostic/clippy.stderr",
+      "sha256": "5f588873e11099a93821e779ccaf46824e504b0eed5b8125d47abf6fd28e6d40",
+      "bytes": 250
+    },
+    {
+      "private_relative_path": "bootstrap-diagnostic/result.json",
+      "sha256": "770c077826deea6485d1f9e1d67d1e57e386bd3836875a322c946bc09b2b30a7",
+      "bytes": 221
+    }
+  ]
+}

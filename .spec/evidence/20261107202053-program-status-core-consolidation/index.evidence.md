@@ -9,6 +9,7 @@ rel:
 files:
   - {path: summary.json, sha256: df8b7e0f45293179190487504f228ccee854a897fe59681d89189e01efd0f989, bytes: 28407, store: repo}
   - {path: consumer-and-package.json, sha256: c41b7bcb59bbb2466db7979c1d7286c8df89cd3dba8d2a9f5dd824ccf08dbf27, bytes: 5179, store: repo}
+  - {path: bootstrap-diagnostic.json, sha256: c4d141183853be22de0e528f82bc90fbd8588c073c6b9ce09d3d1faa3a0ae93d, bytes: 2686, store: repo}
 ---
 
 # Core consolidation observation
@@ -65,3 +66,15 @@ unchanged. This proves the default library consumer can use that source archive.
 It does not turn the failed normal package verification into success, qualify
 packaged development tests or establish public registry availability. The raw
 archive and failed attempt are retained alongside the successful bounded result.
+
+## Bootstrap diagnostic source follow-up
+
+The collector now returns a field-free19-variant bootstrap error internally,
+while its public connect error remains generic. WASM all-target checking and
+strict Clippy with runtime-pilot enabled passed;207 selected local inputs were
+unchanged around the lint run. The pilot file and its line22 anchor remain
+byte-identical. Existing fixture tests were amended without adding test names.
+No WASM test, browser or Docker execution was performed for this source slice.
+The earlier9586 bootstrap failure has no recovered inner category and is not
+retrospectively classified by this new diagnostic. The lab's corresponding
+closed parser and actual next-source validation are separate gates.

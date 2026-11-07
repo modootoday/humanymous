@@ -1,4 +1,5 @@
 //! Same-origin buffered Fetch owner; no cookie/stream or qualified-producer claim.
+mod bootstrap;
 mod io;
 mod request;
 #[cfg(all(test, feature = "runtime-pilot"))]
@@ -66,7 +67,7 @@ impl BrowserSession {
             serde_json::from_str(scope_json).map_err(|_| error("invalid provisioned scope"))?;
         Self::connect_with(js_sys::global().into(), scope, timeout_ms)
             .await
-            .map_err(failure)
+            .map_err(|_| error("browser transport failed"))
     }
     /// Sign and send one bounded request; no redirect, cookie or automatic retry.
     pub async fn fetch(
@@ -105,38 +106,12 @@ impl BrowserSession {
     }
 }
 impl BrowserSession {
-    async fn connect_with(global: JsValue, scope: Scope, timeout: u32) -> Result<Self, JsValue> {
-        if !(1..=30000).contains(&timeout) {
-            return Err(error("invalid transport timeout"));
-        }
-        let origin = request::origin(&global, &scope)?;
-        let abort = Abort(io::construct(&global, "AbortController", &[])?);
-        let req = request::build(
-            &global,
-            &origin,
-            "POST",
-            "/_humanymous/browser/session",
-            r#"[["content-type","application/json"]]"#,
-            b"{}",
-            &abort,
-        )?;
-        let mut timer = Timer::start(&global, timeout)?;
-        let response = io::wait(&timer, call(&global, "fetch", &[req])?).await?;
-        if !(200..=299).contains(&io::status(&response)?) {
-            return Err(error("bootstrap rejected"));
-        }
-        let bytes = io::body(&response, &timer, 8192).await?;
-        timer.cancel()?;
-        abort.abort()?;
-        let state = Session::from_json(scope, &bytes, io::now(&global)?, u64::from(timeout))
-            .map_err(|_| error("invalid bootstrap reply"))?;
-        Ok(Self {
-            global,
-            origin,
-            state: Rc::new(RefCell::new(state)),
-            abort: Rc::new(RefCell::new(None)),
-            timeout,
-        })
+    async fn connect_with(
+        global: JsValue,
+        scope: Scope,
+        timeout: u32,
+    ) -> Result<Self, bootstrap::Failure> {
+        bootstrap::connect(global, scope, timeout).await
     }
     async fn fetch_inner(
         &self,

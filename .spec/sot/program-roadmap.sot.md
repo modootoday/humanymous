@@ -21,6 +21,30 @@ freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
+| Structural stage | Workspace count after stage | Current state |
+| --- | --- | --- |
+| Core | 35 | Source integrated; bounded local tests/type/lint and default extracted-library consumer passed; full packaging/product gates pending |
+| Platform | 34 | Feature/API/unsafe map accepted; two source contexts frozen; movement awaits current allocated validators returning inputs |
+| Runtime | 29 | Six-context map accepted; concrete owner privacy dispositions recorded; implementation not moved |
+| Tools | 21 | Owner handoffs prepared; implementation not consolidated |
+| Adapters | 10 | Role/loader/unsafe gates and owner handoffs prepared; implementation not consolidated |
+| Browser | 8 | Separate artifact/loader decisions required; implementation not consolidated |
+
+These counts describe the accepted consolidation sequence, not package feature
+completion. Facade/collector path relocation and final Cross-OS/product gates
+remain required independently of reaching eight members.
+
+The native source-input regression tests now executed3/3 successfully with
+runner check and strict Clippy passing. The overall orchestration retained its
+first failure in final formatting of two dependency files, and its cleanup
+addendum retains the original lease-state discrepancy. Owners subsequently
+corrected those two formatting-only changes. Neither this scoped source-custody
+result nor that correction establishes full native/provider qualification.
+
+The current browser failure reached bootstrap; a new private finite diagnostic
+has WASM type/lint validation, not actual execution. See
+[[evidence:root/20261107202053]] for the source-bound scope and unchanged pilot.
+
 CORE-SLICE-01 implementation now consolidates seven engine contexts under the
 accepted core path; the workspace has35 packages on its way to eight. Actual
 scoped162 tests, strict all-target/all-feature Clippy, collector WASM check and

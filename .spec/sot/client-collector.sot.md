@@ -13,6 +13,23 @@ rel:
 
 # Browser collector migration
 
+## Finite bootstrap failure diagnostic contract
+
+Actual source9586 reached the owned runtime pilot's bootstrap expect and failed;
+the inner failure was not retained. The next diagnostic slice uses a private,
+field-free typed bootstrap error with finite transport stages and HTTP rejection
+families. Never retain a raw JsValue, response body/header, key, token or arbitrary
+error string in its Debug output. Public connect failures remain generic and
+all existing origin/status/session validation and cancellation behavior remain.
+
+Keep the pilot source bytes, line22 panic anchor, closed selected-test contract
+and13-field public actor DTO unchanged. Its existing expect may print only the
+new enum's finite Debug name. The lab classifier may export only exact known
+variants from the source-authenticated bootstrap panic; unknown/ambiguous text
+fails closed to the existing category. An amended existing WASM test exercises
+transport-backed error cases without increasing the67-test inventory. Type/lint
+checks and fixture tests are not actual new Docker bootstrap qualification.
+
 ## Current native component revalidation
 
 After the Python graph window, root reran the current collector library's 26

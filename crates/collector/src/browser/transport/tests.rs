@@ -72,7 +72,14 @@ impl Fixture {
                 assert_eq!(get(&request,"referrer")?.as_string().as_deref(),Some(""));
                 assert_eq!(get(&request,"referrerPolicy")?.as_string().as_deref(),Some("same-origin"));
                 if bootstrap {
-                    let reply=serde_json::json!({"protocol":PROTOCOL,"session":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","key":"AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE","counter":0,"expires":io::now(&global)?+60000,"installation":scope.installation,"tenant":scope.tenant,"origin":scope.origin,"revision":scope.revision,"authority":scope.authority});
+                    if (9..=11).contains(&mode) {
+                        let status=match mode {9=>403,10=>422,_=>503};
+                        return response(&global,status,&[],b"sensitive-bootstrap-fixture",None);
+                    }
+                    if mode==12{return response(&global,200,&[],b"{}",None);}
+                    if mode==14{return Err(error("sensitive-bootstrap-fixture"));}
+                    let mut reply=serde_json::json!({"protocol":PROTOCOL,"session":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","key":"AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE","counter":0,"expires":io::now(&global)?+60000,"installation":scope.installation,"tenant":scope.tenant,"origin":scope.origin,"revision":scope.revision,"authority":scope.authority});
+                    if mode==13{reply["tenant"]=serde_json::json!("other-tenant");}
                     return response(&global,200,&[],reply.to_string().as_bytes(),None);
                 }
                 if mode==1{return Err(error("owned network failure fixture"));}
@@ -336,7 +343,7 @@ async fn bootstrap_future_drop_and_timeout_abort_the_actual_request_signal() {
         if discard {
             drop(future);
         } else {
-            assert!(future.await.is_err());
+            assert_eq!(future.await.err(), Some(bootstrap::Failure::FetchAwait));
         }
         assert_eq!(get(&signal, "aborted").unwrap().as_bool(), Some(true));
     }
@@ -351,4 +358,47 @@ async fn real_same_origin_fetch_to_missing_owned_route_cannot_create_a_session()
             .await
             .is_err()
     );
+    for (mode, expected) in [
+        (9, bootstrap::Failure::HttpForbidden),
+        (10, bootstrap::Failure::HttpUnsupported),
+        (11, bootstrap::Failure::HttpServer),
+        (12, bootstrap::Failure::SessionReply),
+        (13, bootstrap::Failure::SessionScope),
+        (14, bootstrap::Failure::FetchAwait),
+    ] {
+        let fixture = Fixture::new();
+        fixture.mode.set(mode);
+        let failure =
+            BrowserSession::connect_with(fixture.global.clone(), fixture.scope.clone(), 500)
+                .await
+                .err()
+                .expect("fixture bootstrap must fail");
+        assert_eq!(failure, expected);
+        assert!(!format!("{failure:?}").contains("sensitive-bootstrap-fixture"));
+        assert_eq!(fixture.calls.get(), 1);
+        assert_eq!(fixture.last.get(), 0);
+    }
+    let fixture = Fixture::new();
+    assert_eq!(
+        BrowserSession::connect_with(fixture.global.clone(), fixture.scope.clone(), 0)
+            .await
+            .err(),
+        Some(bootstrap::Failure::TimeoutProfile)
+    );
+    let mut wrong_scope = fixture.scope.clone();
+    wrong_scope.authority.push_str(".invalid");
+    assert_eq!(
+        BrowserSession::connect_with(fixture.global.clone(), wrong_scope, 500)
+            .await
+            .err(),
+        Some(bootstrap::Failure::Origin)
+    );
+    set(&fixture.global, "Request", &JsValue::UNDEFINED).unwrap();
+    assert_eq!(
+        BrowserSession::connect_with(fixture.global.clone(), fixture.scope.clone(), 500)
+            .await
+            .err(),
+        Some(bootstrap::Failure::Request)
+    );
+    assert_eq!(fixture.calls.get(), 0);
 }
