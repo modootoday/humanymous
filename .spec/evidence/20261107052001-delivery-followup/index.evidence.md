@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:59:55Z
+updated: 2026-11-07T17:32:21Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -37,6 +37,7 @@ files:
   - {path: controlled-capture-owner-consumption.json, sha256: d50f74aa5d4ba1f85d5cfb339feae88446cacfb40793e96f430bbe699a39bc7c, bytes: 2318, store: repo}
   - {path: public-package-namespace-observation.json, sha256: dcfff523dd1cd4c601b244574358be46df87c073d211febfbc2fdae8ad1cdaf9, bytes: 3366, store: repo}
   - {path: b3-wrapped-cargo-validation.json, sha256: 022d34581c1491f46e4df545861bbe2477fb5f62881fba40eebb1e5e275cb4f5, bytes: 3075, store: repo}
+  - {path: browser-b4fdbc38-summary.json, sha256: 2df1fb4260dddc3dc6af002d55c85f154b2fd23d115f627a24927fabf2482a14, bytes: 5615, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
