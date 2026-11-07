@@ -1,0 +1,165 @@
+{
+  "schema": "humanymous.hosted-browser-source-evidence/1",
+  "source_sha": "e70edeeb984cbcff65ab63132f47caa2a125bf38",
+  "run_id": 42402268161,
+  "run_attempt": 1,
+  "event": "push",
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42402268161",
+  "preflight": {
+    "job_id": 128492411204,
+    "conclusion": "success",
+    "go_tests": 10,
+    "lab_tests": 31,
+    "delivery_tests": 95,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "unix_actor_check": "passed",
+    "strict_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "product": {
+    "job_id": 128493145754,
+    "conclusion": "failure",
+    "summary": {
+      "canonical_git_tree_sha256": "d952e9f37f6457f68277f0e3fafdba6a28a8cfc1703cd0f82492ea416a27f316",
+      "cases": [
+        {
+          "evidence": "private source-bound owning report",
+          "id": "collector-parity",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "challenge-keyboard",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "challenge-assistive",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "missing-signals-closed",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "human-control",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "coherent-browser-ceiling",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "documentation-examples",
+          "status": "blocked"
+        }
+      ],
+      "components": [
+        {
+          "assertions": {
+            "failed": 2,
+            "other": 0,
+            "passed": 16,
+            "total": 18
+          },
+          "exit_code": 1,
+          "full_product_qualified": false,
+          "owner": "lab-runner",
+          "public_receipt": null,
+          "qualification": null,
+          "required_unavailable_count": 9,
+          "safe_diagnostics": {
+            "browser_actor": {
+              "dns_finish": "succeeded",
+              "exit_code": 1,
+              "filtered_count": 66,
+              "full_product_qualified": false,
+              "inventory_count": 67,
+              "inventory_matched": true,
+              "parser_summary_matched": false,
+              "process_success": false,
+              "schema": "humanymous.lab-browser-actor-outcome/1",
+              "selected_count": 1,
+              "source_prefix_authenticated": false,
+              "state": "observed",
+              "test_passed": false
+            },
+            "failure_count": 2,
+            "failures": [
+              {
+                "case_id": "browser-actual-witness-exchange",
+                "error_code": "assertion_failed",
+                "status": "failed"
+              },
+              {
+                "case_id": "execution",
+                "error_code": "browser_selected_test_failed",
+                "status": "failed"
+              }
+            ],
+            "partial": false,
+            "schema": "humanymous.lab-safe-diagnostics/1"
+          },
+          "schema": "humanymous.product-lab/2",
+          "status": null
+        }
+      ],
+      "documentation_review_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+      "errors": 1,
+      "full_product_qualified": false,
+      "images": [
+        "sha256:8effcadba30dc9eee0508fcc2d28e339a7b594947e08dbae69c82948bf280cfd",
+        "sha256:c8e65a5f20dbe67a1cb44ffaa38e27d4ba658fde2d09c3b4a014c5e0a1704d77",
+        "sha256:3eed987053bdca015ec20b3cbb1735876adf3396fee5dc51c45d333b94ac4280"
+      ],
+      "isolation": "docker",
+      "kind": "browser-product",
+      "private_report_sha256": "c4ad8f80cbb300784af45c9632bf62bc023a57c08281a8cc6472c87e5552a0e4",
+      "qualification": "component-only",
+      "release_ready": false,
+      "runtime": "rust",
+      "schema": 1,
+      "skips": null,
+      "source_changed_during_execution": false,
+      "source_manifest_sha256": "e63fbda975a20f8df3504c062ea9122c9a448b5f1c51534503eb1c432e17239d",
+      "source_sha": "e70edeeb984cbcff65ab63132f47caa2a125bf38",
+      "status": "failed"
+    }
+  },
+  "capture": {
+    "private_evidence": "evidence:root/20261107183900",
+    "watch_session": 1952,
+    "watch_terminal_exit": 1,
+    "live_handles": 0,
+    "artifacts_total": 0,
+    "connector_cli_public_summary_bytes_equal": true,
+    "closed_actor_fields": 13,
+    "original_report_rehashed_locally": false,
+    "original_actor_test_streams_retrieved": false,
+    "actual_panic_site_matched": false,
+    "actual_assertion_verified": false,
+    "actual_e70_duplicate_panic_locations_verified": false,
+    "cleanup_separately_exported": false
+  },
+  "hosted_admission": {
+    "checked_repository_visibility": "PUBLIC",
+    "visibility_command": "gh repo view modootoday/humanymous --json visibility --jq .visibility",
+    "runner": "ubuntu-24.04",
+    "workflow": ".github/workflows/browser-product-validation.yml",
+    "pricing_reference": "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "scope": "Standard runner compute only; no paid resource or larger runner authorized."
+  },
+  "limits": [
+    "The finite error remains browser_selected_test_failed. Successful DNS finish and a failed selected test do not identify its assertion or original Origin header.",
+    "A pinned upstream framing defect was subsequently found: test failure output and separate console replay duplicate text. This does not prove what e70 private bytes contained.",
+    "Original private report SHA is reported by the job, not locally rehashed. Image roles/full runtime tuple remain unrecovered; all three identities are kept unmapped.",
+    "The c66 transport correction, later wire counters and later framing correction were absent from this run. No original-cause inference from their future success.",
+    "All required unavailable cases and full/release false remain unchanged. Observed checkout Node20 warnings and actual process-exit error remain in private logs."
+  ]
+}

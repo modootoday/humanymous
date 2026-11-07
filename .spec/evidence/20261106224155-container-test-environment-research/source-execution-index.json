@@ -97,6 +97,14 @@
       "profile": "browser_product",
       "run": 42394466559,
       "facts": "18assertions16pass2fail. Finite selected_test_failed; DNS succeeded, inventory67/1/66 matched, process exit1. Exact underlying assertion unknown; canonical CI dcfe454d."
+    },
+    {
+      "source": "e70edeeb984cbcff65ab63132f47caa2a125bf38",
+      "evidence": "hosted-browser-e70edeeb-failure.json",
+      "facts": "Go10/Lab31/Delivery95 preflight passes. Product18/16pass/2fail;9unavailable; selected_test_failed with no matched panic site. Underlying assertion/old-Origin bytes unknown; later framing defect does not prove original bytes.",
+      "result": "failed",
+      "run": 42402268161,
+      "profile": "browser_product"
     }
   ],
   "unmeasured": [

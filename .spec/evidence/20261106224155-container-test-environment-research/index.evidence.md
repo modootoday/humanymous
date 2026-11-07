@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T18:07:57Z
+updated: 2026-11-07T19:13:28Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -30,9 +30,10 @@ files:
   - {path: hosted-browser-306eedc8-failure.json, sha256: c7dc4e83f79c6b1c2c8463d9536efbadcf156c203cd85ad925c6513f0e59d3aa, bytes: 5612, store: repo}
   - {path: browser-failure-b4fdbc38-checks.json, sha256: ef5da85d7556514fe6529e82b3a192d0eb2fc2f58a8ab95328fbfbcd3545cfc6, bytes: 1859, store: repo}
   - {path: hosted-browser-b4fdbc38-failure-join.json, sha256: 26f83f374c91625b2f40cf71f04ac0da4b3195da363e98d11586814289d2dd62, bytes: 1224, store: repo}
-  - {path: source-execution-index.json, sha256: a56cc7a7202b52779a5b10d0205ecf3b03d1cc1da4cf69197a6124cd27ce835e, bytes: 5325, store: repo}
   - {path: browser-bootstrap-origin-hypothesis.json, sha256: 793fb0beb4dea8b0899713cdbb09aa702609e4598b36c591c1034d7f0a0518af, bytes: 1497, store: repo}
   - {path: browser-panic-e70edeeb-checks.json, sha256: a4259c433e7c357e7e8fcb523a5cd6132e69efe77273c4b0514cb2aadd929fae, bytes: 2095, store: repo}
+  - {path: hosted-browser-e70edeeb-failure.json, sha256: bd59dcf68da075f9a44ab481d28c7ba33fb8ddf402838d865752148a7638a6d9, bytes: 6309, store: repo}
+  - {path: source-execution-index.json, sha256: 80ff9817a4cfc832d366e4832e7d9642bb84589a8dbb3c8d1b471e1bd579cda0, bytes: 5786, store: repo}
 ---
 
 # Container test environment research
