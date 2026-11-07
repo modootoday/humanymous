@@ -81,11 +81,19 @@
       "result": "catalog_scoped_pass_full_gate_refused",
       "facts": "26scheduled/19evaluated/0errors/0skipped/7unsupported/0mismatch; Lab72/72assertions pass. Ownerfull-required exit2, outerfailure/fullfalse retained. Original private body unavailable locally.",
       "evidence": "hosted-generic-306eedc8-scoped.json"
+    },
+    {
+      "source": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+      "run": 42390164354,
+      "profile": "browser_product_typed_diagnostic",
+      "result": "failed_process_exit1_dns_succeeded",
+      "facts": "18assertions16pass2fail. Typed13fields observed: inventory67/selected1/filtered66 matched, processfalse/exit1/summaryfalse/testfalse, DNSfinishsucceeded. Exact tool/test failure cause unknown; fullfalse.",
+      "evidence": "hosted-browser-306eedc8-failure.json"
     }
   ],
   "unmeasured": [
     "Generic813 remediation is measured in distinctrun42387564172/source306:19evaluated/0errors/7unsupported/scopedtrue. This is a26-case scoped catalog result, not full product qualification.",
-    "Typed browser actor outcome has Windows26 units on de0 and genuine hostedLinux26 preflight plus Win/GNU compile proof on306; actual browser actor DTO execution remains NOT_RUN.",
+    "Typed browser actor DTO executed in42390164354/source306: observed67/1/66matched, processfalse/exit1/summaryfalse, DNSsucceeded. Exact tool/harness versus selected-test failure cause remains unverified.",
     "No row establishes full product or release qualification."
   ]
 }
