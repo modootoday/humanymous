@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T17:54:58Z
+updated: 2026-11-07T18:36:43Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -15,6 +15,7 @@ files:
   - {path: rng-upstream-provenance.json, sha256: d9f8ad32d68017a6613a652f4c776f325c2e2048a1aa6de16e607d2296d60b22, bytes: 1899, store: repo}
   - {path: rng-normal-seed0-upstream.json, sha256: 1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989, bytes: 1246, store: repo}
   - {path: rng-source-checkpoint.json, sha256: 96387eb06ecb372439d9370bec517fe981b0576df624f5107defc5f4eac95e41, bytes: 3079, store: repo}
+  - {path: gpu-research.json, sha256: 9b04d66b27bced22d9c32f7b218cca431aae9f82971070735323956ff7442af1, bytes: 5186, store: repo}
 ---
 
 # Read-only source inventory
@@ -414,3 +415,30 @@ attachment inventory; no foreign repair was attempted. This checkpoint claims no
 global green and no formatter/test execution. All kernel/source/fixture hashes
 are registered in rng-source-checkpoint.json; future execution must bind to the
 actual committed candidate and preserve any first failures.
+
+## ML GPU eligibility research, 2026-11-08 KST
+
+gpu-research.json binds read-only Win32 inventory, model source hashes, source-derived
+shape/byte counts, exact reviewed upstream source URLs/versions and evidence gaps.
+No GPU/runtime/driver probe or load, shader, dependency change, model download,
+training/inference/benchmark, compiler or actual device pilot was run. Existing CPU
+experiments and the RNG72888805 NOT_RUN checkpoint were left unchanged.
+
+WMI reports RTX4070Ti/driver32.0.16.1088 and i9-14900K on Windows11x86_64. This is
+hardware inventory, not proof that any CUDA/Vulkan/DX12 context or physical compute
+is usable. VRAM, GPU memory pressure and runtime feature support are NOT_MEASURED.
+Machine-specific PNP ID is omitted. The owned SoT separates real/software adapter
+qualification, tiny-online CPU priority and offline batch/training eligibility.
+No candidate currently meets frozen exact output/order/RNG equivalence. Nonzero
+diagnostic tolerances are explicitly non-accepting; activation stays prohibited.
+
+Primary source review includes Candle0.9.1 tagged manifests (newer0.11.1 source-tag
+reconciliation unresolved), Burn v0.22.1 manifest and0.22.0 API docs, wgpu v30.0.1
+tagged platform/MSRV source and versioned device/queue/feature docs, NVIDIA official
+hardware/Windows CUDA/floating-point references. Source/version, compatibility
+eligibility, source proposal, actual pilot and product proof remain separate.
+
+Owned model scoped spec passed0errors/0warnings. A concurrent public-global snapshot
+reported one foreign E1 in the browser owner's gpu-boundary-research.json attachment
+hash, not this model bundle. No foreign metadata was repaired and no global-green
+claim is made. This research checkpoint does not reserve a compiler/GPU target.

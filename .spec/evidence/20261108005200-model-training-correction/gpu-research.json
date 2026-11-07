@@ -1,0 +1,143 @@
+{
+  "schema": "humanymous.model-gpu-research/1",
+  "status": "RESEARCH_ONLY_NO_GPU_WORKLOAD",
+  "observed_utc": "2026-11-07T18:35:40.8487665Z",
+  "authorization": "Owned ML research/SoT/proposals only; no backend/dependency/driver/shader/unsafe change or GPU work",
+  "hardware_observation_kind": "Read-only Win32 inventory; not a GPU runtime probe or physical compute receipt",
+  "gpu_inventory": {
+    "Name": "NVIDIA GeForce RTX 4070 Ti",
+    "AdapterCompatibility": "NVIDIA",
+    "DriverVersion": "32.0.16.1088",
+    "DriverDate": "2026-07-22T09:00:00+09:00",
+    "Status": "OK"
+  },
+  "cpu_inventory": {
+    "Name": "Intel(R) Core(TM) i9-14900K",
+    "Architecture": 9,
+    "NumberOfCores": 24,
+    "NumberOfLogicalProcessors": 32
+  },
+  "os_inventory": {
+    "Caption": "Microsoft Windows 11 Pro",
+    "Version": "10.0.26200"
+  },
+  "usable_vram": "NOT_MEASURED",
+  "cuda_vulkan_dx12_metal_device": "NOT_PROBED",
+  "online_reference": {
+    "feature_dim": 27,
+    "default_hidden": 16,
+    "candidate_hidden_cap": 256,
+    "dtype": "f32 ordered accumulation, f64 sigmoid exp then f32 cast",
+    "hidden_and_output_products_per_row": 448,
+    "parameter_floats": 465,
+    "parameters_plus_mean_std_calibration_floats": 521,
+    "numeric_payload_bytes": 2084,
+    "input_bytes_per_row": 108,
+    "counts_origin": "Source-derived formulas, not timing measurements",
+    "gpu_equivalence": "UNQUALIFIED",
+    "latency_crossover": "NOT_MEASURED"
+  },
+  "cpu_receipts": [
+    {
+      "source": "a0ebc9ae",
+      "unit": 13,
+      "fixture": 1,
+      "scope": "parser/file and existing inference correctness"
+    },
+    {
+      "source": "e7d8f9a3",
+      "unit": 17,
+      "fixture": 1,
+      "scope": "4standardize+8parser+5inference correctness"
+    },
+    {
+      "source": "aeefd20c",
+      "passed": 4,
+      "filtered": 17,
+      "scope": "metric reducer only"
+    }
+  ],
+  "rng": {
+    "source": "72888805",
+    "new_tests": 12,
+    "status": "SOURCE_ONLY_NOT_RUN",
+    "gpu_change": "NONE"
+  },
+  "compatibility": {
+    "absolute_tolerance": 0,
+    "relative_tolerance": 0,
+    "output_bits": "exact",
+    "abstain": "exact",
+    "decisions": "exact at all existing thresholds, scores and verdicts unchanged",
+    "operation_order": "preserved",
+    "candidate_passes": "NONE",
+    "diagnostic_only_unapproved_band": "1e-6 +1e-5*abs(cpu); not compatibility or promotion acceptance"
+  },
+  "reviewed_candidates": [
+    {
+      "name": "Candle",
+      "tag": "0.9.1",
+      "source": "https://raw.githubusercontent.com/huggingface/candle/0.9.1/candle-core/Cargo.toml",
+      "features": "CPU/CUDA/cuDNN/Metal",
+      "latest_docs_version": "0.11.1",
+      "latest_tag_lookup": "0.11.1/v0.11.1 source URL lookup unresolved; adoption blocked pending reconciliation"
+    },
+    {
+      "name": "Burn",
+      "tag": "v0.22.1",
+      "source": "https://raw.githubusercontent.com/tracel-ai/burn/v0.22.1/crates/burn/Cargo.toml",
+      "msrv": "1.95",
+      "features": "CUDA/ROCm/wgpu/Metal/Vulkan/WebGPU/CPU/Flex",
+      "docs_version": "0.22.0; do not silently equate to tag0.22.1"
+    },
+    {
+      "name": "wgpu",
+      "tag": "v30.0.1",
+      "source": "https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/README.md",
+      "msrv": "1.87 library",
+      "role": "device/queue not ML/training framework; custom authored shaders unapproved"
+    }
+  ],
+  "primary_sources": [
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Features.html#associatedconstant.SHADER_F64",
+    "https://docs.rs/wgpu/30.0.1/wgpu/enum.DeviceType.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/type.RequestAdapterOptions.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Queue.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Device.html",
+    "https://burn.dev/docs/burn/tensor/struct.Device.html",
+    "https://burn.dev/docs/burn/backend/fusion/index.html",
+    "https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/mathematical-functions.html",
+    "https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html",
+    "https://developer.nvidia.com/cuda/gpus"
+  ],
+  "missing_gates": [
+    "tag/dependency/SDK/license reconciliation",
+    "Rust1.99.1 platform build",
+    "exact numeric/decision/order qualification",
+    "physical adapter actual compute",
+    "lifecycle/cancellation/device-loss/resource pilot",
+    "end-to-end crossover",
+    "supported OS/architecture tuples",
+    "product Docker qualification"
+  ],
+  "workloads_run": [],
+  "software_adapter_proof": "NONE; software/noop/virtual inventory is not physical GPU evidence",
+  "source_files": [
+    {
+      "path": "crates/model/src/inference/mlp.rs",
+      "sha256": "85f980297bdeecf7a74a858fc883d36c3b400cb76cbbcb2b21524a83bf92c254"
+    },
+    {
+      "path": "crates/model/src/inference/bundle.rs",
+      "sha256": "0c263b5f509ab5e6ef8165f46106247429d546150078cac5500481de7e88c9af"
+    },
+    {
+      "path": "crates/model/src/training/evaluate.rs",
+      "sha256": "006812fc42811b4608d108e28eab6ea8f6da8e33caf5b07fa7bf3bc2e860f1d7"
+    },
+    {
+      "path": "crates/model/src/training/standardize.rs",
+      "sha256": "d5abb55113c70ad65d716c9c9de4cf510a85bd1d1553ab06cc74106b91444904"
+    }
+  ]
+}

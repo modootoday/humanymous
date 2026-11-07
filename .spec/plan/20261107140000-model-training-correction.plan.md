@@ -180,6 +180,30 @@ integration. Root owns shared third-party attribution before packaging. The full
 29row responsibility, Go mixed-state observability gap, architecture math tails,
 SGD/cohort/time/lifecycle/CLI and production freeze remain unaltered.
 
+## GPU ML research handoff, no implementation allocation
+
+The owned SoT now contains exact-source candidate families, OS/architecture/vendor/
+runtime matrix, arithmetic/parity and cpu/auto/require-gpu contract proposal, bounded
+lifecycle/settlement and L0-through-product evidence ladder. Root's structural
+canon retains shared policy authority; Performance owns measured crossover and
+upper consumers do not infer model activation from GPU discovery.
+
+Source-derived workload handoff:27f32 inputs, H16 default/H256 proposed bound;
+H16 uses448products and465parameter floats,521floats/2084bytes including stats/
+calibration (excluding metadata),108input bytes per row. Offline100000feature
+vectors alone use10.8million bytes. These are formulas, not latency/VRAM readings.
+Existing CPU proofs are correctness-only14/18/4 receipts; no matched GPU or CPU
+prediction benchmark exists. No speedup/crossover ranking is justified yet.
+
+Research priority is CPU tiny online reference, optional offline independent-row
+batch pilots after exact parity/tuple/resource acceptance. Keep ordered stats,
+Go RNG and sequential SGD on CPU. Evaluate Candle tagged0.9.1 baseline, Burn
+v0.22.1 and independently reviewed wgpu v30.0.1; do not silently combine their
+transitive versions or pin old Candle because latest-doc tag lookup was unresolved.
+All actual backend/feature/device memory/SDK/driver and supported-target math
+qualification remains missing. No Cargo, driver/SDK install, shader, unsafe code,
+model download, workload or experiment change is authorized by this research.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.

@@ -268,3 +268,197 @@ can be implemented. No independent review is pending for the already qualified
 parser source; subsequent-slice design acceptance and implementation review remain
 open. No scoring delta is proposed. Final baseline mapping and Go
 retirement belong exclusively to root after source-bound qualification.
+
+## GPU eligibility research, 2026-11-08 KST: proposal only
+
+The user's project-wide GPU request authorizes research and owned spec/proposals,
+not backend activation, GPU work, driver/SDK installation, dependency/lock changes,
+authored shaders/foreign code or unsafe exceptions. This section owns product ML
+contracts only; root's structural canon owns shared scheduling/selection policy.
+Selection vocabulary maps to cpu/auto/require-gpu in
+[[sot:root/structural-development]]; no separate shared compute API is claimed.
+Existing CPU experiments and RNG72888805 source-only status remain unchanged.
+
+### Workloads and current CPU evidence
+
+Input width27; legacy default hidden16, proposed cap256. MLP inference performs
+27H hidden products plus H output products per row:448 multiply/add pairs atH16,
+not a measured throughput figure. Parameters29H+1=465floats atH16; adding54
+standardization and2calibration floats gives521floats/2084bytes, excluding JSON
+metadata. Input is108bytes/row; return includes f32 probability and abstention.
+Inference accumulates ordered f32 and evaluates sigmoid via f64 exp then f32 cast.
+Shapes/identity/dtypes remain frozen. Source: crates/model/src/inference/mlp.rs.
+
+CPU receipts are correctness proofs: a0ebc9ae13unit+1fixture, e7d8f9a317library+
+1fixture, aeefd20c4reducer tests with17filtered. The inference fixture has5models
+x68vectors and exact existing output assertions. No per-request CPU latency,
+CPU/GPU throughput, energy or transfer crossover was measured. Test-suite elapsed
+times are NOT prediction benchmarks. RNG72888805 has12new tests NOT_RUN.
+
+| ML responsibility | GPU eligibility under frozen contract | Priority |
+|---|---|---|
+| Single-request tiny MLP | No qualified GPU equivalent; launch/transfer/queue overhead may dominate (inference, not measurement) | CPU reference first |
+| Offline independent-row inference | Candidate for parallel rows, but each row's reduction/exp parity still required | Compare after an accepted isolated pilot |
+| Sequential per-example SGD | Parallel minibatch/autodiff changes update order/algorithm; not a compatible replacement | Keep CPU; no accelerated training acceptance |
+| Standardize | Parallel sum changes ordered-f32 means/variance | Keep existing CPU kernel |
+| RNG/normal/epoch shuffle | Sequence/state/libm and warm draw-skipping must match pinned Go contract | CPU-only compatibility source |
+| Reducer/cohort counts | Tiny bounded integer/branch work; transfers add a boundary | CPU; future GPU-resident metrics not assumed equivalent |
+| Calibration/canary/lifecycle | Policy/state authority, not a throughput matrix kernel | CPU; activation remains separately prohibited |
+
+### Exact reviewed sources, not installed dependency pins
+
+- [Candle0.9.1 workspace](https://raw.githubusercontent.com/huggingface/candle/0.9.1/Cargo.toml)
+  and [feature manifest](https://raw.githubusercontent.com/huggingface/candle/0.9.1/candle-core/Cargo.toml)
+  expose CPU, optional CUDA/cuDNN and Metal. Rust API plus upstream kernels is not
+  an all-Rust SDK supply chain. This is a resolvable tagged source baseline, not a
+  recommendation to pin an older version. Latest docs identify0.11.1, but attempted
+  source URLs0.11.1/v0.11.1 did not resolve; reconcile exact release source before
+  any adoption.0.9.1 manifest does not establish Rust1.99.1 transitive build success.
+- [Burn v0.22.1 manifest](https://raw.githubusercontent.com/tracel-ai/burn/v0.22.1/crates/burn/Cargo.toml)
+  declares MSRV1.95 and features CUDA/ROCm/wgpu/Metal/Vulkan/WebGPU/CPU/Flex.
+  [Burn0.22 Device docs](https://burn.dev/docs/burn/tensor/struct.Device.html)
+  have explicit device factories and no implicit CPU fallback. Use an explicit
+  backend, not feature-unification-dependent default ordering; docs0.22.0 and
+  tag0.22.1 are distinct research inputs. [Fusion docs](https://burn.dev/docs/burn/backend/fusion/index.html)
+  describe default CubeCL fusion, a numerical/order review concern.
+- [wgpu v30.0.1 platform/MSRV source](https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/README.md)
+  lists native Vulkan/Metal/DX12 and browser WebGPU; library MSRV1.87. It is a
+  device/queue abstraction, not an MLP/trainer. Handwritten WGSL/GLSL/HLSL or
+  passthrough unsafe code is NOT authorized. Burn/wgpu transitive versions must be
+  reconciled rather than assuming this independently reviewed wgpu version fits.
+- [CUDA Windows13.5 guide](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html)
+  documents OS/compiler/toolkit prerequisites; it is not permission to install or
+  a claim that this host has that toolkit. [NVIDIA floating-point guide](https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/mathematical-functions.html)
+  explains non-associative sums and differing FMA rounding.
+
+Declared MSRV below1.99.1 is only a syntax eligibility signal. Exact transitive
+versions, upstream foreign kernels/build tools, SDK/license artifacts and actual
+Rust1.99.1 platform builds remain unverified; no dependency was added.
+
+### OS/architecture/vendor/runtime candidate matrix
+
+These are eligibility hypotheses, not product support or measured capabilities.
+
+| Target tuple | Candidate runtime/vendor | Status and requirement |
+|---|---|---|
+| Windows x86_64, NVIDIA | Burn/wgpu DX12 or Vulkan; Candle/Burn CUDA | Current inventory candidate; exact driver/runtime, parity and real pilot absent |
+| Windows x86_64, AMD/Intel GPU | Burn/wgpu DX12 or Vulkan | No local adapter proof; enumerate features/limits before qualification |
+| Linux x86_64, NVIDIA | CUDA or Burn/wgpu Vulkan | Separate driver/container/host tuple and artifact tests needed |
+| Linux x86_64, AMD | Burn ROCm or Vulkan | Feature exists; exact vendor SDK/GPU compatibility not researched to a supported tuple |
+| Linux x86_64, Intel | Burn/wgpu Vulkan | Driver/features and real allocation absent; no CUDA implication |
+| Linux aarch64, supported GPU | Conditional vendor Vulkan/CUDA stack | No ARM GPU/SDK/packaging proof; do not inherit x86 support |
+| macOS aarch64, Apple GPU | Candle Metal or Burn Metal/wgpu | Native Apple tuple needed; no local Metal proof |
+| macOS x86_64, Metal-capable GPU | Conditional backend/hardware support | Intel/AMD Mac tuple unverified; M1 claims do not qualify it |
+| Browser wasm32 | Burn/wgpu WebGPU where implemented | Browser/secure-context/permission/features differ; no native CUDA/Metal claim |
+| Windows aarch64 or other targets | CPU reference until separately qualified | No GPU backend tuple accepted from package marketing |
+| CPU/software or unknown/virtual adapter | CPU/fallback only unless physical hardware mapping proven | Never count stub/software throughput as hardware GPU proof |
+
+Read-only Win32 inventory reports Windows11Pro10.0.26200 x86_64, i9-14900K
+(24cores/32logical) and NVIDIA GeForce RTX4070Ti, driver32.0.16.1088, StatusOK.
+[NVIDIA's hardware list](https://developer.nvidia.com/cuda/gpus) associates this
+model with compute capability8.9. This is a model-name lookup, not a runtime probe.
+No CUDA/Vulkan/DX12 device, usable VRAM, feature support or real compute dispatch
+was tested. No nvidia-smi/toolkit/load command was run. Public evidence omits the
+machine-specific PNP identifier. Do not derive GPU eligibility from CPU vendor.
+
+### Numerical and decision acceptance
+
+Compatibility mode requires absolute tolerance0, relative tolerance0, same finite/
+abstain result and exact p_bot bits; require identical annotation/fire comparisons
+at every existing cut-point, schema/version/artifact identity and final score/
+verdict. No threshold, RNG, weight or promotion change is authorized. Zero-error
+output alone does not excuse an unreviewed operation-order change.
+
+Generic matmul/reductions, fusion/FMA, tensor-core reduced precision/TF32, mixed
+precision and autodiff optimizer rewrites are not known to preserve the ordered
+f32 reference. CPU's f64 exp then f32 cast is not interchangeable with device f32
+exp. [wgpu30 SHADER_F64](https://docs.rs/wgpu/30.0.1/wgpu/struct.Features.html#associatedconstant.SHADER_F64)
+is an optional native Vulkan feature, not a portable DX12/Metal/WebGPU guarantee.
+Consequently NONE of the investigated GPU candidates currently satisfies exact
+model/standardization/RNG/training equivalence. No backend may replace the CPU
+reference based only on similar aggregate accuracy or a device's advertised FLOPS.
+
+For separately approved exploratory offline diagnostics only, proposed error
+reporting uses abs<=1e-6+1e-5*abs(cpu) and ULP histograms, with exact abstention
+and threshold decisions separately counted. This nonzero diagnostic band is NOT
+compatibility acceptance or permission to change outputs. Any boundary disagreement
+refuses equivalent status. GPU-produced offline training artifacts would need a
+distinct reviewed algorithm/artifact identity, all cohort/time gates and manual
+promotion; that scope is not currently accepted. RNG streams stay CPU and unchanged.
+
+### Proposed interface and selection priority, no source implementation
+
+Separate pure BackendPolicy/Workload/ParityRequirement/Budget/QualifiedTuple from
+an owned compute session. Workload includes online-single, offline-batch and offline
+training; policy is CpuOnly, PreferGpu or RequireGpu. Descriptors bind API/vendor/
+device class/driver/runtime/compiler/backend version/features to a model digest,
+batch limits, parity receipt and execution venue. They do not grant activation.
+
+1. Preserve the existing CPU reference and finish its current experiments unchanged.
+2. Check policy, accepted dependency tuple, resource allocation and exact parity
+   qualification BEFORE device initialization or submission.
+3. CpuOnly always uses CPU. Online tiny MLP stays CPU; RequireGpu on an unqualified
+   workload returns a typed refusal, never silently falls back or enables a model.
+4. PreferGpu can use only an explicitly qualified hardware tuple AND measured
+   end-to-end crossover for that batch/model; otherwise CPU with a finite reason.
+   No global size threshold or automatic backend switch is introduced by this study.
+5. Candidate research order: portable Burn/wgpu for vendor reach, then CUDA on
+   qualified NVIDIA hosts and Metal on qualified Apple hosts. Compare Candle and
+   Burn at the same workload; choose no speed winner without data. Direct wgpu
+   custom kernels remain deferred behind shader/unsafe/implementation review.
+
+wgpu [DeviceType](https://docs.rs/wgpu/30.0.1/wgpu/enum.DeviceType.html) separates
+CPU/software, integrated, discrete and virtual devices; [fallback adapter options](https://docs.rs/wgpu/30.0.1/wgpu/type.RequestAdapterOptions.html)
+can request software. A future RequireGpu check must verify physical/API features
+and completed real compute, not accept a noop/software device or a marketing name.
+Virtual adapters require actual physical-provider mapping before hardware claims.
+CPU fallback is explicit and must preserve the frozen result; no silent half-GPU
+half-CPU batch or resuming SGD from a partial device update. If the CPU itself
+cannot complete, propagate typed failure/abstention under existing signal policy,
+not fabricated success or relaxed strict-route enforcement.
+
+### Crossover and bounded lifecycle proposal
+
+Measure T_gpu=end-to-end startup/amortization + host packing + host-to-device +
+queue wait + compute + device-to-host + synchronization/unpacking; compare to
+identical CPU semantics. Report warm/cold p50/p95/p99 latency, throughput, CPU
+utilization and allocation/VRAM context separately. No crossover exists in current
+evidence. Rows27x4=108bytes and tiny weights suggest (inference) batching/residency
+may be necessary; high kernel FLOPS is not proof of lower per-request latency.
+[wgpu queue docs](https://docs.rs/wgpu/30.0.1/wgpu/struct.Queue.html) describe staged
+copies and asynchronous submission/completion, so enqueue time alone is insufficient.
+
+Proposed first isolated research budget, still requiring allocation: one GPU job,
+batch1/16/64/256/1024/4096, H16 initially, logical tensors<=64MiB, staging<=16MiB,
+one in-flight submission and queue<=4jobs. Driver/context overhead is separately
+measured and is NOT promised to fit the tensor budget. Unified-memory capacity
+must not double-count the same physical pool; driver, shape, residency, precision
+or concurrency changes invalidate crossover receipts. Deadline/cancellation and
+device-loss probes precede any training; exact startup/dispatch deadlines belong
+to the reviewed provider pilot, not invented watchdog guarantees.
+
+Session state: admitted->opening->ready->submitted->completed->closing, with
+lost/timeout/cancelled terminal RESULTS but resource lease held until actual
+completion/reap. Tag submissions/completions by session generation; reject stale
+completion after device loss. Keep callbacks off ownership locks and short.
+[wgpu Device](https://docs.rs/wgpu/30.0.1/wgpu/struct.Device.html) exposes loss callback,
+destroy and polling, but cancellation after submission does not prove GPU work
+stopped. Bounded chunks/owned process supervision need real pilot evidence;
+never reset a shared GPU, kill another session or install a driver to force cleanup.
+Reject OOM/unsupported features/device lost with typed finite reasons; PreferGpu
+may restart a complete independent batch on CPU only after settling its old lease,
+while RequireGpu refuses. Training restart/checkpoint semantics remain unimplemented.
+
+### Required evidence ladder and current gaps
+
+L0: review exact dependency/license/SDK tuple, Rust1.99.1 build and policy/parity
+contract; currently NOT_DONE. L1: pure selector, bounds, refusal/fallback and stale
+completion tests; NO_GPU_IMPL and NOT_RUN. L2: allocated real physical-adapter
+enumeration plus actual dispatch/readback, timeout/cancel/loss/cleanup and memory
+negative cases on each supported tuple; NOT_RUN. Software/noop/mock cases remain
+separate. Then matched CPU/GPU numeric and crossover runs with exact inputs, binary/
+driver/compiler/artifact hashes and excluded cases; NOT_RUN. L3/L4 provider/CLI
+integration requires owner agreements, no serving hot-swap. L5 product authority
+still requires owned Docker topology and actual runner; no GPU component result
+becomes full product success. No future GPU pilot can retroactively qualify RNG
+source-only or missing Go state/SGD/cohort/time/lifecycle responsibilities.
