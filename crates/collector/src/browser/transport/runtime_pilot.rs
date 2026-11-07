@@ -41,6 +41,45 @@ async fn actual_runtime_session_report_and_required_capability_fail_closed() {
             .all(|[name, _]| !name.to_ascii_lowercase().starts_with("x-humanymous-"))
     );
 
+    // Oversized requests fail locally before a counter or network operation.
+    // This does not observe a server413 or poison a valid current epoch.
+    assert!(
+        session
+            .fetch(
+                "POST",
+                routes["effect"].as_str().unwrap(),
+                headers,
+                vec![b'x'; 65537],
+            )
+            .await
+            .is_err()
+    );
+    assert!(!session.is_closed());
+
+    // The largest supported body must traverse actual Fetch and validate its
+    // consumed ACK. The lab separately checks exactly two effect proxy hits.
+    let largest = session
+        .fetch(
+            "POST",
+            routes["effect"].as_str().unwrap(),
+            headers,
+            vec![b'x'; 65536],
+        )
+        .await
+        .expect("maximum supported body must receive a consumed acknowledgement");
+    assert_eq!(
+        u64::from(largest.status()),
+        fixture["expected"]["before_report_status"]
+            .as_u64()
+            .unwrap()
+    );
+    let body: serde_json::Value = serde_json::from_slice(&largest.bytes()).unwrap();
+    assert_eq!(
+        body["verdict"],
+        fixture["expected"]["before_report_verdict"]
+    );
+    assert!(!session.is_closed());
+
     // Preserve actual headless/browser observations. Never fabricate a benign
     // report or interpret accepted report ingestion as human/code attestation.
     let mut collector = crate::BrowserCollector::new().unwrap();

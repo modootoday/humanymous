@@ -338,3 +338,21 @@ case/zero/absence boundaries and fresh-realm distinctions. Real browser WASM tes
 must inspect actual APIs and iframe cleanup. Native snapshot tests, browser unit
 tests and Docker product e2e have distinct evidence scopes; no result implies a
 real human/keyboard/AT baseline or full browser-tool readiness.
+
+## Actual-runtime request boundary pilot contract
+
+The single selected BrowserSession runtime pilot first performs its existing
+small pre-report effect request, then locally rejects65537 bytes before request
+counter consumption, and sends65536 bytes through actual Fetch. Both effect
+responses require consumed ACK verification and pre-report CHALLENGE; local
+rejection leaves the epoch open and does not prove server HTTP413. The shared
+fixture expected.effect_requests=2 binds Lab route and response accounting.
+Keep selected1/filtered66 and zero origin effects. Lab must consume this count
+without weakening exact proxy accounting or fabricating browser status.
+
+Native fixture consistency1, WASM all-target runtime-pilot check, strict Clippy
+and scoped fmt passed on105 captured source/manifest files with zero changes.
+Registry/compiler/SDK inputs and additions outside that list were not captured.
+The first post-test fmt failure and final corrected-byte rerun are retained in
+evidence:root/20261106194410. Actual browser/product execution of this extension
+is NOT_RUN; prior66 component tests do not qualify these new cases.

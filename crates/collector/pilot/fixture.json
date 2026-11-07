@@ -24,6 +24,7 @@
   },
   "expected": {
     "before_report_status": 403,
+    "effect_requests": 2,
     "before_report_verdict": "CHALLENGE",
     "collect_status": 200,
     "required_collector_status": 422,
