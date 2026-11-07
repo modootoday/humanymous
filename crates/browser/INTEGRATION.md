@@ -6,6 +6,25 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Latest frozen ce24fe52 normal bootstrap/desktop build passed0 using explicit
+verified cached CEF_PATH, jobs1/inc0/lockedoffline. First33.11s crate-name guard
+stop is retained; successful retry finished116.12s from the same lease epoch.
+New DLL hashes are in manual-ce24-validation.json; older fef hashes do not apply.
+Declared87 source/3SDK/237 bundle inputs stayed unchanged. Exact owned physical
+target marker was removed after terminal build. No SDK provenance beyond the
+declared cached-input checks is implied.
+
+One fresh human pilot exited0 after15.53s, before180s close deadline; close trigger
+is unknown. One CEF tab supplied before_close, host_closed and25 resize readbacks
+at96DPI. No automated input was sent and the agent did not observe visible content
+before exit. Raw profile/logs remain private; descendant teardown is unverified.
+The human reports CEF content is fine but the Meari shell lags150-200ms or more
+after rapid resize. This subjective feedback is a priority defect, not a passing
+visual performance gate. The actual Meari window driver is VelloCPU/softbuffer;
+the build is dev/unoptimized. UI-37 tracks stage timing, optimized CPU control,
+width-only source-replacement avoidance and reviewed true GPU-window options.
+No new backend, pin, graph, instrumentation or second GUI follows from that design.
+
 Newer UI-36 resize/gutter source reduces the shared perimeter5to3DIP, uses frame
 background instead of exposed white placeholder padding, removes resize gutters
 when maximized, and synchronizes live owned CEF geometry on surface/DPI events

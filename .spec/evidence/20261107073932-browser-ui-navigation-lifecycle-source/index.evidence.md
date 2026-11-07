@@ -29,9 +29,23 @@ files:
   - {path: controls-native-preflight.json, sha256: a87c8f8f43c7fd733d8cbc1feebea15cf775f0fa3001234c54169578d3eac1dc, bytes: 2617, store: repo}
   - {path: controls-gui-first.json, sha256: 2d6fb908687f639466a212a1027970e2d42a81b59eacc075328f112d40fa0ccb, bytes: 3431, store: repo}
   - {path: controls-046-validation.json, sha256: fa9d4fb19faa3e338947e0f4db5efd7993e798743b54cb75fbc516fd016d5475, bytes: 2249, store: repo}
+  - {path: manual-ce24-validation.json, sha256: 99eaf562b2650832c65b64fa434855bd8691dfe9d2a2f23208083c1a2c287c30, bytes: 3267, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
+
+## Latest normal build and human shell-lag feedback
+
+Exact ce24 normal build terminal0 and fresh manual terminal0/15.53s are recorded
+separately from earlier component tests and failed GUI. Same epoch retained the
+initial overbroad dependency guard stop; explicit cached CEF_PATH allowed normal
+wrapper compilation without a new source graph. Declared87source/3SDK/237bundle
+hashes stayed unchanged. One tab/before_close/host_closed and25 resize readbacks
+at96DPI do not prove full visual, AT, sandbox or descendant qualification.
+Human-estimated150-200ms-plus Meari-only resize lag remains serious/open. Actual
+window source uses CPU Vello/softbuffer and the artifact is dev/unoptimized;
+source facts do not assign causal milliseconds. No agent input or visible-content
+success is claimed. All raw manual outputs remain private.
 
 ## Separate tab UI candidate046 validation
 

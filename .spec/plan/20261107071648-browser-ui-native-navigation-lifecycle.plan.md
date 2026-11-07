@@ -11,6 +11,42 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## Priority shell responsiveness follow-up (UI-37; design only)
+
+The ce24 normal build passed and human manual pilot exited0 after15.53s, with
+one tab/before_close/host_closed and25 resize readbacks at96DPI. The human reports
+CEF content is fine but Meari trails rapid resize by150-200ms or more. Record this
+as estimated severe lag, not an instrumentation result. Current window backend
+is VelloCPU/softbuffer; the artifact is dev/unoptimized. No new GUI is allocated.
+
+Pipeline: Browser window_event pre-syncs child bounds, then Meari driver receives
+surface/DPI events; its inner event processing and refresh_host commit viewport
+environment. RedrawRequested enters checked_render, resolves assets/layout,
+configures target size, prepares checked vector scene and submits to the CPU
+window renderer. It rasterizes RGBA, converts pixels and calls softbuffer present.
+Browser's periodic step separately sees width changes and reprojects all64 tab
+slots through full retained source replacement. These are separate candidate
+costs. No source reading establishes their timing or a displayed-frame timestamp.
+
+First reviewable optimization proposal: keep retained replacement for membership,
+selection, title and action metadata; let viewport-only geometry flow through
+pinned responsive CSS/layout if native geometry/AX/action oracles pass. Candidate
+CSS uses shrink/min/max widths and model-count classes for width-dependent close/
+title visibility; no source rewrite for each pixel width. Verify1/2/8 tabs,
+threshold crossings, active-close visibility, hidden-close rejection, tab clicks,
+focus/dirty address and multiple DPI. A failing pinned capability requires an
+upstream explicit layout-only transaction, not a metadata bypass. No code change
+is accepted from this proposal until the oracle and ownership seam are reviewed.
+
+Timing proposal: optional Rust-only bounded512-record ring, monotonic generation
+and durations, dropped counts, no raw user content. Separate Browser projection/
+commit from Meari resolve/scene/raster/swizzle/present-call. Compare optimized CPU
+control and latest-size coalescing before asserting GPU necessity. OS display
+acknowledgement remains unknown unless independently measured. Performance owns
+its comparison/budget canon; Browser owns UI/child/AX integration and root owns
+Meari dependency/pin changes. GPU candidate must be a true window renderer with
+bounded completion/resource lifetime, not offscreen readback or indefinite wait.
+
 ## Resize lag and thick white perimeter (UI-36)
 
 Keep this source delta separate from UI-35. Reduce shared resize edge5to3DIP,

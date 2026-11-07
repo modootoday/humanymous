@@ -12,6 +12,53 @@ rel:
 
 # Native browser UI and CEF boundary
 
+UI-37: the current pinned Meari WINDOW driver is CPU-rasterized, independently
+of CEF content: VelloCpuWindowRenderer aliases a softbuffer window renderer with
+VelloCpuImageRenderer. Its path fills the full target, rasterizes to RGBA,
+converts pixels and calls softbuffer present. The optional GlHost is not this
+window backend; offscreen GPU work plus synchronous readback is not GPU window
+presentation. Do not advertise current shell GPU acceleration from CEF GPU process
+presence, an enabled feature, or OS desktop composition. The human reports the
+Meari shell trailing rapid resize by150-200ms or more while CEF content appears
+fine. This is a serious responsiveness defect and a human estimate, not measured
+stage latency. The ce24 manual artifact is dev/unoptimized; optimized CPU control
+and stage timings are required before attributing the delay to one subsystem.
+
+Separate tab model/action-metadata changes from viewport-only layout dirtiness.
+Current UI-35 width handling updates64 slots and commits a full retained source
+replacement. Its cost is an unmeasured candidate. A replacement must preserve
+actual geometry, source stamps, AX names/roles/selection/action paths, hidden
+close-action behavior, dirty address values and focus. Removing the width guard
+or reverting to stale direct DOM metadata is not an optimization contract.
+Prefer existing layout/CSS responsive ownership if the pinned renderer proves
+those invariants; otherwise request an explicit retained layout-only API upstream.
+Coalesce to one latest pending size and bounded frame work rather than queueing
+old sizes. Never replay old prepared frames after a newer viewport generation.
+
+Performance diagnosis must distinguish event receipt/queue age, tab projection,
+source preparation/commit, host layout/resolve, scene preparation, CPU raster,
+pixel conversion and renderer submit/present-call duration. A submit/present-call
+return is not an OS-displayed frame acknowledgement. Opt-in Rust observations
+use monotonic sequence/generation and durations only, a bounded512-record ring,
+explicit dropped counts and unknown values for unavailable stages. Do not export
+raw keys, input text, AX trees, screenshots, paths or GPU/device identifiers in
+timing records. Disabled instrumentation is not a fabricated zero-cost result.
+Performance owner defines the frozen comparison matrix and acceptance budgets;
+same source, viewport/DPI, route, profile and workload must be recorded.
+
+True GPU WINDOW integration is an upstream Meari/root-owned proposal. Keep the
+single-use NativeWindowPreparation/driver lifecycle and public renderer-selection
+seam rather than fork a second host. Backend changes preserve parent/child leases,
+AX/IME/focus, DPI, minimization, device-loss and close handling. Required GPU mode
+reports unavailable/fallback explicitly; it must not silently claim acceleration.
+No per-frame GPU-to-CPU image readback or indefinite UI-thread completion wait
+qualifies as the target low-latency path. Retain GPU resources until completion
+with bounded frames in flight; do not remove waits without a lifetime design.
+Root owns dependency pins/shared graph and any reviewed upstream Rust changes;
+immutable Cargo git-cache edits and blind gl feature toggles are forbidden.
+CPU optimization/coalescing, backend compilation, real native frame observation
+and OS presentation/latency validation remain distinct unfinished gates.
+
 UI-36: user-reported resize lag/thick white gutters supersede UI-16's5-DIP
 perimeter width with3-DIP normal-window resize strips. Input hit testing, CSS and
 CEF allocation share the same DPI-scaled metric. The exposed strip uses the

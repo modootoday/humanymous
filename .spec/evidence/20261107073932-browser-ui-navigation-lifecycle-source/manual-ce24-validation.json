@@ -1,0 +1,83 @@
+{
+  "source": "ce24fe52d5bb80e846f030a08fdcfe547456b9fa",
+  "build": {
+    "venue": "local Windows x64 immutable archive",
+    "normal_bootstrap_desktop_exit": 0,
+    "elapsed_original_epoch_seconds": 116.12,
+    "first_attempt": "Stopped33.11s on overly broad cef-dll-sys crate-name guard; not compiler failure",
+    "target_lease": "exact own marker recorded and removed after actualterminal",
+    "locked": true,
+    "offline": true,
+    "jobs": 1,
+    "incremental": 0,
+    "cef_path": "verified preexisting pinned minimal SDK",
+    "sdk_version": "156.0.15 Chromium156.0.8078.80",
+    "cmake_parallel": 1,
+    "tool_sdk_provenance": "cached SDK declared inputs verified; full archive/toolchain supply-chain qualification not established",
+    "artifacts": [
+      {
+        "name": "humanymous_cef_bootstrap.dll",
+        "bytes": 287744,
+        "sha256": "c22d16d7e63f07c06c9e9620aa66d6da401833a2b6d7aaa5009989f1fa6acf33"
+      },
+      {
+        "name": "humanymous_cef_desktop.dll",
+        "bytes": 58564096,
+        "sha256": "442fee442f78e0320055082da1e6b91fc67189103f1e1de3444efcdeff21688b"
+      }
+    ],
+    "profile": "dev unoptimized + debuginfo; no optimized CPU control measured"
+  },
+  "closures": {
+    "source_files": 87,
+    "source_differences": 0,
+    "fixed_sdk_inputs": 3,
+    "sdk_differences": 0,
+    "bundle_inputs": 237,
+    "bundle_differences": 0
+  },
+  "manual": {
+    "runs": 1,
+    "exit": 0,
+    "elapsed_seconds": 15.53,
+    "normal_deadline_seconds": 180,
+    "hard_seconds": 195,
+    "outer_seconds": 210,
+    "outer_fired": false,
+    "automated_input": false,
+    "agent_visible_content": "not observed before process exit",
+    "close_trigger": "unknown; exited before timer",
+    "tabs_created": 1,
+    "tabs_before_close": 1,
+    "tabs_incomplete": 0,
+    "host_closed": true,
+    "resize_readbacks": 25,
+    "observed_dpi": [
+      96
+    ],
+    "subjective_feedback": [
+      "Rendering appears slightly delayed",
+      "Browser page area is fine; Meari area is the problem",
+      "Meari CPU UI remains150–200ms or more behind after rapid window-size changes; serious"
+    ],
+    "subjective_feedback_scope": "human observation, not measured latency or proven cause",
+    "descendant_tree_cleanup": "unverified"
+  },
+  "shell_backend": {
+    "pin": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+    "source_observation": "Native window driver instantiates BlitzApplication<VelloCpuWindowRenderer> and VelloCpuWindowRenderer::new; CPU raster plus softbuffer",
+    "desktop_features": [
+      "window"
+    ],
+    "gpu_window_backend": "not wired",
+    "optional_gl": "separate path; enabling it alone does not replace window driver",
+    "cef_gpu_process_observed": true,
+    "cef_hardware_feature_status": "unverified",
+    "latency_cause": "not measured",
+    "required_followup": "Measure source preparation/tab projection, layout, CPU raster and submission/presentation separately; design no-full-source-compile resize path and real GPU window backend preserving AX/input/child/sandbox",
+    "additional_candidate": "Each viewport-width change reprojects all64 tab slots and prepares/commits retained source replacement; cost unmeasured"
+  },
+  "browser_ready": false,
+  "native_full": false,
+  "raw_public": false
+}
