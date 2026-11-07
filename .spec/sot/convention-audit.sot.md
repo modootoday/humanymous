@@ -764,3 +764,33 @@ Independent source review accepts this ordering correction. A cancel request
 does not prove terminal settlement; registration/cancel failure, task-factory
 failure after creation and suppressed cancellation remain cleanup-uncertain.
 No new SDK/fault/queued host controls were observed. HANDOFF01 remains OPEN.
+
+### Additional ownership and management responsibility coverage
+
+Two hash-bound private reviews extend source coverage by20 leaves, rehashed
+unchanged before this canonical update. Native ABI Registry owns monotonic
+context/buffer IDs, owner checks and bounded initialized allocation; Boundary
+owns terminal panic poisoning, and Command owns exact pointer-free wire shape.
+The managed bridge composes these owners, binds Completion to its originating
+instance and keeps authority I/O outside the bridge lock. Its Request owns EOF,
+one decision attempt, original Pending, cancellation and final request binding.
+The owning .NET contract explicitly ends admission at handoff; this is not a
+promise to retain it through the complete application response. Shared integrity
+owns token derivation/browser validation/acknowledgement, whose MAC is neither
+body nor ALLOW attestation. No new violation was confirmed in these reads.
+
+Management routes require native peer, exact scope/envelope and distinct observer/
+operator credentials. Settings application checks original request context and
+poisons sessions on ambiguous commit/application outcomes. Destructive policy
+requires distinct pinned administrator keys, validates every supplied approval,
+and consumes the nonce before issuing private noncloneable grants. Retained
+issuance additionally checks the exact independent signed anchor and durability.
+A suspected stale-ledger retry after commit failure was traced into PrivateState:
+it poisons before disk mutation and remains unusable on failure, so that candidate
+is not a confirmed defect. Erasure still requires caller audit-before-effect and
+stop-after-shred-error; kill assessment is inspection rather than mutation power.
+
+These are bounded semantic source observations, not actual FFI/GC/Kestrel,
+destructive native provider, erasure/backup, service, a11y or complete migration
+qualification. Selected ledger/policy portions do not imply every file was fully
+reviewed. No compiler/SDK/WSL/UNC/Docker workload was launched by this audit.

@@ -243,3 +243,10 @@ This supersedes prior NOT_RUN only for those5pure tests; native/actual-type/
 repair/Ready/capacity/product gates remain OPEN. ASGI252ad task-retention source
 correction accepted, actual settlement/fault/host controls pending. Windows-local
 reads only; no WSL/UNC/compiler/SDK workload launched by X.
+
+Extended source responsibility coverage binds20 unchanged leaves across native
+ABI/managed bridge/shared integrity and management/settings/destructive controls.
+No new violation confirmed; suspected stale-ledger retry rejected after tracing
+PrivateState terminal poison. .NET admission-to-handoff is its explicit contract,
+not full-response ownership. Native/host/destructive/product gates remain open;
+private review hashes retained in baseline, no execution or global pass inferred.

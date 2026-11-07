@@ -363,5 +363,15 @@
     "asgi_retention_source_accepted": true,
     "actual_asgi_fault_tests": 0,
     "native_or_product_qualified": false
+  },
+  "followup_native_management_responsibility": {
+    "private_review_sha256": {
+      "native-managed-responsibility-review-002.json": "33f9380fa35b60f75eeb2019885e3a8338aaf484f1bd0a5e202e9500218f2b69",
+      "management-control-responsibility-review-001.json": "42db552f198342680eca2a439a49d8799040ebf1054bf26d0787855f6d04ef71"
+    },
+    "source_leaves_rehashed_unchanged": 20,
+    "new_confirmed_violations": 0,
+    "source_only": true,
+    "native_host_or_migration_qualified": false
   }
 }
