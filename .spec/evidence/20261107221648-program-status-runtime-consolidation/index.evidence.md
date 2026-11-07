@@ -7,6 +7,7 @@ updated: 2026-11-07T22:16:48Z
 rel:
   depends_on: [sot:root/structural-development, sot:root/program-roadmap, evidence:root/20261107205600]
 files:
+  - {path: runtime-dependencies.json, sha256: 96a5adbd95470c7aa6279556ba361d1ba8330bdde3c4391d563c00d4cdbab17e, bytes: 7908, store: repo}
   - {path: browser-wire-dispatch.json, sha256: 57d40f539e47fd98f701ac033f89cc1cf4df2287cfd4e358287d74cf1fe8e4d9, bytes: 817, store: repo}
   - {path: authority-pilot-fix.json, sha256: 367a6c252055d33043e258558a69a514a80e81a61973b3bb0e016cea3d078c32, bytes: 1845, store: repo}
   - {path: extracted-package.json, sha256: 93e0caec68b715d0d00a61bba535617873be408f747806aa595631f3a2b75463, bytes: 6424, store: repo}
@@ -25,3 +26,5 @@ The privacy attachment records one legitimate sibling read control and ten expec
 The extracted-package attachment records source-only crate production, followed by all-target/all-feature compilation and strict Clippy of Runtime plus a temporary consumer, and a pure default consumer run. All522 extracted files remained unchanged. Dependency patches point only to extracted Core/Platform/Collector archives. This is not normal cargo package verification, registry availability, runtime test execution or native/product qualification. The temporary consumer is a validation harness, not a maintained ninth package.
 
 The Authority pilot command repair removes a stale deleted package selector. Both build and execution JSON explicitly select the current Runtime authority context, its library and all three Authority integration targets, validated against current Cargo metadata. No global name filter can erase integration cases. Prerequisite-context library tests are included; no Docker execution, counts or actual pilot success is claimed by this source check.
+
+The dependency-isolation attachment records seventeen isolated normal-only consumer profiles and six expected disabled-context import failures, followed by a separate Windows all-target/all-feature check and strict Clippy. All177 selected regressions passed from a366-case inventory. Runtime files remained unchanged during each phase. These results do not establish native, Unix, Docker, browser, extracted-package or full product qualification, and no build speedup has been measured.

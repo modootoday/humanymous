@@ -1,0 +1,277 @@
+{
+  "schema": "humanymous.runtime-dependency-isolation/1",
+  "state": "bounded-Windows-source-validation",
+  "manifest_sha256": "c2c174b6e4a71b72637ca62958b4378ab68b22ef179886a682406c8bafb9bbd7",
+  "normal_only": {
+    "positive_profiles": 17,
+    "api_negatives": 6,
+    "source_inputs": 280,
+    "source_difference_records": 0,
+    "elapsed_seconds": 64.9259457,
+    "normal_only": true,
+    "native_executed": false,
+    "speedup_measured": false,
+    "main_lock_unchanged": true
+  },
+  "development": {
+    "check_exit": 0,
+    "clippy_exit": 0,
+    "runtime_source_files": 280,
+    "difference_records": 0,
+    "elapsed_seconds": 10.764936,
+    "registry_toolchain_attested": false,
+    "native_executed": false
+  },
+  "selected_regressions": {
+    "inventory": 366,
+    "groups": [
+      {
+        "filter": "network::",
+        "exit": 0,
+        "passed": 72,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 294
+      },
+      {
+        "filter": "gateway::shipping::tests::",
+        "exit": 0,
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 347
+      },
+      {
+        "filter": "native_security::storage::user_root_journal_model::tests::",
+        "exit": 0,
+        "passed": 12,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 354
+      },
+      {
+        "filter": "authority::",
+        "exit": 0,
+        "passed": 37,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 329
+      },
+      {
+        "filter": "audit::record::",
+        "exit": 0,
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 356
+      },
+      {
+        "filter": "audit::merkle::",
+        "exit": 0,
+        "passed": 8,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 358
+      },
+      {
+        "filter": "audit::verification::scan::limits::tests::",
+        "exit": 0,
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 364
+      },
+      {
+        "filter": "capture::http2::",
+        "exit": 0,
+        "passed": 17,
+        "failed": 0,
+        "ignored": 0,
+        "filtered": 349
+      }
+    ],
+    "passed_sum": 177.0,
+    "runtime_source_files": 280,
+    "difference_records": 0,
+    "elapsed_seconds": 25.1978764,
+    "native_executed": false,
+    "full_inventory_executed": false
+  },
+  "feature_keys": [
+    "audit",
+    "authority",
+    "capture",
+    "credential-pilot",
+    "default",
+    "gateway",
+    "hosted-pilot",
+    "native-security",
+    "network"
+  ],
+  "private_evidence": "evidence:root/20261108054000/runtime-optional",
+  "private_root_records": [
+    {
+      "name": "dev-check.stderr",
+      "sha256": "76e2dc8c15355f03ed3b30f664381a80c9f67400d337c81e5e7177c25d9321f7",
+      "bytes": 455
+    },
+    {
+      "name": "dev-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "dev-clippy.stderr",
+      "sha256": "8c9713d805beb4269e9def559520b64de199bf6b257fe6851998de60acc444b3",
+      "bytes": 455
+    },
+    {
+      "name": "dev-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "dev-inventory.stderr",
+      "sha256": "55d4fccf70f67793f11743a990bc489bd4795dd449c9606a69a76eeab204a3c8",
+      "bytes": 577
+    },
+    {
+      "name": "dev-inventory.stdout",
+      "sha256": "f08c4510f3f7e5a52fe6bd0ddb31b2efe7065e1c87cfe39bb60b2653f93eb5bc",
+      "bytes": 36378
+    },
+    {
+      "name": "dev-pure-1.stderr",
+      "sha256": "1f3392ca04a015e223d1096ab566fa971ee4104a3f34ceff63b63e6f510b8ee2",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-1.stdout",
+      "sha256": "c8dc79ac7bfe84f4f88a44b1d5f53467a019bcf8ccb085cbdbb48ce6decb9823",
+      "bytes": 7040
+    },
+    {
+      "name": "dev-pure-2.stderr",
+      "sha256": "06ba7a82e304cedbdc6402d3de6e0dac94fb0ef523c69895430073e315203bbd",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-2.stdout",
+      "sha256": "3ae965d2d87bb67ee442dd73e0023ad6526dc5eea875e95f21f30d1b871c3dda",
+      "bytes": 2194
+    },
+    {
+      "name": "dev-pure-3.stderr",
+      "sha256": "da561fcf07fa964c9169251786932549125bc43ebbdc63fb25faf4e8d94ac462",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-3.stdout",
+      "sha256": "e9e0e77fb00058e31ce2efc2e0458c7d13ee16089e599ebe62ac4f45c978fe42",
+      "bytes": 1749
+    },
+    {
+      "name": "dev-pure-4.stderr",
+      "sha256": "da561fcf07fa964c9169251786932549125bc43ebbdc63fb25faf4e8d94ac462",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-4.stdout",
+      "sha256": "d2f0dfcd3a529dd83337fc48c968c9b18e8a0654ea0a30216bf2c1d3cc2121db",
+      "bytes": 4104
+    },
+    {
+      "name": "dev-pure-5.stderr",
+      "sha256": "da561fcf07fa964c9169251786932549125bc43ebbdc63fb25faf4e8d94ac462",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-5.stdout",
+      "sha256": "8e8c793fcf57547d4b919a709173f031f4227ddfd268e51f6ff2404a9e2d91a6",
+      "bytes": 1168
+    },
+    {
+      "name": "dev-pure-6.stderr",
+      "sha256": "06ba7a82e304cedbdc6402d3de6e0dac94fb0ef523c69895430073e315203bbd",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-6.stdout",
+      "sha256": "522bf23d80e2cb2ab1361cf258bc34ea4d9f8f5c0d54496d3b2cd74c767b7991",
+      "bytes": 878
+    },
+    {
+      "name": "dev-pure-7.stderr",
+      "sha256": "06ba7a82e304cedbdc6402d3de6e0dac94fb0ef523c69895430073e315203bbd",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-7.stdout",
+      "sha256": "e6c32930265ec0236aafb6a53f90b93553e9ea1124417fa5bde055203b8135c4",
+      "bytes": 332
+    },
+    {
+      "name": "dev-pure-8.stderr",
+      "sha256": "da561fcf07fa964c9169251786932549125bc43ebbdc63fb25faf4e8d94ac462",
+      "bytes": 194
+    },
+    {
+      "name": "dev-pure-8.stdout",
+      "sha256": "7c98f33429551d6a4d812043613f7f0c1e41b54865e600376e91c27c36b537fe",
+      "bytes": 1806
+    },
+    {
+      "name": "dev-pure.summary.json",
+      "sha256": "ab86c542002fae91d8e39e5917ea1797d15b6dce40ff1aae53f2be1ee533f1e3",
+      "bytes": 1457
+    },
+    {
+      "name": "dev.inputs.after.json",
+      "sha256": "db9595c322a407c18a6a695a1e2007942d2d9a99e61e204b55dfdb1ab3fe7e84",
+      "bytes": 58512
+    },
+    {
+      "name": "dev.inputs.before.json",
+      "sha256": "db9595c322a407c18a6a695a1e2007942d2d9a99e61e204b55dfdb1ab3fe7e84",
+      "bytes": 58512
+    },
+    {
+      "name": "dev.summary.json",
+      "sha256": "c319da02870df48834e13aa58d725af5392590393ac822fb640dbf832eede38c",
+      "bytes": 209
+    },
+    {
+      "name": "negative.results.json",
+      "sha256": "121b7648b1c30774c140003c70c024cd98a3c03ffbd6b73d8c62b6570fe6b747",
+      "bytes": 683
+    },
+    {
+      "name": "normal.inputs.after.json",
+      "sha256": "6557fc46e5d00a3a8eecab656c6f177e265e0ba542fb38995179d35c1bc144b2",
+      "bytes": 62756
+    },
+    {
+      "name": "normal.inputs.before.json",
+      "sha256": "6557fc46e5d00a3a8eecab656c6f177e265e0ba542fb38995179d35c1bc144b2",
+      "bytes": 62756
+    },
+    {
+      "name": "normal.results.json",
+      "sha256": "14407c62379483646c5b28c202b2eebe742850be7f2261b3878e987d9c4d06e3",
+      "bytes": 5372
+    },
+    {
+      "name": "normal.summary.json",
+      "sha256": "5a060f5f03071170fce6074bfa81e15bf9c243ed94d5b55e4a05645d96d69c38",
+      "bytes": 254
+    }
+  ],
+  "first_failure": "First harness native profile refused the seeded lock before compilation; retained attempt-01. Per-profile resolution precedes the successful locked checks in attempt-02.",
+  "limits": [
+    "Windows only; no Unix/native/Docker/browser execution",
+    "Selected177 cases are not all366 cases",
+    "Registry/toolchain closure not fully attested for development run",
+    "No matched cold/warm speed comparison",
+    "Main lock unchanged; external normal profile versions/source/checksums matched original lock"
+  ]
+}

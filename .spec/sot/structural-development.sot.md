@@ -864,3 +864,19 @@ required executable boundaries, and reject missing, duplicate or unknown names.
 Do not include a former library root in each integration target and multiply all
 cfg(test) cases, add a public fixture API, or lower counts to hide the split.
 No target/source movement is authorized until this final identity map is frozen.
+## Accepted Runtime dependency isolation slice
+
+Root accepts the reviewed Runtime dependency activation matrix in
+sot:root/performance-optimization at abad5c83. Preserve context implications,
+Gateway default, pilot modifiers, exact versions/subfeatures and OS predicates.
+Optionalize context-owned normal dependencies and remove the observed unused
+normal Platform edge; Platform testing and existing fixture dependencies remain
+development-only. No module, constructor, scoring or authority change is admitted.
+
+Qualification requires isolated normal-only library/consumer checks and
+normal/build feature trees for all12 closed context sets, both pilot modifiers,
+exact public feature-key inventory and absent-API negatives for disabled contexts.
+Run dev/all-target checks separately so unification cannot hide a missing normal
+edge. Compare external version/source/checksum identities and retain failures.
+Unix execution and matched cold/warm performance measurements remain separate;
+reduced dependency closure is not evidence of measured speedup.
