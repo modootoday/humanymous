@@ -143,7 +143,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CLOSED scoped preallocation/UTF16 invariant: 3a0ba182 source plus 3200a5a1 actual boundary/doctest receipts independently checked; broader native provider qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
-| CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync source correction e34cee8a independently accepted; actual late-connected/no-origin and timely controls, SDK compilation, Node/ASGI queued corrections and qualification remain OPEN |
+| CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync e34cee8a and ASGI queued 800b9679 source direction accepted; owner accepted additional task-setup ownership gap. First SDK check failed101 before host tests. Corrected compilation, actual host controls, Node and task settlement remain OPEN |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -712,3 +712,30 @@ with empty raw output. The initial shared-CWD check remains separate from the
 archive-directory gate. Four actual watchdog child cases/exit74/pipe pressure/
 SCM/cleanup remain NOT_RUN. Compilation does not close LIFETIME01 or qualify the
 shared native provider. No audit compiler/native/Docker workload was executed.
+
+### ASGI ownership and hosted projection follow-up
+
+ASGI800b9679 now retains the original Pending, opaque BoundResponse and permit
+across the queue, checking and consuming at the owning-loop invocation. Two
+authored WSGI controls require a genuine audited ALLOW and distinguish late
+origin0 from timely origin1/body/status. These remain unexecuted here. Owner
+summary015 reports first SDK check101 (Rejection lacks Display), no host tests
+or Clippy; its raw logs and closure ledgers were not independently reviewed in
+this follow-up. Fixed messages require fresh exact-source qualification.
+
+Independent source review also found that ensure_future creates a task before
+fallible completion registration and before retaining task/permit in State.
+The error result marks Guard complete and can lose cancellation ownership while
+dropping the permit. The framework owner accepted this source-derived gap;
+retention, error cancellation, uncertain settlement and bounded fault controls
+remain required. Neither native atomic cancellation nor actual orphan execution
+was demonstrated. HANDOFF01 remains OPEN, including Node and actual host gates.
+
+Hosted42387564172 terminal metadata was queried independently: exact306eedc8,
+attempt1, completed/failure. All four public receipt attachment hashes/lengths
+matched. Independent projection recount found ordered indices0..25,19evaluated
+with true expectations and7unsupported with null expectations. Delivery retains
+10blocked required cases and full_product_qualified=false. Original private
+report bytes are unavailable locally; its committed hash is not an independent
+local original-byte verification. These observations do not close the full
+Docker product gate or establish new native/runtime/a11y qualification.

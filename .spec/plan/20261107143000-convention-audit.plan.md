@@ -227,3 +227,11 @@ No new implementation ownership, compiler/native workload or globalpass inferred
 Batched evaluationL0/L1source aeefd20c review andCLI b891d1f8 compile-scope
 re-audit: ZIP2710source bytes independentlymatch SHA256+canonicalGitblob;9pure
 passed, actual4watchdog casesnotrun. No newclosure/SDK/provider/product promotion.
+
+ASGI800b source queue-boundary correction reviewed; owner accepted additional
+task-setup ownership error path. Public summary015 retains first SDK check101,
+zero host tests; raw/source ledger re-audit and corrected qualification pending.
+Hosted42387564172 exact306 terminal failure independently queried; four public
+attachment hashes verified and26case projection recounted19evaluated/7unsupported.
+Original private report unavailable locally; full product remains false with
+10blocked required cases. No compiler/SDK/Docker workload launched by X.

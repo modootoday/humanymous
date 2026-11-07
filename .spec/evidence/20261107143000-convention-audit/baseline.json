@@ -344,5 +344,15 @@
     "cli_zip_source_entries_independently_verified": 2710,
     "cli_actual_watchdog_child_cases": 0,
     "native_provider_or_product_qualified": false
+  },
+  "followup_asgi_hosted_projection": {
+    "private_review_sha256": "5d40ed8e63a3f73f2a339159c107ca754f38185d46a89d567b9cbdfbac7905df",
+    "asgi_source_direction_accepted": true,
+    "additional_setup_ownership_gap_owner_accepted": true,
+    "actual_new_host_tests_observed": 0,
+    "hosted_projection_evaluated": 19,
+    "hosted_projection_unsupported": 7,
+    "full_product_qualified": false,
+    "original_report_hash_independently_recomputed": false
   }
 }
