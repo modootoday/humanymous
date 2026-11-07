@@ -132,14 +132,69 @@
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
+    },
+    {
+      "source": "adapters/dotnet/pilot/Program.cs",
+      "sha256_at_post_read_observation": "5201fd500d688e19bd7af17d707c42b9bdc3177e792425a01894b0991a489b78",
+      "lines": 194,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "194-line test host fully read in contiguous chunks. Redirected stdio/noargs, startup/control JSON, optional generic ABI probe separate from Kestrel. Loopback Kestrel limitsbody2MiB, disables minrate; actual bounded middleware/auth required separately. Contacts increment before request-body read, mutations only selectedroute; generic probe not middleware qualification. GC/control tasks waited before stopped; synchronous Emit/stdin ReadLine and post-read length check do not themselves bound memory, output or total wait. Host cannot attest runner provenance; parent must own timeout/containment. No actual process execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/managed_scope.rs",
+      "sha256_at_post_read_observation": "58ece557467f3135e10ae820eee38dcbbd1c32a166aa8376ed6ec4e1a171e187",
+      "lines": 86,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "86-line exact three authored C# paths and explicit compile-input/source-generation restriction test fully read. Textual forbidden-string checks are narrow source policy, not complete MSBuild transitive input or runtime safety proof; no test run in this review.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/support/mod.rs",
+      "sha256_at_post_read_observation": "69909ca2872d52b5d821c7087f9c8481294f1af3a9152b17da92d72b7515b7b0",
+      "lines": 62,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "62-line execution label classifier and pure tests fully read. Rejects ACT and unallocated/selfhosted labels, Unixrequiresnonroot; accepted environmentstrings remain caller-provided classification, not independently authenticated GitHub runner, parent or actor proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/support/artifacts.rs",
+      "sha256_at_post_read_observation": "7e17e12b1e9c7866e04ee5ffdcab1ef6070a3fa601e41a93ff72ab9924f125fd",
+      "lines": 55,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "55-line stock certutil/sha256sum command builder and parser fully read.64KiB output parser requires one64hex firsttoken and normalizescase. No command deadline/execution/actualfileidentity enforced here; caller owns supervision and exact path/digest binding.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted/launch.rs",
+      "sha256_at_post_read_observation": "a6399d2626597cad22f449afb5668b9e80b262561ca268b90fecf76af0782de7",
+      "lines": 176,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "176-line pure shared UNVERIFIED parent-context consumer fully read. Workload-only decode and one conserved mapped run/cleanup budget with stage ceilings; cleanup-only cannot become workload. Paths/environment/lineage/SID/clock remain syntax/claims, not native file/token/Job/parent launch or cleanup authority. Fixtures test clock arithmetic and sharedcodec only, no OS IO.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
     }
   ],
-  "full_read_files": 12,
-  "lines": 1634,
+  "full_read_files": 17,
+  "lines": 2207,
   "post_read_rehash_drift": [],
   "source_receipts_renewed": false,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "full_product_qualified": false,
-  "remaining": "Full current owner chronology, Kestrel host orchestration, managed fixture and package test source remain. No native ABI/runtime/host execution or source receipt acceptance."
+  "remaining": "Full owner chronology, Rust hosted/controller protocol/generic caller and package test/projection source remain; no runtime/host/package or source receipt acceptance."
 }
