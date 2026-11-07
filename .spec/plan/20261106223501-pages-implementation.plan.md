@@ -1623,3 +1623,13 @@ lookup, with exact authority case/port. Vectors page explicitly separates accept
 Unicode/percentencoded path fixtures from actual service readiness; query is a
 separate boundary. No route/parser/scoring behavior changed, no generic Unicode
 normalization selected. Configuration excerpts do not renew whole-module receipt.
+
+### Separate authority test image versus service deployment
+
+Read full authority Dockerfile.pilot. Image guide adds distinct compiler/test
+candidate, testno-run atbuild and offlinetest startup, retainedtools/source and
+noUSER declaration without inferring actualbaseUID. It is separate from older
+Node authoritylab and a minimal service artifact. One manual receipt, no image
+build/run. Authority INTEGRATION profile list still omits Apache/ASP.NET Core;
+requested owner correction and withheld whole metadata receipt. Other partial
+configuration/integration inspection is not bulk freshness acceptance.

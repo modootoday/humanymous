@@ -43,6 +43,7 @@ Identify the fixture before interpreting a container result:
 | Fixture declaration | Review boundary |
 | --- | --- |
 | Authority lab | Rust authority with a historical Node harness/adapter; not the new native Node-API package or full browser flow |
+| Authority Rust test candidate | Separate pinned Rust compiler image with `cargo test --no-run` at build time and offline authority tests at startup. It retains build/test tools, declares no USER in that recipe and is not a minimal authority service or a qualified non-root deployment |
 | Custody check | Compiled audit/authority unit and subprocess tests; the default entrypoint runs only the audit unit binary, so inventory every actually invoked test |
 | Collector browser | Firefox WASM component tests with historical read-only differential oracles; Firefox is not the product's native UI engine |
 | Product browser | Runtime-pilot browser driver plus a selected collector WASM test artifact. A compiled test module or headless Firefox launch does not prove all tests, human controls or native UI behavior ran; this is separate from Pages keyboard validation |

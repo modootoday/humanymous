@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/Dockerfile.pilot",
+  "sha256": "8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete isolated Rust authority test recipe: pinned compiler base, source/workspace copies, test no-run build and offline test entrypoint. No USER declaration in recipe, compiler/source retained; neither minimal service image nor actual non-root/runtime/whole-product qualification. No Docker build/run performed.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
   "source": "crates/authority/src/startup.rs",
   "sha256": "8084f2ac5dafdc6f389a8debc55b9f7993d46adce47d6f3f8d8bc918d623e35d",
   "reviewer": "codex/rust-pages",
