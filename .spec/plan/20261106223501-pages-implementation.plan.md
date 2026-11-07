@@ -810,3 +810,13 @@ receipts map exact opened-handle privacy checks and their supervisor premises,
 secret snapshots/external scope+mode, keyed linkage/stable tombstones and exact
 subject+scope erasure to public key/data/runbook pages. No anonymity, all-copy
 erasure, FFI proof or platform execution inferred; no keys/deletion action ran.
+
+## Strict parser actual pure evidence reconciliation
+
+Owner671c439 and public evidence07070333 inspected:25pure tests0failed0ignored
+(14attacker+2CLI+9defender), strict scoped Clippy, Windows x86_64 working source;
+full dirty graph/runtime/human/AT explicitly unqualified. No current diff in
+reviewed verifier/parser/report code against671c439. Updated public pending
+pure-check wording and three explicitly reviewed receipts (including test-only
+network fixture visibility delta). No rerun or new runtime; earlier hosted
+results remain bound to their own source. Full generic conformance still pending.

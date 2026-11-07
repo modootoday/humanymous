@@ -44,8 +44,10 @@ inconsistent, oversized or unreadable input. `--require-full` must not be omitte
 and then described as a full-product gate. A valid ledger may still contain
 unsupported cases and explicitly false human/assistive/full-product flags.
 
-Current verifier follow-through is source-authored with changed-source execution
-pending. Replaying a simulation against current code does not silently validate a
+The strict report follow-through has a bounded Windows x86_64 working-source
+check: 25 pure unit tests and scoped Clippy passed. This did not execute the
+runtime or qualify the complete dirty dependency graph. Replaying a simulation
+against current code does not silently validate a
 historical binary. A self-consistent network ledger does not prove that an
 untrusted author executed its asserted topology. Bind actual results to the
 owned Docker supervisor, exact binary/source identity, audit custody and origin
@@ -58,7 +60,8 @@ object ordering and equivalent integer/float representations are not canonical
 byte commitments. Working source now rejects duplicate decoded object keys at
 every depth before replay/schema checks, including escaped aliases and dynamic
 maps. Network report DTOs reject unknown fields; simulation compares the complete
-current replay fieldset. These source changes still await their own validation.
+current replay fieldset. The bounded pure checks above cover this follow-through;
+hosted runtime, original evidence and participant qualification remain separate.
 They do not turn the checker into the experimental adapter parser, JCS validator
 or a generic Draft v0 canonicalization test.
 Retain the original report and its hash alongside any normalized summary.

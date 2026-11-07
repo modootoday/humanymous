@@ -196,16 +196,16 @@
   "source": "crates/attacker/src/verification.rs",
   "sha256": "66374e198689421514d6a477fd7d77804476821a560778c44e52d09ac9cf5434",
   "reviewer": "codex/rust-pages",
-  "notes": "Read v0.4 verifier after prior full review: duplicate-decoded-key prepass precedes simulation replay or original typed network decode; new negative tests cover nested/escaped/dynamic duplicates and unknown DTO fields. Public catalog supersedes former lossy-v1 limitation with working strict structure while retaining semantic numeric/order compatibility, current-engine scope and no byte/JCS/authentic-execution claim. Owner validation pending; historical63f69 does not qualify these bytes.",
+  "notes": "Reviewed actual strict parser code already pinned and matched unchanged source against671c439. Owner public summary records25pure Windows x86_64 working-source checks and scoped warnings-denied Clippy, with dirty full dependency graph unqualified and runtime/human/AT false. Public catalog supersedes pending pure-check wording only; strict structure remains semantic rather than canonical-byte/authentic-execution evidence.",
   "pages": [
     "docs/reference/red-team-catalog.md"
   ]
 },
 {
   "source": "crates/attacker/INTEGRATION.md",
-  "sha256": "10ebf312f77e1209de052d03560f62b5c25f64d2b943341a91db1b77067c5535",
+  "sha256": "1119a350fc756976e2d1b54517b3d0547be02b158831c9b24f43fbb7e5bf78d5",
   "reviewer": "codex/rust-pages",
-  "notes": "Reviewed v0.4 change against previous full integration source: strict decoded-key visitor, closed network DTOs, semantic JSON compatibility and explicit current-source/pending validation. Public catalog preserves original-source and ledger authenticity boundaries and does not apply prior hosted results to this follow-through.",
+  "notes": "Reviewed final v0.4 validation paragraph and sanitized summary:25pure units0failed0ignored, scoped all-target Clippy, allocated single Cargo, original dirty base/patch retained privately, no immutable full graph/runtime qualification. Public catalog updates bounded pure checks without reassigning actual63f69 or older hosted results.",
   "pages": [
     "docs/reference/red-team-catalog.md"
   ]
@@ -248,9 +248,9 @@
 },
 {
   "source": "crates/attacker/src/network/mod.rs",
-  "sha256": "bf8daac18a671bf097282d42f8ccdaa7d845d629b3b3c29552b7598795245e69",
+  "sha256": "6fd6dbea226c1c9ae073e8f3521c5ebe8e6ae3cbf9eb2608dec92f956ba714e2",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full OwnedLab trait, catalog/shuffle execution and source rejection tests retaining19errors7unsupported when actual child/audit unavailable. Public reference requires owned runtime/custody/counted origin and all scheduled denominators; a mock implementer can test accounting but not establish real process/topology or human qualification.",
+  "notes": "Reviewed complete prior OwnedLab/composition source plus the small test-only visibility delta allowing strict verifier unit fixtures to reuse Unavailable. Public catalog preserves synthetic failed-ledger scope and all19errors7unsupported denominators; owner25pure tests are not actual network execution. No production flow or policy change inferred.",
   "pages": [
     "docs/reference/red-team-catalog.md"
   ]
