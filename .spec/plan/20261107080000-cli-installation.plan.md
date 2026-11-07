@@ -409,6 +409,15 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Root decisiond45e600d extends the Tools handoff to13responsibilities (9workspace
++4standalone). [[evidence:root/20261107200932]] now includes tools-role-map.json
+and the approved explicit default-off four-bin matrix, local CLI deny vs safe-root
+forbid boundary, exactly two existing Windows actor allows, release exclusions
+and unsafe-negative compile controls. Feature spellings, safe-context API paths,
+fixture/includes, unique tests/CARGO_BIN_EXE, self-reexecution/root discovery and
+parity/advisory preservation remain unresolved before Root freezes Tools. No
+source/Cargo/lint edits, moves or execution were performed for this handoff update.
+
 PLATFORM-SLICE-02 Root-authorized consumer edit changes only the import in
 crates/cli/tests/watchdog_boundary.rs from humanymous_test_support::process to
 humanymous_platform::testing::process. All imported suffixes, watchdog controls,

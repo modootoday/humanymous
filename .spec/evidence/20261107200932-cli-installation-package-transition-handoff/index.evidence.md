@@ -3,11 +3,12 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T20:09:50Z
+updated: 2026-11-07T21:59:18Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
   - {path: owned-paths.json, sha256: a439efb3738bd73836ab2b056a9fba09b972e544941f4f5ab2d7ee1776dea109, bytes: 8375, store: repo}
+  - {path: tools-role-map.json, sha256: 342f08f560b0b401d4cedd185232e75eaf5e5cc2c99701ba34b96b7a4bd4f1ce, bytes: 8719, store: repo}
 ---
 
 ## Mission and current ownership
@@ -44,6 +45,59 @@ belong to their historical source/path/feature closures and cannot be inherited
 by renamed packages or a changed dependency graph.
 
 ## API, visibility and dependency hazards
+
+Root-approved lint-isolation amendment d45e600d is now part of this handoff.
+tools-role-map.json records all13absorbed responsibilities: the9workspace roles
+plus4standalone qualification tools. The old owned-paths.json remains the original
+32-file observation, not a refreshed Tools freeze/build closure. Root's common
+manifest integration is in flight; the new role map's hashes are observations.
+
+| Preserved standalone binary | Current source context | Accepted isolation |
+| --- | --- | --- |
+| humanymous-cef-pilot | scripts/ci/cef-pilot | own default-off required feature; safe root forbids unsafe |
+| humanymous-native-runner | scripts/ci/windows-native-runner | own default-off required feature; root denies unsafe, only actor.rs and actor/scm.rs existing allows |
+| humanymous-docs-review | scripts/ci/docs-review | own default-off required feature; safe root forbids unsafe |
+| humanymous-local-parity | scripts/ci/local-parity | own default-off required feature; safe root forbids unsafe |
+
+All four retain names as explicit binary targets with autobins=false. Root alone
+will assign feature spellings/manifest paths. Workspace unsafe_code=forbid stays
+unchanged. Only the combined CLI package may use local deny/warn lint settings;
+production lib/bin roots and every other safe qualification root explicitly
+forbid unsafe. Native runner's isolated root uses deny and retains exactly the
+two existing Windows actor module allows. No actor module is promoted to platform
+testing or linked from production. Package/feature identity grants no helper role.
+
+Release commands select production binary names/features explicitly; default
+build/release inventory excludes the four qualification executables and all
+fixture/helper artifacts. Required controls are per-target production/qualification
+compile matrices, forbidden-unsafe negative probes for safe roots, source census
+of exactly two approved allows, and actual produced/released artifact inventories.
+Compile unsafe-negative probes as isolated failing fixtures, not product unsafe
+source or suppressed workspace lints. These are future required controls, NOT_RUN.
+
+Unresolved before the Root Tools freeze:
+
+1. Safe context API/visibility and exact paths for native CLI, attacker/defender,
+   maintenance, Delivery, Pages, lab runner/runtime and the four qualification
+   roles; defender is currently a library, not a new fabricated binary. Resolve
+   shared crate-root references without making role dispatch globally available.
+2. Explicit default-off feature names, production install/release target allowlist
+   and dependency cfg/categories for Windows runner, CEF, Docker/SDK and audit
+   contexts. No all-features release or propagated actor capability to siblings.
+3. Fixture packaging: service-fixture retains service-pilot opt-in; watchdog uses
+   its exact CARGO_BIN_EXE artifact. CEF embeds browser/native/desktop/
+   pilot-contract.json by relative include; assign the new root-owned fixture
+   path and release exclusion without copying an outdated contract.
+4. Unique test/example target names and all CARGO_BIN_EXE rewires, including native
+   CLI/maintenance/service and watchdog tests. Native runner's current_exe
+   self-reexecution must still dispatch only its own verified actor role.
+5. Root-directory discovery: local-parity CARGO_MANIFEST_DIR ancestor calculation,
+   Delivery archive/image context roots and provenance helpers cannot retain old
+   package-depth assumptions. Preserve original parity workload and standalone
+   lock advisory coverage when their lock files cease to be independent packages.
+6. Requalify helper binary path/hash, source/fixture inclusion, bounded controller
+   grants, original watchdog deadlines and held-reader controls after any move.
+   No native/service/account pilot is authorized by the structural decision.
 
 - Current package humanymous-cli has public lib modules release/service and an
   optional runtime_host, private installation with re-exported Plan. Its binaries

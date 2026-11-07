@@ -1,0 +1,222 @@
+{
+  "schema": "humanymous.cli-tools-role-map/1",
+  "observed_utc": "2026-11-07T21:59:16.1879236+00:00",
+  "approved_decision": "d45e600d9930c2707885ec28ceef97614d55057a",
+  "mapping_count": 13,
+  "main_workspace_responsibilities": 9,
+  "standalone_qualification_responsibilities": 4,
+  "scope": "source inventory only; Root is actively integrating common manifests, no immutable build closure",
+  "destination_parent": "crates/apps/humanymous-cli",
+  "autobins": false,
+  "workspace_unsafe_rule": "forbid unchanged",
+  "cli_package_local_lint_exception": "deny unsafe_code, warn missing_docs and Clippy all",
+  "safe_roots": "explicit forbid(unsafe_code) on production lib/bin and every safe qualification bin",
+  "isolated_runner": "explicit deny on native runner root, only existing actor.rs and actor/scm.rs allow sites",
+  "qualification_features": "one explicit default-off required-feature per standalone target; spellings pending Root Tools manifest",
+  "release_selection": "explicit production bin names and production features; no default all-features release",
+  "unsafe_negative_controls": "must reject unsafe in every safe crate root, reject new allow sites, and reject production reference to native actor modules",
+  "rows": [
+    {
+      "source_package": "humanymous-cli",
+      "source_context": "crates/cli",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "47d48a7d76fabcd014a6576fda0833b42faedefb9127dbc35069d76289b92380",
+      "source_roots": [
+        {
+          "path": "crates/cli/src/lib.rs",
+          "sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c"
+        },
+        {
+          "path": "crates/cli/src/main.rs",
+          "sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-native-cli",
+      "source_context": "crates/native-cli",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "source_roots": [
+        {
+          "path": "crates/native-cli/src/lib.rs",
+          "sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621"
+        },
+        {
+          "path": "crates/native-cli/src/main.rs",
+          "sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-attacker",
+      "source_context": "crates/attacker",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "a462f4aa1564d09ceb95ae79799fd6086e01471baa45a3be9e72f6de6a0400a9",
+      "source_roots": [
+        {
+          "path": "crates/attacker/src/lib.rs",
+          "sha256": "8e2d72eb028b262cf99fae6f65c4b35b95cd077096254692b5db9465df5b2344"
+        },
+        {
+          "path": "crates/attacker/src/main.rs",
+          "sha256": "a9415905b5be0967862ae5c3dbf9a9359c4acedba8f5c01012b7089048baa7d6"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-defender",
+      "source_context": "crates/defender",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "8015dff773c6d7191ce465242fe07a6409fa824b0effb9490097769d3a4274d8",
+      "source_roots": [
+        {
+          "path": "crates/defender/src/lib.rs",
+          "sha256": "78f5f341c4a3cf1990ba4f70692100232285c960552eb13101860c47d789cafb"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-agent-maintenance",
+      "source_context": "skills/agent-maintenance",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "6bd9cdeb6150f8c8421f89344f2b0e0608216d67b3264a143d62ad4af1c083ca",
+      "source_roots": [
+        {
+          "path": "skills/agent-maintenance/src/lib.rs",
+          "sha256": "72fafe69868745cb6646774be70f8da3e89f7e73cee3d538e08d2c5c522761a1"
+        },
+        {
+          "path": "skills/agent-maintenance/src/main.rs",
+          "sha256": "93470fb9fe506e38b6a8d0b0f9ec8c51888012507a712c06629494107caa54c7"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-delivery",
+      "source_context": "scripts/ci/delivery",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "cc6b9bbe3c5dfeb45d7434a0a368ad1fde538107e07d1348bc3b4eaedcde9edc",
+      "source_roots": [
+        {
+          "path": "scripts/ci/delivery/src/main.rs",
+          "sha256": "e5b028c5806b5b118a3b89207be327b7f152d03114422b9a7541751368eceb98"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-pages",
+      "source_context": "docs/tooling",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "46e13ba0fe36715d873a323a2edbfc9e5e568c6b5726d9dd37a6409790d0f835",
+      "source_roots": [
+        {
+          "path": "docs/tooling/src/lib.rs",
+          "sha256": "538df6a7f851ca5c00a482e927683611e7f8ec9e5ea0e2e4b9c544e950008fbc"
+        },
+        {
+          "path": "docs/tooling/src/main.rs",
+          "sha256": "503c3563fa2894a08523344df195cb99b12396734472a310f0dfaf737de64b88"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-lab-runner",
+      "source_context": "test/lab/runner",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "adbcf7113b0df87c095bcfb0f40b875f937304ea46dc489cecf984a7305bdc22",
+      "source_roots": [
+        {
+          "path": "test/lab/runner/src/main.rs",
+          "sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-runtime-pilot",
+      "source_context": "test/lab/runtime",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": false,
+      "retained_bin_name": null,
+      "manifest_sha256": "47c3c9db67fc96f4ab0f5d96349ec4d5316ab0bcbf7a498b2e48366d96d991b1",
+      "source_roots": [
+        {
+          "path": "test/lab/runtime/src/main.rs",
+          "sha256": "d486f77d5712bff4ada046711cb7d50fab412e4d3346df766397651392cc16a0"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-cef-pilot",
+      "source_context": "scripts/ci/cef-pilot",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": true,
+      "retained_bin_name": "humanymous-cef-pilot",
+      "manifest_sha256": "1dc5243ef268a1739f46c8d1b139e6e43153edcac19b55ad63bb93baf7399e17",
+      "source_roots": [
+        {
+          "path": "scripts/ci/cef-pilot/src/main.rs",
+          "sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-native-runner",
+      "source_context": "scripts/ci/windows-native-runner",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": true,
+      "retained_bin_name": "humanymous-native-runner",
+      "manifest_sha256": "5264475f08f7317183729ace33c52064f97fecb61911423d4b774a9fad6022b2",
+      "source_roots": [
+        {
+          "path": "scripts/ci/windows-native-runner/src/main.rs",
+          "sha256": "2e085f6c557e09b8842867e9dfc2bc6c3ec39b0def86778b897479900c76ca73"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-docs-review",
+      "source_context": "scripts/ci/docs-review",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": true,
+      "retained_bin_name": "humanymous-docs-review",
+      "manifest_sha256": "1d4ff94c30e5ac85ebfd82fb08390c5d8e01635e1cb544365eeb5fbfc7c7f6c2",
+      "source_roots": [
+        {
+          "path": "scripts/ci/docs-review/src/main.rs",
+          "sha256": "d877646260960f94ec1c1c52c83822fe970e77dbd4e759b6f07bcda33194ffe6"
+        }
+      ]
+    },
+    {
+      "source_package": "humanymous-local-parity",
+      "source_context": "scripts/ci/local-parity",
+      "target_package": "humanymous-cli",
+      "standalone_qualification": true,
+      "retained_bin_name": "humanymous-local-parity",
+      "manifest_sha256": "d663079312863591e965544107a121cbeb83443e961e3d48caf80c2c6ae1f0e3",
+      "source_roots": [
+        {
+          "path": "scripts/ci/local-parity/src/main.rs",
+          "sha256": "c81a1aa4be0ae055f06c40cbcf9b7cde6c3816c07f083d1fbc8be77820591c7b"
+        }
+      ]
+    }
+  ]
+}
