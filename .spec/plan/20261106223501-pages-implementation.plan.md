@@ -2394,3 +2394,57 @@ performed. These public text changes require a NEW render checkpoint: earlier
 29096/eac51f32 results remain historical and cannot qualify the new wording.
 Root's queued preview must select the later public-input milestone explicitly;
 do not silently reuse the old hosted-29096 LF source as the updated document.
+
+### Latest user-requested build and visible preview
+
+Fresh Docker Jekyll builds selected source a6a423908b85db7cefb14f3b956fac070cea485c
+and docs tree 56ea5267ce049a0cf4fe8028a76857c378a863a4, including prose a084173b.
+Both apex and /humanymous builds passed theme, static links/anchors and basic
+accessibility checks: 88 HTML pages and 165 public files each. All 127 frozen
+GitLF source files remained unchanged. The existing checker was reused; no new
+Rust compilation was performed. Input commitment is c8a56de5301bf7d6ff7b0aeb45296a1d3156776bfb62d0cf47301d9a4c8bf589.
+
+Package and second-restoration checks passed for both variants. Actual selected
+HTTP byte comparisons passed for four apex and five subpath resources. The
+subpath serving copy matches all 165 manifest files. Visible IAB tab 6 displays
+http://127.0.0.1:18781/humanymous/ and is marked as the deliverable. Keyboard skip
+navigation, mobile menu operation, selected narrow layouts and representative
+light/dark text and link contrast were observed. This is not full WCAG or actual
+screen-reader task qualification, external-link liveness, deployment or broader
+product acceptance.
+
+Ruby and apex Caddy containers were removed after successful checks. The owned
+loopback-only subpath Caddy remains supervised by session 99340 until automatic
+cleanup at 2026-11-08 03:21:55 +09:00. Evidence07052815/latest-user-preview-result.json
+records exact archive hashes, source/image/checker identities, observation scope
+and cleanup limits; private07051213/latest-user-preview preserves raw receipts
+and the actual browser screenshot. This supersedes the pending render checkpoint
+above for the selected docs tree only.
+
+### User-requested extended accessibility inspection and fresh rebuild
+
+IAB inspected all88HTML (five linked text/JSON attachments separately): basic
+semantics, heading hierarchy, IDs, names/alt/header presence and 320px reflow
+showed no persistent defect. Ordinary computed text-color pairs in both themes
+passed the scoped contrast calculation. Actual initialized developer Code region
+accepted keyboard horizontal scrolling with visible focus; fresh mobile Menu
+expanded with Enter and closed with Escape. Immediate pre-initialization reads
+and the simplified native AX projection are not AT qualification.
+
+Windows Narrator did not retain a stable target after launch/shortcut attempts;
+no spoken output/task completion was verified. Actual AT, browser zoom, custom
+text-spacing, forced-colors and comprehensive WCAG assessment remain open.
+No defect was invented to justify a public source edit. Existing docs remain
+unchanged; a new build selected f6f5a46ff235cc6d85c8d5365ef0b870881a25f9 and the
+same56ea5267 docs tree. Both fresh builds/theme/static checks/package/second
+restoration passed88HTML/165files; all127sources unchanged. Both archive hashes
+are byte-identical to the inspected baseline, retaining scope rather than
+claiming the old execution itself is new evidence.
+
+New public evidence07052815/accessibility-followup-result.json records methods,
+failed setup attempts, exact source/images/checker/archive commitments, five
+actual fresh HTTP byte comparisons and remaining limitations. Private07051213/
+accessibility-followup retains fresh source/build/archive receipts. Owned Ruby
+and baseline Caddy were removed. Final loopback preview at port18782 is served
+by owned Caddy7d98ddd0, supervised by session17945 until automatic cleanup at
+2026-11-08 04:37:20 +09:00. Its serving copy matches all165manifest entries.

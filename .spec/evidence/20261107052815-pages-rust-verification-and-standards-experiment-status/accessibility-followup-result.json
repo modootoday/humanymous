@@ -1,0 +1,74 @@
+{
+  "schema": "humanymous.pages-accessibility-followup/1",
+  "date": "2026-11-08",
+  "source_commit": "f6f5a46ff235cc6d85c8d5365ef0b870881a25f9",
+  "docs_tree": "56ea5267ce049a0cf4fe8028a76857c378a863a4",
+  "source_input_sha256": "c8a56de5301bf7d6ff7b0aeb45296a1d3156776bfb62d0cf47301d9a4c8bf589",
+  "baseline": "latest-user-preview: same docs tree and archive bytes; baseline served only on owned loopback",
+  "browser": "ChatGPT in-app browser, tab 7",
+  "browser_crawl": {
+    "html_documents": 88,
+    "non_html_attachments_separate": 5,
+    "checks": ["nonempty title", "English document language", "one main and H1", "duplicate IDs", "visible control/link names", "image alt presence", "table header presence", "heading level jumps"],
+    "defects_found": 0,
+    "limitations": "DOM inspection is not a complete accessible-name computation, content-quality assessment or assistive-technology task. The five text/JSON attachments are not HTML documents."
+  },
+  "reflow": {
+    "viewport_css_pixels": [320, 800],
+    "documents_checked": 88,
+    "document_horizontal_overflow": 0,
+    "limitations": "Narrow viewport check, not actual browser zoom, text-spacing override or complete visual review."
+  },
+  "contrast": {
+    "dark_documents": 88,
+    "light_documents": 88,
+    "ordinary_text_pairs_below_threshold": 0,
+    "threshold": "4.5 normal text; 3 for large text",
+    "method": "Computed text color and nearest opaque ancestor background, grouped by pair and text size. Representative dynamic Code region also inspected after initialization.",
+    "limitations": "Not comprehensive contrast qualification: does not establish compositing/opacity/background-image correctness, all syntax-token/dynamic states, non-text graphics, hover states or forced colors."
+  },
+  "interaction": {
+    "developer_code_region": "At 320px, actual initialized PRE has role=region, aria-label=Code and tabindex=0; focused ArrowRight moved scrollLeft from 0 to 40, with visible solid 2px focus outline.",
+    "mobile_menu": "Fresh build home: Enter expands visible Menu; Escape collapses it and focus returns to summary. Screenshot showed menu labels. Native simplified AX projection omitted names while expanded although DOM text and screenshot retained names; no full AT inference.",
+    "controls": "No visible button/summary below 24 CSS pixels in either dimension in the 88-page narrow-viewport sample.",
+    "transient_reading": "Initial immediate PRE reads preceded theme ResizeObserver initialization; later actual Code region was labelled. This was not treated as a persistent docs defect."
+  },
+  "assistive_technology": {
+    "actual_task_qualified": false,
+    "attempt": "Windows Narrator launch returned no targetable stable window; subsequent inventory briefly showed Narrator and an update window, then both disappeared. Native shortcut path also yielded no stable target. No speech output or task completion was verified.",
+    "nvda": "No existing installed NVDA at the checked Program Files path. No new installation or license acceptance performed.",
+    "full_wcag_conformance": false
+  },
+  "changes": "No persistent docs defect established by these checks; no public source changes or invented fixes. Remaining AT/zoom/text-spacing/forced-colors gaps remain explicit.",
+  "fresh_build": {
+    "venue": "Windows Docker Desktop, explicit desktop-linux context",
+    "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+    "ruby_image": "ruby:3.3.13-bookworm@sha256:e8bdbcb78ac5610a976012551304271bcd7a5ac43919c1c638ba691279c12b0b",
+    "theme_commit": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+    "checker_sha256": "ad04b2d159c4f42d0c5327cebd042c1246f951ea7b6ca0e4f5c3ff8d79b9fed4",
+    "new_rust_compile": false,
+    "apex_and_subpath": "Both fresh Jekyll builds, strict theme checks, Rust static checks, package and second archive restoration exited 0; each 88 HTML and 165 files.",
+    "source_files_rechecked_unchanged": 127,
+    "apex_archive_sha256": "cf6b0bae5d009082c11c4577de28a7bbd68bf05c3cc96af592ecf68649ee5d31",
+    "subpath_archive_sha256": "a78fe7fce7fa66f48714c7e44d6d933bdca2bfb8ecdb1df8216aef0085a4c704",
+    "baseline_archives_byte_identical": true,
+    "initial_bundle_refusals": "BUNDLE_PATH incorrectly selected a versioned bundle layout. Both refusal outputs preserved in tool trace; corrected by unsetting BUNDLE_PATH and using existing GEM_HOME/GEM_PATH=/bundle/gems. No gems installed.",
+    "ruby_cleanup": "Owned build container stopped and removed after successful execs. Sleep PID1 exit137 with OOMKilled=false is separate from build success."
+  },
+  "fresh_preview": {
+    "url": "http://127.0.0.1:18782/humanymous/",
+    "serving_copy_manifest_hash_matches": 165,
+    "selected_http_exact_matches": ["index.html", "start-here/developer.html", "reference/cli-config-policy.html", "help/challenge-accessibility.html", "assets/css/modootoday.css"],
+    "css_candidate_not_in_manifest": "assets/css/style.css was skipped before HTTP; no CSS HTTP match claimed for that candidate.",
+    "visible_final_observation": "Tab7 marked deliverable; default viewport restored, dark theme restored, home H1 visible, document scroll/client widths both1052. Actual screenshot emitted in tool trace.",
+    "container": "7d98ddd074311b5045128a539b22433845afae116b05f10b4ca60cf9ce373de2",
+    "limits": "127.0.0.1 only, UID1000, 0.5CPU, 256MiB, 64PIDs, read-only root and public-only bind, cap-drop ALL, no-new-privileges",
+    "supervisor_session": 17945,
+    "automatic_cleanup_deadline": "2026-11-08T04:37:20.8699663+09:00",
+    "terminal_cleanup_not_yet_claimed": true,
+    "first_caddy_attempt": "Missing caddy executable prefix caused startup failure; exact failed owned container removed before corrected run. Baseline owned Caddy removed before final server."
+  },
+  "private_receipts": "evidence:root/20261107051213 accessibility-followup/",
+  "deployment_performed": false,
+  "product_qualified": false
+}

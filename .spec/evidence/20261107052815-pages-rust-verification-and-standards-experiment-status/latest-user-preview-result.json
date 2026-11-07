@@ -1,0 +1,50 @@
+{
+  "schema": "humanymous.pages-latest-user-preview/1",
+  "source_commit": "a6a423908b85db7cefb14f3b956fac070cea485c",
+  "docs_tree": "56ea5267ce049a0cf4fe8028a76857c378a863a4",
+  "latest_public_prose_checkpoint": "a084173bc4997c8be4ab382ee968194e60941683",
+  "canonical_git_files_materialized": 127,
+  "frozen_inputs_rechecked_unchanged": true,
+  "current_docs_tree_still_matches": true,
+  "theme_commit": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+  "ruby_image": "ruby:3.3.13-bookworm@sha256:e8bdbcb78ac5610a976012551304271bcd7a5ac43919c1c638ba691279c12b0b",
+  "caddy_image": "caddy:2.11.9-alpine@sha256:fc9cbc100585871d18d4e451cca7021785c90a7006087427ae5ceb3e4efe6424",
+  "venue": "Windows Docker Desktop Linux engine; no WSL",
+  "admission_observation": {"free_physical_gib": 33.44, "commit_percent": 66},
+  "limits": {"ruby_cpu": 1, "ruby_memory_gib": 3, "ruby_pids": 256, "preview_cpu": 0.5, "preview_memory_mib": 256, "preview_pids": 64, "user": "1000:1000", "read_only_root": true, "cap_drop": "ALL", "preview_binding": "127.0.0.1"},
+  "checker": {
+    "sha256": "ad04b2d159c4f42d0c5327cebd042c1246f951ea7b6ca0e4f5c3ff8d79b9fed4",
+    "compiled_source": "269607366e4b2e37b47a974595b406b66642caae",
+    "new_rust_compilation": false,
+    "output_and_accessibility_module_diff_from_current": "none observed in scoped Git comparison"
+  },
+  "builds": [
+    {"baseurl": "", "jekyll_exit": 0, "strict_theme_exit": 0, "rendered_check_exit": 0, "package_exit": 0, "second_archive_check_exit": 0, "pages": 88, "rendered_html": 88, "public_files": 165, "errors": [], "source_input_sha256": "c8a56de5301bf7d6ff7b0aeb45296a1d3156776bfb62d0cf47301d9a4c8bf589", "archive_sha256": "cf6b0bae5d009082c11c4577de28a7bbd68bf05c3cc96af592ecf68649ee5d31"},
+    {"baseurl": "/humanymous", "jekyll_exit": 0, "strict_theme_exit": 0, "rendered_check_exit": 0, "package_exit": 0, "second_archive_check_exit": 0, "pages": 88, "rendered_html": 88, "public_files": 165, "errors": [], "source_input_sha256": "c8a56de5301bf7d6ff7b0aeb45296a1d3156776bfb62d0cf47301d9a4c8bf589", "archive_sha256": "a78fe7fce7fa66f48714c7e44d6d933bdca2bfb8ecdb1df8216aef0085a4c704"}
+  ],
+  "link_and_static_accessibility_scope": "Every rendered page checked for internal targets/fragments/resources, main/h1/language, image alt, document title and theme skip-to-main focus target. External URL liveness and complete WCAG criteria not established.",
+  "http_observation": {"apex_resources_checked": 4, "subpath_resources_checked": 5, "successful_responses_match_second_restored_bytes": true, "subpath_serving_copy_all_165_files_match_manifest": true},
+  "actual_iab_observations": [
+    "Visible latest home, CLI, collector and supported-topologies pages rendered.",
+    "Latest c57cf0c6/24004321 CLI wording, failed306 browser explanation and ABI target-only names were observed.",
+    "Tab visibly focused skip link at16,16 with44px height and2px outline; Enter focused mt-content, next Tab reached content link.",
+    "390x844 CLI and collector layouts had client375/scroll375; keyboard Enter opened and collapsed the visible mobile Menu.",
+    "Light/dark modes inspected; original dark preference restored and viewport override reset.",
+    "Final subpath home had viewport1280/client1265/scroll1265 and internal status links retained /humanymous prefix.",
+    "No captured error-level console messages on final home."
+  ],
+  "selected_normal_text_contrast": {"dark_text_body": 16.2232, "dark_link_body": 10.0226, "light_text_body": 14.5386, "light_link_body": 5.8098, "scope": "Observed body/text/content-link color pairs only; not exhaustive hover/focus/disabled/all-page contrast."},
+  "preserved_attempts": [
+    "First git archive PowerShell output argument was refused before materialization; corrected native argument succeeded, no source edits.",
+    "First mobile Standards research selector targeted a hidden desktop summary; fresh state identified visible Menu and keyboard open/collapse succeeded."
+  ],
+  "cleanup": {"ruby_removed": true, "ruby_supervisor_exit": 0, "ruby_final_exit": 137, "ruby_oom_killed": false, "ruby_exit_scope": "Finite sleep PID1 stopped after successful build; not a build failure or graceful service qualification.", "apex_removed": true, "apex_supervisor_exit": 0},
+  "live_preview": {"url": "http://127.0.0.1:18781/humanymous/", "tab_id": "6", "retained_as_deliverable": true, "owned_supervisor_session": 99340, "state": "observed_live", "bounded_deadline_kst": "2026-11-08T03:21:55+09:00", "terminal_cleanup_observed": false},
+  "screenshot_sha256": "9fb6b5a5d4fe3949f423acf925ffaac2d352359e751cce0245fa35270d6b053a",
+  "private_evidence": "evidence:root/20261107051213 latest-user-preview",
+  "assistive_technology_task_qualified": false,
+  "full_wcag_conformance": false,
+  "full_source_review_freshness_accepted": false,
+  "deployment_performed": false,
+  "product_runtime_qualified": false
+}
