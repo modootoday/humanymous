@@ -170,6 +170,12 @@ digests. Successful parsing is not a passing pilot: process exit, all required
 cases and cleanup must also satisfy the contract. Unverified report counts remain
 unknown rather than becoming zero failures. The public projection permits bounded
 compiler codes and source locations; raw diagnostics and artifacts stay private.
+Its cleanup checks concern the owned container and image tag, not all shared
+image contents, build caches, volumes or external effects. The current host
+source also invokes the Docker CLI without independently recording the selected
+daemon's identity. An execution-context label alone does not identify an engine;
+local execution needs explicit engine selection and verified provenance before
+its results can be compared with a hosted runner.
 The authored pilot uses the real shared authority and WAL with frozen synthetic
 reports for its ALLOW/DENY/CHALLENGE paths. Its loopback origin counts complete
 received requests before writing an echo response; this is not a business-commit

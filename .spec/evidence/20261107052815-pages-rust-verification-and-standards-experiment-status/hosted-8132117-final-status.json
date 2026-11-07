@@ -1,0 +1,130 @@
+{
+  "observed_utc": "2026-11-07T09:29:07.8930141Z",
+  "run": {
+    "conclusion": "failure",
+    "head_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+    "id": 42355168729,
+    "status": "completed",
+    "updated_at": "2026-11-07T09:24:11Z"
+  },
+  "job_count": 19,
+  "success": 5,
+  "failure": 14,
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 128351571194,
+      "name": "validate / policy",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926068,
+      "name": "validate / docker",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926084,
+      "name": "validate / native (macos-15)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926093,
+      "name": "validate / native (ubuntu-24.04)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926153,
+      "name": "validate / native (windows-2025)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128353483559,
+      "name": "validate / browser",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128355522898,
+      "name": "validate / browser-product",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128358355202,
+      "name": "validate / nginx",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128359709010,
+      "name": "validate / msrv",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128359821189,
+      "name": "validate / rust-images",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128360847587,
+      "name": "validate / quality",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128360953683,
+      "name": "validate / images (gate)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128360953728,
+      "name": "validate / images (core)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128361293298,
+      "name": "validate / documentation",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128361401308,
+      "name": "validate / pages / build",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128361465721,
+      "name": "validate / packages",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128361689495,
+      "name": "validate / node",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128362579030,
+      "name": "validate / advisories",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128364674797,
+      "name": "validate / ready",
+      "status": "completed"
+    }
+  ],
+  "scope": "Fixed813source only. Pages dual-baseurl pass and review inventory failure retained separately; no later-source/product acceptance."
+}

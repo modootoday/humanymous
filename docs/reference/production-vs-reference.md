@@ -37,9 +37,11 @@ tests; their separate check/lint results do not establish full-product parity
 or an immutable combined dependency graph. Two mandatory CEF desktop process
 tests are wired but have not executed at this checkpoint.
 
-Hosted run `42355168729` targets source `8132117`, which precedes that local
-integration checkpoint. Its policy check passed, while native and Docker
-component failures were observed. It cannot qualify later source changes.
+Hosted [run `42355168729`](https://github.com/modootoday/humanymous/actions/runs/42355168729)
+targets source `8132117`, which precedes that local integration checkpoint.
+It completed with failure: five of 19 jobs succeeded, including both-baseurl
+Pages builds; source-review inventory and native/product gates still failed.
+These separate outcomes cannot qualify later source changes.
 The current documentation source still needs a fresh rendered-site build,
 actual browser checks and source-review completion before preview acceptance.
 

@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/apache-adapter/native/src/coordinator/host.rs",
+  "sha256": "c7d14894348a694ca1d567d845fd3e18cebc033a41b384056b1c6aa10bea15af",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete coordinator host through staged sections: committed git archive/source observations, bounded command time/poll/killwait, private outputs, container inspect/artifact copies, strict report+failed counts, separately budgeted owned name/tag cleanup. Bare Docker engine identity missing and reported to owner; flags are not global cache/content removal or executed containment proof. No actual command run.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "adapters/apache/coordinator-contract.json",
   "sha256": "40f8b36d75fc11a059a21edc7f4d9ba51c3add5006f6bb40441ac2e57dde3f3b",
   "reviewer": "codex/rust-pages",

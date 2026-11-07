@@ -1668,3 +1668,15 @@ window still active and new compile/runtime requires root allocation. No Docker
 command started. Newly explicit lightweight fmt permission used to check pending
 vector module and its children: rustfmt edition2024 check passed, no compilation
 or parser acceptance implied.
+
+### Final813 aggregate and coordinator host trust gap
+
+Exactrun42355168729 now terminalFAILURE:19jobs/5success/14failure. Independently
+fetched finaljob ledger, saved sanitized evidence and updated public release
+status. Retained both-baseurl Pages88/rendered88/static0errors alongside freshness
+failure; newerdocs/vectors remain unqualified.
+
+Completed host coordinator source reading. Added manual receipt with explicit
+bareDocker/no independently recordedengine gap and limited namedcontainer/tag
+cleanup rather than cache/content erasure. Relayed current Desktopengine canon
+to Apache owner for explicit local binding/preflight; no Docker/native execution.
