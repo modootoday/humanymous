@@ -57,6 +57,25 @@ by this run. No registry publish, tag, token exchange or image deployment occurr
 
 ## Follow-up source implementation
 
+## Third source: rejected before job execution
+
+Run 42354873001 attempt 1 belongs only to
+a26d1c3f08b365ca93545c6a51343095868edb45 and is terminal startup_failure.
+The Jobs API returned zero jobs and Artifacts API zero artifacts. No test,
+wargame receipt, image build, native actor or cache result exists for this run.
+The public run annotation identifies ci.yml caller actions:none versus nested
+policy actions:read. The corrected caller source requires a new run; this
+failure remains immutable and is not a failed product test.
+
+Private API response captures are retained under
+.spec.local/root/evidence/20261107082000-delivery-startup. Their SHA256 values
+are run.json b1300c8f5291f7af32b67df4bd8005287ed2c6f69560adf255e7f1875609ca9b,
+jobs.json 016130407ca1c61f7ee071fab174cc86c2e07c97627c504be864e65beebcea41,
+artifacts.json e338fb10e6740e1e43cdbe137da3a22ec09f95d8097c5f247e751de5f81f87b4.
+These hash the saved API output files, not nonexistent execution logs.
+
+## Follow-up implementation boundary
+
 The new Rust delivery tool separates source/working-byte commitments, workflow
 authorization, package/registry barriers, owning-runner integration, dependency
 closure and image provenance verification. It does not implement missing product

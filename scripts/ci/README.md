@@ -47,7 +47,7 @@ to humanymous-pages. This CI tool aggregates those contracts without cloning
 their implementation. Rust browser library/component success is not a real
 human/AT/Pass recovery result.
 
-`pilot native|browser|docker` creates a fresh private Specfold bundle and runs
+`pilot native|browser|browser-product|docker` creates a fresh private Specfold bundle and runs
 the owning tool with literal arguments. It records HEAD, working-byte SHA256,
 canonical Git object identities, actual process exit, doc-review digest, cases
 and images. A changed source, missing report/case, unknown failure, component-only

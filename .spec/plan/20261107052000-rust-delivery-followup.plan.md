@@ -285,3 +285,10 @@ passed 47 pure delivery tests, strict all-target Clippy and actual static policy
 actionlint and scoped specification checks also passed. A new source-bound
 hosted run remains pending; run 42348518353 belongs exclusively to
 63f69ae9de703939b7b9091e2f215b12bea265de and cannot validate these changes.
+
+Root candidate a26d1c3 closes the 36-member shared Cargo graph and lock together
+with the standalone native-runner lock resolution. Those common files remain
+root-owned. The root staged specification check reported a D1 change-note warning
+for the runner lock under the delivery governing scope; the earlier clean scoped
+check does not erase that separate warning. This note records the ownership and
+resolution boundary without asserting hosted compilation or runtime qualification.

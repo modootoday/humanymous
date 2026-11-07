@@ -103,3 +103,44 @@ d190ced6d26602aaea7aa49d7e758c2cf847f148399ec1d6eebe4b75788ca0c3.
 Follow-up public unauthenticated lookup preserves exactSHA+entrypoint assertions,
 HTTPerrorsfailclosed,unique-action denominator and no retries. Corrected source
 is separate from that failed run; root alone starts the next hosted batch.
+
+## Current source checkpoint and required observation
+
+Delivery checkpoint f82da60 passed 47 pure tests, strict all-target Clippy,
+actual static policy, actionlint and scoped specification checks. Lab checkpoint
+7b2a98c supplies the producer contract consumed by that delivery source. These
+checks do not qualify native processes, containers, browser execution or images.
+
+Run 42348518353 at 63f69ae9de703939b7b9091e2f215b12bea265de remains
+terminal failure: 16 jobs, three successes, 13 failures, zero skipped. Its raw
+whole-run log SHA256 is
+5c03079b00af0704ec0387b82b27fc7e4178cd838a1737eb6f300863252d0e3c.
+Its native harness causes and private owner transcripts remain unrecovered;
+new source diagnostics cannot retroactively explain or qualify that run.
+
+The two required hosted lanes now include separate collector and product-browser
+profiles, the Nginx 35-scenario owner contract and a real runtime binary image
+candidate. The candidate build/CVE job does not replace the legacy core/gate
+source guard. Both legacy image sources still block shipping until reviewed
+Rust replacement evidence exists. No image startup, actor behavior or platform
+qualification is established by a Dockerfile inventory or successful build.
+
+The sole public receipt vocabulary is test/lab/runner/public-receipts.json.
+CI independently hashes the private lab source-manifest.json and
+wargame-report.raw.json, checks the exact source binding and 26 ordered case
+indexes, and recomputes terminal totals and scoped status. Only exact allowlisted
+fields reach public summaries. A valid receipt survives surrounding full-product
+failure; a malformed present receipt adds a CI error. Absent evidence stays null.
+The raw original bytes and private actor/body fields are never printed publicly.
+
+Optional archive transport is restricted to checksum-verified public crates.io
+archives, trusted-push saves and read-only live free-quota/retention checks.
+Cargo timing observations expose hashed inputs and explicit unknown reuse
+dimensions. Neither mechanism bypasses a validation gate or proves a cache hit,
+equivalent compiled artifact, native ABI or complete source qualification.
+
+The next immutable hosted source must include the root Cargo graph/lock and all
+producer inputs. The root chat owns its single push/dispatch. New required
+process profiles, language hosts and Pages browser checks remain pending until
+their actual owner invocation and source-bound hosted evidence are integrated;
+default library tests and unsupported profiles cannot substitute for those runs.
