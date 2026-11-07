@@ -44,6 +44,13 @@ the existing pinned Ubuntu image had no admitted Rust toolchain. The owned
 [[evidence:root/20261107165921]]. Filesystem capability was not probed, not
 declared unsupported. Delivery acknowledged the concrete standard-Linux
 build-only handoff; no hosted dispatch or current native/type qualification yet.
+Delivery-requested closed CI source now adds one private ignored filesystem
+prerequisite fixture gate plus the sole committed13-case catalog and193-input
+f9 baseline. Exactf9 plus explicitly hashed test-only overlay is the source
+strategy; the gate is separate from13 semantic cases. It emits a fixed
+observed/refused/unknown receipt only after attempting cleanup of its NEW
+disposable fixture; no product data or production authority is permitted.
+Source/fmt/hash checks only, no new compilation or hosted execution yet.
 
 Exact older8cbc subsequently passed native Windows check/strict Clippy/fmt and
 SIX exact cases in [[evidence:root/20261107162841]]: facade preflight/Unsupported

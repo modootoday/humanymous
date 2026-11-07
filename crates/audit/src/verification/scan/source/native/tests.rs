@@ -2,6 +2,7 @@ use super::*;
 use crate::verification::scan::tests::limits;
 use std::{sync::atomic::AtomicBool, time::Duration};
 mod capacity;
+mod prerequisite;
 
 #[test]
 fn descriptor_admission_counts_pins_temporaries_and_other_process_handles() {

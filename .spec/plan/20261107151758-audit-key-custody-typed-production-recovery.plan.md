@@ -388,6 +388,56 @@ do not grant writes to Runtime/Authority/native-security/CLI/Lab paths.
 
 ## Record
 
+### Closed hosted prerequisite and sole case catalog (source only)
+
+Root accepted two owned test-only seams requested by Delivery: the committed
+native-owner-validation.json sole13-selector/ignored-intent catalog and a closed
+precondition entrypoint reusing the existing private NativeSource checks. The
+separate native-owner-core-f9b0cda3.json commits all193 baseline relative paths,
+byte lengths and SHA256; all193 were checked against both the frozen archive
+bytes and canonical f9 Git blob hashes. CI must use exactf9 checkout plus the
+declared seam overlay, not label a later whole candidate as unmodifiedf9.
+Only baseline native/tests.rs changes for one module declaration; the prerequisite
+module and two JSON contracts are additions. The catalog binds these source
+hashes, while its own blob is bound externally by the candidate Git identity.
+
+The precondition is ONE explicitly ignored library-test fixture gate before the
+13 semantic cases, not a fourteenth semantic pass. It stays behind the existing
+test/Linux/x86_64 boundary, exposing no public API or new graph edge. Non-root
+matching real/effective UID and an allocated current-owner0700 ext-family parent
+are required. The caller must itself create that NEW private parent and retain
+its ownership; never pass existing product Audit directories. The gate creates
+one uniquely named child with mkdirat0700 and two create_new0600 synthetic WAL
+members, then reuses actual held-object privacy/ext0xef53/statxMNT_ID/openat2,
+independent read_at readers and ExclusiveFile contention/release checks.
+
+Root explicitly authorizes fresh disposable fixture/bootstrap WAL writes for
+this gate and the planned WAL tests ONLY. Existing product Audit data access,
+normal native writes, recovery repair and production Ready remain forbidden.
+No chmod, process umask mutation, recursive delete, symlink fallback, privileged
+helper or subprocess is added. Cleanup unlinks only the two successfully created
+members relative to the held new root and removes only its mkdirat-created empty
+child via the held parent; unknown entries are never recursively removed. It
+syncs and observes name absence. Parent lifetime/cleanup remains with Delivery.
+All OS operations remain cooperative; the separate runner owns the original
+deadline/process containment and must classify missing receipts/cleanup as unknown.
+
+One fixed AUDIT_NATIVE_PREREQUISITE_V1 JSON receipt is emitted to STDERR under
+--nocapture, preserving named libtest stdout accounting. Status distinguishes
+observed/refused/unknown, with actual UID/eUID, fixed check keys, first failure
+stage/kind and cleanup state. Only observed/all checks true, non-root equal UID,
+cleanup removed/name_absent true/no error, first_failure null AND the exact named
+one-pass/zero-fail/zero-ignore gate footer/terminal success admits13. Any other
+status, missing receipt, failed cleanup or missing footer refuses them. Gate
+observations are not an atomic snapshot or a health lease; every semantic case
+still performs its own native checks. The gate receipt carries no business or
+production authentication authority.
+
+Direct pinned Windows Rust1.99.1 rustfmt, JSON/catalog/source marker and hash
+checks pass. This new gate and seam source have NOT COMPILED or RUN. Their own
+candidate identity/review/actual hosted results are required in addition to the
+f9 baseline; neither old Windows evidence nor Docker shell preflight qualifies it.
+
 ### Docker prerequisite refusal and standard-runner handoff
 
 Root explicitly resumed a15-minute Docker-only window for frozenf9b, no WSL or

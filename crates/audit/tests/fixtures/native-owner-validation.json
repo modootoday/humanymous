@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "profile": "audit-existing-owner-closed-component-v1",
+  "target": "x86_64-unknown-linux-gnu",
+  "baseline_source": "f9b0cda3680c3b6d612cac8ace22e237812ed3cb",
+  "baseline_archive_sha256": "12675bab15a39663188974f9eda40d7f1f752f72a3e2dcdab4d0df876641249c",
+  "baseline_manifest": "crates/audit/tests/fixtures/native-owner-core-f9b0cda3.json",
+  "baseline_inputs": 193,
+  "source_strategy": "Exact f9 checkout plus declared test-only seam overlay; not unmodified f9 execution",
+  "test_only_delta": {
+    "modified": [
+      {
+        "path": "crates/audit/src/verification/scan/source/native/tests.rs",
+        "baseline_sha256": "de8e379fcb85e560e1cfc425091d34e56b8a96a9efd5e18d40411b877dd97590",
+        "expected_sha256": "73e0a818fee54798caab91299414b56789190234704e7304726817e8b4651308"
+      }
+    ],
+    "added": [
+      {
+        "path": "crates/audit/src/verification/scan/source/native/tests/prerequisite.rs",
+        "sha256": "9f6639ca5be94e4a6a63506a3f5752ab46bc66f094846738dd590d04931b8629"
+      },
+      {
+        "path": "crates/audit/tests/fixtures/native-owner-core-f9b0cda3.json",
+        "sha256": "966fef7d3690d6db5eaa43dee50edaf1a72b46e9d9189587558d09ed347e9cc2"
+      },
+      {
+        "path": "crates/audit/tests/fixtures/native-owner-validation.json",
+        "sha256_binding": "Exact candidate Git blob; self-hash intentionally external"
+      }
+    ]
+  },
+  "bootstrap": {
+    "fresh_disposable_private_fixture_writes": true,
+    "existing_product_data_access": false,
+    "production_write_repair_ready": false,
+    "parent_environment": "HUMANYMOUS_AUDIT_NATIVE_SOURCE_PARENT",
+    "parent_mode": "0700",
+    "directory_mode": "0700",
+    "payload_mode": "0600",
+    "nonroot_current_uid": true
+  },
+  "prerequisite": {
+    "selector": "verification::scan::source::native::tests::prerequisite::native_filesystem_prerequisite",
+    "ignored": true,
+    "semantic_cases": 0,
+    "fixture_gates": 1,
+    "receipt_stream": "stderr",
+    "receipt_prefix": "AUDIT_NATIVE_PREREQUISITE_V1 ",
+    "receipt_schema": 1,
+    "receipt_gate": "audit-native-filesystem-v1",
+    "allowed_status": [
+      "observed",
+      "refused",
+      "unknown"
+    ],
+    "receipt_keys": [
+      "schema",
+      "gate",
+      "status",
+      "uid",
+      "euid",
+      "cleanup",
+      "checks",
+      "first_failure"
+    ],
+    "cleanup_keys": [
+      "state",
+      "name_absent",
+      "error_kind"
+    ],
+    "check_keys": [
+      "nonroot_uid",
+      "held_directory_0700",
+      "held_payload_0600",
+      "ext_family_0xef53",
+      "same_held_statx_mount_id",
+      "openat2_no_symlinks_no_magiclinks",
+      "read_at",
+      "exclusive_lock",
+      "last_drop_lock_release"
+    ],
+    "admission": "Exactly one observed receipt; uid=euid and nonzero; all nine checks true; cleanup removed/name_absent true/error_kind null; first_failure null; exact named gate ok and one passed/zero failed/zero ignored footer; terminal success",
+    "failure": "Refused/unknown/missing receipt, cleanup issue, nonzero exit or missing exact footer refuses all semantic cases",
+    "arguments": [
+      "--ignored",
+      "--exact",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cleanup": "Only mkdirat-created fresh child and two create_new members; held-parent relative unlink, no recursive delete, no parent deletion; sync and absent-name observation",
+    "cleanup_control": "Caller retains separate owned parent and process supervision; precondition receipt is not an atomic snapshot or a future health lease"
+  },
+  "semantic_case_count": 13,
+  "semantic_cases": [
+    {
+      "name": "verification::scan::source::native::tests::descriptor_admission_counts_pins_temporaries_and_other_process_handles",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/source/native/tests.rs"
+    },
+    {
+      "name": "verification::scan::source::native::tests::admission_and_cancellation_refuse_before_any_missing_directory_open",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/source/native/tests.rs"
+    },
+    {
+      "name": "verification::scan::source::native::tests::path_aliases_are_refused_before_native_open",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/source/native/tests.rs"
+    },
+    {
+      "name": "verification::scan::source::native::tests::controlled_native_inspection_cursor_lifetime_and_replacement",
+      "ignored": true,
+      "source": "crates/audit/src/verification/scan/source/native/tests.rs"
+    },
+    {
+      "name": "storage::wal::tests::new_wal_members_request_private_modes_through_rotation_and_restart",
+      "ignored": false,
+      "source": "crates/audit/src/storage/wal.rs"
+    },
+    {
+      "name": "storage::wal::tests::existing_wal_member_modes_and_identities_are_preserved",
+      "ignored": false,
+      "source": "crates/audit/src/storage/wal.rs"
+    },
+    {
+      "name": "verification::scan::tests::native_facade_refuses_profiles_cancellation_and_unsupported_platforms",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/tests.rs"
+    },
+    {
+      "name": "verification::scan::limits::tests::original_manual_clock_advances_without_replacing_control",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/limits.rs"
+    },
+    {
+      "name": "verification::scan::recovery_transition::tests::preserved_tail_refuses_every_normal_intent_without_clearing_uncertainty",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/recovery_transition.rs"
+    },
+    {
+      "name": "verification::scan::recovery_transition::tests::tail_zero_maximum_and_external_ahead_boundaries_are_checked",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/recovery_transition.rs"
+    },
+    {
+      "name": "verification::scan::recovery_transition::tests::rotation_refuses_at_maximum_before_producing_a_new_index",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/recovery_transition.rs"
+    },
+    {
+      "name": "verification::scan::recovery_transition::tests::control_only_restart_requires_explicit_new_history_and_no_anchor",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/recovery_transition.rs"
+    },
+    {
+      "name": "verification::scan::recovery_transition::tests::original_control_refusal_cannot_be_replaced_or_reset_by_a_fresh_control",
+      "ignored": false,
+      "source": "crates/audit/src/verification/scan/recovery_transition.rs"
+    }
+  ],
+  "probe_manifest": "crates/audit/src/verification/scan/source/native/ownership/probes/cases.json",
+  "probe_compiler_attempts": 12,
+  "probe_semantic_tests": 0,
+  "capacity_cases": 0,
+  "authority": "Test-only observation; no production factory, repair, Ready or business effect acknowledgement"
+}
