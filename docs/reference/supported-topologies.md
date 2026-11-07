@@ -115,6 +115,7 @@ These developing source boundaries do not add release-qualified host tuples.
 | Candidate | Current boundary and remaining qualification |
 | --- | --- |
 | Go HTTP origin | Uses the existing Rust Gate; there is no new Go SDK or provisioned Go adapter producer. An untouched external `net/http` fixture and bounded HTTP cases are selected but unexecuted. chi, Gin, Echo, Fiber and fasthttp each require separate host evidence; proxy compatibility does not establish in-process middleware or pooled-buffer safety |
+| Python WSGI/ASGI | Rust-native `humanymous_python.Wsgi(app, options_json)` and `Asgi(app, options_json)` are candidate interfaces. No wheel or runtime tuple is qualified. WSGI needs the actual server's raw target and input deadline; ASGI needs its declared HTTP/1/raw-path boundary. Candidate package Python-version metadata does not establish CPython ABI, free-threaded, subinterpreter or framework support |
 | ASP.NET Core | A safe Rust request-lifecycle core and normalized producer profile exist. Managed middleware registration, PInvoke binding, NativeAOT, GC/abort ownership and NuGet installation remain unqualified; the generic native ABI is not itself that managed binding |
 | Common C/C++ boundary | Source exports the pointer-free by-value `humanymous_native_abi_v1` buffer/lifecycle command boundary over one safe owner. This is not an installed application security SDK. Header generation configuration and Rust units do not prove actual C/C++ layout, dynamic loading, unload, exception or allocator compatibility |
 
@@ -124,3 +125,9 @@ different denominators: a successful transport contact alone does not prove a
 business effect. A narrow HEAD/duplicate-cookie probe does not qualify 204/304,
 streaming or post-origin rollback. Preserve failed and unexecuted cases when
 evaluating each selected fixture and compiler input.
+
+The Python candidate host contract has three groups and seven framework-object
+cases for dependency-unavailable behavior and trusted-server lifespan forwarding.
+Those cases are not an actual network server, production authority, successful
+authenticated ALLOW, installed wheel, response-streaming or cancellation-race
+qualification. Empty qualified tuples remain the current support declaration.

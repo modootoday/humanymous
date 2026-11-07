@@ -2,6 +2,41 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/python/pilot-contract.json",
+  "sha256": "0c1d0562e4f2b74c99dfda567cc1fc08e395d43917f6d9d787abe2898f692daf",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete three-group seven-case real-framework-object negative/lifespan component contract and exact source/runtime/dependency lineage. Mandatory package/native gates remain separate; no actual network server, production authority, synthetic ALLOW, browser, wheel clean install, response streaming or cancellation/peer matrix is covered. Public topology reference preserves these bounds and not_run.",
+  "pages": ["docs/reference/supported-topologies.md"]
+},
+{
+  "source": "adapters/python/pilot-requirements.txt",
+  "sha256": "23957003f5062260519728bbbd65d5daf3595e452f81ece84cfb3227cce6d46b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete selected direct framework pins. These are unexecuted candidate inputs, not independently authenticated package metadata or compatible installed dependency closure; hosted transitive hashes/audit and actual framework evidence remain required.",
+  "pages": ["docs/reference/supported-topologies.md"]
+},
+{
+  "source": "adapters/python/pyproject.toml",
+  "sha256": "c0677234def685d21c4540f41e505d12d071d62e3c1bd165dc9eb4147202b265",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete maturin/PyO3 candidate package metadata: pinned upstream build backend, experimental package/version/module/feature selection and CPython version range. Candidate registry name and empty tuples are not publication, installed-wheel proof, stable ABI3/free-threaded or subinterpreter qualification.",
+  "pages": ["docs/reference/supported-topologies.md"]
+},
+{
+  "source": "adapters/python/README.md",
+  "sha256": "ced756144c7d1daa59cfd9110df1ffe32ecbe5e17bb0af146debf46543d5da55",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete candidate Wsgi/Asgi API and outer-boundary requirements: actual server raw target/input deadline, HTTP1/raw-path profile, trusted lifespan pass-through and no qualified wheel/ABI/runtime tuple. Public topology reference keeps source APIs distinct from installed native/framework support.",
+  "pages": ["docs/reference/supported-topologies.md"]
+},
+{
+  "source": "adapters/nginx/pilot-contract.json",
+  "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete current component report0.2 contract:35unique scenario groups rather than test-harness tests,32requests in concurrency group, exact source/engine/module/lock/package/image identity, strict JSON/group/exit checks and cleanup. Public nginx reference preserves old35group evidence separation, unknown counts on failed/no-report processes, private diagnostic boundaries and full_product_qualified=false. No native/Compose execution performed.",
+  "pages": ["docs/reference/nginx-adapter.md"]
+},
+{
   "source": "adapters/dotnet/pilot-contract.json",
   "sha256": "cbdc9225b5e94191dad7a64af4afeb355044bfc299e6406d4d5ebb21c3848b2a",
   "reviewer": "codex/rust-pages",

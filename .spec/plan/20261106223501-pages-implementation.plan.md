@@ -1131,3 +1131,30 @@ complete Draft v0 dependency set. Accessibility review cites WCAG2.2 whole-page,
 responsive-variation and complete-process conformance scope; a keyboard probe
 cannot establish A/AA/AAA. No project certification, external submission/rights
 clearance or actual browser result is inferred. Existing source88/errors0.
+
+### Current nginx report and Python candidate boundaries
+
+Read complete nginx pilot-contract0.2 (35required scenario IDs), Python README,
+pyproject, selected direct requirements and three-group/seven-case host contract.
+Public references now distinguish scenario/request/test-harness denominators,
+strict source/image/report accounting and private details; preserve historical
+35group limits and current component-only full_product_qualified=false. Python
+candidate API/version metadata is separate from installed native/framework ABI,
+actual network/authority, wheel, streaming/cancellation and qualified tuple gates.
+
+Added five manual source receipts. First freshness attempt exposed newly authored
+pages mappings serialized as strings instead of arrays. Corrected only those five
+new fields; next real verifier passes receipt schema but still exits1 for missing
+Apache/.NET/new native source inventory. No passing whole-gate claim. Reported
+stale Apache/native pilot blocker declarations to root instead of editing foreign
+contracts or accepting them as current receipts. Existing source88/errors0.
+
+### WebDriver dot-segment refusal fix pending verification
+
+Found a command-path boundary omission: the ASCII identity allowlist still
+accepted literal '.' and '..', which URL joining can normalize as path segments.
+Reject both exact values and extend the existing driver-ID pure regression.
+No manifest/dependency delta. Rustfmt/diff-check pass; requested a fresh scoped
+Cargo slot/root execution. The earlier26lib+1CLI pass does not qualify these
+changed browser helper bytes. Actual browser remains NOT_RUN; no local runtime
+or Cargo launched here. Source frozen awaiting the narrow verification.

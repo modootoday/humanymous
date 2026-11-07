@@ -43,6 +43,24 @@ profile's 409/no-origin observation does not prove a successful human flow.
 Independent witness, cross-user isolation, sustained backpressure and full
 browser/human/assistive-technology qualification remain separate outstanding gates.
 
+### Current pilot report boundary
+
+The current component contract uses report schema `humanymous.nginx.pilot/0.2`.
+Its 35 required IDs describe scenario groups in one Rust pilot process, not 35
+Rust test-harness tests: the HEAD/204 group contains two HTTP behaviors, and the
+concurrency group accounts for 32 requests. A changed contract is not covered
+merely because an older report also counted 35 groups.
+
+Consumers require the exact unique group set, zero failed/ignored/not-run groups,
+successful process exit and source, module, engine, lock, package and immutable
+image identities. They must reject duplicate JSON keys and unknown top-level
+fields rather than rewrite producer results into passing cases. A failed process
+may produce no success report; retain that failure and unknown or unreached
+counts. Per-case private diagnostics must not be copied wholesale into public
+summaries. The report remains a component result with
+`full_product_qualified: false`; trusted synthetic ALLOW and process cleanup do
+not establish a complete browser, independent custody or production deployment.
+
 ### nginx provisioning and request projection
 
 Private provisioning is bounded to 64 KiB. The Linux reader requires a canonical
