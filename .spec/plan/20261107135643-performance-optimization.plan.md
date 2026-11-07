@@ -85,6 +85,94 @@ BufWriter documentation confirms batching and explicit-flush behavior; a failed
 tagged source retrieval is not implementation verification. Owner acceptance and
 an exact source handoff precede any patch.
 
+## Root integration handoff for accepted eight-package baseline v0
+
+The user confirmed the eight public packages humanymous/core/runtime/platform/
+collector/adapters/cli/browser. Root alone sequences graph/path integration and
+branch synchronization. This is a prepared slice handoff, not a lane release,
+package move, new topology implementation or goal completion. Continue only the
+existing non-overlapping paths until root freezes this specific slice.
+
+Mission and invariants: preserve the full build/cache/runtime/GPU performance
+goal, Rust1.99.1/edition2024, detection freeze, fail-closed enforcement, a11y,
+canonical/crypto bytes and exact historical source-bound evidence.
+
+Exact current ownership is the project-coordination loan to
+codex/rust-performance-baseline, limited to these five scopes:
+
+```text
+.spec/sot/performance-optimization.sot.md
+.spec/plan/20261107135643-performance-optimization.plan.md
+.spec/evidence/20261107135643-performance-optimization/index.evidence.md
+.spec/evidence/20261107135643-performance-optimization/baseline.json
+.spec.local/root/evidence/20261107135643-performance-optimization/**
+```
+
+The document identities are [[sot:root/performance-optimization]],
+[[plan:root/20261107135643]] and [[evidence:root/20261107135643]]. The literal
+inventory above is the claim scope, not a replacement reference identity.
+
+Before this handoff edit all four tracked files were clean. This edit changes
+only this plan. After the attributed commit, root receives literal commit/path
+verification and SHA256 of the four final tracked files; do not embed this plan's
+own final hash inside itself. The private scope contains historical receipts and
+source manifests, not an integration worktree or a compiler target to relocate.
+No production-source write grant remains: the three Integrity paths previously
+lent for R1 were returned to root. No branch/ref, manifest/lock or upstream-cache
+mutation is authorized here.
+
+Completed evidence: B1 four native builds, R1 frozen canonical regression plus
+one fixed-corpus release comparison, and source-only CPU scheduling/GPU research
+are recorded in the SoT and evidence index. Latest synthesis checkpoints include
+ff9aa343 (M11 runtime),4b00248f (Browser UI39),c37c67a1 (GPU policy critique) and
+a6a42390 (Meari measurement design). R1 observations do not prove HTTP throughput,
+tail latency or allocation reductions. Preserve first failures and all unsupported
+outcomes, including Windows symlink fixture failure versus Linux success.
+
+There are no owned live compiler, process, GUI, WSL or model handles and no target
+lease. All earlier performance targets were returned. Other owners' current
+allocations must be checked by root; this statement grants no free global slot.
+
+Visibility/API/dependency/unsafe hazards for root:
+
+- This slice has no executable API, new dependency, unsafe code or package facade.
+  The existing performance SoT's historical Integrity governs references and old
+  Cargo package names must be reconciled explicitly by root when paths change.
+- Do not bulk-rewrite old source hashes, command argv, artifact/target paths or
+  measurements to match new names. They qualify their original revisions only.
+  Moved/re-exported implementations need new exact integration evidence.
+- Keep original private raw JSON/logs/manifests immutable. One Meari source receipt
+  remains explicitly unregistered because no Specfold file store was configured;
+  root must choose a legitimate store/allowed attachment path, without inventing
+  a registered artifact or expanding this owner's paths silently.
+- Proposed GPU selection/interfaces/backends remain research. Accepted package
+  consolidation does not admit GPU dependencies, shaders, unsafe boundaries,
+  model/backend activation or nightly offload. Preserve external Meari/CEF pins
+  and root's separate graph decision until their actual handoff.
+
+In progress: B2 archive/preparation comparison, B3 delivery observation changes,
+B4 profile/jobs/caching comparisons and R2 actual product-runtime measurements
+remain incomplete. M11's CLI/finite120second exact-input pilot and Browser's UI38
+pure/native/latency gates are provider-owned dependencies, not this slice's passes.
+No current workload allocation exists here.
+
+Next actions: root freezes the four final tracked hashes and accepts the path
+mapping; then assigns any exact spec-reference migration after the corresponding
+implementation slice exists. Prepare qualified measurement consumers against that
+contract; never infer authorization to move code or rerun old workloads.
+
+Verification commands for this document-only slice are scoped spec check over the
+three Markdown documents (the evidence index binds baseline.json), git diff --check,
+and actual worktree/Git-blob LF/hash checks for all four tracked files.
+No Cargo build/test is justified solely by this handoff edit. Root's eventual
+implementation integration still needs its owning fmt/locked tests/strict Clippy,
+real supported OS/GUI/WASM pilots and Docker-only product gates as applicable.
+
+Read first: AGENTS.md, structural-development SoT, THREADS/LANES, HARD-WON.md,
+performance SoT, this plan and evidence:root/20261107135643. Residual Codex chat
+context is not the only authority. No main merge, publication, path relocation,
+structural branch/worktree or all-branch synchronization is performed by this owner.
+
 ## Full objective
 
 Measure and improve Rust build/verification and product runtime performance with
