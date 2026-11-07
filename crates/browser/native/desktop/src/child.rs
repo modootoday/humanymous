@@ -24,6 +24,8 @@ pub struct State {
     pub file_probes: Vec<FileProbe>,
     pub ime_setup: Option<String>,
     pub ime_candidate_request: Option<String>,
+    pub measured_hanja: Vec<String>,
+    pub hanja_key_events: usize,
 }
 pub type Shared = Arc<Mutex<State>>;
 
@@ -128,6 +130,17 @@ wrap_keyboard_handler! {
     struct InputEvidence { state: Shared, }
     impl KeyboardHandler {
         fn on_pre_key_event(&self, _browser: Option<&mut Browser>, event: Option<&KeyEvent>, _os_event: Option<&mut cef::sys::MSG>, _shortcut: Option<&mut i32>) -> i32 {
+            if event.is_some_and(|e| e.windows_key_code == 0x79 && e.type_ == KeyEventType::RAWKEYDOWN)
+                && std::env::args().any(|a| a == "--native-measured-hanja")
+                && std::env::args().any(|a| a == "--native-korean-ime") {
+                if self.state.lock().map_or(true, |s| s.measured_hanja.len() >= 4) { return 1; }
+                if let Some(browser) = _browser.as_ref() {
+                    let result = crate::measured_input::replay_hanja(browser, event.map_or(0, |e| e.modifiers)).unwrap_or_else(|e| e.to_string());
+                    eprintln!("native: measured Hanja {result}");
+                    if let Ok(mut state) = self.state.lock() { state.measured_hanja.push(result); }
+                }
+                return 1;
+            }
             if event.is_some_and(|e| e.windows_key_code == 0x78 && e.type_ == KeyEventType::RAWKEYDOWN)
                 && std::env::args().any(|a| a == "--native-korean-ime")
                 && let Some(browser) = _browser.as_ref() {
@@ -144,6 +157,7 @@ wrap_keyboard_handler! {
                 return 1;
             }
             if let Ok(mut state) = self.state.lock() {
+                state.hanja_key_events += usize::from(event.is_some_and(|e| e.windows_key_code == 0x19));
                 state.key_events += 1;
                 state.editable_key_events += usize::from(event.is_some_and(|e| e.focus_on_editable_field != 0));
             }

@@ -150,6 +150,9 @@ struct Report {
     input_snapshots: Vec<native::InputSnapshot>,
     ime_setup: Option<String>,
     ime_candidate_request: Option<String>,
+    measured_hanja: Vec<String>,
+    hanja_key_events: usize,
+    owned_surface_transitions: Vec<Vec<crate::measured_input::Surface>>,
 }
 impl Pilot {
     fn tick(&mut self) -> io::Result<()> {
@@ -224,6 +227,19 @@ impl Pilot {
                     self.focus_requested = true;
                 }
                 report.focus_observed |= native::focus_observed(&browser)?;
+                if self.ticks.is_multiple_of(10)
+                    && report.owned_surface_transitions.len() < 64
+                    && std::env::args().any(|a| a == "--native-measured-hanja")
+                {
+                    let surfaces = crate::measured_input::owned_surfaces()?;
+                    if report.owned_surface_transitions.last() != Some(&surfaces) {
+                        eprintln!(
+                            "native: owned surface geometry {}",
+                            serde_json::to_string(&surfaces).map_err(io::Error::other)?
+                        );
+                        report.owned_surface_transitions.push(surfaces);
+                    }
+                }
                 let snapshot = native::input_snapshot(&browser)?;
                 if report.input_snapshots.len() < 64
                     && report.input_snapshots.last() != Some(&snapshot)
@@ -393,8 +409,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             report.renderer_file_probes = state.file_probes.clone();
             report.ime_setup = state.ime_setup.clone();
             report.ime_candidate_request = state.ime_candidate_request.clone();
+            report.measured_hanja = state.measured_hanja.clone();
+            report.hanja_key_events = state.hanja_key_events;
             if report.ime_candidate_request.is_some() {
                 report.ime_candidate_placement = "request_attempted_unqualified";
+            }
+            if !report.measured_hanja.is_empty() {
+                report.ime_candidate_placement =
+                    "measured_key_attempted_external_visual_verification_required";
             }
         }
         report.cef_child_created = state

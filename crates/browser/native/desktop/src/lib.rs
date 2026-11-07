@@ -4,6 +4,7 @@
 mod child;
 mod fixture;
 mod host;
+mod measured_input;
 mod native;
 use cef::*;
 

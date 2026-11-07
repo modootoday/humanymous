@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-07",
+  "scope": "Windows x64 native measured Hanja replay; existing dashboard layout",
+  "measuredKey": {
+    "vk": 25,
+    "scan": 241,
+    "extended": true,
+    "osMode": "VK mode; no UNICODE/SCANCODE flag; down/up pair",
+    "physicalHardwareEquivalence": "not claimed"
+  },
+  "tests": {
+    "nativeUnitsPassed": 10,
+    "ignored": 0,
+    "clippy": "passed -D warnings",
+    "format": "passed",
+    "dllBuild": "passed"
+  },
+  "observations": {
+    "candidateDisplayed": true,
+    "firstSelection": "家",
+    "secondSelection": "Down then Return -> 價",
+    "belowField": "observed in report-measured-exact pilot; previous host report-label revision",
+    "aboveField": "observed and saved in final report-measured-release pilot",
+    "escape": "popup disappeared and source 가 remained",
+    "nativeCandidateHwndRect": "not obtained; known IME class enumeration did not identify the visible popup",
+    "placementMeasurement": "visual window-relative observation, not exact OS candidate HWND geometry",
+    "crossMonitorDpi": "not_run",
+    "screenReaderCandidate": "not_run",
+    "selectionAttribution": "selection observed before final host report-label-only amendment; no exact earlier DLL hash retained; not replayed after physical Escape stop"
+  },
+  "finalRun": {
+    "beforeClose": true,
+    "hostClosed": true,
+    "measuredRequests": [
+      "VK=0x19 scan=0xF1 extended=true; OS inserted2/2; candidate display unqualified"
+    ],
+    "cefHanjaEvents": 0,
+    "browserReady": false,
+    "targetNavigation": false,
+    "fileProbes": [
+      {
+        "pid": 38684,
+        "read_os_error": 5,
+        "create_os_error": 5
+      }
+    ]
+  },
+  "limitations": [
+    "User physical Escape stopped Computer Use; no further native keyboard replay authorized by inference",
+    "No complete sandbox/AX/browser qualification",
+    "Early held-modifier test exposed event/async-state race; fixed and pure regression test plus later native refusal observed",
+    "One exploratory copy-while-running attempt failed; wrong-source second pilot terminated by exact owned executable path, not counted pass"
+  ],
+  "source": [
+    {
+      "path": "crates/browser/Cargo.toml",
+      "sha256": "ac0de68ab5e2f5777a7bcc10930a91be7a1ab57daf42c1465ca1321647f0df2b"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/Cargo.toml",
+      "sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/lib.rs",
+      "sha256": "e5f05198a536a82995feed724620b766c69fa0d94a6c72ed4a9a5c36610df3e0"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/renderer_probe.rs",
+      "sha256": "cfa279ac4ffeee4358fac3f64125716efb27262c53fbdb983db5412215f80243"
+    },
+    {
+      "path": "crates/browser/native/desktop/Cargo.toml",
+      "sha256": "3084e4311d574666594918cbe8b9ea38efd23f3ea4c0e73ca67b9347b56580d2"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/child.rs",
+      "sha256": "b611d0e5c1156894d5d0923bebf8a01af06632481a2ecb670b6d8a6979712c3c"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/fixture.rs",
+      "sha256": "49fe3a8f878c37fca671674d6291f463ac1d466a904163658d6718fb4ccdfda2"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host.rs",
+      "sha256": "d8167143f103cc2baa3673529944a92d9f4e787287b3f91ebbc8661e9d3eabba"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "sha256": "bcdeb98a2e2d2e9a83191912f3824e02d43de06f900d247032779c54597e006c"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/measured_input.rs",
+      "sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/native.rs",
+      "sha256": "adbacbb4765b17054dcffe7f262836f99efefa4deda8340824989017ca6a6ae2"
+    },
+    {
+      "path": "crates/browser/src/lib.rs",
+      "sha256": "b84e63353e3aaf2aaa2d9d998fe863b99ad68f4dca3a61598edc80fbe075774c"
+    },
+    {
+      "path": "crates/browser/src/lifecycle.rs",
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344"
+    },
+    {
+      "path": "crates/browser/src/main.rs",
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8"
+    },
+    {
+      "path": "crates/browser/src/policy.rs",
+      "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626"
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "sha256": "81e320a7dd3375b323368a6affec43d4432405b59c05090d5c8634d5acf4f13b"
+    }
+  ],
+  "nativeDesktopSha256": "2a52031568bec39ec7cb8a00c1411e20cbc2fe8669af9fa3516d58a339d89d7b",
+  "retainedProfiles": 38
+}

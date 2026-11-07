@@ -211,3 +211,24 @@ Candidate qualification remains open. The owned CEF pilot exited0. OSK UI-close
 had no confirmed effect; stopping only its introduced PID/start-time matched
 process returned access denied. No elevation/security bypass was attempted; the
 introduced OSK window remains for manual close.32 generated profiles now remain.
+
+### Measured Hanja native input pilot
+
+The user explicitly authorized Rust native replay of a measured physical key:
+VK_HANJA0x19, message scan0xF1, extended=true. --native-measured-hanja together
+with --native-korean-ime permits F10 to enqueue one OS SendInput down/up pair
+(up to4 attempts). Retain the supplied virtual key and scan with EXTENDEDKEY;
+do not use UNICODE or SCANCODE mode (SCANCODE would ignore the supplied VK).
+The user's repeat=true is not copied into a held/repeated key. Reject input unless
+on CEF UI thread, current foreground belongs to this process, focus is in its
+CEF child and no Shift/Ctrl/Alt/Windows modifier is held. Never steal foreground,
+elevate, bypass UIPI, install global hooks or send to another app. Foreground
+checks do not make OS input routing atomic against concurrent user focus changes;
+use a cooperative local pilot and keep this path out of production navigation.
+
+Record inserted event count separately from CEF receipt and actual native IME
+candidate visibility, screen placement, selected value and cancellation. API
+success is not a candidate receipt. Only synthetic field text and bounded native
+metadata may be retained. Sandbox bootstrap, deny policy and BrowserReady=false
+remain required. This explicitly requested native pilot supersedes the earlier
+no-raw-helper investigation constraint for this measured key only.
