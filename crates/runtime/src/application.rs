@@ -322,6 +322,7 @@ impl Application {
                     &mut stream,
                     429,
                     b"{\"error\":\"admission\"}",
+                    &[],
                     until,
                     &mut shutdown,
                 )
@@ -332,6 +333,7 @@ impl Application {
                 continue;
             }
             let mut response_started = false;
+            let mut ack = None;
             let (result, stopping) = {
                 let connection_shutdown = shutdown.clone();
                 let pending = timeout_at(
@@ -341,6 +343,7 @@ impl Application {
                         until,
                         &mut response_started,
                         &connection_shutdown,
+                        &mut ack,
                     ),
                 );
                 tokio::pin!(pending);
@@ -372,7 +375,24 @@ impl Application {
                 }
                 let body = serde_json::to_vec(&serde_json::json!({"error":error.code}))
                     .unwrap_or_default();
-                if write_or_stop(&mut stream, error.status, &body, until, &mut shutdown).await? {
+                let Ok(extra) = ack
+                    .as_ref()
+                    .map(|ack| ack.headers(error.status))
+                    .transpose()
+                else {
+                    continue;
+                };
+                let extra = extra.unwrap_or_default();
+                if write_or_stop(
+                    &mut stream,
+                    error.status,
+                    &body,
+                    &extra,
+                    until,
+                    &mut shutdown,
+                )
+                .await?
+                {
                     return Ok(());
                 }
             }
@@ -385,11 +405,11 @@ impl Application {
         connection_until: Instant,
         response_started: &mut bool,
         shutdown: &tokio::sync::watch::Receiver<Option<crate::service::ShutdownRequest>>,
+        ack: &mut Option<Ack>,
     ) -> Result<(), Rejection> {
         let request = http::read(stream).await?;
         connected(stream)?;
-        let mut ack = None;
-        let decision = match self.decide_request(&request, humanymous_authority::now_ms, &mut ack) {
+        let decision = match self.decide_request(&request, humanymous_authority::now_ms, ack) {
             Ok(decision) => decision,
             Err(error) => {
                 let extra = ack
@@ -500,19 +520,20 @@ impl Application {
     }
 }
 
-/// An unconsumed local reply owns no origin effect and can stop immediately.
-/// Dropping a partially written response closes this request's connection.
+/// A local fallback can stop immediately. A consumed ACK does not undo an
+/// already dispatched origin effect. Partial response cancellation closes it.
 async fn write_or_stop(
     stream: &mut TcpStream,
     status: u16,
     body: &[u8],
+    extra: &[(String, String)],
     until: Instant,
     shutdown: &mut tokio::sync::watch::Receiver<Option<crate::service::ShutdownRequest>>,
 ) -> std::io::Result<bool> {
     if shutdown.borrow().is_some() {
         return Ok(true);
     }
-    let pending = timeout_at(until, http::write(stream, status, body));
+    let pending = timeout_at(until, http::write_headers(stream, status, body, extra));
     tokio::pin!(pending);
     loop {
         tokio::select! {

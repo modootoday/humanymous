@@ -340,3 +340,11 @@ A pure phase/leak fixture covers all returned error combinations. Hosted Unix
 controller-close fixture asserts actual drain failure plus successful final flush,
 not Stopped. Both remain NOT_RUN. Blocking flush/unknown supervisor force-stop
 cannot produce a receipt. No current-source Cargo/runtime/process execution.
+R02/R05 origin-error ACK source now retains the signer in outer connection state
+and signs pre-response origin failures with the actual local status. A hosted-only
+shared-client/TCP fixture increments the independent origin-effect counter before
+sending a malformed response, verifies503ACK/counter progress and replay refusal,
+and asserts the effect count remains1 rather than claiming zero effects. Client
+report/audit are explicit fixtures; not actual browser/durable product evidence.
+New fixture execution and current compile/Clippy remain NOT_RUN. No local native
+process/Cargo execution; no origin retry or partial-response second write.

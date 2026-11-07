@@ -502,3 +502,12 @@ or secret-bearing source chains. ServiceHost::run_report returns that typed
 outcome; existing run preserves io::Result compatibility by wrapping ExitFailure.
 Synchronous flush remains supervisor-bounded, not watch-preemptible. An unreturned
 flush/force-stop is unknown/incomplete, not an inferred successful flush.
+R02/R05 post-consumption origin errors: keep the consumed browser ACK signer in
+the per-connection response state until dispatch/write ends, not only inside the
+successful decision branch. If origin connect/read/framing fails before any client
+response byte, the local error response carries the consumed counter ACK bound
+to its actual status. Pre-consumption errors/admission remain unsigned. After any
+response byte has started, close without a second response. Deadline/abort/drop
+still invalidates the client epoch if no complete ACK response can be delivered.
+A503 ACK proves counter consumption only; an origin already dispatched may have
+acted. Never infer zero effects or automatically retry from that ACK.

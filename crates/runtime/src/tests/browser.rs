@@ -90,6 +90,79 @@ async fn call(address: std::net::SocketAddr, req: &Request) -> Response {
         .unwrap()
 }
 
+/// Hosted-only native sockets/shared client, not browser or durable-audit proof.
+#[tokio::test]
+async fn origin_failure_acknowledges_consumed_counter_without_claiming_zero_effects() {
+    let origin = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let config = configured(origin.local_addr().unwrap());
+    let effects = Arc::new(AtomicUsize::new(0));
+    let origin_effects = effects.clone();
+    let origin_task = tokio::spawn(async move {
+        let (mut socket, _) = origin.accept().await.unwrap();
+        let request = crate::http::read(&mut socket).await.unwrap();
+        assert_eq!(request.body, b"original bytes");
+        origin_effects.fetch_add(1, Ordering::SeqCst);
+        socket
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\nx")
+            .await
+            .unwrap();
+        socket.shutdown().await.unwrap();
+    });
+    let audit = Audit::default();
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let app = Application::new(config, Default::default(), Box::new(audit.clone())).unwrap();
+    let server = tokio::spawn(app.serve(listener));
+    let bootstrap = call(
+        address,
+        &browser_request("POST", "/_humanymous/browser/session", b"{}".to_vec()),
+    )
+    .await;
+    assert_eq!(bootstrap.status, 200);
+    let mut client = ClientSession::from_json(
+        scope(),
+        &bootstrap.body,
+        humanymous_authority::now_ms().unwrap(),
+        5000,
+    )
+    .unwrap();
+    let mut collect = browser_request("POST", "/_humanymous/browser/collect", client_report(""));
+    signed(
+        &mut client,
+        &mut collect,
+        humanymous_authority::now_ms().unwrap(),
+    );
+    let response = call(address, &collect).await;
+    assert_eq!(response.status, 200);
+    complete(&mut client, &response);
+    let mut protected = browser_request("POST", "/effect", b"original bytes".to_vec());
+    signed(
+        &mut client,
+        &mut protected,
+        humanymous_authority::now_ms().unwrap(),
+    );
+    let failed = call(address, &protected).await;
+    assert_eq!(failed.status, 503);
+    complete(&mut client, &failed);
+    assert!(!client.is_closed());
+    assert_eq!(effects.load(Ordering::SeqCst), 1);
+    assert_eq!(audit.records.lock().unwrap().len(), 2);
+    assert_eq!(call(address, &protected).await.status, 409);
+    let mut collect = browser_request("POST", "/_humanymous/browser/collect", client_report(""));
+    signed(
+        &mut client,
+        &mut collect,
+        humanymous_authority::now_ms().unwrap(),
+    );
+    let response = call(address, &collect).await;
+    assert_eq!(response.status, 200);
+    complete(&mut client, &response);
+    assert_eq!(effects.load(Ordering::SeqCst), 1);
+    origin_task.await.unwrap();
+    server.abort();
+    let _ = server.await;
+}
+
 /// Hosted-only socket boundary: a resource429 still carries the consumed ACK.
 #[tokio::test]
 async fn authenticated_session_quota_consumes_counter_and_preserves_ack_progression() {

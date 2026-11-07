@@ -7,15 +7,15 @@
   },
   {
     "path": "crates/runtime/INTEGRATION.md",
-    "bytes": 23730,
-    "sha256": "442fa1551b59ac3b7bc7e02b93d665aa465164fe6da6c2eed1c129a94fcbf7c5",
-    "git_blob": "e5b980aae5612bc6bdee93f2501e71e7339d2894"
+    "bytes": 24375,
+    "sha256": "191625135811a208953977c1586a0b5ec9b6217cd10a7ceb6768689ad528ee4c",
+    "git_blob": "951212d69a3f9ac24bd7260c5c309c440027c686"
   },
   {
     "path": "crates/runtime/src/application.rs",
-    "bytes": 22524,
-    "sha256": "78d5ff8dfe4d2f84606b2a8230bcc76f725cbef2ea2ca554d7303ecdef896925",
-    "git_blob": "e1f0856d1c22a39bfba6ddcd0c59fce911a370e2"
+    "bytes": 23124,
+    "sha256": "4e9849d1a4832f8bcabeb0347b915d30bad99400c96679c890a2a5c240aa96c0",
+    "git_blob": "01ada57ef3c14369e7d5913191bb530e6981e703"
   },
   {
     "path": "crates/runtime/src/browser.rs",
@@ -139,9 +139,9 @@
   },
   {
     "path": "crates/runtime/src/tests/browser.rs",
-    "bytes": 13392,
-    "sha256": "a35825abc04ab0498d3486d6ae0b7f1eb162c9f32123b5fda38c1d13bc55214d",
-    "git_blob": "dbffb46828fa4d6ebb236b23f9f2566812bce1fd"
+    "bytes": 16261,
+    "sha256": "12a6ea363b3ea983176b007db46171fa34eab1224484953ea0b5cf9826143c11",
+    "git_blob": "3d163c196dbfed40b823c6561a9ecb01822e64ac"
   },
   {
     "path": "crates/runtime/src/tests/service.rs",
