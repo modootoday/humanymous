@@ -3,11 +3,11 @@ id: evidence:root/20261107083740
 title: Ten current Go contract and scenario unit checks with scoped lint
 status: active
 created: 2026-11-07T08:38:26Z
-updated: 2026-11-07T08:40:27Z
+updated: 2026-11-07T08:41:47Z
 rel:
   depends_on: [sot:root/go-adapter, plan:root/20261107072800]
 files:
-  - {path: summary.json, sha256: c7d9f4bd029e776a59effbc8ef15962a35a6b4cbe0cf2ef59eb7b71974121cb0, bytes: 2214, store: repo}
+  - {path: summary.json, sha256: 92f276acf00427856f20205ecd3a4cd1c82ab34657f1869eb4b0530df515d2da, bytes: 2164, store: repo}
 ---
 
 # Actual component verification
