@@ -221,7 +221,7 @@ fn verify(report: &Value, expected: &Expected, logs: Option<&[Logs]>) -> io::Res
         _ => return Err(refuse()),
     }
     Ok(
-        json!({"schema":"humanymous.service-component-summary/1","verified":true,"source_sha":expected.sha,"run_id":expected.run,"actor_case":expected.case,"observed_exit_code":expected.exit,"qualification":"component-only","full_runtime_qualified":false,"product_qualified":false,"native_producer_qualified":false,"cases":rows,"cleanup_verified":true,"source_manifest_sha256":digest(&serde_json::to_vec(&source["files"])?),"scope":"validated supplied source-bound component records; not native admission or original-clock qualification"}),
+        json!({"schema":"humanymous.service-component-summary/1","verified":true,"source_sha":expected.sha,"run_id":expected.run,"actor_case":expected.case,"observed_exit_code":expected.exit,"qualification":"component-only","full_runtime_qualified":false,"product_qualified":false,"native_producer_qualified":false,"cases":rows,"cleanup_verified":true,"source_manifest_sha256":digest(&serde_json::to_vec(&source["files"])?),"selected_execution_identity":"catalog/inventory and caller invocation data; not independently established from nocapture text","scope":"validated supplied source-bound component records; not native admission or original-clock qualification"}),
     )
 }
 fn verify_case(
@@ -236,7 +236,7 @@ fn verify_case(
         .filter_map(|line| line.strip_suffix(": test"))
         .collect();
     let stdout = std::str::from_utf8(&logs.stdout).map_err(|_| refuse())?;
-    let totals = harness::totals(stdout).map_err(|_| refuse())?;
+    let totals = harness::successful_totals(stdout).map_err(|_| refuse())?;
     if !logs.stderr.is_empty()
         || !logs.list_error.is_empty()
         || names.iter().filter(|name| **name == case.test).count() != 1

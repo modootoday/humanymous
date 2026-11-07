@@ -434,6 +434,18 @@ pub(super) fn totals(log: &str) -> io::Result<[usize; 5]> {
     }
     Ok(summaries[0])
 }
+/// One well-formed SUCCESS footer. General totals also parses failure summaries
+/// for accounting; positive admission must use this helper.
+pub(super) fn successful_totals(log: &str) -> io::Result<[usize; 5]> {
+    let counts = totals(log)?;
+    if !log
+        .lines()
+        .any(|line| line.starts_with("test result: ok. "))
+    {
+        return Err(io::Error::other("successful native test footer required"));
+    }
+    Ok(counts)
+}
 fn summaries(log: &str) -> io::Result<Vec<[usize; 5]>> {
     log.lines()
         .filter(|l| l.starts_with("test result: "))

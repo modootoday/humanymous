@@ -978,3 +978,19 @@ fmt/spec/diff checks ran. The preexisting foreign-dirty receipt.rs was read/reus
 and stayed at unchanged hash a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df.
 Source review/freeze and a new explicit pure/hosted allocation precede execution;
 no local SCM/account or workflow dispatch is authorized by this summary seam.
+
+Independent X found a concrete pre-compile negative: general harness::totals
+accepts FAILED footers for failure accounting, so contradictory FAILED+1pass/0fail
+could otherwise qualify supplied service records. New shared successful_totals
+retains that general accounting behavior but explicitly requires the ONE parsed
+footer's status ok. Both service execution and service summary use the positive
+helper. A seventh pure negative changes only footer status plus matching supplied
+hash and requires refusal. No compilation/retry has run for this source change.
+
+Selected execution identity has a deliberately narrower supplied-record limit:
+catalog/inventory and the actual owner's fixed --exact invocation bind selection;
+the sanitizer does NOT independently infer execution identity from libtest's
+potentially interleaved --nocapture `test NAME ...`/standalone `ok` text. This
+limit is also emitted explicitly in the public summary. The Delivery owner must
+retain the actual command/binary/invocation/source provenance. Matching printed
+names or this data summary alone cannot manufacture an actual run or native proof.

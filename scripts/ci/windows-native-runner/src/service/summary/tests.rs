@@ -164,3 +164,14 @@ fn closed_cli_refuses_missing_duplicate_or_unknown_arguments_before_io() {
         assert!(run(args.into_iter().map(str::to_owned)).is_err());
     }
 }
+#[test]
+fn failed_footer_with_success_counts_and_matching_hash_is_refused() {
+    let (mut report, mut logs) = fixture("normal");
+    let text = String::from_utf8(logs[0].stdout.clone()).unwrap();
+    logs[0].stdout = text
+        .replace("test result: ok.", "test result: FAILED.")
+        .into_bytes();
+    report[catalog::CASES[0].field]["stdout_sha256"] = json!(digest(&logs[0].stdout));
+    assert!(harness::totals(std::str::from_utf8(&logs[0].stdout).unwrap()).is_ok());
+    assert!(verify(&report, &expected("normal"), Some(&logs)).is_err());
+}

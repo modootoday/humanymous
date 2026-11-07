@@ -95,7 +95,7 @@ pub(super) fn run(entry: &Value, case: &Case, base: &Path, source: &Value) -> io
         &output.stderr,
     )?;
     let text = std::str::from_utf8(&output.stdout).map_err(io::Error::other)?;
-    let totals = harness::totals(text).ok();
+    let totals = harness::successful_totals(text).ok();
     let mut row = json!({"test":case.test,"exit_code":output.status.code(),"discovered":names.len(),"passed":totals.map(|t|t[0]),"failed":totals.map(|t|t[1]),"ignored":totals.map(|t|t[2]),"measured":totals.map(|t|t[3]),"nonselected_tests":totals.map(|t|t[4]),"stdout_sha256":format!("{:x}",Sha256::digest(&output.stdout)),"validated":false});
     let count_ok = totals.is_some_and(|t| t[0..4] == [1, 0, 0, 0] && t[4] == names.len() - 1);
     if output.status.success() && output.stderr.is_empty() && count_ok {
