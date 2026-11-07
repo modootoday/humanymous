@@ -1,11 +1,27 @@
 {
   "schema": "humanymous.native-abi-pilot/0.1",
   "sourceCrate": "crates/native-abi",
+  "exportCrate": "crates/native-abi/export",
+  "entrypoint": "humanymous_native_abi_v1",
   "toolchain": "1.99.1",
   "edition": "2024",
-  "implementedBoundary": "safe-rust-core-and-pointer-free-export-source",
+  "implementedBoundary": "safe-rust-core-and-pointer-free-export",
+  "qualification": "local-pure-component-only",
   "execution": "not_run",
+  "executionScope": "hosted-header-compiler-and-dynamic-abi-pilot",
   "runner": "standard-free-github-hosted-only",
+  "componentVerification": {
+    "evidence": "evidence:root/20261107081545",
+    "sourceCheckpoint": "6e33131617338e0d00246ff658317550dbc0a9ab",
+    "runner": "local-windows-x86_64",
+    "corePassed": 16,
+    "exportPassed": 6,
+    "diagnosticParserPassed": 3,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "clippy": "all-targets-deny-warnings-passed"
+  },
   "cases": [
     "exact-version-size-reserved-negotiation",
     "zero-wrong-kind-stale-wrong-owner-handles",
@@ -18,17 +34,22 @@
   ],
   "pendingCases": [
     "upstream-generated-c-header-provenance",
-    "actual-rust-dynamic-abi-consumer",
+    "actual-generic-native-dynamic-abi-consumer",
     "actual-c-and-cpp-compiler-layout",
     "cpp-exception-raii-allocator-lifetime",
     "supported-os-architecture-matrix",
     "full-product-docker-e2e"
   ],
   "blockers": [
-    "root-export-wrapper-manifest-registration-and-cargo-slot",
-    "upstream-header-generator-and-hosted-dynamic-abi-gate",
-    "foreign-host-glue-remains-unauthorized"
+    "hosted-pinned-header-generation-and-provenance",
+    "hosted-c-and-cpp-compiler-layout-execution",
+    "hosted-generic-native-abi-consumer-execution"
   ],
+  "hostGlueScope": {
+    "managedGenericProbe": "approved-in-existing-dotnet-pilot-file-not_run",
+    "authoredCppGlue": "not_approved-not_implemented",
+    "cppRaiiExceptionQualification": "not_run"
+  },
   "securityDecision": false,
   "productSuccess": false
 }

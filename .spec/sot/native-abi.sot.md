@@ -141,6 +141,23 @@ Each separately loaded library has its own namespace; handles cannot cross
 libraries/reload. Host extensions use their own versioned symbol/operation
 namespace and must not redefine generic1..7 or invent shared scoring policy.
 
+ABI-13: The hosted delivery coordinator consumes the owning header example's
+exit status and fresh closed evidence directory, without a second layout parser.
+Success requires exit0, the exact success stdout and scope.txt produced by the
+owner, plus thirteen regular files: for each c/cpp prefix, version.txt,
+version-stderr.txt, target.txt, target-stderr.txt, stdout.txt and stderr.txt;
+scope.txt is the thirteenth. The generated header is a separate artifact.
+The coordinator binds all file hashes, actual cbindgen0.29.4 binary/version,
+compiler metadata, source/lock/toolchain/config/owner code and runner identity.
+It may emit a machine-readable outer receipt only after those checks. No extra
+owner JSON certificate is required: scope.txt is written only after both actual
+compiler exits and both layout verifications succeed. Each language checks four
+records, four sizes, four alignments and seventeen named field offsets. These
+counts are separate from the25pure unit denominator. Partial files or a generated
+header alone never authorize success. Actual dynamic loading and C++ runtime
+behavior stay separate gates. Root alone pushes/dispatches the next candidate;
+source generation and Clang execution occur hosted, with no local heavy install.
+
 ## C++ contract
 
 The eventual generated header is declarations only, generated from Rust layouts
