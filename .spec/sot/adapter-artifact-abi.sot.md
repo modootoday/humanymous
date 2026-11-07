@@ -305,6 +305,42 @@ integration is authorized by completing a name table.
 
 ## Review and remaining implementation
 
+### First public Rust facade slice under review
+
+Root owns the proposed `crates/humanymous` library package and its common graph.
+Its default feature set is empty. The first optional `adapter-go` feature exposes
+the existing leaf namespace as `humanymous::adapters::go`, preserving type identity
+through a crate re-export rather than copied wrappers. Existing `scenario` and
+`probe` module paths remain: `scenario::evaluate`, `scenario::CaseObservation`
+and `scenario::EvaluationError` must not be silently moved to the namespace root.
+Deployment, Host, Configuration and Rejection retain the actual shared runtime
+types and constructor/configuration compatibility. Receipt wire literals and the
+eight-case qualification profile remain unchanged.
+
+A colocated closed build-product manifest and Rust validator must precede feature
+wiring. Initially admit only the rust-library profile with no features or exactly
+adapter-go; reject unknown profiles, features and combinations. This manifest is
+checked against the actual Cargo-declared feature set. Define adapter-go using
+`dep:humanymous-go-adapter` so an implicit alternate dependency feature cannot
+bypass the closed feature vocabulary. Duplicate feature requests are invalid.
+This manifest is an admission boundary to be wired into supported build entrypoints, not a claim
+that Cargo cannot be invoked directly. The first slice includes no host extension
+initialization, dynamic artifact, dependency upgrade, leaf package rename or
+publication. Default-off and enabled public-consumer tests are separate gates.
+Feature-gate Go consumer tests; do not add an unconditional Go dev dependency
+that hides the default graph. The enabled closure includes the existing runtime,
+authority, audit, capture, network, TLS and async dependencies; no small or wholly
+native-free closure is promised. Actual build receipts must bind effective
+resolved features, including Cargo feature unification, rather than only manifest
+declarations.
+
+Go's bounded namespace review accepted the concrete proposal. Framework, .NET
+and adversarial reviews also accept the library-only design with the explicit
+feature/closure constraints above. Native review remains required before source
+implementation. Later Lab imports and adapter package renames require a separate
+atomic owner-coordinated graph batch and fresh product evidence. The immutable
+pre-fix e70 browser diagnostic must not be changed by this facade work.
+
 Root synthesized architecture, abuse, operations, data handling and evaluator
 constraints: prevent loader substitution/domain confusion, retained work after
 failure, privacy leaks, falsely broad ABI promises and cosmetic-only rename.
