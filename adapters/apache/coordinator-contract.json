@@ -10,7 +10,7 @@
   "public_output": "apache-public.json",
   "cleanup_output": "apache-cleanup.json",
   "public_fields": ["schema", "executionContext", "engine", "status", "stage", "failure", "lastCommand", "timingsMs", "compilerDiagnostics", "requiredScenarioCount", "observedCounts", "sourceCommit", "sourceManifestSha256", "imageDigest", "artifactHashes", "pilotCleanupObserved", "containerImageCleanupObserved", "fullProductSuccess", "caseOutcomes", "caseDiagnostics", "processExits"],
-  "case_diagnostics_policy": "Only already validated case IDs/results and fixed Rust assertion labels; unknown errors become operation-failed. Raw stderr, messages, bodies, credentials and paths remain private. Missing unverified outcomes are null. Attach and container exits are independently observed.",
+  "case_diagnostics_policy": "Only already validated case IDs/results and fixed Rust assertion or IO-kind labels; unknown errors become operation-failed. Raw stderr, messages, bodies, credentials and paths remain private. Missing unverified outcomes are null. Attach and container exits are independently observed.",
   "execution_contexts": ["github-hosted", "owned-local"],
   "stages": ["engine", "source", "build", "create", "run", "artifacts", "report", "cleanup", "complete"],
   "engine_fields": ["profile", "clientPath", "context", "endpoint", "serverId", "serverVersion", "osType", "verified"],

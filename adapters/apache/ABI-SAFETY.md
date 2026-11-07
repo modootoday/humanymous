@@ -26,8 +26,9 @@ No build receipt exists yet; these checks are authored and unexecuted.
 | Pool cleanup bridge | one Box is registered once in its matching live pool; callback consumes exactly that allocation once; cancellation signal carries no APR pointer |
 | Input replay brigade | callback owns live brigade/filter on request thread; APR-created buckets inserted only using matching host ring layout; copied bytes outlive all bucket reads |
 | Child initialization | construct after fork only; expected PID/generation is checked before locking; no inherited Tokio runtime/thread or credential from parent |
+| MPM identity and queries | read bounded host-owned ap_show_mpm name; accept only pinned names with consistent threading/nonzero capacity, and require event async query success; worker/prefork never fall back from a failed query to a guessed model |
 | Hook handoff | exact method/target/authority/header/body binding remains unchanged; main request only; no quick-cache bypass; consume shared authority result once and recheck liveness before effect |
-| Test-only nested request probes | opt-in pilot-probes build only, after consumed parent ALLOW; upstream allocates each subrequest in its matching pool; destroy once after execution, never retain its pointers; internal redirect callback must reject inherited decisions |
+| Test-only nested request probes | opt-in pilot-probes build only, after consumed parent ALLOW; upstream allocates the lookup-only subrequest in its matching pool; observe real fixups rejection503 before setting the proof marker, then destroy once; never run a rejected lookup or retain its pointers; internal redirect callback must reject inherited decisions |
 
 Every extern callback catches unwinding and returns static failure. OOM abort,
 panic=abort, SIGKILL and memory corruption cannot be caught; do not claim clean

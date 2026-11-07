@@ -48,11 +48,42 @@ const CASE_LABELS: &[(&str, &str)] = &[
     ("graceful reload command", "graceful-reload-command"),
     ("owned cleanup path", "cleanup-path"),
 ];
+const IO_LABELS: &[(std::io::ErrorKind, &str)] = &[
+    (std::io::ErrorKind::TimedOut, "io-timeout"),
+    (std::io::ErrorKind::WouldBlock, "io-would-block"),
+    (
+        std::io::ErrorKind::ConnectionRefused,
+        "io-connection-refused",
+    ),
+    (std::io::ErrorKind::ConnectionReset, "io-connection-reset"),
+    (
+        std::io::ErrorKind::ConnectionAborted,
+        "io-connection-aborted",
+    ),
+    (std::io::ErrorKind::UnexpectedEof, "io-unexpected-eof"),
+    (std::io::ErrorKind::BrokenPipe, "io-broken-pipe"),
+    (std::io::ErrorKind::NotFound, "io-not-found"),
+    (std::io::ErrorKind::PermissionDenied, "io-permission-denied"),
+    (std::io::ErrorKind::OutOfMemory, "io-memory"),
+];
+fn case_io_failure_label(kind: std::io::ErrorKind) -> &'static str {
+    IO_LABELS
+        .iter()
+        .find_map(|(known, label)| (*known == kind).then_some(*label))
+        .unwrap_or("operation-failed")
+}
 pub fn case_failure_label(message: &str) -> &'static str {
     CASE_LABELS
         .iter()
         .find_map(|(text, label)| (*text == message).then_some(*label))
         .unwrap_or("operation-failed")
+}
+pub fn case_error_label(error: &(dyn std::error::Error + 'static)) -> &'static str {
+    if let Some(error) = error.downcast_ref::<std::io::Error>() {
+        case_io_failure_label(error.kind())
+    } else {
+        case_failure_label(&error.to_string())
+    }
 }
 pub fn case_diagnostics(value: &Value, bytes: &[u8]) -> Value {
     let Ok(c) = contract() else {
@@ -80,7 +111,8 @@ pub fn case_diagnostics(value: &Value, bytes: &[u8]) -> Value {
             if parts.len() == 2
                 && labels.contains_key(parts[0])
                 && (parts[1] == "operation-failed"
-                    || CASE_LABELS.iter().any(|(_, label)| *label == parts[1]))
+                    || CASE_LABELS.iter().any(|(_, label)| *label == parts[1])
+                    || IO_LABELS.iter().any(|(_, label)| *label == parts[1]))
             {
                 labels.insert(parts[0].to_owned(), parts[1].to_owned());
             }
@@ -469,6 +501,22 @@ mod tests {
         assert_eq!(result.as_object().unwrap().len(), 1);
         assert!(!result.to_string().contains("private"));
         assert_eq!(case_failure_label("credential=private"), "operation-failed");
+        let private_io =
+            std::io::Error::new(std::io::ErrorKind::ConnectionRefused, "credential=private");
+        assert_eq!(case_error_label(&private_io), "io-connection-refused");
+        assert_eq!(
+            case_io_failure_label(std::io::ErrorKind::ConnectionRefused),
+            "io-connection-refused"
+        );
+        assert_eq!(
+            case_io_failure_label(std::io::ErrorKind::Other),
+            "operation-failed"
+        );
+        let io = case_diagnostics(
+            &value,
+            format!("APACHE_CASE_FAILURE {failed} io-connection-refused\n").as_bytes(),
+        );
+        assert_eq!(io[failed.as_str()], "io-connection-refused");
         assert_eq!(
             case_failure_label("binary replay/effect"),
             "binary-replay-effect"

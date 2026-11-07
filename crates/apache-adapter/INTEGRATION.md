@@ -37,8 +37,11 @@ production module must also build without those test-only hooks. Runner accounts
 feature and selected httpd feature compiled on actual hosted source8042c6bc.
 Evidence:root/20261107111302 retains independent module/ABI/image identities and
 the failed actual45outcome. Outer owned-ledger cleanup passed; pilot cleanup
-remained false. The later safe case projection adds one unrun pure test, making
-the next expected coordinator denominator11; prior10-test proof is historical.
+remained false. Source d65da705 then passed the actual coordinator11units and
+reported event14/15, worker8/15 and prefork1/15. Evidence:root/20261107113711
+retains these failed outcomes. The candidate fixes pinned MPM query selection
+and test-only rejected lookup handling, adding three safe capability tests.
+Next expected pure denominators12safe/11coordinator remain unrun for new bytes.
 
 Hosted pilot interface: adapters/apache/pilot-contract.json. Product-lab owns
 Compose orchestration; Apache owns only the root/CI-delegated standalone

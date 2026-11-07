@@ -261,7 +261,7 @@ fn case(
 ) {
     let result = test();
     if let Err(error) = &result {
-        let label = crate::coordinator::case_failure_label(&error.to_string());
+        let label = crate::coordinator::case_error_label(error.as_ref());
         eprintln!("APACHE_CASE_FAILURE {mpm}/{name} {label}");
     }
     cases.push(serde_json::json!({"id":format!("{mpm}/{name}"),"mpm":mpm,"name":name,"result":if result.is_ok(){"passed"}else{"failed"}}));
@@ -502,7 +502,7 @@ pub fn run() -> Result<(), Error> {
     let mut cases = Vec::new();
     for mpm in ["event", "worker", "prefork"] {
         if let Err(error) = suite(mpm, &mut cases) {
-            let label = crate::coordinator::case_failure_label(&error.to_string());
+            let label = crate::coordinator::case_error_label(error.as_ref());
             eprintln!("APACHE_CASE_FAILURE {mpm}/infrastructure {label}");
             cases.push(serde_json::json!({"id":format!("{mpm}/infrastructure"),"mpm":mpm,"name":"suite-infrastructure","result":"failed"}));
         }

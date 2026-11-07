@@ -255,26 +255,43 @@ extern "C" fn child_init(pool: *mut apr_pool_t, server: *mut server_rec) {
             return Err(());
         }
         let mut threaded = 0;
-        let mut asynchronous = 0;
         let mut generation = 0;
         let mut threads = 0;
         // SAFETY: query writes only the provided initialized output integers.
         unsafe {
             if ap_mpm_query(AP_MPMQ_IS_THREADED as _, &mut threaded) != 0
-                || ap_mpm_query(AP_MPMQ_IS_ASYNC as _, &mut asynchronous) != 0
                 || ap_mpm_query(AP_MPMQ_GENERATION as _, &mut generation) != 0
                 || ap_mpm_query(AP_MPMQ_MAX_THREADS as _, &mut threads) != 0
             {
                 return Err(());
             }
         }
-        let mpm = if threaded == 0 {
-            Mpm::Prefork
-        } else if asynchronous != 0 {
-            Mpm::Event
-        } else {
-            Mpm::Worker
+        // Worker/prefork return APR_ENOTIMPL for IS_ASYNC. Select only an
+        // explicit pinned identity, never infer a known model from that error.
+        // SAFETY: the live child host returns a static NUL-terminated MPM name.
+        let name = unsafe { text(ap_show_mpm(), 16)? };
+        let threaded = match threaded {
+            value if value == AP_MPMQ_STATIC as c_int => true,
+            value if value == AP_MPMQ_NOT_SUPPORTED as c_int => false,
+            _ => return Err(()),
         };
+        let asynchronous = if name == "event" {
+            let mut value: c_int = 0;
+            // SAFETY: this supported event query writes the initialized local
+            // integer only; no borrowed host memory crosses the call.
+            if unsafe { ap_mpm_query(AP_MPMQ_IS_ASYNC as c_int, &mut value) } != 0 {
+                return Err(());
+            }
+            match value {
+                0 => Some(false),
+                1 => Some(true),
+                _ => return Err(()),
+            }
+        } else {
+            None
+        };
+        let threads = usize::try_from(threads).map_err(|_| ())?;
+        let mpm = Mpm::identify(&name, threaded, asynchronous, threads).map_err(|_| ())?;
         let generation = u64::try_from(generation)
             .map_err(|_| ())?
             .checked_add(1)
@@ -282,7 +299,7 @@ extern "C" fn child_init(pool: *mut apr_pool_t, server: *mut server_rec) {
         let capacity = if mpm == Mpm::Prefork {
             1
         } else {
-            usize::try_from(threads).map_err(|_| ())?.min(64)
+            threads.min(64)
         };
         let child = Child::initialize(generation, mpm, capacity).map_err(|_| ())?;
         PROCESS
@@ -704,19 +721,29 @@ extern "C" fn handoff(request: *mut request_rec) -> c_int {
             // Test-only actual host lifecycle probes; never enabled implicitly
             // by a client header, production configuration or runtime setting.
             if probe == 1 {
+                // SAFETY: this callback owns the live parent; lookup creates
+                // one host-owned subrequest pool, destroyed once below.
                 unsafe {
-                    apr_table_set(
-                        (*request).err_headers_out,
-                        c"X-Pilot-Probe-Ran".as_ptr(),
-                        c"subrequest".as_ptr(),
-                    );
                     let subrequest =
                         ap_sub_req_lookup_uri(c"/echo".as_ptr(), request, ptr::null_mut());
                     if subrequest.is_null() {
                         return Err(());
                     }
-                    let _status = ap_run_sub_req(subrequest);
+                    // NULL next_filter requests lookup-only processing. Its
+                    // real fixups must reject this nested request before a
+                    // handler or response protocol can touch the parent.
+                    // SAFETY: non-null lookup result remains live until the
+                    // matching destroy call; copy the scalar before destruction.
+                    let rejected = (*subrequest).status == FAILURE;
                     ap_destroy_sub_req(subrequest);
+                    if !rejected {
+                        return Err(());
+                    }
+                    apr_table_set(
+                        (*request).err_headers_out,
+                        c"X-Pilot-Probe-Ran".as_ptr(),
+                        c"subrequest".as_ptr(),
+                    );
                 }
                 return Ok(FAILURE);
             }

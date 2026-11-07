@@ -108,7 +108,46 @@ Nine pure tests and safe all-target Clippy passed in root-assigned A. A later
 root-assigned D repeated9pure passes and verified the registered native package's
 DEFAULT all-target check/Clippy without headers or bindgen. Exact source/graph
 receipts are evidence:root/20261107082159 and evidence:root/20261107085316.
-Selected httpd compilation and the45hosted scenarios have not run.
+Those historical default results did not select httpd or execute the45scenarios.
 Native source inputs are pinned in adapters/apache/upstream-lock.json using
 official release checksum pages and observed peeled Git tags. Configured header
-closure, builder/clang identity and actual source-bound hosted results are absent.
+closure and builder/clang checks now ran inside the actual SDK build, producing
+an independently hash-bound ABI receipt. This does not qualify every host tuple.
+
+## Actual hosted outcomes and MPM capability correction
+
+Hosted source8042c6bc completed actual production/probe module builds/Clippy and
+all45pairs with23passed/22failed/0not_run. Source d65da705 added only bounded
+case projection and observed the same totals: event14/15, worker8/15,
+prefork1/15. Safe9and coordinator11units passed with zero ignored/filtered;
+pilot cleanup remained false while outer container/image and ledger cleanup
+passed. Evidence:root/20261107113711 retains the exact source, manifest, image,
+five artifact hashes, every case result and fixed failure labels. No runtime
+tuple or full product success is qualified.
+
+The pinned worker and prefork query implementations do not implement
+AP_MPMQ_IS_ASYNC; their default returns APR_ENOTIMPL, which ap_mpm_query
+propagates. Requiring that query for every child therefore rejects those known
+models. Select only the exact host-reported event/worker/prefork identity and
+independently validate threading/count/generation. Query async capability only
+for event, require its exact affirmative value, and reject unknown identities,
+missing event capability, inconsistent threading or zero capacity. No query
+failure is converted into a guessed supported MPM. Three new pure capability
+boundary tests make the next safe denominator12; they are not yet executed.
+
+Primary pinned sources:
+[worker query](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/server/mpm/worker/worker.c#L309-L360),
+[prefork query](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/server/mpm/prefork/prefork.c#L269-L319),
+[query wrapper](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/server/mpm_common.c#L393-L402).
+
+The event failure is separately bounded to subrequest-rejection. The test-only
+probe passed NULL next_filter to lookup, which runs normal internal processing
+and records fixups failure in the subrequest status. ap_run_sub_req does not
+check that status before invoking handlers/finalizing response protocol. The
+correct probe observes actual503rejection, destroys that subrequest once and
+sets its proof marker only after the observation; it never runs an already
+rejected lookup. The unchanged test still requires non-200, that proof marker
+and no origin effect. The earlier combined assertion does not establish a
+production authorization bypass or a particular unrecorded HTTP status.
+[Pinned request lifecycle](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/server/request.c#L2112-L2138),
+[subrequest execution](https://github.com/apache/httpd/blob/e8ada83f004f63bca1e0cc75e374bc25b06cdc7b/server/request.c#L2348-L2369).

@@ -175,3 +175,17 @@ alone do not identify individual failed cases. The follow-up adds only safe
 case/result/static-label projection and actual process exits, retaining the
 closed pilot schema and acceptance denominator, with one new privacy/binding
 pure test. New source awaits allocated or genuine hosted validation.
+
+Run42367750854/source d65da705 executed safe9/coordinator11pure units and all45
+actual pairs with23passed/22failed/0not_run. Case projection distinguishes
+event14/15, worker8/15 and prefork1/15; evidence:root/20261107113711 binds every
+case, artifact and actual attach/container exit1/1. Ledger cleanup passed while
+pilot cleanup remained false. Primary pinned query source confirms unsupported
+async queries wrongly rejected worker/prefork; the candidate requires exact
+MPM identity and consistent capabilities with no unknown fallback. Three safe
+negative/known-capability tests make the next denominator12safe/11coordinator.
+The separate event probe now observes real lookup fixups rejection503 before
+its marker, rather than executing an already rejected lookup. No expected case,
+status/effect assertion, scoring or resource bound changes. Generic prefork I/O
+failures gain only static ErrorKind labels; their exact cause remains unknown.
+All new changes await actual hosted checks and root-reviewed retry.

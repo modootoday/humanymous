@@ -13,6 +13,24 @@ pub enum Mpm {
     /// Event MPM; this alone grants no asynchronous host capability.
     Event,
 }
+impl Mpm {
+    /// Bind a pinned host identity to its independently queried capabilities.
+    /// Missing async support is accepted only for the two explicitly known
+    /// synchronous MPMs; it is never a fallback for unknown or event models.
+    pub fn identify(
+        name: &str,
+        threaded: bool,
+        asynchronous: Option<bool>,
+        threads: usize,
+    ) -> Result<Self, Error> {
+        match (name, threaded, asynchronous, threads) {
+            ("prefork", false, None, 1) => Ok(Self::Prefork),
+            ("worker", true, None, 1..) => Ok(Self::Worker),
+            ("event", true, Some(true), 1..) => Ok(Self::Event),
+            _ => Err(Error::ChildUnavailable),
+        }
+    }
+}
 /// Static failure without request bytes, credentials or client identity.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Error {
@@ -314,5 +332,36 @@ mod tests {
         assert!(begin(&c, 0).is_ok());
         cleanup.cancel();
         assert!(begin(&c, 0).is_ok());
+    }
+    #[test]
+    fn known_mpm_identity_requires_matching_independent_capabilities() {
+        assert_eq!(Mpm::identify("prefork", false, None, 1), Ok(Mpm::Prefork));
+        assert_eq!(Mpm::identify("worker", true, None, 25), Ok(Mpm::Worker));
+        assert_eq!(Mpm::identify("event", true, Some(true), 25), Ok(Mpm::Event));
+    }
+    #[test]
+    fn unknown_or_inconsistent_mpm_capabilities_never_fall_back() {
+        for (name, threaded, asynchronous, threads) in [
+            ("unknown", false, None, 1),
+            ("event", true, None, 25),
+            ("event", true, Some(false), 25),
+            ("event", false, Some(true), 25),
+            ("worker", false, None, 25),
+            ("worker", true, Some(true), 25),
+            ("prefork", true, None, 1),
+            ("prefork", false, None, 2),
+        ] {
+            assert!(Mpm::identify(name, threaded, asynchronous, threads).is_err());
+        }
+    }
+    #[test]
+    fn no_mpm_can_admit_with_missing_thread_capacity() {
+        for (name, threaded, asynchronous) in [
+            ("prefork", false, None),
+            ("worker", true, None),
+            ("event", true, Some(true)),
+        ] {
+            assert!(Mpm::identify(name, threaded, asynchronous, 0).is_err());
+        }
     }
 }
