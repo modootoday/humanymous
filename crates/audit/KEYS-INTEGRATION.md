@@ -228,7 +228,8 @@ Remaining requirements after root-requested safe checkpoint handoff:
 5. Independent latest control/backup/witness pins, initial pending-state incident
    handling, final same-source six-tuple/product Docker/human/AT qualification.
 6. Shared audit-owned Custody+Log lifetime/startup context now has implemented
-   source as described above; consumer migration and hosted proof remain pending.
+   source as described above; runtime and authority consumer source migration is
+   present. Hosted proof remains pending.
    Authority must not add a second crypto/startup implementation during adoption.
    Writer/witness signing-identity key rotation remains distinct from the
    implemented passphrase-envelope rotation and is not implemented here.

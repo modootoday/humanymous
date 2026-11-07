@@ -207,10 +207,12 @@ Runtime requested and received Log::flush (checkpoint then WAL flush, poison on
 error), checkpoints and external co-signer injection. Runtime operational state
 may replay authenticated audit events; a streaming visitor alone cannot remove
 the existing whole-history/Merkle memory premise. Full bounded streaming recovery
-is deferred explicitly. Runtime/authority additionally requested shared startup
-Custody+Log lifetime ownership: proposed for a later audit turn by moving the
-existing runtime SealedAudit implementation, not duplicating it. No current
-audit-owned shared startup wrapper is claimed.
+is deferred explicitly. Audit now owns the shared SealedLog startup/lifetime
+wrapper described by API0.2 above. Current runtime/startup.rs and
+authority/startup.rs consume it; authority/decision.rs implements its local
+DurableAudit trait for SealedLog. These are source adoption facts, not hosted
+qualification. The later TrustedSnapshot storage delta requires its own
+source-bound validation and cannot inherit older startup test results.
 
 Policy errors are ControlError::{Configuration,Malformed,WrongScope,TimeWindow,
 UnknownAdministrator,Quorum,DuplicateAdministrator,InvalidSignature}. Native

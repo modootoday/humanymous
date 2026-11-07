@@ -100,6 +100,34 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+### Current completion audit against inspected sources
+
+This is an open-requirement audit, not a reduction of the active product goal.
+The current checkout was inspected after7dba59d; old component results remain
+source-bound to their historical manifests. No new hosted job was dispatched.
+
+| Requirement | Inspected authoritative source/evidence | Current conclusion and next proof |
+|---|---|---|
+| Shared sealed custody/writer lifetime | audit/log/sealed.rs; runtime/startup.rs; authority/startup.rs and decision.rs | Shared owner and both consumer adoptions exist; full native lifetime/ACL/restart execution on current source remains unverified |
+| Required external witness before secret/state access | SealedLog preflight and runtime startup wrappers; evidence73654 pure preflight | Source/pure evidence exists; actual ServiceHost/private secret-reader refusal needs hosted execution |
+| Independent witness in real product host | ServiceHost bind_with_witness and lab/browser_product.rs injection | Consumer source exists; actual isolated process/owner/mount and product requests require hosted lab observation |
+| Witness-ahead and complete ambiguous-tail recovery | shared planner/recover_pinned; runtime bind_recovered; authored native cases | Pure recovery checked on older source, native cases compiled before snapshot delta; current crash/outage/no-effect proof remains required |
+| Signed dual approval and independent spent-anchor retention | control ledger/retention/service and retained-only capability; evidence80220 | Seven pure checks and static compilation passed before storage delta; actual native service, independent actor rights and runtime destructive handler remain unverified |
+| Persistent settings and one-way kill state | management handler currently reports writable=false/destructive_controls=false; TrustedSnapshot source7dba59d | Native primitive implemented but not yet recompiled; actual typed WAL commit/CAS/restart/epoch/runtime mutation pipeline incomplete |
+| Destination-bound passphrase rotation | custody/rotation.rs; two authored actual-file cases | Target-binding pure test passed on fa327b7; current native wrong-secret, substituted candidate, stale source and interrupted exact recovery need hosted proof; no automatic grant replay |
+| Erasure and vault tombstone durability | custody/vault and subject-bound issuer; historical component evidence51648 | Current operational/admin wiring, authorized crash recovery, backup residual and deployment proof remain incomplete; physical/unknown-copy erasure is not established |
+| Backup inventory/retirement/reconciliation | keys/backups.rs and corrected helper/parent contract | Historical native evidence exists; current full-source hosted strict accounting and product/operator integration remain required |
+| Sink and export | verified bounded local sink.rs | Local component source exists; remote sink delivery/retry/receipt semantics remain unimplemented and are not silently counted complete |
+| Bounded recovery resources and signing identity changes | whole-history Log/WAL/Merkle source and current API | Full streaming authenticated recovery and writer/witness signing-identity rotation remain unimplemented; passphrase rotation does not satisfy either |
+| Final checks and delivery | current evidence manifests, runner's narrow rawignored4 contracts, root-owned hosted batch | Scoped pure/static results are insufficient for current cross-OS full suite, Docker e2e, exact source/images, private evidence recovery and product/deployment qualification |
+
+The previous claim that no shared startup owner existed was contradicted by
+current consumer source and corrected in the owning SoT. Management mutation
+absence is directly visible in current observer-only code; it is not inferred
+from missing green output. Root schedules current-source hosted checks; runtime
+owns effect/CAS semantics, lab owns real requests/isolation, and audit continues
+its owned native storage, cryptographic binding and recovery work.
+
 Runtime accepted the audit-owned trusted native snapshot boundary for R07/R10.
 Source exports TrustedSnapshot open/read/inspect/replace/exact promote_pending,
 reusing the lifetime lock, native privacy checks, atomic transaction and explicit
