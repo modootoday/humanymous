@@ -14,7 +14,7 @@ release is claimed.
 
 | Surface | Qualification state |
 | --- | --- |
-| Rust libraries | Shared detection, integrity, audit and state components exist; unit comparisons are narrower than deployed parity |
+| Rust libraries | Shared detection, integrity, audit and state components exist; the public `humanymous` facade has explicit optional adapter features; unit and namespace checks are narrower than deployed parity |
 | HTTP runtime | Experimental loopback HTTP/1.1 with bounded complete requests, sessions, request integrity and durable audit before origin dispatch |
 | Artifact and service provisioning | Original `doctor`, `install`, `rollback` manage an explicit artifact; separate signed `service-*` commands implement owned lab-service lifecycle with full runtime qualification still false |
 | Native integration CLI | `humanymous-native init` emits an unqualified framework plan; explicit manifest writing currently requires Windows |
@@ -35,6 +35,21 @@ checkpoints. Neither a workspace member count nor a passing component suite is
 a supported-platform matrix or proof of full-product parity. Native browser
 process tests and framework deployment pilots need their own execution evidence;
 a documentation preview does not exercise them.
+
+At source `e696e6a5`, the public Rust crate `humanymous` has no default adapter
+features. Explicitly enabling `adapter-go` exposes `humanymous::adapters::go`
+by re-exporting the existing owning Go-origin integration types and modules.
+This is a Rust API surface for external Go HTTP origins, not a Go-language SDK
+or evidence of execution inside a Go host. Internal namespace migration,
+laboratory imports and CLI admission need their own accepted source checkpoint.
+
+CI source `c3d81a7c`, with results retained at `86d8d68c`, pins Node 24 action
+families and Ubuntu 24.04 runners and corrects release-note newline handling.
+Its recorded local validation passed 107 pure tests, check, strict Clippy,
+formatting, delivery policy and actionlint. These checks do not execute the
+hosted actions or prove that historical annotations and owning job failures
+have disappeared. A successful workflow syntax check is not a release or
+production Pages deployment.
 
 The pure Pass challenge implementation at source `ae57c13` has a recorded
 Windows component run with 37 passing Rust tests: 35 library tests, including

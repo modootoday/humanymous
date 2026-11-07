@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.pages-source-reconciliation/1",
+  "date": "2026-11-08",
+  "accepted_commits": {
+    "facade": "e696e6a580b7971a0a9ef4b8c7c6ff965f406faf",
+    "actions_source": "c3d81a7cb152065b6b078d55379f57e95ae213de",
+    "actions_validation": "86d8d68ca6b8633c00e87aefaa26e88664a9280d"
+  },
+  "sources_read": [
+    "e696e6a5:crates/humanymous/src/lib.rs",
+    "e696e6a5:crates/humanymous/Cargo.toml",
+    "e696e6a5:.spec/sot/adapter-artifact-abi.sot.md",
+    "86d8d68c:.spec/evidence/20261107052001-delivery-followup/actions-c3d81a7c-validation.json"
+  ],
+  "public_changes": [
+    "docs/reference/production-vs-reference.md",
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md",
+    "docs/standards/draft-v0/changes.json"
+  ],
+  "facade": "Empty defaults; explicit adapter-go re-exports existing owning Rust integration contracts through humanymous::adapters::go. Not Go-language SDK, automatic host initialization, native producer, framework or product qualification.",
+  "actions": "Recorded local107 pure tests and check/strictClippy/fmt/policy/actionlint0; Node24 action families, Ubuntu24.04 and release-note newline handling. No hosted execution or historical annotation absence inferred.",
+  "pending_source": "Internal Go namespace/Lab imports/CLI admission atomic batch was uncommitted at owner request; not published as completed.",
+  "ordinary_scoped_validation": "Existing fixed-source Rust Pages checker reports88pages/errors0; git diff --check passed. No new compilation, hosted run or product test performed by this reconciliation.",
+  "spec_scope_correction": "Initial spec check with docs folder refused because it contains no Spec documents. Corrected to owning plan/evidence index:0errors/0warnings; no source edit or test retry implied.",
+  "render": "No render performed for these new authored bytes. Existing tab7/port18782 preview remains the earlier56ea5267 docs tree; its04:37:20+09 lease is unchanged and not extended. Fresh rendering is required before claiming the edited prose is visible.",
+  "full_at_wcag_qualified": false,
+  "production_pages_qualified": false,
+  "full_product_qualified": false,
+  "generic_wire_changed": false
+}

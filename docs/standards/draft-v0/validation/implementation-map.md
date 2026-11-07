@@ -16,6 +16,19 @@ No row claims complete Draft v0 conformance. Source and fixture digests belong
 in the source-bound execution report; an older passing component run does not
 qualify a changed binary.
 
+Public Rust facade source `e696e6a5` adds an explicit optional `adapter-go`
+feature exposing `humanymous::adapters::go`; no adapter is enabled by default.
+The namespace reuses existing owning contracts. Namespace/consumer checks do
+not establish actual Go-host behavior, authenticated observation provenance,
+full-product qualification or a generic Draft v0 wire profile. See the
+[deployment boundaries](../../../reference/supported-topologies.md).
+
+Delivery validation at source `c3d81a7c` records 107 passing pure tests and
+successful local static workflow checks, retained at `86d8d68c`. Node 24 action
+pins, Ubuntu 24.04 runner selection and release-note newline handling are
+delivery changes; they add no protocol requirement or interoperability result.
+Hosted execution and absence of historical annotations remain separate gates.
+
 | Candidate requirement | Current subset | Evidence boundary still needed |
 | --- | --- | --- |
 | [Observation provenance (P-01)](../protocol/profile.md#p-01-observation-provenance) | Shared adapter parser validates declared header mode and rejects fabricated capture; collector reads browser APIs; a separate same-transport TLS/H2 capture candidate exists | Actual ingress qualification, original-client hop ownership and report-to-session provenance, not a client assertion |

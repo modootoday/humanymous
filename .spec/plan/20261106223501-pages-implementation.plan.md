@@ -2448,3 +2448,19 @@ accessibility-followup retains fresh source/build/archive receipts. Owned Ruby
 and baseline Caddy were removed. Final loopback preview at port18782 is served
 by owned Caddy7d98ddd0, supervised by session17945 until automatic cleanup at
 2026-11-08 04:37:20 +09:00. Its serving copy matches all165manifest entries.
+
+### Accepted public Rust facade and local CI evidence reconciliation
+
+Updated public status, supported topologies, Draft-v0 implementation map and
+change manifest from accepted e696e6a5 and c3d81a7c/86d8d68c. Empty facade defaults
+and optional adapter-go namespace retain owning contracts; namespace evidence
+is not Go-host qualification. Local107pure tests/check/strictClippy/fmt/policy/
+actionlint do not establish hosted execution or historical annotation absence.
+The uncommitted internal Go namespace/Lab/CLI batch is not marked complete.
+
+Evidence07052815/public-facade-actions-reconciliation.json retains exact source
+IDs, scope and limits. Existing Rust source checker reports88pages/errors0 and
+diff check passes. No build or runtime execution performed for this prose update.
+The retained preview still serves earlier56ea5267 docs bytes and expires at its
+unchanged04:37:20+09 deadline; it is not a preview of this new authored prose.
+Production Pages, final candidate parity, full product and AT gates remain open.

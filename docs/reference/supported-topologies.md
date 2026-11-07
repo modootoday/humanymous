@@ -205,6 +205,14 @@ and pidfd-based normal signals. Its isolated prefork CLI observation exited and
 reaped successfully without timeout, truncated output or forced cleanup. These
 observations do not establish general CLI or arbitrary process-tree containment.
 
+The public Rust facade at source `e696e6a5` provides the optional `adapter-go`
+feature with the `humanymous::adapters::go` namespace. Default features are empty;
+enabling this namespace reuses the existing owning integration contracts and
+does not initialize a host automatically. Namespace and consumer compilation
+checks do not qualify a Go host, framework, native producer or deployment.
+Internal package migration and CLI admission must be tied to their own accepted
+source and execution evidence.
+
 For Rust Gate integration for Go HTTP origins, source `c3211e27` passed the
 bounded eight-case profile in [hosted run 42375310198](https://github.com/modootoday/humanymous/actions/runs/42375310198).
 All eight ordered cases were evaluated and passed, with 40 known assertions,

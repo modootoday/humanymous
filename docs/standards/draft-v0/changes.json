@@ -9,6 +9,18 @@
 {
   "kind": "implementation-evidence",
   "paths": [
+    "../../reference/production-vs-reference.md",
+    "../../reference/supported-topologies.md",
+    "validation/implementation-map.md"
+  ],
+  "summary": "Record accepted e696e6a5 optional public Rust adapter-go facade with empty defaults, separate namespace checks from Go-host qualification, and retain c3d81a7c/86d8d68c local107-test CI validation without claiming hosted success or resolved historical annotations. Uncommitted internal migration and CLI admission are not accepted evidence.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
+  "paths": [
     "../../reference/cli-config-policy.md",
     "../../reference/browser-collector.md",
     "../../reference/supported-topologies.md"
