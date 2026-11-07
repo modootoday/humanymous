@@ -2072,3 +2072,15 @@ hashes/notes for later ledger reconciliation, without frozen docs mutation.
 Six primary source hashes match; viewport differs only by122 CRLF bytes and
 normalizes to the candidate hash. Reported owner-only LF correction; did not
 mutate foreign path or treat normalized equality as exact review acceptance.
+
+### Fixed Runtime operational settings manual batch
+
+Read complete eight files956lines: settings151/admission59/shutdown83/resource
+schema58/readiness75/outcome91/native store342/journal97. Seven were new inventory
+sources; unchanged schema was rechecked, not counted as an eighth new gap. Exact
+source hashes all match current primary bytes. Existing on-call resource bounds
+and ambiguous mutation/no-automatic-retry wording agree. Pure candidate/expected
+readiness/budget relations and modeled crash selection remain distinct from
+actual native power-loss, manager stop, independent witness or product proof.
+Recorded per-file substantive notes for later ledger reconciliation; no public
+frozen ledger mutation or Cargo/native/browser execution. New Pages run absent.

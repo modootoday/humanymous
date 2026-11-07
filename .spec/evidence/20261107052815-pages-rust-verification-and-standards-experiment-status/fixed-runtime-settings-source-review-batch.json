@@ -1,0 +1,113 @@
+{
+  "scope": "Manual complete-file source review against fixed candidate",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "reviews": [
+    {
+      "source": "crates/runtime/src/settings.rs",
+      "lines": 151,
+      "sha256": "a73a05e5afe707aec0762546cfea66147b65c4a33d4f3b2e166f9129b80eab14",
+      "current_primary_sha256": "a73a05e5afe707aec0762546cfea66147b65c4a33d4f3b2e166f9129b80eab14",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete pure scoped operational snapshot/CAS candidate:16KiB fixed struct JSON, exact bytes and domain commitment, scope/node binding, safe-integer revision and frozen parent/candidate bytes. PreparedSettings grants no durable authorization or effect.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/session/admission.rs",
+      "lines": 59,
+      "sha256": "275f5162e56e490dc9889b1091935e3185c4a7f78cc3281bde0af1ba84f0263e",
+      "current_primary_sha256": "275f5162e56e490dc9889b1091935e3185c4a7f78cc3281bde0af1ba84f0263e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete monotonic fixed-window resource admission; bounded counter, one-second reopen and permanent poison on elapsed rollback. This is neither client identity nor a detection signal.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/service/shutdown.rs",
+      "lines": 83,
+      "sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb",
+      "current_primary_sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete1..30000ms drain request and strictly positive supervisor slack below manager deadline, checked overflow; pure budget relation is not blocking-I/O preemption, actual child reaping or service stop execution.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/configuration/operational.rs",
+      "lines": 58,
+      "sha256": "aa0a21fda1ed2bb760f34ecda727516e76220a630cff16c5bb116af5d92e7650",
+      "current_primary_sha256": "aa0a21fda1ed2bb760f34ecda727516e76220a630cff16c5bb116af5d92e7650",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete strict resource-only schema and five bounds match public operator table; unknown scoring/secret fields reject. Validation alone does not durably apply a change.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/service/readiness.rs",
+      "lines": 75,
+      "sha256": "588e2973865ad469d46a9bb9faeab13c5f95b2d9cb989e1022977d27ccb40fc5",
+      "current_primary_sha256": "588e2973865ad469d46a9bb9faeab13c5f95b2d9cb989e1022977d27ccb40fc5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete expected profile construction, external witness presence separate from independence false, optional management/settings revision, TLS/H1 readiness excluding H2/collector. Declared readiness and source tests are not runtime or deployment attestation.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/service/outcome.rs",
+      "lines": 91,
+      "sha256": "6418a93d8cdf3fcf199096eb08bd810d2c6dc519df654ba35bc7d5c6273c3569",
+      "current_primary_sha256": "6418a93d8cdf3fcf199096eb08bd810d2c6dc519df654ba35bc7d5c6273c3569",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete bounded shutdown report/failure accounting; success only when both drain and audit flush return success, all failure combinations preserved without underlying sensitive errors. No stop/reaping result inferred from enum or serialization.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/settings/store.rs",
+      "lines": 342,
+      "sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6",
+      "current_primary_sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete342-line private lifetime-locked native state plus witnessed journal selection, explicit CreateNew/Existing/pending recovery, exact envelope/parent/revision, durability policy, stage/audit/finalize/check sequence and poison across ambiguity. Caller still owes serialized apply/liveness; modeled selection tests are not power-loss proof.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/settings/store/journal.rs",
+      "lines": 97,
+      "sha256": "bb84e65a4877202df99977ae45021fcc8d11ba3883becfb05144ff5f1d8daa75",
+      "current_primary_sha256": "bb84e65a4877202df99977ae45021fcc8d11ba3883becfb05144ff5f1d8daa75",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete97-line authenticated-record-only operational head: exact event/node/tenant/config/revision/digest, consecutive revisions and witnessed coverage, append/flush and final witness check. HTTP JSON cannot mint a head; same-process witness fixtures do not establish independent deployment.",
+      "pages": [
+        "docs/reference/on-call-quick-reference.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "reviewed_files": 8,
+  "execution": "NOT_RUN",
+  "public_wording": "Resource bounds and ambiguous mutation/no retry statements agree with reviewed source",
+  "public_ledger": "Pending later candidate reconciliation; frozen docs not mutated",
+  "qualification": "Source decisions and durability contracts are distinct from actual native crash, protected service, independent witness or full product proof",
+  "delta_disposition": {
+    "new_inventory_sources_reviewed": 7,
+    "existing_byte_identical_schema_rechecked": 1,
+    "schema": "crates/runtime/src/configuration/operational.rs",
+    "raw_delta_unchanged": true
+  }
+}
