@@ -927,3 +927,24 @@ ancestor or vendor fallback; synthetic parser fixtures remain non-authoritative.
 Reuse existing selected-input readers where semantics match instead of adding
 a generalized framework. Reader ceilings authorize no arbitrary recursive scan.
 No input ownership decision alone freezes or moves the complete Tools slice.
+
+## Accepted offline SGD implementation allocation
+
+Root accepts the bounded offline SGD successor in
+plan:root/20261107140000, subject to its exact reviewed amendments: fully
+specified inactive-ReLU fixture, full input/holdout prevalidation and in-memory
+evaluation before create-new candidate output, explicit retained partial-I/O
+failure, changed-statistics/calibration warm-copy semantics, inherited bounded
+but infallible allocation caveats, and unqualified cross-language exact parity
+until a pinned actual oracle observes target/FMA/build behavior. No silent
+tolerance, optimizer reinterpretation, activation or detection change is admitted.
+
+Source responsibility is explicitly loaned to the model owner for only
+crates/sdk/humanymous-core/src/model/training/mod.rs, sgd.rs and sgd/*. Root
+removed those paths from its broad Core claim through its own normal lane
+release/reclaim; the first same-owner update refusal is not a completed handoff.
+The owner must establish its exact actual lane before writing. Implement the real
+private kernel, meaningful numeric regressions and actual-file offline pilot
+source without new dependencies, public facade, inference, scoring or GPU edits.
+Compilation and pilot execution require a later source-bound slot after the
+Performance lease returns. Coding allocation is not tested SGD or whole ML closure.
