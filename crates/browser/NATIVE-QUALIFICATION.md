@@ -8,6 +8,15 @@ owns the Meari/CEF integration. CI owns the existing provisioning runner.
 
 ## Current evidence boundary
 
+UI candidate046b5f1b passed43 native-ui document tests, including crowded-tab
+geometry and existing action checks. Desktop test-profile compilation required
+cef-dll-sys rebuilding and the allocated guard stopped it before test execution;
+check/Clippy were unreached. No production DLL or second GUI was built/launched.
+Changed-file formatter passed. Source87/fixed SDK3 hashes were unchanged; this
+does not establish cache write exclusion or full tool/SDK provenance. Continuation
+regression and source reproducer remain unexecuted native tests. Root alone can
+allocate the next bounded native test-profile build; no implicit widening.
+
 The first root-allocated fef GUI run is now retained in controls-gui-first.json:
 two actual CEF IDs, CtrlT/CtrlTab and Version/newtab accessible content observed;
 Back to newtab failed generation3 with load_error-3 and no commit/content. Final

@@ -11,6 +11,14 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+Exact046b5f1b native-ui document tests passed43/43, with zero failed/ignored/
+filtered cases. Desktop library tests stopped on the native-profile cef-dll-sys
+rebuild guard before execution; check/Clippy were unreached. Formatter passed and
+declared87 source/3SDK hashes were unchanged; cache write exclusion is unproven.
+Retain initial MSVC quoting failure and premature timezone-based watchdog stop;
+corrected orchestration kept the original600s window and stopped at101.8s.
+See controls-046-validation.json. No second GUI or production build was allocated.
+
 ## User-requested tab control layout (UI-35)
 
 Keep this source delta separate from the navigation continuation correction.

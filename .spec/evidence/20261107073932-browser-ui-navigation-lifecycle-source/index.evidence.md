@@ -28,9 +28,23 @@ files:
   - {path: controls-cef-meta-key-candidate.json, sha256: 5699e6487d27d1e863756bb606a89255c0b10769ca3e581f539786c239054af1, bytes: 9016, store: repo}
   - {path: controls-native-preflight.json, sha256: a87c8f8f43c7fd733d8cbc1feebea15cf775f0fa3001234c54169578d3eac1dc, bytes: 2617, store: repo}
   - {path: controls-gui-first.json, sha256: 2d6fb908687f639466a212a1027970e2d42a81b59eacc075328f112d40fa0ccb, bytes: 3431, store: repo}
+  - {path: controls-046-validation.json, sha256: fa9d4fb19faa3e338947e0f4db5efd7993e798743b54cb75fbc516fd016d5475, bytes: 2249, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
+
+## Separate tab UI candidate046 validation
+
+Actual native-ui document tests passed43/43, including tab close/new-tab geometry
+and native document actions; zero failed/ignored/filtered. Desktop library tests
+required a cef-dll-sys test-profile rebuild, so the allocated guard stopped owned
+Cargo at101.8s before native tests. Check/Clippy were unreached. Changed-file
+formatter passed, declared87 source/3SDK inputs stayed unchanged. Coordination
+used a root allocation without a physical target lease marker: later foreign
+compiler processes do not prove concurrent writes or cache exclusion. Preserve
+first orchestration failures separately (MSVC quoting before Cargo and premature
+timezone-based stop); corrected UTC accounting retained the original deadline.
+No second GUI, production DLL, OS AT or exact Chrome visual claim follows.
 
 ## First actual fef controls pilot: navigation failed
 

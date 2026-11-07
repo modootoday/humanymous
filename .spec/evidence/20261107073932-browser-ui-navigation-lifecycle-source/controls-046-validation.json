@@ -1,0 +1,61 @@
+{
+  "source": "046b5f1b08a8bda46b7b1745e3191db28a237b82",
+  "navigation_delta": "7e0c7b01833aa8f5c7ce973a081f9341ec1ab183",
+  "venue": "local Windows x64 immutable Git archive",
+  "result": "browser_document_passed_native_gate_incomplete",
+  "locked": true,
+  "offline": true,
+  "jobs": 1,
+  "incremental": 0,
+  "production_build": false,
+  "gui": false,
+  "original_started_utc": "2026-11-07T17:15:09.5450402Z",
+  "limit_seconds": 600,
+  "work_stop_seconds": 570,
+  "actual_stop_elapsed_seconds": 101.8,
+  "reservation": "returned",
+  "browser_native_ui": {
+    "exit": 0,
+    "passed": 43,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "geometry_cases": [
+      "1100 DIP one tab",
+      "1100 DIP two tabs",
+      "640 DIP eight tabs"
+    ],
+    "scope": "actual Meari document layout/accessibility action dispatch; not OS AT or native visual proof"
+  },
+  "desktop_lib": {
+    "exit": 1,
+    "tests_executed": false,
+    "passed": null,
+    "reason": "guard stopped on Compiling cef-dll-sys; native test-profile rebuild requires separate allocation"
+  },
+  "check": "not_run",
+  "strict_clippy": "not_run",
+  "changed_file_rustfmt_exit": 0,
+  "source_files": 87,
+  "source_difference_records": 0,
+  "fixed_sdk_inputs": 3,
+  "sdk_difference_records": 0,
+  "compiler_processes_after": 3,
+  "first_failures": [
+    "MSVC cmd quoting failed before Cargo",
+    "Timestamp timezone coercion prematurely stopped first owned browser compile before tests; corrected UTC computation retained original deadline"
+  ],
+  "chrome_reference": {
+    "tab_style": "https://raw.githubusercontent.com/chromium/chromium/main/chrome/browser/ui/tabs/tab_style.cc",
+    "tab_visibility": "https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/browser/ui/views/tabs/tab.cc",
+    "pin": "main retrieved 2026-11-07; exact pinned Chromium156 source retrieval unsuccessful",
+    "exact_visual_parity": "unverified",
+    "live_tab_limit": 8,
+    "lifetime_ids": 64
+  },
+  "browser_ready": false,
+  "native_full": false,
+  "raw_public": false,
+  "target_coordination": "root allocation only; no physical lease marker. Later foreign compiler processes observed; target write exclusion is not proven",
+  "cache_write_closure": "not_established"
+}

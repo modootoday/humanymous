@@ -12,8 +12,13 @@ inactive tabs keep a document icon while hiding close/title; active close remain
 Viewport changes trigger retained projection. Chromium primary source informs
 the behavior, but exact pinned156 metrics, feature defaults, animations, DPI and
 native visual/AT parity are unverified. Live8/lifetime64 admission is unchanged.
-New structural geometry/action tests have not yet run; no prior DLL/UI evidence
-qualifies this newer source.
+Exact046b5f1b passed43 native-ui Meari document tests, including1/2/8-tab geometry
+and action checks (0failed/ignored/filtered), plus changed-file formatter. Desktop
+library tests stopped before execution when cef-dll-sys required a native
+test-profile rebuild; check/strict Clippy were unreached. Source87 and fixed SDK3
+hashes were unchanged, without proving exclusive target/cache writes. First
+orchestration failures are retained. No prior DLL/UI evidence qualifies this
+newer source; see controls-046-validation.json.
 
 First actual fef controls GUI pilot failed navigation: CtrlT created a second
 CEF browser (IDs1/2) and CtrlTab returned to Version, but Back to newtab accepted
