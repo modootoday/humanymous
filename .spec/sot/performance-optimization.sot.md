@@ -3,7 +3,7 @@ id: sot:root/performance-optimization
 title: Reproducible build and runtime performance optimization
 status: draft
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T13:56:43Z
+updated: 2026-11-07T14:08:00Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
 ---
@@ -91,7 +91,7 @@ source-specific checks because a transport cache reports a hit.
 
 | ID | Experiment and current status | Acceptance boundary |
 |---|---|---|
-| B1 | Proposed native signals build plus three identical repeats in an existing target; not allocated/executed | Root chooses immutable post-graph SHA, existing target and quiet window; report actual freshness, never assume warm hits |
+| B1 | Four native signals builds completed on immutable9b064dbd; initial15fresh/8rebuilt, repeats23fresh/0rebuilt | Project-quiet/external-load-observed; no controlled A/B/cold-cache claim; [[evidence:root/20261107135643]] |
 | R1 | Root accepted review of streaming signed-header whitespace emission; implementation/measurement pending | Preserve Unicode split_whitespace, signed-header order/newlines, cookie/body hash and all token bytes; owner patch plus matched comparison |
 | B2 | Archive fetch/preparation measurement and eligible-job restore proposal; research only | Current policy-job cache does not populate other runner filesystems; owner approves any exact policy expansion |
 | B3 | Package/version/feature/target duplicate compilation and invalidation; research only | Prove equivalent gates and actual dependency features before eliminating any build |
@@ -118,6 +118,44 @@ Runtime's current single accept loop owns mutable Sessions and durable audit.
 Parallel workers would change ownership/ordering and need an accepted architecture
 contract before implementation. A function benchmark cannot qualify throughput,
 network cancellation, audit persistence or complete process-tree cleanup.
+
+## Runtime measurement profiles awaiting owner allocation
+
+These are proposed contracts, not executable tests or new deployment claims.
+Each owner must select exact supported fixture, topology, capacity, payload bounds,
+request count, timeout, cleanup budget and source before root admits execution.
+
+| Context and source boundary | Measurements | Required companion correctness evidence |
+|---|---|---|
+| Runtime application.rs serialized accept/decide/dispatch | End-to-end request latency including queue time; separate service time, status counts, completed/offered throughput and sampled RSS | Frozen verdicts/canonical bytes, durable audit before origin, slow-client deadline, shutdown drain and no second response |
+| Authority transport/mod.rs and transport/service.rs | Capacity occupancy, admission rejection, live connection/worker count, timeout-to-terminal interval and permit recovery | Real authenticated native peer, no permit release while detached work survives, no false graceful acknowledgment |
+| Audit record/canonical/encoder.rs and durable sink/storage | Canonical encode/hash work by bytes/items; durable append/commit latency separated from normalization; RSS by bounded record set | NFC/sort/frame/signature parity, count-and-replay limits, partial-write failure, durable persistence/reopen and retained independent pin |
+| Collector browser/behavior.rs and session/mod.rs | Capture/reduction/serialization time, bounded buffer occupancy, listener count before/after stop and browser memory observations | Actual isolated browser, bounded samples/key pairing, reentrant stop cleanup, cleared secrets/raw buffers and no motor/speed gate |
+
+Authority's LocalContext owns an Arc permit expressly to retain admission while
+detached work survives. Started Tokio1.54.1 spawn_blocking work cannot be stopped
+by aborting its JoinHandle; a shutdown timeout only stops waiting. No performance
+patch may count a timed-out future as a reclaimed worker. Reserve capacity before
+allocating large queued work; a bounded message count alone does not bound total
+bytes held by waiting producers. Report held permits separately from queue size.
+
+Audit's encoder intentionally counts then replays each bounded field, including
+normalization. Do not remove either pass or reuse unverified lengths to gain
+speed. Characterize CPU and bounded-memory cost separately from filesystem
+durability; an in-memory sink or mocked fsync is not a durable-append benchmark.
+Collector memory is browser/host specific; a native unit test's RSS cannot prove
+WASM heap or whole-browser usage. Raw samples remain private and are cleared.
+
+For each future latency profile, report offered, admitted, completed, rejected,
+cancelled and timed-out denominators plus unfinished work. Declare whether
+arrivals are open-loop or completion-paced: completion pacing can conceal queue
+delay under overload. Record latency from the scheduled/offered request boundary
+where applicable, without silently excluding dropped/unfinished requests.
+Use a declared quantile estimator and request sample count; retain repetitions
+separately, and publish tail estimates only with sufficient samples and explicit
+uncertainty. A pilot with insufficient samples reports its observations without
+asserting a stable p99. Do not increase workload merely to obtain a percentile
+outside the allocated budget. Owner-authored reusable harnesses remain Rust-only.
 
 ## Verification and completion
 
@@ -176,8 +214,14 @@ tagged upstream source and installed tools:
 - [GitHub dependency caching](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching),
   [upstream sccache Rust constraints](https://github.com/mozilla/sccache/blob/main/docs/Rust.md),
   [Microsoft WSL filesystem guidance](https://learn.microsoft.com/en-gb/windows/wsl/filesystems).
+- [Tokio1.54.1 blocking-task source](https://raw.githubusercontent.com/tokio-rs/tokio/tokio-1.54.1/tokio/src/task/blocking.rs)
+  and [bounded channel source](https://raw.githubusercontent.com/tokio-rs/tokio/tokio-1.54.1/tokio/src/sync/mpsc/bounded.rs).
+  Versioned docs.rs retrieval failed; tagged source supplied the contract.
+- [Rust1.99.1 black_box](https://doc.rust-lang.org/std/hint/fn.black_box.html):
+  benchmark optimization barrier is best effort and provides no cryptographic guarantee.
 
 Actual native identity observed: Cargo1.99.1(5f94df478),
 rustc1.99.1(58cf8f9c35b355199727627d07ae34a4e2846d67),
 x86_64-pc-windows-msvc, bundled LLVM23.1.1. This does not identify the installed
-external linker/SDK or prove a build. No new benchmark has run for this contract.
+external linker/SDK. Four allocated library builds have now completed; function
+A/B and product-runtime experiments remain not run. See the exact B1 evidence.

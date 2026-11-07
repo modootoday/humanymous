@@ -3,7 +3,7 @@ id: plan:root/20261107135643
 title: Performance research and source-bound optimization execution
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T13:56:43Z
+updated: 2026-11-07T14:08:00Z
 rel:
   depends_on: [sot:root/performance-optimization]
 ---
@@ -33,7 +33,7 @@ Integrity implementation ownership. No product patch or benchmark code is owned
 here. Source SHA5ffa253022e1a7f7a64f9ab2a95f664ba40f4e23 was observed, not granted
 as an execution baseline; root must choose the post-graph immutable SHA.
 
-## First actual measurement request
+## First actual measurement request and completed allocation
 
 Preferred existing target: target/validation-authority, subject to owner clearance
 and root's exclusive assignment. Signals build rlib and metadata exist; their
@@ -80,5 +80,17 @@ tests and compilation allocation before use.
 - Recorded native Cargo/rustc version and executable SHA-256 identity; no compile.
 - Acquired exact temporary compatibility lane; authored this draft contract.
 
-All builds, benchmarks, Docker/product workloads and R1 measurements remain
-NOT_RUN. No measured improvement, full-product completion or cache hit is claimed.
+Root selected immutable9b064dbd8942d4fad7f1623da97b6b64c0177a7f after the
+watermark graph window and exclusively assigned the existing Authority target.
+Framework C terminal completion released the project compiler quiet window.
+An explicit revised profile permitted unrelated external project activity, with
+Windows compiler name/count snapshots and fresh resource admission before each
+command. All four builds actually terminated0; initial15fresh/8rebuilt and
+repeats23fresh/0rebuilt. Cargo footer5.55/0.18/0.16/0.18seconds. Source2539files
+and config/tool observations remained unchanged. See exact evidence for limits.
+The compiler slot/target was returned after four terminal commands. Preserve
+initial archive syntax failure and discarded timezone-mixed duration arithmetic.
+
+R1 measurements, tests and Docker/product workloads remain NOT_RUN. No measured
+optimization improvement or full-product completion is claimed. Observed Cargo
+freshness is distinct from a compiler-cache or archive transport hit.

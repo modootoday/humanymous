@@ -1,12 +1,13 @@
 {
   "schema": "humanymous.performance-readiness/0.1",
   "observed_date": "2026-11-07",
-  "status": "identity_and_source_inspection_only",
-  "benchmark_status": "NOT_RUN",
-  "execution_allocated": false,
-  "baseline_source_selected": false,
+  "status": "four_scoped_builds_terminal_source_unchanged",
+  "benchmark_status": "BUILD_OBSERVATIONS_COMPLETED_RUNTIME_NOT_RUN",
+  "execution_allocated": true,
+  "baseline_source_selected": true,
+  "immutable_source_sha": "9b064dbd8942d4fad7f1623da97b6b64c0177a7f",
   "source_sha_observed_not_allocated": "5ffa253022e1a7f7a64f9ab2a95f664ba40f4e23",
-  "workload_result": null,
+  "workload_result": "four_library_builds_exit_0",
   "speedup": null,
   "allocation_count": null,
   "runtime_throughput": null,
@@ -21,7 +22,7 @@
     "llvm": "23.1.1",
     "version_query_exit_codes": [0, 0],
     "external_linker_sdk_identity": "not_observed",
-    "compilation_performed": false
+    "compilation_performed": true
   },
   "r1_owner": "root-integration",
   "r1_status": "source_review_accepted_implementation_pending",
@@ -47,26 +48,62 @@
     "fully_cold_cache_proven": false,
     "general_speedup_claimed": false
   },
-  "proposed_b1": {
+  "b1": {
     "package": "humanymous-signals",
     "kind": "library_build",
     "runs": 4,
     "initial_cache_label": "existing_target_possible_invalidation",
-    "target_candidate_only": "target/validation-authority",
-    "target_ownership_allocated": false,
+    "target": "target/validation-authority",
+    "target_ownership_allocated": true,
     "jobs": 1,
     "incremental": 0,
-    "proposed_budget_seconds": 300,
-    "freshness": "not_observed",
-    "root_source_graph_window": "pending",
-    "resource_admission": "not_performed",
-    "qualified_controller": "not_assigned"
+    "budget_seconds": 300,
+    "all_terminal_wall_upper_bound_seconds": 69.4907721,
+    "within_budget": true,
+    "root_source_graph_window": "completed_before_allocated_snapshot",
+    "observation_profile": "project_quiet_external_load_observed",
+    "machine_idle_claimed": false,
+    "timing_provider": "Cargo rounded Finished stderr footer; outer tool wall time includes controller and admission overhead",
+    "cpu_seconds": null,
+    "rss": null,
+    "compiler_cache_hit_count": null,
+    "archive_cache_hit_count": null,
+    "tests_executed": false,
+    "freshness_scope": "compiler-artifact JSON events, not proof of global compiler-cache hits",
+    "records": [
+      {"run": 0, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 5.55, "tool_outer_seconds": 5.8342537, "artifact_events": 23, "fresh": 15, "rebuilt": 8, "unknown": 0},
+      {"run": 1, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 0.18, "tool_outer_seconds": 1.4016945, "artifact_events": 23, "fresh": 23, "rebuilt": 0, "unknown": 0},
+      {"run": 2, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 0.16, "tool_outer_seconds": 1.6569098, "artifact_events": 23, "fresh": 23, "rebuilt": 0, "unknown": 0},
+      {"run": 3, "exit_code": 0, "build_finished_success": true, "cargo_footer_seconds": 0.18, "tool_outer_seconds": 1.6974302, "artifact_events": 23, "fresh": 23, "rebuilt": 0, "unknown": 0}
+    ],
+    "closure": {
+      "source_files_before": 2539,
+      "source_files_after": 2539,
+      "difference_records": 0,
+      "source_manifest_sha256_before_and_after": "fbe43e2b7d5fe4acfc0873a16a9447b30d5501ffdabfaae752f14e1a943c0fec",
+      "archive_sha256": "055b8c86318d4fdb030d87378497c90028deb458088fc8eada253a8fc4087015",
+      "cargo_lock_sha256": "803338fdd91d5fdafe33946053518d98639850604b827dbe59028b6bb3d6eef3",
+      "config_candidates_before_and_after": 18,
+      "config_files_present": 0,
+      "environment_dimensions_before_and_after": 18,
+      "tools_before_and_after": 2,
+      "config_environment_tools_equal": true,
+      "complete_artifact_reuse_key_proven": false
+    },
+    "admission": {
+      "commit_percent_before_each": [82.67762007152865, 82.12717397486595, 82.09249846534954, 82.79800714108157],
+      "free_physical_gib_before_each": [30.626296997070312, 30.81564712524414, 30.836509704589844, 30.389968872070312],
+      "windows_compiler_process_count_before_each_and_after": [0, 0, 0, 0, 0],
+      "wsl_compiler_processes": "not_observed",
+      "host_cpu_background_load": "not_fully_measured"
+    },
+    "retained_corrections": [
+      "Initial archive command failed because of PowerShell native argument syntax; corrected before any build",
+      "Exploratory DateTime duration arithmetic was invalid; explicit DateTimeOffset chronology proves the terminal upper bound"
+    ]
   },
   "pending": [
     "root accepts full measurement contract",
-    "root selects immutable source and confirms exact target ownership",
-    "root assigns quiet window and bounded controller",
-    "actual four build observations",
     "R1 owner implementation and regression checks",
     "matched before/after function measurements",
     "separate actual product runtime and security qualification",
