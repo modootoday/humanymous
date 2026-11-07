@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 94d63e11b0b8ce874bb81859ce91c3c824bc8fb052b31aab829188eeffa24db7, bytes: 27913, store: repo}
+  - {path: baseline.json, sha256: f3503dd17a993993166e3010d524456d9af6c11df68caf90d1e8a0609df929ec, bytes: 29245, store: repo}
 ---
 
 # Convention audit baseline
@@ -227,3 +227,43 @@ output/child issues remain sticky and consumer cancellation is separate. Actual
 partial thread start, blocked I/O, descendant EOF and final join/host proof are
 still pending. Source-bound private review hashes are in baseline.json; no audit
 compiler/runtime workload was executed, and global CA-LIFETIME remains OPEN.
+
+## Signal provenance matrix and interactive first-failure re-audit
+
+Private signal-provenance-matrix-003.json contains143 rows, preserving current
+ID/layer/weight, exact frozen Go definition line and section citation, Rust
+registry line, lexical producer candidates or unknown, governing umbrella and
+candidate context SoTs, historical availability and authored/actual evidence
+scope. All143 Go definitions were recovered with0weight mismatches. Twenty-one
+pure producers were source-reviewed:17collector predicates over Snapshot and
+four shared RIT results. This is not an AST census, a producer/semantic coverage
+percentage, empirical support for each tell or a no-folklore closure. Historical
+SoT tables were not recovered; current literal ID absence is not itself a defect.
+Actual per-ID execution attribution remains explicitly unknown in this matrix.
+
+Frozen Go registry canonical LF27351bytes/364LF SHA256 is
+556e4d5e4e866edf1fecf37a10b7e0f283f6f045ea3dd16a614837f0137039f9.
+The existing inventory929e8b4e... matches CRLF transformation of the same content;
+it is retained as recorded historical representation, not literal Git LF hash.
+Registry/policy/promotion files remain unchanged from audit baseline; no scoring
+weights, thresholds, predicates, bands or signal IDs were changed.
+
+Interactive receipt457b3732 has33 matching private attachments and actual pure
+footers10interactive/4capture/1direct/2barrier, each0failed/ignored; filtered sets
+44/50/53/52 remain separate. Support check0 has a deprecation warning, strict
+Clippy101 rejects fetch_update, and Native runner gates were NOT_STARTED. Selected
+114 archive inputs match saved SHA256 and f95af960 Git blobs; preserved executable
+matches. Immediate before/after records are byte-equal, including76tool files
+(10executables plus21bin/45targetlib), source114/registry2042/config34/environment7.
+The try_update fix preserves checked_add and ordering but is not validated by
+that failed run. Actual child cases0; CA-LIFETIME stays OPEN. API failure docs now
+correctly scope input failure and explicit consumer cancellation for other issues.
+
+Delivery0d739729 sourcecheck validates exact f9 projection and declared seams,
+not sourceconstruction, compilation, ignored/global configuration/sysroot closure
+or native prerequisite execution. ASGI strong registered completion ownership
+was reviewed as a direction only: same-task identity/actual done, foreign calls
+and Py reference destruction outside Rust locks are required. Registrationfailure,
+custom task/cancellation and abandoned-loop settlement remain unknown. No audit
+compiler/runtime workload was executed. All private review hashes are retained
+in baseline.json; no broader goal or product completion follows.

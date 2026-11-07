@@ -585,5 +585,28 @@
     "CA_HANDOFF_closed": false,
     "global_lifetime_closed": false,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_signal_map_and_interactive_first_failure": {
+    "private_review_sha256": {
+      "signal-provenance-matrix-003.json": "8805019f15b8317fd47141e399d653724d650e1e82a56acae4a2726c833cca03",
+      "signal-frozen-go-definition-locations-001.json": "2e67426dae0867ab55b2a2b1cff5c1f50e23c43e99d0eb63a6aa9decd866abbd",
+      "frozen-policy-source-reaudit-001.json": "9558dd29b2c711ac8b6841f88c2a847eb4165101366442e897db6b605c3eb74f",
+      "interactive-first-failure-actual-review-001.json": "26a8a2378604adac91946f1b177c81ce944ab2610791bdd117899ceb25b54bb3",
+      "interactive-failure-doc-followup-001.json": "32ac2fc84b5c4107267379ef097cb826ba5fd4e599fa6a3ee80ae46911e28e04",
+      "delivery-source-and-asgi-contract-review-001.json": "b880fa7c7b1fa00479b4a5fcd141a3e136b3049d7681ba80ca552a52c34e94fa"
+    },
+    "signal_provenance_rows": 143,
+    "frozen_go_definitions_found": 143,
+    "weight_mismatches": 0,
+    "reviewed_pure_producer_rows": 21,
+    "historical_sot_recovered": false,
+    "all_signal_semantic_trace_complete": false,
+    "actual_per_ID_attribution_complete": false,
+    "interactive_actual_pure_passes": 17,
+    "interactive_strict_clippy_exit": 101,
+    "interactive_actual_child_cases": 0,
+    "CA_HANDOFF_closed": false,
+    "global_lifetime_closed": false,
+    "new_audit_runtime_workloads": 0
   }
 }
