@@ -1,5 +1,64 @@
 # Rust product-lab runner contract
 
+Local engine canon is .spec/sot/rust-migration.sot.md, Local Docker engine
+identity and cleanup, and .agents/rules/96-docker-engine-affinity.md. The local
+default is Windows Docker Desktop: invoke
+`C:/Program Files/Docker/Docker/resources/bin/docker.exe --context desktop-linux`.
+Missing PATH/binary never permits automatic WSL Docker substitution. Standalone
+WSL Docker29.1.3 and Windows Desktop29.9.2 were measured as different servers.
+WSL-native Rust compilation remains a separate valid profile.
+
+Before a local build, run or cleanup, preflight and retain selected context,
+endpoint, actual server ID, server version and container OS type. Match the
+independently selected Desktop binding and Linux OS; fail closed on missing or
+mismatched identity before resource mutation. Expected Windows endpoint is
+`npipe:////./pipe/dockerDesktopLinuxEngine`. IDs are per-execution observations,
+not universal constants. An explicitly allocated WSL/act proxy is equivalent
+only after its server ID matches Desktop; record its actual Unix client endpoint
+separately from the Windows parent endpoint. act's Docker SDK must receive an
+explicit Desktop DOCKER_HOST; a CLI context flag alone does not bind its daemon.
+Hosted Linux uses its own runner engine and records distinct provenance.
+
+Local affinity I/O now consumes the shared test-support docker comparison API
+(1660a251/b2f04b66), not a duplicate policy. Supply
+HUMANYMOUS_DOCKER_DESKTOP_BASELINE pointing to a private independently observed
+JSON object with exactly schema=humanymous.lab-desktop-engine-baseline/1,
+context, endpoint, server_id, server_version and os_type. Baseline IDs/versions
+come from actual preflight, never this document's historical numbers. The local
+Windows wrapper queries the selected context and actual daemon before resource
+mutation, checks the Desktop credential-helper executable's presence and scopes
+the child PATH to the installed CLI directory. It does not read credentials.
+Actual compose/buildx commands must still establish plugin availability; a
+successful info/presence check is not a successful pull or authenticated login.
+
+Local Linux clients are rejected unless explicitly allocated with
+HUMANYMOUS_DOCKER_DESKTOP_PROXY=unix:///... and matching DOCKER_HOST plus the
+independent Desktop baseline. The actual queried CLI server must match Desktop
+through verify_allocated_cli, whose proof does not claim SDK observation.
+Windows parent npipe and Linux client Unix endpoint stay distinct. SDK callers
+still require their own actual connection evidence; CLI equality is not that
+evidence. Genuine hosted Linux keeps its assigned engine, records distinct
+context/endpoint/server metadata and rejects a changed engine before cleanup.
+Local build/create/run/start/down boundaries recheck affinity; project cleanup
+and expired-project cleanup force a recheck. docker-engine-affinity.json,
+per-case ledgers and audit-engine-affinity.private.json retain private tuples.
+
+Shared engine-affinity pure tests5/5 and scoped Clippy passed at99e09209, with
+43-file closure0 drift; no actual engine query was part of that result. The
+wrapper baseline-negative test is authored; runtime preflight and latest scoped
+wrapper compile remain NOT_RUN pending root allocation. New local product
+profiles remain unqualified until actual engine affinity and execution are measured.
+After allocation, a read-only I/O check is available independently of builds:
+`cargo run --locked -p humanymous-lab-runner -- engine-preflight --evidence FRESH_PRIVATE_BUNDLE`.
+It uses an independently supplied Desktop baseline, records actual CLI/context/
+daemon observations and the running wrapper's executable hash privately, and
+prints only status/report hash. It does not create/run/clean Docker resources
+or claim SDK/remote attestation. Never reuse its bundle for a product run.
+No Docker command starts during the root benchmark quiet window. Root owns the
+user-authorized image cleanup; this lab does not perform prune. Existing lab
+project cleanup remains separate and must recheck engine identity before down.
+Never broaden image cleanup to containers, volumes, builder cache or system prune.
+
 The Go bounded HTTP profile has an actual Rust Docker caller:
 `cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --go-product --require-full`.
 Use a fresh bundle, separately from browser/collector/topology-only profiles.

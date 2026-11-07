@@ -25,24 +25,8 @@ fn git(root: &Path, args: &[&str]) -> Result<Vec<u8>> {
     }
     Ok(output.stdout)
 }
-fn hosted_context(
-    actions: Option<&str>,
-    os: Option<&str>,
-    environment: Option<&str>,
-    act_present: bool,
-) -> bool {
-    actions == Some("true")
-        && os == Some("Linux")
-        && environment == Some("github-hosted")
-        && !act_present
-}
 pub(super) fn require_hosted() -> Result<()> {
-    if !hosted_context(
-        std::env::var("GITHUB_ACTIONS").ok().as_deref(),
-        std::env::var("RUNNER_OS").ok().as_deref(),
-        std::env::var("RUNNER_ENVIRONMENT").ok().as_deref(),
-        std::env::var_os("ACT").is_some(),
-    ) {
+    if !crate::docker::actual_hosted_linux() {
         return Err("actual Go fixture requires approved free hosted Linux job".into());
     }
     Ok(())
@@ -217,7 +201,7 @@ pub(super) fn prepare(lab: &mut Lab) -> Result<Fixture> {
 mod tests {
     #[test]
     fn local_act_and_unknown_runner_cannot_be_labelled_hosted() {
-        use super::hosted_context;
+        use crate::docker::hosted_context;
         assert!(hosted_context(
             Some("true"),
             Some("Linux"),

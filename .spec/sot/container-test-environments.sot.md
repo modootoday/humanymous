@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T09:06:05Z
+updated: 2026-11-07T09:54:33Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -32,6 +32,51 @@ is unqualified. Headless/WebDriver preferences are interventions, not a human
 baseline. This component lab does not qualify full product e2e or Meari+CEF.
 
 # Container product-test environments
+
+## Local Docker engine affinity
+
+Follow the canonical Local Docker engine identity and cleanup section in
+sot:root/rust-migration and .agents/rules/96-docker-engine-affinity.md. Default
+local execution uses Windows Docker Desktop's desktop-linux context with the
+installed Windows docker.exe path; missing PATH/binary is not permission for
+WSL CLI/daemon fallback. WSL-native Rust compilation is a separate profile.
+
+Before local build, run and cleanup, independently select the Desktop binding,
+inspect context endpoint, server ID/version and OS type, and retain observations.
+Refuse missing/mismatched identity before mutating resources. The expected
+Windows endpoint is npipe:////./pipe/dockerDesktopLinuxEngine and container OS
+Linux. The server ID is an observed execution binding, not a universal constant.
+Windows Desktop29.9.2 and standalone WSL29.1.3 were different engines; their
+images/caches/timings cannot be merged as one environment. Explicitly allocated
+WSL/act clients must verify the same Desktop server ID and record their actual
+proxy endpoint separately. act SDK admission requires explicit Desktop
+DOCKER_HOST; CLI context selection alone is insufficient. Hosted Linux's own
+engine and provenance remain unchanged. New local product qualification is
+pending actual affinity preflight and measurement, not satisfied by source rules.
+
+The lab wrapper's source consumes shared test-support verify_desktop and
+verify_allocated_cli. Its independently supplied private baseline has exact
+schema/context/endpoint/server_id/server_version/os_type fields; never infer the
+expected binding from the daemon currently selected. Windows selects the fixed
+installed CLI and desktop-linux on every command. Explicitly allocated local
+Linux CLI proxies additionally require matching configured DOCKER_HOST and
+actual queried server identity, while rejecting unallocated WSL fallback.
+This is CLI evidence, not SDK evidence. Root/act must separately establish its
+actual SDK connection. Save private expected/observed tuples and sanitized
+comparison proof; observations are not authenticated remote provenance.
+
+Perform preflight before commands, force local resource-boundary rechecks and
+recheck before project/expiry cleanup. Refuse changed context/endpoint/server
+ID/version/OS without deleting resources through a newly selected daemon.
+Hosted Linux records its own distinct engine and checks continuity, without
+requiring Desktop equivalence. Native/tooling and actual Docker qualification
+remain NOT_RUN for this new source until root admits measurement. No workload
+starts during the benchmark quiet window.
+
+Root's authorized image prune is separate from owned project teardown: no lab
+prune is performed here. Image-only cleanup never implies container, volume,
+build-cache or system prune. Recheck the selected engine before any project
+cleanup. Keep the benchmark quiet window until root allocates execution.
 
 ## Go bounded HTTP actual composition
 

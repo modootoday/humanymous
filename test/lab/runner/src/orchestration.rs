@@ -473,6 +473,7 @@ impl Lab {
         Ok(())
     }
     fn cleanup(&mut self) -> Result<()> {
+        self.docker.recheck_engine()?;
         let down = self.compose(
             &["down", "--volumes", "--remove-orphans", "--timeout", "2"],
             false,
@@ -533,7 +534,10 @@ pub fn run(args: &[String]) -> Result<i32> {
     {
         return Err("existing private Specfold bundle required".into());
     }
-    if evidence.join("lab-report.json").exists() || evidence.join("source-manifest.json").exists() {
+    if evidence.join("lab-report.json").exists()
+        || evidence.join("source-manifest.json").exists()
+        || evidence.join("engine-preflight.private.json").exists()
+    {
         return Err("refused: evidence bundle already contains a run; create a fresh Specfold bundle to preserve failures and source identity".into());
     }
     let mut random = [0; 8];
@@ -587,6 +591,11 @@ pub fn run(args: &[String]) -> Result<i32> {
         lab.cases
             .push(json!({"id":"cleanup","status":"failed","error_code":"cleanup_failed","detail":error.to_string()}));
     }
+    snapshot::write(
+        &lab.evidence,
+        "docker-engine-affinity.json",
+        &json!({"schema":"humanymous.lab-engine-evidence/1","observation":lab.docker.engine_identity,"actual_sdk_connection_observed":false}),
+    )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
     let mut evidence_types = if browser_product || go_product {
         vec![]
@@ -690,6 +699,7 @@ pub fn cleanup_expired() -> Result<()> {
         }
     }
     for project in &projects {
+        docker.recheck_engine()?;
         let filter = format!("label=com.docker.compose.project={project}");
         // Delete only individually re-inspected expired owned resources. No
         // Compose interpolation, global prune, or same-project foreign deletion.

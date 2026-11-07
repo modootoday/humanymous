@@ -168,6 +168,14 @@ pub fn run(args: &[String]) -> Result<i32> {
     let cargo_report: Value = serde_json::from_slice(&cargo.stdout)?;
     snapshot::write(&evidence, "cargo-audit.json", &cargo_report)?;
     clean &= cargo.status.success() && lock_matches && !scans.is_empty();
+    if docker.engine_identity.is_some() {
+        docker.recheck_engine()?;
+    }
+    snapshot::write(
+        &evidence,
+        "audit-engine-affinity.private.json",
+        &json!({"observation":docker.engine_identity,"actual_sdk_connection_observed":false}),
+    )?;
     let summary = json!({"schema":"humanymous.lab-audit/1","scanner":SCANNER,"database":database,"scans":scans,"cargo":{"status":cargo.status.code(),"matches_built_lock":lock_matches,"warnings":cargo_report["warnings"],"vulnerabilities":cargo_report["vulnerabilities"]["count"]},"clean":clean,"full_product_qualified":false});
     snapshot::write(&evidence, "audit-report.json", &summary)?;
     snapshot::write(

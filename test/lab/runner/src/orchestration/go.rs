@@ -645,7 +645,7 @@ fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> 
         snapshot::write(
             &child.evidence,
             "case-ledger.json",
-            &json!({"result":item,"assertions":child.cases}),
+            &json!({"result":item,"assertions":child.cases,"engine_affinity":child.docker.engine_identity}),
         )?;
         snapshot::write(
             &child.evidence,
