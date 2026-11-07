@@ -273,3 +273,30 @@ all transitive source. Raw latest-pure logs and snapshots were privately attache
 sanitized latest-pure-verification.json is in evidence:root/20261107052501.
 B was immediately returned to root. Current hosted nginx35/native/pilot checks
 are still NOT_RUN; root frozen-source dispatch remains a required external step.
+
+## Actual hosted813 qualification
+
+Root froze/pushed8132117e7bf1445939d7dee9066fcf45ccf0915b after a26d1c3's
+startup-only permission failure (run42354873001,0jobs/0tests). In actual fixed
+run42355168729, nginx job128358355202 passed35groups/0failed/0ignored/0not_run,
+cleanup0, source unchanged and immutable image identity. The recovered public
+execution summary and canonical Git blob proof are attached to
+evidence:root/20261107052501; raw job/API logs remain private. Full owner case
+detail/build-stage logs/package manifest hash were not exported by the free
+runner. The successful image build enforces the pinned Dockerfile's library
+tests, native/pilot/package builds and separate strict Clippy commands; no new
+individual harness count is inferred from missing raw build logs.
+
+Actual JSON keepalive and upstream SSE EOF/reset assertions passed in that
+source's pilot. ALLOW remains trusted synthetic evidence through actual shared
+authority and WAL; ApplicationHttp/no-origin409 and executable/private-pipe/
+same-WAL reload assertions are distinct from sealed ServiceHost startup and
+human/browser/full product qualification. No future worktree profile inherits
+the result. There was no nginx failure to repair in this run; historical JSON
+formatting/source corrections and the startup permission failure remain recorded.
+
+The owned local watcher was stopped only after confirming this job success;
+remote workflow execution was not cancelled. Root's new benchmark quiet window
+is observed: no new Cargo/native/runtime/model/Docker commands; owned live
+compile/runtime/watcher processes0. Local actual validation is newly authorized
+by the user but requires the post-benchmark measured allocation policy.

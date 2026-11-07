@@ -1,0 +1,199 @@
+{
+  "schema": "humanymous.nginx.hosted-source-proof/0.1",
+  "source_revision": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "job_id": 128358355202,
+  "job_conclusion": "success",
+  "source_manifest": "20b56673e627209beb263f100071793effb8122cfe5467ae9bb9b6a6ee00770f",
+  "files": [
+    {
+      "path": "adapters/nginx/.gitignore",
+      "sha256": "0bb5e908544e65360b69a4baebee1768a83b9f2499b1537246c80c3213554ff4",
+      "bytes": 14,
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/Dockerfile.native",
+      "sha256": "43601ec07795d039ba2e49bc95ac8db9798233a47d3995d01240014a61c8cd99",
+      "bytes": 4842,
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/Dockerfile.native.dockerignore",
+      "sha256": "3ef3d62c8273e286062254bbbbf6f857de3c1fea8b730a3b07b28f8be7318a1a",
+      "bytes": 319,
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/INTEGRATION.md",
+      "sha256": "5993b42f129735be867690dbdfef72a0b58552645ba3a40a32ac58e519ca3410",
+      "bytes": 1899,
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/README.md",
+      "sha256": "50c6022bccd166fbfe987af8325399cc51c92dbf3c4bc00ddb6a989a976f3d22",
+      "bytes": 4658,
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/compose.yaml",
+      "sha256": "27485d7795f9ad4c2be8dcab53f34a02a462f72974c70dffaf9dce137f767900",
+      "bytes": 618,
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/pilot-contract.json",
+      "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+      "bytes": 4030,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/Cargo.toml",
+      "sha256": "ba9f8353715a0132022ea0f2a0013f7d4d592920a2f3cb96425fd2abfd1e4cfc",
+      "bytes": 1393,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/INTEGRATION.md",
+      "sha256": "c68c19b108fdcc2e6c4e93b7c32bca32b401b8c884a01d738ede539dfe82bdba",
+      "bytes": 3258,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/bin/package.rs",
+      "sha256": "5b4c2ebdd8f2a04c7540525b9e57431c5f2be110e34d746e86b7df590b56fb7e",
+      "bytes": 2249,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/bin/pilot.rs",
+      "sha256": "caca3a0bf53b71d3f9759f762d36b134d5db2109c2d0be747406ffa15ab3255a",
+      "bytes": 496,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/lib.rs",
+      "sha256": "2a2a11e4d441114b3441b7062bf0cf2d41d9b0b5d52609b125e3fe494d20f469",
+      "bytes": 425,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/native.rs",
+      "sha256": "c65131ac337558b87566eb9211d7c36ef823b728f337c4f59de83a705404393d",
+      "bytes": 24912,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/package.rs",
+      "sha256": "140dc60c0606a578742ce100c1acd634dbedfb8668bcc10cb0ab6719bebc1301",
+      "bytes": 8798,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/authority.rs",
+      "sha256": "a3e3d9e9463c17b469be772192a6bbda5abafb83485381a9a8cede68df016bca",
+      "bytes": 4995,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "sha256": "d570abcf18502f376dfc1ccc7e89dfbbc9a7420d5661bf4a54be48d28b703c37",
+      "bytes": 32435,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/origin.rs",
+      "sha256": "e01ddcf5ad2e14e9eb3c05d4b308c87f5edb76013326a4a5bf987775a8661790",
+      "bytes": 8664,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/report.rs",
+      "sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+      "bytes": 3633,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/request.rs",
+      "sha256": "07d868d19d08377f147ea64db4360f07ae545140046a2591582764fc595bfaac",
+      "bytes": 15479,
+      "lf_only": true
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "c304cad065cd0b9f274a940bc6d8f010e4f84eaa4b042a767c50d932ba622705",
+      "bytes": 2703,
+      "lf_only": true
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+      "bytes": 168455,
+      "lf_only": true
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+      "bytes": 123,
+      "lf_only": true
+    },
+    {
+      "path": "scripts/ci/delivery/src/nginx.rs",
+      "sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536",
+      "bytes": 5075,
+      "lf_only": true
+    },
+    {
+      "path": "scripts/ci/delivery/src/nginx/runner.rs",
+      "sha256": "7a65a0e9e2c6f0ec83617979918bf1df5d33db2b348b874624f12752a8555b17",
+      "bytes": 6605,
+      "lf_only": true
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "sha256": "42269d396e544e0034e89ce40eb32beda655671bdb44ba49a68f6795d967cac5",
+      "bytes": 17954,
+      "lf_only": true
+    },
+    {
+      "path": "crates/authority/src/client.rs",
+      "sha256": "703fbc7e4bafbc0aa7e21b8ef5cf320070548cf51e19e2fcc53f779235a4622e",
+      "bytes": 10569,
+      "lf_only": true
+    }
+  ],
+  "evidence_scope": "Exact committed files and recovered public execution summary; not future worktree contents",
+  "build_qualification": "Successful image build enforces pinned Dockerfile library tests, native/pilot/package builds and separate feature Clippy. Individual build-stage raw logs were not exported by the free runner.",
+  "runtime_qualification": "35 owned nginx/actual-authority scenario groups; positive ALLOW uses explicit frozen synthetic evidence through actual shared authority and WAL",
+  "production_scope": "ApplicationHttp no-origin challenge; real authority executable/private pipes, same-WAL restart and credential reload assertions. Inline legacy audit provisioning, not sealed ServiceHost qualification.",
+  "source_assertions": [
+    "JSON CHALLENGE and four keepalive requests",
+    "SSE first event and observed upstream EOF/reset after downstream cancellation",
+    "private provisioning ACL, actual client peer UID/replay/audit failure/outage",
+    "binary/compressed/1MiB body, duplicate headers/cookies, HEAD/204, no origin redirect",
+    "actual process same-WAL restart and nginx reload",
+    "unsigned package module/engine/lock/source/build identity matching"
+  ],
+  "raw_owner_case_report": "not recovered; CI consumer validated exact unique IDs/name/result/counters before public summary",
+  "package_manifest_sha256": "not recovered in sanitized CI summary; successful pilot checks manifest bindings",
+  "startup_failure_preserved": {
+    "run_id": 42354873001,
+    "source_revision": "a26d1c3f08b365ca93545c6a51343095868edb45",
+    "qualification": "no nginx execution",
+    "reason": "caller permissions ceiling rejected nested actions:read",
+    "jobs": 0,
+    "tests": 0
+  },
+  "remaining": [
+    "full product Gate/collector/browser/human/AT",
+    "independent witness and cross-user matrix",
+    "sustained backpressure/load",
+    "original TLS/H2/H3, streaming upload/upgrade/gRPC and non-Linux ABI",
+    "sealed startup and future Go/.NET/Apache work are not inherited"
+  ],
+  "full_product_qualified": false,
+  "signed_release": false,
+  "producer_mode": "nginx-raw: parsed application HTTP1 ordered headers/casing/duplicates, no original TLS/H2 or connection/capture provenance; nginx-normalized is shared vocabulary, not separately runtime-qualified here",
+  "job_url": "https://github.com/modootoday/humanymous/actions/runs/42355168729/job/128358355202"
+}

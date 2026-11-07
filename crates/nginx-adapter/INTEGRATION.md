@@ -1,5 +1,12 @@
 # Rust nginx integration delta
 
+Latest hosted qualification: exact8132117e7bf1445939d7dee9066fcf45ccf0915b,
+run42355168729/job128358355202,35scenario groups passed/0failed/0ignored/0not_run,
+cleanup0 and source/image identity unchanged. The pinned build enforces native,
+pilot/package builds and strict Clippy; separate local pure14/check/Clippy passed.
+See hosted-813 receipts in evidence:root/20261107052501. Source-only status notes
+below are historical. No future worktree, sealed-startup or full product claim.
+
 Root owns Cargo.toml/Cargo.lock/toolchain and has registered crates/nginx-adapter
 in its27-member working workspace. Package humanymous-nginx-adapter,
 Rust1.99.1/edition2024, publish=false, rlib+cdylib. Inherits workspace packages

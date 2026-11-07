@@ -3,13 +3,15 @@ id: evidence:root/20261107052501
 title: Rust nginx native source-bound compatibility results
 status: active
 created: 2026-11-07T05:25:01Z
-updated: 2026-11-07T08:01:50Z
+updated: 2026-11-07T09:06:03Z
 files:
   - {path: native-results.json, sha256: 17aceea2fa59f73972f9fe6d6d431fa47bbd83dead978caa17197cdb063b570e, bytes: 9567, store: repo}
   - {path: git-byte-proof.json, sha256: 811e7f6bceb631d781e6085c2ebc88a97f639561490af0fd9dda9494287b099e, bytes: 8416, store: repo}
   - {path: source-only-checkpoint.json, sha256: 797c4a27e9ae32dda5c7d362e6470c0a7180d5b6f5fc5896baaf045d380fc390, bytes: 2027, store: repo}
   - {path: component-package-source-checkpoint.json, sha256: c8974c05b073b7557321c2aa9a30d5efd33996dad7c1ff3d16551df2a809fcb5, bytes: 2873, store: repo}
   - {path: latest-pure-verification.json, sha256: 0287357dd301e028cf59ca68db01ef0bef87a460c864ebd807f49b6c0400269b, bytes: 20224, store: repo}
+  - {path: hosted-813-execution-summary.json, sha256: c0623cddf19f83ee2d0db992a83763726e7078431f3f657c4cd50398252b0d74, bytes: 1417, store: repo}
+  - {path: hosted-813-source-proof.json, sha256: fd941d43e3ce5eb9b5bc8ce5f32dede14bbfdd7e4896d425c60c3a112be9a8d7, bytes: 7653, store: repo}
 ---
 
 # Rust native nginx compatibility
@@ -44,3 +46,17 @@ not change during those commands. This capture is not a complete transitive
 source closure. Raw logs and before/after manifests remain in the private bundle.
 Linux native/pilot Clippy, actual load/JSON/SSE/authority and full product gates
 remain NOT_RUN for this source; the local pure result does not qualify them.
+
+hosted-813-execution-summary.json is the recovered actual CI public summary from
+source8132117/run42355168729/job128358355202:35/35 scenario groups, zero failed/
+ignored/not_run, cleanup0, unchanged source and image identity. The accompanying
+hosted-813-source-proof.json commits canonical Git blob hashes and separates the
+synthetic ALLOW fixture from actual ApplicationHttp/executable/private-pipe/WAL
+assertions. Successful pinned image construction enforces native/pilot/package
+build and Clippy gates. Full raw per-case/build-stage logs and the package manifest
+hash were not exported in the free runner's sanitized summary; do not invent them.
+
+This hosted result supersedes the historical source-only NOT_RUN status only for
+exact8132117. The a26d startup failure is retained separately with0jobs/0tests.
+Full product remains unqualified, and sealed ServiceHost, future profiles and
+uncommitted worktree changes inherit no success from this component receipt.

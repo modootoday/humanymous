@@ -1,0 +1,29 @@
+{
+  "cargo_lock_sha256": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+  "cleanup_exit_code": 0,
+  "failure_stage": null,
+  "full_product_qualified": false,
+  "image_id": "sha256:49cd270fab32122033cd630add92f8c5bb67e328f34e65558a6df808ec1657ab",
+  "report": {
+    "cargo_lock_sha256": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+    "denominator": "scenario groups in one Rust pilot process, not Rust test-harness tests; HEAD-and-204 includes two HTTP behaviors; concurrent-service group accounts 32 requests",
+    "engine_sha256": "cb091c80cc10a6f63e8f6941af76f34a630641670617d147a28bc6fc6ec01ce7",
+    "failed": 0,
+    "full_product_qualified": false,
+    "ignored": 0,
+    "module_sha256": "a911735564a23f646e2d7242d6a68f3b37a5622f860221b9ec19e92ab8f74845",
+    "not_run": 0,
+    "passed": 35,
+    "scenario_groups": 35,
+    "schema": "humanymous.nginx.component-summary/1",
+    "source_manifest": "20b56673e627209beb263f100071793effb8122cfe5467ae9bb9b6a6ee00770f",
+    "source_revision": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+    "status": "passed"
+  },
+  "required_scenario_groups": 35,
+  "schema": "humanymous.nginx.execution-summary/1",
+  "source_changed_during_execution": false,
+  "source_manifest": "20b56673e627209beb263f100071793effb8122cfe5467ae9bb9b6a6ee00770f",
+  "source_revision": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "status": "passed"
+}

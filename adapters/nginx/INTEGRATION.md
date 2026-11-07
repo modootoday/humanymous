@@ -1,5 +1,10 @@
 # Current native adapter integration
 
+Current hosted checkpoint: exact8132117, run42355168729/job128358355202,
+35/35 scenario groups,0failed/ignored/not_run,cleanup0,source/image unchanged.
+The source-bound hosted813 execution/source proof supersedes historical NOT_RUN
+notes below only for that committed component. Full product remains false.
+
 See `crates/nginx-adapter/INTEGRATION.md` for root Cargo and shared authority APIs.
 The accepted shared Nginx producer contract replaces the old private pilot
 protocol. Core logic uses `AdapterProfile::Nginx` and `parse_with_profile`.

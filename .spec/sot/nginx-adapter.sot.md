@@ -12,6 +12,24 @@ rel:
 
 # Rust nginx body-bound native adapter
 
+## Current qualified component checkpoint
+
+Exact source8132117e7bf1445939d7dee9066fcf45ccf0915b passed hosted nginx
+job128358355202 in run42355168729:35 scenario groups passed, zero failed/ignored/
+not_run, cleanup exit0, unchanged source and immutable image identity. Evidence
+is evidence:root/20261107052501, hosted-813-execution-summary.json and
+hosted-813-source-proof.json. The pinned Docker build enforces separate native,
+pilot and package feature builds/Clippy plus library tests. Latest separate local
+pure verification is14 passed plus package check/scoped Clippy (7f3dc93).
+
+This qualifies the owned Linux HTTP1.1 component, including JSON keepalive,
+SSE upstream cancellation and unsigned package binding assertions. Positive
+ALLOW remains explicit trusted synthetic evidence through actual authority/WAL.
+ApplicationHttp409, private-pipe executable startup and same-WAL reload assertions
+do not qualify sealed ServiceHost startup or human/browser/product protection.
+Full product remains false. Future worktree/API/profile changes inherit no result.
+Earlier NOT_RUN notes below describe historical source-only checkpoints.
+
 ## Rust native replacement contract v0.2
 
 The accepted current implementation target is Rust1.99.1/edition2024, package
@@ -74,7 +92,8 @@ native compile/runtime qualification under root's resource scheduling.
 The source-only follow-up uses ngx_http_send_response with a constant zero-script
 complex value, then one-shot pool-owned timer finalization after the SDK wrapper
 returns. No cell borrow may cross finalization; origin phases must not resume.
-Native ABI/lifetime and JSON tests are NOT_RUN until root allocates a heavy slot.
+These source-only ABI/lifetime and JSON checks were subsequently qualified by the
+exact8132117 hosted component above; earlier35 status-only evidence stays separate.
 These are module/IPC errors; nginx parser rejects malformed wire framing before
 module invocation and retains its native400 response/error headers.
 
@@ -122,7 +141,8 @@ It accepts bounded regular files in trusted hosted build directories and creates
 a new manifest without overwrite. It is not a secure installer or signature.
 abi_load_qualified and signed_release must remain false in metadata; actual
 hosted load/runtime evidence is an independent gate. No credentials or body data
-enter provenance. Current report/package/keepalive extensions are NOT_RUN.
+enter provenance. The8132117 hosted component qualifies the report/package/
+keepalive assertions; metadata itself still grants no signature or ABI permit.
 The SSE scenario must also observe actual upstream EOF/reset after a downstream
 client closes following its first event. Successful buffered writes alone do not
 prove cancellation. This owned-origin witness is bounded to2s observation and

@@ -26,9 +26,11 @@ public origin path, `proxy_next_upstream off`, `proxy_cache off`,
 The Rust Docker fixture writes an exact isolated configuration for these gates.
 Operator-controlled nginx configuration remains a trusted integration boundary.
 
-Historical source16c18f3's root27-member locked snapshot passed7unit tests,
-native/pilot strict Clippy and35actual Compose groups. The subsequent JSON timer,
-strict report and packaging changes remain unqualified until the hosted run.
+Exact source8132117's hosted job128358355202 in run42355168729 passed35actual
+Compose scenario groups, cleanup0 and source/image binding. The pinned image
+build enforces library tests and separate native/pilot/package builds and Clippy.
+Separate latest local verification passed14pure tests and package check/Clippy.
+Historical source16c18f3's7unit/status-only35 result remains separate.
 The CI owner supplies HUMANYMOUS_SOURCE_REV (checkout commit),
 HUMANYMOUS_SOURCE_MANIFEST (frozen source-manifest SHA256), and
 HUMANYMOUS_NGINX_IMAGE (source-bound local image tag). Missing values fail closed.
@@ -51,7 +53,7 @@ Run these process/IPC/ABI checks on the standard hosted runner under the shared
 delivery policy. A successful report requires all35 unique scenario IDs, exact
 source/lock identities, exit0 and no failed/ignored/not-run groups. Counts denote
 scenario groups, not Rust harness tests. Challenge now includes JSON and four
-requests on one keepalive connection; that extension is still NOT_RUN.
+requests on one keepalive connection; that extension passed in8132117.
 
 The image carries package-manifest.json with bounded module/engine hashes,
 Cargo.lock SHA256 and exact toolchain/target/nginx/configure/SDK/source inputs.
@@ -59,6 +61,10 @@ The Rust writer uses a separate package feature graph after saving the native
 module. The pilot compares actual bytes and engine build identity. This is
 unsigned build provenance; abi_load_qualified and signed_release remain false.
 The actual hosted module-load receipt is separate from package metadata.
+Recovered engine/module/lock/image hashes are in the hosted813 execution summary
+under evidence:root/20261107052501. The full private case report and package
+manifest hash were not exported in the sanitized free-runner summary. Current
+worktree changes and full product/human/AT qualification are not covered.
 
 `legacy-njs/` preserves the prior b1e10ae handwritten njs/Python mock pilot without
 new foreign-source edits. Its old24unit/28Docker result is historical, cannot
