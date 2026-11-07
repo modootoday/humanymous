@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 556a7d23a72baf4c77a4a7f034d52f12c60ddc4cf7b4a24011e7a333172c08f2, bytes: 103872, store: repo}
+  - {path: baseline.json, sha256: 8effb202e2e4d6d66354202faedc3ceb1443a540e686d3f56ebc4f7bdb081e14, bytes: 105164, store: repo}
 ---
 
 # Convention audit baseline
@@ -1526,3 +1526,28 @@ Conditional bounded-design readiness does not close that requested refinement.
 No audit compiler/SDK/native/Docker workload ran. Full migration and all remaining
 product/native/consumer gates stay OPEN. Exact source/private hashes are retained
 in baseline.json.
+
+## Canonical Git metadata-envelope re-audit
+
+Delivery repair a9cbbdf0 was independently checked against exact committed Git
+bytes. All80 retained working/original Git view records reproduce their hashes
+and sizes;20 historical working/Git byte views differ. All80 current working
+files equal their Git blobs and contain no CR. All79 JSON Git bodies remain
+unchanged from the declared11815fb7 base. The final index reproduces all82
+attachment hashes/sizes from Git, not merely a green Windows worktree check.
+
+The initial comparison flagged index.evidence.md against its manifest row; that
+row explicitly describes the ORIGINAL normalized index before attachment rehash,
+not the final index. This is a documented self-hash-cycle exception, not a defect.
+The separate final committed index is46676 bytes/SHA256
+df919937d9372f51dd9caacf485db02e2941b79c19f3d0b7cb70ec9c8c7c0e4a.
+Initial and classified private review records are both retained. No prior SHA was
+silently reinterpreted. Raw logs, profiles, fixtures, archives and measurements
+were not normalized or rerun by this audit.
+
+At unchanged a9cbbdf0 HEAD, Runtime7/CLI1/Lab52 public attachment envelopes also
+reproduce from Git with zero mismatches. Audit e4d77ad9 own four files have exact
+raw worktree/Git equality, and its baseline envelope reproduces from Git. These
+checks establish metadata-byte reproducibility only; embedded native/product
+qualification remains at its separately recorded scope. Journal transition
+refinement and entire migration/product/consumer verification stay OPEN.

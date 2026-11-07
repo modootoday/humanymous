@@ -1878,5 +1878,29 @@
     "gnu": "Source1f2completedpreflight3pureproducerpassed/6filtered;fresh102412Blogbyteequalofficial;Lab40Delivery121separate",
     "journal": "Sourceonly3plansarithmeticconsistent; conditionaldesign noP0P1 identified; P2closedtransitiongrammarrequestedbeforecode; actualnative/API/installerunqualified",
     "goal_complete": false
+  },
+  "canonical_git_metadata_review": {
+    "source": "a9cbbdf0f805321f94b396e3e5500f6c245d7555",
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/delivery-encoding-git-view-review-001.json",
+        "sha256": "6db48efed5c2976d3d3a02972f7dd2ccda5047f8cd9529c5810cdb5cb7652b86",
+        "bytes": 1087
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/delivery-encoding-git-view-review-002.json",
+        "sha256": "a9d136d99ea4e50b778de105809aa73d4985e74f14a3f7886316d623230708d9",
+        "bytes": 513
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/selected-public-git-envelope-review-002.json",
+        "sha256": "26b49b8c712779ad6c62df6009f4f5e0af601c7cd5069ddc997b6027b523e4c2",
+        "bytes": 757
+      }
+    ],
+    "delivery": "80retained/original/currentviewsverified;20historicaldifferences;79JSONGitbodiesunchanged;82finalGitattachmentsreproduce",
+    "index": "Manifestrowisoriginalnormalizedindex exception;finalindexseparatelyverified; initialcomparisonandclassificationbothretained",
+    "selected": "Runtime7CLI1Lab52=60Gitattachments0mismatch; own4e4d77ad9rawGit/worktreeequalandbaselineenvelopereproduces",
+    "goal_complete": false
   }
 }
