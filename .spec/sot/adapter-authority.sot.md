@@ -684,14 +684,33 @@ Root accepted Ready COMPOSITION in Runtime. Runtime privately constructs its
 actual listener/readiness evidence; native proof,
 durable audit and observer receipt are independently required. Authority cannot
 import a Runtime proof type or accept activate(true). Proposed consuming interface:
-Authority transfers PreparedObserverSession (actual native publication/W/receipt,
+Authority transfers VerifiedObserverPreparation (actual native publication/W,
 same gate and restricted bounded transport), never a synthetic Ready proof.
-Runtime-private ServiceHost::activate_observed consumes that session and actual
-owned listeners/capture/TLS/audit resources into RunningObservedService. Runtime
+It contains NO observer credential receipt: that receipt comes later, after
+permitted unseal/preparation and Offer. PreparedObserverSession denotes that later
+receipt-bound phase, never a prerequisite that creates a pre-unseal ACK cycle.
+Runtime-private prepare_observed must consume and validate that native epoch and
+independent W BEFORE any unseal/writer open. Existing ServiceHost::bind already
+opens audit/writer state and MUST NOT serve as an unverified TransportPrepared
+path. Only after that proof may preparation acquire actual listeners/capture/TLS/
+audit resources. Its unique ObservedStartupOwner retains the prepared session,
+host resources, transport, credential, pins, W and monitor throughout all stages.
+The same owner's later provisioning transition obtains the actual receipt-bound
+PreparedObserverSession; a caller cannot attach a claimed receipt or readiness.
+activate_observed consumes that owner into RunningObservedService. Runtime
 privately creates RuntimeReadyReceipt and emits ServiceReady only after gated
 activation; that receipt never crosses back into Authority. Exact consuming types,
 transport ownership, failure retention and revocation races remain P0 joint review;
 this direction does not approve a native AcceptedObserverEpoch producer.
+Failure returns an owned non-Clone ObservedStartupFailure with its stage and the
+SAME cleanup owner; it cannot discard or detach transport/secret/pins/W/monitor.
+Revoke immediately, retain ReadyDelivery as NotSubmitted/Partial/Submitted/Unknown
+facts, then explicit bounded close/cancel/join/drain/final-flush reports separate
+outcomes. Drop revokes but never asserts those asynchronous operations completed.
+Partial Ready permits no origin, automatic resend, new epoch or watchdog reset.
+The final complete Ready enqueue AND transition to Active must serialize with
+loss on the same gate: no full-frame-then-later-activate race. Previously accepted
+Ready remains a historical receipt after loss, never a continuing live authority.
 The exact sealed activation adapter/evidence boundary remains P0; these rules do
 not fabricate an implemented constructor. Expensive checks/audit happen outside
 the gate, followed by final epoch/deadline/native-liveness validity at bounded

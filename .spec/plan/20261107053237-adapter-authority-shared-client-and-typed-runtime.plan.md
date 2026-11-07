@@ -726,3 +726,23 @@ public independent-expiry.json binds scope and hashes. Warm Rust compilation
 9.61s; no SDK/native cold graph, no actual handler/native/SCM/account execution.
 Slot returned terminal; no owned validation process remains. Historical IPC proof
 is not silently extended to this new client source; fresh hosted remains NOT_RUN.
+
+## Runtime pre-unseal and failure-owner review reflected
+
+Runtime identified that existing ServiceHost::bind opens/unseals audit writer
+before activation; it cannot be reused as unverified TransportPrepared. Corrected
+the earlier proposed input phases: VerifiedObserverPreparation carries native
+publication/W/same gate/transport BEFORE unseal, with NO credential receipt yet.
+Runtime private prepare_observed consumes that first. One ObservedStartupOwner
+then retains resources through unseal, Offer and actual receipt; the later
+PreparedObserverSession is receipt-bound. Requiring that later receipt before
+unseal would create an invalid ACK cycle, so it is explicitly prohibited.
+
+activate_observed consumes the same owner. Failure must own host/transport/secret/
+pins/W/monitor, stage and ReadyDelivery(NotSubmitted/Partial/Submitted/Unknown),
+revoke immediately and expose explicit bounded close/join/drain/flush facts.
+Drop cannot certify those completions. Complete Ready enqueue and Active transition
+serialize under the same loss gate; partial Ready permits no origin, resend or
+watchdog reset. Historical Ready receipt cannot restore a revoked epoch. Sent
+correction to root/runtime. No Rust change or new execution;689b95d2 pure14 receipt
+is unchanged and does not prove these not-yet-accepted production APIs.
