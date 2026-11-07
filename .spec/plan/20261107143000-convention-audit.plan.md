@@ -223,3 +223,7 @@ Batched followup binds actualmodel17+1 (only4newstandardize) and1497stableinputs
 S2private8cbc five-source-tests remainNOTRUN. HANDOFF01 e34cee8a syncsourcefix
 accepted, actualSDK/lateconnectedcontrols andNode/ASGIqueuedgates remainOPEN.
 No new implementation ownership, compiler/native workload or globalpass inferred.
+
+Batched evaluationL0/L1source aeefd20c review andCLI b891d1f8 compile-scope
+re-audit: ZIP2710source bytes independentlymatch SHA256+canonicalGitblob;9pure
+passed, actual4watchdog casesnotrun. No newclosure/SDK/provider/product promotion.

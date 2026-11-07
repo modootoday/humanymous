@@ -333,5 +333,16 @@
     "handoff_actual_new_host_tests_observed": 0,
     "handoff_finding_closed": false,
     "higher_layer_qualification": false
+  },
+  "followup_metrics_cli_compile": {
+    "private_review_sha256": {
+      "model-evaluate-source-review-001.json": "3cb84860263367203a3e157fd669b4d759d50cbc18bbe8afdf563de091408caf",
+      "cli-watchdog-compile-review-001.json": "8e80b1cc045b9582d3978ecdb26f46c5edd1c571692d7ae21743b8365011a414"
+    },
+    "evaluation_actual_new_tests_observed": 0,
+    "cli_actual_selected_pure_tests": 9,
+    "cli_zip_source_entries_independently_verified": 2710,
+    "cli_actual_watchdog_child_cases": 0,
+    "native_provider_or_product_qualified": false
   }
 }

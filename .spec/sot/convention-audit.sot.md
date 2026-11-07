@@ -688,3 +688,27 @@ qualification. Node's private wall-clock Pending/early copied status and ASGI's
 queued early consumption remain explicitly OPEN in contractv0.3. Genuine bound
 ALLOW-before-late-connected/no-origin and timely positive controls remain required.
 No audit source edits, SDK/compiler/process/Docker workloads were performed.
+
+### Offline metrics and CLI compilation evidence follow-up
+
+Evaluation sourceaeefd20c was fully reviewed against its owning L0 reporting
+contract. It reduces existing Prediction data without duplicating MLP math or
+installing a model. Inclusive offline0.5 classification, explicit numerators/
+denominators, None for absent support, finite/range/label checks and whole-batch
+refusal remain distinct from cohort/label provenance and promotion policy. The
+100000 sample cap keeps counted float32 numerators/denominators representable.
+Four new tests are authored, not observed running here. No new source blocker
+was found; prior model17+1 cannot qualify this newly added source.
+
+CLI compilation receiptb891d1f8 was independently examined. All14 private index
+attachment hashes matched. Source ZIP SHA256 matches its public commitment;
+independent streaming of2710 regular source entries, without filesystem
+extraction, matched both saved SHA256 values and actual e34cee8a Git blob hashes
+including Git blob headers, with zero missing/extra/duplicate/mismatched files.
+This proves that source archive comparison, not a registry/SDK/cache-key closure.
+Raw unit output shows9passed/0failed/0ignored/15filtered; immutable check/strict
+Clippy logs reach successful completion. Fmt0 is recorded by the owning index
+with empty raw output. The initial shared-CWD check remains separate from the
+archive-directory gate. Four actual watchdog child cases/exit74/pipe pressure/
+SCM/cleanup remain NOT_RUN. Compilation does not close LIFETIME01 or qualify the
+shared native provider. No audit compiler/native/Docker workload was executed.
