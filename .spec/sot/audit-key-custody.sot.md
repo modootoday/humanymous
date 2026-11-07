@@ -22,6 +22,9 @@ controlled-native qualification case are authored, all UNRUN/uncompiled. The
 single controlled case includes15 deterministic mutation/admission subcases and
 final-after-both-passes refusal; those are not15 separately executed Rust tests.
 FD exhaustion/peak, unsupported filesystem and capacity remain additional gates.
+Owned rustfmt1.10.0-stable edition2024 returned0 after explicit Root format-only
+permission. The native leaf now explicitly repeats test/Linux/x86_64; scan's
+ancestor was already cfg(test), so no non-test compiler failure was observed.
 The existing native entrypoint remains Unsupported and no product route is wired.
 Native qualification and remaining fault/capacity cases remain pending.
 The narrow prospective Unix WAL creation fix now requests0600

@@ -11,7 +11,7 @@ rel:
 
 # Audit key custody Linux retained source admission
 
-Version0.4. Root accepted the narrow prospective Unix WAL creation fix and the
+Version0.5. Root accepted the narrow prospective Unix WAL creation fix and the
 Linux diagnostic premises below; validation requires a new explicit A grant.
 Native producer implementation follows a separate concrete source-slice freeze.
 No dependency change or production route is authorized. Phase-B qualification
@@ -51,7 +51,13 @@ in an allocated supported Linux venue. No environment absence/Unsupported is
 counted as a healthy native result. It is a qualification case, not a subprocess
 helper, and its ignored default outcome must be recorded separately from the
 five historical helper exclusions. ALL new native tests/code are NOT RUN or
-compiled; no fmt/check/Clippy/capacity/production qualification is claimed.
+compiled; no check/Clippy/capacity/production qualification is claimed.
+Root subsequently allowed owned formatting only: rustfmt1.10.0-stable
+(58cf8f9c35,2026-10-13), edition2024, returned0. The leaf native module now
+explicitly requires test/Linux/x86_64. Its ancestor verification::scan was already
+cfg(test), so the initially suspected non-test unresolved-symbol issue was a
+withdrawn source-review hypothesis, NOT an observed compiler failure or broad
+lint fix. Formatting proves no Linux compilation or native behavior.
 The same one ignored controlled case now additionally authors15 deterministic
 fault scenarios: same-size file replacement, truncate, sampled regrow, append,
 sidecar removal/addition, cancellation, root replacement, wrong mode, symlink,
@@ -214,7 +220,7 @@ claim is authorized. Native source must freeze as a separate concrete slice.
 Prospective creation source now requests0600 through std Unix OpenOptionsExt in
 both open_append (initial lock/segment/sidecar) and rotation create_new. Two Unix
 Rust tests are authored for actual created modes/rotation/restart and preservation
-of existing0644 file modes/dev/inode while appending. Tests are NOT RUN; no fmt,
+of existing0644 file modes/dev/inode while appending. Tests are NOT RUN; no
 check, Clippy or native qualification is inherited from the prior33-case proof.
 No global umask mutation, chmod of actual history, dependency or graph edit.
 
