@@ -12,6 +12,15 @@ rel:
 
 # Audit key custody
 
+S2 draft [[plan:root/20261107151758]] now records independently reviewed contract
+refinements: preserved ambiguous history is read-only/no Ready/normal append or
+checkpoint; original operation Control/Limits survives VerifiedScan finalization;
+control-only explicit bootstrap can resume after fresh validation/sync; rotation
+admission precedes writes. Root accepted only the lowest private L1 planning slice.
+Its pure transition kernel and five invariant tests are now authored UNRUN/
+uncompiled; no NativeFiles/VerifiedScan/operational owner is produced. Production
+authority, repair/clock/type-native proof and all prior gates remain incomplete.
+
 Next accepted S1 slice is a private test-compiled inspect_native composition
 facade using one owning NativeSource and SAME policy/Limits/Control plus typed
 resource-only NativeBudget. It is now authored with one new platform-neutral

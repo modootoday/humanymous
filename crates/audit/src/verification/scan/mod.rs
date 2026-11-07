@@ -3,6 +3,7 @@ mod checkpoints;
 mod frames;
 mod limits;
 mod metadata;
+mod recovery_transition;
 mod source;
 mod verify;
 

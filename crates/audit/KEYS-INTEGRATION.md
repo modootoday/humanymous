@@ -1,5 +1,14 @@
 # Sealed key compatibility integration
 
+## Pending private recovery transition kernel
+
+S2 contract v0.2 (plan151758) incorporates independent readonly-ambiguity,
+original-operation-bounds, bootstrap-restart and pre-write segment-limit review.
+Root accepted private L1 source only. Kernel now classifies these local plans/
+preconditions, with five authored invariant tests, all UNRUN/uncompiled. No native
+owner/authentication/durable write/Ready token exists; operational factory stays
+Unsupported. Type-level VerifiedScan/expiry/repair/provider/consumer gates remain.
+
 ## Pending private native diagnostic facade
 
 Root accepted test-compiled inspect_native with SAME policy/Limits/Control and

@@ -13,7 +13,7 @@ rel:
 
 ## Goal
 
-Design v0.1, DRAFT/needs-work. Prepare the production recovery contract after
+Design v0.2, DRAFT/needs-work. Prepare the production recovery contract after
 private S1 facade qualification; this is not S2 implementation or authority
 approval. L2 owns real storage/FD/recovery inputs; Runtime/Authority/CLI/Lab own
 their consumer paths. Existing claims/full goal survive the structural role change.
@@ -56,6 +56,7 @@ Proposed private state transitions:
 | OpeningOwner | Existing custody/key/witness context plus admitted NativeFiles/guard; no successful history | Complete two-pass authentication under one borrowed operation context |
 | VerifiedScan | SAME OpeningOwner, private authenticated scalar/frontier/physical provenance and optional exact repair plan | Consume once for final revalidation + selected repair/initialization |
 | OperationalOwner | SAME keys/files/guard, fixed frontier, sequence/head, physical checkpoint link/counters, durability/poison state | Bounded append/checkpoint/proof/fold operations |
+| AmbiguousReadOwner | SAME authenticated files/context plus immutable preserved-tail/external coverage facts | Read-only inspection/proofs; no normal append/checkpoint/effect/Ready promotion |
 
 Construct VerifiedScan only inside a consuming authenticate(self) operation:
 temporarily borrow owned key/file fields, finish checks, then move the entire
@@ -63,6 +64,16 @@ unchanged owner into the result. Avoid a self-referential borrowed policy stored
 beside moved keys, or transferable summary attached to another file set. No
 public constructor, clone/serde, source-path token or caller success flag. The
 existing Diagnostic/Report/WitnessCoverage are observations, not these types.
+
+Bind the startup transaction explicitly: authenticate(self, &'op Limits,
+&'op Control, mode) -> VerifiedScan<'op>; finalize(self) accepts NO replacement
+Limits/Control. VerifiedScan owns OpeningOwner while borrowing only the original
+external operation bounds, which is not self-reference into moved key fields.
+Final revalidation/repair checks that same absolute clock and cancellation source.
+Only a later independent OperationalOwner operation may receive a fresh context.
+Require meaningful actual-type borrow/argument compile-fail checks and a negative
+cancel/expired-original-clock-between-auth-and-finalize test with zero writes;
+privacy-only compile failure is not proof of the lifetime invariant.
 
 ### 2. Preserve physical versus external candidate provenance
 
@@ -87,6 +98,21 @@ use existing shared rules at the exact actual prefix, then ALL complete records
 after it must still authenticate. Resource refusal returns no partial result.
 RequireCovered refuses an authenticated complete tail; PreserveAmbiguousTail
 retains it without signing, replay or effect acknowledgement.
+
+Root-selected ambiguity policy: a positive preserved tail finalizes ONLY into
+AmbiguousReadOwner, never Ready/OperationalOwner. It cannot append records,
+generate a normal checkpoint or have flush/shutdown auto-sign the tail. Unsigned
+current/prefix proofs and previously physical checkpoint proofs remain available
+as read-only observations; they are not witness/effect acknowledgements. A normal
+later checkpoint or newer receipt cannot clear ambiguity. No into_writable,
+boolean override or automatic "latest head now covers it" transition is provided.
+Any future explicit business reconciliation/resolution needs a separate accepted
+contract, preserving original uncertainty; it cannot be inferred from storage
+signature coverage. This is an explicit S2 compatibility restriction requiring
+the L3 startup result to distinguish preserved/read-only from writable recovery.
+Exact preplanned terminal-torn repair or persistence of the ALREADY authenticated
+external PREFIX candidate is separate from normal record append/checkpoint and
+cannot sign/cover the preserved tail or grant readiness.
 
 Keep raw sidecar bytes/digest/counts PHYSICAL. Legacy recovery Report/Scope may
 include the virtually appended candidate, matching the old algorithm. Carry
@@ -151,6 +177,18 @@ caller requests initialization. Unknown/co-located files are not "empty".
 
 Lock control-file creation is the explicitly reviewed synchronization bootstrap;
 no history repair or key generation is permitted before complete authentication.
+
+Bootstrap restart compatibility: with allow_new, no external pin, valid private
+admitted provider and exactly an existing valid control lock but no history,
+acquire that same lock and resume empty initialization. This preserves legacy
+control-only-directory acceptance. Revalidate ownership/type/nlink/provider and
+perform fresh lock/directory sync; never claim an unobserved earlier sync passed.
+An active competing guard refuses; no unlink/recreate. A valid existing empty
+initial segment with lock can pass ordinary explicit-empty verification. Missing
+lock WITH any history, partial/invalid control artifact, unknown member, failed
+fresh sync or disallowed new history refuses. Crash after lock create/before
+segment thus resumes only through these explicit fresh checks; crash after a
+failed/uncertain sync is not automatically a previously completed initialization.
 After verified empty history, consume the owner to create initial empty segment
 with0600+file/directory sync and expected membership update. Required independent
 witness client remains mandatory; first actual record must obtain its normal
@@ -182,6 +220,13 @@ expected source epoch/transcript/state only for proven owned writes; unexpected
 changes are refusal. Reconcile native read snapshots with intentionally appended
 bytes using a new operation lease, not the old read-only stamp after mutation.
 No implicit unsupported/unbounded fallback in the required bounded startup path.
+
+At MAXsegments, admission happens before any required rotation create, record
+write, checkpoint write or expected-state advancement. If next append needs a
+new segment and N==limit, return resource refusal with no write/new sequence.
+Appending within the existing last segment may proceed only if all remaining
+record/byte/FD bounds hold. Count write reopen/create, sidecar bootstrap and sync
+temporaries in a separate transition ledger; do not reuse N+P+6 as a write proof.
 
 ### 6. Bounded proofs preserve existing root semantics
 
@@ -215,6 +260,55 @@ Vec wrappers. Keep legacy materialization only with explicit separate budgets;
 it cannot establish bounded recovery. Preserve public result shapes where
 possible; root accepts cross-owner API/durability differences before migration.
 
+Current read-only consumer map (paths were clean when inspected; no consumer
+implementation/qualification is asserted):
+
+| Current consumer | Actual materialization | Required lower contract / upper decision |
+| --- | --- | --- |
+| runtime/startup.rs::witnessed_through | checkpoints()?.last() | Constant-size last PHYSICAL witnessed head/through from same owner; preserve Some(0) for configured external witness with empty history, None for writer-only |
+| runtime/settings/store.rs::open -> store/journal.rs::read | &audit.records()? -> &[Record] | Staged bounded latest revision/digest/parent fold, retain current node/tenant/config-revision checks and reject effects after witnessed_through |
+| runtime/control/state.rs::KillStatus::assess | audit.records()?.iter() | Bounded Effect fold, exact scope/commitment/action/authority/other-target checks and fresh retained anchor; no replay or cached health token |
+| authority/startup.rs::open_audit sealed branch | SealedLog open -> DurableAudit | Preserve protected credential/witness/preflight/error handling and append-before-release trait; no fallback to inline on bounded provider refusal |
+| authority/startup.rs inline branch | Wal + Log direct startup | Explicit compatibility/bounded-migration decision needed; do not silently label unbounded inline startup as qualified production |
+
+The physical getter must not use a virtual recovery candidate or a caller boolean.
+It advances only after required signatures, external acknowledgement and physical
+checkpoint persistence under the same owner. Pending repair cannot advertise a
+new witnessed-through size. Requested bounded fold/physical-head contracts were
+sent to Runtime/Authority owners for their acceptance; no API migration or source
+write in those paths is authorized by this read-only map.
+
+L3 owner feedback refines the contract without granting consumer writes:
+
+- Settings stages only {revision,digest,previous}; first revision0 then checked
+  contiguous canonical decimal <=MAX_SAFE. Preserve exact node/tenant/config
+  revision and outer full ManagementScope checks. Match/parent uses commitment
+  to FULL canonical snapshot bytes, not revision alone. Existing filter accepts
+  only runtime.settings.commit/version1; other settings-family names are ignored.
+  Do not silently tighten that to the kill-family policy.
+- Kill scans every runtime.kill.* and refuses unknown names/versions or malformed
+  fields, including late errors after a valid covered effect. Covered dominates
+  later valid ambiguous kill records but does not stop EOF validation. Retained
+  exact scope/action/target/public key/other-target-empty and fresh retainer anchor
+  join remain serialized outside the fold, not a reusable healthy lease.
+- Empty externally configured/verified history remains Some(0), while writer-only
+  remains None. An optional physical head None cannot collapse these distinct
+  owner states or invent a virtual covered head. No Config/native snapshot
+  finalization/Ready before complete EOF+repair/native/crypto barrier under the
+  SAME owner/control and absolute minimum caller/operation deadline.
+- Authority preserves DurableAudit: Send with append(&mut self, Record)->
+  io::Result<()>. Ok means required record/checkpoint AND required witness coverage
+  policy actually completed, not queued/healthy/Diagnostic. Append Err permanently
+  poisons Authority and leaves its already reserved nonce burned. Authority
+  rechecks time after Ok; expiry still withholds response despite persisted audit.
+  Uncertain append/witness/flush never rolls intent back or permits blind retry.
+- Keep exact-node/trusted-head/allow-new/checkpoint_every1 and private key/WAL/
+  witness preflight before unseal/listen. Missing protected credentials/native
+  store/witness never falls back inline. Keep redacted stage errors and owned
+  Zeroizing credential transfer; caller's original JSON buffer is not erased by
+  magic. The inline Wal/Log branch is explicitly COMPONENT/NONPRODUCTION, not
+  bounded production; future finite-limit/migration decision remains separate.
+
 Propose scoped read/fold leases that borrow the owner through complete operation,
 stage bounded Runtime settings/kill/Authority ledger state, and publish results
 only after authenticated EOF. No escaping cursor that outlives owner/guard and
@@ -246,6 +340,30 @@ do not grant writes to Runtime/Authority/native-security/CLI/Lab paths.
 
 ## Record
 
+### Private L1 transition source checkpoint (UNRUN)
+
+The test-compiled scan/recovery_transition.rs now implements pure tail
+classification, preserved-tail rejection of every normal append/checkpoint/Ready
+intent, checked segment rotation admission, explicit control-only bootstrap
+decisions and OperationBounds borrowing the original Limits/Control with sticky
+refusal. These are LOCAL planning/precondition results only: no NativeFiles,
+VerifiedScan, successful authentication, real write, durable receipt or readiness
+capability is constructed. The original unavailable operational factory stays
+Unsupported. No S2 production source or consumer mutation is enabled.
+
+Five authored invariant tests cover preserved-tail immutability across all
+normal intents, zero/u64MAX/ahead-anchor boundaries, MAXsegments before a new
+index, explicit allow-new/control-only/bootstrap negatives and original cancelled
+Control refusing even with a fresh replacement/reset. Tests are NOT RUN or
+compiled; owned rustfmt and Specfold only. Actual VerifiedScan type compile-fail,
+post-auth expiry/no-write and actual bootstrap/repair/durability gates remain
+distinct requirements. Earlier3d325 proof qualifies none of this new kernel.
+
+Independent reviewer reread the v0.2 contracts and found no further P0/P1 blocker
+in those refinements for Root's narrow private L1 model. This is not acceptance
+of S2 production/native repair, full memory or effect authority. Required actual
+type/method/clock/readonly/bootstrap tests above are not waived.
+
 Owner multi-perspective review, not delegated or independent approval:
 
 - P0: startup-borrowed Control cannot become a long-lived writer deadline.
@@ -266,3 +384,11 @@ Owner multi-perspective review, not delegated or independent approval:
 
 Verdict: needs-work. Production implementation and resource/execution grants are
 not authorized by this draft. Frozen scoring/a11y/defense-only constraints stay.
+
+Independent X-owner review of61bb found three unresolved transition contracts;
+Root directed the v0.2 requirements above: read-only preserved-tail outcome;
+original &'op Control/Limits through finalize; and resumable control-only
+bootstrap with fresh validation/sync, plus pre-write MAXsegments admission.
+These are draft-contract findings, not observed production bugs. Root accepted
+the lowest private L1 transition-source slice after these refinements; no actual
+native repair/owner/authority promotion or compile slot follows from that grant.
