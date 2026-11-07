@@ -1,0 +1,89 @@
+{
+  "schema": "humanymous.nginx.source-only-checkpoint/0.2",
+  "canonical_commit": "7cda20c5660707b06e905aa6fb289cbab44e9f32",
+  "scope": "strict report, unsigned package and JSON/SSE cancellation assertions",
+  "files": [
+    {
+      "path": "adapters/nginx/Dockerfile.native",
+      "bytes": 4842,
+      "sha256": "43601ec07795d039ba2e49bc95ac8db9798233a47d3995d01240014a61c8cd99",
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/compose.yaml",
+      "bytes": 618,
+      "sha256": "27485d7795f9ad4c2be8dcab53f34a02a462f72974c70dffaf9dce137f767900",
+      "lf_only": true
+    },
+    {
+      "path": "adapters/nginx/pilot-contract.json",
+      "bytes": 3051,
+      "sha256": "de0b6032653aa40f6b0240848503ceebca03fcc86bc00abc69a6bd3589648a80",
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/Cargo.toml",
+      "bytes": 1393,
+      "sha256": "ba9f8353715a0132022ea0f2a0013f7d4d592920a2f3cb96425fd2abfd1e4cfc",
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/native.rs",
+      "bytes": 24912,
+      "sha256": "c65131ac337558b87566eb9211d7c36ef823b728f337c4f59de83a705404393d",
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/report.rs",
+      "bytes": 3633,
+      "sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/package.rs",
+      "bytes": 8798,
+      "sha256": "140dc60c0606a578742ce100c1acd634dbedfb8668bcc10cb0ab6719bebc1301",
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/bin/package.rs",
+      "bytes": 2249,
+      "sha256": "5b4c2ebdd8f2a04c7540525b9e57431c5f2be110e34d746e86b7df590b56fb7e",
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "bytes": 32435,
+      "sha256": "d570abcf18502f376dfc1ccc7e89dfbbc9a7420d5661bf4a54be48d28b703c37",
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/origin.rs",
+      "bytes": 8664,
+      "sha256": "e01ddcf5ad2e14e9eb3c05d4b308c87f5edb76013326a4a5bf987775a8661790",
+      "lf_only": true
+    }
+  ],
+  "validation": {
+    "diff_check": "passed",
+    "unit": "NOT_RUN",
+    "clippy": "NOT_RUN",
+    "scoped_specfold": "0 errors 0 warnings",
+    "full_product": "NOT_RUN",
+    "hosted_nginx_authority": "NOT_RUN",
+    "native_build": "NOT_RUN",
+    "rustfmt": "passed"
+  },
+  "denominator": {
+    "rust_tests": "not yet measured for current source",
+    "scenario_groups": 35
+  },
+  "external_dependencies": [
+    "root assigned serial Cargo slot",
+    "root frozen-source hosted dispatch",
+    "CI and product-lab required component integration"
+  ],
+  "qualification": "source commitment only; old source16c18f3 runtime receipt does not qualify this source",
+  "signed_release": false,
+  "full_product_qualified": false
+}
