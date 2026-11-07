@@ -2,6 +2,83 @@
   "schema": 1,
   "reviews": [
     {
+      "source": "crates/native-cli/Cargo.toml",
+      "sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed canonical humanymous-native binary and planning-only dependencies, separate from humanymous provisioning/service CLI. Public tutorial does not imply an installed native SDK or framework qualification. Source review only; no new build or tests during resource hold.",
+      "pages": ["docs/tutorials/quickstart-monitor-mode.md", "docs/reference/cli-config-policy.md"]
+    },
+    {
+      "source": "crates/native-cli/src/lib.rs",
+      "sha256": "727de2499f0b3beaa0084a4375ae14c39915482e08bb1ed7c73bcf2f3dfbb1d5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed exported arguments/manifest/storage modules and forbid-unsafe boundary. Reader pages identify declarative planning and explicit publication separately from actual runtime/SDK protection.",
+      "pages": ["docs/tutorials/quickstart-monitor-mode.md"]
+    },
+    {
+      "source": "crates/native-cli/src/arguments.rs",
+      "sha256": "0c8e593d0d027cdf0b26852eeaf8e29eff51d29bc3ccb5a98c5cae4f99432b48",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed six planning frameworks, explicit target list, bounded version tokens, duplicate/conflict refusal, default dry-run and direct-child portable JSON output names. Target/runtime tokens are requested plans, not observed support; doctor/verify remain absent.",
+      "pages": ["docs/reference/cli-config-policy.md", "docs/tutorials/quickstart-monitor-mode.md"]
+    },
+    {
+      "source": "crates/native-cli/src/main.rs",
+      "sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed bounded argument composition, dry-run without filesystem calls, explicit storage publication and JSON receipt. Public reference now distinguishes exit2 refusal from exit3 published destination with incomplete temporary cleanup; nonzero must not be interpreted as no mutation.",
+      "pages": ["docs/reference/cli-config-policy.md", "docs/tutorials/quickstart-monitor-mode.md"]
+    },
+    {
+      "source": "crates/native-cli/src/manifest.rs",
+      "sha256": "92ee2ad9635a2f297e864316d64152d9aa5ab8de198ef98c0e98fe028bca3239",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed deterministic bounded manifest schema, unimplemented integration, qualified=false, empty capabilities and explicit requested policy/host requirements. Tutorial preserves the Electron main-process/no-second-CEF plan without implying generated addon/glue or actual enforcement.",
+      "pages": ["docs/tutorials/quickstart-monitor-mode.md", "docs/reference/native-browser.md"]
+    },
+    {
+      "source": "crates/native-cli/src/storage.rs",
+      "sha256": "92ba13c460f74860751d5959e7fbe4ad7e163f86856475b9e042f7b668cc4d7b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed explicit write/workspace/name revalidation, Windows-only delegation and unsupported-platform refusal. Receipt separates publication and cleanup. Public docs retain trusted workspace and no power-loss/namespace durability guarantee; this API does not install adapters.",
+      "pages": ["docs/tutorials/quickstart-monitor-mode.md", "docs/reference/cli-config-policy.md"]
+    },
+    {
+      "source": "crates/native-cli/src/storage/windows.rs",
+      "sha256": "21aca8c7b0efc4c81be93c62a686f475f82afb168c0dfae8f1c86fe30ac430d7",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read full path validation, ancestor handle pinning, reparse refusal, bounded create-new staging, hard-link no-clobber publication and post-close cleanup. Corrected public ownership-check overclaim: no owner/ACL verification occurs, hostile same-user workspace mutation is outside the model. Publication may succeed while cleanup fails.",
+      "pages": ["docs/tutorials/quickstart-monitor-mode.md", "docs/reference/cli-config-policy.md"]
+    },
+    {
+      "source": "crates/native-cli/src/storage/windows/tests.rs",
+      "sha256": "f009da89234090e20336449cecf9a6c5198b212d2e4b42b6b380c1dd70bf6deb",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read isolated source cases for one-time publication, racing writers, staging/cleanup failure, pinned ancestors, junction/path refusal and API revalidation. No test was newly executed during resource hold. These cases cannot establish SDK support or complete sandbox policy.",
+      "pages": ["docs/reference/cli-config-policy.md", "docs/tutorials/quickstart-monitor-mode.md"]
+    },
+    {
+      "source": "crates/native-cli/src/test_support.rs",
+      "sha256": "af4483477730588c90df5bba8d2cce770eb78a51872f5931246e8d0f080d84b6",
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed owned flat temporary fixture directories and nonrecursive cleanup; this is test scaffolding rather than a runtime installation/recovery API. No execution or new qualification is inferred from reading the fixture helper.",
+      "pages": ["docs/reference/native-browser.md"]
+    },
+    {
+      "source": "crates/native-cli/src/tests.rs",
+      "sha256": "3bedb8ba4418c75dff24220642b9bbd86a08aec2fb91c4df3b9ad5ba70f17d92",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read source assertions for deterministic dry-run, all six unqualified plans, argument bounds/conflicts, output traversal/device aliases and declared-versus-observed target/runtime. Public tutorial uses an example token without a support claim. Tests not newly run under memory hold.",
+      "pages": ["docs/tutorials/quickstart-monitor-mode.md"]
+    },
+    {
+      "source": "crates/native-cli/tests/command.rs",
+      "sha256": "cbb6d07e578998e71b9a8c343a5400efdbc8bbac7ea2143d5ddbd3414640f508",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read all executable cases for dry-run no-inspection, command refusal/help/version, Windows no-clobber write and non-Windows unsupported write. This turn did not execute them; the earlier tutorial dry-run evidence remains historical rather than a current package-wide gate.",
+      "pages": ["docs/tutorials/quickstart-monitor-mode.md", "docs/reference/cli-config-policy.md"]
+    },
+    {
       "source": "crates/cli/Cargo.toml",
       "sha256": "b14ca7a44a37c68e7d3ed61f89d933e95babcbfe2f94535a63e699ad6e482c24",
       "reviewer": "codex/rust-pages",

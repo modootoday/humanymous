@@ -17,6 +17,19 @@ a qualified production installation by its presence alone.
 | `humanymous-native` | `init --framework`, optional `--target`, `--runtime-version`, `--workspace`, `--output`, `--dry-run` or `--write`; `--help`, `--version` | Integration manifest planning, not an implemented framework SDK; `doctor` and `verify` are not current commands |
 | `humanymous-runtime` | Bounded JSON startup document on inherited stdin, then one JSON readiness line on stdout | Experimental loopback HTTP/1.1; no public management listener |
 
+## Native integration planner outcomes
+
+For `humanymous-native`, default/explicit dry-run does no workspace inspection.
+Explicit Windows manifest writing checks path/reparse boundaries and pins
+directory handles; it does not verify workspace owner/ACL policy. It requires
+trusted, non-hostile workspace entries. Publication is no-clobber, with separate
+temporary cleanup reporting: exit 0 means normal completion, exit 2 refusal or failed publication,
+and exit 3 a published manifest with incomplete temporary cleanup. Inspect
+`publication.published`, `cleanup_complete` and `temporary_file` before retrying.
+On failed publication, stderr reports staging cleanup and the temporary basename;
+inspect it because a temporary file can remain even without destination creation.
+These codes concern the planner, not the provisioning/service executable below.
+
 ## Provisioning and signed service commands
 
 The original `doctor`, `install` and `rollback` commands require `--artifact`,

@@ -484,3 +484,17 @@ Source-only reviewable checkpoint is permitted; it is not render or release
 acceptance. Existing source checker passes86pages; narrowly scoped no-local
 canonical check and diff whitespace check pass. Preserve not_run for new-tree
 actual build/render/accessibility and retain the full persistent goal.
+
+## Native planner source/prose review under source-only priority
+
+Read all11native-cli files completely and manually authored exact LF-byte
+review rows with per-file reasoning. This is public-source review, not renewed
+CLI research, an agent task, compilation or execution of native write tests.
+Found and corrected a material tutorial overclaim: storage/windows.rs pins
+directory handles and checks path/reparse boundaries but does not verify
+workspace owner/ACL policy. Trusted workspace/non-hostile same-user entries
+remain prerequisites, unlike the separate provisioning CLI's owner policy.
+Also documented exit3: publication succeeded but temporary cleanup is incomplete;
+nonzero exit does not prove no writes. Receipt fields and no power-loss/directory
+durability guarantee are explicit. Existing no-clobber and framework-unqualified
+claims remain aligned with source. No new native process/test/build ran.

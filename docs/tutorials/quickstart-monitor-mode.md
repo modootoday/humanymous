@@ -34,7 +34,13 @@ The CLI does not generate JavaScript glue or an addon, and does not start a
 second CEF runtime. Other framework selections likewise remain plans.
 
 Explicit `--write --workspace ABSOLUTE_PATH` can create a new manifest on the
-currently implemented Windows path after ownership/reparse checks. Existing
-files are preserved; unsupported-platform writes are refused. This tutorial
+currently implemented Windows path after path/reparse checks and directory
+handle pinning. The writer does not verify workspace ownership or ACLs; a
+trusted workspace without hostile same-user entry changes is a prerequisite.
+Existing files are preserved; unsupported-platform writes are refused.
+Publication and temporary-link cleanup have separate results: exit code 3 can
+mean the destination was published but a temporary file remains. Inspect the
+`publication` receipt before retrying; a nonzero exit is not proof of no writes.
+No power-loss or directory-namespace durability is claimed. This tutorial
 deliberately uses the read-only mode. Continue with the
 [CLI reference](../reference/cli-config-policy.md) and [evaluator guide](../start-here/evaluator.md).

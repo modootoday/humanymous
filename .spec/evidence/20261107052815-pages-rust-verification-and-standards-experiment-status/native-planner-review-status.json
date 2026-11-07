@@ -1,0 +1,16 @@
+{
+  "scope": "manual native planner source-to-reader review under heavy-execution hold",
+  "files_read_and_review_rows_authored": 11,
+  "receipt_sha256": "54dbceaedc359e8a6852cecaa334ec49ef17093195768e12c9f77545e9d800d5",
+  "corrected_claims": [
+    "manifest writer checks paths/reparse and pins directory handles, not workspace owner/ACL policy",
+    "published manifest and temporary cleanup have separate outcomes; exit 3 can follow publication",
+    "failed publication can leave staging residue; nonzero exit does not prove no writes"
+  ],
+  "native_tests_or_build_newly_executed": false,
+  "reader_pages": 86,
+  "source_check_errors": 0,
+  "new_tree_actual_build_or_rendered_accessibility": "not_run",
+  "framework_sdk_or_full_product_qualified": false,
+  "full_source_review_gate": "not_accepted"
+}
