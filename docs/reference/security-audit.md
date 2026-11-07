@@ -61,3 +61,38 @@ service ran, durable signatures were produced or witness custody was independent
 The supervisor still owns pipe provenance, native deadlines, process identity,
 key/head isolation and reaping. See [administrative role boundaries](rbac-separation-of-duties.md)
 for approval consumption versus actual operational effects.
+
+## Durable witness and private client contract
+
+`DurableWitness` holds a private, lifetime-locked latest-head store and refuses
+using the writer's key as the witness key. It validates append-only extension,
+commits the signed head and only then returns its persistence receipt. Failure
+after witness advancement poisons the wrapper until authenticated recovery.
+Existing-state reopen requires an independently retained minimum head and
+consistency proof. Missing or pending state does not authorize automatic identity
+replacement or silently selecting first-provisioning mode.
+
+The private service exchanges newline-terminated JSON frames bounded to 128 KiB,
+including the newline. The first frame contains supervisor-provisioned private
+configuration; subsequent State/CounterSign/Shutdown requests carry no seed or
+unlock password. Key and latest-head directories must be distinct. The service
+loads a preprovisioned witness identity and does not create a replacement key on
+failure. Private pipes, authenticated process provenance and native I/O deadlines
+are supervisor responsibilities; possession of a public checkpoint is not peer
+authentication.
+
+`WitnessServiceClient::connect` performs the private configuration handshake.
+`from_ready` accepts brokered handles and independently provisioned public keys,
+node and bootstrap without exposing unlock bytes to the runtime. It verifies
+exact returned commitments, writer/witness signatures and continuity before
+updating its head cache. Refusal, malformed replies or I/O failure poison the
+client; reconnect against an independently pinned latest head. `last_size` and
+`validate_local_head` inspect that verified cache, not a fresh remote query.
+
+A Ready persistence capability does not mean an absent checkpoint was stored.
+Apply the required durability policy to each actual signed receipt; Windows
+file sync still does not establish rename-namespace power-loss durability.
+A Stopped frame is also distinct from observing process exit, reaping and lock
+release. Separate process execution, OS-account/key/head isolation, inaccessible
+mounts and independent retained anchors need deployment evidence; shared-host
+parent or privileged compromise is not excluded by this protocol.

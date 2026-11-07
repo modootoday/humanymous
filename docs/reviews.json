@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/checkpoint/durable.rs",
+  "sha256": "2ce83f57aea799ceef105f380ab4203cc638cf123133b272c8ee7d57879fadab",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete witness bootstrap/open/persist-before-reply, poisoning, explicit pending promotion, external minimum/consistency restore, key separation, proof/checkpoint bounds and CheckpointWitness API. Public audit reference separates locked local persistence from independent custody/host resistance and forbids automatic empty-state/identity replacement. No witness process or persistence test executed.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
+  "source": "crates/audit/src/checkpoint/durable/service.rs",
+  "sha256": "cfd4eeb07908987a85c04f8894e539bee62a731cf58046b715d81a29e8cd89b3",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full128KiB newline framing, strict typed config/commands/replies, distinct directories, preprovisioned custody only, private unlock lifetime, persist-before-Signed, State/Shutdown/refusal and frame flush. Public reference separates Ready capability from actual receipt and Stopped frame from observed exit/reaping/lock release; supervisor owns authenticated pipes/deadlines and independent deployment. No secret configuration, process or storage action executed.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
+  "source": "crates/audit/src/checkpoint/durable/service/client.rs",
+  "sha256": "06eafa0039dbee37234d983455c3f835b8b13dbcd08807003ad86cd220a1be38",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full private connect/from_ready handshake, pinned keys/node/bootstrap checks, exact returned checkpoint/signatures/continuity, mutation-only wire I/O, cached last_size/local-head checks and poison-on-failure. Public audit reference documents cache versus fresh remote observation, external pins and caller-owned process/deadline provenance. Signature continuity is not independent organizational custody or protection from privileged parent compromise.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/audit/src/control/policy.rs",
   "sha256": "c4e3048fba8b7bd9f0888af14309916f2f05727669079c309e719f38a505eb94",
   "reviewer": "codex/rust-pages",

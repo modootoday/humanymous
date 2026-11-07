@@ -761,3 +761,11 @@ actual human-independence boundaries without claiming operational qualification.
 No destructive action/test/process run. Wargame owner reports upcoming strict
 duplicate/unknown-field follow-through; await actual source before refreshing its
 existing semantic-parser limitations/receipts, not treating intent as code.
+
+## Durable witness/private service/client review
+
+Read full three witness storage/service/client modules. Added public private
+frame/bootstrap/key+head/persistence/poison/cache boundaries, Ready capability
+versus receipt and Stopped frame versus actual exit/reaping/lock release. Three
+manual source hashes recorded. No child/IPC/storage test or product custody
+qualification; consumer deployment independence and durability gates retained.
