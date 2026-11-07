@@ -100,6 +100,25 @@ if ($LASTEXITCODE -ne 0) { throw 'Git release failed' }
 - Keep source-only checkpoints, actual component tests, full qualification and
   publication distinct. Retain first failures and corrections in the evidence.
 
+### Public metadata encoding and receipts
+
+- Write new public metadata as UTF-8 with LF in the worktree and Git blob.
+  Windows `ConvertTo-Json` can embed CRLF; remove CR from newly authored JSON
+  before writing. Text writers can also convert newlines. Check actual bytes.
+- Attachment-index hashes and sizes must reproduce from a fresh Git checkout.
+  Before reporting a canonical receipt, compare raw worktree bytes with the exact
+  committed blob and recompute its attachment hashes/sizes from that Git view.
+  A green worktree-only `spec check` does not establish this equality.
+- Encoding repair requires an authorized owned-metadata scope. First retain the
+  original worktree bytes in private evidence and preserve old Git commits.
+  Record both retained-worktree and canonical-Git hashes/sizes in an explicit
+  view manifest; reattach corrected metadata against canonical bytes. Never
+  silently reinterpret an existing SHA as a different byte representation.
+- Do not normalize raw logs, immutable fixtures or operational profiles. Do not
+  change global attributes or vendor/raw trees to repair owned metadata. These
+  instructions authorize no new foreign implementation; authored implementation
+  remains Rust under the repository's existing rules.
+
 ### Session end / provider switch
 
 1. Summarize open work (skill `handover-pack` if multi-step remains).
