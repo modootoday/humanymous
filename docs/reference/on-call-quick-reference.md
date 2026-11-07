@@ -22,3 +22,19 @@ for an owned pilot before relying on a service.
 Preserve minimal evidence without copying secrets or visitor bodies. Avoid a
 blanket allow workaround when required safety conditions cannot be established.
 Continue with [incident preparation](../runbooks/incident-runbooks.md).
+
+## Observer-side node liveness
+
+The audit library's `NodeRegistry` is an in-memory expected-node set, not a
+signed heartbeat transport or independent monitoring deployment. Register expected
+nodes through trusted configuration; unknown receipts cannot register themselves,
+and duplicate registration cannot reset a deadline. Authenticate each receipt
+and reject replay before calling `record_receipt`, using the observer's clock.
+
+A node becomes missing strictly after twice its configured cadence, not at the
+exact two-cadence boundary. Inputs use nanoseconds while `lastSeenMs` displays
+milliseconds. A timestamp older than that node's accepted receipt or unsafe age
+arithmetic returns an error instead of a reassuring liveness result. The caller
+still owns persistence, trusted time and an observer outside the watched process;
+a registry inside a suppressed process cannot independently report its absence.
+This status does not prove request admission, audit completeness or human activity.

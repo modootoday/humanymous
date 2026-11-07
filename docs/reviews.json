@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/lifecycle/mod.rs",
+  "sha256": "74640c1a9047a9bd1d169f3b235e312e9c73aeb3317bb2d256e8567e7d27e580",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete lifecycle export boundary explicitly separating classification/observer liveness from deletion and network authentication. Public data inventory and incident reference preserve those caller-owned responsibilities rather than treating module existence as a service.",
+  "pages": [
+    "docs/reference/data-processing-inventory.md"
+  ]
+},
+{
+  "source": "crates/audit/src/lifecycle/retention.rs",
+  "sha256": "220268a5a44cf814c6e3a16dc3946a802f6cf0ba012599c714314c1f853d4376",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full ordered nonnegative nanosecond windows, cumulative90/365/2555fixed-day defaults, inclusive boundaries, negative-age HOT and display truncation plus source tests. Public data inventory distinguishes compatibility labels from deployed retention, calendar years, WORM implementation and actual authorized storage deletion; no cleanup or tests executed.",
+  "pages": [
+    "docs/reference/data-processing-inventory.md"
+  ]
+},
+{
+  "source": "crates/audit/src/lifecycle/registry.rs",
+  "sha256": "1c47f95ea69995ab5406710acc46284b8274b8efa0449b27cd5a533b739f3cec",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full expected-node BTreeMap state, duplicate/unknown refusal, per-node observer-time regression and checked age, strict greater-than two-cadence missing threshold, millisecond output and source tests. Public incident reference requires upstream receipt authentication/replay rejection and external persistent observer, with no signed transport, complete audit or human-presence claim. No heartbeat/process run.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md"
+  ]
+},
+{
   "source": "crates/attacker/src/verification/json.rs",
   "sha256": "adddc643d22438dc7ee178443a25635c279dab6639c107d78e54531a49bf8320",
   "reviewer": "codex/rust-pages",

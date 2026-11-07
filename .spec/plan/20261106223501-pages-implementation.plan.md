@@ -786,3 +786,11 @@ reviewed rows and one new source receipt; public obsolete lossy-v1 limitation
 now superseded by working decoded-key/unknown-field refusal, execution pending.
 Semantic order/numeric compatibility is not JCS/byte equality; no old hosted
 result qualifies newbytes. No wargame unit/runtime command invoked by docs.
+
+## Retention and expected-node observer review
+
+Read all lifecycle composition/retention/registry source and test cases. Three
+manual receipts map classification-only fixed-day boundaries and negative-clock
+handling to inventory, and pure authenticated-caller node liveness/two-cadence
+strict threshold to incident reference. No automatic deletion/WORM/signed transport
+or independent observer inferred. No storage cleanup, heartbeat or runtime run.
