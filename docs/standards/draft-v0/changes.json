@@ -7,6 +7,13 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "implementation-evidence",
+      "paths": ["validation/implementation-map.md", "reviews/security-privacy.md"],
+      "summary": "Record working browser transport and selected runtime profile boundaries, ACK limits and outstanding negative execution and recovery review.",
+      "generic_wire_changed": false,
+      "changed_source_execution_qualified": false
+    },
+    {
       "kind": "candidate-protocol-semantics",
       "paths": ["protocol/profile.md", "protocol/retry-effects.md", "validation/conformance.md"],
       "summary": "Propose durable logical-operation states, a single dispatch incarnation, ambiguous-outcome refusal and authenticated historical status. No existing runtime behavior is changed.",

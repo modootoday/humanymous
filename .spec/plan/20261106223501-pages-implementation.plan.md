@@ -519,3 +519,11 @@ Updated Draft v0 implementation map to link working BrowserSession/BrowserRespon
 transport and explicit runtime profile without closing P-03/P-05/P-07 execution
 gaps. ACK consumption remains distinct from body authentication, ALLOW and origin
 commit. Existing source checker only; build/render/AT remain not_run under hold.
+
+## Browser security/privacy review reconciliation
+
+Read transport request options and response/Flight lifecycle source. Added an
+informative experiment review with explicit negative execution cases, same-origin
+script boundary, cookie/app-Authorization separation, abort versus origin effects,
+ACK scope and browser-copy erasure limits. Updated public change manifest without
+claiming generic wire selection or changed-source execution. No heavy run.

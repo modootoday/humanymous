@@ -43,6 +43,31 @@ Sources: [Windows pipe security](https://learn.microsoft.com/en-us/windows/win32
 [Unix sockets](https://www.man7.org/linux/man-pages/man7/unix.7.html),
 [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/).
 
+## Browser transport experiment review
+
+The current [browser transport source](../../../reference/browser-collector.md#browser-transport-follow-through-under-source-review)
+is an implementation experiment, not a completed security review or generic
+Draft v0 wire. Its same-origin Fetch configuration omits ambient credentials,
+refuses redirects, requests no cache storage and omits the referrer. The selected
+runtime browser profile rejects Cookie while preserving explicit application
+Authorization. These source choices do not qualify cookie-based application
+sessions or protect against hostile script already executing in the same origin.
+Request options alone do not establish server/proxy logging or retention policy.
+
+Retain negative execution cases for wrong scope/origin, mixed protocol profiles,
+reserved-header injection, missing or forged ACK, truncated/oversized response,
+timeout and explicit close during an in-flight request. Verify that ambiguous
+outcomes close the local epoch without automatic replay; closing a client or
+aborting Fetch does not prove that an origin effect was rolled back. Ignoring a
+JavaScript Promise is not cancellation. A consumption ACK does not authenticate
+response-body bytes, prove ALLOW or establish business-operation completion.
+
+Buffered response bytes and explicit application credentials remain sensitive
+application data. Source-level zeroizing owners do not prove erasure of browser,
+JavaScript, operating-system or network copies. These cases still require
+source-bound browser/runtime execution and accessible failure/recovery review;
+no such changed-source qualification is claimed here.
+
 ## Data minimization
 
 Raw keystrokes, passwords, form values, clipboard contents, full document trees
