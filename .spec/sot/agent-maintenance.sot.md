@@ -16,6 +16,20 @@ rel:
 
 # Rust agent canon and qualified skill evaluation
 
+## Workflow convention guide delta
+
+Root checkpoint089a09a updates github-actions-ops, cut-release and its preflight
+asset to reference scripts/ci/workflows.json, stable workflow identities, the
+accepted local-unit/hosted-runtime policy, and separate npm/crates environment
+bindings. The Rust read-only canon checker reported0errors/92mirror drift;
+workflow-guides-canon-check.json is retained under evidence:root/20261106194410.
+This source change has not received model-based skill evaluation. Existing eval
+results do not qualify it. Active vendor mirrors remain untouched under the
+AGENTS retirement exception; no recursive legacy sync or manual mirror copy ran.
+GitHub environment preparation does not authorize tags, publication or token
+exchange, and external registry trust remains unverified. The sole execution
+policy stays in program-roadmap/delivery, not duplicated in operational skills.
+
 ## Rule
 
 M11 agent-maintenance responsibility only; REA remains preserved reference and
