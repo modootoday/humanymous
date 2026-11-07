@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T13:05:37Z
+updated: 2026-11-07T14:16:00Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -21,7 +21,7 @@ freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
-Snapshot: 2026-11-07T13:05:37Z. Source-bound component results below do not
+Snapshot: 2026-11-07T14:16:00Z. Source-bound component results below do not
 qualify the final integration candidate. Execution allocations are ephemeral;
 only an explicit current root grant and resource admission authorize a new run.
 
@@ -31,7 +31,7 @@ only an explicit current root grant and resource admission authorize a new run.
 | Shared CEF test graph | Commit072c8e5a atomically adds Windows-only bootstrap test-support/serde_json dev edges and exactly two lock entries; actual offline and locked Windows graph resolution passed | Owner9251376f rejection refactor/closed observations remain uncompiled: warm-only run interrupted on cold dependency compilation, not a source failure; fresh hosted compilation required |
 | Capture | Genuine hosted42372114913 at e77b9792 succeeded: five actual fixtures passed, source unchanged and full=false | Serving H2, DNS/origin/witness and full Docker composition remain separate product gates |
 | Audit | Captured319a5992 full140 accepted tests passed; five exact ignored helpers excluded; evidence:root/20261107122437 | PhaseA4b49e933 passed21 scoped Rust tests plus Go840 in856ba6c1; PhaseB source is being authored. Native producer and operational memory/custody gates remain |
-| CEF | Genuine hosted42372115353 at e77b9792: helper11, strict Clippy, native build and four native protocol tests passed | Bootstrap stage did not yield authoritative execution/count/child-exit evidence; desktop2 NOT_RUN and post-run source closure unknown; fix typed stage/case diagnostics before retry |
+| CEF | Genuine hosted42377685195 at ec4f2da0 succeeded: helper14, native build, desktop protocol4, bootstrap protocol3, actual bootstrap1 and desktop process2 passed; source unchanged | Four observed rejection cases exited78 and were reaped; browser_ready/full_runtime_qualified remain false. GUI, IME, accessibility and full sandbox remain unqualified; earlier failures retained |
 | Mount custody | Baseline b482 had eight mode refusals. Repaired exact c3211e27 hosted42374587466 passed: four ordered observations/eight accepted paths, owner0/receipt valid/source unchanged/cleanup true | This clears the mount prerequisite for one exact c321 Go8 retry; custody/full/release remain false, not a product qualification |
 | Rust Gate integration for Go origins | Genuine hosted42375310198 at exact c3211e27 passed all8 ordered evaluated cases and40 known assertions; failed/not_run/unknown0, owner0/receipt valid/source unchanged/cleanup true | Bounded net/http component only; full/release=false. Other Go framework/SDK tuples remain unqualified. Older15f writer-mount failures retained |
 | Apache | Exact b4000944 genuine hosted42374566498/job128409407533 passed45 unique scenarios: event15/worker15/prefork15; pilot/container/image/ledger cleanup passed; CLI exit0/reaped/no force/timeout | Exact Linux component tuple qualified only; fullProductSuccess=false. Earlier b5 35/10 and SIGTERM15 remain historical failure evidence; final composition/current graph remain separate |
@@ -39,6 +39,26 @@ only an explicit current root grant and resource admission authorize a new run.
 | Native/.NET | Parent-context shared4/runner7 and .NET consumer13/check/Clippy passed on captured inputs; generic managed ABI079 actual once passed independently | Context remains UNVERIFIED syntax/budget data; retained partial-start/duplex source1b2e8bb2 passed12 pure and1 direct-child fixture; independent Authority expiry passed14 pure in689b95d2. Actual ASP.NET IO, native Job/reader convergence and protected owner remain open |
 | Pages | Exact26960736/docs56b1e029 local pinned Jekyll builds and archive consumers passed both88-page/165-file variants; limited actual browser navigation/keyboard observations recorded | Current docs435f5c99/tree060c82bd and later review receipts have no fresh render/browser; main artifact roundtrip/deployment and AT remain open |
 | Python/Ruby/Node and ABI | Scoped package, contract and selected actual native component receipts exist in owning SoTs | Default/pure tests do not prove required SDK/server/GC/GVL/cross-principal/native ABI matrix; owners retain explicit unqualified cases |
+| Browser product | Genuine hosted42378961845 at49394e38 failed:18 assertions,16 passed,2 failed; owner1, source unchanged, full/release=false | Witness-exchange and browser_actor failures do not identify the original actor cause. Preserve failure; add closed stage diagnostics before another source-bound run; no automatic retry |
+| Watermark | Workspace graph9b064dbd contains39 packages; locked offline graph resolution passed. Exact watermark source passed16 native Windows unit tests, all-target check, strict Clippy and fmt in cc84948d | Payload and bounded volatile ledger only;14 legacy responsibilities are not fully covered. Codecs, actual resource pilot and cross-platform qualification remain open |
+| Delivery notices | d6e8e43c passed80 delivery units/check/strict Clippy/policy/actionlint/fmt and standalone docs-review check/Clippy; source/registry/config/tool closure unchanged | Known Go notice inventory and in-memory notice tar are bounded proof. Actual final binary archive and runtime image notice extraction/scan remain NOT_RUN. Shipping rejection remains an expected negative, not release approval |
+| Performance | Exact9b064dbd four signals library builds exited0: first15 fresh/8 rebuilt, subsequent23 fresh/0 rebuilt; Cargo rounded footers5.55s/0.18s/0.16s/0.18s; source2539/config18/tool2 unchanged in73de40c4 | Project-quiet with external load observed; CPU/RSS unknown. No runtime speedup claim. Delegated Integrity normalization optimization must preserve81 request and27 verification vectors plus Unicode/token parity before measured paired comparison |
+
+Audit PhaseB fb06c4d1 also passed33 scoped Rust tests in efdfdbd7 with unchanged
+2488 source files and declared registry/config inputs. Native Linux source
+draft d7c74125 is uncompiled and unexecuted; open_native remains Unsupported.
+Runtime typed startup6c02bd22 passed3 pure tests in7e208649; this does not prove
+actual bind/unseal/Offer/Ready or native cleanup. CLI792a2fab passed9 pure tests
+and scoped checks in acc77d2c; actual blocked-output/process deadline remains open.
+
+The convention and performance chats now have separate bounded assignments.
+Convention records concrete findings and independent re-audits; performance owns
+only the delegated Integrity canonicalization module, its exact test module and
+one benchmark example in addition to its named specification files. Root retains
+shared graph and security integration responsibility. Current Pages input tree
+b403f22d is frozen for its newly assigned exclusive rendering window; no new
+render, archive or browser result is claimed here. Workload grants below this
+checkpoint are historical, not permission to start concurrent compilation.
 
 The workspace build and source-closure receipts are attached privately to
 evidence:root/20261106194410. This is an archived-source inventory comparison,
