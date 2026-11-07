@@ -140,6 +140,15 @@
       "result": "bootstrap_http403",
       "facts": "PreflightLab36/Delivery116/Go10+1/facade2+2+2/Unixcheck/Clippy/policy passes. Product18/16pass2fail, finite browser_bootstrap_http_forbidden;DNSsucceeded67/1/66matched. Nested runtime403reason unknown;originale70cause notinferred.",
       "evidence": "hosted-browser-1f87d310-http-forbidden.json"
+    },
+    {
+      "source": "edc30181b3b01be4f59c8d16ea641b343c3b05b3",
+      "run": 42418752735,
+      "job": 128543239795,
+      "profile": "browser_product",
+      "result": "bootstrap_http403_origin",
+      "facts": "PreflightLab37/Delivery116/Go10+1/facade2+2+2/Unixcheck/Clippy/policy pass. Product18/16pass2fail, finite browser_bootstrap_http_forbidden_origin;DNSsucceeded67/1/66matched. Missing/null/other Origin unknown, Fetchmetadata branch notproven;fullfalse.",
+      "evidence": "hosted-browser-edc30181-origin-rejection.json"
     }
   ],
   "unmeasured": [

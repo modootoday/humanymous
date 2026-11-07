@@ -1,0 +1,111 @@
+{
+  "schema": "humanymous.lab-hosted-browser-origin-rejection/1",
+  "run": 42418752735,
+  "attempt": 1,
+  "event": "push",
+  "source": "edc30181b3b01be4f59c8d16ea641b343c3b05b3",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42418752735",
+  "preflight": {
+    "lab": 37,
+    "failed": 0,
+    "facade_default": 2,
+    "facade_external": 2,
+    "delivery": 116,
+    "annotations": 0,
+    "workflow_policy": true,
+    "filtered": 0,
+    "unix_actor_check": true,
+    "go_leaf": 10,
+    "go_deployment": 1,
+    "facade_go": 2,
+    "conclusion": "success",
+    "selected_strict_clippy": true,
+    "job": 128542419793,
+    "ignored": 0
+  },
+  "product": {
+    "owner_exit": 1,
+    "required_unavailable": 9,
+    "assertions": {
+      "failed": 2,
+      "other": 0,
+      "passed": 16,
+      "total": 18
+    },
+    "source_changed": false,
+    "source_manifest_sha256": "9465f26c200e45a2da8e48f37d1b9c0333edff4998fe10efa011402da244941e",
+    "conclusion": "failure",
+    "images_roles_unmapped": [
+      "sha256:4c45288168b56ad3963e7737bc3a4d88f48a6660dd99a4ce9cc4b9480a91126c",
+      "sha256:596548dbdeddcb1310170722ba65dbcfb790b94ae62a14c5e9708319c9e89ab4",
+      "sha256:7aafc553717e1f266323c962a7b17ad84e4b297903335746893f069a256b9664"
+    ],
+    "isolation": "docker",
+    "job": 128543239795,
+    "private_report_sha256_source_reported": "f6a45b6e0194de8e99cd4b71a5e82860e8b64f51e557631dd34d6ff310b6b0df",
+    "safe_diagnostics": {
+      "browser_actor": {
+        "dns_finish": "succeeded",
+        "exit_code": 1,
+        "filtered_count": 66,
+        "full_product_qualified": false,
+        "inventory_count": 67,
+        "inventory_matched": true,
+        "parser_summary_matched": false,
+        "process_success": false,
+        "schema": "humanymous.lab-browser-actor-outcome/1",
+        "selected_count": 1,
+        "source_prefix_authenticated": false,
+        "state": "observed",
+        "test_passed": false
+      },
+      "failure_count": 2,
+      "failures": [
+        {
+          "case_id": "browser-actual-witness-exchange",
+          "error_code": "assertion_failed",
+          "status": "failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "browser_bootstrap_http_forbidden_origin",
+          "status": "failed"
+        }
+      ],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    }
+  },
+  "finding": "Finite exact Runtime browser_origin response body classified at bootstrap HTTP403; missing/null/other Origin shape is unknown, Fetch metadata branch not established.",
+  "source_pin": {
+    "line": 22,
+    "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
+    "sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064"
+  },
+  "private_evidence": "evidence:root/20261107220400",
+  "official_log_archive_sha256": "c4a244a299bbeb342464e24105d761664b0ab9f043cb1097cf6157a03e70cd6b",
+  "connector_official_projection_byte_equal": true,
+  "original_private_report_recovered": false,
+  "private_report_locally_rehashed": false,
+  "artifact_count": 0,
+  "watch_terminal": true,
+  "free_hosted_compute": {
+    "official_policy": "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "invoice_audited": false,
+    "eligible_public_standard_runner_compute": true,
+    "runner_group": "GitHub Actions",
+    "actual_job_labels": [
+      "ubuntu-24.04"
+    ],
+    "repository_visibility": "public"
+  },
+  "full_product_qualified": false,
+  "release_ready": false,
+  "limitations": [
+    "Distinct newedc execution; never retroclassify old1f87/e70.",
+    "No raw actor/header/private ledger recovered; no Origin value/presence claim.",
+    "New Runtime consolidation c09/29member live tree not qualified by this old immutable source.",
+    "Cleanup not separately exported; no post-checkout inference."
+  ],
+  "next": "Collector owner investigates secure request Origin generation; strict configured-Origin/fail-closed enforcement retained."
+}

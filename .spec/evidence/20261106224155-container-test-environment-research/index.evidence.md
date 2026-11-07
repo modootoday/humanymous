@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T22:18:33Z
+updated: 2026-11-07T22:28:43Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -45,11 +45,12 @@ files:
   - {path: platform-slice-02-lab-consumers.json, sha256: 8d7acac525e32bb505566f9d9d917eeb6a4ec8d786672d02f24cc61a436f1062, bytes: 5202, store: repo}
   - {path: platform-slice-02-lab-format.json, sha256: 4f425997bc37e3489304c1b469244ca4787c7dccd003e6489421b78973fb3644, bytes: 961, store: repo}
   - {path: hosted-browser-1f87d310-http-forbidden.json, sha256: 469d806b3debd14e675d4555d20733135b0271b4cb898259e908595df45376cc, bytes: 3350, store: repo}
-  - {path: source-execution-index.json, sha256: 4556973e4028190b5dd9ed9201e03e20e508b9ab41cad9d8c7e4155341527b85, bytes: 7787, store: repo}
   - {path: bootstrap-forbidden-reason-parser-contract.json, sha256: cb0b66d9342f2f0d4bda66d52fdbc0abfd07263a2f26a762e78d15bc2efcc754, bytes: 1703, store: repo}
   - {path: bootstrap-forbidden-edc30181-checks.json, sha256: 06702143af3863d0ab0ccdce490b8ff9a712b3347774b69721127b654570d814, bytes: 1515, store: repo}
   - {path: runtime-slice-02-lab-consumers.json, sha256: b73a07c927f5394fdd4cf5bc016a8d1536fdff6505171e6f951af5dd6d8069c0, bytes: 4058, store: repo}
   - {path: runtime-custody-compose-source-join.json, sha256: c065be3d1b98704505736dbb39718d2001d16ed255e1e3d342c313bc8311c5a5, bytes: 1248, store: repo}
+  - {path: hosted-browser-edc30181-origin-rejection.json, sha256: 47233547894fc8b6aacc83e0237f8dc3b9d147234f48a075e5496c6ccc703362, bytes: 3982, store: repo}
+  - {path: source-execution-index.json, sha256: 014f982c57862bb58dba712fb8cb161265a1691b1988751a608904001688e67e, bytes: 8328, store: repo}
 ---
 
 # Container test environment research
