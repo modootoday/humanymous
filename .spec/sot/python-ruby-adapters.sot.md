@@ -1,0 +1,196 @@
+---
+id: sot:root/python-ruby-adapters
+title: Rust native Python and Ruby framework adapters
+status: active
+verify: manual
+created: 2026-11-07T07:08:28Z
+updated: 2026-11-07T07:08:28Z
+rel:
+  governs: [crates/framework-adapter/**, crates/python-adapter/**, crates/ruby-adapter/**, adapters/python/**, adapters/ruby/**]
+  depends_on: [sot:root/adapter-service-contract, sot:root/server-adapter-expansion, sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
+---
+
+# Rust native Python and Ruby framework adapters
+
+Version0.1 implementation contract, authorized 2026-11-07. Framework names below
+are target pilots, not support claims. No tuple is qualified yet.
+
+## Ownership and registration
+
+New authored implementation/tests are Rust1.99.1/edition2024 only. Python native
+module humanymous_python exposes Wsgi(app,options_json) and Asgi(app,options_json).
+Ruby native module Humanymous exposes wrap(app,options_json), returning a real
+Rack callable. No handwritten Python/Ruby loaders, gemspec, extconf or executable
+foreign-language strings. Host app registration belongs to the user's app.
+Upstream PyO3/Magnus generated ABI glue is recorded separately from authored Rust.
+Package registry names are undecided; no publish/token/tag action is authorized.
+
+Reuse authenticated authority::client, native-security transport identity,
+integrity schema, frozen scoring and durable audit. No duplicated decision,
+crypto, IPC framing, browser recovery or management backend. Public admin routes
+remain rejected; localhost management is a separate existing Rust service.
+Common workspace Cargo/lock and integrity profile registry are root-owned.
+Root conditionally accepted framework-adapter for shared config/envelope/admission.
+Node must consume this context through a small followup slice preserving its
+schema/provenance and rerunning actual regressions, rather than retain duplicate
+validation as the final architecture.
+
+## Profile delta
+
+Proposed exact producer IDs humanymous.python and humanymous.ruby, version
+0.1.0-experimental.1. Profile names/modes PythonAsgi/asgi-normalized,
+PythonWsgi/wsgi-normalized, RubyRack/rack-normalized require integrity owner
+acceptance. Credential provisioning selects profile independently of wire data.
+Root accepted these exact profiles; authority configuration uses python-asgi,
+python-wsgi and ruby-rack. Source registration is not actual runtime qualification.
+ASGI headers preserve received list order/duplicates, but original casing is
+unavailable. WSGI/Rack CGI maps lose original order/duplicates/casing. These modes
+always report rawHeaderOrder=false, rawTls=false, originalH2=false, peer=null,
+connectionId=null, capture=null, stream=null. Never reuse Node/Fetch identity to
+evade the registry. Parsed client addresses are not original capture evidence.
+
+Complete transfer-decoded/content-encoded bytes only, at most1MiB and64 in-flight
+body/decision admissions per process. Acquire admission before input allocation.
+Exact method, raw origin-form target including query, host, bytes and configured
+scope bind to the one-shot decision. Reject missing raw target rather than
+reconstruct a lossy decoded path. Explicit configured routes include all protected
+paths; unknown paths and /_humanymous (including children) fail closed.
+Strip internal/forwarding trust headers in both evidence and app-visible copies.
+Reject CONNECT, Upgrade, trailers, request streaming, body-length disagreement,
+decompression/reconstruction, and unsupported protocol versions before origin.
+
+## Host lifecycle
+
+WSGI middleware receives (environ,start_response), copies sanitized environ,
+requires server-provided RAW_URI or REQUEST_URI, CONTENT_LENGTH and unconsumed
+wsgi.input; reads exactly bounded entity bytes and replaces input with a native
+host BytesIO for the application. Server-enforced input deadlines are a deployment
+prerequisite: synchronous read cannot safely be interrupted by a Rust timer.
+Never call app/start_response before decision. After ALLOW return the app iterable
+unchanged, preserving close(), write(), duplicate response headers and errors.
+No claim that middleware alone controls an unrelated server upgrade handler.
+
+Rack receives env, copies/sanitizes it, requires REQUEST_URI, CONTENT_LENGTH and
+rack.input. Reject rack.hijack? and upgrade/stream extensions. Native callback
+reads bounded binary input, replays via upstream StringIO and returns the original
+[status,headers,body] without rewriting streaming/close behavior. Ruby objects
+must remain on the Ruby stack or in VM-managed ivars; no unmarked Value in Rust
+Vec/Box/Arc. Hold GVL for Ruby calls. GVL scheduling/timeout and GC.compact are
+mandatory actual runtime probes; source safety annotations are insufficient.
+
+ASGI is a distinct async callable (scope,receive,send). HTTP1 only initially;
+require raw_path, reject unsupported lifespan/WebSocket explicitly until a
+transparent lifecycle contract is implemented. Bound http.request chunks before
+allocation; reject disconnect/incomplete body. Copy scope and replay one complete
+http.request followed by the real receive for disconnect ownership. Await real
+app/send callbacks with task-local context, cancellation drops Rust IPC future.
+No sync Tokio block_on on the Python event loop. App is invoked once only after
+consuming BoundResponse and immediately checking expiry/deadline/cancellation.
+Application response send/backpressure and exception semantics remain unchanged.
+
+## Dependencies and packaging
+
+Candidate pins: PyO3=0.30.1, pyo3-async-runtimes=0.30.0 with tokio-runtime;
+Magnus=0.9.3 with transitive rb-sys resolved/audited in root lock. Maturin=1.16.0
+build backend. Initial Python per-interpreter CPython wheels; abi3 is an explicit
+later qualification, not automatic free-threaded/subinterpreter support.
+Free-threaded CPython, PyPy, JRuby, TruffleRuby and Ractors remain unsupported.
+Ruby native platform gems must match actual Ruby ABI/OS/arch/libc; Rust packager
+must use upstream RubyGems Specification/Package APIs to generate gem metadata,
+not write a handwritten Ruby gemspec. Source gem installation hooks remain an
+unresolved packaging boundary; do not ship a broken source gem as qualified.
+
+Candidate hosted matrix: CPython3.12/3.13/3.14 regular-GIL and CRuby3.3/3.4,
+Linux GNU x64 and Windows x64 first; macOS/ARM64/musl are unqualified separate
+tuples. Windows Ruby UCRT/MinGW target is distinct from Rust MSVC. Wheel manylinux
+tag/audit and gem platform naming require actual clean installation and import.
+No success from a label, cross-compilation or symbol listing alone.
+
+## Verification and critique reflected
+
+Common local/hosted policy canon: sot:root/program-roadmap and sot:root/delivery.
+Local pure units cover config/route/body/provenance/admission only. Actual host
+callbacks/framework processes, native package install and crossOS IPC/ACL execute
+on hosted, product acceptance Docker-only. No new local runtime pilots.
+
+P0 findings incorporated: do not disguise CGI maps as Node raw evidence; a blocking
+host read requires a server deadline; do not invoke application on expired result;
+Ruby GC must root callback state; public admin is not middleware; abi3 does not
+establish free-threaded support; source gem tooling cannot be replaced with a
+hidden Ruby string. Residual verdict needs-work until actual host pilots pass.
+
+Required target pilots: FastAPI/Starlette ASGI, Django ASGI+WSGI, Flask WSGI,
+Rack with Sinatra and Rails integration. For each exact tuple, record actual
+denominator/failed/ignored/filtered, framework/runtime/dependency/source hashes,
+production nonALLOW versus synthetic test-only ALLOW, audit record and independent
+origin effect counter. Negative corpus covers malformed/missing peer, credential,
+scope/target/body/provenance, down/timeout/cancel, replay/expiry, oversize/aborted
+body, unsupported upgrade/hijack/stream, and audit failure with zero origin effect.
+Compatibility includes binary/empty bodies, duplicate Set-Cookie, HEAD/204/304,
+redirect, exception, iterable close and SSE backpressure. No motor/speed gates,
+new scoring or third-party probing. T4 ceiling remains unchanged.
+
+Current source/package/runtime/whole-product status: NOT_RUN; qualified tuples=[];
+no current dependency closure audit, registry artifact or publisher verification.
+
+## Go integration extension (explicit user scope)
+
+Go net/http plus chi/Gin/Echo and Fiber are required followup targets. Existing
+legacy Go product code stays a read-only oracle, not permission for new authored
+Go implementation/tests. net/http.Handler requires an actual Go method set
+ServeHTTP(ResponseWriter,*Request). cbindgen emits C declarations, and cmd/cgo
+generates interoperability glue for Go source that already calls C; neither is
+evidence that Rust alone constructs a correct Go Handler. No known pinned generic
+generator has yet been verified to generate the complete request lifecycle bridge
+from declarative input without an authored Go middleware template. Go-side glue
+feasibility is unresolved; do not call a Rust reverse proxy idiomatic Go middleware.
+
+If no suitable unchanged upstream generator exists, root must request a specific
+user decision: allow the minimum Go Handler lifecycle adapter (bounded request
+body copy/replay, context cancellation, call Rust decision once, delegate same
+ResponseWriter and Request after consumed ALLOW), or accept explicit HTTP-origin
+proxy coverage while native Go middleware remains unavailable. No exception is
+assumed and no authored Go/script string or new C pointer unsafe export is added.
+
+net/http header maps lose original casing/order and may coalesce values; RequestURI
+and exact entity bytes remain separately available. Context cancellation, body
+Close, request trailers, optional Flusher/Hijacker/Pusher/ResponseController and
+response streaming require real Go host tests. chi/Gin/Echo adapt net/http with
+their own outermost middleware ordering. Fiber/fasthttp has a distinct pooled
+request lifetime/body/cancellation contract; never pass retained pooled pointers
+to an async Rust task or claim net/http parity from its adapter conversion.
+No Go producer profile is registered until the bridge contract is accepted.
+
+Go distribution is a module/version/source-tag and proxy/checksum-database path,
+not npm-style publish/OIDC. No tag/proxy publication/token exchange is authorized.
+CGO toolchain/libc/crossOS linking and pointer retention/ABI evidence are separate
+from module availability. All Go implementation/package/runtime cases NOT_RUN.
+
+Primary Go references: https://pkg.go.dev/net/http#Handler ;
+https://pkg.go.dev/cmd/cgo ; https://github.com/mozilla/cbindgen ;
+https://go.dev/ref/mod#module-proxy ; https://github.com/go-chi/chi ;
+https://gin-gonic.com/en/docs/ ; https://echo.labstack.com/docs/middleware ;
+https://docs.gofiber.io/next/extra/faq/ . Findings are feasibility constraints,
+not claims of a generated Go bridge already working.
+
+## Primary research (2026-11-07)
+
+- https://pyo3.rs/main/class/call and https://docs.rs/pyo3/latest/pyo3/
+- https://docs.rs/pyo3-async-runtimes/latest/pyo3_async_runtimes/tokio/fn.future_into_py.html
+  (cancellation propagation; async contextvars versus synchronous callback caveat)
+- https://pyo3.rs/main/free-threading and https://www.maturin.rs/bindings
+- https://www.maturin.rs/distribution.html and https://pypi.org/project/maturin/
+- https://raw.githubusercontent.com/matsadler/magnus/main/src/lib.rs (GC safety)
+- https://github.com/oxidize-rb/rb-sys
+- https://guides.rubygems.org/c-extensions/ and https://guides.rubygems.org/platforms/
+- https://asgi.readthedocs.io/en/latest/specs/www.html
+- https://peps.python.org/pep-3333/ and https://github.com/rack/rack/blob/main/SPEC.rdoc
+- https://rustsec.org/advisories/RUSTSEC-2026-0176.html: PyO3 iterator overflow
+  patched>=0.29.0; candidate0.30.1 is outside this advisory's affected range.
+  This is not a current full-closure security audit or a no-vulnerabilities claim.
+
+## Rule
+
+## Why
+
+## Verification
