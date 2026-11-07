@@ -12,6 +12,15 @@ Inventory key purposes and keep signing, administration and subject-erasure
 authority separate. Store no operational keys in the repository or public
 examples. Use synthetic keys for migration evidence.
 
+The retained key-compatibility fixture labels its baseline `go1.26.3` and contains
+54 fixed pseudonym cases, three sealed envelopes and a shredded snapshot. Its
+deterministic keys, salts and nonces are comparison data, not provisioning
+examples. One envelope has an empty passphrase for legacy-import comparison;
+that does not permit empty credentials in normal sealing or opening. Composed
+and decomposed Unicode inputs are separate byte cases, not a selected global
+normalization policy. Fixture presence alone does not prove the current Rust
+implementation executed or establish cryptographic security or global erasure.
+
 Define rotation overlap, revocation, restart continuity and rollback behavior.
 Test old/new credential boundaries and loss of the key store. Preserve exact
 cryptographic domain separation and byte encoding during migration. Rust key

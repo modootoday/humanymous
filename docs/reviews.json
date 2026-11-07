@@ -2,6 +2,16 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/tests/fixtures/keys.json",
+  "sha256": "e21e3326472cbcedd9dcec1764ea52ee9a21cabd79320866eb61c04c8b897e89",
+  "reviewer": "codex/rust-pages",
+  "notes": "Reviewed parsed full fixture semantics: go1.26.3 label, all54 subject/value/stretch/expected rows in nontruncated compact projection and unique repeated snapshot, all3 sealed records including empty legacy passphrase, shredded snapshot and tombstone. Initial repeated full projection truncated; followed by complete compact rows. Synthetic fixed salts/nonces not provisioning; no algorithm execution, security proof or raw-byte canonicalization certification.",
+  "pages": [
+    "docs/how-to/key-management.md",
+    "docs/runbooks/erasure-crypto-shred.md"
+  ]
+},
+{
   "source": "crates/browser/native/desktop/src/browser_controls.rs",
   "sha256": "b92a5047f52a8d983b32595b476c92db3cdce7a495329b7645405377938e4264",
   "reviewer": "codex/rust-pages",

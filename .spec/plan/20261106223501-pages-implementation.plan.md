@@ -1811,3 +1811,13 @@ production/descendant proof and unexecuted newregression. Full helper receipt.
 Read complete145line browser_controls and added receipt/publicdescription for
 IME focus/repeatguard, revoke/close, allowlist and committedprojection; no actual
 keydelivery, candidate/AT or CEFload qualification inferred.
+### Synthetic key fixture review
+
+Parsed keys.json and reviewed all54 compact pseudonym rows plus one unique
+repeated snapshot and three sealed records/shreddedsnapshot/tombstone. First
+expanded projection truncated; complete compact rows reread. Scoped receipt
+explicitly semantic fixture review, not bytecanonicalization or execution.
+Read actual open/import_legacy and fixture consumers excerpts; no wholefile
+receipt renewal inferred. Public keyhowto distinguishes deterministic fixture
+entropy, legacyempty passphrase, separate Unicodebytecases and operational/security
+qualification. NormalAPI emptysecret refusal remains; fixture bytes unchanged.
