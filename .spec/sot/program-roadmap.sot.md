@@ -3,13 +3,66 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:56:14Z
+updated: 2026-11-07T08:08:33Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
 ---
 
 # Overall roadmap and milestones
+
+## Integrated briefing: 2026-11-07 08:08 UTC
+
+This snapshot covers all19 project chats (integration plus18 dedicated owners).
+The worktree contains36workspace members; shared Cargo/lock changes are still
+being integrated. A chat being idle or its last turn completing does not mean
+its persistent objective or product scope is complete. Test counts below are
+source-scoped checkpoints, never a combined full-product pass count.
+
+| Owner area | Implemented or observed checkpoint | Remaining completion gate |
+|---|---|---|
+| Integration | Shared engine/integrity/collector,36-member working graph, opt-in local-edit profile;143obsolete files and88empty retired directories removed | Freeze a coherent committed graph; complete collector/engine parity and all cross-context joins; final candidate/main |
+| Runtime/Gate | Management observer, signed sessions/ACK, bounded admission/streaming, sealed recovery and typed shutdown source | Current-source pure/hosted lifecycle, durable settings/effects, qualified collector/capture/Pass joins |
+| Authority/IPC | Credential-bound normalized profiles and shared sealed-key startup source40d0bdd | New startup compile/pure tests, actual peer/ACL/replay/restart/other-UID and sealed custody pilots |
+| Audit/custody/state | Retention/rotation7pure and scoped Clippy/static checks passed atc6a6492; trusted snapshot7dba59d authored | New snapshot checks; actual independent retention, repair/rotation/erasure and restart/effect ordering |
+| TLS/H2 capture | Earlier21pure and scoped Clippy passed; pending-handshake ownership b0363e9 adds22-case corpus | Fresh22pure/hosted-feature compilation; actual5TLS/H2 pilots; supervised runtime binding |
+| OS security/Windows | Provider/fixture/storage/strict-JSON7pure plus scoped Clippy passed | Actual service-principal WinCred/ACL/SCM, latest runner accounting and native OS tuples |
+| Operational CLI | Doctor/install/provisioning and service-host source; earlier6pure passed; newest7-case scope changed | Fresh parser/FSM checks; signed install/start/readiness/stop/update/rollback and actual service fixture |
+| Node/Python/Ruby | Shared framework; Node host-feature check and Clippy passed; Python native type error corrected | Python native recheck, Ruby host build, actual frameworks/body/cancel/stream and clean wheel/gem/npm installation |
+| nginx | Latest14pure, package check and scoped Clippy passed | Native build/pilot Clippy and actual nginx/authority35-group hosted contract |
+| Apache | Safe lifecycle checkpoint; new9-case corpus and native bridge/header pins authored | Register native graph, compile generated ABI, actual event/worker/prefork request/lifetime/cleanup pilots |
+| Go compatibility | Previous3pure/all-targets Clippy passed; new response probe expands6-case scope | Fresh probe checks and actual pinned Go origin8-case isolated contact/response receipt |
+| .NET | Safe lifecycle and approved3managed source files authored; Rust bridge/facade source | Register new graph; current Rust/C# compile, real Kestrel/JIT/NativeAOT/GC and package qualification |
+| Native ABI/C/C++ | Earlier core15/export6pure passed; new shared version/resource APIs and header example | Latest core16/export6/example3 checks; generated header and actual C/C++ layout/dynamic-call evidence |
+| Meari/CEF browser | Earlier23pure/scoped Clippy passed; native lifecycle/probe/scheme source continues | Current native build, seven-step probe, cancellation/crash/IME/AX/DPI/OS and real controls |
+| Product lab/Compose | Isolated browser, DNS/witness/recovery and strict public receipt source | Actual immutable-source Docker topology/UID/egress/outage/cleanup, adapter and origin-contact qualification |
+| Wargame | Shared-decoder26attacker/defender+2JSON pure checks and scoped Clippy passed | Actual owned runtime attack catalog, byte-exact public receipt and ordinary/human/AT controls |
+| CI/CD/OIDC | Prior38pure/scoped Clippy; free hosted two-lane workflows;4registry environments prepared | New candidate run, actor diagnostics, explicit native-host feature gates, cache/metrics, CVE/SBOM/package closure |
+| Pages/Draft v0 | Earlier88pages rendered atboth baseurls on63f69ae; current tool26lib+1bin passed beforelatest URL-segment fix | Fresh helper tests/render/browser/freshness and standards wire/interoperability/security/privacy/a11y review |
+| Rules/skills/evaluation | Current34pure, all-targets check/Clippy; read-only inventory14skills/6roles/errors0/mirror drift0 | Fresh provider discovery, hosted storage/package tests and actual paired model evaluation with declared runtime |
+
+Latest full CI remains42348518353/source63f69ae:16jobs,3success/13failure.
+No new integrated hosted result exists for the later worktree. The old six-tuple
+and CEF/component successes do not qualify current complete product behavior.
+336tracked Go files remain; migration is not main-only. npm/crates/pypi/rubygems
+environment preparation is not package publication or external trust verification.
+
+| Gate | Present state | Exit evidence |
+|---|---|---|
+| G0 Coherent candidate | In progress; committed owners plus pending shared graph | Required manifests/API sources tracked together, lock consistent, source freeze |
+| G1 Component completeness | Mixed source/partial pure checkpoints | Latest selected pure/lint/static gates; full engine/Pass/collector/state scope accounted for |
+| G2 Actual service joins | Source implemented in parts, unqualified | Real capture/collector/authority/audit/credential/adapter effects and refusal paths |
+| G3 Product and OS verification | Waiting for latest-source hosted execution | Supported OS/arch/features, isolated Docker/browser/wargame, failure/restart/cleanup and human/AT controls |
+| G4 Delivery/documentation | Partial | Package/archive/CVE/SBOM, same-source Pages/standards freshness, user/developer skill evaluation; registry preparation |
+| G5 Final retirement candidate | First143files/88directories removed; Go retirement pending replacement proof | Retire Go/oracles/old images and unused surfaces, then rerun full gates on the cleaned candidate |
+| G6 Main-only completion | Not started | Integrate latest main into verified candidate, update main, verify approved Pages serving, remove migration branch |
+
+G0-G6 indicate dependency order, not dates or an invented completion percentage.
+Independent research remains tracked: Computer Use/crawlers/datacenter/API/mobile,
+DRM capability limits and provider-container scenarios have design/source findings,
+not a demonstrated universal blocking guarantee. No paid infrastructure, package
+publication, release tag or OIDC token exchange is authorized by this briefing.
+
 
 ## 2026-11-07 role separation and completion-gate timeline
 
