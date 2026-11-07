@@ -32,16 +32,21 @@ are not ownership. `$ErrorActionPreference` alone does not propagate every nativ
 failure. Never release a claim belonging to another provider or session.
 
 Local work is coding, bounded pure units, fmt and scoped Clippy. Root may assign
-at most two local pipelines: A for the approved shared target, B for an approved
-lightweight isolated target. Both use build jobs1 and incremental0; an idle slot
-is not authorization to start. Do not overlap targets or run CEF/native-heavy/
-bindgen together. At commit>=88% or free physical memory<16GiB, defer new B work
-and reduce the next allocation to one; never kill another owner's processes.
+at most four local pipelines A/B/C/D, each with an explicitly assigned distinct
+target, build jobs1 and incremental0. An idle slot is not authorization to start.
+Admit new work only at commit<85% and free physical memory>20GiB. Do not overlap
+targets or run CEF/native-heavy/bindgen together. At commit>=88% or free physical
+memory<16GiB, automatically defer new compilation and reduce the next allocation
+count; never kill another owner's processes. GPU inference needs a separate
+explicit bounded allocation and owned-process stop policy.
 The single execution-policy canon remains program-roadmap/delivery SoTs, including
 resource measurements and the root lock-integration window for manifest changes.
 Actual process/IPC/SCM/browser/Docker/Cross-OS tests use
 the standard free hosted lanes; do not substitute mocks or silently skip required
 work. Unknown/ignored/filtered/failed/unrecovered evidence stays explicit.
+
+User-authorized local model setup/smoke is a separately bounded component profile,
+not a substitute for hosted product/process or full paired qualification.
 
 Publication is not currently authorized: no tags, releases, package upload or OIDC
 token exchange. Protected GitHub environment setup and planned publisher bindings

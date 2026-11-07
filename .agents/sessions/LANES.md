@@ -30,12 +30,15 @@ These formal lanes supplement legacy lanes above. Existing owners migrate by nor
 
 Native-security OS credential provider belongs to native-windows; CLI only selects/validates typed references, runtime consumes shared protected input. No duplicate OS secret reader. Cross-context API changes require explicit owner agreement. Scoring seams stay frozen.
 
-Execution slots are separate from work lanes: root assigns local A/shared-target
-and B/lightweight-isolated-target, maximum2, jobs1/incremental0 each. No automatic
-start from an available slot or same-target overlap. Root's program-roadmap and
-delivery policy owns resource guards (commit88%/free physical16GiB), manifest lock
-windows and the hosted-only runtime boundary; see rule94. Lane ownership is not
-permission to bypass those allocations.
+Execution slots are separate from work lanes: root assigns at most four local
+pipelines A/B/C/D with distinct targets, jobs1/incremental0 each. No automatic
+start from a free slot or same-target overlap. Admit only at commit<85% and free
+physical>20GiB; at commit>=88% or free physical<16GiB defer new compilation and
+automatically reduce subsequent allocations. No CEF/native-heavy/bindgen overlap
+or termination of foreign processes. Root's program-roadmap/delivery canon owns
+resource measurements, manifest windows and hosted runtime boundaries; see rule94.
+GPU inference still needs its separate bounded allocation. Lane ownership is not
+permission to bypass execution allocations.
 
 
 A **lane** is a coarse ownership slice. Agents claim one primary lane per session

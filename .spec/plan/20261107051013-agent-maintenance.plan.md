@@ -49,6 +49,32 @@ altering product/scoring or extending the earlier bounded REA investigation.
 
 ### Continuation: transaction safety and input validation
 
+Root chose a CPU-only next candidate and authorized download/hash verification
+only. The pinned36,346,799byte CPU artifact matched SHA2569b542da90b6541abd599ff275e3246fa6e144885bdcd67d1f0aefdba1729f7b5;
+it is not extracted/executed. Static review identified explicit CPU/paged-off/
+context1024/concurrency1/no-KV-cache/prefix0 and Rayonthreads4 as proposed smoke
+controls. Batch64/prefill64 flags apply to paged/CUDA/Metal scheduling, so CPU
+enforcement is not claimed. CPU resource/quality behavior remains unmeasured and
+requires separate root review/allocation; no CUDA retry or guard expansion occurs.
+
+The separately allocated4B C smoke also hit its guard: preflight81%/free33.15GiB,
+owned PID93093 reached observedcommit94%/free31.87 with GPU6618MiB. The verified
+owned server was terminated; afterstop81%/free35.38/GPU1288MiB/no servers. Raw
+stdout/stderr, arguments, samples and outcome are attached under qwen4-smoke.
+Server binding/model loading were observed, but API/tool/paired requests remain0.
+Root explicitly forbids further loads pending static review. The logs show autoKV
+2777MiB/19712tokens despite4096context and755preloadedCUDAfunctions. Proposed
+explicit4096token KV/batch limits or a separately reviewed CPU runtime remain
+unexecuted options, not a fix or permission to retry. Guards are unchanged.
+
+Root relayed the user's explicit higher-concurrency instruction: local maximum
+four pipelines A/B/C/D with distinct targets/jobs1/incremental0. Owned rule94,
+LANES and THREADS now use admissions commit<85/freephysical>20GiB and automatic
+backoff at commit>=88/freephysical<16GiB, no foreign termination or heavy native/
+CEF/bindgen overlap. GPU inference remains separately allocated. Hosted two-lane
+CI contracts were deliberately not renamed as local concurrency; historical raw
+two-pipeline evidence is preserved unchanged. No unassigned local process started.
+
 The integration contract was reconciled with current59c80426 rather than leaving
 initial27member/add-workspace/missing-upstream instructions operational. Historical
 7unit/4process evidence remains referenced, separately from current36pure. The

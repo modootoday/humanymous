@@ -60,7 +60,10 @@
     "qwen8b_second_attempt": "CUDA model loaded; stopped owned process on host commit89 percent above88 guard",
     "api_requests_sent": 0,
     "owned_servers_remaining": 0,
-    "qwen4b_candidate": "downloaded and hash verified; not loaded; new slot required",
+    "qwen4b_candidate": "loaded and loopback bound; owned server stopped on observed host commit94 percent; API requests0",
+    "qwen4b_auto_kv_mib": 2777,
+    "qwen4b_auto_kv_tokens": 19712,
+    "further_model_loads": "held for root static review",
     "paired_qualified": false
   },
   "full_goal_complete": false

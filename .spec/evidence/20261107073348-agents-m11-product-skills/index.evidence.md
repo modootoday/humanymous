@@ -3,15 +3,23 @@ id: evidence:root/20261107073348
 title: Agents M11 product skills
 status: active
 created: 2026-11-07T07:33:48Z
-updated: 2026-11-07T08:39:25Z
+updated: 2026-11-07T08:59:04Z
 files:
   - {path: hosted-813-summary.json, sha256: 245218b433c356a94c8e8c90621ebaec906fd733fa9accad4412964af9af27cd, bytes: 873, store: repo}
-  - {path: status.json, sha256: e6a2abf08c3333adf7492d1636d3dbeb6105111c4e69e566164d1d1380284f3b, bytes: 2409, store: repo}
+  - {path: status.json, sha256: 5d7539190238f56764404231b308efdbcb3d37dee2f63a016b4f173eeaad1149, bytes: 2572, store: repo}
 ---
 
 # Agents M11 product skills
 
 ## What was measured
+
+The separately allocated4B smoke loaded and listened on loopback, but observed
+host commit94% triggered termination of only its verified owned PID. Recovery:
+commit81%, free physical35.38GiB, no remaining server. Raw stdout/stderr, exact
+arguments and samples are attached privately under local-runtime/qwen4-smoke.
+Auto KV allocation was2777MiB/19712tokens despite a4096context limit. No API,
+tool or paired request ran. Further loads are held for static root review; no
+larger guard, paid endpoint or global WSL setting was used to make a test pass.
 
 A subsequent allocated B batch passed36pure tests, zero failures/ignored/filtered,
 all-target check/Clippy and fmt. Source/data/shared-lock snapshots were unchanged

@@ -20,8 +20,10 @@ historical evidence51014/51015; they do not qualify current source or model beha
 
 ## Remaining execution gates
 
-Local Cargo work requires a root-assigned slot, jobs1/incremental0 and the shared
-resource guards. The component pure command is:
+Local Cargo work requires one of at most four root-assigned distinct-target
+slots A/B/C/D, jobs1/incremental0 and the shared resource guards. Admit only at
+commit<85%/freeRAM>20GiB; defer and reduce subsequent allocations at commit>=88%
+or freeRAM<16GiB. GPU inference remains separately allocated. The pure command is:
 
 ```text
 cargo test --locked -p humanymous-agent-maintenance --lib
@@ -64,8 +66,10 @@ The user authorized autonomous no-API-cost setup and requested Rust instead of
 Ollama. Pinned mistral.rs0.9.5 CUDA and official Qwen artifacts are installed in
 a dedicated cache without global Codex configuration changes. The8B attempt
 loaded CUDA weights but host commit reached89% above88%; only the verified owned
-server was terminated. No API/tool/paired requests ran. The verified4B candidate
-is not loaded and needs a separate root-assigned inference slot. Initial smoke
+server was terminated. The separately allocated4B profile subsequently loaded
+and bound localhost, but observed commit94% triggered the same owned-process
+termination. Both profiles sent zero API/tool/paired requests. No server remains;
+root forbids another load until static KV/workspace review. Initial smoke
 is limited to loopback, one process, context4096/output256 and GPU budget0.60,
 with preflight commit<85/freeRAM>20GiB and stop commit>=88/freeRAM<16GiB.
 These setup results do not replace hosted product or original paired qualification.
