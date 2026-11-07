@@ -52,6 +52,15 @@ to that target. Reject duplicate/missing/extra names or targets and internal
 count disagreements. Read this file rather than maintaining another count list.
 Its false qualification fields are intentional; the inventory is not a run receipt.
 
+The root-requested Git coordinator regression adds a fourth target, `git_coord`,
+with one actual isolated-repository test (14 total in the inventory). It requires
+Git and PowerShell7 available to the allocated runner. Its single-path case uses
+native `pwsh -File` arguments, a filename containing spaces/brackets, canonical
+attribution and a foreign staged-file preservation assertion. It never touches
+the shared repository's index/HEAD. Multi-path array invocation is a separately
+recorded manual PowerShell validation; no foreign test-launcher string is added
+to Rust. This regression remains NOT_RUN until allocated.
+
 The two new process cases cover competing claim children and retained legacy
 BOM claim ownership. They are authored but NOT_RUN during the root benchmark
 quiet window. Delivery's exact component accounting must move from the earlier

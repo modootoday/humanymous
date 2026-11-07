@@ -10,6 +10,33 @@ rel:
 
 # Agent maintenance
 
+## Narrow Git coordinator array repair
+
+Root transferred only `scripts/agents/git-coord.ps1` into this lane after a
+single-element OnlyPaths failure was independently reproduced. No other active
+claim contained scripts/agents; this lane was released and reclaimed normally
+with that exact path added. The existing compatibility script now captures the
+foreach output with an explicit array subexpression and `[string[]]` type before
+native splatting, preserving one-element and multi-element argument boundaries.
+This bounded existing-script repair is explicitly requested; it does not permit
+new foreign implementations or changes to other coordination scripts.
+
+Focused regression must use isolated temporary Git repositories and leave shared
+index/HEAD untouched. Runtime remains NOT_RUN pending allocation. The multi-value
+PowerShell test-launcher seam was raised with root because native `pwsh -File`
+argv does not represent a multi-element string[] parameter faithfully.
+
+Root resolved that seam without an exception: automate the core single-path bug
+in Rust with native `pwsh -File`, and perform the multi-path array check separately
+through direct PowerShell orchestration in an isolated fixture when allocated.
+`tests/git_coord.rs` copies the exact coordinator into a temporary repository,
+clears inherited Git routing/config variables, supplies fixture-local identity
+and hooks, and checks that only a literal space/bracket filename is committed
+while another staged file remains staged and attribution is retained. No foreign
+executable string is embedded. The single JSON inventory now records four targets
+and14 expected cases; delivery must consume this authority rather than pin13.
+Regression compilation/execution and manual multi-path validation remain NOT_RUN.
+
 ## Measured hybrid execution policy
 
 Root ended the benchmark quiet window and directed rule94/local policy updates

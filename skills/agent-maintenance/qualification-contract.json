@@ -4,8 +4,8 @@
   "locked": true,
   "features": [],
   "inventory_status": "source-only; exact-source per-target --list must agree before execution",
-  "scope": "three integration targets only; excludes library units and whole-product qualification",
-  "expected_total": 13,
+  "scope": "four integration targets only; excludes library units and whole-product qualification",
+  "expected_total": 14,
   "required_summary": {
     "failed": 0,
     "ignored": 0,
@@ -45,6 +45,14 @@
       "exact_test_names": [
         "developer_bundle_contains_separate_five_case_suite",
         "product_bundle_contains_paired_suite_and_refuses_existing_output"
+      ]
+    },
+    {
+      "kind": "test",
+      "name": "git_coord",
+      "expected_count": 1,
+      "exact_test_names": [
+        "single_literal_owned_path_commits_without_consuming_foreign_staging"
       ]
     }
   ],

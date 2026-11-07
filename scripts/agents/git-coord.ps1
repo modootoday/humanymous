@@ -207,13 +207,13 @@ function Action-Commit {
   Set-Content -Path $tmp -Value $msg -Encoding utf8
   try {
     if ($OnlyPaths.Count -gt 0) {
-      $literalPaths = foreach ($ownedPath in $OnlyPaths) {
+      [string[]]$literalPaths = @(foreach ($ownedPath in $OnlyPaths) {
         if ([string]::IsNullOrWhiteSpace($ownedPath) -or [IO.Path]::IsPathRooted($ownedPath) -or
             ($ownedPath -split '[/\\]') -contains '..') {
           throw "OnlyPaths requires nonempty repository-relative owned paths"
         }
         ":(top,literal)$($ownedPath.Replace('\', '/'))"
-      }
+      })
       # Preserve other lanes' staged entries. Git updates only these paths in
       # its commit index; callers still hold git-ops throughout the transaction.
       git commit -F $tmp --only -- @literalPaths
