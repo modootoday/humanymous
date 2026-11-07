@@ -191,7 +191,8 @@ The user explicitly requested a goal. No unfinished goal existed; create_goal
 created an active objective to finish the real native plugin request/response/
 CHALLENGE/cancel/timer/service/packaging, with owned implementation, hosted
 qualification, strict accounting, Specfold receipts and attributed commits.
-The stable chat title is Humanymous · 어댑터 · nginx. No completion status is
+The stable nginx adapter chat ID is 01a1b2f5-ea98-7023-b7af-ad527b820084.
+No completion status is
 inferred from earlier checkpoints. No owned process/container was live at start.
 
 Next concrete slices: verify/fix5ef JSON finalization through the actual hosted
