@@ -1,0 +1,720 @@
+{
+  "schema": "humanymous.controlled-outer-fault-evidence/1",
+  "source_sha": "62f47765a66db03acd0063846d57de4f8a32a4cc",
+  "scope": "two fixed cooperative current-token Windows outer negative cases",
+  "full_product": false,
+  "producer_identity": "Unsupported",
+  "r1": {
+    "raw_preserved": true,
+    "status": "COLLIDED_NOT_QUALIFIED",
+    "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults",
+    "collision": "root overlapping allocation of same physical validation-native target; raw first Cargo records build directory file-lock wait",
+    "first_failure": "prelaunch typed UTC DateTime reparsed as local shifted9h; no process started; corrected inside unchanged original180s/240s horizon",
+    "actual_cases_started": 0
+  },
+  "r2": {
+    "no_collided_cache_or_artifact_reused": true,
+    "pure": {
+      "outcome": {
+        "passed": 4,
+        "filtered": 43
+      },
+      "failed": 0,
+      "profile": {
+        "passed": 5,
+        "filtered": 42
+      },
+      "ignored": 0,
+      "barrier": {
+        "passed": 2,
+        "filtered": 42
+      },
+      "measured": 0
+    },
+    "binary_pins": [
+      {
+        "bytes": 2004480,
+        "sha256": "a248679626aba288238953edf572c2ebfcab8b5d6136bd0c392a1107db7a5b5b",
+        "name": "humanymous_test_support-5a5463700a0b8be0.exe"
+      },
+      {
+        "bytes": 2233344,
+        "sha256": "065a0b002eb77644d2638f91966530836b0bf7003d29d45d5b871993ef94389b",
+        "name": "humanymous-native-runner.exe"
+      }
+    ],
+    "actual_outer_negative_cases": 2,
+    "commands": {
+      "fmt": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:19:42.3597752Z",
+        "started_utc": "2026-11-07T17:19:42.2729871Z"
+      },
+      "barrier-pure": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:19:53.1214623Z",
+        "started_utc": "2026-11-07T17:19:42.363063Z"
+      },
+      "profile-pure": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:04.2513361Z",
+        "started_utc": "2026-11-07T17:19:53.1230612Z"
+      },
+      "outcome-pure": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:04.424348Z",
+        "started_utc": "2026-11-07T17:20:04.2524898Z"
+      },
+      "support-check": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:07.0646218Z",
+        "started_utc": "2026-11-07T17:20:04.4256835Z"
+      },
+      "support-clippy": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:08.0277018Z",
+        "started_utc": "2026-11-07T17:20:07.0664257Z"
+      },
+      "controller-check": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:13.4734032Z",
+        "started_utc": "2026-11-07T17:20:08.0287463Z"
+      },
+      "controller-clippy": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:14.4915423Z",
+        "started_utc": "2026-11-07T17:20:13.4746608Z"
+      },
+      "parent-build": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:14.8029801Z",
+        "started_utc": "2026-11-07T17:20:14.4924843Z"
+      },
+      "controller-build": {
+        "exit_code": 0,
+        "observed_terminal_utc": "2026-11-07T17:20:16.5837426Z",
+        "started_utc": "2026-11-07T17:20:14.8039374Z"
+      }
+    },
+    "target": "C:/workspaces/humanymous/target/native-outer-faults-62f47765-r2",
+    "own_live_handles": 0,
+    "closure": {
+      "runtime_binary_differences": 0,
+      "immediate_pre_post_tool_executable_files": 10,
+      "tool_directory_maps_immediate_pre_omitted": 2,
+      "selected_compilation_differences": 0,
+      "source_files": 111,
+      "runtime_source_differences": 0,
+      "registry_packages": 31,
+      "environment_fields": 7,
+      "historical_tool_file_comparison": {
+        "baseline": "20261107164200 before.json",
+        "differences": 0,
+        "files": 76,
+        "limitation": "historical pre-to-post comparison; not an immediate pre snapshot of two tool directories"
+      },
+      "registry_files": 2042,
+      "config_paths": 34
+    },
+    "original_total_cleanup_seconds": 420,
+    "lease_state": "released",
+    "unknown_cleanup": false,
+    "admission": {
+      "utc": "2026-11-07T17:19:01.4516013Z",
+      "commit_percent": 62.953401674272826,
+      "physical_available_mib": 36432.0,
+      "disk_free_bytes": 123538583552
+    },
+    "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2",
+    "budget": {
+      "run_until": "2026-11-07T17:25:01.5520814Z",
+      "cleanup_until": "2026-11-07T17:26:01.5520814Z",
+      "started_utc": "2026-11-07T17:19:01.5520814Z"
+    },
+    "cases": [
+      {
+        "inner_rust": {
+          "passed": 1,
+          "measured": 0,
+          "failed": 0,
+          "ignored": 0,
+          "filtered": 43
+        },
+        "facts": {
+          "account_scm_or_privilege_operations": false,
+          "active_job_processes_before_termination": 0,
+          "actual_job_assigned": true,
+          "actual_job_empty_observed": true,
+          "actual_parent_exit_code": 0,
+          "actual_parent_exit_observed": true,
+          "case": "outer-missing-grant",
+          "case_qualified": true,
+          "cleanup_budget_ms": 15000,
+          "cleanup_observation_error": false,
+          "cleanup_scope": "assigned-job",
+          "cleanup_termination_failed": false,
+          "cleanup_within_original_deadline": true,
+          "cooperative_grant_written": false,
+          "direct_parent_stop_requested": false,
+          "elapsed_ms": 5095,
+          "execution_token": "inherited-current-process",
+          "expected_outcome": "missing-grant-refusal",
+          "grant_intentionally_withheld": true,
+          "job_assigned_before_grant": false,
+          "job_cleanup_termination_requested": true,
+          "natural_parent_exit_observed": true,
+          "observation_error": false,
+          "outer_cleanup_unknown": false,
+          "parent_exit_and_job_empty": true,
+          "parent_live_observed_at_original_deadline": false,
+          "parent_test_passed": false,
+          "probe_marker_observed": true,
+          "probe_marker_read_error": false,
+          "probe_observation_within_original_cleanup_budget": true,
+          "race_free_untrusted_launch": false,
+          "run_budget_ms": 10000,
+          "run_expired": false,
+          "schema": "humanymous.controlled-capture-outer/1",
+          "scope": "fixed-cooperative-test-only",
+          "selector": "process::controlled_barrier::actual_tests::missing_grant_refuses_before_workload",
+          "setup_failed": false,
+          "syscall_wallclock_guarantee": false,
+          "test_exe_sha256": "a248679626aba288238953edf572c2ebfcab8b5d6136bd0c392a1107db7a5b5b"
+        },
+        "admission": {
+          "utc": "2026-11-07T17:20:57.8304954Z",
+          "commit_percent": 63.102068464062654,
+          "physical_available_mib": 36418.0,
+          "disk_free_bytes": 123150127104
+        },
+        "controller_exit": 0
+      },
+      {
+        "inner_rust": {
+          "completed_footer": false,
+          "passing_inner_test_count": 0
+        },
+        "facts": {
+          "account_scm_or_privilege_operations": false,
+          "active_job_processes_before_termination": 1,
+          "actual_job_assigned": true,
+          "actual_job_empty_observed": true,
+          "actual_parent_exit_code": 1,
+          "actual_parent_exit_observed": true,
+          "case": "outer-live-timeout",
+          "case_qualified": true,
+          "cleanup_budget_ms": 15000,
+          "cleanup_observation_error": false,
+          "cleanup_scope": "assigned-job",
+          "cleanup_termination_failed": false,
+          "cleanup_within_original_deadline": true,
+          "cooperative_grant_written": true,
+          "direct_parent_stop_requested": false,
+          "elapsed_ms": 10011,
+          "execution_token": "inherited-current-process",
+          "expected_outcome": "live-parent-original-deadline-termination",
+          "grant_intentionally_withheld": false,
+          "job_assigned_before_grant": true,
+          "job_cleanup_termination_requested": true,
+          "natural_parent_exit_observed": false,
+          "observation_error": false,
+          "outer_cleanup_unknown": false,
+          "parent_exit_and_job_empty": true,
+          "parent_live_observed_at_original_deadline": true,
+          "parent_test_passed": false,
+          "probe_marker_observed": true,
+          "probe_marker_read_error": false,
+          "probe_observation_within_original_cleanup_budget": true,
+          "race_free_untrusted_launch": false,
+          "run_budget_ms": 10000,
+          "run_expired": true,
+          "schema": "humanymous.controlled-capture-outer/1",
+          "scope": "fixed-cooperative-test-only",
+          "selector": "process::controlled_barrier::actual_tests::live_parent_waits_for_original_outer_deadline",
+          "setup_failed": false,
+          "syscall_wallclock_guarantee": false,
+          "test_exe_sha256": "a248679626aba288238953edf572c2ebfcab8b5d6136bd0c392a1107db7a5b5b"
+        },
+        "admission": {
+          "utc": "2026-11-07T17:21:04.1985779Z",
+          "commit_percent": 63.256915766572796,
+          "physical_available_mib": 36361.0,
+          "disk_free_bytes": 123149262848
+        },
+        "controller_exit": 0
+      }
+    ],
+    "fresh_target_create_new_lease": true,
+    "original_total_run_seconds": 360
+  },
+  "limits": [
+    "Markers and timeout alone are never native terminal proof",
+    "Live timeout is ONE outer negative case, no passing inner Rust footer",
+    "No descendants or IO workers in these fault probes; not blockedIO/interactive coverage",
+    "No universal syscall/preassignment guarantee",
+    "No unassigned fault/SCM/account/privilege/ACL/producer/provider or hosted qualification",
+    "Interactive v1.6 contract accepted by root/.NET/X; implementation and actual tests still pending"
+  ],
+  "attachments": [
+    {
+      "sha256": "65b59c18339a9e7408b452686960a1cd023eb80df02468258c144ce27cda81e5",
+      "bytes": 161,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/admission.json"
+    },
+    {
+      "sha256": "4fb5f418fb8db7b8784ac2ea7c31d2a954cb78884ead92a2c5d61e17a676c59e",
+      "bytes": 232646,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/after.json"
+    },
+    {
+      "sha256": "f82be60b1b98be19082eab59b0745b92bd8b1a5ba556e22ee664a96cf3cf93bd",
+      "bytes": 436,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/barrier-pure.stderr.log"
+    },
+    {
+      "sha256": "23fbaf9246a4b775ce44a5932ef65203d9480147286136ecfb370c501886e55c",
+      "bytes": 318,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/barrier-pure.stdout.log"
+    },
+    {
+      "sha256": "4fb5f418fb8db7b8784ac2ea7c31d2a954cb78884ead92a2c5d61e17a676c59e",
+      "bytes": 232646,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/before.json"
+    },
+    {
+      "sha256": "bb89a71f7a755a18b0b348d1ab7835519e7bfe4e2938f0c248d09c33fc0d6f28",
+      "bytes": 343,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/binary-pins.json"
+    },
+    {
+      "sha256": "c1f463ed808f0660080102e8469994b6cf24a729ef7ba0671493cc91c02f94f9",
+      "bytes": 432,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/collision-hold.json"
+    },
+    {
+      "sha256": "48dd36d876defcd1ab2b521017c48b391df9d8c72b7f723f7bfa93f9deb7a0dd",
+      "bytes": 232,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/commands.json"
+    },
+    {
+      "sha256": "f28a0af4050555d892bb5e82144677a035318ecc37958f4c5c7c6774a5f92b9c",
+      "bytes": 253,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/controller-build.stderr.log"
+    },
+    {
+      "sha256": "e630037797d61eab4b3c440b71d5c188257b6ba0f11ecb04e5063428177fbd85",
+      "bytes": 43856,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/controller-build.stdout.log"
+    },
+    {
+      "sha256": "c49517f532df251a97e384bf5426889bb22fcf2f9098bf2a209c64fabb65e6a3",
+      "bytes": 778,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/controller-check.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/controller-check.stdout.log"
+    },
+    {
+      "sha256": "c765eaf55708e798831bda7a988367ea7149efb9e2fae7bff4db72ad5e2c2801",
+      "bytes": 253,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/controller-clippy.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/controller-clippy.stdout.log"
+    },
+    {
+      "sha256": "8d0deb6dead04c39aa8de4d172b9bfaa61077db73fc33a4da8417d87da1696b5",
+      "bytes": 155,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/first-prelaunch-failure.txt"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/fmt.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/fmt.stdout.log"
+    },
+    {
+      "sha256": "1d46ecae221dbeadee11f243372f6f4c3d8c11c5132b0b1c4244949de25b3247",
+      "bytes": 1582,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/log-filesystem-times.json"
+    },
+    {
+      "sha256": "af7d77e58dc2f7d94ab1e55eea1c9d13311d713ccf8e1aea9a4891113b6252e4",
+      "bytes": 216,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/original-budget.json"
+    },
+    {
+      "sha256": "4d844a5cd03db9552456c954b1c7513a4ce583f0e127c0b74eef1d3661dec017",
+      "bytes": 217,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/outcome-pure.stderr.log"
+    },
+    {
+      "sha256": "f3a6618ed5d7aa3301265bc3fa8ab178d4d6713a66223dfed2d8189f0a659ab7",
+      "bytes": 531,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/outcome-pure.stdout.log"
+    },
+    {
+      "sha256": "6ee7cdbc5065df89c7612edd452e7559642235c2a00b4b952a53916f720d44e5",
+      "bytes": 73,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/parent-build.stderr.log"
+    },
+    {
+      "sha256": "d107b6216466d93861b285df1d1b5d79f0b12b1aa4ebe89c35860495afd1f461",
+      "bytes": 18032,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/parent-build.stdout.log"
+    },
+    {
+      "sha256": "f088bb2c8368a3c8912a579f223ffc6b879dd83eb7a6b671788f1dc8e6e27ecc",
+      "bytes": 22565,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/prelaunch-incomplete-snapshot.json"
+    },
+    {
+      "sha256": "4646418affa0fad6013f9fe3def12e1ff82c534f1bba40de81c3d54ec32edd47",
+      "bytes": 923,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/profile-pure.stderr.log"
+    },
+    {
+      "sha256": "3f3a6f0ceeb3be5ca622b38b77cf8c1e17f73ac50436e6808c70f203fe6ef437",
+      "bytes": 597,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/profile-pure.stdout.log"
+    },
+    {
+      "sha256": "b8d39a42ffb5b0201ba9f172bbe1a3ddad6cbd93684494548a49b9236c3d3dbe",
+      "bytes": 71659520,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/source.tar"
+    },
+    {
+      "sha256": "cf13f93b3f193ae40a67cbe7bf5ca7fe35f11c8105baf9827c306cd353b67473",
+      "bytes": 239,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/support-check.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/support-check.stdout.log"
+    },
+    {
+      "sha256": "65d825d9712186f55cdf9a2aa0d5c699205e8ecfdf175437f6b2a7aae942e34d",
+      "bytes": 239,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/support-clippy.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172000-windows-runner-outer-faults/support-clippy.stdout.log"
+    },
+    {
+      "sha256": "15ea878d2ad83ff0c5d958a5b82a4fc21e5af2702618e465c40e6c9731681a2f",
+      "bytes": 162,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/admission.json"
+    },
+    {
+      "sha256": "d717d3b0e0d7694b12b52b71cacb4926e965f6f09525f0fb40370e962ebb2f3d",
+      "bytes": 232676,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/after.json"
+    },
+    {
+      "sha256": "ad101be8ea9f2c2ad3403ad8a9d6207664a67a797c7905cb72affc360c20fdbf",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/barrier-pure.process.json"
+    },
+    {
+      "sha256": "a2abf1033b55663d2480c1d11f593096f137dbc1b1581617f7eb841383177ccb",
+      "bytes": 728,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/barrier-pure.stderr.log"
+    },
+    {
+      "sha256": "23fbaf9246a4b775ce44a5932ef65203d9480147286136ecfb370c501886e55c",
+      "bytes": 318,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/barrier-pure.stdout.log"
+    },
+    {
+      "sha256": "d717d3b0e0d7694b12b52b71cacb4926e965f6f09525f0fb40370e962ebb2f3d",
+      "bytes": 232676,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/before.json"
+    },
+    {
+      "sha256": "14b8f0e28e561a96ed8d447077c51437a02bad53614fee6702c134d9c5cfdbfd",
+      "bytes": 343,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/binary-pins.json"
+    },
+    {
+      "sha256": "787dcfdc8357ce33bd429d4e058b8712fb77e310d73739a83925c546ca42e7a5",
+      "bytes": 1622,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/commands.json"
+    },
+    {
+      "sha256": "f97d29ae437ef743ac85f172b13480a195a167c57e044f6044bab99b4b5bb22e",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-build.process.json"
+    },
+    {
+      "sha256": "2ec5f4277d63e39e51f6132f1cd65035c9814fe3f8ef110ce1b65480a8f855d1",
+      "bytes": 256,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-build.stderr.log"
+    },
+    {
+      "sha256": "cc9bc06a389ac5402237263c93e79104b0af0eff6935fdcfb3bec1744f9de004",
+      "bytes": 45320,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-build.stdout.log"
+    },
+    {
+      "sha256": "e3af6a152b85d7c2c41e00bf7f047d15ea169d2fa282328d9d3195b0aaab7f9c",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-check.process.json"
+    },
+    {
+      "sha256": "de0a516f9dfe6011c159c7da04267ffe205d4e7e3a135f8d4d250b604f61ec8b",
+      "bytes": 1422,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-check.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-check.stdout.log"
+    },
+    {
+      "sha256": "969a110ed0e55484bd451d61f1e3d928c52081d29f0ddc320008b7656c835d1a",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-clippy.process.json"
+    },
+    {
+      "sha256": "8f9af83ee5bbde9793b06c167621dc9976e604fae941e11a4f397435f22e5621",
+      "bytes": 256,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-clippy.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/controller-clippy.stdout.log"
+    },
+    {
+      "sha256": "c185a5c50ffb7f96e64f7595ca40cb9092ddb570d99dd871a273f7eb973e05b0",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/fmt.process.json"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/fmt.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/fmt.stdout.log"
+    },
+    {
+      "sha256": "f30ea0b92844b511bf26283978d80827df99be1e3fd6fbf087cb8db38fe4d0c4",
+      "bytes": 386,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/lease-end.json"
+    },
+    {
+      "sha256": "0392820c92d777cca8b6855b0173368cd45929f07ececeebe85c3b182a2cdaae",
+      "bytes": 333,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/lease-start.json"
+    },
+    {
+      "sha256": "1421be94eb7dcd80a27d0116c5713e29820ca02889d8aa38edf617392774bfcb",
+      "bytes": 155,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/original-budget.json"
+    },
+    {
+      "sha256": "d5d5dfdc1ed11e3cd7603e4d8ec75b046d8916b854b7bd45fa652f589fe162eb",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outcome-pure.process.json"
+    },
+    {
+      "sha256": "771778c493802c765c6f646fdab52fda01ea54a7edb222c599d5c2cd0ae7cc3d",
+      "bytes": 231,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outcome-pure.stderr.log"
+    },
+    {
+      "sha256": "f3a6618ed5d7aa3301265bc3fa8ab178d4d6713a66223dfed2d8189f0a659ab7",
+      "bytes": 531,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outcome-pure.stdout.log"
+    },
+    {
+      "sha256": "ca00cee77b69dcbf74bde31f68dc235ddb04972f0df3acabfaf13493b2e0a625",
+      "bytes": 162,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout.admission.json"
+    },
+    {
+      "sha256": "9600e271545cfad4938209962534011acfa471fce86193abef3549e3ff8fa957",
+      "bytes": 84,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout.controller.exit.json"
+    },
+    {
+      "sha256": "2149b0afc2933f16e2c5fd470d2eda702692647622c34de3b6811aed9e201feb",
+      "bytes": 131,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout.controller.process.json"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout.controller.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout.controller.stdout.log"
+    },
+    {
+      "sha256": "5ddaeffa5509100574b62700bd025c2a762a385372f82b3bed120fbb31eb52b3",
+      "bytes": 162,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant.admission.json"
+    },
+    {
+      "sha256": "31769d41dba9f445dd57246c87a6e16d72aade188e055da72c573bc564f1329c",
+      "bytes": 84,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant.controller.exit.json"
+    },
+    {
+      "sha256": "d9df77e436d68872a5042292bce4b93ea6326c2eee6e310259460a2d75b65039",
+      "bytes": 131,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant.controller.process.json"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant.controller.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant.controller.stdout.log"
+    },
+    {
+      "sha256": "829f75f84591257ab5207204174e7af930b202bfa5b44547ed492ab4346cabf9",
+      "bytes": 124,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/parent-build.process.json"
+    },
+    {
+      "sha256": "5e5f0453450ade966f7fb2d529ca8e11377bdc9fc9b545fb5b52ae8375cabcc6",
+      "bytes": 73,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/parent-build.stderr.log"
+    },
+    {
+      "sha256": "780e47da8150b1571cc6f1d91e45c8ddb460c89ffff2854d04d1a8ba345aa162",
+      "bytes": 18671,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/parent-build.stdout.log"
+    },
+    {
+      "sha256": "bc42ebfa54efa8aa0a934e5bc8c5e07bb51bb26edba7761c4c0c5a2c6762cf54",
+      "bytes": 128,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/post-native-absence.json"
+    },
+    {
+      "sha256": "655b6f2f47b258e24abb6071a73068b5323494fd188b0244e43d43e373c1b4ef",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/profile-pure.process.json"
+    },
+    {
+      "sha256": "7674dd87cb80e5a3fa2f7dd761ef00515faf151ef3c057cb7000665af6e44712",
+      "bytes": 1616,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/profile-pure.stderr.log"
+    },
+    {
+      "sha256": "674194d97a5aeee9de69f5dd2795850c485ea16918db6622500704fcde4266c5",
+      "bytes": 597,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/profile-pure.stdout.log"
+    },
+    {
+      "sha256": "f936aa186e5a53ce6d404394a5042c4948ebfb63f1a4c40094b39a6bb4fa7fa9",
+      "bytes": 163,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/runtime-lease-end.json"
+    },
+    {
+      "sha256": "fe9e829bb0658ce2dcc28ac69abefc62d6dfa227836dc4e292c641955e89a329",
+      "bytes": 404,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/runtime-lease.json"
+    },
+    {
+      "sha256": "ac5c826e4e8836ae0ce01aae0787e13bd4239afc6f37b4271381e39c41498dd1",
+      "bytes": 101,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/runtime-source-after.json"
+    },
+    {
+      "sha256": "b8d39a42ffb5b0201ba9f172bbe1a3ddad6cbd93684494548a49b9236c3d3dbe",
+      "bytes": 71659520,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/source.tar"
+    },
+    {
+      "sha256": "786e92db85fecd31812937c11af871396b77737a75291c02a83b94a1ac33ef69",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/support-check.process.json"
+    },
+    {
+      "sha256": "363255da743a15dbd133b233efb679d4c06752bd2edcc1f5c1e40a59f1b599f8",
+      "bytes": 415,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/support-check.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/support-check.stdout.log"
+    },
+    {
+      "sha256": "61706681c6dfaf05419e02bc8b416b46647c24133fc3c75e9549ca5d179cbb83",
+      "bytes": 125,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/support-clippy.process.json"
+    },
+    {
+      "sha256": "59c09d94fcc4561923b122db507715c8ec33ffcf43a9d2ae41ad105d6c472893",
+      "bytes": 242,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/support-clippy.stderr.log"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/support-clippy.stdout.log"
+    },
+    {
+      "sha256": "315c82ba1ca090094af90f5848849c94a2f1df80788c469270b51b1aa2957046",
+      "bytes": 9126,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/tool-historical-to-post.json"
+    },
+    {
+      "sha256": "2acf2cef2cb13571bb5619d0755c9d95fab8f8fa02c7c72bca0035bc9816c178",
+      "bytes": 207,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout/grant.json"
+    },
+    {
+      "sha256": "7143e8d46e8c384f9df6bd7dbe05eb304483328b11bc4a09b09acfd944024c55",
+      "bytes": 1520,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout/outer-result.json"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout/parent.stderr.log"
+    },
+    {
+      "sha256": "c259a8d936dcad272d7a59af70f01d71f03bf448818996820605aa3355dc6bd5",
+      "bytes": 53,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-live-timeout/parent.stdout.log"
+    },
+    {
+      "sha256": "cd1eae2c865503b8e216b62aefe1d9ed2370988d2017d493fcda17ac48ad987e",
+      "bytes": 1494,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant/outer-result.json"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant/parent.stderr.log"
+    },
+    {
+      "sha256": "d9aef43c9502f54af60092fa877b084d24730e3321ec54cf00d543d8d50742bc",
+      "bytes": 245,
+      "path": ".spec.local/root/evidence/20261107172100-windows-runner-outer-faults-r2/outer-missing-grant/parent.stdout.log"
+    }
+  ]
+}

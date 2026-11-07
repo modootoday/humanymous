@@ -687,3 +687,181 @@ fault wiring, with final clock-bound hardening still a source claim until review
 Unassigned failure injection, bridge native providers, SCM/accounts/privileges and
 duplicate CLI execution remain excluded. Runtime begins only after explicit slot
 coordination and fresh resource admission.
+
+## Retained interactive controller proposal v1.6 (not implemented)
+
+Root assigned this next foundational contract after the separately frozen outer
+fault slice62f47765. The concrete consumer is ASP.NET/Kestrel; Node/Python/Ruby
+also require actual PID before private configuration, retained control input,
+incremental output and explicit settlement. This proposal is not an execution
+allocation, producer grant, Ready factory or proof of an interactive host.
+
+Reuse the ONE private OwnedDirectChild for actual Child/PID/status/stop/sticky
+errors and original clocks. Do not copy it into a consumer or extend unsafe/FFI,
+protected-provider, ACL or manifest graphs. CaptureAttempt remains a finite
+capture profile; RetainedDirectPipeAttempt remains a no-worker unread-pipe
+profile. Neither existing receipt proves this new interactive lifecycle.
+
+### Smallest proposed API boundary
+
+Names below are provisional until the .NET owner confirms its protocol. Public
+constructors validate every finite limit before spawn; no generic readiness or
+authority callback is accepted by this lower transport.
+
+```rust
+// Sketch only, not an implemented/exported capability.
+InteractiveAttempt::start(&mut Command, CaptureDeadlines, InteractiveLimits)
+    -> Result<InteractiveAttempt, InteractiveStartFailure>;
+InteractiveAttempt::pid(&self) -> u32;
+InteractiveAttempt::try_startup(&mut self, Vec<u8>) -> EnqueueResult;
+InteractiveAttempt::try_control(&mut self, Vec<u8>) -> EnqueueResult;
+InteractiveAttempt::close_input(&mut self);
+InteractiveAttempt::poll(&mut self) -> InteractiveProgress;
+InteractiveAttempt::take_output(&mut self, stream: Stream) -> Option<OutputChunk>;
+InteractiveAttempt::request_stop(&mut self) -> io::Result<()>;
+InteractiveAttempt::settle_joined(self)
+    -> Result<SettledInteractiveChild, RetainedInteractiveFailure>;
+```
+
+Start retains the actual child and every successfully started worker before any
+private startup input. Obtaining PID is observation, never peer authentication.
+Consumer admission, verified fixed executable/cwd/environment and accepted peer
+binding must precede the corresponding effects. The shared transport cannot
+manufacture missing producer authority or certify an inherited environment.
+
+One writer owns stdin and accepts at most one deferred startup, then bounded
+control messages. Startup maximum64KiB, control maximum1024bytes, at most64
+pending controls are consumer-requested ceilings, not changes to finite capture's
+4096byte public input. Exactly one startup acceptance precedes controls; repeated,
+late or premature operations are refused without writing. Enqueue uses try_send:
+Full returns the SAME unaccepted bytes to the caller and records a sticky
+failure; disconnection also fails sticky. Neither permits drop/retry as success.
+No enqueue waits for OS write, promises delivery or renews time.
+Writer completion/bytes written/flush result remain distinct from queue acceptance.
+Explicit close disables new sends and lets accepted input finish before dropping
+stdin; cancellation may discard queued input with an explicit failure, never a
+successful delivery claim. A kernel-blocked writer remains retained and Unknown.
+
+Two retained workers read stdout and stderr independently in fixed bounded
+chunks. Each has a bounded queue and a lifetime byte cap, initially requested
+256KiB per stream; consuming chunks cannot reset that cap. Worker publication
+must not block on a full queue: overflow records a sticky terminal stream error,
+closes that worker's endpoint and retains its JoinHandle. This intentionally
+fails the execution rather than deadlocking cleanup behind an undrained queue.
+No silent loss/truncation, raw output logging or success from partial JSON.
+L4 alone assembles and validates ordered JSON frames (maximum4096bytes including
+delimiter), kinds, actual PID relation and application protocol. Lower byte
+chunks are not frames or authenticated readiness.
+
+### Ownership, clock and completion rules
+
+Every partial worker-start, input, read, overflow, child-observation or final join
+failure returns/retains the SAME owner with its actual handles and sticky facts.
+No detached reader, scoped implicit join, PID reconstruction or Drop wait is a
+cleanup mechanism. A pre-spawn refusal alone may return NotStarted. Child-spawn
+and thread creation/OS stop/write/read/join may block; an independently owned
+outer supervisor remains necessary, with no universal syscall deadline claim.
+
+Poll drains only bounded immediately available observations, samples internal
+time after gathering facts and never joins/waits/writes. Run and cleanup are the
+same original absolute thresholds established before spawn. Graceful control,
+forced stop, stdin closure, child exit, stdout EOF, stderr EOF, worker result and
+actual JoinHandle join are separate facts. A failure worker may be joined without
+EOF; that permits known resource settlement but never successful execution.
+Final settled fields are private and based on actual status and every started
+worker joined. Tree/Job emptiness is an external native observation, not implied
+by direct-child status or worker settlement. No arbitrary caller boolean may
+upgrade this direct-child result into native process-tree proof.
+
+### Smallest review and verification slice
+
+First implement the bounded private input/output state and queue policy without
+changing consumers: pure tests cover one startup/order, Full returns ownership,
+input closure, cumulative output caps, sticky queue/IO errors and conserved
+clock classification. Reuse existing child/worker mechanisms rather than mirror
+them. Then explicit ignored controlled fixtures cover interactive round-trip,
+incremental stderr, refusal/partial-start ownership, unread input, queue/output
+overflow, child exit before inherited-pipe EOF and original deadline expiry.
+Actual Windows fixtures require a separately assigned outer Job slot, actual
+parent/Job/worker observations and source/binary pins. A fixture proof is not
+Kestrel/GC/AOT/package or protected producer qualification.
+
+Local adversarial pass: blocking sync_channel send, drain-reset output caps,
+startup accepted twice, early EOF inferred from child exit and unjoined worker
+completion are P1 design blockers, addressed above. P0 producer admission remains
+Unsupported outside this transport and must fail before protected host launch.
+Residual syscall blocking and caller abandonment remain explicit. Verdict:
+needs-work until .NET confirms its exact sequence/ceilings and X reviews the
+smallest source contract. No interactive implementation or workload yet.
+
+Root relayed the .NET owner's exact consumer agreement: Starting PID precedes
+the single UTF8 startup JSON+LF (65536bytes total); Ready PID/address/runtime/
+dynamic_code and loopback address are L4 checks. Clear inherited environment,
+use fixed context environment and private cwd only after actual native admission.
+Controls include gc-start/gc-stop/counters/dispose-host/handoff-mode with the
+closed normal/rewrite/response-started/expire modes, and terminal stop followed
+by explicit input close. Parsed L4 frame queue is also bounded64; no cross-stream
+ordering is inferred. Starting -> Ready -> contacts/counters -> Stopped -> EOF
+is a consumer phase rule. Premature EOF, incomplete LF, duplicate/wrongPID/schema
+remain L4 failures. Required future actual negatives include deferred startup
+failure, blocked writer, both-stream flood, early EOF, direct exit with descendant
+pipe, reader failure, partial worker creation and exhausted cleanup. Exact API
+and source review still precede implementation; actual host allocation remains
+separate and producer Unsupported remains unchanged.
+
+Independent X contract review requires two mechanical clarifications before
+implementation. Terminal/error/EOF/result state MUST be retained outside payload
+queues (for example bounded fixed worker state); a full payload queue cannot
+drop/block the report of its own overflow. Poll observes that state even when
+chunks remain unread. Neither close nor cancel is a sentinel requiring a free
+queue slot: close is independently published, rejects offers and drains the FIFO
+accepted sequence; cancellation independently stops acceptance and records every
+discarded accepted message as incomplete. One writer preserves startup before
+all accepted controls, with no reordering or consumer retry.
+
+Initial closed memory profile: output chunks at most4096bytes; each output queue
+at most16 chunks, plus one worker in-flight chunk per stream. Each stream's
+256KiB lifetime cap includes bytes queued, in-flight and already delivered; one
+extra byte may be read solely as an overflow sentinel. Output transient payload
+storage is at most2*(16+1)*4096 plus two sentinels. Input has one startup slot
+at most65536bytes and64 control slots at most1024bytes each; one writer may hold
+an additional in-flight control1024bytes, while startup stays counted until its
+write completes. Input owned payload ceiling is therefore132096bytes, independent
+of bytes borrowed/returned to caller on refusal. Queue wrappers/channel nodes,
+fixed worker state and finite issue enums are separate fixed bookkeeping; no
+unbounded event vector or per-poll repeated-error allocation. Caller-taken chunks
+and the L4 parsed queue have their own explicit consumer allocation budget and
+never increase transport lifetime caps. These ceilings are rejected before
+spawn if invalid and cannot be enlarged during an attempt. Source contract is
+still pending implementation review and has no actual interactive proof.
+
+## Controlled outer-fault observed checkpoint v1.7
+
+Frozen62f47765 R1 first refused before any process because typed UTC JSON time
+was reparsed through a local string. Correcting the conversion did not renew its
+original180s/240s budget. All ten gates then returned0, but Root discovered its
+overlapping Browser allocation of the SAME physical validation-native target;
+the first Cargo log confirms a build-directory lock wait. R1 stays COLLIDED /
+NOT_QUALIFIED, actual0. Its original raw outputs and binary pins remain preserved.
+
+Root allocated fresh R2 target/native-outer-faults-62f47765-r2 with create-new
+lease, fresh build/no R1 artifacts and one original360s/420s total budget.
+Observed pure barrier2/profile5/outcome4 pass, all fmt/check/strictClippy/build
+exit0. Actual missing-grant5095ms: assigned Job/no grant/refusal marker, natural
+exit0 plus Job0/timely cleanup; completed inner pass1/filter43. Actual live-parent
+10011ms: grant/marker, actual live at original10s, active Job1 before successful
+termination, actual exit1 and Job0/timely cleanup. No inner completed footer.
+Both case_qualified=true, parent_test_passed=false, unknown/errors=false. Exact
+controller/parent binaries unchanged; source111/registry31packages2042files/
+config34/executable10/environment7 snapshots unchanged and runtime source111
+unchanged. Two nested tool-directory maps were omitted from immediate snapshots;
+separate historical16:44-to-post comparison checks76 tool files with zero drift,
+explicitly NOT retroactive immediate-pre sampling. Registered summary preserves
+this instrumentation limitation,92 raw attachment hashes and all leases returned.
+
+Root/.NET accepted v1.6 after X confirmed independent terminal state and fixed
+queue/memory mechanics. Next authorized work is the smallest Rust interactive
+source slice, then source freeze and .NET/X review BEFORE any new Cargo/actual
+allocation. The R2 fault slot authorizes no interactive workload. Full actual
+blocked-writer/descendant-pipe/partial-start and Kestrel/GC/AOT/package/producer
+gates remain open.

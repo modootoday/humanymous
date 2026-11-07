@@ -1090,3 +1090,20 @@ evidence for that fixed cooperative component profile, not arbitrary hostile
 containment, an outer hung-parent fault injection or universal syscall deadlines.
 Legacy helper debt, CLI consumer0/74, native bridge/producer and hosted service
 gates remain separate; producer identity remains Unsupported.
+
+Immutable62f47765 later qualifies TWO exact controlled outer negative cases,
+registered in controlled-outer-faults-summary.json. Missing cooperative grant
+refuses after original5s and naturally exits0 without workload admission; live
+parent is actually observed live at original10s, has positive native Job count,
+successful termination request, actual exit1 and Job0 within original15s. Both
+have parent_test_passed=false and case_qualified=true. Only missing-grant has a
+completed inner Rust pass1; live termination is one outer case without a passing
+inner footer. Pure barrier2/profile5/outcome4 and all scoped checks pass in fresh
+exclusive R2 target. R1 collided with a root-overlapping physical target
+allocation and stays NOT_QUALIFIED with all raw history preserved. R2 selected
+source/registry/config/executable/environment snapshots match; two tool-directory
+maps were omitted from immediate pre/post capture, so their76-file comparison
+uses the explicitly historical baseline and is not an immediate-pre claim.
+No blocked IO/interactive/descendant-pipe, unassigned-fault, protected producer or
+hosted capability follows. Interactive contract v1.6 is accepted design only;
+implementation and actual consumer qualification remain pending.

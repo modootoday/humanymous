@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: controlled-outer-faults-summary.json, sha256: f7a8edef4ed52fa5ca0dee16ccc0aa5e070c9c6a63f19514f256414ea466354c, bytes: 31140, store: repo}
   - {path: cli-controller-profile-summary.json, sha256: 0d3aacd5d063b9e40ef1f725497a5c60d978158c19bc0a730bfa8669040060ac, bytes: 3950, store: repo}
   - {path: controlled-capture-parents-summary.json, sha256: f4c85272e4880f5d971cde18d1e48b328f48fd94099926f8d879384ff4fbd398, bytes: 16844, store: repo}
   - {path: common-owner-pure-summary.json, sha256: df3a4a83bddb3614cc43679b71139c669bba89e56d3c99a52eebb0065be7c726, bytes: 6119, store: repo}
