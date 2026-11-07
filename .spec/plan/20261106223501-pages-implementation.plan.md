@@ -714,3 +714,12 @@ Added five exact source reviews and public mode/exit/denominator boundaries.
 Synthetic60second accessibility CHALLENGE regression is not human completion.
 Shared verification internals, network ledger/cases and actual source-bound
 execution remain separate pending reviews/gates; no new local process pilot.
+
+## Report verifier semantic/byte boundary review
+
+Read full simulation lib/report, verification and integration contract. Added
+four manually reasoned source hashes and public semantic-JSON versus canonical
+bytes/strict duplicate-key limitation. V1 Value parsing can erase duplicatekeys;
+reported root without modifying owner source. V2 original typed decode is not
+generic strict adapter-wire validation. No execution or independent qualification
+claimed. Current-source and historical ledger results remain separately bound.

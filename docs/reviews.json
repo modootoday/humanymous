@@ -2,6 +2,42 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/attacker/src/lib.rs",
+  "sha256": "8e2d72eb028b262cf99fae6f65c4b35b95cd077096254692b5db9465df5b2344",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete composition and deterministic engine replay test. All scheduled catalog cases pass through the existing defender; seed changes row order only. Public catalog separates pure simulation from network execution, synthetic participant labels and actual runtime qualification. No policy or scoring modification and no execution claimed.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/src/report.rs",
+  "sha256": "f2a6579f8cd3ef342069916a909d054da7051b4ab38322a9f4a1d4672f09ac7b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full simulation rows/statuses/count accumulation, expected regression comparison, per-class/tier denominators, false runtime coverage and separate human-controls-all-allow computation plus source tests. Public reference explains unsupported/error retention, matching synthetic CHALLENGE versus actual access success and scoped regression pass versus product acceptance. No live people, AT or network inferred from field names.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/src/verification.rs",
+  "sha256": "948742d14baeba7f01fc9f535e3e20051869f09082a03e47e1df5742fa62b692",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read entire bounded verify_bytes and semantic recursive equality, exact integer comparison then float compatibility, current-source simulation replay and original-byte typed network decode delegation plus source tests. Public catalog explicitly excludes canonical-byte and strict simulation duplicate-key validation, keeps original report hashes, and distinguishes internal consistency from measured external execution. Deeper network validation and actual changed-source tests remain separate.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/INTEGRATION.md",
+  "sha256": "573f1207baba3297db6f6bfe46ffd4fd722b4735828e6f55ea7d5e76808c45b2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read current ownership/API/report/exit contract and historical immutable network results versus later uncompiled v0.3 boundary/parser/verifier edits. Public catalog separates scoped acceptance, audited verdicts, actual participant flags and unsupported controls. Historical source and lost/failed evidence cannot retrospectively qualify current code; root hosted policy is canonical and no local runtime dispatched.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
   "source": "crates/attacker/Cargo.toml",
   "sha256": "cd4d610d4d1c14b58459c3d6b6602ab38eedb25f4e8c588b9a826cb805fd480d",
   "reviewer": "codex/rust-pages",

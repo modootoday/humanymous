@@ -52,3 +52,11 @@ owned Docker supervisor, exact binary/source identity, audit custody and origin
 measurements. HTTP 403 alone is not an audited DENY, and a collection receipt is
 not a policy verdict. No catalog or verifier pass authorizes scoring changes or
 probing an unrelated deployment.
+
+Simulation report comparison is semantic JSON comparison against a fresh replay:
+object ordering and equivalent integer/float representations are not canonical
+byte commitments. The current Value-based simulation decode is not a strict
+duplicate-key wire validator. Network reports use typed decoding from original
+bytes for their declared fields, but this report checker is not the strict
+experimental adapter parser or a generic Draft v0 canonicalization test.
+Retain the original report and its hash alongside any normalized summary.
