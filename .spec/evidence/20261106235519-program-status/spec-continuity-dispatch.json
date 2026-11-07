@@ -1,0 +1,69 @@
+{
+  "schema": "humanymous.spec-continuity-instruction/1",
+  "at": "2026-11-07T05:22:01.438Z",
+  "authority": "Direct human request: all project chats must canonicalize and continually update specs, work history and contracts",
+  "targets": [
+    {
+      "id": "01a1b34e-f9e9-77d3-b883-0cc4d76763a4",
+      "accepted": true
+    },
+    {
+      "id": "01a1b2da-7d8a-73f2-9bb2-78bde5ae33f9",
+      "accepted": true
+    },
+    {
+      "id": "01a1b2da-d1e9-7a22-9052-9a90a8cba54f",
+      "accepted": true
+    },
+    {
+      "id": "01a1b2f5-e927-7a03-9d47-9d1084d14c53",
+      "accepted": true
+    },
+    {
+      "id": "01a1b2f5-ea98-7023-b7af-ad527b820084",
+      "accepted": true
+    },
+    {
+      "id": "01a1b2f5-ec55-7c91-863d-f539c70417be",
+      "accepted": true
+    },
+    {
+      "id": "01a1b2da-2656-7a23-a60b-08a681b23117",
+      "accepted": true
+    },
+    {
+      "id": "01a1b30d-439d-7030-8e38-789bc0b70f6a",
+      "accepted": true
+    },
+    {
+      "id": "01a1b30d-454e-7a50-9ab1-48358dbd0ff1",
+      "accepted": true
+    },
+    {
+      "id": "01a1b30d-4736-7281-a54f-5cb3a5fa4fe4",
+      "accepted": true
+    },
+    {
+      "id": "01a1b35f-cf83-74f2-aad1-34b3aee60cda",
+      "accepted": true
+    },
+    {
+      "id": "01a1b35f-d1a1-7553-a0ed-65d09b9042a7",
+      "accepted": true
+    },
+    {
+      "id": "01a1b35f-d3e9-7042-91a4-10c910a15515",
+      "accepted": true
+    }
+  ],
+  "newChatsCreated": false,
+  "requirements": [
+    "SoT contracts decisions schemas versions errors permissions lifecycle and change deltas",
+    "Plan acceptance dependencies implementation gaps and followups",
+    "Private source-bound commands environment artifact digests actual results failures and handovers",
+    "Sanitized public Specfold attachments with validated-working vs canonical-Git bytes",
+    "Persist cross-chat agreement proposal acceptance implementation and validation separately",
+    "Preserve lane ownership and implementation scope"
+  ],
+  "deliveryMeansCompletion": false
+}

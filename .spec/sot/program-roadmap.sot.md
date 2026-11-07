@@ -21,6 +21,19 @@ rel:
 
 ## 판정과 개발 규약
 
+### 모든 채팅의 지속 정본화 의무
+
+각 owner는 구현과 동시에 SoT의 계약/결정/schema/version/error/권한/lifecycle와
+변경 delta, plan의 요구·의존·수용기준·미완료·후속 조치를 갱신한다. 채팅 간
+API 합의는 메시지만으로 끝내지 않고 제안/수용/구현/검증 상태를 영속 기록한다.
+실행 명령/source SHA 또는 dirty manifest/환경/tool·image·artifact digest/
+실제 분모·실패·재시도는 private evidence에 남기고 실패 이력을 보존한다.
+공개 evidence는 민감정보를 제거하여 Specfold attach로 등록하며 LF/Git bytes와
+validated-working-source/canonical-Git-source 해시를 구분한다. checkpoint와
+lane 양도에는 정확한 파일·계약·검증·잔여 한계·실행 명령·다음 owner를 남긴다.
+타 owner 정본은 직접 수정하지 않고 change request로 전달한다. 본 의무는
+root와13개 작업 채팅 모두에 적용되며 문서 갱신은 제품 구현/검증의 대체가 아니다.
+
 | 상태 | 의미 |
 |---|---|
 | 구현·검증 | 지정 source와 하위 범위의 실제 실행 증거가 있음 |
