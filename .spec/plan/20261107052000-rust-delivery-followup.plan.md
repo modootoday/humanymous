@@ -12,6 +12,12 @@ rel:
 
 ## Scope and order
 
+Productenvironment preparation only: release crates/npm jobs now use matching
+crates/npm environments, registry prerequisite/trust binding and catalog match.
+Root owns actual GitHub environment parity receipt; externalregistry verified
+false and npmdirectpublishfalse remain.27pureunits/Clippy/staticpolicy/actionlint
+pass, no token issuance/tag/release/publish attempted or authorized.
+
 Workflow naming follow-up after separate pinfixec14b90: normalize display
 namespace only; keep all10technical filenames/jobkeys/OIDC/registry paths stable.
 Add single workflows.json catalog + actual Rust inventory/name/job/concurrency/

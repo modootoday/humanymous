@@ -1,5 +1,5 @@
 {
   "schema": 1,
-  "crates_io": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "release"},
-  "npm": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "release", "direct_publish_allowed": false}
+  "crates_io": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "crates"},
+  "npm": {"verified": false, "repository": "modootoday/humanymous", "evidence": "", "evidence_sha256": "", "workflow": "release.yml", "environment": "npm", "direct_publish_allowed": false}
 }

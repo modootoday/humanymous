@@ -267,6 +267,10 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         )?;
         for id in ["crates", "npm"] {
             require(
+                jobs[id]["environment"] == id,
+                "registry product environment binding mismatch",
+            )?;
+            require(
                 strings(&jobs[id]["needs"]).contains("readiness"),
                 "registry readiness bypass",
             )?;
@@ -350,6 +354,24 @@ fn catalog(catalog: &Value, docs: &[(String, Value)]) -> Result<()> {
         require(
             doc["concurrency"] == entry["concurrency"],
             format!("workflow concurrency drift: {file}"),
+        )?;
+        let mut environments = Map::new();
+        for (job, definition) in jobs {
+            if let Some(environment) = definition.get("environment") {
+                let name = environment
+                    .as_str()
+                    .or_else(|| environment["name"].as_str())
+                    .ok_or("job environment name absent")?;
+                environments.insert(job.clone(), json!(name));
+            }
+        }
+        require(
+            Value::Object(environments)
+                == entry
+                    .get("environments")
+                    .cloned()
+                    .unwrap_or_else(|| json!({})),
+            format!("workflow environment drift: {file}"),
         )?;
         let mut artifacts = BTreeSet::new();
         for step in jobs
@@ -507,6 +529,21 @@ mod tests {
         assert!(document("release.yml", &release).is_ok());
         release["on"]["workflow_dispatch"] = Value::Null;
         assert!(document("release.yml", &release).is_err());
+    }
+    #[test]
+    fn registry_job_cannot_return_to_shared_release_environment() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root).unwrap();
+        let manifest = crate::read_json(&root.join("scripts/ci/workflows.json")).unwrap();
+        let mut changed = original.clone();
+        let release = &mut changed
+            .iter_mut()
+            .find(|(file, _)| file == "release.yml")
+            .unwrap()
+            .1;
+        release["jobs"]["crates"]["environment"] = json!("release");
+        assert!(document("release.yml", release).is_err());
+        assert!(catalog(&manifest, &changed).is_err());
     }
     #[test]
     fn public_commit_json_requires_exact_identity() {

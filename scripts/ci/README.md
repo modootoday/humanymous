@@ -69,7 +69,7 @@ is deployed only after the complete same-source Rust authority passes.
 
 Publication subcommands are implemented gates, not permission to publish.
 Registry prerequisites remain explicitly unverified. External proof must bind
-repository, release.yml, protected release environment and canonical evidence
+repository, release.yml, product environment (crates or npm) and canonical evidence
 digest. No long-lived registry token fallback is allowed. crates dependency
 waves include versioned normal/build/dev paths and reauthenticate per wave.
 Existing immutable versions are skipped only if registry name/version/checksum

@@ -235,6 +235,28 @@ policy command and actionlint pass. No local runtime or hosted qualification is
 implied. First failed run keeps its old display names at immutable bfc9f623;
 new display names and catalog require their own next hosted source result.
 
+### Product OIDC environment preparation (no deployment)
+
+The subsequent explicit user instruction separates registry products:
+release.yml crates job uses environment `crates`; npm job uses `npm`.
+Registry prerequisites and trust validator require the exact repository,
+release.yml filename and product environment (`crates_io`→`crates`, `npm`→`npm`).
+Catalog records all job environment names and rejects drift, including the
+github-pages deployment name and existing image/GitHub-release `release` names.
+Existing job OIDC permission scopes and tag-only release triggers are unchanged.
+No tag, release, npm/crates publish or actual OIDC issuance test is authorized.
+
+Root reports actual GitHub npm/crates environment creation/readback matching
+modootoday/specfold: required reviewer myso-kr/1237913, prevent-self-reviewfalse,
+admin-bypasstrue, custom branch policies with only tagv*, deployments0; the full
+normalized parity receipt is in root private evidence. This provisioned GitHub
+policy is distinct from external registry ownership/bootstrap/trusted-publisher
+proof. Both verified flags and npm direct_publish_allowed remainfalse.
+
+Exact product-binding negative tests, shared-release environment rejection,
+catalog consistency and all27delivery pure units pass; strict scoped Clippy,
+static policy and actionlint pass. No actual token or publication was attempted.
+
 Accepted for implementation by the explicit parallel-completion request on
 2026-11-07 KST. New authored implementation/tests use Rust1.99.1/edition2024.
 The existing upstream action/Jekyll/theme/generated glue and frozen legacy
@@ -516,7 +538,7 @@ allow the action's revocation cleanup. A long sequence reauthenticates between
 dependency waves. No long-lived token fallback belongs in the release workflow.
 
 The Trusted Publisher binds repository owner/name, exact workflow filename and
-the protected release environment. It is configured per crate after ownership
+the protected `crates` environment. It is configured per crate after ownership
 and initial registration. Current crates.io requires an initial non-OIDC upload
 before that registration; this is an external account bootstrap prerequisite,
 not a capability to fake in YAML. Do not perform it or claim live OIDC success

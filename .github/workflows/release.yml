@@ -256,7 +256,7 @@ jobs:
       env:
         CARGO_REGISTRY_TOKEN: ${{ steps.auth7.outputs.token }}
     needs: [readiness, images-ok]
-    environment: release
+    environment: crates
     permissions:
       contents: read
       id-token: write
@@ -282,7 +282,7 @@ jobs:
     needs:
     - readiness
     - crates
-    environment: release
+    environment: npm
     permissions:
       contents: read
       id-token: write

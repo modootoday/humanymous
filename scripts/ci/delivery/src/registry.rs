@@ -93,17 +93,25 @@ pub fn migration(root: &Path) -> Result<()> {
         "Go product/migration source remains in final shipping tree",
     )
 }
+fn trust_binding(registry: &str, record: &Value) -> Result<()> {
+    let environment = match registry {
+        "crates_io" => "crates",
+        "npm" => "npm",
+        _ => return Err("unknown registry trust binding".into()),
+    };
+    require(
+        record["workflow"] == "release.yml"
+            && record["environment"] == environment
+            && record["repository"] == "modootoday/humanymous",
+        "trusted publisher workflow/environment/repository binding mismatch",
+    )
+}
 fn trust(root: &Path, registry: &str, record: &Value) -> Result<()> {
     require(
         record["verified"] == true,
         format!("external {registry} ownership/bootstrap/trust unverified"),
     )?;
-    require(
-        record["workflow"] == "release.yml"
-            && record["environment"] == "release"
-            && record["repository"] == "modootoday/humanymous",
-        "trusted publisher workflow/environment/repository binding mismatch",
-    )?;
+    trust_binding(registry, record)?;
     let evidence = record["evidence"].as_str().ok_or("trust proof missing")?;
     require(
         source::safe_relative(evidence)
@@ -376,6 +384,18 @@ mod tests {
             )
             .is_err()
         );
+    }
+    #[test]
+    fn registry_products_require_distinct_exact_environments() {
+        for (registry, environment) in [("crates_io", "crates"), ("npm", "npm")] {
+            let record = serde_json::json!({"workflow":"release.yml","repository":"modootoday/humanymous","environment":environment});
+            assert!(trust_binding(registry, &record).is_ok());
+            for wrong in ["release", "other", ""] {
+                let mut changed = record.clone();
+                changed["environment"] = serde_json::json!(wrong);
+                assert!(trust_binding(registry, &changed).is_err());
+            }
+        }
     }
     #[test]
     fn immutable_resume_requires_matching_name_version_and_archive_checksum() {
