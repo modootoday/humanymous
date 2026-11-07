@@ -468,6 +468,47 @@ never substitutes them for GUI/human/AT or full sandbox evidence.
 
 ## Rule
 
+### Accepted Windows opened-object bridge exception
+
+Root accepts the B/B2 implementation boundary in
+[[plan:root/20261107140021]] after independent Authority source review of its
+v0.3 proposal. This is an explicit authored-Rust unsafe exception, not a change
+to workspace unsafe_code=forbid or an actual platform qualification.
+
+The unpublished proposed humanymous-windows-object-bridge package owns only
+six private wrappers: GetFileType; GetFileInformationByHandleEx for FileIdInfo
+and FileAttributeTagInfo; GetVolumeInformationByHandleW;
+GetFinalPathNameByHandleW; and CreateDirectoryW. Its manifest must use local
+unsafe_code=deny, copied applicable workspace lint policy, and scoped allowances
+only on those audited wrappers. No process/token/Job FFI, raw-handle public API,
+descriptor ownership conversion, manual native layout or workspace lint override
+is authorized. Root alone registers manifests, features and lock changes after
+the implementation handoff; source authorization does not add the package yet.
+
+Each query borrows the same live File, uses generated initialized aligned POD
+outputs with checked sizes, and interprets outputs only on success. UTF16 buffers
+are owned, bounded including the terminator and retried finitely; successful final
+path length must be nonzero and below capacity with NUL at that length. Native
+errors are captured immediately using io::Error::last_os_error. The directory
+wrapper borrows the pinned windows-permissions0.2.4 native descriptor allocation
+through its opaque reference for one synchronous CreateDirectoryW call; it never
+reinterprets a guessed typed descriptor or transfers allocation ownership.
+
+Native-security retains the same opened objects, protected ancestors, exact
+role/ACL/provider policy and created-path obligations. A wire identity claim is
+forgeable metadata, never authority. ACL-at-creation and the reviewed writer /
+transitional-reader / final-reader sequence must preserve custody without closing
+all pins. Directory creation returns an obligation before later fallible caller
+validation; failure must retain it, with no silent ACL repair. The supported
+trusted-controller/local-provider premise excludes malicious administrators and
+drivers explicitly; path queries do not prove a process section or hosted origin.
+
+Bounded buffers and call counts do not guarantee bounded syscall wall time.
+Actual Windows sharing, identity, ACL-at-create, substitution, retained-failure,
+account/Job and consumer tests remain separately allocated gates. The production
+producer-identity path stays Unsupported until its complete caller contract and
+actual source-bound evidence qualify it. Detection policy and verdicts stay frozen.
+
 Native custody and WAL now share one crate-private storage::ExclusiveFile owner
 using standard File locking and explicit unlock-on-Drop. There is no production
 clone/unlock handle API. fs4 is removed from the root and runtime-pilot locks;
