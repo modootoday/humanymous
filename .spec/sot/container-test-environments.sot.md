@@ -341,6 +341,10 @@ observations qualify this separate source. The pre-fix e70 run measures neither
 these counters nor the repaired source; successful repair cannot prove its
 original assertion retrospectively. Privacy/red/operations/evaluator critique
 is reflected in finite keys, opposing-count refusal and independent effect gates.
+Retain the already classified finite actor failure through normal runtime drain
+and the actual-test-completion assertion: a failed test after a witnessed effect
+must not lose its panic-site code to a later receipt stage. Reset the receipt
+stage only after actual test completion succeeds; no assertion is skipped.
 
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped

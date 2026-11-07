@@ -234,6 +234,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         &[],
     )?;
     let raw_path = lab.evidence.join("browser-process-output.json");
+    let mut actor_failure = None;
     let browser_result = std::thread::scope(|scope| -> Result<_> {
         let (send, done) = mpsc::sync_channel(1);
         let handle = scope.spawn(move || {
@@ -287,6 +288,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             Ok(result) => {
                 let (outcome, failure) =
                     super::browser_actor::from_stdout(&result.stdout, &fixture, &expected);
+                actor_failure = failure;
                 lab.components["browser_actor_diagnostic"] = outcome;
                 if let Some(stage) =
                     super::startup_failure::classify(&String::from_utf8_lossy(&result.stderr))
@@ -351,12 +353,15 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     drop(input);
     let status = child.wait(Duration::from_secs(15))?;
     snapshot::write(&lab.evidence, "browser-gate-report.json", &report)?;
-    lab.stage = "browser_receipts";
+    // A later failed test may already have witnessed effects. Keep its finite
+    // diagnostic through drain rather than replacing it with a receipt stage.
+    lab.stage = actor_failure.unwrap_or("browser_receipts");
     lab.case(
         "browser-product-actual-test-completion",
         browser_result.status.success() && actor["status"] == "passed",
         json!("one exact feature-gated Rust WASM test"),
     )?;
+    lab.stage = "browser_receipts";
     lab.case(
         "browser-product-zero-origin-effect",
         report["origin_effects"] == expected["origin_effects"]
