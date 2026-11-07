@@ -1,0 +1,21 @@
+services:
+  fixture:
+    image: python:3.13-alpine@sha256:1e1f6334529d1fb26a2ef619d7cffb30a7c7d7cc1cc7338ebee283a58d1aeaca
+    command: [python, /pilot/test/pilot.py, serve]
+    volumes:
+      - .:/pilot:ro
+      - ipc:/ipc
+    networks: [lab]
+  nginx:
+    image: nginx:stable-alpine@sha256:583b7f2fce1cdb8da5ad5c39ebd3c33b98b87d493190e548bdee1fa8c619c311
+    command: [nginx, -g, 'daemon off;', -c, /pilot/nginx.conf]
+    volumes:
+      - .:/pilot:ro
+      - ipc:/ipc:ro
+    depends_on: [fixture]
+    networks: [lab]
+networks:
+  lab:
+    internal: true
+volumes:
+  ipc:

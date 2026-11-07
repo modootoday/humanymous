@@ -1,0 +1,14 @@
+**
+!Cargo.toml
+!Cargo.lock
+!rust-toolchain.toml
+!crates/**
+!docs/tooling/**
+!scripts/ci/delivery/**
+!skills/agent-maintenance/**
+!test/lab/runner/**
+!test/lab/runtime/**
+!adapters/nginx/Dockerfile.native
+!adapters/nginx/Dockerfile.native.dockerignore
+**/target/**
+**/.build-cache/**

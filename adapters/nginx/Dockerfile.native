@@ -1,0 +1,39 @@
+# syntax=docker/dockerfile:1.7
+FROM rust:1.99.1-bookworm@sha256:e6f2cff35d0f309acf8433b4f05878ed77092602c5065cc81801177da0bb3a9c AS build
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends clang libclang-dev ca-certificates
+# External upstream engine; no authored C source or configure script.
+ADD --checksum=sha256:3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8 https://nginx.org/download/nginx-1.30.6.tar.gz /tmp/nginx.tar.gz
+RUN tar -xzf /tmp/nginx.tar.gz -C /opt
+WORKDIR /opt/nginx-1.30.6
+RUN ./configure --prefix=/opt/nginx --with-compat --with-threads --without-http_rewrite_module --without-http_gzip_module
+RUN make -j2
+RUN make install
+WORKDIR /src
+RUN rustup component add clippy --toolchain 1.99.1
+ENV RUSTUP_TOOLCHAIN=1.99.1
+COPY . /src
+ENV NGINX_SOURCE_DIR=/opt/nginx-1.30.6
+ENV NGINX_BUILD_DIR=/opt/nginx-1.30.6/objs
+ARG HUMANYMOUS_SOURCE_REV=unknown
+ARG HUMANYMOUS_SOURCE_MANIFEST=unknown
+ENV HUMANYMOUS_SOURCE_REV=$HUMANYMOUS_SOURCE_REV
+ENV HUMANYMOUS_SOURCE_MANIFEST=$HUMANYMOUS_SOURCE_MANIFEST
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo test --locked -p humanymous-nginx-adapter --lib
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo build --locked --release -p humanymous-nginx-adapter --features export-modules
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target install -D /src/target/release/libhumanymous_nginx_adapter.so /out/libhumanymous_nginx_adapter.so
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo clippy --locked -p humanymous-nginx-adapter --features export-modules --lib -- -D warnings
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo build --locked --release -p humanymous-nginx-adapter --features pilot --bin humanymous-nginx-pilot
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target install -D /src/target/release/humanymous-nginx-pilot /out/humanymous-nginx-pilot
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo clippy --locked -p humanymous-nginx-adapter --features pilot --bin humanymous-nginx-pilot -- -D warnings
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target --mount=type=cache,id=nginx-native-registry,target=/usr/local/cargo/registry --mount=type=cache,id=nginx-native-git,target=/usr/local/cargo/git cargo build --locked --release -p humanymous-authority --bin humanymous-authority
+RUN --mount=type=cache,id=nginx-native-target,target=/src/target install -D /src/target/release/humanymous-authority /out/humanymous-authority
+
+FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS lab
+COPY --from=build /opt/nginx /opt/nginx
+COPY --from=build /out/libhumanymous_nginx_adapter.so /opt/nginx/modules/libhumanymous_nginx_adapter.so
+COPY --from=build /out/humanymous-nginx-pilot /opt/pilot
+COPY --from=build /out/humanymous-authority /opt/authority
+USER 65532:65532
+ENV HUMANYMOUS_NGINX_OWNED_DOCKER=1
+ENTRYPOINT ["/opt/pilot"]

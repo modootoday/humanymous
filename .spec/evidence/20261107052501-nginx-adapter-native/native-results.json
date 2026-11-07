@@ -1,0 +1,339 @@
+{
+  "schema": "humanymous.nginx.component-evidence/0.2",
+  "validation_source_kind": "frozen root working-source snapshot, file hashes authoritative; base_git is context, not canonical tree proof",
+  "canonical_git_source": null,
+  "runtime": {
+    "cases": [
+      {
+        "name": "nginx-startup-private-credential-ACL",
+        "origin_delta": 0,
+        "public_mode_rejected": true
+      },
+      {
+        "name": "deny",
+        "origin_delta": 0,
+        "status": 403
+      },
+      {
+        "name": "challenge",
+        "origin_delta": 0,
+        "status": 409
+      },
+      {
+        "name": "reserved-management",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "unknown-route",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "upgrade",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "trailers",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "grpc",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "encoded-target",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "required-capture",
+        "origin_delta": 0,
+        "status": 503
+      },
+      {
+        "name": "duplicate-content-length",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "transfer-encoding-plus-length",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "duplicate-host",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "connect",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "name": "rewritten-dot-target",
+        "origin_delta": 0,
+        "status": 400
+      },
+      {
+        "human_qualified": false,
+        "name": "actual-application-http",
+        "origin_delta": 0,
+        "status": 409
+      },
+      {
+        "evidence": "trusted synthetic fixture, actual authority+WAL",
+        "name": "empty",
+        "origin_delta": 1,
+        "status": 200
+      },
+      {
+        "evidence": "trusted synthetic fixture, actual authority+WAL",
+        "name": "binary",
+        "origin_delta": 1,
+        "status": 200
+      },
+      {
+        "evidence": "trusted synthetic fixture, actual authority+WAL",
+        "name": "compressed",
+        "origin_delta": 1,
+        "status": 200
+      },
+      {
+        "evidence": "trusted synthetic fixture, actual authority+WAL",
+        "name": "complete-1MiB",
+        "origin_delta": 1,
+        "status": 200
+      },
+      {
+        "name": "duplicate-headers-cookie-and-spoof-strip",
+        "status": 200
+      },
+      {
+        "name": "origin-redirect-not-executed",
+        "origin_delta": 1
+      },
+      {
+        "name": "HEAD-and-204",
+        "passed": 2
+      },
+      {
+        "latency_ms": 10,
+        "name": "SSE-first-event"
+      },
+      {
+        "name": "total-body-deadline",
+        "origin_delta": 0,
+        "status": 503
+      },
+      {
+        "name": "client-cancellation",
+        "origin_delta": 0
+      },
+      {
+        "name": "actual-authority-delayed-fixture-timeout",
+        "origin_delta": 0,
+        "status": 503
+      },
+      {
+        "allowed": 16,
+        "capacity_or_deadline_rejected": 16,
+        "name": "owned-concurrent-service-accounting",
+        "origin_delta": 16,
+        "requests": 32
+      },
+      {
+        "name": "actual-authority-replay",
+        "origin_delta": 0,
+        "second_rejected": true
+      },
+      {
+        "name": "actual-client-server-UID-mismatch",
+        "origin_delta": 0,
+        "rejected": true
+      },
+      {
+        "name": "injected-durable-audit-dependency-failure",
+        "origin_delta": 0,
+        "status": 503
+      },
+      {
+        "name": "actual-authority-outage",
+        "origin_delta": 0,
+        "status": 503
+      },
+      {
+        "audit_directory": "fresh separate fixture directory",
+        "human_qualified": false,
+        "name": "actual-production-executable-private-pipes-and-nginx-reload",
+        "origin_delta": 0,
+        "statuses": [
+          503,
+          409
+        ]
+      },
+      {
+        "name": "authority-epoch-stale-credential",
+        "origin_delta": 0,
+        "rejected": true
+      },
+      {
+        "independent_witness": false,
+        "name": "actual-process-same-WAL-restart-and-nginx-reload",
+        "origin_delta": 0,
+        "records_after": 2,
+        "records_before": 1,
+        "statuses": [
+          503,
+          503,
+          503,
+          409
+        ]
+      }
+    ],
+    "failed": 0,
+    "full_product_qualified": false,
+    "ignored": 0,
+    "module_sha256": "88b2d684b859bc5a23d0a8544aa657511a259cb2d00d20a4ca102425e9e6bd36",
+    "nginx": "nginx version: nginx/1.30.6\nbuilt by gcc 12.2.0 (Debian 12.2.0-14+deb12u1) \nconfigure arguments: --prefix=/opt/nginx --with-compat --with-threads --without-http_rewrite_module --without-http_gzip_module\n",
+    "passed": 35,
+    "production_profile_status": 409,
+    "qualification": "component nginx+actual authority library; trusted synthetic ALLOW fixture",
+    "remaining": [
+      "independent witness",
+      "cross-user runtime matrix",
+      "load/backpressure and independent rollback-anchor qualification"
+    ],
+    "source_manifest": "5adf936ac02fde3b86352a803aefb4c4ad4a8dac5adf20d3d99150d99a485eac",
+    "source_revision": "89271d530f955ddee3b0a341d72b02f95c64695d",
+    "uid": 65532,
+    "unsupported": [
+      "original TLS/H2/H3",
+      "streaming upload/upgrade/gRPC",
+      "collector/browser recovery/human/AT",
+      "non-Linux ABI"
+    ]
+  },
+  "image_id": "sha256:6b965a74313e9127cfdac061a2626ce43b371e58dfbc3ec1656900561231cba7",
+  "image_manifest": "sha256:c9129063fdbcd67eff3633aaba78c9de0a71f81c8c64b25d468f0774999a56da",
+  "root_cargo_sha256": {
+    "rust-toolchain.toml": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+    "Cargo.lock": "afabc23080bd476cd3f7708f6462bc50279bff4255f48fa361514e76e5a8c743",
+    "Cargo.toml": "439713c5db27a20da4af246a9f25293596173404b080fc31c133d358feeec794"
+  },
+  "unit": {
+    "linux": {
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0
+    },
+    "windows": {
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "clippy": {
+    "linux_native": "passed",
+    "windows_default": "passed",
+    "linux_rust_pilot": "passed"
+  },
+  "owned_sources": [
+    {
+      "path": "crates/nginx-adapter/Cargo.toml",
+      "sha256": "bb7ac8adeae10d3938dd29d9bce1250c0030385e8b51be140499771c1e7b127c",
+      "bytes": 1277,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/bin/pilot.rs",
+      "sha256": "caca3a0bf53b71d3f9759f762d36b134d5db2109c2d0be747406ffa15ab3255a",
+      "bytes": 496,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/lib.rs",
+      "sha256": "b037239dfc33dd41c3e9a79ecf85b0453d6554c9e0ed922c236952c4ee20c5f3",
+      "bytes": 392,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/native.rs",
+      "sha256": "806555195966407a836462d16e4c8fb20bed1d1d14a0c931960ae9fd0a10184c",
+      "bytes": 23020,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/authority.rs",
+      "sha256": "a3e3d9e9463c17b469be772192a6bbda5abafb83485381a9a8cede68df016bca",
+      "bytes": 4995,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "sha256": "5f1e813d0ca255dcc1c7b279b00ae6886fbe394b6ffe538a35542bf848f6892f",
+      "bytes": 27622,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/origin.rs",
+      "sha256": "ffe29ec3417e5e03a75f2d6a1cea42e528f7959b405bfe88b6aa613eecc6c4ce",
+      "bytes": 7081,
+      "lf_only": true
+    },
+    {
+      "path": "crates/nginx-adapter/src/request.rs",
+      "sha256": "07d868d19d08377f147ea64db4360f07ae545140046a2591582764fc595bfaac",
+      "bytes": 15479,
+      "lf_only": true
+    }
+  ],
+  "legacy": [
+    {
+      "preserved": "adapters/nginx/legacy-njs/gate.js",
+      "git_blob": "12bfc9ea2fc7d7da156ee0358ce2c5002dc84e7d",
+      "original": "adapters/nginx/gate.js"
+    },
+    {
+      "preserved": "adapters/nginx/legacy-njs/nginx.conf",
+      "git_blob": "46692bd1bcecda579ce02c2811d8b9d6df9583fb",
+      "original": "adapters/nginx/nginx.conf"
+    },
+    {
+      "preserved": "adapters/nginx/legacy-njs/compose.yaml",
+      "git_blob": "53d503301568b4c5167f9b50006ae300ad1faaac",
+      "original": "adapters/nginx/compose.yaml"
+    },
+    {
+      "preserved": "adapters/nginx/legacy-njs/README.md",
+      "git_blob": "6d2f70b14ee236dfbc8d0ff8ec6e34b5e83a1c77",
+      "original": "adapters/nginx/README.md"
+    },
+    {
+      "preserved": "adapters/nginx/legacy-njs/INTEGRATION.md",
+      "git_blob": "3aca677c13b578914d17f09031d232c0f5c6f28f",
+      "original": "adapters/nginx/INTEGRATION.md"
+    },
+    {
+      "preserved": "adapters/nginx/legacy-njs/test/pilot.py",
+      "git_blob": "4e8afef26988578578e2a2ee2d9acf7e55ade7b8",
+      "original": "adapters/nginx/test/pilot.py"
+    },
+    {
+      "preserved": "adapters/nginx/legacy-njs/test/unit.js",
+      "git_blob": "3abebd2dc6bb01d8c51ddd2cbd94e7f6d0f5d487",
+      "original": "adapters/nginx/test/unit.js"
+    }
+  ],
+  "remaining": [
+    "independent witness/rollback protection",
+    "actual cross-user module matrix",
+    "sustained load/long-stream backpressure",
+    "raw TLS/H2/H3, streaming uploads, gRPC/upgrades",
+    "browser recovery, full product/human/AT/non-Linux"
+  ]
+}

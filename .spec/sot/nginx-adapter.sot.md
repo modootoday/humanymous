@@ -1,18 +1,146 @@
 ---
 id: sot:root/nginx-adapter
-title: Experimental nginx bounded request adapter
+title: Rust nginx body-bound native adapter
 status: active
 created: 2026-11-07T00:40:00Z
-updated: 2026-11-07T00:40:00Z
+updated: 2026-11-07T05:25:00Z
 verify: manual
 rel:
-  governs: [adapters/nginx/**]
-  depends_on: [sot:root/adapter-service-contract]
+  governs: [adapters/nginx/**, crates/nginx-adapter/**]
+  depends_on: [sot:root/adapter-service-contract, sot:root/adapter-authority]
 ---
 
-# Experimental nginx bounded request adapter
+# Rust nginx body-bound native adapter
 
-## Rule
+## Rust native replacement contract v0.2
+
+The accepted current implementation target is Rust1.99.1/edition2024, package
+humanymous-nginx-adapter, Linux HTTP1.1 only initially. The njs rule below is the
+historical b1e10ae mock pilot, not the current native contract or proof of it.
+Preserve those source files separately without adding foreign-language code.
+
+Shared contracts, agreed with Node/authority/root owners on 2026-11-07:
+
+| Contract | State and owner |
+| --- | --- |
+| integrity::adapter::{AdapterProfile::Nginx,parse_with_profile} | implemented/16 checks, root64852c4; plugin producer still unverified |
+| protocol humanymous.adapter/0.1; id humanymous.nginx; version0.1.0-experimental.1 | accepted; shared contract owned by Node |
+| nginx-raw / nginx-normalized | parsed application HTTP1 ordered casing/duplicates vs normalized; connectionId/capture/stream null, rawTls/originalH2 false |
+| authority::client::decide(&ClientOptions,&[u8],ExpectedBinding) | implemented in authority owner's current working source; owner negative/native validation pending |
+| ClientOptions endpoint/credential/server:&Peer/timeout_ms/adapter:AdapterProfile | explicit server UID and Nginx profile; no producer selected from envelope |
+| BoundResponse + Verdict::{Allow,Deny,Challenge} | exact7field response; verdict()/expires() inspect only, consume(self) rechecks wall/monotonic expiry immediately before one origin continuation |
+
+The module owns ingress projection, complete body, total monotonic body+decision
+deadline, cancellation and a single proxy continuation. Shared authority owns
+peer/ACL/credentials/replay/scoring/audit; no clone of those mechanisms. Client
+completion is not authority qualification until actual peer/replay/audit tests.
+No missing client fallback or fake ALLOW. Application-http results and injected
+trusted synthetic fixture evidence must be reported separately from human ALLOW.
+
+Use official nginx/ngx-rust rev ebbcd514ee7a336fa4b622232170d8a16763a9ca (ngx0.5.0)
+and nginx1.30.6 upstream source SHA256
+3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8.
+Build nginx and its generated bindings with the same configure/ABI inputs.
+Official sources: https://github.com/nginx/ngx-rust/tree/ebbcd514ee7a336fa4b622232170d8a16763a9ca,
+https://nginx.org/download/nginx-1.30.6.tar.gz,
+https://nginx.org/en/docs/dev/development_guide.html,
+https://nginx.org/en/docs/configure.html (consulted2026-11-07).
+Upstream C/headers/generated bindings are pinned external dependencies, not
+new authored C. Core request modules forbid unsafe; native.rs alone permits
+reviewed FFI under crate deny, as required to register nginx callbacks/exports,
+read nginx-owned buffers, rebuild the sanitized generic header list and manage pool/timer
+lifetimes. This exception grants no arbitrary memory or thread access. Never
+send a nginx pointer to another thread. Catch Rust unwinds at callback boundaries.
+
+Register before access in Preaccess, so satisfy-any cannot bypass denial. Read
+the complete request body through nginx's buffered body API, max1MiB; file-backed,
+incomplete or unsupported bodies fail closed. One total deadline includes slow
+body reception. Reject upgrades, CONNECT, gRPC, trailers, Transfer-Encoding,
+non-HTTP1.1 and unsafe target/authority/framing. Preserve binary/compressed entity
+bytes without decoding; ordinary duplicate request headers survive in order.
+Remove internal/forwarded spoof headers before both envelope and proxy. Require
+exact configured method/path inventory, Host and unchanged original target;
+reserved /_humanymous subtree is never an application/admin endpoint.
+
+Only owned Rust values cross into the worker-local bounded Tokio tasks. nginx
+timers receive results on the nginx thread. Pool cleanup cancels the task and
+removes its timer. Recheck expiry and unchanged request bytes before ALLOW;
+no retry/cache. Unknown/reserved routes reject before origin. DENY403,
+CHALLENGE409(no recovery), transport/malformed/mismatch/expiry503 no-store.
+These are module/IPC errors; nginx parser rejects malformed wire framing before
+module invocation and retains its native400 response/error headers.
+
+Standard proxy performs the authorized request once. No response interception,
+HTML/CSP insertion or Set-Cookie coalescing. Disable proxy retries, caching and
+X-Accel-Redirect processing; response buffering off permits SSE. Configuration
+must have no post-authorization rewrite or alternate public origin route.
+Management absent, IPC fixed local-only, no TCP fallback. Supervisor reads actual
+authority readiness privately and provisions the nginx credential file with
+owner-only0600 in canonical0700 parent; plugin reads no-follow, verifies owner,
+and zeroizes its owned credential on drop. Actual shared client also verifies
+the server peer. Same-user hostile processes, mount/ancestor trust and resource
+qualification remain explicit deployment assumptions.
+
+Critique reflected: fail-closed Preaccess prevents auth bypass; full-body and
+final unchanged snapshot prevent pre-body/status-only authorization; total
+deadline prevents trickle extension; no cross-thread nginx pointer; native ABI
+and fixture vs production evidence remain separate. Unsupported streaming upload,
+H2/H3/TLS capture, browser recovery, AT and non-Linux module tuples remain open.
+
+## Current execution and handoff
+
+Node actually acquired pass first despite planned nginx-first ordering. nginx
+performed read-only ABI/contract research until Node voluntarily released the
+lane for dependency waiting; nginx then claimed pass for adapter paths only.
+No actual Pass/scoring edits. Native implementation and Rust driver are authored;
+new source-bound Docker qualification is measured below. Default pure tests7/7
+and strict Clippy pass in actual root working workspace on Windows. Pinned Linux
+native module and Rust pilot both pass strict Clippy/build with the unaltered
+27-member root Cargo/lock snapshot; unit7/7, Compose pilot35groups/0failed/0ignored.
+The validated dependency snapshot is authoritative through its file manifest,
+not a claim that every concurrently changing Git commit was validated.
+njs24/mock28 remains historical and is not shipped in the native image.
+Cargo/lock integration belongs to root. Accepted APIs above were reconciled with
+the current authority client source, not yet a final canonical owner checkpoint.
+
+## Source-bound native verification
+
+Private bundle20261107052500-nginx-adapter-native retains commands, frozen
+sources, image inspection and all failed/retried logs. Sanitized results belong
+to evidence:root/20261107052501, attached through Specfold.
+
+Actual Linux65532/network-none/read-only/cap-drop-ALL Compose execution includes
+full1MiB binary/content-encoded bodies, ordinary duplicate request/response
+headers, Set-Cookie, HEAD/204/ETag, SSE first event10ms, spoof stripping and no
+origin before bound ALLOW. Missing capture, IPC outage/delay, client cancellation,
+replay, UID mismatch and injected DurableAudit dependency failure cause zero
+origin effects. Real malformed-wire duplicate Host/CL, TE+CL and dot-route cases
+reject before origin; native parser400 can precede module response headers.
+
+The real production authority executable starts through private stdin/stdout,
+accepts explicit nginx scope, and yields CHALLENGE409 without origin for its
+application-http profile. The test-only synthetic provider is the separate
+positive ALLOW numerator with actual shared authority and WAL. nginx reload
+transitions include observed503 before409. Actual executable restart authenticates
+the same WAL and a locally retained verified signed checkpoint, rotates bearer,
+rejects stale worker credentials, then continues records1->2 after reload. This
+local anchor is not independent witness/rollback protection.
+
+The final bounded32-request concurrency observation admitted16 and rejected16
+with503, with exactly16 origin effects. Earlier root30-group snapshot admitted20
+and rejected12; neither is a throughput/SLA claim or a configured16 total-request
+limit. The implementation bounds simultaneously outstanding tasks per worker.
+Sustained load, long-stream backpressure, cross-user matrix and independent
+witness remain qualification gates. Full product/browser/Pass/human/AT absent.
+
+First native pilot found real spoof-header leakage because nginx proxy ignores
+hash=0 as a removal mechanism. Rebuilding the generic list fixed it; keep that
+failure. Native strict Clippy initially rejected deprecated fetch_update and
+redundant casts; fixed without lint suppression. A malformed-wire test exposed
+the Rust fixture client's read-to-EOF reset behavior; reading exact response
+Content-Length fixed the client, without changing the plugin to hide failure.
+
+## Historical njs pilot rule (superseded for new implementation)
 
 Implement an njs js_content gate followed by a named internal proxy location.
 No C/FFI or scoring. This is an experimental Linux nginx compatibility slice,
@@ -52,7 +180,7 @@ proxy semantics; preserve repeated Set-Cookie, no HTML/CSP transformations,
 proxy buffering off for response streams. Upgrade/gRPC/uploads streaming are
 unsupported; SSE response support is limited to normal proxy behavior.
 
-## Why
+## Historical njs rationale
 
 Official njs requestBuffer/rawHeadersIn/subrequest/internalRedirect APIs and
 nginx proxy_pass_request_headers permit a small auditable boundary. Bounded
@@ -61,7 +189,7 @@ Sources consulted 2026-11-07: https://nginx.org/en/docs/njs/reference.html,
 https://nginx.org/en/docs/http/ngx_http_js_module.html,
 https://nginx.org/en/docs/http/ngx_http_proxy_module.html.
 
-## Critique reflected
+## Historical njs critique
 
 Blue: authority alone owns verdict; no duplicated detector. Red: public direct
 origin location, spoofed peer, body/target reuse and response mismatch must fail.
@@ -72,7 +200,7 @@ P0 production blockers: real authority integration, peer ACL/replay/audit and
 required capture signals. P1: runtime matrix, disconnect/load/resource tests,
 response streaming cancellation/backpressure, HTTP2 framing and browser recovery.
 
-## Verification
+## Historical njs verification
 
 Docker internal network only; real nginx njs plus mock Unix authority and origin.
 Unit boundary cases and negative network cases must check zero origin effects.

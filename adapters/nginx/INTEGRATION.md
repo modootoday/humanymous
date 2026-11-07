@@ -1,19 +1,24 @@
-# Authority-owner integration request
+# Current native adapter integration
 
-This pilot intentionally does not use shared humanymous.adapter/0.1 because that
-schema authenticates humanymous.node and node-raw/fetch-normalized only.
+See `crates/nginx-adapter/INTEGRATION.md` for root Cargo and shared authority APIs.
+The accepted shared Nginx producer contract replaces the old private pilot
+protocol. Core logic uses `AdapterProfile::Nginx` and `parse_with_profile`.
 
-Required joint decision before integration:
-- approve adapter id humanymous.nginx and nginx-projected headerMode;
-- explicitly bind fixed Host plus ordered five-header projection, generated
-  Content-Length/Connection framing, exact request_uri and entity body digest;
-- 64 KiB body bound, connectionId/capture/stream null, rawTls/originalH2 false;
-- reuse authority credential scope, verified actual Unix peer/ACL, capability
-  enforcement, nonce replay, revision/deadline and durable audit requirements;
-- unsupported required raw capture must produce failure, never synthetic ALLOW;
-- retain ALLOW/DENY/CHALLENGE exact identity/expiry response and zero origin
-  effects before successful binding; recovery endpoints remain unavailable.
+Native callback/ABI and Rust-only Docker runner compile and execute against an
+immutable unmodified root27-member Cargo/lock snapshot:7unit, native/pilot strict
+Clippy and35actual Compose groups. Public receipt: evidence:root/20261107052501.
+Shared actual client has been authored and is being validated by its owner; native source calls
+`BoundResponse::consume(self)` immediately before the single proxy continuation.
 
-No shared schema/service files were modified. nginx-pilot/0.1 is an isolated
-mock protocol, not a claim of compatibility with the real Rust service.
-No new Rust crate or workspace integration is requested by this njs slice.
+Actual nginx load, explicit Nginx profile, verified same-UID server, provision
+ACL negative, replay/audit/timeout/cancel, ordinary header/body/Set-Cookie/SSE and
+actual production executable startup/reload/same-WAL restart are measured. Source
+manifest5adf936ac02fde3b86352a803aefb4c4ad4a8dac5adf20d3d99150d99a485eac,
+module SHA25688b2d684b859bc5a23d0a8544aa657511a259cb2d00d20a4ca102425e9e6bd36.
+ALLOW is trusted synthetic fixture only; production profile409 and reload503
+transitions are preserved. Remaining: independent witness, cross-user matrix,
+sustained load/long-stream backpressure and full product qualification.
+
+Legacy mock protocol/source/request remains in legacy-njs for provenance only.
+Never rename it to Node to obtain authorization. No Cargo/npm/shared contract
+files are modified by this adapter owner.

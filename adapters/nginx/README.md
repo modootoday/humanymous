@@ -1,34 +1,55 @@
-# nginx adapter compatibility pilot
+# Rust nginx adapter (experimental Linux component)
 
-Experimental Linux nginx+njs bounded-request adapter, **mock authority only**.
-This is not full humanymous protection or a shared adapter/0.1 implementation.
-No Rust authority integration, collector/challenge recovery or capture claims.
-Production deployment is blocked; do not deploy the fixture token/root worker.
+New authored module and tests are Rust1.99.1/edition2024 in
+`crates/nginx-adapter`. The official pinned ngx-rust SDK binds a pinned upstream
+nginx C engine; it does not turn nginx into a Rust engine. The native module is
+Linux HTTP1.1 only initially. No default production-qualified tuple is claimed.
 
-Run with Docker Compose from this repository:
+Use `humanymous_guard /canonical/private/provision.json;` at the protected server
+level. The supervisor obtains the real authority credential through its private
+readiness pipe and writes an owner-only0600 file in a canonical0700 directory.
+The provisioning schema is Configuration in the Rust request module; server
+profile must be explicitly Nginx at authority startup (`"adapter":"nginx"`).
+Never provide a decision credential through client headers, logs, argv or env.
+
+The module snapshots complete body/target/ordered sanitized headers, uses shared
+authority::client, and continues normal proxying only after a live bound ALLOW.
+DENY403, CHALLENGE409 without recovery, failure503. Unknown/reserved paths and
+unsupported framing/streams reject before origin. Uploads are bounded at1MiB;
+file-backed/incomplete bodies, Transfer-Encoding, trailers, upgrades, gRPC and
+non-HTTP1.1 are unsupported. Binary/content-encoded bytes and ordinary duplicate
+headers are preserved. No HTML/CSP insertion or response-body filtering.
+
+Configure buffered complete uploads, no post-authorization rewrite, no alternate
+public origin path, `proxy_next_upstream off`, `proxy_cache off`,
+`proxy_buffering off`, and `proxy_ignore_headers X-Accel-Redirect X-Accel-Buffering`.
+The Rust Docker fixture writes an exact isolated configuration for these gates.
+Operator-controlled nginx configuration remains a trusted integration boundary.
+
+The root27-member locked snapshot passes7unit tests, native/pilot strict Clippy
+and35actual Compose groups. Reproduce the component qualification with:
 
 ```
-docker compose -p humanymous-nginx-pilot -f adapters/nginx/compose.yaml up -d
-docker compose -p humanymous-nginx-pilot -f adapters/nginx/compose.yaml exec -T nginx njs -m /pilot/test/unit.js
-docker compose -p humanymous-nginx-pilot -f adapters/nginx/compose.yaml exec -T fixture python /pilot/test/pilot.py test
-docker compose -p humanymous-nginx-pilot -f adapters/nginx/compose.yaml down -v
+cargo test --locked -p humanymous-nginx-adapter --lib
+docker compose -p humanymous-nginx-native -f adapters/nginx/compose.yaml build
+docker compose -p humanymous-nginx-native -f adapters/nginx/compose.yaml run --rm native-pilot
+docker compose -p humanymous-nginx-native -f adapters/nginx/compose.yaml down
 ```
 
-The network is internal, has no published port and targets only the fixture.
-Only GET/POST on the listed pilot routes, max 64 KiB complete entity body,
-fixed example.test authority and an explicit five-header projection are supported.
-All other application headers are dropped; never use this on arbitrary apps
-without an agreed header/route inventory. Upgrades, gRPC, trailers, chunked
-uploads, Content-Encoding uploads and streaming uploads are rejected. Normal response SSE is tested;
-long-running cancellation, backpressure and native OS matrices remain open.
-Set-Cookie and repeatable response headers are handled directly by nginx proxy.
-No response HTML/CSP rewrite. Internal origin routing cannot be requested directly.
+The Docker runner is Rust, runs non-root/network-none/read-only, and contacts
+only its own origin and Unix authority. Positive ALLOW tests use test-only frozen
+synthetic evidence through the actual authority/library and real audit WAL;
+production ApplicationHttp results are separate. Neither is full browser/human/
+AT/product qualification. Shared peer/replay/audit checks are not cloned.
 
-IPC uses a fixed Unix socket and independent fixture Bearer token. Socket 0600
-and root worker exist solely for this isolated pilot. Real deployment requires
-non-root worker identity, protected credential injection, verified socket parent
-ownership and peer credentials, bounded authority concurrency, replay state and
-audit integration. No TCP authority fallback or management endpoint exists.
+`legacy-njs/` preserves the prior b1e10ae handwritten njs/Python mock pilot without
+new foreign-source edits. Its old24unit/28Docker result is historical, cannot
+qualify the native module, and is excluded from the current runtime artifact.
+See INTEGRATION.md and the native nginx Specfold plan for remaining gates.
 
-See the governing nginx-adapter SoT for binding and fail-closed rules. No Cargo
-changes, npm package changes or Go code are needed for this njs slice.
+The real production executable's application-http profile returned409 with no
+origin. Positive ALLOW uses explicitly synthetic trusted evidence. Same-WAL
+restart/credential reload passed with a local verified checkpoint; independent
+witness, cross-user matrix, long-stream backpressure and full product/human/AT
+remain open. A32-request batch admitted16/rejected16 with exactly16origin calls;
+reload observations include503 transitions. These are measured service impacts.

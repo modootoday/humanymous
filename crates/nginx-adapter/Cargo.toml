@@ -1,0 +1,47 @@
+[package]
+name = "humanymous-nginx-adapter"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[features]
+default = []
+native = ["dep:ngx"]
+export-modules = ["native"]
+pilot = ["dep:humanymous-audit", "dep:humanymous-signals"]
+
+[dependencies]
+humanymous-integrity = { path = "../integrity" }
+humanymous-authority = { path = "../authority" }
+humanymous-audit = { path = "../audit", optional = true }
+humanymous-signals = { path = "../signals", optional = true }
+serde.workspace = true
+serde_json.workspace = true
+base64.workspace = true
+sha2.workspace = true
+hex.workspace = true
+getrandom.workspace = true
+zeroize.workspace = true
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "sync", "time", "net", "io-util"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+ngx = { git = "https://github.com/nginx/ngx-rust", rev = "ebbcd514ee7a336fa4b622232170d8a16763a9ca", optional = true }
+rustix = { version = "1.1", features = ["fs", "process"] }
+
+[[bin]]
+name = "humanymous-nginx-pilot"
+path = "src/bin/pilot.rs"
+required-features = ["pilot"]
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"
