@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 2de3a281795873d2a4286b2784b9d6fec03070159385374c13f4d9e48205d692, bytes: 50285, store: repo}
+  - {path: baseline.json, sha256: 126f626508d9a43c79f232db37fc5069ef035e64a68ada381f2d6f0e00a72f5a, bytes: 51539, store: repo}
 ---
 
 # Convention audit baseline
@@ -616,3 +616,23 @@ Actual ordinary-actor creation/readback/cleanup and all negatives remain0/unrun.
 Primary semantics were checked against Microsoft CreateDirectoryW, file-security
 rights and RemoveDirectoryW references retained in the private review. Exact hashes
 are bound in baseline.json. Complete migration/native/Ready/product gates stay OPEN.
+
+## Focused facade regression closure and scoring baseline check
+
+CA-FACADE-GUARD-01 is CLOSED in its occurrence/admission-policy scope. Corrected
+a19 policy7704d0c3 matches literal Git/current source; Root reports the same hash
+immediately before/after terminal session20636. Independent re-audit reads and
+hashes all three registered raw logs: focused regression1passed/0failed/ignored/
+measured109filtered, all-target strictClippy0 and actual workflow-policy0. The
+focused test includes appended weak default/Go build duplicates and admission
+command/ID collisions. This is not repeat110, a full transitive-input attestation,
+hosted Go8, annotation-absence, release or full product qualification.
+
+All54 tracked files under crates/scoring and crates/signals are unchanged from
+immutable d7c74125 baseline, with empty scoped current Git status. Exact selected
+hashes are retained privately. This proves source identity only in those two
+areas, not unchanged semantics across all upstream producers or Runtime inputs.
+
+Root reports a new exact-source hosted Go run42406688473 in progress; Go owner
+is the sole monitor. Audit starts no duplicate watch/dispatch and infers no Linux,
+Go8 or annotation result. Full migration/native/Ready/product gates remain OPEN.

@@ -162,7 +162,7 @@
       "id": "CA-FACADE-GUARD-01",
       "priority": "P2",
       "owner": "Delivery/root",
-      "state": "Source correction accepted at durable a19e3802: every matching facade occurrence guarded and admission command/ID unique; duplicate negative regressions authored. Actual scoped regression/check/Clippy gates OPEN; current workflows originally correct",
+      "state": "CLOSED scoped: durable a19 source correction, actual focused1passed0failedignored109filtered +all-target strictClippy0+workflowpolicy0; three raw logs independently hash/read verified. Not repeat110/fulltransitive/hostedGo/product proof",
       "trigger": "Append known facade build after correct original with only toolchain-success condition; existential witness accepted original",
       "observed_hosted_bypass": false,
       "release_or_green_job_bypass_claim": false,
@@ -988,6 +988,27 @@
     "private_root_decision": "NEEDS WORK before implementation: exact per-level ACE/mask/flags, ancestryanchor/share/read-only eligibility evidence, cleanupclose/remove/absence retainedUnknown algorithm",
     "private_root_new_P0_P1": [],
     "private_root_actual": 0,
+    "new_audit_workload": 0,
+    "goal_complete": false
+  },
+  "followup_facade_guard_actual_and_frozen_sources": {
+    "private_review_sha256": {
+      "scoring-signals-baseline-followup-001.json": "30e536b3f30319fa181fb1e23386557f20913b4ad7265d31051620547d6668eb",
+      "facade-guard-focused-actual-review-001.json": "57424cd3d5155d1a6cce022f297f038ffc205e5d96250ab47ba7cbf14e5ccb38"
+    },
+    "policy_source": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb",
+    "policy_sha256": "7704d0c3882744e0c3cc4feb8946c68f31c8688d5130ce8cec5fb8ee5237c954",
+    "actual": "Focused1pass109filtered, alltargetstrictClippy0/workflowpolicy0",
+    "root_handle": "20636 reported TERMINAL0 with exactpolicybeforeafter",
+    "independent": "Three registered raw logs hashes and content, literalcurrentGitpolicy identity; no saved fulltransitiveclosure asserted",
+    "scoring_signals": {
+      "scope": "Two exact source areas only, not allupstream/runtimefreeze conformance",
+      "baseline": "d7c74125a05e0537873936b4f17541e3744939d9",
+      "tracked_files": 54,
+      "scoped_gitstatus_empty": true,
+      "diff_exit": 0
+    },
+    "hosted_go": "42406688473 newly in progress perRoot; Goowner solemonitor, no duplicatewatch/dispatch by audit; LinuxGo8/annotationabsence pending",
     "new_audit_workload": 0,
     "goal_complete": false
   }
