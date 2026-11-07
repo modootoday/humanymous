@@ -187,14 +187,36 @@
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted/protocol.rs",
+      "sha256_at_post_read_observation": "b229f2a0737d28615b69e545f0f0b54ba56ea0ac1dc7ac1835ba6c06222a34d3",
+      "lines": 368,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "368 lines fully read in contiguous chunks. Pure typed control/output frame codec and bounded nonblocking64slot queues;4096-byte frames/256KiB total output, required explicit nullable native_resources. Starting/ready actualexpectedPID then contact/counters/stopped/EOF order; malformed/overflow/disconnect terminal. Stopcontrol terminal. Ready address/runtime strings and contactcounter semantics not independently validated here; stopped/EOF protocol not OSexit/workerjoin/cleanup proof. Eight source tests no new execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/hosted/generic.rs",
+      "sha256_at_post_read_observation": "4a0f2fd52c2a7132f120ff0f1e0e2c639b401529bced8392e8d3b333086330a2",
+      "lines": 295,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "295 lines fully read in contiguous chunks. Separate ignored generic ABI-only actualprocess case: absolute regular/reparse-refused bounded inputs, exactartifact names/supportset andstockdigest checks, freshcopiedstage rehashed under shared60sadmission then30s directchildcapture withclearenv. Exacttwoframes bound to observedPID, zeroexit/emptystderr andownedstageremoval required; outputexplicitly Kestrelfalse/adapterfalse/AOTfalse/C++false/fullfalse. Metadata sourceSHAs still claims; selectedhashes not fullSDK/runtime/registryclosure. Childhelper guarantees inherited from sharedprocessowner, not independently proven treecontainment. No actualprocess launched here.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
     }
   ],
-  "full_read_files": 17,
-  "lines": 2207,
+  "full_read_files": 19,
+  "lines": 2870,
   "post_read_rehash_drift": [],
   "source_receipts_renewed": false,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "full_product_qualified": false,
-  "remaining": "Full owner chronology, Rust hosted/controller protocol/generic caller and package test/projection source remain; no runtime/host/package or source receipt acceptance."
+  "remaining": "Full owner chronology, Rust hosted orchestration and package test/projection remain; no runtime/host/package or source receipt acceptance."
 }
