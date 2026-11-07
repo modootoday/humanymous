@@ -596,3 +596,28 @@ This is a process-local prerequisite, not all-process registration attestation,
 full sandbox qualification or a new BrowserReady value. Existing report/schema2
 fields do not retroactively prove UI-28. Old source c4b58be remains independently
 bound; this new native delta needs its own hosted compile and actual probe.
+
+
+UI-29 (accepted verification-source slice): the hosted consumer must independently
+validate the launched OS PID, exit classification, report revision, current
+request flags and actual ordered commit/load/content receipts, not only the
+producer's passed boolean. Positive evidence requires at least one renderer
+canary joined by PID to an owned restricted/Untrusted renderer OS observation;
+missing joins are unknown/failure. Canceled-probe negative requires exit78,
+cancellation requested, incomplete probe and actual child/parent cleanup. Public
+summaries contain only fixed case labels/counts/flags/PID, never raw report bodies,
+paths, device text or captured stderr. Protocol tests with synthetic reports are
+not native browser executions. Reuse the shared test-support process supervisor;
+new dependency edges wait for root's approved graph window.
+
+UI-30 (accepted source follow-up; native compile/runtime not_run): renderer file
+probe schema2 records an independent owned-process OS token observation when each
+bounded canary message is received. The browser discovers its own descendants and
+checks executable identity; it never opens an arbitrary renderer-supplied PID.
+No shared state mutex is held across OS queries. Authority is rechecked before
+appending. Missing PID, failed query and absent OS error code remain explicit
+unknown observations, never access-denial evidence. The nested token must match
+the reported PID and identify a restricted/Untrusted renderer before its claimed
+file denials count. This does not attest PID lifetime identity, all processes or
+full sandbox policy. Navigation schema2 is unchanged. Historical periodic token
+snapshots are not retroactively replaced by this new observation contract.

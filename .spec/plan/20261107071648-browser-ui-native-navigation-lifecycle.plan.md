@@ -82,3 +82,10 @@ startup without browser acceptance, and skip renderer canary work without its ow
 acceptance. Missing reports remain unknown; no false file-denial/all-process claim.
 This is a native-only source delta after c4b58be, not covered by its pure23 result.
 Actual compile/probe and missing-registration failure test are hosted not_run.
+
+UI-29/30: implement independent receipt verification and contemporaneous bounded
+owned-token correlation for renderer canary claims. File-probe schema2 is separate
+from navigation schema2. Missing/failed token observations disqualify canary joins.
+Protocol fixtures do not count as process tests. Shared supervisor dependency and
+actual hosted positive/cancellation driver remain pending root graph coordination;
+new native compilation and protocol execution are not_run.

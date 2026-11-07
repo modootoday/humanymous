@@ -4,6 +4,7 @@ use crate::native;
 pub(super) struct Report {
     pub(super) host_pid: u32,
     pub(super) navigation_schema: u32,
+    pub(super) renderer_file_probe_schema: u32,
     pub(super) navigation_receipts: Vec<crate::navigation::Receipt>,
     pub(super) navigation_receipts_dropped: u64,
     pub(super) internal_probe_requested: bool,

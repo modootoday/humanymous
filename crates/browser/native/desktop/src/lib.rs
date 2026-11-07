@@ -11,6 +11,8 @@ mod native;
 mod navigation;
 #[path = "../../shared/scheme.rs"]
 mod owner_scheme;
+#[cfg(test)]
+mod pilot_assertions;
 mod window_frame;
 use cef::*;
 

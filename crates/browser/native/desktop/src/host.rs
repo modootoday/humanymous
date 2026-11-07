@@ -457,6 +457,7 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
     let report = Rc::new(RefCell::new(Report {
         host_pid: std::process::id(),
         navigation_schema: 2,
+        renderer_file_probe_schema: 2,
         internal_probe_requested,
         ime_candidate_placement: "not_run",
         ..Default::default()

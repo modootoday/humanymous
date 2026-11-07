@@ -1,5 +1,26 @@
 # Browser native integration
 
+## Pending correlated canary source
+
+UI-29/30 adds an independent hosted-report verifier and file-probe schema2.
+Each bounded renderer claim now requests an independently discovered owned-process
+token snapshot at receipt time. The nested PID/renderer/restricted/Untrusted join
+is required by the verifier; missing observations remain unknown. No arbitrary
+reported PID is opened and no state mutex spans the OS query. This does not prove
+PID lifetime identity or full sandbox policy. Source formatting/spec checks are
+separate from compile/runtime qualification: new protocol tests and native replay
+are not_run. Historical periodic token snapshots remain unchanged. The hosted
+8132117 run predates this source and cannot qualify it.
+
+The pending hosted driver source is pilot_process.rs. It reuses shared bounded
+capture, compares the actual spawned PID, refuses a pre-existing report, reads at
+most8MiB and emits only the verifier's safe summary. Positive and cancellation
+cases require separate fresh bundles via HUMANYMOUS_CEF_POSITIVE_BUNDLE and
+HUMANYMOUS_CEF_CANCELLED_BUNDLE. Missing provisioning fails explicitly. The source
+is not wired until root approves the native-pilot-tests feature edge; no process
+test has run. Capture failure leaves descendant cleanup unknown; this driver does
+not provide Job-object ownership or qualify IME/AX/full sandbox behavior.
+
 Owner: browser-ui / rust-browser-native-lifecycle. The Meari management UI is integrated.
 Two actual Windows CEF native prototype packages are implemented below; shared
 workspace membership/lock integration is root-owned and now present in the shared checkout.

@@ -263,7 +263,7 @@ pub fn request_ime_candidates(browser: &Browser) -> io::Result<String> {
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(Clone, serde::Serialize)]
 pub struct ProcessToken {
     pub pid: u32,
     pub parent: u32,

@@ -1,0 +1,33 @@
+{
+  "scope": "UI-29 and UI-30 authored source checkpoint",
+  "runtime_qualified": false,
+  "browser_ready": false,
+  "native_compilation": "not_run",
+  "protocol_unit_execution": "not_run",
+  "positive_native_execution": "not_run",
+  "cancelled_native_execution": "not_run",
+  "driver_wiring": "pending explicit feature approval",
+  "driver_source": "crates/browser/native/desktop/src/pilot_process.rs",
+  "verifier_source": "crates/browser/native/desktop/src/pilot_assertions.rs",
+  "approved_manifest_delta": "Windows dev dependency on shared humanymous-test-support",
+  "checks": {
+    "rustfmt": "passed",
+    "scoped_spec_check": "passed: zero errors and warnings",
+    "whitespace": "passed"
+  },
+  "contracts": [
+    "Actual spawned direct-child PID must match report host_pid",
+    "Positive result requires all seven ordered commit, status200 and content observations",
+    "File-probe schema2 requires a contemporaneous owned OS token joined by PID",
+    "Missing or failed OS token observation is unknown, never denial",
+    "Cancelled result requires exit78, explicit cancellation and actual child/parent cleanup",
+    "Provisioned driver rejects pre-existing reports and missing bundles",
+    "Shared capture does not attest descendant cleanup or PID lifetime identity"
+  ],
+  "limitations": [
+    "No new Cargo, process, CEF or GUI execution",
+    "The existing hosted 8132117 run predates these source changes",
+    "IME candidate, screen-reader, full sandbox and cross-tuple qualification remain open",
+    "The driver source is deliberately unreferenced until feature approval"
+  ]
+}

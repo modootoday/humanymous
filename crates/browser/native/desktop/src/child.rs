@@ -44,6 +44,9 @@ pub struct FileProbe {
     pub pid: u32,
     pub read_os_error: i32,
     pub create_os_error: i32,
+    pub os_token: Option<crate::native::ProcessToken>,
+    pub os_token_status: &'static str,
+    pub os_token_error: Option<i32>,
 }
 
 #[derive(Clone, serde::Deserialize, serde::Serialize)]
@@ -124,9 +127,21 @@ wrap_client! {
             if (0..3).any(|i| args.get_type(i) != ValueType::INT) { return 1; }
             let pid = args.int(0);
             if pid <= 0 { return 1; }
+            if !self.state.lock().is_ok_and(|state| state.is_live()
+                && state.file_probes.len() < 32
+                && !state.file_probes.iter().any(|p| p.pid == pid as u32)) { return 1; }
+            // Inspect only independently discovered owned descendants, never an
+            // arbitrary PID supplied by the renderer. Do not hold State over OS calls.
+            let (os_token, os_token_status, os_token_error) = match crate::native::owned_process_tokens() {
+                Ok(tokens) => match tokens.into_iter().find(|token| token.pid == pid as u32) {
+                    Some(token) => (Some(token), "observed", None),
+                    None => (None, "owned_pid_not_observed", None),
+                },
+                Err(error) => (None, "observation_failed", error.raw_os_error()),
+            };
             if let Ok(mut state) = self.state.lock() && state.is_live()
                 && state.file_probes.len() < 32 && !state.file_probes.iter().any(|p| p.pid == pid as u32) {
-                state.file_probes.push(FileProbe { pid: pid as u32, read_os_error: args.int(1), create_os_error: args.int(2) });
+                state.file_probes.push(FileProbe { pid: pid as u32, read_os_error: args.int(1), create_os_error: args.int(2), os_token, os_token_status, os_token_error });
             }
             1
         }
