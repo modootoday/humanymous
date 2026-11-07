@@ -1,0 +1,50 @@
+{
+  "scope": "New native Runtime component evidence compared with frozen public wording",
+  "review_delta": {
+    "result": "FAIL",
+    "freshness_accepted": false,
+    "reason": "source changed during snapshot: crates/python-adapter/tests/component_controller.rs",
+    "output_chunk": "993709"
+  },
+  "runtime_evidence": ".spec/evidence/20261107061821-runtime-application-operational-integration/native-adb8e3ed-validation-summary.json",
+  "runtime_evidence_sha256": "843b633f147dd6a44a6a70609c47a82111ec8f4db7fa3965262fa4f2a24e2ba4",
+  "runtime_commit": "adb8e3ed12b762a8a0236f80249515a6504b9973",
+  "component_counts": {
+    "windows_native_process": 1,
+    "unix_library": 50,
+    "windows_library": 46,
+    "unix_native_process": 1
+  },
+  "counts_are_owner_evidence_not_this_chat_execution": true,
+  "public_wording_to_reconcile": [
+    "docs/standards/draft-v0/validation/implementation-map.md: resource operator policy/native fixtures remain unexecuted",
+    "docs/reference/on-call-quick-reference.md: status listener and resource operator authored but unexecuted"
+  ],
+  "observed_unix_case": "native_operator_commit_is_witnessed_cas_and_invalidates_sessions",
+  "remaining": [
+    "actual TLS and HTTP/2 serving",
+    "browser/collector/human/AT",
+    "production observer/bootstrap broker",
+    "genuine hosted SCM/protected service",
+    "independently deployed witness",
+    "full Docker product"
+  ],
+  "public_edit": "Deferred during root candidate freeze; no source-review receipt renewed from test counts",
+  "full_product_qualified": false,
+  "source_review": {
+    "path": "crates/runtime/src/tests/service/settings_operator.rs",
+    "lines": 198,
+    "sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70",
+    "matches_owner_source_commitment": true,
+    "cfg": "Unix only via tests.rs service module",
+    "observed_assertions": [
+      "real Unix native peer IPC; observer mutation401 and operator read401",
+      "operator CAS200 revision1, replay409",
+      "old session401; capacity32 then429",
+      "observer read200, writable false and operator_available true",
+      "bounded graceful stop, drained and audit_flushed",
+      "witness tree size2, trusted-head restart restores revision1/capacity32"
+    ],
+    "witness_limit": "Actual signer/storage fixture in same process; not independent deployment"
+  }
+}

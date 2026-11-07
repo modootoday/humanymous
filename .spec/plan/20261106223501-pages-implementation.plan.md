@@ -1994,3 +1994,15 @@ Evidence attachment correction: ConvertTo-Json contained CRLF internally; Git's
 LF normalization changed committed bytes. Normalized both authored archive status
 JSONs explicitly to LF and reattached their exact canonical bytes. Raw execution
 logs and historical result counts remain unchanged. Scoped spec check passed.
+
+### Current Runtime native evidence and frozen prose follow-up
+
+Actual review-delta failed because a concurrent Python source changed during
+snapshot; no freshness pass inferred. Read complete198-line Unix operator fixture
+and matched its exact hash to owner source-commitments. Owner attached actual
+46+1 Windows and50+1 Unix gates; Unix fixture asserts peer IPC, credential
+separation, witnessed CAS/replay refusal, session invalidation/capacity, graceful
+drain and trusted-head restart. Same-process witness is not independent deployment.
+Frozen implementation-map/on-call prose still says these fixtures unexecuted.
+Recorded precise follow-up without changing frozen public content or renewing
+receipts from execution counts. TLS/H2/browser/AT/full-product remain unqualified.
