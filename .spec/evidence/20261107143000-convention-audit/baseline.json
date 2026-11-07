@@ -1136,5 +1136,27 @@
     "topology_gate_honored": true,
     "new_audit_workload": 0,
     "goal_complete": false
+  },
+  "followup_unaccepted_role_projection_and_visibility": {
+    "private_review_sha256": {
+      "proposed-role-privacy-review-002.json": "a5fdfd11a0d3e9b1d9900b97f36d4271dabcae84a0121d0cbda84fc0c5f6821d",
+      "proposed-role-dependency-projection-001.json": "9c346c11ea31bc46a95c15a8fbc2a1d0ff3dbff56b4c788804526b9bf1b22078"
+    },
+    "proposal_accepted": false,
+    "current_workspace_members": 41,
+    "mapped_roles": 8,
+    "declared_local_dependency_rows": 105,
+    "normal_build_projected_cycles": 0,
+    "lexical_unsupported_forms": 0,
+    "projection": "browser/core/platform -> collector/runtime -> adapters -> sdk -> cli dependencyfirst",
+    "scope": "Currentmanifest lexical declarations incloptional/target, dev keptseparate; not resolvedCargo/features/SDK/registry graph or authorization",
+    "custody_example": "ErasurePermit::issued pubcrate must not broaden fromAudit into newlymergedRuntime sibling scope; exactcontextrestriction/negative sibling compiler proof beforemove",
+    "test_scope": "Externalrustdoc compilefail alone cannot detect pubcrate widening inside samecrate",
+    "cli_default_example": "Runtimepilot normal facade adaptergo edge creates cli→sdk; requiredfeatures binsetting not optionaldependencies",
+    "manifest_later_drift": 0,
+    "old_metadata": "40member historical metadata not used as41resolvedproof",
+    "current_confirmed_defects": [],
+    "structural_path_package_ref_or_compiler_mutations": 0,
+    "goal_complete": false
   }
 }

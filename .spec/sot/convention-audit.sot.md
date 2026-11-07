@@ -1741,3 +1741,27 @@ completion controls do not test GuardDrop. Global CA-HANDOFF/CA-LIFETIME and
 actual SDK/native/product gates remain OPEN. This prose correction needs no new
 runtime test; exact reviewed hashes are in baseline.json. The user topology
 confirmation gate remains honored and the complete audit remains active.
+
+## Unaccepted role draft: dependency and custody projection
+
+Read-only projection maps all41 current workspace members exactly to the draft's
+8 roles, classifying105 local dependency declarations including optional/target
+rows and keeping dev edges separate. The collapsed normal/build graph has no
+cycle; dependency-first waves are browser/core/platform, collector/runtime,
+adapters, SDK, CLI. All41 manifest hashes and root/proposal hashes remained stable
+on a later reread. This lexical projection is not resolved Cargo/feature/SDK/
+registry proof, implementation readiness or acceptance of the package redesign.
+Existing40-member metadata was not substituted for current41-member evidence.
+
+A concrete mandatory visibility check is ErasurePermit::issued: current pub(crate)
+is scoped to Audit, while a naive Runtime merge would widen new sibling access.
+Retain the exact Audit/issuer context and require a negative compiler observation
+from an unrelated same-crate sibling. An external rustdoc compile-fail alone
+cannot distinguish that widening. The [Rust visibility reference](https://doc.rust-lang.org/reference/visibility-and-privacy.html#pubin-path-pubcrate-pubsuper-and-pubself)
+supports this scope distinction. This is a prospective merge hazard, not a current
+dual-control bypass. Also freeze CLI default versus lab feature/dependency closure:
+the current runtime-pilot normally depends on facade adapter-go; required-features
+on its bin alone does not make dependencies optional. Root received both precise
+acceptance examples. No new current defect is claimed, no path/package/ref/compiler
+operation occurred, and user confirmation remains required. Exact private hashes
+are in baseline.json. Complete migration qualification remains OPEN.
