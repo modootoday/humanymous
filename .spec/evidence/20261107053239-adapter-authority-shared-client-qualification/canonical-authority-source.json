@@ -1,0 +1,126 @@
+{
+  "schema": "humanymous.authority.canonical-source-proof/1",
+  "code_commit": "e346834359e6a9cb122ed134a0d58d6b9f7082a0",
+  "combined_workspace_qualified": false,
+  "source_count": 19,
+  "sources": [
+    {
+      "path": "crates/authority/Cargo.toml",
+      "git_blob_sha1": "a70601f79d9dce21e9280ef6076034488057b75a",
+      "sha256": "fde08562706e2ac34de3e12bed1b081903a3226f711c3208751e2d2c9c129a26",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/Dockerfile.pilot",
+      "git_blob_sha1": "7e371cc56650d4ce1705ff702e7fc4e5b235c1ab",
+      "sha256": "8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/client.rs",
+      "git_blob_sha1": "ecaeb91a86bebebd42f5310c2a0d9d91ec83f1bd",
+      "sha256": "703fbc7e4bafbc0aa7e21b8ef5cf320070548cf51e19e2fcc53f779235a4622e",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "git_blob_sha1": "1dae38574a283f68ec66268a993aa5c2309b93ff",
+      "sha256": "4b229b8a256e28317ac027ada9b9a45c6653d2825bc9fca1a24f3f04cf24ab62",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/credentials.rs",
+      "git_blob_sha1": "4e8125af0f67319ef7517a3f232c66d4934ad57c",
+      "sha256": "4c55d5e28e99bfda3f361d6b5198449d067f15eb13632770dee2e79470895a90",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "git_blob_sha1": "cdeda16ff2453a98697ca947c48afc8e6368ca96",
+      "sha256": "fda9b0e507dd95cdfaa52b14e003e3a98459e53861be9f47a825fde9988f7734",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/lib.rs",
+      "git_blob_sha1": "4063f86d714aadcd2ecf6d2fdb00f7c31ee79427",
+      "sha256": "30a8e6daa85bb3c7674c8148374d275168d35a3e521156a2d6e5d4d290b3560c",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "git_blob_sha1": "e9af422784c8448727c76d2e6f492be7c1d51efe",
+      "sha256": "1eed44297c6ee5c8e333d9fd87f61814c425536d627988091e1bf7faf9773dac",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/protocol.rs",
+      "git_blob_sha1": "b63903b7a0fc790e44d76130d00235b78dbd3123",
+      "sha256": "745ab89800e26457b469e11e8733874cce816203db3cd725f372f37805aae78c",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/protocol/framing.rs",
+      "git_blob_sha1": "39734942e5475b07111d46c7255d9b5a4785aadf",
+      "sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/transport/mod.rs",
+      "git_blob_sha1": "e98a4a01c8685059878a392538cf7fd2cfc29fb4",
+      "sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/transport/permissions.rs",
+      "git_blob_sha1": "e646652f96143c589032370f8fb8155094964c3c",
+      "sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/transport/service.rs",
+      "git_blob_sha1": "f64a19b3ec29716c5ac5b21082009baa56971427",
+      "sha256": "1e7faf4a2f7d89a642c2f59f5ab7467b07cda381c2cdcfcf74ae0e71f93ba86a",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/transport/unix.rs",
+      "git_blob_sha1": "97c669a20b38601ce835a849ac7c8b2ba6173245",
+      "sha256": "cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/src/transport/windows.rs",
+      "git_blob_sha1": "5f29076883d1779e288b995c854c700470d6ace6",
+      "sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/tests/decisions.rs",
+      "git_blob_sha1": "77c449207d0810281227035f6ca98623776d199e",
+      "sha256": "3a0f2a2894e1fd32532936110b78b6187ff09ff722eec9597b4cbe829ad2b06d",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/tests/local_service.rs",
+      "git_blob_sha1": "8fb596c6778ab60b155337cfee5d1136d6f2fa1c",
+      "sha256": "0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "git_blob_sha1": "8732be4d139b699086da5e2ae6e8007f725ed0c5",
+      "sha256": "d374db56d989782084144db0644a56134422a748b6feb17da8d8cc58ad92cd43",
+      "validated_bytes_match": true
+    },
+    {
+      "path": "crates/authority/tests/support/mod.rs",
+      "git_blob_sha1": "66bc374d53bbb4bfa4ed2bf93160d75924d8c1da",
+      "sha256": "34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820",
+      "validated_bytes_match": true
+    }
+  ],
+  "spec_public_errors": 0,
+  "spec_public_warnings": 1,
+  "spec_global_errors": 18113,
+  "spec_global_note": "Shared private evidence has pre-existing unattached files; raw result retained privately. No global pass claim."
+}
