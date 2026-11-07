@@ -1,0 +1,37 @@
+{
+  "schema": "humanymous.pages-source-bound-result/1",
+  "run_id": 42363224485,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42363224485",
+  "source_sha": "8624b57c6ff4c9f8eb3763814659e17520e858b8",
+  "preflight_job": 128375756057,
+  "build_job": 128376122323,
+  "github_job_result": "success",
+  "delivery_tests": {
+    "failed": 0,
+    "passed": 60,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "clippy_passed": true,
+  "workflow_policy_passed": true,
+  "source_unchanged": true,
+  "in_job_apex_passed": true,
+  "in_job_subpath_passed": true,
+  "pages_per_base_url": 88,
+  "artifact_roundtrip_passed": false,
+  "missing_artifact_path": ".well-known/security.txt",
+  "affected_artifact_ids": [
+    13570289928,
+    13570334590
+  ],
+  "outcome_artifact_id": 13570925987,
+  "branch_auto_upload_policy_deviation": true,
+  "browser_qualified": false,
+  "assistive_technology_qualified": false,
+  "deployment_performed": false,
+  "full_product_qualified": false,
+  "main_pages_packaging_qualified": false,
+  "pinned_pages_action": "7b1f4a764d45c48632c6b24a0339c27f5614fb0b",
+  "pinned_action_source": "https://github.com/actions/upload-pages-artifact/blob/7b1f4a764d45c48632c6b24a0339c27f5614fb0b/action.yml",
+  "pinned_action_excludes_dot_directories": true
+}

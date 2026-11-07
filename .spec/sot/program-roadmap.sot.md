@@ -11,6 +11,32 @@ rel:
 
 # Overall roadmap and milestones
 
+## Current Pages proof and transfer blocker
+
+evidence:root/20261107102326 binds actual GitHub run42363224485 to8624b57c.
+Preflight60 tests, strict Clippy and workflow policy passed. Both in-job base URL
+builds rendered88 pages with no reported errors and source unchanged. However,
+both downloaded generic site artifacts lack .well-known/security.txt. The pinned
+main Pages upload action also excludes dot directories. Artifact usability and
+deployment therefore remain unqualified; a public-site packager and actual
+extracted-archive validation are required. Browser and AT gates remain separate.
+Automatic generic branch uploads are being removed to restore the free profile.
+
+## Go component and full-product result ownership
+
+The dedicated Go workflow requests bounded Go8 qualification. Lab owns an
+explicit typed requirement/mode that may return zero only after all eight real
+scenarios, exact source/image/actor/artifact binding and owned cleanup pass. CI
+consumes that sole result contract. It must not blanket accept exit2, reinterpret
+unknown statuses or infer qualification from a generic process exit.
+
+This decision supersedes earlier wording that intentionally kept every
+standalone Go component job red through --require-full. The existing full-product
+gate retains --require-full and must remain nonzero until every product gate
+passes. A bounded component success always keeps full_product_qualified=false;
+it does not close the program or waive any final gate. New typed-mode behavior
+and its refusals require tests and actual hosted execution before qualification.
+
 ## Completed local workflow parity comparison
 
 evidence:root/20261107092034 records the actual paired run: local Windows Desktop
