@@ -1337,3 +1337,18 @@ final mutation/one-use ALLOW and actual unsafe-host premises still unqualified.
 Pilot requires45 scenario/MPM pairs, cleanup and exact artifacts but contains no
 executed results. Added two manual receipts; no native/build/network run. Current
 contract is no longer the stale earlier module-unimplemented declaration.
+
+### Apache pilot provenance and containment finding
+
+Read complete authority/origin/orchestrator modules and added three exact manual
+receipts. Public topology distinguishes real authority/WAL from frozen synthetic
+report fixtures and complete-request origin counter from business commits.
+Graceful-reload spawns an active worker but early pending/reload error can bypass
+join; sent precise finding to Apache owner under existing chat coordination
+authorization. No foreign files changed and no runtime executed. Docs preserves
+this limitation rather than treating cleanupObserved as containment proof.
+
+Reviewed separate hashed Waitress requirement as authored install input only;
+public topology distinguishes pin from actual provisioned server/dependency
+closure. Native ABI pilot metadata still names obsolete registration blocker;
+requested owning chat reconciliation and withheld stale-metadata receipt.

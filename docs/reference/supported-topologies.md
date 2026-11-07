@@ -153,6 +153,12 @@ validity, filter behavior and origin isolation still require the native pilot.
 Its current pilot contract requires 45 named scenario/MPM pairs across event,
 worker and prefork, with separate failed and not-run totals and observed cleanup.
 The contract contains no executed results or qualified artifact identities.
+The authored pilot uses the real shared authority and WAL with frozen synthetic
+reports for its ALLOW/DENY/CHALLENGE paths. Its loopback origin counts complete
+received requests before writing an echo response; this is not a business-commit
+witness or production browser provenance. The reload case also needs confirmed
+worker joining on every error path before cleanup can establish containment.
+Neither the pilot's name nor a cleanup flag supplies that missing evidence.
 
 The Go candidate's synthetic trusted-session cases cannot attest browser or
 human activity. Origin contact counts and observed application mutations are
@@ -171,6 +177,9 @@ A separate WSGI server contract selects a native factory and a candidate server,
 but still records an unimplemented executable harness, an unprovisioned server
 dependency and zero executed cases. That planned network boundary is not supplied by
 the seven framework-object cases or by a default crate build.
+A separate hashed Waitress requirement now declares a candidate install input;
+its presence is not an observed installation, a complete dependency closure or
+execution of the missing server harness.
 
 The Ruby host contract selects three dependency-unavailable framework-object
 smoke cases. Those are not an actual server, successful production authority

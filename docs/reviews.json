@@ -2,6 +2,42 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/python/waitress-requirement.txt",
+  "sha256": "32ac3c99b1bedee0c11481c0c481a985b8260496cd65ff56d08d8d1690193791",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete separate hosted WSGI server requirement with exact version and wheel digest and declared require-hashes/only-binary installation. This reviews authored input only; no upstream digest revalidation, installed dependency closure or actual server execution claimed.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/native/src/pilot/authority.rs",
+  "sha256": "6b962de26b89d121e4d9fa0704f2832b888bc36d3b184c2906c8cd07b03d3aca",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete shared authority/WAL fixture service: real listener and log with random credentials, frozen synthetic report selection for most paths, actual ApplicationHttp only on production probe, delay/cancel fixture signaling, task stop/abort. Synthetic ALLOW is component scope, not authenticated browser provenance or independent custody.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/native/src/pilot/origin.rs",
+  "sha256": "4695f5035b2b563f09a8c7caf9b73d97aa95418306a3314b026423406a50d4f5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete bounded loopback echo observer: complete body receipt increments counter before response write, spoofed-header observation, bounded framing/timeouts and stop-thread join. Counter is complete request receipt, not durable business commit or independent external witness.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/native/src/pilot/mod.rs",
+  "sha256": "b3c0b4236dd9ed040a7c520fbba0c59cdf9cbd252362773c66ff36f028d93dbf",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete45-case/MPM pilot orchestration, current-source/module/ABI binding, actual-httpd source paths, not_run accounting and cleanup flag. Found graceful-reload early-error paths can bypass active request-thread join; reported to owner. Source remains unexecuted and cleanup flag alone does not prove containment.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "crates/apache-adapter/native/src/host.rs",
   "sha256": "4513fc4a8a91dd9d9b7a4516147d7a20674e6502f730961433eb6f7e0fd93abe",
   "reviewer": "codex/rust-pages",
