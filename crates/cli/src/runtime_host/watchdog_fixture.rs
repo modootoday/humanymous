@@ -3,7 +3,13 @@
 use super::{control::Supervisor, invalid, plan::StopPlan, platform::write_report};
 use humanymous_runtime::service::ExitReport;
 use serde::Serialize;
-use std::{io, time::Duration};
+use std::{
+    io::{self, Write},
+    time::Duration,
+};
+
+/// Controlled writer-entry observation only, never proof of kernel-blocked I/O.
+pub const WRITER_ENTRY: &[u8] = b"HUMANYMOUS-WATCHDOG-WRITER/1\n";
 
 const PRESSURE_BYTES: usize = 8 * 1024 * 1024;
 const STOP_MS: u64 = 600;
@@ -45,6 +51,15 @@ pub fn run(case: &str) -> io::Result<()> {
         audit_flushed: true,
     };
     supervisor.deliver_stopped(&completed, || {
+        if case == "blocked-stderr" {
+            let mut marker = io::stderr().lock();
+            marker.write_all(WRITER_ENTRY)?;
+            marker.flush()?;
+        } else {
+            let mut marker = io::stdout().lock();
+            marker.write_all(WRITER_ENTRY)?;
+            marker.flush()?;
+        }
         if case == "late-completion" {
             // Delay this owned writer, not the watchdog. No fresh stop budget.
             std::thread::sleep(Duration::from_millis(STOP_MS * 2));

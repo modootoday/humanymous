@@ -40,8 +40,19 @@ not fork ManagedChild or claim hard cleanup from the legacy capture helper. It
 must independently observe writer/pipe pressure, retain intentionally unread
 stdout/stderr, verify positive exit0 and actual watchdog exit74, keep cleanup and
 reap facts separate, and preserve one parent deadline without a fallback-kill pass.
-Shared native API/support and any root-owned dependency integration remain pending.
-No ignored placeholder test is counted as an implemented parent regression. This
+Native owner subsequently authored a shared RetainedDirectPipeAttempt over the
+same OwnedDirectChild backing as CaptureAttempt, without auto-drainers. The CLI
+parent test is now authored against that exact public source API: controlled
+writer-entry prefix, unread remainder, actual0/74 exit, one original8/12second
+run/cleanup pair shared across all four children, explicit failure recovery and same-owner retention before
+panic. Endpoint Drop is not EOF/native-close/tree proof; marker entry is not
+kernel-blocked proof. Spawn/prefix/stop/settle may block and require independent
+outer native supervision. A forced-stop recovery can never pass the fixture.
+RECOVERY preserves ownership only while the parent test process remains alive;
+its exit is not child termination or cleanup proof. The external controller must
+retain independent recovery authority, and an unresolved owner remains Unknown.
+Shared API freeze/review and the root-owned test-support devdependency remain
+pending. The ignored test is actual authored source, not executed evidence. This
 source is authored/NOT_RUN; fmt/diff checks alone do not qualify subprocess behavior.
 
 ### Active goal continuation
