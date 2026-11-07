@@ -29,7 +29,7 @@ dual-control and missing-required fail-closed remain invariant.
 | R05 | Shared response-head/framing and fidelity | runtime | Partial source for ACK strip/reframe, HEAD/204/304 and partial-write close; latest validation NOT_RUN; full framing/stream work remains |
 | R06 | Explicit bounded response streaming | runtime;R05 | Not implemented; incremental SSE, backpressure, malformed chunks/abort/no retry; browser ACK stream separate |
 | R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Not implemented; scoring writes refused; read-only until durable apply/replay exists |
-| R08 | Bounded session/global abuse admission | runtime | Not implemented;429/capacity/concurrency/clock tests; no client-fingerprint identity authority |
+| R08 | Bounded session/global abuse admission | runtime | Source global/session/capacity/serialized concurrency implemented; pure and hosted429fixtures NOT_RUN; no client-fingerprint identity authority |
 | R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Shared native transport qualified in its scope; runtime observer handler source implemented NOT_RUN; native IPC/peer/credential/RBAC/CSRF/scope negatives pending |
 | R10 | Signed destructive controls and state effects | audit issuer + runtime | Audit primitives implemented; runtime join pending; exact two-party/one-use/target/expiry/restart/failure tests |
 | R11 | Accessible Pass recovery + shared Engine fusion | runtime; shared challenge/root browser | Not implemented; no motor/speed gates or confirmed-human training; real input/AT separate |
@@ -218,3 +218,25 @@ this is not independent witness/product/human evidence. Never execute these via
 a local broad cargo-test command. No current-source tests have executed.
 Public spec check briefly reports duplicate external plan id20261107072500 in
 native-abi/network-capture; root notified, owner files left untouched.
+R08 authenticated-session admission: bounded session/global admission is resource
+control, never a fingerprint/identity/scoring tell. Add validated private setting
+session_rate_per_second (default100, range1..10000). Each volatile session owns one
+fixed monotonic one-second window; no global per-client-key map or live eviction.
+A valid next RIT is verified and consumed before session admission, preserving
+browser ACK progression on429. Invalid signatures/replays never debit a victim's
+session quota. Session-bound429 occurs before report mutation/scoring/audit/origin;
+consumed browser responses retain actual429 ACK. No verdict/rule/weight changes.
+Window reset uses elapsed monotonic duration, rejects rollback at the pure seam,
+never extends a request deadline and cannot revive expired sessions. Global
+pre-auth admission remains shared Admission; capacity rejects new sessions while
+live epochs remain intact and expired entries are pruned. Serialized ingress
+bounds concurrency1; no new throughput or identity flood-resistance claim.
+Pure quota/boundary/rollback tests and shared-client429counter tests are required;
+actual global/concurrent/socket origin-effect tests remain hosted-only.
+R08 source adds per-session monotonic fixed windows with bounded validated config,
+after next-token verification/consumption. Two pure window fixtures plus one
+hosted-only native TCP/shared-client fixture now cover quota boundary/rollback,
+invalid-proof non-debit, actual429 ACK progression, replay refusal and no origin
+accept. This fixture is resource timing/protocol evidence, not human speed/motor
+classification. Source compilation and all fixtures remain NOT_RUN; no local
+native process or Cargo execution. Required missing collector/TLS/H2 still422.

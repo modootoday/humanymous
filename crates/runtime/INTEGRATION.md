@@ -267,3 +267,10 @@ this is not independent witness/product/human evidence. Never execute these via
 a local broad cargo-test command. No current-source tests have executed.
 Public spec check briefly reports duplicate external plan id20261107072500 in
 native-abi/network-capture; root notified, owner files left untouched.
+R08 source adds per-session monotonic fixed windows with bounded validated config,
+after next-token verification/consumption. Two pure window fixtures plus one
+hosted-only native TCP/shared-client fixture now cover quota boundary/rollback,
+invalid-proof non-debit, actual429 ACK progression, replay refusal and no origin
+accept. This fixture is resource timing/protocol evidence, not human speed/motor
+classification. Source compilation and all fixtures remain NOT_RUN; no local
+native process or Cargo execution. Required missing collector/TLS/H2 still422.

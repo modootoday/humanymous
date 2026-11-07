@@ -90,6 +90,76 @@ async fn call(address: std::net::SocketAddr, req: &Request) -> Response {
         .unwrap()
 }
 
+/// Hosted-only socket boundary: a resource429 still carries the consumed ACK.
+#[tokio::test]
+async fn authenticated_session_quota_consumes_counter_and_preserves_ack_progression() {
+    let origin = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let mut config = configured(origin.local_addr().unwrap());
+    config.session_rate_per_second = 1;
+    let audit = Audit::default();
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let app = Application::new(config, Default::default(), Box::new(audit.clone())).unwrap();
+    let server = tokio::spawn(app.serve(listener));
+    let response = call(
+        address,
+        &browser_request("POST", "/_humanymous/browser/session", b"{}".to_vec()),
+    )
+    .await;
+    assert_eq!(response.status, 200);
+    let mut client = ClientSession::from_json(
+        scope(),
+        &response.body,
+        humanymous_authority::now_ms().unwrap(),
+        5000,
+    )
+    .unwrap();
+    let mut collect = browser_request("POST", "/_humanymous/browser/collect", client_report(""));
+    signed(
+        &mut client,
+        &mut collect,
+        humanymous_authority::now_ms().unwrap(),
+    );
+    // Invalid proof cannot debit another session's quota or consume its counter.
+    let mut invalid = Request {
+        method: collect.method.clone(),
+        target: collect.target.clone(),
+        headers: collect.headers.clone(),
+        body: collect.body.clone(),
+    };
+    invalid
+        .headers
+        .iter_mut()
+        .find(|(name, _)| name.eq_ignore_ascii_case("x-humanymous-token"))
+        .unwrap()
+        .1 = "invalid".into();
+    let rejected = call(address, &invalid).await;
+    assert_eq!(rejected.status, 403);
+    assert!(header(&rejected, "x-humanymous-ack").is_none());
+    let response = call(address, &collect).await;
+    assert_eq!(response.status, 200);
+    complete(&mut client, &response);
+    let mut protected = browser_request("POST", "/effect", b"original bytes".to_vec());
+    signed(
+        &mut client,
+        &mut protected,
+        humanymous_authority::now_ms().unwrap(),
+    );
+    let response = call(address, &protected).await;
+    assert_eq!(response.status, 429);
+    complete(&mut client, &response);
+    assert!(!client.is_closed());
+    assert_eq!(call(address, &protected).await.status, 409);
+    assert_eq!(audit.records.lock().unwrap().len(), 1);
+    assert!(
+        tokio::time::timeout(std::time::Duration::from_millis(20), origin.accept())
+            .await
+            .is_err()
+    );
+    server.abort();
+    let _ = server.await;
+}
+
 #[test]
 fn explicit_profile_origin_cookie_and_report_binding_negatives() {
     let cfg = configured("127.0.0.1:32123".parse().unwrap());

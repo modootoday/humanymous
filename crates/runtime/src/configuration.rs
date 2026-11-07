@@ -30,6 +30,9 @@ pub struct Configuration {
     pub timeout_ms: u64,
     /// Global accepted connections per second.
     pub rate_per_second: u32,
+    /// Per authenticated volatile session resource quota; unrelated to scoring.
+    #[serde(default = "default_session_rate")]
+    pub session_rate_per_second: u32,
     /// Explicit browser contract; absent preserves native-only configuration.
     #[serde(default)]
     pub browser: Option<BrowserPolicy>,
@@ -52,6 +55,10 @@ pub enum RitProfile {
 pub struct BrowserPolicy {
     /// Exact serialized origin, currently http:// plus configured authority.
     pub origin: String,
+}
+
+fn default_session_rate() -> u32 {
+    100
 }
 
 /// One exact route and its honest evidence prerequisites.
@@ -99,6 +106,7 @@ impl Configuration {
             || !(1000..=3_600_000).contains(&self.session_ttl_ms)
             || !(1..=30_000).contains(&self.timeout_ms)
             || !(1..=10_000).contains(&self.rate_per_second)
+            || !(1..=10_000).contains(&self.session_rate_per_second)
             || self.routes.is_empty()
             || self.routes.len() > 4096
         {

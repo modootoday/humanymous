@@ -430,3 +430,18 @@ This complete-buffer implementation does not claim R06 incremental streaming,
 full trailer support, original TLS/H2 provenance or browser body authentication.
 Native/browser request codecs and frozen engine are unchanged. Pure malformed
 framing and boundary fixtures precede hosted origin/abort/effect validation.
+R08 authenticated-session admission: bounded session/global admission is resource
+control, never a fingerprint/identity/scoring tell. Add validated private setting
+session_rate_per_second (default100, range1..10000). Each volatile session owns one
+fixed monotonic one-second window; no global per-client-key map or live eviction.
+A valid next RIT is verified and consumed before session admission, preserving
+browser ACK progression on429. Invalid signatures/replays never debit a victim's
+session quota. Session-bound429 occurs before report mutation/scoring/audit/origin;
+consumed browser responses retain actual429 ACK. No verdict/rule/weight changes.
+Window reset uses elapsed monotonic duration, rejects rollback at the pure seam,
+never extends a request deadline and cannot revive expired sessions. Global
+pre-auth admission remains shared Admission; capacity rejects new sessions while
+live epochs remain intact and expired entries are pruned. Serialized ingress
+bounds concurrency1; no new throughput or identity flood-resistance claim.
+Pure quota/boundary/rollback tests and shared-client429counter tests are required;
+actual global/concurrent/socket origin-effect tests remain hosted-only.

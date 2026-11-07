@@ -153,6 +153,9 @@ impl Application {
         let mut authorized = self.sessions.authorize(&self.config, req, now)?;
         *ack = authorized.ack.take();
         let id = &authorized.session;
+        if !self.sessions.admit_authorized(id) {
+            return Err(Rejection::new(429, "session_admission"));
+        }
         let deadline = authorized.deadline;
         let (verdict, risk, rule) = if collect {
             match authorized.profile {

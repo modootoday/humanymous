@@ -10,6 +10,8 @@ use humanymous_signals::report::ClientReport;
 use serde::Serialize;
 use std::collections::HashMap;
 use zeroize::Zeroizing;
+mod admission;
+use admission::Window;
 
 /// Consumed request authorization and the actual shared verifier observation.
 pub struct Authorization {
@@ -45,6 +47,8 @@ struct Session {
     expires: u64,
     report: Option<ClientReport>,
     profile: RitProfile,
+    created: std::time::Instant,
+    admission: Window,
 }
 
 /// Application binding layered over the unchanged shared canonical protocol.
@@ -153,6 +157,8 @@ impl Sessions {
         self.entries.insert(
             id,
             Session {
+                created: std::time::Instant::now(),
+                admission: Window::new(config.session_rate_per_second),
                 key,
                 counter: 0,
                 expires: issued.expires,
@@ -297,6 +303,14 @@ impl Sessions {
             return Err(Rejection::new(403, "report_session"));
         }
         self.store_report(id, report)
+    }
+
+    /// Only call after successful next-token consumption. A429 is still a
+    /// consumed request, so the caller must retain any browser ACK signer.
+    pub(crate) fn admit_authorized(&mut self, id: &str) -> bool {
+        self.entries
+            .get_mut(id)
+            .is_some_and(|session| session.admission.admit(session.created.elapsed()))
     }
 
     /// Browser report projection is bound by the authenticated transport session,
