@@ -2194,3 +2194,19 @@ remain plus removed disposition. Other source changes/additions between fixed
 candidates mean counts cannot be derived merely by subtracting34manual reviews.
 Raw14298-byte result attached privately, exact source/count/limit status publicly.
 No complete freshness acceptance, new rendered build/browser/AT or goal completion.
+
+### Concrete Desktop Docker preview preparation
+
+Prepared structured local preview plan with current official Ruby3.3.13-bookworm
+and Caddy2.11.9-alpine exactlinux/amd64 manifest digests. Queried public registry
+metadata and upstream image definitions, Jekyll cache option and Caddy CLI; no
+Docker daemon/pull/run or browser/server started. Keep explicit DesktopLinux
+context and allocation after serialized Lab terminal. Fixed2696 source read-only,
+separate task gem/output paths, Bundler2.5.22/frozenlock, one-job/CPU/memory limits,
+pinned theme/strict checker, disable-disk-cache and actual prerequisites before
+build. Existing hostRust built/package/second archive-check validates both roots.
+Serve only actual restored trees with literal127.0.0.1 publication and exact-ID
+bounded observed lifecycle; no hidden shell/server implementation or source
+repair. WebDriver binaries not on PATH is not exhaustive machine inventory;
+automated all-page pilot/actual AT still need separate concrete services/gates.
+Plan is reviewable preparation, not local image/runtime/build/preview proof.

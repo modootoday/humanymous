@@ -1,0 +1,181 @@
+{
+  "scope": "Concrete execution plan only; no Docker pull/build/server/browser started",
+  "status": "Prepared for root allocation after live Lab workload is terminal",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "docs_tree": "56b1e029952b5a3b29d4b0d056671bc79110e43b",
+  "docker": {
+    "platform": "linux/amd64",
+    "context": "desktop-linux",
+    "executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe",
+    "precondition": "Record actual endpoint/ServerID/version/OSType after allocation; require expected Linux Desktop context, no WSL-native fallback"
+  },
+  "images": [
+    {
+      "role": "Ruby/Jekyll builder",
+      "tag": "ruby:3.3.13-bookworm",
+      "index_digest": "sha256:ae098d019fd2995e6cb82e16a87529348ba26a7c83ad6189937decc2846b0730",
+      "amd64_digest": "sha256:e8bdbcb78ac5610a976012551304271bcd7a5ac43919c1c638ba691279c12b0b",
+      "registry_url": "https://hub.docker.com/v2/repositories/library/ruby/tags/3.3.13-bookworm",
+      "metadata_date": "2026-11-07",
+      "metadata_status": "active",
+      "compressed_platform_bytes": 386547721,
+      "upstream_source": "https://github.com/docker-library/ruby/blob/9d3b660038954e83a8f5d4db7b5d862d9966f214/3.3/bookworm/Dockerfile"
+    },
+    {
+      "role": "Restored-site static server",
+      "tag": "caddy:2.11.9-alpine",
+      "index_digest": "sha256:0bbb055bda6793c999bde78b1b5ce3e89f829fb031af2cf50056ea1246559fee",
+      "amd64_digest": "sha256:fc9cbc100585871d18d4e451cca7021785c90a7006087427ae5ceb3e4efe6424",
+      "registry_url": "https://hub.docker.com/v2/repositories/library/caddy/tags/2.11.9-alpine",
+      "metadata_date": "2026-11-07",
+      "metadata_status": "active",
+      "compressed_platform_bytes": 24793574,
+      "upstream_source": "https://github.com/caddyserver/caddy-docker/tree/d322e6686bbce5622d98a04c84fadd43b5eb8c58/2.11/alpine"
+    }
+  ],
+  "image_binding": "Pull exact linux/amd64 manifest digest only after allocation; verify actual image identity and use pull=never for subsequent owned runs. Registry metadata is not proof of a successful local pull or runtime.",
+  "source": {
+    "theme_check": "Own fresh pinned tag checkout under Git mutex, verify exact HEAD; mount read-only at /theme for existing exe/modootoday-check",
+    "output_requirement": "Fresh dedicated task root; preserve failed outputs, never repair historical incomplete artifacts",
+    "directory": "C:/workspaces/humanymous/.spec.local/pgr2696b/docs",
+    "theme_revision": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+    "before_after": "Capture fixed source snapshot and exact config/token/Gemfile.lock identities before and after; any drift refuses acceptance",
+    "theme_version": "v1.5.0",
+    "mount": "/source:ro",
+    "gemfile_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+    "output_root": "C:/workspaces/humanymous/.spec.local/pgp2696"
+  },
+  "builder": {
+    "cache_reason": "Official Jekyll --disable-disk-cache avoids writing .jekyll-cache under read-only source; no safe-mode/plugin/theme/token substitution",
+    "build_argv": [
+      "bundle",
+      "_2.5.22_",
+      "exec",
+      "jekyll",
+      "build",
+      "--source",
+      "/source",
+      "--destination",
+      "/out/apex",
+      "--baseurl",
+      "",
+      "--strict_front_matter",
+      "--disable-disk-cache"
+    ],
+    "prerequisites": [
+      "Record ruby/gem/bundle versions; require Ruby3.3.13",
+      "Probe existing compiler and OpenSSL development header; no apt/global install fallback",
+      "Install exact Bundler2.5.22 only into task GEM_HOME, then frozen bundle install --jobs1 and bundle-audit",
+      "Reject unsupported locked platform/dependency closure; do not modify Gemfile.lock"
+    ],
+    "mounts": [
+      "source read-only",
+      "theme read-only",
+      "separate writable /bundle and /out; writable /tmp"
+    ],
+    "second_build": "Same exact upstream command, fresh /out/subpath and baseurl /humanymous",
+    "requested_limit": "one CPU,3GiB memory,256 PIDs; single bundle/native make job, one stage at a time",
+    "theme_check_argv": [
+      "bundle",
+      "_2.5.22_",
+      "exec",
+      "ruby",
+      "/theme/exe/modootoday-check",
+      "/source",
+      "/out/apex",
+      "--strict"
+    ],
+    "no_authored_foreign_implementation": true,
+    "environment": {
+      "BUNDLE_FROZEN": "true",
+      "GEM_PATH": "/bundle/gems",
+      "BUNDLE_APP_CONFIG": "/bundle/config",
+      "GEM_HOME": "/bundle/gems",
+      "BUNDLE_USER_HOME": "/bundle/user",
+      "MAKEFLAGS": "-j1",
+      "GEM_SPEC_CACHE": "/bundle/specs",
+      "BUNDLE_GEMFILE": "/source/Gemfile"
+    },
+    "actor": "Unprivileged container UID/GID1000:1000, exact owned writable task paths",
+    "working_directory": "/source"
+  },
+  "rust_validation": {
+    "acceptance": "Both authored/rendered denominators and errors, exact source-input commitment, archive/manifest/inventory hashes and restored bytes must agree. No cross-run bit-reproducibility claim or reuse of old hosted build for changed docs.",
+    "recorded_executable_sha256": "c9bcc0cebc384ac0fa100485e6a8a076dcbf6d1a7564b1ca884987db3f7145ef",
+    "precondition": "Recheck executable identity and use the already compiled owner tool; rebuilding needs a separate allocation",
+    "variants": [
+      "apex emptybaseurl",
+      "subpath /humanymous"
+    ],
+    "sequence": [
+      "source --source ABS_SOURCE",
+      "built --source ABS_SOURCE --site ABS_BUILT --baseurl VALUE",
+      "package --source ABS_SOURCE --site ABS_BUILT --archive ABS_VARIANT/artifact.tar --manifest ABS_VARIANT/manifest.json --restored ABS_FRESH_PACKAGE --baseurl VALUE",
+      "archive-check --source ABS_SOURCE --archive ABS_VARIANT/artifact.tar --manifest ABS_VARIANT/manifest.json --restored ABS_FRESH_SERVED --baseurl VALUE"
+    ],
+    "executable": "C:/workspaces/humanymous/target/validation-native/debug/humanymous-pages.exe"
+  },
+  "serving": {
+    "apex_root": "apex consumer-restored tree",
+    "source": "Only validated restored public output, never repository/private evidence/cache roots",
+    "notes": "Use corresponding container listen/publication port for each variant. No domain, directory browse, templates or access logging. Upstream file-server disables its admin API.",
+    "command_argv": [
+      "caddy",
+      "file-server",
+      "--root",
+      "/srv",
+      "--listen",
+      ":18080",
+      "--no-compress"
+    ],
+    "requested_limit": "Each server half CPU,256MiB,64PIDs; prefer one variant active at a time",
+    "urls": [
+      "http://127.0.0.1:18080/",
+      "http://127.0.0.1:18081/humanymous/"
+    ],
+    "publication": "Host literal127.0.0.1 only, verify chosen ports free; no public listener/DNS/Cloudflare/deployment",
+    "subpath_root": "parent containing only fresh consumer-restored humanymous/ directory",
+    "mount": "/srv read-only",
+    "phase": "Only after both build/theme/Rust package and second-restore checks pass"
+  },
+  "lifecycle": {
+    "readiness": "Bounded literal-loopback HTTP probe, exact restored asset bytes, expected page/security target and source commitments before opening browser",
+    "supervision": "Caller tracks actual Docker client session and container ID; on deadline/cancel stop exact owned ID with10second grace, wait/inspect terminal state and record cleanup. A client timeout or rm flag alone is not container cleanup proof.",
+    "builder_deadline": "20minutes per stage including native gem build; retain first failure and stop instead of loosening dependencies",
+    "server_deadline": "30minute initial preview lease; extensions require an explicit ongoing inspection, not an unobserved background server",
+    "forbidden_cleanup": "No global prune, daemon shutdown, foreign container kill or deletion of computed/unverified paths",
+    "names": "Unique task labels/names and captured exact container IDs/cidfiles",
+    "observation_owner": "Keep an actual supervisor/session observing the bounded preview lease through handoff/cleanup. No unobserved indefinite server after a final reply; if a Rust lifecycle gap exists, obtain its own implementation/allocation rather than claiming a timeout flag is a supervisor."
+  },
+  "browser": {
+    "not_inferred": [
+      "screen-reader/assistive-technology certification",
+      "WCAG conformance",
+      "human input from synthetic events",
+      "complete source review freshness",
+      "product conformance"
+    ],
+    "checks": [
+      "Theme/layout/navigation/search at representative desktop/mobile widths",
+      "Real keyboard skip/focus/menu/search behavior and accessible names",
+      "Apex and subpath asset/link behavior, no horizontal overflow"
+    ],
+    "automated": "Existing Rust browser command expects caller-owned local WebDriver/site endpoints and all rendered pages at two viewports; no chromedriver/msedgedriver was found on current PATH. Do not treat that PATH result as exhaustive machine inventory or start/install a driver without separate allocation.",
+    "initial": "Use requested built-in browser to inspect current actual restored candidate and leave user-visible preview when running under an observed bounded lease",
+    "cua": "Read current computer-use/browser API documentation before UI work; after observed CUA outcome emit required completion summary exactly once"
+  },
+  "references": [
+    "https://raw.githubusercontent.com/docker-library/official-images/master/library/ruby",
+    "https://raw.githubusercontent.com/docker-library/official-images/master/library/caddy",
+    "https://jekyllrb.com/docs/configuration/options/",
+    "https://caddyserver.com/docs/command-line#caddy-file-server"
+  ],
+  "executed": {
+    "assistive_technology": false,
+    "docker_pull": false,
+    "browser": false,
+    "docker_build": false,
+    "server": false
+  },
+  "allocation": "Pending root release after serialized Lab work; metadata lookup and plan preparation only"
+}
