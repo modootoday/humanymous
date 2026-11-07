@@ -23,6 +23,33 @@ and resource admission; follow the exact live run or process handle.
 
 ### Integration delta after the 17:27 snapshot
 
+Latest source integration: GO-FACADE-01 committed c858b1dc atomically across24
+root and explicitly delegated Go/Lab/Delivery paths. Internal package identity is
+humanymous-adapter-go; consumers use humanymous::adapters::go with adapter-go.
+Delivery delegates request admission to the facade and gates corresponding builds
+on admission success. Leaf10+1, facade default2/enabled2+consumer2, Delivery110,
+Windows actor check, scoped strict Clippy/profile/policy/fmt/actionlint passed.
+Windows cfg excludes the Unix Go actor; fresh Linux compilation and actual Docker
+eight-case qualification remain mandatory. Local raw snapshot accounting is3004
+filesystem records (2917 old nested target outputs/87 non-target files), not3004
+source files or a full transitive/tool/read closure. Workflow hashes were checked
+separately. The public identity SoT records this limitation precisely.
+
+Runtime source aba7934d has actual six DATA tests/73filtered, inventory79 and
+all-feature/all-target check/strict Clippy/fmt success, receipt7bdda110. CLI source
+f20db16e has corrected exact-source validation cf64468c:11pass/15filtered and
+check/Clippy/fmt success, with16 local manifests/434 Rust files captured inside
+7239 selected records. Preserve d395's earlier missing-local-source HOLD and its
+raw6674 snapshot; the corrected run is a new observation. Both interfaces retain
+DATA only and cannot construct native proof or Ready.
+
+Native/.NET retained deadlines have R3's37 pure passes plus the separate R4c
+style-only fmt/Clippy success c3cc978a;37 tests were not repeated in that addendum.
+The private-root initializer remains design-only5a94910e, with actual parent,
+created-object custody and hosted cleanup requirements unresolved. Existing
+producer/start boundaries remain Unsupported. These are implementation and
+runtime frontiers, not reasons to repeat already-qualified pure tests.
+
 At the user's request, root enumerated all393 repository Actions runs and their
 393 distinct Check Suites through gh CLI pagination:1207 unique Check Runs and
 1886 annotations, matching the captured advertised total exactly, with no fetch

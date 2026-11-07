@@ -363,9 +363,12 @@ actionlint. The facade numbers represent4 distinct tests across6 executions.
 The actor check ran on Windows: its Unix-only Go module was excluded by cfg.
 Public consumer type tests do not replace the required actual Linux actor compile
 and hosted Docker eight-case execution.
-The four affected source roots and root Cargo/lock/toolchain comprised3004
-unchanged selected inputs before/after. This does not attest all transitive
-dependency/tool bytes or establish actual Go host execution.
+The four affected directory roots and root Cargo/lock/toolchain yielded3004
+unchanged filesystem records before/after:2917 are pre-existing nested target
+outputs and87 are non-target files. Do not describe this as3004 source files.
+Workflow identities were checked separately against the delegated hashes; they
+are outside that directory snapshot. This is not full transitive/tool or policy
+read-closure attestation and does not establish actual Go host execution.
 
 Actual resolved-profile artifact receipts and fresh hosted product qualification
 remain required. Later adapter package renames require a separate
