@@ -3,7 +3,7 @@ id: sot:root/performance-optimization
 title: Reproducible build and runtime performance optimization
 status: draft
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:32:38Z
+updated: 2026-11-07T14:38:30Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
   governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
@@ -135,6 +135,13 @@ function measurement. Exact root allocation remains required. Real product/nativ
 process-tree lifecycle gates remain unchanged. Five hot in-process pairs are
 not independent process repetitions or cold runs. Keep these distinctions in
 any result schema interpretation and conclusion.
+Before measurement, a case-sensitive read-only inventory found that all81 oracle
+canonical outputs total15174 UTF-8 bytes, with individual lengths181 through192.
+One synthetic long-header case alone contains49152 header payload bytes before
+framing. The aggregate benchmark therefore weights a synthetic large-input case
+heavily by byte work. This is a corpus property, not observed timing dominance.
+Preserve the predeclared corpus; do not generalize its aggregate ratio to typical
+HTTP requests or alter case weights after seeing timings.
 
 Runtime's current single accept loop owns mutable Sessions and durable audit.
 Parallel workers would change ownership/ordering and need an accepted architecture

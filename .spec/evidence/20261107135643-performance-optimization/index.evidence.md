@@ -3,11 +3,11 @@ id: evidence:root/20261107135643
 title: Performance readiness and four source-bound library builds
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:32:38Z
+updated: 2026-11-07T14:38:30Z
 rel:
   depends_on: [sot:root/performance-optimization, plan:root/20261107135643]
 files:
-  - {path: baseline.json, sha256: 1675ecf2977e228bc9db346c28f0ef97e60d566f05783740e548866b0fc85b72, bytes: 7777, store: repo}
+  - {path: baseline.json, sha256: 8f328726aa1b710878bdd5905d6d3822409d3c31d0d5da577c909bbf492c0b47, bytes: 8401, store: repo}
 ---
 
 # Performance readiness and four source-bound library builds
@@ -100,6 +100,12 @@ or external input. This does not establish a hard OS wall-clock or product
 cleanup guarantee. Exact release and direct-binary execution allocations remain
 required. Fixture inventory fields now explicitly distinguish initial inspection
 from the subsequent native parity execution receipt.
+Premeasurement corpus inspection found15174 UTF-8 bytes across all81 oracle
+canonical outputs, while one synthetic case has49152 header payload bytes before
+framing. This byte-volume imbalance is not a timing result or representative
+product traffic. The fixed corpus remains unchanged and was not reweighted after
+timing. Case-sensitive JSON parsing preserved the deliberate header-key collisions;
+the initial rejected parse's zero-count exploratory output was discarded.
 
 The controlling SoT retains build and runtime scope, exact-byte regression
 requirements, security invariants, resource admission and Docker product gates.

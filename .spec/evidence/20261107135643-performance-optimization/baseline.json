@@ -25,6 +25,17 @@
     "compilation_performed": true
   },
   "r1_owner": "root-integration",
+  "r1_corpus_inventory_before_measurement": {
+    "scope": "read-only byte inventory, not timing",
+    "oracle_cases": 81,
+    "oracle_canonical_utf8_bytes_total": 15174,
+    "oracle_canonical_utf8_bytes_minimum": 181,
+    "oracle_canonical_utf8_bytes_maximum": 192,
+    "one_synthetic_long_case_header_payload_bytes_before_framing": 49152,
+    "representative_product_traffic_claimed": false,
+    "corpus_reweighted_after_timing": false,
+    "retained_inspection_correction": "case-colliding header keys require a case-sensitive JSON hashtable; initial rejected parse and zero-count exploratory output were discarded"
+  },
   "r1_status": "scoped_tests_check_clippy_fmt_passed_function_measurement_not_run",
   "r1_verification": {
     "source_sha": "c4786b675f75c4d8b679cf4308e37cdbfadd4cab",
