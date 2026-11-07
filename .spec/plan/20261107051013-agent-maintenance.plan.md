@@ -831,3 +831,17 @@ Theoretical896MiB KV and provisional budgets are not measured allocation or a
 resource grant. No GPU/SDK/backend/dependency change or extra inference ran.
 Actual CUDA/Metal/Vulkan/platform, numeric parity and cancel/device-loss pilots
 remain NOT_RUN pending root's separate reviewed implementation/allocation.
+
+## Accepted eight-package redesign handoff
+
+Root's accepted baseline v0 absorbs maintenance responsibility into humanymous-cli;
+this owner has not moved/renamed packages, paths, imports, refs or worktrees. The
+actionable current-path handoff is `.agents/evals/eight-package-maintenance-handoff.md`.
+Its registered150-file point-in-time path/Git-blob/raw-SHA manifest remains under
+evidence:root/20261107073349. Current owned sources were clean and all compiler,
+model and physical-target leases terminal before this documentation batch. Root
+must explicitly freeze the tools slice and coordinate visibility, binary/import,
+relative include/root, shared Cargo and Delivery consumers. Historical proofs do
+not transfer to relocated source; full76 library and actual boundary/closure gates
+must be requalified under root's final mapping. Current claim is retained until
+the exact slice transfer, not released as though the full M11 goal were complete.
