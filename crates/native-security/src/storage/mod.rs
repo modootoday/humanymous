@@ -1,6 +1,8 @@
 //! Native file-handle privacy policies shared by audit, authority and installer.
 #[cfg(windows)]
 mod actor_context;
+#[cfg(test)]
+mod user_root_journal_model;
 #[cfg(windows)]
 pub use actor_context::{
     ContextPublishError, InspectedActorContext, PublishedActorContext, inspect_actor_context,

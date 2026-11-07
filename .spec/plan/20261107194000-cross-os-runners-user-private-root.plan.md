@@ -579,3 +579,32 @@ Test10 loops over each capacity independently; test11 uses bounded synthetic
 counter states, no huge allocations. No production loader/filesystem/real clock/
 token/SCM/provider/process/callback/durable journal invoked. Approval of this
 exact boundary precedes implementation and any compiler/test allocation.
+
+## Root-approved model source checkpoint (not executed)
+
+Root approved test-only implementation after the bounded-capacity amendment.
+storage/mod.rs declares a private cfg(test) module on all host OSes. Model types,
+fixture constructor and snapshot stay private in user_root_journal_model.rs;
+transitions are decomposed in child transitions.rs with pub(super) visibility
+ONLY to the private test subtree, no exported API/pub use. Child tests.rs contains
+exactly the twelve proposed test names. No real clock/serde/I/O/unsafe/callback/
+Cargo/dependency/native ACK or production caller is introduced.
+
+Reservations check immutable tuple, distinct attempt ID across generations, both
+indexes, explicit namespace relations, eventual tombstone space, byte/operation
+charges and checked additions before model admission. Unknown remains reserved,
+NotCreated cannot close Unknown, stale epoch/tuple/replay refuses, terminal model
+release preserves tombstone, and unknown-history handoff blocks fresh admission.
+Partial-index and overflow fixtures are bounded synthetic facts, not huge memory
+allocations or recovered durable state. The model proves none of the actual
+journal/anchor/authentication/persistence/native cleanup premises.
+
+Bare Rust source formatter and whitespace checks passed. Twelve tests, scoped
+check/Clippy and all actual native/storage qualification are NOT_RUN pending a
+separate Root allocation. native-journal-model-source.json records exact hashes
+for all18 current native-security files (including implementation/config/docs)
+for Root's Runtime move. Existing credential-pilot feature unchanged, cfg(test)
+only for model, zero active compiler/target/process/runtime leases. Native owner
+freezes native-security source after this checkpoint and retains runner/spec
+scope; no independent path move or manifest write. Future destination and test
+selector prefix belong to Root integration; old-source hashes remain historical.

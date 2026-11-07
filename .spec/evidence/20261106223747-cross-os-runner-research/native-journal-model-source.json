@@ -1,0 +1,102 @@
+{
+  "schema": "humanymous.native-journal-model-source/1",
+  "state": "Private cfg(test) model authored; NOT_RUN, not a production journal",
+  "files": [
+    {
+      "path": "crates/native-security/Cargo.toml",
+      "sha256": "eb8b9619cd3c57fd5ca7af002b1a88c78713d5ab2ca692cd7d9e94481aea41fb",
+      "bytes": 738
+    },
+    {
+      "path": "crates/native-security/INTEGRATION.md",
+      "sha256": "f9575d1c86ede01176710c5b8bd98928b3d09000e005732c93e77cb903bd1dce",
+      "bytes": 6355
+    },
+    {
+      "path": "crates/native-security/src/lib.rs",
+      "sha256": "c6ce48bdcc12e9ff440285ddf0d3bf17b231d1fc24b7872f22bace8e8afdd7d0",
+      "bytes": 163
+    },
+    {
+      "path": "crates/native-security/src/process/mod.rs",
+      "sha256": "04e51540d0b09d6dc7a51cd59b49f39271075d6999cdc6bc6de2595bf55a52aa",
+      "bytes": 1923
+    },
+    {
+      "path": "crates/native-security/src/process/windows.rs",
+      "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+      "bytes": 3263
+    },
+    {
+      "path": "crates/native-security/src/secret/mod.rs",
+      "sha256": "eb7ba77665bb51bcb217a34dbf0309bf2c45ef28131c97003c17e7d28541c4c0",
+      "bytes": 2087
+    },
+    {
+      "path": "crates/native-security/src/secret/pilot.rs",
+      "sha256": "99703482931610e1690671ed4b7e690cb9a9897e0d4bd4cccfb2f28ebc942942",
+      "bytes": 6958
+    },
+    {
+      "path": "crates/native-security/src/secret/reference.rs",
+      "sha256": "772fad2c0d89dbe57745f29fe8863e2d896ab1ea24d7008df50e5ca49856a06e",
+      "bytes": 2775
+    },
+    {
+      "path": "crates/native-security/src/secret/windows.rs",
+      "sha256": "ea9ae767ae62ef1137743dcd131bf877b03c0d078138ee9a7e086e2c9e209273",
+      "bytes": 2981
+    },
+    {
+      "path": "crates/native-security/src/storage/actor_context.rs",
+      "sha256": "6312cc4f393f4ec6a84990fcb142bc28eaa830c3125ba2b4f520dc9f9335f207",
+      "bytes": 15754
+    },
+    {
+      "path": "crates/native-security/src/storage/mod.rs",
+      "sha256": "9ee30f1a1dfb291b1d88b5ce20f3d306c2f9e2039a309e0a525f0bd308f97701",
+      "bytes": 858
+    },
+    {
+      "path": "crates/native-security/src/storage/private_directory.rs",
+      "sha256": "a6b2537611366c51a1eeb29b0be33de3add9a236dfed0aedca675a76ce3ef586",
+      "bytes": 5336
+    },
+    {
+      "path": "crates/native-security/src/storage/service.rs",
+      "sha256": "e0dd437ed236cf3ac23f89556694c31b7ac7f64dec7be75eea002769b25c1220",
+      "bytes": 10684
+    },
+    {
+      "path": "crates/native-security/src/storage/user_root_journal_model.rs",
+      "sha256": "39418339777591696298402be879996bc491f722ad048a751bb10bc3905c19a0",
+      "bytes": 5792
+    },
+    {
+      "path": "crates/native-security/src/storage/user_root_journal_model/tests.rs",
+      "sha256": "88604b42b1f163cae50453ec05fd7f18ebccfccf259a4481e2cb2644b7232f04",
+      "bytes": 13311
+    },
+    {
+      "path": "crates/native-security/src/storage/user_root_journal_model/transitions.rs",
+      "sha256": "50e39b05a5dc47d08e2fbc8b6b952df4cf1fb4886347ad30d437ca91a53d72ab",
+      "bytes": 8507
+    },
+    {
+      "path": "crates/native-security/src/storage/windows.rs",
+      "sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f",
+      "bytes": 9227
+    },
+    {
+      "path": "crates/native-security/src/volume/mod.rs",
+      "sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+      "bytes": 1402
+    }
+  ],
+  "model_tests": 12,
+  "features": "No new feature. cfg(test) all host OSes; existing credential-pilot unchanged",
+  "exports": "No pub use, public types, production caller or serde; pub(super) methods only inside private test subtree",
+  "actual_runs": 0,
+  "active_leases": 0,
+  "freeze": "Native-security source frozen for Root Runtime move after this checkpoint; runner scope retained"
+}
