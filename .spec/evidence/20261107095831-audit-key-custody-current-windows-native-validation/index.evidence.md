@@ -3,12 +3,12 @@ id: evidence:root/20261107095831
 title: Audit key custody current Windows native validation
 status: active
 created: 2026-11-07T09:58:31Z
-updated: 2026-11-07T10:01:03Z
+updated: 2026-11-07T10:02:27Z
 rel:
   governs: [crates/audit]
   depends_on: [sot:root/audit-key-custody]
 files:
-  - {path: facts.json, sha256: 0eec5a1bf197fcda268399bcf5f20287575e5443dccbeece7e0544f45faaa7c3, bytes: 1886, store: repo}
+  - {path: facts.json, sha256: 35d3f91c1501cf586a9abe276a9e3db615bb96b923e61b58a1c72bd06cfc568a, bytes: 1818, store: repo}
 ---
 
 # Audit key custody current Windows native validation

@@ -3,7 +3,7 @@ id: evidence:root/20261107092505
 title: Audit key custody Linux MSRV observations
 status: active
 created: 2026-11-07T09:25:05Z
-updated: 2026-11-07T09:55:57Z
+updated: 2026-11-07T10:02:27Z
 rel:
   governs: [crates/audit]
   depends_on: [sot:root/audit-key-custody]
