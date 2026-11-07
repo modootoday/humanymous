@@ -1,0 +1,106 @@
+{
+  "schema": "humanymous.watermark-codec-source/1",
+  "base_component_source": "9b064dbd8942d4fad7f1623da97b6b64c0177a7f",
+  "authority": "root source-only second carrier slice; no new dependencies or graph changes",
+  "source": [
+    {
+      "path": "crates/watermark/Cargo.toml",
+      "sha256": "8973eddacca47b27eacad070d8efbe09b1846c1e01f47d707ef5e94eed3fd8f9",
+      "bytes": 324
+    },
+    {
+      "path": "crates/watermark/INTEGRATION.md",
+      "sha256": "88beabd79c2dc79b092cae48df57e46c22d25d41b36f938b0dfa4fbd26902c13",
+      "bytes": 7010
+    },
+    {
+      "path": "crates/watermark/src/codec.rs",
+      "sha256": "a818fdc1ebd2abd69f424f2e440433dabf96d6d0fc72a8fa0bcf256a6ed95da4",
+      "bytes": 381
+    },
+    {
+      "path": "crates/watermark/src/codec/base32.rs",
+      "sha256": "5d2450a13e03d716ec0b506020a8106e540e0c010a0e52054fc2f2bdb4e6b97e",
+      "bytes": 3133
+    },
+    {
+      "path": "crates/watermark/src/codec/binary.rs",
+      "sha256": "2b5334ec68a5188e8415254b0d4fbff901c6146172e750131c6d9245cc38ccc0",
+      "bytes": 2064
+    },
+    {
+      "path": "crates/watermark/src/codec/mime.rs",
+      "sha256": "7647c94c29d82225e061c7a5c770e1fad535f3f394cf7589db48340708ce3c38",
+      "bytes": 5797
+    },
+    {
+      "path": "crates/watermark/src/codec/text.rs",
+      "sha256": "3d55782b66bdd601c4fd86128ca118380279e56f373246dde53f8f50fdfd7973",
+      "bytes": 3777
+    },
+    {
+      "path": "crates/watermark/src/codec/text/tests.rs",
+      "sha256": "fbeab3e732ebe66993c5296b9d9d7a799630fa8af69d0eba35be6b14ea08f9ce",
+      "bytes": 1920
+    },
+    {
+      "path": "crates/watermark/src/error.rs",
+      "sha256": "89e7282543ab5ce239f192a747ed34421e0187d2c2a6466cf6f318688a3a59bd",
+      "bytes": 2843
+    },
+    {
+      "path": "crates/watermark/src/frame.rs",
+      "sha256": "77919c59dad834044da5bd9a5f4e265cdab6f0b72280d77ce2526ea2fcb5ceb5",
+      "bytes": 5225
+    },
+    {
+      "path": "crates/watermark/src/frame/tests.rs",
+      "sha256": "92a24c4d4e4d8112f5ed1a0ba6cc78a112277dc4fcb602f866e02cf6fad89c0b",
+      "bytes": 2638
+    },
+    {
+      "path": "crates/watermark/src/ledger.rs",
+      "sha256": "4acf4a486f4a87dfef7169908e289cac1c2c44c3dad3bbee9864a8b5a9898362",
+      "bytes": 6542
+    },
+    {
+      "path": "crates/watermark/src/ledger/reservation.rs",
+      "sha256": "82c3ced22094bfecb9abda7eff994984d569c2ce9511102339e4c12b3b5d3ed4",
+      "bytes": 2911
+    },
+    {
+      "path": "crates/watermark/src/ledger/state.rs",
+      "sha256": "e361e06324aeaaae3e4a0e4f856666d2bf758d39ad59292081398b610498726b",
+      "bytes": 1384
+    },
+    {
+      "path": "crates/watermark/src/ledger/tests.rs",
+      "sha256": "048726f52c4ff465b4b30f3ebbdffc557bcc56c1182d0efa863a702bb5a4153b",
+      "bytes": 8502
+    },
+    {
+      "path": "crates/watermark/src/lib.rs",
+      "sha256": "56e17457fab81afb3e3125d3e41839a70e47ddbe6c9918df1b35d63118adb73e",
+      "bytes": 411
+    },
+    {
+      "path": "crates/watermark/src/payload.rs",
+      "sha256": "082ee65ab93908236f3a6db13a495cfc4649e5797e43a6f699b55e2ace20eb73",
+      "bytes": 4863
+    },
+    {
+      "path": "crates/watermark/src/payload/tests.rs",
+      "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76",
+      "bytes": 4696
+    }
+  ],
+  "package_files": 18,
+  "tests_authored": 29,
+  "tests_executed_on_candidate": 0,
+  "cargo": "NOT_RUN",
+  "compiler": "NOT_RUN",
+  "pilots": "NOT_RUN",
+  "wasm_codec": "UNIMPLEMENTED pending standards validator adoption",
+  "png_codecs": "UNIMPLEMENTED pending source/alpha/resource proof",
+  "scope": "boundedframe strictMIME low-leveltext opaque; no successful grammar/issuance/trace claim"
+}

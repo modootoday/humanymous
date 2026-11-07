@@ -64,3 +64,42 @@ integration. Full goal and all original14 responsibilities remain incomplete.
 New PNG/CRC/base32/WASM dependencies require a separate official primary-source
 version/checksum/license/advisory proposal before root adoption. No handrolled
 cryptography or foreign glue. Legacy source deletion remains root-owned.
+
+## Second source-only carrier slice
+
+The earlier A16 receipt subsequently qualified the original9b064dbd payload/ledger
+source:16pure units, check, strict Clippy and fmt passed. That receipt does not
+qualify this newer source. Root now authorizes frame/MIME/text/opaque source and
+tests without dependency or root graph changes; no compiler/workload during the
+Pages window. The manifest remains unchanged. Ledger/payload source is unchanged.
+
+`frame` adds checked legacy CRC envelopes and bounded noise recovery with
+duplicate deduplication, distinct-carrier ambiguity and candidate exhaustion.
+CRC32 is corruption detection, not MAC/ECC. Explicit limits cannot exceed32MiB
+input,33MiB output,65535carrier bytes or64marker/frame candidates per recovery.
+Text comments consume both an outer marker and any contained frame candidates.
+Strict fourteen-byte carrier interpretation and HMAC lookup remain separate.
+
+`codec::mime::select` uses bounded ASCII type/subtype/parameter syntax and exact
+families/structured suffixes. Unknown types are Unsupported, never a binary
+fallback. `Png`/`Wasm` identify pending branches only. `codec::binary` appends an
+opaque trailer only after caller format qualification. `codec::text` preserves
+historical markup/block-comment and JSON whitespace bytes (including scalars),
+with NUL/UTF-8/size checks and bounded common recovery. Private RFC4648 base32
+encoding/decoding introduces no dependency or cryptographic primitive. Original
+grammar is NOT validated by these low-level transforms; W03 source validation
+and W07 encode/commit/response ordering are mandatory in future composition.
+There is no new high-level Apply/Trace API to bypass those responsibilities.
+
+Twenty-nine tests are authored in this candidate (original16 plus13new cases),
+NOT_RUN on this candidate. Direct rustfmt is source formatting only. Independent
+CRC and RFC4648 vectors, damaged/later-valid candidates, duplicate/ambiguous
+frames, exact length/budget caps, MIME grammar and scalar JSON whitespace are
+included. Actual parse/render/execution pilots remain missing.
+
+WASM codec is explicitly unimplemented pending root adoption/review of the
+previous exact wasmparser0.263.0 proposal (default-features=false; std,validate,
+features). No handwritten WASM validator will replace standards validation.
+Instruction/type validation, explicit supported proposals, components refusal,
+count/work limits and real exported-module execution remain required. PNG
+metadata/LSB/alpha and memory/cancellation obligations remain open, not retired.

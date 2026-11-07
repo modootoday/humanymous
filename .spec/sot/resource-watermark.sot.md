@@ -19,6 +19,13 @@ hmac/sha2/subtle/zeroize. Root owns workspace registration and lock integration.
 No Cargo execution, codec dependency adoption, runtime wiring or actual pilot is
 allocated. V1–V5 remain separate gates; final parity is not established.
 
+The later second source-only grant permits bounded frame, strict MIME selection
+and low-level text/opaque transforms without new dependencies. Its source delta
+and complete fourteen-row status are in plan:root/20261107135500. Pages window
+prohibits compiler/workload execution. This newer source is not covered by the
+earlier A16 source-specific pass. WASM validator adoption and PNG remain pending;
+strict MIME identification alone does not implement those formats.
+
 ## 1. Brief and evidence boundary
 
 Migrate the complete twelve implementation and two test files in

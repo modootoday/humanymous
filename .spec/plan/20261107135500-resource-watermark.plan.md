@@ -54,6 +54,58 @@ Foreign dirty files are untouched. Shared Git/index operations were not used.
 
 ## Proposed interface for owner review
 
+### Accepted second source-only slice delta
+
+Root authorized bounded frame, deterministic strict MIME selection, text and
+explicit opaque-binary carrier responsibilities in the existing crate without
+new dependencies/graph edits. Pages window prohibits compiler/workload execution.
+This is source plus tests only; A16 evidence applies to the earlier source only.
+
+- Frame layout remains HMWM/u16be length/carrier/IEEE CRC32. CRC32 is ordinary
+  corruption detection, not cryptography/ECC. Implement the standard reflected
+  IEEE polynomial with independent known vectors, checked lengths, input/output
+  caps and at most64 marker candidates. Exhausted candidate budgets fail as
+  ResourceLimit even if an earlier candidate decoded. Distinct valid carriers
+  fail Ambiguous; repeated identical carriers are deduplicated. Bound every scan
+  by32MiB input and every output by33MiB; reject oversized configuration.
+- MIME selection parses an ASCII type/subtype essence with bounded parameters,
+  lowercases it, matches explicit safe families and suffixes, never substring
+  heuristics for new selection. Unknown types select Unsupported, never automatic
+  binary-trailer issuance. Opaque trailer encoding requires explicit octet-stream
+  dispatch/caller format qualification. Legacy recovery scans remain independent
+  of strict issuance selection.
+- Text is a low-level bounded carrier transformation (JSON trailing whitespace,
+  markup comments, block comments), not an input grammar validator or high-level
+  issuance API. The eventual issuance composition MUST validate source semantics
+  and select a supported syntax before calling it (W03/W07); this slice does not
+  claim invalid source becomes valid. Preserve legacy padded RFC4648 base32 and
+  space/tab MSB-first bytes. Scan all bounded candidates, detect ambiguity, and
+  keep strict/legacy extraction length policy explicit. NUL is forbidden in new
+  text input; legacy byte-oriented recovery remains permitted. New source needs
+  UTF-8 and size admission. No arbitrary text/plain semantic claim is added.
+- WASM strict dispatch identifies application/wasm, but its codec branch stays
+  explicitly unimplemented until root adopts a validator: parsing a header or
+  section extents cannot establish standards-correct module validity. Existing
+  exact wasmparser0.263.0 checksum/license proposal requests default-features=false,
+  features std/validate/features, rejecting components and selecting explicit
+  module proposals. Root must accept the graph/source review before this branch
+  is authored; no handwritten WASM validator will bypass that gate.
+- PNG metadata/LSB/multi remain pending with alpha/premultiplication, actual
+  metadata-strip and hard allocation/cancellation proof, not retired or replaced
+  by trailers. No full format parity or resource pilot follows from source.
+- Ledger TTL/clock/ID exhaustion/cancellation rules stay unchanged; no issuance
+  reuses IDs, accepts NUL identifiers or bypasses authenticated trace/lookup.
+
+Fourteen-row mapping for this delta: payload.go and ledger.go are A16-qualified
+initial components only; ecc.go maps to new bounded frame; codec.go to strict
+MIME selection; codec_text.go to low-level text transforms; codec_binary.go to
+explicit opaque trailers. codecwasm.go stays pending validator adoption.
+codec_png.go, codec_lsb.go and codec_png_multi.go stay pending PNG qualification.
+inject.go and extract.go need full channel orchestration after all codecs exist;
+this slice supplies bounded common recovery only. watermark_test.go's full
+eight-family/semantic/trace assertions and lsb_test.go's two real PNG assertions
+remain open; new frame/text/binary tests are narrower additions, not replacements.
+
 The package accepts `Payload` (tag ID, session ID, asset ID, bucket), typed secret
 reference/borrow and `CodecLimits`, returning `AppliedResource` (bytes, channels,
 degradation reason and hashes). Pure `frame` and `recover` return bounded typed

@@ -26,6 +26,16 @@ pub enum Error {
     ReservationMismatch,
     /// MIME/channel/pseudonym metadata exceeds the accepted bounds.
     InvalidMetadata,
+    /// Input, output, parser work or candidate count exceeds admission limits.
+    ResourceLimit,
+    /// No complete CRC-valid frame was found; this is not a verdict.
+    NoFrame,
+    /// Distinct valid carriers prevent deterministic attribution.
+    Ambiguous,
+    /// The MIME declaration is malformed or outside the strict ASCII profile.
+    InvalidMime,
+    /// New text input is not UTF-8 or contains forbidden NUL bytes.
+    InvalidText,
 }
 
 impl std::fmt::Display for Error {
@@ -42,6 +52,11 @@ impl std::fmt::Display for Error {
             Self::ReservationExpired => "watermark reservation expired",
             Self::ReservationMismatch => "watermark reservation mismatch",
             Self::InvalidMetadata => "invalid watermark metadata",
+            Self::ResourceLimit => "watermark resource limit",
+            Self::NoFrame => "no valid watermark frame",
+            Self::Ambiguous => "ambiguous watermark carriers",
+            Self::InvalidMime => "invalid watermark MIME declaration",
+            Self::InvalidText => "invalid watermark text input",
         })
     }
 }
