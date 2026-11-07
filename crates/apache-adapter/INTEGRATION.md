@@ -1,5 +1,42 @@
 # Apache adapter integration frontier
 
+## Adapter-family naming migration handoff (2026-11-08 KST)
+
+Target convention comes from sot:root/structural-development, not a Cargo syntax
+requirement. This inventory does not execute a rename. Root must migrate graph,
+source, lock, workflows, artifacts and current documentation together. The two
+Apache packages are publish=false; this is not a crates.io publication request.
+
+| Surface | Current identity | Coordinated migration impact |
+| --- | --- | --- |
+| Safe package/default library | humanymous-apache-adapter / humanymous_apache_adapter | Target package humanymous-adapter-apache; without a library-name override the Rust identifier becomes humanymous_adapter_apache. Native Cargo dependency key and host.rs import must agree. |
+| Native package/default library | humanymous-apache-native / humanymous_apache_native | Target package humanymous-adapter-apache-native. Its cdylib/rlib has no explicit [lib].name, so the default Rust identifier and Linux build artifact become humanymous_adapter_apache_native and libhumanymous_adapter_apache_native.so. |
+| Shared framework dependency | humanymous-framework-adapter / humanymous_framework_adapter | Target humanymous-adapter-framework / humanymous_adapter_framework. Native optional dependency keys, dep: feature entries and imports in host, coordinator and pilot modules must migrate atomically with the provider. |
+| Explicit pilot binary | humanymous-apache-pilot | [[bin]].name is explicit and does not follow a package rename. Preserve it unless root approves a separate mapping; --bin commands, Docker install source and executable paths must remain consistent. |
+| Apache runtime module paths | /opt/httpd/modules/libhumanymous_apache_native.so and libhumanymous_apache_probe.so | These are host-facing contracts, not inferred package names. Root must explicitly choose preserving them via a library-name override or mapping the newly named build artifact into these stable installed names, or approve a full runtime-path migration. No choice is implemented here. |
+| Apache exported ABI/config | humanymous_module, LoadModule humanymous_module, HumanymousConfig | Keep the exported no_mangle module symbol and directive compatible. Cargo taxonomy alone does not authorize changing Apache loader/config names. |
+| Profile/provenance registry | AdapterProfile::Apache; apache; humanymous.apache/0.1.0-experimental.1; apache-normalized | Shared service/provenance identities do not derive from Cargo names. Preserve unless their owning accepted contracts explicitly migrate. Apache has no Python/Ruby import-module alias to rename. |
+
+Current command/recipe consumers are .github/workflows/apache-validation.yml,
+adapters/apache/Dockerfile.native and coordinator-contract.json. Both -p package
+selectors change; the explicit --bin selector need not. The Dockerfile currently
+copies the native default build filename for both production and probe builds.
+The pilot LoadModule fixture, module/probe hash reads and pilot-contract.json
+artifact paths must match the chosen installed-name compatibility map. The local
+nonce-scoped humanymous-apache-pilot image tag is not a registry publication or
+an automatically inferred package name. ABI/header receipts and module hashes
+must be regenerated and checked against the actual selected artifacts.
+
+Root owns Cargo.toml/Cargo.lock and any crate path/claim remap; CI owns catalog/
+policy changes, and Pages owns public docs. No directory relocation follows from
+this inventory. Shared native-abi/native-security provider names stay outside
+the host-adapter rename. Historical b400 commands, source/manifests, hashes and
+45-case receipt stay unchanged; they do not qualify renamed artifacts. After a
+coherent root checkpoint, scoped fmt/check/tests/Clippy and actual Apache loader,
+three-MPM and cleanup evidence are required before promoting the renamed tuple.
+
+## Qualified component and retained history
+
 The requested Apache component scope is complete at exact source
 b400094480483d9abb8328234f9de12520b71b65. Root registered the native crate and
 approved its narrow generated ABI. Genuine hosted run42374566498/job128409407533
