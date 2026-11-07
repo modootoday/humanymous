@@ -1,0 +1,1640 @@
+{
+  "schema": "humanymous.runtime-context-design-inventory/1",
+  "slice": "RUNTIME-SLICE-02",
+  "status": "read-only source design; exact context names and owner visibility dispositions require Root freeze",
+  "source_head": "d0812755604e83e3e17dceb7984fb4ba20d6a982",
+  "proposed_contexts": [
+    "gateway",
+    "authority",
+    "audit",
+    "capture",
+    "network",
+    "native_security"
+  ],
+  "entry_manifests": [
+    {
+      "path": "crates/runtime/Cargo.toml",
+      "sha256": "52127fac053b7aa686c75242cc07864086af07b568fd7bbd063b265df126183f"
+    },
+    {
+      "path": "crates/runtime/src/lib.rs",
+      "sha256": "69ece5ec5219113b8e09c165de475ea8e8248e32293ed1f7866bc36bdf201f02"
+    },
+    {
+      "path": "crates/authority/Cargo.toml",
+      "sha256": "66f2c101adbf9aed9598fccbfcc1590b9cf7c51c2463498625846eeea14e204a"
+    },
+    {
+      "path": "crates/authority/src/lib.rs",
+      "sha256": "a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db"
+    },
+    {
+      "path": "crates/audit/Cargo.toml",
+      "sha256": "dcf360b4573dea6a3fdcfca7cb18181a5a80d9fcc02355424f2c5725572c077a"
+    },
+    {
+      "path": "crates/audit/src/lib.rs",
+      "sha256": "4f9f9f5cfe6bb5a8d964bce1f1f9b258b2b3388ac16873434a9e501bf1b5e197"
+    },
+    {
+      "path": "crates/capture/Cargo.toml",
+      "sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840"
+    },
+    {
+      "path": "crates/capture/src/lib.rs",
+      "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076"
+    },
+    {
+      "path": "crates/network/Cargo.toml",
+      "sha256": "895515bf07949a02008a39e03a426134280e42f59420c99c31ba0a7359c3971f"
+    },
+    {
+      "path": "crates/network/src/lib.rs",
+      "sha256": "c41921f17de36168339794339bcef3649f72457e7e5e8bc007b1345425479461"
+    },
+    {
+      "path": "crates/native-security/Cargo.toml",
+      "sha256": "d195018b44ed68b5d2c4000f023cbbd33021941f0285c7cbbc0869b3c6e19485"
+    },
+    {
+      "path": "crates/native-security/src/lib.rs",
+      "sha256": "c6ce48bdcc12e9ff440285ddf0d3bf17b231d1fc24b7872f22bace8e8afdd7d0"
+    }
+  ],
+  "crate_visibility_matches": 98,
+  "crate_visibility_inventory": [
+    {
+      "path": "crates/runtime/src/tls.rs",
+      "line": 19,
+      "text": "pub(crate) fn validate_configuration(",
+      "file_sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db"
+    },
+    {
+      "path": "crates/runtime/src/tls.rs",
+      "line": 89,
+      "text": "    pub(crate) fn parts(&mut self) -> (&Request, &mut Connection) {",
+      "file_sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db"
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "line": 36,
+      "text": "pub(crate) fn config() -> Configuration {",
+      "file_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181"
+    },
+    {
+      "path": "crates/native-security/src/process/mod.rs",
+      "line": 7,
+      "text": "pub(crate) fn require_owned_service_name(name: &str) -> std::io::Result<()> {",
+      "file_sha256": "04e51540d0b09d6dc7a51cd59b49f39271075d6999cdc6bc6de2595bf55a52aa"
+    },
+    {
+      "path": "crates/authority/src/transport/windows.rs",
+      "line": 59,
+      "text": "pub(crate) struct Stream {",
+      "file_sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86"
+    },
+    {
+      "path": "crates/authority/src/transport/windows.rs",
+      "line": 91,
+      "text": "pub(crate) async fn connect(endpoint: &str, server: &Peer) -> io::Result<Stream> {",
+      "file_sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86"
+    },
+    {
+      "path": "crates/authority/src/transport/unix.rs",
+      "line": 57,
+      "text": "pub(crate) async fn connect(endpoint: &str, server: &Peer) -> io::Result<tokio::net::UnixStream> {",
+      "file_sha256": "cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623"
+    },
+    {
+      "path": "crates/network/src/tls/mod.rs",
+      "line": 8,
+      "text": "pub(crate) fn is_grease(value: u16) -> bool {",
+      "file_sha256": "2e228aa45058301fdba6fa05533884f24fdd7fcfee140487b994d19f9279de02"
+    },
+    {
+      "path": "crates/audit/src/record/mod.rs",
+      "line": 5,
+      "text": "pub(crate) use canonical::record_hash_bounded;",
+      "file_sha256": "d3287a2f21ef0628a366c5cae128b0cb53877bca099900a9f3e862449069654c"
+    },
+    {
+      "path": "crates/audit/src/record/canonical.rs",
+      "line": 62,
+      "text": "pub(crate) fn record_hash_bounded(",
+      "file_sha256": "649465eb6bf3b9c5d37010ffb59f0add91cc240ac5e433455d9565095019136f"
+    },
+    {
+      "path": "crates/network/src/history/mod.rs",
+      "line": 21,
+      "text": "pub(crate) struct OrderedTime {",
+      "file_sha256": "92a16e6232be87ebe41645da606e600a8717c19ef991875dc4db82e80806e197"
+    },
+    {
+      "path": "crates/network/src/history/mod.rs",
+      "line": 25,
+      "text": "    pub(crate) fn new() -> Self {",
+      "file_sha256": "92a16e6232be87ebe41645da606e600a8717c19ef991875dc4db82e80806e197"
+    },
+    {
+      "path": "crates/network/src/history/mod.rs",
+      "line": 28,
+      "text": "    pub(crate) fn check(&self, now: Duration) -> Result<(), Unavailable> {",
+      "file_sha256": "92a16e6232be87ebe41645da606e600a8717c19ef991875dc4db82e80806e197"
+    },
+    {
+      "path": "crates/network/src/history/mod.rs",
+      "line": 34,
+      "text": "    pub(crate) fn commit(&mut self, now: Duration) {",
+      "file_sha256": "92a16e6232be87ebe41645da606e600a8717c19ef991875dc4db82e80806e197"
+    },
+    {
+      "path": "crates/authority/src/transport/mod.rs",
+      "line": 29,
+      "text": "pub(crate) use unix::connect;",
+      "file_sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8"
+    },
+    {
+      "path": "crates/authority/src/transport/mod.rs",
+      "line": 31,
+      "text": "pub(crate) use windows::connect;",
+      "file_sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8"
+    },
+    {
+      "path": "crates/audit/src/keys/vault.rs",
+      "line": 30,
+      "text": "    pub(crate) fn issued(subject: &str, operation: &str, scope: &crate::control::Scope) -> Self {",
+      "file_sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef"
+    },
+    {
+      "path": "crates/audit/src/keys/vault.rs",
+      "line": 41,
+      "text": "    pub(crate) fn bound_to(&self, scope: &crate::control::Scope) -> bool {",
+      "file_sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef"
+    },
+    {
+      "path": "crates/audit/src/keys/vault.rs",
+      "line": 108,
+      "text": "    pub(crate) fn authorizes(&self, permit: &ErasurePermit) -> bool {",
+      "file_sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef"
+    },
+    {
+      "path": "crates/audit/src/checkpoint/mod.rs",
+      "line": 72,
+      "text": "    pub(crate) fn verify_signature_bounded(",
+      "file_sha256": "ed75c03c275b144d3aeeea7192b35a23bf30f36b497aeb6ee828fe768524700e"
+    },
+    {
+      "path": "crates/audit/src/keys/custody.rs",
+      "line": 4,
+      "text": "pub(crate) mod permissions;",
+      "file_sha256": "5f5a5af22be524bc8149f9e95deb0f27768bbe9753521c88ee1773277c91b60a"
+    },
+    {
+      "path": "crates/audit/src/merkle/mod.rs",
+      "line": 4,
+      "text": "pub(crate) mod frontier;",
+      "file_sha256": "4b330b6eb2e807f95eab77782358f3c93a828de6dcf49bd9e5d9e32c0c9b21de"
+    },
+    {
+      "path": "crates/audit/src/keys/custody/permissions.rs",
+      "line": 8,
+      "text": "pub(crate) fn directory(path: &Path, owner: &Owner) -> io::Result<()> {",
+      "file_sha256": "8cc7d719ac2f16e5b0fa431f6e1987bfb1bb681a440ed7af0bfe2bf9c1594777"
+    },
+    {
+      "path": "crates/audit/src/keys/custody/permissions.rs",
+      "line": 35,
+      "text": "pub(crate) fn create(path: &Path) -> io::Result<File> {",
+      "file_sha256": "8cc7d719ac2f16e5b0fa431f6e1987bfb1bb681a440ed7af0bfe2bf9c1594777"
+    },
+    {
+      "path": "crates/audit/src/keys/custody/permissions.rs",
+      "line": 46,
+      "text": "pub(crate) fn existing(path: &Path, write: bool) -> io::Result<File> {",
+      "file_sha256": "8cc7d719ac2f16e5b0fa431f6e1987bfb1bb681a440ed7af0bfe2bf9c1594777"
+    },
+    {
+      "path": "crates/audit/src/keys/custody/permissions.rs",
+      "line": 85,
+      "text": "pub(crate) fn file(file: &File, owner: &Owner) -> io::Result<()> {",
+      "file_sha256": "8cc7d719ac2f16e5b0fa431f6e1987bfb1bb681a440ed7af0bfe2bf9c1594777"
+    },
+    {
+      "path": "crates/audit/src/keys/custody/permissions.rs",
+      "line": 89,
+      "text": "pub(crate) fn directory_file(file: &File, owner: &Owner) -> io::Result<()> {",
+      "file_sha256": "8cc7d719ac2f16e5b0fa431f6e1987bfb1bb681a440ed7af0bfe2bf9c1594777"
+    },
+    {
+      "path": "crates/audit/src/merkle/frontier.rs",
+      "line": 6,
+      "text": "pub(crate) struct Frontier {",
+      "file_sha256": "5ac5436a73c470f0756fedf90839c1f213fa9a6aa4a1d2d50d5f394c961efa32"
+    },
+    {
+      "path": "crates/audit/src/merkle/frontier.rs",
+      "line": 11,
+      "text": "pub(crate) struct Full;",
+      "file_sha256": "5ac5436a73c470f0756fedf90839c1f213fa9a6aa4a1d2d50d5f394c961efa32"
+    },
+    {
+      "path": "crates/audit/src/control/policy.rs",
+      "line": 268,
+      "text": "    pub(crate) proposal: Proposal,",
+      "file_sha256": "574a01a1652b78c0578a3c80d71aea985c3fe9629b3a4a244c68bdc61ab725a5"
+    },
+    {
+      "path": "crates/audit/src/control/policy.rs",
+      "line": 269,
+      "text": "    pub(crate) digest: String,",
+      "file_sha256": "574a01a1652b78c0578a3c80d71aea985c3fe9629b3a4a244c68bdc61ab725a5"
+    },
+    {
+      "path": "crates/audit/src/control/policy.rs",
+      "line": 270,
+      "text": "    pub(crate) administrators: Vec<String>,",
+      "file_sha256": "574a01a1652b78c0578a3c80d71aea985c3fe9629b3a4a244c68bdc61ab725a5"
+    },
+    {
+      "path": "crates/audit/src/control/retention.rs",
+      "line": 19,
+      "text": "    pub(crate) fn accepts(self, actual: Durability) -> bool {",
+      "file_sha256": "fe555ca9ab526e897b631775f1d895eb7d8a021960775e10cf65b6d640f0969b"
+    },
+    {
+      "path": "crates/audit/src/control/retention.rs",
+      "line": 59,
+      "text": "    pub(crate) fn matches(&self, scope: &Scope, public: &[u8; 32], anchor: &LedgerAnchor) -> bool {",
+      "file_sha256": "fe555ca9ab526e897b631775f1d895eb7d8a021960775e10cf65b6d640f0969b"
+    },
+    {
+      "path": "crates/runtime/src/management/policy.rs",
+      "line": 38,
+      "text": "    pub(crate) fn from_scope(scope: &Scope) -> Self {",
+      "file_sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9"
+    },
+    {
+      "path": "crates/authority/src/protocol/framing.rs",
+      "line": 5,
+      "text": "pub(crate) struct Head {",
+      "file_sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6"
+    },
+    {
+      "path": "crates/authority/src/protocol/framing.rs",
+      "line": 90,
+      "text": "pub(crate) async fn read(",
+      "file_sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6"
+    },
+    {
+      "path": "crates/runtime/src/management/operator.rs",
+      "line": 13,
+      "text": "    pub(crate) fn validate_observer(&self, observer: &Credential) -> io::Result<()> {",
+      "file_sha256": "f12a6e61bd02ced0706b5995f2124a200dfbe376903b998b4b082fdeb93d7fd0"
+    },
+    {
+      "path": "crates/runtime/src/management/operator.rs",
+      "line": 26,
+      "text": "pub(crate) struct SettingsChange {",
+      "file_sha256": "f12a6e61bd02ced0706b5995f2124a200dfbe376903b998b4b082fdeb93d7fd0"
+    },
+    {
+      "path": "crates/runtime/src/management/operator.rs",
+      "line": 31,
+      "text": "pub(crate) struct SettingsCommand {",
+      "file_sha256": "f12a6e61bd02ced0706b5995f2124a200dfbe376903b998b4b082fdeb93d7fd0"
+    },
+    {
+      "path": "crates/runtime/src/browser.rs",
+      "line": 82,
+      "text": "pub(crate) struct Ack {",
+      "file_sha256": "9cc32a76b1aec49c01dbdea13f8266d737effdc68572d3050daad11806076e6d"
+    },
+    {
+      "path": "crates/runtime/src/browser.rs",
+      "line": 89,
+      "text": "    pub(crate) fn new(key: &[u8; 32], request: &Request, counter: u64, bucket: u64) -> Self {",
+      "file_sha256": "9cc32a76b1aec49c01dbdea13f8266d737effdc68572d3050daad11806076e6d"
+    },
+    {
+      "path": "crates/runtime/src/browser.rs",
+      "line": 104,
+      "text": "    pub(crate) fn headers(&self, status: u16) -> Result<Vec<(String, String)>, Rejection> {",
+      "file_sha256": "9cc32a76b1aec49c01dbdea13f8266d737effdc68572d3050daad11806076e6d"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 11,
+      "text": "pub(crate) use operator::SettingsCommand;",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 18,
+      "text": "pub(crate) type SharedProfile = Arc<RwLock<serde_json::Value>>;",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 34,
+      "text": "    pub(crate) fn bind(",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 74,
+      "text": "    pub(crate) fn operator_credential_for_private_provisioning(&self) -> Option<&str> {",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 81,
+      "text": "    pub(crate) async fn run(",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/http.rs",
+      "line": 9,
+      "text": "pub(crate) const MAX_ORIGIN_FRAME: usize = MAX_BODY * 2 + MAX_HEADER;",
+      "file_sha256": "c69c60bdc3c33072d10175b0e315db636e0d985958744ab7e09de57065a69da6"
+    },
+    {
+      "path": "crates/runtime/src/http.rs",
+      "line": 163,
+      "text": "pub(crate) async fn write_headers(",
+      "file_sha256": "c69c60bdc3c33072d10175b0e315db636e0d985958744ab7e09de57065a69da6"
+    },
+    {
+      "path": "crates/runtime/src/http.rs",
+      "line": 249,
+      "text": "pub(crate) mod stream;",
+      "file_sha256": "c69c60bdc3c33072d10175b0e315db636e0d985958744ab7e09de57065a69da6"
+    },
+    {
+      "path": "crates/runtime/src/http.rs",
+      "line": 250,
+      "text": "pub(crate) use origin_response::Response;",
+      "file_sha256": "c69c60bdc3c33072d10175b0e315db636e0d985958744ab7e09de57065a69da6"
+    },
+    {
+      "path": "crates/runtime/src/application/settings.rs",
+      "line": 32,
+      "text": "    pub(crate) fn install_settings(",
+      "file_sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61"
+    },
+    {
+      "path": "crates/runtime/src/application/settings.rs",
+      "line": 46,
+      "text": "    pub(crate) fn operational_revision(&self) -> Option<u64> {",
+      "file_sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61"
+    },
+    {
+      "path": "crates/runtime/src/application/tls.rs",
+      "line": 9,
+      "text": "    pub(crate) fn validate_tls_h1(&self, config: &ServerConfig) -> io::Result<()> {",
+      "file_sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6"
+    },
+    {
+      "path": "crates/runtime/src/session.rs",
+      "line": 28,
+      "text": "    pub(crate) ack: Option<browser::Ack>,",
+      "file_sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4"
+    },
+    {
+      "path": "crates/runtime/src/session.rs",
+      "line": 174,
+      "text": "    pub(crate) fn issue_browser(",
+      "file_sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4"
+    },
+    {
+      "path": "crates/runtime/src/session.rs",
+      "line": 310,
+      "text": "    pub(crate) fn admit_authorized(&mut self, id: &str) -> bool {",
+      "file_sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4"
+    },
+    {
+      "path": "crates/runtime/src/session.rs",
+      "line": 318,
+      "text": "    pub(crate) fn collect_browser(&mut self, id: &str, body: &[u8]) -> Result<(), Rejection> {",
+      "file_sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4"
+    },
+    {
+      "path": "crates/runtime/src/session.rs",
+      "line": 377,
+      "text": "    pub(crate) fn invalidate_all(&mut self) -> Result<(), Rejection> {",
+      "file_sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4"
+    },
+    {
+      "path": "crates/runtime/src/settings.rs",
+      "line": 61,
+      "text": "    pub(crate) fn validate_binding(&self, config: &Configuration) -> Result<(), Rejection> {",
+      "file_sha256": "3e04120155988ae12fb7bcdbfcbd571519e039f2aec15c0c6f879fadf4abe2fa"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 48,
+      "text": "pub(crate) struct SharedAudit(pub(crate) Arc<Mutex<SealedAudit>>);",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/http/stream.rs",
+      "line": 14,
+      "text": "pub(crate) async fn forward(",
+      "file_sha256": "02444bb5a9212b3976d3a60eb7dc03eb0802e902a889f252017e41e278dac56b"
+    },
+    {
+      "path": "crates/runtime/src/settings/store.rs",
+      "line": 266,
+      "text": "    pub(crate) fn apply(self, config: &mut Configuration) -> Result<(), crate::Rejection> {",
+      "file_sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 27,
+      "text": "    pub(crate) fn durability_name(&self) -> &'static str {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 48,
+      "text": "    pub(crate) fn matches_control_scope(&self, scope: &humanymous_audit::control::Scope) -> bool {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 51,
+      "text": "    pub(crate) fn witnessed_through(&self) -> std::io::Result<Option<u64>> {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 62,
+      "text": "    pub(crate) fn sequence(&self) -> u64 {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 65,
+      "text": "    pub(crate) fn matches_config(&self, config: &Configuration) -> bool {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 69,
+      "text": "    pub(crate) fn records(&self) -> std::io::Result<Vec<humanymous_audit::record::Record>> {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 149,
+      "text": "pub(crate) fn native_owner(peer: &Peer) -> Result<Owner, &'static str> {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/audit/src/storage/exclusive_file.rs",
+      "line": 4,
+      "text": "pub(crate) struct ExclusiveFile {",
+      "file_sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69"
+    },
+    {
+      "path": "crates/audit/src/storage/exclusive_file.rs",
+      "line": 8,
+      "text": "    pub(crate) fn acquire(file: File) -> io::Result<Self> {",
+      "file_sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69"
+    },
+    {
+      "path": "crates/audit/src/storage/exclusive_file.rs",
+      "line": 18,
+      "text": "    pub(crate) fn duplicate_description(&self) -> io::Result<File> {",
+      "file_sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69"
+    },
+    {
+      "path": "crates/runtime/src/http/origin_response.rs",
+      "line": 6,
+      "text": "pub(crate) struct Response {",
+      "file_sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39"
+    },
+    {
+      "path": "crates/runtime/src/http/origin_response.rs",
+      "line": 7,
+      "text": "    pub(crate) status: u16,",
+      "file_sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39"
+    },
+    {
+      "path": "crates/runtime/src/http/origin_response.rs",
+      "line": 49,
+      "text": "    pub(crate) fn parse(bytes: &[u8], head: bool) -> Result<Self, Rejection> {",
+      "file_sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39"
+    },
+    {
+      "path": "crates/runtime/src/http/origin_response.rs",
+      "line": 152,
+      "text": "    pub(crate) fn encode(&self, extra: &[(String, String)]) -> Result<Vec<u8>, Rejection> {",
+      "file_sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39"
+    },
+    {
+      "path": "crates/audit/src/storage/mod.rs",
+      "line": 4,
+      "text": "pub(crate) mod framing;",
+      "file_sha256": "a03b885e3af62cee8ac9d226e971cfc9cf60362741dcdfd899c1140c01d0b448"
+    },
+    {
+      "path": "crates/audit/src/storage/mod.rs",
+      "line": 6,
+      "text": "pub(crate) use exclusive_file::ExclusiveFile;",
+      "file_sha256": "a03b885e3af62cee8ac9d226e971cfc9cf60362741dcdfd899c1140c01d0b448"
+    },
+    {
+      "path": "crates/audit/src/storage/mod.rs",
+      "line": 10,
+      "text": "pub(crate) use private_state::PrivateState;",
+      "file_sha256": "a03b885e3af62cee8ac9d226e971cfc9cf60362741dcdfd899c1140c01d0b448"
+    },
+    {
+      "path": "crates/audit/src/storage/framing.rs",
+      "line": 3,
+      "text": "pub(crate) mod cursor;",
+      "file_sha256": "0fd543e7651a482a1f9b9af717d272ed97e8a3f4ed985d742ef084f34247c8b4"
+    },
+    {
+      "path": "crates/audit/src/storage/framing.rs",
+      "line": 8,
+      "text": "pub(crate) mod preflight;",
+      "file_sha256": "0fd543e7651a482a1f9b9af717d272ed97e8a3f4ed985d742ef084f34247c8b4"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/cursor.rs",
+      "line": 5,
+      "text": "pub(crate) struct FrameCursor<R> {",
+      "file_sha256": "b8a4929245b696c2f3659d4a84201a988976248d45d2277e0b5132c299ce1f46"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/cursor.rs",
+      "line": 116,
+      "text": "pub(crate) fn content(raw: &[u8]) -> &[u8] {",
+      "file_sha256": "b8a4929245b696c2f3659d4a84201a988976248d45d2277e0b5132c299ce1f46"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 10,
+      "text": "pub(crate) struct PrivateState {",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 19,
+      "text": "    pub(crate) fn open(dir: &Path, owner: Owner, namespace: &str) -> io::Result<Self> {",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 22,
+      "text": "    pub(crate) fn open_bounded(",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 89,
+      "text": "    pub(crate) fn pending(&self) -> io::Result<Option<Vec<u8>>> {",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 92,
+      "text": "    pub(crate) fn committed(&self) -> io::Result<Option<Vec<u8>>> {",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 95,
+      "text": "    pub(crate) fn read(&self) -> io::Result<Option<Vec<u8>>> {",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 101,
+      "text": "    pub(crate) fn commit(&mut self, bytes: &[u8]) -> io::Result<Durability> {",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/private_state.rs",
+      "line": 124,
+      "text": "    pub(crate) fn promote_pending(&mut self) -> io::Result<Durability> {",
+      "file_sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight.rs",
+      "line": 6,
+      "text": "pub(crate) struct Limits {",
+      "file_sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight.rs",
+      "line": 14,
+      "text": "pub(crate) enum Exhausted {",
+      "file_sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight.rs",
+      "line": 23,
+      "text": "pub(crate) struct Counts {",
+      "file_sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight.rs",
+      "line": 48,
+      "text": "pub(crate) fn check(bytes: &[u8], limits: Limits) -> Result<Counts, Exhausted> {",
+      "file_sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0"
+    },
+    {
+      "path": "crates/runtime/src/service/shutdown.rs",
+      "line": 17,
+      "text": "    pub(crate) fn drain_timeout(self) -> Duration {",
+      "file_sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb"
+    }
+  ],
+  "context_cross_reference_matches": 121,
+  "context_cross_reference_inventory": [
+    {
+      "path": "crates/authority/src/transport/windows.rs",
+      "line": 122,
+      "text": "    humanymous_native_security::storage::verify_windows_pipe_privacy(&inner, sid)?;",
+      "file_sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86"
+    },
+    {
+      "path": "crates/capture/src/tls/transport.rs",
+      "line": 3,
+      "text": "use humanymous_network::tls::ClientHello;",
+      "file_sha256": "a6054eb2b704b7f66a3086da6808f5985eb1748cd62a3b9a4d92e2b60f3357f8"
+    },
+    {
+      "path": "crates/capture/src/tls/hello.rs",
+      "line": 1,
+      "text": "use humanymous_network::tls::{ClientHello, parse_client_hello};",
+      "file_sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153"
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "line": 5,
+      "text": "use humanymous_network::http2::{Fingerprint, Setting};",
+      "file_sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb"
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "line": 98,
+      "text": "    monitor: humanymous_network::http2::FrameMonitor,",
+      "file_sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb"
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "line": 116,
+      "text": "            monitor: humanymous_network::http2::FrameMonitor::default(),",
+      "file_sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb"
+    },
+    {
+      "path": "crates/authority/src/transport/permissions.rs",
+      "line": 52,
+      "text": "        humanymous_audit::storage::permissions::verify_windows_privacy(",
+      "file_sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c"
+    },
+    {
+      "path": "crates/authority/src/transport/permissions.rs",
+      "line": 55,
+      "text": "            humanymous_audit::storage::permissions::WindowsPrivacy::ProtectedDirectory,",
+      "file_sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c"
+    },
+    {
+      "path": "crates/authority/src/startup.rs",
+      "line": 10,
+      "text": "use humanymous_audit::{",
+      "file_sha256": "102bcce5c8c756debfe8ef6528dddf258e50e24aaeaeb182fd07886e3f15c15c"
+    },
+    {
+      "path": "crates/authority/src/startup.rs",
+      "line": 64,
+      "text": "                    use humanymous_native_security::secret::{",
+      "file_sha256": "102bcce5c8c756debfe8ef6528dddf258e50e24aaeaeb182fd07886e3f15c15c"
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "line": 7,
+      "text": "use humanymous_audit::{log::Log, record::Record};",
+      "file_sha256": "437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c"
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "line": 40,
+      "text": "        use humanymous_network::{",
+      "file_sha256": "437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c"
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "line": 89,
+      "text": "impl DurableAudit for humanymous_audit::log::SealedLog {",
+      "file_sha256": "437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c"
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "line": 91,
+      "text": "        humanymous_audit::log::SealedLog::append(self, record).map(|_| ())",
+      "file_sha256": "437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c"
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "line": 133,
+      "text": "    pub trusted_head: Option<humanymous_audit::checkpoint::Checkpoint>,",
+      "file_sha256": "42f675ac4b4063de4866160140adaae06105ba2156b8bd2f5444c0ac7d27b146"
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "line": 2,
+      "text": "use humanymous_authority::{",
+      "file_sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e"
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "line": 27,
+      "text": "        Some(humanymous_authority::configuration::UnlockSource::InheritedPrivatePipe {",
+      "file_sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e"
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "line": 30,
+      "text": "        Some(humanymous_authority::configuration::UnlockSource::OsServiceStore { .. }) => {",
+      "file_sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e"
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "line": 34,
+      "text": "    let log = humanymous_authority::startup::open_audit(&mut config.audit, &config.peer, None)?;",
+      "file_sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e"
+    },
+    {
+      "path": "crates/runtime/src/control.rs",
+      "line": 3,
+      "text": "use humanymous_audit::control::{Scope, target_commitment};",
+      "file_sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc"
+    },
+    {
+      "path": "crates/runtime/src/configuration.rs",
+      "line": 3,
+      "text": "use humanymous_authority::configuration::{Peer, Required, Scope};",
+      "file_sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e"
+    },
+    {
+      "path": "crates/runtime/src/configuration.rs",
+      "line": 173,
+      "text": "                || humanymous_authority::configuration::reserved(&route.path)",
+      "file_sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e"
+    },
+    {
+      "path": "crates/runtime/src/control/state.rs",
+      "line": 4,
+      "text": "use humanymous_audit::control::{Action, LedgerAnchor, RetainedControlState, Scope};",
+      "file_sha256": "f681fdaa2a898a92e5da58eb53a17a7660f4d841596ab8046fde82072944925e"
+    },
+    {
+      "path": "crates/runtime/src/main.rs",
+      "line": 2,
+      "text": "use humanymous_runtime::service::{ServiceHost, read_configuration};",
+      "file_sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797"
+    },
+    {
+      "path": "crates/runtime/src/lib.rs",
+      "line": 14,
+      "text": "pub use humanymous_authority::Rejection;",
+      "file_sha256": "69ece5ec5219113b8e09c165de475ea8e8248e32293ed1f7866bc36bdf201f02"
+    },
+    {
+      "path": "crates/audit/src/bin/audit-witness.rs",
+      "line": 4,
+      "text": "    let result = humanymous_audit::checkpoint::service::serve(",
+      "file_sha256": "143b7c6fd620704d737cc2d6610ec305a10e35a4ffff0aba792f99dcdc1caa4d"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 9,
+      "text": "use humanymous_authority::decision::DurableAudit;",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 50,
+      "text": "    fn append(&mut self, record: humanymous_audit::record::Record) -> io::Result<()> {",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 106,
+      "text": "        tail: humanymous_audit::storage::TailRecovery,",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 146,
+      "text": "        tail: humanymous_audit::storage::TailRecovery,",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 168,
+      "text": "        recovery: Option<humanymous_audit::storage::TailRecovery>,",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 192,
+      "text": "        recovery: Option<humanymous_audit::storage::TailRecovery>,",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/service.rs",
+      "line": 211,
+      "text": "        recovery: Option<humanymous_audit::storage::TailRecovery>,",
+      "file_sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13"
+    },
+    {
+      "path": "crates/runtime/src/management/policy.rs",
+      "line": 2,
+      "text": "use humanymous_authority::{",
+      "file_sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9"
+    },
+    {
+      "path": "crates/audit/src/bin/audit-control-retainer.rs",
+      "line": 4,
+      "text": "    let result = humanymous_audit::control::retention_service::serve(",
+      "file_sha256": "b728c1807b7b6360c9c11024df9a5db8de30946c34de784eb35b7d8b174cf77d"
+    },
+    {
+      "path": "crates/audit/src/storage/permissions.rs",
+      "line": 2,
+      "text": "pub use humanymous_native_security::storage::{WindowsPrivacy, verify_windows_privacy};",
+      "file_sha256": "ec1bd4b017f609c4eebb2d431bf47ac9605a15824928bc43b09ddc433ac0a02a"
+    },
+    {
+      "path": "crates/runtime/src/service/observed.rs",
+      "line": 5,
+      "text": "use humanymous_authority::startup::observer::{",
+      "file_sha256": "70ae58ce40e59fdfe217562c144b380bc6097ce1a63228f1f5d072e7c33d7bda"
+    },
+    {
+      "path": "crates/runtime/src/configuration/audit.rs",
+      "line": 18,
+      "text": "    pub trusted_head: Option<humanymous_audit::checkpoint::Checkpoint>,",
+      "file_sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f"
+    },
+    {
+      "path": "crates/runtime/src/settings/store.rs",
+      "line": 4,
+      "text": "use humanymous_audit::{",
+      "file_sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6"
+    },
+    {
+      "path": "crates/runtime/src/settings/store.rs",
+      "line": 135,
+      "text": "        humanymous_authority::transport::private_directory(&policy.directory, &config.owner)?;",
+      "file_sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 9,
+      "text": "use humanymous_audit::record::Record;",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 10,
+      "text": "use humanymous_authority::{decision::DurableAudit, transport::Admission};",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 13,
+      "text": "use humanymous_network::{",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 106,
+      "text": "        tls: Option<&humanymous_capture::tls::Connection>,",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 164,
+      "text": "            if humanymous_authority::configuration::reserved(path) {",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 461,
+      "text": "        let decision = match self.decide_request(&request, humanymous_authority::now_ms, ack) {",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 498,
+      "text": "                self.check_deadline(deadline, humanymous_authority::now_ms())?;",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 500,
+      "text": "                    .checked_sub(humanymous_authority::now_ms()?)",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "line": 521,
+      "text": "                    self.check_deadline(deadline, humanymous_authority::now_ms())?;",
+      "file_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 5,
+      "text": "use humanymous_authority::{",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 51,
+      "text": "            humanymous_authority::configuration::Peer::Unix { uid } => NativePeer::Unix(*uid),",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/management/mod.rs",
+      "line": 52,
+      "text": "            humanymous_authority::configuration::Peer::Windows { pid, .. } => {",
+      "file_sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb"
+    },
+    {
+      "path": "crates/runtime/src/settings/store/journal.rs",
+      "line": 3,
+      "text": "use humanymous_authority::decision::DurableAudit;",
+      "file_sha256": "64a1341091cca0e3009e0486f705e54296b45b18bb99612f88cfb568bc38c672"
+    },
+    {
+      "path": "crates/runtime/src/tls.rs",
+      "line": 3,
+      "text": "use humanymous_capture::tls::{Cancellation, Connection, PendingHandshake};",
+      "file_sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db"
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "line": 15,
+      "text": "use humanymous_audit::record::Record;",
+      "file_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181"
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "line": 16,
+      "text": "use humanymous_authority::decision::DurableAudit;",
+      "file_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181"
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "line": 68,
+      "text": "    use humanymous_audit::{",
+      "file_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181"
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "line": 495,
+      "text": "    let now = humanymous_authority::now_ms().unwrap();",
+      "file_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181"
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "line": 588,
+      "text": "    let now = humanymous_authority::now_ms().unwrap();",
+      "file_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181"
+    },
+    {
+      "path": "crates/runtime/src/service/authorization.rs",
+      "line": 3,
+      "text": "use humanymous_authority::startup::authorization::SignatureCheckedAuthorization;",
+      "file_sha256": "e4c0f7e255e00a1cab76fb10271991761207aab77437cb77ab6ab059dff94085"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 3,
+      "text": "use humanymous_audit::{",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 9,
+      "text": "use humanymous_authority::configuration::Peer;",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 42,
+      "text": "impl humanymous_authority::decision::DurableAudit for SealedAudit {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 43,
+      "text": "    fn append(&mut self, record: humanymous_audit::record::Record) -> std::io::Result<()> {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 48,
+      "text": "    pub(crate) fn matches_control_scope(&self, scope: &humanymous_audit::control::Scope) -> bool {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 69,
+      "text": "    pub(crate) fn records(&self) -> std::io::Result<Vec<humanymous_audit::record::Record>> {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 77,
+      "text": "    pub fn recovery_coverage(&self) -> Option<&humanymous_audit::storage::WitnessCoverage> {",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 117,
+      "text": "    humanymous_authority::transport::private_directory(&config.audit.directory, &config.owner)",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/startup.rs",
+      "line": 119,
+      "text": "    humanymous_authority::transport::private_directory(&config.audit.keys.directory, &config.owner)",
+      "file_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db"
+    },
+    {
+      "path": "crates/runtime/src/service/authorization/tests.rs",
+      "line": 3,
+      "text": "use humanymous_authority::startup::authorization::{",
+      "file_sha256": "7837748f7fb6573df6efbd6cae300805d3eae7b68b8610f0e76b2b9aa4c8aa3f"
+    },
+    {
+      "path": "crates/runtime/src/service/authorization/tests.rs",
+      "line": 172,
+      "text": "        humanymous_authority::startup::observer::native_preparation(),",
+      "file_sha256": "7837748f7fb6573df6efbd6cae300805d3eae7b68b8610f0e76b2b9aa4c8aa3f"
+    },
+    {
+      "path": "crates/runtime/src/service/authorization/tests.rs",
+      "line": 173,
+      "text": "        Err(humanymous_authority::startup::observer::NativePreparationUnavailable::Unsupported)",
+      "file_sha256": "7837748f7fb6573df6efbd6cae300805d3eae7b68b8610f0e76b2b9aa4c8aa3f"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 6,
+      "text": "use humanymous_authority::protocol::Response;",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 82,
+      "text": "            humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 89,
+      "text": "    humanymous_authority::protocol::read_response(&mut stream)",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 126,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 134,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 143,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 156,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 187,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 195,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 220,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 351,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 363,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 379,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 392,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 428,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "line": 442,
+      "text": "                humanymous_authority::now_ms().unwrap()",
+      "file_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c"
+    },
+    {
+      "path": "crates/runtime/src/application/tls.rs",
+      "line": 121,
+      "text": "            self.decide_observed(request, humanymous_authority::now_ms, ack, Some(connection))?;",
+      "file_sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6"
+    },
+    {
+      "path": "crates/runtime/src/application/tls.rs",
+      "line": 140,
+      "text": "                self.check_deadline(deadline, humanymous_authority::now_ms())?;",
+      "file_sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6"
+    },
+    {
+      "path": "crates/runtime/src/application/tls.rs",
+      "line": 142,
+      "text": "                    .checked_sub(humanymous_authority::now_ms()?)",
+      "file_sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6"
+    },
+    {
+      "path": "crates/runtime/src/application/tls.rs",
+      "line": 157,
+      "text": "                    self.check_deadline(deadline, humanymous_authority::now_ms())?;",
+      "file_sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract.rs",
+      "line": 16,
+      "text": "            humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "f40d22522c6b1ae4bb1d0df184fd5ed294c9984a9ae7b59781e1b130ad849fe2"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract.rs",
+      "line": 30,
+      "text": "            humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "f40d22522c6b1ae4bb1d0df184fd5ed294c9984a9ae7b59781e1b130ad849fe2"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract.rs",
+      "line": 39,
+      "text": "            humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "f40d22522c6b1ae4bb1d0df184fd5ed294c9984a9ae7b59781e1b130ad849fe2"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract.rs",
+      "line": 64,
+      "text": "            humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "f40d22522c6b1ae4bb1d0df184fd5ed294c9984a9ae7b59781e1b130ad849fe2"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract.rs",
+      "line": 77,
+      "text": "            humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "f40d22522c6b1ae4bb1d0df184fd5ed294c9984a9ae7b59781e1b130ad849fe2"
+    },
+    {
+      "path": "crates/runtime/src/tests/tls.rs",
+      "line": 88,
+      "text": "    let now = humanymous_authority::now_ms().unwrap();",
+      "file_sha256": "154a9b4a43f21673d5c69f4d6c93fe0e1c338f0ffa3ede0244096519207c3065"
+    },
+    {
+      "path": "crates/runtime/src/tests/stream.rs",
+      "line": 38,
+      "text": "    let now = humanymous_authority::now_ms().unwrap();",
+      "file_sha256": "1768559c0ce1f6704efc038ba779436d6329be97b41ba74bb4a174b1d354e346"
+    },
+    {
+      "path": "crates/runtime/src/tests/service/settings_operator.rs",
+      "line": 8,
+      "text": "use humanymous_audit::{",
+      "file_sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70"
+    },
+    {
+      "path": "crates/runtime/src/tests/service/settings_operator.rs",
+      "line": 111,
+      "text": "        humanymous_authority::now_ms().unwrap(),",
+      "file_sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 8,
+      "text": "use humanymous_audit::keys::{",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 12,
+      "text": "use humanymous_authority::{configuration::Peer, credentials::Credential};",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 57,
+      "text": "struct SharedWitness(Arc<Mutex<humanymous_audit::checkpoint::DurableWitness>>);",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 58,
+      "text": "impl humanymous_audit::checkpoint::CheckpointWitness for SharedWitness {",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 63,
+      "text": "        humanymous_audit::checkpoint::CheckpointWitness::last_size(&*self.0.lock().unwrap())",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 67,
+      "text": "        head: &humanymous_audit::checkpoint::Checkpoint,",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 69,
+      "text": "        humanymous_audit::checkpoint::CheckpointWitness::validate_local_head(",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 76,
+      "text": "        head: &humanymous_audit::checkpoint::Checkpoint,",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 77,
+      "text": "        proof: &[humanymous_audit::merkle::Hash],",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 78,
+      "text": "    ) -> std::io::Result<humanymous_audit::checkpoint::WitnessReceipt> {",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 79,
+      "text": "        humanymous_audit::checkpoint::CheckpointWitness::counter_sign(",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 94,
+      "text": "    use humanymous_audit::{",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 209,
+      "text": ") -> humanymous_authority::protocol::Response {",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/tests/service.rs",
+      "line": 217,
+      "text": "    humanymous_authority::protocol::read_response(&mut stream)",
+      "file_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a"
+    },
+    {
+      "path": "crates/runtime/src/application/temporal.rs",
+      "line": 5,
+      "text": "use humanymous_network::{",
+      "file_sha256": "00233744c82aa75130e180f83a062a53234ff92c64fc0174b38e3395cc02a797"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract/harness.rs",
+      "line": 92,
+      "text": "            humanymous_authority::protocol::read_response(&mut stream)",
+      "file_sha256": "a29c5c03ad5c1a608fe6727f68a53fe4e81c5624562c6d9c9ee214befecb3079"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract/harness.rs",
+      "line": 135,
+      "text": "            humanymous_authority::now_ms().map_err(|_| \"clock\")?,",
+      "file_sha256": "a29c5c03ad5c1a608fe6727f68a53fe4e81c5624562c6d9c9ee214befecb3079"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract/harness.rs",
+      "line": 154,
+      "text": "                humanymous_authority::now_ms().map_err(|_| \"clock\")?,",
+      "file_sha256": "a29c5c03ad5c1a608fe6727f68a53fe4e81c5624562c6d9c9ee214befecb3079"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract/harness.rs",
+      "line": 179,
+      "text": "                    humanymous_authority::now_ms().map_err(|_| \"clock\")?,",
+      "file_sha256": "a29c5c03ad5c1a608fe6727f68a53fe4e81c5624562c6d9c9ee214befecb3079"
+    },
+    {
+      "path": "crates/runtime/src/tests/tls/dispatch.rs",
+      "line": 27,
+      "text": "    let now = humanymous_authority::now_ms().unwrap();",
+      "file_sha256": "42a335960ce0245f3e3374408d1b686be1be98239c074210abf16ff0b3c97b2d"
+    }
+  ],
+  "fixture_target_root_matches": 36,
+  "fixture_target_root_inventory": [
+    {
+      "path": "crates/runtime/tests/native_process.rs",
+      "line": 85,
+      "text": "    let mut child = Command::new(env!(\"CARGO_BIN_EXE_humanymous-runtime\"))",
+      "file_sha256": "205eb6559c66cc88107192ffaaa33a37e4609f25eb09239d104a69cf8a52bfd4"
+    },
+    {
+      "path": "crates/runtime/tests/native_process.rs",
+      "line": 264,
+      "text": "    let mut child = Command::new(env!(\"CARGO_BIN_EXE_humanymous-runtime\"))",
+      "file_sha256": "205eb6559c66cc88107192ffaaa33a37e4609f25eb09239d104a69cf8a52bfd4"
+    },
+    {
+      "path": "crates/network/tests/tls_parity.rs",
+      "line": 20,
+      "text": "    let cases: Vec<Case> = serde_json::from_str(include_str!(\"fixtures/tls.json\")).unwrap();",
+      "file_sha256": "32572b1c0a023eda9820aea849211598806f294ba1c3df07dce29cc8ef108153"
+    },
+    {
+      "path": "crates/network/tests/report_parity.rs",
+      "line": 21,
+      "text": "    let cases: Vec<Case> = serde_json::from_str(include_str!(\"fixtures/reports.json\")).unwrap();",
+      "file_sha256": "9d28088b687b038d18a226951889ecb8d83518b56f3934eb02f7ee6db92008d5"
+    },
+    {
+      "path": "crates/network/tests/monitor_parity.rs",
+      "line": 14,
+      "text": "    let cases: Vec<Case> = serde_json::from_str(include_str!(\"fixtures/monitor.json\")).unwrap();",
+      "file_sha256": "3e3ce87642eb5c49ff428860e8f5fcbf99dda133b4f50c4b65432971a551a371"
+    },
+    {
+      "path": "crates/network/tests/h2_parity.rs",
+      "line": 15,
+      "text": "    let cases: Vec<Case> = serde_json::from_str(include_str!(\"fixtures/h2.json\")).unwrap();",
+      "file_sha256": "51600f099b6ff78dfff0d099a9c3574f9373839a2c5f3c558d5932824f8d58cb"
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "line": 21,
+      "text": "            child: Command::new(env!(\"CARGO_BIN_EXE_humanymous-authority\"))",
+      "file_sha256": "fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03"
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "line": 62,
+      "text": "        let child = Command::new(env!(\"CARGO_BIN_EXE_humanymous-authority\"))",
+      "file_sha256": "fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03"
+    },
+    {
+      "path": "crates/audit/tests/verification_parity.rs",
+      "line": 27,
+      "text": "        serde_json::from_str(include_str!(\"fixtures/verification.json\")).unwrap();",
+      "file_sha256": "c5c70aa060cc1e794274ae2c64aa32a8c5bdafd1422b4c7bfebb6a6f07691343"
+    },
+    {
+      "path": "crates/audit/tests/record_parity.rs",
+      "line": 23,
+      "text": "    let corpus: Corpus = serde_json::from_str(include_str!(\"fixtures/records.json\")).unwrap();",
+      "file_sha256": "cce55f1007da9448ae669f83425f5d1493b9406649c29af7674d1a6cf83f831d"
+    },
+    {
+      "path": "crates/audit/tests/merkle_parity.rs",
+      "line": 32,
+      "text": "    let cases: Vec<Case> = serde_json::from_str(include_str!(\"fixtures/merkle.json\")).unwrap();",
+      "file_sha256": "a7e133486fe7de0bd8c4462b8b807bf29f3a0398c56dde2259f01ecb73c95f12"
+    },
+    {
+      "path": "crates/audit/tests/key_custody.rs",
+      "line": 232,
+      "text": "        serde_json::from_str(include_str!(\"fixtures/keys.json\")).unwrap();",
+      "file_sha256": "7a0e458c89b1d277de7d34dc91c5a4ebb06101639da21ee000a78dbf66425b8c"
+    },
+    {
+      "path": "crates/audit/tests/key_custody.rs",
+      "line": 261,
+      "text": "        serde_json::from_str(include_str!(\"fixtures/keys.json\")).unwrap();",
+      "file_sha256": "7a0e458c89b1d277de7d34dc91c5a4ebb06101639da21ee000a78dbf66425b8c"
+    },
+    {
+      "path": "crates/authority/tests/decisions.rs",
+      "line": 32,
+      "text": "        let fixture: serde_json::Value = serde_json::from_str(include_str!(",
+      "file_sha256": "0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b"
+    },
+    {
+      "path": "crates/audit/tests/durable_witness.rs",
+      "line": 130,
+      "text": "            env!(\"CARGO_BIN_EXE_audit-witness\"),",
+      "file_sha256": "59cd9b5c90335f4f00c440df44a0c8ba633c744fe5b8ad5fb7cc34a611ccc1c0"
+    },
+    {
+      "path": "crates/audit/tests/durable_witness.rs",
+      "line": 241,
+      "text": "        &mut Command::new(env!(\"CARGO_BIN_EXE_audit-witness\")),",
+      "file_sha256": "59cd9b5c90335f4f00c440df44a0c8ba633c744fe5b8ad5fb7cc34a611ccc1c0"
+    },
+    {
+      "path": "crates/audit/tests/durable_witness.rs",
+      "line": 274,
+      "text": "        &mut Command::new(env!(\"CARGO_BIN_EXE_audit-witness\")),",
+      "file_sha256": "59cd9b5c90335f4f00c440df44a0c8ba633c744fe5b8ad5fb7cc34a611ccc1c0"
+    },
+    {
+      "path": "crates/audit/tests/durable_witness.rs",
+      "line": 295,
+      "text": "        \"CARGO_BIN_EXE_audit-witness\"",
+      "file_sha256": "59cd9b5c90335f4f00c440df44a0c8ba633c744fe5b8ad5fb7cc34a611ccc1c0"
+    },
+    {
+      "path": "crates/audit/tests/control_operations.rs",
+      "line": 1314,
+      "text": "    let binary = env!(\"CARGO_BIN_EXE_audit-control-retainer\");",
+      "file_sha256": "df6d5f7eae9a4c654c97f639340a94b16d95a3953484d65c308c8b5ef8e423d3"
+    },
+    {
+      "path": "crates/audit/tests/checkpoint_parity.rs",
+      "line": 26,
+      "text": "    let cases: Vec<Case> = serde_json::from_str(include_str!(\"fixtures/checkpoints.json\")).unwrap();",
+      "file_sha256": "09aac015de6d7e45343095afc63c4745aee2749e15d59322567956373c4be0b9"
+    },
+    {
+      "path": "crates/audit/tests/checkpoint_parity.rs",
+      "line": 68,
+      "text": "    let cases: Vec<Case> = serde_json::from_str(include_str!(\"fixtures/checkpoints.json\")).unwrap();",
+      "file_sha256": "09aac015de6d7e45343095afc63c4745aee2749e15d59322567956373c4be0b9"
+    },
+    {
+      "path": "crates/runtime/src/tests/browser/contract/harness.rs",
+      "line": 20,
+      "text": "            serde_json::from_str(include_str!(\"../../../../../collector/pilot/fixture.json\"))",
+      "file_sha256": "a29c5c03ad5c1a608fe6727f68a53fe4e81c5624562c6d9c9ee214befecb3079"
+    },
+    {
+      "path": "crates/audit/src/verification/incremental/tests.rs",
+      "line": 199,
+      "text": "        serde_json::from_str(include_str!(\"../../../tests/fixtures/verification.json\")).unwrap();",
+      "file_sha256": "27eb814f60eb0fd63f42bd291001d330dbd2d5a32f964b18bae4e532bb1fb705"
+    },
+    {
+      "path": "crates/audit/src/keys/vault.rs",
+      "line": 356,
+      "text": "            serde_json::from_str(include_str!(\"../../tests/fixtures/keys.json\")).unwrap();",
+      "file_sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef"
+    },
+    {
+      "path": "crates/audit/src/keys/vault.rs",
+      "line": 405,
+      "text": "            serde_json::from_str(include_str!(\"../../tests/fixtures/keys.json\")).unwrap();",
+      "file_sha256": "fa8753b554943194f3b0ea7d9e0b48a0ea09d341c7377240c2c4a9f283cfe6ef"
+    },
+    {
+      "path": "crates/audit/src/keys/mod.rs",
+      "line": 247,
+      "text": "            serde_json::from_str(include_str!(\"../../tests/fixtures/keys.json\")).unwrap();",
+      "file_sha256": "f51306f99c522d203fffdcb54a7278cf4021621a429218fb2a6bba91e363b721"
+    },
+    {
+      "path": "crates/audit/src/record/ordering.rs",
+      "line": 279,
+      "text": "            serde_json::from_str(include_str!(\"../../tests/fixtures/records.json\")).unwrap();",
+      "file_sha256": "0d11a0bd8be69ce75d4fdaae57dec312112160207c85f214422cdf4474083e2b"
+    },
+    {
+      "path": "crates/audit/src/record/normalization.rs",
+      "line": 91,
+      "text": "            serde_json::from_str(include_str!(\"../../tests/fixtures/records.json\")).unwrap();",
+      "file_sha256": "7c386e79eaa025b0f160d1bcc3aff923e75b1ecd067762d822683242a1b8630f"
+    },
+    {
+      "path": "crates/audit/src/checkpoint/signing/tests.rs",
+      "line": 19,
+      "text": "        serde_json::from_str(include_str!(\"../../../tests/fixtures/checkpoints.json\")).unwrap();",
+      "file_sha256": "db86fa502ba86d962e6be0771981db664e16e782cc6bae147bf851912ca6d3c9"
+    },
+    {
+      "path": "crates/runtime/src/service/authorization/tests.rs",
+      "line": 12,
+      "text": "    let v: Value = serde_json::from_str(include_str!(",
+      "file_sha256": "7837748f7fb6573df6efbd6cae300805d3eae7b68b8610f0e76b2b9aa4c8aa3f"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight/tests.rs",
+      "line": 108,
+      "text": "        serde_json::from_str(include_str!(\"../../../../tests/fixtures/records.json\")).unwrap();",
+      "file_sha256": "8fd30354a11a7523e9b240458fb398446dbbdef5f936ed909aa9171638f5b6d2"
+    },
+    {
+      "path": "crates/audit/src/storage/framing/preflight/tests.rs",
+      "line": 110,
+      "text": "        serde_json::from_str(include_str!(\"../../../../tests/fixtures/checkpoints.json\")).unwrap();",
+      "file_sha256": "8fd30354a11a7523e9b240458fb398446dbbdef5f936ed909aa9171638f5b6d2"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/tests.rs",
+      "line": 430,
+      "text": "            include_str!(\"../../../tests/fixtures/authorization-v2-minimal.json\"),",
+      "file_sha256": "6ae4f2984eab99efef916104ab05e1562b71aa49e4aa280bd766420e1d653444"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/tests.rs",
+      "line": 439,
+      "text": "            include_str!(\"../../../tests/fixtures/authorization-v2-maximum.json\"),",
+      "file_sha256": "6ae4f2984eab99efef916104ab05e1562b71aa49e4aa280bd766420e1d653444"
+    },
+    {
+      "path": "crates/audit/src/record/canonical/encoder/tests.rs",
+      "line": 16,
+      "text": "    let corpus: Corpus = serde_json::from_str(include_str!(concat!(",
+      "file_sha256": "d2cf1d1aa84e8e9d2ff8fb26e6e81e50c132248b9119b5b1982d10dd35e00252"
+    },
+    {
+      "path": "crates/audit/src/record/canonical/encoder/tests.rs",
+      "line": 17,
+      "text": "        env!(\"CARGO_MANIFEST_DIR\"),",
+      "file_sha256": "d2cf1d1aa84e8e9d2ff8fb26e6e81e50c132248b9119b5b1982d10dd35e00252"
+    }
+  ],
+  "source_moves_performed": false,
+  "consumer_edits_performed": false,
+  "manifest_changes_performed": false,
+  "compiler_executed": false,
+  "unique_inventory_source_files": 93,
+  "inventory_current_hash_drift": 0,
+  "actual_public_root_collisions": {
+    "configuration": [
+      "gateway",
+      "authority"
+    ],
+    "startup": [
+      "gateway",
+      "authority"
+    ],
+    "control": [
+      "gateway",
+      "audit"
+    ],
+    "http": [
+      "gateway",
+      "network"
+    ],
+    "tls": [
+      "gateway",
+      "capture",
+      "network"
+    ],
+    "http2": [
+      "capture",
+      "network"
+    ],
+    "storage": [
+      "audit",
+      "native_security"
+    ]
+  }
+}

@@ -20,6 +20,159 @@ dual-control and missing-required fail-closed remain invariant.
 
 ## Steps
 
+### RUNTIME-SLICE-02 context design v0 — pending Root freeze
+
+**Brief.** Consolidate six accepted responsibilities into one public Runtime
+package while preserving existing authority domains. This is read-only design
+against current source, not permission to move/import/edit other owners' files.
+Root sequences atomic graph/path integration and obtains Audit/Authority/Network/
+Native reviews. No detection, wire, lifecycle, custody or public policy change.
+The attached runtime-slice-02-context-inventory.json lists EVERY matched
+pub(crate) declaration/field line in the six src trees, cross-context crate-name
+references, manifest/root hashes and fixture/target anchors. It is a source-bound
+inventory, not a compile or complete semantic-access proof.
+
+#### Proposed exact module map
+
+Use crates/sdk/humanymous-runtime/src/lib.rs as the deliberate six-context root:
+gateway, authority, audit, capture, network and native_security. Prefer gateway
+for the old Runtime composition tree: src/gateway/mod.rs receives old
+crates/runtime/src/lib.rs, and its existing application.rs, service.rs, startup.rs,
+configuration.rs, session.rs, http.rs, settings.rs, management/, browser.rs and
+tls.rs stay children. Thus gateway::application::Application and
+gateway::service::ServiceHost remain coherent names without a new application/
+application nesting or crate-name/runtime repetition. This exact name is a
+proposal for Root freeze, not a unilateral topology adoption.
+
+Each other old src/lib.rs becomes src/<context>/mod.rs and its existing subtree
+remains below that context. Native-security's identifier is native_security.
+Root exports the six intentional contexts; do not flatten all six old root
+exports or add aliases recreating the old package graph. Any curated root API
+needs an explicit supported API decision, not a compatibility shim.
+
+#### Root collisions and directional dependencies
+
+Old public root names collide: gateway/authority configuration and startup,
+gateway/audit control, gateway/network http, gateway/capture/network tls,
+capture/network http2, and audit/native_security storage. Integration test target
+names and fixture roots collide separately. Preserve
+context qualification for EVERY old crate:: path, including grouped crate::{...},
+intra-doc links and cfg(test) helpers. Examples: gateway crate::tests::config ->
+crate::gateway::tests::config; network crate::history -> crate::network::history;
+audit crate::control -> crate::audit::control; capture crate::http2 ->
+crate::capture::http2. Rejection is owned by authority; use its canonical type
+and never create a second nominal Rejection during merging. Old crate-qualified
+cross-context APIs become crate::<owner>::..., not the caller's context.
+
+Allowed direction is gateway -> authority/audit/capture/network/core;
+authority -> audit/network/native_security/core; capture -> network;
+network -> core; audit -> native_security/core; native_security -> platform for
+approved Windows primitives. Runtime as a package depends on core and platform.
+Platform contains native primitives/reusable testing support and must NOT depend
+on Runtime, Authority, Audit or Gateway. Test-support moves to an explicit
+platform testing capability as a dev/test dependency, never a production proof
+factory. Core remains independent of Runtime/platform/browser. No inverse
+Authority -> Gateway Ready dependency or new scoring copy is allowed.
+
+#### All widened crate visibility and custody dispositions
+
+Every pub(crate) inventory entry must default to pub(in crate::<owning_context>)
+or a narrower private/pub(super) scope after relocation, including type aliases,
+reexports, tuple fields and methods. Do not change only type declarations and
+leave writable fields crate-wide. Preserve existing private modules and ancestor
+restrictions as well; do not publish modules merely to fix compiler errors.
+
+P0: audit::keys::vault::ErasurePermit::issued is a capability mint and must stay
+audit-only. audit::control::policy::Authorization's proposal/digest/administrators
+fields must stay audit-only, otherwise a sibling could forge signed approval
+data. Vault::authorizes/bound_to, retention accepts/matches, PrivateState open/
+commit/promote/read, ExclusiveFile acquire/duplicate, custody::permissions and
+framing/frontier/record bounded helpers all retain the original Audit domain.
+Private custody/key/retained-ledger fields must remain private; merging does not
+authorize a generic serializer, constructor, Clone or testing bypass.
+
+Authority's protocol::framing Head/read and transport Stream/connect/reexports
+stay authority-only; Head's public fields do not justify broader parent access.
+The private empty NativeProof and private fields of preparation/session/failure
+remain exactly uninhabited. observer::state::Owner and restricted gate methods
+remain pub(super), with no sibling state constructor. SignatureCheckedAuthorization
+and Expected DATA remain DATA, with no new conversion to NativeProof or Ready.
+
+Gateway's Ack constructor/headers and Authorization.ack, Sessions browser/epoch
+mutations, SharedAudit tuple constructor/field, sealed audit history/scope/owner
+helpers, management operator credential accessor/commands, settings apply,
+captured TLS parts and response/stream helpers stay gateway-only. Retained owner,
+AuthorityGuard, RuntimeActivationFailure and any final Ready receipt remain
+private to gateway::service; test-only epoch/temporal models stay cfg(test).
+Network's OrderedTime new/check/commit and is_grease stay network-only, preventing
+sibling mutation/reinterpretation of temporal completeness. Native-security's
+service-name policy helper stays native_security-only. Capture has no current
+pub(crate) match; its pub(super) RecordBoundary/headers decoder and private actual
+socket/handshake fields still require preservation, never a public DTO constructor.
+
+#### Public type and target/feature contracts
+
+Gateway public Configuration exposes Authority Scope/Peer/Required and Audit
+Checkpoint; ServiceHost constructors expose TailRecovery, ExternalWitness,
+ManagementPolicy/SettingsPolicy and rustls::ServerConfig. CapturedRequest borrows
+Capture Connection; gate/preparation/failure and key custody/retained-control
+types have deliberate owner APIs. The attachment includes all121 current
+crate-name cross-reference lines as a review superset, not just use statements.
+Resolve these to the single owning context's nominal type. External CLI/adapters/
+facade consumers require their own Root-assigned updates; do not widen internal
+fields so they compile. Public data types being constructible today does not make
+them capabilities after consolidation.
+
+No current six-package manifest declares a default feature set. Preserve default
+behavior and target cfgs explicitly; do not gate away currently default public
+contexts or enable pilots silently. Proposed nondefault capture-hosted-pilot and
+native-credential-pilot replace capture hosted-pilot and native credential-pilot
+only if Root approves those exact names and updates required-features/cfgs.
+Windows-only bridge/keyring/winsafe/interprocess/widestring/permissions and Unix
+rustix features retain their target restrictions. Audit OS custody remains
+cfg(any(unix,windows)); volume stays Windows-only. Match pinned versions and
+crypto feature tuples; no dependency upgrade or unsupported WASM Runtime promise.
+All-features may include actual pilot code, never a proof-minting feature.
+
+Root must resolve four existing binary targets before moves: runtime/authority
+src/main.rs, audit-witness and audit-control-retainer. Preserve exact installed
+binary names and private stdin/stdout/watchdog behavior with explicit target
+entries; do not accidentally replace both mains with one Cargo auto target.
+Root/CLI determine final application placement. Tests referencing CARGO_BIN_EXE
+must keep the real binary targets available until that migration is accepted.
+
+#### Fixture and test-root migration
+
+Use context-qualified integration target roots tests/gateway, tests/authority,
+tests/audit, tests/capture and tests/network, with explicit unique Cargo test target
+names. Runtime and Authority both have native_process.rs; blindly combining them
+loses one target. Keep fixture directories under their source context and exact
+bytes: signed authorization minimal/maximum, Audit canonical/Unicode/keys/Merkle/
+checkpoint/verification corpora, Network TLS/H2/report/monitor fixtures and the
+separately owned collector fixture. Update relative include_str roots and Audit's
+CARGO_MANIFEST_DIR/tests/fixtures/records.json anchor. Authority decisions also
+references core's frozen scoring corpus. No fixture regeneration, duplicate
+signing encoder or copied collector contract is authorized for path repair.
+
+#### Adversarial review and acceptance gates
+
+Applying the blue/red/SRE/privacy/evaluator lenses yields NEEDS-WORK before
+implementation freeze. P0 approval/erasure minting through widened crate scope is
+resolved only by explicit contextual visibility plus owner review and negative
+compile-access checks. P1 root/type/target collisions and feature/fixture drift
+need a frozen per-path map and exact inventory, not compiler-driven pub widening.
+P1 over-claim is prevented by fresh source-bound consumer tests: prior core162,
+collector WASM or old Runtime6 passes do not qualify this merged graph.
+
+Root obtains owning Audit/Authority/Network/Native dispositions against the exact
+inventory, then freezes names, visibility exceptions (default NONE), bin/test
+targets and dependency tuple. After implementation, fmt FIRST, all-target default
+and all-feature check/strict Clippy, rustdoc links and exact per-platform test
+inventories precede pure execution. Include external sibling compile-fail cases
+for erasure/approval minting and NativeProof/Ready construction; actual OS custody,
+process/IPC/TLS/W and Docker-only product tests remain separately allocated.
+No new compiler/native/provider/pilot action was performed for this design.
+
 ### CORE-SLICE-01 Runtime consumer edit
 
 Root explicitly authorized mechanical Rust consumer path changes under
