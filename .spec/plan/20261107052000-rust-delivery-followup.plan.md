@@ -376,3 +376,25 @@ container or actual image scan ran. Private evidence
 f86b3c79f13c4877a806c47c46e03c9a21f714acc3081513babc7a851365a56d.
 D was returned. The ordinary Rust candidate remains unqualified and is expected
 to fail the new binary-inventory requirement until reviewed inventory exists.
+
+Root prioritized a dedicated build-only Pages caller before Go/Apache/SCM
+integration. The authored workflow triggers on codex/pages-validation and manual
+dispatch, reuses the exact event source, and preserves independent frozen-bundle
+audit/apex/subpath outcomes. The new Rust provenance formatter binds both docs
+and builder input hashes before/after, emits safe step metadata and leaves
+non-success exits unknown. Generated site artifacts require their own successful
+validation and source integrity. The Pages owner independently reviewed this
+interface and froze public docs at 4fbe782. Rustfmt/actionlint/scoped Specfold
+checks passed after a transient Windows mapped-file formatting write retry.
+The expected sixty pure tests and strict Clippy have not run; no slot is held
+and actual Pages execution is pending root's immutable branch push.
+
+Local B was reserved but fresh admission measured 88 percent commit, then 86
+percent after an actual external workload returned; neither attempt started a
+compiler. Root released B and explicitly authorized genuine hosted preflight
+instead of waiting on local capacity. The caller now requires delivery unit
+tests (sixty expected), all-target Clippy and policy before its dependent Pages
+build. Rustfmt, actionlint and scoped Specfold checks passed. New-helper compile,
+unit outcomes and both actual Pages builds remain unrun until root pushes this
+literal checkpoint to the dedicated branch. Local admission deferrals are not
+test failures. Original 58-test image-gate evidence remains a separate source.

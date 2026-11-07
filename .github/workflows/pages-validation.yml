@@ -1,0 +1,40 @@
+# Build-only branch entrypoint; no deployment or token exchange.
+name: Docs / Validate
+'on':
+  push:
+    branches: [codex/pages-validation]
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: pages-validation-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CARGO_BUILD_JOBS: '1'
+      CARGO_INCREMENTAL: '0'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      id: toolchain
+      with:
+        toolchain: 1.99.1
+    - name: Validate delivery unit contracts
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-delivery -j1
+    - name: Check all delivery targets with warnings denied
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo clippy --locked -p humanymous-delivery --all-targets -j1 -- -D warnings
+    - name: Verify current workflow authorization policy
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- policy
+  validate:
+    needs: preflight
+    uses: ./.github/workflows/pages-build.yml

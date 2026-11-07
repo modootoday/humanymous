@@ -1066,3 +1066,23 @@ has an invocation-specific name and ownership label. Cleanup removes only an
 inspected exact image and invocation label, then requires a successful empty
 exact-name inventory. Component evidence cannot create a native package trust
 receipt or full-product qualification.
+
+The bounded Docs / Validate entrypoint permits only the dedicated
+codex/pages-validation push branch and workflow_dispatch. It calls the existing
+build workflow at the event's immutable github.sha with contents-read permission,
+without deployment or OIDC authority. Ruby 3.3.13, frozen Gemfile.lock, one bundle
+job and Rust 1.99.1 are explicit inputs. Audit, apex and subpath attempts remain
+independent after installation; their failures cannot be hidden by artifacts.
+Before/after provenance binds clean docs and Rust builder/delivery input bytes,
+docs Git tree, configuration and lock hashes. Trusted step outcomes are emitted
+without parsing inherited mixed subprocess stdout; unknown exits remain null.
+Only successful corresponding generated sites with unchanged source are
+uploaded for one day. Safe source/outcome JSON survives build failures. Browser,
+assistive-technology and whole-product qualification remain false.
+
+The dedicated caller first runs the exact-source delivery unit suite,
+all-target Clippy with warnings denied, and workflow authorization policy on
+standard hosted Ubuntu 24.04. All preflight commands are independently attempted
+after toolchain setup; any failure blocks the dependent Pages build. This
+hosted preflight may establish new-helper validation when local capacity is
+unavailable, but authoring and static checks alone never establish its success.

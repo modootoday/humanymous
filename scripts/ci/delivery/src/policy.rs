@@ -126,6 +126,57 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         "privileged untrusted PR trigger forbidden",
     )?;
     let jobs = doc["jobs"].as_object().ok_or("missing workflow jobs")?;
+    if name == "pages-validation.yml" {
+        require(
+            strings(&doc["on"]["push"]["branches"]) == ["codex/pages-validation".into()].into()
+                && doc["on"].get("workflow_dispatch").is_some()
+                && jobs.len() == 2
+                && jobs["validate"]["uses"] == "./.github/workflows/pages-build.yml"
+                && jobs["validate"]["needs"] == "preflight"
+                && jobs["validate"].get("if").is_none()
+                && jobs["preflight"]["runs-on"] == "ubuntu-24.04",
+            "Pages-only caller must remain bounded build-only",
+        )?;
+        let steps = jobs["preflight"]["steps"]
+            .as_array()
+            .ok_or("Pages preflight absent")?;
+        for command in [
+            "cargo test --locked -p humanymous-delivery -j1",
+            "cargo clippy --locked -p humanymous-delivery --all-targets -j1 -- -D warnings",
+            "cargo run --locked -p humanymous-delivery -- policy",
+        ] {
+            require(
+                steps.iter().any(|step| {
+                    step["run"] == command
+                        && step["if"]
+                            == "${{ !cancelled() && steps.toolchain.outcome == 'success' }}"
+                }),
+                "Pages helper preflight cannot be omitted or skipped on test failure",
+            )?;
+        }
+    }
+    if name == "pages-build.yml" {
+        let steps = jobs["build"]["steps"]
+            .as_array()
+            .ok_or("Pages build steps absent")?;
+        for id in ["apex", "subpath", "bundle_audit"] {
+            require(
+                steps.iter().any(|step| {
+                    step["id"] == id
+                        && step["if"]
+                            == "${{ !cancelled() && steps.bundle_install.outcome == 'success' }}"
+                }),
+                "Pages base/audit attempts must remain independent",
+            )?;
+        }
+        require(
+            steps.iter().any(|step| {
+                step["id"] == "source_finish"
+                    && step["if"] == "${{ always() && steps.source_prepare.outcome == 'success' }}"
+            }),
+            "Pages source/failure evidence missing",
+        )?;
+    }
     if matches!(name, "ci.yml" | "release.yml") {
         caller_permissions(jobs.get("validate").unwrap_or(&Value::Null))?;
     }
@@ -561,6 +612,34 @@ pub fn jobs(raw: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn pages_only_caller_and_base_failure_accounting_cannot_widen() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let docs = workflows(&root).unwrap();
+        let original = &docs
+            .iter()
+            .find(|(file, _)| file == "pages-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("pages-validation.yml", original).is_ok());
+        let mut changed = original.clone();
+        changed["jobs"]["validate"]["uses"] = json!("./.github/workflows/pages.yml");
+        assert!(document("pages-validation.yml", &changed).is_err());
+        let original = &docs
+            .iter()
+            .find(|(file, _)| file == "pages-build.yml")
+            .unwrap()
+            .1;
+        let mut changed = original.clone();
+        let subpath = changed["jobs"]["build"]["steps"]
+            .as_array_mut()
+            .unwrap()
+            .iter_mut()
+            .find(|step| step["id"] == "subpath")
+            .unwrap();
+        subpath["if"] = json!("${{ success() }}");
+        assert!(document("pages-build.yml", &changed).is_err());
+    }
     #[test]
     fn image_inventory_cannot_be_empty_or_failure_accounting_skipped() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");

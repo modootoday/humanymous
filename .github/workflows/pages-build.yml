@@ -11,6 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       with:
+        ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 1
     - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199
@@ -21,12 +22,52 @@ jobs:
     - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
       with:
         toolchain: 1.99.1
-    - run: bundle install --jobs 1
-    - run: bundle exec bundle-audit check --update
-    - run: cargo run --locked -p humanymous-pages -- validate --source docs --destination "${{ runner.temp }}/pages-apex" --baseurl ''
+    - id: source_prepare
+      run: cargo run --locked -p humanymous-delivery -- pages-evidence prepare
       working-directory: .
-    - run: cargo run --locked -p humanymous-pages -- validate --source docs --destination "${{ runner.temp }}/pages-subpath" --baseurl /humanymous
+    - id: bundle_install
+      run: bundle install --jobs 1
+    - id: bundle_audit
+      if: ${{ !cancelled() && steps.bundle_install.outcome == 'success' }}
+      run: bundle exec bundle-audit check --update
+    - id: apex
+      if: ${{ !cancelled() && steps.bundle_install.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-pages -- validate --source docs --destination "${{ runner.temp }}/pages-apex" --baseurl ''
       working-directory: .
+    - id: subpath
+      if: ${{ !cancelled() && steps.bundle_install.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-pages -- validate --source docs --destination "${{ runner.temp }}/pages-subpath" --baseurl /humanymous
+      working-directory: .
+    - id: source_finish
+      if: ${{ always() && steps.source_prepare.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- pages-evidence finish
+      working-directory: .
+      env:
+        HUMANYMOUS_PAGES_INSTALL: ${{ steps.bundle_install.outcome }}
+        HUMANYMOUS_PAGES_AUDIT: ${{ steps.bundle_audit.outcome }}
+        HUMANYMOUS_PAGES_APEX: ${{ steps.apex.outcome }}
+        HUMANYMOUS_PAGES_SUBPATH: ${{ steps.subpath.outcome }}
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: ${{ always() && steps.source_prepare.outcome == 'success' }}
+      with:
+        name: pages-outcomes-${{ github.sha }}
+        path: target/delivery-pages/*.json
+        retention-days: 1
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: ${{ always() && steps.apex.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
+      with:
+        name: pages-apex-${{ github.sha }}
+        path: ${{ runner.temp }}/pages-apex
+        retention-days: 1
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: ${{ always() && steps.subpath.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
+      with:
+        name: pages-subpath-${{ github.sha }}
+        path: ${{ runner.temp }}/pages-subpath
+        retention-days: 1
+        if-no-files-found: error
     - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
       if: github.ref == 'refs/heads/main'
       with:
@@ -35,6 +76,8 @@ jobs:
         path: ${{ runner.temp }}/pages-apex
     env:
       BUNDLE_FROZEN: 'true'
+      CARGO_BUILD_JOBS: '1'
+      CARGO_INCREMENTAL: '0'
     defaults:
       run:
         working-directory: docs

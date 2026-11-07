@@ -12,6 +12,7 @@ mod lab_receipts;
 mod metrics;
 mod nginx;
 mod package;
+mod pages;
 mod pilot;
 mod policy;
 mod registry;
@@ -78,6 +79,7 @@ fn run() -> Result<()> {
         "image-sources" => package::image_sources(&root),
         "image-candidates" => image_candidates::check(&root),
         "image-scan" => image_scan::run(&root, argument(1)?),
+        "pages-evidence" => pages::run(&root, argument(1)?),
         "native-artifacts" => package::native_artifacts(&root),
         "node" => package::node(&root).map(|_| ()),
         "readiness" => registry::readiness(&root),
