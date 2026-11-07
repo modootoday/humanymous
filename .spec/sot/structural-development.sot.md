@@ -948,3 +948,36 @@ private kernel, meaningful numeric regressions and actual-file offline pilot
 source without new dependencies, public facade, inference, scoring or GPU edits.
 Compilation and pilot execution require a later source-bound slot after the
 Performance lease returns. Coding allocation is not tested SGD or whole ML closure.
+
+## Expanded Tools ownership table acceptance
+
+Root reviewed the35-row Delivery input decision proposal (25 literal input rows
+plus10 manifest-concatenation sites,34 distinct paths). These are lexical review
+rows, not a complete compiler read closure. The accepted dispositions are:
+
+| Rows | Accepted disposition |
+| --- | --- |
+| L01,L02,L18,C01-C10 | Keep original agent/skill/script canon; bounded explicit source readers and required actual repository checks, with synthetic units separately identified |
+| L03-L06 | Move the original operational contracts to the previously accepted qualification/adapters paths |
+| L07 | Keep browser canon; exact CEF DATA replica at qualification/browser/cef/pilot-contract.json, superseding the proposal's fixtures/cef-desktop destination |
+| L08 | One pinned Collector DATA replica at qualification/fixtures/collector/pilot.json with producer provenance and equality |
+| L10-L15 | One pinned replica per frozen Core scoring dataset under qualification/fixtures/core/scoring; preserve original filenames, producer bytes, license and equality checks |
+| L09 | Reviewed data-only pin at qualification/pins/collector-runtime-pilot-source.json plus actual selected-source binding; no Collector implementation copy |
+| L16,L17 | Keep Docker recipe and public standards corpus canonical; explicit bounded readers preserve actual recipe/corpus verification, including25 corpus cases/5accept/20reject |
+| L19-L21,L23,L25 | Move each original shared Lab Rust file once into src/qualification/lab_support with its basename; all private roles link the same physical source |
+| L22,L24 | Move original browser-wire-contract.json and go-configuration.json to qualification/lab with unchanged bytes and atomic reader/config/source-pin updates |
+
+The Collector source-binding design at d49c19bc is accepted only as modest trusted-
+checkout drift detection: a private selected record from the same freeze bytes,
+explicit frozen root and Compose context association, bounded16KiB source read,
+exact digest/UTF-8/line checks and revalidation before refinement. Missing/drifted
+required source refuses the actual checkout gate; synthetic package-only parser
+tests cannot replace it. Snapshot's public path alone and retained JSON are not
+authenticated authority. No native custody, hostile-race, compiler-read or nofollow
+proof is inferred. Keep source_prefix_authenticated false and all existing
+Origin/policy/assertion/diagnostic field contracts unchanged.
+
+These decisions complete the named ownership direction, not the13-context source,
+role, feature and test freeze. Exact current pins/callers and full main/bin/unit
+inventories must be reconciled before Root's atomic move. No independent source,
+resource, manifest or branch movement is authorized by this table.
