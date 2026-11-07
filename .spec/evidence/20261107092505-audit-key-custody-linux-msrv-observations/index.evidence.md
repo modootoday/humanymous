@@ -3,21 +3,23 @@ id: evidence:root/20261107092505
 title: Audit key custody Linux MSRV observations
 status: active
 created: 2026-11-07T09:25:05Z
-updated: 2026-11-07T10:14:26Z
+updated: 2026-11-07T10:16:44Z
 rel:
   governs: [crates/audit]
   depends_on: [sot:root/audit-key-custody]
 files:
   - {path: facts.json, sha256: 2cbe053de739a814c7712ca6406273fee479e67766f3017dc74a9d8005163b21, bytes: 4894, store: repo}
-  - {path: accounting-correction.json, sha256: 46c16568f532cad484417da36f9d6019d473ac27eaf54350789a648b24af68e7, bytes: 738, store: repo}
+  - {path: accounting-correction.json, sha256: 85c2ae4a5148a618c7355df65612e153f1d40d9604ef50d3c5751d1bb5cb8ea0, bytes: 888, store: repo}
 ---
 
 # Audit key custody Linux MSRV observations
 
 ## What was measured
 
-Accounting correction: historical raw output reports101 passes, but only100 are
-accepted case passes. Exact git source8132117 confirms the ordinary library test
+Accounting correction: historical audit-package aggregate raw output reports101
+passes, but only100 are accepted case passes. Library alone reports54 raw/53
+accepted; all other audit outer harnesses contribute47 accepted passes.
+Exact git source8132117 confirms the ordinary library test
 storage::wal::tests::process_lock_probe returns without assertions when its
 parent environment is absent. Exclude that one outer no-op pass. Its real parent
 already counts as one case; the captured child assertion adds no separate case.
