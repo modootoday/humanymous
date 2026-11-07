@@ -201,7 +201,7 @@
       "id": "CA-CARGO-ID-01",
       "priority": "P2",
       "owner": "Native/Delivery/root",
-      "state": "OPEN production qualification; Native five fixture passes independently verified, source9fcc013d/057befe3 reviewed; production loader NOT_RUN and Delivery actual regression pending review",
+      "state": "OPEN production qualification; Native5fixture and Delivery2regressions within original1f87 actual116 independently verified; productionPackages::load and actualnativearchive remain unrun; current/moved graph separate",
       "trigger": "Cargo package IDs are opaque; valid Platform path package uses version-only fragment and fails old name-suffix predicate",
       "actual_false_positive_observed": false,
       "historic_9586_cause_established": false,
@@ -1655,5 +1655,27 @@
     "current_source": "Root Runtime relocation in progress; frozen sources above remain historical immutable checkpoints, no candidate qualification",
     "goal_complete": false,
     "spec_observation": "During concurrent Root Runtime relocation: --no-local284documents/4foreignRuntimeindexregistrationerrors/9historicalmoved-governswarnings. Owners notified; not a clean candidate check."
+  },
+  "followup_1f87_original_logs_and_terminal_custody_source": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\1f87-independent-completed-jobs-review-001.json",
+        "sha256": "9b3fdf7b6808e189b36e7f2c6e84ec8322023e1e83cba72c16d623ddb1e0ecc9",
+        "bytes": 2979
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\delivery-terminal-custody-source-review-001.json",
+        "sha256": "6a188dc4570db3afc09383338b643e9593c9d106e40f103d406239fb3db3d854",
+        "bytes": 857
+      }
+    ],
+    "completed_run": "42415763028 attempt1/browserdiagnostic source1f87; product128534175499/preflight128533382957; not CI siblingrun42415763189",
+    "logs": "Fresh decodedlogs51083/103781B equal cachedofficialjoblogs and originalZIP53f08545 members;6commonstepfields and1producttypedreportmatch;commandmetric separate",
+    "product": "18assert16pass2fail,actor67inventory1selected66filtered; generic403only, originalcauseunknown; privateledger/image-role provenance unverified",
+    "delivery": "Actualpreflight116 includes2opaqueIDregressions; no nativearchive/loader/current844custodyqualification",
+    "custody": "844cfce source-onlyready,3newregressionsauthorednotactual",
+    "spec": "Prior4Runtimeindexerrorsresolved after5a52dfab; current284/0errors/9historicalmovedgovernswarnings, not clean completed candidate",
+    "goal_complete": false,
+    "final_spec_observation": "285documents/0errors/9historicalmovedgovernswarnings --no-local"
   }
 }

@@ -2234,3 +2234,40 @@ executed zero; no actual WASM/browser403 cause or product qualification is claim
 Root is relocating Runtime paths. These immutable pre-move proofs do not qualify
 the moved candidate; no audit source move/compiler/native/product workload ran.
 Exact private hashes are in baseline.json. Full migration/global gates stay OPEN.
+## Completed1f87 original-log join and terminal custody source review
+
+Fresh read-only retrieval of completed browser-diagnostic run42415763028 attempt1
+matches its retained official job logs: product128534175499 is51083bytes/SHA8b589c85;
+preflight128533382957 is103781bytes/SHA071215ff. The original whole-run ZIP is
+81748bytes/SHA53f08545; independently opened0_product.txt and1_preflight.txt match
+both fresh logs exactly. This recovers original execution-log archive custody,
+not the original private product ledger. Six common product step fields match;
+no full API/timestamp equality is claimed. Its one product typed report matches
+semantically; the separate command metric is not counted as another product report.
+
+Actual source-reported Docker assertions remain18total/16pass/2fail. Actor inventory
+67/select1/filter66, DNS succeeded, process/test failed, source-prefix authentication
+and parser-summary match false. Only generic HttpForbidden is observed; neither
+origin nor fetch-metadata cause is established. Image-role provenance and original
+private ledger remain unrecovered. No lifetime/handoff causality or full-product
+success is inferred. This is a completed-job audit, not a new live monitor.
+
+The same browser-run preflight contains116 actual Delivery unit passes, including
+opaque-ID positive and foreign/ambiguous/drifted metadata negative cases. This
+partially qualifies CA-CARGO-ID-01; production Native Packages::load, actual native
+archive and the moved/current graph remain OPEN. Do not blend this preflight with
+sibling CI run42415763189/job128533383046 or promote it to later custody tests.
+
+Delivery844cfce source now verifies retained terminal attachments instead of
+accepting marker existence alone. Exact paths/hash/size/representation, current
+run/source/attempt/conclusion, retained metadata, complete retained inventory,
+positive unique artifact IDs and startup no-log exception are checked. Artifact
+stdout is isolated from stderr; decoded run.log explicitly includes CLI diagnostics.
+Legacy markers refuse without rewriting. No concrete P0/P1 was confirmed in this
+bounded source review; three new authored tests remain unverified as execution.
+This is neither signed local storage nor hostile-concurrent-filesystem proof.
+
+Runtime5a52dfab resolves the earlier four registration errors. The observed public
+spec state is284documents/0errors/9historical moved-governs warnings, not a clean
+completed migration candidate. Root is still relocating paths; audit touched only
+owned records. Exact private hashes are bound in baseline.json; full goal stays OPEN.
