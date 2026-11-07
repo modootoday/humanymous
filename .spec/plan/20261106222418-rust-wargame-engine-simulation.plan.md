@@ -13,6 +13,28 @@ rel:
 
 ## Goal
 
+### PLATFORM-SLICE-02 assigned decoder consumers (source only)
+
+Root assigned verification/json.rs and report/legacy/mod.rs. Normal own-lane
+release/reclaim added exactly verification/json.rs; legacy/mod.rs was already
+owned. Both imports now consume humanymous_platform::testing::json instead of
+humanymous_test_support::json. No windows-object-bridge reference exists in
+attacker Rust files and no old test-support identifier remains there.
+
+| Changed current path | Source-ready SHA256 |
+| --- | --- |
+| crates/attacker/src/verification/json.rs | a2942231d6d1d29045261d7d0de1636f1a6f29099eb353bb5b908e37087cd475 |
+| crates/attacker/src/report/legacy/mod.rs | 57d1b16589a0a3a1e00c5c8ca345f4060afedfc7ad965cd0b6c8cfdf33684f6a |
+
+Exactly two import lines changed. StrictJsonError mapping, 4MiB verification and
+8MiB legacy bounds, duplicate-key semantics, fixtures, visibility and behavior
+remain unchanged. No manifests/features/dependency categories or paths moved;
+Root owns all28 frozen-file moves and shared graph edits. Whitespace/spec checks
+pass. No formatter/Cargo compiler/unit/Clippy/global CI ran during the transient
+graph. Scoped Cargo fmt and the new source-bound gates wait for root coherence
+and execution allocation. Historical pre-platform receipts do not qualify this
+new dependency graph. No compatibility aliases or decoder copies were created.
+
 ### CORE-SLICE-01 assigned consumer references (source only)
 
 Root later supplied the actual fixture destination:

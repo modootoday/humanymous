@@ -1,6 +1,6 @@
 //! Report-specific budget and safe diagnostics over the shared syntax boundary.
 use humanymous_defender::lab::LabError;
-use humanymous_test_support::json::{StrictJsonError, decode_strict_json};
+use humanymous_platform::testing::json::{StrictJsonError, decode_strict_json};
 use serde_json::Value;
 
 pub(super) fn decode(bytes: &[u8]) -> Result<Value, LabError> {

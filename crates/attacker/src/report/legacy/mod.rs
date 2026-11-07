@@ -6,7 +6,7 @@ mod tests;
 
 pub use aggregate::{Accounting, Notice, ProfileSummary, Summary, aggregate};
 pub use html::render;
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Map, Value};
 use std::{
     fmt,
