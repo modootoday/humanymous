@@ -254,6 +254,21 @@ impl Operations {
                     .eq_ignore_ascii_case(engine::WINDOWS_CLIENT),
                 "windows-desktop-client-path-mismatch",
             )?;
+            // The Windows child resolves credentials through its own PATH;
+            // successful WSL lookup or Docker info does not establish this.
+            let helper = self.success(
+                "/mnt/c/Windows/System32/where.exe",
+                &argv(&["docker-credential-desktop.exe"]),
+                Duration::from_secs(10),
+            )?;
+            ensure(
+                text(&helper)?.lines().next().is_some_and(|path| {
+                    path.trim().replace('\\', "/").eq_ignore_ascii_case(
+                        "C:/Program Files/Docker/Docker/resources/bin/docker-credential-desktop.exe",
+                    )
+                }),
+                "windows-desktop-credential-helper-path-mismatch",
+            )?;
         }
         let context_args = if matches!(
             self.engine_expected.profile,

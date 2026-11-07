@@ -143,3 +143,13 @@ Source review additionally ends every Rust Context borrow before probe host
 calls that can re-enter callbacks, requires collector capability on the
 production-route denial witness, and places Apache runtime files in the owned
 writable directory. Those Linux-only changes await actual compilation/pilot.
+
+Evidence evidence:root/20261107100218 now records actual Linux pilot-feature
+pure10/check/all-target Clippy success on immutable271b14e1, with full extracted
+file inventories unchanged. The native httpd feature was not selected there.
+Root then allocated actual Desktop C; evidence:root/20261107101252 retains the
+credential-helper first failure and the fresh retry's memory-guard stop during
+selected-httpd dependency compilation. Both observed owned cleanup, including
+separate ledger cleanup. All45scenarios remain NOT_RUN. Source now checks the
+Windows child's credential-helper resolution before Docker build; that change
+requires new validation. C was returned and no slot is self-allocated.
