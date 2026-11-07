@@ -1,6 +1,6 @@
 use super::{Config, FleetInput, Scope, Unavailable, velocity::Population};
 use crate::history::OrderedTime;
-use humanymous_signals::observation::{Signal, Source, Verdict};
+use humanymous_core::signals::observation::{Signal, Source, Verdict};
 use serde_json::json;
 use std::{
     collections::{BTreeMap, BTreeSet},

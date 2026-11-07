@@ -1,4 +1,4 @@
-use humanymous_signals::wire::simple_lowercase as lowercase;
+use humanymous_core::signals::wire::simple_lowercase as lowercase;
 use serde::{Deserialize, Serialize};
 
 /// Request header evidence supplied by the capture/HTTP adapter. Reliability

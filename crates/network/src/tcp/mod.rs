@@ -1,5 +1,5 @@
 //! Optional TCP/SYN observations remain score-exempt administrative evidence.
-use humanymous_signals::{
+use humanymous_core::signals::{
     observation::{Signal, Source, Verdict},
     wire::simple_lowercase,
 };

@@ -1,5 +1,5 @@
 //! One mapping authority for score-exempt network residuals and audit events.
-use humanymous_signals::observation::Signal;
+use humanymous_core::signals::observation::Signal;
 
 const EVENTS: &[(&str, &str)] = &[
     ("l5.header.proxy_hop", "net.proxy.hop"),
@@ -85,7 +85,7 @@ pub fn audit_records(input: &[Signal]) -> Vec<AuditRecord> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use humanymous_signals::observation::{Source, Verdict};
+    use humanymous_core::signals::observation::{Source, Verdict};
     #[test]
     fn observations_are_audited_without_becoming_actionable_or_scored() {
         let signal = Signal::new(

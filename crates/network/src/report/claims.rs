@@ -1,5 +1,5 @@
 use crate::http::HeaderInfo;
-use humanymous_signals::wire::simple_lowercase;
+use humanymous_core::signals::wire::simple_lowercase;
 
 pub(super) fn browser(ua: &str) -> bool {
     let ua = simple_lowercase(ua);

@@ -1,0 +1,80 @@
+{
+  "schema": "humanymous.network.core-slice01-consumer-edit/0.1",
+  "observed_utc": "2026-11-07T20:14:28.2326465Z",
+  "source_before": "2d7be3f614820b23e0fb816de173ac9e7cd6cd69",
+  "authority": "Root exact CORE-SLICE-01 consumer edit assignment; previous network residual/report/tcp/http source loan included",
+  "changes": [
+    {
+      "path": "crates/network/src/traffic/consistency.rs",
+      "before_sha256": "355544de4bbc985e9b2e918661d7bc2a27460d264c6a96dbfe41d3aa82a70951",
+      "after_sha256": "7d1940682d97744a2332e6474e130712f9f454495ea4772839f39e823264c791",
+      "bytes": 3901,
+      "literal_transform_only": true,
+      "lf_only": true
+    },
+    {
+      "path": "crates/network/src/residual/mod.rs",
+      "before_sha256": "1e0a4cf5377b553e907bd47e6d52399e7807a8a623afecd7bbfbfcf4858a35b5",
+      "after_sha256": "d5a17a64a694c9d515b26c8776a61515e4c2b8f50711be37d8198f8d6eb6eec6",
+      "bytes": 3786,
+      "literal_transform_only": true,
+      "lf_only": true
+    },
+    {
+      "path": "crates/network/src/tcp/mod.rs",
+      "before_sha256": "966663d089f9e6d6014992a915a3c0aad831ab04a8c54f3bc8c821434dad5abd",
+      "after_sha256": "a0bd1105acb001908c47674f06755a55cf663eb82ad6330040a9a03a2ade901a",
+      "bytes": 4108,
+      "literal_transform_only": true,
+      "lf_only": true
+    },
+    {
+      "path": "crates/network/src/http/headers.rs",
+      "before_sha256": "afc5ebac8a99902a4e0482653242e4c97ebf98d5f426b663c4f0280a308fd0f8",
+      "after_sha256": "796a1a224103695a1ed9b8af5590fa38bcca88fdc4ab02b94e3d76ce37c7c62f",
+      "bytes": 6767,
+      "literal_transform_only": true,
+      "lf_only": true
+    },
+    {
+      "path": "crates/network/src/report/assembly.rs",
+      "before_sha256": "8e1fb60339e6f6cc0f01d5691cd21bd1846fa630612c629efa07a56a0bbeb7c6",
+      "after_sha256": "aadb6d0cdb205485ee27977d1d2462db5df687242f3a50807a7b5d0d446446bb",
+      "bytes": 11260,
+      "literal_transform_only": true,
+      "lf_only": true
+    },
+    {
+      "path": "crates/network/src/report/claims.rs",
+      "before_sha256": "e4d798876767b3233d3806f6cecd22ba4c67b90522f6be99faab8ade6c622ea8",
+      "after_sha256": "412127506241c83a879931ead15cfe4a069c83c71efba7009772a7dfba978c99",
+      "bytes": 2301,
+      "literal_transform_only": true,
+      "lf_only": true
+    },
+    {
+      "path": "crates/network/src/correlation/registry.rs",
+      "before_sha256": "f85d04bbcbbec262a538de1af45a9fe424a4826d202563ea519d7c6fd9a836d6",
+      "after_sha256": "2f7ff86065f7e10090b70703d9713160703b02454610f4b23e20cd274326dcea",
+      "bytes": 12912,
+      "literal_transform_only": true,
+      "lf_only": true
+    },
+    {
+      "path": "crates/network/src/correlation/tests.rs",
+      "before_sha256": "4429b10fd2852ae6c19a51933f1de712d539e189959838fc686471b6bb70047e",
+      "after_sha256": "b958f9195c6c23fc415e91f406a617e8e8a104c021d007371995e953b64b0298",
+      "bytes": 10335,
+      "literal_transform_only": true,
+      "lf_only": true
+    }
+  ],
+  "manifests_edited": false,
+  "paths_moved": false,
+  "compiler_executed": false,
+  "clippy_executed": false,
+  "behavior_or_visibility_changed": false,
+  "compiler_gate": "Blocked until Root declares workspace coherent",
+  "process_handles": [],
+  "target_leases": []
+}

@@ -3,7 +3,7 @@ use crate::{
     tcp,
     tls::{engine_from_client_hello, ja3, ja4},
 };
-use humanymous_signals::{
+use humanymous_core::signals::{
     observation::{Signal, Source, Verdict},
     report::NetworkReport,
 };

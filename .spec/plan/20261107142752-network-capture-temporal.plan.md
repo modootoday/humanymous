@@ -470,3 +470,17 @@ required new-path verification. It moves no path or ref and changes no manifest.
 The existing claim remains until Root freezes and explicitly sequences this slice;
 then narrow/release actual transferred paths. Real fleet, same-epoch association,
 Runtime serving and Docker gates remain with their current responsibilities.
+
+## CORE-SLICE-01 consumer references
+
+Root assigned the mechanical Network Rust import edit, including a source loan
+for residual/report/tcp/http beyond this writer's former temporal-only paths.
+The verified own lane was released/reclaimed with Network src/tests/examples
+scope before edits. Eight files/nine references were changed only from
+humanymous_signals to humanymous_core::signals; suffixes and aliases remain.
+Evidence:root/20261107201405 binds exact before/after hashes and literal-only
+checks. No old matching crate references remain in this Rust source scope.
+No other assigned legacy core-context names matched. No behavior/visibility,
+manifest, path/ref or fixture change; no compiler/Clippy/full CI was launched.
+Root owns common graph and relocation and must declare coherence before tests.
+Prior72unit/5hosted proofs are not transferred to the changed consumer tuple.
