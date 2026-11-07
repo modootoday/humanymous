@@ -1,0 +1,62 @@
+{
+  "schema": "humanymous.offline-sgd-source-checkpoint/1",
+  "status": "SOURCE_ONLY_ALL_EXECUTION_NOT_RUN",
+  "root_grant": "6a7dda38859d2e80db7121c39349bdde7cf00011",
+  "source_files": [
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/mod.rs",
+      "sha256": "737eeb20cfbee00100542d28b1dc49111723abe172183f11755ef73d47babea6",
+      "bytes": 336
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd.rs",
+      "sha256": "21306e13ea5bf38861fe4d44ea13eff26d25365d14c9dc4bdb8fb9f345423f5e",
+      "bytes": 9656
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs",
+      "sha256": "3cbddd5e62c1d917b1424780ea54e56e00b1da547841421df822ed485d94ed9b",
+      "bytes": 14151
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs",
+      "sha256": "bf7075d0f7ea6765f5edc0d6be63868f21a70b3f014656881c8abf94111efe21",
+      "bytes": 8502
+    }
+  ],
+  "authored_tests": [
+    "fn analytic_active_step_uses_old_output_weight_and_exact_bias_order() {",
+    "fn analytic_inactive_and_signed_zero_relu_only_update_output_bias() {",
+    "fn rounded_product_is_not_fused_with_accumulator() {",
+    "fn rust_derived_reference_matches_each_epoch_all_weight_bits_and_stream_counts() {",
+    "fn warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function() {",
+    "fn defaults_empty_input_and_version_changes_preserve_weight_determinism() {",
+    "fn limits_schema_labels_statistics_and_warm_shape_fail_before_work() {",
+    "fn exact_work_limits_and_rejection_draw_budget_discard_entire_candidate() {",
+    "fn finite_input_overflows_and_invalid_config_never_mutate_inputs() {",
+    "fn rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator() {",
+    "fn actual_file_training_roundtrip_is_reproducible_and_never_overwrites_sentinel() {",
+    "fn actual_file_late_invalid_quarantine_support_and_capacity_fail_before_output() {"
+  ],
+  "authored_test_count": 12,
+  "live_owned_compiler_handles": [],
+  "owned_target_leases": [],
+  "dependencies_changed": false,
+  "activation_changed": false,
+  "limitations": [
+    "No formatter, compiler, test or actual file pilot execution",
+    "Go FMA allowed; abs0/rel0 cross-language parity unqualified until exact toolchain/target/CPU/build oracle",
+    "Warm new statistics and reset calibration do not preserve function continuity even at zero epochs",
+    "Existing RNG initialize and shuffle order.to_vec use bounded infallible allocations; no whole-process OOM recovery promise",
+    "Private module has cfg_attr(not(test), expect(dead_code)) pending real bootstrap caller; remove/review at integration",
+    "Actual-file pilot source is native filesystem test, not CLI/process or product e2e"
+  ],
+  "next_commands": [
+    "cargo fmt --package humanymous-core -- --check",
+    "cargo test --locked --offline -p humanymous-core --lib model::training::sgd --jobs 1 -- --test-threads=1",
+    "cargo test --locked --offline -p humanymous-core --jobs 1 -- --test-threads=1",
+    "cargo check --locked --offline -p humanymous-core --all-targets --all-features --jobs 1",
+    "cargo clippy --locked --offline -p humanymous-core --all-targets --all-features --jobs 1 -- -D warnings"
+  ],
+  "execution_precondition": "Performance lease returned; Root grants immutable source-bound slot, exclusive target and one monotonic supervisor; formatter fixes need separately admitted source mutation"
+}

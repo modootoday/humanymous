@@ -657,3 +657,55 @@ malformed-warm refusal) before code. Time split/tie policy, per-cohort evaluatio
 AUT, calibration, drift, sinks, correction lifecycle and command/process surfaces
 remain individually tracked future slices; candidate must stay offline until those
 separate admission gates exist. This is concrete Train progress, not whole ML closure.
+
+### Accepted source grant and final numerical/allocation caveats
+
+Root accepted the bounded offline SGD design including both X-review corrections
+and allocated ONLY training/mod.rs, training/sgd.rs and training/sgd/** to this
+owner. Actual detection-core and sot-plan claims were read back before source work.
+No formatter/compiler/test execution is allocated. Root retains all other Core,
+Cargo/dependency, inference/scoring and activation ownership.
+
+Warm copying with NEWmean/std and CalA=1,CalB=0 may change predictions even with
+zero epochs: weight continuity is not function/prediction continuity. Existing
+RNG initialize AND shuffle's order.to_vec perform bounded infallible allocations;
+fallible SGD-owned reservations do not promise whole-process OOM recovery.
+Go1.26.3 permits FMA: Rust explicit non-FMA ordered arithmetic is this deterministic
+implementation target, while abs0/rel0 cross-language parity remains UNQUALIFIED
+until an exact toolchain/target/CPU/build Go oracle allocation. Do not introduce a
+nonzero tolerance or patch upstream source to force a compatibility claim.
+
+### Real SGD source checkpoint under accepted grant
+
+The four allocated source paths now implement the real ordered offline online-SGD
+kernel,10numeric regression tests and2actual-file pilot tests. All12are NOT_RUN.
+sgd-source-checkpoint.json binds exact file hashes, test names and next command
+matrix. No formatter, compiler, target allocation, pilot or Go execution occurred.
+No manifest/dependency, inference, scoring, activation or GPU code changed.
+
+The borrowed-row API validates full input and capacities before creating the RNG;
+one stream initializes and shuffles successive existing ID orders. A private
+candidate is discarded on arithmetic/limit/draw failure. Tests include analytic
+old-W2 and inactive/signed-zero cases, an explicit non-FMA cancellation boundary,
+per-sample all-weight bit comparisons against a separate Rust gradient formulation,
+cold/warm seed/epoch stream comparison, zero-epoch function discontinuity, invalid
+and overflowing input/configuration, and deterministic legacy separable learnability.
+References share exp/RNG and remain Rust-derived, not a Go execution transcript.
+The native-file test source fully prevalidates both datasets/support/admission,
+trains/evaluates in memory, then create_new writes and reads back exact artifact
+bytes. It checks reproducibility, sentinel preservation and no output for late
+invalid/quarantined/absent-class/capacity/numerical failures. Post-create I/O failures
+are explicitly owned unpublished outputs; no success is emitted from partial I/O.
+
+Public API is unchanged: sgd and every callable/type are pub(crate) or narrower.
+Until a separately allocated bootstrap caller exists, the registration carries a
+non-test-only scoped expect(dead_code) with its exact reason; it does not suppress
+Clippy or test warnings and must be reviewed/removed at caller integration. RNG's
+bounded infallible allocation caveat remains. No prior162pass receipt qualifies
+these new sources. Formatting/compilation have not been observed and may require
+source fixes in the separately allocated slot. Root must bind package/target/
+features/profile/toolchain/CPU and source hashes before the command matrix runs.
+Next gate: fmt check FIRST, focused12SGD tests including actual-file pilot, full
+Core regression, locked/offline all-target/all-feature check and strict Clippy,
+jobs1/test-threads1 under a fresh exclusive target and monotonic budget. All
+remain pending Performance lease return and Root's explicit execution allocation.
