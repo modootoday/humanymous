@@ -1,0 +1,78 @@
+{
+  "toolchain": "1.99.1",
+  "productReleaseQualified": false,
+  "residuals": [
+    "Windows namespace power-loss durability unconfirmed",
+    "trusted stable supervisor-controlled ancestors",
+    "same-owner and privileged replacement outside trust boundary",
+    "Windows hardlink aliases not inspected",
+    "local filesystem only",
+    "independent witness and anti-rollback not implemented",
+    "ErasurePermit production issuer absent",
+    "pending erasure recovery unsupported",
+    "runtime service wiring and full product e2e remain"
+  ],
+  "sourceFiles": [
+    {
+      "bytes": 11555,
+      "sha256": "830d1154eb89f3d9d3d6a972b7e38fe7992cd88f2ca3ec1d66deb110a3107cf6",
+      "path": "crates/audit/src/keys/mod.rs"
+    },
+    {
+      "bytes": 16675,
+      "sha256": "b10eea3032e36fde5d9fb41acfed73402482109589297ffdd052f2d710bc4351",
+      "path": "crates/audit/src/keys/vault.rs"
+    },
+    {
+      "bytes": 9973,
+      "sha256": "218d7a67d2e9898cd548d589068b48bdf5490717e477584d40e4890b98f9a9e0",
+      "path": "crates/audit/src/keys/custody.rs"
+    },
+    {
+      "bytes": 5280,
+      "sha256": "cda0428942563a5de7b20a3a05e7b242a2831da702e3c8a306ff8a5805b33502",
+      "path": "crates/audit/src/keys/custody/permissions.rs"
+    },
+    {
+      "bytes": 14544,
+      "sha256": "9429cc93175f3c6e3da92027a1c588f940f45d12f6a1eca9b41526ce7a816e9f",
+      "path": "crates/audit/tests/key_custody.rs"
+    }
+  ],
+  "windows": {
+    "workspacePassed": 49,
+    "subprocessHelpersExcluded": 2,
+    "clippy": "passed",
+    "custodyPassed": 10
+  },
+  "privateExecutionHashes": [
+    {
+      "bytes": 6371,
+      "sha256": "5aa57222efcebddd83ea4d73331e55fddb5b44faa4363b3fc8806f5bdae6b03d",
+      "name": "workspace-tests.log"
+    },
+    {
+      "bytes": 5765,
+      "sha256": "74070c3ccf973fad7d7018fdee6d4f155934092f8427767abf786f20013eedad",
+      "name": "linux-workspace-tests.log"
+    },
+    {
+      "bytes": 151,
+      "sha256": "d1cd82d52aeec289972e09335b69dccb85a64108fceec5dd551367af5d5fe363",
+      "name": "workspace-clippy.log"
+    },
+    {
+      "bytes": 2020,
+      "sha256": "805002dc77e709bd1b113c36d4bc927dfe32c526c9445a3234a6758702d80452",
+      "name": "linux-clippy.log"
+    }
+  ],
+  "linux": {
+    "workspacePassed": 47,
+    "image": "sha256:e6f2cff35d0f309acf8433b4f05878ed77092602c5065cc81801177da0bb3a9c",
+    "subprocessHelpersExcluded": 2,
+    "clippy": "passed",
+    "custodyPassed": 8
+  },
+  "scope": "native filesystem and library qualification; not whole-product e2e"
+}

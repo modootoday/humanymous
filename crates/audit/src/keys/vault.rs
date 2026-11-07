@@ -254,6 +254,29 @@ fn null_tombstones<'de, D: Deserializer<'de>>(d: D) -> Result<BTreeSet<String>, 
     Ok(Option::<BTreeSet<String>>::deserialize(d)?.unwrap_or_default())
 }
 
+// Custody cannot use snapshot replacement to bypass the erasure capability.
+// Existing keys are immutable; tombstones are monotonic, including on recovery.
+pub(super) fn validate_update(
+    old: Option<&[u8]>,
+    new: &[u8],
+    erasure: bool,
+) -> Result<(), KeyError> {
+    let old = Vault::load(old.unwrap_or_default(), Mode::Hmac, usize::MAX)?;
+    let new = Vault::load(new, Mode::Hmac, usize::MAX)?;
+    let old = old.state.lock().map_err(|_| KeyError::InvalidMaterial)?;
+    let new = new.state.lock().map_err(|_| KeyError::InvalidMaterial)?;
+    if !old.shredded.is_subset(&new.shredded)
+        || (!erasure && old.shredded != new.shredded)
+        || old.keys.iter().any(|(id, key)| match new.keys.get(id) {
+            Some(next) => key.as_ref() != next.as_ref(),
+            None => !erasure || !new.shredded.contains(id),
+        })
+    {
+        return Err(KeyError::InvalidMaterial);
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -366,5 +389,21 @@ mod tests {
                 .unwrap()
                 .starts_with("shredded:")
         );
+    }
+    #[test]
+    fn custody_updates_require_erasure_authority_and_monotonic_tombstones() {
+        let vault = Vault::new(Mode::Hmac, 10).unwrap();
+        vault.pseudonymize("subject", "value").unwrap();
+        let before = vault.snapshot().unwrap();
+        vault
+            .shred("subject", &ErasurePermit { _private: () })
+            .unwrap();
+        let after = vault.snapshot().unwrap();
+        assert!(validate_update(Some(&before), &after, false).is_err());
+        assert!(validate_update(Some(&before), &after, true).is_ok());
+        assert!(validate_update(Some(&after), &before, true).is_err());
+        let replacement = Vault::new(Mode::Hmac, 10).unwrap();
+        replacement.pseudonymize("subject", "value").unwrap();
+        assert!(validate_update(Some(&before), &replacement.snapshot().unwrap(), true).is_err());
     }
 }

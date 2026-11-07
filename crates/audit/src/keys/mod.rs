@@ -1,5 +1,6 @@
-//! Historical sealed-key compatibility and subject linkage. Durable file
-//! storage/permissions and operational dual-control remain separate boundaries.
+//! Historical sealed-key compatibility, subject linkage and exclusive native
+//! sealed custody. Operational dual-control remains a separate boundary.
+pub mod custody;
 pub mod vault;
 use aes_gcm::{
     Aes256Gcm, Nonce,
