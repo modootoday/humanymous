@@ -1,0 +1,95 @@
+{
+  "schema": "humanymous.dotnet-retained-static/1",
+  "base_source": "35ec950dc87a6f4397b448f627ba37137eb47128",
+  "overlay_index_sha256": "82255217ad5da22f049f102bf475d4650e035d2189754247e9dfd70a0c4bfd33",
+  "r4c": {
+    "fmt_exit": 0,
+    "clippy_reported_seconds": 0.73,
+    "input_closure_identical": true,
+    "target_marker_removed": true,
+    "gate_pids_absent": true,
+    "tests_repeated": 0,
+    "all_target_strict_clippy_exit": 0
+  },
+  "r3_separate_history": {
+    "dotnet_protocol_passed": 11,
+    "dotnet_clippy_exit": 101,
+    "dotnet_protocol_filtered": 13,
+    "pure_tests_passed": 37,
+    "source": "35ec950d plus044000 overlays",
+    "first_failure": "collapsible_if in retained.rs",
+    "dotnet_all_target_check_exit": 0
+  },
+  "raw_receipt_pins": [
+    {
+      "transaction": "R4c",
+      "sha256": "4a460dfa7797473ead67e46ab6290d0555710b99b0d519aacc13986d43f3156e",
+      "bytes": 319,
+      "file": "commands.json"
+    },
+    {
+      "transaction": "R4c",
+      "sha256": "f829063760d7d706fa35cc7bbbf57d2f906aa4d0c02ebd686edf9bac85750844",
+      "bytes": 69,
+      "file": "closure-comparison.json"
+    },
+    {
+      "transaction": "R4c",
+      "sha256": "4ec2c741f2467e9171b4dd557d3221d41c6e5926363a38d5e2f2f2f94b0c90d9",
+      "bytes": 154,
+      "file": "execution-terminal.json"
+    },
+    {
+      "transaction": "R4c",
+      "sha256": "d64d52177e9aa943b25f0c571a46b240eb2ccab3348d5744aa8163884cb8f091",
+      "bytes": 166,
+      "file": "terminal.json"
+    },
+    {
+      "transaction": "R4c",
+      "sha256": "9ad9fa2260c46b753f472947afb17a356d0d9614ab87c3cdf2fe8f0d847e6176",
+      "bytes": 247,
+      "file": "dotnet-clippy.stderr.log"
+    },
+    {
+      "transaction": "R4c",
+      "sha256": "82255217ad5da22f049f102bf475d4650e035d2189754247e9dfd70a0c4bfd33",
+      "bytes": 1229,
+      "file": "overlay-index.json"
+    },
+    {
+      "transaction": "R3",
+      "sha256": "0994d20e43e0fd11a59cd7784800d8f19b4338124c8b0e359a10a9a82b3020a7",
+      "bytes": 1014,
+      "file": "dotnet-protocol-pure.stdout.log"
+    },
+    {
+      "transaction": "R3",
+      "sha256": "f807d2aac06dec5b2bc32d80ef52c7b3c7fb9fb8a686c42585667094269de07a",
+      "bytes": 3463,
+      "file": "dotnet-clippy.stderr.log"
+    },
+    {
+      "transaction": "R3",
+      "sha256": "65de4bf1b14831da6a42d10560da43afb0eb74ef8f141e7bbeb953a71a8f28b8",
+      "bytes": 188,
+      "file": "terminal.json"
+    },
+    {
+      "transaction": "R3",
+      "sha256": "4b1d9d757f08cb65866dfde0f4df23ed7212596bb3359f35b1a095f8728e2a68",
+      "bytes": 69,
+      "file": "closure-comparison.json"
+    }
+  ],
+  "actual_host": false,
+  "gc_await": false,
+  "nativeaot": false,
+  "package_install": false,
+  "full_goal_complete": false,
+  "limitations": [
+    "R4c is static-only and repeats no tests; R3 remains a failed transaction.",
+    "Actual native producer/admitted launch remains Unsupported; no Command is constructed by Host.start.",
+    "No actual child/host/SCM/GPU workload ran in this transaction."
+  ]
+}

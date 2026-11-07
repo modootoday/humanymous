@@ -6,18 +6,18 @@ const FRAME_LIMIT: usize = 4096;
 const STREAM_LIMIT: usize = 256 * 1024;
 const QUEUE_LIMIT: usize = 64;
 
-#[derive(Clone, Copy, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "kebab-case")]
-enum HandoffMode {
+pub(super) enum HandoffMode {
     Normal,
     Rewrite,
     ResponseStarted,
     Expire,
 }
 
-#[derive(Clone, Copy, Debug, Serialize)]
-#[serde(tag = "operation", rename_all = "kebab-case")]
-enum Control {
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[serde(tag = "operation", rename_all = "kebab-case", deny_unknown_fields)]
+pub(super) enum Control {
     GcStart,
     GcStop,
     DisposeHost,
@@ -58,9 +58,9 @@ impl Controls {
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
 #[serde(tag = "kind", deny_unknown_fields)]
-enum Frame {
+pub(super) enum Frame {
     #[serde(rename = "starting")]
     Starting { pid: u32 },
     #[serde(rename = "ready")]
@@ -106,15 +106,16 @@ enum Phase {
     Failed,
 }
 
-struct Ingress {
+pub(super) struct Ingress {
     send: SyncSender<Frame>,
     pid: u32,
     phase: Phase,
     bytes: usize,
+    pending: Vec<u8>,
 }
 
 impl Ingress {
-    fn new(pid: u32) -> (Self, Receiver<Frame>) {
+    pub(super) fn new(pid: u32) -> (Self, Receiver<Frame>) {
         let (send, receive) = sync_channel(QUEUE_LIMIT);
         (
             Self {
@@ -122,6 +123,7 @@ impl Ingress {
                 pid,
                 phase: Phase::Starting,
                 bytes: 0,
+                pending: Vec::new(),
             },
             receive,
         )
@@ -133,6 +135,44 @@ impl Ingress {
             self.phase = Phase::Failed;
         }
         result
+    }
+
+    // Native output chunks have no line boundaries. Retain at most one bounded
+    // partial frame; never infer stream completion from a temporarily empty queue.
+    pub(super) fn offer_chunk(&mut self, chunk: &[u8]) -> Result<(), &'static str> {
+        let result = self.offer_chunk_inner(chunk);
+        if result.is_err() {
+            self.phase = Phase::Failed;
+        }
+        result
+    }
+
+    fn offer_chunk_inner(&mut self, chunk: &[u8]) -> Result<(), &'static str> {
+        if matches!(self.phase, Phase::Failed | Phase::Stopped | Phase::Eof) {
+            return Err("host stream already terminal");
+        }
+        let total = self
+            .bytes
+            .checked_add(self.pending.len())
+            .and_then(|count| count.checked_add(chunk.len()))
+            .ok_or("stream overflow")?;
+        if total > STREAM_LIMIT {
+            return Err("host stream byte budget");
+        }
+        for &byte in chunk {
+            if matches!(self.phase, Phase::Stopped | Phase::Eof) {
+                return Err("host bytes after stop");
+            }
+            if self.pending.len() == FRAME_LIMIT {
+                return Err("host frame bounds");
+            }
+            self.pending.push(byte);
+            if byte == b'\n' {
+                let line = std::mem::take(&mut self.pending);
+                self.offer_inner(&line)?;
+            }
+        }
+        Ok(())
     }
 
     fn offer_inner(&mut self, line: &[u8]) -> Result<(), &'static str> {
@@ -163,8 +203,8 @@ impl Ingress {
             .map_err(|_| "host frame queue unavailable")
     }
 
-    fn eof(&mut self) -> Result<(), &'static str> {
-        if self.phase != Phase::Stopped {
+    pub(super) fn eof(&mut self) -> Result<(), &'static str> {
+        if self.phase != Phase::Stopped || !self.pending.is_empty() {
             self.phase = Phase::Failed;
             return Err("host EOF before successful protocol stop");
         }
@@ -183,6 +223,47 @@ mod tests {
         b"{\"kind\":\"application-contact\",\"contacts\":1,\"mutations\":0,\"body_length\":6}\n";
     const STOP: &[u8] =
         b"{\"kind\":\"stopped\",\"contacts\":0,\"mutations\":0,\"collections\":1}\n";
+
+    #[test]
+    fn byte_chunks_preserve_split_and_coalesced_frames() {
+        let (mut ingress, receive) = Ingress::new(7);
+        for byte in START {
+            ingress.offer_chunk(&[*byte]).unwrap();
+        }
+        let rest = [READY, COUNTERS, STOP].concat();
+        ingress.offer_chunk(&rest).unwrap();
+        assert!(ingress.pending.is_empty());
+        ingress.eof().unwrap();
+        assert_eq!(receive.try_iter().count(), 4);
+    }
+
+    #[test]
+    fn partial_frame_eof_and_oversize_are_sticky_failures() {
+        let (mut partial, _receive) = Ingress::new(7);
+        partial.offer_chunk(&START[..START.len() - 1]).unwrap();
+        assert!(partial.eof().is_err());
+        assert!(partial.offer_chunk(b"\n").is_err());
+        let (mut oversized, _receive) = Ingress::new(7);
+        oversized.offer_chunk(&vec![b'x'; FRAME_LIMIT]).unwrap();
+        assert!(oversized.offer_chunk(b"\n").is_err());
+        assert_eq!(oversized.pending.len(), FRAME_LIMIT);
+        assert!(oversized.offer_chunk(START).is_err());
+    }
+
+    #[test]
+    fn chunks_count_pending_bytes_and_refuse_trailing_stop_data() {
+        let (mut capped, _receive) = Ingress::new(7);
+        capped.bytes = STREAM_LIMIT - 2;
+        capped.offer_chunk(b"{").unwrap();
+        assert!(capped.offer_chunk(b"xx").is_err());
+        let (mut trailing, _receive) = Ingress::new(7);
+        assert!(
+            trailing
+                .offer_chunk(&[START, READY, STOP, b"x"].concat())
+                .is_err()
+        );
+        assert!(trailing.eof().is_err());
+    }
 
     #[test]
     fn exact_pid_sequence_requires_stop_then_eof() {

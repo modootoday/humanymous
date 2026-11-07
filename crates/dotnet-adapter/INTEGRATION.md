@@ -2,6 +2,16 @@
 
 ## Current approved continuation
 
+Latest retained-harness checkpoint: evidence:root/20261108050000 records R4c
+fmt/all-target strict Clippy passing for35ec950d plus exact045000 overlays.
+The earlier R3 transaction passed37pure cases and .NET check but failed the last
+Clippy style gate; R4c repeats no tests and fixes only that nested-if form.
+Host now consumes the shared interactive owner, derives both original deadlines,
+retains GC HTTP worker custody and bounds HTTP/stage IO by that original run.
+Actual prelaunch still refuses Unsupported BEFORE Command. Protected producer,
+outer Job/failure handoff and actual Kestrel/GC/AOT/package remain unqualified;
+this checkpoint must not enable the startup path or mark the full goal complete.
+
 Latest pure checkpoint: evidence:root/20261108014500 records immutable62f47765
 plus exact four overlays, actual launch8/protocol8/managed_scope1 passing,
 fmt/check/strict Clippy passing and0input drift across11521rows. The previously
