@@ -4,9 +4,9 @@ use crate::internal_urls::Route;
 /// Engine-observed control availability; unknown defaults to unavailable.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Controls {
-    /// A permitted previous entry is available and no transaction is pending.
+    /// CEF reports a previous entry; dispatch still validates its route.
     pub back: bool,
-    /// A permitted next entry is available and no transaction is pending.
+    /// CEF reports a next entry; dispatch still validates its route.
     pub forward: bool,
     /// CEF is loading or host verification is pending.
     pub loading: bool,

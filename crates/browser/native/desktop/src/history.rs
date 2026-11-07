@@ -33,6 +33,7 @@ wrap_task! {
                 let Ok(mut state)=self.state.lock() else { return; };
                 if !state.is_live() { return; }
                 if matches!(self.action, Action::Stop) {
+                    if state.navigation.invalidate_controls().is_err() { state.revoke(); return; }
                     if let Some(ticket)=state.navigation.transaction.pending() {
                         state.navigation.finish(ticket,Outcome::Stopped,0,0);
                     }
@@ -40,17 +41,18 @@ wrap_task! {
                 }
                 if state.navigation.transaction.pending().is_some() || state.navigation.controls.loading { return; }
                 let Some(anchor)=state.navigation.transaction.current() else { return; };
-                anchor
+                let Some((_,committed))=state.navigation.committed() else { return; };
+                (anchor,committed,state.navigation.control_epoch)
             };
             let Some(host)=self.browser.host() else { return; };
-            let mut visitor=HistoryVisitor::new(self.browser.clone(),self.state.clone(),anchor,
+            let mut visitor=HistoryVisitor::new(self.browser.clone(),self.state.clone(),anchor.0,anchor.1,anchor.2,
                 matches!(self.action,Action::Forward),Arc::new(Mutex::new(Entries::default())));
             host.navigation_entries(Some(&mut visitor),0);
         }
     }
 }
 wrap_navigation_entry_visitor! {
-    struct HistoryVisitor { browser: Browser, state: Shared, anchor: Ticket, forward: bool, entries: Arc<Mutex<Entries>>, }
+    struct HistoryVisitor { browser: Browser, state: Shared, anchor: Ticket, committed: internal_urls::Route, epoch: u64, forward: bool, entries: Arc<Mutex<Entries>>, }
     impl NavigationEntryVisitor {
         fn visit(&self,entry:Option<&mut NavigationEntry>,current:i32,index:i32,total:i32)->i32 {
             let route=entry.and_then(|e|internal_urls::classify(&CefString::from(&e.url()).to_string()).ok());
@@ -58,14 +60,14 @@ wrap_navigation_entry_visitor! {
                 let Ok(mut entries)=self.entries.lock() else { return 0; };
                 if !matches!(current,0|1) || !entries.push(route,current==1,index,total) { return 0; }
                 if index!=total-1 { return 1; }
-                entries.target(self.forward,self.anchor.route())
+                entries.target(self.forward,self.committed)
             };
             let Some(target)=target else { return 0; };
             let available=if self.forward { self.browser.can_go_forward()==1 } else { self.browser.can_go_back()==1 };
             let current_route=self.browser.main_frame().and_then(|f|internal_urls::classify(&CefString::from(&f.url()).to_string()).ok());
-            if !available || current_route!=Some(self.anchor.route()) { return 0; }
+            if !available || current_route!=Some(self.committed) { return 0; }
             let Ok(mut state)=self.state.lock() else { return 0; };
-            if !state.is_live() || state.navigation.transaction.current()!=Some(self.anchor)
+            if !state.is_live() || state.navigation.control_epoch!=self.epoch || state.navigation.transaction.current()!=Some(self.anchor)
                 || state.navigation.transaction.pending().is_some() || state.navigation.controls.loading { return 0; }
             if state.navigation.begin(target,"request_accepted").is_err() { return 0; }
             drop(state);

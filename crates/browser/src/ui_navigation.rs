@@ -125,7 +125,6 @@ pub fn committed(
     let address = path(doc, "address").ok_or("native address missing")?;
     doc.set_input_value(&address, route.url())?;
     text(doc, "page-tab-label", route.title());
-    text(doc, "navigation-status", "LOCAL ONLY");
     Ok(())
 }
 /// Present a bounded application notice; the caller supplies a fixed safe message.

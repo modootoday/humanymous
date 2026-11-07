@@ -9,6 +9,7 @@ use std::io;
 
 #[derive(Default)]
 pub struct State {
+    pub control_epoch: u64,
     pub controls: humanymous_browser::history::Controls,
     pub transaction: Navigation,
     pub notice: Option<&'static str>,
@@ -48,6 +49,7 @@ impl State {
         }
     }
     pub fn begin(&mut self, route: Route, phase: &'static str) -> io::Result<Ticket> {
+        self.invalidate_controls()?;
         let superseded = self.transaction.pending();
         let ticket = self.transaction.begin(route).map_err(io::Error::other)?;
         if let Some(old) = superseded {
@@ -61,6 +63,13 @@ impl State {
         self.transaction
             .committed()
             .map(|t| (t.generation(), t.route()))
+    }
+    pub fn invalidate_controls(&mut self) -> io::Result<()> {
+        self.control_epoch = self
+            .control_epoch
+            .checked_add(1)
+            .ok_or_else(|| io::Error::other("control epoch exhausted"))?;
+        Ok(())
     }
     fn commit(&mut self, route: Route) {
         if let Some(ticket) = self.transaction.pending().filter(|t| t.route() == route)
