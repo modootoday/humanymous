@@ -133,6 +133,38 @@ new scoring or third-party probing. T4 ceiling remains unchanged.
 Current source/package/runtime/whole-product status: NOT_RUN; qualified tuples=[];
 no current dependency closure audit, registry artifact or publisher verification.
 
+## Explicit hosted smoke source
+
+adapters/python/pilot-contract.json describes2required Rust test groups,4actual
+framework objects (Flask/Django WSGI and Starlette/FastAPI ASGI). They deliberately
+use an unavailable authority fixture, expect503 and independent native spy count0.
+adapters/ruby/pilot-contract.json describes3required Rack/Sinatra/Rails object
+callbacks with the same dependency-down expectation. These are source-defined
+denominators, not executed counts. All7cases remain NOT_RUN. They do not qualify
+production IPC/ALLOW/audit/server/wheel/gem/streaming/cancellation-race behavior.
+Actual acceptance still requires the full earlier verification corpus.
+
+Python candidate directpins from official PyPI JSON API on2026-11-07:
+FastAPI0.162.0, Starlette1.10.0, Django6.1.3, Flask3.1.3.
+RubyGems official v1/gems JSON API candidate pins Rack3.2.8/Sinatra4.2.1/
+Rails8.1.4.1 and registry artifact SHA256 are in its contract. These retrieved
+metadata values are not compatibility/security findings; hosted must retain the
+actual transitive installed closure and current audit. No local interpreter ran.
+
+Ruby package-tool native init can read a bounded private JSON request path from
+HUMANYMOUS_NATIVE_GEM_PACKAGE_REQUEST and call upstream packaging APIs, allowing
+an unchanged ruby --require native-extension invocation with no custom Ruby
+entrypoint. The feature is absent from production. Actual archive/install remains
+NOT_RUN, and self-generated metadata must never state runtime qualification.
+
+## Dedicated context handoffs
+
+Root split Apache/C ABI/Go/.NET into dedicated owners. This owner now exclusively
+implements framework-adapter/Node/Python/Ruby in adapter-hosts lane. Later-language
+research below is handoff context, not a competing implementation canon. Apache
+owner requests one shared encode arm only after root's exact integrity profile
+exists; unknown profiles currently fail closed. No new language source paths here.
+
 ## Go integration extension (explicit user scope)
 
 Go net/http plus chi/Gin/Echo and Fiber are required followup targets. Existing

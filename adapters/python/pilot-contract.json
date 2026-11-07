@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.framework-native-pilot/1",
+  "adapter": "python",
+  "implementation": "rust-pyo3",
+  "status": "not_run",
+  "wholeProductQualified": false,
+  "releaseQualifiedTuples": [],
+  "source": "crates/python-adapter/src/hosted.rs",
+  "requiredGroups": [
+    {"id": "hosted::wsgi_real_frameworks_dependency_failure_has_no_origin_effect", "cases": 2, "frameworks": ["Flask", "Django"], "expectedStatus": 503, "expectedOriginEffects": 0},
+    {"id": "hosted::asgi_real_frameworks_dependency_failure_has_no_origin_effect", "cases": 2, "frameworks": ["Starlette", "FastAPI"], "expectedStatus": 503, "expectedOriginEffects": 0}
+  ],
+  "expectedGroups": 2,
+  "expectedCases": 4,
+  "expectedIgnored": 0,
+  "expectedFiltered": 0,
+  "command": ["cargo", "test", "--locked", "-p", "humanymous-python-adapter", "--lib", "--", "--include-ignored", "--test-threads=1", "--nocapture"],
+  "requiredEnvironment": {"HUMANYMOUS_HOSTED_NATIVE_PILOT": "1"},
+  "sourceBindingRequired": ["source_sha", "cargo_lock_sha256", "native_artifact_sha256", "python_version", "os_arch_abi", "installed_dependency_closure_sha256"],
+  "scope": "real-framework-object native-callback dependency-unavailable smoke only",
+  "notCovered": ["actual-network-server", "production-authority", "synthetic-allow", "browser", "wheel-clean-install", "response-streaming", "cancellation-races", "windows-peer-acl"]
+}

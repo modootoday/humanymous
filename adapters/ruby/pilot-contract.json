@@ -1,0 +1,29 @@
+{
+  "schema": "humanymous.framework-native-pilot/1",
+  "adapter": "ruby",
+  "implementation": "rust-magnus",
+  "status": "not_run",
+  "wholeProductQualified": false,
+  "releaseQualifiedTuples": [],
+  "source": "crates/ruby-adapter/src/hosted.rs",
+  "requiredGroups": [
+    {"id": "rack-dependency-unavailable", "framework": "rack", "cases": 1, "expectedStatus": 503, "expectedOriginEffects": 0},
+    {"id": "sinatra-dependency-unavailable", "framework": "sinatra", "cases": 1, "expectedStatus": 503, "expectedOriginEffects": 0},
+    {"id": "rails-dependency-unavailable", "framework": "rails", "cases": 1, "expectedStatus": 503, "expectedOriginEffects": 0}
+  ],
+  "expectedGroups": 3,
+  "expectedCases": 3,
+  "expectedIgnored": 0,
+  "expectedFiltered": 0,
+  "buildFeatures": ["host-pilot"],
+  "execution": {"program": "ruby", "arguments": ["--require", "ABSOLUTE_HOST_PILOT_NATIVE_EXTENSION"], "stdin": "closed", "timeoutSeconds": 30},
+  "requiredEnvironment": {"HUMANYMOUS_HOSTED_NATIVE_PILOT": "1"},
+  "candidateDependencies": [
+    {"name": "rack", "version": "3.2.8", "registrySha256": "1fecc85e463ebc7a2a945fff829ffcd549babeb1556384796fad946c28dc4ec7"},
+    {"name": "sinatra", "version": "4.2.1", "registrySha256": "b7aeb9b11d046b552972ade834f1f9be98b185fa8444480688e3627625377080"},
+    {"name": "rails", "version": "8.1.4.1", "registrySha256": "365c3a0ad2713bd6e60628e5e826622d4ca8dee60b5a7e560e9b20844e9650bc"}
+  ],
+  "sourceBindingRequired": ["source_sha", "cargo_lock_sha256", "native_artifact_sha256", "ruby_version", "ruby_api_version", "os_arch_libc_abi", "installed_gem_closure_sha256"],
+  "scope": "real-framework-object native-callback dependency-unavailable smoke only",
+  "notCovered": ["actual-network-server", "production-authority", "synthetic-allow", "browser", "gem-clean-install", "response-streaming", "gc-compaction", "gvl-cancellation-races", "windows-peer-acl"]
+}

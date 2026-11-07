@@ -17,6 +17,9 @@ Root delegated Python ASGI/WSGI and Ruby Rack native callbacks on2026-11-07.
 Claimed sot-plan session rust-python-ruby-native for two language crates,
 adapters/python,ruby and this context SoT/plan. Workspace/lock/integrity registry
 remain root-owned. No registry publish/tag/token actions. No local host runtime.
+The owner transitioned normally to formal adapter-hosts lane after root split
+Apache/C ABI/Go/.NET into dedicated chats. Those paths are no longer this owner's
+implementation responsibility; shared framework encode requests remain here.
 
 ## Contract and frontier
 
@@ -36,6 +39,9 @@ Source compilation, unit tests, actual runtime/package/CrossOS/product tests,
 dependency closure audit and registry artifacts are all NOT_RUN for this slice.
 There are no successes or qualified tuples to report. Do not transplant Node's
 previous Windows52/Linux36 results into this implementation.
+Update: root reported framework check/locked6pure/Clippy and authority10/integrity22
+passes after registering30workspace members. Exact source/command/evidence receipt
+was requested; do not promote this message into native host runtime qualification.
 
 ## Research limitations
 
@@ -79,6 +85,13 @@ unless explicitly provisioned. Credentials become zeroizing. Node timer converts
 common bounded timeout to u32. Existing admission unit moves to shared budget;
 retained Node envelope3/template1 and new shared6 pure tests need separate counts.
 Compile/unit/runtime NOT_RUN for this new source; no old green transfers.
+Python Rust hosted2groups/4frameworks and Ruby nativeinit3framework groups are now
+authored for dependency-unavailable503/noorigin0 only. All7actual cases NOT_RUN.
+Package-tool native init uses bounded private JSON request, no foreign script.
+Root added Apache/DotnetAspNetCore integrity profiles; this owner added only the
+shared encode modes and both axes of cross-profile pure matrix. Dedicated owners
+retain native Apache/.NET lifecycle/ABI work. Updated shared matrix NOT_RUN.
+Standalonefmt/diff passed; source and package install remain awaiting compilation.
 
 ## Goal
 

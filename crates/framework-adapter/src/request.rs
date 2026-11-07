@@ -144,6 +144,8 @@ pub fn encode(
         AdapterProfile::PythonAsgi => "asgi-normalized",
         AdapterProfile::PythonWsgi => "wsgi-normalized",
         AdapterProfile::RubyRack => "rack-normalized",
+        AdapterProfile::Apache => "apache-normalized",
+        AdapterProfile::DotnetAspNetCore => "aspnetcore-normalized",
         _ => return Err(Error("unsupported framework profile")),
     };
     if (profile != AdapterProfile::Node && o.raw)
@@ -201,6 +203,8 @@ mod tests {
             AdapterProfile::PythonAsgi,
             AdapterProfile::PythonWsgi,
             AdapterProfile::RubyRack,
+            AdapterProfile::Apache,
+            AdapterProfile::DotnetAspNetCore,
             AdapterProfile::Node,
         ] {
             let now = humanymous_authority::now_ms().unwrap();
@@ -212,6 +216,8 @@ mod tests {
                 AdapterProfile::PythonAsgi,
                 AdapterProfile::PythonWsgi,
                 AdapterProfile::RubyRack,
+                AdapterProfile::Apache,
+                AdapterProfile::DotnetAspNetCore,
                 AdapterProfile::Node,
             ] {
                 if profile != other {

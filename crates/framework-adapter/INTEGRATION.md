@@ -9,6 +9,9 @@ Exact profile seam: PythonAsgi humanymous.python/asgi-normalized; PythonWsgi
 humanymous.python/wsgi-normalized; RubyRack humanymous.ruby/rack-normalized;
 all version0.1.0-experimental.1. Authority config spelling python-asgi,
 python-wsgi, ruby-rack. No original raw/capture/connection capability.
+Root's later Apache/apache-normalized and DotnetAspNetCore/aspnetcore-normalized
+profiles are also projected here using the integrity-owned expected identity.
+The normalized/cross-profile pure matrix includes both; updated matrix NOT_RUN.
 
 Current source migrates existing Node config/envelope/admission into this context,
 without changing its accepted config schema or measured provenance. The existing

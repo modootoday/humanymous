@@ -1,7 +1,36 @@
 //! Build metadata through upstream RubyGems APIs; no authored Ruby source.
 use magnus::{Error, RClass, RHash, RModule, Ruby, Value, prelude::*};
 use serde::Deserialize;
+use std::io::Read;
 use std::path::Path;
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Request {
+    staging: String,
+    metadata: serde_json::Value,
+}
+
+pub fn from_private_request(ruby: &Ruby) -> Result<(), Error> {
+    let Some(path) = std::env::var_os("HUMANYMOUS_NATIVE_GEM_PACKAGE_REQUEST") else {
+        return Ok(());
+    };
+    let error = |s: &str| Error::new(ruby.exception_runtime_error(), s);
+    let file =
+        std::fs::File::open(path).map_err(|_| error("native gem package request unavailable"))?;
+    let mut data = Vec::new();
+    file.take(65537)
+        .read_to_end(&mut data)
+        .map_err(|_| error("native gem package request unreadable"))?;
+    if data.len() > 65536 {
+        return Err(error("native gem package request exceeds limit"));
+    }
+    let request: Request =
+        serde_json::from_slice(&data).map_err(|_| error("invalid native gem package request"))?;
+    let artifact = build(ruby, request.staging, request.metadata.to_string())?;
+    println!("humanymous-native-gem-artifact={artifact}");
+    Ok(())
+}
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]

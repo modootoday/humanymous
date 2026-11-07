@@ -6,6 +6,8 @@ use humanymous_framework_adapter::{
 use humanymous_integrity::adapter::AdapterProfile;
 use magnus::{Error, RClass, RHash, RString, Ruby, Value, function, method, prelude::*};
 use std::sync::Arc;
+#[cfg(feature = "host-pilot")]
+mod hosted;
 #[cfg(feature = "package-tool")]
 mod package;
 
@@ -163,5 +165,9 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     module.define_singleton_method("wrap", function!(wrap, 2))?;
     #[cfg(feature = "package-tool")]
     module.define_singleton_method("build_native_gem", function!(package::build, 2))?;
+    #[cfg(feature = "package-tool")]
+    package::from_private_request(ruby)?;
+    #[cfg(feature = "host-pilot")]
+    hosted::run_if_requested(ruby)?;
     Ok(())
 }

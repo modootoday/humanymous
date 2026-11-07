@@ -96,7 +96,7 @@ pub(crate) fn express(env: &Env, config: Configuration) -> Result<Function<'stat
                 source: None,
                 bytes: Vec::new(),
                 observation,
-                deadline: envelope::now()? + config.timeout_ms as u64,
+                deadline: envelope::now()? + config.timeout_ms,
             };
             collect(ctx.env, &req, pending, config.clone())?;
             trace("express:collecting");
@@ -196,7 +196,7 @@ pub(crate) fn fetch(
                 source: None,
                 bytes: Vec::new(),
                 observation,
-                deadline: envelope::now()? + config.timeout_ms as u64,
+                deadline: envelope::now()? + config.timeout_ms,
             };
             let streams = streams.get_value(ctx.env)?;
             let readable = callable(&streams, "Readable")?;
@@ -244,7 +244,7 @@ fn collect(
     let state: State = Rc::new(RefCell::new(Some(pending)));
     let (cancel_tx, cancel_rx) = tokio::sync::watch::channel(false);
     let data_state = state.clone();
-    let max = config.max_body as usize;
+    let max = config.max_body;
     let data = env.create_function_from_closure::<(), (), _>("humanymousBody", move |ctx| {
         let chunk: Buffer = ctx.get(0)?;
         trace("body:data");

@@ -1,11 +1,12 @@
 //! Schedule Python callbacks on their owning event loop and cancel on Rust Drop.
 use crate::failure;
 use pyo3::{
+    BoundObject,
     prelude::*,
     types::{PyDict, PyTuple},
 };
 use pyo3_async_runtimes::TaskLocals;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, Weak};
 use tokio::sync::oneshot;
 
 struct State {
@@ -40,7 +41,7 @@ impl Start {
                 (Py::new(
                     py,
                     Done {
-                        state: self.state.clone(),
+                        state: Arc::downgrade(&self.state),
                     },
                 )?,),
             )?;
@@ -70,14 +71,16 @@ impl Start {
 }
 #[pyclass]
 struct Done {
-    state: Arc<Mutex<State>>,
+    state: Weak<Mutex<State>>,
 }
 #[pymethods]
 impl Done {
     fn __call__(&self, task: &Bound<'_, PyAny>) -> PyResult<()> {
         let result = task.call_method0("result").map(Bound::unbind);
-        let mut state = self
-            .state
+        let Some(state) = self.state.upgrade() else {
+            return Ok(());
+        };
+        let mut state = state
             .lock()
             .map_err(|_| failure("callback state unavailable"))?;
         state.task.take();
@@ -152,7 +155,10 @@ where
         complete: false,
     };
     Python::attach(|py| -> PyResult<()> {
-        let args = args.into_pyobject(py).map_err(Into::into)?.unbind();
+        let args = args
+            .into_pyobject(py)
+            .map_err(|e| -> PyErr { e.into() })?
+            .unbind();
         let start = Py::new(
             py,
             Start {

@@ -1,6 +1,8 @@
 //! Rust-native WSGI/ASGI callables. No Python implementation or eval strings.
 mod asgi;
 mod async_call;
+#[cfg(test)]
+mod hosted;
 mod wsgi;
 use pyo3::{exceptions::PyRuntimeError, prelude::*};
 fn failure(e: impl std::fmt::Display) -> PyErr {
