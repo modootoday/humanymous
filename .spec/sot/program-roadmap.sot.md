@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T02:59:58Z
+updated: 2026-11-07T03:36:00Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui]
@@ -11,8 +11,8 @@ rel:
 
 # 전체 로드맵과 마일스톤
 
-버전 0.4.0. 2026-11-07 KST 기준 프로젝트 채팅 이력, collector c3389b6,
-원격 Actions 산출물, 정본 spec 및 native CEF 통합 작업을 대조했다.
+버전 0.5.0. 2026-11-07 KST 기준 프로젝트 채팅 이력, collector cb5dce7,
+browser b65e2f0, 원격 Actions 산출물과 미커밋 custody 수정 근거를 대조했다.
 이 문서는 현재 상태·우선순위·종료 조건의 정본이다. 실행 체크리스트는
 plan:root/20261106235521, 정제 근거는 evidence:root/20261106235519다.
 과거 결과는 해당 evidence와 Git 이력에 보존한다. 전체 목표는 아직 미완료다.
@@ -51,6 +51,7 @@ Cross-Lang은 대상 서비스와 상호운용하는 계약이며 새 JS/njs 제
 | 공통 Rust | MSRV/toolchain1.99.1, edition2024,root19 packages;ac560ff CEF 통합 remote 검증 완료 | native component와 전체 delivery·GUI 자격화를 구분;후속 behavior source는 별도 검증 |
 | 순수 엔진 이전 | 기존 inventory314행 중 ported54/partial5/pending255, 원본 함수804개 | 과거 단위 이전 inventory이며 최신 전체 재집계·runtime parity 증거가 아님;verified_runtime_parity0 |
 | native CI | ac560ff, run42329288807, Linux/macOS/Windows x64·ARM64 모두 성공 | implemented-crate-native-tests;full_runtime_qualified=false;새 behavior delta 제외 |
+| native 최신 시도 | cb5dce7/run42332170496는5tuple 성공·Linux x64 custody 재획득 실패 | failure 보존;controlled duplicate 회귀로 수정한 새 source는 원격 재검증 필요 |
 | Windows 분모 | 각51/51 required harness,204passed,workspace 쓰기 거부 | raw ignored2/helper2를 보존;일반 skip 성공 처리 금지 |
 | 실제 runtime 프로세스 | network-none,UID65532,read-only,cap-drop ALL;origin2/audit4,재시작·replay·변조·sealed custody 부정 시험 | typed fixture이며 실제 browser/human/AT 또는 full Gate가 아님 |
 | CLI provisioning | 실제 binary doctor/dry-run/install/repeat/rollback,digest·변조·mode0500parent 거절 | 서비스 활성화·서명 package 설치·제품 readiness는 미완료 |
@@ -96,19 +97,30 @@ B 트랙은 제품을 검증하는 별도 도구다. B2 파일럿 성공을 M5 c
 DRM/media capability,accessibility automation은 각각 관찰 항목이며 단독 bot
 증거가 아니다. 새 scoring 규칙은 이 로드맵으로 허가하지 않는다.
 
+사용자가 browser 채팅에서 비연동 사이트까지의 로컬 관측 연구와 UI 개선을
+추가했다. 위쪽 탭·주소창,큰 실제 페이지,접을 수 있는 우측/하단 분석 패널을
+목표로 하며 Meari+CEF를 유지한다. Chrome 수준 렌더링은 같은 콘텐츠/viewport/
+zoom/환경에서 실제 비교·기능 matrix로 입증할 목표다. 라이선스/CDM/codec 및
+빌드 차이를 숨긴 동일성 보장은 하지 않는다. engine-only,page-available,
+server-joined 증거를 구분하고 CDP/Computer Use 관찰 개입과 on/off 대조를
+기록한다. 비연동 수동 관측은 제품 보호 효과나 서버 검증 판정이 아니며
+공격 실험은 계속 owned lab에 한정한다. 해당 chromium-lab-browser SoT 단독
+writer는 UI 채팅에 양도했고 공통 Cargo/roadmap/automation 정본은 root가 유지한다.
+
 ## 채팅 결과와 후속 작업
 
 2026-11-07 최초 조회 시 후속3개 채팅은 모두 idle이며 마지막 turn은 completed였다.
 이후 browser 채팅에서 사용자 요청에 따른 IME/AX·sandbox 후속 재개와 root native
 workspace 통합 요청이 도착했다. browser는 재개,나머지2개는 조회 시 idle로 구분한다.
-root의 collector 작업은 별도 진행 중이다.
+root의 collector는 cb5dce7에 커밋됐고 component 원격13건이 통과했다.
+root custody/WAL 수명 수정은 로컬 검증 완료·미커밋·exact-source 원격 대기다.
 기존9개 채팅 완료 기록은 chat-results.json과 각 plan에 보존돼 있다.
 
 | 채팅 / 작업 | 실제 결과 | 후속 작업 |
 |---|---|---|
 | Rust 런타임 · Core/Gate 세션과 collector | 9ce3190 bounded session/ingress/RIT;root a8a3b66 sealed startup과 실제 Docker process 통합 | M2 raw capture,M5 qualified collector,full proxy/admin/Pass |
 | Rust 키 저장 · sealed custody와 vault 영속성 | 5a77605 bounded custody;Windows49/Linux47;root SealedAudit가 Log+Custody 잠금 공동 소유 | rotation·독립 witness·운영 vault/dual control |
-| Meari + CEF · Rust 검증 브라우저 UI | ead2dc6 관리UI 후43044be 실제 Windows CEF child·종료·UIA 검증 | root native membership/dependency/lock 통합,B2 잔여 native 검증;BrowserReady=false |
+| Meari + CEF · Rust 검증 브라우저 UI | 43044be 실제 child,ac560ff 공통 native 통합 원격 통과;b65e2f0 bounded Hanja 입력 replay 커밋 | 현재 UI·비연동 로컬 관측 설계 확장 진행;새 source 검증 및 B2 잔여 자격화;BrowserReady=false |
 | Pages·Draft v0 | 2d98934 authored77문서,과거88browser조합/keyboard8 | 최신 source 문서 재검토·AT·실제 Pages deployment |
 | CI/OIDC·Windows runner | 44e79a4 wiring,c6a2457 기반 및 후속 c063ccd6tuple | full native/browser/Docker runner3개·최종 source 전체 자격화 |
 | Node/Bun·nginx | 6941032 Express/Hono14그룹;b1e10ae njs24/mock28;후속 실제 Node→authority 제한 lab | Rust-only 전환·실제 nginx authority·stream/provenance·대상 확장 |
@@ -121,7 +133,9 @@ browser01a1b35f-d3e9-7042-91a4-10c910a15515.
 공통 Cargo/lock/toolchain/CI와 모든 Git mutation은 root 단일 writer로 직렬화한다.
 다른 경로는 session board claim 후 병렬 가능하다. 이 갱신은 새 채팅 생성이나
 root 발신의 idle 채팅 재개를 수행하지 않는다. browser 후속 재개는 해당 채팅의
-사용자 요청에 따른 것이며 공통Cargo 통합을 다음 root 작업으로 기록한다.
+사용자 요청에 따른 것이다. 공통Cargo 통합은 ac560ff 범위에서 완료됐으며
+후속 browser source와 새 UI 변경은 별도 검증한다. 목록의 notLoaded는
+채팅 미로딩 상태이지 실패·실행 중·제품 완료의 판정이 아니다.
 
 ## 연구 backlog를 구현으로 연결하는 규칙
 
@@ -143,11 +157,29 @@ cf CLI를 사용한다. 실제 provider 환경 생성은 이 문서 정리에서
 
 ## 실행 파동과 병렬 경계
 
+### 다음 실행 우선순위
+
+| 순번 | 후속 작업 | 현재 상태 | 완료 판정 |
+|---|---|---|---|
+| 1 | custody/WAL 잠금·Unix authority 수정 통합 | 로컬 통과·미커밋 | 소스 manifest 대조,귀속 커밋,동일 SHA native6tuple 산출물 |
+| 2 | 전체 CI의 collector target·Windows actor·Pages Ruby wiring | 미수정 | 실제 지원 toolchain과 Rust runner로 실행,실패 gate 보존 |
+| 3 | collector 환경 신호·raw capture·session/RIT 및 audit 운영 경로 | 부분/미구현 | 원본 회귀,신뢰 가능한 provenance,누락 fail-closed와 실제 origin/audit 효과 |
+| 병렬 A | Meari+CEF 브라우저형 UI·관측 경계 설계 | browser 채팅 진행 중 | 정본 설계→구현→native 입력/AX/sandbox/렌더링 비교,새 source별 증거 |
+| 병렬 B | adapter 계약·표준 draft·운영 문서 | 연구/작성 기반 존재 | 계약과 실제 구현 대조,공개 문서는 docs/Pages 검증;새 writer는 claim 필요 |
+| 4 | Rust-only adapter·서비스 활성화·live Gate 제품랩 | 미완료 | 실제 서비스·authority·stream·재시작/rollback,격리 Docker e2e |
+| 5 | 전체 Cross-OS·human/AT·Pages·공급망·skills | 미완료 | 최종 source에 귀속한 실제 실행 분모와 배포 증거 |
+| 6 | 최종 main 통합과 rust branch 제거 | 보류 | 최신 main을 포함한 exact final tree 모든 필수 gate 통과 |
+
+위 순번은 의존 순서이며 날짜 약속이 아니다. 병렬 가능은 작업 배정 완료를
+뜻하지 않는다. 이번 재정리는 기존 browser 채팅만 진행 중임을 확인했으며
+idle 채팅 재개나 새 채팅 생성은 수행하지 않았다. snapshot 근거는
+evidence:root/20261106235519/roadmap-status-20261107.json이다.
+
 | 순서 | 구체적 후속 결과 | 병렬 가능 범위 | 통과 증거 |
 |---|---|---|---|
-| W0 | 기존 결과·현재 상태 정합화 | 이번 정본 갱신 | c0636tuple 산출물,43044be browser 근거,dirty collector 구분 |
-| W1-A / F11 | collector L1-L3 실제 browser 검증 완료→L4/env/guard/advanced와 generated bootstrap | crates/collector 소유자 | native6/browser3·실제 오류 전파/iframe cleanup 통과;필수 runtime 경로는 미완료 시422 유지 |
-| W1-B / F10 | CEF native workspace 통합 진행·sandbox/input/AX 자격화 | browser 경로 단일 writer;공통Cargo root | 실제 DLL/explicit rejection pilot 통과;최종 browser commit과 native tuples·IME/AT는 별도 |
+| W0 | 기존 결과·현재 상태 정합화 | 이번 정본 갱신 | cb5dce7 component13·native 실패 보존,b65e2f0 소스·로컬 custody 수정 구분 |
+| W1-A / F11 | L1-L3·passive behavior 이후 env/guard/advanced·bootstrap 구현 | crates/collector 소유자 | 현재 native13/browser13;후속 오류 전파·cleanup·원본 회귀와 실제 session 연결;미완료 경로422 유지 |
+| W1-B / F10 | CEF 통합 이후 sandbox/input/AX·브라우저형 UI 자격화 | browser 경로 단일 writer;공통Cargo root | ac560ff remote 통합 통과;후속 Hanja/UI source·sandbox/AT는 별도 검증 |
 | W1-C / F01-F02 | raw capture·session binding·witness/rotation | network와 audit 별도 owner;공유 scoring seam 직렬 | 실제 raw provenance·재시작/동시성/tamper·독립 witness |
 | W2 / F03-F05 | collector/RIT application,adapter Rust-only·stream,서비스 설치 | 계약 고정 후 adapter/CLI 경로 분리 | 실제 authority/origin/audit 효과,서비스 readiness·rollback·peer 거절 |
 | W3 / F06 | full native/browser/Docker runners와 live wargame | lab·CI 구분,공유 설정 직렬 | 제품 Docker e2e,공격/정상·human/AT,최종 source six tuple |
@@ -173,7 +205,7 @@ flowchart TD
 ## 완결을 막는 현재 gate
 
 1. 실제 raw capture·collector/session/RIT·Pass·proxy/admin 전체 경로가 없다.
-2. CEF BrowserReady=false;native2개 root 통합의 원격 검증,전체 sandbox/IME 후보창/AX/6tuple가 남았다.
+2. CEF BrowserReady=false;공통 native 통합 원격 검증은 통과했으나 후속 UI/input source,전체 sandbox/IME 후보창/AX/6tuple가 남았다.
 3. 독립 durable witness·rotation·dual-control 운영과 signed service install이 남았다.
 4. full delivery runner3개와 live Gate/browser/human/AT 제품 e2e가 없다.
 5. 최신 source docs review/Pages,registry trust,최종 scans·Rust-only/skills 정리가 남았다.
@@ -218,9 +250,20 @@ ac560ff의 전체 run42329288896는 failure이며 component green으로 대체�
 
 | 우선 | 관측된 실패 | 후속 완료 조건 |
 |---|---|---|
-| P1 | Unix custody 재획득 WouldBlock | 경쟁/상속 file description 원인 재현 후 guard 수명·해제 회귀;재시도로 숨기지 않음 |
-| P1 | Unix authority native_process Clippy err_expect | 실제 부정 시험 의미를 보존한 Rust 수정·Linux 검증 |
+| P1 / local 수정 | Unix custody 재획득 WouldBlock | duplicate-description 실패 재현→custody/WAL 공용 guard명시unlock 회귀 통과;exact remote 재검증 |
+| P1 / local 수정 | Unix authority native_process Clippy err_expect | Rust 수정·Linux all-target Clippy·실제 UID65534거절 및 helper 실행분모 검증 통과;원격 확인 |
 | P1 | browser job의 없는 humanymous-wasm 패키지 | 실제 collector/명시 WASM target 계약과 배포 runner 연결 |
 | P1 | 전체 Windows job이 관리자 token으로 CLI tests 실행 | 기존 엄격한 비관리자 검증을 공유하고 actor 조건 완화 금지 |
 | P1 | Pages Ruby3.3.12를 pinned action이 지원하지 않음 | 공식 지원 버전 확인·pin·실제 Pages build |
 | 제품 gate | full runner3개·docs freshness·publish=false·Go shipping/CVE | 미구현 제품 경로/정리/검토를 실제 완료;gate 삭제·skip·ignore 금지 |
+
+writer lifetime 후속 근거는 evidence:root/20261106235519/custody-lifetime-results.json.
+기존 guard Drop 후 duplicate가 남으면1case가 WouldBlock으로 실패했다. 새
+ExclusiveFile은 custody와 WAL의 OS lock 소유를 단일화하며 inode교체/삭제나
+재시도를 하지 않는다. Linux audit36,key custody8parent/2helper ignored,
+authority lib3/native4 및 명시 multi-UID parent1이 통과했다. Windows touched
+packages all-targets·Clippy,audit WASM도 통과했다. 실제 Rust runtime process
+pilot의 origin2/audit4·sealed custody 부정 시험·CLI도 유지됐다. Cargo fs4를
+제거해 root dependency587/known vulnerabilities0이며 기존 ttf-parser 유지보수
+경고1은 남는다. 실제 과거 CI fork사건은 추적하지 않았으므로 설명 가설과
+재현된 descriptor 수명 결함을 구분한다. full product 자격화는 여전히 false다.

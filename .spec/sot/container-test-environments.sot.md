@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T02:59:58Z
+updated: 2026-11-07T03:30:26Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -24,6 +24,20 @@ is unqualified. Headless/WebDriver preferences are interventions, not a human
 baseline. This component lab does not qualify full product e2e or Meari+CEF.
 
 # Container product-test environments
+
+## Native writer-lifetime regression profile
+
+compose.custody.yaml builds Rust audit/authority tests and warnings-denied Linux
+Clippy in an owned image. Default execution is UID65532,network none,read-only,
+cap-drop ALL and no-new-privileges. The separately named peer profile requires
+container UID0 plus only SETUID/SETGID to launch the UID65534 negative child;
+no privileged-container flag,host mount or network exposure is added. The parent
+must verify the helper actually executed, not just a zero-exit harness.
+
+The pre-fix duplicate-description regression fails with WouldBlock. The shared
+guard explicitly unlocks on Drop and both custody/WAL regressions pass without
+unlink or retry. This is native ownership evidence; the separate real-runtime
+process pilot remains bounded origin/audit evidence, not full product e2e.
 
 ## Passive behavior component extension
 

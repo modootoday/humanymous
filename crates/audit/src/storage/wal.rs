@@ -1,4 +1,4 @@
-use super::{framing, recover_segment};
+use super::{ExclusiveFile, framing, recover_segment};
 use crate::{checkpoint::Checkpoint, record::Record};
 use std::{
     fs::{self, File, OpenOptions},
@@ -28,7 +28,7 @@ impl Default for WalOptions {
 pub struct Wal {
     dir: PathBuf,
     options: WalOptions,
-    _lock: File,
+    _lock: ExclusiveFile,
     segment: File,
     index: u64,
     written: u64,
@@ -57,7 +57,7 @@ impl Wal {
             return Err(invalid("WAL directory is not a real directory"));
         }
         let lock = open_append(&dir.join(".audit-writer.lock"))?;
-        fs4::FileExt::try_lock(&lock).map_err(io::Error::from)?;
+        let lock = ExclusiveFile::acquire(lock)?;
         let segments = segments(dir)?;
         let mut recovered_bytes = 0;
         for (position, (_, path)) in segments.iter().enumerate() {
@@ -267,6 +267,35 @@ mod tests {
             rotate_bytes: 1,
             max_frame: 4096,
         }
+    }
+    #[cfg(unix)]
+    #[test]
+    fn guard_drop_releases_wal_without_replacing_inode_or_unlocking_successor() {
+        use std::os::unix::fs::MetadataExt;
+        let dir = directory();
+        let identity = || {
+            let m = fs::metadata(dir.join(".audit-writer.lock")).unwrap();
+            (m.dev(), m.ino())
+        };
+        let first = Wal::open(&dir, options()).unwrap();
+        let duplicate = first._lock.duplicate_description().unwrap();
+        let inode = identity();
+        assert!(matches!(Wal::open(&dir,options()),Err(e) if e.kind()==io::ErrorKind::WouldBlock));
+        drop(first);
+        assert_eq!(identity(), inode);
+        let second = Wal::open(&dir, options()).unwrap();
+        assert!(matches!(Wal::open(&dir,options()),Err(e) if e.kind()==io::ErrorKind::WouldBlock));
+        drop(duplicate);
+        assert!(matches!(Wal::open(&dir,options()),Err(e) if e.kind()==io::ErrorKind::WouldBlock));
+        drop(second);
+        let final_guard = Wal::open(&dir, options()).unwrap();
+        assert_eq!(identity(), inode);
+        assert!(final_guard.records().unwrap().is_empty());
+        drop(final_guard);
+        for entry in fs::read_dir(&dir).unwrap() {
+            fs::remove_file(entry.unwrap().path()).unwrap();
+        }
+        fs::remove_dir(dir).unwrap();
     }
     #[test]
     fn exclusive_writer_rotation_checkpoint_and_restart() {

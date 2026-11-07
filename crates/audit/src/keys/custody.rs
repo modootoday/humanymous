@@ -1,9 +1,14 @@
 //! Exclusive local sealed custody. Provision the service directory privately
 //! before opening; trusted ancestors and same-owner processes remain premises.
 mod permissions;
+#[cfg(all(test, unix))]
+mod tests;
 use super::{KeyMaterial, LIMIT, open, seal, vault::Vault};
+use crate::storage::ExclusiveFile;
+#[cfg(unix)]
+use std::fs::File;
 use std::{
-    fs::{self, File},
+    fs,
     io::{self, Read, Write},
     path::{Path, PathBuf},
 };
@@ -29,7 +34,7 @@ pub enum Durability {
 pub struct Custody {
     dir: PathBuf,
     owner: Owner,
-    _lock: File,
+    _lock: ExclusiveFile,
     poisoned: bool,
 }
 fn invalid(message: &'static str) -> io::Error {
@@ -56,12 +61,7 @@ impl Custody {
             Err(e) => return Err(e),
         };
         permissions::file(&lock, &owner)?;
-        lock.try_lock().map_err(|e| match e {
-            fs::TryLockError::WouldBlock => {
-                io::Error::new(io::ErrorKind::WouldBlock, "custody already locked")
-            }
-            fs::TryLockError::Error(e) => e,
-        })?;
+        let lock = ExclusiveFile::acquire(lock)?;
         Ok(Self {
             dir,
             owner,

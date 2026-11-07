@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T02:59:58Z
+updated: 2026-11-07T03:30:26Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -27,6 +27,13 @@ the final delivery runner requirements remain unchanged.
 # Rust delivery and Pages contracts
 
 ## Native CEF component integration
+
+The later cb5dce7 native run42332170496 failed Linux x64 on custody reacquisition
+while its other5tuples and browser component passed. Preserve that failure; a
+successful retry is not its replacement. A controlled duplicate-description
+regression now reproduces the lifetime defect and the new custody/WAL common
+guard plus Unix Clippy repair are locally validated. Exact patched-source native
+CI is still required. No release gate or standard-user condition is relaxed.
 
 The actual ac560ff source subsequently passed all6native tuples and the Windows
 CEF build/provisioned rejection component. Downloaded source-bound receipts are

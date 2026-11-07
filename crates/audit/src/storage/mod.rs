@@ -1,5 +1,9 @@
 //! Local durable storage. Parsing alone never authenticates an audit chain.
+#[cfg(any(unix, windows))]
+mod exclusive_file;
 mod framing;
+#[cfg(any(unix, windows))]
+pub(crate) use exclusive_file::ExclusiveFile;
 #[cfg(windows)]
 pub mod permissions;
 mod recovery;

@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T02:59:58Z
+updated: 2026-11-07T03:30:26Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -33,6 +33,13 @@ scripts/ci/cef-pilot tool explicitly validates provisioned negative cases and
 never substitutes them for GUI/human/AT or full sandbox evidence.
 
 ## Rule
+
+Native custody and WAL now share one crate-private storage::ExclusiveFile owner
+using standard File locking and explicit unlock-on-Drop. There is no production
+clone/unlock handle API. fs4 is removed from the root and runtime-pilot locks;
+same-inode and successor-exclusivity regressions cover the common mechanism.
+Unix authority denial-helper execution is checked explicitly and its Clippy
+issue is repaired without ignored-test or permissions exceptions.
 
 The passive browser behavior port extends humanymous-collector with one bounded
 pure Recorder and owned passive WASM listeners. Existing JS reducers are unchanged

@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T03:02:01Z
+updated: 2026-11-07T03:35:46Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -26,6 +26,9 @@ files:
   - {path: cef-root-integration-results.json, sha256: 9443590ebbe69049afa90d0a519918bfb5fea43656d5efaef248648ae6c772d3, bytes: 4534, store: repo}
   - {path: cef-remote-results.json, sha256: 257c77da6031b0dd7f7f15d61cc0df5ca79df80c2ec105e5bf797cbdbf3a4a5f, bytes: 3831, store: repo}
   - {path: behavior-collector-results.json, sha256: 45ef89dc623130800283721f1fd52d4cd7f8757bfc312a9ed74b4e705c9cdea0, bytes: 7070, store: repo}
+  - {path: custody-lifetime-results.json, sha256: 7e67429f34e8aa81d44b176167b4cc93baefa445f341043866a7ae674c1b2440, bytes: 4319, store: repo}
+  - {path: behavior-native-followup.json, sha256: ef9ab2c65460571b416065231cc61df4a2ce256a7aad7ca87812430e51f624eb, bytes: 1811, store: repo}
+  - {path: roadmap-status-20261107.json, sha256: fc012ca076066e78e9a3ad9261f7098bf0c69bc7fd027e80ca0a517b2c06f3f4, bytes: 1412, store: repo}
 ---
 
 # Program status

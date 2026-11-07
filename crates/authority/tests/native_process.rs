@@ -277,6 +277,17 @@ fn unix_other_user_is_denied_by_actual_socket_acl() {
         "actual other-user connection must fail: {}",
         String::from_utf8_lossy(&child.stderr)
     );
+    let receipt = String::from_utf8_lossy(&child.stdout);
+    assert!(
+        receipt
+            .lines()
+            .any(|line| line == "test unix_unprivileged_connect_probe ... ok"),
+        "required other-user helper did not execute"
+    );
+    assert!(
+        receipt.contains("test result: ok. 1 passed; 0 failed; 0 ignored;"),
+        "empty/skipped helper cannot qualify socket denial"
+    );
 }
 
 #[cfg(target_os = "linux")]
@@ -288,8 +299,7 @@ fn unix_unprivileged_connect_probe() {
     let result = std::os::unix::net::UnixStream::connect(path);
     assert_eq!(
         result
-            .err()
-            .expect("unprivileged peer must not connect")
+            .expect_err("unprivileged peer must not connect")
             .kind(),
         std::io::ErrorKind::PermissionDenied
     );

@@ -3,7 +3,7 @@ id: sot:root/adapter-authority
 title: Adapter authority
 status: active
 created: 2026-11-06T22:50:11Z
-updated: 2026-11-06T23:07:47Z
+updated: 2026-11-07T03:30:26Z
 verify: [manual]
 rel:
   governs: [crates/authority/**]
@@ -11,6 +11,16 @@ rel:
 ---
 
 # Adapter authority
+
+## Explicit other-user qualification receipt
+
+The Linux owned-socket negative parent must verify both successful child exit
+and an exact executed unix_unprivileged_connect_probe test receipt with1passed/
+0failed/0ignored. A zero-test, missing or skipped helper is not socket denial.
+The real child requires UID65534 and PermissionDenied. Execute this case only
+inside the owned Docker profile with UID/GID switching capabilities; it grants
+no host privilege, network egress, public admin access or relaxed peer identity.
+The ordinary helper remains explicitly ignored until its parent provisions it.
 
 ## Rule
 

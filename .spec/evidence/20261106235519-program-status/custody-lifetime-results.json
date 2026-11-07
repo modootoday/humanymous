@@ -1,0 +1,108 @@
+{
+  "schema": "humanymous.writer-lifetime/1",
+  "observed_at": "2026-11-07T03:26:05.6405108Z",
+  "source_attribution": "dirty scoped source manifest; uncommitted browser lane excluded",
+  "parent_commit": "cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+  "before": {
+    "error": "WouldBlock after guard drop while duplicate description lives",
+    "exit_code": 101,
+    "passed": 0,
+    "failed": 1,
+    "source_manifest": "private custody-before-source.json",
+    "image_id": "sha256:a98d629d9fb346067e02f72a976e249c9cc07ef3f9c4c68ed0abec2ddd2ea2b6",
+    "case": "keys::custody::tests::guard_drop_unlocks_with_duplicate_description_still_alive"
+  },
+  "after": {
+    "peer_image_id": "sha256:bd599f14e79a7cd21178426098232799b62b947d72fb1e07372831b5588ce634",
+    "linux_authority_native_passed": 4,
+    "same_inode_and_successor_exclusivity": "both custody and WAL regressions passed",
+    "linux_authority_default_ignored": 2,
+    "linux_authority_library_passed": 3,
+    "native_clippy": "Windows and Linux all-targets -D warnings passed",
+    "linux_custody_ignored_helpers": 2,
+    "audit_image_id": "sha256:66978949bb13ac758a4fbc79371a315b8179b01be605f6dcf25ef48c82691214",
+    "explicit_other_uid_child": "required exact helper1passed/0ignored; UID65534 and PermissionDenied",
+    "windows_audit_authority_all_targets": "passed",
+    "windows_raw_ignored_helpers": 2,
+    "wasm_audit_check": "passed",
+    "explicit_other_uid_parent_passed": 1,
+    "linux_audit_library_passed": 36,
+    "linux_custody_parents_passed": 8
+  },
+  "runtime": {
+    "browser_or_human_executed": false,
+    "audit_records": 4,
+    "source": "unchanged actual Rust process/CLI pilot; standalone lock pruned fs4",
+    "status": "passed",
+    "origin_effects": 2,
+    "full_runtime_qualified": false,
+    "image_id": "sha256:999616ce76bf097011a95176f7d5819d0c7336d1aa061f062d4bb38d3fe64bad"
+  },
+  "dependency_change": {
+    "known_cargo_vulnerabilities": 0,
+    "removed": "fs4",
+    "existing_maintenance_warning": "RUSTSEC-2026-0192 ttf-parser0.25.1",
+    "root_dependency_count": 587
+  },
+  "limits": {
+    "original_ci_spawn_event_traced": false,
+    "full_runtime_qualified": false,
+    "controlled_duplicate_lifetime_defect_reproduced": true,
+    "native_six_tuple_for_this_patch": "pending",
+    "host_linux_only_pilot_check": "Windows compile unsupported by this Docker-only test driver; actual Linux Docker pilot passed"
+  },
+  "source": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "2e240baea769c9092e84d1d50cea8602b5053b5cce8be2c47f5cf4e53e44aa55"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "2c60d2151348b57dd8c4c929d5ed140980c26a97e49a7351bfdeb21231789f8c"
+    },
+    {
+      "path": "crates/audit/Cargo.toml",
+      "sha256": "9aeb75a4d4ba3d68725b23285ff3c499286f2a213dba52b800c425d3ebf01694"
+    },
+    {
+      "path": "crates/audit/src/keys/custody.rs",
+      "sha256": "dd680ea38ddf6b6861906fc1b507391f1f642443f9339e85102f4316f86daa1c"
+    },
+    {
+      "path": "crates/audit/src/keys/custody/tests.rs",
+      "sha256": "21fe2804a8896ed0bd8d2d4f2a97380a19c18a151c958f53f69faaf46fa8c68a"
+    },
+    {
+      "path": "crates/audit/src/storage/exclusive_file.rs",
+      "sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69"
+    },
+    {
+      "path": "crates/audit/src/storage/mod.rs",
+      "sha256": "3c47d114fa5d743e2992d173c82d524e5bb7cc877617143e2b7a88f2384da97a"
+    },
+    {
+      "path": "crates/audit/src/storage/wal.rs",
+      "sha256": "a5477e4deaba6ce856a96c0bbd8f039ce373411561b86585c070d1e55e1f4598"
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "sha256": "e683476d0f73dfe7ae586e7ba9e4a85775c71abbe20ac1a1ad1a1ddece326361"
+    },
+    {
+      "path": "test/lab/runtime/Cargo.lock",
+      "sha256": "a6af7a88b6e4c33436f63155ef6042c499eb5e30686604d067a4e17a797ac361"
+    },
+    {
+      "path": "build/rust/custody-check.Dockerfile",
+      "sha256": "0aab709c65819123f1efcdb4c7b66a0a0079caa6342077c4a758e075e30ec3f9"
+    },
+    {
+      "path": "build/rust/custody-check.Dockerfile.dockerignore",
+      "sha256": "f529463bdf455ee0b2d76e74150829281fbd3b28586143161ae1171e88ba0097"
+    },
+    {
+      "path": "deployments/lab/compose.custody.yaml",
+      "sha256": "a64aaa42acd55aa01e0e0a1ea3fc5d2b35a98a702cca4d53881035a72a8cd1c5"
+    }
+  ]
+}

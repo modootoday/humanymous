@@ -1,0 +1,23 @@
+services:
+  custody-check:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/custody-check:local
+    build:
+      context: ../..
+      dockerfile: build/rust/custody-check.Dockerfile
+    network_mode: none
+    mem_limit: 256m
+    cpus: 1
+    profiles: [custody]
+  authority-peer-check:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/custody-check:local
+    pull_policy: never
+    user: "0:0"
+    cap_add: [SETUID, SETGID]
+    network_mode: none
+    mem_limit: 256m
+    cpus: 1
+    entrypoint: ["/usr/local/bin/authority-native-tests"]
+    command: ["--exact", "unix_other_user_is_denied_by_actual_socket_acl", "--ignored", "--nocapture"]
+    profiles: [peer]

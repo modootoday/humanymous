@@ -1,0 +1,47 @@
+{
+  "schema": "humanymous.behavior-remote-followup/1",
+  "source_sha": "cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+  "native_run": 42332170496,
+  "native_conclusion": "failure",
+  "passed_tuples": [
+    "linux-arm64",
+    "macos-arm64",
+    "macos-x64",
+    "windows-arm64",
+    "windows-x64"
+  ],
+  "failed_tuple": "linux-x64",
+  "failure": "competing_process_cannot_load_or_create: custody WouldBlock on reacquisition",
+  "native_report_sha256": [
+    {
+      "name": "probe-linux-arm64-cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+      "sha256": "3b966a969331d6ea3be26135e5e2535a71c4e4aeb2c6946f0f8b1e017fb9af72"
+    },
+    {
+      "name": "probe-linux-x64-cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+      "sha256": "e81b7dbf41c3bef2c3f8005549e23a0187826022e1d9420459efe792c66262cb"
+    },
+    {
+      "name": "probe-macos-arm64-cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+      "sha256": "0d9ff1ce80acdb7339c4dd3ca55a3b1d221a994015ee3ac1512a5c20a192ccd2"
+    },
+    {
+      "name": "probe-macos-x64-cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+      "sha256": "38394db9c2c964a8d6fb5cabcd2f422591ad037139fcfdd02fdb1972843e9338"
+    },
+    {
+      "name": "probe-windows-arm64-cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+      "sha256": "aa30811c70cf846043570c8dd38405ef556d03ac259ef6ef3be54782ad6ebc67"
+    },
+    {
+      "name": "probe-windows-x64-cb5dce7f7ae96cbe9153a45a4b0027ca6b1065e8",
+      "sha256": "9b19db66ba0356375ccabcdb488e374a560a460c1decfd882335a5dbc77f8384"
+    }
+  ],
+  "component_run": 42332170566,
+  "component_conclusion": "success",
+  "component_raw_receipt_download": "downloaded and verified13passed/0failed/0ignored",
+  "full_runtime_qualified": false,
+  "later_custody_patch_excluded": true,
+  "component_log_sha256": "557abd210425c38c2e227af8e88d9d07f89dfb51bb0fedd10faa01a70da277eb"
+}

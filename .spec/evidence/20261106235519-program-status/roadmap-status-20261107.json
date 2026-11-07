@@ -1,0 +1,40 @@
+{
+  "schema": "humanymous.roadmap-status/1",
+  "observed_at": "2026-11-07T03:35:00Z",
+  "head": "b65e2f0",
+  "scope": "roadmap reconciliation; no new product qualification",
+  "chats": [
+    {
+      "work": "user-requested UI/research design expansion",
+      "title": "Meari + CEF · Rust 검증 브라우저 UI",
+      "status": "active",
+      "id": "01a1b35f-d3e9-7042-91a4-10c910a15515"
+    },
+    {
+      "title": "Rust 런타임 · Core/Gate 세션과 collector",
+      "status": "idle",
+      "id": "01a1b35f-cf83-74f2-aad1-34b3aee60cda"
+    },
+    {
+      "title": "Rust 키 저장 · sealed custody와 vault 영속성",
+      "status": "idle",
+      "id": "01a1b35f-d1a1-7553-a0ed-65d09b9042a7"
+    }
+  ],
+  "verified": {
+    "collector_commit": "cb5dce7",
+    "integration_commit": "ac560ff",
+    "integration_native_tuples_passed": 6,
+    "integration_cef_component": "passed",
+    "collector_remote_passed": 13,
+    "latest_native_attempt": "cb5dce7: five tuples passed, Linux x64 custody failed",
+    "custody_patch": "local scoped manifest tests passed; uncommitted; exact-source native CI pending"
+  },
+  "limits": {
+    "full_product_e2e_qualified": false,
+    "total_completion_percentage": "not estimated",
+    "new_chats_created": 0,
+    "other_chat_notLoaded": "loading state only; historical results remain in original evidence",
+    "main_cutover": "deferred until final-tree gates"
+  }
+}

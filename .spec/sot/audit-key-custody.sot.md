@@ -3,16 +3,24 @@ id: sot:root/audit-key-custody
 title: Audit key custody
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T00:31:45Z
+updated: 2026-11-07T03:30:26Z
 verify: [cargo test -p humanymous-audit --locked]
 rel:
-  governs: [crates/audit/src/keys/**]
+  governs: [crates/audit/src/keys/**, crates/audit/src/storage/exclusive_file.rs, crates/audit/src/storage/wal.rs]
   depends_on: [sot:root/rust-migration]
 ---
 
 # Audit key custody
 
 ## Rule
+
+The guard, not the last duplicate OS file description, defines the writer lock's
+lifetime. A temporary inherited/duplicated description must not retain custody
+after its owner guard is dropped. Keep the lock inode and all owner/ACL checks;
+do not unlink, retry away WouldBlock, or relax exclusivity. Verify acquisition
+is denied while each live guard exists and that closing a stale duplicate cannot
+unlock a successor. Use a deterministic duplicate-description regression before
+attributing the intermittent remote failure to process-spawn inheritance.
 
 Keep the frozen sealed AES256-GCM/scrypt envelope and existing vault API.
 Custody owns a canonical, already provisioned private service directory. Every
@@ -54,6 +62,21 @@ Only the latest committed snapshot is authoritative; external rollback defense
 and backup deletion are not implemented. No ErasurePermit issuer is added.
 
 ## Critique reflected
+
+Native writer ownership is implemented once by a crate-private ExclusiveFile in
+storage and consumed by both custody and WAL. It owns an already validated File,
+acquires the standard-library nonblocking exclusive lock and attempts explicit
+unlock on Drop before the File closes. An OS unlock error is not hidden by retry,
+unlink or a fabricated success receipt; File close remains the final fallback
+and reacquisition may fail closed. The lock filename/inode must remain unchanged.
+There is no public clone/unlock API. A cfg(test)-only duplicate-description hook
+enables deterministic guard-lifetime regressions for both consumers. Remove the
+now redundant fs4 dependency rather than keeping parallel native lock mechanisms.
+
+The standard File contract confirms that duplicate/inherited descriptions can
+extend a lock until explicit unlock or all descriptions close. This motivates
+the ownership fix; it does not independently identify which concurrent spawn
+occurred in the earlier CI process. [Rust File locking contract](https://doc.rust-lang.org/std/fs/struct.File.html#method.try_lock).
 
 Blue: reuse seal/open, never fork crypto. Red: stale snapshots under separate
 locks lose tombstones; lifetime lock and serialized replacement are required.
