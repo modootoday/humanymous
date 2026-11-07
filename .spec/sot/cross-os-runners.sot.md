@@ -1069,3 +1069,12 @@ supersedes NOT_RUN above ONLY for these exact pure/check bytes; actual child IO,
 worker joins, native queries/creation, producer custody and hosted tests remain
 NOT_RUN/Unsupported. A subsequently identified create.rs prevalidation allocation
 gap is not covered by these passing tests and needs a separate source checkpoint.
+
+The next immutable173008f0 gate observes common-owner7a1 capture4/direct-prefix1,
+bounded-create3a0 bridge4 pure and external Rustdoc2 passes, plus both package
+all-target check/strict Clippy/fmt. Selected closure has zero differences; the
+registered common-owner-pure-summary.json preserves exact counts and the disk-
+versus-RAM admission clarification. This qualifies ONLY the new L1/static bytes:
+FIVE actual capture parents, direct-pipe consumer0/74, actual provider queries,
+ACL-at-create/WTR/producer association and privileged/hosted gates remain unrun.
+No source-only status or pure success upgrades native producer authority.

@@ -463,3 +463,22 @@ and pressure-entry-versus-exit observations; its consumer and devdependency rema
 separate owner/Root work. No old pure14 or five-parent source hash qualifies this
 refactor. All new static/pure/actual direct-pipe and capture regression gates are
 NOT_RUN pending an explicit Root allocation. No automatic retry is authorized.
+
+## Common backing pure/static execution checkpoint v0.9
+
+Root allocated ONLY the lower pure/doc/static batch on immutable173008f0, which
+contains unchanged7a1 and3a0 source ancestors. Native Windows MSVC jobs1/inc0,
+locked/offline: fmt FIRST, test catalog40, capture pure4 (36filtered), prefix pure1
+(39filtered), bridge pure4 and separate positive1/compile_fail1 Rustdocs all pass;
+both packages all-target check and strict Clippy pass. Selected input closure
+68source/manifests/lock/toolchain +15registry/1217files +76selected tool files and
+config/flags has zero differences. Compiler reservation returned at terminal.
+
+No actual parent or native bridge call ran. The FIVE ignored parents are compiled
+and listed, not executed; source ignore state and exact names are preserved in
+common-owner-pure-summary.json. The older14pure receipt remains historical.
+Passing negative Rustdoc has its positive import control but no separately captured
+E0451 diagnostic output, so no stronger diagnostic-code claim is made. Captured
+128.657GiB admission free space is DISK, not RAM; original physical availability
+was not persisted and later observations do not backfill it. All L2 actual gates
+and CLI consumer0/74 remain pending their explicit execution decisions.

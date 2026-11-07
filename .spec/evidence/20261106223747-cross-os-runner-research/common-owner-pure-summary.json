@@ -1,0 +1,158 @@
+{
+  "schema": "humanymous.common-owner-pure-validation/1",
+  "status": "passed-source-and-pure-only",
+  "base_sha": "173008f0789303bef4a37d7ef45555f0b959c333",
+  "source_ancestors": [
+    "7a1e8dee97352e76f426a7db4d15801811eebe3f",
+    "3a0ba182d2d0120d45d4c974ed4cbf18d2e417ac"
+  ],
+  "venue": "native Windows x86_64-pc-windows-msvc",
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "locked": true,
+  "fmt_first": 0,
+  "admission": {
+    "commit_percent": 82,
+    "disk_free_bytes": 138143899648,
+    "available_physical_memory": "not persisted in original admission receipt; disk free must not be called RAM"
+  },
+  "closure": {
+    "registry_files": 1217,
+    "environment_hash_entries": 7,
+    "selection": "complete two selected path packages, all archived Cargo.toml manifests, root Cargo.lock and rust-toolchain",
+    "config_presence_absence_entries": 18,
+    "selected_source_files": 68,
+    "differences": 0,
+    "selected_tool_files": 76,
+    "limits": "Selected byte closure, not every archived workspace file, entire OS/MSVC/SDK image or complete cache key",
+    "registry_packages": 15
+  },
+  "selected_test_results": [
+    {
+      "measured": 0,
+      "ignored": 0,
+      "passed": 4,
+      "failed": 0,
+      "filter": "process::capture_attempt::tests",
+      "filtered": 36
+    },
+    {
+      "measured": 0,
+      "ignored": 0,
+      "passed": 1,
+      "failed": 0,
+      "filter": "process::direct_pipe::tests",
+      "filtered": 39
+    },
+    {
+      "measured": 0,
+      "ignored": 0,
+      "passed": 4,
+      "failed": 0,
+      "filter": "bridge --lib",
+      "filtered": 0
+    }
+  ],
+  "pure_passed": 9,
+  "doctests": [
+    {
+      "measured": 0,
+      "ignored": 0,
+      "passed": 1,
+      "failed": 0,
+      "kind": "external public import and wire control without native query",
+      "filtered": 0
+    },
+    {
+      "measured": 0,
+      "ignored": 0,
+      "passed": 1,
+      "failed": 0,
+      "kind": "external private-construction compile_fail",
+      "filtered": 0,
+      "limitation": "Expected E0451 source example; passing Rustdoc hides compiler diagnostic, so no separately captured diagnostic-code claim"
+    }
+  ],
+  "doctest_passed": 2,
+  "discovered_shared_tests": 40,
+  "ignored_actual_parent_names": [
+    "retained_normal_stdout_stderr_and_actual_joins",
+    "retained_stderr_cap_is_sticky",
+    "retained_stdout_cap_is_sticky",
+    "retained_stop_request_preserves_observed_exit_zero",
+    "retained_synthetic_pending_stdin_expires_original_run"
+  ],
+  "ignored_actual_parents_executed": 0,
+  "legacy_ignored_subprocess_entry_executed": 0,
+  "actual_native_bridge_query_create_calls": 0,
+  "actual_account_scm_job_docker_gui_calls": 0,
+  "checks": {
+    "fmt_first": 0,
+    "all_targets_check": 0,
+    "strict_clippy": 0
+  },
+  "failures": [],
+  "compiler_reservation": "returned at terminal",
+  "producer_identity": "Unsupported",
+  "remaining": [
+    "Five ignored actual capture parents need independent outer supervisor and separate resource allocation.",
+    "Direct-pipe CLI positive0/watchdog74 boundary is not executed by this batch.",
+    "Native bridge same-handle/provider/ACL-at-create/WTR and actual producer association remain unqualified.",
+    "Direct child, std endpoint release, EOF, actual IO joins and descendant cleanup remain distinct."
+  ],
+  "raw": {
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\before.json": {
+      "bytes": 146178,
+      "sha256": "5c1404b9586d154cef24d698155101655aa74b4265e5a12f5c6066cacca4d0ff"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\after.json": {
+      "bytes": 146178,
+      "sha256": "5c1404b9586d154cef24d698155101655aa74b4265e5a12f5c6066cacca4d0ff"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\results.json": {
+      "bytes": 637,
+      "sha256": "50d702c5b555f333b468c7747d5c0bcf1d4e0a4fc0ba02a4e8612b6752a5af7f"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\fmt-first.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\selected-tree.log": {
+      "bytes": 766,
+      "sha256": "ee14c4ab43572fbd691cba6351bcdd9ba6fa7caef161b68708465dd4ca2cbf5b"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\shared-list.log": {
+      "bytes": 3730,
+      "sha256": "2abb17cfff475d6048ce7941dc668ec68bb7cb37715e2168b37abd441808fc9e"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\capture-pure.log": {
+      "bytes": 782,
+      "sha256": "7a091792ab9ad125e66ebc525052eea43b1a0329953a7ac82eae160f3035256e"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\prefix-pure.log": {
+      "bytes": 426,
+      "sha256": "b8f5681a886ba5b5eebf4854f8e0a9675047a68eb343c9156d8525b465029950"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\bridge-pure.log": {
+      "bytes": 830,
+      "sha256": "82ff8300430b4ecbea59ca5f283a7a3c4ccb7de33404c6594b09cc772c667128"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\bridge-doc.log": {
+      "bytes": 912,
+      "sha256": "20a7857a6deee2929dd2fbded8b768484d104ecc1c317f2ac41929a372ad7e46"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\shared-check.log": {
+      "bytes": 437,
+      "sha256": "269ce31c0fc393fbddab2febbcedbe627c3944e9db68067f02f7caddafbb46b8"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\shared-clippy.log": {
+      "bytes": 437,
+      "sha256": "d4da78eb7037d858eae82366e6cb89a69e67f8a5531c08ec05ecac42766ef856"
+    },
+    ".spec.local\\root\\evidence\\20261107152610-windows-runner-common-owner-pure\\admission-metric-clarification.json": {
+      "sha256": "93407ce29535882b1cec8d6a8d46daacf60bf3f1cbb4b3c7f7076c54855f0454",
+      "bytes": 681
+    }
+  }
+}

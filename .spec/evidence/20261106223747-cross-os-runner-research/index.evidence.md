@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: common-owner-pure-summary.json, sha256: df3a4a83bddb3614cc43679b71139c669bba89e56d3c99a52eebb0065be7c726, bytes: 6119, store: repo}
   - {path: binding-capture-bridge-pure-summary.json, sha256: 08d40be7f3270adbc06521a5c9d0381eec8d9a73a75a1d0cc6d48fdb684f2afa, bytes: 7401, store: repo}
   - {path: actor-context-carrier-summary.json, sha256: b80b4a5d0c772b707322d1ff312cef0b267a0ce9fabf9340c22cc91c1c0dbaf2, bytes: 4066, store: repo}
   - {path: partial-setup-duplex-summary.json, sha256: afd7dd3de43e209600d3e47fcfe983a79bc112d654e7c1d25e967a52ae17812a, bytes: 4288, store: repo}
@@ -137,3 +138,24 @@ unbounded prevalidation UTF16/path copies in create.rs; those require a separate
 source/test checkpoint. These pure results do not qualify that allocation claim.
 Producer identity remains Unsupported. Registered binding-capture-bridge-pure-
 summary.json preserves exact raw hashes and scope.
+
+## Common owner and bounded bridge pure gate
+
+Immutable173008f0 includes the exact7a1common owner and3a0bounded bridge sources.
+Fmt ran FIRST; selected capture4 (36filtered), direct-prefix1 (39filtered), and
+bridge4 (0filtered) pure cases pass, plus separate positive1/private-construction
+compile_fail1 Rustdoc controls. All selected footers have0failed/ignored/measured.
+The40-test shared catalog includes FIVE source-ignored actual parents and the
+legacy ignored subprocess entry; none ran. Both packages pass all-target check
+and strict Clippy. Selected68source/manifests/lock/toolchain inputs,15registry
+packages/1217files,76selected tool files and config/flag fingerprints have zero
+before/after differences. This is selected input closure, not a complete OS/SDK
+image or every archived workspace byte. Compiler reservation returned at terminal.
+
+Admission commit82percent was captured; the128.657GiB free value is C: DISK,
+not physical RAM. Original available physical memory was not persisted. Raw
+admission remains unchanged with a separate metric clarification; a later memory
+observation is not historical proof. Exact doctest compiler error output is not
+captured beyond the passing compile_fail result and positive import control.
+No native query/create, actual parent, account/Job/SCM/Docker/GUI or consumer pilot
+ran. Producer identity stays Unsupported. See common-owner-pure-summary.json.
