@@ -7,6 +7,13 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "implementation-evidence",
+      "paths": ["reviews/security-privacy.md"],
+      "summary": "Document current vault tombstone guessability, cross-scope linkage and retained shredded identifiers separately from proposed protocol erasure semantics.",
+      "generic_wire_changed": false,
+      "privacy_qualification_claimed": false
+    },
+    {
       "kind": "editorial",
       "paths": ["validation/conformance.md", "process/preparation.md"],
       "summary": "Clarify comparable evidence records, frozen expected-versus-executed inventories, relevant source closure and same-candidate document validation; distinguish synthetic decisions, origin effects, skipped execution, retained raw evidence and human/assistive review.",

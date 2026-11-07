@@ -1457,3 +1457,14 @@ semantic content, normalized owned public summaries to LF before attaching and
 reattached exact bytes. No original command output or immutable raw evidence was
 rewritten. Current hosted snapshot additionally observes msrv128359709010 and
 rust-images128359821189 running; overall still in_progress.
+
+### Residual tombstone linkage in privacy review
+
+Inspected Vault pseudonymize/shred/snapshot source and current public inventory.
+Tombstone is shredded plus6digest bytes of raw subject SHA256, without subject
+key or tenant/purpose salt; snapshots retain original shredded identifiers.
+Data inventory and informative Draft privacy review now state offline guessability,
+cross-scope linkage and residual-copy limits. Existing implementation is unchanged;
+no generic erasure wire or anonymity/legal compliance claim. Added implementation-
+evidence change-manifest row. No Cargo/native/runtime/model/Docker commands during
+benchmark quiet window; source-text inspection only before lightweight checks.

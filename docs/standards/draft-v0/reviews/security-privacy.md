@@ -87,6 +87,13 @@ ordinary hash of a small input space is not anonymity.
 Separate tenant/purpose pseudonyms, key lifetimes, deletion and audit retention.
 Document what must survive to verify integrity and what can be erased. Do not
 publish operational visitor traces or identifiers as conformance examples.
+Review deletion markers as well as active pseudonyms. The current reference
+vault's stable truncated subject digest is not tenant/purpose-keyed, and its
+private snapshot retains shredded identifiers. These implementation details can
+retain guessability and cross-scope linkage after key removal; they are not a
+selected Draft v0 erasure encoding or a proof of anonymization. See the
+[data inventory](../../../reference/data-processing-inventory.md#subject-linkage-and-secret-snapshots)
+for the current source boundary and residual-copy obligations.
 The [W3C Privacy Principles](https://www.w3.org/TR/privacy-principles/) are a
 Statement, not a compliance certificate for an implementation.
 

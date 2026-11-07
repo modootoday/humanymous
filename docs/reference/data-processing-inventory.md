@@ -64,3 +64,12 @@ pseudonym is an anonymity certificate. Tombstones consume bounded capacity and
 are not evicted to create fresh subject identities. Runtime authentication and
 audit of reverse lookup, durable snapshot persistence, backup retirement and
 KMS separation remain distinct from this in-process object.
+
+The current tombstone return value is `shredded:` followed by a 48-bit truncated
+SHA-256 digest of the subject identifier. That marker uses neither the subject
+key nor a tenant/purpose salt. The same identifier can therefore produce the
+same marker across scopes, and a guessable identifier can be tested offline.
+The private snapshot also retains the original shredded identifiers to prevent
+reminting. Key removal does not make either representation anonymous or erase
+previously exported pseudonyms, snapshots and backups. Keep these residual data
+and linkage properties in the deployment's access and retention review.
