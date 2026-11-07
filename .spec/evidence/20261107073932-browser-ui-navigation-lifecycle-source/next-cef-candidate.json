@@ -1,0 +1,263 @@
+{
+  "source_head": "4a9b1a828677293c056f96eec37d86c854c76a01",
+  "scope": "Next Windows x64 CEF component candidate; source only",
+  "source_closure_kind": "canonical Git blob OIDs, not raw working-file hashes",
+  "source_files": [
+    {
+      "path": ".github/workflows/cef-native-component.yml",
+      "git_blob_oid": "657ddf151c96bbbbc93ab93661154cc8c1e79c3d"
+    },
+    {
+      "path": "Cargo.lock",
+      "git_blob_oid": "b5dc477730702886938bf69d33cd9b732dc42b1f"
+    },
+    {
+      "path": "Cargo.toml",
+      "git_blob_oid": "ae6a9a4b1c9aa2bd8b8b30d2251cc22526cebffc"
+    },
+    {
+      "path": "crates/browser/Cargo.toml",
+      "git_blob_oid": "e0978526b59857d94373773c00ad4679f7293ab1"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/Cargo.toml",
+      "git_blob_oid": "c9c896d62de3a0b2e799e7f8820e7830a8f3baf6"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/lib.rs",
+      "git_blob_oid": "366f577db854d7d93fbce9b2279657d04e60e1bc"
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/renderer_probe.rs",
+      "git_blob_oid": "4bca5994b7de41f5c7ee21f2e6af9994661bb047"
+    },
+    {
+      "path": "crates/browser/native/desktop/Cargo.toml",
+      "git_blob_oid": "c9bf11fcb7601aadb748aa77a51e41737e3f7489"
+    },
+    {
+      "path": "crates/browser/native/desktop/pilot-contract.json",
+      "git_blob_oid": "3c46ad94a5c314913f53a368828674c5fd650595"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/browser_controls.rs",
+      "git_blob_oid": "de83870244e14027820f6bc9208d4fc5dfef07c7"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/child.rs",
+      "git_blob_oid": "dac147f25768801080004f774e88839f3650bd87"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/fixture.rs",
+      "git_blob_oid": "9d5554d499c680c33b4a488beee26c16ec836b35"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host_report.rs",
+      "git_blob_oid": "47c140ce7f4b408ab4ab19417f6c3772ad47acff"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host.rs",
+      "git_blob_oid": "3ec46fb8ba27aa12dd1389e6f4fbf53e40306ad3"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/internal_probe.rs",
+      "git_blob_oid": "6a260f04c78c439c4b9842bea7fd4cde334c36d3"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "git_blob_oid": "7743bc7ac939cb59da242a2d11f89f1f49b6a39c"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/local_page.rs",
+      "git_blob_oid": "c5061194076cbb37e239c1fc84f8a88db387eade"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/measured_input.rs",
+      "git_blob_oid": "52fa98ff6e575f06aa7f3be441ccdb773e9bc782"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/native.rs",
+      "git_blob_oid": "0a1300dc91b2b76d5169a3fbfdbe9fb153801c57"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/navigation.rs",
+      "git_blob_oid": "026057e119c05482b4c536044bda68a7fef79c94"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_assertions.rs",
+      "git_blob_oid": "d1cde6a8c39b6afb936b641dbbfad97c5eeb1a53"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_process.rs",
+      "git_blob_oid": "6d36546bd1f3975ad90a4ed8c9662f6ca2f7931a"
+    },
+    {
+      "path": "crates/browser/native/desktop/src/window_frame.rs",
+      "git_blob_oid": "4101f1e040dfe76adf777b7eb31a558fde5c05ca"
+    },
+    {
+      "path": "crates/browser/native/shared/scheme.rs",
+      "git_blob_oid": "bf7180b94ad2409da1a293f83837140048ae83f9"
+    },
+    {
+      "path": "crates/browser/src/frame_geometry.rs",
+      "git_blob_oid": "aaed03078f39906b8ed3b072f6189bf18dd9953e"
+    },
+    {
+      "path": "crates/browser/src/icons.rs",
+      "git_blob_oid": "9f02d2e07dff292047d27bfb5020dc4b02453a82"
+    },
+    {
+      "path": "crates/browser/src/input.rs",
+      "git_blob_oid": "f8beef47a8ba1d6dd7a3e6dd17f2f66115607d7f"
+    },
+    {
+      "path": "crates/browser/src/internal_urls.rs",
+      "git_blob_oid": "85b25d063920a406958672325580bcd78b420684"
+    },
+    {
+      "path": "crates/browser/src/lib.rs",
+      "git_blob_oid": "b86e5c02cebb544fac4a4b21ca6141b2a1cfae78"
+    },
+    {
+      "path": "crates/browser/src/lifecycle.rs",
+      "git_blob_oid": "3aeb6ee318530cda39041580fb7f5f307bd1d40e"
+    },
+    {
+      "path": "crates/browser/src/main.rs",
+      "git_blob_oid": "f7336536376576f485f50f9c9986c5712000fcea"
+    },
+    {
+      "path": "crates/browser/src/navigation.rs",
+      "git_blob_oid": "1c3e339ec1944d9b2f86ec04fdee7c7b83f00590"
+    },
+    {
+      "path": "crates/browser/src/newtab.rs",
+      "git_blob_oid": "1f9522338262671f3b1fc927571278bdc953b6c7"
+    },
+    {
+      "path": "crates/browser/src/policy.rs",
+      "git_blob_oid": "4c519ff79d478fcf070799e657acb7e90e9e4e2b"
+    },
+    {
+      "path": "crates/browser/src/ui_navigation.rs",
+      "git_blob_oid": "b7bcb6dfd7562fb413232b34f7b96bd7a29d7c35"
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "git_blob_oid": "7b68ff5898f0a5bec61ee2d9122f9936f40da7c6"
+    },
+    {
+      "path": "crates/browser/src/viewport.rs",
+      "git_blob_oid": "8ec5675e78a36c00461c90f91ee891cb9cbea591"
+    },
+    {
+      "path": "crates/browser/src/window_chrome.rs",
+      "git_blob_oid": "3381ac8eaf125253e46550974b39f3814bb20f46"
+    },
+    {
+      "path": "crates/test-support/Cargo.toml",
+      "git_blob_oid": "d8c9382eb94e217ba7255f2c85418304cc3d17b6"
+    },
+    {
+      "path": "crates/test-support/examples/linux_tree_inventory.rs",
+      "git_blob_oid": "95b15c13088c06ecbad450b8e54d65f86f2faaa5"
+    },
+    {
+      "path": "crates/test-support/src/docker.rs",
+      "git_blob_oid": "90c320aef743d430dd4dd422f1fbf879a8149604"
+    },
+    {
+      "path": "crates/test-support/src/json.rs",
+      "git_blob_oid": "9a9a57a53225c54e944ccf8ca7488a58c8609270"
+    },
+    {
+      "path": "crates/test-support/src/lib.rs",
+      "git_blob_oid": "b3aa9c1aacfe21ec027aac1fdcfb12c54fbb634b"
+    },
+    {
+      "path": "crates/test-support/src/linux_tree_probe.rs",
+      "git_blob_oid": "9ca3613d614d16ee08c687ba41ee32f2ed3af45d"
+    },
+    {
+      "path": "crates/test-support/src/process.rs",
+      "git_blob_oid": "fcf16110afafa01eb9c97f37abc11229e10d533b"
+    },
+    {
+      "path": "crates/test-support/src/tree_lifecycle.rs",
+      "git_blob_oid": "8337561f3168e06260839490b98ca6a4d61210ec"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "git_blob_oid": "e527dfe8ab8692d092b4cbd615c65d2f7b35393e"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/Cargo.lock",
+      "git_blob_oid": "d66f65c63981ff3fd2142bd8407af900aefd6761"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/Cargo.toml",
+      "git_blob_oid": "44016a2a6a49c60896c013ef6908f1480f7b0201"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/desktop.rs",
+      "git_blob_oid": "d5a58b5cbd83f1143aab94ec54d9a65e95ebdfc2"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/main.rs",
+      "git_blob_oid": "4545cac47104043c843ed36cee7ab73e7f768d58"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/provisioning.rs",
+      "git_blob_oid": "249f84f2d5282c7dadf4b010a64c3de0e094781f"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/provisioning/bundles.rs",
+      "git_blob_oid": "e831ae07b752fc89a579916dd30abf0451df28f3"
+    }
+  ],
+  "workflow": ".github/workflows/cef-native-component.yml",
+  "runner_command": "cargo run --locked --manifest-path scripts/ci/cef-pilot/Cargo.toml -- target/cef-native-evidence",
+  "required_host": "standard GitHub-hosted windows-2025 x64, clean exact SHA, ACT absent",
+  "protocol_contract": "crates/browser/native/desktop/pilot-contract.json",
+  "executed_test_groups": {
+    "synthetic_protocol": 4,
+    "actual_desktop_processes": 2,
+    "bootstrap_security_rejection": 1
+  },
+  "positive_navigation_steps": 7,
+  "requires_root_final_sha_and_dispatch": true,
+  "requires_allocation_for_local_heavy_work": true,
+  "native_feature_compile": "not_run for this candidate",
+  "protocol4": "not_run",
+  "bootstrap1": "not_run",
+  "process2": "not_run",
+  "keyboard_ime_ax_full_sandbox": "unqualified",
+  "browser_ready": false,
+  "full_runtime_qualified": false,
+  "registered_workflow_id": 409997480,
+  "registered_workflow_state": "active",
+  "root_dispatch_command": "gh workflow run 409997480 --ref codex/rust",
+  "dispatch_prerequisite": "Root pushes/finalizes branch SHA, checks no duplicate live component run, dispatches once and requires returned headSha to equal that exact SHA",
+  "dispatched_by_browser_owner": false,
+  "ci_runner_source_commit": "448765343b14e6e138dede756fecc4178a3820e4",
+  "ci_owner_ancestor_confirmation": "confirmed; standalone runner6 and protocol4 ordering are included",
+  "artifact_profile": "no upload: CI_COMPONENT_ARTIFACTS must remain unset or false before root dispatch",
+  "raw_receipt_recovery": "not established; record actual recovery scope without inferring private report retrieval",
+  "root_final_sha_must_preserve_source_closure": true,
+  "provisioning_requirements": {
+    "visual_studio": "locator plus bundled CMake/bin and Ninja",
+    "cef_crate": "156.3.0+156.0.15",
+    "cef_rs_revision": "224a785c7b41758b51821cbb7395ea57ba493a63",
+    "archive_metadata_name": "cef_binary_156.0.15+gcf671c0+chromium-156.0.8078.80_windows64_minimal.tar.bz2",
+    "archive_metadata_sha1": "b690e035689ee20ba9d2500ac8953815bc7ed46a",
+    "required_artifacts": [
+      "libcef.dll",
+      "humanymous_cef_bootstrap.dll",
+      "humanymous_cef_desktop.dll",
+      "bootstrapc.exe"
+    ],
+    "network_and_materialization": "not yet observed for this candidate",
+    "note": "Values are expected pinned metadata from provisioner source, not a new downloaded archive verification"
+  }
+}

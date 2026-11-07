@@ -11,11 +11,61 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
-Goal active: implement actual Rust Meari/CEF host lifecycle, permissions, input and
-accessibility with supported-tuple evidence. REA stays disabled; no new browser
-research, local process/runtime/CEF execution or duplicate dispatch. Shared
-Cargo/lock/toolchain/push belongs to root. Central execution policy remains
-sot:root/program-roadmap and sot:root/delivery.
+## Next native candidate and required execution
+
+The next candidate combines browser cancellation verifier35cca50f, exact protocol
+inventory3d52eec0, shared captured-PID ownership and the existing CI-owned
+scripts/ci/cef-pilot runner. Its standalone six runner tests/check/Clippy passed
+separately; no Windows desktop test binary or CEF process result follows from that.
+next-cef-candidate.json in evidence:root/20261107073932 binds the committed source
+closure and prerequisites. Root owns the final pushed SHA and sole dispatch.
+
+Run the existing .github/workflows/cef-native-component.yml on standard
+windows-2025 x64, from a clean checkout matching GITHUB_SHA. ACT is rejected;
+do not spoof hosted environment variables for a local run. Root must allocate
+any local heavy build/SDK/GUI separately. The runner's actual entry command is
+`cargo run --locked --manifest-path scripts/ci/cef-pilot/Cargo.toml -- target/cef-native-evidence`.
+
+The ordered gate groups are:
+
+1. Resolve the unchanged locked graph, exact CEF/Meari pins, Visual Studio tools,
+   SDK runtime/manifest and required locales. Preserve source/runner failures.
+2. Compile bootstrap and desktop, then compile the existing Windows desktop test
+   binary with native-pilot-tests and --lib --no-run. A compile failure means
+   later test groups are not_run, not passing or ignored.
+3. Execute the contract's pilot_assertions::tests:: selector: exactly four named
+   synthetic protocol tests, zero failed/ignored, actual filtered count retained.
+   This exercises35cca cancellation negatives without starting a CEF process.
+4. Execute exactly one bootstrap security-override case covering four refused
+   flags before UI/profile creation. Preserve its separate denominator.
+5. Provision two distinct fresh private bundles. Execute exactly two desktop
+   cases: positive exit0 with seven ordered route observations and real cleanup;
+   cancellation exit78 with actual empty renderer inventory, initial-transaction
+   receipts and real cleanup. Do not manufacture zero from missing observations.
+6. Compare source closure after execution and bind actual binary hashes. Publish
+   only sanitized report.json; private runtime profiles/source/device data and
+   captured stderr stay outside the public artifact allowlist.
+
+The seven executed tests are protocol4 + bootstrap1 + actual desktop2, not seven
+native UI tests. The positive desktop case separately checks seven navigation
+steps: newtab, the five admitted diagnostics, then newtab again. Failed or missing
+canary/token joins, source loss, unexpected cancellation callbacks or unsupported
+GUI availability fail this bounded qualification rather than weakening sandbox.
+Creation/cancellation scheduling and cleanup remain actual runtime questions.
+
+After this bounded gate, separate real keyboard/IME composition and Hanja
+candidate display/placement/selection, native AX focus/geometry and screen-reader,
+DPI/monitor, process-tree termination and full sandbox-policy gates remain open.
+External browsing and BrowserReady stay disabled until their controlling gates.
+No SDK, Meari substitution, extra authored language or scoring change is introduced.
+
+Implement actual Rust Meari/CEF host lifecycle, permissions, input and accessibility
+with supported-tuple evidence. REA stays disabled; no new browser research,
+unallocated SDK/GUI/heavy compile or duplicate dispatch. Current source authoring
+is permitted; root assigns actual execution and the final source/dispatch. Shared
+Cargo/lock/toolchain/push belongs to root. Current execution authority is recorded
+below; historical hosted-only notes do not override later user authorization.
+Central execution policy remains sot:root/program-roadmap and sot:root/delivery.
 
 - [x] Claim browser-only source/spec paths after product-lab owner released misc;
   root-approved transition to the formal browser-ui lane completed.
@@ -36,7 +86,7 @@ covered by UI-25; URL/parser and canceled composition bounds by UI-27. Residual
 same-URL engine callback attribution is explicit and grants no authority. Do not
 claim native compilation or a completed browser from pure unit success.
 
-Dependency owners: root assigns the sole local Cargo slot and remote source
+Dependency owners: root assigns local validation slots and remote source
 closure/dispatch; CI/native-runner owners provide suitable hosted execution and
 raw recovery policy. Product-lab ownership is deployments/test-lab only. This
 browser writer edits no shared manifests, CI workflow or other owner's canon.
