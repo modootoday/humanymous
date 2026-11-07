@@ -1,0 +1,56 @@
+{
+  "schema": "humanymous.pages-source-followup/1",
+  "full_read_files": 4,
+  "full_read_lines": 744,
+  "before_after_exact": true,
+  "reviewed_text_already_lf": true,
+  "reviews": [
+    {
+      "source": "crates/audit/src/verification/mod.rs",
+      "sha256": "11ab3c6537407c0ea90a5937d5c6c6a7bd3315fc0aba80efa8394b6375e36c52",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete230-line source review: public compatibility verify rejects empty history, checks records before all supplied checkpoints; sequence uses historical wrapping progression and unbounded canonical/signing limits. Full copied hash-leaf history/Tree means no whole-history memory bound. Empty HMAC key yields successful HmacUnchecked; no checkpoints can succeed without public key/independent anchor. verify_with_witness adds supplied signatures only after base success, empty checkpoint list still zero witnessed scope. Native Scope successful prefixes omitted from compatibility JSON. Private incremental and scan remain cfg(test); one authored source test not new execution or release qualification.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/checks.rs",
+      "sha256": "1f507beb4b5d0189ca80d0d93409d422c1261993596bb38a624026569337d9a9",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete112-line source review: shared record mismatch order seq then prev linkage then bounded canonical hash then optionalHMAC, constant-time hash text compare. Checkpoint order strict writer signature, previous-signature linkage, supplied linear root then optional nonempty Merkle root; empty Merkle commitment intentionally skips that layer. Resource/signing I/O errors return Result rather than mismatch/success. Caller owns node policy, witness layer and trusted source/root; these helpers do not establish EOF/native identity or operational authorization. No new executed tests.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/incremental.rs",
+      "sha256": "e2fbec271e1673106b31df8b8e1c904aab586c2a5df4bce09246eeeb50eee055",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete148-line source review: cfg(test) private diagnostic accumulator with fixed prefix counters and first record/base/witness failures; actual Work attempts/successes remain distinct when interleaved later work continues. Report preserves record-before-base-before-witness priority and only historically reachable scope. Checked counter overflow poisons subsequent use; finish consumes diagnostic state but caller still owns authenticated EOF/source checks. No trusted-state/owner/admission token or production streaming verifier; source-only review.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/incremental/tests.rs",
+      "sha256": "27eb814f60eb0fd63f42bd291001d330dbd2d5a32f964b18bae4e532bb1fb705",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete254-line source review: six authored tests compare interleaved diagnostic work against public sequential verify, error precedence and successful-prefix Scope, including840included frozen Go-report fixtures, optionalHMAC/witness modes and resource-limit poison paths. Differential shares production checks and quoting/crypto helpers; not independent implementation. Synthetic drive borrows whole history and deliberately checks future checkpoints early, not an operational reader. Fixture content not reread and tests not executed by this batch; no EOF/native/source identity qualification.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "fixture_corpus_independently_reviewed": false,
+  "public_prose_changed": false
+}
