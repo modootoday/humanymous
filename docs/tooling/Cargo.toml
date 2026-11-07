@@ -22,3 +22,6 @@ ureq = "=3.5.1"
 
 [lints]
 workspace = true
+
+[target.'cfg(windows)'.dev-dependencies]
+junction = { version = "=2.1.0", default-features = false }

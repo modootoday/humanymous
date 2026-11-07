@@ -79,6 +79,25 @@ freshness, bounded I/O/deadline/acknowledgement and recovery/cleanup. Their exac
 contract and implementation gates remain pending; this decision is not runtime
 qualification and changes no detection policy.
 
+Subsequent root review approves the initial Windows launcher architecture as two
+independently SCM-owned own-process roles with distinct service principals. It
+also accepts irreversible observer-loss readiness/admission revocation and
+bounded drain/final-flush semantics with separate failed/unknown outcomes. This
+does not implement either service or approve the unresolved native grant issuer,
+process-instance proof, cross-principal ACL or activation API. An observer-status
+credential grants no stop mutation: service-lifecycle authorization remains
+separate and witness availability must persist through actual final service
+flush. No universal 24-hour lease default or renewal policy is accepted.
+
+## Narrow test dependency integration
+
+The Windows Pages reparse fixture uses the already locked junction2.1.0 crate
+without default features, replacing a symlink fixture that needs unavailable
+privilege. Python's hosted test controller reuses the existing workspace
+humanymous-test-support dev dependency. The root lock update adds only these two
+package dependency edges; it upgrades no external version. Actual locked target
+resolution is required: metadata --no-deps alone does not prove lock coherence.
+
 ## Local Docker engine identity and cleanup
 
 The user's 2026-11-07 correction establishes Windows Docker Desktop's
