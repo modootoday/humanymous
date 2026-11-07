@@ -6,12 +6,13 @@ services:
     build:
       context: ${HM_LAB_BUILD_CONTEXT:?immutable source required}
       dockerfile: deployments/lab/images/go.Dockerfile
-      args:
-        HM_PRODUCT_IMAGE: humanymous/product-lab:${HM_LAB_IMAGE_TAG:?owned image required}
       additional_contexts:
+        product_image: service:go-gate
         go_fixture: ${HM_GO_FIXTURE_EXPORT:?verified untouched binary required}
     entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --go-backend]
     networks: [go-backend]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
     pids_limit: 64
     mem_limit: 256m
     tmpfs: !override ["/tmp:rw,noexec,nosuid,size=16m,mode=1777"]
@@ -27,6 +28,8 @@ services:
     command: ["${HM_GO_BACKEND:-127.0.0.1:0}", "${HM_GO_CASE:-missing}"]
     stdin_open: true
     networks: [go-ingress, go-backend]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
     volumes: [writer-key:/writer/keys, writer-wal:/writer/wal]
     pids_limit: 128
     mem_limit: 512m
@@ -38,11 +41,17 @@ services:
     entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --go-client]
     command: ["${HM_GO_GATE:-127.0.0.1:0}", "${HM_GO_CASE:-missing}"]
     networks: [go-ingress]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
     tmpfs: !override ["/tmp:rw,noexec,nosuid,size=16m,mode=1777"]
     profiles: [go-product]
   go-bypass:
     extends: {service: go-client}
     command: ["${HM_GO_GATE:-127.0.0.1:0}", "origin-bypass", "${HM_GO_BACKEND:-127.0.0.1:0}", "${HM_GO_WITNESS:-127.0.0.1:0}"]
+  go-egress-canary:
+    extends: {file: compose.rust.yaml, service: outside-canary}
+    command: [fixture, dns-server]
+    profiles: [go-product]
 networks:
   go-ingress: &owned-network
     internal: true

@@ -1,6 +1,7 @@
 //! Actual untouched Go-host conformance actors; no native Go SDK or human claim.
 mod backend;
 mod client;
+mod egress;
 mod gate;
 mod receipt;
 mod relay;
@@ -62,4 +63,7 @@ pub fn evaluate() -> Result<()> {
 }
 pub fn client_release() -> Result<()> {
     client::release()
+}
+pub fn egress() -> Result<()> {
+    egress::run()
 }

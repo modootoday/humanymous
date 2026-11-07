@@ -1,0 +1,79 @@
+//! Recover private startup logs while projecting only fixed stage identifiers.
+use super::Lab;
+use crate::{docker::Result, snapshot};
+use serde_json::json;
+fn classify(logs: &str) -> Option<&'static str> {
+    logs.lines()
+        .filter_map(
+            |line| match line.trim().strip_prefix("HM-LAB-ACTOR-STEP ")? {
+                "actor_hardening" => Some("actor_hardening"),
+                "actor_root_probe_eacces" => Some("actor_root_probe_eacces"),
+                "actor_root_probe_unknown" => Some("actor_root_probe_unknown"),
+                "actor_installation" => Some("actor_installation"),
+                "actor_writer_mount" => Some("actor_writer_mount"),
+                "actor_writer_keys" => Some("actor_writer_keys"),
+                "actor_writer_identity" => Some("actor_writer_identity"),
+                "actor_witness_bootstrap" => Some("actor_witness_bootstrap"),
+                _ => None,
+            },
+        )
+        .next_back()
+}
+pub(super) fn capture(lab: &mut Lab, id: &str) -> Result<()> {
+    let output = lab.docker.invoke(
+        &["logs".into(), "--tail".into(), "32".into(), id.into()],
+        &[],
+        false,
+    )?;
+    let logs = format!("{}\n{}", output.stdout, output.stderr);
+    if let Some(code) = classify(&logs) {
+        lab.stage = code;
+    }
+    let state = lab
+        .docker
+        .invoke(&["inspect".into(), id.into()], &[], false)?;
+    snapshot::write(
+        &lab.evidence,
+        "actor-startup-failure.private.json",
+        &json!({"stdout":output.stdout,"stderr":output.stderr,"inspect_stdout":state.stdout,"inspect_stderr":state.stderr,"safe_error_code":lab.stage,"private_contents_included":true}),
+    )
+}
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn only_complete_static_stage_lines_can_escape_private_logs() {
+        assert_eq!(
+            super::classify(
+                "HM-LAB-ACTOR-STEP actor_installation\nsecret/path\nHM-LAB-ACTOR-STEP actor_writer_keys"
+            ),
+            Some("actor_writer_keys")
+        );
+        for value in [
+            "HM-LAB-ACTOR-STEP private@example.com",
+            "prefix HM-LAB-ACTOR-STEP actor_writer_keys",
+            "HM-LAB-ACTOR-STEP actor_writer_keys Bearer private",
+        ] {
+            assert_eq!(super::classify(value), None);
+        }
+        let contract: serde_json::Value =
+            serde_json::from_str(include_str!("../../safe-diagnostics.json")).unwrap();
+        for stage in [
+            "actor_hardening",
+            "actor_root_probe_eacces",
+            "actor_root_probe_unknown",
+            "actor_installation",
+            "actor_writer_mount",
+            "actor_writer_keys",
+            "actor_writer_identity",
+            "actor_witness_bootstrap",
+        ] {
+            assert!(
+                contract["error_codes"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|v| v == stage)
+            );
+        }
+    }
+}

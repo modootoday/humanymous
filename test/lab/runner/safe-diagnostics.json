@@ -9,6 +9,9 @@
     "collector_build", "collector_process", "browser_config", "browser_gate_build",
     "browser_image_build", "browser_gate_start", "browser_witness_handshake",
     "browser_actor", "browser_runtime_drain", "browser_receipts",
-    "assertion_failed", "execution_failed", "cleanup_failed"
+    "assertion_failed", "execution_failed", "cleanup_failed",
+    "go_fixture", "go_case", "actor_hardening", "actor_root_probe_eacces",
+    "actor_root_probe_unknown", "actor_installation", "actor_writer_mount",
+    "actor_writer_keys", "actor_writer_identity", "actor_witness_bootstrap"
   ]
 }

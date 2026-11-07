@@ -41,6 +41,14 @@ fn hardening() -> Result<serde_json::Value> {
     let error = std::fs::write("/.humanymous-browser-write-probe", b"probe")
         .expect_err("actor root must be read-only");
     if error.raw_os_error() != Some(30) {
+        eprintln!(
+            "HM-LAB-ACTOR-STEP {}",
+            if error.raw_os_error() == Some(13) {
+                "actor_root_probe_eacces"
+            } else {
+                "actor_root_probe_unknown"
+            }
+        );
         return Err("actual root EROFS missing".into());
     }
     Ok(
@@ -49,6 +57,7 @@ fn hardening() -> Result<serde_json::Value> {
 }
 
 pub fn gate() -> Result<()> {
+    eprintln!("HM-LAB-ACTOR-STEP actor_hardening");
     let hardening = hardening()?;
     let input = BufReader::new(io::stdin());
     // One fresh installation per product bundle; credentials are process-private.

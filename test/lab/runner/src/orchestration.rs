@@ -48,6 +48,7 @@ mod browser;
 mod go;
 mod go_fixture;
 mod public_receipts;
+mod startup_failure;
 mod witness;
 struct Lab {
     docker: Docker,
@@ -183,8 +184,8 @@ impl Lab {
             container["Config"]["User"] == expected_user
                 && host["ReadonlyRootfs"] == true
                 && host["Privileged"] == false
-                && host["PidMode"].as_str()==Some("")
-                && host["IpcMode"].as_str()==Some("private")
+                && host["PidMode"].as_str() == Some("")
+                && host["IpcMode"].as_str() == Some("private")
                 && host["CapDrop"] == json!(["ALL"])
                 && host["SecurityOpt"]
                     .as_array()

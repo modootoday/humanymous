@@ -3,7 +3,7 @@ id: plan:root/20261106224156
 title: Canonical container test environment rollout
 status: active
 created: 2026-11-06T22:41:56Z
-updated: 2026-11-07T07:34:56Z
+updated: 2026-11-07T09:06:05Z
 rel:
   depends_on: [sot:root/container-test-environments]
 ---
@@ -20,9 +20,13 @@ rel:
 - [x] Consume audit29ee901 typed recovery coverage with externally supplied pin, RequireCovered and no implicit repair for normal drain; preserve original wargame stdout and owner strict verifier hash/schema/mode/scoped/totals. Generic strict JSON uses shared test-support API; current integration not_run.
 - [ ] Build actual pinned untouched Go fixture31d9f69 with compiler-input approved by root; consume go-adapter Deployment and v2 Receipt qualifier, distinguish origin contacts from application mutations, and keep greeting-only sibling hosts unqualified. Runtime-pilot approved path dependency is authored and frozen; common lock remains root-owned.
 - [x] Author actual --go-product eight-case Docker caller, fresh per-case three-namespace Gate/backend/attacker topology, private independent witness, untouched pinned Go compiler/export path, measured native HTTP/cancellation/kernel probes, conservative contact counters, owner evaluator and independent Receipt tuple. This is source completion only; latest compile and hosted execution remain NOT_RUN.
-- [ ] Run scoped lab-runner units/Clippy and hosted Unix runtime-pilot compilation/Clippy, then actual free-hosted --go-product in a fresh private evidence bundle. Retain every case/error/unknown and cleanup result; no sibling-framework or full-product qualification.
+- [x] Scoped Windows lab-runner units10/10 and all-targets Clippy pass in evidence:root/20261107090102 after preserving one needless_borrow failure and correcting it;632-file recursive fingerprint0drift. Earlier411b69e5 unit9/Clippy/621-file0drift remains in evidence:root/20261107085145. This does not compile Unix actors.
+- [ ] Run hosted Unix runtime-pilot compilation/Clippy, then actual free-hosted --go-product in a fresh private evidence bundle. Retain every case/error/unknown and cleanup result; no sibling-framework or full-product qualification. Latest small IPv6/status-diagnostic source additions await compile under root admission.
+- [x] Correct Go setup-failure denominator retention, actual backend liveness/exit/reap, service build context and per-namespace owned DNS/TCP no-egress prerequisites. All remain actual Docker NOT_RUN until measured.
+- [x] Preserve813 browser-product8assertions/7pass/1fail execution/browser_gate_start before first writer identity; root fixture omission is not its established cause. Add private startup log/inspect capture and static-only diagnostic stages without relaxing mount/witness policy.
+- [x] Root's latest user authorization permits actual local/hosted timing comparison; obey the benchmark quiet window and await measured execution-policy admission. No owned Cargo/runtime/Docker/model handle or GPU/CPU server remains.
 - [x] Preserve actual8132117 Docker failure in evidence:root/20261107083259:35 lab assertions/33pass/2fail; wargame26scheduled/0evaluated/19errors/7unsupported, internally consistent but scoped/full false. Original private causes remain unavailable; next readiness fix is separately source-bound.
-- [x] Author a small source-bound public wargame receipt projection and canonical JSON contract. It retains all case indices/statuses, rechecks totals/scoped predicate and removes private identities/raw bodies. New projection unit is authored but not_run; hosted strict-byte/public recovery is still required.
+- [x] Author a small source-bound public wargame receipt projection and canonical JSON contract. It retains all case indices/statuses, rechecks totals/scoped predicate and removes private identities/raw bodies. Projection pure test passes; actual813 strict-byte/public receipt recovery is internally consistent but reports0evaluated/19errors/7unsupported, not a scoped success. Fixed readiness source still needs actual rerun.
 
 - [x] Root accepted two-namespace same-origin browser product contract; source consumes sole collector/pilot/fixture.json contract. Root owns WASM tests/typed Firefox proxy config, runtime supplies21b6c4b external-witness host seam, CI supplies6da9c02 product image.
 - [ ] New F/G Rust forwarders, separate Compose profile, actual injected ServiceHost/witness broker, status/ACK observations, namespace/key/egress negatives and authenticated effect receipts authored but Linux compile/runtime/browser execution not_run. Next hosted batch must run --browser-product in its own fresh evidence bundle. Physical crash, human/AT, producer provenance and browser-profile witness outage/recovery remain incomplete.

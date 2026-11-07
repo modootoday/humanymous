@@ -127,7 +127,13 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         lab.docker
             .duplex(&["start".into(), "-a".into(), "-i".into(), id.into()])?;
     let receive = frame_reader(output);
-    let identity = frame(&receive, 20)?;
+    let identity = match frame(&receive, 20) {
+        Ok(value) => value,
+        Err(error) => {
+            let _ = super::startup_failure::capture(lab, id);
+            return Err(error);
+        }
+    };
     if identity["role"] != "writer_identity" {
         return Err("gate writer identity missing".into());
     }

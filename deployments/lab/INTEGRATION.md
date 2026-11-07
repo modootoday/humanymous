@@ -3,7 +3,8 @@
 The Go bounded HTTP profile has an actual Rust Docker caller:
 `cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --go-product --require-full`.
 Use a fresh bundle, separately from browser/collector/topology-only profiles.
-The caller is authored; its latest Unix compile and Docker execution are NOT_RUN
+The caller is authored; Windows orchestration units10/10 and scoped Clippy pass
+in evidence:root/20261107090102. Its latest Unix compile and Docker execution are NOT_RUN
 until the next source-bound hosted batch. A scoped pass still exits2; execution
 failure exits1. Full product qualification stays false.
 
@@ -29,6 +30,16 @@ conservative TCP contacts, never inferred application mutations. Each real
 observation goes through the Go owner's evaluator. All eight cases, errors and
 cleanup failures remain in the private ledger. Missing counters remain unknown.
 
+The scheduled eight-row NOT_RUN ledger is saved before compiler/source/image
+setup; setup failure retains all rows without pretending they executed. Backend
+liveness is checked after each case, and controlled stop must produce actual
+actor exit plus child_reaped before Compose cleanup. An owned outside canary
+has positive UDP53/TCP8080 controls; Gate/backend/attacker each run actual libc
+DNS denial, direct UDP/TCP no-route and no-default-route prerequisites. Outside
+DNS counters must stay unchanged. No public DNS or third-party endpoint is used.
+The final image consumes product_image:service:go-gate as its explicit BuildKit
+context, following https://docs.docker.com/compose/how-tos/dependent-images/ .
+
 Parent-selected complete sanitized configurations must equal actor configurations.
 The parent binds frozen source, actual images, full fixture/binary/compiler
 closure, engine binary, all per-case configurations and actual OS into the
@@ -42,6 +53,17 @@ zero evaluated,19 errors and7 unsupported, with strict internally-consistent
 accounting but scoped/full false. Original private case causes remain unavailable.
 evidence:root/20261107083259 preserves the decoded log and derived public receipt.
 Later fixes and Go source do not overwrite or qualify that historical run.
+
+Its separate browser-product job failed before the first writer identity:
+7 assertions passed/1 failed, execution/browser_gate_start. The particular
+hardening/installation/mounted-key failure is not recovered. New startup source
+emits fixed stage markers, checks actual writer mount UID/mode/type, and saves
+private Docker logs/inspect before cleanup. Only complete allowlisted stage
+codes can enter public safe_diagnostics; raw exceptions and paths stay private.
+This narrows a subsequent failure, not the historical cause. Root's later
+user-authorized local/hosted timing comparison controls execution admission;
+no lab command starts during its benchmark quiet window. The current Go
+qualification contract still requires its actual standard free hosted runner.
 
 The accepted browser product profile is separate from collector component tests:
 `cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --browser-product --require-full`.

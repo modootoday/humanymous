@@ -1,4 +1,4 @@
-//! Eight real isolated host cases; every failure remains in the fixed ledger.
+//! Eight real isolated host cases; failures remain in the fixed ledger.
 use super::{
     Lab, go_fixture,
     witness::{Broker, frame_reader},
@@ -89,6 +89,7 @@ fn isolate(lab: &mut Lab, gate: &Value, backend: &Value, client: &Value) -> Resu
         lab.case(
             "go-internal-owned-network",
             network[0]["Internal"] == true
+                && network[0]["EnableIPv6"] == false
                 && network[0]["Labels"]["com.docker.compose.project"] == lab.project,
             json!(name),
         )?;
@@ -128,8 +129,98 @@ fn evaluate(lab: &mut Lab, observation: &Value) -> Result<Value> {
     )?;
     Ok(decode_strict_json(output.stdout.as_bytes(), 65536)?)
 }
+fn dns_snapshot(lab: &mut Lab, id: &str) -> Result<Value> {
+    Ok(decode_strict_json(
+        lab.docker
+            .call(&[
+                "exec",
+                id,
+                "/usr/local/bin/humanymous-lab-runner",
+                "fixture",
+                "dns-snapshot",
+            ])?
+            .as_bytes(),
+        65536,
+    )?)
+}
+fn egress(lab: &mut Lab, actor: &Value, canary: &str, role: &str) -> Result<()> {
+    lab.case(
+        "go-explicit-local-deny-dns",
+        actor["HostConfig"]["Dns"] == json!(["127.0.0.1"]),
+        json!(role),
+    )?;
+    let name = format!("{}-{role}.invalid", lab.project);
+    let hash = snapshot::digest(name.as_bytes());
+    let report = decode_strict_json(
+        lab.docker
+            .call(&[
+                "exec",
+                actor["Id"].as_str().ok_or("Go egress actor ID")?,
+                "/usr/local/bin/humanymous-runtime-pilot",
+                "--go-egress",
+                canary,
+                &name,
+            ])?
+            .as_bytes(),
+        65536,
+    )?;
+    let denied = |v: &Value| {
+        matches!(
+            v.as_str(),
+            Some("NetworkUnreachable" | "HostUnreachable" | "PermissionDenied")
+        )
+    };
+    lab.case(
+        "go-actual-namespace-egress-denied",
+        report["schema"] == "humanymous.go-egress-control/1"
+            && report["no_default_ipv4_route"] == true
+            && denied(&report["outside_tcp_denied"]["kind"])
+            && denied(&report["dns_control"]["outside_udp_denied"]["kind"])
+            && report["dns_control"]["query_hash"] == hash
+            && report["dns_control"]["local_deny_observed"] == true
+            && report["dns_policy"]["question_hash_counts"][&hash]
+                .as_u64()
+                .is_some_and(|n| n > 0)
+            && report["dns_policy"]["forwards"] == 0
+            && report["timeout_counted_as_denial"] == false,
+        json!(role),
+    )?;
+    snapshot::write(&lab.evidence, &format!("go-egress-{role}.json"), &report)
+}
 fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Value> {
     set(lab, "HM_GO_CASE", id.into());
+    lab.compose(
+        &[
+            "up",
+            "-d",
+            "--no-build",
+            "--wait",
+            "--wait-timeout",
+            "30",
+            "go-egress-canary",
+        ],
+        true,
+    )?;
+    let canary = lab.inspect("go-egress-canary")?;
+    let canary_id = canary["Id"]
+        .as_str()
+        .ok_or("Go outside canary ID")?
+        .to_owned();
+    let canary_ip = named_ip(&canary, "_outside")?;
+    lab.docker.call(&[
+        "exec",
+        &canary_id,
+        "/usr/local/bin/humanymous-lab-runner",
+        "fixture",
+        "dns-positive",
+    ])?;
+    let dns_before = dns_snapshot(lab, &canary_id)?;
+    lab.case(
+        "go-owned-outside-canary-positive",
+        dns_before["received"] == 1 && dns_before["invalid"] == 0,
+        json!("actual healthy outside UDP53 and TCP8080 control"),
+    )?;
+    snapshot::write(&lab.evidence, "go-dns-canary-before.json", &dns_before)?;
     lab.compose(&["up", "-d", "--no-build", "go-backend"], true)?;
     let mut backend = lab.inspect("go-backend")?;
     let backend_id = backend["Id"]
@@ -181,7 +272,13 @@ fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Val
         lab.docker
             .duplex(&["start".into(), "-a".into(), "-i".into(), gate_id.clone()])?;
     let receive = frame_reader(output);
-    let identity = frame(&receive)?;
+    let identity = match frame(&receive) {
+        Ok(value) => value,
+        Err(error) => {
+            let _ = super::startup_failure::capture(lab, &gate_id);
+            return Err(error);
+        }
+    };
     if identity["role"] != "writer_identity" {
         return Err("Go writer identity missing".into());
     }
@@ -231,6 +328,8 @@ fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Val
         json!("complete parent-selected sanitized configuration, actual private loopback origin"),
     )?;
     let running_gate = lab.inspect("go-gate")?;
+    egress(lab, &running_gate, &canary_ip, "gate")?;
+    egress(lab, &backend, &canary_ip, "backend")?;
     set(
         lab,
         "HM_GO_GATE",
@@ -263,11 +362,11 @@ fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Val
     let captured = std::thread::scope(|scope| -> Result<_> {
         let (send, done) = mpsc::sync_channel(1);
         let handle=scope.spawn(move||{
-            let result=capture_with_stderr(&mut command,&[],Duration::from_secs(40),1048576);
+            let result=capture_with_stderr(&mut command,&[],Duration::from_secs(70),1048576);
             let raw=match &result{Ok(r)=>json!({"stdout":String::from_utf8_lossy(&r.stdout),"stderr":String::from_utf8_lossy(&r.stderr),"exit":r.status.code()}),Err(error)=>json!({"capture_error":error.to_string(),"partial_output_unavailable":true})};
             fs::write(raw_path,serde_json::to_vec_pretty(&raw).map_err(std::io::Error::other)?)?;let _=send.send(());result
         });
-        let until = Instant::now() + Duration::from_secs(45);
+        let until = Instant::now() + Duration::from_secs(75);
         let mut checked = false;
         loop {
             if done.try_recv().is_ok() {
@@ -280,6 +379,7 @@ fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Val
                 let client = lab.inspect(service)?;
                 if client["State"]["Running"] == true {
                     isolate(lab, &running_gate, &backend, &client)?;
+                    egress(lab, &client, &canary_ip, "client")?;
                     lab.docker.call(&[
                         "exec",
                         &client_id,
@@ -335,8 +435,21 @@ fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Val
     let contacts = counter["origin"]["contacts"]
         .as_u64()
         .ok_or("Go independent origin counter absent")?;
+    let live_backend = lab.inspect("go-backend")?;
+    lab.case(
+        "go-backend-live-after-case",
+        live_backend["State"]["Running"] == true && live_backend["Image"] == backend["Image"],
+        json!("actual upstream actor remains running after probe"),
+    )?;
     observation["observation"]["origin_contacts"] = json!(contacts);
     observation["observation"]["actual_host_verified"] = json!(true);
+    let dns_after = dns_snapshot(lab, &canary_id)?;
+    lab.case(
+        "go-no-external-dns-arrival",
+        dns_after == dns_before,
+        json!("healthy independent canary saw no new queries from Gate/backend/attacker"),
+    )?;
+    snapshot::write(&lab.evidence, "go-dns-canary-after.json", &dns_after)?;
     snapshot::write(&lab.evidence, "go-measured-observation.json", &observation)?;
     let evaluation = evaluate(lab, &observation["observation"])?;
     let pin = broker
@@ -385,6 +498,44 @@ fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Val
         "/usr/local/bin/humanymous-runtime-pilot",
         "--go-backend-stop",
     ])?;
+    let until = Instant::now() + Duration::from_secs(15);
+    let state = loop {
+        let value: Value = serde_json::from_str(&lab.docker.call(&[
+            "inspect",
+            "--format",
+            "{{json .State}}",
+            &backend_id,
+        ])?)?;
+        if value["Running"] == false {
+            break value;
+        }
+        if Instant::now() >= until {
+            return Err("Go backend actor stop/reap deadline".into());
+        }
+        std::thread::sleep(Duration::from_millis(50));
+    };
+    let logs = lab.docker.call(&["logs", "--tail", "3", &backend_id])?;
+    let stopped: Vec<_> = logs
+        .lines()
+        .filter_map(|line| decode_strict_json(line.as_bytes(), 65536).ok())
+        .filter(|v| v["schema"] == "humanymous.go-backend-stop/1")
+        .collect();
+    lab.case(
+        "go-backend-child-reaped",
+        state["ExitCode"] == 0
+            && stopped.len() == 1
+            && stopped[0]["child_reaped"] == true
+            && stopped[0]["graceful_shutdown_qualified"] == false
+            && stopped[0]["contacts"]["contacts"] == contacts,
+        json!(
+            "actual actor exit plus shared ManagedChild reap receipt; no graceful upstream claim"
+        ),
+    )?;
+    snapshot::write(
+        &lab.evidence,
+        "go-backend-stop.json",
+        &json!({"state":state,"receipt":stopped[0]}),
+    )?;
     snapshot::write(&lab.evidence, "go-gate-result.json", &report)?;
     Ok(
         json!({"case":id,"evaluation":evaluation,"configuration":expected,"runtime_image":image,"backend_image":backend["Image"],"engine_sha256":engine,"actual_upstream_binary_sha256":actual_binary,"full_product_qualified":false}),
@@ -392,15 +543,6 @@ fn one(lab: &mut Lab, id: &str, contract: &Value, fixture: &Value) -> Result<Val
 }
 
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
-    lab.stage = "runtime_build";
-    // No fixture-dependent interpolation is needed for the initial build.
-    let placeholder = lab.config_file("test/lab")?;
-    set(lab, "HM_GO_FIXTURE_EXPORT", placeholder);
-    lab.compose(&["build", "go-gate"], true)?;
-    lab.stage = "go_fixture";
-    let fixture = go_fixture::prepare(lab)?;
-    set(lab, "HM_GO_FIXTURE_EXPORT", fixture.export.clone());
-    lab.compose(&["build", "go-backend"], true)?;
     let contract = decode_strict_json(
         &fs::read(lab.config_file("adapters/go/pilot-contract.json")?)?,
         65536,
@@ -411,9 +553,59 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     if cases.len() != 8 {
         return Err("Go eight-case inventory required".into());
     }
-    let mut ledger = vec![];
+    let mut seen = std::collections::BTreeSet::new();
+    let mut ledger = Vec::new();
     for case in cases {
         let id = case["id"].as_str().ok_or("Go case ID")?;
+        if id.is_empty()
+            || id.len() > 40
+            || !id.bytes().all(|b| b.is_ascii_lowercase() || b == b'-')
+            || !seen.insert(id)
+        {
+            return Err("Go case inventory unsafe or duplicated".into());
+        }
+        ledger.push(json!({"case":id,"status":"not_run","evaluation":null,"origin_contacts":null,"full_product_qualified":false}));
+    }
+    snapshot::write(
+        &lab.evidence,
+        "go-product-scheduled.json",
+        &json!({"schema":"humanymous.go-product-ledger/1","scheduled":8,"evaluated":0,"cases":ledger,"status":"not_run","full_product_qualified":false}),
+    )?;
+    let result = execute(lab, &contract, &mut ledger);
+    if let Err(error) = &result {
+        let evaluated = ledger
+            .iter()
+            .filter(|v| {
+                v["evaluation"]["status"] == "passed" || v["evaluation"]["status"] == "failed"
+            })
+            .count();
+        let report = json!({"schema":"humanymous.go-product-ledger/1","scheduled":8,"evaluated":evaluated,"cases":ledger,"status":"failed","setup_or_qualification_error":{"stage":lab.stage,"detail":error.to_string()},"full_product_qualified":false});
+        snapshot::write(&lab.evidence, "go-product-report.json", &report)?;
+        lab.components["go_product"] = report;
+    }
+    result
+}
+fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> {
+    lab.stage = "runtime_build";
+    // No fixture-dependent interpolation is needed for the initial build.
+    let placeholder = lab.config_file("test/lab")?;
+    set(lab, "HM_GO_FIXTURE_EXPORT", placeholder);
+    lab.compose(&["build", "go-gate"], true)?;
+    lab.compose(&["build", "go-egress-canary"], true)?;
+    lab.stage = "go_fixture";
+    let fixture = go_fixture::prepare(lab)?;
+    set(lab, "HM_GO_FIXTURE_EXPORT", fixture.export.clone());
+    lab.compose(&["build", "go-backend"], true)?;
+    let cases = contract["cases"]
+        .as_array()
+        .ok_or("Go fixed case inventory")?;
+    if cases.len() != 8 {
+        return Err("Go eight-case inventory required".into());
+    }
+    for (index, case) in cases.iter().enumerate() {
+        lab.stage = "go_case";
+        let id = case["id"].as_str().ok_or("Go case ID")?;
+        ledger[index]["status"] = json!("attempted");
         let directory = lab.evidence.join(format!("go-case-{id}"));
         fs::create_dir(&directory)?;
         let mut random = [0; 8];
@@ -439,12 +631,12 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             components: json!({}),
             public_receipts: json!({"schema":"humanymous.lab-public-receipts/1"}),
         };
-        let result = one(&mut child, id, &contract, &fixture.identity);
+        let result = one(&mut child, id, contract, &fixture.identity);
         let cleanup = child.cleanup();
         let item = match (result, cleanup) {
             (Ok(result), Ok(())) => result,
             (result, cleanup) => {
-                json!({"case":id,"status":"error","detail":result.err().map(|e|e.to_string()),"cleanup_error":cleanup.err().map(|e|e.to_string()),"full_product_qualified":false})
+                json!({"case":id,"status":"error","error_code":child.stage,"detail":result.err().map(|e|e.to_string()),"cleanup_error":cleanup.err().map(|e|e.to_string()),"full_product_qualified":false})
             }
         };
         snapshot::write(
@@ -457,7 +649,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             "docker-transcript.json",
             &json!(child.docker.transcript),
         )?;
-        ledger.push(item);
+        ledger[index] = item;
     }
     let passed = ledger.iter().all(|v| v["evaluation"]["status"] == "passed");
     let mut qualification =

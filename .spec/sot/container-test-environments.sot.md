@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T07:34:56Z
+updated: 2026-11-07T09:06:05Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -64,6 +64,24 @@ or manufacture zero counters. Complete successful ledgers alone may invoke the
 owner qualifier against the parent's independently provisioned source/artifact,
 configuration and OS tuple. New source is NOT_RUN until its own hosted receipt.
 
+Save the initial eight-row NOT_RUN inventory before any fetch/compiler/image
+operation. Setup failures retain the unexecuted denominator. After a case,
+independently inspect backend liveness, then await controlled actor exit and
+the actual ManagedChild reap receipt before Compose cleanup; this does not
+qualify graceful Go termination. Reuse the owned positive outside DNS/TCP canary
+and deny-only DNS policy in each Go namespace. Require explicit TCP/UDP no-route,
+actual libc-query denial, no default IPv4 route, disabled bridge IPv6 and no new
+outside DNS arrival. A timeout or Internal configuration field alone is not proof.
+Dependent images use the explicit service build context from Docker's official
+https://docs.docker.com/compose/how-tos/dependent-images/ contract.
+
+Browser/Go startup failure collection saves bounded Docker logs and inspect
+privately before cleanup. Project only exact static stage markers from the
+sole safe-diagnostics enum, never arbitrary exception/path/body text. The shared
+factory verifies actual writer mount UID65532, mode0700, directory/non-symlink
+before key initialization. The original813 browser-product failure remains
+pre-writer-identity/unknown; added markers cannot retroactively explain it.
+
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
 pass. evidence:root/20261107083259 preserves the decoded public log and derived
@@ -78,8 +96,11 @@ nginx, Apache and language adapters; it is not a request-processing language
 adapter. Support scope does not certify an unmeasured topology or authorize an
 actual deployment. Current configuration/source and measured qualification are
 tracked separately. New orchestration and tests are Rust1.99.1/edition2024;
-Compose YAML remains configuration. Linux Docker execution belongs on free
-GitHub standard hosted runners under roadmap/delivery policy, not local Docker.
+Compose YAML remains configuration. Execution admission, local benchmark
+exceptions, resource slots and runner budgets follow roadmap/delivery policy.
+The user-authorized local/hosted timing comparison supersedes the earlier
+blanket local restriction; no lab command starts during root's quiet window.
+The current Go qualification contract still requires actual free hosted Linux.
 
 Canonical configurations are deployments/lab/compose.rust.yaml, its contextual
 witness/browser overlays and topology/sandbox.yaml. The collector component

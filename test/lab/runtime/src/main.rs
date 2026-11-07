@@ -32,6 +32,7 @@ mod witness;
 #[cfg(unix)]
 fn main() {
     match std::env::args().nth(1).as_deref() {
+        Some("--go-egress") => go::egress().expect("owned Go namespace egress control"),
         Some("--go-client-release") => {
             go::client_release().expect("independent Go client namespace release")
         }

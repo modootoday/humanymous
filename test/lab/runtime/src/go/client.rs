@@ -27,7 +27,7 @@ fn exchange(address: SocketAddr, bytes: &[u8], half_close: bool) -> Result<Vec<u
     Ok(output)
 }
 pub fn run() -> Result<()> {
-    let until = std::time::Instant::now() + Duration::from_secs(15);
+    let until = std::time::Instant::now() + Duration::from_secs(60);
     while !std::path::Path::new("/tmp/go-client-release").exists() {
         if std::time::Instant::now() >= until {
             return Err("Go independent namespace inspection release absent".into());
