@@ -409,6 +409,16 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Root accepted Tools15bin names/qualification-* and native-planner spellings,
+defaultoff qualification, default artifact ONLYhumanymous and explicit optional
+native planner. [[plan:root/20261107224511]] and tools-linkage-map.json map34roots
+to src/bin compositions/private src/qualification contexts,12exact test aliases,
+canonical shared attacker/defender files and minimal per-bin namespace wiring.
+Dead-code handling is item-reviewed, not blanket suppression/visibility widening.
+Expanded closure25external literal inputs+10manifest-relative includes exposes
+Collector implementation, mutable registry and lab/shared fixture blockers; no
+whole-input freeze/move is claimed. Root must route for X review before relocation.
+
 Tools pre-freeze exact target/private-context matrix:
 [[plan:root/20261107224511]], with attached13manifest/category bodies,34target
 roots,279tracked source/mode/hash rows,10original resource moves,123reader paths

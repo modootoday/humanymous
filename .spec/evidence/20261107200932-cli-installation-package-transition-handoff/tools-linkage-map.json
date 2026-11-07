@@ -1,0 +1,1163 @@
+{
+  "schema": "humanymous.cli-tools-linkage-map/1",
+  "observed_utc": "2026-11-08T07:56:08.936539+09:00",
+  "source_census": "tools-freeze-census.json",
+  "accepted_root_choices": "15bin names/features retained; default artifact ONLYhumanymous; explicitnative-plannerartifact only; allRustsource under src, resources rootqualification",
+  "target_rows": [
+    {
+      "old_package": "humanymous-cli",
+      "old_kind": "test",
+      "old_name": "watchdog_boundary",
+      "old_source": "crates/cli/tests/watchdog_boundary.rs",
+      "old_source_sha256": "084fa9dab254ba424f96de9fac4c80b05e05649f71a06d926c347f66d315c05f",
+      "new_target_name": "cli-watchdog-boundary",
+      "new_source": "src/qualification/tests/cli_watchdog_boundary.rs",
+      "required_features": "runtime-service-pilot,service-pilot",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-native-runner",
+      "old_kind": "bin",
+      "old_name": "humanymous-native-runner",
+      "old_source": "scripts/ci/windows-native-runner/src/main.rs",
+      "old_source_sha256": "2e085f6c557e09b8842867e9dfc2bc6c3ec39b0def86778b897479900c76ca73",
+      "new_target_name": "humanymous-native-runner",
+      "new_source": "src/bin/native_runner/main.rs",
+      "required_features": "qualification-native-runner",
+      "disposition": "retained compiled root",
+      "root_lint": "deny; exact2actorallows",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-cef-pilot",
+      "old_kind": "bin",
+      "old_name": "humanymous-cef-pilot",
+      "old_source": "scripts/ci/cef-pilot/src/main.rs",
+      "old_source_sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527",
+      "new_target_name": "humanymous-cef-pilot",
+      "new_source": "src/bin/cef_pilot/main.rs",
+      "required_features": "qualification-cef-pilot",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-runtime-pilot",
+      "old_kind": "bin",
+      "old_name": "humanymous-runtime-pilot",
+      "old_source": "test/lab/runtime/src/main.rs",
+      "old_source_sha256": "d486f77d5712bff4ada046711cb7d50fab412e4d3346df766397651392cc16a0",
+      "new_target_name": "humanymous-runtime-pilot",
+      "new_source": "src/bin/runtime_pilot/main.rs",
+      "required_features": "qualification-runtime-pilot",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-lab-runner",
+      "old_kind": "bin",
+      "old_name": "humanymous-lab-runner",
+      "old_source": "test/lab/runner/src/main.rs",
+      "old_source_sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45",
+      "new_target_name": "humanymous-lab-runner",
+      "new_source": "src/bin/lab_runner/main.rs",
+      "required_features": "qualification-lab-runner",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-pages",
+      "old_kind": "lib",
+      "old_name": "humanymous_pages",
+      "old_source": "docs/tooling/src/lib.rs",
+      "old_source_sha256": "538df6a7f851ca5c00a482e927683611e7f8ec9e5ea0e2e4b9c544e950008fbc",
+      "new_target_name": "humanymous_pages",
+      "new_source": "src/qualification/pages/mod.rs",
+      "required_features": "",
+      "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-pages",
+      "old_kind": "bin",
+      "old_name": "humanymous-pages",
+      "old_source": "docs/tooling/src/main.rs",
+      "old_source_sha256": "503c3563fa2894a08523344df195cb99b12396734472a310f0dfaf737de64b88",
+      "new_target_name": "humanymous-pages",
+      "new_source": "src/bin/pages/main.rs",
+      "required_features": "qualification-pages",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-delivery",
+      "old_kind": "bin",
+      "old_name": "humanymous-delivery",
+      "old_source": "scripts/ci/delivery/src/main.rs",
+      "old_source_sha256": "e5b028c5806b5b118a3b89207be327b7f152d03114422b9a7541751368eceb98",
+      "new_target_name": "humanymous-delivery",
+      "new_source": "src/bin/delivery/main.rs",
+      "required_features": "qualification-delivery",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "process",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "new_target_name": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "git_coord",
+      "old_source": "skills/agent-maintenance/tests/git_coord.rs",
+      "old_source_sha256": "a024ad0db93492ecba551108d39f17fea2c0ee54f5cb5d91caf19aebf3b77d75",
+      "new_target_name": "maintenance-git-coord",
+      "new_source": "src/qualification/tests/maintenance_git_coord.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "windows_doctor",
+      "old_source": "skills/agent-maintenance/tests/windows_doctor.rs",
+      "old_source_sha256": "779fbf793706966b768849fad7cd511317383b8d9e11854a5b1b9fa3c729372c",
+      "new_target_name": "maintenance-windows-doctor",
+      "new_source": "src/qualification/tests/maintenance_windows_doctor.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "product_package",
+      "old_source": "skills/agent-maintenance/tests/product_package.rs",
+      "old_source_sha256": "fb15b0d1c2318ca02037682ae7ca9ecd0a0383a1a9752f83ff58749b20e354ea",
+      "new_target_name": "maintenance-product-package",
+      "new_source": "src/qualification/tests/maintenance_product_package.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "evidence_layout_cli",
+      "old_source": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+      "old_source_sha256": "8a797816780c673d8831d6fcc030a81360bf51a7183927f1e5f02f791425f4f6",
+      "new_target_name": "maintenance-evidence-layout-cli",
+      "new_source": "src/qualification/tests/maintenance_evidence_layout_cli.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "session_storage",
+      "old_source": "skills/agent-maintenance/tests/session_storage.rs",
+      "old_source_sha256": "1343a083c917c52661aabf490fbeecc64082c52ac5341591f0445c008a9ce147",
+      "new_target_name": "maintenance-session-storage",
+      "new_source": "src/qualification/tests/maintenance_session_storage.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "selected_inputs_cli",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "old_source_sha256": "2086f49381d5e3828f5b78f842d5ff81a05e6a1382b386afb61aeeda4d750260",
+      "new_target_name": "maintenance-selected-inputs-cli",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs_cli.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "bin",
+      "old_name": "humanymous-agent-maintenance",
+      "old_source": "skills/agent-maintenance/src/main.rs",
+      "old_source_sha256": "93470fb9fe506e38b6a8d0b0f9ec8c51888012507a712c06629494107caa54c7",
+      "new_target_name": "humanymous-agent-maintenance",
+      "new_source": "src/bin/maintenance/main.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "test",
+      "old_name": "selected_inputs",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
+      "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
+      "new_target_name": "maintenance-selected-inputs",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs.rs",
+      "required_features": "qualification-maintenance",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_kind": "lib",
+      "old_name": "humanymous_agent_maintenance",
+      "old_source": "skills/agent-maintenance/src/lib.rs",
+      "old_source_sha256": "72fafe69868745cb6646774be70f8da3e89f7e73cee3d538e08d2c5c522761a1",
+      "new_target_name": "humanymous_agent_maintenance",
+      "new_source": "src/qualification/maintenance/mod.rs",
+      "required_features": "",
+      "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-cli",
+      "old_kind": "bin",
+      "old_name": "humanymous-service-fixture",
+      "old_source": "crates/cli/src/bin/service_fixture.rs",
+      "old_source_sha256": "be90a01df7aca4e229916d11f53f593cadd8994ed60ef467cdb51bc80e3749f9",
+      "new_target_name": "humanymous-service-fixture",
+      "new_source": "src/bin/service_fixture/main.rs",
+      "required_features": "service-pilot",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-cli",
+      "old_kind": "test",
+      "old_name": "runtime_service_process",
+      "old_source": "crates/cli/tests/runtime_service_process.rs",
+      "old_source_sha256": "d2dd6db5dc9b890abf532479c78632b478261f1cc8336183038b9fccc5b169fe",
+      "new_target_name": "cli-runtime-service-process",
+      "new_source": "src/qualification/tests/cli_runtime_service_process.rs",
+      "required_features": "runtime-service-pilot",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-cli",
+      "old_kind": "bin",
+      "old_name": "humanymous",
+      "old_source": "crates/cli/src/main.rs",
+      "old_source_sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "new_target_name": "humanymous",
+      "new_source": "src/main.rs",
+      "required_features": "",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-cli",
+      "old_kind": "test",
+      "old_name": "service_process",
+      "old_source": "crates/cli/tests/service_process.rs",
+      "old_source_sha256": "c2ffbc93cb212c6dc9817b61e030453b2cd918e4b0b20618fd2abe1ad0c4b005",
+      "new_target_name": "cli-service-process",
+      "new_source": "src/qualification/tests/cli_service_process.rs",
+      "required_features": "service-pilot",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-cli",
+      "old_kind": "lib",
+      "old_name": "humanymous_cli",
+      "old_source": "crates/cli/src/lib.rs",
+      "old_source_sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+      "new_target_name": "humanymous_cli",
+      "new_source": "src/lib.rs",
+      "required_features": "",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-cli",
+      "old_kind": "example",
+      "old_name": "service_evidence",
+      "old_source": "crates/cli/examples/service_evidence.rs",
+      "old_source_sha256": "1cea916877af8941fa668fe0c17e3407cd8a0aae21597b490fc31f205c9f3076",
+      "new_target_name": "cli-service-evidence",
+      "new_source": "src/qualification/examples/cli_service_evidence.rs",
+      "required_features": "",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-docs-review",
+      "old_kind": "bin",
+      "old_name": "humanymous-docs-review",
+      "old_source": "scripts/ci/docs-review/src/main.rs",
+      "old_source_sha256": "d877646260960f94ec1c1c52c83822fe970e77dbd4e759b6f07bcda33194ffe6",
+      "new_target_name": "humanymous-docs-review",
+      "new_source": "src/bin/docs_review/main.rs",
+      "required_features": "qualification-docs-review",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-native-cli",
+      "old_kind": "bin",
+      "old_name": "humanymous-native",
+      "old_source": "crates/native-cli/src/main.rs",
+      "old_source_sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "new_target_name": "humanymous-native",
+      "new_source": "src/bin/native/main.rs",
+      "required_features": "native-planner",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-native-cli",
+      "old_kind": "test",
+      "old_name": "command",
+      "old_source": "crates/native-cli/tests/command.rs",
+      "old_source_sha256": "cbb6d07e578998e71b9a8c343a5400efdbc8bbac7ea2143d5ddbd3414640f508",
+      "new_target_name": "native-command",
+      "new_source": "src/qualification/tests/native_command.rs",
+      "required_features": "native-planner",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-attacker",
+      "old_kind": "bin",
+      "old_name": "humanymous-report",
+      "old_source": "crates/attacker/src/bin/humanymous-report.rs",
+      "old_source_sha256": "a23096cd699f82384fabddfe1e79dae7ca2cc601452635569bcb0a0d8836d199",
+      "new_target_name": "humanymous-report",
+      "new_source": "src/bin/report/main.rs",
+      "required_features": "qualification-report",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-attacker",
+      "old_kind": "bin",
+      "old_name": "humanymous-attacker",
+      "old_source": "crates/attacker/src/main.rs",
+      "old_source_sha256": "a9415905b5be0967862ae5c3dbf9a9359c4acedba8f5c01012b7089048baa7d6",
+      "new_target_name": "humanymous-attacker",
+      "new_source": "src/bin/attacker/main.rs",
+      "required_features": "qualification-attacker",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-attacker",
+      "old_kind": "bin",
+      "old_name": "humanymous-wargame-verify",
+      "old_source": "crates/attacker/src/bin/humanymous-wargame-verify.rs",
+      "old_source_sha256": "d78c1f5b8694248019f94f8a3c1ced87279b3f3abe87f77bb16faa29832095e4",
+      "new_target_name": "humanymous-wargame-verify",
+      "new_source": "src/bin/wargame_verify/main.rs",
+      "required_features": "qualification-wargame-verify",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-attacker",
+      "old_kind": "lib",
+      "old_name": "humanymous_attacker",
+      "old_source": "crates/attacker/src/lib.rs",
+      "old_source_sha256": "8e2d72eb028b262cf99fae6f65c4b35b95cd077096254692b5db9465df5b2344",
+      "new_target_name": "humanymous_attacker",
+      "new_source": "src/qualification/lab_support/attacker/mod.rs",
+      "required_features": "",
+      "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-defender",
+      "old_kind": "lib",
+      "old_name": "humanymous_defender",
+      "old_source": "crates/defender/src/lib.rs",
+      "old_source_sha256": "78f5f341c4a3cf1990ba4f70692100232285c960552eb13101860c47d789cafb",
+      "new_target_name": "humanymous_defender",
+      "new_source": "src/qualification/lab_support/defender/mod.rs",
+      "required_features": "",
+      "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-native-cli",
+      "old_kind": "lib",
+      "old_name": "humanymous_native_cli",
+      "old_source": "crates/native-cli/src/lib.rs",
+      "old_source_sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+      "new_target_name": "humanymous_native_cli",
+      "new_source": "src/qualification/native/mod.rs",
+      "required_features": "",
+      "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    },
+    {
+      "old_package": "humanymous-local-parity",
+      "old_kind": "bin",
+      "old_name": "humanymous-local-parity",
+      "old_source": "scripts/ci/local-parity/src/main.rs",
+      "old_source_sha256": "c81a1aa4be0ae055f06c40cbcf9b7cde6c3816c07f083d1fbc8be77820591c7b",
+      "new_target_name": "humanymous-local-parity",
+      "new_source": "src/bin/local_parity/main.rs",
+      "required_features": "qualification-local-parity",
+      "disposition": "retained compiled root",
+      "root_lint": "forbid",
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+    }
+  ],
+  "literal_source_resource_edges": [
+    {
+      "source": "crates/attacker/src/catalog.rs",
+      "literal": "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "exists": true
+    },
+    {
+      "source": "crates/attacker/src/catalog.rs",
+      "literal": "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+      "exists": true
+    },
+    {
+      "source": "crates/attacker/src/catalog.rs",
+      "literal": "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "exists": true
+    },
+    {
+      "source": "crates/attacker/src/catalog.rs",
+      "literal": "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+      "exists": true
+    },
+    {
+      "source": "crates/attacker/src/catalog.rs",
+      "literal": "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "exists": true
+    },
+    {
+      "source": "crates/attacker/src/catalog.rs",
+      "literal": "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+      "exists": true
+    },
+    {
+      "source": "crates/attacker/src/network/cases.rs",
+      "literal": "../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "exists": true
+    },
+    {
+      "source": "crates/attacker/src/network/cases.rs",
+      "literal": "../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "resolved": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "exists": true
+    },
+    {
+      "source": "crates/native-cli/tests/command.rs",
+      "literal": "../src/test_support.rs",
+      "resolved": "crates/native-cli/src/test_support.rs",
+      "exists": true
+    },
+    {
+      "source": "docs/tooling/src/vectors/mod.rs",
+      "literal": "../../../standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
+      "resolved": "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/cef-pilot/src/desktop.rs",
+      "literal": "../../../../crates/browser/native/desktop/pilot-contract.json",
+      "resolved": "crates/browser/native/desktop/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/components/maintenance.rs",
+      "literal": "../../../../../skills/agent-maintenance/qualification-contract.json",
+      "resolved": "skills/agent-maintenance/qualification-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/components/node_host.rs",
+      "literal": "../../../../../adapters/node/host-pilot-contract.json",
+      "resolved": "adapters/node/host-pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/go_product.rs",
+      "literal": "../../../../test/lab/runner/go-public-receipts.json",
+      "resolved": "test/lab/runner/go-public-receipts.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/go_product.rs",
+      "literal": "../../../../adapters/go/pilot-contract.json",
+      "resolved": "adapters/go/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/go_product.rs",
+      "literal": "../../../../test/lab/runner/safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/header_proof.rs",
+      "literal": "../../../../adapters/native/header-proof-profile.json",
+      "resolved": "adapters/native/header-proof-profile.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+      "literal": "../../../../../adapters/native/header-proof-profile.json",
+      "resolved": "adapters/native/header-proof-profile.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/header_proof/admission.rs",
+      "literal": "../../../../../adapters/native/header-proof-profile.json",
+      "resolved": "adapters/native/header-proof-profile.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "literal": "../../../../test/lab/browser_outcome.rs",
+      "resolved": "test/lab/browser_outcome.rs",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "literal": "../../../../test/lab/runner/safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "literal": "../../../../test/lab/runner/browser-outcome-contract.json",
+      "resolved": "test/lab/runner/browser-outcome-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/lab_receipts.rs",
+      "literal": "../../../../test/lab/runner/public-receipts.json",
+      "resolved": "test/lab/runner/public-receipts.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/mount_probe.rs",
+      "literal": "../../../../test/lab/runner/mount-probe-contract.json",
+      "resolved": "test/lab/runner/mount-probe-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/nginx.rs",
+      "literal": "../../../../adapters/nginx/pilot-contract.json",
+      "resolved": "adapters/nginx/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/nginx.rs",
+      "literal": "../../../../adapters/nginx/pilot-contract.json",
+      "resolved": "adapters/nginx/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/delivery/src/policy.rs",
+      "literal": "../../../../adapters/native/header-proof-profile.json",
+      "resolved": "adapters/native/header-proof-profile.json",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/windows-native-runner/src/actor/prebuilt.rs",
+      "literal": "prebuilt/tests.rs",
+      "resolved": "scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs",
+      "exists": true
+    },
+    {
+      "source": "scripts/ci/windows-native-runner/src/main.rs",
+      "literal": "actor/prebuilt.rs",
+      "resolved": "scripts/ci/windows-native-runner/src/actor/prebuilt.rs",
+      "exists": true
+    },
+    {
+      "source": "skills/agent-maintenance/src/evidence_layout/tests.rs",
+      "literal": "../../tests/support/layout_request.rs",
+      "resolved": "skills/agent-maintenance/tests/support/layout_request.rs",
+      "exists": true
+    },
+    {
+      "source": "skills/agent-maintenance/src/language.rs",
+      "literal": "../../../.agents/evals/language-preservation.json",
+      "resolved": ".agents/evals/language-preservation.json",
+      "exists": true
+    },
+    {
+      "source": "skills/agent-maintenance/src/language.rs",
+      "literal": "../../../.agents/sessions/THREADS.md",
+      "resolved": ".agents/sessions/THREADS.md",
+      "exists": true
+    },
+    {
+      "source": "skills/agent-maintenance/src/language.rs",
+      "literal": "../../../.agents/sessions/THREADS.md",
+      "resolved": ".agents/sessions/THREADS.md",
+      "exists": true
+    },
+    {
+      "source": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+      "literal": "support/layout_request.rs",
+      "resolved": "skills/agent-maintenance/tests/support/layout_request.rs",
+      "exists": true
+    },
+    {
+      "source": "skills/agent-maintenance/tests/git_coord.rs",
+      "literal": "../../../scripts/agents/git-coord.ps1",
+      "resolved": "scripts/agents/git-coord.ps1",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/fixture.rs",
+      "literal": "../../dns_wire.rs",
+      "resolved": "test/lab/dns_wire.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/fixture/mount.rs",
+      "literal": "../../mount-probe-contract.json",
+      "resolved": "test/lab/runner/mount-probe-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/main.rs",
+      "literal": "../../browser_expectations.rs",
+      "resolved": "test/lab/browser_expectations.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/main.rs",
+      "literal": "../../browser_outcome.rs",
+      "resolved": "test/lab/browser_outcome.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/main.rs",
+      "literal": "../../browser_wire.rs",
+      "resolved": "test/lab/browser_wire.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/main.rs",
+      "literal": "../../mount_policy.rs",
+      "resolved": "test/lab/mount_policy.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration.rs",
+      "literal": "../safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "literal": "../../browser-outcome-contract.json",
+      "resolved": "test/lab/runner/browser-outcome-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "literal": "../../../../../crates/collector/pilot/fixture.json",
+      "resolved": "crates/collector/pilot/fixture.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "literal": "../../../../../../crates/collector/src/browser/transport/runtime_pilot.rs",
+      "resolved": "crates/collector/src/browser/transport/runtime_pilot.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "literal": "../../../safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/browser_failure/panic_site/bootstrap.rs",
+      "literal": "../../../../safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/go_public.rs",
+      "literal": "../../go-public-receipts.json",
+      "resolved": "test/lab/runner/go-public-receipts.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/go_public.rs",
+      "literal": "../../../../../adapters/go/pilot-contract.json",
+      "resolved": "adapters/go/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/go_public.rs",
+      "literal": "../../safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/go_public.rs",
+      "literal": "../../../../../adapters/go/pilot-contract.json",
+      "resolved": "adapters/go/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/go_public.rs",
+      "literal": "../../../../../adapters/go/pilot-contract.json",
+      "resolved": "adapters/go/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "literal": "../../../mount-probe-contract.json",
+      "resolved": "test/lab/runner/mount-probe-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "literal": "../../../../../../deployments/lab/images/product.Dockerfile",
+      "resolved": "deployments/lab/images/product.Dockerfile",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "literal": "../../../safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/public_receipts.rs",
+      "literal": "../../public-receipts.json",
+      "resolved": "test/lab/runner/public-receipts.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runner/src/orchestration/startup_failure.rs",
+      "literal": "../../safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/browser_proxy.rs",
+      "literal": "../../../../crates/collector/pilot/fixture.json",
+      "resolved": "crates/collector/pilot/fixture.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/browser_proxy.rs",
+      "literal": "../../browser-wire-contract.json",
+      "resolved": "test/lab/browser-wire-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/go/backend.rs",
+      "literal": "../../../../../adapters/go/pilot-contract.json",
+      "resolved": "adapters/go/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/go/mod.rs",
+      "literal": "../../../go-configuration.json",
+      "resolved": "test/lab/go-configuration.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/go/mod.rs",
+      "literal": "../../../../../adapters/go/pilot-contract.json",
+      "resolved": "adapters/go/pilot-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/main.rs",
+      "literal": "../../browser_expectations.rs",
+      "resolved": "test/lab/browser_expectations.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/main.rs",
+      "literal": "../../dns_wire.rs",
+      "resolved": "test/lab/dns_wire.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/runtime/src/main.rs",
+      "literal": "../../mount_policy.rs",
+      "resolved": "test/lab/mount_policy.rs",
+      "exists": true
+    },
+    {
+      "source": "test/lab/browser_outcome.rs",
+      "literal": "runner/browser-outcome-contract.json",
+      "resolved": "test/lab/runner/browser-outcome-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/browser_expectations.rs",
+      "literal": "../../crates/collector/pilot/fixture.json",
+      "resolved": "crates/collector/pilot/fixture.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/browser_wire.rs",
+      "literal": "browser-wire-contract.json",
+      "resolved": "test/lab/browser-wire-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/browser_wire.rs",
+      "literal": "browser-wire-contract.json",
+      "resolved": "test/lab/browser-wire-contract.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/browser_wire.rs",
+      "literal": "runner/safe-diagnostics.json",
+      "resolved": "test/lab/runner/safe-diagnostics.json",
+      "exists": true
+    },
+    {
+      "source": "test/lab/browser_wire.rs",
+      "literal": "../../crates/collector/pilot/fixture.json",
+      "resolved": "crates/collector/pilot/fixture.json",
+      "exists": true
+    },
+    {
+      "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
+      "literal": "../../../pilot/fixture.json",
+      "resolved": "crates/collector/pilot/fixture.json",
+      "exists": true
+    }
+  ],
+  "additional_external_inputs": [
+    {
+      "path": ".agents/evals/language-preservation.json",
+      "sha256": "4b4314e94f1862b10bdb7e59e47966e5eb5032a821dc402a11e5f58517fab406",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": ".agents/sessions/THREADS.md",
+      "sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "adapters/go/pilot-contract.json",
+      "sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "adapters/native/header-proof-profile.json",
+      "sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "adapters/nginx/pilot-contract.json",
+      "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "adapters/node/host-pilot-contract.json",
+      "sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/browser/native/desktop/pilot-contract.json",
+      "sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/collector/pilot/fixture.json",
+      "sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
+      "sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+      "sha256": "04eb9bd2a02d70ea1dd7796c8128ef03b2cc10f41bcafb97d91c61873ef264b2",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+      "sha256": "5fd5941b45ee6a43a113a91c132f5928a93bdaedc5f1fb447e13e3eca11a0725",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+      "sha256": "3a8474c8e3de9dd33d56a470ec79a20743b184699401c6311720f2af38be2236",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "deployments/lab/images/product.Dockerfile",
+      "sha256": "b37a448b1b05e020a17e5c41699a2ae981cbcb18be81b194e093d2cb2ab84d9b",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
+      "sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "scripts/agents/git-coord.ps1",
+      "sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+      "proposed_owner": "owning resource/provider decision required",
+      "copied": false
+    },
+    {
+      "path": "test/lab/browser_expectations.rs",
+      "sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439",
+      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
+      "copied": false
+    },
+    {
+      "path": "test/lab/browser_outcome.rs",
+      "sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
+      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
+      "copied": false
+    },
+    {
+      "path": "test/lab/browser_wire.rs",
+      "sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d",
+      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
+      "copied": false
+    },
+    {
+      "path": "test/lab/browser-wire-contract.json",
+      "sha256": "42eb19cdbd7ba1cd2b419467ceb6c0d2c2c25da6a9a0140093797a496a56a151",
+      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
+      "copied": false
+    },
+    {
+      "path": "test/lab/dns_wire.rs",
+      "sha256": "0717cf28f759cf26b9b37183faa23148f7eb2d222977edfd21bef291cec403b1",
+      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
+      "copied": false
+    },
+    {
+      "path": "test/lab/go-configuration.json",
+      "sha256": "bc85c6380b1369fd43ea5ce75f1ea591e53d6315b32f1e5946711cbb5a026ff8",
+      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
+      "copied": false
+    },
+    {
+      "path": "test/lab/mount_policy.rs",
+      "sha256": "0038b94c599bc4f19b382c9e19fcefdfbd8b2b4d6191317083a5e8ddc63fc3eb",
+      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
+      "copied": false
+    }
+  ],
+  "unresolved_reader_expressions": [
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "literal": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/../SKILL.md\"));",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/registry.rs",
+      "literal": "include_str!(concat!(",
+      "reason": "nonliteral include requires bounded owner resolution"
+    }
+  ],
+  "moves": false,
+  "compiler": false,
+  "manifest_relative_include_resolution": [
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "original_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/../SKILL.md\"))",
+      "resolved": "skills/SKILL.md",
+      "sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/installation.md\"\n                ))",
+      "resolved": "skills/references/installation.md",
+      "sha256": "d61688100b9c0db630306ab0f9a27fd490b8ac1780131f88352fb13379e68c6d",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/operations.md\"\n                ))",
+      "resolved": "skills/references/operations.md",
+      "sha256": "015642b84019e645684372330547d24b487eef9882b372cf8eee5054b5ef100c",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/adapters.md\"\n                ))",
+      "resolved": "skills/references/adapters.md",
+      "sha256": "6e2cc2ad417c8d441df6a8ccac9f891c464b89554b7dfc2e21629d3572ee366d",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/product.rs",
+      "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/qualification.md\"\n                ))",
+      "resolved": "skills/references/qualification.md",
+      "sha256": "85ba9bf8901016fc4bb970de693e15d71825ceb1a961e44ee5964b0e5f5e7eff",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "original_expression": "include_str!(concat!(\n            env!(\"CARGO_MANIFEST_DIR\"),\n            \"/../../.agents/sessions/lanes.json\"\n        ))",
+      "resolved": ".agents/sessions/lanes.json",
+      "sha256": "78c8790146ffc26fd69bf35684b826a78cc88a064f3e070f2b15a72a852261d7",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "original_expression": "include_str!(concat!(\n                env!(\"CARGO_MANIFEST_DIR\"),\n                \"/../../.agents/sessions/LANES.md\"\n            ))",
+      "resolved": ".agents/sessions/LANES.md",
+      "sha256": "b9f7d292a34c3cb0c1aedc9567fd64197cd9b13544b4dd5ed442aaf9b00c9b50",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "original_expression": "include_str!(concat!(\n                env!(\"CARGO_MANIFEST_DIR\"),\n                \"/../../scripts/agents/session-board.ps1\"\n            ))",
+      "resolved": "scripts/agents/session-board.ps1",
+      "sha256": "093e01174eb444249f9c1ea05f992e66fade9cc8693fd75225a278071c501304",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "original_expression": "include_str!(concat!(\n                env!(\"CARGO_MANIFEST_DIR\"),\n                \"/../../scripts/agents/session-board.sh\"\n            ))",
+      "resolved": "scripts/agents/session-board.sh",
+      "sha256": "6abeff6d9fe14364aec3025e24d89de948848d5066a7ca2fc199830e88b7e058",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    },
+    {
+      "source": "skills/agent-maintenance/src/sessions/registry.rs",
+      "original_expression": "include_str!(concat!(\n            env!(\"CARGO_MANIFEST_DIR\"),\n            \"/../../.agents/sessions/THREADS.md\"\n        ))",
+      "resolved": ".agents/sessions/THREADS.md",
+      "sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+    }
+  ],
+  "closure_status": "NOT_FROZEN: all34roots mapped;25literal external inputs+10resolvedmanifest expressions require owner disposition; registry embeds and Collector implementation path remain blockers"
+}

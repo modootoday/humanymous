@@ -3,7 +3,7 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T22:48:20Z
+updated: 2026-11-07T22:59:05Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
@@ -13,6 +13,7 @@ files:
   - {path: runtime-slice02-formatted.json, sha256: 0583ceb99f97c8d2f2ffa2449220df0ab73cca3371cc44a32cc88bc05ab7a48e, bytes: 4763, store: repo}
   - {path: tools-freeze-census.json, sha256: 7e7765d28b232f5760235c715fd7dfe29dc2ca93efed12d12d0f702502e23cce, bytes: 111913, store: repo}
   - {path: tools-source-readers.json, sha256: d6f6e022d7991cad3d4a65da7c87e6ee861c1cca9a2400728ec392db69cc1f12, bytes: 22007, store: repo}
+  - {path: tools-linkage-map.json, sha256: 790cef2d9f3a8e8bfcd34a20e86afb65c3afd770884184606c97e270514671b9, bytes: 52633, store: repo}
 ---
 
 ## Mission and current ownership
@@ -69,6 +70,22 @@ qualification/resource ownership rules apply; final feature spellings/paths and
 the five retired-lib private shared contexts remain explicit Root decisions.
 No new public tool APIs, helper crates, source copies, moves or compile proof are
 introduced. This census is read-only, pre-freeze and not Cargo metadata authority.
+
+tools-linkage-map.json now maps all34old roots to standard-src targets or private
+contexts, exact proposed test aliases/minimal selectors and required lints. Root
+accepted15bin names, qualification-* and native-planner spellings/default-off,
+default release ONLYhumanymous and explicit native-planner artifact policy.
+Canonical shared attacker/defender source is src/qualification/lab_support; bins
+link the same files with reviewed in-package path modules, not copies or lib
+exports. The plan specifies each bin's minimal modules and per-warning dead-code
+review; existing public tool namespaces may remain binary-only without exposing
+new private capability fields. No blanket lint suppressions are proposed.
+
+The expanded source reader review found25literal external inputs plus10resolved
+manifest-relative includes. Collector implementation path, shared lab files,
+mutable registry embeds, frozen Core/Collector replicas and remaining dynamic
+repository readers need Root/owner dispositions. Whole34root+resource closure is
+NOT_FROZEN. Root must route this detailed mapping for X review before any move.
 
 Root-approved lint-isolation amendment d45e600d is now part of this handoff.
 tools-role-map.json records all13absorbed responsibilities: the9workspace roles
