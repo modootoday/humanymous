@@ -1,0 +1,83 @@
+{
+  "schema": "humanymous.pages-test-support-review/1",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/test-support/Cargo.toml",
+      "lines": 15,
+      "sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a",
+      "current_sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete15-line shared unpublished test-support manifest with serde/serde_json only. No additional process-control dependency or production supervisor qualification.",
+      "pages": [
+        "docs/explanation/how-this-was-built.md"
+      ]
+    },
+    {
+      "source": "crates/test-support/src/lib.rs",
+      "lines": 101,
+      "sha256": "d4b8db892b57b5079d8acbcf37b0705d1f281428b066a479baf67c85d03190f1",
+      "current_sha256": "c452fc623e9ab67d11745d6b3866c49283957796347f7173cf27365d4b795bac",
+      "current_matches_fixed": false,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete101-line JSON equivalence assertion preserves object keys, omission/null, array order and exact integer distinctions; integral float spelling comparison avoids rounding large integer identities. Test assertion is not a canonical signature encoding or semantic protocol validator.",
+      "pages": [
+        "docs/explanation/how-this-was-built.md"
+      ]
+    },
+    {
+      "source": "crates/test-support/INTEGRATION.md",
+      "lines": 46,
+      "sha256": "58a46bce98e82b2a4e1849fa054c9a9ac2330ccfcf18357fd943db8c51cceded",
+      "current_sha256": "b7a97e568e7ab5eccd018ac11caa0abd4dae4e6b91d36e139b21104886b5bf78",
+      "current_matches_fixed": false,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete46-line helper chronology: direct-child kill/reap and caller-owned descendant group, private outputs, interactive protocol framing/timeouts owned by caller, WASM process cfg and separate shared JSON source/result scopes. Historical9process tests and later2pure JSON cases are not one all-current run.",
+      "pages": [
+        "docs/explanation/how-this-was-built.md"
+      ]
+    },
+    {
+      "source": "crates/test-support/src/json.rs",
+      "lines": 143,
+      "sha256": "16e47a333700e2b084e81f7012c1d5d523695a59b1454d21f5db8157beaa9656",
+      "current_sha256": "16e47a333700e2b084e81f7012c1d5d523695a59b1454d21f5db8157beaa9656",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete143-line bounded unique-decoded-key JSON visitor: byte budget before parse, nested/escaped duplicate rejection, serde nesting limit, integer precision, static non-echoing errors and trailing/UTF8/number refusal. Consumer schema, unknown fields, replay/authentication remain outside this syntax helper.",
+      "pages": [
+        "docs/explanation/how-this-was-built.md"
+      ]
+    },
+    {
+      "source": "crates/test-support/src/process.rs",
+      "lines": 355,
+      "sha256": "5a000856ac6d6e02fecc5a5162ea307d8513aa95890d8740a0b6088c14530937",
+      "current_sha256": "6b1edaf2f60f300fd5025009ee44c580f438e8aa73c406e67ce751dcaeb164cb",
+      "current_matches_fixed": false,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete355-line direct ManagedChild/Captured helper: hidden Windows console, bounded private startup payload, concurrent capped streams, observed PID/status, readiness/wait deadlines and RAII kill/wait. Duplex caller owns framing/deadline/close; descendants/jobs and inherited pipe EOF are not generally contained. Startup input uses synchronous write, so no arbitrary blocking preemption is inferred. Process fixture helper ignores require actual parent execution; no new OS test ran here.",
+      "pages": [
+        "docs/explanation/how-this-was-built.md"
+      ]
+    },
+    {
+      "source": "crates/test-support/src/docker.rs",
+      "lines": 281,
+      "sha256": "97c9f53b2e89ac5a6966c0f9383e82eefae2ffcace841ae1a7977a128621d9e8",
+      "current_sha256": "97c9f53b2e89ac5a6966c0f9383e82eefae2ffcace841ae1a7977a128621d9e8",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete281-line pure caller-observation comparison: requires explicit Desktop context/endpoint/Linux/version/ID or explicit allocated SDK/CLI host and matching actually supplied server observation. Does not query engines or authenticate caller provenance. Public summary contains comparison facts only; raw ServerIdentity belongs in private evidence. Static negative tests do not prove actual engine connection or execution.",
+      "pages": [
+        "docs/explanation/how-this-was-built.md"
+      ]
+    }
+  ],
+  "full_read_files": 6,
+  "lines": 941,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; no new helper execution or blanket receipt renewal",
+  "evidence_projection_correction": "Two own public Pages execution summaries now omit raw engine ID, retaining observed comparison facts. Exact originals preserved under private evidence:root/20261107051213; no Git history rewrite."
+}

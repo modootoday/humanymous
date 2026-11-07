@@ -3,7 +3,6 @@
   "source_commit": "269607366e4b2e37b47a974595b406b66642caae",
   "docs_tree": "56b1e029952b5a3b29d4b0d056671bc79110e43b",
   "image": "caddy:2.11.9-alpine@sha256:fc9cbc100585871d18d4e451cca7021785c90a7006087427ae5ceb3e4efe6424",
-  "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
   "context": "desktop-linux",
   "admission": {
     "committed_percent": 79.78,
@@ -62,5 +61,8 @@
   },
   "public_source_review_complete": false,
   "deployment_performed": false,
-  "remaining_observation": "Implementation status page still contains older build and TLS execution wording; exact-source editorial reconciliation remains pending. Preview evidence applies only to the named source."
+  "remaining_observation": "Implementation status page still contains older build and TLS execution wording; exact-source editorial reconciliation remains pending. Preview evidence applies only to the named source.",
+  "engine_identity_matches_build_observation": true,
+  "authenticated_engine_provenance": false,
+  "private_identity_evidence": "evidence:root/20261107051213"
 }

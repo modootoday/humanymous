@@ -6,12 +6,14 @@
     "server_version": "29.9.2",
     "context": "desktop-linux",
     "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
-    "server_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
     "credential_store": "desktop",
     "scoped_path_corrected": true,
     "os": "linux",
     "helper": "C:/Program Files/Docker/Docker/resources/bin/docker-credential-desktop.exe",
-    "executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe"
+    "executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe",
+    "engine_identity_observed": true,
+    "authenticated_provenance": false,
+    "private_identity_evidence": "evidence:root/20261107051213"
   },
   "admission": {
     "available_gib": 32.88,

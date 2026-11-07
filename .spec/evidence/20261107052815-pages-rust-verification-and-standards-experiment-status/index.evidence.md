@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T12:44:18Z
+updated: 2026-11-07T12:48:06Z
 rel:
   governs: [docs]
 files:
@@ -60,10 +60,8 @@ files:
   - {path: runtime-reference-correction-status.json, sha256: fcb4270df829fda6a04176567f84af9d4b5ae473f20627e0e6433ef48b3fb895, bytes: 1536, store: repo}
   - {path: fixed-candidate-26960736-review-delta.json, sha256: 92b26b4cfc9382ae6e45cbeeac3a993ff2b0e27dd3414fe7eb851bd0e8fa25c6, bytes: 1202, store: repo}
   - {path: local-desktop-preview-plan.json, sha256: 58185fa583b5581abd376ca61e914821071db03b38b5a88b1162da3660443fc3, bytes: 9900, store: repo}
-  - {path: local-ruby-desktop-build-result.json, sha256: 6ceb35215716df78028f67fdfb95b3d76c56306126c4ef2e0ae851430b515852, bytes: 5331, store: repo}
   - {path: local-rust-archive-verification.json, sha256: 2606a8c6b33c8ad2e9253254b9ff377836dc72918f4af8e3307a917ad83f5414, bytes: 1852, store: repo}
   - {path: fixed-control-service-fixture-source-review-batch.json, sha256: ad0ed6ec70d30506bc0a8e00b855230786b1648665c5ea89be9595852d7b4d31, bytes: 3065, store: repo}
-  - {path: local-desktop-preview-result.json, sha256: ee5ebd09c82d5cf166adb739059394ce40897a761e9e2f5f71c5fe0bd2adb053, bytes: 2515, store: repo}
   - {path: fixed-26960736-review-tasks.json, sha256: 9c08424b7ada5550fc025f3eafd9128ae8ff91e0b4fe41544586774326f068c9, bytes: 175473, store: repo}
   - {path: fixed-runtime-entry-inventory-source-review-batch.json, sha256: d3ca5458af13ff581920ffdff5bc2239e9e9fc0f850891820bd24a038600dbfa, bytes: 3305, store: repo}
   - {path: fixed-runtime-fixture-source-review-batch.json, sha256: 70d3ea9c0352d4f18c396604689283948a7f6077dad6764e4db10d81f031f982, bytes: 5330, store: repo}
@@ -78,6 +76,9 @@ files:
   - {path: fixed-native-cli-image-source-review-batch.json, sha256: a66c6cee95ca52cd008fb5dab6f6ccfd2d9ef065c5d90f355fac701708d41625, bytes: 3197, store: repo}
   - {path: current-image-and-native-security-chronology-review.json, sha256: f680d8ca12b13723cc7694a730989dee1e20804cdc8d81b189e17f0ff386e1ff, bytes: 1689, store: repo}
   - {path: integrity-security-node-review-acceptance.json, sha256: 735d9f34467898283439ce488d2c9db407c76a6fdf3f22d8677c2bdd9f9c2499, bytes: 36340, store: repo}
+  - {path: local-ruby-desktop-build-result.json, sha256: 37ea433537dbed2f6a79d128d0eb5c3f2d208997437531fb7c99cbde5aa45a67, bytes: 5416, store: repo}
+  - {path: local-desktop-preview-result.json, sha256: 9c9f48d97d8077f0fb09b2b239dda289bbcb07b33a544131ac335ef232bcbec9, bytes: 2620, store: repo}
+  - {path: fixed-test-support-source-review-batch.json, sha256: b7dde2ecff17608085b2186b65ba7663131886452d739c98e34dbf8c0230ff3e, bytes: 5092, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
