@@ -647,5 +647,32 @@
     "CA_HANDOFF_closed": false,
     "global_lifetime_closed": false,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_temporal_authorization_live_tree": {
+    "private_review_sha256": {
+      "signal-provenance-matrix-008.json": "ef89a41fa9bf86859b7810d85482e14f05e4911a78caf366d7a28282334a97ac",
+      "authority-public-authorization-source-review-001.json": "cb914bcdfdbeadb3e160184382cd0493ed2fb46b2b314c0072831bafe7b619c3",
+      "authority-public-authorization-source-review-002.json": "73e568263fbb556538c5fa658ae0a20d3425b9acca2dd86a543b7ddf2d8a945d",
+      "tracked-tree-source-policy-reaudit-001.json": "6a9ea0b3c188b46367bad3afe62bd394bf18620676a04566bd128066c98837cf"
+    },
+    "signal_registry_rows": 143,
+    "pure_signal_producer_rows_reviewed": 95,
+    "additional_identifier_only_classifiers": 2,
+    "all_signal_semantic_trace_complete": false,
+    "authority_kernel_source_reviewed": true,
+    "authority_actual_tests_executed_by_auditor": 0,
+    "authority_remainder_gate_source_corrected": true,
+    "authority_golden_vectors_fixed": false,
+    "native_authority_qualified": false,
+    "live_inventory_source": "bd2e4469922fec9f3ab4f4b348b3dee68e7779a4",
+    "live_tracked_paths": 2861,
+    "live_rust_paths": 798,
+    "live_cargo_manifests": 45,
+    "live_csharp_paths": 3,
+    "AM_paths_since_original_baseline": 462,
+    "foreign_extension_AM_paths": 0,
+    "selected_text_git_blob_CR_paths": 0,
+    "original_baseline_replaced": false,
+    "new_audit_compiler_runtime_workloads": 0
   }
 }

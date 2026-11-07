@@ -582,3 +582,39 @@ No unit or actual host cases ran. The later app-borrow correction is source-only
 and not covered by that failed run. CA-HANDOFF and global CA-LIFETIME remain OPEN.
 Private hashes are retained in baseline.json; no audit compiler/runtime workload
 was executed and the full migration audit remains active.
+## Temporal producers, public authorization and tracked-tree re-audit
+
+Matrix008 adds five traffic and four correlation Signal producers, bringing
+source-reviewed pure producer rows to95 of143 registry rows. Two HTTP2 FrameMonitor
+identifier classifiers are recorded separately: they return identifiers, not
+Signal objects or validated HTTP2/native enforcement. Temporal history/fleet counts
+and Source::Server metadata remain supplied DATA, not authenticated transport,
+healthy coverage or empirical tell proof. Disabled order/permutation/ALPN rules
+remain absent, velocity remains weight-zero, and actual per-ID attribution and
+historical semantic SoT recovery remain incomplete.
+
+Authority778ef36b/06c3b4c6 public authorization DATA source review confirms bounded
+record/Hello parsing, checked offsets/EOF, closed canonical Hello encoding,
+strict Ed25519 verification, domain/complete-artifact/expected-data linkage,
+immutable validated scope snapshot and checked lifetime/cap comparisons. This is
+not native provenance, one-claim consumption, original-clock, process/token rights,
+retained cleanup or Ready qualification. No P0/P1 is confirmed in this bounded
+review; compilation and actual regression evidence remain separate.
+
+Two named prequalification test gaps were sent to Authority. The owner worktree
+candidate now covers nine valid name combinations and every permitted binary
+length remainder with positive Hello verification and exhaustive unused-bit
+negatives; Commit remains fixed275bytes/remainder2. The error description now
+limits noncanonical claims to Ed25519 R/S, without claiming an independent
+canonical-A check. These corrections are source-reviewed, NOTRUN. Fixed literal
+min/max golden bytes/signatures/commitments remain OPEN: the current test prints
+derived vectors and is not yet a frozen golden assertion.
+
+A separate live tracked-tree scan binds bd2e4469:2861paths/798Rust/45Cargo manifests
+and the same three C# exception paths. All462 added/modified paths since original
+baseline contain zero foreign executable filename extensions. Selected tracked
+Rust/config/document Git blobs contain zero CR matches. This filename/text scan
+proves neither absence of executable foreign strings/templates nor worktree,
+untracked, generated, runtime or semantic conformance. Immutable original baseline
+counts remain unchanged. Private source hashes are in baseline.json; no compiler,
+SDK/native, Docker or runtime workload was executed and the full goal stays active.
