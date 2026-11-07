@@ -1533,3 +1533,26 @@ Runtime5a52dfab resolves the earlier four registration errors. The observed publ
 spec state is284documents/0errors/9historical moved-governs warnings, not a clean
 completed migration candidate. Root is still relocating paths; audit touched only
 owned records. Exact private hashes are bound in baseline.json; full goal stays OPEN.
+## Runtime working-candidate contract/data preparation
+
+Read-only preliminary review of Root's live Runtime move compares279 mapping
+records: six manifests to merge and273 source/data destinations. Of22 data/docs/
+license destinations,21 preserve the original SHA256. The changed Gateway
+qualification contract intentionally becomes schema0.2: all98 common and Unix
+extra names match after removing gateway::, platform counts remain98/102,
+required ignored remains zero and full_product_qualified remains false. Its
+explicit gateway context filter permits only other-context names to be filtered;
+all Gateway selected names and zero-filter integration remain mandatory. Other
+Runtime contexts remain required in whole qualification. Readers must bind the
+complete inventory and new schema/path/target rather than treat a missing old
+global filtered-count field as a waiver.
+
+Spotchecks of accepted Audit visibility dispositions find ErasurePermit::issued
+and storage capabilities Audit-only, bound_to/authorizes keys-only and retained
+state checked control-only, with private permit fields. This is not a complete
+visibility inventory or forbidden-construction compiler proof. Root is still
+rewiring the candidate; metadata and working-tree pure summaries are not an
+immutable whole Runtime qualification. Final frozen map, source-bound inventory,
+privacy/feature/extracted-package/native-helper and full graph/product gates stay
+OPEN. Audit made no source/compiler/process changes. The private preparation
+hash is bound in baseline.json and must be superseded by final candidate review.

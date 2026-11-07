@@ -1677,5 +1677,15 @@
     "spec": "Prior4Runtimeindexerrorsresolved after5a52dfab; current284/0errors/9historicalmovedgovernswarnings, not clean completed candidate",
     "goal_complete": false,
     "final_spec_observation": "285documents/0errors/9historicalmovedgovernswarnings --no-local"
+  },
+  "followup_runtime_live_contract_data_preparation": {
+    "private_review": ".spec.local/root/evidence/20261107143000-convention-audit/runtime-live-contract-and-data-preparation-001.json",
+    "sha256": "df565323ed4cad9c21c783f998bbd9d3637a6118a628216aa71b69d079ffe108",
+    "scope": "Working candidate read-only preparation only, not frozen/immutable candidate qualification",
+    "data": "279mapped records=6manifests+273files;22data/docs21byteequal, qualificationcontract rewritten explicitly",
+    "contract": "v0.2 retains98common andUnixextra names aftergatewayprefix normalization, platformcounts/ignored0/fullproductfalse; contextfilter requires fullinventory selectednamesexact; integrationzero filtered",
+    "visibility": "AcceptedAudit table spotchecks context/keys/control scopes correct; no full inventory or negative compile proof",
+    "remaining": "Frozenmap, source-bound final inventory, compiler privacy/feature/normalpackage/extracted/native/helper/all366Runtime/wholegraph/product",
+    "goal_complete": false
   }
 }
