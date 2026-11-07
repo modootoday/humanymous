@@ -7,6 +7,29 @@ from windows import manifest_from_messages, verify_results
 
 
 class CoverageTests(unittest.TestCase):
+    def test_custody_helpers_require_exact_parent_and_child_proof(self):
+        names = ['child_lock_probe', 'child_interrupted_writer', 'competing_process_cannot_load_or_create', 'process_exit_releases_lock_and_rotation_pending_requires_recovery']
+        listing = ''.join(name + ': test\n' for name in names)
+        log = ('test child_lock_probe ... ignored, subprocess\n'
+               'test child_interrupted_writer ... ignored, subprocess\n'
+               'test child_lock_probe ... ok\n'
+               'test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out\n'
+               'test competing_process_cannot_load_or_create ... ok\n'
+               'test process_exit_releases_lock_and_rotation_pending_requires_recovery ... ok\n'
+               'test result: ok. 2 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out\n')
+        entry = {'executable': 'a', 'package_id': 'path+file:///audit#humanymous-audit@0.1.0', 'target': 'key_custody', 'kind': ['test']}
+        result = self.check(listing, log, manifest=[entry])
+        self.assertEqual((result['passed_tests'], result['ignored_tests'], result['ignored_helpers']), (2, 2, 2))
+        for bad in [log.replace('test child_lock_probe ... ok\n', ''),
+                    log.replace('test competing_process_cannot_load_or_create ... ok\n', ''),
+                    log.replace('child_interrupted_writer', 'unknown_helper'),
+                    log.replace('3 filtered out', '2 filtered out'),
+                    log + 'test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\n']:
+            with self.subTest(log=bad), self.assertRaises(RuntimeError):
+                self.check(listing, bad, manifest=[entry])
+        with self.assertRaises(RuntimeError):
+            self.check(listing, log, manifest=[{**entry, 'package_id': 'unrelated'}])
+
     def test_manifest_ignores_non_test_artifacts_and_deduplicates(self):
         item = {"reason": "compiler-artifact", "profile": {"test": True}, "executable": "a.exe", "package_id": "pkg", "target": {"name": "a", "kind": ["bin"]}}
         rows = manifest_from_messages('\n'.join(map(json.dumps, [item, item, {"reason": "build-finished", "success": True}])))

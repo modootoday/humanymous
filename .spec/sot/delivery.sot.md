@@ -217,3 +217,18 @@ and live account setup are pending. Implementation acceptance requires
 cross-OS/pilot evidence, negative tests for the read-only freshness verifier,
 locked source/site checks and a controlled OIDC release demonstration after
 the product migration and account bootstrap prerequisites are met.
+
+
+## Native probe subprocess-helper accounting
+
+The audit key_custody harness has two explicitly ignored subprocess entry points,
+not omitted product tests. Native Windows coverage must retain the exact Cargo
+executable hash and distinguish required parent tests from these helpers. Accept
+only the registered child_lock_probe and child_interrupted_writer in the audit
+package/test target, with both matching parent tests passed, the lock helper's
+actual nested successful summary and no unknown ignored/filtered tests. Report
+ignored_helpers separately and preserve raw ignored_tests; never relabel them as
+zero or count the nested child summary as an additional parent test. Any unknown
+helper, missing parent/child proof, malformed extra summary or ordinary ignored
+unit fails the gate. All other harnesses retain strict one-summary/zero-ignore
+accounting. This does not skip tests or qualify full product runtime.

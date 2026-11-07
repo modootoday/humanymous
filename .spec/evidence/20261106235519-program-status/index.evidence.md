@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T00:39:32Z
+updated: 2026-11-07T00:49:23Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -13,6 +13,8 @@ files:
   - {path: parallel-integration-observation.json, sha256: 4d1b0270ed3f1c02d6c251225c4da75096c94bc1edf1f8054ec7ee0f282e3d57, bytes: 5128, store: repo}
   - {path: runtime-process-pilot-results.json, sha256: a33cdda0808ebddb82506d0515d4e1c4ee01e03bbc68623d9fda59b48f245357, bytes: 1419, store: repo}
   - {path: runtime-process-pilot-final-results.json, sha256: 8860924266dec81cc11165c0c99624473b96ae4086514ed6bfb21a818525c6a6, bytes: 3696, store: repo}
+  - {path: sealed-runtime-custody-results.json, sha256: 85c96b1877b288585f91a9f097acee68f4db650a98cdc5cd61ecfa03c8b83373, bytes: 2853, store: repo}
+  - {path: native-helper-accounting-results.json, sha256: 189d57be76038bca7199f48e20b70ba95d64a0a0594a6036e86ccad52bf4c64a, bytes: 1177, store: repo}
 ---
 
 # Program status

@@ -107,3 +107,21 @@ Final-product readiness stays false. No scoring policy, threshold, band or rule
 predicate was changed. No shared Cargo/CI/lab files were edited by this lane.
 
 See sot:root/runtime-application and its implementation plan for acceptance.
+
+
+## Root follow-through: sealed startup v0.2
+
+The runtime now consumes audit.keys.directory and audit.keys.passphrase through
+private inherited JSON. Inline hmac_key_hex/signing_seed_hex are rejected. Keys
+must already exist in native sealed custody; startup never provisions or repairs
+identity. SealedAudit owns both Log and lifetime Custody, so application code
+cannot accidentally discard the key lock while retaining the log. Passphrase
+buffers are consumed and zeroized before bind. CLI provisioning/rotation,
+independent witness, service integration and full product qualification remain.
+The exact updated fixture is tests/native_process.rs; that test preprovisions
+synthetic sealed material, then validates real child-process restart and refusal.
+Updated Windows native tests:13unit/TCP +1process,14passed. Root Docker process
+pilot passes with sealed wrong-password/missing/tampered/concurrent-writer
+refusals, actual origin2/audit4 and restart invalidation. Source/image commitments:
+evidence:root/20261106235519, sealed-runtime-custody-results.json. Earlier source
+snapshots above remain historical; new Cross-OS qualification is required.

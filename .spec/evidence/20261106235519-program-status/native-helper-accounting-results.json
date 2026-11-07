@@ -1,0 +1,32 @@
+{
+  "schema": "humanymous.native-helper-accounting/1",
+  "run_id": 42319642298,
+  "source_sha": "7e2f17c440f0229263e9feee6f13aaf9b8463f3d",
+  "original_run_conclusion": "failure",
+  "full_runtime_qualified": false,
+  "reanalysis_is_not_a_new_ci_success": true,
+  "windows": [
+    {
+      "arch": "x64",
+      "original_ci_status": "failure",
+      "reason": "strict verifier rejected two registered subprocess helper ignores and nested summary",
+      "reanalysis_with_updated_verifier": "passed",
+      "passed_required_tests": 180,
+      "ignored_helpers": 2,
+      "raw_ignored_tests": 2,
+      "required_harnesses": 46,
+      "manifest_sha256": "92fb91730f728f3d52aef1c7afd7a77a73cc747a641dc472e0eae6f7d518a39d"
+    },
+    {
+      "arch": "arm64",
+      "original_ci_status": "failure",
+      "reason": "strict verifier rejected two registered subprocess helper ignores and nested summary",
+      "reanalysis_with_updated_verifier": "passed",
+      "passed_required_tests": 180,
+      "ignored_helpers": 2,
+      "raw_ignored_tests": 2,
+      "required_harnesses": 46,
+      "manifest_sha256": "e4e6efb030cfb9d8579087ba465e7bd1cca66de3c269af726c49b16f97d0781c"
+    }
+  ]
+}

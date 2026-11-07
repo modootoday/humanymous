@@ -23,7 +23,13 @@ impl Drop for PrivateDirectory {
     }
 }
 fn directory() -> (PrivateDirectory, Value) {
-    let path = std::env::temp_dir().join(format!("h-runtime-{}-{}", std::process::id(), now()));
+    static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+    let path = std::env::temp_dir().join(format!(
+        "h-runtime-{}-{}-{}",
+        std::process::id(),
+        now(),
+        NEXT.fetch_add(1, std::sync::atomic::Ordering::SeqCst)
+    ));
     std::fs::create_dir(&path).unwrap();
     #[cfg(unix)]
     let owner = {
@@ -176,12 +182,26 @@ fn exchange(address: SocketAddr, request: &Request) -> (u16, Vec<u8>) {
 #[test]
 fn native_binary_session_collection_origin_restart_and_wal_authentication() {
     let (directory, owner) = directory();
+    let (key_directory, _) = self::directory();
+    #[cfg(unix)]
+    let key_owner = humanymous_audit::keys::custody::Owner::CurrentUser;
+    #[cfg(windows)]
+    let key_owner =
+        humanymous_audit::keys::custody::Owner::WindowsSid(owner["sid"].as_str().unwrap().into());
+    let mut custody =
+        humanymous_audit::keys::custody::Custody::acquire(&key_directory.0, key_owner).unwrap();
+    custody
+        .load_or_create(b"native-fixture", || {
+            humanymous_audit::keys::KeyMaterial::new([0xbb; 32], vec![0xaa; 32], None, None)
+        })
+        .unwrap();
+    drop(custody);
     let origin = TcpListener::bind("127.0.0.1:0").unwrap();
     origin.set_nonblocking(true).unwrap();
     let value = json!({"listen":"127.0.0.1:0","origin":origin.local_addr().unwrap().to_string(),
         "scope":{"installation":"install","tenant":"tenant","origin":"origin","revision":"r1","authority":"owned.test"},
         "routes":[{"method":"POST","path":"/effect","required":{"raw_tls":false,"original_h2":false,"raw_header_order":true,"collector":false,"rit":true}}],
-        "audit":{"directory":directory.0,"node_id":"runtime-native","hmac_key_hex":"aa".repeat(32),"signing_seed_hex":"bb".repeat(32),"allow_new":true,"trusted_head":null},
+        "audit":{"directory":directory.0,"node_id":"runtime-native","keys":{"directory":key_directory.0,"passphrase":"native-fixture"},"allow_new":true,"trusted_head":null},
         "owner":owner,"session_capacity":16,"session_ttl_ms":60_000,"timeout_ms":5000,"rate_per_second":100});
     let cfg: Configuration = serde_json::from_value(value.clone()).unwrap();
     let (process, address) = start(&value);
@@ -240,7 +260,7 @@ fn native_binary_session_collection_origin_restart_and_wal_authentication() {
     assert_eq!(exchange(address, &req).0, 401);
     drop(process);
     let mut wrong = value.clone();
-    wrong["audit"]["hmac_key_hex"] = json!("cc".repeat(32));
+    wrong["audit"]["keys"]["passphrase"] = json!("wrong-fixture");
     let mut child = Command::new(env!("CARGO_BIN_EXE_humanymous-runtime"))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())

@@ -252,3 +252,20 @@ delivery gate가 끝나기 전 M12를 실행하지 않는다. 최종 병합에�
 - .spec.local/root/evidence/20261106194410-rust-migration-local-runs/
 - crates/authority/INTEGRATION.md,crates/audit/KEYS-INTEGRATION.md,crates/cli/INTEGRATION.md
 - scripts/ci/README.md,scripts/ci/registry-prerequisites.json,docs/reviews.json
+
+
+## Sealed runtime 및 native 집계 후속 통합
+
+Runtime 설정 v0.2는 평문 audit hex 키 대신 사전 발급 sealed custody를 연다.
+SealedAudit가 Log와 키 잠금을 함께 소유하고 passphrase는 bind 전에 소비·zeroize한다.
+누락·변조·잘못된 암호·동시 writer에서 새 identity를 생성하지 않는다. Windows
+runtime unit/TCP13+native process1과 Docker 실제 프로세스 파일럿이 통과했다.
+근거: evidence:root/20261106235519의 sealed-runtime-custody-results.json.
+
+7e2f17c의 원격 run42319642298는 Linux/macOS 네 tuple 성공,Windows 두 tuple
+집계 실패로 전체 failure다. Windows 원시 산출물을 대조하면 각180 required
+테스트가 통과했고,2개 subprocess helper ignore 및 중첩 summary가 기존 엄격한
+집계와 충돌했다. 새 verifier는 정확한 audit helper/parent/child 증거만 분리해
+인정하고 일반 ignore/unknown helper는 계속 거절한다. 회귀5개가 통과했다.
+재분석은 새 CI 성공이 아니다. 기존 실패와 raw ignored2는 보존하며 새 commit의
+실제 원격 실행이 필요하다. 근거: native-helper-accounting-results.json.

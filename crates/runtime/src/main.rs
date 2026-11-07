@@ -1,8 +1,4 @@
 //! Private inherited configuration, durable audit startup and native listener.
-use humanymous_audit::{
-    log::{Config, Log},
-    storage::{Wal, WalOptions},
-};
 use humanymous_runtime::{application::Application, configuration::Configuration};
 use std::io::{self, IsTerminal, Read, Write};
 use zeroize::{Zeroize, Zeroizing};
@@ -23,31 +19,7 @@ fn run() -> Result<(), &'static str> {
         serde_json::from_slice(&input).map_err(|_| "configuration JSON")?;
     input.zeroize();
     config.validate().map_err(|_| "configuration invalid")?;
-    humanymous_authority::transport::private_directory(&config.audit.directory, &config.owner)
-        .map_err(|_| "audit directory is not private")?;
-    let key = hex::decode(&config.audit.hmac_key_hex).map_err(|_| "audit key")?;
-    let seed: [u8; 32] = hex::decode(&config.audit.signing_seed_hex)
-        .map_err(|_| "audit seed")?
-        .try_into()
-        .map_err(|_| "audit seed width")?;
-    if !(32..=256).contains(&key.len()) {
-        return Err("audit key width");
-    }
-    let log = Log::open(
-        Wal::open(&config.audit.directory, WalOptions::default()).map_err(|_| "audit WAL")?,
-        Config {
-            node_id: config.audit.node_id.clone(),
-            hmac_key: key,
-            signing_seed: seed,
-            checkpoint_every: 1,
-            witness: None,
-        },
-        config.audit.trusted_head.as_ref(),
-        config.audit.allow_new,
-    )
-    .map_err(|_| "audit authenticated recovery")?;
-    config.audit.hmac_key_hex.zeroize();
-    config.audit.signing_seed_hex.zeroize();
+    let log = humanymous_runtime::startup::open_audit(&mut config)?;
     let address = config.listen;
     let app = Application::new(config, Default::default(), Box::new(log))
         .map_err(|_| "application startup")?;

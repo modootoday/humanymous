@@ -1,8 +1,10 @@
 //! Trusted installation scope and an exact, capability-aware route inventory.
 use crate::Rejection;
-use humanymous_authority::configuration::{Audit, Peer, Required, Scope};
+use humanymous_authority::configuration::{Peer, Required, Scope};
 use serde::Deserialize;
 use std::net::SocketAddr;
+mod audit;
+pub use audit::{Audit, SealedKeys};
 
 /// Private inherited startup document; intentionally not Debug or Serialize.
 #[derive(Deserialize)]

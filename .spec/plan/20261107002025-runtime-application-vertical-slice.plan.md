@@ -77,3 +77,16 @@ workspace edits are validated. No GUI, provider probes, publish or main merge.
 
 All residual chat state is Codex; durable interfaces/results are in the files
 above, AGENTS.md and the session board. Lane release note points here.
+
+
+## Root sealed startup follow-through
+
+- [x] Replace raw runtime audit credentials with preprovisioned sealed custody.
+- [x] Tie custody lifetime to the actual Log through opaque SealedAudit.
+- [x] Unit/native process14cases and warnings-denied Clippy after config change.
+- [x] Docker real process pilot: wrong password, absent store, concurrent writer,
+  tampered store, session/RIT/origin and authenticated audit restart.
+- [ ] Exact new SHA six-tuple requalification and signed installer/provisioning.
+
+Evidence is evidence:root/20261106235519/sealed-runtime-custody-results.json;
+full browser/capture/admin/witness qualification remains incomplete.

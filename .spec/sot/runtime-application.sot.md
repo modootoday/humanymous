@@ -105,6 +105,21 @@ without pretending to implement absent raw planes or introducing a detector.
 
 ## Verification
 
+### Sealed audit startup integration, configuration v0.2
+
+Runtime startup accepts only an explicitly preprovisioned sealed custody source;
+inline HMAC/seed fields are rejected. A private inherited passphrase is consumed
+into a zeroizing buffer and cleared from application configuration before bind.
+Acquire and retain exclusive custody for the entire application lifetime, reuse
+the authenticated writer identity for the existing audit Log, and never mint
+replacement keys when storage is absent, pending, tampered or wrongly unlocked.
+Provisioning and rotation remain supervisor/CLI operations, not HTTP endpoints.
+Both custody and audit directories must pass native owner checks. No implicit
+recovery, independent-witness claim or erasure permit is added. Existing tests
+using a mock audit do not qualify this startup; the real process Docker pilot
+must preprovision a synthetic sealed store, prove restart identity and test
+wrong-password, missing-store and competing-writer startup refusal.
+
 Unit and native TCP tests must prove scope/method/target/body/replay/deadline,
 collection session isolation, absent-plane refusal, capacity/clock/audit poison,
 audit-before-origin and truncated request no-origin using real origin counters.

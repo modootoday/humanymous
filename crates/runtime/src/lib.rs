@@ -3,6 +3,7 @@ pub mod application;
 pub mod configuration;
 pub mod http;
 pub mod session;
+pub mod startup;
 
 pub use humanymous_authority::Rejection;
 

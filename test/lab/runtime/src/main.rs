@@ -15,15 +15,50 @@ fn main() {
     let directory = std::path::PathBuf::from(format!("/tmp/runtime-pilot-{}", std::process::id()));
     fs::create_dir(&directory).unwrap();
     fs::set_permissions(&directory, fs::Permissions::from_mode(0o700)).unwrap();
+    let key_directory = directory.join("custody");
+    fs::create_dir(&key_directory).unwrap();
+    fs::set_permissions(&key_directory, fs::Permissions::from_mode(0o700)).unwrap();
+    let mut custody = humanymous_audit::keys::custody::Custody::acquire(
+        &key_directory,
+        humanymous_audit::keys::custody::Owner::CurrentUser,
+    )
+    .unwrap();
+    custody
+        .load_or_create(b"docker-fixture", || {
+            humanymous_audit::keys::KeyMaterial::new([0x22; 32], vec![0x11; 32], None, None)
+        })
+        .unwrap();
+    drop(custody);
     let origin = origin::Origin::start();
     let config = json!({"listen":"127.0.0.1:0","origin":origin.address.to_string(),
         "scope":{"installation":"pilot","tenant":"tenant","origin":"origin","revision":"r1","authority":"owned.test"},
         "routes":[{"method":"POST","path":"/effect","required":{"raw_tls":false,"original_h2":false,"raw_header_order":true,"collector":false,"rit":true}},
           {"method":"POST","path":"/tls","required":{"raw_tls":true,"original_h2":false,"raw_header_order":true,"collector":false,"rit":true}}],
-        "audit":{"directory":directory,"node_id":"process-pilot","hmac_key_hex":"11".repeat(32),"signing_seed_hex":"22".repeat(32),"allow_new":true,"trusted_head":null},
+        "audit":{"directory":directory,"node_id":"process-pilot","keys":{"directory":key_directory,"passphrase":"docker-fixture"},"allow_new":true,"trusted_head":null},
         "owner":{"kind":"unix","uid":65532},"session_capacity":16,"session_ttl_ms":60000,"timeout_ms":5000,"rate_per_second":1000});
+    let mut wrong = config.clone();
+    wrong["audit"]["keys"]["passphrase"] = json!("wrong-fixture");
+    process::Runtime::reject(&wrong);
+    let missing = directory.join("missing-custody");
+    fs::create_dir(&missing).unwrap();
+    fs::set_permissions(&missing, fs::Permissions::from_mode(0o700)).unwrap();
+    let mut absent = config.clone();
+    absent["audit"]["keys"]["directory"] = json!(missing);
+    process::Runtime::reject(&absent);
+    assert!(!missing.join("keys.sealed").exists());
+    assert!(!missing.join("keys.pending").exists());
     let typed: Configuration = serde_json::from_value(config.clone()).unwrap();
     let (runtime, address) = process::Runtime::start(&config);
+    assert!(
+        humanymous_audit::keys::custody::Custody::acquire(
+            &key_directory,
+            humanymous_audit::keys::custody::Owner::CurrentUser
+        )
+        .is_err(),
+        "runtime lost lifetime custody"
+    );
+    process::Runtime::reject(&config);
+
     let issued = issue(address);
     let mut collect = request("/_humanymous/collect", report(&issued));
     sign(&typed, &mut collect, &issued, 1);
@@ -89,10 +124,21 @@ fn main() {
     expect(new_address, &stale, 401);
     assert_eq!(origin.effects(), 2);
     drop(restarted);
+    let sealed = key_directory.join("keys.sealed");
+    let mut bytes = fs::read(&sealed).unwrap();
+    bytes[0] = b'!';
+    fs::write(&sealed, &bytes).unwrap();
+    process::Runtime::reject(&config);
+    assert_eq!(
+        fs::read(&sealed).unwrap(),
+        bytes,
+        "tamper replaced identity"
+    );
+
     drop(origin);
     let result: Value = json!({"schema":"humanymous.runtime-process-pilot/1","status":"passed","origin_effects":2,"audit_records":sequence,
         "scope":"real binary/session/RIT/durable audit/owned loopback origin","full_runtime_qualified":false,"browser_or_human_executed":false,
-        "checks":["private startup","collect","valid origin","duplicate cookies","credentials stripped","replay","body mutation","counter not consumed on bad signature","missing session","unsupported TLS","reserved admin","ambiguous framing","missing report","authenticated audit recovery","minimized audit","restart invalidates session"],
+        "checks":["private startup","sealed custody wrong password","missing custody no replacement","lifetime custody exclusion","tampered custody no replacement","collect","valid origin","duplicate cookies","credentials stripped","replay","body mutation","counter not consumed on bad signature","missing session","unsupported TLS","reserved admin","ambiguous framing","missing report","authenticated audit recovery","minimized audit","restart invalidates session"],
         "not_qualified":["browser collector","TLS/H2 capture","Pass recovery","assistive technology","independent origin isolation","independent witness"]});
     println!("{result}");
     fs::remove_dir_all(directory).unwrap();

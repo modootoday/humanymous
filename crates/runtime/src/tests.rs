@@ -23,7 +23,7 @@ fn configuration(origin: std::net::SocketAddr) -> Configuration {
     serde_json::from_value(json!({"listen":"127.0.0.1:0","origin":origin.to_string(),
         "scope":{"installation":"install","tenant":"tenant","origin":"origin","revision":"r1","authority":"owned.test"},
         "routes":[{"method":"POST","path":"/effect","required":{"raw_tls":false,"original_h2":false,"raw_header_order":true,"collector":false,"rit":true}}],
-        "audit":{"directory":"unused","node_id":"runtime-test","hmac_key_hex":"unused","signing_seed_hex":"unused","allow_new":true,"trusted_head":null},
+        "audit":{"directory":"unused","node_id":"runtime-test","keys":{"directory":"unused-keys","passphrase":"unit-fixture"},"allow_new":true,"trusted_head":null},
         "owner":if cfg!(windows){json!({"kind":"windows","sid":"S-1-5-21-1","pid":1})}else{json!({"kind":"unix","uid":0})},
         "session_capacity":16,"session_ttl_ms":60_000,"timeout_ms":1000,"rate_per_second":1000})).unwrap()
 }

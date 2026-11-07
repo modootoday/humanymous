@@ -9,6 +9,30 @@ use std::{
 
 pub struct Runtime(Child);
 impl Runtime {
+    pub fn reject(config: &Value) {
+        let mut child = Command::new("/usr/local/bin/humanymous-runtime")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap();
+        let mut input = child.stdin.take().unwrap();
+        serde_json::to_writer(&mut input, config).unwrap();
+        drop(input);
+        let mut guard = Self(child);
+        let until = std::time::Instant::now() + Duration::from_secs(10);
+        loop {
+            if let Some(status) = guard.0.try_wait().unwrap() {
+                assert!(!status.success(), "unsafe startup accepted");
+                break;
+            }
+            assert!(std::time::Instant::now() < until, "refusal deadline");
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        let mut output = String::new();
+        std::io::Read::read_to_string(&mut guard.0.stdout.take().unwrap(), &mut output).unwrap();
+        assert!(output.is_empty(), "refused process reported readiness");
+    }
     pub fn start(config: &Value) -> (Self, SocketAddr) {
         let mut child = Command::new("/usr/local/bin/humanymous-runtime")
             .stdin(Stdio::piped())
