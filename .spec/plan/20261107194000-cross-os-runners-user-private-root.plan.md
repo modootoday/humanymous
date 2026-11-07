@@ -394,3 +394,91 @@ test is granted now. Existing three SDs are fixed offline fixtures for the polic
 matrix, not permission to mutate C:/, its profile, ACLs or any peer directory.
 Only Root-coordinated review/read-only admission and an explicit hosted fixture
 allocation can advance this proposal toward the .NET/Header foundation.
+
+## No-clobber attempt registration amendment (X P1, design only)
+
+Concrete failure to prevent: legitimate attempt A registers anchor/suffix, creates
+the directory, then crashes before learning its FileID. Attempt B reuses the same
+selected namespace and overwrites the registration/original clocks. B's later
+NotCreated could then erase A's real CreatedUnopened/Unknown obligation. Neither
+fresh syntax nor an in-memory nonce map prevents this across supervisor restart.
+
+The SOLE authoritative journal owner is independently supervised O, or an
+equivalently verified protected broker admitted by the same reviewed protocol.
+Caller bools, callbacks, serialized ACK claims and in-memory model transitions
+cannot construct an authoritative registration, durable ACK or root capability.
+O must retain an independently protected journal/anchor association; caller-held
+locator or a record beneath an unqualified path is not sufficient. Exact storage
+atomicity, persistence/flush/crash recovery, namespace canonicalization and broker
+authentication remain review prerequisites, NOT implemented guarantees.
+
+Proposed registration identity is an immutable tuple: globally distinct attempt
+ID; actual owner identity; native anchor volume/file identity; configured selector
+and policy revision; exact canonical selected child namespace and nonce; original
+run/cleanup pair; journal generation. Attempt identity and namespace reservation
+are separate indexes. Reserve BEFORE native create, with atomic NO-CLOBBER in
+both indexes and an ACK bound to the entire tuple. For overlapping path spellings
+or distinct anchor claims that may select the SAME namespace, uncertainty refuses
+reservation; string inequality is not disjointness proof. A caller-chosen new
+attempt ID or selector revision cannot bypass an existing namespace reservation.
+
+| Existing authoritative state | New registration / completion rule |
+| --- | --- |
+| Reserved / acknowledged / CreateCallPending | Different attempt touching same selected namespace refuses; no replacement of record, owner or clocks. |
+| CreatedUnopened / Unknown / recovery pending | Reservation survives crash/restart/handoff. New attempt touching that namespace refuses, including identical nonce replay; no automatic expiry/garbage-collection clears it. |
+| Same attempt retransmits identical tuple | O may replay the SAME persisted ACK only after proving exact generation/tuple and retained record; it never resets clocks or repeats a native call. No new attempt is manufactured. |
+| Same attempt ID with any changed tuple field | Refuse as conflict, preserving original record and budget. |
+| B reports NotCreated | It applies ONLY to B's verified current record if B was actually admitted. It cannot close A's record or release A's namespace. Collision refusal is not proof about A's create result. |
+| Terminal cleanup known for exact attempt | Release namespace only through O's separately reviewed identity-bound terminal protocol; retain immutable attempt/tombstone for stale ACK/completion replay rejection. Timeout, caller death, journal absence or path absence alone is not this proof. |
+
+For fresh B to receive NotCreated, its admission must have succeeded against a
+disjoint namespace and its own create outcome must be associated with B. The
+particular A/B collision above refuses B BEFORE create. No local clock renewal,
+replacement parent, new generation or reopened path turns A Unknown into Known.
+If O restarts without sufficient durable history, all possibly affected slots
+remain unqualified/Unknown and no fresh registration is ACKed under a guessed
+empty ledger. Do not claim exactly-once effects from journal transitions alone.
+
+Crash handoff transfers only custody that is actually retained and admitted.
+A durable planned locator does not recover an unknown created FileID or transfer
+the dead process's File handles. O owns the unresolved obligation and original
+pair until the reviewed recovery protocol settles it; O may report retained
+Unknown without gaining a delete permit. A new O/broker epoch needs authenticated
+history/generation fencing; it cannot silently resurrect expired work horizons.
+
+### Proposed pure model slice for Root review before code
+
+Author a private, platform-independent transition model with explicit unverified
+facts and caller-supplied symbolic attempt/namespace IDs. The model may return
+ModelReserved/ModelConflict/ModelUnknown transitions ONLY. No file/socket/process
+I/O, journal durability assertion, native File constructor, authority callback,
+DurableAck type, native root/Ready factory, or production admission integration.
+Explicitly model conservation of the original tuple and distinct namespace index;
+do not export an empty/new model as a supervisor restart success path.
+
+Proposed negatives and expected assertions:
+
+1. A reserve/create-unopened/crash -> B same anchor+suffix: B rejected; A's exact
+   owner/unknown/clock tuple and reserved namespace unchanged.
+2. B new attempt ID, nonce replay, alternate spelling/selector revision or claimed
+   anchor alias cannot overwrite a namespace known equal or not proven disjoint.
+3. Duplicate A identical tuple can only observe same model record; altered owner,
+   nonce, anchor, attempt generation or original pair refuses with zero mutation.
+4. Stale ACK/completion from old attempt/epoch cannot release current reservation;
+   B NotCreated never clears A Unknown, whether delivered before or after restart.
+5. Original run expiry, cleanup expiry, clock rollback/rebase/new process start,
+   crash handoff and missing journal facts do not reset either original deadline
+   or expire Unknown into a free slot. Distinct namespace B retains its own pair.
+6. Lost ACK after reservation remains reserved; uncertain append/flush/recovery
+   is modeled Unknown, never durable success. Partial insertion in either index
+   cannot become admitted state or allow a second namespace owner.
+7. Only an exact-attempt terminal observation can propose model release; path
+   absence/caller boolean/timeout are insufficient. A retained tombstone denies
+   replay even after model namespace release. This models ordering, not native
+   cleanup, secure erasure, durable persistence or supervisor authentication.
+
+Implementation, precise pure API/module placement and actual test allocation
+remain pending Root review. No new code/native I/O/journal/directory/ACL/unsafe or
+callback has been introduced by this amendment. Native eight-family/private
+parent foundation remains the priority; Docker public-role DATA parsing does not
+provide any of these local persistence/ownership prerequisites.
