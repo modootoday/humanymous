@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.lab-wire-fmt-first-failure/1",
+  "source": "36373e79c33f850da3298acaa66150dac370655b",
+  "overlay": false,
+  "ancestry_64f74c7_verified": true,
+  "private_evidence": "evidence:root/20261107224723",
+  "archive_sha256": "e8d85ec67e5f8c60f6714d38052c28a1da282dd6aa4a7a8cf079b1497ce131bb",
+  "archive_registered": false,
+  "first_failure": "fmt",
+  "fmt_exit": 1,
+  "format_failure_paths": [
+    "test/lab/runner/src/orchestration/browser.rs",
+    "test/lab/runner/src/orchestration/go.rs"
+  ],
+  "check": "NOTRUN",
+  "clippy": "NOTRUN",
+  "actual_inventory": null,
+  "expected_inventory_only": 40,
+  "tests": "NOTRUN",
+  "inputs_before": 14901,
+  "inputs_after": 14901,
+  "difference_records": 0,
+  "selected_packages": 175,
+  "registry_packages": 170,
+  "tool_versions_unchanged": true,
+  "full_compiler_binary_environment_closure": false,
+  "work_elapsed_ms": 58516,
+  "total_elapsed_ms": 110953,
+  "allocation_released": true,
+  "remaining_own_processes": 0,
+  "no_retry": true,
+  "current_worktree_format_correction": [
+    {
+      "path": "test/lab/runner/src/orchestration/browser.rs",
+      "sha256": "cf53de6f2a19f9dfecb97832f9a3c3a03ea3c9166865b6a323159dc41c55e5f4",
+      "change": "Import ordering only; direct rustfmt edition2024 exit0"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go.rs",
+      "sha256": "d625835f9b78a8c836fd073016b6bee836fcea60e1bc7bc5b741ac2e39d59459",
+      "change": "Import ordering only; direct rustfmt edition2024 exit0"
+    }
+  ],
+  "archive_source_fixed": false,
+  "limits": "8.5MBsourcearchive retainedrawprivate; per-file snapshots/logs registered within4MBattachmentlimit",
+  "next": "New immutable checkpoint and Root allocation required; Windows cannot qualify Unix producer tests",
+  "actual_browser_docker": false,
+  "full_product_qualified": false
+}

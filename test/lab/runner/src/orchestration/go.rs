@@ -7,8 +7,8 @@ use crate::{
     docker::{Docker, Result},
     snapshot,
 };
-use humanymous_runtime::audit::checkpoint::service::write_frame;
 use humanymous_platform::testing::{json::decode_strict_json, process::capture_with_stderr};
+use humanymous_runtime::audit::checkpoint::service::write_frame;
 use serde_json::{Value, json};
 use std::{
     fs,
