@@ -648,3 +648,12 @@ Documented private file ownership/mode/no-follow plus supervisor mount/cleanup
 assumptions, exact route/Host/body checks and feature/target distinctions. Added
 three manually reasoned hash receipts; native ABI/pilot internals/execution remain
 separate. No new runtime, Docker or build invocation.
+
+## Full nginx native source/prose review
+
+Read entire native.rs, including pool callbacks/header reconstruction/body chain,
+task slot and poll/finalize paths. Documented16 authority tasks per worker after
+body reception (not all buffered uploads), exact snapshot recheck, UTF-8 header
+limits and native status differences. One exact hash receipt is traceability only,
+not independent ABI/unsafe/race approval or execution. Required native/hosted
+gates remain unchanged. Existing source/spec checks only.

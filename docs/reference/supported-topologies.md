@@ -227,3 +227,30 @@ pilot features have different responsibilities; the pilot entrypoint refuses
 non-Linux targets rather than reporting zero executed tests as success. Executed
 native ABI, peer/ACL and request-lifecycle evidence remains separate from these
 source-level configuration and projection checks.
+
+### nginx dispatch and resource limits
+
+The preaccess handler captures the sanitized request and completes its bounded
+body before scheduling an authority task. Immediately before continuing nginx
+processing it compares a new method/target/path/header/body snapshot with the
+stored one and consumes the bound decision, including expiry checks. This is
+not protection from a later trusted module or operator rewrite; the configured
+post-authorization route/origin boundary still needs deployment evidence.
+
+The source permits at most 16 concurrent authority tasks per worker process.
+That slot is acquired after body collection; it is not a global limit of 16
+buffered uploads or all active nginx connections. Configure and validate nginx
+connection/body/resource limits as well. A single request budget covers body
+reception and the decision phase, with wall-clock and elapsed-time checks.
+Neither the budget nor a 10 ms polling interval is a human interaction deadline
+or a guaranteed response-time bound under load.
+
+Native snapshots reject file-backed bodies and bound the in-memory body chain.
+Header names/values must be representable as UTF-8 and pass the shared profile;
+preserving ordinary header order does not imply arbitrary raw header-byte
+fidelity. Input/header/route failures may return 400, body snapshot failure 413,
+and capacity/dependency/expiry failures 503. These are this native component's
+paths, not the Node adapter's uniform input-error mapping or generic Draft v0
+status rules. Pool cleanup aborts owned tasks and deletes owned timers in source;
+actual cancellation, finalization, reload and ABI lifetime safety need native
+execution and review against the exact engine/build flags.
