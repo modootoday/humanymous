@@ -9,6 +9,19 @@
 {
   "kind": "implementation-evidence",
   "paths": [
+    "../../start-here/developer.md",
+    "../../how-to/run-detection-engine.md",
+    "../../reference/production-vs-reference.md",
+    "validation/implementation-map.md"
+  ],
+  "summary": "Reconcile c67d07c0 Core and89715c04 Platform paths, separate testing/windows-object features and checkpoint34 packages toward accepted eight public roles. Replace obsolete Core test package names. Mark accepted pure public-role data parser source under construction, without ingress/native/provider/Ready, registry or generic-wire qualification.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
+  "paths": [
     "../../reference/production-vs-reference.md",
     "../../reference/supported-topologies.md",
     "validation/implementation-map.md"

@@ -29,6 +29,21 @@ pins, Ubuntu 24.04 runner selection and release-note newline handling are
 delivery changes; they add no protocol requirement or interoperability result.
 Hosted execution and absence of historical annotations remain separate gates.
 
+Core and Platform consolidation at `c67d07c0` and `89715c04` changes package
+ownership, not the generic Draft v0 protocol. There are 34 workspace packages at
+that checkpoint against an accepted eight-role target. Core contextual APIs live
+under `crates/sdk/humanymous-core`; Platform's separate optional `testing` and
+`windows-object` roles live under `crates/integrations/humanymous-platform`.
+Neither a public package role nor a testing feature establishes authenticated
+observations, provider availability, registry publication or conformance.
+
+The first pure public-role data parser contract is accepted for implementation;
+source is under construction. Its data declarations are caller assertions, not
+actual provider admission, native ownership, replay/freshness verification or a
+Ready producer. This acceptance selects no public listener, endpoint, discovery
+or generic Draft v0 wire contract. The existing private-loopback configuration
+and historical execution reports keep their own scope.
+
 | Candidate requirement | Current subset | Evidence boundary still needed |
 | --- | --- | --- |
 | [Observation provenance (P-01)](../protocol/profile.md#p-01-observation-provenance) | Shared adapter parser validates declared header mode and rejects fabricated capture; collector reads browser APIs; a separate same-transport TLS/H2 capture candidate exists | Actual ingress qualification, original-client hop ownership and report-to-session provenance, not a client assertion |

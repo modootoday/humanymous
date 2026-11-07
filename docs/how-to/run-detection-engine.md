@@ -12,9 +12,14 @@ Use a reviewed checkout and Rust 1.99.1. The following runs source-bound
 component tests; it is not a full deployment test:
 
 ```console
-cargo test --locked -p humanymous-scoring -p humanymous-signals
+cargo test --locked -p humanymous-core --lib
 cargo test --locked -p humanymous-runtime
 ```
+
+Signals and scoring now belong to contextual modules of `humanymous-core` at
+`crates/sdk/humanymous-core`. Record the actual test names and result counts;
+the broader Core library suite is still component evidence, not a detector or
+deployment acceptance result.
 
 Define exact input observations and expected outcomes from the frozen comparison
 corpus. Exercise ordering, boundary values, missing required inputs and invalid

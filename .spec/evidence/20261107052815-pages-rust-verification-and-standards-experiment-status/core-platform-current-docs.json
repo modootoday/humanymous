@@ -1,0 +1,38 @@
+{
+  "schema": "humanymous.pages-core-platform-current-docs/1",
+  "source_before_receipt": "8c234fa86cb436793546dc9d7854ac25a852cc8a",
+  "core": "c67d07c0114bd04793410f82f7182de7bfa6df2c",
+  "platform": "89715c04d007abf87b36efe6508a9e54fa6aa018",
+  "parser_contract": "plan:root/20261107211302 accepted at1f87d310, source under construction",
+  "changed_files": [
+    {
+      "path": "docs/start-here/developer.md",
+      "sha256": "f07250d6f7ac0b82d143578b450fc557149f1a79daa03d9fd9b6786048051548",
+      "bytes": 2414
+    },
+    {
+      "path": "docs/how-to/run-detection-engine.md",
+      "sha256": "ece7818fbd22b4ed484810b4d6c58b913d03622fc811ac11cd059c1322dad17d",
+      "bytes": 1354
+    },
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "e7793858a9d5c1a50e7bea72eb3ece268f3927d204b7b57a99607dca122e6f67",
+      "bytes": 7767
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "8611a9e019e751a5453e7f286a7374e6b5c41c915a27f294ed51aa642243184d",
+      "bytes": 13257
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "f0dd92cb1c179b422d52273d32b59f3dc7ebbad7ea915ce5a46c32a1d27e1b64",
+      "bytes": 14449
+    }
+  ],
+  "claims": "Checkpoint41-to34 packages toward accepted8 public roles; actual Core/Platform paths and independent optional testing/windows-object features; caller DATA parser acceptance is not public ingress/native/provider/Ready.",
+  "validation": "Existing immutable checker ad04b2d1 reports88pages/errors0; git diff --check passed. No new compiler/build/browser/GHA/publish run.",
+  "historical_proofs": "Preserved without transferring old9586 build or56ea preview to these new authored bytes.",
+  "lane_refresh": "Initial same-owner claim replacement refused; actual owner verified, own narrow lane released and broader assigned docs lane claimed normally, no force or overlapping writer."
+}

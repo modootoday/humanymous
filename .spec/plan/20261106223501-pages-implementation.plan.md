@@ -2514,3 +2514,21 @@ and no source diff. The earlier pending-source-commit condition is superseded;
 do not re-commit those bytes. Own plan/evidence WIP remains separately owned.
 No Pages compiler/Clippy/full CI run is inferred from core162/Clippy or collector
 WASM proof; per-owner execution still requires a bounded root allocation.
+
+### Current Core/Platform and accepted data-parser documentation
+
+Reconciled five current public docs/manifest paths to corec67d07c0 and
+platform89715c04: checkpoint41-to34 workspace packages, accepted target8,
+actual sdk/core and integrations/platform paths, independent default-off testing
+and windows-object features. Updated obsolete signals/scoring test commands to
+the Core library suite without implying detector/deployment acceptance.
+
+Accepted parser plan:root/20261107211302 is described only as a first pure caller
+DATA contract with source under construction. No public ingress, native producer,
+provider admission, Ready, registry availability or generic Draft-v0 wire is
+invented. Historical source-specific proofs remain immutable.
+
+Evidence07052815/core-platform-current-docs.json records all five exact changed
+paths/SHA256/bytes and source checkpoints. Existing frozen checker reports88pages/
+errors0; diff check passes. No build, preview, compiler, GHA or publish run.
+New authored bytes remain unrendered pending a bounded allocation.

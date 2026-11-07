@@ -25,6 +25,21 @@ release is claimed.
 | Documentation | Fixed-source pinned-theme builds, rendered-link checks, archive round trips and representative browser observations exist; complete source review and accessibility qualification remain separate |
 | Standards Draft v0 | Independent developing proposal; no external submission or adoption |
 
+Core consolidation at `c67d07c0` and Platform consolidation at `89715c04` reduce
+the workspace from 41 packages to 34. The accepted target is eight public package
+roles; consolidation remains in progress and does not establish registry
+publication or supported deployment tuples. The current package paths are
+`crates/sdk/humanymous-core` and `crates/integrations/humanymous-platform`.
+Platform defaults are empty; `testing` and `windows-object` are independent
+optional features, with the object API additionally restricted to Windows.
+Testing support cannot mint provider authority or readiness.
+
+A first pure public-role data parser contract has been accepted, with its source
+under construction. It describes bounded caller-supplied data rather than a
+public listener, native preparation, provider availability or a Ready producer.
+No public endpoint or registry-ready API is promised by that acceptance. Existing
+private-loopback startup configuration remains a separate implemented interface.
+
 Historical Go behavior is a migration comparison baseline, not evidence that the
 new runtime is ready. A future release must name exact supported tuples,
 capabilities, artifact digests and completed checks. Until then, use an isolated
