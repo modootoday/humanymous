@@ -4,7 +4,7 @@ title: Rust native Python and Ruby framework adapters
 status: active
 verify: manual
 created: 2026-11-07T07:08:28Z
-updated: 2026-11-07T07:08:28Z
+updated: 2026-11-07T07:36:39Z
 rel:
   governs: [crates/framework-adapter/**, crates/python-adapter/**, crates/ruby-adapter/**, adapters/python/**, adapters/ruby/**]
   depends_on: [sot:root/adapter-service-contract, sot:root/server-adapter-expansion, sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
@@ -282,9 +282,3 @@ https://httpd.apache.org/docs/2.4/mpm.html ; https://httpd.apache.org/docs/2.4/m
 - https://rustsec.org/advisories/RUSTSEC-2026-0176.html: PyO3 iterator overflow
   patched>=0.29.0; candidate0.30.1 is outside this advisory's affected range.
   This is not a current full-closure security audit or a no-vulnerabilities claim.
-
-## Rule
-
-## Why
-
-## Verification

@@ -55,7 +55,15 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
             if internal_header(&name) {
                 remove.push(key);
             } else {
-                if ["upgrade", "trailer", "transfer-encoding"].contains(&name.as_str()) {
+                if [
+                    "upgrade",
+                    "trailer",
+                    "transfer-encoding",
+                    "content-length",
+                    "content-type",
+                ]
+                .contains(&name.as_str())
+                {
                     unsupported = true;
                 }
                 headers.push([name, String::try_convert(value)?]);

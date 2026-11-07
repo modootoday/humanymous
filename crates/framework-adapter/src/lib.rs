@@ -36,7 +36,11 @@ impl Drop for Admission {
 
 /// Reject malformed CGI framing without interpreting a missing length as empty.
 pub fn body_length(value: &str, maximum: usize) -> Result<usize, Error> {
-    if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+    if value.is_empty()
+        || value.len() > 10
+        || (value.len() > 1 && value.starts_with('0'))
+        || !value.bytes().all(|b| b.is_ascii_digit())
+    {
         return Err(Error("explicit decimal content length required"));
     }
     let n = value
@@ -62,7 +66,17 @@ mod tests {
     }
     #[test]
     fn missing_ambiguous_and_oversized_lengths_reject() {
-        for value in ["", "-1", "+1", "1,1", " 1", "1\n", "42949672960"] {
+        for value in [
+            "",
+            "-1",
+            "+1",
+            "1,1",
+            " 1",
+            "1\n",
+            "00",
+            "01",
+            "42949672960",
+        ] {
             assert!(body_length(value, 8).is_err());
         }
         assert!(body_length("9", 8).is_err());

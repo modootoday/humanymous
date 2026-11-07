@@ -19,3 +19,11 @@ Synthetic ALLOW stays distinct from production browser evidence.
 Compiler, Clippy, pure units, contextvars/cancellation/GIL, fidelity, server read
 deadline, actual frameworks, clean install, Unix/Windows IPC/ABI and lock audit
 are all NOT_RUN. No previous Node success is attributed to this source.
+
+Hosted smoke contract expects2groups4cases only for actual framework objects
+and dependency-down, with explicit ignored opt-in. No server/ALLOW/audit claim.
+Candidate direct pins are pilot-requirements.txt; retain hosted closure/audit.
+Rust wheel driver build/inspect prints hash/member/tag receipt with generation
+provenance=false and whole/runtime qualification=false. Clean install/import and
+input-source lineage remain mandatory. Initial Rustfmt syntax typo was corrected;
+compiler validation has not run here.

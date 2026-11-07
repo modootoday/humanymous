@@ -68,7 +68,15 @@ impl Wsgi {
                     remove.push(key);
                     continue;
                 }
-                if ["upgrade", "transfer-encoding", "trailer"].contains(&name.as_str()) {
+                if [
+                    "upgrade",
+                    "transfer-encoding",
+                    "trailer",
+                    "content-length",
+                    "content-type",
+                ]
+                .contains(&name.as_str())
+                {
                     return reject(py, &start_response, 503);
                 }
                 headers.push([name, value.extract::<String>()?]);

@@ -3,7 +3,7 @@ id: plan:root/20261107070828
 title: Python Ruby adapters native implementation
 status: active
 created: 2026-11-07T07:08:28Z
-updated: 2026-11-07T07:08:28Z
+updated: 2026-11-07T07:36:39Z
 rel:
   governs: [crates/python-adapter]
   depends_on: [sot:root/python-ruby-adapters]
@@ -93,8 +93,13 @@ shared encode modes and both axes of cross-profile pure matrix. Dedicated owners
 retain native Apache/.NET lifecycle/ABI work. Updated shared matrix NOT_RUN.
 Standalonefmt/diff passed; source and package install remain awaiting compilation.
 
-## Goal
+## Current checkpoint and resource coordination
 
-## Steps
-
-## Record
+Source44acbbf fixes hosted smoke/package implementations. Later static CGI fix
+rejects lengths00/01 and HTTP_CONTENT_LENGTH/HTTP_CONTENT_TYPE ambiguity instead
+of normalizing it away. Updated bytes/tests NOT_RUN. Initial wheel driver
+Rustfmt syntax typo was corrected before44acbbf; compiler remains unrun here.
+Manifest edits outside an integration window caused another owner's locked
+failure; future graph edits are queued until explicit root integration approval.
+Two local independent validation targets are now permitted only by assignment;
+this owner has no assigned slot and no native process was started.

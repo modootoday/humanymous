@@ -21,3 +21,10 @@ from RustMSVC. JRuby/TruffleRuby/Ractors unsupported.
 
 Compiler/unit/runtime/package/install/require/framework/GC/GVL/ABI/IPC/audit
 all NOT_RUN. Hosted must exercise Rack/Sinatra/Rails and preserve actual counts.
+
+Feature host-pilot opts into unchanged ruby --require native-extension, stdin
+closed; contract expects3unique dependency-down503/noeffects0 groups only.
+Production excludes host-pilot/package-tool. Package-tool init reads at most64KiB
+of private JSON from HUMANYMOUS_NATIVE_GEM_PACKAGE_REQUEST and calls upstream
+APIs, not eval or a generated Ruby executable string. Archive/install remain
+NOT_RUN. CGI leading-zero/duplicate content header ambiguity must reject.
