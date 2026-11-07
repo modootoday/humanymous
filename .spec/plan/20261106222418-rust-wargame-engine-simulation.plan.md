@@ -22,6 +22,7 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 - [x] V0.6: root lock integration and new allocated28pure/Clippy;13-crate snapshot and3file drift retained in075313/075756.
 - [x] V0.6: shared decoder f44b32b blob matches captured/current source and measured shared2pure checks.
 - [ ] V0.6: immutable hosted strict-byte receipt with safe recovery.
+- [x] Preserve actual candidate a26d1c3/run42354873001 startup_failure with0jobs in evidence081913; no measured case ledger.
 
 - [x] V0.5: bind network step identities/order/roles to catalog; preserve error prefixes.
 - [x] V0.5: allocated26pure/Clippy passed; evidence073022/073058, dirty dependency scope retained.
