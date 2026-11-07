@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: native-structural-handoff-source.json, sha256: 5597dbd5fb29c86c4f89898780158a1c70a721e4e772374ecb0fcc0e7333a9e2, bytes: 13714, store: repo}
   - {path: dotnet-minimal-style-verification-summary.json, sha256: 6ce52c028f355fb39b27cdcdb16a0cbaa44b80daaf260af48c9ec2c5ca2db396, bytes: 12154, store: repo}
   - {path: native-dotnet-targeted-pure-summary.json, sha256: dcc02f39df3dfc285184bd4f9a295641554e92f8c2116bc4a709460ecb4ba579, bytes: 25952, store: repo}
   - {path: gpu-lifecycle-research-summary.json, sha256: 1705038b354653c2136ca29c619df0908702090311f705f7feb9992f49bbe5ea, bytes: 4015, store: repo}
