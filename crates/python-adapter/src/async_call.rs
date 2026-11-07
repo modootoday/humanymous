@@ -80,6 +80,16 @@ impl Start {
             let task = py
                 .import("asyncio")?
                 .call_method1("ensure_future", (awaitable,))?;
+            // Retain both owners before callback registration or cancellation
+            // can fail. An error must still leave Guard a cancellation handle.
+            {
+                let mut state = self
+                    .state
+                    .lock()
+                    .map_err(|_| failure("callback state unavailable"))?;
+                state.task = Some(task.clone().unbind());
+                state.permit = permit;
+            }
             task.call_method1(
                 "add_done_callback",
                 (Py::new(
@@ -89,15 +99,14 @@ impl Start {
                     },
                 )?,),
             )?;
-            let mut state = self
+            let cancelled = self
                 .state
                 .lock()
-                .map_err(|_| failure("callback state unavailable"))?;
-            if state.cancelled {
+                .map_err(|_| failure("callback state unavailable"))?
+                .cancelled;
+            if cancelled {
                 task.call_method0("cancel")?;
             }
-            state.task = Some(task.unbind());
-            state.permit = permit;
             Ok(())
         })();
         if let Err(e) = result
@@ -259,6 +268,8 @@ where
     let result = rx
         .await
         .map_err(|_| failure("callback completion unavailable"))?;
-    guard.complete = true;
+    // Setup errors may occur after task creation. Keep Drop cancellation active;
+    // a cancellation request alone does not establish terminal task settlement.
+    guard.complete = result.is_ok();
     result
 }

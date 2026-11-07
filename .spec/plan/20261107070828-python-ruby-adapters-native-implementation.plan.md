@@ -629,3 +629,15 @@ preserves first failure, source2732/SDK1462/selected-registry4867/config11 stabl
 closures and terminal101/closure0; target returned. Replaced that conversion
 with fixed expiry messages in WSGI/ASGI and the analogous uncompiled Rack path.
 No retry or broader SDK/provider activation follows from the correction.
+
+Independent X review found an additional ASGI setup ownership seam: ensure_future
+could create a task before fallible Done allocation/registration/cancel, while
+State retained neither task nor permit and Err disabled Guard cancellation.
+The source correction stores both owners immediately after task creation and
+keeps Guard cancellation active on Err. Actual supported-task-factory behavior,
+completion-registration/cancel failure, suppressed cancellation and terminal
+settlement/permit-lifetime fault controls remain open and NOT_RUN. No cancellation
+request is recorded as successful cleanup. User-directed WSL release took effect
+after the first batch/closure reads completed; no live owned WSL handle remained.
+The corrected SDK retry is deferred to a later explicit venue allocation; source
+work continues without pausing the full goal or starting another WSL command.

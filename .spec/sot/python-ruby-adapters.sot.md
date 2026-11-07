@@ -431,6 +431,16 @@ or production evidence, and execution remains NOT_RUN. The existing private
 directory/configuration fixture is extracted once for SDK and server reuse;
 no child controller, transport/peer clone or new native provider is introduced.
 
+ASGI setup ownership is a separate open gate: retain a created task and its
+permit before fallible completion-callback registration/cancellation. An Err
+completion must not disable Guard cancellation. The narrow source correction
+does this, but failed callback registration, failed cancellation, a custom task
+factory creating a task before raising, and cancellation-suppressing application
+code do not provide terminal settlement. Such outcomes are cleanup-uncertain,
+not successful qualification. Supported-loop/task-factory admission and bounded
+fault-injection controls must observe actual task settlement and permit lifetime;
+no source-only cancellation request closes that obligation.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;
