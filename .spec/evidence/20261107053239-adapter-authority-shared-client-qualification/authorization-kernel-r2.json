@@ -1,0 +1,219 @@
+{
+  "schema": "humanymous.authority.authorization-kernel-evidence/1",
+  "status": "component-verified; native/Ready/hosted NOT_RUN",
+  "source": "a898d91a33d19d80a86d0d75444a1a9175fdcaea",
+  "base_archive_source": "06c3b4c67bec8f9232dda58b623a60e64f4a284f",
+  "root_contract_source": "3d4faf12",
+  "dependency_integration": "69ccf7fc",
+  "compiler": "Rust 1.99.1 / edition 2024",
+  "runner": "local Windows, isolated archived workspace; Root R2 slot; jobs=1 incremental=0",
+  "final_tested_overlay": [
+    {
+      "path": "crates/authority/src/startup/authorization.rs",
+      "sha256": "27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e"
+    },
+    {
+      "path": "crates/authority/src/startup/authorization/tests.rs",
+      "sha256": "6ae4f2984eab99efef916104ab05e1562b71aa49e4aa280bd766420e1d653444"
+    },
+    {
+      "path": "crates/authority/tests/fixtures/authorization-v2-minimal.json",
+      "sha256": "c3119b20fdf1b40cc6e99ac9e8efef6b84da8ac5c35bbdeb6588fcb47f720786"
+    },
+    {
+      "path": "crates/authority/tests/fixtures/authorization-v2-maximum.json",
+      "sha256": "d4aa80ca126c101ee61cd18e78928f9beaa185b2330f1fb8f44dbaefc08e8dbc"
+    }
+  ],
+  "final": {
+    "passed": 37,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "check_exit": 0,
+    "strict_clippy_exit": 0,
+    "scoped_fmt_exit": 0,
+    "selected_packages": 96,
+    "selected_input_files": 4731,
+    "changed_inputs": 0,
+    "environment_hashes": 17,
+    "changed_environment": 0,
+    "working_overlay_changed": 0,
+    "committed_blob_matches_raw_worktree": true,
+    "binary_sha256": "96aa0537c2b3c76245dda4c31817c9fcbf350b7d80417f58f456e1c2db269e90",
+    "elapsed_seconds": 480.969,
+    "original_work_seconds": 600,
+    "original_cleanup_seconds": 660,
+    "lease_removed": true,
+    "owned_processes_remaining": 0
+  },
+  "commands": [
+    "cargo test --locked -p humanymous-authority --lib",
+    "cargo check --locked -p humanymous-authority --all-targets",
+    "cargo clippy --locked -p humanymous-authority --all-targets -- -D warnings",
+    "scoped cargo fmt --check"
+  ],
+  "attempts": [
+    "R1: preparation FALSE timezone guard before Cargo; actual135.787s within360/420s. Original wrong derived elapsed/latecleanup preserved; correction uses literal UTC DateTimeOffset. No compile/tests. Wrong root rustfmt stderr NOT_RETAINED.",
+    "R2 exact06c:36 passed, check/Clippy/fmt0;4729 inputs unchanged.",
+    "R2 allowed repair1:1 selected passed,36filtered; public vector observation; no drift.",
+    "R2 allowed repair2 FINAL:37 passed,0filtered; same original600/660s clock; fixed full min/max JSON regression bytes. Attempts are separate, never summed."
+  ],
+  "boundary": "DATA parsing/signature/binding only. SignatureCheckedAuthorization retains immutable validated expected scope, cannot construct NativeProof or Ready. Dalek strict R/S and weak-point rejection does not establish independent canonical-A normalization. Golden fixtures use separate test encoder/shared crypto, not external interoperability oracle.",
+  "snapshot_limit": "Before files contain complete selected manifests. After files are derived rehash/comparison summaries, not second saved complete manifests. No whole-workspace qualification is claimed.",
+  "not_run": [
+    "Original protected I installer/root/SCM record, finite P delegation and key provisioning/store",
+    "Actual distinct P/S/O primary TokenUser and retained process identity/rights, exact launch-file custody",
+    "P/S/O native acceptance and OS-backed one-claim/restart/republication/uncertain Commit",
+    "Independent W authenticated transport/lifetime, cancellation/join/flush",
+    "HMBP0003 framed channel and aggregate startup deadline, actual secret receipt/release",
+    "Runtime-private Ready, same-gate final enqueue/Active/origin effects",
+    "Protected unattended provider and cold reboot; Linux/macOS backends",
+    "Fresh hosted ephemeral SCM/accounts/profile/remote refusal and Docker product e2e"
+  ],
+  "revalidation": "Audit source edits were not imported into the immutable archived selected closure. This receipt covers only captured96packages and exact overlay. Any later audit/dependency/runtime change inside a new selected closure requires fresh source-bound component checks; native/hosted/Ready gates require their actual final source/topology and cannot inherit historical8132117 runs.",
+  "private_evidence": "evidence:root/20261107053238",
+  "raw_files": [
+    {
+      "name": "kernel-r2-before.json",
+      "sha256": "6cc3ceebe887fb51af87e4ff9ee86b1e58f802361aa836daa7a2f67e963263c7",
+      "bytes": 1119764
+    },
+    {
+      "name": "kernel-r2-check.log",
+      "sha256": "cc6c0fa8f1539fe9f339acdf3869f5f92195236570dd4932045a48e9e2a39b06",
+      "bytes": 3940
+    },
+    {
+      "name": "kernel-r2-clippy.log",
+      "sha256": "878e2ed88d139f95cfafe3323dd275ef04d853fee586bd967a33f4d664649781",
+      "bytes": 1659
+    },
+    {
+      "name": "kernel-r2-final-after.json",
+      "sha256": "19ae1029558b099475b6f304e2991ab4b3617a8e4551f71f6455405bd7bae9cc",
+      "bytes": 912
+    },
+    {
+      "name": "kernel-r2-fmt-first.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "kernel-r2-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "kernel-r2-initial-after.json",
+      "sha256": "5252d5316bd9da4e345ea3acc5f0f8116ba4c5ebfea4e682efe3597205de1f77",
+      "bytes": 299
+    },
+    {
+      "name": "kernel-r2-lease.json",
+      "sha256": "d100354a7afaa45d511573b0c615d138db84870a8cd2a862805146c680589b39",
+      "bytes": 613
+    },
+    {
+      "name": "kernel-r2-lib.log",
+      "sha256": "a8e343cc3341799c22b22ca9dd9a4a98744268b8ceeb7f181f20cd1241e1174d",
+      "bytes": 7531
+    },
+    {
+      "name": "kernel-r2-list.log",
+      "sha256": "0de613ccf956a036f43ed619779983d9479a0a3a854aa192fe73ef37b9fccdd1",
+      "bytes": 7809
+    },
+    {
+      "name": "kernel-r2-repair1-after.json",
+      "sha256": "9aa84dae13d085a51b905f76f2416ab0d3ac6008ec9c775577f7fa600c92e8c1",
+      "bytes": 189
+    },
+    {
+      "name": "kernel-r2-repair1-before.json",
+      "sha256": "e02ccac53a3e29b3782de88e8869c436e9c7b336d11ebd29f00c7e5bb308ea97",
+      "bytes": 1119764
+    },
+    {
+      "name": "kernel-r2-repair1-overlay.json",
+      "sha256": "091df5b159ef4179df8c7343b8ff15206524d80369500143efb154d3340c3d62",
+      "bytes": 580
+    },
+    {
+      "name": "kernel-r2-repair1-vectors.log",
+      "sha256": "36697c6f4fe3d3bc8f8dd92354874de35e9bbd86384e46ec49ed43190ccbad41",
+      "bytes": 9035
+    },
+    {
+      "name": "kernel-r2-repair2-before.json",
+      "sha256": "763dfa1e1b0c60f76c5f48e527e78420d47e1a0ca42738f6bde4f6bbade15123",
+      "bytes": 1120338
+    },
+    {
+      "name": "kernel-r2-repair2-check.log",
+      "sha256": "5531308606a36121a90c646d3fa3de6e6e7b89ddf4ecb72761437dabef7de0fd",
+      "bytes": 231
+    },
+    {
+      "name": "kernel-r2-repair2-clippy.log",
+      "sha256": "3f5fb4790e2910742009dc334617a0e6e0ae9f5c2f6ea3e25a52d99c96d9cced",
+      "bytes": 231
+    },
+    {
+      "name": "kernel-r2-repair2-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "kernel-r2-repair2-lib.log",
+      "sha256": "ecd1c58964413d8f83605653071da6e14282d54e5c1259b6615caffe7a3d4ad3",
+      "bytes": 3960
+    },
+    {
+      "name": "kernel-r2-repair2-list.log",
+      "sha256": "812eddd320767d003566b92755c2d67210642fb695b6d3fc97b2ef0f5061ddd3",
+      "bytes": 3801
+    },
+    {
+      "name": "kernel-r2-repair2-overlay.json",
+      "sha256": "04908eda0459bfc6da633b314a29f2b6466c0035fc55cec5e72bb473b26de809",
+      "bytes": 968
+    },
+    {
+      "name": "kernel-r2-rustc.log",
+      "sha256": "2a9ba90ddc1895fc7b4d94baee548ac7947533b6ef348fc9f010ab5d9f3d7898",
+      "bytes": 201
+    },
+    {
+      "name": "kernel-r2-tree.log",
+      "sha256": "f1a723a37894ba7eb661588f2bb3399186f860a447689c7b22071194d3b1ed30",
+      "bytes": 6247
+    },
+    {
+      "name": "kernel06-fmt-first.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "kernel06-lease-start.json",
+      "sha256": "e064fd1ac758df278c80a06b77b1681c2202235943276ccf10f95e08a61383f5",
+      "bytes": 540
+    },
+    {
+      "name": "kernel06-preparation-failure.json",
+      "sha256": "318d30ad44e2924a4f9de89fa9f311a8f515fd75dca154bc1e9047c8a7035008",
+      "bytes": 938
+    },
+    {
+      "name": "kernel06-source.tar",
+      "sha256": "0f1ddbb3bdb9fe8068bf52b5b9549eee45bc291a6b0a38034b64ad7c39958f32",
+      "bytes": 72376320
+    },
+    {
+      "name": "kernel06-timezone-correction.json",
+      "sha256": "881b4e3ac23902d418dc59114bd81e3b03face26ffff446d8968cd52d1100f1e",
+      "bytes": 808
+    }
+  ],
+  "archive_registration": "kernel06-source.tar retained privately with SHA256 in raw_files; spec attach refused72,376,320-byte archive, no upload bypass. Logs/snapshots registered separately."
+}
