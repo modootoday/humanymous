@@ -644,3 +644,22 @@ report dependency/feature gaps before root manifest integration. No local SCM or
 account action, production credential, full issuer/channel implementation or
 additional runtime test was performed. Full implementation still requires accepted
 API, exact golden vectors and actual probe proof; remaining P0s are not waived.
+
+## Native v0.4 nonfrozen Hello and probe review
+
+Read exact nonfrozen draft SHA256
+a98c20f2d0a2d96b3672a662d64a8492834511a4161a16ea99371b83b09ff0f6.
+Independently constructed its listed compact ASCII Hello fields and counted
+2653bytes:1938 artifact hex +83 grant JSON syntax +632 outside. Authority has no
+objection to the closed ASCII/key-order/re-encode wire direction. This is NOT a
+format freeze, golden-vector execution or channel implementation approval.
+
+New probe requirement: the ordinary fixture controller must be named I/T, distinct
+from ACTUAL publisher service P. Cross-SID query/pipe edges must execute under the
+actual P/S/O service tokens with per-edge privilege, expected-role, native query,
+ACL denial and cleanup facts. Ordinary controller/admin access cannot substitute
+for service P access. Forwarded this ambiguity to native owner/root. The new
+LaunchTicket/cursor and changed role_plan_digest binding are separate unresolved
+format/replay/atomic-publication proposals; Hello agreement does not approve them.
+Safe feature/dependency integration, cross-instance TEST credential handoff and
+actual native probe gates remain. No source implementation or new execution.
