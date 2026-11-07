@@ -41,6 +41,13 @@ documentation checks, same-crate privacy probes and nine isolated feature/API
 checks. Normal Cargo package verification passed for the default library. These
 are distinct scopes; do not sum them into a full native/product result.
 
+Platform source integration is committed at89715c04d007abf87b36efe6508a9e54fa6aa018.
+Post-integration review found native helper accounting assumes a package-name
+fragment in Cargo's opaque ID; the new brand-matching path actually emits a
+version-only fragment. Required accounting fails closed, but the consumer is not
+qualified. Native owns exact metadata/workspace/manifest identity resolution and
+negative regression tests before another native harness qualification claim.
+
 The existing9586 hosted workflow still exposes major migration debt. Its legacy
 Core/Gate image jobs refuse the remaining Go shipping input before Docker build
 or scanning; a successful separate Rust candidate image is not their replacement.

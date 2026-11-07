@@ -211,6 +211,16 @@ The package-count milestones are41 initially,35 after core,34 after platform,
 the facade and collector changes paths without reducing this count. These are
 planned structural counts, not functional completion or performance claims.
 
+Cargo package IDs are opaque join keys. The observed new core/platform IDs end
+in #0.1.0 because their leaf directory matches their package name, while older
+paths produced a name/version fragment. Never infer package ownership from
+substring or suffix grammar. Native helper/role accounting must resolve the
+artifact's exact package_id through the same-source metadata workspace-member
+map, checking expected package name, manifest role, target and kind. Registry or
+unrelated path packages with the same name cannot obtain a helper waiver. The
+first platform checkpoint exposed this consumer defect; its local boundary
+tests do not qualify native harness accounting until the correction is validated.
+
 Move safe engine first, then runtime/platform contracts, developer tools, adapters
 by qualified role, and browser last. Each slice updates imports, manifests,
 fixtures, locks, CLI/workflow selectors, source inventories, packaging recipes,
