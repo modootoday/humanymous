@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/navigation.rs",
+  "sha256": "3a04a35e58c6c1cb16dce20572dc0f1cd20d4b17ccd2b8e7b7f40915653cf1fc",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete361line CEF navigation adapter: preflightallowlist/tickets, pendingcommit/load200/sourceidentity separate receipts128+dropcount, supersede/revoke/task/frame/error/8MiB sourcebudget/timeout. Sourcevisitor ticket guards, gesture hostqueue and resource/download refusal; structural substringidentity is not fullrender/OSsandbox/network or actual native browser qualification. Raw source transient, no publiccontent retained.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/audit/src/keys/backups/retained.rs",
+  "sha256": "98347efd011802bda9ffb853e959a48fa541db533d257025899b9f332fd0c9d9",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete91line retainedbackup bridge: actual authenticated inventory anchor, exact retainedgrant scope/authority/anchor, active/sealedfile precheck, grant execute reconcile. Fresh distinct-operation recovery only exactRetiring prior; retain oldinventoryoperation/newcontrolreceipt and correlate both plus anchors. Caller witness-beforeeffect/latestpinack; no physical/unknowncopy or currentnative proof. Public entrypoint prose update pending next content checkpoint after hosted freeze.",
+  "pages": [
+    "docs/runbooks/erasure-crypto-shred.md"
+  ]
+},
+{
   "source": ".github/workflows/pages-validation.yml",
   "sha256": "af20f6b1ca2b7e55311832d268c1b75df41e374c4bc7afcbcd61ef9862f312d0",
   "reviewer": "codex/rust-pages",

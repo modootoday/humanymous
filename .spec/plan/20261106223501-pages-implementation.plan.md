@@ -1898,3 +1898,17 @@ beforeafter sourceguard reviewed. Added receipts for newcaller+pagesmodule only;
 existing changedbuildworkflow not bulkhashrenewed. Shared source review sent to
 CIowner, no blocking mismatch found at this checkpoint, no compile/policy/native
 or actualhostedrun inferred. Publicdocs remain frozen since4fbe782 content.
+### Retained backup API and native navigation review
+
+Read complete91line backups/retained.rs: authenticatedactualinventory/anchor,
+retainedgrant exactscope/issuer/pin, Active+sealed checks, fresh distinct grant
+for exactRetiring prior, oldinventoryID/newcontrolID and beforeafteranchor audit
+correlation. Fullreceipt added; pending publicrunbook API paragraph after frozen
+buildcheckpoint, no qualification claimed. Existing legacy localretire separate.
+
+Read complete361line CEF navigation in two bounded sections, fullreceipt added:
+allowlist/ticket/request/commit/load200/structuralcontent/error/timeout separate,
+128receipts+dropcounter,8MiB transient sourcebudget, gesturehostqueue/resource
+refusal. Substring identity not fullrender/security/AT proof. Currentpublictext
+already consistent, no contentedit during frozenbuild. Sourcechecker88errors0,
+scopedSpec0/0. Remainingfreshness still requires all unreviewed/changed inventory.
