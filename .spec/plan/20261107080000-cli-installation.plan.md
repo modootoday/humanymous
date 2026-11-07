@@ -24,6 +24,26 @@ release artifact provenance and privileged/service registration remain open.
 
 ## Service follow-through (2026-11-07 KST)
 
+### Authored watchdog subprocess boundary fixture
+
+Follow-up after immutable792a2fab/acc77d2c: the opt-in existing service-fixture
+binary accepts exact --watchdog-boundary positive/blocked-stdout/blocked-stderr/
+late-completion modes only with runtime-service-pilot. It uses the real Supervisor
+and shared production JSON serialize/write/flush helper under one600ms original
+stop deadline. Fixed8MiB synthetic pressure is a test payload, not a valid host
+plan or runtime drain/flush proof; reports explicitly mark runtime completion
+simulated and product_qualified=false. No native service/account/network operation
+is involved. Default production CLI and runtime-service omit the fixture module.
+
+The actual parent regression must consume the native owner's retained supervisor,
+not fork ManagedChild or claim hard cleanup from the legacy capture helper. It
+must independently observe writer/pipe pressure, retain intentionally unread
+stdout/stderr, verify positive exit0 and actual watchdog exit74, keep cleanup and
+reap facts separate, and preserve one parent deadline without a fallback-kill pass.
+Shared native API/support and any root-owned dependency integration remain pending.
+No ignored placeholder test is counted as an implemented parent regression. This
+source is authored/NOT_RUN; fmt/diff checks alone do not qualify subprocess behavior.
+
 ### Active goal continuation
 
 get_goal returned no unfinished goal; an explicit user-requested goal was created

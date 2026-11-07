@@ -5,7 +5,7 @@ use super::{HostPlan, NativeSecrets, invalid};
 #[cfg(not(windows))]
 use super::{HostReadiness, control::StopHandle};
 use std::io;
-#[cfg(not(windows))]
+#[cfg(any(not(windows), feature = "runtime-service-pilot"))]
 use std::io::Write;
 
 pub(super) fn execute(plan: HostPlan) -> io::Result<()> {
@@ -24,7 +24,14 @@ pub(super) fn execute(plan: HostPlan) -> io::Result<()> {
 #[cfg(not(windows))]
 fn output(value: &impl serde::Serialize) -> io::Result<()> {
     let mut output = std::io::stdout().lock();
-    serde_json::to_writer(&mut output, value)
+    write_report(&mut output, value)
+}
+#[cfg(any(not(windows), feature = "runtime-service-pilot"))]
+pub(super) fn write_report(
+    output: &mut impl Write,
+    value: &impl serde::Serialize,
+) -> io::Result<()> {
+    serde_json::to_writer(&mut *output, value)
         .map_err(|_| invalid("non-secret lifecycle report"))?;
     output.write_all(b"\n")?;
     output.flush()

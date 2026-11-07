@@ -127,6 +127,21 @@ mod scm {
 }
 
 fn run() -> std::io::Result<()> {
+    #[cfg(feature = "runtime-service-pilot")]
+    {
+        let args = std::env::args().skip(1).collect::<Vec<_>>();
+        if args
+            .first()
+            .is_some_and(|value| value == "--watchdog-boundary")
+        {
+            if args.len() != 2 {
+                return Err(std::io::Error::other(
+                    "exact watchdog boundary case required",
+                ));
+            }
+            return humanymous_cli::runtime_host::watchdog_fixture::run(&args[1]);
+        }
+    }
     let (name, address, response, scm) = configuration()?;
     #[cfg(windows)]
     if scm {

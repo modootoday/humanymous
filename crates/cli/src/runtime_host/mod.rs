@@ -10,6 +10,9 @@ mod pilot;
 pub use pilot::PilotPlan;
 mod plan;
 mod platform;
+/// Opt-in owned-process watchdog boundary fixture, never service qualification.
+#[cfg(feature = "runtime-service-pilot")]
+pub mod watchdog_fixture;
 use control::Supervisor;
 pub use failure::{HostFailure, describe_failure};
 use humanymous_authority::credentials::Credential;
