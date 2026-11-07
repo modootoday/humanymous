@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 83,
-      "macos": 83,
-      "windows": 79
+      "linux": 102,
+      "macos": 102,
+      "windows": 98
     },
     "common_test_names": [
       "service::authorization::tests::checked_fixture_retains_same_configuration_and_public_data",
@@ -90,7 +90,26 @@
       "tests::tls::dispatch::chrome_claim_over_actual_rustls_is_audited_and_never_reaches_origin",
       "tests::tls::dispatch::truthful_native_tls_profile_preserves_policy_and_origin_agreement",
       "tests::tls::observation::actual_client_hello_and_negotiated_alpn_share_the_request_owner",
-      "tls::tests::configuration_refuses_profiles_without_a_tls_h1_consumer"
+      "tls::tests::configuration_refuses_profiles_without_a_tls_h1_consumer",
+      "shipping::tests::bounds::every_scope_token_enforces_exact_ascii_length_and_alphabet",
+      "shipping::tests::bounds::authority_is_exact_bounded_ascii_data_without_address_normalization",
+      "shipping::tests::bounds::epoch_requires_exact_lower_hex_and_nonzero_but_proves_no_freshness",
+      "shipping::tests::bounds::both_digest_fields_are_exact_lower_hex_external_document_assertions",
+      "shipping::tests::bounds::generation_requires_positive_safe_integer_without_coercion_or_overflow",
+      "shipping::tests::envelope::both_roles_preserve_immutable_scope_binding_and_original_input",
+      "shipping::tests::envelope::standard_whitespace_and_decoded_escaped_keys_and_tokens_are_valid",
+      "shipping::tests::envelope::duplicate_decoded_fields_refuse_at_every_object_level",
+      "shipping::tests::envelope::unknown_fields_refuse_at_every_object_level",
+      "shipping::tests::envelope::every_required_root_scope_and_binding_field_is_required",
+      "shipping::tests::envelope::scalar_types_and_positional_objects_cannot_bypass_closed_schema",
+      "shipping::tests::envelope::role_schema_aliases_and_trailing_documents_are_rejected",
+      "shipping::tests::envelope::original_raw_budget_is_enforced_before_json_parsing",
+      "shipping::tests::envelope::public_errors_are_fixed_redacted_and_have_no_parser_source",
+      "shipping::tests::providers::both_roles_must_declare_each_of_four_providers",
+      "shipping::tests::providers::bounded_optional_declarations_preserve_order_without_provider_observations",
+      "shipping::tests::providers::duplicate_unknown_and_wrong_type_provider_declarations_refuse",
+      "shipping::tests::providers::seventh_provider_is_refused_before_decoding_or_collecting_its_value",
+      "shipping::tests::providers::repeated_epoch_generation_and_digests_remain_data_not_replay_authority"
     ],
     "unix_extra_test_names": [
       "tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",

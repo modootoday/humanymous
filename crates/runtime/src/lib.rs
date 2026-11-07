@@ -8,6 +8,7 @@ pub mod management;
 pub mod service;
 pub mod session;
 pub mod settings;
+pub mod shipping;
 pub mod startup;
 pub mod tls;
 

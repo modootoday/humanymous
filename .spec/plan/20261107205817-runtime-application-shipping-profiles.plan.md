@@ -22,6 +22,39 @@ remain unchanged. Root must canonize the explicit new public contracts below.
 
 # Source and inventory limits
 
+## Accepted first DATA parser implementation — source authored
+
+Root accepted the exact five-field envelope in
+plan:root/20261107211302 and authorized source/tests under current Runtime,
+eventually gateway::shipping. This accepts only pure DATA, not the rest of C1-C8.
+shipping::parse_public_role_data is the single parser with immutable role/scope/
+binding/provider views and fixed redacted errors. Original input is capped at
+32768 bytes before parsing. Typed object visitors enforce closed maps and decoded
+duplicate keys without an overwriting JSON Value intermediary; positional arrays
+and object-form role variants refuse. All lengths/grammars precede hex decoding.
+The provider visitor has constant six-element capacity, rejects duplicates and
+missing mandatory first-four declarations, and refuses the seventh before its
+value is decoded or collected. H2/collector declarations waive no later rules.
+
+Scope and generation/digest/epoch values remain assertions. There is no binding
+comparison helper, generation reservation/freshness check, serialization/raw
+Debug, I/O, clock, callback, secret/address/path reference or native/Ready factory.
+Existing private Configuration and Cargo dependencies are unchanged. Source is
+split by envelope/visitor, scope and binding responsibilities with meaningful
+negative and positive unit groups. All authored implementation/tests are Rust.
+
+Nineteen authored units cover both roles and preserved input, raw/decoded size
+boundaries, schema/role aliases and trailing JSON, every missing/unknown/type
+case, decoded escaped duplicates at each object level, positional arrays,
+epoch/digest/generation bounds, required providers/duplicates/types/seventh seed,
+fixed redacted errors and repeated assertions without replay authority. Exact
+paths/SHA256 and test names are attached as public-role-data-source.json under
+evidence:root/20261107061821. Source formatting and diff whitespace check passed;
+NO compiler/Clippy/test execution occurred. Authored library inventory is now
+Windows98/Unix102 with unchanged native-process target. Root must freeze source
+and allocate bounded check/Clippy/exact-list/selected19 execution; earlier leaf
+or core/platform proofs do not qualify this parser or integrated graph.
+
 Read plan:root/20261107205157 and Delivery's shipping-role-source-map.json first.
 The attached runtime-shipping-behavior-inventory.json in
 evidence:root/20261107061821 binds186 observed source/deployment inputs,62 route/

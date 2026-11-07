@@ -1,0 +1,112 @@
+{
+  "schema": "humanymous.runtime-public-role-source/1",
+  "accepted_plan": "plan:root/20261107211302",
+  "kind": "Source authored, uncompiled/unexecuted; bounded DATA parser only",
+  "api": "shipping::parse_public_role_data(&[u8]) -> Result<PublicRoleData, PublicRoleDataError>",
+  "files": [
+    {
+      "path": "crates/runtime/qualification-contract.json",
+      "bytes": 10630,
+      "sha256": "b47500cba412070d638b1159cec8b7adb215f3458e6cfc64f899c621e8a7738d"
+    },
+    {
+      "path": "crates/runtime/src/lib.rs",
+      "bytes": 367,
+      "sha256": "54fb6bb5814f6e5fd1846df0408c93222f573403589d4c921f207c0cd3734928"
+    },
+    {
+      "path": "crates/runtime/src/shipping.rs",
+      "bytes": 3518,
+      "sha256": "b4cda834adcf0fa4983521f58b58fab0823aac53cecd8b576320432a8abbfe5c"
+    },
+    {
+      "path": "crates/runtime/src/shipping/binding.rs",
+      "bytes": 1789,
+      "sha256": "05097e0ae6560946af9725cccb32e86a1382d97e5b95a4d7bcb93ea043f64e6e"
+    },
+    {
+      "path": "crates/runtime/src/shipping/scope.rs",
+      "bytes": 1920,
+      "sha256": "7fc02698d5ca5a16a4f636334c4a2cab091da3d5b8c87799e63b99dff5714094"
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests.rs",
+      "bytes": 1251,
+      "sha256": "6b2f5182ab1b4061862d5147e91a0cba8b0ea1e44c35d79aeb1966d1b5d5aa53"
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests/bounds.rs",
+      "bytes": 3440,
+      "sha256": "6fde5b8a4f91931d028ec1709a27b5e64284d49f029c6564d01b0f978ce2e2d9"
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests/envelope.rs",
+      "bytes": 6249,
+      "sha256": "929f0e602f987e6e65cc514097282aff829dd624b311495d18f3a587d3231101"
+    },
+    {
+      "path": "crates/runtime/src/shipping/tests/providers.rs",
+      "bytes": 3420,
+      "sha256": "e8c07914816e47b9ce5db8990f1914708c124a196af90570bcb9b3709550c7ef"
+    },
+    {
+      "path": "crates/runtime/src/shipping/wire.rs",
+      "bytes": 4096,
+      "sha256": "928d1d4a9b704f161b5570639c21ee2b56d211d7c8f2dcaed932e3a3af237630"
+    }
+  ],
+  "new_tests": 19,
+  "selector": "shipping::tests::",
+  "test_names": [
+    "shipping::tests::bounds::every_scope_token_enforces_exact_ascii_length_and_alphabet",
+    "shipping::tests::bounds::authority_is_exact_bounded_ascii_data_without_address_normalization",
+    "shipping::tests::bounds::epoch_requires_exact_lower_hex_and_nonzero_but_proves_no_freshness",
+    "shipping::tests::bounds::both_digest_fields_are_exact_lower_hex_external_document_assertions",
+    "shipping::tests::bounds::generation_requires_positive_safe_integer_without_coercion_or_overflow",
+    "shipping::tests::envelope::both_roles_preserve_immutable_scope_binding_and_original_input",
+    "shipping::tests::envelope::standard_whitespace_and_decoded_escaped_keys_and_tokens_are_valid",
+    "shipping::tests::envelope::duplicate_decoded_fields_refuse_at_every_object_level",
+    "shipping::tests::envelope::unknown_fields_refuse_at_every_object_level",
+    "shipping::tests::envelope::every_required_root_scope_and_binding_field_is_required",
+    "shipping::tests::envelope::scalar_types_and_positional_objects_cannot_bypass_closed_schema",
+    "shipping::tests::envelope::role_schema_aliases_and_trailing_documents_are_rejected",
+    "shipping::tests::envelope::original_raw_budget_is_enforced_before_json_parsing",
+    "shipping::tests::envelope::public_errors_are_fixed_redacted_and_have_no_parser_source",
+    "shipping::tests::providers::both_roles_must_declare_each_of_four_providers",
+    "shipping::tests::providers::bounded_optional_declarations_preserve_order_without_provider_observations",
+    "shipping::tests::providers::duplicate_unknown_and_wrong_type_provider_declarations_refuse",
+    "shipping::tests::providers::seventh_provider_is_refused_before_decoding_or_collecting_its_value",
+    "shipping::tests::providers::repeated_epoch_generation_and_digests_remain_data_not_replay_authority"
+  ],
+  "authored_windows_library_inventory": 98,
+  "authored_unix_library_inventory": 102,
+  "preserved_private_configuration_and_manifest": [
+    {
+      "path": "crates/runtime/src/configuration.rs",
+      "sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e"
+    },
+    {
+      "path": "crates/runtime/src/configuration/audit.rs",
+      "sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f"
+    },
+    {
+      "path": "crates/runtime/Cargo.toml",
+      "sha256": "52127fac053b7aa686c75242cc07864086af07b568fd7bbd063b265df126183f"
+    }
+  ],
+  "raw_input_max": 32768,
+  "provider_max": 6,
+  "mandatory_providers": 4,
+  "seventh_refuses_before_value_decode": true,
+  "strict_object_visitors": true,
+  "no_raw_debug_or_serialize": true,
+  "comparison_helper": false,
+  "io_or_native_factory": false,
+  "cargo_dependencies_changed": false,
+  "source_format_exit": 0,
+  "diff_whitespace_exit": 0,
+  "compiler_executed": false,
+  "clippy_executed": false,
+  "tests_executed": false,
+  "remaining_scope": "All27shipping behaviors; actual public ingress/origin/admin/TLSH2/native/W/Ready and product gates remain open."
+}
