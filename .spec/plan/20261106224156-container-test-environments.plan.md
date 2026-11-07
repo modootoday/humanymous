@@ -12,6 +12,8 @@ rel:
 
 ## Rust-only v2 continuation (2026-11-07 KST)
 
+- [x] Prepare finite browser failure classifier after actual306/run42390164354: recognize only pinned complete selected-test FAIL, missing-summary report or WebDriver session-request context; reject duplicate/ambiguous/payload input. Require valid original actor, failed process, matched inventory and successful DNS finish. Preserve the shared13-field validator/contract hashes, witness assertion,18-case accounting, deadlines and full refusal. Source only: expected Lab28 tests, compilation/Clippy/consumer review and actual hosted retry are NOT_RUN; no WSL or target allocation is held.
+
 - [x] Active goal established by explicit user instruction: complete Rust Compose product lab, separate browser namespace, actual runtime/witness, egress/recovery/cleanup and hosted evidence. Product-lab lane is dedicated; no completion claim before source/unit/hosted/strict accounting/evidence/owned commits.
 - [x] Docker Compose added as supported deployment/product-test integration (not a language adapter): role wiring, readiness/order, private credentials, hardening, drain, witness recovery, evidence and fail-closed qualification are normative in container SoT.
 - [ ] Integrate nginx35-group owner contract and server-framework-owned Apache hosted pilot with immutable source/image/lock and independent strict denominators; actual composition not_run.

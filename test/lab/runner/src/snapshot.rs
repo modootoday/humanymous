@@ -223,6 +223,7 @@ mod tests {
             "test/lab/browser_expectations.rs",
             "test/lab/browser_outcome.rs",
             "test/lab/runner/browser-outcome-contract.json",
+            "test/lab/runner/src/orchestration/browser_failure.rs",
             "test/lab/runner/mount-probe-contract.json",
             "deployments/lab/compose.rust.mount.yaml",
             "deployments/lab/images/product.Dockerfile",

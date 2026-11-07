@@ -126,17 +126,39 @@ fn extract(actor: &Value, fixture: &Value, expected: &Value) -> Result<Value, &'
     )
 }
 
-pub(super) fn from_stdout(bytes: &[u8], fixture: &Value, expected: &Value) -> Value {
+pub(super) fn from_stdout(
+    bytes: &[u8],
+    fixture: &Value,
+    expected: &Value,
+) -> (Value, Option<&'static str>) {
     if bytes.iter().all(u8::is_ascii_whitespace) {
-        return unavailable("missing");
+        return (unavailable("missing"), None);
     }
-    match decode_strict_json(bytes, 2 * 1024 * 1024)
-        .ok()
-        .and_then(|actor| extract(&actor, fixture, expected).ok())
+    let Ok(actor) = decode_strict_json(bytes, 2 * 1024 * 1024) else {
+        return (unavailable("invalid"), None);
+    };
+    let Ok(value) = extract(&actor, fixture, expected) else {
+        return (unavailable("invalid"), None);
+    };
+    let failure = if value["process_success"] == false
+        && value["inventory_matched"] == true
+        && value["dns_finish"] == "succeeded"
     {
-        Some(value) => value,
-        None => unavailable("invalid"),
-    }
+        super::browser_failure::classify(
+            actor["test_output"]
+                .as_str()
+                .expect("validated actor output"),
+            actor["test_stderr"]
+                .as_str()
+                .expect("validated actor stderr"),
+            actor["selected_test"]
+                .as_str()
+                .expect("validated owned name"),
+        )
+    } else {
+        None
+    };
+    (value, failure)
 }
 
 #[cfg(test)]
@@ -167,7 +189,9 @@ mod tests {
     #[test]
     fn original_actor_report_rebuilds_only_scalars_before_any_witness_claim() {
         let (mut actor, fixture, expected) = actor();
-        let value = from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected);
+        let (value, failure) =
+            from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected);
+        assert_eq!(failure, None);
         assert_eq!(value["state"], "observed");
         assert_eq!(value["exit_code"], 1);
         assert_eq!(value["inventory_count"], 67);
@@ -176,8 +200,25 @@ mod tests {
         actor["dns_finish"] = json!("failed");
         actor["dns_policy"] = Value::Null;
         assert_eq!(
-            from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected)["dns_finish"],
+            from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected).0["dns_finish"],
             "failed"
+        );
+        actor["test_stderr"] = json!("Error: webdriver POST /session request failed");
+        assert_eq!(
+            from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected).1,
+            None
+        );
+        actor["dns_finish"] = json!("succeeded");
+        actor["dns_policy"] = json!({});
+        assert_eq!(
+            from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected).1,
+            Some("browser_driver_session_request_failed")
+        );
+        actor["test_process_success"] = json!(true);
+        actor["test_exit_code"] = json!(0);
+        assert_eq!(
+            from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected).1,
+            None
         );
     }
 
@@ -192,7 +233,7 @@ mod tests {
         );
         for bytes in [format!("{raw}\n{raw}"), duplicate] {
             assert_eq!(
-                from_stdout(bytes.as_bytes(), &fixture, &expected)["state"],
+                from_stdout(bytes.as_bytes(), &fixture, &expected).0["state"],
                 "invalid"
             );
         }
@@ -208,14 +249,14 @@ mod tests {
                 6 => value["test_inventory"][0] = json!("x".repeat(1025)),
                 _ => value["test_output"] = json!({"PRIVATE_BODY":"PRIVATE_VALUE"}),
             }
-            let public = from_stdout(&serde_json::to_vec(&value).unwrap(), &fixture, &expected);
+            let public = from_stdout(&serde_json::to_vec(&value).unwrap(), &fixture, &expected).0;
             assert_eq!(public["state"], "invalid");
             assert!(public["inventory_count"].is_null());
             assert!(!public.to_string().contains("PRIVATE"));
         }
         assert_eq!(
             from_stdout(b" \n", &fixture, &expected),
-            unavailable("missing")
+            (unavailable("missing"), None)
         );
     }
 }

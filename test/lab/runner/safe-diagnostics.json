@@ -20,6 +20,8 @@
     "actor_browser_dns_finish",
     "actor_browser_test_passed", "actor_browser_test_failed",
     "actor_browser_dns_finished", "actor_browser_dns_finish_failed",
+    "browser_selected_test_failed", "browser_runner_no_summary_reported",
+    "browser_driver_session_request_failed",
     "assertion_failed", "execution_failed", "cleanup_failed",
     "go_fixture", "go_case", "actor_hardening", "actor_root_probe_eacces",
     "actor_root_probe_unknown", "actor_installation", "actor_writer_mount",

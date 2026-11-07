@@ -274,6 +274,27 @@ and child output is not independently attested, and shared subprocess lifecycle
 limits remain explicit residuals. The source design is ready for implementation;
 actual browser behavior and full product remain unmeasured by this delta.
 
+The actual306/run42390164354 outcome matches inventory67/1/66 and completes
+DNS finish, but the selected runner process exits1 without the exact passing
+summary. The next source-only diagnostic layer may classify existing private
+test output into three finite error codes, without changing the13-field object
+or the witness assertion. Match whole source-owned lines only: pinned
+wasm-bindgen-test0.3.80 rt/mod.rs emits `test {owned_name} ... FAIL` for a failed
+test; wasm-bindgen-cli0.2.130 headless.rs emits its fixed missing-summary
+sentence and a fixed `webdriver POST /session request failed` context. Only
+standard Anyhow `Error: ` or a bounded two-digit numbered context prefix may be
+removed for that last context. Never publish the matched line or any suffix.
+
+Use browser_selected_test_failed, browser_runner_no_summary_reported and
+browser_driver_session_request_failed in the existing closed error vocabulary.
+Require one unique match, a valid observed actor report, failed process,
+matched inventory and successful DNS finish before replacing the execution
+diagnostic code. Duplicate, ambiguous, prefixed-payload, appended-payload and
+unknown input retain the prior diagnostic; a missing summary is not proof of
+timeout or non-execution. Source-prefix authentication remains false. Preserve
+18-case accounting and the witness failure. Pure positive/injection tests and
+consumer recompile review precede any separately granted actual retry.
+
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
 pass. evidence:root/20261107083259 preserves the decoded public log and derived

@@ -46,6 +46,7 @@ fn safe_diagnostics(cases: &[Value]) -> Value {
 }
 mod browser;
 mod browser_actor;
+mod browser_failure;
 mod go;
 mod go_fixture;
 mod go_public;

@@ -285,12 +285,16 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         // can terminate the run. Raw output remains in the private bundle.
         match &captured {
             Ok(result) => {
-                lab.components["browser_actor_diagnostic"] =
+                let (outcome, failure) =
                     super::browser_actor::from_stdout(&result.stdout, &fixture, &expected);
+                lab.components["browser_actor_diagnostic"] = outcome;
                 if let Some(stage) =
                     super::startup_failure::classify(&String::from_utf8_lossy(&result.stderr))
                 {
                     lab.stage = stage;
+                }
+                if let Some(code) = failure {
+                    lab.stage = code;
                 }
             }
             Err(error) => {
