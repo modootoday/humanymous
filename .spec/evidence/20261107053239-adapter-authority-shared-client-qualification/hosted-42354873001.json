@@ -1,0 +1,53 @@
+{
+  "schema": "humanymous.authority.hosted-observation/1",
+  "candidate": "a26d1c3f08b365ca93545c6a51343095868edb45",
+  "audit_final_commit": "20b57d2",
+  "authority_source_unchanged_from": "40d0bdd",
+  "run_id": 42354873001,
+  "attempt": 1,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42354873001",
+  "workflow": ".github/workflows/ci.yml",
+  "status": "completed",
+  "conclusion": "startup_failure",
+  "jobs_total": 0,
+  "authority_executed_tests": 0,
+  "authority_test_result": "not_run",
+  "sealed_startup": "not_run",
+  "ipc_permissions_cancel_drain": "not_run",
+  "raw_run_sha256": "9df370c9d8766543d3a736be5969812e170fd6156af8b79254e6473af9a24a01",
+  "raw_jobs_sha256": "b3dab5870ff3a8209160335de7c1077b89e461d875d9041ac9d8b8ed7c1666f6",
+  "source_blobs": [
+    {
+      "path": "crates/authority/src/startup.rs",
+      "git_blob_sha1": "38466c580d3439681d0e3cf58bcc6c081f14ac20"
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "git_blob_sha1": "17c8e7808f49df211b7d013c58cffe2f1051a7f0"
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "git_blob_sha1": "48ea5a94a21b3ef30f038bdbf13b1200040efbd9"
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "git_blob_sha1": "eb483ba8a79dc75553cabf60ccfbadfafb1e84be"
+    },
+    {
+      "path": "crates/authority/src/lib.rs",
+      "git_blob_sha1": "28a1c235b78d0c6410de67be4948a89b6a4fd432"
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "git_blob_sha1": "d98f05d954d23ef18d51d55a5ef6c960b96578b9"
+    },
+    {
+      "path": "crates/authority/tests/local_service.rs",
+      "git_blob_sha1": "8fb596c6778ab60b155337cfee5d1136d6f2fa1c"
+    },
+    {
+      "path": "crates/authority/Cargo.toml",
+      "git_blob_sha1": "fc140a2fbfe378e88d48c060e6b4b80afe4b810d"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ id: evidence:root/20261107053239
 title: Adapter authority shared client qualification
 status: active
 created: 2026-11-07T05:32:38Z
-updated: 2026-11-07T08:16:26Z
+updated: 2026-11-07T08:19:25Z
 rel:
   depends_on: [sot:root/adapter-authority]
 files:
@@ -12,6 +12,7 @@ files:
   - {path: sealed-startup-source.json, sha256: dbdd5d4db9dac9d8122285c27bb235fdd1e48020a4ae37884cf46ecbc1307a64, bytes: 3078, store: repo}
   - {path: sealed-local-results.json, sha256: e2240677e28b0893050dd79c7dd670a4acac9bb69dcf7e0b2cd13b0f2cbdeebe, bytes: 1167, store: repo}
   - {path: sealed-revalidation-scope.json, sha256: dfc1e2de11efb2660320aa72ee9d65370fe868d9bd89febc80268d85af44c265, bytes: 2561, store: repo}
+  - {path: hosted-42354873001.json, sha256: feaebd98451516d314b97ed8e6e18ac91be9ecfce0bee6013df48622698db73d, bytes: 1827, store: repo}
 ---
 
 # Adapter authority shared client qualification

@@ -293,3 +293,20 @@ Local13passing observed runs remain evidence, not final frozen-graph qualificati
 Public sealed-revalidation-scope.json records exact current hashes and required
 gates, without assigning execution to source-only requirements. Root is preparing
 a fixed hosted candidate; no duplicate dispatch or local runtime execution.
+
+## First fixed-candidate hosted observation
+
+Remote branch now points to a26d1c3f08b365ca93545c6a51343095868edb45, which
+contains audit20b57d2 and the same eight authority source blobs as40d0bdd.
+Actual run42354873001/attempt1 (CI Validate, ci.yml, push) completed with
+startup_failure and jobs.total_count0. Authority executed0tests: sealed startup,
+IPC, cancellation/drain and otherUID all remain NOT_RUN, not failed test cases.
+Full run/jobs metadata recovered privately and hash-linked to sanitized public
+hosted-42354873001.json. CI owner reports reusable caller permission-chain issue
+and is fixing owned workflow/policy; authority does not bypass or duplicate dispatch.
+
+Public spec rechecks observed concurrent other-owner attachment windows: initially
+two wargame P2 registrations, then CLI summary E1. Own attachments remain valid;
+no foreign evidence mutation or waiver. Root confirms new failure cause is the
+ci caller actions:none ceiling versus nested actions:read. CI owner implements
+minimal caller permission fix/regression; root remains sole push/dispatch owner.
