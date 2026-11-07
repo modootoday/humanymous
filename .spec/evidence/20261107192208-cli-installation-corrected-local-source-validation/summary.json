@@ -1,0 +1,122 @@
+{
+  "schema": "humanymous.cli-corrected-data-validation/1",
+  "status": "passed-scoped-corrected-closure",
+  "source_sha": "f20db16ed32cae78c39057fa35319a142ccc78e3",
+  "venue": "local Windows x86_64-pc-windows-msvc",
+  "toolchain": "Rust1.99.1 edition2024",
+  "features": "humanymous-cli all-features",
+  "locked": true,
+  "offline": true,
+  "jobs": 1,
+  "incremental": 0,
+  "new_workspace": true,
+  "cache_reuse": "root-approved returned target cache; commands were cache hits, no fresh compiler work asserted",
+  "steps": [
+    {
+      "name": "fmt",
+      "exit": 0
+    },
+    {
+      "name": "metadata",
+      "exit": 0
+    },
+    {
+      "name": "check",
+      "exit": 0
+    },
+    {
+      "name": "list",
+      "exit": 0
+    },
+    {
+      "name": "pure11",
+      "exit": 0
+    },
+    {
+      "name": "clippy",
+      "exit": 0
+    }
+  ],
+  "tests": {
+    "inventory": 11,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 15
+  },
+  "clock": {
+    "source": "f20db16ed32cae78c39057fa35319a142ccc78e3",
+    "start_utc": "2026-11-08T04:21:02.6285841+09:00",
+    "work_deadline_utc": "2026-11-08T04:31:02.6285841+09:00",
+    "cleanup_deadline_utc": "2026-11-08T04:32:02.6285841+09:00"
+  },
+  "work_ended": "2026-11-08T04:21:24.782139+09:00",
+  "cleanup_utc": "2026-11-08T04:21:51.187592+09:00",
+  "lease_removed": true,
+  "target_returned": true,
+  "all_handles_terminal": true,
+  "selected_packages": 143,
+  "coverage_before_compiler": {
+    "local_packages": 16,
+    "local_manifests": 16,
+    "expected_rust_files": 434,
+    "exact_input_present": true,
+    "missing_paths": [],
+    "counts": [
+      {
+        "category": "local",
+        "files": 504
+      },
+      {
+        "category": "registry",
+        "files": 6666
+      },
+      {
+        "category": "root",
+        "files": 3
+      },
+      {
+        "category": "toolchain",
+        "files": 66
+      }
+    ],
+    "canonical_join_files": 507,
+    "canonical_mismatches": 0,
+    "exclusion": "package-root-relative target/.git only"
+  },
+  "before_files": 7239,
+  "after_files": 7239,
+  "difference_rows": 0,
+  "environment_variables": 17,
+  "environment_unchanged": true,
+  "all_canonical_package_inventory": {
+    "expected_files": 507,
+    "before_files": 507,
+    "after_files": 507,
+    "missing_before": 0,
+    "missing_after": 0,
+    "unexpected_before": 0,
+    "unexpected_after": 0,
+    "blob_mismatches_before": 0,
+    "blob_mismatches_after": 0,
+    "method": "post-run analysis of retained immediate snapshots against every Git file in selected packages and three root files"
+  },
+  "source_archive_sha256": "c3ba6d55df7b2a0a62efa214127ef97959b458206161475e0d33f7206f49c4d9",
+  "before_manifest_sha256": "4f8f71a512fabeda13f67c7fd94ac36c944b45a29f8e147b46240f4b1e3f56c0",
+  "after_manifest_sha256": "4f8f71a512fabeda13f67c7fd94ac36c944b45a29f8e147b46240f4b1e3f56c0",
+  "environment_sha256": "d7192319f88536666497ea6d7c4da63926626b8c4e6640005ec1446019820ee9",
+  "raw_inventory_sha256": "97da01008bdd26de3d2f59309db07c9b19b104c66f5b5750fdfb2feea2ec3493",
+  "raw_receipt": "evidence:root/20261107192210",
+  "prior_receipt": "evidence:root/20261107191156 remains HOLD; its6674-row defect is not retroactively repaired",
+  "native_preparation": "Unsupported",
+  "actual_service_validation": "NOT_RUN",
+  "product_qualified": false,
+  "limits": [
+    "DATA conversion type-checked;11 selected tests validate pure input/document/state boundaries, not a new signed CLI end-to-end test.",
+    "No service/account/SCM/listener/native pilot; compiler/test harness processes only.",
+    "Initial orchestration command was blocked before execution by PreToolUse misclassification of single-file cleanup; safe split orchestration and exact literal cleanup then ran once.",
+    "No source overlays, hidden retry or source corrections in run; no prior raw bytes changed.",
+    "No actual issuer/process claim/W/Ready/service lifecycle or audit drain/flush qualification."
+  ]
+}

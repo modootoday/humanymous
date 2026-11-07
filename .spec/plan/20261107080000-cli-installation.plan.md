@@ -409,7 +409,19 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
-CLI DATA source qualification is HOLD: independent CA-CLI-INPUT-01 audit found
+Root subsequently allocated a distinct corrected-source run, recorded in
+[[evidence:root/20261107192208]]. New immutablef20workspace, explicit cache reuse
+and new lease: fmt/check/pure11/strictClippy all0; exact11passed/15filtered.
+Before compiler commands,16local manifests/434Rust files/exactinput were asserted.
+Both snapshots contain504local+6666registry+3root+66toolchain files=7239,0drift;
+17environment variables match. Canonical507local/root Git blob joins match both
+phases; complete canonical module/fixture inventory has0missing/unexpected entries.
+Commands were cache hits, not a fresh compilation claim. Work22.15s, actual marker
+cleanup48.56s from original clock; all handles/leases returned. This new scoped
+proof does not retroactively repair the old6674-row run or qualify actual service.
+
+The earlier run's CLI DATA source qualification remains HOLD: independent
+CA-CLI-INPUT-01 audit found
 that d395a302's6674-row snapshots excluded all local package trees by matching
 the absolute target ancestor. No local Rust/package-manifest before/after hashes
 exist; archive provenance alone cannot prove actual compiled-source stability.
