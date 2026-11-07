@@ -3,11 +3,13 @@ id: evidence:root/20261107081545
 title: Native ABI pure ownership and export verification
 status: active
 created: 2026-11-07T08:15:45Z
-updated: 2026-11-07T08:16:39Z
+updated: 2026-11-07T08:37:45Z
 rel:
   depends_on: [sot:root/native-abi, plan:root/20261107072500]
 files:
   - {path: summary.json, sha256: a55a59d498914d90c7ba788b663def7b105f390f14f37c71419e7273d5673f49, bytes: 2406, store: repo}
+  - {path: hosted-startup-failure.json, sha256: aaef59afbb25b88e38aab3539a46c2129f6e84cb4401aff11582fe991980de59, bytes: 928, store: repo}
+  - {path: hosted-813-ubuntu.json, sha256: c9e34a3a2368ccf6bd1dbf105ef4c04c5454a7d5c92d126a7189646ae1fcca0b, bytes: 1446, store: repo}
 ---
 
 # Native ABI pure ownership and export verification
@@ -35,3 +37,25 @@ RAII/exception behavior, cross-OS runtime or product e2e. Parser fixtures are
 synthetic compiler diagnostic text only. Header generation and hosted Clang layout
 execution remain separate gates; approved managed generic-DLL loading will be
 reported separately from the .NET facade and middleware profile.
+
+## Separate hosted startup failure
+
+Direct GitHub connector reads of run42354873001 and its latest-attempt jobs
+confirmed sourcea26d1c3f08b365ca93545c6a51343095868edb45, completed/startup_failure
+and zero jobs/tests. The attached API projection is separate from the local pure
+receipt. Git ancestry confirms source checkpoints3ef6fdc and6e33131 are included;
+local evidence commit7cdfb31 is not included in that run's source. Root attributed
+the startup failure to the caller's Actions permission ceiling; the run/jobs API
+projection itself contains no cause field. No native or product acceptance follows
+from a zero-job run, and a later fixed run must not erase this failed attempt.
+
+## Fixed-source Ubuntu partial execution
+
+Run42355168729 targets exact8132117e7bf1445939d7dee9066fcf45ccf0915b. Its Ubuntu
+native job128351926093 built the full workspace/all targets, including native
+core/export. The following actor step failed after15of88required harnesses:
+51passed tests,0failed tests,4raw ignored,1error and coverage_complete=false.
+No native ABI harness appears in the executed list, so ABI hosted tests remain
+not_run. The attached sanitized projection retains that denominator; private
+bundle20261107083655-native-abi-hosted-ubuntu-attempt-813 retains original decoded
+logs and the parsed workspace summary. This is not a parent-run terminal claim.

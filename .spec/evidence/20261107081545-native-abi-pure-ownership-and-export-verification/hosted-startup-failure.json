@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.native-abi-hosted-attempt/1",
+  "source": "GitHub connector GET run and latest-attempt jobs",
+  "runId": 42354873001,
+  "sourceSha": "a26d1c3f08b365ca93545c6a51343095868edb45",
+  "runAttempt": 1,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42354873001",
+  "status": "completed",
+  "conclusion": "startup_failure",
+  "jobs": 0,
+  "executedAbiTests": 0,
+  "createdAt": "2026-11-07T08:17:51Z",
+  "nativeSourceCheckpointsPresent": [
+    "3ef6fdc4c30ed30fcd12a192e3771f460da72b5f",
+    "6e33131617338e0d00246ff658317550dbc0a9ab"
+  ],
+  "localPureEvidenceCommitPresent": false,
+  "localPureEvidenceCommit": "7cdfb31e61e136cf8e70375d5d2d893196bd9688",
+  "scope": "zero-job infrastructure startup failure; no ABI or product acceptance",
+  "causeAttribution": "Root reported caller permissions ceiling; cause not present in this run/jobs API projection",
+  "rootOnlyPushAndDispatch": true
+}
