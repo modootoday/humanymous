@@ -1,0 +1,19 @@
+{
+  "schema": "humanymous.delivery-public-metadata-encoding-erratum/1",
+  "problem": "Prior Windows authored metadata could use CRLF while Git stored LF; old envelope store:repo SHA/size described retained working bytes and did not reproduce canonical Git archive metadata.",
+  "correction": "Normalize authored public metadata to UTF-8 LF and recompute only envelope index hashes/sizes. Preserve parsed JSON values and all embedded execution/source/raw digests.",
+  "encoding_view_manifest": "encoding-views.json",
+  "base_commit": "11815fb72b81924df8753a6c7f70104028983519",
+  "retained_original_public_files": 80,
+  "original_before_manifest_sha256": "d7aaff5a1f09f6b8fcff897675baa8492115a053c44c63c27f3150973b1352b8",
+  "linked_partial_hash_meaning": "All existing linked_partial_observations[].sha256 remain the original retained working-byte view. Use encoding-views.json for canonical Git counterparts; no original measurement claim was silently changed.",
+  "unchanged_immutable_custody": {
+    "full1f87_original_zip_sha256": "772fdfaf6790c6e8f6cb88085ec0026a9d84a455c6f99fb45756f62fcee07e3c",
+    "full1f87_private_index_sha256": "2ce42ff37f2d32240c8f3378e11e4ece78f32f870d951a7753847b8fdfbcaecd",
+    "raw_profile_fixture_or_archive_bytes_normalized": false,
+    "old_git_commits_rewritten": false
+  },
+  "scoped_attributes": "Only this public metadata directory; no global .gitattributes or profile/fixture changes",
+  "terminal_facts_or_qualification_changed": false,
+  "gnu_ci_or_compiler_rerun_required": false
+}

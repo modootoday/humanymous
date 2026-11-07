@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T23:05:45Z
+updated: 2026-11-07T23:14:09Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -42,17 +42,17 @@ files:
   - {path: audit-source-0d739729-validation.json, sha256: 166f2f400af2eb00a2f2be9858e5cba4fc0f0dcef2e6cca09590fdb0690cdd97, bytes: 2442, store: repo}
   - {path: gpu-ci-compatibility-research.json, sha256: 7214b15eb307d112d433d76250ed91e745f282e4aa76270559ddaf1d5155396f, bytes: 4287, store: repo}
   - {path: actions-remediation-source.json, sha256: 714e884f91ce4936e1fff0ec44c775d24db3eeafe54cfe75f79bb060904e80dd, bytes: 3040, store: repo}
-  - {path: actions-annotation-accounting.json, sha256: 565973bc9a8c7716e0378f34d3e67fe09f4fa57958ce6d86def72dc9abec87c1, bytes: 14870, store: repo}
+  - {path: actions-annotation-accounting.json, sha256: d34202c1ce066b73b608537efb429ca4a3a5d646b562394e3354d313cef8b778, bytes: 14545, store: repo}
   - {path: actions-c3d81a7c-validation.json, sha256: cba0b5d1d63d531853b627cbea8cbb9229f6bdadb38d54a5b23e2be3660e64bb, bytes: 1253, store: repo}
-  - {path: frozen-archive-byte-followup.json, sha256: db60b2ea4b618cdcb0ae4420d7239b03716895a6e12ca96fb307e55de062f545, bytes: 1461, store: repo}
-  - {path: browser-e70-independent-consumption.json, sha256: 5c1dc2ab11e7dd0dc726196c984e46f15eb420ec7fbb09ddba9cf1f4b387933b, bytes: 1000, store: repo}
+  - {path: frozen-archive-byte-followup.json, sha256: 858d8e3f13a7d35959d5ecc33999fe2a4800a83abbc692eddb8696a46d2eb007, bytes: 1433, store: repo}
+  - {path: browser-e70-independent-consumption.json, sha256: 5d7209f263fe39a90e9e0f2a2b22a124a63f40eb3ed9c8cb7c0155876f756ff4, bytes: 977, store: repo}
   - {path: two-lane-source-audit.json, sha256: d38a6ecb4acd3568fc0a8384bb27a4120fd19620595ed8a1307f8631c01b826a, bytes: 3909, store: repo}
   - {path: go-facade-local-consumption.json, sha256: bb22f9b95eed2d0ebd241e669aebe864abb39e772be2519d0b931b8618cbc85e, bytes: 1677, store: repo}
-  - {path: go-facade-c858b1dc-binding.json, sha256: 497776ea17fb3a49d90a529ed38fb6ec0cc765e9a954de8a88900a3760710c9a, bytes: 14278, store: repo}
-  - {path: private-root-plan-review.json, sha256: a6bbfc23069673d2f2444b1a70c289d38d3d5352cd16f3f8e540d3ea5f3ac794, bytes: 5078, store: repo}
-  - {path: a19-policy-consumption.json, sha256: 397cadc6a42e9aaf056bed5cc520cbf12bf1a8167ba5aba0c9aaab5e440258ab, bytes: 1421, store: repo}
+  - {path: go-facade-c858b1dc-binding.json, sha256: e7727d3a2b1d6f1da99db61bb6c9dcfbf4deb2a5eda40004e524b7057d89dc85, bytes: 13911, store: repo}
+  - {path: private-root-plan-review.json, sha256: def96f1a10a7eddd04ad47efb293147ec2ba14c878690c40642de4cf8f13e517, bytes: 5028, store: repo}
+  - {path: a19-policy-consumption.json, sha256: 9d9026cb2f361db8e5d3c5ec731608481673a978648f273e9a438d60f25a2007, bytes: 1386, store: repo}
   - {path: dependabot-rust-disposition.json, sha256: ba19dfcb92aa56d7c64dd0374bc7877237f317038f117c4b15b6b983c7698b36, bytes: 7699, store: repo}
-  - {path: hosted-go-a19-consumption.json, sha256: e82c6b3f5fb452ca4d3625ffe88e7859d679296addd923edcee635a801732c37, bytes: 1402, store: repo}
+  - {path: hosted-go-a19-consumption.json, sha256: 31843936d3e73ed0065fe89826bc59788d5b3aa7f52292c0f542a241d88add74, bytes: 1372, store: repo}
   - {path: header-callsite-responsibility-proposal.json, sha256: 4ef64ea563a31d884944eb4c6cce1018d58aa1c8dacdf503dc6deee4869c81b4, bytes: 3860, store: repo}
   - {path: header-core-local-validation.json, sha256: 20d745e1b35fdb4318b17bfed46b8000ff5cbcd78ee0a5f8609df7c72a660288, bytes: 1629, store: repo}
   - {path: hosted-9586-partial-jobs.json, sha256: 635eb71a56ed65f12487594c9cc892f778ad6a8cf9dc186ec56fd355878aec50, bytes: 5406, store: repo}
@@ -72,18 +72,21 @@ files:
   - {path: hosted-1f87-policy.json, sha256: d15b921c40f759eb5b2488de2e50a0bb80eb12a1516225dc1ab092c1083b9af7, bytes: 1406, store: repo}
   - {path: standalone-tools-handoff.json, sha256: a0f646ea76a9d378a05bb8087ee2ef3593b7b95b19dc2721029c10f768bc8583, bytes: 16196, store: repo}
   - {path: hosted-1f87-docker.json, sha256: 574d0e5bfb33dee1bb711d82fadb0705bb8bfc9b16fd39eb838f6f514b5f23f3, bytes: 2608, store: repo}
-  - {path: remote-custody-source.json, sha256: 07e57c6ee60cfb71e41cc9d0b1244cc3e5b828a4a9f8a6839576df0871913a12, bytes: 1619, store: repo}
-  - {path: hosted-1f87-macos-browser.json, sha256: 1a5fbd70fe171ba54c010083b794e6b59b51c418e6a96f10a8dec997f74db392, bytes: 8000, store: repo}
-  - {path: runtime-consumers-source.json, sha256: 7e56054b3a770e05779ca3479e8c06b826f701c7624b81ef66d7ccedbc3c1f34, bytes: 5171, store: repo}
-  - {path: runtime-64-first-failure.json, sha256: e37339760499fcb5960b24a861ad22dbf8ed7a131111cf58439e5ee89a9cf86f, bytes: 1973, store: repo}
-  - {path: runtime-106-validation.json, sha256: 7878bc935f9733aee7fa86878404949c4320b0bf31da4cc15d3825bc8cc96352, bytes: 2201, store: repo}
-  - {path: cross-package-contract-census.json, sha256: d3ef00b85861b118132d431e1136771a3e84594b31ad06082f5774b42ffa58ad, bytes: 7236, store: repo}
-  - {path: hosted-1f87-image-nginx-browser-product.json, sha256: c0581f0a4c03f72ee7cf986504353ff7aa58776cb506e263ffabe096320b6e6b, bytes: 8995, store: repo}
-  - {path: hosted-1f87-windows-legacy-packages.json, sha256: 9b922f7d93bf9f4ac42e7dd7821f2d2631e8668623f7d91560d93e373568fb68, bytes: 9436, store: repo}
-  - {path: gnu-proxy-preflight-source.json, sha256: ccec44094d833b26e034fb946c93352f730d1635a041ea4617b5944510818748, bytes: 2808, store: repo}
-  - {path: tools-operational-ownership-handoff.json, sha256: 0782a835788a74bd1c095f5c54ff8f655acf0e2c8a4fd366dde3b02d854153a2, bytes: 81638, store: repo}
-  - {path: tools-callers-profiles.json, sha256: 9d468d608436df9f1471c186d48570a5d4d7f9e59b13f9cef1a21bca77611f31, bytes: 223587, store: repo}
-  - {path: hosted-1f87-terminal.json, sha256: f110aa97456550990cb184a86522e493d089616c8d504a46c03e986bdbd1279e, bytes: 29587, store: repo}
+  - {path: remote-custody-source.json, sha256: 934669386552d037d24257772f6f52a1fac0fa27c0cca7dd4bd2f940fd7d8182, bytes: 1574, store: repo}
+  - {path: hosted-1f87-macos-browser.json, sha256: 6fd6cc51301e6bf110f0d2c4224f9a3dccaade3ab621451f7fa48a1077aec73d, bytes: 7738, store: repo}
+  - {path: runtime-consumers-source.json, sha256: 69972256d48e0137addee74d606b9c1846d96bc3192dc991b66c7fb67d9235e3, bytes: 5064, store: repo}
+  - {path: runtime-64-first-failure.json, sha256: a63e4d87768770e923b2ddf9745a09182f7fefecc03d7d048d1a453e3754c33f, bytes: 1914, store: repo}
+  - {path: runtime-106-validation.json, sha256: 71feba5fc53422ea6909b131885b7b09cd02173b642e6cec4851111813ae9e31, bytes: 2121, store: repo}
+  - {path: cross-package-contract-census.json, sha256: c4f52b0c21a48a68ab35e7b581abf075d2ff3d336ffa23f5ad41e11b7ade51e1, bytes: 7080, store: repo}
+  - {path: hosted-1f87-image-nginx-browser-product.json, sha256: c76581044f55ebedb2741add634c30c24e989cce8dee07e1e2d5a69f11ef3101, bytes: 8769, store: repo}
+  - {path: hosted-1f87-windows-legacy-packages.json, sha256: 43928d94a4a39ac10a38cb7a47b09d0dd1fdde60b19a2d194b0939d069d20984, bytes: 9195, store: repo}
+  - {path: gnu-proxy-preflight-source.json, sha256: 48203139c89c3fec6694e8f9e5325efb080891df84b437f4cbe191d93d2cabf5, bytes: 2752, store: repo}
+  - {path: tools-operational-ownership-handoff.json, sha256: 82bdcd9888d7a4ae0c9de82fdab7ba1ae228cfc8d17c7d68045302f8fbb4f9b6, bytes: 79903, store: repo}
+  - {path: tools-callers-profiles.json, sha256: 8d0f24d24674db3e04af75a5296a6d9745ab348b0c5dd7a21907f93517776c34, bytes: 218140, store: repo}
+  - {path: hosted-1f87-terminal.json, sha256: c0620a8927900fc86a4186201d5a22376bbdc07c27e8194b18e6499b35ba05d7, bytes: 28800, store: repo}
+  - {path: encoding-views.json, sha256: 264a508299f2ebf367a7c42decaa6a3ebfe1f33916b3a70155c43e6866ca104a, bytes: 86921, store: repo}
+  - {path: encoding-erratum.json, sha256: c472cda38f65f3ec5e570dd44ea9d64eb0672f0a242e36c03e63ae19ef1d4da8, bytes: 1528, store: repo}
+  - {path: .gitattributes, sha256: 6e886a39d7a275d5d300b982ff5ef5d630bbeabe6ac8209026c7a704f021b92c, bytes: 170, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
