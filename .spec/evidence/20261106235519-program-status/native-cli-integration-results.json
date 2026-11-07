@@ -37,5 +37,14 @@
     "adapter_runtime": "not_implemented",
     "full_runtime_qualified": false,
     "capabilities_available": []
+  },
+  "canonical_source_commit": "d6944d3",
+  "canonical_source_hashes_verified": true,
+  "canonical_source_tests": {
+    "actual_process": 6,
+    "ignored": 0,
+    "failed": 0,
+    "log": "private native-cli-canonical-source-tests.log",
+    "unit": 11
   }
 }

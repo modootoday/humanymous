@@ -3,12 +3,9 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-06T23:10:08Z
+updated: 2026-11-07T04:43:41Z
 files:
-  - {path: provenance.md, sha256: 0cbed0ecddc8254ce675a0feb599b062ad4786c5e75dea52e71cd18120e0ec19, bytes: 1636, store: repo}
   - {path: macos-arm64-initial.log, sha256: 05490700b79bff322d867d8ec71f87c98e226399511438e4c1541158cb2da587, bytes: 57321, store: repo}
-  - {path: windows-x64-initial.log, sha256: d769e6d3db4baf798f6470a041222588723e33e72825487d4247664f31abf357, bytes: 58031, store: repo}
-  - {path: windows-arm64-initial.log, sha256: 6d8420c873aa2df5f35a8749e28a09e84872fe3a6030011f4cd199bcf4d42117, bytes: 59487, store: repo}
   - {path: initial-artifacts.json, sha256: 88991429991b63ae1ec7bcda09792d986a137e482b1eded17f12c90158b5df56, bytes: 1277, store: repo}
   - {path: corrected-run-summary.json, sha256: 18f2ddaeee61015909ce12b74bc71238b5eea2012752ab2975c72a01191653f4, bytes: 1170, store: repo}
   - {path: corrected-artifacts.json, sha256: b13a8ad8dabc581959919d01e63ccac3611eeb06a612ef267d990b3c276b91df, bytes: 1277, store: repo}
@@ -23,6 +20,9 @@ files:
   - {path: windows-pilot-42309353245-artifacts.json, sha256: 2a6826143afc331eb907d1e764f64d504db4f7651f5d3b3835eefe54fc1baab4, bytes: 2288, store: repo}
   - {path: windows-pilot-42309353245-summary.json, sha256: 0a060cb7528cb3620efd4c5e8c9e102e47788d99a7d59100792a5d7740d0793a, bytes: 1195, store: repo}
   - {path: windows-standard-user-qualified-summary.json, sha256: 5bde1224133a217e09d6a80a7361038e35d1b9c52415e090877be74565659447, bytes: 4572, store: repo}
+  - {path: provenance.md, sha256: 5ce5a520c1ce6ea91b958d0981567bffabcf31baafe5697a42388dadc358229a, bytes: 1635, store: repo}
+  - {path: windows-arm64-initial.log, sha256: 67c145f79a7c11872afdd3e401e7d5b96eafadd4b8a0a8ce299d750d6f5d0f87, bytes: 58767, store: repo}
+  - {path: windows-x64-initial.log, sha256: bcdb25e142dd1dd07f0a2b290988cf030753e6f529ffa1a055aec61cd80a5638, bytes: 57334, store: repo}
 ---
 
 # Cross OS runner research

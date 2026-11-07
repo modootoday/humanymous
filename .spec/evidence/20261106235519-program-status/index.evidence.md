@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:40:18Z
+updated: 2026-11-07T04:46:33Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -42,7 +42,8 @@ files:
   - {path: roadmap-reconciliation-latest.json, sha256: 8341d7394b51876e146a6da7645d9e0f6e4c0e8e65796a4bf8f99cdfb1b2459a, bytes: 14267, store: repo}
   - {path: roadmap-continuation-results.json, sha256: c8d5b5ddcfb9f16371833a933b6a059050379f6bd0aacd5400cca67306068930, bytes: 1563, store: repo}
   - {path: integration-5f-remote-results.json, sha256: ce7f72006a9b268d7dba7e9af36f0df38d17df55810eb7bc321d05088e2ea2f8, bytes: 3067, store: repo}
-  - {path: native-cli-integration-results.json, sha256: 7c699e369c8f2fad89e2c5bccb695267bcd67917ddd9e12765879726dd267b5c, bytes: 1422, store: repo}
+  - {path: evidence-portability-results.json, sha256: cffda8601731de70bcf45d6d55a619420b16e7db83d0aa87a58beb5753f1ad1b, bytes: 4877, store: repo}
+  - {path: native-cli-integration-results.json, sha256: d4620a5c37eb7541044472a841d3e21696cd92972a1c26a6be13a948ab6bd9fd, bytes: 1676, store: repo}
 ---
 
 # Program status

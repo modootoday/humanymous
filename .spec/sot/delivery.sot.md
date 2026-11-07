@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T04:20:51Z
+updated: 2026-11-07T04:46:34Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -25,6 +25,18 @@ source-bound artifacts are recorded with the program evidence. Full-runtime qual
 the final delivery runner requirements remain unchanged.
 
 # Rust delivery and Pages contracts
+
+## Evidence byte portability
+
+Normalize authored public text attachments to LF before Specfold attachment.
+Bind index SHA/length to the actual Git bytes, not an uncommitted Windows CRLF
+view. Before integration, compare each tracked public evidence file's unfiltered
+working blob to the staged Git blob and run the public Specfold checker on those
+same bytes. Binary attachments retain their bytes and disclosed scanner limits.
+Historical CRLF evidence must retain its original private receipt; rebind only
+the index when the normalized candidate equals the existing Git payload exactly.
+Keep validated-worktree source hashes distinct from canonical-Git source hashes.
+Never rewrite old source/runtime claims as though they were tested after normalization.
 
 ## Authored workflow and collector target
 

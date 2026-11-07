@@ -1,0 +1,91 @@
+{
+  "schema": "humanymous.evidence-eol-portability/1",
+  "observed_at": "2026-11-07T04:43:49.4848440Z",
+  "source_head": "d6944d34d822d169449717b218fc1ad9a4d54e30",
+  "scope": "Public payload unchanged in Git; rebind historical working CRLF receipts to exact LF Git bytes",
+  "fixed_count": 10,
+  "files": [
+    {
+      "path": ".spec/evidence/20261106194112-go-migration-source-inventory/go-inventory.json",
+      "owner": "evidence:root/20261106194112",
+      "before_sha256": "5462fcdba60b77da112e55c5fa5074ecf9f231758a0fa40647a967f51dc664bf",
+      "canonical_sha256": "0a6f459192af626b85daf9fe1cbaeeab7d1221d7043c290907eb5d585a1483f2",
+      "canonical_git_blob": "19a1d5d4527b012ec53b01ad21adb98be8381fe4",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106223747-cross-os-runner-research/provenance.md",
+      "owner": "evidence:root/20261106223747",
+      "before_sha256": "0cbed0ecddc8254ce675a0feb599b062ad4786c5e75dea52e71cd18120e0ec19",
+      "canonical_sha256": "5ce5a520c1ce6ea91b958d0981567bffabcf31baafe5697a42388dadc358229a",
+      "canonical_git_blob": "afa8700de41178298b94da0602af4162928c534d",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106223747-cross-os-runner-research/windows-arm64-initial.log",
+      "owner": "evidence:root/20261106223747",
+      "before_sha256": "6d8420c873aa2df5f35a8749e28a09e84872fe3a6030011f4cd199bcf4d42117",
+      "canonical_sha256": "67c145f79a7c11872afdd3e401e7d5b96eafadd4b8a0a8ce299d750d6f5d0f87",
+      "canonical_git_blob": "d6b6bbe33ec0345e533fb315e55d2f5d8e88a054",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106223747-cross-os-runner-research/windows-x64-initial.log",
+      "owner": "evidence:root/20261106223747",
+      "before_sha256": "d769e6d3db4baf798f6470a041222588723e33e72825487d4247664f31abf357",
+      "canonical_sha256": "bcdb25e142dd1dd07f0a2b290988cf030753e6f529ffa1a055aec61cd80a5638",
+      "canonical_git_blob": "9cc344ccd93079312ca1df91c39d7592e7ac5f2e",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106224155-container-test-environment-research/container-runtime-results.json",
+      "owner": "evidence:root/20261106224155",
+      "before_sha256": "2b55eae607032f467795724387418a6cf59b309af7b927c8b4a41ce45d7cba03",
+      "canonical_sha256": "82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363",
+      "canonical_git_blob": "e281241c83204ad74e2ef160b922c3a6f5ec4822",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106224155-container-test-environment-research/provenance.md",
+      "owner": "evidence:root/20261106224155",
+      "before_sha256": "74d038211b4d4ec69b70fbda004463799a882a04079b33b16008cf7ed5de3d33",
+      "canonical_sha256": "881be44b70ea201eaa97ab25f0d4ab5b0bacb8580fb5368d65d8dc7cfc8ce108",
+      "canonical_git_blob": "b2208b373efcda6df602d0ab222217cba56718f5",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106225055-aws-container-research/provenance.md",
+      "owner": "evidence:root/20261106225055",
+      "before_sha256": "85ed2c9bf478ca317cdec70292008f1d161cb7e4fcded088d3ffa1f01d7f4269",
+      "canonical_sha256": "9d7e55ca001459c34d3d96670410a44ba8a501d7086e47a689bf0ed05fa9cc16",
+      "canonical_git_blob": "e3e141443dfa8611db3030004aa4ce07f442776d",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106231600-crate-architecture-review/package-graph.json",
+      "owner": "evidence:root/20261106231600",
+      "before_sha256": "a8c889fcb32c4e750bcc7d51f26132a19b80d9d79c864dc43c3375f974fafe07",
+      "canonical_sha256": "24cb48b82b315f89a8c3714a2e9724a06115386bd41ed4751eab538da29719d3",
+      "canonical_git_blob": "231cebe2d9db864269755bea20717ebb51d606ca",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106231600-crate-architecture-review/provenance.md",
+      "owner": "evidence:root/20261106231600",
+      "before_sha256": "8f8d9bfd84781959ae0550794d21bb2fd7595fedb1344046496135b9f7c86e55",
+      "canonical_sha256": "bb13238d0f9cd4899041c0ce351bed00b022c14738b7e243ca96b03d4249902a",
+      "canonical_git_blob": "f161873a921efe8bb8707c44392ac74945d9ed42",
+      "git_payload_changed": false
+    },
+    {
+      "path": ".spec/evidence/20261106233113-mobile-agent-research/mobile-mcp-source.json",
+      "owner": "evidence:root/20261106233113",
+      "before_sha256": "6e7efaac795467d4a04604fd9b98fabbf01b8ad1257cf1a730a5a3cc7d20fcf1",
+      "canonical_sha256": "902484e1fe26ec93cdbafbe6c0e1f3b39c24834d8ffea356dcc56ec31206f60f",
+      "canonical_git_blob": "4220c6b35ce35d73e10cb038588606c85aec28c5",
+      "git_payload_changed": false
+    }
+  ],
+  "originals": "Registered private eol-before records retained",
+  "semantic_evidence_changed": false
+}

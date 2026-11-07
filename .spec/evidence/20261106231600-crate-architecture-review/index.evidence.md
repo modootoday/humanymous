@@ -3,10 +3,10 @@ id: evidence:root/20261106231600
 title: Crate architecture review
 status: active
 created: 2026-11-06T23:16:00Z
-updated: 2026-11-06T23:22:28Z
+updated: 2026-11-07T04:43:45Z
 files:
-  - {path: provenance.md, sha256: 8f8d9bfd84781959ae0550794d21bb2fd7595fedb1344046496135b9f7c86e55, bytes: 1015, store: repo}
-  - {path: package-graph.json, sha256: a8c889fcb32c4e750bcc7d51f26132a19b80d9d79c864dc43c3375f974fafe07, bytes: 15174, store: repo}
+  - {path: package-graph.json, sha256: 24cb48b82b315f89a8c3714a2e9724a06115386bd41ed4751eab538da29719d3, bytes: 14509, store: repo}
+  - {path: provenance.md, sha256: bb13238d0f9cd4899041c0ce351bed00b022c14738b7e243ca96b03d4249902a, bytes: 1014, store: repo}
 ---
 
 # Crate architecture review

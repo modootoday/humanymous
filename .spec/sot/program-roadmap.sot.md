@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:39:37Z
+updated: 2026-11-07T04:46:34Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -74,6 +74,9 @@ cb5dce7 Linux custody 실패는 보존했다. 공용 exclusive guard 수정 뒤 
 다운로드했다. native42338082261은6환경모두성공이며report6개를다운로드했다.
 해당Windows source는각51/51harness·228passed·raw2ignored helpers다.
 CEF42338082212도component범위성공이다. full CI42338082293은별도관측하며 실행 중은성공이아니다.
+이후full CI42338082293은실패로종료됐다. 실제native build/test/release 뒤
+필수native runner 부재를거절했고browser/Docker runner·shipping/registry/docs
+gate도미완료다. component 성공을full product 성공으로바꾸지않는다.
 
 정본화 이후 구체적인 crates/native-cli manifest를 받아 working tree의20번째
 workspace member로등록하고의존성을resolve했다. 새production dependency version은

@@ -3,9 +3,9 @@ id: evidence:root/20261106194112
 title: Go migration source inventory
 status: active
 created: 2026-11-06T19:41:12Z
-updated: 2026-11-06T23:00:21Z
+updated: 2026-11-07T04:42:58Z
 files:
-  - {path: go-inventory.json, sha256: 5462fcdba60b77da112e55c5fa5074ecf9f231758a0fa40647a967f51dc664bf, bytes: 116064, store: repo}
+  - {path: go-inventory.json, sha256: 0a6f459192af626b85daf9fe1cbaeeab7d1221d7043c290907eb5d585a1483f2, bytes: 112765, store: repo}
 ---
 
 # Go migration source inventory
