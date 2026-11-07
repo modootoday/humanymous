@@ -4,6 +4,7 @@ pub mod configuration;
 pub mod credentials;
 pub mod decision;
 pub mod protocol;
+pub mod startup;
 pub mod transport;
 
 /// Static errors are safe for the wire; request values and secrets are omitted.

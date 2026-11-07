@@ -217,3 +217,20 @@ SealedLogOptions/UnlockCredential/PinnedWitness, retaining sealed ownership
 through connection drain and flush. Runtime owns wrapper migration; authority
 main still uses legacy inline-key configuration. Trait delta compile and hosted
 startup/drain are NOT_RUN pending assigned gates.
+
+## Sealed executable startup source
+
+startup::open_audit(&mut Audit,&Peer,Option<PinnedWitness>) now composes the
+shared SealedLog before main binds IPC. audit.keys uses directory and unlock:
+mode inherited-private-pipe/passphrase or os-service-store/service_name/credential_id.
+Inline and sealed sources are mutually exclusive. Windows service-store mode
+reuses shared native security; non-Windows refuses it without fallback. The
+standalone executable has no witness injection transport, so require_external_witness
+refuses startup; trusted library brokers may inject the shared PinnedWitness.
+
+Inherited pipe mode is a controlled-parent/lab transport, not native-store or
+parent attestation. External provenance evidence is required; readiness explicitly
+reports external_parent_attested=false. Legacy inline readiness is labelled
+inline-component-nonproduction. Secret config and unlock buffers are zeroizing,
+not Debug/Serialize; no secret appears in added readiness metadata. Executable
+startup, provider and new custody/restart fixture qualification remain NOT_RUN.

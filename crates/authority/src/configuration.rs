@@ -116,13 +116,74 @@ pub struct Audit {
     /// Stable audit node ID.
     pub node_id: String,
     /// Stable independent HMAC key, 32..256 bytes lower hex.
+    #[serde(default)]
     pub hmac_key_hex: String,
     /// Stable 32-byte Ed25519 seed, lower hex.
+    #[serde(default)]
     pub signing_seed_hex: String,
+    /// Existing sealed custody. Mutually exclusive with inline component keys.
+    #[serde(default)]
+    pub keys: Option<SealedKeys>,
+    /// Require a broker-injected witness before opening any sealed state.
+    #[serde(default)]
+    pub require_external_witness: bool,
     /// Explicit first-install authorization. Not a rollback-proof anchor.
     pub allow_new: bool,
     /// Independently retained trusted head, null on explicitly unanchored startup.
     pub trusted_head: Option<humanymous_audit::checkpoint::Checkpoint>,
+}
+
+/// Private inherited startup credential, never Debug or Serialize.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SealedKeys {
+    /// Existing private custody directory; startup never creates keys.
+    pub directory: PathBuf,
+    /// Explicit private input transport; no argv/env/file fallback.
+    pub unlock: UnlockSource,
+}
+/// Unlock policy is independent of the adapter and its authenticated peer.
+#[derive(Deserialize)]
+#[serde(tag = "mode", rename_all = "kebab-case", deny_unknown_fields)]
+pub enum UnlockSource {
+    /// Controlled broker/hosted-lab input; external parent provenance is required.
+    InheritedPrivatePipe {
+        /// Consumed before listening, never included in readiness.
+        passphrase: zeroize::Zeroizing<String>,
+    },
+    /// Existing protected native service store; unsupported platforms refuse.
+    OsServiceStore {
+        /// Exact owned service namespace.
+        service_name: String,
+        /// Exact nonsecret provider selector.
+        credential_id: String,
+    },
+}
+impl Audit {
+    /// Reject ambiguous or missing sources before opening persistent state.
+    pub fn validate_source(&self) -> Result<(), Rejection> {
+        let inline = !self.hmac_key_hex.is_empty() && !self.signing_seed_hex.is_empty();
+        let any_inline = !self.hmac_key_hex.is_empty() || !self.signing_seed_hex.is_empty();
+        if match &self.keys {
+            Some(keys) => {
+                any_inline
+                    || keys.directory.as_os_str().is_empty()
+                    || match &keys.unlock {
+                        UnlockSource::InheritedPrivatePipe { passphrase } => {
+                            passphrase.is_empty() || passphrase.len() > 4096
+                        }
+                        UnlockSource::OsServiceStore {
+                            service_name,
+                            credential_id,
+                        } => service_name.is_empty() || credential_id.is_empty(),
+                    }
+            }
+            None => !inline || self.require_external_witness,
+        } {
+            return Err(Rejection::new(503, "invalid_audit_source"));
+        }
+        Ok(())
+    }
 }
 
 fn identity(s: &str) -> bool {

@@ -1,12 +1,8 @@
 //! Private-pipe startup and composition root for the local adapter authority.
-use humanymous_audit::{
-    log::{Config, Log},
-    storage::{Wal, WalOptions},
-};
 use humanymous_authority::{
     configuration::Configuration,
     decision::{ApplicationHttp, Authority},
-    transport::{Listener, private_directory},
+    transport::Listener,
 };
 use std::io::{self, IsTerminal, Read, Write};
 
@@ -14,7 +10,7 @@ fn run() -> Result<(), &'static str> {
     if std::env::args_os().len() != 1 || io::stdin().is_terminal() || io::stdout().is_terminal() {
         return Err("private inherited stdin/stdout pipes required; no command-line secrets");
     }
-    let mut input = Vec::new();
+    let mut input = zeroize::Zeroizing::new(Vec::new());
     io::stdin()
         .take(65_537)
         .read_to_end(&mut input)
@@ -22,34 +18,20 @@ fn run() -> Result<(), &'static str> {
     if input.len() > 65_536 {
         return Err("configuration budget exceeded");
     }
-    let config: Configuration =
+    let mut config: Configuration =
         serde_json::from_slice(&input).map_err(|_| "invalid configuration JSON")?;
     input.fill(0);
     config.validate().map_err(|_| "invalid configuration")?;
-    private_directory(&config.audit.directory, &config.peer)
-        .map_err(|_| "audit directory is not private and canonical")?;
-    let key = hex::decode(&config.audit.hmac_key_hex).map_err(|_| "invalid audit key")?;
-    let seed: [u8; 32] = hex::decode(&config.audit.signing_seed_hex)
-        .map_err(|_| "invalid audit seed")?
-        .try_into()
-        .map_err(|_| "invalid audit seed size")?;
-    if !(32..=256).contains(&key.len()) {
-        return Err("invalid audit key size");
-    }
-    let log = Log::open(
-        Wal::open(&config.audit.directory, WalOptions::default())
-            .map_err(|_| "audit WAL unavailable")?,
-        Config {
-            node_id: config.audit.node_id.clone(),
-            hmac_key: key,
-            signing_seed: seed,
-            checkpoint_every: 1,
-            witness: None,
-        },
-        config.audit.trusted_head.as_ref(),
-        config.audit.allow_new,
-    )
-    .map_err(|_| "audit authentication/recovery failed")?;
+    let audit_source = match config.audit.keys.as_ref().map(|keys| &keys.unlock) {
+        None => "inline-component-nonproduction",
+        Some(humanymous_authority::configuration::UnlockSource::InheritedPrivatePipe {
+            ..
+        }) => "sealed-inherited-private-pipe-external-provenance-required",
+        Some(humanymous_authority::configuration::UnlockSource::OsServiceStore { .. }) => {
+            "sealed-os-service-store"
+        }
+    };
+    let log = humanymous_authority::startup::open_audit(&mut config.audit, &config.peer, None)?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
         .worker_threads(2)
         .max_blocking_threads(128)
@@ -66,11 +48,12 @@ fn run() -> Result<(), &'static str> {
             config,
             Default::default(),
             Box::new(ApplicationHttp),
-            Box::new(log),
+            log,
         )
         .map_err(|_| "authority startup failed")?;
         let ready = serde_json::json!({"protocol":"humanymous.adapter/0.1", "endpoint":endpoint,
-            "credential": authority.credential(), "qualification":"experimental-local-authority", "profile": profile});
+            "credential": authority.credential(), "qualification":"experimental-local-authority", "profile": profile,
+            "audit_source":audit_source, "external_parent_attested":false});
         let mut stdout = io::stdout().lock();
         serde_json::to_writer(&mut stdout, &ready).map_err(|_| "private readiness pipe failed")?;
         stdout

@@ -239,3 +239,30 @@ catch/fallback. Runtime can replace its separate wrapper with shared owner.
 No manifest/lock/crypto/OS reader duplication. Direct rustfmt and whitespace
 check passed; Cargo slot not assigned and trait compilation/hosted lifecycle
 remain NOT_RUN. Authority binary inline-key startup remains explicitly unmigrated.
+
+## User-requested sealed executable continuation
+
+Re-read latest root AGENTS, Rust conventions and existing implement-sot-slice.
+Actual authority-ipc claim verified. Root approved explicit inherited lab mode
+versus protected OS service store; implementation follows the contract above.
+Added startup module delegating custody/WAL/unlock/witness to shared SealedLog,
+main opens audit before IPC and uses Zeroizing raw input. Added two pure source
+selection/witness refusal tests and one hosted actual sealed startup fixture:
+parent provisions fixture keys, two child generations verify live custody
+exclusion, post-exit release and unchanged sealed key bytes. Fixture is one test,
+not two successes; no interpreter/framework or full product claim.
+
+Initial rustfmt encountered Windows mapped-file OS1224, retried narrow files
+with skip_children after no process termination; later format/diff passed.
+Cargo and actual IPC execution NOT_RUN awaiting root A/B slot and hosted source
+closure. No new dependency/manifest/shared lock change. Latest goal tool still
+returns blocked despite user resume; API has no resume operation, no replacement
+goal or false completion issued. Implementation continues under user direction.
+
+Hosted sealed fixture additionally authors bounded wrong-unlock and missing
+witness subprocess refusals, requiring nonzero exit and zero readiness stdout.
+Both retain identical sealed key bytes. This is source-only coverage, NOT_RUN.
+The fixture ends child processes by kill+wait and proves ownership release; it
+does not claim graceful service shutdown/flush acknowledgement. Existing explicit
+serve_handler_until drain tests remain separate. Root slot queue still owns
+local compile allocation and hosted source dispatch; no duplicate run started.

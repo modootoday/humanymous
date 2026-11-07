@@ -278,3 +278,27 @@ key/lifetime wrapper is copied into authority. Composition callers must open
 SealedLog through audit's existing unlock/witness contract before listening and
 retain ownership through drain/flush. This adapter alone does not migrate the
 authority binary's inline-key startup or qualify external witness independence.
+
+## Executable sealed startup transport contract
+
+The authority executable opens its configured audit source before binding IPC.
+Optional audit.keys specifies existing custody directory and an explicit tagged
+unlock: inherited-private-pipe with Zeroizing passphrase, or os-service-store
+with nonsecret service_name/credential_id. Protected unattended Windows input
+reuses native-security::secret::read_service_secret and audit UnlockCredential
+Bytes; unsupported platforms reject without plaintext/inline fallback. Controlled
+parent/broker/owned hosted lab may select the inherited mode. The caller must
+verify parent ownership/provenance externally: JSON, nonterminal stdio or an
+arbitrary Read is not attestation. No argv/env/plaintext file fallback is added.
+Raw config and unlock buffers are zeroizing; readiness never serializes them.
+Readiness labels inherited transport as external-provenance-required, reports
+external_parent_attested=false, and never equates it with OS-store attestation.
+
+SealedLog retains custody and WAL ownership for the full authority lifetime.
+No keys are provisioned by startup, and an unlock/recovery failure never selects
+another source. Mixed inline/sealed, missing source and unknown unlock modes
+reject. Required witness absence rejects before opening directories or consuming
+unlock; broker injection uses startup::open_audit(...,Option<PinnedWitness>).
+The standalone binary has no witness broker transport, so requiring a witness
+there currently refuses before listening. Inline legacy keys remain explicitly
+inline-component-nonproduction. This is not production sealed qualification.

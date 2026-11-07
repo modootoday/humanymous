@@ -16,6 +16,48 @@ struct Process {
     credential: String,
 }
 impl Process {
+    async fn rejects_startup(config: &Value) {
+        let mut process = Self {
+            child: Command::new(env!("CARGO_BIN_EXE_humanymous-authority"))
+                .stdin(Stdio::piped())
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn()
+                .unwrap(),
+            endpoint: String::new(),
+            credential: String::new(),
+        };
+        process
+            .child
+            .stdin
+            .take()
+            .unwrap()
+            .write_all(&serde_json::to_vec(config).unwrap())
+            .unwrap();
+        let status = tokio::time::timeout(Duration::from_secs(15), async {
+            loop {
+                if let Some(status) = process.child.try_wait().unwrap() {
+                    break status;
+                }
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        })
+        .await
+        .expect("bounded startup refusal");
+        assert!(!status.success());
+        let mut stdout = String::new();
+        std::io::Read::read_to_string(&mut process.child.stdout.take().unwrap(), &mut stdout)
+            .unwrap();
+        assert!(
+            stdout.is_empty(),
+            "refusal cannot publish readiness or credentials"
+        );
+        let mut stderr = String::new();
+        std::io::Read::read_to_string(&mut process.child.stderr.take().unwrap(), &mut stderr)
+            .unwrap();
+        assert!(stderr.starts_with("humanymous-authority: "));
+        assert!(!stderr.contains("authority-sealed-fixture"));
+    }
     fn start(config: &Value) -> Self {
         let child = Command::new(env!("CARGO_BIN_EXE_humanymous-authority"))
             .stdin(Stdio::piped())
@@ -286,6 +328,58 @@ impl Drop for Process {
             let _ = std::fs::remove_file(&self.endpoint);
         }
     }
+}
+
+#[tokio::test]
+async fn sealed_startup_retains_custody_and_reuses_existing_identity() {
+    use humanymous_audit::keys::{
+        KeyMaterial,
+        custody::{Custody, Owner},
+    };
+    let d = Directory::new();
+    let keys = Directory::new();
+    #[cfg(unix)]
+    let owner = Owner::CurrentUser;
+    #[cfg(windows)]
+    let owner = Owner::WindowsSid(sid());
+    let mut custody = Custody::acquire(&keys.0, owner.clone()).unwrap();
+    custody
+        .load_or_create(b"authority-sealed-fixture", || {
+            KeyMaterial::new([0xbb; 32], vec![0xaa; 32], None, None)
+        })
+        .unwrap();
+    drop(custody);
+    let original = std::fs::read(keys.0.join("keys.sealed")).unwrap();
+    let mut c = config_value(&d);
+    let audit = c["audit"].as_object_mut().unwrap();
+    audit.remove("hmac_key_hex");
+    audit.remove("signing_seed_hex");
+    audit.insert("keys".into(), serde_json::json!({"directory":keys.0,"unlock":{"mode":"inherited-private-pipe","passphrase":"authority-sealed-fixture"}}));
+    for generation in 0..2 {
+        let p = Process::start(&c);
+        assert!(
+            Custody::acquire(&keys.0, owner.clone()).is_err(),
+            "live authority retains custody guard"
+        );
+        let (status, _) = p
+            .send(&p.credential, &request(now_ms().unwrap(), 200 + generation))
+            .await;
+        assert_eq!(status, 200);
+        drop(p);
+        let released = Custody::acquire(&keys.0, owner.clone()).unwrap();
+        drop(released);
+        assert!(
+            original == std::fs::read(keys.0.join("keys.sealed")).unwrap(),
+            "startup never rotates or regenerates keys"
+        );
+    }
+    c["audit"]["keys"]["unlock"]["passphrase"] = "wrong-fixture-secret".into();
+    Process::rejects_startup(&c).await;
+    assert!(original == std::fs::read(keys.0.join("keys.sealed")).unwrap());
+    c["audit"]["keys"]["unlock"]["passphrase"] = "authority-sealed-fixture".into();
+    c["audit"]["require_external_witness"] = true.into();
+    Process::rejects_startup(&c).await;
+    assert!(original == std::fs::read(keys.0.join("keys.sealed")).unwrap());
 }
 #[tokio::test]
 async fn real_ipc_auth_replay_body_scope_capture_and_restart_epoch() {
