@@ -1,0 +1,19 @@
+{
+  "schema": "humanymous.adapter-compilation/1",
+  "scope": "Node all-targets host-pilot compile and lint after shared-context migration",
+  "ownedSourceCheckpoint": "78562be",
+  "headObservedAfterCommands": "65166bb6e9b35caadac338978c593ceeb1a2a6ab",
+  "ownedWorkingPathsCleanAfterCommands": true,
+  "concurrentDependencySourceMutationIndependentlyMonitored": false,
+  "cargoLockSha256AfterCommands": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+  "environment": {"CARGO_TARGET_DIR": "target/node-native/build", "CARGO_BUILD_JOBS": "1", "CARGO_INCREMENTAL": "0"},
+  "commands": [
+    {"argv": ["cargo", "check", "--locked", "-p", "humanymous-node-adapter", "--all-targets", "--features", "host-pilot"], "exitCode": 0, "durationSeconds": 41.35, "rawLogSha256": "aed031ff295fba6331ec83bb31082e1aec9a64e20dcd897e46b1cfcf372e7caa"},
+    {"argv": ["cargo", "clippy", "--locked", "-p", "humanymous-node-adapter", "--all-targets", "--features", "host-pilot", "--", "-D", "warnings"], "exitCode": 0, "durationSeconds": 3.6, "rawLogSha256": "324c091c91dbe0ae21097c52c0428902f4c93ac7ae2204d2d142f4af322b7b54"}
+  ],
+  "actualRuntimeStatus": "not_run",
+  "unitExecutionStatus": "not_run",
+  "packageInstallStatus": "not_run",
+  "releaseQualifiedTuples": [],
+  "wholeProductQualified": false
+}

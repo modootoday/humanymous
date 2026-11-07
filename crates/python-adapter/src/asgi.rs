@@ -170,7 +170,9 @@ impl Asgi {
                 Err(_) => return respond(&locals, &send, 503).await,
             };
             let expires = bound.expires();
-            let verdict = bound.consume().map_err(failure)?;
+            let verdict = bound
+                .consume()
+                .map_err(|_| failure("authority result expired"))?;
             if verdict != Verdict::Allow {
                 return respond(
                     &locals,

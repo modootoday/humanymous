@@ -139,8 +139,11 @@ Compatibility includes binary/empty bodies, duplicate Set-Cookie, HEAD/204/304,
 redirect, exception, iterable close and SSE backpressure. No motor/speed gates,
 new scoring or third-party probing. T4 ceiling remains unchanged.
 
-Current source/package/runtime/whole-product status: NOT_RUN; qualified tuples=[];
-no current dependency closure audit, registry artifact or publisher verification.
+Current Node shared-source check/Clippy passed (evidence:root/20261107075243).
+Python native first check failed E0277 on opaque Rejection conversion; own source
+fix awaits retry. Ruby native/compiler and all actual package/runtime/whole-product
+gates remain NOT_RUN; qualified tuples=[]; no current closure audit, registry
+artifact or publisher verification. Compilation never establishes native runtime.
 
 ## Explicit hosted smoke source
 

@@ -115,3 +115,22 @@ requires package-tool. Root was notified immediately at completion and manifests
 are frozen again. No new package version; Node features unchanged. Mandatory
 pure+native gates and default0-not-success are recorded in both pilot contracts.
 All new feature/native source compilation and actual gates remain NOT_RUN.
+
+## Executed local component gates (2026-11-07)
+
+Root assigned B target/node-native/build, jobs1/incremental0. Node all-targets
+host-pilot cargo check passed41.35s and same-scope Clippy -Dwarnings passed3.60s.
+Resource guards passed82%/34.79GiB and83%/34.26GiB. Slot returned immediately.
+Public source-bound scope/limitations are evidence:root/20261107075243. No runtime
+or unit execution is implied by compilation. Node/native package gates remain.
+
+Root then explicitly assigned Python host-pilot all-targets check. First run
+failed exit101 with E0277 at asgi.rs:173: authority Rejection intentionally has no
+Display implementation. Two diagnostics arose from one map_err(failure) call.
+Raw private python-check-001.txt SHA256
+c1ae6dcf635724da28cdaaf4b0d1d0e6bb799613fc4d8099a1b2c59b8c518303.
+The adapter now maps consumption
+failure to static text without changing authority types or exposing internals.
+B returned immediately on first failure, as instructed. Source fix formatted;
+retry/Clippy/native package binary compilation are NOT_RUN pending reassignment.
+PyO3 build-time interpreter discovery is not actual product/pilot execution.
