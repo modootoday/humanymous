@@ -1,0 +1,129 @@
+{
+  "schema": "humanymous.convention-audit.baseline/1",
+  "status": "partial independent audit; full objective active",
+  "initial_head": "bcd4a9b9a87c48d0d4047cebc84c618165dfab83",
+  "baseline_head": "d7c74125a05e0537873936b4f17541e3744939d9",
+  "tracked_tree": {
+    "records": 2560,
+    "sha256_of_lf_ls_tree_records": "80dd8e25438070098f2d2f96be4715dbff564df00bdb777abe0356e057177894",
+    "cargo_manifests": 44,
+    "rust_source_files": 654,
+    "scope": "Entire tracked Git tree at the named baseline; counts are inventory, not semantic coverage"
+  },
+  "csharp_exception_inventory": [
+    "adapters/dotnet/pilot/Program.cs",
+    "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
+    "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs"
+  ],
+  "ownership": {
+    "lane": "red-catalog",
+    "provider": "codex",
+    "session": "rust-convention-audit",
+    "mechanism": "Root-authorized temporary existing legacy compatibility loan; actual stored claim verified",
+    "implementation_or_cargo_rights": false,
+    "rust_session_mutator_qualified": false
+  },
+  "bounded_language_observations": {
+    "existing_binary_sha256": "4b38ef6a5df79e8f083661116ccf1c195e2a83ff5cf36266872ff40a7513c8e8",
+    "sot_files": 37,
+    "sot_findings": 0,
+    "rust_files_in_live_scan": 655,
+    "rust_findings": 0,
+    "rust_before_after_changed_files": 0,
+    "rust_inventory_difference_records": 0,
+    "docs_and_plan_files": 148,
+    "intentional_ime_indicators": 2,
+    "exact_preservation_rechecked": true,
+    "english_conformance_proven": false,
+    "scope": "Prior live scans, not the same inventory as the fixed tracked tree; fences/inline comments and unrecognized languages require review"
+  },
+  "findings": [
+    {
+      "id": "CA-API-01",
+      "owner": "adapter-hosts",
+      "state": "independent invariant and regression closure accepted; owner evidence checkpoint tracked separately",
+      "source": "ac7dc4a97d4154308dbdce1dd05541df6b477d4c",
+      "fixed_file_sha256": "e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3",
+      "units_passed": 6,
+      "positive_compile_cases": 1,
+      "negative_compile_cases": 1,
+      "batch_exit": 0,
+      "sdk_or_product_qualified": false
+    },
+    {
+      "id": "CA-NOTICE-01",
+      "owner": "delivery/root",
+      "state": "source and in-memory tar regression resolved; actual binary archive and final image verification OPEN",
+      "source": "d6e8e43c8ebcb47edf80b0a0aafb3f4eb56e424a",
+      "known_notice_sha256": "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738",
+      "actual_binary_archive_verified": false,
+      "actual_image_verified": false,
+      "complete_dependency_notices_verified": false
+    },
+    {
+      "id": "CA-META-01",
+      "owner": "delivery",
+      "state": "closed",
+      "source": "d6e8e43c8ebcb47edf80b0a0aafb3f4eb56e424a",
+      "manifest_sha256": "1d4ff94c30e5ac85ebfd82fb08390c5d8e01635e1cb544365eeb5fbfc7c7f6c2",
+      "actual_standalone_check_and_strict_clippy": true
+    },
+    {
+      "id": "CA-DOC-01",
+      "owner": "root",
+      "state": "closed prose scope only",
+      "source": "66ad33a432319de05eda7236cfc034a8f709dfbe",
+      "notice_sha256": "b67c09b767a7169be8f776bf9071d32c84e414b12d7fd200e9bde803069dd234",
+      "third_party_sha256": "5bfc4ced6b4819672aebb17dc39de588490c1afa9c27a62e9df99bef2cabe1dd"
+    },
+    {
+      "id": "CA-GOV-01",
+      "owner": "M11",
+      "state": "source correction accepted; prose scope only",
+      "source": "f191ee8c6d17371fc2b1aa27c7f7546c21ffdcd7",
+      "rule_sha256": "6e2bc3438aeb404ab4bd10a2fbc4b5132cc913da433b7d6d1bec46d9d6770576"
+    },
+    {
+      "id": "CA-LF-01",
+      "owner": "browser",
+      "state": "closed worktree-only hygiene",
+      "after_matches_original_lf_blob_sha256": "c37be54a5c5e71a00257f1b9a52475edbbeda95217bec69bdfebffd36612c3f3"
+    },
+    {
+      "id": "CA-LF-02",
+      "owner": "native-windows",
+      "state": "closed worktree-only hygiene",
+      "after_matches_original_lf_blob_sha256": "a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df"
+    },
+    {
+      "id": "CA-LIFETIME-01",
+      "owner": "native-windows/test-support with root coordination",
+      "state": "confirmed source contract gap; owner design, fix and actual process pilot OPEN",
+      "source_file": "crates/test-support/src/process.rs",
+      "observed_sha256": "6b1edaf2f60f300fd5025009ee44c580f438e8aa73c406e67ce751dcaeb164cb",
+      "actual_hang_observed": false,
+      "no_new_workload": true
+    }
+  ],
+  "evidence_references": {
+    "api_public": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/summary-014.json",
+    "api_public_sha256_at_independent_review": "f7b69201c3c03dcf4d91a923efc29164ca6052cf948d5492ede27aa59f73d7e2",
+    "api_private_raw_sha256": "02f06649dd539ed99d2395aa1e04c82ad10a16038d1734507c4c22931baa9f99",
+    "delivery_public": ".spec/evidence/20261107052001-delivery-followup/distribution-notice-validation.json",
+    "delivery_raw_test_log_sha256": "918b821a0383dcdf4381f9d98a8ef24133606394d9471e62fb2790ecbc953e75",
+    "delivery_scope": "Frozen 08823f90 plus seven exact overlays; all seven committed blob hashes independently compared; later graph not retroactively qualified"
+  },
+  "full_semantic_coverage_complete": false,
+  "full_product_qualified": false,
+  "goal_complete": false,
+  "spec_validation_observation": {
+    "scoped_exit": 0,
+    "scoped_errors": 0,
+    "scoped_warnings": 0,
+    "full_shared_exit": 1,
+    "full_shared_errors": 82759,
+    "full_shared_warnings": 14,
+    "full_errors_fully_classified": false,
+    "private_raw_preserved": true
+  }
+}
