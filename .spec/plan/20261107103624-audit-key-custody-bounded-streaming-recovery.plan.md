@@ -118,10 +118,27 @@ The allocation ledger must include two bounded input frames/cursors, decoder
 scratch, both owned record/checkpoint strings, conservatively grown array
 capacities, bounded sort references, normalization state, checkpoint message,
 frontier/path descriptors and custody/witness context retained during scanning.
+Accepted Phase-B raw-link retention delta: checkpoint.sig is excluded from signing
+bytes, so an invalid raw signature text can reach the admitted frame bound even
+when the signing-message limit is16KiB. Shared checkpoint checks compare the next
+prev_checkpoint_hash against exact previous writer-signature TEXT after signature
+validation. Continued post-failure work therefore needs an explicit previous raw
+signature retention strategy; a fixed64-byte decoded signature is not that text.
+Root explicitly accepted retaining ONE raw previous writer signature bounded by
+frame (up to4MiB in this profile), with its additional live/peak bytes ledgered
+SEPARATELY from the already accepted previous raw record hash. Phase-A
+physical_latest may be dropped before Phase B ONLY if all needed metadata, exact
+pin, transcript/count commitments and the Report/Work contract remain preserved.
+No authoritative CP or VerifiedScan is exposed. Never silently truncate128
+characters, skip future checkpoint work or claim this extra buffer was already
+measured. This is an accepted implementation direction, not accepted capacity;
+all live buffers/allocator overhead still need actual qualification.
 Record currently has only triggered_rules Vec<String> and top_signals Vec<Signal>;
 4096-element limits bound their per-element overhead independently of string bytes.
 No JSON Value tree, Vec<all records/checkpoints/leaves/paths>, canonical output
-Vec, signature-sized input buffer or per-record retained projection is allowed.
+Vec, arbitrary decoded signature input buffer or per-record retained projection
+is allowed. Fixed64-byte signature decoding and the explicitly ledgered raw
+previous-link text are distinct allocations with distinct purposes.
 A source-derived capacity calculation plus instrumented worst-case allocation
 test must prove the profile before acceptance;128MiB is not a measured process
 RSS promise. Trusted external witness implementations must declare bounded
