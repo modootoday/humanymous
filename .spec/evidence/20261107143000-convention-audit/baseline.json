@@ -223,5 +223,15 @@
     "zeroizing_fields_and_direct_transfer_reviewed": true,
     "authored_regression_execution_observed": false,
     "finding_closed": false
+  },
+  "followup_execution_review": {
+    "private_review_sha256": "45632f1ac819686bca3aabbe68fc24cdd4b1c1d43e9136902129757d1dd7bca2",
+    "bridge_source_fix": "3a0ba182",
+    "new_bridge_tests_run": false,
+    "earlier_pure_tests_observed": 14,
+    "actual_subprocess_tests_observed": 0,
+    "r1_release_and_benchmark_observed": true,
+    "r1_product_performance_qualified": false,
+    "notice_actual_archive_qualified": false
   }
 }

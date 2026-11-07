@@ -140,7 +140,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-LF-01 | P2: browser native.rs worktree had 522 CRLF pairs despite LF blob | Browser | CLOSED; owner normalized to exact original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LF-02 | P2: Windows runner receipt.rs worktree had 90 CRLF pairs despite LF blob | Native Windows | CLOSED; worktree equals original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LIFETIME-01 | P1 contract gap: shared process capture has no retained reader joins or proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Independently confirmed source constraints; owner design/fix and actual adversarial process pilot OPEN; no observed hang claimed |
-| CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CONFIRMED at create.rs fb91e1c9; separate owner fix and fresh qualification OPEN; no actual OOM alleged |
+| CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | Fixed-source reviewed at 3a0ba182; fresh boundary/doctest/native qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retain ordinary String key fields outside Zeroizing ownership | Authority | Source fix independently reviewed at 2ca6e4fa; scoped compilation/regressions OPEN; no exfiltration/log/provider leak alleged |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
@@ -360,3 +360,42 @@ owner-corrected violations, required allocated regressions/pilots, committed
 canonical evidence and final fixed-source re-audit. Current verdict: needs-work.
 Open artifact verification, remaining coverage and graph freshness prohibit a
 global convention/security/a11y/license or full-product success claim.
+
+### Subsequent bounded bridge and execution evidence
+
+The source-only bridge correction at3a0ba182 now takes at most32768 UTF16
+code units before collection, rejects empty/NUL/over-cap values, and clones the
+validated Path before native creation. ASCII32767/32768 and surrogate-unit
+boundary cases plus positive/external compile-fail doctests are authored.
+Independent source review accepts this correction; their execution remains OPEN.
+
+Separately, the earlier corrected-source pure receipt was independently read:
+seven parent-context, four capture-ledger and three bridge tests passed, with
+check/strict Clippy/fmt exit0. All19 referenced raw attachment hashes matched;
+actual saved before/after manifests are byte-identical (source2610, selected
+registry1217files/15packages, tools76files, config22entries, environment7entries).
+This supersedes the earlier not-yet-observed pure-test status only. Preserve the
+first preparation failure, E0432 failure and disclosed retry-before-renewal
+ordering, with root's later acceptance rather than invented prior authorization.
+No actual native query/create or subprocess occurred. These14 results do not
+qualify3a0's later allocation/privacy tests. Five ignored actual-process parents
+at1e05b7ba retain failed owners through settlement and assert actual joins;
+they remain authored NOT_RUN. Caller migration and LIFETIME01 stay OPEN.
+
+The R1 release/benchmark evidence has now been independently read without rerun.
+Saved release source/selected registry/config-tools before/after bytes match;
+current binary SHA256 cce5b7da9dbbebe5d85a97184036688955e86ae0b68dc8bb46f6ff112a795365
+matches both release receipt and benchmark before/after identities. The observed
+process receipt records PID58020 terminal exit0, one run. Raw10 rows cover five
+alternating A/B pairs over87 fixed cases; each pair has equal operations/output
+bytes. Recalculation gives13.748..18.693percent reduction, median15.682percent.
+This supersedes the earlier release/main NOT_RUN observation for this exact
+profile, not functional or product qualification. It measures hot function calls,
+output destruction/counting and cooperative checks; no request p95, allocation
+count, representative HTTP workload, hard OS deadline or production result.
+
+Delivery's hosted native archive attempt atb09e98cf records a successful release
+build followed by archive-member refusal and zero artifacts. The combined error
+does not identify which member/predicate failed. Sparse writer versus regular
+reader incompatibility is source-confirmed separately, not proven as that run's
+cause. NOTICE01 actual archive and final runtime-image gates remain OPEN.

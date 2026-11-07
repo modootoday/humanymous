@@ -163,3 +163,10 @@ Independent Pass source/raw review confirms37Rust tests (35lib+twoharnesses,
 27Pass-named), selected718-file equality and no motor/solve-speed input to the
 reviewed primitive. Original Go baseline16 tests also passed in a separately read raw receipt; independent Go/Rust golden comparison and full timing/config/tool/SDK closure,
 runtime replay/issuance/attestation and actual accessible UI are not inferred.
+
+Subsequent independent followup:3a0ba182 allocation correction is source-accepted
+but fresh tests remain NOT_RUN; original corrected pure14 receipt and19 raw
+attachments verified. Five actual process parents remain NOT_RUN. R1 release
+and one benchmark actual exit0/hash/paired arithmetic verified, function scope
+only. Hosted archive release-build success followed by refusal does not close
+NOTICE01 artifact gates. See the SoT subsequent evidence section.
