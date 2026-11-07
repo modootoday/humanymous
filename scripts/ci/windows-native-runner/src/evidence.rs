@@ -1,6 +1,8 @@
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, fs, io, path::Path, process::Command};
+mod accounting;
+mod lifecycle;
 
 pub fn digest(path: &Path) -> io::Result<String> {
     Ok(format!("{:x}", Sha256::digest(fs::read(path)?)))
@@ -240,19 +242,10 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
         return Err(io::Error::other("scoped native input report required"));
     }
     let rows=report["coverage"]["harnesses"].as_array().map(|rows|rows.iter().map(|row|json!({"target":row["target"],"executable_sha256":row["executable_sha256"],"discovered":row["discovered"],"passed":row["passed"],"failed":row["failed"],"validated":row["validated"],"ignored":row["ignored"],"ignored_subprocess_helpers":row["ignored_subprocess_helpers"],"subprocess_helpers":row["subprocess_helpers"],"required_parent_tests":row["required_parent_tests"],"required_not_run":row["required_not_run"],"filtered":row["filtered"],"exit_code":row["exit_code"],"stdout_sha256":row["stdout_sha256"]})).collect::<Vec<_>>()).unwrap_or_default();
-    let passed = rows
-        .iter()
-        .filter_map(|r| r["passed"].as_u64())
-        .sum::<u64>();
-    let ignored = rows
-        .iter()
-        .filter_map(|r| r["ignored"].as_u64())
-        .sum::<u64>();
+    let passed = accounting::observed_total(&rows, "passed")?;
+    let ignored = accounting::observed_total(&rows, "ignored")?;
     let zero = rows.iter().filter(|r| r["discovered"] == 0).count();
-    let failed = rows
-        .iter()
-        .filter_map(|r| r["failed"].as_u64())
-        .sum::<u64>();
+    let failed = accounting::observed_total(&rows, "failed")?;
     let summary = json!({"schema":"humanymous.native-runner-summary/1","scope":"four-package-native-process-component","status":report["status"],"qualification":"component-only","full_runtime_qualified":false,"source_sha":report["source_sha"],"validated_worktree_dirty":report["source"]["dirty"],"raw_report_sha256":digest(input)?,"os":report["os"],"arch":report["arch"],"errors":report["errors"],"skips":report["skips"],"missing_required_cases":report["missing_required_cases"],"unsupported":report["unsupported"],"documentation_examples_executed":report["documentation_examples_executed"],"harnesses":rows,"passed_tests":passed,"raw_ignored_tests":ignored,"zero_test_harnesses":zero,"own_source_git_bytes":report["source"]["own_source_git_bytes"]});
     let mut summary = summary;
     let unknown_counts = rows
@@ -270,31 +263,8 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     summary["executed_harnesses"] = report["coverage"]["executed_harnesses"].clone();
     summary["coverage_complete"] = report["coverage"]["complete"].clone();
     if workspace {
-        if report["status"] == "passed"
-            && (report["errors"] != 0
-                || report["skips"] != 0
-                || report["coverage"]["complete"] != true
-                || report["coverage"]["required_harnesses"]
-                    != report["coverage"]["executed_harnesses"]
-                || passed == 0)
-        {
-            return Err(io::Error::other(
-                "incomplete workspace cannot publish passed summary",
-            ));
-        }
         if report["status"] == "passed" {
-            let raw = report["coverage"]["harnesses"]
-                .as_array()
-                .ok_or_else(|| io::Error::other("workspace rows absent"))?;
-            if failed != 0
-                || report["ignored_subprocess_helpers"].as_u64() != Some(ignored)
-                || report["coverage"]["required_harnesses"].as_u64() != Some(raw.len() as u64)
-                || raw.iter().any(|r| r["validated"] != true)
-            {
-                return Err(io::Error::other(
-                    "unvalidated workspace counts cannot publish passed summary",
-                ));
-            }
+            accounting::workspace_pass(&report)?;
         }
         summary["schema"] = "humanymous.workspace-probe-summary/1".into();
         summary["scope"] = "workspace-default-features".into();
@@ -302,6 +272,7 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
         summary["ignored_subprocess_helpers"] = report["ignored_subprocess_helpers"].clone();
     }
     summary["runner_provenance"] = report["source"]["github"].clone();
+    lifecycle::project(&report, &mut summary);
     summary["source_manifest_sha256"] = json!(format!(
         "{:x}",
         Sha256::digest(serde_json::to_vec(&report["source"]["files"])?)
@@ -343,6 +314,9 @@ mod tests {
         workspace["ignored_subprocess_helpers"] = 0.into();
         workspace["coverage"]["harnesses"][0]["ignored"] = 0.into();
         workspace["coverage"]["harnesses"][0]["validated"] = true.into();
+        workspace["coverage"]["harnesses"][0]["failed"] = 0.into();
+        workspace["coverage"]["harnesses"][0]["exit_code"] = 0.into();
+        workspace["coverage"]["harnesses"][0]["discovered"] = 2.into();
         write(&raw, &workspace).unwrap();
         summary(&raw, &public).unwrap();
         let published: Value = serde_json::from_slice(&fs::read(&public).unwrap()).unwrap();

@@ -543,3 +543,49 @@ key_backups was not reached in this execution. Raw partial-run artifacts are
 registered privately. Root and CI received the exact failure and no-running-
 process report. Full local Specfold check also failed on other private analysis
 paths/unregistered inputs(17938errors/1warning); --no-local remained0errors/1warning.
+
+## Active Windows goal: strict publication and lifecycle evidence
+
+Root relayed explicit user authorization for an active Windows completion goal.
+get_goal returned none; create_goal set active without a token budget. Completion
+requires owned implementation/commits, pure unit checks, actual hosted pilots,
+strict accounting and Specfold evidence. Current title: Humanymous · Windows ·
+네이티브 러너. Policy canon remains program-roadmap/delivery; local actual process,
+SCM/account mutation, duplicate dispatch and publication remain unauthorized.
+
+Pure evidence/accounting validates passed workspace publication: typed unsigned
+counts, positive required denominator equal executed/row count, complete coverage,
+every exit0/validatedtrue/failed0/filtered0, checked passed+ignored=discovered,
+per-row ignored=classified helpers and nonempty aggregate passed. Missing/null/
+string/negative/overflow counts fail closed; zero-test harnesses remain in the
+denominator. Raw reports are not rewritten. Producer flags alone are insufficient.
+
+The evidence/lifecycle whitelist retains typed cleanup booleans, child exit,
+job-empty/delegation request/known actor case, SCM rights/single-generated-SID/
+restored/original-descriptor digest and service counts. Actual SID/credentials/
+raw SDDL/free-text errors/paths are excluded. Missing remains null, false remains
+false. Projection does not alter failed/blocked status or prove actual execution.
+
+CI owner received separate hosted standard-user-service positive and after-grant
+negative contracts: positive actual service1passed still componentblocked2;
+negative intentionally failed1 before child launch. Both require actual account/
+scratch deletion and original SCM restoration. Positive additionally requires
+actual job-empty. Corrected earlier description: after-grant precedes launch,
+so child_launch_attempted=false and child exit/job-empty/job-kill observation
+remain null. Raw and sanitized reports retain this attempt fact. Actor-backed
+workspace passed publication requires attempted child/exit0/normal case and all
+actual cleanup facts true. CLI owner confirms the
+existing service pilot is a signed fixture; actual RuntimeServiceHost pilot name
+awaits CLI/runtime source work. Remote42348518353/63f69ae is a distinct source.
+Root allocated the single local Cargo slot: six new pure evidence tests passed,
+zero failed/ignored and seven outside-scope filtered, jobs1/incremental0. Direct
+rustfmt and scoped all-target Clippy with warnings denied passed. Slot returned.
+Exact source-byte hashes at HEAD2b2d3ccf+dirty are recorded in the pure-unit summary;
+raw console output exists in tool results, not a separately retrieved raw log.
+Actual hosted lifecycle/projection verification and private raw retrieval: not_run.
+
+Root assigned native-windows lane and sole native-security OS credential provider
+ownership. CLI selects typed references, runtime consumes protected bytes and audit
+custody retains key sealing responsibilities. Missing/locked/unsupported must fail
+closed, no UI or plaintext argv/env/file fallback. This ownership acceptance is not
+an implemented or verified OS secret provider; other-OS gaps stay explicit.

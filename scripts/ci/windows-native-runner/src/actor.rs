@@ -354,6 +354,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
     fs::create_dir(&scratch)?;
     let mut scm_proof = None;
     let mut job_empty_observed = None;
+    let mut child_launch_attempted = false;
     let execution = (|| -> io::Result<u32> {
         acl(&scratch, &sid, identity.sid())?;
         let manifest_path = scratch.join("manifest.json");
@@ -418,6 +419,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         let launched = if options.actor_case == "after-grant" {
             Err(io::Error::other("injected failure after SCM grant"))
         } else {
+            child_launch_attempted = true;
             launch(&account, &password, &arguments, &environment, &workspace)
         };
         job_empty_observed = launched.as_ref().ok().map(|(_, active)| *active == 0);
@@ -492,6 +494,9 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         failed
     });
     report["standard_user_lifecycle"] = json!({"sid":sid,"account_deleted":account_deleted,"scratch_deleted":scratch_deleted,"child_exit_code":code,"provisioning":"native-Win32","job_kill_on_close":true,"job_empty_observed":job_empty_observed,"scm_delegation_requested":service,"actor_case":options.actor_case});
+    report["standard_user_lifecycle"]["child_launch_attempted"] = json!(child_launch_attempted);
+    report["standard_user_lifecycle"]["job_kill_on_close"] =
+        json!(job_empty_observed.map(|_| true));
     if let Some(proof) = scm_proof {
         report["scm_delegation"] = proof;
     }

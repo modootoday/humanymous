@@ -1,0 +1,26 @@
+{
+  "schema": "humanymous.native-runner-pure-unit-summary/1",
+  "qualification": "pure-unit-only",
+  "full_runtime_qualified": false,
+  "source_head": "2b2d3ccfa4c5e96d1e42473ebf82f9c919bb4a67",
+  "validated_worktree_dirty": true,
+  "source_bytes_sha256": {
+    "scripts/ci/windows-native-runner/src/evidence.rs": "622b520b03b7a194dd0538d4ff373ccf386315691773ca4e8bfcb645b09f6e0f",
+    "scripts/ci/windows-native-runner/src/evidence/accounting.rs": "dbbb287e4213423b566f799255c271e1c7251cc698d223b312699149b2a7c8b0",
+    "scripts/ci/windows-native-runner/src/evidence/lifecycle.rs": "8dd20eb05a2f85dbc5e3a84aaafc42330c20c17cf9ecbb5d3fbac6d9eb0c674e",
+    "scripts/ci/windows-native-runner/src/actor.rs": "daade4bf331b0a3d67ff0062b95292f0faa01cf6140da496a2ba123ae1919123"
+  },
+  "unit_command": "cargo test --locked --manifest-path scripts/ci/windows-native-runner/Cargo.toml evidence:: -- --skip public_summary_excludes_identity_credentials_and_raw_traces",
+  "build_jobs": 1,
+  "incremental": false,
+  "passed": 6,
+  "failed": 0,
+  "ignored": 0,
+  "filtered_outside_scope": 7,
+  "scoped_clippy_all_targets_deny_warnings": "passed",
+  "rustfmt": "passed",
+  "actual_runtime_process_test": "not_run",
+  "actual_acl_or_scm_test": "not_run",
+  "hosted_lifecycle": "not_run",
+  "raw_console_capture": "tool-output-only; no standalone raw log retrieved"
+}

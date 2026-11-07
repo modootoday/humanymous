@@ -138,3 +138,19 @@ parent passed, exit0, one summary, passed+1=discovered, no failed/measured/filte
 Parents must capture/assert actual child status, marker and state/recovery.
 Raw ignored helper counts remain separate from passed counts. Old nested child
 summaries fail this contract. These add two to existing custody helper count2.
+
+Publication hardening (new source, hosted not_run): passed workspace summaries
+reject missing/null/nonunsigned counts, nonzero/absent exits, inconsistent required/
+executed/row/discovered denominators, unclassified ignored and overflow. Zero-test
+harnesses remain in the denominator. Actor-backed passed summaries additionally
+require attempted child exit0 and observed successful cleanup.
+
+Sanitized summaries retain typed `standard_user_lifecycle`, `scm_delegation` and
+`service_execution` facts without SID, SDDL or paths. Missing stays null; false
+cleanup stays false. For `standard-user-service --actor-case after-grant`, injection
+precedes child launch: expect exit1/statusfailed, child_launch_attempted=false,
+child_exit_code/job_empty_observed/job_kill_on_close=null. Account and scratch
+deletion plus SCM restored=true remain required. Positive returns2/statusblocked
+when its service component passes but other native requirements remain missing;
+it requires actual child exit2, job empty and cleanup/restore evidence. These two
+cases must use separate report paths and be consumed as separate evidence.
