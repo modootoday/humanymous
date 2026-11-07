@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/bootstrap/src/renderer_probe.rs",
+  "sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete61line opt-in renderer canary: process-local scheme acceptance gates callbacks, positive owner, fixed generated executable-sibling canary/read and create_new write, numeric error statuses only. Missing callback/frame/message is no observation; missing-file not denial. No process-wide sandbox, native execution or independent provenance proof.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/audit/src/keys/custody/erasure.rs",
   "sha256": "e554d1d0e8896c93febf8161bd6e85c7457b4af0a2163a660d71de7934f63514",
   "reviewer": "codex/rust-pages",

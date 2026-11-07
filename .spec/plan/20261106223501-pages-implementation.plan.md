@@ -1780,3 +1780,15 @@ crash/powerloss. Public witness reference and Draftsecurity checklist now retain
 those exact evidence boundaries. Reported unbounded servicefixture exchanges to
 auditowner, no foreignsource edits or actualaudit/native execution. Pages source
 checker88errors0; scoped Specfold0errors0warnings and owneddiff clean.
+### Renderer probe unknown outcomes and build preparation
+
+Read complete61line renderer_probe and shared scheme acceptance source; full
+renderer receipt added. Native browser reference distinguishes process-local
+registration/explicitoptin, generatedcanary numeric results and missingcallback
+unknown from accessdenied or globalsandbox proof. No native execution inferred.
+
+Read complete current Pages build.rs. It already uses ruby-Sbundle, avoiding
+batchfile directspawn concerns, with frozenlock, pinnedtheme and beforeafter
+authoredinput checks. Sent concrete sequential Windows Ruby dualbaseurl allocation
+request with dedicated private destinations; no install/lock mutation/browser
+server authorization inferred and no processes started.

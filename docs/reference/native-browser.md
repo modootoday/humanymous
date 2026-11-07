@@ -55,6 +55,15 @@ and missing-registration failure execution still unverified. Do not transfer
 the earlier passing receipt to those changed paths or describe all browser
 execution as absent.
 
+The current renderer probe runs only after that process observes successful
+owner-scheme registration and receives an explicit positive probe-owner value.
+It attempts only generated canary paths beside the executable and sends numeric
+read/write outcomes, not file contents. Missing callbacks, registration, frame
+or message delivery produce no observation. They must remain unknown rather
+than becoming a successful denial. A missing-file error is also distinct from
+access denied; neither result qualifies every renderer, utility process,
+filesystem path or network boundary.
+
 The process-owning prototype DLL is not the planned embeddable SDK. SDK lifecycle,
 versioned ABI, consumer ownership/unload and framework compatibility remain
 separate responsibilities. The `humanymous-native init` planner can describe a
