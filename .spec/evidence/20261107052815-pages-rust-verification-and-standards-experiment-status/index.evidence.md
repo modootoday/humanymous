@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T12:48:06Z
+updated: 2026-11-07T12:53:09Z
 rel:
   governs: [docs]
 files:
@@ -79,6 +79,7 @@ files:
   - {path: local-ruby-desktop-build-result.json, sha256: 37ea433537dbed2f6a79d128d0eb5c3f2d208997437531fb7c99cbde5aa45a67, bytes: 5416, store: repo}
   - {path: local-desktop-preview-result.json, sha256: 9c9f48d97d8077f0fb09b2b239dda289bbcb07b33a544131ac335ef232bcbec9, bytes: 2620, store: repo}
   - {path: fixed-test-support-source-review-batch.json, sha256: b7dde2ecff17608085b2186b65ba7663131886452d739c98e34dbf8c0230ff3e, bytes: 5092, store: repo}
+  - {path: current-test-support-source-review.json, sha256: 67b08828344b5f3974be8f54c36889f5e5992340afe45bf20924c73ca56d9c7a, bytes: 8529, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status

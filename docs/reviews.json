@@ -2,6 +2,87 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/test-support/src/linux_tree_probe.rs",
+  "sha256": "5db8db4b6fbf1285582b6ba4e77fe40574d440dd189b962fc8c7c43ac95a0bf7",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete160-line fixed-path Linux prerequisite inspector, no launch/kill/D-Bus/policy/resource mutation. Byte bounds only, not time/cancellation guarantee; actual manager/version/broker authorization are never queried and NativeBackendUnqualified always retained. Windows pure tests do not prove Linux inspect ran.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/src/parent_context.rs",
+  "sha256": "4629133c9666faaf73bad2cc8accfeb150f07fca690025a63314be0a7236d6aa",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete322-line strict64KiB unverified workload/cleanup schema, separate named managed/native/harness lineages, fixed environment keys and one mapped original180s+60s clock claim. Syntax/paths/SID/hash strings are not authenticated parent/artifact/token/Job/Ready state or execution provenance. Original native parent watchdog dominates transit/skew; cleanup wire has no workload launch authority.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/src/parent_context/tests.rs",
+  "sha256": "fa436a2a5c77d1bbbc4a363e2d1cdb4146dadd680fef0766c359e15cd6dc6608",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete126-line synthetic golden codec, duplicate/unknown/lineage/path/size refusals, conserved clock mapping and fixed environment tests. All supplied paths/SIDs/source digests are fixtures; no real parent, Windows account, Job, service or cleanup was executed in this review.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/src/tree_lifecycle.rs",
+  "sha256": "58fb0b44bfd6810c40f929c5c1fcc9ac93e01d48d5912c80c738727e771831e7",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete220-line pure symbolic owner model: retain same owner across incomplete six-fact finish, independent execution result with irreversible failure, invalidate/reset facts on renewed cleanup. No custom Drop/spawn/kill/recovery supervisor/native proof; caller-supplied observations cannot authenticate actual containment, emptiness, reaping or reader joins.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/examples/linux_tree_inventory.rs",
+  "sha256": "aa9f32c5a903f245e5fefbace75a8c9aa72ad35b4abc0627ad12eb9019fe4455",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete45-line no-argument closed-vocabulary inventory CLI. Successful output always says unsupported/native backend false and omits raw paths/PIDs/bus data. Source existence/zero exit is not backend qualification.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/INTEGRATION.md",
+  "sha256": "b7a97e568e7ab5eccd018ac11caa0abd4dae4e6b91d36e139b21104886b5bf78",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current78-line chronology read: historical process/strictJSON results, symbolic owned-tree and read-only inventory results, later parent-codec source selector/overlay scopes remain separate. No genuine Linux/backend/native parent/Windows actor execution inferred; decoder/context types remain unverified.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/src/process.rs",
+  "sha256": "6b1edaf2f60f300fd5025009ee44c580f438e8aa73c406e67ce751dcaeb164cb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current404-line direct-child guard/capture/readiness helper with new three-owned-pipe duplex return. Caller must apply trusted cwd/env, bound startup/input/output, retain/join readers and independently own descendants/Job. Returned pipes or guard Drop do not prove EOF/reader join/tree empty. Synchronous startup write has no arbitrary preemption guarantee; no new process execution here.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/src/json.rs",
+  "sha256": "16e47a333700e2b084e81f7012c1d5d523695a59b1454d21f5db8157beaa9656",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete143-line bounded unique-decoded-key JSON visitor: byte budget before parse, nested/escaped duplicate rejection, serde nesting limit, integer precision, static non-echoing errors and trailing/UTF8/number refusal. Consumer schema, unknown fields, replay/authentication remain outside this syntax helper.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
+  "source": "crates/test-support/src/docker.rs",
+  "sha256": "97c9f53b2e89ac5a6966c0f9383e82eefae2ffcace841ae1a7977a128621d9e8",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete281-line pure caller-observation comparison: requires explicit Desktop context/endpoint/Linux/version/ID or explicit allocated SDK/CLI host and matching actually supplied server observation. Does not query engines or authenticate caller provenance. Public summary contains comparison facts only; raw ServerIdentity belongs in private evidence. Static negative tests do not prove actual engine connection or execution.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
+{
   "source": "crates/integrity/src/adapter/mod.rs",
   "sha256": "8a44c59f88a2888b05ff5c1c38b8d34c3fee0c429ce1aa394dc7c1e1f210dd22",
   "reviewer": "codex/rust-pages",
@@ -5576,27 +5657,23 @@
       ]
     },
     {
-      "source": "crates/test-support/Cargo.toml",
-      "sha256": "0c85873065399ed81b5d31cce03ecf3c5ca98491ad3f63bca08386c53ce56177",
-      "reviewer": "codex/rust-pages",
-      "notes": "Workspace metadata/test support describes library migration state rather than a distributable service. Reader pages provide no executable installation example or OS support guarantee; exact artifact/native/runtime qualification remains required.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/developer.md",
-        "docs/reference/install-requirements.md"
-      ]
-    },
+  "source": "crates/test-support/Cargo.toml",
+  "sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete15-line shared unpublished test-support manifest with serde/serde_json only. No additional process-control dependency or production supervisor qualification.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
     {
-      "source": "crates/test-support/src/lib.rs",
-      "sha256": "702cf04e1bfb2f5bab51c7505db50a40ff06fd2f805e7af0fafadbf7b7c0b0c3",
-      "reviewer": "codex/rust-pages",
-      "notes": "Workspace metadata/test support describes library migration state rather than a distributable service. Reader pages provide no executable installation example or OS support guarantee; exact artifact/native/runtime qualification remains required.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/developer.md",
-        "docs/reference/install-requirements.md"
-      ]
-    },
+  "source": "crates/test-support/src/lib.rs",
+  "sha256": "c452fc623e9ab67d11745d6b3866c49283957796347f7173cf27365d4b795bac",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current104-line module root plus exact JSON equivalence assertions. Exposes new pure lifecycle, prerequisite and unverified parent-context helpers; module declarations grant no native backend. Process is excluded on WASM; numeric comparisons preserve large integers and omit/null/order distinctions.",
+  "pages": [
+    "docs/explanation/how-this-was-built.md"
+  ]
+},
     {
       "source": "web/AGENTS.md",
       "sha256": "92a4aacc2d4756dc661aee21d09abc66a99d25093d2953273f2a21de8bfd4a9e",
