@@ -38,7 +38,11 @@ registry and `ClientReport`; no scoring implementation is duplicated.
 The exported `detect_json` reads actual browser APIs and returns a partial report.
 Browser getter/call errors reject. The report has no minted session and leaves
 environment.probed=false and behavior/advanced/guard unmeasured defaults.
-The two CDP flags are only consumed: their active producers remain unported.
+Optional producers are implemented separately: environment_json and advanced_json
+run explicit bounded probes; BrowserCollector::probe_cdp_json attempts the two
+legacy console-preview observations once per epoch. enable_guard_hooks explicitly
+installs owned eval/Function forwarding proxies and changes direct-eval lexical
+semantics. These optional APIs do not become implicit detect_json measurements.
 This is not a qualified runtime collector, human proof or full Pass implementation.
 Required runtime collector routes remain fail-closed rather than accepting this
 partial report as a substitute for missing evidence.
@@ -46,8 +50,9 @@ partial report as a substitute for missing evidence.
 All authored implementation/tests are Rust. wasm-bindgen0.2.130,
 js-sys0.3.107 and wasm-bindgen-test0.3.80 are pinned. Production js-sys disables
 default features including unsafe-eval; upstream generated binding/test glue is
-an external artifact, not a hand-authored JavaScript loader. No eval/inline_js or
-Function constructor is authored. Go detect files remain read-only migration oracle.
+an external artifact, not a hand-authored JavaScript loader. No hand-authored JavaScript or inline_js loader is added. Optional guard hooks
+forward existing realm eval/Function through Rust-owned proxies; they are not a
+compatibility-neutral operation. Go detect files remain a read-only migration oracle.
 
 Pure tests cover all17frozen signal IDs, values/confidences/verdicts and registry
 weights, benign/absence/zero/case boundaries, software-renderer Unicode lowering,
@@ -59,8 +64,8 @@ Reproduce:
 
 - `cargo test -p humanymous-collector --locked`
 - `cargo clippy -p humanymous-collector --target wasm32-unknown-unknown --all-targets --locked -- -D warnings`
-- `docker compose -f deployments/lab/compose.collector.yaml --profile collector build`
-- `docker compose -f deployments/lab/compose.collector.yaml --profile collector run --rm --no-deps collector-browser`
+- Windows allocated engine: `docker.exe --context desktop-linux compose -f deployments/lab/compose.collector.yaml --profile collector build`
+- Windows allocated engine: `docker.exe --context desktop-linux compose -f deployments/lab/compose.collector.yaml --profile collector run --rm --no-deps collector-browser`
 
 The Docker component lab uses Firefox ESR and geckodriver, UID65532, network none,
 read-only root, cap-drop ALL and no-new-privileges. Loopback WebDriver/test-server
@@ -74,8 +79,22 @@ not an ordinary-human baseline.
 The standard wasm-bindgen runner Chrome/Edge branches append no-sandbox; they are
 prohibited here. Firefox is only a component-test engine; product UI stays Meari+CEF.
 
-Remaining: full loader/distribution, environment/guard/advanced probes,
-session-bound collector/RIT transport/recovery, actual Pass, ordinary-browser/AT
-controls, and product Docker e2e. A native/WASM build or component test does not
-complete these. Public summary and source manifest are in
-evidence:root/20261106235519; raw logs are private evidence:root/20261106194410.
+The committed BrowserSession transport owns same-origin cookie-free buffered
+Fetch, bootstrap scope, one-flight request signing, cancellation and authenticated
+consumption ACK checks. Checkpoint667e98f has a recorded66-case isolated Firefox
+component run, including bootstrap cancellation cleanup; the earlier65-case run
+and initial PID-cap failure remain separate attempts. Those tests use synthetic
+positive Fetch responses and do not prove a successful real runtime join.
+
+Remaining: full loader/distribution, accepted fresh collector provenance, actual
+runtime/bootstrap/ACK joining, cookie/identity and recovery profiles, actual Pass,
+ordinary-browser/human/AT controls, and product Docker e2e. Implemented optional
+probes are not attestation or an automatically qualified report. Required runtime
+collector routes remain fail-closed. A component pass does not close these gates.
+Public baseline evidence is evidence:root/20261106235519; source-bound component
+logs and667e98f byte-binding records are private evidence:root/20261106194410.
+
+Before local Docker reproduction follow rule96: resolve the Windows Desktop
+executable and credential helper, verify endpoint/server ID, and obtain the
+current execution allocation. Hosted Linux records its own engine; standalone
+WSL Docker is not a fallback. The commands above are not product-e2e authority.
