@@ -1625,3 +1625,19 @@ hashes. Current rewritten source is not substituted into that historical closure
 Unit schema tests use synthetic owned inputs; actual baseline byte admission
 remains a closed repository-only file/Git check. Missing original historical
 seams refuse preparation rather than refreshing the expected hashes.
+
+### Dedicated GNU browser proxy producer coverage
+
+The existing browser-product diagnostic preflight runs the Unix Runtime pilot's
+browser_proxy::tests:: selection after its existing Unix check and strict Clippy.
+It retains the same toolchain-success/cancellation guard, normal required failure
+behavior, original job budget and single Cargo build job. Source36373e79 defines
+three selected cases: origin_classes_initialize_zeroes_and_never_retain_foreign_values,
+wire_observations_count_only_fixed_classes_and_treat_empty_referer_as_present and
+owned_authority_and_api_dispatch_cannot_be_retargeted. Actual GNU discovery and
+execution must retain those identities and counts; source preparation is not a
+test pass. Windows Lab unit results do not execute this Unix producer selection.
+These are pure proxy producer/counter cases, not network/provider/browser or
+whole-product qualification. Existing preflight and full browser product gates
+remain required; this addition supplies no failure tolerance or qualification
+for the older1f87 or edc30181 executions.

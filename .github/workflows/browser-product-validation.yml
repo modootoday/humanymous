@@ -68,6 +68,9 @@ jobs:
     - name: Compile and lint all selected Unix targets
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo clippy --locked -p humanymous-adapter-go -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings
+    - name: Execute Unix browser proxy producer units
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: 'cargo test --locked -p humanymous-runtime-pilot --bin humanymous-runtime-pilot browser_proxy::tests:: -- --nocapture'
     - name: Verify current workflow policy
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- policy

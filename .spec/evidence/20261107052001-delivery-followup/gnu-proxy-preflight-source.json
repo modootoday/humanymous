@@ -1,0 +1,56 @@
+{
+  "schema": "humanymous.delivery-gnu-proxy-preflight-source/1",
+  "state": "workflow-source-prepared-actual-GNU-tests-not-run",
+  "workflow": ".github/workflows/browser-product-validation.yml",
+  "workflow_sha256": "bba6942cae24470d6347517993b3ac7d16e41c43d8b1934f692d25a333721c51",
+  "step": "Execute Unix browser proxy producer units",
+  "command": "cargo test --locked -p humanymous-runtime-pilot --bin humanymous-runtime-pilot browser_proxy::tests:: -- --nocapture",
+  "placement": "after existing Unix runtime check and selected Unix strict Clippy; before existing policy",
+  "guard": "${{ !cancelled() && steps.toolchain.outcome == 'success' }}",
+  "unchanged": [
+    "25-minute preflight budget",
+    "single Cargo build job env",
+    "existing required steps",
+    "normal failure behavior",
+    "full browser product dependency"
+  ],
+  "owner_source": {
+    "sha": "36373e79c33f850da3298acaa66150dac370655b",
+    "path": "test/lab/runtime/src/browser_proxy.rs",
+    "git_blob": "8ca8b6a0608c42f83c9fbbb921338d883f0e4648",
+    "sha256": "4b0d3acb859878463d56ab66a287ffc67d960143bdc5bc71172d49742ed9e1a1",
+    "expected_selected_test_names": [
+      "browser_proxy::tests::origin_classes_initialize_zeroes_and_never_retain_foreign_values",
+      "browser_proxy::tests::wire_observations_count_only_fixed_classes_and_treat_empty_referer_as_present",
+      "browser_proxy::tests::owned_authority_and_api_dispatch_cannot_be_retargeted"
+    ],
+    "expected_count": 3,
+    "scope": "pure Unix proxy producer/counter/dispatch tests; no actual network/provider qualification"
+  },
+  "static_policy_initial": {
+    "binary_sha256": "73c9d4d9a04a4db5c38fc70440c465f99281b5cc3c3a28a937ee4614f87578f4",
+    "workflow_sha256": "075a8cad142e0d30cf53acf4d096efb4bb7a571244ea6b955764a6bc1e8cae99",
+    "completed_within_budget": true,
+    "exit_code": 1,
+    "compiler_executed": false,
+    "elapsed_seconds": 0.1277158,
+    "pid": 40120,
+    "source": "094477b3d97a715c57ef4fc04f7669b1cb3cf896"
+  },
+  "initial_error": "Unquoted test selector colon followed by space was parsed as YAML mapping; exact first workflow/logs preserved separately",
+  "static_policy_quoted": {
+    "completed_within_budget": true,
+    "binary_sha256": "73c9d4d9a04a4db5c38fc70440c465f99281b5cc3c3a28a937ee4614f87578f4",
+    "elapsed_seconds": 0.1601454,
+    "source": "094477b3d97a715c57ef4fc04f7669b1cb3cf896",
+    "compiler_executed": false,
+    "exit_code": 0,
+    "pid": 34564,
+    "workflow_sha256": "bba6942cae24470d6347517993b3ac7d16e41c43d8b1934f692d25a333721c51"
+  },
+  "compiler_executed": false,
+  "new_test_execution_performed": false,
+  "Windows_Lab40_qualifies_this_GNU_selection": false,
+  "full_product_qualified": false,
+  "dispatch_or_push_performed": false
+}
