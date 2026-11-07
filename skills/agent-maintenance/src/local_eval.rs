@@ -104,10 +104,10 @@ fn call(
     port: u16,
     messages: &[Value],
     tools: Option<&Value>,
-    seed: u64,
+    _seed: u64,
     max_tokens: u64,
 ) -> Result<Value> {
-    let mut request = json!({"model":"default","messages":messages,"temperature":0.2,"seed":seed,"max_tokens":max_tokens,"stream":false});
+    let mut request = json!({"model":"default","messages":messages,"temperature":0.0,"max_tokens":max_tokens,"stream":false});
     if let Some(tools) = tools {
         request["tools"] = tools.clone();
         request["tool_choice"] = json!("auto");

@@ -805,7 +805,7 @@ plus matching tokenizer/config are downloaded, pinned and hash-verified. CPU-onl
 four-thread/context8192/maxseq1/paged-off/prefix0 is proposed, with conservative
 host/process guards. The existing Rust driver offers finite allowlisted skill
 reads only; there are no model host commands or mutations. Product12/developer20
-subjects use original tasks/rubrics, matched arm seeds and reversed repeat order.
+subjects use original tasks/rubrics, matched greedy sampling and reversed repeat order.
 Same-model judge limitations remain explicit; actual reads are not adherence proof.
 Compilation/model resource allocation and actual32-run completion remain pending
 at this source checkpoint. No inference, paid API or hosted/Codex qualification is

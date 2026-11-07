@@ -25,7 +25,9 @@ developer catalog is explicitly limited to github-actions-ops and cut-release,
 the two skills targeted by these five developer cases; this is not a test of the
 full plugin inventory. Each of three product and five developer cases receives
 two runs per arm,32 subject runs total. Run order reverses per repeat; matched
-arms use the same temperature0.2 and repeat seed42/43. Tool rounds are capped at5,
+arms use greedy temperature0 without an RNG seed. Windows CPU rejects explicit
+seeding (first startup failure retained); bitwise determinism is not asserted.
+Tool rounds are capped at5,
 calls per round4, subject output768tokens per call, per-case cooperative budget600s
 and entire driver3600s. Exact model requests/responses, output, actual returned
 skill-body hashes and observed usage remain in raw receipts. API prices are zero;
