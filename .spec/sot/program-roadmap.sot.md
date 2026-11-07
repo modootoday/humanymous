@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T14:41:34Z
+updated: 2026-11-07T15:26:30Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -20,6 +20,35 @@ They do not grant current execution slots, supersede newer contracts or prove
 freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
+
+Snapshot: 2026-11-07T15:26:30Z. The preceding checkpoint is retained below as
+history; its queued/running descriptions are not current status. Component
+receipts qualify their exact inputs, not the final migration candidate.
+
+| Area | Current source-bound outcome | Next unmet gate |
+| --- | --- | --- |
+| Structure and ownership | 23 live chat titles verified; structural canon aa8beef1, registry119fa52b; continuous rotation173008f0 and tooling transition41907143 recorded | Retain missing gates when rotating responsibilities; registry projection follows accepted title changes, never idle status alone |
+| Shared graph | CLI test-support dev edge1e977a66 and matching internal lock entry173008f0; locked/offline no-deps metadata exited0 | No external package change; final full workspace and Cross-OS candidate gates remain |
+| Browser pure layer | Owner reports exact ce05c45e plus173 graph overlay:30 tests passed, default all-target check/strict Clippy/fmt exited0;86 selected files unchanged | Receipt checkpoint pending; native-ui, CEF and real navigation/tab/keyboard/IME/AT gates remain. First live-tree locked rejection retained |
+| Delivery pure layer | Owner reports d6b24b76 plus six explicit native overlays:90 tests passed, check/strict Clippy/policy/fmt/actionlint exited0; target returned | Final closure/receipt and overlay commit pending; Windows regular/hardlink fixture does not satisfy GNU sparse or actual release-tar/product gates |
+| Browser product | Actual hosted42381878489 at bb763c1f TERMINAL FAILED: preflight passed, product18 assertions/16 passed/2 failed; receipt14dd08ca | Closed typed diagnostic f601/de0 source-ready; new Lab component verification allocated, actual corrected product retry still unrun |
+| Audit | Exact3d325bdb SIX selected GNU tests/check/strict Clippy/fmt passed; source-bound receipt9bb51b44 | Facade8025/capacity50df are source-only; S2 draft61bb6b4c requires correction of independent review findings. Production native open remains Unsupported |
+| Watermark | Corrected2eb2069a actual29 tests/check/strict Clippy/fmt passed in9ba8e308; earlier27f Clippy failure retained | Standards-validating WASM/PNG, high-level composition and actual carrier/file/product gates remain |
+| Integrity performance | c4786b67 actual27 tests; fixed-corpus release comparisonfc74b9be observed five hot paired batches13.75-18.69% shorter, paired median15.68% | Function/corpus observation only; no product/tail/allocation claim. Source ownership returned; bounded preparation tooling now prioritized |
+| Network temporal layer | Corrected e1ed50ce rejects invalid Vec layouts;72 authored tests. First actual compile failed on three imports of observation types from the wrong signals namespace, before any tests; owner correcting its consumers | Corrected-source retry/check/Clippy pending; fleet coordinator/capture epochs/runtime integration remain unqualified |
+| Native shared ownership | 7a1e8dee common owner and3a0 bounded-create source prepared; selected pure/doc/check/Clippy batch allocated | New actual OS parent/pipe/bridge/producer gates remain; old14-test receipt cannot qualify new source |
+| Authority | Encoded-secret ownership2ca6e4fa source-ready; first22-test batch failed before tests on the same Network dependency imports; no Authority diagnostic or key access | Corrected Network dependency checkpoint then retry; actual current-source result and real authenticated provider/IPC integration remain required |
+| Runtime and model | Runtime temporal composition and next deterministic model kernel assigned within existing owners; source preparation only | No readiness/scoring activation or new test success inferred; actual lower-provider contracts and full original parity scope retained |
+| Pages | Public input5341a880 remains a separate prepared candidate; later source-review batches do not constitute rendering | Fresh both-baseurl render, link/browser/AT validation, final-source reconciliation and approved main deployment remain |
+| Dedicated wargame | d6b24b76 authors strict dedicated caller; its policy is included in the90-test component batch | Root exact candidate push/dispatch review, actual generic26 run and full failure/unsupported accounting still required |
+
+Four one-job local pure owners maximum are admitted, subject to fresh memory and
+target ownership checks. Terminal Browser/Delivery slots were returned before
+Lab/Authority allocation. This is a dated allocation record, not a reusable grant.
+No package publication, tag, OIDC exchange, final main merge or branch deletion
+has been performed by this checkpoint.
+
+## Earlier integration checkpoint (historical)
 
 Snapshot: 2026-11-07T14:41:34Z. Source-bound component results below do not
 qualify the final integration candidate. Execution allocations are ephemeral;
