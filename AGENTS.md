@@ -23,39 +23,46 @@ before committing, run `spec check`. Rust conventions in that SoT are mandatory.
 
 | If you are working on… | Read next |
 |------------------------|-----------|
-| Package layout / scoring / signals | `internal/AGENTS.md` |
-| Edge proxy, audit, admin | `cmd/gate/AGENTS.md` + `internal/gate` patterns |
+| Rust layout / scoring / signals | `.agents/rules/10-rust-conventions.md` + owning crate and `.spec/sot/` |
+| Runtime, edge proxy, audit, admin | `crates/runtime`, `crates/authority`, `crates/audit` + owning SoT |
 | Public docs (Diátaxis) | `docs/AGENTS.md` |
 | Attack catalog / e2e | `test/AGENTS.md` |
-| Client WASM/JS | `web/AGENTS.md` |
-| Spec / design before code | skill `design-sot` → `sots/`, `plan/` |
+| Rust client WASM | `crates/collector` + `.spec/sot/client-collector.sot.md`; `web/` is legacy oracle |
+| Spec / design before code | skill `design-sot` → `.spec/sot/`, `.spec/plan/` |
 | Deferred / misdocumented claims | `sots/38-truth-debt-remediation.md` if present + `.agents/rules/80-truth-debt.md` |
 | Hard-won multi-session lessons | `.agents/lessons/HARD-WON.md` (Claude memory is **not** visible to other providers) |
 | Full verification | skill `red-blue-validate` (**Docker only**) |
 | Multi-round red/blue wargame (attack→e2e→guard) | skill `red-blue-wargame-round` + rule `61-redblue-wargame` |
 | Pass challenge round only | skill `pass-wargame-round` (SoT-36) |
-| Multi-perspective panel | `.agents/workflows/design-panel.yaml` + personas |
+| Multi-perspective panel | `.agents/agents/` + `.agents/workflows/design-panel.yaml` |
 | Prior LLM sessions on this machine | skill `survey-provider-history` |
 | SemVer tag / ghcr release / release.yml failure | skill `cut-release` (user-invoked publish) or `github-actions-ops` + rule `93` + `docs/how-to/cut-a-release.md` |
 
-Domain canon: `sots/`, `plan/` (may be gitignored in publish snapshots). Public method: `docs/explanation/how-this-was-built.md`.
+Current canon: `.spec/sot/`, `.spec/plan/`; raw evidence is private `.spec.local/`.
+Old `sots/`, `plan/`, Go and foreign-language harnesses are historical oracles,
+not instructions to author new non-Rust code. Public method: `docs/explanation/how-this-was-built.md`.
 
 ## Done means
 
 | Scope | Gate |
 |-------|------|
-| Any code | `go test` on touched packages; prefer `go test ./...` |
-| WASM/detect | `GOOS=js GOARCH=wasm go build ./cmd/wasm/` |
-| **Any e2e** | **Docker only** — `make e2e` / `bash scripts/e2e-docker.sh` (skill `red-blue-validate`) |
+| Authored implementation/tests | Rust **1.99.1 / edition 2024** only; no executable foreign script strings or generated foreign templates as a workaround |
+| Rust changes | scoped `cargo test --locked`, fmt and Clippy; integration candidate uses workspace gates in Rust migration SoT |
+| Rust WASM collector | `cargo check --locked -p humanymous-collector --target wasm32-unknown-unknown` plus actual isolated browser pilot |
+| **Product e2e** | **Docker only**; skill `red-blue-validate`; report exact source/image/topology and actual runner, never a stub as full product success |
+| Native tools/UI | real OS/process/GUI pilot in addition to unit tests; unsupported, ignored, mock and component results remain separate |
 
 Host/loopback `node test/e2e/runner.mjs` or host `node test/gate/e2e.mjs` is **not** completion authority (misses L5 topology / lab isolation). See `.agents/rules/60-e2e-docker-only.md`.
 
 ## Skills & agents
 
-- Canon: `.agents/skills/`, `.agents/personas/`, `.agents/rules/`, `.agents/workflows/`
-- After clone (Claude/Codex): `pwsh -File scripts/agents/sync-adapters.ps1` or `bash scripts/agents/sync-adapters.sh`
-- Verify: `scripts/agents/verify-agents-layout.*`
-- Edit **only** `.agents/**`, nested `AGENTS.md`, and this file — re-run sync; never hand-edit generated `.claude/` / `.grok/` / `.codex/` mirrors.
+- Canon: `.agents/skills/`, `.agents/agents/`, `.agents/rules/`; repository-root `skills/` holds Rust maintenance/evaluation tooling, not another skill definition copy.
+- `.agents/personas/` and generated vendor mirrors are compatibility surfaces pending retirement. Never hand-edit or remove live mirrors. Follow `.agents/retirement/README.md`; legacy sync recursively replaces mirrors and is deferred while sessions are active.
+- Verify canon: `cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .`
+- Preserve session coordination scripts until their Rust replacement and compatibility gates are qualified; their use is not permission for new foreign implementation.
+- Workspace Cargo/toolchain and whole roadmap edits belong to root integration. Keep public evidence sanitized and source-bound; observe LF in worktree **and Git blob** bytes.
+
+Cloudflare: use `cf` CLI unless the target project has Wrangler configuration.
 
 ## Multi-provider / nested sessions (overlap)
 

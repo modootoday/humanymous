@@ -13,7 +13,7 @@ guards, no per-round commit theater) use skill `red-blue-wargame-round` + rule `
 
 ## Policy
 
-**All e2e completion authority is Docker compose.** Host/loopback catalog or
+**Product e2e completion authority is Docker compose.** Host/loopback catalog or
 `node test/gate/e2e.mjs` alone is **not** done. See `.agents/rules/60-e2e-docker-only.md`.
 
 ## Preconditions
@@ -22,6 +22,12 @@ guards, no per-round commit theater) use skill `red-blue-wargame-round` + rule `
 - Defense-only (lab networks are internal by construction)
 
 ## Preferred one-shot
+
+Current Rust gates: `.spec/sot/delivery.sot.md`, owning `.spec/plan` and
+`test/lab/` actual Rust runner. Inspect the current Compose profile before running
+it. The commands below are retained legacy-oracle recipes, not proof that the
+full Rust product runner exists or permission to author JS/Go harness changes.
+Do not replace a missing required product runner with a zero-test/mock helper.
 
 ```bash
 # Full suite matching CI intent
@@ -47,7 +53,7 @@ make e2e-quick
 
 Progress:
 
-- [ ] Unit: `go test ./...` (and WASM build if client path touched)
+- [ ] Unit: scoped `cargo test --locked`, fmt and Clippy (Rust 1.99.1/edition 2024); collector also checks wasm32-unknown-unknown and runs its isolated browser pilot
 - [ ] `docker compose -f deployments/compose.yaml config -q`
 - [ ] `make up` — core + origin + gate
 - [ ] `make attack` — bots catalog → `deployments/artifacts/core-results.json`
@@ -59,6 +65,8 @@ Progress:
 ## Report
 
 - Pass/fail per Docker gate
+- Exact source/tree, image and environment; original failures, unsupported and ignored denominators
+- Distinguish legacy oracle, bounded component, native pilot and full product results
 - Human baseline not DENY
 - No guarantee language; reference-measured only
 
@@ -67,3 +75,4 @@ Progress:
 - Stale host `bin/server` on :8443 can confuse operators — use compose stack.
 - Swarm log must contain `l5.correlation.proxy_rotation`.
 - Do not mark network-plane work complete on loopback-only runner output.
+- Keep sandboxing enabled; no --no-sandbox or equivalent evaluator downgrade.

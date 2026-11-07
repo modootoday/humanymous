@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "compatibility-transition-not-deleted",
+  "canonical": ["AGENTS.md", ".agents/rules", ".agents/skills", ".agents/agents"],
+  "tools": ["skills/agent-maintenance"],
+  "external_read_only": ["user-root/.agents/skills", "user-root/.codex/skills"],
+  "retirement_candidates": [
+    {"path": ".agents/personas", "kind": "compatibility-pointers", "requires": ["workflow consumers migrated", "legacy role loading tested"]},
+    {"path": ".codex/skills", "kind": "generated-mirror", "requires": ["no dependent active chat", "fresh Codex canonical discovery eval", "CI adapter drift gate migrated"]},
+    {"path": ".claude/skills", "kind": "generated-mirror", "requires": ["no dependent active chat", "fresh Claude discovery or qualified Rust mirror generator"]},
+    {"path": ".grok/skills", "kind": "generated-mirror", "requires": ["no dependent active chat", "fresh Grok discovery eval"]},
+    {"path": ".gemini/skills", "kind": "generated-mirror", "requires": ["no dependent active chat", "fresh Gemini discovery eval"]},
+    {"path": ".agents/rules/10-go-conventions.md", "kind": "legacy-pointer", "requires": ["all legacy references migrated"]}
+  ],
+  "excluded_from_deletion": [".agents/sessions", ".agents/hooks", ".agents/lessons", "provider settings", "provider hooks", "user global skills", "legacy oracles"],
+  "deletion_owner": "root-final-integration",
+  "required_gates": ["source-bound Rust unit and actual pilot", "provider compatibility and paired plugin eval", "exact Git LF bytes", "final supply-chain and whole-product gates"]
+}

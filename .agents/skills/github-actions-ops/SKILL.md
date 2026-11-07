@@ -49,14 +49,14 @@ human-gated via skill `cut-release` + rule `93`.
 
 | Symptom | First checks | Fix shape |
 |---------|--------------|-----------|
-| CI `go` red | logs, `go test`, wasm job | fix code on main |
+| Rust CI red | exact job/source, locked Cargo tests, native/wasm matrix | fix the owning Rust crate; no branch switch or full-product claim from component green |
 | CI `detector-vs-bots` red | compose, assert profiles, freeze regression | Docker e2e locally; do not “skip” job |
 | Release `require-ci` red / timeout | No green `ci.yml` on tag SHA | Land CI green on that commit first, or fix-forward new tag after green CI |
 | Release `images` one leg red | Dockerfile, TARGETARCH, VERSION build-arg | fix main → **new** tag if prior tag incomplete |
 | Cosign / id-token | `permissions.id-token: write`, OIDC | restore perms; no ad-hoc keys |
 | `gh-release` empty body | `fetch-depth: 0`, cliff, unconventional commits | fix cliff/hygiene; `gh release edit` only with user OK |
 | packages: write denied | GITHUB_TOKEN packages permission, first package create | restore workflow perms / org package settings |
-| Agent layout job red | adapter drift | `sync-adapters` + verify; no hand-edit mirrors |
+| Agent layout job red | Rust canon check and retirement manifest, adapter drift | preserve live mirrors; root coordinates qualified final sync/retirement |
 | Trivy HIGH/CRITICAL | image deps | patch; no severity ignore without user OK |
 
 Observe:

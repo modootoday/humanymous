@@ -1,0 +1,31 @@
+{
+  "base_head": "26d99254997466a8bb1e14f8473fbe3948d6c585",
+  "status": "validated-working-source-not-canonical-commit",
+  "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "os": "Microsoft Windows 10.0.26200",
+  "arch": "X64",
+  "source": [
+    {
+      "path": "skills/agent-maintenance/src/evaluation.rs",
+      "sha256": "55ce54d98f8f0a98ba270f67e7f50de07bab83111ba3475ea6c019300380ca7d"
+    },
+    {
+      "path": "skills/agent-maintenance/src/inventory.rs",
+      "sha256": "7747fcb061dacbaa8c709c4d745db0105f2258766d65a400f3695fa2af369831"
+    },
+    {
+      "path": "skills/agent-maintenance/src/main.rs",
+      "sha256": "0d36fc22f66418c4fd1a33fb60508e8a27e2f02fb62beb8338efe6a26c94374c"
+    },
+    {
+      "path": "skills/agent-maintenance/src/routing.rs",
+      "sha256": "b4deee808b90f45e3634348a1815fdcde01228b9d405a076df3e21319a0af0fa"
+    },
+    {
+      "path": "skills/agent-maintenance/tests/process.rs",
+      "sha256": "d787269a6bc364355cae169f66b242fa143eb873d10d6e800094437512ff50af"
+    }
+  ],
+  "cargo": "1d50106c956254f7273213ffd4cc27586f518f63708319ec07a631c0f47787ec",
+  "lock": "c8a9cdbf71be7ce9bbc58623b35bb2fc26a0f9a3f40d4cea8eb35f01947597a4"
+}

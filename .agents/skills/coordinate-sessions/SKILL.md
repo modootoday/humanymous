@@ -29,7 +29,7 @@ this repository.
      -Goal "<one line>" -Paths "<glob1,glob2>"
    ```
 
-5. If claim fails (lane taken): stop writing those paths; ask user or pick another lane.
+5. If claim fails (lane taken): stop writing those paths. Continue independent read-only analysis/interface coordination; recheck the same lane after its owner releases it. Never force-release or invent an alternate claim for overlapping paths. Do not repeat a permission request when existing session authorization already covers the task.
 
 ### During work
 
@@ -56,6 +56,7 @@ pwsh -File scripts/agents/git-coord.ps1 release -Note "commit <sha>"
   `codex <codex@openai.com>` — full registry in `COMMIT-CONVENTION.md`.
 - Do not use bare `git commit -m` without that trailer; do not invent unowned emails.
 - Read-only `git status`/`diff`/`log` — no claim.
+- Shared index contains another writer's staged work: use `git-coord commit -OnlyPaths @('own/literal/path')`; never restore/unstage their files. Common Cargo/lock/toolchain and whole roadmap remain root-owned unless assigned.
 - If preflight reports `index.lock` or active `git-ops` → wait.
 - No force-push to shared branches; no amend of pushed commits without user OK.
 - Full rules: `GIT-PROTOCOL.md`, `COMMIT-CONVENTION.md`, rules `91` + `92`.

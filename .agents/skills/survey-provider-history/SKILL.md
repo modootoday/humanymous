@@ -33,10 +33,10 @@ settings (MCP tokens, OAuth) into the repo or chat.
    python ~/.grok/bundled/skills/shared/resume-session/session_reader.py claude list --cwd "$PWD" --json
    ```
 
-4. Reconcile open work with disk: `sots/38-*.md`, `plan/*`, git status.
+4. Reconcile open work with current `.spec/sot/`, `.spec/plan/`, INTEGRATION.md and git status. Historical `sots/`/`plan/` are not current implementation authority.
 
 5. If new durable lessons appear, **append** `.agents/lessons/HARD-WON.md` and
-   re-run `scripts/agents/sync-adapters` — do not leave lessons only in Claude memory.
+   do not leave lessons only in Claude memory. Generated mirror replacement is deferred during active sessions; follow `.agents/retirement/README.md`.
 
 ## Output
 

@@ -1,4 +1,4 @@
-# `.agents/` — multi-provider agent canon (v4)
+# `.agents/` — multi-provider agent canon (v5)
 
 Vendor-neutral source of truth for Claude Code, Grok Build, OpenAI Codex, and Gemini CLI.
 
@@ -9,9 +9,9 @@ Vendor-neutral source of truth for Claude Code, Grok Build, OpenAI Codex, and Ge
 | **L0 Hooks** | `hooks/` + `scripts/agents/hooks/` | Deterministic PreToolUse guard |
 | **L1 Rules** | root + nested `AGENTS.md`, `rules/` | Always-on; root stays **thin** (router) |
 | **L2 Skills** | `skills/*/SKILL.md` + `assets/` | Progressive disclosure ([Agent Skills](https://agentskills.io)) |
-| **L3 Personas** | `personas/` | Multi-perspective panels |
+| **L3 Agents** | `agents/` (`personas/` compatibility pointers) | Multi-perspective review roles |
 | **L4 Workflows** | `workflows/` + `scripts/agents/workflow-runner.mjs` | Local state machine, approvals, retries, JSONL journal |
-| **Evals** | `evals/trigger-{queries,rules}.json` | Executable no-LLM intent-routing proxy |
+| **Evals** | `evals/trigger-{queries,rules}.json`, Rust `skills/agent-maintenance` | Routing proxy, path/LF checks and separately classified real CLI pilot |
 | **Lessons** | `lessons/HARD-WON.md` | Cross-provider durable lessons (Claude memory is not enough) |
 | **Sessions** | `sessions/` | Multi-provider overlap: lanes, protocol, live ACTIVE board |
 
@@ -33,6 +33,19 @@ The runner records phases, time budgets, retries, approvals, artifacts, and an a
 
 ## Commands
 
+Current Rust canon checks (1.99.1 / edition 2024):
+
+```text
+cargo test --locked --manifest-path skills/agent-maintenance/Cargo.toml
+cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .
+cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- routing .
+```
+
+The following legacy commands are retained compatibility references. Do not run
+recursive mirror sync while chats are active; `.agents/retirement/README.md`
+defines the transition. Legacy workflow/hooks/session executables remain explicit
+foreign-tool debt until replacement qualification; no new foreign implementation.
+
 ```powershell
 pwsh -File scripts/agents/sync-adapters.ps1
 pwsh -File scripts/agents/verify-agents-layout.ps1
@@ -49,7 +62,7 @@ node scripts/agents/workflow-runner.mjs start --workflow feature-loop --objectiv
 ## Edit policy
 
 1. Edit **only** `.agents/**`, root/nested `AGENTS.md`, `CLAUDE.md`/`GEMINI.md` stubs if needed.
-2. Re-run **sync** after skill/rule/persona/hook changes.
+2. Observe drift with the Rust check. Root coordinates final compatibility sync/retirement after active sessions and gates permit it.
 3. Never hand-edit generated `.claude/skills`, `.grok/skills`, etc.
 
 ## Skills catalog

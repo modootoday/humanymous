@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": ".agents/skills/adversarial-critique/SKILL.md",
+      "bytes": 1032,
+      "sha256": "faa1a43f97aa890802f0e0ac5b89807c526c0f7fb64f85614b0d0c8575e104e6"
+    },
+    {
+      "path": ".agents/skills/adversarial-critique/assets/critique-report.md",
+      "bytes": 286,
+      "sha256": "e85019389dce4c0026046b1d9b002980b7a01f304525c8122af522b5e44d6998"
+    },
+    {
+      "path": ".agents/skills/coordinate-sessions/SKILL.md",
+      "bytes": 3711,
+      "sha256": "f981576f08b5ad4afb8dfdb8f972d2a9972074fe2fe84944b8561e1e5b3cb3bd"
+    },
+    {
+      "path": ".agents/skills/cut-release/SKILL.md",
+      "bytes": 5525,
+      "sha256": "65b6aadbeda0600aa0cb7cfbc189b2ae2ee6b9c9aacb0c491af8cff1f558023f"
+    },
+    {
+      "path": ".agents/skills/cut-release/assets/preflight-checklist.md",
+      "bytes": 985,
+      "sha256": "a285dc58006df0786e500d67f8c6a10a62993e9cccb08cdf5902c4bd6fa5fa84"
+    },
+    {
+      "path": ".agents/skills/design-sot/SKILL.md",
+      "bytes": 1512,
+      "sha256": "fd9b3f1f008315b663ceee45e01bb6b898cdcf451cf308be8832b2d5bc8ba974"
+    },
+    {
+      "path": ".agents/skills/design-sot/assets/sot-outline.md",
+      "bytes": 452,
+      "sha256": "6d86b7336499fead7e276ef9eb11fb3d0072804a1fe69a590ce76dd7b822a137"
+    },
+    {
+      "path": ".agents/skills/docs-from-sot/SKILL.md",
+      "bytes": 678,
+      "sha256": "bf52927cbd60716aac28ce95c20391ace826f319ee95dae787f76c575484e058"
+    },
+    {
+      "path": ".agents/skills/github-actions-ops/SKILL.md",
+      "bytes": 4475,
+      "sha256": "e84be0f6a6680a416fac33b964f8dd6d25bd30ac99889a6d9e4344f9ed57686a"
+    },
+    {
+      "path": ".agents/skills/handover-pack/SKILL.md",
+      "bytes": 1412,
+      "sha256": "0072ea2466e9ebe9dcba4a49a51eb823b7979ce5538957e876649a87be13c04b"
+    },
+    {
+      "path": ".agents/skills/handover-pack/assets/handover-template.md",
+      "bytes": 259,
+      "sha256": "35640a87500809bb5bb1a078ae8e7396d9dfa64e666617853a0cb898a12e6965"
+    },
+    {
+      "path": ".agents/skills/implement-sot-slice/SKILL.md",
+      "bytes": 2133,
+      "sha256": "a6954408c3e85f05da679905d386442aecf62fa9ebf930fa0478a3295bfbd70f"
+    },
+    {
+      "path": ".agents/skills/optimize-skill-description/SKILL.md",
+      "bytes": 2152,
+      "sha256": "fe2cc71a2d9bbb26695bef56be9be658d22913dbcbecd65699f5145ffa5d2aaf"
+    },
+    {
+      "path": ".agents/skills/pass-wargame-round/SKILL.md",
+      "bytes": 1536,
+      "sha256": "469241b579a1b1730e4eef94c2eb178ec3be47e335fd3757c20fff0040ddaa5b"
+    },
+    {
+      "path": ".agents/skills/pass-wargame-round/assets/round-log.md",
+      "bytes": 318,
+      "sha256": "04862bafa98a8f7823f0e946dc7f227ed645e0d7a445dc3c47dcb488b37ac4e6"
+    },
+    {
+      "path": ".agents/skills/red-blue-validate/SKILL.md",
+      "bytes": 2782,
+      "sha256": "6300cdfdbee6f357d826663aebbec9790d801d9098fbb5d81c17bdf6768ef3fa"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/SKILL.md",
+      "bytes": 4837,
+      "sha256": "d7d3588e54badaeb564e313a4a83d527925ac1c142f2aa507bb5d268cbc396a3"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/backlog-template.md",
+      "bytes": 166,
+      "sha256": "9aa26529f9740973e9c111a161e5dc02934c96a3fd2f4f335444a7f4eff0584b"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/evidence-template.md",
+      "bytes": 600,
+      "sha256": "e90ea209e02e8a7f3df4ebfac2012ea8157e69176b1c1c15ec83802bf926b5dd"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/ledger-template.md",
+      "bytes": 382,
+      "sha256": "39c4f205cb835d6e8b77a4eebf2d06cae0bb7234a8b92e2f207c59b88d3b3850"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/protocol.md",
+      "bytes": 945,
+      "sha256": "05da64fc564abbcbbbbbecceab4c8fafbae8c787590d482fcf54f0b94fb81fc7"
+    },
+    {
+      "path": ".agents/skills/review-changes/SKILL.md",
+      "bytes": 677,
+      "sha256": "d57c319bb4ae6096f1c278b96ded95128b5a604d851f172bfb598defad14f9f6"
+    },
+    {
+      "path": ".agents/skills/survey-provider-history/SKILL.md",
+      "bytes": 1587,
+      "sha256": "563c3446a5b302abc0cf73d536c4c95db8e6a6cee019c845cc99c6b6befc7faa"
+    },
+    {
+      "path": ".agents/rules/00-safety.md",
+      "bytes": 687,
+      "sha256": "9623066eed8370be140fa8a8b8c45610f37a85c803c5774a8ba8d5a85b1aaee9"
+    },
+    {
+      "path": ".agents/rules/10-go-conventions.md",
+      "bytes": 481,
+      "sha256": "d6a63198426ecec7b7f632e30ea27604eeadc3748a5087f8e1f1af2961cd1535"
+    },
+    {
+      "path": ".agents/rules/10-rust-conventions.md",
+      "bytes": 1400,
+      "sha256": "4564b564a235ad8982182a2c79230c5733feffdacbb70bfc192f8545c32666ca"
+    },
+    {
+      "path": ".agents/rules/20-detection-freeze.md",
+      "bytes": 704,
+      "sha256": "9ede02075d4fe77d3de9cc3217f3ac3a8cc8234d7c962446ec5031d8c018d054"
+    },
+    {
+      "path": ".agents/rules/30-docs-diataxis.md",
+      "bytes": 652,
+      "sha256": "089ca886f3a5bd242e5315fa25f3586eab1f3683933e26260d12e700da75ceef"
+    },
+    {
+      "path": ".agents/rules/40-ambiguity-ask.md",
+      "bytes": 488,
+      "sha256": "2e3c034b1f762125cbc73634567d2cb5f9f97b6aa5707579308f6f80dc815ba1"
+    },
+    {
+      "path": ".agents/rules/50-provider-matrix.md",
+      "bytes": 2355,
+      "sha256": "0d26fcef191c029d6ab566187dda7dfaa8e2ccf3fc14dabcec2329fd9d978686"
+    },
+    {
+      "path": ".agents/rules/60-e2e-docker-only.md",
+      "bytes": 1873,
+      "sha256": "32a225d9d19b11746e02992175d6b7276e70ff34e5f1e4c650982d657717b51c"
+    },
+    {
+      "path": ".agents/rules/61-redblue-wargame.md",
+      "bytes": 3156,
+      "sha256": "37b311761748cfb89e49cbe96fa499715ad1e64b26dd6ccce06d9afc552d32bf"
+    },
+    {
+      "path": ".agents/rules/70-hard-won-lessons.md",
+      "bytes": 642,
+      "sha256": "fb16378c1c14ca31937ff5c30217513b9c0a8c022185846601e84b92ee0db355"
+    },
+    {
+      "path": ".agents/rules/80-truth-debt.md",
+      "bytes": 664,
+      "sha256": "ac643ad60d9e4dadd097562dbb2d063c6df3e3a823c5644842802cf52f7c2f24"
+    },
+    {
+      "path": ".agents/rules/90-session-overlap.md",
+      "bytes": 1124,
+      "sha256": "ecf67ce7d8da0b954c6c2c3cdd6176010389a6a2f550050e92694a9432ed0d55"
+    },
+    {
+      "path": ".agents/rules/91-git-contention.md",
+      "bytes": 1143,
+      "sha256": "674143979f29e09adcc4f3e77df111558e1f031659950c1adc7db02c0e4d9b85"
+    },
+    {
+      "path": ".agents/rules/92-git-commit-attribution.md",
+      "bytes": 1702,
+      "sha256": "2673c61e4ae6a7d132e6d98765912e79b535810e704eefcb966077e3045edb6c"
+    },
+    {
+      "path": ".agents/rules/93-release-and-ci.md",
+      "bytes": 1983,
+      "sha256": "bdc9a864cc177bc77bfc0c12cc5a937a131cabf8fa8a608e25b84a49c9027c52"
+    },
+    {
+      "path": ".agents/agents/README.md",
+      "bytes": 326,
+      "sha256": "f29c08195ee3ecb491e2f3ca38b95a5bd0c59a123f958b1ee628f40f7dbc6d44"
+    },
+    {
+      "path": ".agents/agents/blue-architect.md",
+      "bytes": 778,
+      "sha256": "fd8bd3c27e63240b01b7860bd0bcd4cb5b24bc7fabd0ab60c27e17705310dd84"
+    },
+    {
+      "path": ".agents/agents/compliance-dpo.md",
+      "bytes": 698,
+      "sha256": "377cc422d39accc5f327c2c1448cdfc69610d3ac0668b09184c88988a734f745"
+    },
+    {
+      "path": ".agents/agents/evaluator.md",
+      "bytes": 699,
+      "sha256": "10ddb22b4dd3650f1e1219030f9f652e3c74a17684f46939a50719def0729867"
+    },
+    {
+      "path": ".agents/agents/red-attacker.md",
+      "bytes": 774,
+      "sha256": "fecc230763a6660baeb506f9a99dacc10258d42c9cc4889984b540e80fcc676a"
+    },
+    {
+      "path": ".agents/agents/sre-ops.md",
+      "bytes": 685,
+      "sha256": "8e4b5aa9fa18f03831a1df21f7c5776fb4f83b2f6fb270adab522055170000a8"
+    },
+    {
+      "path": ".agents/agents/staff-synthesizer.md",
+      "bytes": 772,
+      "sha256": "1ee6ce295e6dd3a65c29aaed2056af11feb1943c5c8be546a827101c0aca3dd1"
+    }
+  ],
+  "skills": 14,
+  "errors": [],
+  "mirror_drift": [
+    ".codex/skills/adversarial-critique/SKILL.md",
+    ".claude/skills/adversarial-critique/SKILL.md",
+    ".grok/skills/adversarial-critique/SKILL.md",
+    ".gemini/skills/adversarial-critique/SKILL.md",
+    ".codex/skills/adversarial-critique/assets/critique-report.md",
+    ".claude/skills/adversarial-critique/assets/critique-report.md",
+    ".grok/skills/adversarial-critique/assets/critique-report.md",
+    ".gemini/skills/adversarial-critique/assets/critique-report.md",
+    ".codex/skills/coordinate-sessions/SKILL.md",
+    ".claude/skills/coordinate-sessions/SKILL.md",
+    ".grok/skills/coordinate-sessions/SKILL.md",
+    ".gemini/skills/coordinate-sessions/SKILL.md",
+    ".codex/skills/cut-release/SKILL.md",
+    ".claude/skills/cut-release/SKILL.md",
+    ".grok/skills/cut-release/SKILL.md",
+    ".gemini/skills/cut-release/SKILL.md",
+    ".codex/skills/cut-release/assets/preflight-checklist.md",
+    ".claude/skills/cut-release/assets/preflight-checklist.md",
+    ".grok/skills/cut-release/assets/preflight-checklist.md",
+    ".gemini/skills/cut-release/assets/preflight-checklist.md",
+    ".codex/skills/design-sot/SKILL.md",
+    ".claude/skills/design-sot/SKILL.md",
+    ".grok/skills/design-sot/SKILL.md",
+    ".gemini/skills/design-sot/SKILL.md",
+    ".codex/skills/design-sot/assets/sot-outline.md",
+    ".claude/skills/design-sot/assets/sot-outline.md",
+    ".grok/skills/design-sot/assets/sot-outline.md",
+    ".gemini/skills/design-sot/assets/sot-outline.md",
+    ".codex/skills/docs-from-sot/SKILL.md",
+    ".claude/skills/docs-from-sot/SKILL.md",
+    ".grok/skills/docs-from-sot/SKILL.md",
+    ".gemini/skills/docs-from-sot/SKILL.md",
+    ".codex/skills/github-actions-ops/SKILL.md",
+    ".claude/skills/github-actions-ops/SKILL.md",
+    ".grok/skills/github-actions-ops/SKILL.md",
+    ".gemini/skills/github-actions-ops/SKILL.md",
+    ".codex/skills/handover-pack/SKILL.md",
+    ".claude/skills/handover-pack/SKILL.md",
+    ".grok/skills/handover-pack/SKILL.md",
+    ".gemini/skills/handover-pack/SKILL.md",
+    ".codex/skills/handover-pack/assets/handover-template.md",
+    ".claude/skills/handover-pack/assets/handover-template.md",
+    ".grok/skills/handover-pack/assets/handover-template.md",
+    ".gemini/skills/handover-pack/assets/handover-template.md",
+    ".codex/skills/implement-sot-slice/SKILL.md",
+    ".claude/skills/implement-sot-slice/SKILL.md",
+    ".grok/skills/implement-sot-slice/SKILL.md",
+    ".gemini/skills/implement-sot-slice/SKILL.md",
+    ".codex/skills/optimize-skill-description/SKILL.md",
+    ".claude/skills/optimize-skill-description/SKILL.md",
+    ".grok/skills/optimize-skill-description/SKILL.md",
+    ".gemini/skills/optimize-skill-description/SKILL.md",
+    ".codex/skills/pass-wargame-round/SKILL.md",
+    ".claude/skills/pass-wargame-round/SKILL.md",
+    ".grok/skills/pass-wargame-round/SKILL.md",
+    ".gemini/skills/pass-wargame-round/SKILL.md",
+    ".codex/skills/pass-wargame-round/assets/round-log.md",
+    ".claude/skills/pass-wargame-round/assets/round-log.md",
+    ".grok/skills/pass-wargame-round/assets/round-log.md",
+    ".gemini/skills/pass-wargame-round/assets/round-log.md",
+    ".codex/skills/red-blue-validate/SKILL.md",
+    ".claude/skills/red-blue-validate/SKILL.md",
+    ".grok/skills/red-blue-validate/SKILL.md",
+    ".gemini/skills/red-blue-validate/SKILL.md",
+    ".codex/skills/red-blue-wargame-round/SKILL.md",
+    ".claude/skills/red-blue-wargame-round/SKILL.md",
+    ".grok/skills/red-blue-wargame-round/SKILL.md",
+    ".gemini/skills/red-blue-wargame-round/SKILL.md",
+    ".codex/skills/red-blue-wargame-round/assets/backlog-template.md",
+    ".claude/skills/red-blue-wargame-round/assets/backlog-template.md",
+    ".grok/skills/red-blue-wargame-round/assets/backlog-template.md",
+    ".gemini/skills/red-blue-wargame-round/assets/backlog-template.md",
+    ".codex/skills/red-blue-wargame-round/assets/evidence-template.md",
+    ".claude/skills/red-blue-wargame-round/assets/evidence-template.md",
+    ".grok/skills/red-blue-wargame-round/assets/evidence-template.md",
+    ".gemini/skills/red-blue-wargame-round/assets/evidence-template.md",
+    ".codex/skills/red-blue-wargame-round/assets/ledger-template.md",
+    ".claude/skills/red-blue-wargame-round/assets/ledger-template.md",
+    ".grok/skills/red-blue-wargame-round/assets/ledger-template.md",
+    ".gemini/skills/red-blue-wargame-round/assets/ledger-template.md",
+    ".codex/skills/red-blue-wargame-round/assets/protocol.md",
+    ".claude/skills/red-blue-wargame-round/assets/protocol.md",
+    ".grok/skills/red-blue-wargame-round/assets/protocol.md",
+    ".gemini/skills/red-blue-wargame-round/assets/protocol.md",
+    ".codex/skills/review-changes/SKILL.md",
+    ".claude/skills/review-changes/SKILL.md",
+    ".grok/skills/review-changes/SKILL.md",
+    ".gemini/skills/review-changes/SKILL.md",
+    ".codex/skills/survey-provider-history/SKILL.md",
+    ".claude/skills/survey-provider-history/SKILL.md",
+    ".grok/skills/survey-provider-history/SKILL.md",
+    ".gemini/skills/survey-provider-history/SKILL.md"
+  ],
+  "role_pointers": 6,
+  "elapsed_micros": 20361
+}

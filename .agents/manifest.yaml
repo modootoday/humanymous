@@ -1,5 +1,5 @@
 # Multi-provider agent layout inventory (canon).
-version: 4
+version: 5
 
 canon:
   project_rules: AGENTS.md
@@ -11,12 +11,14 @@ canon:
     - web/AGENTS.md
   rules_root: .agents/rules
   skills_root: .agents/skills
-  personas_root: .agents/personas
+  agents_root: .agents/agents
+  personas_root: .agents/personas # compatibility pointers, not duplicate contracts
   workflows_root: .agents/workflows
   evals:
     dataset: .agents/evals/trigger-queries.json
     deterministic_rules: .agents/evals/trigger-rules.json
-    runner: scripts/agents/eval-skill-triggers.mjs
+    runner: skills/agent-maintenance
+    legacy_runner: scripts/agents/eval-skill-triggers.mjs
   hooks_canon: .agents/hooks
   workflow_runtime: scripts/agents/workflow-runner.mjs
   workflow_schema: .agents/workflows/workflow.schema.json
@@ -46,6 +48,7 @@ adapters:
 rules:
   - 00-safety.md
   - 10-go-conventions.md
+  - 10-rust-conventions.md
   - 20-detection-freeze.md
   - 30-docs-diataxis.md
   - 40-ambiguity-ask.md
@@ -106,3 +109,10 @@ research_basis:
   - https://agentskills.io/skill-creation/optimizing-descriptions
   - nested AGENTS progressive disclosure / monorepo patterns
   - L0 hooks for deterministic safety (Claude settings + Grok hooks)
+
+transition:
+  policy: .agents/retirement/README.md
+  manifest: .agents/retirement/manifest.json
+  user_skills: external-read-only
+  generated_mirror_deletion: root-only-after-qualification
+  authored_toolchain: Rust-1.99.1-edition-2024

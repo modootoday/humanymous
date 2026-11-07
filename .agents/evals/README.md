@@ -1,0 +1,27 @@
+# Evaluation boundaries
+
+The legacy trigger dataset and rules are measured by the Rust `routing` command.
+Its output is a regex intent proxy, not model activation or answer quality.
+Rust-era cases add authority and WASM implementation requests plus a conceptual
+near miss. The model pilot's cases and behavioral rubric are defined once in
+`skills/agent-maintenance/src/evaluation.rs`; do not copy examples into skill bodies.
+
+Model cases were defined before the pilot: two positive tasks (real authority
+peer missing despite mock success; actual browser missing despite native units)
+and one conceptual TLS explanation near miss. Positives require the pinned Rust
+toolchain, locked Cargo verification and an actual boundary pilot. The near miss
+must not invoke implementation. Both arms use identical behavioral graders;
+claimed skill names are not proof of an observed skill read.
+
+The modoo.today `codex-plugin-eval` is the required separate upstream plugin
+measurement path. The supplied script imports shared plugin files not included
+in its catalog bundle. Retain its exact hash, provision bwrap without weakening
+isolation, and report dependency failure separately. Do not fill missing harness
+imports with ad-hoc mocks or claim a standalone Windows CLI pilot is that suite.
+
+The recorded M11 pilot stopped at its observed token ceiling after two baseline
+and one treatment answers. The treatment skill read was policy-blocked. Do not
+compute a positive delta, tune the skill to the sandbox error, rerun around the
+policy or classify missing answers as quality failures. A final qualified rerun
+needs complete plugin provenance, two runs per arm for all three cases, recorded
+model/runtime/usage, actual discovery/read evidence and a valid sandbox boundary.

@@ -1,8 +1,8 @@
-# Go & layout conventions
+# Legacy Go compatibility pointer
 
-- Follow golang-standards/project-layout: `cmd/`, `internal/`, `pkg/`, `web/`, `test/`.
-- Keep `internal/signals` pure Go (no platform deps) — shared WASM + server types.
-- Prefer small files with one responsibility group (see `plan/01-implementation-plan.md`).
-- Scoring core stays pure/testable; do not fork scoring logic into `internal/gate`.
-- `cmd/server` and `internal/gate` share `collector.Store` + `scoring.Engine` — never re-implement verdicts in Gate.
-- Run `go vet` and `go test` on touched packages before claiming done.
+Current implementation rules are in `10-rust-conventions.md` and
+`.spec/sot/rust-migration.sot.md`. Go source is a read-only differential oracle
+until the parity/foreign-source retirement gate. Existing Go tests may measure
+that oracle but never substitute for Rust tests or authorize new Go code.
+Keep this filename while old adapters reference it; removal is a root integration
+step after the retirement manifest and compatibility checks pass.

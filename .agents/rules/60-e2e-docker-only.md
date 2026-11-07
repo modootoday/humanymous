@@ -1,6 +1,6 @@
 # E2E is Docker-only (completion authority)
 
-All end-to-end validation for detection and Gate **must** run through the Docker
+All product end-to-end validation for detection and Gate **must** run through the Docker
 compose stack under `deployments/`. Host/loopback runs are development aids only.
 
 ## Why
@@ -10,6 +10,12 @@ compose stack under `deployments/`. Host/loopback runs are development aids only
 - CI (`detector-vs-bots`) is the same path operators and agents must use.
 
 ## Authoritative commands
+
+Rust product completion additionally requires the actual Rust runner and current
+delivery/owning SoT gates, exact source/image attribution and real origin/audit/
+browser/Pass denominators. Below are legacy-oracle recipes retained for parity;
+do not count their success as the missing full Rust product runner. New authored
+test/runtime tooling is Rust 1.99.1/edition 2024, never foreign script wrappers.
 
 ```bash
 # Full suite (attack + assert + gate-e2e + swarm + overlays)
@@ -36,6 +42,7 @@ Windows: `pwsh -File scripts/e2e-docker.ps1` (optional `-SkipSwarm` / `-SkipOver
 
 ## Allowed without Docker
 
-- `go test ./...` unit tests
+- Scoped `cargo test --locked`, fmt and Clippy; existing Go tests only as oracle
 - WASM build/vet
 - Authoring a red profile locally before packaging into the bots image
+- Actual native OS/service/GUI pilots, explicitly component-scoped; these do not replace product Docker e2e

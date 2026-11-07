@@ -15,7 +15,7 @@ No prior chat assumed. Structure in `assets/handover-template.md`.
 
 Mission · Done (+ evidence) · In progress · Next actions · Verify commands · Files to read · Out-of-scope.
 
-If detection intentionally changed, state it loudly. Prefer updating `plan/*` handover when in tree.
+If detection intentionally changed, state it loudly. Use the owning `.spec/plan` and INTEGRATION.md; retain raw source-bound evidence privately under `.spec.local` and sanitized public attachments. Distinguish Rust unit/component, actual pilot, full Docker product e2e, mock, ignored and unsupported results. New implementation/test code remains Rust 1.99.1/edition 2024.
 
 ## Multi-provider / nested sessions
 

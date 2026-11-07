@@ -1,5 +1,12 @@
 # Provider matrix (what loads where)
 
+The table below is a legacy adapter compatibility snapshot, not a current
+cross-provider qualification claim. Canonical Rust-era paths are
+`.agents/{rules,skills,agents}`; user-global skills remain external read-only.
+Observe actual selected paths/hashes in fresh provider evals before retiring any
+mirror. Follow `.agents/retirement/README.md`; legacy recursive sync is deferred
+while active chats depend on old generated paths.
+
 | Asset | Claude Code | Grok Build | OpenAI Codex | Gemini CLI |
 |-------|-------------|------------|--------------|------------|
 | `AGENTS.md` | via `CLAUDE.md` stub / compat | native | native | via `.gemini/settings.json` |
@@ -13,7 +20,8 @@
 
 **Attribution emails:** Claude/Codex are GitHub-linked for profile photos. Grok follows community convention `grok@x.ai` (unlinked as of 2026-07). Official org [`xai-org`](https://github.com/xai-org) — **not** third-party `github.com/grok` / `github.com/xai`. Full registry: `.agents/sessions/COMMIT-CONVENTION.md`.
 
-Edit canon under `.agents/` + nested AGENTS; run `scripts/agents/sync-adapters`.
+Edit canon under `.agents/` + assigned AGENTS paths; validate with the Rust tool.
+Root coordinates any final legacy adapter sync under the transition policy.
 
 **Claude-only memory is not portable.** After a Claude-heavy session, promote durable
 rules into `.agents/lessons/HARD-WON.md` (skill `survey-provider-history`).

@@ -2,7 +2,7 @@
 name: red-blue-wargame-round
 description: >
   Use for sequential multi-round red/blue wargame series: red writes attack
-  in test/redteam or test/gate/e2e, Docker e2e measures, then blue guards.
+  in the owning Rust lab, Docker product e2e measures, then blue guards.
   Trigger on red/blue wargame, 50-round series, residual gap hunt, attack
   then defend. Not Pass-only (use pass-wargame-round) or measure-only
   (use red-blue-validate).
@@ -22,16 +22,16 @@ Pass-only challenge KPI: skill `pass-wargame-round` (SoT-36).
 
 1. `session-board list` → claim plane lane (`gate-edge`, `red-catalog`, `detection-core`, …).
 2. Confirm series mode with user if ambiguous: **no commits during series** (default) vs commit-after-batch.
-3. Private series tree (gitignored `plan/` is fine):
+3. Private series tree under an owned `.spec.local/root/evidence/<series-id>` bundle:
 
    ```text
-   plan/<series-id>/PROTOCOL.md   # optional series notes; copy from assets/protocol.md
-   plan/<series-id>/LEDGER.md
-   plan/<series-id>/BACKLOG.md
-   SCRATCH/<series-id>/rounds/rNN-evidence.md
+   .spec.local/root/evidence/<series-id>/PROTOCOL.md
+   .spec.local/root/evidence/<series-id>/LEDGER.md
+   .spec.local/root/evidence/<series-id>/BACKLOG.md
+   .spec.local/root/evidence/<series-id>/rounds/rNN-evidence.md
    ```
 
-4. Do not invent `test/wargame/`. Stay on existing harnesses.
+4. Reuse the current Rust `test/lab`/attacker/defender harness, verify membership and actual runner. Do not invent a duplicate harness. New code/tests are Rust 1.99.1/edition 2024 only, including executable script strings.
 
 ## Round loop (one attack class)
 
@@ -39,17 +39,17 @@ Pass-only challenge KPI: skill `pass-wargame-round` (SoT-36).
 
 | Plane | Write here |
 |-------|------------|
-| Core L1–L7 | `test/redteam/<name>.mjs` (`run`, `label`=`bot:…`, `needsBrowser`); raw TLS/RIT → `cmd/redteam` + `_bin.mjs` wrap |
-| Gate edge/admin | extend `test/gate/e2e.mjs` (and package tests under `internal/gate` / `internal/audit` as needed) |
-| Pass | `test/redteam/pass_*.mjs` only with `pass` lane |
+| Core L1–L7 | owning Rust attacker/defender lab case using shared engine; owned targets only |
+| Gate edge/admin | Rust runtime/authority process case, independent origin/audit effects |
+| Pass | Rust challenge case only with the appropriate lane and keyboard/SR controls |
 
-**Core profile registration (all three or silent skip):**
+**Legacy registration reference (read-only oracle, not Rust completion):**
 
 1. `test/e2e/runner.mjs` `PROFILES`
 2. `cmd/server/launch.go` `launchProfiles`
 3. `web/playground.html`
 
-Authoring aids (not done): `node test/redteam/run-one.mjs …`, host gate e2e.
+Legacy authoring aids are not current authoring targets or product completion evidence.
 
 Code research: file:line. Web research when technique class needs grounding (note URL one-liner). Defense-only / own deployment.
 

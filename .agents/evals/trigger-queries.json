@@ -3,6 +3,24 @@
   "description": "Static trigger eval set for project skills (manual or agent-assisted). should_trigger labels guide description quality reviews.",
   "queries": [
     {
+      "query": "Implement the accepted SoT slice in crates/authority using Rust and actual peer tests",
+      "skill": "implement-sot-slice",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Implement the accepted SoT slice for Rust WASM collector with browser verification",
+      "skill": "implement-sot-slice",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Explain Rust ownership conceptually without editing or implementing anything",
+      "skill": "implement-sot-slice",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
       "query": "Write a new SoT for rate-limit escalation before we touch code",
       "skill": "design-sot",
       "should_trigger": true,

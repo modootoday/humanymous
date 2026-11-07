@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "scope": "M11-agent-maintenance-component",
+  "overall": "partial-external-eval-dependency-and-root-integration-open",
+  "toolchain": "Rust 1.99.1 edition 2024",
+  "validation": {"unit_passed": 7, "process_passed": 4, "failed": 0, "ignored": 0, "clippy": "passed", "fmt": "passed"},
+  "canon": {"skills": 14, "role_pointers": 6, "errors": 0, "skill_mirror_drift_entries": 92, "mirror_deletion": false, "user_skills_observed_read_only": 20},
+  "routing_proxy": {"total": 40, "passed": 40, "model_activation": false},
+  "upstream_eval": {"skill": "modootoday/skill-factory/codex-plugin-eval", "script_sha256": "7430f009e37a556d1a96f512e31e508569297d35dbf1686766e6686fe48cfd3a", "bwrap": "0.9.0-1ubuntu0.3", "bwrap_namespace_probe": "passed", "package_sha256": "2461f1beee9cb04c8942739fe1a2b37e7b7c2a3d518f0779dc75f9245baa3094", "harness_startup": "ERR_MODULE_NOT_FOUND shared/owned-process.mjs", "qualified_paired_suite": false},
+  "independent_cli_pilot": {"runtime": "codex-cli 0.166.0-alpha.6", "subject_model": null, "sandbox": "read-only", "planned_cases": 3, "planned_runs_per_arm": 2, "baseline_answers": 2, "treatment_answers": 1, "observed_tokens": 123450, "future_call_stop_bound": 100000, "partial": true, "observed_skill_read": false, "skill_read_policy_blocked": true, "valid_paired_quality_delta": null, "original_quality_false_treatment_interpretation": "infrastructure-not-quality-failure", "precommit_exploratory_source": true},
+  "pending": ["complete upstream plugin/shared package", "qualified full paired eval", "root Cargo integration", "CI and fresh provider compatibility", "final mirror retirement", "M11-wide supply-chain and product gates"],
+  "not_run": ["full product e2e", "cross-platform tool qualification", "global user skill performance qualification"],
+  "privacy": "No raw credentials, user configuration or CLI traces in public attachments"
+}
