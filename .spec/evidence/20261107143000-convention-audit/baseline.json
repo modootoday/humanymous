@@ -220,7 +220,7 @@
       "id": "CA-RUNTIME-PILOT-01",
       "priority": "P2",
       "owner": "Root",
-      "state": "OPEN source pilot invocation regression after Runtime64 consolidation",
+      "state": "CLOSED scoped removed-package source invocation mismatch at02d8aedf with independentJSONargv/metadatajoin; actualDocker/pilot and newlypackaged correctedartifact remain OPEN",
       "trigger": "pilots/authority/Dockerfile RUN/CMD use removed humanymous-authority package; newmetadata has authority as Runtime context/bin only",
       "required_delta": "Correct package/features/target contract or explicit retirement; preserve authority library and allthreeintegrationroles, no globalprefixfilter that silently dropsintegration cases",
       "actual_docker_execution": false,
@@ -1783,6 +1783,31 @@
     "verdict": "No new production predicate/scoring/dualcontrol/a11y behavior delta confirmed in mappedRust review; no blanket semantic proof from whitespace triage",
     "new_finding": "CA-RUNTIME-PILOT-01 P2 OPEN: movedAuthorityDockerfile still cargo test -p humanymous-authority, no suchpackage innewmetadata",
     "remaining": "Rootpilotfix/disposition and preserved library+3integrationobligations; extracted/consumer/feature/native/full366/CrossOS/Docker gates separate",
+    "goal_complete": false
+  },
+  "followup_runtime_extracted522_and_pilot_source_fix": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-extracted-archive-review-001.json",
+        "sha256": "72ae57df23f9c8e8df313b93a403a2c6683d20fb3411895c20ec983edadb6b2d",
+        "bytes": 1354
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-extracted-readscope-review-001.json",
+        "sha256": "6a275700171cdfa2edf0d635658badd8db7655ed884461c7beff920f2e80b576",
+        "bytes": 2595
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime-authority-pilot-fix-review-002.json",
+        "sha256": "8c1823760af7d50b9569138b5549755c69bacb848ab6bb8f8356795d18388371",
+        "bytes": 2580
+      }
+    ],
+    "archives": "23raw+4archives hashverified/copied;150+32+282+58=522unique regularfiles exactmanifest/currentextract, beforeafterfinalidentical",
+    "compile": "Boundedalltarget/allfeaturecheck0/strictClippy0/pureconsumer0; finalonlysizeof/APIreferences, initialwarningretained; noRuntime tests/native/product",
+    "resolution": "Generatedexcludedlock154externalrecords differsinSyn2.0.119 vsRoot64 2.0.117;Syn3.0.9 common, notsamelockedworkspaceproof",
+    "source_identity": "ArchiveVCSbd16668 for4;Runtime dirtytrue, identitybyexactarchivehashes notcleansourcecommitclaim",
+    "pilot": "02d8aedf exactRuntime/authority/lib+3integrationJSONargv metadatajoinverified; scopedsourcefixed, Dockerunrun, old77e8archive notpromoted",
     "goal_complete": false
   }
 }

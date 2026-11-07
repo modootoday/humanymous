@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 9c5b9141deda106b502fdef8f38bdac63ba4421aaffd1c55139d8aab6ac5703a, bytes: 98275, store: repo}
+  - {path: baseline.json, sha256: 7723995ed799de07b36428a49bab57fd8b98d3f27c85b92b85d92d253d25c286, bytes: 99987, store: repo}
 ---
 
 # Convention audit baseline
@@ -1395,3 +1395,38 @@ This completes the bounded mapped-Rust difference read, not whole Runtime
 execution, normal/extracted package verification, all-consumer/native/CrossOS or
 product qualification. The pilot disposition and all remaining global gates stay
 OPEN. Exact private review hashes are in baseline.json.
+## Extracted522 custody and Authority pilot source correction
+
+Independent review of Root8e51e558 verifies/copies23 indexed raw files and four
+original crate archives. All522 unique regular archive members (Core150,
+Platform32,Runtime282,Collector58) match the before manifest and current extracted
+files by hash/size, with no missing/duplicate/nonregular/path-traversal records.
+Before/after/final extracted manifests are byte-identical. This is archive/source
+custody, not complete registry/compiler/OS read attestation.
+
+The temporary consumer workspace patches Core/Platform/Collector only to their
+extracted archives. Its normal/build tree has no Platform testing feature or
+source-repository crates path. All-target/all-feature check and strict Clippy
+receipts succeed; default consumer runs only public-type size/function references.
+Initial unused-import warnings and final actual-type references are retained
+separately. No Runtime tests, native/provider/credential/service operations or
+browser/product effects execute. The Runtime package-description warning is
+retained. These --no-verify --exclude-lockfile source packages are not normal
+Cargo package verification, registry publication or namespace ownership proof.
+
+Archive VCS metadata names bd16668 for all four packages and dirty=true for
+Runtime; exact archive hashes identify the payload, not a clean immutable64 tree.
+The separately generated lock selects154 external records. Its syn2.0.119
+replaces Root64/current-main2.0.117; syn3.0.9 is common. This permitted independent
+resolution is not itself a defect, but cannot qualify the original workspace lock
+or justify a full dependency-read closure claim. Root was notified to preserve
+that scope distinction without automatic reruns.
+
+CA-RUNTIME-PILOT-01's removed-package invocation is CLOSED at source scope by
+Root02d8aedf. Both Docker JSON exec argument arrays independently parse and bind
+Runtime/no-default-features/authority, library and all three exact Authority
+integration targets, each requiring authority in metadata. No global test-name
+filter drops integration cases; prerequisite library tests are explicitly extra.
+Actual Docker execution remains OPEN. The older Runtime77e8 archive still has the
+pre-fix Dockerfile and is not retroactively promoted by this source correction.
+Exact private hashes are bound in baseline.json; full migration remains OPEN.
